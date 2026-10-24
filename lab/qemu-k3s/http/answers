@@ -1,0 +1,18 @@
+# Alpine setup-alpine answer file (non-interactive install to /dev/vda, sys mode)
+# Consumed by setup-alpine -f /tmp/answers inside the QEMU live ISO.
+KEYMAPOPTS="us us"
+HOSTNAMEOPTS="-n k3s"
+INTERFACESOPTS="auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet dhcp
+    hostname k3s
+"
+DNSOPTS="-d 1.1.1.1 8.8.8.8"
+TIMEZONEOPTS="-z UTC"
+PROXYOPTS="none"
+APKREPOSOPTS="-1 -c"
+SSHDOPTS="-c openssh"
+NTPOPTS="-c chrony"
+DISKOPTS="-m sys /dev/vda"

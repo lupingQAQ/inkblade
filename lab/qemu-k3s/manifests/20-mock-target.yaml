@@ -1,0 +1,77 @@
+# Mock target workload: the repo's lab/mock_targets.py served from a Pod.
+#
+# mock_targets.py binds 127.0.0.1 by default (it was written for host-local
+# fixtures). Inside a Pod that address is not reachable through a Service, so the
+# container monkey-patches the module global to 0.0.0.0 before starting it. The
+# source itself is NOT modified: it is mounted from a ConfigMap created by
+# `kubectl create configmap mock-targets-src --from-file=lab/mock_targets.py`.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-target
+  namespace: trident-proof
+  labels:
+    app: mock-target
+    trident.dev/proof: real-cluster
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mock-target
+  template:
+    metadata:
+      labels:
+        app: mock-target
+        trident.dev/proof: real-cluster
+    spec:
+      containers:
+        - name: mock
+          image: python:3.12-alpine
+          command:
+            - python
+            - -c
+            - |
+              import sys
+              sys.path.insert(0, "/app")
+              import mock_targets as m
+              m.HOST = "0.0.0.0"   # Service reachability; module default is 127.0.0.1
+              m.main(["--port", "8000", "--mode", "vulnerable"])
+          ports:
+            - name: http
+              containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /__routes__
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - name: src
+              mountPath: /app
+              readOnly: true
+          resources:
+            limits:
+              memory: 256Mi
+              cpu: 500m
+      volumes:
+        - name: src
+          configMap:
+            name: mock-targets-src
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mock-target
+  namespace: trident-proof
+  labels:
+    app: mock-target
+    trident.dev/proof: real-cluster
+spec:
+  type: NodePort
+  selector:
+    app: mock-target
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+      nodePort: 30080      # host-forwarded to 127.0.0.1:30080 by start-vm.ps1

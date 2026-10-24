@@ -1,0 +1,57 @@
+{
+ "collected_at": "2026-10-24T19:42:16Z",
+ "cluster_ip": "10.43.41.60",
+ "pod_ip": "10.42.0.13",
+ "probes": [
+  {
+   "pod": "proof-normal",
+   "target": "clusterIP",
+   "url": "http://10.43.41.60:8000/__routes__",
+   "rc": 1,
+   "stdout": "",
+   "stderr": "wget: can't connect to remote host (10.43.41.60): Connection refused\ncommand terminated with exit code 1",
+   "verdict": "blocked"
+  },
+  {
+   "pod": "proof-normal",
+   "target": "podIP",
+   "url": "http://10.42.0.13:8000/__routes__",
+   "rc": 1,
+   "stdout": "",
+   "stderr": "wget: can't connect to remote host (10.42.0.13): Connection refused\ncommand terminated with exit code 1",
+   "verdict": "blocked"
+  },
+  {
+   "pod": "proof-hostnet",
+   "target": "clusterIP",
+   "url": "http://10.43.41.60:8000/__routes__",
+   "rc": 0,
+   "stdout": "",
+   "stderr": "",
+   "verdict": "connected"
+  },
+  {
+   "pod": "proof-hostnet",
+   "target": "podIP",
+   "url": "http://10.42.0.13:8000/__routes__",
+   "rc": 0,
+   "stdout": "",
+   "stderr": "",
+   "verdict": "connected"
+  }
+ ],
+ "pod_ready": {
+  "proof-normal": {
+   "rc": 0,
+   "stderr": ""
+  },
+  "proof-hostnet": {
+   "rc": 0,
+   "stderr": ""
+  }
+ },
+ "normal_all_blocked": true,
+ "hostnet_any_connected": true,
+ "verdict": "bypass-confirmed",
+ "policy": "apiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata:\n  annotations:\n    kubectl.kubernetes.io/last-applied-configuration: |\n      {\"apiVersion\":\"networking.k8s.io/v1\",\"kind\":\"NetworkPolicy\",\"metadata\":{\"annotations\":{},\"labels\":{\"trident.dev/proof\":\"real-cluster\"},\"name\":\"default-deny-all\",\"namespace\":\"trident-proof\"},\"spec\":{\"podSelector\":{},\"policyTypes\":[\"Ingress\",\"Egress\"]}}\n  creationTimestamp: \"2026-10-24T19:42:17Z\"\n  generation: 1\n  labels:\n    trident.dev/proof: real-cluster\n  name: default-deny-all\n  namespace: trident-proof\n  resourceVersion: \"694\"\n  uid: 06458d47-9370-465d-9d1e-483850d5031a\nspec:\n  podSelector: {}\n  policyTypes:\n  - Ingress\n  - Egress\n"
+}

@@ -1,4 +1,4 @@
-__pycache__/
+﻿__pycache__/
 *.pyc
 .superpowers/
 evidence/
@@ -10,5 +10,19 @@ dist/
 *.egg-info/
 .pytest_cache/
 .mypy_cache/
-# 本地 VM/QEMU 实验产物（可再生成，不入公开树）
-lab/qemu-k3s/
+# æœ¬åœ° VM/QEMU å®žéªŒäº§ç‰©ï¼ˆå¯å†ç”Ÿæˆï¼Œä¸å…¥å…¬å¼€æ ‘ï¼‰
+
+# --- QEMU TCG k3s lab (large / binary / secret artifacts) ---
+lab/qemu-k3s/qemu/
+lab/qemu-k3s/disk/
+lab/qemu-k3s/out/
+lab/qemu-k3s/*.iso
+lab/qemu-k3s/vmlinuz-virt
+lab/qemu-k3s/initramfs-virt
+lab/qemu-k3s/kubectl.exe
+lab/qemu-k3s/http/id_ed25519
+lab/qemu-k3s/http/id_ed25519.pub
+lab/qemu-k3s/http/authorized_keys
+lab/qemu-k3s/http/setup-alpine.sh
+lab/qemu-k3s/http/install-k3s.sh
+lab/qemu-k3s/qemu-w64-setup-*.exe

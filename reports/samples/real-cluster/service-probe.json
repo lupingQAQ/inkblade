@@ -1,0 +1,105 @@
+{
+ "windows_http": {
+  "url": "http://127.0.0.1:30080/__routes__",
+  "attempts": [
+   {
+    "status": 200,
+    "seconds": 0.03,
+    "body_head": "{\"service\": \"trident-mock-lab\", \"mode\": \"vulnerable\", \"host\": \"0.0.0.0\", \"admin_token_hint\": \"fixed 模式管理密钥 = Authorization: Bearer test-admin-key\", \"service_selector_header\": \"x-mock-service\", \"route_count\": 25, \"routes\": [{\"service\": \"sglang\", \"title\": \"SGLang 管理面磁盘权重更新\", \"method\": \"POST\", \"path\": "
+   },
+   {
+    "status": 200,
+    "seconds": 0.02,
+    "body_head": "{\"service\": \"trident-mock-lab\", \"mode\": \"vulnerable\", \"host\": \"0.0.0.0\", \"admin_token_hint\": \"fixed 模式管理密钥 = Authorization: Bearer test-admin-key\", \"service_selector_header\": \"x-mock-service\", \"route_count\": 25, \"routes\": [{\"service\": \"sglang\", \"title\": \"SGLang 管理面磁盘权重更新\", \"method\": \"POST\", \"path\": "
+   },
+   {
+    "status": 200,
+    "seconds": 0.01,
+    "body_head": "{\"service\": \"trident-mock-lab\", \"mode\": \"vulnerable\", \"host\": \"0.0.0.0\", \"admin_token_hint\": \"fixed 模式管理密钥 = Authorization: Bearer test-admin-key\", \"service_selector_header\": \"x-mock-service\", \"route_count\": 25, \"routes\": [{\"service\": \"sglang\", \"title\": \"SGLang 管理面磁盘权重更新\", \"method\": \"POST\", \"path\": "
+   }
+  ],
+  "ok": true
+ },
+ "trident_module": {
+  "target": "http://127.0.0.1:30080",
+  "summary": "plugins/list=200 对照面/v1/models=401 invoke=200 mode=probe-only",
+  "trace": {
+   "module": "vllm-plugin-auth-bypass",
+   "entries": [
+    {
+     "ts": 1792870922.584,
+     "method": "GET",
+     "url": "http://127.0.0.1:30080/plugins/list",
+     "body": null,
+     "headers": {},
+     "status": 200,
+     "response": {
+      "service": "vllm",
+      "plugins": [
+       {
+        "name": "jev",
+        "description": "mock vllm-jev 插件"
+       },
+       {
+        "name": "mock-plugin",
+        "description": "mock 插件"
+       }
+      ]
+     }
+    },
+    {
+     "ts": 1792870922.613,
+     "method": "GET",
+     "url": "http://127.0.0.1:30080/v1/models",
+     "body": null,
+     "headers": {
+      "X-Mock-Service": "vllm"
+     },
+     "status": 401,
+     "response": {
+      "error": "unauthorized",
+      "service": "vllm",
+      "note": "对照面：/v1/* 两模式均要求 api-key"
+     }
+    },
+    {
+     "ts": 1792870922.633,
+     "method": "POST",
+     "url": "http://127.0.0.1:30080/plugins/invoke",
+     "body": {
+      "plugin": "mock-plugin",
+      "args": {
+       "probe": "TRIDENT-real-cluster-http-20261025-034151",
+       "marker": "TRIDENT-real-cluster-http-20261025-034151"
+      }
+     },
+     "headers": {},
+     "status": 200,
+     "response": {
+      "ok": true,
+      "service": "vllm",
+      "plugin": "mock-plugin",
+      "invoked": true,
+      "result": {
+       "echo": {
+        "probe": "TRIDENT-real-cluster-http-20261025-034151",
+        "marker": "TRIDENT-real-cluster-http-20261025-034151"
+       }
+      }
+     }
+    }
+   ]
+  },
+  "findings": [
+   {
+    "sev": "high",
+    "title": "vLLM 插件路由绕过 api-key",
+    "detail": "plugins/list=200 而对照面 /v1/models=401"
+   }
+  ]
+ },
+ "after_policy": {
+  "note": "同一 NodePort 在 default-deny 生效后不可达（见 netpol-proof.json）",
+  "reprobe_status": 0
+ }
+}

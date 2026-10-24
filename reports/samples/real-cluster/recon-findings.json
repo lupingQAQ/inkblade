@@ -1,0 +1,173 @@
+{
+ "run": "real-cluster-recononly",
+ "run_dir": "out\\evidence-home\\evidence\\local-lab\\real-cluster-recononly",
+ "modules": [
+  {
+   "key": "exposure-mapping",
+   "ok": true,
+   "summary": "暴露面测绘完成：1 条发现（最高 medium；分布 {'medium': 1}；来源 <inline snapshot>）",
+   "archive": "steps/exposure-mapping.tar.gz"
+  },
+  {
+   "key": "network-policy-coverage",
+   "ok": true,
+   "summary": "网络策略覆盖分析完成：1 条发现（最高 high；分布 {'high': 1}；来源 <inline snapshot>）",
+   "archive": "steps/network-policy-coverage.tar.gz"
+  },
+  {
+   "key": "rbac-mapping",
+   "ok": true,
+   "summary": "RBAC 权限测绘完成：13 条发现（最高 critical；分布 {'critical': 11, 'high': 2}；来源 <inline snapshot>）",
+   "archive": "steps/rbac-mapping.tar.gz"
+  },
+  {
+   "key": "framework-port-matching",
+   "ok": true,
+   "summary": "框架漏洞端口匹配完成：0 条发现（最高 info；分布 {}；来源 <inline snapshot>）",
+   "archive": "steps/framework-port-matching.tar.gz"
+  },
+  {
+   "key": "escape-primitives",
+   "ok": true,
+   "summary": "逃逸原语检查完成：1 条发现（最高 medium；分布 {'medium': 1}；来源 <inline snapshot>）",
+   "archive": "steps/escape-primitives.tar.gz"
+  },
+  {
+   "key": "observability-exposure",
+   "ok": true,
+   "summary": "观测面暴露测绘完成：0 条发现（最高 info；分布 {}；来源 <inline snapshot>）",
+   "archive": "steps/observability-exposure.tar.gz"
+  }
+ ],
+ "finding_count": 16,
+ "findings": [
+  {
+   "module": "exposure-mapping",
+   "sev": "medium",
+   "title": "NodePort 服务暴露：trident-proof/mock-target（端口 8000）",
+   "detail": "NodePort 在全部节点对外开放（含宿主网络边界），绕过 Ingress 层治理。",
+   "evidence_path": "steps/exposure-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "network-policy-coverage",
+   "sev": "high",
+   "title": "命名空间 kube-system 的 2 个 Pod 未被任何入站 NetworkPolicy 选择（覆盖缺口）",
+   "detail": "Pod 清单：coredns-7cfb7bc9c7-pq74m, local-path-provisioner-77b9867795-7scjs。无策略选择 = 入站全放行（平网前提），任意同集群 Pod 可直达。",
+   "evidence_path": "steps/network-policy-coverage.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "rbac-mapping",
+   "sev": "high",
+   "title": "RBAC 扩散权限：ClusterRole admin 可创建 rolebindings/roles",
+   "detail": "可创建 roles/rolebindings 即可自铸高权绑定（提权闭环），无需触碰节点。",
+   "evidence_path": "steps/rbac-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "rbac-mapping",
+   "sev": "critical",
+   "title": "通配符ClusterRole：cluster-admin",
+   "detail": "verbs/resources/apiGroups 含 *：等价全权限（准 cluster-admin），绑定主体可接管集群。",
+   "evidence_path": "steps/rbac-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "rbac-mapping",
+   "sev": "critical",
+   "title": "通配符ClusterRole：k3s-cloud-controller-manager",
+   "detail": "verbs/resources/apiGroups 含 *：等价全权限（准 cluster-admin），绑定主体可接管集群。",
+   "evidence_path": "steps/rbac-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "rbac-mapping",
+   "sev": "critical",
+   "title": "通配符ClusterRole：local-path-provisioner-role",
+   "detail": "verbs/resources/apiGroups 含 *：等价全权限（准 cluster-admin），绑定主体可接管集群。",
+   "evidence_path": "steps/rbac-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "rbac-mapping",
+   "sev": "high",
+   "title": "RBAC 扩散权限：ClusterRole system:aggregate-to-admin 可创建 rolebindings/roles",
+   "detail": "可创建 roles/rolebindings 即可自铸高权绑定（提权闭环），无需触碰节点。",
+   "evidence_path": "steps/rbac-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "rbac-mapping",
+   "sev": "critical",
+   "title": "通配符ClusterRole：system:controller:disruption-controller",
+   "detail": "verbs/resources/apiGroups 含 *：等价全权限（准 cluster-admin），绑定主体可接管集群。",
+   "evidence_path": "steps/rbac-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "rbac-mapping",
+   "sev": "critical",
+   "title": "通配符ClusterRole：system:controller:generic-garbage-collector",
+   "detail": "verbs/resources/apiGroups 含 *：等价全权限（准 cluster-admin），绑定主体可接管集群。",
+   "evidence_path": "steps/rbac-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "rbac-mapping",
+   "sev": "critical",
+   "title": "通配符ClusterRole：system:controller:horizontal-pod-autoscaler",
+   "detail": "verbs/resources/apiGroups 含 *：等价全权限（准 cluster-admin），绑定主体可接管集群。",
+   "evidence_path": "steps/rbac-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "rbac-mapping",
+   "sev": "critical",
+   "title": "通配符ClusterRole：system:controller:namespace-controller",
+   "detail": "verbs/resources/apiGroups 含 *：等价全权限（准 cluster-admin），绑定主体可接管集群。",
+   "evidence_path": "steps/rbac-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "rbac-mapping",
+   "sev": "critical",
+   "title": "通配符ClusterRole：system:controller:resourcequota-controller",
+   "detail": "verbs/resources/apiGroups 含 *：等价全权限（准 cluster-admin），绑定主体可接管集群。",
+   "evidence_path": "steps/rbac-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "rbac-mapping",
+   "sev": "critical",
+   "title": "通配符ClusterRole：system:kube-controller-manager",
+   "detail": "verbs/resources/apiGroups 含 *：等价全权限（准 cluster-admin），绑定主体可接管集群。",
+   "evidence_path": "steps/rbac-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "rbac-mapping",
+   "sev": "critical",
+   "title": "通配符ClusterRole：system:kubelet-api-admin",
+   "detail": "verbs/resources/apiGroups 含 *：等价全权限（准 cluster-admin），绑定主体可接管集群。",
+   "evidence_path": "steps/rbac-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "rbac-mapping",
+   "sev": "critical",
+   "title": "cluster-admin 绑定：cluster-admin → Group:system:masters",
+   "detail": "cluster-admin 主体一步接管集群（含节点与密钥面）。",
+   "evidence_path": "steps/rbac-mapping.tar.gz",
+   "is_zeroday": false
+  },
+  {
+   "module": "escape-primitives",
+   "sev": "medium",
+   "title": "trident-proof/proof-hostnet：宿主网络命名空间共享（hostNetwork=true）",
+   "detail": "hostNetwork 绕过 CNI/NetworkPolicy 并直连宿主服务。",
+   "evidence_path": "steps/escape-primitives.tar.gz",
+   "is_zeroday": false
+  }
+ ]
+}

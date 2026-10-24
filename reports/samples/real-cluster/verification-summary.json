@@ -1,0 +1,66 @@
+{
+ "started_at": "2026-10-24T19:42:10Z",
+ "tag": "20261025-034210",
+ "steps": {
+  "cluster": {
+   "nodes": 1,
+   "ready": true,
+   "api_latency_s": [
+    1.253,
+    0.125,
+    0.096
+   ]
+  },
+  "deploy": {
+   "clusterIP": "10.43.41.60",
+   "nodePort": 30080,
+   "rollout_rc": 0
+  },
+  "service_probe": {
+   "windows_ok": true,
+   "module_summary": "plugins/list=200 对照面/v1/models=401 invoke=200 mode=probe-only"
+  },
+  "netpol": {
+   "verdict": "bypass-confirmed",
+   "normal_all_blocked": true,
+   "hostnet_any_connected": true
+  },
+  "snapshot": {
+   "pods": 5,
+   "services": 3,
+   "networkpolicies": 1,
+   "roles": 7,
+   "rolebindings": 8,
+   "clusterroles": 74,
+   "clusterrolebindings": 57,
+   "ingresses": 0,
+   "nodes": 1,
+   "serviceaccounts": 44,
+   "cani": 0
+  },
+  "recon": {
+   "modules": 6,
+   "ok": 6,
+   "findings": 16,
+   "severities": {
+    "medium": 2,
+    "high": 3,
+    "critical": 11
+   }
+  }
+ },
+ "finished_at": "2026-10-24T19:43:05Z",
+ "qemu_tcg": {
+  "note": "pure software emulation (-accel tcg), 4 vCPU / 2048 MB, no KVM/Hyper-V/WSL",
+  "implication": "control-plane operations are 5-20x slower than native; see cluster-info.json api_latency_s"
+ },
+ "artifacts": [
+  "cluster-info.json",
+  "netpol-proof.json",
+  "recon-findings.json",
+  "service-deploy.json",
+  "service-probe.json",
+  "snapshot.json",
+  "verification-summary.json"
+ ]
+}

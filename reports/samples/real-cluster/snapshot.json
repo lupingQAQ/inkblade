@@ -1,0 +1,7876 @@
+{
+ "source": "live-kubectl",
+ "collected_at": "2026-10-24T19:42:59Z",
+ "context": "k3s-single-node-qemu-tcg",
+ "pods": [
+  {
+   "namespace": "kube-system",
+   "name": "coredns-7cfb7bc9c7-pq74m",
+   "labels": {
+    "k8s-app": "kube-dns",
+    "pod-template-hash": "7cfb7bc9c7"
+   },
+   "nodeName": "k3s",
+   "hostNetwork": false,
+   "hostPID": false,
+   "hostIPC": false,
+   "serviceAccountName": "coredns",
+   "phase": "Running",
+   "podIP": "10.42.0.12",
+   "containers": [
+    {
+     "name": "coredns",
+     "image": "rancher/mirrored-coredns-coredns:1.14.7",
+     "securityContext": {
+      "allowPrivilegeEscalation": false,
+      "capabilities": {
+       "add": [
+        "NET_BIND_SERVICE"
+       ],
+       "drop": [
+        "all"
+       ]
+      },
+      "readOnlyRootFilesystem": true
+     },
+     "volumeMounts": [
+      {
+       "mountPath": "/etc/coredns",
+       "name": "config-volume",
+       "readOnly": true
+      },
+      {
+       "mountPath": "/etc/coredns/custom",
+       "name": "custom-config-volume",
+       "readOnly": true
+      },
+      {
+       "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+       "name": "kube-api-access-s9tvp",
+       "readOnly": true
+      }
+     ],
+     "command": [],
+     "args": [
+      "-conf",
+      "/etc/coredns/Corefile"
+     ]
+    }
+   ],
+   "volumes": [
+    {
+     "name": "config-volume",
+     "hostPath": null,
+     "configMap": {
+      "defaultMode": 420,
+      "items": [
+       {
+        "key": "Corefile",
+        "path": "Corefile"
+       },
+       {
+        "key": "NodeHosts",
+        "path": "NodeHosts"
+       }
+      ],
+      "name": "coredns"
+     },
+     "secret": null,
+     "emptyDir": null,
+     "persistentVolumeClaim": null
+    },
+    {
+     "name": "custom-config-volume",
+     "hostPath": null,
+     "configMap": {
+      "defaultMode": 420,
+      "name": "coredns-custom",
+      "optional": true
+     },
+     "secret": null,
+     "emptyDir": null,
+     "persistentVolumeClaim": null
+    },
+    {
+     "name": "kube-api-access-s9tvp",
+     "hostPath": null,
+     "configMap": null,
+     "secret": null,
+     "emptyDir": null,
+     "persistentVolumeClaim": null
+    }
+   ],
+   "tolerations": [
+    {
+     "key": "CriticalAddonsOnly",
+     "operator": "Exists"
+    },
+    {
+     "effect": "NoSchedule",
+     "key": "node-role.kubernetes.io/control-plane",
+     "operator": "Exists"
+    },
+    {
+     "effect": "NoExecute",
+     "key": "node.kubernetes.io/not-ready",
+     "operator": "Exists",
+     "tolerationSeconds": 300
+    },
+    {
+     "effect": "NoExecute",
+     "key": "node.kubernetes.io/unreachable",
+     "operator": "Exists",
+     "tolerationSeconds": 300
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "local-path-provisioner-77b9867795-7scjs",
+   "labels": {
+    "app": "local-path-provisioner",
+    "pod-template-hash": "77b9867795"
+   },
+   "nodeName": "k3s",
+   "hostNetwork": false,
+   "hostPID": false,
+   "hostIPC": false,
+   "serviceAccountName": "local-path-provisioner-service-account",
+   "phase": "Running",
+   "podIP": "10.42.0.14",
+   "containers": [
+    {
+     "name": "local-path-provisioner",
+     "image": "rancher/local-path-provisioner:v0.0.37",
+     "securityContext": {},
+     "volumeMounts": [
+      {
+       "mountPath": "/etc/config/",
+       "name": "config-volume"
+      },
+      {
+       "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+       "name": "kube-api-access-g4rsg",
+       "readOnly": true
+      }
+     ],
+     "command": [
+      "local-path-provisioner",
+      "start",
+      "--config",
+      "/etc/config/config.json"
+     ],
+     "args": []
+    }
+   ],
+   "volumes": [
+    {
+     "name": "config-volume",
+     "hostPath": null,
+     "configMap": {
+      "defaultMode": 420,
+      "name": "local-path-config"
+     },
+     "secret": null,
+     "emptyDir": null,
+     "persistentVolumeClaim": null
+    },
+    {
+     "name": "kube-api-access-g4rsg",
+     "hostPath": null,
+     "configMap": null,
+     "secret": null,
+     "emptyDir": null,
+     "persistentVolumeClaim": null
+    }
+   ],
+   "tolerations": [
+    {
+     "key": "CriticalAddonsOnly",
+     "operator": "Exists"
+    },
+    {
+     "effect": "NoSchedule",
+     "key": "node-role.kubernetes.io/control-plane",
+     "operator": "Exists"
+    },
+    {
+     "effect": "NoExecute",
+     "key": "node.kubernetes.io/not-ready",
+     "operator": "Exists",
+     "tolerationSeconds": 300
+    },
+    {
+     "effect": "NoExecute",
+     "key": "node.kubernetes.io/unreachable",
+     "operator": "Exists",
+     "tolerationSeconds": 300
+    }
+   ]
+  },
+  {
+   "namespace": "trident-proof",
+   "name": "mock-target-66c765d55-2z9n4",
+   "labels": {
+    "app": "mock-target",
+    "pod-template-hash": "66c765d55",
+    "trident.dev/proof": "real-cluster"
+   },
+   "nodeName": "k3s",
+   "hostNetwork": false,
+   "hostPID": false,
+   "hostIPC": false,
+   "serviceAccountName": "default",
+   "phase": "Running",
+   "podIP": "10.42.0.13",
+   "containers": [
+    {
+     "name": "mock",
+     "image": "python:3.12-alpine",
+     "securityContext": {},
+     "volumeMounts": [
+      {
+       "mountPath": "/app",
+       "name": "src",
+       "readOnly": true
+      },
+      {
+       "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+       "name": "kube-api-access-xj5f2",
+       "readOnly": true
+      }
+     ],
+     "command": [
+      "python",
+      "-c",
+      "import sys\nsys.path.insert(0, \"/app\")\nimport mock_targets as m\nm.HOST = \"0.0.0.0\"   # Service reachability; module default is 127.0.0.1\nm.main([\"--port\", \"8000\", \"--mode\", \"vulnerable\"])\n"
+     ],
+     "args": []
+    }
+   ],
+   "volumes": [
+    {
+     "name": "src",
+     "hostPath": null,
+     "configMap": {
+      "defaultMode": 420,
+      "name": "mock-targets-src"
+     },
+     "secret": null,
+     "emptyDir": null,
+     "persistentVolumeClaim": null
+    },
+    {
+     "name": "kube-api-access-xj5f2",
+     "hostPath": null,
+     "configMap": null,
+     "secret": null,
+     "emptyDir": null,
+     "persistentVolumeClaim": null
+    }
+   ],
+   "tolerations": [
+    {
+     "effect": "NoExecute",
+     "key": "node.kubernetes.io/not-ready",
+     "operator": "Exists",
+     "tolerationSeconds": 300
+    },
+    {
+     "effect": "NoExecute",
+     "key": "node.kubernetes.io/unreachable",
+     "operator": "Exists",
+     "tolerationSeconds": 300
+    }
+   ]
+  },
+  {
+   "namespace": "trident-proof",
+   "name": "proof-hostnet",
+   "labels": {
+    "app": "proof-hostnet",
+    "trident.dev/proof": "real-cluster"
+   },
+   "nodeName": "k3s",
+   "hostNetwork": true,
+   "hostPID": false,
+   "hostIPC": false,
+   "serviceAccountName": "default",
+   "phase": "Running",
+   "podIP": "10.0.2.15",
+   "containers": [
+    {
+     "name": "probe",
+     "image": "alpine:3.21",
+     "securityContext": {},
+     "volumeMounts": [
+      {
+       "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+       "name": "kube-api-access-zr6zg",
+       "readOnly": true
+      }
+     ],
+     "command": [
+      "sleep",
+      "infinity"
+     ],
+     "args": []
+    }
+   ],
+   "volumes": [
+    {
+     "name": "kube-api-access-zr6zg",
+     "hostPath": null,
+     "configMap": null,
+     "secret": null,
+     "emptyDir": null,
+     "persistentVolumeClaim": null
+    }
+   ],
+   "tolerations": [
+    {
+     "effect": "NoExecute",
+     "key": "node.kubernetes.io/not-ready",
+     "operator": "Exists",
+     "tolerationSeconds": 300
+    },
+    {
+     "effect": "NoExecute",
+     "key": "node.kubernetes.io/unreachable",
+     "operator": "Exists",
+     "tolerationSeconds": 300
+    }
+   ]
+  },
+  {
+   "namespace": "trident-proof",
+   "name": "proof-normal",
+   "labels": {
+    "app": "proof-normal",
+    "trident.dev/proof": "real-cluster"
+   },
+   "nodeName": "k3s",
+   "hostNetwork": false,
+   "hostPID": false,
+   "hostIPC": false,
+   "serviceAccountName": "default",
+   "phase": "Running",
+   "podIP": "10.42.0.15",
+   "containers": [
+    {
+     "name": "probe",
+     "image": "alpine:3.21",
+     "securityContext": {},
+     "volumeMounts": [
+      {
+       "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+       "name": "kube-api-access-trv4g",
+       "readOnly": true
+      }
+     ],
+     "command": [
+      "sleep",
+      "infinity"
+     ],
+     "args": []
+    }
+   ],
+   "volumes": [
+    {
+     "name": "kube-api-access-trv4g",
+     "hostPath": null,
+     "configMap": null,
+     "secret": null,
+     "emptyDir": null,
+     "persistentVolumeClaim": null
+    }
+   ],
+   "tolerations": [
+    {
+     "effect": "NoExecute",
+     "key": "node.kubernetes.io/not-ready",
+     "operator": "Exists",
+     "tolerationSeconds": 300
+    },
+    {
+     "effect": "NoExecute",
+     "key": "node.kubernetes.io/unreachable",
+     "operator": "Exists",
+     "tolerationSeconds": 300
+    }
+   ]
+  }
+ ],
+ "services": [
+  {
+   "namespace": "default",
+   "name": "kubernetes",
+   "type": "ClusterIP",
+   "clusterIP": "10.43.0.1",
+   "externalIPs": [],
+   "selector": {},
+   "labels": {
+    "component": "apiserver",
+    "provider": "kubernetes"
+   },
+   "ports": [
+    {
+     "name": "https",
+     "port": 443,
+     "targetPort": 6443,
+     "nodePort": null,
+     "protocol": "TCP"
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "kube-dns",
+   "type": "ClusterIP",
+   "clusterIP": "10.43.0.10",
+   "externalIPs": [],
+   "selector": {
+    "k8s-app": "kube-dns"
+   },
+   "labels": {
+    "k8s-app": "kube-dns",
+    "kubernetes.io/cluster-service": "true",
+    "kubernetes.io/name": "CoreDNS",
+    "objectset.rio.cattle.io/hash": "bce283298811743a0386ab510f2f67ef74240c57"
+   },
+   "ports": [
+    {
+     "name": "dns",
+     "port": 53,
+     "targetPort": 53,
+     "nodePort": null,
+     "protocol": "UDP"
+    },
+    {
+     "name": "dns-tcp",
+     "port": 53,
+     "targetPort": 53,
+     "nodePort": null,
+     "protocol": "TCP"
+    },
+    {
+     "name": "metrics",
+     "port": 9153,
+     "targetPort": 9153,
+     "nodePort": null,
+     "protocol": "TCP"
+    }
+   ]
+  },
+  {
+   "namespace": "trident-proof",
+   "name": "mock-target",
+   "type": "NodePort",
+   "clusterIP": "10.43.41.60",
+   "externalIPs": [],
+   "selector": {
+    "app": "mock-target"
+   },
+   "labels": {
+    "app": "mock-target",
+    "trident.dev/proof": "real-cluster"
+   },
+   "ports": [
+    {
+     "name": "http",
+     "port": 8000,
+     "targetPort": 8000,
+     "nodePort": 30080,
+     "protocol": "TCP"
+    }
+   ]
+  }
+ ],
+ "networkpolicies": [
+  {
+   "namespace": "trident-proof",
+   "name": "default-deny-all",
+   "podSelector": {},
+   "policyTypes": [
+    "Ingress",
+    "Egress"
+   ],
+   "ingress": [],
+   "egress": []
+  }
+ ],
+ "roles": [
+  {
+   "namespace": "kube-public",
+   "name": "system:controller:bootstrap-signer",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "configmaps"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resourceNames": [
+      "cluster-info"
+     ],
+     "resources": [
+      "configmaps"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "extension-apiserver-authentication-reader",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resourceNames": [
+      "extension-apiserver-authentication"
+     ],
+     "resources": [
+      "configmaps"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "system::leader-locking-kube-controller-manager",
+   "rules": [
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resources": [
+      "leases"
+     ],
+     "verbs": [
+      "create",
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resources": [
+      "leasecandidates"
+     ],
+     "verbs": [
+      "create",
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "system::leader-locking-kube-scheduler",
+   "rules": [
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resources": [
+      "leases"
+     ],
+     "verbs": [
+      "create",
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resources": [
+      "leasecandidates"
+     ],
+     "verbs": [
+      "create",
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "system:controller:bootstrap-signer",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "secrets"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "system:controller:cloud-provider",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "configmaps"
+     ],
+     "verbs": [
+      "create",
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "system:controller:token-cleaner",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "secrets"
+     ],
+     "verbs": [
+      "delete",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  }
+ ],
+ "rolebindings": [
+  {
+   "namespace": "kube-public",
+   "name": "system:controller:bootstrap-signer",
+   "role": "system:controller:bootstrap-signer",
+   "roleKind": "Role",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "bootstrap-signer",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "k3s-cloud-controller-manager-authentication-reader",
+   "role": "extension-apiserver-authentication-reader",
+   "roleKind": "Role",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "User",
+     "name": "k3s-cloud-controller-manager",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "system::extension-apiserver-authentication-reader",
+   "role": "extension-apiserver-authentication-reader",
+   "roleKind": "Role",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "User",
+     "name": "system:kube-controller-manager"
+    },
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "User",
+     "name": "system:kube-scheduler"
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "system::leader-locking-kube-controller-manager",
+   "role": "system::leader-locking-kube-controller-manager",
+   "roleKind": "Role",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "User",
+     "name": "system:kube-controller-manager"
+    },
+    {
+     "kind": "ServiceAccount",
+     "name": "kube-controller-manager",
+     "namespace": "kube-system"
+    },
+    {
+     "kind": "ServiceAccount",
+     "name": "leader-election-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "system::leader-locking-kube-scheduler",
+   "role": "system::leader-locking-kube-scheduler",
+   "roleKind": "Role",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "User",
+     "name": "system:kube-scheduler"
+    },
+    {
+     "kind": "ServiceAccount",
+     "name": "kube-scheduler",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "system:controller:bootstrap-signer",
+   "role": "system:controller:bootstrap-signer",
+   "roleKind": "Role",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "bootstrap-signer",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "system:controller:cloud-provider",
+   "role": "system:controller:cloud-provider",
+   "roleKind": "Role",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "cloud-provider",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": "kube-system",
+   "name": "system:controller:token-cleaner",
+   "role": "system:controller:token-cleaner",
+   "roleKind": "Role",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "token-cleaner",
+     "namespace": "kube-system"
+    }
+   ]
+  }
+ ],
+ "clusterroles": [
+  {
+   "namespace": null,
+   "name": "admin",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/attach",
+      "pods/exec",
+      "pods/portforward",
+      "pods/proxy",
+      "secrets",
+      "services/proxy"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "serviceaccounts"
+     ],
+     "verbs": [
+      "impersonate"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods",
+      "pods/attach",
+      "pods/exec",
+      "pods/portforward",
+      "pods/proxy"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/eviction"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "configmaps",
+      "persistentvolumeclaims",
+      "replicationcontrollers",
+      "replicationcontrollers/scale",
+      "secrets",
+      "serviceaccounts",
+      "services",
+      "services/proxy"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "serviceaccounts/token"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "daemonsets",
+      "deployments",
+      "deployments/rollback",
+      "deployments/scale",
+      "replicasets",
+      "replicasets/scale",
+      "statefulsets",
+      "statefulsets/scale"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "autoscaling"
+     ],
+     "resources": [
+      "horizontalpodautoscalers"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "cronjobs",
+      "jobs"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "extensions"
+     ],
+     "resources": [
+      "daemonsets",
+      "deployments",
+      "deployments/rollback",
+      "deployments/scale",
+      "ingresses",
+      "networkpolicies",
+      "replicasets",
+      "replicasets/scale",
+      "replicationcontrollers/scale"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "policy"
+     ],
+     "resources": [
+      "poddisruptionbudgets"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "ingresses",
+      "networkpolicies"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resources": [
+      "leases"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims",
+      "resourceclaimtemplates"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "configmaps",
+      "endpoints",
+      "persistentvolumeclaims",
+      "persistentvolumeclaims/status",
+      "pods",
+      "replicationcontrollers",
+      "replicationcontrollers/scale",
+      "serviceaccounts",
+      "services",
+      "services/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "bindings",
+      "limitranges",
+      "namespaces/status",
+      "pods/log",
+      "pods/status",
+      "replicationcontrollers/status",
+      "resourcequotas",
+      "resourcequotas/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "namespaces"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "discovery.k8s.io"
+     ],
+     "resources": [
+      "endpointslices"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "controllerrevisions",
+      "daemonsets",
+      "daemonsets/status",
+      "deployments",
+      "deployments/scale",
+      "deployments/status",
+      "replicasets",
+      "replicasets/scale",
+      "replicasets/status",
+      "statefulsets",
+      "statefulsets/scale",
+      "statefulsets/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "autoscaling"
+     ],
+     "resources": [
+      "horizontalpodautoscalers",
+      "horizontalpodautoscalers/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "cronjobs",
+      "cronjobs/status",
+      "jobs",
+      "jobs/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "extensions"
+     ],
+     "resources": [
+      "daemonsets",
+      "daemonsets/status",
+      "deployments",
+      "deployments/scale",
+      "deployments/status",
+      "ingresses",
+      "ingresses/status",
+      "networkpolicies",
+      "replicasets",
+      "replicasets/scale",
+      "replicasets/status",
+      "replicationcontrollers/scale"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "policy"
+     ],
+     "resources": [
+      "poddisruptionbudgets",
+      "poddisruptionbudgets/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "ingresses",
+      "ingresses/status",
+      "networkpolicies"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims",
+      "resourceclaims/status",
+      "resourceclaimtemplates"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "authorization.k8s.io"
+     ],
+     "resources": [
+      "localsubjectaccessreviews"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "rbac.authorization.k8s.io"
+     ],
+     "resources": [
+      "rolebindings",
+      "roles"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "cluster-admin",
+   "rules": [
+    {
+     "apiGroups": [
+      "*"
+     ],
+     "resources": [
+      "*"
+     ],
+     "verbs": [
+      "*"
+     ]
+    },
+    {
+     "nonResourceURLs": [
+      "*"
+     ],
+     "verbs": [
+      "*"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "clustercidrs-node",
+   "rules": [
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "clustercidrs"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "edit",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/attach",
+      "pods/exec",
+      "pods/portforward",
+      "pods/proxy",
+      "secrets",
+      "services/proxy"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "serviceaccounts"
+     ],
+     "verbs": [
+      "impersonate"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods",
+      "pods/attach",
+      "pods/exec",
+      "pods/portforward",
+      "pods/proxy"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/eviction"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "configmaps",
+      "persistentvolumeclaims",
+      "replicationcontrollers",
+      "replicationcontrollers/scale",
+      "secrets",
+      "serviceaccounts",
+      "services",
+      "services/proxy"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "serviceaccounts/token"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "daemonsets",
+      "deployments",
+      "deployments/rollback",
+      "deployments/scale",
+      "replicasets",
+      "replicasets/scale",
+      "statefulsets",
+      "statefulsets/scale"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "autoscaling"
+     ],
+     "resources": [
+      "horizontalpodautoscalers"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "cronjobs",
+      "jobs"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "extensions"
+     ],
+     "resources": [
+      "daemonsets",
+      "deployments",
+      "deployments/rollback",
+      "deployments/scale",
+      "ingresses",
+      "networkpolicies",
+      "replicasets",
+      "replicasets/scale",
+      "replicationcontrollers/scale"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "policy"
+     ],
+     "resources": [
+      "poddisruptionbudgets"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "ingresses",
+      "networkpolicies"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resources": [
+      "leases"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims",
+      "resourceclaimtemplates"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "configmaps",
+      "endpoints",
+      "persistentvolumeclaims",
+      "persistentvolumeclaims/status",
+      "pods",
+      "replicationcontrollers",
+      "replicationcontrollers/scale",
+      "serviceaccounts",
+      "services",
+      "services/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "bindings",
+      "limitranges",
+      "namespaces/status",
+      "pods/log",
+      "pods/status",
+      "replicationcontrollers/status",
+      "resourcequotas",
+      "resourcequotas/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "namespaces"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "discovery.k8s.io"
+     ],
+     "resources": [
+      "endpointslices"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "controllerrevisions",
+      "daemonsets",
+      "daemonsets/status",
+      "deployments",
+      "deployments/scale",
+      "deployments/status",
+      "replicasets",
+      "replicasets/scale",
+      "replicasets/status",
+      "statefulsets",
+      "statefulsets/scale",
+      "statefulsets/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "autoscaling"
+     ],
+     "resources": [
+      "horizontalpodautoscalers",
+      "horizontalpodautoscalers/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "cronjobs",
+      "cronjobs/status",
+      "jobs",
+      "jobs/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "extensions"
+     ],
+     "resources": [
+      "daemonsets",
+      "daemonsets/status",
+      "deployments",
+      "deployments/scale",
+      "deployments/status",
+      "ingresses",
+      "ingresses/status",
+      "networkpolicies",
+      "replicasets",
+      "replicasets/scale",
+      "replicasets/status",
+      "replicationcontrollers/scale"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "policy"
+     ],
+     "resources": [
+      "poddisruptionbudgets",
+      "poddisruptionbudgets/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "ingresses",
+      "ingresses/status",
+      "networkpolicies"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims",
+      "resourceclaims/status",
+      "resourceclaimtemplates"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "k3s-cloud-controller-manager",
+   "rules": [
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resources": [
+      "leases"
+     ],
+     "verbs": [
+      "get",
+      "create",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "*"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes/status",
+      "services/status"
+     ],
+     "verbs": [
+      "patch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "services",
+      "pods"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "services"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "serviceaccounts"
+     ],
+     "verbs": [
+      "create",
+      "get"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "namespaces"
+     ],
+     "verbs": [
+      "create",
+      "get"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "daemonsets"
+     ],
+     "verbs": [
+      "*"
+     ]
+    },
+    {
+     "apiGroups": [
+      "discovery.k8s.io"
+     ],
+     "resources": [
+      "endpointslices"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "local-path-provisioner-role",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes",
+      "persistentvolumeclaims",
+      "configmaps",
+      "pods/log"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "endpoints",
+      "persistentvolumes",
+      "pods"
+     ],
+     "verbs": [
+      "*"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "storageclasses"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:aggregate-to-admin",
+   "rules": [
+    {
+     "apiGroups": [
+      "authorization.k8s.io"
+     ],
+     "resources": [
+      "localsubjectaccessreviews"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "rbac.authorization.k8s.io"
+     ],
+     "resources": [
+      "rolebindings",
+      "roles"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:aggregate-to-edit",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/attach",
+      "pods/exec",
+      "pods/portforward",
+      "pods/proxy",
+      "secrets",
+      "services/proxy"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "serviceaccounts"
+     ],
+     "verbs": [
+      "impersonate"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods",
+      "pods/attach",
+      "pods/exec",
+      "pods/portforward",
+      "pods/proxy"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/eviction"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "configmaps",
+      "persistentvolumeclaims",
+      "replicationcontrollers",
+      "replicationcontrollers/scale",
+      "secrets",
+      "serviceaccounts",
+      "services",
+      "services/proxy"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "serviceaccounts/token"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "daemonsets",
+      "deployments",
+      "deployments/rollback",
+      "deployments/scale",
+      "replicasets",
+      "replicasets/scale",
+      "statefulsets",
+      "statefulsets/scale"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "autoscaling"
+     ],
+     "resources": [
+      "horizontalpodautoscalers"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "cronjobs",
+      "jobs"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "extensions"
+     ],
+     "resources": [
+      "daemonsets",
+      "deployments",
+      "deployments/rollback",
+      "deployments/scale",
+      "ingresses",
+      "networkpolicies",
+      "replicasets",
+      "replicasets/scale",
+      "replicationcontrollers/scale"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "policy"
+     ],
+     "resources": [
+      "poddisruptionbudgets"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "ingresses",
+      "networkpolicies"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resources": [
+      "leases"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims",
+      "resourceclaimtemplates"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:aggregate-to-view",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "configmaps",
+      "endpoints",
+      "persistentvolumeclaims",
+      "persistentvolumeclaims/status",
+      "pods",
+      "replicationcontrollers",
+      "replicationcontrollers/scale",
+      "serviceaccounts",
+      "services",
+      "services/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "bindings",
+      "limitranges",
+      "namespaces/status",
+      "pods/log",
+      "pods/status",
+      "replicationcontrollers/status",
+      "resourcequotas",
+      "resourcequotas/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "namespaces"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "discovery.k8s.io"
+     ],
+     "resources": [
+      "endpointslices"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "controllerrevisions",
+      "daemonsets",
+      "daemonsets/status",
+      "deployments",
+      "deployments/scale",
+      "deployments/status",
+      "replicasets",
+      "replicasets/scale",
+      "replicasets/status",
+      "statefulsets",
+      "statefulsets/scale",
+      "statefulsets/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "autoscaling"
+     ],
+     "resources": [
+      "horizontalpodautoscalers",
+      "horizontalpodautoscalers/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "cronjobs",
+      "cronjobs/status",
+      "jobs",
+      "jobs/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "extensions"
+     ],
+     "resources": [
+      "daemonsets",
+      "daemonsets/status",
+      "deployments",
+      "deployments/scale",
+      "deployments/status",
+      "ingresses",
+      "ingresses/status",
+      "networkpolicies",
+      "replicasets",
+      "replicasets/scale",
+      "replicasets/status",
+      "replicationcontrollers/scale"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "policy"
+     ],
+     "resources": [
+      "poddisruptionbudgets",
+      "poddisruptionbudgets/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "ingresses",
+      "ingresses/status",
+      "networkpolicies"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims",
+      "resourceclaims/status",
+      "resourceclaimtemplates"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:auth-delegator",
+   "rules": [
+    {
+     "apiGroups": [
+      "authentication.k8s.io"
+     ],
+     "resources": [
+      "tokenreviews"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "authorization.k8s.io"
+     ],
+     "resources": [
+      "subjectaccessreviews"
+     ],
+     "verbs": [
+      "create"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:basic-user",
+   "rules": [
+    {
+     "apiGroups": [
+      "authorization.k8s.io"
+     ],
+     "resources": [
+      "selfsubjectaccessreviews",
+      "selfsubjectrulesreviews"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "authentication.k8s.io"
+     ],
+     "resources": [
+      "selfsubjectreviews"
+     ],
+     "verbs": [
+      "create"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:certificates.k8s.io:certificatesigningrequests:nodeclient",
+   "rules": [
+    {
+     "apiGroups": [
+      "certificates.k8s.io"
+     ],
+     "resources": [
+      "certificatesigningrequests/nodeclient"
+     ],
+     "verbs": [
+      "create"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:certificates.k8s.io:certificatesigningrequests:selfnodeclient",
+   "rules": [
+    {
+     "apiGroups": [
+      "certificates.k8s.io"
+     ],
+     "resources": [
+      "certificatesigningrequests/selfnodeclient"
+     ],
+     "verbs": [
+      "create"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:certificates.k8s.io:kube-apiserver-client-approver",
+   "rules": [
+    {
+     "apiGroups": [
+      "certificates.k8s.io"
+     ],
+     "resourceNames": [
+      "kubernetes.io/kube-apiserver-client"
+     ],
+     "resources": [
+      "signers"
+     ],
+     "verbs": [
+      "approve"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:certificates.k8s.io:kube-apiserver-client-kubelet-approver",
+   "rules": [
+    {
+     "apiGroups": [
+      "certificates.k8s.io"
+     ],
+     "resourceNames": [
+      "kubernetes.io/kube-apiserver-client-kubelet"
+     ],
+     "resources": [
+      "signers"
+     ],
+     "verbs": [
+      "approve"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:certificates.k8s.io:kubelet-serving-approver",
+   "rules": [
+    {
+     "apiGroups": [
+      "certificates.k8s.io"
+     ],
+     "resourceNames": [
+      "kubernetes.io/kubelet-serving"
+     ],
+     "resources": [
+      "signers"
+     ],
+     "verbs": [
+      "approve"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:certificates.k8s.io:legacy-unknown-approver",
+   "rules": [
+    {
+     "apiGroups": [
+      "certificates.k8s.io"
+     ],
+     "resourceNames": [
+      "kubernetes.io/legacy-unknown"
+     ],
+     "resources": [
+      "signers"
+     ],
+     "verbs": [
+      "approve"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:attachdetach-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims",
+      "persistentvolumes"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes/status"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "volumeattachments"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "csidrivers"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "csinodes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:certificate-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      "certificates.k8s.io"
+     ],
+     "resources": [
+      "certificatesigningrequests"
+     ],
+     "verbs": [
+      "delete",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "certificates.k8s.io"
+     ],
+     "resources": [
+      "certificatesigningrequests/approval",
+      "certificatesigningrequests/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "certificates.k8s.io"
+     ],
+     "resourceNames": [
+      "kubernetes.io/kube-apiserver-client-kubelet"
+     ],
+     "resources": [
+      "signers"
+     ],
+     "verbs": [
+      "approve"
+     ]
+    },
+    {
+     "apiGroups": [
+      "certificates.k8s.io"
+     ],
+     "resourceNames": [
+      "kubernetes.io/kube-apiserver-client",
+      "kubernetes.io/kube-apiserver-client-kubelet",
+      "kubernetes.io/kubelet-serving",
+      "kubernetes.io/legacy-unknown"
+     ],
+     "resources": [
+      "signers"
+     ],
+     "verbs": [
+      "sign"
+     ]
+    },
+    {
+     "apiGroups": [
+      "authorization.k8s.io"
+     ],
+     "resources": [
+      "subjectaccessreviews"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:clusterrole-aggregation-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      "rbac.authorization.k8s.io"
+     ],
+     "resources": [
+      "clusterroles"
+     ],
+     "verbs": [
+      "escalate",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:cronjob-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "cronjobs"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "jobs"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "cronjobs/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "cronjobs/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "delete",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:daemon-set-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      "apps",
+      "extensions"
+     ],
+     "resources": [
+      "daemonsets"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps",
+      "extensions"
+     ],
+     "resources": [
+      "daemonsets/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps",
+      "extensions"
+     ],
+     "resources": [
+      "daemonsets/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "list",
+      "patch",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/binding"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "controllerrevisions"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:deployment-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      "apps",
+      "extensions"
+     ],
+     "resources": [
+      "deployments"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps",
+      "extensions"
+     ],
+     "resources": [
+      "deployments/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps",
+      "extensions"
+     ],
+     "resources": [
+      "deployments/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps",
+      "extensions"
+     ],
+     "resources": [
+      "replicasets"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:device-taint-eviction-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "delete",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/status"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceslices"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "deviceclasses"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:disruption-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      "apps",
+      "extensions"
+     ],
+     "resources": [
+      "deployments"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps",
+      "extensions"
+     ],
+     "resources": [
+      "replicasets"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "replicationcontrollers"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "policy"
+     ],
+     "resources": [
+      "poddisruptionbudgets"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "statefulsets"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "policy"
+     ],
+     "resources": [
+      "poddisruptionbudgets/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/status"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "*"
+     ],
+     "resources": [
+      "*/scale"
+     ],
+     "verbs": [
+      "get"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:endpoint-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods",
+      "services"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "endpoints"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "endpoints/restricted"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:endpointslice-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes",
+      "pods",
+      "services"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "services/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "discovery.k8s.io"
+     ],
+     "resources": [
+      "endpointslices"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:endpointslicemirroring-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "endpoints",
+      "services"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "services/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "endpoints/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "discovery.k8s.io"
+     ],
+     "resources": [
+      "endpointslices"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:ephemeral-volume-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims"
+     ],
+     "verbs": [
+      "create",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:expand-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims/status"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:generic-garbage-collector",
+   "rules": [
+    {
+     "apiGroups": [
+      "*"
+     ],
+     "resources": [
+      "*"
+     ],
+     "verbs": [
+      "delete",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:horizontal-pod-autoscaler",
+   "rules": [
+    {
+     "apiGroups": [
+      "autoscaling"
+     ],
+     "resources": [
+      "horizontalpodautoscalers"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "autoscaling"
+     ],
+     "resources": [
+      "horizontalpodautoscalers/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "*"
+     ],
+     "resources": [
+      "*/scale"
+     ],
+     "verbs": [
+      "get",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "metrics.k8s.io"
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "custom.metrics.k8s.io"
+     ],
+     "resources": [
+      "*"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "external.metrics.k8s.io"
+     ],
+     "resources": [
+      "*"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:job-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "jobs"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "jobs/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "jobs/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "list",
+      "patch",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:legacy-service-account-token-cleaner",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resourceNames": [
+      "kube-apiserver-legacy-service-account-token-tracking"
+     ],
+     "resources": [
+      "configmaps"
+     ],
+     "verbs": [
+      "get"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "secrets"
+     ],
+     "verbs": [
+      "delete",
+      "patch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:namespace-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "namespaces"
+     ],
+     "verbs": [
+      "delete",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "namespaces/finalize",
+      "namespaces/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "*"
+     ],
+     "resources": [
+      "*"
+     ],
+     "verbs": [
+      "delete",
+      "deletecollection",
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:node-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "delete",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes/status"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/status"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "delete",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:persistent-volume-binder",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumes"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumes/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "storageclasses"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:pod-garbage-collector",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "delete",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/status"
+     ],
+     "verbs": [
+      "patch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:pv-protection-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:pvc-protection-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:replicaset-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      "apps",
+      "extensions"
+     ],
+     "resources": [
+      "replicasets"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps",
+      "extensions"
+     ],
+     "resources": [
+      "replicasets/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps",
+      "extensions"
+     ],
+     "resources": [
+      "replicasets/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "list",
+      "patch",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:replication-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "replicationcontrollers"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "replicationcontrollers/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "replicationcontrollers/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "list",
+      "patch",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:resource-claim-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims",
+      "resourceclaims/status"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/status"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims/binding"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:resourcequota-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      "*"
+     ],
+     "resources": [
+      "*"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "resourcequotas/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:root-ca-cert-publisher",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "configmaps"
+     ],
+     "verbs": [
+      "create",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:route-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes/status"
+     ],
+     "verbs": [
+      "patch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:selinux-warning-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "csidrivers"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:service-account-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "serviceaccounts"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:service-cidrs-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "servicecidrs"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "servicecidrs/finalizers"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "servicecidrs/status"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "ipaddresses"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:service-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "services"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "services/status"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:statefulset-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "statefulsets"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "statefulsets/status"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "statefulsets/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "controllerrevisions"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims"
+     ],
+     "verbs": [
+      "create",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims"
+     ],
+     "verbs": [
+      "delete",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:ttl-after-finished-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "jobs"
+     ],
+     "verbs": [
+      "delete",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:ttl-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:validatingadmissionpolicy-status-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      "admissionregistration.k8s.io"
+     ],
+     "resources": [
+      "validatingadmissionpolicies"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "admissionregistration.k8s.io"
+     ],
+     "resources": [
+      "validatingadmissionpolicies/status"
+     ],
+     "verbs": [
+      "get",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:volumeattributesclass-protection-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "volumeattributesclasses"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:coredns",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "endpoints",
+      "services",
+      "pods",
+      "namespaces"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "discovery.k8s.io"
+     ],
+     "resources": [
+      "endpointslices"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:discovery",
+   "rules": [
+    {
+     "nonResourceURLs": [
+      "/api",
+      "/api/*",
+      "/apis",
+      "/apis/*",
+      "/healthz",
+      "/livez",
+      "/openapi",
+      "/openapi/*",
+      "/readyz",
+      "/version",
+      "/version/"
+     ],
+     "verbs": [
+      "get"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:heapster",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "events",
+      "namespaces",
+      "nodes",
+      "pods"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "extensions"
+     ],
+     "resources": [
+      "deployments"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:k3s-controller",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes/status"
+     ],
+     "verbs": [
+      "patch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "namespaces"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "networkpolicies",
+      "clustercidrs"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "endpoints",
+      "pods"
+     ],
+     "verbs": [
+      "list",
+      "get",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "discovery.k8s.io"
+     ],
+     "resources": [
+      "endpointslices"
+     ],
+     "verbs": [
+      "list",
+      "get",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:kube-aggregator",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "endpoints",
+      "services"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:kube-controller-manager",
+   "rules": [
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resources": [
+      "leases"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resourceNames": [
+      "kube-controller-manager"
+     ],
+     "resources": [
+      "leases"
+     ],
+     "verbs": [
+      "get",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "secrets",
+      "serviceaccounts"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "secrets"
+     ],
+     "verbs": [
+      "delete"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "configmaps",
+      "namespaces",
+      "secrets",
+      "serviceaccounts"
+     ],
+     "verbs": [
+      "get"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "secrets",
+      "serviceaccounts"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "authentication.k8s.io"
+     ],
+     "resources": [
+      "tokenreviews"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "authorization.k8s.io"
+     ],
+     "resources": [
+      "subjectaccessreviews"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "*"
+     ],
+     "resources": [
+      "*"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "serviceaccounts/token"
+     ],
+     "verbs": [
+      "create"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:kube-dns",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "endpoints",
+      "services"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:kube-scheduler",
+   "rules": [
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resources": [
+      "leases"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resourceNames": [
+      "kube-scheduler"
+     ],
+     "resources": [
+      "leases"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resources": [
+      "leasecandidates"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "delete",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "bindings",
+      "pods/binding"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/status"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "replicationcontrollers",
+      "services"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps",
+      "extensions"
+     ],
+     "resources": [
+      "replicasets"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "statefulsets"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "policy"
+     ],
+     "resources": [
+      "poddisruptionbudgets"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims",
+      "persistentvolumes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "authentication.k8s.io"
+     ],
+     "resources": [
+      "tokenreviews"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "authorization.k8s.io"
+     ],
+     "resources": [
+      "subjectaccessreviews"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "csinodes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "volumeattachments"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "namespaces"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "csidrivers"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "csistoragecapacities"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "deviceclasses"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/finalizers"
+     ],
+     "verbs": [
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceslices"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims"
+     ],
+     "verbs": [
+      "create",
+      "delete"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims/binding"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:kubelet-api-admin",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "proxy"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes/log",
+      "nodes/metrics",
+      "nodes/proxy",
+      "nodes/stats"
+     ],
+     "verbs": [
+      "*"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes/configz",
+      "nodes/healthz",
+      "nodes/pods"
+     ],
+     "verbs": [
+      "*"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:monitoring",
+   "rules": [
+    {
+     "nonResourceURLs": [
+      "/flagz",
+      "/healthz",
+      "/healthz/*",
+      "/livez",
+      "/livez/*",
+      "/metrics",
+      "/metrics/slis",
+      "/readyz",
+      "/readyz/*",
+      "/statusz"
+     ],
+     "verbs": [
+      "get"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes/metrics"
+     ],
+     "verbs": [
+      "get"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:node",
+   "rules": [
+    {
+     "apiGroups": [
+      "authentication.k8s.io"
+     ],
+     "resources": [
+      "tokenreviews"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      "authorization.k8s.io"
+     ],
+     "resources": [
+      "localsubjectaccessreviews",
+      "subjectaccessreviews"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "services"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "create",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes/status"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods"
+     ],
+     "verbs": [
+      "create",
+      "delete"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/status"
+     ],
+     "verbs": [
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "pods/eviction"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "configmaps",
+      "secrets"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims",
+      "persistentvolumes"
+     ],
+     "verbs": [
+      "get"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "endpoints"
+     ],
+     "verbs": [
+      "get"
+     ]
+    },
+    {
+     "apiGroups": [
+      "certificates.k8s.io"
+     ],
+     "resources": [
+      "certificatesigningrequests"
+     ],
+     "verbs": [
+      "create",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "coordination.k8s.io"
+     ],
+     "resources": [
+      "leases"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "volumeattachments"
+     ],
+     "verbs": [
+      "get"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "serviceaccounts/token"
+     ],
+     "verbs": [
+      "create"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims/status"
+     ],
+     "verbs": [
+      "get",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "csidrivers"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "csinodes"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "node.k8s.io"
+     ],
+     "resources": [
+      "runtimeclasses"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims"
+     ],
+     "verbs": [
+      "get"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceslices"
+     ],
+     "verbs": [
+      "deletecollection"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "serviceaccounts"
+     ],
+     "verbs": [
+      "get"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:node-bootstrapper",
+   "rules": [
+    {
+     "apiGroups": [
+      "certificates.k8s.io"
+     ],
+     "resources": [
+      "certificatesigningrequests"
+     ],
+     "verbs": [
+      "create",
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:node-problem-detector",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "get"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes/status"
+     ],
+     "verbs": [
+      "patch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:node-proxier",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "endpoints",
+      "services"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "nodes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    },
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "servicecidrs"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "discovery.k8s.io"
+     ],
+     "resources": [
+      "endpointslices"
+     ],
+     "verbs": [
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:persistent-volume-provisioner",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumes"
+     ],
+     "verbs": [
+      "create",
+      "delete",
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "storageclasses"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "create",
+      "patch",
+      "update"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:public-info-viewer",
+   "rules": [
+    {
+     "nonResourceURLs": [
+      "/healthz",
+      "/livez",
+      "/readyz",
+      "/version",
+      "/version/"
+     ],
+     "verbs": [
+      "get"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:service-account-issuer-discovery",
+   "rules": [
+    {
+     "nonResourceURLs": [
+      "/.well-known/openid-configuration",
+      "/.well-known/openid-configuration/",
+      "/openid/v1/jwks",
+      "/openid/v1/jwks/"
+     ],
+     "verbs": [
+      "get"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:volume-scheduler",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumes"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "storage.k8s.io"
+     ],
+     "resources": [
+      "storageclasses"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "persistentvolumeclaims"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+     ]
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "view",
+   "rules": [
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "configmaps",
+      "endpoints",
+      "persistentvolumeclaims",
+      "persistentvolumeclaims/status",
+      "pods",
+      "replicationcontrollers",
+      "replicationcontrollers/scale",
+      "serviceaccounts",
+      "services",
+      "services/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "bindings",
+      "limitranges",
+      "namespaces/status",
+      "pods/log",
+      "pods/status",
+      "replicationcontrollers/status",
+      "resourcequotas",
+      "resourcequotas/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      ""
+     ],
+     "resources": [
+      "namespaces"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "",
+      "events.k8s.io"
+     ],
+     "resources": [
+      "events"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "discovery.k8s.io"
+     ],
+     "resources": [
+      "endpointslices"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "apps"
+     ],
+     "resources": [
+      "controllerrevisions",
+      "daemonsets",
+      "daemonsets/status",
+      "deployments",
+      "deployments/scale",
+      "deployments/status",
+      "replicasets",
+      "replicasets/scale",
+      "replicasets/status",
+      "statefulsets",
+      "statefulsets/scale",
+      "statefulsets/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "autoscaling"
+     ],
+     "resources": [
+      "horizontalpodautoscalers",
+      "horizontalpodautoscalers/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "batch"
+     ],
+     "resources": [
+      "cronjobs",
+      "cronjobs/status",
+      "jobs",
+      "jobs/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "extensions"
+     ],
+     "resources": [
+      "daemonsets",
+      "daemonsets/status",
+      "deployments",
+      "deployments/scale",
+      "deployments/status",
+      "ingresses",
+      "ingresses/status",
+      "networkpolicies",
+      "replicasets",
+      "replicasets/scale",
+      "replicasets/status",
+      "replicationcontrollers/scale"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "policy"
+     ],
+     "resources": [
+      "poddisruptionbudgets",
+      "poddisruptionbudgets/status"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "networking.k8s.io"
+     ],
+     "resources": [
+      "ingresses",
+      "ingresses/status",
+      "networkpolicies"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    },
+    {
+     "apiGroups": [
+      "resource.k8s.io"
+     ],
+     "resources": [
+      "resourceclaims",
+      "resourceclaims/status",
+      "resourceclaimtemplates"
+     ],
+     "verbs": [
+      "get",
+      "list",
+      "watch"
+     ]
+    }
+   ]
+  }
+ ],
+ "clusterrolebindings": [
+  {
+   "namespace": null,
+   "name": "cluster-admin",
+   "role": "cluster-admin",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "Group",
+     "name": "system:masters"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "clustercidrs-node",
+   "role": "clustercidrs-node",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "Group",
+     "name": "system:nodes"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "k3s-cloud-controller-manager",
+   "role": "k3s-cloud-controller-manager",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "User",
+     "name": "k3s-cloud-controller-manager",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "k3s-cloud-controller-manager-auth-delegator",
+   "role": "system:auth-delegator",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "User",
+     "name": "k3s-cloud-controller-manager",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "kube-apiserver-kubelet-admin",
+   "role": "system:kubelet-api-admin",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "User",
+     "name": "kube-apiserver"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "local-path-provisioner-bind",
+   "role": "local-path-provisioner-role",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "local-path-provisioner-service-account",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:basic-user",
+   "role": "system:basic-user",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "Group",
+     "name": "system:authenticated"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:attachdetach-controller",
+   "role": "system:controller:attachdetach-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "attachdetach-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:certificate-controller",
+   "role": "system:controller:certificate-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "certificate-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:clusterrole-aggregation-controller",
+   "role": "system:controller:clusterrole-aggregation-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "clusterrole-aggregation-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:cronjob-controller",
+   "role": "system:controller:cronjob-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "cronjob-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:daemon-set-controller",
+   "role": "system:controller:daemon-set-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "daemon-set-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:deployment-controller",
+   "role": "system:controller:deployment-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "deployment-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:device-taint-eviction-controller",
+   "role": "system:controller:device-taint-eviction-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "device-taint-eviction-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:disruption-controller",
+   "role": "system:controller:disruption-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "disruption-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:endpoint-controller",
+   "role": "system:controller:endpoint-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "endpoint-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:endpointslice-controller",
+   "role": "system:controller:endpointslice-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "endpointslice-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:endpointslicemirroring-controller",
+   "role": "system:controller:endpointslicemirroring-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "endpointslicemirroring-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:ephemeral-volume-controller",
+   "role": "system:controller:ephemeral-volume-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "ephemeral-volume-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:expand-controller",
+   "role": "system:controller:expand-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "expand-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:generic-garbage-collector",
+   "role": "system:controller:generic-garbage-collector",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "generic-garbage-collector",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:horizontal-pod-autoscaler",
+   "role": "system:controller:horizontal-pod-autoscaler",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "horizontal-pod-autoscaler",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:job-controller",
+   "role": "system:controller:job-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "job-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:legacy-service-account-token-cleaner",
+   "role": "system:controller:legacy-service-account-token-cleaner",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "legacy-service-account-token-cleaner",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:namespace-controller",
+   "role": "system:controller:namespace-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "namespace-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:node-controller",
+   "role": "system:controller:node-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "node-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:persistent-volume-binder",
+   "role": "system:controller:persistent-volume-binder",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "persistent-volume-binder",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:pod-garbage-collector",
+   "role": "system:controller:pod-garbage-collector",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "pod-garbage-collector",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:pv-protection-controller",
+   "role": "system:controller:pv-protection-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "pv-protection-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:pvc-protection-controller",
+   "role": "system:controller:pvc-protection-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "pvc-protection-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:replicaset-controller",
+   "role": "system:controller:replicaset-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "replicaset-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:replication-controller",
+   "role": "system:controller:replication-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "replication-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:resource-claim-controller",
+   "role": "system:controller:resource-claim-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "resource-claim-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:resourcequota-controller",
+   "role": "system:controller:resourcequota-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "resourcequota-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:root-ca-cert-publisher",
+   "role": "system:controller:root-ca-cert-publisher",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "root-ca-cert-publisher",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:route-controller",
+   "role": "system:controller:route-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "route-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:selinux-warning-controller",
+   "role": "system:controller:selinux-warning-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "selinux-warning-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:service-account-controller",
+   "role": "system:controller:service-account-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "service-account-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:service-cidrs-controller",
+   "role": "system:controller:service-cidrs-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "service-cidrs-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:service-controller",
+   "role": "system:controller:service-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "service-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:statefulset-controller",
+   "role": "system:controller:statefulset-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "statefulset-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:ttl-after-finished-controller",
+   "role": "system:controller:ttl-after-finished-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "ttl-after-finished-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:ttl-controller",
+   "role": "system:controller:ttl-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "ttl-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:validatingadmissionpolicy-status-controller",
+   "role": "system:controller:validatingadmissionpolicy-status-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "validatingadmissionpolicy-status-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:controller:volumeattributesclass-protection-controller",
+   "role": "system:controller:volumeattributesclass-protection-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "volumeattributesclass-protection-controller",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:coredns",
+   "role": "system:coredns",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "coredns",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:discovery",
+   "role": "system:discovery",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "Group",
+     "name": "system:authenticated"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:k3s-controller",
+   "role": "system:k3s-controller",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "User",
+     "name": "system:k3s-controller"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:kube-controller-manager",
+   "role": "system:kube-controller-manager",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "User",
+     "name": "system:kube-controller-manager"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:kube-dns",
+   "role": "system:kube-dns",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "kind": "ServiceAccount",
+     "name": "kube-dns",
+     "namespace": "kube-system"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:kube-scheduler",
+   "role": "system:kube-scheduler",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "User",
+     "name": "system:kube-scheduler"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:monitoring",
+   "role": "system:monitoring",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "Group",
+     "name": "system:monitoring"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:node",
+   "role": "system:node",
+   "roleKind": "ClusterRole",
+   "subjects": []
+  },
+  {
+   "namespace": null,
+   "name": "system:node-proxier",
+   "role": "system:node-proxier",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "User",
+     "name": "system:kube-proxy"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:public-info-viewer",
+   "role": "system:public-info-viewer",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "Group",
+     "name": "system:authenticated"
+    },
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "Group",
+     "name": "system:unauthenticated"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:service-account-issuer-discovery",
+   "role": "system:service-account-issuer-discovery",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "Group",
+     "name": "system:serviceaccounts"
+    }
+   ]
+  },
+  {
+   "namespace": null,
+   "name": "system:volume-scheduler",
+   "role": "system:volume-scheduler",
+   "roleKind": "ClusterRole",
+   "subjects": [
+    {
+     "apiGroup": "rbac.authorization.k8s.io",
+     "kind": "User",
+     "name": "system:kube-scheduler"
+    }
+   ]
+  }
+ ],
+ "ingresses": [],
+ "nodes": [
+  {
+   "name": "k3s",
+   "labels": {
+    "beta.kubernetes.io/arch": "amd64",
+    "beta.kubernetes.io/instance-type": "k3s",
+    "beta.kubernetes.io/os": "linux",
+    "kubernetes.io/arch": "amd64",
+    "kubernetes.io/hostname": "k3s",
+    "kubernetes.io/os": "linux",
+    "node-role.kubernetes.io/control-plane": "true",
+    "node.kubernetes.io/instance-type": "k3s"
+   },
+   "capacity": {
+    "cpu": "4",
+    "ephemeral-storage": "5800248Ki",
+    "hugepages-1Gi": "0",
+    "hugepages-2Mi": "0",
+    "memory": "2023912Ki",
+    "pods": "110"
+   },
+   "conditions": [
+    "Ready"
+   ]
+  }
+ ],
+ "serviceaccounts": [
+  {
+   "namespace": "default",
+   "name": "default",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-node-lease",
+   "name": "default",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-public",
+   "name": "default",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "attachdetach-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "certificate-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "clusterrole-aggregation-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "coredns",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "cronjob-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "daemon-set-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "default",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "deployment-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "device-taint-eviction-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "disruption-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "endpoint-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "endpointslice-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "endpointslicemirroring-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "ephemeral-volume-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "expand-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "generic-garbage-collector",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "horizontal-pod-autoscaler",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "job-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "legacy-service-account-token-cleaner",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "local-path-provisioner-service-account",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "namespace-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "node-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "persistent-volume-binder",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "pod-garbage-collector",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "pv-protection-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "pvc-protection-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "replicaset-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "replication-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "resource-claim-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "resourcequota-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "root-ca-cert-publisher",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "service-account-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "service-cidrs-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "statefulset-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "svclb",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "token-cleaner",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "ttl-after-finished-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "ttl-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "validatingadmissionpolicy-status-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "kube-system",
+   "name": "volumeattributesclass-protection-controller",
+   "secrets": []
+  },
+  {
+   "namespace": "trident-proof",
+   "name": "default",
+   "secrets": []
+  }
+ ],
+ "cani": [],
+ "provenance": {
+  "tool": "kubectl",
+  "note": "each section comes from `kubectl get <resource> -o json`; no fixtures were merged"
+ }
+}

@@ -1,0 +1,22 @@
+# Namespace + default-deny NetworkPolicy for the hostNetwork bypass proof.
+#
+# k3s ships a built-in network policy controller (kube-router based), so this
+# policy is actually enforced without installing Calico/Cilium. The policy
+# selects every Pod in the namespace and allows no Ingress/Egress at all.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: trident-proof
+  labels:
+    trident.dev/proof: real-cluster
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: trident-proof
+  labels:
+    trident.dev/proof: real-cluster
+spec:
+  podSelector: {}
+  policyTypes: ["Ingress", "Egress"]

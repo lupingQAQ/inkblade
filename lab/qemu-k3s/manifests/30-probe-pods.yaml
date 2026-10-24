@@ -1,0 +1,46 @@
+# Probe Pods for the NetworkPolicy bypass proof.
+#
+#   proof-normal  : ordinary Pod, subject to the namespace default-deny
+#   proof-hostnet : hostNetwork Pod, traffic never enters the Pod network
+#
+# alpine is used because it ships busybox wget (no extra packages to pull under
+# TCG). Both Pods just sleep; the checks are `kubectl exec ... wget`.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: proof-normal
+  namespace: trident-proof
+  labels:
+    app: proof-normal
+    trident.dev/proof: real-cluster
+spec:
+  restartPolicy: Never
+  containers:
+    - name: probe
+      image: alpine:3.21
+      command: ["sleep", "infinity"]
+      resources:
+        limits:
+          memory: 64Mi
+          cpu: 100m
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: proof-hostnet
+  namespace: trident-proof
+  labels:
+    app: proof-hostnet
+    trident.dev/proof: real-cluster
+spec:
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+  restartPolicy: Never
+  containers:
+    - name: probe
+      image: alpine:3.21
+      command: ["sleep", "infinity"]
+      resources:
+        limits:
+          memory: 64Mi
+          cpu: 100m
