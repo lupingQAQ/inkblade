@@ -1,0 +1,34 @@
+# lab/kind/hostnetwork-bypass.yaml — hostNetwork 探测 Pod（NetworkPolicy 旁路实证）
+# 依据：Trident 设计 spec 5.6 主机网络层——hostNetwork/hostDevice 绕过 CNI 与
+#       NetworkPolicy；验收标准 12「hostNetwork 绕过 NetworkPolicy 实证」。
+#
+# 场景：default-deny-netpol.yaml 已在本命名空间全量拒绝（Ingress+Egress）。
+#       本 Pod 使用宿主网络栈发起探测，预期策略对其不生效（对照组 = 普通 Pod 被拒）。
+# 用法：由 lab/kind/run-proof.sh 应用并 kubectl exec 驱动 curl 探测；也可手工复现：
+#       kubectl apply -f lab/kind/default-deny-netpol.yaml
+#       kubectl apply -f lab/kind/hostnetwork-bypass.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: proof-hostnet
+  namespace: trident-proof
+  labels:
+    app: proof-hostnet
+    trident.dev/proof: hostnetwork-bypass
+spec:
+  hostNetwork: true                  # 旁路原语：共享宿主网络命名空间
+  dnsPolicy: ClusterFirstWithHostNet  # hostNetwork 下的正确 DNS 姿态
+  restartPolicy: Never
+  containers:
+    - name: curl
+      image: curlimages/curl:8.11.1  # 只读探测镜像（无写入面）
+      command: ["sleep", "infinity"]
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        readOnlyRootFilesystem: true
+      resources:
+        limits:
+          memory: 64Mi
+          cpu: 100m

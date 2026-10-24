@@ -1,0 +1,29 @@
+# lab/kind/default-deny-netpol.yaml — trident-proof 命名空间 + 全量 default-deny
+# 用途：hostNetwork 旁路实证（lab/kind/run-proof.sh）的策略基线。
+#
+# 语义：K8s 原生 NetworkPolicy，podSelector 选中命名空间内全部 Pod，
+#       policyTypes 声明 Ingress+Egress 且不写任何规则 = 入站/出站全量拒绝。
+#
+# 注意（实证前提）：NetworkPolicy 仅在策略型 CNI（Calico/Cilium 等）下被强制执行；
+# kind 默认 kindnet 不执行策略（kubernetes-sigs/kind#3705）。run-proof.sh 建群时
+# 已 disableDefaultCNI 并安装 Calico，本清单才有对照意义。
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: trident-proof
+  labels:
+    # baseline 即可：PSS 并不禁止 hostNetwork（restricted 也不禁），
+    # 标签仅声明实证命名空间的准入基线，避免引入无关拦截干扰对照。
+    pod-security.kubernetes.io/enforce: baseline
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: trident-proof
+  labels:
+    trident.dev/proof: hostnetwork-bypass
+spec:
+  podSelector: {}                     # 全部 Pod
+  policyTypes: ["Ingress", "Egress"]  # 双向默认拒绝
+  # 不写 ingress/egress 规则 = 全量拒绝（默认拒绝基线）
