@@ -28,40 +28,17 @@ def _scope_file(store: EvidenceStore) -> Path:
 
 
 def init_roe(store: EvidenceStore, fields: dict[str, Any]) -> None:
-    payload = json.dumps(fields, ensure_ascii=False, sort_keys=True)
-    sha = hashlib.sha256(payload.encode("utf-8")).hexdigest()
-    _scope_file(store).write_text(
-        json.dumps({"fields": fields, "sha256": sha}, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
-    run = store.create_run("_roe")
-    with run._tx() as conn:
-        conn.executescript(
-            "CREATE TABLE IF NOT EXISTS roe(id INTEGER PRIMARY KEY, workspace TEXT,"
-            " scope_sha256 TEXT, status TEXT, fields TEXT, created_at REAL)"
-        )
-        conn.execute(
-            "INSERT INTO roe(workspace, scope_sha256, status, fields, created_at) VALUES(?,?,?,?,?)",
-            (store.workspace, sha, "complete", payload, time.time()),
-        )
+    store.pin_roe(fields)
 
 
 def roe_status(store: EvidenceStore) -> str:
-    if not _scope_file(store).exists():
-        return "absent"
-    try:
-        run = store.open_run("_roe")
-        rows = run.query("SELECT status FROM roe ORDER BY id DESC LIMIT 1")
-        if rows and rows[0][0] == "complete":
-            return "complete"
-    except KeyError:
-        pass
-    return "absent"
+    c = store.consent()
+    return "complete" if c and c.get("status") == "complete" else "absent"
 
 
 def _fields(store: EvidenceStore) -> dict[str, Any]:
-    data = json.loads(_scope_file(store).read_text(encoding="utf-8"))
-    return data.get("fields", {})
+    c = store.consent()
+    return c.get("fields", {}) if c else {}
 
 
 def in_scope(store: EvidenceStore, target_ns: str | None, target_addr: str | None) -> bool:

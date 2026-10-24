@@ -260,7 +260,32 @@ class EvidenceStore:
                 "INSERT OR REPLACE INTO runs(name, created_at, status) VALUES(?,?,?)",
                 (name, time.time(), "active"),
             )
+        consent = self.consent()
+        if consent is not None:
+            with run._tx() as conn:
+                conn.execute(
+                    "INSERT INTO roe(workspace, scope_sha256, status, fields, created_at) VALUES(?,?,?,?,?)",
+                    (self.workspace, consent["sha256"], "complete", consent["fields"], consent["ts"]),
+                )
         return run
+
+    def pin_roe(self, fields: dict) -> None:
+        """写入工作区级授权（consent.json）；后续每个 run 固化该记录。"""
+        import hashlib as _h
+
+        payload = json.dumps(fields, ensure_ascii=False, sort_keys=True)
+        sha = _h.sha256(payload.encode("utf-8")).hexdigest()
+        (self.ws_dir / "consent.json").write_text(
+            json.dumps({"fields": fields, "sha256": sha, "ts": time.time(), "status": "complete"},
+                       ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
+    def consent(self) -> dict | None:
+        p = self.ws_dir / "consent.json"
+        if not p.exists():
+            return None
+        return json.loads(p.read_text(encoding="utf-8"))
 
     def open_run(self, name: str) -> Run:
         run_dir = self.ws_dir / name
