@@ -1,0 +1,26 @@
+{
+  "deployments": [
+    "kyverno/kyverno",
+    "gatekeeper-system/gatekeeper-controller-manager"
+  ],
+  "daemonsets": [
+    "gatekeeper-system/gatekeeper-audit"
+  ],
+  "images": [
+    "kyverno/kyverno:v1.11.0",
+    "openpolicyagent/gatekeeper:v3.15.0"
+  ],
+  "crds": [
+    "constrainttemplates.templates.gatekeeper.sh"
+  ],
+  "webhooks": [
+    "kyverno-resource-validating-webhook-cfg",
+    "gatekeeper-validating-webhook-configuration"
+  ],
+  "rules": [
+    "clusterpolicy/disallow-privileged-containers validationFailureAction=Audit"
+  ],
+  "configs": [
+    "kyverno-config"
+  ]
+}

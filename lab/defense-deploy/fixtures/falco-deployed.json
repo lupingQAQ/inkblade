@@ -1,0 +1,18 @@
+{
+  "daemonsets": [
+    "kube-system/falco"
+  ],
+  "images": [
+    "falcosecurity/falco:0.37.1"
+  ],
+  "rules": [
+    "falco_rules.yaml",
+    "falco_rules.local.yaml"
+  ],
+  "configs": [
+    "/etc/falco/falco.yaml"
+  ],
+  "kernel_modules": [
+    "falco"
+  ]
+}

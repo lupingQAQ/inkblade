@@ -1,0 +1,33 @@
+{
+  "cluster": "kind-trident",
+  "daemonsets": [
+    "kube-system/kube-proxy",
+    "kube-system/coredns"
+  ],
+  "deployments": [
+    "kube-system/coredns",
+    "train/vllm-server"
+  ],
+  "pods": [
+    "train/vllm-server-0",
+    "train/ray-worker-1"
+  ],
+  "images": [
+    "vllm/vllm-openai:latest",
+    "rayproject/ray:2.9"
+  ],
+  "rules": [],
+  "configs": [
+    "kubelet-config",
+    "corefile"
+  ],
+  "kernel_modules": [
+    "nvml"
+  ],
+  "agent_status": [],
+  "kernel_params": [],
+  "crds": [
+    "rayclusters.ray.io"
+  ],
+  "webhooks": []
+}

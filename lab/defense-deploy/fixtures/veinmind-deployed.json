@@ -1,0 +1,13 @@
+{
+  "pods": [
+    "trident-scan/veinmind-tools-abc12"
+  ],
+  "images": [
+    "chaitin/veinmind-tools:v2.0",
+    "veinmind/veinmind-backdoor:v1",
+    "veinmind/veinmind-weakpass:v1"
+  ],
+  "configs": [
+    "veinmind-scanner-cfg"
+  ]
+}

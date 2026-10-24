@@ -1,0 +1,20 @@
+{
+  "daemonsets": [
+    "kube-system/tetragon"
+  ],
+  "deployments": [
+    "kube-system/tetragon-operator"
+  ],
+  "images": [
+    "cilium/tetragon:v1.3.0"
+  ],
+  "crds": [
+    "tracingpolicies.cilium.io"
+  ],
+  "configs": [
+    "tetragon-conf"
+  ],
+  "kernel_params": [
+    "lsm=bpf,integrity"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "deployments": [
+    "waf/safeline-tengine",
+    "waf/coraza-spoa"
+  ],
+  "images": [
+    "chaitin/safeline-ce-waf:latest",
+    "corazawaf/coraza-spoa:1.0",
+    "owasp/modsecurity:2.9"
+  ],
+  "ingresses": [
+    "inference/vllm-ingress modsecurity=on"
+  ],
+  "rules": [
+    "owasp-crs-3.3.2"
+  ],
+  "configs": [
+    "safeline-detector",
+    "coraza-config"
+  ]
+}

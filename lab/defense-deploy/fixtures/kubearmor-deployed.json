@@ -1,0 +1,18 @@
+{
+  "daemonsets": [
+    "kube-system/kubearmor"
+  ],
+  "deployments": [
+    "kubearmor/kubearmor-operator"
+  ],
+  "images": [
+    "kubearmor/kubearmor:latest"
+  ],
+  "crds": [
+    "kubearmorpolicies.security.kubearmor.com",
+    "kubearmorhostpolicies.security.kubearmor.com"
+  ],
+  "configs": [
+    "kubearmor-file-posture=audit"
+  ]
+}

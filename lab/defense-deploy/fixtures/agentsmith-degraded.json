@@ -1,0 +1,12 @@
+{
+  "daemonsets": [
+    "kube-system/agentsmith-agent"
+  ],
+  "images": [
+    "bytedance/agentsmith:latest"
+  ],
+  "configs": [
+    "agentsmith-agent-cfg"
+  ],
+  "kernel_modules": []
+}

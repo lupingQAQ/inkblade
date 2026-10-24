@@ -1,0 +1,15 @@
+{
+  "pods": [
+    "scanning/trivy-scan-x7",
+    "scanning/grype-scan-99"
+  ],
+  "images": [
+    "aquasecurity/trivy:0.50.0",
+    "anchore/grype:v0.74.0",
+    "chaitin/veinmind-tools:v2.0"
+  ],
+  "configs": [
+    "trivy-config",
+    "grype-db-cfg"
+  ]
+}

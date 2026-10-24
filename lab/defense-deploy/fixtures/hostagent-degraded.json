@@ -1,0 +1,24 @@
+{
+  "daemonsets": [
+    "kube-system/wazuh-agent"
+  ],
+  "deployments": [
+    "wazuh/wazuh-manager"
+  ],
+  "images": [
+    "wazuh/wazuh-agent:4.7.0",
+    "osquery/osqueryd:5.9.1"
+  ],
+  "rules": [
+    "0020-syscheck_rules.xml",
+    "0010-ossec_rules.xml"
+  ],
+  "configs": [
+    "ossec.conf",
+    "osquery.conf",
+    "osqueryd-packs"
+  ],
+  "agent_status": [
+    "offline"
+  ]
+}

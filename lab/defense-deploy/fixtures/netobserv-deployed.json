@@ -1,0 +1,16 @@
+{
+  "daemonsets": [
+    "kube-system/cilium"
+  ],
+  "deployments": [
+    "kube-system/hubble-relay",
+    "kube-system/hubble-ui",
+    "calico-system/calico-typha"
+  ],
+  "images": [
+    "cilium/hubble-relay:v1.15.0"
+  ],
+  "configs": [
+    "hubble-flowlogs"
+  ]
+}

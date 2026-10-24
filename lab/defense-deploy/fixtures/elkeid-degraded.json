@@ -1,0 +1,22 @@
+{
+  "cluster": "kind-trident",
+  "daemonsets": [
+    "kube-system/elkeid-agent",
+    "kube-system/elkeid-manager"
+  ],
+  "deployments": [
+    "elkeid-system/elkeid-server",
+    "elkeid-system/elkeid-web"
+  ],
+  "images": [
+    "elkeid/elkeid-agent:1.9.7"
+  ],
+  "rules": [
+    "elkeid-rule-host-2130",
+    "elkeid-rule-container-2398"
+  ],
+  "configs": [
+    "elkeidup-agent-conf"
+  ],
+  "kernel_modules": []
+}
