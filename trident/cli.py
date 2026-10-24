@@ -19,7 +19,14 @@ def _store(home: Path, ws: str):
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(prog="trident", description="Trident — ML 集群渗透测试平台（授权测试）")
+    import sys
+
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+    ap = argparse.ArgumentParser(prog="trident", description="Trident ML-cluster pentest platform (authorized testing)")
     ap.add_argument("--home", default=".", help="工作区根目录（含 evidence/ modules/ users.json）")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
