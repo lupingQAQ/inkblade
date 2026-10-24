@@ -1,0 +1,113 @@
+[
+  {
+    "id": "sigma-rolebinding-cluster-admin",
+    "title": "指向 cluster-admin 的 RoleBinding 创建",
+    "description": "K8s audit: creation of RoleBinding/ClusterRoleBinding referencing cluster-admin (operator/RBAC takeover primitive). English: audit-detect RoleBinding creation pointing at cluster-admin.",
+    "level": "critical",
+    "tags": ["attack.privilege_escalation", "attack.t1098", "trident"],
+    "logsource": {"product": "kubernetes", "service": "audit"},
+    "detection": {
+      "selection": {
+        "verb": ["create"],
+        "objectRef.resource": ["rolebinding", "clusterrolebinding"],
+        "objectRef.roleRef.name": "cluster-admin"
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["gitops/CI 同步主体的合法绑定（以主体白名单收敛）"],
+    "blocks_modules": ["overprivileged-sa-escalation"],
+    "tuning": {
+      "zh": "对 argocd/gitops 与 operator 的常规绑定建立主体白名单（user.username/serviceaccount），仅对指向 cluster-admin 的增量绑定保持 critical；建议同时监控 rolebindings 的 delete（清理痕迹）",
+      "en": "Baseline gitops/operator binding subjects into an allowlist; keep critical severity for new cluster-admin references; also watch rolebinding deletes (cleanup trails)"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "kubernetes", "service": "audit"},
+      "selection": {"verb": ["create"], "objectRef.resource": ["rolebinding", "clusterrolebinding"], "objectRef.roleRef.name": "cluster-admin"},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-privileged-pod-create",
+    "title": "特权 Pod 创建",
+    "description": "K8s audit: pod created with privileged securityContext or hostPath/hostPID/hostIPC. 审计检测特权/宿主面 Pod 创建（GPU operator 逃逸面、SA 提权落地）。",
+    "level": "high",
+    "tags": ["attack.privilege_escalation", "attack.t1611", "trident"],
+    "logsource": {"product": "kubernetes", "service": "audit"},
+    "detection": {
+      "selection": {
+        "verb": ["create"],
+        "objectRef.resource": "pod",
+        "requestObject.privileged": true
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["GPU 驱动/device plugin DaemonSet（例外通道命名空间内放行）"],
+    "blocks_modules": ["privileged-gpu-pod-escape", "gpu-network-operator-posture"],
+    "tuning": {
+      "zh": "以例外通道命名空间（GPU operator 专用）过滤基线 DaemonSet；非例外 ns 的特权创建保持 high；可按 requestObject.hostPath.* 前缀细分严重级",
+      "en": "Filter baseline DaemonSets via the GPU operator exception namespace; keep high severity for privileged creates elsewhere; optionally grade by requestObject.hostPath.* prefixes"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "kubernetes", "service": "audit"},
+      "selection": {"verb": ["create"], "objectRef.resource": "pod", "requestObject.privileged": true},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-ray-job-submit",
+    "title": "Ray 作业提交（dashboard 无鉴权面）",
+    "description": "Ray dashboard audit: job submission events on the job API (unauthenticated head-node command surface). 检测 Ray 8265 作业提交（头节点任意命令入口）。",
+    "level": "high",
+    "tags": ["attack.execution", "attack.t1610", "trident"],
+    "logsource": {"product": "ray", "service": "dashboard"},
+    "detection": {
+      "selection": {
+        "verb": ["create", "submit"],
+        "objectRef.resource": "job"
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["合法训练平台调度器主体（按提交主体/入口网段白名单）"],
+    "blocks_modules": ["ray-dashboard-job"],
+    "tuning": {
+      "zh": "按提交来源收敛：仅调度器服务账号与 bastion 网段可提交；其余来源直接升级 critical；配合 8265 端口 NetworkPolicy 分区限源",
+      "en": "Restrict submitters to the scheduler service account and bastion CIDR; escalate everything else to critical; pair with NetworkPolicy source restriction on port 8265"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "ray", "service": "dashboard"},
+      "selection": {"verb": ["create", "submit"], "objectRef.resource": "job"},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-secret-abnormal-read",
+    "title": "异常主体读取 Secret",
+    "description": "K8s audit: non-baseline subject reads/list secrets (SA token / cloud credential theft primitives). 审计检测非基线主体的 Secret 读取（SA 令牌、云凭据面）。",
+    "level": "high",
+    "tags": ["attack.credential_access", "attack.t1552", "trident"],
+    "logsource": {"product": "kubernetes", "service": "audit"},
+    "detection": {
+      "selection": {
+        "verb": ["get", "list", "watch"],
+        "objectRef.resource": "secret",
+        "subject_sa": {"not_in": ["system:serviceaccount:kube-system:generic-garbage-collector", "system:serviceaccount:monitoring:prometheus"]}
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["CI/CD 部署主体、密钥轮转 Job（按主体+时间段白名单）"],
+    "blocks_modules": ["ssrf-imds-credential", "multi-cloud-imds-credentials", "metadata-egress", "dify-snapshot-cross-tenant-theft", "training-data-leak"],
+    "tuning": {
+      "zh": "以 30 天 audit 基线提取合法读 Secret 主体清单替换 not_in 白名单；对 instance-role/云凭据类 Secret 名称单独加规则并降低 list 误报（改 watch 审计）",
+      "en": "Derive the not_in allowlist from a 30-day audit baseline of legitimate secret readers; add a dedicated rule for instance-role/cloud-credential secret names and reduce list noise by preferring watch auditing"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "kubernetes", "service": "audit"},
+      "selection": {"verb": ["get", "list", "watch"], "objectRef.resource": "secret", "subject_sa": {"not_in": ["system:serviceaccount:kube-system:generic-garbage-collector", "system:serviceaccount:monitoring:prometheus"]}},
+      "condition": "all"
+    }
+  }
+]

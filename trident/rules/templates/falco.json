@@ -1,0 +1,78 @@
+[
+  {
+    "id": "falco-admin-plane-unauth-access",
+    "rule": "TRIDENT Admin plane unauthorized access",
+    "desc": "到 ML 管理面端口（Ray 8265 / 推理管理 30000 / 训练控制 9000）的非白名单来源连接。English: non-allowlisted source connecting to ML admin-plane ports.",
+    "condition": "(evt.type=connect and fd.l4proto=tcp) and (fd.sport in (8265, 30000, 9000)) and not fd.cip in (admin_allowlist)",
+    "output": "admin-plane connection src=%fd.cip sport=%fd.sport proc=%proc.name container=%container.name",
+    "priority": "WARNING",
+    "tags": ["trident", "network", "monitor"],
+    "blocks_modules": ["sglang-admin-failopen", "slime-weight-pull-poison", "ray-dashboard-job"],
+    "tuning": {
+      "zh": "admin_allowlist 宏先填 bastion/调度器网段；对 8265/30000/9000 之外的自部署管理端口按端口清单追加；无 driver 部署下依赖网络事件源（auditd/ebpf 二选一）",
+      "en": "Populate the admin_allowlist macro with bastion/scheduler CIDRs first; append self-deployed admin ports to the port list; without the driver, rely on auditd or eBPF network event source"
+    },
+    "match": {
+      "engine": "falco",
+      "event_type": ["connect"],
+      "all": {"dest_port": [8265, 30000, 9000], "source_zone": {"not_in": ["admin-bastion"]}}
+    }
+  },
+  {
+    "id": "falco-pickle-deserialize-call",
+    "rule": "TRIDENT Pickle deserialization in serving/training process",
+    "desc": "服务/训练进程外的 pickle/torch.load/recv_pyobj 反序列化调用（检查点与权重通道）。English: pickle/torch.load/recv_pyobj deserialization outside the trainer baseline.",
+    "condition": "evt.type in (syscall.primative, retval) and proc.name in (python, python3, raylet, sglang-server) and evt.arg.data startswith b'pickle' or lib in (pickle, torch.load, recv_pyobj)",
+    "output": "deserialize call proc=%proc.name lib=%lib channel=%channel obj=%obj.source",
+    "priority": "CRITICAL",
+    "tags": ["trident", "process", "monitor"],
+    "blocks_modules": ["verl-checkpoint-pickle", "areal-load-pickle", "trust-remote-code-supply-chain"],
+    "tuning": {
+      "zh": "以训练基线进程清单（torchrun/trainer）收敛 proc 白名单；通道字段区分 checkpoint-socket / weights-load / shared-volume；weights_only=True 迁移完成后可升 ERROR",
+      "en": "Constrain proc names to the training baseline (torchrun/trainer); keep a channel field to separate checkpoint-socket / weights-load / shared-volume; raise to ERROR once weights_only=True migration completes"
+    },
+    "match": {
+      "engine": "falco",
+      "event_type": ["deserialize"],
+      "all": {"library": ["pickle", "torch.load", "recv_pyobj"]}
+    }
+  },
+  {
+    "id": "falco-weight-file-abnormal-write",
+    "rule": "TRIDENT Weight file write by non-training process",
+    "desc": "非训练进程对权重/检查点/HF 缓存路径的写打开（权重投毒与偷换一体面）。English: write-open on weight/checkpoint/HF-cache paths by a non-training process.",
+    "condition": "(evt.type in (open, openat, openat2) and evt.is_open_write=true) and fd.name icontains (checkpoints, weights, hf-cache, models) and not proc.name in (trainer, torchrun, accelerate)",
+    "output": "weight-path write proc=%proc.name path=%fd.name container=%container.name",
+    "priority": "CRITICAL",
+    "tags": ["trident", "filesystem", "monitor"],
+    "blocks_modules": ["slime-weight-pull-poison", "shared-volume-weight-copy"],
+    "tuning": {
+      "zh": "路径关键字按客户挂载点校准（/checkpoints、/models、hf_cache、safetensors）；训练进程名单按调度器主体固化；RWX 共享卷路径建议整体纳入",
+      "en": "Calibrate path keywords to customer mount points (/checkpoints, /models, hf_cache, safetensors); pin the training process list to scheduler identities; include RWX shared-volume paths wholesale"
+    },
+    "match": {
+      "engine": "falco",
+      "event_type": ["open_write"],
+      "all": {"path": {"re": "(?i)(checkpoints?|weights?|hf-cache|models)"}, "training_process": false}
+    }
+  },
+  {
+    "id": "falco-nccl-abnormal-join",
+    "rule": "TRIDENT Collective communication join by external rank",
+    "desc": "集合通信（NCCL bootstrap / TCPStore / KV 传输）出现外部 rank 入组或跨域加入。English: external rank joining collective communication (NCCL bootstrap / TCPStore / KV transfer).",
+    "condition": "evt.type in (connect, accept) and evt.arg.channel in (collective, kv-cache-transfer, rdma-fabric) and not k8s.ns.label in (training-allowlist) and evt.arg.external_rank=true",
+    "output": "collective join channel=%evt.arg.channel rank_src=%fd.cip port=%fd.sport ns=%k8s.ns.name",
+    "priority": "CRITICAL",
+    "tags": ["trident", "network", "monitor"],
+    "blocks_modules": ["nccl-collective-join", "multus-sriov-rdma-bypass", "inference-gateway-pd"],
+    "tuning": {
+      "zh": "training-allowlist 按调度器生成的训练命名空间标签维护；channel 枚举对齐实际集合通信栈（NCCL/DeepEP/NIXL/Mooncake）；RDMA 面事件依赖 eBPF/SM 导出（IB 面无 NetworkPolicy，见 ib-partition-advice.yaml）",
+      "en": "Maintain training-allowlist from scheduler-generated namespace labels; align the channel enum with the actual collective stack (NCCL/DeepEP/NIXL/Mooncake); RDMA-plane events need eBPF/SM export (no NetworkPolicy on IB - see ib-partition-advice.yaml)"
+    },
+    "match": {
+      "engine": "falco",
+      "event_type": ["nccl_join"],
+      "all": {"external_rank": true}
+    }
+  }
+]

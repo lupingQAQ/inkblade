@@ -1,0 +1,61 @@
+[
+  {
+    "id": "suricata-admin-endpoint-uri",
+    "title": "ML 管理端点 URI 签名（无鉴权管理面访问特征）",
+    "description": "命中已知 ML 框架管理端点 URI（权重拉取/环境注入/引擎创建/权重获取/集合通信注入），来源非 bastion。English: known ML admin endpoint URIs from non-bastion sources.",
+    "level": "high",
+    "uris": ["/pull_weights", "/set_env", "/create_engine", "/fetch_weights", "/awex", "/update_weights_from_disk", "/pause"],
+    "sids": {"base": 9000001},
+    "blocks_modules": ["sglang-admin-failopen", "slime-weight-pull-poison", "areal-load-pickle"],
+    "tuning": {
+      "zh": "HOME_NET/ML_NET 变量按分区模板配置；URI 清单按客户自研管理面路由追加；建议对 POST 方法 + 非 bastion 源触发 alert，其余仅统计",
+      "en": "Set HOME_NET/ML_NET from the partition template; append customer-specific admin routes to the URI list; alert on POST from non-bastion sources and only count the rest"
+    },
+    "match": {
+      "engine": "suricata",
+      "any_of": [
+        {"uri_re": "/pull_weights|/set_env|/create_engine|/fetch_weights|/awex|/update_weights_from_disk|/pause"}
+      ]
+    }
+  },
+  {
+    "id": "suricata-imds-egress",
+    "title": "云元数据出网探测（IMDS 凭据面）",
+    "description": "Pod 到 169.254.169.254 的元数据请求（link-local 元数据直取/SSRF 出网）。English: pod traffic to the link-local metadata service (IMDS credential surface).",
+    "level": "critical",
+    "dest_ip": "169.254.169.254",
+    "paths": ["/latest/meta-data", "/computeMetadata", "/metadata/instance"],
+    "sids": {"base": 9000101},
+    "blocks_modules": ["ssrf-imds-credential", "multi-cloud-imds-credentials", "metadata-egress", "hybrid-cloud-egress-pivot"],
+    "tuning": {
+      "zh": "合法调用方（云 provider 组件节点池）按节点 CIDR 白名单；EKS 侧配合 IMDSv2 强制（Hop Limit=1）与 SecurityGroup for Pods 出网收敛；其余云按等价元数据加固",
+      "en": "Allowlist cloud provider component node pools by node CIDR; on EKS enforce IMDSv2 (Hop Limit=1) and tighten pod egress via SecurityGroup for Pods; mirror the equivalent hardening on other clouds"
+    },
+    "match": {
+      "engine": "suricata",
+      "any_of": [
+        {"uri_re": "/latest/meta-data|/computeMetadata|/metadata/instance"},
+        {"dest_ip_re": "^169\\.254\\.169\\.254$"}
+      ]
+    }
+  },
+  {
+    "id": "suricata-nccl-kv-ports",
+    "title": "集合通信 / KV 传输端口异常流量（NCCL TCPStore、NIXL/Mooncake）",
+    "description": "训练分区外主体访问集合通信 bootstrap/TCPStore 与 KV 传输端口（跨域入组/注入面）。English: out-of-partition access to collective bootstrap/TCPStore and KV-transfer ports.",
+    "level": "high",
+    "ports": [29400, 29500, 29501, 29511, 45678],
+    "sids": {"base": 9000201},
+    "blocks_modules": ["nccl-collective-join", "collective-communication-surface", "inference-gateway-pd"],
+    "tuning": {
+      "zh": "端口集按训练平台的 rendezvous/KV 传输实际配置扩展（动态端口段按范围写 rule）；RDMA/RoCE 面 Suricata 不可见，须以 IB Partition/SM 隔离替代（见 rdma-sriov-uncovered.md）",
+      "en": "Extend the port set from the actual rendezvous/KV configuration (write dynamic ranges as ranges); RDMA/RoCE is invisible to Suricata - compensate with IB Partition/SM isolation (see rdma-sriov-uncovered.md)"
+    },
+    "match": {
+      "engine": "suricata",
+      "any_of": [
+        {"dest_ports": [29400, 29500, 29501, 29511, 45678]}
+      ]
+    }
+  }
+]

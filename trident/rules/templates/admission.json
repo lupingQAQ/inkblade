@@ -1,0 +1,61 @@
+[
+  {
+    "id": "deny-privileged-pod",
+    "title": {"zh": "禁止特权工作负载（privileged/hostPID/hostIPC/hostNetwork）", "en": "Deny privileged workloads (privileged/hostPID/hostIPC/hostNetwork)"},
+    "enforcement": "block",
+    "pss": "baseline + GPU 例外通道（专用命名空间 + 镜像白名单 + 显式审计）",
+    "blocks_modules": ["privileged-gpu-pod-escape", "overprivileged-sa-escalation", "gpu-network-operator-posture"],
+    "message": {"zh": "拒绝 privileged/hostPID/hostIPC/hostNetwork 工作负载（PSS baseline，GPU 驱动走例外通道）", "en": "Privileged/hostPID/hostIPC/hostNetwork workload denied (PSS baseline; GPU drivers via exception channel)"},
+    "tuning": {
+      "zh": "先以 monitor（Audit）观察 7 天并列出命中清单；GPU Operator/NVIDIA 驱动与 SR-IOV device plugin DaemonSet 移入例外命名空间并加镜像白名单后，再切换 Enforce；例外通道任何新增条目需二次审计",
+      "en": "Run in monitor (Audit) for 7 days and review hits; move GPU operator/driver and SR-IOV device plugin DaemonSets into an exception namespace with an image allowlist before switching to Enforce; any new exception entry requires a second review"
+    }
+  },
+  {
+    "id": "deny-sensitive-hostpath",
+    "title": {"zh": "禁止敏感 hostPath 卷（容器运行时 socket / 宿主系统路径）", "en": "Deny sensitive hostPath volumes (runtime sockets / host system paths)"},
+    "enforcement": "block",
+    "blocks_modules": ["runtime-socket-escape", "privileged-gpu-pod-escape"],
+    "params": {
+      "prefixes": ["/var/run/docker.sock", "/var/run/containerd", "/run/containerd", "/var/lib/kubelet", "/var/lib/containerd", "/proc", "/sys", "/dev", "/etc", "/root", "/"]
+    },
+    "message": {"zh": "拒绝挂载敏感宿主路径（运行时 socket、kubelet/containerd 目录、系统路径）", "en": "Sensitive hostPath mount denied (runtime socket, kubelet/containerd dirs, system paths)"},
+    "tuning": {
+      "zh": "GPU 直挂（/dev/nvidia*）与日志只读挂载可按命名空间放行；前缀表按客户基线裁剪，建议保留 '/' 与运行时 socket 前缀为硬阻断",
+      "en": "Allow GPU device mounts (/dev/nvidia*) and read-only log mounts per namespace; trim the prefix list to the customer baseline, but keep '/' and runtime socket prefixes hard-denied"
+    }
+  },
+  {
+    "id": "deny-automount-serviceaccount-token",
+    "title": {"zh": "禁用 ServiceAccount 令牌自动挂载", "en": "Deny automountServiceAccountToken"},
+    "enforcement": "block",
+    "blocks_modules": ["metadata-egress", "ssrf-imds-credential"],
+    "message": {"zh": "工作负载未显式关闭 automountServiceAccountToken（默认拒绝，需显式 opt-out 清单）", "en": "Workload does not explicitly disable automountServiceAccountToken (default deny with explicit opt-out list)"},
+    "tuning": {
+      "zh": "确需令牌的工作负载（operator、Fluentd 采集器）放入白名单命名空间并在 SA 级显式开启；其余一律 false；配合 operator SA 约束（见 RBAC 收敛清单）",
+      "en": "Workloads that truly need the token (operators, log agents) go to an allowlisted namespace and opt in at the SA level; everything else defaults to false; pairs with operator SA constraints in the RBAC convergence list"
+    }
+  },
+  {
+    "id": "alert-rolebinding-creation",
+    "title": {"zh": "RoleBinding/ClusterRoleBinding 创建告警（cluster-admin 指向硬阻断）", "en": "Alert on RoleBinding/ClusterRoleBinding creation (hard block when pointing at cluster-admin)"},
+    "enforcement": "alert",
+    "blocks_modules": ["overprivileged-sa-escalation"],
+    "message": {"zh": "RoleBinding 创建告警；指向 cluster-admin 的绑定一律阻断（operator 集群级 RBAC 扩散拦截）", "en": "RoleBinding creation alert; bindings pointing at cluster-admin are always blocked (operator cluster-scoped RBAC sprawl)"},
+    "tuning": {
+      "zh": "monitor 阶段统计合法 CI/CD 与 operator 的绑定创建频率，形成白名单主体；Enforce 后仅豁免 argocd/gitops 同步主体；同步收紧三大 operator 的集群级 roles/rolebindings CRUD（见 RBAC 收敛清单）",
+      "en": "During monitor, baseline binding creation by legitimate CI/CD and operators into a subject allowlist; after Enforce only exempt the gitops sync subject; also shrink the three operators' cluster-scoped roles/rolebindings CRUD (see RBAC convergence list)"
+    }
+  },
+  {
+    "id": "alert-combo-signature",
+    "title": {"zh": "组合签名准入告警（权重写端点 × 可变镜像标签共存）", "en": "Combo-signature admission alert (weight-write endpoint x mutable image tag)"},
+    "enforcement": "alert",
+    "blocks_modules": ["slime-weight-pull-poison"],
+    "message": {"zh": "组合签名命中：暴露权重写类管理端口的 Deployment 同时使用可变镜像标签（latest/无 digest），准入告警", "en": "Combo signature hit: Deployment exposing weight-write admin ports while using mutable image tags (latest / no digest)"},
+    "tuning": {
+      "zh": "端口集与镜像标签基线按客户部署清单校准；命中仅告警不断链（组合缺陷只能靠准入拦，先盘点再收紧）；配合镜像 digest 固定基线",
+      "en": "Calibrate the port set and image tag baseline against the customer inventory; alert-only first (combo defects are admission-layer issues, inventory before enforce); pairs with image digest pinning"
+    }
+  }
+]

@@ -1,0 +1,143 @@
+{
+  "note": "紫队验证重放计划：每链第一步探针（含链内其余可 HTTP 重放步骤）对 lab mock vulnerable 靶场重放；非 HTTP 面（RDMA/KV/审计事件）以日志 fixture 重放。dest_ip/dest_port 为探测规格声明的业务端口（mock 基座端口为随机分配）。",
+  "on_success_hooks": {
+    "weight-write-marker": "响应含 marker 路径 → 合成 falco open_write 事件（权重路径异常写）",
+    "ray-job": "200 → 合成 sigma Ray 作业提交事件",
+    "sandbox-exec": "200 → 合成 falco 沙箱宿主执行事件（行为化）",
+    "tenant-binding": "200 → 合成 sigma Agent 平台租户对象事件（行为化）"
+  },
+  "chains": {
+    "flat-network-admin-plane-weight-poison": {
+      "replay": [
+        {"module": "sglang-admin-failopen", "method": "POST", "path": "/pause", "body": {}, "dest_ip": "10.42.0.9", "dest_port": 30000, "admin_plane": true},
+        {"module": "slime-weight-pull-poison", "method": "POST", "path": "/pull_weights", "body": {"source_dir": "/models/trident-probe", "local_checkpoint_dir": "/checkpoints/victim"}, "dest_ip": "10.42.0.9", "dest_port": 30000, "admin_plane": true, "on_success": "weight-write-marker"}
+      ],
+      "fixtures": []
+    },
+    "ray-dashboard-cluster-takeover": {
+      "replay": [
+        {"module": "ray-dashboard-job", "method": "POST", "path": "/api/jobs/", "body": {"entrypoint": "python trident_probe.py"}, "dest_ip": "10.42.0.9", "dest_port": 8265, "admin_plane": true, "on_success": "ray-job"}
+      ],
+      "fixtures": [
+        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "create", "objectRef": {"resource": "rolebinding", "name": "trident-demo-binding", "roleRef": {"name": "cluster-admin"}}, "subject_sa": "system:serviceaccount:ray-system:ray-operator"}
+      ]
+    },
+    "nccl-gradient-injection": {
+      "replay": [],
+      "fixtures": [
+        {"kind": "falco", "event_type": "nccl_join", "channel": "collective", "external_rank": true, "dest_port": 29500, "source_zone": "tenant-workload"},
+        {"kind": "suricata", "src": "10.42.0.21", "dest_ip": "10.42.0.9", "dest_port": 29500, "proto": "tcp", "uri": ""}
+      ]
+    },
+    "shared-pvc-supply-chain-poison": {
+      "replay": [],
+      "fixtures": [
+        {"kind": "falco", "event_type": "open_write", "path": "/shared/hf-cache/models/victim/model.safetensors", "proc": "curl", "training_process": false},
+        {"kind": "falco", "event_type": "deserialize", "library": "torch.load", "channel": "shared-volume", "object_source": "/shared/hf-cache"}
+      ]
+    },
+    "ssrf-sa-token-cloud-metadata": {
+      "replay": [
+        {"module": "ssrf-imds-credential", "method": "GET", "path": "/mock-imds/azure/metadata/instance?api-version=2021-02-01", "body": null, "dest_ip": "169.254.169.254", "dest_port": 80, "admin_plane": false}
+      ],
+      "fixtures": [
+        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "cloud-egress-credentials"}, "subject_sa": "system:serviceaccount:ml-inference:default"}
+      ]
+    },
+    "observability-pivot-precision-strike": {
+      "replay": [
+        {"module": "observability-exposure", "method": "GET", "path": "/__routes__", "body": null, "dest_ip": "10.42.0.9", "dest_port": 30000, "admin_plane": false}
+      ],
+      "fixtures": []
+    },
+    "pickle-channel-unauth-execution": {
+      "replay": [
+        {"module": "areal-load-pickle", "method": "POST", "path": "/create_engine", "body": {"module": "mock_probe", "cls": "Probe"}, "dest_ip": "10.42.0.9", "dest_port": 9000, "admin_plane": true}
+      ],
+      "fixtures": [
+        {"kind": "falco", "event_type": "deserialize", "library": "pickle", "channel": "checkpoint-socket", "object_source": "recv_pyobj"}
+      ]
+    },
+    "aws-role-weight-bucket": {
+      "replay": [
+        {"module": "multi-cloud-imds-credentials", "method": "GET", "path": "/mock-imds/aws/latest/meta-data/iam/security-credentials/role", "body": null, "dest_ip": "169.254.169.254", "dest_port": 80, "admin_plane": false}
+      ],
+      "fixtures": [
+        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "instance-role-credentials"}, "subject_sa": "system:serviceaccount:ml-training:default"}
+      ]
+    },
+    "azure-managed-identity-blob-weight": {
+      "replay": [
+        {"module": "multi-cloud-imds-credentials", "method": "GET", "path": "/mock-imds/azure/metadata/instance?api-version=2021-02-01", "body": null, "dest_ip": "169.254.169.254", "dest_port": 80, "admin_plane": false}
+      ],
+      "fixtures": [
+        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "managed-identity-credentials"}, "subject_sa": "system:serviceaccount:ml-training:default"}
+      ]
+    },
+    "ali-ram-role-oss-weight": {
+      "replay": [
+        {"module": "multi-cloud-imds-credentials", "method": "GET", "path": "/mock-imds/aliyun/latest/meta-data/ram/security-credentials/", "body": null, "dest_ip": "169.254.169.254", "dest_port": 80, "admin_plane": false}
+      ],
+      "fixtures": [
+        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "ram-role-credentials"}, "subject_sa": "system:serviceaccount:ml-training:default"}
+      ]
+    },
+    "tencent-cam-role-cos-weight": {
+      "replay": [
+        {"module": "multi-cloud-imds-credentials", "method": "GET", "path": "/mock-imds/tencent/latest/meta-data/cam/security-credentials/", "body": null, "dest_ip": "169.254.169.254", "dest_port": 80, "admin_plane": false}
+      ],
+      "fixtures": [
+        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "cam-role-credentials"}, "subject_sa": "system:serviceaccount:ml-training:default"}
+      ]
+    },
+    "gpu-network-operator-host-escape": {
+      "replay": [],
+      "fixtures": [
+        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "create", "objectRef": {"resource": "pod", "name": "trident-priv-escape"}, "requestObject": {"privileged": true, "hostPath": "/var/run/docker.sock"}, "subject_sa": "system:serviceaccount:gpu-operator:nvidia-operator"}
+      ]
+    },
+    "ib-rdma-collective-injection": {
+      "replay": [],
+      "fixtures": [
+        {"kind": "falco", "event_type": "nccl_join", "channel": "rdma-fabric", "external_rank": true, "hostnetwork_bypass": true, "dest_port": 29500, "source_zone": "tenant-workload"},
+        {"kind": "suricata", "src": "10.42.0.21", "dest_ip": "10.42.0.9", "dest_port": 29500, "proto": "tcp", "uri": ""}
+      ]
+    },
+    "imex-computedomain-gpu-memory-crossing": {
+      "replay": [],
+      "fixtures": [
+        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "create", "objectRef": {"resource": "pod", "name": "nvidia-driver-daemonset-abc"}, "requestObject": {"privileged": true, "hostDevice": "imex-channel"}, "subject_sa": "system:serviceaccount:gpu-operator:nvidia-driver"}
+      ]
+    },
+    "prefill-decode-kv-inference-manipulation": {
+      "replay": [],
+      "fixtures": [
+        {"kind": "falco", "event_type": "nccl_join", "channel": "kv-cache-transfer", "external_rank": true, "dest_port": 45678, "source_zone": "tenant-workload"},
+        {"kind": "suricata", "src": "10.42.0.21", "dest_ip": "10.42.0.9", "dest_port": 45678, "proto": "tcp", "uri": ""}
+      ]
+    },
+    "vpc-cni-dual-control-plane-lateral": {
+      "replay": [],
+      "fixtures": [
+        {"kind": "suricata", "src": "10.42.0.21", "dest_ip": "169.254.169.254", "dest_port": 80, "proto": "tcp", "uri": "/latest/meta-data/iam/security-credentials/role", "sg_gap": true}
+      ]
+    },
+    "agent-platform-zero-precondition-lateral": {
+      "replay": [
+        {"module": "dify-local-sandbox-unauth-rce", "method": "POST", "path": "/v1/jobs/run", "body": {"script": "echo trident-probe"}, "dest_ip": "10.42.0.9", "dest_port": 80, "admin_plane": false, "on_success": "sandbox-exec"},
+        {"module": "metadata-egress", "method": "GET", "path": "/mock-imds/aliyun/latest/meta-data/ram/security-credentials/", "body": null, "dest_ip": "169.254.169.254", "dest_port": 80, "admin_plane": false}
+      ],
+      "fixtures": [
+        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "default-token-sa"}, "subject_sa": "system:serviceaccount:ml-agent:default"}
+      ]
+    },
+    "agent-platform-cross-tenant-data-chain": {
+      "replay": [
+        {"module": "dify-snapshot-cross-tenant-theft", "method": "POST", "path": "/api/v1/bindings", "body": {"name": "trident-validate"}, "dest_ip": "10.42.0.9", "dest_port": 80, "admin_plane": false, "on_success": "tenant-binding"}
+      ],
+      "fixtures": [
+        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "tenant-dataset-credentials"}, "subject_sa": "system:serviceaccount:ml-agent:default"}
+      ]
+    }
+  }
+}

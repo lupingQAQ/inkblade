@@ -1,0 +1,59 @@
+{
+  "note": "私有零日 → 行为化签名模板：仅描述异常行为特征，不含利用细节特征串；公开 advisory 后可升级为细节版规则。",
+  "rules": [
+    {
+      "id": "zeroday-agent-sandbox-unexpected-parent-exec",
+      "engine": "falco",
+      "behavioral": true,
+      "rule": "TRIDENT Agent sandbox host unexpected parent execution",
+      "desc": "Agent 平台沙箱宿主上，进程执行的父进程不在沙箱监管基线内（行为化异常执行面）。English: execution on an agent-platform sandbox host whose parent process is outside the sandbox supervisor baseline.",
+      "condition": "spawned_process and k8s.ns.label[trident-io-zone]=ml-agent and not proc.aname in (sandbox-supervisor, containerd-shim, systemd)",
+      "output": "sandbox unexpected parent exec proc=%proc.name parent=%proc.aname cmdline=%proc.cmdline ns=%k8s.ns.name",
+      "priority": "CRITICAL",
+      "tags": ["trident", "zeroday-behavioral", "monitor"],
+      "blocks_modules": ["dify-local-sandbox-unauth-rce"],
+      "tuning": {
+        "zh": "先按沙箱宿主实际监管进程补全父进程基线（sandbox-supervisor/containerd-shim/systemd）；上线两周内统计高频合法父进程并收敛；命中样本回传平台侧复核后再升级处置",
+        "en": "Complete the parent baseline from the actual sandbox supervisor processes; observe for two weeks and absorb frequent legitimate parents; escalate response only after platform-side confirmation"
+      },
+      "match": {
+        "engine": "falco",
+        "event_type": ["exec"],
+        "all": {
+          "host_class": "agent-sandbox",
+          "parent": {"not_in": ["sandbox-supervisor", "containerd-shim", "systemd"]}
+        }
+      }
+    },
+    {
+      "id": "zeroday-agent-tenant-object-cross-read",
+      "engine": "sigma",
+      "behavioral": true,
+      "title": "Agent 平台租户对象跨租户读取",
+      "description": "Agent 平台审计面：单会话主体在短时间内读取不属于自身租户的绑定/快照类对象。English: a single session principal reading tenant-scoped objects across tenant boundaries in a short window.",
+      "level": "critical",
+      "tags": ["attack.credential_access", "trident", "zeroday-behavioral"],
+      "logsource": {"category": "agent-platform"},
+      "detection": {
+        "selection": {
+          "action": ["read", "list", "materialize"],
+          "object_class": "tenant-binding",
+          "cross_tenant": true
+        },
+        "condition": "selection | count() by subject > 3 in 5m"
+      },
+      "falsepositives": ["平台运维主体的租户迁移作业（按运维账号+时间窗白名单）"],
+      "blocks_modules": ["dify-snapshot-cross-tenant-theft", "training-data-leak"],
+      "tuning": {
+        "zh": "阈值（5 分钟 3 次）按平台吞吐校准；对 object_class 扩展到快照/数据集导出类对象；运维迁移窗口以主体白名单收敛",
+        "en": "Calibrate the threshold (3 per 5m) to platform throughput; extend object_class to snapshot/dataset-export objects; allowlist operations migration windows by subject"
+      },
+      "match": {
+        "engine": "sigma",
+        "logsource": {"category": "agent-platform"},
+        "selection": {"action": ["read", "list", "materialize", "create"], "object_class": "tenant-binding", "cross_tenant": true},
+        "condition": "all"
+      }
+    }
+  ]
+}
