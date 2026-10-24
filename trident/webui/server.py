@@ -115,6 +115,7 @@ class _Handler(BaseHTTPRequestHandler):
 def make_server(root: Path | str, users: UserStore, host: str = "127.0.0.1", port: int = 0) -> ThreadingHTTPServer:
     handler = type("BoundHandler", (_Handler,), {"users": users, "root": Path(root)})
     httpd = ThreadingHTTPServer((host, port), handler)
+    httpd.port = httpd.server_address[1]
     t = threading.Thread(target=httpd.serve_forever, daemon=True)
     t.start()
     return httpd
