@@ -1,0 +1,79 @@
+{
+  "items": [
+    {
+      "apiVersion": "scheduling.volcano.sh/v1beta1",
+      "kind": "Queue",
+      "metadata": {"name": "train-queue"},
+      "spec": {"weight": 1, "reclaimable": false, "capacity": "64"}
+    },
+    {
+      "apiVersion": "scheduling.volcano.sh/v1beta1",
+      "kind": "PodGroup",
+      "metadata": {"name": "llm-train-gang", "namespace": "train"},
+      "spec": {
+        "minMember": 16,
+        "queue": "train-queue",
+        "minResources": {"cpu": "512", "memory": "512Gi", "nvidia.com/gpu": "128", "rdma/hca": "16"}
+      },
+      "status": {"phase": "Pending"}
+    },
+    {
+      "apiVersion": "kueue.x-k8s.io/v1beta1",
+      "kind": "ClusterQueue",
+      "metadata": {"name": "cluster-queue"},
+      "spec": {
+        "namespaceSelector": {},
+        "cohort": "shared",
+        "resourceGroups": [
+          {
+            "coveredResources": ["cpu", "memory", "nvidia.com/gpu"],
+            "flavors": [
+              {
+                "name": "gpu-flavor",
+                "resources": [
+                  {"name": "cpu", "nominalQuota": "256"},
+                  {"name": "memory", "nominalQuota": "1Ti"},
+                  {"name": "nvidia.com/gpu", "nominalQuota": "64"}
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "kueue.x-k8s.io/v1beta1",
+      "kind": "ResourceFlavor",
+      "metadata": {
+        "name": "gpu-flavor",
+        "annotations": {"kueue.x-k8s.io/podset-required-topology": "topology.kubernetes.io/rack"}
+      },
+      "spec": {"nodeLabels": {"node.kubernetes.io/instance-type": "ml.gpu-b200-large"}}
+    },
+    {
+      "apiVersion": "kueue.x-k8s.io/v1beta1",
+      "kind": "LocalQueue",
+      "metadata": {"name": "sandbox-lq", "namespace": "sandbox"},
+      "spec": {"clusterQueue": "cluster-queue"}
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "ClusterRole",
+      "metadata": {"name": "vcjob-submitter"},
+      "rules": [
+        {
+          "apiGroups": ["scheduling.volcano.sh"],
+          "resources": ["jobs", "podgroups", "queues"],
+          "verbs": ["create", "get", "list", "watch"]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "ClusterRoleBinding",
+      "metadata": {"name": "vcjob-submitter-all"},
+      "roleRef": {"apiGroup": "rbac.authorization.k8s.io", "kind": "ClusterRole", "name": "vcjob-submitter"},
+      "subjects": [{"kind": "Group", "name": "system:authenticated"}]
+    }
+  ]
+}

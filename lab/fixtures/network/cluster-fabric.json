@@ -1,0 +1,40 @@
+{
+  "nodes": [
+    {
+      "name": "gpu-node-a",
+      "labels": {
+        "nvidia.com/gpu.product": "NVIDIA-B200",
+        "topology.rail": "rail-zero",
+        "plane": "dual-plane-a",
+        "nvidia.com/imex.domain": "imex-domain-a"
+      },
+      "annotations": {"fabric.hca.inventory": "mlx5_0:400:ib,mlx5_1:400:ib"}
+    },
+    {
+      "name": "gpu-node-b",
+      "labels": {
+        "topology.rail": "rail-one",
+        "plane": "dual-plane-a"
+      }
+    },
+    {
+      "name": "gpu-node-c",
+      "labels": {
+        "nvidia.com/gpu.product": "NVIDIA-B200",
+        "topology.rail": "rail-zero",
+        "plane": "dual-plane-b",
+        "nvidia.com/imex.domain": "imex-domain-a"
+      },
+      "annotations": {"fabric.hca.inventory": "mlx5_0:400:ib,mlx5_1:400:ib"}
+    }
+  ],
+  "ib_fabric": {
+    "type": "infiniband",
+    "sm": {"masters": ["sm-0"]},
+    "partitions": [],
+    "notes": "未配置 Partition，仅默认 pkey 0xffff 全网互通"
+  },
+  "roce": {"present": false},
+  "efa": {"present": false},
+  "nvlink": {"present": true, "nvswitch": true}
+}

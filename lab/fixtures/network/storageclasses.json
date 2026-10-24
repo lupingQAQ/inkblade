@@ -1,0 +1,78 @@
+{
+  "storageclasses": [
+    {
+      "metadata": {
+        "name": "nfs-client",
+        "annotations": {"storage.example.io/root-squash": "false"}
+      },
+      "provisioner": "cluster.local/nfs-subdir-external-provisioner",
+      "mountOptions": ["vers=4.1", "sec=sys", "nolock"],
+      "parameters": {"server": "nas.internal", "share": "/exports/models"}
+    },
+    {
+      "metadata": {"name": "cephfs-shared"},
+      "provisioner": "cephfs.csi.ceph.com",
+      "parameters": {"clusterID": "ceph-prod", "fs": "models", "pool": "models-data"}
+    },
+    {
+      "metadata": {"name": "juicefs-cache"},
+      "provisioner": "csi.juicefs.com",
+      "parameters": {"metaurl": "redis://juicefs-meta.internal:6379/1", "name": "models"}
+    },
+    {
+      "metadata": {"name": "lustre-scratch"},
+      "provisioner": "fsx.csi.aws.com",
+      "parameters": {"subnetId": "subnet-0bc123", "deploymentType": "PERSISTENT_2"}
+    }
+  ],
+  "csi_pods": [
+    {
+      "metadata": {"name": "csi-cephfs-node-7xk2p", "namespace": "kube-system", "labels": {"app": "csi-cephfs-node"}},
+      "spec": {
+        "hostNetwork": true,
+        "serviceAccountName": "csi-cephfs-node",
+        "containers": [{
+          "name": "csi-node-driver-registrar",
+          "image": "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.11.1",
+          "securityContext": {"privileged": true},
+          "volumeMounts": [
+            {"name": "kubelet-dir", "mountPath": "/var/lib/kubelet"},
+            {"name": "host-sys", "mountPath": "/sys"}
+          ]
+        }]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "juicefs-csi-node-m4qwt", "namespace": "kube-system", "labels": {"app": "juicefs-csi-node"}},
+      "spec": {
+        "hostNetwork": true,
+        "serviceAccountName": "juicefs-csi-node",
+        "containers": [{
+          "name": "juicefs-plugin",
+          "image": "docker.io/juicedata/juicefs-csi-driver:v1.2.2",
+          "securityContext": {"privileged": true},
+          "volumeMounts": [
+            {"name": "kubelet-dir", "mountPath": "/var/lib/kubelet"},
+            {"name": "jfs-config", "mountPath": "/etc/juicefs"}
+          ]
+        }]
+      },
+      "status": {"phase": "Running"}
+    }
+  ],
+  "pvcs": [
+    {
+      "metadata": {"name": "weights-cache", "namespace": "train"},
+      "spec": {"accessModes": ["ReadWriteMany"], "storageClassName": "nfs-client"}
+    },
+    {
+      "metadata": {"name": "dataset-shard", "namespace": "train"},
+      "spec": {"accessModes": ["ReadWriteMany"], "storageClassName": "cephfs-shared"}
+    },
+    {
+      "metadata": {"name": "ckpt-store", "namespace": "train"},
+      "spec": {"accessModes": ["ReadWriteMany"], "storageClassName": "nfs-client"}
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "items": [
+    {
+      "apiVersion": "gateway.networking.k8s.io/v1",
+      "kind": "Gateway",
+      "metadata": {"name": "llm-gw", "namespace": "infer"},
+      "spec": {
+        "listeners": [
+          {"name": "http", "port": 80, "protocol": "HTTP"},
+          {"name": "https", "port": 443, "protocol": "HTTPS", "tls": {"mode": "Terminate"}}
+        ]
+      }
+    },
+    {
+      "apiVersion": "gateway.networking.k8s.io/v1",
+      "kind": "HTTPRoute",
+      "metadata": {"name": "chat-route", "namespace": "infer"},
+      "spec": {
+        "parentRefs": [{"name": "llm-gw"}],
+        "rules": [
+          {
+            "backendRefs": [
+              {"group": "inference.networking.x-k8s.io", "kind": "InferencePool", "name": "llm-pool", "port": 8000}
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "inference.networking.x-k8s.io/v1alpha1",
+      "kind": "InferencePool",
+      "metadata": {"name": "llm-pool", "namespace": "infer"},
+      "spec": {
+        "selector": {"app": "sglang-pool"},
+        "targetPorts": [{"name": "http", "number": 8000}],
+        "endpointPickerRef": {"kind": "Service", "name": "epp-gateway", "port": 9002}
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {"name": "epp-gateway", "namespace": "infer", "labels": {"app": "epp-gateway"}},
+      "spec": {
+        "replicas": 2,
+        "selector": {"matchLabels": {"app": "epp-gateway"}},
+        "template": {
+          "metadata": {"labels": {"app": "epp-gateway"}},
+          "spec": {
+            "serviceAccountName": "epp",
+            "containers": [{
+              "name": "epp",
+              "image": "us-docker.pkg.dev/ks-releases/global/epp/epp:v0.3.1",
+              "env": [
+                {"name": "EXT_ENDPOINT_POOL_FAILURE_MODE", "value": "FailOpen"},
+                {"name": "EXT_ENDPOINTS", "value": "llm-pool"}
+              ],
+              "ports": [
+                {"containerPort": 9002, "name": "grpc"},
+                {"containerPort": 9010, "name": "mgmt"}
+              ]
+            }]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {"name": "llm-d-route-plugin-config", "namespace": "infer"},
+      "data": {
+        "pluginConfig": "{\"plugin\":\"llm-d-prefill-decode-router\",\"kvTransferHints\":{\"engine\":\"nixl\",\"tls\":false}}"
+      }
+    },
+    {
+      "apiVersion": "leaderworkerset.x-k8s.io/v1",
+      "kind": "LeaderWorkerSet",
+      "metadata": {"name": "pd-pool", "namespace": "infer"},
+      "spec": {
+        "replicas": 2,
+        "leaderTemplate": {
+          "spec": {
+            "serviceAccountName": "infer-runtime",
+            "containers": [{
+              "name": "sglang-prefill",
+              "image": "docker.io/sglang/sglang:v0.4.2-cu124",
+              "env": [{"name": "POD_ROLE", "value": "prefill"}, {"name": "KV_TRANSFER_ENGINE", "value": "nixl"}]
+            }]
+          }
+        },
+        "workerTemplate": {
+          "spec": {
+            "serviceAccountName": "infer-runtime",
+            "containers": [{
+              "name": "sglang-decode",
+              "image": "docker.io/sglang/sglang:v0.4.2-cu124",
+              "env": [{"name": "POD_ROLE", "value": "decode"}, {"name": "KV_TRANSFER_ENGINE", "value": "nixl"}]
+            }]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {"name": "llm-router", "namespace": "infer"},
+      "spec": {
+        "type": "LoadBalancer",
+        "selector": {"app": "llm-router"},
+        "ports": [{"port": 80, "name": "http"}, {"port": 8080, "name": "mgmt"}]
+      }
+    }
+  ]
+}

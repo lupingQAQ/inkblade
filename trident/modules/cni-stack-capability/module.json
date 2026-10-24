@@ -1,0 +1,15 @@
+{
+  "key": "cni-stack-capability",
+  "name": {"zh": "CNI 栈与策略能力矩阵", "en": "CNI Stack and Policy Capability Matrix"},
+  "series": "网络架构",
+  "description": "CNI 类型与版本、策略引擎能力矩阵、hostNetwork/hostDevice/Multus 旁路清单",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "fixture dict 或 lab/fixtures/network/ 路径（kube-system-pods / networkpolicies / cloud-network）"
+  },
+  "produces": "cni-capability-matrix.json（per-CNI 能力矩阵 artifact）+ 旁路清单 findings",
+  "knowledge": "spec 5.2 网络架构模块 + 5.6 CNI 与 Overlay 层；组合签名 vpc-cni-dual-controlplane-mismatch",
+  "combo_signature": "vpc-cni-dual-controlplane-mismatch"
+}

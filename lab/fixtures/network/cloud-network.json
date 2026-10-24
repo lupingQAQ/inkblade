@@ -1,0 +1,27 @@
+{
+  "vpc_cni": {
+    "type": "terway",
+    "mode": "eniip",
+    "security_group_for_pods": false
+  },
+  "node_provider_ids": [
+    {"node": "gpu-node-a", "provider_id": "i-bp1a2c3d4e5f6g001"},
+    {"node": "gpu-node-b", "provider_id": "i-bp1a2c3d4e5f6g002"},
+    {"node": "gpu-node-c", "provider_id": "i-bp1a2c3d4e5f6g003"}
+  ],
+  "security_groups": [
+    {
+      "name": "train-worker-sg",
+      "ingress": [
+        {"source": "0.0.0.0/0", "ports": [22, 8265, 29500]},
+        {"source": "::/0", "ports": [22]}
+      ]
+    },
+    {
+      "name": "gpu-node-sg",
+      "ingress": [
+        {"source": "10.0.0.0/8", "ports": [9400]}
+      ]
+    }
+  ]
+}

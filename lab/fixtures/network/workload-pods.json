@@ -1,0 +1,122 @@
+{
+  "apiVersion": "v1",
+  "kind": "PodList",
+  "items": [
+    {
+      "metadata": {
+        "name": "llm-train-worker-0",
+        "namespace": "train",
+        "labels": {"app": "rl-train", "train-lead": "true"},
+        "annotations": {"k8s.v1.cni.cncf.io/networks": "train/sriov-rdma-net,train/ib-sriov-net"}
+      },
+      "spec": {
+        "serviceAccountName": "train-runner",
+        "containers": [{
+          "name": "train",
+          "image": "registry.example.internal/areal/areal-worker:v0.6.3",
+          "env": [
+            {"name": "NCCL_SOCKET_IFNAME", "value": "^docker0,lo"},
+            {"name": "NCCL_IB_HCA", "value": "=mlx5_0,mlx5_1"},
+            {"name": "NCCL_DEBUG", "value": "INFO"},
+            {"name": "MASTER_ADDR", "value": "llm-train-rdzv.train.svc.cluster.local"},
+            {"name": "MASTER_PORT", "value": "29500"},
+            {"name": "WORLD_SIZE", "value": "16"}
+          ],
+          "resources": {
+            "requests": {"nvidia.com/gpu": "8", "rdma/hca": "1", "cpu": "32", "memory": "32Gi"}
+          },
+          "volumeMounts": [{"name": "weights", "mountPath": "/models"}, {"name": "ckpt", "mountPath": "/checkpoints"}]
+        }],
+        "volumes": [
+          {"name": "weights", "persistentVolumeClaim": {"claimName": "weights-cache"}},
+          {"name": "ckpt", "persistentVolumeClaim": {"claimName": "ckpt-store"}}
+        ]
+      },
+      "status": {"phase": "Running", "podIP": "10.88.0.11"}
+    },
+    {
+      "metadata": {
+        "name": "sglang-pd-prefill-0",
+        "namespace": "infer",
+        "labels": {
+          "app": "sglang-pool",
+          "leaderworkerset.sigs.k8s.io/name": "pd-pool",
+          "llm-d.ai/pod-role": "prefill"
+        }
+      },
+      "spec": {
+        "serviceAccountName": "infer-runtime",
+        "containers": [{
+          "name": "sglang",
+          "image": "docker.io/sglang/sglang:v0.4.2-cu124",
+          "env": [
+            {"name": "POD_ROLE", "value": "prefill"},
+            {"name": "KV_TRANSFER_ENGINE", "value": "nixl"},
+            {"name": "NIXL_TLS", "value": "false"},
+            {"name": "NCCL_IB_HCA", "value": "=mlx5_0"}
+          ],
+          "ports": [{"containerPort": 8000, "name": "http"}],
+          "resources": {"requests": {"nvidia.com/gpu": "8", "rdma/hca": "1"}}
+        }]
+      },
+      "status": {"phase": "Running", "podIP": "10.88.1.21"}
+    },
+    {
+      "metadata": {
+        "name": "sglang-pd-decode-0",
+        "namespace": "infer",
+        "labels": {
+          "app": "sglang-pool",
+          "leaderworkerset.sigs.k8s.io/name": "pd-pool",
+          "llm-d.ai/pod-role": "decode"
+        }
+      },
+      "spec": {
+        "serviceAccountName": "infer-runtime",
+        "containers": [{
+          "name": "sglang",
+          "image": "docker.io/sglang/sglang:v0.4.2-cu124",
+          "env": [
+            {"name": "POD_ROLE", "value": "decode"},
+            {"name": "KV_TRANSFER_ENGINE", "value": "nixl"},
+            {"name": "NIXL_TLS", "value": "false"}
+          ],
+          "ports": [{"containerPort": 8000, "name": "http"}],
+          "resources": {"requests": {"nvidia.com/gpu": "8"}}
+        }]
+      },
+      "status": {"phase": "Running", "podIP": "10.88.1.22"}
+    },
+    {
+      "metadata": {"name": "ray-head-0", "namespace": "train", "labels": {"app": "ray-head"}},
+      "spec": {
+        "serviceAccountName": "ray-user",
+        "containers": [{
+          "name": "ray-head",
+          "image": "docker.io/rayproject/ray:2.40.0-py310",
+          "env": [{"name": "RAY_GCS_SERVER_ENABLED", "value": "true"}],
+          "ports": [
+            {"containerPort": 6379, "name": "gcs"},
+            {"containerPort": 8265, "name": "dashboard"},
+            {"containerPort": 10001, "name": "client"}
+          ]
+        }]
+      },
+      "status": {"phase": "Running", "podIP": "10.88.0.31"}
+    },
+    {
+      "metadata": {"name": "hostnet-node-metrics", "namespace": "observability", "labels": {"app": "node-plane-probe"}},
+      "spec": {
+        "hostNetwork": true,
+        "serviceAccountName": "node-metrics",
+        "containers": [{
+          "name": "probe",
+          "image": "docker.io/busybox:1.36",
+          "command": ["sh", "-c", "nc -lk -p 9100 -e hostname"],
+          "ports": [{"containerPort": 9100, "hostPort": 9100, "name": "metrics"}]
+        }]
+      },
+      "status": {"phase": "Running"}
+    }
+  ]
+}

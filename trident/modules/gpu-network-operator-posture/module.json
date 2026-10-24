@@ -1,0 +1,15 @@
+{
+  "key": "gpu-network-operator-posture",
+  "name": {"zh": "GPU 与网络 Operator 权限姿态", "en": "GPU and Network Operator Posture"},
+  "series": "网络架构",
+  "description": "driver container/DCGM/NFD/validator/SR-IOV operator/RDMA device plugin/ib-kubernetes/DRA kubelet plugin/ComputeDomain controller",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "fixture dict 或 lab/fixtures/network/ 路径（kube-system-pods / compute-domains）"
+  },
+  "produces": "gpu-network-operator-posture.json（组件×特权×宿主挂载矩阵）",
+  "knowledge": "spec 5.2 网络架构模块 + 5.6 主机网络层；组合签名 hardware-route-privileged-posture / nvl-dra-imex-domain",
+  "combo_signature": "hardware-route-privileged-posture"
+}

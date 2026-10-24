@@ -1,0 +1,64 @@
+{
+  "items": [
+    {
+      "apiVersion": "resource.k8s.io/v1beta1",
+      "kind": "ResourceSlice",
+      "metadata": {"name": "gpu-imex-rack-a-node-a"},
+      "spec": {
+        "driver": "gpu.nvidia.com",
+        "pool": {"name": "imex-rack-a", "resourceSliceCount": 1},
+        "nodeName": "gpu-node-a",
+        "devices": [
+          {"name": "gpu-0", "basic": {"attributes": {"gpu.nvidia.com/product": "NVIDIA-B200"}}},
+          {"name": "gpu-1", "basic": {"attributes": {"gpu.nvidia.com/product": "NVIDIA-B200"}}}
+        ]
+      }
+    },
+    {
+      "apiVersion": "resource.k8s.io/v1beta1",
+      "kind": "ResourceClaim",
+      "metadata": {"name": "imex-claim", "namespace": "train"},
+      "spec": {
+        "devices": {
+          "requests": [
+            {"name": "imex", "deviceClassName": "gpu.nvidia.com-imex-domain"}
+          ]
+        }
+      }
+    },
+    {
+      "apiVersion": "gpu.nvidia.com/v1alpha1",
+      "kind": "ComputeDomain",
+      "metadata": {"name": "imex-domain-a"},
+      "spec": {
+        "domainType": "IMEX",
+        "members": [
+          {"name": "gpu-node-a"},
+          {"name": "gpu-node-c"}
+        ],
+        "imex": {"domains": 2}
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "DaemonSet",
+      "metadata": {"name": "imex-daemon", "namespace": "kube-system"},
+      "spec": {
+        "selector": {"matchLabels": {"app": "imex-daemon"}},
+        "template": {
+          "metadata": {"labels": {"app": "imex-daemon"}},
+          "spec": {
+            "hostNetwork": true,
+            "serviceAccountName": "imex-daemon",
+            "containers": [{
+              "name": "imex-daemon",
+              "image": "nvcr.io/nvidia/cloud-native/imex-daemon:v28.10.0",
+              "securityContext": {"privileged": true},
+              "volumeMounts": [{"name": "dev", "mountPath": "/dev"}]
+            }]
+          }
+        }
+      }
+    }
+  ]
+}

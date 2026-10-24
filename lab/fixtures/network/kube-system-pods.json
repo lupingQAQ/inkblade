@@ -1,0 +1,204 @@
+{
+  "apiVersion": "v1",
+  "kind": "PodList",
+  "items": [
+    {
+      "metadata": {"name": "calico-node-9x8bk", "namespace": "kube-system", "labels": {"k8s-app": "calico-node"}},
+      "spec": {
+        "hostNetwork": true,
+        "serviceAccountName": "calico-node",
+        "containers": [{
+          "name": "calico-node",
+          "image": "docker.io/calico/node:v3.28.1",
+          "securityContext": {"privileged": true},
+          "volumeMounts": [
+            {"name": "lib-modules", "mountPath": "/lib/modules"},
+            {"name": "var-run-calico", "mountPath": "/var/run/calico"},
+            {"name": "sys-fs", "mountPath": "/sys/fs"}
+          ]
+        }]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "calico-kube-controllers-76d5f8b7", "namespace": "kube-system", "labels": {"k8s-app": "kube-controllers"}},
+      "spec": {
+        "serviceAccountName": "calico-kube-controllers",
+        "containers": [{"name": "calico-kube-controllers", "image": "docker.io/calico/kube-controllers:v3.28.1"}]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "cilium-7v9kx", "namespace": "kube-system", "labels": {"k8s-app": "cilium"}},
+      "spec": {
+        "hostNetwork": true,
+        "serviceAccountName": "cilium",
+        "containers": [{
+          "name": "cilium-agent",
+          "image": "quay.io/cilium/cilium:v1.16.2",
+          "securityContext": {"privileged": true},
+          "volumeMounts": [
+            {"name": "bpf-maps", "mountPath": "/sys/fs/bpf"},
+            {"name": "cilium-run", "mountPath": "/var/run/cilium"}
+          ]
+        }]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "cilium-operator-6d4f7c", "namespace": "kube-system", "labels": {"io.cilium/app": "operator"}},
+      "spec": {
+        "serviceAccountName": "cilium-operator",
+        "containers": [{"name": "cilium-operator", "image": "quay.io/cilium/operator-generic:v1.16.2"}]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "kube-multus-ds-wms7q", "namespace": "kube-system", "labels": {"app": "multus"}},
+      "spec": {
+        "hostNetwork": true,
+        "serviceAccountName": "multus",
+        "containers": [{
+          "name": "kube-multus",
+          "image": "ghcr.io/k8snetworkplumbingwg/multus-cni:v4.1.0",
+          "securityContext": {"privileged": true},
+          "volumeMounts": [{"name": "cnibin", "mountPath": "/host/usr/libexec/cni/"}]
+        }]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "terway-eniip-8dj4v", "namespace": "kube-system", "labels": {"app": "terway-eniip"}},
+      "spec": {
+        "hostNetwork": true,
+        "serviceAccountName": "terway",
+        "containers": [{
+          "name": "terway",
+          "image": "registry-cn-hangzhou.aliyuncs.com/acs/terway:v1.11.0",
+          "securityContext": {"privileged": true}
+        }]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "sriov-device-plugin-4ghkt", "namespace": "kube-system", "labels": {"app": "sriov-network-device-plugin"}},
+      "spec": {
+        "hostNetwork": true,
+        "serviceAccountName": "sriov-network-device-plugin",
+        "containers": [{
+          "name": "sriov-device-plugin",
+          "image": "ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin:v3.8.0",
+          "securityContext": {"privileged": true},
+          "volumeMounts": [{"name": "sysfs", "mountPath": "/sys"}]
+        }]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "ofed-driver-daemonset-qnzp2", "namespace": "kube-system", "labels": {"app": "ofed-driver", "nvidia-network-operator": "true"}},
+      "spec": {
+        "serviceAccountName": "ofed-driver",
+        "containers": [{
+          "name": "ofed-driver",
+          "image": "nvcr.io/nvidia/cloud-native/driver:560.35.05-ubuntu22.04",
+          "securityContext": {"privileged": true},
+          "volumeMounts": [
+            {"name": "host-root", "mountPath": "/host"},
+            {"name": "sys", "mountPath": "/sys"},
+            {"name": "dev", "mountPath": "/dev"}
+          ]
+        }]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "rdma-shared-dp-j4l9p", "namespace": "kube-system", "labels": {"app": "rdma-shared-device-plugin"}},
+      "spec": {
+        "hostNetwork": true,
+        "serviceAccountName": "rdma-shared-device-plugin",
+        "containers": [{
+          "name": "rdma-shared-device-plugin",
+          "image": "nvcr.io/nvidia/cloud-native/k8s-rdma-shared-dev-plugin:v1.4.0",
+          "securityContext": {"privileged": true},
+          "volumeMounts": [{"name": "infiniband", "mountPath": "/dev/infiniband"}]
+        }]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "ib-kubernetes-vcw7m", "namespace": "kube-system", "labels": {"app": "ib-kubernetes"}},
+      "spec": {
+        "hostNetwork": true,
+        "serviceAccountName": "ib-kubernetes",
+        "containers": [{
+          "name": "ib-kubernetes",
+          "image": "ghcr.io/mellanox/ib-kubernetes:v1.0.2",
+          "securityContext": {"privileged": true},
+          "volumeMounts": [{"name": "cnibin", "mountPath": "/host/var/lib/cni/bin"}]
+        }]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "nfd-master-5nhvq", "namespace": "kube-system", "labels": {"app": "node-feature-discovery"}},
+      "spec": {
+        "serviceAccountName": "nfd-master",
+        "containers": [{"name": "nfd-master", "image": "registry.k8s.io/nfd/node-feature-discovery:v0.15.6"}]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "nfd-worker-xr8kw", "namespace": "kube-system", "labels": {"app": "node-feature-discovery"}},
+      "spec": {
+        "serviceAccountName": "nfd-worker",
+        "containers": [{
+          "name": "nfd-worker",
+          "image": "registry.k8s.io/nfd/node-feature-discovery:v0.15.6",
+          "volumeMounts": [{"name": "host-root", "mountPath": "/host-readonly", "readOnly": true}]
+        }]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "gpu-operator-validator-9vmzk", "namespace": "kube-system", "labels": {"app": "gpu-operator-validator"}},
+      "spec": {
+        "serviceAccountName": "gpu-operator-validator",
+        "containers": [{
+          "name": "validator",
+          "image": "nvcr.io/nvidia/gpu-operator/gpu-operator-validator:v24.6.2",
+          "securityContext": {"privileged": true}
+        }]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "dcgm-exporter-xq7ct", "namespace": "kube-system", "labels": {"app": "dcgm-exporter"}},
+      "spec": {
+        "hostNetwork": true,
+        "serviceAccountName": "dcgm-exporter",
+        "containers": [{
+          "name": "dcgm-exporter",
+          "image": "nvcr.io/nvidia/k8s/dcgm-exporter:3.3.5-3.4.1-ubuntu22.04",
+          "ports": [{"containerPort": 9400, "name": "metrics"}]
+        }]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "dra-controller-gpu-5nhvq", "namespace": "kube-system", "labels": {"app": "nvidia-dra-controller"}},
+      "spec": {
+        "serviceAccountName": "nvidia-dra-controller",
+        "containers": [{"name": "dra-controller", "image": "nvcr.io/nvidia/cloud-native/k8s-dra-controller:v28.10.0"}]
+      },
+      "status": {"phase": "Running"}
+    },
+    {
+      "metadata": {"name": "computedomain-controller-f9swq", "namespace": "kube-system", "labels": {"app": "computedomain-controller"}},
+      "spec": {
+        "serviceAccountName": "computedomain-controller",
+        "containers": [{"name": "computedomain-controller", "image": "nvcr.io/nvidia/cloud-native/compute-domain-operator:v28.10.0"}]
+      },
+      "status": {"phase": "Running"}
+    }
+  ]
+}

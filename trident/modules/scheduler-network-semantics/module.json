@@ -1,0 +1,15 @@
+{
+  "key": "scheduler-network-semantics",
+  "name": {"zh": "调度网络语义", "en": "Scheduler Network Semantics"},
+  "series": "网络架构",
+  "description": "Volcano/Kueue/拓扑感知调度、跨 namespace 提交面、gang 调度拒绝服务面、资源声明与拓扑错配",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "fixture dict 或 lab/fixtures/network/ 路径（scheduler-manifests / workload-pods）"
+  },
+  "produces": "scheduler-network.json + gang DoS / 跨 ns 提交 / 拓扑错配 findings",
+  "knowledge": "spec 5.2 网络架构模块 + 5.6 主机网络层（拓扑感知调度与网络资源错配）",
+  "combo_signature": ""
+}

@@ -1,0 +1,15 @@
+{
+  "key": "multus-sriov-rdma-bypass",
+  "name": {"zh": "多网卡与 RDMA 旁路", "en": "Multi-NIC and RDMA Bypass"},
+  "series": "网络架构",
+  "description": "Multus 附件、SR-IOV VF/RDMA shared device/IB device plugin、Pod 多网卡绑定、NetworkPolicy 不覆盖路径实证",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "fixture dict 或 lab/fixtures/network/ 路径（net-attach-defs / workload-pods / networkpolicies / kube-system-pods）"
+  },
+  "produces": "「NetworkPolicy 不覆盖路径」清单 finding + rdma-bypass-paths.json artifact",
+  "knowledge": "spec 5.2 网络架构模块 + 5.6 CNI 与 Overlay 层；组合签名 multus-sriov-rdma-bypass",
+  "combo_signature": "multus-sriov-rdma-bypass"
+}
