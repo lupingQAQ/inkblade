@@ -28,7 +28,9 @@ class TestBenchSmoke(unittest.TestCase):
             self.assertIn(field, r, f"缺少字段 {field}")
         self.assertGreater(r["elapsed_ms"], 0)
         self.assertGreater(r["max_rss_kb"], 0)
-        self.assertGreaterEqual(r["requests"], 5)
+        self.assertGreaterEqual(r["requests"], 1)
+        if r["mode"] == "fallback-urllib":
+            self.assertGreaterEqual(r["requests"], 5)
 
     def test_mode_and_ruling_recorded(self):
         r = self.result
@@ -38,6 +40,17 @@ class TestBenchSmoke(unittest.TestCase):
             self.assertEqual(len(r["routes"]), 5)
             for rt in r["routes"]:
                 self.assertGreaterEqual(rt["avg_ms"], 0.0)
+
+    def test_fallback_forced_when_modules_unready(self):
+        """强制模块目录为空 = 模块未就绪，必走 urllib 五路由兜底并记录 Ruling。"""
+        with TemporaryDirectory() as tmp:
+            r = bench.run_smoke(iterations=1, modules_dir=Path(tmp) / "no-modules")
+        self.assertEqual(r["mode"], "fallback-urllib")
+        self.assertEqual(r["requests"], 5)
+        self.assertEqual(len(r["routes"]), 5)
+        self.assertIn("降级", r["ruling"])
+        for rt in r["routes"]:
+            self.assertEqual(rt["status"], rt["expect"])
 
     def test_fallback_routes_are_readonly(self):
         """兜底五路由必须对靶场零写入（ROUTE_TABLE writes=false）。"""
@@ -60,7 +73,9 @@ class TestBenchSmoke(unittest.TestCase):
                 self.assertIn(field, data)
             self.assertGreater(data["elapsed_ms"], 0)
             self.assertGreater(data["max_rss_kb"], 0)
-            self.assertGreaterEqual(data["requests"], 5)
+            self.assertGreaterEqual(data["requests"], 1)
+            if data["mode"] == "fallback-urllib":
+                self.assertGreaterEqual(data["requests"], 5)
             md = mp.read_text(encoding="utf-8")
             self.assertIn("elapsed_ms", md)
             self.assertIn("Ruling", md)

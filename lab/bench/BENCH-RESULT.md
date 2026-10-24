@@ -14,14 +14,18 @@ D:\llm-audit-2026-10\env\reproenv-d\Scripts\python.exe lab\bench\bench.py smoke 
 环境：Windows 11（10.0.26300）/ Python 3.12.15（reproenv-d，仅标准库）/ mock 靶场
 `lab/mock_targets.py`（vulnerable 姿态，进程内 127.0.0.1）。
 
-| 指标 | 初值 |
-|---|---|
-| mode | fallback-urllib（见 Ruling） |
-| elapsed_ms（总 / 每轮） | 31.29 / 6.258（5 轮） |
-| max_rss_kb | 50224（≈49 MB；peak_rss_kb 50224，后端 ctypes-GetProcessMemoryInfo） |
-| requests | 25（= 5 轮 × 5 只读路由，全部 200 与预期一致） |
+| 指标 | 链路径（当前实跑） | 兜底路径（强制空模块目录） |
+|---|---|---|
+| mode | chain（prefill-decode-kv-inference-manipulation） | fallback-urllib |
+| elapsed_ms（总 / 每轮，5 轮） | 320.465 / 64.093 | 45.302 / 9.06 |
+| max_rss_kb | 50176（≈49 MB，ctypes-GetProcessMemoryInfo） | 35424 |
+| requests | 5（= 5 轮 × 1 链步骤，来源 chain-steps） | 25（= 5 轮 × 5 只读路由，全部 200） |
 
-兜底五路由逐项计时（avg/min/max ms，n=5，状态全部 200）：
+说明：链路径含链引擎全开销（证据库 SQLite + 审计 + 三层落证 + 模块 fixture 快照解析），
+64 ms/轮 vs 兜底直探 9 ms/轮属预期；空闲 RSS ≈ 49 MB 满足 spec 11.1「< 150 MB」目标
+（单 Python 进程，无 Node/PG 运行时）。
+
+兜底五路由逐项计时（强制兜底 5 轮实测，状态全部 200 与预期一致）：
 
 | 路由 | 方法 | 面向 | avg_ms | min_ms | max_ms |
 |---|---|---|---|---|---|
@@ -32,21 +36,26 @@ D:\llm-audit-2026-10\env\reproenv-d\Scripts\python.exe lab\bench\bench.py smoke 
 | `/pause` | POST | SGLang 管理面 fail-open | 0.739 | 0.570 | 1.025 |
 
 产物：`lab/bench/out/bench-smoke.json` + `bench-smoke.md`（每次运行覆盖，值随机器波动，
-以 JSON 为准）。
+以 JSON 为准）；强制兜底样本 `out/fallback-smoke.json`。
 
-## Ruling（链路径 → 兜底降级）
+## Ruling（链路径与兜底的切换记录）
 
-bench 优先走链路径（`trident/core/chains.load_chains` 选只读链 + `chains.execute` 计时）。
-本次实跑的 Ruling 原文：
+bench 优先走链路径（`trident/core/chains.load_chains` 选只读链 + `chains.execute` 计时），
+步骤执行失败（如模块要求 fixture 参数）即视为「对 HTTP 靶场未就绪」自动降级 urllib
+五路由兜底，并在结果 JSON/MD 记录 Ruling 原文。两条 Ruling 均已实测发生：
 
-> 选中只读链 prefill-decode-kv-inference-manipulation（1 个模块全就绪，链路径计时）；
-> 链执行失败（RuntimeError: 链 prefill-decode-kv-inference-manipulation 第 1 轮步骤失败:
-> {'kv-channel-probe': 'ValueError: 缺少 params.snapshot（fixture dict 或
-> lab/fixtures/network/ 路径）'}）→ urllib 五路由兜底
+1. 降级（首跑，当时链定义未带 snapshot）：
 
-判定：现存「只读链」的模块均为 fixture 驱动（无 HTTP 探测语义），对 mock 靶场未就绪，
-故按设计降级为 urllib 五路由直探计时并记录 Ruling；待侦察/横向利用模块族支持
-`base_url`/`target` 直探后，bench 将自动切回链路径（无需改代码）。
+   > 选中只读链 prefill-decode-kv-inference-manipulation（1 个模块全就绪，链路径计时）；
+   > 链执行失败（RuntimeError: … 步骤失败: {'kv-channel-probe': 'ValueError: 缺少
+   > params.snapshot（fixture dict 或 lab/fixtures/network/ 路径）'}）→ urllib 五路由兜底
+
+2. 链路径（并行任务为该链步骤补上 `snapshot: lab/fixtures/network` 后，bench 无需改码
+   自动切回）：
+
+   > 选中只读链 prefill-decode-kv-inference-manipulation（1 个模块全就绪，链路径计时）
+
+兜底路径可确定性复现（空模块目录强制降级，见上表），不依赖仓库当时的模块就绪状态。
 
 ## ARTEX 同靶场对比方法
 
