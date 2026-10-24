@@ -109,5 +109,61 @@
       "selection": {"verb": ["get", "list", "watch"], "objectRef.resource": "secret", "subject_sa": {"not_in": ["system:serviceaccount:kube-system:generic-garbage-collector", "system:serviceaccount:monitoring:prometheus"]}},
       "condition": "all"
     }
+  },
+  {
+    "id": "sigma-gateway-admin-api-no-auth",
+    "title": "AI 网关管理 API 无鉴权调用（key 签发 / 配置 / 控制台）",
+    "description": "AI gateway admin API (key issuance, provider config, web console) invoked without credentials or with tenant-scoped credentials. 检测 AI 网关管理面未授权调用，覆盖默认凭据与越权访问两类入口。",
+    "level": "high",
+    "tags": ["attack.credential_access", "attack.t1552", "trident"],
+    "logsource": {"product": "litellm", "service": "gateway-admin"},
+    "detection": {
+      "selection": {
+        "verb": ["admin_api_call"],
+        "path": ["/key/generate", "/config", "/admin/console"],
+        "auth": ["none", "tenant"]
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["受控运维脚本/巡检（以管理员主体 + bastion 网段白名单收敛）"],
+    "blocks_modules": ["aigateway-auth-bypass", "aigateway-upstream-key-exfil"],
+    "tuning": {
+      "zh": "先以管理员主体（serviceaccount/运维网段）建立 allowlist，仅对匿名或租户级凭据访问 key 签发/配置/控制台保持 high；/key/generate 建议同时记录签发的 key 别名与目标租户，异常租户直接升级 critical",
+      "en": "Build an allowlist from admin subjects (service accounts/ops CIDR); keep high only for anonymous or tenant-scoped calls to key issuance/config/console; log the issued key alias and target tenant for /key/generate and escalate unknown tenants to critical"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "litellm", "service": "gateway-admin"},
+      "selection": {"verb": ["admin_api_call"], "path": {"re": "^/(key/generate|config|admin/console)$"}, "auth": ["none", "tenant"]},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-gateway-default-master-key-use",
+    "title": "AI 网关默认 master key 使用",
+    "description": "Authentication with the well-known default master key (vendor default / sample config) succeeding against the AI gateway. 检测默认 master key 认证成功——默认凭据是上游 provider key 外泄链的第一步。",
+    "level": "critical",
+    "tags": ["attack.credential_access", "attack.t1078", "trident"],
+    "logsource": {"product": "litellm", "service": "gateway-auth"},
+    "detection": {
+      "selection": {
+        "verb": ["authenticate"],
+        "key_class": "default_master",
+        "status": [200]
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["尚未完成 master key 轮换的初始化窗口（应以一次性 bootstrap token 替代）"],
+    "blocks_modules": ["aigateway-auth-bypass", "aigateway-upstream-key-exfil"],
+    "tuning": {
+      "zh": "默认 master key 在任何时点成功都应 critical；初始化窗口以一次性 bootstrap token（单次使用 + 自动失效）替代；同时监控 /key/generate 的 admin=true 签发与 master key 的调用来源网段",
+      "en": "Any successful default master key auth is critical; replace bootstrap windows with single-use auto-expiring tokens; also watch admin=true issuances from /key/generate and the source CIDR of master key calls"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "litellm", "service": "gateway-auth"},
+      "selection": {"verb": ["authenticate"], "key_class": "default_master", "status": [200]},
+      "condition": "all"
+    }
   }
 ]

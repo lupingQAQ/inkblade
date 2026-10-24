@@ -74,5 +74,25 @@
       "event_type": ["nccl_join"],
       "all": {"external_rank": true}
     }
+  },
+  {
+    "id": "falco-gateway-upstream-config-read",
+    "rule": "TRIDENT AI gateway process reads upstream provider credentials",
+    "desc": "AI 网关进程（litellm/higress/envoy）读取上游 provider 凭据配置（/config、/etc/litellm、provider-secrets 挂载），或非网关主体读取同一路径。English: gateway or foreign process reading upstream provider credential config.",
+    "condition": "evt.type in (open, openat, openat2) and evt.is_open_read=true and fd.name contains (/config, /etc/litellm, provider-secrets) and proc.name in (litellm, higress, envoy) and not proc.name in (gateway-startup-allowlist)",
+    "output": "gateway config read proc=%proc.name file=%fd.name container=%container.name",
+    "priority": "WARNING",
+    "tags": ["trident", "filesystem", "credential", "monitor"],
+    "blocks_modules": ["aigateway-upstream-key-exfil", "aigateway-fingerprint"],
+    "tuning": {
+      "zh": "网关自身启动期读取配置为正常基线（按启动窗口抑制）；运行期再次读取 /config 或 provider-secrets 挂载应告警；非网关进程读取同一路径建议升级 CRITICAL，并与 Sigma 的 admin API 无鉴权调用联动",
+      "en": "Treat startup reads by the gateway as baseline (suppress during startup window); alert on runtime re-reads of /config or provider-secrets mounts; escalate to CRITICAL for non-gateway processes and correlate with the no-auth admin API Sigma rule"
+    },
+    "match": {
+      "engine": "falco",
+      "event_type": ["config_read"],
+      "all": {"config_class": ["upstream-credentials", "provider-secrets"],
+              "proc": {"re": "(?i)(litellm|higress|envoy)"}}
+    }
   }
 ]

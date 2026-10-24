@@ -121,6 +121,8 @@ def _http_request(mock_base: str, probe: dict, timeout: int = 15) -> dict:
     req = urllib.request.Request(url, data=data, method=probe["method"].upper())
     if data is not None:
         req.add_header("Content-Type", "application/json")
+    for key, value in (probe.get("headers") or {}).items():
+        req.add_header(key, value)
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             status, raw = resp.status, resp.read()
@@ -188,13 +190,57 @@ def _synth_events(probe: dict, outcome: dict) -> list[dict]:
             "action": "create", "object_class": "tenant-binding",
             "cross_tenant": True, "subject": "session-anon",
         })
+    elif hook == "gateway-admin-call":
+        events.append({
+            "kind": "sigma",
+            "logsource": {"product": "litellm", "service": "gateway-admin"},
+            "verb": "admin_api_call", "path": probe.get("path", "").split("?")[0],
+            "auth": "none", "status": outcome.get("status"),
+        })
+    elif hook == "gateway-config-read":
+        events.append({
+            "kind": "sigma",
+            "logsource": {"product": "litellm", "service": "gateway-admin"},
+            "verb": "admin_api_call", "path": "/config", "auth": "none",
+            "status": outcome.get("status"),
+        })
+        events.append({
+            "kind": "sigma",
+            "logsource": {"product": "litellm", "service": "gateway-auth"},
+            "verb": "authenticate", "key_class": "default_master", "status": outcome.get("status"),
+        })
+        events.append({
+            "kind": "falco", "event_type": "config_read",
+            "proc": "litellm-gateway", "config_class": "upstream-credentials",
+            "path": "/config", "authorized": False,
+        })
+    elif hook == "gateway-default-key":
+        events.append({
+            "kind": "sigma",
+            "logsource": {"product": "litellm", "service": "gateway-auth"},
+            "verb": "authenticate", "key_class": "default_master", "status": outcome.get("status"),
+        })
     return events
 
 
 # ---------------------------------------------------------------- 主流程
 
+def _is_ai_gateway_probe(probe: dict) -> bool:
+    """AI 网关仿真探针：显式 sim 标记（与 mock_targets 的 /v1/* 路径消歧）。"""
+    return probe.get("sim") == "ai-gateway"
+
+
+def _needs_ai_gateway(probes_catalog: dict) -> bool:
+    return any(_is_ai_gateway_probe(probe)
+               for plan in probes_catalog.values()
+               for probe in plan.get("replay", []))
+
+
 def validate(pack_dir: Path | str, mock_base: str | None = None) -> dict:
-    """对 mock vulnerable 靶场重放攻击链探针，断言规则命中 → 覆盖率矩阵（dict，含 JSON/MD 落盘）。"""
+    """对 mock vulnerable 靶场重放攻击链探针，断言规则命中 → 覆盖率矩阵（dict，含 JSON/MD 落盘）。
+
+    AI 网关链探针（sim=ai-gateway）按需自动启动 lab/ai_gateway_sim（vulnerable 姿态）。
+    """
     root = Path(pack_dir)
     mapping = json.loads((root / "mapping.json").read_text(encoding="utf-8"))
     probes_catalog = load_catalog()["probes"]["chains"]
@@ -207,6 +253,14 @@ def validate(pack_dir: Path | str, mock_base: str | None = None) -> dict:
         own_server = start_all(mode="vulnerable")
         mock_base = own_server.url("/")
 
+    ai_server = None
+    ai_base = None
+    if _needs_ai_gateway(probes_catalog):
+        from lab.ai_gateway_sim import start_all as start_ai_gateway
+
+        ai_server = start_ai_gateway(mode="vulnerable")
+        ai_base = ai_server.url("/")
+
     chain_rows: dict[str, dict] = {}
     all_events: dict[str, list[dict]] = {}
     for cid, plan in probes_catalog.items():
@@ -216,7 +270,8 @@ def validate(pack_dir: Path | str, mock_base: str | None = None) -> dict:
         events: list[dict] = []
         probe_rows: list[dict] = []
         for probe in plan.get("replay", []):
-            outcome = _http_request(mock_base, probe)
+            base = (ai_base or mock_base) if _is_ai_gateway_probe(probe) else mock_base
+            outcome = _http_request(base, probe)
             events.extend(_synth_events(probe, outcome))
             blocked = outcome["status"] in (401, 403, 404)
             probe_rows.append({
@@ -269,6 +324,8 @@ def validate(pack_dir: Path | str, mock_base: str | None = None) -> dict:
 
     if own_server is not None:
         own_server.shutdown()
+    if ai_server is not None:
+        ai_server.shutdown()
 
     total_cells = sum(len(row["rules"]) for row in chain_rows.values())
     blocked_cells = sum(1 for row in chain_rows.values() for c in row["rules"] if c["status"] == _BLOCKED)

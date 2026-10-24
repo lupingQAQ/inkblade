@@ -21,7 +21,7 @@ from typing import Any
 from .registry import _KEY_RE, load_modules
 from .runner import run_module
 
-CATEGORIES = ("经典攻击链", "云侧权重桶链", "网络利用链", "零日链")
+CATEGORIES = ("经典攻击链", "云侧权重桶链", "网络利用链", "零日链", "AI 网关链")
 
 _CMP_OPS = ("==", "!=", ">=", "<=", ">", "<")
 

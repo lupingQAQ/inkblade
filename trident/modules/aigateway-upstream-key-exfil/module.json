@@ -1,0 +1,20 @@
+{
+  "key": "aigateway-upstream-key-exfil",
+  "name": {
+    "zh": "AI 网关上游 provider key 外泄",
+    "en": "AI Gateway Upstream Provider Key Exfiltration"
+  },
+  "series": "窃取与数据泄露",
+  "description": "用默认 master key（或匿名）读取 /config、/key/info，提取上游 provider API key（MOCK 前缀）与 master key。vulnerable：/config 明文返回上游 key；fixed：默认 key 401、仅轮换 admin key 可见且返回掩码。finding/报告仅保留尾 4 位，全文只存归档 trace。",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "master_key": "默认 master key（缺省实验室默认 MOCK-master-key-4c7a）",
+    "mode": "probe-only（默认，仅读取配置）"
+  },
+  "produces": "masked-upstream-keys + upstream-key-exfil-proof",
+  "knowledge": "docs/AI-GATEWAY.md 第 2-4 节：配置面凭据外泄与掩码留证",
+  "combo_signature": "ai-gateway-upstream-key-exfil"
+}

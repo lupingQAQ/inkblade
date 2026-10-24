@@ -1,0 +1,22 @@
+{
+  "key": "aigateway-route-hijack",
+  "name": {
+    "zh": "AI 网关模型别名路由劫持",
+    "en": "AI Gateway Model Alias Route Hijack"
+  },
+  "series": "横向利用",
+  "description": "/ai/model-alias 写入可控后端（Higress/Envoy AI 风格）后，同一别名的推理流量被导向未授权后端。vulnerable：别名写入无鉴权、任意 backend 生效且 chat 返回 hijacked；fixed：admin key + backend allowlist（400）。probe-only 仅读取路由表（暴露别名→后端映射）；backup-write 才触碰写面。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认）| backup-write（需 backup_targets，写演示+可回滚）",
+    "backup_targets": "backup-write 必需的备份目标（建议 http: /ai/route 状态快照）",
+    "alias": "被劫持的模型别名（缺省 gpt-4o-mini）",
+    "backend": "攻击者后端 URL（缺省 http://attacker.invalid/v1）"
+  },
+  "produces": "route-hijack-proof + alias-table-sha256",
+  "knowledge": "docs/AI-GATEWAY.md 第 5 节：模型别名与后端 allowlist",
+  "combo_signature": "ai-gateway-route-hijack"
+}

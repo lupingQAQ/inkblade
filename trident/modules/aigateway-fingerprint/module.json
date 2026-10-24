@@ -1,0 +1,19 @@
+{
+  "key": "aigateway-fingerprint",
+  "name": {
+    "zh": "AI 网关指纹与未鉴权面",
+    "en": "AI Gateway Fingerprint and Unauthenticated Surface"
+  },
+  "series": "侦察",
+  "description": "LiteLLM/Higress/Envoy AI 风格网关指纹（/health 产品与版本）与未鉴权面测绘（/models、/key/info、/config、/admin/console）；默认 master key 泄露或不需凭据即可读管理面时产出 finding。vulnerable：健康检查泄露默认 master key、管理面匿名 200；fixed：仅产品信息，管理面 401/403。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅只读探测）"
+  },
+  "produces": "ai-gateway-fingerprint.json + 未鉴权管理面 findings",
+  "knowledge": "docs/AI-GATEWAY.md 第 1-3 节：网关指纹、默认凭据与管理面暴露",
+  "combo_signature": "ai-gateway-default-credential"
+}
