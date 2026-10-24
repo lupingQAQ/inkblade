@@ -10,9 +10,9 @@ PY = sys.executable
 
 class TestCli(unittest.TestCase):
     def test_help_smoke(self):
-        r = subprocess.run([PY, "-m", "trident", "--help"], capture_output=True, text=True, timeout=30)
+        r = subprocess.run([PY, "-m", "trident", "--help"], capture_output=True, timeout=30)
         self.assertEqual(r.returncode, 0)
-        self.assertIn("module", r.stdout)
+        self.assertIn("module", r.stdout.decode("utf-8", "replace"))
 
     def test_module_list(self):
         with TemporaryDirectory() as tmp:
@@ -26,10 +26,10 @@ class TestCli(unittest.TestCase):
             (d / "run.py").write_text("def run(ctx, params):\n    return {'summary': 'ok'}\n", encoding="utf-8")
             r = subprocess.run(
                 [PY, "-m", "trident", "module", "list", "--modules-dir", str(Path(tmp) / "modules")],
-                capture_output=True, text=True, timeout=30,
+                capture_output=True, timeout=30,
             )
-            self.assertEqual(r.returncode, 0, r.stderr)
-            self.assertIn("sample-probe", r.stdout)
+            self.assertEqual(r.returncode, 0, r.stderr.decode("utf-8", "replace"))
+            self.assertIn("sample-probe", r.stdout.decode("utf-8", "replace"))
 
 
 if __name__ == "__main__":
