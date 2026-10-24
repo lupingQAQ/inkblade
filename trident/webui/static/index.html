@@ -2,16 +2,116 @@
 <html lang="zh">
 <head>
 <meta charset="utf-8">
-<title>Trident 控制台</title>
-<style>
-body { font-family: system-ui, "Microsoft YaHei", sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
-h1 { font-size: 1.2rem; }
-.pill { display: inline-block; padding: .2rem .6rem; border-radius: 999px; background: #1e293b; font-size: .8rem; }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trident 控制台 · 六视图</title>
+<link rel="stylesheet" href="vendor/reactflow.style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>Trident — ML 集群渗透测试控制台</h1>
-<span class="pill">本地模式 · 全离线</span>
-<div id="app">六视图 SPA 骨架（工作流 DAG / 攻击链图 / 时间线 / 证据浏览器 / 报告预览 / 规则视图）</div>
+<header>
+  <div class="brand">Trident<small>ML 集群渗透测试控制台 · 六视图</small></div>
+  <span class="pill" id="mode-pill">本地模式 · 全离线</span>
+  <span class="pill" id="session-pill" hidden></span>
+  <form id="login-form" hidden>
+    <input id="in-user" placeholder="用户名" autocomplete="username">
+    <input id="in-pass" type="password" placeholder="密码" autocomplete="current-password">
+    <input id="in-ws" placeholder="工作区" value="local-lab">
+    <button type="submit" id="btn-login">登录</button>
+    <button type="button" id="btn-runs" hidden>刷新运行</button>
+    <button type="button" id="btn-abort" hidden title="终止执行中的子进程并记录中断点">紧急停止</button>
+  </form>
+</header>
+
+<nav id="views">
+  <button data-view="dag" class="active"><span class="n">①</span>工作流 DAG</button>
+  <button data-view="chain"><span class="n">②</span>攻击链图</button>
+  <button data-view="timeline"><span class="n">③</span>执行时间线</button>
+  <button data-view="evidence"><span class="n">④</span>证据浏览器</button>
+  <button data-view="report"><span class="n">⑤</span>报告预览</button>
+  <button data-view="rules"><span class="n">⑥</span>规则视图</button>
+</nav>
+
+<main>
+  <!-- ① 工作流 DAG：节点=步骤，状态色 待执行/运行中/成功/降级/阻断；侧栏=步骤详情 -->
+  <section id="view-dag" class="view active">
+    <div id="dag-layout">
+      <div>
+        <div id="dag-canvas"><div class="dag-empty">暂无步骤数据</div></div>
+        <div class="legend">
+          <span class="i-pending"><i></i>待执行</span>
+          <span class="i-running"><i></i>运行中</span>
+          <span class="i-success"><i></i>成功</span>
+          <span class="i-degraded"><i></i>降级</span>
+          <span class="i-blocked"><i></i>阻断</span>
+        </div>
+      </div>
+      <aside id="dag-sidebar" class="panel">
+        <h3>步骤详情</h3>
+        <div class="hint">点击节点查看 prompt/命令、环境、结果与三层证据指针。</div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ② 攻击链图：资产节点 + 利用边（严重度着色，按链分组） -->
+  <section id="view-chain" class="view">
+    <div class="panel">
+      <div class="chain-controls">
+        <label class="hint">链过滤</label>
+        <select id="chain-filter"><option value="*">全部链</option></select>
+        <span class="hint">边色：红=可达利用 / 橙=高危路径 / 黄虚线=降级 / 灰虚线=阻断·不可达</span>
+      </div>
+      <div id="chain-canvas"></div>
+    </div>
+  </section>
+
+  <!-- ③ 执行时间线：Argo 风格瀑布（起止/耗时/并行度） -->
+  <section id="view-timeline" class="view">
+    <div class="panel">
+      <h3>执行瀑布</h3>
+      <div class="hint" id="tl-summary"></div>
+      <div id="timeline-body"></div>
+    </div>
+  </section>
+
+  <!-- ④ 证据浏览器：数据库层 → 上下文摘要层 → 归档层（SHA256）三层穿透 -->
+  <section id="view-evidence" class="view">
+    <div id="ev-layout">
+      <div class="panel">
+        <h3>运行步骤</h3>
+        <div id="ev-steps"></div>
+      </div>
+      <div class="panel" id="ev-detail">
+        <h3>三层证据</h3>
+        <div class="hint">选择左侧步骤查看 prompt/命令、环境、归档哈希与上下文摘要指针。</div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>归档清单 manifest.sha256</h3>
+      <pre class="manifest" id="ev-manifest">（无）</pre>
+    </div>
+  </section>
+
+  <!-- ⑤ 报告预览：双语报告渲染 + 导出（占位 /api/report，静态模式内嵌渲染） -->
+  <section id="view-report" class="view">
+    <div id="report-body"></div>
+  </section>
+
+  <!-- ⑥ 规则视图：规则↔攻击链映射矩阵 + 覆盖情况 + 紫队验证标记 -->
+  <section id="view-rules" class="view">
+    <div class="panel">
+      <h3>规则 ↔ 攻击链映射矩阵</h3>
+      <div class="hint">行=防御/检测规则（Kyverno·Gatekeeper·NetworkPolicy·PSS·Sigma·Falco·Suricata），列=攻击链；●=规则覆盖该链。</div>
+      <div id="rules-body"></div>
+    </div>
+  </section>
+</main>
+
+<footer>Trident · 资产全部本地内嵌（无 CDN）· 证据三层：上下文摘要 / 数据库 / 归档（tar+SHA256）</footer>
+
+<script src="vendor/react.production.min.js"></script>
+<script src="vendor/react-dom.production.min.js"></script>
+<script src="vendor/reactflow.umd.min.js"></script>
+<!-- TRIDENT_DATA -->
+<script src="app.js"></script>
 </body>
 </html>
