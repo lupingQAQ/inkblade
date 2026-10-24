@@ -43,7 +43,7 @@ def finding(sev: str, title: str, detail: str = "", evidence: str = "", mapping:
 
 def findings_from_tsv(text: str) -> list[dict]:
     """既有 recon 工具输出 → findings（severity→sev、evidence→detail；未知 severity 降级 info）。"""
-    lines = [ln for ln in text.splitlines() if ln.strip()]
+    lines = [ln for ln in text.splitlines() if ln.strip() and not ln.lstrip().startswith("#")]
     if not lines:
         return []
     first_cells = [c.strip() for c in lines[0].lstrip("#").split("\t")]
@@ -86,8 +86,9 @@ def run_recon(ctx: dict, params: dict, analyze, family: str = "侦察") -> dict:
     src_desc = src if isinstance(src, str) else "<inline snapshot>"
     rank = {s: i for i, s in enumerate(SEVS)}
     top = min((f.get("sev", "info") for f in findings), key=lambda s: rank.get(s, len(rank)), default="info")
+    counts = {sev: sum(1 for f in findings if f.get("sev", "info") == sev) for sev in SEVS if any(f.get("sev", "info") == sev for f in findings)}
     return {
-        "summary": f"{family}完成：{len(findings)} 条发现（最高 {top}；来源 {src_desc}）",
+        "summary": f"{family}完成：{len(findings)} 条发现（最高 {top}；分布 {counts}；来源 {src_desc}）",
         "findings": findings,
         "artifacts": [],
     }
