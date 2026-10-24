@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.superpowers/
+evidence/
+reports/samples/
+*.sqlite3
+*.tar.gz
+*.zst
