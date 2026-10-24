@@ -1,0 +1,118 @@
+{
+  "note": "Trident 核心代码检测首批 sink 规则（regex+ast 双通道）。anchor=实验室样本树上的 file:line 案例锚；hint=建议的动态验证模块机器键（静态→动态闭环）。",
+  "rules": [
+    {
+      "id": "eval-call",
+      "sev": "high",
+      "description": "eval 动态求值（模型输出/请求参数可达即 RCE）",
+      "regex": "\\beval\\(",
+      "ast": "eval",
+      "anchor": "serve.py:14",
+      "hint": "areal-setenv-engine-rce"
+    },
+    {
+      "id": "exec-call",
+      "sev": "high",
+      "description": "exec 动态语句执行",
+      "regex": "\\bexec\\(",
+      "ast": "exec",
+      "anchor": "serve.py:18",
+      "hint": "areal-setenv-engine-rce"
+    },
+    {
+      "id": "torch-load-unsafe",
+      "sev": "high",
+      "description": "torch.load 显式 weights_only=False（反序列化 RCE 面）",
+      "regex": "torch\\.load\\([^)]*weights_only\\s*=\\s*False",
+      "ast": "torch-load-unsafe",
+      "anchor": "load_weights.py:9",
+      "hint": "areal-load-pickle"
+    },
+    {
+      "id": "pickle-loads",
+      "sev": "high",
+      "description": "pickle.load/loads 反序列化不可信字节流",
+      "regex": "pickle\\.(load|loads)\\(",
+      "ast": "pickle",
+      "anchor": "load_weights.py:14",
+      "hint": "verl-checkpoint-pickle"
+    },
+    {
+      "id": "os-system-concat",
+      "sev": "high",
+      "description": "os.system 参数拼接/f-string（命令注入）",
+      "regex": "os\\.system\\(f['\"]|os\\.system\\([^)]*\\+",
+      "anchor": "hdfs_utils.py:7",
+      "hint": "verl-hdfs-command-injection"
+    },
+    {
+      "id": "dynamic-import",
+      "sev": "medium",
+      "description": "运行期值直达 import_module/__import__（任意模块加载）",
+      "regex": "(import_module|__import__)\\(",
+      "ast": "dynamic-import",
+      "anchor": "load_weights.py:23",
+      "hint": "trust-remote-code-supply-chain"
+    },
+    {
+      "id": "bind-all-interfaces",
+      "sev": "medium",
+      "description": "服务绑定 0.0.0.0（管理面全网可达）",
+      "regex": "['\"]0\\.0\\.0\\.0['\"]",
+      "anchor": "serve.py:33",
+      "hint": "trl-serve-dev-mode"
+    },
+    {
+      "id": "auth-fail-open",
+      "sev": "high",
+      "description": "鉴权 fail-open：key/token 为 None 时放行",
+      "regex": "(api[_-]?key|auth[_-]?key|token)\\s+is\\s+None",
+      "anchor": "serve.py:8",
+      "hint": "sglang-admin-failopen"
+    },
+    {
+      "id": "trust-remote-code",
+      "sev": "high",
+      "description": "trust_remote_code 硬编码 True（加载即执行）",
+      "regex": "trust_remote_code\\s*=\\s*True",
+      "anchor": "model_fetch.py:8",
+      "hint": "trust-remote-code-supply-chain"
+    },
+    {
+      "id": "missing-revision",
+      "sev": "medium",
+      "description": "from_pretrained 未固定 revision（供应链可漂移）",
+      "regex": "from_pretrained\\((?![^)]*revision)",
+      "anchor": "model_fetch.py:15",
+      "hint": "supply-chain-credential-theft"
+    },
+    {
+      "id": "file-url-accepted",
+      "sev": "medium",
+      "description": "出站 URL 接受 file:// 方案（SSRF/本地文件读取）",
+      "regex": "['\"]file://",
+      "anchor": "model_fetch.py:6",
+      "hint": "ssrf-imds-credential"
+    }
+  ],
+  "combos": [
+    {
+      "id": "unsafe-deserialization",
+      "requires": ["torch-load-unsafe", "pickle-loads"],
+      "description": "同文件同时存在 torch.load 不安全加载与 pickle 反序列化",
+      "detail": "权重/检查点双通道反序列化 → 恶意检查点即代码执行"
+    },
+    {
+      "id": "unauth-rce-surface",
+      "requires": ["bind-all-interfaces", "eval-call"],
+      "description": "全网绑定 + eval 动态求值共存",
+      "detail": "未鉴权路由直连模型输出到 eval → 远程命令执行"
+    },
+    {
+      "id": "unpinned-remote-model",
+      "requires": ["trust-remote-code", "missing-revision"],
+      "description": "trust_remote_code 硬编码且 revision 未固定",
+      "detail": "供应链投毒面：任意 revision 的远程代码将被执行"
+    }
+  ]
+}

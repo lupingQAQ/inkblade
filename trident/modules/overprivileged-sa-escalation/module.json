@@ -1,0 +1,16 @@
+{
+  "key": "overprivileged-sa-escalation",
+  "name": { "zh": "宽 ServiceAccount 提权", "en": "Overprivileged ServiceAccount Escalation" },
+  "series": "权限链",
+  "description": "解析 can-i 矩阵：create pods + pods/exec（或 rolebindings）→ 特权 Pod → 节点",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "fixture": "can-i 矩阵 JSON（默认 lab/fixtures/perm/cani-matrix.json）",
+    "mode": "detect | backup-write（演示分支，需 demo_target）",
+    "demo_target": "backup-write 模式下的演示写入文件（特权 Pod 清单落盘点）"
+  },
+  "produces": "sa-escalation",
+  "knowledge": "总纲第 11 节：训练流水线宽 ServiceAccount（can-i 矩阵 → create pods/exec）"
+}

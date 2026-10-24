@@ -1,0 +1,4 @@
+2026-10-25 03:11:02 INFO  train step=104200 loss=0.4123
+2026-10-25 03:11:03 DEBUG prompt样本: {"user":"zhangsan@example.com","msg":"帮我查一下订单 138-0000-0000 的物流"}
+2026-10-25 03:11:04 DEBUG completion样本: 尊敬的张三，您的订单已发出……（训练日志残留 PII 样张，实验室编造数据）
+2026-10-25 03:11:09 INFO  train step=104201 loss=0.4119

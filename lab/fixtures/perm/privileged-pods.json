@@ -1,0 +1,49 @@
+{
+  "kind": "PodList",
+  "apiVersion": "v1",
+  "note": "fake-kubectl fixture: get pods -o json（实验室样本，非真实集群）",
+  "items": [
+    {
+      "metadata": { "name": "gpu-trainer-privileged", "namespace": "train" },
+      "spec": {
+        "hostPID": true,
+        "hostIPC": true,
+        "volumes": [
+          { "name": "host-root", "hostPath": { "path": "/" } },
+          { "name": "runtime-sock", "hostPath": { "path": "/var/run/containerd/containerd.sock" } },
+          { "name": "nvidia-dev", "hostPath": { "path": "/dev/nvidia0" } }
+        ],
+        "containers": [
+          {
+            "name": "trainer",
+            "image": "fake-registry/train:fixture",
+            "securityContext": {
+              "privileged": true,
+              "capabilities": { "add": ["SYS_ADMIN", "SYS_PTRACE", "CAP_SYS_MODULE"] }
+            },
+            "volumeMounts": [
+              { "name": "host-root", "mountPath": "/host" },
+              { "name": "runtime-sock", "mountPath": "/var/run/containerd/containerd.sock" },
+              { "name": "nvidia-dev", "mountPath": "/dev/nvidia0" }
+            ],
+            "resources": { "limits": { "nvidia.com/gpu": "8" } }
+          }
+        ]
+      }
+    },
+    {
+      "metadata": { "name": "inference-server", "namespace": "train" },
+      "spec": {
+        "volumes": [],
+        "containers": [
+          {
+            "name": "server",
+            "image": "fake-registry/serve:fixture",
+            "securityContext": { "privileged": false },
+            "resources": { "limits": { "nvidia.com/gpu": "1" } }
+          }
+        ]
+      }
+    }
+  ]
+}

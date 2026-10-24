@@ -1,0 +1,15 @@
+{
+  "kind": "query-access-log",
+  "note": "实验室样本：未鉴权推理端点的查询留痕（编造数据）",
+  "endpoint": "http://127.0.0.1:8000/v1/completions",
+  "auth": {"required": false, "api_key_optional": true},
+  "quota": {"enabled": false, "rate_limit": null, "per_user_cap": null},
+  "audit": {"query_logging": false, "anomaly_alerts": false},
+  "queries": [
+    {"seq": 1, "prompt_digest": "3f2a9c01d8e5b7f4", "completion_tokens": 512},
+    {"seq": 2, "prompt_digest": "9b8c7d60e1f2a3b4", "completion_tokens": 864},
+    {"seq": 3, "prompt_digest": "c1d2e3f405a6b7c8", "completion_tokens": 1024},
+    {"seq": 4, "prompt_digest": "7a8b9c0d1e2f3a4b", "completion_tokens": 2048},
+    {"seq": 5, "prompt_digest": "5d4c3b2a1908f7e6", "completion_tokens": 4096}
+  ]
+}

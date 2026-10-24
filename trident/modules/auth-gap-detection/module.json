@@ -1,0 +1,14 @@
+{
+  "key": "auth-gap-detection",
+  "name": { "zh": "鉴权缺口", "en": "Auth Gap Detection" },
+  "series": "核心代码",
+  "description": "路由无鉴权依赖、key 可选/fail-open、0.0.0.0 绑定、dev-mode 强制开启",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "root": "客户代码仓库/挂载卷路径（默认 lab/sample-vuln-repo）"
+  },
+  "produces": "auth-gap",
+  "knowledge": "总纲三轮审计：服务鉴权 fail-open 与全网绑定模式"
+}

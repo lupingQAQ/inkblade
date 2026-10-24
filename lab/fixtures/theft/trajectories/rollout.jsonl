@@ -1,0 +1,2 @@
+{"episode": 41, "prompt": "用户 zhangsan@example.com 的排班问题（轨迹残留样张，编造数据）", "reward": 0.87, "action": "tool:calendar.query"}
+{"episode": 42, "prompt": "给 138-0000-0000 发送提醒（轨迹残留样张，编造数据）", "reward": 0.79, "action": "tool:sms.send"}

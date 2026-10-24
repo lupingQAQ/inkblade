@@ -1,0 +1,14 @@
+{
+  "key": "outbound-ssrf",
+  "name": { "zh": "出站请求与 SSRF", "en": "Outbound Request and SSRF" },
+  "series": "核心代码",
+  "description": "URL 直连无过滤、file:// 接受、重定向绕过、私网无拒绝",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "root": "客户代码仓库/挂载卷路径（默认 lab/sample-vuln-repo）"
+  },
+  "produces": "outbound-ssrf",
+  "knowledge": "总纲第 1–5 节：媒体 URL/重定向 SSRF → IMDS 云凭据"
+}

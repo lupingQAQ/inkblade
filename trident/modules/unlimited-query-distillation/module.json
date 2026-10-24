@@ -1,0 +1,15 @@
+{
+  "key": "unlimited-query-distillation",
+  "name": { "zh": "无限查询蒸馏面", "en": "Unlimited Query Distillation" },
+  "series": "窃取与数据泄露",
+  "description": "未鉴权推理端点 = 免费查询源；证明查询配额与审计失效（蒸馏面开放）",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "access_log": "查询留痕 JSON（默认 lab/fixtures/theft/access/query-log.json）",
+    "endpoint": "可选：推理端点地址（探测模式，仅限授权范围内）"
+  },
+  "produces": "query-distillation-surface",
+  "knowledge": "总纲第 6 节：未鉴权推理服务被用作免费查询源/模型蒸馏"
+}

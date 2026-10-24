@@ -1,0 +1,15 @@
+{
+  "kind": "can-i-matrix",
+  "subject": "system:serviceaccount:train:pipeline-runner",
+  "note": "fake-kubectl fixture: auth can-i --list 输出样本（实验室样本）",
+  "rules": [
+    { "verb": "create", "resource": "pods", "apiGroups": [""], "allowed": true },
+    { "verb": "create", "resource": "pods/exec", "apiGroups": [""], "allowed": true },
+    { "verb": "get", "resource": "secrets", "apiGroups": [""], "allowed": true, "scope": "cluster" },
+    { "verb": "list", "resource": "secrets", "apiGroups": [""], "allowed": true, "scope": "cluster" },
+    { "verb": "create", "resource": "rolebindings", "apiGroups": ["rbac.authorization.k8s.io"], "allowed": false },
+    { "verb": "get", "resource": "pods", "apiGroups": [""], "allowed": true },
+    { "verb": "list", "resource": "pods", "apiGroups": [""], "allowed": true },
+    { "verb": "create", "resource": "deployments", "apiGroups": ["apps"], "allowed": true }
+  ]
+}

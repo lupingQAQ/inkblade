@@ -1,0 +1,16 @@
+{
+  "key": "lws-secrets-lateral",
+  "name": { "zh": "LWS 集群级 Secrets 横向", "en": "LWS Cluster-scoped Secrets Lateral" },
+  "series": "权限链",
+  "description": "解析 operator ClusterRole：集群级 secrets 读 + nodes patch → 跨命名空间凭据横向移动",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "fixture": "ClusterRole 清单 JSON（默认 lab/fixtures/perm/clusterroles.json）",
+    "mode": "detect | backup-write（演示分支，需 demo_target）",
+    "demo_target": "backup-write 模式下的演示写入文件（Secret 读取清单落盘点）"
+  },
+  "produces": "secrets-lateral",
+  "knowledge": "总纲第 11 节：LWS/LeaderWorkerSet 集群级 secrets 读写与节点 patch"
+}

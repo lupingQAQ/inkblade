@@ -1,0 +1,80 @@
+{
+  "kind": "List",
+  "apiVersion": "v1",
+  "note": "fake-kubectl fixture: get clusterroles -o json（实验室样本，非真实集群）",
+  "items": [
+    {
+      "kind": "ClusterRole",
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "metadata": { "name": "vllm-operator-manager-role", "namespace": "" },
+      "rules": [
+        {
+          "apiGroups": ["rbac.authorization.k8s.io"],
+          "resources": ["roles", "rolebindings"],
+          "verbs": ["create", "update", "patch", "delete", "get", "list", "watch"]
+        },
+        {
+          "apiGroups": ["apps"],
+          "resources": ["deployments", "statefulsets"],
+          "verbs": ["*"]
+        }
+      ]
+    },
+    {
+      "kind": "ClusterRole",
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "metadata": { "name": "kuberay-operator-cluster-role", "namespace": "" },
+      "rules": [
+        {
+          "apiGroups": ["ray.io"],
+          "resources": ["rayclusters", "rayjobs", "rayservices"],
+          "verbs": ["*"]
+        },
+        {
+          "apiGroups": [""],
+          "resources": ["pods"],
+          "verbs": ["create", "get", "list", "watch", "delete"]
+        },
+        {
+          "apiGroups": [""],
+          "resources": ["pods/exec", "events"],
+          "verbs": ["create", "get"]
+        }
+      ]
+    },
+    {
+      "kind": "ClusterRole",
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "metadata": { "name": "leaderworkerset-manager-role", "namespace": "" },
+      "rules": [
+        {
+          "apiGroups": [""],
+          "resources": ["secrets"],
+          "verbs": ["get", "list", "watch"]
+        },
+        {
+          "apiGroups": [""],
+          "resources": ["nodes"],
+          "verbs": ["get", "list", "patch"]
+        },
+        {
+          "apiGroups": ["leaderworkerset.x-k8s.io"],
+          "resources": ["leaderworkerset"],
+          "verbs": ["get", "list", "watch"]
+        }
+      ]
+    },
+    {
+      "kind": "ClusterRole",
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "metadata": { "name": "view", "namespace": "" },
+      "rules": [
+        {
+          "apiGroups": [""],
+          "resources": ["pods"],
+          "verbs": ["get", "list", "watch"]
+        }
+      ]
+    }
+  ]
+}
