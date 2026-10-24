@@ -48,6 +48,10 @@ def run_module(
     assert_execution_allowed(store, meta.__dict__)
     if not session.can("execute"):
         raise PermissionError(f"{session.name}({session.role}) 无 execute 权限")
+    if meta.__dict__.get("private"):
+        from .zeroday import assert_allowed
+
+        assert_allowed(store, session, meta.__dict__)
 
     if run is None:
         run = store.create_run(f"run-{time.strftime('%Y%m%d-%H%M%S')}-{uuid.uuid4().hex[:6]}")
