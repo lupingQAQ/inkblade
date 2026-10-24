@@ -111,6 +111,62 @@
     }
   },
   {
+    "id": "sigma-gpu-pool-admin-unauth",
+    "title": "GPU 池调度 admin 无鉴权（跨租户分配/迁移）",
+    "description": "GPU pooling scheduler audit: allocation/migration accepted without authenticated admin and across tenant boundary. 池化调度面未鉴权跨租户分配/迁移（HAMi/OrionX/cGPU 风格）。",
+    "level": "high",
+    "tags": ["attack.resource_development", "attack.t1496", "trident"],
+    "logsource": {"product": "gpu-pooling", "service": "scheduler"},
+    "detection": {
+      "selection": {
+        "action": ["allocate", "migrate"],
+        "authenticated": false,
+        "cross_tenant": true
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["平台维护窗口内的受控迁移（按操作主体/工单白名单）"],
+    "blocks_modules": ["gpu-pool-scheduler-unauth", "gpu-tenant-residue", "mig-profile-mismatch"],
+    "tuning": {
+      "zh": "先以工单/维护窗口白名单过滤平台管理员的计划内迁移；对非 admin 主体 + 跨 tenant 的 allocate/migrate 保持 high；同时监控 /gpu/release 后残留未清理（联合 gpu-tenant-residue）",
+      "en": "Allowlist planned migrations by ticket/maintenance window first; keep high for non-admin cross-tenant allocate/migrate; also watch for residue left after /gpu/release (pair with gpu-tenant-residue)"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "gpu-pooling", "service": "scheduler"},
+      "selection": {"action": ["allocate", "migrate"], "authenticated": false, "cross_tenant": true},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cloud-cross-account-assume",
+    "title": "跨账户 AssumeRole（trust policy 通配）",
+    "description": "CloudTrail STS: AssumeRole from a foreign account against a role whose trust policy has a wildcard principal. 云身份联邦通配信任导致跨账户角色假定。",
+    "level": "critical",
+    "tags": ["attack.credential_access", "attack.t1552.005", "trident"],
+    "logsource": {"product": "aws", "service": "cloudtrail"},
+    "detection": {
+      "selection": {
+        "eventName": "AssumeRole",
+        "crossAccount": true,
+        "trustPolicyWildcard": true
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["集团统一身份提供商下的合法跨账户角色链（按 sourceAccount+roleArn 白名单）"],
+    "blocks_modules": ["cloud-irsa-trust-wildcard", "cloud-bucket-cross-tenant"],
+    "tuning": {
+      "zh": "以组织级 sourceAccount/roleArn 白名单收敛合法跨账户链路；对 Principal='*' 且无 sts:ExternalId/Condition 的角色直接 critical；联动 CloudTrail AssumeRole + S3 ListBucket 事件",
+      "en": "Constrain legitimate cross-account chains with an org-level sourceAccount/roleArn allowlist; mark roles with Principal='*' and no sts:ExternalId/Condition as critical; correlate AssumeRole with S3 ListBucket events"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "aws", "service": "cloudtrail"},
+      "selection": {"eventName": "AssumeRole", "crossAccount": true, "trustPolicyWildcard": true},
+      "condition": "all"
+    }
+  },
+  {
     "id": "sigma-gateway-admin-api-no-auth",
     "title": "AI 网关管理 API 无鉴权调用（key 签发 / 配置 / 控制台）",
     "description": "AI gateway admin API (key issuance, provider config, web console) invoked without credentials or with tenant-scoped credentials. 检测 AI 网关管理面未授权调用，覆盖默认凭据与越权访问两类入口。",

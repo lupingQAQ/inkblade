@@ -1,0 +1,22 @@
+{
+  "key": "cloud-bucket-cross-tenant",
+  "name": {
+    "zh": "云桶跨租户读取（public 策略/列目录）",
+    "en": "Cloud Bucket Cross-Tenant Read (public policy / listing)"
+  },
+  "series": "混合云",
+  "description": "S3/OSS/COS/Blob 桶策略 Principal='*' 且可匿名/跨租户列目录：/cloud/bucket/policy + /cloud/bucket/list 返回权重/检查点/tokenizer 清单。fixed：策略收敛到 owner 账户，列目录 403。",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "bucket": "目标桶（默认 weights-b）",
+    "prefix": "列目录前缀（可选）",
+    "tenant": "请求租户（默认 tenant-a）",
+    "token": "可选租户 token（fixed 模式读身份）"
+  },
+  "produces": "bucket-cross-tenant-listing",
+  "knowledge": "对象存储桶策略/ACL/Block Public Access；跨云 S3/OSS/COS/Blob 等价控制面",
+  "combo_signature": "cloud-bucket-cross-tenant"
+}

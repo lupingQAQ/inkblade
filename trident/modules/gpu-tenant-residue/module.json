@@ -1,0 +1,25 @@
+{
+  "key": "gpu-tenant-residue",
+  "name": {
+    "zh": "GPU 租户残留（显存快照跨租户可读）",
+    "en": "GPU Tenant Residue (cross-tenant VRAM snapshot readback)"
+  },
+  "series": "网络架构",
+  "description": "池化/MIG/MPS 释放后残留显存快照可跨租户读取：GET /gpu/residue 读他租户 benign marker；backup-write 下自有设备分配→释放→读回并校验 marker/文件 sha256。fixed：租户隔离 + 释放即删除（404）。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅读他租户残留）| backup-write（需 backup_targets，写读回）",
+    "tenant": "攻击者租户（默认 tenant-a）",
+    "victim_tenant": "受害者租户（默认 tenant-b）",
+    "device": "受害者设备（默认 gpu-b-0）",
+    "own_device": "自有设备（默认 gpu-a-1）",
+    "token": "可选租户 token（fixed 模式读身份）",
+    "admin_token": "可选平台 admin token（fixed 模式写身份）"
+  },
+  "produces": "gpu-residue-readback",
+  "knowledge": "MIG/MPS/vGPU 释放生命周期与显存清零；残留读取以 benign marker 写读回 + sha256 为可度量证据",
+  "combo_signature": "gpu-tenant-residue"
+}

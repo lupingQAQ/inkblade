@@ -76,6 +76,44 @@
     }
   },
   {
+    "id": "falco-gpu-device-cross-namespace",
+    "rule": "TRIDENT GPU device mounted across namespaces",
+    "desc": "同一 /dev/nvidia* 设备被不同 namespace 的进程同时打开（device plugin/MIG 独占失效）。English: same GPU device opened by processes in different namespaces.",
+    "condition": "evt.type in (mount, open, openat) and fd.name startswith /dev/nvidia and not k8s.ns.name in (gpu-exclusive-allowlist)",
+    "output": "GPU device cross-ns open device=%fd.name proc=%proc.name ns=%k8s.ns.name pod=%k8s.pod.name",
+    "priority": "WARNING",
+    "tags": ["trident", "gpu", "monitor"],
+    "blocks_modules": ["gpu-device-cross-namespace", "gpu-pool-scheduler-unauth", "gpu-tenant-residue"],
+    "tuning": {
+      "zh": "gpu-exclusive-allowlist 先放 GPU operator/驱动 DaemonSet 命名空间；跨 namespace 判定以 k8s.ns.name 为准（同一 Pod 多容器不触发）；MIG 场景按 /dev/nvidia-caps 细分",
+      "en": "Populate gpu-exclusive-allowlist with the GPU operator/driver DaemonSet namespace first; judge cross-namespace by k8s.ns.name (multi-container pods do not trigger); for MIG, split by /dev/nvidia-caps"
+    },
+    "match": {
+      "engine": "falco",
+      "event_type": ["mount", "open"],
+      "all": {"device": {"re": "^/dev/nvidia"}, "cross_namespace": true}
+    }
+  },
+  {
+    "id": "falco-mig-abnormal-reconfig",
+    "rule": "TRIDENT Unconventional MIG reconfiguration",
+    "desc": "nvidia-smi/nvml 在已分配设备上执行 MIG 重配或非常规档位切换（隔离边界被改写）。English: nvidia-smi/nvml MIG reconfiguration or unusual profile switch on an allocated device.",
+    "condition": "evt.type=exec and proc.name=nvidia-smi and evt.arg.mig_reconfig=true",
+    "output": "MIG reconfig proc=%proc.name device=%evt.arg.device profile=%evt.arg.profile user=%user.name",
+    "priority": "WARNING",
+    "tags": ["trident", "gpu", "monitor"],
+    "blocks_modules": ["mig-profile-mismatch", "gpu-pool-scheduler-unauth"],
+    "tuning": {
+      "zh": "维护窗口内的计划重配按工单白名单；已分配设备上的 MIG 变更一律告警；结合 /gpu/mig/profiles 的 active/requested 差值确认隔离降级",
+      "en": "Allowlist planned maintenance-window reconfigurations by ticket; alert on any MIG change on allocated devices; correlate with the active/requested delta from /gpu/mig/profiles"
+    },
+    "match": {
+      "engine": "falco",
+      "event_type": ["exec"],
+      "all": {"proc": "nvidia-smi", "mig_reconfig": true}
+    }
+  },
+  {
     "id": "falco-gateway-upstream-config-read",
     "rule": "TRIDENT AI gateway process reads upstream provider credentials",
     "desc": "AI 网关进程（litellm/higress/envoy）读取上游 provider 凭据配置（/config、/etc/litellm、provider-secrets 挂载），或非网关主体读取同一路径。English: gateway or foreign process reading upstream provider credential config.",

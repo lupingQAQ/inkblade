@@ -190,6 +190,20 @@ def _synth_events(probe: dict, outcome: dict) -> list[dict]:
             "action": "create", "object_class": "tenant-binding",
             "cross_tenant": True, "subject": "session-anon",
         })
+    elif hook == "gpu-pool-admin":
+        events.append({
+            "kind": "sigma",
+            "logsource": {"product": "gpu-pooling", "service": "scheduler"},
+            "action": "allocate", "authenticated": False, "cross_tenant": True,
+            "device": (probe.get("body") or {}).get("device", ""),
+        })
+    elif hook == "cloud-assume-role":
+        events.append({
+            "kind": "sigma",
+            "logsource": {"product": "aws", "service": "cloudtrail"},
+            "eventName": "AssumeRole", "crossAccount": True, "trustPolicyWildcard": True,
+            "sourceAccount": (probe.get("body") or {}).get("source_account", ""),
+        })
     elif hook == "gateway-admin-call":
         events.append({
             "kind": "sigma",
@@ -225,6 +239,17 @@ def _synth_events(probe: dict, outcome: dict) -> list[dict]:
 
 # ---------------------------------------------------------------- 主流程
 
+def _is_gpu_cloud_probe(probe: dict) -> bool:
+    """GPU 池化/云租户面探针：显式 sim 标记或 /gpu//cloud/ 前缀（双靶场路由）。"""
+    return probe.get("sim") == "gpu-cloud" or str(probe.get("path", "")).startswith(("/gpu/", "/cloud/"))
+
+
+def _needs_gpu_cloud(probes_catalog: dict) -> bool:
+    return any(_is_gpu_cloud_probe(probe)
+               for plan in probes_catalog.values()
+               for probe in plan.get("replay", []))
+
+
 def _is_ai_gateway_probe(probe: dict) -> bool:
     """AI 网关仿真探针：显式 sim 标记（与 mock_targets 的 /v1/* 路径消歧）。"""
     return probe.get("sim") == "ai-gateway"
@@ -236,10 +261,13 @@ def _needs_ai_gateway(probes_catalog: dict) -> bool:
                for probe in plan.get("replay", []))
 
 
-def validate(pack_dir: Path | str, mock_base: str | None = None) -> dict:
+def validate(pack_dir: Path | str, mock_base: str | None = None,
+             aux_base: str | None = None) -> dict:
     """对 mock vulnerable 靶场重放攻击链探针，断言规则命中 → 覆盖率矩阵（dict，含 JSON/MD 落盘）。
 
-    AI 网关链探针（sim=ai-gateway）按需自动启动 lab/ai_gateway_sim（vulnerable 姿态）。
+    aux_base：GPU 池化/云租户仿真基址；缺省时若探针含 /gpu//cloud/ 路径则自动启动
+    lab/gpu_cloud_sim（同 mock_targets 的 vulnerable 姿态）。
+    AI 网关链探针（sim=ai-gateway）按需自动启动 lab/ai_gateway_sim。
     """
     root = Path(pack_dir)
     mapping = json.loads((root / "mapping.json").read_text(encoding="utf-8"))
@@ -252,6 +280,13 @@ def validate(pack_dir: Path | str, mock_base: str | None = None) -> dict:
 
         own_server = start_all(mode="vulnerable")
         mock_base = own_server.url("/")
+
+    aux_server = None
+    if aux_base is None and _needs_gpu_cloud(probes_catalog):
+        from lab.gpu_cloud_sim import start_all as start_gpu_cloud
+
+        aux_server = start_gpu_cloud(mode="vulnerable")
+        aux_base = aux_server.url("/")
 
     ai_server = None
     ai_base = None
@@ -270,7 +305,12 @@ def validate(pack_dir: Path | str, mock_base: str | None = None) -> dict:
         events: list[dict] = []
         probe_rows: list[dict] = []
         for probe in plan.get("replay", []):
-            base = (ai_base or mock_base) if _is_ai_gateway_probe(probe) else mock_base
+            if _is_ai_gateway_probe(probe):
+                base = ai_base or mock_base
+            elif _is_gpu_cloud_probe(probe):
+                base = aux_base or mock_base
+            else:
+                base = mock_base
             outcome = _http_request(base, probe)
             events.extend(_synth_events(probe, outcome))
             blocked = outcome["status"] in (401, 403, 404)
@@ -324,6 +364,8 @@ def validate(pack_dir: Path | str, mock_base: str | None = None) -> dict:
 
     if own_server is not None:
         own_server.shutdown()
+    if aux_server is not None:
+        aux_server.shutdown()
     if ai_server is not None:
         ai_server.shutdown()
 

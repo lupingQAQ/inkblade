@@ -1,0 +1,37 @@
+{
+  "id": "cloud-cross-tenant-role-assume",
+  "title": {
+    "zh": "IRSA 通配信任 → 跨账户角色 → 权重桶",
+    "en": "IRSA wildcard trust → cross-account role → weight bucket"
+  },
+  "category": "云侧权重桶链",
+  "requires": [
+    "cloud-irsa-trust-wildcard",
+    "cloud-bucket-cross-tenant"
+  ],
+  "preconditions": [
+    {"expr": "findings('cloud-irsa-trust-wildcard').count > 0"}
+  ],
+  "steps": [
+    {
+      "id": "trust-policy-assume",
+      "module": "cloud-irsa-trust-wildcard",
+      "params": {
+        "role": "weight-reader",
+        "source_account": "999999999999",
+        "tenant": "tenant-a"
+      }
+    },
+    {
+      "id": "weight-bucket-list",
+      "module": "cloud-bucket-cross-tenant",
+      "params": {
+        "bucket": "weights-b",
+        "tenant": "tenant-a"
+      },
+      "depends_on": ["trust-policy-assume"]
+    }
+  ],
+  "evidence": ["redacted-credential-receipt", "cross-account-assume", "bucket-cross-tenant-listing"],
+  "mitre": ["T1552.005", "T1530"]
+}
