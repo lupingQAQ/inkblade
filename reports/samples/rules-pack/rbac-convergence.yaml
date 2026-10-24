@@ -1,0 +1,14 @@
+document: rbac-convergence-reference
+annotations:
+  trident.io/mode: monitor
+samples:
+  - target: vllm-operator / production-stack operator
+    from: cluster 级 roles/rolebindings 全 CRUD（集群接管面）
+    to: namespace 级 Role（仅本命名空间 roles/rolebindings），remove cluster-admin 引用
+  - target: kuberay-operator
+    from: 准 cluster-admin（pods/exec/nodes/CRD 全域）
+    to: 命名空间 Role 限定 rayclusters.ray.io 等 CR + 去除 nodes/exec；dashboard 令牌与 8265 分区限源
+  - target: lws-operator (LeaderWorkerSet)
+    from: 集群级 secrets 读写 + 节点 patch
+    to: 命名空间 secrets（仅 labelselector 命中的工作负载 secret）+ 取消节点 patch；webhook 关闭 automount 继承
+verify: 收敛后以 trident 权限链模块复测（can-i 矩阵 + RoleBinding 创建探针）

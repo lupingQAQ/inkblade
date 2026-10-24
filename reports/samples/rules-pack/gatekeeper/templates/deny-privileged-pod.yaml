@@ -1,0 +1,12 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: denyprivilegedpod
+spec:
+  crd:
+    spec:
+      names:
+        kind: TridentDenyPrivilegedPod
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: "violation[{\"msg\": msg}] {\n  c := input.review.object.spec.containers[_]\n  c.securityContext.privileged == true\n  msg := \"privileged container denied (PSS baseline; GPU exception channel applies)\"\n}\nviolation[{\"msg\": msg}] {\n  input.review.object.spec.hostPID == true\n  msg := \"hostPID denied\"\n}\nviolation[{\"msg\": msg}] {\n  input.review.object.spec.hostIPC == true\n  msg := \"hostIPC denied\"\n}\nviolation[{\"msg\": msg}] {\n  input.review.object.spec.hostNetwork == true\n  msg := \"hostNetwork denied (converge via exception namespace)\"\n}"

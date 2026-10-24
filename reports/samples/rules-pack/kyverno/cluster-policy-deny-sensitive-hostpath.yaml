@@ -1,0 +1,36 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: trident-deny-sensitive-hostpath
+  annotations:
+    trident.io/mode: monitor
+    trident.io/tuning: "GPU 直挂（/dev/nvidia*）与日志只读挂载可按命名空间放行；前缀表按客户基线裁剪，建议保留 '/' 与运行时 socket 前缀为硬阻断"
+    trident.io/blocks-chains: gpu-network-operator-host-escape
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: deny-sensitive-hostpath
+      match:
+        anyResources:
+          - kinds:
+              - Pod
+      validate:
+        message: "拒绝挂载敏感宿主路径（运行时 socket、kubelet/containerd 目录、系统路径） / Sensitive hostPath mount denied (runtime socket, kubelet/containerd dirs, system paths)"
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.spec.volumes[].hostPath.path[] || `[]` }}"
+                operator: AnyIn
+                value:
+                  - /var/run/docker.sock
+                  - /var/run/containerd
+                  - /run/containerd
+                  - /var/lib/kubelet
+                  - /var/lib/containerd
+                  - /proc
+                  - /sys
+                  - /dev
+                  - /etc
+                  - /root
+                  - /

@@ -1,0 +1,279 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: trident-default-deny
+  namespace: ray-system
+  annotations:
+    trident.io/mode: monitor
+spec:
+  endpointSelector: {}
+  ingress: []
+  egress: []
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: trident-partition-allow
+  namespace: ray-system
+  annotations:
+    trident.io/mode: monitor
+spec:
+  endpointSelector:
+    matchLabels:
+      ray-system.trident-io-zone/member: true
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: ml-training
+      fromCIDR:
+        - 192.168.10.0/24
+      toPorts:
+        - ports:
+            - port: 8265
+              protocol: TCP
+            - port: 10001
+              protocol: TCP
+            - port: 6379
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: 53
+              protocol: UDP
+            - port: 53
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: ml-training
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: ml-inference
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: monitoring
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: trident-default-deny
+  namespace: ml-training
+  annotations:
+    trident.io/mode: monitor
+spec:
+  endpointSelector: {}
+  ingress: []
+  egress: []
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: trident-partition-allow
+  namespace: ml-training
+  annotations:
+    trident.io/mode: monitor
+spec:
+  endpointSelector:
+    matchLabels:
+      ml-training.trident-io-zone/member: true
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: ray-system
+        - matchLabels:
+            io.kubernetes.podns: ml-training
+      fromCIDR:
+        - 192.168.10.0/24
+      toPorts:
+        - ports:
+            - port: 29400
+              protocol: TCP
+            - port: 29500
+              protocol: TCP
+            - port: 29501
+              protocol: TCP
+            - port: 29511
+              protocol: TCP
+            - port: 45678
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: 53
+              protocol: UDP
+            - port: 53
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: ray-system
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: ml-inference
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: monitoring
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: trident-default-deny
+  namespace: ml-inference
+  annotations:
+    trident.io/mode: monitor
+spec:
+  endpointSelector: {}
+  ingress: []
+  egress: []
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: trident-partition-allow
+  namespace: ml-inference
+  annotations:
+    trident.io/mode: monitor
+spec:
+  endpointSelector:
+    matchLabels:
+      ml-inference.trident-io-zone/member: true
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: monitoring
+      fromCIDR:
+        - 192.168.10.0/24
+      toPorts:
+        - ports:
+            - port: 30000
+              protocol: TCP
+            - port: 9000
+              protocol: TCP
+            - port: 8000
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: 53
+              protocol: UDP
+            - port: 53
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: ray-system
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: monitoring
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: trident-default-deny
+  namespace: monitoring
+  annotations:
+    trident.io/mode: monitor
+spec:
+  endpointSelector: {}
+  ingress: []
+  egress: []
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: trident-partition-allow
+  namespace: monitoring
+  annotations:
+    trident.io/mode: monitor
+spec:
+  endpointSelector:
+    matchLabels:
+      monitoring.trident-io-zone/member: true
+  ingress:
+    - fromEndpoints: []
+      fromCIDR:
+        - 192.168.10.0/24
+      toPorts:
+        - ports:
+            - port: 9090
+              protocol: TCP
+            - port: 9092
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: 53
+              protocol: UDP
+            - port: 53
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: ray-system
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: ml-training
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.podns: ml-inference
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: trident-default-deny
+  namespace: ml-agent
+  annotations:
+    trident.io/mode: monitor
+spec:
+  endpointSelector: {}
+  ingress: []
+  egress: []
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: trident-partition-allow
+  namespace: ml-agent
+  annotations:
+    trident.io/mode: monitor
+spec:
+  endpointSelector:
+    matchLabels:
+      ml-agent.trident-io-zone/member: true
+  ingress:
+    - fromEndpoints: []
+      fromCIDR:
+        - 192.168.10.0/24
+      toPorts:
+        - ports:
+            - port: 80
+              protocol: TCP
+            - port: 8080
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: 53
+              protocol: UDP
+            - port: 53
+              protocol: TCP

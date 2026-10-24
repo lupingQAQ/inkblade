@@ -1,0 +1,30 @@
+title: Ray 作业提交（dashboard 无鉴权面）
+id: 230dab22-7dd5-55da-8dc5-57535998e5ce
+status: stable
+description: "Ray dashboard audit: job submission events on the job API (unauthenticated head-node command surface). 检测 Ray 8265 作业提交（头节点任意命令入口）。"
+references:
+  - "trident-rules-mapping: sigma-ray-job-submit"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: ray
+  service: dashboard
+detection:
+  selection:
+    verb:
+      - create
+      - submit
+    objectRef.resource: job
+  condition: selection
+falsepositives:
+  - 合法训练平台调度器主体（按提交主体/入口网段白名单）
+level: high
+tags:
+  - attack.execution
+  - attack.t1610
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: 按提交来源收敛：仅调度器服务账号与 bastion 网段可提交；其余来源直接升级 critical；配合 8265 端口 NetworkPolicy 分区限源
+  trident-blocks-chains: ray-dashboard-cluster-takeover

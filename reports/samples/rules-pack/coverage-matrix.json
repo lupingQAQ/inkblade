@@ -1,0 +1,862 @@
+{
+  "mock_base": "http://127.0.0.1:56777/",
+  "mock_mode": "vulnerable",
+  "validated_at": "2026-10-24T17:19:57Z",
+  "chains": {
+    "flat-network-admin-plane-weight-poison": {
+      "title": {
+        "zh": "平网 → 管理面 → 权重投毒",
+        "en": "Flat network → admin plane → weight poisoning"
+      },
+      "category": "经典攻击链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "sglang-admin-failopen",
+          "method": "POST",
+          "path": "/pause",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "slime-weight-pull-poison",
+          "method": "POST",
+          "path": "/pull_weights",
+          "status": 200,
+          "outcome": "reproduced"
+        }
+      ],
+      "rules": [
+        {
+          "rule": "alert-combo-signature",
+          "engines": [
+            "kyverno",
+            "gatekeeper"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "netpol-default-deny-partition",
+          "engines": [
+            "netpol"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "falco-admin-plane-unauth-access",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco connect port=30000 parent=-"
+        },
+        {
+          "rule": "falco-weight-file-abnormal-write",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco open_write port=- parent=-"
+        },
+        {
+          "rule": "suricata-admin-endpoint-uri",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:30000 uri=/pause"
+        }
+      ],
+      "state": "拦截+检测"
+    },
+    "ray-dashboard-cluster-takeover": {
+      "title": {
+        "zh": "Ray Dashboard → 集群控制",
+        "en": "Ray Dashboard → cluster takeover"
+      },
+      "category": "经典攻击链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "ray-dashboard-job",
+          "method": "POST",
+          "path": "/api/jobs/",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 1
+        }
+      ],
+      "rules": [
+        {
+          "rule": "deny-privileged-pod",
+          "engines": [
+            "kyverno",
+            "gatekeeper"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "alert-rolebinding-creation",
+          "engines": [
+            "kyverno",
+            "gatekeeper"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "netpol-default-deny-partition",
+          "engines": [
+            "netpol"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "sigma-rolebinding-cluster-admin",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create rolebinding"
+        },
+        {
+          "rule": "sigma-ray-job-submit",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create job"
+        },
+        {
+          "rule": "falco-admin-plane-unauth-access",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco connect port=8265 parent=-"
+        }
+      ],
+      "state": "拦截+检测"
+    },
+    "nccl-gradient-injection": {
+      "title": {
+        "zh": "NCCL → 梯度注入",
+        "en": "NCCL → gradient injection"
+      },
+      "category": "经典攻击链",
+      "probe": [
+        {
+          "kind": "fixture",
+          "count": 2
+        }
+      ],
+      "rules": [
+        {
+          "rule": "netpol-default-deny-partition",
+          "engines": [
+            "netpol"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "rdma-sriov-ib-partition-advice",
+          "engines": [
+            "ib-advice"
+          ],
+          "status": "建议",
+          "evidence": "缓解建议文件在包内"
+        },
+        {
+          "rule": "falco-nccl-abnormal-join",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco nccl_join port=29500 parent=-"
+        },
+        {
+          "rule": "suricata-nccl-kv-ports",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:29500 uri=-"
+        }
+      ],
+      "state": "拦截+检测"
+    },
+    "shared-pvc-supply-chain-poison": {
+      "title": {
+        "zh": "共享 PVC + 模型加载 → 供应链投毒",
+        "en": "Shared PVC + model loading → supply chain poisoning"
+      },
+      "category": "经典攻击链",
+      "probe": [
+        {
+          "kind": "fixture",
+          "count": 2
+        }
+      ],
+      "rules": [
+        {
+          "rule": "falco-pickle-deserialize-call",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco deserialize port=- parent=-"
+        },
+        {
+          "rule": "falco-weight-file-abnormal-write",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco open_write port=- parent=-"
+        }
+      ],
+      "state": "检测"
+    },
+    "ssrf-sa-token-cloud-metadata": {
+      "title": {
+        "zh": "SSRF / SA Token → 云元数据",
+        "en": "SSRF / SA token → cloud metadata"
+      },
+      "category": "经典攻击链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "ssrf-imds-credential",
+          "method": "GET",
+          "path": "/mock-imds/azure/metadata/instance?api-version=2021-02-01",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 1
+        }
+      ],
+      "rules": [
+        {
+          "rule": "deny-automount-serviceaccount-token",
+          "engines": [
+            "kyverno",
+            "gatekeeper"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "sigma-secret-abnormal-read",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma get secret"
+        },
+        {
+          "rule": "suricata-imds-egress",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 169.254.169.254:80 uri=/mock-imds/azure/metadata/instance?api-version=2021-02-01"
+        }
+      ],
+      "state": "拦截+检测"
+    },
+    "observability-pivot-precision-strike": {
+      "title": {
+        "zh": "观测面 → 精准打点",
+        "en": "Observability plane → precision targeting"
+      },
+      "category": "经典攻击链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "observability-exposure",
+          "method": "GET",
+          "path": "/__routes__",
+          "status": 200,
+          "outcome": "reproduced"
+        }
+      ],
+      "rules": [
+        {
+          "rule": "netpol-default-deny-partition",
+          "engines": [
+            "netpol"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        }
+      ],
+      "state": "拦截"
+    },
+    "pickle-channel-unauth-execution": {
+      "title": {
+        "zh": "pickle 通道 → 未授权执行",
+        "en": "pickle channel → unauthenticated execution"
+      },
+      "category": "经典攻击链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "areal-load-pickle",
+          "method": "POST",
+          "path": "/create_engine",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 1
+        }
+      ],
+      "rules": [
+        {
+          "rule": "netpol-default-deny-partition",
+          "engines": [
+            "netpol"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "falco-pickle-deserialize-call",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco deserialize port=- parent=-"
+        },
+        {
+          "rule": "suricata-admin-endpoint-uri",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:9000 uri=/create_engine"
+        }
+      ],
+      "state": "拦截+检测"
+    },
+    "aws-role-weight-bucket": {
+      "title": {
+        "zh": "AWS 角色 → S3 权重桶",
+        "en": "AWS role → S3 weight bucket"
+      },
+      "category": "云侧权重桶链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "multi-cloud-imds-credentials",
+          "method": "GET",
+          "path": "/mock-imds/aws/latest/meta-data/iam/security-credentials/role",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 1
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-secret-abnormal-read",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma get secret"
+        },
+        {
+          "rule": "suricata-imds-egress",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 169.254.169.254:80 uri=/mock-imds/aws/latest/meta-data/iam/security-credentials/role"
+        }
+      ],
+      "state": "检测"
+    },
+    "azure-managed-identity-blob-weight": {
+      "title": {
+        "zh": "Azure 托管身份 → Blob 权重",
+        "en": "Azure managed identity → Blob weights"
+      },
+      "category": "云侧权重桶链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "multi-cloud-imds-credentials",
+          "method": "GET",
+          "path": "/mock-imds/azure/metadata/instance?api-version=2021-02-01",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 1
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-secret-abnormal-read",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma get secret"
+        },
+        {
+          "rule": "suricata-imds-egress",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 169.254.169.254:80 uri=/mock-imds/azure/metadata/instance?api-version=2021-02-01"
+        }
+      ],
+      "state": "检测"
+    },
+    "ali-ram-role-oss-weight": {
+      "title": {
+        "zh": "阿里 RAM 角色 → OSS 权重",
+        "en": "Aliyun RAM role → OSS weights"
+      },
+      "category": "云侧权重桶链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "multi-cloud-imds-credentials",
+          "method": "GET",
+          "path": "/mock-imds/aliyun/latest/meta-data/ram/security-credentials/",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 1
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-secret-abnormal-read",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma get secret"
+        },
+        {
+          "rule": "suricata-imds-egress",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 169.254.169.254:80 uri=/mock-imds/aliyun/latest/meta-data/ram/security-credentials/"
+        }
+      ],
+      "state": "检测"
+    },
+    "tencent-cam-role-cos-weight": {
+      "title": {
+        "zh": "腾讯 CAM 角色 → COS 权重",
+        "en": "Tencent CAM role → COS weights"
+      },
+      "category": "云侧权重桶链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "multi-cloud-imds-credentials",
+          "method": "GET",
+          "path": "/mock-imds/tencent/latest/meta-data/cam/security-credentials/",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 1
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-secret-abnormal-read",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma get secret"
+        },
+        {
+          "rule": "suricata-imds-egress",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 169.254.169.254:80 uri=/mock-imds/tencent/latest/meta-data/cam/security-credentials/"
+        }
+      ],
+      "state": "检测"
+    },
+    "gpu-network-operator-host-escape": {
+      "title": {
+        "zh": "GPU 与网络 Operator → 宿主逃逸",
+        "en": "GPU and network operator → host escape"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "fixture",
+          "count": 1
+        }
+      ],
+      "rules": [
+        {
+          "rule": "deny-privileged-pod",
+          "engines": [
+            "kyverno",
+            "gatekeeper"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "deny-sensitive-hostpath",
+          "engines": [
+            "kyverno",
+            "gatekeeper"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "sigma-privileged-pod-create",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create pod"
+        }
+      ],
+      "state": "拦截+检测"
+    },
+    "ib-rdma-collective-injection": {
+      "title": {
+        "zh": "IB/RDMA 平面 → 集合通信注入",
+        "en": "IB/RDMA plane → collective communication injection"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "fixture",
+          "count": 2
+        }
+      ],
+      "rules": [
+        {
+          "rule": "netpol-default-deny-partition",
+          "engines": [
+            "netpol"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "rdma-sriov-ib-partition-advice",
+          "engines": [
+            "ib-advice"
+          ],
+          "status": "建议",
+          "evidence": "缓解建议文件在包内"
+        },
+        {
+          "rule": "falco-nccl-abnormal-join",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco nccl_join port=29500 parent=-"
+        },
+        {
+          "rule": "suricata-nccl-kv-ports",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:29500 uri=-"
+        }
+      ],
+      "state": "拦截+检测"
+    },
+    "imex-computedomain-gpu-memory-crossing": {
+      "title": {
+        "zh": "IMEX / ComputeDomain → 跨节点 GPU 内存越权",
+        "en": "IMEX / ComputeDomain → cross-node GPU memory overreach"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "fixture",
+          "count": 1
+        }
+      ],
+      "rules": [
+        {
+          "rule": "deny-privileged-pod",
+          "engines": [
+            "kyverno",
+            "gatekeeper"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "rdma-sriov-ib-partition-advice",
+          "engines": [
+            "ib-advice"
+          ],
+          "status": "建议",
+          "evidence": "缓解建议文件在包内"
+        },
+        {
+          "rule": "sigma-privileged-pod-create",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create pod"
+        }
+      ],
+      "state": "拦截+检测"
+    },
+    "prefill-decode-kv-inference-manipulation": {
+      "title": {
+        "zh": "预填充-解码 KV 通道 → 推理操纵",
+        "en": "Prefill-decode KV channel → inference manipulation"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "fixture",
+          "count": 2
+        }
+      ],
+      "rules": [
+        {
+          "rule": "netpol-default-deny-partition",
+          "engines": [
+            "netpol"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "rdma-sriov-ib-partition-advice",
+          "engines": [
+            "ib-advice"
+          ],
+          "status": "建议",
+          "evidence": "缓解建议文件在包内"
+        },
+        {
+          "rule": "falco-nccl-abnormal-join",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco nccl_join port=45678 parent=-"
+        },
+        {
+          "rule": "suricata-nccl-kv-ports",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:45678 uri=-"
+        }
+      ],
+      "state": "拦截+检测"
+    },
+    "vpc-cni-dual-control-plane-lateral": {
+      "title": {
+        "zh": "VPC-CNI 双控制面错配 → 云内横向",
+        "en": "VPC-CNI dual control plane mismatch → intra-cloud lateral"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "fixture",
+          "count": 1
+        }
+      ],
+      "rules": [
+        {
+          "rule": "netpol-default-deny-partition",
+          "engines": [
+            "netpol"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "vpc-securitygroup-supplement",
+          "engines": [
+            "vpc-sg"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "suricata-imds-egress",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 169.254.169.254:80 uri=/latest/meta-data/iam/security-credentials/role"
+        }
+      ],
+      "state": "拦截+检测"
+    },
+    "agent-platform-zero-precondition-lateral": {
+      "title": {
+        "zh": "智能体平台零前置执行 → 训练集群横向",
+        "en": "Agent platform zero-precondition execution → training cluster lateral"
+      },
+      "category": "零日链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "dify-local-sandbox-unauth-rce",
+          "method": "POST",
+          "path": "/v1/jobs/run",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "metadata-egress",
+          "method": "GET",
+          "path": "/mock-imds/aliyun/latest/meta-data/ram/security-credentials/",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 1
+        }
+      ],
+      "rules": [
+        {
+          "rule": "deny-automount-serviceaccount-token",
+          "engines": [
+            "kyverno",
+            "gatekeeper"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "netpol-default-deny-partition",
+          "engines": [
+            "netpol"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "sigma-secret-abnormal-read",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma get secret"
+        },
+        {
+          "rule": "suricata-imds-egress",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 169.254.169.254:80 uri=/mock-imds/aliyun/latest/meta-data/ram/security-credentials/"
+        },
+        {
+          "rule": "zeroday-agent-sandbox-unexpected-parent-exec",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco exec port=- parent=http-job-runner"
+        }
+      ],
+      "state": "拦截+检测"
+    },
+    "agent-platform-cross-tenant-data-chain": {
+      "title": {
+        "zh": "智能体平台跨租户窃取 → 数据面串联",
+        "en": "Agent platform cross-tenant theft → data plane chain"
+      },
+      "category": "零日链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "dify-snapshot-cross-tenant-theft",
+          "method": "POST",
+          "path": "/api/v1/bindings",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 1
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-secret-abnormal-read",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma get secret"
+        },
+        {
+          "rule": "zeroday-agent-tenant-object-cross-read",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create tenant-binding"
+        }
+      ],
+      "state": "检测"
+    }
+  },
+  "summary": {
+    "chains": 18,
+    "covered": 18,
+    "missed": 0,
+    "rules_evaluated": 56,
+    "rules_blocked": 18,
+    "rules_detected": 34,
+    "rules_missed": 0
+  },
+  "ok": true,
+  "ruling": {
+    "port_basis": "合成事件使用探测规格声明的业务端口（mock 基座端口随机分配）",
+    "matcher": "内置简化 sigma/falco/suricata 匹配器（selection/event_type/any_of 语义子集）",
+    "loopback": "漏过项 → 规则缺口 → 反哺规则库迭代"
+  }
+}

@@ -1,0 +1,32 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: trident-alert-combo-signature
+  annotations:
+    trident.io/mode: monitor
+    trident.io/tuning: 端口集与镜像标签基线按客户部署清单校准；命中仅告警不断链（组合缺陷只能靠准入拦，先盘点再收紧）；配合镜像 digest 固定基线
+    trident.io/blocks-chains: flat-network-admin-plane-weight-poison
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: combo-weight-write-mutable-image
+      match:
+        anyResources:
+          - kinds:
+              - Deployment
+      validate:
+        message: "组合签名命中：暴露权重写类管理端口的 Deployment 同时使用可变镜像标签（latest/无 digest），准入告警 / Combo signature hit: Deployment exposing weight-write admin ports while using mutable image tags (latest / no digest)"
+        deny:
+          conditions:
+            all:
+              - key: "{{ request.object.spec.template.spec.containers[].image[] || `[]` }}"
+                operator: AnyIn
+                value:
+                  - "*:latest"
+                  - "*"
+              - key: "{{ request.object.spec.template.spec.containers[].ports[].containerPort[] || `[]` }}"
+                operator: AnyIn
+                value:
+                  - 30000
+                  - 9000

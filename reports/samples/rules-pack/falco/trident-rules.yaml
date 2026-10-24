@@ -1,0 +1,49 @@
+- rule: TRIDENT Admin plane unauthorized access
+  desc: "到 ML 管理面端口（Ray 8265 / 推理管理 30000 / 训练控制 9000）的非白名单来源连接。English: non-allowlisted source connecting to ML admin-plane ports."
+  condition: "(evt.type=connect and fd.l4proto=tcp) and (fd.sport in (8265, 30000, 9000)) and not fd.cip in (admin_allowlist)"
+  output: "admin-plane connection src=%fd.cip sport=%fd.sport proc=%proc.name container=%container.name"
+  priority: WARNING
+  tags:
+    - trident
+    - network
+    - monitor
+    - mode-monitor
+- rule: TRIDENT Pickle deserialization in serving/training process
+  desc: "服务/训练进程外的 pickle/torch.load/recv_pyobj 反序列化调用（检查点与权重通道）。English: pickle/torch.load/recv_pyobj deserialization outside the trainer baseline."
+  condition: "evt.type in (syscall.primative, retval) and proc.name in (python, python3, raylet, sglang-server) and evt.arg.data startswith b'pickle' or lib in (pickle, torch.load, recv_pyobj)"
+  output: "deserialize call proc=%proc.name lib=%lib channel=%channel obj=%obj.source"
+  priority: CRITICAL
+  tags:
+    - trident
+    - process
+    - monitor
+    - mode-monitor
+- rule: TRIDENT Weight file write by non-training process
+  desc: "非训练进程对权重/检查点/HF 缓存路径的写打开（权重投毒与偷换一体面）。English: write-open on weight/checkpoint/HF-cache paths by a non-training process."
+  condition: "(evt.type in (open, openat, openat2) and evt.is_open_write=true) and fd.name icontains (checkpoints, weights, hf-cache, models) and not proc.name in (trainer, torchrun, accelerate)"
+  output: "weight-path write proc=%proc.name path=%fd.name container=%container.name"
+  priority: CRITICAL
+  tags:
+    - trident
+    - filesystem
+    - monitor
+    - mode-monitor
+- rule: TRIDENT Collective communication join by external rank
+  desc: "集合通信（NCCL bootstrap / TCPStore / KV 传输）出现外部 rank 入组或跨域加入。English: external rank joining collective communication (NCCL bootstrap / TCPStore / KV transfer)."
+  condition: "evt.type in (connect, accept) and evt.arg.channel in (collective, kv-cache-transfer, rdma-fabric) and not k8s.ns.label in (training-allowlist) and evt.arg.external_rank=true"
+  output: "collective join channel=%evt.arg.channel rank_src=%fd.cip port=%fd.sport ns=%k8s.ns.name"
+  priority: CRITICAL
+  tags:
+    - trident
+    - network
+    - monitor
+    - mode-monitor
+- rule: TRIDENT Agent sandbox host unexpected parent execution
+  desc: "Agent 平台沙箱宿主上，进程执行的父进程不在沙箱监管基线内（行为化异常执行面）。English: execution on an agent-platform sandbox host whose parent process is outside the sandbox supervisor baseline."
+  condition: "spawned_process and k8s.ns.label[trident-io-zone]=ml-agent and not proc.aname in (sandbox-supervisor, containerd-shim, systemd)"
+  output: "sandbox unexpected parent exec proc=%proc.name parent=%proc.aname cmdline=%proc.cmdline ns=%k8s.ns.name"
+  priority: CRITICAL
+  tags:
+    - trident
+    - zeroday-behavioral
+    - monitor

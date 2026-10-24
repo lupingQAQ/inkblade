@@ -1,0 +1,27 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: trident-alert-rolebinding-creation
+  annotations:
+    trident.io/mode: monitor
+    trident.io/tuning: monitor 阶段统计合法 CI/CD 与 operator 的绑定创建频率，形成白名单主体；Enforce 后仅豁免 argocd/gitops 同步主体；同步收紧三大 operator 的集群级 roles/rolebindings CRUD（见 RBAC 收敛清单）
+    trident.io/blocks-chains: ray-dashboard-cluster-takeover
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: rolebinding-cluster-admin-guard
+      match:
+        anyResources:
+          - kinds:
+              - RoleBinding
+              - ClusterRoleBinding
+            operations:
+              - CREATE
+      validate:
+        message: RoleBinding 创建告警；指向 cluster-admin 的绑定一律阻断（operator 集群级 RBAC 扩散拦截） / RoleBinding creation alert; bindings pointing at cluster-admin are always blocked (operator cluster-scoped RBAC sprawl)
+        deny:
+          conditions:
+            - key: "{{ request.object.roleRef.name || `` }}"
+              operator: Equals
+              value: cluster-admin

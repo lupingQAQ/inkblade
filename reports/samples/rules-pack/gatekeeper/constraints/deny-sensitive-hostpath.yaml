@@ -1,0 +1,18 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: TridentDenySensitiveHostpath
+metadata:
+  name: trident-deny-sensitive-hostpath
+  annotations:
+    trident.io/mode: monitor
+    trident.io/tuning: "GPU 直挂（/dev/nvidia*）与日志只读挂载可按命名空间放行；前缀表按客户基线裁剪，建议保留 '/' 与运行时 socket 前缀为硬阻断"
+    trident.io/blocks-chains: gpu-network-operator-host-escape
+spec:
+  enforcementAction: dryrun
+  match:
+    kinds:
+      - apiGroups:
+          - ""
+          - apps
+          - rbac.authorization.k8s.io
+        kinds:
+          - Pod

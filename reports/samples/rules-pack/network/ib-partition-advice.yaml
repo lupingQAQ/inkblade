@@ -1,0 +1,23 @@
+document: ib-partition-advice
+annotations:
+  trident.io/mode: monitor
+  trident.io/blocks-chains: "ib-rdma-collective-injection,imex-computedomain-gpu-memory-crossing,nccl-gradient-injection,prefill-decode-kv-inference-manipulation"
+scope: 集合通信 fabric（IB / RoCE / GPUDirect RDMA / SR-IOV VF / IMEX ComputeDomain）
+explicit_declaration:
+  zh: 显式声明：RDMA / SR-IOV VF / IB / macvlan 与 hostNetwork/hostDevice 路径不经 CNI 转发，任何 NetworkPolicy（原生 / Calico / Cilium）与 VPC 安全组均不覆盖该面；集合通信隔离必须依赖 IB Partition（PKey）/ Subnet Manager 隔离与 rail/plane 分区，另见 network/ib-partition-advice.yaml 与 network/rdma-sriov-uncovered.md。
+  en: "Explicit declaration: RDMA / SR-IOV VF / IB / macvlan and hostNetwork/hostDevice paths bypass the CNI forwarding plane and are NOT covered by any NetworkPolicy (native / Calico / Cilium) nor by VPC security groups; collective-communication isolation must rely on IB Partition (PKey) / Subnet Manager isolation and rail/plane partitioning - see network/ib-partition-advice.yaml and network/rdma-sriov-uncovered.md."
+recommended_controls:
+  - IB Partition（PKey）按训练租户/作业组分隔离区，禁用默认全通 partition membership
+  - Subnet Manager 侧按 rail/plane 划分隔离域，跨 partition 流量显式白名单
+  - ib-kubernetes / NVIDIA Network Operator 的 NicClusterPolicy 显式配置 guid/pkey 池，禁 default partition
+  - RoCEv2 场景以 VRF/BD 分段 + PFC/ECN 基线替代 partition 语义
+  - hostNetwork/hostDevice 收敛清单（逐 DaemonSet 审计必要性）
+hostnetwork_convergence:
+  - "逐 DaemonSet 审计 hostNetwork=true 必要性（GPU 驱动、SR-IOV device plugin、ib-kubernetes），能收敛即收敛"
+  - hostNetwork Pod 出网仅放行到显式白名单 CIDR（监控/registry/时间同步）
+  - hostDevice / SR-IOV 附件统一走专用命名空间并登记到例外通道
+not_covered_by:
+  - NetworkPolicy (native)
+  - Calico GlobalNetworkPolicy
+  - Cilium CiliumNetworkPolicy
+  - VPC security groups

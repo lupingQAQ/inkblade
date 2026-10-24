@@ -1,0 +1,1222 @@
+{
+  "generator": "trident.rules.generate",
+  "generated_at": "2026-10-24T17:19:56Z",
+  "cni_active": "native",
+  "cni_variants": [
+    "native",
+    "calico",
+    "cilium",
+    "vpc-native"
+  ],
+  "inputs": {
+    "chains": 18,
+    "findings": 2
+  },
+  "rules": [
+    {
+      "id": "deny-privileged-pod",
+      "engines": [
+        "kyverno",
+        "gatekeeper"
+      ],
+      "title": {
+        "zh": "禁止特权工作负载（privileged/hostPID/hostIPC/hostNetwork）",
+        "en": "Deny privileged workloads (privileged/hostPID/hostIPC/hostNetwork)"
+      },
+      "files": [
+        "kyverno/cluster-policy-deny-privileged-pod.yaml",
+        "gatekeeper/templates/deny-privileged-pod.yaml",
+        "gatekeeper/constraints/deny-privileged-pod.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "先以 monitor（Audit）观察 7 天并列出命中清单；GPU Operator/NVIDIA 驱动与 SR-IOV device plugin DaemonSet 移入例外命名空间并加镜像白名单后，再切换 Enforce；例外通道任何新增条目需二次审计",
+        "en": "Run in monitor (Audit) for 7 days and review hits; move GPU operator/driver and SR-IOV device plugin DaemonSets into an exception namespace with an image allowlist before switching to Enforce; any new exception entry requires a second review"
+      },
+      "log_source": "K8s admission review",
+      "blocks_modules": [
+        "gpu-network-operator-posture",
+        "overprivileged-sa-escalation",
+        "privileged-gpu-pod-escape"
+      ],
+      "blocks_chains": [
+        "gpu-network-operator-host-escape",
+        "imex-computedomain-gpu-memory-crossing",
+        "ray-dashboard-cluster-takeover"
+      ],
+      "finding_links": [],
+      "match": null
+    },
+    {
+      "id": "deny-sensitive-hostpath",
+      "engines": [
+        "kyverno",
+        "gatekeeper"
+      ],
+      "title": {
+        "zh": "禁止敏感 hostPath 卷（容器运行时 socket / 宿主系统路径）",
+        "en": "Deny sensitive hostPath volumes (runtime sockets / host system paths)"
+      },
+      "files": [
+        "kyverno/cluster-policy-deny-sensitive-hostpath.yaml",
+        "gatekeeper/templates/deny-sensitive-hostpath.yaml",
+        "gatekeeper/constraints/deny-sensitive-hostpath.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "GPU 直挂（/dev/nvidia*）与日志只读挂载可按命名空间放行；前缀表按客户基线裁剪，建议保留 '/' 与运行时 socket 前缀为硬阻断",
+        "en": "Allow GPU device mounts (/dev/nvidia*) and read-only log mounts per namespace; trim the prefix list to the customer baseline, but keep '/' and runtime socket prefixes hard-denied"
+      },
+      "log_source": "K8s admission review",
+      "blocks_modules": [
+        "privileged-gpu-pod-escape",
+        "runtime-socket-escape"
+      ],
+      "blocks_chains": [
+        "gpu-network-operator-host-escape"
+      ],
+      "finding_links": [],
+      "match": null
+    },
+    {
+      "id": "deny-automount-serviceaccount-token",
+      "engines": [
+        "kyverno",
+        "gatekeeper"
+      ],
+      "title": {
+        "zh": "禁用 ServiceAccount 令牌自动挂载",
+        "en": "Deny automountServiceAccountToken"
+      },
+      "files": [
+        "kyverno/cluster-policy-deny-automount-serviceaccount-token.yaml",
+        "gatekeeper/templates/deny-automount-serviceaccount-token.yaml",
+        "gatekeeper/constraints/deny-automount-serviceaccount-token.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "确需令牌的工作负载（operator、Fluentd 采集器）放入白名单命名空间并在 SA 级显式开启；其余一律 false；配合 operator SA 约束（见 RBAC 收敛清单）",
+        "en": "Workloads that truly need the token (operators, log agents) go to an allowlisted namespace and opt in at the SA level; everything else defaults to false; pairs with operator SA constraints in the RBAC convergence list"
+      },
+      "log_source": "K8s admission review",
+      "blocks_modules": [
+        "metadata-egress",
+        "ssrf-imds-credential"
+      ],
+      "blocks_chains": [
+        "agent-platform-zero-precondition-lateral",
+        "ssrf-sa-token-cloud-metadata"
+      ],
+      "finding_links": [],
+      "match": null
+    },
+    {
+      "id": "alert-rolebinding-creation",
+      "engines": [
+        "kyverno",
+        "gatekeeper"
+      ],
+      "title": {
+        "zh": "RoleBinding/ClusterRoleBinding 创建告警（cluster-admin 指向硬阻断）",
+        "en": "Alert on RoleBinding/ClusterRoleBinding creation (hard block when pointing at cluster-admin)"
+      },
+      "files": [
+        "kyverno/cluster-policy-alert-rolebinding-creation.yaml",
+        "gatekeeper/templates/alert-rolebinding-creation.yaml",
+        "gatekeeper/constraints/alert-rolebinding-creation.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "monitor 阶段统计合法 CI/CD 与 operator 的绑定创建频率，形成白名单主体；Enforce 后仅豁免 argocd/gitops 同步主体；同步收紧三大 operator 的集群级 roles/rolebindings CRUD（见 RBAC 收敛清单）",
+        "en": "During monitor, baseline binding creation by legitimate CI/CD and operators into a subject allowlist; after Enforce only exempt the gitops sync subject; also shrink the three operators' cluster-scoped roles/rolebindings CRUD (see RBAC convergence list)"
+      },
+      "log_source": "K8s admission review",
+      "blocks_modules": [
+        "overprivileged-sa-escalation"
+      ],
+      "blocks_chains": [
+        "ray-dashboard-cluster-takeover"
+      ],
+      "finding_links": [],
+      "match": null
+    },
+    {
+      "id": "alert-combo-signature",
+      "engines": [
+        "kyverno",
+        "gatekeeper"
+      ],
+      "title": {
+        "zh": "组合签名准入告警（权重写端点 × 可变镜像标签共存）",
+        "en": "Combo-signature admission alert (weight-write endpoint x mutable image tag)"
+      },
+      "files": [
+        "kyverno/cluster-policy-alert-combo-signature.yaml",
+        "gatekeeper/templates/alert-combo-signature.yaml",
+        "gatekeeper/constraints/alert-combo-signature.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "端口集与镜像标签基线按客户部署清单校准；命中仅告警不断链（组合缺陷只能靠准入拦，先盘点再收紧）；配合镜像 digest 固定基线",
+        "en": "Calibrate the port set and image tag baseline against the customer inventory; alert-only first (combo defects are admission-layer issues, inventory before enforce); pairs with image digest pinning"
+      },
+      "log_source": "K8s admission review",
+      "blocks_modules": [
+        "slime-weight-pull-poison"
+      ],
+      "blocks_chains": [
+        "flat-network-admin-plane-weight-poison"
+      ],
+      "finding_links": [
+        "step_key:slime-weight-pull-poison"
+      ],
+      "match": null
+    },
+    {
+      "id": "netpol-default-deny-partition",
+      "engines": [
+        "netpol"
+      ],
+      "title": {
+        "zh": "NetworkPolicy 默认拒绝 + 按域放行（per-CNI 三变体）",
+        "en": "Default-deny NetworkPolicy with zone allows (per-CNI variants)"
+      },
+      "files": [
+        "network/native/network-policy-default-deny.yaml",
+        "network/calico/global-network-policy-default-deny.yaml",
+        "network/cilium/cilium-network-policy-default-deny.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "命名空间/标签为占位模板，按客户分区清单改名后再 apply；先在单分区试点观察 DNS/存储/云 API 依赖，再全量铺开；管理端口仅管理网段可达",
+        "en": "Placeholder namespaces/labels must be renamed to the customer partition inventory; pilot one zone first (DNS/storage/cloud API dependencies) before rollout; admin ports reachable only from the admin CIDR"
+      },
+      "log_source": "CNI policy engine",
+      "blocks_modules": [
+        "cni-stack-capability",
+        "collective-communication-surface",
+        "exposure-mapping",
+        "framework-port-matching",
+        "inference-gateway-pd",
+        "network-policy-coverage",
+        "observability-exposure",
+        "ray-control-plane"
+      ],
+      "blocks_chains": [
+        "agent-platform-zero-precondition-lateral",
+        "flat-network-admin-plane-weight-poison",
+        "ib-rdma-collective-injection",
+        "nccl-gradient-injection",
+        "observability-pivot-precision-strike",
+        "pickle-channel-unauth-execution",
+        "prefill-decode-kv-inference-manipulation",
+        "ray-dashboard-cluster-takeover",
+        "vpc-cni-dual-control-plane-lateral"
+      ],
+      "finding_links": [],
+      "match": null
+    },
+    {
+      "id": "vpc-securitygroup-supplement",
+      "engines": [
+        "vpc-sg"
+      ],
+      "title": {
+        "zh": "VPC-native CNI 安全组补充清单（EKS SG for Pods / Terway / TKE VPC-CNI / AKS）",
+        "en": "VPC-native security-group supplement (EKS SG for Pods / Terway / TKE VPC-CNI / AKS)"
+      },
+      "files": [
+        "network/vpc-native/security-group-supplement.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "安全组规则与 NetworkPolicy 双控制面必须双侧核对（入站 SG、出站策略最易错配）；按分区建立对照表后收敛默认拒绝",
+        "en": "Cross-check both control planes (inbound SG vs outbound policy is the classic mismatch); build a per-zone mapping table before tightening to default deny"
+      },
+      "log_source": "cloud provider network API",
+      "blocks_modules": [
+        "cni-stack-capability",
+        "hybrid-cloud-egress-pivot"
+      ],
+      "blocks_chains": [
+        "vpc-cni-dual-control-plane-lateral"
+      ],
+      "finding_links": [],
+      "match": null
+    },
+    {
+      "id": "rdma-sriov-ib-partition-advice",
+      "engines": [
+        "ib-advice"
+      ],
+      "title": {
+        "zh": "RDMA/SR-IOV 不受 NetworkPolicy 覆盖声明 + IB Partition/SM 隔离建议",
+        "en": "RDMA/SR-IOV not covered by NetworkPolicy declaration + IB Partition/SM isolation advice"
+      },
+      "files": [
+        "network/rdma-sriov-uncovered.md",
+        "network/ib-partition-advice.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "PKey/Partition 规划与 SM 隔离域随组网方案落地；hostNetwork 收敛清单逐 DaemonSet 过一遍；KV/NCCL 端口域与身份校验补强",
+        "en": "Plan PKey partitions and SM isolation domains with the fabric team; walk the hostNetwork convergence list per DaemonSet; add identity checks on KV/NCCL port domains"
+      },
+      "log_source": "fabric (IB SM / eBPF export)",
+      "blocks_modules": [
+        "collective-communication-surface",
+        "fabric-topology-isolation",
+        "multus-sriov-rdma-bypass"
+      ],
+      "blocks_chains": [
+        "ib-rdma-collective-injection",
+        "imex-computedomain-gpu-memory-crossing",
+        "nccl-gradient-injection",
+        "prefill-decode-kv-inference-manipulation"
+      ],
+      "finding_links": [],
+      "match": null
+    },
+    {
+      "id": "sigma-rolebinding-cluster-admin",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "指向 cluster-admin 的 RoleBinding 创建",
+        "en": "指向 cluster-admin 的 RoleBinding 创建"
+      },
+      "files": [
+        "sigma/sigma-rolebinding-cluster-admin.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "对 argocd/gitops 与 operator 的常规绑定建立主体白名单（user.username/serviceaccount），仅对指向 cluster-admin 的增量绑定保持 critical；建议同时监控 rolebindings 的 delete（清理痕迹）",
+        "en": "Baseline gitops/operator binding subjects into an allowlist; keep critical severity for new cluster-admin references; also watch rolebinding deletes (cleanup trails)"
+      },
+      "log_source": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "blocks_modules": [
+        "overprivileged-sa-escalation"
+      ],
+      "blocks_chains": [
+        "ray-dashboard-cluster-takeover"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "rolebinding",
+            "clusterrolebinding"
+          ],
+          "objectRef.roleRef.name": "cluster-admin"
+        },
+        "condition": "all"
+      }
+    },
+    {
+      "id": "sigma-privileged-pod-create",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "特权 Pod 创建",
+        "en": "特权 Pod 创建"
+      },
+      "files": [
+        "sigma/sigma-privileged-pod-create.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以例外通道命名空间（GPU operator 专用）过滤基线 DaemonSet；非例外 ns 的特权创建保持 high；可按 requestObject.hostPath.* 前缀细分严重级",
+        "en": "Filter baseline DaemonSets via the GPU operator exception namespace; keep high severity for privileged creates elsewhere; optionally grade by requestObject.hostPath.* prefixes"
+      },
+      "log_source": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "blocks_modules": [
+        "gpu-network-operator-posture",
+        "privileged-gpu-pod-escape"
+      ],
+      "blocks_chains": [
+        "gpu-network-operator-host-escape",
+        "imex-computedomain-gpu-memory-crossing"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": "pod",
+          "requestObject.privileged": true
+        },
+        "condition": "all"
+      }
+    },
+    {
+      "id": "sigma-ray-job-submit",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "Ray 作业提交（dashboard 无鉴权面）",
+        "en": "Ray 作业提交（dashboard 无鉴权面）"
+      },
+      "files": [
+        "sigma/sigma-ray-job-submit.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按提交来源收敛：仅调度器服务账号与 bastion 网段可提交；其余来源直接升级 critical；配合 8265 端口 NetworkPolicy 分区限源",
+        "en": "Restrict submitters to the scheduler service account and bastion CIDR; escalate everything else to critical; pair with NetworkPolicy source restriction on port 8265"
+      },
+      "log_source": {
+        "product": "ray",
+        "service": "dashboard"
+      },
+      "blocks_modules": [
+        "ray-dashboard-job"
+      ],
+      "blocks_chains": [
+        "ray-dashboard-cluster-takeover"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "ray",
+          "service": "dashboard"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "submit"
+          ],
+          "objectRef.resource": "job"
+        },
+        "condition": "all"
+      }
+    },
+    {
+      "id": "sigma-secret-abnormal-read",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "异常主体读取 Secret",
+        "en": "异常主体读取 Secret"
+      },
+      "files": [
+        "sigma/sigma-secret-abnormal-read.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以 30 天 audit 基线提取合法读 Secret 主体清单替换 not_in 白名单；对 instance-role/云凭据类 Secret 名称单独加规则并降低 list 误报（改 watch 审计）",
+        "en": "Derive the not_in allowlist from a 30-day audit baseline of legitimate secret readers; add a dedicated rule for instance-role/cloud-credential secret names and reduce list noise by preferring watch auditing"
+      },
+      "log_source": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "blocks_modules": [
+        "dify-snapshot-cross-tenant-theft",
+        "metadata-egress",
+        "multi-cloud-imds-credentials",
+        "ssrf-imds-credential",
+        "training-data-leak"
+      ],
+      "blocks_chains": [
+        "agent-platform-cross-tenant-data-chain",
+        "agent-platform-zero-precondition-lateral",
+        "ali-ram-role-oss-weight",
+        "aws-role-weight-bucket",
+        "azure-managed-identity-blob-weight",
+        "ssrf-sa-token-cloud-metadata",
+        "tencent-cam-role-cos-weight"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "get",
+            "list",
+            "watch"
+          ],
+          "objectRef.resource": "secret",
+          "subject_sa": {
+            "not_in": [
+              "system:serviceaccount:kube-system:generic-garbage-collector",
+              "system:serviceaccount:monitoring:prometheus"
+            ]
+          }
+        },
+        "condition": "all"
+      }
+    },
+    {
+      "id": "falco-admin-plane-unauth-access",
+      "engines": [
+        "falco"
+      ],
+      "title": {
+        "zh": "TRIDENT Admin plane unauthorized access",
+        "en": "TRIDENT Admin plane unauthorized access"
+      },
+      "files": [
+        "falco/trident-rules.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "admin_allowlist 宏先填 bastion/调度器网段；对 8265/30000/9000 之外的自部署管理端口按端口清单追加；无 driver 部署下依赖网络事件源（auditd/ebpf 二选一）",
+        "en": "Populate the admin_allowlist macro with bastion/scheduler CIDRs first; append self-deployed admin ports to the port list; without the driver, rely on auditd or eBPF network event source"
+      },
+      "log_source": "Falco syscall/trace events",
+      "blocks_modules": [
+        "ray-dashboard-job",
+        "sglang-admin-failopen",
+        "slime-weight-pull-poison"
+      ],
+      "blocks_chains": [
+        "flat-network-admin-plane-weight-poison",
+        "ray-dashboard-cluster-takeover"
+      ],
+      "finding_links": [
+        "step_key:sglang-admin-failopen",
+        "step_key:slime-weight-pull-poison"
+      ],
+      "match": {
+        "engine": "falco",
+        "event_type": [
+          "connect"
+        ],
+        "all": {
+          "dest_port": [
+            8265,
+            30000,
+            9000
+          ],
+          "source_zone": {
+            "not_in": [
+              "admin-bastion"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "falco-pickle-deserialize-call",
+      "engines": [
+        "falco"
+      ],
+      "title": {
+        "zh": "TRIDENT Pickle deserialization in serving/training process",
+        "en": "TRIDENT Pickle deserialization in serving/training process"
+      },
+      "files": [
+        "falco/trident-rules.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以训练基线进程清单（torchrun/trainer）收敛 proc 白名单；通道字段区分 checkpoint-socket / weights-load / shared-volume；weights_only=True 迁移完成后可升 ERROR",
+        "en": "Constrain proc names to the training baseline (torchrun/trainer); keep a channel field to separate checkpoint-socket / weights-load / shared-volume; raise to ERROR once weights_only=True migration completes"
+      },
+      "log_source": "Falco syscall/trace events",
+      "blocks_modules": [
+        "areal-load-pickle",
+        "trust-remote-code-supply-chain",
+        "verl-checkpoint-pickle"
+      ],
+      "blocks_chains": [
+        "pickle-channel-unauth-execution",
+        "shared-pvc-supply-chain-poison"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "falco",
+        "event_type": [
+          "deserialize"
+        ],
+        "all": {
+          "library": [
+            "pickle",
+            "torch.load",
+            "recv_pyobj"
+          ]
+        }
+      }
+    },
+    {
+      "id": "falco-weight-file-abnormal-write",
+      "engines": [
+        "falco"
+      ],
+      "title": {
+        "zh": "TRIDENT Weight file write by non-training process",
+        "en": "TRIDENT Weight file write by non-training process"
+      },
+      "files": [
+        "falco/trident-rules.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "路径关键字按客户挂载点校准（/checkpoints、/models、hf_cache、safetensors）；训练进程名单按调度器主体固化；RWX 共享卷路径建议整体纳入",
+        "en": "Calibrate path keywords to customer mount points (/checkpoints, /models, hf_cache, safetensors); pin the training process list to scheduler identities; include RWX shared-volume paths wholesale"
+      },
+      "log_source": "Falco syscall/trace events",
+      "blocks_modules": [
+        "shared-volume-weight-copy",
+        "slime-weight-pull-poison"
+      ],
+      "blocks_chains": [
+        "flat-network-admin-plane-weight-poison",
+        "shared-pvc-supply-chain-poison"
+      ],
+      "finding_links": [
+        "step_key:slime-weight-pull-poison"
+      ],
+      "match": {
+        "engine": "falco",
+        "event_type": [
+          "open_write"
+        ],
+        "all": {
+          "path": {
+            "re": "(?i)(checkpoints?|weights?|hf-cache|models)"
+          },
+          "training_process": false
+        }
+      }
+    },
+    {
+      "id": "falco-nccl-abnormal-join",
+      "engines": [
+        "falco"
+      ],
+      "title": {
+        "zh": "TRIDENT Collective communication join by external rank",
+        "en": "TRIDENT Collective communication join by external rank"
+      },
+      "files": [
+        "falco/trident-rules.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "training-allowlist 按调度器生成的训练命名空间标签维护；channel 枚举对齐实际集合通信栈（NCCL/DeepEP/NIXL/Mooncake）；RDMA 面事件依赖 eBPF/SM 导出（IB 面无 NetworkPolicy，见 ib-partition-advice.yaml）",
+        "en": "Maintain training-allowlist from scheduler-generated namespace labels; align the channel enum with the actual collective stack (NCCL/DeepEP/NIXL/Mooncake); RDMA-plane events need eBPF/SM export (no NetworkPolicy on IB - see ib-partition-advice.yaml)"
+      },
+      "log_source": "Falco syscall/trace events",
+      "blocks_modules": [
+        "inference-gateway-pd",
+        "multus-sriov-rdma-bypass",
+        "nccl-collective-join"
+      ],
+      "blocks_chains": [
+        "ib-rdma-collective-injection",
+        "nccl-gradient-injection",
+        "prefill-decode-kv-inference-manipulation"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "falco",
+        "event_type": [
+          "nccl_join"
+        ],
+        "all": {
+          "external_rank": true
+        }
+      }
+    },
+    {
+      "id": "suricata-admin-endpoint-uri",
+      "engines": [
+        "suricata"
+      ],
+      "title": {
+        "zh": "ML 管理端点 URI 签名（无鉴权管理面访问特征）",
+        "en": "ML 管理端点 URI 签名（无鉴权管理面访问特征）"
+      },
+      "files": [
+        "suricata/trident.rules"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "HOME_NET/ML_NET 变量按分区模板配置；URI 清单按客户自研管理面路由追加；建议对 POST 方法 + 非 bastion 源触发 alert，其余仅统计",
+        "en": "Set HOME_NET/ML_NET from the partition template; append customer-specific admin routes to the URI list; alert on POST from non-bastion sources and only count the rest"
+      },
+      "log_source": "Suricata EVE json",
+      "blocks_modules": [
+        "areal-load-pickle",
+        "sglang-admin-failopen",
+        "slime-weight-pull-poison"
+      ],
+      "blocks_chains": [
+        "flat-network-admin-plane-weight-poison",
+        "pickle-channel-unauth-execution"
+      ],
+      "finding_links": [
+        "step_key:sglang-admin-failopen",
+        "step_key:slime-weight-pull-poison"
+      ],
+      "match": {
+        "engine": "suricata",
+        "any_of": [
+          {
+            "uri_re": "/pull_weights|/set_env|/create_engine|/fetch_weights|/awex|/update_weights_from_disk|/pause"
+          }
+        ]
+      }
+    },
+    {
+      "id": "suricata-imds-egress",
+      "engines": [
+        "suricata"
+      ],
+      "title": {
+        "zh": "云元数据出网探测（IMDS 凭据面）",
+        "en": "云元数据出网探测（IMDS 凭据面）"
+      },
+      "files": [
+        "suricata/trident.rules"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "合法调用方（云 provider 组件节点池）按节点 CIDR 白名单；EKS 侧配合 IMDSv2 强制（Hop Limit=1）与 SecurityGroup for Pods 出网收敛；其余云按等价元数据加固",
+        "en": "Allowlist cloud provider component node pools by node CIDR; on EKS enforce IMDSv2 (Hop Limit=1) and tighten pod egress via SecurityGroup for Pods; mirror the equivalent hardening on other clouds"
+      },
+      "log_source": "Suricata EVE json",
+      "blocks_modules": [
+        "hybrid-cloud-egress-pivot",
+        "metadata-egress",
+        "multi-cloud-imds-credentials",
+        "ssrf-imds-credential"
+      ],
+      "blocks_chains": [
+        "agent-platform-zero-precondition-lateral",
+        "ali-ram-role-oss-weight",
+        "aws-role-weight-bucket",
+        "azure-managed-identity-blob-weight",
+        "ssrf-sa-token-cloud-metadata",
+        "tencent-cam-role-cos-weight",
+        "vpc-cni-dual-control-plane-lateral"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "suricata",
+        "any_of": [
+          {
+            "uri_re": "/latest/meta-data|/computeMetadata|/metadata/instance"
+          },
+          {
+            "dest_ip_re": "^169\\.254\\.169\\.254$"
+          }
+        ]
+      }
+    },
+    {
+      "id": "suricata-nccl-kv-ports",
+      "engines": [
+        "suricata"
+      ],
+      "title": {
+        "zh": "集合通信 / KV 传输端口异常流量（NCCL TCPStore、NIXL/Mooncake）",
+        "en": "集合通信 / KV 传输端口异常流量（NCCL TCPStore、NIXL/Mooncake）"
+      },
+      "files": [
+        "suricata/trident.rules"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "端口集按训练平台的 rendezvous/KV 传输实际配置扩展（动态端口段按范围写 rule）；RDMA/RoCE 面 Suricata 不可见，须以 IB Partition/SM 隔离替代（见 rdma-sriov-uncovered.md）",
+        "en": "Extend the port set from the actual rendezvous/KV configuration (write dynamic ranges as ranges); RDMA/RoCE is invisible to Suricata - compensate with IB Partition/SM isolation (see rdma-sriov-uncovered.md)"
+      },
+      "log_source": "Suricata EVE json",
+      "blocks_modules": [
+        "collective-communication-surface",
+        "inference-gateway-pd",
+        "nccl-collective-join"
+      ],
+      "blocks_chains": [
+        "ib-rdma-collective-injection",
+        "nccl-gradient-injection",
+        "prefill-decode-kv-inference-manipulation"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "suricata",
+        "any_of": [
+          {
+            "dest_ports": [
+              29400,
+              29500,
+              29501,
+              29511,
+              45678
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "zeroday-agent-sandbox-unexpected-parent-exec",
+      "engines": [
+        "falco"
+      ],
+      "title": {
+        "zh": "TRIDENT Agent sandbox host unexpected parent execution",
+        "en": "TRIDENT Agent sandbox host unexpected parent execution"
+      },
+      "files": [
+        "falco/trident-rules.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "先按沙箱宿主实际监管进程补全父进程基线（sandbox-supervisor/containerd-shim/systemd）；上线两周内统计高频合法父进程并收敛；命中样本回传平台侧复核后再升级处置",
+        "en": "Complete the parent baseline from the actual sandbox supervisor processes; observe for two weeks and absorb frequent legitimate parents; escalate response only after platform-side confirmation"
+      },
+      "log_source": "Falco syscall/trace events",
+      "blocks_modules": [
+        "dify-local-sandbox-unauth-rce"
+      ],
+      "blocks_chains": [
+        "agent-platform-zero-precondition-lateral"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "falco",
+        "event_type": [
+          "exec"
+        ],
+        "all": {
+          "host_class": "agent-sandbox",
+          "parent": {
+            "not_in": [
+              "sandbox-supervisor",
+              "containerd-shim",
+              "systemd"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "zeroday-agent-tenant-object-cross-read",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "Agent 平台租户对象跨租户读取",
+        "en": "Agent 平台租户对象跨租户读取"
+      },
+      "files": [
+        "sigma/zeroday-agent-tenant-object-cross-read.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "阈值（5 分钟 3 次）按平台吞吐校准；对 object_class 扩展到快照/数据集导出类对象；运维迁移窗口以主体白名单收敛",
+        "en": "Calibrate the threshold (3 per 5m) to platform throughput; extend object_class to snapshot/dataset-export objects; allowlist operations migration windows by subject"
+      },
+      "log_source": {
+        "category": "agent-platform"
+      },
+      "blocks_modules": [
+        "dify-snapshot-cross-tenant-theft",
+        "training-data-leak"
+      ],
+      "blocks_chains": [
+        "agent-platform-cross-tenant-data-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "category": "agent-platform"
+        },
+        "selection": {
+          "action": [
+            "read",
+            "list",
+            "materialize",
+            "create"
+          ],
+          "object_class": "tenant-binding",
+          "cross_tenant": true
+        },
+        "condition": "all"
+      }
+    }
+  ],
+  "chains": {
+    "agent-platform-cross-tenant-data-chain": {
+      "category": "零日链",
+      "title": {
+        "zh": "智能体平台跨租户窃取 → 数据面串联",
+        "en": "Agent platform cross-tenant theft → data plane chain"
+      },
+      "modules": [
+        "dify-snapshot-cross-tenant-theft",
+        "storage-sharing",
+        "training-data-leak"
+      ],
+      "rules": [
+        "sigma-secret-abnormal-read",
+        "zeroday-agent-tenant-object-cross-read"
+      ]
+    },
+    "agent-platform-zero-precondition-lateral": {
+      "category": "零日链",
+      "title": {
+        "zh": "智能体平台零前置执行 → 训练集群横向",
+        "en": "Agent platform zero-precondition execution → training cluster lateral"
+      },
+      "modules": [
+        "dify-local-sandbox-unauth-rce",
+        "exposure-mapping",
+        "metadata-egress"
+      ],
+      "rules": [
+        "deny-automount-serviceaccount-token",
+        "netpol-default-deny-partition",
+        "sigma-secret-abnormal-read",
+        "suricata-imds-egress",
+        "zeroday-agent-sandbox-unexpected-parent-exec"
+      ]
+    },
+    "ali-ram-role-oss-weight": {
+      "category": "云侧权重桶链",
+      "title": {
+        "zh": "阿里 RAM 角色 → OSS 权重",
+        "en": "Aliyun RAM role → OSS weights"
+      },
+      "modules": [
+        "cloud-integration-fingerprint",
+        "cloud-role-overprivilege",
+        "multi-cloud-imds-credentials"
+      ],
+      "rules": [
+        "sigma-secret-abnormal-read",
+        "suricata-imds-egress"
+      ]
+    },
+    "aws-role-weight-bucket": {
+      "category": "云侧权重桶链",
+      "title": {
+        "zh": "AWS 角色 → S3 权重桶",
+        "en": "AWS role → S3 weight bucket"
+      },
+      "modules": [
+        "cloud-integration-fingerprint",
+        "cloud-role-overprivilege",
+        "multi-cloud-imds-credentials"
+      ],
+      "rules": [
+        "sigma-secret-abnormal-read",
+        "suricata-imds-egress"
+      ]
+    },
+    "azure-managed-identity-blob-weight": {
+      "category": "云侧权重桶链",
+      "title": {
+        "zh": "Azure 托管身份 → Blob 权重",
+        "en": "Azure managed identity → Blob weights"
+      },
+      "modules": [
+        "cloud-integration-fingerprint",
+        "cloud-role-overprivilege",
+        "multi-cloud-imds-credentials"
+      ],
+      "rules": [
+        "sigma-secret-abnormal-read",
+        "suricata-imds-egress"
+      ]
+    },
+    "flat-network-admin-plane-weight-poison": {
+      "category": "经典攻击链",
+      "title": {
+        "zh": "平网 → 管理面 → 权重投毒",
+        "en": "Flat network → admin plane → weight poisoning"
+      },
+      "modules": [
+        "framework-port-matching",
+        "network-policy-coverage",
+        "sglang-admin-failopen",
+        "slime-weight-pull-poison"
+      ],
+      "rules": [
+        "alert-combo-signature",
+        "netpol-default-deny-partition",
+        "falco-admin-plane-unauth-access",
+        "falco-weight-file-abnormal-write",
+        "suricata-admin-endpoint-uri"
+      ]
+    },
+    "gpu-network-operator-host-escape": {
+      "category": "网络利用链",
+      "title": {
+        "zh": "GPU 与网络 Operator → 宿主逃逸",
+        "en": "GPU and network operator → host escape"
+      },
+      "modules": [
+        "gpu-network-operator-posture",
+        "privileged-gpu-pod-escape",
+        "runtime-socket-escape"
+      ],
+      "rules": [
+        "deny-privileged-pod",
+        "deny-sensitive-hostpath",
+        "sigma-privileged-pod-create"
+      ]
+    },
+    "ib-rdma-collective-injection": {
+      "category": "网络利用链",
+      "title": {
+        "zh": "IB/RDMA 平面 → 集合通信注入",
+        "en": "IB/RDMA plane → collective communication injection"
+      },
+      "modules": [
+        "collective-communication-surface",
+        "fabric-topology-isolation",
+        "multus-sriov-rdma-bypass",
+        "nccl-collective-join"
+      ],
+      "rules": [
+        "netpol-default-deny-partition",
+        "rdma-sriov-ib-partition-advice",
+        "falco-nccl-abnormal-join",
+        "suricata-nccl-kv-ports"
+      ]
+    },
+    "imex-computedomain-gpu-memory-crossing": {
+      "category": "网络利用链",
+      "title": {
+        "zh": "IMEX / ComputeDomain → 跨节点 GPU 内存越权",
+        "en": "IMEX / ComputeDomain → cross-node GPU memory overreach"
+      },
+      "modules": [
+        "fabric-topology-isolation",
+        "gpu-network-operator-posture"
+      ],
+      "rules": [
+        "deny-privileged-pod",
+        "rdma-sriov-ib-partition-advice",
+        "sigma-privileged-pod-create"
+      ]
+    },
+    "nccl-gradient-injection": {
+      "category": "经典攻击链",
+      "title": {
+        "zh": "NCCL → 梯度注入",
+        "en": "NCCL → gradient injection"
+      },
+      "modules": [
+        "collective-communication-surface",
+        "nccl-collective-join"
+      ],
+      "rules": [
+        "netpol-default-deny-partition",
+        "rdma-sriov-ib-partition-advice",
+        "falco-nccl-abnormal-join",
+        "suricata-nccl-kv-ports"
+      ]
+    },
+    "observability-pivot-precision-strike": {
+      "category": "经典攻击链",
+      "title": {
+        "zh": "观测面 → 精准打点",
+        "en": "Observability plane → precision targeting"
+      },
+      "modules": [
+        "exposure-mapping",
+        "observability-exposure"
+      ],
+      "rules": [
+        "netpol-default-deny-partition"
+      ]
+    },
+    "pickle-channel-unauth-execution": {
+      "category": "经典攻击链",
+      "title": {
+        "zh": "pickle 通道 → 未授权执行",
+        "en": "pickle channel → unauthenticated execution"
+      },
+      "modules": [
+        "areal-load-pickle",
+        "framework-port-matching",
+        "verl-checkpoint-pickle"
+      ],
+      "rules": [
+        "netpol-default-deny-partition",
+        "falco-pickle-deserialize-call",
+        "suricata-admin-endpoint-uri"
+      ]
+    },
+    "prefill-decode-kv-inference-manipulation": {
+      "category": "网络利用链",
+      "title": {
+        "zh": "预填充-解码 KV 通道 → 推理操纵",
+        "en": "Prefill-decode KV channel → inference manipulation"
+      },
+      "modules": [
+        "collective-communication-surface",
+        "inference-gateway-pd"
+      ],
+      "rules": [
+        "netpol-default-deny-partition",
+        "rdma-sriov-ib-partition-advice",
+        "falco-nccl-abnormal-join",
+        "suricata-nccl-kv-ports"
+      ]
+    },
+    "ray-dashboard-cluster-takeover": {
+      "category": "经典攻击链",
+      "title": {
+        "zh": "Ray Dashboard → 集群控制",
+        "en": "Ray Dashboard → cluster takeover"
+      },
+      "modules": [
+        "overprivileged-sa-escalation",
+        "ray-control-plane",
+        "ray-dashboard-job"
+      ],
+      "rules": [
+        "deny-privileged-pod",
+        "alert-rolebinding-creation",
+        "netpol-default-deny-partition",
+        "sigma-rolebinding-cluster-admin",
+        "sigma-ray-job-submit",
+        "falco-admin-plane-unauth-access"
+      ]
+    },
+    "shared-pvc-supply-chain-poison": {
+      "category": "经典攻击链",
+      "title": {
+        "zh": "共享 PVC + 模型加载 → 供应链投毒",
+        "en": "Shared PVC + model loading → supply chain poisoning"
+      },
+      "modules": [
+        "shared-volume-weight-copy",
+        "storage-sharing",
+        "trust-remote-code-supply-chain"
+      ],
+      "rules": [
+        "falco-pickle-deserialize-call",
+        "falco-weight-file-abnormal-write"
+      ]
+    },
+    "ssrf-sa-token-cloud-metadata": {
+      "category": "经典攻击链",
+      "title": {
+        "zh": "SSRF / SA Token → 云元数据",
+        "en": "SSRF / SA token → cloud metadata"
+      },
+      "modules": [
+        "metadata-egress",
+        "multi-cloud-imds-credentials",
+        "ssrf-imds-credential"
+      ],
+      "rules": [
+        "deny-automount-serviceaccount-token",
+        "sigma-secret-abnormal-read",
+        "suricata-imds-egress"
+      ]
+    },
+    "tencent-cam-role-cos-weight": {
+      "category": "云侧权重桶链",
+      "title": {
+        "zh": "腾讯 CAM 角色 → COS 权重",
+        "en": "Tencent CAM role → COS weights"
+      },
+      "modules": [
+        "cloud-integration-fingerprint",
+        "cloud-role-overprivilege",
+        "multi-cloud-imds-credentials"
+      ],
+      "rules": [
+        "sigma-secret-abnormal-read",
+        "suricata-imds-egress"
+      ]
+    },
+    "vpc-cni-dual-control-plane-lateral": {
+      "category": "网络利用链",
+      "title": {
+        "zh": "VPC-CNI 双控制面错配 → 云内横向",
+        "en": "VPC-CNI dual control plane mismatch → intra-cloud lateral"
+      },
+      "modules": [
+        "cni-stack-capability",
+        "hybrid-cloud-egress-pivot"
+      ],
+      "rules": [
+        "netpol-default-deny-partition",
+        "vpc-securitygroup-supplement",
+        "suricata-imds-egress"
+      ]
+    }
+  },
+  "zeroday": [
+    {
+      "id": "zeroday-agent-sandbox-unexpected-parent-exec",
+      "engine": "falco",
+      "files": [
+        "falco/trident-rules.yaml"
+      ],
+      "related_modules": [
+        "dify-local-sandbox-unauth-rce"
+      ],
+      "behavioral": true,
+      "note": "行为化签名：仅描述异常行为特征，不含利用细节特征串；公开 advisory 后可升级为细节版规则"
+    },
+    {
+      "id": "zeroday-agent-tenant-object-cross-read",
+      "engine": "sigma",
+      "files": [
+        "sigma/zeroday-agent-tenant-object-cross-read.yaml"
+      ],
+      "related_modules": [
+        "dify-snapshot-cross-tenant-theft",
+        "training-data-leak"
+      ],
+      "behavioral": true,
+      "note": "行为化签名：仅描述异常行为特征，不含利用细节特征串；公开 advisory 后可升级为细节版规则"
+    }
+  ],
+  "rdma_declaration": {
+    "files": [
+      "network/rdma-sriov-uncovered.md",
+      "network/ib-partition-advice.yaml"
+    ],
+    "statement": {
+      "zh": "显式声明：RDMA / SR-IOV VF / IB / macvlan 与 hostNetwork/hostDevice 路径不经 CNI 转发，任何 NetworkPolicy（原生 / Calico / Cilium）与 VPC 安全组均不覆盖该面；集合通信隔离必须依赖 IB Partition（PKey）/ Subnet Manager 隔离与 rail/plane 分区，另见 network/ib-partition-advice.yaml 与 network/rdma-sriov-uncovered.md。",
+      "en": "Explicit declaration: RDMA / SR-IOV VF / IB / macvlan and hostNetwork/hostDevice paths bypass the CNI forwarding plane and are NOT covered by any NetworkPolicy (native / Calico / Cilium) nor by VPC security groups; collective-communication isolation must rely on IB Partition (PKey) / Subnet Manager isolation and rail/plane partitioning - see network/ib-partition-advice.yaml and network/rdma-sriov-uncovered.md."
+    }
+  },
+  "purple_validation": {
+    "entry": "trident.rules.validate",
+    "artifacts": [
+      "coverage-matrix.json",
+      "coverage-matrix.md"
+    ],
+    "note": "对 lab mock vulnerable 靶场重放各链第一步探针 + 日志 fixture，用内置简化匹配器断言规则命中"
+  }
+}

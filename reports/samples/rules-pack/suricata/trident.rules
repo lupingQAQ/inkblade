@@ -1,0 +1,20 @@
+# Trident Suricata signatures (monitor mode) - deploy with HOME_NET/ML_NET vars
+# vars: ML_NET = ML 分区网段（training/inference/ray-system）；BASTION_NET = 管理网段
+
+# --- suricata-admin-endpoint-uri: ML 管理端点 URI 签名（无鉴权管理面访问特征） (tuning: HOME_NET/ML_NET 变量按分区模板配置；URI 清单按客户自研管理面路由追加；建议对 POST 方法 + 非...) ---
+alert http any any -> $ML_NET any (msg:"TRIDENT admin endpoint URI /pull_weights"; flow:established,to_server; http.method; content:"POST"; http.uri; content:"/pull_weights"; sid:9000001; rev:1; metadata:trident.mode=monitor, trident.rule=suricata-admin-endpoint-uri;)
+alert http any any -> $ML_NET any (msg:"TRIDENT admin endpoint URI /set_env"; flow:established,to_server; http.method; content:"POST"; http.uri; content:"/set_env"; sid:9000002; rev:1; metadata:trident.mode=monitor, trident.rule=suricata-admin-endpoint-uri;)
+alert http any any -> $ML_NET any (msg:"TRIDENT admin endpoint URI /create_engine"; flow:established,to_server; http.method; content:"POST"; http.uri; content:"/create_engine"; sid:9000003; rev:1; metadata:trident.mode=monitor, trident.rule=suricata-admin-endpoint-uri;)
+alert http any any -> $ML_NET any (msg:"TRIDENT admin endpoint URI /fetch_weights"; flow:established,to_server; http.method; content:"POST"; http.uri; content:"/fetch_weights"; sid:9000004; rev:1; metadata:trident.mode=monitor, trident.rule=suricata-admin-endpoint-uri;)
+alert http any any -> $ML_NET any (msg:"TRIDENT admin endpoint URI /awex"; flow:established,to_server; http.method; content:"POST"; http.uri; content:"/awex"; sid:9000005; rev:1; metadata:trident.mode=monitor, trident.rule=suricata-admin-endpoint-uri;)
+alert http any any -> $ML_NET any (msg:"TRIDENT admin endpoint URI /update_weights_from_disk"; flow:established,to_server; http.method; content:"POST"; http.uri; content:"/update_weights_from_disk"; sid:9000006; rev:1; metadata:trident.mode=monitor, trident.rule=suricata-admin-endpoint-uri;)
+alert http any any -> $ML_NET any (msg:"TRIDENT admin endpoint URI /pause"; flow:established,to_server; http.method; content:"POST"; http.uri; content:"/pause"; sid:9000007; rev:1; metadata:trident.mode=monitor, trident.rule=suricata-admin-endpoint-uri;)
+
+# --- suricata-imds-egress: 云元数据出网探测（IMDS 凭据面） (tuning: 合法调用方（云 provider 组件节点池）按节点 CIDR 白名单；EKS 侧配合 IMDSv2 强制（Hop Li...) ---
+alert ip $ML_NET any -> 169.254.169.254 any (msg:"TRIDENT IMDS egress from ML partition"; flow:to_server; sid:9000101; rev:1; metadata:trident.mode=monitor, trident.rule=suricata-imds-egress;)
+alert http $ML_NET any -> any any (msg:"TRIDENT metadata URI /latest/meta-data"; flow:established,to_server; http.uri; content:"/latest/meta-data"; sid:9000102; rev:1; metadata:trident.mode=monitor, trident.rule=suricata-imds-egress;)
+alert http $ML_NET any -> any any (msg:"TRIDENT metadata URI /computeMetadata"; flow:established,to_server; http.uri; content:"/computeMetadata"; sid:9000103; rev:1; metadata:trident.mode=monitor, trident.rule=suricata-imds-egress;)
+alert http $ML_NET any -> any any (msg:"TRIDENT metadata URI /metadata/instance"; flow:established,to_server; http.uri; content:"/metadata/instance"; sid:9000104; rev:1; metadata:trident.mode=monitor, trident.rule=suricata-imds-egress;)
+
+# --- suricata-nccl-kv-ports: 集合通信 / KV 传输端口异常流量（NCCL TCPStore、NIXL/Mooncake） (tuning: 端口集按训练平台的 rendezvous/KV 传输实际配置扩展（动态端口段按范围写 rule）；RDMA/RoCE 面...) ---
+alert tcp any any -> $ML_NET [29400, 29500, 29501, 29511, 45678] (msg:"TRIDENT collective/KV transfer port access from outside partition"; flow:to_server; flags:S; sid:9000201; rev:1; metadata:trident.mode=monitor, trident.rule=suricata-nccl-kv-ports;)

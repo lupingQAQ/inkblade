@@ -1,0 +1,177 @@
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: trident-default-deny
+  annotations:
+    trident.io/mode: monitor
+    trident.io/note: 顺序低于放行策略；RDMA/SR-IOV 面不覆盖，见 rdma-sriov-uncovered.md
+spec:
+  selector: all()
+  order: 1000
+  types:
+    - Ingress
+    - Egress
+  ingress:
+    - action: Deny
+  egress:
+    - action: Deny
+
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: trident-allow-ray-system
+  annotations:
+    trident.io/mode: monitor
+spec:
+  order: 900
+  selector: "ray-system.trident-io-zone/member == 'true'"
+  types:
+    - Ingress
+    - Egress
+  ingress:
+    - action: Allow
+      source:
+        selector: "ml-training.trident-io-zone/member == 'true'"
+        nets:
+          - 192.168.10.0/24
+      ports:
+        - protocol: TCP
+          port: 8265
+        - protocol: TCP
+          port: 10001
+        - protocol: TCP
+          port: 6379
+  egress:
+    - action: Allow
+      destination:
+        nets:
+          - 0.0.0.0/0
+
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: trident-allow-ml-training
+  annotations:
+    trident.io/mode: monitor
+spec:
+  order: 900
+  selector: "ml-training.trident-io-zone/member == 'true'"
+  types:
+    - Ingress
+    - Egress
+  ingress:
+    - action: Allow
+      source:
+        selector: "ray-system.trident-io-zone/member == 'true' || ml-training.trident-io-zone/member == 'true'"
+        nets:
+          - 192.168.10.0/24
+      ports:
+        - protocol: TCP
+          port: 29400
+        - protocol: TCP
+          port: 29500
+        - protocol: TCP
+          port: 29501
+        - protocol: TCP
+          port: 29511
+        - protocol: TCP
+          port: 45678
+  egress:
+    - action: Allow
+      destination:
+        nets:
+          - 0.0.0.0/0
+
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: trident-allow-ml-inference
+  annotations:
+    trident.io/mode: monitor
+spec:
+  order: 900
+  selector: "ml-inference.trident-io-zone/member == 'true'"
+  types:
+    - Ingress
+    - Egress
+  ingress:
+    - action: Allow
+      source:
+        selector: "monitoring.trident-io-zone/member == 'true'"
+        nets:
+          - 192.168.10.0/24
+      ports:
+        - protocol: TCP
+          port: 30000
+        - protocol: TCP
+          port: 9000
+        - protocol: TCP
+          port: 8000
+  egress:
+    - action: Allow
+      destination:
+        nets:
+          - 0.0.0.0/0
+
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: trident-allow-monitoring
+  annotations:
+    trident.io/mode: monitor
+spec:
+  order: 900
+  selector: "monitoring.trident-io-zone/member == 'true'"
+  types:
+    - Ingress
+    - Egress
+  ingress:
+    - action: Allow
+      source:
+        selector: all()
+        nets:
+          - 192.168.10.0/24
+      ports:
+        - protocol: TCP
+          port: 9090
+        - protocol: TCP
+          port: 9092
+  egress:
+    - action: Allow
+      destination:
+        nets:
+          - 0.0.0.0/0
+
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: trident-allow-ml-agent
+  annotations:
+    trident.io/mode: monitor
+spec:
+  order: 900
+  selector: "ml-agent.trident-io-zone/member == 'true'"
+  types:
+    - Ingress
+    - Egress
+  ingress:
+    - action: Allow
+      source:
+        selector: all()
+        nets:
+          - 192.168.10.0/24
+      ports:
+        - protocol: TCP
+          port: 80
+        - protocol: TCP
+          port: 8080
+  egress:
+    - action: Allow
+      destination:
+        nets:
+          - 0.0.0.0/0

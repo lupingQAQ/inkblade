@@ -1,0 +1,12 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: alertcombosignature
+spec:
+  crd:
+    spec:
+      names:
+        kind: TridentAlertComboSignature
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: "violation[{\"msg\": msg}] {\n  c := input.review.object.spec.template.spec.containers[_]\n  endswith(c.image, \":latest\")\n  p := c.ports[_].containerPort\n  p == 30000\n  msg := \"combo signature: weight-write admin port with mutable image tag\"\n}"

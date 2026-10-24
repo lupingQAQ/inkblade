@@ -1,0 +1,19 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: TridentAlertComboSignature
+metadata:
+  name: trident-alert-combo-signature
+  annotations:
+    trident.io/mode: monitor
+    trident.io/tuning: 端口集与镜像标签基线按客户部署清单校准；命中仅告警不断链（组合缺陷只能靠准入拦，先盘点再收紧）；配合镜像 digest 固定基线
+    trident.io/blocks-chains: flat-network-admin-plane-weight-poison
+spec:
+  enforcementAction: dryrun
+  match:
+    kinds:
+      - apiGroups:
+          - ""
+          - apps
+          - rbac.authorization.k8s.io
+        kinds:
+          - Deployment
+          - apps/Deployment

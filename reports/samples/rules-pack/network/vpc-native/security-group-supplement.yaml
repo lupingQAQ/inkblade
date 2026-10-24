@@ -1,0 +1,21 @@
+apiVersion: vpcresources.k8s.aws/v1beta1
+kind: SecurityGroupPolicy
+metadata:
+  name: trident-training-partition-sg
+  annotations:
+    trident.io/mode: monitor
+    trident.io/blocks-chains: vpc-cni-dual-control-plane-lateral
+    trident.io/note: VPC-native 双控制面：SG 与 NetworkPolicy 语义不一致，必须双侧核对
+spec:
+  podSelector:
+    matchLabels:
+      trident-io-zone: ml-training
+  securityGroups:
+    groupIds:
+      - sg-TRAINING_PARTITION_PLACEHOLDER
+variants:
+  eks-securitygroup-for-pods: vpcresources.k8s.aws/v1beta1 SecurityGroupPolicy（本文件）
+  aliyun-ack-terway: Terway Pod 级安全组（trident.io/sg 注解方式，按 Terway 文档套用）
+  tencent-tke-vpc-cni: TKE VPC-CNI Pod 级安全组绑定（按 TKE 控制台/API 套用）
+  azure-aks: AKS Azure CNI + NSG（NSG 无 Pod 级语义，用 policy + NSG 双侧收敛）
+warning: VPC 安全组与 K8s NetworkPolicy 是两套控制面：入站以 SG 为准、出站以策略为准时最易错配；逐分区建立双侧对照表后再收敛。
