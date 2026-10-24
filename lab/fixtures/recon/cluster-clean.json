@@ -1,0 +1,37 @@
+{
+  "cluster": { "name": "clean-lab", "provider": "unknown" },
+  "namespaces": ["default"],
+  "services": [
+    { "name": "web-app", "namespace": "default", "type": "ClusterIP", "ports": [{ "name": "http", "port": 8080 }] }
+  ],
+  "ingresses": [],
+  "httproutes": [],
+  "networkpolicies": [
+    { "name": "default-deny", "namespace": "default", "podSelector": {}, "policyTypes": ["Ingress", "Egress"], "ingress": [], "egress": [] }
+  ],
+  "pods": [
+    { "name": "clean-app-0", "namespace": "default", "serviceAccount": "default", "automountServiceAccountToken": false, "containers": [{ "name": "web", "image": "nginx:1.27" }] }
+  ],
+  "rayclusters": [],
+  "rayjobs": [],
+  "serviceaccounts": [
+    { "name": "default", "namespace": "default", "automount": false }
+  ],
+  "cani": [
+    { "subject": "system:serviceaccount:default:default", "allowed": ["get pods", "list pods"] }
+  ],
+  "clusterroles": [
+    { "name": "app-view", "rules": [{ "apiGroups": [""], "resources": ["pods"], "verbs": ["get", "list"] }] }
+  ],
+  "clusterrolebindings": [],
+  "secrets": [],
+  "pvcs": [
+    { "name": "app-data", "namespace": "default", "accessModes": ["ReadWriteOnce"], "storageClass": "local-path" }
+  ],
+  "storageclasses": [
+    { "name": "local-path", "provisioner": "rancher.io/local-path" }
+  ],
+  "pvs": [],
+  "nodes": [],
+  "interconnects": []
+}

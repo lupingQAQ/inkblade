@@ -1,0 +1,82 @@
+{
+  "cluster": { "name": "ml-lab", "provider": "unknown" },
+  "namespaces": ["default", "infer", "train", "ray-system", "monitoring", "ops"],
+  "services": [
+    { "name": "sglang-admin", "namespace": "infer", "type": "ClusterIP", "selector": { "app": "sglang" }, "ports": [{ "name": "http", "port": 30000, "targetPort": 30000 }] },
+    { "name": "ray-dashboard", "namespace": "ray-system", "type": "LoadBalancer", "ports": [{ "name": "dashboard", "port": 8265, "targetPort": 8265 }], "externalIPs": ["203.0.113.10"] },
+    { "name": "vllm-plugins", "namespace": "infer", "type": "NodePort", "ports": [{ "name": "http", "port": 8000, "targetPort": 8000, "nodePort": 31000 }] },
+    { "name": "openrlhf-reward", "namespace": "train", "type": "ClusterIP", "ports": [{ "name": "rm", "port": 5000, "targetPort": 5000 }] },
+    { "name": "grafana", "namespace": "monitoring", "type": "LoadBalancer", "ports": [{ "name": "http", "port": 3000 }] },
+    { "name": "prometheus", "namespace": "monitoring", "type": "NodePort", "ports": [{ "name": "http", "port": 9090, "nodePort": 32090 }] },
+    { "name": "dcgm-exporter", "namespace": "monitoring", "type": "ClusterIP", "ports": [{ "name": "metrics", "port": 9400 }] },
+    { "name": "mlflow", "namespace": "ops", "type": "ClusterIP", "ports": [{ "name": "http", "port": 5000 }] },
+    { "name": "jupyter", "namespace": "ops", "type": "ClusterIP", "ports": [{ "name": "http", "port": 8888 }] },
+    { "name": "tensorboard", "namespace": "train", "type": "ClusterIP", "ports": [{ "name": "http", "port": 6006 }] }
+  ],
+  "ingresses": [
+    { "name": "mlflow-ingress", "namespace": "ops", "host": "ml.ml-lab.internal", "service": "mlflow", "port": 5000 },
+    { "name": "jupyter-ingress", "namespace": "ops", "host": "nb.ml-lab.internal", "service": "jupyter", "port": 8888 }
+  ],
+  "httproutes": [
+    { "name": "llm-gateway", "namespace": "infer", "hostname": "llm.ml-lab.internal", "service": "llm-router", "port": 8000, "inferencePool": { "name": "llm-pool", "failureMode": "FailOpen" } }
+  ],
+  "networkpolicies": [
+    { "name": "default-deny", "namespace": "train", "podSelector": {}, "policyTypes": ["Ingress", "Egress"], "ingress": [], "egress": [] },
+    { "name": "allow-dns", "namespace": "train", "podSelector": {}, "policyTypes": ["Egress"], "egress": [{ "to": [{ "namespaceSelector": { "matchLabels": { "kubernetes.io/metadata.name": "kube-system" } } }], "ports": [{ "port": 53, "protocol": "UDP" }] }] }
+  ],
+  "pods": [
+    { "name": "sglang-server-0", "namespace": "infer", "serviceAccount": "sglang-sa", "automountServiceAccountToken": true, "labels": { "app": "sglang" }, "containers": [{ "name": "server", "image": "lmsys/sglang:v0.5.21", "securityContext": { "privileged": true }, "ports": [{ "containerPort": 30000 }], "env": [{ "name": "ADMIN_OPTIONAL", "value": "1" }] }] },
+    { "name": "ray-head-0", "namespace": "ray-system", "serviceAccount": "ray-head", "hostNetwork": true, "hostIPC": true, "labels": { "app": "ray" }, "containers": [{ "name": "ray", "image": "rayproject/ray:2.9.3", "ports": [{ "containerPort": 8265 }] }] },
+    { "name": "gpu-trainer-0", "namespace": "train", "serviceAccount": "train-sa", "hostPID": true, "volumes": [{ "name": "docker-sock", "hostPath": { "path": "/var/run/docker.sock" } }, { "name": "hf-cache", "hostPath": { "path": "/mnt/hf-cache" } }], "containers": [{ "name": "trainer", "image": "registry.ml-lab/train:latest", "securityContext": { "capabilities": { "add": ["SYS_ADMIN", "SYS_PTRACE"] }, "seccompProfile": "Unconfined" }, "env": [{ "name": "AWS_ACCESS_KEY_ID", "value": "MOCKAKIATRIDENTLAB" }, { "name": "AWS_SECRET_ACCESS_KEY", "value": "MOCKSECRETTRIDENTLAB" }, { "name": "HF_TOKEN", "value": "mock-hf-token" }] }] },
+    { "name": "kuberay-operator-0", "namespace": "ray-system", "serviceAccount": "ray-operator", "containers": [{ "name": "manager", "image": "kuberay/operator:v1.1.1" }] },
+    { "name": "clean-app-0", "namespace": "default", "serviceAccount": "default", "containers": [{ "name": "web", "image": "nginx:1.27" }] }
+  ],
+  "rayclusters": [
+    { "name": "rl-train", "namespace": "ray-system", "headService": "ray-dashboard", "dashboardPort": 8265, "auth": "none", "autoscalerSA": "ray-operator" }
+  ],
+  "rayjobs": [
+    { "name": "verl-ppo", "namespace": "ray-system", "entrypoint": "python train_ppo.py" }
+  ],
+  "serviceaccounts": [
+    { "name": "sglang-sa", "namespace": "infer" },
+    { "name": "ray-head", "namespace": "ray-system" },
+    { "name": "train-sa", "namespace": "train" },
+    { "name": "ray-operator", "namespace": "ray-system" }
+  ],
+  "cani": [
+    { "subject": "system:serviceaccount:train:train-sa", "allowed": ["create pods", "create pods/exec", "get secrets", "list secrets"] },
+    { "subject": "system:serviceaccount:ray-system:ray-operator", "allowed": ["*"] }
+  ],
+  "clusterroles": [
+    { "name": "ray-operator-role", "rules": [{ "apiGroups": ["*"], "resources": ["*"], "verbs": ["*"] }] },
+    { "name": "vllm-operator-role", "rules": [{ "apiGroups": ["rbac.authorization.k8s.io"], "resources": ["roles", "rolebindings", "clusterroles", "clusterrolebindings"], "verbs": ["create", "update", "patch", "delete"] }] }
+  ],
+  "clusterrolebindings": [
+    { "name": "ray-operator-binding", "role": "ray-operator-role", "subjects": [{ "kind": "ServiceAccount", "name": "ray-operator", "namespace": "ray-system" }] },
+    { "name": "ops-admin-binding", "role": "cluster-admin", "subjects": [{ "kind": "User", "name": "ops-admin" }] }
+  ],
+  "secrets": [
+    { "name": "hf-token", "namespace": "train" },
+    { "name": "aws-creds", "namespace": "train" },
+    { "name": "regcred", "namespace": "ops" }
+  ],
+  "pvcs": [
+    { "name": "shared-weights", "namespace": "train", "accessModes": ["ReadWriteMany"], "storageClass": "nfs-shared" },
+    { "name": "datasets", "namespace": "train", "accessModes": ["ReadWriteMany"], "storageClass": "juicefs-shared" }
+  ],
+  "storageclasses": [
+    { "name": "nfs-shared", "provisioner": "nfs.csi.k8s.io" },
+    { "name": "juicefs-shared", "provisioner": "csi.juicefs.com" },
+    { "name": "alicloud-ssd", "provisioner": "diskplugin.csi.alibabacloud.com" }
+  ],
+  "pvs": [
+    { "name": "pv-weights", "accessModes": ["ReadWriteMany"], "nfs": { "server": "nfs.ml-lab.internal", "path": "/exports/weights" } }
+  ],
+  "nodes": [
+    { "name": "gpu-node-1", "providerID": "cn-beijing.i-mock00001", "labels": { "alibabacloud.com/nodepool-id": "ml-gpu-pool" } },
+    { "name": "gpu-node-2", "providerID": "cn-beijing.i-mock00002" }
+  ],
+  "interconnects": [
+    { "kind": "cen", "name": "cen-ml-vpcs", "peer": "vpc-ml-bj" }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "key": "ray-dashboard-job",
+  "name": {
+    "zh": "Ray 控制面作业提交",
+    "en": "Ray Dashboard Job Submission"
+  },
+  "series": "横向利用",
+  "description": "8265 无令牌提交 Job → 头节点任意命令。实验室 face：ray POST /api/jobs/ 直达（GET 列表为指纹）。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）",
+    "backup_targets": "backup-write 模式必需的备份目标清单"
+  },
+  "produces": "head-node-rce",
+  "knowledge": "VULNERABILITY-MASTER.md 第 1–5 节：Ray dashboard 8265 无鉴权作业提交",
+  "combo_signature": "ray-dashboard-unauth"
+}

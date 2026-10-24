@@ -1,0 +1,20 @@
+{
+  "key": "skyrl-tinker-hijack",
+  "name": {
+    "zh": "SkyRL Tinker 控制面劫持",
+    "en": "SkyRL Tinker Control Plane Hijack"
+  },
+  "series": "横向利用",
+  "description": "默认 0.0.0.0 + 无鉴权训练控制面（建模型/采样/删检查点）。实验室 face：areal /create_engine 同构承载训练控制面建模型语义。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）",
+    "backup_targets": "backup-write 模式必需的备份目标清单"
+  },
+  "produces": "training-control-hijack",
+  "knowledge": "VULNERABILITY-MASTER.md 第 1–5 节：SkyRL Tinker 控制面无鉴权",
+  "combo_signature": "skyrl-tinker-unauth-control"
+}

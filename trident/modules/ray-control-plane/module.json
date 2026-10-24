@@ -1,0 +1,15 @@
+{
+  "key": "ray-control-plane",
+  "name": { "zh": "Ray 控制面侦察", "en": "Ray control plane recon" },
+  "series": "侦察",
+  "description": "RayCluster/RayService/RayJob 清单、dashboard 端口暴露与认证配置、autoscaler 权限观察点",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群快照 dict 或 lab/fixtures/recon/*.json 路径（rayclusters/rayjobs/services 节）",
+    "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
+  },
+  "produces": "ray-control-plane-findings",
+  "knowledge": "总纲 11.2：8265 无鉴权 Job → head root → 特权 Pod；官方 ray-cluster.verl.yaml 自警告任意代码执行"
+}

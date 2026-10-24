@@ -1,0 +1,20 @@
+{
+  "key": "sglang-omni-profiler-write",
+  "name": {
+    "zh": "sglang-omni 目录写",
+    "en": "sglang-omni Profiler Directory Write"
+  },
+  "series": "横向利用",
+  "description": "管理面 fail-open + profiler 事件目录任意写。实验室 face：sglang /pause（fail-open 判定）+ /update_weights_from_disk（路径写同构承载）。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）",
+    "backup_targets": "backup-write 模式必需的备份目标清单"
+  },
+  "produces": "arbitrary-write-primitive",
+  "knowledge": "VULNERABILITY-MASTER.md 第 1–5 节：sglang-omni 管理面+profiler 目录写",
+  "combo_signature": "sglang-admin-surface"
+}

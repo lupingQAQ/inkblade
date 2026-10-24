@@ -1,0 +1,19 @@
+{
+  "key": "sglang-admin-failopen",
+  "name": {
+    "zh": "SGLang 管理面 fail-open",
+    "en": "SGLang Admin Plane Fail-open"
+  },
+  "series": "横向利用",
+  "description": "SGLang 管理路由（/pause /freeze /resume /update_weights_from_disk）无管理密钥即放行。实验室 face：POST /pause 探测 + POST /resume 清理（靶场 writes=False）。",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）"
+  },
+  "produces": "admin-plane-failopen",
+  "knowledge": "VULNERABILITY-MASTER.md 第 1–5 节：SGLang 管理面 fail-open",
+  "combo_signature": "sglang-admin-surface"
+}

@@ -1,0 +1,17 @@
+{
+  "key": "open-webui-code-execute-rce",
+  "name": { "zh": "Open WebUI 共享沙箱执行", "en": "Open WebUI shared sandbox execution" },
+  "series": "横向利用",
+  "description": "任意登录用户经工具端点在共享 Jupyter 沙箱执行任意 Python（无模块黑名单、无用户隔离、跨用户残留互读，私有零日）",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "private": true,
+  "params_schema": {
+    "base_url": "mock 靶场地址（lab/mock_targets.py，仅限授权范围）",
+    "marker": "运行标记（缺省取 ctx.marker）",
+    "backup_targets": "写面备份（远端状态：探测响应存档条目）"
+  },
+  "produces": "is_zeroday finding（共享沙箱任意代码执行=命中）",
+  "knowledge": "零日登记册：智能体平台共享沙箱条目（未披露，细节不入模块描述）"
+}

@@ -1,0 +1,23 @@
+{
+  "cluster": { "name": "multi-cloud-lab", "provider": "unknown" },
+  "namespaces": ["infer", "train"],
+  "nodes": [
+    { "name": "eks-node-1", "providerID": "aws:///cn-north-1/i-mockaaaa1111" },
+    { "name": "aks-node-1", "providerID": "azure:///subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mc-rg/providers/Microsoft.Compute/virtualMachines/aks-node-1" },
+    { "name": "gke-node-1", "providerID": "gce://mock-project/asia-east1-b/gke-node-1" },
+    { "name": "tke-node-1", "providerID": "qcloud:///ap-guangzhou/ins-mock1111" }
+  ],
+  "serviceaccounts": [
+    { "name": "irsa-sa", "namespace": "infer", "annotations": { "eks.amazonaws.com/role-arn": "arn:aws:iam::123456789012:role/ml-trident-mock" } },
+    { "name": "wi-sa", "namespace": "train", "annotations": { "azure.workload.identity/use": "true" } },
+    { "name": "gcp-wi-sa", "namespace": "train", "annotations": { "iam.gke.io/gcp-service-account": "trainer@mock-project.iam.gserviceaccount.com" } }
+  ],
+  "storageclasses": [
+    { "name": "ebs-sc", "provisioner": "ebs.csi.aws.com" },
+    { "name": "azure-disk-sc", "provisioner": "disk.csi.azure.com" },
+    { "name": "cbs-sc", "provisioner": "com.tencent.cloud.csi.cbs" }
+  ],
+  "interconnects": [
+    { "kind": "direct-connect", "name": "dc-hq-to-cloud", "peer": "hq-datacenter", "cidrs": ["10.0.0.0/8"] }
+  ]
+}

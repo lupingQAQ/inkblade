@@ -1,0 +1,15 @@
+{
+  "key": "cloud-integration-fingerprint",
+  "name": { "zh": "云集成指纹", "en": "Cloud integration fingerprint" },
+  "series": "侦察",
+  "description": "云商识别（EKS/AKS/ACK/TKE/GKE/CCE）、providerID、IRSA/Workload Identity 注解、云 StorageClass、混合互联形态",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群快照 dict 或 lab/fixtures/recon/*.json 路径（nodes/serviceaccounts/storageclasses/interconnects 节）",
+    "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
+  },
+  "produces": "cloud-fingerprint-findings",
+  "knowledge": "spec 12.1 云商 K8s 架构源；四条云侧权重桶链前置（多云元数据凭据面/云角色过权）"
+}

@@ -1,0 +1,15 @@
+{
+  "key": "framework-port-matching",
+  "name": { "zh": "框架漏洞端口匹配", "en": "Framework port matching" },
+  "series": "侦察",
+  "description": "已复现漏洞端口 ↔ Service 端点匹配（清单驱动，核心清单内嵌；供链前置判定 findings.reachable）",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群快照 dict 或 lab/fixtures/recon/*.json 路径（services 节）",
+    "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
+  },
+  "produces": "reachable-port-findings（链引擎消费：findings('framework-port-matching').reachable）",
+  "knowledge": "总纲第 1 节已复现漏洞（SGLang 30000 管理面、Ray 8265、SkyRL Tinker 8000、OpenRLHF serve_rm 5000 等）"
+}

@@ -1,0 +1,15 @@
+{
+  "key": "rbac-mapping",
+  "name": { "zh": "RBAC 权限测绘", "en": "RBAC mapping" },
+  "series": "侦察",
+  "description": "can-i 矩阵、cluster-admin 绑定、通配符角色、RBAC 扩散权限与 Secret 名称盘点",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群快照 dict 或 lab/fixtures/recon/*.json 路径（cani/clusterroles/clusterrolebindings/secrets 节）",
+    "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
+  },
+  "produces": "rbac-findings",
+  "knowledge": "总纲第 11 节：三 operator 集群级 RBAC + 220+ 取证；CHAIN-MATRIX 判定规则"
+}

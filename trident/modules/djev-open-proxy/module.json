@@ -1,0 +1,19 @@
+{
+  "key": "djev-open-proxy",
+  "name": {
+    "zh": "djev 开放代理",
+    "en": "djev Open Proxy"
+  },
+  "series": "横向利用",
+  "description": "djev 默认无鉴权 + /v1 全量中继，GET 面无鉴权（开放代理/免费查询源/内网中继跳板）。实验室 face：GET /v1/models + POST /v1/chat/completions（缺省语义即 djev）。",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）"
+  },
+  "produces": "open-proxy-proof",
+  "knowledge": "VULNERABILITY-MASTER.md 第 1–5 节：djev 默认无鉴权开放代理",
+  "combo_signature": "djev-open-relay"
+}

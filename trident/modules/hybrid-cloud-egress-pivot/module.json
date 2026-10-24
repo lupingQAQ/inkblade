@@ -1,0 +1,20 @@
+{
+  "key": "hybrid-cloud-egress-pivot",
+  "name": {
+    "zh": "混合云出网与回旋",
+    "en": "Hybrid Cloud Egress Pivot"
+  },
+  "series": "混合云",
+  "description": "云 API 端点可达性、私网互联网段暴露（本地↔云双向）、DNS 泄露通道 → 混合云横向路径图。实验室 face：四云 /mock-imds/* 差分构造 pivot 边；DNS 通道标注不可仿真。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）",
+    "imds_base": "IMDS 基址（缺省取 target）"
+  },
+  "produces": "hybrid-pivot-path-map",
+  "knowledge": "Trident 规格 5.6 云与混合边界层 + 6.3 VPC-CNI 双控制面链",
+  "combo_signature": "hybrid-egress-pivot"
+}

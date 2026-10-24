@@ -1,0 +1,15 @@
+{
+  "key": "storage-sharing",
+  "name": { "zh": "存储共享面测绘", "en": "Storage sharing surface" },
+  "series": "侦察",
+  "description": "PVC/StorageClass/PV、RWX、NFS/JuiceFS/CephFS、HF 缓存与 checkpoint 目录线索",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群快照 dict 或 lab/fixtures/recon/*.json 路径（pvcs/storageclasses/pvs/pods 节）",
+    "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
+  },
+  "produces": "storage-sharing-findings",
+  "knowledge": "总纲第 6 节与 5.6 存储数据面层：RWX 跨租户写；NFSv4 AUTH_SYS uid 可伪造；HF 缓存偷换一体"
+}
