@@ -68,7 +68,7 @@ result = run_module(store, tester_session, "sglang-admin-failopen",
 
 ```python
 from trident.core.chains import load_chains, dry_run, execute
-chains = load_chains("trident/chains")                 # 18 条：经典/云侧权重桶/网络/零日级
+chains = load_chains("trident/chains")                 # 20 条：经典/云侧权重桶/网络（含长上下文/PD KV）/零日级
 plan = dry_run(chains["flat-network-admin-plane-weight-poison"], findings, modules_dir=...)
 # plan.verdict ∈ 成立/部分成立/不成立；plan.steps[].backup_actions / write_surface = 预览写面
 res = execute(chain, store, tester_session, modules_dir=..., findings=..., workers=4)

@@ -57,5 +57,80 @@
         {"dest_ports": [29400, 29500, 29501, 29511, 45678]}
       ]
     }
+  },
+  {
+    "id": "suricata-longctx-kv-endpoints",
+    "title": "长上下文 / PD KV 端点异常访问（prefix cache 复用与 KV 通道写入）",
+    "description": "非推理分区主体访问长上下文补全、PD KV 传输、checkpoint 分片写面或未鉴权指标面（跨租户 prefix 复用 / KV 注入 / 分片投毒前置）。English: out-of-zone access to long-context completions, PD KV transfer, checkpoint shard writes or unauthenticated metrics.",
+    "level": "high",
+    "uris": ["/v1/chat/completions", "/kv/transfer", "/checkpoint/shards", "/metrics"],
+    "sids": {"base": 9000301},
+    "blocks_modules": [
+      "long-context-window-exhaustion",
+      "prefix-cache-cross-tenant-leak",
+      "kv-cache-integrity-poison",
+      "prefill-decode-kv-channel-unauth",
+      "long-context-training-collective-surface",
+      "checkpoint-shard-poison",
+      "long-context-memory-amplification",
+      "context-limit-bypass"
+    ],
+    "tuning": {
+      "zh": "按推理分区登记合法调用方（网关/EPP/训练 eval 作业）；/metrics 建议仅允许监控命名空间抓取；KV 传输与 checkpoint 写面建议叠加 mTLS/身份校验后只对异常源告警",
+      "en": "Register legitimate callers per inference zone (gateway/EPP/training eval jobs); restrict /metrics scraping to the monitoring namespace; once mTLS/identity is added to KV transfer and checkpoint writes, alert only on anomalous sources"
+    },
+    "match": {
+      "engine": "suricata",
+      "any_of": [
+        {"uri_re": "/v1/chat/completions|/kv/transfer|/checkpoint/shards|/metrics"}
+      ]
+    }
+  },
+  {
+    "id": "suricata-gpu-cloud-tenant-uri",
+    "title": "GPU 池调度/云租户异常调用（无鉴权分配、跨账户 AssumeRole）",
+    "description": "非管理来源对 GPU 池调度与云身份端点的异常调用（/gpu/allocate、/gpu/release、/cloud/identity、/cloud/bucket/list）。English: abnormal calls to GPU pool scheduler and cloud identity endpoints from non-admin sources.",
+    "level": "high",
+    "uris": ["/gpu/allocate", "/gpu/release", "/cloud/identity", "/cloud/bucket/list"],
+    "sids": {"base": 9000401},
+    "blocks_modules": [
+      "gpu-pool-scheduler-unauth",
+      "gpu-tenant-residue",
+      "cloud-irsa-trust-wildcard",
+      "cloud-bucket-cross-tenant"
+    ],
+    "tuning": {
+      "zh": "按管理网段登记合法调度器/云控制面调用方；对来自训练/推理租户网段的 /gpu/allocate 与 /cloud/identity 直接告警；/cloud/identity 需同时联动 CloudTrail AssumeRole 事件（避免仅看 URI）",
+      "en": "Register legitimate scheduler/cloud-control callers by admin CIDR; alert on /gpu/allocate and /cloud/identity from tenant workload ranges; correlate /cloud/identity with CloudTrail AssumeRole events (do not rely on URI alone)"
+    },
+    "match": {
+      "engine": "suricata",
+      "any_of": [
+        {"uri_re": "/gpu/allocate|/gpu/release|/cloud/identity|/cloud/bucket/list"}
+      ]
+    }
+  },
+  {
+    "id": "suricata-ai-gateway-admin-uri",
+    "title": "AI 网关管理端点访问（key 签发 / 配置 / 控制台）",
+    "description": "非管理员网段访问 AI 网关管理面 URI（/key/generate、/config、/admin/console）。English: access to AI gateway admin URIs from non-admin sources.",
+    "level": "high",
+    "uris": ["/key/generate", "/config", "/admin/console"],
+    "sids": {"base": 9000501},
+    "blocks_modules": [
+      "aigateway-auth-bypass",
+      "aigateway-upstream-key-exfil",
+      "aigateway-route-hijack"
+    ],
+    "tuning": {
+      "zh": "管理端点为高价值签名：来源非 bastion/运维网段时直接 alert；/config 建议叠加响应体大小与 200 状态判定（401/403 仅计数）；与 Sigma 管理 API 无鉴权规则联动可区分「尝试」与「成功」",
+      "en": "Treat admin URIs as high-value signatures: alert when the source is outside bastion/ops CIDRs; for /config also key on HTTP 200 plus response size (count 401/403 separately); correlate with the Sigma admin API rule to separate attempts from successes"
+    },
+    "match": {
+      "engine": "suricata",
+      "any_of": [
+        {"uri_re": "/key/generate|/config|/admin/console"}
+      ]
+    }
   }
 ]

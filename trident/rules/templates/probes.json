@@ -4,7 +4,12 @@
     "weight-write-marker": "响应含 marker 路径 → 合成 falco open_write 事件（权重路径异常写）",
     "ray-job": "200 → 合成 sigma Ray 作业提交事件",
     "sandbox-exec": "200 → 合成 falco 沙箱宿主执行事件（行为化）",
-    "tenant-binding": "200 → 合成 sigma Agent 平台租户对象事件（行为化）"
+    "tenant-binding": "200 → 合成 sigma Agent 平台租户对象事件（行为化）",
+    "gpu-pool-admin": "200 → 合成 sigma GPU 池化无鉴权分配事件",
+    "cloud-assume-role": "200 → 合成 sigma CloudTrail 跨账户 AssumeRole 事件",
+    "gateway-admin-call": "200 → 合成 sigma AI 网关管理 API 无鉴权调用事件",
+    "gateway-config-read": "200 → 合成 sigma 默认凭据认证 + falco 上游凭据配置读取事件",
+    "gateway-default-key": "200 → 合成 sigma 默认 master key 认证成功事件"
   },
   "chains": {
     "flat-network-admin-plane-weight-poison": {
@@ -116,6 +121,19 @@
         {"kind": "suricata", "src": "10.42.0.21", "dest_ip": "10.42.0.9", "dest_port": 45678, "proto": "tcp", "uri": ""}
       ]
     },
+    "long-context-cache-leak": {
+      "replay": [
+        {"module": "prefix-cache-cross-tenant-leak", "method": "POST", "path": "/v1/chat/completions", "body": {"model": "mock-model", "messages": [{"role": "user", "content": "trident-longctx-probe"}], "context_window": "128k", "prompt_tokens": 4096, "max_tokens": 1, "prompt_prefix": "TRIDENT-PREFIX-VALIDATE"}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false}
+      ],
+      "fixtures": []
+    },
+    "pd-kv-poison": {
+      "replay": [],
+      "fixtures": [
+        {"kind": "suricata", "src": "10.42.0.21", "dest_ip": "10.42.0.9", "dest_port": 45678, "proto": "tcp", "uri": "/kv/transfer"},
+        {"kind": "falco", "event_type": "nccl_join", "channel": "kv-cache-transfer", "external_rank": true, "dest_port": 45678, "source_zone": "tenant-workload"}
+      ]
+    },
     "vpc-cni-dual-control-plane-lateral": {
       "replay": [],
       "fixtures": [
@@ -138,6 +156,40 @@
       "fixtures": [
         {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "tenant-dataset-credentials"}, "subject_sa": "system:serviceaccount:ml-agent:default"}
       ]
+    },
+    "gpu-tenant-residue-chain": {
+      "replay": [
+        {"module": "gpu-pool-scheduler-unauth", "method": "POST", "path": "/gpu/allocate", "body": {"tenant": "tenant-a", "device": "gpu-b-0", "namespace": "ns-a-infer", "marker": "TRIDENT-BENIGN-VALIDATE"}, "dest_ip": "10.42.0.9", "dest_port": 8080, "admin_plane": true, "on_success": "gpu-pool-admin"},
+        {"module": "gpu-pool-scheduler-unauth", "method": "POST", "path": "/gpu/release", "body": {"tenant": "tenant-a", "device": "gpu-b-0"}, "dest_ip": "10.42.0.9", "dest_port": 8080, "admin_plane": true},
+        {"module": "gpu-tenant-residue", "method": "GET", "path": "/gpu/residue?device=gpu-b-0&tenant=tenant-b", "body": null, "dest_ip": "10.42.0.9", "dest_port": 8080, "admin_plane": false},
+        {"module": "gpu-metrics-tenant-leak", "method": "GET", "path": "/gpu/metrics", "body": null, "dest_ip": "10.42.0.9", "dest_port": 8080, "admin_plane": false}
+      ],
+      "fixtures": [
+        {"kind": "sigma", "logsource": {"product": "gpu-pooling", "service": "scheduler"}, "action": "allocate", "authenticated": false, "cross_tenant": true, "device": "gpu-b-0"},
+        {"kind": "falco", "event_type": "mount", "device": "/dev/nvidia0", "cross_namespace": true, "proc": "python", "namespace": "ns-a-dev", "resident_namespace": "ns-a-infer"},
+        {"kind": "falco", "event_type": "exec", "proc": "nvidia-smi", "mig_reconfig": true, "device": "gpu-b-1", "profile": "1g.10gb"}
+      ]
+    },
+    "cloud-cross-tenant-role-assume": {
+      "replay": [
+        {"module": "cloud-irsa-trust-wildcard", "method": "GET", "path": "/cloud/identity?role=weight-reader", "body": null, "dest_ip": "10.42.0.9", "dest_port": 443, "admin_plane": false},
+        {"module": "cloud-irsa-trust-wildcard", "method": "POST", "path": "/cloud/identity/assume-role", "body": {"role": "weight-reader", "source_account": "999999999999"}, "dest_ip": "10.42.0.9", "dest_port": 443, "admin_plane": false, "on_success": "cloud-assume-role"},
+        {"module": "cloud-bucket-cross-tenant", "method": "GET", "path": "/cloud/bucket/list?bucket=weights-b", "body": null, "dest_ip": "10.42.0.9", "dest_port": 443, "admin_plane": false}
+      ],
+      "fixtures": [
+        {"kind": "sigma", "logsource": {"product": "aws", "service": "cloudtrail"}, "eventName": "AssumeRole", "crossAccount": true, "trustPolicyWildcard": true, "sourceAccount": "999999999999"}
+      ]
+    },
+    "ai-gateway-key-exfil": {
+      "sim": "ai-gateway",
+      "replay": [
+        {"sim": "ai-gateway", "module": "aigateway-fingerprint", "method": "GET", "path": "/health", "body": null, "dest_ip": "10.42.0.9", "dest_port": 4000, "admin_plane": false},
+        {"sim": "ai-gateway", "module": "aigateway-auth-bypass", "method": "POST", "path": "/v1/chat/completions", "body": {"model": "gpt-4o", "messages": [{"role": "user", "content": "trident-validate"}]}, "headers": {"Authorization": "Bearer MOCK-master-key-4c7a", "X-Forwarded-User": "admin"}, "dest_ip": "10.42.0.9", "dest_port": 4000, "admin_plane": true, "on_success": "gateway-default-key"},
+        {"sim": "ai-gateway", "module": "aigateway-upstream-key-exfil", "method": "GET", "path": "/config", "body": null, "headers": {"Authorization": "Bearer MOCK-master-key-4c7a", "X-Forwarded-User": "admin"}, "dest_ip": "10.42.0.9", "dest_port": 4000, "admin_plane": true, "on_success": "gateway-config-read"},
+        {"sim": "ai-gateway", "module": "model-registry-exposure", "method": "GET", "path": "/models", "body": null, "dest_ip": "10.42.0.9", "dest_port": 4000, "admin_plane": false},
+        {"sim": "ai-gateway", "module": "aigateway-auth-bypass", "method": "POST", "path": "/key/generate", "body": {"key_alias": "trident-validate", "tenant": "tenant-b"}, "dest_ip": "10.42.0.9", "dest_port": 4000, "admin_plane": true, "on_success": "gateway-admin-call"}
+      ],
+      "fixtures": []
     }
   }
 }

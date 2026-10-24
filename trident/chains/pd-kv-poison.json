@@ -1,0 +1,34 @@
+{
+  "id": "pd-kv-poison",
+  "title": {
+    "zh": "PD 分离 KV 通道未鉴权 → KV 块投毒",
+    "en": "PD-split KV channel unauthenticated → KV block poisoning"
+  },
+  "category": "网络利用链",
+  "requires": [
+    "prefill-decode-kv-channel-unauth",
+    "kv-cache-integrity-poison"
+  ],
+  "preconditions": [
+    {"expr": "findings('prefill-decode-kv-channel-unauth').any(severity == 'high')"}
+  ],
+  "steps": [
+    {
+      "id": "kv-channel-probe",
+      "module": "prefill-decode-kv-channel-unauth",
+      "params": {"block_id": "pd-handshake"}
+    },
+    {
+      "id": "kv-block-poison",
+      "module": "kv-cache-integrity-poison",
+      "params": {"mode": "backup-write", "block_id": "kv-block-poison"},
+      "depends_on": ["kv-channel-probe"],
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "http://target:8000/kv/transfer", "state": {}}
+      ]
+    }
+  ],
+  "evidence": ["http-trace", "kv-readback-sha256", "rollback-receipt"],
+  "mitre": ["T1565.001", "T1557"]
+}

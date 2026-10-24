@@ -1,4 +1,4 @@
-"""链引擎测试：目录 18 条 + 前置三态判定 + 安全表达式求值 + dry-run + 并行执行。"""
+"""链引擎测试：目录 20+ 条（长上下文/PD KV 专项新增 2 条）+ 前置三态判定 + 安全表达式求值 + dry-run + 并行执行。"""
 
 import json
 import re
@@ -91,7 +91,11 @@ def _chain_fixture(**overrides):
 class TestCatalog(unittest.TestCase):
     def test_catalog_complete_and_valid(self):
         chains = load_chains(CHAINS_DIR)
-        self.assertEqual(len(chains), 18)
+        # 并行任务会持续追加链：至少包含长上下文/PD KV 专项 2 条 + AI 网关链，且四条类别齐备。
+        self.assertGreaterEqual(len(chains), 21)
+        self.assertIn("long-context-cache-leak", chains)
+        self.assertIn("pd-kv-poison", chains)
+        self.assertIn("ai-gateway-key-exfil", chains)
         cats: dict[str, int] = {}
         for cid, chain in chains.items():
             self.assertRegex(cid, r"^[a-z][a-z-]*$", f"链机器键禁数字/非小写: {cid}")
@@ -106,10 +110,13 @@ class TestCatalog(unittest.TestCase):
                     self.assertRegex(dep, KEY_RE)
             for req in chain["requires"]:
                 self.assertRegex(req, KEY_RE)
-        self.assertEqual(cats.get("经典攻击链"), 7)
-        self.assertEqual(cats.get("云侧权重桶链"), 4)
-        self.assertEqual(cats.get("网络利用链"), 5)
-        self.assertEqual(cats.get("零日链"), 2)
+        # 并行任务可能追加新类别（如 AI 网关链）：只要求核心四类齐备。
+        self.assertTrue({"经典攻击链", "云侧权重桶链", "网络利用链", "零日链"} <= set(cats))
+        self.assertGreaterEqual(cats.get("经典攻击链"), 7)
+        self.assertGreaterEqual(cats.get("云侧权重桶链"), 4)
+        self.assertGreaterEqual(cats.get("网络利用链"), 7)
+        self.assertGreaterEqual(cats.get("零日链"), 2)
+        self.assertGreaterEqual(cats.get("AI 网关链"), 1)
 
     def test_load_chains_rejects_bad_definitions(self):
         with TemporaryDirectory() as tmp:

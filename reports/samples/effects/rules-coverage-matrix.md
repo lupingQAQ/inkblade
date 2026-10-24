@@ -1,7 +1,7 @@
 # Trident 紫队验证覆盖率矩阵（defense validation）
 
-- 时间：2026-10-24T18:04:14Z；靶场：http://127.0.0.1:51558/（mode=vulnerable，仅 127.0.0.1）
-- 摘要：链 18 条，覆盖 18，漏过 0；规则评估 56 项（拦截 18 / 检测 34 / 漏过 0）
+- 时间：2026-10-24T19:17:17Z；靶场：http://127.0.0.1:61181/（mode=vulnerable，仅 127.0.0.1）
+- 摘要：链 23 条，覆盖 23，漏过 0；规则评估 68 项（拦截 18 / 检测 46 / 漏过 0）
 - 判定口径：合成事件使用探测规格声明的业务端口（mock 基座端口随机分配）；匹配器：内置简化 sigma/falco/suricata 匹配器（selection/event_type/any_of 语义子集）
 
 | 链 | 类别 | 探针重放 | 状态 |
@@ -21,9 +21,14 @@
 | ib-rdma-collective-injection | 网络利用链 | fixture×2 | 拦截+检测 |
 | imex-computedomain-gpu-memory-crossing | 网络利用链 | fixture×1 | 拦截+检测 |
 | prefill-decode-kv-inference-manipulation | 网络利用链 | fixture×2 | 拦截+检测 |
+| long-context-cache-leak | 网络利用链 | POST /v1/chat/completions → 200 复现 | 检测 |
+| pd-kv-poison | 网络利用链 | fixture×2 | 检测 |
 | vpc-cni-dual-control-plane-lateral | 网络利用链 | fixture×1 | 拦截+检测 |
 | agent-platform-zero-precondition-lateral | 零日链 | POST /v1/jobs/run → 200 复现；GET /mock-imds/aliyun/latest/meta-data/ram/security-credentials/ → 200 复现；fixture×1 | 拦截+检测 |
 | agent-platform-cross-tenant-data-chain | 零日链 | POST /api/v1/bindings → 200 复现；fixture×1 | 检测 |
+| gpu-tenant-residue-chain | 网络利用链 | POST /gpu/allocate → 200 复现；POST /gpu/release → 200 复现；GET /gpu/residue?device=gpu-b-0&tenant=tenant-b → 200 复现；GET /gpu/metrics → 200 复现；fixture×3 | 检测 |
+| cloud-cross-tenant-role-assume | 云侧权重桶链 | GET /cloud/identity?role=weight-reader → 200 复现；POST /cloud/identity/assume-role → 200 复现；GET /cloud/bucket/list?bucket=weights-b → 200 复现；fixture×1 | 检测 |
+| ai-gateway-key-exfil | AI 网关链 | GET /health → 200 复现；POST /v1/chat/completions → 200 复现；GET /config → 200 复现；GET /models → 200 复现；POST /key/generate → 200 复现 | 检测 |
 
 ## 规则命中明细
 
@@ -103,6 +108,12 @@
 - [检测] falco-nccl-abnormal-join（falco）— 事件命中: falco nccl_join port=45678 parent=-
 - [检测] suricata-nccl-kv-ports（suricata）— 事件命中: suricata 10.42.0.9:45678 uri=-
 
+### long-context-cache-leak（检测）
+- [检测] suricata-longctx-kv-endpoints（suricata）— 事件命中: suricata 10.42.0.9:8000 uri=/v1/chat/completions
+
+### pd-kv-poison（检测）
+- [检测] suricata-longctx-kv-endpoints（suricata）— 事件命中: suricata 10.42.0.9:45678 uri=/kv/transfer
+
 ### vpc-cni-dual-control-plane-lateral（拦截+检测）
 - [拦截] netpol-default-deny-partition（netpol）— 策略文件在包内齐备（默认 monitor，Enforce 后即拦截）
 - [拦截] vpc-securitygroup-supplement（vpc-sg）— 策略文件在包内齐备（默认 monitor，Enforce 后即拦截）
@@ -118,6 +129,22 @@
 ### agent-platform-cross-tenant-data-chain（检测）
 - [检测] sigma-secret-abnormal-read（sigma）— 事件命中: sigma get secret
 - [检测] zeroday-agent-tenant-object-cross-read（sigma）— 事件命中: sigma create tenant-binding
+
+### gpu-tenant-residue-chain（检测）
+- [检测] sigma-gpu-pool-admin-unauth（sigma）— 事件命中: sigma allocate 
+- [检测] falco-gpu-device-cross-namespace（falco）— 事件命中: falco mount port=- parent=-
+- [检测] falco-mig-abnormal-reconfig（falco）— 事件命中: falco exec port=- parent=-
+- [检测] suricata-gpu-cloud-tenant-uri（suricata）— 事件命中: suricata 10.42.0.9:8080 uri=/gpu/allocate
+
+### cloud-cross-tenant-role-assume（检测）
+- [检测] sigma-cloud-cross-account-assume（sigma）— 事件命中: sigma None 
+- [检测] suricata-gpu-cloud-tenant-uri（suricata）— 事件命中: suricata 10.42.0.9:443 uri=/cloud/identity?role=weight-reader
+
+### ai-gateway-key-exfil（检测）
+- [检测] sigma-gateway-admin-api-no-auth（sigma）— 事件命中: sigma admin_api_call 
+- [检测] sigma-gateway-default-master-key-use（sigma）— 事件命中: sigma authenticate 
+- [检测] falco-gateway-upstream-config-read（falco）— 事件命中: falco config_read port=- parent=-
+- [检测] suricata-ai-gateway-admin-uri（suricata）— 事件命中: suricata 10.42.0.9:4000 uri=/config
 
 ## 知识闭环
 

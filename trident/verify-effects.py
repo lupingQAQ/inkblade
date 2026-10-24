@@ -14,12 +14,22 @@ d) RCE 实效：areal-setenv-engine-rce 触发 mock 侧真实落地 marker 文�
 e) 数据泄露实效：training-data-leak 读到 fixture 假密钥，报告仅以尾4位出现；
 f) 检测规则实效：规则引擎对本次靶场重放 validate，断言 ≥1 条规则命中；
 g) 端到端链：flat-network-admin-plane-weight-poison dry-run → execute
-   （全影响演示级 + 备份），断言链完成且证据三层完整。
+   （全影响演示级 + 备份），断言链完成且证据三层完整；
+h) 长上下文超窗：long-context-window-exhaustion 真实 200 且 /metrics queue_depth 增长；
+i) prefix cache 跨租户：无 cache_salt 复用他租户 prefix，usage.cached_tokens>0；
+j) PD KV 通道：kv-cache-integrity-poison 真实写入 benign marker 并独立读回（sha256 一致）；
+k) checkpoint 分片回滚：checkpoint-shard-poison 写后 sha256 变化，rollback 后与原始完全一致；
+l) GPU 跨租户残留：gpu-tenant-residue 分配→释放→读回 benign marker（含释放后），sha256 一致；
+m) 云身份跨账户：通配 trust policy 跨账户 AssumeRole 成功（mock，凭据脱敏）；
+n) 云桶跨租户：公共桶策略 + 跨租户列目录成功（权重/检查点清单）；
+o) AI 网关默认 master key：/config 读到上游 provider MOCK key，报告仅尾 4 位；
+p) X-Forwarded-User 伪造：/key/info 返回 admin 全局视图 + /logs 全租户明文；
+q) 语义缓存跨租户：tenant-a 以共享前缀键命中 tenant-b 缓存条目。
 
 边界（写入报告，不隐藏）：本验证是**本机真实进程/真实 HTTP 效果级**，靶场为
-``lab/mock_targets.py``（仅 127.0.0.1），**不是 live K8s 集群**；KIND（hostNetwork 绕过
-NetworkPolicy）与 ARTEX 黑盒对标需启用虚拟化后按 ``lab/kind/run-proof.sh`` 与
-``lab/bench/artex-bench.sh`` 执行。
+``lab/mock_targets.py``、``lab/longctx_sim.py`` 与 ``lab/gpu_cloud_sim.py``（均仅 127.0.0.1），
+**不是 live K8s 集群 / 真实 GPU 驱动**；KIND（hostNetwork 绕过 NetworkPolicy）与 ARTEX 黑盒
+对标需启用虚拟化后按 ``lab/kind/run-proof.sh`` 与 ``lab/bench/artex-bench.sh`` 执行。
 """
 
 from __future__ import annotations
@@ -32,15 +42,26 @@ import re
 import shutil
 import sys
 import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, Callable
+from urllib.parse import quote
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from lab.mock_targets import _safe_name, start_all  # noqa: E402
+from lab.longctx_sim import checkpoint_shard_path, start_all as start_longctx  # noqa: E402
+from lab.gpu_cloud_sim import start_all as start_gpu_cloud  # noqa: E402
+from lab.ai_gateway_sim import (  # noqa: E402
+    MASTER_KEY as AI_GATEWAY_MASTER_KEY,
+    TENANT_KEYS as AI_GATEWAY_TENANT_KEYS,
+    UPSTREAMS as AI_GATEWAY_UPSTREAMS,
+    start_all as start_ai_gateway,
+)
 from trident.core.backup import BackupManager  # noqa: E402
 from trident.core.chains import dry_run, execute, load_chains  # noqa: E402
 from trident.core.evidence import EvidenceStore  # noqa: E402
@@ -58,12 +79,17 @@ TARGET_CHAIN = "flat-network-admin-plane-weight-poison"
 FAKE_TOKEN = "hf_FAKEtokenDoNotUseSampleABCD1234wxyz"
 
 SCOPE = (
-    "本机真实进程 + 真实 HTTP（127.0.0.1 回环 mock 靶场）效果级验证；"
-    "非 live K8s 集群。KIND/ARTEX 需启用虚拟化后按 lab/kind 与 lab/bench 脚本执行。"
+    "本机真实进程 + 真实 HTTP（127.0.0.1 回环 mock 靶场：mock_targets / longctx_sim / gpu_cloud_sim / "
+    "ai_gateway_sim）效果级验证；非 live K8s 集群 / 真实 GPU 驱动 / 真实云账号。"
+    "KIND/ARTEX 需启用虚拟化后按 lab/kind 与 lab/bench 脚本执行。"
 )
 LIMITATIONS = [
-    "靶场为 lab/mock_targets.py 单进程仿真（仅 127.0.0.1），非真实 K8s API/容器运行时。",
+    "靶场为 lab/mock_targets.py + lab/longctx_sim.py + lab/gpu_cloud_sim.py + lab/ai_gateway_sim.py 单进程仿真"
+    "（仅 127.0.0.1），非真实 K8s API/容器运行时/GPU 推理/云账号。",
     "sglang/areal/slime 的写面以 mock server 侧真实文件落盘为证据，不是远端生产文件系统。",
+    "长上下文仿真以 token 计数提示 + KV 计数器表达 128K–1M 窗口行为，不执行真实 attention/KV 传输。",
+    "GPU 池化/云租户仿真以池状态文件与 benign marker 表达 MIG/MPS/显存残留与云身份/桶策略，不调用真实 nvidia-smi/STS/S3。",
+    "AI 网关仿真为内存态（key/别名/缓存/配额/日志），上游 provider key 一律 MOCK 前缀；不连接真实模型厂商。",
     "KIND hostNetwork 绕过 NetworkPolicy 实证需启用 WSL2/虚拟化后执行 lab/kind/run-proof.sh。",
     "ARTEX（AGPL）仅作外部黑盒对标，本仓库不复用其代码；对标需虚拟化环境执行 lab/bench/artex-bench.sh。",
 ]
@@ -113,6 +139,35 @@ def _trace_entry(trace: dict, method: str, suffix: str) -> dict:
     raise AssertionError(f"trace 未命中 {method} {suffix}")
 
 
+def _trace_match(trace: dict, method: str, needle: str) -> dict:
+    """按 URL 子串匹配 trace 条目（查询参数内含动态 allocation id 时使用）。"""
+    for entry in reversed(trace.get("entries", [])):
+        if entry.get("method") == method and needle in str(entry.get("url", "")):
+            return entry
+    raise AssertionError(f"trace 未命中 {method} *{needle}*")
+
+
+def _http_json(url: str, method: str = "GET", body=None, headers: dict | None = None) -> dict:
+    """独立 HTTP 调用（verify-effects 侧直连，不复用模块 trace）。"""
+    data = json.dumps(body).encode("utf-8") if body is not None else None
+    req = urllib.request.Request(url, data=data, method=method)
+    if data is not None:
+        req.add_header("Content-Type", "application/json")
+    for key, value in (headers or {}).items():
+        req.add_header(key, value)
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            status, raw = resp.status, resp.read()
+    except urllib.error.HTTPError as exc:
+        status, raw = exc.code, exc.read()
+    text = raw.decode("utf-8", "replace")
+    try:
+        payload = json.loads(text)
+    except ValueError:
+        payload = text
+    return {"status": status, "payload": payload, "text": text}
+
+
 class _Checks:
     """逐项 PASS/FAIL 清单；异常即 FAIL（不中断后续检查，便于一次看全）。"""
 
@@ -143,7 +198,7 @@ class _Checks:
 
 
 def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, Any]:
-    """执行 7 项实效验证；输出 effects.json + effects.md（可选写 docs/EFFECT-VERIFICATION.md）。"""
+    """执行 17 项实效验证；输出 effects.json + effects.md（可选写 docs/EFFECT-VERIFICATION.md）。"""
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     checks = _Checks()
@@ -167,6 +222,9 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
         })
         run = store.create_run(f"effects-{stamp}")
         lab = start_all(mode="vulnerable", root=lab_root)
+        longctx = start_longctx(mode="vulnerable", root=lab_root / "longctx")
+        gpu_cloud = start_gpu_cloud(mode="vulnerable", root=lab_root / "gpu-cloud")
+        ai_gateway = start_ai_gateway(mode="vulnerable")
         try:
             def admin_plane() -> dict[str, Any]:
                 state_path = lab_root / "sglang" / "admin-state.json"
@@ -314,6 +372,493 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                 }
 
             checks.run("rce-marker", "RCE 实效：AReaL 三步链触发 mock 侧真实 marker 文件（含 run 标记）", rce_marker)
+
+            def gpu_tenant_residue_marker() -> dict[str, Any]:
+                run_module(
+                    store, tester, "gpu-tenant-residue",
+                    {
+                        "target": gpu_cloud.url(""),
+                        "mode": "backup-write",
+                        "tenant": "tenant-a",
+                        "victim_tenant": "tenant-b",
+                        "device": "gpu-b-0",
+                        "own_device": "gpu-a-1",
+                        "backup_targets": [{"kind": "http",
+                                            "url": gpu_cloud.url("/gpu/residue"),
+                                            "state": {"retained": False}}],
+                    },
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "gpu-tenant-residue")
+                alloc = _trace_match(trace, "POST", "/gpu/allocate")
+                release = _trace_match(trace, "POST", "/gpu/release")
+                readback = _trace_match(trace, "GET", "/gpu/residue?device=gpu-a-1")
+                victim = _trace_match(trace, "GET", "/gpu/residue?device=gpu-b-0")
+                statuses = {"allocate": alloc.get("status"), "release": release.get("status"),
+                            "readback": readback.get("status"), "victim": victim.get("status")}
+                if statuses != {"allocate": 200, "release": 200, "readback": 200, "victim": 200}:
+                    raise AssertionError(f"GPU 残留链路状态异常：{statuses}")
+                marker = str((alloc.get("body") or {}).get("marker", ""))
+                if not marker.startswith("TRIDENT-BENIGN-"):
+                    raise AssertionError(f"未使用 benign marker：{marker!r}")
+                release_payload = release.get("response") or {}
+                readback_payload = readback.get("response") or {}
+                entry = (readback_payload.get("residue") or [{}])[0]
+                if not entry.get("readable_after_release"):
+                    raise AssertionError("残留未标记为 released/readable")
+                expected = _sha256_bytes(marker.encode("utf-8"))
+                if entry.get("marker_sha256") != expected:
+                    raise AssertionError("读回 marker sha256 与写入不一致")
+                if entry.get("marker") != marker:
+                    raise AssertionError("读回 marker 内容与写入不一致")
+                if release_payload.get("residue_sha256") != entry.get("file_sha256"):
+                    raise AssertionError("释放响应 residue_sha256 与读回文件 sha256 不一致")
+                residue_file = gpu_cloud.root / str(entry.get("residue_file", ""))
+                if not residue_file.is_file():
+                    raise AssertionError("残留文件未真实落盘")
+                file_sha = _sha256_file(residue_file)
+                if file_sha != entry.get("file_sha256"):
+                    raise AssertionError("残留文件实际 sha256 与响应不一致")
+                victim_entry = ((victim.get("response") or {}).get("residue") or [{}])[0]
+                if victim_entry.get("tenant") != "tenant-b":
+                    raise AssertionError("跨租户残留未命中 tenant-b")
+                return {
+                    "allocate_status": alloc.get("status"),
+                    "release_status": release.get("status"),
+                    "readback_status": readback.get("status"),
+                    "victim_read_status": victim.get("status"),
+                    "tenant": "tenant-a",
+                    "victim_tenant": victim_entry.get("tenant"),
+                    "device": "gpu-a-1",
+                    "victim_device": "gpu-b-0",
+                    "marker": marker,
+                    "marker_sha256": entry.get("marker_sha256"),
+                    "expected_marker_sha256": expected,
+                    "readback_file_sha256": entry.get("file_sha256"),
+                    "residue_file_sha256": release_payload.get("residue_sha256"),
+                    "actual_file_sha256": file_sha,
+                    "residue_file": _rel(residue_file, gpu_cloud.root),
+                    "readback_after_release": True,
+                    "victim_marker_sha256": victim_entry.get("marker_sha256"),
+                    "victim_readable": bool(victim_entry),
+                }
+
+            checks.run("gpu-tenant-residue-marker",
+                       "GPU 跨租户残留实效：benign marker 分配→释放→读回（含释放后）+ sha256 一致",
+                       gpu_tenant_residue_marker)
+
+            def cloud_assume_role_cross_account() -> dict[str, Any]:
+                run_module(
+                    store, tester, "cloud-irsa-trust-wildcard",
+                    {
+                        "target": gpu_cloud.url(""),
+                        "role": "weight-reader",
+                        "source_account": "999999999999",
+                        "tenant": "tenant-a",
+                    },
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "cloud-irsa-trust-wildcard")
+                identity = _trace_entry(trace, "GET", "/cloud/identity?role=weight-reader")
+                assume = _trace_entry(trace, "POST", "/cloud/identity/assume-role")
+                if identity.get("status") != 200 or assume.get("status") != 200:
+                    raise AssertionError(f"身份/AssumeRole 状态异常：{identity.get('status')}/{assume.get('status')}")
+                identity_payload = identity.get("response") or {}
+                assume_payload = assume.get("response") or {}
+                statement = ((identity_payload.get("trust_policy") or {}).get("Statement") or [{}])[0]
+                if statement.get("Principal") != "*":
+                    raise AssertionError(f"trust policy Principal 非通配：{statement.get('Principal')!r}")
+                if not assume_payload.get("cross_account"):
+                    raise AssertionError("AssumeRole 未标记跨账户")
+                creds = assume_payload.get("credentials") or {}
+                full = "MOCKAKIACROSSTENANT0001"
+                findings_text = json.dumps(
+                    [f for f in run.findings if f.get("step_key") == "cloud-irsa-trust-wildcard"],
+                    ensure_ascii=False)
+                if full in findings_text:
+                    raise AssertionError("finding 泄漏完整 mock 凭据")
+                return {
+                    "identity_status": identity.get("status"),
+                    "assume_role_status": assume.get("status"),
+                    "role_arn": assume_payload.get("role_arn"),
+                    "source_account": assume_payload.get("source_account"),
+                    "cross_account": True,
+                    "wildcard_principal": bool(identity_payload.get("wildcard_principal")),
+                    "trust_policy_principal": statement.get("Principal"),
+                    "external_id_required": bool(identity_payload.get("external_id_required")),
+                    "masked_credentials": {
+                        "AccessKeyId": f"MOCK****{str(creds.get('AccessKeyId', ''))[-4:]}",
+                        "SecretAccessKey": f"MOCK****{str(creds.get('SecretAccessKey', ''))[-4:]}",
+                        "SessionToken": f"MOCK****{str(creds.get('SessionToken', ''))[-4:]}",
+                    },
+                    "full_credential_absent": True,
+                }
+
+            checks.run("cloud-assume-role-cross-account",
+                       "云身份实效：通配 trust policy 跨账户 AssumeRole 成功（mock，凭据脱敏）",
+                       cloud_assume_role_cross_account)
+
+            def cloud_bucket_public_listing() -> dict[str, Any]:
+                run_module(
+                    store, tester, "cloud-bucket-cross-tenant",
+                    {"target": gpu_cloud.url(""), "bucket": "weights-b", "tenant": "tenant-a"},
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "cloud-bucket-cross-tenant")
+                policy = _trace_entry(trace, "GET", "/cloud/bucket/policy?bucket=weights-b")
+                listing = _trace_entry(trace, "GET", "/cloud/bucket/list?bucket=weights-b&prefix=")
+                if policy.get("status") != 200 or listing.get("status") != 200:
+                    raise AssertionError(f"桶策略/列目录状态异常：{policy.get('status')}/{listing.get('status')}")
+                policy_payload = policy.get("response") or {}
+                list_payload = listing.get("response") or {}
+                objects = list_payload.get("objects") or []
+                keys = [o.get("key") for o in objects]
+                if not policy_payload.get("public"):
+                    raise AssertionError("桶策略未标记 public")
+                if not list_payload.get("cross_tenant"):
+                    raise AssertionError("列目录未标记跨租户")
+                if not any(str(k).startswith("tenant-b/") for k in keys):
+                    raise AssertionError(f"未列出 tenant-b 对象：{keys}")
+                return {
+                    "policy_status": policy.get("status"),
+                    "list_status": listing.get("status"),
+                    "bucket": "weights-b",
+                    "bucket_owner": list_payload.get("bucket_owner"),
+                    "requester": list_payload.get("requester"),
+                    "public": True,
+                    "cross_tenant": True,
+                    "object_count": len(objects),
+                    "objects": keys,
+                    "policy_principal": ((policy_payload.get("policy") or {}).get("Statement") or [{}])[0].get("Principal"),
+                }
+
+            checks.run("cloud-bucket-public-listing",
+                       "云桶实效：公共桶策略 + 跨租户列目录成功（权重/检查点清单）",
+                       cloud_bucket_public_listing)
+
+            def longctx_window_overflow() -> dict[str, Any]:
+                before = _http_json(longctx.url("/metrics"))
+                chat = _http_json(
+                    longctx.url("/v1/chat/completions"),
+                    "POST",
+                    {
+                        "model": "longctx-mock",
+                        "messages": [{"role": "user", "content": "trident effects window probe"}],
+                        "context_window": "128k",
+                        "prompt_tokens": 200000,
+                        "max_tokens": 32,
+                        "cache_salt": f"effects-{stamp}",
+                    },
+                    {"X-Tenant": "tenant-a"},
+                )
+                after = _http_json(longctx.url("/metrics"))
+                if before["status"] != 200 or after["status"] != 200:
+                    raise AssertionError(f"/metrics 不可达：{before['status']}/{after['status']}")
+                if chat["status"] != 200:
+                    raise AssertionError(f"超窗请求未被接受（实际 {chat['status']}）")
+                usage = chat["payload"]["usage"]
+                window = int(chat["payload"]["context_window"])
+                prefill = int(usage["prefill_tokens"])
+                if prefill <= window:
+                    raise AssertionError(f"prefill_tokens {prefill} 未超窗口 {window}")
+                q_before = int(before["payload"]["queue_depth"])
+                q_after = int(after["payload"]["queue_depth"])
+                if q_after - q_before < 1:
+                    raise AssertionError(f"queue_depth 未增长：{q_before} → {q_after}")
+                return {
+                    "http_status": chat["status"],
+                    "context_window_tokens": window,
+                    "prefill_tokens": prefill,
+                    "queue_depth_before": q_before,
+                    "queue_depth_after": q_after,
+                    "queue_depth_delta": q_after - q_before,
+                    "prefill_pool": after["payload"].get("prefill_pool"),
+                    "route": "/v1/chat/completions",
+                }
+
+            checks.run("longctx-window-overflow",
+                       "长上下文超窗实效：真实 HTTP 200 + prefill_tokens 超窗 + queue_depth 增长",
+                       longctx_window_overflow)
+
+            def longctx_prefix_reuse() -> dict[str, Any]:
+                prefix = f"TRIDENT-PREFIX-{run.name}"
+                body = {
+                    "model": "longctx-mock",
+                    "messages": [{"role": "user", "content": "trident prefix cache probe"}],
+                    "context_window": "128k",
+                    "prompt_prefix": prefix,
+                    "prefix_tokens": 4096,
+                    "prompt_tokens": 4096,
+                    "max_tokens": 1,
+                }
+                prime = _http_json(longctx.url("/v1/chat/completions"), "POST",
+                                   dict(body, cache_salt="effects-salt-a"), {"X-Tenant": "tenant-a"})
+                reuse = _http_json(longctx.url("/v1/chat/completions"), "POST",
+                                   dict(body, cache_salt=None), {"X-Tenant": "tenant-b"})
+                if prime["status"] != 200:
+                    raise AssertionError(f"租户 A 预热失败：{prime['status']}")
+                if reuse["status"] != 200:
+                    raise AssertionError(f"租户 B 复用请求未被接受：{reuse['status']}")
+                cached = int(reuse["payload"]["usage"]["cached_tokens"])
+                if cached <= 0:
+                    raise AssertionError("跨租户复用 cached_tokens 为 0")
+                if int(prime["payload"]["usage"]["cached_tokens"]) != 0:
+                    raise AssertionError("预热请求不应命中缓存")
+                return {
+                    "prime_status": prime["status"],
+                    "reuse_status": reuse["status"],
+                    "prime_tenant": "tenant-a",
+                    "reuse_tenant": "tenant-b",
+                    "cache_salt_present_on_reuse": False,
+                    "cached_tokens": cached,
+                    "cross_tenant": True,
+                    "route": "/v1/chat/completions",
+                }
+
+            checks.run("longctx-prefix-reuse",
+                       "prefix cache 跨租户实效：无 cache_salt 复用他租户 prefix（cached_tokens>0）",
+                       longctx_prefix_reuse)
+
+            def longctx_kv_channel() -> dict[str, Any]:
+                block_id = f"kv-block-{run.name}"
+                run_module(
+                    store, tester, "kv-cache-integrity-poison",
+                    {
+                        "target": longctx.url(""),
+                        "mode": "backup-write",
+                        "block_id": block_id,
+                        "backup_targets": [{"kind": "http",
+                                            "url": longctx.url("/kv/transfer"),
+                                            "state": {}}],
+                    },
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "kv-cache-integrity-poison")
+                write = _trace_entry(trace, "POST", "/kv/transfer")
+                if write.get("status") != 200:
+                    raise AssertionError(f"KV 写入未返回 200（实际 {write.get('status')}）")
+                write_sha = (write.get("response") or {}).get("sha256", "")
+                read = _http_json(
+                    longctx.url("/kv/transfer") + "?block_id=" + quote(block_id, safe=""))
+                if read["status"] != 200:
+                    raise AssertionError(f"KV 读回未返回 200（实际 {read['status']}）")
+                payload = read["payload"]
+                if not payload.get("found"):
+                    raise AssertionError("KV 块读回 not found")
+                value = str(payload.get("value") or "")
+                marker = f"TRIDENT-{run.name}"
+                if marker not in value:
+                    raise AssertionError("KV 读回内容不含 run marker")
+                read_sha = _sha256_bytes(value.encode("utf-8"))
+                if read_sha != write_sha:
+                    raise AssertionError(f"KV 读回 sha256 与写入不一致：{read_sha} != {write_sha}")
+                return {
+                    "write_status": write["status"],
+                    "readback_status": read["status"],
+                    "block_id": block_id,
+                    "readback_found": True,
+                    "readback_marker_present": True,
+                    "write_sha256": write_sha,
+                    "readback_sha256": read_sha,
+                    "bytes": len(value.encode("utf-8")),
+                }
+
+            checks.run("longctx-kv-channel-write",
+                       "PD KV 通道实效：benign marker 真实写入并独立读回（sha256 一致）",
+                       longctx_kv_channel)
+
+            def longctx_checkpoint_rollback() -> dict[str, Any]:
+                shard_id = "trident-effects-shard"
+                path = checkpoint_shard_path(longctx.root, shard_id)
+                path.parent.mkdir(parents=True, exist_ok=True)
+                original = b"TRIDENT-CHECKPOINT-ORIGINAL\nshard=effects\nepoch=1\n"
+                path.write_bytes(original)
+                before_sha = _sha256_file(path)
+                marker = f"TRIDENT-{run.name}"
+                run_module(
+                    store, tester, "checkpoint-shard-poison",
+                    {
+                        "target": longctx.url(""),
+                        "mode": "backup-write",
+                        "shard_id": shard_id,
+                        "backup_targets": [{"kind": "file", "path": str(path)}],
+                    },
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "checkpoint-shard-poison")
+                write = _trace_entry(trace, "POST", "/checkpoint/shards")
+                if write.get("status") != 200:
+                    raise AssertionError(f"分片写入未返回 200（实际 {write.get('status')}）")
+                after_sha = _sha256_file(path)
+                if after_sha == before_sha:
+                    raise AssertionError("分片文件 sha256 前后相同（未真实写入）")
+                content = path.read_text(encoding="utf-8", errors="replace")
+                if marker not in content:
+                    raise AssertionError("分片文件未含 run marker")
+                bm = BackupManager(store, run)
+                rows = bm.rollback("checkpoint-shard-poison")
+                restored_sha = _sha256_file(path)
+                if rows < 1:
+                    raise AssertionError("未找到分片备份回执（rollback 行数为 0）")
+                if restored_sha != before_sha:
+                    raise AssertionError(f"回滚后 sha256 不一致：{restored_sha} != {before_sha}")
+                if path.read_bytes() != original:
+                    raise AssertionError("回滚后分片字节与原始不一致")
+                return {
+                    "http_status": write["status"],
+                    "shard_file": _rel(path, longctx.root),
+                    "sha256_before": before_sha,
+                    "sha256_after": after_sha,
+                    "sha256_after_rollback": restored_sha,
+                    "rollback_rows": rows,
+                    "exact_restore": True,
+                    "marker_present": True,
+                    "write_status": write["status"],
+                }
+
+            checks.run("longctx-checkpoint-rollback",
+                       "checkpoint 分片实效：投毒 sha256 变化 + rollback 后 sha256 与原始完全一致",
+                       longctx_checkpoint_rollback)
+
+            def gateway_master_key_exfil() -> dict[str, Any]:
+                run_module(
+                    store, tester, "aigateway-upstream-key-exfil",
+                    {"target": ai_gateway.url(""), "master_key": AI_GATEWAY_MASTER_KEY},
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "aigateway-upstream-key-exfil")
+                config = _trace_entry(trace, "GET", "/config")
+                if config.get("status") != 200:
+                    raise AssertionError(f"默认 master key 读 /config 未返回 200（实际 {config.get('status')}）")
+                payload = config.get("response") or {}
+                upstream_keys = [str(u.get("api_key") or "") for u in payload.get("upstreams") or []]
+                if not upstream_keys:
+                    raise AssertionError("/config 未返回任何上游 provider key")
+                if not all(key.startswith("MOCK-") for key in upstream_keys):
+                    raise AssertionError("上游 provider key 非 MOCK 前缀（仿真边界异常）")
+                sample = AI_GATEWAY_UPSTREAMS[0]["api_key"]
+                if sample not in upstream_keys:
+                    raise AssertionError("未读到预期上游 provider key")
+                tail4 = sample[-4:]
+                findings = [f for f in run.findings if f.get("step_key") == "aigateway-upstream-key-exfil"]
+                if not findings:
+                    raise AssertionError("上游 key 外泄未产出 finding")
+                joined = json.dumps(findings, ensure_ascii=False)
+                if sample in joined:
+                    raise AssertionError("finding 泄漏完整上游 provider key")
+                if f"MOCK****{tail4}" not in joined:
+                    raise AssertionError("finding 未以尾4位呈现上游 provider key")
+                run.finalize_run()
+                report = render_pentest(store, run.name)
+                if sample in report:
+                    raise AssertionError("报告泄漏完整上游 provider key")
+                if f"MOCK****{tail4}" not in report:
+                    raise AssertionError("报告未以尾4位呈现上游 provider key")
+                return {
+                    "http_status": config.get("status"),
+                    "route": "/config",
+                    "master_key_class": "default",
+                    "master_key_used": True,
+                    "upstream_key_count": len(upstream_keys),
+                    "upstream_providers": [str(u.get("provider")) for u in payload.get("upstreams") or []],
+                    "upstream_key_tail4": tail4,
+                    "upstream_key_masked": f"MOCK****{tail4}",
+                    "full_key_in_finding": False,
+                    "report_full_key_absent": True,
+                    "report_redacted_sample": f"MOCK****{tail4}",
+                }
+
+            checks.run("gateway-default-master-key-exfil",
+                       "AI 网关默认 master key：/config 读到上游 MOCK key，报告仅尾4位",
+                       gateway_master_key_exfil)
+
+            def gateway_forwarded_user_impersonation() -> dict[str, Any]:
+                run_module(
+                    store, tester, "aigateway-auth-bypass",
+                    {"target": ai_gateway.url(""), "master_key": AI_GATEWAY_MASTER_KEY,
+                     "tenant_key": AI_GATEWAY_TENANT_KEYS["tenant-a"], "spoof_user": "admin"},
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "aigateway-auth-bypass")
+                info = _trace_entry(trace, "GET", "/key/info")
+                logs = _trace_entry(trace, "GET", "/logs")
+                if info.get("status") != 200:
+                    raise AssertionError(f"伪造 X-Forwarded-User 访问 /key/info 未返回 200（实际 {info.get('status')}）")
+                info_payload = info.get("response") or {}
+                if info_payload.get("scope") != "global" or info_payload.get("subject") != "admin":
+                    raise AssertionError(f"/key/info 未返回 admin 全局视图：{info_payload.get('scope')}/{info_payload.get('subject')}")
+                tenants = info_payload.get("visible_tenants") or []
+                if not tenants or "tenant-b" not in tenants:
+                    raise AssertionError(f"/key/info 未暴露他租户：{tenants}")
+                if logs.get("status") != 200:
+                    raise AssertionError(f"伪造 X-Forwarded-User 访问 /logs 未返回 200（实际 {logs.get('status')}）")
+                entries = (logs.get("response") or {}).get("entries") or []
+                log_tenants = sorted({str(e.get("tenant")) for e in entries})
+                if len(log_tenants) < 2:
+                    raise AssertionError(f"/logs 未返回多租户日志：{log_tenants}")
+                findings = [f for f in run.findings if f.get("step_key") == "aigateway-auth-bypass"]
+                if not any("X-Forwarded-User" in f.get("title", "") for f in findings):
+                    raise AssertionError("伪造身份头越权未产出 finding")
+                return {
+                    "impersonated_user": "admin",
+                    "key_info_status": info.get("status"),
+                    "scope": info_payload.get("scope"),
+                    "visible_tenants": tenants,
+                    "logs_status": logs.get("status"),
+                    "logs_tenants": log_tenants,
+                    "log_entry_count": len(entries),
+                    "finding_count": len(findings),
+                }
+
+            checks.run("gateway-forwarded-user-impersonation",
+                       "AI 网关伪造 X-Forwarded-User：admin 全局 key 视图 + 全租户日志",
+                       gateway_forwarded_user_impersonation)
+
+            def gateway_semantic_cache_cross_tenant() -> dict[str, Any]:
+                run_module(
+                    store, tester, "aigateway-cache-cross-tenant",
+                    {"target": ai_gateway.url(""),
+                     "tenant_key": AI_GATEWAY_TENANT_KEYS["tenant-a"],
+                     "victim_tenant_key": AI_GATEWAY_TENANT_KEYS["tenant-b"],
+                     "requester_tenant": "tenant-a", "victim_tenant": "tenant-b"},
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "aigateway-cache-cross-tenant")
+                lookups = [e for e in trace.get("entries", [])
+                           if e.get("method") == "POST" and str(e.get("url", "")).endswith("/cache/lookup")]
+                if len(lookups) < 2:
+                    raise AssertionError("缓存 trace 缺少 requester/victim 两次 lookup")
+                requester_entry, victim_entry = lookups[0], lookups[1]
+                requester = requester_entry.get("response") or {}
+                victim = victim_entry.get("response") or {}
+                if requester_entry.get("status") != 200 or not requester.get("hit"):
+                    raise AssertionError(f"tenant-a 未命中 tenant-b 缓存：{requester}")
+                entry = requester.get("entry") or {}
+                if entry.get("tenant") != "tenant-b":
+                    raise AssertionError(f"缓存条目租户不是 tenant-b：{entry.get('tenant')}")
+                if requester.get("requester_tenant") != "tenant-a":
+                    raise AssertionError("缓存 requester_tenant 记录异常")
+                if requester.get("cache_key") != victim.get("cache_key"):
+                    raise AssertionError("跨租户 lookup 的 cache_key 不一致（共享前缀键证据不成立）")
+                findings = [f for f in run.findings if f.get("step_key") == "aigateway-cache-cross-tenant"]
+                if not findings:
+                    raise AssertionError("语义缓存跨租户命中未产出 finding")
+                return {
+                    "requester_status": requester_entry.get("status"),
+                    "victim_status": victim_entry.get("status"),
+                    "hit": True,
+                    "requester_tenant": "tenant-a",
+                    "entry_tenant": "tenant-b",
+                    "cache_key": requester.get("cache_key"),
+                    "victim_cache_key": victim.get("cache_key"),
+                    "shared_key": True,
+                    "cross_tenant": True,
+                    "finding_count": len(findings),
+                }
+
+            checks.run("gateway-semantic-cache-cross-tenant",
+                       "AI 网关语义缓存跨租户：tenant-a 命中 tenant-b 缓存条目（共享前缀键）",
+                       gateway_semantic_cache_cross_tenant)
 
             def data_leak() -> dict[str, Any]:
                 run_module(
@@ -471,6 +1016,9 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                 },
             }
         finally:
+            ai_gateway.shutdown()
+            gpu_cloud.shutdown()
+            longctx.shutdown()
             lab.shutdown()
 
     _write_outputs(out, result, write_docs=write_docs)
@@ -491,7 +1039,8 @@ def _md_table(result: dict[str, Any]) -> list[str]:
         f"（FAIL {result['summary']['failed']}）",
         "",
         "> **边界声明（必须随报告阅读）**：本验证为本机真实进程/真实 HTTP 效果级"
-        "（`lab/mock_targets.py`，仅 127.0.0.1），**非 live K8s 集群**。"
+        "（`lab/mock_targets.py` + `lab/longctx_sim.py` + `lab/gpu_cloud_sim.py` + `lab/ai_gateway_sim.py`，"
+        "仅 127.0.0.1），**非 live K8s 集群 / 真实 GPU 驱动 / 真实云账号**。"
         "KIND hostNetwork 绕过 NetworkPolicy 与 ARTEX（AGPL，黑盒对标）需启用虚拟化后，"
         "分别执行 `lab/kind/run-proof.sh` 与 `lab/bench/artex-bench.sh`；"
         "在虚拟化启用前，这两项不构成本报告的 PASS 结论。",

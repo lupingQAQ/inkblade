@@ -1,0 +1,30 @@
+{
+  "id": "long-context-cache-leak",
+  "title": {
+    "zh": "长上下文 prefix cache 跨租户复用 → 上下文侧信道",
+    "en": "Long-context prefix cache cross-tenant reuse → context side channel"
+  },
+  "category": "网络利用链",
+  "requires": [
+    "long-context-window-exhaustion",
+    "prefix-cache-cross-tenant-leak"
+  ],
+  "preconditions": [
+    {"expr": "findings('long-context-window-exhaustion').any(severity == 'high')"}
+  ],
+  "steps": [
+    {
+      "id": "window-pressure",
+      "module": "long-context-window-exhaustion",
+      "params": {"context_window": "128k", "prompt_tokens": 200000}
+    },
+    {
+      "id": "cache-reuse",
+      "module": "prefix-cache-cross-tenant-leak",
+      "params": {"cache_salt": "salt-tenant-a", "prefix_tokens": 4096},
+      "depends_on": ["window-pressure"]
+    }
+  ],
+  "evidence": ["http-trace", "usage-cached-tokens", "metrics-queue-depth"],
+  "mitre": ["T1557", "T1213"]
+}

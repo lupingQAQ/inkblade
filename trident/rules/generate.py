@@ -521,6 +521,27 @@ def _suricata_rules_text(specs: list[dict]) -> str:
                 f'alert tcp any any -> $ML_NET [{ports}] (msg:"TRIDENT collective/KV transfer port access from outside partition"; '
                 f'flow:to_server; flags:S; sid:{sid}; rev:1; metadata:trident.mode=monitor, trident.rule={spec["id"]};)'
             )
+        elif spec["id"] == "suricata-gpu-cloud-tenant-uri":
+            for i, uri in enumerate(spec["uris"]):
+                lines.append(
+                    f'alert http any any -> $ML_NET any (msg:"TRIDENT GPU pool / cloud tenant endpoint {uri}"; '
+                    f'flow:established,to_server; http.uri; content:"{uri}"; '
+                    f'sid:{sid + i}; rev:1; metadata:trident.mode=monitor, trident.rule={spec["id"]};)'
+                )
+        elif spec["id"] == "suricata-ai-gateway-admin-uri":
+            for i, uri in enumerate(spec["uris"]):
+                lines.append(
+                    f'alert http any any -> $ML_NET any (msg:"TRIDENT AI gateway admin URI {uri} from non-admin source"; '
+                    f'flow:established,to_server; http.uri; content:"{uri}"; '
+                    f'sid:{sid + i}; rev:1; metadata:trident.mode=monitor, trident.rule={spec["id"]};)'
+                )
+        elif spec.get("uris"):
+            for i, uri in enumerate(spec["uris"]):
+                lines.append(
+                    f'alert http any any -> $ML_NET any (msg:"TRIDENT long-context/KV endpoint {uri} from outside partition"; '
+                    f'flow:established,to_server; http.uri; content:"{uri}"; '
+                    f'sid:{sid + i}; rev:1; metadata:trident.mode=monitor, trident.rule={spec["id"]};)'
+                )
         lines.append("")
     return "\n".join(lines)
 

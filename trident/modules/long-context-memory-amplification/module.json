@@ -1,0 +1,21 @@
+{
+  "key": "long-context-memory-amplification",
+  "name": {
+    "zh": "长上下文内存放大",
+    "en": "Long-context memory amplification"
+  },
+  "series": "网络架构",
+  "description": "推理服务按声明窗口而非实际长度预留 KV cache：1M 窗口的极小 prompt 触发数百倍 KV 字节增长，叠加队列即形成低成本的 KV 内存耗尽面。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "推理服务基址（必填）",
+    "context_window": "声明窗口（缺省 1m）",
+    "prompt_tokens": "实际 prompt token 数（缺省 1024）",
+    "max_tokens": "生成上限（缺省 64）"
+  },
+  "produces": "long-context-memory-amplification.json + kv_cache_bytes 增量与放大比",
+  "knowledge": "docs/LONG-CONTEXT.md 第 2 节：KV cache 生命周期与内存放大；spec 5.2 网络架构层",
+  "combo_signature": "long-context-kv-memory-amplification"
+}

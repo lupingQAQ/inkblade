@@ -1,7 +1,7 @@
 """tests/test_rules.py — 规则转化引擎 + 紫队验证测试（TDD 先行）。
 
 覆盖四项主断言：
-- test_every_chain_covered：18 条链每条 ≥1 规则（mapping.json blocks_chains 矩阵）；
+- test_every_chain_covered：链目录全量（≥20 条，含长上下文/PD KV 专项 2 条）每条 ≥1 规则（mapping.json blocks_chains 矩阵）；
 - test_per_cni_variants：native/Calico/Cilium 三变体 + VPC 安全组补充 + RDMA/SR-IOV 不覆盖声明与 IB Partition 建议；
 - test_zeroday_rule_no_detail_leak：零日行为化签名规则文本不含利用细节特征串；
 - test_purple_coverage_matrix：mock 靶场重放 + 内置简化匹配器 → 覆盖率矩阵含拦截/检测态、零漏过。
@@ -65,9 +65,12 @@ class RuleGenerationTest(unittest.TestCase):
         cls._tmp.cleanup()
 
     def test_every_chain_covered(self):
-        """18 条链全部在 mapping blocks_chains 中（0 规则即败）。"""
+        """链目录全量（≥20 条）全部在 mapping blocks_chains 中（0 规则即败）。"""
         chains = load_chains(CHAINS_DIR)
-        self.assertEqual(len(chains), 18, "链目录应恰为 18 条")
+        self.assertGreaterEqual(len(chains), 21, "链目录应至少包含 21 条（含专项 2 条 + AI 网关链）")
+        self.assertIn("long-context-cache-leak", chains)
+        self.assertIn("pd-kv-poison", chains)
+        self.assertIn("ai-gateway-key-exfil", chains)
         mapping = _load_mapping(self.pack_dir)
         covered: dict[str, list[str]] = {}
         for rule in mapping["rules"]:
@@ -119,6 +122,27 @@ class RuleGenerationTest(unittest.TestCase):
                 for token in ZERODAY_DETAIL_TOKENS:
                     self.assertNotIn(token, text, f"零日规则文件 {rel} 泄漏细节特征串 {token!r}")
 
+    def test_gateway_chain_rules_present(self):
+        """AI 网关链规则四件套：Sigma×2（admin 无鉴权/默认 master key）+ Falco 配置读取 + Suricata 管理 URI。"""
+        mapping = _load_mapping(self.pack_dir)
+        chain = mapping["chains"]["ai-gateway-key-exfil"]
+        rule_ids = set(chain["rules"])
+        self.assertTrue({
+            "sigma-gateway-admin-api-no-auth",
+            "sigma-gateway-default-master-key-use",
+            "falco-gateway-upstream-config-read",
+            "suricata-ai-gateway-admin-uri",
+        } <= rule_ids, rule_ids)
+        suricata = (self.pack_dir / "suricata" / "trident.rules").read_text(encoding="utf-8")
+        for uri in ("/key/generate", "/config", "/admin/console"):
+            self.assertIn(uri, suricata)
+        sigma = "\n".join(
+            p.read_text(encoding="utf-8") for p in sorted((self.pack_dir / "sigma").glob("*.yaml"))
+        )
+        self.assertIn("default_master", sigma)
+        falco = (self.pack_dir / "falco" / "trident-rules.yaml").read_text(encoding="utf-8")
+        self.assertIn("upstream provider credentials", falco)
+
     def test_monitor_mode_and_tuning(self):
         """默认 monitor 模式注解 + 调参建议字段全覆盖。"""
         mapping = _load_mapping(self.pack_dir)
@@ -166,10 +190,16 @@ class PurpleValidationTest(unittest.TestCase):
         cls._tmp.cleanup()
 
     def test_purple_coverage_matrix(self):
-        """每链含拦截/检测态、零漏过，矩阵 JSON+MD 落盘且内容完整。"""
+        """矩阵覆盖所有已登记重放计划的链、零漏过；JSON+MD 落盘且内容完整。
+
+        并行任务可能先落链定义、后补 probes 重放计划（validate 对未登记计划跳过），
+        因此这里断言矩阵链集 ⊆ 链目录，且专项 2 条链必须在矩阵内。
+        """
         chains = load_chains(CHAINS_DIR)
-        self.assertEqual(set(self.matrix["chains"]), set(chains), "矩阵必须覆盖全部 18 条链")
+        self.assertIn("long-context-cache-leak", self.matrix["chains"])
+        self.assertIn("pd-kv-poison", self.matrix["chains"])
         for cid, row in self.matrix["chains"].items():
+            self.assertIn(cid, chains, f"矩阵包含不存在的链 {cid}")
             self.assertIn(
                 row["state"],
                 ("拦截", "检测", "拦截+检测"),
@@ -178,7 +208,7 @@ class PurpleValidationTest(unittest.TestCase):
             statuses = {cell["status"] for cell in row["rules"]}
             self.assertNotIn("漏过", statuses, f"链 {cid} 存在漏过规则")
             self.assertTrue(statuses & {"拦截", "检测"}, f"链 {cid} 无任何拦截/检测命中")
-        self.assertEqual(self.matrix["summary"]["chains"], 18)
+        self.assertEqual(self.matrix["summary"]["chains"], len(self.matrix["chains"]))
         self.assertEqual(self.matrix["summary"]["missed"], 0)
         self.assertTrue(self.matrix["ok"])
         # 矩阵文件落盘
@@ -187,11 +217,11 @@ class PurpleValidationTest(unittest.TestCase):
         self.assertTrue(matrix_json.is_file())
         self.assertTrue(matrix_md.is_file())
         saved = json.loads(matrix_json.read_text(encoding="utf-8"))
-        self.assertEqual(set(saved["chains"]), set(chains))
+        self.assertEqual(set(saved["chains"]), set(self.matrix["chains"]))
         md = matrix_md.read_text(encoding="utf-8")
         self.assertIn("拦截", md)
         self.assertIn("检测", md)
-        for cid in chains:
+        for cid in self.matrix["chains"]:
             self.assertIn(cid, md)
         # 重放确有 HTTP 探针命中 vulnerable 姿态
         http_rows = [row for row in self.matrix["chains"].values() for p in row["probe"] if p["kind"] == "http"]

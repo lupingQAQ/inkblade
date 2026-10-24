@@ -21,8 +21,8 @@
 - `network/` **三 CNI 变体**（`native/` NetworkPolicy、`calico/` GlobalNetworkPolicy、`cilium/` CiliumNetworkPolicy）默认拒绝分区 + `vpc-native/` 安全组补充 + `rdma-sriov-uncovered.md`（RDMA/SR-IOV 不受 NetworkPolicy 覆盖声明）+ `ib-partition-advice.yaml`（IB Partition/SM 隔离建议）。
 - `sigma/`、`falco/`、`suricata/` 检测规则（Suricata 含 NCCL TCPStore/KV 传输端口 29400-29512/45678 与 IMDS 出网签名）。
 - `rbac-convergence.yaml` 三 operator 集群级角色 → namespace 最小化改写参考。
-- `mapping.json` **规则↔攻击链/模块映射矩阵**：21 规则 × 18 链全覆盖（每链 ≥1 规则硬校验）、零日行为化签名登记（规则文本零利用细节）、monitor 模式 + 中英调参建议。
-- `coverage-matrix.json` / `.md` **紫队验证覆盖率矩阵**：mock 靶场重放各链探针 + 内置简化 sigma/falco/suricata 匹配器 → 18 链全部「拦截/检测/拦截+检测」，**0 漏过**。
+- `mapping.json` **规则↔攻击链/模块映射矩阵**：22 规则 × 20 链全覆盖（每链 ≥1 规则硬校验）、零日行为化签名登记（规则文本零利用细节）、monitor 模式 + 中英调参建议。
+- `coverage-matrix.json` / `.md` **紫队验证覆盖率矩阵**：mock 靶场重放各链探针 + 内置简化 sigma/falco/suricata 匹配器 → 20 链全部「拦截/检测/拦截+检测」，**0 漏过**。
 
 ## 3. 证据三层（每次 run）
 

@@ -13,16 +13,21 @@
 ## 能力 / Capabilities
 
 - **七层架构**：授权治理、链编排、模块库、三层证据、双语报告、六视图 SPA、规则包转化。详见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
-- **攻击链编排**：18 条链（经典攻击链 / 云侧权重桶链 / 网络利用链 / 零日级链），支持 dry-run 预览写面、依赖拓扑、并行执行与逐步回滚。
+- **攻击链编排**：20 条链（经典攻击链 / 云侧权重桶链 / 网络利用链 / 零日级链），支持 dry-run 预览写面、依赖拓扑、并行执行与逐步回滚。
 - **模块库**：侦察、横向利用、权限链、窃取与数据泄露、核心代码、网络架构、混合云、防护绕过、零日级漏洞模块（**共 6 个，均已公开**：dify-* 与 open-webui-*）。
 - **证据三层**：上下文摘要（`context.jsonl.gz`）+ SQLite（`evidence.db`）+ 归档层（`steps/*.tar.gz` + `manifest.sha256`），支持篡改检测。
 - **报告**：PTES 七段 + 五个 ML 专节 + NIST / 等保 / GB/T 20984 映射 + CVSS 3.1 + 证据锚；中英双语。
+- **合规映射（2026-10）**：每条发现映射 OWASP LLM Top 10（2026 正式版，含 2025 编号 crosswalk）、OWASP Agentic AI Top 10（ASI01–ASI10）、MITRE ATLAS、NIST AI RMF、ISO/IEC 42001、EU AI Act GPAI 与 TC260/生成式AI管理办法条款；见 [`trident/reports/compliance.py`](trident/reports/compliance.py) 与 [`tests/test_compliance.py`](tests/test_compliance.py)。
+- **MCP 与 agent 协作**：`trident mcp` 提供 5 个只读 stdio JSON-RPC 工具（复用授权锁、零写工具）；`trident plan` 输出证据驱动的链推荐排序，固定 lead 审批、由人触发执行；见 [`trident/mcp_server.py`](trident/mcp_server.py)、[`trident/agent_planner.py`](trident/agent_planner.py)。
+- **模型供应链与机密计算**：CycloneDX ML-BOM 风格 AI SBOM、cosign 风格 provenance 三元组校验、TDX/SEV-SNP/NVIDIA CC 证明解析与策略断言（本地 fixture 驱动，篡改必失败）；见 [`trident/supplychain.py`](trident/supplychain.py)。
+- **机器可读导出**：`trident export --format sarif|ocsf|vex` 输出 SARIF 2.1.0、OCSF 1.x Detection Finding 与 OpenVEX 风格 JSON；见 [`trident/export.py`](trident/export.py)。
 - **规则转化**：Kyverno / Gatekeeper / NetworkPolicy（native、Calico、Cilium）/ Sigma / Falco / Suricata，规则↔链覆盖率硬校验 + 紫队重放矩阵。
-- **实效验证**：`trident/verify-effects.py` 在本机真实进程/真实 HTTP 上逐项验证管理面利用、权重投毒、备份回滚、RCE、数据泄露、检测规则与端到端链；见 [`docs/EFFECT-VERIFICATION.md`](docs/EFFECT-VERIFICATION.md)。
+- **SOTA 能力矩阵**：2026-10 公开参照对照与诚实差距（万卡实测、真实 ARTEX 对比、硬件 TEE 实测等未达成项及追赶路径）见 [`docs/SOTA-2026-10.md`](docs/SOTA-2026-10.md)。
+- **实效验证**：`trident/verify-effects.py` 在本机真实进程/真实 HTTP 上逐项验证管理面利用、权重投毒、备份回滚、RCE、数据泄露、检测规则、端到端链与长上下文/PD KV 四项效果（11/11 PASS）；见 [`docs/EFFECT-VERIFICATION.md`](docs/EFFECT-VERIFICATION.md) 与 [`docs/LONG-CONTEXT.md`](docs/LONG-CONTEXT.md)。
 
 ## 边界 / Boundaries
 
-- **实验室优先**：默认靶场为 `lab/mock_targets.py`（仅监听 `127.0.0.1`）。真实集群执行需自行提供 kubeconfig、网络可达性与授权材料。
+- **实验室优先**：默认靶场为 `lab/mock_targets.py` 与 `lab/longctx_sim.py`（均仅监听 `127.0.0.1`）。真实集群执行需自行提供 kubeconfig、网络可达性与授权材料。
 - **不内置任何真实凭据**：fixture 与 mock 返回值均为 `MOCK*` / `FAKE*` 样值。
 - **零日级模块已公开**：6 个 `dify-*` / `open-webui-*` 模块为公开模块（`private: false`），正常打包与展示细节。`trident/core/zeroday.py` 仅作为**默认关闭的可选加密扩展**，供未来真正未披露的私有材料使用，不构成这些公开模块的门槛。
 - **效果级 vs 集群级**：本机验证为真实进程/真实 HTTP 的**效果级**证据，不等同于 live K8s 集群验证。KIND（hostNetwork 绕过 NetworkPolicy）与 ARTEX 黑盒对标需启用虚拟化后按 `lab/kind/run-proof.sh` 与 `lab/bench/artex-bench.sh` 执行。
@@ -71,6 +76,7 @@ python scripts/check-public-tree.py                # 公开树 0 命中（无内
 | [`docs/design.md`](docs/design.md) | 设计基线与漏洞研究分类（中性引用） |
 | [`docs/RUNBOOK.md`](docs/RUNBOOK.md) | 安装、授权、模块/链、报告、回滚、实验室边界 |
 | [`docs/EFFECT-VERIFICATION.md`](docs/EFFECT-VERIFICATION.md) | 实效验证 PASS/FAIL 表与证据摘要 |
+| [`docs/SOTA-2026-10.md`](docs/SOTA-2026-10.md) | 2026-10 SOTA 能力矩阵、诚实差距与追赶路径 |
 | [`docs/DELIVERY.md`](docs/DELIVERY.md) | 交付包结构与样张说明 |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | 开发、测试、模块作者规范 |
 | [`SECURITY.md`](SECURITY.md) | 漏洞披露政策（私密渠道 + 90 天） |

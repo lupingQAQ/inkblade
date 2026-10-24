@@ -1,0 +1,20 @@
+{
+  "key": "prefill-decode-kv-channel-unauth",
+  "name": {
+    "zh": "PD 分离 KV 通道未鉴权",
+    "en": "Prefill-decode KV channel unauthenticated"
+  },
+  "series": "网络架构",
+  "description": "预填充-解码分离架构中 KV 传输通道（NIXL/Mooncake over RDMA/TCP）缺身份校验：任意租户可发读握手并读取通道指标（prefill_pool/decode_pool/queue_depth）。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "推理服务基址（必填）",
+    "block_id": "读握手的 KV 块 id（缺省 pd-handshake）",
+    "tenant": "源租户（缺省 tenant-a）"
+  },
+  "produces": "prefill-decode-kv-channel-unauth.json + 通道/池计数器证据",
+  "knowledge": "docs/LONG-CONTEXT.md 第 2 节：PD 分离 KV 通道；spec 5.2 网络架构层 + 6.2 预填充-解码 KV 通道链",
+  "combo_signature": "pd-split-nixl-rdma-kv-channel"
+}

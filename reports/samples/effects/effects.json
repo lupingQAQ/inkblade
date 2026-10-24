@@ -1,14 +1,17 @@
 {
-  "generated_at": "2026-10-24T18:04:14Z",
-  "scope": "本机真实进程 + 真实 HTTP（127.0.0.1 回环 mock 靶场）效果级验证；非 live K8s 集群。KIND/ARTEX 需启用虚拟化后按 lab/kind 与 lab/bench 脚本执行。",
+  "generated_at": "2026-10-24T19:17:17Z",
+  "scope": "本机真实进程 + 真实 HTTP（127.0.0.1 回环 mock 靶场：mock_targets / longctx_sim / gpu_cloud_sim / ai_gateway_sim）效果级验证；非 live K8s 集群 / 真实 GPU 驱动 / 真实云账号。KIND/ARTEX 需启用虚拟化后按 lab/kind 与 lab/bench 脚本执行。",
   "limitations": [
-    "靶场为 lab/mock_targets.py 单进程仿真（仅 127.0.0.1），非真实 K8s API/容器运行时。",
+    "靶场为 lab/mock_targets.py + lab/longctx_sim.py + lab/gpu_cloud_sim.py + lab/ai_gateway_sim.py 单进程仿真（仅 127.0.0.1），非真实 K8s API/容器运行时/GPU 推理/云账号。",
     "sglang/areal/slime 的写面以 mock server 侧真实文件落盘为证据，不是远端生产文件系统。",
+    "长上下文仿真以 token 计数提示 + KV 计数器表达 128K–1M 窗口行为，不执行真实 attention/KV 传输。",
+    "GPU 池化/云租户仿真以池状态文件与 benign marker 表达 MIG/MPS/显存残留与云身份/桶策略，不调用真实 nvidia-smi/STS/S3。",
+    "AI 网关仿真为内存态（key/别名/缓存/配额/日志），上游 provider key 一律 MOCK 前缀；不连接真实模型厂商。",
     "KIND hostNetwork 绕过 NetworkPolicy 实证需启用 WSL2/虚拟化后执行 lab/kind/run-proof.sh。",
     "ARTEX（AGPL）仅作外部黑盒对标，本仓库不复用其代码；对标需虚拟化环境执行 lab/bench/artex-bench.sh。"
   ],
-  "run": "effects-20261025-020413",
-  "chain_run": "effects-chain-20261025-020413",
+  "run": "effects-20261025-031716",
+  "chain_run": "effects-chain-20261025-031716",
   "checks": [
     {
       "id": "admin-plane-failopen",
@@ -19,12 +22,12 @@
         "route": "/pause",
         "state_file": "sglang/admin-state.json",
         "state_sha256_before": "5b377a070bfa3e011a6994667613cd33be1f9abed8c0a75e0547230dd4089318",
-        "state_sha256_after": "8a3ef06953240e4018d07f2bf63f4ac80c304f94ade769d71d0c8f3f88a95ae3",
+        "state_sha256_after": "006269a96dbbeb341736adfd43167e2f7a11dca65ac8885b59568aafb20545c7",
         "state_applied": true,
-        "state_response_sha256": "077f4eda063d1c7ded456d5d6ab194080675a801232453875f6d736b945695bf"
+        "state_response_sha256": "0cac1ed26dc9368db8edaf6c4974a4668ce9d62b5dc4e369d7391aaaa91660b0"
       },
       "detail": "",
-      "elapsed_ms": 49.7
+      "elapsed_ms": 75.3
     },
     {
       "id": "weight-poison-write",
@@ -32,15 +35,15 @@
       "status": "PASS",
       "evidence": {
         "http_status": 200,
-        "file": "slime/checkpoints_victim-TRIDENT-effects-20261025-020413/model.safetensors",
+        "file": "slime/checkpoints_victim-TRIDENT-effects-20261025-031716/model.safetensors",
         "sha256_before": "8127ad31f844aa2495a3e251f38263b6540cb39325c54f775db29604f6eb41e0",
-        "sha256_after": "6147ff548866208f41f830e0dbc9fb87580b9c13024bb5fe0ff22336727d6530",
-        "marker": "TRIDENT-effects-20261025-020413",
+        "sha256_after": "035733c190776a81ada1d4e19a994e8ada9653739305d94cd3f4867e7c62a27f",
+        "marker": "TRIDENT-effects-20261025-031716",
         "marker_present": true,
-        "server_weights_sha256": "6147ff548866208f41f830e0dbc9fb87580b9c13024bb5fe0ff22336727d6530"
+        "server_weights_sha256": "035733c190776a81ada1d4e19a994e8ada9653739305d94cd3f4867e7c62a27f"
       },
       "detail": "",
-      "elapsed_ms": 39.5
+      "elapsed_ms": 67.2
     },
     {
       "id": "backup-rollback",
@@ -54,7 +57,7 @@
         "backup_receipt_sha256": "8127ad31f844aa2495a3e251f38263b6540cb39325c54f775db29604f6eb41e0"
       },
       "detail": "",
-      "elapsed_ms": 4.5
+      "elapsed_ms": 6.0
     },
     {
       "id": "rce-marker",
@@ -66,14 +69,225 @@
           "create_engine": 200,
           "call": 200
         },
-        "marker_file": "areal/call/engine-754c36cdc7984283bb50d515e51f71d2-CALL.marker",
+        "marker_file": "areal/call/engine-9534fe6dbca74b16aeff19fdd186d533-CALL.marker",
         "env_marker_file": "areal/env/ENV-SET.marker",
-        "marker": "TRIDENT-effects-20261025-020413",
+        "marker": "TRIDENT-effects-20261025-031716",
         "marker_present": true,
-        "engine_id": "engine-754c36cdc7984283bb50d515e51f71d2"
+        "engine_id": "engine-9534fe6dbca74b16aeff19fdd186d533"
       },
       "detail": "",
-      "elapsed_ms": 39.4
+      "elapsed_ms": 61.2
+    },
+    {
+      "id": "gpu-tenant-residue-marker",
+      "title": "GPU 跨租户残留实效：benign marker 分配→释放→读回（含释放后）+ sha256 一致",
+      "status": "PASS",
+      "evidence": {
+        "allocate_status": 200,
+        "release_status": 200,
+        "readback_status": 200,
+        "victim_read_status": 200,
+        "tenant": "tenant-a",
+        "victim_tenant": "tenant-b",
+        "device": "gpu-a-1",
+        "victim_device": "gpu-b-0",
+        "marker": "TRIDENT-BENIGN-RESIDUE-TRIDENT-effects-20261025-031716",
+        "marker_sha256": "07cad3202efc98e4dda1f8e8fd7785756f330f3e8142619d83f387b7adede5a9",
+        "expected_marker_sha256": "07cad3202efc98e4dda1f8e8fd7785756f330f3e8142619d83f387b7adede5a9",
+        "readback_file_sha256": "4bc384e759eedb2281f3063864cd45fbf63c275fc8bb850894bdc1bd15494b27",
+        "residue_file_sha256": "4bc384e759eedb2281f3063864cd45fbf63c275fc8bb850894bdc1bd15494b27",
+        "actual_file_sha256": "4bc384e759eedb2281f3063864cd45fbf63c275fc8bb850894bdc1bd15494b27",
+        "residue_file": "gpu/residue/gpu-a-1/alloc-7402f313b5.json",
+        "readback_after_release": true,
+        "victim_marker_sha256": "20e59e65ff218abffa5bd1af1ddd62e9f4571ff762b408c8e26dd171235b0fad",
+        "victim_readable": true
+      },
+      "detail": "",
+      "elapsed_ms": 72.2
+    },
+    {
+      "id": "cloud-assume-role-cross-account",
+      "title": "云身份实效：通配 trust policy 跨账户 AssumeRole 成功（mock，凭据脱敏）",
+      "status": "PASS",
+      "evidence": {
+        "identity_status": 200,
+        "assume_role_status": 200,
+        "role_arn": "arn:aws:iam::222222222222:role/weight-reader",
+        "source_account": "999999999999",
+        "cross_account": true,
+        "wildcard_principal": true,
+        "trust_policy_principal": "*",
+        "external_id_required": false,
+        "masked_credentials": {
+          "AccessKeyId": "MOCK****0001",
+          "SecretAccessKey": "MOCK****0001",
+          "SessionToken": "MOCK****0001"
+        },
+        "full_credential_absent": true
+      },
+      "detail": "",
+      "elapsed_ms": 61.8
+    },
+    {
+      "id": "cloud-bucket-public-listing",
+      "title": "云桶实效：公共桶策略 + 跨租户列目录成功（权重/检查点清单）",
+      "status": "PASS",
+      "evidence": {
+        "policy_status": 200,
+        "list_status": 200,
+        "bucket": "weights-b",
+        "bucket_owner": "tenant-b",
+        "requester": "tenant-a",
+        "public": true,
+        "cross_tenant": true,
+        "object_count": 3,
+        "objects": [
+          "tenant-b/model.safetensors",
+          "tenant-b/checkpoint-00001.safetensors",
+          "tenant-b/tokenizer.json"
+        ],
+        "policy_principal": "*"
+      },
+      "detail": "",
+      "elapsed_ms": 59.3
+    },
+    {
+      "id": "longctx-window-overflow",
+      "title": "长上下文超窗实效：真实 HTTP 200 + prefill_tokens 超窗 + queue_depth 增长",
+      "status": "PASS",
+      "evidence": {
+        "http_status": 200,
+        "context_window_tokens": 131072,
+        "prefill_tokens": 200000,
+        "queue_depth_before": 0,
+        "queue_depth_after": 1,
+        "queue_depth_delta": 1,
+        "prefill_pool": {
+          "capacity": 4,
+          "active": 1,
+          "queued": 1
+        },
+        "route": "/v1/chat/completions"
+      },
+      "detail": "",
+      "elapsed_ms": 4.0
+    },
+    {
+      "id": "longctx-prefix-reuse",
+      "title": "prefix cache 跨租户实效：无 cache_salt 复用他租户 prefix（cached_tokens>0）",
+      "status": "PASS",
+      "evidence": {
+        "prime_status": 200,
+        "reuse_status": 200,
+        "prime_tenant": "tenant-a",
+        "reuse_tenant": "tenant-b",
+        "cache_salt_present_on_reuse": false,
+        "cached_tokens": 4096,
+        "cross_tenant": true,
+        "route": "/v1/chat/completions"
+      },
+      "detail": "",
+      "elapsed_ms": 2.6
+    },
+    {
+      "id": "longctx-kv-channel-write",
+      "title": "PD KV 通道实效：benign marker 真实写入并独立读回（sha256 一致）",
+      "status": "PASS",
+      "evidence": {
+        "write_status": 200,
+        "readback_status": 200,
+        "block_id": "kv-block-effects-20261025-031716",
+        "readback_found": true,
+        "readback_marker_present": true,
+        "write_sha256": "f05039038dbadcfe99ea72a236aa5bb696305cd73fcb469cc8d2020acdf15769",
+        "readback_sha256": "f05039038dbadcfe99ea72a236aa5bb696305cd73fcb469cc8d2020acdf15769",
+        "bytes": 136
+      },
+      "detail": "",
+      "elapsed_ms": 59.1
+    },
+    {
+      "id": "longctx-checkpoint-rollback",
+      "title": "checkpoint 分片实效：投毒 sha256 变化 + rollback 后 sha256 与原始完全一致",
+      "status": "PASS",
+      "evidence": {
+        "http_status": 200,
+        "shard_file": "checkpoints/trident-effects-shard.safetensors",
+        "sha256_before": "8922fec3b98bc9b255761d7208df88911a8c790c3709026dc4a8cc448cda6645",
+        "sha256_after": "48842604449c5d4f81b80e337b8b1fadf22b4a6208cdaf53ad26ad81a08190fa",
+        "sha256_after_rollback": "8922fec3b98bc9b255761d7208df88911a8c790c3709026dc4a8cc448cda6645",
+        "rollback_rows": 1,
+        "exact_restore": true,
+        "marker_present": true,
+        "write_status": 200
+      },
+      "detail": "",
+      "elapsed_ms": 70.6
+    },
+    {
+      "id": "gateway-default-master-key-exfil",
+      "title": "AI 网关默认 master key：/config 读到上游 MOCK key，报告仅尾4位",
+      "status": "PASS",
+      "evidence": {
+        "http_status": 200,
+        "route": "/config",
+        "master_key_class": "default",
+        "master_key_used": true,
+        "upstream_key_count": 2,
+        "upstream_providers": [
+          "openai",
+          "anthropic"
+        ],
+        "upstream_key_tail4": "9f3c",
+        "upstream_key_masked": "MOCK****9f3c",
+        "full_key_in_finding": false,
+        "report_full_key_absent": true,
+        "report_redacted_sample": "MOCK****9f3c"
+      },
+      "detail": "",
+      "elapsed_ms": 76.7
+    },
+    {
+      "id": "gateway-forwarded-user-impersonation",
+      "title": "AI 网关伪造 X-Forwarded-User：admin 全局 key 视图 + 全租户日志",
+      "status": "PASS",
+      "evidence": {
+        "impersonated_user": "admin",
+        "key_info_status": 200,
+        "scope": "global",
+        "visible_tenants": [
+          "tenant-a",
+          "tenant-b"
+        ],
+        "logs_status": 200,
+        "logs_tenants": [
+          "tenant-a",
+          "tenant-b"
+        ],
+        "log_entry_count": 3,
+        "finding_count": 3
+      },
+      "detail": "",
+      "elapsed_ms": 71.1
+    },
+    {
+      "id": "gateway-semantic-cache-cross-tenant",
+      "title": "AI 网关语义缓存跨租户：tenant-a 命中 tenant-b 缓存条目（共享前缀键）",
+      "status": "PASS",
+      "evidence": {
+        "requester_status": 200,
+        "victim_status": 200,
+        "hit": true,
+        "requester_tenant": "tenant-a",
+        "entry_tenant": "tenant-b",
+        "cache_key": "sc:b918ca5cbe91e61a88057d63",
+        "victim_cache_key": "sc:b918ca5cbe91e61a88057d63",
+        "shared_key": true,
+        "cross_tenant": true,
+        "finding_count": 1
+      },
+      "detail": "",
+      "elapsed_ms": 53.9
     },
     {
       "id": "data-leak-redaction",
@@ -88,24 +302,24 @@
         "report_redacted_sample": "****wxyz"
       },
       "detail": "",
-      "elapsed_ms": 54.2
+      "elapsed_ms": 107.8
     },
     {
       "id": "rules-detection",
       "title": "检测规则实效：规则引擎对本次靶场重放 ≥1 条命中",
       "status": "PASS",
       "evidence": {
-        "rules_evaluated": 56,
-        "rules_detected": 34,
+        "rules_evaluated": 68,
+        "rules_detected": 46,
         "rules_blocked": 18,
         "rules_missed": 0,
-        "hits": 52,
+        "hits": 64,
         "sample_hit": "flat-network-admin-plane-weight-poison · alert-combo-signature · 拦截",
         "matrix_ok": true,
         "coverage_file": "rules-coverage-matrix.json"
       },
       "detail": "",
-      "elapsed_ms": 53.3
+      "elapsed_ms": 187.0
     },
     {
       "id": "chain-e2e",
@@ -124,7 +338,7 @@
         },
         "backup_receipts": 1,
         "weights_sha256_before": "3b3c43cbb5b6a9223cc39aea3d4f86a9ffe5bc3c25bb9162d9363dd950d012cb",
-        "weights_sha256_after": "8b78ff6b6aa5e9ee7faeb71b3eeb4cff02181e4390838220ad1c0cfa5f962295",
+        "weights_sha256_after": "4b3d9a9f864355b75e37f901ee02c7e2df697246d9e3e0578da8c6aa95385177",
         "marker_present": true,
         "layers": {
           "context": true,
@@ -132,15 +346,15 @@
           "archives": 2,
           "manifest": true
         },
-        "run": "effects-chain-20261025-020413"
+        "run": "effects-chain-20261025-031716"
       },
       "detail": "",
-      "elapsed_ms": 104.3
+      "elapsed_ms": 174.4
     }
   ],
   "summary": {
-    "total": 7,
-    "passed": 7,
+    "total": 17,
+    "passed": 17,
     "failed": 0,
     "ok": true
   },
