@@ -265,7 +265,8 @@ class EvidenceStore:
             with run._tx() as conn:
                 conn.execute(
                     "INSERT INTO roe(workspace, scope_sha256, status, fields, created_at) VALUES(?,?,?,?,?)",
-                    (self.workspace, consent["sha256"], "complete", consent["fields"], consent["ts"]),
+                    (self.workspace, consent["sha256"], "complete",
+                     json.dumps(consent["fields"], ensure_ascii=False), consent["ts"]),
                 )
         return run
 
