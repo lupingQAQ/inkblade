@@ -65,7 +65,7 @@ def _decrypt(key: bytes, blob: bytes) -> bytes:
     if blob.startswith(b"TRZD-AESGCM"):
         from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-        salt, nonce, body = blob[10:26], blob[26:38], blob[38:]
+        salt, nonce, body = blob[11:27], blob[27:39], blob[39:]
         dk = hashlib.scrypt(key, salt=salt, n=2 ** 14, r=8, p=1, dklen=32)
         return AESGCM(dk).decrypt(nonce, body, b"trident-zeroday")
     salt, nonce, tag, ct = blob[10:26], blob[26:42], blob[42:74], blob[74:]

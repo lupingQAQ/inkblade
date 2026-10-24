@@ -24,6 +24,7 @@ class BackupManager:
         if not targets:
             return None
         rid = int(time.time() * 1000) % 10 ** 9
+        snapshotted = 0
         for i, t in enumerate(targets):
             kind = t.get("kind")
             if kind == "file":
@@ -33,16 +34,19 @@ class BackupManager:
                 dst = self.root / f"{rid}-{step_key}-{i}.bak"
                 shutil.copy2(src, dst)
                 self.run.record_backup(step_key, t["path"], dst, "file-restore")
+                snapshotted += 1
             elif kind == "kube":
                 dst = self.root / f"{rid}-{step_key}-{i}.yaml"
                 dst.write_text(str(t.get("manifest", "")), encoding="utf-8")
                 self.run.record_backup(step_key, f"kube:{t.get('kind')}/{t.get('name')}",
                                        dst, "kubectl-apply")
+                snapshotted += 1
             elif kind == "http":
                 dst = self.root / f"{rid}-{step_key}-{i}.json"
                 dst.write_text(json.dumps(t.get("state", {}), ensure_ascii=False), encoding="utf-8")
                 self.run.record_backup(step_key, str(t.get("url")), dst, "http-restore")
-        return rid
+                snapshotted += 1
+        return rid if snapshotted else None
 
     def rollback(self, step_key: str) -> int:
         rows = self.run.query(

@@ -299,10 +299,13 @@ class EvidenceStore:
         mpath = run_dir / "manifest.sha256"
         if not mpath.exists():
             return False
+        lines = [l for l in mpath.read_text(encoding="utf-8").splitlines() if l.strip()]
+        steps_dir = run_dir / "steps"
+        expected = len([p for p in steps_dir.iterdir() if p.is_file()]) if steps_dir.exists() else 0
+        if not lines or len(lines) < expected:
+            return False
         ok = True
-        for line in mpath.read_text(encoding="utf-8").splitlines():
-            if not line.strip():
-                continue
+        for line in lines:
             sha, rel = line.split("  ", 1)
             f = run_dir / rel
             if not f.exists() or _sha256_bytes(f.read_bytes()) != sha:
