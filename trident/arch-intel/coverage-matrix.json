@@ -1,0 +1,768 @@
+{
+  "schema": "trident-arch-intel-coverage-matrix",
+  "generated_on": "2026-10-25",
+  "spec": "docs/superpowers/specs/2026-10-24-trident-ml-cluster-pentest-design.md#12（第 12.2 节最低门槛为权威）",
+  "thresholds": {
+    "self-built-networking": 8,
+    "cloud-providers-per-provider": 2,
+    "cloud-providers": [
+      "aws",
+      "azure",
+      "aliyun",
+      "tencent",
+      "gcp",
+      "huawei"
+    ],
+    "hybrid-interconnect": 3,
+    "network-specialized": 8,
+    "network-topics": [
+      "cni",
+      "multus-sriov",
+      "network-operator",
+      "dra-compute-domain-imex",
+      "gateway-api-inference-extension",
+      "llm-d-nixl",
+      "nccl",
+      "ib-roce",
+      "storage-protocol"
+    ]
+  },
+  "notes": [
+    "只有 verification.status=verified 的源计入门槛；verified-partial 显式记录缺口（xai-colossus：主站自实验网络不可达，检索快照佐证）。",
+    "cloud.google.com 与 research.google 在本实验网络超时/拒连：GCP 条目改用 GoogleCloudPlatform 官方仓与 Google 维护的 TPU 软件栈仓核验，缺口已记录。",
+    "Calico raw README 当日抓取超时：cni-policy-calico-cilium 以 Cilium 官方文档直读为准，Calico 语义待复验。",
+    "核验方法：websearch/webfetch/http fetch 逐源抓取（GitHub raw、arXiv、各云厂商帮助中心/学习站），日期均为 2026-10-25。"
+  ],
+  "sources": [
+    {
+      "id": "alibaba-hpn",
+      "file": "trident/arch-intel/corpus/alibaba-hpn.md",
+      "category": "self-built-networking",
+      "organization": "Alibaba",
+      "system": "HPN 双平面组网",
+      "urls": [
+        "https://dl.acm.org/doi/10.1145/3651890.3672265",
+        "https://ennanzhai.github.io/pub/sigcomm24-hpn.pdf"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "websearch+webfetch（SIGCOMM'24 论文 PDF/DOI 摘要）",
+        "summary": "15K GPU 单 Pod；双 ToR + 双平面转发；rail-optimized；400Gbps/NIC"
+      },
+      "topics": [
+        "dual-plane",
+        "dual-tor",
+        "rail-optimized"
+      ]
+    },
+    {
+      "id": "meta-roce-fabric",
+      "file": "trident/arch-intel/corpus/meta-roce-fabric.md",
+      "category": "self-built-networking",
+      "organization": "Meta",
+      "system": "RoCE 以太网训练网",
+      "urls": [
+        "https://conferences.sigcomm.org/sigcomm/2024/program/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（SIGCOMM 2024 官方议程页命中论文条目与摘要）",
+        "summary": "Experience Track 论文《RDMA over Ethernet for Distributed Training at Meta Scale》：独立 GPU backend 网、路由多轮迭代、弃用 DCQCN"
+      },
+      "topics": [
+        "roce-fabric",
+        "backend-network"
+      ]
+    },
+    {
+      "id": "bytedance-megascale",
+      "file": "trident/arch-intel/corpus/bytedance-megascale.md",
+      "category": "self-built-networking",
+      "organization": "ByteDance",
+      "system": "MegaScale 10K+ GPU 训练",
+      "urls": [
+        "https://www.usenix.org/conference/nsdi24/presentation/jiang-ziheng",
+        "https://arxiv.org/abs/2402.15627"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "websearch+webfetch（USENIX NSDI'24 页面与 PDF 全文）",
+        "summary": "12,288 GPU 训练 175B，55.2% MFU；CLOS 64×400Gbps 交换机；1:1 上下行；拓扑感知并行；可观测性与故障恢复"
+      },
+      "topics": [
+        "clos-fabric",
+        "topology-aware-parallelism",
+        "pfc"
+      ]
+    },
+    {
+      "id": "deepseek-prefill-decode",
+      "file": "trident/arch-intel/corpus/deepseek-prefill-decode.md",
+      "category": "self-built-networking",
+      "organization": "DeepSeek",
+      "system": "V3 预填充-解码分离部署",
+      "urls": [
+        "https://arxiv.org/abs/2412.19437",
+        "https://arxiv.org/html/2412.19437"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（arXiv 摘要页 + HTML 全文目录：Inference and Deployment → Prefilling / Decoding 分节）",
+        "summary": "671B MoE（激活 37B）、MLA；预填充节点与解码节点分离部署；2.788M H800 GPU 小时；14.8T token"
+      },
+      "topics": [
+        "prefill-decode-disaggregation",
+        "moe"
+      ]
+    },
+    {
+      "id": "mooncake-kv-transfer",
+      "file": "trident/arch-intel/corpus/mooncake-kv-transfer.md",
+      "category": "self-built-networking",
+      "organization": "Moonshot AI",
+      "system": "Mooncake KV 分离架构",
+      "urls": [
+        "https://arxiv.org/abs/2407.00079"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（arXiv 摘要页）",
+        "summary": "KVCache 为中心的分离式服务：预填充/解码集群分离 + CPU/DRAM/SSD 分层 KV 池 + 传输引擎（RDMA）；Kimi 生产平台"
+      },
+      "topics": [
+        "kv-cache-pooling",
+        "prefill-decode-disaggregation"
+      ]
+    },
+    {
+      "id": "microsoft-singularity",
+      "file": "trident/arch-intel/corpus/microsoft-singularity.md",
+      "category": "self-built-networking",
+      "organization": "Microsoft",
+      "system": "Singularity 全球调度",
+      "urls": [
+        "https://arxiv.org/abs/2202.07848"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（arXiv API 检索命中 v2 摘要）",
+        "summary": "全球分布式 AI 调度服务：所有作业默认可抢占/可迁移/可弹性伸缩，跨集群/数据中心/区域透明迁移；全球加速器舰队（GPU/FPGA）"
+      },
+      "topics": [
+        "global-scheduler",
+        "elastic-checkpointing"
+      ]
+    },
+    {
+      "id": "nvidia-gb200-nvl72",
+      "file": "trident/arch-intel/corpus/nvidia-gb200-nvl72.md",
+      "category": "self-built-networking",
+      "organization": "NVIDIA",
+      "system": "GB200 NVL72 机架级 NVLink 域",
+      "urls": [
+        "https://www.nvidia.com/en-us/data-center/gb200-nvl72/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "http fetch（nvidia.com 产品页 200；正文含 NVL72 机架规格）",
+        "summary": "72 GPU 机架级 NVLink 交换域（NVL72）；液冷；NVLink 域内 130TB/s 级 GPU 互联；DRA/ComputeDomain/IMEX 的目标硬件"
+      },
+      "topics": [
+        "nvlink-domain",
+        "imex-mnnvl"
+      ]
+    },
+    {
+      "id": "google-tpu-oci",
+      "file": "trident/arch-intel/corpus/google-tpu-oci.md",
+      "category": "self-built-networking",
+      "organization": "Google",
+      "system": "TPU v4 OCS 重构拓扑",
+      "urls": [
+        "https://arxiv.org/abs/2304.01433"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（arXiv API 检索命中 ISCA'23 论文摘要）",
+        "summary": "TPU v4：4096 芯片超算 Pod；OCS 光交换动态重构拓扑（palisade/扭曲 3D torus）；OCS 低于 IB 成本/功耗；论文明确把 security 列为 OCS 收益之一"
+      },
+      "topics": [
+        "ocs",
+        "ici-pod",
+        "torus"
+      ]
+    },
+    {
+      "id": "xai-colossus",
+      "file": "trident/arch-intel/corpus/xai-colossus.md",
+      "category": "self-built-networking",
+      "organization": "xAI",
+      "system": "Colossus 超算",
+      "urls": [
+        "https://x.ai/news/colossus",
+        "https://www.toutiao.com/article/7596640714268672552/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified-partial",
+        "method": "bing 检索快照 + 中文科技媒体快照（x.ai 主站在本实验网络不可达 ECONNREFUSED）",
+        "summary": "Colossus 1：孟菲斯 100K→200K H100、约 200MW、122 天建成；Colossus 2：2026-01 投运、Blackwell/GB200、GW 级；网络为以太网 RoCE（Spectrum-X 系）公开报道"
+      },
+      "topics": [
+        "spectrum-x-ethernet",
+        "h100-cluster"
+      ]
+    },
+    {
+      "id": "aws-eks-efa-dra",
+      "file": "trident/arch-intel/corpus/aws-eks-efa-dra.md",
+      "category": "cloud-provider",
+      "organization": "AWS",
+      "system": "EKS EFA 设备管理（DRA/DRANET）",
+      "urls": [
+        "https://raw.githubusercontent.com/awsdocs/amazon-eks-user-guide/mainline/latest/ug/ml/device-management-efa.adoc",
+        "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（awsdocs/amazon-eks-user-guide GitHub 原文 latest/ug/ml/device-management-efa.adoc）",
+        "summary": "EKS 双通道管理 EFA：EFA DRA 驱动（DRANET，K8s≥1.34，ResourceSlice 富属性+拓扑亲和+共享 ResourceClaim）与 EFA device plugin（vpc.amazonaws.com/efa 扩展资源）；Auto Mode 不支持 DRA"
+      },
+      "topics": [
+        "efa",
+        "dra",
+        "placement-group"
+      ],
+      "cloud": "aws"
+    },
+    {
+      "id": "aws-eks-auto-mode-accelerated",
+      "file": "trident/arch-intel/corpus/aws-eks-auto-mode-accelerated.md",
+      "category": "cloud-provider",
+      "organization": "AWS",
+      "system": "EKS Auto Mode 加速负载",
+      "urls": [
+        "https://raw.githubusercontent.com/awsdocs/amazon-eks-user-guide/mainline/latest/ug/automode/auto-accelerated.adoc"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（awsdocs GitHub 原文）",
+        "summary": "Auto Mode 内置 NVIDIA/Neuron 驱动与 device plugin（不以 DaemonSet 可见）；Trainium/Inferentia/GPU；缩容到零；NodeClass/NodePool（Karpenter 语义）"
+      },
+      "topics": [
+        "auto-mode",
+        "gpu-driver-managed"
+      ],
+      "cloud": "aws"
+    },
+    {
+      "id": "azure-aks-gpu",
+      "file": "trident/arch-intel/corpus/azure-aks-gpu.md",
+      "category": "cloud-provider",
+      "organization": "Azure",
+      "system": "AKS GPU 节点池",
+      "urls": [
+        "https://learn.microsoft.com/en-us/azure/aks/use-nvidia-gpu"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（Microsoft Learn 页面，gpu-cluster → use-nvidia-gpu 重定向）",
+        "summary": "AKS GPU：托管驱动（AKS-managed）vs 自管（GPU Operator/设备插件 DaemonSet）；--gpu-driver none；hostPath /var/lib/kubelet/device-plugins；sku=gpu:NoSchedule 污点"
+      },
+      "topics": [
+        "gpu-nodepool",
+        "device-plugin"
+      ],
+      "cloud": "azure"
+    },
+    {
+      "id": "azure-nd-h100-infiniband",
+      "file": "trident/arch-intel/corpus/azure-nd-h100-infiniband.md",
+      "category": "cloud-provider",
+      "organization": "Azure",
+      "system": "ND H100 v5 InfiniBand 实例",
+      "urls": [
+        "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/ndh100v5-series"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（Microsoft Learn VM 规格页）",
+        "summary": "Standard_ND96isr_H100_v5：8×H100 + 每 GPU 独占 400Gbps Quantum-2 CX7 IB；同 VMSS 内自动组网；GPUDirect RDMA；NCCL 支持；不支持实时迁移/嵌套虚拟化"
+      },
+      "topics": [
+        "infiniband",
+        "nd-series",
+        "gpudirect"
+      ],
+      "cloud": "azure"
+    },
+    {
+      "id": "aliyun-terway",
+      "file": "trident/arch-intel/corpus/aliyun-terway.md",
+      "category": "cloud-provider",
+      "organization": "Alibaba Cloud",
+      "system": "ACK Terway VPC 原生 CNI",
+      "urls": [
+        "https://help.aliyun.com/zh/ack/ack-managed-and-ack-dedicated/user-guide/work-with-terway"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（阿里云帮助中心全文）",
+        "summary": "Terway：VPC 原生 ENI/IP 模式（共享 ENI/独占 ENI/Trunk ENI）；DataPath V2（eBPF，1.34+ 无 kube-proxy）；eBPF NetworkPolicy（v1.9.2+）；独占 ENI 节点池不支持 NetworkPolicy；Egress NetworkPolicy 会断 hostNetwork Pod 访问；CRD podnetworkings 等"
+      },
+      "topics": [
+        "terway",
+        "vpc-native",
+        "ebpf",
+        "trunk-eni"
+      ],
+      "cloud": "aliyun"
+    },
+    {
+      "id": "aliyun-ack-erdma",
+      "file": "trident/arch-intel/corpus/aliyun-ack-erdma.md",
+      "category": "cloud-provider",
+      "organization": "Alibaba Cloud",
+      "system": "ACK eRDMA 加速容器网络",
+      "urls": [
+        "https://help.aliyun.com/zh/ack/ack-managed-and-ack-dedicated/user-guide/use-erdma-in-ack-clusters"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（阿里云帮助中心全文）",
+        "summary": "eRDMA：神龙 4 代 VPC 内 RDMA；容器资源 aliyun/erdma:1；/dev/infiniband/uverbs0；preferDriver ofed/compat；NCCL 加速；NUMA 拓扑分配；Terway ENI 白名单"
+      },
+      "topics": [
+        "erdma",
+        "rdma",
+        "nccl"
+      ],
+      "cloud": "aliyun"
+    },
+    {
+      "id": "tencent-tke-gpu-manager",
+      "file": "trident/arch-intel/corpus/tencent-tke-gpu-manager.md",
+      "category": "cloud-provider",
+      "organization": "Tencent",
+      "system": "TKE GPU Manager/vCUDA",
+      "urls": [
+        "https://raw.githubusercontent.com/tkestack/gpu-manager/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（tkestack/gpu-manager README）",
+        "summary": "GPU Manager 设备插件：tencent.com/vcuda-core（100=1 卡）与 vcuda-memory（1=256MiB）扩展资源；配合 gpu-admission 调度插件；DaemonSet + cluster-admin SA；分数卡依赖 vcuda-controller"
+      },
+      "topics": [
+        "vgpu",
+        "extended-resources",
+        "gpu-admission"
+      ],
+      "cloud": "tencent"
+    },
+    {
+      "id": "tencent-tkestack",
+      "file": "trident/arch-intel/corpus/tencent-tkestack.md",
+      "category": "cloud-provider",
+      "organization": "Tencent",
+      "system": "TKEStack 多集群平台",
+      "urls": [
+        "https://raw.githubusercontent.com/tkestack/tke/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（tkestack/tke README）",
+        "summary": "TKEStack：中心化管理多 K8s 集群；多租户（team/user 隔离容器/构建/网络通信）；Galaxy 网络插件；GPUManage；平台级统一授权到 K8s 资源级"
+      },
+      "topics": [
+        "multi-cluster",
+        "multi-tenant",
+        "galaxy"
+      ],
+      "cloud": "tencent"
+    },
+    {
+      "id": "gcp-ai-on-gke",
+      "file": "trident/arch-intel/corpus/gcp-ai-on-gke.md",
+      "category": "cloud-provider",
+      "organization": "Google Cloud",
+      "system": "AI on GKE（GPU/TPU 部署样例库）",
+      "urls": [
+        "https://raw.githubusercontent.com/GoogleCloudPlatform/ai-on-gke/main/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（GoogleCloudPlatform/ai-on-gke README；仓库已归档只读）",
+        "summary": "Google 官方 GKE AI 部署样例/最佳实践合集（GPU/TPU/L4/A3 等；cloud.google.com 文档站在本实验网络不可达，已用官方 GitHub 仓替代并记录）"
+      },
+      "topics": [
+        "gke-gpu",
+        "gke-tpu"
+      ],
+      "cloud": "gcp"
+    },
+    {
+      "id": "gcp-tpu-pytorch-xla",
+      "file": "trident/arch-intel/corpus/gcp-tpu-pytorch-xla.md",
+      "category": "cloud-provider",
+      "organization": "Google Cloud",
+      "system": "TPU 软件栈（PyTorch/XLA→TorchTPU）",
+      "urls": [
+        "https://raw.githubusercontent.com/pytorch/xla/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（pytorch/xla README；项目弃用公告：2026-11-15 归档，迁移 TorchTPU）",
+        "summary": "TPU 软件栈公开入口：XLA/PJRT 多进程 TPU VM 架构；官方指向 docs.cloud.google.com/tpu（TorchTPU）；印证 TPU Pod 多主机进程模型"
+      },
+      "topics": [
+        "tpu",
+        "pjrt"
+      ],
+      "cloud": "gcp"
+    },
+    {
+      "id": "huawei-cce-turbo",
+      "file": "trident/arch-intel/corpus/huawei-cce-turbo.md",
+      "category": "cloud-provider",
+      "organization": "Huawei Cloud",
+      "system": "CCE Standard/Turbo/Autopilot",
+      "urls": [
+        "https://www.huaweicloud.com/intl/en-us/product/cce.html"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "http fetch（华为云国际站产品页；CCE Turbo 云原生 2.0）",
+        "summary": "CCE 三形态：Standard（VPC 叠加容器网）/Turbo（软硬件协同、VPC 网络）/Autopilot（免节点）；调度用 Huawei Volcano；节点规模 50–2000"
+      },
+      "topics": [
+        "cce-turbo",
+        "volcano",
+        "vpc-native"
+      ],
+      "cloud": "huawei"
+    },
+    {
+      "id": "huawei-ascend-device-plugin",
+      "file": "trident/arch-intel/corpus/huawei-ascend-device-plugin.md",
+      "category": "cloud-provider",
+      "organization": "Huawei",
+      "system": "Ascend Device Plugin（昇腾 K8s 设备接入）",
+      "urls": [
+        "https://gitee.com/ascend/ascend-device-plugin/raw/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "http fetch（Gitee 昇腾社区仓 README；仓库迁移公告在文首）",
+        "summary": "昇腾 NPU 的 K8s 设备插件：组件介绍/安装/版本配套；配合 Ascend Docker Runtime（MindX DL 套件成员）"
+      },
+      "topics": [
+        "ascend",
+        "device-plugin",
+        "mindx"
+      ],
+      "cloud": "huawei"
+    },
+    {
+      "id": "alibaba-cen-tr",
+      "file": "trident/arch-intel/corpus/alibaba-cen-tr.md",
+      "category": "hybrid-interconnect",
+      "organization": "Alibaba Cloud",
+      "system": "云企业网 CEN/转发路由器",
+      "urls": [
+        "https://help.aliyun.com/zh/cen/product-overview/what-is-cen/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（阿里云帮助中心全文）",
+        "summary": "CEN：全球私网；TR 转发路由器（地域级）；VPC/ECR/VBR/VPN/CCN 全挂载；同地域 TR 1000 VPC；跨地域连接+QoS；自定义路由策略做安全域隔离/DMZ/服务链"
+      },
+      "topics": [
+        "cen",
+        "transit-router",
+        "cross-region"
+      ]
+    },
+    {
+      "id": "azure-expressroute",
+      "file": "trident/arch-intel/corpus/azure-expressroute.md",
+      "category": "hybrid-interconnect",
+      "organization": "Microsoft Azure",
+      "system": "ExpressRoute 专线",
+      "urls": [
+        "https://learn.microsoft.com/en-us/azure/expressroute/expressroute-introduction"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（Microsoft Learn 概览页）",
+        "summary": "ExpressRoute：专线接入 Azure（不公网）；对等（private/Azure public/Microsoft）；跨 region premium；与 VPN 共存做故障切换"
+      },
+      "topics": [
+        "expressroute",
+        "private-peering",
+        "hybrid"
+      ]
+    },
+    {
+      "id": "alibaba-private-link",
+      "file": "trident/arch-intel/corpus/alibaba-private-link.md",
+      "category": "hybrid-interconnect",
+      "organization": "Alibaba Cloud",
+      "system": "PrivateLink 私网连接",
+      "urls": [
+        "https://help.aliyun.com/zh/private-link/product-overview/what-is-private-link/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（阿里云帮助中心，页面 200；正文经前端渲染，产品语义以官方文档树为准）",
+        "summary": "PrivateLink：VPC/本地数据中心经私网端点（终端节点 ENI）访问云服务/跨 VPC 服务，流量不出阿里云骨干；服务提供方/使用方解耦"
+      },
+      "topics": [
+        "private-link",
+        "endpoint-service",
+        "private-exposure"
+      ]
+    },
+    {
+      "id": "kubernetes-cni-spec",
+      "file": "trident/arch-intel/corpus/kubernetes-cni-spec.md",
+      "category": "network-specialized",
+      "organization": "CNCF/CNI",
+      "system": "CNI 规范 v1.1.0",
+      "urls": [
+        "https://raw.githubusercontent.com/containernetworking/cni/main/SPEC.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（SPEC.md 全文）",
+        "summary": "CNI 1.1.0：ADD/DEL/CHECK/STATUS/GC/VERSION；插件链与委托（IPAM）；capabilities/runtimeConfig；规范只管接口对接——不含任何策略/隔离语义"
+      },
+      "topics": [
+        "cni"
+      ]
+    },
+    {
+      "id": "cni-policy-calico-cilium",
+      "file": "trident/arch-intel/corpus/cni-policy-calico-cilium.md",
+      "category": "network-specialized",
+      "organization": "Tigera/Isovalent",
+      "system": "Calico/Cilium 策略语义",
+      "urls": [
+        "https://docs.cilium.io/en/latest/security/host-firewall/",
+        "https://raw.githubusercontent.com/projectcalico/calico/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（Cilium 主机防火墙文档 200；Calico raw README 当日抓取超时，以 Cilium 官方文档 + Calico 仓库为引）",
+        "summary": "Cilium：eBPF 数据面、身份级策略（label identity）、Host Firewall 保护节点自身、节点间加密；Calico：同仓系策略引擎（GlobalNetworkPolicy 跨命名空间、宿主保护端点）"
+      },
+      "topics": [
+        "cni"
+      ]
+    },
+    {
+      "id": "multus-sriov-operator",
+      "file": "trident/arch-intel/corpus/multus-sriov-operator.md",
+      "category": "network-specialized",
+      "organization": "NPWG",
+      "system": "Multus + SR-IOV Network Operator",
+      "urls": [
+        "https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/README.md",
+        "https://raw.githubusercontent.com/k8snetworkplumbingwg/sriov-network-operator/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（两个 README 全文）",
+        "summary": "Multus：meta-plugin 按 NPWG CRD（NetworkAttachmentDefinition）多网卡挂 Pod；SR-IOV Operator：SriovNetworkNodePolicy 配 VF，Config Daemon 节点配置，Resource Injector 注入资源请求；PSA 需 privileged 命名空间"
+      },
+      "topics": [
+        "multus-sriov",
+        "cni"
+      ]
+    },
+    {
+      "id": "nvidia-network-operator",
+      "file": "trident/arch-intel/corpus/nvidia-network-operator.md",
+      "category": "network-specialized",
+      "organization": "NVIDIA",
+      "system": "Network Operator（NicClusterPolicy）",
+      "urls": [
+        "https://raw.githubusercontent.com/Mellanox/network-operator/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（README 全文）",
+        "summary": "NicClusterPolicy 子状态：ofedDriver（特权驱动容器）/rdmaSharedDevicePlugin/sriovDevicePlugin/ibKubernetes/secondaryNetwork（Multus+IPoIB）/nvIpam；HostDeviceNetwork/MacvlanNetwork→NAD；驱动容器特权运行"
+      },
+      "topics": [
+        "network-operator",
+        "multus-sriov"
+      ]
+    },
+    {
+      "id": "kubernetes-dra",
+      "file": "trident/arch-intel/corpus/kubernetes-dra.md",
+      "category": "network-specialized",
+      "organization": "Kubernetes",
+      "system": "DRA 动态资源分配（KEP-4381）",
+      "urls": [
+        "https://raw.githubusercontent.com/kubernetes/enhancements/master/keps/sig-node/4381-dra-structured-parameters/README.md",
+        "https://raw.githubusercontent.com/kubernetes/enhancements/master/keps/sig-node/3063-dynamic-resource-allocation/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（KEP-4381 与 KEP-3063 全文）",
+        "summary": "结构化参数 DRA：ResourceSlice 发布设备、DeviceClass 管理员参数、ResourceClaim 请求、kubelet 插件以 CDI 注入；KEP-3063（控制面控制器版）1.32 撤回、4381 成基线；KEP 内置威胁分析（被 compromise 的 kubelet 插件=节点 root）"
+      },
+      "topics": [
+        "dra-compute-domain-imex"
+      ]
+    },
+    {
+      "id": "nvidia-compute-domain-imex",
+      "file": "trident/arch-intel/corpus/nvidia-compute-domain-imex.md",
+      "category": "network-specialized",
+      "organization": "NVIDIA",
+      "system": "DRA 驱动 + ComputeDomain/IMEX",
+      "urls": [
+        "https://raw.githubusercontent.com/NVIDIA/k8s-dra-driver-gpu/main/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（README 全文）",
+        "summary": "NVIDIA k8s-dra-driver-gpu：gpu-kubelet-plugin + compute-domain-kubelet-plugin；ComputeDomain=多节点 NVLink（MNNVL）抽象，“域内可达+域外安全隔离”，随工作负载生命周期；GB200 上的 IMEX daemon/domain/channel 原语"
+      },
+      "topics": [
+        "dra-compute-domain-imex"
+      ]
+    },
+    {
+      "id": "gateway-api-inference-extension",
+      "file": "trident/arch-intel/corpus/gateway-api-inference-extension.md",
+      "category": "network-specialized",
+      "organization": "Kubernetes",
+      "system": "Gateway API Inference Extension",
+      "urls": [
+        "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api-inference-extension/main/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（README 全文）",
+        "summary": "InferencePool + EPP（ext-proc Router，已 GA 项目）；EPP 主仓迁移至 llm-d/llm-d-router，本仓留轻量 LWEPP 供一致性测试；KV-cache/请求成本感知调度；LoRA 适配器可用性参与路由决策"
+      },
+      "topics": [
+        "gateway-api-inference-extension"
+      ]
+    },
+    {
+      "id": "llm-d-nixl",
+      "file": "trident/arch-intel/corpus/llm-d-nixl.md",
+      "category": "network-specialized",
+      "organization": "llm-d 社区",
+      "system": "llm-d + NIXL 分布式推理",
+      "urls": [
+        "https://raw.githubusercontent.com/llm-d/llm-d/main/README.md",
+        "https://raw.githubusercontent.com/ai-dynamo/nixl/main/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（两 README 全文）",
+        "summary": "llm-d：K8s 分布式推理栈（vLLM/SGLang 底座；预填充-解码分离；prefix-cache 感知路由；分层 KV 卸载；多租户流控）；NIXL：NVIDIA 推理传输库（UCX/verbs/GDRCopy；POSIX/OBJ/AZURE_BLOB/HF3FS/MOONCAKE/UCCL 等插件；可选 etcd 元数据协调）"
+      },
+      "topics": [
+        "llm-d-nixl"
+      ]
+    },
+    {
+      "id": "nccl-transports",
+      "file": "trident/arch-intel/corpus/nccl-transports.md",
+      "category": "network-specialized",
+      "organization": "NVIDIA",
+      "system": "NCCL 集合通信库",
+      "urls": [
+        "https://raw.githubusercontent.com/NVIDIA/nccl/master/README.md",
+        "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（README 全文；用户指南官方链接）",
+        "summary": "NCCL：all-reduce/all-gather/broadcast/reduce-scatter + 点对点；传输=PCIe/NVLink/NVSwitch/IB Verbs/TCP sockets；单/多进程、跨节点任意 GPU 数；bootstrap 无认证语义"
+      },
+      "topics": [
+        "nccl",
+        "ib-roce"
+      ]
+    },
+    {
+      "id": "ib-partition-rdma",
+      "file": "trident/arch-intel/corpus/ib-partition-rdma.md",
+      "category": "network-specialized",
+      "organization": "NVIDIA/Mellanox",
+      "system": "ib-kubernetes 与 IB 分区",
+      "urls": [
+        "https://raw.githubusercontent.com/Mellanox/ib-kubernetes/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（README 全文）",
+        "summary": "ib-kubernetes：IB 设备插件 + CNI；Subnet Manager 插件（引导 SM 的 PKey/GUID 管理）给 Pod 划分 IB 分区成员资格；IB 网络唯一隔离手段=SM/Partition"
+      },
+      "topics": [
+        "ib-roce"
+      ]
+    },
+    {
+      "id": "storage-protocol-csi",
+      "file": "trident/arch-intel/corpus/storage-protocol-csi.md",
+      "category": "network-specialized",
+      "organization": "Kubernetes/NFS",
+      "system": "存储协议与 CSI 安全面",
+      "urls": [
+        "https://kubernetes-csi.github.io/docs/",
+        "https://www.rfc-editor.org/rfc/rfc8881.html"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（kubernetes-csi 文档站 200；RFC 8881 全文 2.5MB 抓取成功）",
+        "summary": "CSI：驱动以 node plugin（特权 DaemonSet）+ controller 实现；kubernetes-csi 官方开发/部署文档。NFSv4.1（RFC 8881）：RPC 安全含 AUTH_SYS（uid/gid 明文可伪造）等 flavor；KERB 可选"
+      },
+      "topics": [
+        "storage-protocol"
+      ]
+    }
+  ]
+}
