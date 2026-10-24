@@ -1,0 +1,133 @@
+{
+  "ptes": [
+    {
+      "key": "scope",
+      "zh": "范围与约定",
+      "en": "Scope and Rules of Engagement",
+      "nist_phase_zh": "计划阶段（规划与准备）",
+      "nist_phase_en": "Planning and Preparation",
+      "nist_ref": "NIST SP 800-115 §5",
+      "zh_body": "测试范围、授权与技术级别以工作区 scope.yaml 及其哈希签存为准；测试窗口、禁止项与紧急联系人遵照授权书记载。本报告仅覆盖授权范围内资产。",
+      "en_body": "Scope, authorization and technical level follow the workspace scope.yaml with hash-pinned consent; testing window, prohibitions and emergency contacts follow the engagement letter. Only in-scope assets are covered."
+    },
+    {
+      "key": "intel",
+      "zh": "情报收集",
+      "en": "Intelligence Gathering",
+      "nist_phase_zh": "执行阶段（发现）",
+      "nist_phase_en": "Execution (Discovery)",
+      "nist_ref": "NIST SP 800-115 §6",
+      "zh_body": "情报来自只读侦察模块输出与架构情报语料（2026-10 公开基线），覆盖自建训练组网、六云商 K8s、混合互联与网络专源。",
+      "en_body": "Intelligence derives from read-only recon modules and the architecture-intel corpus (2026-10 public baseline), covering self-built training fabrics, six CSP Kubernetes flavors, hybrid interconnects and network-specific sources."
+    },
+    {
+      "key": "threat-model",
+      "zh": "威胁建模",
+      "en": "Threat Modeling",
+      "nist_phase_zh": "计划阶段（规划与准备）",
+      "nist_phase_en": "Planning and Preparation",
+      "nist_ref": "NIST SP 800-115 §5",
+      "zh_body": "威胁建模采用七层网络模型（物理 fabric / 主机网络 / CNI / 服务与网关 / 集合通信 / 存储数据面 / 云与混合边界），结合 MITRE ATT&CK 与 ATLAS 技术视角。",
+      "en_body": "Threat modeling applies the seven-layer network model (physical fabric, host network, CNI, services and gateways, collective communication, storage data plane, cloud and hybrid boundary) with MITRE ATT&CK and ATLAS perspectives."
+    },
+    {
+      "key": "vuln-analysis",
+      "zh": "漏洞分析",
+      "en": "Vulnerability Analysis",
+      "nist_phase_zh": "执行阶段（发现与分析）",
+      "nist_phase_en": "Execution (Discovery and Analysis)",
+      "nist_ref": "NIST SP 800-115 §6–§7",
+      "zh_body": "逐项发现的严重度、CNVD/CNNVD 习惯定级与证据锚（步骤 + manifest sha256 前 16 位）见下表；零日发现默认脱敏，仅输出影响已验证与证据哈希。",
+      "en_body": "Each finding lists severity, CNVD/CNNVD-style grading and an evidence anchor (step + first 16 hex of manifest sha256) in the table below; zero-day findings are redacted by default to impact-verified plus evidence hash."
+    },
+    {
+      "key": "exploitation",
+      "zh": "利用",
+      "en": "Exploitation",
+      "nist_phase_zh": "执行阶段（攻击与利用）",
+      "nist_phase_en": "Execution (Attack and Exploitation)",
+      "nist_ref": "NIST SP 800-115 §7",
+      "zh_body": "执行步骤由编排引擎逐项记录（prompt/命令 + 环境 + 结果摘要）并归档于三层证据（上下文摘要 / SQLite / tar+SHA256）。",
+      "en_body": "Executed steps are recorded by the orchestration engine (prompt/command + environment + result summary) and archived in the three-layer evidence store (context digest / SQLite / tar+SHA256)."
+    },
+    {
+      "key": "post-exploit",
+      "zh": "后利用（影响证明）",
+      "en": "Post-Exploitation (Impact Proof)",
+      "nist_phase_zh": "执行阶段（攻击与利用）",
+      "nist_phase_en": "Execution (Attack and Exploitation)",
+      "nist_ref": "NIST SP 800-115 §7",
+      "zh_body": "影响证明严格限定在授权技术级别内；全部写类动作均通过备份闸门取得回执，并保留按步回滚记录。",
+      "en_body": "Impact demonstration is strictly bounded by the authorized technical level; every write action passed the backup gate with a receipt and per-step rollback records are kept."
+    },
+    {
+      "key": "risk-rating",
+      "zh": "风险评级与修复",
+      "en": "Risk Rating and Remediation",
+      "nist_phase_zh": "后置阶段（报告）",
+      "nist_phase_en": "Post-Testing (Reporting)",
+      "nist_ref": "NIST SP 800-115 §8",
+      "zh_body": "风险评级结合 CVSS 3.1 基础评分、CNVD/CNNVD 习惯定级、GB/T 20984 资产-威胁-脆弱性计算与修复基线优先级（立即/短期/中期），修复建议详见配套修复报告。",
+      "en_body": "Risk rating combines CVSS 3.1 base scores, CNVD/CNNVD grading conventions, GB/T 20984 asset-threat-vulnerability computation and baseline remediation priorities (immediate / short-term / mid-term); see the companion remediation report."
+    }
+  ],
+  "special": [
+    {
+      "key": "combo-risk",
+      "zh": "组合层风险",
+      "en": "Combination-Layer Risks",
+      "zh_body": "组合命中来自框架×插件×operator×存储×通信×硬件路线的交叉判定（combos 表）：单一组件各自合规时组合仍可成立攻击链，单点修复不消除组合层风险。",
+      "en_body": "Combination hits come from cross-checking framework x plugin x operator x storage x transport x hardware routes (combos table): a chain can hold even when every single component is individually compliant, so point fixes do not remove combination-layer risk."
+    },
+    {
+      "key": "training-data-leak",
+      "zh": "训练数据泄露面",
+      "en": "Training Data Exposure Surface",
+      "zh_body": "覆盖数据集挂载越权、checkpoint/权重出网通道、推理日志与提示回显三条泄露路径，逐条给出证据锚与定位。",
+      "en_body": "Covers three leakage paths — over-privileged dataset mounts, checkpoint/weight egress channels, and inference-log/prompt echo — each with evidence anchors and localization."
+    },
+    {
+      "key": "core-code",
+      "zh": "核心代码问题清单（file:line）",
+      "en": "Core Code Issues (file:line)",
+      "zh_body": "核心代码问题带 file:line 定位，来自已复现漏洞知识库（推理引擎/RL 框架/operator 源码级取证）。",
+      "en_body": "Core code issues carry file:line anchors from the reproduced vulnerability knowledge base (source-level forensics on inference engines, RL frameworks and operators)."
+    },
+    {
+      "key": "network-threat-model",
+      "zh": "网络分层威胁模型",
+      "en": "Layered Network Threat Model",
+      "zh_body": "按七层模型输出威胁面：物理 fabric / 主机网络 / CNI / 服务与网关 / 集合通信（RDMA·IB 旁路实证）/ 存储数据面 / 云与混合边界，并附 CNI 语义可达性矩阵与判定方式。",
+      "en_body": "Threat surfaces are presented per the seven-layer model — physical fabric, host network, CNI, services and gateways, collective communication (RDMA/IB bypass with proof), storage data plane, cloud and hybrid boundary — plus the CNI-semantic reachability matrix and verdict methods."
+    },
+    {
+      "key": "hybrid-cloud-boundary",
+      "zh": "混合云边界（IMDS/角色/互联）",
+      "en": "Hybrid Cloud Boundary (IMDS/Roles/Interconnect)",
+      "zh_body": "混合云边界关注云元数据服务（IMDS）临时凭据获取、跨账号角色扮演与云互联/专线暴露面，及六云商 K8s 的网络策略差异。",
+      "en_body": "The hybrid boundary covers cloud metadata service (IMDS) temporary credential theft, cross-account role assumption, interconnect/direct-link exposure, and NetworkPolicy differences across six CSP Kubernetes flavors."
+    }
+  ],
+  "nist": {
+    "intro_zh": "NIST SP 800-115 章节映射（计划—执行—后置三阶段与 PTES 段落交叉引用）：",
+    "intro_en": "NIST SP 800-115 section mapping (Planning–Execution–Post-Testing phases cross-referenced with PTES stages):",
+    "phases": [
+      {"zh": "计划", "en": "Planning", "ref": "NIST SP 800-115 §5"},
+      {"zh": "执行", "en": "Execution", "ref": "NIST SP 800-115 §6–§7"},
+      {"zh": "后置", "en": "Post-Testing", "ref": "NIST SP 800-115 §8"}
+    ]
+  },
+  "djbh_intro_zh": "等保 2.0（GB/T 22239-2019）与 GB/T 20984 条款映射（发现类别 → 安全要求条款）：",
+  "djbh_intro_en": "CPS 2.0 (GB/T 22239-2019) and GB/T 20984 clause mapping (finding category -> security requirement clause):",
+  "djbh": [
+    {"clause": "GB/T 22239-2019 8.1.2.1", "zh": "安全通信网络—网络架构", "en": "Secure Communication Network — Network Architecture", "maps": "network-architecture"},
+    {"clause": "GB/T 22239-2019 8.1.3.1", "zh": "安全区域边界—边界防护", "en": "Security Area Boundary — Boundary Protection", "maps": "boundary-bypass"},
+    {"clause": "GB/T 22239-2019 8.1.3.2", "zh": "安全区域边界—访问控制", "en": "Security Area Boundary — Access Control", "maps": "mgmt-port-exposure"},
+    {"clause": "GB/T 22239-2019 8.1.3.3", "zh": "安全区域边界—入侵防范", "en": "Security Area Boundary — Intrusion Prevention", "maps": "intrusion-detection"},
+    {"clause": "GB/T 22239-2019 8.1.4.1", "zh": "安全计算环境—身份鉴别", "en": "Secure Computing Environment — Identity Authentication", "maps": "authn-bypass"},
+    {"clause": "GB/T 22239-2019 8.1.4.2", "zh": "安全计算环境—访问控制", "en": "Secure Computing Environment — Access Control", "maps": "rbac-escape"},
+    {"clause": "GB/T 22239-2019 8.1.4.7", "zh": "安全计算环境—数据完整性", "en": "Secure Computing Environment — Data Integrity", "maps": "weight-poison"},
+    {"clause": "GB/T 22239-2019 8.1.4.8", "zh": "安全计算环境—数据保密性", "en": "Secure Computing Environment — Data Confidentiality", "maps": "data-exfiltration"},
+    {"clause": "GB/T 20984-2022", "zh": "信息安全风险评估—资产/威胁/脆弱性计算", "en": "Information Security Risk Assessment — asset/threat/vulnerability computation", "maps": "risk-calculation"}
+  ]
+}

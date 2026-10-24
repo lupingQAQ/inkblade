@@ -1,0 +1,103 @@
+{
+  "version": "2026-10",
+  "source_zh": "修复基线样本库（源自审计总纲第 9/11 节），优先级：立即 / 短期 / 中期",
+  "source_en": "Remediation baseline library (from audit master notes sections 9/11), priorities: immediate / short-term / mid-term",
+  "priorities": [
+    {"key": "immediate", "zh": "立即", "en": "Immediate", "window_zh": "24–72 小时内", "window_en": "within 24-72 hours"},
+    {"key": "short", "zh": "短期", "en": "Short-term", "window_zh": "2–4 周内", "window_en": "within 2-4 weeks"},
+    {"key": "mid", "zh": "中期", "en": "Mid-term", "window_zh": "1–3 个月内", "window_en": "within 1-3 months"}
+  ],
+  "entries": [
+    {
+      "id": "operator-rbac-scopedown",
+      "tags": ["rbac", "operator", "rolebinding", "cluster-admin", "权限"],
+      "priority": "immediate",
+      "title": {"zh": "vLLM Operator / KubeRay / LWS 集群级 RBAC 收敛为 namespace 角色", "en": "Scope vLLM Operator / KubeRay / LWS cluster-level RBAC down to namespace roles"},
+      "remediation": {"zh": "撤销 operator ServiceAccount 的集群级角色绑定，改用最小权限 namespace Role；禁止 create rolebindings 指向 cluster-admin，配合准入规则阻断。", "en": "Remove cluster-level role bindings from operator ServiceAccounts and replace with least-privilege namespace Roles; block rolebindings targeting cluster-admin via admission rules."},
+      "refs": ["rules/kyverno/restrict-rolebinding", "rbac收敛参考清单"]
+    },
+    {
+      "id": "mgmt-plane-auth",
+      "tags": ["管理面", "管理端口", "sglang", "vllm", "pull_weights", "fail-open", "无鉴权", "权重"],
+      "priority": "immediate",
+      "title": {"zh": "推理引擎管理面端口鉴权与网络隔离", "en": "Authenticate and isolate inference-engine management ports"},
+      "remediation": {"zh": "管理端口（权重拉取/环境注入/引擎创建等端点）默认不对外暴露：NetworkPolicy 限制到管理网段，端点强制鉴权并审计调用主体。", "en": "Keep management endpoints (weight pull, env injection, engine creation) off the data path: restrict to management CIDRs via NetworkPolicy and enforce authenticated, audited access."},
+      "refs": ["rules/networkpolicy/mgmt-port", "rules/sigma/mgmt-endpoint-access"]
+    },
+    {
+      "id": "secret-rotation",
+      "tags": ["secret", "凭据", "token", "imds", "身份"],
+      "priority": "immediate",
+      "title": {"zh": "泄露凭据轮换与 ServiceAccount token 约束", "en": "Rotate leaked credentials and constrain ServiceAccount tokens"},
+      "remediation": {"zh": "轮换本次演练中可读的全部 Secret/令牌；automountServiceAccountToken 置 false，IMDSv2 强制 + 会话令牌最小化。", "en": "Rotate every secret/token readable during this exercise; set automountServiceAccountToken=false, enforce IMDSv2 and minimize session tokens."},
+      "refs": ["rules/kyverno/disable-sa-token-automount"]
+    },
+    {
+      "id": "networkpolicy-default-deny",
+      "tags": ["网络策略", "networkpolicy", "cni", "连通", "出网"],
+      "priority": "short",
+      "title": {"zh": "NetworkPolicy 默认拒绝 + 按域放行（per-CNI 变体）", "en": "Default-deny NetworkPolicy with per-domain allowances (per-CNI variants)"},
+      "remediation": {"zh": "按 Ray 系统/训练/推理/监控分区实施默认拒绝（入站+出站），管理端口仅管理网段可达；按目标 CNI 输出原生/Calico/Cilium/云商变体。", "en": "Apply default-deny (ingress+egress) across Ray system / training / inference / monitoring zones with management CIDR-only access to admin ports; emit native/Calico/Cilium/CSP variants per target CNI."},
+      "refs": ["rules/networkpolicy/default-deny"]
+    },
+    {
+      "id": "pod-hardening",
+      "tags": ["privileged", "hostnetwork", "hostpid", "hostpath", "特权", "逃逸"],
+      "priority": "short",
+      "title": {"zh": "特权 Pod 收敛与 Pod Security Standards 基线", "en": "Restrict privileged pods and adopt Pod Security Standards baselines"},
+      "remediation": {"zh": "禁 privileged/hostPID/hostIPC/敏感 hostPath；restricted/baseline 准入基线 + GPU 必需权限例外通道；hostNetwork 部署清单化收敛。", "en": "Forbid privileged/hostPID/hostIPC/sensitive hostPath; enforce restricted/baseline admission with a GPU exception lane; inventory and shrink hostNetwork deployments."},
+      "refs": ["rules/kyverno/pod-security"]
+    },
+    {
+      "id": "combo-admission",
+      "tags": ["组合", "镜像", "准入", "组合签名"],
+      "priority": "short",
+      "title": {"zh": "镜像/端口组合准入（组合签名拦截）", "en": "Image/port combination admission (combination-signature blocking)"},
+      "remediation": {"zh": "对权重写端点 + 补丁栈镜像等高危组合签名实施准入拦截，命名空间级白名单管控。", "en": "Admission-block high-risk combination signatures such as weight-write endpoints coexisting with patched-stack images, governed by namespace allowlists."},
+      "refs": ["rules/kyverno/combo-signature"]
+    },
+    {
+      "id": "rdma-ib-isolation",
+      "tags": ["rdma", "ib", "infiniband", "旁路", "集合通信"],
+      "priority": "mid",
+      "title": {"zh": "RDMA/InfiniBand 旁路隔离（NetworkPolicy 不覆盖面）", "en": "Isolate RDMA/InfiniBand bypass (not covered by NetworkPolicy)"},
+      "remediation": {"zh": "显式声明 RDMA/SR-IOV/IB 路径不受 NetworkPolicy 覆盖：IB Partition/SM 按租户隔离，NCCL socket 入组白名单，hostNetwork 收敛清单。", "en": "Explicitly declare RDMA/SR-IOV/IB paths outside NetworkPolicy coverage: tenant-scoped IB partitions/SM, NCCL socket join allowlists, and a hostNetwork shrink list."},
+      "refs": ["rules/falco/nccl-anomalous-join"]
+    },
+    {
+      "id": "detection-deploy",
+      "tags": ["检测", "审计", "soc", "日志"],
+      "priority": "mid",
+      "title": {"zh": "SOC 检测规则部署与审计强化", "en": "Deploy SOC detection rules and harden auditing"},
+      "remediation": {"zh": "部署随附 Sigma/Falco/Suricata 规则包（含零日行为化签名），开启 K8s 审计日志与权重目录写审计，紫队验证覆盖率矩阵。", "en": "Deploy the bundled Sigma/Falco/Suricata rule pack (including behavioral zero-day signatures), enable Kubernetes audit logs and weight-directory write auditing, and verify the coverage matrix purple-team style."},
+      "refs": ["rules/sigma", "rules/falco", "rules/suricata"]
+    },
+    {
+      "id": "default-immediate",
+      "tags": [],
+      "default_for": "immediate",
+      "priority": "immediate",
+      "title": {"zh": "通用立即项：暴露面收敛与凭据复核", "en": "Generic immediate: shrink exposure and review credentials"},
+      "remediation": {"zh": "对高危/超危发现先做暴露面收敛（网络隔离 + 鉴权），并复核涉及的凭据与数据访问路径。", "en": "For high/critical findings first shrink exposure (network isolation + authentication) and review the credentials and data access paths involved."},
+      "refs": []
+    },
+    {
+      "id": "default-short",
+      "tags": [],
+      "default_for": "short",
+      "priority": "short",
+      "title": {"zh": "通用短期项：策略与准入基线化", "en": "Generic short-term: baseline policies and admission"},
+      "remediation": {"zh": "将临时处置固化为策略：默认拒绝网络策略、准入基线与角色最小化改写。", "en": "Turn interim mitigations into policy: default-deny network policy, admission baselines and least-privilege role rewrites."},
+      "refs": []
+    },
+    {
+      "id": "default-mid",
+      "tags": [],
+      "default_for": "mid",
+      "priority": "mid",
+      "title": {"zh": "通用中期项：检测闭环与架构加固", "en": "Generic mid-term: detection loop and architecture hardening"},
+      "remediation": {"zh": "建立检测—验证闭环：规则包部署、紫队复测、网络分层与混合云边界架构加固。", "en": "Establish a detection-verification loop: rule pack rollout, purple-team retests, layered-network and hybrid-boundary hardening."},
+      "refs": []
+    }
+  ]
+}
