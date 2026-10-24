@@ -1,0 +1,29 @@
+{
+  "id": "imex-computedomain-gpu-memory-crossing",
+  "title": {
+    "zh": "IMEX / ComputeDomain → 跨节点 GPU 内存越权",
+    "en": "IMEX / ComputeDomain → cross-node GPU memory overreach"
+  },
+  "category": "网络利用链",
+  "requires": [
+    "fabric-topology-isolation",
+    "gpu-network-operator-posture"
+  ],
+  "preconditions": [
+    {"expr": "findings('gpu-network-operator-posture').any(compute_domain == true)"}
+  ],
+  "steps": [
+    {
+      "id": "fabric-imex-map",
+      "module": "fabric-topology-isolation",
+      "params": {"probe": "imex-domain"}
+    },
+    {
+      "id": "operator-posture-map",
+      "module": "gpu-network-operator-posture",
+      "params": {"probe": "computedomain-controller"}
+    }
+  ],
+  "evidence": ["reachability-note"],
+  "mitre": ["T1068"]
+}

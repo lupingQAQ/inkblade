@@ -1,0 +1,39 @@
+{
+  "id": "shared-pvc-supply-chain-poison",
+  "title": {
+    "zh": "共享 PVC + 模型加载 → 供应链投毒",
+    "en": "Shared PVC + model loading → supply chain poisoning"
+  },
+  "category": "经典攻击链",
+  "requires": [
+    "storage-sharing",
+    "trust-remote-code-supply-chain",
+    "shared-volume-weight-copy"
+  ],
+  "preconditions": [
+    {"expr": "findings('storage-sharing').any(access_mode == 'ReadWriteMany')"}
+  ],
+  "steps": [
+    {
+      "id": "weight-copy-proof",
+      "module": "shared-volume-weight-copy",
+      "params": {"mode": "backup-write", "marker": "TRIDENT-${run.name}"},
+      "writes": true,
+      "backup_targets": [
+        {"kind": "file", "path": "/shared/hf-cache/weights.bin"}
+      ]
+    },
+    {
+      "id": "remote-code-poison",
+      "module": "trust-remote-code-supply-chain",
+      "params": {"mode": "backup-write", "marker": "TRIDENT-${run.name}"},
+      "depends_on": ["weight-copy-proof"],
+      "writes": true,
+      "backup_targets": [
+        {"kind": "file", "path": "/shared/hf-cache/model-loading.py"}
+      ]
+    }
+  ],
+  "evidence": ["before-after-sha256", "rollback-receipt"],
+  "mitre": ["T1195.002", "T1565.001"]
+}

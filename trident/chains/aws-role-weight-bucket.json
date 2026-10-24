@@ -1,0 +1,36 @@
+{
+  "id": "aws-role-weight-bucket",
+  "title": {
+    "zh": "AWS 角色 → S3 权重桶",
+    "en": "AWS role → S3 weight bucket"
+  },
+  "category": "云侧权重桶链",
+  "requires": [
+    "cloud-integration-fingerprint",
+    "multi-cloud-imds-credentials",
+    "cloud-role-overprivilege"
+  ],
+  "preconditions": [
+    {"expr": "findings('cloud-integration-fingerprint').any(provider == 'eks')"},
+    {"expr": "findings('multi-cloud-imds-credentials').reachable.any(port == 80)"}
+  ],
+  "steps": [
+    {
+      "id": "imds-credential-proof",
+      "module": "multi-cloud-imds-credentials",
+      "params": {"provider": "aws", "probe": "imds-token", "redact": true}
+    },
+    {
+      "id": "role-bucket-proof",
+      "module": "cloud-role-overprivilege",
+      "params": {"provider": "aws", "bucket_kind": "s3", "mode": "backup-write", "marker": "TRIDENT-${run.name}"},
+      "depends_on": ["imds-credential-proof"],
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "https://checkpoint-bucket.s3.internal/", "state": {}}
+      ]
+    }
+  ],
+  "evidence": ["redacted-credential-receipt", "before-after-sha256", "rollback-receipt"],
+  "mitre": ["T1552.005", "T1530"]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "ray-dashboard-cluster-takeover",
+  "title": {
+    "zh": "Ray Dashboard → 集群控制",
+    "en": "Ray Dashboard → cluster takeover"
+  },
+  "category": "经典攻击链",
+  "requires": [
+    "ray-control-plane",
+    "ray-dashboard-job",
+    "overprivileged-sa-escalation"
+  ],
+  "preconditions": [
+    {"expr": "findings('ray-control-plane').reachable.any(port == 8265)"},
+    {"expr": "findings('ray-control-plane').any(auth == 'none')"}
+  ],
+  "steps": [
+    {
+      "id": "ray-job-submit",
+      "module": "ray-dashboard-job",
+      "params": {"mode": "probe-only", "marker": "TRIDENT-${run.name}"}
+    },
+    {
+      "id": "sa-escalation",
+      "module": "overprivileged-sa-escalation",
+      "params": {"mode": "backup-write", "marker": "TRIDENT-${run.name}"},
+      "depends_on": ["ray-job-submit"],
+      "writes": true,
+      "backup_targets": [
+        {"kind": "kube", "resource": "rolebinding", "name": "trident-demo-binding", "manifest": ""}
+      ]
+    }
+  ],
+  "evidence": ["http-trace", "before-after-sha256", "rollback-receipt"],
+  "mitre": ["T1210", "T1610"]
+}

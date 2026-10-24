@@ -1,0 +1,37 @@
+{
+  "id": "flat-network-admin-plane-weight-poison",
+  "title": {
+    "zh": "平网 → 管理面 → 权重投毒",
+    "en": "Flat network → admin plane → weight poisoning"
+  },
+  "category": "经典攻击链",
+  "requires": [
+    "network-policy-coverage",
+    "framework-port-matching",
+    "sglang-admin-failopen",
+    "slime-weight-pull-poison"
+  ],
+  "preconditions": [
+    {"expr": "findings('network-policy-coverage').count == 0"},
+    {"expr": "findings('framework-port-matching').reachable.any(port == 30000)"}
+  ],
+  "steps": [
+    {
+      "id": "admin-failopen-probe",
+      "module": "sglang-admin-failopen",
+      "params": {"probe": "auth-bypass"}
+    },
+    {
+      "id": "weight-pull-poison",
+      "module": "slime-weight-pull-poison",
+      "params": {"mode": "backup-write", "marker": "TRIDENT-${run.name}"},
+      "depends_on": ["admin-failopen-probe"],
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "http://target:30000/pull_weights", "state": {}}
+      ]
+    }
+  ],
+  "evidence": ["http-trace", "before-after-sha256", "rollback-receipt"],
+  "mitre": ["T1210", "T1565.001"]
+}

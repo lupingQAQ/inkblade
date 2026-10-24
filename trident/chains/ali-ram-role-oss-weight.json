@@ -1,0 +1,36 @@
+{
+  "id": "ali-ram-role-oss-weight",
+  "title": {
+    "zh": "阿里 RAM 角色 → OSS 权重",
+    "en": "Aliyun RAM role → OSS weights"
+  },
+  "category": "云侧权重桶链",
+  "requires": [
+    "cloud-integration-fingerprint",
+    "multi-cloud-imds-credentials",
+    "cloud-role-overprivilege"
+  ],
+  "preconditions": [
+    {"expr": "findings('cloud-integration-fingerprint').any(provider == 'ack')"},
+    {"expr": "findings('multi-cloud-imds-credentials').reachable.any(port == 80)"}
+  ],
+  "steps": [
+    {
+      "id": "imds-credential-proof",
+      "module": "multi-cloud-imds-credentials",
+      "params": {"provider": "aliyun", "flow": "ram-role", "redact": true}
+    },
+    {
+      "id": "role-bucket-proof",
+      "module": "cloud-role-overprivilege",
+      "params": {"provider": "aliyun", "bucket_kind": "oss", "mode": "backup-write", "marker": "TRIDENT-${run.name}"},
+      "depends_on": ["imds-credential-proof"],
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "https://checkpoint-bucket.oss-internal.aliyuncs.com/", "state": {}}
+      ]
+    }
+  ],
+  "evidence": ["redacted-credential-receipt", "before-after-sha256", "rollback-receipt"],
+  "mitre": ["T1552.005", "T1530"]
+}

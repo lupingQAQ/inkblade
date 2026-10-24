@@ -1,0 +1,25 @@
+{
+  "id": "vpc-cni-dual-control-plane-lateral",
+  "title": {
+    "zh": "VPC-CNI 双控制面错配 → 云内横向",
+    "en": "VPC-CNI dual control plane mismatch → intra-cloud lateral"
+  },
+  "category": "网络利用链",
+  "requires": [
+    "cni-stack-capability",
+    "hybrid-cloud-egress-pivot"
+  ],
+  "preconditions": [
+    {"expr": "findings('cni-stack-capability').any(cni == 'vpc-native')"},
+    {"expr": "findings('cni-stack-capability').any(security_group_gap == true)"}
+  ],
+  "steps": [
+    {
+      "id": "egress-pivot-proof",
+      "module": "hybrid-cloud-egress-pivot",
+      "params": {"probe": "security-group-bypass", "marker": "TRIDENT-${run.name}"}
+    }
+  ],
+  "evidence": ["http-trace", "reachability-note"],
+  "mitre": ["T1550"]
+}
