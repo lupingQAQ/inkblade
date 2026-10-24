@@ -27,6 +27,7 @@ class ModuleMeta:
     produces: str = ""
     knowledge: str = ""
     combo_signature: str = ""
+    private: bool = False
     path: Path | None = None
 
 
@@ -57,6 +58,7 @@ def load_modules(modules_dir: Path | str) -> dict[str, ModuleMeta]:
             writes=bool(raw["writes"]), requires=list(raw.get("requires", [])),
             params_schema=raw.get("params_schema", {}), produces=raw.get("produces", ""),
             knowledge=raw.get("knowledge", ""), combo_signature=raw.get("combo_signature", ""),
+            private=bool(raw.get("private", False)),
             path=d,
         )
     for m in mods.values():
