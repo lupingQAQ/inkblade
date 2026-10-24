@@ -16,6 +16,7 @@ from string import Template
 from typing import Any, Container
 
 from . import cvss
+from . import compliance
 from .cvss import SEVERITY_CN
 
 _DIR = Path(__file__).resolve().parent
@@ -123,8 +124,8 @@ def _meta_block(store, run, lang: str) -> dict[str, str]:
         ),
         "footer_decl": _pick(
             lang,
-            "Trident 双语报告引擎 · 证据三层（上下文摘要 / SQLite / tar+SHA256） · PTES / NIST SP 800-115 / GB/T 22239-2019 / GB/T 20984 / CVSS 3.1",
-            "Trident bilingual report engine - three-layer evidence (context digest / SQLite / tar+SHA256) - PTES / NIST SP 800-115 / GB/T 22239-2019 / GB/T 20984 / CVSS 3.1",
+            "Trident 双语报告引擎 · 证据三层（上下文摘要 / SQLite / tar+SHA256） · PTES / NIST SP 800-115 / GB/T 22239-2019 / GB/T 20984 / CVSS 3.1 · 合规：OWASP LLM/Agentic · MITRE ATLAS · NIST AI RMF · ISO/IEC 42001 · EU AI Act GPAI · TC260",
+            "Trident bilingual report engine - three-layer evidence (context digest / SQLite / tar+SHA256) - PTES / NIST SP 800-115 / GB/T 22239-2019 / GB/T 20984 / CVSS 3.1 - compliance: OWASP LLM/Agentic, MITRE ATLAS, NIST AI RMF, ISO/IEC 42001, EU AI Act GPAI, TC260",
         ),
     }
 
@@ -295,6 +296,8 @@ def render_pentest(
     mapping["nist_table"] = _nist_table(lang)
     mapping["djbh_intro"] = _pick(lang, _STANDARDS["djbh_intro_zh"], _STANDARDS["djbh_intro_en"])
     mapping["djbh_table"] = _djbh_table(lang)
+    mapping["title_compliance"] = _pick(lang, "合规映射", "Compliance Mapping")
+    mapping["body_compliance"] = compliance.render_compliance_body(run.findings, lang)
     mapping["title_glossary"] = _pick(lang, "术语表 Glossary", "Glossary")
     mapping["glossary_table"] = _glossary_table(lang)
     return _PENTEST_TMPL.substitute(mapping)
@@ -437,6 +440,8 @@ def render_remediation(
         _pick(lang, "2. 规则包部署并紫队验证，输出规则↔攻击覆盖率矩阵。", "2. Deploy the rule pack and validate purple-team style, producing the rule-to-attack coverage matrix."),
         _pick(lang, "3. 短期/中期项在窗口期末统一复测，重出双语报告对比。", "3. Re-test short/mid-term items at the end of each window and regenerate bilingual reports for comparison."),
     ])
+    mapping["title_compliance"] = _pick(lang, "合规映射", "Compliance Mapping")
+    mapping["body_compliance"] = compliance.render_compliance_body(run.findings, lang)
     mapping["title_glossary"] = _pick(lang, "术语表 Glossary", "Glossary")
     mapping["glossary_table"] = _glossary_table(lang)
     return _REMEDIATION_TMPL.substitute(mapping)

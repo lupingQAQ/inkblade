@@ -18,7 +18,7 @@
 - **证据三层**：上下文摘要（`context.jsonl.gz`）+ SQLite（`evidence.db`）+ 归档层（`steps/*.tar.gz` + `manifest.sha256`），支持篡改检测。
 - **报告**：PTES 七段 + 五个 ML 专节 + NIST / 等保 / GB/T 20984 映射 + CVSS 3.1 + 证据锚；中英双语。
 - **合规映射（2026-10）**：每条发现映射 OWASP LLM Top 10（2026 正式版，含 2025 编号 crosswalk）、OWASP Agentic AI Top 10（ASI01–ASI10）、MITRE ATLAS、NIST AI RMF、ISO/IEC 42001、EU AI Act GPAI 与 TC260/生成式AI管理办法条款；见 [`trident/reports/compliance.py`](trident/reports/compliance.py) 与 [`tests/test_compliance.py`](tests/test_compliance.py)。
-- **MCP 与 agent 协作**：`trident mcp` 提供 5 个只读 stdio JSON-RPC 工具（复用授权锁、零写工具）；`trident plan` 输出证据驱动的链推荐排序，固定 lead 审批、由人触发执行；见 [`trident/mcp_server.py`](trident/mcp_server.py)、[`trident/agent_planner.py`](trident/agent_planner.py)。
+- **MCP 与 agent 协作**：`trident mcp` 提供 5 个只读 stdio JSON-RPC 工具（复用授权锁、零写工具，MCP 2026-07-28 + 旧版 initialize 兼容）；`trident plan` 输出证据驱动的链推荐排序，固定 lead 审批、由人触发执行；见 [`trident/mcp_server.py`](trident/mcp_server.py)、[`trident/agent_planner.py`](trident/agent_planner.py)。
 - **模型供应链与机密计算**：CycloneDX ML-BOM 风格 AI SBOM、cosign 风格 provenance 三元组校验、TDX/SEV-SNP/NVIDIA CC 证明解析与策略断言（本地 fixture 驱动，篡改必失败）；见 [`trident/supplychain.py`](trident/supplychain.py)。
 - **机器可读导出**：`trident export --format sarif|ocsf|vex` 输出 SARIF 2.1.0、OCSF 1.x Detection Finding 与 OpenVEX 风格 JSON；见 [`trident/export.py`](trident/export.py)。
 - **规则转化**：Kyverno / Gatekeeper / NetworkPolicy（native、Calico、Cilium）/ Sigma / Falco / Suricata，规则↔链覆盖率硬校验 + 紫队重放矩阵。

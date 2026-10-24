@@ -1,0 +1,41 @@
+{
+  "schema": "trident-tee-policy/2026-10",
+  "description": "Fixture-only TDX/SEV-SNP/NVIDIA CC policy for local tests; not a production trust policy.",
+  "allowed_tees": [
+    "tdx",
+    "sev-snp",
+    "nvidia-cc"
+  ],
+  "nonce": "fixture-nonce-2026-10",
+  "model_sha256": "5b9c7e1b20f0b6cf507885381162b6c0dbb8368aa3ce34cd5a37f4f139bba925",
+  "launch_measurements": {
+    "tdx": {
+      "mrtd": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "rtmr3": [
+        "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      ]
+    },
+    "sev-snp": {
+      "measurement": [
+        "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1"
+      ]
+    },
+    "nvidia-cc": {
+      "measurement": [
+        "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2"
+      ]
+    }
+  },
+  "allowed_tcb_status": [
+    "UpToDate"
+  ],
+  "require_debug_disabled": true,
+  "require_gpu_cc_mode": "on",
+  "trusted_keys": {
+    "fixture-tdx-root": "TRIDENT-FIXTURE-ONLY-tdx-root-2026-10",
+    "fixture-snp-root": "TRIDENT-FIXTURE-ONLY-snp-root-2026-10",
+    "fixture-nvidia-root": "TRIDENT-FIXTURE-ONLY-nvidia-root-2026-10"
+  }
+}

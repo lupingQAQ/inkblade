@@ -1,0 +1,30 @@
+{
+  "tee": "tdx",
+  "version": 1,
+  "nonce": "fixture-nonce-2026-10",
+  "model_sha256": "5b9c7e1b20f0b6cf507885381162b6c0dbb8368aa3ce34cd5a37f4f139bba925",
+  "report_data": "5d5c6c555bf407a0844a01fb5cafde30c47b3ed9457d9677de1f41e224774999",
+  "generated_at": 1790000000,
+  "quote": {
+    "mrtd": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "rtmr0": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "rtmr1": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "rtmr2": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "rtmr3": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "tcb": {
+      "status": "UpToDate",
+      "svn": 7
+    },
+    "debug": false
+  },
+  "claims": {
+    "attester": "tdx-fixture",
+    "gpu_cc": false,
+    "debug": false
+  },
+  "signature": {
+    "keyid": "fixture-tdx-root",
+    "alg": "HMAC-SHA256",
+    "value": "a4b1f75c394c52c77d6cd2d5986fa1ffd0e6ff1cc8600e6dd4dfb6047330cfb9"
+  }
+}

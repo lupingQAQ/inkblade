@@ -10,3 +10,5 @@ dist/
 *.egg-info/
 .pytest_cache/
 .mypy_cache/
+# 本地 VM/QEMU 实验产物（可再生成，不入公开树）
+lab/qemu-k3s/

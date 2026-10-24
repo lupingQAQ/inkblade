@@ -1,0 +1,3 @@
+# 供应链 fixture 字节级哈希依赖原始字节，禁止 EOL 转换
+trident/data/supplychain/artifact.example.bin -text
+*.bin -text
