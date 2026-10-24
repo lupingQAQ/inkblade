@@ -32,7 +32,7 @@ def _detect(doc: dict) -> list[dict[str, Any]]:
                 "detail": (
                     f"ray.io 全动词={ray_wildcard}，pods:create={pod_create}，"
                     f"pods/exec:create={exec_create} → 可提交特权 RayCluster/Job 工作负载落到任意节点"
-                    "（总纲第 11 节 KubeRay 条目）"
+                    "（设计基线第 11 节 KubeRay 条目）"
                 ),
             })
     return findings

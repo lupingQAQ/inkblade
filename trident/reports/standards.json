@@ -37,8 +37,8 @@
       "nist_phase_zh": "执行阶段（发现与分析）",
       "nist_phase_en": "Execution (Discovery and Analysis)",
       "nist_ref": "NIST SP 800-115 §6–§7",
-      "zh_body": "逐项发现的严重度、CNVD/CNNVD 习惯定级与证据锚（步骤 + manifest sha256 前 16 位）见下表；零日发现默认脱敏，仅输出影响已验证与证据哈希。",
-      "en_body": "Each finding lists severity, CNVD/CNNVD-style grading and an evidence anchor (step + first 16 hex of manifest sha256) in the table below; zero-day findings are redacted by default to impact-verified plus evidence hash."
+      "zh_body": "逐项发现的严重度、CNVD/CNNVD 习惯定级与证据锚（步骤 + manifest sha256 前 16 位）见下表；零日级发现（已公开模块）默认展示细节，可选脱敏开关仅输出影响已验证与证据哈希。",
+      "en_body": "Each finding lists severity, CNVD/CNNVD-style grading and an evidence anchor (step + first 16 hex of manifest sha256) in the table below; zero-day-class findings (public modules) show details by default, with an optional redaction switch that emits impact-verified plus evidence hash only."
     },
     {
       "key": "exploitation",

@@ -38,6 +38,7 @@ Ruling（同路径消歧）：单端口下 /v1/models 同时承载 vllm 对照�
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import shutil
@@ -101,13 +102,40 @@ class _RequestContext:
 
 
 def _sglang_admin(ctx: _RequestContext):
-    return 200, {"ok": True, "service": "sglang", "route": ctx.entry["path"], "applied": True, "mode": ctx.mode}
+    """管理面动作：真实写 server 侧状态文件（verify-effects a 项证据锚）。"""
+    state_path = ctx.sandbox("sglang", "admin-state.json")
+    state = {}
+    if state_path.is_file():
+        try:
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+        except ValueError:
+            state = {}
+    route = str(ctx.entry["path"])
+    previous = state.get(route) or {}
+    state[route] = {
+        "applied": True,
+        "previous_applied": bool(previous.get("applied", False)),
+        "mode": ctx.mode,
+        "updated_at": _utcnow_iso(),
+    }
+    state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+    return 200, {
+        "ok": True,
+        "service": "sglang",
+        "route": route,
+        "applied": True,
+        "mode": ctx.mode,
+        "state_file": str(state_path),
+        "state_sha256": hashlib.sha256(state_path.read_bytes()).hexdigest(),
+    }
 
 
 def _slime_pull_weights(ctx: _RequestContext):
     source_dir = str(ctx.body.get("source_dir", ""))
     local_checkpoint_dir = str(ctx.body.get("local_checkpoint_dir", ""))
-    marker = ctx.sandbox("slime", _safe_name(local_checkpoint_dir, "checkpoint"), "PULLED-WEIGHTS.marker")
+    sandbox = ctx.sandbox("slime", _safe_name(local_checkpoint_dir, "checkpoint"))
+    sandbox.mkdir(parents=True, exist_ok=True)
+    marker = sandbox / "PULLED-WEIGHTS.marker"
     marker.write_text(
         json.dumps(
             {
@@ -122,13 +150,56 @@ def _slime_pull_weights(ctx: _RequestContext):
         ),
         encoding="utf-8",
     )
-    return 200, {"ok": True, "service": "slime", "pulled": True, "marker": str(marker), "mode": ctx.mode}
+    # 权重文件副本真实写入（benign marker 便于 effect 验证 sha256 前后变化）。
+    weights = sandbox / "model.safetensors"
+    weights.write_text(
+        "TRIDENT-MOCK-WEIGHTS\n"
+        + json.dumps(
+            {
+                "format": "mock-safetensors",
+                "benign_marker": source_dir,
+                "poisoned": True,
+                "service": "slime",
+                "route": "/pull_weights",
+                "mode": ctx.mode,
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    return 200, {
+        "ok": True,
+        "service": "slime",
+        "pulled": True,
+        "marker": str(marker),
+        "weights_file": str(weights),
+        "weights_sha256": hashlib.sha256(weights.read_bytes()).hexdigest(),
+        "mode": ctx.mode,
+    }
 
 
 def _areal_set_env(ctx: _RequestContext):
     key = str(ctx.body.get("key", ""))
     ctx.state["areal_env"][key] = ctx.body.get("value")
-    return 200, {"ok": True, "service": "areal", "route": "set_env", "key": key, "env_size": len(ctx.state["areal_env"])}
+    marker = ctx.sandbox("areal", "env", "ENV-SET.marker")
+    marker.write_text(
+        json.dumps(
+            {"service": "areal", "route": "/set_env", "key": key,
+             "value": ctx.body.get("value"), "mode": ctx.mode, "updated_at": _utcnow_iso()},
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    return 200, {
+        "ok": True,
+        "service": "areal",
+        "route": "set_env",
+        "key": key,
+        "env_size": len(ctx.state["areal_env"]),
+        "marker": str(marker),
+    }
 
 
 def _areal_create_engine(ctx: _RequestContext):
@@ -147,7 +218,19 @@ def _areal_call(ctx: _RequestContext):
             "whitelist": list(AREAL_CALL_WHITELIST),
         }
     args = ctx.body.get("args", {})
-    return 200, {"ok": True, "service": "areal", "engine_id": str(ctx.body.get("engine_id", "")), "method": method, "result": args}
+    engine_id = str(ctx.body.get("engine_id", ""))
+    marker = ctx.sandbox("areal", "call", f"{_safe_name(engine_id, 'engine')}-CALL.marker")
+    marker.write_text(
+        json.dumps(
+            {"service": "areal", "route": "/call", "engine_id": engine_id,
+             "method": method, "args": args, "mode": ctx.mode, "updated_at": _utcnow_iso()},
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    return 200, {"ok": True, "service": "areal", "engine_id": engine_id,
+                 "method": method, "result": args, "marker": str(marker)}
 
 
 def _ray_submit_job(ctx: _RequestContext):

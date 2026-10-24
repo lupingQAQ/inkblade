@@ -1,0 +1,48 @@
+Trident — ML Training/Inference Cluster Penetration Testing Platform
+Copyright 2026 The Trident Authors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+--------------------------------------------------------------------------
+Third-party and interoperability notices
+--------------------------------------------------------------------------
+
+1. ARTEX (AGPL-3.0) — black-box comparison only
+
+   ARTEX (upstream: Autumn-27/ARTEX; maintained fork: RuoJi6/ARTEX) is an
+   independent open-source project licensed under the GNU Affero General
+   Public License, version 3 (AGPL-3.0).
+
+   Trident does NOT include, copy, link, embed, or derive from ARTEX source
+   code. No ARTEX code is distributed in this repository. ARTEX is used only
+   as an optional external black-box comparison target in
+   `lab/bench/artex-bench.sh`, which is executed separately in a lab
+   environment against an independently cloned ARTEX checkout. Because there
+   is no code reuse or derivative work, the ARTEX AGPL license does not apply
+   to Trident or to this repository.
+
+   Any ARTEX source you clone remains governed by its own AGPL-3.0 terms.
+
+2. Vendored browser assets (MIT)
+
+   The offline web UI vendors the following unmodified UMD builds:
+
+   - React 18.3.1 — Copyright (c) Meta Platforms, Inc. and affiliates — MIT
+   - ReactDOM 18.3.1 — Copyright (c) Meta Platforms, Inc. and affiliates — MIT
+   - React Flow (@reactflow/core) 11.11.4 — Copyright (c) webkid GmbH — MIT
+
+   These files are located under `trident/webui/static/vendor/` and
+   `reports/samples/static-export/vendor/`. Their original license notices are
+   retained in the minified headers where present.
+
+3. Synthetic lab data
+
+   All credentials, tokens, hostnames, IP addresses and datasets used by the
+   test fixtures and mock targets are synthetic (`MOCK*` / `FAKE*` / RFC 5737
+   documentation ranges). No real customer data or production credentials are
+   included.
+
+--------------------------------------------------------------------------
+If you modify and redistribute this repository, keep this NOTICE file and the
+attribution above with your distribution.
+--------------------------------------------------------------------------

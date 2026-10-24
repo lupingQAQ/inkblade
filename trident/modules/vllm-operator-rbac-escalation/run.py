@@ -30,7 +30,7 @@ def _detect(doc: dict) -> list[dict[str, Any]]:
                     "detail": (
                         f"apiGroups={sorted(groups)} resources={sorted(resources)} "
                         f"verbs={sorted(verbs)} → 可创建 RoleBinding 绑定 cluster-admin 接管集群"
-                        "（总纲第 11 节 vLLM Operator 条目）"
+                        "（设计基线第 11 节 vLLM Operator 条目）"
                     ),
                 })
     return findings

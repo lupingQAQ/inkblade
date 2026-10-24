@@ -10,5 +10,5 @@
     "root": "客户代码仓库/挂载卷路径（默认 lab/sample-vuln-repo）"
   },
   "produces": "auth-gap",
-  "knowledge": "总纲三轮审计：服务鉴权 fail-open 与全网绑定模式"
+  "knowledge": "设计基线三轮审计：服务鉴权 fail-open 与全网绑定模式"
 }

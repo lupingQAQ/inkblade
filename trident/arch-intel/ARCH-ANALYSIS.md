@@ -1,14 +1,14 @@
 # 架构情报分析（ARCH-ANALYSIS）— 2026-10 公开基线
 
 - 生成日期：2026-10-25（全部来源当日逐源核验，见 `coverage-matrix.json`）
-- 权威门槛：`docs/superpowers/specs/2026-10-24-trident-ml-cluster-pentest-design.md` 第 12.2 节
+- 权威门槛：`docs/design.md` 第 12.2 节
 - 语料：`corpus/*.md` 共 35 篇（组织-系统命名），覆盖矩阵见 `coverage-matrix.json`，门槛校验器 `check.py`
 
 ---
 
 ## 1. 问题点汇总表：公开设计证据 ↔ 放大前提 ↔ 建议模块机器键
 
-| # | 放大前提（spec 12.2） | 公开设计证据（来源条目） | 建议模块/链机器键（spec 5.2/6.3） |
+| # | 放大前提（设计基线 12.2） | 公开设计证据（来源条目） | 建议模块/链机器键（设计基线 5.2/6.3） |
 |---|---|---|---|
 | 1 | 集合通信无认证（平网直达即可入组） | NCCL 传输与 bootstrap 无鉴权语义（nccl-transports）；eRDMA 设备即 RDMA 通道（aliyun-ack-erdma）；IB 隔离仅靠 Partition/PKey（ib-partition-rdma）；HPN/Meta RoCE/MegaScale 全互通 fabric | `collective-communication-surface`、`nccl-collective-join`、`fabric-topology-isolation`、链「IB/RDMA 平面 → 集合通信注入」 |
 | 2 | RDMA/IB 无内建认证与加密 | ib-kubernetes：SM/PKey 为唯一隔离；RoCE 变体无 PKey 等价物（回退 VLAN/安全组，常漏配）；Azure ND 每 GPU 独占 IB 且 VMSS 内自动组网（azure-nd-h100-infiniband） | `fabric-topology-isolation`、`multus-sriov-rdma-bypass`、`cni-aware-reachability-graph`（pod↔IB 维） |
@@ -62,7 +62,7 @@ Pod→Pod 横向（CNI 层）
 1. **“有 NetworkPolicy”≠“隔离有效”**——每条旁路（hostNetwork/SR-IOV/IB/独占 ENI/TCP fallback）都必须单独实证（可达性图五维：pod↔pod / pod↔宿主 / pod↔IB / pod↔元数据 / 跨集群）。
 2. **新架构面优先**：预填充-解码 KV 通道（NIXL/llm-d）、ComputeDomain/IMEX、EPP FailOpen、DRA ResourceClaim 是 2026 检测面增量，均有公开设计证据支撑。
 3. **云商共性问题**：六云一致出现「托管化转移风险面」——驱动/网络组件被托管收编，但节点角色与元数据语义不变，凭据链攻击仍是通用横向枢纽。
-4. **规则转化**：旁路族建议出 per-CNI 规则包 + IB Partition/SM 补充建议 + hostNetwork 收敛清单（spec 10.1）。
+4. **规则转化**：旁路族建议出 per-CNI 规则包 + IB Partition/SM 补充建议 + hostNetwork 收敛清单（设计基线 10.1）。
 
 ## 3. 覆盖情况声明
 
@@ -76,5 +76,5 @@ Pod→Pod 横向（CNI 层）
   1. `cloud.google.com` 与 `research.google.com` 在本实验网络超时/拒连——GCP 条目改用 GoogleCloudPlatform 官方仓（ai-on-gke，已归档只读）与 Google 云 TPU 团队维护的 pytorch/xla 仓（官方弃用公告：2026-11-15 归档、迁移 TorchTPU）核验；
   2. `x.ai` 主站不可达——xai-colossus 记为 verified-partial（Bing 检索快照 + 中文科技媒体交叉佐证），不计入门槛；
   3. Calico raw README 当日抓取超时——cni-policy-calico-cilium 以 Cilium 官方文档直读为核验依据，Calico 语义待复验；
-  4. spec 12.1 首批清单中 NVIDIA SuperPOD RA、ACES、VeScale、Google Borg/Jupiter 原文、Anthropic 集群访谈等未在本轮独立成篇（非门槛项），由 HPN/GB200/TPU/Singularity 等同类已核验源覆盖其架构要素，后续批次补齐。
-- **可回溯性**：本分析全部「问题点→模块」映射均标注来源条目 id；模块清单与组合签名库更新必须回溯到矩阵条目（spec 12.2 要求）。
+  4. 设计基线 12.1 首批清单中 NVIDIA SuperPOD RA、ACES、VeScale、Google Borg/Jupiter 原文、Anthropic 集群访谈等未在本轮独立成篇（非门槛项），由 HPN/GB200/TPU/Singularity 等同类已核验源覆盖其架构要素，后续批次补齐。
+- **可回溯性**：本分析全部「问题点→模块」映射均标注来源条目 id；模块清单与组合签名库更新必须回溯到矩阵条目（设计基线 12.2 要求）。

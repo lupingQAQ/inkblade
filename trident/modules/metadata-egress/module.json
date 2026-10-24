@@ -11,5 +11,5 @@
     "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
   },
   "produces": "metadata-egress-findings",
-  "knowledge": "链「SSRF / SA Token → 云元数据」；spec 5.6 云与混合边界层：元数据凭据是云横向枢纽"
+  "knowledge": "链「SSRF / SA Token → 云元数据」；设计基线 5.6 云与混合边界层：元数据凭据是云横向枢纽"
 }

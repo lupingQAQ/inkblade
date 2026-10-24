@@ -166,7 +166,7 @@ def run(ctx: dict, params: dict) -> dict:
         findings.append(_finding(
             "high", "集合通信 bootstrap 无认证（rank 可入组）",
             "NCCL/Gloo/c10d 的 TCPStore/rendezvous 无认证：任意可达端点均可加入通信组"
-            "（梯度/权重注入与窃听面，spec 5.6 集合通信层）。\n"
+            "（梯度/权重注入与窃听面，设计基线 5.6 集合通信层）。\n"
             f"框架：{sorted(frameworks)}\n"
             f"NCCL 基线：{json.dumps(nccl_baseline, ensure_ascii=False)}\n"
             f"bootstrap 端点：{json.dumps(bootstrap, ensure_ascii=False)}\n"
@@ -184,7 +184,7 @@ def run(ctx: dict, params: dict) -> dict:
             "medium", "KV/共享内存传输通道明文过网（NIXL/Mooncake/NVSHMEM/DeepEP）",
             f"通道清单：{json.dumps(kv_channels, ensure_ascii=False)}；其中明文（TLS 关闭）{len(cleartext)} 条。"
             "预填充-解码分离架构下 KV cache 经 RDMA 明文传输且 rendezvous 无认证 → "
-            "通道注入/篡改/窃听可操纵推理输出（spec 5.6 + 6.3 预填充-解码 KV 通道链）。",
+            "通道注入/篡改/窃听可操纵推理输出（设计基线 5.6 + 6.3 预填充-解码 KV 通道链）。",
             fps_kv,
             combo=("pd-split-nixl-rdma-kv-channel",)))
 

@@ -52,7 +52,7 @@ def _load_mapping(pack_dir: str) -> dict:
 
 
 class RuleGenerationTest(unittest.TestCase):
-    """规则包生成：链覆盖矩阵 + per-CNI 变体 + 零日脱敏 + monitor 注解。"""
+    """规则包生成：链覆盖矩阵 + per-CNI 变体 + 零日级行为化签名 + monitor 注解。"""
 
     @classmethod
     def setUpClass(cls):

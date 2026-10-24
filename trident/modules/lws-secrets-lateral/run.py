@@ -29,13 +29,13 @@ def _detect(doc: dict) -> list[dict[str, Any]]:
                 "sev": "high",
                 "title": f"ClusterRole「{name}」可集群级读 Secrets 并 patch 节点（横向原语）",
                 "detail": "secrets:get/list=true，nodes:patch=true → 任意命名空间凭据可取，"
-                          "叠加节点 patch 可固化持久化（总纲第 11 节 LWS 条目）",
+                          "叠加节点 patch 可固化持久化（设计基线第 11 节 LWS 条目）",
             })
         elif secrets_read:
             findings.append({
                 "sev": "medium",
                 "title": f"ClusterRole「{name}」具备集群级 Secrets 读权",
-                "detail": "secrets:get/list=true → 跨命名空间横向读取凭据（总纲第 11 节 LWS 条目）",
+                "detail": "secrets:get/list=true → 跨命名空间横向读取凭据（设计基线第 11 节 LWS 条目）",
             })
     return findings
 

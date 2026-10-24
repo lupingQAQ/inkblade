@@ -15,6 +15,6 @@
     "backup_targets": "backup-write 模式必需的备份目标清单"
   },
   "produces": "pickle-channel-primitive",
-  "knowledge": "VULNERABILITY-MASTER.md 第 1–5 节：verl 检查点通道 pickle 无鉴权",
+  "knowledge": "docs/design.md 第 1–5 节：verl 检查点通道 pickle 无鉴权",
   "combo_signature": "verl-pickle-channel"
 }

@@ -11,5 +11,5 @@
     "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
   },
   "produces": "privileged-workload-findings",
-  "knowledge": "总纲第 11 节：四框架特权部署；spec 5.2 侦察表"
+  "knowledge": "设计基线第 11 节：四框架特权部署；spec 5.2 侦察表"
 }

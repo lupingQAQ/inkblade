@@ -1,4 +1,4 @@
-"""open-webui-code-execute-rce — Open WebUI 共享沙箱执行（私有零日模块）。
+"""open-webui-code-execute-rce — Open WebUI 共享沙箱执行（零日级漏洞模块，已公开）。
 
 检测流程：/__routes__ fingerprint → 经 /api/v1/utils/code/execute 提交良性 marker 代码
 → 200 + stdout 标记即「任意登录用户可执行任意 Python（共享沙箱、跨用户残留互读）」；403 → 加固态零发现。

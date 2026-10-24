@@ -101,7 +101,7 @@ def run(ctx: dict, params: dict) -> dict:
                 f"NFS 导出使用 AUTH_SYS（sec=sys / 无 krb）：客户端自报 uid，服务端按 uid 授权。"
                 f"任何可达 NAS 的 Pod 可伪造任意 uid（含 0）读写他租户文件。"
                 f"root_squash 关闭项：{[n for n in vulnerable if n['root_squash_off']]}。"
-                f"清单：{json.dumps(nfs_scs, ensure_ascii=False)}（spec 5.6 存储数据面层）。",
+                f"清单：{json.dumps(nfs_scs, ensure_ascii=False)}（设计基线 5.6 存储数据面层）。",
                 {"nfs-authsys": True, "root-squash-off": any(n["root_squash_off"] for n in vulnerable)},
                 combo=("shared-pvc-hf-cache-supply-chain", "shared-volume-weight-copy",
                        "training-data-leak")))

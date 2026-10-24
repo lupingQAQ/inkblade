@@ -16,6 +16,6 @@
     "role": "目标角色名（缺省 role）"
   },
   "produces": "cloud-credential-proof",
-  "knowledge": "VULNERABILITY-MASTER.md 第 1–5 节：媒体 URL/重定向 SSRF→IMDS",
+  "knowledge": "docs/design.md 第 1–5 节：媒体 URL/重定向 SSRF→IMDS",
   "combo_signature": "ssrf-imds-chain"
 }

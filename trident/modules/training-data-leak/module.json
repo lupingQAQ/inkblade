@@ -10,5 +10,5 @@
     "data_root": "数据面扫描根目录（默认 lab/fixtures/theft）"
   },
   "produces": "data-leak-surface",
-  "knowledge": "总纲第 6 节 + 训练数据面扩展：日志 PII / 轨迹残留 / 缓存残留"
+  "knowledge": "设计基线第 6 节 + 训练数据面扩展：日志 PII / 轨迹残留 / 缓存残留"
 }

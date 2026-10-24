@@ -1,7 +1,7 @@
 {
   "schema": "trident-arch-intel-coverage-matrix",
   "generated_on": "2026-10-25",
-  "spec": "docs/superpowers/specs/2026-10-24-trident-ml-cluster-pentest-design.md#12（第 12.2 节最低门槛为权威）",
+  "spec": "docs/design.md 第 12 节（第 12.2 节最低门槛为权威）",
   "thresholds": {
     "self-built-networking": 8,
     "cloud-providers-per-provider": 2,

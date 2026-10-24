@@ -168,7 +168,7 @@ def run(ctx: dict, params: dict) -> dict:
         fps["hostnetwork-pod"] = True
         findings.append(_finding(
             "medium", "hostNetwork/hostPort 旁路 CNI 与 NetworkPolicy",
-            "hostNetwork Pod 直接占用宿主网络栈，绕过 CNI 与 NetworkPolicy（spec 5.6 主机网络层）。"
+            "hostNetwork Pod 直接占用宿主网络栈，绕过 CNI 与 NetworkPolicy（设计基线 5.6 主机网络层）。"
             f"hostNetwork Pod：{hostnet_pods}；hostPort：{hostports or '无'}。"
             "该路径可达节点面（node-plane），可达性图按「配置证据」标注。",
             {"hostnetwork-pod": True, "hostport-exposed": bool(hostports)},

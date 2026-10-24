@@ -1,6 +1,6 @@
 # Trident bench 对比 — 冒烟初值与 ARTEX 对比方法
 
-- 任务依据：Trident 设计 spec 第 11 节（对标 ARTEX）/ 第 13 节（实验室 bench）
+- 任务依据：Trident 设计 设计基线第 11 节（对标 ARTEX）/ 第 13 节（实验室 bench）
 - 首次记录：2026-10-24（Windows 宿主实跑）；ARTEX 侧数据待 WSL 实验室补测（见下）
 
 ## Windows 冒烟初值（smoke）
@@ -8,7 +8,7 @@
 运行命令（仓库根）：
 
 ```bash
-D:\llm-audit-2026-10\env\reproenv-d\Scripts\python.exe lab\bench\bench.py smoke --iterations 5
+python lab/bench/bench.py smoke --iterations 5
 ```
 
 环境：Windows 11（10.0.26300）/ Python 3.12.15（reproenv-d，仅标准库）/ mock 靶场
@@ -22,7 +22,7 @@ D:\llm-audit-2026-10\env\reproenv-d\Scripts\python.exe lab\bench\bench.py smoke 
 | requests | 5（= 5 轮 × 1 链步骤，来源 chain-steps） | 25（= 5 轮 × 5 只读路由，全部 200） |
 
 说明：链路径含链引擎全开销（证据库 SQLite + 审计 + 三层落证 + 模块 fixture 快照解析），
-64 ms/轮 vs 兜底直探 9 ms/轮属预期；空闲 RSS ≈ 49 MB 满足 spec 11.1「< 150 MB」目标
+64 ms/轮 vs 兜底直探 9 ms/轮属预期；空闲 RSS ≈ 49 MB 满足 设计基线 11.1「< 150 MB」目标
 （单 Python 进程，无 Node/PG 运行时）。
 
 兜底五路由逐项计时（强制兜底 5 轮实测，状态全部 200 与预期一致）：
@@ -59,13 +59,13 @@ bench 优先走链路径（`trident/core/chains.load_chains` 选只读链 + `cha
 
 ## ARTEX 同靶场对比方法
 
-原则（spec 11.2）：同一 mock 靶场跑双方、只测不改造（ARTEX 为 AGPL，零代码复用）、
+原则（设计基线 11.2）：同一 mock 靶场跑双方、只测不改造（ARTEX 为 AGPL，零代码复用）、
 数据进交付附录「选型对比」，避免主观断言。
 
 1. **共同靶场**：`python lab/mock_targets.py --port 18080 --mode vulnerable`
    （Trident 与 ARTEX 容器均访问同一 `MOCK_URL`，同一五路由集）。
 2. **Trident 侧**：`python lab/bench/bench.py smoke --iterations 5`
-   （上表即初值；全链 sweep 目标 < 3 分钟、0 token，见 spec 11.1）。
+   （上表即初值；全链 sweep 目标 < 3 分钟、0 token，见 设计基线 11.1）。
 3. **ARTEX 侧**：`bash lab/bench/artex-bench.sh`（本目录，交付脚本 + 说明，本任务未执行）：
    - 用 ARTEX 自带 `docker-compose.bench.yml` 起栈（Go server + PostgreSQL + Next.js）；
    - 计冷启动（compose down→up 到全部容器 running，ms）；

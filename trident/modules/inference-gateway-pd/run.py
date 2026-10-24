@@ -113,7 +113,7 @@ def run(ctx: dict, params: dict) -> dict:
             "high", "EPP failureMode=FailOpen：网关故障域放大",
             f"FailOpen EPP：{json.dumps(failopen, ensure_ascii=False)}。EPP 故障时放行全量流量："
             "（1）绕过基于池的调度与准入；（2）网关成为新的未授权入口面与放大器"
-            "（spec 5.6 服务与网关层 + 12.1 Gateway API Inference Extension）。",
+            "（设计基线 5.6 服务与网关层 + 12.1 Gateway API Inference Extension）。",
             {"inferencepool": True, "failopen": True, "gateway-api": bool(gateways)},
             combo=("inferencepool-failopen-gateway",)))
     elif epps:

@@ -1,4 +1,4 @@
-"""dify-local-sandbox-unauth-rce — Dify 本地沙箱零前置执行（私有零日模块，零前置最高危）。
+"""dify-local-sandbox-unauth-rce — Dify 本地沙箱零前置执行（零日级漏洞模块（已公开），零前置最高危）。
 
 检测流程：/__routes__ fingerprint → 无凭据向 /v1/jobs/run 提交良性 marker 命令（id/echo，无破坏性）
 → 200 + SUCCEEDED 即「任意网络邻居零前置命令执行面」；401 → 加固态零发现。

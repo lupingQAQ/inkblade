@@ -1,4 +1,7 @@
-"""私有零日武器库：加密存储 + 工作区级启用闸门（lead 审批）+ 模块隐藏过滤。
+"""可选零日加密扩展：加密存储 + 工作区级启用闸门（lead 审批）+ private 模块隐藏过滤。
+
+定位：**默认关闭的通用扩展能力**，用于未来真正未披露的私有材料；当前 6 个
+dify-*/open-webui-* 零日级漏洞模块均为公开模块（private=false），不经过本闸门。
 
 加密：优先 AES-256-GCM（若安装 cryptography）；否则 scrypt 派生密钥 + BLAKE2b 计数器密钥流 XOR + HMAC-SHA256
 （显式降级：静态保护等级=混淆，文档需标注；升级路径=安装 cryptography）。
@@ -97,7 +100,7 @@ class ZerodayStore:
         """登记册（状态/版本），不含 PoC 细节。"""
         lines = ["# 零日登记册", "", "| 条目 | 状态 |", "|---|---|"]
         for f in sorted((self.path / "entries").glob("*.enc")):
-            lines.append(f"| {f.stem} | 未披露（私有库） |")
+            lines.append(f"| {f.stem} | 可选加密库（默认不启用） |")
         return "\n".join(lines) + "\n"
 
 

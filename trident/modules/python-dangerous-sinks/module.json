@@ -10,5 +10,5 @@
     "root": "客户代码仓库/挂载卷路径（默认 lab/sample-vuln-repo）"
   },
   "produces": "dangerous-sink",
-  "knowledge": "总纲三轮审计 sink 模式（核心代码检测首批规则）"
+  "knowledge": "设计基线三轮审计 sink 模式（核心代码检测首批规则）"
 }

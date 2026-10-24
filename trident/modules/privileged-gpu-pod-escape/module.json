@@ -12,5 +12,5 @@
     "demo_target": "backup-write 模式下的演示写入文件（宿主挂载点 marker 证明）"
   },
   "produces": "host-escape",
-  "knowledge": "总纲第 11 节：四框架特权部署（hostPath/socket/caps/设备组合逃逸）"
+  "knowledge": "设计基线第 11 节：四框架特权部署（hostPath/socket/caps/设备组合逃逸）"
 }

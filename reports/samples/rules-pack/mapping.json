@@ -1,6 +1,6 @@
 {
   "generator": "trident.rules.generate",
-  "generated_at": "2026-10-24T17:19:56Z",
+  "generated_at": "2026-10-24T18:03:34Z",
   "cni_active": "native",
   "cni_variants": [
     "native",

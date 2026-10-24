@@ -15,6 +15,6 @@
     "backup_targets": "backup-write 模式必需的备份目标清单"
   },
   "produces": "supply-chain-poison",
-  "knowledge": "VULNERABILITY-MASTER.md 第 6 节：trust_remote_code+共享缓存供应链投毒",
+  "knowledge": "docs/design.md 第 6 节：trust_remote_code+共享缓存供应链投毒",
   "combo_signature": "shared-cache-remote-code"
 }

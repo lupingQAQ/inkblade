@@ -50,7 +50,7 @@ def run(ctx: dict, params: dict) -> dict:
         findings.append({
             "sev": "medium",
             "title": f"共享卷数据集可读：{len(datasets)} 个数据文件",
-            "detail": "; ".join(e["file"] for e in datasets) + "（总纲第 6 节共享卷条目）",
+            "detail": "; ".join(e["file"] for e in datasets) + "（设计基线第 6 节共享卷条目）",
         })
 
     art_dir = ctx["run"].dir / "artifacts"

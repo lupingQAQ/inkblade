@@ -39,7 +39,7 @@ def analyze(snapshot: dict, params: dict) -> list[dict]:
                 "medium", f"命名空间 {ns} 缺默认拒绝入站策略（有选择策略但无 deny-all）",
                 detail="存在策略不等于隔离有效：未入选标的 Pod 仍全放行，需 deny-all 兜底。",
                 evidence=f"ns={ns} selecting={len(ingress_selecting)} default_deny=no",
-                mapping="spec 5.6 设计约束 1",
+                mapping="设计基线 5.6 设计约束 1",
                 fix="补 podSelector 为空的默认拒绝策略，再按服务网格最小放行",
             ))
     return findings

@@ -109,7 +109,7 @@ def run(ctx: dict, params: dict) -> dict:
                 "medium", "CoreDNS 配置面：转发与投毒面",
                 "；".join(reasons) + "。缓存=" + ("有（无 DNSSEC 校验，投毒 TTL 内持续生效）" if has_cache
                 else "无") + "。任何可控 DNS 应答的路径（hostNetwork Pod / 上游劫持 / hosts 覆写）"
-                "可重定向框架 rendezvous、镜像源与云 API 名字（spec 5.6 服务与网关层）。",
+                "可重定向框架 rendezvous、镜像源与云 API 名字（设计基线 5.6 服务与网关层）。",
                 {"coredns-forward-open": forward_open, "dns-poison-surface": pods_insecure or has_rewrite,
                  "dns-caching": has_cache},
                 combo=("hybrid-cloud-egress-pivot",)))
@@ -153,7 +153,7 @@ def run(ctx: dict, params: dict) -> dict:
             "medium", "跨集群服务发现在位（MCS/Submariner）",
             f"ServiceImport={len(imports)}，Submariner Endpoint={len(endpoints)}。跨集群名字解析"
             "（clusterset.local）把远端集群端点注入本地 DNS：远端被攻陷即经 DNS 直达本地负载；"
-            "DNS 投毒面同步放大（spec 5.6 云与混合边界层）。",
+            "DNS 投毒面同步放大（设计基线 5.6 云与混合边界层）。",
             {"cross-cluster-dns": True},
             combo=("hybrid-cloud-egress-pivot",)))
 

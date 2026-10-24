@@ -1,4 +1,4 @@
-"""dify-control-plane-failopen — Dify 控制面默认放行（私有零日模块）。
+"""dify-control-plane-failopen — Dify 控制面默认放行（零日级漏洞模块，已公开）。
 
 检测流程（安全默认：先探测后动作）：
 1. GET /__routes__ fingerprint（版本/路由语义），未命中不进入动作分支；

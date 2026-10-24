@@ -10,7 +10,7 @@
       "components": ["vllm", "vllm-jev-plugin"],
       "risk": {"zh": "插件端点未鉴权，/plugins/* 绕过 api-key 直达管理原语", "en": "Plugin endpoints unauthenticated; /plugins/* bypasses api-key"},
       "modules": ["vllm-plugin-auth-bypass"],
-      "knowledge": "VULNERABILITY-MASTER.md 第 1-5 节 横向利用 · vllm-plugin-auth-bypass",
+      "knowledge": "docs/design.md 第 1-5 节 横向利用 · vllm-plugin-auth-bypass",
       "evidence": ["http-trace", "route-fingerprint"]
     },
     {
@@ -20,7 +20,7 @@
       "components": ["sglang", ["slime-patch", "slime-weight-pull"]],
       "risk": {"zh": "/pull_weights 请求可控路径，补丁栈叠加后可跨租户写权重", "en": "/pull_weights path controlled; patched stack enables cross-tenant weight writes"},
       "modules": ["slime-weight-pull-poison"],
-      "knowledge": "VULNERABILITY-MASTER.md 第 1-5 节 横向利用 · slime-weight-pull-poison",
+      "knowledge": "docs/design.md 第 1-5 节 横向利用 · slime-weight-pull-poison",
       "evidence": ["http-trace", "before-after-sha256"]
     },
     {
@@ -30,7 +30,7 @@
       "components": ["sglang", "lws", ["pd-split", "prefill-decode-split"]],
       "risk": {"zh": "LWS 集群级 secrets 读写 + 特权模板，webhook automount 继承放大横向面", "en": "LWS cluster-scoped secrets access + privileged templates; webhook automount inheritance widens lateral surface"},
       "modules": ["lws-secrets-lateral", "inference-gateway-pd"],
-      "knowledge": "VULNERABILITY-MASTER.md 第 11 节 权限链矩阵 · lws-secrets-lateral",
+      "knowledge": "docs/design.md 第 11 节 权限链矩阵 · lws-secrets-lateral",
       "evidence": ["rbac-matrix", "manifest-fingerprint"]
     },
     {
@@ -40,7 +40,7 @@
       "components": [["verl", "skyrl"], "kuberay"],
       "risk": {"zh": "operator 准 cluster-admin 提权 + dashboard 无令牌提交 Job 二段接管", "en": "Operator quasi cluster-admin escalation plus unauthenticated dashboard job submission"},
       "modules": ["kuberay-operator-escalation", "ray-dashboard-job"],
-      "knowledge": "VULNERABILITY-MASTER.md 第 11 节 权限链矩阵 · kuberay-operator-escalation",
+      "knowledge": "docs/design.md 第 11 节 权限链矩阵 · kuberay-operator-escalation",
       "evidence": ["can-i-matrix", "http-trace"]
     },
     {
@@ -50,7 +50,7 @@
       "components": ["vllm", "production-stack-operator"],
       "risk": {"zh": "集群级 roles/rolebindings 全 CRUD，创建 RoleBinding 即接管集群", "en": "Cluster-scoped roles/rolebindings CRUD; crafting a RoleBinding takes over the cluster"},
       "modules": ["vllm-operator-rbac-escalation"],
-      "knowledge": "VULNERABILITY-MASTER.md 第 11 节 权限链矩阵 · vllm-operator-rbac-escalation",
+      "knowledge": "docs/design.md 第 11 节 权限链矩阵 · vllm-operator-rbac-escalation",
       "evidence": ["rbac-matrix", "rolebinding-demo-receipt"]
     },
     {
@@ -60,7 +60,7 @@
       "components": [["areal", "sglang"], ["nccl", "rdma-flatnet"]],
       "risk": {"zh": "集合通信无认证入组，平网内任意 rank 可注入梯度/权重", "en": "Unauthenticated collective join; any rank on the flat network can inject gradients or weights"},
       "modules": ["nccl-collective-join", "collective-communication-surface"],
-      "knowledge": "VULNERABILITY-MASTER.md 第 1-5 节 横向利用 · nccl-collective-join",
+      "knowledge": "docs/design.md 第 1-5 节 横向利用 · nccl-collective-join",
       "evidence": ["collective-join-trace", "fabric-fingerprint"]
     },
     {
@@ -70,7 +70,7 @@
       "components": [["vllm", "sglang", "verl", "skyrl", "areal"], ["shared-pvc", "hf-cache"]],
       "risk": {"zh": "共享缓存写权即供应链：一份恶意模型/权重被全集群加载者执行", "en": "Shared cache write access equals supply chain: one malicious artifact executes for every loader in the cluster"},
       "modules": ["shared-volume-weight-copy", "trust-remote-code-supply-chain"],
-      "knowledge": "VULNERABILITY-MASTER.md 第 6 节 数据面 · shared-volume-weight-copy",
+      "knowledge": "docs/design.md 第 6 节 数据面 · shared-volume-weight-copy",
       "evidence": ["before-after-sha256", "volume-inventory"]
     },
     {
@@ -80,7 +80,7 @@
       "components": [["sglang", "sglang-doc-generator"], ["privileged-workload", "privileged-pod"]],
       "risk": {"zh": "按硬件路线自动生成的部署模板继承 privileged/hostPath，宿主逃逸面随文档复制扩散", "en": "Hardware-specific generated templates inherit privileged/hostPath; host-escape surface spreads by documentation copy-paste"},
       "modules": ["privileged-gpu-pod-escape", "privileged-workloads"],
-      "knowledge": "VULNERABILITY-MASTER.md 第 11 节 四框架特权部署取证 · privileged-gpu-pod-escape",
+      "knowledge": "docs/design.md 第 11 节 四框架特权部署取证 · privileged-gpu-pod-escape",
       "evidence": ["manifest-fingerprint", "escape-primitive-matrix"]
     },
     {
@@ -90,7 +90,7 @@
       "components": ["multus", "sriov", "rdma"],
       "risk": {"zh": "SR-IOV VF / RDMA / macvlan 流量不受 NetworkPolicy 约束，策略语义被旁路", "en": "SR-IOV VF / RDMA / macvlan traffic is not enforced by NetworkPolicy; policy semantics bypassed"},
       "modules": ["multus-sriov-rdma-bypass", "network-policy-coverage", "cni-stack-capability"],
-      "knowledge": "spec 第 5.6 节 七层网络模型 CNI 与 Overlay 层 · multus-sriov-rdma-bypass",
+      "knowledge": "设计基线第 5.6 节 七层网络模型 CNI 与 Overlay 层 · multus-sriov-rdma-bypass",
       "evidence": ["cni-capability-matrix", "bypass-path-list"]
     },
     {
@@ -100,7 +100,7 @@
       "components": ["ib-fabric", "ib-no-partition"],
       "risk": {"zh": "IB/RDMA 无内建认证，SM/Partition 是唯一隔离手段；无 Partition 即全网 rank 可入组", "en": "IB/RDMA has no built-in auth; SM/Partition is the only isolation. Without Partition any host may join the collective"},
       "modules": ["fabric-topology-isolation", "nccl-collective-join"],
-      "knowledge": "spec 第 5.6 节 七层网络模型 物理 Fabric 层 · fabric-topology-isolation",
+      "knowledge": "设计基线第 5.6 节 七层网络模型 物理 Fabric 层 · fabric-topology-isolation",
       "evidence": ["fabric-fingerprint", "sm-partition-inventory"]
     },
     {
@@ -110,7 +110,7 @@
       "components": ["nvl-host", "dra", "computedomain"],
       "risk": {"zh": "IMEX/ComputeDomain 把多节点 GPU 内存并为一个域，域内越权访问缺乏网络层隔离", "en": "IMEX/ComputeDomain merges multi-node GPU memory into one domain; intra-domain access lacks network-layer isolation"},
       "modules": ["fabric-topology-isolation", "gpu-network-operator-posture"],
-      "knowledge": "spec 第 5.6 节 物理 Fabric 层 + 12.1 网络专源（ComputeDomain/IMEX 指南）",
+      "knowledge": "设计基线第 5.6 节 物理 Fabric 层 + 12.1 网络专源（ComputeDomain/IMEX 指南）",
       "evidence": ["fabric-fingerprint", "dra-resourceclaim-inventory"]
     },
     {
@@ -120,7 +120,7 @@
       "components": [["llm-d", "vllm", "sglang"], "pd-split", "nixl-rdma"],
       "risk": {"zh": "KV cache 明文过网且 rendezvous 无认证，通道可被注入/篡改/窃听以操纵推理输出", "en": "KV cache crosses the wire in cleartext with unauthenticated rendezvous; channel injection manipulates inference"},
       "modules": ["inference-gateway-pd", "collective-communication-surface"],
-      "knowledge": "spec 第 5.6 节 集合通信层 + 6.3 网络利用链 预填充-解码 KV 通道",
+      "knowledge": "设计基线第 5.6 节 集合通信层 + 6.3 网络利用链 预填充-解码 KV 通道",
       "evidence": ["kv-channel-fingerprint", "gateway-config"]
     },
     {
@@ -130,7 +130,7 @@
       "components": [["eks-vpc-cni", "terway", "tke-vpc-cni"], ["sgp-pods", "security-group-gap"]],
       "risk": {"zh": "VPC 安全组与 K8s NetworkPolicy 是两套控制面，缺口即绕过策略的云内横向", "en": "VPC security groups and NetworkPolicy are two control planes; any gap yields policy-bypassing cloud lateral movement"},
       "modules": ["cni-stack-capability", "cloud-integration-fingerprint", "hybrid-cloud-egress-pivot"],
-      "knowledge": "spec 第 5.6 节 云与混合边界层 + CNI 与 Overlay 层 · cni-stack-capability",
+      "knowledge": "设计基线第 5.6 节 云与混合边界层 + CNI 与 Overlay 层 · cni-stack-capability",
       "evidence": ["cni-capability-matrix", "security-group-audit"]
     },
     {
@@ -140,7 +140,7 @@
       "components": ["inferencepool", "failopen"],
       "risk": {"zh": "EPP FailOpen 在故障时放行全量流量，网关成为新的未授权入口与放大器", "en": "EPP FailOpen passes all traffic during failure; the gateway becomes a new unauthenticated entry point and amplifier"},
       "modules": ["inference-gateway-pd"],
-      "knowledge": "spec 第 5.6 节 服务与网关层 + 12.1 Gateway API Inference Extension v1.0",
+      "knowledge": "设计基线第 5.6 节 服务与网关层 + 12.1 Gateway API Inference Extension v1.0",
       "evidence": ["gateway-config", "httproute-inventory"]
     }
   ]

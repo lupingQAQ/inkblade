@@ -8,8 +8,8 @@
     {"zh": "横向利用", "en": "Lateral Exploitation", "note_zh": "跨 Pod/节点/命名空间的利用", "note_en": "Exploitation across pods / nodes / namespaces"},
     {"zh": "权重投毒", "en": "Weight Poisoning", "note_zh": "写 checkpoint/权重端点导致模型污染", "note_en": "Contaminating models via checkpoint/weight write endpoints"},
     {"zh": "训练数据泄露", "en": "Training Data Exposure", "note_zh": "数据集挂载/出网通道/日志回显泄出", "note_en": "Leaks via dataset mounts / egress channels / log echo"},
-    {"zh": "零日", "en": "Zero-Day", "note_zh": "未披露漏洞；报告默认脱敏输出", "note_en": "Undisclosed vulnerability; redacted in reports by default"},
-    {"zh": "脱敏", "en": "Redaction", "note_zh": "仅输出影响已验证 + 证据哈希，细节按合同分级", "note_en": "Impact verified + evidence hash only; details per contract tier"},
+    {"zh": "零日", "en": "Zero-Day", "note_zh": "已公开零日级漏洞模块；报告默认展示细节", "note_en": "Public zero-day-class modules; details shown in reports by default"},
+    {"zh": "脱敏", "en": "Redaction", "note_zh": "可选开关：仅输出影响说明 + 证据哈希，供未来真私有发现", "note_en": "Optional switch: impact summary + evidence hash only, for future truly private findings"},
     {"zh": "备份闸门", "en": "Backup Gate", "note_zh": "写类模块执行前强制备份回执", "note_en": "Mandatory backup receipt before write modules run"},
     {"zh": "可达性图", "en": "Reachability Graph", "note_zh": "CNI 语义感知的网络可达性矩阵", "note_en": "CNI-semantic network reachability matrix"},
     {"zh": "紫队验证", "en": "Purple-Team Validation", "note_zh": "规则包重放攻击链验证覆盖率", "note_en": "Replaying chains against rule packs to measure coverage"}

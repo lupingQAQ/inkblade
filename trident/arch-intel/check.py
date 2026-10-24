@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""arch-intel 覆盖矩阵门槛校验（spec 第 12.2 节最低门槛，权威）。
+"""arch-intel 覆盖矩阵门槛校验（设计基线第 12.2 节最低门槛，权威）。
 
 四类门槛：
 - self-built-networking（自建与超大规模训练组网）≥ 8 源
@@ -12,7 +12,7 @@
 只有核验状态为 verified 的源才计入门槛（stale/failed 显式记录缺口）。
 verify(matrix: dict) -> dict：返回各类达标布尔 + 计数明细；顶层 ok = 全部达标。
 
-用法：D:\\...\\python.exe trident/arch-intel/check.py [coverage-matrix.json]
+用法：python trident/arch-intel/check.py [coverage-matrix.json]
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ import json
 import sys
 from pathlib import Path
 
-# spec 12.2：最低门槛（权威，勿随意调整）
+# 设计基线 12.2：最低门槛（权威，勿随意调整）
 REQUIRED = {
     "self-built-networking": 8,
     "cloud-providers-per-provider": 2,
@@ -32,7 +32,7 @@ REQUIRED = {
 # 六云商（渗透检测的直接靶面）
 CLOUD_PROVIDERS = ("aws", "azure", "aliyun", "tencent", "gcp", "huawei")
 
-# 网络专源必需 topic（机器键，映射 spec 12.1「网络架构专源」清单）
+# 网络专源必需 topic（机器键，映射 设计基线 12.1「网络架构专源」清单）
 NETWORK_TOPICS = (
     "cni",
     "multus-sriov",

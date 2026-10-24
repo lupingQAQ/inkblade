@@ -32,7 +32,7 @@ def run(ctx: dict, params: dict) -> dict:
             "title": f"推理端点 {doc.get('endpoint', '?')} 蒸馏面开放：无鉴权且无配额",
             "detail": "；".join(problems)
                       + f"。留痕样本 {len(queries)} 次查询零拦截 → 可无限采样复刻模型能力"
-                        "（总纲第 6 节查询滥用条目）",
+                        "（设计基线第 6 节查询滥用条目）",
         })
 
     art_dir = ctx["run"].dir / "artifacts"

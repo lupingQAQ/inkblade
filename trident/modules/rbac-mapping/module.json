@@ -11,5 +11,5 @@
     "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
   },
   "produces": "rbac-findings",
-  "knowledge": "总纲第 11 节：三 operator 集群级 RBAC + 220+ 取证；CHAIN-MATRIX 判定规则"
+  "knowledge": "设计基线第 11 节：三 operator 集群级 RBAC + 220+ 取证；链矩阵 判定规则"
 }

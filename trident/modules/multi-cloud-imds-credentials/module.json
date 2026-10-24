@@ -15,6 +15,6 @@
     "imds_base": "IMDS 基址（缺省取 target）"
   },
   "produces": "cloud-credential-surface",
-  "knowledge": "Trident 规格 5.6 云与混合边界层 + 总纲第 1–5 节 SSRF→IMDS",
+  "knowledge": "设计基线 5.6 云与混合边界层 + 设计基线第 1–5 节 SSRF→IMDS",
   "combo_signature": "imds-credential-hub"
 }

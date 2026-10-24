@@ -2,11 +2,11 @@
 # =============================================================================
 # lab/bench/artex-bench.sh — ARTEX 同靶场 bench 计时脚本（交付脚本 + 说明，本任务不执行）
 #
-# 依据：Trident 设计 spec 第 11 节（对标 ARTEX）与 11.2 方法——
+# 依据：Trident 设计 设计基线第 11 节（对标 ARTEX）与 11.2 方法——
 #   「bench 脚本化：资源采样、端到端计时、断言写入对比报告；
 #     ARTEX 侧用其 docker-compose.bench.yml 同靶场跑（遵循其 AGPL，只测不改造）」。
 #
-# 用途：在 WSL Ubuntu 实验室对 ARTEX（本地备份 .slim/clonedeps/repos/RuoJi6__ARTEX，
+# 用途：在 WSL Ubuntu 实验室对独立克隆的 ARTEX（AGPL-3.0；本仓库不收录、不复用其源码，
 #   v0.3.23，Go + PostgreSQL + Next.js）做黑盒计时，与 Trident（lab/bench/bench.py
 #   smoke，同靶场同路由集）对比，数据进 BENCH-RESULT.md / 交付附录「选型对比」。
 #
@@ -19,7 +19,7 @@
 #   # 1) 先起共享靶场（WSL 或 Windows 侧均可，监听 0.0.0.0 供容器访问）：
 #   python3 lab/mock_targets.py --port 18080 --mode vulnerable
 #   # 2) 运行本脚本：
-#   ARTEX_DIR=/mnt/d/llm-audit-2026-10/.slim/clonedeps/repos/RuoJi6__ARTEX \
+#   ARTEX_DIR=$HOME/artex \
 #   MOCK_URL=http://host.docker.internal:18080 \
 #   bash lab/bench/artex-bench.sh
 #
@@ -31,7 +31,7 @@
 # =============================================================================
 set -euo pipefail
 
-ARTEX_DIR="${ARTEX_DIR:-/mnt/d/llm-audit-2026-10/.slim/clonedeps/repos/RuoJi6__ARTEX}"
+ARTEX_DIR="${ARTEX_DIR:-$HOME/artex}"
 MOCK_URL="${MOCK_URL:-http://host.docker.internal:18080}"
 COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.bench.yml}"
 SAMPLES="${SAMPLES:-10}"

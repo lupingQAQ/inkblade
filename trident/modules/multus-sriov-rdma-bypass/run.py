@@ -155,7 +155,7 @@ def run(ctx: dict, params: dict) -> dict:
         })
         findings.append(_finding(
             "high", "NetworkPolicy 不覆盖路径清单（Multus/SR-IOV/RDMA 旁路）",
-            "以下 Pod↔网络路径不受 NetworkPolicy 约束（spec 5.6：SR-IOV VF/IB/macvlan/host-device "
+            "以下 Pod↔网络路径不受 NetworkPolicy 约束（设计基线 5.6：SR-IOV VF/IB/macvlan/host-device "
             "流量不经 CNI 策略执行点；即使策略覆盖该 Pod，附件接口仍构成旁路边）：\n"
             + json.dumps(uncovered, ensure_ascii=False, indent=2),
             fps,

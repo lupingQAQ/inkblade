@@ -35,6 +35,11 @@ def _make_run(root: Path):
         "sglang-admin-failopen", sev="high", title="SGLang 管理面 fail-open",
         detail="30000 无 key 放行", evidence_path="steps/sglang-admin-failopen.tar.gz",
     )
+    run.add_finding(
+        "sglang-admin-failopen", sev="critical", title="已公开零日级样例",
+        detail="公开细节：未鉴权管理面动作成功",
+        evidence_path="steps/sglang-admin-failopen.tar.gz", is_zeroday=True,
+    )
     run.upsert_node("workload-pod", "pod", "pod", {"namespace": "train"})
     run.upsert_node("svc/sglang-admin", "service", "service", {"port": 30000})
     run.add_edge("workload-pod", "svc/sglang-admin", "reachable", "probed",
@@ -109,6 +114,25 @@ class TestExportStatic(unittest.TestCase):
             self.assertTrue((out / "style.css").exists())
             self.assertTrue((out / "vendor" / "react.production.min.js").exists())
             self.assertNotIn('fetch("/api/runs")', html)  # app.js 用相对路径而非绝对
+
+    def test_export_static_optional_zeroday_redaction(self):
+        """静态导出可选脱敏开关：默认展示已公开细节；开启后仅保留证据引用。"""
+        with TemporaryDirectory() as td:
+            root = Path(td)
+            run_dir = _make_run(root)
+            html_path = export_static(run_dir, root / "export", redact_zeroday=True)
+            html = html_path.read_text(encoding="utf-8")
+            m = re.search(
+                r"window\.TRIDENT_DATA\s*=\s*(\{.*?\})\s*;?\s*</script>",
+                html, re.S,
+            )
+            self.assertIsNotNone(m)
+            data = json.loads(m.group(1))
+            zd = [f for f in data["findings"] if f["is_zeroday"]]
+            self.assertTrue(zd, "fixture 缺零日级发现")
+            self.assertIn("【脱敏】", zd[0]["title"])
+            self.assertEqual(zd[0]["detail"], "")
+            self.assertTrue(zd[0]["evidence_path"])
 
     def test_export_static_data_json_parses(self):
         with TemporaryDirectory() as td:

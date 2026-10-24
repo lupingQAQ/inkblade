@@ -99,8 +99,10 @@ class TestTheftModules(unittest.TestCase):
         })
         findings = self._run_findings(result, "training-data-leak")
         joined = json.dumps(findings, ensure_ascii=False)
-        for category in ("数据集", "缓存", "日志", "轨迹"):
+        for category in ("数据集", "缓存", "日志", "轨迹", "凭据"):
             self.assertIn(category, joined, f"训练数据泄露未覆盖类别: {category}")
+        self.assertIn(FAKE_HF_TOKEN[-4:], joined, "假密钥需保留尾4位指纹")
+        self.assertNotIn(FAKE_HF_TOKEN, joined, "完整假密钥不得进入 finding")
         # 样张必须脱敏
         run_dir = self.root / "evidence" / "local-lab" / result["run"]
         for p in run_dir.rglob("*"):
@@ -110,6 +112,7 @@ class TestTheftModules(unittest.TestCase):
         self.assertTrue(samples, "缺少脱敏样张产物")
         content = samples[0].read_text(encoding="utf-8")
         self.assertNotIn("zhangsan", content, "PII 样张未脱敏")
+        self.assertNotIn(FAKE_HF_TOKEN, content, "凭据样张未脱敏")
 
     def test_unlimited_query_distillation(self):
         result = self._run("unlimited-query-distillation", {

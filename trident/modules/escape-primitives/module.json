@@ -11,5 +11,5 @@
     "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
   },
   "produces": "escape-primitive-findings",
-  "knowledge": "总纲第 11 节：特权 GPU Pod 宿主逃逸与运行时 socket 逃逸原语组合"
+  "knowledge": "设计基线第 11 节：特权 GPU Pod 宿主逃逸与运行时 socket 逃逸原语组合"
 }

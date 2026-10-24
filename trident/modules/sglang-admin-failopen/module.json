@@ -14,6 +14,6 @@
     "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）"
   },
   "produces": "admin-plane-failopen",
-  "knowledge": "VULNERABILITY-MASTER.md 第 1–5 节：SGLang 管理面 fail-open",
+  "knowledge": "docs/design.md 第 1–5 节：SGLang 管理面 fail-open",
   "combo_signature": "sglang-admin-surface"
 }

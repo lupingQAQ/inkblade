@@ -15,6 +15,6 @@
     "backup_targets": "backup-write 模式必需的备份目标清单"
   },
   "produces": "lora-injection",
-  "knowledge": "VULNERABILITY-MASTER.md 第 1–5 节：请求可控 lora_path/运行时 LoRA 更新",
+  "knowledge": "docs/design.md 第 1–5 节：请求可控 lora_path/运行时 LoRA 更新",
   "combo_signature": "lora-path-control"
 }

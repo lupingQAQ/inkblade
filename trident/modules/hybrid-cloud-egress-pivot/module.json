@@ -15,6 +15,6 @@
     "imds_base": "IMDS 基址（缺省取 target）"
   },
   "produces": "hybrid-pivot-path-map",
-  "knowledge": "Trident 规格 5.6 云与混合边界层 + 6.3 VPC-CNI 双控制面链",
+  "knowledge": "设计基线 5.6 云与混合边界层 + 6.3 VPC-CNI 双控制面链",
   "combo_signature": "hybrid-egress-pivot"
 }

@@ -7,9 +7,9 @@
 
 ```powershell
 # 项目根（本仓库）
-cd D:\llm-audit-2026-10\projects\trident-2026-10
-# Python 解释器（工作区共享 reproenv）
-D:\llm-audit-2026-10\env\reproenv-d\Scripts\python.exe -m unittest discover -s tests -v   # 全绿再开工
+cd <repo>
+# Python 解释器（Python 3.10+，仅标准库）
+python -m unittest discover -s tests -v   # 全绿再开工
 ```
 
 - 目录约定：`--home`（默认 `.`）下生成 `evidence/<workspace>/<run>/`、`users.json`、`modules/`（即 `trident/modules`，可软链/复制到 home）。
@@ -39,9 +39,9 @@ init_roe(store, fields={
 assert roe_status(store) == "complete"
 ```
 
-- 角色矩阵：`admin`（全部）/ `lead`（执行+审批+零日审批，无 manage）/ `tester`（执行+报告）/ `auditor`（只读+报告）。
+- 角色矩阵：`admin`（全部）/ `lead`（执行+审批+零日扩展审批，无 manage）/ `tester`（执行+报告）/ `auditor`（只读+报告）。
 - 级别闸门：模块 `min_level` 高于授权级别 → `ExecutionLocked`；范围外命名空间/IP → 拒绝。
-- **零日启用**（默认关，登记册不可见）：`python -c "from trident.core.zeroday import enable; enable(store, lead_session)"`——需 `approve-zeroday` 角色，写入 `workspace.json` 并留审计。
+- **可选零日加密扩展**（默认关；仅对显式 `private: true` 的未来模块生效）：`python -c "from trident.core.zeroday import enable; enable(store, lead_session)"`——需 `approve-zeroday` 角色，写入 `workspace.json` 并留审计。当前 6 个 dify-*/open-webui-* 零日级漏洞模块已公开（`private: false`），**无需启用本扩展**。
 
 ## 3. 跑模块与链（CLI + API）
 
@@ -68,7 +68,7 @@ result = run_module(store, tester_session, "sglang-admin-failopen",
 
 ```python
 from trident.core.chains import load_chains, dry_run, execute
-chains = load_chains("trident/chains")                 # 18 条：经典/云侧权重桶/网络/零日
+chains = load_chains("trident/chains")                 # 18 条：经典/云侧权重桶/网络/零日级
 plan = dry_run(chains["flat-network-admin-plane-weight-poison"], findings, modules_dir=...)
 # plan.verdict ∈ 成立/部分成立/不成立；plan.steps[].backup_actions / write_surface = 预览写面
 res = execute(chain, store, tester_session, modules_dir=..., findings=..., workers=4)
@@ -91,7 +91,8 @@ from trident.rules.generate import generate_all
 from trident.rules.validate import validate
 from trident.webui.export_static import export_static
 
-pentest = render_pentest(store, run_name)          # 双语（bi/zh/en），零日默认脱敏
+pentest = render_pentest(store, run_name)          # 双语（bi/zh/en），零日级细节默认展示
+# 可选脱敏（未来真私有发现）：render_pentest(..., redact_zeroday=True)
 remediation = render_remediation(store, run_name)  # 立即/短期/中期基线 + 逐发现建议 + 复测计划
 pack = generate_all("trident/chains", findings=..., cni="native", out_dir="reports/samples/rules-pack")
 matrix = validate(pack.out_dir, "http://127.0.0.1:<mock-port>/")   # 紫队覆盖率矩阵（0 漏过）
@@ -100,13 +101,14 @@ export_static(run_dir, "reports/samples/static-export")            # file:// 免
 
 - 规则包：Kyverno + Gatekeeper 准入、NetworkPolicy per-CNI 三变体（native/Calico/Cilium）+ VPC-native 安全组补充、Sigma/Falco/Suricata 检测、RBAC 收敛清单、`mapping.json`（规则↔链矩阵，每链 ≥1 规则硬校验）；全部默认 monitor 模式 + 中英调参建议。
 - 端到端一键复跑：`python trident/e2e-check.py`（15 项 PASS/FAIL 清单 → `reports/samples/e2e/`）。
+- 实效验证一键复跑：`python -m trident.verify-effects --out reports/samples/effects/`（7 项 PASS/FAIL + 证据摘要 → `docs/EFFECT-VERIFICATION.md`；边界：本机真实 HTTP，非 live K8s）。
 
 ## 5. 回滚与紧急停止
 
 - **步骤回滚**：`BackupManager(store, run).rollback("<module-key>")`；整 run：逐步骤回滚（按 `backups` 表回执）。
 - **备份语义**：file → 副本+sha256 还原；kube → 清单快照（`kubectl-apply` 人工执行）；http → 响应/状态存档（登记 `http-restore`）。
 - **紧急停止**：API `POST /api/abort`（置全局 abort 标志）；Ctrl+C 终止 CLI/链执行——已落盘写面按 run 的 `backups` 表回执清单人工/脚本回滚。
-- 每步动作全量入 `actions` 表（主体/工作区/目标/参数/结果/回滚指针，零日另标 `is_zeroday=1`）。
+- 每步动作全量入 `actions` 表（主体/工作区/目标/参数/结果/回滚指针，零日级另标 `is_zeroday=1`）。
 
 ## 6. 实验室（mock / KIND / WSL 边界）
 

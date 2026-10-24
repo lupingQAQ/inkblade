@@ -10,5 +10,5 @@
     "volume_root": "共享卷根目录（默认 lab/fixtures/theft/shared-volume）"
   },
   "produces": "weight-exposure",
-  "knowledge": "总纲第 6 节：RWX 共享卷上权重未授权读（哈希存证 + 偷换风险）"
+  "knowledge": "设计基线第 6 节：RWX 共享卷上权重未授权读（哈希存证 + 偷换风险）"
 }

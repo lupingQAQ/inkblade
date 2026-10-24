@@ -34,7 +34,7 @@ def _detect(doc: dict) -> list[dict[str, Any]]:
                 "sev": "high",
                 "title": f"Pod「{name}」挂载容器运行时 socket（宿主逃逸原语）",
                 "detail": f"hostPath {m['host_path']} → 容器内 {m['mount_path']}；"
-                          "经运行时 API 可在宿主侧拉起特权容器（总纲第 11 节 socket 逃逸条目）",
+                          "经运行时 API 可在宿主侧拉起特权容器（设计基线第 11 节 socket 逃逸条目）",
             })
     return findings
 

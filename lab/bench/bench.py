@@ -1,11 +1,11 @@
-"""lab/bench/bench.py — Trident bench 冒烟（spec 第 11 节对标 ARTEX / 第 13 节实验室）。
+"""lab/bench/bench.py — Trident bench 冒烟（设计基线第 11 节对标 ARTEX / 第 13 节实验室）。
 
 smoke 模式：对 lab mock 靶场（lab/mock_targets.py start_all，vulnerable 姿态）跑一条
 最小链探测计时 + 内存采样 + 请求数统计。
 
 路径选择（记录 Ruling）：
 1. 链路径（优先）：trident/core/chains.load_chains 选一条「只读链」——全部步骤引用的
-   模块已在 trident/modules 就绪（writes=false、非私有零日），用 chains.execute 计时；
+   模块已在 trident/modules 就绪（writes=false、非私有），用 chains.execute 计时；
 2. 兜底路径：链模块未就绪（当前侦察/横向利用模块族尚未落地）时，urllib 直探
    5 条只读路由（ROUTE_TABLE writes=false，覆盖侦察发现/观测面/插件面/中继面/管理面）。
 
@@ -161,7 +161,7 @@ class MemorySampler:
 
 def select_readonly_chain(chains_dir: Path | str = CHAINS_DIR,
                           modules_dir: Path | str = MODULES_DIR) -> tuple[dict | None, str]:
-    """选一条最小只读链：步骤引用模块全部就绪且 writes=false、非私有零日。
+    """选一条最小只读链：步骤引用模块全部就绪且 writes=false、非私有。
 
     返回 (chain, ruling_reason)；chain=None 时 reason 说明兜底原因（含最近候选及其缺失模块键）。
     """

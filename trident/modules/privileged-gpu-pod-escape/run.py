@@ -47,7 +47,7 @@ def _detect(doc: dict) -> list[dict[str, Any]]:
                 "sev": "high",
                 "title": f"Pod「{name}」特权原语组合可宿主逃逸",
                 "detail": f"原语: {', '.join(prim)} → hostPath/或特权+caps 即宿主 root"
-                          "（总纲第 11 节特权部署条目）",
+                          "（设计基线第 11 节特权部署条目）",
             })
     return findings
 

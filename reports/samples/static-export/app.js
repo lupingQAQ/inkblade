@@ -58,7 +58,7 @@
   var STATE = {
     token: null, role: null, workspace: "local-lab",
     runs: [], data: window.TRIDENT_DATA || null,
-    selectedStep: null, view: "dag", reportRemote: null,
+    selectedStep: null, view: "dag", reportRemote: null, redactZeroday: false,
   };
   var STATIC_MODE = !!window.TRIDENT_DATA;
 
@@ -670,6 +670,18 @@
 
     var panel = el("div", "panel");
     panel.appendChild(el("h3", null, "发现清单（Findings）"));
+    // 可选脱敏开关：默认关闭（零日级漏洞模块已公开，细节正常展示）；供未来真私有发现使用。
+    var toggle = el("label", "hint");
+    var cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = !!STATE.redactZeroday;
+    cb.addEventListener("change", function () {
+      STATE.redactZeroday = cb.checked;
+      renderReport();
+    });
+    toggle.appendChild(cb);
+    toggle.appendChild(document.createTextNode(" 零日级细节脱敏（可选；默认展示已公开细节）"));
+    panel.appendChild(toggle);
     if (!fs.length) {
       panel.appendChild(el("div", "hint", STATIC_MODE ? "该运行无发现" : "服务模式无发现数据（静态导出内嵌 findings 表）"));
     } else {
@@ -683,19 +695,20 @@
         var tr = el("tr");
         var sev = (f.severity || "info").toLowerCase();
         tr.appendChild(el("td")).appendChild(el("span", "badge sev-" + (SEV_ORDER.indexOf(sev) >= 0 ? sev : "info"), sev.toUpperCase()));
-        // 零日脱敏模式（默认开）：未披露零日只显示影响已验证 + 证据哈希
+        // 默认展示全部细节；勾选可选脱敏后仅对 is_zeroday 发现隐藏细节（保留证据哈希引用）。
+        var redact = !!STATE.redactZeroday && !!f.is_zeroday;
         var titleTd = el("td");
-        titleTd.textContent = f.is_zeroday ? "【脱敏】影响已验证（私有零日，未披露细节）" : (f.title || "");
-        if (!f.is_zeroday && f.detail) {
+        titleTd.textContent = redact ? "【脱敏】影响已验证（零日级，已公开；未展示细节）" : (f.title || "");
+        if (!redact && f.detail) {
           titleTd.appendChild(el("div", "hint", f.detail));
         }
-        if (f.is_zeroday && f.evidence_path) {
+        if (redact && f.evidence_path) {
           titleTd.appendChild(el("div", "hint", "证据：" + f.evidence_path));
         }
         tr.appendChild(titleTd);
         tr.appendChild(el("td", null, f.step_key || ""));
         tr.appendChild(el("td")).appendChild(el("code", null, f.evidence_path || "—"));
-        tr.appendChild(el("td", null, f.is_zeroday ? "是（报告默认脱敏）" : "否"));
+        tr.appendChild(el("td", null, f.is_zeroday ? (redact ? "是（可选脱敏）" : "是（零日级，已公开）") : "否"));
         tbody.appendChild(tr);
       });
       tbl.appendChild(tbody);

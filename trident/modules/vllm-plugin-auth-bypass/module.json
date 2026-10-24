@@ -11,6 +11,6 @@
     "mode": "probe-only（默认）| backup-write（本模块只读面，无写分支）"
   },
   "produces": "auth-bypass-proof（插件面绕过 api-key 证据）",
-  "knowledge": "VULNERABILITY-MASTER.md 第 1–5 节：vLLM + vllm-jev 插件路由绕鉴权",
+  "knowledge": "docs/design.md 第 1–5 节：vLLM + vllm-jev 插件路由绕鉴权",
   "combo_signature": "vllm-plugin-route-bypass"
 }

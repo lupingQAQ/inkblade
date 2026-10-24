@@ -2,7 +2,7 @@
 # =============================================================================
 # lab/kind/run-proof.sh — KIND 实证：hostNetwork Pod 绕过 NetworkPolicy（可实跑）
 #
-# 依据：Trident 设计 spec 5.6「主机网络层：hostNetwork/hostDevice 绕过 CNI 与
+# 依据：Trident 设计 设计基线 5.6「主机网络层：hostNetwork/hostDevice 绕过 CNI 与
 #       NetworkPolicy」；验收标准 12「hostNetwork 绕过 NetworkPolicy 实证」。
 #
 # 对照实验设计（自包含可重复）：
@@ -69,7 +69,7 @@ write_conclusion() {  # write_conclusion <verdict> <notes...>
 - 日期（UTC）：$(date -u +%Y-%m-%dT%H:%M:%SZ)
 - 判定方式：主动实测（KIND + Calico；非 fixture 推演）
 - 结论：**${verdict}**
-- 网络层级：主机网络层（spec 七层网络模型）；旁路原语：hostNetwork Pod 共享宿主网络栈
+- 网络层级：主机网络层（设计基线七层网络模型）；旁路原语：hostNetwork Pod 共享宿主网络栈
 
 ## 实验环境
 
@@ -107,7 +107,7 @@ write_conclusion() {  # write_conclusion <verdict> <notes...>
 
 - ${verdict}
 - 说明：hostNetwork 流量不走 Pod veth/overlay，K8s NetworkPolicy 不覆盖宿主网络路径
- （spec 5.6 主机网络层）。防御侧须靠准入禁令（Kyverno/Gatekeeper 拒绝 hostNetwork
+ （设计基线 5.6 主机网络层）。防御侧须靠准入禁令（Kyverno/Gatekeeper 拒绝 hostNetwork
  Pod 创建，或 PSS + 例外通道）与主机侧 ACL/Calico host endpoint 收敛，不能依赖
  NetworkPolicy。
 - 备注：${notes:-无}

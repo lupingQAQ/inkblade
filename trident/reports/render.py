@@ -3,7 +3,8 @@
 - PTES 七段 + 五个专节（组合层风险 / 训练数据泄露面 / 核心代码问题 / 网络分层威胁模型 / 混合云边界）
 - 证据锚 = 步骤 + manifest.sha256 前 16 位（来自 run.findings 的 evidence_path 与 run 归档清单）
 - 标准条款映射注入（NIST SP 800-115 计划-执行-后置 / 等保 2.0 GB/T 22239-2019 / GB/T 20984）
-- 零日脱敏默认开启：is_zeroday 发现的细节列输出「影响已验证 + 证据哈希（细节按合同分级）」
+- 零日级细节默认展示（公开零日级模块）；redact_zeroday=True 时可选脱敏为
+  「影响已验证 + 证据哈希（细节按合同分级）」，供未来真私有发现使用
 """
 
 from __future__ import annotations
@@ -96,8 +97,8 @@ def _redacted(lang: str, sha16: str) -> str:
     )
 
 
-def _is_redacted(finding: dict, disclosed: Container[str] | None) -> bool:
-    if not finding.get("is_zeroday"):
+def _is_redacted(finding: dict, disclosed: Container[str] | None, redact_zeroday: bool) -> bool:
+    if not redact_zeroday or not finding.get("is_zeroday"):
         return False
     return not (disclosed is not None and finding.get("title") in disclosed)
 
@@ -130,7 +131,7 @@ def _meta_block(store, run, lang: str) -> dict[str, str]:
 
 # ---------- 表格构件 ----------
 
-def _findings_table(run, lang: str, disclosed, sha_map: dict[str, str]) -> str:
+def _findings_table(run, lang: str, disclosed, sha_map: dict[str, str], redact_zeroday: bool) -> str:
     header = _pick(
         lang,
         "| 发现 | 严重度 | 习惯定级 | 零日 | 细节 | 证据锚 |",
@@ -147,7 +148,7 @@ def _findings_table(run, lang: str, disclosed, sha_map: dict[str, str]) -> str:
             if sha16
             else f"{f['step_key']} · " + _pick(lang, "证据缺失", "no archive")
         )
-        detail = _redacted(lang, sha16) if _is_redacted(f, disclosed) else f.get("detail", "")
+        detail = _redacted(lang, sha16) if _is_redacted(f, disclosed, redact_zeroday) else f.get("detail", "")
         sev = str(f.get("severity", ""))
         grade = SEVERITY_CN.get(sev, sev) if lang != "en" else sev
         zd = _pick(lang, "是", "Yes") if f.get("is_zeroday") else _pick(lang, "否", "No")
@@ -239,8 +240,19 @@ def _glossary_table(lang: str) -> str:
 
 # ---------- 渗透测试报告 ----------
 
-def render_pentest(store, run_name: str, lang: str = "bi", disclosed: Container[str] | None = None) -> str:
-    """渲染双语渗透测试报告（Markdown）。零日脱敏默认开启；disclosed 内的标题视为已披露。"""
+def render_pentest(
+    store,
+    run_name: str,
+    lang: str = "bi",
+    disclosed: Container[str] | None = None,
+    *,
+    redact_zeroday: bool = False,
+) -> str:
+    """渲染双语渗透测试报告（Markdown）。
+
+    默认展示全部发现细节（含已公开零日级模块）。``redact_zeroday=True`` 时对
+    is_zeroday 发现启用可选脱敏；``disclosed`` 内的标题视为已披露并恢复细节。
+    """
     _check_lang(lang)
     run = store.open_run(run_name)
     sha_map = _manifest_sha_map(run)
@@ -262,8 +274,8 @@ def render_pentest(store, run_name: str, lang: str = "bi", disclosed: Container[
     mapping["title_special_intro"] = _pick(lang, "专节 Special Sections", "Special Sections")
     mapping["body_special_intro"] = _pick(
         lang,
-        "以下专节为 ML 训练/推理集群检测焦点（spec 第 8 节），独立于 PTES 七段成节。",
-        "The following sections are ML training/inference cluster detection focus areas (spec section 8), kept as standalone sections alongside the PTES stages.",
+        "以下专节为 ML 训练/推理集群检测焦点（设计基线第 8 节），独立于 PTES 七段成节。",
+        "The following sections are ML training/inference cluster detection focus areas (design baseline section 8), kept as standalone sections alongside the PTES stages.",
     )
     # 模板占位符使用短名（combo / data_leak / network_tm / hybrid）
     mapping["title_combo"] = mapping.pop("title_combo_risk")
@@ -274,7 +286,7 @@ def render_pentest(store, run_name: str, lang: str = "bi", disclosed: Container[
     mapping["body_network_tm"] = mapping.pop("body_network_threat_model")
     mapping["title_hybrid"] = mapping.pop("title_hybrid_cloud_boundary")
     mapping["body_hybrid"] = mapping.pop("body_hybrid_cloud_boundary")
-    mapping["findings_table"] = _findings_table(run, lang, disclosed, sha_map)
+    mapping["findings_table"] = _findings_table(run, lang, disclosed, sha_map, redact_zeroday)
     mapping["steps_table"] = _steps_table(run, lang)
     mapping["combo_table"] = _combo_table(run, lang)
     mapping["cvss_legend"] = _cvss_legend(lang)
@@ -323,7 +335,7 @@ def _match_entries(finding: dict) -> list[dict]:
     return [e for e in _BASELINE["entries"] if e.get("default_for") == prio]
 
 
-def _findings_recs(run, lang: str, disclosed, sha_map: dict[str, str]) -> str:
+def _findings_recs(run, lang: str, disclosed, sha_map: dict[str, str], redact_zeroday: bool) -> str:
     header = _pick(
         lang,
         "| 发现 | 严重度 | 优先级 | 细节 | 修复建议（基线命中） |",
@@ -335,7 +347,7 @@ def _findings_recs(run, lang: str, disclosed, sha_map: dict[str, str]) -> str:
         lines.append(_pick(lang, "|（无发现）| | | | |", "| (no findings) | | | | |"))
     for f in rows:
         sha16 = _sha16(sha_map, f.get("evidence_path", ""))
-        detail = _redacted(lang, sha16) if _is_redacted(f, disclosed) else f.get("detail", "")
+        detail = _redacted(lang, sha16) if _is_redacted(f, disclosed, redact_zeroday) else f.get("detail", "")
         hits = _match_entries(f)
         prio = hits[0]["priority"] if hits else "mid"
         recs = "；".join(_pick(lang, h["title"]["zh"], h["title"]["en"]) for h in hits) or "—"
@@ -346,8 +358,18 @@ def _findings_recs(run, lang: str, disclosed, sha_map: dict[str, str]) -> str:
     return "\n".join(lines)
 
 
-def render_remediation(store, run_name: str, lang: str = "bi", disclosed: Container[str] | None = None) -> str:
-    """渲染双语修复报告（修复基线优先级分组 + 逐发现建议 + 复测计划）。零日脱敏默认开启。"""
+def render_remediation(
+    store,
+    run_name: str,
+    lang: str = "bi",
+    disclosed: Container[str] | None = None,
+    *,
+    redact_zeroday: bool = False,
+) -> str:
+    """渲染双语修复报告（修复基线优先级分组 + 逐发现建议 + 复测计划）。
+
+    默认展示全部发现细节；``redact_zeroday=True`` 时对 is_zeroday 发现启用可选脱敏。
+    """
     _check_lang(lang)
     run = store.open_run(run_name)
     sha_map = _manifest_sha_map(run)
@@ -371,10 +393,16 @@ def render_remediation(store, run_name: str, lang: str = "bi", disclosed: Contai
         "本报告与渗透测试报告同批交付，给出按优先级（立即/短期/中期）组织的修复建议、逐发现基线命中与复测计划；防御规则包随本报告一并交付（规则↔攻击映射见规则视图）。",
         "Delivered together with the penetration test report: prioritized remediation (immediate/short-term/mid-term), per-finding baseline hits and a retest plan; the defense rule pack ships alongside (rule-to-attack mapping in the rules view).",
     )
+    zd_note_zh = "细节已按合同分级脱敏" if redact_zeroday else "细节默认展示（已公开零日级模块）"
+    zd_note_en = (
+        "redacted per contract tier"
+        if redact_zeroday
+        else "details shown by default (public zero-day-class modules)"
+    )
     mapping["summary_stats"] = _pick(
         lang,
-        f"发现共 {len(findings)} 项（零日 {zd_count} 项，细节已按合同分级脱敏）；修复基线命中 {len(matched_ids)} 条；建议分布：立即 {len(groups['immediate'])} · 短期 {len(groups['short'])} · 中期 {len(groups['mid'])}。",
-        f"{len(findings)} findings ({zd_count} zero-day, redacted per contract tier); {len(matched_ids)} baseline entries matched; suggestions: immediate {len(groups['immediate'])}, short-term {len(groups['short'])}, mid-term {len(groups['mid'])}.",
+        f"发现共 {len(findings)} 项（零日级 {zd_count} 项，{zd_note_zh}）；修复基线命中 {len(matched_ids)} 条；建议分布：立即 {len(groups['immediate'])} · 短期 {len(groups['short'])} · 中期 {len(groups['mid'])}。",
+        f"{len(findings)} findings ({zd_count} zero-day-class, {zd_note_en}); {len(matched_ids)} baseline entries matched; suggestions: immediate {len(groups['immediate'])}, short-term {len(groups['short'])}, mid-term {len(groups['mid'])}.",
     )
     mapping["title_priorities"] = _pick(lang, "修复建议（按优先级）Remediation by Priority", "Remediation by Priority")
     for key in ("immediate", "short", "mid"):
@@ -397,12 +425,12 @@ def render_remediation(store, run_name: str, lang: str = "bi", disclosed: Contai
         "每项发现按标题/步骤匹配修复基线库；未命中时按严重度兜底到对应优先级通用建议。",
         "Each finding is matched against the baseline library by title/step; unmatched findings fall back to severity-mapped generic advice.",
     )
-    mapping["finding_recs"] = _findings_recs(run, lang, disclosed, sha_map)
+    mapping["finding_recs"] = _findings_recs(run, lang, disclosed, sha_map, redact_zeroday)
     mapping["title_retest"] = _pick(lang, "复测计划 Retest Plan", "Retest Plan")
     mapping["body_retest"] = _pick(
         lang,
-        "修复完成后按同参数重放对应攻击链（先 dry-run 预览写面），并运行 `trident rules validate` 做紫队验证输出覆盖率矩阵；零日发现按合同分级开放细节后在授权窗口内复测。",
-        "After fixes, replay the same chains with identical parameters (dry-run first to preview writes) and run `trident rules validate` for purple-team coverage; zero-day findings are retested inside the authorized window once details are released per contract tier.",
+        "修复完成后按同参数重放对应攻击链（先 dry-run 预览写面），并运行 `trident rules validate` 做紫队验证输出覆盖率矩阵；零日级发现细节默认展示，如启用可选脱敏开关则按合同分级开放细节后在授权窗口内复测。",
+        "After fixes, replay the same chains with identical parameters (dry-run first to preview writes) and run `trident rules validate` for purple-team coverage; zero-day-class details are shown by default, and when the optional redaction switch is enabled, retest inside the authorized window once details are released per contract tier.",
     )
     mapping["retest_steps"] = "\n".join([
         _pick(lang, "1. 立即项修复后 72 小时内完成验证（管理面隔离 + RBAC 收敛 + 凭据轮换）。", "1. Verify immediate items within 72 hours of fix (management-plane isolation + RBAC scope-down + credential rotation)."),

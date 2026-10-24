@@ -10,5 +10,5 @@
     "root": "客户代码仓库/挂载卷路径（默认 lab/sample-vuln-repo）"
   },
   "produces": "supply-chain-gap",
-  "knowledge": "总纲第 6 节：trust_remote_code/revision 固定缺失（供应链投毒面）"
+  "knowledge": "设计基线第 6 节：trust_remote_code/revision 固定缺失（供应链投毒面）"
 }

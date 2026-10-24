@@ -11,5 +11,5 @@
     "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
   },
   "produces": "cloud-fingerprint-findings",
-  "knowledge": "spec 12.1 云商 K8s 架构源；四条云侧权重桶链前置（多云元数据凭据面/云角色过权）"
+  "knowledge": "设计基线 12.1 云商 K8s 架构源；四条云侧权重桶链前置（多云元数据凭据面/云角色过权）"
 }

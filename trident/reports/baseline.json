@@ -1,6 +1,6 @@
 {
   "version": "2026-10",
-  "source_zh": "修复基线样本库（源自审计总纲第 9/11 节），优先级：立即 / 短期 / 中期",
+  "source_zh": "修复基线样本库（源自审计基线第 9/11 节），优先级：立即 / 短期 / 中期",
   "source_en": "Remediation baseline library (from audit master notes sections 9/11), priorities: immediate / short-term / mid-term",
   "priorities": [
     {"key": "immediate", "zh": "立即", "en": "Immediate", "window_zh": "24–72 小时内", "window_en": "within 24-72 hours"},

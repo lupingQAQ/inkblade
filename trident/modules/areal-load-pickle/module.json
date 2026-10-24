@@ -15,6 +15,6 @@
     "backup_targets": "backup-write 模式必需的备份目标清单"
   },
   "produces": "pickle-load-primitive",
-  "knowledge": "VULNERABILITY-MASTER.md 第 1–5 节：AReaL 权重加载反序列化",
+  "knowledge": "docs/design.md 第 1–5 节：AReaL 权重加载反序列化",
   "combo_signature": "areal-pickle-channel"
 }

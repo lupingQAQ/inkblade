@@ -17,6 +17,6 @@
     "role_snapshot": "角色权限快照 fixture：{provider, role_name, permissions: [{action, resource}]}"
   },
   "produces": "role-overprivilege-matrix",
-  "knowledge": "Trident 规格 6.3 云侧权重桶链 + 5.6 云与混合边界层",
+  "knowledge": "设计基线 6.3 云侧权重桶链 + 5.6 云与混合边界层",
   "combo_signature": "cloud-role-weight-bucket"
 }

@@ -30,13 +30,13 @@ def _detect(doc: dict) -> list[dict[str, Any]]:
             "sev": "high",
             "title": f"ServiceAccount「{subject}」可创建 Pod 与 exec（提权到节点原语齐备）",
             "detail": f"授权项: {', '.join(grants)} → 提交特权 Pod / exec 进宿主面"
-                      "（总纲第 11 节宽 SA 条目）",
+                      "（设计基线第 11 节宽 SA 条目）",
         })
     elif "create:rolebindings" in grants or "create:pods" in grants:
         findings.append({
             "sev": "medium",
             "title": f"ServiceAccount「{subject}」存在越权授权项",
-            "detail": f"授权项: {', '.join(grants)}（总纲第 11 节宽 SA 条目）",
+            "detail": f"授权项: {', '.join(grants)}（设计基线第 11 节宽 SA 条目）",
         })
     return findings
 

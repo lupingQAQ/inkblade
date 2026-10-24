@@ -10,5 +10,5 @@
     "root": "客户代码仓库/挂载卷路径（默认 lab/sample-vuln-repo）"
   },
   "produces": "outbound-ssrf",
-  "knowledge": "总纲第 1–5 节：媒体 URL/重定向 SSRF → IMDS 云凭据"
+  "knowledge": "设计基线第 1–5 节：媒体 URL/重定向 SSRF → IMDS 云凭据"
 }

@@ -15,12 +15,12 @@
 ③ 九族代表性子集（每族 ≥2 模块，probe-only；写类带 backup_targets 验证回滚还原）
 ④ 跑一条完整链 flat-network-admin-plane-weight-poison：dry-run 出计划 → execute 落证
 ⑤ 验收断言逐条输出 PASS/FAIL 清单（JSON+MD → reports/samples/e2e/）：
-   consent 未签 runner/API 双路拒绝 / 备份闸 91 / 零日隐藏与启用后可见 /
-   三层证据 + manifest 校验（含篡改检测）/ report 双语渲染含脱敏 /
+   consent 未签 runner/API 双路拒绝 / 备份闸 91 / 零日级模块（已公开）无需闸门 /
+   三层证据 + manifest 校验（含篡改检测）/ report 双语渲染含已公开细节 + 可选脱敏 /
    rules generate_all 每链 ≥1 + 紫队矩阵零漏过 / export_static 兜底产物 /
-   四角色矩阵与跨工作区隔离 / 样张清单落盘。
+   四角色矩阵与跨工作区隔离 / 样张清单落盘（本地绝对路径已清理）。
 
-对应 spec 第 18 节可本机闭环的验收条目；KIND/WSL 边界项见 docs/RUNBOOK.md 实验室边界。
+对应 设计基线第 18 节可本机闭环的验收条目；KIND/WSL 边界项见 docs/RUNBOOK.md 实验室边界。
 文件名含连字符（计划口径），外部以 importlib 按路径装载。
 """
 
@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import copy
 import json
+import re
 import sys
 import time
 import urllib.error
@@ -49,7 +50,7 @@ from trident.core.registry import load_modules  # noqa: E402
 from trident.core.roe import ExecutionLocked, init_roe  # noqa: E402
 from trident.core.runner import BackupGateRefused, run_module  # noqa: E402
 from trident.core.users import UserStore  # noqa: E402
-from trident.core.zeroday import ZerodayLocked, enable, filter_modules  # noqa: E402
+from trident.core.zeroday import filter_modules  # noqa: E402
 from trident.reports.render import render_pentest, render_remediation  # noqa: E402
 from trident.rules.generate import generate_all  # noqa: E402
 from trident.rules.validate import validate  # noqa: E402
@@ -65,8 +66,9 @@ DEFAULT_SAMPLES = REPO_ROOT / "reports" / "samples"
 
 TARGET_CHAIN = "flat-network-admin-plane-weight-poison"
 
-# 零日细节特征串：双语报告样张（默认脱敏）不得出现
-ZERODAY_DETAIL_TOKENS = ("/api/v1/bindings", "/v1/jobs/run", "code/execute", "stub-token")
+# 已公开零日级模块：报告默认展示细节；可选脱敏开关必须能隐藏该细节。
+PUBLIC_ZERODAY_DETAIL = "无 Authorization 凭据即可创建/销毁 binding"
+PUBLIC_ZERODAY_KEYS = ("dify-control-plane-failopen", "open-webui-code-execute-rce")
 
 # 混合云过权角色快照（与 tests/test_modules_hybrid.py 同构的 mock 样值）
 OVERPRIV_SNAPSHOT = {
@@ -133,10 +135,10 @@ def _http_json(url: str, method: str = "GET", body: dict | None = None, token: s
 
 
 def _subset_cases(lab_base: str) -> list[tuple[str, str, dict]]:
-    """九族代表性子集（每族 ≥2 模块）：侦察/网络/权限链/横向/混合云/窃取/核心代码/绕过/零日。
+    """九族代表性子集（每族 ≥2 模块）：侦察/网络/权限链/横向/混合云/窃取/核心代码/绕过/零日级。
 
     权限链两模块 writes=true → 检测运行同样必须带 backup_targets（备份闸门对检测+演示一致生效）。
-    零日子集在 zeroday-hidden-then-enabled 检查内执行（先闸门后启用）。
+    零日级模块已公开（private=false），在 zeroday-public-no-gate 检查内默认执行。
     """
     recon_snap = json.loads((FIX / "recon" / "cluster-snapshot.json").read_text(encoding="utf-8"))
     defense = lambda product: json.loads((DEFENSE_FIX / f"{product}-deployed.json").read_text(encoding="utf-8"))  # noqa: E731
@@ -204,7 +206,7 @@ def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
                 assert data.get("routes"), "路由清单为空"
                 _note(it, f"{len(data['routes'])} 条路由 @ {lab.url('/')}")
 
-            # ② 授权锁：consent 未签署 → runner 与 API 双路拒绝（spec 18.1）------
+            # ② 授权锁：consent 未签署 → runner 与 API 双路拒绝（设计基线 18.1）------
             with book.check("consent-lock-runner", "consent 未签署：runner 执行路径拒绝（ExecutionLocked）"):
                 try:
                     run_module(store, tester, "exposure-mapping",
@@ -239,7 +241,7 @@ def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
                 "client": "Trident 验收实验室（本机 mock）",
             })
 
-            # ③ 备份闸门：写类无 backup_targets → 退出码 91（spec 18.2）----------
+            # ③ 备份闸门：写类无 backup_targets → 退出码 91（设计基线 18.2）----------
             with book.check("backup-gate-exit-code-91",
                             "写类模块无备份回执：BackupGateRefused 且退出码语义 91、模块未执行") as it:
                 pre_runs = store.ws_dir.exists()
@@ -256,7 +258,7 @@ def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
             run = store.create_run(f"e2e-acceptance-{time.strftime('%Y%m%d-%H%M%S')}")
             run_name = run.name
 
-            # ④ 九族代表性子集 + 写类回滚还原（spec 18.3 / 18.11–18.17 的本机面）---
+            # ④ 九族代表性子集 + 写类回滚还原（设计基线 18.3 / 18.11–18.17 的本机面）---
             with book.check("module-family-subset",
                             "九族代表性子集（每族 ≥2 模块）全部执行且产出发现；写类 backup-write 演示可回滚还原") as it:
                 zero_day_keys = {"dify-control-plane-failopen", "open-webui-code-execute-rce"}
@@ -286,7 +288,7 @@ def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
                 assert demo.read_text(encoding="utf-8") == "original", "回滚后未还原原内容"
                 _note(it, " / ".join(f"{f}×{len(k)}" for f, k in sorted(families_run.items())) + "；写类演示已回滚还原")
 
-            # ⑤ 链目录 + dry-run（spec 18.4）-----------------------------------
+            # ⑤ 链目录 + dry-run（设计基线 18.4）-----------------------------------
             with book.check("chain-catalog-dryrun",
                             "链目录齐全（经典/云侧/网络/零日）且 dry-run 输出可读计划（备份动作+写面）") as it:
                 chains = load_chains(CHAINS_DIR)
@@ -303,7 +305,7 @@ def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
                 _note(it, f"{len(chains)} 链 / {len(cats)} 类；{TARGET_CHAIN} 判定={plan['verdict']}"
                           f"（缺失 {len(plan['missing'])} 条前置）")
 
-            # ⑥ 完整链执行：dry-run 计划 → execute 落证（spec 18.4/18.5）---------
+            # ⑥ 完整链执行：dry-run 计划 → execute 落证（设计基线 18.4/18.5）---------
             with book.check("chain-execute-weight-poison",
                             "完整链执行（平网→管理面→权重投毒）：全部步骤成功 + 备份回执在库") as it:
                 chain_exec = copy.deepcopy(chain)
@@ -325,7 +327,7 @@ def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
                     all_findings.append({"step_key": f[0]})
                 _note(it, "步骤 " + "、".join(f"{sid}:{st['status']}" for sid, st in res["steps"].items()))
 
-            # ⑦ 三层证据 + manifest 完整性（spec 18.3；含篡改检测）----------------
+            # ⑦ 三层证据 + manifest 完整性（设计基线 18.3；含篡改检测）----------------
             with book.check("evidence-three-layers-manifest",
                             "三层证据齐备（上下文摘要/SQLite/归档 tar+SHA256）且 manifest 校验通过、篡改可检出") as it:
                 ctx_layer = run.dir / "context.jsonl.gz"
@@ -347,23 +349,18 @@ def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
                 assert store.verify_manifest(run.name) is True, "还原后 manifest 未恢复通过"
                 _note(it, f"{rows[0][0]} 步骤 / {len(archives)} 归档 / 篡改检出✓")
 
-            # ⑧ 零日：默认隐藏 → lead 启用后可见可执行（spec 18.15）---------------
-            with book.check("zeroday-hidden-then-enabled",
-                            "零日默认隐藏不可执行；lead 审批启用后可执行且发现带 is_zeroday 审计标记") as it:
+            # ⑧ 零日级漏洞模块（已公开）：无需零日闸门，默认可见可执行 ----------
+            with book.check("zeroday-public-no-gate",
+                            "零日级漏洞模块（已公开）无需零日闸门：默认可见、可直接执行，"
+                            "发现带 is_zeroday 审计标记") as it:
                 mods = {k: m.__dict__ for k, m in load_modules(MODULES_DIR).items()}
-                assert "dify-control-plane-failopen" in mods, "零日模块未注册"
                 visible = filter_modules(mods, store)
-                assert "dify-control-plane-failopen" not in visible, "未启用时零日模块竟可见"
-                try:
-                    run_module(store, tester, "dify-control-plane-failopen",
-                               {"base_url": lab.url("/")}, modules_dir=MODULES_DIR, run=run)
-                    raise AssertionError("未启用时零日模块竟可执行")
-                except ZerodayLocked:
-                    pass
-                enable(store, lead)
-                assert "dify-control-plane-failopen" in filter_modules(mods, store), "启用后仍不可见"
+                for key in PUBLIC_ZERODAY_KEYS:
+                    assert key in mods, f"{key} 未注册"
+                    assert not mods[key].get("private"), f"{key} 已公开，不得标记 private"
+                    assert key in visible, f"零日扩展未启用时 {key} 也应可见"
                 zd_count = 0
-                for key in ("dify-control-plane-failopen", "open-webui-code-execute-rce"):
+                for key in PUBLIC_ZERODAY_KEYS:
                     result = run_module(store, tester, key,
                                         {"base_url": lab.url("/"),
                                          "backup_targets": [{"kind": "http", "url": lab.url("/"), "state": {}}]},
@@ -375,32 +372,37 @@ def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
                     families_run.setdefault("零日", []).append(key)
                 zd_rows = run.query("SELECT COUNT(*) FROM findings WHERE run=? AND is_zeroday=1", (run.name,))
                 zd_count = zd_rows[0][0]
-                assert zd_count >= 2, f"零日落库 {zd_count} < 2"
-                _note(it, f"隐藏✓ / ZerodayLocked✓ / lead 启用✓ / is_zeroday 落库 {zd_count} 条")
+                assert zd_count >= 2, f"零日级发现落库 {zd_count} < 2"
+                _note(it, f"公开✓ / private=false✓ / 无需 enable✓ / is_zeroday 落库 {zd_count} 条")
 
             run.finalize_run()
 
-            # ⑨ 双语报告 + 零日默认脱敏（spec 18.5）-------------------------------
-            with book.check("report-bilingual-redaction",
-                            "双语渗透+修复报告渲染：PTES/专节/标准映射/CVSS/证据锚齐备，零日细节默认脱敏") as it:
+            # ⑨ 双语报告 + 已公开零日级细节默认展示 + 可选脱敏开关（设计基线 18.5）----
+            with book.check("report-bilingual-public-details",
+                            "双语渗透+修复报告渲染：PTES/专节/标准映射/CVSS/证据锚齐备；"
+                            "已公开零日级细节默认展示，可选脱敏开关生效") as it:
                 pentest = render_pentest(store, run.name)
                 remediation = render_remediation(store, run.name)
+                redacted = render_pentest(store, run.name, redact_zeroday=True)
                 for token in ("渗透测试报告", "Penetration Test Report", "中英对照 / Bilingual (CN/EN)",
                               "sha256:", "CVSS", "等保", "NIST"):
                     assert token in pentest, f"渗透报告缺要素 {token}"
                 for token in ("修复报告", "Remediation Report", "复测计划"):
                     assert token in remediation, f"修复报告缺要素 {token}"
-                assert "影响已验证 + 证据哈希" in pentest, "零日默认脱敏标记缺失"
-                for doc, name in ((pentest, "渗透"), (remediation, "修复")):
-                    for token in ZERODAY_DETAIL_TOKENS:
-                        assert token not in doc, f"{name}报告泄漏零日细节 {token}"
+                assert PUBLIC_ZERODAY_DETAIL in pentest, "已公开零日级细节默认未展示"
+                assert "影响已验证 + 证据哈希" not in pentest, "默认报告不应脱敏已公开模块细节"
+                assert "影响已验证 + 证据哈希" in redacted, "可选脱敏开关未生效"
+                assert PUBLIC_ZERODAY_DETAIL not in redacted, "可选脱敏后仍泄漏已公开模块细节"
                 assert "verified" in pentest, "manifest 校验状态未注入报告"
                 (samples / "pentest-report-bi.md").write_text(pentest, encoding="utf-8")
+                (samples / "pentest-report-bi-redacted.md").write_text(redacted, encoding="utf-8")
                 (samples / "remediation-report-bi.md").write_text(remediation, encoding="utf-8")
-                sample_files += ["pentest-report-bi.md", "remediation-report-bi.md"]
-                _note(it, f"渗透 {len(pentest)} 字符 / 修复 {len(remediation)} 字符，脱敏✓")
+                sample_files += ["pentest-report-bi.md", "pentest-report-bi-redacted.md",
+                                 "remediation-report-bi.md"]
+                _note(it, f"渗透 {len(pentest)} 字符 / 修复 {len(remediation)} 字符；"
+                          f"默认展示✓ / 可选脱敏 {len(redacted)} 字符✓")
 
-            # ⑩ 规则包：每链 ≥1 + 三 CNI 变体 + 四引擎产物（spec 18.8/18.13）------
+            # ⑩ 规则包：每链 ≥1 + 三 CNI 变体 + 四引擎产物（设计基线 18.8/18.13）------
             with book.check("rules-pack-coverage",
                             "规则包 generate_all：每链 ≥1 规则，三 CNI 变体 + Sigma/Falco/Suricata 产物齐备") as it:
                 pack_dir = samples / "rules-pack"
@@ -423,7 +425,7 @@ def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
                 sample_files.append("rules-pack/**")
                 _note(it, f"{pack.total_rules} 规则 / {pack.covered_chain_count} 链全覆盖 / 三变体+四引擎✓")
 
-            # ⑪ 紫队验证覆盖率矩阵（spec 18.8）------------------------------------
+            # ⑪ 紫队验证覆盖率矩阵（设计基线 18.8）------------------------------------
             with book.check("purple-coverage-matrix",
                             "紫队验证：mock 靶场重放 + 简化匹配器 → 覆盖率矩阵零漏过") as it:
                 matrix = validate(str(samples / "rules-pack"), lab.url("/"))
@@ -433,7 +435,7 @@ def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
                 assert states <= {"拦截", "检测", "拦截+检测"}, f"异常态: {states}"
                 _note(it, f"{matrix['summary']['chains']} 链 / 0 漏过 / 态集合 {sorted(states)}")
 
-            # ⑫ 六视图离线兜底（spec 18.6）---------------------------------------
+            # ⑫ 六视图离线兜底（设计基线 18.6）---------------------------------------
             with book.check("export-static-offline",
                             "export_static 免服务产物：index.html 内嵌 TRIDENT_DATA（file:// 可开六视图）") as it:
                 html_path = export_static(run.dir, samples / "static-export")
@@ -444,7 +446,7 @@ def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
                 sample_files.append("static-export/**")
                 _note(it, str(html_path.relative_to(samples)))
 
-            # ⑬ 四角色矩阵 + 跨工作区隔离（spec 18.7）----------------------------
+            # ⑬ 四角色矩阵 + 跨工作区隔离（设计基线 18.7）----------------------------
             with book.check("roles-and-workspace-isolation",
                             "四角色动作矩阵符合规格；auditor 跨工作区访问被拒、无执行权") as it:
                 admin = users.verify("e2e-admin", "x")
@@ -491,7 +493,28 @@ def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
         "samples": sample_files,
     }
     _write_checklist(samples, result)
+    _scrub_public_paths(samples)
     return result
+
+
+# 本地绝对路径（Windows 盘符 / 反斜杠或 JSON 双反斜杠）→ `<abs-path>`；样张为公开交付物。
+_ABS_PATH_RES = (
+    re.compile(r"[A-Za-z]:\\\\[^\s\"',;|()\[\]{}<>：，；（）]+"),
+    re.compile(r"[A-Za-z]:\\[^\s\"',;|()\[\]{}<>：，；（）]+"),
+)
+
+
+def _scrub_public_paths(root: Path) -> None:
+    """清理样张中的本机绝对路径（盘符路径 / 用户临时目录），避免公开树泄漏环境信息。"""
+    for p in sorted(Path(root).rglob("*")):
+        if not p.is_file() or p.suffix.lower() not in (".json", ".md", ".html"):
+            continue
+        text = p.read_text(encoding="utf-8")
+        cleaned = text
+        for rx in _ABS_PATH_RES:
+            cleaned = rx.sub("<abs-path>", cleaned)
+        if cleaned != text:
+            p.write_text(cleaned, encoding="utf-8")
 
 
 def _write_checklist(samples: Path, result: dict[str, Any]) -> None:
@@ -517,7 +540,7 @@ def _write_checklist(samples: Path, result: dict[str, Any]) -> None:
         lines.append(f"| {c['id']} | {c['title']} | {status} | {detail} | {c.get('elapsed_ms', '')} |")
     lines += [
         "",
-        "> 对应 spec 第 18 节验收标准中可本机闭环条目；KIND/WSL 边界项（规则实际拦截重放、",
+        "> 对应 设计基线第 18 节验收标准中可本机闭环条目；KIND/WSL 边界项（规则实际拦截重放、",
         "> hostNetwork 实证、bench 对比）见 `docs/RUNBOOK.md` 实验室边界章节与 `lab/bench/BENCH-RESULT.md`。",
         "",
     ]

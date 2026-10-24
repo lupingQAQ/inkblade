@@ -274,7 +274,7 @@ class ModuleFamilyRegistryTest(unittest.TestCase):
         for key in ZERODAY_KEYS:
             meta = mods[key]
             self.assertEqual(meta.min_level, "利用验证", key)
-            self.assertTrue(meta.private, f"{key} 必须标记 private（零日闸门依赖）")
+            self.assertFalse(meta.private, f"{key} 为零日级漏洞模块（已公开），不得标记 private")
 
 
 if __name__ == "__main__":

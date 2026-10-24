@@ -1,8 +1,8 @@
 """tests/test_e2e.py — 端到端验收测试：调 trident/e2e-check.py::main() 断言全 PASS 与样张落盘。
 
-对应计划任务「端到端验收 + RUNBOOK + 样张」与 spec 第 18 节验收标准中可本机闭环的条目：
-授权锁（runner+API）/ 备份闸 91 / 零日隐藏与启用 / 三层证据+manifest / 链 dry-run+execute /
-report 双语脱敏 / rules generate_all 每链≥1+紫队矩阵 / export_static 兜底 / 角色与工作区隔离 / 样张清单。
+对应计划任务「端到端验收 + RUNBOOK + 样张」与 设计基线第 18 节验收标准中可本机闭环的条目：
+授权锁（runner+API）/ 备份闸 91 / 零日级模块（已公开，无需闸门）/ 三层证据+manifest / 链 dry-run+execute /
+report 双语默认展示 + 可选脱敏 / rules generate_all 每链≥1+紫队矩阵 / export_static 兜底 / 角色与工作区隔离 / 样张清单。
 
 e2e-check.py 文件名含连字符（计划口径），经 importlib 按路径装载。
 """
@@ -26,8 +26,8 @@ REQUIRED_CHECK_IDS = {
     "chain-catalog-dryrun",
     "chain-execute-weight-poison",
     "evidence-three-layers-manifest",
-    "zeroday-hidden-then-enabled",
-    "report-bilingual-redaction",
+    "zeroday-public-no-gate",
+    "report-bilingual-public-details",
     "rules-pack-coverage",
     "purple-coverage-matrix",
     "export-static-offline",
@@ -40,6 +40,7 @@ REQUIRED_SAMPLES = [
     "e2e/e2e-check.json",
     "e2e/e2e-check.md",
     "pentest-report-bi.md",
+    "pentest-report-bi-redacted.md",
     "remediation-report-bi.md",
     "rules-pack/mapping.json",
     "rules-pack/coverage-matrix.json",
@@ -96,15 +97,17 @@ class TestE2EAcceptance(unittest.TestCase):
             d = SAMPLES / "rules-pack" / engine_dir
             self.assertTrue(d.is_dir() and any(d.iterdir()), f"规则包缺 {engine_dir} 产物")
 
-    def test_pentest_sample_bilingual_and_redacted(self):
+    def test_pentest_sample_bilingual_and_public_details(self):
         text = (SAMPLES / "pentest-report-bi.md").read_text(encoding="utf-8")
         self.assertIn("渗透测试报告", text)
         self.assertIn("Penetration Test Report", text)
         self.assertIn("中英对照 / Bilingual (CN/EN)", text)
-        self.assertIn("影响已验证 + 证据哈希", text)  # 零日默认脱敏
+        self.assertIn("无 Authorization 凭据即可创建/销毁 binding", text)  # 已公开零日级细节默认展示
+        self.assertNotIn("影响已验证 + 证据哈希", text)
         self.assertIn("sha256:", text)  # 证据锚
-        for token in ("/api/v1/bindings", "/v1/jobs/run", "code/execute"):
-            self.assertNotIn(token, text, f"零日利用细节泄漏: {token}")
+        redacted = (SAMPLES / "pentest-report-bi-redacted.md").read_text(encoding="utf-8")
+        self.assertIn("影响已验证 + 证据哈希", redacted)  # 可选脱敏开关样例
+        self.assertNotIn("无 Authorization 凭据即可创建/销毁 binding", redacted)
 
     def test_remediation_sample_structure(self):
         text = (SAMPLES / "remediation-report-bi.md").read_text(encoding="utf-8")

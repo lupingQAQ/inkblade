@@ -16,6 +16,6 @@
     "collective_snapshot": "网络模块联动 fixture：{reachable, auth, bootstrap_url, world_size}（reachable=false 或 auth!=none 时前置不成立）"
   },
   "produces": "collective-join-proof",
-  "knowledge": "VULNERABILITY-MASTER.md 第 1–5 节 + 5.6 集合通信层：NCCL bootstrap 无认证入组",
+  "knowledge": "docs/design.md 第 1–5 节 + 5.6 集合通信层：NCCL bootstrap 无认证入组",
   "combo_signature": "nccl-unauth-join"
 }

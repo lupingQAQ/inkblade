@@ -1,4 +1,4 @@
-"""open-webui-indirect-injection-exec — Open WebUI 间接注入执行（私有零日模块）。
+"""open-webui-indirect-injection-exec — Open WebUI 间接注入执行（零日级漏洞模块，已公开）。
 
 检测流程：/__routes__ fingerprint → 以「间接注入语义」的良性载荷（动态导入形态 marker，无真实敏感动作）
 经 /api/v1/utils/code/execute 提交 → 200 + stdout 即「护栏包装后仍可执行动态导入形态」；403 → 加固态零发现。

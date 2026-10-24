@@ -14,6 +14,6 @@
     "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）"
   },
   "produces": "dev-mode-exposure",
-  "knowledge": "VULNERABILITY-MASTER.md 第 1–5 节：TRL vllm-serve dev 模式暴露",
+  "knowledge": "docs/design.md 第 1–5 节：TRL vllm-serve dev 模式暴露",
   "combo_signature": "trl-serve-devface"
 }

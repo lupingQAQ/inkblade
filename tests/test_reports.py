@@ -1,4 +1,4 @@
-"""报告引擎测试：CVSS 3.1 精确值 / PTES 七段双语 / 专节 / 证据锚 / 标准映射 / 零日脱敏 / 修复基线。"""
+"""报告引擎测试：CVSS 3.1 精确值 / PTES 七段双语 / 专节 / 证据锚 / 标准映射 / 零日级默认展示与可选脱敏 / 修复基线。"""
 
 import json
 import unittest
@@ -123,13 +123,27 @@ class TestRenderPentest(unittest.TestCase):
         self.assertIn("weights-write-endpoint+patch-image", self.md)
         self.assertIn("组合命中", self.md)
 
-    def test_zeroday_redaction_default(self):
-        self.assertNotIn(ZD_SECRET, self.md)
-        self.assertIn("影响已验证", self.md)
-        self.assertIn("细节按合同分级", self.md)
+    def test_zeroday_details_public_by_default(self):
+        """零日级漏洞模块（已公开）细节默认展示，不再默认脱敏。"""
+        self.assertIn(ZD_SECRET, self.md)
+        self.assertNotIn("影响已验证 + 证据哈希", self.md)
         rem = render_remediation(self.store, "run-report")
+        self.assertIn(ZD_SECRET, rem)
+        self.assertNotIn("影响已验证 + 证据哈希", rem)
+
+    def test_zeroday_redaction_opt_in(self):
+        """可选脱敏开关：供未来真私有发现使用；disclosed 可逐条解除。"""
+        md = render_pentest(self.store, "run-report", redact_zeroday=True)
+        self.assertNotIn(ZD_SECRET, md)
+        self.assertIn("影响已验证", md)
+        self.assertIn("细节按合同分级", md)
+        rem = render_remediation(self.store, "run-report", redact_zeroday=True)
         self.assertNotIn(ZD_SECRET, rem)
         self.assertIn("影响已验证", rem)
+        disclosed = render_pentest(
+            self.store, "run-report", redact_zeroday=True,
+            disclosed=("SGLang 管理面 fail-open 拉取权重",))
+        self.assertIn(ZD_SECRET, disclosed, "disclosed 内的已披露发现应恢复细节")
 
     def test_evidence_anchor_sha16(self):
         m = _manifest_map(self.run.dir)

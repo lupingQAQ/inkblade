@@ -1,9 +1,10 @@
-"""tests/test_modules_zeroday_mods.py — 私有零日模块族（6 模块）对 mock 靶场的两态断言。
+"""tests/test_modules_zeroday_mods.py — 零日级漏洞模块族（6 模块，已公开）对 mock 靶场的两态断言。
 
 - vulnerable：fingerprint（GET /__routes__）命中 dify-agent / open-webui 路由 + 无凭据（或伪造凭据）动作成功
   → finding(is_zeroday=True)
 - fixed：目标存在但动作被拒（401/403）→ 零发现
-- runner 的 ZerodayLocked 闸门与 is_zeroday 落库已由 tests/test_runner_zeroday.py 覆盖，此处只测模块自身两态。
+- 6 模块均为公开模块（private=false）：零日闸门不再作为门槛；通用 private 闸门由
+  tests/test_runner_zeroday.py 覆盖，此处只测模块自身两态与公开标记。
 """
 import json
 import threading
@@ -16,6 +17,7 @@ from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 
 from lab.mock_targets import start_all
+from trident.core.registry import load_modules
 
 ROOT = Path(__file__).resolve().parents[1]
 MODULES_DIR = ROOT / "trident" / "modules"
@@ -114,6 +116,14 @@ class ZerodayTwoStateTest(unittest.TestCase):
     def test_missing_base_url_rejected(self):
         with self.assertRaises(ValueError):
             load_run("dify-local-sandbox-unauth-rce").run({}, {})
+
+    def test_public_class_modules_are_not_private(self):
+        """6 个零日级模块已公开：不得标记 private（否则会被零日闸门错误隐藏）。"""
+        mods = load_modules(MODULES_DIR)
+        for key in ZERODAY_KEYS:
+            with self.subTest(module=key):
+                self.assertIn(key, mods)
+                self.assertFalse(mods[key].private, f"{key} 已公开，必须 private=false/缺省")
 
     def test_module_specific_evidence(self):
         # dify 控制面：证据锚定路由

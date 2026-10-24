@@ -27,8 +27,12 @@ def _rows(conn: sqlite3.Connection, sql: str, args: tuple = ()) -> list[dict[str
     return [dict(r) for r in conn.execute(sql, args)]
 
 
-def load_run_data(run_dir: Path | str) -> dict[str, Any]:
-    """读取一次 run 的数据库层 → 视图数据模型（steps/findings/nodes/edges/manifest）。"""
+def load_run_data(run_dir: Path | str, redact_zeroday: bool = False) -> dict[str, Any]:
+    """读取一次 run 的数据库层 → 视图数据模型（steps/findings/nodes/edges/manifest）。
+
+    ``redact_zeroday=True`` 为可选脱敏开关（供未来真私有发现）：仅对 is_zeroday
+    发现隐藏标题/细节文本，保留证据归档引用；默认关闭（已公开零日级模块正常展示）。
+    """
     run_dir = Path(run_dir)
     db = run_dir / "evidence.db"
     if not db.exists():
@@ -59,6 +63,11 @@ def load_run_data(run_dir: Path | str) -> dict[str, Any]:
             " FROM findings WHERE run=? ORDER BY id",
             (name,),
         )
+        if redact_zeroday:
+            for f in findings:
+                if f.get("is_zeroday"):
+                    f["title"] = "【脱敏】影响已验证（零日级，未展示细节）"
+                    f["detail"] = ""
         combos = _rows(conn, "SELECT signature, detail FROM combos WHERE run=?", (name,))
         nodes = _rows(conn, "SELECT node_id, kind, layer, attrs FROM graph_nodes")
         edges = _rows(conn, "SELECT src, dst, verdict, method, chain FROM graph_edges")
@@ -79,10 +88,10 @@ def load_run_data(run_dir: Path | str) -> dict[str, Any]:
     }
 
 
-def export_static(run_dir: Path | str, out: Path | str) -> Path:
+def export_static(run_dir: Path | str, out: Path | str, redact_zeroday: bool = False) -> Path:
     """导出一次 run 的免服务静态页面，返回写出的 index.html 路径。"""
     out = Path(out)
-    data = load_run_data(run_dir)
+    data = load_run_data(run_dir, redact_zeroday=redact_zeroday)
 
     # 静态资产随行（vendor UMD / app.js / style.css / index.html 模板）
     if out.exists():

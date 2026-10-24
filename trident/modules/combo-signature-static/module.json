@@ -10,5 +10,5 @@
     "root": "客户代码仓库/挂载卷路径（默认 lab/sample-vuln-repo）"
   },
   "produces": "combo-signature",
-  "knowledge": "总纲三轮审计：跨问题组合（框架×插件×operator×存储）静态共存证据"
+  "knowledge": "设计基线三轮审计：跨问题组合（框架×插件×operator×存储）静态共存证据"
 }

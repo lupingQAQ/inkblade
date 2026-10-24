@@ -1,4 +1,4 @@
-"""dify-stub-token-forgery — Dify 存根令牌伪造（私有零日模块）。
+"""dify-stub-token-forgery — Dify 存根令牌伪造（零日级漏洞模块，已公开）。
 
 检测流程：/__routes__ fingerprint → 以离线铸造的存根凭据形态（公开默认根密钥可铸造的 marker 令牌）
 POST /api/v1/bindings → 200 + created 即「伪造凭据被控制面接受」；401 → 加固态零发现。

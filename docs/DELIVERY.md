@@ -6,10 +6,13 @@
 
 | 路径 | 内容 | 说明 |
 |---|---|---|
-| `e2e/e2e-check.json` / `.md` | 端到端验收清单（15 项 PASS/FAIL + 明细 + 耗时） | 对应 spec §18 可本机闭环条目 |
-| `pentest-report-bi.md` | **双语渗透测试报告样张** | PTES 七段 + 五专节（组合层风险/训练数据泄露面/核心代码问题/网络分层威胁模型/混合云边界）；标准条款映射（NIST SP 800-115 / 等保 GB/T 22239-2019 / GB/T 20984）；CVSS 3.1 实时计算图例 + 中文习惯定级；攻击链步骤表；证据锚（步骤 · sha256 前 16 位）；零日默认脱敏（「影响已验证 + 证据哈希」，不含 `/api/v1/bindings`、`/v1/jobs/run`、`code/execute` 等细节串） |
+| `e2e/e2e-check.json` / `.md` | 端到端验收清单（15 项 PASS/FAIL + 明细 + 耗时） | 对应 设计基线 §18 可本机闭环条目 |
+| `pentest-report-bi.md` | **双语渗透测试报告样张** | PTES 七段 + 五专节（组合层风险/训练数据泄露面/核心代码问题/网络分层威胁模型/混合云边界）；标准条款映射（NIST SP 800-115 / 等保 GB/T 22239-2019 / GB/T 20984）；CVSS 3.1 实时计算图例 + 中文习惯定级；攻击链步骤表；证据锚（步骤 · sha256 前 16 位）；**零日级漏洞模块（已公开）细节默认展示** |
+| `pentest-report-bi-redacted.md` | **可选脱敏开关样张** | `render_pentest(..., redact_zeroday=True)`：零日级发现仅输出「影响已验证 + 证据哈希」，供未来真私有发现使用 |
 | `remediation-report-bi.md` | **双语修复报告样张** | 立即/短期/中期修复基线分组 + 逐发现基线命中建议 + 复测计划（规则包紫队验证联动） |
 | `rules-pack/` | **defense bundle** | 见 §2 |
+| `effects/effects.json` / `.md` | **实效验证报告** | 7 项本机真实 HTTP 效果验证（管理面/权重投毒/回滚/RCE/数据泄露/规则命中/端到端链）+ 证据摘要；边界声明「非 live K8s」 |
+| `effects/rules-coverage-matrix.json` / `.md` | 本次实效验证的紫队覆盖率矩阵 | 规则引擎对本次靶场重放的命中/拦截/漏过明细 |
 | `static-export/index.html` | 六视图离线兜底 | `window.TRIDENT_DATA` 内嵌 run 全量数据（steps/findings/graph/manifest），file:// 免服务打开 |
 
 ## 2. defense bundle：`reports/samples/rules-pack/`
@@ -35,8 +38,8 @@
 
 - 规则→链/模块：`rules-pack/mapping.json`（`blocks_chains` + 演练发现 `finding_links` 追溯线）。
 - 发现→证据：findings 表 `evidence_path` = 步骤归档（manifest sha 锚）。
-- 审计线：actions 表全量动作（主体/工作区/目标/参数/结果/回滚指针；零日 `is_zeroday=1`）。
-- 零日：登记册（未披露条目仅状态行）+ 行为化规则（无 PoC 特征串）。
+- 审计线：actions 表全量动作（主体/工作区/目标/参数/结果/回滚指针；零日级 `is_zeroday=1`）。
+- 零日级：6 个已公开模块（dify-*/open-webui-*）正常打包与展示细节；`zeroday.py` 保留为默认关闭的可选加密扩展，仅对显式 `private: true` 的未来模块生效；行为化规则仍不含利用细节特征串。
 
 ## 5. 实验室边界（显式声明）
 

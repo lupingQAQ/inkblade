@@ -11,5 +11,5 @@
     "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
   },
   "produces": "reachable-port-findings（链引擎消费：findings('framework-port-matching').reachable）",
-  "knowledge": "总纲第 1 节已复现漏洞（SGLang 30000 管理面、Ray 8265、SkyRL Tinker 8000、OpenRLHF serve_rm 5000 等）"
+  "knowledge": "设计基线第 1 节已复现漏洞（SGLang 30000 管理面、Ray 8265、SkyRL Tinker 8000、OpenRLHF serve_rm 5000 等）"
 }

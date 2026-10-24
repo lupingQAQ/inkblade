@@ -1,4 +1,4 @@
-"""dify-snapshot-cross-tenant-theft — Dify 赃快照跨租户窃取（私有零日模块）。
+"""dify-snapshot-cross-tenant-theft — Dify 赃快照跨租户窃取（零日级漏洞模块，已公开）。
 
 检测流程：/__routes__ fingerprint → 以良性 marker 形态提交「跨租户快照物化」作业到 /v1/jobs/run
 （作业脚本仅描述物化语义、不触真实数据）→ 200 + SUCCEEDED 即「可写公共祖先根的快照作业被接受」；

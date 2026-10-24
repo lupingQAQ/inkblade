@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trident-pentest"
+version = "0.1.0"
+description = "Authorized penetration-testing platform for Kubernetes ML training/inference clusters"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "The Trident Authors" }]
+keywords = [
+    "security",
+    "penetration-testing",
+    "kubernetes",
+    "machine-learning",
+    "llm",
+    "ai-security",
+    "purple-team",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = []
+
+[project.scripts]
+trident = "trident.cli:main"
+
+[tool.setuptools]
+include-package-data = false
+license-files = ["LICENSE", "NOTICE"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["trident*"]
+exclude = ["tests*", "lab*", "scripts*", "reports*", "docs*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+trident = [
+    "*.py",
+    "chains/*.json",
+    "core/data/*.json",
+    "modules/*.py",
+    "modules/*/*.json",
+    "modules/*/*.py",
+    "modules/*/*.md",
+    "modules/*/*.txt",
+    "rules/templates/*.json",
+    "reports/*.json",
+    "reports/templates/*.tmpl",
+    "webui/static/*.html",
+    "webui/static/*.js",
+    "webui/static/*.css",
+    "webui/static/vendor/*.js",
+    "webui/static/vendor/*.css",
+    "arch-intel/*.py",
+    "arch-intel/*.json",
+    "arch-intel/corpus/*.md",
+]

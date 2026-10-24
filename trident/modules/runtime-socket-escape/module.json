@@ -12,5 +12,5 @@
     "demo_target": "backup-write 模式下的演示写入文件（socket 挂载点 marker 证明）"
   },
   "produces": "host-escape",
-  "knowledge": "总纲第 11 节：运行时 socket 挂载逃逸（docker.sock/containerd.sock → 宿主特权容器）"
+  "knowledge": "设计基线第 11 节：运行时 socket 挂载逃逸（docker.sock/containerd.sock → 宿主特权容器）"
 }

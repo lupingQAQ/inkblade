@@ -142,7 +142,7 @@ def run(ctx: dict, params: dict) -> dict:
             "info", "rail/plane 拓扑映射",
             "rail 对齐映射：" + json.dumps(rails, ensure_ascii=False)
             + "；plane 集合：" + json.dumps(sorted(planes), ensure_ascii=False)
-            + "。rail 拓扑决定 fabric 可达对（spec 5.6 物理 Fabric 层）。",
+            + "。rail 拓扑决定 fabric 可达对（设计基线 5.6 物理 Fabric 层）。",
             {"rail-topology": True}))
         if len(planes) >= 2:
             fps["dual-plane"] = True
@@ -173,7 +173,7 @@ def run(ctx: dict, params: dict) -> dict:
             "medium", "IMEX/ComputeDomain 跨节点 GPU 内存域无网络隔离",
             f"ComputeDomain={len(compute_domains)}（成员 {members}）；DRA ResourceSlice/Claim={len(dra_objs)}。"
             "IMEX/ComputeDomain 把多节点 GPU 内存并为一个域，域内越权访问缺乏网络层隔离"
-            "（spec 5.6 + 12.1 ComputeDomain/IMEX 指南）。",
+            "（设计基线 5.6 + 12.1 ComputeDomain/IMEX 指南）。",
             {"computedomain": bool(compute_domains), "dra": bool(dra_objs),
              "nvl-host": bool(nvlink.get("present"))},
             combo=("nvl-dra-imex-domain",)))

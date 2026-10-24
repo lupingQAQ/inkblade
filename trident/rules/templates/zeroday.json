@@ -1,5 +1,5 @@
 {
-  "note": "私有零日 → 行为化签名模板：仅描述异常行为特征，不含利用细节特征串；公开 advisory 后可升级为细节版规则。",
+  "note": "零日级（已公开）漏洞的行为化签名模板：仅描述异常行为特征，不含利用细节特征串；公开 advisory 后可升级为细节版规则。",
   "rules": [
     {
       "id": "zeroday-agent-sandbox-unexpected-parent-exec",

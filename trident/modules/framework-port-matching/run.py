@@ -1,6 +1,6 @@
 """framework-port-matching — 已复现漏洞端口 ↔ Service 端点匹配（清单驱动）。
 
-核心清单（CORE_PORTS）内嵌自 VULNERABILITY-MASTER 已复现条目：端口 × 框架 × 已知漏洞面 × 对应利用模块。
+核心清单（CORE_PORTS）内嵌自 docs/design.md 已复现条目：端口 × 框架 × 已知漏洞面 × 对应利用模块。
 匹配规则：Service 任一 port/nodePort/targetPort 命中清单端口，且服务名含名称提示（避免 mlflow:5000 误报 openrlhf）。
 """
 from __future__ import annotations

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""arch-intel 覆盖矩阵门槛校验测试（spec 第 12 节权威门槛）。
+"""arch-intel 覆盖矩阵门槛校验测试（设计基线第 12 节权威门槛）。
 
 先于 trident/arch-intel/check.py 编写（TDD）：fixture dict 注入，
 不依赖真实语料文件即可校验门槛函数语义。
@@ -12,7 +12,7 @@ from pathlib import Path
 
 ARCH_INTEL = Path(__file__).resolve().parent.parent / "trident" / "arch-intel"
 
-# arch-intel 目录名含连字符（spec 第 14 节目录结构），按路径加载模块
+# arch-intel 目录名含连字符（设计基线第 14 节目录结构），按路径加载模块
 _spec = importlib.util.spec_from_file_location(
     "trident_arch_intel_check", ARCH_INTEL / "check.py"
 )
