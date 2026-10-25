@@ -221,5 +221,116 @@
       "selection": {"verb": ["authenticate"], "key_class": "default_master", "status": [200]},
       "condition": "all"
     }
+  },
+  {
+    "id": "sigma-pods-exec-lateral",
+    "title": "非基线主体 pods/exec 会话",
+    "description": "K8s audit: exec/attach session into a pod by a non-baseline subject (lateral movement / borrowed-identity primitive). 审计检测非基线主体的 pods/exec/attach 会话（横向与借用身份支点）。",
+    "level": "high",
+    "tags": ["attack.lateral_movement", "attack.t1609", "trident"],
+    "logsource": {"product": "kubernetes", "service": "audit"},
+    "detection": {
+      "selection": {
+        "verb": ["create"],
+        "objectRef.resource": ["pods"],
+        "objectRef.subresource": ["exec", "attach"],
+        "subject_sa": {"not_in": ["system:serviceaccount:kube-system:trident-break-glass"]}
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["运维 break-glass 会话（专用跳板主体 + 时间窗白名单）"],
+    "blocks_modules": ["overprivileged-sa-escalation"],
+    "tuning": {
+      "zh": "把运维跳板主体（专用 break-glass SA + bastion 网段）加入 not_in 白名单；对进入特权/GPU 命名空间的 exec 直接升级 critical；配合会话录像与 kubectl audit 注解核对操作者",
+      "en": "Allowlist the dedicated break-glass SA plus bastion CIDR; escalate exec into privileged/GPU namespaces to critical; pair with session recording and operator identity from audit annotations"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "kubernetes", "service": "audit"},
+      "selection": {"verb": ["create"], "objectRef.resource": ["pods"], "objectRef.subresource": ["exec", "attach"], "subject_sa": {"not_in": ["system:serviceaccount:kube-system:trident-break-glass"]}},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-weight-pvc-abnormal-write",
+    "title": "权重/检查点 PVC 异常写（claim 级变更或非基线主体挂载）",
+    "description": "K8s audit: create/update/patch of weight/checkpoint-class PersistentVolumeClaims by a non-baseline subject, or pod creation mounting them outside the platform scheduler. 检测共享模型数据面（权重/检查点 PVC）的异常写通道（供应链投毒入口）。",
+    "level": "high",
+    "tags": ["attack.impact", "attack.t1565.001", "trident"],
+    "logsource": {"product": "kubernetes", "service": "audit"},
+    "detection": {
+      "selection": {
+        "verb": ["create", "update", "patch"],
+        "objectRef.resource": ["persistentvolumeclaims"],
+        "subject_sa": {"not_in": ["system:serviceaccount:ml-training:platform-scheduler", "system:serviceaccount:kube-system:storage-operator"]}
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["存储运维扩容（storage-operator 主体白名单）、平台调度器例行挂载（platform-scheduler）"],
+    "blocks_modules": ["shared-volume-weight-copy"],
+    "tuning": {
+      "zh": "先收敛 claim 写主体到存储运维/平台调度器两个 SA；权重类名称（weights/model-weights/hf-cache/checkpoint）单独加正则子规则并保持 high；挂载级异常与 falco-weight-file-abnormal-write 联动定位写进程",
+      "en": "Constrain claim writers to the storage-operator and platform-scheduler SAs; add a regex sub-rule for weight-class names (weights/model-weights/hf-cache/checkpoint) kept at high; correlate mount-level anomalies with falco-weight-file-abnormal-write to locate the writing process"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "kubernetes", "service": "audit"},
+      "selection": {"verb": ["create", "update", "patch"], "objectRef.resource": ["persistentvolumeclaims"], "subject_sa": {"not_in": ["system:serviceaccount:ml-training:platform-scheduler", "system:serviceaccount:kube-system:storage-operator"]}},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-fabric-sharp-unauth-join",
+    "title": "fabric 在网聚合会话无鉴权入组/篡改（SHARP all-reduce 面）",
+    "description": "fabric 控制器审计：外部主体入组在网聚合会话或提交 reduce 贡献且无作业身份（集合通信域被外部 rank 混入）。English: fabric controller audit - unauthenticated join/submit on in-network aggregation sessions.",
+    "level": "critical",
+    "tags": ["attack.execution", "attack.t1550", "trident"],
+    "logsource": {"product": "fabric", "service": "sharp-controller"},
+    "detection": {
+      "selection": {
+        "action": ["join", "reduce"],
+        "authenticated": false
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["调试窗口内的合法外部 eval 作业（按作业清单白名单）"],
+    "blocks_modules": ["sharp-in-network-poison", "training-silent-corruption", "ib-subnet-manager-hijack"],
+    "tuning": {
+      "zh": "入组/贡献事件按作业调度器签发的身份（job token/mTLS SPIFFE）判定 authenticated；fabric 控制器需输出该字段后规则才可执行；跨作业会话命中即 critical",
+      "en": "Mark authenticated from scheduler-issued job identity (job token / mTLS SPIFFE); the rule needs the fabric controller to emit that field; cross-job session hits stay critical"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "fabric", "service": "sharp-controller"},
+      "selection": {"action": ["join", "reduce"], "authenticated": false},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-fabric-exhaustion-quota-miss",
+    "title": "fabric 资源耗尽事件（端口/IO/请求洪/队列无配额）",
+    "description": "fabric 审计：端口分配、checkpoint I/O、apiserver 请求与 gang 提交在无配额强制下放量增长（集群级资源耗尽特征）。English: fabric audit - exhaustion-class actions without quota enforcement.",
+    "level": "high",
+    "tags": ["attack.impact", "attack.t1499", "trident"],
+    "logsource": {"product": "fabric", "service": "resource-quota"},
+    "detection": {
+      "selection": {
+        "action": ["port_alloc", "io_burst", "request_flood", "gang_submit"],
+        "quota_enforced": false
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["平台侧批量拉起大作业（调度器来源 + 白名单窗口）"],
+    "blocks_modules": ["nccl-port-exhaustion", "checkpoint-io-storm", "api-server-flood-surface", "gang-scheduler-abuse", "kv-oom-bomb"],
+    "tuning": {
+      "zh": "按作业/租户聚合端口与 I/O 配额事件，单作业逼近池上限即告警；request_flood 以 apiserver 限流器事件为源；gang_submit 与调度器准入日志对账（占位 job 特征：placeholders+hold）",
+      "en": "Aggregate port/IO quota events per job and alert as a single job nears pool exhaustion; source request_flood from the apiserver rate-limiter; reconcile gang_submit with admission logs (placeholder signature: placeholders+hold)"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "fabric", "service": "resource-quota"},
+      "selection": {"action": ["port_alloc", "io_burst", "request_flood", "gang_submit"], "quota_enforced": false},
+      "condition": "all"
+    }
   }
 ]

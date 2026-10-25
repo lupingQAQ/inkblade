@@ -9,7 +9,8 @@
     "cloud-assume-role": "200 → 合成 sigma CloudTrail 跨账户 AssumeRole 事件",
     "gateway-admin-call": "200 → 合成 sigma AI 网关管理 API 无鉴权调用事件",
     "gateway-config-read": "200 → 合成 sigma 默认凭据认证 + falco 上游凭据配置读取事件",
-    "gateway-default-key": "200 → 合成 sigma 默认 master key 认证成功事件"
+    "gateway-default-key": "200 → 合成 sigma 默认 master key 认证成功事件",
+    "fabric-sharp-join": "200 → 合成 sigma fabric 控制器无鉴权入组事件"
   },
   "chains": {
     "flat-network-admin-plane-weight-poison": {
@@ -24,7 +25,8 @@
         {"module": "ray-dashboard-job", "method": "POST", "path": "/api/jobs/", "body": {"entrypoint": "python trident_probe.py"}, "dest_ip": "10.42.0.9", "dest_port": 8265, "admin_plane": true, "on_success": "ray-job"}
       ],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "create", "objectRef": {"resource": "rolebinding", "name": "trident-demo-binding", "roleRef": {"name": "cluster-admin"}}, "subject_sa": "system:serviceaccount:ray-system:ray-operator"}
+        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "create", "objectRef": {"resource": "rolebinding", "name": "trident-demo-binding", "roleRef": {"name": "cluster-admin"}}, "subject_sa": "system:serviceaccount:ray-system:ray-operator"},
+        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "create", "objectRef": {"resource": "pods", "subresource": "exec", "name": "ray-head-rl-train-0"}, "subject_sa": "system:serviceaccount:ray-system:ray-operator"}
       ]
     },
     "nccl-gradient-injection": {
@@ -38,7 +40,8 @@
       "replay": [],
       "fixtures": [
         {"kind": "falco", "event_type": "open_write", "path": "/shared/hf-cache/models/victim/model.safetensors", "proc": "curl", "training_process": false},
-        {"kind": "falco", "event_type": "deserialize", "library": "torch.load", "channel": "shared-volume", "object_source": "/shared/hf-cache"}
+        {"kind": "falco", "event_type": "deserialize", "library": "torch.load", "channel": "shared-volume", "object_source": "/shared/hf-cache"},
+        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "patch", "objectRef": {"resource": "persistentvolumeclaims", "name": "weights-pvc"}, "subject_sa": "system:serviceaccount:ml-training:eval-worker"}
       ]
     },
     "ssrf-sa-token-cloud-metadata": {
@@ -190,6 +193,31 @@
         {"sim": "ai-gateway", "module": "aigateway-auth-bypass", "method": "POST", "path": "/key/generate", "body": {"key_alias": "trident-validate", "tenant": "tenant-b"}, "dest_ip": "10.42.0.9", "dest_port": 4000, "admin_plane": true, "on_success": "gateway-admin-call"}
       ],
       "fixtures": []
+    },
+    "fabric-silent-corruption-chain": {
+      "sim": "fabric",
+      "replay": [
+        {"sim": "fabric", "module": "sharp-in-network-poison", "method": "POST", "path": "/sharp/sessions", "body": {"op": "join", "session_id": "train-job-alpha", "rank": "trident-validate"}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false, "on_success": "fabric-sharp-join"},
+        {"sim": "fabric", "module": "sharp-in-network-poison", "method": "POST", "path": "/sharp/reduce", "body": {"session_id": "train-job-alpha", "contributions": [1, 2, 3, 4, 5, 6, 7, 8], "tamper_factor": 3.0}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false},
+        {"sim": "fabric", "module": "ib-subnet-manager-hijack", "method": "POST", "path": "/ib/sm/partition", "body": {"pkey": "0x8001", "add_members": ["guid-trident-validate"]}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false}
+      ],
+      "fixtures": [
+        {"kind": "falco", "event_type": "collective_reduce", "channel": "sharp-aggregation", "tampered": true, "dest_port": 8000, "source_zone": "tenant-workload"},
+        {"kind": "falco", "event_type": "fabric_config_write", "component": "partition", "authorized": false, "dest_port": 8000}
+      ]
+    },
+    "fabric-exhaustion-chain": {
+      "sim": "fabric",
+      "replay": [
+        {"sim": "fabric", "module": "nccl-port-exhaustion", "method": "POST", "path": "/nccl/bootstrap", "body": {"job": "trident-validate", "ranks": 2}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false},
+        {"sim": "fabric", "module": "gang-scheduler-abuse", "method": "POST", "path": "/sched/gang", "body": {"job_id": "placeholder-validate", "gang_size": 8, "placeholders": 8, "hold": true}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false},
+        {"sim": "fabric", "module": "checkpoint-io-storm", "method": "POST", "path": "/checkpoint/io", "body": {"bytes_mb": 4096, "burst": 4}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false},
+        {"sim": "fabric", "module": "roce-pfc-storm", "method": "POST", "path": "/roce/pfc", "body": {"mode": "storm", "interfaces": ["all"]}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false}
+      ],
+      "fixtures": [
+        {"kind": "sigma", "logsource": {"product": "fabric", "service": "resource-quota"}, "action": "port_alloc", "quota_enforced": false, "job": "trident-validate"},
+        {"kind": "falco", "event_type": "fabric_config_write", "component": "pfc", "authorized": false, "dest_port": 8000}
+      ]
     }
   }
 }

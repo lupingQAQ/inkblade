@@ -10,8 +10,8 @@ DOC = REPO / "docs" / "SOTA-2026-10.md"
 README = REPO / "README.md"
 
 STATUSES = {"已达成", "部分", "未达成"}
-# 矩阵 26 行：14 已达成 / 6 部分 / 6 未达成（与文档「计数」节一致）
-EXPECTED = {"已达成": 14, "部分": 6, "未达成": 6}
+# 矩阵 27 行：15 已达成 / 6 部分 / 6 未达成（与文档「计数」节一致；2026-10-25 新增「K8s 审计轨迹分析」已达成行）
+EXPECTED = {"已达成": 15, "部分": 6, "未达成": 6}
 
 
 def _rows() -> list[dict[str, str]]:
@@ -59,7 +59,7 @@ class TestSotaDoc(unittest.TestCase):
 
     def test_honest_gaps_present(self):
         text = DOC.read_text(encoding="utf-8")
-        for topic, needle in (("万卡实测", "万卡"), ("真实 ARTEX 对比数据", "ARTEX"),
+        for topic, needle in (("万卡实测", "万卡"), ("真实 ARTEX 对比数据", "真实 ARTEX 对比数据"),
                               ("硬件 TEE 实测", "硬件 TEE")):
             line = next((l for l in text.splitlines() if needle in l and l.startswith("|")), None)
             self.assertIsNotNone(line, f"缺少未达成项: {topic}")

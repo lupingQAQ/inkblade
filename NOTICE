@@ -23,6 +23,29 @@ Third-party and interoperability notices
 
    Any ARTEX source you clone remains governed by its own AGPL-3.0 terms.
 
+1a. KubeTrail (Apache-2.0) and Datadog MKAT (Apache-2.0) — read-only comparison
+
+   In October 2026, Trident added a K8s audit-trail analysis capability and
+   compared against two independently cloned, read-only checkouts (workspace
+   level, outside this repository's distribution):
+
+   - KubeTrail — https://github.com/ekkoo-z/KubeTrail — Apache License 2.0
+     (its README footer says "MIT License" but the LICENSE file in the
+     repository is the authoritative Apache-2.0 text; discrepancy noted here
+     for honesty). Used to define the `dbus.json` export Document shape that
+     `trident/core/auditlog.py::adapt_kubetrail` can ingest.
+     Note: the frequently cited "DataDog/kubetrail" repository does NOT exist
+     (GitHub 404, verified 2026-10-25).
+   - Managed Kubernetes Auditing Toolkit (MKAT) —
+     https://github.com/DataDog/managed-kubernetes-auditing-toolkit — Apache
+     License 2.0, Copyright 2023-Present Datadog, Inc. — capability
+     comparison only (IRSA/Pod-Identity trust graphs, hardcoded cloud
+     credentials, IMDS reachability).
+
+   No source code from either project is included, copied, linked, embedded,
+   or derived from in this repository; both are used as external read-only
+   comparison references and export-format documentation only.
+
 2. Vendored browser assets (MIT)
 
    The offline web UI vendors the following unmodified UMD builds:

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1",
+  "run": {
+    "id": "kubetrail-run-20261024-031500",
+    "startedAt": "2026-10-24T03:15:00Z",
+    "finishedAt": "2026-10-24T03:15:41Z",
+    "durationMs": 41000,
+    "hostname": "poison-pod",
+    "toolVersion": "kubetrail-server dev",
+    "args": ["-m", "safe", "-o", "dbus.json"]
+  },
+  "target": {
+    "inKubernetes": true,
+    "namespace": "ray-system",
+    "podName": "poison-pod",
+    "apiServer": "https://10.96.0.1:443"
+  },
+  "mode": "safe",
+  "collectors": [
+    {"id": "identity", "mode": "safe", "status": "ok", "durationMs": 12, "factCount": 2},
+    {"id": "kubernetes_access", "mode": "safe", "status": "ok", "durationMs": 8200, "factCount": 3},
+    {"id": "proc", "mode": "safe", "status": "ok", "durationMs": 340, "factCount": 4},
+    {"id": "runtime_local", "mode": "safe", "status": "ok", "durationMs": 210, "factCount": 2}
+  ],
+  "facts": [
+    {"id": "identity.current_user", "collector": "identity", "category": "identity", "value": {"uid": 0, "username": "root"}},
+    {"id": "k8s_permissions.high_value_access", "collector": "kubernetes_access", "category": "k8s_permissions", "sensitive": true, "value": {"secrets": ["get", "list"], "pods": ["create"], "pods_exec": true, "rbac_bind": ["clusterrole"], "rbac_escalate": true}},
+    {"id": "k8s_permissions.expanded_wildcards", "collector": "kubernetes_access", "category": "k8s_permissions", "value": {"cluster_admin_equivalent": true}},
+    {"id": "proc.status_security", "collector": "proc", "category": "proc", "value": {"Seccomp": 0, "NoNewPrivs": 0, "capabilities": {"effective": "00000000a80425fb"}}},
+    {"id": "runtime.sockets", "collector": "runtime_local", "category": "runtime", "value": [{"path": "/var/run/containerd/containerd.sock", "writable": true}]}
+  ],
+  "findings": [
+    {"severity": "high", "category": "rbac", "confidence": "confirmed", "title": "secrets readable", "description": "Current identity can get/list secrets in current namespace and cluster-wide service account token creation is allowed.", "evidence": "k8s_permissions"},
+    {"severity": "critical", "category": "escape", "confidence": "probable", "title": "containerd socket writable", "description": "containerd runtime socket is mounted and writable: node-level container creation primitive.", "evidence": "runtime.sockets"},
+    {"severity": "medium", "category": "lpe", "confidence": "signal", "title": "Dirty Pipe signal", "description": "Kernel version within known vulnerable range for CVE-2022-0847; needs write-target conditions to confirm.", "evidence": "lpe.kernel"}
+  ],
+  "errors": []
+}
