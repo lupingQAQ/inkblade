@@ -1,0 +1,2 @@
+trident keyless gap closure - live Rekor write test - 2026-10-25T15:43:33Z
+benign audit artifact; not a production signature

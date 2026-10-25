@@ -52,7 +52,7 @@ agentdojo@ethz-spylab），登记见 `.slim/clonedeps/clonedeps.json`；ARTEX / 
 
 ## 2. 能力维度定义（18 维）与 Trident 基线
 
-Trident 列取自 [`docs/SOTA-2026-10.md`](SOTA-2026-10.md) 的诚实口径（已达成/部分/未达成），
+Trident 列取自 [`docs/SOTA-2026-10.md`](SOTA-2026-10.md) 的诚实口径（真实验证/模拟验证/仍未达成），
 不因竞品对比而上调。
 
 | 键 | 维度 | 说明 | Trident 现状锚点（SOTA-2026-10.md） |

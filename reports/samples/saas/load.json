@@ -1,0 +1,148 @@
+{
+  "schema": "trident-saas-load/2026-10",
+  "mode": "local simulation (single host, SQLite, simulated module work)",
+  "disclaimer": "本地模拟，非商业 SLA；不是分布式集群/跨 region 测试",
+  "config": {
+    "tenants": 8,
+    "concurrency_per_tenant": 8,
+    "requests_per_client": 20,
+    "workers": 4,
+    "work_ms": 30,
+    "max_concurrent_per_tenant": 4,
+    "max_runs_per_tenant": 1000,
+    "evidence_bytes_per_run": 2048
+  },
+  "metrics": {
+    "elapsed_s": 21.731,
+    "throughput_runs_s": 17.579,
+    "submit_p50_ms": 72.033,
+    "submit_p95_ms": 727.612,
+    "submit_p99_ms": 2436.029,
+    "complete_p50_ms": 921.596,
+    "complete_p95_ms": 3176.999,
+    "complete_p99_ms": 3708.761,
+    "runs_submitted": 382,
+    "runs_done": 382,
+    "quota_rejects": 898,
+    "isolation_violations": 0,
+    "cross_tenant_denied": 192,
+    "http_errors": {},
+    "approval_created": 8,
+    "approval_ok": 8,
+    "duplicate_approval_blocked": 8,
+    "approval_role_denied": 1
+  },
+  "tenants": {
+    "tenant-00": {
+      "tenant": "tenant-00",
+      "runs_total": 40,
+      "active": 0,
+      "done": 40,
+      "evidence_bytes": 80384,
+      "pending_approvals": 0,
+      "limits": {
+        "max_concurrent": 4,
+        "max_runs": 1000,
+        "max_evidence_bytes": 1048576
+      }
+    },
+    "tenant-01": {
+      "tenant": "tenant-01",
+      "runs_total": 32,
+      "active": 0,
+      "done": 32,
+      "evidence_bytes": 64000,
+      "pending_approvals": 0,
+      "limits": {
+        "max_concurrent": 4,
+        "max_runs": 1000,
+        "max_evidence_bytes": 1048576
+      }
+    },
+    "tenant-02": {
+      "tenant": "tenant-02",
+      "runs_total": 54,
+      "active": 0,
+      "done": 54,
+      "evidence_bytes": 109056,
+      "pending_approvals": 0,
+      "limits": {
+        "max_concurrent": 4,
+        "max_runs": 1000,
+        "max_evidence_bytes": 1048576
+      }
+    },
+    "tenant-03": {
+      "tenant": "tenant-03",
+      "runs_total": 40,
+      "active": 0,
+      "done": 40,
+      "evidence_bytes": 80384,
+      "pending_approvals": 0,
+      "limits": {
+        "max_concurrent": 4,
+        "max_runs": 1000,
+        "max_evidence_bytes": 1048576
+      }
+    },
+    "tenant-04": {
+      "tenant": "tenant-04",
+      "runs_total": 69,
+      "active": 0,
+      "done": 69,
+      "evidence_bytes": 139776,
+      "pending_approvals": 0,
+      "limits": {
+        "max_concurrent": 4,
+        "max_runs": 1000,
+        "max_evidence_bytes": 1048576
+      }
+    },
+    "tenant-05": {
+      "tenant": "tenant-05",
+      "runs_total": 51,
+      "active": 0,
+      "done": 51,
+      "evidence_bytes": 102912,
+      "pending_approvals": 0,
+      "limits": {
+        "max_concurrent": 4,
+        "max_runs": 1000,
+        "max_evidence_bytes": 1048576
+      }
+    },
+    "tenant-06": {
+      "tenant": "tenant-06",
+      "runs_total": 51,
+      "active": 0,
+      "done": 51,
+      "evidence_bytes": 102912,
+      "pending_approvals": 0,
+      "limits": {
+        "max_concurrent": 4,
+        "max_runs": 1000,
+        "max_evidence_bytes": 1048576
+      }
+    },
+    "tenant-07": {
+      "tenant": "tenant-07",
+      "runs_total": 53,
+      "active": 0,
+      "done": 53,
+      "evidence_bytes": 107008,
+      "pending_approvals": 0,
+      "limits": {
+        "max_concurrent": 4,
+        "max_runs": 1000,
+        "max_evidence_bytes": 1048576
+      }
+    }
+  },
+  "checks": {
+    "tenant_isolation": true,
+    "quota_enforced": true,
+    "approval_single_use": true,
+    "approval_role_gate": true,
+    "all_submitted_eventually_done_or_rejected": true
+  }
+}

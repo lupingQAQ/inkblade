@@ -1,0 +1,105 @@
+{
+  "schema": "trident-sigstore-keyless-verdict/2026-10",
+  "ok": true,
+  "checks": [
+    {
+      "name": "schema",
+      "ok": true,
+      "detail": "mediaType=application/vnd.dev.sigstore.bundle.v0.3+json"
+    },
+    {
+      "name": "artifact-digest",
+      "ok": true,
+      "detail": "artifact=e0bdcc1b0fd62afa…"
+    },
+    {
+      "name": "keyless-certificate",
+      "ok": true,
+      "detail": "Fulcio 证书存在"
+    },
+    {
+      "name": "message-signature",
+      "ok": true,
+      "detail": "ECDSA 对 artifact 验签"
+    },
+    {
+      "name": "certificate-chain",
+      "ok": true,
+      "detail": "root=Trident Fixture Fulcio Root; at=2026-10-25T12:00:00Z; errors=[]"
+    },
+    {
+      "name": "certificate-time",
+      "ok": true,
+      "detail": "integratedTime=2026-10-25T12:00:00Z cert=2026-10-25T11:55~2026-10-25T13:00"
+    },
+    {
+      "name": "identity",
+      "ok": true,
+      "detail": "SAN=['fixture@trident.local'] expected=fixture@trident.local"
+    },
+    {
+      "name": "issuer",
+      "ok": true,
+      "detail": "OIDC issuer=https://fixture.trident.local expected=https://fixture.trident.local"
+    },
+    {
+      "name": "revocation",
+      "ok": true,
+      "detail": "serial=2336500271046374778 revoked=False"
+    },
+    {
+      "name": "tlog-body",
+      "ok": true,
+      "detail": "kind=hashedrekord hash=e0bdcc1b0fd62afa…"
+    },
+    {
+      "name": "tlog-logid",
+      "ok": true,
+      "detail": "entry=QOIlKmdbFou8PpcT… expected=40e2252a675b168b…"
+    },
+    {
+      "name": "tlog-set",
+      "ok": true,
+      "detail": "SET 签名有效"
+    },
+    {
+      "name": "tlog-inclusion",
+      "ok": true,
+      "detail": "root=3d8cadc786e141aa…"
+    },
+    {
+      "name": "tlog-checkpoint",
+      "ok": true,
+      "detail": "checkpoint note 签名有效"
+    },
+    {
+      "name": "tlog-online",
+      "ok": true,
+      "detail": "未请求在线重取（离线缓存/公共日志样本）"
+    }
+  ],
+  "errors": [],
+  "artifact": {
+    "sha256": "e0bdcc1b0fd62afaa238f493b74034571ce09aab80c276c252f20dbb40ae8366",
+    "bytes": 56
+  },
+  "identity": {
+    "subject_cn": "",
+    "issuer_cn": "Trident Fixture Fulcio Intermediate",
+    "sans": [
+      {
+        "kind": "email",
+        "value": "fixture@trident.local"
+      }
+    ],
+    "oidc_issuer": "https://fixture.trident.local",
+    "serial": 2336500271046374778,
+    "not_before": "2026-10-25T11:55:00+00:00",
+    "not_after": "2026-10-25T13:00:00+00:00"
+  },
+  "log": {
+    "logIndex": 1,
+    "integratedTime": 1792929600
+  },
+  "mode": "fixture"
+}

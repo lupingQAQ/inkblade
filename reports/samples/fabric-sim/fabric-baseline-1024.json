@@ -1,0 +1,2534 @@
+{
+  "schema": "trident-fabric-sim/2026-10",
+  "source": "discrete-event simulation",
+  "hardware": false,
+  "disclaimer": "模拟，非真实硬件；不能替代 10K GPU 实测",
+  "scenario": "baseline",
+  "seed": 7,
+  "topology": {
+    "nodes": 1024,
+    "rails": 8,
+    "planes": 2,
+    "leaves": 64,
+    "spines": 32,
+    "hosts_per_leaf": 16,
+    "link_gbps": 400.0,
+    "core_gbps": 800.0,
+    "logical_links": "on-demand per flow (not materialized)"
+  },
+  "ranks": {
+    "rank-0": 1.4062,
+    "rank-1": 1.4072,
+    "rank-2": 1.4082,
+    "rank-3": 1.4092,
+    "rank-4": 1.4102,
+    "rank-5": 1.4112,
+    "rank-6": 1.4122,
+    "rank-7": 1.4132,
+    "rank-8": 1.4142,
+    "rank-9": 1.4152,
+    "rank-10": 1.4162,
+    "rank-11": 1.4172,
+    "rank-12": 1.4182,
+    "rank-13": 1.4192,
+    "rank-14": 1.4202,
+    "rank-15": 1.4212,
+    "rank-16": 1.4222,
+    "rank-17": 1.4232,
+    "rank-18": 1.4242,
+    "rank-19": 1.4252,
+    "rank-20": 1.4262,
+    "rank-21": 1.4272,
+    "rank-22": 1.4282,
+    "rank-23": 1.4292,
+    "rank-24": 1.4302,
+    "rank-25": 1.4312,
+    "rank-26": 1.4322,
+    "rank-27": 1.4332,
+    "rank-28": 1.4342,
+    "rank-29": 1.4352,
+    "rank-30": 1.4362,
+    "rank-31": 1.4372,
+    "rank-32": 2.7454,
+    "rank-33": 2.7464,
+    "rank-34": 2.7474,
+    "rank-35": 2.7484,
+    "rank-36": 2.7494,
+    "rank-37": 2.7504,
+    "rank-38": 2.7514,
+    "rank-39": 2.7524,
+    "rank-40": 2.7534,
+    "rank-41": 2.7544,
+    "rank-42": 2.7554,
+    "rank-43": 2.7564,
+    "rank-44": 2.7574,
+    "rank-45": 2.7584,
+    "rank-46": 2.7594,
+    "rank-47": 2.7604,
+    "rank-48": 2.7614,
+    "rank-49": 2.7624,
+    "rank-50": 2.7634,
+    "rank-51": 2.7644,
+    "rank-52": 2.7654,
+    "rank-53": 2.7664,
+    "rank-54": 2.7674,
+    "rank-55": 2.7684,
+    "rank-56": 2.7694,
+    "rank-57": 2.7704,
+    "rank-58": 2.7714,
+    "rank-59": 2.7724,
+    "rank-60": 2.7734,
+    "rank-61": 2.7744,
+    "rank-62": 2.7754,
+    "rank-63": 2.7764
+  },
+  "flows": [
+    {
+      "id": 0,
+      "src": 0,
+      "dst": 16,
+      "src_rail": 0,
+      "dst_rail": 0,
+      "completion_ms": 1.4062,
+      "rerouted": false
+    },
+    {
+      "id": 1,
+      "src": 16,
+      "dst": 32,
+      "src_rail": 1,
+      "dst_rail": 1,
+      "completion_ms": 1.4072,
+      "rerouted": false
+    },
+    {
+      "id": 2,
+      "src": 32,
+      "dst": 48,
+      "src_rail": 2,
+      "dst_rail": 2,
+      "completion_ms": 1.4082,
+      "rerouted": false
+    },
+    {
+      "id": 3,
+      "src": 48,
+      "dst": 64,
+      "src_rail": 3,
+      "dst_rail": 3,
+      "completion_ms": 1.4092,
+      "rerouted": false
+    },
+    {
+      "id": 4,
+      "src": 64,
+      "dst": 80,
+      "src_rail": 4,
+      "dst_rail": 4,
+      "completion_ms": 1.4102,
+      "rerouted": false
+    },
+    {
+      "id": 5,
+      "src": 80,
+      "dst": 96,
+      "src_rail": 5,
+      "dst_rail": 5,
+      "completion_ms": 1.4112,
+      "rerouted": false
+    },
+    {
+      "id": 6,
+      "src": 96,
+      "dst": 112,
+      "src_rail": 6,
+      "dst_rail": 6,
+      "completion_ms": 1.4122,
+      "rerouted": false
+    },
+    {
+      "id": 7,
+      "src": 112,
+      "dst": 128,
+      "src_rail": 7,
+      "dst_rail": 7,
+      "completion_ms": 1.4132,
+      "rerouted": false
+    },
+    {
+      "id": 8,
+      "src": 128,
+      "dst": 144,
+      "src_rail": 0,
+      "dst_rail": 0,
+      "completion_ms": 1.4142,
+      "rerouted": false
+    },
+    {
+      "id": 9,
+      "src": 144,
+      "dst": 160,
+      "src_rail": 1,
+      "dst_rail": 1,
+      "completion_ms": 1.4152,
+      "rerouted": false
+    },
+    {
+      "id": 10,
+      "src": 160,
+      "dst": 176,
+      "src_rail": 2,
+      "dst_rail": 2,
+      "completion_ms": 1.4162,
+      "rerouted": false
+    },
+    {
+      "id": 11,
+      "src": 176,
+      "dst": 192,
+      "src_rail": 3,
+      "dst_rail": 3,
+      "completion_ms": 1.4172,
+      "rerouted": false
+    },
+    {
+      "id": 12,
+      "src": 192,
+      "dst": 208,
+      "src_rail": 4,
+      "dst_rail": 4,
+      "completion_ms": 1.4182,
+      "rerouted": false
+    },
+    {
+      "id": 13,
+      "src": 208,
+      "dst": 224,
+      "src_rail": 5,
+      "dst_rail": 5,
+      "completion_ms": 1.4192,
+      "rerouted": false
+    },
+    {
+      "id": 14,
+      "src": 224,
+      "dst": 240,
+      "src_rail": 6,
+      "dst_rail": 6,
+      "completion_ms": 1.4202,
+      "rerouted": false
+    },
+    {
+      "id": 15,
+      "src": 240,
+      "dst": 256,
+      "src_rail": 7,
+      "dst_rail": 7,
+      "completion_ms": 1.4212,
+      "rerouted": false
+    },
+    {
+      "id": 16,
+      "src": 256,
+      "dst": 272,
+      "src_rail": 0,
+      "dst_rail": 0,
+      "completion_ms": 1.4222,
+      "rerouted": false
+    },
+    {
+      "id": 17,
+      "src": 272,
+      "dst": 288,
+      "src_rail": 1,
+      "dst_rail": 1,
+      "completion_ms": 1.4232,
+      "rerouted": false
+    },
+    {
+      "id": 18,
+      "src": 288,
+      "dst": 304,
+      "src_rail": 2,
+      "dst_rail": 2,
+      "completion_ms": 1.4242,
+      "rerouted": false
+    },
+    {
+      "id": 19,
+      "src": 304,
+      "dst": 320,
+      "src_rail": 3,
+      "dst_rail": 3,
+      "completion_ms": 1.4252,
+      "rerouted": false
+    },
+    {
+      "id": 20,
+      "src": 320,
+      "dst": 336,
+      "src_rail": 4,
+      "dst_rail": 4,
+      "completion_ms": 1.4262,
+      "rerouted": false
+    },
+    {
+      "id": 21,
+      "src": 336,
+      "dst": 352,
+      "src_rail": 5,
+      "dst_rail": 5,
+      "completion_ms": 1.4272,
+      "rerouted": false
+    },
+    {
+      "id": 22,
+      "src": 352,
+      "dst": 368,
+      "src_rail": 6,
+      "dst_rail": 6,
+      "completion_ms": 1.4282,
+      "rerouted": false
+    },
+    {
+      "id": 23,
+      "src": 368,
+      "dst": 384,
+      "src_rail": 7,
+      "dst_rail": 7,
+      "completion_ms": 1.4292,
+      "rerouted": false
+    },
+    {
+      "id": 24,
+      "src": 384,
+      "dst": 400,
+      "src_rail": 0,
+      "dst_rail": 0,
+      "completion_ms": 1.4302,
+      "rerouted": false
+    },
+    {
+      "id": 25,
+      "src": 400,
+      "dst": 416,
+      "src_rail": 1,
+      "dst_rail": 1,
+      "completion_ms": 1.4312,
+      "rerouted": false
+    },
+    {
+      "id": 26,
+      "src": 416,
+      "dst": 432,
+      "src_rail": 2,
+      "dst_rail": 2,
+      "completion_ms": 1.4322,
+      "rerouted": false
+    },
+    {
+      "id": 27,
+      "src": 432,
+      "dst": 448,
+      "src_rail": 3,
+      "dst_rail": 3,
+      "completion_ms": 1.4332,
+      "rerouted": false
+    },
+    {
+      "id": 28,
+      "src": 448,
+      "dst": 464,
+      "src_rail": 4,
+      "dst_rail": 4,
+      "completion_ms": 1.4342,
+      "rerouted": false
+    },
+    {
+      "id": 29,
+      "src": 464,
+      "dst": 480,
+      "src_rail": 5,
+      "dst_rail": 5,
+      "completion_ms": 1.4352,
+      "rerouted": false
+    },
+    {
+      "id": 30,
+      "src": 480,
+      "dst": 496,
+      "src_rail": 6,
+      "dst_rail": 6,
+      "completion_ms": 1.4362,
+      "rerouted": false
+    },
+    {
+      "id": 31,
+      "src": 496,
+      "dst": 512,
+      "src_rail": 7,
+      "dst_rail": 7,
+      "completion_ms": 1.4372,
+      "rerouted": false
+    },
+    {
+      "id": 32,
+      "src": 512,
+      "dst": 528,
+      "src_rail": 0,
+      "dst_rail": 0,
+      "completion_ms": 2.7454,
+      "rerouted": false
+    },
+    {
+      "id": 33,
+      "src": 528,
+      "dst": 544,
+      "src_rail": 1,
+      "dst_rail": 1,
+      "completion_ms": 2.7464,
+      "rerouted": false
+    },
+    {
+      "id": 34,
+      "src": 544,
+      "dst": 560,
+      "src_rail": 2,
+      "dst_rail": 2,
+      "completion_ms": 2.7474,
+      "rerouted": false
+    },
+    {
+      "id": 35,
+      "src": 560,
+      "dst": 576,
+      "src_rail": 3,
+      "dst_rail": 3,
+      "completion_ms": 2.7484,
+      "rerouted": false
+    },
+    {
+      "id": 36,
+      "src": 576,
+      "dst": 592,
+      "src_rail": 4,
+      "dst_rail": 4,
+      "completion_ms": 2.7494,
+      "rerouted": false
+    },
+    {
+      "id": 37,
+      "src": 592,
+      "dst": 608,
+      "src_rail": 5,
+      "dst_rail": 5,
+      "completion_ms": 2.7504,
+      "rerouted": false
+    },
+    {
+      "id": 38,
+      "src": 608,
+      "dst": 624,
+      "src_rail": 6,
+      "dst_rail": 6,
+      "completion_ms": 2.7514,
+      "rerouted": false
+    },
+    {
+      "id": 39,
+      "src": 624,
+      "dst": 640,
+      "src_rail": 7,
+      "dst_rail": 7,
+      "completion_ms": 2.7524,
+      "rerouted": false
+    },
+    {
+      "id": 40,
+      "src": 640,
+      "dst": 656,
+      "src_rail": 0,
+      "dst_rail": 0,
+      "completion_ms": 2.7534,
+      "rerouted": false
+    },
+    {
+      "id": 41,
+      "src": 656,
+      "dst": 672,
+      "src_rail": 1,
+      "dst_rail": 1,
+      "completion_ms": 2.7544,
+      "rerouted": false
+    },
+    {
+      "id": 42,
+      "src": 672,
+      "dst": 688,
+      "src_rail": 2,
+      "dst_rail": 2,
+      "completion_ms": 2.7554,
+      "rerouted": false
+    },
+    {
+      "id": 43,
+      "src": 688,
+      "dst": 704,
+      "src_rail": 3,
+      "dst_rail": 3,
+      "completion_ms": 2.7564,
+      "rerouted": false
+    },
+    {
+      "id": 44,
+      "src": 704,
+      "dst": 720,
+      "src_rail": 4,
+      "dst_rail": 4,
+      "completion_ms": 2.7574,
+      "rerouted": false
+    },
+    {
+      "id": 45,
+      "src": 720,
+      "dst": 736,
+      "src_rail": 5,
+      "dst_rail": 5,
+      "completion_ms": 2.7584,
+      "rerouted": false
+    },
+    {
+      "id": 46,
+      "src": 736,
+      "dst": 752,
+      "src_rail": 6,
+      "dst_rail": 6,
+      "completion_ms": 2.7594,
+      "rerouted": false
+    },
+    {
+      "id": 47,
+      "src": 752,
+      "dst": 768,
+      "src_rail": 7,
+      "dst_rail": 7,
+      "completion_ms": 2.7604,
+      "rerouted": false
+    },
+    {
+      "id": 48,
+      "src": 768,
+      "dst": 784,
+      "src_rail": 0,
+      "dst_rail": 0,
+      "completion_ms": 2.7614,
+      "rerouted": false
+    },
+    {
+      "id": 49,
+      "src": 784,
+      "dst": 800,
+      "src_rail": 1,
+      "dst_rail": 1,
+      "completion_ms": 2.7624,
+      "rerouted": false
+    },
+    {
+      "id": 50,
+      "src": 800,
+      "dst": 816,
+      "src_rail": 2,
+      "dst_rail": 2,
+      "completion_ms": 2.7634,
+      "rerouted": false
+    },
+    {
+      "id": 51,
+      "src": 816,
+      "dst": 832,
+      "src_rail": 3,
+      "dst_rail": 3,
+      "completion_ms": 2.7644,
+      "rerouted": false
+    },
+    {
+      "id": 52,
+      "src": 832,
+      "dst": 848,
+      "src_rail": 4,
+      "dst_rail": 4,
+      "completion_ms": 2.7654,
+      "rerouted": false
+    },
+    {
+      "id": 53,
+      "src": 848,
+      "dst": 864,
+      "src_rail": 5,
+      "dst_rail": 5,
+      "completion_ms": 2.7664,
+      "rerouted": false
+    },
+    {
+      "id": 54,
+      "src": 864,
+      "dst": 880,
+      "src_rail": 6,
+      "dst_rail": 6,
+      "completion_ms": 2.7674,
+      "rerouted": false
+    },
+    {
+      "id": 55,
+      "src": 880,
+      "dst": 896,
+      "src_rail": 7,
+      "dst_rail": 7,
+      "completion_ms": 2.7684,
+      "rerouted": false
+    },
+    {
+      "id": 56,
+      "src": 896,
+      "dst": 912,
+      "src_rail": 0,
+      "dst_rail": 0,
+      "completion_ms": 2.7694,
+      "rerouted": false
+    },
+    {
+      "id": 57,
+      "src": 912,
+      "dst": 928,
+      "src_rail": 1,
+      "dst_rail": 1,
+      "completion_ms": 2.7704,
+      "rerouted": false
+    },
+    {
+      "id": 58,
+      "src": 928,
+      "dst": 944,
+      "src_rail": 2,
+      "dst_rail": 2,
+      "completion_ms": 2.7714,
+      "rerouted": false
+    },
+    {
+      "id": 59,
+      "src": 944,
+      "dst": 960,
+      "src_rail": 3,
+      "dst_rail": 3,
+      "completion_ms": 2.7724,
+      "rerouted": false
+    },
+    {
+      "id": 60,
+      "src": 960,
+      "dst": 976,
+      "src_rail": 4,
+      "dst_rail": 4,
+      "completion_ms": 2.7734,
+      "rerouted": false
+    },
+    {
+      "id": 61,
+      "src": 976,
+      "dst": 992,
+      "src_rail": 5,
+      "dst_rail": 5,
+      "completion_ms": 2.7744,
+      "rerouted": false
+    },
+    {
+      "id": 62,
+      "src": 992,
+      "dst": 1008,
+      "src_rail": 6,
+      "dst_rail": 6,
+      "completion_ms": 2.7754,
+      "rerouted": false
+    },
+    {
+      "id": 63,
+      "src": 1008,
+      "dst": 0,
+      "src_rail": 7,
+      "dst_rail": 7,
+      "completion_ms": 2.7764,
+      "rerouted": false
+    }
+  ],
+  "links": [
+    {
+      "id": "host:0:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:0:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:1008:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:1008:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:112:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:112:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:128:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:128:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:144:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:144:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:160:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:160:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:16:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:16:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:176:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:176:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:192:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:192:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:208:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:208:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:224:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:224:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:240:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:240:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:256:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:256:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:272:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:272:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:288:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:288:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:304:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:304:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:320:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:320:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:32:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:32:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:336:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:336:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:352:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:352:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:368:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:368:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:384:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:384:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:400:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:400:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:416:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:416:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:432:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:432:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:448:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:448:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:464:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:464:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:480:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:480:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:48:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:48:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:496:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:496:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:512:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:512:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:528:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:528:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:544:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:544:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:560:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:560:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:576:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:576:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:592:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:592:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:608:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:608:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:624:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:624:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:640:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:640:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:64:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:64:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:656:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:656:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:672:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:672:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:688:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:688:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:704:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:704:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:720:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:720:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:736:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:736:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:752:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:752:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:768:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:768:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:784:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:784:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:800:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:800:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:80:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:80:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:816:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:816:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:832:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:832:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:848:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:848:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:864:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:864:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:880:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:880:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:896:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:896:7",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:912:0",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:912:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:928:1",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:928:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:944:2",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:944:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:960:3",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:960:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:96:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:96:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:976:4",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:976:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:992:5",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "host:992:6",
+      "gbps": 400.0,
+      "bytes": 16777216,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "leaf:0:spine:0",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:11:spine:5",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:12:spine:6",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:15:spine:7",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:16:spine:8",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:19:spine:9",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:20:spine:10",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:23:spine:11",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:24:spine:12",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:27:spine:13",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:28:spine:14",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:31:spine:15",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:32:spine:16",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:35:spine:17",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:36:spine:18",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:39:spine:19",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:3:spine:1",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:40:spine:20",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:43:spine:21",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:44:spine:22",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:47:spine:23",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:48:spine:24",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:4:spine:2",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:51:spine:25",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:52:spine:26",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:55:spine:27",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:56:spine:28",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:59:spine:29",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:60:spine:30",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:63:spine:31",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:7:spine:3",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "leaf:8:spine:4",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 65363136.0,
+      "pfc_pause_frames": 3,
+      "ecn_marks": 1,
+      "drops": 1
+    },
+    {
+      "id": "spine:0:leaf:2",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:10:leaf:22",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:11:leaf:25",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:12:leaf:26",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:13:leaf:29",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:14:leaf:30",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:15:leaf:33",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:16:leaf:34",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:17:leaf:37",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:18:leaf:38",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:19:leaf:41",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:1:leaf:5",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:20:leaf:42",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:21:leaf:45",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:22:leaf:46",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:23:leaf:49",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:24:leaf:50",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:25:leaf:53",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:26:leaf:54",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:27:leaf:57",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:28:leaf:58",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:29:leaf:61",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:2:leaf:6",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:30:leaf:62",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:31:leaf:1",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:3:leaf:9",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:4:leaf:10",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:5:leaf:13",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:6:leaf:14",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:7:leaf:17",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:8:leaf:18",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    },
+    {
+      "id": "spine:9:leaf:21",
+      "gbps": 400.0,
+      "bytes": 33554432,
+      "peak_queue_bytes": 0.0,
+      "pfc_pause_frames": 0,
+      "ecn_marks": 0,
+      "drops": 0
+    }
+  ],
+  "pfc_pause_frames": 96,
+  "ecn_marks": 32,
+  "drops": 32,
+  "cross_rail_flows": 0,
+  "rail_mismatch_flows": 0,
+  "failed_links": 0,
+  "rerouted_flows": 0,
+  "total_bytes": 1073741824,
+  "chunks": 1024,
+  "max_completion_ms": 2.7764,
+  "median_completion_ms": 2.7454,
+  "worst_rank": "rank-63",
+  "worst_rank_ms": 2.7764,
+  "goodput_gbps": 3093.866,
+  "rail_matrix": {
+    "leaf0": {
+      "rail-0": 33554432
+    },
+    "leaf3": {
+      "rail-1": 33554432
+    },
+    "leaf4": {
+      "rail-2": 33554432
+    },
+    "leaf7": {
+      "rail-3": 33554432
+    },
+    "leaf8": {
+      "rail-4": 33554432
+    },
+    "leaf11": {
+      "rail-5": 33554432
+    },
+    "leaf12": {
+      "rail-6": 33554432
+    },
+    "leaf15": {
+      "rail-7": 33554432
+    },
+    "leaf16": {
+      "rail-0": 33554432
+    },
+    "leaf19": {
+      "rail-1": 33554432
+    },
+    "leaf20": {
+      "rail-2": 33554432
+    },
+    "leaf23": {
+      "rail-3": 33554432
+    },
+    "leaf24": {
+      "rail-4": 33554432
+    },
+    "leaf27": {
+      "rail-5": 33554432
+    },
+    "leaf28": {
+      "rail-6": 33554432
+    },
+    "leaf31": {
+      "rail-7": 33554432
+    },
+    "leaf32": {
+      "rail-0": 33554432
+    },
+    "leaf35": {
+      "rail-1": 33554432
+    },
+    "leaf36": {
+      "rail-2": 33554432
+    },
+    "leaf39": {
+      "rail-3": 33554432
+    },
+    "leaf40": {
+      "rail-4": 33554432
+    },
+    "leaf43": {
+      "rail-5": 33554432
+    },
+    "leaf44": {
+      "rail-6": 33554432
+    },
+    "leaf47": {
+      "rail-7": 33554432
+    },
+    "leaf48": {
+      "rail-0": 33554432
+    },
+    "leaf51": {
+      "rail-1": 33554432
+    },
+    "leaf52": {
+      "rail-2": 33554432
+    },
+    "leaf55": {
+      "rail-3": 33554432
+    },
+    "leaf56": {
+      "rail-4": 33554432
+    },
+    "leaf59": {
+      "rail-5": 33554432
+    },
+    "leaf60": {
+      "rail-6": 33554432
+    },
+    "leaf63": {
+      "rail-7": 33554432
+    }
+  },
+  "notes": [
+    "ranks=64",
+    "chunks/flow=16",
+    "storm_links=0",
+    "failed_links=0",
+    "logical topology aggregated; not real switch config"
+  ],
+  "verdict": {
+    "schema": "trident-fabric-verdict/2026-10",
+    "scenario": "baseline",
+    "ok": true,
+    "high": 0,
+    "medium": 0,
+    "info": 1,
+    "findings": [
+      {
+        "rule": "fabric.baseline-clean",
+        "sev": "info",
+        "title": "fabric 基线未见 PFC/ECN/rail/straggler 异常",
+        "detail": {
+          "pfc_pause_frames": 96,
+          "ecn_marks": 32,
+          "cross_rail_flows": 0,
+          "ranks": 64
+        }
+      }
+    ],
+    "simulated": true
+  }
+}

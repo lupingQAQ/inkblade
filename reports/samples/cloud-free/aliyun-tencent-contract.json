@@ -1,0 +1,114 @@
+{
+  "schema": "trident-cloud-contract/2026-10",
+  "mode": "contract simulation (lab/cloud_six_sim.py), not a real account",
+  "vulnerable": {
+    "scenarios": 8,
+    "as_expected": 8,
+    "cross_tenant_ok": 8,
+    "rows": [
+      {
+        "scenario": "irsa-wildcard",
+        "cloud": "aliyun",
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "irsa-wildcard",
+        "cloud": "tencent",
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "bucket-public",
+        "cloud": "aliyun",
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "bucket-public",
+        "cloud": "tencent",
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "snapshot-share",
+        "cloud": "aliyun",
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "snapshot-share",
+        "cloud": "tencent",
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "sg-imds",
+        "cloud": "aliyun",
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "sg-imds",
+        "cloud": "tencent",
+        "as_expected": true,
+        "cross_tenant_ok": true
+      }
+    ]
+  },
+  "fixed": {
+    "scenarios": 8,
+    "as_expected": 8,
+    "cross_tenant_ok": 0,
+    "rows": [
+      {
+        "scenario": "irsa-wildcard",
+        "cloud": "aliyun",
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "irsa-wildcard",
+        "cloud": "tencent",
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "bucket-public",
+        "cloud": "aliyun",
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "bucket-public",
+        "cloud": "tencent",
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "snapshot-share",
+        "cloud": "aliyun",
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "snapshot-share",
+        "cloud": "tencent",
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "sg-imds",
+        "cloud": "aliyun",
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "sg-imds",
+        "cloud": "tencent",
+        "as_expected": true,
+        "cross_tenant_ok": false
+      }
+    ]
+  }
+}

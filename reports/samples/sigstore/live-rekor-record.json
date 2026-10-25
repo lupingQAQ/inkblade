@@ -1,0 +1,21 @@
+{
+  "uuid": "108e9186e8c5677a1abbc42c871c2e7464e9c684908a504a3b83ec41758730a5f7bdf8fea556424f",
+  "logIndex": 3462554806,
+  "integratedTime": 1792943014,
+  "url": "https://rekor.sigstore.dev/api/v1/log/entries/108e9186e8c5677a1abbc42c871c2e7464e9c684908a504a3b83ec41758730a5f7bdf8fea556424f",
+  "artifact_sha256": "b508a6d5b43428586145b92f0200a9acda9d263a61c677f4160caf8231e578ac",
+  "mode": "key-based hashedrekord (not keyless)",
+  "tlog_checks": {
+    "tlog-body": true,
+    "tlog-logid": true,
+    "tlog-set": true,
+    "tlog-inclusion": true,
+    "tlog-checkpoint": true,
+    "tlog-online": true
+  },
+  "errors": [
+    "keyless-certificate",
+    "certificate-chain"
+  ],
+  "recorded_at": "2026-10-25T15:43:33Z"
+}

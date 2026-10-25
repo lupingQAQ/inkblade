@@ -20,7 +20,8 @@ from dataclasses import dataclass
 from ._asn1 import DerError, bit_string, decode_oid, integer, oid, read_tlv, seq
 
 __all__ = ["Curve", "CURVES", "PublicKey", "PrivateKey", "der_sig_to_rs", "rs_to_der_sig",
-           "load_pem_blocks", "ALG_ECDSA_SHA256", "ALG_ECDSA_SHA384", "ALG_RSA_SHA256"]
+           "load_pem_blocks", "ALG_ECDSA_SHA256", "ALG_ECDSA_SHA384", "ALG_RSA_SHA256",
+           "ALG_RSA_SHA384", "ALG_RSA_PSS"]
 
 OID_EC_PUBLIC_KEY = "1.2.840.10045.2.1"
 OID_RSA_ENCRYPTION = "1.2.840.113549.1.1.1"
@@ -29,7 +30,11 @@ OID_P384 = "1.3.132.0.34"
 ALG_ECDSA_SHA256 = "1.2.840.10045.4.3.2"
 ALG_ECDSA_SHA384 = "1.2.840.10045.4.3.3"
 ALG_RSA_SHA256 = "1.2.840.113549.1.1.11"
-_SIG_HASH = {ALG_ECDSA_SHA256: "sha256", ALG_ECDSA_SHA384: "sha384", ALG_RSA_SHA256: "sha256"}
+ALG_RSA_SHA384 = "1.2.840.113549.1.1.12"
+ALG_RSA_PSS = "1.2.840.113549.1.1.10"
+_SIG_HASH = {ALG_ECDSA_SHA256: "sha256", ALG_ECDSA_SHA384: "sha384",
+             ALG_RSA_SHA256: "sha256", ALG_RSA_SHA384: "sha384",
+             ALG_RSA_PSS: "pss"}
 
 
 @dataclass(frozen=True)
@@ -231,12 +236,19 @@ class PublicKey:
 
     @classmethod
     def from_jwk(cls, jwk: dict) -> "PublicKey":
-        """JWKS/JWK 的 RSA 公钥（n/e 为 base64url）。"""
-        if jwk.get("kty") != "RSA":
-            raise DerError(f"仅支持 RSA JWK，收到 {jwk.get('kty')!r}")
-        n = int.from_bytes(_b64url_decode(jwk["n"]), "big")
-        e = int.from_bytes(_b64url_decode(jwk["e"]), "big")
-        return cls(kind="rsa", n=n, e=e)
+        """JWK 公钥：RSA（n/e）或 EC P-256/P-384（x/y）。"""
+        if jwk.get("kty") == "RSA":
+            n = int.from_bytes(_b64url_decode(jwk["n"]), "big")
+            e = int.from_bytes(_b64url_decode(jwk["e"]), "big")
+            return cls(kind="rsa", n=n, e=e)
+        if jwk.get("kty") == "EC":
+            curve = {"P-256": "P-256", "P-384": "P-384"}.get(str(jwk.get("crv") or ""))
+            if curve is None:
+                raise DerError(f"不支持的 EC JWK 曲线 {jwk.get('crv')!r}")
+            return cls(kind="ec", curve=curve,
+                       x=int.from_bytes(_b64url_decode(jwk["x"]), "big"),
+                       y=int.from_bytes(_b64url_decode(jwk["y"]), "big"))
+        raise DerError(f"不支持的 JWK kty={jwk.get('kty')!r}")
 
     # ---------- 编码 ----------
     def to_spki_der(self) -> bytes:
@@ -258,7 +270,8 @@ class PublicKey:
         return jwk
 
     # ---------- 验签 ----------
-    def verify(self, alg_oid: str, message: bytes, signature: bytes) -> bool:
+    def verify(self, alg_oid: str, message: bytes, signature: bytes,
+               params: bytes | None = None) -> bool:
         if self.kind == "ec":
             curve = CURVES[self.curve]
             expected = {"P-256": ALG_ECDSA_SHA256, "P-384": ALG_ECDSA_SHA384}[self.curve]
@@ -270,19 +283,30 @@ class PublicKey:
                 return False
             return _ecdsa_verify(curve, (self.x, self.y), message, r, s)
         if self.kind == "rsa":
-            if alg_oid != ALG_RSA_SHA256:
-                return False
-            return _rsa_pkcs1_verify(self.n, self.e, message, signature)
+            if alg_oid == ALG_RSA_SHA256:
+                return _rsa_pkcs1_verify(self.n, self.e, message, signature, "sha256")
+            if alg_oid == ALG_RSA_SHA384:
+                return _rsa_pkcs1_verify(self.n, self.e, message, signature, "sha384")
+            if alg_oid == ALG_RSA_PSS:
+                return _rsa_pss_verify(self.n, self.e, message, signature, params or b"")
         return False
 
 
 # ---------------------------------------------------------------- RSA
 
 
-_SHA256_DIGEST_INFO_PREFIX = bytes.fromhex("3031300d060960864801650304020105000420")
+_DIGEST_INFO_PREFIX = {
+    "sha256": bytes.fromhex("3031300d060960864801650304020105000420"),
+    "sha384": bytes.fromhex("3041300d060960864801650304020205000430"),
+}
+_HASH_OID = {
+    "2.16.840.1.101.3.4.2.1": ("sha256", 32),
+    "2.16.840.1.101.3.4.2.2": ("sha384", 48),
+}
 
 
-def _rsa_pkcs1_verify(n: int, e: int, message: bytes, signature: bytes) -> bool:
+def _rsa_pkcs1_verify(n: int, e: int, message: bytes, signature: bytes,
+                      hash_name: str = "sha256") -> bool:
     k = (n.bit_length() + 7) // 8
     if len(signature) != k:
         return False
@@ -290,8 +314,8 @@ def _rsa_pkcs1_verify(n: int, e: int, message: bytes, signature: bytes) -> bool:
     if s >= n:
         return False
     em = pow(s, e, n).to_bytes(k, "big")
-    digest = hashlib.sha256(message).digest()
-    expected_tail = _SHA256_DIGEST_INFO_PREFIX + digest
+    digest = hashlib.new(hash_name, message).digest()
+    expected_tail = _DIGEST_INFO_PREFIX[hash_name] + digest
     padding_len = k - len(expected_tail) - 3
     if padding_len < 8:
         return False
@@ -306,10 +330,80 @@ def _rsa_pkcs1_verify(n: int, e: int, message: bytes, signature: bytes) -> bool:
 def _rsa_pkcs1_sign(n: int, d: int, message: bytes) -> bytes:
     k = (n.bit_length() + 7) // 8
     digest = hashlib.sha256(message).digest()
-    tail = _SHA256_DIGEST_INFO_PREFIX + digest
+    tail = _DIGEST_INFO_PREFIX["sha256"] + digest
     padding = b"\xff" * (k - len(tail) - 3)
     em = b"\x00\x01" + padding + b"\x00" + tail
     return pow(int.from_bytes(em, "big"), d, n).to_bytes(k, "big")
+
+
+def _mgf1(seed: bytes, length: int, hash_name: str) -> bytes:
+    out = bytearray()
+    counter = 0
+    while len(out) < length:
+        out.extend(hashlib.new(hash_name, seed + counter.to_bytes(4, "big")).digest())
+        counter += 1
+    return bytes(out[:length])
+
+
+def _parse_pss_params(params: bytes) -> tuple[str, int]:
+    """解析 RSASSA-PSS AlgorithmIdentifier 参数；返回 (hash_name, salt_len)。"""
+    hash_name, salt_len = "sha256", 32
+    if not params:
+        return hash_name, salt_len
+    try:
+        tag, body, _ = read_tlv(params, 0)
+        off = 0
+        while off < len(body):
+            tag, value, off = read_tlv(body, off)
+            if tag == 0xA0:  # hashAlgorithm
+                _, alg, _ = read_tlv(value, 0)
+                _, oid_raw, _ = read_tlv(alg, 0)
+                hash_name = _HASH_OID.get(decode_oid(oid_raw), (hash_name, 0))[0]
+            elif tag == 0xA1:  # maskGenAlgorithm = MGF1(hash)
+                _, alg, _ = read_tlv(value, 0)
+                _, mgf_oid, mgf_off = read_tlv(alg, 0)
+                if decode_oid(mgf_oid) == "1.2.840.113549.1.1.8":
+                    _, hash_alg, _ = read_tlv(alg, mgf_off)
+                    _, oid_raw, _ = read_tlv(hash_alg, 0)
+                    hash_name = _HASH_OID.get(decode_oid(oid_raw), (hash_name, 0))[0]
+            elif tag == 0xA2:
+                int_tag, int_value, _ = read_tlv(value, 0)
+                if int_tag == 0x02:
+                    salt_len = int.from_bytes(int_value, "big")
+    except DerError:
+        pass
+    return hash_name, salt_len
+
+
+def _rsa_pss_verify(n: int, e: int, message: bytes, signature: bytes,
+                    params: bytes) -> bool:
+    """RSASSA-PSS（MGF1）验签；支持 SHA-256/SHA-384、任意 salt 长度。"""
+    hash_name, salt_len = _parse_pss_params(params)
+    h_len = hashlib.new(hash_name).digest_size
+    em_bits = n.bit_length() - 1
+    em_len = (em_bits + 7) // 8
+    if len(signature) != em_len:
+        return False
+    s = int.from_bytes(signature, "big")
+    if s >= n:
+        return False
+    em = pow(s, e, n).to_bytes(em_len, "big")
+    if em[-1] != 0xBC:
+        return False
+    masked_db = em[:em_len - h_len - 1]
+    h = em[em_len - h_len - 1:-1]
+    unused_bits = 8 * em_len - em_bits
+    if unused_bits:
+        masked_db = bytes([masked_db[0] & (0xFF >> unused_bits)]) + masked_db[1:]
+    db = bytes(a ^ b for a, b in zip(masked_db, _mgf1(h, len(masked_db), hash_name)))
+    if unused_bits:
+        db = bytes([db[0] & (0xFF >> unused_bits)]) + db[1:]
+    ps_len = em_len - h_len - salt_len - 2
+    if ps_len < 0 or db[:ps_len] != b"\x00" * ps_len or db[ps_len] != 0x01:
+        return False
+    salt = db[-salt_len:] if salt_len else b""
+    m_prime = b"\x00" * 8 + hashlib.new(hash_name, message).digest() + salt
+    return hashlib.new(hash_name, m_prime).digest() == h
 
 
 # ---------------------------------------------------------------- 私钥（fixture 专用）

@@ -162,6 +162,34 @@ def main(argv=None) -> int:
     at.add_argument("--policy", default=None, help="策略 JSON（缺省使用内置 fixture 策略）")
     at.add_argument("--out", default=None)
 
+    skl = sub.add_parser("sign-keyless", help="Sigstore keyless 签名（Fulcio+Rekor；无 OIDC 时 fixture 降级）")
+    skl.add_argument("--artifact", required=True)
+    skl.add_argument("--out", default=None)
+    skl.add_argument("--identity-token-env", default="SIGSTORE_ID_TOKEN")
+    skl.add_argument("--identity", default="fixture@trident.local")
+    skl.add_argument("--issuer", default="https://fixture.trident.local")
+    skl.add_argument("--offline-fixture", action="store_true",
+                     help="强制本地 Fulcio/Rekor fixture（不使用 OIDC token）")
+    skl.add_argument("--live-rekor-key-entry", action="store_true",
+                     help="无 OIDC 时额外向公共 Rekor 上传 key-based hashedrekord（非 keyless）")
+    skl.add_argument("--fulcio-url", default="https://fulcio.sigstore.dev")
+    skl.add_argument("--rekor-url", default="https://rekor.sigstore.dev")
+    skl.add_argument("--no-upload", action="store_true", help="live 模式只取 Fulcio 证书，不上传 Rekor")
+
+    vkl = sub.add_parser("verify-keyless", help="校验 Sigstore keyless bundle（Fulcio 链/Rekor/SET/身份）")
+    vkl.add_argument("--artifact", required=True)
+    vkl.add_argument("--bundle", required=True)
+    vkl.add_argument("--identity", default=None, help="SAN email/URI 精确匹配")
+    vkl.add_argument("--identity-regex", default=None)
+    vkl.add_argument("--issuer", default=None, help="Fulcio OIDC issuer")
+    vkl.add_argument("--trust-bundle", default=None, help="Fulcio trustBundle JSON（缺省 bundle/内置缓存）")
+    vkl.add_argument("--rekor-log", default=None)
+    vkl.add_argument("--rekor-public-key", default=None, help="PEM 路径或 PEM 文本")
+    vkl.add_argument("--online", action="store_true", help="在线重取 Rekor 条目比对")
+    vkl.add_argument("--rekor-url", default="https://rekor.sigstore.dev")
+    vkl.add_argument("--revoked-serial", action="append", default=[])
+    vkl.add_argument("--out", default=None)
+
     exp = sub.add_parser("export", help="机器可读导出：SARIF / OCSF / VEX")
     exp.add_argument("--workspace", default="local-lab")
     exp.add_argument("--run", required=True)
@@ -444,6 +472,67 @@ def main(argv=None) -> int:
             return 2
         if args.out is None:
             print(json.dumps(verdict, ensure_ascii=False, indent=2))
+        return 0 if verdict["ok"] else 2
+
+    if args.cmd == "sign-keyless":
+        from . import sigstore_keyless as sk
+
+        try:
+            artifact = Path(args.artifact).read_bytes()
+            token = None if args.offline_fixture else os.environ.get(args.identity_token_env)
+            bundle = None
+            fallback = ""
+            if token:
+                try:
+                    bundle = sk.keyless_sign(
+                        artifact, identity_token=token, fulcio_url=args.fulcio_url,
+                        rekor_url=args.rekor_url, upload=not args.no_upload)
+                except sk.SigstoreError as exc:
+                    fallback = str(exc)
+                    print(f"trident sign-keyless: live 失败，降级 fixture：{exc}", file=sys.stderr)
+            if bundle is None:
+                bundle = sk.keyless_sign(
+                    artifact, identity=args.identity, issuer=args.issuer,
+                    rekor_url=args.rekor_url, live_rekor_key_entry=args.live_rekor_key_entry)
+            if fallback:
+                bundle.setdefault("trident", {})["fallback_reason"] = fallback
+            if args.out:
+                Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+                Path(args.out).write_text(json.dumps(bundle, ensure_ascii=False, indent=2) + "\n",
+                                          encoding="utf-8")
+        except (OSError, ValueError) as exc:
+            print(f"trident sign-keyless: {exc}", file=sys.stderr)
+            return 2
+        mode = (bundle.get("trident") or {}).get("mode", "unknown")
+        if args.out is None:
+            print(json.dumps(bundle, ensure_ascii=False, indent=2))
+        else:
+            print(f"sign-keyless: {args.out}（mode={mode}）")
+        return 0
+
+    if args.cmd == "verify-keyless":
+        from . import sigstore_keyless as sk
+
+        try:
+            artifact = Path(args.artifact).read_bytes()
+            bundle = json.loads(Path(args.bundle).read_text(encoding="utf-8"))
+            verdict = sk.keyless_verify(
+                artifact, bundle, identity=args.identity,
+                identity_regex=args.identity_regex, issuer=args.issuer,
+                trust_bundle=args.trust_bundle, rekor_log=args.rekor_log,
+                rekor_public_key=args.rekor_public_key, online=args.online,
+                rekor_url=args.rekor_url, revoked_serials=args.revoked_serial)
+            if args.out:
+                Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+                Path(args.out).write_text(json.dumps(verdict, ensure_ascii=False, indent=2) + "\n",
+                                          encoding="utf-8")
+        except (OSError, ValueError) as exc:
+            print(f"trident verify-keyless: {exc}", file=sys.stderr)
+            return 2
+        if args.out is None:
+            print(json.dumps(verdict, ensure_ascii=False, indent=2))
+        else:
+            print(f"verify-keyless: {args.out}（ok={verdict['ok']} mode={verdict['mode']}）")
         return 0 if verdict["ok"] else 2
 
     if args.cmd == "export":

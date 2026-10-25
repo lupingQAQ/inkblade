@@ -1,0 +1,66 @@
+{
+  "mediaType": "application/vnd.dev.sigstore.bundle.v0.3+json",
+  "verificationMaterial": {
+    "x509CertificateChain": {
+      "certificates": [
+        {
+          "rawBytes": "MIIBkDCCATagAwIBAgIIIGzqngFStXowCgYIKoZIzj0EAwIwLjEsMCoGA1UEAwwjVHJpZGVudCBGaXh0dXJlIEZ1bGNpbyBJbnRlcm1lZGlhdGUwHhcNMjYxMDI1MTE1NTAwWhcNMjYxMDI1MTMwMDAwWjALMQkwBwYDVQQDDAAwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASUFcmMVTDXj/oeDJb+d+6D+sHEdWLcPo4LpYmw4b7gohWnws2hJFe7bBGM16UbJ/zBIRDFkav2+1hVU3nyGjlxo2EwXzAMBgNVHRMBAf8EAjAAMCAGA1UdEQQZMBeBFWZpeHR1cmVAdHJpZGVudC5sb2NhbDAtBgorBgEEAYO/MAEIBB8MHWh0dHBzOi8vZml4dHVyZS50cmlkZW50LmxvY2FsMAoGCCqGSM49BAMCA0gAMEUCIBCyoAQxkb554c/4PGXo8goc8Md3tfN1EoMyiZIqX+bkAiEA9nX5TBMvDFM9wsPXUiWicrp7iJTVeWwniIv16zligko="
+        },
+        {
+          "rawBytes": "MIIBVjCB/KADAgECAgECMAoGCCqGSM49BAMCMCYxJDAiBgNVBAMMG1RyaWRlbnQgRml4dHVyZSBGdWxjaW8gUm9vdDAeFw0yNjEwMjQxMjAwMDBaFw0yNzEwMjUxMjAwMDBaMC4xLDAqBgNVBAMMI1RyaWRlbnQgRml4dHVyZSBGdWxjaW8gSW50ZXJtZWRpYXRlMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE4ZwWACNWnks80o8aGN3hK4ZPhUFoyKsL6m+RTnOV6er8kACKZ1Nf7lF6u+3XT15HoJuVuvl5F5nzoUm+JXvSfKMTMBEwDwYDVR0TAQH/BAUwAwEB/zAKBggqhkjOPQQDAgNJADBGAiEAnl/6IeZn+IbmzKcaYCKTo5ZqdCpKr8rGWsbjn7IVCZsCIQDY8SBSslphfBX1MjsVxUyibJMqWnTD7JEGpIW2svZPew=="
+        }
+      ]
+    },
+    "tlogEntries": [
+      {
+        "logIndex": 1,
+        "logId": {
+          "keyId": "QOIlKmdbFou8PpcTrScja11bhpzitxtzi/Huf7kKX28="
+        },
+        "kindVersion": {
+          "kind": "hashedrekord",
+          "version": "0.0.1"
+        },
+        "integratedTime": 1792929600,
+        "inclusionPromise": {
+          "signedEntryTimestamp": "MEUCIDeqB+1Gvg+lvVbhcebXX+kMFShOVIrF+1JrSmm7jIL0AiEAwR+wF6TH52qhUaSbU0/uTPFXO1Yldbc/J3cd9WmuiHk="
+        },
+        "inclusionProof": {
+          "logIndex": 1,
+          "rootHash": "3d8cadc786e141aaa268907cee24b3b58b633c80da5389ae03ff87ebb21d752c",
+          "treeSize": 1,
+          "hashes": [],
+          "checkpoint": "fixture.rekor.local - 4675340227216873099\n1\nPYytx4bhQaqiaJB87iSztYtjPIDaU4muA/+H67IddSw=\n\n— fixture.rekor.local QOIlKjBFAiAoovjAO1mwRTWznwDdUeSfKU8QaLNCgJPk0wgv7+L/HQIhAKGcJga8xb+fR5DPd7Yti3axZQ5C1gQfLowRBy6K7egc\n"
+        },
+        "canonicalizedBody": "eyJhcGlWZXJzaW9uIjoiMC4wLjEiLCJraW5kIjoiaGFzaGVkcmVrb3JkIiwic3BlYyI6eyJkYXRhIjp7Imhhc2giOnsiYWxnb3JpdGhtIjoic2hhMjU2IiwidmFsdWUiOiJlMGJkY2MxYjBmZDYyYWZhYTIzOGY0OTNiNzQwMzQ1NzFjZTA5YWFiODBjMjc2YzI1MmYyMGRiYjQwYWU4MzY2In19LCJzaWduYXR1cmUiOnsiY29udGVudCI6Ik1FVUNJUUN3NEN4R3dwWnRGYXRua292SURVWXBqenhKKzJ1YVd1YUJTek1mQkNBSjBBSWdkNVpCQ01ibHdCQ0tLZ0FGREVVUFNsMEpNR09HNFhxdjYzQnNTeE1KOTZrPSIsInB1YmxpY0tleSI6eyJjb250ZW50IjoiTFMwdExTMUNSVWRKVGlCRFJWSlVTVVpKUTBGVVJTMHRMUzB0Q2sxSlNVSnJSRU5EUVZSaFowRjNTVUpCWjBsSlNVZDZjVzVuUmxOMFdHOTNRMmRaU1V0dldrbDZhakJGUVhkSmQweHFSWE5OUTI5SFFURlZSVUYzZDJvS1ZraEtjRnBIVm5Wa1EwSkhZVmhvTUdSWVNteEpSVm94WWtkT2NHSjVRa3BpYmxKc1kyMHhiRnBIYkdoa1IxVjNTR2hqVGsxcVdYaE5SRWt4VFZSRk1RcE9WRUYzVjJoalRrMXFXWGhOUkVreFRWUk5kMDFFUVhkWGFrRk1UVkZyZDBKM1dVUldVVkZFUkVGQmQxZFVRVlJDWjJOeGFHdHFUMUJSU1VKQ1oyZHhDbWhyYWs5UVVVMUNRbmRPUTBGQlUxVkdZMjFOVmxSRVdHb3ZiMlZFU21JclpDczJSQ3R6U0VWa1YweGpVRzgwVEhCWmJYYzBZamRuYjJoWGJuZHpNbWdLU2tabE4ySkNSMDB4TmxWaVNpOTZRa2xTUkVacllYWXlLekZvVmxVemJubEhhbXg0YnpKRmQxaDZRVTFDWjA1V1NGSk5Ra0ZtT0VWQmFrRkJUVU5CUndwQk1WVmtSVkZSV2sxQ1pVSkdWMXB3WlVoU01XTnRWa0ZrU0Vwd1drZFdkV1JETlhOaU1rNW9Za1JCZEVKbmIzSkNaMFZGUVZsUEwwMUJSVWxDUWpoTkNraFhhREJrU0VKNlQyazRkbHB0YkRSa1NGWjVXbE0xTUdOdGJHdGFWelV3VEcxNGRsa3lSbk5OUVc5SFEwTnhSMU5OTkRsQ1FVMURRVEJuUVUxRlZVTUtTVUpEZVc5QlVYaHJZalUxTkdNdk5GQkhXRzg0WjI5ak9FMWtNM1JtVGpGRmIwMTVhVnBKY1ZnclltdEJhVVZCT1c1WU5WUkNUWFpFUmswNWQzTlFXQXBWYVZkcFkzSndOMmxLVkZabFYzZHVhVWwyTVRaNmJHbG5hMjg5Q2kwdExTMHRSVTVFSUVORlVsUkpSa2xEUVZSRkxTMHRMUzBLIn19fX0="
+      }
+    ]
+  },
+  "messageSignature": {
+    "messageDigest": {
+      "algorithm": "SHA2_256",
+      "digest": "4L3MGw/WKvqiOPSTt0A0VxzgmquAwnbCUvINu0Cug2Y="
+    },
+    "signature": "MEUCIQCw4CxGwpZtFatnkovIDUYpjzxJ+2uaWuaBSzMfBCAJ0AIgd5ZBCMblwBCKKgAFDEUPSl0JMGOG4Xqv63BsSxMJ96k="
+  },
+  "trident": {
+    "mode": "fixture",
+    "artifact_sha256": "e0bdcc1b0fd62afaa238f493b74034571ce09aab80c276c252f20dbb40ae8366",
+    "created_at": "2026-10-25T12:00:00Z",
+    "identity": "fixture@trident.local",
+    "issuer": "https://fixture.trident.local",
+    "fulcio": "fixture-ca",
+    "rekor": "fixture-log",
+    "trust_bundle": {
+      "chains": [
+        {
+          "certificates": [
+            "-----BEGIN CERTIFICATE-----\nMIIBVjCB/KADAgECAgECMAoGCCqGSM49BAMCMCYxJDAiBgNVBAMMG1RyaWRlbnQg\nRml4dHVyZSBGdWxjaW8gUm9vdDAeFw0yNjEwMjQxMjAwMDBaFw0yNzEwMjUxMjAw\nMDBaMC4xLDAqBgNVBAMMI1RyaWRlbnQgRml4dHVyZSBGdWxjaW8gSW50ZXJtZWRp\nYXRlMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE4ZwWACNWnks80o8aGN3hK4ZP\nhUFoyKsL6m+RTnOV6er8kACKZ1Nf7lF6u+3XT15HoJuVuvl5F5nzoUm+JXvSfKMT\nMBEwDwYDVR0TAQH/BAUwAwEB/zAKBggqhkjOPQQDAgNJADBGAiEAnl/6IeZn+Ibm\nzKcaYCKTo5ZqdCpKr8rGWsbjn7IVCZsCIQDY8SBSslphfBX1MjsVxUyibJMqWnTD\n7JEGpIW2svZPew==\n-----END CERTIFICATE-----\n",
+            "-----BEGIN CERTIFICATE-----\nMIIBTTCB9KADAgECAgEBMAoGCCqGSM49BAMCMCYxJDAiBgNVBAMMG1RyaWRlbnQg\nRml4dHVyZSBGdWxjaW8gUm9vdDAeFw0yNjEwMjQxMjAwMDBaFw0yNzEwMjUxMjAw\nMDBaMCYxJDAiBgNVBAMMG1RyaWRlbnQgRml4dHVyZSBGdWxjaW8gUm9vdDBZMBMG\nByqGSM49AgEGCCqGSM49AwEHA0IABCJ6GxEeqzLAeVDO1EO9sIDSfQseLUj1AVqt\n3ddKukJQozcLCPlhR60NdOuyUhX3W7GITi2M4OC8EIKgBZeMJU6jEzARMA8GA1Ud\nEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwIDSAAwRQIgEOk7yGx7uOhhrEGsNnj/YaRm\n42HaYlAksn0bw+ZnhNMCIQCYJpxWKkbo3Xar+r2Tn8biAJAMpW6QrLUgYNwVi8Wl\nqQ==\n-----END CERTIFICATE-----\n"
+          ]
+        }
+      ]
+    },
+    "rekor_public_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAECUY/Zl9fEzpDl4lG8BswRkszxzej\nm3xrZERuGUag+YwAQ9Vxg2v0sm0G69YctGIBSnkYfLozMAAvOCypayALeQ==\n-----END PUBLIC KEY-----\n"
+  }
+}

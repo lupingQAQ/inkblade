@@ -12,6 +12,31 @@
 
 ---
 
+## 5 分钟上手 / 5-minute quickstart
+
+> 不需要 `pip install`、不需要 kubeconfig、不需要 LLM key、不需要 bash。以下命令在仓库根目录执行（Windows / macOS / Linux 均可）。
+
+```bash
+# 1) 环境自检：Python、写权限、端口、可选依赖、mock / 真集群二选一
+python -m trident doctor
+
+# 2) 一键 demo：建 demo 工作区 → 建 lead/tester → 签 demo 授权 → 起 mock 靶场
+#    → 跑 2 模块 + 1 链 → 生成双语报告与规则包
+python -m trident demo
+
+# 3) 接真实集群：5 问向导（目标 / 范围 / 级别 / 用户 / 签授权；失败可重入）
+python -m trident quickstart
+```
+
+第 2 条命令结束时会直接打印：发现数（按严重度）、链两步状态、双语报告路径、规则包路径、Web UI 路径与下一步。默认只写 `./demo/`，**不读取、不修改真实集群**；`--no-ui` 跳过 UI 导出，`--keep` 保留 mock 靶场进程（Ctrl+C 结束）。
+
+实测（Windows 11 / Python 3.12，本机 mock）：`doctor` 0.2 秒，`demo` 18.3 秒，**首次有效结果 18.5 秒**；陌生用户走查基线与改造后对照见 [`docs/ONBOARDING-EVALUATION.md`](docs/ONBOARDING-EVALUATION.md)。
+
+想用 `trident ...` 短命令：`python -m pip install -e .` 后即可；不装也能用 `python -m trident ...`。
+不需要：kubeconfig、外部网络、LLM key、bash、第三方 Python 包。
+
+---
+
 ## 能力 / Capabilities
 
 - **七层架构**：授权治理、链编排、模块库、三层证据、双语报告、六视图 SPA、规则包转化。详见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
@@ -24,9 +49,28 @@
 - **模型供应链与机密计算**：CycloneDX ML-BOM 风格 AI SBOM、cosign 风格 provenance 三元组校验、TDX/SEV-SNP/NVIDIA CC 证明解析与策略断言（本地 fixture 驱动，篡改必失败）；见 [`trident/supplychain.py`](trident/supplychain.py)。
 - **机器可读导出**：`trident export --format sarif|ocsf|vex` 输出 SARIF 2.1.0、OCSF 1.x Detection Finding 与 OpenVEX 风格 JSON；见 [`trident/export.py`](trident/export.py)。
 - **规则转化**：Kyverno / Gatekeeper / NetworkPolicy（native、Calico、Cilium）/ Sigma / Falco / Suricata，规则↔链覆盖率硬校验 + 紫队重放矩阵。
-- **SOTA 能力矩阵**：2026-10 公开参照对照与诚实差距（万卡实测、真实 ARTEX 对比、硬件 TEE 实测等未达成项及追赶路径）见 [`docs/SOTA-2026-10.md`](docs/SOTA-2026-10.md)。
+- **试点模式（2026-10）**：`trident pilot` 导入客户 kubeconfig（多文件/多 context/多 cluster 合并）→ 只读清点（仅 `kubectl get`）→ 环境画像 + 风险热图 + 分阶段测试计划（窗口/停止条件/回滚预案）+ pilot-report 与审批清单；默认只读，`--allow-write` 仍需 ROE/级别/备份三闸门。见 [`trident/pilot.py`](trident/pilot.py)、[`docs/ENTERPRISE-READINESS.md`](docs/ENTERPRISE-READINESS.md)。
+- **企业集成适配（2026-10）**：OIDC/LDAP mock 登录适配、Splunk HEC / Elastic `_bulk` / Webhook HMAC / Jira / ServiceNow 契约、lead→安全负责人双签审批链、报告哈希+时间戳/签核/保留策略；本地 HTTP 契约测试。见 [`trident/enterprise/`](trident/enterprise/)。
+- **企业就绪三态清单**：六类差距（真实环境/规模/数据与窗口/误报漏报/集成/合规运营）60 项，绿 27 / 黄 12 / 红 21，禁止全绿粉饰；POC→Lab→Pilot→Production 四阶段量化门槛见 [`docs/ENTERPRISE-READINESS.md`](docs/ENTERPRISE-READINESS.md)。真实感实验室 FP/FN 见 [`docs/ENTERPRISE-LAB-RESULTS.md`](docs/ENTERPRISE-LAB-RESULTS.md)。
+- **SOTA 能力矩阵**：2026-10 公开参照对照与三态（真实验证 / 模拟验证 / 仍未达成）+ 证据路径，见 [`docs/SOTA-2026-10.md`](docs/SOTA-2026-10.md)。**企业就绪单列**，不用任一单项（pilot/适配器/实验室）冒充整体就绪。
+- **免费资源补齐（2026-10-25）**：Sigstore keyless 公共验证与 Rekor 写入（[KEYLESS-VERIFICATION](docs/KEYLESS-VERIFICATION.md)）、Intel PCS / AMD KDS / NVIDIA NRAS 公共证书链（[TEE-ONLINE-VERIFICATION](docs/TEE-ONLINE-VERIFICATION.md)）、AWS/Azure/GCP emulator + 阿里/腾讯契约（[CLOUD-FREE-TIER-RUNBOOK](docs/CLOUD-FREE-TIER-RUNBOOK.md)）、1,024–10,000 节点 fabric 仿真（[FABRIC-SIM-RESULTS](docs/FABRIC-SIM-RESULTS.md)）、8 租户 SaaS 本地压测（[SAAS-LOAD-RESULTS](docs/SAAS-LOAD-RESULTS.md)）。除公共 keyless 验证/TEE 公共链外均为模拟/本地，不冒充真实硬件或云账号。
 - **实效验证**：`trident/verify-effects.py` 在本机真实进程/真实 HTTP 上逐项验证管理面利用、权重投毒、备份回滚、RCE、数据泄露、检测规则、端到端链与长上下文/PD KV 四项效果（当前落盘 17/17 PASS；fabric 三项台账另记 3/3，两处待合并）；见 [`docs/EFFECT-VERIFICATION.md`](docs/EFFECT-VERIFICATION.md) 与 [`docs/LONG-CONTEXT.md`](docs/LONG-CONTEXT.md)。
 - **ARTEX clean-room 功能对齐（2026-10）**：按公开功能描述独立实现 LLM 多模型池、通知渠道与事件规则、任务模板（含从 run 反推）、一次性日历窗口、run 内侧问、图快照/跨 run 差异、跨 run 只读黑板、已批准提议的 bounded 并发执行（1–8，默认 1）；竞争矩阵 S/M backlog 30 项已清零。功能×实现×测试×状态见 [`docs/ARTEX-PARITY.md`](docs/ARTEX-PARITY.md)。
+
+## 能力分档 / Maturity tiers
+
+> 三档是交付证据等级，不是营销标签。**禁止把 demo 或试点能力写成生产已验证**。
+
+| 档位 | 本仓库能做什么（证据） | 不能宣称 / 仍需客户环境 |
+|---|---|---|
+| **demo** | mock 靶场真实 HTTP/进程效果验证（20/20）、单节点 k3s 真 apiserver/CNI/NetworkPolicy（6/6 模块、16 findings）、规则包 + 紫队矩阵、双语报告/证据 manifest、SPA 离线导出。 | 不能称生产就绪、支持万卡、通过客户合规认证；单节点 k3s ≠ 多节点/客户 CNI。 |
+| **试点（Pilot）** | `trident pilot` 只读清点客户 kubeconfig（多 context/多 cluster 合并）→ 环境画像/风险热图/分阶段计划/审批清单；默认只读，写计划需 `--allow-write` + ROE/级别/备份三闸门；`docs/ENTERPRISE-READINESS.md` 的四阶段门槛与 60 项三态清单（绿 27/黄 12/红 21）。 | 不能称 pilot 已验收；误报/漏报必须在客户标注样本重测；写验证需双签/备份/窗口；fixture FP/FN 不可外推。 |
+| **生产（Production）** | 本仓库提供可运营的基础：授权/证据/回滚/审批/导出/报告签核/保留策略 + HA/升级/备份 runbook。 | **本仓库不是生产发行版**：HA/多副本队列/租户 KMS/客户 IdP/真实 SIEM/ITSM/TSA 需客户环境补齐并演练；SLA/保险/合规认证需合同与客户签核。 |
+
+**禁止宣称清单**：
+- 不得称「企业生产验证通过」「万卡实测」「替代 SOC/合规认证」「零误报」；
+- 不得把 `lab/saas` 单机压测、fixture FP/FN、单节点 k3s 当作客户 SLA/容量/准确率证据；
+- 不得在未双签/未备份/未窗口时执行写验证；不得隐藏三态清单中的 🔴 项。
 
 ## 边界 / Boundaries
 
@@ -46,7 +90,9 @@ Trident 的 ARTEX 对齐功能（`trident/core/llmpool.py`、`notify.py`、`temp
 
 The ARTEX-parity features are clean-room implementations derived solely from public functional descriptions and generic protocol knowledge. No ARTEX (AGPL-3.0) source code was read, copied, adapted, or line-by-line translated; interfaces, data models, gates, and tests are independently designed.
 
-## 快速开始 / Quick start
+## 完整快速开始（开发者） / Full quickstart (developers)
+
+> 首次接触请先走上面的「5 分钟上手」；本节保留安装、全量测试、前台 mock、UI 与验收脚本的开发者路径。
 
 ```bash
 # 1) 安装（无运行时第三方依赖）
@@ -88,8 +134,12 @@ python scripts/check-public-tree.py                # 公开树 0 命中（无内
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | 七层架构图与职责边界 |
 | [`docs/design.md`](docs/design.md) | 设计基线与漏洞研究分类（中性引用） |
 | [`docs/RUNBOOK.md`](docs/RUNBOOK.md) | 安装、授权、模块/链、报告、回滚、实验室边界 |
+| [`docs/ONBOARDING-EVALUATION.md`](docs/ONBOARDING-EVALUATION.md) | 陌生用户走查实测：基线 vs 改造后、命令数/耗时/失败、根因与修复清单 |
 | [`docs/EFFECT-VERIFICATION.md`](docs/EFFECT-VERIFICATION.md) | 实效验证 PASS/FAIL 表与证据摘要 |
 | [`docs/SOTA-2026-10.md`](docs/SOTA-2026-10.md) | 2026-10 SOTA 能力矩阵、诚实差距与追赶路径 |
+| [`docs/ENTERPRISE-READINESS.md`](docs/ENTERPRISE-READINESS.md) | 六类企业差距、POC→Lab→Pilot→Production 门槛、60 项三态清单（绿/黄/红） |
+| [`docs/ENTERPRISE-LAB-RESULTS.md`](docs/ENTERPRISE-LAB-RESULTS.md) | 真实感实验室：三场景 FP/FN、Kyverno/Falco/NetworkPolicy 生效状态、fixture 与真实集群分列 |
+| [`docs/OPERATIONS.md`](docs/OPERATIONS.md) | HA/升级/备份/回滚 runbook、单机多租户压测、许可证与交付边界 |
 | [`docs/REFLECTION-XBOW-ARTEX-KUBETRAIL.md`](docs/REFLECTION-XBOW-ARTEX-KUBETRAIL.md) | XBow/ARTEX/KubeTrail 对标反思：已对齐/待补/不补+理由（确定性执行差异化声明） |
 | [`docs/DELIVERY.md`](docs/DELIVERY.md) | 交付包结构与样张说明 |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | 开发、测试、模块作者规范 |

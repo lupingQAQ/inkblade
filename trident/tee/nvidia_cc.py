@@ -19,7 +19,8 @@ import time
 from dataclasses import dataclass, field
 
 from ._asn1 import DerError
-from .keys import ALG_RSA_SHA256, PublicKey, b64url_decode
+from .keys import (ALG_ECDSA_SHA256, ALG_ECDSA_SHA384, ALG_RSA_SHA256, PublicKey,
+                   b64url_decode)
 
 __all__ = ["NvidiaJwt", "NvidiaVerification", "parse_jwt", "verify_jwt", "NvidiaJwtError"]
 
@@ -83,8 +84,8 @@ def parse_jwt(token: str) -> NvidiaJwt:
     header = _decode_json(parts[0])
     claims = _decode_json(parts[1])
     signature = b64url_decode(parts[2])
-    if header.get("alg") != "RS256":
-        raise NvidiaJwtError(f"只接受 RS256，收到 {header.get('alg')!r}")
+    if header.get("alg") not in ("RS256", "ES384", "ES256"):
+        raise NvidiaJwtError(f"只接受 RS256/ES384/ES256，收到 {header.get('alg')!r}")
     if not signature:
         raise NvidiaJwtError("JWT 签名为空")
     return NvidiaJwt(header=header, claims=claims,
@@ -132,17 +133,22 @@ def verify_jwt(token: str, jwks: dict | list, *, issuer: str | None = NRAS_ISSUE
                                   claims_valid=False, errors=[str(exc)])
 
     signature_valid = False
+    sig_alg = {"RS256": ALG_RSA_SHA256, "ES384": ALG_ECDSA_SHA384,
+               "ES256": ALG_ECDSA_SHA256}[str(jwt.header.get("alg"))]
+    expected_kind = "rsa" if sig_alg == ALG_RSA_SHA256 else "ec"
     try:
         keys = _select_keys(jwks, jwt.kid)
     except NvidiaJwtError as exc:
         errors.append(str(exc))
         keys = []
     for key in keys:
-        if key.verify(ALG_RSA_SHA256, jwt.signing_input, jwt.signature):
+        if key.kind != expected_kind:
+            continue
+        if key.verify(sig_alg, jwt.signing_input, jwt.signature):
             signature_valid = True
             break
     if keys and not signature_valid:
-        errors.append("RS256 验签失败（签名或 JWKS 不匹配）")
+        errors.append(f"{jwt.header.get('alg')} 验签失败（签名或 JWKS 不匹配）")
     if not jwt.kid:
         errors.append("JWT header 缺 kid（无法定位 JWKS 公钥）")
 

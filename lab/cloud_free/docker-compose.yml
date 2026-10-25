@@ -1,0 +1,46 @@
+# 免费/本地云 emulator 栈（需 Docker；本机 2026-10-25 未安装 Docker，
+# 因此本文件的命令为交付待跑，实际执行路径是 python-mock-endpoints）。
+services:
+  localstack:
+    image: localstack/localstack:3.8
+    container_name: trident-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: s3
+      DEBUG: "0"
+      PERSISTENCE: "0"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:4566/_localstack/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:3.33.0
+    container_name: trident-azurite
+    command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000 --location /data --debug /data/debug.log
+    ports:
+      - "10000:10000"
+    volumes:
+      - azurite-data:/data
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "10000"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  fake-gcs-server:
+    image: fsouza/fake-gcs-server:1.49
+    container_name: trident-fake-gcs
+    command: -scheme http -host 0.0.0.0 -port 4443 -backend memory
+    ports:
+      - "4443:4443"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:4443/storage/v1/b"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  azurite-data:

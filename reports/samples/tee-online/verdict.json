@@ -1,0 +1,170 @@
+{
+  "schema": "trident-tee-online-verdict/2026-10",
+  "checked_at": "2026-10-25T16:00:00Z",
+  "source": "online_cache (official samples fetched 2026-10-25)",
+  "intel": {
+    "ok": true,
+    "errors": [],
+    "checks": [
+      {
+        "name": "schema",
+        "ok": true,
+        "detail": "tcbInfo + signature"
+      },
+      {
+        "name": "certificate-chain",
+        "ok": true,
+        "detail": "certs=2"
+      },
+      {
+        "name": "tcb-signature",
+        "ok": true,
+        "detail": "ECDSA P-256 over minified tcbInfo"
+      },
+      {
+        "name": "fmspc",
+        "ok": true,
+        "detail": "fmspc=90c06f000000"
+      },
+      {
+        "name": "validity-window",
+        "ok": true,
+        "detail": "issue=2026-10-25T15:14:48Z next=2026-11-24T15:14:48Z now=2026-10-25T16:00:00+00:00"
+      },
+      {
+        "name": "tcb-levels",
+        "ok": true,
+        "detail": "levels=4"
+      },
+      {
+        "name": "tcb-no-revoked-levels",
+        "ok": true,
+        "detail": "revoked_levels=0"
+      }
+    ],
+    "fmspc": "90c06f000000",
+    "url": "cache://intel_tdx_tcb_90c06f000000.json",
+    "issueDate": "2026-10-25T15:14:48Z",
+    "nextUpdate": "2026-11-24T15:14:48Z",
+    "levels": 4,
+    "statuses": [
+      "OutOfDate",
+      "UpToDate"
+    ],
+    "chain": [
+      [
+        "Intel SGX TCB Signing",
+        "Intel SGX Root CA",
+        false
+      ],
+      [
+        "Intel SGX Root CA",
+        "Intel SGX Root CA",
+        true
+      ]
+    ]
+  },
+  "amd": {
+    "ok": true,
+    "errors": [],
+    "checks": [
+      {
+        "name": "ask-ark-chain",
+        "ok": true,
+        "detail": "certs=2"
+      },
+      {
+        "name": "vcek-chain",
+        "ok": true,
+        "detail": "vcek_issuer=''"
+      },
+      {
+        "name": "vcek-validity",
+        "ok": true,
+        "detail": "2026-10-24~2033-10-24"
+      },
+      {
+        "name": "crl-signature",
+        "ok": true,
+        "detail": "ARK/ASK 对 CRL 验签"
+      },
+      {
+        "name": "crl-issuer",
+        "ok": true,
+        "detail": "CRL issuer = ARK"
+      },
+      {
+        "name": "crl-fresh",
+        "ok": true,
+        "detail": "nextUpdate=2026-11-09T01:00:00+00:00"
+      },
+      {
+        "name": "vcek-not-revoked",
+        "ok": true,
+        "detail": "serial 未吊销"
+      }
+    ],
+    "revoked": false,
+    "crl_status": "serial 未吊销",
+    "crl_serials": 1,
+    "vcek_serial": 0,
+    "paths": {
+      "chain": "amd_milan_cert_chain.pem",
+      "crl": "amd_milan_crl.der",
+      "vcek": "amd_milan_vcek.der"
+    },
+    "vcek_subject": "",
+    "vcek_issuer": "",
+    "vcek_not_before": "2026-10-24T16:49:22+00:00",
+    "vcek_not_after": "2033-10-24T16:49:22+00:00",
+    "crl_this_update": "2026-09-22T07:35:42+00:00",
+    "crl_next_update": "2026-11-09T01:00:00+00:00",
+    "crl_revoked_serials": 1,
+    "crl_signature_valid": true,
+    "chain": [
+      [
+        "",
+        "",
+        true,
+        "1.2.840.113549.1.1.10"
+      ],
+      [
+        "",
+        "",
+        true,
+        "1.2.840.113549.1.1.10"
+      ]
+    ]
+  },
+  "nvidia": {
+    "ok": true,
+    "errors": [],
+    "checks": [
+      {
+        "name": "jwks-schema",
+        "ok": true,
+        "detail": "keys=234"
+      },
+      {
+        "name": "jwks-kid",
+        "ok": true,
+        "detail": "kids=234"
+      },
+      {
+        "name": "jwks-alg",
+        "ok": true,
+        "detail": "algs=['ES384'] invalid=[]"
+      }
+    ],
+    "keys": 234,
+    "note": "official JWKS structure only; JWT fixture tests in tests/test_tee_online.py",
+    "kty": {
+      "EC": 234
+    },
+    "curves": {
+      "P-384": 234
+    },
+    "sample_kid": "nv-eat-kid-prod-20261024125606471-c57d9235-401b-48d0-8099-ac1de68c36c9"
+  },
+  "ok": true
+}

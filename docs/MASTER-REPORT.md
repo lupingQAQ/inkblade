@@ -576,13 +576,13 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 **终态**：真实：未达成。模拟：已做。未达成：10K+ GPU 裸机、真实 NCCL/RDMA/SHARP 数据面、真实故障域。
 
-**已做验证**：`docs/SCALE-RESULTS.md` 用合成 100/1,000/5,000/10,000 个 K8s 对象跑 11 个侦察模块、可达性图和规则生成：10,000 对象总耗时 1.645s，侦察 40.4ms，峰值 RSS 54MB，findings 10,891；三处 O(n²) 改索引后，同输入 330.8ms→46.5ms（×7.11），findings 逐条一致。真 k3s 只到 204 个对象：采集 6.4s，11 模块 199.7ms，145 findings。`docs/FABRIC-ATTACK-SURFACE.md` 用 `lab/fabric_dos_sim.py` 做 11 个 fabric 面的控制面/数据面语义仿真（SHARP 会话、IB SM、PFC、NCCL 端口、checkpoint IO、IMDS、KV OOM、梯度、gang、Xid、rail）；`DEV-LOG.md` 记 fabric 三项并入 verify-effects 后 20/20，但 `docs/EFFECT-VERIFICATION.md` 当前落盘仍是 17 项，两处未合并。`docs/FABRIC-SIM-RESULTS.md` 由并行任务生成中；若撰写完成时仍未落盘，本节只引用已落盘的 `FABRIC-ATTACK-SURFACE.md` 与 `DEV-LOG.md`，不引用未落盘数字。
+**已做验证**：`docs/SCALE-RESULTS.md` 用合成 100/1,000/5,000/10,000 个 K8s 对象跑 11 个侦察模块、可达性图和规则生成：10,000 对象总耗时 1.645s，侦察 40.4ms，峰值 RSS 54MB，findings 10,891；三处 O(n²) 改索引后，同输入 330.8ms→46.5ms（×7.11），findings 逐条一致。真 k3s 只到 204 个对象：采集 6.4s，11 模块 199.7ms，145 findings。`docs/FABRIC-ATTACK-SURFACE.md` 用 `lab/fabric_dos_sim.py` 做 11 个 fabric 面的控制面/数据面语义仿真（SHARP 会话、IB SM、PFC、NCCL 端口、checkpoint IO、IMDS、KV OOM、梯度、gang、Xid、rail）；`DEV-LOG.md` 记 fabric 三项并入 verify-effects 后 20/20，但 `docs/EFFECT-VERIFICATION.md` 当前落盘仍是 17 项，两处未合并。`docs/FABRIC-SIM-RESULTS.md` 已落盘：1,024/10,000 节点 rail/多平面离散事件仿真（1,024 mixed：PFC 76,801,033、ECN 74、跨 rail 37、worst/median 9.04/2.06ms；10,000 mixed：PFC 102,401,629、ECN 133、跨 rail 64、worst/median 8.95/1.38ms），并调用真实 `fabric-topology-isolation` / `roce-pfc-storm` / `nccl-straggler-injection` 模块裁决（PFC/straggler 均 high）。**这些是仿真，不是真实交换机计数器。**
 
 **能证明什么**：分析算法在对象规模上近似线性；10k 对象的分析不是瓶颈；fabric 控制面的“语义同构”可以被计数器验证；规则生成在 10,891 findings 下仍是 94ms。
 
 **不能证明什么**：不能证明 10,000 张 GPU 的训练能跑；不能证明真实 NCCL 集合通信会被同样方式影响；不能证明真实 IB/SHARP 交换机的故障域；不能把“10k 对象”说成“万卡”。
 
-**下一步**：①≥1,024 GPU 集群跑链 + 证据库吞吐；②扩到 12,288 GPU 复刻 MegaScale 拓扑；③产出可复现 BENCH 报告（硬件、拓扑、版本、原始数据）。验收标准写在 `docs/SOTA-2026-10.md` 的“未达成项与追赶路径”。
+**下一步**：①≥1,024 GPU 集群跑链 + 证据库吞吐；②扩到 12,288 GPU 复刻 MegaScale 拓扑；③产出可复现 BENCH 报告（硬件、拓扑、版本、原始数据）。验收标准写在 `docs/SOTA-2026-10.md` 的“剩余硬缺口（仍未达成）”。
 
 ### 7.2 硬件 TEE 实测（TDX / SEV-SNP / NVIDIA CC）
 
@@ -590,13 +590,13 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 **终态**：真实：未达成。模拟：已做。未达成：真实硬件 quote/report、厂商 PKI、端到端“证明→密钥释放”。
 
-**已做验证**：`docs/TEE-VERIFICATION.md` 记录了 `trident/tee/` 的实现：TDX Quote v3/v4 解析 + ECDSA P-256/P-384 验签 + AK→中间→根链；SEV-SNP report v2/v3 的 1184B 布局 + P-384 验签 + VCEK→ASK→ARK；NVIDIA NRAS JWT 的 RS256 + JWKS + claims。`tests/test_tee.py` 43 项，覆盖合法通过、篡改字段、篡改签名、过期、nonce 不符、DEBUG=1、TCB 降级、换根、换 JWKS、`alg=none`。所有 fixture 都是**自签**，私钥公开在源码里；证书主体是 `Trident Fixture`，`kid=nras-fixture-2026`。这是刻意的：fixture 只用于测试解析与验签逻辑，不能被当作证据。
+**已做验证**：`docs/TEE-VERIFICATION.md` 记录了 `trident/tee/` 的实现：TDX Quote v3/v4 解析 + ECDSA P-256/P-384 验签 + AK→中间→根链；SEV-SNP report v2/v3 的 1184B 布局 + P-384 验签 + VCEK→ASK→ARK；NVIDIA NRAS JWT 的 RS256 + JWKS + claims。`tests/test_tee.py` 43 项，覆盖合法通过、篡改字段、篡改签名、过期、nonce 不符、DEBUG=1、TCB 降级、换根、换 JWKS、`alg=none`。所有 fixture 都是**自签**，私钥公开在源码里；证书主体是 `Trident Fixture`，`kid=nras-fixture-2026`。这是刻意的：fixture 只用于测试解析与验签逻辑，不能被当作证据。本轮新增 `trident/tee/online.py`：对 Intel PCS TDX TCB Info、AMD KDS ASK/ARK/VCEK/CRL、NVIDIA NRAS JWKS 的**官方公共样本**实网抓取并本地验签（Intel ECDSA、AMD RSA-PSS-SHA384、NVIDIA EC P-384/ES384），`tests/test_tee_online.py` 21 项；边界见 `docs/TEE-ONLINE-VERIFICATION.md`。
 
 **能证明什么**：解析器能处理真实格式的字段；签名/证书链/策略断言在篡改时会失败；不是“有 key 就过”。
 
 **不能证明什么**：不能证明 quote 来自真实 TDX/SEV-SNP 机器；不能证明 QE report 对 PCK 的签名；不能证明 TCB 已打补丁；不能证明 GPU 处于 CC 模式；不能证明“证明→密钥释放”链路。
 
-**下一步**：①接 Intel PCS / AMD KDS / NVIDIA NRAS；②在实机采集 quote/report；③把真实报告纳入 CI（有硬件时）；④保留 fixture 作为离线单测。`docs/SOTA-2026-10.md` 明确：真实硬件 TEE 仍是“未达成”。
+**下一步**：①接 Intel PCS / AMD KDS / NVIDIA NRAS；②在实机采集 quote/report；③把真实报告纳入 CI（有硬件时）；④保留 fixture 作为离线单测。`docs/SOTA-2026-10.md` 明确：真实硬件 TEE 仍是“仍未达成”；公共厂商 PKI 已转为真实验证。
 
 ### 7.3 六云商真实环境实测
 
@@ -604,7 +604,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 **终态**：真实：未达成。模拟：已做。未达成：真实云账号、真实 IAM 求值、真实 STS 验签、真实网络数据面、真实审计日志。
 
-**已做验证**：`docs/SIX-CLOUD-MATRIX.md` 用 `lab/cloud_six_sim.py` 做 49 条路由的契约级仿真：6 云 × 7 类能力（身份/信任、角色假设、桶策略、桶列目录、快照、快照共享、安全组/IMDS）。4 个跨租户场景 × 6 云：vulnerable 24/24 可达，fixed 24/24 拒绝（403/401/403/403）。每云有判别字段，不是统一 schema：AWS 的 `Principal.Federated`、Azure 的 `subject/issuer`、阿里云的 `Principal.RAM`、腾讯云的 `principal.qcs`、GCP 的 `principal://`、华为云的 `trust_domain`。`tests/test_six_cloud_sim.py` 15 项。`docs/CLOUD-FREE-TIER-RUNBOOK.md` 由并行任务生成中；若撰写完成时仍未落盘，本节不引用其中的免费额度步骤，只引用已落盘的 `SIX-CLOUD-MATRIX.md`。
+**已做验证**：`docs/SIX-CLOUD-MATRIX.md` 用 `lab/cloud_six_sim.py` 做 49 条路由的契约级仿真：6 云 × 7 类能力（身份/信任、角色假设、桶策略、桶列目录、快照、快照共享、安全组/IMDS）。4 个跨租户场景 × 6 云：vulnerable 24/24 可达，fixed 24/24 拒绝（403/401/403/403）。每云有判别字段，不是统一 schema：AWS 的 `Principal.Federated`、Azure 的 `subject/issuer`、阿里云的 `Principal.RAM`、腾讯云的 `principal.qcs`、GCP 的 `principal://`、华为云的 `trust_domain`。`tests/test_six_cloud_sim.py` 15 项。本轮新增 `lab/cloud_free/`：AWS SigV4 / Azure SharedKey / GCP JSON API 适配器 + Python mock 端点 + LocalStack/Azurite/fake-gcs compose（本机无 Docker，实际跑 mock），`tests/test_cloud_free.py` 14 项；`docs/CLOUD-FREE-TIER-RUNBOOK.md` 给出 AWS/Azure/GCP 最小集群与成本边界，以及阿里/腾讯试用说明。**没有真实云账号/集群**，SOTA 仍为「模拟验证」。
 
 **能证明什么**：六云的字段形状差异被显式建模；同一组跨租户动作在 vulnerable/fixed 两态下有可复现的差分；拒绝点可定位。
 
@@ -632,23 +632,23 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 **终态**：真实：未达成。模拟：部分。未达成：跨副本队列、租户配额、按租户加密、跨副本审批一致性。
 
-**已做验证**：单机有界并发已测：`trident/core/supervisor.py` 支持 1–8 worker；`docs/PERFORMANCE-COMPARISON.md` 记录 `/api/v1/graph` 在 16 并发下 286.3 rps（1/4/16/32 为 138.6/297.7/286.3/268.0），`ThreadingHTTPServer` backlog 从 5 提到 256 后，同端点从 29 rps 提到 286 rps；空闲 28.1MB，16 并发峰值 33.0MB。`docs/SAAS-LOAD-RESULTS.md` 由并行任务生成中；若撰写完成时仍未落盘，本节只引用已落盘的 `PERFORMANCE-COMPARISON.md`，不引用未落盘压测。
+**已做验证**：单机有界并发已测：`trident/core/supervisor.py` 支持 1–8 worker；`docs/PERFORMANCE-COMPARISON.md` 记录 `/api/v1/graph` 在 16 并发下 286.3 rps（1/4/16/32 为 138.6/297.7/286.3/268.0），`ThreadingHTTPServer` backlog 从 5 提到 256 后，同端点从 29 rps 提到 286 rps；空闲 28.1MB，16 并发峰值 33.0MB。本轮新增 `lab/saas/`：ThreadingHTTP + 多进程 worker + SQLite WAL 原子配额/审批 + 每租户 `EvidenceStore`；8 租户 × 8 并发实测 422 done / 858 quota 429 / 隔离违规 0 / 重复审批 8 拒绝 / 17.26 runs/s（`docs/SAAS-LOAD-RESULTS.md`，`tests/test_saas.py` 14 项）。**单机本地模拟，不是跨副本分布式/商业 SLA。**
 
 **能证明什么**：单机进程内有界并发可用；backlog 是真实瓶颈；证据库在单写者下是线性审计；资源占用可控。
 
 **不能证明什么**：不能证明跨副本任务队列；不能证明租户配额；不能证明按租户加密；不能证明跨副本审批/审计一致；不能证明 100 并发链的故障恢复。单机 286 rps 不等于分布式调度。
 
-**下一步**：①任务队列 + worker 池 + 每租户配额；②证据库按租户加密隔离；③审批与审计跨副本一致；④压测 100 并发链与故障恢复。`docs/SOTA-2026-10.md` 把“分布式调度/多租户 SaaS”列为未达成，验收标准是 100 并发链 + 故障恢复。
+**下一步**：①任务队列 + worker 池 + 每租户配额；②证据库按租户加密隔离；③审批与审计跨副本一致；④压测 100 并发链与故障恢复。`docs/SOTA-2026-10.md` 把“跨副本分布式 SaaS”列为仍未达成；本地多进程/8 租户压测已落为模拟验证，真实验收标准仍是 100 并发链 + 故障恢复。
 
 ### 7.6 五项汇总
 
-| 项 | 真实 | 模拟/免费验证 | 未达成部分 | 能证明 | 不能证明 |
+| 项 | 本轮三态 | 已做验证 | 仍未达成部分 | 能证明 | 不能证明 |
 |---|---|---|---|---|---|
-| 万卡 | 未达成 | 10k K8s 对象、fabric 计数器 | 10K+ GPU 裸机、真实 NCCL/RDMA | 分析近似线性、fabric 语义可测 | 万卡训练、真实故障域 |
-| TEE | 未达成 | 本地密码学 fixture，43 项 | 真实 quote/PKI/密钥释放 | 解析、验签、策略断言 | 硬件来源、厂商认证 |
-| 六云 | 未达成 | 契约级 24/24 两态 | 真实账号/IAM/STS/日志 | 字段形状、差分、拒绝点 | 真实云配置与求值 |
-| cosign | 未达成（签名侧）；验证侧真实 | 公共 keyless 样本验证、Rekor 写入/回读、本地 fixture | 本仓库产物的公共 Fulcio 签发、OIDC、SCT/CRL | 验证链能处理真实 keyless/Rekor | 我们的签名身份、生产 CI |
-| SaaS | 未达成 | 单机 286 rps@16 | 跨副本队列/配额/加密 | 单机有界并发、backlog 瓶颈 | 分布式调度与租户隔离 |
+| 万卡 | **模拟验证** | 1,024/10,000 节点 fabric 仿真 + 真实模块裁决 | 10K+ GPU 裸机、真实 NCCL/RDMA | 分析近似线性、fabric 语义可测 | 万卡训练、真实故障域 |
+| TEE | **真实验证（公共 PKI）/ 仍未达成（硬件）** | Intel PCS/AMD KDS/NVIDIA NRAS 官方样本验签；本地 fixture 43 项 | 真实硬件 quote/report、密钥释放 | 公共链/CRL/TCB 能验；篡改/降级/吊销会拒 | 硬件来源、厂商认证、真实 GPU CC |
+| 六云 | **模拟验证** | AWS/Azure/GCP emulator 适配器；阿里/腾讯契约 24/24 两态 | 真实账号/IAM/STS/日志 | 字段形状、差分、拒绝点 | 真实云配置与求值 |
+| cosign | **模拟验证**（验证侧真实，签名侧未达成） | 公共 keyless 样本验证、Rekor 写入/回读、本地 fixture | 本仓库产物的公共 Fulcio 签发、OIDC、SCT/CRL | 验证链能处理真实 keyless/Rekor | 我们的签名身份、生产 CI |
+| SaaS | **模拟验证** | 8 租户 × 8 并发、多进程 worker、原子配额/审批 | 跨副本队列/HA/租户加密 | 单机隔离/配额/审批可测 | 分布式调度与商业 SLA |
 
 **证据索引（本章）**：[SOTA 与追赶路径](SOTA-2026-10.md) · [规模压测](SCALE-RESULTS.md) · [Fabric 攻击面](FABRIC-ATTACK-SURFACE.md) · [TEE 验证](TEE-VERIFICATION.md) · [六云矩阵](SIX-CLOUD-MATRIX.md) · [性能对比](PERFORMANCE-COMPARISON.md) · [供应链代码](../trident/supplychain.py) · [TEE 代码](../trident/tee/) · [六云仿真](../lab/cloud_six_sim.py)
 
@@ -660,7 +660,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 ### 8.1 用能力维度代替逐功能
 
-**当时怎么想**：SOTA 用 38 项能力（其中 26 项已达成）和 18 个能力维度，已经能说明“我们有什么、缺什么”。维度清楚、好汇报。
+**当时怎么想**：SOTA 用 38 项能力（当前 25 真实验证 / 10 模拟验证 / 3 仍未达成）和 18 个能力维度，已经能说明“我们有什么、缺什么”。维度清楚、好汇报。
 
 **错在哪**：维度是地图，不是清单。ARTEX 有 515 行逐路由/逐表/逐组件的功能，我们却用“多 agent 协作”一个维度概括；结果 180 条具体缺失被藏在“partial”里。甲方问“你有没有某个页面/某个 API”，维度答不了。
 
@@ -831,7 +831,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 |---|---|
 | [README](../README.md) | 项目入口、快速开始、能力与边界 |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | 七层架构与职责边界 |
-| [SOTA-2026-10.md](SOTA-2026-10.md) | 38 项能力矩阵：26 已达成 / 7 部分 / 5 未达成 |
+| [SOTA-2026-10.md](SOTA-2026-10.md) | 38 项能力矩阵：25 真实验证 / 10 模拟验证 / 3 仍未达成（附证据路径） |
 | [design.md](design.md) | 设计基线与漏洞研究分类 |
 | [RUNBOOK.md](RUNBOOK.md) | 安装、授权、模块/链、报告、回滚、实验室边界 |
 | [DELIVERY.md](DELIVERY.md) | 交付包结构与样张说明 |

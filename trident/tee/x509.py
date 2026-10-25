@@ -14,14 +14,16 @@ from datetime import datetime, timezone
 
 from ._asn1 import (DerError, bit_string, decode_oid, encode, explicit, integer, oid,
                     parse_time, read_tlv, seq, set_of, utc_time, utf8)
-from .keys import ALG_ECDSA_SHA256, ALG_ECDSA_SHA384, ALG_RSA_SHA256, PublicKey, load_pem_blocks, pem_wrap
+from .keys import (ALG_ECDSA_SHA256, ALG_ECDSA_SHA384, ALG_RSA_PSS, ALG_RSA_SHA256,
+                   ALG_RSA_SHA384, PublicKey, load_pem_blocks, pem_wrap)
 
 __all__ = ["Certificate", "build_certificate", "verify_chain", "load_certificates_pem",
            "to_pem", "OID_BASIC_CONSTRAINTS", "OID_COMMON_NAME"]
 
 OID_COMMON_NAME = "2.5.4.3"
 OID_BASIC_CONSTRAINTS = "2.5.29.19"
-_KNOWN_SIG_ALGS = {ALG_ECDSA_SHA256, ALG_ECDSA_SHA384, ALG_RSA_SHA256}
+_KNOWN_SIG_ALGS = {ALG_ECDSA_SHA256, ALG_ECDSA_SHA384, ALG_RSA_SHA256,
+                   ALG_RSA_SHA384, ALG_RSA_PSS}
 
 
 def _name_der(cn: str) -> bytes:
@@ -40,6 +42,7 @@ class Certificate:
     tbs: bytes
     sig_alg: str
     signature: bytes
+    sig_params: bytes
     issuer_raw: bytes
     subject_raw: bytes
     issuer_cn: str
@@ -56,7 +59,8 @@ class Certificate:
 
     def verify_self_signed(self) -> bool:
         return (self.issuer_raw == self.subject_raw
-                and self.public_key.verify(self.sig_alg, self.tbs, self.signature))
+                and self.public_key.verify(self.sig_alg, self.tbs, self.signature,
+                                           self.sig_params))
 
     def to_pem(self) -> str:
         return pem_wrap(self.der, "CERTIFICATE")
@@ -109,8 +113,9 @@ def parse_certificate(der: bytes) -> Certificate:
     alg_tag, alg_body, alg_next = read_tlv(cert_body, off)
     if alg_tag != 0x30:
         raise DerError("signatureAlgorithm 非 SEQUENCE")
-    _, alg_oid_raw, _ = read_tlv(alg_body, 0)
+    _, alg_oid_raw, alg_oid_end = read_tlv(alg_body, 0)
     sig_alg = decode_oid(alg_oid_raw)
+    sig_params = alg_body[alg_oid_end:]
     if sig_alg not in _KNOWN_SIG_ALGS:
         raise DerError(f"不支持的证书签名算法 {sig_alg}")
     sig_tag, sig_bits, _ = read_tlv(cert_body, alg_next)
@@ -140,7 +145,7 @@ def parse_certificate(der: bytes) -> Certificate:
     nb_tag, nb_raw, voff = read_tlv(validity, 0)
     na_tag, na_raw, _ = read_tlv(validity, voff)
     return Certificate(
-        der=der, tbs=tbs, sig_alg=sig_alg, signature=signature,
+        der=der, tbs=tbs, sig_alg=sig_alg, signature=signature, sig_params=sig_params,
         issuer_raw=issuer_raw, subject_raw=subject_raw,
         issuer_cn=_parse_name_cn(issuer_raw), subject_cn=_parse_name_cn(subject_raw),
         not_before=parse_time(nb_raw, nb_tag), not_after=parse_time(na_raw, na_tag),
@@ -199,7 +204,8 @@ def verify_chain(chain: list[Certificate], trust_root: Certificate,
             errors.append(f"{label}: 签发者不是 CA（basicConstraints cA=false）")
         if not child.is_valid_at(now):
             errors.append(f"{label}: 证书不在有效期内（{child.not_before:%Y-%m-%d}~{child.not_after:%Y-%m-%d}）")
-        if not parent.public_key.verify(child.sig_alg, child.tbs, child.signature):
+        if not parent.public_key.verify(child.sig_alg, child.tbs, child.signature,
+                                        child.sig_params):
             errors.append(f"{label}: 签名验签失败")
     if not chain[-1].is_ca and len(chain) > 1:
         pass  # 叶子可为非 CA；中间层在循环里已逐个校验 parent.is_ca

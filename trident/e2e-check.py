@@ -34,6 +34,7 @@ import time
 import urllib.error
 import urllib.request
 from contextlib import contextmanager
+from datetime import datetime, timedelta
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any
@@ -191,6 +192,11 @@ def run_e2e(samples_dir: Path | str | None = None,
     """
     samples = Path(samples_dir) if samples_dir else DEFAULT_SAMPLES
     samples.mkdir(parents=True, exist_ok=True)
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
     book = _Checkbook()
     families_run: dict[str, list[str]] = {}
     all_findings: list[dict] = []  # 带逐步产出（含 reachable/port 等链前置字段）
@@ -249,7 +255,10 @@ def run_e2e(samples_dir: Path | str | None = None,
                 "level": "全影响演示",
                 "namespaces": ["train", "infer", "ray-system", "default", "ml-agent"],
                 "cidrs": ["127.0.0.0/8"],
-                "window": "2026-10-25 00:00 – 23:59（验收实验室）",
+                "window": {
+                    "start": (datetime.now() - timedelta(hours=1)).strftime("%Y-%m-%d %H:%M"),
+                    "end": (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d %H:%M"),
+                },
                 "client": "Trident 验收实验室（本机 mock）",
             })
 

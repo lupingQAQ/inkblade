@@ -1,0 +1,105 @@
+{
+  "schema": "trident-sigstore-keyless-verdict/2026-10",
+  "ok": true,
+  "checks": [
+    {
+      "name": "schema",
+      "ok": true,
+      "detail": "mediaType=application/vnd.dev.sigstore.bundle.v0.3+json"
+    },
+    {
+      "name": "artifact-digest",
+      "ok": true,
+      "detail": "artifact=e70e59b328d52949…"
+    },
+    {
+      "name": "keyless-certificate",
+      "ok": true,
+      "detail": "Fulcio 证书存在"
+    },
+    {
+      "name": "message-signature",
+      "ok": true,
+      "detail": "ECDSA 对 artifact 验签"
+    },
+    {
+      "name": "certificate-chain",
+      "ok": true,
+      "detail": "root=; at=2026-10-20T18:00:54Z; errors=[]"
+    },
+    {
+      "name": "certificate-time",
+      "ok": true,
+      "detail": "integratedTime=2026-10-20T18:00:54Z cert=2026-10-20T18:00~2026-10-20T18:10"
+    },
+    {
+      "name": "identity",
+      "ok": true,
+      "detail": "SAN=['keyless@projectsigstore.iam.gserviceaccount.com'] expected=keyless@projectsigstore.iam.gserviceaccount.com"
+    },
+    {
+      "name": "issuer",
+      "ok": true,
+      "detail": "OIDC issuer=https://accounts.google.com expected=https://accounts.google.com"
+    },
+    {
+      "name": "revocation",
+      "ok": true,
+      "detail": "serial=140906817006620838240325362330746308531759972908 revoked=False"
+    },
+    {
+      "name": "tlog-body",
+      "ok": true,
+      "detail": "kind=hashedrekord hash=e70e59b328d52949…"
+    },
+    {
+      "name": "tlog-logid",
+      "ok": true,
+      "detail": "entry=c0d23d6ad406973f… expected=c0d23d6ad406973f…"
+    },
+    {
+      "name": "tlog-set",
+      "ok": true,
+      "detail": "SET 签名有效"
+    },
+    {
+      "name": "tlog-inclusion",
+      "ok": true,
+      "detail": "root=94e2a8f6097d5a1e…"
+    },
+    {
+      "name": "tlog-checkpoint",
+      "ok": true,
+      "detail": "checkpoint note 签名有效"
+    },
+    {
+      "name": "tlog-online",
+      "ok": true,
+      "detail": "未请求在线重取（离线缓存/公共日志样本）"
+    }
+  ],
+  "errors": [],
+  "artifact": {
+    "sha256": "e70e59b328d52949b3a9ae3e0d04721ea8f380c4e91c28197aa91df02afbf4c0",
+    "bytes": 3906
+  },
+  "identity": {
+    "subject_cn": "",
+    "issuer_cn": "",
+    "sans": [
+      {
+        "kind": "email",
+        "value": "keyless@projectsigstore.iam.gserviceaccount.com"
+      }
+    ],
+    "oidc_issuer": "https://accounts.google.com",
+    "serial": 140906817006620838240325362330746308531759972908,
+    "not_before": "2026-10-20T18:00:54+00:00",
+    "not_after": "2026-10-20T18:10:54+00:00"
+  },
+  "log": {
+    "logIndex": 3341269697,
+    "integratedTime": 1792519254
+  },
+  "mode": "rekor-import"
+}

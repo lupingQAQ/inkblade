@@ -1,0 +1,109 @@
+{
+  "schema": "trident-cloud-free-semantics/2026-10",
+  "mode": "python-mock-endpoints (Docker/LocalStack absent on this host)",
+  "clouds": {
+    "aws": {
+      "steps": [
+        {
+          "op": "put",
+          "ok": true,
+          "etag_kind": "hex-md5"
+        },
+        {
+          "op": "get",
+          "ok": true,
+          "bytes": 18
+        },
+        {
+          "op": "head",
+          "ok": true,
+          "metadata_keys": [
+            "owner"
+          ]
+        },
+        {
+          "op": "list",
+          "ok": true,
+          "count": 1
+        },
+        {
+          "op": "get-missing",
+          "ok": true,
+          "error": {
+            "status": 404,
+            "code": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    "azure": {
+      "steps": [
+        {
+          "op": "put",
+          "ok": true,
+          "etag_kind": "hex-md5"
+        },
+        {
+          "op": "get",
+          "ok": true,
+          "bytes": 18
+        },
+        {
+          "op": "head",
+          "ok": true,
+          "metadata_keys": [
+            "owner"
+          ]
+        },
+        {
+          "op": "list",
+          "ok": true,
+          "count": 1
+        },
+        {
+          "op": "get-missing",
+          "ok": true,
+          "error": {
+            "status": 404,
+            "code": "BlobNotFound"
+          }
+        }
+      ]
+    },
+    "gcp": {
+      "steps": [
+        {
+          "op": "put",
+          "ok": true,
+          "etag_kind": "base64"
+        },
+        {
+          "op": "get",
+          "ok": true,
+          "bytes": 18
+        },
+        {
+          "op": "head",
+          "ok": true,
+          "metadata_keys": [
+            "owner"
+          ]
+        },
+        {
+          "op": "list",
+          "ok": true,
+          "count": 1
+        },
+        {
+          "op": "get-missing",
+          "ok": true,
+          "error": {
+            "status": 404,
+            "code": "404"
+          }
+        }
+      ]
+    }
+  },
+  "note": "语义/签名/错误码可复现；不是真实云账号或官方 emulator"
+}

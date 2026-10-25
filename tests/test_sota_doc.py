@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""SOTA-2026-10 能力矩阵测试：表结构 / 状态枚举 / 诚实未达成项 / README 链接。"""
+"""SOTA-2026-10 三态矩阵：表结构/状态枚举/计数/证据路径/五个补齐项。"""
 
 import re
 import unittest
@@ -9,11 +9,9 @@ REPO = Path(__file__).resolve().parents[1]
 DOC = REPO / "docs" / "SOTA-2026-10.md"
 README = REPO / "README.md"
 
-STATUSES = {"已达成", "部分", "未达成"}
-# 矩阵 38 行：26 已达成 / 7 部分 / 5 未达成（与文档「计数」节一致）。
-# 2026-10-25 收尾：新增输出确定性/执行审计轨迹/单机多租户隔离（已达成）；
-# Live K8s 部分→已达成；真实 ARTEX 对比 未达成→部分（QEMU TCG 实测，非裸机）。
-EXPECTED = {"已达成": 26, "部分": 7, "未达成": 5}
+STATUSES = {"真实验证", "模拟验证", "仍未达成"}
+# 38 行：25 真实验证 / 10 模拟验证 / 3 仍未达成。
+EXPECTED = {"真实验证": 25, "模拟验证": 10, "仍未达成": 3}
 
 
 def _rows() -> list[dict[str, str]]:
@@ -26,13 +24,15 @@ def _rows() -> list[dict[str, str]]:
             continue
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
         if not header_seen:
-            if "能力" in cells[0] and "状态" in cells[-1]:
+            if "能力" in cells[0] and any("状态" in c for c in cells):
                 header_seen = True
             continue
         if set(cells[0]) <= set("-: "):
             continue
+        if len(cells) != 5:
+            continue
         rows.append({"capability": cells[0], "implementation": cells[1],
-                     "reference": cells[2], "status": cells[3]})
+                     "reference": cells[2], "status": cells[3], "evidence": cells[4]})
     return rows
 
 
@@ -42,14 +42,16 @@ class TestSotaDoc(unittest.TestCase):
         readme = README.read_text(encoding="utf-8")
         self.assertIn("docs/SOTA-2026-10.md", readme)
 
-    def test_matrix_shape(self):
+    def test_matrix_shape_and_three_state(self):
         rows = _rows()
-        self.assertGreaterEqual(len(rows), 24, f"矩阵行数不足: {len(rows)}")
+        self.assertEqual(len(rows), 38, f"矩阵行数不匹配: {len(rows)}")
         for row in rows:
-            self.assertEqual(set(row), {"capability", "implementation", "reference", "status"})
+            self.assertEqual(set(row), {"capability", "implementation", "reference",
+                                        "status", "evidence"})
             self.assertIn(row["status"], STATUSES, row)
             self.assertTrue(row["implementation"], row)
             self.assertTrue(row["reference"], row)
+            self.assertTrue(row["evidence"], row)
             self.assertTrue(any(tok in row["reference"] for tok in ("http", "arch-intel/corpus")),
                             f"公开参照未给出来源: {row}")
 
@@ -60,24 +62,38 @@ class TestSotaDoc(unittest.TestCase):
         self.assertEqual(counts, EXPECTED)
 
     def test_honest_gaps_present(self):
+        rows = {r["capability"]: r for r in _rows()}
+        self.assertEqual(rows["硬件 TEE 实测（TDX/SEV-SNP/NVIDIA CC）"]["status"], "仍未达成")
+        self.assertEqual(rows["模型注册中心 / 权重仓库直连"]["status"], "仍未达成")
+        self.assertEqual(rows["SIEM/SOAR 连接器"]["status"], "仍未达成")
         text = DOC.read_text(encoding="utf-8")
-        for topic, needle in (("万卡实测", "万卡"), ("硬件 TEE 实测", "硬件 TEE"),
-                              ("生产级模型签名", "cosign keyless"),
-                              ("六云商真实环境", "六云商"),
-                              ("分布式调度", "分布式调度")):
-            line = next((l for l in text.splitlines() if needle in l and l.startswith("|")), None)
-            self.assertIsNotNone(line, f"缺少未达成项: {topic}")
-            self.assertIn("未达成", line, f"{topic} 未诚实标注未达成: {line}")
-        self.assertIn("追赶路径", text)
-        self.assertIn("未达成", text)
+        self.assertIn("免费资源补齐（2026-10-25）", text)
+        self.assertIn("剩余硬缺口", text)
+        self.assertIn("模拟验证", text)
 
-    def test_artex_comparison_is_partial_with_tcg_caveat(self):
-        """真实 ARTEX 对比：已有实测数据（同靶场 + 全端点网格），但仍为 QEMU TCG，故标部分。"""
+    def test_gap_closure_section_statuses(self):
+        text = DOC.read_text(encoding="utf-8")
+        start = text.index("## 免费资源补齐")
+        end = text.index("## 剩余硬缺口", start)
+        section = text[start:end]
+        checks = {
+            "cosign keyless": "模拟验证",
+            "TEE 公共证书链": "真实验证",
+            "六云免费/模拟": "模拟验证",
+            "万卡网络仿真": "模拟验证",
+            "SaaS 多租户压测": "模拟验证",
+        }
+        for topic, status in checks.items():
+            line = next(l for l in section.splitlines() if l.startswith("|") and topic in l)
+            self.assertIn(status, line, f"{topic} 状态不符: {line}")
+        self.assertIn("硬件 TEE", section)
+
+    def test_artex_comparison_is_simulated_with_tcg_caveat(self):
         line = next(l for l in DOC.read_text(encoding="utf-8").splitlines()
                     if l.startswith("|") and "真实 ARTEX 对比数据" in l)
-        self.assertIn("部分", line)
+        self.assertIn("模拟验证", line)
         self.assertIn("QEMU TCG", line)
-        self.assertIn("跨副本", DOC.read_text(encoding="utf-8"), "缺分布式调度未达成行")
+        self.assertIn("跨副本", DOC.read_text(encoding="utf-8"))
 
     def test_closure_rows_present(self):
         rows = {r["capability"]: r for r in _rows()}
@@ -86,7 +102,16 @@ class TestSotaDoc(unittest.TestCase):
                     "多租户工作区隔离与有界并发（单机）",
                     "API-first REST + MCP 同步暴露"):
             self.assertIn(cap, rows, f"缺能力行 {cap}")
-            self.assertEqual(rows[cap]["status"], "已达成", cap)
+            self.assertEqual(rows[cap]["status"], "真实验证", cap)
+
+    def test_evidence_paths_exist(self):
+        for row in _rows():
+            for raw in row["evidence"].split(";"):
+                path = raw.strip()
+                if not path:
+                    continue
+                self.assertTrue((REPO / path).exists(),
+                                f"{row['capability']} 证据路径不存在: {path}")
 
     def test_corpus_citations_exist(self):
         rows = _rows()
@@ -105,10 +130,11 @@ class TestSotaDoc(unittest.TestCase):
 
     def test_documented_counts_match_matrix(self):
         text = DOC.read_text(encoding="utf-8")
-        m = re.search(r"已达成\s*(\d+)\s*[·/、,，]\s*部分\s*(\d+)\s*[·/、,，]\s*未达成\s*(\d+)", text)
-        self.assertIsNotNone(m, "文档缺少计数行：已达成 N · 部分 N · 未达成 N")
+        m = re.search(r"真实验证\s*(\d+)\s*[·/、,，]\s*模拟验证\s*(\d+)\s*[·/、,，]\s*仍未达成\s*(\d+)", text)
+        self.assertIsNotNone(m, "文档缺少计数行：真实验证 N · 模拟验证 N · 仍未达成 N")
         self.assertEqual(
-            {"已达成": int(m.group(1)), "部分": int(m.group(2)), "未达成": int(m.group(3))},
+            {"真实验证": int(m.group(1)), "模拟验证": int(m.group(2)),
+             "仍未达成": int(m.group(3))},
             EXPECTED,
         )
 
