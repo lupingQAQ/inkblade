@@ -20,6 +20,30 @@ def _store(home: Path, ws: str):
     return EvidenceStore(home, workspace=ws)
 
 
+def cigate_severities():
+    from .core.cigate import SEVERITIES
+
+    return SEVERITIES
+
+
+def _json_arg(text: str | None, default=None):
+    """JSON 字符串或 @文件 → Python 对象。"""
+    if not text:
+        return default
+    raw = Path(text[1:]).read_text(encoding="utf-8") if text.startswith("@") else text
+    return json.loads(raw)
+
+
+def _session(ws: str, actor: str, role: str):
+    from .core.users import Session
+
+    return Session(None, actor, role, [ws], "cli-local")
+
+
+def _print_json(data) -> None:
+    print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
+
+
 def main(argv=None) -> int:
     import sys
 
@@ -38,6 +62,59 @@ def main(argv=None) -> int:
     ml.add_argument("--modules-dir", default=None)
 
     sub.add_parser("roe", help="查看授权状态").add_argument("--workspace", default="local-lab")
+
+    # ---- 执行/回滚/中止/报告/规则（终审 Minor#7）------------------------------
+    runp = sub.add_parser("run", help="执行单个模块（授权+范围+备份闸门；拒绝退出码 91）")
+    runp.add_argument("--module", required=True)
+    runp.add_argument("--params", default="{}", help="JSON 字符串或 @file")
+    runp.add_argument("--workspace", default="local-lab")
+    runp.add_argument("--actor", default="cli")
+    runp.add_argument("--role", choices=list(ROLES), default="tester")
+    runp.add_argument("--run", default=None, help="复用既有 run（缺省新建）")
+    runp.add_argument("--modules-dir", default=None)
+
+    exq = sub.add_parser("execute", help="执行攻击链（--dry-run 只出计划；拒绝退出码 91）")
+    exq.add_argument("--chain", required=True)
+    exq.add_argument("--workspace", default="local-lab")
+    exq.add_argument("--actor", default="cli")
+    exq.add_argument("--role", choices=list(ROLES), default="tester")
+    exq.add_argument("--dry-run", action="store_true")
+    exq.add_argument("--strict", action="store_true", help="前置判定非「成立」即拒绝")
+    exq.add_argument("--findings", default=None, help="既有发现 JSON 或 @file（前置判定输入）")
+    exq.add_argument("--workers", type=int, default=4)
+    exq.add_argument("--chains-dir", default=None)
+    exq.add_argument("--modules-dir", default=None)
+
+    rb = sub.add_parser("rollback", help="按步骤回滚（明细回执；failed>0 退出码 3）")
+    rb.add_argument("--run", required=True)
+    rb.add_argument("--step", required=True)
+    rb.add_argument("--workspace", default="local-lab")
+
+    ab = sub.add_parser("abort", help="工作区紧急停止：置位/清除（--clear）")
+    ab.add_argument("--workspace", default="local-lab")
+    ab.add_argument("--actor", default="cli")
+    ab.add_argument("--reason", default="")
+    ab.add_argument("--clear", action="store_true")
+
+    rp = sub.add_parser("report", help="渲染双语报告（pentest|remediation）")
+    rp.add_argument("--run", required=True)
+    rp.add_argument("--kind", choices=["pentest", "remediation"], default="pentest")
+    rp.add_argument("--lang", choices=["bi", "zh", "en"], default="bi")
+    rp.add_argument("--redact", action="store_true", help="零日级细节可选脱敏")
+    rp.add_argument("--disclosed", default=None, help="已披露标题 JSON 数组或 @file")
+    rp.add_argument("--workspace", default="local-lab")
+    rp.add_argument("--out", default=None)
+
+    rl = sub.add_parser("rules", help="规则包 generate|validate（紫队覆盖率矩阵）")
+    rlsub = rl.add_subparsers(dest="rcmd", required=True)
+    rlg = rlsub.add_parser("generate")
+    rlg.add_argument("--chains-dir", default=None)
+    rlg.add_argument("--out", default=None)
+    rlg.add_argument("--cni", choices=["native", "calico", "cilium", "vpc-native"], default="native")
+    rlg.add_argument("--findings", default=None, help="演练发现 JSON 或 @file")
+    rlv = rlsub.add_parser("validate")
+    rlv.add_argument("--pack", default=None)
+    rlv.add_argument("--mock-base", default=None)
 
     u = sub.add_parser("user", help="用户管理")
     usub = u.add_subparsers(dest="ucmd", required=True)
@@ -65,6 +142,8 @@ def main(argv=None) -> int:
     plan.add_argument("--format", choices=["json", "md"], default="json")
     plan.add_argument("--chains-dir", default=None)
     plan.add_argument("--modules-dir", default=None)
+    plan.add_argument("--record", action="store_true",
+                      help="把推荐理由/选择写入 decisions 表（须有 run；只写决策不执行）")
 
     sbom = sub.add_parser("sbom", help="导出 CycloneDX ML-BOM 风格 AI SBOM")
     sbom.add_argument("--models", required=True, help="模型清单 JSON（name/version/source/license/path|sha256）")
@@ -102,6 +181,8 @@ def main(argv=None) -> int:
     expl.add_argument("--use-llm", default=None, help="true/false（缺省：有 env 则用 LLM，失败降级 rules）")
     expl.add_argument("--max-actions", type=int, default=5)
     expl.add_argument("--reason", default="")
+    expl.add_argument("--workers", type=int, default=1,
+                      help="已批准提议的并发执行数（1-8，默认 1；每动作独立 run）")
     expl.add_argument("--actor", default="cli")
     expl.add_argument("--role", choices=list(ROLES), default="lead")
 
@@ -127,6 +208,126 @@ def main(argv=None) -> int:
     mine = sub.add_parser("mine", help="挖掘流水线闭环：模板验证→最新版本差异→登记册候选（不自动入库）")
     mine.add_argument("--out", default=None, help="输出目录（缺省 reports/samples/mining）")
     mine.add_argument("--targets", default=None, help="逗号分隔目标（vllm,sglang,kuberay,hami,litellm）")
+
+    llm = sub.add_parser("llm-pool", help="LLM 多模型池（默认关闭）：status|add|remove|enable|reset|health")
+    llm.add_argument("action", choices=["status", "add", "remove", "enable", "disable", "reset",
+                                        "health", "records", "models", "tokens"])
+    llm.add_argument("--workspace", default="local-lab")
+    llm.add_argument("--base-url", default="")
+    llm.add_argument("--model", default="")
+    llm.add_argument("--api-key-env", default="")
+    llm.add_argument("--weight", type=int, default=1)
+    llm.add_argument("--quota-requests", type=int, default=0)
+    llm.add_argument("--quota-tokens", type=int, default=0)
+    llm.add_argument("--id", default="")
+    llm.add_argument("--usage", action="store_true", help="reset 时同时清用量")
+    llm.add_argument("--actor", default="cli")
+    llm.add_argument("--role", choices=list(ROLES), default="lead")
+
+    nf = sub.add_parser("notify", help="通知渠道/事件规则/投递（默认关闭）")
+    nf.add_argument("action", choices=["meta", "channels", "channels-add", "channels-test",
+                                       "rules", "rules-add", "emit", "deliveries", "retry",
+                                       "enable", "disable"])
+    nf.add_argument("--workspace", default="local-lab")
+    nf.add_argument("--kind", choices=["webhook", "slack", "email"], default="webhook")
+    nf.add_argument("--name", default="")
+    nf.add_argument("--config", default=None, help="渠道 config：JSON 字符串或 @文件")
+    nf.add_argument("--event", default="finding.critical")
+    nf.add_argument("--severity", default="info")
+    nf.add_argument("--channels", default="", help="逗号分隔渠道 id")
+    nf.add_argument("--payload", default=None, help="事件 payload：JSON 字符串或 @文件")
+    nf.add_argument("--id", default="")
+    nf.add_argument("--actor", default="cli")
+    nf.add_argument("--role", choices=list(ROLES), default="lead")
+
+    tpl = sub.add_parser("template", help="任务模板：list|add|from-run|get|plan|update|delete")
+    tpl.add_argument("action", choices=["list", "add", "from-run", "get", "plan", "update", "delete"])
+    tpl.add_argument("--workspace", default="local-lab")
+    tpl.add_argument("--name", default="")
+    tpl.add_argument("--chains", default=None, help="逗号分隔链 id")
+    tpl.add_argument("--modules", default=None, help="逗号分隔模块键（无链模板）")
+    tpl.add_argument("--params", default=None, help="参数预设 JSON 字符串或 @文件")
+    tpl.add_argument("--run", default=None)
+    tpl.add_argument("--id", default="")
+    tpl.add_argument("--overrides", default=None)
+    tpl.add_argument("--actor", default="cli")
+    tpl.add_argument("--role", choices=list(ROLES), default="lead")
+
+    cal = sub.add_parser("calendar", help="一次性测试窗口：list|add|pause|resume|remove|run-due|upcoming|events")
+    cal.add_argument("action", choices=["list", "add", "pause", "resume", "remove", "run-due",
+                                        "upcoming", "events"])
+    cal.add_argument("--workspace", default="local-lab")
+    cal.add_argument("--name", default="")
+    cal.add_argument("--start", default=None, help="epoch 或 ISO 8601")
+    cal.add_argument("--end", default=None)
+    cal.add_argument("--chains", default=None)
+    cal.add_argument("--id", default="")
+    cal.add_argument("--days", type=int, default=14)
+    cal.add_argument("--allow-past", action="store_true")
+    cal.add_argument("--actor", default="cli")
+    cal.add_argument("--role", choices=list(ROLES), default="lead")
+
+    th = sub.add_parser("threads", help="run 内侧问：ask|reply|list|events|close|cancel|summary")
+    th.add_argument("action", choices=["ask", "reply", "list", "events", "close", "cancel", "summary"])
+    th.add_argument("--workspace", default="local-lab")
+    th.add_argument("--run", default=None)
+    th.add_argument("--subject", default="")
+    th.add_argument("--body", default="")
+    th.add_argument("--id", default="")
+    th.add_argument("--reason", default="")
+    th.add_argument("--resolution", default="")
+    th.add_argument("--actor", default="cli")
+    th.add_argument("--role", choices=list(ROLES), default="tester")
+
+    gp = sub.add_parser("graph", help="图快照/差异/UI 数据：snapshot|list|diff|ui|neighbors")
+    gp.add_argument("action", choices=["snapshot", "list", "diff", "ui", "neighbors"])
+    gp.add_argument("--workspace", default="local-lab")
+    gp.add_argument("--run", default=None)
+    gp.add_argument("--label", default="")
+    gp.add_argument("--id", default="")
+    gp.add_argument("--base", default="")
+    gp.add_argument("--head", default="")
+    gp.add_argument("--node", default="")
+    gp.add_argument("--actor", default="cli")
+    gp.add_argument("--role", choices=list(ROLES), default="lead")
+
+    bb = sub.add_parser("blackboard", help="跨 run 上下文黑板：list|context|pin-note|pin-finding|pin-assets|unpin")
+    bb.add_argument("action", choices=["list", "context", "pin-note", "pin-finding",
+                                       "pin-assets", "unpin"])
+    bb.add_argument("--workspace", default="local-lab")
+    bb.add_argument("--run", default=None)
+    bb.add_argument("--title", default="")
+    bb.add_argument("--text", default="")
+    bb.add_argument("--ref", default="")
+    bb.add_argument("--note", default="")
+    bb.add_argument("--product", default="")
+    bb.add_argument("--limit", type=int, default=20)
+    bb.add_argument("--actor", default="cli")
+    bb.add_argument("--role", choices=list(ROLES), default="lead")
+
+    ci = sub.add_parser("ci-gate", help="CI 退出码契约：阈值判定 + 机器可读摘要")
+    ci.add_argument("--workspace", default="local-lab")
+    ci.add_argument("--run", required=True)
+    ci.add_argument("--fail-on", default="high", choices=list(cigate_severities()))
+    ci.add_argument("--baseline", default=None, help="基线 JSON（key 列表或 findings 对象）")
+    ci.add_argument("--new-only", action="store_true")
+    ci.add_argument("--allow-zeroday", action="store_true")
+    ci.add_argument("--out", default=None)
+
+    imp = sub.add_parser("import-scan", help="外部扫描器 JSON（Trivy/Syft/grype）→ findings")
+    imp.add_argument("--workspace", default="local-lab")
+    imp.add_argument("--run", required=True)
+    imp.add_argument("--doc", required=True, help="扫描器 JSON 文件")
+    imp.add_argument("--source", default="cli")
+
+    cc = sub.add_parser("credcheck", help="fixture 驱动凭据有效性验证（不发网络）")
+    cc.add_argument("--workspace", default="local-lab")
+    cc.add_argument("--fixture", required=True)
+
+    ctem = sub.add_parser("report-ctem", help="CTEM 五阶段报告叙事（只读）")
+    ctem.add_argument("--workspace", default="local-lab")
+    ctem.add_argument("--run", required=True)
+    ctem.add_argument("--out", default=None, help="Markdown 输出路径（缺省 stdout）")
 
     args = ap.parse_args(argv)
     home = Path(args.home)
@@ -188,7 +389,12 @@ def main(argv=None) -> int:
                 _store(home, args.workspace), run=args.run,
                 chains_dir=args.chains_dir, modules_dir=args.modules_dir,
             )
-        except KeyError as exc:
+            if args.record:
+                from .core.decisions import record_plan
+
+                data["decisions"] = record_plan(_store(home, args.workspace), data,
+                                                actor=args.actor)
+        except (KeyError, ValueError) as exc:
             print(f"trident plan: {exc}", file=sys.stderr)
             return 2
         if args.format == "md":
@@ -293,7 +499,7 @@ def main(argv=None) -> int:
             else:
                 if not args.id:
                     raise ValueError("--id 必填")
-                data = ex.execute(session, args.id)
+                data = ex.execute(session, args.id, workers=args.workers)
         except (ApprovalDenied, PermissionError) as exc:
             print(f"trident explore: {exc}", file=sys.stderr)
             return 2
@@ -367,6 +573,444 @@ def main(argv=None) -> int:
                          ensure_ascii=False, indent=2))
         print(f"mining: {out / 'mining-report.json'}（候选 pending-manual-review，不自动入库）")
         return 0
+
+    if args.cmd == "llm-pool":
+        from .core.llmpool import LLMPool
+
+        store = _store(home, args.workspace)
+        session = _session(args.workspace, args.actor, args.role)
+        pool = LLMPool(store)
+        try:
+            if args.action == "status":
+                data = pool.status()
+            elif args.action == "add":
+                data = pool.add_endpoint(session, base_url=args.base_url, model=args.model,
+                                         api_key_env=args.api_key_env, weight=args.weight,
+                                         quota_requests=args.quota_requests,
+                                         quota_tokens=args.quota_tokens,
+                                         endpoint_id=args.id)
+            elif args.action == "remove":
+                data = pool.remove_endpoint(session, args.id)
+            elif args.action in ("enable", "disable"):
+                data = pool.set_enabled(session, args.action == "enable")
+            elif args.action == "reset":
+                data = pool.reset(session, args.id, usage=args.usage)
+            elif args.action == "records":
+                data = {"records": pool.records()}
+            elif args.action == "models":
+                data = {"models": pool.models()}
+            elif args.action == "tokens":
+                data = pool.token_stats()
+            else:
+                data = pool.health_check(session)
+        except (ValueError, PermissionError) as exc:
+            print(f"trident llm-pool: {exc}", file=sys.stderr)
+            return 2
+        _print_json(data)
+        return 0
+
+    if args.cmd == "notify":
+        from .core.notify import NotifyManager
+
+        store = _store(home, args.workspace)
+        session = _session(args.workspace, args.actor, args.role)
+        nm = NotifyManager(store)
+        try:
+            if args.action == "meta":
+                data = nm.meta()
+            elif args.action == "channels":
+                data = {"channels": nm.list_channels(), "rules": nm.list_rules()}
+            elif args.action == "channels-add":
+                data = nm.add_channel(session, args.kind, args.name,
+                                      _json_arg(args.config, {}), channel_id=args.id)
+            elif args.action == "channels-test":
+                data = nm.test_channel(session, args.id)
+            elif args.action == "rules":
+                data = {"rules": nm.list_rules()}
+            elif args.action == "rules-add":
+                channels = [c for c in args.channels.split(",") if c]
+                data = nm.add_rule(session, args.event, channels,
+                                   min_severity=args.severity, rule_id=args.id)
+            elif args.action == "emit":
+                if not session.can("execute"):
+                    raise PermissionError(f"{session.name} 无 execute 权限")
+                data = nm.emit(args.event, _json_arg(args.payload, {}),
+                               severity=args.severity, actor=session.name)
+            elif args.action == "deliveries":
+                data = {"deliveries": nm.deliveries(event=args.event, limit=200)}
+            elif args.action == "retry":
+                data = nm.retry(session, args.id)
+            else:
+                data = nm.set_enabled(session, args.action == "enable")
+        except (ValueError, PermissionError) as exc:
+            print(f"trident notify: {exc}", file=sys.stderr)
+            return 2
+        _print_json(data)
+        return 0
+
+    if args.cmd == "template":
+        from .core.templates import TemplateStore
+
+        store = _store(home, args.workspace)
+        session = _session(args.workspace, args.actor, args.role)
+        ts = TemplateStore(store, modules_dir=home / "modules")
+        chains = [c for c in (args.chains or "").split(",") if c]
+        modules = [m for m in (args.modules or "").split(",") if m]
+        params = _json_arg(args.params, {})
+        try:
+            if args.action == "list":
+                data = {"templates": ts.list()}
+            elif args.action == "add":
+                data = ts.add(session, name=args.name, chains=chains, params=params,
+                              modules=modules, template_id=args.id)
+            elif args.action == "from-run":
+                data = ts.from_run(session, args.run or "", name=args.name,
+                                   template_id=args.id)
+            elif args.action == "get":
+                data = ts.get(args.id)
+            elif args.action == "plan":
+                data = ts.instantiate(args.id, overrides=_json_arg(args.overrides, {}))
+            elif args.action == "update":
+                fields = {}
+                if args.name:
+                    fields["name"] = args.name
+                if chains:
+                    fields["chains"] = chains
+                if modules:
+                    fields["modules"] = modules
+                if args.params:
+                    fields["params"] = params
+                data = ts.update(session, args.id, **fields)
+            else:
+                data = ts.delete(session, args.id)
+        except (ValueError, PermissionError) as exc:
+            print(f"trident template: {exc}", file=sys.stderr)
+            return 2
+        _print_json(data)
+        return 0
+
+    if args.cmd == "calendar":
+        from .core.calendar import Calendar
+
+        store = _store(home, args.workspace)
+        session = _session(args.workspace, args.actor, args.role)
+        cal = Calendar(store, modules_dir=home / "modules")
+        chains = [c for c in (args.chains or "").split(",") if c]
+        try:
+            if args.action == "list":
+                data = {"windows": cal.list(), "due": [w["id"] for w in cal.due()]}
+            elif args.action == "add":
+                data = cal.add_window(session, name=args.name, start=args.start, end=args.end,
+                                      chains=chains, window_id=args.id,
+                                      allow_past=args.allow_past)
+            elif args.action in ("pause", "resume"):
+                data = (cal.pause if args.action == "pause" else cal.resume)(session, args.id)
+            elif args.action == "remove":
+                data = cal.remove(session, args.id)
+            elif args.action == "run-due":
+                data = cal.run_due(session)
+            elif args.action == "upcoming":
+                data = {"windows": cal.upcoming(days=args.days)}
+            else:
+                data = cal.event_calendar(days=args.days)
+        except (ValueError, PermissionError) as exc:
+            print(f"trident calendar: {exc}", file=sys.stderr)
+            return 2
+        _print_json(data)
+        return 0
+
+    if args.cmd == "threads":
+        from .core.threads import Threads
+
+        store = _store(home, args.workspace)
+        session = _session(args.workspace, args.actor, args.role)
+        th = Threads(store)
+        try:
+            if args.action == "ask":
+                data = th.ask(session, args.run or "", args.subject, args.body)
+            elif args.action == "reply":
+                data = th.reply(session, args.run or "", args.id, args.body)
+            elif args.action == "list":
+                data = {"threads": th.list_threads(args.run or None),
+                        "summary": th.summary(args.run or None)}
+            elif args.action == "events":
+                data = th.events(args.run or "", args.id)
+            elif args.action == "close":
+                data = th.close(session, args.run or "", args.id, resolution=args.resolution)
+            elif args.action == "cancel":
+                data = th.cancel(session, args.run or "", args.id, reason=args.reason)
+            else:
+                data = th.summary(args.run or None)
+        except (ValueError, PermissionError, KeyError) as exc:
+            print(f"trident threads: {exc}", file=sys.stderr)
+            return 2
+        _print_json(data)
+        return 0
+
+    if args.cmd == "graph":
+        from .core.graphsnap import GraphSnapshots
+
+        store = _store(home, args.workspace)
+        session = _session(args.workspace, args.actor, args.role)
+        gs = GraphSnapshots(store)
+        try:
+            if args.action == "snapshot":
+                data = gs.snapshot(session, run=args.run, label=args.label)
+            elif args.action == "list":
+                data = {"snapshots": gs.list()}
+            elif args.action == "diff":
+                data = gs.diff(args.base, args.head)
+            elif args.action == "ui":
+                data = gs.ui_data(args.id)
+            else:
+                data = gs.neighbors(args.id, args.node)
+        except (ValueError, PermissionError) as exc:
+            print(f"trident graph: {exc}", file=sys.stderr)
+            return 2
+        _print_json(data)
+        return 0
+
+    if args.cmd == "blackboard":
+        from .core.blackboard import Blackboard
+
+        store = _store(home, args.workspace)
+        session = _session(args.workspace, args.actor, args.role)
+        bb = Blackboard(store)
+        try:
+            if args.action == "list":
+                data = {"entries": bb.list()}
+            elif args.action == "context":
+                data = bb.context()
+            elif args.action == "pin-note":
+                data = bb.pin_note(session, args.text, ref=args.ref, note=args.note)
+            elif args.action == "pin-finding":
+                data = bb.pin_finding(session, args.run or "", args.title, note=args.note)
+            elif args.action == "pin-assets":
+                data = {"pinned": bb.pin_assets(session, product=args.product,
+                                                limit=args.limit, note=args.note)}
+            else:
+                data = bb.unpin(session, args.ref)
+        except (ValueError, PermissionError) as exc:
+            print(f"trident blackboard: {exc}", file=sys.stderr)
+            return 2
+        _print_json(data)
+        return 0
+
+    if args.cmd == "ci-gate":
+        from .core.cigate import evaluate_run, write_summary
+
+        store = _store(home, args.workspace)
+        baseline = _json_arg(args.baseline, None) if args.baseline else None
+        try:
+            result = evaluate_run(store, args.run, {
+                "fail_on": args.fail_on, "baseline": baseline,
+                "fail_on_new_only": args.new_only,
+                "allow_zeroday": args.allow_zeroday,
+            })
+        except ValueError as exc:
+            print(f"trident ci-gate: {exc}", file=sys.stderr)
+            return 1
+        if args.out:
+            write_summary(result, args.out)
+        _print_json(result)
+        return int(result["exit_code"])
+
+    if args.cmd == "import-scan":
+        from .core.importers import ingest
+
+        try:
+            doc = json.loads(Path(args.doc).read_text(encoding="utf-8"))
+            result = ingest(_store(home, args.workspace), args.run, doc, source=args.source)
+        except (OSError, ValueError) as exc:
+            print(f"trident import-scan: {exc}", file=sys.stderr)
+            return 2
+        _print_json(result)
+        return 0
+
+    if args.cmd == "credcheck":
+        from .core.credcheck import probe_plan, render_md, validate_file
+
+        try:
+            fixture = json.loads(Path(args.fixture).read_text(encoding="utf-8"))
+            result = validate_file(args.fixture)
+            result["probe_plan"] = probe_plan(fixture)
+        except (OSError, ValueError) as exc:
+            print(f"trident credcheck: {exc}", file=sys.stderr)
+            return 2
+        print(render_md(result))
+        _print_json(result)
+        return 0
+
+    if args.cmd == "report-ctem":
+        from .core.narrative import build, render_md
+
+        try:
+            report = build(_store(home, args.workspace), args.run)
+        except (ValueError, KeyError) as exc:
+            print(f"trident report-ctem: {exc}", file=sys.stderr)
+            return 2
+        if args.out:
+            out = Path(args.out)
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(render_md(report), encoding="utf-8")
+            print(f"report-ctem: {out}")
+        else:
+            print(render_md(report))
+        return 0
+
+    # ---- run / execute / rollback / abort / report / rules --------------------
+    if args.cmd == "run":
+        from .core.roe import ExecutionLocked
+        from .core.runner import BackupGateRefused, run_module
+        from .core.zeroday import ZerodayLocked
+
+        store = _store(home, args.workspace)
+        session = _session(args.workspace, args.actor, args.role)
+        try:
+            params = _json_arg(args.params, {})
+        except (OSError, ValueError) as exc:
+            print(f"trident run: --params 解析失败：{exc}", file=sys.stderr)
+            return 2
+        mods_dir = Path(args.modules_dir) if args.modules_dir else home / "modules"
+        try:
+            run = store.open_run(args.run) if args.run else None
+        except KeyError as exc:
+            print(f"trident run: {exc}", file=sys.stderr)
+            return 2
+        try:
+            result = run_module(store, session, args.module, params, mods_dir, run=run)
+        except KeyError as exc:
+            print(f"trident run: {exc}", file=sys.stderr)
+            return 2
+        except (ExecutionLocked, BackupGateRefused, ZerodayLocked, PermissionError) as exc:
+            print(f"trident run: {exc}", file=sys.stderr)
+            return 91
+        _print_json(result)
+        return 0
+
+    if args.cmd == "execute":
+        from .core.chains import PreconditionError, dry_run, execute, load_chains
+        from .core.roe import ExecutionLocked
+        from .core.runner import BackupGateRefused
+        from .core.zeroday import ZerodayLocked
+
+        chains_dir = Path(args.chains_dir) if args.chains_dir else home / "chains"
+        if not chains_dir.exists():
+            chains_dir = Path(__file__).resolve().parent / "chains"
+        mods_dir = Path(args.modules_dir) if args.modules_dir else home / "modules"
+        try:
+            chains = load_chains(chains_dir)
+        except ValueError as exc:
+            print(f"trident execute: 链目录非法：{exc}", file=sys.stderr)
+            return 2
+        if args.chain not in chains:
+            print(f"trident execute: 未知链 {args.chain}（{chains_dir}）", file=sys.stderr)
+            return 2
+        try:
+            findings = _json_arg(args.findings, []) or []
+        except (OSError, ValueError) as exc:
+            print(f"trident execute: --findings 解析失败：{exc}", file=sys.stderr)
+            return 2
+        chain = chains[args.chain]
+        if args.dry_run:
+            _print_json(dry_run(chain, findings, mods_dir))
+            return 0
+        store = _store(home, args.workspace)
+        session = _session(args.workspace, args.actor, args.role)
+        try:
+            result = execute(chain, store, session, mods_dir, findings=findings,
+                             workers=args.workers, strict=args.strict)
+        except (PreconditionError, ExecutionLocked, BackupGateRefused, ZerodayLocked,
+                PermissionError) as exc:
+            print(f"trident execute: {exc}", file=sys.stderr)
+            return 91
+        _print_json(result)
+        return 0 if result.get("ok") else 3
+
+    if args.cmd == "rollback":
+        from .core.backup import BackupManager
+
+        store = _store(home, args.workspace)
+        try:
+            run = store.open_run(args.run)
+        except KeyError as exc:
+            print(f"trident rollback: {exc}", file=sys.stderr)
+            return 2
+        receipt = BackupManager(store, run).rollback(args.step)
+        _print_json(receipt)
+        return 0 if receipt["failed"] == 0 else 3
+
+    if args.cmd == "abort":
+        from .core.abort import abort_info, clear_abort, request_abort
+
+        store = _store(home, args.workspace)
+        doc = clear_abort(store, args.actor) if args.clear else request_abort(
+            store, args.actor, args.reason)
+        _print_json({"workspace": args.workspace, **doc, "state": abort_info(store)})
+        return 0
+
+    if args.cmd == "report":
+        from .reports.render import render_pentest, render_remediation
+
+        store = _store(home, args.workspace)
+        try:
+            disclosed = _json_arg(args.disclosed, None)
+        except (OSError, ValueError) as exc:
+            print(f"trident report: --disclosed 解析失败：{exc}", file=sys.stderr)
+            return 2
+        try:
+            if args.kind == "remediation":
+                text = render_remediation(store, args.run, lang=args.lang,
+                                          disclosed=disclosed, redact_zeroday=args.redact)
+            else:
+                text = render_pentest(store, args.run, lang=args.lang,
+                                      disclosed=disclosed, redact_zeroday=args.redact)
+        except KeyError as exc:
+            print(f"trident report: {exc}", file=sys.stderr)
+            return 2
+        if args.out:
+            out = Path(args.out)
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(text, encoding="utf-8")
+            print(f"report: {out}（kind={args.kind}, lang={args.lang}）")
+        else:
+            print(text)
+        return 0
+
+    if args.cmd == "rules":
+        from .rules.generate import RuleCoverageError, generate_all
+        from .rules.validate import validate
+
+        if args.rcmd == "generate":
+            chains_dir = Path(args.chains_dir) if args.chains_dir else home / "chains"
+            if not chains_dir.exists():
+                chains_dir = Path(__file__).resolve().parent / "chains"
+            out_dir = Path(args.out) if args.out else home / "reports" / "rules-pack"
+            try:
+                findings = _json_arg(args.findings, []) or []
+            except (OSError, ValueError) as exc:
+                print(f"trident rules: --findings 解析失败：{exc}", file=sys.stderr)
+                return 2
+            try:
+                pack = generate_all(chains_dir, findings=findings, cni=args.cni,
+                                    out_dir=out_dir)
+            except (RuleCoverageError, ValueError, OSError) as exc:
+                print(f"trident rules generate: {exc}", file=sys.stderr)
+                return 2
+            _print_json({"pack": str(out_dir), "rules": pack.total_rules,
+                         "chains": pack.covered_chain_count, "files": len(pack.files)})
+            return 0
+        pack_dir = Path(args.pack) if args.pack else home / "reports" / "rules-pack"
+        if not (pack_dir / "mapping.json").is_file():
+            print(f"trident rules validate: 缺 {pack_dir / 'mapping.json'}", file=sys.stderr)
+            return 2
+        try:
+            matrix = validate(pack_dir, mock_base=args.mock_base)
+        except (ValueError, OSError, KeyError) as exc:
+            print(f"trident rules validate: {exc}", file=sys.stderr)
+            return 2
+        _print_json(matrix)
+        return 0 if matrix.get("ok") else 3
 
     return 1
 

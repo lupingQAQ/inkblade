@@ -60,6 +60,16 @@ def run_module(
     bm = BackupManager(store, run)
     is_zd = bool(meta.private)  # 私有（零日级）模块的每条审计行都打标
 
+    # 紧急停止闸门：工作区级 kill switch 命中后拒绝一切新执行
+    from .abort import assert_not_aborted
+
+    try:
+        assert_not_aborted(store)
+    except ExecutionLocked as exc:
+        run.log_action(session.name, "execute", module_key, params,
+                       "refused-aborted", is_zeroday=is_zd)
+        raise exc
+
     # 范围闸门：params 显式声明的 host / target_ns / namespace 必须落在授权范围内
     violation = scope_violation(store, params)
     if violation:

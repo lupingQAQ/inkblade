@@ -21,6 +21,7 @@ from urllib.parse import parse_qs, urlparse
 from ..core.evidence import EvidenceStore
 from ..core.roe import roe_status
 from ..core.users import UserStore
+from . import api_ext
 
 _STATIC = Path(__file__).parent / "static"
 
@@ -117,6 +118,20 @@ class _Handler(BaseHTTPRequestHandler):
             return self._json(200, {"abort": True})
         return self._api_v1_post(u.path)
 
+    def do_PATCH(self):
+        u = urlparse(self.path)
+        b = self._body()
+        if api_ext.route(self, "PATCH", u.path, u.query, b):
+            return
+        self._json(404, {"error": "not found"})
+
+    def do_DELETE(self):
+        u = urlparse(self.path)
+        b = self._body()
+        if api_ext.route(self, "DELETE", u.path, u.query, b):
+            return
+        self._json(404, {"error": "not found"})
+
     # ---------- /api/v1 POST ----------
     def _api_v1_post(self, path: str):
         from ..core import discovery, explorer as explorer_mod, poc as poc_mod, traffic as traffic_mod
@@ -125,6 +140,9 @@ class _Handler(BaseHTTPRequestHandler):
         from ..core.zeroday import enable as zd_enable
 
         b = self._body()
+
+        if api_ext.route(self, "POST", path, "", b):
+            return
 
         if path == "/api/v1/assets/discover":
             session, store, ws = self._auth(b)
@@ -168,7 +186,8 @@ class _Handler(BaseHTTPRequestHandler):
                 locked = self._roe_guard(store)
                 if locked:
                     return self._json(locked["code"], {"error": locked["error"]})
-                return self._json(200, ex.execute(session, pid))
+                return self._json(200, ex.execute(session, pid,
+                                                  workers=int(b.get("workers", 1) or 1)))
             except PermissionError as e:
                 return self._json(403, {"error": str(e)})
             except ExecutionLocked as e:
@@ -284,6 +303,10 @@ class _Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         u = urlparse(self.path)
+        if u.path in ("/openapi.json", "/api/v1/openapi.json"):
+            from .openapi import build_openapi
+
+            return self._json(200, build_openapi())
         if u.path == "/":
             html = (_STATIC / "index.html").read_text(encoding="utf-8") if (_STATIC / "index.html").exists() else "<html><body>Trident</body></html>"
             payload = html.encode("utf-8")
@@ -309,6 +332,73 @@ class _Handler(BaseHTTPRequestHandler):
         return self._api_v1_get(u.path, u.query)
 
     # ---------- /api/v1 GET ----------
+    def _api_readonly(self, path: str, q: dict, session, store, ws: str) -> bool:
+        """终审 Minor#8 只读端点：workspaces / steps / evidence / graph / report。"""
+        if path == "/api/v1/workspaces":
+            self._json(200, {"workspaces": session.visible_workspaces(root=Path(self.root)),
+                             "current": ws})
+            return True
+        if path not in ("/api/v1/steps", "/api/v1/evidence", "/api/v1/graph", "/api/v1/report"):
+            return False
+        run = (q.get("run") or [""])[0]
+        if not run:
+            self._json(400, {"error": "run 参数必填"})
+            return True
+        run_dir = Path(store.ws_dir) / run
+        if not (run_dir / "evidence.db").is_file():
+            self._json(404, {"error": f"run not found: {run}"})
+            return True
+        from .export_static import load_run_data
+
+        try:
+            data = load_run_data(run_dir)
+        except Exception as exc:  # 库损坏/权限
+            self._json(500, {"error": f"run 数据读取失败: {exc}"})
+            return True
+
+        if path == "/api/v1/steps":
+            steps = data["steps"]
+            self._json(200, {"workspace": ws, "run": run, "steps": steps,
+                             "count": len(steps)})
+            return True
+        if path == "/api/v1/evidence":
+            step = (q.get("step") or [""])[0]
+            rows = []
+            for s in data["steps"]:
+                if step and s["step_key"] != step:
+                    continue
+                for ev in s.get("evidence", []):
+                    rows.append({"step_key": s["step_key"], "step_id": s["id"], **ev})
+            self._json(200, {"workspace": ws, "run": run, "evidence": rows,
+                             "count": len(rows),
+                             "manifest_verified": store.verify_manifest(run)})
+            return True
+        if path == "/api/v1/graph":
+            nodes, edges = data["nodes"], data["edges"]
+            by_layer: dict[str, int] = {}
+            for n in nodes:
+                layer = n.get("layer") or "未分层"
+                by_layer[layer] = by_layer.get(layer, 0) + 1
+            self._json(200, {"workspace": ws, "run": run, "nodes": nodes, "edges": edges,
+                             "node_count": len(nodes), "edge_count": len(edges),
+                             "by_layer": by_layer})
+            return True
+        # report
+        kind = (q.get("kind") or ["pentest"])[0]
+        lang = (q.get("lang") or ["bi"])[0]
+        redact = (q.get("redact") or ["0"])[0] in ("1", "true", "yes")
+        if kind not in ("pentest", "remediation") or lang not in ("bi", "zh", "en"):
+            self._json(400, {"error": "kind 须 pentest|remediation，lang 须 bi|zh|en"})
+            return True
+        from ..reports.render import render_pentest, render_remediation
+
+        render = render_remediation if kind == "remediation" else render_pentest
+        text = render(store, run, lang=lang, redact_zeroday=redact)
+        self._json(200, {"workspace": ws, "run": run, "kind": kind, "lang": lang,
+                         "redact_zeroday": redact, "bytes": len(text.encode("utf-8")),
+                         "markdown": text})
+        return True
+
     def _api_v1_get(self, path: str, query: str):
         from ..core import discovery, explorer as explorer_mod, traffic as traffic_mod
         from ..core.scheduler import Scheduler
@@ -323,6 +413,9 @@ class _Handler(BaseHTTPRequestHandler):
             store = self._ws_store(session, ws)
         except PermissionError as e:
             return self._json(403, {"error": str(e)})
+
+        if self._api_readonly(path, q, session, store, ws):
+            return
 
         if path == "/api/v1/assets":
             inv = discovery.AssetInventory(store)
@@ -370,6 +463,8 @@ class _Handler(BaseHTTPRequestHandler):
             return self._json(200, {"workspace": ws, "pack": str(pack), "ok": True,
                                     "rules": len(doc.get("rules") or []),
                                     "chains": len(doc.get("chains") or {})})
+        if api_ext.route(self, "GET", path, query, None):
+            return
         return self._json(404, {"error": "not found"})
 
 
