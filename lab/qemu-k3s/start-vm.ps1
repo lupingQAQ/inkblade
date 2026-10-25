@@ -13,6 +13,8 @@
       127.0.0.1:2222  -> guest :22    (ssh/scp)
       127.0.0.1:6445  -> guest :6443  (k3s API server)
       127.0.0.1:30080 -> guest :30080 (NodePort used by the mock target)
+      127.0.0.1:18787 -> guest :8787  (ARTEX UI/API, bench)
+      127.0.0.1:18788 -> guest :8788  (ARTEX traffic proxy, bench)
 
     The guest serial console is exposed as a TCP chardev on 127.0.0.1:4555 and
     mirrored to lab/qemu-k3s/out/serial-<mode>.log for evidence. Use
@@ -21,6 +23,7 @@
 .EXAMPLE
     powershell -File lab/qemu-k3s/start-vm.ps1 -Mode install
     powershell -File lab/qemu-k3s/start-vm.ps1 -Mode run
+    powershell -File lab/qemu-k3s/start-vm.ps1 -Mode run -MemoryMB 6144 -Smp 6
     powershell -File lab/qemu-k3s/start-vm.ps1 -Stop
 #>
 [CmdletBinding()]
@@ -33,11 +36,26 @@ param(
     [int]$SshPort = 2222,
     [int]$ApiPort = 6445,
     [int]$NodePortPort = 30080,
-    [int]$Memory = 2048,
-    [int]$Cpus = 4,
+    # ARTEX UI/API (guest :8787) and its traffic proxy (:8788) for host access.
+    [int]$ArtexPort = 18787,
+    [int]$ArtexProxyPort = 18788,
+    # -MemoryMB / -Smp are the documented names (ARTEX bench uses -MemoryMB 6144 -Smp 6);
+    # the old -Memory / -Cpus names stay as aliases so existing callers keep working.
+    [Alias('Memory')]
+    [int]$MemoryMB = 2048,
+    [Alias('Cpus')]
+    [int]$Smp = 4,
     [string]$Kernel = '',
     [string]$Initrd = '',
     [string]$Append = 'console=ttyS0,115200',
+    # TCG accelerator options. `-accel tcg,thread=single` is the fallback when
+    # multi-threaded TCG panics the guest at IO-APIC setup with -Smp > 4.
+    # Machine type. QEMU 11.x defaults x86_64 to q35, which under TCG aborts the
+    # guest halfway through openrc with 6 vCPUs (and panics at IO-APIC setup with
+    # 6 vCPUs / 6 GB). i440fx (`pc`) boots -Smp 6 reliably; see
+    # docs/ARTEX-BENCH-RESULT.md §"SMP 6 under TCG".
+    [string]$Machine = 'pc',
+    [string]$Accel = 'tcg',
     [switch]$Stop,
     [switch]$Foreground
 )
@@ -81,14 +99,15 @@ if ($running) { throw "lab VM already running (pid $($running.Id)); use -Stop fi
 $serialLog = Join-Path $OutDir "serial-$Mode.log"
 $qemuLog = Join-Path $OutDir "qemu-$Mode.log"
 $args = @(
-    '-accel', 'tcg',
-    '-m', "$Memory",
-    '-smp', "$Cpus",
+    '-accel', $Accel,
+    '-machine', $Machine,
+    '-m', "$MemoryMB",
+    '-smp', "$Smp",
     '-cpu', 'max',
     '-display', 'none',
     '-chardev', "socket,id=ser0,host=127.0.0.1,port=$ConsolePort,server=on,wait=off,logfile=$serialLog",
     '-serial', 'chardev:ser0',
-    '-netdev', "user,id=n0,hostfwd=tcp::$SshPort-:22,hostfwd=tcp::$ApiPort-:6443,hostfwd=tcp::$NodePortPort-:30080",
+    '-netdev', "user,id=n0,hostfwd=tcp::$SshPort-:22,hostfwd=tcp::$ApiPort-:6443,hostfwd=tcp::$NodePortPort-:30080,hostfwd=tcp::$ArtexPort-:8787,hostfwd=tcp::${ArtexProxyPort}-:8788",
     '-device', 'virtio-net-pci,netdev=n0',
     '-device', 'virtio-rng-pci',
     '-drive', "file=$Disk,if=virtio,format=qcow2,cache=writeback",
@@ -109,7 +128,7 @@ if ($Mode -eq 'install') {
     $args += @('-boot', 'order=c')
 }
 
-Write-Host "[qemu-k3s] mode=$Mode memory=${Memory}MB smp=$Cpus console=:$ConsolePort ssh=:$SshPort api=:$ApiPort nodeport=:$NodePortPort"
+Write-Host "[qemu-k3s] mode=$Mode memory=${MemoryMB}MB smp=$Smp console=:$ConsolePort ssh=:$SshPort api=:$ApiPort nodeport=:$NodePortPort artex=:$ArtexPort"
 Write-Host "[qemu-k3s] serial log: $serialLog"
 
 if ($Foreground) {
