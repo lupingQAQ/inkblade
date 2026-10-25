@@ -338,6 +338,40 @@ class _Handler(BaseHTTPRequestHandler):
             self._json(200, {"workspaces": session.visible_workspaces(root=Path(self.root)),
                              "current": ws})
             return True
+        if path == "/api/v1/drift":
+            run = (q.get("run") or [""])[0]
+            ws_dir = Path(store.ws_dir)
+            if run:
+                run_dir = ws_dir / run
+                if not run_dir.is_dir():
+                    self._json(404, {"error": f"run not found: {run}"})
+                    return True
+                drift_path = run_dir / "drift.json"
+                if not drift_path.is_file():
+                    self._json(404, {"error": f"run 无漂移数据（drift: {run}）"})
+                    return True
+            else:
+                candidates = sorted(
+                    (p for p in ws_dir.iterdir()
+                     if p.is_dir() and (p / "drift.json").is_file()),
+                    key=lambda p: (p / "drift.json").stat().st_mtime, reverse=True)
+                if not candidates:
+                    self._json(404, {"error": "工作区暂无漂移数据（先 schedule run-due）"})
+                    return True
+                run_dir = candidates[0]
+                run = run_dir.name
+                drift_path = run_dir / "drift.json"
+            try:
+                doc = json.loads(drift_path.read_text(encoding="utf-8"))
+            except ValueError as exc:
+                self._json(500, {"error": f"drift.json 非法: {exc}"})
+                return True
+            self._json(200, {"workspace": ws, "run": run,
+                             "counts": doc.get("counts") or {},
+                             "new": doc.get("new") or [],
+                             "fixed": doc.get("fixed") or [],
+                             "drift": doc})
+            return True
         if path not in ("/api/v1/steps", "/api/v1/evidence", "/api/v1/graph", "/api/v1/report"):
             return False
         run = (q.get("run") or [""])[0]

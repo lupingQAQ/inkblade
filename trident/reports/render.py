@@ -176,6 +176,79 @@ def _steps_table(run, lang: str) -> str:
     return "\n".join(lines)
 
 
+def _network_layer_section(run, lang: str) -> str:
+    """网络分层节的数据驱动部分：消费 graph_nodes/graph_edges（层级 + 判定方式）。
+
+    空图时显式声明「未落图数据」，仅保留七层模型基线叙述，不臆造资产。
+    """
+    nodes = run.query(
+        "SELECT node_id, kind, layer, attrs FROM graph_nodes ORDER BY layer, node_id")
+    edges = run.query(
+        "SELECT src, dst, verdict, method, chain FROM graph_edges ORDER BY src, dst")
+    if not nodes and not edges:
+        return _pick(
+            lang,
+            "**本 run 未落图数据**（`graph_nodes`/`graph_edges` 为空）：上表为七层模型基线，"
+            "不对资产归属与可达性作推断；接入侦察模块或可达性图后本节自动填充。",
+            "**No graph data recorded for this run** (`graph_nodes`/`graph_edges` empty): the "
+            "paragraph above is the seven-layer baseline only; no asset or reachability "
+            "inference is made. Populate the graph via recon/reachability modules to fill this section.",
+        )
+
+    layer_counts: dict[str, list[str]] = {}
+    for node_id, _kind, layer, _attrs in nodes:
+        layer_counts.setdefault(layer or _pick(lang, "未分层", "unlayered"), []).append(node_id)
+
+    lines: list[str] = [_pick(lang,
+                              "### 分层节点（数据驱动：`graph_nodes.layer`）",
+                              "### Layered nodes (data-driven: `graph_nodes.layer`)")]
+    lines.append(_pick(lang, "| 层 | 节点数 | 节点样例 |", "| Layer | Nodes | Examples |"))
+    lines.append("|---|---:|---|")
+    for layer in sorted(layer_counts):
+        ids = layer_counts[layer]
+        sample = ", ".join(ids[:5]) + (" …" if len(ids) > 5 else "")
+        lines.append(f"| {_cell(layer)} | {len(ids)} | {_cell(sample)} |")
+
+    lines.append("")
+    lines.append(_pick(lang,
+                       "### 跨层边与判定方式（数据驱动：`graph_edges.method`）",
+                       "### Cross-layer edges and verdict methods (data-driven: `graph_edges.method`)"))
+    lines.append(_pick(lang,
+                       "| 源 | 目标 | 判定 | 判定方式 | 链 |",
+                       "| Source | Target | Verdict | Method | Chain |"))
+    lines.append("|---|---|---|---|---|")
+    if not edges:
+        lines.append(_pick(lang, "|（无图边）| | | | |", "| (no edges) | | | | |"))
+    for src, dst, verdict, method, chain in edges:
+        lines.append(f"| {_cell(src)} | {_cell(dst)} | {_cell(verdict)} | "
+                     f"{_cell(method)} | {_cell(chain or '—')} |")
+
+    verdict_counts: dict[str, int] = {}
+    method_set: set[str] = set()
+    for _src, _dst, verdict, method, _chain in edges:
+        verdict_counts[verdict or "unknown"] = verdict_counts.get(verdict or "unknown", 0) + 1
+        if method:
+            method_set.add(method)
+    lines.append("")
+    lines.append(_pick(lang, "**判定分布**", "**Verdict distribution**"))
+    lines.append("")
+    lines.append(_pick(lang, "| 判定 | 数量 |", "| Verdict | Count |"))
+    lines.append("|---|---:|")
+    for verdict in sorted(verdict_counts):
+        lines.append(f"| {_cell(verdict)} | {verdict_counts[verdict]} |")
+    lines.append("")
+    lines.append(_pick(
+        lang,
+        f"判定方式口径：共 {len(method_set)} 类（{_cell('、'.join(sorted(method_set)) or '—')}）；"
+        "`CNI 语义推演`=按 NetworkPolicy/命名空间/端口语义静态推演，"
+        "`实测`=运行期 HTTP/连接探测，`静态规则`=清单与策略规则匹配。",
+        f"Verdict-method legend: {len(method_set)} kind(s) "
+        f"({_cell(', '.join(sorted(method_set)) or '—')}); `CNI 语义推演`=static semantics over "
+        "NetworkPolicy/namespace/port, `实测`=runtime probe, `静态规则`=manifest/policy matching.",
+    ))
+    return "\n".join(lines)
+
+
 def _combo_table(run, lang: str) -> str:
     header = _pick(lang, "| 组合签名 | 详情 |", "| Combination Signature | Detail |")
     lines = [header, "|---|---|"]
@@ -284,7 +357,11 @@ def render_pentest(
     mapping["title_data_leak"] = mapping.pop("title_training_data_leak")
     mapping["body_data_leak"] = mapping.pop("body_training_data_leak")
     mapping["title_network_tm"] = mapping.pop("title_network_threat_model")
-    mapping["body_network_tm"] = mapping.pop("body_network_threat_model")
+    mapping["body_network_tm"] = (
+        mapping.pop("body_network_threat_model")
+        + "\n\n"
+        + _network_layer_section(run, lang)
+    )
     mapping["title_hybrid"] = mapping.pop("title_hybrid_cloud_boundary")
     mapping["body_hybrid"] = mapping.pop("body_hybrid_cloud_boundary")
     mapping["findings_table"] = _findings_table(run, lang, disclosed, sha_map, redact_zeroday)

@@ -860,15 +860,32 @@
   function renderAssets() {
     var body = ensureSection("assets-body");
     if (!body) return;
-    var render = function (data) {
+    var render = function (data, opts) {
+      opts = opts || {};
       var g = data.graph || { nodes: [], edges: [] };
+      var allNodes = g.nodes || [];
       var wrap = el("div", "chain-controls");
       wrap.appendChild(el("span", "hint",
-        "资产 " + (g.nodes || []).length + " · 关系 " + (g.edges || []).length + " · 来源：core/discovery（assets 表，种子→增量）"));
+        "资产 " + allNodes.length + " · 关系 " + (g.edges || []).length + " · 来源：core/discovery（assets 表，种子→增量）"));
+      if (!STATIC_MODE && STATE.token) {
+        var kindSel = el("select", "filter");
+        [["", "全部类型"], ["namespace", "命名空间"], ["service", "服务"],
+         ["kubeconfig", "kubeconfig"], ["other", "其他"]].forEach(function (kv) {
+          var o = el("option", null, kv[1]); o.value = kv[0]; kindSel.appendChild(o);
+        });
+        kindSel.value = opts.kind || "";
+        kindSel.onchange = function () { load(kindSel.value); };
+        wrap.appendChild(kindSel);
+        var prodIn = el("input", "filter");
+        prodIn.placeholder = "产品过滤（如 sglang）";
+        prodIn.value = opts.product || "";
+        prodIn.onchange = function () { load(kindSel.value, prodIn.value.trim()); };
+        wrap.appendChild(prodIn);
+      }
       body.appendChild(wrap);
       /* 复用攻击链图的分层画法：namespace → service，产品着色，缺失资产灰显 */
-      var ns = (g.nodes || []).filter(function (n) { return n.kind === "namespace"; });
-      var svc = (g.nodes || []).filter(function (n) { return n.kind !== "namespace"; });
+      var ns = allNodes.filter(function (n) { return n.kind === "namespace"; });
+      var svc = allNodes.filter(function (n) { return n.kind !== "namespace"; });
       var cols = ["namespace"].concat(["service", "kubeconfig", "other"]);
       var colIndex = {};
       cols.forEach(function (k, i) { colIndex[k] = i; });
@@ -901,7 +918,7 @@
         ["资产键", "类型", "产品", "命名空间", "地址", "状态"].forEach(function (t) { h.appendChild(el("th", null, t)); });
         return h;
       })());
-      g.nodes.forEach(function (n) {
+      allNodes.forEach(function (n) {
         var tr = el("tr");
         [n.id, n.kind, n.product || "—", n.namespace || "—",
          (n.addr ? n.addr + (n.port ? ":" + n.port : "") : "—"),
@@ -912,10 +929,21 @@
       });
       body.appendChild(tbl);
     };
-    if (STATIC_MODE || STATE.data) return render(assetsData());
+    var load = function (kind, product) {
+      var qs = "api/v1/assets?workspace=" + encodeURIComponent(STATE.workspace);
+      if (kind) qs += "&kind=" + encodeURIComponent(kind);
+      if (product) qs += "&product=" + encodeURIComponent(product);
+      return api(qs).then(function (data) {
+        clear(body);
+        render(data, { kind: kind, product: product });
+      }).catch(function () {
+        clear(body);
+        body.appendChild(el("div", "hint", "资产清单加载失败（未发现或未登录）。"));
+      });
+    };
+    if (STATIC_MODE || STATE.data) return render(assetsData(), {});
     if (!STATE.token) { body.appendChild(el("div", "hint", "登录后加载资产清单（api/v1/assets）。")); return; }
-    api("api/v1/assets?workspace=" + encodeURIComponent(STATE.workspace)).then(render)
-      .catch(function () { body.appendChild(el("div", "hint", "资产清单加载失败（未发现或未登录）。")); });
+    load("");
   }
 
   function renderDrift() {
@@ -949,8 +977,14 @@
       });
     };
     if (STATIC_MODE || STATE.data) return render(driftData());
-    body.appendChild(el("div", "hint", "服务模式漂移读取：MCP get_drift（或静态导出内嵌）；此处展示内嵌数据。"));
-    render(driftData());
+    if (!STATE.token) { body.appendChild(el("div", "hint", "登录后加载差异视图（api/v1/drift）。")); return; }
+    var qs = "api/v1/drift?workspace=" + encodeURIComponent(STATE.workspace);
+    if (STATE.selectedRun) qs += "&run=" + encodeURIComponent(STATE.selectedRun);
+    api(qs).then(function (body2) { render(body2.drift || body2); })
+      .catch(function (e) {
+        body.appendChild(el("div", "hint", "差异数据加载失败（" + e.message +
+          "）；周期重测 run-due 后生成 drift.json，或查看静态导出。"));
+      });
   }
 
   var APPROVAL_ZH = {

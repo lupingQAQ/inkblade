@@ -100,6 +100,8 @@ def build_openapi() -> dict[str, Any]:
                                         params=["workspace", "run", "step"])},
         "/api/v1/graph": {"get": _op("图节点/边（层级与判定方式原样透出）", "readonly",
                                      params=["workspace", "run"])},
+        "/api/v1/drift": {"get": _op("周期重测差异（drift.json；缺 run 取最新）", "readonly",
+                                     params=["workspace", "run"])},
         "/api/v1/report": {"get": _op("渲染双语报告（pentest|remediation）", "readonly",
                                       params=["workspace", "run", "kind", "lang", "redact"])},
         "/api/v1/rules": {"get": _op("规则包状态（mapping 规则/链计数）", "rules", params=["workspace"])},
