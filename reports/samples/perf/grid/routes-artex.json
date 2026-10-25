@@ -2,7 +2,7 @@
  "tool": "artex",
  "source": "RuoJi6/ARTEX server/*.go (mux.HandleFunc pattern routes)",
  "commit": "620ca5d",
- "extracted_at": "2026-10-25T13:37:17Z",
+ "extracted_at": "<dynamic>",
  "endpoint_count": 278,
  "by_class": {
   "read": 124,

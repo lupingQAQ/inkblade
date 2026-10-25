@@ -1,0 +1,2278 @@
+{
+  "routes_file": "reports/samples/perf/grid/routes-artex.json",
+  "route_count": 278,
+  "base": "http://127.0.0.1:<port>",
+  "n": 10,
+  "query": null,
+  "measured_at": "<dynamic>",
+  "mode": "live",
+  "endpoints": [
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/agents",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 23.475,
+      "median_ms": 33.424,
+      "p95_ms": 171.342,
+      "p99_ms": 171.342,
+      "max_ms": 171.342,
+      "mean_ms": 52.952,
+      "stdev_ms": 44.578
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/agents/bench-probe",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 8.107,
+      "median_ms": 9.234,
+      "p95_ms": 12.067,
+      "p99_ms": 12.067,
+      "max_ms": 12.067,
+      "mean_ms": 9.56,
+      "stdev_ms": 1.101
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/agents/bench-probe/prompts",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 7.976,
+      "median_ms": 9.233,
+      "p95_ms": 13.594,
+      "p99_ms": 13.594,
+      "max_ms": 13.594,
+      "mean_ms": 9.55,
+      "stdev_ms": 1.629
+    },
+    {
+      "route": null,
+      "path": "/api/agents/bench-probe/triggers",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 8.155,
+      "median_ms": 8.78,
+      "p95_ms": 22.244,
+      "p99_ms": 22.244,
+      "max_ms": 22.244,
+      "mean_ms": 10.465,
+      "stdev_ms": 4.058
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/agents/bench-probe/variables",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 8.076,
+      "median_ms": 9.216,
+      "p95_ms": 11.096,
+      "p99_ms": 11.096,
+      "max_ms": 11.096,
+      "mean_ms": 9.505,
+      "stdev_ms": 1.005
+    },
+    {
+      "route": null,
+      "path": "/api/agents/bench-probe/visibility",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 7.386,
+      "median_ms": 8.499,
+      "p95_ms": 10.75,
+      "p99_ms": 10.75,
+      "max_ms": 10.75,
+      "mean_ms": 8.705,
+      "stdev_ms": 1.097
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/asset-intercept/rules",
+      "ok_rate": 1.0,
+      "note": "SSE 流端点：只测首响应（读首块即断）",
+      "n": 10,
+      "min_ms": 6.507,
+      "median_ms": 8.104,
+      "p95_ms": 25.025,
+      "p99_ms": 25.025,
+      "max_ms": 25.025,
+      "mean_ms": 11.301,
+      "stdev_ms": 6.741
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/assets",
+      "ok_rate": 1.0,
+      "note": "SSE 流端点：只测首响应（读首块即断）",
+      "n": 10,
+      "min_ms": 9.64,
+      "median_ms": 12.34,
+      "p95_ms": 90.737,
+      "p99_ms": 90.737,
+      "max_ms": 90.737,
+      "mean_ms": 26.752,
+      "stdev_ms": 29.726
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/assets/counts",
+      "ok_rate": 1.0,
+      "note": "SSE 流端点：只测首响应（读首块即断）",
+      "n": 10,
+      "min_ms": 7.568,
+      "median_ms": 10.238,
+      "p95_ms": 15.389,
+      "p99_ms": 15.389,
+      "max_ms": 15.389,
+      "mean_ms": 10.844,
+      "stdev_ms": 2.551
+    },
+    {
+      "route": null,
+      "path": "/api/assets/1/intelligence",
+      "ok_rate": 0.0,
+      "note": "SSE 流端点：只测首响应（读首块即断）",
+      "n": 10,
+      "min_ms": 7.099,
+      "median_ms": 9.923,
+      "p95_ms": 15.107,
+      "p99_ms": 15.107,
+      "max_ms": 15.107,
+      "mean_ms": 9.797,
+      "stdev_ms": 2.149
+    },
+    {
+      "route": null,
+      "path": "/api/assets/1/intelligence/1",
+      "ok_rate": 0.0,
+      "note": "SSE 流端点：只测首响应（读首块即断）",
+      "n": 10,
+      "min_ms": 7.017,
+      "median_ms": 9.045,
+      "p95_ms": 10.152,
+      "p99_ms": 10.152,
+      "max_ms": 10.152,
+      "mean_ms": 8.823,
+      "stdev_ms": 1.136
+    },
+    {
+      "route": null,
+      "path": "/api/assets/1/intelligence/1/traffic/1",
+      "ok_rate": 0.0,
+      "note": "SSE 流端点：只测首响应（读首块即断）",
+      "n": 10,
+      "min_ms": 6.811,
+      "median_ms": 7.967,
+      "p95_ms": 10.121,
+      "p99_ms": 10.121,
+      "max_ms": 10.121,
+      "mean_ms": 8.241,
+      "stdev_ms": 1.017
+    },
+    {
+      "route": null,
+      "path": "/api/audit",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 4.907,
+      "median_ms": 5.254,
+      "p95_ms": 6.376,
+      "p99_ms": 6.376,
+      "max_ms": 6.376,
+      "mean_ms": 5.425,
+      "stdev_ms": 0.545
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/auth/status",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 7.951,
+      "median_ms": 9.212,
+      "p95_ms": 13.186,
+      "p99_ms": 13.186,
+      "max_ms": 13.186,
+      "mean_ms": 9.482,
+      "stdev_ms": 1.417
+    },
+    {
+      "route": null,
+      "path": "/api/basic-auth/check",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 4.385,
+      "median_ms": 5.541,
+      "p95_ms": 7.099,
+      "p99_ms": 7.099,
+      "max_ms": 7.099,
+      "mean_ms": 5.636,
+      "stdev_ms": 0.856
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/chat/mentions",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 10.949,
+      "median_ms": 18.162,
+      "p95_ms": 119.438,
+      "p99_ms": 119.438,
+      "max_ms": 119.438,
+      "mean_ms": 26.75,
+      "stdev_ms": 31.236
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/commands",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 20.077,
+      "median_ms": 25.223,
+      "p95_ms": 36.887,
+      "p99_ms": 36.887,
+      "max_ms": 36.887,
+      "mean_ms": 26.483,
+      "stdev_ms": 5.679
+    },
+    {
+      "route": null,
+      "path": "/api/commands/stats",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 8.936,
+      "median_ms": 10.02,
+      "p95_ms": 23.053,
+      "p99_ms": 23.053,
+      "max_ms": 23.053,
+      "mean_ms": 12.215,
+      "stdev_ms": 4.498
+    },
+    {
+      "route": null,
+      "path": "/api/companies",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 6.42,
+      "median_ms": 8.146,
+      "p95_ms": 35.987,
+      "p99_ms": 35.987,
+      "max_ms": 35.987,
+      "mean_ms": 12.856,
+      "stdev_ms": 10.094
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/companies/1",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 7.055,
+      "median_ms": 9.785,
+      "p95_ms": 13.506,
+      "p99_ms": 13.506,
+      "max_ms": 13.506,
+      "mean_ms": 10.123,
+      "stdev_ms": 1.623
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/conversations",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 6.812,
+      "median_ms": 7.695,
+      "p95_ms": 25.163,
+      "p99_ms": 25.163,
+      "max_ms": 25.163,
+      "mean_ms": 9.332,
+      "stdev_ms": 5.302
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/conversations/1/messages",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 13.725,
+      "median_ms": 15.694,
+      "p95_ms": 48.497,
+      "p99_ms": 48.497,
+      "max_ms": 48.497,
+      "mean_ms": 20.551,
+      "stdev_ms": 10.426
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/conversations/1/messages/1",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 12.921,
+      "median_ms": 15.831,
+      "p95_ms": 63.339,
+      "p99_ms": 63.339,
+      "max_ms": 63.339,
+      "mean_ms": 20.98,
+      "stdev_ms": 14.473
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/activity",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 9.194,
+      "median_ms": 14.562,
+      "p95_ms": 20.39,
+      "p99_ms": 20.39,
+      "max_ms": 20.39,
+      "mean_ms": 14.337,
+      "stdev_ms": 3.502
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/activity/history",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 13.319,
+      "median_ms": 21.465,
+      "p95_ms": 53.031,
+      "p99_ms": 53.031,
+      "max_ms": 53.031,
+      "mean_ms": 25.636,
+      "stdev_ms": 12.905
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/activity/stream",
+      "ok_rate": 1.0,
+      "note": "SSE 流端点：只测首响应（读首块即断）",
+      "n": 10,
+      "min_ms": 12.846,
+      "median_ms": 16.949,
+      "p95_ms": 23.63,
+      "p99_ms": 23.63,
+      "max_ms": 23.63,
+      "mean_ms": 16.925,
+      "stdev_ms": 3.035
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/activity/1",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 12.309,
+      "median_ms": 24.215,
+      "p95_ms": 57.095,
+      "p99_ms": 57.095,
+      "max_ms": 57.095,
+      "mean_ms": 25.391,
+      "stdev_ms": 14.086
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/finding-case-review",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 7.756,
+      "median_ms": 8.477,
+      "p95_ms": 27.075,
+      "p99_ms": 27.075,
+      "max_ms": 27.075,
+      "mean_ms": 12.301,
+      "stdev_ms": 6.586
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/finding-case-suggestions",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 6.868,
+      "median_ms": 9.943,
+      "p95_ms": 46.469,
+      "p99_ms": 46.469,
+      "max_ms": 46.469,
+      "mean_ms": 15.144,
+      "stdev_ms": 12.183
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/finding-cases",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 34.119,
+      "median_ms": 37.202,
+      "p95_ms": 156.594,
+      "p99_ms": 156.594,
+      "max_ms": 156.594,
+      "mean_ms": 51.224,
+      "stdev_ms": 35.779
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/finding-cases/1",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 6.631,
+      "median_ms": 8.645,
+      "p95_ms": 16.019,
+      "p99_ms": 16.019,
+      "max_ms": 16.019,
+      "mean_ms": 9.277,
+      "stdev_ms": 2.667
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/finding-cases/1/members",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 6.78,
+      "median_ms": 7.804,
+      "p95_ms": 24.973,
+      "p99_ms": 24.973,
+      "max_ms": 24.973,
+      "mean_ms": 9.471,
+      "stdev_ms": 5.201
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/findings",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 12.325,
+      "median_ms": 16.849,
+      "p95_ms": 27.227,
+      "p99_ms": 27.227,
+      "max_ms": 27.227,
+      "mean_ms": 16.696,
+      "stdev_ms": 4.062
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/findings/asset-tree",
+      "ok_rate": 1.0,
+      "note": "SSE 流端点：只测首响应（读首块即断）",
+      "n": 10,
+      "min_ms": 8.307,
+      "median_ms": 11.365,
+      "p95_ms": 41.426,
+      "p99_ms": 41.426,
+      "max_ms": 41.426,
+      "mean_ms": 15.41,
+      "stdev_ms": 9.845
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/findings/export",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 26.595,
+      "median_ms": 32.841,
+      "p95_ms": 106.328,
+      "p99_ms": 106.328,
+      "max_ms": 106.328,
+      "mean_ms": 40.366,
+      "stdev_ms": 22.491
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/findings/groups",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 12.122,
+      "median_ms": 19.807,
+      "p95_ms": 48.293,
+      "p99_ms": 48.293,
+      "max_ms": 48.293,
+      "mean_ms": 21.938,
+      "stdev_ms": 10.127
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/findings/retests/active",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 7.318,
+      "median_ms": 8.165,
+      "p95_ms": 33.82,
+      "p99_ms": 33.82,
+      "max_ms": 33.82,
+      "mean_ms": 10.749,
+      "stdev_ms": 7.716
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/findings/stats",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 18.962,
+      "median_ms": 24.878,
+      "p95_ms": 89.124,
+      "p99_ms": 89.124,
+      "max_ms": 89.124,
+      "mean_ms": 31.376,
+      "stdev_ms": 20.365
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/findings/1",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 11.966,
+      "median_ms": 18.478,
+      "p95_ms": 27.672,
+      "p99_ms": 27.672,
+      "max_ms": 27.672,
+      "mean_ms": 18.124,
+      "stdev_ms": 5.105
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/findings/1/lineage",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 21.374,
+      "median_ms": 34.5,
+      "p95_ms": 76.278,
+      "p99_ms": 76.278,
+      "max_ms": 76.278,
+      "mean_ms": 34.406,
+      "stdev_ms": 15.418
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/findings/1/retests",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 13.469,
+      "median_ms": 16.376,
+      "p95_ms": 42.764,
+      "p99_ms": 42.764,
+      "max_ms": 42.764,
+      "mean_ms": 18.71,
+      "stdev_ms": 8.274
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/frontier",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 12.216,
+      "median_ms": 13.691,
+      "p95_ms": 27.559,
+      "p99_ms": 27.559,
+      "max_ms": 27.559,
+      "mean_ms": 15.594,
+      "stdev_ms": 4.425
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/graph",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 19.404,
+      "median_ms": 26.584,
+      "p95_ms": 59.568,
+      "p99_ms": 59.568,
+      "max_ms": 59.568,
+      "mean_ms": 30.788,
+      "stdev_ms": 13.067
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/intents",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 8.277,
+      "median_ms": 11.1,
+      "p95_ms": 20.854,
+      "p99_ms": 20.854,
+      "max_ms": 20.854,
+      "mean_ms": 12.969,
+      "stdev_ms": 4.302
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/main-sessions",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 7.202,
+      "median_ms": 9.064,
+      "p95_ms": 13.696,
+      "p99_ms": 13.696,
+      "max_ms": 13.696,
+      "mean_ms": 9.259,
+      "stdev_ms": 1.638
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/nodes",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 17.428,
+      "median_ms": 26.245,
+      "p95_ms": 68.341,
+      "p99_ms": 68.341,
+      "max_ms": 68.341,
+      "mean_ms": 29.289,
+      "stdev_ms": 14.325
+    },
+    {
+      "route": null,
+      "path": "/api/exploration/tokens",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 20.338,
+      "median_ms": 39.835,
+      "p95_ms": 59.555,
+      "p99_ms": 59.555,
+      "max_ms": 59.555,
+      "mean_ms": 39.139,
+      "stdev_ms": 11.614
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/health",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 4.048,
+      "median_ms": 5.601,
+      "p95_ms": 7.979,
+      "p99_ms": 7.979,
+      "max_ms": 7.979,
+      "mean_ms": 5.693,
+      "stdev_ms": 1.082
+    },
+    {
+      "route": null,
+      "path": "/api/intercept/history",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 12.004,
+      "median_ms": 23.638,
+      "p95_ms": 75.124,
+      "p99_ms": 75.124,
+      "max_ms": 75.124,
+      "mean_ms": 24.87,
+      "stdev_ms": 17.703
+    },
+    {
+      "route": null,
+      "path": "/api/intercept/history/1",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 12.634,
+      "median_ms": 20.87,
+      "p95_ms": 29.458,
+      "p99_ms": 29.458,
+      "max_ms": 29.458,
+      "mean_ms": 19.503,
+      "stdev_ms": 5.795
+    },
+    {
+      "route": null,
+      "path": "/api/intercept/history/1/execution",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 10.71,
+      "median_ms": 13.223,
+      "p95_ms": 88.581,
+      "p99_ms": 88.581,
+      "max_ms": 88.581,
+      "mean_ms": 22.243,
+      "stdev_ms": 22.46
+    },
+    {
+      "route": null,
+      "path": "/api/intercept/judge",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 38.494,
+      "median_ms": 51.389,
+      "p95_ms": 83.359,
+      "p99_ms": 83.359,
+      "max_ms": 83.359,
+      "mean_ms": 52.417,
+      "stdev_ms": 12.946
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/intercept/judge/usage",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 9.913,
+      "median_ms": 13.952,
+      "p95_ms": 76.551,
+      "p99_ms": 76.551,
+      "max_ms": 76.551,
+      "mean_ms": 20.022,
+      "stdev_ms": 19.041
+    },
+    {
+      "route": null,
+      "path": "/api/intercept/pending",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 7.63,
+      "median_ms": 9.157,
+      "p95_ms": 20.576,
+      "p99_ms": 20.576,
+      "max_ms": 20.576,
+      "mean_ms": 10.659,
+      "stdev_ms": 3.94
+    },
+    {
+      "route": null,
+      "path": "/api/intercept/pending/1",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 8.209,
+      "median_ms": 9.167,
+      "p95_ms": 13.879,
+      "p99_ms": 13.879,
+      "max_ms": 13.879,
+      "mean_ms": 9.726,
+      "stdev_ms": 1.608
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/intercept/rules",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 8.774,
+      "median_ms": 9.434,
+      "p95_ms": 15.693,
+      "p99_ms": 15.693,
+      "max_ms": 15.693,
+      "mean_ms": 10.269,
+      "stdev_ms": 2.12
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/intercept/task/1",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 10.696,
+      "median_ms": 20.339,
+      "p95_ms": 53.371,
+      "p99_ms": 53.371,
+      "max_ms": 53.371,
+      "mean_ms": 22.706,
+      "stdev_ms": 11.627
+    },
+    {
+      "route": null,
+      "path": "/api/intercept/tool-config",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 7.378,
+      "median_ms": 9.049,
+      "p95_ms": 11.278,
+      "p99_ms": 11.278,
+      "max_ms": 11.278,
+      "mean_ms": 9.222,
+      "stdev_ms": 1.298
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/llm",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 4.486,
+      "median_ms": 5.232,
+      "p95_ms": 14.356,
+      "p99_ms": 14.356,
+      "max_ms": 14.356,
+      "mean_ms": 6.246,
+      "stdev_ms": 2.801
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/llm/pool",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 11.515,
+      "median_ms": 14.273,
+      "p95_ms": 40.093,
+      "p99_ms": 40.093,
+      "max_ms": 40.093,
+      "mean_ms": 16.539,
+      "stdev_ms": 8.001
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/llm/profiles",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 7.494,
+      "median_ms": 10.508,
+      "p95_ms": 13.261,
+      "p99_ms": 13.261,
+      "max_ms": 13.261,
+      "mean_ms": 10.319,
+      "stdev_ms": 1.61
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/llm/records",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 11.949,
+      "median_ms": 13.136,
+      "p95_ms": 45.684,
+      "p99_ms": 45.684,
+      "max_ms": 45.684,
+      "mean_ms": 17.396,
+      "stdev_ms": 9.807
+    },
+    {
+      "route": null,
+      "path": "/api/llm/records/by-model",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 5.718,
+      "median_ms": 6.031,
+      "p95_ms": 8.015,
+      "p99_ms": 8.015,
+      "max_ms": 8.015,
+      "mean_ms": 6.517,
+      "stdev_ms": 0.796
+    },
+    {
+      "route": null,
+      "path": "/api/llm/records/tasks",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 8.841,
+      "median_ms": 10.82,
+      "p95_ms": 31.678,
+      "p99_ms": 31.678,
+      "max_ms": 31.678,
+      "mean_ms": 13.245,
+      "stdev_ms": 6.592
+    },
+    {
+      "route": null,
+      "path": "/api/llm/records/1",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 8.4,
+      "median_ms": 12.16,
+      "p95_ms": 19.236,
+      "p99_ms": 19.236,
+      "max_ms": 19.236,
+      "mean_ms": 12.591,
+      "stdev_ms": 3.041
+    },
+    {
+      "route": null,
+      "path": "/api/llm/retry-policy",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 8.297,
+      "median_ms": 9.462,
+      "p95_ms": 12.265,
+      "p99_ms": 12.265,
+      "max_ms": 12.265,
+      "mean_ms": 9.607,
+      "stdev_ms": 1.121
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/logs",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 4.835,
+      "median_ms": 5.875,
+      "p95_ms": 8.929,
+      "p99_ms": 8.929,
+      "max_ms": 8.929,
+      "mean_ms": 6.275,
+      "stdev_ms": 1.176
+    },
+    {
+      "route": null,
+      "path": "/api/logs/history",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 7.424,
+      "median_ms": 8.408,
+      "p95_ms": 22.373,
+      "p99_ms": 22.373,
+      "max_ms": 22.373,
+      "mean_ms": 9.976,
+      "stdev_ms": 4.204
+    },
+    {
+      "route": null,
+      "path": "/api/logs/stream",
+      "ok_rate": 1.0,
+      "note": "SSE 流端点：只测首响应（读首块即断）",
+      "n": 10,
+      "min_ms": 6.995,
+      "median_ms": 7.883,
+      "p95_ms": 13.615,
+      "p99_ms": 13.615,
+      "max_ms": 13.615,
+      "mean_ms": 8.42,
+      "stdev_ms": 1.826
+    },
+    {
+      "route": null,
+      "path": "/api/mcp",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 11.996,
+      "median_ms": 13.337,
+      "p95_ms": 48.121,
+      "p99_ms": 48.121,
+      "max_ms": 48.121,
+      "mean_ms": 17.476,
+      "stdev_ms": 10.388
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/mcp/1/tools",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 6.633,
+      "median_ms": 9.048,
+      "p95_ms": 13.389,
+      "p99_ms": 13.389,
+      "max_ms": 13.389,
+      "mean_ms": 9.304,
+      "stdev_ms": 1.732
+    },
+    {
+      "route": null,
+      "path": "/api/notify/channels",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 6.633,
+      "median_ms": 7.653,
+      "p95_ms": 9.603,
+      "p99_ms": 9.603,
+      "max_ms": 9.603,
+      "mean_ms": 7.771,
+      "stdev_ms": 0.964
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/notify/deliveries",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 16.656,
+      "median_ms": 19.488,
+      "p95_ms": 54.658,
+      "p99_ms": 54.658,
+      "max_ms": 54.658,
+      "mean_ms": 25.507,
+      "stdev_ms": 12.315
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/notify/meta",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 15.254,
+      "median_ms": 25.659,
+      "p95_ms": 53.621,
+      "p99_ms": 53.621,
+      "max_ms": 53.621,
+      "mean_ms": 25.654,
+      "stdev_ms": 10.635
+    },
+    {
+      "route": null,
+      "path": "/api/report",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 26.134,
+      "median_ms": 28.569,
+      "p95_ms": 83.055,
+      "p99_ms": 83.055,
+      "max_ms": 83.055,
+      "mean_ms": 33.843,
+      "stdev_ms": 16.456
+    },
+    {
+      "route": null,
+      "path": "/api/schedules",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 5.323,
+      "median_ms": 7.827,
+      "p95_ms": 9.745,
+      "p99_ms": 9.745,
+      "max_ms": 9.745,
+      "mean_ms": 7.813,
+      "stdev_ms": 1.491
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/schedules/1",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 8.772,
+      "median_ms": 10.368,
+      "p95_ms": 15.389,
+      "p99_ms": 15.389,
+      "max_ms": 15.389,
+      "mean_ms": 11.432,
+      "stdev_ms": 2.377
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/settings",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 45.306,
+      "median_ms": 55.918,
+      "p95_ms": 74.498,
+      "p99_ms": 74.498,
+      "max_ms": 74.498,
+      "mean_ms": 56.716,
+      "stdev_ms": 7.791
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/settings/basic-auth",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 5.124,
+      "median_ms": 6.595,
+      "p95_ms": 8.015,
+      "p99_ms": 8.015,
+      "max_ms": 8.015,
+      "mean_ms": 6.582,
+      "stdev_ms": 0.954
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/side-questions/1/events",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 7.844,
+      "median_ms": 10.625,
+      "p95_ms": 40.795,
+      "p99_ms": 40.795,
+      "max_ms": 40.795,
+      "mean_ms": 13.875,
+      "stdev_ms": 9.205
+    },
+    {
+      "route": null,
+      "path": "/api/skills",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 14.055,
+      "median_ms": 18.086,
+      "p95_ms": 46.696,
+      "p99_ms": 46.696,
+      "max_ms": 46.696,
+      "mean_ms": 22.383,
+      "stdev_ms": 11.016
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/skills/missing",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 8.253,
+      "median_ms": 10.229,
+      "p95_ms": 20.38,
+      "p99_ms": 20.38,
+      "max_ms": 20.38,
+      "mean_ms": 10.927,
+      "stdev_ms": 3.256
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/skills/bench-probe/files",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 3.96,
+      "median_ms": 4.846,
+      "p95_ms": 6.129,
+      "p99_ms": 6.129,
+      "max_ms": 6.129,
+      "mean_ms": 4.955,
+      "stdev_ms": 0.627
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/skills/bench-probe/files/{file...}",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 4.497,
+      "median_ms": 5.888,
+      "p95_ms": 13.826,
+      "p99_ms": 13.826,
+      "max_ms": 13.826,
+      "mean_ms": 6.449,
+      "stdev_ms": 2.53
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/skills/bench-probe/usage",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 8.397,
+      "median_ms": 9.417,
+      "p95_ms": 15.882,
+      "p99_ms": 15.882,
+      "max_ms": 15.882,
+      "mean_ms": 10.044,
+      "stdev_ms": 2.064
+    },
+    {
+      "route": null,
+      "path": "/api/stats",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 27.722,
+      "median_ms": 35.712,
+      "p95_ms": 50.015,
+      "p99_ms": 50.015,
+      "max_ms": 50.015,
+      "mean_ms": 37.069,
+      "stdev_ms": 6.594
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/sync/scopesentry/projects",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 11.979,
+      "median_ms": 13.235,
+      "p95_ms": 46.733,
+      "p99_ms": 46.733,
+      "max_ms": 46.733,
+      "mean_ms": 16.765,
+      "stdev_ms": 10.06
+    },
+    {
+      "route": null,
+      "path": "/api/sync/scopesentry/status",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 12.754,
+      "median_ms": 14.341,
+      "p95_ms": 16.368,
+      "p99_ms": 16.368,
+      "max_ms": 16.368,
+      "mean_ms": 14.42,
+      "stdev_ms": 1.134
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/sync/scopesentry/tasks",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 12.498,
+      "median_ms": 14.19,
+      "p95_ms": 18.436,
+      "p99_ms": 18.436,
+      "max_ms": 18.436,
+      "mean_ms": 14.854,
+      "stdev_ms": 2.063
+    },
+    {
+      "route": null,
+      "path": "/api/task-archives",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 8.748,
+      "median_ms": 14.117,
+      "p95_ms": 53.503,
+      "p99_ms": 53.503,
+      "max_ms": 53.503,
+      "mean_ms": 17.974,
+      "stdev_ms": 12.434
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/task-archives/1",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 8.637,
+      "median_ms": 10.022,
+      "p95_ms": 18.057,
+      "p99_ms": 18.057,
+      "max_ms": 18.057,
+      "mean_ms": 11.196,
+      "stdev_ms": 2.804
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/task-categories",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 8.492,
+      "median_ms": 9.691,
+      "p95_ms": 37.685,
+      "p99_ms": 37.685,
+      "max_ms": 37.685,
+      "mean_ms": 14.635,
+      "stdev_ms": 10.358
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/task-templates",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 7.558,
+      "median_ms": 11.177,
+      "p95_ms": 30.901,
+      "p99_ms": 30.901,
+      "max_ms": 30.901,
+      "mean_ms": 12.982,
+      "stdev_ms": 6.288
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/tasks",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 20.743,
+      "median_ms": 23.038,
+      "p95_ms": 89.415,
+      "p99_ms": 89.415,
+      "max_ms": 89.415,
+      "mean_ms": 30.579,
+      "stdev_ms": 19.913
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 8.537,
+      "median_ms": 9.443,
+      "p95_ms": 10.732,
+      "p99_ms": 10.732,
+      "max_ms": 10.732,
+      "mean_ms": 9.537,
+      "stdev_ms": 0.823
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1/asset-refs",
+      "ok_rate": 0.0,
+      "note": "SSE 流端点：只测首响应（读首块即断）",
+      "n": 10,
+      "min_ms": 5.318,
+      "median_ms": 6.858,
+      "p95_ms": 15.049,
+      "p99_ms": 15.049,
+      "max_ms": 15.049,
+      "mean_ms": 7.357,
+      "stdev_ms": 2.683
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1/chat/status",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 5.264,
+      "median_ms": 6.928,
+      "p95_ms": 8.731,
+      "p99_ms": 8.731,
+      "max_ms": 8.731,
+      "mean_ms": 7.001,
+      "stdev_ms": 1.006
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1/constraints",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 9.3,
+      "median_ms": 10.382,
+      "p95_ms": 28.325,
+      "p99_ms": 28.325,
+      "max_ms": 28.325,
+      "mean_ms": 12.419,
+      "stdev_ms": 5.42
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1/coverage",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 15.761,
+      "median_ms": 83.933,
+      "p95_ms": 164.416,
+      "p99_ms": 164.416,
+      "max_ms": 164.416,
+      "mean_ms": 68.087,
+      "stdev_ms": 47.451
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1/coverage-graph",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 16.555,
+      "median_ms": 86.127,
+      "p95_ms": 127.008,
+      "p99_ms": 127.008,
+      "max_ms": 127.008,
+      "mean_ms": 83.435,
+      "stdev_ms": 26.268
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1/goals",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 11.285,
+      "median_ms": 12.903,
+      "p95_ms": 15.02,
+      "p99_ms": 15.02,
+      "max_ms": 15.02,
+      "mean_ms": 13.121,
+      "stdev_ms": 1.166
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1/intelligence",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 34.402,
+      "median_ms": 76.073,
+      "p95_ms": 201.174,
+      "p99_ms": 201.174,
+      "max_ms": 201.174,
+      "mean_ms": 83.976,
+      "stdev_ms": 42.103
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1/intelligence/1",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 20.464,
+      "median_ms": 34.585,
+      "p95_ms": 45.027,
+      "p99_ms": 45.027,
+      "max_ms": 45.027,
+      "mean_ms": 33.228,
+      "stdev_ms": 7.597
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1/intelligence/1/traffic/1",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 14.83,
+      "median_ms": 18.371,
+      "p95_ms": 52.498,
+      "p99_ms": 52.498,
+      "max_ms": 52.498,
+      "mean_ms": 21.11,
+      "stdev_ms": 10.564
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1/intent-assets",
+      "ok_rate": 1.0,
+      "note": "SSE 流端点：只测首响应（读首块即断）",
+      "n": 10,
+      "min_ms": 15.644,
+      "median_ms": 48.79,
+      "p95_ms": 116.785,
+      "p99_ms": 116.785,
+      "max_ms": 116.785,
+      "mean_ms": 52.345,
+      "stdev_ms": 31.558
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1/intercept-rules",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 8.876,
+      "median_ms": 10.976,
+      "p95_ms": 32.263,
+      "p99_ms": 32.263,
+      "max_ms": 32.263,
+      "mean_ms": 13.109,
+      "stdev_ms": 6.533
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1/llm/resolution",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 26.515,
+      "median_ms": 31.144,
+      "p95_ms": 70.897,
+      "p99_ms": 70.897,
+      "max_ms": 70.897,
+      "mean_ms": 35.049,
+      "stdev_ms": 12.292
+    },
+    {
+      "route": null,
+      "path": "/api/tasks/1/scope",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 15.512,
+      "median_ms": 33.944,
+      "p95_ms": 45.064,
+      "p99_ms": 45.064,
+      "max_ms": 45.064,
+      "mean_ms": 30.162,
+      "stdev_ms": 10.418
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/tokens/conversations",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 16.48,
+      "median_ms": 18.514,
+      "p95_ms": 50.75,
+      "p99_ms": 50.75,
+      "max_ms": 50.75,
+      "mean_ms": 21.937,
+      "stdev_ms": 9.746
+    },
+    {
+      "route": null,
+      "path": "/api/tokens/daily",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 12.534,
+      "median_ms": 15.818,
+      "p95_ms": 57.595,
+      "p99_ms": 57.595,
+      "max_ms": 57.595,
+      "mean_ms": 20.267,
+      "stdev_ms": 13.013
+    },
+    {
+      "route": null,
+      "path": "/api/tokens/usage",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 18.854,
+      "median_ms": 24.066,
+      "p95_ms": 72.039,
+      "p99_ms": 72.039,
+      "max_ms": 72.039,
+      "mean_ms": 29.096,
+      "stdev_ms": 15.481
+    },
+    {
+      "route": null,
+      "path": "/api/tools",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 29.953,
+      "median_ms": 32.788,
+      "p95_ms": 71.449,
+      "p99_ms": 71.449,
+      "max_ms": 71.449,
+      "mean_ms": 38.852,
+      "stdev_ms": 12.545
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/traffic",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 8.345,
+      "median_ms": 10.551,
+      "p95_ms": 33.691,
+      "p99_ms": 33.691,
+      "max_ms": 33.691,
+      "mean_ms": 14.059,
+      "stdev_ms": 7.625
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/traffic/blob",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 5.281,
+      "median_ms": 7.552,
+      "p95_ms": 8.496,
+      "p99_ms": 8.496,
+      "max_ms": 8.496,
+      "mean_ms": 7.283,
+      "stdev_ms": 0.931
+    },
+    {
+      "route": null,
+      "path": "/api/traffic/exchange",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 4.818,
+      "median_ms": 5.931,
+      "p95_ms": 7.117,
+      "p99_ms": 7.117,
+      "max_ms": 7.117,
+      "mean_ms": 5.853,
+      "stdev_ms": 0.759
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/traffic/hosts",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 6.003,
+      "median_ms": 8.635,
+      "p95_ms": 12.749,
+      "p99_ms": 12.749,
+      "max_ms": 12.749,
+      "mean_ms": 8.444,
+      "stdev_ms": 1.861
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/update/check",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 7.644,
+      "median_ms": 10.758,
+      "p95_ms": 1932.406,
+      "p99_ms": 1932.406,
+      "max_ms": 1932.406,
+      "mean_ms": 202.409,
+      "stdev_ms": 576.668
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/update/settings",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 6.641,
+      "median_ms": 8.012,
+      "p95_ms": 10.102,
+      "p99_ms": 10.102,
+      "max_ms": 10.102,
+      "mean_ms": 8.193,
+      "stdev_ms": 1.044
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/update/stream",
+      "ok_rate": 0.0,
+      "note": "SSE 流端点：只测首响应（读首块即断）",
+      "n": 10,
+      "min_ms": 3008.501,
+      "median_ms": 3019.899,
+      "p95_ms": 3026.261,
+      "p99_ms": 3026.261,
+      "max_ms": 3026.261,
+      "mean_ms": 3017.877,
+      "stdev_ms": 6.223
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/visibility/skill/bench-probe",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 17.592,
+      "median_ms": 20.183,
+      "p95_ms": 32.282,
+      "p99_ms": 32.282,
+      "max_ms": 32.282,
+      "mean_ms": 22.228,
+      "stdev_ms": 4.428
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/visibility/site/1",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 13.288,
+      "median_ms": 14.472,
+      "p95_ms": 23.251,
+      "p99_ms": 23.251,
+      "max_ms": 23.251,
+      "mean_ms": 15.807,
+      "stdev_ms": 2.772
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/workspace/download",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 8.62,
+      "median_ms": 11.115,
+      "p95_ms": 12.097,
+      "p99_ms": 12.097,
+      "max_ms": 12.097,
+      "mean_ms": 10.655,
+      "stdev_ms": 1.202
+    },
+    {
+      "route": null,
+      "path": "/api/workspace/list",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 8.493,
+      "median_ms": 12.278,
+      "p95_ms": 15.346,
+      "p99_ms": 15.346,
+      "max_ms": 15.346,
+      "mean_ms": 11.827,
+      "stdev_ms": 1.996
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/workspace/read",
+      "ok_rate": 0.0,
+      "n": 10,
+      "min_ms": 8.217,
+      "median_ms": 11.198,
+      "p95_ms": 14.305,
+      "p99_ms": 14.305,
+      "max_ms": 14.305,
+      "mean_ms": 11.393,
+      "stdev_ms": 1.867
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    }
+  ],
+  "concurrency_path": "/api/agents",
+  "concurrency": [
+    {
+      "concurrency": 1,
+      "requests": 30,
+      "throughput_rps": 33.38,
+      "error_rate": 0.0
+    },
+    {
+      "concurrency": 4,
+      "requests": 30,
+      "throughput_rps": 30.25,
+      "error_rate": 0.0
+    },
+    {
+      "concurrency": 16,
+      "requests": 30,
+      "throughput_rps": 17.35,
+      "error_rate": 0.0
+    },
+    {
+      "concurrency": 32,
+      "requests": 30,
+      "throughput_rps": 22.35,
+      "error_rate": 0.0
+    }
+  ]
+}

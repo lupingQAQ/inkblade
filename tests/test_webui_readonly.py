@@ -164,6 +164,10 @@ class TestReadOnlyApi(unittest.TestCase):
                        token=token)
         self.assertEqual(code, 403)
 
+    def test_server_backlog_supports_concurrency(self):
+        """性能网格发现：默认 backlog=5 在 16+ 并发下吞吐断崖，已提升到 256。"""
+        self.assertGreaterEqual(self.httpd.request_queue_size, 128)
+
     def test_openapi_is_public_and_complete(self):
         code, doc = _req("GET", self.base + "/api/v1/openapi.json")
         self.assertEqual(code, 200, doc)

@@ -1,0 +1,310 @@
+{
+  "routes_file": "reports/samples/perf/grid/routes-trident.json",
+  "route_count": 32,
+  "base": "http://127.0.0.1:<port>",
+  "n": 10,
+  "query": "workspace=bench&run=perf-run",
+  "measured_at": "<dynamic>",
+  "mode": "live",
+  "endpoints": [
+    {
+      "route": null,
+      "path": "/?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 1.263,
+      "median_ms": 1.751,
+      "p95_ms": 25.076,
+      "p99_ms": 25.076,
+      "max_ms": 25.076,
+      "mean_ms": 5.538,
+      "stdev_ms": 8.009
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/runs?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 1.302,
+      "median_ms": 1.758,
+      "p95_ms": 2.687,
+      "p99_ms": 2.687,
+      "max_ms": 2.687,
+      "mean_ms": 1.916,
+      "stdev_ms": 0.461
+    },
+    {
+      "route": null,
+      "path": "/api/v1/assets?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 3.049,
+      "median_ms": 3.885,
+      "p95_ms": 4.6,
+      "p99_ms": 4.6,
+      "max_ms": 4.6,
+      "mean_ms": 3.813,
+      "stdev_ms": 0.458
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/v1/consent?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 2.032,
+      "median_ms": 2.735,
+      "p95_ms": 3.269,
+      "p99_ms": 3.269,
+      "max_ms": 3.269,
+      "mean_ms": 2.645,
+      "stdev_ms": 0.364
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/v1/drift?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 1.339,
+      "median_ms": 2.087,
+      "p95_ms": 26.162,
+      "p99_ms": 26.162,
+      "max_ms": 26.162,
+      "mean_ms": 5.86,
+      "stdev_ms": 8.292
+    },
+    {
+      "route": null,
+      "path": "/api/v1/evidence?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 7.128,
+      "median_ms": 7.636,
+      "p95_ms": 31.412,
+      "p99_ms": 31.412,
+      "max_ms": 31.412,
+      "mean_ms": 11.253,
+      "stdev_ms": 7.741
+    },
+    {
+      "route": null,
+      "path": "/api/v1/explorer?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 1.397,
+      "median_ms": 2.074,
+      "p95_ms": 2.932,
+      "p99_ms": 2.932,
+      "max_ms": 2.932,
+      "mean_ms": 2.108,
+      "stdev_ms": 0.51
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/v1/graph?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 5.779,
+      "median_ms": 6.278,
+      "p95_ms": 6.697,
+      "p99_ms": 6.697,
+      "max_ms": 6.697,
+      "mean_ms": 6.217,
+      "stdev_ms": 0.267
+    },
+    {
+      "route": null,
+      "path": "/api/v1/openapi.json?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 1.433,
+      "median_ms": 2.111,
+      "p95_ms": 23.606,
+      "p99_ms": 23.606,
+      "max_ms": 23.606,
+      "mean_ms": 5.119,
+      "stdev_ms": 6.891
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/v1/rules?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 1.941,
+      "median_ms": 2.612,
+      "p95_ms": 3.671,
+      "p99_ms": 3.671,
+      "max_ms": 3.671,
+      "mean_ms": 2.653,
+      "stdev_ms": 0.48
+    },
+    {
+      "route": null,
+      "path": "/api/v1/scheduler?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 1.459,
+      "median_ms": 2.124,
+      "p95_ms": 2.787,
+      "p99_ms": 2.787,
+      "max_ms": 2.787,
+      "mean_ms": 2.184,
+      "stdev_ms": 0.435
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/v1/steps?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 5.684,
+      "median_ms": 6.669,
+      "p95_ms": 25.729,
+      "p99_ms": 25.729,
+      "max_ms": 25.729,
+      "mean_ms": 8.356,
+      "stdev_ms": 5.811
+    },
+    {
+      "route": null,
+      "path": "/api/v1/traffic?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 2.131,
+      "median_ms": 2.418,
+      "p95_ms": 3.167,
+      "p99_ms": 3.167,
+      "max_ms": 3.167,
+      "mean_ms": 2.6,
+      "stdev_ms": 0.395
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/api/v1/workspaces?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 1.039,
+      "median_ms": 1.851,
+      "p95_ms": 19.013,
+      "p99_ms": 19.013,
+      "max_ms": 19.013,
+      "mean_ms": 4.614,
+      "stdev_ms": 5.955
+    },
+    {
+      "route": null,
+      "path": "/api/v1/zeroday?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 1.322,
+      "median_ms": 1.68,
+      "p95_ms": 2.567,
+      "p99_ms": 2.567,
+      "max_ms": 2.567,
+      "mean_ms": 1.809,
+      "stdev_ms": 0.407
+    },
+    {
+      "route": null,
+      "skipped": "mutating-method"
+    },
+    {
+      "route": null,
+      "path": "/openapi.json?workspace=bench&run=perf-run",
+      "ok_rate": 1.0,
+      "n": 10,
+      "min_ms": 1.1,
+      "median_ms": 1.994,
+      "p95_ms": 2.918,
+      "p99_ms": 2.918,
+      "max_ms": 2.918,
+      "mean_ms": 1.925,
+      "stdev_ms": 0.549
+    }
+  ],
+  "concurrency_path": "/api/v1/graph",
+  "concurrency": [
+    {
+      "concurrency": 1,
+      "requests": 60,
+      "throughput_rps": 138.61,
+      "error_rate": 0.0
+    },
+    {
+      "concurrency": 4,
+      "requests": 60,
+      "throughput_rps": 297.7,
+      "error_rate": 0.0
+    },
+    {
+      "concurrency": 16,
+      "requests": 60,
+      "throughput_rps": 286.3,
+      "error_rate": 0.0
+    },
+    {
+      "concurrency": 32,
+      "requests": 60,
+      "throughput_rps": 267.97,
+      "error_rate": 0.0
+    }
+  ]
+}

@@ -59,12 +59,14 @@ def _one(url: str, token: str | None, timeout: float) -> tuple[bool, float]:
 
 
 def measure_endpoint(base: str, route: dict, token: str | None, n: int,
-                     timeout: float = 5.0) -> dict:
+                     timeout: float = 5.0, query: str = "") -> dict:
     path = route.get("probe_path") or route.get("path") or route.get("id", "")
     if not path.startswith("/"):
         return {"route": route.get("id"), "skipped": "non-http-route"}
     if (route.get("method") or "GET").upper() != "GET":
         return {"route": route.get("id"), "skipped": "mutating-method"}
+    if query:
+        path = path + ("&" if "?" in path else "?") + query
     # 流式端点只测首响应（读首块即断；超时收紧）
     per_timeout = min(timeout, 3.0) if route.get("streaming") else timeout
     samples, ok = [], 0
@@ -128,6 +130,9 @@ def main(argv=None) -> int:
     ap.add_argument("--n", type=int, default=10)
     ap.add_argument("--levels", default="1,4,16,32")
     ap.add_argument("--per-level", type=int, default=30)
+    ap.add_argument("--query", default="", help="附加到每个端点的查询串（如 workspace=bench&run=x）")
+    ap.add_argument("--concurrency-path", default=None,
+                    help="并发扫掠目标端点（缺省取首个只读路由；建议选 JSON 端点）")
     ap.add_argument("--out", required=True)
     ap.add_argument("--offline", action="store_true")
     args = ap.parse_args(argv)
@@ -135,7 +140,7 @@ def main(argv=None) -> int:
     routes = load_routes(Path(args.routes))
     result = {
         "routes_file": _rel(args.routes), "route_count": len(routes),
-        "base": args.base or None, "n": args.n,
+        "base": args.base or None, "n": args.n, "query": args.query or None,
         "measured_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "mode": "offline" if args.offline or not args.base else "live",
     }
@@ -143,15 +148,21 @@ def main(argv=None) -> int:
         result["endpoints"] = [{"route": r.get("id"), "skipped": "offline"} for r in routes]
         result["concurrency"] = []
     else:
-        result["endpoints"] = [measure_endpoint(args.base, r, args.token, args.n) for r in routes]
+        result["endpoints"] = [measure_endpoint(args.base, r, args.token, args.n,
+                                                query=args.query) for r in routes]
         read_routes = [r for r in routes if (r.get("method") or "GET").upper() == "GET"
                        and str(r.get("probe_path") or r.get("path", "")).startswith("/")]
-        if read_routes:
+        concurrency_path = args.concurrency_path
+        if not concurrency_path and read_routes:
+            concurrency_path = read_routes[0].get("probe_path") or read_routes[0]["path"]
+        if concurrency_path:
             levels = [int(x) for x in args.levels.split(",") if x]
-            result["concurrency_path"] = read_routes[0].get("probe_path") or read_routes[0]["path"]
+            path = concurrency_path
+            if args.query:
+                path = path + ("&" if "?" in path else "?") + args.query
+            result["concurrency_path"] = concurrency_path
             result["concurrency"] = concurrency_sweep(
-                args.base, result["concurrency_path"], args.token, levels,
-                per_level=args.per_level)
+                args.base, path, args.token, levels, per_level=args.per_level)
         else:
             result["concurrency"] = []
 

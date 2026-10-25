@@ -504,9 +504,17 @@ class _Handler(BaseHTTPRequestHandler):
         return self._json(404, {"error": "not found"})
 
 
+class _Server(ThreadingHTTPServer):
+    """并发友好：默认 backlog=5 在 16+ 并发下触发 SYN 重传（吞吐断崖），此处放大。"""
+
+    request_queue_size = 256
+    daemon_threads = True
+    allow_reuse_address = True
+
+
 def make_server(root: Path | str, users: UserStore, host: str = "127.0.0.1", port: int = 0) -> ThreadingHTTPServer:
     handler = type("BoundHandler", (_Handler,), {"users": users, "root": Path(root)})
-    httpd = ThreadingHTTPServer((host, port), handler)
+    httpd = _Server((host, port), handler)
     httpd.port = httpd.server_address[1]
     t = threading.Thread(target=httpd.serve_forever, daemon=True)
     t.start()

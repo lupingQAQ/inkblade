@@ -1,10 +1,10 @@
 {
  "tool": "trident",
  "source": "trident/webui/server.py (path literals in do_GET/do_POST)",
- "extracted_at": "2026-10-25T13:37:17Z",
- "endpoint_count": 25,
+ "extracted_at": "<dynamic>",
+ "endpoint_count": 32,
  "by_class": {
-  "read": 9,
+  "read": 16,
   "write": 16
  },
  "endpoints": [
@@ -12,8 +12,8 @@
    "method": "GET",
    "path": "/",
    "probe_path": "/",
-   "handler": "webui/server.py::GET@L287",
-   "line": 287,
+   "handler": "webui/server.py::GET@L310",
+   "line": 310,
    "class": "read",
    "streaming": false
   },
@@ -21,8 +21,8 @@
    "method": "POST",
    "path": "/api/abort",
    "probe_path": "/api/abort",
-   "handler": "webui/server.py::POST@L115",
-   "line": 115,
+   "handler": "webui/server.py::POST@L116",
+   "line": 116,
    "class": "write",
    "streaming": false
   },
@@ -30,8 +30,8 @@
    "method": "POST",
    "path": "/api/execute",
    "probe_path": "/api/execute",
-   "handler": "webui/server.py::POST@L91",
-   "line": 91,
+   "handler": "webui/server.py::POST@L92",
+   "line": 92,
    "class": "write",
    "streaming": false
   },
@@ -39,8 +39,8 @@
    "method": "POST",
    "path": "/api/login",
    "probe_path": "/api/login",
-   "handler": "webui/server.py::POST@L85",
-   "line": 85,
+   "handler": "webui/server.py::POST@L86",
+   "line": 86,
    "class": "write",
    "streaming": false
   },
@@ -48,8 +48,8 @@
    "method": "GET",
    "path": "/api/runs",
    "probe_path": "/api/runs",
-   "handler": "webui/server.py::GET@L295",
-   "line": 295,
+   "handler": "webui/server.py::GET@L318",
+   "line": 318,
    "class": "read",
    "streaming": false
   },
@@ -57,8 +57,8 @@
    "method": "GET",
    "path": "/api/v1/assets",
    "probe_path": "/api/v1/assets",
-   "handler": "webui/server.py::GET@L327",
-   "line": 327,
+   "handler": "webui/server.py::GET@L454",
+   "line": 454,
    "class": "read",
    "streaming": false
   },
@@ -66,8 +66,8 @@
    "method": "POST",
    "path": "/api/v1/assets/discover",
    "probe_path": "/api/v1/assets/discover",
-   "handler": "webui/server.py::POST@L129",
-   "line": 129,
+   "handler": "webui/server.py::POST@L147",
+   "line": 147,
    "class": "write",
    "streaming": false
   },
@@ -75,8 +75,8 @@
    "method": "GET",
    "path": "/api/v1/consent",
    "probe_path": "/api/v1/consent",
-   "handler": "webui/server.py::GET@L353",
-   "line": 353,
+   "handler": "webui/server.py::GET@L480",
+   "line": 480,
    "class": "read",
    "streaming": false
   },
@@ -84,17 +84,35 @@
    "method": "POST",
    "path": "/api/v1/consent/sign",
    "probe_path": "/api/v1/consent/sign",
-   "handler": "webui/server.py::POST@L236",
-   "line": 236,
+   "handler": "webui/server.py::POST@L255",
+   "line": 255,
    "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/drift",
+   "probe_path": "/api/v1/drift",
+   "handler": "webui/server.py::GET@L341",
+   "line": 341,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/evidence",
+   "probe_path": "/api/v1/evidence",
+   "handler": "webui/server.py::GET@L398",
+   "line": 398,
+   "class": "read",
    "streaming": false
   },
   {
    "method": "GET",
    "path": "/api/v1/explorer",
    "probe_path": "/api/v1/explorer",
-   "handler": "webui/server.py::GET@L334",
-   "line": 334,
+   "handler": "webui/server.py::GET@L461",
+   "line": 461,
    "class": "read",
    "streaming": false
   },
@@ -102,8 +120,8 @@
    "method": "POST",
    "path": "/api/v1/explorer/approve",
    "probe_path": "/api/v1/explorer/approve",
-   "handler": "webui/server.py::POST@L152",
-   "line": 152,
+   "handler": "webui/server.py::POST@L170",
+   "line": 170,
    "class": "write",
    "streaming": false
   },
@@ -111,8 +129,8 @@
    "method": "POST",
    "path": "/api/v1/explorer/execute",
    "probe_path": "/api/v1/explorer/execute",
-   "handler": "webui/server.py::POST@L152",
-   "line": 152,
+   "handler": "webui/server.py::POST@L170",
+   "line": 170,
    "class": "write",
    "streaming": false
   },
@@ -120,8 +138,8 @@
    "method": "POST",
    "path": "/api/v1/explorer/propose",
    "probe_path": "/api/v1/explorer/propose",
-   "handler": "webui/server.py::POST@L140",
-   "line": 140,
+   "handler": "webui/server.py::POST@L158",
+   "line": 158,
    "class": "write",
    "streaming": false
   },
@@ -129,17 +147,35 @@
    "method": "POST",
    "path": "/api/v1/explorer/reject",
    "probe_path": "/api/v1/explorer/reject",
-   "handler": "webui/server.py::POST@L152",
-   "line": 152,
+   "handler": "webui/server.py::POST@L170",
+   "line": 170,
    "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/graph",
+   "probe_path": "/api/v1/graph",
+   "handler": "webui/server.py::GET@L410",
+   "line": 410,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/openapi.json",
+   "probe_path": "/api/v1/openapi.json",
+   "handler": "webui/server.py::GET@L306",
+   "line": 306,
+   "class": "read",
    "streaming": false
   },
   {
    "method": "POST",
    "path": "/api/v1/poc/auto-reverify",
    "probe_path": "/api/v1/poc/auto-reverify",
-   "handler": "webui/server.py::POST@L274",
-   "line": 274,
+   "handler": "webui/server.py::POST@L293",
+   "line": 293,
    "class": "write",
    "streaming": false
   },
@@ -147,8 +183,8 @@
    "method": "POST",
    "path": "/api/v1/poc/reverify",
    "probe_path": "/api/v1/poc/reverify",
-   "handler": "webui/server.py::POST@L258",
-   "line": 258,
+   "handler": "webui/server.py::POST@L277",
+   "line": 277,
    "class": "write",
    "streaming": false
   },
@@ -156,8 +192,8 @@
    "method": "GET",
    "path": "/api/v1/rules",
    "probe_path": "/api/v1/rules",
-   "handler": "webui/server.py::GET@L363",
-   "line": 363,
+   "handler": "webui/server.py::GET@L490",
+   "line": 490,
    "class": "read",
    "streaming": false
   },
@@ -165,8 +201,8 @@
    "method": "GET",
    "path": "/api/v1/scheduler",
    "probe_path": "/api/v1/scheduler",
-   "handler": "webui/server.py::GET@L339",
-   "line": 339,
+   "handler": "webui/server.py::GET@L466",
+   "line": 466,
    "class": "read",
    "streaming": false
   },
@@ -174,8 +210,8 @@
    "method": "POST",
    "path": "/api/v1/scheduler/add",
    "probe_path": "/api/v1/scheduler/add",
-   "handler": "webui/server.py::POST@L179",
-   "line": 179,
+   "handler": "webui/server.py::POST@L198",
+   "line": 198,
    "class": "write",
    "streaming": false
   },
@@ -183,8 +219,8 @@
    "method": "POST",
    "path": "/api/v1/scheduler/remove",
    "probe_path": "/api/v1/scheduler/remove",
-   "handler": "webui/server.py::POST@L194",
-   "line": 194,
+   "handler": "webui/server.py::POST@L213",
+   "line": 213,
    "class": "write",
    "streaming": false
   },
@@ -192,17 +228,26 @@
    "method": "POST",
    "path": "/api/v1/scheduler/run-due",
    "probe_path": "/api/v1/scheduler/run-due",
-   "handler": "webui/server.py::POST@L204",
-   "line": 204,
+   "handler": "webui/server.py::POST@L223",
+   "line": 223,
    "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/steps",
+   "probe_path": "/api/v1/steps",
+   "handler": "webui/server.py::GET@L393",
+   "line": 393,
+   "class": "read",
    "streaming": false
   },
   {
    "method": "GET",
    "path": "/api/v1/traffic",
    "probe_path": "/api/v1/traffic",
-   "handler": "webui/server.py::GET@L343",
-   "line": 343,
+   "handler": "webui/server.py::GET@L470",
+   "line": 470,
    "class": "read",
    "streaming": false
   },
@@ -210,17 +255,26 @@
    "method": "POST",
    "path": "/api/v1/traffic/replay",
    "probe_path": "/api/v1/traffic/replay",
-   "handler": "webui/server.py::POST@L217",
-   "line": 217,
+   "handler": "webui/server.py::POST@L236",
+   "line": 236,
    "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/workspaces",
+   "probe_path": "/api/v1/workspaces",
+   "handler": "webui/server.py::GET@L337",
+   "line": 337,
+   "class": "read",
    "streaming": false
   },
   {
    "method": "GET",
    "path": "/api/v1/zeroday",
    "probe_path": "/api/v1/zeroday",
-   "handler": "webui/server.py::GET@L357",
-   "line": 357,
+   "handler": "webui/server.py::GET@L484",
+   "line": 484,
    "class": "read",
    "streaming": false
   },
@@ -228,9 +282,18 @@
    "method": "POST",
    "path": "/api/v1/zeroday/enable",
    "probe_path": "/api/v1/zeroday/enable",
-   "handler": "webui/server.py::POST@L248",
-   "line": 248,
+   "handler": "webui/server.py::POST@L267",
+   "line": 267,
    "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/openapi.json",
+   "probe_path": "/openapi.json",
+   "handler": "webui/server.py::GET@L306",
+   "line": 306,
+   "class": "read",
    "streaming": false
   }
  ]

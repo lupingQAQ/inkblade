@@ -1,0 +1,47 @@
+{
+ "measured_at": "<dynamic>",
+ "cold_start": [
+  {
+   "port": 18791,
+   "ok": true,
+   "cold_start_ms": 815.4
+  },
+  {
+   "port": 18792,
+   "ok": true,
+   "cold_start_ms": 805.3
+  },
+  {
+   "port": 18793,
+   "ok": true,
+   "cold_start_ms": 781.4
+  }
+ ],
+ "idle_rss": {
+  "working_set_mb": 28.1,
+  "pid": 12060,
+  "note": "venv python.exe 为 trampoline；此处为真实解释器进程"
+ },
+ "load_rss": {
+  "concurrency": 16,
+  "requests": 600,
+  "throughput_rps": 293.93,
+  "rss_min_mb": 28.1,
+  "rss_peak_mb": 33.0,
+  "rss_after_mb": 30.8,
+  "peak_working_set_mb": 44.1,
+  "samples": 47,
+  "pid": 12060,
+  "endpoint": "/api/v1/graph?workspace=bench&run=perf-run"
+ },
+ "generation": {
+  "findings": 10000,
+  "steps": 11,
+  "pentest_ms": 3213.5,
+  "pentest_bytes": 2914890,
+  "remediation_ms": 3481.7,
+  "remediation_bytes": 3644639,
+  "rules_generate_ms": 62.8,
+  "rules_pack": "rules-pack"
+ }
+}
