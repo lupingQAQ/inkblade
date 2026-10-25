@@ -94,6 +94,10 @@
       case "evidence": renderEvidence(); break;
       case "report": renderReport(); break;
       case "rules": renderRules(); break;
+      case "assets": renderAssets(); break;
+      case "drift": renderDrift(); break;
+      case "approvals": renderApprovals(); break;
+      case "schedules": renderSchedules(); break;
     }
   }
   function renderAll() {
@@ -837,6 +841,178 @@
     note.textContent = "当前数据命中链：" + (dataChains.length ? dataChains.map(chainZh).join("、") : "（无 —— 展示全目录）") +
       "。规则包由规则转化引擎导出（defense bundle = 规则文件 + 映射矩阵 + 紫队验证报告），零日规则为行为化签名（不含利用细节）。";
     host.appendChild(note);
+  }
+
+  /* ================= ⑦ 资产图 / 差异 / 审批队列 / 计划任务（XBow 对标，服务模式 api/v1，静态模式内嵌） ================= */
+
+  function assetsData() { return (STATE.data && STATE.data.assets) || { nodes: [], edges: [] }; }
+  function driftData() { return (STATE.data && STATE.data.drift) || null; }
+  function approvalsData() { return (STATE.data && STATE.data.proposals) || []; }
+  function schedulesData() { return (STATE.data && STATE.data.schedules) || []; }
+
+  function ensureSection(id) {
+    var host = document.getElementById(id);
+    if (!host) return null;
+    clear(host);
+    return host;
+  }
+
+  function renderAssets() {
+    var body = ensureSection("assets-body");
+    if (!body) return;
+    var render = function (data) {
+      var g = data.graph || { nodes: [], edges: [] };
+      var wrap = el("div", "chain-controls");
+      wrap.appendChild(el("span", "hint",
+        "资产 " + (g.nodes || []).length + " · 关系 " + (g.edges || []).length + " · 来源：core/discovery（assets 表，种子→增量）"));
+      body.appendChild(wrap);
+      /* 复用攻击链图的分层画法：namespace → service，产品着色，缺失资产灰显 */
+      var ns = (g.nodes || []).filter(function (n) { return n.kind === "namespace"; });
+      var svc = (g.nodes || []).filter(function (n) { return n.kind !== "namespace"; });
+      var cols = ["namespace"].concat(["service", "kubeconfig", "other"]);
+      var colIndex = {};
+      cols.forEach(function (k, i) { colIndex[k] = i; });
+      var W = Math.max(320, cols.length * 240), H = Math.max(180, (ns.length + svc.length + 2) * 46);
+      var svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, class: "chain-svg" });
+      var colX = function (i) { return 40 + i * 240; };
+      var pos = {};
+      ns.forEach(function (n, i) { pos[n.id] = { x: colX(0), y: 30 + i * 46 }; });
+      svc.forEach(function (n, i) { pos[n.id] = { x: colX(colIndex[n.kind] || 1), y: 30 + i * 46 }; });
+      (g.edges || []).forEach(function (e2) {
+        var a = pos[e2.src], b = pos[e2.dst];
+        if (!a || !b) return;
+        svg.appendChild(svgEl("line", { x1: a.x + 130, y1: a.y, x2: b.x, y2: b.y, class: "v-blocked" }));
+      });
+      g.nodes.forEach(function (n) {
+        var p = pos[n.id];
+        if (!p) return;
+        var g2 = svgEl("g", {});
+        g2.appendChild(svgEl("rect", { x: p.x, y: p.y - 14, width: 130, height: 30, rx: 6,
+          class: n.missing ? "node-ns node-missing" : "node-ns" }));
+        var label = n.label + (n.product ? " · " + n.product : "");
+        g2.appendChild(svgEl("text", { x: p.x + 8, y: p.y + 6, "font-size": 11 }, label.slice(0, 24)));
+        g2.title = n.id + (n.addr ? " " + n.addr + (n.port ? ":" + n.port : "") : "");
+        svg.appendChild(g2);
+      });
+      body.appendChild(svg);
+      var tbl = el("table", "rules-matrix");
+      tbl.appendChild((function () {
+        var h = el("tr");
+        ["资产键", "类型", "产品", "命名空间", "地址", "状态"].forEach(function (t) { h.appendChild(el("th", null, t)); });
+        return h;
+      })());
+      g.nodes.forEach(function (n) {
+        var tr = el("tr");
+        [n.id, n.kind, n.product || "—", n.namespace || "—",
+         (n.addr ? n.addr + (n.port ? ":" + n.port : "") : "—"),
+         n.missing ? "缺失" : "在册"].forEach(function (v, i) {
+           tr.appendChild(el(i === 0 ? "td" : "td", i === 0 ? "k" : null, String(v)));
+         });
+        tbl.appendChild(tr);
+      });
+      body.appendChild(tbl);
+    };
+    if (STATIC_MODE || STATE.data) return render(assetsData());
+    if (!STATE.token) { body.appendChild(el("div", "hint", "登录后加载资产清单（api/v1/assets）。")); return; }
+    api("api/v1/assets?workspace=" + encodeURIComponent(STATE.workspace)).then(render)
+      .catch(function () { body.appendChild(el("div", "hint", "资产清单加载失败（未发现或未登录）。")); });
+  }
+
+  function renderDrift() {
+    var body = ensureSection("drift-body");
+    if (!body) return;
+    var render = function (d) {
+      if (!d) { body.appendChild(el("div", "hint", "无漂移数据（周期重测后由 scheduler 生成 drift.json）。")); return; }
+      var c = (d.counts) || {};
+      var cards = el("div", "sev-cards");
+      [["新增", c.new || 0, "critical"], ["已修复", c.fixed || 0, "success-ish"], ["未变", c.unchanged || 0, "info"]].forEach(function (x) {
+        var card = el("div", "sev-card " + x[2]);
+        card.appendChild(el("div", "num", String(x[1])));
+        card.appendChild(el("div", "lbl", x[0]));
+        cards.appendChild(card);
+      });
+      body.appendChild(cards);
+      [["新增发现", d.new || [], "v-reachable"], ["已修复", d.fixed || [], "v-degraded"]].forEach(function (grp) {
+        var h = el("h3", null, grp[0] + "（" + grp[1].length + "）");
+        body.appendChild(h);
+        var tbl = el("table", "rules-matrix");
+        var hr = el("tr"); ["模块", "标题", "严重度"].forEach(function (t) { hr.appendChild(el("th", null, t)); });
+        tbl.appendChild(hr);
+        grp[1].forEach(function (f) {
+          var tr = el("tr");
+          tr.appendChild(el("td", "k", f.step_key || ""));
+          tr.appendChild(el("td", null, f.title || ""));
+          tr.appendChild(el("td", null, f.severity || ""));
+          tbl.appendChild(tr);
+        });
+        body.appendChild(tbl);
+      });
+    };
+    if (STATIC_MODE || STATE.data) return render(driftData());
+    body.appendChild(el("div", "hint", "服务模式漂移读取：MCP get_drift（或静态导出内嵌）；此处展示内嵌数据。"));
+    render(driftData());
+  }
+
+  var APPROVAL_ZH = {
+    "pending_approval": "待审批", "approved": "已批准", "rejected": "已拒绝", "executed": "已执行",
+  };
+
+  function renderApprovals() {
+    var body = ensureSection("approvals-body");
+    if (!body) return;
+    var render = function (list) {
+      if (!list.length) { body.appendChild(el("div", "hint", "审批队列为空（explorer propose 生成提议）。")); return; }
+      var tbl = el("table", "rules-matrix");
+      var hr = el("tr"); ["提议", "模式", "动作序列", "写面", "状态", "创建者"].forEach(function (t) { hr.appendChild(el("th", null, t)); });
+      tbl.appendChild(hr);
+      list.forEach(function (p) {
+        var tr = el("tr");
+        tr.appendChild(el("td", "k", p.id || ""));
+        tr.appendChild(el("td", null, p.mode === "llm" ? "LLM" : "规则"));
+        var acts = (p.actions || []).map(function (a) { return (a.seq || "") + "." + (a.module || ""); }).join(" → ");
+        tr.appendChild(el("td", null, acts));
+        tr.appendChild(el("td", null, (p.actions || []).some(function (a) { return a.writes; }) ? "含写类（备份闸门）" : "只读"));
+        tr.appendChild(el("td", p.status === "executed" ? "hit" : (p.status === "approved" ? "warn" : "miss"),
+          APPROVAL_ZH[p.status] || p.status));
+        tr.appendChild(el("td", null, p.created_by || ""));
+        tbl.appendChild(tr);
+      });
+      body.appendChild(tbl);
+      body.appendChild(el("div", "hint", "审批制自主探索：propose（只读）→ lead 批准 → 人触发执行；LLM 可选、规则兜底。"));
+    };
+    if (STATIC_MODE || STATE.data) return render(approvalsData());
+    if (!STATE.token) { body.appendChild(el("div", "hint", "登录后加载审批队列（api/v1/explorer）。")); return; }
+    api("api/v1/explorer?workspace=" + encodeURIComponent(STATE.workspace))
+      .then(function (b) { render(b.proposals || []); })
+      .catch(function () { render([]); });
+  }
+
+  function renderSchedules() {
+    var body = ensureSection("schedules-body");
+    if (!body) return;
+    var render = function (list, due) {
+      if (!list.length) { body.appendChild(el("div", "hint", "无周期重测计划（api/v1/scheduler/add 创建）。")); return; }
+      var tbl = el("table", "rules-matrix");
+      var hr = el("tr"); ["计划", "触发", "链子集", "启用", "上次 run", "下次触发"].forEach(function (t) { hr.appendChild(el("th", null, t)); });
+      tbl.appendChild(hr);
+      list.forEach(function (s) {
+        var tr = el("tr");
+        tr.appendChild(el("td", "k", s.id || ""));
+        tr.appendChild(el("td", null, s.cron ? ("cron " + s.cron) : ("每 " + (s.interval_seconds || "?") + "s")));
+        tr.appendChild(el("td", null, (s.chains || []).join("、")));
+        tr.appendChild(el("td", null, s.enabled ? "启用" : "停用"));
+        tr.appendChild(el("td", null, s.last_run_name || "—"));
+        tr.appendChild(el("td", due && due.indexOf(s.id) >= 0 ? "hit" : null, due && due.indexOf(s.id) >= 0 ? "到期" : (s.next_fire || "—")));
+        tbl.appendChild(tr);
+      });
+      body.appendChild(tbl);
+      body.appendChild(el("div", "hint", "到期自动跑链子集并与上次 findings 差异（新增/已修复），drift 报告落 run 目录。"));
+    };
+    if (STATIC_MODE || STATE.data) return render(schedulesData(), []);
+    if (!STATE.token) { body.appendChild(el("div", "hint", "登录后加载计划任务（api/v1/scheduler）。")); return; }
+    api("api/v1/scheduler?workspace=" + encodeURIComponent(STATE.workspace))
+      .then(function (b) { render(b.schedules || [], b.due || []); })
+      .catch(function () { render([], []); });
   }
 
   /* ================= 启动 ================= */

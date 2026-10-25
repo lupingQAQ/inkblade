@@ -20,10 +20,12 @@ SCHEMA = "trident-agent-plan-v1"
 
 
 def _runs(store: EvidenceStore) -> list[str]:
+    """真实 run 目录 = 含 evidence.db 的目录（排除 explorer/ 等工作区级目录）。"""
     if not store.ws_dir.exists():
         return []
     return sorted(p.name for p in store.ws_dir.iterdir()
-                  if p.is_dir() and not p.name.startswith("_"))
+                  if p.is_dir() and not p.name.startswith("_")
+                  and (p / "evidence.db").is_file())
 
 
 def latest_run(store: EvidenceStore) -> str | None:

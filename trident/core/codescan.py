@@ -9,8 +9,8 @@ from pathlib import Path
 
 RULES_PATH = Path(__file__).resolve().parent / "data" / "sink-rules.json"
 
-# 参与扫描的源码后缀（ast 通道仅 .py）
-SOURCE_SUFFIXES = {".py", ".yaml", ".yml", ".json", ".toml", ".txt", ".sh", ".cfg", ".ini", ".md"}
+# 参与扫描的源码后缀（ast 通道仅 .py；.go 为挖掘流水线对 Go 上游的 regex 通道扩展）
+SOURCE_SUFFIXES = {".py", ".go", ".yaml", ".yml", ".json", ".toml", ".txt", ".sh", ".cfg", ".ini", ".md"}
 
 _skip_dirs = {"__pycache__", ".git", "node_modules", ".venv", "evidence"}
 

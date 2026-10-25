@@ -17,7 +17,7 @@ from typing import Any
 SCHEMA_TABLES = [
     "runs", "steps", "prompts", "env", "findings", "evidence",
     "actions", "backups", "rollbacks", "roe", "combos",
-    "graph_nodes", "graph_edges",
+    "graph_nodes", "graph_edges", "traffic",
 ]
 
 _SCHEMA = """
@@ -40,6 +40,9 @@ CREATE TABLE IF NOT EXISTS combos(id INTEGER PRIMARY KEY, run TEXT, signature TE
 CREATE TABLE IF NOT EXISTS graph_nodes(node_id TEXT PRIMARY KEY, kind TEXT, layer TEXT, attrs TEXT);
 CREATE TABLE IF NOT EXISTS graph_edges(id INTEGER PRIMARY KEY, src TEXT, dst TEXT,
     verdict TEXT, method TEXT, chain TEXT);
+CREATE TABLE IF NOT EXISTS traffic(id INTEGER PRIMARY KEY, run TEXT, module TEXT, seq INTEGER,
+    method TEXT, url TEXT, req_headers TEXT, req_body TEXT,
+    status INTEGER, resp_body TEXT, error TEXT, sha256 TEXT, ts REAL);
 """
 
 
@@ -240,6 +243,45 @@ class Run:
                 "INSERT INTO graph_edges(src, dst, verdict, method, chain) VALUES(?,?,?,?,?)",
                 (src, dst, verdict, method, chain),
             )
+
+    # ---------- 流量录制（XBow 对标 ④：请求/响应全量入库） ----------
+    def record_traffic(self, module: str, entries: list[dict]) -> int:
+        """把模块 HTTP trace 条目全量写入 traffic 表（幂等：同 run+module 清除后重写）。"""
+        rows = []
+        for i, e in enumerate(entries or []):
+            body = e.get("body")
+            resp = e.get("response")
+            rows.append((
+                self.name, module, i, str(e.get("method", "")), str(e.get("url", "")),
+                json.dumps(e.get("headers") or {}, ensure_ascii=False, default=str),
+                json.dumps(body, ensure_ascii=False, default=str) if body is not None else None,
+                int(e.get("status") or 0),
+                json.dumps(resp, ensure_ascii=False, default=str) if resp is not None else None,
+                str(e.get("error") or "") or None,
+                _sha256_bytes(json.dumps(
+                    {k: e.get(k) for k in ("method", "url", "body", "headers", "status", "response")},
+                    ensure_ascii=False, default=str, sort_keys=True).encode("utf-8")),
+                float(e.get("ts") or time.time()),
+            ))
+        with self._tx() as conn:
+            conn.execute("DELETE FROM traffic WHERE run=? AND module=?", (self.name, module))
+            conn.executemany(
+                "INSERT INTO traffic(run, module, seq, method, url, req_headers, req_body,"
+                " status, resp_body, error, sha256, ts) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+                rows,
+            )
+        return len(rows)
+
+    @property
+    def traffic(self) -> list[dict[str, Any]]:
+        rows = self.query(
+            "SELECT module, seq, method, url, req_headers, req_body, status, resp_body,"
+            " error, sha256, ts FROM traffic WHERE run=? ORDER BY module, seq",
+            (self.name,),
+        )
+        keys = ["module", "seq", "method", "url", "req_headers", "req_body",
+                "status", "resp_body", "error", "sha256", "ts"]
+        return [dict(zip(keys, r)) for r in rows]
 
 
 class EvidenceStore:

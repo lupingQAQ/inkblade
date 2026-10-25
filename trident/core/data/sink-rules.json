@@ -93,6 +93,30 @@
       "regex": "['\"]file://",
       "anchor": "model_fetch.py:6",
       "hint": "ssrf-imds-credential"
+    },
+    {
+      "id": "exec-command-go",
+      "sev": "high",
+      "description": "Go exec.Command 参数拼接/变量直达（命令注入面，regex 通道）",
+      "regex": "exec\\.Command\\(",
+      "anchor": "scheduler.go:20",
+      "hint": "verl-hdfs-command-injection"
+    },
+    {
+      "id": "go-bind-all",
+      "sev": "medium",
+      "description": "Go 服务绑定 0.0.0.0（管理面全网可达）",
+      "regex": "\"0\\.0\\.0\\.0",
+      "anchor": "scheduler.go:33",
+      "hint": "trl-serve-dev-mode"
+    },
+    {
+      "id": "pprof-exposed-go",
+      "sev": "medium",
+      "description": "pprof 调试路由注册（未加鉴权即信息泄露/压力面）",
+      "regex": "net/http/pprof|/debug/pprof/",
+      "anchor": "scheduler.go:32",
+      "hint": "gpu-network-operator-posture"
     }
   ],
   "combos": [

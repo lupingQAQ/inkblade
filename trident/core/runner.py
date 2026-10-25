@@ -86,9 +86,20 @@ def run_module(
         result_summary=str(result.get("summary", "")),
         artifacts=[Path(p) for p in result.get("artifacts", [])],
     )
-    for f in result.get("findings", []):
+    # 验证级 PoC：写类模块 finding 附验证步骤+预期证据（core/poc.py）
+    from .poc import enrich_write_findings
+
+    findings = enrich_write_findings(module_key, bool(meta.writes), params, result)
+    for f in findings:
         run.add_finding(module_key, sev=f.get("sev", "info"), title=f.get("title", ""),
                         detail=f.get("detail", ""), evidence_path=step["archive"],
                         is_zeroday=bool(f.get("is_zeroday", False)))
+    # 流量录制：模块 traces/*.json 全量入 traffic 表（core/traffic.py，幂等）
+    try:
+        from .traffic import ingest_run
+
+        ingest_run(run)
+    except Exception:  # 流量入库失败不阻断执行（无 trace 的模块跳过）
+        pass
     run.log_action(session.name, "execute", module_key, params, "success", rollback_to=module_key if meta.writes else None)
     return {"run": run.name, "step": module_key, **step}

@@ -77,7 +77,7 @@ def load_run_data(run_dir: Path | str, redact_zeroday: bool = False) -> dict[str
     manifest_path = run_dir / "manifest.sha256"
     manifest = manifest_path.read_text(encoding="utf-8") if manifest_path.exists() else ""
 
-    return {
+    data = {
         "run": run_meta,
         "steps": steps,
         "findings": findings,
@@ -86,6 +86,47 @@ def load_run_data(run_dir: Path | str, redact_zeroday: bool = False) -> dict[str
         "edges": edges,
         "manifest": manifest,
     }
+    # 十视图补充数据（文件存在才内嵌；老 run 导出不受影响）：
+    # drift.json（⑧差异视图）与工作区级 assets.db / explorer 队列 / schedules
+    drift_path = run_dir / "drift.json"
+    if drift_path.exists():
+        try:
+            data["drift"] = json.loads(drift_path.read_text(encoding="utf-8"))
+        except ValueError:
+            pass
+    ws_dir = run_dir.parent
+    assets_db = ws_dir / "assets.db"
+    if assets_db.exists():
+        try:
+            aconn = sqlite3.connect(assets_db)
+            aconn.row_factory = sqlite3.Row
+            inv_rows = [dict(r) for r in aconn.execute(
+                "SELECT asset_key, kind, product, name, namespace, addr, port, missing_since FROM assets")]
+            aconn.close()
+            nodes_a = [{"id": r["asset_key"], "kind": r["kind"], "label": r["name"],
+                        "product": r["product"], "namespace": r["namespace"], "addr": r["addr"],
+                        "port": r["port"], "missing": r["missing_since"] is not None} for r in inv_rows]
+            keys = {n["id"] for n in nodes_a}
+            edges_a = [{"src": f"namespace/{n['namespace']}/{n['namespace']}".replace("//", "/"),
+                        "dst": n["id"], "relation": "contains"}
+                       for n in nodes_a if n["kind"] == "service" and n["namespace"]
+                       and f"namespace/{n['namespace']}/{n['namespace']}".replace("//", "/") in keys]
+            data["assets"] = {"nodes": nodes_a, "edges": edges_a}
+        except sqlite3.Error:
+            pass
+    queue_path = ws_dir / "explorer" / "queue.json"
+    if queue_path.exists():
+        try:
+            data["proposals"] = json.loads(queue_path.read_text(encoding="utf-8"))
+        except ValueError:
+            pass
+    sched_path = ws_dir / "schedules.json"
+    if sched_path.exists():
+        try:
+            data["schedules"] = json.loads(sched_path.read_text(encoding="utf-8"))
+        except ValueError:
+            pass
+    return data
 
 
 def export_static(run_dir: Path | str, out: Path | str, redact_zeroday: bool = False) -> Path:

@@ -7,6 +7,11 @@
 - ``get_chain_plan``       链前置判定 + dry-run 计划（plan-only，需 lead 审批后由人触发）
 - ``get_evidence_manifest`` manifest 校验 + 三层证据清单
 - ``validate_rules``       规则包静态校验（文件齐备 / 映射一致）
+- ``get_assets``           资产清单（discovery assets 表，XBow 对标 ①）
+- ``get_explorer_queue``   审批队列视图（不执行；XBow 对标 ②）
+- ``get_schedules``        周期重测计划与到期态（不执行；XBow 对标 ③）
+- ``get_traffic``          已录制流量清单（XBow 对标 ④；replay 不上 MCP）
+- ``get_drift``            最近/指定 run 的漂移报告（XBow 对标 ③）
 
 安全边界：
 - 复用工作区授权锁：未签署 consent 时数据类工具返回 JSON-RPC -32002（与 CLI/API 423 同源）；
@@ -96,6 +101,48 @@ TOOLS: list[dict[str, Any]] = [
             "additionalProperties": False,
         },
     },
+    {
+        "name": "get_assets",
+        "description": "List the workspace asset inventory (discovery assets table) with optional filters. Read-only.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "kind": {"type": "string"},
+                "product": {"type": "string"},
+                "include_missing": {"type": "boolean"},
+            },
+            "additionalProperties": False,
+        },
+    },
+    {
+        "name": "get_explorer_queue",
+        "description": "List explorer proposals and their approval states (never executes; approval is lead-gated). Read-only.",
+        "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False},
+    },
+    {
+        "name": "get_schedules",
+        "description": "List continuous retest schedules, enabled flags and due state. Read-only.",
+        "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False},
+    },
+    {
+        "name": "get_traffic",
+        "description": "List recorded HTTP traffic (requests/responses with SHA256) for a run. Read-only.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {"run": {"type": "string"}, "module": {"type": "string"}},
+            "required": ["run"],
+            "additionalProperties": False,
+        },
+    },
+    {
+        "name": "get_drift",
+        "description": "Read the latest (or named) run's scheduler drift report (new/fixed findings). Read-only.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {"run": {"type": "string"}},
+            "additionalProperties": False,
+        },
+    },
 ]
 _TOOL_NAMES = {t["name"] for t in TOOLS}
 
@@ -120,10 +167,12 @@ def _manifest_map(run) -> dict[str, str]:
 
 
 def _runs(store: EvidenceStore) -> list[str]:
+    """真实 run 目录 = 含 evidence.db 的目录（排除 explorer/ 等工作区级目录）。"""
     if not store.ws_dir.exists():
         return []
     return sorted(p.name for p in store.ws_dir.iterdir()
-                  if p.is_dir() and not p.name.startswith("_"))
+                  if p.is_dir() and not p.name.startswith("_")
+                  and (p / "evidence.db").is_file())
 
 
 def _latest_run(store: EvidenceStore) -> str | None:
@@ -358,6 +407,67 @@ class McpContext:
         }
 
     # ---------- 分发 ----------
+    def get_assets(self, args: dict) -> dict:
+        from .core.discovery import AssetInventory
+
+        store = self.authorized_store()
+        inv = AssetInventory(store)
+        assets = inv.list(kind=str(args.get("kind") or ""),
+                          product=str(args.get("product") or ""),
+                          include_missing=bool(args.get("include_missing")))
+        return {"workspace": self.workspace, "count": len(assets), "assets": assets,
+                "read_only": True}
+
+    def get_explorer_queue(self, args: dict) -> dict:
+        from .core.explorer import Explorer
+
+        store = self.authorized_store()
+        ex = Explorer(store, chains_dir=self.chains_dir, modules_dir=self.modules_dir)
+        proposals = ex.list_proposals()
+        return {"workspace": self.workspace, "count": len(proposals), "proposals": proposals,
+                "note_zh": "只读队列视图：执行须 lead 批准后由人触发，本工具不执行。",
+                "read_only": True}
+
+    def get_schedules(self, args: dict) -> dict:
+        from .core.scheduler import Scheduler
+
+        store = self.authorized_store()
+        sched = Scheduler(store, chains_dir=self.chains_dir, modules_dir=self.modules_dir)
+        items = sched.list()
+        return {"workspace": self.workspace, "schedules": items,
+                "due": [s["id"] for s in sched.due()],
+                "note": "run-due is CLI/API-side; this tool never executes chains.",
+                "read_only": True}
+
+    def get_traffic(self, args: dict) -> dict:
+        from .core.traffic import list_traffic
+
+        store = self.authorized_store()
+        run_name = str(args.get("run") or "").strip()
+        if not run_name:
+            raise ToolError("缺少参数 run")
+        try:
+            entries = list_traffic(store, run_name, module=str(args.get("module") or ""))
+        except KeyError as exc:
+            raise ToolError(str(exc)) from exc
+        return {"workspace": self.workspace, "run": run_name, "count": len(entries),
+                "entries": entries,
+                "note": "replay is a write-surface action: not exposed over MCP.",
+                "read_only": True}
+
+    def get_drift(self, args: dict) -> dict:
+        store = self.authorized_store()
+        run_name = str(args.get("run") or "").strip() or _latest_run(store)
+        if run_name is None:
+            raise ToolError("证据库为空：没有可读取的 run")
+        run = self._run(store, run_name)
+        drift_path = run.dir / "drift.json"
+        if not drift_path.is_file():
+            raise ToolError(f"run {run_name} 无 drift.json（scheduler 周期重测后生成）")
+        return {"workspace": self.workspace, "run": run.name,
+                "drift": json.loads(drift_path.read_text(encoding="utf-8")),
+                "read_only": True}
+
     def call(self, name: str, args: dict | None) -> dict:
         if name not in _TOOL_NAMES:
             raise KeyError(name)
@@ -367,6 +477,11 @@ class McpContext:
             "get_chain_plan": self.get_chain_plan,
             "get_evidence_manifest": self.get_evidence_manifest,
             "validate_rules": self.validate_rules,
+            "get_assets": self.get_assets,
+            "get_explorer_queue": self.get_explorer_queue,
+            "get_schedules": self.get_schedules,
+            "get_traffic": self.get_traffic,
+            "get_drift": self.get_drift,
         }[name]
         return handler(dict(args or {}))
 

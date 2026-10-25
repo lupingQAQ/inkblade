@@ -1,0 +1,206 @@
+/*
+Copyright 2024 The HAMi Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+package main
+
+import (
+	"context"
+	"crypto/tls"
+	"fmt"
+	"net/http"
+	"net/http/pprof"
+	"os"
+	"time"
+
+	"github.com/julienschmidt/httprouter"
+	"github.com/spf13/cobra"
+	klog "k8s.io/klog/v2"
+	"sigs.k8s.io/controller-runtime/pkg/certwatcher"
+
+	"github.com/Project-HAMi/HAMi/pkg/device"
+	"github.com/Project-HAMi/HAMi/pkg/scheduler"
+	"github.com/Project-HAMi/HAMi/pkg/scheduler/config"
+	"github.com/Project-HAMi/HAMi/pkg/scheduler/routes"
+	"github.com/Project-HAMi/HAMi/pkg/util"
+	"github.com/Project-HAMi/HAMi/pkg/util/client"
+	"github.com/Project-HAMi/HAMi/pkg/util/flag"
+	"github.com/Project-HAMi/HAMi/pkg/util/nodelock"
+	"github.com/Project-HAMi/HAMi/pkg/version"
+)
+
+//var version string
+
+var (
+	sher            *scheduler.Scheduler
+	tlsKeyFile      string
+	tlsCertFile     string
+	enableProfiling bool
+	legacyMetrics   bool
+	rootCmd         = &cobra.Command{
+		Use:   "scheduler",
+		Short: "kubernetes vgpu scheduler",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			flag.PrintPFlags(cmd.Flags())
+			return start()
+		},
+	}
+)
+
+func init() {
+	rootCmd.Flags().SortFlags = false
+	rootCmd.PersistentFlags().SortFlags = false
+
+	rootCmd.Flags().StringVar(&config.HTTPBind, "http_bind", "127.0.0.1:8080", "http server bind address")
+	rootCmd.Flags().StringVar(&tlsCertFile, "cert_file", "", "tls cert file")
+	rootCmd.Flags().StringVar(&tlsKeyFile, "key_file", "", "tls key file")
+	rootCmd.Flags().StringVar(&config.SchedulerName, "scheduler-name", "", "the name to be added to pod.spec.schedulerName if not empty")
+	rootCmd.Flags().StringVar(&config.NodeSchedulerPolicy, "node-scheduler-policy", util.NodeSchedulerPolicyBinpack.String(), "node scheduler policy")
+	rootCmd.Flags().StringVar(&device.GPUSchedulerPolicy, "gpu-scheduler-policy", util.GPUSchedulerPolicySpread.String(), "GPU scheduler policy")
+	rootCmd.Flags().StringVar(&config.MetricsBindAddress, "metrics-bind-address", ":9395", "The TCP address that the scheduler should bind to for serving prometheus metrics(e.g. 127.0.0.1:9395, :9395)")
+	rootCmd.Flags().StringToStringVar(&config.NodeLabelSelector, "node-label-selector", nil, "key=value pairs separated by commas")
+
+	rootCmd.Flags().Float32Var(&config.QPS, "kube-qps", client.DefaultQPS, "QPS to use while talking with kube-apiserver.")
+	rootCmd.Flags().IntVar(&config.Burst, "kube-burst", client.DefaultBurst, "Burst to use while talking with kube-apiserver.")
+	rootCmd.Flags().IntVar(&config.Timeout, "kube-timeout", client.DefaultTimeout, "Timeout to use while talking with kube-apiserver.")
+	rootCmd.Flags().BoolVar(&enableProfiling, "profiling", false, "Enable pprof profiling via HTTP server")
+	rootCmd.Flags().DurationVar(&config.NodeLockTimeout, "node-lock-timeout", time.Minute*5, "timeout for node locks")
+	rootCmd.Flags().DurationVar(&config.NodeLockRetryTimeout, "node-lock-retry-timeout", 28*time.Second, "timeout for retrying LockNode when contended by another PodGroup member (0 disables retry). Align the Extender's httpTimeout in KubeSchedulerConfiguration with this value.")
+	rootCmd.Flags().BoolVar(&config.ForceOverwriteDefaultScheduler, "force-overwrite-default-scheduler", true, "Overwrite schedulerName in Pod Spec when set to the const DefaultSchedulerName in https://k8s.io/api/core/v1 package")
+
+	rootCmd.Flags().BoolVar(&config.LeaderElect, "leader-elect", false, "The pod of hami-scheduler enable leader select")
+	rootCmd.Flags().StringVar(&config.LeaderElectResourceName, "leader-elect-resource-name", "", "The name of resource object that is used for leader election")
+	rootCmd.Flags().StringVar(&config.LeaderElectResourceNamespace, "leader-elect-resource-namespace", "", "The namespace of resource object that is used for leader election")
+	rootCmd.Flags().BoolVar(&legacyMetrics, "legacy-metrics", false, "Emit legacy metric names alongside new ones for backward compatibility")
+
+	rootCmd.PersistentFlags().AddGoFlagSet(config.GlobalFlagSet())
+	rootCmd.AddCommand(version.VersionCmd)
+	rootCmd.Flags().AddGoFlagSet(util.InitKlogFlags())
+}
+
+// injectProfilingRoute injects pprof routes into the router.
+func injectProfilingRoute(router *httprouter.Router) {
+	router.GET("/debug/pprof/*suffix", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+		suffix := params.ByName("suffix")
+		switch suffix {
+		case "/cmdline":
+			pprof.Cmdline(w, r)
+		case "/profile":
+			pprof.Profile(w, r)
+		case "/symbol":
+			pprof.Symbol(w, r)
+		case "/trace":
+			pprof.Trace(w, r)
+		default:
+			pprof.Index(w, r)
+		}
+	})
+}
+
+func start() error {
+	// Initialize node lock timeout from config
+	nodelock.NodeLockTimeout = config.NodeLockTimeout
+	klog.InfoS("Set node lock timeout", "timeout", nodelock.NodeLockTimeout)
+	client.InitGlobalClient(
+		client.WithBurst(config.Burst),
+		client.WithQPS(config.QPS),
+		client.WithTimeout(config.Timeout),
+	)
+
+	config.InitDevices()
+
+	var err error
+	config.HostName, err = os.Hostname()
+	if err != nil {
+		return fmt.Errorf("unable to get hostname: %v", err)
+	}
+	if config.HostName == "" {
+		return fmt.Errorf("empty hostname returned")
+	}
+
+	sher = scheduler.NewScheduler()
+	go sher.RegisterFromNodeAnnotations()
+	err = sher.Start()
+	if err != nil {
+		return err
+	}
+	defer sher.Stop()
+
+	// start monitor metrics
+	go initMetrics(config.MetricsBindAddress, sher, legacyMetrics)
+
+	// start http server
+	router := httprouter.New()
+	router.POST("/filter", routes.PredicateRoute(sher))
+	router.POST("/bind", routes.Bind(sher))
+	router.POST("/webhook", routes.WebHookRoute())
+	router.GET("/healthz", routes.HealthzRoute())
+	router.GET("/readyz", routes.ReadyzRoute(sher))
+	klog.Info("listen on ", config.HTTPBind)
+
+	if enableProfiling {
+		injectProfilingRoute(router)
+		klog.Infof("Profiling enabled, visit %s/debug/pprof/ to view profiles", config.HTTPBind)
+	}
+
+	if len(tlsCertFile) == 0 || len(tlsKeyFile) == 0 {
+		server := &http.Server{
+			Addr:              config.HTTPBind,
+			Handler:           router,
+			ReadHeaderTimeout: 15 * time.Second,
+			ReadTimeout:       60 * time.Second,
+		}
+		if err := server.ListenAndServe(); err != nil {
+			return fmt.Errorf("listen and Serve error, %v", err)
+		}
+	} else {
+		certWatcher, err := certwatcher.New(tlsCertFile, tlsKeyFile)
+		if err != nil {
+			return fmt.Errorf("failed to create cert watcher: %w", err)
+		}
+
+		tlsCfg := &tls.Config{
+			GetCertificate: certWatcher.GetCertificate,
+		}
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+		go func() {
+			if err := certWatcher.Start(ctx); err != nil && err != context.Canceled {
+				klog.ErrorS(err, "cert watcher error")
+			}
+		}()
+
+		addr := config.HTTPBind
+		handler := router
+		server := &http.Server{
+			Addr:              addr,
+			Handler:           handler,
+			TLSConfig:         tlsCfg,
+			ReadHeaderTimeout: 15 * time.Second,
+			ReadTimeout:       60 * time.Second,
+		}
+		klog.InfoS("Starting HTTPS server", "address", addr)
+		if err := server.ListenAndServeTLS("", ""); err != nil {
+			return fmt.Errorf("HTTPS server error: %w", err)
+		}
+	}
+	return nil
+}
+
+func main() {
+	if err := rootCmd.Execute(); err != nil {
+		klog.Fatal(err)
+	}
+}

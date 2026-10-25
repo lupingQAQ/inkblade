@@ -89,6 +89,45 @@ def main(argv=None) -> int:
     exp.add_argument("--format", choices=["sarif", "ocsf", "vex"], required=True)
     exp.add_argument("--out", default=None, help="输出 JSON（缺省 stdout）")
 
+    disc = sub.add_parser("discover", help="资产自动发现：种子 → 增量资产库（assets 表）")
+    disc.add_argument("--workspace", default="local-lab")
+    disc.add_argument("--seeds", required=True, help="种子 JSON（namespaces/services/kubeconfig_snapshot）")
+    disc.add_argument("--source", default="cli")
+    disc.add_argument("--graph", action="store_true", help="输出资产图（namespace→service）")
+
+    expl = sub.add_parser("explore", help="审批制自主探索器：propose|list|approve|reject|execute")
+    expl.add_argument("--workspace", default="local-lab")
+    expl.add_argument("action", choices=["propose", "list", "approve", "reject", "execute"])
+    expl.add_argument("--id", default=None, help="提议 id（approve/reject/execute）")
+    expl.add_argument("--use-llm", default=None, help="true/false（缺省：有 env 则用 LLM，失败降级 rules）")
+    expl.add_argument("--max-actions", type=int, default=5)
+    expl.add_argument("--reason", default="")
+    expl.add_argument("--actor", default="cli")
+    expl.add_argument("--role", choices=list(ROLES), default="lead")
+
+    sch = sub.add_parser("schedule", help="周期重测：add|list|remove|run-due（cron/interval → 链子集 → drift）")
+    sch.add_argument("--workspace", default="local-lab")
+    sch.add_argument("action", choices=["add", "list", "remove", "run-due"])
+    sch.add_argument("--cron", default=None)
+    sch.add_argument("--interval-seconds", type=int, default=None)
+    sch.add_argument("--chains", default=None, help="逗号分隔链 id")
+    sch.add_argument("--id", default=None)
+    sch.add_argument("--actor", default="cli")
+    sch.add_argument("--role", choices=list(ROLES), default="lead")
+
+    tr = sub.add_parser("traffic", help="流量录制/回放：ingest|list|replay")
+    tr.add_argument("--workspace", default="local-lab")
+    tr.add_argument("action", choices=["ingest", "list", "replay"])
+    tr.add_argument("--run", default=None)
+    tr.add_argument("--module", default="")
+    tr.add_argument("--live", action="store_true", help="真实重放（须 ROE+execute；默认 dry 断言计划）")
+    tr.add_argument("--actor", default="cli")
+    tr.add_argument("--role", choices=list(ROLES), default="tester")
+
+    mine = sub.add_parser("mine", help="挖掘流水线闭环：模板验证→最新版本差异→登记册候选（不自动入库）")
+    mine.add_argument("--out", default=None, help="输出目录（缺省 reports/samples/mining）")
+    mine.add_argument("--targets", default=None, help="逗号分隔目标（vllm,sglang,kuberay,hami,litellm）")
+
     args = ap.parse_args(argv)
     home = Path(args.home)
 
@@ -217,6 +256,116 @@ def main(argv=None) -> int:
             print(json.dumps(doc, ensure_ascii=False, indent=2))
         else:
             print(f"export: {args.out}（format={args.format}）")
+        return 0
+
+    if args.cmd == "discover":
+        from .core.discovery import AssetInventory
+
+        try:
+            seeds = json.loads(Path(args.seeds).read_text(encoding="utf-8"))
+            inv = AssetInventory(_store(home, args.workspace))
+            diff = inv.ingest(seeds, source=args.source)
+        except (OSError, ValueError) as exc:
+            print(f"trident discover: {exc}", file=sys.stderr)
+            return 2
+        payload = inv.graph() if args.graph else {"assets": inv.list(include_missing=True)}
+        print(json.dumps({"diff": diff, **payload}, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.cmd == "explore":
+        from .core.explorer import ApprovalDenied, Explorer
+        from .core.users import Session
+
+        store = _store(home, args.workspace)
+        session = Session(None, args.actor, args.role, [args.workspace], "cli-local")
+        ex = Explorer(store, modules_dir=home / "modules")
+        try:
+            if args.action == "propose":
+                use_llm = None if args.use_llm is None else args.use_llm == "true"
+                data = ex.propose(session, use_llm=use_llm, max_actions=args.max_actions)
+            elif args.action == "list":
+                data = {"proposals": ex.list_proposals()}
+            elif args.action in ("approve", "reject"):
+                if not args.id:
+                    raise ValueError("--id 必填")
+                data = ex.approve(session, args.id) if args.action == "approve" \
+                    else ex.reject(session, args.id, args.reason)
+            else:
+                if not args.id:
+                    raise ValueError("--id 必填")
+                data = ex.execute(session, args.id)
+        except (ApprovalDenied, PermissionError) as exc:
+            print(f"trident explore: {exc}", file=sys.stderr)
+            return 2
+        except ValueError as exc:
+            print(f"trident explore: {exc}", file=sys.stderr)
+            return 2
+        print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
+        return 0
+
+    if args.cmd == "schedule":
+        from .core.scheduler import Scheduler
+        from .core.users import Session
+
+        store = _store(home, args.workspace)
+        session = Session(None, args.actor, args.role, [args.workspace], "cli-local")
+        sched = Scheduler(store, modules_dir=home / "modules")
+        try:
+            if args.action == "add":
+                chains = [c for c in (args.chains or "").split(",") if c]
+                data = sched.add(session, cron=args.cron, interval_seconds=args.interval_seconds,
+                                 chains=chains, schedule_id=args.id or "")
+            elif args.action == "list":
+                data = {"schedules": sched.list(), "due": [s["id"] for s in sched.due()]}
+            elif args.action == "remove":
+                data = sched.remove(args.id or "")
+            else:
+                data = sched.run_due(session)
+        except (ValueError, PermissionError) as exc:
+            print(f"trident schedule: {exc}", file=sys.stderr)
+            return 2
+        print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
+        return 0
+
+    if args.cmd == "traffic":
+        from .core import traffic as traffic_mod
+        from .core.users import Session
+
+        store = _store(home, args.workspace)
+        session = Session(None, args.actor, args.role, [args.workspace], "cli-local")
+        try:
+            if args.action == "ingest":
+                if not args.run:
+                    raise ValueError("--run 必填")
+                data = {"ingested": traffic_mod.ingest_run(store.open_run(args.run))}
+            elif args.action == "list":
+                if not args.run:
+                    raise ValueError("--run 必填")
+                data = {"entries": traffic_mod.list_traffic(store, args.run, module=args.module)}
+            else:
+                if not args.run:
+                    raise ValueError("--run 必填")
+                data = traffic_mod.replay(store, session, args.run, module=args.module,
+                                          live=args.live)
+        except (ValueError, PermissionError, KeyError) as exc:
+            print(f"trident traffic: {exc}", file=sys.stderr)
+            return 2
+        print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
+        return 0
+
+    if args.cmd == "mine":
+        from .mining import run_pipeline
+
+        out = Path(args.out) if args.out else home / "reports" / "samples" / "mining"
+        targets = [t for t in (args.targets or "").split(",") if t] or None
+        try:
+            report = run_pipeline(out, targets=targets)
+        except ValueError as exc:
+            print(f"trident mine: {exc}", file=sys.stderr)
+            return 2
+        print(json.dumps({k: report[k] for k in ("validation", "targets", "candidates_total")},
+                         ensure_ascii=False, indent=2))
+        print(f"mining: {out / 'mining-report.json'}（候选 pending-manual-review，不自动入库）")
         return 0
 
     return 1

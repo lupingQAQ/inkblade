@@ -1,0 +1,19 @@
+{
+ "vllm": [],
+ "sglang": [
+  "http_server.py:248:auth-fail-open:regex"
+ ],
+ "kuberay": [],
+ "hami": [
+  "main.go:155:pprof-exposed-go:regex",
+  "main.go:24:pprof-exposed-go:regex",
+  "main.go:95:pprof-exposed-go:regex"
+ ],
+ "litellm": [
+  "proxy_server.py:1408:dynamic-import:ast",
+  "proxy_server.py:1408:dynamic-import:regex",
+  "proxy_server.py:16397:auth-fail-open:regex",
+  "proxy_server.py:16509:auth-fail-open:regex",
+  "proxy_server.py:16602:auth-fail-open:regex"
+ ]
+}

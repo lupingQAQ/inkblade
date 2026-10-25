@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "hami-main-go-pprof-exposed-go-l95-regex",
+ "target": "hami",
+ "repo": "Project-HAMi/HAMi",
+ "tag": "v2.10.0",
+ "status": "pending-manual-review",
+ "rule": "pprof-exposed-go",
+ "channel": "regex",
+ "file": "main.go",
+ "line": 95,
+ "snippet": "router.GET(\"/debug/pprof/*suffix\", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-25T21:15:33"
+}

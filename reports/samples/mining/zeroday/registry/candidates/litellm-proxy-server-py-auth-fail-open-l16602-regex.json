@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "litellm-proxy-server-py-auth-fail-open-l16602-regex",
+ "target": "litellm",
+ "repo": "BerriAI/litellm",
+ "tag": "v1.106.4",
+ "status": "pending-manual-review",
+ "rule": "auth-fail-open",
+ "channel": "regex",
+ "file": "proxy_server.py",
+ "line": 16602,
+ "snippet": "if api_key is None or api_key == \"undefined\":",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-25T21:15:34"
+}

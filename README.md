@@ -77,6 +77,7 @@ python scripts/check-public-tree.py                # 公开树 0 命中（无内
 | [`docs/RUNBOOK.md`](docs/RUNBOOK.md) | 安装、授权、模块/链、报告、回滚、实验室边界 |
 | [`docs/EFFECT-VERIFICATION.md`](docs/EFFECT-VERIFICATION.md) | 实效验证 PASS/FAIL 表与证据摘要 |
 | [`docs/SOTA-2026-10.md`](docs/SOTA-2026-10.md) | 2026-10 SOTA 能力矩阵、诚实差距与追赶路径 |
+| [`docs/REFLECTION-XBOW-ARTEX-KUBETRAIL.md`](docs/REFLECTION-XBOW-ARTEX-KUBETRAIL.md) | XBow/ARTEX/KubeTrail 对标反思：已对齐/待补/不补+理由（确定性执行差异化声明） |
 | [`docs/DELIVERY.md`](docs/DELIVERY.md) | 交付包结构与样张说明 |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | 开发、测试、模块作者规范 |
 | [`SECURITY.md`](SECURITY.md) | 漏洞披露政策（私密渠道 + 90 天） |

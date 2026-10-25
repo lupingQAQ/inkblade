@@ -16,7 +16,11 @@ from trident.core.evidence import EvidenceStore
 REPO = Path(__file__).resolve().parents[1]
 PY = sys.executable
 CHAIN_COUNT = len(load_chains(REPO / "trident" / "chains"))
-VALID_TOOLS = {"list_runs", "get_findings", "get_chain_plan", "get_evidence_manifest", "validate_rules"}
+VALID_TOOLS = {
+    "list_runs", "get_findings", "get_chain_plan", "get_evidence_manifest", "validate_rules",
+    # XBow 对标同步暴露（全部只读）：资产/审批队列/计划/流量/漂移
+    "get_assets", "get_explorer_queue", "get_schedules", "get_traffic", "get_drift",
+}
 
 
 def _seed(store: EvidenceStore, name: str = "run-mcp"):
