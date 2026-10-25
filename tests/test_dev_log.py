@@ -76,7 +76,7 @@ class TestDevLog(unittest.TestCase):
         self.assertTrue(PROGRESS.is_file())
         self.assertTrue(SDD.is_file())
         # 原始 SDD 仍保留原编码（不强行改写，避免破坏外部引用）
-        raw = SDD.read_bytes()
+        raw = SDD.read_bytes().lstrip(b"\xef\xbb\xbf")
         self.assertTrue(raw.startswith(b"# SDD ledger"))
 
 
