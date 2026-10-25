@@ -1,0 +1,55 @@
+{
+ "id": "GHSA-h26v-922j-28cg",
+ "source": "cve",
+ "title": "rsyslog 配置注入（welf_firewall_name）",
+ "version": "master 修复前构建（具体 tag 未标注）",
+ "version_ref": {
+  "kind": "vendor",
+  "version": "master 修复前构建（具体 tag 未标注）"
+ },
+ "install": "not installable on this host",
+ "root_cause": {
+  "file": "n/a (vendor firmware / Linux runtime)",
+  "line": 0,
+  "function": "",
+  "snippet": "",
+  "source": null,
+  "note": "换行/特殊字符注入 rsyslog 指令 → root 上下文配置执行（可写文件/执行命令）"
+ },
+ "preconditions": [
+  "vendor hardware or Linux runtime required"
+ ],
+ "steps": [
+  "record why this host cannot host the vulnerable path",
+  "do not claim exploitation"
+ ],
+ "expected_evidence": [
+  "unsupported.json with explicit reason"
+ ],
+ "cleanup": "none (no exploit executed)",
+ "status": "unsupported",
+ "method": "unsupported",
+ "module": "sonic-rsyslog-injection",
+ "python": null,
+ "advisory": "https://github.com/sonic-net/sonic-buildimage/security/advisories/GHSA-h26v-922j-28cg",
+ "marker_text": "TRIDENT-UV-GHSA-h26v-922j-28cg",
+ "notes": "Hardware/OS-dependent path; not exercised on this host. Not counted as verified.",
+ "static_evidence_level": "advisory",
+ "static_analysis": "",
+ "static_verdict": "",
+ "unsupported": {
+  "reason": "SONiC rsyslog injection requires a SONiC build/switch",
+  "requires": [
+   "SONiC",
+   "master 修复前构建（具体 tag 未标注）"
+  ],
+  "blocked_by": [
+   "Windows host",
+   "no GPU",
+   "no Linux container runtime",
+   "no vendor BMC/NOS"
+  ]
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "sonic"
+}

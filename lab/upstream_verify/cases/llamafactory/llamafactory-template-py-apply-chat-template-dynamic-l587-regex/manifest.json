@@ -1,0 +1,57 @@
+{
+ "id": "llamafactory-template-py-apply-chat-template-dynamic-l587-regex",
+ "source": "mining",
+ "title": "llamafactory: apply-chat-template-dynamic @ template.py:587",
+ "version": "v0.9.5",
+ "version_ref": {
+  "kind": "git",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "src/llamafactory/data/template.py",
+  "line": 587,
+  "function": "",
+  "snippet": "user_slot_empty_system = tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)",
+  "source": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/data/template.py",
+  "source_sha256": "68f289bb28c434e7d26cb36bd4351ea4636f9e102bf374d9a84f642565d9f84e",
+  "note": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-llamafactory-template-py-apply-chat-template-dynamic-l587-regex",
+ "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink.",
+ "static_verdict": "false-positive",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 35,
+  "rule": "apply-chat-template-dynamic",
+  "channel": "regex",
+  "file": "template.py",
+  "line": 587,
+  "snippet": "user_slot_empty_system = tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "llamafactory"
+}

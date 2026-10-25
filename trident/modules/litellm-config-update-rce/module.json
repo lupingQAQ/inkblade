@@ -17,5 +17,21 @@
   },
   "produces": "litellm-config-update",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "litellm-config-update"
+  "combo_signature": "litellm-config-update",
+  "verified": false,
+  "verification_status": "partial",
+  "verification_cves": {
+    "CVE-2026-35029": "static-only",
+    "CVE-2026-40217": "verified",
+    "CVE-2026-42203": "verified",
+    "CVE-2026-42208": "static-only",
+    "CVE-2026-47102": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/litellm/CVE-2026-35029/result.json",
+    "lab/upstream_verify/cases/litellm/CVE-2026-40217/result.json",
+    "lab/upstream_verify/cases/litellm/CVE-2026-42203/result.json",
+    "lab/upstream_verify/cases/litellm/CVE-2026-42208/result.json",
+    "lab/upstream_verify/cases/litellm/CVE-2026-47102/result.json"
+  ]
 }

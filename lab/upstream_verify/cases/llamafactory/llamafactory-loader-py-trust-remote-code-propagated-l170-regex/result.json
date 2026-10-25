@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "llamafactory-loader-py-trust-remote-code-propagated-l170-regex",
+ "source": "mining",
+ "component": "llamafactory",
+ "title": "llamafactory: trust-remote-code-propagated @ loader.py:170",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v0.9.5",
+ "version_ref": {
+  "kind": "git",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v0.9.5",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/model/loader.py",
+  "artifact_sha256": "873c4924c899574ee903000eefbbdfbeafad92087a8fe8dd96f94c34bf6bb1bb",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-trust-remote-code-propagated-l170-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.084,
+ "started_at": "2026-10-25T18:06:58+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-llamafactory-loader-py-trust-remote-code-propagated-l170-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-trust-remote-code-propagated-l170-regex/evidence/log.txt",
+   "sha256": "4cf956bed0ed27e39d3144b823ecb268bebf53dacbc322f1fcb8eb0ac06ca014",
+   "size": 300
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-trust-remote-code-propagated-l170-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-trust-remote-code-propagated-l170-regex/evidence/static-check.json",
+   "sha256": "9765fab99280ac6de8ad1718595404c0959012666736ffc41dd16e7fe9514005",
+   "size": 1329
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "5faa0cce7b039712c05f79a2179f099cbfbd5463e5924a4f196478ff59342969",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-loader-py-trust-remote-code-propagated-l170-regex\"}\n",
+ "stderr": "",
+ "notes": "Explicit trust_remote_code opt-in; requires a malicious model repository and user consent. Not a vulnerability by itself."
+}

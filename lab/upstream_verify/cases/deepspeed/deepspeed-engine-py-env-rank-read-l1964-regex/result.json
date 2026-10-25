@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "deepspeed-engine-py-env-rank-read-l1964-regex",
+ "source": "mining",
+ "component": "deepspeed",
+ "title": "deepspeed: env-rank-read @ engine.py:1964",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v0.19.8",
+ "version_ref": {
+  "kind": "git",
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8",
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v0.19.8",
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8",
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/runtime/engine.py",
+  "artifact_sha256": "e35eaa313874d2b3bd5bc9169dad35405819df2dfb1e7abdffa0c2f03db36c75",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-engine-py-env-rank-read-l1964-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.083,
+ "started_at": "2026-10-25T18:06:41+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-deepspeed-engine-py-env-rank-read-l1964-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/deepspeed/deepspeed-engine-py-env-rank-read-l1964-regex/evidence/log.txt",
+   "sha256": "2d7bc4bc8461d5b299b9f2fbbfc82e705d7d649c1ecd19cc5c411d7b7745aceb",
+   "size": 263
+  },
+  {
+   "path": "lab/upstream_verify/cases/deepspeed/deepspeed-engine-py-env-rank-read-l1964-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/deepspeed/deepspeed-engine-py-env-rank-read-l1964-regex/evidence/static-check.json",
+   "sha256": "2f337366a003c50f3b5397198599f9a1751a6d4875a89a5258dd22edf934b0e1",
+   "size": 1102
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "1d1223a8896dca07abb01f42fb120273e7408c42e0ad8a83d3c5df72c0ab4770",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"deepspeed-engine-py-env-rank-read-l1964-regex\"}\n",
+ "stderr": "",
+ "notes": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."
+}

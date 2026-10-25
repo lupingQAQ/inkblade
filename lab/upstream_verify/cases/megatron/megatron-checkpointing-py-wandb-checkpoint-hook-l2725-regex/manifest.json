@@ -1,0 +1,57 @@
+{
+ "id": "megatron-checkpointing-py-wandb-checkpoint-hook-l2725-regex",
+ "source": "mining",
+ "title": "megatron: wandb-checkpoint-hook @ checkpointing.py:2725",
+ "version": "core_v0.19.2",
+ "version_ref": {
+  "kind": "git",
+  "repo": "NVIDIA/Megatron-LM",
+  "tag": "core_v0.19.2",
+  "commit": "4b4acac9a1d28ea6829c8d4f566d75698a21249d"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "megatron/training/checkpointing.py",
+  "line": 2725,
+  "function": "",
+  "snippet": "wandb_utils.on_load_checkpoint_success(checkpoint_name, load_dir)",
+  "source": "lab/upstream_verify/upstream/NVIDIA/Megatron-LM/core_v0.19.2/megatron/training/checkpointing.py",
+  "source_sha256": "b4b4fcc725d543dd382a838dc72679c9de4dca8502ee274d8864c46ab55bba49",
+  "note": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-megatron-checkpointing-py-wandb-checkpoint-hook-l2725-regex",
+ "notes": "Rule hit is a legitimate framework call; no untrusted-data sink is reached.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Rule hit is a legitimate framework call; no untrusted-data sink is reached.",
+ "static_verdict": "false-positive",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 2,
+  "rule": "wandb-checkpoint-hook",
+  "channel": "regex",
+  "file": "checkpointing.py",
+  "line": 2725,
+  "snippet": "wandb_utils.on_load_checkpoint_success(checkpoint_name, load_dir)",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "megatron"
+}

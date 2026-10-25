@@ -1,0 +1,57 @@
+{
+ "id": "trl-sft-trainer-py-trust-remote-code-propagated-l715-regex",
+ "source": "mining",
+ "title": "trl: trust-remote-code-propagated @ sft_trainer.py:715",
+ "version": "v1.16.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "huggingface/trl",
+  "tag": "v1.16.0",
+  "commit": "1b5c75ed94b7387f42532adb090c935166d4878d"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "trl/trainer/sft_trainer.py",
+  "line": 715,
+  "function": "",
+  "snippet": "get_config_model_id(model.config), revision=model_revision, trust_remote_code=args.trust_remote_code",
+  "source": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/trainer/sft_trainer.py",
+  "source_sha256": "a93001470796c6502a4cf8886a13abbd8280e653357b5a95eb1abd53c6868205",
+  "note": "Explicit trust_remote_code opt-in; requires a malicious model repository and user consent. Not a vulnerability by itself."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-trl-sft-trainer-py-trust-remote-code-propagated-l715-regex",
+ "notes": "Explicit trust_remote_code opt-in; requires a malicious model repository and user consent. Not a vulnerability by itself.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Explicit trust_remote_code opt-in; requires a malicious model repository and user consent. Not a vulnerability by itself.",
+ "static_verdict": "risk-not-vuln",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 65,
+  "rule": "trust-remote-code-propagated",
+  "channel": "regex",
+  "file": "sft_trainer.py",
+  "line": 715,
+  "snippet": "get_config_model_id(model.config), revision=model_revision, trust_remote_code=args.trust_remote_code",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "trl"
+}

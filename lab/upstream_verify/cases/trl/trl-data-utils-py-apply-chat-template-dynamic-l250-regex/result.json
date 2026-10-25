@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "trl-data-utils-py-apply-chat-template-dynamic-l250-regex",
+ "source": "mining",
+ "component": "trl",
+ "title": "trl: apply-chat-template-dynamic @ data_utils.py:250",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v1.16.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "huggingface/trl",
+  "tag": "v1.16.0",
+  "commit": "1b5c75ed94b7387f42532adb090c935166d4878d"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v1.16.0",
+  "repo": "huggingface/trl",
+  "tag": "v1.16.0",
+  "commit": "1b5c75ed94b7387f42532adb090c935166d4878d",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/data_utils.py",
+  "artifact_sha256": "24e80d9427de17026cc74e25a7b11612746d57d213317b82132ff1bc7ae9468b",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l250-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.082,
+ "started_at": "2026-10-25T18:07:14+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-trl-data-utils-py-apply-chat-template-dynamic-l250-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l250-regex/evidence/log.txt",
+   "sha256": "dd05496228deac33f248342fccf37f4d7513c90114a55a911be920aaaa8ca3fa",
+   "size": 279
+  },
+  {
+   "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l250-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l250-regex/evidence/static-check.json",
+   "sha256": "b95b73aa1e006ec943fe4932745b0a8b9fecb45ca7074948fe085a449f812487",
+   "size": 1169
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "a812826486bc6c0b095be1b76981e7b0cd472e5f552ace66d0c26866939e238d",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"trl-data-utils-py-apply-chat-template-dynamic-l250-regex\"}\n",
+ "stderr": "",
+ "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+}

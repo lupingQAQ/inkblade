@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "msswift-loader-py-load-dataset-any-l109-regex",
+ "source": "mining",
+ "component": "msswift",
+ "title": "msswift: load-dataset-any @ loader.py:109",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v4.6.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v4.6.0",
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/dataset/loader.py",
+  "artifact_sha256": "20f83a4e3c4cdb736e29a0848767b0f525a3280ab11ce2ff2b91955093fb1157",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/msswift/msswift-loader-py-load-dataset-any-l109-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.08,
+ "started_at": "2026-10-25T18:07:06+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-msswift-loader-py-load-dataset-any-l109-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/msswift/msswift-loader-py-load-dataset-any-l109-regex/evidence/log.txt",
+   "sha256": "ee1046e1228968c76b9cc8b7018e547189418ffa4019d3d7d9b774ec10007c0e",
+   "size": 260
+  },
+  {
+   "path": "lab/upstream_verify/cases/msswift/msswift-loader-py-load-dataset-any-l109-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/msswift/msswift-loader-py-load-dataset-any-l109-regex/evidence/static-check.json",
+   "sha256": "0bcbaac0e1f25fad4eb99d33fa643504dd270c3a4c0d554f1fd46ca24e2198a4",
+   "size": 1095
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "03569e0ddc4f3e92d0c55bdd43ab4220c80793d1a50c1e74c6c1ef2ecd6094dd",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"msswift-loader-py-load-dataset-any-l109-regex\"}\n",
+ "stderr": "",
+ "notes": "Dataset loading is intended functionality; remote dataset trust is a documented boundary."
+}

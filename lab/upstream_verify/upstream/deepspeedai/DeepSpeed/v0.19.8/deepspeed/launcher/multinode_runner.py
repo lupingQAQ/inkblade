@@ -1,0 +1,508 @@
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: Apache-2.0
+
+# DeepSpeed Team
+
+import os
+import sys
+import shutil
+import subprocess
+import warnings
+import re
+from shlex import split
+from abc import ABC, abstractmethod
+from deepspeed.accelerator import get_accelerator
+from ..utils import logger, get_numactl_cmd
+from .constants import PDSH_MAX_FAN_OUT, MVAPICH_TMP_HOSTFILE
+
+
+class MultiNodeRunner(ABC):
+
+    def __init__(self, args, world_info_base64):
+        self.args = args
+        self.validate_args()
+        self.user_arguments = self.parse_user_args()
+        self.user_script = args.user_script
+        self.world_info_base64 = world_info_base64
+        self.exports = {}
+
+    @abstractmethod
+    def backend_exists(self):
+        """Return whether the corresponding backend exists"""
+
+    @abstractmethod
+    def get_cmd(self, environment, active_resources):
+        """Return the command to execute on node"""
+
+    def add_export(self, key, var):
+        var = var.strip()
+        if re.search(r'[^\w@%+=:,./-]', var):
+            var = f"\"{var}\""
+        self.exports[key.strip()] = var
+
+    def parse_user_args(self):
+        return self.args.user_args
+
+    @property
+    def name(self):
+        """Return the name of the backend"""
+        return self.__class__.__name__
+
+    def validate_args(self):
+        """Validate self.args"""
+
+    @classmethod
+    def validate_active_resources(cls, active_resources):
+        """Check a resolved --include/--exclude filter against what this backend can express.
+
+        runner.main() calls this before it picks between a local and a multi-node launch. A
+        filter can narrow the pool to one host, which takes the local path and never builds a
+        backend, so a backend that cannot honor the filter has to say so from here or the
+        launcher the user asked for is dropped without a word.
+        """
+
+
+class PDSHRunner(MultiNodeRunner):
+
+    def __init__(self, args, world_info_base64):
+        super().__init__(args, world_info_base64)
+
+    def backend_exists(self):
+        return shutil.which('pdsh')
+
+    def parse_user_args(self):
+        processed_args = []
+        for arg in self.args.user_args:
+            # With pdsh, if we are passing a string as an argument, it will get
+            # split on whitespace. To avoid this and support strings that
+            # contain '"', we do this extra processing step:
+            if " " in arg:
+                arg = '"{}"'.format(arg.replace('"', '\\"'))
+            processed_args.append(arg)
+        return processed_args
+
+    @property
+    def name(self):
+        return "pdsh"
+
+    def get_cmd(self, environment, active_resources):
+        environment['PDSH_RCMD_TYPE'] = 'ssh'
+        if self.args.ssh_port is not None:  # only specify ssh port if it is specified
+            environment["PDSH_SSH_ARGS_APPEND"] = f"{environment.get('PDSH_SSH_ARGS_APPEND', '')} \
+            -p {self.args.ssh_port}"
+
+        active_workers = ",".join(active_resources.keys())
+        logger.info("Running on the following workers: %s" % active_workers)
+
+        # PDSH flags for max node fan out and specific hosts to launch on
+        # See https://linux.die.net/man/1/pdsh for flag details
+        pdsh_cmd_args = ['pdsh', '-S', '-f', str(PDSH_MAX_FAN_OUT), '-w', active_workers] + split(
+            self.args.launcher_args)
+
+        exports = ""
+        for key, val in self.exports.items():
+            exports += "export {}={}; ".format(key, val)
+
+        # https://linux.die.net/man/1/pdsh
+        # %n will be replaced by pdsh command
+        deepspeed_launch = [
+            exports, f"cd {os.path.abspath('.')};", sys.executable, "-u", "-m", "deepspeed.launcher.launch",
+            f'--world_info={self.world_info_base64}', "--node_rank=%n", f"--master_addr={self.args.master_addr}",
+            f"--master_port={self.args.master_port}"
+        ]
+        if self.args.venv_script is not None:
+            deepspeed_launch = [f"source {self.args.venv_script};"] + deepspeed_launch
+        if self.args.no_python:
+            deepspeed_launch.append("--no_python")
+        if self.args.module:
+            deepspeed_launch.append("--module")
+        if self.args.no_local_rank:
+            deepspeed_launch.append("--no_local_rank")
+        if self.args.save_pid:
+            deepspeed_launch += ["--save_pid", f"{os.getpid()}"]
+        if self.args.enable_each_rank_log:
+            deepspeed_launch.append(f"--enable_each_rank_log={self.args.enable_each_rank_log}")
+
+        cmd_to_search = [i + "\\" for i in deepspeed_launch[2:6]]
+
+        kill_command = pdsh_cmd_args + ["pkill -f ", " ".join(cmd_to_search)[:-2]]
+        return pdsh_cmd_args + deepspeed_launch + [self.user_script] + self.user_arguments, kill_command, environment
+
+
+class OpenMPIRunner(MultiNodeRunner):
+
+    def __init__(self, args, world_info_base64, resource_pool):
+        super().__init__(args, world_info_base64)
+        self.resource_pool = resource_pool
+        self.add_export('UCX_TLS', 'tcp')
+
+    def backend_exists(self):
+        #TODO: if IB is available we should suggestion mvapich
+        return shutil.which('ompi_info')
+
+    @property
+    def name(self):
+        return "openmpi"
+
+    def validate_args(self):
+        super().validate_args()
+
+        #TODO: Allow for include/exclude at node-level but not gpu-level
+        if self.args.include != "" or self.args.exclude != "":
+            raise ValueError(f"{self.name} backend does not support worker include/exclusion")
+        if self.args.num_nodes != -1 or self.args.num_gpus != -1:
+            raise ValueError(f"{self.name} backend does not support limiting num nodes/gpus")
+
+    def get_cmd(self, environment, active_resources):
+        total_process_count = sum(self.resource_pool.values())
+
+        launcher_args = split(self.args.launcher_args)
+
+        # If btl_tcp_if_include option is provided through launcher_args, we use it. Otherwise, we add
+        # `--mca btl_tcp_if_include eth0` option as a default value for compatibility.
+        btl_tcp_opt = ['--mca', 'btl_tcp_if_include', 'eth0']
+        if len(launcher_args) >= 2:
+            for i in range(len(launcher_args) - 1):
+                if launcher_args[i] in ['-mca', '--mca'] and launcher_args[i + 1] == 'btl_tcp_if_include':
+                    btl_tcp_opt = []
+                    break
+
+        mpirun_cmd = [
+            'mpirun',
+            '-n',
+            f'{total_process_count}',
+            '-hostfile',
+            f'{self.args.hostfile}',
+            '--mca',
+            'btl',
+            '^openib',
+        ] + btl_tcp_opt + launcher_args
+
+        export_cmd = []
+        for k, v in self.exports.items():
+            export_cmd += ['-x', "{}={}".format(k, v)]
+
+        python_exec = []
+        if not self.args.no_python:
+            python_exec = [sys.executable, "-u"]
+            if self.args.module:
+                python_exec.append("-m")
+
+        return mpirun_cmd + export_cmd + python_exec + [self.user_script] + self.user_arguments
+
+
+class MPICHRunner(MultiNodeRunner):
+
+    def __init__(self, args, world_info_base64, resource_pool):
+        super().__init__(args, world_info_base64)
+        self.resource_pool = resource_pool
+
+    def backend_exists(self):
+        #TODO: if IB is available we should suggestion mpich
+        return shutil.which('mpirun')  #mpich_info
+
+    @property
+    def name(self):
+        return "mpich"
+
+    def validate_args(self):
+        super().validate_args()
+        #TODO: Allow for include/exclude at node-level but not gpu-level
+        if self.args.include != "" or self.args.exclude != "":
+            raise ValueError(f"{self.name} backend does not support worker include/exclusion")
+
+        if self.args.num_nodes != -1 or self.args.num_gpus != -1:
+            raise ValueError(f"{self.name} backend does not support limiting num nodes/gpus")
+
+    def get_cmd(self, environment, active_resources):
+        devices_per_node = self.resource_pool.values()
+        total_process_count = sum(devices_per_node)
+        process_per_node = list(devices_per_node)[0]
+        if not all([n == process_per_node for n in devices_per_node]):
+            raise ValueError("MPICH requires same number of devices per node")
+
+        mpirun_cmd = [
+            'mpirun',
+            '-n',
+            f'{total_process_count}',
+            '-ppn',
+            f'{process_per_node}',
+        ] + split(self.args.launcher_args)
+        export_cmd = []
+
+        for k, v in self.exports.items():
+            export_cmd += ['-genv', "{}={}".format(k, v)]
+
+        export_cmd += ['-genv', 'MASTER_ADDR', str(self.args.master_addr)]
+        export_cmd += ['-genv', 'MASTER_PORT', str(self.args.master_port)]
+        export_cmd += ['-genv', 'WORLD_SIZE', str(total_process_count)]
+        export_cmd += ['-genv', 'LOCAL_SIZE', str(process_per_node)]
+
+        export_cmd += ['-hosts']
+        hosts = ""
+        for i, host in enumerate(self.resource_pool.keys()):
+            if i == 0:
+                hosts = f"{host}"
+            else:
+                hosts += f",{host}"
+        export_cmd += [hosts]
+
+        helper_args = ["--launcher"] + [self.args.launcher]
+        python_exec = []
+        if not self.args.no_python:
+            python_exec += [sys.executable, "-u"]
+            if self.args.module:
+                python_exec.append("-m")
+                helper_args.append("--module")
+        else:
+            helper_args.append("--no_python")
+
+        helper_cmd = str(os.path.dirname(os.path.realpath(__file__))) + '/launcher_helper.py'
+        helper_cmd = [helper_cmd] + helper_args + [self.user_script] + self.user_arguments
+
+        return mpirun_cmd + export_cmd + python_exec + helper_cmd
+
+
+class IMPIRunner(MultiNodeRunner):
+
+    def __init__(self, args, world_info_base64, resource_pool):
+        super().__init__(args, world_info_base64)
+        self.resource_pool = resource_pool
+
+    def backend_exists(self):
+        #TODO: if IB is available we should suggestion mpich
+        return shutil.which('mpirun')  #mpich_info
+
+    @property
+    def name(self):
+        return "impi"
+
+    def validate_args(self):
+        super().validate_args()
+        #TODO: Allow for include/exclude at node-level but not gpu-level
+        if self.args.include != "" or self.args.exclude != "":
+            raise ValueError(f"{self.name} backend does not support worker include/exclusion")
+
+        if self.args.num_nodes != -1 or self.args.num_gpus != -1:
+            raise ValueError(f"{self.name} backend does not support limiting num nodes/gpus")
+
+    def get_cmd(self, environment, active_resources):
+        devices_per_node = self.resource_pool.values()
+        total_process_count = sum(devices_per_node)
+        process_per_node = list(devices_per_node)[0]
+        if not all([n == process_per_node for n in devices_per_node]):
+            raise ValueError("Intel MPI requires same number of devices per node")
+
+        mpirun_cmd = [
+            'mpirun',
+            '-ppn',
+            f'{process_per_node}',
+        ] + split(self.args.launcher_args)
+        export_cmd = []
+
+        for k, v in self.exports.items():
+            export_cmd += ['-genv', f'{k}', f'{v}']
+
+        if self.args.bind_cores_to_rank:
+            cores_per_rank, _ = get_numactl_cmd(self.args.bind_core_list, process_per_node, 0)
+            export_cmd += ['-genv', 'OMP_NUM_THREADS', str(cores_per_rank)]
+
+        export_cmd += ['-genv', 'MASTER_ADDR', str(self.args.master_addr)]
+        export_cmd += ['-genv', 'MASTER_PORT', str(self.args.master_port)]
+        export_cmd += ['-genv', 'WORLD_SIZE', str(total_process_count)]
+        export_cmd += ['-genv', 'LOCAL_SIZE', str(process_per_node)]
+
+        # turn off IMPI core binding, use deepspeed's own core binding
+        export_cmd += ['-genv', 'I_MPI_PIN', '0']
+
+        export_cmd += ['-hosts']
+        hosts = ""
+        for i, host in enumerate(self.resource_pool.keys()):
+            if i == 0:
+                hosts = f"{host}"
+            else:
+                hosts += f",{host}"
+        export_cmd += [hosts]
+
+        per_host_cmd = []
+
+        for i in range(total_process_count):
+            local_rank = i % process_per_node
+            python_exec = []
+            if self.args.bind_cores_to_rank:
+                _, numactl_cmd = get_numactl_cmd(self.args.bind_core_list, process_per_node, local_rank)
+                python_exec += numactl_cmd
+
+            if not self.args.no_python:
+                python_exec += [sys.executable, "-u"]
+                if self.args.module:
+                    python_exec.append("-m")
+            env_mapping = ['-env', 'RANK', str(i)]
+            env_mapping += ['-env', 'LOCAL_RANK', str(local_rank)]
+            if i == 0:
+                per_host_cmd = ['-n', '1'] + env_mapping + python_exec + [self.user_script] + self.user_arguments
+            else:
+                per_host_cmd = per_host_cmd + [':', '-n', '1'] + env_mapping + python_exec + [self.user_script
+                                                                                              ] + self.user_arguments
+        print(mpirun_cmd + export_cmd + per_host_cmd)
+        return mpirun_cmd + export_cmd + per_host_cmd
+
+
+class SlurmRunner(MultiNodeRunner):
+
+    def __init__(self, args, world_info_base64, resource_pool):
+        super().__init__(args, world_info_base64)
+        self.resource_pool = resource_pool
+
+    def backend_exists(self):
+        return shutil.which('sinfo')
+
+    @property
+    def name(self):
+        return 'slurm'
+
+    @classmethod
+    def validate_active_resources(cls, active_resources):
+        """srun places tasks by count, not by device id.
+
+        It can run N tasks on a named set of hosts, but it cannot pin them to
+        particular slots, and -n gives it no way to put fewer tasks on one host
+        than another. Fail here rather than launch a job that ignores the filter.
+        """
+        slot_counts = set()
+        for hostname, slots in active_resources.items():
+            if list(slots) != list(range(len(slots))):
+                raise ValueError(f"slurm backend cannot select specific device ids, got "
+                                 f"{list(slots)} on {hostname}. Filter whole hosts, or keep the "
+                                 f"first N slots on every host.")
+            slot_counts.add(len(slots))
+        if len(slot_counts) > 1:
+            counts = {hostname: len(slots) for hostname, slots in active_resources.items()}
+            raise ValueError(f"slurm backend needs the same slot count on every host, got {counts}.")
+
+    def get_cmd(self, environment, active_resources):
+        assert not getattr(self.args, 'detect_nvlink_pairs',
+                           False), "slurm backend does not support remapping visible devices"
+        self.validate_active_resources(active_resources)
+        # --include/--exclude are already resolved into active_resources, so counting the
+        # whole pool would ask srun for slots the user filtered out.
+        total_process_count = sum(len(slots) for slots in active_resources.values())
+        srun_cmd = [
+            'srun',
+            '-n',
+            f'{total_process_count}',
+        ] + split(self.args.launcher_args)
+
+        if getattr(self.args, 'slurm_comment', ''):
+            srun_cmd += ['--comment', self.args.slurm_comment]
+
+        if self.args.include != "" or self.args.exclude != "":
+            # srun has no --include, and DeepSpeed's NAME[:SLOT,...] syntax is not a slurm
+            # hostlist, so name the hosts that survived the filter.
+            srun_cmd.append('--nodelist')
+            srun_cmd.append(",".join(active_resources.keys()))
+            # --nodelist is only an upper bound: srun may satisfy -n from a subset of it.
+            srun_cmd.append('--nodes')
+            srun_cmd.append(f'{len(active_resources)}')
+        if self.args.num_nodes > 0:
+            srun_cmd.append('--nodes')
+            srun_cmd.append(f'{self.args.num_nodes}')
+        if self.args.num_gpus > 0:
+            # --num_gpus is per node, so --gpus (a job total) would under-request.
+            srun_cmd.append('--gpus-per-node')
+            srun_cmd.append(f'{self.args.num_gpus}')
+
+        exports = '--export=ALL'
+        for key, val in self.exports.items():
+            exports += f",{key}={val}"
+
+        python_exec = [sys.executable, "-u"]
+        command = srun_cmd + [exports] + python_exec + [self.user_script] + self.user_arguments
+        return command
+
+
+class MVAPICHRunner(MultiNodeRunner):
+
+    def __init__(self, args, world_info_base64, resource_pool):
+        super().__init__(args, world_info_base64)
+        self.resource_pool = resource_pool
+
+        # Disable the CMA kernel module, not available on Ubuntu systems
+        self.add_export('MV2_SMP_USE_CMA', '0')
+
+        # If we fail this will output more verbose logging
+        self.add_export('MV2_DEBUG_SHOW_BACKTRACE', '1')
+
+        # Enabled cuda-aware communication
+        if get_accelerator().device_name() == 'cuda':
+            self.add_export('MV2_USE_CUDA', '1')
+
+        # Support deep learning frameworks: http://hidl.cse.ohio-state.edu/userguide/horovod/
+        self.add_export('MV2_SUPPORT_DL', '1')
+
+        # Support MPI_THREAD_MULTIPLE
+        self.add_export('MV2_ENABLE_AFFINITY', '0')
+
+        # Performance tuning flags for allgather
+        self.add_export('MV2_INTER_ALLGATHER_TUNING', '5')
+        self.add_export('MV2_CUDA_USE_NAIVE', '0')
+
+    def backend_exists(self):
+        #TODO: if IB is available we should suggestion mvapich
+        mpiname_exists = shutil.which('mpiname')
+        exists = False
+        if not mpiname_exists:
+            warnings.warn("mpiname does not exist, mvapich is not installed properly")
+        else:
+            results = subprocess.check_output(['mpiname'])
+            mpiname_results = results.decode('utf-8').strip()
+            if "MVAPICH2-GDR" in mpiname_results:
+                exists = True
+            else:
+                warnings.warn(f"Expected MVAPICH2-GDR as return for mpiname but received {mpiname_results}")
+        return exists
+
+    @property
+    def name(self):
+        return "mvapich"
+
+    def validate_args(self):
+        super().validate_args()
+        #TODO: Allow for include/exclude at node-level but not gpu-level
+        if self.args.include != "" or self.args.exclude != "":
+            raise ValueError(f"{self.name} backend does not support worker include/exclusion")
+        if self.args.num_nodes != -1 or self.args.num_gpus != -1:
+            raise ValueError(f"{self.name} backend does not support limiting num nodes/gpus")
+
+    def get_cmd(self, environment, active_resources):
+        devices_per_node = self.resource_pool.values()
+        total_process_count = sum(devices_per_node)
+        process_per_node = list(devices_per_node)[0]
+        if not all([n == process_per_node for n in devices_per_node]):
+            raise ValueError("mvapich requires same number of devices per node")
+
+        with open(MVAPICH_TMP_HOSTFILE, 'w') as fd:
+            for host in self.resource_pool.keys():
+                fd.write(f'{host}\n')
+
+        mpirun_cmd = [
+            'mpirun',
+            '-np',
+            f'{total_process_count}',
+            '-ppn',
+            f'{process_per_node}',
+            '--hostfile',
+            f'{MVAPICH_TMP_HOSTFILE}',
+        ] + split(self.args.launcher_args)
+
+        export_cmd = []
+        for k, v in self.exports.items():
+            export_cmd += ['-env', "{}={}".format(k, v)]
+
+        python_exec = []
+        if not self.args.no_python:
+            python_exec = [sys.executable, "-u"]
+            if self.args.module:
+                python_exec.append("-m")
+
+        return mpirun_cmd + export_cmd + python_exec + [self.user_script] + self.user_arguments

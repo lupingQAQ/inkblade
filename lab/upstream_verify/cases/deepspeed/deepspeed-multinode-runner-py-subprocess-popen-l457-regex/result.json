@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "deepspeed-multinode-runner-py-subprocess-popen-l457-regex",
+ "source": "mining",
+ "component": "deepspeed",
+ "title": "deepspeed: subprocess-popen @ multinode_runner.py:457",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v0.19.8",
+ "version_ref": {
+  "kind": "git",
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8",
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v0.19.8",
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8",
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/launcher/multinode_runner.py",
+  "artifact_sha256": "888fe4888604b4cdbe86473c91082fe1b9f2a94b5c9e5d59cbda90210bf25088",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-multinode-runner-py-subprocess-popen-l457-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.078,
+ "started_at": "2026-10-25T18:06:41+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-deepspeed-multinode-runner-py-subprocess-popen-l457-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/deepspeed/deepspeed-multinode-runner-py-subprocess-popen-l457-regex/evidence/log.txt",
+   "sha256": "5dae2c1ab0c51556ea05d661ec61dc04df078ea7a957f1f6b8c76aa680c1a75e",
+   "size": 287
+  },
+  {
+   "path": "lab/upstream_verify/cases/deepspeed/deepspeed-multinode-runner-py-subprocess-popen-l457-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/deepspeed/deepspeed-multinode-runner-py-subprocess-popen-l457-regex/evidence/static-check.json",
+   "sha256": "cfb989dae30ff429e657ce681ec34c56f6eadf73617f451ac1edec7d48f36b85",
+   "size": 1163
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "4ffb4e28564813116cfb5cacbd9a850857240c29c707a2bfc2917fc4706da5ff",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"deepspeed-multinode-runner-py-subprocess-popen-l457-regex\"}\n",
+ "stderr": "",
+ "notes": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."
+}

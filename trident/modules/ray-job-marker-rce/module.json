@@ -17,5 +17,19 @@
   },
   "produces": "ray-job-rce",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "ray-job-rce"
+  "combo_signature": "ray-job-rce",
+  "verified": false,
+  "verification_status": "static-only",
+  "verification_cves": {
+    "CVE-2023-48022": "static-only",
+    "CVE-2023-48023": "static-only",
+    "CVE-2026-32981": "static-only",
+    "KUBERAY-ADV-2026-01": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/ray/CVE-2023-48022/result.json",
+    "lab/upstream_verify/cases/ray/CVE-2023-48023/result.json",
+    "lab/upstream_verify/cases/ray/CVE-2026-32981/result.json",
+    "lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/result.json"
+  ]
 }

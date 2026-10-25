@@ -1,0 +1,57 @@
+{
+ "id": "llamafactory-loader-py-missing-revision-l186-regex",
+ "source": "mining",
+ "title": "llamafactory: missing-revision @ loader.py:186",
+ "version": "v0.9.5",
+ "version_ref": {
+  "kind": "git",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "src/llamafactory/model/loader.py",
+  "line": 186,
+  "function": "",
+  "snippet": "model = AutoModelForCausalLMWithValueHead.from_pretrained(model)",
+  "source": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/model/loader.py",
+  "source_sha256": "873c4924c899574ee903000eefbbdfbeafad92087a8fe8dd96f94c34bf6bb1bb",
+  "note": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-llamafactory-loader-py-missing-revision-l186-regex",
+ "notes": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive.",
+ "static_verdict": "supply-chain-gap",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 31,
+  "rule": "missing-revision",
+  "channel": "regex",
+  "file": "loader.py",
+  "line": 186,
+  "snippet": "model = AutoModelForCausalLMWithValueHead.from_pretrained(model)",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "llamafactory"
+}

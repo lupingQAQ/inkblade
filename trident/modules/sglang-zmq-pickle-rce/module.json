@@ -17,5 +17,19 @@
   },
   "produces": "sglang-zmq-rce",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "sglang-zmq-rce"
+  "combo_signature": "sglang-zmq-rce",
+  "verified": false,
+  "verification_status": "partial",
+  "verification_cves": {
+    "CVE-2026-3059": "verified",
+    "CVE-2026-3060": "verified",
+    "CVE-2026-7301": "static-only",
+    "CVE-2026-7302": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/sglang/CVE-2026-3059/result.json",
+    "lab/upstream_verify/cases/sglang/CVE-2026-3060/result.json",
+    "lab/upstream_verify/cases/sglang/CVE-2026-7301/result.json",
+    "lab/upstream_verify/cases/sglang/CVE-2026-7302/result.json"
+  ]
 }

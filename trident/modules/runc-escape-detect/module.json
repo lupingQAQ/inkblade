@@ -17,5 +17,17 @@
   },
   "produces": "runc-escape",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "runc-escape"
+  "combo_signature": "runc-escape",
+  "verified": false,
+  "verification_status": "unsupported",
+  "verification_cves": {
+    "CVE-2024-21626": "unsupported",
+    "CVE-2022-0492": "unsupported",
+    "CVE-2025-31133": "unsupported"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/runc/CVE-2024-21626/result.json",
+    "lab/upstream_verify/cases/linux-kernel/CVE-2022-0492/result.json",
+    "lab/upstream_verify/cases/runc/CVE-2025-31133/result.json"
+  ]
 }

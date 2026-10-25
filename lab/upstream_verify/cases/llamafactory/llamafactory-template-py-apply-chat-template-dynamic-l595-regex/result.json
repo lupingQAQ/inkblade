@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "llamafactory-template-py-apply-chat-template-dynamic-l595-regex",
+ "source": "mining",
+ "component": "llamafactory",
+ "title": "llamafactory: apply-chat-template-dynamic @ template.py:595",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v0.9.5",
+ "version_ref": {
+  "kind": "git",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v0.9.5",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/data/template.py",
+  "artifact_sha256": "68f289bb28c434e7d26cb36bd4351ea4636f9e102bf374d9a84f642565d9f84e",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-template-py-apply-chat-template-dynamic-l595-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.091,
+ "started_at": "2026-10-25T18:06:58+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-llamafactory-template-py-apply-chat-template-dynamic-l595-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-template-py-apply-chat-template-dynamic-l595-regex/evidence/log.txt",
+   "sha256": "9f1aae9e05f9afe9ae63460c71b21eda736a1e7d1d145c07b0e56c663eceaa38",
+   "size": 302
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-template-py-apply-chat-template-dynamic-l595-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-template-py-apply-chat-template-dynamic-l595-regex/evidence/static-check.json",
+   "sha256": "4371ec24fa62c000b51d9d6c44a6eff2cc852856fe275ad7d0cff7053faf3e92",
+   "size": 1308
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "ce5c45677db78187ec6ee26c57a089511ed5e99ff0167e58aeb7e82ae414499d",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-template-py-apply-chat-template-dynamic-l595-regex\"}\n",
+ "stderr": "",
+ "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+}

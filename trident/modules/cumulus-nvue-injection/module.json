@@ -17,5 +17,15 @@
   },
   "produces": "cumulus-nvue",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "cumulus-nvue"
+  "combo_signature": "cumulus-nvue",
+  "verified": false,
+  "verification_status": "unsupported",
+  "verification_cves": {
+    "CVE-2025-33180": "unsupported",
+    "CVE-2026-24184": "unsupported"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/cumulus/CVE-2025-33180/result.json",
+    "lab/upstream_verify/cases/cumulus/CVE-2026-24184/result.json"
+  ]
 }

@@ -17,5 +17,13 @@
   },
   "produces": "hami-scheduler",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "hami-scheduler"
+  "combo_signature": "hami-scheduler",
+  "verified": false,
+  "verification_status": "unsupported",
+  "verification_cves": {
+    "HAMI-ADV-2026-01": "unsupported"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/hami/HAMI-ADV-2026-01/result.json"
+  ]
 }

@@ -1,0 +1,65 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "LITELLM-DEFAULT-KEY",
+ "source": "cve",
+ "component": "litellm",
+ "title": "默认/未设置 master key（sk-1234）",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-advisory",
+ "verified": false,
+ "module": "litellm-default-key-exfil",
+ "version": "LITELLM_MASTER_KEY 未设置或使用文档示例 sk-1234/sk-litellm-master-key",
+ "version_ref": {
+  "kind": "advisory",
+  "version": "LITELLM_MASTER_KEY 未设置或使用文档示例 sk-1234/sk-litellm-master-key"
+ },
+ "version_hash": {
+  "kind": "advisory",
+  "version": "LITELLM_MASTER_KEY 未设置或使用文档示例 sk-1234/sk-litellm-master-key",
+  "repo": null,
+  "tag": null,
+  "commit": null,
+  "package": null,
+  "wheel_sha256": null,
+  "advisory": "https://docs.litellm.ai/docs/proxy/virtual_keys",
+  "advisory_sha256": "135f0dce83d99612b04b421006b377de2fd05a3f544986bdb7a0875f4004da49"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/litellm/LITELLM-DEFAULT-KEY/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.075,
+ "started_at": "2026-10-25T18:06:56+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-LITELLM-DEFAULT-KEY",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/litellm/LITELLM-DEFAULT-KEY/evidence/log.txt",
+   "sha256": "ed0b55cb7ad72ed8400ca2c1789aa4d9cd112f5124b9e3a2426d6737fe5ded31",
+   "size": 209
+  },
+  {
+   "path": "lab/upstream_verify/cases/litellm/LITELLM-DEFAULT-KEY/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/litellm/LITELLM-DEFAULT-KEY/evidence/static-check.json",
+   "sha256": "34130b0d3c2337da870191898d44ed559f63725a78adaf0d7b28dd5d37ac088b",
+   "size": 870
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "54bbf33fb78c27c09f597aec12b05f8c60081a4c11056af74de726dba437fc83",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"LITELLM-DEFAULT-KEY\"}\n",
+ "stderr": "",
+ "notes": "Default/master-key misconfiguration is deployment-dependent; no upstream version boundary, static-only."
+}

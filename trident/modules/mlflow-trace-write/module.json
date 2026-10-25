@@ -17,5 +17,13 @@
   },
   "produces": "mlflow-trace",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "mlflow-trace"
+  "combo_signature": "mlflow-trace",
+  "verified": true,
+  "verification_status": "verified",
+  "verification_cves": {
+    "CVE-2026-53995": "verified"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/mlflow/CVE-2026-53995/result.json"
+  ]
 }

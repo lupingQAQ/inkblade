@@ -1,0 +1,57 @@
+{
+ "id": "trl-sft-trainer-py-apply-chat-template-dynamic-l436-regex",
+ "source": "mining",
+ "title": "trl: apply-chat-template-dynamic @ sft_trainer.py:436",
+ "version": "v1.16.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "huggingface/trl",
+  "tag": "v1.16.0",
+  "commit": "1b5c75ed94b7387f42532adb090c935166d4878d"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "trl/trainer/sft_trainer.py",
+  "line": 436,
+  "function": "",
+  "snippet": "examples = [apply_chat_template(example, self.processor) for example in examples]",
+  "source": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/trainer/sft_trainer.py",
+  "source_sha256": "a93001470796c6502a4cf8886a13abbd8280e653357b5a95eb1abd53c6868205",
+  "note": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-trl-sft-trainer-py-apply-chat-template-dynamic-l436-regex",
+ "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink.",
+ "static_verdict": "false-positive",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 62,
+  "rule": "apply-chat-template-dynamic",
+  "channel": "regex",
+  "file": "sft_trainer.py",
+  "line": 436,
+  "snippet": "examples = [apply_chat_template(example, self.processor) for example in examples]",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "trl"
+}

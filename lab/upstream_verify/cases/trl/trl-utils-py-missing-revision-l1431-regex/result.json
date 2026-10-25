@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "trl-utils-py-missing-revision-l1431-regex",
+ "source": "mining",
+ "component": "trl",
+ "title": "trl: missing-revision @ utils.py:1431",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v1.16.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "huggingface/trl",
+  "tag": "v1.16.0",
+  "commit": "1b5c75ed94b7387f42532adb090c935166d4878d"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v1.16.0",
+  "repo": "huggingface/trl",
+  "tag": "v1.16.0",
+  "commit": "1b5c75ed94b7387f42532adb090c935166d4878d",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/trainer/utils.py",
+  "artifact_sha256": "a3c44bd9e7f332f3087ef1943e89ea6f4ee99c0480ff64f13d586c72a51578b1",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/trl/trl-utils-py-missing-revision-l1431-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.08,
+ "started_at": "2026-10-25T18:07:16+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-trl-utils-py-missing-revision-l1431-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/trl/trl-utils-py-missing-revision-l1431-regex/evidence/log.txt",
+   "sha256": "6fdc557ed0120497e49841543d31a35e12bf20b23223015c4d9ac4bd80b5294c",
+   "size": 248
+  },
+  {
+   "path": "lab/upstream_verify/cases/trl/trl-utils-py-missing-revision-l1431-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/trl/trl-utils-py-missing-revision-l1431-regex/evidence/static-check.json",
+   "sha256": "0ed89c0e9d59871b20a1259e83eaee1d156d524ed8707e681ff9d46c0f9cab64",
+   "size": 1153
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "b696def6f84ca639bc9f239dd9e9d01898b86d1f5136c0048bf5c4b6ca46a0da",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"trl-utils-py-missing-revision-l1431-regex\"}\n",
+ "stderr": "",
+ "notes": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."
+}

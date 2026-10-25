@@ -17,5 +17,17 @@
   },
   "produces": "dify-code-node",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "dify-code-node"
+  "combo_signature": "dify-code-node",
+  "verified": false,
+  "verification_status": "static-only",
+  "verification_cves": {
+    "CVE-2025-3466": "static-only",
+    "CVE-2025-63387": "static-only",
+    "CVE-2025-56520": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/dify/CVE-2025-3466/result.json",
+    "lab/upstream_verify/cases/dify/CVE-2025-63387/result.json",
+    "lab/upstream_verify/cases/dify/CVE-2025-56520/result.json"
+  ]
 }

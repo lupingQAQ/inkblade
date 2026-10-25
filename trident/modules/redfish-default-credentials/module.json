@@ -17,5 +17,15 @@
   },
   "produces": "redfish-default-creds",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "redfish-default-creds"
+  "combo_signature": "redfish-default-creds",
+  "verified": false,
+  "verification_status": "unsupported",
+  "verification_cves": {
+    "CVE-2023-34329": "unsupported",
+    "CVE-2017-12542": "unsupported"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/bmc/CVE-2023-34329/result.json",
+    "lab/upstream_verify/cases/bmc/CVE-2017-12542/result.json"
+  ]
 }

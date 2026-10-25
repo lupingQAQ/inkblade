@@ -32,3 +32,8 @@ lab/qemu-k3s/qemu-w64-setup-*.exe
 
 # --- 可再生基准输出（确定性样张只保留 reports/samples，lab/bench/out 不入库） ---
 lab/bench/out/
+
+# upstream verification working caches (rebuilt from manifests, not source)
+lab/upstream_verify/.cache/
+lab/upstream_verify/.envs/
+lab/upstream_verify/**/__pycache__/

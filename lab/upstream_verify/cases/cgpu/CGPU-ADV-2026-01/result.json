@@ -1,0 +1,65 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "CGPU-ADV-2026-01",
+ "source": "cve",
+ "component": "cgpu",
+ "title": "策略型 GPU 隔离边界（无独立 CVE）",
+ "status": "unsupported",
+ "declared_status": "unsupported",
+ "method": "unsupported",
+ "verified": false,
+ "module": "cgpu-isolation-audit",
+ "version": "cGPU 各版本（隔离依赖驱动/运行时策略）",
+ "version_ref": {
+  "kind": "vendor",
+  "version": "cGPU 各版本（隔离依赖驱动/运行时策略）"
+ },
+ "version_hash": {
+  "kind": "vendor",
+  "version": "cGPU 各版本（隔离依赖驱动/运行时策略）",
+  "repo": null,
+  "tag": null,
+  "commit": null,
+  "package": null,
+  "wheel_sha256": null,
+  "advisory": "https://www.alibabacloud.com/help/en/ack/ack-managed-and-ack-dedicated/user-guide/use-cgpu-to-share-gpus",
+  "advisory_sha256": "8d72787f88a6aad8ecce6e0c174cf2f6b475809be7c65f7e674953783438247a"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/cgpu/CGPU-ADV-2026-01/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.074,
+ "started_at": "2026-10-25T18:06:39+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-CGPU-ADV-2026-01",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/cgpu/CGPU-ADV-2026-01/evidence/log.txt",
+   "sha256": "62d3aeb51e19684803eb0b60c7e143c04cb4f71097785c1faef2e5976245e694",
+   "size": 274
+  },
+  {
+   "path": "lab/upstream_verify/cases/cgpu/CGPU-ADV-2026-01/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/cgpu/CGPU-ADV-2026-01/evidence/unsupported.json",
+   "sha256": "11fd79982f2386c281dd6571d493b6d3712983c5b6f426d692ba55aa7193b59a",
+   "size": 840
+  }
+ ],
+ "poc_sha256": "8c43ff144a23e6e961076b0c4ab32cfe5e637403206fce521050ffb6dc8361c7",
+ "manifest_sha256": "292dc31eba31c5aded8da82029a19ed5a005f453a0c15a79aacdfdfe0e791a1f",
+ "stdout": "{\"status\": \"unsupported\", \"case\": \"CGPU-ADV-2026-01\", \"reason\": \"cGPU isolation audit requires Alibaba Cloud cGPU runtime/GPU\"}\n",
+ "stderr": "",
+ "notes": "Hardware/OS-dependent path; not exercised on this host. Not counted as verified."
+}

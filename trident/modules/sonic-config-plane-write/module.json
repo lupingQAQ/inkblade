@@ -17,5 +17,15 @@
   },
   "produces": "sonic-config-plane",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "sonic-config-plane"
+  "combo_signature": "sonic-config-plane",
+  "verified": false,
+  "verification_status": "unsupported",
+  "verification_cves": {
+    "CVE-2025-38741": "unsupported",
+    "CVE-2025-23374": "unsupported"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/sonic/CVE-2025-38741/result.json",
+    "lab/upstream_verify/cases/sonic/CVE-2025-23374/result.json"
+  ]
 }

@@ -1,0 +1,57 @@
+{
+ "id": "megatron-checkpointing-py-torch-load-any-l2796-regex",
+ "source": "mining",
+ "title": "megatron: torch-load-any @ checkpointing.py:2796",
+ "version": "core_v0.19.2",
+ "version_ref": {
+  "kind": "git",
+  "repo": "NVIDIA/Megatron-LM",
+  "tag": "core_v0.19.2",
+  "commit": "4b4acac9a1d28ea6829c8d4f566d75698a21249d"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "megatron/training/checkpointing.py",
+  "line": 2796,
+  "function": "",
+  "snippet": "state_dict = torch.load(checkpoint_name, map_location='cpu')",
+  "source": "lab/upstream_verify/upstream/NVIDIA/Megatron-LM/core_v0.19.2/megatron/training/checkpointing.py",
+  "source_sha256": "b4b4fcc725d543dd382a838dc72679c9de4dca8502ee274d8864c46ab55bba49",
+  "note": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-megatron-checkpointing-py-torch-load-any-l2796-regex",
+ "notes": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced.",
+ "static_verdict": "duplicate-static-only",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 3,
+  "rule": "torch-load-any",
+  "channel": "regex",
+  "file": "checkpointing.py",
+  "line": 2796,
+  "snippet": "state_dict = torch.load(checkpoint_name, map_location='cpu')",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "megatron"
+}

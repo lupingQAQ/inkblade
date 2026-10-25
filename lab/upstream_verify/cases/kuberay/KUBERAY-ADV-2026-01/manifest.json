@@ -1,0 +1,45 @@
+{
+ "id": "KUBERAY-ADV-2026-01",
+ "source": "cve",
+ "title": "KubeRay 管理的 Ray 集群暴露 Dashboard 未授权面",
+ "version": "所有 KubeRay 版本（底层 Ray<2.52 或未启用 token）",
+ "version_ref": {
+  "kind": "advisory",
+  "version": "所有 KubeRay 版本（底层 Ray<2.52 或未启用 token）"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "advisory:https://docs.ray.io/en/latest/ray-security/token-auth.html",
+  "line": 0,
+  "function": "",
+  "snippet": "",
+  "source": null,
+  "source_sha256": null,
+  "note": "KubeRay-managed Ray exposure is a deployment pattern, not a single upstream sink; static-only."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-advisory",
+ "module": "ray-job-marker-rce",
+ "python": "reproenv",
+ "advisory": "https://docs.ray.io/en/latest/ray-security/token-auth.html",
+ "marker_text": "TRIDENT-UV-KUBERAY-ADV-2026-01",
+ "notes": "KubeRay-managed Ray exposure is a deployment pattern, not a single upstream sink; static-only.",
+ "static_evidence_level": "advisory",
+ "static_analysis": "KubeRay-managed Ray exposure is a deployment pattern, not a single upstream sink; static-only.",
+ "static_verdict": "not-dynamically-verified",
+ "unsupported": {},
+ "schema": "trident-upstream-case-v1",
+ "component": "kuberay"
+}

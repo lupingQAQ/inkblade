@@ -17,5 +17,13 @@
   },
   "produces": "vllm-timing-oracle",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "vllm-timing-oracle"
+  "combo_signature": "vllm-timing-oracle",
+  "verified": false,
+  "verification_status": "static-only",
+  "verification_cves": {
+    "CVE-2025-59425": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/vllm/CVE-2025-59425/result.json"
+  ]
 }

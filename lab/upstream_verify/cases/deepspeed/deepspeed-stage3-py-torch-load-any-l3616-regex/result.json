@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "deepspeed-stage3-py-torch-load-any-l3616-regex",
+ "source": "mining",
+ "component": "deepspeed",
+ "title": "deepspeed: torch-load-any @ stage3.py:3616",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v0.19.8",
+ "version_ref": {
+  "kind": "git",
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8",
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v0.19.8",
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8",
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/runtime/zero/stage3.py",
+  "artifact_sha256": "4ff3fdb4cbabaddfeaa866e43785b49a69cdfe35db4e0ceda6f1b432b6fbf9d7",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3616-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.08,
+ "started_at": "2026-10-25T18:06:42+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-deepspeed-stage3-py-torch-load-any-l3616-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3616-regex/evidence/log.txt",
+   "sha256": "d31b651b31dcbafa66a3ff905229767563497df74a2637592cfd6fb0393c7481",
+   "size": 264
+  },
+  {
+   "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3616-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3616-regex/evidence/static-check.json",
+   "sha256": "32819f5810c95aaaf53ad09871f7975b160b1e1c17a0efb8d447c081f2f56916",
+   "size": 1339
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "dbe9954abb8183ab9b02d288b6fda6e47f9833d5831bd4012b5e231a3ec8b12b",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"deepspeed-stage3-py-torch-load-any-l3616-regex\"}\n",
+ "stderr": "",
+ "notes": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced."
+}

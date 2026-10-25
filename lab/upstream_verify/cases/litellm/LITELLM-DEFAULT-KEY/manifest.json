@@ -1,0 +1,45 @@
+{
+ "id": "LITELLM-DEFAULT-KEY",
+ "source": "cve",
+ "title": "默认/未设置 master key（sk-1234）",
+ "version": "LITELLM_MASTER_KEY 未设置或使用文档示例 sk-1234/sk-litellm-master-key",
+ "version_ref": {
+  "kind": "advisory",
+  "version": "LITELLM_MASTER_KEY 未设置或使用文档示例 sk-1234/sk-litellm-master-key"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "advisory:https://docs.litellm.ai/docs/proxy/virtual_keys",
+  "line": 0,
+  "function": "",
+  "snippet": "",
+  "source": null,
+  "source_sha256": null,
+  "note": "Default/master-key misconfiguration is deployment-dependent; no upstream version boundary, static-only."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-advisory",
+ "module": "litellm-default-key-exfil",
+ "python": "reproenv",
+ "advisory": "https://docs.litellm.ai/docs/proxy/virtual_keys",
+ "marker_text": "TRIDENT-UV-LITELLM-DEFAULT-KEY",
+ "notes": "Default/master-key misconfiguration is deployment-dependent; no upstream version boundary, static-only.",
+ "static_evidence_level": "advisory",
+ "static_analysis": "Default/master-key misconfiguration is deployment-dependent; no upstream version boundary, static-only.",
+ "static_verdict": "not-dynamically-verified",
+ "unsupported": {},
+ "schema": "trident-upstream-case-v1",
+ "component": "litellm"
+}

@@ -32,6 +32,10 @@ DEFAULT_EXCLUDED_DIRS = frozenset({
     # （如 DeepSpeed 文档字符串中的单字母盘符示例），不属于本仓公开源码；
     # 快照来源与许可见该目录 README。
     "mining-fixture",
+    # lab/upstream_verify/upstream：按 commit/tag 固定、用于静态根因与动态
+    # PoC 的第三方上游源码快照；哈希记录在 cases/*/manifest.json 与
+    # upstream/sources.json，不参与本仓源码卫生检查。
+    "upstream",
 })
 
 # 明确按文本扫描的扩展名/文件名（无扩展名配置文件另行白名单）。

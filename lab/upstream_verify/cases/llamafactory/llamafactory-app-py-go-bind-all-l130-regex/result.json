@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "llamafactory-app-py-go-bind-all-l130-regex",
+ "source": "mining",
+ "component": "llamafactory",
+ "title": "llamafactory: go-bind-all @ app.py:130",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v0.9.5",
+ "version_ref": {
+  "kind": "git",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v0.9.5",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/api/app.py",
+  "artifact_sha256": "99369f350ca92c3efd87625505fc17bd185b6eafbd6c28b9551126a28197f6a3",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-app-py-go-bind-all-l130-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.078,
+ "started_at": "2026-10-25T18:06:56+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-llamafactory-app-py-go-bind-all-l130-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-app-py-go-bind-all-l130-regex/evidence/log.txt",
+   "sha256": "97c2d391b2ba12e704398dc991e8f5fba040806b0f5f9e34a99054d795c862fe",
+   "size": 260
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-app-py-go-bind-all-l130-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-app-py-go-bind-all-l130-regex/evidence/static-check.json",
+   "sha256": "284e85e219ad62e007a0b77c58a9794e0064ee6ea3b26828064eee1c7bf7c3dc",
+   "size": 1119
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "0f89b5b85a744cf585e6d5ec35675b351113a21a4cb082ea7e1150c2658ebee5",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-app-py-go-bind-all-l130-regex\"}\n",
+ "stderr": "",
+ "notes": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution."
+}

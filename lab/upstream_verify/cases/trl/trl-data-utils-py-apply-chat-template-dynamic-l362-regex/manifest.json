@@ -1,0 +1,57 @@
+{
+ "id": "trl-data-utils-py-apply-chat-template-dynamic-l362-regex",
+ "source": "mining",
+ "title": "trl: apply-chat-template-dynamic @ data_utils.py:362",
+ "version": "v1.16.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "huggingface/trl",
+  "tag": "v1.16.0",
+  "commit": "1b5c75ed94b7387f42532adb090c935166d4878d"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "trl/data_utils.py",
+  "line": 362,
+  "function": "",
+  "snippet": "return apply_chat_template(example, processing_class, tools, **template_kwargs)",
+  "source": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/data_utils.py",
+  "source_sha256": "24e80d9427de17026cc74e25a7b11612746d57d213317b82132ff1bc7ae9468b",
+  "note": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-trl-data-utils-py-apply-chat-template-dynamic-l362-regex",
+ "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink.",
+ "static_verdict": "false-positive",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 56,
+  "rule": "apply-chat-template-dynamic",
+  "channel": "regex",
+  "file": "data_utils.py",
+  "line": 362,
+  "snippet": "return apply_chat_template(example, processing_class, tools, **template_kwargs)",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "trl"
+}

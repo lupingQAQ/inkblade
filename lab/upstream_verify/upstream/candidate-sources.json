@@ -1,0 +1,138 @@
+{
+ "megatron/checkpointing.py": {
+  "repo": "NVIDIA/Megatron-LM",
+  "tag": "core_v0.19.2",
+  "commit": "4b4acac9a1d28ea6829c8d4f566d75698a21249d",
+  "path": "megatron/training/checkpointing.py",
+  "sha256": "b4b4fcc725d543dd382a838dc72679c9de4dca8502ee274d8864c46ab55bba49",
+  "local": "lab/upstream_verify/upstream/NVIDIA/Megatron-LM/core_v0.19.2/megatron/training/checkpointing.py"
+ },
+ "deepspeed/engine.py": {
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8",
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c",
+  "path": "deepspeed/runtime/engine.py",
+  "sha256": "e35eaa313874d2b3bd5bc9169dad35405819df2dfb1e7abdffa0c2f03db36c75",
+  "local": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/runtime/engine.py"
+ },
+ "deepspeed/multinode_runner.py": {
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8",
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c",
+  "path": "deepspeed/launcher/multinode_runner.py",
+  "sha256": "888fe4888604b4cdbe86473c91082fe1b9f2a94b5c9e5d59cbda90210bf25088",
+  "local": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/launcher/multinode_runner.py"
+ },
+ "deepspeed/runner.py": {
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8",
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c",
+  "path": "deepspeed/launcher/runner.py",
+  "sha256": "956d554ea5c9b142ab4bae47c8317cce11f7b23748e09849b7876072c66cf9a0",
+  "local": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/launcher/runner.py"
+ },
+ "deepspeed/stage3.py": {
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8",
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c",
+  "path": "deepspeed/runtime/zero/stage3.py",
+  "sha256": "4ff3fdb4cbabaddfeaa866e43785b49a69cdfe35db4e0ceda6f1b432b6fbf9d7",
+  "local": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/runtime/zero/stage3.py"
+ },
+ "llamafactory/app.py": {
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5",
+  "path": "src/llamafactory/api/app.py",
+  "sha256": "99369f350ca92c3efd87625505fc17bd185b6eafbd6c28b9551126a28197f6a3",
+  "local": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/api/app.py"
+ },
+ "llamafactory/interface.py": {
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5",
+  "path": "src/llamafactory/webui/interface.py",
+  "sha256": "2a7cb77e442137d92d361eed95d430e362b57a006acb49750d8049b5f740b5d8",
+  "local": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/webui/interface.py"
+ },
+ "llamafactory/loader.py": {
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5",
+  "path": "src/llamafactory/model/loader.py",
+  "sha256": "873c4924c899574ee903000eefbbdfbeafad92087a8fe8dd96f94c34bf6bb1bb",
+  "local": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/model/loader.py"
+ },
+ "llamafactory/template.py": {
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5",
+  "path": "src/llamafactory/data/template.py",
+  "sha256": "68f289bb28c434e7d26cb36bd4351ea4636f9e102bf374d9a84f642565d9f84e",
+  "local": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/data/template.py"
+ },
+ "msswift/agent_loop.py": {
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2",
+  "path": "swift/rollout/agent_loop.py",
+  "sha256": "d6ea1ac1c20faf9643c40bf20a7e27ac4666fb03f3558296edecc007cd92f8ca",
+  "local": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/rollout/agent_loop.py"
+ },
+ "msswift/base.py": {
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2",
+  "path": "swift/template/base.py",
+  "sha256": "a2d14012e37058ad392c1f242e220fd69bb654f29887baffb04aa552f3dfbc16",
+  "local": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/template/base.py"
+ },
+ "msswift/loader.py": {
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2",
+  "path": "swift/dataset/loader.py",
+  "sha256": "20f83a4e3c4cdb736e29a0848767b0f525a3280ab11ce2ff2b91955093fb1157",
+  "local": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/dataset/loader.py"
+ },
+ "msswift/sft.py": {
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2",
+  "path": "swift/pipelines/train/sft.py",
+  "sha256": "744ceb388ae51f3f50f95f9ceb208980696ba95eaa1f01aaabb0584bd78515b6",
+  "local": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/pipelines/train/sft.py"
+ },
+ "trl/data_utils.py": {
+  "repo": "huggingface/trl",
+  "tag": "v1.16.0",
+  "commit": "1b5c75ed94b7387f42532adb090c935166d4878d",
+  "path": "trl/data_utils.py",
+  "sha256": "24e80d9427de17026cc74e25a7b11612746d57d213317b82132ff1bc7ae9468b",
+  "local": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/data_utils.py"
+ },
+ "trl/sft.py": {
+  "repo": "huggingface/trl",
+  "tag": "v1.16.0",
+  "commit": "1b5c75ed94b7387f42532adb090c935166d4878d",
+  "path": "trl/scripts/sft.py",
+  "sha256": "310f4eb5f750a8f2f1ca9ef86235455a6d1d262d1c4cf6c8261ad95090a209dc",
+  "local": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/scripts/sft.py"
+ },
+ "trl/sft_trainer.py": {
+  "repo": "huggingface/trl",
+  "tag": "v1.16.0",
+  "commit": "1b5c75ed94b7387f42532adb090c935166d4878d",
+  "path": "trl/trainer/sft_trainer.py",
+  "sha256": "a93001470796c6502a4cf8886a13abbd8280e653357b5a95eb1abd53c6868205",
+  "local": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/trainer/sft_trainer.py"
+ },
+ "trl/utils.py": {
+  "repo": "huggingface/trl",
+  "tag": "v1.16.0",
+  "commit": "1b5c75ed94b7387f42532adb090c935166d4878d",
+  "path": "trl/trainer/utils.py",
+  "sha256": "a3c44bd9e7f332f3087ef1943e89ea6f4ee99c0480ff64f13d586c72a51578b1",
+  "local": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/trainer/utils.py"
+ }
+}

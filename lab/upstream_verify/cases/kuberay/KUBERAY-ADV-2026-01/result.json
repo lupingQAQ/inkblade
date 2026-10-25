@@ -1,0 +1,65 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "KUBERAY-ADV-2026-01",
+ "source": "cve",
+ "component": "kuberay",
+ "title": "KubeRay 管理的 Ray 集群暴露 Dashboard 未授权面",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-advisory",
+ "verified": false,
+ "module": "ray-job-marker-rce",
+ "version": "所有 KubeRay 版本（底层 Ray<2.52 或未启用 token）",
+ "version_ref": {
+  "kind": "advisory",
+  "version": "所有 KubeRay 版本（底层 Ray<2.52 或未启用 token）"
+ },
+ "version_hash": {
+  "kind": "advisory",
+  "version": "所有 KubeRay 版本（底层 Ray<2.52 或未启用 token）",
+  "repo": null,
+  "tag": null,
+  "commit": null,
+  "package": null,
+  "wheel_sha256": null,
+  "advisory": "https://docs.ray.io/en/latest/ray-security/token-auth.html",
+  "advisory_sha256": "6f0aa11f549acfbf46bfc19d82b0cec64fa41ccf0a59ea2f80b5fa7eeb8b73da"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.075,
+ "started_at": "2026-10-25T18:06:43+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-KUBERAY-ADV-2026-01",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/evidence/log.txt",
+   "sha256": "5e6458af5231e76080250fc6c73579c63865519882c9456abff8359b330acf93",
+   "size": 209
+  },
+  {
+   "path": "lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/evidence/static-check.json",
+   "sha256": "3ea88db1bffd803422e01a78201533cad4473b0b584083324a149c9d3ad2327f",
+   "size": 874
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "e24afffcbdcc649ee3e31d3a14e994044fb3884fd410a13d37553c02f3416a87",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"KUBERAY-ADV-2026-01\"}\n",
+ "stderr": "",
+ "notes": "KubeRay-managed Ray exposure is a deployment pattern, not a single upstream sink; static-only."
+}

@@ -178,8 +178,8 @@ def _cve_table(run, lang: str, sha_map: dict[str, str]) -> str:
             if item:
                 entries[item["id"]] = item
     lines = [_pick(lang,
-                   "| CVE/Advisory | Component | Type | CVSS | Affected | Fixed | Weaponized surface | Evidence |",
-                   "| CVE/Advisory | Component | Type | CVSS | Affected | Fixed | Weaponized surface | Evidence |"),
+                   "| CVE/Advisory | Component | Type | CVSS | Affected | Fixed | Verification | Evidence |",
+                   "| CVE/Advisory | Component | Type | CVSS | Affected | Fixed | Verification | Evidence |"),
              "|---|---|---|---:|---|---|---|---|"]
     if not entries:
         lines.append(_pick(lang, "| (no CVE catalog match in this run) | | | | | | | |",
@@ -188,8 +188,15 @@ def _cve_table(run, lang: str, sha_map: dict[str, str]) -> str:
     for item in sorted(entries.values(), key=lambda x: (x["component"], x["id"])):
         severity = item.get("cvss")
         sev_text = f"{severity} ({item['severity']})" if severity is not None else item["severity"]
-        if item["mockable"] and not item["requires_hardware"]:
-            surface = _pick(lang, "mockable / weaponized", "mockable / weaponized")
+        verification = (item.get("verification") or {}).get("status")
+        if verification == "verified":
+            surface = _pick(lang, "verified dynamic (exploitable)", "verified dynamic (exploitable)")
+        elif verification == "static-only":
+            surface = _pick(lang, "static-only (NOT exploitable)", "static-only (NOT exploitable)")
+        elif verification == "unsupported":
+            surface = _pick(lang, "unsupported (no environment)", "unsupported (no environment)")
+        elif item["mockable"] and not item["requires_hardware"]:
+            surface = _pick(lang, "unverified (not reproduced)", "unverified (not reproduced)")
         elif item["requires_hardware"]:
             surface = _pick(lang, "real hardware / read-only", "real hardware / read-only")
         else:

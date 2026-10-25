@@ -17,5 +17,17 @@
   },
   "produces": "nvidia-toolkit",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "nvidia-toolkit"
+  "combo_signature": "nvidia-toolkit",
+  "verified": false,
+  "verification_status": "unsupported",
+  "verification_cves": {
+    "CVE-2024-0132": "unsupported",
+    "CVE-2024-0133": "unsupported",
+    "CVE-2025-23267": "unsupported"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/nvidia/CVE-2024-0132/result.json",
+    "lab/upstream_verify/cases/nvidia/CVE-2024-0133/result.json",
+    "lab/upstream_verify/cases/nvidia/CVE-2025-23267/result.json"
+  ]
 }

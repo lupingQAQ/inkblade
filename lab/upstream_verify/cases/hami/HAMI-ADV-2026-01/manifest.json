@@ -1,0 +1,55 @@
+{
+ "id": "HAMI-ADV-2026-01",
+ "source": "cve",
+ "title": "scheduler/device-plugin HTTP 面未认证",
+ "version": "所有版本（v2.10 及更早；/filter /bind /webhook 无鉴权）",
+ "version_ref": {
+  "kind": "vendor",
+  "version": "所有版本（v2.10 及更早；/filter /bind /webhook 无鉴权）"
+ },
+ "install": "not installable on this host",
+ "root_cause": {
+  "file": "n/a (vendor firmware / Linux runtime)",
+  "line": 0,
+  "function": "",
+  "snippet": "",
+  "source": null,
+  "note": "直接调用 /filter /bind 或伪造 vGPU 分配 → 跨租户 GPU 资源劫持/配额绕过"
+ },
+ "preconditions": [
+  "vendor hardware or Linux runtime required"
+ ],
+ "steps": [
+  "record why this host cannot host the vulnerable path",
+  "do not claim exploitation"
+ ],
+ "expected_evidence": [
+  "unsupported.json with explicit reason"
+ ],
+ "cleanup": "none (no exploit executed)",
+ "status": "unsupported",
+ "method": "unsupported",
+ "module": "hami-scheduler-auth-gap",
+ "python": null,
+ "advisory": "https://github.com/Project-HAMi/HAMi",
+ "marker_text": "TRIDENT-UV-HAMI-ADV-2026-01",
+ "notes": "Hardware/OS-dependent path; not exercised on this host. Not counted as verified.",
+ "static_evidence_level": "advisory",
+ "static_analysis": "",
+ "static_verdict": "",
+ "unsupported": {
+  "reason": "HAMi scheduler/device-plugin auth gap requires a Kubernetes GPU cluster with HAMi",
+  "requires": [
+   "HAMi",
+   "所有版本（v2.10 及更早；/filter /bind /webhook 无鉴权）"
+  ],
+  "blocked_by": [
+   "Windows host",
+   "no GPU",
+   "no Linux container runtime",
+   "no vendor BMC/NOS"
+  ]
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "hami"
+}

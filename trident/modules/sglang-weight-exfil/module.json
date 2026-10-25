@@ -17,5 +17,13 @@
   },
   "produces": "sglang-weight-exfil",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "sglang-weight-exfil"
+  "combo_signature": "sglang-weight-exfil",
+  "verified": false,
+  "verification_status": "static-only",
+  "verification_cves": {
+    "CVE-2026-15978": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/sglang/CVE-2026-15978/result.json"
+  ]
 }

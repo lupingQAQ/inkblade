@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "llamafactory-loader-py-eval-call-l211-ast",
+ "source": "mining",
+ "component": "llamafactory",
+ "title": "llamafactory: eval-call @ loader.py:211",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v0.9.5",
+ "version_ref": {
+  "kind": "git",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v0.9.5",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/model/loader.py",
+  "artifact_sha256": "873c4924c899574ee903000eefbbdfbeafad92087a8fe8dd96f94c34bf6bb1bb",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-ast/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.085,
+ "started_at": "2026-10-25T18:06:57+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-llamafactory-loader-py-eval-call-l211-ast",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-ast/evidence/log.txt",
+   "sha256": "2754ae900b1fdec9788003baed584761f61e99dabd133fe0741d078c8d658cda",
+   "size": 258
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-ast/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-ast/evidence/static-check.json",
+   "sha256": "467f1c89754767940090646dae3615a7deff157dc6320eb9130e6292ff60965b",
+   "size": 1034
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "b15b115ec880065cf879dc01f811cd4a90b8a39bcb60c951dd3ad7a8da5d85ea",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-loader-py-eval-call-l211-ast\"}\n",
+ "stderr": "",
+ "notes": "False positive: the matched text is model.eval(), not Python eval()."
+}

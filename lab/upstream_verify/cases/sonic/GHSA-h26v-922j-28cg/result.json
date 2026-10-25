@@ -1,0 +1,65 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "GHSA-h26v-922j-28cg",
+ "source": "cve",
+ "component": "sonic",
+ "title": "rsyslog 配置注入（welf_firewall_name）",
+ "status": "unsupported",
+ "declared_status": "unsupported",
+ "method": "unsupported",
+ "verified": false,
+ "module": "sonic-rsyslog-injection",
+ "version": "master 修复前构建（具体 tag 未标注）",
+ "version_ref": {
+  "kind": "vendor",
+  "version": "master 修复前构建（具体 tag 未标注）"
+ },
+ "version_hash": {
+  "kind": "vendor",
+  "version": "master 修复前构建（具体 tag 未标注）",
+  "repo": null,
+  "tag": null,
+  "commit": null,
+  "package": null,
+  "wheel_sha256": null,
+  "advisory": "https://github.com/sonic-net/sonic-buildimage/security/advisories/GHSA-h26v-922j-28cg",
+  "advisory_sha256": "11b437a4fd6076da2eb1bc9809bb1b2d124ea07990562d64cbe53c0d50b3ef18"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/sonic/GHSA-h26v-922j-28cg/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.076,
+ "started_at": "2026-10-25T18:07:14+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-GHSA-h26v-922j-28cg",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/sonic/GHSA-h26v-922j-28cg/evidence/log.txt",
+   "sha256": "c77792adae041c368bca5a9b0ac9b6425146695fc6b5d57d87ae6770529c6040",
+   "size": 274
+  },
+  {
+   "path": "lab/upstream_verify/cases/sonic/GHSA-h26v-922j-28cg/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/sonic/GHSA-h26v-922j-28cg/evidence/unsupported.json",
+   "sha256": "5530bd2931e4cd4b6120ae327badb522b5e1f3c3bee11ff74de32035aef88629",
+   "size": 829
+  }
+ ],
+ "poc_sha256": "8c43ff144a23e6e961076b0c4ab32cfe5e637403206fce521050ffb6dc8361c7",
+ "manifest_sha256": "39e0947a6eeb723cb8bce0ced05c86f46a0e63d8b789c178f6d58102651459e8",
+ "stdout": "{\"status\": \"unsupported\", \"case\": \"GHSA-h26v-922j-28cg\", \"reason\": \"SONiC rsyslog injection requires a SONiC build/switch\"}\n",
+ "stderr": "",
+ "notes": "Hardware/OS-dependent path; not exercised on this host. Not counted as verified."
+}

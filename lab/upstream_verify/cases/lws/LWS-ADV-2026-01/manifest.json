@@ -1,0 +1,45 @@
+{
+ "id": "LWS-ADV-2026-01",
+ "source": "cve",
+ "title": "LWS leader/worker 拓扑信任与地址注入面",
+ "version": "所有 LWS 版本（依赖 CRD 模板与网络策略）",
+ "version_ref": {
+  "kind": "advisory",
+  "version": "所有 LWS 版本（依赖 CRD 模板与网络策略）"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "advisory:https://lws.sigs.k8s.io/docs/concepts/leaderworkerset",
+  "line": 0,
+  "function": "",
+  "snippet": "",
+  "source": null,
+  "source_sha256": null,
+  "note": "LWS leader/worker address trust is a topology/CRD issue; static-only."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-advisory",
+ "module": "lws-leader-endpoint-audit",
+ "python": "reproenv",
+ "advisory": "https://lws.sigs.k8s.io/docs/concepts/leaderworkerset",
+ "marker_text": "TRIDENT-UV-LWS-ADV-2026-01",
+ "notes": "LWS leader/worker address trust is a topology/CRD issue; static-only.",
+ "static_evidence_level": "advisory",
+ "static_analysis": "LWS leader/worker address trust is a topology/CRD issue; static-only.",
+ "static_verdict": "not-dynamically-verified",
+ "unsupported": {},
+ "schema": "trident-upstream-case-v1",
+ "component": "lws"
+}

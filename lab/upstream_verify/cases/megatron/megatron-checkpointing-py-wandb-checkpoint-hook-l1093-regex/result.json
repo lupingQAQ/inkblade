@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex",
+ "source": "mining",
+ "component": "megatron",
+ "title": "megatron: wandb-checkpoint-hook @ checkpointing.py:1093",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "core_v0.19.2",
+ "version_ref": {
+  "kind": "git",
+  "repo": "NVIDIA/Megatron-LM",
+  "tag": "core_v0.19.2",
+  "commit": "4b4acac9a1d28ea6829c8d4f566d75698a21249d"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "core_v0.19.2",
+  "repo": "NVIDIA/Megatron-LM",
+  "tag": "core_v0.19.2",
+  "commit": "4b4acac9a1d28ea6829c8d4f566d75698a21249d",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/NVIDIA/Megatron-LM/core_v0.19.2/megatron/training/checkpointing.py",
+  "artifact_sha256": "b4b4fcc725d543dd382a838dc72679c9de4dca8502ee274d8864c46ab55bba49",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/megatron/megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.105,
+ "started_at": "2026-10-25T18:07:03+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex/evidence/log.txt",
+   "sha256": "999a06e96cef826543524ec41fd0bf59a4c82f90aa9913c4ee8b57d07168385f",
+   "size": 290
+  },
+  {
+   "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex/evidence/static-check.json",
+   "sha256": "b82628bc9e4a315f5d014e49d14d396a82cd7029924cbd7af6a658689ecb7073",
+   "size": 1150
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "2ab7671f43051536de24c0e0cc2b75ab38d35ad9ed8921269dece02f0faa1560",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex\"}\n",
+ "stderr": "",
+ "notes": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."
+}

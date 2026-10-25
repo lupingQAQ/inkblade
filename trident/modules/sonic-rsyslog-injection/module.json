@@ -17,5 +17,13 @@
   },
   "produces": "sonic-rsyslog",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "sonic-rsyslog"
+  "combo_signature": "sonic-rsyslog",
+  "verified": false,
+  "verification_status": "unsupported",
+  "verification_cves": {
+    "GHSA-h26v-922j-28cg": "unsupported"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/sonic/GHSA-h26v-922j-28cg/result.json"
+  ]
 }

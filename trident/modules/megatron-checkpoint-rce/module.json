@@ -17,5 +17,17 @@
   },
   "produces": "megatron-checkpoint",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "megatron-checkpoint"
+  "combo_signature": "megatron-checkpoint",
+  "verified": false,
+  "verification_status": "partial",
+  "verification_cves": {
+    "CVE-2025-23354": "static-only",
+    "CVE-2025-33247": "static-only",
+    "CVE-2026-65110": "verified"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/megatron/CVE-2025-23354/result.json",
+    "lab/upstream_verify/cases/megatron/CVE-2025-33247/result.json",
+    "lab/upstream_verify/cases/megatron/CVE-2026-65110/result.json"
+  ]
 }

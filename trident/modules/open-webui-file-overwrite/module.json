@@ -17,5 +17,17 @@
   },
   "produces": "open-webui-file",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "open-webui-file"
+  "combo_signature": "open-webui-file",
+  "verified": false,
+  "verification_status": "static-only",
+  "verification_cves": {
+    "CVE-2026-28786": "static-only",
+    "CVE-2026-28788": "static-only",
+    "CVE-2025-64496": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/open-webui/CVE-2026-28786/result.json",
+    "lab/upstream_verify/cases/open-webui/CVE-2026-28788/result.json",
+    "lab/upstream_verify/cases/open-webui/CVE-2025-64496/result.json"
+  ]
 }

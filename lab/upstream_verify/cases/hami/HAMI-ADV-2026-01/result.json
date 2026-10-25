@@ -1,0 +1,65 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "HAMI-ADV-2026-01",
+ "source": "cve",
+ "component": "hami",
+ "title": "scheduler/device-plugin HTTP 面未认证",
+ "status": "unsupported",
+ "declared_status": "unsupported",
+ "method": "unsupported",
+ "verified": false,
+ "module": "hami-scheduler-auth-gap",
+ "version": "所有版本（v2.10 及更早；/filter /bind /webhook 无鉴权）",
+ "version_ref": {
+  "kind": "vendor",
+  "version": "所有版本（v2.10 及更早；/filter /bind /webhook 无鉴权）"
+ },
+ "version_hash": {
+  "kind": "vendor",
+  "version": "所有版本（v2.10 及更早；/filter /bind /webhook 无鉴权）",
+  "repo": null,
+  "tag": null,
+  "commit": null,
+  "package": null,
+  "wheel_sha256": null,
+  "advisory": "https://github.com/Project-HAMi/HAMi",
+  "advisory_sha256": "aa785ed7b9e196016b935e47331195bd822985898efcada252f442032b3310c2"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/hami/HAMI-ADV-2026-01/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.075,
+ "started_at": "2026-10-25T18:06:43+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-HAMI-ADV-2026-01",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/hami/HAMI-ADV-2026-01/evidence/log.txt",
+   "sha256": "440e2fcc4f56cf2056141c1e470b1a7577e165b6d03ff8510ec43a32a75e1da6",
+   "size": 295
+  },
+  {
+   "path": "lab/upstream_verify/cases/hami/HAMI-ADV-2026-01/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/hami/HAMI-ADV-2026-01/evidence/unsupported.json",
+   "sha256": "c22aaaff268e0c48e46e7953825f815e85c75917cd4c9ae2916f72e83e20d7e8",
+   "size": 814
+  }
+ ],
+ "poc_sha256": "8c43ff144a23e6e961076b0c4ab32cfe5e637403206fce521050ffb6dc8361c7",
+ "manifest_sha256": "259111e8db9f6f28febc8fade4b1ec4914fde7aa00f1a29bbd5e4dfac42147da",
+ "stdout": "{\"status\": \"unsupported\", \"case\": \"HAMI-ADV-2026-01\", \"reason\": \"HAMi scheduler/device-plugin auth gap requires a Kubernetes GPU cluster with HAMi\"}\n",
+ "stderr": "",
+ "notes": "Hardware/OS-dependent path; not exercised on this host. Not counted as verified."
+}

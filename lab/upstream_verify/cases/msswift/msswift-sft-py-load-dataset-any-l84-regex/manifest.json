@@ -1,0 +1,57 @@
+{
+ "id": "msswift-sft-py-load-dataset-any-l84-regex",
+ "source": "mining",
+ "title": "msswift: load-dataset-any @ sft.py:84",
+ "version": "v4.6.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "swift/pipelines/train/sft.py",
+  "line": 84,
+  "function": "",
+  "snippet": "train_dataset, val_dataset = args.load_dataset()",
+  "source": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/pipelines/train/sft.py",
+  "source_sha256": "744ceb388ae51f3f50f95f9ceb208980696ba95eaa1f01aaabb0584bd78515b6",
+  "note": "Dataset loading is intended functionality; remote dataset trust is a documented boundary."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-msswift-sft-py-load-dataset-any-l84-regex",
+ "notes": "Dataset loading is intended functionality; remote dataset trust is a documented boundary.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Dataset loading is intended functionality; remote dataset trust is a documented boundary.",
+ "static_verdict": "risk-not-vuln",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 44,
+  "rule": "load-dataset-any",
+  "channel": "regex",
+  "file": "sft.py",
+  "line": 84,
+  "snippet": "train_dataset, val_dataset = args.load_dataset()",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "msswift"
+}

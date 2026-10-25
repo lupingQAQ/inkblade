@@ -1,0 +1,57 @@
+{
+ "id": "msswift-base-py-apply-chat-template-dynamic-l1283-regex",
+ "source": "mining",
+ "title": "msswift: apply-chat-template-dynamic @ base.py:1283",
+ "version": "v4.6.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "swift/template/base.py",
+  "line": 1283,
+  "function": "",
+  "snippet": "text = self.tokenizer.apply_chat_template(",
+  "source": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/template/base.py",
+  "source_sha256": "a2d14012e37058ad392c1f242e220fd69bb654f29887baffb04aa552f3dfbc16",
+  "note": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-msswift-base-py-apply-chat-template-dynamic-l1283-regex",
+ "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink.",
+ "static_verdict": "false-positive",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 38,
+  "rule": "apply-chat-template-dynamic",
+  "channel": "regex",
+  "file": "base.py",
+  "line": 1283,
+  "snippet": "text = self.tokenizer.apply_chat_template(",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "msswift"
+}

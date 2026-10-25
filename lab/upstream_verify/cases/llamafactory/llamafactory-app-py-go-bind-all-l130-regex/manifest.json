@@ -1,0 +1,57 @@
+{
+ "id": "llamafactory-app-py-go-bind-all-l130-regex",
+ "source": "mining",
+ "title": "llamafactory: go-bind-all @ app.py:130",
+ "version": "v0.9.5",
+ "version_ref": {
+  "kind": "git",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "src/llamafactory/api/app.py",
+  "line": 130,
+  "function": "",
+  "snippet": "api_host = os.getenv(\"API_HOST\", \"0.0.0.0\")",
+  "source": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/api/app.py",
+  "source_sha256": "99369f350ca92c3efd87625505fc17bd185b6eafbd6c28b9551126a28197f6a3",
+  "note": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-llamafactory-app-py-go-bind-all-l130-regex",
+ "notes": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution.",
+ "static_verdict": "risk-not-vuln",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 19,
+  "rule": "go-bind-all",
+  "channel": "regex",
+  "file": "app.py",
+  "line": 130,
+  "snippet": "api_host = os.getenv(\"API_HOST\", \"0.0.0.0\")",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "llamafactory"
+}

@@ -1,6 +1,9 @@
 {
   "key": "kuberay-operator-escalation",
-  "name": { "zh": "KubeRay Operator 提权", "en": "KubeRay Operator Escalation" },
+  "name": {
+    "zh": "KubeRay Operator 提权",
+    "en": "KubeRay Operator Escalation"
+  },
   "series": "权限链",
   "description": "解析 operator ClusterRole：ray.io 全动词 + pods/pods-exec 创建 → 准 cluster-admin → 特权 Pod",
   "min_level": "利用验证",
@@ -12,5 +15,13 @@
     "demo_target": "backup-write 模式下的演示写入文件（特权 RayCluster 清单落盘点）"
   },
   "produces": "privileged-pod-creation",
-  "knowledge": "设计基线第 11 节：KubeRay Operator 准 cluster-admin 权限（Ray 自定义资源全 CRUD + Pod 创建）"
+  "knowledge": "设计基线第 11 节：KubeRay Operator 准 cluster-admin 权限（Ray 自定义资源全 CRUD + Pod 创建）",
+  "verified": false,
+  "verification_status": "static-only",
+  "verification_cves": {
+    "KUBERAY-ADV-2026-01": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/result.json"
+  ]
 }

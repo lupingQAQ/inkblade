@@ -1,0 +1,57 @@
+{
+ "id": "deepspeed-runner-py-subprocess-popen-l504-regex",
+ "source": "mining",
+ "title": "deepspeed: subprocess-popen @ runner.py:504",
+ "version": "v0.19.8",
+ "version_ref": {
+  "kind": "git",
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8",
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "deepspeed/launcher/runner.py",
+  "line": 504,
+  "function": "",
+  "snippet": "result = subprocess.check_output(hostname_cmd)",
+  "source": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/launcher/runner.py",
+  "source_sha256": "956d554ea5c9b142ab4bae47c8317cce11f7b23748e09849b7876072c66cf9a0",
+  "note": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-deepspeed-runner-py-subprocess-popen-l504-regex",
+ "notes": "Rule hit is a legitimate framework call; no untrusted-data sink is reached.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Rule hit is a legitimate framework call; no untrusted-data sink is reached.",
+ "static_verdict": "false-positive",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 9,
+  "rule": "subprocess-popen",
+  "channel": "regex",
+  "file": "runner.py",
+  "line": 504,
+  "snippet": "result = subprocess.check_output(hostname_cmd)",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "deepspeed"
+}

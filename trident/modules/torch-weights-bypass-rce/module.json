@@ -17,5 +17,13 @@
   },
   "produces": "torch-weights",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "torch-weights"
+  "combo_signature": "torch-weights",
+  "verified": true,
+  "verification_status": "verified",
+  "verification_cves": {
+    "CVE-2025-32434": "verified"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/pytorch/CVE-2025-32434/result.json"
+  ]
 }

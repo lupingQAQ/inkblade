@@ -286,7 +286,11 @@
       "audit_refs": [
         "docs/REAL-CLUSTER-VERIFICATION.md",
         "trident/modules/vllm-plugin-auth-bypass/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "sglang-admin-failopen",
@@ -348,7 +352,11 @@
       "audit_refs": [
         "trident/modules/sglang-admin-failopen/run.py",
         "progress.md 任务「核心代码模块族」"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "sglang-omni-profiler-write",
@@ -390,7 +398,11 @@
       ],
       "audit_refs": [
         "trident/modules/sglang-omni-profiler-write/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "ray-dashboard-job",
@@ -446,7 +458,11 @@
       "audit_refs": [
         "trident/modules/ray-dashboard-job/run.py",
         "trident/modules/ray-control-plane/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "areal-setenv-engine-rce",
@@ -497,7 +513,11 @@
       "audit_refs": [
         "trident/modules/areal-setenv-engine-rce/run.py",
         "trident/core/data/sink-rules.json eval-call 锚"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "areal-load-pickle",
@@ -538,7 +558,11 @@
       ],
       "audit_refs": [
         "trident/modules/areal-load-pickle/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "areal-awex-nccl-injection",
@@ -586,7 +610,11 @@
       ],
       "audit_refs": [
         "trident/modules/areal-awex-nccl-injection/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "dify-control-plane-failopen",
@@ -627,7 +655,11 @@
       ],
       "audit_refs": [
         "trident/modules/dify-control-plane-failopen/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "dify-local-sandbox-unauth-rce",
@@ -672,7 +704,11 @@
       ],
       "audit_refs": [
         "trident/modules/dify-local-sandbox-unauth-rce/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "dify-snapshot-cross-tenant-theft",
@@ -712,7 +748,11 @@
       ],
       "audit_refs": [
         "trident/modules/dify-snapshot-cross-tenant-theft/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "dify-stub-token-forgery",
@@ -756,7 +796,11 @@
       ],
       "audit_refs": [
         "trident/modules/dify-stub-token-forgery/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "open-webui-code-execute-rce",
@@ -797,7 +841,11 @@
       ],
       "audit_refs": [
         "trident/modules/open-webui-code-execute-rce/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "open-webui-indirect-injection-exec",
@@ -837,7 +885,11 @@
       ],
       "audit_refs": [
         "trident/modules/open-webui-indirect-injection-exec/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "trl-serve-dev-mode",
@@ -884,7 +936,11 @@
       ],
       "audit_refs": [
         "trident/modules/trl-serve-dev-mode/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "skyrl-dev-pickle-rce",
@@ -925,7 +981,11 @@
       ],
       "audit_refs": [
         "trident/modules/skyrl-dev-pickle-rce/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "skyrl-tinker-hijack",
@@ -972,7 +1032,11 @@
       ],
       "audit_refs": [
         "trident/modules/skyrl-tinker-hijack/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "slime-weight-pull-poison",
@@ -1017,7 +1081,11 @@
       ],
       "audit_refs": [
         "trident/modules/slime-weight-pull-poison/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "verl-checkpoint-pickle",
@@ -1065,7 +1133,11 @@
       ],
       "audit_refs": [
         "trident/modules/verl-checkpoint-pickle/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "verl-hdfs-command-injection",
@@ -1113,7 +1185,11 @@
       ],
       "audit_refs": [
         "trident/modules/verl-hdfs-command-injection/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "lora-adapter-injection",
@@ -1157,7 +1233,11 @@
       ],
       "audit_refs": [
         "trident/modules/lora-adapter-injection/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "kv-cache-integrity-poison",
@@ -1207,7 +1287,11 @@
       "audit_refs": [
         "trident/modules/kv-cache-integrity-poison/run.py",
         "docs/LONG-CONTEXT.md"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "checkpoint-shard-poison",
@@ -1254,7 +1338,11 @@
       ],
       "audit_refs": [
         "trident/modules/checkpoint-shard-poison/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "nccl-collective-join",
@@ -1301,7 +1389,11 @@
       ],
       "audit_refs": [
         "trident/modules/nccl-collective-join/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "djev-open-proxy",
@@ -1349,7 +1441,11 @@
       ],
       "audit_refs": [
         "trident/modules/djev-open-proxy/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "ssrf-imds-credential",
@@ -1396,7 +1492,11 @@
       ],
       "audit_refs": [
         "trident/modules/ssrf-imds-credential/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "reward-model-abuse",
@@ -1444,7 +1544,11 @@
       ],
       "audit_refs": [
         "trident/modules/reward-model-abuse/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "trust-remote-code-supply-chain",
@@ -1492,7 +1596,11 @@
       ],
       "audit_refs": [
         "trident/modules/trust-remote-code-supply-chain/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "aigateway-fingerprint",
@@ -1539,7 +1647,11 @@
       "audit_refs": [
         "trident/modules/aigateway-fingerprint/run.py",
         "docs/AI-GATEWAY.md"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "aigateway-auth-bypass",
@@ -1588,7 +1700,11 @@
       ],
       "audit_refs": [
         "trident/modules/aigateway-auth-bypass/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "aigateway-upstream-key-exfil",
@@ -1632,7 +1748,11 @@
       ],
       "audit_refs": [
         "trident/modules/aigateway-upstream-key-exfil/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "aigateway-route-hijack",
@@ -1677,7 +1797,11 @@
       ],
       "audit_refs": [
         "trident/modules/aigateway-route-hijack/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "aigateway-cache-cross-tenant",
@@ -1725,7 +1849,11 @@
       ],
       "audit_refs": [
         "trident/modules/aigateway-cache-cross-tenant/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "aigateway-quota-bypass",
@@ -1773,7 +1901,11 @@
       ],
       "audit_refs": [
         "trident/modules/aigateway-quota-bypass/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "aigateway-log-pii-leak",
@@ -1818,7 +1950,11 @@
       ],
       "audit_refs": [
         "trident/modules/aigateway-log-pii-leak/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "aigateway-guardrail-bypass",
@@ -1865,7 +2001,11 @@
       ],
       "audit_refs": [
         "trident/modules/aigateway-guardrail-bypass/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "defense-bypass-elkeid",
@@ -1913,7 +2053,11 @@
       "audit_refs": [
         "trident/modules/defense-bypass-elkeid/run.py",
         "progress.md 任务「防护产品绕过模块族」"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "defense-bypass-falco",
@@ -1960,7 +2104,11 @@
       ],
       "audit_refs": [
         "trident/modules/defense-bypass-falco/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "defense-bypass-tetragon",
@@ -2007,7 +2155,11 @@
       ],
       "audit_refs": [
         "trident/modules/defense-bypass-tetragon/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "defense-bypass-kubearmor",
@@ -2054,7 +2206,11 @@
       ],
       "audit_refs": [
         "trident/modules/defense-bypass-kubearmor/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "defense-bypass-agentsmith",
@@ -2101,7 +2257,11 @@
       ],
       "audit_refs": [
         "trident/modules/defense-bypass-agentsmith/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "defense-bypass-hostagent",
@@ -2148,7 +2308,11 @@
       ],
       "audit_refs": [
         "trident/modules/defense-bypass-hostagent/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "defense-bypass-admission",
@@ -2195,7 +2359,11 @@
       ],
       "audit_refs": [
         "trident/modules/defense-bypass-admission/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "defense-bypass-imagescan",
@@ -2242,7 +2410,11 @@
       ],
       "audit_refs": [
         "trident/modules/defense-bypass-imagescan/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "defense-bypass-veinmind",
@@ -2289,7 +2461,11 @@
       ],
       "audit_refs": [
         "trident/modules/defense-bypass-veinmind/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "defense-bypass-netobserv",
@@ -2337,7 +2513,11 @@
       ],
       "audit_refs": [
         "trident/modules/defense-bypass-netobserv/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "defense-bypass-waf-inference",
@@ -2384,7 +2564,11 @@
       ],
       "audit_refs": [
         "trident/modules/defense-bypass-waf-inference/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "overprivileged-sa-escalation",
@@ -2446,7 +2630,11 @@
       ],
       "audit_refs": [
         "trident/modules/overprivileged-sa-escalation/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "privileged-gpu-pod-escape",
@@ -2508,7 +2696,11 @@
       ],
       "audit_refs": [
         "trident/modules/privileged-gpu-pod-escape/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "runtime-socket-escape",
@@ -2569,7 +2761,11 @@
       ],
       "audit_refs": [
         "trident/modules/runtime-socket-escape/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "kuberay-operator-escalation",
@@ -2618,6 +2814,14 @@
       ],
       "audit_refs": [
         "trident/modules/kuberay-operator-escalation/run.py"
+      ],
+      "verified": false,
+      "verification_status": "static-only",
+      "verification_cves": {
+        "KUBERAY-ADV-2026-01": "static-only"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/result.json"
       ]
     },
     {
@@ -2667,7 +2871,11 @@
       ],
       "audit_refs": [
         "trident/modules/vllm-operator-rbac-escalation/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "lws-secrets-lateral",
@@ -2716,7 +2924,11 @@
       ],
       "audit_refs": [
         "trident/modules/lws-secrets-lateral/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "metadata-egress",
@@ -2777,7 +2989,11 @@
       ],
       "audit_refs": [
         "trident/modules/metadata-egress/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "outbound-ssrf",
@@ -2826,7 +3042,11 @@
       ],
       "audit_refs": [
         "trident/modules/outbound-ssrf/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "long-context-window-exhaustion",
@@ -2875,7 +3095,11 @@
       ],
       "audit_refs": [
         "trident/modules/long-context-window-exhaustion/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "context-limit-bypass",
@@ -2924,7 +3148,11 @@
       ],
       "audit_refs": [
         "trident/modules/context-limit-bypass/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "gpu-tenant-residue",
@@ -2973,7 +3201,11 @@
       ],
       "audit_refs": [
         "trident/modules/gpu-tenant-residue/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "kv-oom-bomb",
@@ -3022,7 +3254,11 @@
       ],
       "audit_refs": [
         "trident/modules/kv-oom-bomb/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "multi-cloud-imds-credentials",
@@ -3083,7 +3319,11 @@
       ],
       "audit_refs": [
         "trident/modules/multi-cloud-imds-credentials/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "model-registry-exposure",
@@ -3132,7 +3372,11 @@
       ],
       "audit_refs": [
         "trident/modules/model-registry-exposure/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "vector-db-exposure",
@@ -3181,7 +3425,11 @@
       ],
       "audit_refs": [
         "trident/modules/vector-db-exposure/run.py"
-      ]
+      ],
+      "verified": false,
+      "verification_status": "not-cve",
+      "verification_cves": {},
+      "verification_evidence": []
     },
     {
       "module": "ray-job-marker-rce",
@@ -3236,6 +3484,20 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/ray-job-marker-rce/run.py"
+      ],
+      "verified": false,
+      "verification_status": "static-only",
+      "verification_cves": {
+        "CVE-2023-48022": "static-only",
+        "CVE-2023-48023": "static-only",
+        "CVE-2026-32981": "static-only",
+        "KUBERAY-ADV-2026-01": "static-only"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/ray/CVE-2023-48022/result.json",
+        "lab/upstream_verify/cases/ray/CVE-2023-48023/result.json",
+        "lab/upstream_verify/cases/ray/CVE-2026-32981/result.json",
+        "lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/result.json"
       ]
     },
     {
@@ -3287,6 +3549,20 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/sglang-zmq-pickle-rce/run.py"
+      ],
+      "verified": false,
+      "verification_status": "partial",
+      "verification_cves": {
+        "CVE-2026-3059": "verified",
+        "CVE-2026-3060": "verified",
+        "CVE-2026-7301": "static-only",
+        "CVE-2026-7302": "static-only"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/sglang/CVE-2026-3059/result.json",
+        "lab/upstream_verify/cases/sglang/CVE-2026-3060/result.json",
+        "lab/upstream_verify/cases/sglang/CVE-2026-7301/result.json",
+        "lab/upstream_verify/cases/sglang/CVE-2026-7302/result.json"
       ]
     },
     {
@@ -3332,6 +3608,14 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/sglang-route-poison/run.py"
+      ],
+      "verified": false,
+      "verification_status": "static-only",
+      "verification_cves": {
+        "CVE-2026-92972": "static-only"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/sglang/CVE-2026-92972/result.json"
       ]
     },
     {
@@ -3377,6 +3661,14 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/sglang-weight-exfil/run.py"
+      ],
+      "verified": false,
+      "verification_status": "static-only",
+      "verification_cves": {
+        "CVE-2026-15978": "static-only"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/sglang/CVE-2026-15978/result.json"
       ]
     },
     {
@@ -3426,6 +3718,18 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/vllm-pickle-pipe-rce/run.py"
+      ],
+      "verified": true,
+      "verification_status": "verified",
+      "verification_cves": {
+        "CVE-2025-32444": "verified",
+        "CVE-2025-29783": "verified",
+        "CVE-2025-47277": "verified"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/vllm/CVE-2025-32444/result.json",
+        "lab/upstream_verify/cases/vllm/CVE-2025-29783/result.json",
+        "lab/upstream_verify/cases/vllm/CVE-2025-47277/result.json"
       ]
     },
     {
@@ -3477,6 +3781,16 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/litellm-default-key-exfil/run.py"
+      ],
+      "verified": false,
+      "verification_status": "static-only",
+      "verification_cves": {
+        "LITELLM-DEFAULT-KEY": "static-only",
+        "CVE-2026-4993": "static-only"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/litellm/LITELLM-DEFAULT-KEY/result.json",
+        "lab/upstream_verify/cases/wandb/CVE-2026-4993/result.json"
       ]
     },
     {
@@ -3530,6 +3844,22 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/litellm-config-update-rce/run.py"
+      ],
+      "verified": false,
+      "verification_status": "partial",
+      "verification_cves": {
+        "CVE-2026-35029": "static-only",
+        "CVE-2026-40217": "verified",
+        "CVE-2026-42203": "verified",
+        "CVE-2026-42208": "static-only",
+        "CVE-2026-47102": "static-only"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/litellm/CVE-2026-35029/result.json",
+        "lab/upstream_verify/cases/litellm/CVE-2026-40217/result.json",
+        "lab/upstream_verify/cases/litellm/CVE-2026-42203/result.json",
+        "lab/upstream_verify/cases/litellm/CVE-2026-42208/result.json",
+        "lab/upstream_verify/cases/litellm/CVE-2026-47102/result.json"
       ]
     },
     {
@@ -3582,6 +3912,14 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/ipmi-cipher-zero-bypass/run.py"
+      ],
+      "verified": false,
+      "verification_status": "unsupported",
+      "verification_cves": {
+        "CVE-2013-4786": "unsupported"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/bmc/CVE-2013-4786/result.json"
       ]
     },
     {
@@ -3633,6 +3971,16 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/redfish-default-credentials/run.py"
+      ],
+      "verified": false,
+      "verification_status": "unsupported",
+      "verification_cves": {
+        "CVE-2023-34329": "unsupported",
+        "CVE-2017-12542": "unsupported"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/bmc/CVE-2023-34329/result.json",
+        "lab/upstream_verify/cases/bmc/CVE-2017-12542/result.json"
       ]
     },
     {
@@ -3680,6 +4028,16 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/sonic-config-plane-write/run.py"
+      ],
+      "verified": false,
+      "verification_status": "unsupported",
+      "verification_cves": {
+        "CVE-2025-38741": "unsupported",
+        "CVE-2025-23374": "unsupported"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/sonic/CVE-2025-38741/result.json",
+        "lab/upstream_verify/cases/sonic/CVE-2025-23374/result.json"
       ]
     },
     {
@@ -3728,6 +4086,14 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/sonic-rsyslog-injection/run.py"
+      ],
+      "verified": false,
+      "verification_status": "unsupported",
+      "verification_cves": {
+        "GHSA-h26v-922j-28cg": "unsupported"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/sonic/GHSA-h26v-922j-28cg/result.json"
       ]
     },
     {
@@ -3774,6 +4140,16 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/cumulus-nvue-injection/run.py"
+      ],
+      "verified": false,
+      "verification_status": "unsupported",
+      "verification_cves": {
+        "CVE-2025-33180": "unsupported",
+        "CVE-2026-24184": "unsupported"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/cumulus/CVE-2025-33180/result.json",
+        "lab/upstream_verify/cases/cumulus/CVE-2026-24184/result.json"
       ]
     },
     {
@@ -3831,6 +4207,18 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/runc-escape-detect/run.py"
+      ],
+      "verified": false,
+      "verification_status": "unsupported",
+      "verification_cves": {
+        "CVE-2024-21626": "unsupported",
+        "CVE-2022-0492": "unsupported",
+        "CVE-2025-31133": "unsupported"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/runc/CVE-2024-21626/result.json",
+        "lab/upstream_verify/cases/linux-kernel/CVE-2022-0492/result.json",
+        "lab/upstream_verify/cases/runc/CVE-2025-31133/result.json"
       ]
     },
     {
@@ -3883,6 +4271,14 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/containerd-shim-escape-detect/run.py"
+      ],
+      "verified": false,
+      "verification_status": "unsupported",
+      "verification_cves": {
+        "CVE-2020-15257": "unsupported"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/containerd/CVE-2020-15257/result.json"
       ]
     },
     {
@@ -3937,6 +4333,16 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/kubelet-gitrepo-exec-detect/run.py"
+      ],
+      "verified": false,
+      "verification_status": "static-only",
+      "verification_cves": {
+        "CVE-2024-10220": "static-only",
+        "CVE-2024-3177": "static-only"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/kubernetes/CVE-2024-10220/result.json",
+        "lab/upstream_verify/cases/kubernetes/CVE-2024-3177/result.json"
       ]
     },
     {
@@ -3993,6 +4399,18 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/nvidia-toolkit-escape-detect/run.py"
+      ],
+      "verified": false,
+      "verification_status": "unsupported",
+      "verification_cves": {
+        "CVE-2024-0132": "unsupported",
+        "CVE-2024-0133": "unsupported",
+        "CVE-2025-23267": "unsupported"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/nvidia/CVE-2024-0132/result.json",
+        "lab/upstream_verify/cases/nvidia/CVE-2024-0133/result.json",
+        "lab/upstream_verify/cases/nvidia/CVE-2025-23267/result.json"
       ]
     },
     {
@@ -4045,6 +4463,14 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/gpu-operator-driver-audit/run.py"
+      ],
+      "verified": false,
+      "verification_status": "unsupported",
+      "verification_cves": {
+        "CVE-2025-23266": "unsupported"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/nvidia/CVE-2025-23266/result.json"
       ]
     },
     {
@@ -4093,6 +4519,18 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/megatron-checkpoint-rce/run.py"
+      ],
+      "verified": false,
+      "verification_status": "partial",
+      "verification_cves": {
+        "CVE-2025-23354": "static-only",
+        "CVE-2025-33247": "static-only",
+        "CVE-2026-65110": "verified"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/megatron/CVE-2025-23354/result.json",
+        "lab/upstream_verify/cases/megatron/CVE-2025-33247/result.json",
+        "lab/upstream_verify/cases/megatron/CVE-2026-65110/result.json"
       ]
     },
     {
@@ -4138,6 +4576,14 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/deepspeed-checkpoint-rce/run.py"
+      ],
+      "verified": true,
+      "verification_status": "verified",
+      "verification_cves": {
+        "CVE-2024-43497": "verified"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/deepspeed/CVE-2024-43497/result.json"
       ]
     },
     {
@@ -4182,6 +4628,14 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/torch-weights-bypass-rce/run.py"
+      ],
+      "verified": true,
+      "verification_status": "verified",
+      "verification_cves": {
+        "CVE-2025-32434": "verified"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/pytorch/CVE-2025-32434/result.json"
       ]
     },
     {
@@ -4227,6 +4681,14 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/mlflow-trace-write/run.py"
+      ],
+      "verified": true,
+      "verification_status": "verified",
+      "verification_cves": {
+        "CVE-2026-53995": "verified"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/mlflow/CVE-2026-53995/result.json"
       ]
     },
     {
@@ -4277,6 +4739,16 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/mlflow-model-rce/run.py"
+      ],
+      "verified": false,
+      "verification_status": "partial",
+      "verification_cves": {
+        "CVE-2024-0520": "verified",
+        "CVE-2024-37061": "static-only"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/mlflow/CVE-2024-0520/result.json",
+        "lab/upstream_verify/cases/mlflow/CVE-2024-37061/result.json"
       ]
     },
     {
@@ -4326,6 +4798,18 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/dify-code-node-escape/run.py"
+      ],
+      "verified": false,
+      "verification_status": "static-only",
+      "verification_cves": {
+        "CVE-2025-3466": "static-only",
+        "CVE-2025-63387": "static-only",
+        "CVE-2025-56520": "static-only"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/dify/CVE-2025-3466/result.json",
+        "lab/upstream_verify/cases/dify/CVE-2025-63387/result.json",
+        "lab/upstream_verify/cases/dify/CVE-2025-56520/result.json"
       ]
     },
     {
@@ -4374,6 +4858,18 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/open-webui-file-overwrite/run.py"
+      ],
+      "verified": false,
+      "verification_status": "static-only",
+      "verification_cves": {
+        "CVE-2026-28786": "static-only",
+        "CVE-2026-28788": "static-only",
+        "CVE-2025-64496": "static-only"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/open-webui/CVE-2026-28786/result.json",
+        "lab/upstream_verify/cases/open-webui/CVE-2026-28788/result.json",
+        "lab/upstream_verify/cases/open-webui/CVE-2025-64496/result.json"
       ]
     },
     {
@@ -4423,6 +4919,14 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/hami-scheduler-auth-gap/run.py"
+      ],
+      "verified": false,
+      "verification_status": "unsupported",
+      "verification_cves": {
+        "HAMI-ADV-2026-01": "unsupported"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/hami/HAMI-ADV-2026-01/result.json"
       ]
     },
     {
@@ -4475,6 +4979,14 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/cgpu-isolation-audit/run.py"
+      ],
+      "verified": false,
+      "verification_status": "unsupported",
+      "verification_cves": {
+        "CGPU-ADV-2026-01": "unsupported"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/cgpu/CGPU-ADV-2026-01/result.json"
       ]
     },
     {
@@ -4527,6 +5039,14 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/lws-leader-endpoint-audit/run.py"
+      ],
+      "verified": false,
+      "verification_status": "static-only",
+      "verification_cves": {
+        "LWS-ADV-2026-01": "static-only"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/lws/LWS-ADV-2026-01/result.json"
       ]
     },
     {
@@ -4576,7 +5096,16 @@
       "audit_refs": [
         "docs/CVE-CATALOG.md",
         "trident/modules/vllm-timing-oracle/run.py"
+      ],
+      "verified": false,
+      "verification_status": "static-only",
+      "verification_cves": {
+        "CVE-2025-59425": "static-only"
+      },
+      "verification_evidence": [
+        "lab/upstream_verify/cases/vllm/CVE-2025-59425/result.json"
       ]
     }
-  ]
+  ],
+  "verification_note": "2026-10-26 dynamic verification pipeline: verified / partial / static-only / unsupported aggregated from the CVE registry; verification_evidence points to per-CVE result.json. not-cve = no CVE catalog mapping. See docs/EXPLOIT-VERIFICATION.md."
 }

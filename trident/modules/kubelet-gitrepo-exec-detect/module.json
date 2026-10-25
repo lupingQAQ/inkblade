@@ -17,5 +17,15 @@
   },
   "produces": "kubelet-gitrepo",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "kubelet-gitrepo"
+  "combo_signature": "kubelet-gitrepo",
+  "verified": false,
+  "verification_status": "static-only",
+  "verification_cves": {
+    "CVE-2024-10220": "static-only",
+    "CVE-2024-3177": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/kubernetes/CVE-2024-10220/result.json",
+    "lab/upstream_verify/cases/kubernetes/CVE-2024-3177/result.json"
+  ]
 }

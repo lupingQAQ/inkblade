@@ -17,5 +17,13 @@
   },
   "produces": "containerd-shim",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
-  "combo_signature": "containerd-shim"
+  "combo_signature": "containerd-shim",
+  "verified": false,
+  "verification_status": "unsupported",
+  "verification_cves": {
+    "CVE-2020-15257": "unsupported"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/containerd/CVE-2020-15257/result.json"
+  ]
 }

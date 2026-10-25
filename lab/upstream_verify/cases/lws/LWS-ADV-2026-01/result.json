@@ -1,0 +1,65 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "LWS-ADV-2026-01",
+ "source": "cve",
+ "component": "lws",
+ "title": "LWS leader/worker 拓扑信任与地址注入面",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-advisory",
+ "verified": false,
+ "module": "lws-leader-endpoint-audit",
+ "version": "所有 LWS 版本（依赖 CRD 模板与网络策略）",
+ "version_ref": {
+  "kind": "advisory",
+  "version": "所有 LWS 版本（依赖 CRD 模板与网络策略）"
+ },
+ "version_hash": {
+  "kind": "advisory",
+  "version": "所有 LWS 版本（依赖 CRD 模板与网络策略）",
+  "repo": null,
+  "tag": null,
+  "commit": null,
+  "package": null,
+  "wheel_sha256": null,
+  "advisory": "https://lws.sigs.k8s.io/docs/concepts/leaderworkerset",
+  "advisory_sha256": "fbfa685e91216d325b3d87d2bdeb8c89f316df2368a66e04c167e20ff0971752"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/lws/LWS-ADV-2026-01/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.079,
+ "started_at": "2026-10-25T18:06:58+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-LWS-ADV-2026-01",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/lws/LWS-ADV-2026-01/evidence/log.txt",
+   "sha256": "c0552516e2e764f24609f13f82b9fe9836b1c2d3cdd208a1a53ca68d05a749a8",
+   "size": 197
+  },
+  {
+   "path": "lab/upstream_verify/cases/lws/LWS-ADV-2026-01/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/lws/LWS-ADV-2026-01/evidence/static-check.json",
+   "sha256": "0187150994da3954c1d0c228bd6d28edc4e619f4b26d0a0f7909aa0920f885f4",
+   "size": 806
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "6d4bb007a9f74aa475495dc443a83b000ddcd651e0d5b49160175683161a000e",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"LWS-ADV-2026-01\"}\n",
+ "stderr": "",
+ "notes": "LWS leader/worker address trust is a topology/CRD issue; static-only."
+}

@@ -1,0 +1,57 @@
+{
+ "id": "deepspeed-engine-py-env-rank-read-l1964-regex",
+ "source": "mining",
+ "title": "deepspeed: env-rank-read @ engine.py:1964",
+ "version": "v0.19.8",
+ "version_ref": {
+  "kind": "git",
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8",
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "deepspeed/runtime/engine.py",
+  "line": 1964,
+  "function": "",
+  "snippet": "os.environ['LOCAL_RANK'] = local_rank",
+  "source": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/runtime/engine.py",
+  "source_sha256": "e35eaa313874d2b3bd5bc9169dad35405819df2dfb1e7abdffa0c2f03db36c75",
+  "note": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-deepspeed-engine-py-env-rank-read-l1964-regex",
+ "notes": "Rule hit is a legitimate framework call; no untrusted-data sink is reached.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Rule hit is a legitimate framework call; no untrusted-data sink is reached.",
+ "static_verdict": "false-positive",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 4,
+  "rule": "env-rank-read",
+  "channel": "regex",
+  "file": "engine.py",
+  "line": 1964,
+  "snippet": "os.environ['LOCAL_RANK'] = local_rank",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "deepspeed"
+}

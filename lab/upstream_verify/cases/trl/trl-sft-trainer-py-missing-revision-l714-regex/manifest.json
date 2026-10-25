@@ -1,0 +1,57 @@
+{
+ "id": "trl-sft-trainer-py-missing-revision-l714-regex",
+ "source": "mining",
+ "title": "trl: missing-revision @ sft_trainer.py:714",
+ "version": "v1.16.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "huggingface/trl",
+  "tag": "v1.16.0",
+  "commit": "1b5c75ed94b7387f42532adb090c935166d4878d"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "trl/trainer/sft_trainer.py",
+  "line": 714,
+  "function": "",
+  "snippet": "processing_class = AutoProcessor.from_pretrained(",
+  "source": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/trainer/sft_trainer.py",
+  "source_sha256": "a93001470796c6502a4cf8886a13abbd8280e653357b5a95eb1abd53c6868205",
+  "note": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-trl-sft-trainer-py-missing-revision-l714-regex",
+ "notes": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive.",
+ "static_verdict": "supply-chain-gap",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 64,
+  "rule": "missing-revision",
+  "channel": "regex",
+  "file": "sft_trainer.py",
+  "line": 714,
+  "snippet": "processing_class = AutoProcessor.from_pretrained(",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "trl"
+}

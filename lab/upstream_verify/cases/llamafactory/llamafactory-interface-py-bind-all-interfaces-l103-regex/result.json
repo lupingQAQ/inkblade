@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "llamafactory-interface-py-bind-all-interfaces-l103-regex",
+ "source": "mining",
+ "component": "llamafactory",
+ "title": "llamafactory: bind-all-interfaces @ interface.py:103",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v0.9.5",
+ "version_ref": {
+  "kind": "git",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v0.9.5",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/webui/interface.py",
+  "artifact_sha256": "2a7cb77e442137d92d361eed95d430e362b57a006acb49750d8049b5f740b5d8",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-bind-all-interfaces-l103-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.088,
+ "started_at": "2026-10-25T18:06:56+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-llamafactory-interface-py-bind-all-interfaces-l103-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-bind-all-interfaces-l103-regex/evidence/log.txt",
+   "sha256": "9b5c9eb5d86647ca87463ab560f62024349d9833f8c0b8ef636b1030f1c15558",
+   "size": 288
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-bind-all-interfaces-l103-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-bind-all-interfaces-l103-regex/evidence/static-check.json",
+   "sha256": "0e9003ab9e8a960fe1455ca8c789fa9c82db4651aa02e1ee84d6c2154c2cf0d0",
+   "size": 1247
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "fd872bbcad939993da248625bdc525e479051d6c7f12da5dee9e1fea189cf21f",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-interface-py-bind-all-interfaces-l103-regex\"}\n",
+ "stderr": "",
+ "notes": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution."
+}

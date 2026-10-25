@@ -1,0 +1,55 @@
+{
+ "id": "CGPU-ADV-2026-01",
+ "source": "cve",
+ "title": "策略型 GPU 隔离边界（无独立 CVE）",
+ "version": "cGPU 各版本（隔离依赖驱动/运行时策略）",
+ "version_ref": {
+  "kind": "vendor",
+  "version": "cGPU 各版本（隔离依赖驱动/运行时策略）"
+ },
+ "install": "not installable on this host",
+ "root_cause": {
+  "file": "n/a (vendor firmware / Linux runtime)",
+  "line": 0,
+  "function": "",
+  "snippet": "",
+  "source": null,
+  "note": "绕过显存/算力配额或读取残留显存（策略面，无公开 CVE）"
+ },
+ "preconditions": [
+  "vendor hardware or Linux runtime required"
+ ],
+ "steps": [
+  "record why this host cannot host the vulnerable path",
+  "do not claim exploitation"
+ ],
+ "expected_evidence": [
+  "unsupported.json with explicit reason"
+ ],
+ "cleanup": "none (no exploit executed)",
+ "status": "unsupported",
+ "method": "unsupported",
+ "module": "cgpu-isolation-audit",
+ "python": null,
+ "advisory": "https://www.alibabacloud.com/help/en/ack/ack-managed-and-ack-dedicated/user-guide/use-cgpu-to-share-gpus",
+ "marker_text": "TRIDENT-UV-CGPU-ADV-2026-01",
+ "notes": "Hardware/OS-dependent path; not exercised on this host. Not counted as verified.",
+ "static_evidence_level": "advisory",
+ "static_analysis": "",
+ "static_verdict": "",
+ "unsupported": {
+  "reason": "cGPU isolation audit requires Alibaba Cloud cGPU runtime/GPU",
+  "requires": [
+   "Alibaba cGPU",
+   "cGPU 各版本（隔离依赖驱动/运行时策略）"
+  ],
+  "blocked_by": [
+   "Windows host",
+   "no GPU",
+   "no Linux container runtime",
+   "no vendor BMC/NOS"
+  ]
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "cgpu"
+}

@@ -1,0 +1,57 @@
+{
+ "id": "trl-utils-py-missing-revision-l1366-regex",
+ "source": "mining",
+ "title": "trl: missing-revision @ utils.py:1366",
+ "version": "v1.16.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "huggingface/trl",
+  "tag": "v1.16.0",
+  "commit": "1b5c75ed94b7387f42532adb090c935166d4878d"
+ },
+ "install": "git checkout <pinned tag> (source is vendored under lab/upstream_verify/upstream/)",
+ "root_cause": {
+  "file": "trl/trainer/utils.py",
+  "line": 1366,
+  "function": "",
+  "snippet": "model = architecture.from_pretrained(model_id, **kwargs)",
+  "source": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/trainer/utils.py",
+  "source_sha256": "a3c44bd9e7f332f3087ef1943e89ea6f4ee99c0480ff64f13d586c72a51578b1",
+  "note": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."
+ },
+ "preconditions": [
+  "pinned upstream source or advisory is available"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-trl-utils-py-missing-revision-l1366-regex",
+ "notes": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive.",
+ "static_verdict": "supply-chain-gap",
+ "unsupported": {},
+ "mining": {
+  "candidate_index": 68,
+  "rule": "missing-revision",
+  "channel": "regex",
+  "file": "utils.py",
+  "line": 1366,
+  "snippet": "model = architecture.from_pretrained(model_id, **kwargs)",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "trl"
+}
