@@ -533,6 +533,8 @@ class _LabHTTPServer(ThreadingHTTPServer):
             "ray_jobs": {},
             "aws_tokens": set(),
         }
+        self.lab_stats_lock = threading.Lock()
+        self.lab_stats = {"total": 0, "hits": []}
 
 
 class _LabHandler(BaseHTTPRequestHandler):
@@ -544,6 +546,18 @@ class _LabHandler(BaseHTTPRequestHandler):
 
     # -- 基础设施 -----------------------------------------------------------
 
+    def _count(self, status: int) -> None:
+        """请求计数：artex same-target bench 的靶场侧证据（每响应一条，含 epoch ms）。"""
+        server = self.server  # type: _LabHTTPServer
+        with server.lab_stats_lock:
+            server.lab_stats["total"] += 1
+            server.lab_stats["hits"].append({
+                "t_epoch_ms": int(time.time() * 1000),
+                "method": str(self.command),
+                "path": str(self.path.split("?")[0]),
+                "status": int(status),
+            })
+
     def _send(self, status: int, payload, extra_headers: dict | None = None):
         if isinstance(payload, str):
             body = payload.encode("utf-8")
@@ -551,6 +565,7 @@ class _LabHandler(BaseHTTPRequestHandler):
         else:
             body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
             content_type = "application/json; charset=utf-8"
+        self._count(status)
         self.send_response(status)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
@@ -584,6 +599,17 @@ class _LabHandler(BaseHTTPRequestHandler):
     def _dispatch(self, method: str):
         split = urlsplit(self.path)
         norm = _normalize(split.path)
+        # 请求统计端点（基准证据）：GET 读、POST 清零；不在 ROUTE_TABLE 内。
+        if norm == "/__stats__":
+            if method == "POST":
+                with self.server.lab_stats_lock:  # type: ignore[attr-defined]
+                    self.server.lab_stats = {"total": 0, "hits": []}  # type: ignore[attr-defined]
+                self._send(200, {"ok": True, "reset": True})
+            else:
+                with self.server.lab_stats_lock:  # type: ignore[attr-defined]
+                    snapshot = dict(self.server.lab_stats)  # type: ignore[attr-defined]
+                self._send(200, snapshot)
+            return
         entry = _resolve(method, norm, self.headers)
         if entry is None:
             if any(_entries_for(other, norm) for other in ("GET", "POST", "PUT") if other != method):
@@ -649,6 +675,17 @@ class Server:
     def routes(self) -> list[dict]:
         """本地返回路由清单（等价于 GET /__routes__ 的 routes 字段）。"""
         return [{key: value for key, value in entry.items() if key != "behavior"} for entry in ROUTE_TABLE]
+
+    def stats(self) -> dict:
+        """请求计数快照（含每条命中 epoch ms），bench 证据用。"""
+        httpd = self._httpd  # type: _LabHTTPServer
+        with httpd.lab_stats_lock:
+            return dict(httpd.lab_stats)
+
+    def stats_reset(self) -> None:
+        httpd = self._httpd  # type: _LabHTTPServer
+        with httpd.lab_stats_lock:
+            httpd.lab_stats = {"total": 0, "hits": []}
 
     def shutdown(self) -> None:
         """停止监听并清理自建临时 root（幂等）。"""

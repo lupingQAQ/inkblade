@@ -173,7 +173,8 @@ class RawConsistencyTest(unittest.TestCase):
         self.assertEqual(self.data["api_latency"]["health"]["samples_ms"], expected)
 
     def test_task_matches_raw(self):
-        self.assertEqual(self.data["task_run"]["total_ms"], int(self.raw["TASK_MS"]))
+        total_raw = self.raw.get("TASK_TOTAL_MS") or self.raw.get("TASK_MS")
+        self.assertEqual(self.data["task_run"]["total_ms"], int(total_raw))
         self.assertEqual(self.data["task_run"]["final_status"], self.raw["TASK_FINAL_STATUS"])
 
     def test_disk_matches_raw(self):
@@ -199,19 +200,25 @@ class ProseMatchesJsonTest(unittest.TestCase):
         self.assertIn("QEMU", doc)
         self.assertIn("TCG", doc)
         self.assertIn("ruoji6/artex:v0.3.23", doc)
-        # 37 850 ms / 37.85 s cold start and 169.8 MiB idle RSS as reported
-        self.assertRegex(doc, r"37[\s.]?850")
+        # the cold start actually measured in this run must be quoted in the doc
+        self.assertIn(f"{data['cold_start']['artex_health_ms']}", doc)
         self.assertIn(f"{data['resources']['total_mib']['max']:.1f}", doc)
         for section in ("## 1. 环境", "## 2. 步骤", "## 3. 原始数据", "## 4. 与 Trident 对照",
                         "## 5. 复现", "## 6. 失败点"):
             self.assertIn(section, doc)
 
-    def test_doc_does_not_claim_a_completed_scan(self):
+    def test_doc_claims_completed_scan_only_with_same_target_evidence(self):
+        """同靶场声明必须与 same-target.json 的证据一致（撤销旧的“未达成”结论后新增的一致性锚）。"""
         doc = DOC.read_text(encoding="utf-8")
-        self.assertTrue(
-            ("未达成" in doc) or ("未跑到靶场" in doc) or ("NOT claimed" in doc),
-            "the report must state that the target scan was not demonstrated",
-        )
+        same = ART / "same-target.json"
+        self.assertTrue(same.is_file(), "same-target.json must ship with the report")
+        data = json.loads(same.read_text(encoding="utf-8"))
+        artex = data["artex"]
+        if "未达成" in doc or "未跑到靶场" in doc:
+            self.fail("the report still claims the same-target scan was not achieved")
+        self.assertIn("same-target", doc)
+        self.assertGreaterEqual(artex["target_hit_count"], 3)
+        self.assertEqual(artex["task_final_status"], "done")
 
 
 if __name__ == "__main__":

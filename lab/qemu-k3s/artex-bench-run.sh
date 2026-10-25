@@ -135,7 +135,13 @@ while [ "$S" -le "$STATS_SAMPLES" ]; do
 done
 
 # --- 5. one scan task against the shared mock target --------------------------
-TASK_BODY=$(printf '{"description":"ARTEX bench scan of mock target","goal":"Recon the target %s and report reachable endpoints. Stop after one or two tool calls; the LLM is a protocol mock."}' "$MOCK_TARGET")
+# same-target bench: the goal names the exact probe surface (route manifest,
+# unauth admin action, weight pull) so the scripted-planner mock and the
+# Trident chain flat-network-admin-plane-weight-poison exercise the same faces.
+now_epoch_ms() { date +%s%3N 2>/dev/null | awk '{ if (length($0) <= 10) printf "%d000", $0; else print $0 }'; }
+GOAL="Probe the authorized lab target $MOCK_TARGET without credentials: fetch its route manifest, exercise unauthenticated admin action and weight pull, and record confirmed endpoints as findings."
+DESC="ARTEX same-target bench scan of the Trident mock lab at $MOCK_TARGET (authorized lab)."
+TASK_BODY=$(printf '{"description":"%s","goal":"%s"}' "$DESC" "$GOAL")
 T2=$(now_ms)
 task_code=$(curl -s -o /tmp/task.json -w '%{http_code}' -m 60 -X POST \
     -H 'Content-Type: application/json' -H "$AUTH_HDR" \
@@ -144,25 +150,36 @@ TASK_ID=$(sed -n 's/.*"id"[[:space:]]*:[[:space:]]*"\([0-9]*\)".*/\1/p' /tmp/tas
 emit "TASK_HTTP=$task_code"
 emit "TASK_ID=$TASK_ID"
 emit "TASK_ACCEPT_MS=$(( $(now_ms) - T2 ))"
+emit "TASK_SUBMIT_EPOCH_MS=$(now_epoch_ms)"
 log "task create http=$task_code id=$TASK_ID"
 
 status=""
 elapsed=0
+S=1
 if [ -n "$TASK_ID" ]; then
     while [ "$elapsed" -lt "$TASK_TIMEOUT_S" ]; do
         curl -s -o /tmp/task-get.json -m 10 -H "$AUTH_HDR" \
             "http://127.0.0.1:8787/api/tasks/$TASK_ID" >/dev/null 2>&1 || true
         status=$(sed -n 's/.*"status"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' /tmp/task-get.json 2>/dev/null | head -1)
         emit "TASK_POLL=$elapsed,$status"
+        # RSS during the task window (docker stats while the task runs)
+        docker stats --no-stream --format '{{.Name}}|{{.MemUsage}}|{{.MemPerc}}|{{.CPUPerc}}' 2>/dev/null > /tmp/tstats.txt || true
+        joined=$(awk 'BEGIN{ORS=""} {if (NR>1) printf ";;"; printf "%s", $0} END{print ""}' /tmp/tstats.txt)
+        emit "TASK_STATS_$S=$joined"
+        S=$((S + 1))
         case "$status" in
-            done|failed) break ;;
+            done|failed|timeout) break ;;
         esac
         sleep 3
         elapsed=$((elapsed + 3))
     done
 fi
 emit "TASK_FINAL_STATUS=$status"
-emit "TASK_MS=$(( $(now_ms) - T2 ))"
+emit "TASK_TOTAL_MS=$(( $(now_ms) - T2 ))"
+emit "TASK_DONE_EPOCH_MS=$(now_epoch_ms)"
+# full task list JSON (findings / goals / tokens) as single-line evidence
+TASKS_JSON=$(curl -s -m 20 -H "$AUTH_HDR" http://127.0.0.1:8787/api/tasks)
+emit "TASKS_JSON=$TASKS_JSON"
 
 # --- 6. disk / image footprint ------------------------------------------------
 docker images --format '{{.Repository}}:{{.Tag}}|{{.Size}}|{{.ID}}' 2>/dev/null > /tmp/images.txt || true

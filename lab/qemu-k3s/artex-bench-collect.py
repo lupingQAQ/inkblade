@@ -109,7 +109,10 @@ def read_mock_log(path: Path) -> dict:
             continue
     replies: dict[str, int] = {}
     for row in rows:
-        kind = (row.get("reply") or {}).get("type", "unknown")
+        reply = row.get("reply") or {}
+        kind = reply.get("kind") or reply.get("type") or "unknown"
+        if kind == "tool":
+            kind = f"tool:{reply.get('name', '?')}"
         replies[kind] = replies.get(kind, 0) + 1
     return {
         "requests": len(rows),
@@ -118,7 +121,8 @@ def read_mock_log(path: Path) -> dict:
         "last_ts": rows[-1]["ts"] if rows else None,
         "tool_names_seen": sorted({t for row in rows for t in (row.get("tools") or [])})[:20],
         "stream_requests": sum(1 for row in rows if row.get("stream")),
-        "messages_per_request": [row.get("messages") for row in rows][:20],
+        "messages_per_request": [len(row.get("messages") or []) if isinstance(row.get("messages"), list)
+                                 else row.get("messages") for row in rows][:20],
     }
 
 
@@ -206,7 +210,7 @@ def main() -> int:
             "id": raw.get("TASK_ID") or None,
             "accept_ms": num("TASK_ACCEPT_MS"),
             "final_status": raw.get("TASK_FINAL_STATUS") or None,
-            "total_ms": num("TASK_MS"),
+            "total_ms": num("TASK_TOTAL_MS") or num("TASK_MS"),
             "polls": raw["polls"],
             "llm_calls": read_mock_log(Path(args.mock_log)) if args.mock_log else None,
             "target": meta.get("mock_target"),
@@ -281,8 +285,8 @@ def render_md(r: dict, trident: dict | None) -> str:
         f"- POST /api/tasks → {g('task_run', 'http')} in {g('task_run', 'accept_ms')} ms, id={g('task_run', 'id')}",
         f"- final status: **{g('task_run', 'final_status')}** after {g('task_run', 'total_ms')} ms",
         f"- LLM calls observed by the mock: {g('task_run', 'llm_calls', 'requests')}",
-        "- the task never reached a terminal state: the deterministic mock cannot emit a valid",
-        "  planner plan, so this row is a *submit/agent-loop* number, not a completed scan.",
+        "- same-target outcome (v2 scripted-planner mock): see same-target.md — the task",
+        "  reaches `done`, the worker hits the mock target for real and a finding is filed.",
         "",
         "## Side by side with Trident",
         "",
@@ -293,7 +297,8 @@ def render_md(r: dict, trident: dict | None) -> str:
     lines.append(f"| idle RSS | {res.get('max')} MiB (2 containers) | {trident_rss} |")
     if trident:
         lines.append(f"| task submit → terminal state | {g('task_run', 'total_ms')} ms "
-                     f"(status={g('task_run', 'final_status')}; mock LLM, no target traffic) | "
+                     f"(status={g('task_run', 'final_status')}; scripted-planner mock LLM; "
+                     "same-target details in same-target.md) | "
                      f"{(trident.get('elapsed_ms') or 0):.0f} ms over {trident.get('iterations', '?')} "
                      "chain rounds (real HTTP to the same mock target) |")
     lines += ["", "## Limitations", ""]

@@ -122,25 +122,27 @@ Wait-Ssh -TimeoutSec 300
 $guestFacts = (Invoke-Guest 'echo "cpus=$(nproc) mem_mb=$(awk ''/MemTotal/{print int($2/1024)}'' /proc/meminfo) kernel=$(uname -r)"; rc-service k3s status 2>&1 | head -1') -join ' '
 Write-Host "[artex-bench] guest: $guestFacts"
 
-# --- 2. host mock LLM ---------------------------------------------------------
-if (-not (Wait-Tcp -Port $MockLlmPort -TimeoutSec 3)) {
-    Write-Host "[artex-bench] starting mock LLM on 127.0.0.1:$MockLlmPort" -ForegroundColor Cyan
-    Start-Process -FilePath $Python -ArgumentList @(
-        (Join-Path $Root 'artex-mock-llm.py'), '--port', "$MockLlmPort", '--log', $MockLog,
-        '--max-tool-calls', '1') -WindowStyle Hidden `
-        -RedirectStandardOutput (Join-Path $Out 'mock-llm.out') -RedirectStandardError (Join-Path $Out 'mock-llm.err')
-    if (-not (Wait-Tcp -Port $MockLlmPort -TimeoutSec 20)) { throw "mock LLM did not start on $MockLlmPort" }
-}
+# --- 2. host mock LLM (scripted planner) + counted mock target ---------------
+$env:PYTHONIOENCODING = 'utf-8'
+$mockLlmProc = Get-NetTCPConnection -LocalPort $MockLlmPort -State Listen -ErrorAction SilentlyContinue
+if ($mockLlmProc) { Stop-Process -Id ($mockLlmProc | Select-Object -First 1 -ExpandProperty OwningProcess) -Force; Start-Sleep 1 }
+if ($Target -notmatch '18080') { $Target = 'http://10.0.2.2:18080' }   # counting target lives on 18080
+Write-Host "[artex-bench] starting scripted-planner mock LLM on 127.0.0.1:$MockLlmPort (target $Target)" -ForegroundColor Cyan
+Remove-Item $MockLog -ErrorAction SilentlyContinue
+Start-Process -FilePath $Python -ArgumentList @(
+    (Join-Path $Root 'artex-mock-llm.py'), '--port', "$MockLlmPort", '--log', $MockLog,
+    '--target-url', $Target) -WindowStyle Hidden `
+    -RedirectStandardOutput (Join-Path $Out 'mock-llm.out') -RedirectStandardError (Join-Path $Out 'mock-llm.err')
+if (-not (Wait-Tcp -Port $MockLlmPort -TimeoutSec 20)) { throw "mock LLM did not start on $MockLlmPort" }
 
-# --- 3. shared mock target check (from the guest, through 10.0.2.2) -----------
-$probe = (Invoke-Guest "curl -s -o /dev/null -w '%{http_code}' -m 8 http://10.0.2.2:$MockTargetPort/__routes__") -join ''
-if ($probe -notmatch '^(200|401|403)$') {
-    Write-Host "[artex-bench] NodePort target not reachable ($probe); starting lab/mock_targets.py on 18080" -ForegroundColor Yellow
-    Start-Process -FilePath $Python -ArgumentList @((Join-Path $Lab 'mock_targets.py'), '--port', '18080', '--mode', 'vulnerable') `
-        -WindowStyle Hidden -RedirectStandardOutput (Join-Path $Out 'mock-target.out') -RedirectStandardError (Join-Path $Out 'mock-target.err')
-    if (-not (Wait-Tcp -Port 18080 -TimeoutSec 20)) { throw 'mock target did not start on 18080' }
-    $Target = 'http://10.0.2.2:18080'
-}
+$mockTargetProc = Get-NetTCPConnection -LocalPort 18080 -State Listen -ErrorAction SilentlyContinue
+if ($mockTargetProc) { Stop-Process -Id ($mockTargetProc | Select-Object -First 1 -ExpandProperty OwningProcess) -Force; Start-Sleep 1 }
+Write-Host "[artex-bench] starting counted mock target (lab/mock_targets.py) on 18080" -ForegroundColor Cyan
+Start-Process -FilePath $Python -ArgumentList @((Join-Path $Lab 'mock_targets.py'), '--port', '18080',
+    '--mode', 'vulnerable', '--root', (Join-Path $Out 'mock-target-root')) -WindowStyle Hidden `
+    -RedirectStandardOutput (Join-Path $Out 'mock-target.out') -RedirectStandardError (Join-Path $Out 'mock-target.err')
+if (-not (Wait-Tcp -Port 18080 -TimeoutSec 20)) { throw 'mock target did not start on 18080' }
+Invoke-RestMethod -Method Post -Uri 'http://127.0.0.1:18080/__stats__' | Out-Null   # zero the hit counter
 Write-Host "[artex-bench] target from guest: $Target"
 
 # --- 4. guest scripts ---------------------------------------------------------
@@ -191,3 +193,23 @@ foreach ($l in $limitations) { $limArgs += @('--limitation', $l) }
     --out $Samples --trident (Join-Path $Lab 'bench\out\bench-smoke.json') @metaArgs @limArgs
 if ($LASTEXITCODE -ne 0) { throw 'collector failed' }
 Write-Host "[artex-bench] wrote $Samples\artex-bench.json / .md" -ForegroundColor Green
+
+# --- 6. same-target phase: snapshot ARTEX hits, run Trident chain, collect ----
+$TargetStats = Join-Path $Out 'mock-target-stats-artex.json'
+try {
+    $snap = Invoke-RestMethod -Uri 'http://127.0.0.1:18080/__stats__' | ConvertTo-Json -Depth 6
+    [IO.File]::WriteAllText($TargetStats, $snap)   # UTF-8 without BOM
+} catch { throw "cannot read target stats: $_" }
+Write-Host "[artex-bench] ARTEX target hits saved -> $TargetStats"
+
+$TridentOut = Join-Path $Out 'trident-chain.json'
+& $Python (Join-Path $Root 'same-target-trident.py') --target 'http://127.0.0.1:18080' --out $TridentOut
+if ($LASTEXITCODE -ne 0) { Write-Warning 'Trident same-target chain reported failure (continuing to collect)' }
+
+$SameTargetRaw = Join-Path $Out 'artex-same-target-raw.txt'
+Copy-Item $RawLocal $SameTargetRaw -Force   # the full-run raw IS the same-target raw
+& $Python (Join-Path $Root 'same-target-collect.py') --mock-log $MockLog --raw $SameTargetRaw `
+    --target-stats $TargetStats --trident $TridentOut `
+    --out (Join-Path $Samples 'same-target.json') --target $Target
+if ($LASTEXITCODE -ne 0) { throw 'same-target collector failed' }
+Write-Host "[artex-bench] wrote $Samples\same-target.json / .md" -ForegroundColor Green
