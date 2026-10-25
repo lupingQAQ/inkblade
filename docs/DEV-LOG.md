@@ -110,7 +110,7 @@ Ruling（本轮）：
 
 | 指标 | ARTEX（QEMU TCG） | Trident（宿主） | 来源 |
 |---|---:|---:|---|
-| 只读端点网格（N=10） | 124 端点：median-of-medians 11.19 ms；p95-of-medians 48.79 ms；max 3,026 ms（SSE 首响应超时） | 16 端点：median-of-medians 3.20 ms；p95-of-medians 10.82 ms；max 36.29 ms | `perf/grid/live-artex.json` / `live-trident.json` |
+| 只读端点网格（N=10） | 124 端点：median-of-medians 11.19 ms；p95-of-medians 48.79 ms；max 3,026 ms（SSE 首响应超时） | 16 端点：median-of-medians 2.12 ms；p95-of-medians 6.67 ms；max 31.41 ms | `perf/grid/live-artex.json` / `live-trident.json` |
 | 并发 1/4/16/32（rps） | 33.4 / 30.3 / 17.4 / 22.4（`/api/agents`，30 请求/档） | 138.6 / 297.7 / 286.3 / 268.0（`/api/v1/graph`，60 请求/档） | 同上，error_rate 均 0 |
 | 冷启动到可登录 | 37.85 s（PG ready 31.0 s） | 0.805 s（781/805/815 ms 中位） | `live-trident-extra.json` |
 | 空闲 / 16 并发峰值 RSS | 169.8 MiB（artex 67.4 + PG 102.9） | 28.1 / 33.0 MB | 同上 |

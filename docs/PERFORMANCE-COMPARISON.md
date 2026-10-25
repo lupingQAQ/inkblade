@@ -27,7 +27,7 @@
 | S3 单步（权重写） | 2,159 ms | 1.6 ms | 同靶场同语义请求（`/pull_weights`） |
 | S3 单步（管理面探测） | 159 ms | 1.9 ms | `/pause` 类请求 |
 | S3 Token 消耗 | in≈84,160 / out≈986（12 次 LLM） | **0** | ARTEX 为脚本化计划器，token 按请求体统计 |
-| S4 API 延迟（全端点网格） | 124 只读端点：median-of-medians **11.19 ms**，p95-of-medians 48.79 ms，median-of-p95 27.62 ms，p95-of-p95 127.01 ms，max 3,026 ms（`/api/update/stream` SSE 首响应超时） | 16 只读端点：median-of-medians **3.20 ms**，p95-of-medians 10.82 ms，median-of-p95 12.26 ms，p95-of-p95 25.61 ms，max 36.29 ms | 每端点 N=10；ARTEX 92/124 端点 2xx，32 个 0-2xx 为缺真实对象 id/权限域（401/404，延迟仍有效）；Trident 16/16 端点 2xx |
+| S4 API 延迟（全端点网格） | 124 只读端点：median-of-medians **11.19 ms**，p95-of-medians 48.79 ms，median-of-p95 27.62 ms，p95-of-p95 127.01 ms，max 3,026 ms（`/api/update/stream` SSE 首响应超时） | 16 只读端点：median-of-medians **2.12 ms**，p95-of-medians 6.67 ms，median-of-p95 4.14 ms，p95-of-p95 26.16 ms，max 31.41 ms | 每端点 N=10；ARTEX 92/124 端点 2xx，32 个 0-2xx 为缺真实对象 id/权限域（401/404，延迟仍有效）；Trident 16/16 端点 2xx |
 | S5 吞吐（并发曲线） | `/api/agents`：**33.4 / 30.3 / 17.4 / 22.4 rps**（1/4/16/32，error 0） | `/api/v1/graph`：**138.6 / 297.7 / 286.3 / 268.0 rps**（1/4/16/32，error 0） | 同档位同请求数密度不同（30 vs 60），只看曲线形状与量级；Trident 在 4 并发后进入 ~270–300 rps 平台（GIL+JSON 渲染） |
 | S6 负载峰值资源 | N/A（未测） | **峰值 33.0 MB**（16 并发 600 请求，50ms 采样 47 点；空闲 28.1 MB，压后 30.8 MB） | ARTEX 需 guest 内 `docker stats` 同步采样，本轮未接；不填数 |
 | S7 规模（10k 对象） | N/A（不支持同口径） | **1.645 s / 54 MB RSS**（11 侦察+可达性+规则生成，10,891 findings） | 合成快照；真 k3s 仅 204 对象点（TCG 限制） |
@@ -82,6 +82,6 @@ python -m lab.bench.perf_compare --routes reports/samples/perf/grid/routes-tride
 6. ARTEX 与 Trident 的**同并发密度**曲线（目前 30 vs 60 请求/档）：可复跑脚本对齐，本轮不做二次采样。
 
 > 结论边界：在已测维度上——冷启动 ≈47× 更快（805ms vs 37.85s，含 TCG 放大）、空闲内存 ≈6× 更省
-> （28.1MB vs 169.8MiB）、同靶场扫描 ≈128×（TCG 放大，非产品倍率）、全端点中位延迟 ≈3.5× 更低
-> （3.20ms vs 11.19ms）、并发量级 ≈8–16×（286 vs 17–22 rps @16）、token 0 vs 84k。
+> （28.1MB vs 169.8MiB）、同靶场扫描 ≈128×（TCG 放大，非产品倍率）、全端点中位延迟 ≈5× 更低
+> （2.12ms vs 11.19ms）、并发量级 ≈10–16×（286 vs 17–22 rps @16）、token 0 vs 84k。
 > **未测维度不作结论。**
