@@ -138,11 +138,13 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     routes = load_routes(Path(args.routes))
+    offline = bool(args.offline or not args.base)
     result = {
         "routes_file": _rel(args.routes), "route_count": len(routes),
         "base": args.base or None, "n": args.n, "query": args.query or None,
-        "measured_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "mode": "offline" if args.offline or not args.base else "live",
+        # 离线模式未发生测量：不写时间戳（否则每次重跑都改样张，破坏确定性）
+        "measured_at": None if offline else time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "mode": "offline" if offline else "live",
     }
     if result["mode"] == "offline":
         result["endpoints"] = [{"route": r.get("id"), "skipped": "offline"} for r in routes]
