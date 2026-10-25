@@ -15,6 +15,7 @@
 | `core/reflexion.py` | 运行后自反思：失败/降级 → 建议 → pending 技能 | **零执行** | `reflect/propose_skill/render_md` |
 | `core/a2a.py` | A2A agent card + task 状态机（只读委派）+ MCP stdio 客户端（只读工具） | 写技能/写工具拒绝 | `A2AServer/agent_card/MCPClient` |
 | `core/sandbox.py` | 工具执行沙箱：python -I 子进程 + 超时 + 内存限制（POSIX）+ 禁网开关 + 审计 | 不可信代码默认禁网 | `Sandbox.run_python/run_untrusted` |
+| `core/agentops.py` | 门面：审批计划 → supervisor（journal）→ reflexion → 技能提案，一条可审计闭环 | 不绕过任何闸门 | `run_approved_plan` |
 
 ## 2. 硬边界（测试锁定）
 
