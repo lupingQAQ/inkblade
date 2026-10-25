@@ -1,0 +1,21 @@
+{
+  "key": "nccl-port-exhaustion",
+  "name": {
+    "zh": "NCCL bootstrap 端口耗尽（rendezvous 拒绝服务）",
+    "en": "NCCL bootstrap port exhaustion at rendezvous"
+  },
+  "series": "网络架构",
+  "description": "rendezvous/TCPStore bootstrap 端口分配面无鉴权无按作业上限：恶意作业占满端口池后，诚实作业 join 收到 503（bootstrap_exhausted 计数），新训练作业无法建链。只读探测级（分配即释放，不留残留）。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "NCCL bootstrap/rendezvous 基址（必填）",
+    "job": "攻击者作业名（缺省 trident-probe）",
+    "max_allocs": "分配请求上限（默认 30，防失控）",
+    "job_token": "可选作业令牌（fixed 模式合法身份）"
+  },
+  "produces": "nccl-port-exhaustion.json + 端口剩余/诚实作业拒绝证据",
+  "knowledge": "docs/FABRIC-ATTACK-SURFACE.md §2.4；语料 nccl-transports / bytedance-megascale（集合通信初始化 O(n²)→<30s）",
+  "combo_signature": "nccl-bootstrap-port-exhaustion"
+}

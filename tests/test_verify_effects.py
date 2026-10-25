@@ -1,4 +1,4 @@
-"""实效验证测试：调 trident/verify-effects.py::run_verification 断言 17 项全 PASS。
+"""实效验证测试：调 trident/verify-effects.py::run_verification 断言 20 项全 PASS。
 
 覆盖（本机真实进程 + 127.0.0.1 真实 HTTP）：
 a) 管理面未授权利用（200 + 服务端状态文件变更）
@@ -18,6 +18,9 @@ n) 公共桶策略 + 跨租户列目录证据
 o) AI 网关默认 master key 读到上游 MOCK key，报告仅尾4位
 p) 伪造 X-Forwarded-User 越权（admin 全局 key 视图 + 全租户日志）
 q) 语义缓存跨租户命中（共享前缀键 cache_key 一致）
+r) SHARP 在网聚合投毒（入组 + reduce 前后差分 + tampered_reduces 计数）
+s) PFC 暂停风暴（pfc_pause_frames 计数暴增）
+t) 慢 rank 注入步时劣化（计时差分 ≥2×）
 """
 
 import importlib.util
@@ -48,6 +51,9 @@ EXPECTED_IDS = {
     "gateway-default-master-key-exfil",
     "gateway-forwarded-user-impersonation",
     "gateway-semantic-cache-cross-tenant",
+    "fabric-sharp-reduce-tamper",
+    "fabric-pfc-storm-counter",
+    "fabric-straggler-step-slowdown",
 }
 
 
@@ -72,12 +78,12 @@ class TestVerifyEffects(unittest.TestCase):
 
     def test_all_checks_pass(self):
         self.assertEqual(self.result["summary"]["failed"], 0, self.by_id)
-        self.assertEqual(self.result["summary"]["passed"], 17)
+        self.assertEqual(self.result["summary"]["passed"], 20)
         self.assertEqual(set(self.by_id), EXPECTED_IDS)
 
     def test_json_and_md_written(self):
         data = json.loads((self.out / "effects.json").read_text(encoding="utf-8"))
-        self.assertEqual(data["summary"]["passed"], 17)
+        self.assertEqual(data["summary"]["passed"], 20)
         md = (self.out / "effects.md").read_text(encoding="utf-8")
         self.assertIn("PASS", md)
         for cid in EXPECTED_IDS:
@@ -233,6 +239,29 @@ class TestVerifyEffects(unittest.TestCase):
         self.assertTrue(ev["shared_key"])
         self.assertTrue(ev["cross_tenant"])
         self.assertGreaterEqual(ev["finding_count"], 1)
+
+    def test_fabric_sharp_reduce_tamper_diff(self):
+        ev = self.by_id["fabric-sharp-reduce-tamper"]["evidence"]
+        self.assertEqual(ev["join_status"], 200)
+        self.assertEqual(ev["baseline_status"], 200)
+        self.assertEqual(ev["tamper_status"], 200)
+        self.assertNotEqual(ev["tampered_result"], ev["baseline_result"])
+        self.assertTrue(ev["results_differ"])
+        self.assertTrue(ev["silent"])
+        self.assertGreaterEqual(ev["tampered_reduces"], 1)
+
+    def test_fabric_pfc_storm_counter(self):
+        ev = self.by_id["fabric-pfc-storm-counter"]["evidence"]
+        self.assertEqual(ev["read_status"], 200)
+        self.assertGreaterEqual(ev["pfc_pause_frames_delta"], 50000)
+        self.assertGreater(ev["pfc_pause_frames_after"], ev["pfc_pause_frames_before"])
+        self.assertTrue(ev["storm_active"])
+
+    def test_fabric_straggler_step_slowdown(self):
+        ev = self.by_id["fabric-straggler-step-slowdown"]["evidence"]
+        self.assertEqual(ev["inject_status"], 200)
+        self.assertGreater(ev["slowed_step_ms"], ev["baseline_step_ms"])
+        self.assertGreaterEqual(ev["step_time_ratio"], 2.0)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,21 @@
+{
+  "key": "api-server-flood-surface",
+  "name": {
+    "zh": "apiserver/IMDS 请求洪（配额缺失）",
+    "en": "Control-plane request flood via missing quota"
+  },
+  "series": "网络架构",
+  "description": "apiserver 与 IMDS 代理面无按调用方配额：高 count 请求被直接受理（requests_total 无界增长、quota_enforced=false），等价于训练租户可耗尽控制面配额/云元数据服务；fixed 姿态超配额 429。只读探测级。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "apiserver/IMDS 代理基址（必填）",
+    "count": "单请求 count（默认 250）",
+    "rounds": "请求轮数（默认 4）",
+    "imds_rounds": "IMDS 轮数（默认 2）"
+  },
+  "produces": "api-server-flood-surface.json + requests/imds 计数差分与配额缺失证据",
+  "knowledge": "docs/FABRIC-ATTACK-SURFACE.md §2.6；语料 meta-prometheus（百 k GPU 的控制面依赖）/ kubernetes-cni-spec",
+  "combo_signature": "control-plane-quota-missing"
+}

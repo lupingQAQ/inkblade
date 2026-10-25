@@ -1,0 +1,22 @@
+{
+  "key": "sharp-in-network-poison",
+  "name": {
+    "zh": "SHARP 在网聚合投毒（all-reduce 静默损坏）",
+    "en": "SHARP in-network aggregation poisoning (silent all-reduce corruption)"
+  },
+  "series": "横向利用",
+  "description": "SHARP/SHARPv3 在网 all-reduce 会话面无鉴权：外部 rank 可入组并提交带篡改因子的贡献，reduce 结果与正确值偏离且无告警（静默损坏原语），/metrics.tampered_reduces 计数增长。写面走 backup_targets 备份闸门。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "fabric 仿真/控制器基址（必填）",
+    "mode": "probe-only（默认，仅入组探测）| backup-write（需 backup_targets：篡改 reduce 对比）",
+    "session_id": "SHARP 会话 id（缺省 train-job-alpha）",
+    "job_token": "可选作业令牌（fixed 模式合法入组身份）",
+    "backup_targets": "backup-write 必需：fabric 会话面快照目标（runner 备份闸门）"
+  },
+  "produces": "sharp-in-network-poison.json + 基线/篡改 reduce 结果差分证据",
+  "knowledge": "docs/FABRIC-ATTACK-SURFACE.md §2.1（SHARP 在网聚合面）；语料 nvidia-sharp-in-network / nvidia-quantum-x800 / ultra-ethernet-spec-2026（INC）",
+  "combo_signature": "sharp-in-network-allreduce-poison"
+}

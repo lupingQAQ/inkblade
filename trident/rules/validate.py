@@ -234,6 +234,13 @@ def _synth_events(probe: dict, outcome: dict) -> list[dict]:
             "logsource": {"product": "litellm", "service": "gateway-auth"},
             "verb": "authenticate", "key_class": "default_master", "status": outcome.get("status"),
         })
+    elif hook == "fabric-sharp-join":
+        events.append({
+            "kind": "sigma",
+            "logsource": {"product": "fabric", "service": "sharp-controller"},
+            "action": "join", "authenticated": False,
+            "rank": (probe.get("body") or {}).get("rank", ""),
+        })
     return events
 
 
@@ -257,6 +264,17 @@ def _is_ai_gateway_probe(probe: dict) -> bool:
 
 def _needs_ai_gateway(probes_catalog: dict) -> bool:
     return any(_is_ai_gateway_probe(probe)
+               for plan in probes_catalog.values()
+               for probe in plan.get("replay", []))
+
+
+def _is_fabric_probe(probe: dict) -> bool:
+    """万卡 fabric 破坏面仿真探针：显式 sim 标记（/gpu/health 与 gpu-cloud 面消歧）。"""
+    return probe.get("sim") == "fabric"
+
+
+def _needs_fabric(probes_catalog: dict) -> bool:
+    return any(_is_fabric_probe(probe)
                for plan in probes_catalog.values()
                for probe in plan.get("replay", []))
 
@@ -296,6 +314,14 @@ def validate(pack_dir: Path | str, mock_base: str | None = None,
         ai_server = start_ai_gateway(mode="vulnerable")
         ai_base = ai_server.url("/")
 
+    fabric_server = None
+    fabric_base = None
+    if _needs_fabric(probes_catalog):
+        from lab.fabric_dos_sim import start_all as start_fabric
+
+        fabric_server = start_fabric(mode="vulnerable")
+        fabric_base = fabric_server.url("/")
+
     chain_rows: dict[str, dict] = {}
     all_events: dict[str, list[dict]] = {}
     for cid, plan in probes_catalog.items():
@@ -307,6 +333,8 @@ def validate(pack_dir: Path | str, mock_base: str | None = None,
         for probe in plan.get("replay", []):
             if _is_ai_gateway_probe(probe):
                 base = ai_base or mock_base
+            elif _is_fabric_probe(probe):
+                base = fabric_base or mock_base
             elif _is_gpu_cloud_probe(probe):
                 base = aux_base or mock_base
             else:
@@ -368,6 +396,8 @@ def validate(pack_dir: Path | str, mock_base: str | None = None,
         aux_server.shutdown()
     if ai_server is not None:
         ai_server.shutdown()
+    if fabric_server is not None:
+        fabric_server.shutdown()
 
     total_cells = sum(len(row["rules"]) for row in chain_rows.values())
     blocked_cells = sum(1 for row in chain_rows.values() for c in row["rules"] if c["status"] == _BLOCKED)

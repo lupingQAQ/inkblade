@@ -96,15 +96,35 @@ def run(ctx: dict, params: dict) -> dict:
     resume = None
     if _ok(pause):
         resume = t.call("POST", f"{target}/resume", {})  # 探测即恢复：不留服务状态残留
+    # payload 变体（版本矩阵驱动）：/pause 主探针成立后重放 ≤2 变体，收集绕过面差分
+    variant_hits = []
+    if _ok(pause):
+        # `_lateral-common.py` 文件名含连字符，不能作包模块导入；按仓库惯例以 importlib 装载
+        import importlib.util as _ilu
+        from pathlib import Path as _Path
+        _spec = _ilu.spec_from_file_location(
+            "_lateral_common", _Path(__file__).resolve().parent.parent / "_lateral-common.py")
+        _mod = _ilu.module_from_spec(_spec)
+        _spec.loader.exec_module(_mod)
+        VariantProber = _mod.VariantProber
+
+        vp = VariantProber(t, KEY, limit=2)
+        variant_hits = vp.probe(method="POST", path="/pause", body={}, base_url=target)
+        if any(h["status"] == 200 for h in variant_hits):
+            t.call("POST", f"{target}/resume", {})  # 变体命中后的清理（不留状态残留）
     findings = []
     if _ok(pause) and _resp(pause).get("applied") is True:
         detail = {"route": "/pause(+/resume 清理)", "unauth_status": 200, "applied": True,
                   "admin_routes": ["/pause", "/freeze", "/resume", "/update_weights_from_disk"],
                   "note": "管理路由无管理密钥即放行（fail-open）"}
+        if variant_hits:
+            detail["payload_variants"] = variant_hits
         findings.append({"sev": "high", "title": "SGLang 管理面 fail-open：无管理密钥放行暂停/恢复",
                          "detail": json.dumps(detail, ensure_ascii=False)})
     artifact = t.dump()
     summary = f"/pause={pause.get('status')} /resume={resume.get('status') if resume else 'skipped'} mode={mode}"
+    if variant_hits:
+        summary += f" variants={len(variant_hits)}"
     if note:
         summary += f"；{note}"
     return {"summary": summary, "artifacts": [str(artifact)], "findings": findings}

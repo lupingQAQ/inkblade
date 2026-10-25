@@ -1,0 +1,50 @@
+{
+  "id": "fabric-silent-corruption-chain",
+  "title": {
+    "zh": "fabric 控制面 → all-reduce/梯度静默污染 → 训练无效",
+    "en": "Fabric control plane → silent all-reduce/gradient corruption → wasted training"
+  },
+  "category": "网络利用链",
+  "requires": [
+    "ib-subnet-manager-hijack",
+    "sharp-in-network-poison",
+    "training-silent-corruption",
+    "rail-mismatch-forcing"
+  ],
+  "preconditions": [
+    {"expr": "findings('sharp-in-network-poison').any(severity == 'high')"}
+  ],
+  "steps": [
+    {
+      "id": "ib-partition-tamper",
+      "module": "ib-subnet-manager-hijack",
+      "params": {"mode": "backup-write", "pkey": "0x8001"},
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "http://target:8000/ib/sm/partition", "state": {}}
+      ]
+    },
+    {
+      "id": "sharp-reduce-poison",
+      "module": "sharp-in-network-poison",
+      "params": {"mode": "backup-write"},
+      "depends_on": ["ib-partition-tamper"],
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "http://target:8000/sharp/sessions", "state": {}}
+      ]
+    },
+    {
+      "id": "gradient-silent-poison",
+      "module": "training-silent-corruption",
+      "params": {"mode": "backup-write", "scale": 3.0},
+      "depends_on": ["sharp-reduce-poison"],
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "http://target:8000/train/gradient", "state": {}}
+      ]
+    }
+  ],
+  "evidence": ["http-trace", "reduce-result-diff", "loss-trajectory-diff", "rollback-receipt"],
+  "mitre": ["T1565.001", "T1499", "T1550"]
+}

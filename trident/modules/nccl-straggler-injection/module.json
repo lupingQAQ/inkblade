@@ -1,0 +1,22 @@
+{
+  "key": "nccl-straggler-injection",
+  "name": {
+    "zh": "NCCL 慢 rank 注入（straggler 拖垮步时）",
+    "en": "NCCL straggler rank injection slowing training steps"
+  },
+  "series": "横向利用",
+  "description": "集合通信 rank 状态写面无鉴权：注入慢 rank（straggler_ms）或滥用弹性组成员，使同步 all-reduce 步时成倍劣化（步时以计时端点度量），训练 goodput 静默下降。写面走 backup_targets 备份闸门。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "fabric/训练控制基址（必填）",
+    "mode": "probe-only（默认，仅基线步时）| backup-write（需 backup_targets：注入+计时对比）",
+    "rank": "目标 rank（缺省 rank-7）",
+    "straggler_ms": "注入步时增量（默认 5000）",
+    "backup_targets": "backup-write 必需：rank 状态快照目标（runner 备份闸门）"
+  },
+  "produces": "nccl-straggler-injection.json + 基线/注入步时对比证据",
+  "knowledge": "docs/FABRIC-ATTACK-SURFACE.md §2.4（NCCL bootstrap/rank 面）；语料 bytedance-megascale（straggler 治理）/ meta-prometheus（goodput/MTBI）",
+  "combo_signature": "nccl-straggler-goodput-degradation"
+}

@@ -24,7 +24,10 @@ m) 云身份跨账户：通配 trust policy 跨账户 AssumeRole 成功（mock�
 n) 云桶跨租户：公共桶策略 + 跨租户列目录成功（权重/检查点清单）；
 o) AI 网关默认 master key：/config 读到上游 provider MOCK key，报告仅尾 4 位；
 p) X-Forwarded-User 伪造：/key/info 返回 admin 全局视图 + /logs 全租户明文；
-q) 语义缓存跨租户：tenant-a 以共享前缀键命中 tenant-b 缓存条目。
+q) 语义缓存跨租户：tenant-a 以共享前缀键命中 tenant-b 缓存条目；
+r) SHARP 在网聚合投毒：入组后篡改 reduce，结果前后差分 + 服务端 tampered_reduces 计数；
+s) PFC 暂停风暴：配置写入后 pfc_pause_frames 计数暴增（≥50000）；
+t) 慢 rank 注入：straggler 使训练步时劣化 ≥2×（计时差分）。
 
 边界（写入报告，不隐藏）：本验证是**本机真实进程/真实 HTTP 效果级**，靶场为
 ``lab/mock_targets.py``、``lab/longctx_sim.py`` 与 ``lab/gpu_cloud_sim.py``（均仅 127.0.0.1），
@@ -56,6 +59,7 @@ if str(REPO_ROOT) not in sys.path:
 from lab.mock_targets import _safe_name, start_all  # noqa: E402
 from lab.longctx_sim import checkpoint_shard_path, start_all as start_longctx  # noqa: E402
 from lab.gpu_cloud_sim import start_all as start_gpu_cloud  # noqa: E402
+from lab.fabric_dos_sim import start_all as start_fabric  # noqa: E402
 from lab.ai_gateway_sim import (  # noqa: E402
     MASTER_KEY as AI_GATEWAY_MASTER_KEY,
     TENANT_KEYS as AI_GATEWAY_TENANT_KEYS,
@@ -80,16 +84,18 @@ FAKE_TOKEN = "hf_FAKEtokenDoNotUseSampleABCD1234wxyz"
 
 SCOPE = (
     "本机真实进程 + 真实 HTTP（127.0.0.1 回环 mock 靶场：mock_targets / longctx_sim / gpu_cloud_sim / "
-    "ai_gateway_sim）效果级验证；非 live K8s 集群 / 真实 GPU 驱动 / 真实云账号。"
+    "ai_gateway_sim / fabric_dos_sim）效果级验证；非 live K8s 集群 / 真实 GPU 驱动 / 真实云账号。"
     "KIND/ARTEX 需启用虚拟化后按 lab/kind 与 lab/bench 脚本执行。"
 )
 LIMITATIONS = [
-    "靶场为 lab/mock_targets.py + lab/longctx_sim.py + lab/gpu_cloud_sim.py + lab/ai_gateway_sim.py 单进程仿真"
+    "靶场为 lab/mock_targets.py + lab/longctx_sim.py + lab/gpu_cloud_sim.py + lab/ai_gateway_sim.py + lab/fabric_dos_sim.py 单进程仿真"
     "（仅 127.0.0.1），非真实 K8s API/容器运行时/GPU 推理/云账号。",
     "sglang/areal/slime 的写面以 mock server 侧真实文件落盘为证据，不是远端生产文件系统。",
     "长上下文仿真以 token 计数提示 + KV 计数器表达 128K–1M 窗口行为，不执行真实 attention/KV 传输。",
     "GPU 池化/云租户仿真以池状态文件与 benign marker 表达 MIG/MPS/显存残留与云身份/桶策略，不调用真实 nvidia-smi/STS/S3。",
     "AI 网关仿真为内存态（key/别名/缓存/配额/日志），上游 provider key 一律 MOCK 前缀；不连接真实模型厂商。",
+    "fabric 破坏面仿真以内存计数器/状态位表达 SHARP 篡改、PFC 暂停帧、端口耗尽、I/O 洪与驱动复位等效果，"
+    "不触碰真实交换机/IB SM/NCCL 进程/GPU 驱动；破坏效果均以计数器与状态变化度量（不真破坏）。",
     "KIND hostNetwork 绕过 NetworkPolicy 实证需启用 WSL2/虚拟化后执行 lab/kind/run-proof.sh。",
     "ARTEX（AGPL）仅作外部黑盒对标，本仓库不复用其代码；对标需虚拟化环境执行 lab/bench/artex-bench.sh。",
 ]
@@ -198,7 +204,7 @@ class _Checks:
 
 
 def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, Any]:
-    """执行 17 项实效验证；输出 effects.json + effects.md（可选写 docs/EFFECT-VERIFICATION.md）。"""
+    """执行 20 项实效验证；输出 effects.json + effects.md（可选写 docs/EFFECT-VERIFICATION.md）。"""
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     checks = _Checks()
@@ -224,6 +230,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
         lab = start_all(mode="vulnerable", root=lab_root)
         longctx = start_longctx(mode="vulnerable", root=lab_root / "longctx")
         gpu_cloud = start_gpu_cloud(mode="vulnerable", root=lab_root / "gpu-cloud")
+        fabric = start_fabric(mode="vulnerable")
         ai_gateway = start_ai_gateway(mode="vulnerable")
         try:
             def admin_plane() -> dict[str, Any]:
@@ -860,6 +867,139 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                        "AI 网关语义缓存跨租户：tenant-a 命中 tenant-b 缓存条目（共享前缀键）",
                        gateway_semantic_cache_cross_tenant)
 
+            def fabric_sharp_reduce_tamper() -> dict[str, Any]:
+                run_module(
+                    store, tester, "sharp-in-network-poison",
+                    {
+                        "target": fabric.url(""),
+                        "mode": "backup-write",
+                        "session_id": "train-job-alpha",
+                        "backup_targets": [{"kind": "http",
+                                            "url": fabric.url("/sharp/sessions"),
+                                            "state": {}},
+                                           {"kind": "http",
+                                            "url": fabric.url("/sharp/reduce"),
+                                            "state": {}}],
+                    },
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "sharp-in-network-poison")
+                joins = [e for e in trace["entries"]
+                         if e["method"] == "POST" and e["url"].endswith("/sharp/sessions")]
+                reduces = [e for e in trace["entries"]
+                           if e["method"] == "POST" and e["url"].endswith("/sharp/reduce")]
+                if not joins or joins[0].get("status") != 200:
+                    raise AssertionError(f"SHARP 入组未返回 200：{joins[0].get('status') if joins else 'no-call'}")
+                if len(reduces) < 2:
+                    raise AssertionError("缺少基线/篡改两次 reduce")
+                baseline, tampered = reduces[0], reduces[1]
+                if baseline.get("status") != 200 or tampered.get("status") != 200:
+                    raise AssertionError(f"reduce 状态异常：{baseline.get('status')}/{tampered.get('status')}")
+                baseline_result = float((baseline.get("response") or {}).get("result"))
+                tampered_result = float((tampered.get("response") or {}).get("result"))
+                if tampered_result == baseline_result:
+                    raise AssertionError("篡改 reduce 结果与基线一致（静默损坏未成立）")
+                metrics = _http_json(fabric.url("/metrics"))
+                tampered_reduces = int(metrics["payload"]["sharp"]["tampered_reduces"])
+                if tampered_reduces < 1:
+                    raise AssertionError("服务端 tampered_reduces 计数未增长")
+                return {
+                    "join_status": joins[0]["status"],
+                    "baseline_status": baseline["status"],
+                    "tamper_status": tampered["status"],
+                    "baseline_result": baseline_result,
+                    "tampered_result": tampered_result,
+                    "results_differ": tampered_result != baseline_result,
+                    "silent": bool((tampered.get("response") or {}).get("silent")),
+                    "tampered_reduces": tampered_reduces,
+                    "route": "/sharp/sessions,/sharp/reduce",
+                }
+
+            checks.run("fabric-sharp-reduce-tamper",
+                       "SHARP 在网聚合实效：入组后 reduce 结果被改（前后值差分 + 服务端计数）",
+                       fabric_sharp_reduce_tamper)
+
+            def fabric_pfc_storm() -> dict[str, Any]:
+                before = _http_json(fabric.url("/roce/pfc"))
+                if before["status"] != 200:
+                    raise AssertionError(f"/roce/pfc 读失败：{before['status']}")
+                run_module(
+                    store, tester, "roce-pfc-storm",
+                    {
+                        "target": fabric.url(""),
+                        "mode": "backup-write",
+                        "rounds": 3,
+                        "backup_targets": [{"kind": "http",
+                                            "url": fabric.url("/roce/pfc"),
+                                            "state": {}}],
+                    },
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                after = _http_json(fabric.url("/roce/pfc"))
+                if after["status"] != 200:
+                    raise AssertionError(f"/roce/pfc 复读失败：{after['status']}")
+                pause_before = int(before["payload"]["pfc_pause_frames"])
+                pause_after = int(after["payload"]["pfc_pause_frames"])
+                delta = pause_after - pause_before
+                if delta < 50000:
+                    raise AssertionError(f"暂停帧计数未达风暴阈值：Δ={delta}")
+                if not after["payload"].get("pfc", {}).get("storm"):
+                    raise AssertionError("服务端 storm_active 未置位")
+                return {
+                    "read_status": before["status"],
+                    "pfc_pause_frames_before": pause_before,
+                    "pfc_pause_frames_after": pause_after,
+                    "pfc_pause_frames_delta": delta,
+                    "ecn_marks": int(after["payload"].get("ecn_marks") or 0),
+                    "storm_active": True,
+                    "route": "/roce/pfc",
+                }
+
+            checks.run("fabric-pfc-storm-counter",
+                       "PFC 风暴实效：配置写入后暂停帧计数暴增（≥50000）",
+                       fabric_pfc_storm)
+
+            def fabric_straggler_slowdown() -> dict[str, Any]:
+                run_module(
+                    store, tester, "nccl-straggler-injection",
+                    {
+                        "target": fabric.url(""),
+                        "mode": "backup-write",
+                        "rank": "rank-7",
+                        "straggler_ms": 5000,
+                        "backup_targets": [{"kind": "http",
+                                            "url": fabric.url("/nccl/rank"),
+                                            "state": {}}],
+                    },
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "nccl-straggler-injection")
+                steps = [e for e in trace["entries"]
+                         if e["method"] == "POST" and e["url"].endswith("/train/step")]
+                if len(steps) < 2:
+                    raise AssertionError("缺少基线/注入后两次步时测量")
+                baseline_ms = float((steps[0].get("response") or {}).get("step_ms"))
+                slowed_ms = float((steps[-1].get("response") or {}).get("step_ms"))
+                ratio = slowed_ms / baseline_ms if baseline_ms > 0 else 0.0
+                if ratio < 2.0:
+                    raise AssertionError(f"步时劣化不足：{baseline_ms}ms → {slowed_ms}ms（{ratio:.2f}×）")
+                injects = [e for e in trace["entries"]
+                           if e["method"] == "POST" and e["url"].endswith("/nccl/rank")]
+                if not injects or injects[0].get("status") != 200:
+                    raise AssertionError("慢 rank 注入未成功")
+                return {
+                    "inject_status": injects[0]["status"],
+                    "baseline_step_ms": baseline_ms,
+                    "slowed_step_ms": slowed_ms,
+                    "step_time_ratio": round(ratio, 3),
+                    "straggler_ms": 5000,
+                    "route": "/nccl/rank,/train/step",
+                }
+
+            checks.run("fabric-straggler-step-slowdown",
+                       "慢 rank 注入实效：训练步时被拖慢 ≥2×（计时差分）",
+                       fabric_straggler_slowdown)
+
             def data_leak() -> dict[str, Any]:
                 run_module(
                     store, tester, "training-data-leak",
@@ -1017,6 +1157,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
             }
         finally:
             ai_gateway.shutdown()
+            fabric.shutdown()
             gpu_cloud.shutdown()
             longctx.shutdown()
             lab.shutdown()

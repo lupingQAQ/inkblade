@@ -1,0 +1,22 @@
+{
+  "key": "checkpoint-io-storm",
+  "name": {
+    "zh": "checkpoint I/O 风暴（限速缺失）",
+    "en": "Checkpoint I/O storm via missing rate limit"
+  },
+  "series": "网络架构",
+  "description": "checkpoint 写入/读取面无限速：少量并发 burst 即把 io_bytes/io_queue 推到共享存储与 fabric 缓冲上限（计数器度量），与训练 checkpoint 竞争造成集群级 I/O 停摆；fixed 姿态限速 429。只读探测级。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "checkpoint I/O 网关基址（必填）",
+    "bytes_mb": "单次写入 MiB（默认 4096）",
+    "burst": "单次并发 burst（默认 4）",
+    "rounds": "风暴轮数（默认 5）",
+    "job_token": "可选作业令牌（fixed 模式合法身份）"
+  },
+  "produces": "checkpoint-io-storm.json + io_bytes/io_queue 计数差分证据",
+  "knowledge": "docs/FABRIC-ATTACK-SURFACE.md §2.5；语料 meta-prometheus（多层 checkpoint/delta checkppoint 依赖共享存储）/ storage-protocol-csi",
+  "combo_signature": "checkpoint-io-fabric-storm"
+}

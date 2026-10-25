@@ -79,9 +79,22 @@ def run(ctx: dict, params: dict) -> dict:
     listing = t.call("GET", f"{target}/plugins/list")
     control = t.call("GET", f"{target}/v1/models", headers={"X-Mock-Service": "vllm"})
     invoked = None
+    variant_hits = []
     if listing.get("status") == 200:
         invoked = t.call("POST", f"{target}/plugins/invoke",
                          {"plugin": "mock-plugin", "args": {"probe": marker, "marker": marker}})
+        # payload 变体（版本矩阵驱动）：插件面成立后重放 ≤2 变体（路径/编码/空鉴权头）
+        # `_lateral-common.py` 文件名含连字符，不能作包模块导入；按仓库惯例以 importlib 装载
+        import importlib.util as _ilu
+        from pathlib import Path as _Path
+        _spec = _ilu.spec_from_file_location(
+            "_lateral_common", _Path(__file__).resolve().parent.parent / "_lateral-common.py")
+        _mod = _ilu.module_from_spec(_spec)
+        _spec.loader.exec_module(_mod)
+        VariantProber = _mod.VariantProber
+
+        vp = VariantProber(t, KEY, limit=2)
+        variant_hits = vp.probe(method="GET", path="/plugins/list", base_url=target)
 
     findings = []
     if listing.get("status") == 200 and control.get("status") in (401, 403):
@@ -95,11 +108,15 @@ def run(ctx: dict, params: dict) -> dict:
             "plugins": plugins, "invoke_status": invoked.get("status") if invoked else None,
             "note": "插件端点未鉴权而 /v1/* 要求 api-key：组合即绕过",
         }
+        if variant_hits:
+            detail["payload_variants"] = variant_hits
         findings.append({"sev": "high", "title": "vLLM 插件路由绕过 api-key",
                          "detail": json.dumps(detail, ensure_ascii=False)})
     artifact = t.dump()
     summary = (f"plugins/list={listing.get('status')} 对照面/v1/models={control.get('status')} "
                f"invoke={invoked.get('status') if invoked else 'skipped'} mode={mode}")
+    if variant_hits:
+        summary += f" variants={len(variant_hits)}"
     if note:
         summary += f"；{note}"
     return {"summary": summary, "artifacts": [str(artifact)], "findings": findings}

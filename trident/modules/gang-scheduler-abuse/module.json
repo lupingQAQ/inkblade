@@ -1,0 +1,21 @@
+{
+  "key": "gang-scheduler-abuse",
+  "name": {
+    "zh": "gang/EPP 调度滥用（占位 job 拖垮队列）",
+    "en": "Gang scheduler abuse via placeholder jobs"
+  },
+  "series": "网络架构",
+  "description": "gang/EPP 作业提交面无按租户配额：占位 job（placeholders+hold）持续占据队列容量，pending_gpus 超过 capacity（clogged=true）阻塞全部后续训练作业；fixed 姿态令牌 + 配额 429。只读探测级。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "gang/EPP 调度器基址（必填）",
+    "gang_size": "占位 gang 规模（默认 8）",
+    "rounds": "提交轮数（默认 5）",
+    "job_token": "可选作业令牌（fixed 模式合法身份）"
+  },
+  "produces": "gang-scheduler-abuse.json + pending/clogged 队列证据",
+  "knowledge": "docs/FABRIC-ATTACK-SURFACE.md §2.9；语料 meta-prometheus（64/72 切片与备件调度）/ gateway-api-inference-extension（EPP）",
+  "combo_signature": "gang-queue-placeholder-clog"
+}
