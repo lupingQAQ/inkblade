@@ -15,6 +15,8 @@
 ## 5 分钟上手 / 5-minute quickstart
 
 > 不需要 `pip install`、不需要 kubeconfig、不需要 LLM key、不需要 bash。以下命令在仓库根目录执行（Windows / macOS / Linux 均可）。
+>
+> 唯一先决条件：**Python 3.10+ 在 PATH**（`python --version` 能看到版本）。Windows 若 `python` 是 Microsoft Store 别名，请先安装 Python 并勾选 “Add to PATH”，或用 `py -3.12` / 完整路径替换下文的 `python`。
 
 ```bash
 # 1) 环境自检：Python、写权限、端口、可选依赖、mock / 真集群二选一

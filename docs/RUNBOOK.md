@@ -5,7 +5,7 @@
 
 ## 0. 5 分钟上手（陌生用户先走这条）
 
-不需要 `pip install`、kubeconfig、外部网络、LLM key 或 bash；在仓库根目录执行：
+不需要 `pip install`、kubeconfig、外部网络、LLM key 或 bash；在仓库根目录执行（先决条件：Python 3.10+ 在 PATH，Windows Store 别名请改用 `py -3.12` 或完整路径）：
 
 ```powershell
 python -m trident doctor      # 环境自检：Python/写权限/端口/可选依赖/mock 或真集群
