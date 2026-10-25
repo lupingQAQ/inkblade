@@ -175,15 +175,27 @@ def _subset_cases(lab_base: str) -> list[tuple[str, str, dict]]:
     return cases
 
 
-def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
-    """执行完整端到端验收；返回结果 dict（含逐项检查与样张清单）。"""
+def resolve_run_name(fixed: str | None = None) -> str:
+    """样张确定性：给定固定名则原样使用，否则 ``e2e-acceptance-<YYYYmmdd-HHMMSS>``。"""
+    if fixed:
+        return str(fixed)
+    return f"e2e-acceptance-{time.strftime('%Y%m%d-%H%M%S')}"
+
+
+def run_e2e(samples_dir: Path | str | None = None,
+            run_name: str | None = None) -> dict[str, Any]:
+    """执行完整端到端验收；返回结果 dict（含逐项检查与样张清单）。
+
+    ``run_name`` 固定后（如 ``e2e-acceptance``），样张两次生成的差异仅剩动态字段
+    （时间戳/端口/耗时），由 ``trident.sampledet`` 归一化后可断言 diff=空。
+    """
     samples = Path(samples_dir) if samples_dir else DEFAULT_SAMPLES
     samples.mkdir(parents=True, exist_ok=True)
     book = _Checkbook()
     families_run: dict[str, list[str]] = {}
     all_findings: list[dict] = []  # 带逐步产出（含 reachable/port 等链前置字段）
     sample_files: list[str] = []
-    run_name = ""
+    fixed_run_name = resolve_run_name(run_name)
 
     lab = start_all(mode="vulnerable")
     try:
@@ -255,7 +267,7 @@ def run_e2e(samples_dir: Path | str | None = None) -> dict[str, Any]:
                     assert exc.exit_code == 91, f"退出码 {exc.exit_code} != 91"
                     _note(it, str(exc))
 
-            run = store.create_run(f"e2e-acceptance-{time.strftime('%Y%m%d-%H%M%S')}")
+            run = store.create_run(fixed_run_name)
             run_name = run.name
 
             # ④ 九族代表性子集 + 写类回滚还原（设计基线 18.3 / 18.11–18.17 的本机面）---
@@ -556,7 +568,10 @@ def main(argv: list[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
     if "--samples" in args:
         samples = Path(args[args.index("--samples") + 1])
-    result = run_e2e(samples)
+    fixed = None
+    if "--run-name" in args:
+        fixed = args[args.index("--run-name") + 1]
+    result = run_e2e(samples, run_name=fixed)
     for c in result["checks"]:
         mark = "PASS" if c["status"] == "PASS" else "FAIL"
         print(f"[{mark}] {c['id']} — {c['title']}" + (f"（{c['detail']}）" if c.get("detail") else ""))

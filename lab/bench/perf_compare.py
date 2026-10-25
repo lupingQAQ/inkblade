@@ -5,8 +5,10 @@
       --base http://127.0.0.1:18787 --token <session> --n 10 --out reports/samples/perf/grid/live-artex.json
 离线模式（不发请求）：--offline 仅校验路由清单并输出统计骨架。
 
-测量口径：GET 路由逐端点 N 次 → min/median/p95/p99/max/mean/stdev；并发 1/4/16 对首个只读端点
-测吞吐与错误率。所有结果附 measured_at 与 base，未测项必须由调用方标 N/A，不得编造。
+测量口径：GET 路由逐端点 N 次 → min/median/p95/p99/max/mean/stdev；并发 1/4/16/32
+对首个只读端点测吞吐与错误率（--per-level 控制每档请求数）。路径参数用 probe_path
+样本值替换；流式端点只测首响应。所有结果附 measured_at 与 base，未测项必须由调用方
+标 N/A，不得编造。
 """
 
 from __future__ import annotations
@@ -56,18 +58,23 @@ def _one(url: str, token: str | None, timeout: float) -> tuple[bool, float]:
         return False, (time.perf_counter() - t0) * 1000
 
 
-def measure_endpoint(base: str, route: dict, token: str | None, n: int, timeout: float = 5.0) -> dict:
-    path = route.get("path") or route.get("id", "")
+def measure_endpoint(base: str, route: dict, token: str | None, n: int,
+                     timeout: float = 5.0) -> dict:
+    path = route.get("probe_path") or route.get("path") or route.get("id", "")
     if not path.startswith("/"):
         return {"route": route.get("id"), "skipped": "non-http-route"}
     if (route.get("method") or "GET").upper() != "GET":
         return {"route": route.get("id"), "skipped": "mutating-method"}
+    # 流式端点只测首响应（读首块即断；超时收紧）
+    per_timeout = min(timeout, 3.0) if route.get("streaming") else timeout
     samples, ok = [], 0
     for _ in range(n):
-        good, ms = _one(base + path, token, timeout)
+        good, ms = _one(base + path, token, per_timeout)
         samples.append(ms)
         ok += int(good)
     out = {"route": route.get("id"), "path": path, "ok_rate": round(ok / n, 3)}
+    if route.get("streaming"):
+        out["note"] = "SSE 流端点：只测首响应（读首块即断）"
     out.update(stats(samples))
     return out
 
@@ -104,20 +111,30 @@ def load_routes(path: Path) -> list[dict]:
     return []
 
 
+def _rel(path: str) -> str:
+    """样张/公开树友好：仓库内路径转相对 posix，仓库外只留文件名。"""
+    p = Path(path)
+    try:
+        return p.resolve().relative_to(Path.cwd().resolve()).as_posix()
+    except ValueError:
+        return p.name
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--routes", required=True)
     ap.add_argument("--base", default="")
     ap.add_argument("--token", default=None)
     ap.add_argument("--n", type=int, default=10)
-    ap.add_argument("--levels", default="1,4,16")
+    ap.add_argument("--levels", default="1,4,16,32")
+    ap.add_argument("--per-level", type=int, default=30)
     ap.add_argument("--out", required=True)
     ap.add_argument("--offline", action="store_true")
     args = ap.parse_args(argv)
 
     routes = load_routes(Path(args.routes))
     result = {
-        "routes_file": args.routes, "route_count": len(routes),
+        "routes_file": _rel(args.routes), "route_count": len(routes),
         "base": args.base or None, "n": args.n,
         "measured_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "mode": "offline" if args.offline or not args.base else "live",
@@ -127,10 +144,14 @@ def main(argv=None) -> int:
         result["concurrency"] = []
     else:
         result["endpoints"] = [measure_endpoint(args.base, r, args.token, args.n) for r in routes]
-        read_routes = [r for r in routes if (r.get("method") or "GET").upper() == "GET" and str(r.get("path", "")).startswith("/")]
+        read_routes = [r for r in routes if (r.get("method") or "GET").upper() == "GET"
+                       and str(r.get("probe_path") or r.get("path", "")).startswith("/")]
         if read_routes:
             levels = [int(x) for x in args.levels.split(",") if x]
-            result["concurrency"] = concurrency_sweep(args.base, read_routes[0]["path"], args.token, levels)
+            result["concurrency_path"] = read_routes[0].get("probe_path") or read_routes[0]["path"]
+            result["concurrency"] = concurrency_sweep(
+                args.base, result["concurrency_path"], args.token, levels,
+                per_level=args.per_level)
         else:
             result["concurrency"] = []
 

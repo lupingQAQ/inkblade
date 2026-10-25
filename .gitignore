@@ -26,3 +26,6 @@ lab/qemu-k3s/http/authorized_keys
 lab/qemu-k3s/http/setup-alpine.sh
 lab/qemu-k3s/http/install-k3s.sh
 lab/qemu-k3s/qemu-w64-setup-*.exe
+
+# --- 可再生基准输出（确定性样张只保留 reports/samples，lab/bench/out 不入库） ---
+lab/bench/out/

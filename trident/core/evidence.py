@@ -104,14 +104,25 @@ class Run:
             import zstandard
 
             return zstandard.compress(payload), suffix_hint + ".zst"
-        return gzip.compress(payload), suffix_hint + ".gz"
+        # mtime=0：gzip 头不写入生成时间 → 同输入归档字节稳定（样张/报告可复现）
+        return gzip.compress(payload, mtime=0), suffix_hint + ".gz"
 
     def _archive_step(self, step_key: str, artifacts: list[Path]) -> str:
         buf = io.BytesIO()
         with tarfile.open(fileobj=buf, mode="w") as tf:
-            for art in artifacts:
-                if Path(art).is_file():
-                    tf.add(str(art), arcname=Path(art).name)
+            # 确定性归档：按文件名排序 + 归零 mtime/uid/gid/uname → 同输入字节一致
+            for art in sorted((Path(a) for a in artifacts), key=lambda p: p.name):
+                if not art.is_file():
+                    continue
+                data = art.read_bytes()
+                info = tarfile.TarInfo(name=art.name)
+                info.size = len(data)
+                info.mtime = 0
+                info.mode = 0o644
+                info.uid = info.gid = 0
+                info.uname = info.gname = ""
+                info.type = tarfile.REGTYPE
+                tf.addfile(info, io.BytesIO(data))
         data, ext = self._compress(buf.getvalue(), ".tar")
         arch = self.dir / "steps" / f"{step_key}{ext}"
         arch.write_bytes(data)
@@ -170,7 +181,7 @@ class Run:
 
     def _flush_context(self) -> None:
         payload = ("\n".join(self._ctx_lines) + "\n").encode("utf-8")
-        (self.dir / "context.jsonl.gz").write_bytes(gzip.compress(payload))
+        (self.dir / "context.jsonl.gz").write_bytes(gzip.compress(payload, mtime=0))
 
     def finalize_run(self) -> None:
         steps = self.query("SELECT step_key, result_summary FROM steps ORDER BY id")
