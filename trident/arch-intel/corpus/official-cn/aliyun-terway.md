@@ -25,3 +25,10 @@
 
 ## 横向思路
 - 识别 Terway 模式（terway-eni vs terway-eniip DaemonSet 名）→ 独占 ENI 池做策略盲区横移 → Pod 安全组错配直达管理网段 → ECS 元数据取 RAM 角色 → OSS/CPFS 权重面
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ❌ 未达 ≥10k 口径：无 ≥10k 披露：CNI 插件语义文档
+## 网络要素
+- isolation、multi-tenancy
+- 分类迁移：corpus 扁平目录 → corpus/official-cn（中文官方源）

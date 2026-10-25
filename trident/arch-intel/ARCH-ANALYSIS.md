@@ -1,80 +1,83 @@
-# 架构情报分析（ARCH-ANALYSIS）— 2026-10 公开基线
+# 架构情报分析（ARCH-ANALYSIS）— 2026-10 万卡语料推倒重收版
 
-- 生成日期：2026-10-25（全部来源当日逐源核验，见 `coverage-matrix.json`）
-- 权威门槛：`docs/design.md` 第 12.2 节
-- 语料：`corpus/*.md` 共 35 篇（组织-系统命名），覆盖矩阵见 `coverage-matrix.json`，门槛校验器 `check.py`
+- 生成日期：2026-10-25（全部来源当日逐源核验，检索式与不可达清单见 `docs/RESEARCH-COVERAGE.md`）
+- 语料：`corpus/{official-cn,official-en,paper}/` 共 **80 源**（中文官方 28 / 外文官方 39 / 论文 13；verified 75，其余 5 为 verified-partial 并显式标注不可达/快照原因）
+- 门槛（`check.py` 全绿）：official-cn 28/≥12、official-en 39/≥12、万卡证据源 28/≥20、网络要素 8/8 全覆盖、本轮新增 32/≥30（official 占比 93.8%）
+- 重收口径：**≥10k GPU/加速器实践 + 官方技术博客优先 + 中外并收**；每篇 corpus 文件含【万卡证据】（集群规模/部署数量原文摘录）与【网络要素】标注
+- 并行批次：`batch=gen-26-fabric`（13 源）为 gen-26 fabric 面任务并入，保留其原始字段，不计入本任务新增门槛
 
 ---
 
-## 1. 问题点汇总表：公开设计证据 ↔ 放大前提 ↔ 建议模块机器键
+## 1. 问题点汇总表：万卡官方证据 ↔ 放大前提 ↔ 模块机器键
 
-| # | 放大前提（设计基线 12.2） | 公开设计证据（来源条目） | 建议模块/链机器键（设计基线 5.2/6.3） |
+> 机器键以 `trident/modules/` 现有目录为准；`fabric-*`/`nccl-*`/`roce-*` 等为 gen-26 fabric 面模块族（在跑，预留映射同步更新）。
+
+| # | 放大前提（万卡官方证据） | 公开证据原文（来源条目） | 模块/链机器键 |
 |---|---|---|---|
-| 1 | 集合通信无认证（平网直达即可入组） | NCCL 传输与 bootstrap 无鉴权语义（nccl-transports）；eRDMA 设备即 RDMA 通道（aliyun-ack-erdma）；IB 隔离仅靠 Partition/PKey（ib-partition-rdma）；HPN/Meta RoCE/MegaScale 全互通 fabric | `collective-communication-surface`、`nccl-collective-join`、`fabric-topology-isolation`、链「IB/RDMA 平面 → 集合通信注入」 |
-| 2 | RDMA/IB 无内建认证与加密 | ib-kubernetes：SM/PKey 为唯一隔离；RoCE 变体无 PKey 等价物（回退 VLAN/安全组，常漏配）；Azure ND 每 GPU 独占 IB 且 VMSS 内自动组网（azure-nd-h100-infiniband） | `fabric-topology-isolation`、`multus-sriov-rdma-bypass`、`cni-aware-reachability-graph`（pod↔IB 维） |
-| 3 | NetworkPolicy 旁路（SR-IOV/hostNetwork/独占 ENI） | Terway 官方明示：独占 ENI 节点池不支持 NetworkPolicy、Egress 策略无法约束 hostNetwork Pod/节点 IP（aliyun-terway）；CNI 规范本身不含策略（kubernetes-cni-spec）；SR-IOV VF/macvlan/IB 流量不受 NetworkPolicy 约束（multus-sriov-operator） | `multus-sriov-rdma-bypass`、`cni-stack-capability`、`network-policy-coverage`、链「VPC-CNI 双控制面错配 → 云内横向」 |
-| 4 | 特权容器/驱动容器（operator 面） | Network Operator：OFED 驱动容器特权加载内核模块（nvidia-network-operator）；SR-IOV Operator 要求 pod-security enforce=privileged 命名空间（multus-sriov-operator）；GPU Manager 以 cluster-admin SA 运行（tencent-tke-gpu-manager）；KEP-4381 自认被攻陷 kubelet 插件≈节点 root（kubernetes-dra） | `gpu-network-operator-posture`、`privileged-workloads`、`privileged-gpu-pod-escape`、`runtime-socket-escape`、链「GPU 与网络 Operator → 宿主逃逸」 |
-| 5 | 宽 RBAC / 集群级身份 | gpu-manager DaemonSet 绑 cluster-admin（tencent-tke-gpu-manager）；DRA ResourceClaim 创建权=跨命名空间抓敏感设备（kubernetes-dra、aws-eks-efa-dra）；Resource Injector 准入注入（multus-sriov-operator）；TKEStack 平台面=多集群枢纽（tencent-tkestack）；Singularity 全球调度身份（microsoft-singularity） | `rbac-mapping`、`overprivileged-sa-escalation`、`cloud-integration-fingerprint`、链「Ray Dashboard → 集群控制」 |
-| 6 | 共享存储/共享 KV（偷换一体） | NFSv4 AUTH_SYS uid 可伪造（storage-protocol-csi）；RWX+HF 缓存目录（同上）；Mooncake 全局 KV 池与请求前缀复用（mooncake-kv-transfer）；llm-d 分层 KV 卸载落盘/对象存储（llm-d-nixl）；vGPU 显存共享（tencent-tke-gpu-manager） | `shared-volume-weight-copy`、`trust-remote-code-supply-chain`、`training-data-leak`、链「共享 PVC + 模型加载 → 供应链投毒」 |
-| 7 | 多租户共享引擎/推理端点未鉴权 | DeepSeek 预填充-解码分离两池间 KV 传递无认证公开描述（deepseek-prefill-decode）；EPP/KV-cache 路由信息面（gateway-api-inference-extension）；llm-d 多租户流控在调度层而非传输层（llm-d-nixl） | `unlimited-query-distillation`、`inference-gateway-pd`、`lora-adapter-injection`、链「预填充-解码 KV 通道 → 推理操纵」 |
-| 8 | 监控/管理面暴露 | MegaScale 深度可观测体系=拓扑与流量画像（bytedance-megascale）；观测面常与引擎同部署；EPP ext-proc 通道信任（gateway-api-inference-extension） | `observability-exposure`、`exposure-mapping`、`framework-port-matching` |
-| 9 | SA token 与云凭据（元数据枢纽） | 各云条目共同证据：IRSA/Workload Identity/托管标识/RAM 角色/CAM/委托与节点池绑定（aws-eks-*、azure-aks-gpu、aliyun-terway、gcp-ai-on-gke、huawei-cce-turbo、tencent-tke-gpu-manager） | `metadata-egress`、`ssrf-imds-credential`、`multi-cloud-imds-credentials`、`cloud-role-overprivilege`、四条云侧权重桶链 |
-| 10 | 混合互联放大平网 | CEN/TR 路由传播与跨账号互联（alibaba-cen-tr）；ExpressRoute Microsoft Peering 直达云 API（azure-expressroute）；PrivateLink 私网暴露语义（后端服务若自身无鉴权，私网=更大暴露）（alibaba-private-link） | `hybrid-cloud-egress-pivot`、`dns-service-discovery`、链「SSRF/SA Token → 云元数据」混合回旋段 |
-| 11 | 拓扑即隔离但拓扑可被操控 | TPU OCS 动态重构拓扑、安全=重构正确性（google-tpu-oci）；ComputeDomain 域界正确性依赖驱动（nvidia-compute-domain-imex）；rail/双平面可被侦察推演（alibaba-hpn） | `fabric-topology-isolation`、`cni-aware-reachability-graph`、链「IMEX/ComputeDomain → 跨节点 GPU 内存越权」 |
-| 12 | 调度/编排面（gang/抢占/队列） | Volcano 为 CCE 官方调度（huawei-cce-turbo）；Singularity 抢占迁移（microsoft-singularity）；gpu-admission 调度扩展（tencent-tke-gpu-manager）；gang 调度 DoS 面 | `scheduler-network-semantics`、`ray-control-plane` |
-| 13 | 云托管化转移风险面 | EKS Auto Mode 驱动不可见但托管权限面扩大（aws-eks-auto-mode-accelerated）；托管集群 Trunk ENI 默认开启（aliyun-terway）；Autopilot/Turbo 全托管边界 | `cloud-integration-fingerprint`、`cloud-role-overprivilege` |
-| 14 | 权重/数据面（checkpoint=权重） | 各云 StorageClass/OBS/OSS/GCS/Blob 权重桶 + 训练 checkpoint 桶；Singularity 迁移即 checkpoint 通道（microsoft-singularity） | `shared-volume-weight-copy`、`supply-chain-credential-theft`、四条云侧权重桶链 |
+| 1 | **平网（flat/fat-tree 全互通）成万卡默认设计** | Microsoft Fairwater："single flat network...hundreds of thousands of GB200/GB300"（msft-fairwater-superfactory/wisconsin）；NVIDIA："Spectrum-X multiplane...flat, two-tier topology...128K GPUs"（nvidia-spectrum-x） | `cni-aware-reachability-graph`、`fabric-topology-isolation`、`network-policy-coverage` |
+| 2 | **多平面/多轨 fabric 的平面间无隔离语义** | Spectrum-X multiplane 64x 单平面（nvidia-spectrum-x）；HPN 双平面/单层千卡两层万卡（alibaba-hpn、aliyun-lingjun）；星脉多轨（tencent-xingmai-2） | `fabric-topology-isolation`、`rail-mismatch-forcing`（gen-26 fabric 面） |
+| 3 | **在网计算把聚合逻辑下沉交换机** | Quantum-X800 SHARP v4（gen-26 条目 nvidia-quantum-x800）；UEC 1.1 INC "offload compute to the network"（uec-spec）；Ultra Ethernet 批次 SHARP 条目 | `sharp-in-network-poison`（gen-26）、`collective-communication-surface` |
+| 4 | **拥塞控制端网协同=协议层扰动面** | Meta 400G 弃 DCQCN、PFC-only+CTS 接收端准入（meta-roce-blog）；TiTa2.0 主动 CC 上网卡（tencent-xingmai-2）；UEC CSIG/PCM（uec-spec）；Fairwater packet spray/trimming（msft-fairwater-superfactory） | `roce-pfc-storm`（gen-26）、`fabric-topology-isolation`、`scheduler-network-semantics` |
+| 5 | **集合通信无认证（万卡直达即可入组）** | Meta backend fabric 专为训练全域 RoCE（meta-roce-blog）；火山引擎"同一集群内 RDMA 互联互通、不同集群相互隔离"——集群内无租户身份（volcengine-hpc-rdma）；昆仑芯超节点柜间 IB/RoCE（kunlunxin-supernode） | `nccl-collective-join`、`nccl-port-exhaustion`（gen-26）、`nccl-straggler-injection`（gen-26）、链「IB/RDMA 平面 → 集合通信注入」 |
+| 6 | **跨数据中心训练网=横向回旋新段** | Fairwater "dedicated AI WAN optical network...120,000 fiber miles"（msft-fairwater-superfactory）；Spectrum-XGS 跨楼宇/数百公里（nvidia-spectrum-x）；Meta Prometheus 跨栋+Twine/MAST 长距训练（meta-infra-evolution）；AWS Rainier EFA 跨 DC（aws-project-rainier） | `hybrid-cloud-egress-pivot`、`dns-service-discovery`、链「跨站 WAN → 远端 fabric 入组」（gen-26 预留） |
+| 7 | **光交换/光互联重构可达性** | Google OCS 动态重构拓扑（google-tpu-oci、jupiter-evolving）；Ironwood ICI 9.6Tb/s 单域（google-ironwood）；Quantum-X CPO 共封装光（gen-26 条目） | `fabric-topology-isolation`、链「OCS/SDN 控制面 → 拓扑重配」（gen-26 预留） |
+| 8 | **万卡自愈/调度自动化被劫持即大规模扰动** | 昇腾"秒级恢复、分钟级诊断/训练可用度98%"（huawei-ascend-10k-stability）；美团"自动故障恢复、月均日故障率降70%"（meituan-longcat-2）；星脉故障定位分钟级（tencent-xingmai-2）；Meta 中断率降 ~50x（llama3-herd） | `scheduler-network-semantics`、`driver-reset-trigger`（gen-26）、`checkpoint-io-storm`（gen-26） |
+| 9 | **多租公共智算平台隔离在平台层而非 fabric** | 中国电信"息壤"万卡池公共多租（china-telecom-10k）；OCI Zettascale 云上交付 16,384 H100（oracle-zettascale）；MiniMax 租用算力样本（minimax-m1） | `network-policy-coverage`、`cloud-role-overprivilege`、`cloud-bucket-cross-tenant` |
+| 10 | **超节点总线域替代以太=旁路族再扩容** | 华为"高速总线互联替代传统以太"16 万卡（huawei-ascend-cloud）；NVLink Fusion/GB200 NVL72 域（nvidia-gb200-nvl72、gen-26 nvidia-nvlink-fusion）；昆仑芯单柜全互联（kunlunxin-supernode） | `multus-sriov-rdma-bypass`、`privileged-gpu-pod-escape`、`gpu-device-cross-namespace` |
+| 11 | **交换机 OS/NOS 开放化=控制面供应链** | Fairwater 明示 SONiC 为其交换机 OS（msft-fairwater-superfactory）；SONiC Foundation 多厂商 NOS（sonic-foundation）；SONiC 白盒安全（gen-26 sonic-whitebox-security） | `gpu-network-operator-posture`、`trust-remote-code-supply-chain`、链「白盒交换机指纹 → fabric 控制面」 |
+| 12 | **UFM/fabric 管理器单点** | Quantum-X800 UFM 专用端口（gen-26 条目 nvidia-quantum-x800）；IB 子网管理器（ib-partition-rdma、gen-26 ib-subnet-manager-hijack） | `ib-subnet-manager-hijack`（gen-26）、`rbac-mapping`、`gpu-network-operator-posture` |
+| 13 | **云凭据链仍是万卡租户/运营双方面共同枢纽** | AWS×Anthropic 专属容量+AWS 运营（aws-project-rainier）；OpenAI×NVIDIA 10GW（openai-nvidia-10gw）；Microsoft OpenAI 超算 10k GPU/400G（msft-openai-sc-2020） | `multi-cloud-imds-credentials`、`metadata-egress`、`ssrf-imds-credential`、`cloud-role-overprivilege` |
+| 14 | **权重/checkpoint 双轨大通道** | Meta Tectonic+Hammerspace 双存储（meta-genai-infra）；Fairwater 存储专用楼+BlobFuse2（msft-fairwater-wisconsin）；vePFS RDMA 直访（volcengine-hpc-rdma） | `shared-volume-weight-copy`、`checkpoint-shard-poison`、`training-data-leak` |
+| 15 | **观测面=拓扑与 rank 布局地图** | Meta desync debug/flight recorder（meta-genai-infra）；Minerva 全栈遥测（nvidia-spectrum-x）；昇腾分钟级定位（huawei-ascend-10k-stability） | `observability-exposure`、`exposure-mapping`、`gpu-metrics-tenant-leak` |
+| 16 | **万卡规模常态化（宏观）** | 人民日报：全国已建成 42 个万卡级智算集群（people-daily-42-wanka，partial）；MegaScale 12,288/HPN 15K/Llama 3 24,576×2（paper 条目） | 全模块族量级依据（`exposure-mapping`） |
 
-## 2. 横向架构思路（路径图·文字版）
-
-主路径（网络七层模型贯穿）：
+## 2. 横向架构思路（路径图·文字版，fabric 面为主线）
 
 ```
-初始立足（推理端点/引擎管理面/共享卷/平台网关）
+初始立足（推理端点/引擎管理面/共享卷/平台网关/云凭据）
    │  ① 暴露面测绘 + 框架端口匹配（exposure-mapping / framework-port-matching）
    ▼
-Pod→Pod 横向（CNI 层）
-   ├─ NetworkPolicy 盲区：hostNetwork / SR-IOV VF / macvlan / IB / 独占 ENI（multus-sriov-rdma-bypass）
-   ├─ VPC-native 双控制面错配：安全组 × K8s 策略两套语义（cni-stack-capability）
+Fabric 侦察段（gen-26 fabric 面 · 在跑）
+   ├─ 拓扑指纹：平面数/rail 映射/超节点域边界（fabric-topology-isolation / rail-mismatch-forcing）
+   ├─ 拥塞面画像：PFC/ECN/CC 代际（TiTa/DCQCN 弃用/CSIG）→ roce-pfc-storm
+   └─ 交换机控制面：SONiC/UFM/IB SM 指纹 → gpu-network-operator-posture / ib-subnet-manager-hijack
    ▼
-网关与分离面（服务与网关层）
-   ├─ EPP/failureMode=FailOpen → 旁路智能路由（inference-gateway-pd）
-   ├─ 预填充池 →(NIXL/RDMA KV 明文通道)→ 解码池：注入/窃听 KV（collective-communication-surface）
+集合通信面（万卡 fabric 层）
+   ├─ TCPStore/rendezvous → NCCL/TCCL 入组 → 梯度注入/参数旁听（nccl-collective-join）
+   ├─ 在网计算段：SHARP/INC 聚合投毒（sharp-in-network-poison）
+   └─ 慢节点/straggler：低速率拖垮万卡（nccl-straggler-injection）；自愈通道反向利用（scheduler-network-semantics）
    ▼
-集合通信面（fabric 层）
-   ├─ 探 TCPStore/rendezvous → NCCL 入组 → 梯度注入/参数旁听（nccl-collective-join）
-   ├─ IB 可达且 default PKey 全通 → RDMA 直读写邻居（fabric-topology-isolation）
-   └─ ComputeDomain/IMEX 划界错配 → 跨节点 GPU 内存越权（GB200 形态）
+Pod→Pod / 云原生层（旁路族）
+   ├─ NetworkPolicy 盲区：hostNetwork/SR-IOV/macvlan/IB/独占 ENI（multus-sriov-rdma-bypass）
+   └─ VPC-native 双控制面错配（cni-stack-capability）
    ▼
-存储数据面
-   ├─ NFS AUTH_SYS 伪造 uid → 数据集/权重直读（storage-protocol-csi / shared-volume-weight-copy）
-   ├─ RWX + HF 缓存 → 恶意权重/模型代码投放 → 加载即执行（trust-remote-code-supply-chain）
+跨站/混合回旋段
+   ├─ AI WAN / XGS / Prometheus 跨栋：远端 fabric 段入组（hybrid-cloud-egress-pivot）
+   └─ CEN/ExpressRoute/PrivateLink 路由传播（既有链）
    ▼
-云身份与凭据（云与混合边界层）
-   ├─ 元数据（IMDSv2/托管标识/RAM/CAM/WIF）→ 节点/SA 云凭据（multi-cloud-imds-credentials）
-   ├─ 权重桶链：IRSA/MI/RAM/CAM → S3/Blob/OSS/COS 权重读写投毒（cloud-role-overprivilege）
+存储与权重面
+   ├─ Tectonic/Hammerspace/vePFS-BlobFuse 双轨 → checkpoint 投毒（shared-volume-weight-copy / checkpoint-shard-poison）
+   └─ RWX+HF 缓存 → 恶意模型投放（trust-remote-code-supply-chain）
    ▼
-混合回旋
-   └─ CEN/ExpressRoute/PrivateLink 路由传播面 → IDC ↔ 多 VPC 回旋（hybrid-cloud-egress-pivot）
+云身份枢纽
+   └─ IMDS/托管标识/RAM/CAM → 权重桶链（multi-cloud-imds-credentials / cloud-role-overprivilege）
 ```
 
-要点：
-1. **“有 NetworkPolicy”≠“隔离有效”**——每条旁路（hostNetwork/SR-IOV/IB/独占 ENI/TCP fallback）都必须单独实证（可达性图五维：pod↔pod / pod↔宿主 / pod↔IB / pod↔元数据 / 跨集群）。
-2. **新架构面优先**：预填充-解码 KV 通道（NIXL/llm-d）、ComputeDomain/IMEX、EPP FailOpen、DRA ResourceClaim 是 2026 检测面增量，均有公开设计证据支撑。
-3. **云商共性问题**：六云一致出现「托管化转移风险面」——驱动/网络组件被托管收编，但节点角色与元数据语义不变，凭据链攻击仍是通用横向枢纽。
-4. **规则转化**：旁路族建议出 per-CNI 规则包 + IB Partition/SM 补充建议 + hostNetwork 收敛清单（设计基线 10.1）。
+要点（重收后的更新）：
+1. **平网与多平面是 2025-2026 万卡官方共识**（Fairwater/Spectrum-X/Meta 129k），"有 NetworkPolicy ≠ 隔离有效"升级为"平面间/跨站段默认全通"——可达性图必须新增 fabric 维与跨站维（gen-26 fabric 面承接）。
+2. **在网计算（SHARP/INC）与端网协同 CC（CTS/TiTa/CSIG）成为协议层新攻击面**：不破密码即扰动/投毒万卡训练。
+3. **万卡自愈自动化是双刃剑**：98% 可用度/秒级恢复依赖的探测-决策通道被劫持即成放大器（straggler/自愈投毒）。
+4. **国内侧独有形态**：国产芯片万卡集群（昇腾 16 万卡/昆仑芯 3 万卡/美团五万卡/电信万卡池）+ 公共多租智算平台——平台层隔离与国产通信库（TCCL/HCCL 族）是差异化检测面。
+5. **规则转化衔接**：fabric 面建议新增 Falco/Suricata 段（NCCL/TCCL 入组、SHARP 段、PFC 风暴）+ SONiC/白盒管理面收敛清单（对接规则转化引擎既有管线）。
 
-## 3. 覆盖情况声明
+## 3. 覆盖情况声明（重收门槛全绿）
 
-- **门槛达成**（`check.py` 校验，逐源状态见 `coverage-matrix.json`）：
-  - 自建与超大规模训练组网：**8 verified / ≥8 达标**（另 1 篇 verified-partial：xai-colossus，主站自实验网络不可达，经检索快照佐证，缺口显式记录）
-  - 六云商各 ≥2：**全部达标**（AWS 2 / Azure 2 / 阿里 2 / 腾讯 2 / GCP 2 / 华为 2，均 verified）
-  - 混合互联与边界：**3 / ≥3 达标**（CEN、ExpressRoute、PrivateLink，均 verified）
-  - 网络架构专源：**11 / ≥8 达标**；必需 topic 9/9 全覆盖：CNI ✓、Multus/SR-IOV ✓、Network Operator ✓、DRA/ComputeDomain/IMEX ✓、Gateway API Inference Extension ✓、llm-d/NIXL ✓、NCCL ✓、IB/RoCE ✓、存储协议 ✓
-- **核验方法**：websearch/webfetch/http fetch 逐源抓取（GitHub raw、arXiv 摘要与全文、SIGCOMM/USENIX 官方页、各云厂商帮助中心/学习站/产品页/官方开源仓），核验日期统一 2026-10-25；每篇 corpus 文件含来源 URL、核验状态、架构要素、问题点（前提↔模块机器键）、横向思路。
-- **显式缺口与替代**：
-  1. `cloud.google.com` 与 `research.google.com` 在本实验网络超时/拒连——GCP 条目改用 GoogleCloudPlatform 官方仓（ai-on-gke，已归档只读）与 Google 云 TPU 团队维护的 pytorch/xla 仓（官方弃用公告：2026-11-15 归档、迁移 TorchTPU）核验；
-  2. `x.ai` 主站不可达——xai-colossus 记为 verified-partial（Bing 检索快照 + 中文科技媒体交叉佐证），不计入门槛；
-  3. Calico raw README 当日抓取超时——cni-policy-calico-cilium 以 Cilium 官方文档直读为核验依据，Calico 语义待复验；
-  4. 设计基线 12.1 首批清单中 NVIDIA SuperPOD RA、ACES、VeScale、Google Borg/Jupiter 原文、Anthropic 集群访谈等未在本轮独立成篇（非门槛项），由 HPN/GB200/TPU/Singularity 等同类已核验源覆盖其架构要素，后续批次补齐。
+- **门槛达成**（`check.py` 输出，2026-10-25）：
+  - official-cn：**28 verified / ≥12 达标**（阿里云/腾讯云/华为云/百度智能云/火山引擎/中国电信/国资委/人民日报/美团/京东云×2/摩尔线程/昆仑芯/DeepSeek/MiniMax）
+  - official-en：**39 verified / ≥12 达标**（Meta×3/Microsoft×3/OpenAI/AWS/Google/NVIDIA×2/UEC/SONiC Foundation + 云商与 OSS 官方文档 + gen-26 批次 8 源）
+  - 万卡证据源：**28 / ≥20 达标**（每源 wanka_quote 原文摘录；规划口径与能力宣称如实排除）
+  - 网络要素：**8/8 全覆盖**（rail 3 / multi-plane 8 / 在网计算 5 / 拥塞控制 13 / 光交换 2 / 多租 16 / 隔离 23 / 运维故障面 14）
+  - 本轮新增：**32 / ≥30 达标**，official 占比 **93.8% / ≥70% 达标**
+- **不可达与替代（显式记录）**：x.ai（ECONNREFUSED，xai-colossus 以检索快照佐证）；cloud.google.com（拒连，google-next26-80k 快照佐证）；oracle.com（403 WAF，快照佐证）；dl.acm.org（Cloudflare 403，jupiter-evolving 镜像/快照佐证）；paper.people.com.cn（未直读，快照佐证）；docs.volcengine.com/mthreads.com（JS 渲染，标题+快照佐证）。检索式与未找到项见 `docs/RESEARCH-COVERAGE.md`。
+- **gen-26 并行批次**：13 源（UEC 生态/SHARP/Spectrum-X multiplane/NVLink Fusion/SONiC 白盒/Prometheus/Colossus 2/Ironwood OCS/MegaScale 推理/Trainium UltraServer 等）以 `batch=gen-26-fabric` 并入；`nvidia-quantum-x800` 撞名条目归 gen-26 批次（本任务同名新增源已让位）。fabric 面模块（`rail-mismatch-forcing`、`roce-pfc-storm`、`sharp-in-network-poison`、`ib-subnet-manager-hijack`、`nccl-straggler-injection`、`nccl-port-exhaustion`、`driver-reset-trigger`、`checkpoint-io-storm`、`_fabric-common.py`）为 gen-26 在跑交付，本分析的问题点→模块映射已按其机器键预留对齐。
 - **可回溯性**：本分析全部「问题点→模块」映射均标注来源条目 id；模块清单与组合签名库更新必须回溯到矩阵条目（设计基线 12.2 要求）。

@@ -24,3 +24,10 @@
 
 ## 横向思路
 - 观测 ComputeDomain CR → 构造 claim 尝试与目标同域 → 域内直接读改对端 GPU 内存（权重/梯度）
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ❌ 未达 ≥10k 口径：无 ≥10k 披露：DRA/IMEX 仓
+## 网络要素
+- isolation
+- 分类迁移：corpus 扁平目录 → corpus/official-en（外文官方源）

@@ -24,3 +24,10 @@
 
 ## 横向思路
 - 供应链/边车服务（监控/存储 UI）立足 → 管理面未鉴权端点 → 权重与 checkpoint 面
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ✅ 达标：x.ai/colossus 官方页（本网络拒连，检索快照佐证）：Then we doubled it in 92 days to 200k GPUs — 200,000 H100 GPUs in a single interconnected cluster
+## 网络要素
+- （本源为控制面/组件语义类，不直接承载 8 项 fabric 要素）
+- 分类迁移：corpus 扁平目录 → corpus/official-en（外文官方源）

@@ -24,3 +24,10 @@
 
 ## 横向思路
 - 云凭据（WIF/元数据）→ TPU 控制面 → 创建相邻 slice/查询拓扑 → 定位目标作业 slice → 数据面相邻性利用
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ❌ 未达 ≥10k 口径：无 ≥10k 披露：4096 芯片/Pod（ISCA'23 TPU v4）
+## 网络要素
+- optical-switching、multi-tenancy
+- 分类迁移：corpus 扁平目录 → corpus/paper（论文/技术报告）

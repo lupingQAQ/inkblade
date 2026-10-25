@@ -74,4 +74,5 @@ trident = [
     "arch-intel/*.py",
     "arch-intel/*.json",
     "arch-intel/corpus/*.md",
+    "arch-intel/corpus/*/*.md",
 ]

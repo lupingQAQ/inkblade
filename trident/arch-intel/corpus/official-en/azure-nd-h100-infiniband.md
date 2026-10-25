@@ -24,3 +24,10 @@
 
 ## 横向思路
 - AKS Pod（hostNetwork/IB 设备）→ 扫 IB 子网 → 入组污染/窃听 → checkpoint 桶（托管标识）
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ❌ 未达 ≥10k 口径：无 ≥10k 披露：ND 系列 VM 文档
+## 网络要素
+- isolation
+- 分类迁移：corpus 扁平目录 → corpus/official-en（外文官方源）

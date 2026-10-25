@@ -25,3 +25,10 @@
 
 ## 横向思路
 - 云指纹识别 EKS+EFA → can-i create ResourceClaim → 抓 EFA 入集合通信网 → NCCL 入组；或元数据出网 → 云凭据 → 桶横向
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ❌ 未达 ≥10k 口径：无 ≥10k 披露：EKS+EFA/DRA 文档
+## 网络要素
+- multi-tenancy
+- 分类迁移：corpus 扁平目录 → corpus/official-en（外文官方源）

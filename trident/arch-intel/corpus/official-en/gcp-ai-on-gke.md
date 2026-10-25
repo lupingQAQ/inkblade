@@ -24,3 +24,10 @@
 
 ## 横向思路
 - SSRF → GCP 元数据 → GSA 凭据 → GCS/TPU 控制面 → 作业投放/权重桶
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ❌ 未达 ≥10k 口径：无 ≥10k 披露：GKE AI 文档
+## 网络要素
+- multi-tenancy
+- 分类迁移：corpus 扁平目录 → corpus/official-en（外文官方源）

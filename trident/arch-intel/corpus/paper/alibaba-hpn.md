@@ -25,3 +25,10 @@
 
 ## 横向思路
 - 拿到任一训练节点 → 探测双平面两个 200G 接口 → 定位同 rail 邻居 → NCCL 入组注入梯度，或对 ToR 上联做低速率扰动（PFC/ECN 层面）放大训练抖动
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ✅ 达标：论文摘要口径：15K GPU 单 Pod 双平面组网（SIGCOMM'24）
+## 网络要素
+- rail-optimized、multi-plane
+- 分类迁移：corpus 扁平目录 → corpus/paper（论文/技术报告）

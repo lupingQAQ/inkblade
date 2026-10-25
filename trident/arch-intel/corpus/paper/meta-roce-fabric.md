@@ -24,3 +24,10 @@
 
 ## 横向思路
 - 由前端业务立足点 → 找到通往 GPU backend 的路由/多网卡节点 → RoCE 直达训练 ranks → NCCL 入组或 KV/RDMA 窃听
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ✅ 达标：同系统官方博客口径：AI networks interconnecting tens of thousands of GPUs；24k 级集群（engineering.fb.com 2024-03/08）
+## 网络要素
+- congestion-control、ops-fault-surface
+- 分类迁移：corpus 扁平目录 → corpus/paper（论文/技术报告）

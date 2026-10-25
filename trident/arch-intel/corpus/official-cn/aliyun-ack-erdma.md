@@ -24,3 +24,10 @@
 
 ## 横向思路
 - 申请 erdma 资源（RBAC 允许即可）→ 探 VPC RDMA 段 → 入组/窃听 → 元数据（RAM 角色）→ OSS 权重桶
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ❌ 未达 ≥10k 口径：无 ≥10k 披露：eRDMA 设备文档
+## 网络要素
+- isolation
+- 分类迁移：corpus 扁平目录 → corpus/official-cn（中文官方源）

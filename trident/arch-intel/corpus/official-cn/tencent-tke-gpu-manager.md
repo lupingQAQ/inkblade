@@ -24,3 +24,10 @@
 
 ## 横向思路
 - 逃逸/接管 gpu-manager Pod（特权+cluster-admin）→ 集群级横向 → 节点池任意 GPU 负载注入
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ❌ 未达 ≥10k 口径：无 ≥10k 披露：GPU 管理组件文档
+## 网络要素
+- multi-tenancy
+- 分类迁移：corpus 扁平目录 → corpus/official-cn（中文官方源）

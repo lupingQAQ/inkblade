@@ -24,3 +24,10 @@
 
 ## 横向思路
 - 拿 CR 写权/operator SA → 重配 PKey/网络划分 → 把攻击者 Pod 划入目标分区 → IB 直达
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ❌ 未达 ≥10k 口径：无 ≥10k 披露：Network Operator 仓
+## 网络要素
+- isolation
+- 分类迁移：corpus 扁平目录 → corpus/official-en（外文官方源）

@@ -24,3 +24,10 @@
 
 ## 横向思路
 - 枚举 PKey/GUID → 若 default 分区全通 → 直接 RDMA 读写邻居（含存储流量）→ 免 NCCL 的底层窃听
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ❌ 未达 ≥10k 口径：无 ≥10k 披露：ib-kubernetes 文档
+## 网络要素
+- isolation
+- 分类迁移：corpus 扁平目录 → corpus/official-en（外文官方源）

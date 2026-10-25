@@ -24,3 +24,10 @@
 
 ## 横向思路
 - Pod → IMDS 取托管标识 token → Blob 权重桶读写；或污点容忍节点上的特权 operator 面提权
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ❌ 未达 ≥10k 口径：无 ≥10k 披露：AKS GPU 文档
+## 网络要素
+- multi-tenancy
+- 分类迁移：corpus 扁平目录 → corpus/official-en（外文官方源）

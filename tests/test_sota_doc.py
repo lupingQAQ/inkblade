@@ -71,11 +71,16 @@ class TestSotaDoc(unittest.TestCase):
         rows = _rows()
         cited = set()
         for row in rows:
-            cited.update(re.findall(r"arch-intel/corpus/([a-z0-9-]+)\.md", row["reference"]))
+            cited.update(re.findall(
+                r"arch-intel/corpus/(?:official-cn/|official-en/|paper/)?"
+                r"([a-z0-9-]+)\.md", row["reference"]))
         self.assertGreaterEqual(len(cited), 8, cited)
         for cid in cited:
-            self.assertTrue((REPO / "trident" / "arch-intel" / "corpus" / f"{cid}.md").is_file(),
-                            f"引用了不存在的 corpus 条目: {cid}")
+            base = REPO / "trident" / "arch-intel" / "corpus"
+            self.assertTrue(
+                any((base / cls / f"{cid}.md").is_file()
+                    for cls in ("official-cn", "official-en", "paper")),
+                f"引用了不存在的 corpus 条目: {cid}")
 
     def test_documented_counts_match_matrix(self):
         text = DOC.read_text(encoding="utf-8")

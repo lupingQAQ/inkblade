@@ -24,3 +24,10 @@
 
 ## 横向思路
 - IDC 立足 → private peering 进 VNet → AKS 管理段；反向：云内 → 经 ExpressRoute 回 IDC AD/文件服务器
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ❌ 未达 ≥10k 口径：无 ≥10k 披露：专线文档
+## 网络要素
+- isolation
+- 分类迁移：corpus 扁平目录 → corpus/official-en（外文官方源）

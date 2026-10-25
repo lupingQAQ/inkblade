@@ -25,3 +25,10 @@
 
 ## 横向思路
 - 观测面拿拓扑图 → 定位 TP/PP 关键 rank → 精准摘除/拖慢（straggler 攻击）或入组污染梯度 → 权重面（共享 checkpoint 桶/卷）继续横向
+
+---
+## 万卡证据（2026-10-25 重收批注）
+- ✅ 达标：论文口径：12,288 GPU 训练 175B 模型（NSDI'24 摘要）
+## 网络要素
+- congestion-control、ops-fault-surface
+- 分类迁移：corpus 扁平目录 → corpus/paper（论文/技术报告）
