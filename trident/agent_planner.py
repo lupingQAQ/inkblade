@@ -70,6 +70,25 @@ def _reasons(chain: dict, plan: dict, verdict: str, missing: list[str],
     return {"zh": zh, "en": en}
 
 
+def _policy_actions(steps: list[dict]) -> list[dict]:
+    return [{"module": s.get("module"), "writes": bool(s.get("writes")),
+             "dry_run": {"backup_targets": list(s.get("backup_targets") or [])}}
+            for s in steps]
+
+
+def _policy_summary(steps: list[dict]) -> dict:
+    from .core import agent_policy
+    decided = agent_policy.decide(_policy_actions(steps))
+    return {k: decided[k] for k in ("level", "label", "approval_mode",
+                                    "approval_count", "requires_human", "reason")}
+
+
+def _cost_summary(steps: list[dict]) -> dict:
+    from .core import cost
+    plan = cost.plan_cost(_policy_actions(steps))
+    return {**plan, "pricing": "确定性估算（4 字符/token）；非真实账单"}
+
+
 def _summarize_steps(plan: dict) -> list[dict]:
     out = []
     for step in plan.get("steps", []):
@@ -90,8 +109,16 @@ def plan_workspace(
     run: str | None = None,
     chains_dir: Path | str | None = None,
     modules_dir: Path | str | None = None,
+    policy: bool | None = None,
 ) -> dict:
-    """生成推荐计划；只读，不落任何 actions/run。"""
+    """生成推荐计划；只读，不落任何 actions/run。
+
+    ``policy=False``（或 env ``TRIDENT_AGENT_POLICY=off``）精确复现 HEAD 的
+    计划字段；ON 为每个候选附加自主度/审批次数与成本估算（仍不执行）。
+    """
+    from .core.explorer import policy_enabled
+
+    policy_on = policy_enabled(policy)
     runs = _runs(store)
     run_name = run or latest_run(store)
     if modules_dir is None:
@@ -109,7 +136,8 @@ def plan_workspace(
         satisfied = total - len(missing)
         plan = dry_run(chain, findings, modules_dir)
         writes = sum(1 for step in plan.get("steps", []) if step.get("writes"))
-        candidates.append({
+        steps = _summarize_steps(plan)
+        candidate = {
             "chain": chain["id"],
             "title": chain.get("title", {}),
             "category": chain.get("category", ""),
@@ -122,7 +150,7 @@ def plan_workspace(
             "requires": list(chain.get("requires", [])),
             "mitre": list(chain.get("mitre", [])),
             "reasons": _reasons(chain, plan, verdict, missing, satisfied, total, writes),
-            "steps": _summarize_steps(plan),
+            "steps": steps,
             "execution": {
                 "trigger": "human",
                 "performed": False,
@@ -130,7 +158,11 @@ def plan_workspace(
                 "note_zh": "规划器不执行；lead 审批后由人触发 chains.execute。",
                 "note_en": "The planner never executes; after lead approval a human triggers chains.execute.",
             },
-        })
+        }
+        if policy_on:
+            candidate["policy"] = _policy_summary(steps)
+            candidate["cost"] = _cost_summary(steps)
+        candidates.append(candidate)
     candidates.sort(key=lambda c: (-c["score"], c["chain"]))
     for i, cand in enumerate(candidates, 1):
         cand["rank"] = i
@@ -162,6 +194,9 @@ def plan_workspace(
             "note_zh": "本命令只输出计划（plan-only）。",
             "note_en": "This command only emits a plan (plan-only).",
         },
+        **( {"agent_policy": {"engine": "trident.agent_policy", "enabled": True,
+                              "hard_boundary": "plan-only；审批后由人触发"}}
+           if policy_on else {} ),
         "candidates": candidates,
     }
 

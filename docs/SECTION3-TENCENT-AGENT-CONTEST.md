@@ -415,6 +415,7 @@ optional，再砍写，最后保留最小集并上报）。P7 用 700 元打完�
 | `trident/core/observation.py` | 结构化观察 + 证据指针 + 下一步候选 + 压缩 | confirmed 必须有证据；JSONL 只追加 |
 | `trident/core/cost.py` | token/时延/审批/干预预算 + 超支降级 | 确定性；至少保留 1 个动作 |
 | `trident/core/explorer.py` | 提议路径接入（`policy=True/False`） | 不执行、不建 run；OFF 精确复现 HEAD |
+| `trident/agent_planner.py` | 链计划候选附加自主度/成本（`policy=True/False`） | plan-only；不落 actions/run |
 | `trident/webui/api_section3.py` | 只读视图 `/api/v1/agent/*` | 仅 GET；不改既有路由语义 |
 | `lab/tencent-compare/` | 8 任务 OFF/ON 微评测 | 确定性；不调用外部 LLM |
 | `tests/test_*.py` | 策略/观察/成本/接线/视图/评测 | 全部 stdlib unittest |
