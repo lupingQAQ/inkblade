@@ -99,6 +99,12 @@ def _summarize_steps(plan: dict) -> list[dict]:
             "backup_targets": step.get("backup_targets", []),
             "write_surface": step.get("write_surface", []),
             "gate": step.get("gate", ""),
+            "status": step.get("status", "ready"),
+            "applicability": {
+                "state": (step.get("applicability") or {}).get("state"),
+                "gated": (step.get("applicability") or {}).get("gated", False),
+                "cves": (step.get("applicability") or {}).get("cves", []),
+            },
         })
     return out
 
@@ -110,15 +116,24 @@ def plan_workspace(
     chains_dir: Path | str | None = None,
     modules_dir: Path | str | None = None,
     policy: bool | None = None,
+    inventory: dict | None = None,
+    catalog_path: str | Path | None = None,
+    assessment: dict | None = None,
 ) -> dict:
     """生成推荐计划；只读，不落任何 actions/run。
 
     ``policy=False``（或 env ``TRIDENT_AGENT_POLICY=off``）精确复现 HEAD 的
     计划字段；ON 为每个候选附加自主度/审批次数与成本估算（仍不执行）。
+    ``inventory`` 提供时，候选链在规划前先做 CVE 适用性评估（blocked/unknown
+    步骤不会进入可执行面），计划里带 applicability 依据。
     """
     from .core.explorer import policy_enabled
 
     policy_on = policy_enabled(policy)
+    if assessment is None and inventory is not None:
+        from .core.applicability import assess_cves
+
+        assessment = assess_cves(inventory, catalog_path=catalog_path)
     runs = _runs(store)
     run_name = run or latest_run(store)
     if modules_dir is None:
@@ -134,9 +149,10 @@ def plan_workspace(
         verdict, missing = evaluate_preconditions(chain, findings)
         total = len(chain.get("preconditions", []))
         satisfied = total - len(missing)
-        plan = dry_run(chain, findings, modules_dir)
+        plan = dry_run(chain, findings, modules_dir, applicability=assessment)
         writes = sum(1 for step in plan.get("steps", []) if step.get("writes"))
         steps = _summarize_steps(plan)
+        blocked_steps = [s for s in plan.get("steps", []) if s.get("status") == "blocked"]
         candidate = {
             "chain": chain["id"],
             "title": chain.get("title", {}),
@@ -151,6 +167,14 @@ def plan_workspace(
             "mitre": list(chain.get("mitre", [])),
             "reasons": _reasons(chain, plan, verdict, missing, satisfied, total, writes),
             "steps": steps,
+            "applicability": {
+                "evaluated": assessment is not None,
+                "summary": (assessment or {}).get("summary") or {},
+                "catalog": (assessment or {}).get("catalog") or {},
+                "inventory": (assessment or {}).get("inventory") or {},
+                "blocked_steps": [s.get("module") for s in blocked_steps],
+                "basis": plan.get("applicability_basis") or [],
+            },
             "execution": {
                 "trigger": "human",
                 "performed": False,

@@ -1,0 +1,2500 @@
+{
+  "schema": "trident-inventory-v1",
+  "collected_at": "2026-10-25T17:03:14Z",
+  "source": {
+    "mode": "live-kubectl",
+    "label": "live-kubectl",
+    "kubeconfig": "lab\\qemu-k3s\\out\\k3s.yaml",
+    "context": "default",
+    "kubectl": "lab/qemu-k3s/kubectl.exe",
+    "cluster": "default",
+    "version": "v1.36.5+k3s1",
+    "server": "https://127.0.0.1:6445"
+  },
+  "cluster": {
+    "name": "default",
+    "version": "v1.36.5+k3s1",
+    "provider": "",
+    "server": "https://127.0.0.1:6445",
+    "node_count": 1,
+    "source": "live-kubectl"
+  },
+  "nodes": [
+    {
+      "name": "k3s",
+      "os": "linux",
+      "os_image": "Alpine Linux v3.24",
+      "kernel": "6.18.58-0-virt",
+      "arch": "amd64",
+      "kubelet": "v1.36.5+k3s1",
+      "container_runtime": "containerd://2.3.4-k3s1.36",
+      "runtime_type": "containerd",
+      "runtime_version": "2.3.4-k3s1.36",
+      "containerd": "2.3.4-k3s1.36",
+      "runc": "",
+      "runc_present": true,
+      "runtime_handlers": [
+        "",
+        "runc",
+        "runhcs-wcow-process"
+      ],
+      "cni": "",
+      "cni_version": "",
+      "cgroups_version": "",
+      "provider_id": "k3s://k3s",
+      "capacity": {
+        "cpu": "6",
+        "ephemeral-storage": "14052164Ki",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "6076700Ki",
+        "pods": "110"
+      },
+      "gpu": {
+        "count": 0,
+        "driver_version": "",
+        "product": ""
+      },
+      "labels": {
+        "beta.kubernetes.io/arch": "amd64",
+        "beta.kubernetes.io/instance-type": "k3s",
+        "beta.kubernetes.io/os": "linux",
+        "kubernetes.io/arch": "amd64",
+        "kubernetes.io/hostname": "k3s",
+        "kubernetes.io/os": "linux",
+        "node-role.kubernetes.io/control-plane": "true",
+        "node.kubernetes.io/instance-type": "k3s"
+      },
+      "annotations": {
+        "alpha.kubernetes.io/provided-node-ip": "10.0.2.15,fec0::5054:ff:fe12:3456",
+        "flannel.alpha.coreos.com/backend-data": "{\"VNI\":1,\"VtepMAC\":\"1e:10:f6:77:35:05\"}",
+        "flannel.alpha.coreos.com/backend-type": "vxlan",
+        "flannel.alpha.coreos.com/kube-subnet-manager": "true",
+        "flannel.alpha.coreos.com/public-ip": "10.0.2.15",
+        "k3s.io/hostname": "k3s",
+        "k3s.io/internal-ip": "10.0.2.15,fec0::5054:ff:fe12:3456",
+        "k3s.io/node-args": "[\"server\",\"--disable\",\"traefik\",\"--disable\",\"metrics-server\",\"--write-kubeconfig-mode\",\"644\"]",
+        "k3s.io/node-config-hash": "ETEG45P7ASJ2I4H5QLLI2Q5ZT743VVPNGLNNUYDG4DMSXZZHKFLA====",
+        "k3s.io/node-env": "{}",
+        "node.alpha.kubernetes.io/ttl": "0",
+        "volumes.kubernetes.io/controller-managed-attach-detach": "true"
+      },
+      "conditions": [
+        "Ready"
+      ],
+      "source": "kubectl get nodes -o json"
+    }
+  ],
+  "namespaces": [
+    "default",
+    "kube-node-lease",
+    "kube-public",
+    "kube-system",
+    "trident-proof"
+  ],
+  "pods": [
+    {
+      "namespace": "kube-system",
+      "name": "coredns-7cfb7bc9c7-pq74m",
+      "phase": "Running",
+      "node": "k3s",
+      "labels": {
+        "k8s-app": "kube-dns",
+        "pod-template-hash": "7cfb7bc9c7"
+      },
+      "annotations": {},
+      "service_account": "coredns",
+      "automount_sa_token": null,
+      "host_network": false,
+      "host_pid": false,
+      "host_ipc": false,
+      "containers": [
+        {
+          "name": "coredns",
+          "image": "rancher/mirrored-coredns-coredns:1.14.7",
+          "command": [],
+          "args": [
+            "-conf",
+            "/etc/coredns/Corefile"
+          ],
+          "env": {},
+          "env_from": [],
+          "privileged": false,
+          "allow_privilege_escalation": false,
+          "cap_add": [
+            "NET_BIND_SERVICE"
+          ],
+          "cap_drop": [
+            "all"
+          ],
+          "read_only_root": true,
+          "run_as_user": null,
+          "volume_mounts": [
+            {
+              "mountPath": "/etc/coredns",
+              "name": "config-volume",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/etc/coredns/custom",
+              "name": "custom-config-volume",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-s9tvp",
+              "readOnly": true
+            }
+          ],
+          "ports": [
+            {
+              "containerPort": 53,
+              "name": "dns",
+              "protocol": "UDP"
+            },
+            {
+              "containerPort": 53,
+              "name": "dns-tcp",
+              "protocol": "TCP"
+            },
+            {
+              "containerPort": 9153,
+              "name": "metrics",
+              "protocol": "TCP"
+            }
+          ]
+        }
+      ],
+      "volumes": [
+        {
+          "name": "config-volume",
+          "host_path": null,
+          "git_repo": null,
+          "persistent_volume_claim": null,
+          "config_map": {
+            "defaultMode": 420,
+            "items": [
+              {
+                "key": "Corefile",
+                "path": "Corefile"
+              },
+              {
+                "key": "NodeHosts",
+                "path": "NodeHosts"
+              }
+            ],
+            "name": "coredns"
+          },
+          "secret": null,
+          "empty_dir": null
+        },
+        {
+          "name": "custom-config-volume",
+          "host_path": null,
+          "git_repo": null,
+          "persistent_volume_claim": null,
+          "config_map": {
+            "defaultMode": 420,
+            "name": "coredns-custom",
+            "optional": true
+          },
+          "secret": null,
+          "empty_dir": null
+        },
+        {
+          "name": "kube-api-access-s9tvp",
+          "host_path": null,
+          "git_repo": null,
+          "persistent_volume_claim": null,
+          "config_map": null,
+          "secret": null,
+          "empty_dir": null
+        }
+      ],
+      "host_paths": [],
+      "runtime_socket_mounts": [],
+      "git_repo_volumes": [],
+      "tolerations": [
+        {
+          "key": "CriticalAddonsOnly",
+          "operator": "Exists"
+        },
+        {
+          "effect": "NoSchedule",
+          "key": "node-role.kubernetes.io/control-plane",
+          "operator": "Exists"
+        },
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/not-ready",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        },
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/unreachable",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        }
+      ],
+      "source": "kubectl get pods --all-namespaces -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "local-path-provisioner-77b9867795-7scjs",
+      "phase": "Running",
+      "node": "k3s",
+      "labels": {
+        "app": "local-path-provisioner",
+        "pod-template-hash": "77b9867795"
+      },
+      "annotations": {},
+      "service_account": "local-path-provisioner-service-account",
+      "automount_sa_token": null,
+      "host_network": false,
+      "host_pid": false,
+      "host_ipc": false,
+      "containers": [
+        {
+          "name": "local-path-provisioner",
+          "image": "rancher/local-path-provisioner:v0.0.37",
+          "command": [
+            "local-path-provisioner",
+            "start",
+            "--config",
+            "/etc/config/config.json"
+          ],
+          "args": [],
+          "env": {
+            "POD_NAMESPACE": "<valueFrom>"
+          },
+          "env_from": [],
+          "privileged": false,
+          "allow_privilege_escalation": null,
+          "cap_add": [],
+          "cap_drop": [],
+          "read_only_root": null,
+          "run_as_user": null,
+          "volume_mounts": [
+            {
+              "mountPath": "/etc/config/",
+              "name": "config-volume"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-g4rsg",
+              "readOnly": true
+            }
+          ],
+          "ports": []
+        }
+      ],
+      "volumes": [
+        {
+          "name": "config-volume",
+          "host_path": null,
+          "git_repo": null,
+          "persistent_volume_claim": null,
+          "config_map": {
+            "defaultMode": 420,
+            "name": "local-path-config"
+          },
+          "secret": null,
+          "empty_dir": null
+        },
+        {
+          "name": "kube-api-access-g4rsg",
+          "host_path": null,
+          "git_repo": null,
+          "persistent_volume_claim": null,
+          "config_map": null,
+          "secret": null,
+          "empty_dir": null
+        }
+      ],
+      "host_paths": [],
+      "runtime_socket_mounts": [],
+      "git_repo_volumes": [],
+      "tolerations": [
+        {
+          "key": "CriticalAddonsOnly",
+          "operator": "Exists"
+        },
+        {
+          "effect": "NoSchedule",
+          "key": "node-role.kubernetes.io/control-plane",
+          "operator": "Exists"
+        },
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/not-ready",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        },
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/unreachable",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        }
+      ],
+      "source": "kubectl get pods --all-namespaces -o json"
+    },
+    {
+      "namespace": "trident-proof",
+      "name": "mock-target-66c765d55-2z9n4",
+      "phase": "Running",
+      "node": "k3s",
+      "labels": {
+        "app": "mock-target",
+        "pod-template-hash": "66c765d55",
+        "trident.dev/proof": "real-cluster"
+      },
+      "annotations": {},
+      "service_account": "default",
+      "automount_sa_token": null,
+      "host_network": false,
+      "host_pid": false,
+      "host_ipc": false,
+      "containers": [
+        {
+          "name": "mock",
+          "image": "python:3.12-alpine",
+          "command": [
+            "python",
+            "-c",
+            "import sys\nsys.path.insert(0, \"/app\")\nimport mock_targets as m\nm.HOST = \"0.0.0.0\"   # Service reachability; module default is 127.0.0.1\nm.main([\"--port\", \"8000\", \"--mode\", \"vulnerable\"])\n"
+          ],
+          "args": [],
+          "env": {},
+          "env_from": [],
+          "privileged": false,
+          "allow_privilege_escalation": null,
+          "cap_add": [],
+          "cap_drop": [],
+          "read_only_root": null,
+          "run_as_user": null,
+          "volume_mounts": [
+            {
+              "mountPath": "/app",
+              "name": "src",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-xj5f2",
+              "readOnly": true
+            }
+          ],
+          "ports": [
+            {
+              "containerPort": 8000,
+              "name": "http",
+              "protocol": "TCP"
+            }
+          ]
+        }
+      ],
+      "volumes": [
+        {
+          "name": "src",
+          "host_path": null,
+          "git_repo": null,
+          "persistent_volume_claim": null,
+          "config_map": {
+            "defaultMode": 420,
+            "name": "mock-targets-src"
+          },
+          "secret": null,
+          "empty_dir": null
+        },
+        {
+          "name": "kube-api-access-xj5f2",
+          "host_path": null,
+          "git_repo": null,
+          "persistent_volume_claim": null,
+          "config_map": null,
+          "secret": null,
+          "empty_dir": null
+        }
+      ],
+      "host_paths": [],
+      "runtime_socket_mounts": [],
+      "git_repo_volumes": [],
+      "tolerations": [
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/not-ready",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        },
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/unreachable",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        }
+      ],
+      "source": "kubectl get pods --all-namespaces -o json"
+    },
+    {
+      "namespace": "trident-proof",
+      "name": "proof-hostnet",
+      "phase": "Failed",
+      "node": "k3s",
+      "labels": {
+        "app": "proof-hostnet",
+        "trident.dev/proof": "real-cluster"
+      },
+      "annotations": {
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"proof-hostnet\",\"trident.dev/proof\":\"real-cluster\"},\"name\":\"proof-hostnet\",\"namespace\":\"trident-proof\"},\"spec\":{\"containers\":[{\"command\":[\"sleep\",\"infinity\"],\"image\":\"alpine:3.21\",\"name\":\"probe\",\"resources\":{\"limits\":{\"cpu\":\"100m\",\"memory\":\"64Mi\"}}}],\"dnsPolicy\":\"ClusterFirstWithHostNet\",\"hostNetwork\":true,\"restartPolicy\":\"Never\"}}\n"
+      },
+      "service_account": "default",
+      "automount_sa_token": null,
+      "host_network": true,
+      "host_pid": false,
+      "host_ipc": false,
+      "containers": [
+        {
+          "name": "probe",
+          "image": "alpine:3.21",
+          "command": [
+            "sleep",
+            "infinity"
+          ],
+          "args": [],
+          "env": {},
+          "env_from": [],
+          "privileged": false,
+          "allow_privilege_escalation": null,
+          "cap_add": [],
+          "cap_drop": [],
+          "read_only_root": null,
+          "run_as_user": null,
+          "volume_mounts": [
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-zr6zg",
+              "readOnly": true
+            }
+          ],
+          "ports": []
+        }
+      ],
+      "volumes": [
+        {
+          "name": "kube-api-access-zr6zg",
+          "host_path": null,
+          "git_repo": null,
+          "persistent_volume_claim": null,
+          "config_map": null,
+          "secret": null,
+          "empty_dir": null
+        }
+      ],
+      "host_paths": [],
+      "runtime_socket_mounts": [],
+      "git_repo_volumes": [],
+      "tolerations": [
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/not-ready",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        },
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/unreachable",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        }
+      ],
+      "source": "kubectl get pods --all-namespaces -o json"
+    },
+    {
+      "namespace": "trident-proof",
+      "name": "proof-normal",
+      "phase": "Failed",
+      "node": "k3s",
+      "labels": {
+        "app": "proof-normal",
+        "trident.dev/proof": "real-cluster"
+      },
+      "annotations": {
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"proof-normal\",\"trident.dev/proof\":\"real-cluster\"},\"name\":\"proof-normal\",\"namespace\":\"trident-proof\"},\"spec\":{\"containers\":[{\"command\":[\"sleep\",\"infinity\"],\"image\":\"alpine:3.21\",\"name\":\"probe\",\"resources\":{\"limits\":{\"cpu\":\"100m\",\"memory\":\"64Mi\"}}}],\"restartPolicy\":\"Never\"}}\n"
+      },
+      "service_account": "default",
+      "automount_sa_token": null,
+      "host_network": false,
+      "host_pid": false,
+      "host_ipc": false,
+      "containers": [
+        {
+          "name": "probe",
+          "image": "alpine:3.21",
+          "command": [
+            "sleep",
+            "infinity"
+          ],
+          "args": [],
+          "env": {},
+          "env_from": [],
+          "privileged": false,
+          "allow_privilege_escalation": null,
+          "cap_add": [],
+          "cap_drop": [],
+          "read_only_root": null,
+          "run_as_user": null,
+          "volume_mounts": [
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-trv4g",
+              "readOnly": true
+            }
+          ],
+          "ports": []
+        }
+      ],
+      "volumes": [
+        {
+          "name": "kube-api-access-trv4g",
+          "host_path": null,
+          "git_repo": null,
+          "persistent_volume_claim": null,
+          "config_map": null,
+          "secret": null,
+          "empty_dir": null
+        }
+      ],
+      "host_paths": [],
+      "runtime_socket_mounts": [],
+      "git_repo_volumes": [],
+      "tolerations": [
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/not-ready",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        },
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/unreachable",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        }
+      ],
+      "source": "kubectl get pods --all-namespaces -o json"
+    }
+  ],
+  "daemonsets": [],
+  "components": [
+    {
+      "kind": null,
+      "namespace": "kube-system",
+      "name": "coredns-7cfb7bc9c7-pq74m",
+      "container": "coredns",
+      "image": "rancher/mirrored-coredns-coredns:1.14.7",
+      "repo": "rancher/mirrored-coredns-coredns",
+      "tag": "1.14.7",
+      "digest": "",
+      "version": "1.14.7",
+      "product": "",
+      "source": "kubectl get pods --all-namespaces -o json"
+    },
+    {
+      "kind": null,
+      "namespace": "kube-system",
+      "name": "local-path-provisioner-77b9867795-7scjs",
+      "container": "local-path-provisioner",
+      "image": "rancher/local-path-provisioner:v0.0.37",
+      "repo": "rancher/local-path-provisioner",
+      "tag": "v0.0.37",
+      "digest": "",
+      "version": "v0.0.37",
+      "product": "",
+      "source": "kubectl get pods --all-namespaces -o json"
+    },
+    {
+      "kind": null,
+      "namespace": "trident-proof",
+      "name": "mock-target-66c765d55-2z9n4",
+      "container": "mock",
+      "image": "python:3.12-alpine",
+      "repo": "python",
+      "tag": "3.12-alpine",
+      "digest": "",
+      "version": "3.12-alpine",
+      "product": "",
+      "source": "kubectl get pods --all-namespaces -o json"
+    },
+    {
+      "kind": null,
+      "namespace": "trident-proof",
+      "name": "proof-hostnet",
+      "container": "probe",
+      "image": "alpine:3.21",
+      "repo": "alpine",
+      "tag": "3.21",
+      "digest": "",
+      "version": "3.21",
+      "product": "",
+      "source": "kubectl get pods --all-namespaces -o json"
+    },
+    {
+      "kind": null,
+      "namespace": "trident-proof",
+      "name": "proof-normal",
+      "container": "probe",
+      "image": "alpine:3.21",
+      "repo": "alpine",
+      "tag": "3.21",
+      "digest": "",
+      "version": "3.21",
+      "product": "",
+      "source": "kubectl get pods --all-namespaces -o json"
+    }
+  ],
+  "serviceaccounts": [
+    {
+      "namespace": "default",
+      "name": "default",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-node-lease",
+      "name": "default",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-public",
+      "name": "default",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "attachdetach-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "certificate-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "clusterrole-aggregation-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "coredns",
+      "annotations": {
+        "objectset.rio.cattle.io/applied": "H4sIAAAAAAAA/4yPzU7rQAxGX+XqW6e5+WsTRmLRNUsk9s6MQ4ckdpVxg1DVd0fZIaECS+vYR8dX0Dm+8JKiChzWEhnGKAEOz7ys0fPRe72IIcPMRoGM4K4gETWyqJK2Ufs39pbY8iVq7sls4jzq/7iJkN3l+i687F7XEQ5jnb6Qtcz+PUUJj8cQVH5VCM0MB68LB0l/Wk9n8tvNeOl5lz6S8Yxbhol6nn586kTpBIfec9XV1UPXlWXb1FTU3YH6fVkM1XBoeWibqin8vt2k3/LuBtw+AwAA///oKnY0kgEAAA",
+        "objectset.rio.cattle.io/id": "",
+        "objectset.rio.cattle.io/owner-gvk": "k3s.cattle.io/v1, Kind=Addon",
+        "objectset.rio.cattle.io/owner-name": "coredns",
+        "objectset.rio.cattle.io/owner-namespace": "kube-system"
+      },
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "cronjob-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "daemon-set-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "default",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "deployment-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "device-taint-eviction-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "disruption-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "endpoint-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "endpointslice-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "endpointslicemirroring-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "ephemeral-volume-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "expand-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "generic-garbage-collector",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "horizontal-pod-autoscaler",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "job-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "legacy-service-account-token-cleaner",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "local-path-provisioner-service-account",
+      "annotations": {
+        "objectset.rio.cattle.io/applied": "H4sIAAAAAAAA/4yQQUvEMBCF/4rMuVlb05YS8LBnj4L3aTLdxraZkpmtyLL/XYogelj1ODzex5vvArjGF8oSOYGDrYICppgCOHimvEVPR+/5nBQKWEgxoCK4C2BKrKiRk+wn96/kVUgPOfLBo+pMh8j3cQdBcTPnt0TZnLYJHExWviVbVdw9xRQejyFw+hORcCFwMLPH2YhyxhP9qyQr+r05nXsy8i5KC1wLmLGn+dfXRpQRHFSdHWzj22YYem/Ltm5LO9R2qJquDJ1vO3wI2Id6h/4YuaKOZs28xd09ZSOfvg1+Cb+57/oRAAD///h+7Ma3AQAA",
+        "objectset.rio.cattle.io/id": "",
+        "objectset.rio.cattle.io/owner-gvk": "k3s.cattle.io/v1, Kind=Addon",
+        "objectset.rio.cattle.io/owner-name": "local-storage",
+        "objectset.rio.cattle.io/owner-namespace": "kube-system"
+      },
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "namespace-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "node-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "persistent-volume-binder",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "pod-garbage-collector",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "pv-protection-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "pvc-protection-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "replicaset-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "replication-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "resource-claim-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "resourcequota-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "root-ca-cert-publisher",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "service-account-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "service-cidrs-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "statefulset-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "svclb",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "token-cleaner",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "ttl-after-finished-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "ttl-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "validatingadmissionpolicy-status-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "volumeattributesclass-protection-controller",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    },
+    {
+      "namespace": "trident-proof",
+      "name": "default",
+      "annotations": {},
+      "automount_service_account_token": null,
+      "source": "kubectl get serviceaccounts -A -o json"
+    }
+  ],
+  "crds": [
+    {
+      "name": "addons.k3s.cattle.io",
+      "group": "k3s.cattle.io",
+      "kind": "Addon",
+      "source": "kubectl get crd -o json"
+    },
+    {
+      "name": "etcdsnapshotfiles.k3s.cattle.io",
+      "group": "k3s.cattle.io",
+      "kind": "ETCDSnapshotFile",
+      "source": "kubectl get crd -o json"
+    },
+    {
+      "name": "helmchartconfigs.helm.cattle.io",
+      "group": "helm.cattle.io",
+      "kind": "HelmChartConfig",
+      "source": "kubectl get crd -o json"
+    },
+    {
+      "name": "helmcharts.helm.cattle.io",
+      "group": "helm.cattle.io",
+      "kind": "HelmChart",
+      "source": "kubectl get crd -o json"
+    }
+  ],
+  "cni": {
+    "name": "flannel",
+    "version": "",
+    "source": "kubectl get nodes -o json（node annotations）",
+    "detail": "CNI 由节点注解识别，版本未暴露"
+  },
+  "ingress": {
+    "controllers": [],
+    "classes": [],
+    "ingresses": 0,
+    "source": "live-kubectl"
+  },
+  "gateway": {
+    "components": [],
+    "classes": [],
+    "gateways": [],
+    "crd": false,
+    "source": "live-kubectl"
+  },
+  "gpu": {
+    "nodes": [],
+    "operator": {},
+    "toolkit": {},
+    "driver_version": "",
+    "source": "live-kubectl"
+  },
+  "ray": {
+    "versions": [],
+    "pods": [],
+    "crd": false,
+    "source": "live-kubectl"
+  },
+  "kuberay": {
+    "versions": [],
+    "crd": false,
+    "source": "live-kubectl"
+  },
+  "lws": {
+    "versions": [],
+    "crd": false,
+    "source": "live-kubectl"
+  },
+  "storage": {
+    "classes": [
+      {
+        "name": "local-path",
+        "provisioner": "rancher.io/local-path",
+        "reclaim_policy": "Delete"
+      }
+    ],
+    "csi_drivers": [],
+    "pvs": 0,
+    "pvcs": 0,
+    "source": "live-kubectl"
+  },
+  "cloud": {
+    "provider": "",
+    "identity_hints": [],
+    "imds_reachable": null,
+    "source": "live-kubectl"
+  },
+  "bmc": [],
+  "switches": [],
+  "rbac": {
+    "create_pods": true,
+    "get_secrets": true,
+    "create_clusterrolebindings": true,
+    "create_pods_exec": true,
+    "get_nodes_proxy": true,
+    "create_daemonsets": true,
+    "create_serviceaccounts_token": true,
+    "get_persistentvolumes": true
+  },
+  "feature_gates": {
+    "APIResponseCompression": true,
+    "APIServerIdentity": true,
+    "APIServerTracing": true,
+    "APIServingWithRoutine": false,
+    "AggregatedDiscoveryRemoveBetaType": true,
+    "AllAlpha": false,
+    "AllBeta": false,
+    "AllowDNSOnlyNodeCSR": false,
+    "AllowInsecureKubeletCertificateSigningRequests": false,
+    "AllowOverwriteTerminationGracePeriodSeconds": false,
+    "AllowParsingUserUIDFromCertAuth": true,
+    "AllowServiceExternalIPs": true,
+    "AllowUnsafeMalformedObjectDeletion": false,
+    "AnonymousAuthConfigurableEndpoints": true,
+    "AnyVolumeDataSource": true,
+    "AtomicFIFO": true,
+    "AuthorizeNodeWithSelectors": true,
+    "AuthorizePodWebsocketUpgradeCreatePermission": true,
+    "AuthorizeWithSelectors": true,
+    "BtreeWatchCache": true,
+    "CBORServingAndStorage": false,
+    "CPUManagerPolicyAlphaOptions": false,
+    "CPUManagerPolicyBetaOptions": true,
+    "CPUManagerPolicyOptions": true,
+    "CRDObservedGenerationTracking": true,
+    "CRDValidationRatcheting": true,
+    "CRIListStreaming": false,
+    "CSIServiceAccountTokenSecrets": true,
+    "CSIVolumeHealth": false,
+    "ChangeContainerStatusOnKubeletRestart": false,
+    "ClearingNominatedNodeNameAfterBinding": true,
+    "ClientsAllowCARotation": true,
+    "ClientsAllowCBOR": false,
+    "ClientsAllowTLSCacheGC": true,
+    "ClientsPreferCBOR": false,
+    "CloudControllerManagerWatchBasedRoutesReconciliation": false,
+    "CloudControllerManagerWebhook": false,
+    "ClusterTrustBundle": false,
+    "ClusterTrustBundleProjection": false,
+    "ComponentFlagz": true,
+    "ComponentStatusz": true,
+    "ConcurrentWatchObjectDecode": false,
+    "ConsistentListFromCache": true,
+    "ConstrainedImpersonation": true,
+    "ContainerCheckpoint": true,
+    "ContainerRestartRules": true,
+    "ContainerStopSignals": false,
+    "ContextualLogging": true,
+    "ControllerManagerReleaseLeaderElectionLockOnExit": false,
+    "CoordinatedLeaderElection": false,
+    "CrossNamespaceVolumeDataSource": false,
+    "CustomCPUCFSQuotaPeriod": true,
+    "CustomResourceFieldSelectors": true,
+    "DRAAdminAccess": true,
+    "DRAConsumableCapacity": true,
+    "DRADeviceBindingConditions": true,
+    "DRADeviceTaintRules": false,
+    "DRADeviceTaints": true,
+    "DRAExtendedResource": true,
+    "DRAListTypeAttributes": false,
+    "DRANodeAllocatableResources": false,
+    "DRAPartitionableDevices": true,
+    "DRAPrioritizedList": true,
+    "DRAResourceClaimDeviceStatus": true,
+    "DRAResourceClaimGranularStatusAuthorization": true,
+    "DRAResourcePoolStatus": false,
+    "DRASchedulerFilterTimeout": true,
+    "DRAWorkloadResourceClaims": false,
+    "DeclarativeValidation": true,
+    "DeclarativeValidationBeta": true,
+    "DeclarativeValidationTakeover": false,
+    "DeploymentReplicaSetTerminatingReplicas": true,
+    "DetectCacheInconsistency": true,
+    "DisableAllocatorDualWrite": true,
+    "DisableCPUQuotaWithExclusiveCPUs": true,
+    "DisableNodeKubeProxyVersion": true,
+    "DynamicResourceAllocation": true,
+    "EnvFiles": true,
+    "EventedPLEG": false,
+    "ExecProbeTimeout": true,
+    "ExtendWebSocketsToKubelet": true,
+    "ExternalServiceAccountTokenSigner": true,
+    "GangScheduling": false,
+    "GenericWorkload": false,
+    "GitRepoVolumeDriver": false,
+    "GracefulNodeShutdown": true,
+    "GracefulNodeShutdownBasedOnPodPriority": true,
+    "HPAConfigurableTolerance": true,
+    "HPAScaleToZero": false,
+    "HostnameOverride": true,
+    "ImageMaximumGCAge": true,
+    "ImageVolume": true,
+    "ImageVolumeWithDigest": false,
+    "InOrderInformers": true,
+    "InOrderInformersBatchProcess": true,
+    "InPlacePodLevelResourcesVerticalScaling": true,
+    "InPlacePodVerticalScaling": true,
+    "InPlacePodVerticalScalingExclusiveCPUs": false,
+    "InPlacePodVerticalScalingExclusiveMemory": false,
+    "InPlacePodVerticalScalingInitContainers": true,
+    "InformerResourceVersion": true,
+    "JobBackoffLimitPerIndex": true,
+    "JobManagedBy": true,
+    "JobPodReplacementPolicy": true,
+    "JobSuccessPolicy": true,
+    "KMSv1": false,
+    "KubeletCgroupDriverFromCRI": true,
+    "KubeletCrashLoopBackOffMax": true,
+    "KubeletEnsureSecretPulledImages": true,
+    "KubeletFineGrainedAuthz": true,
+    "KubeletInUserNamespace": false,
+    "KubeletPSI": true,
+    "KubeletPodResourcesDynamicResources": true,
+    "KubeletPodResourcesGet": true,
+    "KubeletPodResourcesListUseActivePods": true,
+    "KubeletRegistrationGetOnExistsOnly": false,
+    "KubeletSeparateDiskGC": true,
+    "KubeletServiceAccountTokenForCredentialProviders": true,
+    "KubeletTracing": true,
+    "ListFromCacheSnapshot": true,
+    "LocalStorageCapacityIsolationFSQuotaMonitoring": false,
+    "LogarithmicScaleDown": true,
+    "LoggingAlphaOptions": false,
+    "LoggingBetaOptions": true,
+    "ManifestBasedAdmissionControlConfig": false,
+    "MatchLabelKeysInPodAffinity": true,
+    "MatchLabelKeysInPodTopologySpread": true,
+    "MatchLabelKeysInPodTopologySpreadSelectorMerge": true,
+    "MaxUnavailableStatefulSet": false,
+    "MemoryQoS": false,
+    "MultiCIDRServiceAllocator": true,
+    "MutableCSINodeAllocatableCount": true,
+    "MutablePVNodeAffinity": false,
+    "MutablePodResourcesForSuspendedJobs": true,
+    "MutableSchedulingDirectivesForSuspendedJobs": true,
+    "MutatingAdmissionPolicy": true,
+    "NFTablesProxyMode": true,
+    "NativeHistograms": false,
+    "NodeDeclaredFeatures": true,
+    "NodeInclusionPolicyInPodTopologySpread": true,
+    "NodeLogQuery": true,
+    "NodeSwap": true,
+    "NominatedNodeNameForExpectation": true,
+    "OpenAPIEnums": true,
+    "OpportunisticBatching": true,
+    "OrderedNamespaceDeletion": true,
+    "PLEGOnDemandRelist": true,
+    "PersistentVolumeClaimUnusedSinceTime": false,
+    "PodAndContainerStatsFromCRI": false,
+    "PodCertificateRequest": false,
+    "PodDeletionCost": true,
+    "PodLevelResourceManagers": false,
+    "PodLevelResources": true,
+    "PodLifecycleSleepAction": true,
+    "PodLifecycleSleepActionAllowZero": true,
+    "PodLogsQuerySplitStreams": false,
+    "PodObservedGenerationTracking": true,
+    "PodReadyToStartContainersCondition": true,
+    "PodSchedulingReadiness": true,
+    "PodTopologyLabelsAdmission": true,
+    "PodsAPI": false,
+    "PortForwardWebsockets": true,
+    "PreferSameTrafficDistribution": true,
+    "PreventStaticPodAPIReferences": true,
+    "ProcMountType": true,
+    "QOSReserved": false,
+    "RecoverVolumeExpansionFailure": true,
+    "RecursiveReadOnlyMounts": true,
+    "ReduceDefaultCrashLoopBackOffDecay": false,
+    "RelaxedDNSSearchValidation": true,
+    "RelaxedEnvironmentVariableValidation": true,
+    "RelaxedServiceNameValidation": true,
+    "ReloadKubeletClientCAFile": true,
+    "ReloadKubeletServerCertificateFile": true,
+    "RemoteRequestHeaderUID": true,
+    "ResilientWatchCacheInitialization": true,
+    "ResourceHealthStatus": true,
+    "ResourceHealthStatusMessage": true,
+    "RestartAllContainersOnContainerExits": true,
+    "RetryGenerateName": true,
+    "RotateKubeletServerCertificate": true,
+    "RuntimeClassInImageCriApi": false,
+    "SELinuxChangePolicy": true,
+    "SELinuxMount": false,
+    "SELinuxMountReadWriteOncePod": true,
+    "SchedulerAsyncAPICalls": false,
+    "SchedulerAsyncPreemption": true,
+    "SchedulerPopFromBackoffQ": true,
+    "SchedulerQueueingHints": true,
+    "SeparateCacheWatchRPC": false,
+    "SeparateTaintEvictionController": true,
+    "ServiceAccountNodeAudienceRestriction": true,
+    "ServiceAccountTokenJTI": true,
+    "ServiceAccountTokenNodeBinding": true,
+    "ServiceAccountTokenNodeBindingValidation": true,
+    "ServiceAccountTokenPodNodeInfo": true,
+    "ServiceCIDRStatusFieldWiping": true,
+    "ShardedListAndWatch": false,
+    "SidecarContainers": true,
+    "SizeBasedListCostEstimate": true,
+    "StaleControllerConsistencyDaemonSet": true,
+    "StaleControllerConsistencyJob": true,
+    "StaleControllerConsistencyReplicaSet": true,
+    "StaleControllerConsistencyStatefulSet": true,
+    "StatefulSetSemanticRevisionComparison": true,
+    "StorageCapacityScoring": false,
+    "StorageNamespaceIndex": true,
+    "StorageVersionAPI": false,
+    "StorageVersionHash": true,
+    "StorageVersionMigrator": false,
+    "StreamingCollectionEncodingToJSON": true,
+    "StreamingCollectionEncodingToProtobuf": true,
+    "StrictIPCIDRValidation": true,
+    "StructuredAuthenticationConfiguration": true,
+    "StructuredAuthenticationConfigurationEgressSelector": true,
+    "StructuredAuthenticationConfigurationJWKSMetrics": true,
+    "SupplementalGroupsPolicy": true,
+    "SystemdWatchdog": true,
+    "TaintTolerationComparisonOperators": false,
+    "TokenRequestServiceAccountUIDValidation": true,
+    "TopologyAwareWorkloadScheduling": false,
+    "TopologyManagerPolicyAlphaOptions": false,
+    "TopologyManagerPolicyBetaOptions": true,
+    "TopologyManagerPolicyOptions": true,
+    "TranslateStreamCloseWebsocketRequests": true,
+    "UnauthenticatedHTTP2DOSMitigation": true,
+    "UnknownVersionInteroperabilityProxy": true,
+    "UnlockWhileProcessingFIFO": true,
+    "UserNamespacesHostNetworkSupport": false,
+    "UserNamespacesSupport": true,
+    "VolumeAttributesClass": true,
+    "VolumeLimitScaling": false,
+    "WatchCacheInitializationPostStartHook": true,
+    "WatchList": true,
+    "WatchListClient": true,
+    "WinDSR": true,
+    "WinOverlay": true,
+    "WindowsCPUAndMemoryAffinity": false,
+    "WindowsGracefulNodeShutdown": true,
+    "WindowsHostNetwork": false,
+    "WorkloadAwarePreemption": false,
+    "WorkloadWithJob": false
+  },
+  "apiserver": {
+    "flags": {},
+    "anonymous_auth": null,
+    "authorization_mode": null,
+    "source": "kubectl get pods -n kube-system"
+  },
+  "kubelet": {
+    "read_only_port": null,
+    "anonymous_auth": false,
+    "config": {
+      "kind": "KubeletConfiguration",
+      "apiVersion": "kubelet.config.k8s.io/v1beta1",
+      "enableServer": true,
+      "staticPodPath": "/var/lib/rancher/k3s/agent/pod-manifests",
+      "podLogsDir": "/var/log/pods",
+      "syncFrequency": "1m0s",
+      "fileCheckFrequency": "20s",
+      "httpCheckFrequency": "20s",
+      "address": "0.0.0.0",
+      "port": 10250,
+      "tlsCertFile": "/var/lib/rancher/k3s/agent/serving-kubelet.crt",
+      "tlsPrivateKeyFile": "/var/lib/rancher/k3s/agent/serving-kubelet.key",
+      "authentication": {
+        "x509": {
+          "clientCAFile": "/var/lib/rancher/k3s/agent/client-ca.crt"
+        },
+        "webhook": {
+          "enabled": true,
+          "cacheTTL": "2m0s"
+        },
+        "anonymous": {
+          "enabled": false
+        }
+      },
+      "authorization": {
+        "mode": "Webhook",
+        "webhook": {
+          "cacheAuthorizedTTL": "5m0s",
+          "cacheUnauthorizedTTL": "30s"
+        }
+      },
+      "registryPullQPS": 5,
+      "registryBurst": 10,
+      "imagePullCredentialsVerificationPolicy": "NeverVerifyPreloadedImages",
+      "eventRecordQPS": 50,
+      "eventBurst": 100,
+      "enableDebuggingHandlers": true,
+      "healthzPort": 10248,
+      "healthzBindAddress": "127.0.0.1",
+      "oomScoreAdj": -999,
+      "clusterDomain": "cluster.local",
+      "clusterDNS": [
+        "10.43.0.10"
+      ],
+      "streamingConnectionIdleTimeout": "4h0m0s",
+      "nodeStatusUpdateFrequency": "10s",
+      "nodeStatusReportFrequency": "5m0s",
+      "nodeLeaseDurationSeconds": 40,
+      "imageMinimumGCAge": "2m0s",
+      "imageMaximumGCAge": "0s",
+      "imageGCHighThresholdPercent": 85,
+      "imageGCLowThresholdPercent": 80,
+      "volumeStatsAggPeriod": "1m0s",
+      "cgroupsPerQOS": true,
+      "cgroupDriver": "cgroupfs",
+      "cpuManagerPolicy": "none",
+      "cpuManagerReconcilePeriod": "10s",
+      "memoryManagerPolicy": "None",
+      "topologyManagerPolicy": "none",
+      "topologyManagerScope": "container",
+      "runtimeRequestTimeout": "2m0s",
+      "hairpinMode": "promiscuous-bridge",
+      "maxPods": 110,
+      "podPidsLimit": -1,
+      "resolvConf": "/etc/resolv.conf",
+      "cpuCFSQuota": true,
+      "cpuCFSQuotaPeriod": "100ms",
+      "nodeStatusMaxImages": 50,
+      "maxOpenFiles": 1000000,
+      "contentType": "application/vnd.kubernetes.protobuf",
+      "kubeAPIQPS": 50,
+      "kubeAPIBurst": 100,
+      "serializeImagePulls": false,
+      "evictionHard": {
+        "imagefs.available": "5%",
+        "nodefs.available": "5%"
+      },
+      "evictionPressureTransitionPeriod": "5m0s",
+      "evictionMinimumReclaim": {
+        "imagefs.available": "10%",
+        "nodefs.available": "10%"
+      },
+      "mergeDefaultEvictionSettings": false,
+      "enableControllerAttachDetach": true,
+      "makeIPTablesUtilChains": true,
+      "iptablesMasqueradeBit": 14,
+      "iptablesDropBit": 15,
+      "failSwapOn": false,
+      "memorySwap": {},
+      "containerLogMaxSize": "10Mi",
+      "containerLogMaxFiles": 5,
+      "containerLogMaxWorkers": 1,
+      "containerLogMonitorInterval": "10s",
+      "configMapAndSecretChangeDetectionStrategy": "Watch",
+      "enforceNodeAllocatable": [
+        "pods"
+      ],
+      "allowedUnsafeSysctls": [
+        "net.ipv4.ip_forward",
+        "net.ipv6.conf.all.forwarding"
+      ],
+      "volumePluginDir": "/usr/libexec/kubernetes/kubelet-plugins/volume/exec/",
+      "logging": {
+        "format": "text",
+        "flushFrequency": "5s",
+        "verbosity": 0,
+        "options": {
+          "text": {
+            "infoBufferSize": "0"
+          },
+          "json": {
+            "infoBufferSize": "0"
+          }
+        }
+      },
+      "enableSystemLogHandler": true,
+      "enableSystemLogQuery": false,
+      "shutdownGracePeriod": "0s",
+      "shutdownGracePeriodCriticalPods": "0s",
+      "crashLoopBackOff": {
+        "maxContainerRestartPeriod": "5m0s"
+      },
+      "enableProfilingHandler": true,
+      "enableDebugFlagsHandler": true,
+      "seccompDefault": false,
+      "memoryThrottlingFactor": 0.9,
+      "memoryReservationPolicy": "None",
+      "registerNode": true,
+      "localStorageCapacityIsolation": true,
+      "containerRuntimeEndpoint": "unix:///run/k3s/containerd/containerd.sock",
+      "failCgroupV1": true
+    },
+    "source": "kubectl get --raw /api/v1/nodes/<node>/proxy/configz"
+  },
+  "probes": {},
+  "facts": {
+    "cluster.version": "v1.36.5+k3s1",
+    "node.kernel": [
+      "6.18.58-0-virt"
+    ],
+    "node.os": [
+      "linux"
+    ],
+    "cloud.provider": "",
+    "workloads.privileged": false,
+    "workloads.host_path": false,
+    "workloads.host_network": true,
+    "workloads.host_pid": false,
+    "workloads.host_ipc": false,
+    "workloads.runtime_socket": false,
+    "workloads.cap_sys_admin": false,
+    "workloads.automount_sa_token": true,
+    "feature_gates.APIResponseCompression": true,
+    "feature_gates.APIServerIdentity": true,
+    "feature_gates.APIServerTracing": true,
+    "feature_gates.APIServingWithRoutine": false,
+    "feature_gates.AggregatedDiscoveryRemoveBetaType": true,
+    "feature_gates.AllAlpha": false,
+    "feature_gates.AllBeta": false,
+    "feature_gates.AllowDNSOnlyNodeCSR": false,
+    "feature_gates.AllowInsecureKubeletCertificateSigningRequests": false,
+    "feature_gates.AllowOverwriteTerminationGracePeriodSeconds": false,
+    "feature_gates.AllowParsingUserUIDFromCertAuth": true,
+    "feature_gates.AllowServiceExternalIPs": true,
+    "feature_gates.AllowUnsafeMalformedObjectDeletion": false,
+    "feature_gates.AnonymousAuthConfigurableEndpoints": true,
+    "feature_gates.AnyVolumeDataSource": true,
+    "feature_gates.AtomicFIFO": true,
+    "feature_gates.AuthorizeNodeWithSelectors": true,
+    "feature_gates.AuthorizePodWebsocketUpgradeCreatePermission": true,
+    "feature_gates.AuthorizeWithSelectors": true,
+    "feature_gates.BtreeWatchCache": true,
+    "feature_gates.CBORServingAndStorage": false,
+    "feature_gates.CPUManagerPolicyAlphaOptions": false,
+    "feature_gates.CPUManagerPolicyBetaOptions": true,
+    "feature_gates.CPUManagerPolicyOptions": true,
+    "feature_gates.CRDObservedGenerationTracking": true,
+    "feature_gates.CRDValidationRatcheting": true,
+    "feature_gates.CRIListStreaming": false,
+    "feature_gates.CSIServiceAccountTokenSecrets": true,
+    "feature_gates.CSIVolumeHealth": false,
+    "feature_gates.ChangeContainerStatusOnKubeletRestart": false,
+    "feature_gates.ClearingNominatedNodeNameAfterBinding": true,
+    "feature_gates.ClientsAllowCARotation": true,
+    "feature_gates.ClientsAllowCBOR": false,
+    "feature_gates.ClientsAllowTLSCacheGC": true,
+    "feature_gates.ClientsPreferCBOR": false,
+    "feature_gates.CloudControllerManagerWatchBasedRoutesReconciliation": false,
+    "feature_gates.CloudControllerManagerWebhook": false,
+    "feature_gates.ClusterTrustBundle": false,
+    "feature_gates.ClusterTrustBundleProjection": false,
+    "feature_gates.ComponentFlagz": true,
+    "feature_gates.ComponentStatusz": true,
+    "feature_gates.ConcurrentWatchObjectDecode": false,
+    "feature_gates.ConsistentListFromCache": true,
+    "feature_gates.ConstrainedImpersonation": true,
+    "feature_gates.ContainerCheckpoint": true,
+    "feature_gates.ContainerRestartRules": true,
+    "feature_gates.ContainerStopSignals": false,
+    "feature_gates.ContextualLogging": true,
+    "feature_gates.ControllerManagerReleaseLeaderElectionLockOnExit": false,
+    "feature_gates.CoordinatedLeaderElection": false,
+    "feature_gates.CrossNamespaceVolumeDataSource": false,
+    "feature_gates.CustomCPUCFSQuotaPeriod": true,
+    "feature_gates.CustomResourceFieldSelectors": true,
+    "feature_gates.DRAAdminAccess": true,
+    "feature_gates.DRAConsumableCapacity": true,
+    "feature_gates.DRADeviceBindingConditions": true,
+    "feature_gates.DRADeviceTaintRules": false,
+    "feature_gates.DRADeviceTaints": true,
+    "feature_gates.DRAExtendedResource": true,
+    "feature_gates.DRAListTypeAttributes": false,
+    "feature_gates.DRANodeAllocatableResources": false,
+    "feature_gates.DRAPartitionableDevices": true,
+    "feature_gates.DRAPrioritizedList": true,
+    "feature_gates.DRAResourceClaimDeviceStatus": true,
+    "feature_gates.DRAResourceClaimGranularStatusAuthorization": true,
+    "feature_gates.DRAResourcePoolStatus": false,
+    "feature_gates.DRASchedulerFilterTimeout": true,
+    "feature_gates.DRAWorkloadResourceClaims": false,
+    "feature_gates.DeclarativeValidation": true,
+    "feature_gates.DeclarativeValidationBeta": true,
+    "feature_gates.DeclarativeValidationTakeover": false,
+    "feature_gates.DeploymentReplicaSetTerminatingReplicas": true,
+    "feature_gates.DetectCacheInconsistency": true,
+    "feature_gates.DisableAllocatorDualWrite": true,
+    "feature_gates.DisableCPUQuotaWithExclusiveCPUs": true,
+    "feature_gates.DisableNodeKubeProxyVersion": true,
+    "feature_gates.DynamicResourceAllocation": true,
+    "feature_gates.EnvFiles": true,
+    "feature_gates.EventedPLEG": false,
+    "feature_gates.ExecProbeTimeout": true,
+    "feature_gates.ExtendWebSocketsToKubelet": true,
+    "feature_gates.ExternalServiceAccountTokenSigner": true,
+    "feature_gates.GangScheduling": false,
+    "feature_gates.GenericWorkload": false,
+    "feature_gates.GitRepoVolumeDriver": false,
+    "feature_gates.GracefulNodeShutdown": true,
+    "feature_gates.GracefulNodeShutdownBasedOnPodPriority": true,
+    "feature_gates.HPAConfigurableTolerance": true,
+    "feature_gates.HPAScaleToZero": false,
+    "feature_gates.HostnameOverride": true,
+    "feature_gates.ImageMaximumGCAge": true,
+    "feature_gates.ImageVolume": true,
+    "feature_gates.ImageVolumeWithDigest": false,
+    "feature_gates.InOrderInformers": true,
+    "feature_gates.InOrderInformersBatchProcess": true,
+    "feature_gates.InPlacePodLevelResourcesVerticalScaling": true,
+    "feature_gates.InPlacePodVerticalScaling": true,
+    "feature_gates.InPlacePodVerticalScalingExclusiveCPUs": false,
+    "feature_gates.InPlacePodVerticalScalingExclusiveMemory": false,
+    "feature_gates.InPlacePodVerticalScalingInitContainers": true,
+    "feature_gates.InformerResourceVersion": true,
+    "feature_gates.JobBackoffLimitPerIndex": true,
+    "feature_gates.JobManagedBy": true,
+    "feature_gates.JobPodReplacementPolicy": true,
+    "feature_gates.JobSuccessPolicy": true,
+    "feature_gates.KMSv1": false,
+    "feature_gates.KubeletCgroupDriverFromCRI": true,
+    "feature_gates.KubeletCrashLoopBackOffMax": true,
+    "feature_gates.KubeletEnsureSecretPulledImages": true,
+    "feature_gates.KubeletFineGrainedAuthz": true,
+    "feature_gates.KubeletInUserNamespace": false,
+    "feature_gates.KubeletPSI": true,
+    "feature_gates.KubeletPodResourcesDynamicResources": true,
+    "feature_gates.KubeletPodResourcesGet": true,
+    "feature_gates.KubeletPodResourcesListUseActivePods": true,
+    "feature_gates.KubeletRegistrationGetOnExistsOnly": false,
+    "feature_gates.KubeletSeparateDiskGC": true,
+    "feature_gates.KubeletServiceAccountTokenForCredentialProviders": true,
+    "feature_gates.KubeletTracing": true,
+    "feature_gates.ListFromCacheSnapshot": true,
+    "feature_gates.LocalStorageCapacityIsolationFSQuotaMonitoring": false,
+    "feature_gates.LogarithmicScaleDown": true,
+    "feature_gates.LoggingAlphaOptions": false,
+    "feature_gates.LoggingBetaOptions": true,
+    "feature_gates.ManifestBasedAdmissionControlConfig": false,
+    "feature_gates.MatchLabelKeysInPodAffinity": true,
+    "feature_gates.MatchLabelKeysInPodTopologySpread": true,
+    "feature_gates.MatchLabelKeysInPodTopologySpreadSelectorMerge": true,
+    "feature_gates.MaxUnavailableStatefulSet": false,
+    "feature_gates.MemoryQoS": false,
+    "feature_gates.MultiCIDRServiceAllocator": true,
+    "feature_gates.MutableCSINodeAllocatableCount": true,
+    "feature_gates.MutablePVNodeAffinity": false,
+    "feature_gates.MutablePodResourcesForSuspendedJobs": true,
+    "feature_gates.MutableSchedulingDirectivesForSuspendedJobs": true,
+    "feature_gates.MutatingAdmissionPolicy": true,
+    "feature_gates.NFTablesProxyMode": true,
+    "feature_gates.NativeHistograms": false,
+    "feature_gates.NodeDeclaredFeatures": true,
+    "feature_gates.NodeInclusionPolicyInPodTopologySpread": true,
+    "feature_gates.NodeLogQuery": true,
+    "feature_gates.NodeSwap": true,
+    "feature_gates.NominatedNodeNameForExpectation": true,
+    "feature_gates.OpenAPIEnums": true,
+    "feature_gates.OpportunisticBatching": true,
+    "feature_gates.OrderedNamespaceDeletion": true,
+    "feature_gates.PLEGOnDemandRelist": true,
+    "feature_gates.PersistentVolumeClaimUnusedSinceTime": false,
+    "feature_gates.PodAndContainerStatsFromCRI": false,
+    "feature_gates.PodCertificateRequest": false,
+    "feature_gates.PodDeletionCost": true,
+    "feature_gates.PodLevelResourceManagers": false,
+    "feature_gates.PodLevelResources": true,
+    "feature_gates.PodLifecycleSleepAction": true,
+    "feature_gates.PodLifecycleSleepActionAllowZero": true,
+    "feature_gates.PodLogsQuerySplitStreams": false,
+    "feature_gates.PodObservedGenerationTracking": true,
+    "feature_gates.PodReadyToStartContainersCondition": true,
+    "feature_gates.PodSchedulingReadiness": true,
+    "feature_gates.PodTopologyLabelsAdmission": true,
+    "feature_gates.PodsAPI": false,
+    "feature_gates.PortForwardWebsockets": true,
+    "feature_gates.PreferSameTrafficDistribution": true,
+    "feature_gates.PreventStaticPodAPIReferences": true,
+    "feature_gates.ProcMountType": true,
+    "feature_gates.QOSReserved": false,
+    "feature_gates.RecoverVolumeExpansionFailure": true,
+    "feature_gates.RecursiveReadOnlyMounts": true,
+    "feature_gates.ReduceDefaultCrashLoopBackOffDecay": false,
+    "feature_gates.RelaxedDNSSearchValidation": true,
+    "feature_gates.RelaxedEnvironmentVariableValidation": true,
+    "feature_gates.RelaxedServiceNameValidation": true,
+    "feature_gates.ReloadKubeletClientCAFile": true,
+    "feature_gates.ReloadKubeletServerCertificateFile": true,
+    "feature_gates.RemoteRequestHeaderUID": true,
+    "feature_gates.ResilientWatchCacheInitialization": true,
+    "feature_gates.ResourceHealthStatus": true,
+    "feature_gates.ResourceHealthStatusMessage": true,
+    "feature_gates.RestartAllContainersOnContainerExits": true,
+    "feature_gates.RetryGenerateName": true,
+    "feature_gates.RotateKubeletServerCertificate": true,
+    "feature_gates.RuntimeClassInImageCriApi": false,
+    "feature_gates.SELinuxChangePolicy": true,
+    "feature_gates.SELinuxMount": false,
+    "feature_gates.SELinuxMountReadWriteOncePod": true,
+    "feature_gates.SchedulerAsyncAPICalls": false,
+    "feature_gates.SchedulerAsyncPreemption": true,
+    "feature_gates.SchedulerPopFromBackoffQ": true,
+    "feature_gates.SchedulerQueueingHints": true,
+    "feature_gates.SeparateCacheWatchRPC": false,
+    "feature_gates.SeparateTaintEvictionController": true,
+    "feature_gates.ServiceAccountNodeAudienceRestriction": true,
+    "feature_gates.ServiceAccountTokenJTI": true,
+    "feature_gates.ServiceAccountTokenNodeBinding": true,
+    "feature_gates.ServiceAccountTokenNodeBindingValidation": true,
+    "feature_gates.ServiceAccountTokenPodNodeInfo": true,
+    "feature_gates.ServiceCIDRStatusFieldWiping": true,
+    "feature_gates.ShardedListAndWatch": false,
+    "feature_gates.SidecarContainers": true,
+    "feature_gates.SizeBasedListCostEstimate": true,
+    "feature_gates.StaleControllerConsistencyDaemonSet": true,
+    "feature_gates.StaleControllerConsistencyJob": true,
+    "feature_gates.StaleControllerConsistencyReplicaSet": true,
+    "feature_gates.StaleControllerConsistencyStatefulSet": true,
+    "feature_gates.StatefulSetSemanticRevisionComparison": true,
+    "feature_gates.StorageCapacityScoring": false,
+    "feature_gates.StorageNamespaceIndex": true,
+    "feature_gates.StorageVersionAPI": false,
+    "feature_gates.StorageVersionHash": true,
+    "feature_gates.StorageVersionMigrator": false,
+    "feature_gates.StreamingCollectionEncodingToJSON": true,
+    "feature_gates.StreamingCollectionEncodingToProtobuf": true,
+    "feature_gates.StrictIPCIDRValidation": true,
+    "feature_gates.StructuredAuthenticationConfiguration": true,
+    "feature_gates.StructuredAuthenticationConfigurationEgressSelector": true,
+    "feature_gates.StructuredAuthenticationConfigurationJWKSMetrics": true,
+    "feature_gates.SupplementalGroupsPolicy": true,
+    "feature_gates.SystemdWatchdog": true,
+    "feature_gates.TaintTolerationComparisonOperators": false,
+    "feature_gates.TokenRequestServiceAccountUIDValidation": true,
+    "feature_gates.TopologyAwareWorkloadScheduling": false,
+    "feature_gates.TopologyManagerPolicyAlphaOptions": false,
+    "feature_gates.TopologyManagerPolicyBetaOptions": true,
+    "feature_gates.TopologyManagerPolicyOptions": true,
+    "feature_gates.TranslateStreamCloseWebsocketRequests": true,
+    "feature_gates.UnauthenticatedHTTP2DOSMitigation": true,
+    "feature_gates.UnknownVersionInteroperabilityProxy": true,
+    "feature_gates.UnlockWhileProcessingFIFO": true,
+    "feature_gates.UserNamespacesHostNetworkSupport": false,
+    "feature_gates.UserNamespacesSupport": true,
+    "feature_gates.VolumeAttributesClass": true,
+    "feature_gates.VolumeLimitScaling": false,
+    "feature_gates.WatchCacheInitializationPostStartHook": true,
+    "feature_gates.WatchList": true,
+    "feature_gates.WatchListClient": true,
+    "feature_gates.WinDSR": true,
+    "feature_gates.WinOverlay": true,
+    "feature_gates.WindowsCPUAndMemoryAffinity": false,
+    "feature_gates.WindowsGracefulNodeShutdown": true,
+    "feature_gates.WindowsHostNetwork": false,
+    "feature_gates.WorkloadAwarePreemption": false,
+    "feature_gates.WorkloadWithJob": false,
+    "kubelet.read_only_port": null,
+    "kubelet.anonymous_auth": false,
+    "rbac.create_pods": true,
+    "rbac.get_secrets": true,
+    "rbac.create_clusterrolebindings": true,
+    "rbac.create_pods_exec": true,
+    "rbac.get_nodes_proxy": true,
+    "rbac.create_daemonsets": true,
+    "rbac.create_serviceaccounts_token": true,
+    "rbac.get_persistentvolumes": true,
+    "node.runc_present": true,
+    "cni.name": "flannel",
+    "cni.version": ""
+  },
+  "fact_sources": {
+    "cluster.version": "live-kubectl",
+    "node.kernel": "kubectl get nodes -o json",
+    "node.os": "kubectl get nodes -o json",
+    "cloud.provider": "live-kubectl",
+    "workloads.privileged": "kubectl get pods -A -o json",
+    "workloads.host_path": "kubectl get pods -A -o json",
+    "workloads.host_network": "kubectl get pods -A -o json",
+    "workloads.host_pid": "kubectl get pods -A -o json",
+    "workloads.host_ipc": "kubectl get pods -A -o json",
+    "workloads.runtime_socket": "kubectl get pods -A -o json",
+    "workloads.cap_sys_admin": "kubectl get pods -A -o json",
+    "workloads.automount_sa_token": "kubectl get pods,serviceaccounts -A -o json",
+    "feature_gates.APIResponseCompression": "kubectl get --raw /metrics",
+    "feature_gates.APIServerIdentity": "kubectl get --raw /metrics",
+    "feature_gates.APIServerTracing": "kubectl get --raw /metrics",
+    "feature_gates.APIServingWithRoutine": "kubectl get --raw /metrics",
+    "feature_gates.AggregatedDiscoveryRemoveBetaType": "kubectl get --raw /metrics",
+    "feature_gates.AllAlpha": "kubectl get --raw /metrics",
+    "feature_gates.AllBeta": "kubectl get --raw /metrics",
+    "feature_gates.AllowDNSOnlyNodeCSR": "kubectl get --raw /metrics",
+    "feature_gates.AllowInsecureKubeletCertificateSigningRequests": "kubectl get --raw /metrics",
+    "feature_gates.AllowOverwriteTerminationGracePeriodSeconds": "kubectl get --raw /metrics",
+    "feature_gates.AllowParsingUserUIDFromCertAuth": "kubectl get --raw /metrics",
+    "feature_gates.AllowServiceExternalIPs": "kubectl get --raw /metrics",
+    "feature_gates.AllowUnsafeMalformedObjectDeletion": "kubectl get --raw /metrics",
+    "feature_gates.AnonymousAuthConfigurableEndpoints": "kubectl get --raw /metrics",
+    "feature_gates.AnyVolumeDataSource": "kubectl get --raw /metrics",
+    "feature_gates.AtomicFIFO": "kubectl get --raw /metrics",
+    "feature_gates.AuthorizeNodeWithSelectors": "kubectl get --raw /metrics",
+    "feature_gates.AuthorizePodWebsocketUpgradeCreatePermission": "kubectl get --raw /metrics",
+    "feature_gates.AuthorizeWithSelectors": "kubectl get --raw /metrics",
+    "feature_gates.BtreeWatchCache": "kubectl get --raw /metrics",
+    "feature_gates.CBORServingAndStorage": "kubectl get --raw /metrics",
+    "feature_gates.CPUManagerPolicyAlphaOptions": "kubectl get --raw /metrics",
+    "feature_gates.CPUManagerPolicyBetaOptions": "kubectl get --raw /metrics",
+    "feature_gates.CPUManagerPolicyOptions": "kubectl get --raw /metrics",
+    "feature_gates.CRDObservedGenerationTracking": "kubectl get --raw /metrics",
+    "feature_gates.CRDValidationRatcheting": "kubectl get --raw /metrics",
+    "feature_gates.CRIListStreaming": "kubectl get --raw /metrics",
+    "feature_gates.CSIServiceAccountTokenSecrets": "kubectl get --raw /metrics",
+    "feature_gates.CSIVolumeHealth": "kubectl get --raw /metrics",
+    "feature_gates.ChangeContainerStatusOnKubeletRestart": "kubectl get --raw /metrics",
+    "feature_gates.ClearingNominatedNodeNameAfterBinding": "kubectl get --raw /metrics",
+    "feature_gates.ClientsAllowCARotation": "kubectl get --raw /metrics",
+    "feature_gates.ClientsAllowCBOR": "kubectl get --raw /metrics",
+    "feature_gates.ClientsAllowTLSCacheGC": "kubectl get --raw /metrics",
+    "feature_gates.ClientsPreferCBOR": "kubectl get --raw /metrics",
+    "feature_gates.CloudControllerManagerWatchBasedRoutesReconciliation": "kubectl get --raw /metrics",
+    "feature_gates.CloudControllerManagerWebhook": "kubectl get --raw /metrics",
+    "feature_gates.ClusterTrustBundle": "kubectl get --raw /metrics",
+    "feature_gates.ClusterTrustBundleProjection": "kubectl get --raw /metrics",
+    "feature_gates.ComponentFlagz": "kubectl get --raw /metrics",
+    "feature_gates.ComponentStatusz": "kubectl get --raw /metrics",
+    "feature_gates.ConcurrentWatchObjectDecode": "kubectl get --raw /metrics",
+    "feature_gates.ConsistentListFromCache": "kubectl get --raw /metrics",
+    "feature_gates.ConstrainedImpersonation": "kubectl get --raw /metrics",
+    "feature_gates.ContainerCheckpoint": "kubectl get --raw /metrics",
+    "feature_gates.ContainerRestartRules": "kubectl get --raw /metrics",
+    "feature_gates.ContainerStopSignals": "kubectl get --raw /metrics",
+    "feature_gates.ContextualLogging": "kubectl get --raw /metrics",
+    "feature_gates.ControllerManagerReleaseLeaderElectionLockOnExit": "kubectl get --raw /metrics",
+    "feature_gates.CoordinatedLeaderElection": "kubectl get --raw /metrics",
+    "feature_gates.CrossNamespaceVolumeDataSource": "kubectl get --raw /metrics",
+    "feature_gates.CustomCPUCFSQuotaPeriod": "kubectl get --raw /metrics",
+    "feature_gates.CustomResourceFieldSelectors": "kubectl get --raw /metrics",
+    "feature_gates.DRAAdminAccess": "kubectl get --raw /metrics",
+    "feature_gates.DRAConsumableCapacity": "kubectl get --raw /metrics",
+    "feature_gates.DRADeviceBindingConditions": "kubectl get --raw /metrics",
+    "feature_gates.DRADeviceTaintRules": "kubectl get --raw /metrics",
+    "feature_gates.DRADeviceTaints": "kubectl get --raw /metrics",
+    "feature_gates.DRAExtendedResource": "kubectl get --raw /metrics",
+    "feature_gates.DRAListTypeAttributes": "kubectl get --raw /metrics",
+    "feature_gates.DRANodeAllocatableResources": "kubectl get --raw /metrics",
+    "feature_gates.DRAPartitionableDevices": "kubectl get --raw /metrics",
+    "feature_gates.DRAPrioritizedList": "kubectl get --raw /metrics",
+    "feature_gates.DRAResourceClaimDeviceStatus": "kubectl get --raw /metrics",
+    "feature_gates.DRAResourceClaimGranularStatusAuthorization": "kubectl get --raw /metrics",
+    "feature_gates.DRAResourcePoolStatus": "kubectl get --raw /metrics",
+    "feature_gates.DRASchedulerFilterTimeout": "kubectl get --raw /metrics",
+    "feature_gates.DRAWorkloadResourceClaims": "kubectl get --raw /metrics",
+    "feature_gates.DeclarativeValidation": "kubectl get --raw /metrics",
+    "feature_gates.DeclarativeValidationBeta": "kubectl get --raw /metrics",
+    "feature_gates.DeclarativeValidationTakeover": "kubectl get --raw /metrics",
+    "feature_gates.DeploymentReplicaSetTerminatingReplicas": "kubectl get --raw /metrics",
+    "feature_gates.DetectCacheInconsistency": "kubectl get --raw /metrics",
+    "feature_gates.DisableAllocatorDualWrite": "kubectl get --raw /metrics",
+    "feature_gates.DisableCPUQuotaWithExclusiveCPUs": "kubectl get --raw /metrics",
+    "feature_gates.DisableNodeKubeProxyVersion": "kubectl get --raw /metrics",
+    "feature_gates.DynamicResourceAllocation": "kubectl get --raw /metrics",
+    "feature_gates.EnvFiles": "kubectl get --raw /metrics",
+    "feature_gates.EventedPLEG": "kubectl get --raw /metrics",
+    "feature_gates.ExecProbeTimeout": "kubectl get --raw /metrics",
+    "feature_gates.ExtendWebSocketsToKubelet": "kubectl get --raw /metrics",
+    "feature_gates.ExternalServiceAccountTokenSigner": "kubectl get --raw /metrics",
+    "feature_gates.GangScheduling": "kubectl get --raw /metrics",
+    "feature_gates.GenericWorkload": "kubectl get --raw /metrics",
+    "feature_gates.GitRepoVolumeDriver": "kubectl get --raw /metrics",
+    "feature_gates.GracefulNodeShutdown": "kubectl get --raw /metrics",
+    "feature_gates.GracefulNodeShutdownBasedOnPodPriority": "kubectl get --raw /metrics",
+    "feature_gates.HPAConfigurableTolerance": "kubectl get --raw /metrics",
+    "feature_gates.HPAScaleToZero": "kubectl get --raw /metrics",
+    "feature_gates.HostnameOverride": "kubectl get --raw /metrics",
+    "feature_gates.ImageMaximumGCAge": "kubectl get --raw /metrics",
+    "feature_gates.ImageVolume": "kubectl get --raw /metrics",
+    "feature_gates.ImageVolumeWithDigest": "kubectl get --raw /metrics",
+    "feature_gates.InOrderInformers": "kubectl get --raw /metrics",
+    "feature_gates.InOrderInformersBatchProcess": "kubectl get --raw /metrics",
+    "feature_gates.InPlacePodLevelResourcesVerticalScaling": "kubectl get --raw /metrics",
+    "feature_gates.InPlacePodVerticalScaling": "kubectl get --raw /metrics",
+    "feature_gates.InPlacePodVerticalScalingExclusiveCPUs": "kubectl get --raw /metrics",
+    "feature_gates.InPlacePodVerticalScalingExclusiveMemory": "kubectl get --raw /metrics",
+    "feature_gates.InPlacePodVerticalScalingInitContainers": "kubectl get --raw /metrics",
+    "feature_gates.InformerResourceVersion": "kubectl get --raw /metrics",
+    "feature_gates.JobBackoffLimitPerIndex": "kubectl get --raw /metrics",
+    "feature_gates.JobManagedBy": "kubectl get --raw /metrics",
+    "feature_gates.JobPodReplacementPolicy": "kubectl get --raw /metrics",
+    "feature_gates.JobSuccessPolicy": "kubectl get --raw /metrics",
+    "feature_gates.KMSv1": "kubectl get --raw /metrics",
+    "feature_gates.KubeletCgroupDriverFromCRI": "kubectl get --raw /metrics",
+    "feature_gates.KubeletCrashLoopBackOffMax": "kubectl get --raw /metrics",
+    "feature_gates.KubeletEnsureSecretPulledImages": "kubectl get --raw /metrics",
+    "feature_gates.KubeletFineGrainedAuthz": "kubectl get --raw /metrics",
+    "feature_gates.KubeletInUserNamespace": "kubectl get --raw /metrics",
+    "feature_gates.KubeletPSI": "kubectl get --raw /metrics",
+    "feature_gates.KubeletPodResourcesDynamicResources": "kubectl get --raw /metrics",
+    "feature_gates.KubeletPodResourcesGet": "kubectl get --raw /metrics",
+    "feature_gates.KubeletPodResourcesListUseActivePods": "kubectl get --raw /metrics",
+    "feature_gates.KubeletRegistrationGetOnExistsOnly": "kubectl get --raw /metrics",
+    "feature_gates.KubeletSeparateDiskGC": "kubectl get --raw /metrics",
+    "feature_gates.KubeletServiceAccountTokenForCredentialProviders": "kubectl get --raw /metrics",
+    "feature_gates.KubeletTracing": "kubectl get --raw /metrics",
+    "feature_gates.ListFromCacheSnapshot": "kubectl get --raw /metrics",
+    "feature_gates.LocalStorageCapacityIsolationFSQuotaMonitoring": "kubectl get --raw /metrics",
+    "feature_gates.LogarithmicScaleDown": "kubectl get --raw /metrics",
+    "feature_gates.LoggingAlphaOptions": "kubectl get --raw /metrics",
+    "feature_gates.LoggingBetaOptions": "kubectl get --raw /metrics",
+    "feature_gates.ManifestBasedAdmissionControlConfig": "kubectl get --raw /metrics",
+    "feature_gates.MatchLabelKeysInPodAffinity": "kubectl get --raw /metrics",
+    "feature_gates.MatchLabelKeysInPodTopologySpread": "kubectl get --raw /metrics",
+    "feature_gates.MatchLabelKeysInPodTopologySpreadSelectorMerge": "kubectl get --raw /metrics",
+    "feature_gates.MaxUnavailableStatefulSet": "kubectl get --raw /metrics",
+    "feature_gates.MemoryQoS": "kubectl get --raw /metrics",
+    "feature_gates.MultiCIDRServiceAllocator": "kubectl get --raw /metrics",
+    "feature_gates.MutableCSINodeAllocatableCount": "kubectl get --raw /metrics",
+    "feature_gates.MutablePVNodeAffinity": "kubectl get --raw /metrics",
+    "feature_gates.MutablePodResourcesForSuspendedJobs": "kubectl get --raw /metrics",
+    "feature_gates.MutableSchedulingDirectivesForSuspendedJobs": "kubectl get --raw /metrics",
+    "feature_gates.MutatingAdmissionPolicy": "kubectl get --raw /metrics",
+    "feature_gates.NFTablesProxyMode": "kubectl get --raw /metrics",
+    "feature_gates.NativeHistograms": "kubectl get --raw /metrics",
+    "feature_gates.NodeDeclaredFeatures": "kubectl get --raw /metrics",
+    "feature_gates.NodeInclusionPolicyInPodTopologySpread": "kubectl get --raw /metrics",
+    "feature_gates.NodeLogQuery": "kubectl get --raw /metrics",
+    "feature_gates.NodeSwap": "kubectl get --raw /metrics",
+    "feature_gates.NominatedNodeNameForExpectation": "kubectl get --raw /metrics",
+    "feature_gates.OpenAPIEnums": "kubectl get --raw /metrics",
+    "feature_gates.OpportunisticBatching": "kubectl get --raw /metrics",
+    "feature_gates.OrderedNamespaceDeletion": "kubectl get --raw /metrics",
+    "feature_gates.PLEGOnDemandRelist": "kubectl get --raw /metrics",
+    "feature_gates.PersistentVolumeClaimUnusedSinceTime": "kubectl get --raw /metrics",
+    "feature_gates.PodAndContainerStatsFromCRI": "kubectl get --raw /metrics",
+    "feature_gates.PodCertificateRequest": "kubectl get --raw /metrics",
+    "feature_gates.PodDeletionCost": "kubectl get --raw /metrics",
+    "feature_gates.PodLevelResourceManagers": "kubectl get --raw /metrics",
+    "feature_gates.PodLevelResources": "kubectl get --raw /metrics",
+    "feature_gates.PodLifecycleSleepAction": "kubectl get --raw /metrics",
+    "feature_gates.PodLifecycleSleepActionAllowZero": "kubectl get --raw /metrics",
+    "feature_gates.PodLogsQuerySplitStreams": "kubectl get --raw /metrics",
+    "feature_gates.PodObservedGenerationTracking": "kubectl get --raw /metrics",
+    "feature_gates.PodReadyToStartContainersCondition": "kubectl get --raw /metrics",
+    "feature_gates.PodSchedulingReadiness": "kubectl get --raw /metrics",
+    "feature_gates.PodTopologyLabelsAdmission": "kubectl get --raw /metrics",
+    "feature_gates.PodsAPI": "kubectl get --raw /metrics",
+    "feature_gates.PortForwardWebsockets": "kubectl get --raw /metrics",
+    "feature_gates.PreferSameTrafficDistribution": "kubectl get --raw /metrics",
+    "feature_gates.PreventStaticPodAPIReferences": "kubectl get --raw /metrics",
+    "feature_gates.ProcMountType": "kubectl get --raw /metrics",
+    "feature_gates.QOSReserved": "kubectl get --raw /metrics",
+    "feature_gates.RecoverVolumeExpansionFailure": "kubectl get --raw /metrics",
+    "feature_gates.RecursiveReadOnlyMounts": "kubectl get --raw /metrics",
+    "feature_gates.ReduceDefaultCrashLoopBackOffDecay": "kubectl get --raw /metrics",
+    "feature_gates.RelaxedDNSSearchValidation": "kubectl get --raw /metrics",
+    "feature_gates.RelaxedEnvironmentVariableValidation": "kubectl get --raw /metrics",
+    "feature_gates.RelaxedServiceNameValidation": "kubectl get --raw /metrics",
+    "feature_gates.ReloadKubeletClientCAFile": "kubectl get --raw /metrics",
+    "feature_gates.ReloadKubeletServerCertificateFile": "kubectl get --raw /metrics",
+    "feature_gates.RemoteRequestHeaderUID": "kubectl get --raw /metrics",
+    "feature_gates.ResilientWatchCacheInitialization": "kubectl get --raw /metrics",
+    "feature_gates.ResourceHealthStatus": "kubectl get --raw /metrics",
+    "feature_gates.ResourceHealthStatusMessage": "kubectl get --raw /metrics",
+    "feature_gates.RestartAllContainersOnContainerExits": "kubectl get --raw /metrics",
+    "feature_gates.RetryGenerateName": "kubectl get --raw /metrics",
+    "feature_gates.RotateKubeletServerCertificate": "kubectl get --raw /metrics",
+    "feature_gates.RuntimeClassInImageCriApi": "kubectl get --raw /metrics",
+    "feature_gates.SELinuxChangePolicy": "kubectl get --raw /metrics",
+    "feature_gates.SELinuxMount": "kubectl get --raw /metrics",
+    "feature_gates.SELinuxMountReadWriteOncePod": "kubectl get --raw /metrics",
+    "feature_gates.SchedulerAsyncAPICalls": "kubectl get --raw /metrics",
+    "feature_gates.SchedulerAsyncPreemption": "kubectl get --raw /metrics",
+    "feature_gates.SchedulerPopFromBackoffQ": "kubectl get --raw /metrics",
+    "feature_gates.SchedulerQueueingHints": "kubectl get --raw /metrics",
+    "feature_gates.SeparateCacheWatchRPC": "kubectl get --raw /metrics",
+    "feature_gates.SeparateTaintEvictionController": "kubectl get --raw /metrics",
+    "feature_gates.ServiceAccountNodeAudienceRestriction": "kubectl get --raw /metrics",
+    "feature_gates.ServiceAccountTokenJTI": "kubectl get --raw /metrics",
+    "feature_gates.ServiceAccountTokenNodeBinding": "kubectl get --raw /metrics",
+    "feature_gates.ServiceAccountTokenNodeBindingValidation": "kubectl get --raw /metrics",
+    "feature_gates.ServiceAccountTokenPodNodeInfo": "kubectl get --raw /metrics",
+    "feature_gates.ServiceCIDRStatusFieldWiping": "kubectl get --raw /metrics",
+    "feature_gates.ShardedListAndWatch": "kubectl get --raw /metrics",
+    "feature_gates.SidecarContainers": "kubectl get --raw /metrics",
+    "feature_gates.SizeBasedListCostEstimate": "kubectl get --raw /metrics",
+    "feature_gates.StaleControllerConsistencyDaemonSet": "kubectl get --raw /metrics",
+    "feature_gates.StaleControllerConsistencyJob": "kubectl get --raw /metrics",
+    "feature_gates.StaleControllerConsistencyReplicaSet": "kubectl get --raw /metrics",
+    "feature_gates.StaleControllerConsistencyStatefulSet": "kubectl get --raw /metrics",
+    "feature_gates.StatefulSetSemanticRevisionComparison": "kubectl get --raw /metrics",
+    "feature_gates.StorageCapacityScoring": "kubectl get --raw /metrics",
+    "feature_gates.StorageNamespaceIndex": "kubectl get --raw /metrics",
+    "feature_gates.StorageVersionAPI": "kubectl get --raw /metrics",
+    "feature_gates.StorageVersionHash": "kubectl get --raw /metrics",
+    "feature_gates.StorageVersionMigrator": "kubectl get --raw /metrics",
+    "feature_gates.StreamingCollectionEncodingToJSON": "kubectl get --raw /metrics",
+    "feature_gates.StreamingCollectionEncodingToProtobuf": "kubectl get --raw /metrics",
+    "feature_gates.StrictIPCIDRValidation": "kubectl get --raw /metrics",
+    "feature_gates.StructuredAuthenticationConfiguration": "kubectl get --raw /metrics",
+    "feature_gates.StructuredAuthenticationConfigurationEgressSelector": "kubectl get --raw /metrics",
+    "feature_gates.StructuredAuthenticationConfigurationJWKSMetrics": "kubectl get --raw /metrics",
+    "feature_gates.SupplementalGroupsPolicy": "kubectl get --raw /metrics",
+    "feature_gates.SystemdWatchdog": "kubectl get --raw /metrics",
+    "feature_gates.TaintTolerationComparisonOperators": "kubectl get --raw /metrics",
+    "feature_gates.TokenRequestServiceAccountUIDValidation": "kubectl get --raw /metrics",
+    "feature_gates.TopologyAwareWorkloadScheduling": "kubectl get --raw /metrics",
+    "feature_gates.TopologyManagerPolicyAlphaOptions": "kubectl get --raw /metrics",
+    "feature_gates.TopologyManagerPolicyBetaOptions": "kubectl get --raw /metrics",
+    "feature_gates.TopologyManagerPolicyOptions": "kubectl get --raw /metrics",
+    "feature_gates.TranslateStreamCloseWebsocketRequests": "kubectl get --raw /metrics",
+    "feature_gates.UnauthenticatedHTTP2DOSMitigation": "kubectl get --raw /metrics",
+    "feature_gates.UnknownVersionInteroperabilityProxy": "kubectl get --raw /metrics",
+    "feature_gates.UnlockWhileProcessingFIFO": "kubectl get --raw /metrics",
+    "feature_gates.UserNamespacesHostNetworkSupport": "kubectl get --raw /metrics",
+    "feature_gates.UserNamespacesSupport": "kubectl get --raw /metrics",
+    "feature_gates.VolumeAttributesClass": "kubectl get --raw /metrics",
+    "feature_gates.VolumeLimitScaling": "kubectl get --raw /metrics",
+    "feature_gates.WatchCacheInitializationPostStartHook": "kubectl get --raw /metrics",
+    "feature_gates.WatchList": "kubectl get --raw /metrics",
+    "feature_gates.WatchListClient": "kubectl get --raw /metrics",
+    "feature_gates.WinDSR": "kubectl get --raw /metrics",
+    "feature_gates.WinOverlay": "kubectl get --raw /metrics",
+    "feature_gates.WindowsCPUAndMemoryAffinity": "kubectl get --raw /metrics",
+    "feature_gates.WindowsGracefulNodeShutdown": "kubectl get --raw /metrics",
+    "feature_gates.WindowsHostNetwork": "kubectl get --raw /metrics",
+    "feature_gates.WorkloadAwarePreemption": "kubectl get --raw /metrics",
+    "feature_gates.WorkloadWithJob": "kubectl get --raw /metrics",
+    "kubelet.read_only_port": "kubectl get --raw /api/v1/nodes/<node>/proxy/configz",
+    "kubelet.anonymous_auth": "kubectl get --raw /api/v1/nodes/<node>/proxy/configz",
+    "rbac.create_pods": "kubectl auth can-i",
+    "rbac.get_secrets": "kubectl auth can-i",
+    "rbac.create_clusterrolebindings": "kubectl auth can-i",
+    "rbac.create_pods_exec": "kubectl auth can-i",
+    "rbac.get_nodes_proxy": "kubectl auth can-i",
+    "rbac.create_daemonsets": "kubectl auth can-i",
+    "rbac.create_serviceaccounts_token": "kubectl auth can-i",
+    "rbac.get_persistentvolumes": "kubectl auth can-i",
+    "node.runc_present": "kubectl get nodes -o json",
+    "cni.name": "kubectl get nodes -o json（node annotations）",
+    "cni.version": "kubectl get nodes -o json（node annotations）"
+  },
+  "coverage": {
+    "nodes": true,
+    "pods": true,
+    "daemonsets": true,
+    "crds": true,
+    "serviceaccounts": true,
+    "storage": true,
+    "ingress": true,
+    "gateway": false,
+    "rbac": true,
+    "kubelet_config": true,
+    "apiserver_flags": false,
+    "metrics": true,
+    "components": true,
+    "components_complete": true,
+    "hardware": false
+  },
+  "collection": {
+    "read_only": true,
+    "allowed_verbs": [
+      "get",
+      "auth can-i"
+    ],
+    "commands": [
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "--raw",
+          "/version"
+        ],
+        "rc": 0,
+        "ms": 126.8
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "nodes",
+          "-o",
+          "json"
+        ],
+        "rc": 0,
+        "ms": 125.4
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "namespaces",
+          "-o",
+          "json"
+        ],
+        "rc": 0,
+        "ms": 128.2
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "pods",
+          "--all-namespaces",
+          "-o",
+          "json"
+        ],
+        "rc": 0,
+        "ms": 153.0
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "daemonsets",
+          "--all-namespaces",
+          "-o",
+          "json"
+        ],
+        "rc": 0,
+        "ms": 125.8
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "customresourcedefinitions",
+          "-o",
+          "json"
+        ],
+        "rc": 0,
+        "ms": 147.2
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "serviceaccounts",
+          "--all-namespaces",
+          "-o",
+          "json"
+        ],
+        "rc": 0,
+        "ms": 125.0
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "storageclasses",
+          "-o",
+          "json"
+        ],
+        "rc": 0,
+        "ms": 119.9
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "csidrivers",
+          "-o",
+          "json"
+        ],
+        "rc": 0,
+        "ms": 151.4
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "persistentvolumes",
+          "-o",
+          "json"
+        ],
+        "rc": 0,
+        "ms": 135.9
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "persistentvolumeclaims",
+          "--all-namespaces",
+          "-o",
+          "json"
+        ],
+        "rc": 0,
+        "ms": 138.9
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "ingressclasses",
+          "-o",
+          "json"
+        ],
+        "rc": 0,
+        "ms": 137.7
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "ingresses",
+          "--all-namespaces",
+          "-o",
+          "json"
+        ],
+        "rc": 0,
+        "ms": 129.9
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "gatewayclasses",
+          "-o",
+          "json"
+        ],
+        "rc": 1,
+        "ms": 170.4
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "gateways",
+          "--all-namespaces",
+          "-o",
+          "json"
+        ],
+        "rc": 1,
+        "ms": 164.2
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "auth",
+          "can-i",
+          "create",
+          "pods",
+          "--all-namespaces"
+        ],
+        "rc": 0,
+        "ms": 130.0
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "auth",
+          "can-i",
+          "get",
+          "secrets",
+          "--all-namespaces"
+        ],
+        "rc": 0,
+        "ms": 144.5
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "auth",
+          "can-i",
+          "create",
+          "clusterrolebindings"
+        ],
+        "rc": 0,
+        "ms": 175.6
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "auth",
+          "can-i",
+          "create",
+          "pods/exec",
+          "--all-namespaces"
+        ],
+        "rc": 0,
+        "ms": 155.6
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "auth",
+          "can-i",
+          "get",
+          "nodes/proxy"
+        ],
+        "rc": 0,
+        "ms": 195.8
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "auth",
+          "can-i",
+          "create",
+          "daemonsets",
+          "--all-namespaces"
+        ],
+        "rc": 0,
+        "ms": 128.7
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "auth",
+          "can-i",
+          "create",
+          "serviceaccounts/token",
+          "--all-namespaces"
+        ],
+        "rc": 0,
+        "ms": 158.1
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "auth",
+          "can-i",
+          "get",
+          "persistentvolumes"
+        ],
+        "rc": 0,
+        "ms": 169.6
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "--raw",
+          "/api/v1/nodes/k3s/proxy/configz"
+        ],
+        "rc": 0,
+        "ms": 216.5
+      },
+      {
+        "argv": [
+          "--kubeconfig",
+          "lab\\qemu-k3s\\out\\k3s.yaml",
+          "get",
+          "--raw",
+          "/metrics"
+        ],
+        "rc": 0,
+        "ms": 1716.8
+      }
+    ],
+    "errors": [
+      {
+        "command": "kubectl get gatewayclasses",
+        "optional": true,
+        "error": "error: the server doesn't have a resource type \"gatewayclasses\"\n"
+      },
+      {
+        "command": "kubectl get gateways --all-namespaces",
+        "optional": true,
+        "error": "error: the server doesn't have a resource type \"gateways\"\n"
+      }
+    ],
+    "started_at": "2026-10-25T17:03:14Z",
+    "finished_at": "2026-10-25T17:03:14Z"
+  },
+  "evidence": [
+    {
+      "field": "cluster.version",
+      "value": "v1.36.5+k3s1",
+      "source": "live-kubectl"
+    },
+    {
+      "field": "node.kernel",
+      "value": [
+        "6.18.58-0-virt"
+      ],
+      "source": "kubectl get nodes -o json"
+    },
+    {
+      "field": "node.os",
+      "value": [
+        "linux"
+      ],
+      "source": "kubectl get nodes -o json"
+    },
+    {
+      "field": "cloud.provider",
+      "value": "",
+      "source": "live-kubectl"
+    },
+    {
+      "field": "workloads.privileged",
+      "value": false,
+      "source": "kubectl get pods -A -o json"
+    },
+    {
+      "field": "workloads.host_path",
+      "value": false,
+      "source": "kubectl get pods -A -o json"
+    },
+    {
+      "field": "workloads.host_network",
+      "value": true,
+      "source": "kubectl get pods -A -o json"
+    },
+    {
+      "field": "workloads.host_pid",
+      "value": false,
+      "source": "kubectl get pods -A -o json"
+    },
+    {
+      "field": "workloads.host_ipc",
+      "value": false,
+      "source": "kubectl get pods -A -o json"
+    },
+    {
+      "field": "workloads.runtime_socket",
+      "value": false,
+      "source": "kubectl get pods -A -o json"
+    },
+    {
+      "field": "workloads.cap_sys_admin",
+      "value": false,
+      "source": "kubectl get pods -A -o json"
+    },
+    {
+      "field": "workloads.automount_sa_token",
+      "value": true,
+      "source": "kubectl get pods,serviceaccounts -A -o json"
+    },
+    {
+      "field": "kubelet.read_only_port",
+      "value": null,
+      "source": "kubectl get --raw /api/v1/nodes/<node>/proxy/configz"
+    },
+    {
+      "field": "kubelet.anonymous_auth",
+      "value": false,
+      "source": "kubectl get --raw /api/v1/nodes/<node>/proxy/configz"
+    },
+    {
+      "field": "rbac.create_pods",
+      "value": true,
+      "source": "kubectl auth can-i"
+    },
+    {
+      "field": "rbac.get_secrets",
+      "value": true,
+      "source": "kubectl auth can-i"
+    },
+    {
+      "field": "rbac.create_clusterrolebindings",
+      "value": true,
+      "source": "kubectl auth can-i"
+    },
+    {
+      "field": "rbac.create_pods_exec",
+      "value": true,
+      "source": "kubectl auth can-i"
+    },
+    {
+      "field": "rbac.get_nodes_proxy",
+      "value": true,
+      "source": "kubectl auth can-i"
+    },
+    {
+      "field": "rbac.create_daemonsets",
+      "value": true,
+      "source": "kubectl auth can-i"
+    },
+    {
+      "field": "rbac.create_serviceaccounts_token",
+      "value": true,
+      "source": "kubectl auth can-i"
+    },
+    {
+      "field": "rbac.get_persistentvolumes",
+      "value": true,
+      "source": "kubectl auth can-i"
+    },
+    {
+      "field": "node.runc_present",
+      "value": true,
+      "source": "kubectl get nodes -o json"
+    },
+    {
+      "field": "cni.name",
+      "value": "flannel",
+      "source": "kubectl get nodes -o json（node annotations）"
+    },
+    {
+      "field": "cni.version",
+      "value": "",
+      "source": "kubectl get nodes -o json（node annotations）"
+    },
+    {
+      "field": "feature_gates",
+      "value": 242,
+      "source": "kubectl get --raw /metrics"
+    }
+  ],
+  "_crds_names": [
+    "addons.k3s.cattle.io",
+    "etcdsnapshotfiles.k3s.cattle.io",
+    "helmchartconfigs.helm.cattle.io",
+    "helmcharts.helm.cattle.io"
+  ],
+  "path": "reports\\samples\\assess\\inventory-k3s.json"
+}

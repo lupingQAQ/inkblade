@@ -1380,22 +1380,34 @@ def _main(argv=None) -> int:
                 text_md = render_matrix(assessment)
                 if args.out:
                     out = Path(args.out)
-                    if args.format == "both":
+                    if out.is_dir() or (args.format == "both" and not out.suffix):
+                        out.mkdir(parents=True, exist_ok=True)
+                        base = out / "cve-applicability"
+                        json_path = base.with_suffix(".json")
+                        md_path = base.with_suffix(".md")
+                    elif args.format == "both":
+                        json_path = out.with_suffix(".json")
+                        md_path = out.with_suffix(".md")
+                    elif args.format == "md":
                         json_path = out.with_suffix(".json") if out.suffix else out / "cve-applicability.json"
+                        md_path = out
+                    else:
+                        json_path = out
                         md_path = out.with_suffix(".md") if out.suffix else out / "cve-applicability.md"
+                    if args.format == "both":
                         _write_text(json_path, text_json)
                         _write_text(md_path, text_md)
                         print(json.dumps({"json": str(json_path), "md": str(md_path),
                                           "summary": assessment["summary"]},
                                          ensure_ascii=False, indent=2))
                     elif args.format == "md":
-                        _write_text(out, text_md)
-                        print(json.dumps({"md": str(out),
+                        _write_text(md_path, text_md)
+                        print(json.dumps({"md": str(md_path),
                                           "summary": assessment["summary"]},
                                          ensure_ascii=False, indent=2))
                     else:
-                        _write_text(out, text_json)
-                        print(json.dumps({"json": str(out),
+                        _write_text(json_path, text_json)
+                        print(json.dumps({"json": str(json_path),
                                           "summary": assessment["summary"]},
                                          ensure_ascii=False, indent=2))
                 elif args.format == "md":
@@ -1623,7 +1635,8 @@ def _main(argv=None) -> int:
         try:
             if args.kind == "remediation":
                 text = render_remediation(store, args.run, lang=args.lang,
-                                          disclosed=disclosed, redact_zeroday=args.redact)
+                                          disclosed=disclosed, redact_zeroday=args.redact,
+                                          inventory=inventory, catalog_path=args.catalog)
             else:
                 text = render_pentest(store, args.run, lang=args.lang,
                                       disclosed=disclosed, redact_zeroday=args.redact,

@@ -53,7 +53,9 @@ namespaces = false
 trident = [
     "*.py",
     "chains/*.json",
+    "core/*.json",
     "core/data/*.json",
+    "assess/*.py",
     "data/supplychain/*.json",
     "data/supplychain/*.md",
     "data/supplychain/*.bin",
