@@ -1,0 +1,2515 @@
+{
+ "tool": "artex",
+ "source": "RuoJi6/ARTEX server/*.go (mux.HandleFunc pattern routes)",
+ "commit": "620ca5d",
+ "extracted_at": "2026-10-25T13:37:17Z",
+ "endpoint_count": 278,
+ "by_class": {
+  "read": 124,
+  "write": 154
+ },
+ "endpoints": [
+  {
+   "method": "POST",
+   "path": "/api/active",
+   "probe_path": "/api/active",
+   "handler": "server.go::setActive",
+   "line": 790,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/agents",
+   "probe_path": "/api/agents",
+   "handler": "server.go::pgListAgents",
+   "line": 917,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/agents",
+   "probe_path": "/api/agents",
+   "handler": "server.go::pgCreateAgent",
+   "line": 918,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/agents/{key}",
+   "probe_path": "/api/agents/bench-probe",
+   "handler": "server.go::pgDeleteAgent",
+   "line": 921,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/agents/{key}",
+   "probe_path": "/api/agents/bench-probe",
+   "handler": "server.go::pgGetAgent",
+   "line": 919,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/agents/{key}",
+   "probe_path": "/api/agents/bench-probe",
+   "handler": "server.go::pgUpdateAgent",
+   "line": 920,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/agents/{key}/config",
+   "probe_path": "/api/agents/bench-probe/config",
+   "handler": "server.go::pgSaveAgentConfig",
+   "line": 922,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/agents/{key}/prompt",
+   "probe_path": "/api/agents/bench-probe/prompt",
+   "handler": "server.go::pgSavePrompt",
+   "line": 923,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/agents/{key}/prompt/preview",
+   "probe_path": "/api/agents/bench-probe/prompt/preview",
+   "handler": "server.go::pgPreviewPrompt",
+   "line": 935,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/agents/{key}/prompt/reset",
+   "probe_path": "/api/agents/bench-probe/prompt/reset",
+   "handler": "server.go::pgResetPrompt",
+   "line": 924,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/agents/{key}/prompts",
+   "probe_path": "/api/agents/bench-probe/prompts",
+   "handler": "server.go::pgListPromptVersions",
+   "line": 933,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/agents/{key}/triggers",
+   "probe_path": "/api/agents/bench-probe/triggers",
+   "handler": "server.go::pgListTriggers",
+   "line": 929,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/agents/{key}/triggers",
+   "probe_path": "/api/agents/bench-probe/triggers",
+   "handler": "server.go::pgCreateTrigger",
+   "line": 930,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/agents/{key}/variables",
+   "probe_path": "/api/agents/bench-probe/variables",
+   "handler": "server.go::pgPromptVars",
+   "line": 934,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/agents/{key}/visibility",
+   "probe_path": "/api/agents/bench-probe/visibility",
+   "handler": "server.go::pgGetAgentVisibility",
+   "line": 936,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/agents/{key}/visibility",
+   "probe_path": "/api/agents/bench-probe/visibility",
+   "handler": "server.go::pgSetAgentVisibility",
+   "line": 937,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/agents/{key}/wrapup",
+   "probe_path": "/api/agents/bench-probe/wrapup",
+   "handler": "server.go::pgSaveWrapup",
+   "line": 925,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/agents/{key}/wrapup/reset",
+   "probe_path": "/api/agents/bench-probe/wrapup/reset",
+   "handler": "server.go::pgResetWrapup",
+   "line": 926,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/agents/{key}/wrapup/task-timeout",
+   "probe_path": "/api/agents/bench-probe/wrapup/task-timeout",
+   "handler": "server.go::pgSaveTaskTimeoutWrapup",
+   "line": 927,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/agents/{key}/wrapup/task-timeout/reset",
+   "probe_path": "/api/agents/bench-probe/wrapup/task-timeout/reset",
+   "handler": "server.go::pgResetTaskTimeoutWrapup",
+   "line": 928,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/asset-intercept/rules",
+   "probe_path": "/api/asset-intercept/rules",
+   "handler": "server.go::assetInterceptListRules",
+   "line": 998,
+   "class": "read",
+   "streaming": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/asset-intercept/rules",
+   "probe_path": "/api/asset-intercept/rules",
+   "handler": "server.go::assetInterceptCreateRule",
+   "line": 999,
+   "class": "write",
+   "streaming": true
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/asset-intercept/rules/{id}",
+   "probe_path": "/api/asset-intercept/rules/1",
+   "handler": "server.go::assetInterceptDeleteRule",
+   "line": 1001,
+   "class": "write",
+   "streaming": true
+  },
+  {
+   "method": "PUT",
+   "path": "/api/asset-intercept/rules/{id}",
+   "probe_path": "/api/asset-intercept/rules/1",
+   "handler": "server.go::assetInterceptUpdateRule",
+   "line": 1000,
+   "class": "write",
+   "streaming": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/asset-intercept/rules/{id}/toggle",
+   "probe_path": "/api/asset-intercept/rules/1/toggle",
+   "handler": "server.go::assetInterceptToggleRule",
+   "line": 1002,
+   "class": "write",
+   "streaming": true
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/assets",
+   "probe_path": "/api/assets",
+   "handler": "server.go::deleteAssets",
+   "line": 800,
+   "class": "write",
+   "streaming": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/assets",
+   "probe_path": "/api/assets",
+   "handler": "server.go::listAssets",
+   "line": 797,
+   "class": "read",
+   "streaming": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/assets",
+   "probe_path": "/api/assets",
+   "handler": "server.go::insertAssets",
+   "line": 799,
+   "class": "write",
+   "streaming": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/assets/counts",
+   "probe_path": "/api/assets/counts",
+   "handler": "server.go::assetCounts",
+   "line": 798,
+   "class": "read",
+   "streaming": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/assets/{id}/intelligence",
+   "probe_path": "/api/assets/1/intelligence",
+   "handler": "server.go::?",
+   "line": 874,
+   "class": "read",
+   "streaming": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/assets/{id}/intelligence/{intelID}",
+   "probe_path": "/api/assets/1/intelligence/1",
+   "handler": "server.go::?",
+   "line": 878,
+   "class": "read",
+   "streaming": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/assets/{id}/intelligence/{intelID}/traffic/{trafficID}",
+   "probe_path": "/api/assets/1/intelligence/1/traffic/1",
+   "handler": "server.go::?",
+   "line": 870,
+   "class": "read",
+   "streaming": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/audit",
+   "probe_path": "/api/audit",
+   "handler": "server.go::getAudit",
+   "line": 849,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/auth/change-password",
+   "probe_path": "/api/auth/change-password",
+   "handler": "server.go::authChangePassword",
+   "line": 695,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/auth/init",
+   "probe_path": "/api/auth/init",
+   "handler": "server.go::authInit",
+   "line": 693,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/auth/login",
+   "probe_path": "/api/auth/login",
+   "handler": "server.go::authLogin",
+   "line": 694,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/auth/status",
+   "probe_path": "/api/auth/status",
+   "handler": "server.go::authStatus",
+   "line": 692,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/basic-auth/check",
+   "probe_path": "/api/basic-auth/check",
+   "handler": "server.go::?",
+   "line": 696,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/chat",
+   "probe_path": "/api/chat",
+   "handler": "server.go::chat",
+   "line": 897,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/chat/mentions",
+   "probe_path": "/api/chat/mentions",
+   "handler": "server.go::searchChatMentions",
+   "line": 896,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/chat/upload",
+   "probe_path": "/api/chat/upload",
+   "handler": "server.go::chatUpload",
+   "line": 898,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/commands",
+   "probe_path": "/api/commands",
+   "handler": "server.go::pgListCommands",
+   "line": 858,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/commands/stats",
+   "probe_path": "/api/commands/stats",
+   "handler": "server.go::pgToolStats",
+   "line": 859,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/companies",
+   "probe_path": "/api/companies",
+   "handler": "server.go::listCompanies",
+   "line": 803,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/companies",
+   "probe_path": "/api/companies",
+   "handler": "server.go::createCompany",
+   "line": 804,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/companies/reattribute",
+   "probe_path": "/api/companies/reattribute",
+   "handler": "server.go::reattribute",
+   "line": 808,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/companies/{id}",
+   "probe_path": "/api/companies/1",
+   "handler": "server.go::deleteCompany",
+   "line": 806,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/companies/{id}",
+   "probe_path": "/api/companies/1",
+   "handler": "server.go::getCompany",
+   "line": 805,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/companies/{id}/scope",
+   "probe_path": "/api/companies/1/scope",
+   "handler": "server.go::addCompanyScope",
+   "line": 807,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/conversations",
+   "probe_path": "/api/conversations",
+   "handler": "server.go::pgListConversations",
+   "line": 906,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/conversations",
+   "probe_path": "/api/conversations",
+   "handler": "server.go::pgCreateConversation",
+   "line": 907,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/conversations/delete/batch",
+   "probe_path": "/api/conversations/delete/batch",
+   "handler": "server.go::pgDeleteConversationsBatch",
+   "line": 908,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/conversations/{id}",
+   "probe_path": "/api/conversations/1",
+   "handler": "server.go::pgDeleteConversation",
+   "line": 911,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/conversations/{id}",
+   "probe_path": "/api/conversations/1",
+   "handler": "server.go::pgRenameConversation",
+   "line": 909,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/conversations/{id}/messages",
+   "probe_path": "/api/conversations/1/messages",
+   "handler": "server.go::pgConversationMessages",
+   "line": 912,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/conversations/{id}/messages",
+   "probe_path": "/api/conversations/1/messages",
+   "handler": "server.go::pgSendConversationMessage",
+   "line": 913,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/conversations/{id}/messages/{seq}",
+   "probe_path": "/api/conversations/1/messages/1",
+   "handler": "server.go::pgConversationMsgDetail",
+   "line": 915,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/conversations/{id}/profile",
+   "probe_path": "/api/conversations/1/profile",
+   "handler": "server.go::pgUpdateConversation",
+   "line": 910,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/conversations/{id}/stop",
+   "probe_path": "/api/conversations/1/stop",
+   "handler": "server.go::pgStopConversation",
+   "line": 914,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/activity",
+   "probe_path": "/api/exploration/activity",
+   "handler": "server.go::activity",
+   "line": 838,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/activity/history",
+   "probe_path": "/api/exploration/activity/history",
+   "handler": "server.go::activityHistory",
+   "line": 839,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/activity/stream",
+   "probe_path": "/api/exploration/activity/stream",
+   "handler": "server.go::streamActivity",
+   "line": 842,
+   "class": "read",
+   "streaming": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/activity/{seq}",
+   "probe_path": "/api/exploration/activity/1",
+   "handler": "server.go::activityDetail",
+   "line": 843,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/finding-case-review",
+   "probe_path": "/api/exploration/finding-case-review",
+   "handler": "server.go::caseReviewRuns",
+   "line": 822,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/exploration/finding-case-review",
+   "probe_path": "/api/exploration/finding-case-review",
+   "handler": "server.go::reviewFindingCases",
+   "line": 821,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/finding-case-suggestions",
+   "probe_path": "/api/exploration/finding-case-suggestions",
+   "handler": "server.go::caseSuggestions",
+   "line": 819,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/exploration/finding-case-suggestions/{id}",
+   "probe_path": "/api/exploration/finding-case-suggestions/1",
+   "handler": "server.go::resolveCaseSuggestion",
+   "line": 820,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/finding-cases",
+   "probe_path": "/api/exploration/finding-cases",
+   "handler": "server.go::listFindingCases",
+   "line": 813,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/exploration/finding-cases",
+   "probe_path": "/api/exploration/finding-cases",
+   "handler": "server.go::mergeFindingCase",
+   "line": 814,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/finding-cases/{id}",
+   "probe_path": "/api/exploration/finding-cases/1",
+   "handler": "server.go::getFindingCase",
+   "line": 815,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/finding-cases/{id}/members",
+   "probe_path": "/api/exploration/finding-cases/1/members",
+   "handler": "server.go::getFindingCaseMembers",
+   "line": 816,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/exploration/finding-cases/{id}/members/{fid}",
+   "probe_path": "/api/exploration/finding-cases/1/members/1",
+   "handler": "server.go::removeFindingCaseMember",
+   "line": 817,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/exploration/finding-cases/{id}/report",
+   "probe_path": "/api/exploration/finding-cases/1/report",
+   "handler": "server.go::updateCaseReport",
+   "line": 818,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/findings",
+   "probe_path": "/api/exploration/findings",
+   "handler": "server.go::findings",
+   "line": 811,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/findings/asset-tree",
+   "probe_path": "/api/exploration/findings/asset-tree",
+   "handler": "server.go::findingAssetTree",
+   "line": 823,
+   "class": "read",
+   "streaming": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/findings/export",
+   "probe_path": "/api/exploration/findings/export",
+   "handler": "server.go::findingsExport",
+   "line": 825,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/findings/groups",
+   "probe_path": "/api/exploration/findings/groups",
+   "handler": "server.go::findingGroups",
+   "line": 812,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/findings/retests/active",
+   "probe_path": "/api/exploration/findings/retests/active",
+   "handler": "server.go::listActiveFindingRetests",
+   "line": 831,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/findings/stats",
+   "probe_path": "/api/exploration/findings/stats",
+   "handler": "server.go::findingStats",
+   "line": 824,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/exploration/findings/{id}",
+   "probe_path": "/api/exploration/findings/1",
+   "handler": "server.go::deleteFinding",
+   "line": 834,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/findings/{id}",
+   "probe_path": "/api/exploration/findings/1",
+   "handler": "server.go::getFinding",
+   "line": 827,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/exploration/findings/{id}",
+   "probe_path": "/api/exploration/findings/1",
+   "handler": "server.go::patchFinding",
+   "line": 833,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/exploration/findings/{id}/deepen",
+   "probe_path": "/api/exploration/findings/1/deepen",
+   "handler": "server.go::deepenFinding",
+   "line": 829,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/findings/{id}/lineage",
+   "probe_path": "/api/exploration/findings/1/lineage",
+   "handler": "server.go::findingLineage",
+   "line": 828,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/findings/{id}/retests",
+   "probe_path": "/api/exploration/findings/1/retests",
+   "handler": "server.go::listFindingRetests",
+   "line": 830,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/exploration/findings/{id}/retests",
+   "probe_path": "/api/exploration/findings/1/retests",
+   "handler": "server.go::startFindingRetest",
+   "line": 832,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/frontier",
+   "probe_path": "/api/exploration/frontier",
+   "handler": "server.go::frontier",
+   "line": 810,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/graph",
+   "probe_path": "/api/exploration/graph",
+   "handler": "server.go::explorationGraph",
+   "line": 836,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/intents",
+   "probe_path": "/api/exploration/intents",
+   "handler": "server.go::intents",
+   "line": 835,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/exploration/main-session/new",
+   "probe_path": "/api/exploration/main-session/new",
+   "handler": "server.go::newMainSession",
+   "line": 841,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/main-sessions",
+   "probe_path": "/api/exploration/main-sessions",
+   "handler": "server.go::mainSessions",
+   "line": 840,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/nodes",
+   "probe_path": "/api/exploration/nodes",
+   "handler": "server.go::explorationNodes",
+   "line": 837,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/exploration/tokens",
+   "probe_path": "/api/exploration/tokens",
+   "handler": "server.go::tokenStats",
+   "line": 844,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/gc",
+   "probe_path": "/api/gc",
+   "handler": "server.go::gc",
+   "line": 850,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/health",
+   "probe_path": "/api/health",
+   "handler": "server.go::health",
+   "line": 703,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/intercept/history",
+   "probe_path": "/api/intercept/history",
+   "handler": "server.go::interceptHistory",
+   "line": 1007,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/intercept/history/{id}",
+   "probe_path": "/api/intercept/history/1",
+   "handler": "server.go::interceptDetail",
+   "line": 1008,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/intercept/history/{id}/execution",
+   "probe_path": "/api/intercept/history/1/execution",
+   "handler": "server.go::interceptExecution",
+   "line": 1009,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/intercept/judge",
+   "probe_path": "/api/intercept/judge",
+   "handler": "server.go::interceptGetJudgeConfig",
+   "line": 1013,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/intercept/judge",
+   "probe_path": "/api/intercept/judge",
+   "handler": "server.go::interceptSetJudgeConfig",
+   "line": 1014,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/intercept/judge/usage",
+   "probe_path": "/api/intercept/judge/usage",
+   "handler": "server.go::interceptJudgeUsage",
+   "line": 1015,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/intercept/pending",
+   "probe_path": "/api/intercept/pending",
+   "handler": "server.go::interceptListPending",
+   "line": 1004,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/intercept/pending/{id}",
+   "probe_path": "/api/intercept/pending/1",
+   "handler": "server.go::interceptGetOne",
+   "line": 1005,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/intercept/pending/{id}/decide",
+   "probe_path": "/api/intercept/pending/1/decide",
+   "handler": "server.go::interceptDecide",
+   "line": 1006,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/intercept/rules",
+   "probe_path": "/api/intercept/rules",
+   "handler": "server.go::interceptListRules",
+   "line": 991,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/intercept/rules",
+   "probe_path": "/api/intercept/rules",
+   "handler": "server.go::interceptCreateRule",
+   "line": 992,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/intercept/rules/{id}",
+   "probe_path": "/api/intercept/rules/1",
+   "handler": "server.go::interceptDeleteRule",
+   "line": 994,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/intercept/rules/{id}",
+   "probe_path": "/api/intercept/rules/1",
+   "handler": "server.go::interceptUpdateRule",
+   "line": 993,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/intercept/rules/{id}/toggle",
+   "probe_path": "/api/intercept/rules/1/toggle",
+   "handler": "server.go::interceptToggleRule",
+   "line": 995,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/intercept/task/{taskID}",
+   "probe_path": "/api/intercept/task/1",
+   "handler": "server.go::interceptListTaskItems",
+   "line": 1010,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/intercept/tool-config",
+   "probe_path": "/api/intercept/tool-config",
+   "handler": "server.go::interceptGetToolConfig",
+   "line": 1011,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/intercept/tool-config",
+   "probe_path": "/api/intercept/tool-config",
+   "handler": "server.go::interceptSetToolConfig",
+   "line": 1012,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/llm",
+   "probe_path": "/api/llm",
+   "handler": "server.go::getLLM",
+   "line": 792,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/llm",
+   "probe_path": "/api/llm",
+   "handler": "server.go::setLLM",
+   "line": 793,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/llm/models",
+   "probe_path": "/api/llm/models",
+   "handler": "server.go::pgListModels",
+   "line": 988,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/llm/pool",
+   "probe_path": "/api/llm/pool",
+   "handler": "server.go::pgLLMPoolStatus",
+   "line": 986,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/llm/pool/reset",
+   "probe_path": "/api/llm/pool/reset",
+   "handler": "server.go::pgLLMPoolReset",
+   "line": 987,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/llm/profiles",
+   "probe_path": "/api/llm/profiles",
+   "handler": "server.go::pgListProfiles",
+   "line": 980,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/llm/profiles",
+   "probe_path": "/api/llm/profiles",
+   "handler": "server.go::pgSaveProfile",
+   "line": 981,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/llm/profiles/active",
+   "probe_path": "/api/llm/profiles/active",
+   "handler": "server.go::pgActivateProfile",
+   "line": 983,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/llm/profiles/{id}",
+   "probe_path": "/api/llm/profiles/1",
+   "handler": "server.go::pgDeleteProfile",
+   "line": 982,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/llm/records",
+   "probe_path": "/api/llm/records",
+   "handler": "server.go::pgDeleteLLMRecords",
+   "line": 861,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/llm/records",
+   "probe_path": "/api/llm/records",
+   "handler": "server.go::pgListLLMRecords",
+   "line": 860,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/llm/records/by-model",
+   "probe_path": "/api/llm/records/by-model",
+   "handler": "server.go::pgTokenByModel",
+   "line": 863,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/llm/records/tasks",
+   "probe_path": "/api/llm/records/tasks",
+   "handler": "server.go::pgLLMTasks",
+   "line": 862,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/llm/records/{id}",
+   "probe_path": "/api/llm/records/1",
+   "handler": "server.go::pgGetLLMRecord",
+   "line": 864,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/llm/retry-policy",
+   "probe_path": "/api/llm/retry-policy",
+   "handler": "server.go::pgGetLLMRetryPolicy",
+   "line": 984,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/llm/retry-policy",
+   "probe_path": "/api/llm/retry-policy",
+   "handler": "server.go::pgSaveLLMRetryPolicy",
+   "line": 985,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/llm/test",
+   "probe_path": "/api/llm/test",
+   "handler": "server.go::testLLM",
+   "line": 794,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/logs",
+   "probe_path": "/api/logs",
+   "handler": "server.go::getLogs",
+   "line": 705,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/logs/history",
+   "probe_path": "/api/logs/history",
+   "handler": "server.go::getLogsHistory",
+   "line": 706,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/logs/stream",
+   "probe_path": "/api/logs/stream",
+   "handler": "server.go::streamLogs",
+   "line": 707,
+   "class": "read",
+   "streaming": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/mcp",
+   "probe_path": "/api/mcp",
+   "handler": "server.go::pgListMCP",
+   "line": 948,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/mcp",
+   "probe_path": "/api/mcp",
+   "handler": "server.go::pgSaveMCP",
+   "line": 949,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/mcp/{id}",
+   "probe_path": "/api/mcp/1",
+   "handler": "server.go::pgDeleteMCP",
+   "line": 950,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/mcp/{id}/refresh",
+   "probe_path": "/api/mcp/1/refresh",
+   "handler": "server.go::pgRefreshMCP",
+   "line": 952,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/mcp/{id}/tools",
+   "probe_path": "/api/mcp/1/tools",
+   "handler": "server.go::pgMCPTools",
+   "line": 951,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/notify/channels",
+   "probe_path": "/api/notify/channels",
+   "handler": "server.go::notifyListChannels",
+   "line": 887,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/notify/channels",
+   "probe_path": "/api/notify/channels",
+   "handler": "server.go::notifyCreateChannel",
+   "line": 888,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/notify/channels/{id}",
+   "probe_path": "/api/notify/channels/1",
+   "handler": "server.go::notifyDeleteChannel",
+   "line": 890,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/notify/channels/{id}",
+   "probe_path": "/api/notify/channels/1",
+   "handler": "server.go::notifyUpdateChannel",
+   "line": 889,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/notify/channels/{id}/test",
+   "probe_path": "/api/notify/channels/1/test",
+   "handler": "server.go::notifyTestChannel",
+   "line": 891,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/notify/deliveries",
+   "probe_path": "/api/notify/deliveries",
+   "handler": "server.go::notifyListDeliveries",
+   "line": 892,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/notify/deliveries/{id}/retry",
+   "probe_path": "/api/notify/deliveries/1/retry",
+   "handler": "server.go::notifyRetryDelivery",
+   "line": 893,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/notify/meta",
+   "probe_path": "/api/notify/meta",
+   "handler": "server.go::notifyMeta",
+   "line": 886,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/report",
+   "probe_path": "/api/report",
+   "handler": "server.go::getReport",
+   "line": 895,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/schedules",
+   "probe_path": "/api/schedules",
+   "handler": "server.go::listSchedules",
+   "line": 720,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/schedules",
+   "probe_path": "/api/schedules",
+   "handler": "server.go::createSchedule",
+   "line": 721,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/schedules/{id}",
+   "probe_path": "/api/schedules/1",
+   "handler": "server.go::deleteSchedule",
+   "line": 726,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/schedules/{id}",
+   "probe_path": "/api/schedules/1",
+   "handler": "server.go::getSchedule",
+   "line": 722,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/schedules/{id}",
+   "probe_path": "/api/schedules/1",
+   "handler": "server.go::updateSchedule",
+   "line": 723,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/schedules/{id}/metadata",
+   "probe_path": "/api/schedules/1/metadata",
+   "handler": "server.go::updateScheduleMetadata",
+   "line": 725,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/schedules/{id}/pause",
+   "probe_path": "/api/schedules/1/pause",
+   "handler": "server.go::pauseSchedule",
+   "line": 727,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/schedules/{id}/remark",
+   "probe_path": "/api/schedules/1/remark",
+   "handler": "server.go::updateScheduleMetadata",
+   "line": 724,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/schedules/{id}/resume",
+   "probe_path": "/api/schedules/1/resume",
+   "handler": "server.go::resumeSchedule",
+   "line": 728,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/schedules/{id}/run-now",
+   "probe_path": "/api/schedules/1/run-now",
+   "handler": "server.go::runScheduleNow",
+   "line": 729,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/settings",
+   "probe_path": "/api/settings",
+   "handler": "server.go::getSettings",
+   "line": 882,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/settings",
+   "probe_path": "/api/settings",
+   "handler": "server.go::putSettings",
+   "line": 883,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/settings/basic-auth",
+   "probe_path": "/api/settings/basic-auth",
+   "handler": "server.go::getBasicAuthSettings",
+   "line": 700,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/settings/basic-auth",
+   "probe_path": "/api/settings/basic-auth",
+   "handler": "server.go::saveBasicAuthSettings",
+   "line": 701,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/settings/python/detect",
+   "probe_path": "/api/settings/python/detect",
+   "handler": "server.go::pgDetectPython",
+   "line": 945,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/settings/web-search/test",
+   "probe_path": "/api/settings/web-search/test",
+   "handler": "server.go::testWebSearch",
+   "line": 894,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/side-questions/{requestID}/cancel",
+   "probe_path": "/api/side-questions/1/cancel",
+   "handler": "side_questions.go::cancelSideRequest",
+   "line": 360,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/side-questions/{requestID}/events",
+   "probe_path": "/api/side-questions/1/events",
+   "handler": "side_questions.go::sideEvents",
+   "line": 359,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/skills",
+   "probe_path": "/api/skills",
+   "handler": "server.go::fsListSkills",
+   "line": 960,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/skills",
+   "probe_path": "/api/skills",
+   "handler": "server.go::fsCreateSkill",
+   "line": 961,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/skills/missing",
+   "probe_path": "/api/skills/missing",
+   "handler": "server.go::fsMissingSkills",
+   "line": 964,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/skills/upload",
+   "probe_path": "/api/skills/upload",
+   "handler": "server.go::fsUploadSkill",
+   "line": 962,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/skills/{name}",
+   "probe_path": "/api/skills/bench-probe",
+   "handler": "server.go::fsDeleteSkill",
+   "line": 963,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/skills/{name}/dirs",
+   "probe_path": "/api/skills/bench-probe/dirs",
+   "handler": "server.go::fsCreateDir",
+   "line": 967,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/skills/{name}/files",
+   "probe_path": "/api/skills/bench-probe/files",
+   "handler": "server.go::fsListFiles",
+   "line": 968,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/skills/{name}/files/{file...}",
+   "probe_path": "/api/skills/bench-probe/files/{file...}",
+   "handler": "server.go::fsDeletePath",
+   "line": 972,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/skills/{name}/files/{file...}",
+   "probe_path": "/api/skills/bench-probe/files/{file...}",
+   "handler": "server.go::fsReadFile",
+   "line": 970,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/skills/{name}/files/{file...}",
+   "probe_path": "/api/skills/bench-probe/files/{file...}",
+   "handler": "server.go::fsWriteFile",
+   "line": 971,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/skills/{name}/meta",
+   "probe_path": "/api/skills/bench-probe/meta",
+   "handler": "server.go::fsUpdateSkillMeta",
+   "line": 966,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/skills/{name}/usage",
+   "probe_path": "/api/skills/bench-probe/usage",
+   "handler": "server.go::fsSkillUsage",
+   "line": 965,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/stats",
+   "probe_path": "/api/stats",
+   "handler": "server.go::stats",
+   "line": 704,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/sync/scopesentry/datasource",
+   "probe_path": "/api/sync/scopesentry/datasource",
+   "handler": "server.go::syncSSDatasource",
+   "line": 955,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/sync/scopesentry/projects",
+   "probe_path": "/api/sync/scopesentry/projects",
+   "handler": "server.go::syncSSProjects",
+   "line": 956,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/sync/scopesentry/status",
+   "probe_path": "/api/sync/scopesentry/status",
+   "handler": "server.go::syncSSStatus",
+   "line": 954,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/sync/scopesentry/sync",
+   "probe_path": "/api/sync/scopesentry/sync",
+   "handler": "server.go::syncSSRun",
+   "line": 958,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/sync/scopesentry/tasks",
+   "probe_path": "/api/sync/scopesentry/tasks",
+   "handler": "server.go::syncSSTasks",
+   "line": 957,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/task-archives",
+   "probe_path": "/api/task-archives",
+   "handler": "server.go::listTaskArchives",
+   "line": 749,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/task-archives/delete/batch",
+   "probe_path": "/api/task-archives/delete/batch",
+   "handler": "server.go::deleteTaskArchivesBatch",
+   "line": 756,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/task-archives/restore/batch",
+   "probe_path": "/api/task-archives/restore/batch",
+   "handler": "server.go::restoreTaskArchivesBatch",
+   "line": 754,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/task-archives/{id}",
+   "probe_path": "/api/task-archives/1",
+   "handler": "server.go::queueTaskArchiveDelete",
+   "line": 755,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/task-archives/{id}",
+   "probe_path": "/api/task-archives/1",
+   "handler": "server.go::getTaskArchive",
+   "line": 750,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/task-archives/{id}/restore",
+   "probe_path": "/api/task-archives/1/restore",
+   "handler": "server.go::queueTaskArchiveRestore",
+   "line": 753,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/task-categories",
+   "probe_path": "/api/task-categories",
+   "handler": "server.go::pgListTaskCategories",
+   "line": 730,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/task-categories",
+   "probe_path": "/api/task-categories",
+   "handler": "server.go::pgCreateTaskCategory",
+   "line": 731,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/task-categories/{id}",
+   "probe_path": "/api/task-categories/1",
+   "handler": "server.go::pgDeleteTaskCategory",
+   "line": 733,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/task-categories/{id}",
+   "probe_path": "/api/task-categories/1",
+   "handler": "server.go::pgRenameTaskCategory",
+   "line": 732,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/task-templates",
+   "probe_path": "/api/task-templates",
+   "handler": "server.go::pgListTaskTemplates",
+   "line": 735,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/task-templates",
+   "probe_path": "/api/task-templates",
+   "handler": "server.go::pgCreateTaskTemplate",
+   "line": 736,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/task-templates/{id}",
+   "probe_path": "/api/task-templates/1",
+   "handler": "server.go::pgDeleteTaskTemplate",
+   "line": 738,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/task-templates/{id}",
+   "probe_path": "/api/task-templates/1",
+   "handler": "server.go::pgUpdateTaskTemplate",
+   "line": 737,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks",
+   "probe_path": "/api/tasks",
+   "handler": "server.go::listTasks",
+   "line": 718,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks",
+   "probe_path": "/api/tasks",
+   "handler": "server.go::createTask",
+   "line": 719,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/archive/batch",
+   "probe_path": "/api/tasks/archive/batch",
+   "handler": "server.go::queueTaskArchivesBatch",
+   "line": 752,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/category/batch",
+   "probe_path": "/api/tasks/category/batch",
+   "handler": "server.go::updateTasksCategoryBatch",
+   "line": 734,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/control/batch",
+   "probe_path": "/api/tasks/control/batch",
+   "handler": "server.go::controlTasksBatch",
+   "line": 748,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/tasks/{id}",
+   "probe_path": "/api/tasks/1",
+   "handler": "server.go::pgDeleteTask",
+   "line": 903,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}",
+   "probe_path": "/api/tasks/1",
+   "handler": "server.go::getTask",
+   "line": 739,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/tasks/{id}",
+   "probe_path": "/api/tasks/1",
+   "handler": "server.go::updateTaskMetadata",
+   "line": 740,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/archive",
+   "probe_path": "/api/tasks/1/archive",
+   "handler": "server.go::queueTaskArchive",
+   "line": 751,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}/asset-refs",
+   "probe_path": "/api/tasks/1/asset-refs",
+   "handler": "server.go::taskAssetRefs",
+   "line": 759,
+   "class": "read",
+   "streaming": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/assets",
+   "probe_path": "/api/tasks/1/assets",
+   "handler": "server.go::attachTaskAssets",
+   "line": 760,
+   "class": "write",
+   "streaming": true
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/tasks/{id}/assets/{assetID}",
+   "probe_path": "/api/tasks/1/assets/1",
+   "handler": "server.go::detachTaskAsset",
+   "line": 761,
+   "class": "write",
+   "streaming": true
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/tasks/{id}/category",
+   "probe_path": "/api/tasks/1/category",
+   "handler": "server.go::updateTaskCategory",
+   "line": 741,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}/chat/status",
+   "probe_path": "/api/tasks/1/chat/status",
+   "handler": "server.go::taskChatStatus",
+   "line": 899,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/chat/stop",
+   "probe_path": "/api/tasks/1/chat/stop",
+   "handler": "server.go::stopChat",
+   "line": 900,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}/constraints",
+   "probe_path": "/api/tasks/1/constraints",
+   "handler": "server.go::listConstraints",
+   "line": 779,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/constraints",
+   "probe_path": "/api/tasks/1/constraints",
+   "handler": "server.go::addConstraint",
+   "line": 780,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/tasks/{id}/constraints/{cid}",
+   "probe_path": "/api/tasks/1/constraints/1",
+   "handler": "server.go::deleteConstraint",
+   "line": 782,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/tasks/{id}/constraints/{cid}",
+   "probe_path": "/api/tasks/1/constraints/1",
+   "handler": "server.go::editConstraint",
+   "line": 781,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/control",
+   "probe_path": "/api/tasks/1/control",
+   "handler": "server.go::control",
+   "line": 783,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}/coverage",
+   "probe_path": "/api/tasks/1/coverage",
+   "handler": "server.go::taskCoverage",
+   "line": 757,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}/coverage-graph",
+   "probe_path": "/api/tasks/1/coverage-graph",
+   "handler": "server.go::taskCoverageGraph",
+   "line": 758,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}/goals",
+   "probe_path": "/api/tasks/1/goals",
+   "handler": "server.go::listGoals",
+   "line": 775,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/goals",
+   "probe_path": "/api/tasks/1/goals",
+   "handler": "server.go::addGoal",
+   "line": 776,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/tasks/{id}/goals/{gid}",
+   "probe_path": "/api/tasks/1/goals/1",
+   "handler": "server.go::deleteGoal",
+   "line": 778,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/tasks/{id}/goals/{gid}",
+   "probe_path": "/api/tasks/1/goals/1",
+   "handler": "server.go::editGoal",
+   "line": 777,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}/intelligence",
+   "probe_path": "/api/tasks/1/intelligence",
+   "handler": "server.go::listIntelligence",
+   "line": 865,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}/intelligence/{intelID}",
+   "probe_path": "/api/tasks/1/intelligence/1",
+   "handler": "server.go::getIntelligence",
+   "line": 866,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/tasks/{id}/intelligence/{intelID}",
+   "probe_path": "/api/tasks/1/intelligence/1",
+   "handler": "server.go::updateIntelligence",
+   "line": 867,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/intelligence/{intelID}/credentials/retry",
+   "probe_path": "/api/tasks/1/intelligence/1/credentials/retry",
+   "handler": "server.go::retryCredentials",
+   "line": 868,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}/intelligence/{intelID}/traffic/{trafficID}",
+   "probe_path": "/api/tasks/1/intelligence/1/traffic/1",
+   "handler": "server.go::credentialTrafficDetail",
+   "line": 869,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}/intent-assets",
+   "probe_path": "/api/tasks/1/intent-assets",
+   "handler": "server.go::taskIntentAssets",
+   "line": 762,
+   "class": "read",
+   "streaming": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/intents/rerun-blocked",
+   "probe_path": "/api/tasks/1/intents/rerun-blocked",
+   "handler": "server.go::rerunBlocked",
+   "line": 789,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/intents/{iid}/control",
+   "probe_path": "/api/tasks/1/intents/1/control",
+   "handler": "server.go::controlIntent",
+   "line": 786,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/intents/{iid}/messages",
+   "probe_path": "/api/tasks/1/intents/1/messages",
+   "handler": "server.go::sendWorkerMessage",
+   "line": 787,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/intents/{iid}/rerun",
+   "probe_path": "/api/tasks/1/intents/1/rerun",
+   "handler": "server.go::rerunIntent",
+   "line": 788,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}/intercept-rules",
+   "probe_path": "/api/tasks/1/intercept-rules",
+   "handler": "server.go::taskInterceptListRules",
+   "line": 743,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/intercept-rules",
+   "probe_path": "/api/tasks/1/intercept-rules",
+   "handler": "server.go::taskInterceptCreateRule",
+   "line": 744,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/tasks/{id}/intercept-rules/{rid}",
+   "probe_path": "/api/tasks/1/intercept-rules/1",
+   "handler": "server.go::taskInterceptDeleteRule",
+   "line": 746,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/tasks/{id}/intercept-rules/{rid}",
+   "probe_path": "/api/tasks/1/intercept-rules/1",
+   "handler": "server.go::taskInterceptUpdateRule",
+   "line": 745,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/intercept-rules/{rid}/toggle",
+   "probe_path": "/api/tasks/1/intercept-rules/1/toggle",
+   "handler": "server.go::taskInterceptToggleRule",
+   "line": 747,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/tasks/{id}/llm",
+   "probe_path": "/api/tasks/1/llm",
+   "handler": "server.go::updateTaskLLMProfiles",
+   "line": 784,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}/llm/resolution",
+   "probe_path": "/api/tasks/1/llm/resolution",
+   "handler": "server.go::taskLLMResolutionHandler",
+   "line": 785,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tasks/{id}/scope",
+   "probe_path": "/api/tasks/1/scope",
+   "handler": "server.go::taskScopeList",
+   "line": 772,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tasks/{id}/scope",
+   "probe_path": "/api/tasks/1/scope",
+   "handler": "server.go::taskScopeAdd",
+   "line": 773,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/tasks/{id}/scope/{sid}",
+   "probe_path": "/api/tasks/1/scope/1",
+   "handler": "server.go::taskScopeDelete",
+   "line": 774,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tokens/conversations",
+   "probe_path": "/api/tokens/conversations",
+   "handler": "server.go::conversationTokens",
+   "line": 846,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tokens/daily",
+   "probe_path": "/api/tokens/daily",
+   "handler": "server.go::tokenDailyStats",
+   "line": 845,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tokens/usage",
+   "probe_path": "/api/tokens/usage",
+   "handler": "server.go::pgUsageStats",
+   "line": 847,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/tools",
+   "probe_path": "/api/tools",
+   "handler": "server.go::pgListTools",
+   "line": 939,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tools/custom",
+   "probe_path": "/api/tools/custom",
+   "handler": "server.go::pgCreateCustomTool",
+   "line": 941,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tools/custom/test",
+   "probe_path": "/api/tools/custom/test",
+   "handler": "server.go::pgTestCustomTool",
+   "line": 942,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/tools/custom/{key}",
+   "probe_path": "/api/tools/custom/bench-probe",
+   "handler": "server.go::pgDeleteCustomTool",
+   "line": 944,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/tools/custom/{key}",
+   "probe_path": "/api/tools/custom/bench-probe",
+   "handler": "server.go::pgUpdateCustomTool",
+   "line": 943,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/tools/{key}",
+   "probe_path": "/api/tools/bench-probe",
+   "handler": "server.go::pgUpdateTool",
+   "line": 940,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/tools/{key}/reset",
+   "probe_path": "/api/tools/bench-probe/reset",
+   "handler": "server.go::pgResetTool",
+   "line": 946,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/traffic",
+   "probe_path": "/api/traffic",
+   "handler": "server.go::deleteTraffic",
+   "line": 853,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/traffic",
+   "probe_path": "/api/traffic",
+   "handler": "server.go::getTraffic",
+   "line": 851,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/traffic/all",
+   "probe_path": "/api/traffic/all",
+   "handler": "server.go::deleteAllTraffic",
+   "line": 855,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/traffic/blob",
+   "probe_path": "/api/traffic/blob",
+   "handler": "server.go::getTrafficBlob",
+   "line": 857,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/traffic/exchange",
+   "probe_path": "/api/traffic/exchange",
+   "handler": "server.go::getTrafficExchange",
+   "line": 856,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/traffic/hosts",
+   "probe_path": "/api/traffic/hosts",
+   "handler": "server.go::deleteTrafficHosts",
+   "line": 854,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/traffic/hosts",
+   "probe_path": "/api/traffic/hosts",
+   "handler": "server.go::getTrafficHosts",
+   "line": 852,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/triggers/{id}",
+   "probe_path": "/api/triggers/1",
+   "handler": "server.go::pgDeleteTrigger",
+   "line": 932,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/triggers/{id}",
+   "probe_path": "/api/triggers/1",
+   "handler": "server.go::pgUpdateTrigger",
+   "line": 931,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/update/apply",
+   "probe_path": "/api/update/apply",
+   "handler": "server.go::updateApply",
+   "line": 714,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/update/check",
+   "probe_path": "/api/update/check",
+   "handler": "server.go::updateCheck",
+   "line": 713,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/update/rollback",
+   "probe_path": "/api/update/rollback",
+   "handler": "server.go::updateRollback",
+   "line": 715,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/update/settings",
+   "probe_path": "/api/update/settings",
+   "handler": "server.go::getUpdateSettings",
+   "line": 711,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "PUT",
+   "path": "/api/update/settings",
+   "probe_path": "/api/update/settings",
+   "handler": "server.go::putUpdateSettings",
+   "line": 712,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/update/stream",
+   "probe_path": "/api/update/stream",
+   "handler": "server.go::updateStream",
+   "line": 716,
+   "class": "read",
+   "streaming": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/visibility/skill/toggle",
+   "probe_path": "/api/visibility/skill/toggle",
+   "handler": "server.go::pgToggleSkillVisibility",
+   "line": 978,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/visibility/skill/{name}",
+   "probe_path": "/api/visibility/skill/bench-probe",
+   "handler": "server.go::pgSkillVisibility",
+   "line": 977,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/visibility/toggle",
+   "probe_path": "/api/visibility/toggle",
+   "handler": "server.go::pgToggleVisibility",
+   "line": 975,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/visibility/{kind}/{id}",
+   "probe_path": "/api/visibility/site/1",
+   "handler": "server.go::pgResourceVisibility",
+   "line": 974,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/workspace/delete",
+   "probe_path": "/api/workspace/delete",
+   "handler": "server.go::wsDelete",
+   "line": 769,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/workspace/download",
+   "probe_path": "/api/workspace/download",
+   "handler": "server.go::wsDownload",
+   "line": 770,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/workspace/list",
+   "probe_path": "/api/workspace/list",
+   "handler": "server.go::wsList",
+   "line": 765,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/workspace/mkdir",
+   "probe_path": "/api/workspace/mkdir",
+   "handler": "server.go::wsMkdir",
+   "line": 768,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/workspace/read",
+   "probe_path": "/api/workspace/read",
+   "handler": "server.go::wsRead",
+   "line": 766,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/workspace/upload",
+   "probe_path": "/api/workspace/upload",
+   "handler": "server.go::wsUpload",
+   "line": 771,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/workspace/write",
+   "probe_path": "/api/workspace/write",
+   "handler": "server.go::wsWrite",
+   "line": 767,
+   "class": "write",
+   "streaming": false
+  }
+ ]
+}

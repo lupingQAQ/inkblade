@@ -1,0 +1,237 @@
+{
+ "tool": "trident",
+ "source": "trident/webui/server.py (path literals in do_GET/do_POST)",
+ "extracted_at": "2026-10-25T13:37:17Z",
+ "endpoint_count": 25,
+ "by_class": {
+  "read": 9,
+  "write": 16
+ },
+ "endpoints": [
+  {
+   "method": "GET",
+   "path": "/",
+   "probe_path": "/",
+   "handler": "webui/server.py::GET@L287",
+   "line": 287,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/abort",
+   "probe_path": "/api/abort",
+   "handler": "webui/server.py::POST@L115",
+   "line": 115,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/execute",
+   "probe_path": "/api/execute",
+   "handler": "webui/server.py::POST@L91",
+   "line": 91,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/login",
+   "probe_path": "/api/login",
+   "handler": "webui/server.py::POST@L85",
+   "line": 85,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/runs",
+   "probe_path": "/api/runs",
+   "handler": "webui/server.py::GET@L295",
+   "line": 295,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/assets",
+   "probe_path": "/api/v1/assets",
+   "handler": "webui/server.py::GET@L327",
+   "line": 327,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/assets/discover",
+   "probe_path": "/api/v1/assets/discover",
+   "handler": "webui/server.py::POST@L129",
+   "line": 129,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/consent",
+   "probe_path": "/api/v1/consent",
+   "handler": "webui/server.py::GET@L353",
+   "line": 353,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/consent/sign",
+   "probe_path": "/api/v1/consent/sign",
+   "handler": "webui/server.py::POST@L236",
+   "line": 236,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/explorer",
+   "probe_path": "/api/v1/explorer",
+   "handler": "webui/server.py::GET@L334",
+   "line": 334,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/explorer/approve",
+   "probe_path": "/api/v1/explorer/approve",
+   "handler": "webui/server.py::POST@L152",
+   "line": 152,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/explorer/execute",
+   "probe_path": "/api/v1/explorer/execute",
+   "handler": "webui/server.py::POST@L152",
+   "line": 152,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/explorer/propose",
+   "probe_path": "/api/v1/explorer/propose",
+   "handler": "webui/server.py::POST@L140",
+   "line": 140,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/explorer/reject",
+   "probe_path": "/api/v1/explorer/reject",
+   "handler": "webui/server.py::POST@L152",
+   "line": 152,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/poc/auto-reverify",
+   "probe_path": "/api/v1/poc/auto-reverify",
+   "handler": "webui/server.py::POST@L274",
+   "line": 274,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/poc/reverify",
+   "probe_path": "/api/v1/poc/reverify",
+   "handler": "webui/server.py::POST@L258",
+   "line": 258,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/rules",
+   "probe_path": "/api/v1/rules",
+   "handler": "webui/server.py::GET@L363",
+   "line": 363,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/scheduler",
+   "probe_path": "/api/v1/scheduler",
+   "handler": "webui/server.py::GET@L339",
+   "line": 339,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/scheduler/add",
+   "probe_path": "/api/v1/scheduler/add",
+   "handler": "webui/server.py::POST@L179",
+   "line": 179,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/scheduler/remove",
+   "probe_path": "/api/v1/scheduler/remove",
+   "handler": "webui/server.py::POST@L194",
+   "line": 194,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/scheduler/run-due",
+   "probe_path": "/api/v1/scheduler/run-due",
+   "handler": "webui/server.py::POST@L204",
+   "line": 204,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/traffic",
+   "probe_path": "/api/v1/traffic",
+   "handler": "webui/server.py::GET@L343",
+   "line": 343,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/traffic/replay",
+   "probe_path": "/api/v1/traffic/replay",
+   "handler": "webui/server.py::POST@L217",
+   "line": 217,
+   "class": "write",
+   "streaming": false
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/zeroday",
+   "probe_path": "/api/v1/zeroday",
+   "handler": "webui/server.py::GET@L357",
+   "line": 357,
+   "class": "read",
+   "streaming": false
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/zeroday/enable",
+   "probe_path": "/api/v1/zeroday/enable",
+   "handler": "webui/server.py::POST@L248",
+   "line": 248,
+   "class": "write",
+   "streaming": false
+  }
+ ]
+}

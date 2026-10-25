@@ -1,0 +1,1123 @@
+{
+  "routes_file": "D:\\llm-audit-2026-10\\projects\\trident-2026-10\\reports\\samples\\perf\\grid\\routes-artex.json",
+  "route_count": 278,
+  "base": null,
+  "n": 10,
+  "measured_at": "2026-10-25T13:49:05Z",
+  "mode": "offline",
+  "endpoints": [
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    },
+    {
+      "route": null,
+      "skipped": "offline"
+    }
+  ],
+  "concurrency": []
+}
