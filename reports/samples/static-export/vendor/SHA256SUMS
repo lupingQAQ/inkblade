@@ -1,0 +1,11 @@
+# Trident SPA vendor bundle — SHA256 checksums (offline, no external refs)
+# Sources (unpkg official builds, pinned):
+#   react.production.min.js         react@18.3.1/umd/react.production.min.js
+#   react-dom.production.min.js     react-dom@18.3.1/umd/react-dom.production.min.js
+#   reactflow.umd.min.js            @reactflow/core@11.11.4/dist/umd/index.js
+#   reactflow.style.css             @reactflow/core@11.11.4/dist/style.css
+# Verify: python -m unittest tests.test_vendor_checksums
+35f4f974f4b2bcd44da73963347f8952e341f83909e4498227d4e26b98f66f0d  react-dom.production.min.js
+d949f1c3687aedadcedac85261865f29b17cd273997e7f6b2bfc53b2f9d4c4dd  react.production.min.js
+134af0e5bacf7b919760125f3c22ff3d7a1795c8217a776d10d2b674f7b4ade6  reactflow.style.css
+3a018e9d98d1f1927e153d994165e8b32cd59e4b3fd0a34ffa207520feabeea0  reactflow.umd.min.js

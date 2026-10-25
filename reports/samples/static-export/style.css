@@ -276,4 +276,22 @@ table.matrix td.miss { color: var(--line); text-align: center; }
 .matrix-wrap { overflow: auto; max-height: 520px; }
 .matrix-wrap th.rot { writing-mode: vertical-rl; min-width: 30px; }
 
+/* ---------- 视图七~十：资产图 / 差异 / 审批队列 / 计划任务 ---------- */
+table.rules-matrix { border-collapse: collapse; width: 100%; font-size: 12px; margin-top: 10px; }
+table.rules-matrix th, table.rules-matrix td { border: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+table.rules-matrix th { background: var(--panel-2); color: var(--text-dim); font-weight: 600; }
+table.rules-matrix td.k { font-family: Consolas, monospace; font-size: 11px; word-break: break-all; }
+table.rules-matrix td.hit { color: var(--status-success); }
+table.rules-matrix td.warn { color: var(--status-degraded); }
+table.rules-matrix td.miss { color: var(--text-dim); }
+.chain-svg .node-ns { fill: var(--panel-2); stroke: var(--accent); stroke-width: 1.2; }
+.chain-svg .node-ns.node-missing { fill: var(--bg-soft); stroke: var(--text-dim); stroke-dasharray: 4 3; }
+.sev-cards { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.sev-card { flex: 1; min-width: 120px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.sev-card .num { font-size: 22px; font-weight: 700; }
+.sev-card .lbl { color: var(--text-dim); font-size: 12px; }
+.sev-card.critical .num { color: var(--sev-critical, #e5484d); }
+.sev-card.success-ish .num { color: var(--status-success); }
+.sev-card.info .num { color: var(--text-dim); }
+
 footer { padding: 10px 16px; color: var(--text-dim); font-size: 11px; border-top: 1px solid var(--line); }

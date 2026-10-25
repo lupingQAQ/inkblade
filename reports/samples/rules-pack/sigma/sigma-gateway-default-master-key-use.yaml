@@ -1,0 +1,31 @@
+title: AI 网关默认 master key 使用
+id: f2ab7153-983f-143f-357b-9ed6a840ca0d
+status: stable
+description: Authentication with the well-known default master key (vendor default / sample config) succeeding against the AI gateway. 检测默认 master key 认证成功——默认凭据是上游 provider key 外泄链的第一步。
+references:
+  - "trident-rules-mapping: sigma-gateway-default-master-key-use"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: litellm
+  service: gateway-auth
+detection:
+  selection:
+    verb:
+      - authenticate
+    key_class: default_master
+    status:
+      - 200
+  condition: selection
+falsepositives:
+  - 尚未完成 master key 轮换的初始化窗口（应以一次性 bootstrap token 替代）
+level: critical
+tags:
+  - attack.credential_access
+  - attack.t1078
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: "默认 master key 在任何时点成功都应 critical；初始化窗口以一次性 bootstrap token（单次使用 + 自动失效）替代；同时监控 /key/generate 的 admin=true 签发与 master key 的调用来源网段"
+  trident-blocks-chains: ai-gateway-key-exfil

@@ -1,0 +1,36 @@
+title: 非基线主体 pods/exec 会话
+id: 035d5ba7-56c6-30d2-a602-00dcb513c017
+status: stable
+description: "K8s audit: exec/attach session into a pod by a non-baseline subject (lateral movement / borrowed-identity primitive). 审计检测非基线主体的 pods/exec/attach 会话（横向与借用身份支点）。"
+references:
+  - "trident-rules-mapping: sigma-pods-exec-lateral"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - pods
+    objectRef.subresource:
+      - exec
+      - attach
+    subject_sa:
+      not_in:
+        - "system:serviceaccount:kube-system:trident-break-glass"
+  condition: selection
+falsepositives:
+  - 运维 break-glass 会话（专用跳板主体 + 时间窗白名单）
+level: high
+tags:
+  - attack.lateral_movement
+  - attack.t1609
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: 把运维跳板主体（专用 break-glass SA + bastion 网段）加入 not_in 白名单；对进入特权/GPU 命名空间的 exec 直接升级 critical；配合会话录像与 kubectl audit 注解核对操作者
+  trident-blocks-chains: ray-dashboard-cluster-takeover

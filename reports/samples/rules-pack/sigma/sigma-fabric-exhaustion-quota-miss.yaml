@@ -1,0 +1,32 @@
+title: fabric 资源耗尽事件（端口/IO/请求洪/队列无配额）
+id: e33cd0d9-e5fa-75b7-300f-ff650e69a71c
+status: stable
+description: "fabric 审计：端口分配、checkpoint I/O、apiserver 请求与 gang 提交在无配额强制下放量增长（集群级资源耗尽特征）。English: fabric audit - exhaustion-class actions without quota enforcement."
+references:
+  - "trident-rules-mapping: sigma-fabric-exhaustion-quota-miss"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: fabric
+  service: resource-quota
+detection:
+  selection:
+    action:
+      - port_alloc
+      - io_burst
+      - request_flood
+      - gang_submit
+    quota_enforced: false
+  condition: selection
+falsepositives:
+  - 平台侧批量拉起大作业（调度器来源 + 白名单窗口）
+level: high
+tags:
+  - attack.impact
+  - attack.t1499
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: 按作业/租户聚合端口与 I/O 配额事件，单作业逼近池上限即告警；request_flood 以 apiserver 限流器事件为源；gang_submit 与调度器准入日志对账（占位 job 特征：placeholders+hold）
+  trident-blocks-chains: fabric-exhaustion-chain

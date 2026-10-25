@@ -63,7 +63,8 @@ class TestE2EAcceptance(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.mod = load_e2e()
-        cls.rc = cls.mod.main([])
+        # 固定 run 名 + 归一化动态字段：测试重跑不会把带时间戳的样张写回仓库
+        cls.rc = cls.mod.main(["--run-name", "e2e-acceptance", "--normalize"])
 
     def test_main_exit_zero(self):
         self.assertEqual(self.rc, 0, "e2e-check.main() 有失败项时必须非 0")

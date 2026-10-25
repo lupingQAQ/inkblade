@@ -3,7 +3,8 @@
   "route_count": 278,
   "base": null,
   "n": 10,
-  "measured_at": "2026-10-25T14:39:24Z",
+  "query": null,
+  "measured_at": "2026-10-25T14:58:58Z",
   "mode": "offline",
   "endpoints": [
     {

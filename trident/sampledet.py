@@ -6,8 +6,12 @@
 - 动态字段清单同时作为 ``.gitignore``/CI 的忽略口径（B14：lab/bench/out 为可再生输出）。
 
 动态字段（``DYNAMIC_FIELDS``）：generated_at / measured_at / extracted_at / created_at /
-ts / elapsed_ms / duration_ms / latency_ms / wall_ms / ms / 端口 / 时间戳 / 带时间戳的 run 名 /
+ts / elapsed_ms / duration_ms / latency_ms / wall_ms / 端口 / 时间戳 / 带时间戳的 run 名 /
 本机绝对路径。**稳定字段（sha256/manifest/判定/计数）不归一化**，否则测试会失去意义。
+
+边界：本模块保证「同一 run 数据 → 报告/规则/静态导出」的生成层可复现。端到端 e2e 样张另含
+靶场侧状态（mock 写入的 state 文件带墙钟），其证据锚 sha256 会随靶场状态变化——这类差异属
+数据面而非生成面，不在归一化范围内（不得靠篡改 sha 伪造确定性）。
 """
 
 from __future__ import annotations
@@ -43,9 +47,10 @@ _RULES: list[tuple[str, re.Pattern[str], str]] = [
     ("port",
      re.compile(r"\b(127\.0\.0\.1|localhost|0\.0\.0\.0):\d{2,5}\b"),
      r"\1:<port>"),
-    # 耗时/时间字段（JSON 键值）
+    # 耗时/时间字段（JSON 键值）。注意不含裸 "ms"：ARTEX 样张的 "ms" 是实测延迟数值，
+    # 归一化会把数字变字符串并破坏消费者解析（确定性只针对生成时间/耗时汇总字段）。
     ("elapsed",
-     re.compile(r'"(elapsed_ms|duration_ms|latency_ms|wall_ms|ms|measured_at|generated_at|'
+     re.compile(r'"(elapsed_ms|duration_ms|latency_ms|wall_ms|measured_at|generated_at|'
                 r'extracted_at|created_at|updated_at|started_at|finished_at|enabled_at|'
                 r'last_run|ts)"(\s*:\s*)("[^"]*"|[^,}\n]+)'),
      r'"\1"\2"<dynamic>"'),
@@ -76,23 +81,35 @@ def normalize_markdown(text: str) -> str:
     return "\n".join(fixed) + ("\n" if text.endswith("\n") else "")
 
 
-def normalize_tree(root: Path | str, *, suffixes: Iterable[str] | None = None) -> list[str]:
-    """就地归一化目录内文本样张；返回被改写的相对路径（posix）。"""
+def normalize_tree(root: Path | str, *, suffixes: Iterable[str] | None = None,
+                   include_prefixes: Iterable[str] | None = None,
+                   include_files: Iterable[str] | None = None) -> list[str]:
+    """就地归一化目录内文本样张；返回被改写的相对路径（posix）。
+
+    ``include_prefixes`` / ``include_files`` 用于把范围限制在「本流程生成」的样张，
+    避免误改其它任务的实测数值（如 artex-bench 的逐步延迟）。
+    """
     root = Path(root)
     allowed = set(suffixes or TEXT_SUFFIXES)
+    prefixes = tuple(include_prefixes or ())
+    files = set(include_files or ())
     changed: list[str] = []
     if not root.exists():
         return changed
     for p in sorted(root.rglob("*")):
         if not p.is_file() or p.suffix.lower() not in allowed:
             continue
+        rel = p.relative_to(root).as_posix()
+        if prefixes or files:
+            if not (rel in files or any(rel.startswith(pre) for pre in prefixes)):
+                continue
         raw = p.read_text(encoding="utf-8")
         new = normalize_text(raw)
         if p.suffix.lower() == ".md":
             new = normalize_markdown(new)
         if new != raw:
             p.write_text(new, encoding="utf-8")
-            changed.append(p.relative_to(root).as_posix())
+            changed.append(rel)
     return changed
 
 

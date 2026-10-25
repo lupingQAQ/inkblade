@@ -1,0 +1,36 @@
+title: 权重/检查点 PVC 异常写（claim 级变更或非基线主体挂载）
+id: 6638147d-a6d4-a6df-d1b2-da6c91d89abb
+status: stable
+description: "K8s audit: create/update/patch of weight/checkpoint-class PersistentVolumeClaims by a non-baseline subject, or pod creation mounting them outside the platform scheduler. 检测共享模型数据面（权重/检查点 PVC）的异常写通道（供应链投毒入口）。"
+references:
+  - "trident-rules-mapping: sigma-weight-pvc-abnormal-write"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+      - update
+      - patch
+    objectRef.resource:
+      - persistentvolumeclaims
+    subject_sa:
+      not_in:
+        - "system:serviceaccount:ml-training:platform-scheduler"
+        - "system:serviceaccount:kube-system:storage-operator"
+  condition: selection
+falsepositives:
+  - 存储运维扩容（storage-operator 主体白名单）、平台调度器例行挂载（platform-scheduler）
+level: high
+tags:
+  - attack.impact
+  - attack.t1565.001
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: 先收敛 claim 写主体到存储运维/平台调度器两个 SA；权重类名称（weights/model-weights/hf-cache/checkpoint）单独加正则子规则并保持 high；挂载级异常与 falco-weight-file-abnormal-write 联动定位写进程
+  trident-blocks-chains: shared-pvc-supply-chain-poison

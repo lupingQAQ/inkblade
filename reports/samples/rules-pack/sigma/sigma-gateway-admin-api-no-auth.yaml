@@ -1,0 +1,35 @@
+title: AI 网关管理 API 无鉴权调用（key 签发 / 配置 / 控制台）
+id: 539a38cb-9ee9-7c2d-8b97-27664bcd7b80
+status: stable
+description: "AI gateway admin API (key issuance, provider config, web console) invoked without credentials or with tenant-scoped credentials. 检测 AI 网关管理面未授权调用，覆盖默认凭据与越权访问两类入口。"
+references:
+  - "trident-rules-mapping: sigma-gateway-admin-api-no-auth"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: litellm
+  service: gateway-admin
+detection:
+  selection:
+    verb:
+      - admin_api_call
+    path:
+      - /key/generate
+      - /config
+      - /admin/console
+    auth:
+      - none
+      - tenant
+  condition: selection
+falsepositives:
+  - 受控运维脚本/巡检（以管理员主体 + bastion 网段白名单收敛）
+level: high
+tags:
+  - attack.credential_access
+  - attack.t1552
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: 先以管理员主体（serviceaccount/运维网段）建立 allowlist，仅对匿名或租户级凭据访问 key 签发/配置/控制台保持 high；/key/generate 建议同时记录签发的 key 别名与目标租户，异常租户直接升级 critical
+  trident-blocks-chains: ai-gateway-key-exfil

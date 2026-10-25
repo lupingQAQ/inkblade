@@ -572,6 +572,16 @@ def main(argv: list[str] | None = None) -> int:
     if "--run-name" in args:
         fixed = args[args.index("--run-name") + 1]
     result = run_e2e(samples, run_name=fixed)
+    if "--normalize" in args:
+        from trident.sampledet import normalize_tree
+
+        changed = normalize_tree(
+            samples,
+            include_prefixes=("e2e/", "static-export/", "rules-pack/"),
+            include_files=("pentest-report-bi.md", "pentest-report-bi-redacted.md",
+                           "remediation-report-bi.md"),
+        )
+        print(f"normalize: {len(changed)} 个样张文件已剥离动态字段（时间戳/端口/耗时/绝对路径）")
     for c in result["checks"]:
         mark = "PASS" if c["status"] == "PASS" else "FAIL"
         print(f"[{mark}] {c['id']} — {c['title']}" + (f"（{c['detail']}）" if c.get("detail") else ""))

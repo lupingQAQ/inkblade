@@ -38,6 +38,59 @@
     - network
     - monitor
     - mode-monitor
+- rule: TRIDENT GPU device mounted across namespaces
+  desc: "同一 /dev/nvidia* 设备被不同 namespace 的进程同时打开（device plugin/MIG 独占失效）。English: same GPU device opened by processes in different namespaces."
+  condition: "evt.type in (mount, open, openat) and fd.name startswith /dev/nvidia and not k8s.ns.name in (gpu-exclusive-allowlist)"
+  output: "GPU device cross-ns open device=%fd.name proc=%proc.name ns=%k8s.ns.name pod=%k8s.pod.name"
+  priority: WARNING
+  tags:
+    - trident
+    - gpu
+    - monitor
+    - mode-monitor
+- rule: TRIDENT Unconventional MIG reconfiguration
+  desc: "nvidia-smi/nvml 在已分配设备上执行 MIG 重配或非常规档位切换（隔离边界被改写）。English: nvidia-smi/nvml MIG reconfiguration or unusual profile switch on an allocated device."
+  condition: "evt.type=exec and proc.name=nvidia-smi and evt.arg.mig_reconfig=true"
+  output: "MIG reconfig proc=%proc.name device=%evt.arg.device profile=%evt.arg.profile user=%user.name"
+  priority: WARNING
+  tags:
+    - trident
+    - gpu
+    - monitor
+    - mode-monitor
+- rule: TRIDENT AI gateway process reads upstream provider credentials
+  desc: "AI 网关进程（litellm/higress/envoy）读取上游 provider 凭据配置（/config、/etc/litellm、provider-secrets 挂载），或非网关主体读取同一路径。English: gateway or foreign process reading upstream provider credential config."
+  condition: "evt.type in (open, openat, openat2) and evt.is_open_read=true and fd.name contains (/config, /etc/litellm, provider-secrets) and proc.name in (litellm, higress, envoy) and not proc.name in (gateway-startup-allowlist)"
+  output: "gateway config read proc=%proc.name file=%fd.name container=%container.name"
+  priority: WARNING
+  tags:
+    - trident
+    - filesystem
+    - credential
+    - monitor
+    - mode-monitor
+- rule: TRIDENT In-network collective reduce poisoned by external member
+  desc: "在网聚合 reduce 结果被外部成员篡改（all-reduce 静默损坏面）。English: in-network collective reduce result tampered by an external session member."
+  condition: "evt.type in (connect, accept) and evt.arg.channel in (sharp-aggregation, in-network-collective) and evt.arg.tampered=true and not k8s.ns.label in (training-allowlist)"
+  output: "collective poison channel=%evt.arg.channel rank_src=%fd.cip result_delta=%evt.arg.delta ns=%k8s.ns.name"
+  priority: CRITICAL
+  tags:
+    - trident
+    - network
+    - collective
+    - monitor
+    - mode-monitor
+- rule: TRIDENT Fabric control-plane config mutated by unauthorized subject
+  desc: "fabric 控制面配置（IB Partition 成员 / PFC 档位 / rail 绑定 / GPU 健康 Xid）被未授权主体改写。English: unauthorized mutation of fabric control-plane config (IB partition / PFC / rail binding / GPU health)."
+  condition: "evt.type in (open, openat, openat2) and evt.is_open_write=true and evt.arg.component in (pfc, partition, rail, xid) and not proc.name in (fabric-operator-allowlist)"
+  output: "fabric config write component=%evt.arg.component proc=%proc.name src=%fd.cip container=%container.name"
+  priority: CRITICAL
+  tags:
+    - trident
+    - network
+    - filesystem
+    - monitor
+    - mode-monitor
 - rule: TRIDENT Agent sandbox host unexpected parent execution
   desc: "Agent 平台沙箱宿主上，进程执行的父进程不在沙箱监管基线内（行为化异常执行面）。English: execution on an agent-platform sandbox host whose parent process is outside the sandbox supervisor baseline."
   condition: "spawned_process and k8s.ns.label[trident-io-zone]=ml-agent and not proc.aname in (sandbox-supervisor, containerd-shim, systemd)"

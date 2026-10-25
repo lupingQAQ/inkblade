@@ -1,0 +1,31 @@
+title: GPU 池调度 admin 无鉴权（跨租户分配/迁移）
+id: ce53af39-41f8-7de5-e7e7-c46fa1b1fcab
+status: stable
+description: "GPU pooling scheduler audit: allocation/migration accepted without authenticated admin and across tenant boundary. 池化调度面未鉴权跨租户分配/迁移（HAMi/OrionX/cGPU 风格）。"
+references:
+  - "trident-rules-mapping: sigma-gpu-pool-admin-unauth"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: gpu-pooling
+  service: scheduler
+detection:
+  selection:
+    action:
+      - allocate
+      - migrate
+    authenticated: false
+    cross_tenant: true
+  condition: selection
+falsepositives:
+  - 平台维护窗口内的受控迁移（按操作主体/工单白名单）
+level: high
+tags:
+  - attack.resource_development
+  - attack.t1496
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: 先以工单/维护窗口白名单过滤平台管理员的计划内迁移；对非 admin 主体 + 跨 tenant 的 allocate/migrate 保持 high；同时监控 /gpu/release 后残留未清理（联合 gpu-tenant-residue）
+  trident-blocks-chains: gpu-tenant-residue-chain

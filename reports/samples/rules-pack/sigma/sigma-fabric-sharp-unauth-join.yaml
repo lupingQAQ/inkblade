@@ -1,0 +1,30 @@
+title: fabric 在网聚合会话无鉴权入组/篡改（SHARP all-reduce 面）
+id: 10d60a25-5c58-faee-e99d-124f8fa4eddb
+status: stable
+description: "fabric 控制器审计：外部主体入组在网聚合会话或提交 reduce 贡献且无作业身份（集合通信域被外部 rank 混入）。English: fabric controller audit - unauthenticated join/submit on in-network aggregation sessions."
+references:
+  - "trident-rules-mapping: sigma-fabric-sharp-unauth-join"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: fabric
+  service: sharp-controller
+detection:
+  selection:
+    action:
+      - join
+      - reduce
+    authenticated: false
+  condition: selection
+falsepositives:
+  - 调试窗口内的合法外部 eval 作业（按作业清单白名单）
+level: critical
+tags:
+  - attack.execution
+  - attack.t1550
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: 入组/贡献事件按作业调度器签发的身份（job token/mTLS SPIFFE）判定 authenticated；fabric 控制器需输出该字段后规则才可执行；跨作业会话命中即 critical
+  trident-blocks-chains: fabric-silent-corruption-chain

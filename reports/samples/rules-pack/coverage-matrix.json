@@ -1,7 +1,7 @@
 {
-  "mock_base": "http://127.0.0.1:54789/",
+  "mock_base": "http://127.0.0.1:<port>/",
   "mock_mode": "vulnerable",
-  "validated_at": "2026-10-24T18:03:34Z",
+  "validated_at": "<timestamp>",
   "chains": {
     "flat-network-admin-plane-weight-poison": {
       "title": {
@@ -89,7 +89,7 @@
         },
         {
           "kind": "fixture",
-          "count": 1
+          "count": 2
         }
       ],
       "rules": [
@@ -134,6 +134,14 @@
           ],
           "status": "检测",
           "evidence": "事件命中: sigma create job"
+        },
+        {
+          "rule": "sigma-pods-exec-lateral",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create pods"
         },
         {
           "rule": "falco-admin-plane-unauth-access",
@@ -203,10 +211,18 @@
       "probe": [
         {
           "kind": "fixture",
-          "count": 2
+          "count": 3
         }
       ],
       "rules": [
+        {
+          "rule": "sigma-weight-pvc-abnormal-write",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma patch persistentvolumeclaims"
+        },
         {
           "rule": "falco-pickle-deserialize-call",
           "engines": [
@@ -690,6 +706,58 @@
       ],
       "state": "拦截+检测"
     },
+    "long-context-cache-leak": {
+      "title": {
+        "zh": "长上下文 prefix cache 跨租户复用 → 上下文侧信道",
+        "en": "Long-context prefix cache cross-tenant reuse → context side channel"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "prefix-cache-cross-tenant-leak",
+          "method": "POST",
+          "path": "/v1/chat/completions",
+          "status": 200,
+          "outcome": "reproduced"
+        }
+      ],
+      "rules": [
+        {
+          "rule": "suricata-longctx-kv-endpoints",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:8000 uri=/v1/chat/completions"
+        }
+      ],
+      "state": "检测"
+    },
+    "pd-kv-poison": {
+      "title": {
+        "zh": "PD 分离 KV 通道未鉴权 → KV 块投毒",
+        "en": "PD-split KV channel unauthenticated → KV block poisoning"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "fixture",
+          "count": 2
+        }
+      ],
+      "rules": [
+        {
+          "rule": "suricata-longctx-kv-endpoints",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:45678 uri=/kv/transfer"
+        }
+      ],
+      "state": "检测"
+    },
     "vpc-cni-dual-control-plane-lateral": {
       "title": {
         "zh": "VPC-CNI 双控制面错配 → 云内横向",
@@ -842,15 +910,379 @@
         }
       ],
       "state": "检测"
+    },
+    "gpu-tenant-residue-chain": {
+      "title": {
+        "zh": "GPU 池化调度 → 残留显存/显存快照 → 他租户模型数据",
+        "en": "GPU pooling scheduler → residual VRAM/snapshot → victim tenant model data"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "gpu-pool-scheduler-unauth",
+          "method": "POST",
+          "path": "/gpu/allocate",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "gpu-pool-scheduler-unauth",
+          "method": "POST",
+          "path": "/gpu/release",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "gpu-tenant-residue",
+          "method": "GET",
+          "path": "/gpu/residue?device=gpu-b-0&tenant=tenant-b",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "gpu-metrics-tenant-leak",
+          "method": "GET",
+          "path": "/gpu/metrics",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 3
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-gpu-pool-admin-unauth",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma allocate "
+        },
+        {
+          "rule": "falco-gpu-device-cross-namespace",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco mount port=- parent=-"
+        },
+        {
+          "rule": "falco-mig-abnormal-reconfig",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco exec port=- parent=-"
+        },
+        {
+          "rule": "suricata-gpu-cloud-tenant-uri",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:8080 uri=/gpu/allocate"
+        }
+      ],
+      "state": "检测"
+    },
+    "cloud-cross-tenant-role-assume": {
+      "title": {
+        "zh": "IRSA 通配信任 → 跨账户角色 → 权重桶",
+        "en": "IRSA wildcard trust → cross-account role → weight bucket"
+      },
+      "category": "云侧权重桶链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "cloud-irsa-trust-wildcard",
+          "method": "GET",
+          "path": "/cloud/identity?role=weight-reader",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "cloud-irsa-trust-wildcard",
+          "method": "POST",
+          "path": "/cloud/identity/assume-role",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "cloud-bucket-cross-tenant",
+          "method": "GET",
+          "path": "/cloud/bucket/list?bucket=weights-b",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 1
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-cloud-cross-account-assume",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma None "
+        },
+        {
+          "rule": "suricata-gpu-cloud-tenant-uri",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:443 uri=/cloud/identity?role=weight-reader"
+        }
+      ],
+      "state": "检测"
+    },
+    "ai-gateway-key-exfil": {
+      "title": {
+        "zh": "AI 网关默认凭据 → 上游 provider key → 模型/云资源接管",
+        "en": "AI gateway default credential → upstream provider key → model/cloud resource takeover"
+      },
+      "category": "AI 网关链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "aigateway-fingerprint",
+          "method": "GET",
+          "path": "/health",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "aigateway-auth-bypass",
+          "method": "POST",
+          "path": "/v1/chat/completions",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "aigateway-upstream-key-exfil",
+          "method": "GET",
+          "path": "/config",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "model-registry-exposure",
+          "method": "GET",
+          "path": "/models",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "aigateway-auth-bypass",
+          "method": "POST",
+          "path": "/key/generate",
+          "status": 200,
+          "outcome": "reproduced"
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-gateway-admin-api-no-auth",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma admin_api_call "
+        },
+        {
+          "rule": "sigma-gateway-default-master-key-use",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma authenticate "
+        },
+        {
+          "rule": "falco-gateway-upstream-config-read",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco config_read port=- parent=-"
+        },
+        {
+          "rule": "suricata-ai-gateway-admin-uri",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:4000 uri=/config"
+        }
+      ],
+      "state": "检测"
+    },
+    "fabric-silent-corruption-chain": {
+      "title": {
+        "zh": "fabric 控制面 → all-reduce/梯度静默污染 → 训练无效",
+        "en": "Fabric control plane → silent all-reduce/gradient corruption → wasted training"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "sharp-in-network-poison",
+          "method": "POST",
+          "path": "/sharp/sessions",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "sharp-in-network-poison",
+          "method": "POST",
+          "path": "/sharp/reduce",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "ib-subnet-manager-hijack",
+          "method": "POST",
+          "path": "/ib/sm/partition",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 2
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-fabric-sharp-unauth-join",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma join "
+        },
+        {
+          "rule": "falco-fabric-collective-poison",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco collective_reduce port=8000 parent=-"
+        },
+        {
+          "rule": "falco-fabric-control-plane-mutation",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco fabric_config_write port=8000 parent=-"
+        },
+        {
+          "rule": "suricata-fabric-control-uri",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:8000 uri=/sharp/sessions"
+        }
+      ],
+      "state": "检测"
+    },
+    "fabric-exhaustion-chain": {
+      "title": {
+        "zh": "fabric 资源耗尽（端口/I-O/配额/队列）→ 集群级 DoS",
+        "en": "Fabric resource exhaustion (ports/IO/quota/queue) → cluster-level DoS"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "nccl-port-exhaustion",
+          "method": "POST",
+          "path": "/nccl/bootstrap",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "gang-scheduler-abuse",
+          "method": "POST",
+          "path": "/sched/gang",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "checkpoint-io-storm",
+          "method": "POST",
+          "path": "/checkpoint/io",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "roce-pfc-storm",
+          "method": "POST",
+          "path": "/roce/pfc",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 2
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-fabric-exhaustion-quota-miss",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma port_alloc "
+        },
+        {
+          "rule": "falco-fabric-control-plane-mutation",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco fabric_config_write port=8000 parent=-"
+        },
+        {
+          "rule": "suricata-fabric-control-uri",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:8000 uri=/nccl/bootstrap"
+        }
+      ],
+      "state": "检测"
     }
   },
   "summary": {
-    "chains": 18,
-    "covered": 18,
+    "chains": 25,
+    "covered": 25,
     "missed": 0,
-    "rules_evaluated": 56,
+    "rules_evaluated": 77,
     "rules_blocked": 18,
-    "rules_detected": 34,
+    "rules_detected": 55,
     "rules_missed": 0
   },
   "ok": true,

@@ -1,6 +1,6 @@
 {
   "generator": "trident.rules.generate",
-  "generated_at": "2026-10-24T18:03:34Z",
+  "generated_at": "<dynamic>",
   "cni_active": "native",
   "cni_variants": [
     "native",
@@ -9,7 +9,7 @@
     "vpc-native"
   ],
   "inputs": {
-    "chains": 18,
+    "chains": 25,
     "findings": 2
   },
   "rules": [
@@ -476,6 +476,396 @@
       }
     },
     {
+      "id": "sigma-gpu-pool-admin-unauth",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "GPU 池调度 admin 无鉴权（跨租户分配/迁移）",
+        "en": "GPU 池调度 admin 无鉴权（跨租户分配/迁移）"
+      },
+      "files": [
+        "sigma/sigma-gpu-pool-admin-unauth.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "先以工单/维护窗口白名单过滤平台管理员的计划内迁移；对非 admin 主体 + 跨 tenant 的 allocate/migrate 保持 high；同时监控 /gpu/release 后残留未清理（联合 gpu-tenant-residue）",
+        "en": "Allowlist planned migrations by ticket/maintenance window first; keep high for non-admin cross-tenant allocate/migrate; also watch for residue left after /gpu/release (pair with gpu-tenant-residue)"
+      },
+      "log_source": {
+        "product": "gpu-pooling",
+        "service": "scheduler"
+      },
+      "blocks_modules": [
+        "gpu-pool-scheduler-unauth",
+        "gpu-tenant-residue",
+        "mig-profile-mismatch"
+      ],
+      "blocks_chains": [
+        "gpu-tenant-residue-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "gpu-pooling",
+          "service": "scheduler"
+        },
+        "selection": {
+          "action": [
+            "allocate",
+            "migrate"
+          ],
+          "authenticated": false,
+          "cross_tenant": true
+        },
+        "condition": "all"
+      }
+    },
+    {
+      "id": "sigma-cloud-cross-account-assume",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "跨账户 AssumeRole（trust policy 通配）",
+        "en": "跨账户 AssumeRole（trust policy 通配）"
+      },
+      "files": [
+        "sigma/sigma-cloud-cross-account-assume.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以组织级 sourceAccount/roleArn 白名单收敛合法跨账户链路；对 Principal='*' 且无 sts:ExternalId/Condition 的角色直接 critical；联动 CloudTrail AssumeRole + S3 ListBucket 事件",
+        "en": "Constrain legitimate cross-account chains with an org-level sourceAccount/roleArn allowlist; mark roles with Principal='*' and no sts:ExternalId/Condition as critical; correlate AssumeRole with S3 ListBucket events"
+      },
+      "log_source": {
+        "product": "aws",
+        "service": "cloudtrail"
+      },
+      "blocks_modules": [
+        "cloud-bucket-cross-tenant",
+        "cloud-irsa-trust-wildcard"
+      ],
+      "blocks_chains": [
+        "cloud-cross-tenant-role-assume"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "aws",
+          "service": "cloudtrail"
+        },
+        "selection": {
+          "eventName": "AssumeRole",
+          "crossAccount": true,
+          "trustPolicyWildcard": true
+        },
+        "condition": "all"
+      }
+    },
+    {
+      "id": "sigma-gateway-admin-api-no-auth",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "AI 网关管理 API 无鉴权调用（key 签发 / 配置 / 控制台）",
+        "en": "AI 网关管理 API 无鉴权调用（key 签发 / 配置 / 控制台）"
+      },
+      "files": [
+        "sigma/sigma-gateway-admin-api-no-auth.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "先以管理员主体（serviceaccount/运维网段）建立 allowlist，仅对匿名或租户级凭据访问 key 签发/配置/控制台保持 high；/key/generate 建议同时记录签发的 key 别名与目标租户，异常租户直接升级 critical",
+        "en": "Build an allowlist from admin subjects (service accounts/ops CIDR); keep high only for anonymous or tenant-scoped calls to key issuance/config/console; log the issued key alias and target tenant for /key/generate and escalate unknown tenants to critical"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "gateway-admin"
+      },
+      "blocks_modules": [
+        "aigateway-auth-bypass",
+        "aigateway-upstream-key-exfil"
+      ],
+      "blocks_chains": [
+        "ai-gateway-key-exfil"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "gateway-admin"
+        },
+        "selection": {
+          "verb": [
+            "admin_api_call"
+          ],
+          "path": {
+            "re": "^/(key/generate|config|admin/console)$"
+          },
+          "auth": [
+            "none",
+            "tenant"
+          ]
+        },
+        "condition": "all"
+      }
+    },
+    {
+      "id": "sigma-gateway-default-master-key-use",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "AI 网关默认 master key 使用",
+        "en": "AI 网关默认 master key 使用"
+      },
+      "files": [
+        "sigma/sigma-gateway-default-master-key-use.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "默认 master key 在任何时点成功都应 critical；初始化窗口以一次性 bootstrap token（单次使用 + 自动失效）替代；同时监控 /key/generate 的 admin=true 签发与 master key 的调用来源网段",
+        "en": "Any successful default master key auth is critical; replace bootstrap windows with single-use auto-expiring tokens; also watch admin=true issuances from /key/generate and the source CIDR of master key calls"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "gateway-auth"
+      },
+      "blocks_modules": [
+        "aigateway-auth-bypass",
+        "aigateway-upstream-key-exfil"
+      ],
+      "blocks_chains": [
+        "ai-gateway-key-exfil"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "gateway-auth"
+        },
+        "selection": {
+          "verb": [
+            "authenticate"
+          ],
+          "key_class": "default_master",
+          "status": [
+            200
+          ]
+        },
+        "condition": "all"
+      }
+    },
+    {
+      "id": "sigma-pods-exec-lateral",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "非基线主体 pods/exec 会话",
+        "en": "非基线主体 pods/exec 会话"
+      },
+      "files": [
+        "sigma/sigma-pods-exec-lateral.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "把运维跳板主体（专用 break-glass SA + bastion 网段）加入 not_in 白名单；对进入特权/GPU 命名空间的 exec 直接升级 critical；配合会话录像与 kubectl audit 注解核对操作者",
+        "en": "Allowlist the dedicated break-glass SA plus bastion CIDR; escalate exec into privileged/GPU namespaces to critical; pair with session recording and operator identity from audit annotations"
+      },
+      "log_source": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "blocks_modules": [
+        "overprivileged-sa-escalation"
+      ],
+      "blocks_chains": [
+        "ray-dashboard-cluster-takeover"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "pods"
+          ],
+          "objectRef.subresource": [
+            "exec",
+            "attach"
+          ],
+          "subject_sa": {
+            "not_in": [
+              "system:serviceaccount:kube-system:trident-break-glass"
+            ]
+          }
+        },
+        "condition": "all"
+      }
+    },
+    {
+      "id": "sigma-weight-pvc-abnormal-write",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "权重/检查点 PVC 异常写（claim 级变更或非基线主体挂载）",
+        "en": "权重/检查点 PVC 异常写（claim 级变更或非基线主体挂载）"
+      },
+      "files": [
+        "sigma/sigma-weight-pvc-abnormal-write.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "先收敛 claim 写主体到存储运维/平台调度器两个 SA；权重类名称（weights/model-weights/hf-cache/checkpoint）单独加正则子规则并保持 high；挂载级异常与 falco-weight-file-abnormal-write 联动定位写进程",
+        "en": "Constrain claim writers to the storage-operator and platform-scheduler SAs; add a regex sub-rule for weight-class names (weights/model-weights/hf-cache/checkpoint) kept at high; correlate mount-level anomalies with falco-weight-file-abnormal-write to locate the writing process"
+      },
+      "log_source": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "blocks_modules": [
+        "shared-volume-weight-copy"
+      ],
+      "blocks_chains": [
+        "shared-pvc-supply-chain-poison"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "update",
+            "patch"
+          ],
+          "objectRef.resource": [
+            "persistentvolumeclaims"
+          ],
+          "subject_sa": {
+            "not_in": [
+              "system:serviceaccount:ml-training:platform-scheduler",
+              "system:serviceaccount:kube-system:storage-operator"
+            ]
+          }
+        },
+        "condition": "all"
+      }
+    },
+    {
+      "id": "sigma-fabric-sharp-unauth-join",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "fabric 在网聚合会话无鉴权入组/篡改（SHARP all-reduce 面）",
+        "en": "fabric 在网聚合会话无鉴权入组/篡改（SHARP all-reduce 面）"
+      },
+      "files": [
+        "sigma/sigma-fabric-sharp-unauth-join.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "入组/贡献事件按作业调度器签发的身份（job token/mTLS SPIFFE）判定 authenticated；fabric 控制器需输出该字段后规则才可执行；跨作业会话命中即 critical",
+        "en": "Mark authenticated from scheduler-issued job identity (job token / mTLS SPIFFE); the rule needs the fabric controller to emit that field; cross-job session hits stay critical"
+      },
+      "log_source": {
+        "product": "fabric",
+        "service": "sharp-controller"
+      },
+      "blocks_modules": [
+        "ib-subnet-manager-hijack",
+        "sharp-in-network-poison",
+        "training-silent-corruption"
+      ],
+      "blocks_chains": [
+        "fabric-silent-corruption-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "fabric",
+          "service": "sharp-controller"
+        },
+        "selection": {
+          "action": [
+            "join",
+            "reduce"
+          ],
+          "authenticated": false
+        },
+        "condition": "all"
+      }
+    },
+    {
+      "id": "sigma-fabric-exhaustion-quota-miss",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "fabric 资源耗尽事件（端口/IO/请求洪/队列无配额）",
+        "en": "fabric 资源耗尽事件（端口/IO/请求洪/队列无配额）"
+      },
+      "files": [
+        "sigma/sigma-fabric-exhaustion-quota-miss.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按作业/租户聚合端口与 I/O 配额事件，单作业逼近池上限即告警；request_flood 以 apiserver 限流器事件为源；gang_submit 与调度器准入日志对账（占位 job 特征：placeholders+hold）",
+        "en": "Aggregate port/IO quota events per job and alert as a single job nears pool exhaustion; source request_flood from the apiserver rate-limiter; reconcile gang_submit with admission logs (placeholder signature: placeholders+hold)"
+      },
+      "log_source": {
+        "product": "fabric",
+        "service": "resource-quota"
+      },
+      "blocks_modules": [
+        "api-server-flood-surface",
+        "checkpoint-io-storm",
+        "gang-scheduler-abuse",
+        "kv-oom-bomb",
+        "nccl-port-exhaustion"
+      ],
+      "blocks_chains": [
+        "fabric-exhaustion-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "fabric",
+          "service": "resource-quota"
+        },
+        "selection": {
+          "action": [
+            "port_alloc",
+            "io_burst",
+            "request_flood",
+            "gang_submit"
+          ],
+          "quota_enforced": false
+        },
+        "condition": "all"
+      }
+    },
+    {
       "id": "falco-admin-plane-unauth-access",
       "engines": [
         "falco"
@@ -649,6 +1039,204 @@
       }
     },
     {
+      "id": "falco-gpu-device-cross-namespace",
+      "engines": [
+        "falco"
+      ],
+      "title": {
+        "zh": "TRIDENT GPU device mounted across namespaces",
+        "en": "TRIDENT GPU device mounted across namespaces"
+      },
+      "files": [
+        "falco/trident-rules.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "gpu-exclusive-allowlist 先放 GPU operator/驱动 DaemonSet 命名空间；跨 namespace 判定以 k8s.ns.name 为准（同一 Pod 多容器不触发）；MIG 场景按 /dev/nvidia-caps 细分",
+        "en": "Populate gpu-exclusive-allowlist with the GPU operator/driver DaemonSet namespace first; judge cross-namespace by k8s.ns.name (multi-container pods do not trigger); for MIG, split by /dev/nvidia-caps"
+      },
+      "log_source": "Falco syscall/trace events",
+      "blocks_modules": [
+        "gpu-device-cross-namespace",
+        "gpu-pool-scheduler-unauth",
+        "gpu-tenant-residue"
+      ],
+      "blocks_chains": [
+        "gpu-tenant-residue-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "falco",
+        "event_type": [
+          "mount",
+          "open"
+        ],
+        "all": {
+          "device": {
+            "re": "^/dev/nvidia"
+          },
+          "cross_namespace": true
+        }
+      }
+    },
+    {
+      "id": "falco-mig-abnormal-reconfig",
+      "engines": [
+        "falco"
+      ],
+      "title": {
+        "zh": "TRIDENT Unconventional MIG reconfiguration",
+        "en": "TRIDENT Unconventional MIG reconfiguration"
+      },
+      "files": [
+        "falco/trident-rules.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "维护窗口内的计划重配按工单白名单；已分配设备上的 MIG 变更一律告警；结合 /gpu/mig/profiles 的 active/requested 差值确认隔离降级",
+        "en": "Allowlist planned maintenance-window reconfigurations by ticket; alert on any MIG change on allocated devices; correlate with the active/requested delta from /gpu/mig/profiles"
+      },
+      "log_source": "Falco syscall/trace events",
+      "blocks_modules": [
+        "gpu-pool-scheduler-unauth",
+        "mig-profile-mismatch"
+      ],
+      "blocks_chains": [
+        "gpu-tenant-residue-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "falco",
+        "event_type": [
+          "exec"
+        ],
+        "all": {
+          "proc": "nvidia-smi",
+          "mig_reconfig": true
+        }
+      }
+    },
+    {
+      "id": "falco-gateway-upstream-config-read",
+      "engines": [
+        "falco"
+      ],
+      "title": {
+        "zh": "TRIDENT AI gateway process reads upstream provider credentials",
+        "en": "TRIDENT AI gateway process reads upstream provider credentials"
+      },
+      "files": [
+        "falco/trident-rules.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "网关自身启动期读取配置为正常基线（按启动窗口抑制）；运行期再次读取 /config 或 provider-secrets 挂载应告警；非网关进程读取同一路径建议升级 CRITICAL，并与 Sigma 的 admin API 无鉴权调用联动",
+        "en": "Treat startup reads by the gateway as baseline (suppress during startup window); alert on runtime re-reads of /config or provider-secrets mounts; escalate to CRITICAL for non-gateway processes and correlate with the no-auth admin API Sigma rule"
+      },
+      "log_source": "Falco syscall/trace events",
+      "blocks_modules": [
+        "aigateway-fingerprint",
+        "aigateway-upstream-key-exfil"
+      ],
+      "blocks_chains": [
+        "ai-gateway-key-exfil"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "falco",
+        "event_type": [
+          "config_read"
+        ],
+        "all": {
+          "config_class": [
+            "upstream-credentials",
+            "provider-secrets"
+          ],
+          "proc": {
+            "re": "(?i)(litellm|higress|envoy)"
+          }
+        }
+      }
+    },
+    {
+      "id": "falco-fabric-collective-poison",
+      "engines": [
+        "falco"
+      ],
+      "title": {
+        "zh": "TRIDENT In-network collective reduce poisoned by external member",
+        "en": "TRIDENT In-network collective reduce poisoned by external member"
+      },
+      "files": [
+        "falco/trident-rules.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "需要 fabric 控制器/交换机导出 reduce 会话事件（含 tampered 标记与结果差分）；与 sigma-fabric-sharp-unauth-join 联动区分「入组尝试」与「结果已被篡改」；命中即 critical",
+        "en": "Requires fabric controller/switch export of reduce-session events (tampered flag + result delta); correlate with sigma-fabric-sharp-unauth-join to separate join attempts from actual result tampering; keep hits critical"
+      },
+      "log_source": "Falco syscall/trace events",
+      "blocks_modules": [
+        "sharp-in-network-poison",
+        "training-silent-corruption"
+      ],
+      "blocks_chains": [
+        "fabric-silent-corruption-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "falco",
+        "event_type": [
+          "collective_reduce"
+        ],
+        "all": {
+          "tampered": true
+        }
+      }
+    },
+    {
+      "id": "falco-fabric-control-plane-mutation",
+      "engines": [
+        "falco"
+      ],
+      "title": {
+        "zh": "TRIDENT Fabric control-plane config mutated by unauthorized subject",
+        "en": "TRIDENT Fabric control-plane config mutated by unauthorized subject"
+      },
+      "files": [
+        "falco/trident-rules.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "component 枚举对齐客户 fabric 控制器（SM/PFC Agent/拓扑服务/GPU 健康服务）；写主体白名单=网络 operator 与驱动 DaemonSet；storm 档与 Xid 复位族直接 critical",
+        "en": "Align the component enum with the customer fabric controllers (SM/PFC agent/topology service/GPU health service); allowlist writers = network operator and driver DaemonSets; escalate storm profiles and reset-class Xid writes to critical"
+      },
+      "log_source": "Falco syscall/trace events",
+      "blocks_modules": [
+        "driver-reset-trigger",
+        "ib-subnet-manager-hijack",
+        "rail-mismatch-forcing",
+        "roce-pfc-storm"
+      ],
+      "blocks_chains": [
+        "fabric-exhaustion-chain",
+        "fabric-silent-corruption-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "falco",
+        "event_type": [
+          "fabric_config_write"
+        ],
+        "all": {
+          "component": {
+            "re": "pfc|partition|rail|xid"
+          },
+          "authorized": false
+        }
+      }
+    },
+    {
       "id": "suricata-admin-endpoint-uri",
       "engines": [
         "suricata"
@@ -779,6 +1367,168 @@
       }
     },
     {
+      "id": "suricata-longctx-kv-endpoints",
+      "engines": [
+        "suricata"
+      ],
+      "title": {
+        "zh": "长上下文 / PD KV 端点异常访问（prefix cache 复用与 KV 通道写入）",
+        "en": "长上下文 / PD KV 端点异常访问（prefix cache 复用与 KV 通道写入）"
+      },
+      "files": [
+        "suricata/trident.rules"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按推理分区登记合法调用方（网关/EPP/训练 eval 作业）；/metrics 建议仅允许监控命名空间抓取；KV 传输与 checkpoint 写面建议叠加 mTLS/身份校验后只对异常源告警",
+        "en": "Register legitimate callers per inference zone (gateway/EPP/training eval jobs); restrict /metrics scraping to the monitoring namespace; once mTLS/identity is added to KV transfer and checkpoint writes, alert only on anomalous sources"
+      },
+      "log_source": "Suricata EVE json",
+      "blocks_modules": [
+        "checkpoint-shard-poison",
+        "context-limit-bypass",
+        "kv-cache-integrity-poison",
+        "long-context-memory-amplification",
+        "long-context-training-collective-surface",
+        "long-context-window-exhaustion",
+        "prefill-decode-kv-channel-unauth",
+        "prefix-cache-cross-tenant-leak"
+      ],
+      "blocks_chains": [
+        "long-context-cache-leak",
+        "pd-kv-poison"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "suricata",
+        "any_of": [
+          {
+            "uri_re": "/v1/chat/completions|/kv/transfer|/checkpoint/shards|/metrics"
+          }
+        ]
+      }
+    },
+    {
+      "id": "suricata-gpu-cloud-tenant-uri",
+      "engines": [
+        "suricata"
+      ],
+      "title": {
+        "zh": "GPU 池调度/云租户异常调用（无鉴权分配、跨账户 AssumeRole）",
+        "en": "GPU 池调度/云租户异常调用（无鉴权分配、跨账户 AssumeRole）"
+      },
+      "files": [
+        "suricata/trident.rules"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按管理网段登记合法调度器/云控制面调用方；对来自训练/推理租户网段的 /gpu/allocate 与 /cloud/identity 直接告警；/cloud/identity 需同时联动 CloudTrail AssumeRole 事件（避免仅看 URI）",
+        "en": "Register legitimate scheduler/cloud-control callers by admin CIDR; alert on /gpu/allocate and /cloud/identity from tenant workload ranges; correlate /cloud/identity with CloudTrail AssumeRole events (do not rely on URI alone)"
+      },
+      "log_source": "Suricata EVE json",
+      "blocks_modules": [
+        "cloud-bucket-cross-tenant",
+        "cloud-irsa-trust-wildcard",
+        "gpu-pool-scheduler-unauth",
+        "gpu-tenant-residue"
+      ],
+      "blocks_chains": [
+        "cloud-cross-tenant-role-assume",
+        "gpu-tenant-residue-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "suricata",
+        "any_of": [
+          {
+            "uri_re": "/gpu/allocate|/gpu/release|/cloud/identity|/cloud/bucket/list"
+          }
+        ]
+      }
+    },
+    {
+      "id": "suricata-ai-gateway-admin-uri",
+      "engines": [
+        "suricata"
+      ],
+      "title": {
+        "zh": "AI 网关管理端点访问（key 签发 / 配置 / 控制台）",
+        "en": "AI 网关管理端点访问（key 签发 / 配置 / 控制台）"
+      },
+      "files": [
+        "suricata/trident.rules"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "管理端点为高价值签名：来源非 bastion/运维网段时直接 alert；/config 建议叠加响应体大小与 200 状态判定（401/403 仅计数）；与 Sigma 管理 API 无鉴权规则联动可区分「尝试」与「成功」",
+        "en": "Treat admin URIs as high-value signatures: alert when the source is outside bastion/ops CIDRs; for /config also key on HTTP 200 plus response size (count 401/403 separately); correlate with the Sigma admin API rule to separate attempts from successes"
+      },
+      "log_source": "Suricata EVE json",
+      "blocks_modules": [
+        "aigateway-auth-bypass",
+        "aigateway-route-hijack",
+        "aigateway-upstream-key-exfil"
+      ],
+      "blocks_chains": [
+        "ai-gateway-key-exfil"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "suricata",
+        "any_of": [
+          {
+            "uri_re": "/key/generate|/config|/admin/console"
+          }
+        ]
+      }
+    },
+    {
+      "id": "suricata-fabric-control-uri",
+      "engines": [
+        "suricata"
+      ],
+      "title": {
+        "zh": "fabric 控制面 URI 异常访问（SHARP/IB SM/PFC/NCCL/调度/健康）",
+        "en": "fabric 控制面 URI 异常访问（SHARP/IB SM/PFC/NCCL/调度/健康）"
+      },
+      "files": [
+        "suricata/trident.rules"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "fabric 运维网段（网络 operator/驱动 DaemonSet/调度器）入白名单；POST + 非白名单源直接 alert（GET 仅计数）；RDMA 数据面不可见，须配合 IB Partition/SM 隔离与 eBPF 导出（见 ib-partition-advice.yaml）",
+        "en": "Allowlist fabric ops CIDRs (network operator/driver DaemonSet/scheduler); alert on POST from non-allowlisted sources (count GETs); the RDMA data plane is invisible here - pair with IB Partition/SM isolation and eBPF export (see ib-partition-advice.yaml)"
+      },
+      "log_source": "Suricata EVE json",
+      "blocks_modules": [
+        "api-server-flood-surface",
+        "checkpoint-io-storm",
+        "driver-reset-trigger",
+        "gang-scheduler-abuse",
+        "ib-subnet-manager-hijack",
+        "kv-oom-bomb",
+        "nccl-port-exhaustion",
+        "nccl-straggler-injection",
+        "rail-mismatch-forcing",
+        "roce-pfc-storm",
+        "sharp-in-network-poison",
+        "training-silent-corruption"
+      ],
+      "blocks_chains": [
+        "fabric-exhaustion-chain",
+        "fabric-silent-corruption-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "suricata",
+        "any_of": [
+          {
+            "uri_re": "/sharp/sessions|/sharp/reduce|/ib/sm/partition|/roce/pfc|/nccl/bootstrap|/nccl/rank|/nccl/rail|/checkpoint/io|/apiserver/request|/imds/request|/sched/gang|/gpu/health|/train/gradient|/train/context"
+          }
+        ]
+      }
+    },
+    {
       "id": "zeroday-agent-sandbox-unexpected-parent-exec",
       "engines": [
         "falco"
@@ -903,6 +1653,26 @@
         "zeroday-agent-sandbox-unexpected-parent-exec"
       ]
     },
+    "ai-gateway-key-exfil": {
+      "category": "AI 网关链",
+      "title": {
+        "zh": "AI 网关默认凭据 → 上游 provider key → 模型/云资源接管",
+        "en": "AI gateway default credential → upstream provider key → model/cloud resource takeover"
+      },
+      "modules": [
+        "aigateway-auth-bypass",
+        "aigateway-fingerprint",
+        "aigateway-route-hijack",
+        "aigateway-upstream-key-exfil",
+        "model-registry-exposure"
+      ],
+      "rules": [
+        "sigma-gateway-admin-api-no-auth",
+        "sigma-gateway-default-master-key-use",
+        "falco-gateway-upstream-config-read",
+        "suricata-ai-gateway-admin-uri"
+      ]
+    },
     "ali-ram-role-oss-weight": {
       "category": "云侧权重桶链",
       "title": {
@@ -951,6 +1721,62 @@
         "suricata-imds-egress"
       ]
     },
+    "cloud-cross-tenant-role-assume": {
+      "category": "云侧权重桶链",
+      "title": {
+        "zh": "IRSA 通配信任 → 跨账户角色 → 权重桶",
+        "en": "IRSA wildcard trust → cross-account role → weight bucket"
+      },
+      "modules": [
+        "cloud-bucket-cross-tenant",
+        "cloud-irsa-trust-wildcard"
+      ],
+      "rules": [
+        "sigma-cloud-cross-account-assume",
+        "suricata-gpu-cloud-tenant-uri"
+      ]
+    },
+    "fabric-exhaustion-chain": {
+      "category": "网络利用链",
+      "title": {
+        "zh": "fabric 资源耗尽（端口/I-O/配额/队列）→ 集群级 DoS",
+        "en": "Fabric resource exhaustion (ports/IO/quota/queue) → cluster-level DoS"
+      },
+      "modules": [
+        "api-server-flood-surface",
+        "checkpoint-io-storm",
+        "driver-reset-trigger",
+        "gang-scheduler-abuse",
+        "kv-oom-bomb",
+        "nccl-port-exhaustion",
+        "nccl-straggler-injection",
+        "roce-pfc-storm"
+      ],
+      "rules": [
+        "sigma-fabric-exhaustion-quota-miss",
+        "falco-fabric-control-plane-mutation",
+        "suricata-fabric-control-uri"
+      ]
+    },
+    "fabric-silent-corruption-chain": {
+      "category": "网络利用链",
+      "title": {
+        "zh": "fabric 控制面 → all-reduce/梯度静默污染 → 训练无效",
+        "en": "Fabric control plane → silent all-reduce/gradient corruption → wasted training"
+      },
+      "modules": [
+        "ib-subnet-manager-hijack",
+        "rail-mismatch-forcing",
+        "sharp-in-network-poison",
+        "training-silent-corruption"
+      ],
+      "rules": [
+        "sigma-fabric-sharp-unauth-join",
+        "falco-fabric-collective-poison",
+        "falco-fabric-control-plane-mutation",
+        "suricata-fabric-control-uri"
+      ]
+    },
     "flat-network-admin-plane-weight-poison": {
       "category": "经典攻击链",
       "title": {
@@ -988,6 +1814,24 @@
         "sigma-privileged-pod-create"
       ]
     },
+    "gpu-tenant-residue-chain": {
+      "category": "网络利用链",
+      "title": {
+        "zh": "GPU 池化调度 → 残留显存/显存快照 → 他租户模型数据",
+        "en": "GPU pooling scheduler → residual VRAM/snapshot → victim tenant model data"
+      },
+      "modules": [
+        "gpu-metrics-tenant-leak",
+        "gpu-pool-scheduler-unauth",
+        "gpu-tenant-residue"
+      ],
+      "rules": [
+        "sigma-gpu-pool-admin-unauth",
+        "falco-gpu-device-cross-namespace",
+        "falco-mig-abnormal-reconfig",
+        "suricata-gpu-cloud-tenant-uri"
+      ]
+    },
     "ib-rdma-collective-injection": {
       "category": "网络利用链",
       "title": {
@@ -1023,6 +1867,20 @@
         "sigma-privileged-pod-create"
       ]
     },
+    "long-context-cache-leak": {
+      "category": "网络利用链",
+      "title": {
+        "zh": "长上下文 prefix cache 跨租户复用 → 上下文侧信道",
+        "en": "Long-context prefix cache cross-tenant reuse → context side channel"
+      },
+      "modules": [
+        "long-context-window-exhaustion",
+        "prefix-cache-cross-tenant-leak"
+      ],
+      "rules": [
+        "suricata-longctx-kv-endpoints"
+      ]
+    },
     "nccl-gradient-injection": {
       "category": "经典攻击链",
       "title": {
@@ -1052,6 +1910,20 @@
       ],
       "rules": [
         "netpol-default-deny-partition"
+      ]
+    },
+    "pd-kv-poison": {
+      "category": "网络利用链",
+      "title": {
+        "zh": "PD 分离 KV 通道未鉴权 → KV 块投毒",
+        "en": "PD-split KV channel unauthenticated → KV block poisoning"
+      },
+      "modules": [
+        "kv-cache-integrity-poison",
+        "prefill-decode-kv-channel-unauth"
+      ],
+      "rules": [
+        "suricata-longctx-kv-endpoints"
       ]
     },
     "pickle-channel-unauth-execution": {
@@ -1105,6 +1977,7 @@
         "netpol-default-deny-partition",
         "sigma-rolebinding-cluster-admin",
         "sigma-ray-job-submit",
+        "sigma-pods-exec-lateral",
         "falco-admin-plane-unauth-access"
       ]
     },
@@ -1120,6 +1993,7 @@
         "trust-remote-code-supply-chain"
       ],
       "rules": [
+        "sigma-weight-pvc-abnormal-write",
         "falco-pickle-deserialize-call",
         "falco-weight-file-abnormal-write"
       ]

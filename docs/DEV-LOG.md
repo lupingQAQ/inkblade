@@ -105,3 +105,42 @@ Ruling（本轮）：
 - 并行 agent 的 `trident/modules/*`（含 module.json 缺 run.py 的在途目录）会使 `load_modules` 硬失败；
   全量测试在「HEAD + 本轮显式 overlay」的干净树中度量，另行记录工作树中的在途红测。
 - 性能口径：ARTEX 运行于 QEMU TCG（软件仿真），跨工具倍率仅同宿主相对参考；未实测单元一律 N/A。
+
+### C.1 性能实测结果（2026-10-25 在线网格）
+
+| 指标 | ARTEX（QEMU TCG） | Trident（宿主） | 来源 |
+|---|---:|---:|---|
+| 只读端点网格（N=10） | 124 端点：median-of-medians 11.19 ms；p95-of-medians 48.79 ms；max 3,026 ms（SSE 首响应超时） | 16 端点：median-of-medians 3.20 ms；p95-of-medians 10.82 ms；max 36.29 ms | `perf/grid/live-artex.json` / `live-trident.json` |
+| 并发 1/4/16/32（rps） | 33.4 / 30.3 / 17.4 / 22.4（`/api/agents`，30 请求/档） | 138.6 / 297.7 / 286.3 / 268.0（`/api/v1/graph`，60 请求/档） | 同上，error_rate 均 0 |
+| 冷启动到可登录 | 37.85 s（PG ready 31.0 s） | 0.805 s（781/805/815 ms 中位） | `live-trident-extra.json` |
+| 空闲 / 16 并发峰值 RSS | 169.8 MiB（artex 67.4 + PG 102.9） | 28.1 / 33.0 MB | 同上 |
+| 10k findings 报告/规则生成 | N/A（未测） | pentest 3.21 s / 2.9 MB；remediation 3.48 s / 3.6 MB；规则包 63 ms | 同上 |
+
+- 网格发现并修复：`ThreadingHTTPServer` 默认 backlog=5 → 16 并发吞吐仅 29 rps；`request_queue_size=256`
+  后同端点 286 rps（回归断言 `tests/test_webui_readonly.py::test_server_backlog_supports_concurrency`）。
+- 端点清单：ARTEX 278（124 只读）/ Trident 32（16 只读，含本轮新增只读端点）。
+- 仍为 N/A：ARTEX 32 个 0-2xx 端点有效载荷、30 分钟稳定性、启动逐项分解、UI 首屏/10 万行查询、
+  KubeTrail 构建（原因逐条记入 `docs/PERFORMANCE-COMPARISON.md`）。
+
+### C.2 SOTA 状态变化（D）
+
+- 新增「输出确定性」「执行审计轨迹」「单机多租户隔离与有界并发」三行 → 已达成；
+- 「Live K8s」部分 → 已达成（QEMU k3s 真集群 + hostNetwork 旁路实证）；
+- 「真实 ARTEX 对比数据」未达成 → 部分（已有同靶场 + 全端点实测，但仅 QEMU TCG）；
+- 计数：**已达成 26 · 部分 7 · 未达成 5**（38 行）；不可闭合项（万卡/硬件 TEE/cosign keyless/六云/
+  分布式 SaaS）逐条写明「需资源/需外部基础设施」。
+
+### C.3 全量测试与提交
+
+- 全量回归（工作树副本，剔除 5 个在途残缺模块目录 `trident/modules/kubetrail-*`）：
+  **1136 tests OK（4 skipped）**，包含并行任务已落地的 138 个模块与其测试。
+- 本轮新增/更新测试文件：`test_consent_signature`、`test_runner_scope_audit`、`test_backup`（回滚状态）、
+  `test_cli_ops`、`test_webui_readonly`、`test_reports_network_layers`、`test_ui_data_binding`、
+  `test_sample_determinism`、`test_vendor_checksums`、`test_dev_log`、`test_sota_doc`（计数）。
+- 样张：`e2e-check.py --run-name e2e-acceptance --normalize`（`tests/test_e2e.py` 也固定该口径），
+  生成层可复现由 `tests/test_sample_determinism.py` 锁定；e2e 全量样张的证据锚仍随靶场侧状态变化
+  （数据面差异，不伪造 sha）。
+- 提交：`7614559` consent HMAC/时间窗 · `0dc9f9c` 回滚状态 · `3166a5e` 范围/零日审计 ·
+  `c921595` CLI/只读 API · `7ea6c2c` 网络分层/UI 绑定 · `2231baa` 确定性/vendor ·
+  `6390185` DEV-LOG · `e3657e3` 性能网格 · `e09320c` SOTA 收尾。
+
