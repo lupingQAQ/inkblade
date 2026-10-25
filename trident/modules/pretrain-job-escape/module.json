@@ -1,0 +1,21 @@
+{
+  "key": "pretrain-job-escape",
+  "name": {
+    "zh": "预训练作业提交面逃逸原语",
+    "en": "Pretraining job submit escape"
+  },
+  "series": "权限链",
+  "description": "K8s Job / Ray / Slurm 提交面：共享 trainer-admin ServiceAccount、允许 hostNetwork 与特权、提交接口无鉴权。backup-write 提交带 benign marker 的作业（hostPath=/ + privileged + 共享 SA，仅记录不执行），读回三项原语齐全即 high。写面走 backup_targets 备份闸门。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "训练栈仿真/真实作业提交服务基址（必填）",
+    "mode": "probe-only（默认，仅读调度器/SA 面）| backup-write（需 backup_targets）",
+    "backup_targets": "backup-write 必需：作业记录文件快照目标（runner 备份闸门）",
+    "tenant": "请求租户（X-Tenant）"
+  },
+  "produces": "pretrain-job-escape.json + 提交/读回的 SA、hostPath、privileged 证据",
+  "knowledge": "docs/PRETRAIN-SFT-RL-COVERAGE.md 第 9 节：K8s Job/Ray/Slurm 提交面；KubeRay v1.7.1 controller 快照与 DeepSpeed launcher 快照命中",
+  "combo_signature": "pretrain-job-privileged-submit"
+}

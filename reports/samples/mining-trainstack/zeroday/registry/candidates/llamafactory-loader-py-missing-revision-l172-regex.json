@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "llamafactory-loader-py-missing-revision-l172-regex",
+ "target": "llamafactory",
+ "repo": "hiyouga/LlamaFactory",
+ "tag": "v0.9.5",
+ "status": "pending-manual-review",
+ "rule": "missing-revision",
+ "channel": "regex",
+ "file": "loader.py",
+ "line": 172,
+ "snippet": "model = load_class.from_pretrained(**init_kwargs)",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-26T00:59:04"
+}

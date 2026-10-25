@@ -7,9 +7,14 @@
    anchor 必须在实验室样本树（lab/sample-vuln-repo）上命中——规则失准即拒绝产出候选；
 2. **最新版本差异复核**（extract_latest + diff_baseline）：对 ``lab/mining-fixture/<t>/``
    下按最新 release tag 抓取的上游源文件跑 codescan 双通道提取，与已提交基线
-   （core/data/mining-baseline.json）逐 (target, file, line, rule, channel) 差异；
+   （trident/data/mining-baseline.json；训练栈为 trident/data/trainstack-mining-baseline.json）
+   逐 (target, file, line, rule, channel) 差异；
 3. **登记册**（register_candidates）：差异候选写入 ``<out>/zeroday/registry/candidates/``
    ``status=pending-manual-review``，**绝不自动入库**（不进模块注册表、不进零日加密库）。
+
+训练栈扩展：``run_trainstack_pipeline`` 对 Megatron-LM / DeepSpeed / LLaMA-Factory /
+ms-swift / TRL 五目标复用同一三环闭环，基线独立
+（``trident/data/trainstack-mining-baseline.json``），不污染推理栈基线。
 
 诚实边界（tests 锁定）：候选 ≠ 漏洞；fixtures 为上游公开源码快照（Apache-2.0），
 hit=规则命中而非可利用性结论；人工确认前不得生成模块。
@@ -30,6 +35,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_FIXTURE_DIR = REPO_ROOT / "lab" / "mining-fixture"
 DEFAULT_SAMPLE_TREE = REPO_ROOT / "lab" / "sample-vuln-repo"
 BASELINE_PATH = Path(__file__).resolve().parent / "data" / "mining-baseline.json"
+TRAINSTACK_BASELINE_PATH = Path(__file__).resolve().parent / "data" / "trainstack-mining-baseline.json"
 
 # 挖掘目标（与任务口径一致：五仓库各一轮；latest_tag=2026-10-25 webfetch GitHub raw 快照）
 TARGETS = {
@@ -39,6 +45,17 @@ TARGETS = {
     "hami": {"repo": "Project-HAMi/HAMi", "tag": "v2.10.0"},
     "litellm": {"repo": "BerriAI/litellm", "tag": "v1.106.4"},
 }
+
+# 训练栈目标（2026-10-26 webfetch GitHub releases/latest + raw 快照）：预训练/SFT/RL 三栈
+TRAINSTACK_TARGETS = {
+    "megatron": {"repo": "NVIDIA/Megatron-LM", "tag": "core_v0.19.2"},
+    "deepspeed": {"repo": "deepspeedai/DeepSpeed", "tag": "v0.19.8"},
+    "llamafactory": {"repo": "hiyouga/LlamaFactory", "tag": "v0.9.5"},
+    "msswift": {"repo": "modelscope/ms-swift", "tag": "v4.6.0"},
+    "trl": {"repo": "huggingface/trl", "tag": "v1.16.0"},
+}
+
+ALL_TARGETS = {**TARGETS, **TRAINSTACK_TARGETS}
 
 CANDIDATE_SCHEMA = "trident-mining-candidate-v1"
 
@@ -71,10 +88,15 @@ def validate_templates(sample_tree: Path | str | None = None) -> dict[str, Any]:
             "invalid_rules": invalid}
 
 
+def _spec(target: str) -> dict:
+    if target not in ALL_TARGETS:
+        raise MiningError(f"未知挖掘目标 {target}（可用: {sorted(ALL_TARGETS)}）")
+    return ALL_TARGETS[target]
+
+
 def extract_latest(target: str, fixture_dir: Path | str | None = None) -> dict[str, Any]:
     """环 2a：对目标最新 tag 的源文件快照跑双通道提取。"""
-    if target not in TARGETS:
-        raise MiningError(f"未知挖掘目标 {target}（可用: {sorted(TARGETS)}）")
+    spec = _spec(target)
     fdir = Path(fixture_dir) / target if fixture_dir else DEFAULT_FIXTURE_DIR / target
     if not fdir.exists() or not any(fdir.iterdir()):
         raise MiningError(f"目标 {target} 缺源码快照: {fdir}（lab/mining-fixture/README）")
@@ -83,7 +105,7 @@ def extract_latest(target: str, fixture_dir: Path | str | None = None) -> dict[s
         if p.is_file():
             hits += scan_file(p, root=fdir)
     combos = match_combos(hits, load_rules().get("combos", []))
-    return {"target": target, **TARGETS[target], "fixture_dir": str(fdir),
+    return {"target": target, **spec, "fixture_dir": str(fdir),
             "files": [p.name for p in sorted(fdir.iterdir()) if p.is_file()],
             "hits": hits, "combos": combos}
 
@@ -125,7 +147,7 @@ def register_candidates(target: str, hits: list[dict], out_dir: Path | str) -> l
         cid = _candidate_id(target, h)
         doc = {
             "schema": CANDIDATE_SCHEMA, "id": cid, "target": target,
-            "repo": TARGETS[target]["repo"], "tag": TARGETS[target]["tag"],
+            "repo": _spec(target)["repo"], "tag": _spec(target)["tag"],
             "status": "pending-manual-review",
             "rule": h["rule"], "channel": h["channel"],
             "file": h["file"], "line": h["line"], "snippet": h.get("snippet", ""),
@@ -144,7 +166,7 @@ def run_pipeline(out_dir: Path | str, *, targets: list[str] | None = None,
                  baseline_path: Path | str | None = None) -> dict[str, Any]:
     """三环闭环入口：返回报告并落 ``<out_dir>/mining-report.json``。
 
-    基线语义：本轮命中集在产出候选后写回基线（core/data/mining-baseline.json），
+    基线语义：本轮命中集在产出候选后写回基线（trident/data/mining-baseline.json），
     下一轮只对「新增命中」产出候选；首轮（基线无该 target）全部命中入候选
     （报告注明 first-round）。
     """
@@ -183,3 +205,14 @@ def run_pipeline(out_dir: Path | str, *, targets: list[str] | None = None,
     (out / "mining-report.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
     return report
+
+
+def run_trainstack_pipeline(out_dir: Path | str, **kwargs) -> dict[str, Any]:
+    """训练栈五目标（Megatron/DeepSpeed/LLaMA-Factory/ms-swift/TRL）一轮挖掘。
+
+    与主流水线共用三环闭环与 ``pending-manual-review`` 登记语义；基线独立
+    （``trident/data/trainstack-mining-baseline.json``），不污染推理栈基线。
+    """
+    kwargs.setdefault("targets", list(TRAINSTACK_TARGETS))
+    kwargs.setdefault("baseline_path", TRAINSTACK_BASELINE_PATH)
+    return run_pipeline(out_dir, **kwargs)

@@ -1,0 +1,22 @@
+{
+  "key": "tokenizer-template-injection",
+  "name": {
+    "zh": "chat template 注入",
+    "en": "Chat template injection"
+  },
+  "series": "横向利用",
+  "description": "tokenizer chat template 与 default_system 的写面：未鉴权改写模板后，渲染层原样拼接 system 槽（无转义），可注入 SYSTEM OVERRIDE 指令并覆盖默认系统提示；证据为模板 sha256 变化 + system_block 含 run marker + injected_directive=true + sanitized=false。写面走 backup_targets 备份闸门。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "训练栈仿真/真实 tokenizer 服务基址（必填）",
+    "mode": "probe-only（默认，读模板与渲染姿态）| backup-write（需 backup_targets）",
+    "template": "自定义注入模板（必须含 {{ user }} 槽；缺省含 run marker 指令）",
+    "backup_targets": "backup-write 必需：模板文件快照目标（runner 备份闸门）",
+    "tenant": "请求租户（X-Tenant）"
+  },
+  "produces": "tokenizer-template-injection.json + 渲染 system_block sha256 与注入标记",
+  "knowledge": "docs/PRETRAIN-SFT-RL-COVERAGE.md 第 4 节：chat template/特殊 token 注入面；LLaMA-Factory v0.9.5 template.py 与 ms-swift v4.6.0 template/base.py apply_chat_template 快照命中",
+  "combo_signature": "chat-template-system-slot-injection"
+}

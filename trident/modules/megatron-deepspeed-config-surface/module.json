@@ -1,0 +1,19 @@
+{
+  "key": "megatron-deepspeed-config-surface",
+  "name": {
+    "zh": "Megatron/DeepSpeed 训练配置面调查",
+    "en": "Megatron/DeepSpeed training config surface"
+  },
+  "series": "侦察",
+  "description": "只读调查训练主配置与环境注入面：world_size/TP-PP-EP-CP-SP 并行度、共享 checkpoint 与 optimizer state 路径、trust_remote_code、rendezvous 后端，以及 HF_TOKEN/WANDB_API_KEY 等令牌类环境变量是否可读。判据为多点组合（配置可读 + 大规模并行度 + 敏感环境变量/远程代码），单点不结论。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "训练栈仿真/真实配置服务基址（必填）",
+    "tenant": "请求租户（X-Tenant，缺省 tenant-a）"
+  },
+  "produces": "megatron-deepspeed-config-surface.json + /train/config 与 /train/env trace",
+  "knowledge": "docs/PRETRAIN-SFT-RL-COVERAGE.md 第 1 节：预训练栈配置面（并行度/checkpoint/环境注入）；Megatron-LM core_v0.19.2 与 DeepSpeed v0.19.8 只读快照",
+  "combo_signature": "trainstack-config-and-secret-exposure"
+}

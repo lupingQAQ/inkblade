@@ -1,0 +1,23 @@
+{
+  "key": "data-pipeline-poison",
+  "name": {
+    "zh": "训练数据管线投毒与检出",
+    "en": "Training data pipeline poisoning"
+  },
+  "series": "横向利用",
+  "description": "webdataset/Arrow/parquet 数据加载链的分片写面：未鉴权追加样本（重复 id + 未知 id + benign marker）后，采样器重算分片 sha256 与顺序即可检出（expected≠actual、duplicate/unknown 增加、order_changed）。写面走 backup_targets 备份闸门；检出语义在 vulnerable/fixed 两态一致（写面在 fixed 为 401）。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "训练栈仿真/真实数据服务基址（必填）",
+    "mode": "probe-only（默认，读清单与采样顺序）| backup-write（需 backup_targets）",
+    "shard_id": "目标分片 id（缺省 shard-0001）",
+    "payload": "自定义 JSONL 样本（缺省含重复/未知 id 与 run marker）",
+    "backup_targets": "backup-write 必需：分片文件快照目标（runner 备份闸门）",
+    "tenant": "请求租户（X-Tenant）"
+  },
+  "produces": "data-pipeline-poison.json + manifest/sampler 前后指纹",
+  "knowledge": "docs/PRETRAIN-SFT-RL-COVERAGE.md 第 3 节：数据采样/分片篡改面；ms-swift v4.6.0 dataset loader 与 TRL v1.16.0 SFT load_dataset 快照命中",
+  "combo_signature": "dataset-shard-append-and-detect"
+}
