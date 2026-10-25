@@ -1,0 +1,436 @@
+{
+  "scales": [
+    {
+      "scale": 100,
+      "modules": {
+        "cloud-integration-fingerprint": {
+          "legacy_ms": 0.0,
+          "current_ms": 0.0,
+          "speedup": 1.49,
+          "findings_legacy": 5,
+          "findings_current": 5,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "escape-primitives": {
+          "legacy_ms": 0.1,
+          "current_ms": 0.1,
+          "speedup": 1.26,
+          "findings_legacy": 8,
+          "findings_current": 8,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "exposure-mapping": {
+          "legacy_ms": 0.0,
+          "current_ms": 0.0,
+          "speedup": 1.31,
+          "findings_legacy": 12,
+          "findings_current": 12,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "framework-port-matching": {
+          "legacy_ms": 0.1,
+          "current_ms": 0.1,
+          "speedup": 1.34,
+          "findings_legacy": 8,
+          "findings_current": 8,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "metadata-egress": {
+          "legacy_ms": 0.1,
+          "current_ms": 0.1,
+          "speedup": 1.33,
+          "findings_legacy": 53,
+          "findings_current": 53,
+          "findings_equal": true,
+          "optimized": true
+        },
+        "network-policy-coverage": {
+          "legacy_ms": 0.0,
+          "current_ms": 0.0,
+          "speedup": 1.16,
+          "findings_legacy": 1,
+          "findings_current": 1,
+          "findings_equal": true,
+          "optimized": true
+        },
+        "observability-exposure": {
+          "legacy_ms": 0.0,
+          "current_ms": 0.0,
+          "speedup": 1.35,
+          "findings_legacy": 9,
+          "findings_current": 9,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "privileged-workloads": {
+          "legacy_ms": 0.1,
+          "current_ms": 0.0,
+          "speedup": 1.21,
+          "findings_legacy": 6,
+          "findings_current": 6,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "ray-control-plane": {
+          "legacy_ms": 0.0,
+          "current_ms": 0.0,
+          "speedup": 1.03,
+          "findings_legacy": 5,
+          "findings_current": 5,
+          "findings_equal": true,
+          "optimized": true
+        },
+        "rbac-mapping": {
+          "legacy_ms": 0.0,
+          "current_ms": 0.0,
+          "speedup": 1.21,
+          "findings_legacy": 6,
+          "findings_current": 6,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "storage-sharing": {
+          "legacy_ms": 0.0,
+          "current_ms": 0.0,
+          "speedup": 1.19,
+          "findings_legacy": 4,
+          "findings_current": 4,
+          "findings_equal": true,
+          "optimized": false
+        }
+      },
+      "legacy_total_ms": 0.4,
+      "current_total_ms": 0.3,
+      "total_speedup": 1.33,
+      "all_findings_equal": true
+    },
+    {
+      "scale": 1000,
+      "modules": {
+        "cloud-integration-fingerprint": {
+          "legacy_ms": 0.1,
+          "current_ms": 0.0,
+          "speedup": 1.4,
+          "findings_legacy": 11,
+          "findings_current": 11,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "escape-primitives": {
+          "legacy_ms": 0.5,
+          "current_ms": 0.5,
+          "speedup": 1.06,
+          "findings_legacy": 64,
+          "findings_current": 64,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "exposure-mapping": {
+          "legacy_ms": 0.3,
+          "current_ms": 0.2,
+          "speedup": 1.12,
+          "findings_legacy": 99,
+          "findings_current": 99,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "framework-port-matching": {
+          "legacy_ms": 0.5,
+          "current_ms": 0.4,
+          "speedup": 1.05,
+          "findings_legacy": 76,
+          "findings_current": 76,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "metadata-egress": {
+          "legacy_ms": 3.4,
+          "current_ms": 1.0,
+          "speedup": 3.28,
+          "findings_legacy": 603,
+          "findings_current": 603,
+          "findings_equal": true,
+          "optimized": true
+        },
+        "network-policy-coverage": {
+          "legacy_ms": 0.3,
+          "current_ms": 0.2,
+          "speedup": 1.76,
+          "findings_legacy": 13,
+          "findings_current": 13,
+          "findings_equal": true,
+          "optimized": true
+        },
+        "observability-exposure": {
+          "legacy_ms": 0.2,
+          "current_ms": 0.2,
+          "speedup": 1.09,
+          "findings_legacy": 93,
+          "findings_current": 93,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "privileged-workloads": {
+          "legacy_ms": 0.4,
+          "current_ms": 0.4,
+          "speedup": 1.02,
+          "findings_legacy": 60,
+          "findings_current": 60,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "ray-control-plane": {
+          "legacy_ms": 0.1,
+          "current_ms": 0.1,
+          "speedup": 1.1,
+          "findings_legacy": 31,
+          "findings_current": 31,
+          "findings_equal": true,
+          "optimized": true
+        },
+        "rbac-mapping": {
+          "legacy_ms": 0.1,
+          "current_ms": 0.1,
+          "speedup": 1.16,
+          "findings_legacy": 10,
+          "findings_current": 10,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "storage-sharing": {
+          "legacy_ms": 0.2,
+          "current_ms": 0.2,
+          "speedup": 1.04,
+          "findings_legacy": 28,
+          "findings_current": 28,
+          "findings_equal": true,
+          "optimized": false
+        }
+      },
+      "legacy_total_ms": 6.1,
+      "current_total_ms": 3.3,
+      "total_speedup": 1.85,
+      "all_findings_equal": true
+    },
+    {
+      "scale": 5000,
+      "modules": {
+        "cloud-integration-fingerprint": {
+          "legacy_ms": 0.2,
+          "current_ms": 0.1,
+          "speedup": 1.91,
+          "findings_legacy": 40,
+          "findings_current": 40,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "escape-primitives": {
+          "legacy_ms": 2.8,
+          "current_ms": 2.6,
+          "speedup": 1.1,
+          "findings_legacy": 318,
+          "findings_current": 318,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "exposure-mapping": {
+          "legacy_ms": 1.3,
+          "current_ms": 1.5,
+          "speedup": 0.89,
+          "findings_legacy": 499,
+          "findings_current": 499,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "framework-port-matching": {
+          "legacy_ms": 2.4,
+          "current_ms": 2.5,
+          "speedup": 0.98,
+          "findings_legacy": 376,
+          "findings_current": 376,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "metadata-egress": {
+          "legacy_ms": 65.2,
+          "current_ms": 5.8,
+          "speedup": 11.33,
+          "findings_legacy": 3051,
+          "findings_current": 3051,
+          "findings_equal": true,
+          "optimized": true
+        },
+        "network-policy-coverage": {
+          "legacy_ms": 4.4,
+          "current_ms": 0.8,
+          "speedup": 5.46,
+          "findings_legacy": 67,
+          "findings_current": 67,
+          "findings_equal": true,
+          "optimized": true
+        },
+        "observability-exposure": {
+          "legacy_ms": 0.9,
+          "current_ms": 0.9,
+          "speedup": 1.06,
+          "findings_legacy": 468,
+          "findings_current": 468,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "privileged-workloads": {
+          "legacy_ms": 2.7,
+          "current_ms": 2.0,
+          "speedup": 1.39,
+          "findings_legacy": 300,
+          "findings_current": 300,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "ray-control-plane": {
+          "legacy_ms": 1.7,
+          "current_ms": 1.0,
+          "speedup": 1.69,
+          "findings_legacy": 157,
+          "findings_current": 157,
+          "findings_equal": true,
+          "optimized": true
+        },
+        "rbac-mapping": {
+          "legacy_ms": 0.5,
+          "current_ms": 0.5,
+          "speedup": 1.05,
+          "findings_legacy": 44,
+          "findings_current": 44,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "storage-sharing": {
+          "legacy_ms": 0.8,
+          "current_ms": 0.7,
+          "speedup": 1.06,
+          "findings_legacy": 139,
+          "findings_current": 139,
+          "findings_equal": true,
+          "optimized": false
+        }
+      },
+      "legacy_total_ms": 82.9,
+      "current_total_ms": 18.4,
+      "total_speedup": 4.51,
+      "all_findings_equal": true
+    },
+    {
+      "scale": 10000,
+      "modules": {
+        "cloud-integration-fingerprint": {
+          "legacy_ms": 0.2,
+          "current_ms": 0.2,
+          "speedup": 1.16,
+          "findings_legacy": 69,
+          "findings_current": 69,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "escape-primitives": {
+          "legacy_ms": 5.5,
+          "current_ms": 6.2,
+          "speedup": 0.89,
+          "findings_legacy": 635,
+          "findings_current": 635,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "exposure-mapping": {
+          "legacy_ms": 2.6,
+          "current_ms": 2.5,
+          "speedup": 1.03,
+          "findings_legacy": 1000,
+          "findings_current": 1000,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "framework-port-matching": {
+          "legacy_ms": 5.3,
+          "current_ms": 5.6,
+          "speedup": 0.93,
+          "findings_legacy": 752,
+          "findings_current": 752,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "metadata-egress": {
+          "legacy_ms": 283.4,
+          "current_ms": 15.6,
+          "speedup": 18.14,
+          "findings_legacy": 6098,
+          "findings_current": 6098,
+          "findings_equal": true,
+          "optimized": true
+        },
+        "network-policy-coverage": {
+          "legacy_ms": 17.1,
+          "current_ms": 4.2,
+          "speedup": 4.1,
+          "findings_legacy": 133,
+          "findings_current": 133,
+          "findings_equal": true,
+          "optimized": true
+        },
+        "observability-exposure": {
+          "legacy_ms": 1.8,
+          "current_ms": 2.8,
+          "speedup": 0.64,
+          "findings_legacy": 936,
+          "findings_current": 936,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "privileged-workloads": {
+          "legacy_ms": 4.8,
+          "current_ms": 5.5,
+          "speedup": 0.86,
+          "findings_legacy": 600,
+          "findings_current": 600,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "ray-control-plane": {
+          "legacy_ms": 7.4,
+          "current_ms": 1.0,
+          "speedup": 7.48,
+          "findings_legacy": 312,
+          "findings_current": 312,
+          "findings_equal": true,
+          "optimized": true
+        },
+        "rbac-mapping": {
+          "legacy_ms": 1.0,
+          "current_ms": 0.9,
+          "speedup": 1.09,
+          "findings_legacy": 84,
+          "findings_current": 84,
+          "findings_equal": true,
+          "optimized": false
+        },
+        "storage-sharing": {
+          "legacy_ms": 1.7,
+          "current_ms": 2.0,
+          "speedup": 0.84,
+          "findings_legacy": 272,
+          "findings_current": 272,
+          "findings_equal": true,
+          "optimized": false
+        }
+      },
+      "legacy_total_ms": 330.8,
+      "current_total_ms": 46.5,
+      "total_speedup": 7.11,
+      "all_findings_equal": true
+    }
+  ]
+}

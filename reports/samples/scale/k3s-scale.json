@@ -1,0 +1,89 @@
+{
+  "mode": "real-k3s-qemu-tcg",
+  "generated_at": "2026-10-25T00:46:57Z",
+  "kubeconfig": "lab/qemu-k3s/out/k3s.yaml",
+  "steps": {
+    "apply": {
+      "elapsed_ms": 156894.8,
+      "returncode": 0,
+      "stdout_tail": "service/scale-svc-010 created\nservice/scale-svc-011 created\nservice/scale-svc-012 created\nservice/scale-svc-013 created\nservice/scale-svc-014 created\nservice/scale-svc-015 created\nservice/scale-svc-016 created\nservice/scale-svc-017 created\nservice/scale-svc-018 created\nservice/scale-svc-019 created\nservice/scale-svc-020 created\nservice/scale-svc-021 created\nservice/scale-svc-022 created\nservice/scale-svc-023 created\nservice/scale-svc-024 created\nservice/scale-svc-025 created\nservice/scale-svc-026 created\nservice/scale-svc-027 created\nservice/scale-svc-028 created\nservice/scale-svc-029 created\nservice/scale-svc-030 created\nservice/scale-svc-031 created\nservice/scale-svc-032 created\nservice/scale-svc-033 created\nservice/scale-svc-034 created\nservice/scale-svc-035 created\nservice/scale-svc-036 created\nservice/scale-svc-037 created\nservice/scale-svc-038 created\nservice/scale-svc-039 created\nservice/scale-svc-040 created\nservice/scale-svc-041 created\nservice/scale-svc-042 created\nservice/scale-svc-043 created\nservice/scale-svc-044 created\nservice/scale-svc-045 created\nservice/scale-svc-046 created\nservice/scale-svc-047 created\nservice/scale-svc-048 created\nservice/scale-svc-049 created\nservice/scale-svc-050 created\nservice/scale-svc-051 created\nservice/scale-svc-052 created\nservice/scale-svc-053 created\nservice/scale-svc-054 created\nservice/scale-svc-055 created\nservice/scale-svc-056 created\nservice/scale-svc-057 created\nservice/scale-svc-058 created\nservice/scale-svc-059 created\n",
+      "stderr_tail": ""
+    },
+    "collect": {
+      "elapsed_ms": 6377.1,
+      "counts": {
+        "pods": 65,
+        "services": 63,
+        "networkpolicies": 37,
+        "roles": 19,
+        "rolebindings": 20,
+        "clusterroles": 74,
+        "clusterrolebindings": 57,
+        "ingresses": 0,
+        "nodes": 1,
+        "serviceaccounts": 68,
+        "cani": 0
+      }
+    },
+    "recon": {
+      "elapsed_ms": 199.7,
+      "findings": 145,
+      "modules": {
+        "cloud-integration-fingerprint": {
+          "elapsed_ms": 0.1,
+          "findings": 1
+        },
+        "escape-primitives": {
+          "elapsed_ms": 0.16,
+          "findings": 1
+        },
+        "exposure-mapping": {
+          "elapsed_ms": 0.15,
+          "findings": 16
+        },
+        "framework-port-matching": {
+          "elapsed_ms": 0.17,
+          "findings": 0
+        },
+        "metadata-egress": {
+          "elapsed_ms": 0.68,
+          "findings": 67
+        },
+        "network-policy-coverage": {
+          "elapsed_ms": 0.2,
+          "findings": 1
+        },
+        "observability-exposure": {
+          "elapsed_ms": 0.14,
+          "findings": 30
+        },
+        "privileged-workloads": {
+          "elapsed_ms": 0.24,
+          "findings": 1
+        },
+        "ray-control-plane": {
+          "elapsed_ms": 0.17,
+          "findings": 15
+        },
+        "rbac-mapping": {
+          "elapsed_ms": 1.33,
+          "findings": 13
+        },
+        "storage-sharing": {
+          "elapsed_ms": 0.07,
+          "findings": 0
+        }
+      }
+    }
+  },
+  "objects": {
+    "namespaces": 12,
+    "pods": 60,
+    "services": 60,
+    "networkpolicies": 36,
+    "serviceaccounts": 12,
+    "roles": 12,
+    "rolebindings": 12,
+    "total": 204
+  }
+}

@@ -17,13 +17,17 @@ def analyze(snapshot: dict, params: dict) -> list[dict]:
     services = snapshot.get("services", [])
     ray_crs = list(snapshot.get("rayclusters", [])) + list(snapshot.get("rayservices", []))
     head_service_names = {rc.get("headService") for rc in ray_crs if rc.get("headService")}
+    # 索引：name -> 第一个同名 Service（与 next(...) 首个匹配语义一致），把 O(raycrs×services) 降为线性
+    service_by_name: dict = {}
+    for svc_entry in services:
+        service_by_name.setdefault(svc_entry.get("name"), svc_entry)
 
     for rc in ray_crs:
         ns = rc.get("namespace", "default")
         name = rc.get("name", "?")
         dash = rc.get("dashboardPort", "未标注")
         auth = rc.get("auth", "unknown")
-        svc = next((s for s in services if s.get("name") == rc.get("headService")), None)
+        svc = service_by_name.get(rc.get("headService"))
         svc_type = svc.get("type", "未发现") if svc else "未发现"
         exposed = bool(svc) and svc.get("type") in ("LoadBalancer", "NodePort")
         if auth in ("none", "") and exposed:

@@ -38,6 +38,15 @@ def analyze(snapshot: dict, params: dict) -> list[dict]:
     findings: list[dict] = []
     policies = snapshot.get("networkpolicies", [])
     service_accounts = snapshot.get("serviceaccounts", [])
+    # 一次性索引：空选择器 Egress 覆盖的命名空间集合 + (ns,name)→automount。
+    # 把每 Pod 重扫策略表（O(pods×policies)）与逐 Pod 线性找 SA（O(pods×SAs)）降为线性。
+    egress_covered_ns = {
+        policy.get("namespace", "default")
+        for policy in policies
+        if not policy.get("podSelector") and "Egress" in policy.get("policyTypes", [])
+    }
+    sa_automount = {(s.get("namespace", "default"), s.get("name")): s.get("automount")
+                    for s in service_accounts}
 
     for pod in snapshot.get("pods", []):
         ns = pod.get("namespace", "default")
@@ -53,12 +62,9 @@ def analyze(snapshot: dict, params: dict) -> list[dict]:
                 mapping="链「SSRF / SA Token → 云元数据」；supply-chain-credential-theft；云侧权重桶链",
                 fix="改用 Secret 卷挂载或 IRSA/Workload Identity 短时效凭据；日志与环境回显过滤",
             ))
-        sa_automount = next(
-            (s.get("automount") for s in service_accounts
-             if s.get("name") == sa_name and s.get("namespace", "default") == ns),
-            None,
-        )
-        automount = pod.get("automountServiceAccountToken", sa_automount if sa_automount is not None else True)
+        sa_automount_value = sa_automount.get((ns, sa_name))
+        automount = pod.get("automountServiceAccountToken",
+                           sa_automount_value if sa_automount_value is not None else True)
         if automount is not False:
             findings.append(finding(
                 "medium", f"SA token 自动挂载：{pid}（SA {ns}/{sa_name}）",
@@ -67,7 +73,7 @@ def analyze(snapshot: dict, params: dict) -> list[dict]:
                 mapping="元数据与出网面；链「Ray Dashboard → 集群控制」token 段",
                 fix="默认 automountServiceAccountToken: false（SA 与 Pod 双层显式关闭），按需最小授权",
             ))
-        if not _egress_covered(policies, ns):
+        if ns not in egress_covered_ns:
             if pod.get("hostNetwork"):
                 findings.append(finding(
                     "medium", f"hostNetwork Pod 出网绕过 NetworkPolicy：{pid}",

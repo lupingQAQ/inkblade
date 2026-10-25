@@ -1,0 +1,1218 @@
+{
+  "vulnerable": {
+    "mode": "vulnerable",
+    "scenarios": [
+      {
+        "scenario": "irsa-wildcard",
+        "title": "工作负载身份通配 → 跨租户 AssumeRole",
+        "cloud": "aws",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aws/identity",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "wildcard=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/aws/assume-role",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_account=True account=333333333333"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "irsa-wildcard",
+        "title": "工作负载身份通配 → 跨租户 AssumeRole",
+        "cloud": "azure",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/azure/identity",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "wildcard=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/azure/assume-role",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_account=True account=333333333333"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "irsa-wildcard",
+        "title": "工作负载身份通配 → 跨租户 AssumeRole",
+        "cloud": "aliyun",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aliyun/identity",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "wildcard=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/aliyun/assume-role",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_account=True account=333333333333"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "irsa-wildcard",
+        "title": "工作负载身份通配 → 跨租户 AssumeRole",
+        "cloud": "tencent",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/tencent/identity",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "wildcard=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/tencent/assume-role",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_account=True account=333333333333"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "irsa-wildcard",
+        "title": "工作负载身份通配 → 跨租户 AssumeRole",
+        "cloud": "gcp",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/gcp/identity",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "wildcard=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/gcp/assume-role",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_account=True account=333333333333"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "irsa-wildcard",
+        "title": "工作负载身份通配 → 跨租户 AssumeRole",
+        "cloud": "huawei",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/huawei/identity",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "wildcard=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/huawei/assume-role",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_account=True account=333333333333"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "bucket-public",
+        "title": "公共桶策略 → 匿名/跨租户列目录",
+        "cloud": "aws",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aws/bucket/policy",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "public=True"
+          },
+          {
+            "method": "GET",
+            "path": "/api/aws/bucket/list?bucket=trident-ml-weights",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant=True"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "bucket-public",
+        "title": "公共桶策略 → 匿名/跨租户列目录",
+        "cloud": "azure",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/azure/bucket/policy",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "public=True"
+          },
+          {
+            "method": "GET",
+            "path": "/api/azure/bucket/list?bucket=trident-ml-weights",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant=True"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "bucket-public",
+        "title": "公共桶策略 → 匿名/跨租户列目录",
+        "cloud": "aliyun",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aliyun/bucket/policy",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "public=True"
+          },
+          {
+            "method": "GET",
+            "path": "/api/aliyun/bucket/list?bucket=trident-ml-weights",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant=True"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "bucket-public",
+        "title": "公共桶策略 → 匿名/跨租户列目录",
+        "cloud": "tencent",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/tencent/bucket/policy",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "public=True"
+          },
+          {
+            "method": "GET",
+            "path": "/api/tencent/bucket/list?bucket=trident-ml-weights",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant=True"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "bucket-public",
+        "title": "公共桶策略 → 匿名/跨租户列目录",
+        "cloud": "gcp",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/gcp/bucket/policy",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "public=True"
+          },
+          {
+            "method": "GET",
+            "path": "/api/gcp/bucket/list?bucket=trident-ml-weights",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant=True"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "bucket-public",
+        "title": "公共桶策略 → 匿名/跨租户列目录",
+        "cloud": "huawei",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/huawei/bucket/policy",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "public=True"
+          },
+          {
+            "method": "GET",
+            "path": "/api/huawei/bucket/list?bucket=trident-ml-weights",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant=True"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "snapshot-share",
+        "title": "快照跨账户共享 → 他租户可挂载",
+        "cloud": "aws",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aws/snapshot",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant_visible=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/aws/snapshot/share",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "shared_with=['333333333333'] public=True"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "snapshot-share",
+        "title": "快照跨账户共享 → 他租户可挂载",
+        "cloud": "azure",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/azure/snapshot",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant_visible=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/azure/snapshot/share",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "shared_with=['333333333333'] public=True"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "snapshot-share",
+        "title": "快照跨账户共享 → 他租户可挂载",
+        "cloud": "aliyun",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aliyun/snapshot",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant_visible=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/aliyun/snapshot/share",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "shared_with=['333333333333'] public=True"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "snapshot-share",
+        "title": "快照跨账户共享 → 他租户可挂载",
+        "cloud": "tencent",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/tencent/snapshot",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant_visible=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/tencent/snapshot/share",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "shared_with=['333333333333'] public=True"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "snapshot-share",
+        "title": "快照跨账户共享 → 他租户可挂载",
+        "cloud": "gcp",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/gcp/snapshot",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant_visible=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/gcp/snapshot/share",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "shared_with=['333333333333'] public=True"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "snapshot-share",
+        "title": "快照跨账户共享 → 他租户可挂载",
+        "cloud": "huawei",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/huawei/snapshot",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant_visible=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/huawei/snapshot/share",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "shared_with=['333333333333'] public=True"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "sg-imds",
+        "title": "安全组 0.0.0.0/0 + IMDS 宽松 → 凭据面暴露",
+        "cloud": "aws",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aws/security-group",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "imds_open=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/aws/security-group/authorize",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "authorized=True cidr=0.0.0.0/0"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "sg-imds",
+        "title": "安全组 0.0.0.0/0 + IMDS 宽松 → 凭据面暴露",
+        "cloud": "azure",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/azure/security-group",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "imds_open=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/azure/security-group/authorize",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "authorized=True cidr=0.0.0.0/0"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "sg-imds",
+        "title": "安全组 0.0.0.0/0 + IMDS 宽松 → 凭据面暴露",
+        "cloud": "aliyun",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aliyun/security-group",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "imds_open=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/aliyun/security-group/authorize",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "authorized=True cidr=0.0.0.0/0"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "sg-imds",
+        "title": "安全组 0.0.0.0/0 + IMDS 宽松 → 凭据面暴露",
+        "cloud": "tencent",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/tencent/security-group",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "imds_open=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/tencent/security-group/authorize",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "authorized=True cidr=0.0.0.0/0"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "sg-imds",
+        "title": "安全组 0.0.0.0/0 + IMDS 宽松 → 凭据面暴露",
+        "cloud": "gcp",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/gcp/security-group",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "imds_open=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/gcp/security-group/authorize",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "authorized=True cidr=0.0.0.0/0"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      },
+      {
+        "scenario": "sg-imds",
+        "title": "安全组 0.0.0.0/0 + IMDS 宽松 → 凭据面暴露",
+        "cloud": "huawei",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/huawei/security-group",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "imds_open=True"
+          },
+          {
+            "method": "POST",
+            "path": "/api/huawei/security-group/authorize",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "authorized=True cidr=0.0.0.0/0"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": true
+      }
+    ],
+    "contracts": 49,
+    "clouds": 6,
+    "all_as_expected": true
+  },
+  "fixed": {
+    "mode": "fixed",
+    "scenarios": [
+      {
+        "scenario": "irsa-wildcard",
+        "title": "工作负载身份通配 → 跨租户 AssumeRole",
+        "cloud": "aws",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aws/identity",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "wildcard=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/aws/assume-role",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=cross-account assume denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "irsa-wildcard",
+        "title": "工作负载身份通配 → 跨租户 AssumeRole",
+        "cloud": "azure",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/azure/identity",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "wildcard=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/azure/assume-role",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=cross-account assume denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "irsa-wildcard",
+        "title": "工作负载身份通配 → 跨租户 AssumeRole",
+        "cloud": "aliyun",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aliyun/identity",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "wildcard=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/aliyun/assume-role",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=cross-account assume denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "irsa-wildcard",
+        "title": "工作负载身份通配 → 跨租户 AssumeRole",
+        "cloud": "tencent",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/tencent/identity",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "wildcard=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/tencent/assume-role",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=cross-account assume denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "irsa-wildcard",
+        "title": "工作负载身份通配 → 跨租户 AssumeRole",
+        "cloud": "gcp",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/gcp/identity",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "wildcard=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/gcp/assume-role",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=cross-account assume denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "irsa-wildcard",
+        "title": "工作负载身份通配 → 跨租户 AssumeRole",
+        "cloud": "huawei",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/huawei/identity",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "wildcard=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/huawei/assume-role",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=cross-account assume denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "bucket-public",
+        "title": "公共桶策略 → 匿名/跨租户列目录",
+        "cloud": "aws",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aws/bucket/policy",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "public=False"
+          },
+          {
+            "method": "GET",
+            "path": "/api/aws/bucket/list?bucket=trident-ml-weights",
+            "status": 401,
+            "expect": 401,
+            "match": true,
+            "evidence": "denied=unauthorized"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "bucket-public",
+        "title": "公共桶策略 → 匿名/跨租户列目录",
+        "cloud": "azure",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/azure/bucket/policy",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "public=False"
+          },
+          {
+            "method": "GET",
+            "path": "/api/azure/bucket/list?bucket=trident-ml-weights",
+            "status": 401,
+            "expect": 401,
+            "match": true,
+            "evidence": "denied=unauthorized"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "bucket-public",
+        "title": "公共桶策略 → 匿名/跨租户列目录",
+        "cloud": "aliyun",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aliyun/bucket/policy",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "public=False"
+          },
+          {
+            "method": "GET",
+            "path": "/api/aliyun/bucket/list?bucket=trident-ml-weights",
+            "status": 401,
+            "expect": 401,
+            "match": true,
+            "evidence": "denied=unauthorized"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "bucket-public",
+        "title": "公共桶策略 → 匿名/跨租户列目录",
+        "cloud": "tencent",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/tencent/bucket/policy",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "public=False"
+          },
+          {
+            "method": "GET",
+            "path": "/api/tencent/bucket/list?bucket=trident-ml-weights",
+            "status": 401,
+            "expect": 401,
+            "match": true,
+            "evidence": "denied=unauthorized"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "bucket-public",
+        "title": "公共桶策略 → 匿名/跨租户列目录",
+        "cloud": "gcp",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/gcp/bucket/policy",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "public=False"
+          },
+          {
+            "method": "GET",
+            "path": "/api/gcp/bucket/list?bucket=trident-ml-weights",
+            "status": 401,
+            "expect": 401,
+            "match": true,
+            "evidence": "denied=unauthorized"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "bucket-public",
+        "title": "公共桶策略 → 匿名/跨租户列目录",
+        "cloud": "huawei",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/huawei/bucket/policy",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "public=False"
+          },
+          {
+            "method": "GET",
+            "path": "/api/huawei/bucket/list?bucket=trident-ml-weights",
+            "status": 401,
+            "expect": 401,
+            "match": true,
+            "evidence": "denied=unauthorized"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "snapshot-share",
+        "title": "快照跨账户共享 → 他租户可挂载",
+        "cloud": "aws",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aws/snapshot",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant_visible=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/aws/snapshot/share",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=cross-account snapshot share denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "snapshot-share",
+        "title": "快照跨账户共享 → 他租户可挂载",
+        "cloud": "azure",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/azure/snapshot",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant_visible=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/azure/snapshot/share",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=cross-account snapshot share denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "snapshot-share",
+        "title": "快照跨账户共享 → 他租户可挂载",
+        "cloud": "aliyun",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aliyun/snapshot",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant_visible=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/aliyun/snapshot/share",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=cross-account snapshot share denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "snapshot-share",
+        "title": "快照跨账户共享 → 他租户可挂载",
+        "cloud": "tencent",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/tencent/snapshot",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant_visible=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/tencent/snapshot/share",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=cross-account snapshot share denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "snapshot-share",
+        "title": "快照跨账户共享 → 他租户可挂载",
+        "cloud": "gcp",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/gcp/snapshot",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant_visible=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/gcp/snapshot/share",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=cross-account snapshot share denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "snapshot-share",
+        "title": "快照跨账户共享 → 他租户可挂载",
+        "cloud": "huawei",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/huawei/snapshot",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "cross_tenant_visible=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/huawei/snapshot/share",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=cross-account snapshot share denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "sg-imds",
+        "title": "安全组 0.0.0.0/0 + IMDS 宽松 → 凭据面暴露",
+        "cloud": "aws",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aws/security-group",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "imds_open=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/aws/security-group/authorize",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=world-open ingress denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "sg-imds",
+        "title": "安全组 0.0.0.0/0 + IMDS 宽松 → 凭据面暴露",
+        "cloud": "azure",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/azure/security-group",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "imds_open=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/azure/security-group/authorize",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=world-open ingress denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "sg-imds",
+        "title": "安全组 0.0.0.0/0 + IMDS 宽松 → 凭据面暴露",
+        "cloud": "aliyun",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/aliyun/security-group",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "imds_open=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/aliyun/security-group/authorize",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=world-open ingress denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "sg-imds",
+        "title": "安全组 0.0.0.0/0 + IMDS 宽松 → 凭据面暴露",
+        "cloud": "tencent",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/tencent/security-group",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "imds_open=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/tencent/security-group/authorize",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=world-open ingress denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "sg-imds",
+        "title": "安全组 0.0.0.0/0 + IMDS 宽松 → 凭据面暴露",
+        "cloud": "gcp",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/gcp/security-group",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "imds_open=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/gcp/security-group/authorize",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=world-open ingress denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      },
+      {
+        "scenario": "sg-imds",
+        "title": "安全组 0.0.0.0/0 + IMDS 宽松 → 凭据面暴露",
+        "cloud": "huawei",
+        "steps": [
+          {
+            "method": "GET",
+            "path": "/api/huawei/security-group",
+            "status": 200,
+            "expect": 200,
+            "match": true,
+            "evidence": "imds_open=False"
+          },
+          {
+            "method": "POST",
+            "path": "/api/huawei/security-group/authorize",
+            "status": 403,
+            "expect": 403,
+            "match": true,
+            "evidence": "denied=world-open ingress denied"
+          }
+        ],
+        "as_expected": true,
+        "cross_tenant_ok": false
+      }
+    ],
+    "contracts": 49,
+    "clouds": 6,
+    "all_as_expected": true
+  }
+}

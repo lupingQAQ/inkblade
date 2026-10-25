@@ -18,9 +18,13 @@ def analyze(snapshot: dict, params: dict) -> list[dict]:
     pods_by_ns: dict[str, list[dict]] = {}
     for pod in snapshot.get("pods", []):
         pods_by_ns.setdefault(pod.get("namespace", "default"), []).append(pod)
+    # 索引：namespace → 策略列表（O(policies) 一次分组，避免每命名空间全表扫描的 O(ns×policies)）
+    policies_by_ns: dict[str, list[dict]] = {}
+    for policy in policies:
+        policies_by_ns.setdefault(policy.get("namespace", "default"), []).append(policy)
 
     for ns, pods in sorted(pods_by_ns.items()):
-        ns_policies = [p for p in policies if p.get("namespace", "default") == ns]
+        ns_policies = policies_by_ns.get(ns, [])
         # 空选择器（podSelector == {}）= 选择命名空间内全部 Pod；缺省 policyTypes 视为 ["Ingress"]
         selecting_all = [p for p in ns_policies if not p.get("podSelector")]
         ingress_selecting = [p for p in selecting_all if "Ingress" in p.get("policyTypes", ["Ingress"])]

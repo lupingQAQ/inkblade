@@ -1,0 +1,719 @@
+{
+  "generated_at": "2026-10-25T00:43:36Z",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "python": "3.12.15",
+  "scales": [
+    {
+      "scale": 100,
+      "generated_at": "2026-10-25T00:43:32Z",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "python": "3.12.15",
+      "objects": {
+        "namespaces": 2,
+        "pods": 34,
+        "services": 15,
+        "networkpolicies": 13,
+        "roles": 6,
+        "clusterroles": 1,
+        "rolebindings": 4,
+        "clusterrolebindings": 1,
+        "pvcs": 10,
+        "pvs": 3,
+        "storageclasses": 1,
+        "secrets": 6,
+        "serviceaccounts": 4,
+        "total": 100
+      },
+      "stages": {
+        "build_snapshot": {
+          "elapsed_ms": 0.23,
+          "py_heap_peak_kb": 75.5,
+          "py_heap_end_kb": 19.1
+        },
+        "cloud-integration-fingerprint": {
+          "elapsed_ms": 0.08,
+          "py_heap_peak_kb": 5.6,
+          "py_heap_end_kb": 1.8,
+          "findings": 5,
+          "summary_chars": 73
+        },
+        "escape-primitives": {
+          "elapsed_ms": 0.14,
+          "py_heap_peak_kb": 7.0,
+          "py_heap_end_kb": 1.7,
+          "findings": 8,
+          "summary_chars": 91
+        },
+        "exposure-mapping": {
+          "elapsed_ms": 0.09,
+          "py_heap_peak_kb": 10.1,
+          "py_heap_end_kb": 1.9,
+          "findings": 12,
+          "summary_chars": 82
+        },
+        "framework-port-matching": {
+          "elapsed_ms": 0.11,
+          "py_heap_peak_kb": 10.4,
+          "py_heap_end_kb": 1.7,
+          "findings": 8,
+          "summary_chars": 74
+        },
+        "metadata-egress": {
+          "elapsed_ms": 0.16,
+          "py_heap_peak_kb": 32.8,
+          "py_heap_end_kb": 4.8,
+          "findings": 53,
+          "summary_chars": 75
+        },
+        "network-policy-coverage": {
+          "elapsed_ms": 0.06,
+          "py_heap_peak_kb": 5.2,
+          "py_heap_end_kb": 1.6,
+          "findings": 1,
+          "summary_chars": 61
+        },
+        "observability-exposure": {
+          "elapsed_ms": 0.07,
+          "py_heap_peak_kb": 7.5,
+          "py_heap_end_kb": 1.7,
+          "findings": 9,
+          "summary_chars": 71
+        },
+        "privileged-workloads": {
+          "elapsed_ms": 0.09,
+          "py_heap_peak_kb": 6.1,
+          "py_heap_end_kb": 1.5,
+          "findings": 6,
+          "summary_chars": 74
+        },
+        "ray-control-plane": {
+          "elapsed_ms": 0.07,
+          "py_heap_peak_kb": 5.1,
+          "py_heap_end_kb": 1.5,
+          "findings": 5,
+          "summary_chars": 86
+        },
+        "rbac-mapping": {
+          "elapsed_ms": 0.08,
+          "py_heap_peak_kb": 5.2,
+          "py_heap_end_kb": 1.6,
+          "findings": 6,
+          "summary_chars": 105
+        },
+        "storage-sharing": {
+          "elapsed_ms": 0.07,
+          "py_heap_peak_kb": 4.2,
+          "py_heap_end_kb": 1.3,
+          "findings": 4,
+          "summary_chars": 73
+        },
+        "reachability-graph": {
+          "elapsed_ms": 0.07,
+          "py_heap_peak_kb": 6.5,
+          "py_heap_end_kb": 2.5
+        },
+        "rules-generate": {
+          "elapsed_ms": 46.3,
+          "py_heap_peak_kb": 831.7,
+          "py_heap_end_kb": 29.8
+        }
+      },
+      "totals": {
+        "elapsed_ms": 290.1,
+        "recon_ms": 1.02,
+        "recon_over_60s": false,
+        "recon_over_60s_per_10k": false,
+        "findings": 117,
+        "max_rss_kb": 35268,
+        "peak_rss_kb": 36152,
+        "rss_backend": "ctypes-GetProcessMemoryInfo"
+      },
+      "reachability": {
+        "graphs": 2,
+        "nodes": 5,
+        "edges": 3
+      },
+      "rules": {
+        "rules": 31,
+        "chains": 23,
+        "files": 35
+      },
+      "slowest_recon": [
+        {
+          "module": "metadata-egress",
+          "elapsed_ms": 0.16,
+          "py_heap_peak_kb": 32.8,
+          "py_heap_end_kb": 4.8,
+          "findings": 53,
+          "summary_chars": 75
+        },
+        {
+          "module": "escape-primitives",
+          "elapsed_ms": 0.14,
+          "py_heap_peak_kb": 7.0,
+          "py_heap_end_kb": 1.7,
+          "findings": 8,
+          "summary_chars": 91
+        },
+        {
+          "module": "framework-port-matching",
+          "elapsed_ms": 0.11,
+          "py_heap_peak_kb": 10.4,
+          "py_heap_end_kb": 1.7,
+          "findings": 8,
+          "summary_chars": 74
+        },
+        {
+          "module": "exposure-mapping",
+          "elapsed_ms": 0.09,
+          "py_heap_peak_kb": 10.1,
+          "py_heap_end_kb": 1.9,
+          "findings": 12,
+          "summary_chars": 82
+        },
+        {
+          "module": "privileged-workloads",
+          "elapsed_ms": 0.09,
+          "py_heap_peak_kb": 6.1,
+          "py_heap_end_kb": 1.5,
+          "findings": 6,
+          "summary_chars": 74
+        }
+      ]
+    },
+    {
+      "scale": 1000,
+      "generated_at": "2026-10-25T00:43:33Z",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "python": "3.12.15",
+      "objects": {
+        "namespaces": 20,
+        "pods": 353,
+        "services": 150,
+        "networkpolicies": 130,
+        "roles": 60,
+        "clusterroles": 10,
+        "rolebindings": 35,
+        "clusterrolebindings": 5,
+        "pvcs": 100,
+        "pvs": 30,
+        "storageclasses": 2,
+        "secrets": 60,
+        "serviceaccounts": 45,
+        "total": 1000
+      },
+      "stages": {
+        "build_snapshot": {
+          "elapsed_ms": 1.48,
+          "py_heap_peak_kb": 729.9,
+          "py_heap_end_kb": 19.3
+        },
+        "cloud-integration-fingerprint": {
+          "elapsed_ms": 0.1,
+          "py_heap_peak_kb": 9.2,
+          "py_heap_end_kb": 2.2,
+          "findings": 11,
+          "summary_chars": 74
+        },
+        "escape-primitives": {
+          "elapsed_ms": 0.73,
+          "py_heap_peak_kb": 41.8,
+          "py_heap_end_kb": 5.2,
+          "findings": 64,
+          "summary_chars": 95
+        },
+        "exposure-mapping": {
+          "elapsed_ms": 0.64,
+          "py_heap_peak_kb": 68.4,
+          "py_heap_end_kb": 5.8,
+          "findings": 99,
+          "summary_chars": 84
+        },
+        "framework-port-matching": {
+          "elapsed_ms": 0.55,
+          "py_heap_peak_kb": 80.3,
+          "py_heap_end_kb": 5.8,
+          "findings": 76,
+          "summary_chars": 77
+        },
+        "metadata-egress": {
+          "elapsed_ms": 1.11,
+          "py_heap_peak_kb": 353.2,
+          "py_heap_end_kb": 8.4,
+          "findings": 603,
+          "summary_chars": 78
+        },
+        "network-policy-coverage": {
+          "elapsed_ms": 0.2,
+          "py_heap_peak_kb": 24.5,
+          "py_heap_end_kb": 5.0,
+          "findings": 13,
+          "summary_chars": 75
+        },
+        "observability-exposure": {
+          "elapsed_ms": 0.35,
+          "py_heap_peak_kb": 57.0,
+          "py_heap_end_kb": 5.8,
+          "findings": 93,
+          "summary_chars": 74
+        },
+        "privileged-workloads": {
+          "elapsed_ms": 0.75,
+          "py_heap_peak_kb": 40.7,
+          "py_heap_end_kb": 4.9,
+          "findings": 60,
+          "summary_chars": 77
+        },
+        "ray-control-plane": {
+          "elapsed_ms": 0.24,
+          "py_heap_peak_kb": 22.9,
+          "py_heap_end_kb": 3.1,
+          "findings": 31,
+          "summary_chars": 88
+        },
+        "rbac-mapping": {
+          "elapsed_ms": 0.18,
+          "py_heap_peak_kb": 12.9,
+          "py_heap_end_kb": 1.8,
+          "findings": 10,
+          "summary_chars": 106
+        },
+        "storage-sharing": {
+          "elapsed_ms": 0.19,
+          "py_heap_peak_kb": 16.5,
+          "py_heap_end_kb": 2.8,
+          "findings": 28,
+          "summary_chars": 76
+        },
+        "reachability-graph": {
+          "elapsed_ms": 0.48,
+          "py_heap_peak_kb": 13.5,
+          "py_heap_end_kb": 5.1
+        },
+        "rules-generate": {
+          "elapsed_ms": 52.31,
+          "py_heap_peak_kb": 838.9,
+          "py_heap_end_kb": 29.4
+        }
+      },
+      "totals": {
+        "elapsed_ms": 431.71,
+        "recon_ms": 5.04,
+        "recon_over_60s": false,
+        "recon_over_60s_per_10k": false,
+        "findings": 1088,
+        "max_rss_kb": 37472,
+        "peak_rss_kb": 37644,
+        "rss_backend": "ctypes-GetProcessMemoryInfo"
+      },
+      "reachability": {
+        "graphs": 20,
+        "nodes": 45,
+        "edges": 25
+      },
+      "rules": {
+        "rules": 31,
+        "chains": 23,
+        "files": 35
+      },
+      "slowest_recon": [
+        {
+          "module": "metadata-egress",
+          "elapsed_ms": 1.11,
+          "py_heap_peak_kb": 353.2,
+          "py_heap_end_kb": 8.4,
+          "findings": 603,
+          "summary_chars": 78
+        },
+        {
+          "module": "privileged-workloads",
+          "elapsed_ms": 0.75,
+          "py_heap_peak_kb": 40.7,
+          "py_heap_end_kb": 4.9,
+          "findings": 60,
+          "summary_chars": 77
+        },
+        {
+          "module": "escape-primitives",
+          "elapsed_ms": 0.73,
+          "py_heap_peak_kb": 41.8,
+          "py_heap_end_kb": 5.2,
+          "findings": 64,
+          "summary_chars": 95
+        },
+        {
+          "module": "exposure-mapping",
+          "elapsed_ms": 0.64,
+          "py_heap_peak_kb": 68.4,
+          "py_heap_end_kb": 5.8,
+          "findings": 99,
+          "summary_chars": 84
+        },
+        {
+          "module": "framework-port-matching",
+          "elapsed_ms": 0.55,
+          "py_heap_peak_kb": 80.3,
+          "py_heap_end_kb": 5.8,
+          "findings": 76,
+          "summary_chars": 77
+        }
+      ]
+    },
+    {
+      "scale": 5000,
+      "generated_at": "2026-10-25T00:43:34Z",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "python": "3.12.15",
+      "objects": {
+        "namespaces": 100,
+        "pods": 1767,
+        "services": 750,
+        "networkpolicies": 650,
+        "roles": 300,
+        "clusterroles": 50,
+        "rolebindings": 175,
+        "clusterrolebindings": 25,
+        "pvcs": 500,
+        "pvs": 150,
+        "storageclasses": 8,
+        "secrets": 300,
+        "serviceaccounts": 225,
+        "total": 5000
+      },
+      "stages": {
+        "build_snapshot": {
+          "elapsed_ms": 7.97,
+          "py_heap_peak_kb": 3643.1,
+          "py_heap_end_kb": 19.3
+        },
+        "cloud-integration-fingerprint": {
+          "elapsed_ms": 0.28,
+          "py_heap_peak_kb": 27.4,
+          "py_heap_end_kb": 4.4,
+          "findings": 40,
+          "summary_chars": 75
+        },
+        "escape-primitives": {
+          "elapsed_ms": 2.78,
+          "py_heap_peak_kb": 200.5,
+          "py_heap_end_kb": 6.1,
+          "findings": 318,
+          "summary_chars": 99
+        },
+        "exposure-mapping": {
+          "elapsed_ms": 1.28,
+          "py_heap_peak_kb": 337.9,
+          "py_heap_end_kb": 5.8,
+          "findings": 499,
+          "summary_chars": 88
+        },
+        "framework-port-matching": {
+          "elapsed_ms": 2.69,
+          "py_heap_peak_kb": 390.6,
+          "py_heap_end_kb": 6.0,
+          "findings": 376,
+          "summary_chars": 80
+        },
+        "metadata-egress": {
+          "elapsed_ms": 5.49,
+          "py_heap_peak_kb": 1783.7,
+          "py_heap_end_kb": 18.5,
+          "findings": 3051,
+          "summary_chars": 81
+        },
+        "network-policy-coverage": {
+          "elapsed_ms": 1.75,
+          "py_heap_peak_kb": 111.9,
+          "py_heap_end_kb": 15.2,
+          "findings": 67,
+          "summary_chars": 77
+        },
+        "observability-exposure": {
+          "elapsed_ms": 0.91,
+          "py_heap_peak_kb": 280.8,
+          "py_heap_end_kb": 5.8,
+          "findings": 468,
+          "summary_chars": 90
+        },
+        "privileged-workloads": {
+          "elapsed_ms": 2.03,
+          "py_heap_peak_kb": 195.9,
+          "py_heap_end_kb": 6.1,
+          "findings": 300,
+          "summary_chars": 80
+        },
+        "ray-control-plane": {
+          "elapsed_ms": 0.5,
+          "py_heap_peak_kb": 120.9,
+          "py_heap_end_kb": 5.9,
+          "findings": 157,
+          "summary_chars": 110
+        },
+        "rbac-mapping": {
+          "elapsed_ms": 0.54,
+          "py_heap_peak_kb": 47.4,
+          "py_heap_end_kb": 4.0,
+          "findings": 44,
+          "summary_chars": 108
+        },
+        "storage-sharing": {
+          "elapsed_ms": 0.76,
+          "py_heap_peak_kb": 73.6,
+          "py_heap_end_kb": 5.8,
+          "findings": 139,
+          "summary_chars": 77
+        },
+        "reachability-graph": {
+          "elapsed_ms": 1.11,
+          "py_heap_peak_kb": 49.7,
+          "py_heap_end_kb": 5.8
+        },
+        "rules-generate": {
+          "elapsed_ms": 59.35,
+          "py_heap_peak_kb": 873.2,
+          "py_heap_end_kb": 29.5
+        }
+      },
+      "totals": {
+        "elapsed_ms": 909.43,
+        "recon_ms": 19.01,
+        "recon_over_60s": false,
+        "recon_over_60s_per_10k": false,
+        "findings": 5459,
+        "max_rss_kb": 43080,
+        "peak_rss_kb": 44008,
+        "rss_backend": "ctypes-GetProcessMemoryInfo"
+      },
+      "reachability": {
+        "graphs": 100,
+        "nodes": 229,
+        "edges": 129
+      },
+      "rules": {
+        "rules": 31,
+        "chains": 23,
+        "files": 35
+      },
+      "slowest_recon": [
+        {
+          "module": "metadata-egress",
+          "elapsed_ms": 5.49,
+          "py_heap_peak_kb": 1783.7,
+          "py_heap_end_kb": 18.5,
+          "findings": 3051,
+          "summary_chars": 81
+        },
+        {
+          "module": "escape-primitives",
+          "elapsed_ms": 2.78,
+          "py_heap_peak_kb": 200.5,
+          "py_heap_end_kb": 6.1,
+          "findings": 318,
+          "summary_chars": 99
+        },
+        {
+          "module": "framework-port-matching",
+          "elapsed_ms": 2.69,
+          "py_heap_peak_kb": 390.6,
+          "py_heap_end_kb": 6.0,
+          "findings": 376,
+          "summary_chars": 80
+        },
+        {
+          "module": "privileged-workloads",
+          "elapsed_ms": 2.03,
+          "py_heap_peak_kb": 195.9,
+          "py_heap_end_kb": 6.1,
+          "findings": 300,
+          "summary_chars": 80
+        },
+        {
+          "module": "network-policy-coverage",
+          "elapsed_ms": 1.75,
+          "py_heap_peak_kb": 111.9,
+          "py_heap_end_kb": 15.2,
+          "findings": 67,
+          "summary_chars": 77
+        }
+      ]
+    },
+    {
+      "scale": 10000,
+      "generated_at": "2026-10-25T00:43:36Z",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "python": "3.12.15",
+      "objects": {
+        "namespaces": 200,
+        "pods": 3542,
+        "services": 1500,
+        "networkpolicies": 1300,
+        "roles": 600,
+        "clusterroles": 100,
+        "rolebindings": 350,
+        "clusterrolebindings": 50,
+        "pvcs": 1000,
+        "pvs": 300,
+        "storageclasses": 8,
+        "secrets": 600,
+        "serviceaccounts": 450,
+        "total": 10000
+      },
+      "stages": {
+        "build_snapshot": {
+          "elapsed_ms": 18.25,
+          "py_heap_peak_kb": 7288.3,
+          "py_heap_end_kb": 19.3
+        },
+        "cloud-integration-fingerprint": {
+          "elapsed_ms": 0.52,
+          "py_heap_peak_kb": 46.1,
+          "py_heap_end_kb": 6.2,
+          "findings": 69,
+          "summary_chars": 75
+        },
+        "escape-primitives": {
+          "elapsed_ms": 5.72,
+          "py_heap_peak_kb": 399.1,
+          "py_heap_end_kb": 6.1,
+          "findings": 635,
+          "summary_chars": 99
+        },
+        "exposure-mapping": {
+          "elapsed_ms": 2.93,
+          "py_heap_peak_kb": 676.8,
+          "py_heap_end_kb": 5.8,
+          "findings": 1000,
+          "summary_chars": 89
+        },
+        "framework-port-matching": {
+          "elapsed_ms": 5.01,
+          "py_heap_peak_kb": 779.6,
+          "py_heap_end_kb": 6.0,
+          "findings": 752,
+          "summary_chars": 80
+        },
+        "metadata-egress": {
+          "elapsed_ms": 11.98,
+          "py_heap_peak_kb": 3571.0,
+          "py_heap_end_kb": 30.8,
+          "findings": 6098,
+          "summary_chars": 81
+        },
+        "network-policy-coverage": {
+          "elapsed_ms": 4.14,
+          "py_heap_peak_kb": 221.8,
+          "py_heap_end_kb": 21.2,
+          "findings": 133,
+          "summary_chars": 78
+        },
+        "observability-exposure": {
+          "elapsed_ms": 2.24,
+          "py_heap_peak_kb": 560.4,
+          "py_heap_end_kb": 5.8,
+          "findings": 936,
+          "summary_chars": 90
+        },
+        "privileged-workloads": {
+          "elapsed_ms": 4.47,
+          "py_heap_peak_kb": 391.1,
+          "py_heap_end_kb": 6.1,
+          "findings": 600,
+          "summary_chars": 80
+        },
+        "ray-control-plane": {
+          "elapsed_ms": 0.85,
+          "py_heap_peak_kb": 237.9,
+          "py_heap_end_kb": 6.1,
+          "findings": 312,
+          "summary_chars": 111
+        },
+        "rbac-mapping": {
+          "elapsed_ms": 0.98,
+          "py_heap_peak_kb": 89.9,
+          "py_heap_end_kb": 5.9,
+          "findings": 84,
+          "summary_chars": 108
+        },
+        "storage-sharing": {
+          "elapsed_ms": 1.58,
+          "py_heap_peak_kb": 143.5,
+          "py_heap_end_kb": 6.0,
+          "findings": 272,
+          "summary_chars": 79
+        },
+        "reachability-graph": {
+          "elapsed_ms": 2.16,
+          "py_heap_peak_kb": 91.1,
+          "py_heap_end_kb": 5.9
+        },
+        "rules-generate": {
+          "elapsed_ms": 93.91,
+          "py_heap_peak_kb": 915.0,
+          "py_heap_end_kb": 28.9
+        }
+      },
+      "totals": {
+        "elapsed_ms": 1644.97,
+        "recon_ms": 40.42,
+        "recon_over_60s": false,
+        "recon_over_60s_per_10k": false,
+        "findings": 10891,
+        "max_rss_kb": 55728,
+        "peak_rss_kb": 56124,
+        "rss_backend": "ctypes-GetProcessMemoryInfo"
+      },
+      "reachability": {
+        "graphs": 200,
+        "nodes": 459,
+        "edges": 259
+      },
+      "rules": {
+        "rules": 31,
+        "chains": 23,
+        "files": 35
+      },
+      "slowest_recon": [
+        {
+          "module": "metadata-egress",
+          "elapsed_ms": 11.98,
+          "py_heap_peak_kb": 3571.0,
+          "py_heap_end_kb": 30.8,
+          "findings": 6098,
+          "summary_chars": 81
+        },
+        {
+          "module": "escape-primitives",
+          "elapsed_ms": 5.72,
+          "py_heap_peak_kb": 399.1,
+          "py_heap_end_kb": 6.1,
+          "findings": 635,
+          "summary_chars": 99
+        },
+        {
+          "module": "framework-port-matching",
+          "elapsed_ms": 5.01,
+          "py_heap_peak_kb": 779.6,
+          "py_heap_end_kb": 6.0,
+          "findings": 752,
+          "summary_chars": 80
+        },
+        {
+          "module": "privileged-workloads",
+          "elapsed_ms": 4.47,
+          "py_heap_peak_kb": 391.1,
+          "py_heap_end_kb": 6.1,
+          "findings": 600,
+          "summary_chars": 80
+        },
+        {
+          "module": "network-policy-coverage",
+          "elapsed_ms": 4.14,
+          "py_heap_peak_kb": 221.8,
+          "py_heap_end_kb": 21.2,
+          "findings": 133,
+          "summary_chars": 78
+        }
+      ]
+    }
+  ]
+}
