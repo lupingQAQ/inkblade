@@ -20,6 +20,23 @@ def _store(home: Path, ws: str):
     return EvidenceStore(home, workspace=ws)
 
 
+def _modules_dir(home: Path, explicit: str | None = None) -> Path:
+    """显式 --modules-dir 优先；否则工作区 modules/，再回落安装包内 trident/modules。"""
+    if explicit:
+        return Path(explicit)
+    ws_modules = Path(home) / "modules"
+    if ws_modules.exists():
+        return ws_modules
+    return Path(__file__).resolve().parent / "modules"
+
+
+def _human_error(exc: BaseException, *, context: dict | None = None) -> None:
+    """把异常渲染成三行式人话（错误码 + 发生了什么/为什么/怎么修）。"""
+    from .core.humanize import format_error
+
+    print(format_error(exc, context), file=sys.stderr)
+
+
 def cigate_severities():
     from .core.cigate import SEVERITIES
 
@@ -45,6 +62,20 @@ def _print_json(data) -> None:
 
 
 def main(argv=None) -> int:
+    """CLI 入口：未捕获异常统一转人话，堆栈仅在 TRIDENT_DEBUG=1 时暴露。"""
+    try:
+        return _main(argv)
+    except KeyboardInterrupt:
+        print("\n已取消（Ctrl+C）。", file=sys.stderr)
+        return 130
+    except Exception as exc:  # noqa: BLE001 —— 陌生用户默认不该看到堆栈
+        if os.environ.get("TRIDENT_DEBUG") == "1":
+            raise
+        _human_error(exc)
+        return 2
+
+
+def _main(argv=None) -> int:
     import sys
 
     try:
@@ -125,6 +156,61 @@ def main(argv=None) -> int:
     ua.add_argument("--workspaces", default="local-lab")
 
     sub.add_parser("ui", help="启动本地 Web 控制台").add_argument("--port", type=int, default=8765)
+
+    doc = sub.add_parser("doctor", help="环境自检：Python/写权限/端口/可选依赖/mock 或真集群")
+    doc.add_argument("--port", type=int, default=8765, help="检查 Web UI 端口（默认 8765）")
+    doc.add_argument("--mode", choices=["auto", "mock", "cluster"], default="auto",
+                     help="auto=有 kubeconfig 则提示真集群，否则 mock；cluster=要求 kubeconfig")
+    doc.add_argument("--kubeconfig", default=None, help="kubeconfig 路径（缺省 KUBECONFIG / ~/.kube/config）")
+    doc.add_argument("--workspace", default="local-lab")
+    doc.add_argument("--json", action="store_true", help="机器可读输出")
+
+    dem = sub.add_parser("demo", help="一键 demo：mock 靶场→授权→2 模块+1 链→双语报告+规则包")
+    dem.add_argument("--out", default="demo", help="输出目录（默认 ./demo；拒绝覆盖非 demo 目录）")
+    dem.add_argument("--temp", action="store_true", help="改用系统临时目录（默认成功后清理）")
+    dem.add_argument("--keep", action="store_true", help="保留 mock 靶场进程与临时目录（Ctrl+C 结束）")
+    dem.add_argument("--no-ui", action="store_true", help="跳过静态 Web UI 导出")
+    dem.add_argument("--workers", type=int, default=2, help="链步骤并发数（默认 2）")
+    dem.add_argument("--json", action="store_true", help="机器可读摘要")
+
+    qs = sub.add_parser("quickstart", help="5 问交互向导：目标/范围/级别/用户/签授权")
+    qs.add_argument("--workspace-dir", default="trident-workspace",
+                    help="工作区根目录（默认 ./trident-workspace）")
+    qs.add_argument("--yes", action="store_true", help="全部使用默认值（CI/非交互）")
+    qs.add_argument("--json", action="store_true", help="机器可读摘要")
+
+    pilot = sub.add_parser("pilot", help="试点模式：kubeconfig 只读清点→画像/热图/计划/审批清单")
+    pilot.add_argument("--kubeconfig", action="append", default=[],
+                       help="可重复；多文件/多 context/多 cluster 合并")
+    pilot.add_argument("--context", action="append", default=[], help="只扫描指定 context（可重复）")
+    pilot.add_argument("--snapshot", action="append", default=[],
+                       help="离线归一化 snapshot JSON（可重复；本地 mock/客户先导采样）")
+    pilot.add_argument("--out", default="reports/pilot", help="pilot-report/审批清单输出目录")
+    pilot.add_argument("--format", choices=["json", "md", "both"], default="both")
+    pilot.add_argument("--workspace", default="pilot")
+    pilot.add_argument("--actor", default="pilot")
+    pilot.add_argument("--role", choices=list(ROLES), default="auditor")
+    pilot.add_argument("--allow-write", action="store_true", help="允许生成写计划（仍须授权+备份闸门）")
+    pilot.add_argument("--kubectl", default="kubectl", help="kubectl 路径（只读 get）")
+    pilot.add_argument("--timeout", type=int, default=30, help="单条 kubectl 超时秒")
+
+    ent = sub.add_parser("enterprise", help="企业集成：适配器/审批/报告签核/保留策略")
+    ent.add_argument("action", choices=["adapters", "deliver", "sign-report", "retention",
+                                        "signoff", "approval-list"])
+    ent.add_argument("--workspace", default="local-lab")
+    ent.add_argument("--run", default=None)
+    ent.add_argument("--kind", choices=["splunk", "elastic", "webhook", "jira", "servicenow"],
+                     default="splunk")
+    ent.add_argument("--url", default="")
+    ent.add_argument("--token", default="")
+    ent.add_argument("--dry-run", action="store_true", default=True)
+    ent.add_argument("--send", action="store_true", help="真实发送（缺省 dry-run）")
+    ent.add_argument("--report", default=None)
+    ent.add_argument("--signer", default="lead")
+    ent.add_argument("--key-env", default="TRIDENT_REPORT_KEY")
+    ent.add_argument("--dir", default=None)
+    ent.add_argument("--retain-days", type=int, default=365)
+    ent.add_argument("--out", default=None)
 
     mcp = sub.add_parser("mcp", help="MCP 只读服务器（stdio JSON-RPC）")
     mcp.add_argument("--workspace", default="local-lab")
@@ -360,8 +446,162 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
     home = Path(args.home)
 
+    # ---- 上手三条命令（doctor / demo / quickstart）--------------------------
+    if args.cmd == "doctor":
+        from .onboarding import doctor
+
+        return doctor(home, port=args.port, mode=args.mode, kubeconfig=args.kubeconfig,
+                      workspace=args.workspace, json_out=args.json)
+
+    if args.cmd == "demo":
+        from .onboarding import run_demo
+
+        return run_demo(args.out, temp=args.temp, keep=args.keep, no_ui=args.no_ui,
+                        json_out=args.json, workers=args.workers)
+
+    if args.cmd == "quickstart":
+        from .onboarding import run_quickstart
+
+        return run_quickstart(args.workspace_dir, yes=args.yes, json_out=args.json)
+
+    if args.cmd == "pilot":
+        from .pilot import KubectlCollector, PilotError, PilotGateRefused, run_pilot
+
+        if not args.kubeconfig and not args.snapshot:
+            print("trident pilot: 需要 --kubeconfig 或 --snapshot", file=sys.stderr)
+            return 2
+        collector = (KubectlCollector(args.kubectl, timeout=args.timeout)
+                     if args.kubeconfig and not args.snapshot else None)
+        try:
+            result = run_pilot(
+                kubeconfigs=args.kubeconfig,
+                snapshot_paths=args.snapshot,
+                out_dir=args.out,
+                workspace=args.workspace,
+                actor=args.actor,
+                role=args.role,
+                allow_write=args.allow_write,
+                store=_store(home, args.workspace) if args.allow_write else None,
+                session=_session(args.workspace, args.actor, args.role) if args.allow_write else None,
+                contexts=args.context,
+                collector=collector,
+            )
+        except PilotGateRefused as exc:
+            _human_error(exc, context={"workspace": args.workspace, "action": "trident pilot"})
+            return 91
+        except (PilotError, OSError, ValueError) as exc:
+            print(f"trident pilot: {exc}", file=sys.stderr)
+            return 2
+        if args.format == "json":
+            _print_json(result)
+        elif args.format == "md":
+            from .pilot import render_markdown
+
+            print(render_markdown(result))
+        else:
+            _print_json({"out": str(args.out), "read_only": True,
+                         "write_authorized": result["plan"]["write_authorized"],
+                         "summary": result["summary"],
+                         "manifest_sha256": result.get("outputs", {}).get("manifest_sha256"),
+                         "report": str(Path(args.out) / "pilot-report.md")})
+        return 0
+
+    if args.cmd == "enterprise":
+        from .core import jsonio
+        from .enterprise import (
+            ApprovalChain, ElasticBulk, JiraSink, ServiceNowSink, SplunkHEC,
+            WebhookSink, create_signoff, retention_plan, sign_report,
+        )
+
+        try:
+            if args.action == "adapters":
+                _print_json({"adapters": [
+                    {"kind": "splunk", "mode": "Splunk HEC", "default": "dry-run"},
+                    {"kind": "elastic", "mode": "Elastic _bulk", "default": "dry-run"},
+                    {"kind": "webhook", "mode": "HMAC webhook", "default": "dry-run"},
+                    {"kind": "jira", "mode": "Jira REST issue", "default": "dry-run"},
+                    {"kind": "servicenow", "mode": "ServiceNow incident", "default": "dry-run"},
+                ], "boundary": "本地契约适配；真实客户环境需联调证书/代理/字段映射"})
+                return 0
+            if args.action == "approval-list":
+                _print_json({"approvals": ApprovalChain(_store(home, args.workspace)).list()})
+                return 0
+            if args.action == "retention":
+                if not args.dir:
+                    print("trident enterprise: --dir 必填", file=sys.stderr)
+                    return 2
+                _print_json(retention_plan(Path(args.dir).glob("*"),
+                                            retain_days=args.retain_days, legal_hold=False))
+                return 0
+            if args.action == "sign-report":
+                if not args.report:
+                    print("trident enterprise: --report 必填", file=sys.stderr)
+                    return 2
+                key = os.environ.get(args.key_env, "")
+                if not key:
+                    print(f"trident enterprise: 缺少签名密钥环境变量 {args.key_env}", file=sys.stderr)
+                    return 2
+                _print_json(sign_report(args.report, signer=args.signer, key=key, out=args.out))
+                return 0
+            if args.action == "signoff":
+                if not args.report:
+                    print("trident enterprise: --report 必填", file=sys.stderr)
+                    return 2
+                key = os.environ.get(args.key_env, "")
+                if not key:
+                    print(f"trident enterprise: 缺少签名密钥环境变量 {args.key_env}", file=sys.stderr)
+                    return 2
+                _print_json(create_signoff(
+                    args.report,
+                    signers=[{"name": args.signer, "role": "lead"},
+                             {"name": "security-owner", "role": "security-owner"}],
+                    checklist={k: True for k in ("scope", "evidence_manifest",
+                                                 "findings_reviewed", "fp_fn_reviewed",
+                                                 "data_handling", "rollback_verified")},
+                    key=key, out=args.out))
+                return 0
+            if not args.run:
+                print("trident enterprise: deliver 需要 --run", file=sys.stderr)
+                return 2
+            from .export import export_run
+
+            doc = export_run(_store(home, args.workspace), args.run, "ocsf")
+            if not args.url:
+                print("trident enterprise: --url 必填", file=sys.stderr)
+                return 2
+            if args.kind in ("jira", "servicenow"):
+                if not doc.get("events"):
+                    print("trident enterprise: run 无 findings", file=sys.stderr)
+                    return 2
+                ev = doc["events"][0]
+                finding = {"title": ev.get("finding_info", {}).get("title", ""),
+                           "detail": ev.get("finding_info", {}).get("desc", ""),
+                           "severity": str(ev.get("severity", "info")).lower(),
+                           "step_key": (ev.get("finding_info", {}).get("analytic") or {}).get("uid", "")}
+                payload = (JiraSink(args.url, token=args.token).build(finding, run=args.run)
+                           if args.kind == "jira"
+                           else ServiceNowSink(args.url, token=args.token).build(finding, run=args.run))
+                _print_json({"adapter": args.kind, "dry_run": True,
+                             "payload": jsonio.redact(payload)})
+                return 0
+            if args.kind == "splunk":
+                adapter = SplunkHEC(args.url, args.token, index="trident")
+            elif args.kind == "elastic":
+                adapter = ElasticBulk(args.url, index="trident-findings", api_key=args.token)
+            else:
+                adapter = WebhookSink(args.url, secret=args.token)
+            body = adapter.build_payload(doc)
+            if args.send:
+                _print_json(adapter.send(doc))
+            else:
+                print(body.decode("utf-8"))
+            return 0
+        except (ValueError, OSError, KeyError) as exc:
+            print(f"trident enterprise: {exc}", file=sys.stderr)
+            return 2
+
     if args.cmd == "module" and args.mcmd == "list":
-        mods_dir = Path(args.modules_dir) if args.modules_dir else home / "modules"
+        mods_dir = _modules_dir(home, args.modules_dir)
         mods = load_modules(mods_dir)
         for key in sorted(mods):
             m = mods[key]
@@ -381,8 +621,16 @@ def main(argv=None) -> int:
         return 0
 
     if args.cmd == "ui":
+        import socket
+
         from .webui.server import make_server
 
+        # SO_REUSEADDR 在 Windows 上可能让第二个进程也 bind 成功，先显式探活端口
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            try:
+                probe.bind(("127.0.0.1", int(args.port)))
+            except OSError as exc:
+                raise OSError(10048, f"address already in use: 127.0.0.1:{args.port}") from exc
         users = UserStore(home / "users.json")
         httpd = make_server(home, users, port=args.port)
         print(f"Trident 控制台: http://127.0.0.1:{httpd.port} （Ctrl+C 退出）")
@@ -960,7 +1208,7 @@ def main(argv=None) -> int:
         except (OSError, ValueError) as exc:
             print(f"trident run: --params 解析失败：{exc}", file=sys.stderr)
             return 2
-        mods_dir = Path(args.modules_dir) if args.modules_dir else home / "modules"
+        mods_dir = _modules_dir(home, args.modules_dir)
         try:
             run = store.open_run(args.run) if args.run else None
         except KeyError as exc:
@@ -969,10 +1217,10 @@ def main(argv=None) -> int:
         try:
             result = run_module(store, session, args.module, params, mods_dir, run=run)
         except KeyError as exc:
-            print(f"trident run: {exc}", file=sys.stderr)
+            _human_error(exc, context={"workspace": args.workspace})
             return 2
         except (ExecutionLocked, BackupGateRefused, ZerodayLocked, PermissionError) as exc:
-            print(f"trident run: {exc}", file=sys.stderr)
+            _human_error(exc, context={"workspace": args.workspace, "action": "trident run"})
             return 91
         _print_json(result)
         return 0
@@ -986,7 +1234,7 @@ def main(argv=None) -> int:
         chains_dir = Path(args.chains_dir) if args.chains_dir else home / "chains"
         if not chains_dir.exists():
             chains_dir = Path(__file__).resolve().parent / "chains"
-        mods_dir = Path(args.modules_dir) if args.modules_dir else home / "modules"
+        mods_dir = _modules_dir(home, args.modules_dir)
         try:
             chains = load_chains(chains_dir)
         except ValueError as exc:
@@ -1011,7 +1259,7 @@ def main(argv=None) -> int:
                              workers=args.workers, strict=args.strict)
         except (PreconditionError, ExecutionLocked, BackupGateRefused, ZerodayLocked,
                 PermissionError) as exc:
-            print(f"trident execute: {exc}", file=sys.stderr)
+            _human_error(exc, context={"workspace": args.workspace, "action": "trident execute"})
             return 91
         _print_json(result)
         return 0 if result.get("ok") else 3
@@ -1023,7 +1271,7 @@ def main(argv=None) -> int:
         try:
             run = store.open_run(args.run)
         except KeyError as exc:
-            print(f"trident rollback: {exc}", file=sys.stderr)
+            _human_error(exc, context={"workspace": args.workspace})
             return 2
         receipt = BackupManager(store, run).rollback(args.step)
         _print_json(receipt)
@@ -1055,7 +1303,7 @@ def main(argv=None) -> int:
                 text = render_pentest(store, args.run, lang=args.lang,
                                       disclosed=disclosed, redact_zeroday=args.redact)
         except KeyError as exc:
-            print(f"trident report: {exc}", file=sys.stderr)
+            _human_error(exc, context={"workspace": args.workspace})
             return 2
         if args.out:
             out = Path(args.out)

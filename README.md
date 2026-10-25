@@ -30,7 +30,7 @@ python -m trident quickstart
 
 第 2 条命令结束时会直接打印：发现数（按严重度）、链两步状态、双语报告路径、规则包路径、Web UI 路径与下一步。默认只写 `./demo/`，**不读取、不修改真实集群**；`--no-ui` 跳过 UI 导出，`--keep` 保留 mock 靶场进程（Ctrl+C 结束）。
 
-实测（Windows 11 / Python 3.12，本机 mock）：`doctor` 0.2 秒，`demo` 18.3 秒，**首次有效结果 18.5 秒**；陌生用户走查基线与改造后对照见 [`docs/ONBOARDING-EVALUATION.md`](docs/ONBOARDING-EVALUATION.md)。
+实测（Windows 11 / Python 3.12，本机 mock）：`doctor` 0.3 秒，`demo` 3.6 秒（慢盘/杀软波动区间约 4–20 秒），**首次有效结果 3.8 秒**；陌生用户走查基线与改造后对照见 [`docs/ONBOARDING-EVALUATION.md`](docs/ONBOARDING-EVALUATION.md)。
 
 想用 `trident ...` 短命令：`python -m pip install -e .` 后即可；不装也能用 `python -m trident ...`。
 不需要：kubeconfig、外部网络、LLM key、bash、第三方 Python 包。
@@ -111,6 +111,9 @@ python -m trident ui --port 8765
 # 5) 端到端验收 + 实效验证（本机、可复现）
 python trident/e2e-check.py
 python -m trident.verify-effects --out reports/samples/effects/
+
+# 6) 试点只读清点（多 kubeconfig 合并；写计划需 --allow-write + 三闸门）
+python -m trident pilot --kubeconfig ~/.kube/config --out reports/pilot
 ```
 
 工作区初始化、授权签署、四角色矩阵、链执行与报告导出的完整示例见 [`docs/RUNBOOK.md`](docs/RUNBOOK.md)。

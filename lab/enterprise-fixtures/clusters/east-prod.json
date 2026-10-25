@@ -1,0 +1,1334 @@
+{
+  "source": "fixture",
+  "context": "east-prod",
+  "provider": "aws-eks",
+  "k8s_version": "v1.31.4-eks",
+  "collected_at": "2026-10-25T10:00:00Z",
+  "nodes": [
+    {
+      "name": "east-node-0",
+      "labels": {
+        "kubernetes.io/hostname": "east-node-0",
+        "node.kubernetes.io/instance-type": "m6i.4xlarge",
+        "eks.amazonaws.com/nodegroup": "gpu"
+      },
+      "capacity": {
+        "cpu": "16",
+        "memory": "64Gi",
+        "pods": "110",
+        "nvidia.com/gpu": "8"
+      },
+      "conditions": [
+        "Ready"
+      ]
+    },
+    {
+      "name": "east-node-1",
+      "labels": {
+        "kubernetes.io/hostname": "east-node-1",
+        "node.kubernetes.io/instance-type": "m6i.4xlarge",
+        "eks.amazonaws.com/nodegroup": "gpu"
+      },
+      "capacity": {
+        "cpu": "16",
+        "memory": "64Gi",
+        "pods": "110",
+        "nvidia.com/gpu": "8"
+      },
+      "conditions": [
+        "Ready"
+      ]
+    },
+    {
+      "name": "east-node-2",
+      "labels": {
+        "kubernetes.io/hostname": "east-node-2",
+        "node.kubernetes.io/instance-type": "m6i.4xlarge",
+        "eks.amazonaws.com/nodegroup": "gpu"
+      },
+      "capacity": {
+        "cpu": "16",
+        "memory": "64Gi",
+        "pods": "110",
+        "nvidia.com/gpu": "8"
+      },
+      "conditions": [
+        "Ready"
+      ]
+    },
+    {
+      "name": "east-node-3",
+      "labels": {
+        "kubernetes.io/hostname": "east-node-3",
+        "node.kubernetes.io/instance-type": "m6i.4xlarge",
+        "eks.amazonaws.com/nodegroup": "gpu"
+      },
+      "capacity": {
+        "cpu": "16",
+        "memory": "64Gi",
+        "pods": "110",
+        "nvidia.com/gpu": "8"
+      },
+      "conditions": [
+        "Ready"
+      ]
+    },
+    {
+      "name": "east-node-4",
+      "labels": {
+        "kubernetes.io/hostname": "east-node-4",
+        "node.kubernetes.io/instance-type": "m6i.2xlarge",
+        "eks.amazonaws.com/nodegroup": "system"
+      },
+      "capacity": {
+        "cpu": "16",
+        "memory": "64Gi",
+        "pods": "110"
+      },
+      "conditions": [
+        "Ready"
+      ]
+    },
+    {
+      "name": "east-node-5",
+      "labels": {
+        "kubernetes.io/hostname": "east-node-5",
+        "node.kubernetes.io/instance-type": "m6i.2xlarge",
+        "eks.amazonaws.com/nodegroup": "system"
+      },
+      "capacity": {
+        "cpu": "16",
+        "memory": "64Gi",
+        "pods": "110"
+      },
+      "conditions": [
+        "Ready"
+      ]
+    },
+    {
+      "name": "east-node-6",
+      "labels": {
+        "kubernetes.io/hostname": "east-node-6",
+        "node.kubernetes.io/instance-type": "m6i.2xlarge",
+        "eks.amazonaws.com/nodegroup": "system"
+      },
+      "capacity": {
+        "cpu": "16",
+        "memory": "64Gi",
+        "pods": "110"
+      },
+      "conditions": [
+        "Ready"
+      ]
+    },
+    {
+      "name": "east-node-7",
+      "labels": {
+        "kubernetes.io/hostname": "east-node-7",
+        "node.kubernetes.io/instance-type": "m6i.2xlarge",
+        "eks.amazonaws.com/nodegroup": "system"
+      },
+      "capacity": {
+        "cpu": "16",
+        "memory": "64Gi",
+        "pods": "110"
+      },
+      "conditions": [
+        "Ready"
+      ]
+    }
+  ],
+  "pods": [
+    {
+      "namespace": "kube-system",
+      "name": "aws-node-9k2lp",
+      "labels": {},
+      "nodeName": "kube-system-node-0",
+      "hostNetwork": true,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "aws-node",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "aws-node-9k2lp",
+          "image": "602401143452.dkr.ecr.us-east-1.amazonaws.com/amazon-k8s-cni:v1.18",
+          "securityContext": {
+            "privileged": true
+          },
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [
+        {
+          "name": "host-0",
+          "hostPath": {
+            "path": "/var/run/docker.sock"
+          }
+        },
+        {
+          "name": "host-1",
+          "hostPath": {
+            "path": "/var/lib/cni"
+          }
+        }
+      ],
+      "tolerations": []
+    },
+    {
+      "namespace": "kube-system",
+      "name": "kube-proxy-7c9d",
+      "labels": {},
+      "nodeName": "kube-system-node-0",
+      "hostNetwork": true,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "kube-proxy",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "kube-proxy-7c9d",
+          "image": "registry.k8s.io/kube-proxy:v1.31.4",
+          "securityContext": {
+            "capabilities": {
+              "add": [
+                "NET_ADMIN"
+              ]
+            }
+          },
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "kube-system",
+      "name": "ebs-csi-node-2x8v",
+      "labels": {},
+      "nodeName": "kube-system-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "ebs-csi-node",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "ebs-csi-node-2x8v",
+          "image": "public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver:v1.35",
+          "securityContext": {
+            "privileged": true
+          },
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [
+        {
+          "name": "host-0",
+          "hostPath": {
+            "path": "/var/lib/kubelet"
+          }
+        },
+        {
+          "name": "host-1",
+          "hostPath": {
+            "path": "/dev"
+          }
+        }
+      ],
+      "tolerations": []
+    },
+    {
+      "namespace": "kube-system",
+      "name": "coredns-6d4b75cb6d-x8q2z",
+      "labels": {
+        "k8s-app": "kube-dns"
+      },
+      "nodeName": "kube-system-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "coredns",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "coredns-6d4b75cb6d-x8q2z",
+          "image": "registry.k8s.io/coredns/coredns:v1.11.1",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "security",
+      "name": "falco-jk2m9",
+      "labels": {},
+      "nodeName": "security-node-0",
+      "hostNetwork": true,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "falco",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "falco-jk2m9",
+          "image": "falcosecurity/falco:0.39.2",
+          "securityContext": {
+            "privileged": true
+          },
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [
+        {
+          "name": "host-0",
+          "hostPath": {
+            "path": "/proc"
+          }
+        },
+        {
+          "name": "host-1",
+          "hostPath": {
+            "path": "/sys/kernel/debug"
+          }
+        },
+        {
+          "name": "host-2",
+          "hostPath": {
+            "path": "/var/run/docker.sock"
+          }
+        }
+      ],
+      "tolerations": []
+    },
+    {
+      "namespace": "security",
+      "name": "kyverno-admission-controller-5b7c",
+      "labels": {},
+      "nodeName": "security-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "kyverno-admission-controller",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "kyverno-admission-controller-5b7c",
+          "image": "ghcr.io/kyverno/kyverno:v1.13.2",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "monitoring",
+      "name": "node-exporter-h4n2p",
+      "labels": {},
+      "nodeName": "monitoring-node-0",
+      "hostNetwork": true,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "node-exporter",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "node-exporter-h4n2p",
+          "image": "quay.io/prometheus/node-exporter:v1.8.2",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [
+        {
+          "name": "host-0",
+          "hostPath": {
+            "path": "/proc"
+          }
+        },
+        {
+          "name": "host-1",
+          "hostPath": {
+            "path": "/sys"
+          }
+        }
+      ],
+      "tolerations": []
+    },
+    {
+      "namespace": "monitoring",
+      "name": "prometheus-0",
+      "labels": {},
+      "nodeName": "monitoring-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "prometheus",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "prometheus-0",
+          "image": "quay.io/prometheus/prometheus:v2.55.0",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [
+        {
+          "name": "host-0",
+          "hostPath": {
+            "path": "/var/lib/prometheus"
+          }
+        },
+        {
+          "name": "pvc-0",
+          "persistentVolumeClaim": {
+            "claimName": "prometheus-data"
+          }
+        }
+      ],
+      "tolerations": []
+    },
+    {
+      "namespace": "monitoring",
+      "name": "grafana-7d9f",
+      "labels": {},
+      "nodeName": "monitoring-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "grafana",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "grafana-7d9f",
+          "image": "grafana/grafana:11.3.0",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "ml-training",
+      "name": "pytorchjob-worker-0",
+      "labels": {
+        "job": "llama-finetune"
+      },
+      "nodeName": "ml-training-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "training-operator",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "pytorchjob-worker-0",
+          "image": "pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "ml-training",
+      "name": "checkpoint-writer-0",
+      "labels": {},
+      "nodeName": "ml-training-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "platform-scheduler",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "checkpoint-writer-0",
+          "image": "alpine:3.20",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [
+        {
+          "name": "pvc-0",
+          "persistentVolumeClaim": {
+            "claimName": "model-weights-pvc"
+          }
+        }
+      ],
+      "tolerations": []
+    },
+    {
+      "namespace": "ml-training",
+      "name": "ray-head-0",
+      "labels": {},
+      "nodeName": "ml-training-node-0",
+      "hostNetwork": true,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "ray-head",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "ray-head-0",
+          "image": "rayproject/ray:2.40.0-gpu",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "ml-inference",
+      "name": "vllm-router-6f7d9",
+      "labels": {
+        "app": "vllm"
+      },
+      "nodeName": "ml-inference-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "vllm-router",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "vllm-router-6f7d9",
+          "image": "vllm/vllm-openai:v0.6.4",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "ml-inference",
+      "name": "sglang-engine-0",
+      "labels": {
+        "app": "sglang"
+      },
+      "nodeName": "ml-inference-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "sglang-engine",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "sglang-engine-0",
+          "image": "lmsysorg/sglang:v0.4.1",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "ml-inference",
+      "name": "api-gateway-5f8d",
+      "labels": {
+        "app": "api-gateway"
+      },
+      "nodeName": "ml-inference-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "api-gateway",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "api-gateway-5f8d",
+          "image": "envoyproxy/envoy:v1.31.2",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "tenant-a",
+      "name": "jupyter-alice-0",
+      "labels": {
+        "tenant": "a"
+      },
+      "nodeName": "tenant-a-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "tenant-a",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "jupyter-alice-0",
+          "image": "jupyter/scipy-notebook:2024-10-01",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "tenant-a",
+      "name": "model-copy-job-8x2k",
+      "labels": {
+        "tenant": "a"
+      },
+      "nodeName": "tenant-a-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "tenant-a",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "model-copy-job-8x2k",
+          "image": "busybox:1.36",
+          "securityContext": {
+            "privileged": true
+          },
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [
+        {
+          "name": "host-0",
+          "hostPath": {
+            "path": "/"
+          }
+        }
+      ],
+      "tolerations": []
+    },
+    {
+      "namespace": "tenant-b",
+      "name": "jupyter-bob-0",
+      "labels": {
+        "tenant": "b"
+      },
+      "nodeName": "tenant-b-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "tenant-b",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "jupyter-bob-0",
+          "image": "jupyter/scipy-notebook:2024-10-01",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "ci",
+      "name": "gitlab-runner-0",
+      "labels": {},
+      "nodeName": "ci-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "ci-runner",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "gitlab-runner-0",
+          "image": "gitlab/gitlab-runner:alpine-v17.5.0",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "ingress-nginx",
+      "name": "controller-7d8f9",
+      "labels": {},
+      "nodeName": "ingress-nginx-node-0",
+      "hostNetwork": true,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "ingress-nginx",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "controller-7d8f9",
+          "image": "registry.k8s.io/ingress-nginx/controller:v1.11.3",
+          "securityContext": {
+            "capabilities": {
+              "add": [
+                "NET_BIND_SERVICE"
+              ]
+            }
+          },
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    }
+  ],
+  "services": [
+    {
+      "namespace": "default",
+      "name": "kubernetes",
+      "type": "ClusterIP",
+      "clusterIP": "10.43.0.10",
+      "externalIPs": [],
+      "selector": {
+        "app": "kubernetes"
+      },
+      "labels": {},
+      "ports": [
+        {
+          "name": "p0",
+          "port": 443,
+          "targetPort": 443,
+          "nodePort": null,
+          "protocol": "TCP"
+        }
+      ]
+    },
+    {
+      "namespace": "ml-inference",
+      "name": "vllm-router",
+      "type": "NodePort",
+      "clusterIP": "10.43.0.10",
+      "externalIPs": [],
+      "selector": {
+        "app": "vllm-router"
+      },
+      "labels": {},
+      "ports": [
+        {
+          "name": "p0",
+          "port": 8000,
+          "targetPort": 8000,
+          "nodePort": 30000,
+          "protocol": "TCP"
+        }
+      ]
+    },
+    {
+      "namespace": "ml-training",
+      "name": "tensorboard",
+      "type": "LoadBalancer",
+      "clusterIP": "10.43.0.10",
+      "externalIPs": [],
+      "selector": {
+        "app": "tensorboard"
+      },
+      "labels": {},
+      "ports": [
+        {
+          "name": "p0",
+          "port": 6006,
+          "targetPort": 6006,
+          "nodePort": null,
+          "protocol": "TCP"
+        }
+      ]
+    },
+    {
+      "namespace": "monitoring",
+      "name": "grafana",
+      "type": "ClusterIP",
+      "clusterIP": "10.43.0.10",
+      "externalIPs": [],
+      "selector": {
+        "app": "grafana"
+      },
+      "labels": {},
+      "ports": [
+        {
+          "name": "p0",
+          "port": 3000,
+          "targetPort": 3000,
+          "nodePort": null,
+          "protocol": "TCP"
+        }
+      ]
+    },
+    {
+      "namespace": "monitoring",
+      "name": "prometheus",
+      "type": "ClusterIP",
+      "clusterIP": "10.43.0.10",
+      "externalIPs": [],
+      "selector": {
+        "app": "prometheus"
+      },
+      "labels": {},
+      "ports": [
+        {
+          "name": "p0",
+          "port": 9090,
+          "targetPort": 9090,
+          "nodePort": null,
+          "protocol": "TCP"
+        }
+      ]
+    },
+    {
+      "namespace": "ml-training",
+      "name": "mlflow",
+      "type": "LoadBalancer",
+      "clusterIP": "10.43.0.10",
+      "externalIPs": [],
+      "selector": {
+        "app": "mlflow"
+      },
+      "labels": {},
+      "ports": [
+        {
+          "name": "p0",
+          "port": 5000,
+          "targetPort": 5000,
+          "nodePort": null,
+          "protocol": "TCP"
+        }
+      ]
+    },
+    {
+      "namespace": "ingress-nginx",
+      "name": "ingress-nginx-controller",
+      "type": "LoadBalancer",
+      "clusterIP": "10.43.0.10",
+      "externalIPs": [],
+      "selector": {
+        "app": "ingress-nginx-controller"
+      },
+      "labels": {},
+      "ports": [
+        {
+          "name": "p0",
+          "port": 80,
+          "targetPort": 80,
+          "nodePort": null,
+          "protocol": "TCP"
+        },
+        {
+          "name": "p1",
+          "port": 443,
+          "targetPort": 443,
+          "nodePort": null,
+          "protocol": "TCP"
+        }
+      ]
+    },
+    {
+      "namespace": "tenant-a",
+      "name": "jupyter-alice",
+      "type": "NodePort",
+      "clusterIP": "10.43.0.10",
+      "externalIPs": [],
+      "selector": {
+        "app": "jupyter-alice"
+      },
+      "labels": {},
+      "ports": [
+        {
+          "name": "p0",
+          "port": 8888,
+          "targetPort": 8888,
+          "nodePort": 30000,
+          "protocol": "TCP"
+        }
+      ]
+    }
+  ],
+  "networkpolicies": [
+    {
+      "namespace": "ml-training",
+      "name": "default-deny",
+      "podSelector": {},
+      "policyTypes": [
+        "Ingress",
+        "Egress"
+      ],
+      "ingress": [],
+      "egress": []
+    },
+    {
+      "namespace": "ml-inference",
+      "name": "default-deny",
+      "podSelector": {},
+      "policyTypes": [
+        "Ingress",
+        "Egress"
+      ],
+      "ingress": [],
+      "egress": []
+    },
+    {
+      "namespace": "tenant-a",
+      "name": "default-deny",
+      "podSelector": {},
+      "policyTypes": [
+        "Ingress",
+        "Egress"
+      ],
+      "ingress": [],
+      "egress": []
+    },
+    {
+      "namespace": "ci",
+      "name": "default-deny",
+      "podSelector": {},
+      "policyTypes": [
+        "Ingress",
+        "Egress"
+      ],
+      "ingress": [],
+      "egress": []
+    }
+  ],
+  "roles": [
+    {
+      "namespace": "tenant-a",
+      "name": "tenant-a-deployer",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "roles",
+            "rolebindings"
+          ],
+          "verbs": [
+            "create",
+            "update",
+            "patch"
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "tenant-a",
+      "name": "read-only-auditor",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods",
+            "services"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        }
+      ]
+    }
+  ],
+  "rolebindings": [
+    {
+      "namespace": "tenant-a",
+      "name": "tenant-a-deployer-binding",
+      "role": "tenant-a-deployer",
+      "roleKind": "Role",
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "deployer",
+          "namespace": "tenant-a"
+        }
+      ]
+    }
+  ],
+  "clusterroles": [
+    {
+      "namespace": null,
+      "name": "platform-operator",
+      "rules": [
+        {
+          "apiGroups": [
+            "*"
+          ],
+          "resources": [
+            "*"
+          ],
+          "verbs": [
+            "*"
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": null,
+      "name": "system:controller:node-controller",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "nodes",
+            "pods"
+          ],
+          "verbs": [
+            "*"
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": null,
+      "name": "tenant-a-deployer",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "roles",
+            "rolebindings"
+          ],
+          "verbs": [
+            "create",
+            "update",
+            "patch"
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": null,
+      "name": "ml-pipeline-runner",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods",
+            "secrets"
+          ],
+          "verbs": [
+            "create",
+            "get",
+            "list"
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": null,
+      "name": "read-only-auditor",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods",
+            "services"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        }
+      ]
+    }
+  ],
+  "clusterrolebindings": [
+    {
+      "namespace": null,
+      "name": "system:masters",
+      "role": "cluster-admin",
+      "roleKind": "ClusterRole",
+      "subjects": [
+        {
+          "kind": "Group",
+          "name": "system:masters"
+        }
+      ]
+    },
+    {
+      "namespace": null,
+      "name": "platform-operator-binding",
+      "role": "platform-operator",
+      "roleKind": "ClusterRole",
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "platform-operator",
+          "namespace": "ml-platform"
+        }
+      ]
+    },
+    {
+      "namespace": null,
+      "name": "tenant-a-admin-binding",
+      "role": "cluster-admin",
+      "roleKind": "ClusterRole",
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "admin",
+          "namespace": "tenant-a"
+        }
+      ]
+    },
+    {
+      "namespace": null,
+      "name": "ci-runner-binding",
+      "role": "ml-pipeline-runner",
+      "roleKind": "ClusterRole",
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "ci-runner",
+          "namespace": "ci"
+        }
+      ]
+    }
+  ],
+  "ingresses": [
+    {
+      "namespace": "ml-inference",
+      "name": "vllm",
+      "host": "llm.east.example.test",
+      "path": "/",
+      "service": "vllm-router",
+      "port": 8000
+    },
+    {
+      "namespace": "monitoring",
+      "name": "grafana",
+      "host": "grafana.east.example.test",
+      "path": "/",
+      "service": "grafana",
+      "port": 3000
+    }
+  ],
+  "pvs": [
+    {
+      "name": "model-weights-pvc",
+      "capacity": {
+        "storage": "2Ti"
+      },
+      "claim": "model-weights-pvc",
+      "namespace": "ml-training"
+    },
+    {
+      "name": "checkpoint-pvc",
+      "capacity": {
+        "storage": "1Ti"
+      },
+      "claim": "checkpoint-pvc",
+      "namespace": "ml-training"
+    },
+    {
+      "name": "prometheus-data",
+      "capacity": {
+        "storage": "500Gi"
+      },
+      "claim": "prometheus-data",
+      "namespace": "monitoring"
+    }
+  ],
+  "secrets": [
+    {
+      "namespace": "ml-training",
+      "name": "hf-token"
+    },
+    {
+      "namespace": "ml-inference",
+      "name": "vllm-api-key"
+    },
+    {
+      "namespace": "tenant-a",
+      "name": "alice-token"
+    },
+    {
+      "namespace": "tenant-b",
+      "name": "bob-token"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "aws-node-token"
+    },
+    {
+      "namespace": "security",
+      "name": "falco-webhook"
+    }
+  ],
+  "cani": [
+    {
+      "subject": "system:serviceaccount:ml-training:platform-scheduler",
+      "allowed": [
+        "create pods",
+        "get secrets"
+      ]
+    },
+    {
+      "subject": "system:serviceaccount:tenant-a:tenant-a",
+      "allowed": [
+        "get secrets"
+      ]
+    },
+    {
+      "subject": "system:serviceaccount:ci:ci-runner",
+      "allowed": [
+        "create pods/exec"
+      ]
+    },
+    {
+      "subject": "system:serviceaccount:tenant-a:auditor",
+      "allowed": [
+        "get pods"
+      ]
+    }
+  ],
+  "namespaces": [
+    "kube-system",
+    "security",
+    "monitoring",
+    "ml-training",
+    "ml-inference",
+    "tenant-a",
+    "tenant-b",
+    "ci",
+    "ingress-nginx"
+  ],
+  "defenses": {
+    "kyverno": {
+      "policies": [
+        {
+          "name": "deny-privileged",
+          "status": "Enforced"
+        },
+        {
+          "name": "deny-hostpath",
+          "status": "Enforced"
+        },
+        {
+          "name": "require-run-as-nonroot",
+          "status": "Audit"
+        },
+        {
+          "name": "restrict-image-registries",
+          "status": "Audit"
+        },
+        {
+          "name": "require-resource-limits",
+          "status": "Missing"
+        }
+      ]
+    },
+    "falco": {
+      "rules": [
+        {
+          "name": "Terminal shell in container",
+          "loaded": true
+        },
+        {
+          "name": "Read sensitive file untrusted",
+          "loaded": true
+        },
+        {
+          "name": "Write below etc",
+          "loaded": true
+        },
+        {
+          "name": "Package management launched",
+          "loaded": true
+        },
+        {
+          "name": "Contact K8s API Server",
+          "loaded": true
+        },
+        {
+          "name": "Detect crypto mining",
+          "loaded": false
+        },
+        {
+          "name": "Outbound connection to C2",
+          "loaded": false
+        },
+        {
+          "name": "Sensitive mount",
+          "loaded": false
+        }
+      ]
+    }
+  }
+}

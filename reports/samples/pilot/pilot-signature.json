@@ -1,0 +1,12 @@
+{
+  "schema": "trident-pilot-signature/1",
+  "generated_at": "2026-10-25T16:27:21Z",
+  "manifest_sha256": "2ebc9a050e90b9523cff1fd77f483ffe3ceab90659d0bb89176a2fd15234922a",
+  "report_sha256": "b4ecf40d712f5bbb2b6998ae1b1fe163e8493c1449c4d26f537016f1347a6126",
+  "timestamp": {
+    "source": "local-clock",
+    "epoch": 1792945641,
+    "note": "本机时间戳；生产交付需客户 TSA/RFC3161 或 HSM 签名"
+  },
+  "signed_by": "pilot"
+}

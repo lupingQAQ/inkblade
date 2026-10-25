@@ -1,0 +1,19 @@
+rules:
+  - rule: Terminal shell in container
+    enabled: true
+    priority: NOTICE
+  - rule: Read sensitive file untrusted
+    enabled: true
+    priority: WARNING
+  - rule: Write below etc
+    enabled: true
+    priority: ERROR
+  - rule: Detect crypto mining
+    enabled: false
+    priority: ERROR
+  - rule: Outbound connection to C2
+    enabled: false
+    priority: CRITICAL
+  - rule: Sensitive mount
+    enabled: false
+    priority: WARNING

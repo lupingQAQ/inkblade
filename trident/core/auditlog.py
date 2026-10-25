@@ -230,6 +230,8 @@ def _detect_pods_exec(event: dict, baseline: set[str]) -> dict | None:
         return None
     if str(ref.get("subresource") or "").lower() not in ("exec", "attach"):
         return None
+    if subject_of(event) in baseline:
+        return None
     return _finding(
         "pods-exec-session", "high", "审计轨迹：pods/exec 会话（非基线主体）",
         event,

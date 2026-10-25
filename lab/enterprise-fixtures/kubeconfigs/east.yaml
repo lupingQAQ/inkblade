@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Config
+clusters:
+- name: east-cluster
+  cluster:
+    server: https://east-cluster.example.test:6443
+contexts:
+- name: east-prod
+  context:
+    cluster: east-cluster
+    user: east-user
+    namespace: ml-inference
+current-context: east-prod
+users:
+- name: east-user
+  user:
+    token: MOCK-EAST-TOKEN

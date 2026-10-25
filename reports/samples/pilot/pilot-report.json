@@ -1,0 +1,708 @@
+{
+  "schema": "trident-pilot/1",
+  "generated_at": "2026-10-25T16:27:21Z",
+  "tool": "trident",
+  "workspace": "pilot",
+  "actor": "pilot",
+  "role": "auditor",
+  "read_only": true,
+  "collector_mode": "fixture-read-only",
+  "mutations": [],
+  "inventory": {
+    "schema": "trident-kubeconfig-inventory/1",
+    "source_files": [
+      "east.yaml",
+      "west.yaml"
+    ],
+    "context_count": 2,
+    "cluster_count": 2,
+    "user_count": 2,
+    "contexts": [
+      {
+        "name": "east-prod",
+        "cluster": "east-cluster",
+        "user": "east-user",
+        "namespace": "ml-inference",
+        "server": "https://east-cluster.example.test:6443",
+        "auth": "token",
+        "source": "east.yaml",
+        "current": true
+      },
+      {
+        "name": "west-prod",
+        "cluster": "west-cluster",
+        "user": "west-user",
+        "namespace": "ml-inference",
+        "server": "https://west-cluster.example.test:6443",
+        "auth": "token",
+        "source": "west.yaml",
+        "current": true
+      }
+    ],
+    "clusters": [
+      {
+        "name": "east-cluster",
+        "server": "https://east-cluster.example.test:6443",
+        "insecure_skip_tls_verify": false,
+        "source": "east.yaml"
+      },
+      {
+        "name": "west-cluster",
+        "server": "https://west-cluster.example.test:6443",
+        "insecure_skip_tls_verify": false,
+        "source": "west.yaml"
+      }
+    ],
+    "users": [
+      {
+        "name": "east-user",
+        "auth": "token",
+        "source": "east.yaml"
+      },
+      {
+        "name": "west-user",
+        "auth": "token",
+        "source": "west.yaml"
+      }
+    ],
+    "conflicts": [],
+    "warnings": []
+  },
+  "profile": {
+    "schema": "trident-pilot-profile/1",
+    "generated_at": "2026-10-25T16:27:21Z",
+    "clusters": [
+      {
+        "context": "east-prod",
+        "source": "fixture",
+        "provider": "aws-eks",
+        "k8s_version": "v1.31.4-eks",
+        "nodes": 8,
+        "gpu_nodes": 4,
+        "gpus": 32,
+        "namespaces": [
+          "ci",
+          "ingress-nginx",
+          "kube-system",
+          "ml-inference",
+          "ml-training",
+          "monitoring",
+          "security",
+          "tenant-a",
+          "tenant-b"
+        ],
+        "namespace_count": 9,
+        "pods": 20,
+        "services": 8,
+        "privileged_pods": 4,
+        "host_path_pods": 6,
+        "host_network_pods": 6,
+        "node_ports": 2,
+        "load_balancers": 3,
+        "wildcard_roles": 2,
+        "cluster_admin_bindings": 2,
+        "netpol_namespaces": 4,
+        "unisolated_namespaces": [
+          "ingress-nginx",
+          "kube-system",
+          "monitoring",
+          "security",
+          "tenant-b"
+        ],
+        "weight_pvs": 2,
+        "weight_claim_pods": 1,
+        "secrets": 6,
+        "inference_services": [
+          "vllm-router"
+        ],
+        "kyverno_policies": 5,
+        "kyverno_enforced": 2,
+        "falco_rules": 8,
+        "falco_loaded": 5,
+        "cani_entries": 4,
+        "findings": 32
+      },
+      {
+        "context": "west-prod",
+        "source": "fixture",
+        "provider": "azure-aks",
+        "k8s_version": "v1.30.7-aks",
+        "nodes": 4,
+        "gpu_nodes": 2,
+        "gpus": 16,
+        "namespaces": [
+          "kube-system",
+          "ml-inference",
+          "ml-training",
+          "monitoring",
+          "tenant-c"
+        ],
+        "namespace_count": 5,
+        "pods": 6,
+        "services": 3,
+        "privileged_pods": 1,
+        "host_path_pods": 2,
+        "host_network_pods": 0,
+        "node_ports": 0,
+        "load_balancers": 0,
+        "wildcard_roles": 1,
+        "cluster_admin_bindings": 1,
+        "netpol_namespaces": 2,
+        "unisolated_namespaces": [
+          "kube-system",
+          "monitoring",
+          "tenant-c"
+        ],
+        "weight_pvs": 1,
+        "weight_claim_pods": 1,
+        "secrets": 2,
+        "inference_services": [
+          "triton"
+        ],
+        "kyverno_policies": 3,
+        "kyverno_enforced": 1,
+        "falco_rules": 6,
+        "falco_loaded": 3,
+        "cani_entries": 1,
+        "findings": 10
+      }
+    ],
+    "totals": {
+      "clusters": 2,
+      "contexts": 2,
+      "nodes": 12,
+      "gpu_nodes": 6,
+      "gpus": 48,
+      "namespaces": 14,
+      "pods": 26,
+      "secrets": 8,
+      "findings": 42,
+      "providers": [
+        "aws-eks",
+        "azure-aks"
+      ]
+    },
+    "heatmap": [
+      {
+        "category": "身份与 RBAC",
+        "score": 96,
+        "level": "critical",
+        "signals": [
+          "通配符角色：platform-operator",
+          "通配符角色：system:controller:node-controller",
+          "cluster-admin 非系统绑定：tenant-a-admin-binding → admin",
+          "通配符角色：platform-operator"
+        ],
+        "signal_count": 4
+      },
+      {
+        "category": "网络分区",
+        "score": 100,
+        "level": "critical",
+        "signals": [
+          "命名空间无默认拒绝 NetworkPolicy：ingress-nginx",
+          "命名空间无默认拒绝 NetworkPolicy：kube-system",
+          "命名空间无默认拒绝 NetworkPolicy：monitoring",
+          "命名空间无默认拒绝 NetworkPolicy：security",
+          "命名空间无默认拒绝 NetworkPolicy：tenant-b",
+          "命名空间无默认拒绝 NetworkPolicy：kube-system",
+          "命名空间无默认拒绝 NetworkPolicy：monitoring",
+          "命名空间无默认拒绝 NetworkPolicy：tenant-c"
+        ],
+        "signal_count": 8
+      },
+      {
+        "category": "工作负载逃逸面",
+        "score": 100,
+        "level": "critical",
+        "signals": [
+          "特权容器：kube-system/aws-node-9k2lp",
+          "hostPath 挂载：kube-system/aws-node-9k2lp → /var/run/docker.sock",
+          "hostPath 挂载：kube-system/aws-node-9k2lp → /var/lib/cni",
+          "特权容器：kube-system/ebs-csi-node-2x8v",
+          "hostPath 挂载：kube-system/ebs-csi-node-2x8v → /var/lib/kubelet",
+          "hostPath 挂载：kube-system/ebs-csi-node-2x8v → /dev",
+          "特权容器：security/falco-jk2m9",
+          "hostPath 挂载：security/falco-jk2m9 → /proc",
+          "hostPath 挂载：security/falco-jk2m9 → /sys/kernel/debug",
+          "hostPath 挂载：security/falco-jk2m9 → /var/run/docker.sock",
+          "hostPath 挂载：monitoring/node-exporter-h4n2p → /proc",
+          "hostPath 挂载：monitoring/node-exporter-h4n2p → /sys"
+        ],
+        "signal_count": 18
+      },
+      {
+        "category": "模型与数据面",
+        "score": 68,
+        "level": "high",
+        "signals": [
+          "权重/检查点 PVC：model-weights-pvc",
+          "权重/检查点 PVC：checkpoint-pvc",
+          "权重/检查点 PVC：model-weights-west"
+        ],
+        "signal_count": 3
+      },
+      {
+        "category": "检测与准入",
+        "score": 100,
+        "level": "critical",
+        "signals": [
+          "Kyverno 未全部 Enforce（3/5 非强制）",
+          "Falco 规则未加载（3/8）",
+          "Kyverno 未全部 Enforce（2/3 非强制）",
+          "Falco 规则未加载（3/6）"
+        ],
+        "signal_count": 4
+      },
+      {
+        "category": "暴露面",
+        "score": 74,
+        "level": "high",
+        "signals": [
+          "NodePort：ml-inference/vllm-router",
+          "LoadBalancer：ml-training/tensorboard",
+          "LoadBalancer：ml-training/mlflow",
+          "LoadBalancer：ingress-nginx/ingress-nginx-controller",
+          "NodePort：tenant-a/jupyter-alice"
+        ],
+        "signal_count": 5
+      },
+      {
+        "category": "多租户隔离",
+        "score": 60,
+        "level": "high",
+        "signals": [
+          "context=east-prod 租户命名空间 tenant-b 未被默认拒绝覆盖",
+          "context=west-prod 租户命名空间 tenant-c 未被默认拒绝覆盖"
+        ],
+        "signal_count": 2
+      }
+    ],
+    "findings": [
+      {
+        "severity": "high",
+        "category": "工作负载逃逸面",
+        "title": "特权容器：kube-system/aws-node-9k2lp",
+        "evidence": "context=east-prod pod=kube-system/aws-node-9k2lp privileged=true"
+      },
+      {
+        "severity": "critical",
+        "category": "工作负载逃逸面",
+        "title": "hostPath 挂载：kube-system/aws-node-9k2lp → /var/run/docker.sock",
+        "evidence": "context=east-prod pod=kube-system/aws-node-9k2lp hostPath=/var/run/docker.sock"
+      },
+      {
+        "severity": "medium",
+        "category": "工作负载逃逸面",
+        "title": "hostPath 挂载：kube-system/aws-node-9k2lp → /var/lib/cni",
+        "evidence": "context=east-prod pod=kube-system/aws-node-9k2lp hostPath=/var/lib/cni"
+      },
+      {
+        "severity": "high",
+        "category": "工作负载逃逸面",
+        "title": "特权容器：kube-system/ebs-csi-node-2x8v",
+        "evidence": "context=east-prod pod=kube-system/ebs-csi-node-2x8v privileged=true"
+      },
+      {
+        "severity": "medium",
+        "category": "工作负载逃逸面",
+        "title": "hostPath 挂载：kube-system/ebs-csi-node-2x8v → /var/lib/kubelet",
+        "evidence": "context=east-prod pod=kube-system/ebs-csi-node-2x8v hostPath=/var/lib/kubelet"
+      },
+      {
+        "severity": "medium",
+        "category": "工作负载逃逸面",
+        "title": "hostPath 挂载：kube-system/ebs-csi-node-2x8v → /dev",
+        "evidence": "context=east-prod pod=kube-system/ebs-csi-node-2x8v hostPath=/dev"
+      },
+      {
+        "severity": "high",
+        "category": "工作负载逃逸面",
+        "title": "特权容器：security/falco-jk2m9",
+        "evidence": "context=east-prod pod=security/falco-jk2m9 privileged=true"
+      },
+      {
+        "severity": "critical",
+        "category": "工作负载逃逸面",
+        "title": "hostPath 挂载：security/falco-jk2m9 → /proc",
+        "evidence": "context=east-prod pod=security/falco-jk2m9 hostPath=/proc"
+      },
+      {
+        "severity": "critical",
+        "category": "工作负载逃逸面",
+        "title": "hostPath 挂载：security/falco-jk2m9 → /sys/kernel/debug",
+        "evidence": "context=east-prod pod=security/falco-jk2m9 hostPath=/sys/kernel/debug"
+      },
+      {
+        "severity": "critical",
+        "category": "工作负载逃逸面",
+        "title": "hostPath 挂载：security/falco-jk2m9 → /var/run/docker.sock",
+        "evidence": "context=east-prod pod=security/falco-jk2m9 hostPath=/var/run/docker.sock"
+      },
+      {
+        "severity": "critical",
+        "category": "工作负载逃逸面",
+        "title": "hostPath 挂载：monitoring/node-exporter-h4n2p → /proc",
+        "evidence": "context=east-prod pod=monitoring/node-exporter-h4n2p hostPath=/proc"
+      },
+      {
+        "severity": "critical",
+        "category": "工作负载逃逸面",
+        "title": "hostPath 挂载：monitoring/node-exporter-h4n2p → /sys",
+        "evidence": "context=east-prod pod=monitoring/node-exporter-h4n2p hostPath=/sys"
+      },
+      {
+        "severity": "medium",
+        "category": "工作负载逃逸面",
+        "title": "hostPath 挂载：monitoring/prometheus-0 → /var/lib/prometheus",
+        "evidence": "context=east-prod pod=monitoring/prometheus-0 hostPath=/var/lib/prometheus"
+      },
+      {
+        "severity": "high",
+        "category": "工作负载逃逸面",
+        "title": "特权容器：tenant-a/model-copy-job-8x2k",
+        "evidence": "context=east-prod pod=tenant-a/model-copy-job-8x2k privileged=true"
+      },
+      {
+        "severity": "medium",
+        "category": "工作负载逃逸面",
+        "title": "hostPath 挂载：tenant-a/model-copy-job-8x2k → /",
+        "evidence": "context=east-prod pod=tenant-a/model-copy-job-8x2k hostPath=/"
+      },
+      {
+        "severity": "critical",
+        "category": "身份与 RBAC",
+        "title": "通配符角色：platform-operator",
+        "evidence": "context=east-prod role=platform-operator"
+      },
+      {
+        "severity": "critical",
+        "category": "身份与 RBAC",
+        "title": "通配符角色：system:controller:node-controller",
+        "evidence": "context=east-prod role=system:controller:node-controller"
+      },
+      {
+        "severity": "critical",
+        "category": "身份与 RBAC",
+        "title": "cluster-admin 非系统绑定：tenant-a-admin-binding → admin",
+        "evidence": "context=east-prod binding=tenant-a-admin-binding"
+      },
+      {
+        "severity": "medium",
+        "category": "暴露面",
+        "title": "NodePort：ml-inference/vllm-router",
+        "evidence": "context=east-prod ports=8000"
+      },
+      {
+        "severity": "high",
+        "category": "暴露面",
+        "title": "LoadBalancer：ml-training/tensorboard",
+        "evidence": "context=east-prod ports=6006"
+      },
+      {
+        "severity": "high",
+        "category": "暴露面",
+        "title": "LoadBalancer：ml-training/mlflow",
+        "evidence": "context=east-prod ports=5000"
+      },
+      {
+        "severity": "high",
+        "category": "暴露面",
+        "title": "LoadBalancer：ingress-nginx/ingress-nginx-controller",
+        "evidence": "context=east-prod ports=80,443"
+      },
+      {
+        "severity": "medium",
+        "category": "暴露面",
+        "title": "NodePort：tenant-a/jupyter-alice",
+        "evidence": "context=east-prod ports=8888"
+      },
+      {
+        "severity": "high",
+        "category": "网络分区",
+        "title": "命名空间无默认拒绝 NetworkPolicy：ingress-nginx",
+        "evidence": "context=east-prod ns=ingress-nginx pods=1"
+      },
+      {
+        "severity": "high",
+        "category": "网络分区",
+        "title": "命名空间无默认拒绝 NetworkPolicy：kube-system",
+        "evidence": "context=east-prod ns=kube-system pods=4"
+      },
+      {
+        "severity": "high",
+        "category": "网络分区",
+        "title": "命名空间无默认拒绝 NetworkPolicy：monitoring",
+        "evidence": "context=east-prod ns=monitoring pods=3"
+      },
+      {
+        "severity": "high",
+        "category": "网络分区",
+        "title": "命名空间无默认拒绝 NetworkPolicy：security",
+        "evidence": "context=east-prod ns=security pods=2"
+      },
+      {
+        "severity": "high",
+        "category": "网络分区",
+        "title": "命名空间无默认拒绝 NetworkPolicy：tenant-b",
+        "evidence": "context=east-prod ns=tenant-b pods=1"
+      },
+      {
+        "severity": "high",
+        "category": "检测与准入",
+        "title": "Kyverno 未全部 Enforce（3/5 非强制）",
+        "evidence": "context=east-prod policies=require-run-as-nonroot:Audit,restrict-image-registries:Audit,require-resource-limits:Missing"
+      },
+      {
+        "severity": "medium",
+        "category": "检测与准入",
+        "title": "Falco 规则未加载（3/8）",
+        "evidence": "context=east-prod rules=Detect crypto mining,Outbound connection to C2,Sensitive mount"
+      },
+      {
+        "severity": "medium",
+        "category": "模型与数据面",
+        "title": "权重/检查点 PVC：model-weights-pvc",
+        "evidence": "context=east-prod pv=model-weights-pvc"
+      },
+      {
+        "severity": "medium",
+        "category": "模型与数据面",
+        "title": "权重/检查点 PVC：checkpoint-pvc",
+        "evidence": "context=east-prod pv=checkpoint-pvc"
+      },
+      {
+        "severity": "high",
+        "category": "工作负载逃逸面",
+        "title": "特权容器：kube-system/azure-cni-agent-0",
+        "evidence": "context=west-prod pod=kube-system/azure-cni-agent-0 privileged=true"
+      },
+      {
+        "severity": "critical",
+        "category": "工作负载逃逸面",
+        "title": "hostPath 挂载：kube-system/azure-cni-agent-0 → /var/run/containerd/containerd.sock",
+        "evidence": "context=west-prod pod=kube-system/azure-cni-agent-0 hostPath=/var/run/containerd/containerd.sock"
+      },
+      {
+        "severity": "medium",
+        "category": "工作负载逃逸面",
+        "title": "hostPath 挂载：monitoring/prometheus-0 → /var/lib/prometheus",
+        "evidence": "context=west-prod pod=monitoring/prometheus-0 hostPath=/var/lib/prometheus"
+      },
+      {
+        "severity": "critical",
+        "category": "身份与 RBAC",
+        "title": "通配符角色：platform-operator",
+        "evidence": "context=west-prod role=platform-operator"
+      },
+      {
+        "severity": "high",
+        "category": "网络分区",
+        "title": "命名空间无默认拒绝 NetworkPolicy：kube-system",
+        "evidence": "context=west-prod ns=kube-system pods=2"
+      },
+      {
+        "severity": "high",
+        "category": "网络分区",
+        "title": "命名空间无默认拒绝 NetworkPolicy：monitoring",
+        "evidence": "context=west-prod ns=monitoring pods=1"
+      },
+      {
+        "severity": "high",
+        "category": "网络分区",
+        "title": "命名空间无默认拒绝 NetworkPolicy：tenant-c",
+        "evidence": "context=west-prod ns=tenant-c pods=1"
+      },
+      {
+        "severity": "high",
+        "category": "检测与准入",
+        "title": "Kyverno 未全部 Enforce（2/3 非强制）",
+        "evidence": "context=west-prod policies=require-run-as-nonroot:Audit,restrict-image-registries:Audit"
+      },
+      {
+        "severity": "medium",
+        "category": "检测与准入",
+        "title": "Falco 规则未加载（3/6）",
+        "evidence": "context=west-prod rules=Detect crypto mining,Outbound connection to C2,Sensitive mount"
+      },
+      {
+        "severity": "medium",
+        "category": "模型与数据面",
+        "title": "权重/检查点 PVC：model-weights-west",
+        "evidence": "context=west-prod pv=model-weights-west"
+      }
+    ],
+    "data_sensitivity": {
+      "weight_pvs": [
+        "model-weights-pvc",
+        "checkpoint-pvc",
+        "model-weights-west"
+      ],
+      "tenant_namespaces": [
+        "tenant-a",
+        "tenant-b",
+        "tenant-c"
+      ],
+      "inference_services": [
+        "triton",
+        "vllm-router"
+      ]
+    },
+    "boundary": "只读清点；fixture/live-kubectl 来源分列；非生产规模，不等同容量/性能结论。"
+  },
+  "plan": {
+    "schema": "trident-pilot-plan/1",
+    "generated_at": "2026-10-25T16:27:21Z",
+    "read_only": true,
+    "allow_write": false,
+    "write_authorized": false,
+    "collector_mode": "read-only",
+    "mutations": [],
+    "phases": [
+      {
+        "id": "P0",
+        "name": "只读清点与环境画像",
+        "mode": "read-only",
+        "window": "任意时间（仅 kubectl get）",
+        "duration_min": 20,
+        "actions": [
+          "多 context/cluster 合并",
+          "pods/services/netpol/RBAC/PVC/Secret 元数据清点",
+          "Kyverno/Falco/NetworkPolicy 生效状态读取"
+        ],
+        "exit_criteria": [
+          "只读通过率 >= 95%",
+          "无写动作",
+          "环境画像与冲突清单完整"
+        ]
+      },
+      {
+        "id": "P1",
+        "name": "低影响验证",
+        "mode": "read-only",
+        "window": "业务低峰；只读 API/快照分析",
+        "duration_min": 45,
+        "actions": [
+          "证据驱动链推荐（不执行）",
+          "误报/漏报基线（客户标注样本）",
+          "告警/SIEM 连通性干跑"
+        ],
+        "exit_criteria": [
+          "误报率 <= 20%（Pilot 门槛）",
+          "漏报率 <= 10%",
+          "扫描窗口 <= 客户约定时长"
+        ]
+      },
+      {
+        "id": "P2",
+        "name": "受控写验证（条件执行）",
+        "mode": "write",
+        "blocked": true,
+        "requires": [
+          "--allow-write",
+          "ROE/consent 完整",
+          "级别=利用验证或更高",
+          "lead/tester 角色",
+          "备份/回滚预案"
+        ],
+        "window": "客户变更窗口内（建议业务低峰；训练作业暂停/排空后）",
+        "duration_min": 60,
+        "actions": [
+          {
+            "finding": "P2 未授权",
+            "action": "仅生成计划；不执行任何写操作",
+            "risk": "n/a",
+            "rollback": "n/a"
+          }
+        ],
+        "exit_criteria": [
+          "每个写动作有备份回执 + 回滚演练记录",
+          "回滚成功率 100%（失败即停止并升级）",
+          "写窗口内 P95 时延不超过客户阈值"
+        ]
+      },
+      {
+        "id": "P3",
+        "name": "复测、报告与签核",
+        "mode": "read-only",
+        "window": "写验证后 24h 内",
+        "duration_min": 30,
+        "actions": [
+          "回归复测",
+          "pilot-report/证据 manifest 哈希",
+          "双签与保留策略登记"
+        ],
+        "exit_criteria": [
+          "报告签核项 6/6",
+          "证据 manifest 校验通过",
+          "客户安全负责人签字"
+        ]
+      }
+    ],
+    "recommended_window": {
+      "read_only": "任意（仍建议通知 SOC）",
+      "write": "客户变更窗口；避开训练/推理高峰；单次 <= 2h",
+      "freeze": "训练作业 checkpoint / 推理扩缩容 / 发布冻结期不执行写验证"
+    },
+    "stop_conditions": [
+      "客户 SOC/值班要求立即停止",
+      "出现非预期生产影响或 SLO 越界",
+      "授权/范围/时间窗任一失效",
+      "回滚失败或备份回执缺失"
+    ],
+    "rollback_plan": {
+      "steps": [
+        "执行前导出目标命名空间资源 YAML + PVC/RBAC 元数据并计算 sha256",
+        "每个写动作登记 backup_targets 与回滚命令（沿用 core/backup.py）",
+        "异常时按步骤逆序回滚并校验资源哈希",
+        "回滚后只读复测并记录回执"
+      ],
+      "success_criteria": "回滚成功率 100%；失败项为 0；资源哈希一致"
+    },
+    "approvals": [
+      {
+        "role": "lead",
+        "required": true,
+        "scope": "测试范围/窗口/停止条件"
+      },
+      {
+        "role": "security-owner",
+        "required": true,
+        "scope": "双签；数据敏感与变更窗口"
+      },
+      {
+        "role": "platform-owner",
+        "required": false,
+        "scope": "集群/GPU 平台影响确认"
+      },
+      {
+        "role": "data-owner",
+        "required": false,
+        "scope": "训练数据/模型权重接触确认"
+      }
+    ],
+    "gate_receipts": {},
+    "metrics": {
+      "read_only_pass_rate_target": ">=95%",
+      "false_positive_rate_target": "<=20%",
+      "false_negative_rate_target": "<=10%",
+      "scan_window_target": "<=客户约定窗口（默认 2h）",
+      "rollback_success_target": "100%",
+      "report_signoff_target": "6/6"
+    }
+  },
+  "boundary": [
+    "pilot 只读清点，不执行利用/写操作",
+    "fixture/live-kubectl 来源分列；fixture 不等于客户生产环境",
+    "非生产规模；不构成 SLA、合规认证或全量覆盖承诺"
+  ],
+  "summary": {
+    "contexts": 2,
+    "clusters": 2,
+    "nodes": 12,
+    "gpu_nodes": 6,
+    "findings": 42,
+    "top_risk": 100,
+    "write_authorized": false
+  }
+}

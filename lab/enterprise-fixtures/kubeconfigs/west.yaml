@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Config
+clusters:
+- name: west-cluster
+  cluster:
+    server: https://west-cluster.example.test:6443
+contexts:
+- name: west-prod
+  context:
+    cluster: west-cluster
+    user: west-user
+    namespace: ml-inference
+current-context: west-prod
+users:
+- name: west-user
+  user:
+    token: MOCK-WEST-TOKEN

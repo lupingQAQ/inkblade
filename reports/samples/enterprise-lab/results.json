@@ -1,0 +1,148 @@
+{
+  "schema": "trident-enterprise-lab/1",
+  "generated_at": "2026-10-25T16:16:41Z",
+  "tool": "trident",
+  "source": "fixture",
+  "fixture": "lab/enterprise-fixtures",
+  "metric_definition": {
+    "fp_rate": "FP / (TP + FP)：发现级误报占比",
+    "fn_rate": "FN / (TP + FN)：标注风险漏报率",
+    "severity_scope": [
+      "critical",
+      "high",
+      "medium",
+      "low"
+    ],
+    "labels": "ground-truth.json 固化，实现不临时改标签"
+  },
+  "scenarios": [
+    {
+      "id": "platform-baseline-noise",
+      "title": "场景 1：平台组件基线噪声（privileged/hostPath/hostNetwork DaemonSet）",
+      "source": "fixture",
+      "findings_total": 17,
+      "tp": 1,
+      "fp": 16,
+      "fn": 1,
+      "risk_items": 2,
+      "benign_items": 7,
+      "benign_hits": 13,
+      "fp_rate": 0.9412,
+      "fn_rate": 0.5
+    },
+    {
+      "id": "rbac-intent-noise",
+      "title": "场景 2：RBAC/NetworkPolicy 常规运维噪声（system wildcard / CI exec / 系统 NS）",
+      "source": "fixture",
+      "findings_total": 20,
+      "tp": 7,
+      "fp": 13,
+      "fn": 1,
+      "risk_items": 7,
+      "benign_items": 6,
+      "benign_hits": 9,
+      "fp_rate": 0.65,
+      "fn_rate": 0.1429
+    },
+    {
+      "id": "audit-flood-noise",
+      "title": "场景 3：审计事件洪水（340 良性 + 5 风险，2 未覆盖）",
+      "source": "fixture",
+      "findings_total": 3,
+      "tp": 3,
+      "fp": 0,
+      "fn": 2,
+      "risk_items": 5,
+      "benign_items": 0,
+      "benign_hits": 0,
+      "fp_rate": 0.0,
+      "fn_rate": 0.4,
+      "tuning": {
+        "default_baseline": {
+          "findings_total": 183,
+          "tp": 3,
+          "fp": 180,
+          "fn": 2,
+          "risk_items": 5,
+          "benign_items": 0,
+          "benign_hits": 0,
+          "fp_rate": 0.9836,
+          "fn_rate": 0.4
+        },
+        "tuned_baseline": {
+          "findings_total": 3,
+          "tp": 3,
+          "fp": 0,
+          "fn": 2,
+          "risk_items": 5,
+          "benign_items": 0,
+          "benign_hits": 0,
+          "fp_rate": 0.0,
+          "fn_rate": 0.4
+        },
+        "baseline_added": [
+          "system:serviceaccount:ci:ci-runner",
+          "system:serviceaccount:security:scanner"
+        ],
+        "fp_before": 180,
+        "fp_after": 0,
+        "fp_reduction": 1.0
+      }
+    }
+  ],
+  "overall": {
+    "tp": 11,
+    "fp": 29,
+    "fn": 4,
+    "findings_total": 40,
+    "risk_items": 14,
+    "fp_rate": 0.725,
+    "fn_rate": 0.2857
+  },
+  "defenses": {
+    "kyverno": {
+      "total": 8,
+      "enforced": 3,
+      "audit": 4,
+      "missing": 1,
+      "enforced_rate": 0.375
+    },
+    "falco": {
+      "total": 14,
+      "loaded": 8,
+      "missing": 6,
+      "loaded_rate": 0.5714
+    },
+    "network_policy": {
+      "namespaces": 14,
+      "covered": 6,
+      "coverage_rate": 0.4286,
+      "uncovered": [
+        "east-prod/ingress-nginx",
+        "east-prod/kube-system",
+        "east-prod/monitoring",
+        "east-prod/security",
+        "east-prod/tenant-b",
+        "west-prod/kube-system",
+        "west-prod/monitoring",
+        "west-prod/tenant-c"
+      ]
+    }
+  },
+  "real_cluster": {
+    "source": "real-cluster-k3s",
+    "evidence": "reports/samples/real-cluster/recon-findings.json",
+    "modules_ok": 6,
+    "modules_total": 6,
+    "findings": 16,
+    "fp_fn_available": false,
+    "note": "真实集群单节点 k3s（QEMU TCG），只有结构性发现、无客户标注真值，故不计算 FP/FN；不得把 fixture 的 FP/FN 外推到该集群或客户环境。"
+  },
+  "gaps": [
+    "fixture 不等于客户集群：版本/CNI/CRD/准入/遥测差异未覆盖",
+    "审计场景只有 345 条事件，不等于客户日均百万级事件流",
+    "2 个风险（SA token 铸造、pods/portforward）当前检测器未覆盖 → 如实计 FN",
+    "真实集群车道无标注，不计算 FP/FN"
+  ],
+  "reproduce": "python lab/enterprise_lab.py"
+}

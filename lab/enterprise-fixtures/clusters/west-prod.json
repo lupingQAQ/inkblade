@@ -1,0 +1,500 @@
+{
+  "source": "fixture",
+  "context": "west-prod",
+  "provider": "azure-aks",
+  "k8s_version": "v1.30.7-aks",
+  "collected_at": "2026-10-25T10:05:00Z",
+  "nodes": [
+    {
+      "name": "west-node-0",
+      "labels": {
+        "kubernetes.io/hostname": "west-node-0",
+        "node.kubernetes.io/instance-type": "m6i.4xlarge",
+        "kubernetes.azure.com/agentpool": "gpu"
+      },
+      "capacity": {
+        "cpu": "16",
+        "memory": "64Gi",
+        "pods": "110",
+        "nvidia.com/gpu": "8"
+      },
+      "conditions": [
+        "Ready"
+      ]
+    },
+    {
+      "name": "west-node-1",
+      "labels": {
+        "kubernetes.io/hostname": "west-node-1",
+        "node.kubernetes.io/instance-type": "m6i.4xlarge",
+        "kubernetes.azure.com/agentpool": "gpu"
+      },
+      "capacity": {
+        "cpu": "16",
+        "memory": "64Gi",
+        "pods": "110",
+        "nvidia.com/gpu": "8"
+      },
+      "conditions": [
+        "Ready"
+      ]
+    },
+    {
+      "name": "west-node-2",
+      "labels": {
+        "kubernetes.io/hostname": "west-node-2",
+        "node.kubernetes.io/instance-type": "m6i.2xlarge",
+        "kubernetes.azure.com/agentpool": "system"
+      },
+      "capacity": {
+        "cpu": "16",
+        "memory": "64Gi",
+        "pods": "110"
+      },
+      "conditions": [
+        "Ready"
+      ]
+    },
+    {
+      "name": "west-node-3",
+      "labels": {
+        "kubernetes.io/hostname": "west-node-3",
+        "node.kubernetes.io/instance-type": "m6i.2xlarge",
+        "kubernetes.azure.com/agentpool": "system"
+      },
+      "capacity": {
+        "cpu": "16",
+        "memory": "64Gi",
+        "pods": "110"
+      },
+      "conditions": [
+        "Ready"
+      ]
+    }
+  ],
+  "pods": [
+    {
+      "namespace": "kube-system",
+      "name": "azure-cni-agent-0",
+      "labels": {},
+      "nodeName": "kube-system-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "default",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "azure-cni-agent-0",
+          "image": "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:3.1",
+          "securityContext": {
+            "privileged": true
+          },
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [
+        {
+          "name": "host-0",
+          "hostPath": {
+            "path": "/var/run/containerd/containerd.sock"
+          }
+        }
+      ],
+      "tolerations": []
+    },
+    {
+      "namespace": "kube-system",
+      "name": "coredns-5c7f9",
+      "labels": {},
+      "nodeName": "kube-system-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "default",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "coredns-5c7f9",
+          "image": "registry.k8s.io/coredns/coredns:v1.11.1",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "monitoring",
+      "name": "prometheus-0",
+      "labels": {},
+      "nodeName": "monitoring-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "default",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "prometheus-0",
+          "image": "quay.io/prometheus/prometheus:v2.55.0",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [
+        {
+          "name": "host-0",
+          "hostPath": {
+            "path": "/var/lib/prometheus"
+          }
+        }
+      ],
+      "tolerations": []
+    },
+    {
+      "namespace": "ml-training",
+      "name": "verl-worker-0",
+      "labels": {},
+      "nodeName": "ml-training-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "default",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "verl-worker-0",
+          "image": "verl/verl:0.3.0-cuda12.4",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [
+        {
+          "name": "pvc-0",
+          "persistentVolumeClaim": {
+            "claimName": "model-weights-west"
+          }
+        }
+      ],
+      "tolerations": []
+    },
+    {
+      "namespace": "ml-inference",
+      "name": "triton-0",
+      "labels": {},
+      "nodeName": "ml-inference-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "triton",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "triton-0",
+          "image": "nvcr.io/nvidia/tritonserver:24.10-py3",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    },
+    {
+      "namespace": "tenant-c",
+      "name": "notebook-carol-0",
+      "labels": {},
+      "nodeName": "tenant-c-node-0",
+      "hostNetwork": false,
+      "hostPID": false,
+      "hostIPC": false,
+      "serviceAccountName": "tenant-c",
+      "phase": "Running",
+      "podIP": "10.42.0.10",
+      "containers": [
+        {
+          "name": "notebook-carol-0",
+          "image": "jupyter/scipy-notebook:2024-10-01",
+          "securityContext": {},
+          "volumeMounts": [],
+          "command": [],
+          "args": []
+        }
+      ],
+      "volumes": [],
+      "tolerations": []
+    }
+  ],
+  "services": [
+    {
+      "namespace": "default",
+      "name": "kubernetes",
+      "type": "ClusterIP",
+      "clusterIP": "10.43.0.10",
+      "externalIPs": [],
+      "selector": {
+        "app": "kubernetes"
+      },
+      "labels": {},
+      "ports": [
+        {
+          "name": "p0",
+          "port": 443,
+          "targetPort": 443,
+          "nodePort": null,
+          "protocol": "TCP"
+        }
+      ]
+    },
+    {
+      "namespace": "ml-inference",
+      "name": "triton",
+      "type": "ClusterIP",
+      "clusterIP": "10.43.0.10",
+      "externalIPs": [],
+      "selector": {
+        "app": "triton"
+      },
+      "labels": {},
+      "ports": [
+        {
+          "name": "p0",
+          "port": 8000,
+          "targetPort": 8000,
+          "nodePort": null,
+          "protocol": "TCP"
+        },
+        {
+          "name": "p1",
+          "port": 8001,
+          "targetPort": 8001,
+          "nodePort": null,
+          "protocol": "TCP"
+        },
+        {
+          "name": "p2",
+          "port": 8002,
+          "targetPort": 8002,
+          "nodePort": null,
+          "protocol": "TCP"
+        }
+      ]
+    },
+    {
+      "namespace": "monitoring",
+      "name": "grafana",
+      "type": "ClusterIP",
+      "clusterIP": "10.43.0.10",
+      "externalIPs": [],
+      "selector": {
+        "app": "grafana"
+      },
+      "labels": {},
+      "ports": [
+        {
+          "name": "p0",
+          "port": 3000,
+          "targetPort": 3000,
+          "nodePort": null,
+          "protocol": "TCP"
+        }
+      ]
+    }
+  ],
+  "networkpolicies": [
+    {
+      "namespace": "ml-training",
+      "name": "default-deny",
+      "podSelector": {},
+      "policyTypes": [
+        "Ingress",
+        "Egress"
+      ],
+      "ingress": [],
+      "egress": []
+    },
+    {
+      "namespace": "ml-inference",
+      "name": "default-deny",
+      "podSelector": {},
+      "policyTypes": [
+        "Ingress",
+        "Egress"
+      ],
+      "ingress": [],
+      "egress": []
+    }
+  ],
+  "roles": [],
+  "rolebindings": [],
+  "clusterroles": [
+    {
+      "namespace": null,
+      "name": "platform-operator",
+      "rules": [
+        {
+          "apiGroups": [
+            "*"
+          ],
+          "resources": [
+            "*"
+          ],
+          "verbs": [
+            "*"
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": null,
+      "name": "read-only-auditor",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        }
+      ]
+    }
+  ],
+  "clusterrolebindings": [
+    {
+      "namespace": null,
+      "name": "system:masters",
+      "role": "cluster-admin",
+      "roleKind": "ClusterRole",
+      "subjects": [
+        {
+          "kind": "Group",
+          "name": "system:masters"
+        }
+      ]
+    },
+    {
+      "namespace": null,
+      "name": "platform-operator-binding",
+      "role": "platform-operator",
+      "roleKind": "ClusterRole",
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "platform-operator",
+          "namespace": "ml-platform"
+        }
+      ]
+    }
+  ],
+  "ingresses": [],
+  "pvs": [
+    {
+      "name": "model-weights-west",
+      "capacity": {
+        "storage": "1Ti"
+      },
+      "claim": "model-weights-west",
+      "namespace": "ml-training"
+    },
+    {
+      "name": "prometheus-data",
+      "capacity": {
+        "storage": "200Gi"
+      },
+      "claim": "prometheus-data",
+      "namespace": "monitoring"
+    }
+  ],
+  "secrets": [
+    {
+      "namespace": "ml-training",
+      "name": "acr-pull"
+    },
+    {
+      "namespace": "tenant-c",
+      "name": "carol-token"
+    }
+  ],
+  "cani": [
+    {
+      "subject": "system:serviceaccount:tenant-c:tenant-c",
+      "allowed": [
+        "get secrets"
+      ]
+    }
+  ],
+  "namespaces": [
+    "kube-system",
+    "monitoring",
+    "ml-training",
+    "ml-inference",
+    "tenant-c"
+  ],
+  "defenses": {
+    "kyverno": {
+      "policies": [
+        {
+          "name": "deny-privileged",
+          "status": "Enforced"
+        },
+        {
+          "name": "require-run-as-nonroot",
+          "status": "Audit"
+        },
+        {
+          "name": "restrict-image-registries",
+          "status": "Audit"
+        }
+      ]
+    },
+    "falco": {
+      "rules": [
+        {
+          "name": "Terminal shell in container",
+          "loaded": true
+        },
+        {
+          "name": "Read sensitive file untrusted",
+          "loaded": true
+        },
+        {
+          "name": "Write below etc",
+          "loaded": true
+        },
+        {
+          "name": "Detect crypto mining",
+          "loaded": false
+        },
+        {
+          "name": "Outbound connection to C2",
+          "loaded": false
+        },
+        {
+          "name": "Sensitive mount",
+          "loaded": false
+        }
+      ]
+    }
+  }
+}

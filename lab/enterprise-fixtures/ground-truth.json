@@ -1,0 +1,191 @@
+[
+  {
+    "id": "benign-platform-aws-node",
+    "scenario": "platform-baseline-noise",
+    "label": "benign",
+    "module": "escape-primitives",
+    "contains": "aws-node"
+  },
+  {
+    "id": "benign-platform-kube-proxy",
+    "scenario": "platform-baseline-noise",
+    "label": "benign",
+    "module": "escape-primitives",
+    "contains": "kube-proxy"
+  },
+  {
+    "id": "benign-platform-ebs-csi-node",
+    "scenario": "platform-baseline-noise",
+    "label": "benign",
+    "module": "escape-primitives",
+    "contains": "ebs-csi-node"
+  },
+  {
+    "id": "benign-platform-falco",
+    "scenario": "platform-baseline-noise",
+    "label": "benign",
+    "module": "escape-primitives",
+    "contains": "falco"
+  },
+  {
+    "id": "benign-platform-node-exporter",
+    "scenario": "platform-baseline-noise",
+    "label": "benign",
+    "module": "escape-primitives",
+    "contains": "node-exporter"
+  },
+  {
+    "id": "benign-platform-prometheus",
+    "scenario": "platform-baseline-noise",
+    "label": "benign",
+    "module": "escape-primitives",
+    "contains": "prometheus"
+  },
+  {
+    "id": "benign-platform-ingress-nginx",
+    "scenario": "platform-baseline-noise",
+    "label": "benign",
+    "module": "escape-primitives",
+    "contains": "ingress-nginx"
+  },
+  {
+    "id": "risk-tenant-a-privileged-copy",
+    "scenario": "platform-baseline-noise",
+    "label": "risk",
+    "module": "escape-primitives",
+    "contains": "model-copy-job"
+  },
+  {
+    "id": "fn-falco-gap",
+    "scenario": "platform-baseline-noise",
+    "label": "risk",
+    "module": "escape-primitives",
+    "contains": "__not_detected__"
+  },
+  {
+    "id": "benign-rbac-platform-operator",
+    "scenario": "rbac-intent-noise",
+    "label": "benign",
+    "module": "rbac-mapping",
+    "contains": "platform-operator"
+  },
+  {
+    "id": "benign-rbac-system:controller",
+    "scenario": "rbac-intent-noise",
+    "label": "benign",
+    "module": "rbac-mapping",
+    "contains": "system:controller"
+  },
+  {
+    "id": "benign-rbac-ci-runner",
+    "scenario": "rbac-intent-noise",
+    "label": "benign",
+    "module": "rbac-mapping",
+    "contains": "ci-runner"
+  },
+  {
+    "id": "benign-netpol-kube-system",
+    "scenario": "rbac-intent-noise",
+    "label": "benign",
+    "module": "network-policy-coverage",
+    "contains": "kube-system"
+  },
+  {
+    "id": "benign-netpol-monitoring",
+    "scenario": "rbac-intent-noise",
+    "label": "benign",
+    "module": "network-policy-coverage",
+    "contains": "monitoring"
+  },
+  {
+    "id": "benign-netpol-security",
+    "scenario": "rbac-intent-noise",
+    "label": "benign",
+    "module": "network-policy-coverage",
+    "contains": "security"
+  },
+  {
+    "id": "risk-tenant-a-admin",
+    "scenario": "rbac-intent-noise",
+    "label": "risk",
+    "module": "rbac-mapping",
+    "contains": "tenant-a-admin"
+  },
+  {
+    "id": "risk-tenant-a-deployer",
+    "scenario": "rbac-intent-noise",
+    "label": "risk",
+    "module": "rbac-mapping",
+    "contains": "tenant-a-deployer"
+  },
+  {
+    "id": "risk-tenant-a-secret",
+    "scenario": "rbac-intent-noise",
+    "label": "risk",
+    "module": "rbac-mapping",
+    "contains": "tenant-a:tenant-a"
+  },
+  {
+    "id": "risk-platform-scheduler",
+    "scenario": "rbac-intent-noise",
+    "label": "risk",
+    "module": "rbac-mapping",
+    "contains": "platform-scheduler"
+  },
+  {
+    "id": "risk-tenant-b-netpol",
+    "scenario": "rbac-intent-noise",
+    "label": "risk",
+    "module": "network-policy-coverage",
+    "contains": "tenant-b"
+  },
+  {
+    "id": "risk-tenant-c-netpol",
+    "scenario": "rbac-intent-noise",
+    "label": "risk",
+    "module": "network-policy-coverage",
+    "contains": "tenant-c"
+  },
+  {
+    "id": "fn-mutable-image",
+    "scenario": "rbac-intent-noise",
+    "label": "risk",
+    "module": "rbac-mapping",
+    "contains": "__not_detected__"
+  },
+  {
+    "id": "risk-audit-clusteradmin",
+    "scenario": "audit-flood-noise",
+    "label": "risk",
+    "module": "auditlog",
+    "contains": "cluster-admin"
+  },
+  {
+    "id": "risk-audit-tenant-exec",
+    "scenario": "audit-flood-noise",
+    "label": "risk",
+    "module": "auditlog",
+    "contains": "tenant-b"
+  },
+  {
+    "id": "risk-audit-weight-pvc",
+    "scenario": "audit-flood-noise",
+    "label": "risk",
+    "module": "auditlog",
+    "contains": "model-weights-pvc"
+  },
+  {
+    "id": "fn-audit-sa-token",
+    "scenario": "audit-flood-noise",
+    "label": "risk",
+    "module": "auditlog",
+    "contains": "__not_detected__"
+  },
+  {
+    "id": "fn-audit-portforward",
+    "scenario": "audit-flood-noise",
+    "label": "risk",
+    "module": "auditlog",
+    "contains": "__not_detected__"
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "schema": "trident-pilot-approvals/1",
+  "generated_at": "2026-10-25T16:27:21Z",
+  "workspace": "pilot",
+  "read_only": true,
+  "write_authorized": false,
+  "report_sha256": "7c554918f172ac3fd9cd9a30e7134a3b5fc045fd10d29b95c906c9740dadfd36",
+  "approvals": [
+    {
+      "role": "lead",
+      "required": true,
+      "scope": "测试范围/窗口/停止条件"
+    },
+    {
+      "role": "security-owner",
+      "required": true,
+      "scope": "双签；数据敏感与变更窗口"
+    },
+    {
+      "role": "platform-owner",
+      "required": false,
+      "scope": "集群/GPU 平台影响确认"
+    },
+    {
+      "role": "data-owner",
+      "required": false,
+      "scope": "训练数据/模型权重接触确认"
+    }
+  ],
+  "signoff_items": [
+    "scope",
+    "evidence_manifest",
+    "findings_reviewed",
+    "fp_fn_reviewed",
+    "data_handling",
+    "rollback_verified"
+  ],
+  "signed": [],
+  "note": "双签：lead → 安全负责人；签字必须绑定报告 sha256 与时间戳。"
+}
