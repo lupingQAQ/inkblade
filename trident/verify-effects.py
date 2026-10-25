@@ -319,10 +319,13 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                 before_sha = state["sha_before"]
                 original = state["original"]
                 bm = BackupManager(store, run)
-                rows = bm.rollback("slime-weight-pull-poison")
+                result = bm.rollback("slime-weight-pull-poison")
+                rows = result["restored"]
                 restored_sha = _sha256_file(victim)
-                if rows < 1:
+                if result["attempted"] < 1:
                     raise AssertionError("未找到备份回执（rollback 行数为 0）")
+                if rows < 1:
+                    raise AssertionError(f"文件类回滚未还原：{result['items']}")
                 if restored_sha != before_sha:
                     raise AssertionError(f"回滚后 sha256 不一致：{restored_sha} != {before_sha}")
                 if victim.read_bytes() != original:
@@ -703,10 +706,13 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                 if marker not in content:
                     raise AssertionError("分片文件未含 run marker")
                 bm = BackupManager(store, run)
-                rows = bm.rollback("checkpoint-shard-poison")
+                result = bm.rollback("checkpoint-shard-poison")
+                rows = result["restored"]
                 restored_sha = _sha256_file(path)
-                if rows < 1:
+                if result["attempted"] < 1:
                     raise AssertionError("未找到分片备份回执（rollback 行数为 0）")
+                if rows < 1:
+                    raise AssertionError(f"分片回滚未还原：{result['items']}")
                 if restored_sha != before_sha:
                     raise AssertionError(f"回滚后 sha256 不一致：{restored_sha} != {before_sha}")
                 if path.read_bytes() != original:

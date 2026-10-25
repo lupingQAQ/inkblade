@@ -186,8 +186,9 @@ class VulnerableDetectionTest(LongctxModuleTestBase):
         self.assertIn("TRIDENT-MARKER-SHARD", content)
         detail = _detail(high[0])
         self.assertEqual(detail["readback_sha256"], after)
-        rows = BackupManager(self.store, run).rollback("checkpoint-shard-poison")
-        self.assertGreaterEqual(rows, 1)
+        receipt = BackupManager(self.store, run).rollback("checkpoint-shard-poison")
+        self.assertGreaterEqual(receipt["restored"], 1)
+        self.assertEqual(receipt["failed"], 0, receipt["items"])
         self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), before)
         self.assertEqual(path.read_bytes(), original)
 
