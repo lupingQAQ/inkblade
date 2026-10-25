@@ -1,0 +1,18 @@
+{
+  "key": "sharp-collective-config",
+  "name": {
+    "zh": "SHARP 集合通信配置审计",
+    "en": "SHARP collective config audit"
+  },
+  "series": "网络架构",
+  "description": "解析 SHARP 会话/AM/collective 导出 JSON：会话鉴权、成员租户、聚合节点共享、聚合缓冲隔离、AM tenant_sharing。只读，不加入会话、不提交 reduce、不改 AM。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "SHARP 会话/AM/collective 导出 JSON 路径或 dict（sharp/sessions/collectives，必填）"
+  },
+  "produces": "sharp-collective-config.json + 会话/聚合节点/缓冲隔离证据",
+  "knowledge": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T1；SHARP/在网聚合的会话=作业成员默认假设",
+  "combo_signature": "sharp-collective-config-audit"
+}

@@ -1,0 +1,18 @@
+{
+  "key": "gpu-driver-firmware-surface",
+  "name": {
+    "zh": "GPU 驱动/固件暴露面（只读解析）",
+    "en": "GPU driver/firmware surface (read-only parsing)"
+  },
+  "series": "侦察",
+  "description": "解析 nvidia-smi --query-gpu 与 NVML JSON 导出：驱动/CUDA/VBIOS 版本、ECC、持久化模式与 Xid 复位族事件。只读，不执行 nvidia-smi、不调用 NVML、不写设备；fixture 驱动。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "{\"nvidia_smi\": CSV 文本或路径, \"nvml\": JSON 路径/dict, \"xid_events\": [...]} 或 JSON fixture 路径"
+  },
+  "produces": "gpu-driver-firmware-surface.json + 设备/版本/ECC/Xid 证据",
+  "knowledge": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T1；NVIDIA Xid 复位族（48/63/79/94/119）与 ECC/VBIOS 基线为 fixture 规则，非 CVE 结论",
+  "combo_signature": "gpu-driver-firmware-baseline"
+}

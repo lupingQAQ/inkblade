@@ -27,7 +27,9 @@ p) X-Forwarded-User 伪造：/key/info 返回 admin 全局视图 + /logs 全租�
 q) 语义缓存跨租户：tenant-a 以共享前缀键命中 tenant-b 缓存条目；
 r) SHARP 在网聚合投毒：入组后篡改 reduce，结果前后差分 + 服务端 tampered_reduces 计数；
 s) PFC 暂停风暴：配置写入后 pfc_pause_frames 计数暴增（≥50000）；
-t) 慢 rank 注入：straggler 使训练步时劣化 ≥2×（计时差分）。
+t) 慢 rank 注入：straggler 使训练步时劣化 ≥2×（计时差分）；
+u) BMC 默认凭据：Redfish 默认凭据登录 200 + IPMI over LAN/匿名管理详情；
+v) 固件清单篡改：blob 篡改后哈希不匹配（签名仍有效），finding 为 high。
 
 边界（写入报告，不隐藏）：本验证是**本机真实进程/真实 HTTP 效果级**，靶场为
 ``lab/mock_targets.py``、``lab/longctx_sim.py`` 与 ``lab/gpu_cloud_sim.py``（均仅 127.0.0.1），
@@ -60,6 +62,7 @@ from lab.mock_targets import _safe_name, start_all  # noqa: E402
 from lab.longctx_sim import checkpoint_shard_path, start_all as start_longctx  # noqa: E402
 from lab.gpu_cloud_sim import start_all as start_gpu_cloud  # noqa: E402
 from lab.fabric_dos_sim import start_all as start_fabric  # noqa: E402
+from lab.hardware_sim import FIXTURES as HARDWARE_FIXTURES, start_all as start_hardware  # noqa: E402
 from lab.ai_gateway_sim import (  # noqa: E402
     MASTER_KEY as AI_GATEWAY_MASTER_KEY,
     TENANT_KEYS as AI_GATEWAY_TENANT_KEYS,
@@ -84,7 +87,8 @@ FAKE_TOKEN = "hf_FAKEtokenDoNotUseSampleABCD1234wxyz"
 
 SCOPE = (
     "本机真实进程 + 真实 HTTP（127.0.0.1 回环 mock 靶场：mock_targets / longctx_sim / gpu_cloud_sim / "
-    "ai_gateway_sim / fabric_dos_sim）效果级验证；非 live K8s 集群 / 真实 GPU 驱动 / 真实云账号。"
+    "ai_gateway_sim / fabric_dos_sim / hardware_sim）效果级验证；非 live K8s 集群 / 真实 GPU 驱动 / "
+    "真实 BMC / 真实交换机 / 真实云账号。"
     "KIND/ARTEX 需启用虚拟化后按 lab/kind 与 lab/bench 脚本执行。"
 )
 LIMITATIONS = [
@@ -96,6 +100,9 @@ LIMITATIONS = [
     "AI 网关仿真为内存态（key/别名/缓存/配额/日志），上游 provider key 一律 MOCK 前缀；不连接真实模型厂商。",
     "fabric 破坏面仿真以内存计数器/状态位表达 SHARP 篡改、PFC 暂停帧、端口耗尽、I/O 洪与驱动复位等效果，"
     "不触碰真实交换机/IB SM/NCCL 进程/GPU 驱动；破坏效果均以计数器与状态变化度量（不真破坏）。",
+    "硬件/交换机面为 lab/hardware_sim.py 的只读 mock（Redfish/SONiC/NVSwitch/DPU/telemetry）与 "
+    "lab/hardware-fixtures 的合成 fixture；无真实 GPU/BMC/交换机验证，固件签名仅 HMAC fixture，"
+    "不等于厂商 PKI/生产供应链。",
     "KIND hostNetwork 绕过 NetworkPolicy 实证需启用 WSL2/虚拟化后执行 lab/kind/run-proof.sh。",
     "ARTEX（AGPL）仅作外部黑盒对标，本仓库不复用其代码；对标需虚拟化环境执行 lab/bench/artex-bench.sh。",
 ]
@@ -204,7 +211,7 @@ class _Checks:
 
 
 def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, Any]:
-    """执行 20 项实效验证；输出 effects.json + effects.md（可选写 docs/EFFECT-VERIFICATION.md）。"""
+    """执行全部实效验证项（当前含 fabric 三项与硬件两项）；输出 effects.json + effects.md（可选写 docs/EFFECT-VERIFICATION.md）。"""
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     checks = _Checks()
@@ -232,6 +239,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
         gpu_cloud = start_gpu_cloud(mode="vulnerable", root=lab_root / "gpu-cloud")
         fabric = start_fabric(mode="vulnerable")
         ai_gateway = start_ai_gateway(mode="vulnerable")
+        hardware = start_hardware(mode="vulnerable")
         try:
             def admin_plane() -> dict[str, Any]:
                 state_path = lab_root / "sglang" / "admin-state.json"
@@ -1006,6 +1014,109 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                        "慢 rank 注入实效：训练步时被拖慢 ≥2×（计时差分）",
                        fabric_straggler_slowdown)
 
+            def hardware_bmc_default_credential() -> dict[str, Any]:
+                run_module(
+                    store, tester, "bmc-ipmi-exposure",
+                    {
+                        "target": hardware.url(""),
+                        "check_default_credentials": True,
+                    },
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "bmc-ipmi-exposure")
+                logins = [e for e in trace["entries"]
+                          if e["method"] == "GET"
+                          and "/redfish/v1/Systems/1" in e["url"]
+                          and e.get("status") == 200]
+                if not logins:
+                    raise AssertionError("默认凭据未获得 /redfish/v1/Systems/1 200")
+                high = [f for f in run.findings
+                        if f["step_key"] == "bmc-ipmi-exposure" and f["severity"] == "high"]
+                if not high:
+                    raise AssertionError("BMC 默认凭据未产出 high finding")
+                detail = json.loads(high[0]["detail"])
+                for key in ("default_login_status", "ipmi_over_lan", "ipmi_port",
+                            "anonymous_manager_read", "credential_class"):
+                    if key not in detail:
+                        raise AssertionError(f"BMC finding 缺少字段 {key}")
+                if detail["default_login_status"] != 200:
+                    raise AssertionError("default_login_status != 200")
+                if detail["credential_class"] != "vendor-default":
+                    raise AssertionError("credential_class 不是 vendor-default")
+                if not detail["ipmi_over_lan"] or detail["ipmi_port"] != 623:
+                    raise AssertionError("IPMI over LAN/623 未检出")
+                if not detail["anonymous_manager_read"]:
+                    raise AssertionError("匿名管理详情未检出")
+                return {
+                    "http_status": logins[0]["status"],
+                    "default_login_status": detail["default_login_status"],
+                    "default_username": detail.get("default_username", ""),
+                    "credential_class": detail["credential_class"],
+                    "ipmi_over_lan": detail["ipmi_over_lan"],
+                    "ipmi_port": detail["ipmi_port"],
+                    "anonymous_manager_read": detail["anonymous_manager_read"],
+                    "accounts_status": detail.get("accounts_status"),
+                    "network_protocol_status": detail.get("network_protocol_status"),
+                    "detected": bool(detail.get("detected")),
+                    "route": "/redfish/v1/Systems/1",
+                }
+
+            checks.run("hardware-bmc-default-credential",
+                       "BMC 默认凭据实效：Redfish 默认凭据登录 200 + IPMI/匿名管理面（mock）",
+                       hardware_bmc_default_credential)
+
+            def hardware_firmware_manifest_tamper() -> dict[str, Any]:
+                source = HARDWARE_FIXTURES / "firmware"
+                target = lab_root / "firmware-tamper"
+                if target.exists():
+                    shutil.rmtree(target)
+                shutil.copytree(source, target)
+                blob = target / "blobs" / "nvswitch-fw-1.8.2.bin"
+                before = _sha256_file(blob)
+                blob.write_bytes(blob.read_bytes() + b"\nTRIDENT-TAMPER\n")
+                after = _sha256_file(blob)
+                if before == after:
+                    raise AssertionError("固件 blob 篡改后 sha256 未变化")
+                run_module(
+                    store, tester, "hardware-supply-chain",
+                    {
+                        "manifest": str(target / "manifest.json"),
+                        "key_file": str(source / "fixture-signing-key.txt"),
+                    },
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                high = [f for f in run.findings
+                        if f["step_key"] == "hardware-supply-chain" and f["severity"] == "high"]
+                if not high:
+                    raise AssertionError("固件清单篡改未产出 high finding")
+                rows = run.query(
+                    "SELECT result_summary FROM steps WHERE run=? AND step_key=? ORDER BY id DESC LIMIT 1",
+                    (run.name, "hardware-supply-chain"),
+                )
+                summary = json.loads(rows[0][0]) if rows else {}
+                detail = json.loads(high[0]["detail"])
+                if summary.get("signature_status") != "valid":
+                    raise AssertionError("清单签名状态不是 valid（篡改的是 blob，不是清单）")
+                if "nvswitch-fw" not in (summary.get("tampered_components") or []):
+                    raise AssertionError("tampered_components 未包含 nvswitch-fw")
+                if detail.get("expected_sha256") == detail.get("actual_sha256"):
+                    raise AssertionError("expected/actual sha256 相同")
+                return {
+                    "manifest": _rel(target / "manifest.json", lab_root),
+                    "tampered_components": summary["tampered_components"],
+                    "expected_sha256": detail["expected_sha256"],
+                    "actual_sha256": detail["actual_sha256"],
+                    "sha256_before": before,
+                    "sha256_after": after,
+                    "signature_status": summary["signature_status"],
+                    "detected": bool(detail.get("detected")),
+                    "route": "firmware manifest + blob sha256",
+                }
+
+            checks.run("hardware-firmware-manifest-tamper",
+                       "固件清单篡改实效：blob 哈希不匹配（签名仍有效），finding 为 high",
+                       hardware_firmware_manifest_tamper)
+
             def data_leak() -> dict[str, Any]:
                 run_module(
                     store, tester, "training-data-leak",
@@ -1162,6 +1273,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                 },
             }
         finally:
+            hardware.shutdown()
             ai_gateway.shutdown()
             fabric.shutdown()
             gpu_cloud.shutdown()

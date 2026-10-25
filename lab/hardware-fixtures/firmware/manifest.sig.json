@@ -1,0 +1,5 @@
+{
+  "alg": "hmac-sha256-fixture",
+  "key_id": "trident-hardware-fixture-2026",
+  "signature": "37591c92184a662ff43a06785706d6b6444eddde05743d379574a49f1757cd17"
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "trident-firmware-manifest/v1",
+  "generated_at": "2026-10-26T00:00:00Z",
+  "vendor": "MockVendor",
+  "signing": {
+    "alg": "hmac-sha256-fixture",
+    "key_id": "trident-hardware-fixture-2026"
+  },
+  "components": [
+    {
+      "name": "gpu-driver",
+      "version": "580.65.06",
+      "file": "blobs/gpu-driver-580.65.06.bin",
+      "sha256": "8f6b7e9df1b74a5ef2c9d289dbae710713eb5455cb7db15cfd7ec841beca5c34",
+      "vendor": "MockVendor",
+      "signed_by": "MockVendor"
+    },
+    {
+      "name": "bmc-fw",
+      "version": "2.10.0",
+      "file": "blobs/bmc-fw-2.10.0.bin",
+      "sha256": "def2060dbe60b5b6b098b9c13a60cd86d562dc2b6b50f49f47020e8b409b6293",
+      "vendor": "MockVendor",
+      "signed_by": "MockVendor"
+    },
+    {
+      "name": "nvswitch-fw",
+      "version": "1.8.2.0",
+      "file": "blobs/nvswitch-fw-1.8.2.bin",
+      "sha256": "66853eb2b3ab00c1a1bcc26b39fb2ddbdd017b49ae2e33aa7b2bf893aa6b1ff2",
+      "vendor": "MockVendor",
+      "signed_by": "MockVendor"
+    },
+    {
+      "name": "dpu-fw",
+      "version": "32.42.1000",
+      "file": "blobs/dpu-fw-32.42.1000.bin",
+      "sha256": "f240e8b1ce6879de56043a87f258a8e32a9c2eb1810462450a26183fe9dbf352",
+      "vendor": "MockVendor",
+      "signed_by": "MockVendor"
+    }
+  ],
+  "signature": "37591c92184a662ff43a06785706d6b6444eddde05743d379574a49f1757cd17"
+}

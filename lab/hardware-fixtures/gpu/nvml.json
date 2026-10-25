@@ -1,0 +1,14 @@
+{
+  "driver_version": "580.65.06",
+  "cuda_version": "13.0",
+  "nvml_remote_management": false,
+  "xid_events": [
+    {
+      "gpu": 2,
+      "xid": 79,
+      "count": 1,
+      "time": "2026-10-26T02:14:09Z",
+      "note": "fallback to Xid 79 (GPU has fallen off the bus) mock event"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-"""实效验证测试：调 trident/verify-effects.py::run_verification 断言 20 项全 PASS。
+"""实效验证测试：调 trident/verify-effects.py::run_verification 断言 22 项全 PASS。
 
 覆盖（本机真实进程 + 127.0.0.1 真实 HTTP）：
 a) 管理面未授权利用（200 + 服务端状态文件变更）
@@ -21,6 +21,8 @@ q) 语义缓存跨租户命中（共享前缀键 cache_key 一致）
 r) SHARP 在网聚合投毒（入组 + reduce 前后差分 + tampered_reduces 计数）
 s) PFC 暂停风暴（pfc_pause_frames 计数暴增）
 t) 慢 rank 注入步时劣化（计时差分 ≥2×）
+u) BMC 默认凭据（Redfish 默认凭据登录 200 + IPMI/匿名管理面）
+v) 固件清单篡改（blob 哈希不匹配，签名仍有效）
 """
 
 import importlib.util
@@ -54,6 +56,8 @@ EXPECTED_IDS = {
     "fabric-sharp-reduce-tamper",
     "fabric-pfc-storm-counter",
     "fabric-straggler-step-slowdown",
+    "hardware-bmc-default-credential",
+    "hardware-firmware-manifest-tamper",
 }
 
 
@@ -78,12 +82,12 @@ class TestVerifyEffects(unittest.TestCase):
 
     def test_all_checks_pass(self):
         self.assertEqual(self.result["summary"]["failed"], 0, self.by_id)
-        self.assertEqual(self.result["summary"]["passed"], 20)
+        self.assertEqual(self.result["summary"]["passed"], 22)
         self.assertEqual(set(self.by_id), EXPECTED_IDS)
 
     def test_json_and_md_written(self):
         data = json.loads((self.out / "effects.json").read_text(encoding="utf-8"))
-        self.assertEqual(data["summary"]["passed"], 20)
+        self.assertEqual(data["summary"]["passed"], 22)
         md = (self.out / "effects.md").read_text(encoding="utf-8")
         self.assertIn("PASS", md)
         for cid in EXPECTED_IDS:
@@ -262,6 +266,25 @@ class TestVerifyEffects(unittest.TestCase):
         self.assertEqual(ev["inject_status"], 200)
         self.assertGreater(ev["slowed_step_ms"], ev["baseline_step_ms"])
         self.assertGreaterEqual(ev["step_time_ratio"], 2.0)
+
+
+    def test_hardware_bmc_default_credential(self):
+        ev = self.by_id["hardware-bmc-default-credential"]["evidence"]
+        self.assertEqual(ev["http_status"], 200)
+        self.assertEqual(ev["default_username"], "root")
+        self.assertEqual(ev["credential_class"], "vendor-default")
+        self.assertTrue(ev["ipmi_over_lan"])
+        self.assertEqual(ev["ipmi_port"], 623)
+        self.assertTrue(ev["anonymous_manager_read"])
+        self.assertTrue(ev["detected"])
+
+    def test_hardware_firmware_manifest_tamper(self):
+        ev = self.by_id["hardware-firmware-manifest-tamper"]["evidence"]
+        self.assertTrue(ev["detected"])
+        self.assertEqual(ev["signature_status"], "valid")
+        self.assertIn("nvswitch-fw", ev["tampered_components"])
+        self.assertNotEqual(ev["expected_sha256"], ev["actual_sha256"])
+        self.assertNotEqual(ev["sha256_before"], ev["sha256_after"])
 
 
 if __name__ == "__main__":

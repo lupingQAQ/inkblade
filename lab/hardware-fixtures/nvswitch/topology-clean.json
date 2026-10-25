@@ -1,0 +1,156 @@
+{
+  "domain": "nvl72-mock",
+  "generated_at": "2026-10-26T00:00:00Z",
+  "switches": [
+    {
+      "id": "nvswitch-0",
+      "firmware": "1.8.2.0",
+      "partitions": [
+        1
+      ]
+    },
+    {
+      "id": "nvswitch-1",
+      "firmware": "1.8.2.0",
+      "partitions": [
+        2
+      ]
+    },
+    {
+      "id": "nvswitch-2",
+      "firmware": "1.8.2.0",
+      "partitions": [
+        3
+      ]
+    },
+    {
+      "id": "nvswitch-3",
+      "firmware": "1.8.2.0",
+      "partitions": [
+        4
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from": "gpu-0",
+      "to": "nvswitch-0",
+      "port": 0,
+      "state": "up",
+      "width": 18
+    },
+    {
+      "from": "gpu-1",
+      "to": "nvswitch-0",
+      "port": 1,
+      "state": "up",
+      "width": 18
+    },
+    {
+      "from": "gpu-2",
+      "to": "nvswitch-1",
+      "port": 0,
+      "state": "up",
+      "width": 18
+    },
+    {
+      "from": "gpu-3",
+      "to": "nvswitch-1",
+      "port": 1,
+      "state": "up",
+      "width": 18
+    },
+    {
+      "from": "gpu-4",
+      "to": "nvswitch-2",
+      "port": 0,
+      "state": "up",
+      "width": 18
+    },
+    {
+      "from": "gpu-5",
+      "to": "nvswitch-2",
+      "port": 1,
+      "state": "up",
+      "width": 18
+    },
+    {
+      "from": "gpu-6",
+      "to": "nvswitch-3",
+      "port": 0,
+      "state": "up",
+      "width": 18
+    },
+    {
+      "from": "gpu-7",
+      "to": "nvswitch-3",
+      "port": 1,
+      "state": "up",
+      "width": 18
+    }
+  ],
+  "partitions": [
+    {
+      "id": 1,
+      "tenant": "tenant-a",
+      "switches": [
+        "nvswitch-0"
+      ],
+      "gpus": [
+        "gpu-0",
+        "gpu-1"
+      ]
+    },
+    {
+      "id": 2,
+      "tenant": "tenant-a",
+      "switches": [
+        "nvswitch-1"
+      ],
+      "gpus": [
+        "gpu-2",
+        "gpu-3"
+      ]
+    },
+    {
+      "id": 3,
+      "tenant": "tenant-b",
+      "switches": [
+        "nvswitch-2"
+      ],
+      "gpus": [
+        "gpu-4",
+        "gpu-5"
+      ]
+    },
+    {
+      "id": 4,
+      "tenant": "tenant-b",
+      "switches": [
+        "nvswitch-3"
+      ],
+      "gpus": [
+        "gpu-6",
+        "gpu-7"
+      ]
+    }
+  ],
+  "imex": {
+    "channels": [
+      {
+        "id": "imex-a",
+        "tenant": "tenant-a",
+        "members": [
+          "tenant-a/host-1"
+        ]
+      },
+      {
+        "id": "imex-b",
+        "tenant": "tenant-b",
+        "members": [
+          "tenant-b/host-1"
+        ]
+      }
+    ]
+  }
+}

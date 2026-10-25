@@ -1,0 +1,53 @@
+{
+  "sharp": {
+    "enabled": true,
+    "version": "3.2.1",
+    "daemon": "sharpd",
+    "am_enabled": true,
+    "tenant_sharing": false
+  },
+  "sessions": [
+    {
+      "id": "train-alpha",
+      "tenant": "tenant-a",
+      "auth": "mtls",
+      "members": [
+        "tenant-a/rank-0",
+        "tenant-a/rank-1"
+      ],
+      "aggregation_nodes": [
+        "leaf-1"
+      ],
+      "buffer_isolation": true
+    },
+    {
+      "id": "train-beta",
+      "tenant": "tenant-b",
+      "auth": "mtls",
+      "members": [
+        "tenant-b/rank-0",
+        "tenant-b/rank-1"
+      ],
+      "aggregation_nodes": [
+        "leaf-2"
+      ],
+      "buffer_isolation": true
+    }
+  ],
+  "collectives": [
+    {
+      "name": "all-reduce",
+      "session": "train-alpha",
+      "reduction": "fp32",
+      "tree": "agg-1",
+      "buffer_isolation": true
+    },
+    {
+      "name": "all-reduce",
+      "session": "train-beta",
+      "reduction": "fp32",
+      "tree": "agg-2",
+      "buffer_isolation": true
+    }
+  ]
+}

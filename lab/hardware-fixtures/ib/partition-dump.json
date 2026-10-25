@@ -1,0 +1,136 @@
+{
+  "subnet_prefix": "fe80::/64",
+  "sm": {
+    "primary": "guid-sm-1",
+    "secondary": null,
+    "host": "gpu-node-07",
+    "routing_engine": "minhop",
+    "opensm_version": "3.3.24",
+    "priority": 0
+  },
+  "partitions": [
+    {
+      "pkey": "0x7fff",
+      "name": "default",
+      "default": true,
+      "members": [
+        "*"
+      ],
+      "tenant": null,
+      "ipoib": true
+    },
+    {
+      "pkey": "0x8001",
+      "name": "train-a",
+      "default": false,
+      "members": [
+        "guid-h1",
+        "guid-h2",
+        "guid-h5"
+      ],
+      "tenant": "tenant-a",
+      "ipoib": true
+    },
+    {
+      "pkey": "0x8002",
+      "name": "train-b",
+      "default": false,
+      "members": [
+        "guid-h3",
+        "guid-h4"
+      ],
+      "tenant": "tenant-b",
+      "ipoib": false
+    }
+  ],
+  "nodes": [
+    {
+      "guid": "guid-h1",
+      "type": "HCA",
+      "tenant": "tenant-a",
+      "host": "gpu-node-01",
+      "ports": [
+        {
+          "state": "ACTIVE",
+          "rate_gbps": 400
+        }
+      ]
+    },
+    {
+      "guid": "guid-h2",
+      "type": "HCA",
+      "tenant": "tenant-a",
+      "host": "gpu-node-02",
+      "ports": [
+        {
+          "state": "ACTIVE",
+          "rate_gbps": 400
+        }
+      ]
+    },
+    {
+      "guid": "guid-h3",
+      "type": "HCA",
+      "tenant": "tenant-b",
+      "host": "gpu-node-03",
+      "ports": [
+        {
+          "state": "ACTIVE",
+          "rate_gbps": 400
+        }
+      ]
+    },
+    {
+      "guid": "guid-h4",
+      "type": "HCA",
+      "tenant": "tenant-b",
+      "host": "gpu-node-04",
+      "ports": [
+        {
+          "state": "ACTIVE",
+          "rate_gbps": 400
+        }
+      ]
+    },
+    {
+      "guid": "guid-h5",
+      "type": "HCA",
+      "tenant": "tenant-b",
+      "host": "gpu-node-05",
+      "ports": [
+        {
+          "state": "ACTIVE",
+          "rate_gbps": 400
+        }
+      ]
+    },
+    {
+      "guid": "guid-h7",
+      "type": "HCA",
+      "tenant": "tenant-b",
+      "host": "gpu-node-07",
+      "ports": [
+        {
+          "state": "ACTIVE",
+          "rate_gbps": 400
+        }
+      ]
+    },
+    {
+      "guid": "guid-sm-1",
+      "type": "SWITCH",
+      "tenant": null,
+      "host": "gpu-node-07",
+      "ports": [
+        {
+          "state": "ACTIVE",
+          "rate_gbps": 400
+        }
+      ]
+    }
+  ],
+  "tenants": [
+    "tenant-a",
+    "tenant-b"
+  ]
+}

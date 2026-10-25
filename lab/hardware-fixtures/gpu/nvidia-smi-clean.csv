@@ -1,0 +1,3 @@
+index, name, driver_version, vbios_version, memory.total, ecc.mode.current, pstate, temperature.gpu, persistence_mode
+0, NVIDIA H100 80GB HBM3, 580.65.06, 96.00.74.00.01, 81559 MiB, Enabled, P0, 52, Enabled
+1, NVIDIA H100 80GB HBM3, 580.65.06, 96.00.74.00.01, 81559 MiB, Enabled, P0, 53, Enabled

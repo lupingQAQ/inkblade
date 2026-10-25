@@ -1,0 +1,21 @@
+{
+  "key": "hardware-supply-chain",
+  "name": {
+    "zh": "硬件供应链固件签名/哈希核验",
+    "en": "Hardware supply-chain firmware signature/hash verification"
+  },
+  "series": "侦察",
+  "description": "fixture 驱动核验固件清单：HMAC 签名（可选）、每组件实际 sha256、缺失/越界路径、缺签名者、供应商不一致。只读，不刷新固件、不写设备；HMAC 仅用于测试验证路径，生产必须换厂商非对称签名/PKI。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "manifest": "固件清单 JSON 路径或 dict（components[].file/sha256/signed_by/vendor，必填）",
+    "blobs_dir": "实际固件目录（缺省为 manifest 所在目录）",
+    "key_file": "可选：HMAC fixture 密钥文件（生产不用 HMAC）",
+    "hmac_key": "可选：HMAC 密钥字符串（与 key_file 二选一）"
+  },
+  "produces": "hardware-supply-chain.json + 签名/哈希/组件完整性证据",
+  "knowledge": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T1 与签名口径；生产用厂商非对称签名 + 公钥指纹 + 独立下载渠道",
+  "combo_signature": "firmware-manifest-tamper"
+}

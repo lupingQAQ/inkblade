@@ -1,0 +1,54 @@
+{
+  "DEVICE_METADATA": {
+    "localhost": {
+      "hostname": "leaf-01",
+      "platform": "x86_64-mock",
+      "type": "LeafRouter"
+    }
+  },
+  "PFC_WATCHDOG": {
+    "GLOBAL": {
+      "mode": "disable"
+    }
+  },
+  "BUFFER_POOL": {
+    "ingress_lossless_pool": {
+      "mode": "dynamic",
+      "size": "12766208"
+    }
+  },
+  "WRED_PROFILE": {
+    "AZURE_LOSSLESS": {
+      "wred_enabled": "false",
+      "ecn": "ecn_all",
+      "green_min_threshold": "150000"
+    }
+  },
+  "ACL_RULE": {
+    "MGMT_ACL|ALLOW_ANY": {
+      "PRIORITY": "1",
+      "PACKET_ACTION": "ACCEPT",
+      "SRC_IP": "0.0.0.0/0",
+      "IP_PROTOCOL": "6",
+      "L4_DST_PORT": "22"
+    }
+  },
+  "MGMT_INTERFACE": {
+    "eth0|10.0.0.2/24": {
+      "gwaddr": "10.0.0.1"
+    }
+  },
+  "SNMP": {
+    "COMMUNITY": {
+      "public": {
+        "TYPE": "RO"
+      }
+    }
+  },
+  "NTP_SERVER": {},
+  "FEATURE": {
+    "management-framework": {
+      "state": "enabled"
+    }
+  }
+}

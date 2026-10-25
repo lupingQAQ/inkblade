@@ -1,0 +1,48 @@
+{
+  "system": {
+    "hostname": "spine-01",
+    "platform": "cumulus-linux-mock"
+  },
+  "interfaces": {
+    "swp1": {
+      "pfc": {
+        "enabled": true,
+        "watchdog": false
+      },
+      "ecn": {
+        "enabled": false
+      }
+    },
+    "swp2": {
+      "pfc": {
+        "enabled": true,
+        "watchdog": false
+      },
+      "ecn": {
+        "enabled": false
+      }
+    }
+  },
+  "acl": {
+    "mgmt": {
+      "rules": [
+        {
+          "action": "permit",
+          "src": "0.0.0.0/0",
+          "dst_port": 22,
+          "proto": "tcp"
+        }
+      ]
+    }
+  },
+  "snmp": {
+    "version": "2c",
+    "community": "public"
+  },
+  "ntp": {
+    "servers": []
+  },
+  "aaa": {
+    "tacacs": []
+  }
+}
