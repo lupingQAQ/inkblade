@@ -215,7 +215,7 @@ class TestClonedepsRegistration(unittest.TestCase):
         names = {r["name"] for r in self.data["repos"]}
         expected_new = {
             "DataDog__KubeHound", "NVIDIA__garak", "microsoft__PyRIT",
-            "promptfoo__promptfoo", "aquasecurity__kube-hunter", "eth-sri__agent-dojo",
+            "promptfoo__promptfoo", "aquasecurity__kube-hunter", "ethz-spylab__agentdojo",
         }
         self.assertTrue(expected_new.issubset(names), f"新增克隆缺登记: {expected_new - names}")
 

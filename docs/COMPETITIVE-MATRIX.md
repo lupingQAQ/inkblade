@@ -41,14 +41,14 @@
 | garak | AI/LLM 安全 | 开源 Apache-2.0（NVIDIA） | main @ d6a8be1（本地克隆 README：探针族/生成器/JSONL 报告） | .slim/clonedeps/repos/NVIDIA__garak | 2026-10-25 |
 | PyRIT | AI/LLM 安全 | 开源 MIT（microsoft；原 Azure/PyRIT 仓库已迁移为跳转 stub） | main @ 246b659（本地克隆 README + doc/index.md 能力页） | .slim/clonedeps/repos/microsoft__PyRIT | 2026-10-25 |
 | promptfoo | AI/LLM 安全 | 开源 MIT（已并入 OpenAI，保持开源） | main @ b4c2404（本地克隆 README） | .slim/clonedeps/repos/promptfoo__promptfoo | 2026-10-25 |
-| AgentDojo | AI/LLM 安全 | 开源（ETH Zurich SRI / Invariant Labs；NeurIPS 2024 D&B，arXiv 2406.13352） | PyPI 0.1.35（benchmark CLI/attack/defense 参数；本地克隆因网络重置失败，见 §6.5 与 clonedeps.json） | https://pypi.org/project/agentdojo/ | 2026-10-25 |
+| AgentDojo | AI/LLM 安全 | 开源 MIT（ETH Zurich SRI / Invariant Labs；NeurIPS 2024 D&B，arXiv 2406.13352） | main @ 089ed468（本地克隆 README；PyPI 0.1.35；注意：常被引用的 eth-sri/agent-dojo 404，真实仓库=ethz-spylab/agentdojo，见 §6.5） | .slim/clonedeps/repos/ethz-spylab__agentdojo | 2026-10-25 |
 | Trivy | 其他 | 开源（Aqua；综合扫描器） | 官方 README（main）+ trivy.dev v0.76 文档系 | https://github.com/aquasecurity/trivy | 2026-10-25 |
 | Syft | 其他 | 开源（Anchore；SBOM 生成） | 官方 README（main） | https://github.com/anchore/syft | 2026-10-25 |
 | kube-bench | 其他 | 开源（Aqua；CIS K8s Benchmark 检查器） | 官方 README（main） | https://github.com/aquasecurity/kube-bench | 2026-10-25 |
 
-克隆登记：新增浅克隆 **5 个成功**（KubeHound / garak / PyRIT(microsoft) / promptfoo / kube-hunter）
-+ agent-dojo 克隆失败（网络重置，改用 PyPI 官方页核验），登记见 `.slim/clonedeps/clonedeps.json`；
-ARTEX / KubeTrail / DataDog MKAT 为既有克隆一并登记。
+克隆登记：新增浅克隆 **6 个成功**（KubeHound / garak / PyRIT(microsoft) / promptfoo / kube-hunter /
+agentdojo@ethz-spylab），登记见 `.slim/clonedeps/clonedeps.json`；ARTEX / KubeTrail / DataDog MKAT
+为既有克隆一并登记。
 
 ## 2. 能力维度定义（18 维）与 Trident 基线
 
@@ -302,9 +302,10 @@ kube-bench D13 ✓ = 输出即 CIS Benchmark 条目级合规报告（按定义�
    docs/REFLECTION-ARTEX-KUBETRAIL.md）；真实锚点为 ekkoo-z/KubeTrail 与 DataDog MKAT。
 4. **pentera.com ≠ Pentera 安全厂商**：pentera.com 为同名慈善营销公司；安全厂商官网为 pentera.io。
    （域名撞名已实测，来源登记以 pentera.io 为准。）
-5. **AgentDojo 本地克隆失败**：github.com 直连克隆多次连接重置（网络环境所致，2026-10-25 多轮重试后
-   放弃并清除残缺目录）；能力面以 PyPI 官方页（0.1.35，benchmark CLI/attack/defense 参数明证）核验，
-   clonedeps.json 已如实登记 CLONE-FAILED。不影响矩阵判定（来源=官方分发渠道）。
+5. **AgentDojo 仓库地址勘误**：任务口径与常见引用中的 `eth-sri/agent-dojo` **不存在**（git ls-remote
+   → Repository not found，2026-10-25 核验；早先两轮克隆卡在连接重置，掩盖了 404 事实）。真实仓库为
+   **`ethz-spylab/agentdojo`**（官方文档站 agentdojo.spylab.ai 的源码链接与 shields 徽章交叉确认，
+   MIT，main@089ed468 已克隆）。能力面双源核验一致（本地 README + PyPI 0.1.35 官方页），矩阵判定不变。
 6. **XBow/NodeZero/Pentera 为商业产品**：能力以官网公开声明为限，无二进制实测；「?」= 官网未声明，
    不等于不具备。商业产品的 K8s/ML 面未声明处一律保守标注。
 7. 本矩阵为**文档级对标**，不把阅读等同于实测；Trident 列以 SOTA-2026-10.md 诚实口径为锚，
