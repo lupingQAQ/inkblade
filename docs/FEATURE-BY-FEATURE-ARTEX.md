@@ -4,7 +4,10 @@
 >
 > 行数 = 提取计数：路由 278｜表 59｜agent 组件 32｜页面 29｜Web 组件 107｜配置键 7｜skills 3｜合计 515 行。
 >
-> 状态分布：we-have 37 / partial 201 / missing 180 / N/A 97。`missing + 行动项 -` = 刻意不做（锚点见 REFLECTION-ARTEX-KUBETRAIL.md）；`N/A` = 类别外（UI 基础件/桌面形态等）。
+> 状态分布：we-have 37 / partial 201 / missing 180 / N/A 97。`N/A` = 类别外（UI 基础件/桌面形态等）。
+>
+> 本文件的状态列是 2026-10-25 的历史快照（不再回写）；最终处置以 ARTEX-PARITY 为准。
+> **2026-10 clean-room 轮次**：180 条 `missing` 已逐行处置（done 70 / 技术不可行 6 / 架构不适用 104 / missing 0），逐功能实现与测试见 [`ARTEX-PARITY.md`](ARTEX-PARITY.md)，逐行处置见 [`artex-parity-rows.json`](artex-parity-rows.json)。
 
 ## A1. HTTP 路由（server/*.go，含循环注册展开）（278 项）
 
@@ -15,20 +18,20 @@
 | `POST /api/auth/login` | server/server.go:694 | s.authLogin | we-have（core/users.py + webui/server.py /api/login） | - | JWT/会话登录等价 |
 | `POST /api/auth/change-password` | server/server.go:695 | s.authChangePassword | partial（core/users.py） | S | 缺自助改密端点 |
 | `GET /api/basic-auth/check` | server/server.go:696 | func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Cache-Control" | missing | - | HTTP Basic Auth 外层门：部署层反代可等价，刻意不做 |
-| `GET /api/settings/basic-auth` | server/server.go:700 | s.getBasicAuthSettings | missing | - | HTTP Basic Auth 外层门：部署层反代可等价，刻意不做 |
-| `PUT /api/settings/basic-auth` | server/server.go:701 | s.saveBasicAuthSettings | missing | - | HTTP Basic Auth 外层门：部署层反代可等价，刻意不做 |
+		w.Header().Set("Cache-Control" | missing | - | HTTP Basic Auth 外层门：部署层反代可等价，不纳入（理由见 ARTEX-PARITY） |
+| `GET /api/settings/basic-auth` | server/server.go:700 | s.getBasicAuthSettings | missing | - | HTTP Basic Auth 外层门：部署层反代可等价，不纳入（理由见 ARTEX-PARITY） |
+| `PUT /api/settings/basic-auth` | server/server.go:701 | s.saveBasicAuthSettings | missing | - | HTTP Basic Auth 外层门：部署层反代可等价，不纳入（理由见 ARTEX-PARITY） |
 | `GET /api/health` | server/server.go:703 | s.health | partial（webui/server.py） | S | 缺 /health 探针端点 |
 | `GET /api/stats` | server/server.go:704 | s.stats | partial（webui/server.py /api/runs + reports/） | S | 缺全局 stats 聚合端点 |
 | `GET /api/logs` | server/server.go:705 | s.getLogs | partial（core/evidence.py JSONL artifacts） | S | 日志查询/历史/SSE 流缺端点（过程检索→CM-02） [CM-02] |
 | `GET /api/logs/history` | server/server.go:706 | s.getLogsHistory | partial（core/evidence.py JSONL artifacts） | S | 日志查询/历史/SSE 流缺端点（过程检索→CM-02） [CM-02] |
 | `GET /api/logs/stream` | server/server.go:707 | s.streamLogs | partial（core/evidence.py JSONL artifacts） | S | 日志查询/历史/SSE 流缺端点（过程检索→CM-02） [CM-02] |
-| `GET /api/update/settings` | server/server.go:711 | s.getUpdateSettings | missing | - | 一键自更新/回滚：包管理部署形态，刻意不做 |
-| `PUT /api/update/settings` | server/server.go:712 | s.putUpdateSettings | missing | - | 一键自更新/回滚：包管理部署形态，刻意不做 |
-| `GET /api/update/check` | server/server.go:713 | s.updateCheck | missing | - | 一键自更新/回滚：包管理部署形态，刻意不做 |
-| `POST /api/update/apply` | server/server.go:714 | s.updateApply | missing | - | 一键自更新/回滚：包管理部署形态，刻意不做 |
-| `POST /api/update/rollback` | server/server.go:715 | s.updateRollback | missing | - | 一键自更新/回滚：包管理部署形态，刻意不做 |
-| `GET /api/update/stream` | server/server.go:716 | s.updateStream | missing | - | 一键自更新/回滚：包管理部署形态，刻意不做 |
+| `GET /api/update/settings` | server/server.go:711 | s.getUpdateSettings | missing | - | 一键自更新/回滚：包管理部署形态，不纳入（理由见 ARTEX-PARITY） |
+| `PUT /api/update/settings` | server/server.go:712 | s.putUpdateSettings | missing | - | 一键自更新/回滚：包管理部署形态，不纳入（理由见 ARTEX-PARITY） |
+| `GET /api/update/check` | server/server.go:713 | s.updateCheck | missing | - | 一键自更新/回滚：包管理部署形态，不纳入（理由见 ARTEX-PARITY） |
+| `POST /api/update/apply` | server/server.go:714 | s.updateApply | missing | - | 一键自更新/回滚：包管理部署形态，不纳入（理由见 ARTEX-PARITY） |
+| `POST /api/update/rollback` | server/server.go:715 | s.updateRollback | missing | - | 一键自更新/回滚：包管理部署形态，不纳入（理由见 ARTEX-PARITY） |
+| `GET /api/update/stream` | server/server.go:716 | s.updateStream | missing | - | 一键自更新/回滚：包管理部署形态，不纳入（理由见 ARTEX-PARITY） |
 | `GET /api/tasks` | server/server.go:718 | s.listTasks | partial（core/runner.py runs + webui /api/runs） | L | 任务实体 CRUD/元数据缺（runs 不可变）→ 多任务模型=CM-31 同源 [CM-31] |
 | `POST /api/tasks` | server/server.go:719 | s.createTask | partial（core/runner.py runs + webui /api/runs） | L | 任务实体 CRUD/元数据缺（runs 不可变）→ 多任务模型=CM-31 同源 [CM-31] |
 | `GET /api/schedules` | server/server.go:720 | s.listSchedules | we-have（core/scheduler.py + webui /api/v1/scheduler(add/remove/run-due)） | - | cron 调度等价；缺 remark/metadata 字段 |
@@ -73,13 +76,13 @@
 | `POST /api/tasks/{id}/assets` | server/server.go:760 | s.attachTaskAssets | partial（core/runner.py runs + webui /api/runs） | L | 任务实体 CRUD/元数据缺（runs 不可变）→ 多任务模型=CM-31 同源 [CM-31] |
 | `DELETE /api/tasks/{id}/assets/{assetID}` | server/server.go:761 | s.detachTaskAsset | missing | L | 任务删除（runs 为不可变证据，刻意保留） |
 | `GET /api/tasks/{id}/intent-assets` | server/server.go:762 | s.taskIntentAssets | partial（core/runner.py runs + webui /api/runs） | L | 任务实体 CRUD/元数据缺（runs 不可变）→ 多任务模型=CM-31 同源 [CM-31] |
-| `GET /api/workspace/list` | server/server.go:765 | s.wsList | missing | M | run 工作区文件管理器（离线 artifacts 模型，刻意不做 UI） |
-| `GET /api/workspace/read` | server/server.go:766 | s.wsRead | missing | M | run 工作区文件管理器（离线 artifacts 模型，刻意不做 UI） |
-| `POST /api/workspace/write` | server/server.go:767 | s.wsWrite | missing | M | run 工作区文件管理器（离线 artifacts 模型，刻意不做 UI） |
-| `POST /api/workspace/mkdir` | server/server.go:768 | s.wsMkdir | missing | M | run 工作区文件管理器（离线 artifacts 模型，刻意不做 UI） |
-| `DELETE /api/workspace/delete` | server/server.go:769 | s.wsDelete | missing | M | run 工作区文件管理器（离线 artifacts 模型，刻意不做 UI） |
-| `GET /api/workspace/download` | server/server.go:770 | s.wsDownload | missing | M | run 工作区文件管理器（离线 artifacts 模型，刻意不做 UI） |
-| `POST /api/workspace/upload` | server/server.go:771 | s.wsUpload | missing | M | run 工作区文件管理器（离线 artifacts 模型，刻意不做 UI） |
+| `GET /api/workspace/list` | server/server.go:765 | s.wsList | missing | M | run 工作区文件管理器（离线 artifacts 模型，不纳入（理由见 ARTEX-PARITY） UI） |
+| `GET /api/workspace/read` | server/server.go:766 | s.wsRead | missing | M | run 工作区文件管理器（离线 artifacts 模型，不纳入（理由见 ARTEX-PARITY） UI） |
+| `POST /api/workspace/write` | server/server.go:767 | s.wsWrite | missing | M | run 工作区文件管理器（离线 artifacts 模型，不纳入（理由见 ARTEX-PARITY） UI） |
+| `POST /api/workspace/mkdir` | server/server.go:768 | s.wsMkdir | missing | M | run 工作区文件管理器（离线 artifacts 模型，不纳入（理由见 ARTEX-PARITY） UI） |
+| `DELETE /api/workspace/delete` | server/server.go:769 | s.wsDelete | missing | M | run 工作区文件管理器（离线 artifacts 模型，不纳入（理由见 ARTEX-PARITY） UI） |
+| `GET /api/workspace/download` | server/server.go:770 | s.wsDownload | missing | M | run 工作区文件管理器（离线 artifacts 模型，不纳入（理由见 ARTEX-PARITY） UI） |
+| `POST /api/workspace/upload` | server/server.go:771 | s.wsUpload | missing | M | run 工作区文件管理器（离线 artifacts 模型，不纳入（理由见 ARTEX-PARITY） UI） |
 | `GET /api/tasks/{id}/scope` | server/server.go:772 | s.taskScopeList | partial（core/runner.py runs + webui /api/runs） | L | 任务实体 CRUD/元数据缺（runs 不可变）→ 多任务模型=CM-31 同源 [CM-31] |
 | `POST /api/tasks/{id}/scope` | server/server.go:773 | s.taskScopeAdd | partial（core/runner.py runs + webui /api/runs） | L | 任务实体 CRUD/元数据缺（runs 不可变）→ 多任务模型=CM-31 同源 [CM-31] |
 | `DELETE /api/tasks/{id}/scope/{sid}` | server/server.go:774 | s.taskScopeDelete | missing | L | 任务删除（runs 为不可变证据，刻意保留） |
@@ -99,9 +102,9 @@
 | `POST /api/tasks/{id}/intents/{iid}/rerun` | server/server.go:788 | s.rerunIntent | partial（core/runner.py runs + webui /api/runs） | L | 任务实体 CRUD/元数据缺（runs 不可变）→ 多任务模型=CM-31 同源 [CM-31] |
 | `POST /api/tasks/{id}/intents/rerun-blocked` | server/server.go:789 | s.rerunBlocked | partial（core/runner.py runs + webui /api/runs） | L | 任务实体 CRUD/元数据缺（runs 不可变）→ 多任务模型=CM-31 同源 [CM-31] |
 | `POST /api/active` | server/server.go:790 | s.setActive | missing | L | 全局活动任务切换（单活动 run 模型） |
-| `GET /api/llm` | server/server.go:792 | s.getLLM | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
-| `POST /api/llm` | server/server.go:793 | s.setLLM | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
-| `POST /api/llm/test` | server/server.go:794 | s.testLLM | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
+| `GET /api/llm` | server/server.go:792 | s.getLLM | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
+| `POST /api/llm` | server/server.go:793 | s.setLLM | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
+| `POST /api/llm/test` | server/server.go:794 | s.testLLM | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
 | `GET /api/assets` | server/server.go:797 | s.listAssets | partial（core/discovery.py + webui /api/v1/assets） | S | 资产插入/删除端点缺（发现+导入已有） |
 | `GET /api/assets/counts` | server/server.go:798 | s.assetCounts | partial（core/discovery.py + webui /api/v1/assets） | S | 资产插入/删除端点缺（发现+导入已有） |
 | `POST /api/assets` | server/server.go:799 | s.insertAssets | partial（core/discovery.py + webui /api/v1/assets） | S | 资产插入/删除端点缺（发现+导入已有） |
@@ -141,14 +144,14 @@
 | `GET /api/exploration/nodes` | server/server.go:837 | s.explorationNodes | partial（core/graph.py） | M | 探索图/节点/意图查询端点缺 [CM-16] |
 | `GET /api/exploration/activity` | server/server.go:838 | s.activity | partial（core/evidence.py 事件流） | S | 活动流/历史/SSE 端点缺 |
 | `GET /api/exploration/activity/history` | server/server.go:839 | s.activityHistory | partial（core/evidence.py 事件流） | S | 活动流/历史/SSE 端点缺 |
-| `GET /api/exploration/main-sessions` | server/server.go:840 | s.mainSessions | missing | - | 主 agent 会话（自主执行循环刻意不做，Ruling 规划≠执行） |
-| `POST /api/exploration/main-session/new` | server/server.go:841 | s.newMainSession | missing | - | 主 agent 会话（自主执行循环刻意不做，Ruling 规划≠执行） |
+| `GET /api/exploration/main-sessions` | server/server.go:840 | s.mainSessions | missing | - | 主 agent 会话（自主执行循环不纳入（理由见 ARTEX-PARITY），Ruling 规划≠执行） |
+| `POST /api/exploration/main-session/new` | server/server.go:841 | s.newMainSession | missing | - | 主 agent 会话（自主执行循环不纳入（理由见 ARTEX-PARITY），Ruling 规划≠执行） |
 | `GET /api/exploration/activity/stream` | server/server.go:842 | s.streamActivity | partial（core/evidence.py 事件流） | S | 活动流/历史/SSE 端点缺 |
 | `GET /api/exploration/activity/{seq}` | server/server.go:843 | s.activityDetail | partial（core/evidence.py 事件流） | S | 活动流/历史/SSE 端点缺 |
-| `GET /api/exploration/tokens` | server/server.go:844 | s.tokenStats | missing | - | token 用量统计（0-token 原则，刻意不做） |
-| `GET /api/tokens/daily` | server/server.go:845 | s.tokenDailyStats | missing | - | token 用量统计（0-token 原则，刻意不做） |
-| `GET /api/tokens/conversations` | server/server.go:846 | s.conversationTokens | missing | - | token 用量统计（0-token 原则，刻意不做） |
-| `GET /api/tokens/usage` | server/server.go:847 | s.pgUsageStats | missing | - | token 用量统计（0-token 原则，刻意不做） |
+| `GET /api/exploration/tokens` | server/server.go:844 | s.tokenStats | missing | - | token 用量统计：本轮由 core/llmpool.py 调用留档提供（见 ARTEX-PARITY） |
+| `GET /api/tokens/daily` | server/server.go:845 | s.tokenDailyStats | missing | - | token 用量统计：本轮由 core/llmpool.py 调用留档提供（见 ARTEX-PARITY） |
+| `GET /api/tokens/conversations` | server/server.go:846 | s.conversationTokens | missing | - | token 用量统计：本轮由 core/llmpool.py 调用留档提供（见 ARTEX-PARITY） |
+| `GET /api/tokens/usage` | server/server.go:847 | s.pgUsageStats | missing | - | token 用量统计：本轮由 core/llmpool.py 调用留档提供（见 ARTEX-PARITY） |
 | `GET /api/audit` | server/server.go:849 | s.getAudit | partial（core/evidence.py manifest 篡改检测） | S | 独立审计查询端点缺 |
 | `POST /api/gc` | server/server.go:850 | s.gc | partial（core/backup.py） | S | 显式 GC 端点缺 |
 | `GET /api/traffic` | server/server.go:851 | s.getTraffic | partial（core/traffic.py ingest/replay + webui /api/v1/traffic） | S | 按主机/正文浏览与批量删除端点缺 |
@@ -160,11 +163,11 @@
 | `GET /api/traffic/blob` | server/server.go:857 | s.getTrafficBlob | partial（core/traffic.py ingest/replay + webui /api/v1/traffic） | S | 按主机/正文浏览与批量删除端点缺 |
 | `GET /api/commands` | server/server.go:858 | s.pgListCommands | partial（core/evidence.py 命令记录） | S | 命令审计/按工具聚合视图缺 |
 | `GET /api/commands/stats` | server/server.go:859 | s.pgToolStats | partial（core/evidence.py 命令记录） | S | 命令审计/按工具聚合视图缺 |
-| `GET /api/llm/records` | server/server.go:860 | s.pgListLLMRecords | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
+| `GET /api/llm/records` | server/server.go:860 | s.pgListLLMRecords | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
 | `DELETE /api/llm/records` | server/server.go:861 | s.pgDeleteLLMRecords | missing | - | LLM 调用留档（0-token 原则） |
-| `GET /api/llm/records/tasks` | server/server.go:862 | s.pgLLMTasks | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
-| `GET /api/llm/records/by-model` | server/server.go:863 | s.pgTokenByModel | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
-| `GET /api/llm/records/{id}` | server/server.go:864 | s.pgGetLLMRecord | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
+| `GET /api/llm/records/tasks` | server/server.go:862 | s.pgLLMTasks | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
+| `GET /api/llm/records/by-model` | server/server.go:863 | s.pgTokenByModel | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
+| `GET /api/llm/records/{id}` | server/server.go:864 | s.pgGetLLMRecord | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
 | `GET /api/tasks/{id}/intelligence` | server/server.go:865 | s.listIntelligence | partial（core/runner.py runs + webui /api/runs） | L | 任务实体 CRUD/元数据缺（runs 不可变）→ 多任务模型=CM-31 同源 [CM-31] |
 | `GET /api/tasks/{id}/intelligence/{intelID}` | server/server.go:866 | s.getIntelligence | partial（core/runner.py runs + webui /api/runs） | L | 任务实体 CRUD/元数据缺（runs 不可变）→ 多任务模型=CM-31 同源 [CM-31] |
 | `PATCH /api/tasks/{id}/intelligence/{intelID}` | server/server.go:867 | s.updateIntelligence | missing | S | 任务情报登记（凭据/线索集中 registry） [CM-01] |
@@ -188,43 +191,43 @@
 | `POST /api/notify/deliveries/{id}/retry` | server/server.go:893 | s.notifyRetryDelivery | missing | S | IM 推送渠道/投递/重试（输出多路分发同族） [CM-10] |
 | `POST /api/settings/web-search/test` | server/server.go:894 | s.testWebSearch | missing | - | 内置 web 搜索（外部检索由 librarian/websearch 会话承担） |
 | `GET /api/report` | server/server.go:895 | s.getReport | we-have（reports/render.py + compliance） | - | 报告等价 |
-| `GET /api/chat/mentions` | server/server.go:896 | s.searchChatMentions | missing | - | 对话式主 agent/上传/mentions（自主执行循环刻意不做） |
-| `POST /api/chat` | server/server.go:897 | s.chat | missing | - | 对话式主 agent/上传/mentions（自主执行循环刻意不做） |
-| `POST /api/chat/upload` | server/server.go:898 | s.chatUpload | missing | - | 对话式主 agent/上传/mentions（自主执行循环刻意不做） |
+| `GET /api/chat/mentions` | server/server.go:896 | s.searchChatMentions | missing | - | 对话式主 agent/上传/mentions（自主执行循环不纳入（理由见 ARTEX-PARITY）） |
+| `POST /api/chat` | server/server.go:897 | s.chat | missing | - | 对话式主 agent/上传/mentions（自主执行循环不纳入（理由见 ARTEX-PARITY）） |
+| `POST /api/chat/upload` | server/server.go:898 | s.chatUpload | missing | - | 对话式主 agent/上传/mentions（自主执行循环不纳入（理由见 ARTEX-PARITY）） |
 | `GET /api/tasks/{id}/chat/status` | server/server.go:899 | s.taskChatStatus | partial（core/runner.py runs + webui /api/runs） | L | 任务实体 CRUD/元数据缺（runs 不可变）→ 多任务模型=CM-31 同源 [CM-31] |
 | `POST /api/tasks/{id}/chat/stop` | server/server.go:900 | s.stopChat | partial（core/runner.py runs + webui /api/runs） | L | 任务实体 CRUD/元数据缺（runs 不可变）→ 多任务模型=CM-31 同源 [CM-31] |
 | `DELETE /api/tasks/{id}` | server/server.go:903 | s.pgDeleteTask | partial（core/runner.py + webui /api/runs） | L | 任务详情/改元数据：runs 有详情，缺可编辑元数据 [CM-31] |
-| `GET /api/conversations` | server/server.go:906 | s.pgListConversations | missing | - | 多会话管理（对话式平台刻意不做） |
-| `POST /api/conversations` | server/server.go:907 | s.pgCreateConversation | missing | - | 多会话管理（对话式平台刻意不做） |
-| `POST /api/conversations/delete/batch` | server/server.go:908 | s.pgDeleteConversationsBatch | missing | - | 多会话管理（对话式平台刻意不做） |
-| `PATCH /api/conversations/{id}` | server/server.go:909 | s.pgRenameConversation | missing | - | 多会话管理（对话式平台刻意不做） |
-| `PATCH /api/conversations/{id}/profile` | server/server.go:910 | s.pgUpdateConversation | missing | - | 多会话管理（对话式平台刻意不做） |
-| `DELETE /api/conversations/{id}` | server/server.go:911 | s.pgDeleteConversation | missing | - | 多会话管理（对话式平台刻意不做） |
-| `GET /api/conversations/{id}/messages` | server/server.go:912 | s.pgConversationMessages | missing | - | 多会话管理（对话式平台刻意不做） |
-| `POST /api/conversations/{id}/messages` | server/server.go:913 | s.pgSendConversationMessage | missing | - | 多会话管理（对话式平台刻意不做） |
-| `POST /api/conversations/{id}/stop` | server/server.go:914 | s.pgStopConversation | missing | - | 多会话管理（对话式平台刻意不做） |
-| `GET /api/conversations/{id}/messages/{seq}` | server/server.go:915 | s.pgConversationMsgDetail | missing | - | 多会话管理（对话式平台刻意不做） |
-| `GET /api/agents` | server/server.go:917 | s.pgListAgents | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `POST /api/agents` | server/server.go:918 | s.pgCreateAgent | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `GET /api/agents/{key}` | server/server.go:919 | s.pgGetAgent | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `PATCH /api/agents/{key}` | server/server.go:920 | s.pgUpdateAgent | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `DELETE /api/agents/{key}` | server/server.go:921 | s.pgDeleteAgent | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `PUT /api/agents/{key}/config` | server/server.go:922 | s.pgSaveAgentConfig | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `PUT /api/agents/{key}/prompt` | server/server.go:923 | s.pgSavePrompt | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `POST /api/agents/{key}/prompt/reset` | server/server.go:924 | s.pgResetPrompt | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `PUT /api/agents/{key}/wrapup` | server/server.go:925 | s.pgSaveWrapup | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `POST /api/agents/{key}/wrapup/reset` | server/server.go:926 | s.pgResetWrapup | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `PUT /api/agents/{key}/wrapup/task-timeout` | server/server.go:927 | s.pgSaveTaskTimeoutWrapup | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `POST /api/agents/{key}/wrapup/task-timeout/reset` | server/server.go:928 | s.pgResetTaskTimeoutWrapup | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `GET /api/agents/{key}/triggers` | server/server.go:929 | s.pgListTriggers | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `POST /api/agents/{key}/triggers` | server/server.go:930 | s.pgCreateTrigger | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
+| `GET /api/conversations` | server/server.go:906 | s.pgListConversations | missing | - | 多会话管理（对话式平台不纳入（理由见 ARTEX-PARITY）） |
+| `POST /api/conversations` | server/server.go:907 | s.pgCreateConversation | missing | - | 多会话管理（对话式平台不纳入（理由见 ARTEX-PARITY）） |
+| `POST /api/conversations/delete/batch` | server/server.go:908 | s.pgDeleteConversationsBatch | missing | - | 多会话管理（对话式平台不纳入（理由见 ARTEX-PARITY）） |
+| `PATCH /api/conversations/{id}` | server/server.go:909 | s.pgRenameConversation | missing | - | 多会话管理（对话式平台不纳入（理由见 ARTEX-PARITY）） |
+| `PATCH /api/conversations/{id}/profile` | server/server.go:910 | s.pgUpdateConversation | missing | - | 多会话管理（对话式平台不纳入（理由见 ARTEX-PARITY）） |
+| `DELETE /api/conversations/{id}` | server/server.go:911 | s.pgDeleteConversation | missing | - | 多会话管理（对话式平台不纳入（理由见 ARTEX-PARITY）） |
+| `GET /api/conversations/{id}/messages` | server/server.go:912 | s.pgConversationMessages | missing | - | 多会话管理（对话式平台不纳入（理由见 ARTEX-PARITY）） |
+| `POST /api/conversations/{id}/messages` | server/server.go:913 | s.pgSendConversationMessage | missing | - | 多会话管理（对话式平台不纳入（理由见 ARTEX-PARITY）） |
+| `POST /api/conversations/{id}/stop` | server/server.go:914 | s.pgStopConversation | missing | - | 多会话管理（对话式平台不纳入（理由见 ARTEX-PARITY）） |
+| `GET /api/conversations/{id}/messages/{seq}` | server/server.go:915 | s.pgConversationMsgDetail | missing | - | 多会话管理（对话式平台不纳入（理由见 ARTEX-PARITY）） |
+| `GET /api/agents` | server/server.go:917 | s.pgListAgents | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `POST /api/agents` | server/server.go:918 | s.pgCreateAgent | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `GET /api/agents/{key}` | server/server.go:919 | s.pgGetAgent | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `PATCH /api/agents/{key}` | server/server.go:920 | s.pgUpdateAgent | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `DELETE /api/agents/{key}` | server/server.go:921 | s.pgDeleteAgent | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `PUT /api/agents/{key}/config` | server/server.go:922 | s.pgSaveAgentConfig | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `PUT /api/agents/{key}/prompt` | server/server.go:923 | s.pgSavePrompt | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `POST /api/agents/{key}/prompt/reset` | server/server.go:924 | s.pgResetPrompt | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `PUT /api/agents/{key}/wrapup` | server/server.go:925 | s.pgSaveWrapup | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `POST /api/agents/{key}/wrapup/reset` | server/server.go:926 | s.pgResetWrapup | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `PUT /api/agents/{key}/wrapup/task-timeout` | server/server.go:927 | s.pgSaveTaskTimeoutWrapup | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `POST /api/agents/{key}/wrapup/task-timeout/reset` | server/server.go:928 | s.pgResetTaskTimeoutWrapup | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `GET /api/agents/{key}/triggers` | server/server.go:929 | s.pgListTriggers | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `POST /api/agents/{key}/triggers` | server/server.go:930 | s.pgCreateTrigger | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
 | `PATCH /api/triggers/{id}` | server/server.go:931 | s.pgUpdateTrigger | missing | S | 事件/间隔触发器（调度器族） [CM-04] |
 | `DELETE /api/triggers/{id}` | server/server.go:932 | s.pgDeleteTrigger | missing | S | 事件/间隔触发器（调度器族） [CM-04] |
-| `GET /api/agents/{key}/prompts` | server/server.go:933 | s.pgListPromptVersions | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `GET /api/agents/{key}/variables` | server/server.go:934 | s.pgPromptVars | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `POST /api/agents/{key}/prompt/preview` | server/server.go:935 | s.pgPreviewPrompt | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `GET /api/agents/{key}/visibility` | server/server.go:936 | s.pgGetAgentVisibility | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
-| `PUT /api/agents/{key}/visibility` | server/server.go:937 | s.pgSetAgentVisibility | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台刻意不做，REFLECTION §2） |
+| `GET /api/agents/{key}/prompts` | server/server.go:933 | s.pgListPromptVersions | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `GET /api/agents/{key}/variables` | server/server.go:934 | s.pgPromptVars | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `POST /api/agents/{key}/prompt/preview` | server/server.go:935 | s.pgPreviewPrompt | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `GET /api/agents/{key}/visibility` | server/server.go:936 | s.pgGetAgentVisibility | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
+| `PUT /api/agents/{key}/visibility` | server/server.go:937 | s.pgSetAgentVisibility | missing | - | 多 agent 实体/提示词版本/可见性/wrap-up（多 agent 平台不纳入（理由见 ARTEX-PARITY），REFLECTION §2） |
 | `GET /api/tools` | server/server.go:939 | s.pgListTools | partial（core/registry.py 模块动态加载） | S | 内置工具目录改描述/默认值缺（模块即工具） |
 | `PUT /api/tools/{key}` | server/server.go:940 | s.pgUpdateTool | partial（core/registry.py 模块动态加载） | S | 内置工具目录改描述/默认值缺（模块即工具） |
 | `POST /api/tools/custom` | server/server.go:941 | s.pgCreateCustomTool | partial（core/registry.py 模块动态加载） | S | 内置工具目录改描述/默认值缺（模块即工具） |
@@ -259,15 +262,15 @@
 | `POST /api/visibility/toggle` | server/server.go:975 | s.pgToggleVisibility | missing | - | 按 agent 的资源可见性（多 agent 模型外） |
 | `GET /api/visibility/skill/{name}` | server/server.go:977 | s.pgSkillVisibility | missing | - | 按 agent 的资源可见性（多 agent 模型外） |
 | `POST /api/visibility/skill/toggle` | server/server.go:978 | s.pgToggleSkillVisibility | missing | - | 按 agent 的资源可见性（多 agent 模型外） |
-| `GET /api/llm/profiles` | server/server.go:980 | s.pgListProfiles | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
-| `POST /api/llm/profiles` | server/server.go:981 | s.pgSaveProfile | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
+| `GET /api/llm/profiles` | server/server.go:980 | s.pgListProfiles | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
+| `POST /api/llm/profiles` | server/server.go:981 | s.pgSaveProfile | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
 | `DELETE /api/llm/profiles/{id}` | server/server.go:982 | s.pgDeleteProfile | missing | M | 未归类路由：待人工归类（完备性要求下不得长期存在） |
-| `POST /api/llm/profiles/active` | server/server.go:983 | s.pgActivateProfile | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
-| `GET /api/llm/retry-policy` | server/server.go:984 | s.pgGetLLMRetryPolicy | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
-| `POST /api/llm/retry-policy` | server/server.go:985 | s.pgSaveLLMRetryPolicy | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
-| `GET /api/llm/pool` | server/server.go:986 | s.pgLLMPoolStatus | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
-| `POST /api/llm/pool/reset` | server/server.go:987 | s.pgLLMPoolReset | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
-| `POST /api/llm/models` | server/server.go:988 | s.pgListModels | missing | - | LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则） |
+| `POST /api/llm/profiles/active` | server/server.go:983 | s.pgActivateProfile | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
+| `GET /api/llm/retry-policy` | server/server.go:984 | s.pgGetLLMRetryPolicy | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
+| `POST /api/llm/retry-policy` | server/server.go:985 | s.pgSaveLLMRetryPolicy | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
+| `GET /api/llm/pool` | server/server.go:986 | s.pgLLMPoolStatus | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
+| `POST /api/llm/pool/reset` | server/server.go:987 | s.pgLLMPoolReset | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
+| `POST /api/llm/models` | server/server.go:988 | s.pgListModels | missing | - | LLM 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
 | `GET /api/intercept/rules` | server/server.go:991 | s.interceptListRules | partial（core/roe.py + core/explorer.py 审批） | S | 拦截规则持久化 CRUD 缺（ROE 内置规则） |
 | `POST /api/intercept/rules` | server/server.go:992 | s.interceptCreateRule | partial（core/roe.py + core/explorer.py 审批） | S | 拦截规则持久化 CRUD 缺（ROE 内置规则） |
 | `PUT /api/intercept/rules/{id}` | server/server.go:993 | s.interceptUpdateRule | partial（core/roe.py + core/explorer.py 审批） | S | 拦截规则持久化 CRUD 缺（ROE 内置规则） |
@@ -308,29 +311,29 @@
 | `activity` | db/schema.sql:298 | 表 activity | partial（core/evidence.py JSONL） | S | 活动/日志独立表缺（事件入证据库） |
 | `main_sessions` | db/schema.sql:346 | 表 main_sessions | partial（core/evidence.py JSONL） | S | 活动/日志独立表缺（事件入证据库） |
 | `settings` | db/schema.sql:356 | 表 settings | partial（lab/ 配置） | S | 集中设置表缺 |
-| `llm_profiles` | db/schema.sql:362 | 表 llm_profiles | missing | - | 多模型池（刻意不做，REFLECTION §2） |
-| `llm_profile_health` | db/schema.sql:479 | 表 llm_profile_health | missing | - | 多模型池（刻意不做，REFLECTION §2） |
+| `llm_profiles` | db/schema.sql:362 | 表 llm_profiles | missing | - | 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY） |
+| `llm_profile_health` | db/schema.sql:479 | 表 llm_profile_health | missing | - | 多模型池：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY） |
 | `task_categories` | db/schema.sql:493 | 表 task_categories | partial（core/scheduler.py + core/runner.py runs） | M | 任务实体族表缺；调度等价（cron+diff_findings），历史/状态持久化缺 [CM-31] |
 | `tasks` | db/schema.sql:505 | 表 tasks | partial（core/scheduler.py + core/runner.py runs） | M | 任务实体族表缺；调度等价（cron+diff_findings），历史/状态持久化缺 [CM-31] |
 | `task_archives` | db/schema.sql:572 | 表 task_archives | partial（core/scheduler.py + core/runner.py runs） | M | 任务实体族表缺；调度等价（cron+diff_findings），历史/状态持久化缺 [CM-31] |
 | `task_templates` | db/schema.sql:614 | 表 task_templates | partial（core/scheduler.py + core/runner.py runs） | M | 任务实体族表缺；调度等价（cron+diff_findings），历史/状态持久化缺 [CM-31] |
 | `task_relations` | db/schema.sql:637 | 表 task_relations | partial（core/scheduler.py + core/runner.py runs） | M | 任务实体族表缺；调度等价（cron+diff_findings），历史/状态持久化缺 [CM-31] |
 | `task_asset_links` | db/schema.sql:649 | 表 task_asset_links | partial（core/scheduler.py + core/runner.py runs） | M | 任务实体族表缺；调度等价（cron+diff_findings），历史/状态持久化缺 [CM-31] |
-| `task_llm_profiles` | db/schema.sql:697 | 表 task_llm_profiles | missing | - | 多模型池（刻意不做，REFLECTION §2） |
+| `task_llm_profiles` | db/schema.sql:697 | 表 task_llm_profiles | missing | - | 任务级 LLM profile 关联：架构不适用（无任务实体；见 ARTEX-PARITY） |
 | `task_scope` | db/schema.sql:739 | 表 task_scope | we-have（core/roe.py） | S | 约束/范围持久化表缺（ROE YAML 内） |
-| `agents` | db/schema.sql:767 | 表 agents | missing | - | 多 agent 实体族（刻意不做） |
-| `agent_prompts` | db/schema.sql:805 | 表 agent_prompts | missing | - | 多 agent 实体族（刻意不做） |
-| `agent_prompt_vars` | db/schema.sql:821 | 表 agent_prompt_vars | missing | - | 多 agent 实体族（刻意不做） |
+| `agents` | db/schema.sql:767 | 表 agents | missing | - | 多 agent 实体族（不纳入（理由见 ARTEX-PARITY）） |
+| `agent_prompts` | db/schema.sql:805 | 表 agent_prompts | missing | - | 多 agent 实体族（不纳入（理由见 ARTEX-PARITY）） |
+| `agent_prompt_vars` | db/schema.sql:821 | 表 agent_prompt_vars | missing | - | 多 agent 实体族（不纳入（理由见 ARTEX-PARITY）） |
 | `mcp_servers` | db/schema.sql:834 | 表 mcp_servers | partial（mcp_server.py） | M | 外部 MCP 挂载表缺（服务端已有） |
 | `mcp_tools_cache` | db/schema.sql:865 | 表 mcp_tools_cache | partial（mcp_server.py） | M | 外部 MCP 挂载表缺（服务端已有） |
-| `agent_visibility` | db/schema.sql:878 | 表 agent_visibility | missing | - | 多 agent 实体族（刻意不做） |
-| `agent_skill_visibility` | db/schema.sql:889 | 表 agent_skill_visibility | missing | - | 多 agent 实体族（刻意不做） |
+| `agent_visibility` | db/schema.sql:878 | 表 agent_visibility | missing | - | 多 agent 实体族（不纳入（理由见 ARTEX-PARITY）） |
+| `agent_skill_visibility` | db/schema.sql:889 | 表 agent_skill_visibility | missing | - | 多 agent 实体族（不纳入（理由见 ARTEX-PARITY）） |
 | `skill_usage` | db/schema.sql:901 | 表 skill_usage | partial（core/registry.py） | S | 工具/技能使用统计缺 |
 | `tool_usage` | db/schema.sql:920 | 表 tool_usage | partial（core/registry.py） | S | 工具/技能使用统计缺 |
 | `tools` | db/schema.sql:936 | 表 tools | partial（core/registry.py） | S | 工具/技能使用统计缺 |
-| `conversations` | db/schema.sql:955 | 表 conversations | missing | - | 会话持久化（对话式平台刻意不做） |
+| `conversations` | db/schema.sql:955 | 表 conversations | missing | - | 会话持久化（对话式平台不纳入（理由见 ARTEX-PARITY）） |
 | `conversation_activities` | db/schema.sql:971 | 表 conversation_activities | missing | M | 未归类表：待人工归类 |
-| `agent_triggers` | db/schema.sql:994 | 表 agent_triggers | missing | - | 多 agent 实体族（刻意不做） |
+| `agent_triggers` | db/schema.sql:994 | 表 agent_triggers | missing | - | 多 agent 实体族（不纳入（理由见 ARTEX-PARITY）） |
 | `scheduler_state` | db/schema.sql:1026 | 表 scheduler_state | partial（core/scheduler.py + core/runner.py runs） | M | 任务实体族表缺；调度等价（cron+diff_findings），历史/状态持久化缺 [CM-31] |
 | `task_schedules` | db/schema.sql:1034 | 表 task_schedules | partial（core/scheduler.py + core/runner.py runs） | M | 任务实体族表缺；调度等价（cron+diff_findings），历史/状态持久化缺 [CM-31] |
 | `task_schedule_tasks` | db/schema.sql:1066 | 表 task_schedule_tasks | partial（core/scheduler.py + core/runner.py runs） | M | 任务实体族表缺；调度等价（cron+diff_findings），历史/状态持久化缺 [CM-31] |
@@ -364,9 +367,9 @@
 | `assembly.go` | agent/assembly.go:1 | 组件文件（types: DeferredInfo, guardedTool） | partial（core/chains.py + core/evidence.py） | S | 工具装配/捕获留档差异 |
 | `cancelcause.go` | agent/cancelcause.go:1 | 组件文件（types: AbortCause） | partial（core/runner.py abort/timeout） | S | 任务钟/终止原因留档细节缺 |
 | `capture.go` | agent/capture.go:1 | 组件文件（types: -） | partial（core/chains.py + core/evidence.py） | S | 工具装配/捕获留档差异 |
-| `chat.go` | agent/chat.go:1 | 组件文件（types: ChatAgent, chatVars） | partial（agent_planner.py + core/explorer.py） | - | 规划/探索循环：推荐+lead 审批等价；自主多轮执行刻意不做 |
+| `chat.go` | agent/chat.go:1 | 组件文件（types: ChatAgent, chatVars） | partial（agent_planner.py + core/explorer.py） | - | 规划/探索循环：推荐+lead 审批等价；自主多轮执行不纳入（审批边界；见 ARTEX-PARITY） |
 | `coldgraph.go` | agent/coldgraph.go:1 | 组件文件（types: block, cgEdge, cgNode, coldGraph, coldParams, stampOp, unionFind） | partial（core/graph.py） | M | 冷启动图重建缺 [CM-16] |
-| `compaction.go` | agent/compaction.go:1 | 组件文件（types: Compactor） | missing | - | 上下文压缩（无多轮对话运行时，刻意不做） |
+| `compaction.go` | agent/compaction.go:1 | 组件文件（types: Compactor） | missing | - | 上下文压缩（无多轮对话运行时，不纳入（理由见 ARTEX-PARITY）） |
 | `constraints.go` | agent/constraints.go:1 | 组件文件（types: -） | we-have（core/roe.py） | S | 延迟动作/约束执行缺端点 |
 | `credentials.go` | agent/credentials.go:1 | 组件文件（types: -） | missing | S | 情报/凭据登记 [CM-01] |
 | `deferred.go` | agent/deferred.go:1 | 组件文件（types: -） | we-have（core/roe.py） | S | 延迟动作/约束执行缺端点 |
@@ -375,13 +378,13 @@
 | `finding_workflow.go` | agent/finding_workflow.go:1 | 组件文件（types: -） | partial（core/evidence.py + core/combo.py） | M | finding 工作流/案例缺 [CM-17] |
 | `goals.go` | agent/goals.go:1 | 组件文件（types: GoalSpec） | partial（agent_planner.py） | M | goal 实体/复活任务缺 [CM-16] |
 | `intelligence.go` | agent/intelligence.go:1 | 组件文件（types: -） | missing | S | 情报/凭据登记 [CM-01] |
-| `mainagent.go` | agent/mainagent.go:1 | 组件文件（types: MainAgent） | partial（agent_planner.py + core/explorer.py） | - | 规划/探索循环：推荐+lead 审批等价；自主多轮执行刻意不做 |
-| `noa.go` | agent/noa.go:1 | 组件文件（types: -） | missing | - | 上下文压缩（无多轮对话运行时，刻意不做） |
-| `planner.go` | agent/planner.go:1 | 组件文件（types: Planner, TriggerEvent） | partial（agent_planner.py + core/explorer.py） | - | 规划/探索循环：推荐+lead 审批等价；自主多轮执行刻意不做 |
+| `mainagent.go` | agent/mainagent.go:1 | 组件文件（types: MainAgent） | partial（agent_planner.py + core/explorer.py） | - | 规划/探索循环：推荐+lead 审批等价；自主多轮执行不纳入（审批边界；见 ARTEX-PARITY） |
+| `noa.go` | agent/noa.go:1 | 组件文件（types: -） | missing | - | 上下文压缩（无多轮对话运行时，不纳入（理由见 ARTEX-PARITY）） |
+| `planner.go` | agent/planner.go:1 | 组件文件（types: Planner, TriggerEvent） | partial（agent_planner.py + core/explorer.py） | - | 规划/探索循环：推荐+lead 审批等价；自主多轮执行不纳入（审批边界；见 ARTEX-PARITY） |
 | `prompt.go` | agent/prompt.go:1 | 组件文件（types: GoalsVars, MainVars, PlannerVars, WorkerVars） | partial（core/registry.py + rules/templates/） | S | 提示词/工具目录机制差异（模块即工具） |
 | `promptcatalog.go` | agent/promptcatalog.go:1 | 组件文件（types: -） | partial（core/registry.py + rules/templates/） | S | 提示词/工具目录机制差异（模块即工具） |
-| `provider.go` | agent/provider.go:1 | 组件文件（types: Config, RetryConfig, quotaAwareTransport） | missing | - | 多模型 provider/限流（刻意不做） |
-| `request_limiter.go` | agent/request_limiter.go:1 | 组件文件（types: RequestLimiter, rateLimitedTransport, requestWindow） | missing | - | 多模型 provider/限流（刻意不做） |
+| `provider.go` | agent/provider.go:1 | 组件文件（types: Config, RetryConfig, quotaAwareTransport） | missing | - | 多模型 provider/限流：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
+| `request_limiter.go` | agent/request_limiter.go:1 | 组件文件（types: RequestLimiter, rateLimitedTransport, requestWindow） | missing | - | 多模型 provider/限流：本轮 clean-room 实现（core/llmpool.py；见 ARTEX-PARITY）|
 | `retester.go` | agent/retester.go:1 | 组件文件（types: -） | partial（poc reverify + verify-effects.py） | M | 自动复测 worker 缺 [CM-14] |
 | `runinfo.go` | agent/runinfo.go:1 | 组件文件（types: RunInfo, runInfoKey） | partial（core/runner.py abort/timeout） | S | 任务钟/终止原因留档细节缺 |
 | `side_questions.go` | agent/side_questions.go:1 | 组件文件（types: -） | missing | M | 侧问 |
@@ -391,7 +394,7 @@
 | `tools.go` | agent/tools.go:1 | 组件文件（types: ToolSet, WriteCounts, constraintItem, factItem, goalItem, hintItem, intentItem, overviewTextBudget） | partial（core/registry.py + rules/templates/） | S | 提示词/工具目录机制差异（模块即工具） |
 | `tools_digest.go` | agent/tools_digest.go:1 | 组件文件（types: -） | partial（core/registry.py + rules/templates/） | S | 提示词/工具目录机制差异（模块即工具） |
 | `tools_insert.go` | agent/tools_insert.go:1 | 组件文件（types: assetInputItem） | partial（core/registry.py + rules/templates/） | S | 提示词/工具目录机制差异（模块即工具） |
-| `worker.go` | agent/worker.go:1 | 组件文件（types: WebSearchOpts, Worker） | partial（agent_planner.py + core/explorer.py） | - | 规划/探索循环：推荐+lead 审批等价；自主多轮执行刻意不做 |
+| `worker.go` | agent/worker.go:1 | 组件文件（types: WebSearchOpts, Worker） | partial（agent_planner.py + core/explorer.py） | - | 规划/探索循环：推荐+lead 审批等价；自主多轮执行不纳入（审批边界；见 ARTEX-PARITY） |
 | `wrapup.go` | agent/wrapup.go:1 | 组件文件（types: -） | missing | - | 收尾 prompt（对话式运行时外） |
 
 ## A4. Web 页面（web/src/app/**/page.tsx）（29 项）
@@ -401,7 +404,7 @@
 | `/(auth)/login` | web/src/app/(auth)/login/page.tsx | Next.js 页面 | N/A | - | 外部落地页/类别外 |
 | `/(auth)/setup` | web/src/app/(auth)/setup/page.tsx | Next.js 页面 | N/A | - | 外部落地页/类别外 |
 | `/(external)` | web/src/app/(external)/page.tsx | Next.js 页面 | N/A | - | 外部落地页/类别外 |
-| `/(main)/chat` | web/src/app/(main)/chat/page.tsx | Next.js 页面 | missing | - | 对话页（刻意不做） |
+| `/(main)/chat` | web/src/app/(main)/chat/page.tsx | Next.js 页面 | missing | - | 对话页（不纳入（理由见 ARTEX-PARITY）） |
 | `/(main)/dashboard` | web/src/app/(main)/dashboard/page.tsx | Next.js 页面 | we-have（webui SPA 总览视图） | - |  |
 | `/(main)/function/assets` | web/src/app/(main)/function/assets/page.tsx | Next.js 页面 | we-have（webui assets 视图） | - |  |
 | `/(main)/function/commands` | web/src/app/(main)/function/commands/page.tsx | Next.js 页面 | partial（webui + evidence 命令记录） | S | 命令审计页缺 |
@@ -415,12 +418,12 @@
 | `/(main)/function/tasks` | web/src/app/(main)/function/tasks/page.tsx | Next.js 页面 | partial（webui runs 视图） | M | 任务详情/控制 UI 部分对齐（缺任务元数据编辑） [CM-31] |
 | `/(main)/function/traffic` | web/src/app/(main)/function/traffic/page.tsx | Next.js 页面 | partial（webui traffic 回放视图） | S | 流量浏览/删除 UI 缺 |
 | `/(main)/function/workspace` | web/src/app/(main)/function/workspace/page.tsx | Next.js 页面 | missing | M | 工作区文件管理页 |
-| `/(main)/system/agents/detail` | web/src/app/(main)/system/agents/detail/page.tsx | Next.js 页面 | missing | - | 多 agent 管理页（刻意不做） |
-| `/(main)/system/agents` | web/src/app/(main)/system/agents/page.tsx | Next.js 页面 | missing | - | 多 agent 管理页（刻意不做） |
+| `/(main)/system/agents/detail` | web/src/app/(main)/system/agents/detail/page.tsx | Next.js 页面 | missing | - | 多 agent 管理页（不纳入（理由见 ARTEX-PARITY）） |
+| `/(main)/system/agents` | web/src/app/(main)/system/agents/page.tsx | Next.js 页面 | missing | - | 多 agent 管理页（不纳入（理由见 ARTEX-PARITY）） |
 | `/(main)/system/intercept/approvals` | web/src/app/(main)/system/intercept/approvals/page.tsx | Next.js 页面 | we-have（webui /approve //reject 审批页） | - |  |
 | `/(main)/system/intercept/assets` | web/src/app/(main)/system/intercept/assets/page.tsx | Next.js 页面 | partial（webui 审批 + core/roe.py） | S | 拦截规则/资产黑名单管理页缺 |
 | `/(main)/system/intercept` | web/src/app/(main)/system/intercept/page.tsx | Next.js 页面 | partial（webui 审批 + core/roe.py） | S | 拦截规则/资产黑名单管理页缺 |
-| `/(main)/system/llm` | web/src/app/(main)/system/llm/page.tsx | Next.js 页面 | missing | - | LLM 配置页（刻意不做） |
+| `/(main)/system/llm` | web/src/app/(main)/system/llm/page.tsx | Next.js 页面 | missing | - | LLM 配置页（不纳入（理由见 ARTEX-PARITY）） |
 | `/(main)/system/logs` | web/src/app/(main)/system/logs/page.tsx | Next.js 页面 | partial（evidence JSONL + webui） | S | 日志流页缺 [CM-02] |
 | `/(main)/system/mcp` | web/src/app/(main)/system/mcp/page.tsx | Next.js 页面 | partial（mcp_server.py） | M | 外部 MCP 挂载页缺 |
 | `/(main)/system/notify` | web/src/app/(main)/system/notify/page.tsx | Next.js 页面 | missing | S | 通知渠道页 [CM-10] |

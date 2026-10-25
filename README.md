@@ -24,6 +24,7 @@
 - **规则转化**：Kyverno / Gatekeeper / NetworkPolicy（native、Calico、Cilium）/ Sigma / Falco / Suricata，规则↔链覆盖率硬校验 + 紫队重放矩阵。
 - **SOTA 能力矩阵**：2026-10 公开参照对照与诚实差距（万卡实测、真实 ARTEX 对比、硬件 TEE 实测等未达成项及追赶路径）见 [`docs/SOTA-2026-10.md`](docs/SOTA-2026-10.md)。
 - **实效验证**：`trident/verify-effects.py` 在本机真实进程/真实 HTTP 上逐项验证管理面利用、权重投毒、备份回滚、RCE、数据泄露、检测规则、端到端链与长上下文/PD KV 四项效果（11/11 PASS）；见 [`docs/EFFECT-VERIFICATION.md`](docs/EFFECT-VERIFICATION.md) 与 [`docs/LONG-CONTEXT.md`](docs/LONG-CONTEXT.md)。
+- **ARTEX clean-room 功能对齐（2026-10）**：按公开功能描述独立实现 LLM 多模型池、通知渠道与事件规则、任务模板（含从 run 反推）、一次性日历窗口、run 内侧问、图快照/跨 run 差异、跨 run 只读黑板、已批准提议的 bounded 并发执行（1–8，默认 1）；竞争矩阵 S/M backlog 30 项已清零。功能×实现×测试×状态见 [`docs/ARTEX-PARITY.md`](docs/ARTEX-PARITY.md)。
 
 ## 边界 / Boundaries
 
@@ -31,7 +32,17 @@
 - **不内置任何真实凭据**：fixture 与 mock 返回值均为 `MOCK*` / `FAKE*` 样值。
 - **零日级模块已公开**：6 个 `dify-*` / `open-webui-*` 模块为公开模块（`private: false`），正常打包与展示细节。`trident/core/zeroday.py` 仅作为**默认关闭的可选加密扩展**，供未来真正未披露的私有材料使用，不构成这些公开模块的门槛。
 - **效果级 vs 集群级**：本机验证为真实进程/真实 HTTP 的**效果级**证据，不等同于 live K8s 集群验证。KIND（hostNetwork 绕过 NetworkPolicy）与 ARTEX 黑盒对标需启用虚拟化后按 `lab/kind/run-proof.sh` 与 `lab/bench/artex-bench.sh` 执行。
-- **ARTEX 关系**：ARTEX 仅作为外部黑盒对标对象；本仓库不复用、不链接、不派生其 AGPL 代码。详见 [`NOTICE`](NOTICE)。
+- **ARTEX 关系（clean-room）**：ARTEX 仅作为公开功能描述与外部黑盒对标对象；本仓库的 ARTEX 对齐功能均为**独立 clean-room 实现**（依据公开功能矩阵/文档与通用协议知识，**未读取、未复制、未逐行翻译其 AGPL 源码**）。详见 [`NOTICE`](NOTICE) 与 [`docs/ARTEX-PARITY.md`](docs/ARTEX-PARITY.md)。
+
+## Clean-room 声明 / Clean-room statement
+
+Trident 的 ARTEX 对齐功能（`trident/core/llmpool.py`、`notify.py`、`templates.py`、`calendar.py`、`threads.py`、`graphsnap.py`、`blackboard.py` 及 explorer 并发执行）是**净室实现**：
+
+- 输入仅为公开功能描述（功能矩阵文档、竞争矩阵、公开协议/标准）与 Trident 自身架构约束；
+- 未读取、未复制、未改编、未逐行翻译 ARTEX（Autumn-27/ARTEX、RuoJi6/ARTEX）的 AGPL-3.0 源码；
+- 接口、数据模型、安全闸门与测试均为本项目独立设计；不存在代码级派生关系。
+
+The ARTEX-parity features are clean-room implementations derived solely from public functional descriptions and generic protocol knowledge. No ARTEX (AGPL-3.0) source code was read, copied, adapted, or line-by-line translated; interfaces, data models, gates, and tests are independently designed.
 
 ## 快速开始 / Quick start
 

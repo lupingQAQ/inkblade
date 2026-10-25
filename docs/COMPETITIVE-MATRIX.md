@@ -220,18 +220,18 @@ kube-bench D13 ✓ = 输出即 CIS Benchmark 条目级合规报告（按定义�
 
 ## 4. 每工具一行：对我们启示（补齐项映射模块/功能键）
 
-> 「补齐项」均落入 §5 backlog（去重）；「已对齐/刻意不做」给出锚点，不入 backlog。
+> 「补齐项」均落入 §5 backlog（去重）；「已对齐/不纳入」给出锚点，不入 backlog。
 
 | 工具 | 类别 | 对我们启示：补齐项（映射模块/功能键） |
 |---|---|---|
 | XBow | 自主渗透 | 补齐：①finding 级确定性复现检查 + 免费复测闭环（→ runner/verify-effects 增加 retest 工作流键，CM-14）；②工单系统直投 + 修复建议（→ export.py 连接器，CM-15）；③每步决策/战术全量留档（→ core/evidence.py 决策轨迹 artifact，CM-03）；④千级并行（→ 多租户 SaaS 未达成项同源，CM-31）。自主执行本体维持 Ruling「规划≠执行」不跟进 |
-| ARTEX | 自主渗透 | 补齐：⑤探索血缘图 goal→intent→fact→finding 边（→ core/graph.py，CM-16）；⑥同根因漏洞归并+统一报告（→ reports/render.py，CM-17）；⑦全流量 MITM/pcap 录制回放（→ lab 证据增强，CM-18）；⑧任务情报登记（凭据/线索集中 registry，CM-01）；⑨跨 run 过程检索 API（→ evidence 检索，CM-02）。多模型池/C2 维持刻意不做（docs/REFLECTION-ARTEX-KUBETRAIL.md §2） |
+| ARTEX | 自主渗透 | 补齐：⑤探索血缘图 goal→intent→fact→finding 边（→ core/lineage.py，CM-16）；⑥同根因漏洞归并+统一报告（→ core/dedupe.py，CM-17）；⑦全流量 pcap 录制回放（离线；→ core/pcap.py，CM-18）；⑧任务情报登记（凭据/线索集中 registry，→ core/intel.py，CM-01）；⑨跨 run 过程检索（→ core/search.py，CM-02）。多模型池已 clean-room 实现（→ core/llmpool.py）；C2 未纳入（理由见 docs/ARTEX-PARITY.md） |
 | NodeZero | 自主渗透 | 补齐：⑩Sankey 攻击路径图 + 系统性修复优先级（修一处消多少路径）（→ webui 攻击链图 + reports，CM-19）；⑪每日定时连续测试（→ 调度器，CM-04）；Quick Verify 复测并入 CM-14 |
 | Pentera | 自主渗透 | 补齐：⑫CTEM 五阶段报告叙事（→ reports/compliance.py 框架章节，CM-20）；⑬泄露凭据有效性验证面（→ modules 凭据验证，CM-21）；IoC 投递并入 CM-15（SIEM/工单连接器）。勒索仿真/AD 密码审计为类别外 |
 | KubeTrail | K8s 攻防 | 补齐：⑭in-pod 只读采集器（safe 模式等价物，→ modules/recon kube-in-pod-collector，CM-22）；⑮legacy SA token 逐 token SSRR/SSAR（→ modules/rbac-mapping，CM-05）；⑯敏感证据 metadata-by-reference 三态（→ core/evidence.py，CM-06）。内核 LPE CVE 库维持不补（平台定位 Ruling） |
 | KubeHound | K8s 攻防 | 补齐：⑰攻击路径自动计算（最短路径/关键节点/割点排序 + 图查询 API 暴露）（→ core/graph.py + core/reachability.py，CM-23）；KHaaS 服务化形态并入 CM-31 |
 | kube-hunter | K8s 攻防 | 补齐：⑱VID 式漏洞知识库条目页（finding→可引用 KB 键，→ docs/kb + reports 锚，CM-07）。竞争态势：官方声明停更，承接方为 Trivy（记录于 §6） |
-| Peirates | K8s 攻防 | 无补齐项：交互式攻击操作台与「可审计交付」定位冲突（同 REFLECTION 对桌面后渗透台的刻意不做）；SA token/Secrets 采集面已由 rbac-mapping/审计轨迹分析覆盖 |
+| Peirates | K8s 攻防 | 无补齐项：交互式攻击操作台与「可审计交付」定位冲突（同 REFLECTION 对桌面后渗透台的定位取舍）；SA token/Secrets 采集面已由 rbac-mapping/审计轨迹分析覆盖 |
 | kdigger | K8s 攻防 | 补齐：⑲admission dry-run/fuzz 探测（gen fuzz-pod 式模板 → server dry-run 反推准入边界）（→ rules/validate.py + modules，CM-24）。~20 bucket 采集面已对齐（recon 族） |
 | CDK | K8s 攻防 | 已对齐：evaluate→run 推荐衔接 = agent_planner 推荐排序；零依赖单二进制属部署形态差异（Trident 控制台不在目标容器内执行），不设 backlog |
 | KubeletCTL | K8s 攻防 | 补齐：⑳kubelet 10250 面扫描（CIDR 扫描开放 kubelet/runningpods/RCE 面/token 收割）（→ modules/recon kubelet-api-surface，CM-08） |
@@ -248,47 +248,48 @@ kube-bench D13 ✓ = 输出即 CIS Benchmark 条目级合规报告（按定义�
 | Syft | 其他 | 补齐：SBOM 格式转换/多输出并入 CM-13 适配器（CycloneDX ML-BOM 已有，差异在格式转换矩阵）；in-toto 签名 attest 已有供应链等价（cosign 风格 bundle）。无独立新增项 |
 | kube-bench | 其他 | 补齐：㉝CIS K8s Benchmark 检查模块 + 合规框架条目（→ modules 新 cis-benchmark 族 + reports/standards.json CIS 条目，CM-33） |
 
-## 5. 补齐项 Backlog（去重登记，**不实施**）
+## 5. 补齐项 Backlog（S/M 已清零，L 保留）
 
-> 本表只登记与排序，本任务不实施任何一项。工作量 S=小（≤1 天）/ M=中（1–3 天）/ L=大（>3 天或需新域）。
+> 2026-10 clean-room 轮次：**S 13 + M 17 已全部实施并清零**（状态/证据列指向实现与测试）；L 3 项保留。逐功能对照见 `docs/ARTEX-PARITY.md`，逐行处置见 `docs/artex-parity-rows.json`。
+> 工作量 S=小（≤1 天）/ M=中（1–3 天）/ L=大（>3 天或需新域）。
 > **重叠标注**：`gen-27`（XBow 对标任务）正在做其中一部分，凡 XBow 派生项均已标注，
 > 落地前先与 gen-27 对齐范围避免重复实现；其余项无重叠。
 
-| ID | 一句话 | 对应维度 | 工作量 | 重叠标注 | 来源工具 |
-|---|---|---|---|---|---|
-| CM-01 | 任务情报登记：run 级凭据/线索/敏感数据集中 registry（带来源证据绑定） | D12 证据链 | S | - | ARTEX |
-| CM-02 | 跨 run 过程检索 API：对 steps/artifacts 全文检索并回链证据锚 | D12 证据链 | S | - | ARTEX |
-| CM-03 | 决策/意图留档 artifact：规划器推荐理由与战术选择全量入证据库 | D12 证据链 | S | gen-27（XBow 派生） | XBow |
-| CM-04 | 定时调度连续测试：cron 式调度器 + 测试窗口（ROE 约束内） | D18 持续化 | S | - | NodeZero/XBow |
-| CM-05 | legacy SA token 逐 token SSRR/SSAR 权限审计 | D4 权限链逃逸 | S | - | KubeTrail |
-| CM-06 | 敏感证据 metadata-by-reference 三态（raw/redact/metadata 引用式存储） | D12 证据链 | S | - | KubeTrail |
-| CM-07 | VID 式漏洞知识库条目页（finding→可引用 KB 键，含中文条目） | D13 双语合规报告 | S | - | kube-hunter |
-| CM-08 | kubelet 10250 面扫描模块（CIDR 扫描开放 kubelet/runningpods/token 收割面） | D1 资产发现 | S | - | KubeletCTL |
-| CM-09 | Falco 宏/列表复用规则编写模型（macro/list 组合降噪） | D14 规则转化 | S | - | Falco |
-| CM-10 | 规则/告警输出多路分发通道（stdout/file/syslog/program/http[s]） | D17 API-first | S | - | Falco/falcosidekick |
-| CM-11 | CI/CD 集成 exit code 契约（阈值判定退出码 + 机器可读摘要） | D18 持续化 | S | - | promptfoo |
-| CM-12 | 声明式评估配置（yaml 驱动模块/链评估矩阵与基线对比） | D17 API-first | S | - | promptfoo |
-| CM-13 | 外部扫描器输入适配器（import Trivy/Syft/grype JSON→findings 归一入证据链） | D1 资产发现 | S | - | Trivy/Syft |
-| CM-14 | finding 级确定性复测闭环（修复后重放验证 + retest 结论留档） | D15 紫队验证 | M | gen-27（XBow 派生） | XBow/NodeZero/ARTEX/Pentera |
-| CM-15 | 工单/SIEM 直投连接器（finding+修复建议→ticketing/SIEM 后端投递） | D17 API-first | M | gen-27（XBow 派生） | XBow/Pentera |
-| CM-16 | 探索血缘图边（goal→intent→fact→finding 血缘，支撑反查与覆盖度） | D3 攻击链编排 | M | - | ARTEX |
-| CM-17 | 同根因漏洞归并 + 统一报告（跨 run 去重、根因确认工作流） | D13 双语合规报告 | M | - | ARTEX |
-| CM-18 | 全流量 pcap 级录制与回放器（MITM 留痕，入三层证据） | D12 证据链 | M | - | ARTEX |
-| CM-19 | Sankey 攻击路径图 + 系统性修复优先级（修一处消多少路径的量化建议） | D13 双语合规报告 | M | - | NodeZero |
-| CM-20 | CTEM 五阶段报告叙事（暴露验证→侦查→攻击→报告→修复验证章节化） | D13 双语合规报告 | M | - | Pentera |
-| CM-21 | 泄露凭据有效性验证面（凭据集→租户内有效性判定的 fixture 驱动模块） | D4 权限链逃逸 | M | - | Pentera |
-| CM-22 | in-pod 只读采集器（safe 模式等价物：/proc /sys cgroup socket 本地扫） | D1 资产发现 | M | - | KubeTrail |
-| CM-23 | 攻击路径自动计算（最短路径/关键节点/割点排序 + 图查询 API） | D3 攻击链编排 | M | - | KubeHound |
-| CM-24 | admission dry-run/fuzz 探测（fuzz-pod 模板→server dry-run 反推准入边界） | D15 紫队验证 | M | - | kdigger |
-| CM-25 | Tetragon TracingPolicy 规则目标（findings→传感器/执行策略，拦截态入紫队矩阵） | D14 规则转化 | M | - | Tetragon |
-| CM-26 | KubeArmorPolicy/ClusterPolicy 规则目标（LSM 内联阻断语义） | D14 规则转化 | M | - | KubeArmor |
-| CM-27 | Kyverno CEL 校验表达式 + verifyImages 镜像签名验证规则生成 | D14 规则转化 | M | - | Kyverno |
-| CM-28 | 存量资源 background 合规扫描（policy audit 对存量对象的覆盖矩阵） | D15 紫队验证 | M | - | Kyverno/Gatekeeper |
-| CM-29 | LLM 行为面多轮攻击策略链（Crescendo/TAP 式升级链 + 评分器框架） | D5 ML 域专长 | M | - | PyRIT |
-| CM-30 | agent 工具面注入基准场景（工具环境间接注入→执行的套件化基准与评分） | D5 ML 域专长 | M | - | AgentDojo |
-| CM-31 | 多租户并发/分布式调度（与 SOTA 未达成项「多租户 SaaS」同源，登记不重复实施） | D18 持续化 | L | gen-27（XBow 派生·并发规模对照） | XBow |
-| CM-32 | LLM 行为面探针族（注入/越狱/泄露/毒性探针库，garak 级广度） | D5 ML 域专长 | L | - | garak |
-| CM-33 | CIS K8s Benchmark 检查模块族 + 合规框架 CIS 条目（standards.json） | D13 双语合规报告 | L | - | kube-bench |
+| ID | 一句话 | 对应维度 | 工作量 | 重叠标注 | 来源工具 | 状态 / 证据 |
+|---|---|---|---|---|---|---|
+| CM-01 | 任务情报登记：run 级凭据/线索/敏感数据集中 registry（带来源证据绑定） | D12 证据链 | S | - | ARTEX | done — `core/intel.py` / `tests/test_backlog_s.py` |
+| CM-02 | 跨 run 过程检索 API：对 steps/artifacts 全文检索并回链证据锚 | D12 证据链 | S | - | ARTEX | done — `core/search.py` / `tests/test_backlog_s.py` |
+| CM-03 | 决策/意图留档 artifact：规划器推荐理由与战术选择全量入证据库 | D12 证据链 | S | gen-27（XBow 派生） | XBow | done — `core/decisions.py` / `trident plan --record` / `tests/test_backlog_s.py` |
+| CM-04 | 定时调度连续测试：cron 式调度器 + 测试窗口（ROE 约束内） | D18 持续化 | S | - | NodeZero/XBow | done — `core/scheduler.py` + `core/calendar.py` / `tests/test_scheduler.py` + `tests/test_calendar.py` |
+| CM-05 | legacy SA token 逐 token SSRR/SSAR 权限审计 | D4 权限链逃逸 | S | - | KubeTrail | done — `core/tokenaudit.py` / `tests/test_backlog_s.py` |
+| CM-06 | 敏感证据 metadata-by-reference 三态（raw/redact/metadata 引用式存储） | D12 证据链 | S | - | KubeTrail | done — `core/intel.py`（raw/redact/metadata） / `tests/test_backlog_s.py` |
+| CM-07 | VID 式漏洞知识库条目页（finding→可引用 KB 键，含中文条目） | D13 双语合规报告 | S | - | kube-hunter | done — `core/kb.py` / `tests/test_backlog_s.py` |
+| CM-08 | kubelet 10250 面扫描模块（CIDR 扫描开放 kubelet/runningpods/token 收割面） | D1 资产发现 | S | - | KubeletCTL | done — `trident/modules/kubelet-surface/` / `tests/test_backlog_s.py` |
+| CM-09 | Falco 宏/列表复用规则编写模型（macro/list 组合降噪） | D14 规则转化 | S | - | Falco | done — `core/rulemacro.py` / `tests/test_backlog_s.py` |
+| CM-10 | 规则/告警输出多路分发通道（stdout/file/syslog/program/http[s]） | D17 API-first | S | - | Falco/falcosidekick | done — `core/dispatch.py` + `core/notify.py` / `tests/test_backlog_s.py` + `tests/test_notify.py` |
+| CM-11 | CI/CD 集成 exit code 契约（阈值判定退出码 + 机器可读摘要） | D18 持续化 | S | - | promptfoo | done — `core/cigate.py` / `tests/test_backlog_s.py` |
+| CM-12 | 声明式评估配置（yaml 驱动模块/链评估矩阵与基线对比） | D17 API-first | S | - | promptfoo | done — `core/evalconfig.py` / `tests/test_backlog_s.py` |
+| CM-13 | 外部扫描器输入适配器（import Trivy/Syft/grype JSON→findings 归一入证据链） | D1 资产发现 | S | - | Trivy/Syft | done — `core/importers.py` / `tests/test_backlog_s.py` |
+| CM-14 | finding 级确定性复测闭环（修复后重放验证 + retest 结论留档） | D15 紫队验证 | M | gen-27（XBow 派生） | XBow/NodeZero/ARTEX/Pentera | done — `core/retest.py` / `tests/test_backlog_m.py` |
+| CM-15 | 工单/SIEM 直投连接器（finding+修复建议→ticketing/SIEM 后端投递） | D17 API-first | M | gen-27（XBow 派生） | XBow/Pentera | done — `core/connectors.py` / `tests/test_backlog_m.py` |
+| CM-16 | 探索血缘图边（goal→intent→fact→finding 血缘，支撑反查与覆盖度） | D3 攻击链编排 | M | - | ARTEX | done — `core/lineage.py` / `tests/test_backlog_m.py` |
+| CM-17 | 同根因漏洞归并 + 统一报告（跨 run 去重、根因确认工作流） | D13 双语合规报告 | M | - | ARTEX | done — `core/dedupe.py` / `tests/test_backlog_m.py` |
+| CM-18 | 全流量 pcap 级录制与回放器（MITM 留痕，入三层证据） | D12 证据链 | M | - | ARTEX | done（限定：离线 pcap；live MITM 技术不可行） — `core/pcap.py` / `tests/test_backlog_m.py` |
+| CM-19 | Sankey 攻击路径图 + 系统性修复优先级（修一处消多少路径的量化建议） | D13 双语合规报告 | M | - | NodeZero | done — `core/sankey.py` / `tests/test_backlog_m.py` |
+| CM-20 | CTEM 五阶段报告叙事（暴露验证→侦查→攻击→报告→修复验证章节化） | D13 双语合规报告 | M | - | Pentera | done — `core/narrative.py` / `tests/test_backlog_m.py` |
+| CM-21 | 泄露凭据有效性验证面（凭据集→租户内有效性判定的 fixture 驱动模块） | D4 权限链逃逸 | M | - | Pentera | done — `core/credcheck.py` / `tests/test_backlog_m.py` |
+| CM-22 | in-pod 只读采集器（safe 模式等价物：/proc /sys cgroup socket 本地扫） | D1 资产发现 | M | - | KubeTrail | done — `core/inpod.py` / `tests/test_backlog_m.py` |
+| CM-23 | 攻击路径自动计算（最短路径/关键节点/割点排序 + 图查询 API） | D3 攻击链编排 | M | - | KubeHound | done — `core/pathcalc.py` / `tests/test_backlog_m.py` |
+| CM-24 | admission dry-run/fuzz 探测（fuzz-pod 模板→server dry-run 反推准入边界） | D15 紫队验证 | M | - | kdigger | done — `core/admission.py` / `tests/test_backlog_m.py` |
+| CM-25 | Tetragon TracingPolicy 规则目标（findings→传感器/执行策略，拦截态入紫队矩阵） | D14 规则转化 | M | - | Tetragon | done — `core/policygen.py::tetragon_policy` / `tests/test_backlog_m.py` |
+| CM-26 | KubeArmorPolicy/ClusterPolicy 规则目标（LSM 内联阻断语义） | D14 规则转化 | M | - | KubeArmor | done — `core/policygen.py::kubearmor_policy` / `tests/test_backlog_m.py` |
+| CM-27 | Kyverno CEL 校验表达式 + verifyImages 镜像签名验证规则生成 | D14 规则转化 | M | - | Kyverno | done — `core/policygen.py::kyverno_policy` / `tests/test_backlog_m.py` |
+| CM-28 | 存量资源 background 合规扫描（policy audit 对存量对象的覆盖矩阵） | D15 紫队验证 | M | - | Kyverno/Gatekeeper | done — `core/policygen.py::background_coverage` / `tests/test_backlog_m.py` |
+| CM-29 | LLM 行为面多轮攻击策略链（Crescendo/TAP 式升级链 + 评分器框架） | D5 ML 域专长 | M | - | PyRIT | done — `core/llmredteam.py` / `tests/test_backlog_m.py` |
+| CM-30 | agent 工具面注入基准场景（工具环境间接注入→执行的套件化基准与评分） | D5 ML 域专长 | M | - | AgentDojo | done — `core/agentbench.py` / `tests/test_backlog_m.py` |
+| CM-31 | 多租户并发/分布式调度（与 SOTA 未达成项「多租户 SaaS」同源，登记不重复实施） | D18 持续化 | L | gen-27（XBow 派生·并发规模对照） | XBow | open — L（超出本轮 S/M 范围；多租户 SaaS 同源未达成项） |
+| CM-32 | LLM 行为面探针族（注入/越狱/泄露/毒性探针库，garak 级广度） | D5 ML 域专长 | L | - | garak | open — L（超出本轮 S/M 范围） |
+| CM-33 | CIS K8s Benchmark 检查模块族 + 合规框架 CIS 条目（standards.json） | D13 双语合规报告 | L | - | kube-bench | open — L（超出本轮 S/M 范围） |
 
 计数：**33 项 = S 13 · M 17 · L 3**；其中 gen-27 重叠 4 项（CM-03/14/15/31）。
 

@@ -1,0 +1,16 @@
+{
+  "key": "kubelet-surface",
+  "name": { "zh": "kubelet 10250 暴露面", "en": "Kubelet 10250 Surface" },
+  "series": "侦察",
+  "description": "CIDR/资产清单驱动的 kubelet 10250 只读面核查：匿名鉴权、read-only port、runningpods、日志、exec、token 收割面",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "采集快照（kubelets[]: addr/port/anonymous_auth/read_only_port/running_pods_exposed/token_harvestable/exec_allowed/logs_allowed）",
+    "cidr": "可选：待扫描 CIDR（由授权采集器执行，模块只分析结果）",
+    "ports": "可选：端口列表（默认 [10250]）"
+  },
+  "produces": "kubelet-exposure",
+  "knowledge": "kubelet 10250 未授权面（/pods、/runningpods、/logs、/exec）与 SA token 收割"
+}

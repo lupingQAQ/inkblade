@@ -22,18 +22,23 @@ import os
 import time
 import urllib.error
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
+from . import jsonio
+from .blackboard import Blackboard
 from .chains import dry_run as chain_dry_run
 from .chains import evaluate_preconditions, load_chains
 from .discovery import AssetInventory
+from .llmpool import pool_available, rank_candidates
 from .registry import load_modules
 from .roe import LEVELS, roe_status
 from .version_matrix import entries as matrix_entries
 
 QUEUE_RELPATH = "explorer/queue.json"
 MAX_ACTIONS_DEFAULT = 5
+MAX_WORKERS = 8
 _LLM_TIMEOUT = 20
 
 
@@ -151,7 +156,8 @@ class Explorer:
                                "steps": [s["module"] for s in plan["steps"]]})
         context = {"assets": len(assets), "products": sorted(products_present),
                    "latest_run": run_name, "findings": len(findings),
-                   "roe_level": roe_level, "chains_eligible": [c["chain"] for c in chain_hits]}
+                   "roe_level": roe_level, "chains_eligible": [c["chain"] for c in chain_hits],
+                   "blackboard": Blackboard(self.store).context(limit=20)}
         # 排序：只读在前、有资产目标在前、链成立优先
         cands.sort(key=lambda c: (c["writes"], not c["asset"]))
         return cands[: max_actions * 3], context
@@ -162,10 +168,21 @@ class Explorer:
         if not candidates:
             raise ExplorerError("无可用候选（先 discover 资产或降低 ROE 级别限制）")
         mode, llm_note = "rules", ""
-        want_llm = llm_available() if use_llm is None else (use_llm and llm_available())
+        pool_on = pool_available(self.store)
+        want_llm = (llm_available() or pool_on) if use_llm is None \
+            else bool(use_llm and (llm_available() or pool_on))
         if want_llm:
             try:
-                seq = _llm_rank(candidates, context)
+                if pool_on:
+                    try:
+                        seq = rank_candidates(self.store, candidates, context)
+                    except Exception as pool_exc:
+                        if not llm_available():
+                            raise
+                        llm_note = f"LLM 池降级 env：{type(pool_exc).__name__}: {pool_exc}"
+                        seq = _llm_rank(candidates, context)
+                else:
+                    seq = _llm_rank(candidates, context)
                 allowed = {c["module"] for c in candidates}
                 picked = [m for m in seq if m in allowed][:max_actions]
                 if picked:
@@ -246,7 +263,8 @@ class Explorer:
         return self._load_queue()
 
     # ---------- 执行（仅 approved；逐模块走 runner 全部闸门） ----------
-    def execute(self, session, proposal_id: str) -> dict:
+    def execute(self, session, proposal_id: str, *, workers: int = 1) -> dict:
+        """执行已批准提议；``workers`` 1–8（默认 1）。每个动作独立 run，审计隔离。"""
         from .discovery import AssetInventory
         from .runner import run_module
 
@@ -256,25 +274,58 @@ class Explorer:
             raise ExecutionLocked("工作区授权未完成（consent 未签署）")
         if not session.can("execute"):
             raise ApprovalDenied(f"{session.name}({session.role}) 无 execute 权限")
+        if not isinstance(workers, int) or isinstance(workers, bool) \
+                or not (1 <= workers <= MAX_WORKERS):
+            raise ExplorerError(f"workers 须为 1-{MAX_WORKERS} 的整数")
         p, queue, i = self._get(proposal_id)
         if p["status"] != "approved":
             raise ExplorerError(f"提议 {proposal_id} 状态 {p['status']}：须先 lead 批准")
         inv = AssetInventory(self.store)
-        results = []
-        for action in p["actions"]:
+
+        def _run_one(action: dict) -> dict:
             params = inv.bind_params(action["module"], dict(action.get("params") or {}))
             try:
                 res = run_module(self.store, session, action["module"], params,
                                  self.modules_dir)
-                results.append({"module": action["module"], "status": "success", "result": res})
+                return {"module": action["module"], "status": "success", "result": res,
+                        "run": res.get("run", ""), "step": res.get("step", ""),
+                        "audit": f"run:{res.get('run', '')}"}
             except Exception as exc:
-                results.append({"module": action["module"], "status": "failed",
-                                "error": f"{type(exc).__name__}: {exc}"})
+                return {"module": action["module"], "status": "failed",
+                        "error": f"{type(exc).__name__}: {exc}", "run": "",
+                        "audit": "workspace:audit.jsonl"}
+
+        if workers == 1:
+            results = [_run_one(action) for action in p["actions"]]
+        else:
+            results = [None] * len(p["actions"])  # type: ignore[list-item]
+            with ThreadPoolExecutor(max_workers=workers,
+                                    thread_name_prefix="trident-agent") as pool:
+                futures = {pool.submit(_run_one, action): idx
+                           for idx, action in enumerate(p["actions"])}
+                for fut in as_completed(futures):
+                    idx = futures[fut]
+                    try:
+                        results[idx] = fut.result()
+                    except Exception as exc:  # 兜底：单动作异常不外溢
+                        results[idx] = {"module": p["actions"][idx]["module"],
+                                        "status": "failed",
+                                        "error": f"{type(exc).__name__}: {exc}",
+                                        "run": "", "audit": "workspace:audit.jsonl"}
+        ok = all(r["status"] == "success" for r in results) if results else False
         p["status"] = "executed"
-        p["execution"] = {"trigger": "human", "performed": True,
+        p["execution"] = {"trigger": "human", "performed": True, "workers": workers,
+                          "audit_isolation": "per-action run (evidence.db)",
                           "executed_by": session.name, "executed_at": time.time()}
         p["results"] = results
         queue[i] = p
         self._save_queue(queue)
-        return {"proposal": proposal_id, "results": results,
-                "ok": all(r["status"] == "success" for r in results) if results else False}
+        jsonio.append_audit(self.store, session.name, "explorer.execute", proposal_id,
+                            {"workers": workers, "actions": len(results),
+                             "ok": ok}, "ok" if ok else "partial")
+        return {"proposal": proposal_id, "results": results, "ok": ok,
+                "workers": workers, "parallel": workers > 1}
+
+    def execute_parallel(self, session, proposal_id: str, workers: int = 4) -> dict:
+        """并发执行的显式别名（仍走 approval + 三闸门；默认上限 8）。"""
+        return self.execute(session, proposal_id, workers=workers)
