@@ -10,9 +10,10 @@ DOC = REPO / "docs" / "SOTA-2026-10.md"
 README = REPO / "README.md"
 
 STATUSES = {"已达成", "部分", "未达成"}
-# 矩阵 35 行：22 已达成 / 7 部分 / 6 未达成（与文档「计数」节一致；
-# 2026-10-25 新增「K8s 审计轨迹分析」已达成行 + XBow 对标 8 行：7 已达成 + 1 部分）
-EXPECTED = {"已达成": 22, "部分": 7, "未达成": 6}
+# 矩阵 38 行：26 已达成 / 7 部分 / 5 未达成（与文档「计数」节一致）。
+# 2026-10-25 收尾：新增输出确定性/执行审计轨迹/单机多租户隔离（已达成）；
+# Live K8s 部分→已达成；真实 ARTEX 对比 未达成→部分（QEMU TCG 实测，非裸机）。
+EXPECTED = {"已达成": 26, "部分": 7, "未达成": 5}
 
 
 def _rows() -> list[dict[str, str]]:
@@ -60,13 +61,32 @@ class TestSotaDoc(unittest.TestCase):
 
     def test_honest_gaps_present(self):
         text = DOC.read_text(encoding="utf-8")
-        for topic, needle in (("万卡实测", "万卡"), ("真实 ARTEX 对比数据", "真实 ARTEX 对比数据"),
-                              ("硬件 TEE 实测", "硬件 TEE")):
+        for topic, needle in (("万卡实测", "万卡"), ("硬件 TEE 实测", "硬件 TEE"),
+                              ("生产级模型签名", "cosign keyless"),
+                              ("六云商真实环境", "六云商"),
+                              ("分布式调度", "分布式调度")):
             line = next((l for l in text.splitlines() if needle in l and l.startswith("|")), None)
             self.assertIsNotNone(line, f"缺少未达成项: {topic}")
             self.assertIn("未达成", line, f"{topic} 未诚实标注未达成: {line}")
         self.assertIn("追赶路径", text)
         self.assertIn("未达成", text)
+
+    def test_artex_comparison_is_partial_with_tcg_caveat(self):
+        """真实 ARTEX 对比：已有实测数据（同靶场 + 全端点网格），但仍为 QEMU TCG，故标部分。"""
+        line = next(l for l in DOC.read_text(encoding="utf-8").splitlines()
+                    if l.startswith("|") and "真实 ARTEX 对比数据" in l)
+        self.assertIn("部分", line)
+        self.assertIn("QEMU TCG", line)
+        self.assertIn("跨副本", DOC.read_text(encoding="utf-8"), "缺分布式调度未达成行")
+
+    def test_closure_rows_present(self):
+        rows = {r["capability"]: r for r in _rows()}
+        for cap in ("输出确定性（归档/报告/样张可复现）",
+                    "执行审计轨迹（平台侧 who-did-what）",
+                    "多租户工作区隔离与有界并发（单机）",
+                    "API-first REST + MCP 同步暴露"):
+            self.assertIn(cap, rows, f"缺能力行 {cap}")
+            self.assertEqual(rows[cap]["status"], "已达成", cap)
 
     def test_corpus_citations_exist(self):
         rows = _rows()
