@@ -14,6 +14,7 @@ import hmac
 import json
 import os
 import secrets
+import time
 from pathlib import Path
 from typing import Any
 
@@ -117,14 +118,22 @@ def zeroday_enabled(store: EvidenceStore) -> bool:
 
 
 def enable(store: EvidenceStore, session) -> None:
+    """工作区级启用零日：lead/admin 审批 + 审计行（成功与拒绝都留痕）。"""
+    run = store.create_run("_audit")  # "_" 前缀：不计入 /api/runs 业务 run 列表
+    params = {"workspace": store.workspace, "enabled_by": session.name}
     if not session.can("approve-zeroday"):
+        run.log_action(session.name, "zeroday-enable", store.workspace, params,
+                       "denied:无 approve-zeroday 权限", is_zeroday=True)
         raise PermissionError(f"{session.name}({session.role}) 无 approve-zeroday 权限")
     cfg = _config(store)
     cfg.setdefault("zeroday", {})["enabled"] = True
     cfg["zeroday"]["enabled_by"] = session.name
+    cfg["zeroday"]["enabled_at"] = time.time()
     (store.ws_dir / "workspace.json").write_text(
         json.dumps(cfg, ensure_ascii=False, indent=2), encoding="utf-8"
     )
+    run.log_action(session.name, "zeroday-enable", store.workspace, params,
+                   "success", is_zeroday=True)
 
 
 def assert_allowed(store: EvidenceStore, session, meta: dict) -> None:

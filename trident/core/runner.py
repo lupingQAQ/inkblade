@@ -11,7 +11,7 @@ from typing import Any
 from .backup import BackupManager
 from .evidence import EvidenceStore
 from .registry import ModuleMeta, load_modules
-from .roe import assert_execution_allowed
+from .roe import ExecutionLocked, assert_execution_allowed, scope_violation
 
 
 class BackupGateRefused(Exception):
@@ -58,23 +58,33 @@ def run_module(
 
     marker = f"TRIDENT-{run.name}"
     bm = BackupManager(store, run)
+    is_zd = bool(meta.private)  # 私有（零日级）模块的每条审计行都打标
+
+    # 范围闸门：params 显式声明的 host / target_ns / namespace 必须落在授权范围内
+    violation = scope_violation(store, params)
+    if violation:
+        run.log_action(session.name, "execute", module_key, params,
+                       "refused-out-of-scope", is_zeroday=is_zd)
+        raise ExecutionLocked(violation)
 
     # 备份闸门：写类模块必须先拿到快照回执
     if meta.writes:
         receipt = bm.snapshot(module_key, params.get("backup_targets", []))
         if receipt is None:
-            run.log_action(session.name, "execute", module_key, params, "refused-no-backup")
+            run.log_action(session.name, "execute", module_key, params, "refused-no-backup",
+                           is_zeroday=is_zd)
             raise BackupGateRefused("写类模块缺少备份回执（backup_targets 为空或不可用）")
 
     run.log_action(session.name, "execute", module_key, params, "started",
-                   rollback_to=module_key if meta.writes else None)
+                   rollback_to=module_key if meta.writes else None, is_zeroday=is_zd)
     try:
         mod = _load_run_py(meta)
         ctx = {"store": store, "run": run, "marker": marker, "backup": bm,
                "actor": session.name, "meta": meta.__dict__}
         result = mod.run(ctx, params) or {}
     except Exception as exc:  # 模块失败：审计 + 不留写残留（由回滚保障）
-        run.log_action(session.name, "execute", module_key, params, f"failed:{exc}")
+        run.log_action(session.name, "execute", module_key, params, f"failed:{exc}",
+                       is_zeroday=is_zd)
         if meta.writes:
             bm.rollback(module_key)
         raise
@@ -101,5 +111,6 @@ def run_module(
         ingest_run(run)
     except Exception:  # 流量入库失败不阻断执行（无 trace 的模块跳过）
         pass
-    run.log_action(session.name, "execute", module_key, params, "success", rollback_to=module_key if meta.writes else None)
+    run.log_action(session.name, "execute", module_key, params, "success",
+                   rollback_to=module_key if meta.writes else None, is_zeroday=is_zd)
     return {"run": run.name, "step": module_key, **step}
