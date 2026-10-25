@@ -18,6 +18,7 @@ SCHEMA_TABLES = [
     "runs", "steps", "prompts", "env", "findings", "evidence",
     "actions", "backups", "rollbacks", "roe", "combos",
     "graph_nodes", "graph_edges", "traffic",
+    "decisions", "lineage", "retests",
 ]
 
 _SCHEMA = """
@@ -43,6 +44,12 @@ CREATE TABLE IF NOT EXISTS graph_edges(id INTEGER PRIMARY KEY, src TEXT, dst TEX
 CREATE TABLE IF NOT EXISTS traffic(id INTEGER PRIMARY KEY, run TEXT, module TEXT, seq INTEGER,
     method TEXT, url TEXT, req_headers TEXT, req_body TEXT,
     status INTEGER, resp_body TEXT, error TEXT, sha256 TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS decisions(id INTEGER PRIMARY KEY, run TEXT, kind TEXT, goal TEXT,
+    options TEXT, chosen TEXT, rationale TEXT, actor TEXT, evidence_path TEXT, created_at REAL);
+CREATE TABLE IF NOT EXISTS lineage(id INTEGER PRIMARY KEY, run TEXT, src TEXT, dst TEXT,
+    relation TEXT, attrs TEXT, created_at REAL);
+CREATE TABLE IF NOT EXISTS retests(id INTEGER PRIMARY KEY, run TEXT, finding TEXT, module TEXT,
+    conclusion TEXT, detail TEXT, evidence_path TEXT, actor TEXT, created_at REAL);
 """
 
 
@@ -313,22 +320,41 @@ class EvidenceStore:
         return run
 
     def pin_roe(self, fields: dict) -> None:
-        """写入工作区级授权（consent.json）；后续每个 run 固化该记录。"""
-        import hashlib as _h
+        """写入工作区级授权（consent.json，工作区密钥 HMAC 签名）；后续每个 run 固化该记录。
 
-        payload = json.dumps(fields, ensure_ascii=False, sort_keys=True)
-        sha = _h.sha256(payload.encode("utf-8")).hexdigest()
+        写后立即回读验签（签名算法/落盘任一步出错都不留「看似已授权」的状态）。
+        """
+        from .roe import sign_consent, verify_consent_doc  # 延迟导入避免循环依赖
+
+        doc = sign_consent(self, fields)
         (self.ws_dir / "consent.json").write_text(
-            json.dumps({"fields": fields, "sha256": sha, "ts": time.time(), "status": "complete"},
-                       ensure_ascii=False, indent=2),
-            encoding="utf-8",
+            json.dumps(doc, ensure_ascii=False, indent=2), encoding="utf-8"
         )
+        if not verify_consent_doc(self, doc):
+            raise RuntimeError("consent 签名自校验失败：拒绝签发（工作区密钥异常）")
 
     def consent(self) -> dict | None:
+        """读取工作区授权；HMAC 校验失败时返回 status=tampered 的文档（执行路径据此拒绝）。"""
+        from .roe import verify_consent_doc  # 延迟导入避免循环依赖
+
         p = self.ws_dir / "consent.json"
         if not p.exists():
             return None
-        return json.loads(p.read_text(encoding="utf-8"))
+        try:
+            doc = json.loads(p.read_text(encoding="utf-8"))
+        except ValueError:
+            return {"status": "tampered", "fields": {}, "reason": "consent.json 非法 JSON"}
+        if not isinstance(doc, dict):
+            return {"status": "tampered", "fields": {}, "reason": "consent.json 结构非法"}
+        if doc.get("status") == "complete" and not verify_consent_doc(self, doc):
+            return {**doc, "status": "tampered", "reason": "HMAC/哈希校验失败（字段被篡改或密钥轮换）"}
+        return doc
+
+    def verify_consent(self, doc: dict | None = None) -> bool:
+        """独立验签入口（不改变 consent() 的返回语义）。"""
+        from .roe import verify_consent_doc
+
+        return verify_consent_doc(self, self.consent() if doc is None else doc)
 
     def open_run(self, name: str) -> Run:
         run_dir = self.ws_dir / name
