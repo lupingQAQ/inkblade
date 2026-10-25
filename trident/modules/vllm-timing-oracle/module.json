@@ -1,0 +1,21 @@
+{
+  "key": "vllm-timing-oracle",
+  "name": {
+    "zh": "vLLM API key timing surface",
+    "en": "vLLM API key timing surface"
+  },
+  "series": "核心代码",
+  "description": "vLLM API key timing surface; covers CVE-2025-59425. Read-only: version/evidence collection, no target writes.",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "vllm-timing-oracle",
+  "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
+  "combo_signature": "vllm-timing-oracle"
+}

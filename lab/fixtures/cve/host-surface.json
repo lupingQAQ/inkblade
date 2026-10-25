@@ -1,0 +1,39 @@
+{
+  "schema": "trident-cve-host-surface-v1",
+  "note": "CVE 只读探测 fixture：真实集群/硬件清单的脱敏快照；不发起网络请求。",
+  "cluster": {"version": "v1.28.11", "provider": "mock-lab"},
+  "nodes": [
+    {
+      "name": "gpu-node-1",
+      "runc": "1.1.11",
+      "containerd": "1.4.2",
+      "kubelet": "1.28.11",
+      "kernel": "5.15.0-119-generic",
+      "cgroups": "v1",
+      "capabilities": ["SYS_ADMIN", "NET_ADMIN"],
+      "hostNetwork": true,
+      "gitRepoVolumes": ["/var/lib/kubelet/pods/*/volumes/kubernetes.io~git-repo"],
+      "envFromPods": ["default/legacy-app"]
+    },
+    {
+      "name": "gpu-node-2",
+      "runc": "1.1.12",
+      "containerd": "1.7.29",
+      "kubelet": "1.30.3",
+      "kernel": "6.1.0-30-amd64",
+      "cgroups": "v2",
+      "capabilities": [],
+      "hostNetwork": false
+    }
+  ],
+  "nvidia": {
+    "containerToolkit": "1.16.1",
+    "driver": "535.104.05",
+    "cdi": false,
+    "gpuModel": "A100-SXM4-80GB"
+  },
+  "gpuOperator": {"version": "24.6.1", "toolkit": "1.16.1", "driver": "535.104.05"},
+  "cgpu": {"isolation": "policy", "memoryQuota": "8Gi", "crossTenant": true},
+  "lws": {"leaderAddressEnv": "LWS_LEADER_ADDRESS", "templateMutable": true, "networkPolicy": "absent"},
+  "hami": {"scheduler": "0.0.0.0:443", "auth": "none"}
+}

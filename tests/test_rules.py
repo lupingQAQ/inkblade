@@ -74,6 +74,8 @@ class RuleGenerationTest(unittest.TestCase):
         mapping = _load_mapping(self.pack_dir)
         covered: dict[str, list[str]] = {}
         for rule in mapping["rules"]:
+            if rule.get("scope") == "cve-catalog":
+                continue  # CVE catalog rules cover all CVEs; they are not bound to a single chain
             self.assertTrue(rule["blocks_chains"], f"规则 {rule['id']} 未映射任何链")
             for cid in rule["blocks_chains"]:
                 self.assertIn(cid, chains, f"规则映射到不存在的链 {cid}")

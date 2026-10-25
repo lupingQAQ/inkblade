@@ -1,7 +1,7 @@
 {
-  "mock_base": "http://127.0.0.1:53818/",
+  "mock_base": "http://127.0.0.1:50492/",
   "mock_mode": "vulnerable",
-  "validated_at": "2026-10-25T16:50:42Z",
+  "validated_at": "2026-10-25T17:01:52Z",
   "chains": {
     "flat-network-admin-plane-weight-poison": {
       "title": {

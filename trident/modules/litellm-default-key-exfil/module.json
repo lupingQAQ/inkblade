@@ -1,0 +1,21 @@
+{
+  "key": "litellm-default-key-exfil",
+  "name": {
+    "zh": "LiteLLM default master key",
+    "en": "LiteLLM default master key"
+  },
+  "series": "横向利用",
+  "description": "LiteLLM default master key; covers LITELLM-DEFAULT-KEY. Read-only: version/evidence collection, no target writes.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "litellm-default-key",
+  "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
+  "combo_signature": "litellm-default-key"
+}

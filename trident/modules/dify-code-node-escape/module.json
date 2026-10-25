@@ -1,0 +1,21 @@
+{
+  "key": "dify-code-node-escape",
+  "name": {
+    "zh": "Dify code-node escape",
+    "en": "Dify code-node escape"
+  },
+  "series": "横向利用",
+  "description": "Dify code-node escape; covers CVE-2025-3466/63387/56520. Write surface: requires mode=backup-write and backup_targets (runner backup gate); marker is proven then cleaned.",
+  "min_level": "全影响演示",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "dify-code-node",
+  "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
+  "combo_signature": "dify-code-node"
+}

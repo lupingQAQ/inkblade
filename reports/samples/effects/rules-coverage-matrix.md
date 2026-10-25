@@ -1,6 +1,6 @@
 # Trident 紫队验证覆盖率矩阵（defense validation）
 
-- 时间：2026-10-25T16:50:42Z；靶场：http://127.0.0.1:53818/（mode=vulnerable，仅 127.0.0.1）
+- 时间：2026-10-25T17:01:52Z；靶场：http://127.0.0.1:50492/（mode=vulnerable，仅 127.0.0.1）
 - 摘要：链 26 条，覆盖 26，漏过 0；规则评估 89 项（拦截 21 / 检测 64 / 漏过 0）
 - 判定口径：合成事件使用探测规格声明的业务端口（mock 基座端口随机分配）；匹配器：内置简化 sigma/falco/suricata 匹配器（selection/event_type/any_of 语义子集）
 

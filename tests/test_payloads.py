@@ -40,6 +40,16 @@ class TestMaterialize(unittest.TestCase):
         out = materialize(BASE, {"op": "header", "arg": ["Authorization", "Bearer "]})
         self.assertEqual(out["headers"]["Authorization"], "Bearer ")
 
+    def test_query_and_body_merge(self):
+        out = materialize(BASE, {"op": "query", "arg": ["probe", "cve"]})
+        self.assertEqual(out["path"], "/pause?probe=cve")
+        merged = materialize({"method": "POST", "path": "/x", "body": {"a": 1}},
+                             {"op": "body_merge", "arg": {"b": 2}})
+        self.assertEqual(merged["body"], {"a": 1, "b": 2})
+        with self.assertRaises(PayloadError):
+            materialize({"method": "POST", "path": "/x", "body": "raw"},
+                        {"op": "body_merge", "arg": {"b": 2}})
+
     def test_unknown_op_rejected(self):
         with self.assertRaises(PayloadError):
             materialize(BASE, {"op": "evil", "arg": "x"})

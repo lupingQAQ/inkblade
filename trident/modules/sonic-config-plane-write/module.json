@@ -1,0 +1,21 @@
+{
+  "key": "sonic-config-plane-write",
+  "name": {
+    "zh": "SONiC configuration-plane write",
+    "en": "SONiC configuration-plane write"
+  },
+  "series": "网络架构",
+  "description": "SONiC configuration-plane write; covers CVE-2025-38741/23374. Write surface: requires mode=backup-write and backup_targets (runner backup gate); marker is proven then cleaned.",
+  "min_level": "全影响演示",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "sonic-config-plane",
+  "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
+  "combo_signature": "sonic-config-plane"
+}

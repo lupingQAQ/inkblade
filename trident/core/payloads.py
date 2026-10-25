@@ -16,6 +16,8 @@ transform 文法（白名单，未知 op 抛 PayloadError）：
   double_pct_encode             同上再编码一层（%25xx）
   method       arg=METHOD       替换 HTTP 方法（仅 GET/POST/PUT/HEAD）
   header       arg=[name,value] 增设/覆盖请求头（空值探针用）
+  query        arg=[key,value]  追加 URL 查询参数
+  body_merge   arg={k:v}        JSON body 合并（不新增写语义）
   param        arg=[key,value]  参数面变体（surface=params 模块）
 """
 
@@ -80,6 +82,20 @@ def _apply(op: str, arg: Any, base: dict) -> dict:
         if not (isinstance(arg, (list, tuple)) and len(arg) == 2):
             raise PayloadError("header 需要 [name, value] 参数")
         out["headers"][str(arg[0])] = str(arg[1])
+    elif op == "query":
+        if not (isinstance(arg, (list, tuple)) and len(arg) == 2):
+            raise PayloadError("query 需要 [key, value] 参数")
+        joiner = "&" if "?" in path else "?"
+        out["path"] = f"{path}{joiner}{urllib.parse.quote(str(arg[0]))}={urllib.parse.quote(str(arg[1]))}"
+    elif op == "body_merge":
+        if not isinstance(arg, dict):
+            raise PayloadError("body_merge 需要 dict 参数")
+        body = out.get("body")
+        if not isinstance(body, dict):
+            raise PayloadError("body_merge 仅适用于 JSON dict body")
+        merged = dict(body)
+        merged.update(arg)
+        out["body"] = merged
     else:
         raise PayloadError(f"未知 transform 操作 {op!r}")
     return out

@@ -1,0 +1,21 @@
+{
+  "key": "cgpu-isolation-audit",
+  "name": {
+    "zh": "cGPU isolation audit",
+    "en": "cGPU isolation audit"
+  },
+  "series": "权限链",
+  "description": "cGPU isolation audit; covers CGPU-ADV-2026-01. Read-only: version/evidence collection, no target writes.",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "cgpu-isolation",
+  "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
+  "combo_signature": "cgpu-isolation"
+}

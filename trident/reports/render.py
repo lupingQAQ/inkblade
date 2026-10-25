@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import json
+import re
 import time
 from pathlib import Path
 from string import Template
@@ -159,6 +160,54 @@ def _findings_table(run, lang: str, disclosed, sha_map: dict[str, str], redact_z
     return "\n".join(lines)
 
 
+def _cve_table(run, lang: str, sha_map: dict[str, str]) -> str:
+    """Map findings in this run to the CVE catalog; show CVE/affected/fixed."""
+    from ..core import cve_catalog
+
+    modules = {str(f.get("step_key") or "") for f in run.findings}
+    entries: dict[str, dict] = {}
+    for module in modules:
+        if not module:
+            continue
+        for item in cve_catalog.for_module(module):
+            entries[item["id"]] = item
+    for finding in run.findings:
+        blob = f"{finding.get('title', '')} {finding.get('detail', '')}"
+        for cve_id in re.findall(r"CVE-\d{4}-\d{4,}", blob):
+            item = cve_catalog.entry(cve_id)
+            if item:
+                entries[item["id"]] = item
+    lines = [_pick(lang,
+                   "| CVE/Advisory | Component | Type | CVSS | Affected | Fixed | Weaponized surface | Evidence |",
+                   "| CVE/Advisory | Component | Type | CVSS | Affected | Fixed | Weaponized surface | Evidence |"),
+             "|---|---|---|---:|---|---|---|---|"]
+    if not entries:
+        lines.append(_pick(lang, "| (no CVE catalog match in this run) | | | | | | | |",
+                           "| (no CVE catalog match in this run) | | | | | | | |"))
+        return "\n".join(lines)
+    for item in sorted(entries.values(), key=lambda x: (x["component"], x["id"])):
+        severity = item.get("cvss")
+        sev_text = f"{severity} ({item['severity']})" if severity is not None else item["severity"]
+        if item["mockable"] and not item["requires_hardware"]:
+            surface = _pick(lang, "mockable / weaponized", "mockable / weaponized")
+        elif item["requires_hardware"]:
+            surface = _pick(lang, "real hardware / read-only", "real hardware / read-only")
+        else:
+            surface = _pick(lang, "read-only/version check", "read-only/version check")
+        anchor = ""
+        for finding in run.findings:
+            if str(finding.get("step_key") or "") in item.get("modules", []):
+                sha16 = _sha16(sha_map, finding.get("evidence_path", ""))
+                anchor = f"{finding.get('step_key')} - sha256:{sha16}" if sha16 else str(finding.get("step_key"))
+                break
+        lines.append(
+            f"| `{item['id']}` | {_cell(item['component_name'])} | {item['kind']} | "
+            f"{_cell(sev_text)} | {_cell(item['affected'])} | "
+            f"{_cell(item['fixed'] or _pick(lang, 'unfixed/no official fix', 'unfixed/no official fix'))} | "
+            f"{_cell(surface)} | {_cell(anchor)} |")
+    return "\n".join(lines)
+
+
 def _steps_table(run, lang: str) -> str:
     header = _pick(
         lang,
@@ -249,6 +298,109 @@ def _network_layer_section(run, lang: str) -> str:
     return "\n".join(lines)
 
 
+def _objective_section(run, lang: str) -> str:
+    """Highest-privilege proof section (objective PROOF artifact when present)."""
+    path = run.dir / "objective-proof.json"
+    if not path.is_file():
+        return _pick(
+            lang,
+            "**本 run 未包含 objective 夺权证明**（未执行 `trident objective cluster-takeover`）。"
+            "本节不臆造集群级权限结论。",
+            "**No objective takeover proof in this run** (`trident objective cluster-takeover` "
+            "was not executed). This section makes no cluster-level privilege claim.",
+        )
+    proof = json.loads(path.read_text(encoding="utf-8"))
+    hp = proof.get("highest_privilege") or {}
+    rbac = hp.get("rbac") or {}
+    node = hp.get("node_root") or {}
+    secrets = hp.get("cluster_secrets") or {}
+    cleanup = proof.get("cleanup") or {}
+    backend = proof.get("backend") or {}
+    lines = [
+        _pick(lang, f"**PROOF marker**：`{proof.get('marker')}`；"
+                    f"**backend**：`{backend.get('kind')}` (real_cluster={backend.get('real_cluster')})；"
+                    f"**proof_sha256**：`{proof.get('hashes', {}).get('proof_sha256', '')}`",
+              f"**PROOF marker**: `{proof.get('marker')}`; "
+              f"**backend**: `{backend.get('kind')}` (real_cluster={backend.get('real_cluster')}); "
+              f"**proof_sha256**: `{proof.get('hashes', {}).get('proof_sha256', '')}`"),
+        "",
+        _pick(lang, "| 证明项 | 结果 | 证据 |", "| Proof item | Result | Evidence |"),
+        "|---|---|---|",
+        _pick(lang,
+              f"| 集群最高权限 | `{rbac.get('role')}` | RoleBinding `{rbac.get('rolebinding')}`；"
+              f"ClusterRoleBinding `{rbac.get('clusterrolebinding')}` |",
+              f"| Highest cluster privilege | `{rbac.get('role')}` | RoleBinding `{rbac.get('rolebinding')}`; "
+              f"ClusterRoleBinding `{rbac.get('clusterrolebinding')}` |"),
+        _pick(lang,
+              f"| 节点 root | verified={node.get('verified')} | node=`{node.get('node')}`；"
+              f"path=`{node.get('path')}`；sha256=`{node.get('sha256')}` |",
+              f"| Node root | verified={node.get('verified')} | node=`{node.get('node')}`; "
+              f"path=`{node.get('path')}`; sha256=`{node.get('sha256')}` |"),
+        _pick(lang,
+              f"| 集群 secrets 列举 | count={secrets.get('count')} | "
+              f"namespaces={_cell(secrets.get('namespaces'))} |",
+              f"| Cluster secret enumeration | count={secrets.get('count')} | "
+              f"namespaces={_cell(secrets.get('namespaces'))} |"),
+        _pick(lang,
+              f"| 测试 namespace / ConfigMap | created="
+              f"{(hp.get('test_namespace') or {}).get('created')} / read_back="
+              f"{(hp.get('test_configmap') or {}).get('read_back')} | "
+              f"`{(hp.get('test_namespace') or {}).get('name')}` |",
+              f"| Test namespace / ConfigMap | created="
+              f"{(hp.get('test_namespace') or {}).get('created')} / read_back="
+              f"{(hp.get('test_configmap') or {}).get('read_back')} | "
+              f"`{(hp.get('test_namespace') or {}).get('name')}` |"),
+        "",
+        _pick(lang, "**集群级动作清单（节选）**", "**Cluster-level actions (excerpt)**"),
+        "",
+        _pick(lang, "| stage | verb | resource | namespace | name | result |",
+              "| stage | verb | resource | namespace | name | result |"),
+        "|---|---|---|---|---|---|",
+    ]
+    actions = proof.get("cluster_actions") or []
+    for action in actions[:20]:
+        lines.append(
+            f"| {_cell(action.get('stage'))} | {_cell(action.get('verb'))} | "
+            f"{_cell(action.get('resource'))} | {_cell(action.get('namespace'))} | "
+            f"{_cell(action.get('name'))} | {_cell(action.get('result'))} |"
+        )
+    if len(actions) > 20:
+        lines.append(_pick(lang, f"| … | 共 {len(actions)} 条 | | | | |",
+                           f"| … | {len(actions)} total | | | | |"))
+    lines.append("")
+    lines.append(_pick(lang, "**清理校验**", "**Cleanup verification**"))
+    lines.append("")
+    lines.append(_pick(lang,
+                       f"- verified=`{cleanup.get('verified')}`；residue=`{cleanup.get('residue')}`；"
+                       f"fixture_cleanup=`{cleanup.get('fixture_cleanup')}`",
+                       f"- verified=`{cleanup.get('verified')}`; residue=`{cleanup.get('residue')}`; "
+                       f"fixture_cleanup=`{cleanup.get('fixture_cleanup')}`"))
+    for check in (cleanup.get("checks") or [])[:12]:
+        lines.append(f"- {'PASS' if check.get('ok') else 'FAIL'} — {_cell(check.get('check'))} "
+                     f"({_cell(check.get('observed'))})")
+    if cleanup.get("verified"):
+        lines.append(_pick(
+            lang,
+            "**已清理**：测试 namespace、测试 ConfigMap、pwn 绑定、特权 Pod 与节点 `/root` proof 文件"
+            "均已删除并按基线复核；本次 run 未留下持久化对象。",
+            "**Cleanup confirmed**: test namespace/ConfigMap, pwn bindings, privileged Pod and the "
+            "node `/root` proof file were deleted and re-checked against baseline; this run left "
+            "no persistent objects.",
+        ))
+    else:
+        lines.append(_pick(
+            lang,
+            "**未确认清理**：存在残留，按失败处理；不得对外宣称已清理。",
+            "**Cleanup NOT confirmed**: residue exists; treat as failed and do not claim cleanup.",
+        ))
+    shot = (proof.get("artifacts") or {}).get("screenshot")
+    if shot:
+        lines.append("")
+        lines.append(_pick(lang, f"截图：`{shot.get('path')}`（sha256 `{shot.get('sha256')}`）",
+                           f"Screenshot: `{shot.get('path')}` (sha256 `{shot.get('sha256')}`)"))
+    return "\n".join(lines)
+
+
 def _combo_table(run, lang: str) -> str:
     header = _pick(lang, "| 组合签名 | 详情 |", "| Combination Signature | Detail |")
     lines = [header, "|---|---|"]
@@ -321,11 +473,15 @@ def render_pentest(
     disclosed: Container[str] | None = None,
     *,
     redact_zeroday: bool = False,
+    inventory: dict | None = None,
+    catalog_path: str | Path | None = None,
+    assessment: dict | None = None,
 ) -> str:
     """渲染双语渗透测试报告（Markdown）。
 
     默认展示全部发现细节（含已公开零日级模块）。``redact_zeroday=True`` 时对
     is_zeroday 发现启用可选脱敏；``disclosed`` 内的标题视为已披露并恢复细节。
+    新增「漏洞适用性矩阵」：环境清单 + CVE 目录 → 版本/前置/实测四态。
     """
     _check_lang(lang)
     run = store.open_run(run_name)
@@ -333,6 +489,18 @@ def render_pentest(
     ptes = {s["key"]: s for s in _STANDARDS["ptes"]}
     special = {s["key"]: s for s in _STANDARDS["special"]}
     phases = _STANDARDS["nist"]["phases"]
+    if assessment is None:
+        from ..core.applicability import assess_cves
+
+        if inventory is None:
+            for candidate in (Path(store.root) / "inventory.json",
+                              Path(store.root) / "reports" / "assess" / "inventory.json"):
+                if candidate.is_file():
+                    from ..assess.inventory import load_inventory
+
+                    inventory = load_inventory(candidate)
+                    break
+        assessment = assess_cves(inventory or {}, catalog_path=catalog_path)
 
     mapping: dict[str, str] = {"main_title": _pick(lang, "渗透测试报告（中英双语）", "Penetration Test Report (Bilingual)")}
     mapping.update(_meta_block(store, run, lang))
@@ -365,7 +533,34 @@ def render_pentest(
     mapping["title_hybrid"] = mapping.pop("title_hybrid_cloud_boundary")
     mapping["body_hybrid"] = mapping.pop("body_hybrid_cloud_boundary")
     mapping["findings_table"] = _findings_table(run, lang, disclosed, sha_map, redact_zeroday)
+    mapping["title_cve"] = _pick(lang, "CVE and Fixed Versions (catalog mapping)", "CVE and Fixed Versions (catalog mapping)")
+    try:
+        mapping["cve_table"] = _cve_table(run, lang, sha_map)
+    except (OSError, ValueError, KeyError) as exc:
+        mapping["cve_table"] = _pick(
+            lang,
+            f"（CVE 目录不可用：{exc}）",
+            f"(CVE catalog unavailable: {exc})",
+        )
+    from ..core.applicability import render_matrix
+
+    mapping["title_applicability"] = _pick(
+        lang, "漏洞适用性矩阵（版本 × 前置 × 实测）",
+        "CVE Applicability Matrix (version × preconditions × live evidence)")
+    mapping["body_applicability"] = _pick(
+        lang,
+        "下表把目录版本区间、前置条件与本次环境清单的实测字段放在一起；"
+        "只有 `applicable` 才开放对应模块，`blocked` 列出缺失前置，"
+        "`unknown` 不升级为适用。证据列格式为 `字段=值 (来源)`。",
+        "The matrix combines catalog version ranges, preconditions, and live inventory fields. "
+        "Only `applicable` opens the linked module; `blocked` lists missing preconditions; "
+        "`unknown` is never upgraded to applicable. Evidence is `field=value (source)`.",
+    )
+    mapping["applicability_table"] = render_matrix(assessment, lang)
     mapping["steps_table"] = _steps_table(run, lang)
+    mapping["title_highest_privilege"] = _pick(
+        lang, "最高权限证明", "Highest-Privilege Proof")
+    mapping["body_highest_privilege"] = _objective_section(run, lang)
     mapping["combo_table"] = _combo_table(run, lang)
     mapping["cvss_legend"] = _cvss_legend(lang)
     mapping["title_standards"] = _pick(lang, "标准条款映射 Standards Mapping", "Standards Mapping")
@@ -445,16 +640,32 @@ def render_remediation(
     disclosed: Container[str] | None = None,
     *,
     redact_zeroday: bool = False,
+    inventory: dict | None = None,
+    catalog_path: str | Path | None = None,
+    assessment: dict | None = None,
 ) -> str:
     """渲染双语修复报告（修复基线优先级分组 + 逐发现建议 + 复测计划）。
 
     默认展示全部发现细节；``redact_zeroday=True`` 时对 is_zeroday 发现启用可选脱敏。
+    ``inventory`` 提供时附带同一套漏洞适用性矩阵。
     """
     _check_lang(lang)
     run = store.open_run(run_name)
     sha_map = _manifest_sha_map(run)
     findings = run.findings
     zd_count = sum(1 for f in findings if f.get("is_zeroday"))
+    if assessment is None:
+        from ..core.applicability import assess_cves
+
+        if inventory is None:
+            for candidate in (Path(store.root) / "inventory.json",
+                              Path(store.root) / "reports" / "assess" / "inventory.json"):
+                if candidate.is_file():
+                    from ..assess.inventory import load_inventory
+
+                    inventory = load_inventory(candidate)
+                    break
+        assessment = assess_cves(inventory or {}, catalog_path=catalog_path)
 
     groups: dict[str, list[dict]] = {"immediate": [], "short": [], "mid": []}
     for e in _BASELINE["entries"]:
@@ -506,6 +717,12 @@ def render_remediation(
         "Each finding is matched against the baseline library by title/step; unmatched findings fall back to severity-mapped generic advice.",
     )
     mapping["finding_recs"] = _findings_recs(run, lang, disclosed, sha_map, redact_zeroday)
+    from ..core.applicability import render_matrix
+
+    mapping["title_applicability"] = _pick(
+        lang, "漏洞适用性矩阵（版本 × 前置 × 实测）",
+        "CVE Applicability Matrix (version × preconditions × live evidence)")
+    mapping["applicability_table"] = render_matrix(assessment, lang)
     mapping["title_retest"] = _pick(lang, "复测计划 Retest Plan", "Retest Plan")
     mapping["body_retest"] = _pick(
         lang,

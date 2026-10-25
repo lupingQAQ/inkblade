@@ -326,15 +326,24 @@ def _validate_chain(chain: dict, filename: str) -> None:
             raise ValueError(f"{filename}: 前置表达式非法: {expr}（{exc}）") from exc
 
 
-def load_chains(chains_dir: Path | str) -> dict[str, dict]:
-    """加载目录内全部链定义（<id>.json），加载即校验（命名/结构/表达式/依赖图）。"""
+def load_chains(chains_dir: Path | str, *, skip_invalid: bool = False) -> dict[str, dict]:
+    """加载目录内全部链定义（<id>.json），加载即校验（命名/结构/表达式/依赖图）。
+
+    skip_invalid=True 仅用于实验/效果验证：跳过并行在途或损坏的链文件，
+    生产 CLI/规则生成必须保持默认 False（显式失败，不静默降级）。
+    """
     root = Path(chains_dir)
     chains: dict[str, dict] = {}
     if not root.exists():
         return chains
     for p in sorted(root.glob("*.json")):
         raw = json.loads(p.read_text(encoding="utf-8"))
-        _validate_chain(raw, p.name)
+        try:
+            _validate_chain(raw, p.name)
+        except ValueError:
+            if skip_invalid:
+                continue
+            raise
         chains[raw["id"]] = raw
     return chains
 
@@ -364,19 +373,46 @@ def evaluate_preconditions(chain: dict, findings: list[dict]) -> tuple[str, list
     return "不成立", missing
 
 
+def _assess_for_chain(chain: dict, inventory: dict | None,
+                      applicability: dict | None,
+                      catalog_path: str | Path | None) -> dict | None:
+    """链执行前的适用性评估；显式 applicability 优先，其次 inventory。"""
+    if applicability is not None:
+        return applicability
+    if inventory is None:
+        return None
+    from .applicability import assess_cves
+
+    return assess_cves(inventory, catalog_path=catalog_path)
+
+
 # ---------------------------------------------------------------- dry-run
 
-def dry_run(chain: dict, findings: list[dict], modules_dir: Path | str | None = None) -> dict:
-    """渲染完整执行计划：模块/参数/目标/依赖/备份动作/预计写面（写类步骤列 backup_targets）。"""
+def dry_run(chain: dict, findings: list[dict], modules_dir: Path | str | None = None,
+            *, inventory: dict | None = None, applicability: dict | None = None,
+            catalog_path: str | Path | None = None) -> dict:
+    """渲染完整执行计划：模块/参数/目标/依赖/备份动作/预计写面 + CVE 适用性依据。
+
+    只对 ``applicable`` 的 CVE 开放对应模块；``blocked/unknown/not-applicable``
+    在步骤上标记 status 与缺失条件（dry-run 不执行，故保留计划供审阅）。
+    """
     verdict, missing = evaluate_preconditions(chain, findings)
+    assessment = _assess_for_chain(chain, inventory, applicability, catalog_path)
     mods = load_modules(modules_dir) if modules_dir else {}
     steps: list[dict] = []
+    gates: list[dict] = []
     for st in chain.get("steps", []):
         meta = mods.get(st["module"])
         params = dict(st.get("params", {}))
         targets = list(st.get("backup_targets", params.get("backup_targets", [])))
         # 写面标志以注册表为准；模块族未落地时回退链内声明
         writes = bool(meta.writes) if meta is not None else bool(st.get("writes", False))
+        gate = None
+        if assessment is not None:
+            from .applicability import gate_module
+
+            gate = gate_module(assessment, st["module"])
+            gates.append(gate)
         entry: dict[str, Any] = {
             "id": st.get("id", st["module"]),
             "module": st["module"],
@@ -384,7 +420,16 @@ def dry_run(chain: dict, findings: list[dict], modules_dir: Path | str | None = 
             "target": st.get("target") or params.get("target") or "",
             "depends_on": list(st.get("depends_on", [])),
             "writes": writes,
+            "status": "ready",
         }
+        if gate is not None:
+            entry["applicability"] = gate
+            if gate.get("gated") and not gate.get("allow"):
+                entry["status"] = "blocked"
+                entry["blocked_reason"] = (
+                    f"CVE 适用性闸门：{gate.get('state')}；"
+                    + "；".join(gate.get("basis") or [])[:500]
+                )
         if writes:
             entry["backup_targets"] = targets
             entry["backup_actions"] = [{"action": "snapshot", "target": t} for t in targets]
@@ -402,7 +447,10 @@ def dry_run(chain: dict, findings: list[dict], modules_dir: Path | str | None = 
             entry["backup_actions"] = []
             entry["write_surface"] = []
         steps.append(entry)
-    return {
+    from .applicability import gate_chain
+
+    applicability_doc = gate_chain(chain, assessment)
+    result: dict[str, Any] = {
         "chain": chain["id"],
         "title": chain.get("title", {}),
         "category": chain.get("category", ""),
@@ -411,7 +459,18 @@ def dry_run(chain: dict, findings: list[dict], modules_dir: Path | str | None = 
         "steps": steps,
         "evidence": list(chain.get("evidence", [])),
         "mitre": list(chain.get("mitre", [])),
+        "applicability": applicability_doc,
+        "applicability_basis": applicability_doc.get("basis") or [],
     }
+    if chain.get("objective"):
+        obj = chain["objective"] if isinstance(chain["objective"], dict) else {}
+        result["objective"] = {
+            "highest_privilege": obj.get("highest_privilege") or "",
+            "stages": len(obj.get("stages") or []),
+            "hardware_gates": obj.get("hardware_gates") or [],
+            "applicability": applicability_doc,
+        }
+    return result
 
 
 # ---------------------------------------------------------------- 执行
@@ -425,18 +484,34 @@ def execute(
     workers: int = 4,
     run=None,
     strict: bool = False,
+    *,
+    inventory: dict | None = None,
+    applicability: dict | None = None,
+    catalog_path: str | Path | None = None,
 ) -> dict:
     """执行链：无依赖步骤并行（ThreadPoolExecutor），依赖分支串行；依赖失败 → 下游跳过。
 
     全部步骤共用一个证据 run；单步经 runner（授权闸门 + 备份闸门 + 三层落证）。
     strict=True 时前置判定非「成立」即拒绝执行。
+    CVE 适用性闸门：只对 applicable 的 CVE 开放对应模块；blocked/unknown 步骤
+    记录 skipped 与缺失条件，不进入 runner。
     """
     verdict, missing = evaluate_preconditions(chain, findings or [])
     if strict and verdict != "成立":
         raise PreconditionError(f"链 {chain['id']} 前置判定 {verdict}，缺失: {missing}")
+    assessment = _assess_for_chain(chain, inventory, applicability, catalog_path)
+    step_gates: dict[str, dict] = {}
+    if assessment is not None:
+        from .applicability import gate_module
+
+        for st in chain["steps"]:
+            step_gates[st.get("id", st["module"])] = gate_module(assessment, st["module"])
     if run is None:
         run = store.create_run(f"chain-{chain['id']}-{time.strftime('%Y%m%d-%H%M%S')}")
-    run.log_action(session.name, "chain", chain["id"], {"verdict": verdict}, verdict)
+    run.log_action(session.name, "chain", chain["id"],
+                   {"verdict": verdict,
+                    "applicability": (assessment or {}).get("summary") or {}},
+                   verdict)
 
     steps = {st.get("id", st["module"]): st for st in chain["steps"]}
     deps = {sid: list(st.get("depends_on", [])) for sid, st in steps.items()}
@@ -448,12 +523,25 @@ def execute(
             results[sid] = {"status": status, **payload}
 
     def _run_step(sid: str, st: dict) -> None:
+        gate = step_gates.get(sid)
+        if gate is not None and gate.get("gated") and not gate.get("allow"):
+            reason = (f"CVE 适用性闸门：{gate.get('state')}；"
+                      + "；".join(gate.get("basis") or [])[:500])
+            _record(sid, "skipped", reason=reason, applicability=gate)
+            try:
+                run.log_action(session.name, "execute", st["module"],
+                               dict(st.get("params", {})), "skipped-cve-applicability")
+            except Exception:
+                pass
+            return
         try:
             res = run_module(store, session, st["module"], dict(st.get("params", {})),
                              modules_dir, run=run)
-            _record(sid, "success", result=res)
+            _record(sid, "success", result=res,
+                    **({"applicability": gate} if gate is not None else {}))
         except Exception as exc:  # 单步失败不拖垮独立分支
-            _record(sid, "failed", error=f"{type(exc).__name__}: {exc}")
+            _record(sid, "failed", error=f"{type(exc).__name__}: {exc}",
+                    **({"applicability": gate} if gate is not None else {}))
 
     pending = set(steps)
     done: set[str] = set()
@@ -477,6 +565,8 @@ def execute(
                 raise ValueError(f"链 {chain['id']} 步骤依赖存在环: {sorted(pending)}")
 
     ok = len(results) == len(steps) and all(r["status"] == "success" for r in results.values())
+    from .applicability import gate_chain
+
     return {
         "chain": chain["id"],
         "run": run.name,
@@ -484,4 +574,5 @@ def execute(
         "missing": missing,
         "steps": results,
         "ok": ok,
+        "applicability": gate_chain(chain, assessment),
     }

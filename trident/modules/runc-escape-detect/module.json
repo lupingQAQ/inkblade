@@ -1,0 +1,21 @@
+{
+  "key": "runc-escape-detect",
+  "name": {
+    "zh": "runc escape surface detection",
+    "en": "runc escape surface detection"
+  },
+  "series": "权限链",
+  "description": "runc escape surface detection; covers CVE-2024-21626/2025-31133/2022-0492. Read-only: version/evidence collection, no target writes.",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "runc-escape",
+  "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
+  "combo_signature": "runc-escape"
+}

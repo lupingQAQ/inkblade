@@ -332,5 +332,405 @@
       "selection": {"action": ["port_alloc", "io_burst", "request_flood", "gang_submit"], "quota_enforced": false},
       "condition": "all"
     }
+  },
+  {
+    "id": "sigma-cluster-takeover-entry",
+    "title": "??? operator ????????",
+    "description": "K8s audit: an operator-class service account enumerates services/pods (entry discovery against an exposed training/inference control plane). ???? operator ???????/?????????",
+    "level": "medium",
+    "tags": [
+      "attack.discovery",
+      "attack.t1046",
+      "trident"
+    ],
+    "logsource": {
+      "product": "kubernetes",
+      "service": "audit"
+    },
+    "detection": {
+      "selection": {
+        "verb": [
+          "get",
+          "list"
+        ],
+        "objectRef.resource": [
+          "services",
+          "pods"
+        ],
+        "subject_sa": {
+          "re": "serviceaccount:.*operator"
+        }
+      },
+      "condition": "selection"
+    },
+    "falsepositives": [
+      "?????????/???????????????????"
+    ],
+    "blocks_modules": [
+      "cluster-entry"
+    ],
+    "tuning": {
+      "zh": "? 30 ?????????????????operator ?????????? list services/pods ?? high??? NodePort ?????????",
+      "en": "Baseline platform discovery vs external enumeration over 30 days; escalate high when operator subjects list services/pods outside change windows; correlate with the NodePort exposure inventory"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "selection": {
+        "verb": [
+          "get",
+          "list"
+        ],
+        "objectRef.resource": [
+          "services",
+          "pods"
+        ],
+        "subject_sa": {
+          "re": "serviceaccount:.*operator"
+        }
+      },
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cluster-token-harvest",
+    "title": "ServiceAccount TokenRequest ????",
+    "description": "K8s audit: service account token request/create by a workload-class subject (credential acquisition for RBAC escalation). ???????????? TokenRequest???????",
+    "level": "high",
+    "tags": [
+      "attack.credential_access",
+      "attack.t1552",
+      "trident"
+    ],
+    "logsource": {
+      "product": "kubernetes",
+      "service": "audit"
+    },
+    "detection": {
+      "selection": {
+        "verb": [
+          "create",
+          "get"
+        ],
+        "objectRef.resource": [
+          "serviceaccounts",
+          "secrets"
+        ],
+        "objectRef.subresource": [
+          "token"
+        ],
+        "subject_sa": {
+          "re": "serviceaccount:.*operator"
+        }
+      },
+      "condition": "selection"
+    },
+    "falsepositives": [
+      "?? operator ??? token ??????+???????"
+    ],
+    "blocks_modules": [
+      "cluster-credential"
+    ],
+    "tuning": {
+      "zh": "???? TokenRequest ???serviceaccounts/token???? CI/? operator ???????? high?token ??????????? jti/??/???",
+      "en": "Ingest serviceaccounts/token audit events first; keep high for issuers outside CI/operator controllers; never log the token itself, only jti/subject/expiry"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "selection": {
+        "verb": [
+          "create",
+          "get"
+        ],
+        "objectRef.resource": [
+          "serviceaccounts",
+          "secrets"
+        ],
+        "objectRef.subresource": [
+          "token"
+        ],
+        "subject_sa": {
+          "re": "serviceaccount:.*operator"
+        }
+      },
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cluster-rbac-takeover",
+    "title": "operator ???? cluster-admin ????????",
+    "description": "K8s audit: operator-class subject creates RoleBinding/ClusterRoleBinding to cluster-admin (RBAC takeover). ???? operator ?????? cluster-admin ????????????",
+    "level": "critical",
+    "tags": [
+      "attack.privilege_escalation",
+      "attack.t1098",
+      "trident"
+    ],
+    "logsource": {
+      "product": "kubernetes",
+      "service": "audit"
+    },
+    "detection": {
+      "selection": {
+        "verb": [
+          "create",
+          "patch"
+        ],
+        "objectRef.resource": [
+          "rolebindings",
+          "clusterrolebindings"
+        ],
+        "objectRef.roleRef.name": "cluster-admin"
+      },
+      "condition": "selection"
+    },
+    "falsepositives": [
+      "gitops/CI ????????????????? + ?????"
+    ],
+    "blocks_modules": [
+      "cluster-rbac-escalation"
+    ],
+    "tuning": {
+      "zh": "?? cluster-admin ??????? critical ?????????? gitops ?????????????????????????? bind/escalate ????",
+      "en": "Any incremental binding to cluster-admin is critical and should be blocked; allow only the gitops sync subject with two-person approval; also watch binding deletions (cleanup trails) and bind/escalate grants"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "selection": {
+        "verb": [
+          "create",
+          "patch"
+        ],
+        "objectRef.resource": [
+          "rolebindings",
+          "clusterrolebindings"
+        ],
+        "objectRef.roleRef.name": "cluster-admin"
+      },
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cluster-privileged-pod",
+    "title": "???????/??? Pod",
+    "description": "K8s audit: pod created with privileged + hostPID/hostPath after a cluster-admin binding (node takeover). ????????? privileged+hostPID ???? Pod?",
+    "level": "critical",
+    "tags": [
+      "attack.privilege_escalation",
+      "attack.t1611",
+      "trident"
+    ],
+    "logsource": {
+      "product": "kubernetes",
+      "service": "audit"
+    },
+    "detection": {
+      "selection": {
+        "verb": [
+          "create"
+        ],
+        "objectRef.resource": [
+          "pods"
+        ],
+        "requestObject.privileged": true,
+        "requestObject.hostPID": true
+      },
+      "condition": "selection"
+    },
+    "falsepositives": [
+      "GPU operator/?? DaemonSet???????? + ??????"
+    ],
+    "blocks_modules": [
+      "cluster-privileged-pod"
+    ],
+    "tuning": {
+      "zh": "?? monitor 7 ???? Enforce?GPU ??/device plugin ??????????????? cluster-admin ???????? critical",
+      "en": "Run monitor for 7 days then switch to Enforce; allow GPU driver/device plugin only in the exception namespace; correlate with the cluster-admin binding rule and escalate to critical"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "selection": {
+        "verb": [
+          "create"
+        ],
+        "objectRef.resource": [
+          "pods"
+        ],
+        "requestObject.privileged": true,
+        "requestObject.hostPID": true
+      },
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cluster-proof-actions",
+    "title": "?????????? secrets / ???? namespace",
+    "description": "K8s audit: cluster-scope secret enumeration and namespace creation by an operator-class subject (post-takeover proof). ???????? secret ????? namespace ???",
+    "level": "critical",
+    "tags": [
+      "attack.collection",
+      "attack.t1530",
+      "trident"
+    ],
+    "logsource": {
+      "product": "kubernetes",
+      "service": "audit"
+    },
+    "detection": {
+      "selection": {
+        "verb": [
+          "list",
+          "create"
+        ],
+        "objectRef.resource": [
+          "secrets",
+          "namespaces"
+        ],
+        "subject_sa": {
+          "re": "serviceaccount:.*operator"
+        }
+      },
+      "condition": "selection"
+    },
+    "falsepositives": [
+      "??/???????????? secret ??????? value?"
+    ],
+    "blocks_modules": [
+      "cluster-proof"
+    ],
+    "tuning": {
+      "zh": "secret ?????????????/??/?????namespace ??????????? gitops?? operator ?????? list secrets ?? critical",
+      "en": "Allowlist secret listers (backup/audit/controllers); namespace creation restricted to platform controllers and gitops; cluster-wide secret listing by operator subjects is critical"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "selection": {
+        "verb": [
+          "list",
+          "create"
+        ],
+        "objectRef.resource": [
+          "secrets",
+          "namespaces"
+        ],
+        "subject_sa": {
+          "re": "serviceaccount:.*operator"
+        }
+      },
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cluster-cleanup-trail",
+    "title": "????????????/?? namespace",
+    "description": "K8s audit: deletion of cluster-admin bindings or proof namespaces shortly after creation (cleanup trail). ???????????/?? namespace ??????",
+    "level": "high",
+    "tags": [
+      "attack.defense_evasion",
+      "attack.t1070",
+      "trident"
+    ],
+    "logsource": {
+      "product": "kubernetes",
+      "service": "audit"
+    },
+    "detection": {
+      "selection": {
+        "verb": [
+          "delete"
+        ],
+        "objectRef.resource": [
+          "rolebindings",
+          "clusterrolebindings",
+          "namespaces"
+        ]
+      },
+      "condition": "selection"
+    },
+    "falsepositives": [
+      "gitops/?? namespace ??????????????????"
+    ],
+    "blocks_modules": [
+      "cluster-cleanup"
+    ],
+    "tuning": {
+      "zh": "?????????????? 30 ???????? cluster-admin ??/namespace ?? critical????????????",
+      "en": "Correlate with creation events: same subject deleting a cluster-admin binding/namespace within 30 minutes is critical; preserve the deletion timeline for forensics"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "selection": {
+        "verb": [
+          "delete"
+        ],
+        "objectRef.resource": [
+          "rolebindings",
+          "clusterrolebindings",
+          "namespaces"
+        ]
+      },
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cve-arsenal-surface",
+    "title": "CVE 武器化面：Ray / LiteLLM / IPMI / Redfish / runc 探测",
+    "description": "Correlate management-plane probes for public CVE surfaces: Ray job API, LiteLLM config, IPMI RMCP, Redfish session service, and runtime escape reconnaissance. 仅行为特征，不含利用载荷。",
+    "level": "high",
+    "tags": ["attack.lateral_movement", "attack.t1210", "trident"],
+    "logsource": {"category": "webserver"},
+    "detection": {
+      "selection": {
+        "cs-uri|contains": [
+          "/ray/api/jobs",
+          "/litellm/config",
+          "/ipmi/rmcp",
+          "/redfish/v1",
+          "/runc"
+        ]
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["资产盘点/合规扫描", "运维脚本访问 BMC 管理面"],
+    "blocks_modules": [
+      "ray-job-marker-rce",
+      "litellm-config-update-rce",
+      "ipmi-cipher-zero-bypass",
+      "redfish-default-credentials",
+      "runc-escape-detect"
+    ],
+    "tuning": {
+      "zh": "按管理网段与来源身份白名单调参；同一来源在 10 分钟内同时命中 Ray 与 BMC 面时升级为 critical",
+      "en": "Allowlist admin CIDRs and operator identities; escalate to critical when the same source hits Ray and BMC surfaces within 10 minutes"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"category": "webserver"},
+      "selection": {"cs-uri": "*"},
+      "condition": "all"
+    }
   }
 ]

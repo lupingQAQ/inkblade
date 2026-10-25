@@ -24,8 +24,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from ..core import cve_catalog
 from ..core.chains import load_chains
 from ..core.yamlish import dump as yaml_dump
+from .cve_rules import sigma_specs as cve_sigma_specs
 
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 CNI_VARIANTS = ("native", "calico", "cilium", "vpc-native")
@@ -592,7 +594,9 @@ def generate_all(chains_dir: Path | str, findings: list | None = None,
 
     def register(rule_id: str, engines: list[str], title: dict, files: list[str],
                  tuning: dict, modules: list[str], match: dict | None = None,
-                 log_source: dict | str | None = None) -> dict:
+                 log_source: dict | str | None = None,
+                 cves: list[str] | None = None,
+                 scope: str = "chain") -> dict:
         blocks = blocks_of(modules)
         meta = {
             "id": rule_id,
@@ -606,6 +610,8 @@ def generate_all(chains_dir: Path | str, findings: list | None = None,
             "blocks_chains": blocks,
             "finding_links": finding_links(modules),
             "match": match,
+            "cves": list(cves or []),
+            "scope": scope,
         }
         rules_meta.append(meta)
         return meta
@@ -702,6 +708,36 @@ def generate_all(chains_dir: Path | str, findings: list | None = None,
         register(spec["id"], ["sigma"], {"zh": spec["title"], "en": spec["title"]}, [rel],
                  spec["tuning"], spec["blocks_modules"], match=spec["match"],
                  log_source=spec["logsource"])
+
+    # 3b) CVE ??? ? ?? CVE/???? 1 ? Sigma?monitor?? cve ????
+    for spec in cve_sigma_specs(cve_catalog.load()):
+        doc = {
+            "title": spec["title"],
+            "id": _deterministic_uuid(f"trident-sigma-{spec['id']}"),
+            "status": "experimental",
+            "description": spec["description"],
+            "references": ["trident-cve-catalog: " + spec["cves"][0]],
+            "author": "Trident cve arsenal",
+            "date": "2026/10/26",
+            "logsource": spec["logsource"],
+            "detection": spec["detection"],
+            "falsepositives": spec["falsepositives"],
+            "level": spec["level"],
+            "tags": spec["tags"] + ["trident-mode-monitor"],
+            "custom": {
+                "trident-mode": MONITOR,
+                "trident-tuning": spec["tuning"]["zh"],
+                "trident-cve": spec["cves"][0],
+                "trident-blocks-chains": ",".join(blocks_of(spec["blocks_modules"])),
+            },
+        }
+        rel = write(f"sigma/{spec['id']}.yaml", yaml_dump(doc))
+        match = {"logsource": spec["logsource"],
+                 "selection": ({key: "*" for key in spec["detection"]["selection"]}
+                               if spec["detection"].get("selection") else {"event": "*"})}
+        register(spec["id"], ["sigma"], {"zh": spec["title"], "en": spec["title"]}, [rel],
+                 spec["tuning"], [], match=match,
+                 log_source=spec["logsource"], cves=spec["cves"], scope="cve-catalog")
 
     for spec in catalog["falco"]:
         falco_rule_dicts.append({

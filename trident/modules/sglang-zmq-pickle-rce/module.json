@@ -1,0 +1,21 @@
+{
+  "key": "sglang-zmq-pickle-rce",
+  "name": {
+    "zh": "SGLang ZMQ pickle RCE",
+    "en": "SGLang ZMQ pickle RCE"
+  },
+  "series": "核心代码",
+  "description": "SGLang ZMQ pickle RCE; covers CVE-2026-3059/3060/7301/7302/7304. Write surface: requires mode=backup-write and backup_targets (runner backup gate); marker is proven then cleaned.",
+  "min_level": "全影响演示",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "sglang-zmq-rce",
+  "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
+  "combo_signature": "sglang-zmq-rce"
+}

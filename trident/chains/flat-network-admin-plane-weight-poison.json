@@ -12,26 +12,52 @@
     "slime-weight-pull-poison"
   ],
   "preconditions": [
-    {"expr": "findings('network-policy-coverage').count == 0"},
-    {"expr": "findings('framework-port-matching').reachable.any(port == 30000)"}
+    {
+      "expr": "findings('network-policy-coverage').count == 0"
+    },
+    {
+      "expr": "findings('framework-port-matching').reachable.any(port == 30000)"
+    }
   ],
   "steps": [
     {
       "id": "admin-failopen-probe",
       "module": "sglang-admin-failopen",
-      "params": {"probe": "auth-bypass"}
+      "params": {
+        "probe": "auth-bypass"
+      }
     },
     {
       "id": "weight-pull-poison",
       "module": "slime-weight-pull-poison",
-      "params": {"mode": "backup-write", "marker": "TRIDENT-${run.name}"},
-      "depends_on": ["admin-failopen-probe"],
+      "params": {
+        "mode": "backup-write",
+        "marker": "TRIDENT-${run.name}"
+      },
+      "depends_on": [
+        "admin-failopen-probe"
+      ],
       "writes": true,
       "backup_targets": [
-        {"kind": "http", "url": "http://target:30000/pull_weights", "state": {}}
+        {
+          "kind": "http",
+          "url": "http://target:30000/pull_weights",
+          "state": {}
+        }
       ]
     }
   ],
-  "evidence": ["http-trace", "before-after-sha256", "rollback-receipt"],
-  "mitre": ["T1210", "T1565.001"]
+  "evidence": [
+    "http-trace",
+    "before-after-sha256",
+    "rollback-receipt"
+  ],
+  "mitre": [
+    "T1210",
+    "T1565.001"
+  ],
+  "cves": [
+    "CVE-2025-32444",
+    "CVE-2026-3059"
+  ]
 }
