@@ -132,15 +132,17 @@ Ruling（本轮）：
 
 ### C.3 全量测试与提交
 
-- 全量回归（工作树副本，剔除 5 个在途残缺模块目录 `trident/modules/kubetrail-*`）：
-  **1136 tests OK（4 skipped）**，包含并行任务已落地的 138 个模块与其测试。
+- 全量回归（工作树全量副本，含并行任务已落地的 138 个模块与其测试）：
+  **1140 tests OK（4 skipped）**；跳过项均为环境前置（3 项 `clonedeps.json` 仓外注册检查、
+  1 项「无可用的无前置只读链」），非代码缺陷。
 - 本轮新增/更新测试文件：`test_consent_signature`、`test_runner_scope_audit`、`test_backup`（回滚状态）、
   `test_cli_ops`、`test_webui_readonly`、`test_reports_network_layers`、`test_ui_data_binding`、
   `test_sample_determinism`、`test_vendor_checksums`、`test_dev_log`、`test_sota_doc`（计数）。
 - 样张：`e2e-check.py --run-name e2e-acceptance --normalize`（`tests/test_e2e.py` 也固定该口径），
   生成层可复现由 `tests/test_sample_determinism.py` 锁定；e2e 全量样张的证据锚仍随靶场侧状态变化
-  （数据面差异，不伪造 sha）。
+  （数据面差异，不伪造 sha）。离线性能样张 `measured_at=null`（未测量不写时间戳）。
 - 提交：`7614559` consent HMAC/时间窗 · `0dc9f9c` 回滚状态 · `3166a5e` 范围/零日审计 ·
   `c921595` CLI/只读 API · `7ea6c2c` 网络分层/UI 绑定 · `2231baa` 确定性/vendor ·
-  `6390185` DEV-LOG · `e3657e3` 性能网格 · `e09320c` SOTA 收尾。
+  `6390185` DEV-LOG · `e3657e3` 性能网格 · `e09320c` SOTA 收尾 · `b824631` 样张重生成 ·
+  `28d7d14` BOM 容错 · `f953c07` 离线样张确定性。
 
