@@ -74,7 +74,10 @@ class TestDevLog(unittest.TestCase):
 
     def test_originals_unchanged(self):
         self.assertTrue(PROGRESS.is_file())
-        self.assertTrue(SDD.is_file())
+        if not SDD.is_file():
+            # .superpowers 为本地 SDD 状态（.gitignore），git 克隆/公开包本就不含；
+            # 陌生用户按 README 跑测试时不应因内部台账缺失而红。
+            self.skipTest("SDD ledger 不在工作树（.superpowers 被 gitignore）")
         # 原始 SDD 仍保留原编码（不强行改写，避免破坏外部引用）
         raw = SDD.read_bytes().lstrip(b"\xef\xbb\xbf")
         self.assertTrue(raw.startswith(b"# SDD ledger"))

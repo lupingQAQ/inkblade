@@ -22,6 +22,20 @@
   </form>
 </header>
 
+<section id="demo-guide" class="demo-guide" aria-label="首次使用引导">
+  <div class="demo-guide-copy">
+    <strong>第一次用 Trident？2 条命令看结果</strong>
+    <span>本地 mock 靶场，不碰真实集群；约 10–20 秒生成发现、双语报告与规则包。</span>
+    <div class="demo-guide-cmds">
+      <code>python -m trident doctor</code><span>→</span><code>python -m trident demo</code>
+    </div>
+  </div>
+  <div class="demo-guide-actions">
+    <span class="hint">真实集群：python -m trident quickstart</span>
+    <button type="button" id="demo-guide-close">知道了</button>
+  </div>
+</section>
+
 <nav id="views">
   <button data-view="dag" class="active"><span class="n">①</span>工作流 DAG</button>
   <button data-view="chain"><span class="n">②</span>攻击链图</button>

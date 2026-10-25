@@ -10,6 +10,9 @@ dist/
 *.egg-info/
 .pytest_cache/
 .mypy_cache/
+# 上手命令的默认输出（安全隔离，不入库）
+/demo/
+/trident-workspace/
 # æœ¬åœ° VM/QEMU å®žéªŒäº§ç‰©ï¼ˆå¯å†ç”Ÿæˆï¼Œä¸å…¥å…¬å¼€æ ‘ï¼‰
 
 # --- QEMU TCG k3s lab (large / binary / secret artifacts) ---

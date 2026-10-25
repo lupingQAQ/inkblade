@@ -42,6 +42,7 @@ import hashlib
 import json
 import re
 import shutil
+import sys
 import tempfile
 import threading
 import time
@@ -58,6 +59,19 @@ ADMIN_TOKEN = "test-admin-key"
 SERVICE_SELECTOR_HEADER = "x-mock-service"
 AREAL_CALL_WHITELIST = ("echo",)
 OPEN_WEBUI_MOCK_STDOUT = "B-was-here"
+
+
+def _force_utf8_stdio() -> None:
+    """Windows 控制台默认 cp1252/IBM437 时，中文帮助与启动横幅会 UnicodeEncodeError。
+
+    直接运行 ``python lab/mock_targets.py`` 的陌生用户必须先看到可用输出，
+    因此入口统一切 UTF-8（失败则替换不可编码字符，不阻断启动）。
+    """
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
 
 
 def _utcnow_iso() -> str:
@@ -728,6 +742,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE, root: Path | str | None =
 
 
 def main(argv: list[str] | None = None) -> int:
+    _force_utf8_stdio()
     parser = argparse.ArgumentParser(description="Trident 实验室 mock 靶场（仅监听 127.0.0.1）")
     parser.add_argument("--port", type=int, default=0, help="监听端口（0=自动分配）")
     parser.add_argument("--mode", choices=list(MODES), default=DEFAULT_MODE, help="vulnerable=fail-open 姿态，fixed=加固姿态")

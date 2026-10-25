@@ -3,6 +3,38 @@
 > 适用版本：v0.1.0 · 运行环境：Windows / Python 3.10+（仅标准库运行时；`zstd`/`cryptography` 可选，缺失自动降级）
 > 一切执行仅限已授权工作区；无授权记录时 CLI 与 API 同源拒绝（退出/HTTP 423）。
 
+## 0. 5 分钟上手（陌生用户先走这条）
+
+不需要 `pip install`、kubeconfig、外部网络、LLM key 或 bash；在仓库根目录执行：
+
+```powershell
+python -m trident doctor      # 环境自检：Python/写权限/端口/可选依赖/mock 或真集群
+python -m trident demo        # 本地 mock：授权→2 模块+1 链→双语报告+规则包（默认 ./demo）
+python -m trident quickstart  # 5 问向导：目标/范围/级别/用户/签授权（失败可重入）
+```
+
+- `demo` 默认只写 `./demo/`，不读取真实集群；`--no-ui` 跳过静态 UI，`--keep` 保留 mock 靶场（Ctrl+C 结束），`--temp` 用临时目录。
+- `demo` 产物：`demo/reports/pentest-bi.md`（中英双语）、`demo/reports/remediation-bi.md`、`demo/rules-pack/`、`demo/webui/index.html`、`demo/workspace/evidence/demo-lab/<run>/`（三层证据）。
+- `quickstart` 默认在 `./trident-workspace/` 建 `local-lab` 工作区；真实集群会先提示只读级别与 dry-run。
+- 实测（Windows 11 / Python 3.12）：`demo` 约 4–5 秒（多次 3.6–5.0 秒；最终复测 5.00 秒，墙钟 5.33 秒），远低于 60 秒目标；走查前后对照见 [`ONBOARDING-EVALUATION.md`](ONBOARDING-EVALUATION.md)。
+
+### 错误码速查（三行式：发生了什么 / 为什么 / 怎么修）
+
+| 码 | 场景 | 首修动作 |
+|---|---|---|
+| E101 | 无 kubeconfig | 设 `KUBECONFIG` 或 `quickstart` 填路径 |
+| E102 | 可选依赖缺失 | `pip install <name>`；核心可不装 |
+| E103 | 端口占用 | `--port 8766` 或停止占用进程 |
+| E104 | 无 bash | 安装 Git Bash/WSL；demo 不需要 |
+| E201 | 无授权 | `trident demo` 或 `trident quickstart` |
+| E202 | 级别不足 | `quickstart` 重签更高级别 |
+| E203 | 范围外 | 把 namespace/CIDR 加入授权 |
+| E205 | 角色/系统权限不足 | 换 lead/tester 或可写 `--home` |
+| E301 | 备份缺 targets | 加 `backup_targets` 或改 probe-only |
+| E401 | 工作区/run 不存在 | 先 `demo` 或检查 `--home/--workspace/--run` |
+| E402 | demo 目录非空 | `--out` 换目录 |
+| E207 | quickstart 取消/输入不可用 | 终端重跑或 `--yes` |
+
 ## 1. 安装与初始化
 
 ```powershell
@@ -12,7 +44,7 @@ cd <repo>
 python -m unittest discover -s tests -v   # 全绿再开工
 ```
 
-- 目录约定：`--home`（默认 `.`）下生成 `evidence/<workspace>/<run>/`、`users.json`、`modules/`（即 `trident/modules`，可软链/复制到 home）。
+- 目录约定：`--home`（默认 `.`）下生成 `evidence/<workspace>/<run>/`、`users.json`、`modules/`（即 `trident/modules`，可软链/复制到 home）。若 home 下没有 `modules/`，CLI 会自动回落到包内 `trident/modules`（陌生用户无需手工复制）。
 - 首次初始化：`python -m trident --home . user add admin <口令> admin --workspaces *`（口令仅此一次明文输入，库存 scrypt 哈希）。
 
 ## 2. 用户与授权（consent / ROE）
