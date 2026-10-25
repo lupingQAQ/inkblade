@@ -4,6 +4,8 @@
 
 **Trident** is an authorized-testing platform for Kubernetes / ML training and inference clusters. It follows a seven-layer architecture (authorization → orchestration → modules → three-layer evidence → bilingual reporting → visualization → rule conversion) and uses only the Python 3.10+ standard library.
 
+> **总文档（先读这篇）**：[`docs/MASTER-REPORT.md`](docs/MASTER-REPORT.md) — 面向非 K8s 安全读者的白话总报告：前置知识、攻击路径、产品流程、Agent 改动、指标、竞品、未达成项、复盘、术语与证据索引。
+
 > **授权使用 / Authorized use only**：仅可对获得书面授权的资产执行测试。平台内置 consent/ROE 签名、级别闸门、写类操作备份闸门与逐动作审计；未签署授权时 CLI 与 API 均拒绝执行。
 >
 > **Authorized use only.** Run Trident exclusively against assets covered by written authorization. Consent/ROE pinning, technical-level gates, a mandatory backup gate for write modules, and per-action auditing are enforced by design; without signed consent both CLI and API refuse to execute.
@@ -23,7 +25,7 @@
 - **机器可读导出**：`trident export --format sarif|ocsf|vex` 输出 SARIF 2.1.0、OCSF 1.x Detection Finding 与 OpenVEX 风格 JSON；见 [`trident/export.py`](trident/export.py)。
 - **规则转化**：Kyverno / Gatekeeper / NetworkPolicy（native、Calico、Cilium）/ Sigma / Falco / Suricata，规则↔链覆盖率硬校验 + 紫队重放矩阵。
 - **SOTA 能力矩阵**：2026-10 公开参照对照与诚实差距（万卡实测、真实 ARTEX 对比、硬件 TEE 实测等未达成项及追赶路径）见 [`docs/SOTA-2026-10.md`](docs/SOTA-2026-10.md)。
-- **实效验证**：`trident/verify-effects.py` 在本机真实进程/真实 HTTP 上逐项验证管理面利用、权重投毒、备份回滚、RCE、数据泄露、检测规则、端到端链与长上下文/PD KV 四项效果（11/11 PASS）；见 [`docs/EFFECT-VERIFICATION.md`](docs/EFFECT-VERIFICATION.md) 与 [`docs/LONG-CONTEXT.md`](docs/LONG-CONTEXT.md)。
+- **实效验证**：`trident/verify-effects.py` 在本机真实进程/真实 HTTP 上逐项验证管理面利用、权重投毒、备份回滚、RCE、数据泄露、检测规则、端到端链与长上下文/PD KV 四项效果（当前落盘 17/17 PASS；fabric 三项台账另记 3/3，两处待合并）；见 [`docs/EFFECT-VERIFICATION.md`](docs/EFFECT-VERIFICATION.md) 与 [`docs/LONG-CONTEXT.md`](docs/LONG-CONTEXT.md)。
 - **ARTEX clean-room 功能对齐（2026-10）**：按公开功能描述独立实现 LLM 多模型池、通知渠道与事件规则、任务模板（含从 run 反推）、一次性日历窗口、run 内侧问、图快照/跨 run 差异、跨 run 只读黑板、已批准提议的 bounded 并发执行（1–8，默认 1）；竞争矩阵 S/M backlog 30 项已清零。功能×实现×测试×状态见 [`docs/ARTEX-PARITY.md`](docs/ARTEX-PARITY.md)。
 
 ## 边界 / Boundaries
