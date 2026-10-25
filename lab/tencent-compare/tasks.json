@@ -1,0 +1,133 @@
+{
+  "schema": "trident-tencent-compare-tasks-v1",
+  "note": "策略级微评测：确定性动作成本 + 故障注入，不调用外部 LLM / 真实目标。动作成本按 Trident 模块输出规模标定（token 为上下文估算）。",
+  "tasks": [
+    {
+      "id": "tenant-recon",
+      "zone": "识器·明理",
+      "goal": "识别 ML 租户入口并确认管理面暴露（含重复侦察）",
+      "actions": [
+        {"module": "sglang-admin-failopen", "writes": false, "tokens": 420, "latency_ms": 900,
+         "params": {"use_assets": true}, "finding": "finding:sglang-admin"},
+        {"module": "sglang-admin-failopen", "writes": false, "tokens": 420, "latency_ms": 900,
+         "params": {"use_assets": true}, "finding": "finding:sglang-admin-dup"},
+        {"module": "sglang-metrics-read", "writes": false, "tokens": 260, "latency_ms": 500,
+         "params": {"use_assets": true}, "finding": "finding:sglang-metrics"}
+      ],
+      "expect": {"min_findings": 2}
+    },
+    {
+      "id": "gateway-auth",
+      "zone": "洞见·虚实",
+      "goal": "验证 AI 网关鉴权绕过；首个探测注入瞬时超时",
+      "actions": [
+        {"module": "aigateway-auth-bypass", "writes": false, "tokens": 380, "latency_ms": 800,
+         "params": {"use_assets": true}, "finding": "finding:gateway-auth"},
+        {"module": "aigateway-header-audit", "writes": false, "tokens": 240, "latency_ms": 400,
+         "params": {"use_assets": true}, "finding": "finding:gateway-header"}
+      ],
+      "fault": {"module": "aigateway-auth-bypass", "kind": "transient",
+                "detail": "TimeoutError: upstream 504"},
+      "expect": {"min_findings": 2}
+    },
+    {
+      "id": "litellm-chain",
+      "zone": "执刃·循迹",
+      "goal": "LiteLLM 配置泄露 → 密钥复用 → 受控写验证（带备份）",
+      "actions": [
+        {"module": "litellm-config-read", "writes": false, "tokens": 400, "latency_ms": 900,
+         "params": {"use_assets": true}, "finding": "finding:litellm-config"},
+        {"module": "litellm-key-reuse", "writes": true, "tokens": 500, "latency_ms": 1000,
+         "params": {"use_assets": true}, "finding": "finding:litellm-key",
+         "dry_run": {"backup_targets": ["s3://ml-secrets/litellm.env"]}},
+        {"module": "litellm-route-audit", "writes": false, "tokens": 300, "latency_ms": 600,
+         "params": {"use_assets": true}, "finding": "finding:litellm-route"}
+      ],
+      "expect": {"min_findings": 3}
+    },
+    {
+      "id": "gpu-tenant",
+      "zone": "铸剑·止戈",
+      "goal": "GPU 租户隔离探测；主模块瞬时失败后回退到指标面",
+      "actions": [
+        {"module": "gpu-tenant-probe", "writes": false, "tokens": 450, "latency_ms": 1000,
+         "params": {"use_assets": true}, "finding": "finding:gpu-tenant",
+         "fallback": ["gpu-tenant-metrics"]},
+        {"module": "gpu-tenant-metrics", "writes": false, "tokens": 320, "latency_ms": 700,
+         "params": {"use_assets": true}, "finding": "finding:gpu-metrics"}
+      ],
+      "fault": {"module": "gpu-tenant-probe", "kind": "transient",
+                "detail": "ConnectionResetError: peer reset"},
+      "expect": {"min_findings": 2}
+    },
+    {
+      "id": "budget-crunch",
+      "zone": "识器·明理",
+      "goal": "预算受限下的侦察收敛：保留 3 个核心动作，丢弃可选/尾部动作",
+      "actions": [
+        {"module": "sglang-admin-failopen", "writes": false, "tokens": 300, "latency_ms": 900,
+         "params": {"use_assets": true}, "finding": "finding:core-admin"},
+        {"module": "sglang-metrics-read", "writes": false, "tokens": 300, "latency_ms": 900,
+         "params": {"use_assets": true}, "finding": "finding:core-metrics"},
+        {"module": "kubelet-surface-read", "writes": false, "tokens": 300, "latency_ms": 900,
+         "params": {"use_assets": true}, "finding": "finding:core-kubelet"},
+        {"module": "nuclei-full-sweep", "writes": false, "tokens": 2000, "latency_ms": 4000,
+         "optional": true, "params": {"use_assets": true}, "finding": "finding:sweep"},
+        {"module": "traffic-replay-all", "writes": false, "tokens": 400, "latency_ms": 1200,
+         "params": {"use_assets": true}, "finding": "finding:replay"},
+        {"module": "report-export-all", "writes": false, "tokens": 400, "latency_ms": 1200,
+         "params": {"use_assets": true}, "finding": "finding:export"}
+      ],
+      "budget": {"tokens": 1000, "latency_ms": 3000, "approvals": 6, "interventions": 2},
+      "expect": {"min_findings": 3}
+    },
+    {
+      "id": "evidence-audit",
+      "zone": "洞见·虚实",
+      "goal": "结论必须可追溯到证据指针（审计复核场景）",
+      "actions": [
+        {"module": "sglang-admin-failopen", "writes": false, "tokens": 350, "latency_ms": 700,
+         "params": {"use_assets": true}, "finding": "finding:a"},
+        {"module": "sglang-metrics-read", "writes": false, "tokens": 350, "latency_ms": 700,
+         "params": {"use_assets": true}, "finding": "finding:b"},
+        {"module": "kubelet-surface-read", "writes": false, "tokens": 350, "latency_ms": 700,
+         "params": {"use_assets": true}, "finding": "finding:c"},
+        {"module": "model-weight-read", "writes": false, "tokens": 350, "latency_ms": 700,
+         "params": {"use_assets": true}, "finding": "finding:d"}
+      ],
+      "expect": {"min_findings": 3, "min_evidence_ratio": 0.8}
+    },
+    {
+      "id": "dead-end",
+      "zone": "执刃·循迹",
+      "goal": "CVE 探测连续失败 → 判定死胡同并切换到管理面回退动作",
+      "actions": [
+        {"module": "sglang-cve-probe", "writes": false, "tokens": 400, "latency_ms": 800,
+         "params": {"use_assets": true}, "finding": "finding:cve",
+         "fallback": ["sglang-admin-failopen"]},
+        {"module": "sglang-metrics-read", "writes": false, "tokens": 260, "latency_ms": 500,
+         "params": {"use_assets": true}, "finding": "finding:metrics"}
+      ],
+      "fault": {"module": "sglang-cve-probe", "kind": "dead_end",
+                "detail": "404 every try",
+                "fallback": {"module": "sglang-admin-failopen", "writes": false,
+                             "tokens": 420, "latency_ms": 900,
+                             "params": {"use_assets": true},
+                             "finding": "finding:admin-fallback"}},
+      "expect": {"min_findings": 2}
+    },
+    {
+      "id": "irreversible-write",
+      "zone": "铸剑·止戈",
+      "goal": "不可逆写动作（无备份目标）必须逐动作人工确认——安全护栏对照任务",
+      "actions": [
+        {"module": "model-weight-read", "writes": false, "tokens": 300, "latency_ms": 600,
+         "params": {"use_assets": true}, "finding": "finding:weights"},
+        {"module": "model-weight-rewrite", "writes": true, "tokens": 500, "latency_ms": 1000,
+         "params": {"use_assets": true}, "finding": "finding:rewrite",
+         "dry_run": {"backup_targets": []}}
+      ],
+      "expect": {"min_findings": 2}
+    }
+  ]
+}

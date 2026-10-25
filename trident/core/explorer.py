@@ -26,7 +26,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
-from . import jsonio
+from . import agent_policy, cost, jsonio, observation
 from .blackboard import Blackboard
 from .chains import dry_run as chain_dry_run
 from .chains import evaluate_preconditions, load_chains
@@ -40,6 +40,15 @@ QUEUE_RELPATH = "explorer/queue.json"
 MAX_ACTIONS_DEFAULT = 5
 MAX_WORKERS = 8
 _LLM_TIMEOUT = 20
+POLICY_ENV = "TRIDENT_AGENT_POLICY"
+
+
+def policy_enabled(explicit: bool | None = None) -> bool:
+    """第三节改进开关：默认 ON；``TRIDENT_AGENT_POLICY=off`` 精确复现 HEAD。"""
+    if explicit is not None:
+        return bool(explicit)
+    return os.environ.get(POLICY_ENV, "on").strip().lower() not in (
+        "off", "0", "false", "no")
 
 
 class ExplorerError(ValueError):
@@ -162,8 +171,14 @@ class Explorer:
         cands.sort(key=lambda c: (c["writes"], not c["asset"]))
         return cands[: max_actions * 3], context
 
-    def propose(self, session, *, use_llm: bool | None = None, max_actions: int = MAX_ACTIONS_DEFAULT) -> dict:
-        """生成下一步序列提议（pending_approval）。绝不执行。"""
+    def propose(self, session, *, use_llm: bool | None = None,
+                max_actions: int = MAX_ACTIONS_DEFAULT,
+                policy: bool | None = None) -> dict:
+        """生成下一步序列提议（pending_approval）。绝不执行。
+
+        ``policy=False``（或 env ``TRIDENT_AGENT_POLICY=off``）精确复现 HEAD
+        的字段与行为，用于 lab/tencent-compare 的前后对照。
+        """
         candidates, context = self._candidates(max_actions=max_actions)
         if not candidates:
             raise ExplorerError("无可用候选（先 discover 资产或降低 ROE 级别限制）")
@@ -204,17 +219,80 @@ class Explorer:
                       "dry_run": self._action_dry_run(meta, c)}
             actions.append(action)
         pid = f"prop-{time.strftime('%Y%m%d-%H%M%S')}-{len(self._load_queue()) + 1:03d}"
+        extras: dict = {}
+        if policy_enabled(policy):
+            extras = self._policy_block(pid, actions, candidates)
+            if extras.get("_degraded_actions"):
+                actions = extras.pop("_degraded_actions")
         proposal = {"id": pid, "mode": mode, "created_by": session.name,
                     "created_at": time.time(), "status": "pending_approval",
                     "context": context, "actions": actions,
                     "approval": {"required": True, "approver_role": "lead", "status": "pending"},
                     "execution": {"trigger": "human", "performed": False}}
+        if extras:
+            proposal.update(extras)
+            proposal["approval"].update({"mode": extras["policy"]["approval_mode"],
+                                         "count": extras["policy"]["approval_count"]})
         if llm_note:
             proposal["llm_note"] = llm_note
         queue = self._load_queue()
         queue.append(proposal)
         self._save_queue(queue)
         return proposal
+
+    def _policy_block(self, pid: str, actions: list[dict], catalog: list[dict]) -> dict:
+        """只在提议路径附加策略/观察/成本；不执行、不写 actions/evidence。"""
+        budget = cost.Budget()
+        graded = cost.apply_budget(actions, budget=budget)
+        degraded_actions = None
+        if graded["degraded"]:
+            degraded_actions = [{**a, "seq": i}
+                                for i, a in enumerate(graded["actions"], 1)]
+            actions = degraded_actions
+        decided = agent_policy.decide(actions)
+        decomposition = agent_policy.decompose(actions, strategy="phase")
+        planned = {a["module"] for a in actions}
+        pool = [c for c in catalog if c.get("module") not in planned]
+        observations: list[dict] = []
+        for action in actions:
+            obs = observation.build(
+                action["seq"], action, status="proposed",
+                result_summary=f"dry-run：writes={action['writes']}；"
+                               f"asset={action.get('asset_key') or '-'}；{action['reason']}",
+                evidence=[{"kind": "plan", "ref": f"{pid}#{action['seq']}",
+                           "detail": "explorer 提议队列（未执行）"}],
+                candidates=observation.next_candidates(pool, observations, limit=2),
+                tokens=int(cost.estimate_tokens(action["module"] + action["reason"])))
+            observations.append(obs)
+            observation.append(self.store, obs)
+        estimate = cost.plan_cost(actions)
+        block = {
+            "policy": {
+                "engine": "trident.agent_policy",
+                "level": decided["level"],
+                "label": decided["label"],
+                "approval_mode": decided["approval_mode"],
+                "approval_count": decided["approval_count"],
+                "requires_human": decided["requires_human"],
+                "reason": decided["reason"],
+                "hard_boundary": "提议不执行；批准后仍逐模块走 runner 三闸门",
+            },
+            "decomposition": decomposition,
+            "observations": observations,
+            "cost": {
+                "estimate": estimate,
+                "tokens": estimate["tokens"],
+                "latency_ms": estimate["latency_ms"],
+                "budget": budget.status(),
+                "degraded": graded["degraded"],
+                "dropped": [d.get("module") for d in graded["dropped"]],
+                "reason": graded["reason"],
+                "pricing": "确定性估算（4 字符/token）；非真实账单",
+            },
+        }
+        if degraded_actions is not None:
+            block["_degraded_actions"] = degraded_actions
+        return block
 
     @staticmethod
     def _action_dry_run(meta, cand: dict) -> dict:

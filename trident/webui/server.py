@@ -21,7 +21,7 @@ from urllib.parse import parse_qs, urlparse
 from ..core.evidence import EvidenceStore
 from ..core.roe import roe_status
 from ..core.users import UserStore
-from . import api_ext
+from . import api_ext, api_section3
 
 _STATIC = Path(__file__).parent / "static"
 
@@ -497,6 +497,8 @@ class _Handler(BaseHTTPRequestHandler):
             return self._json(200, {"workspace": ws, "pack": str(pack), "ok": True,
                                     "rules": len(doc.get("rules") or []),
                                     "chains": len(doc.get("chains") or {})})
+        if api_section3.route(self, "GET", path, query, None):
+            return
         if api_ext.route(self, "GET", path, query, None):
             return
         return self._json(404, {"error": "not found"})
