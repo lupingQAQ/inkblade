@@ -1,0 +1,60 @@
+kind: SigmaRule
+title: pods/exec 进入特权容器
+id: 877188be-d8a8-0de5-eca2-008d89ad26f2
+status: stable
+description: exec 进入特权或 hostPath 容器，读取 SA token、宿主机文件系统或直接 nsenter 到宿主命名空间。
+references:
+  - "Kubernetes RBAC 文档 https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+  - "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
+  - "Peirates Kubernetes 提权 https://github.com/inguardians/peirates"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: rbac-pods-exec
+    trident.io/module: overprivileged-sa-escalation
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - pods/exec
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.rbac
+  - attack.t1610
+  - attack.t1611
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: rbac-pods-exec
+  trident-module: overprivileged-sa-escalation
+  trident-detection-point: K8s audit：create pods/exec
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+        objectRef.resource:
+          - pods/exec
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: pods/exec

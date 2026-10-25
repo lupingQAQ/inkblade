@@ -1,0 +1,20 @@
+{
+  "key": "apiservice-hijack",
+  "name": {
+    "zh": "APIService 聚合劫持",
+    "en": "APIService aggregation hijack"
+  },
+  "series": "权限链",
+  "description": "检测 insecureSkipTLSVerify/无 service 的 APIService：可劫持 API group、窃取 bearer token。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "fixture": "提权快照 JSON 路径（缺省 lab/fixtures/privesc/<fixture>.json）",
+    "mode": "probe-only | backup-write（写类模块）",
+    "demo_target": "backup-write 演示写入目标文件（写类模块）",
+    "backup_targets": "写类模块备份目标（runner 备份闸门）"
+  },
+  "produces": "apiservice-hijack-findings",
+  "knowledge": "提权矩阵 rbac-apiservice-hijack；K8s aggregation 文档"
+}

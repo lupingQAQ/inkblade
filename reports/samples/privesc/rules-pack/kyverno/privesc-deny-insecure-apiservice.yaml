@@ -1,0 +1,28 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: trident-privesc-deny-insecure-apiservice
+  annotations:
+    trident.io/mode: monitor
+    trident.io/vector: rbac-apiservice-hijack
+    trident.io/tuning: 先 Audit 观察基线；确认无合法例外后切 Enforce
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: privesc-deny-insecure-apiservice
+      match:
+        anyResources:
+          - kinds:
+              - APIService
+            operations:
+              - CREATE
+              - UPDATE
+      validate:
+        message: 拒绝 insecureSkipTLSVerify 的 APIService / Deny insecure APIService
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.spec.insecureSkipTLSVerify || `false` }}"
+                operator: Equals
+                value: true

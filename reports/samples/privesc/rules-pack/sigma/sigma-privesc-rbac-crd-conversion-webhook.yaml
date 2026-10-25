@@ -1,0 +1,69 @@
+kind: SigmaRule
+title: CRD conversion webhook 拦截/伪造
+id: d0459585-e572-085c-dd9e-0313c55b65ac
+status: stable
+description: 接管 CRD 版本转换，读取/篡改所有 CR 对象（训练作业、凭据引用、RayCluster 配置），或返回恶意转换结果触发控制器 RCE。
+references:
+  - "Kubernetes CRD conversion https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definition-versioning/"
+  - "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+  - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: rbac-crd-conversion-webhook
+    trident.io/module: crd-conversion-webhook
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+      - update
+      - patch
+    objectRef.resource:
+      - customresourcedefinitions
+    requestObject.spec.conversion.strategy: Webhook
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.rbac
+  - attack.t1098
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: rbac-crd-conversion-webhook
+  trident-module: crd-conversion-webhook
+  trident-detection-point: "K8s audit：CRD 创建/更新且 conversion.strategy=Webhook"
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+          - update
+          - patch
+        objectRef.resource:
+          - customresourcedefinitions
+        requestObject.spec.conversion.strategy: Webhook
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: customresourcedefinitions
+      requestObject:
+        spec:
+          conversion:
+            strategy: Webhook

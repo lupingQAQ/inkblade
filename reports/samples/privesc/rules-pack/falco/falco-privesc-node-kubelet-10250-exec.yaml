@@ -1,0 +1,12 @@
+# trident.io/vector: node-kubelet-10250-exec
+# detection-point: Falco/eBPF：非 kube-apiserver 主体连接 kubelet 10250
+- rule: Trident Privesc node-kubelet-10250-exec
+  desc: kubelet 10250 /exec 无认证
+  condition: "evt.type in (open,openat,connect,execve) and dest_port=10250"
+  output: "Trident privilege-escalation primitive (vector=node-kubelet-10250-exec module=kubelet-10250-exec proc=%proc.name)"
+  priority: CRITICAL
+  tags:
+    - trident
+    - privesc
+    - node
+    - node-kubelet-10250-exec

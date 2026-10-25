@@ -1,0 +1,12 @@
+# trident.io/vector: node-kubelet-10250-run
+# detection-point: Falco：kubelet /run 端点访问
+- rule: Trident Privesc node-kubelet-10250-run
+  desc: kubelet 10250 /run 启动特权容器
+  condition: "evt.type in (open,openat,connect,execve) and dest_port=10250"
+  output: "Trident privilege-escalation primitive (vector=node-kubelet-10250-run module=kubelet-10250-exec proc=%proc.name)"
+  priority: CRITICAL
+  tags:
+    - trident
+    - privesc
+    - node
+    - node-kubelet-10250-run

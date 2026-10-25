@@ -1,0 +1,64 @@
+kind: SigmaRule
+title: initContainer 绕过准入检查
+id: 72083316-ddf5-e4e5-67c0-817479452687
+status: stable
+description: 把特权/hostPath 配置放进 initContainers，利用策略只遍历 spec.containers 的盲区完成逃逸或写入宿主。
+references:
+  - "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+  - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+  - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: workload-init-container-override
+    trident.io/module: privileged-workloads
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - pods
+    requestObject.initContainerPrivileged: true
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.workload
+  - attack.t1610
+  - attack.t1611
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: workload-init-container-override
+  trident-module: privileged-workloads
+  trident-detection-point: K8s audit：create pod 且 initContainers 含 privileged/hostPath
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+        objectRef.resource:
+          - pods
+        requestObject.initContainerPrivileged: true
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: pods
+      requestObject:
+        initContainerPrivileged: true

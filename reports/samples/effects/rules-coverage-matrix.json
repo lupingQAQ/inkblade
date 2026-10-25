@@ -1,7 +1,7 @@
 {
-  "mock_base": "http://127.0.0.1:<port>/",
+  "mock_base": "http://127.0.0.1:53818/",
   "mock_mode": "vulnerable",
-  "validated_at": "<timestamp>",
+  "validated_at": "2026-10-25T16:50:42Z",
   "chains": {
     "flat-network-admin-plane-weight-poison": {
       "title": {
@@ -89,7 +89,7 @@
         },
         {
           "kind": "fixture",
-          "count": 1
+          "count": 2
         }
       ],
       "rules": [
@@ -134,6 +134,14 @@
           ],
           "status": "检测",
           "evidence": "事件命中: sigma create job"
+        },
+        {
+          "rule": "sigma-pods-exec-lateral",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create pods"
         },
         {
           "rule": "falco-admin-plane-unauth-access",
@@ -203,10 +211,18 @@
       "probe": [
         {
           "kind": "fixture",
-          "count": 2
+          "count": 3
         }
       ],
       "rules": [
+        {
+          "rule": "sigma-weight-pvc-abnormal-write",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma patch persistentvolumeclaims"
+        },
         {
           "rule": "falco-pickle-deserialize-call",
           "engines": [
@@ -1114,15 +1130,273 @@
         }
       ],
       "state": "检测"
+    },
+    "fabric-silent-corruption-chain": {
+      "title": {
+        "zh": "fabric 控制面 → all-reduce/梯度静默污染 → 训练无效",
+        "en": "Fabric control plane → silent all-reduce/gradient corruption → wasted training"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "sharp-in-network-poison",
+          "method": "POST",
+          "path": "/sharp/sessions",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "sharp-in-network-poison",
+          "method": "POST",
+          "path": "/sharp/reduce",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "ib-subnet-manager-hijack",
+          "method": "POST",
+          "path": "/ib/sm/partition",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 2
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-fabric-sharp-unauth-join",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma join "
+        },
+        {
+          "rule": "falco-fabric-collective-poison",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco collective_reduce port=8000 parent=-"
+        },
+        {
+          "rule": "falco-fabric-control-plane-mutation",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco fabric_config_write port=8000 parent=-"
+        },
+        {
+          "rule": "suricata-fabric-control-uri",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:8000 uri=/sharp/sessions"
+        }
+      ],
+      "state": "检测"
+    },
+    "fabric-exhaustion-chain": {
+      "title": {
+        "zh": "fabric 资源耗尽（端口/I-O/配额/队列）→ 集群级 DoS",
+        "en": "Fabric resource exhaustion (ports/IO/quota/queue) → cluster-level DoS"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "nccl-port-exhaustion",
+          "method": "POST",
+          "path": "/nccl/bootstrap",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "gang-scheduler-abuse",
+          "method": "POST",
+          "path": "/sched/gang",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "checkpoint-io-storm",
+          "method": "POST",
+          "path": "/checkpoint/io",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "roce-pfc-storm",
+          "method": "POST",
+          "path": "/roce/pfc",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "fixture",
+          "count": 2
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-fabric-exhaustion-quota-miss",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma port_alloc "
+        },
+        {
+          "rule": "falco-fabric-control-plane-mutation",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco fabric_config_write port=8000 parent=-"
+        },
+        {
+          "rule": "suricata-fabric-control-uri",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.9:8000 uri=/nccl/bootstrap"
+        }
+      ],
+      "state": "检测"
+    },
+    "cluster-takeover-objective": {
+      "title": {
+        "zh": "内网入口 → 集群最高权限（夺权证明链）",
+        "en": "Intranet entry → highest cluster privilege (takeover proof chain)"
+      },
+      "category": "经典攻击链",
+      "probe": [
+        {
+          "kind": "fixture",
+          "count": 9
+        }
+      ],
+      "rules": [
+        {
+          "rule": "deny-privileged-pod",
+          "engines": [
+            "kyverno",
+            "gatekeeper"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "alert-rolebinding-creation",
+          "engines": [
+            "kyverno",
+            "gatekeeper"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "netpol-default-deny-partition",
+          "engines": [
+            "netpol"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "sigma-rolebinding-cluster-admin",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create clusterrolebinding"
+        },
+        {
+          "rule": "sigma-pods-exec-lateral",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create pods"
+        },
+        {
+          "rule": "sigma-cluster-takeover-entry",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma list services"
+        },
+        {
+          "rule": "sigma-cluster-token-harvest",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create serviceaccounts"
+        },
+        {
+          "rule": "sigma-cluster-rbac-takeover",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create clusterrolebindings"
+        },
+        {
+          "rule": "sigma-cluster-privileged-pod",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create pods"
+        },
+        {
+          "rule": "sigma-cluster-proof-actions",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma list secrets"
+        },
+        {
+          "rule": "sigma-cluster-cleanup-trail",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma delete clusterrolebindings"
+        },
+        {
+          "rule": "falco-node-root-marker-write",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco open_write port=- parent=-"
+        }
+      ],
+      "state": "拦截+检测"
     }
   },
   "summary": {
-    "chains": 23,
-    "covered": 23,
+    "chains": 26,
+    "covered": 26,
     "missed": 0,
-    "rules_evaluated": 68,
-    "rules_blocked": 18,
-    "rules_detected": 46,
+    "rules_evaluated": 89,
+    "rules_blocked": 21,
+    "rules_detected": 64,
     "rules_missed": 0
   },
   "ok": true,

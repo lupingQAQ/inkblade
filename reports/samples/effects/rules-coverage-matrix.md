@@ -1,15 +1,15 @@
 # Trident 紫队验证覆盖率矩阵（defense validation）
 
-- 时间：<timestamp>；靶场：http://127.0.0.1:<port>/（mode=vulnerable，仅 127.0.0.1）
-- 摘要：链 23 条，覆盖 23，漏过 0；规则评估 68 项（拦截 18 / 检测 46 / 漏过 0）
+- 时间：2026-10-25T16:50:42Z；靶场：http://127.0.0.1:53818/（mode=vulnerable，仅 127.0.0.1）
+- 摘要：链 26 条，覆盖 26，漏过 0；规则评估 89 项（拦截 21 / 检测 64 / 漏过 0）
 - 判定口径：合成事件使用探测规格声明的业务端口（mock 基座端口随机分配）；匹配器：内置简化 sigma/falco/suricata 匹配器（selection/event_type/any_of 语义子集）
 
 | 链 | 类别 | 探针重放 | 状态 |
 |---|---|---|---|
 | flat-network-admin-plane-weight-poison | 经典攻击链 | POST /pause → 200 复现；POST /pull_weights → 200 复现 | 拦截+检测 |
-| ray-dashboard-cluster-takeover | 经典攻击链 | POST /api/jobs/ → 200 复现；fixture×1 | 拦截+检测 |
+| ray-dashboard-cluster-takeover | 经典攻击链 | POST /api/jobs/ → 200 复现；fixture×2 | 拦截+检测 |
 | nccl-gradient-injection | 经典攻击链 | fixture×2 | 拦截+检测 |
-| shared-pvc-supply-chain-poison | 经典攻击链 | fixture×2 | 检测 |
+| shared-pvc-supply-chain-poison | 经典攻击链 | fixture×3 | 检测 |
 | ssrf-sa-token-cloud-metadata | 经典攻击链 | GET /mock-imds/azure/metadata/instance?api-version=2021-02-01 → 200 复现；fixture×1 | 拦截+检测 |
 | observability-pivot-precision-strike | 经典攻击链 | GET /__routes__ → 200 复现 | 拦截 |
 | pickle-channel-unauth-execution | 经典攻击链 | POST /create_engine → 200 复现；fixture×1 | 拦截+检测 |
@@ -29,6 +29,9 @@
 | gpu-tenant-residue-chain | 网络利用链 | POST /gpu/allocate → 200 复现；POST /gpu/release → 200 复现；GET /gpu/residue?device=gpu-b-0&tenant=tenant-b → 200 复现；GET /gpu/metrics → 200 复现；fixture×3 | 检测 |
 | cloud-cross-tenant-role-assume | 云侧权重桶链 | GET /cloud/identity?role=weight-reader → 200 复现；POST /cloud/identity/assume-role → 200 复现；GET /cloud/bucket/list?bucket=weights-b → 200 复现；fixture×1 | 检测 |
 | ai-gateway-key-exfil | AI 网关链 | GET /health → 200 复现；POST /v1/chat/completions → 200 复现；GET /config → 200 复现；GET /models → 200 复现；POST /key/generate → 200 复现 | 检测 |
+| fabric-silent-corruption-chain | 网络利用链 | POST /sharp/sessions → 200 复现；POST /sharp/reduce → 200 复现；POST /ib/sm/partition → 200 复现；fixture×2 | 检测 |
+| fabric-exhaustion-chain | 网络利用链 | POST /nccl/bootstrap → 200 复现；POST /sched/gang → 200 复现；POST /checkpoint/io → 200 复现；POST /roce/pfc → 200 复现；fixture×2 | 检测 |
+| cluster-takeover-objective | 经典攻击链 | fixture×9 | 拦截+检测 |
 
 ## 规则命中明细
 
@@ -45,6 +48,7 @@
 - [拦截] netpol-default-deny-partition（netpol）— 策略文件在包内齐备（默认 monitor，Enforce 后即拦截）
 - [检测] sigma-rolebinding-cluster-admin（sigma）— 事件命中: sigma create rolebinding
 - [检测] sigma-ray-job-submit（sigma）— 事件命中: sigma create job
+- [检测] sigma-pods-exec-lateral（sigma）— 事件命中: sigma create pods
 - [检测] falco-admin-plane-unauth-access（falco）— 事件命中: falco connect port=8265 parent=-
 
 ### nccl-gradient-injection（拦截+检测）
@@ -54,6 +58,7 @@
 - [检测] suricata-nccl-kv-ports（suricata）— 事件命中: suricata 10.42.0.9:29500 uri=-
 
 ### shared-pvc-supply-chain-poison（检测）
+- [检测] sigma-weight-pvc-abnormal-write（sigma）— 事件命中: sigma patch persistentvolumeclaims
 - [检测] falco-pickle-deserialize-call（falco）— 事件命中: falco deserialize port=- parent=-
 - [检测] falco-weight-file-abnormal-write（falco）— 事件命中: falco open_write port=- parent=-
 
@@ -145,6 +150,31 @@
 - [检测] sigma-gateway-default-master-key-use（sigma）— 事件命中: sigma authenticate 
 - [检测] falco-gateway-upstream-config-read（falco）— 事件命中: falco config_read port=- parent=-
 - [检测] suricata-ai-gateway-admin-uri（suricata）— 事件命中: suricata 10.42.0.9:4000 uri=/config
+
+### fabric-silent-corruption-chain（检测）
+- [检测] sigma-fabric-sharp-unauth-join（sigma）— 事件命中: sigma join 
+- [检测] falco-fabric-collective-poison（falco）— 事件命中: falco collective_reduce port=8000 parent=-
+- [检测] falco-fabric-control-plane-mutation（falco）— 事件命中: falco fabric_config_write port=8000 parent=-
+- [检测] suricata-fabric-control-uri（suricata）— 事件命中: suricata 10.42.0.9:8000 uri=/sharp/sessions
+
+### fabric-exhaustion-chain（检测）
+- [检测] sigma-fabric-exhaustion-quota-miss（sigma）— 事件命中: sigma port_alloc 
+- [检测] falco-fabric-control-plane-mutation（falco）— 事件命中: falco fabric_config_write port=8000 parent=-
+- [检测] suricata-fabric-control-uri（suricata）— 事件命中: suricata 10.42.0.9:8000 uri=/nccl/bootstrap
+
+### cluster-takeover-objective（拦截+检测）
+- [拦截] deny-privileged-pod（kyverno/gatekeeper）— 策略文件在包内齐备（默认 monitor，Enforce 后即拦截）
+- [拦截] alert-rolebinding-creation（kyverno/gatekeeper）— 策略文件在包内齐备（默认 monitor，Enforce 后即拦截）
+- [拦截] netpol-default-deny-partition（netpol）— 策略文件在包内齐备（默认 monitor，Enforce 后即拦截）
+- [检测] sigma-rolebinding-cluster-admin（sigma）— 事件命中: sigma create clusterrolebinding
+- [检测] sigma-pods-exec-lateral（sigma）— 事件命中: sigma create pods
+- [检测] sigma-cluster-takeover-entry（sigma）— 事件命中: sigma list services
+- [检测] sigma-cluster-token-harvest（sigma）— 事件命中: sigma create serviceaccounts
+- [检测] sigma-cluster-rbac-takeover（sigma）— 事件命中: sigma create clusterrolebindings
+- [检测] sigma-cluster-privileged-pod（sigma）— 事件命中: sigma create pods
+- [检测] sigma-cluster-proof-actions（sigma）— 事件命中: sigma list secrets
+- [检测] sigma-cluster-cleanup-trail（sigma）— 事件命中: sigma delete clusterrolebindings
+- [检测] falco-node-root-marker-write（falco）— 事件命中: falco open_write port=- parent=-
 
 ## 知识闭环
 

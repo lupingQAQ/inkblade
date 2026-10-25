@@ -1,0 +1,20 @@
+{
+  "key": "etcd-direct-access",
+  "name": {
+    "zh": "etcd 直连访问",
+    "en": "Direct etcd access"
+  },
+  "series": "权限链",
+  "description": "检测 etcd 无 TLS/无客户端证书认证：可读取全部 Secret/SA token 或写入 RBAC 对象。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "fixture": "提权快照 JSON 路径（缺省 lab/fixtures/privesc/<fixture>.json）",
+    "mode": "probe-only | backup-write（写类模块）",
+    "demo_target": "backup-write 演示写入目标文件（写类模块）",
+    "backup_targets": "写类模块备份目标（runner 备份闸门）"
+  },
+  "produces": "etcd-direct-access-findings",
+  "knowledge": "提权矩阵 node-etcd-direct；K8s etcd 运维；kube-hunter"
+}

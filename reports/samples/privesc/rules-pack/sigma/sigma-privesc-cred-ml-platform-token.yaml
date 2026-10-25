@@ -1,0 +1,67 @@
+kind: SigmaRule
+title: "HF/W&B/MLflow token 窃取与模型投毒"
+id: 93c4fefa-9149-2fde-283e-f622c642d948
+status: stable
+description: 窃取模型平台 token，向权重/数据集/MLflow artifact 写入恶意内容；推理服务拉取后执行或输出被操纵。
+references:
+  - "Hugging Face token 安全 https://huggingface.co/docs/hub/security-tokens"
+  - "Weights & Biases 服务账号/密钥 https://docs.wandb.ai/guides/technical-faq"
+  - "MLflow 认证/安全 https://mlflow.org/docs/latest/auth/index.html"
+  - "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: cred-ml-platform-token
+    trident.io/module: supply-chain-credential-theft
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - get
+      - list
+    objectRef.resource:
+      - secrets
+    requestObject.secretLabel: ml-platform-token
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.credential
+  - attack.t1552
+  - attack.t1195
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: cred-ml-platform-token
+  trident-module: supply-chain-credential-theft
+  trident-detection-point: K8s audit：读取标注 ml-platform-token 的 Secret；平台侧审计 token 写入
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - get
+          - list
+        objectRef.resource:
+          - secrets
+        requestObject.secretLabel: ml-platform-token
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: get
+      objectRef:
+        resource: secrets
+      requestObject:
+        secretLabel: ml-platform-token

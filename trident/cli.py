@@ -57,6 +57,37 @@ def _session(ws: str, actor: str, role: str):
     return Session(None, actor, role, [ws], "cli-local")
 
 
+def _inventory_for_cli(home: Path, explicit: str | None, *, required: bool = False):
+    """读取 --inventory / 自动发现 inventory.json；显式路径错误必须报错，不静默降级。"""
+    from .assess.inventory import InventoryError, default_inventory_path, load_inventory
+
+    p = Path(explicit) if explicit else default_inventory_path(home)
+    if p is None:
+        if required:
+            raise InventoryError(
+                "缺少环境清单：先运行 trident assess inventory --kubeconfig <路径> "
+                "或 --snapshot <快照>，再传 --inventory。"
+            )
+        return None, None
+    return load_inventory(p), p
+
+
+def _assessment_for_cli(home: Path, inventory_arg: str | None = None,
+                        catalog_arg: str | None = None, *, required: bool = False):
+    """链/模块执行前的适用性评估入口（无清单时返回 None，不阻断旧路径）。"""
+    from .core.applicability import assess_cves
+
+    inv, path = _inventory_for_cli(home, inventory_arg, required=required)
+    if inv is None:
+        return None, None
+    return assess_cves(inv, catalog_path=catalog_arg), path
+
+
+def _write_text(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+
+
 def _print_json(data) -> None:
     print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
 
@@ -103,6 +134,9 @@ def _main(argv=None) -> int:
     runp.add_argument("--role", choices=list(ROLES), default="tester")
     runp.add_argument("--run", default=None, help="复用既有 run（缺省新建）")
     runp.add_argument("--modules-dir", default=None)
+    runp.add_argument("--inventory", default=None,
+                      help="环境清单；缺省自动发现 <home>/inventory.json")
+    runp.add_argument("--catalog", default=None, help="CVE 目录路径")
 
     exq = sub.add_parser("execute", help="执行攻击链（--dry-run 只出计划；拒绝退出码 91）")
     exq.add_argument("--chain", required=True)
@@ -115,6 +149,63 @@ def _main(argv=None) -> int:
     exq.add_argument("--workers", type=int, default=4)
     exq.add_argument("--chains-dir", default=None)
     exq.add_argument("--modules-dir", default=None)
+    exq.add_argument("--inventory", default=None,
+                     help="环境清单 inventory.json；缺省自动发现 <home>/inventory.json")
+    exq.add_argument("--catalog", default=None, help="CVE 目录路径（缺省 trident/core/cve-catalog.json）")
+
+    obj = sub.add_parser("objective", help="目标链编排：三闸门/逐阶段确认/阶段超时/清理校验")
+    objsub = obj.add_subparsers(dest="objective_cmd", required=True)
+    oc = objsub.add_parser("cluster-takeover", help="内网入口→集群最高权限夺权证明（真实 K8s 或 fake-kubectl）")
+    oc.add_argument("--workspace", default="local-lab")
+    oc.add_argument("--actor", default="cli")
+    oc.add_argument("--role", choices=list(ROLES), default="lead")
+    oc.add_argument("--proof-marker", required=True)
+    oc.add_argument("--namespace", default=None, help="目标命名空间（默认 trident-killchain）")
+    oc.add_argument("--max-stage", type=int, default=7, help="只执行到第 N 阶段；随后强制清理")
+    oc.add_argument("--stage-timeout", type=float, default=None, help="覆盖每阶段超时秒数")
+    oc.add_argument("--auto-approve", action="store_true",
+                    help="跳过逐阶段确认（仅限 level=全影响演示 且 role=lead）")
+    oc.add_argument("--dry-run", action="store_true")
+    oc.add_argument("--backend", choices=["auto", "kubectl", "fake"], default="auto",
+                    help="auto=真 kubectl 不可用时降级 fake-kubectl 夹具")
+    oc.add_argument("--kubectl", default="kubectl")
+    oc.add_argument("--kubeconfig", default=None)
+    oc.add_argument("--entry-url", default=None, help="入口 HTTP 探测 URL（默认由 NodePort 推导）")
+    oc.add_argument("--pod-image", default="alpine:3.21")
+    oc.add_argument("--cleanup-fixture", action="store_true",
+                    help="同时删除实验室脆弱 operator 夹具（仅实验室使用）")
+    oc.add_argument("--out", default=None, help="额外写出 proof.json 的路径")
+    oc.add_argument("--report", default=None, help="写出双语 PROOF 报告 Markdown")
+    oc.add_argument("--inventory", default=None,
+                    help="环境清单 inventory.json（执行前 CVE 适用性依据）")
+    oc.add_argument("--catalog", default=None, help="CVE 目录路径")
+
+    ass = sub.add_parser("assess", help="CVE 适用性：inventory|cves|explain（版本×前置×实测）")
+    asub = ass.add_subparsers(dest="acmd", required=True)
+    ai = asub.add_parser("inventory", help="只读采集环境清单（kubectl get / 或 --snapshot）")
+    ai.add_argument("--kubeconfig", default=None)
+    ai.add_argument("--context", default=None)
+    ai.add_argument("--snapshot", action="append", default=[],
+                    help="离线快照 JSON（inventory/K8s 对象/pilot snapshot）")
+    ai.add_argument("--probes", default=None, help="主动探测结果 JSON（IMDS/网络/认证等）")
+    ai.add_argument("--kubectl", default="kubectl")
+    ai.add_argument("--timeout", type=int, default=30, help="单条 kubectl 超时秒")
+    ai.add_argument("--skip-kubelet-config", action="store_true",
+                    help="跳过 nodes/proxy/configz（受限 RBAC 更快）")
+    ai.add_argument("--out", default=None)
+    ai.add_argument("--json", action="store_true", help="stdout 输出完整 JSON")
+    ac = asub.add_parser("cves", help="四态判定：applicable|blocked|not-applicable|unknown")
+    ac.add_argument("--inventory", default=None)
+    ac.add_argument("--catalog", default=None)
+    ac.add_argument("--probes", default=None)
+    ac.add_argument("--out", default=None)
+    ac.add_argument("--format", choices=["json", "md", "both"], default="json")
+    ac.add_argument("--json", action="store_true", help="stdout 输出完整 JSON")
+    ae = asub.add_parser("explain", help="人话解释单个 CVE：为什么/缺什么/怎么补采")
+    ae.add_argument("cve")
+    ae.add_argument("--inventory", default=None)
+    ae.add_argument("--catalog", default=None)
+    ae.add_argument("--json", action="store_true")
 
     rb = sub.add_parser("rollback", help="按步骤回滚（明细回执；failed>0 退出码 3）")
     rb.add_argument("--run", required=True)
@@ -135,6 +226,9 @@ def _main(argv=None) -> int:
     rp.add_argument("--disclosed", default=None, help="已披露标题 JSON 数组或 @file")
     rp.add_argument("--workspace", default="local-lab")
     rp.add_argument("--out", default=None)
+    rp.add_argument("--inventory", default=None,
+                    help="漏洞适用性矩阵使用的环境清单；缺省自动发现")
+    rp.add_argument("--catalog", default=None, help="CVE 目录路径")
 
     rl = sub.add_parser("rules", help="规则包 generate|validate（紫队覆盖率矩阵）")
     rlsub = rl.add_subparsers(dest="rcmd", required=True)
@@ -146,6 +240,37 @@ def _main(argv=None) -> int:
     rlv = rlsub.add_parser("validate")
     rlv.add_argument("--pack", default=None)
     rlv.add_argument("--mock-base", default=None)
+
+    pr = sub.add_parser("privesc", help="提权矩阵/路径/检测：matrix|paths|infer|detections|report")
+    prsub = pr.add_subparsers(dest="pcmd", required=True)
+    prm = prsub.add_parser("matrix")
+    prm.add_argument("--json", action="store_true")
+    prm.add_argument("--out", default=None, help="写出 Markdown（如 docs/PRIVESC-MATRIX.md）")
+    prp = prsub.add_parser("paths")
+    prp.add_argument("--from", dest="from_principal", required=True)
+    prp.add_argument("--to", default="cluster-admin")
+    prp.add_argument("--limit", type=int, default=5)
+    prp.add_argument("--mode", choices=["weight", "hops"], default="weight")
+    prp.add_argument("--snapshot", default=None, help="集群快照 JSON")
+    prp.add_argument("--run", default=None, help="从 evidence run 的 artifacts/归档读取快照")
+    prp.add_argument("--workspace", default="local-lab")
+    prp.add_argument("--json", action="store_true")
+    prp.add_argument("--mermaid", action="store_true")
+    pri = prsub.add_parser("infer")
+    pri.add_argument("--snapshot", default=None)
+    pri.add_argument("--run", default=None)
+    pri.add_argument("--workspace", default="local-lab")
+    pri.add_argument("--json", action="store_true")
+    prd = prsub.add_parser("detections")
+    prd.add_argument("--out", default=None)
+    prr = prsub.add_parser("report")
+    prr.add_argument("--from", dest="from_principal", required=True)
+    prr.add_argument("--to", default="cluster-admin")
+    prr.add_argument("--limit", type=int, default=5)
+    prr.add_argument("--snapshot", default=None)
+    prr.add_argument("--run", default=None)
+    prr.add_argument("--workspace", default="local-lab")
+    prr.add_argument("--out", default=None)
 
     u = sub.add_parser("user", help="用户管理")
     usub = u.add_subparsers(dest="ucmd", required=True)
@@ -230,6 +355,9 @@ def _main(argv=None) -> int:
     plan.add_argument("--modules-dir", default=None)
     plan.add_argument("--record", action="store_true",
                       help="把推荐理由/选择写入 decisions 表（须有 run；只写决策不执行）")
+    plan.add_argument("--inventory", default=None,
+                      help="环境清单；缺省自动发现 <home>/inventory.json")
+    plan.add_argument("--catalog", default=None, help="CVE 目录路径")
 
     sbom = sub.add_parser("sbom", help="导出 CycloneDX ML-BOM 风格 AI SBOM")
     sbom.add_argument("--models", required=True, help="模型清单 JSON（name/version/source/license/path|sha256）")
@@ -322,6 +450,8 @@ def _main(argv=None) -> int:
     mine = sub.add_parser("mine", help="挖掘流水线闭环：模板验证→最新版本差异→登记册候选（不自动入库）")
     mine.add_argument("--out", default=None, help="输出目录（缺省 reports/samples/mining）")
     mine.add_argument("--targets", default=None, help="逗号分隔目标（vllm,sglang,kuberay,hami,litellm）")
+    mine.add_argument("--trainstack", action="store_true",
+                      help="训练栈五目标（megatron,deepspeed,llamafactory,msswift,trl），独立基线")
 
     llm = sub.add_parser("llm-pool", help="LLM 多模型池（默认关闭）：status|add|remove|enable|reset|health")
     llm.add_argument("action", choices=["status", "add", "remove", "enable", "disable", "reset",
@@ -661,9 +791,15 @@ def _main(argv=None) -> int:
         from .agent_planner import plan_workspace, render_plan_md
 
         try:
+            inventory, _ = _inventory_for_cli(home, args.inventory)
+        except (OSError, ValueError) as exc:
+            print(f"trident plan: 环境清单读取失败：{exc}", file=sys.stderr)
+            return 2
+        try:
             data = plan_workspace(
                 _store(home, args.workspace), run=args.run,
                 chains_dir=args.chains_dir, modules_dir=args.modules_dir,
+                inventory=inventory, catalog_path=args.catalog,
             )
             if args.record:
                 from .core.decisions import record_plan
@@ -897,12 +1033,16 @@ def _main(argv=None) -> int:
         return 0
 
     if args.cmd == "mine":
-        from .mining import run_pipeline
+        from .mining import TRAINSTACK_BASELINE_PATH, TRAINSTACK_TARGETS, run_pipeline
 
         out = Path(args.out) if args.out else home / "reports" / "samples" / "mining"
         targets = [t for t in (args.targets or "").split(",") if t] or None
         try:
-            report = run_pipeline(out, targets=targets)
+            if args.trainstack:
+                report = run_pipeline(out, targets=targets or list(TRAINSTACK_TARGETS),
+                                      baseline_path=TRAINSTACK_BASELINE_PATH)
+            else:
+                report = run_pipeline(out, targets=targets)
         except ValueError as exc:
             print(f"trident mine: {exc}", file=sys.stderr)
             return 2
@@ -1195,6 +1335,94 @@ def _main(argv=None) -> int:
             print(render_md(report))
         return 0
 
+    if args.cmd == "assess":
+        from .assess.inventory import (
+            InventoryError, collect_inventory, inventory_summary, load_inventory,
+            load_probes, merge_probes, normalize_inventory, save_inventory,
+        )
+        from .core.applicability import (
+            ApplicabilityError, assess_cves, explain as explain_cve, render_matrix,
+        )
+
+        try:
+            probes = load_probes(args.probes) if getattr(args, "probes", None) else {}
+            if args.acmd == "inventory":
+                if args.snapshot:
+                    if len(args.snapshot) > 1:
+                        raise InventoryError("assess inventory 一次只接受一个 --snapshot")
+                    inv = load_inventory(args.snapshot[0])
+                    if probes:
+                        inv = merge_probes(inv, probes, source=args.snapshot[0])
+                else:
+                    inv = collect_inventory(
+                        kubeconfig=args.kubeconfig, context=args.context,
+                        kubectl=args.kubectl, timeout=args.timeout,
+                        probes=probes,
+                        collect_kubelet_config=not args.skip_kubelet_config,
+                    )
+                if args.out:
+                    out = save_inventory(inv, args.out)
+                    print(json.dumps({"inventory": str(out),
+                                      **inventory_summary(inv)},
+                                     ensure_ascii=False, indent=2))
+                elif args.json:
+                    _print_json(inv)
+                else:
+                    _print_json(inventory_summary(inv))
+                return 0
+
+            if args.acmd == "cves":
+                inv, inv_path = _inventory_for_cli(home, args.inventory, required=True)
+                if probes:
+                    inv = merge_probes(inv, probes, source=str(inv_path))
+                assessment = assess_cves(inv, catalog_path=args.catalog)
+                text_json = json.dumps(assessment, ensure_ascii=False, indent=2)
+                text_md = render_matrix(assessment)
+                if args.out:
+                    out = Path(args.out)
+                    if args.format == "both":
+                        json_path = out.with_suffix(".json") if out.suffix else out / "cve-applicability.json"
+                        md_path = out.with_suffix(".md") if out.suffix else out / "cve-applicability.md"
+                        _write_text(json_path, text_json)
+                        _write_text(md_path, text_md)
+                        print(json.dumps({"json": str(json_path), "md": str(md_path),
+                                          "summary": assessment["summary"]},
+                                         ensure_ascii=False, indent=2))
+                    elif args.format == "md":
+                        _write_text(out, text_md)
+                        print(json.dumps({"md": str(out),
+                                          "summary": assessment["summary"]},
+                                         ensure_ascii=False, indent=2))
+                    else:
+                        _write_text(out, text_json)
+                        print(json.dumps({"json": str(out),
+                                          "summary": assessment["summary"]},
+                                         ensure_ascii=False, indent=2))
+                elif args.format == "md":
+                    print(text_md)
+                else:
+                    print(text_json)
+                return 0
+
+            # explain
+            inv, _ = _inventory_for_cli(home, args.inventory)
+            if inv is None:
+                inv = normalize_inventory({})
+            assessment = assess_cves(inv, catalog_path=args.catalog)
+            if args.json:
+                entry = next((e for e in assessment.get("entries") or []
+                              if e["cve"].upper() == args.cve.upper()), None)
+                if entry is None:
+                    raise ApplicabilityError(f"目录中没有 {args.cve}")
+                _print_json({"inventory": assessment.get("inventory"),
+                             "catalog": assessment.get("catalog"), "entry": entry})
+            else:
+                print(explain_cve(assessment, args.cve))
+            return 0
+        except (InventoryError, ApplicabilityError, OSError, ValueError) as exc:
+            print(f"trident assess: {exc}", file=sys.stderr)
+            return 2
+
     # ---- run / execute / rollback / abort / report / rules --------------------
     if args.cmd == "run":
         from .core.roe import ExecutionLocked
@@ -1209,6 +1437,22 @@ def _main(argv=None) -> int:
             print(f"trident run: --params 解析失败：{exc}", file=sys.stderr)
             return 2
         mods_dir = _modules_dir(home, args.modules_dir)
+        try:
+            assessment, _ = _assessment_for_cli(home, args.inventory, args.catalog)
+        except (OSError, ValueError) as exc:
+            print(f"trident run: CVE 适用性评估失败：{exc}", file=sys.stderr)
+            return 2
+        if assessment is not None:
+            from .core.applicability import gate_module
+
+            gate = gate_module(assessment, args.module)
+            if gate.get("gated") and not gate.get("allow"):
+                _print_json({"module": args.module, "status": "blocked",
+                             "exit_code": 91, "applicability": gate})
+                print(f"trident run: {args.module} 被 CVE 适用性闸门拒绝"
+                      f"（{gate.get('state')}）：{'；'.join(gate.get('basis') or [])}",
+                      file=sys.stderr)
+                return 91
         try:
             run = store.open_run(args.run) if args.run else None
         except KeyError as exc:
@@ -1249,19 +1493,95 @@ def _main(argv=None) -> int:
             print(f"trident execute: --findings 解析失败：{exc}", file=sys.stderr)
             return 2
         chain = chains[args.chain]
+        try:
+            assessment, _ = _assessment_for_cli(home, args.inventory, args.catalog)
+        except (OSError, ValueError) as exc:
+            print(f"trident execute: CVE 适用性评估失败：{exc}", file=sys.stderr)
+            return 2
         if args.dry_run:
-            _print_json(dry_run(chain, findings, mods_dir))
+            _print_json(dry_run(chain, findings, mods_dir, applicability=assessment))
             return 0
         store = _store(home, args.workspace)
         session = _session(args.workspace, args.actor, args.role)
         try:
             result = execute(chain, store, session, mods_dir, findings=findings,
-                             workers=args.workers, strict=args.strict)
+                             workers=args.workers, strict=args.strict,
+                             applicability=assessment)
         except (PreconditionError, ExecutionLocked, BackupGateRefused, ZerodayLocked,
                 PermissionError) as exc:
             _human_error(exc, context={"workspace": args.workspace, "action": "trident execute"})
             return 91
         _print_json(result)
+        return 0 if result.get("ok") else 3
+
+    if args.cmd == "objective":
+        try:
+            from .core.objective import (
+                FakeKubectlBackend, GateRefused, KubectlBackend, load_objective,
+                run_objective, write_report,
+            )
+        except ImportError:
+            print("trident objective: kill-chain objective 模块在并行任务中（当前版本提供 "
+                  "`trident privesc` 与 core.objective.plan_objective 提权选路）", file=sys.stderr)
+            return 2
+
+        chains_dir = home / "chains"
+        if not chains_dir.exists():
+            chains_dir = Path(__file__).resolve().parent / "chains"
+        try:
+            chain = load_objective(chains_dir)
+        except (OSError, ValueError) as exc:
+            print(f"trident objective: 链定义非法：{exc}", file=sys.stderr)
+            return 2
+        store = _store(home, args.workspace)
+        session = _session(args.workspace, args.actor, args.role)
+        backend = None
+        if args.backend == "fake":
+            backend = FakeKubectlBackend()
+        elif args.dry_run:
+            backend = KubectlBackend(args.kubectl, args.kubeconfig) if args.backend == "kubectl" \
+                else FakeKubectlBackend()
+        else:
+            candidate = KubectlBackend(args.kubectl, args.kubeconfig)
+            if candidate.readyz().get("ok"):
+                backend = candidate
+            elif args.backend == "kubectl":
+                print("trident objective: kubectl 后端不可用（--backend kubectl 显式要求）",
+                      file=sys.stderr)
+                return 91
+            else:
+                backend = FakeKubectlBackend()
+        try:
+            assessment, _ = _assessment_for_cli(home, args.inventory, args.catalog)
+        except (OSError, ValueError) as exc:
+            print(f"trident objective: CVE 适用性评估失败：{exc}", file=sys.stderr)
+            return 2
+        try:
+            result = run_objective(
+                store, session, chain, backend,
+                proof_marker=args.proof_marker, namespace=args.namespace,
+                auto_approve=args.auto_approve, max_stage=args.max_stage,
+                stage_timeout=args.stage_timeout,
+                cleanup_fixture=args.cleanup_fixture,
+                entry_url=args.entry_url, pod_image=args.pod_image,
+                out_dir=args.out, dry_run=args.dry_run,
+            )
+        except GateRefused as exc:
+            _human_error(exc, context={"workspace": args.workspace,
+                                       "action": "trident objective"})
+            return 91
+        except (ValueError, OSError) as exc:
+            print(f"trident objective: {exc}", file=sys.stderr)
+            return 2
+        if assessment is not None:
+            from .core.applicability import gate_chain
+
+            result["applicability"] = gate_chain(chain, assessment)
+        if args.report and not result.get("dry_run"):
+            write_report(result["proof"], args.report)
+        _print_json(result)
+        if result.get("dry_run"):
+            return 0
         return 0 if result.get("ok") else 3
 
     if args.cmd == "rollback":
@@ -1296,12 +1616,18 @@ def _main(argv=None) -> int:
             print(f"trident report: --disclosed 解析失败：{exc}", file=sys.stderr)
             return 2
         try:
+            inventory, _ = _inventory_for_cli(home, args.inventory)
+        except (OSError, ValueError) as exc:
+            print(f"trident report: 环境清单读取失败：{exc}", file=sys.stderr)
+            return 2
+        try:
             if args.kind == "remediation":
                 text = render_remediation(store, args.run, lang=args.lang,
                                           disclosed=disclosed, redact_zeroday=args.redact)
             else:
                 text = render_pentest(store, args.run, lang=args.lang,
-                                      disclosed=disclosed, redact_zeroday=args.redact)
+                                      disclosed=disclosed, redact_zeroday=args.redact,
+                                      inventory=inventory, catalog_path=args.catalog)
         except KeyError as exc:
             _human_error(exc, context={"workspace": args.workspace})
             return 2
@@ -1310,6 +1636,113 @@ def _main(argv=None) -> int:
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(text, encoding="utf-8")
             print(f"report: {out}（kind={args.kind}, lang={args.lang}）")
+        else:
+            print(text)
+        return 0
+
+    if args.cmd == "privesc":
+        from .core.privesc import (
+            PrivescError,
+            PrivescGraph,
+            UnknownPrincipal,
+            UnknownTarget,
+            explain,
+            infer_principals,
+            load_matrix,
+            load_snapshot,
+            load_snapshot_from_evidence,
+            matrix_summary,
+            render_matrix_md,
+            render_path_mermaid,
+            render_privesc_section,
+            validate_matrix,
+        )
+
+        matrix = load_matrix()
+        if args.pcmd == "matrix":
+            if args.out:
+                out = Path(args.out)
+                out.parent.mkdir(parents=True, exist_ok=True)
+                out.write_text(render_matrix_md(matrix), encoding="utf-8")
+                print(f"privesc matrix: {out}（{len(matrix['vectors'])} 向量）")
+                return 0
+            if args.json:
+                _print_json({"summary": matrix_summary(matrix), "vectors": matrix["vectors"]})
+                return 0
+            print(render_matrix_md(matrix))
+            return 0
+        if args.pcmd == "detections":
+            from .rules.privesc import write_rule_pack
+
+            out = Path(args.out) if args.out else home / "reports" / "rules-pack" / "privesc"
+            summary = write_rule_pack(matrix, out)
+            _print_json({"out": str(out), **summary})
+            return 0 if summary.get("ok") else 3
+        if args.pcmd == "infer":
+            try:
+                if args.run:
+                    store = _store(home, args.workspace)
+                    snapshot = load_snapshot_from_evidence(store, args.run)
+                else:
+                    snapshot = load_snapshot(args.snapshot) if args.snapshot else {}
+            except (OSError, ValueError, KeyError, PrivescError) as exc:
+                _human_error(exc, context={"action": "trident privesc infer"})
+                return 2
+            principals = infer_principals(snapshot)
+            if args.json:
+                _print_json({"principals": [p.to_dict() for p in principals],
+                             "assets": len(snapshot.get("assets", []) or [])})
+            else:
+                for p in principals:
+                    admin = " [cluster-admin]" if p.cluster_admin else ""
+                    print(f"{p.id}{admin}  caps={', '.join(p.capabilities) or '-'}")
+            return 0
+        # paths / report
+        try:
+            if args.run:
+                store = _store(home, args.workspace)
+                snapshot = load_snapshot_from_evidence(store, args.run)
+            elif args.snapshot:
+                snapshot = load_snapshot(args.snapshot)
+            else:
+                raise PrivescError("paths 需要 --snapshot 或 --run（真实快照/证据）")
+            graph = PrivescGraph(matrix, snapshot=snapshot)
+            paths = graph.paths(args.from_principal, to=args.to,
+                                limit=args.limit, mode=getattr(args, "mode", "weight"))
+        except (OSError, ValueError, KeyError, PrivescError) as exc:
+            _human_error(exc, context={"action": "trident privesc paths"})
+            return 2
+        if args.pcmd == "paths":
+            if args.json:
+                _print_json({
+                    "from": args.from_principal,
+                    "to": args.to,
+                    "paths": [p.to_dict() for p in paths],
+                    "explanation": explain(paths[0]) if paths else "",
+                })
+                return 0
+            if args.mermaid:
+                if not paths:
+                    print("（无提权路径）", file=sys.stderr)
+                    return 3
+                print(render_path_mermaid(paths[0]))
+                return 0
+            if not paths:
+                print(f"无到 {args.to} 的提权路径（主体 {args.from_principal}）", file=sys.stderr)
+                return 3
+            print(explain(paths[0]))
+            if len(paths) > 1:
+                print("\n备选路径：")
+                for i, p in enumerate(paths[1:], 1):
+                    print(f"  {i}. 权重 {p.weight:g} / {p.hops} 步：{' → '.join(p.vector_ids)}")
+            return 0
+        section = render_privesc_section(matrix, paths, principal=args.from_principal)
+        text = "\n".join(section)
+        if args.out:
+            out = Path(args.out)
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(text, encoding="utf-8")
+            print(f"privesc report: {out}")
         else:
             print(text)
         return 0
@@ -1334,8 +1767,24 @@ def _main(argv=None) -> int:
             except (RuleCoverageError, ValueError, OSError) as exc:
                 print(f"trident rules generate: {exc}", file=sys.stderr)
                 return 2
+            privesc_summary = {}
+            try:
+                from .rules.privesc import write_rule_pack
+
+                privesc_summary = write_rule_pack(out_dir=out_dir / "privesc")
+                mapping_path = out_dir / "mapping.json"
+                if mapping_path.is_file():
+                    mapping = json.loads(mapping_path.read_text(encoding="utf-8"))
+                    mapping["privesc"] = privesc_summary
+                    mapping_path.write_text(json.dumps(mapping, ensure_ascii=False, indent=2),
+                                            encoding="utf-8")
+            except (OSError, ValueError) as exc:
+                print(f"trident rules generate: 提权规则包失败：{exc}", file=sys.stderr)
+                return 2
             _print_json({"pack": str(out_dir), "rules": pack.total_rules,
-                         "chains": pack.covered_chain_count, "files": len(pack.files)})
+                         "chains": pack.covered_chain_count, "files": len(pack.files),
+                         "privesc_rules": privesc_summary.get("rules", 0),
+                         "privesc_ok": privesc_summary.get("ok", False)})
             return 0
         pack_dir = Path(args.pack) if args.pack else home / "reports" / "rules-pack"
         if not (pack_dir / "mapping.json").is_file():
@@ -1345,6 +1794,17 @@ def _main(argv=None) -> int:
             matrix = validate(pack_dir, mock_base=args.mock_base)
         except (ValueError, OSError, KeyError) as exc:
             print(f"trident rules validate: {exc}", file=sys.stderr)
+            return 2
+        try:
+            from .rules.privesc import purple_replay
+
+            privesc = purple_replay(strict=False)
+            matrix["privesc"] = {"summary": {k: privesc[k] for k in
+                                             ("vectors", "rules", "hit", "ok")},
+                                 "missed": [m["vector"] for m in privesc["missed"]]}
+            matrix["ok"] = bool(matrix.get("ok")) and bool(privesc["ok"])
+        except (ValueError, OSError, KeyError) as exc:
+            print(f"trident rules validate: 提权紫队重放失败：{exc}", file=sys.stderr)
             return 2
         _print_json(matrix)
         return 0 if matrix.get("ok") else 3

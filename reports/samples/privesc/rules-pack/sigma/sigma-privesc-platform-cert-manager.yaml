@@ -1,0 +1,64 @@
+kind: SigmaRule
+title: cert-manager/CSR 签发管理员证书
+id: a7079b0f-b439-1fa6-0213-899fd954e37e
+status: stable
+description: "用 CA/Issuer 签发 O=system:masters 的 client 证书，或批准恶意 CSR；以证书直接认证为 cluster-admin。"
+references:
+  - "Kubernetes CSR API https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/"
+  - "cert-manager 文档 https://cert-manager.io/docs/"
+  - "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: platform-cert-manager
+    trident.io/module: csr-approve
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - update
+      - approve
+    objectRef.resource:
+      - certificatesigningrequests
+    objectRef.subresource: approval
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.platform
+  - attack.t1098
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: platform-cert-manager
+  trident-module: csr-approve
+  trident-detection-point: K8s audit：CSR approval 子资源更新
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - update
+          - approve
+        objectRef.resource:
+          - certificatesigningrequests
+        objectRef.subresource: approval
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: update
+      objectRef:
+        resource: certificatesigningrequests
+        subresource: approval

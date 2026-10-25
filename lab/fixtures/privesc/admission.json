@@ -1,0 +1,97 @@
+{
+  "kind": "privesc-admission-fixture",
+  "note": "准入/聚合层脆弱配置：fail-open webhook、不安全 APIService、CRD conversion webhook、待批准高权 CSR。",
+  "mutatingwebhookconfigurations": [
+    {
+      "name": "gpu-pod-mutator",
+      "failurePolicy": "Ignore",
+      "namespaceSelector": {},
+      "sideEffects": "None",
+      "rules": [
+        {"apiGroups": [""], "apiVersions": ["v1"], "operations": ["CREATE"], "resources": ["pods"]}
+      ],
+      "clientConfig": {"url": "http://127.0.0.1:9443/mutate", "caBundle": ""}
+    },
+    {
+      "name": "baseline-sidecar-injector",
+      "failurePolicy": "Fail",
+      "namespaceSelector": {"matchLabels": {"inject": "enabled"}},
+      "rules": [
+        {"apiGroups": [""], "apiVersions": ["v1"], "operations": ["CREATE"], "resources": ["pods"]}
+      ],
+      "clientConfig": {"service": {"name": "sidecar-injector", "namespace": "kube-system"}, "caBundle": "MOCK-CA"}
+    }
+  ],
+  "validatingwebhookconfigurations": [
+    {
+      "name": "policy-validator",
+      "failurePolicy": "Ignore",
+      "namespaceSelector": {},
+      "rules": [
+        {"apiGroups": ["*"], "apiVersions": ["*"], "operations": ["CREATE", "UPDATE"], "resources": ["*"]}
+      ],
+      "clientConfig": {"url": "https://validator.policy.svc:443/validate", "caBundle": "MOCK-CA"}
+    }
+  ],
+  "apiservices": [
+    {
+      "name": "v1beta1.metrics.k8s.io",
+      "group": "metrics.k8s.io",
+      "version": "v1beta1",
+      "insecureSkipTLSVerify": true,
+      "service": {"name": "metrics-server", "namespace": "kube-system", "port": 443}
+    },
+    {
+      "name": "v1beta1.batch.example.com",
+      "group": "batch.example.com",
+      "version": "v1beta1",
+      "insecureSkipTLSVerify": true,
+      "service": null,
+      "caBundle": ""
+    }
+  ],
+  "customresourcedefinitions": [
+    {
+      "name": "rayclusters.ray.io",
+      "group": "ray.io",
+      "kind": "RayCluster",
+      "conversion": {
+        "strategy": "Webhook",
+        "webhook": {
+          "conversionReviewVersions": ["v1"],
+          "clientConfig": {
+            "caBundle": "",
+            "service": {"name": "ray-conversion", "namespace": "ray-system", "port": 443}
+          }
+        }
+      }
+    },
+    {
+      "name": "trainingjobs.example.com",
+      "group": "example.com",
+      "kind": "TrainingJob",
+      "conversion": {"strategy": "None"}
+    }
+  ],
+  "certificatesigningrequests": [
+    {
+      "name": "csr-admin-pending",
+      "signerName": "kubernetes.io/kube-apiserver-client",
+      "username": "system:serviceaccount:privesc-lab:csr-requester",
+      "groups": ["system:serviceaccounts", "system:authenticated"],
+      "request": "MOCK-CSR-PEM",
+      "status": "Pending",
+      "subject": {"commonName": "privesc-admin", "organization": ["system:masters"]}
+    },
+    {
+      "name": "csr-node-approved",
+      "signerName": "kubernetes.io/kubelet-serving",
+      "username": "system:node:k3s",
+      "groups": ["system:nodes"],
+      "status": "Approved",
+      "subject": {"commonName": "system:node:k3s", "organization": ["system:nodes"]}
+    }
+  ],
+  "roles": [],
+  "rolebindings": []
+}

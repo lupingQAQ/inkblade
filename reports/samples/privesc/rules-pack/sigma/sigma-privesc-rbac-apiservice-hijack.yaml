@@ -1,0 +1,69 @@
+kind: SigmaRule
+title: APIService 聚合层劫持
+id: 5b4afd6f-e0d4-fa1d-98d8-aa9c66ece4bd
+status: stable
+description: 注册指向攻击者后端的 APIService，接管某个 API group 的请求；可窃取所有 bearer token、返回伪造对象或触发控制器提权。
+references:
+  - "Kubernetes 聚合 API https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/"
+  - "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+  - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: rbac-apiservice-hijack
+    trident.io/module: apiservice-hijack
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+      - update
+      - patch
+    objectRef.resource:
+      - apiservices
+    requestObject.spec.insecureSkipTLSVerify: true
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.rbac
+  - attack.t1098
+  - attack.t1552
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: rbac-apiservice-hijack
+  trident-module: apiservice-hijack
+  trident-detection-point: "K8s audit：创建/更新 APIService 且 insecureSkipTLSVerify=true"
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+          - update
+          - patch
+        objectRef.resource:
+          - apiservices
+        requestObject.spec.insecureSkipTLSVerify: true
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: apiservices
+      requestObject:
+        spec:
+          insecureSkipTLSVerify: true

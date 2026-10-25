@@ -1,0 +1,64 @@
+kind: SigmaRule
+title: 特权 Pod 直接宿主逃逸
+id: d614763b-b019-7935-dfcb-2ebd9b9d6489
+status: stable
+description: "提交 securityContext.privileged=true 的 Pod，挂载宿主根或使用 nsenter 进入宿主命名空间。"
+references:
+  - "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+  - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+  - "Peirates Kubernetes 提权 https://github.com/inguardians/peirates"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: workload-privileged-pod
+    trident.io/module: privileged-workloads
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - pods
+    requestObject.privileged: true
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.workload
+  - attack.t1610
+  - attack.t1611
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: workload-privileged-pod
+  trident-module: privileged-workloads
+  trident-detection-point: "K8s audit：create pod 且 privileged=true；Falco 亦覆盖 privileged 容器启动"
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+        objectRef.resource:
+          - pods
+        requestObject.privileged: true
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: pods
+      requestObject:
+        privileged: true

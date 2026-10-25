@@ -1,0 +1,218 @@
+{
+  "schema": "trident-privesc-real-paths-v1",
+  "generated_at": "2026-10-25T16:47:39Z",
+  "environment": {
+    "kubectl": "v1.36.5",
+    "server": "v1.36.5+k3s1",
+    "cluster": "QEMU TCG + Alpine + k3s (single control-plane)",
+    "manifest": "lab/qemu-k3s/privesc/rbac-fixtures.yaml",
+    "namespace": "privesc-lab"
+  },
+  "scope": "真实 k3s apiserver/RBAC（QEMU TCG 单节点）；非云托管控制面/节点 root/云 IAM 验证。",
+  "checks": [
+    {
+      "id": "escalate",
+      "title": "escalate 动词改写已绑定 ClusterRole",
+      "subject": "system:serviceaccount:privesc-lab:esc-sa",
+      "action": "patch clusterrole esc-editable -> rules=*",
+      "action_ok": true,
+      "before_admin": false,
+      "after_admin": true,
+      "cluster_read_after": true,
+      "status": "PASS",
+      "evidence": {
+        "patch": "clusterrole.rbac.authorization.k8s.io/esc-editable patched",
+        "get_nodes": "node/k3s"
+      }
+    },
+    {
+      "id": "bind",
+      "title": "bind cluster-admin + 创建 ClusterRoleBinding",
+      "subject": "system:serviceaccount:privesc-lab:bind-sa",
+      "action": "create clusterrolebinding privesc-bind-proof -> cluster-admin",
+      "action_ok": true,
+      "before_admin": false,
+      "after_admin": true,
+      "cluster_read_after": true,
+      "status": "PASS",
+      "evidence": {
+        "create_binding": "clusterrolebinding.rbac.authorization.k8s.io/privesc-bind-proof created",
+        "get_nodes": "node/k3s"
+      }
+    },
+    {
+      "id": "impersonate",
+      "title": "impersonate 冒充 cluster-admin User",
+      "subject": "system:serviceaccount:privesc-lab:imp-sa",
+      "action": "kubectl --as=privesc-superuser get nodes",
+      "action_ok": true,
+      "before_admin": false,
+      "after_admin": true,
+      "cluster_read_after": true,
+      "status": "PASS",
+      "evidence": {
+        "impersonated_get_nodes": "node/k3s"
+      }
+    },
+    {
+      "id": "sa-token",
+      "title": "TokenRequest 借用高权 SA",
+      "subject": "system:serviceaccount:privesc-lab:token-sa",
+      "target_sa": "system:serviceaccount:privesc-lab:privesc-admin",
+      "action": "create token privesc-admin -> 独立 kubeconfig",
+      "action_ok": true,
+      "before_admin": false,
+      "after_admin": true,
+      "cluster_read_after": true,
+      "token_length": 965,
+      "token_sha256_8": "c328a749",
+      "status": "PASS",
+      "evidence": {
+        "get_nodes": "node/k3s"
+      }
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "ok": true
+  },
+  "cleanup": {
+    "kept": false,
+    "verified": true,
+    "residue": [],
+    "delete_rc": 0,
+    "delete_stderr": ""
+  },
+  "fake_closure": {
+    "schema": "trident-privesc-fake-kubectl-v1",
+    "backend": "fake-kubectl (in-memory, deterministic)",
+    "checks": [
+      {
+        "id": "escalate",
+        "status": "PASS",
+        "title": "escalate 动词改写已绑定角色 → cluster-admin",
+        "evidence": {
+          "subject": "system:serviceaccount:lab:esc-sa",
+          "before_admin": false,
+          "after_admin": true,
+          "escalate_allowed": true,
+          "role_rules": [
+            {
+              "apiGroups": [
+                "*"
+              ],
+              "verbs": [
+                "*"
+              ],
+              "resources": [
+                "*"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "bind",
+        "status": "PASS",
+        "title": "bind cluster-admin + create CRB → cluster-admin",
+        "evidence": {
+          "subject": "system:serviceaccount:lab:bind-sa",
+          "before_admin": false,
+          "after_admin": true,
+          "binding_created": true,
+          "role": "cluster-admin"
+        }
+      },
+      {
+        "id": "sa-token",
+        "status": "PASS",
+        "title": "create serviceaccounts/token → 高权 SA 身份",
+        "evidence": {
+          "subject": "system:serviceaccount:lab:token-sa",
+          "target_sa": "privesc-admin",
+          "before_admin": false,
+          "token_issued": true,
+          "token_sha256_8": "cfdbb755",
+          "authenticated_subject": "system:serviceaccount:lab:privesc-admin",
+          "after_admin": true
+        }
+      },
+      {
+        "id": "webhook",
+        "status": "PASS",
+        "title": "写入准入 Webhook → Pod 注入 privileged/hostPath",
+        "evidence": {
+          "subject": "system:serviceaccount:lab:webhook-sa",
+          "before_can_create_pods": false,
+          "webhook_written": true,
+          "failure_policy": "Ignore",
+          "pod_privileged": true,
+          "host_root_mounted": true,
+          "escape_primitive": true,
+          "mutated_by": [
+            "trident-injector"
+          ]
+        }
+      }
+    ],
+    "summary": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "ok": true
+    },
+    "api_actions": [
+      {
+        "verb": "patch",
+        "resource": "clusterrole",
+        "name": "esc-editable",
+        "by": "system:serviceaccount:lab:esc-sa"
+      },
+      {
+        "verb": "create",
+        "resource": "clusterrolebinding",
+        "name": "bind-pwn",
+        "by": "system:serviceaccount:lab:bind-sa"
+      },
+      {
+        "verb": "create",
+        "resource": "serviceaccounts/token",
+        "name": "privesc-admin",
+        "by": "system:serviceaccount:lab:token-sa"
+      },
+      {
+        "verb": "create",
+        "resource": "mutatingwebhookconfiguration",
+        "name": "trident-injector",
+        "by": "system:serviceaccount:lab:webhook-sa"
+      }
+    ],
+    "state": {
+      "roles": [
+        "binder",
+        "esc-editable",
+        "escalator",
+        "token-requester",
+        "webhook-writer"
+      ],
+      "bindings": [
+        "bind-pwn",
+        "binder-binding",
+        "esc-editable-binding",
+        "escalator-binding",
+        "privesc-admin-binding",
+        "token-requester-binding",
+        "webhook-writer-binding"
+      ],
+      "webhooks": [
+        "trident-injector"
+      ],
+      "tokens_issued": 1,
+      "pods": [
+        "webhook-victim"
+      ]
+    }
+  }
+}

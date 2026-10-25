@@ -1,0 +1,65 @@
+kind: SigmaRule
+title: 写入准入 Webhook 注入特权
+id: d8076f81-8ced-87ab-923f-fa842e297805
+status: stable
+description: "注册 mutating webhook，对所有 Pod CREATE 注入 privileged/hostPath/额外卷，或窃取 AdmissionReview 中的 Secret；failurePolicy=Ignore 可静默放行。"
+references:
+  - "Kubernetes 准入 Webhook https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/"
+  - "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+  - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: rbac-admission-webhook-write
+    trident.io/module: admission-webhook-write
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+      - update
+      - patch
+    objectRef.resource:
+      - mutatingwebhookconfigurations
+      - validatingwebhookconfigurations
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.rbac
+  - attack.t1098
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: rbac-admission-webhook-write
+  trident-module: admission-webhook-write
+  trident-detection-point: K8s audit：创建/更新 admission webhook 配置
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+          - update
+          - patch
+        objectRef.resource:
+          - mutatingwebhookconfigurations
+          - validatingwebhookconfigurations
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: mutatingwebhookconfigurations

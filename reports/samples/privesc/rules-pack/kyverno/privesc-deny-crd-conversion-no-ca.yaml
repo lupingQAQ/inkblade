@@ -1,0 +1,31 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: trident-privesc-deny-crd-conversion-no-ca
+  annotations:
+    trident.io/mode: monitor
+    trident.io/vector: rbac-crd-conversion-webhook
+    trident.io/tuning: 先 Audit 观察基线；确认无合法例外后切 Enforce
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: privesc-deny-crd-conversion-no-ca
+      match:
+        anyResources:
+          - kinds:
+              - CustomResourceDefinition
+            operations:
+              - CREATE
+              - UPDATE
+      validate:
+        message: 拒绝无 caBundle 的 CRD conversion webhook / Deny conversion webhook without CA
+        deny:
+          conditions:
+            all:
+              - key: "{{ request.object.spec.conversion.strategy || `` }}"
+                operator: Equals
+                value: Webhook
+              - key: "{{ request.object.spec.conversion.webhook.clientConfig.caBundle || `` }}"
+                operator: Equals
+                value: ""

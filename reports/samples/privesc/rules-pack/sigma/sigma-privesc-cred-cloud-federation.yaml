@@ -1,0 +1,60 @@
+kind: SigmaRule
+title: IRSA/RRSA/PodIdentity/CAM 信任滥用
+id: 1e2c87b0-23e9-2302-98a6-3d40a2cf35e4
+status: stable
+description: "把高权云角色绑定到可控 SA，或利用通配 trust policy（sub=*）跨账户 AssumeRole；Pod 内直接获得云权限。"
+references:
+  - "EKS IRSA 文档 https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html"
+  - "AKS Workload Identity https://learn.microsoft.com/azure/aks/workload-identity-overview"
+  - "GKE Workload Identity https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity"
+  - "TKE CAM 角色 https://cloud.tencent.com/document/product/457/48710"
+  - "ACK RRSA https://help.aliyun.com/zh/ack/ack-managed-and-ack-dedicated/user-guide/use-rrsa-to-authorize-pods-to-access-different-cloud-services"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: cred-cloud-federation
+    trident.io/module: cloud-irsa-trust-wildcard
+date: 2026/10/26
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventName: AssumeRole
+    requestParameters.crossAccount: true
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.credential
+  - attack.t1078
+  - attack.t1552
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: cred-cloud-federation
+  trident-module: cloud-irsa-trust-wildcard
+  trident-detection-point: CloudTrail：跨账户 AssumeRole 且 trust policy 含通配
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: aws
+        service: cloudtrail
+      selection:
+        eventName: AssumeRole
+        requestParameters.crossAccount: true
+    event:
+      kind: sigma
+      logsource:
+        product: aws
+        service: cloudtrail
+      eventName: AssumeRole
+      requestParameters:
+        crossAccount: true
+      userIdentity:
+        type: AssumedRole

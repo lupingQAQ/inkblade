@@ -1,0 +1,368 @@
+{
+  "generator": "trident.rules.privesc",
+  "matrix_schema": "trident-privesc-matrix-v1",
+  "summary": {
+    "vectors": 47,
+    "rules": 47,
+    "hit": 47,
+    "missed": 0,
+    "ok": true
+  },
+  "items": [
+    {
+      "vector": "rbac-escalate-verb",
+      "rule": "sigma-privesc-rbac-escalate-verb",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：update/patch clusterroles/roles 且新 rules.verbs 含 *"
+    },
+    {
+      "vector": "rbac-bind-verb",
+      "rule": "sigma-privesc-rbac-bind-verb",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：创建/更新 roleRef=cluster-admin 的绑定"
+    },
+    {
+      "vector": "rbac-impersonate",
+      "rule": "sigma-privesc-rbac-impersonate",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：impersonatedUser 字段非空且执行敏感动作"
+    },
+    {
+      "vector": "rbac-sa-token-request",
+      "rule": "sigma-privesc-rbac-sa-token-request",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：create serviceaccounts/token 子资源"
+    },
+    {
+      "vector": "rbac-pods-exec",
+      "rule": "sigma-privesc-rbac-pods-exec",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：create pods/exec"
+    },
+    {
+      "vector": "rbac-rolebinding-cluster-admin",
+      "rule": "sigma-privesc-rbac-rolebinding-cluster-admin",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：create rolebindings/clusterrolebindings"
+    },
+    {
+      "vector": "rbac-aggregated-clusterrole",
+      "rule": "sigma-privesc-rbac-aggregated-clusterrole",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：创建/更新带 aggregationRule 的 ClusterRole"
+    },
+    {
+      "vector": "rbac-admission-webhook-write",
+      "rule": "sigma-privesc-rbac-admission-webhook-write",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：创建/更新 admission webhook 配置"
+    },
+    {
+      "vector": "rbac-apiservice-hijack",
+      "rule": "sigma-privesc-rbac-apiservice-hijack",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：创建/更新 APIService 且 insecureSkipTLSVerify=true"
+    },
+    {
+      "vector": "rbac-crd-conversion-webhook",
+      "rule": "sigma-privesc-rbac-crd-conversion-webhook",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：CRD 创建/更新且 conversion.strategy=Webhook"
+    },
+    {
+      "vector": "workload-privileged-pod",
+      "rule": "sigma-privesc-workload-privileged-pod",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：create pod 且 privileged=true；Falco 亦覆盖 privileged 容器启动"
+    },
+    {
+      "vector": "workload-hostpath-hostroot",
+      "rule": "sigma-privesc-workload-hostpath-hostroot",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：create pod 且 hostPath 为 / 或敏感前缀"
+    },
+    {
+      "vector": "workload-hostpid-hostnetwork",
+      "rule": "sigma-privesc-workload-hostpid-hostnetwork",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：create pod 且 hostPID/hostNetwork/hostIPC=true"
+    },
+    {
+      "vector": "workload-dangerous-caps",
+      "rule": "sigma-privesc-workload-dangerous-caps",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：create pod 且 capabilities 含 SYS_ADMIN/SYS_PTRACE/SYS_MODULE"
+    },
+    {
+      "vector": "workload-ephemeral-container",
+      "rule": "sigma-privesc-workload-ephemeral-container",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：update pods/ephemeralcontainers"
+    },
+    {
+      "vector": "workload-init-container-override",
+      "rule": "sigma-privesc-workload-init-container-override",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：create pod 且 initContainers 含 privileged/hostPath"
+    },
+    {
+      "vector": "workload-hostpath-kubelet",
+      "rule": "sigma-privesc-workload-hostpath-kubelet",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：create pod 且 hostPath 指向 kubelet/kubernetes 目录"
+    },
+    {
+      "vector": "workload-hostpath-runtime-socket",
+      "rule": "falco-privesc-workload-hostpath-runtime-socket",
+      "engine": "falco",
+      "fired": true,
+      "detection_point": "Falco：容器内进程打开容器运行时 socket"
+    },
+    {
+      "vector": "workload-static-pod-write",
+      "rule": "falco-privesc-workload-static-pod-write",
+      "engine": "falco",
+      "fired": true,
+      "detection_point": "Falco：写入 kubelet 静态 Pod 目录"
+    },
+    {
+      "vector": "cred-sa-token-automount",
+      "rule": "falco-privesc-cred-sa-token-automount",
+      "engine": "falco",
+      "fired": true,
+      "detection_point": "Falco：容器读取 automount SA token"
+    },
+    {
+      "vector": "cred-projected-token",
+      "rule": "sigma-privesc-cred-projected-token",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：create pod 且 volume 使用 projected serviceAccountToken"
+    },
+    {
+      "vector": "cred-legacy-sa-secret",
+      "rule": "sigma-privesc-cred-legacy-sa-secret",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：读取 legacy SA token Secret"
+    },
+    {
+      "vector": "cred-image-pull-secret",
+      "rule": "sigma-privesc-cred-image-pull-secret",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：读取 dockerconfigjson Secret"
+    },
+    {
+      "vector": "cred-git-ci-token",
+      "rule": "falco-privesc-cred-git-ci-token",
+      "engine": "falco",
+      "fired": true,
+      "detection_point": "Falco：容器/CI 读取 git 凭据文件"
+    },
+    {
+      "vector": "cred-ml-platform-token",
+      "rule": "sigma-privesc-cred-ml-platform-token",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：读取标注 ml-platform-token 的 Secret；平台侧审计 token 写入"
+    },
+    {
+      "vector": "cred-cloud-imds",
+      "rule": "falco-privesc-cred-cloud-imds",
+      "engine": "falco",
+      "fired": true,
+      "detection_point": "Falco：容器连接云 metadata 地址"
+    },
+    {
+      "vector": "cred-cloud-federation",
+      "rule": "sigma-privesc-cred-cloud-federation",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "CloudTrail：跨账户 AssumeRole 且 trust policy 含通配"
+    },
+    {
+      "vector": "node-kubelet-10250-exec",
+      "rule": "falco-privesc-node-kubelet-10250-exec",
+      "engine": "falco",
+      "fired": true,
+      "detection_point": "Falco/eBPF：非 kube-apiserver 主体连接 kubelet 10250"
+    },
+    {
+      "vector": "node-kubelet-10250-run",
+      "rule": "falco-privesc-node-kubelet-10250-run",
+      "engine": "falco",
+      "fired": true,
+      "detection_point": "Falco：kubelet /run 端点访问"
+    },
+    {
+      "vector": "node-etcd-direct",
+      "rule": "falco-privesc-node-etcd-direct",
+      "engine": "falco",
+      "fired": true,
+      "detection_point": "Falco/eBPF：非控制面进程连接 etcd 2379"
+    },
+    {
+      "vector": "node-proxy",
+      "rule": "sigma-privesc-node-proxy",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：get nodes/proxy"
+    },
+    {
+      "vector": "node-runtime-socket",
+      "rule": "falco-privesc-node-runtime-socket",
+      "engine": "falco",
+      "fired": true,
+      "detection_point": "Falco：容器内打开 docker/containerd socket"
+    },
+    {
+      "vector": "node-kernel-runc",
+      "rule": "falco-privesc-node-kernel-runc",
+      "engine": "falco",
+      "fired": true,
+      "detection_point": "Falco：runc 异常执行/文件描述符泄漏行为"
+    },
+    {
+      "vector": "node-host-root-kubeconfig",
+      "rule": "falco-privesc-node-host-root-kubeconfig",
+      "engine": "falco",
+      "fired": true,
+      "detection_point": "Falco：容器/宿主进程读取 admin kubeconfig"
+    },
+    {
+      "vector": "cred-privileged-sa-token-use",
+      "rule": "sigma-privesc-cred-privileged-sa-token-use",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：高权 SA 主体创建敏感绑定"
+    },
+    {
+      "vector": "platform-gpu-operator-driver",
+      "rule": "sigma-privesc-platform-gpu-operator-driver",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：更新 daemonset 且模板 privileged"
+    },
+    {
+      "vector": "platform-device-plugin",
+      "rule": "sigma-privesc-platform-device-plugin",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：device plugin DaemonSet hostPath 变更"
+    },
+    {
+      "vector": "platform-cni-plugin",
+      "rule": "sigma-privesc-platform-cni-plugin",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：CNI DaemonSet hostPath /opt/cni/bin 变更"
+    },
+    {
+      "vector": "platform-csi-node-plugin",
+      "rule": "sigma-privesc-platform-csi-node-plugin",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：CSI node DaemonSet 特权/宿主挂载变更"
+    },
+    {
+      "vector": "platform-ingress-secret",
+      "rule": "sigma-privesc-platform-ingress-secret",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：Ingress 创建/更新含危险 annotation"
+    },
+    {
+      "vector": "platform-cert-manager",
+      "rule": "sigma-privesc-platform-cert-manager",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：CSR approval 子资源更新"
+    },
+    {
+      "vector": "platform-argocd-flux",
+      "rule": "sigma-privesc-platform-argocd-flux",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：ArgoCD Application/Flux Kustomization 变更"
+    },
+    {
+      "vector": "platform-kueue-volcano",
+      "rule": "sigma-privesc-platform-kueue-volcano",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：队列/配额对象变更"
+    },
+    {
+      "vector": "platform-ray-kuberay-autoscaler",
+      "rule": "sigma-privesc-platform-ray-kuberay-autoscaler",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：创建 RayJob/RayCluster 且使用高权 SA"
+    },
+    {
+      "vector": "platform-lws-operator",
+      "rule": "sigma-privesc-platform-lws-operator",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：LeaderWorkerSet 创建/更新"
+    },
+    {
+      "vector": "platform-jupyter-notebook",
+      "rule": "sigma-privesc-platform-jupyter-notebook",
+      "engine": "sigma",
+      "fired": true,
+      "detection_point": "K8s audit：Jupyter SA 发起 pods/exec"
+    },
+    {
+      "vector": "platform-mlflow-tracking",
+      "rule": "falco-privesc-platform-mlflow-tracking",
+      "engine": "falco",
+      "fired": true,
+      "detection_point": "Falco：写入 MLflow artifact/模型目录"
+    }
+  ],
+  "admission": [
+    {
+      "vector": "workload-hostpath-kubelet",
+      "rule": "privesc-deny-kubelet-hostpath"
+    },
+    {
+      "vector": "workload-hostpath-runtime-socket",
+      "rule": "privesc-deny-runtime-socket"
+    },
+    {
+      "vector": "workload-init-container-override",
+      "rule": "privesc-deny-init-privileged"
+    },
+    {
+      "vector": "rbac-admission-webhook-write",
+      "rule": "privesc-deny-webhook-failopen"
+    },
+    {
+      "vector": "rbac-apiservice-hijack",
+      "rule": "privesc-deny-insecure-apiservice"
+    },
+    {
+      "vector": "rbac-crd-conversion-webhook",
+      "rule": "privesc-deny-crd-conversion-no-ca"
+    }
+  ]
+}

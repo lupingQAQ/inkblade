@@ -1,0 +1,65 @@
+kind: SigmaRule
+title: device plugin 滥用 GPU 分配
+id: 3723ee90-5986-872e-b51c-7b896ae14113
+status: stable
+description: 伪造 device plugin 注册任意资源、跨命名空间暴露 GPU，或利用其 hostPath/特权挂载获得节点能力。
+references:
+  - "Kubernetes Device Plugin https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/"
+  - "NVIDIA GPU Operator 文档 https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/"
+  - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: platform-device-plugin
+    trident.io/module: gpu-device-cross-namespace
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+      - update
+    objectRef.resource:
+      - daemonsets
+    requestObject.hostPath: /var/lib/kubelet/device-plugins
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.platform
+  - attack.t1611
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: platform-device-plugin
+  trident-module: gpu-device-cross-namespace
+  trident-detection-point: K8s audit：device plugin DaemonSet hostPath 变更
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+          - update
+        objectRef.resource:
+          - daemonsets
+        requestObject.hostPath: /var/lib/kubelet/device-plugins
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: update
+      objectRef:
+        resource: daemonsets
+      requestObject:
+        hostPath: /var/lib/kubelet/device-plugins

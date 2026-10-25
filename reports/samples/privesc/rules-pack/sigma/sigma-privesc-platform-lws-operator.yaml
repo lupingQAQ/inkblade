@@ -1,0 +1,61 @@
+kind: SigmaRule
+title: LWS operator 秘密读取/工作负载提权
+id: d315eef2-c71c-f0d5-0179-1637737dc7bf
+status: stable
+description: 提交恶意 LeaderWorkerSet 模板，借用 operator 的集群级 secrets 读权限或高权 SA 创建特权 worker。
+references:
+  - "LeaderWorkerSet 文档 https://lws.sigs.k8s.io/docs/"
+  - "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: platform-lws-operator
+    trident.io/module: lws-secrets-lateral
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+      - update
+    objectRef.resource:
+      - leaderworkerset
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.platform
+  - attack.t1610
+  - attack.t1552
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: platform-lws-operator
+  trident-module: lws-secrets-lateral
+  trident-detection-point: K8s audit：LeaderWorkerSet 创建/更新
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+          - update
+        objectRef.resource:
+          - leaderworkerset
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: leaderworkerset

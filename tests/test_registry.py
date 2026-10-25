@@ -35,11 +35,11 @@ class TestRegistry(unittest.TestCase):
         mods = load_modules(self.root)
         self.assertIn("good-one", mods)
         self.assertIsInstance(mods["good-one"], ModuleMeta)
-        # 键含数字 → 拒绝
-        _mk(self.root, "key-007")
+        # 键含大写/下划线 → 拒绝（数字允许，如 kubelet-10250-exec）
+        _mk(self.root, "key_007")
         with self.assertRaises(ValueError):
             load_modules(self.root)
-        (self.root / "key-007" / "module.json").unlink()
+        (self.root / "key_007" / "module.json").unlink()
         # 缺字段
         d = self.root / "no-series"
         d.mkdir()

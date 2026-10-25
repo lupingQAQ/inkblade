@@ -1,0 +1,159 @@
+{
+  "kind": "privesc-rbac-fixture",
+  "note": "fake-kubectl / 真集群同构 RBAC 夹具：escalate、bind、impersonate、SA token 四条提权原语。仅实验室使用。",
+  "namespaces": ["privesc-lab"],
+  "serviceaccounts": [
+    {"name": "esc-sa", "namespace": "privesc-lab"},
+    {"name": "bind-sa", "namespace": "privesc-lab"},
+    {"name": "imp-sa", "namespace": "privesc-lab"},
+    {"name": "token-sa", "namespace": "privesc-lab"},
+    {"name": "privesc-admin", "namespace": "privesc-lab"}
+  ],
+  "clusterroles": [
+    {
+      "name": "esc-editable",
+      "rules": [
+        {"apiGroups": [""], "resources": ["pods"], "verbs": ["get", "list"]}
+      ]
+    },
+    {
+      "name": "escalator",
+      "rules": [
+        {"apiGroups": ["rbac.authorization.k8s.io"], "resources": ["clusterroles"], "verbs": ["escalate"]},
+        {"apiGroups": ["rbac.authorization.k8s.io"], "resources": ["clusterroles"],
+         "resourceNames": ["esc-editable"], "verbs": ["update", "patch"]}
+      ]
+    },
+    {
+      "name": "binder",
+      "rules": [
+        {"apiGroups": ["rbac.authorization.k8s.io"], "resources": ["clusterroles"],
+         "resourceNames": ["cluster-admin"], "verbs": ["bind"]},
+        {"apiGroups": ["rbac.authorization.k8s.io"], "resources": ["clusterrolebindings"], "verbs": ["create"]}
+      ]
+    },
+    {
+      "name": "impersonator",
+      "rules": [
+        {"apiGroups": [""], "resources": ["users", "groups", "serviceaccounts"],
+         "resourceNames": ["privesc-superuser"], "verbs": ["impersonate"]}
+      ]
+    },
+    {
+      "name": "token-requester",
+      "rules": [
+        {"apiGroups": [""], "resources": ["serviceaccounts/token"],
+         "resourceNames": ["privesc-admin"], "verbs": ["create"]}
+      ]
+    },
+    {
+      "name": "webhook-writer",
+      "rules": [
+        {"apiGroups": ["admissionregistration.k8s.io"],
+         "resources": ["mutatingwebhookconfigurations", "validatingwebhookconfigurations"],
+         "verbs": ["create", "update", "patch"]}
+      ]
+    },
+    {
+      "name": "apiservice-writer",
+      "rules": [
+        {"apiGroups": ["apiregistration.k8s.io"], "resources": ["apiservices"], "verbs": ["create", "update"]}
+      ]
+    },
+    {
+      "name": "crd-writer",
+      "rules": [
+        {"apiGroups": ["apiextensions.k8s.io"], "resources": ["customresourcedefinitions"],
+         "verbs": ["create", "update", "patch"]}
+      ]
+    },
+    {
+      "name": "csr-approver",
+      "rules": [
+        {"apiGroups": ["certificates.k8s.io"],
+         "resources": ["certificatesigningrequests", "certificatesigningrequests/approval"],
+         "verbs": ["get", "list", "update", "approve"]},
+        {"apiGroups": ["certificates.k8s.io"], "resources": ["signers"], "verbs": ["approve"]}
+      ]
+    },
+    {
+      "name": "aggregated-role",
+      "aggregationRule": {
+        "clusterRoleSelectors": [{"matchLabels": {"rbac.trident.io/aggregate-to-admin": "true"}}]
+      },
+      "rules": []
+    }
+  ],
+  "clusterrolebindings": [
+    {
+      "name": "esc-editable-binding",
+      "role": "esc-editable",
+      "subjects": [{"kind": "ServiceAccount", "name": "esc-sa", "namespace": "privesc-lab"}]
+    },
+    {
+      "name": "escalator-binding",
+      "role": "escalator",
+      "subjects": [{"kind": "ServiceAccount", "name": "esc-sa", "namespace": "privesc-lab"}]
+    },
+    {
+      "name": "binder-binding",
+      "role": "binder",
+      "subjects": [{"kind": "ServiceAccount", "name": "bind-sa", "namespace": "privesc-lab"}]
+    },
+    {
+      "name": "impersonator-binding",
+      "role": "impersonator",
+      "subjects": [{"kind": "ServiceAccount", "name": "imp-sa", "namespace": "privesc-lab"}]
+    },
+    {
+      "name": "token-requester-binding",
+      "role": "token-requester",
+      "subjects": [{"kind": "ServiceAccount", "name": "token-sa", "namespace": "privesc-lab"}]
+    },
+    {
+      "name": "privesc-superuser-admin",
+      "role": "cluster-admin",
+      "subjects": [{"kind": "User", "name": "privesc-superuser"}]
+    },
+    {
+      "name": "privesc-admin-binding",
+      "role": "cluster-admin",
+      "subjects": [{"kind": "ServiceAccount", "name": "privesc-admin", "namespace": "privesc-lab"}]
+    }
+  ],
+  "rolebindings": [],
+  "cani": [
+    {
+      "subject": "system:serviceaccount:privesc-lab:esc-sa",
+      "allowed": ["escalate clusterroles", "update clusterroles esc-editable", "patch clusterroles esc-editable", "get pods", "create pods"]
+    },
+    {
+      "subject": "system:serviceaccount:privesc-lab:bind-sa",
+      "allowed": ["bind clusterroles cluster-admin", "create clusterrolebindings"]
+    },
+    {
+      "subject": "system:serviceaccount:privesc-lab:imp-sa",
+      "allowed": ["impersonate users privesc-superuser", "impersonate groups system:masters", "impersonate serviceaccounts privesc-admin"]
+    },
+    {
+      "subject": "system:serviceaccount:privesc-lab:token-sa",
+      "allowed": ["create serviceaccounts/token privesc-admin"]
+    },
+    {
+      "subject": "system:serviceaccount:privesc-lab:webhook-writer",
+      "allowed": ["create mutatingwebhookconfigurations", "update mutatingwebhookconfigurations"]
+    },
+    {
+      "subject": "system:serviceaccount:privesc-lab:apiservice-writer",
+      "allowed": ["create apiservices", "update apiservices"]
+    },
+    {
+      "subject": "system:serviceaccount:privesc-lab:crd-writer",
+      "allowed": ["create customresourcedefinitions", "patch customresourcedefinitions"]
+    },
+    {
+      "subject": "system:serviceaccount:privesc-lab:csr-approver",
+      "allowed": ["update certificatesigningrequests/approval", "approve signers"]
+    }
+  ]
+}

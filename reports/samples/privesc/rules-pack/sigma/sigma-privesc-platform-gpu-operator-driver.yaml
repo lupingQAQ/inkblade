@@ -1,0 +1,64 @@
+kind: SigmaRule
+title: GPU Operator driver 容器逃逸
+id: 1a4af12e-2deb-8133-23b7-a5c2a22db8a7
+status: stable
+description: 向 driver 容器注入命令或替换驱动镜像；driver 容器通常 privileged 且挂载 /dev、/run、宿主驱动目录，直接获得节点 root。
+references:
+  - "NVIDIA GPU Operator 文档 https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/"
+  - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: platform-gpu-operator-driver
+    trident.io/module: gpu-operator-driver-escape
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - update
+      - patch
+    objectRef.resource:
+      - daemonsets
+    requestObject.privileged: true
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.platform
+  - attack.t1611
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: platform-gpu-operator-driver
+  trident-module: gpu-operator-driver-escape
+  trident-detection-point: K8s audit：更新 daemonset 且模板 privileged
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - update
+          - patch
+        objectRef.resource:
+          - daemonsets
+        requestObject.privileged: true
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: update
+      objectRef:
+        resource: daemonsets
+      requestObject:
+        privileged: true

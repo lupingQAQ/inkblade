@@ -1,0 +1,64 @@
+kind: SigmaRule
+title: nodes/proxy 访问 kubelet API
+id: c4a8179f-5cae-d4a3-543d-288108b50c31
+status: stable
+description: 经 apiserver 代理访问 kubelet API（/exec、/run、/logs、/metrics），绕过节点网络隔离。
+references:
+  - "Kubernetes kubelet 认证/授权 https://kubernetes.io/docs/reference/access-authn-authz/kubelet-authn-authz/"
+  - "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
+  - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: node-proxy
+    trident.io/module: kubelet-api-surface
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - get
+      - create
+    objectRef.resource:
+      - nodes
+    objectRef.subresource: proxy
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: critical
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.node
+  - attack.t1610
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: node-proxy
+  trident-module: kubelet-api-surface
+  trident-detection-point: K8s audit：get nodes/proxy
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - get
+          - create
+        objectRef.resource:
+          - nodes
+        objectRef.subresource: proxy
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: get
+      objectRef:
+        resource: nodes
+        subresource: proxy

@@ -1,0 +1,70 @@
+kind: SigmaRule
+title: 危险 Linux capabilities
+id: eaa52d42-e0dc-286b-5485-7f2b67c282eb
+status: stable
+description: 添加 SYS_ADMIN 挂载/命名空间操作、SYS_PTRACE 注入宿主进程、SYS_MODULE 加载内核模块，突破容器边界。
+references:
+  - "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+  - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+  - "CDK 容器逃逸工具集 https://github.com/cdk-team/CDK"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: workload-dangerous-caps
+    trident.io/module: privileged-workloads
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - pods
+    requestObject.capabilities:
+      - SYS_ADMIN
+      - SYS_PTRACE
+      - SYS_MODULE
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.workload
+  - attack.t1611
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: workload-dangerous-caps
+  trident-module: privileged-workloads
+  trident-detection-point: K8s audit：create pod 且 capabilities 含 SYS_ADMIN/SYS_PTRACE/SYS_MODULE
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+        objectRef.resource:
+          - pods
+        requestObject.capabilities:
+          - SYS_ADMIN
+          - SYS_PTRACE
+          - SYS_MODULE
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: pods
+      requestObject:
+        capabilities:
+          - SYS_ADMIN

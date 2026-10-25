@@ -1,0 +1,65 @@
+kind: SigmaRule
+title: CSI node plugin 逃逸/卷越权
+id: 6499b8c2-165d-d1ad-75b0-6293b1ad9cbc
+status: stable
+description: 篡改 CSI node plugin（特权、hostPath /var/lib/kubelet、/dev），在挂载/卸载时执行宿主命令或跨租户读取卷。
+references:
+  - "CSI 规范 https://github.com/container-storage-interface/spec"
+  - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+  - "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: platform-csi-node-plugin
+    trident.io/module: csi-node-plugin-escape
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - update
+      - patch
+    objectRef.resource:
+      - daemonsets
+    requestObject.privileged: true
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.platform
+  - attack.t1611
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: platform-csi-node-plugin
+  trident-module: csi-node-plugin-escape
+  trident-detection-point: K8s audit：CSI node DaemonSet 特权/宿主挂载变更
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - update
+          - patch
+        objectRef.resource:
+          - daemonsets
+        requestObject.privileged: true
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: update
+      objectRef:
+        resource: daemonsets
+      requestObject:
+        privileged: true

@@ -20,7 +20,7 @@ from trident.core.roe import init_roe
 from trident.core.users import UserStore
 
 CHAINS_DIR = Path(__file__).resolve().parents[1] / "trident" / "chains"
-KEY_RE = re.compile(r"^[a-z][a-z-]*$")
+KEY_RE = re.compile(r"^[a-z][a-z0-9-]*$")  # 允许端口/版本数字段（如 stage-1-entry）
 
 FINDINGS = [
     {

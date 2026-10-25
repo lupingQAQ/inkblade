@@ -1,0 +1,65 @@
+kind: SigmaRule
+title: ArgoCD/Flux GitOps 接管
+id: 31cc1e56-dca4-630d-178e-07cdfe62b31d
+status: stable
+description: 提交带 ClusterRoleBinding/特权 DaemonSet 的清单，由 GitOps 控制器自动 apply；或直接修改 Application 目标仓库。
+references:
+  - "Argo CD 安全文档 https://argo-cd.readthedocs.io/en/stable/operator-manual/security/"
+  - "Flux 安全文档 https://fluxcd.io/flux/security/"
+  - "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: platform-argocd-flux
+    trident.io/module: gitops-secret-read
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+      - update
+      - patch
+    objectRef.resource:
+      - applications
+      - kustomizations
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.platform
+  - attack.t1098
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: platform-argocd-flux
+  trident-module: gitops-secret-read
+  trident-detection-point: K8s audit：ArgoCD Application/Flux Kustomization 变更
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+          - update
+          - patch
+        objectRef.resource:
+          - applications
+          - kustomizations
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: update
+      objectRef:
+        resource: applications

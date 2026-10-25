@@ -1,0 +1,70 @@
+kind: SigmaRule
+title: 聚合 ClusterRole 权限汇集
+id: 0a217bbc-bd42-ce07-8c48-43f7f0a0968d
+status: stable
+description: 定义聚合 ClusterRole，由 controller 自动合并所有带指定 label 的规则；若该角色已绑定，则被动获得新增高权规则。
+references:
+  - "Kubernetes 聚合 API https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/"
+  - "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+  - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: rbac-aggregated-clusterrole
+    trident.io/module: rbac-escalate-verb
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+      - update
+      - patch
+    objectRef.resource:
+      - clusterroles
+    requestObject.aggregationRule: "*"
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.rbac
+  - attack.t1098
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: rbac-aggregated-clusterrole
+  trident-module: rbac-escalate-verb
+  trident-detection-point: K8s audit：创建/更新带 aggregationRule 的 ClusterRole
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+          - update
+          - patch
+        objectRef.resource:
+          - clusterroles
+        requestObject.aggregationRule: "*"
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: clusterroles
+      requestObject:
+        aggregationRule:
+          clusterRoleSelectors:
+            - matchLabels:
+                x: y

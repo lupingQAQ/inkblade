@@ -1,0 +1,20 @@
+{
+  "key": "crd-conversion-webhook",
+  "name": {
+    "zh": "CRD conversion Webhook",
+    "en": "CRD conversion webhook"
+  },
+  "series": "权限链",
+  "description": "检测 conversion.strategy=Webhook 且缺 caBundle 的 CRD：可拦截/篡改 CR 转换并注入 operator。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "fixture": "提权快照 JSON 路径（缺省 lab/fixtures/privesc/<fixture>.json）",
+    "mode": "probe-only | backup-write（写类模块）",
+    "demo_target": "backup-write 演示写入目标文件（写类模块）",
+    "backup_targets": "写类模块备份目标（runner 备份闸门）"
+  },
+  "produces": "crd-conversion-webhook-findings",
+  "knowledge": "提权矩阵 rbac-crd-conversion-webhook；K8s CRD versioning 文档"
+}

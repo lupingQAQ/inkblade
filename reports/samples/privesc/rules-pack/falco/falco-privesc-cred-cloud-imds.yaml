@@ -1,0 +1,12 @@
+# trident.io/vector: cred-cloud-imds
+# detection-point: Falco：容器连接云 metadata 地址
+- rule: Trident Privesc cred-cloud-imds
+  desc: 云 metadata (IMDS) 凭据窃取
+  condition: "evt.type in (open,openat,connect,execve) and dest_ip=\"169.254.169.254\""
+  output: "Trident privilege-escalation primitive (vector=cred-cloud-imds module=metadata-egress proc=%proc.name)"
+  priority: WARNING
+  tags:
+    - trident
+    - privesc
+    - credential
+    - cred-cloud-imds

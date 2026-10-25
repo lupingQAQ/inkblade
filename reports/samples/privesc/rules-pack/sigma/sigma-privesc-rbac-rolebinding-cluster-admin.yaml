@@ -1,0 +1,61 @@
+kind: SigmaRule
+title: RoleBinding 自绑 cluster-admin
+id: 296c1c19-d1ee-f04f-e123-005a1558a398
+status: stable
+description: 创建 RoleBinding/ClusterRoleBinding，把自身 SA/User 绑定到 cluster-admin；命名空间 RoleBinding 只能提升至该命名空间。
+references:
+  - "Kubernetes RBAC 文档 https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+  - "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+  - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: rbac-rolebinding-cluster-admin
+    trident.io/module: overprivileged-sa-escalation
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - rolebindings
+      - clusterrolebindings
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.rbac
+  - attack.t1098
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: rbac-rolebinding-cluster-admin
+  trident-module: overprivileged-sa-escalation
+  trident-detection-point: K8s audit：create rolebindings/clusterrolebindings
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+        objectRef.resource:
+          - rolebindings
+          - clusterrolebindings
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: clusterrolebindings

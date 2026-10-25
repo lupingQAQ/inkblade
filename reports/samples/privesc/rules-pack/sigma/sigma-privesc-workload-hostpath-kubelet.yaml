@@ -1,0 +1,63 @@
+kind: SigmaRule
+title: hostPath 读取 kubelet 目录
+id: 1db65d7f-1b7e-ef0b-70a3-348964277415
+status: stable
+description: 读写 kubelet 的 pods 目录、静态 Pod 清单、kubeconfig 与证书；可植入静态 Pod 或窃取 kubelet 客户端证书。
+references:
+  - "Kubernetes kubelet 认证/授权 https://kubernetes.io/docs/reference/access-authn-authz/kubelet-authn-authz/"
+  - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+  - "CDK 容器逃逸工具集 https://github.com/cdk-team/CDK"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: workload-hostpath-kubelet
+    trident.io/module: privileged-workloads
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - pods
+    requestObject.hostPath: /var/lib/kubelet
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.workload
+  - attack.t1611
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: workload-hostpath-kubelet
+  trident-module: privileged-workloads
+  trident-detection-point: K8s audit：create pod 且 hostPath 指向 kubelet/kubernetes 目录
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+        objectRef.resource:
+          - pods
+        requestObject.hostPath: /var/lib/kubelet
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: pods
+      requestObject:
+        hostPath: /var/lib/kubelet

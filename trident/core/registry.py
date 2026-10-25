@@ -9,7 +9,7 @@ from pathlib import Path
 
 SERIES = ("侦察", "横向利用", "权限链", "窃取与数据泄露", "核心代码", "网络架构", "混合云", "情报")
 LEVELS = ("只读侦察", "主动探测", "利用验证", "全影响演示")
-_KEY_RE = re.compile(r"^[a-z][a-z-]*$")  # 纯小写单词与连字符，禁数字
+_KEY_RE = re.compile(r"^[a-z][a-z0-9-]*$")  # 纯小写单词/连字符；允许端口或版本数字段（kubelet-10250-exec）
 
 _REQUIRED = ("key", "name", "series", "description", "min_level", "writes", "requires")
 

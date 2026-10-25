@@ -1,0 +1,64 @@
+kind: SigmaRule
+title: KubeRay/Ray autoscaler 提权
+id: d1937ada-8109-65a0-5687-24bae0ba79fe
+status: stable
+description: 提交带 privileged pod template 或 hostPath 的 RayJob；Ray operator 以高权 SA 创建 worker，直接获得节点/集群能力。
+references:
+  - "KubeRay 安全/配置 https://docs.ray.io/en/latest/cluster/kubernetes/"
+  - "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: platform-ray-kuberay-autoscaler
+    trident.io/module: kuberay-operator-escalation
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - rayjobs
+      - rayclusters
+    requestObject.serviceAccountName: "*"
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.platform
+  - attack.t1610
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: platform-ray-kuberay-autoscaler
+  trident-module: kuberay-operator-escalation
+  trident-detection-point: K8s audit：创建 RayJob/RayCluster 且使用高权 SA
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+        objectRef.resource:
+          - rayjobs
+          - rayclusters
+        requestObject.serviceAccountName: "*"
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: rayjobs
+      requestObject:
+        serviceAccountName: ray-operator

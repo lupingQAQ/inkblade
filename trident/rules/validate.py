@@ -42,6 +42,12 @@ def _get_path(item: Any, dotted: str) -> Any:
     for part in dotted.split("."):
         if isinstance(cur, dict) and part in cur:
             cur = cur[part]
+        elif isinstance(cur, list):
+            # 审计字段常为对象数组（如 requestObject.rules[].verbs）：收集子值后继续匹配
+            vals = [_get_path(x, part) for x in cur]
+            cur = [v for v in vals if v is not None]
+            if not cur:
+                return None
         else:
             return None
     return cur
@@ -53,8 +59,16 @@ def _match_condition(actual: Any, pattern: Any) -> bool:
         if "not_in" in pattern:
             return actual not in pattern["not_in"] and actual is not None
         if "re" in pattern:
+            if isinstance(actual, list):
+                return any(re.search(pattern["re"], str(x)) is not None for x in actual)
             return actual is not None and re.search(pattern["re"], str(actual)) is not None
         return False
+    if isinstance(actual, list):
+        if pattern == "*":
+            return bool(actual)
+        if isinstance(pattern, list):
+            return any(a in pattern for a in actual)
+        return actual == pattern or pattern in actual
     if pattern == "*":
         return actual is not None
     if isinstance(pattern, list):

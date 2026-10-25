@@ -1,0 +1,34 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: trident-privesc-deny-webhook-failopen
+  annotations:
+    trident.io/mode: monitor
+    trident.io/vector: rbac-admission-webhook-write
+    trident.io/tuning: 先 Audit 观察基线；确认无合法例外后切 Enforce
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: privesc-deny-webhook-failopen
+      match:
+        anyResources:
+          - kinds:
+              - MutatingWebhookConfiguration
+              - ValidatingWebhookConfiguration
+            operations:
+              - CREATE
+              - UPDATE
+      validate:
+        message: "拒绝 failurePolicy=Ignore 的准入 Webhook / Deny fail-open webhook"
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.webhooks[].failurePolicy[] || `[]` }}"
+                operator: AnyIn
+                value:
+                  - Ignore
+              - key: "{{ request.object.webhooks[].clientConfig.url[] || `[]` }}"
+                operator: AnyIn
+                value:
+                  - "http://*"

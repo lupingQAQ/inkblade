@@ -1,0 +1,73 @@
+kind: SigmaRule
+title: escalate 动词改写已绑定角色
+id: 554eac4f-1000-277a-c632-aa0b6b4a82e6
+status: stable
+description: "用 escalate 把已绑定角色改写为 verbs/resources/apiGroups=*；既有绑定立即生效，无需重新授权。"
+references:
+  - "Kubernetes RBAC 文档 https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+  - "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+  - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: rbac-escalate-verb
+    trident.io/module: rbac-escalate-verb
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - update
+      - patch
+    objectRef.resource:
+      - clusterroles
+      - roles
+    requestObject.rules.verbs: "*"
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.rbac
+  - attack.t1098
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: rbac-escalate-verb
+  trident-module: rbac-escalate-verb
+  trident-detection-point: "K8s audit：update/patch clusterroles/roles 且新 rules.verbs 含 *"
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - update
+          - patch
+        objectRef.resource:
+          - clusterroles
+          - roles
+        requestObject.rules.verbs: "*"
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: patch
+      objectRef:
+        resource: clusterroles
+      requestObject:
+        rules:
+          - apiGroups:
+              - "*"
+            resources:
+              - "*"
+            verbs:
+              - "*"

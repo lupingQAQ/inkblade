@@ -1,0 +1,20 @@
+{
+  "key": "gitops-secret-read",
+  "name": {
+    "zh": "GitOps 凭据/高权",
+    "en": "GitOps credential and privilege"
+  },
+  "series": "权限链",
+  "description": "检测 ArgoCD/Flux 控制器 cluster-admin/secretRead/repoToken 与 GitOps 凭据 Secret。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "fixture": "提权快照 JSON 路径（缺省 lab/fixtures/privesc/<fixture>.json）",
+    "mode": "probe-only | backup-write（写类模块）",
+    "demo_target": "backup-write 演示写入目标文件（写类模块）",
+    "backup_targets": "写类模块备份目标（runner 备份闸门）"
+  },
+  "produces": "gitops-secret-read-findings",
+  "knowledge": "提权矩阵 platform-argocd-flux / cred-git-ci-token；Argo CD/Flux 安全"
+}

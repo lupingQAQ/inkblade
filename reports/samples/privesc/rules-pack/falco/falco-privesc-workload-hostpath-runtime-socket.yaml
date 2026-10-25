@@ -1,0 +1,12 @@
+# trident.io/vector: workload-hostpath-runtime-socket
+# detection-point: Falco：容器内进程打开容器运行时 socket
+- rule: Trident Privesc workload-hostpath-runtime-socket
+  desc: hostPath 挂载运行时 socket
+  condition: "evt.type in (open,openat,connect,execve) and proc=\"ctr\" and path ~ \"containerd\\.sock$\""
+  output: "Trident privilege-escalation primitive (vector=workload-hostpath-runtime-socket module=runtime-socket-escape proc=%proc.name)"
+  priority: WARNING
+  tags:
+    - trident
+    - privesc
+    - workload
+    - workload-hostpath-runtime-socket

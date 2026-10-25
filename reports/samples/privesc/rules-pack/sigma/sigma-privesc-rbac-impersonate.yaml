@@ -1,0 +1,55 @@
+kind: SigmaRule
+title: impersonate 冒充管理员主体
+id: d3549547-ad65-c33f-a249-29fd0062ceea
+status: stable
+description: 请求头 Impersonate-User/Impersonate-Group 冒充 cluster-admin 用户或组；审计只记录冒充者与被冒充者。
+references:
+  - "Kubernetes 认证/授权概览 https://kubernetes.io/docs/reference/access-authn-authz/"
+  - "MITRE ATT&CK T1078 Valid Accounts https://attack.mitre.org/techniques/T1078/"
+  - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: rbac-impersonate
+    trident.io/module: impersonate-abuse
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    impersonatedUser.username: "*"
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.rbac
+  - attack.t1078
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: rbac-impersonate
+  trident-module: impersonate-abuse
+  trident-detection-point: K8s audit：impersonatedUser 字段非空且执行敏感动作
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        impersonatedUser.username: "*"
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: get
+      objectRef:
+        resource: nodes
+      impersonatedUser:
+        username: privesc-superuser

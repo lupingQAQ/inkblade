@@ -1,0 +1,55 @@
+{
+  "kind": "privesc-node-fixture",
+  "note": "节点/控制面脆弱配置：kubelet 匿名+AlwaysAllow、etcd 无 TLS、hostPath 运行时/kubelet 目录、静态 Pod 目录可写。",
+  "nodes": [
+    {
+      "name": "k3s",
+      "providerID": "qemu:///k3s",
+      "kubelet": {
+        "port": 10250,
+        "readOnlyPort": 10255,
+        "anonymousAuth": true,
+        "authorizationMode": "AlwaysAllow",
+        "clientCAFile": "",
+        "tlsCertFile": "/var/lib/rancher/k3s/server/tls/kubelet.crt",
+        "staticPodPath": "/etc/kubernetes/manifests"
+      }
+    }
+  ],
+  "kubelets": [
+    {"node": "k3s", "port": 10250, "anonymousAuth": true, "authorizationMode": "AlwaysAllow", "reachable": true}
+  ],
+  "etcd": [
+    {"name": "k3s-etcd", "endpoint": "http://10.0.2.15:2379", "tls": false,
+     "clientCertAuth": false, "peerTLS": false, "dataDir": "/var/lib/rancher/k3s/server/db"}
+  ],
+  "pods": [
+    {
+      "name": "gpu-trainer-0",
+      "namespace": "train",
+      "serviceAccount": "train-sa",
+      "hostPID": true,
+      "hostNetwork": true,
+      "volumes": [
+        {"name": "kubelet", "hostPath": {"path": "/var/lib/kubelet"}},
+        {"name": "containerd", "hostPath": {"path": "/var/run/containerd/containerd.sock"}},
+        {"name": "docker", "hostPath": {"path": "/var/run/docker.sock"}},
+        {"name": "manifests", "hostPath": {"path": "/etc/kubernetes/manifests"}}
+      ],
+      "containers": [
+        {"name": "trainer", "image": "registry.ml-lab/train:latest",
+         "securityContext": {"privileged": true, "capabilities": {"add": ["SYS_ADMIN", "SYS_PTRACE"]}}}
+      ]
+    }
+  ],
+  "static_pods": [
+    {"path": "/etc/kubernetes/manifests/trident-proof.yaml", "writable": true,
+     "spec": {"hostNetwork": true, "containers": [{"image": "busybox", "securityContext": {"privileged": true}}]}}
+  ],
+  "runtime_sockets": [
+    {"path": "/var/run/containerd/containerd.sock", "runtime": "containerd", "mounted": true},
+    {"path": "/var/run/docker.sock", "runtime": "docker", "mounted": true},
+    {"path": "/run/crio/crio.sock", "runtime": "crio", "mounted": false}
+  ],
+  "kernel": {"version": "6.18.58-0-virt", "runc": "1.1.11", "known_cves": ["CVE-2024-21626", "CVE-2022-0492"]}
+}

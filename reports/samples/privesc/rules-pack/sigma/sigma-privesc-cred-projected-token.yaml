@@ -1,0 +1,62 @@
+kind: SigmaRule
+title: Projected SA token 过度授权
+id: a63e8c1d-cb9e-027f-7283-2d65bc7020f1
+status: stable
+description: 在 Pod 中挂载目标 SA 的 projected token（受众/有效期可调），把 token 外带到集群外长期使用。
+references:
+  - "Kubernetes Secret 文档 https://kubernetes.io/docs/concepts/configuration/secret/"
+  - "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: cred-projected-token
+    trident.io/module: sa-token-request
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - pods
+    requestObject.projectedToken: true
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.credential
+  - attack.t1552
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: cred-projected-token
+  trident-module: sa-token-request
+  trident-detection-point: K8s audit：create pod 且 volume 使用 projected serviceAccountToken
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+        objectRef.resource:
+          - pods
+        requestObject.projectedToken: true
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: pods
+      requestObject:
+        projectedToken: true

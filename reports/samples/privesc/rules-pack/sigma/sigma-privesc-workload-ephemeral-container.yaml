@@ -1,0 +1,64 @@
+kind: SigmaRule
+title: Ephemeral Container 调试注入
+id: 031bf6a9-94a4-0f5b-9d41-dcb910439506
+status: stable
+description: 向运行中 Pod 注入 ephemeral container，复用目标 Pod 的 SA token、卷与网络命名空间；可挂载宿主路径或读取 Secret。
+references:
+  - "Kubernetes Ephemeral Containers https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/"
+  - "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: workload-ephemeral-container
+    trident.io/module: privileged-workloads
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - update
+      - patch
+    objectRef.resource:
+      - pods
+    objectRef.subresource: ephemeralcontainers
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.workload
+  - attack.t1610
+  - attack.t1611
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: workload-ephemeral-container
+  trident-module: privileged-workloads
+  trident-detection-point: K8s audit：update pods/ephemeralcontainers
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - update
+          - patch
+        objectRef.resource:
+          - pods
+        objectRef.subresource: ephemeralcontainers
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: update
+      objectRef:
+        resource: pods
+        subresource: ephemeralcontainers

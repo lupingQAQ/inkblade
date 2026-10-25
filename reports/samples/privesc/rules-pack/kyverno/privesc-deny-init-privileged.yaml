@@ -1,0 +1,31 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: trident-privesc-deny-init-privileged
+  annotations:
+    trident.io/mode: monitor
+    trident.io/vector: workload-init-container-override
+    trident.io/tuning: 先 Audit 观察基线；确认无合法例外后切 Enforce
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: privesc-deny-init-privileged
+      match:
+        anyResources:
+          - kinds:
+              - Pod
+      validate:
+        message: 检查 initContainers 特权/hostPath / Inspect initContainers
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.spec.initContainers[].securityContext.privileged[] || `[]` }}"
+                operator: AnyIn
+                value:
+                  - true
+              - key: "{{ request.object.spec.initContainers[].volumeMounts[].mountPath[] || `[]` }}"
+                operator: AnyIn
+                value:
+                  - /host
+                  - /var/lib/kubelet

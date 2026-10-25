@@ -1,0 +1,66 @@
+kind: SigmaRule
+title: 高权 SA token 直接使用
+id: d9b2a13d-aa9d-b086-4265-2603c363e99f
+status: stable
+description: 以 Bearer token 调用 apiserver，创建 ClusterRoleBinding/特权 Pod；token 短期但足以完成接管。
+references:
+  - "Kubernetes Secret 文档 https://kubernetes.io/docs/concepts/configuration/secret/"
+  - "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+  - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: cred-privileged-sa-token-use
+    trident.io/module: sa-token-request
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - clusterrolebindings
+    authenticationInfo.username:
+      re: "^system:serviceaccount:.*$"
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.credential
+  - attack.t1552
+  - attack.t1078
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: cred-privileged-sa-token-use
+  trident-module: sa-token-request
+  trident-detection-point: K8s audit：高权 SA 主体创建敏感绑定
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+        objectRef.resource:
+          - clusterrolebindings
+        authenticationInfo.username:
+          re: "^system:serviceaccount:.*$"
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: clusterrolebindings
+      authenticationInfo:
+        username: "system:serviceaccount:privesc-lab:privesc-admin"

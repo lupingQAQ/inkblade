@@ -1,0 +1,65 @@
+kind: SigmaRule
+title: CNI 插件二进制替换
+id: 02b4267c-94f0-6dc6-3b3d-a5e6de3b9675
+status: stable
+description: 替换 CNI 二进制或注入 hook；CNI 以节点 root 运行，下一次 Pod 网络配置时执行恶意代码，获得所有节点 root。
+references:
+  - "CNI 规范 https://www.cni.dev/docs/spec/"
+  - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+  - "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: platform-cni-plugin
+    trident.io/module: cni-plugin-exec
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - update
+      - patch
+    objectRef.resource:
+      - daemonsets
+    requestObject.hostPath: /opt/cni/bin
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.platform
+  - attack.t1611
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: platform-cni-plugin
+  trident-module: cni-plugin-exec
+  trident-detection-point: K8s audit：CNI DaemonSet hostPath /opt/cni/bin 变更
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - update
+          - patch
+        objectRef.resource:
+          - daemonsets
+        requestObject.hostPath: /opt/cni/bin
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: update
+      objectRef:
+        resource: daemonsets
+      requestObject:
+        hostPath: /opt/cni/bin

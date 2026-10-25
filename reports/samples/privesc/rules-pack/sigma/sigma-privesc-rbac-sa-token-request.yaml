@@ -1,0 +1,62 @@
+kind: SigmaRule
+title: TokenRequest 申请高权 SA token
+id: 2d8c0ae3-16d4-f642-d38a-7214620834b7
+status: stable
+description: 调用 TokenRequest 子资源为特权 SA 申请短期 token；无需读取 Secret 即可获得其身份。
+references:
+  - "Kubernetes TokenRequest API https://kubernetes.io/docs/reference/kubernetes-api/authentication-resources/token-request-v1/"
+  - "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+  - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: rbac-sa-token-request
+    trident.io/module: sa-token-request
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - serviceaccounts
+    objectRef.subresource: token
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.rbac
+  - attack.t1552
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: rbac-sa-token-request
+  trident-module: sa-token-request
+  trident-detection-point: K8s audit：create serviceaccounts/token 子资源
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+        objectRef.resource:
+          - serviceaccounts
+        objectRef.subresource: token
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: serviceaccounts
+        subresource: token

@@ -1,0 +1,30 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: trident-privesc-deny-runtime-socket
+  annotations:
+    trident.io/mode: monitor
+    trident.io/vector: workload-hostpath-runtime-socket
+    trident.io/tuning: 先 Audit 观察基线；确认无合法例外后切 Enforce
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: privesc-deny-runtime-socket
+      match:
+        anyResources:
+          - kinds:
+              - Pod
+      validate:
+        message: 拒绝容器运行时 socket hostPath / Deny runtime socket hostPath
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.spec.volumes[].hostPath.path[] || `[]` }}"
+                operator: AnyIn
+                value:
+                  - /var/lib/kubelet
+                  - /etc/kubernetes
+                  - /var/run/containerd/containerd.sock
+                  - /var/run/docker.sock
+                  - /run/crio/crio.sock

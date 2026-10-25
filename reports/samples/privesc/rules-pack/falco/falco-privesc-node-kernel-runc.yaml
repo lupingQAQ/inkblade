@@ -1,0 +1,12 @@
+# trident.io/vector: node-kernel-runc
+# detection-point: Falco：runc 异常执行/文件描述符泄漏行为
+- rule: Trident Privesc node-kernel-runc
+  desc: 内核/runc 漏洞容器逃逸
+  condition: "evt.type in (open,openat,connect,execve) and proc=\"runc\" and suspicious=true"
+  output: "Trident privilege-escalation primitive (vector=node-kernel-runc module=kubernetes-cve-catalog proc=%proc.name)"
+  priority: CRITICAL
+  tags:
+    - trident
+    - privesc
+    - node
+    - node-kernel-runc

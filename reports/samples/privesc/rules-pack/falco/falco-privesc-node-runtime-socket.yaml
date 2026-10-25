@@ -1,0 +1,12 @@
+# trident.io/vector: node-runtime-socket
+# detection-point: Falco：容器内打开 docker/containerd socket
+- rule: Trident Privesc node-runtime-socket
+  desc: 运行时 socket 逃逸
+  condition: "evt.type in (open,openat,connect,execve) and path ~ \"docker\\.sock$\""
+  output: "Trident privilege-escalation primitive (vector=node-runtime-socket module=runtime-socket-escape proc=%proc.name)"
+  priority: CRITICAL
+  tags:
+    - trident
+    - privesc
+    - node
+    - node-runtime-socket

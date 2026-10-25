@@ -29,10 +29,14 @@ r) SHARP 在网聚合投毒：入组后篡改 reduce，结果前后差分 + 服�
 s) PFC 暂停风暴：配置写入后 pfc_pause_frames 计数暴增（≥50000）；
 t) 慢 rank 注入：straggler 使训练步时劣化 ≥2×（计时差分）；
 u) BMC 默认凭据：Redfish 默认凭据登录 200 + IPMI over LAN/匿名管理详情；
-v) 固件清单篡改：blob 篡改后哈希不匹配（签名仍有效），finding 为 high。
+v) 固件清单篡改：blob 篡改后哈希不匹配（签名仍有效），finding 为 high；
+w) optimizer state 分片：benign marker 写入 → 读回 sha256 一致 → 文件真实变更（回滚精确复原）；
+x) 数据管线篡改：分片追加重复/未知样本 → 采样器重算 sha256 检出（expected≠actual）；
+y) chat template 注入：模板/default_system 改写 → 渲染 system 槽含注入指令并检出（回滚精确复原）。
 
 边界（写入报告，不隐藏）：本验证是**本机真实进程/真实 HTTP 效果级**，靶场为
-``lab/mock_targets.py``、``lab/longctx_sim.py`` 与 ``lab/gpu_cloud_sim.py``（均仅 127.0.0.1），
+``lab/mock_targets.py``、``lab/longctx_sim.py``、``lab/gpu_cloud_sim.py`` 与
+``lab/trainstack_sim.py``（均仅 127.0.0.1），
 **不是 live K8s 集群 / 真实 GPU 驱动**；KIND（hostNetwork 绕过 NetworkPolicy）与 ARTEX 黑盒
 对标需启用虚拟化后按 ``lab/kind/run-proof.sh`` 与 ``lab/bench/artex-bench.sh`` 执行。
 """
@@ -62,7 +66,16 @@ from lab.mock_targets import _safe_name, start_all  # noqa: E402
 from lab.longctx_sim import checkpoint_shard_path, start_all as start_longctx  # noqa: E402
 from lab.gpu_cloud_sim import start_all as start_gpu_cloud  # noqa: E402
 from lab.fabric_dos_sim import start_all as start_fabric  # noqa: E402
+from lab.privesc_sim import SCENARIOS as PRIVESC_SCENARIOS, run_fake_closure  # noqa: E402
 from lab.hardware_sim import FIXTURES as HARDWARE_FIXTURES, start_all as start_hardware  # noqa: E402
+from lab.cve_sim import start_all as start_cve_sim  # noqa: E402
+from lab.trainstack_sim import (  # noqa: E402
+    data_shard_path as trainstack_data_shard,
+    optimizer_state_path as trainstack_optimizer_shard,
+    start_all as start_trainstack,
+    template_path as trainstack_template,
+)
+from trident.cve_effects import run_cve_checks  # noqa: E402
 from lab.ai_gateway_sim import (  # noqa: E402
     MASTER_KEY as AI_GATEWAY_MASTER_KEY,
     TENANT_KEYS as AI_GATEWAY_TENANT_KEYS,
@@ -87,12 +100,14 @@ FAKE_TOKEN = "hf_FAKEtokenDoNotUseSampleABCD1234wxyz"
 
 SCOPE = (
     "本机真实进程 + 真实 HTTP（127.0.0.1 回环 mock 靶场：mock_targets / longctx_sim / gpu_cloud_sim / "
-    "ai_gateway_sim / fabric_dos_sim / hardware_sim）效果级验证；非 live K8s 集群 / 真实 GPU 驱动 / "
+    "ai_gateway_sim / fabric_dos_sim / hardware_sim）+ fake-kubectl 提权闭环（lab/privesc_sim.py）"
+    "效果级验证；非 live K8s 集群 / 真实 GPU 驱动 / "
     "真实 BMC / 真实交换机 / 真实云账号。"
-    "KIND/ARTEX 需启用虚拟化后按 lab/kind 与 lab/bench 脚本执行。"
+    "KIND/ARTEX 需启用虚拟化后按 lab/kind 与 lab/bench 脚本执行；"
+    "真集群提权见 docs/PRIVESC-VERIFICATION.md。"
 )
 LIMITATIONS = [
-    "靶场为 lab/mock_targets.py + lab/longctx_sim.py + lab/gpu_cloud_sim.py + lab/ai_gateway_sim.py + lab/fabric_dos_sim.py 单进程仿真"
+    "靶场为 lab/mock_targets.py + lab/longctx_sim.py + lab/gpu_cloud_sim.py + lab/ai_gateway_sim.py + lab/fabric_dos_sim.py + lab/hardware_sim.py 单进程仿真"
     "（仅 127.0.0.1），非真实 K8s API/容器运行时/GPU 推理/云账号。",
     "sglang/areal/slime 的写面以 mock server 侧真实文件落盘为证据，不是远端生产文件系统。",
     "长上下文仿真以 token 计数提示 + KV 计数器表达 128K–1M 窗口行为，不执行真实 attention/KV 传输。",
@@ -105,6 +120,10 @@ LIMITATIONS = [
     "不等于厂商 PKI/生产供应链。",
     "KIND hostNetwork 绕过 NetworkPolicy 实证需启用 WSL2/虚拟化后执行 lab/kind/run-proof.sh。",
     "ARTEX（AGPL）仅作外部黑盒对标，本仓库不复用其代码；对标需虚拟化环境执行 lab/bench/artex-bench.sh。",
+    "提权 4 项（escalate/bind/SA token/webhook）使用 lab/privesc_sim.py 的 fake-kubectl 内存态闭环；"
+    "QEMU k3s 真集群 4 条路径证据见 reports/samples/privesc/real-paths.json 与 docs/PRIVESC-VERIFICATION.md。",
+    "训练栈仿真是 lab/trainstack_sim.py（真实 HTTP + 真实文件落盘）：不加载 Megatron/DeepSpeed 权重、"
+    "不执行 LLaMA-Factory/ms-swift/TRL 训练、不连接真实 MLflow/W&B/TensorBoard 或 etcd。",
 ]
 
 _ABS_PATH_RES = (
@@ -222,6 +241,12 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
     with TemporaryDirectory(prefix="trident-effects-") as tmp:
         root = Path(tmp)
         lab_root = root / "lab"
+        # 并行在途链可能暂不可解析；效果验证只使用通过契约校验的链（生产 CLI 仍严格失败）
+        chains_dir = root / "chains"
+        chains_dir.mkdir(parents=True, exist_ok=True)
+        for cid, chain in load_chains(CHAINS_DIR, skip_invalid=True).items():
+            (chains_dir / f"{cid}.json").write_text(
+                json.dumps(chain, ensure_ascii=False, indent=2), encoding="utf-8")
         store = EvidenceStore(root / "workspace", workspace="effects-lab")
         users = UserStore(root / "users.json")
         users.create_user("effects-tester", "x", "tester", ["effects-lab"])
@@ -240,6 +265,8 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
         fabric = start_fabric(mode="vulnerable")
         ai_gateway = start_ai_gateway(mode="vulnerable")
         hardware = start_hardware(mode="vulnerable")
+        cve_sim = start_cve_sim(mode="vulnerable", root=lab_root / "cve")
+        trainstack = start_trainstack(mode="vulnerable", root=lab_root / "trainstack")
         try:
             def admin_plane() -> dict[str, Any]:
                 state_path = lab_root / "sglang" / "admin-state.json"
@@ -1157,7 +1184,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                      "detail": f["detail"], "is_zeroday": bool(f.get("is_zeroday"))}
                     for f in run.findings
                 ]
-                generate_all(CHAINS_DIR, findings=findings, cni="native", out_dir=rule_pack)
+                generate_all(chains_dir, findings=findings, cni="native", out_dir=rule_pack)
                 matrix = validate(str(rule_pack), lab.url("/"))
                 summary = matrix["summary"]
                 hits = int(summary["rules_detected"]) + int(summary["rules_blocked"])
@@ -1189,7 +1216,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
             chain_run = store.create_run(f"effects-chain-{stamp}")
 
             def chain_e2e() -> dict[str, Any]:
-                chain = copy.deepcopy(load_chains(CHAINS_DIR)[TARGET_CHAIN])
+                chain = copy.deepcopy(load_chains(chains_dir)[TARGET_CHAIN])
                 chain_marker = f"TRIDENT-{chain_run.name}"
                 safe = _safe_name(f"/checkpoints/victim-{chain_marker}", "checkpoint")
                 chain_victim = lab_root / "slime" / safe / "model.safetensors"
@@ -1252,12 +1279,212 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
 
             checks.run("chain-e2e", "端到端链：dry-run → execute（全影响演示级 + 备份 + 三层证据）", chain_e2e)
 
+            def trainstack_optimizer_marker() -> dict[str, Any]:
+                shard_id = "ckpt-optim-effects"
+                path = trainstack_optimizer_shard(trainstack.root, shard_id)
+                path.parent.mkdir(parents=True, exist_ok=True)
+                original = b'{"shard": "ckpt-optim-effects", "step": 1, "exp_avg_norm": 0.5}\n'
+                path.write_bytes(original)
+                before_sha = _sha256_file(path)
+                marker = f"TRIDENT-{run.name}"
+                run_module(
+                    store, tester, "checkpoint-optimizer-state-poison",
+                    {
+                        "target": trainstack.url(""),
+                        "mode": "backup-write",
+                        "shard_id": shard_id,
+                        "backup_targets": [{"kind": "file", "path": str(path)}],
+                    },
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "checkpoint-optimizer-state-poison")
+                write = _trace_entry(trace, "POST", "/ckpt/optimizer")
+                read = _trace_match(trace, "GET", f"/ckpt/optimizer/{shard_id}")
+                if write.get("status") != 200 or read.get("status") != 200:
+                    raise AssertionError(
+                        f"optimizer state 写/读状态异常：{write.get('status')}/{read.get('status')}")
+                after_sha = _sha256_file(path)
+                readback = (read.get("response") or {}).get("payload")
+                if not isinstance(readback, str) or not readback:
+                    raise AssertionError("optimizer state 读回缺少 payload")
+                if after_sha == before_sha:
+                    raise AssertionError("optimizer state 分片 sha256 前后相同（未真实写入）")
+                if marker not in readback or marker not in path.read_text(
+                        encoding="utf-8", errors="replace"):
+                    raise AssertionError("optimizer state 未含 run marker")
+                if _sha256_bytes(readback.encode("utf-8")) != after_sha:
+                    raise AssertionError("读回 payload sha256 与落盘文件不一致")
+                if (read.get("response") or {}).get("optimizer_state") is not True:
+                    raise AssertionError("读回未标记 optimizer_state=true")
+                bm = BackupManager(store, run)
+                receipt = bm.rollback("checkpoint-optimizer-state-poison")
+                restored_sha = _sha256_file(path)
+                if receipt["restored"] < 1:
+                    raise AssertionError(f"optimizer state 回滚未还原：{receipt['items']}")
+                if restored_sha != before_sha or path.read_bytes() != original:
+                    raise AssertionError("optimizer state 回滚后与原始不一致")
+                return {
+                    "http_statuses": {"write": write["status"], "read": read["status"]},
+                    "shard_file": _rel(path, trainstack.root),
+                    "sha256_before": before_sha,
+                    "sha256_after": after_sha,
+                    "sha256_after_rollback": restored_sha,
+                    "readback_sha256": _sha256_bytes(readback.encode("utf-8")),
+                    "marker": marker,
+                    "marker_present": True,
+                    "optimizer_state": True,
+                    "rollback_rows": receipt["restored"],
+                    "exact_restore": True,
+                }
+
+            checks.run("trainstack-optimizer-state-marker",
+                       "optimizer state 实效：benign marker 写入并读回（sha256 一致）+ 回滚精确复原",
+                       trainstack_optimizer_marker)
+
+            def trainstack_data_tamper() -> dict[str, Any]:
+                shard_id = "shard-0001"
+                path = trainstack_data_shard(trainstack.root, shard_id)
+                before_sha = _sha256_file(path)
+                run_module(
+                    store, tester, "data-pipeline-poison",
+                    {
+                        "target": trainstack.url(""),
+                        "mode": "backup-write",
+                        "shard_id": shard_id,
+                        "backup_targets": [{"kind": "file", "path": str(path)}],
+                    },
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "data-pipeline-poison")
+                write = _trace_entry(trace, "POST", "/data/shard")
+                sampler_entries = [e for e in trace.get("entries", [])
+                                   if e.get("method") == "GET"
+                                   and "/data/sampler" in str(e.get("url", ""))]
+                if write.get("status") != 200:
+                    raise AssertionError(f"数据分片写未返回 200（实际 {write.get('status')}）")
+                if len(sampler_entries) < 2:
+                    raise AssertionError("缺少篡改前后两次 sampler 采样")
+                after = sampler_entries[-1].get("response") or {}
+                if not after.get("tamper_detected"):
+                    raise AssertionError("采样器未检出数据篡改")
+                if after.get("expected_sha256") == after.get("actual_sha256"):
+                    raise AssertionError("expected/actual sha256 相同（篡改不可检出）")
+                if int(after.get("duplicate_ids") or 0) < 1:
+                    raise AssertionError("未检出重复样本 id")
+                if int(after.get("unknown_ids") or 0) < 1:
+                    raise AssertionError("未检出未知样本 id")
+                actual_sha = _sha256_file(path)
+                if actual_sha != after.get("actual_sha256"):
+                    raise AssertionError("采样器 actual_sha256 与文件实际 sha256 不一致")
+                if actual_sha == before_sha:
+                    raise AssertionError("数据分片 sha256 前后相同（未真实追加）")
+                bm = BackupManager(store, run)
+                receipt = bm.rollback("data-pipeline-poison")
+                restored_sha = _sha256_file(path)
+                if receipt["restored"] < 1:
+                    raise AssertionError(f"数据分片回滚未还原：{receipt['items']}")
+                if restored_sha != before_sha:
+                    raise AssertionError("数据分片回滚后 sha256 与原始不一致")
+                return {
+                    "http_status": write["status"],
+                    "shard_file": _rel(path, trainstack.root),
+                    "appended": int((write.get("response") or {}).get("appended") or 0),
+                    "expected_sha256": after.get("expected_sha256"),
+                    "actual_sha256": after.get("actual_sha256"),
+                    "tamper_detected": True,
+                    "duplicate_ids": int(after.get("duplicate_ids") or 0),
+                    "unknown_ids": int(after.get("unknown_ids") or 0),
+                    "order_changed": bool(after.get("order_changed")),
+                    "sha256_after_rollback": restored_sha,
+                    "exact_restore": True,
+                }
+
+            checks.run("trainstack-data-tamper-detect",
+                       "数据采样篡改实效：分片追加重复/未知样本，采样器重算 sha256 检出并可回滚",
+                       trainstack_data_tamper)
+
+            def trainstack_template_injection() -> dict[str, Any]:
+                path = trainstack_template(trainstack.root)
+                original = path.read_bytes()
+                before_sha = _sha256_file(path)
+                marker = f"TRIDENT-{run.name}"
+                run_module(
+                    store, tester, "tokenizer-template-injection",
+                    {
+                        "target": trainstack.url(""),
+                        "mode": "backup-write",
+                        "backup_targets": [{"kind": "file", "path": str(path)}],
+                    },
+                    modules_dir=MODULES_DIR, run=run,
+                )
+                trace = _load_trace(run, "tokenizer-template-injection")
+                write = _trace_entry(trace, "POST", "/tokenizer/template")
+                renders = [e for e in trace.get("entries", [])
+                           if e.get("method") == "POST"
+                           and str(e.get("url", "")).endswith("/tokenizer/render")]
+                if write.get("status") != 200:
+                    raise AssertionError(f"模板写入未返回 200（实际 {write.get('status')}）")
+                if len(renders) < 2:
+                    raise AssertionError("缺少注入前后两次渲染")
+                render = renders[-1].get("response") or {}
+                if not render.get("template_modified"):
+                    raise AssertionError("渲染端未标记模板被改写")
+                if not render.get("injected_directive"):
+                    raise AssertionError("渲染端未检出注入指令")
+                if render.get("sanitized"):
+                    raise AssertionError("渲染端仍标记 sanitized=true（未原样拼接）")
+                system_block = str(render.get("system_block") or "")
+                if marker not in system_block:
+                    raise AssertionError("system 槽未包含 run marker 指令")
+                after_sha = _sha256_file(path)
+                if after_sha == before_sha:
+                    raise AssertionError("模板文件 sha256 前后相同（未真实写入）")
+                bm = BackupManager(store, run)
+                receipt = bm.rollback("tokenizer-template-injection")
+                restored_sha = _sha256_file(path)
+                if receipt["restored"] < 1:
+                    raise AssertionError(f"模板回滚未还原：{receipt['items']}")
+                if restored_sha != before_sha or path.read_bytes() != original:
+                    raise AssertionError("模板回滚后与原始不一致")
+                return {
+                    "http_status": write["status"],
+                    "template_file": _rel(path, trainstack.root),
+                    "sha256_before": before_sha,
+                    "sha256_after": after_sha,
+                    "template_modified": True,
+                    "injected_directive": True,
+                    "sanitized": False,
+                    "system_block_sha256": _sha256_bytes(system_block.encode("utf-8")),
+                    "marker": marker,
+                    "marker_in_system_block": True,
+                    "sha256_after_rollback": restored_sha,
+                    "rollback_rows": receipt["restored"],
+                    "exact_restore": True,
+                }
+
+            checks.run("trainstack-template-injection-detect",
+                       "模板注入实效：system 槽被注入 run marker 指令并检出（原样渲染）+ 回滚精确复原",
+                       trainstack_template_injection)
+
+            run_cve_checks(checks, store=store, tester=tester, run=run,
+                           lab_root=lab_root, cve_server=cve_sim)
+
+            # 提权原语 4 项：fake-kubectl 内存态闭环（真集群证据另见 docs/PRIVESC-VERIFICATION.md）
+            fake_privesc = run_fake_closure()
+            for item in fake_privesc["checks"]:
+                def _privesc_check(item=item):
+                    if item["status"] != "PASS":
+                        raise AssertionError(f"{item['id']} fake-kubectl 检查失败: {item}")
+                    return item["evidence"]
+                checks.run(f"privesc-{item['id']}", item["title"], _privesc_check)
+
             result = {
                 "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                 "scope": SCOPE,
                 "limitations": LIMITATIONS,
                 "run": run.name,
                 "chain_run": chain_run.name,
+                "privesc_fake_closure": fake_privesc["summary"],
                 "checks": checks.items,
                 "summary": {
                     "total": len(checks.items),
@@ -1273,7 +1500,9 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                 },
             }
         finally:
+            trainstack.shutdown()
             hardware.shutdown()
+            cve_sim.shutdown()
             ai_gateway.shutdown()
             fabric.shutdown()
             gpu_cloud.shutdown()

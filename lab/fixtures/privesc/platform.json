@@ -1,0 +1,92 @@
+{
+  "kind": "privesc-platform-fixture",
+  "note": "平台组件脆弱面：GPU Operator driver、device plugin、CNI、CSI、GitOps、Kueue/Volcano、KubeRay/LWS、Jupyter/MLflow。",
+  "deployments": [
+    {
+      "name": "argocd-application-controller",
+      "namespace": "argocd",
+      "serviceAccount": "argocd-application-controller",
+      "clusterAdmin": true,
+      "secretRead": true,
+      "repoToken": "MOCK-GITOPS-TOKEN",
+      "image": "quay.io/argoproj/argocd:v2.13.0"
+    },
+    {
+      "name": "flux-kustomize-controller",
+      "namespace": "flux-system",
+      "serviceAccount": "kustomize-controller",
+      "clusterAdmin": true,
+      "secretRead": true,
+      "repoToken": "MOCK-FLUX-TOKEN",
+      "image": "ghcr.io/fluxcd/kustomize-controller:v1.4.0"
+    },
+    {
+      "name": "mlflow-tracking",
+      "namespace": "ops",
+      "serviceAccount": "mlflow",
+      "adminApi": true,
+      "artifactWrite": true,
+      "env": [{"name": "MLFLOW_TRACKING_TOKEN", "value": "MOCK-MLFLOW-TOKEN"}]
+    },
+    {
+      "name": "jupyterhub",
+      "namespace": "ops",
+      "serviceAccount": "jupyter",
+      "notebookWrite": true,
+      "podExec": true
+    }
+  ],
+  "daemonsets": [
+    {
+      "name": "nvidia-driver-daemonset",
+      "namespace": "gpu-operator",
+      "serviceAccount": "nvidia-driver",
+      "privileged": true,
+      "hostPath": ["/dev", "/run", "/usr/lib64", "/var/lib/kubelet"],
+      "image": "nvcr.io/nvidia/driver:580.65.06"
+    },
+    {
+      "name": "nvidia-device-plugin-daemonset",
+      "namespace": "gpu-operator",
+      "serviceAccount": "nvidia-device-plugin",
+      "privileged": true,
+      "hostPath": ["/var/lib/kubelet/device-plugins", "/dev"],
+      "image": "nvcr.io/nvidia/k8s-device-plugin:v0.17.0"
+    },
+    {
+      "name": "calico-node",
+      "namespace": "kube-system",
+      "serviceAccount": "calico-node",
+      "privileged": true,
+      "hostPath": ["/opt/cni/bin", "/var/run/netns", "/lib/modules", "/var/lib/calico"],
+      "image": "calico/node:v3.29.0"
+    },
+    {
+      "name": "csi-nodeplugin-nfs",
+      "namespace": "kube-system",
+      "serviceAccount": "csi-nfs",
+      "privileged": true,
+      "hostPath": ["/var/lib/kubelet", "/dev", "/var/lib/rancher/k3s/storage"],
+      "image": "registry.k8s.io/sig-storage/nfsplugin:v4.10.0"
+    }
+  ],
+  "rayclusters": [
+    {"name": "rl-train", "namespace": "ray-system", "autoscalerSA": "ray-operator",
+     "dashboardAuth": "none", "jobSubmit": true}
+  ],
+  "leaderworkersets": [
+    {"name": "llm-lws", "namespace": "train", "operatorSA": "lws-controller-manager",
+     "secretRead": true, "privilegedTemplate": true}
+  ],
+  "queues": [
+    {"kind": "ClusterQueue", "name": "gpu-admin", "namespace": "", "adminQueue": true},
+    {"kind": "Queue", "name": "team-a", "namespace": "train", "clusterQueue": "gpu-admin"}
+  ],
+  "webhooks": [
+    {"name": "gpu-pod-mutator", "failurePolicy": "Ignore", "resource": "pods"}
+  ],
+  "secrets": [
+    {"name": "argocd-repo-creds", "namespace": "argocd", "type": "Opaque", "keys": ["username", "password"]},
+    {"name": "flux-git-auth", "namespace": "flux-system", "type": "Opaque", "keys": ["identity"]}
+  ]
+}

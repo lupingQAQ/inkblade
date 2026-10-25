@@ -1,0 +1,64 @@
+kind: SigmaRule
+title: hostPath 挂载宿主根
+id: c2fd9f69-b4c3-d465-3ac7-f53d99860f66
+status: stable
+description: "挂载 hostPath: / 到容器，读写 /etc/kubernetes、/var/lib/kubelet、宿主进程文件系统。"
+references:
+  - "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+  - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+  - "CDK 容器逃逸工具集 https://github.com/cdk-team/CDK"
+author: Trident privesc matrix
+metadata:
+  author: Trident privesc matrix
+  annotations:
+    trident.io/vector: workload-hostpath-hostroot
+    trident.io/module: privileged-workloads
+date: 2026/10/26
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - pods
+    requestObject.hostPath: /
+  condition: selection
+falsepositives:
+  - 授权的运维/CI 变更（按主体白名单收敛）
+level: high
+tags:
+  - attack.privilege_escalation
+  - trident
+  - trident.vector.workload
+  - attack.t1610
+  - attack.t1611
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-vector: workload-hostpath-hostroot
+  trident-module: privileged-workloads
+  trident-detection-point: K8s audit：create pod 且 hostPath 为 / 或敏感前缀
+  trident-replay:
+    match:
+      engine: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      selection:
+        verb:
+          - create
+        objectRef.resource:
+          - pods
+        requestObject.hostPath: /
+    event:
+      kind: sigma
+      logsource:
+        product: kubernetes
+        service: audit
+      verb: create
+      objectRef:
+        resource: pods
+      requestObject:
+        hostPath: /

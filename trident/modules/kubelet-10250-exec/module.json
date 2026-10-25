@@ -1,0 +1,16 @@
+{
+  "key": "kubelet-10250-exec",
+  "name": { "zh": "kubelet 10250 exec/run", "en": "Kubelet 10250 exec/run" },
+  "series": "权限链",
+  "description": "检测 kubelet anonymous-auth/AlwaysAllow/readOnlyPort 暴露：/exec、/run 可被未认证调用。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "fixture": "提权快照 JSON 路径（缺省 lab/fixtures/privesc/node.json）",
+    "mode": "probe-only",
+    "backup_targets": "只读模块无需备份"
+  },
+  "produces": "kubelet-10250-exec-findings",
+  "knowledge": "提权矩阵 node-kubelet-10250-exec / node-kubelet-10250-run；kube-hunter；K8s kubelet authn/authz"
+}
