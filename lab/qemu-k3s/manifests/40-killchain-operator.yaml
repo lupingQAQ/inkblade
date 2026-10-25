@@ -1,0 +1,60 @@
+# Trident kill-chain lab fixture: an intentionally over-broad operator SA.
+# This is lab scaffolding, not a production manifest. The objective chain's
+# stage 7 removes it when run with --cleanup-fixture (the lab wrapper does).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: trident-killchain
+  labels:
+    trident.io/lab: kill-chain
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: trident-operator
+  namespace: trident-killchain
+  labels:
+    trident.io/lab: kill-chain
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: trident-operator-broad
+  labels:
+    trident.io/lab: kill-chain
+rules:
+  # Deliberately broad: the fixture represents an operator with RBAC write and
+  # bind permissions. Creating a cluster-admin binding is the escalation step.
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["*"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources:
+      - serviceaccounts
+      - serviceaccounts/token
+      - secrets
+      - pods
+      - pods/exec
+      - namespaces
+      - configmaps
+      - services
+      - nodes
+    verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets"]
+    verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: trident-operator-broad
+  labels:
+    trident.io/lab: kill-chain
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: trident-operator-broad
+subjects:
+  - kind: ServiceAccount
+    name: trident-operator
+    namespace: trident-killchain

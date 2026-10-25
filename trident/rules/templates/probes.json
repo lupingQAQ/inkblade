@@ -15,208 +15,1018 @@
   "chains": {
     "flat-network-admin-plane-weight-poison": {
       "replay": [
-        {"module": "sglang-admin-failopen", "method": "POST", "path": "/pause", "body": {}, "dest_ip": "10.42.0.9", "dest_port": 30000, "admin_plane": true},
-        {"module": "slime-weight-pull-poison", "method": "POST", "path": "/pull_weights", "body": {"source_dir": "/models/trident-probe", "local_checkpoint_dir": "/checkpoints/victim"}, "dest_ip": "10.42.0.9", "dest_port": 30000, "admin_plane": true, "on_success": "weight-write-marker"}
+        {
+          "module": "sglang-admin-failopen",
+          "method": "POST",
+          "path": "/pause",
+          "body": {},
+          "dest_ip": "10.42.0.9",
+          "dest_port": 30000,
+          "admin_plane": true
+        },
+        {
+          "module": "slime-weight-pull-poison",
+          "method": "POST",
+          "path": "/pull_weights",
+          "body": {
+            "source_dir": "/models/trident-probe",
+            "local_checkpoint_dir": "/checkpoints/victim"
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 30000,
+          "admin_plane": true,
+          "on_success": "weight-write-marker"
+        }
       ],
       "fixtures": []
     },
     "ray-dashboard-cluster-takeover": {
       "replay": [
-        {"module": "ray-dashboard-job", "method": "POST", "path": "/api/jobs/", "body": {"entrypoint": "python trident_probe.py"}, "dest_ip": "10.42.0.9", "dest_port": 8265, "admin_plane": true, "on_success": "ray-job"}
+        {
+          "module": "ray-dashboard-job",
+          "method": "POST",
+          "path": "/api/jobs/",
+          "body": {
+            "entrypoint": "python trident_probe.py"
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 8265,
+          "admin_plane": true,
+          "on_success": "ray-job"
+        }
       ],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "create", "objectRef": {"resource": "rolebinding", "name": "trident-demo-binding", "roleRef": {"name": "cluster-admin"}}, "subject_sa": "system:serviceaccount:ray-system:ray-operator"},
-        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "create", "objectRef": {"resource": "pods", "subresource": "exec", "name": "ray-head-rl-train-0"}, "subject_sa": "system:serviceaccount:ray-system:ray-operator"}
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "rolebinding",
+            "name": "trident-demo-binding",
+            "roleRef": {
+              "name": "cluster-admin"
+            }
+          },
+          "subject_sa": "system:serviceaccount:ray-system:ray-operator"
+        },
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pods",
+            "subresource": "exec",
+            "name": "ray-head-rl-train-0"
+          },
+          "subject_sa": "system:serviceaccount:ray-system:ray-operator"
+        }
       ]
     },
     "nccl-gradient-injection": {
       "replay": [],
       "fixtures": [
-        {"kind": "falco", "event_type": "nccl_join", "channel": "collective", "external_rank": true, "dest_port": 29500, "source_zone": "tenant-workload"},
-        {"kind": "suricata", "src": "10.42.0.21", "dest_ip": "10.42.0.9", "dest_port": 29500, "proto": "tcp", "uri": ""}
+        {
+          "kind": "falco",
+          "event_type": "nccl_join",
+          "channel": "collective",
+          "external_rank": true,
+          "dest_port": 29500,
+          "source_zone": "tenant-workload"
+        },
+        {
+          "kind": "suricata",
+          "src": "10.42.0.21",
+          "dest_ip": "10.42.0.9",
+          "dest_port": 29500,
+          "proto": "tcp",
+          "uri": ""
+        }
       ]
     },
     "shared-pvc-supply-chain-poison": {
       "replay": [],
       "fixtures": [
-        {"kind": "falco", "event_type": "open_write", "path": "/shared/hf-cache/models/victim/model.safetensors", "proc": "curl", "training_process": false},
-        {"kind": "falco", "event_type": "deserialize", "library": "torch.load", "channel": "shared-volume", "object_source": "/shared/hf-cache"},
-        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "patch", "objectRef": {"resource": "persistentvolumeclaims", "name": "weights-pvc"}, "subject_sa": "system:serviceaccount:ml-training:eval-worker"}
+        {
+          "kind": "falco",
+          "event_type": "open_write",
+          "path": "/shared/hf-cache/models/victim/model.safetensors",
+          "proc": "curl",
+          "training_process": false
+        },
+        {
+          "kind": "falco",
+          "event_type": "deserialize",
+          "library": "torch.load",
+          "channel": "shared-volume",
+          "object_source": "/shared/hf-cache"
+        },
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "patch",
+          "objectRef": {
+            "resource": "persistentvolumeclaims",
+            "name": "weights-pvc"
+          },
+          "subject_sa": "system:serviceaccount:ml-training:eval-worker"
+        }
       ]
     },
     "ssrf-sa-token-cloud-metadata": {
       "replay": [
-        {"module": "ssrf-imds-credential", "method": "GET", "path": "/mock-imds/azure/metadata/instance?api-version=2021-02-01", "body": null, "dest_ip": "169.254.169.254", "dest_port": 80, "admin_plane": false}
+        {
+          "module": "ssrf-imds-credential",
+          "method": "GET",
+          "path": "/mock-imds/azure/metadata/instance?api-version=2021-02-01",
+          "body": null,
+          "dest_ip": "169.254.169.254",
+          "dest_port": 80,
+          "admin_plane": false
+        }
       ],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "cloud-egress-credentials"}, "subject_sa": "system:serviceaccount:ml-inference:default"}
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "get",
+          "objectRef": {
+            "resource": "secret",
+            "name": "cloud-egress-credentials"
+          },
+          "subject_sa": "system:serviceaccount:ml-inference:default"
+        }
       ]
     },
     "observability-pivot-precision-strike": {
       "replay": [
-        {"module": "observability-exposure", "method": "GET", "path": "/__routes__", "body": null, "dest_ip": "10.42.0.9", "dest_port": 30000, "admin_plane": false}
+        {
+          "module": "observability-exposure",
+          "method": "GET",
+          "path": "/__routes__",
+          "body": null,
+          "dest_ip": "10.42.0.9",
+          "dest_port": 30000,
+          "admin_plane": false
+        }
       ],
       "fixtures": []
     },
     "pickle-channel-unauth-execution": {
       "replay": [
-        {"module": "areal-load-pickle", "method": "POST", "path": "/create_engine", "body": {"module": "mock_probe", "cls": "Probe"}, "dest_ip": "10.42.0.9", "dest_port": 9000, "admin_plane": true}
+        {
+          "module": "areal-load-pickle",
+          "method": "POST",
+          "path": "/create_engine",
+          "body": {
+            "module": "mock_probe",
+            "cls": "Probe"
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 9000,
+          "admin_plane": true
+        }
       ],
       "fixtures": [
-        {"kind": "falco", "event_type": "deserialize", "library": "pickle", "channel": "checkpoint-socket", "object_source": "recv_pyobj"}
+        {
+          "kind": "falco",
+          "event_type": "deserialize",
+          "library": "pickle",
+          "channel": "checkpoint-socket",
+          "object_source": "recv_pyobj"
+        }
       ]
     },
     "aws-role-weight-bucket": {
       "replay": [
-        {"module": "multi-cloud-imds-credentials", "method": "GET", "path": "/mock-imds/aws/latest/meta-data/iam/security-credentials/role", "body": null, "dest_ip": "169.254.169.254", "dest_port": 80, "admin_plane": false}
+        {
+          "module": "multi-cloud-imds-credentials",
+          "method": "GET",
+          "path": "/mock-imds/aws/latest/meta-data/iam/security-credentials/role",
+          "body": null,
+          "dest_ip": "169.254.169.254",
+          "dest_port": 80,
+          "admin_plane": false
+        }
       ],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "instance-role-credentials"}, "subject_sa": "system:serviceaccount:ml-training:default"}
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "get",
+          "objectRef": {
+            "resource": "secret",
+            "name": "instance-role-credentials"
+          },
+          "subject_sa": "system:serviceaccount:ml-training:default"
+        }
       ]
     },
     "azure-managed-identity-blob-weight": {
       "replay": [
-        {"module": "multi-cloud-imds-credentials", "method": "GET", "path": "/mock-imds/azure/metadata/instance?api-version=2021-02-01", "body": null, "dest_ip": "169.254.169.254", "dest_port": 80, "admin_plane": false}
+        {
+          "module": "multi-cloud-imds-credentials",
+          "method": "GET",
+          "path": "/mock-imds/azure/metadata/instance?api-version=2021-02-01",
+          "body": null,
+          "dest_ip": "169.254.169.254",
+          "dest_port": 80,
+          "admin_plane": false
+        }
       ],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "managed-identity-credentials"}, "subject_sa": "system:serviceaccount:ml-training:default"}
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "get",
+          "objectRef": {
+            "resource": "secret",
+            "name": "managed-identity-credentials"
+          },
+          "subject_sa": "system:serviceaccount:ml-training:default"
+        }
       ]
     },
     "ali-ram-role-oss-weight": {
       "replay": [
-        {"module": "multi-cloud-imds-credentials", "method": "GET", "path": "/mock-imds/aliyun/latest/meta-data/ram/security-credentials/", "body": null, "dest_ip": "169.254.169.254", "dest_port": 80, "admin_plane": false}
+        {
+          "module": "multi-cloud-imds-credentials",
+          "method": "GET",
+          "path": "/mock-imds/aliyun/latest/meta-data/ram/security-credentials/",
+          "body": null,
+          "dest_ip": "169.254.169.254",
+          "dest_port": 80,
+          "admin_plane": false
+        }
       ],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "ram-role-credentials"}, "subject_sa": "system:serviceaccount:ml-training:default"}
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "get",
+          "objectRef": {
+            "resource": "secret",
+            "name": "ram-role-credentials"
+          },
+          "subject_sa": "system:serviceaccount:ml-training:default"
+        }
       ]
     },
     "tencent-cam-role-cos-weight": {
       "replay": [
-        {"module": "multi-cloud-imds-credentials", "method": "GET", "path": "/mock-imds/tencent/latest/meta-data/cam/security-credentials/", "body": null, "dest_ip": "169.254.169.254", "dest_port": 80, "admin_plane": false}
+        {
+          "module": "multi-cloud-imds-credentials",
+          "method": "GET",
+          "path": "/mock-imds/tencent/latest/meta-data/cam/security-credentials/",
+          "body": null,
+          "dest_ip": "169.254.169.254",
+          "dest_port": 80,
+          "admin_plane": false
+        }
       ],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "cam-role-credentials"}, "subject_sa": "system:serviceaccount:ml-training:default"}
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "get",
+          "objectRef": {
+            "resource": "secret",
+            "name": "cam-role-credentials"
+          },
+          "subject_sa": "system:serviceaccount:ml-training:default"
+        }
       ]
     },
     "gpu-network-operator-host-escape": {
       "replay": [],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "create", "objectRef": {"resource": "pod", "name": "trident-priv-escape"}, "requestObject": {"privileged": true, "hostPath": "/var/run/docker.sock"}, "subject_sa": "system:serviceaccount:gpu-operator:nvidia-operator"}
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pod",
+            "name": "trident-priv-escape"
+          },
+          "requestObject": {
+            "privileged": true,
+            "hostPath": "/var/run/docker.sock"
+          },
+          "subject_sa": "system:serviceaccount:gpu-operator:nvidia-operator"
+        }
       ]
     },
     "ib-rdma-collective-injection": {
       "replay": [],
       "fixtures": [
-        {"kind": "falco", "event_type": "nccl_join", "channel": "rdma-fabric", "external_rank": true, "hostnetwork_bypass": true, "dest_port": 29500, "source_zone": "tenant-workload"},
-        {"kind": "suricata", "src": "10.42.0.21", "dest_ip": "10.42.0.9", "dest_port": 29500, "proto": "tcp", "uri": ""}
+        {
+          "kind": "falco",
+          "event_type": "nccl_join",
+          "channel": "rdma-fabric",
+          "external_rank": true,
+          "hostnetwork_bypass": true,
+          "dest_port": 29500,
+          "source_zone": "tenant-workload"
+        },
+        {
+          "kind": "suricata",
+          "src": "10.42.0.21",
+          "dest_ip": "10.42.0.9",
+          "dest_port": 29500,
+          "proto": "tcp",
+          "uri": ""
+        }
       ]
     },
     "imex-computedomain-gpu-memory-crossing": {
       "replay": [],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "create", "objectRef": {"resource": "pod", "name": "nvidia-driver-daemonset-abc"}, "requestObject": {"privileged": true, "hostDevice": "imex-channel"}, "subject_sa": "system:serviceaccount:gpu-operator:nvidia-driver"}
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pod",
+            "name": "nvidia-driver-daemonset-abc"
+          },
+          "requestObject": {
+            "privileged": true,
+            "hostDevice": "imex-channel"
+          },
+          "subject_sa": "system:serviceaccount:gpu-operator:nvidia-driver"
+        }
       ]
     },
     "prefill-decode-kv-inference-manipulation": {
       "replay": [],
       "fixtures": [
-        {"kind": "falco", "event_type": "nccl_join", "channel": "kv-cache-transfer", "external_rank": true, "dest_port": 45678, "source_zone": "tenant-workload"},
-        {"kind": "suricata", "src": "10.42.0.21", "dest_ip": "10.42.0.9", "dest_port": 45678, "proto": "tcp", "uri": ""}
+        {
+          "kind": "falco",
+          "event_type": "nccl_join",
+          "channel": "kv-cache-transfer",
+          "external_rank": true,
+          "dest_port": 45678,
+          "source_zone": "tenant-workload"
+        },
+        {
+          "kind": "suricata",
+          "src": "10.42.0.21",
+          "dest_ip": "10.42.0.9",
+          "dest_port": 45678,
+          "proto": "tcp",
+          "uri": ""
+        }
       ]
     },
     "long-context-cache-leak": {
       "replay": [
-        {"module": "prefix-cache-cross-tenant-leak", "method": "POST", "path": "/v1/chat/completions", "body": {"model": "mock-model", "messages": [{"role": "user", "content": "trident-longctx-probe"}], "context_window": "128k", "prompt_tokens": 4096, "max_tokens": 1, "prompt_prefix": "TRIDENT-PREFIX-VALIDATE"}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false}
+        {
+          "module": "prefix-cache-cross-tenant-leak",
+          "method": "POST",
+          "path": "/v1/chat/completions",
+          "body": {
+            "model": "mock-model",
+            "messages": [
+              {
+                "role": "user",
+                "content": "trident-longctx-probe"
+              }
+            ],
+            "context_window": "128k",
+            "prompt_tokens": 4096,
+            "max_tokens": 1,
+            "prompt_prefix": "TRIDENT-PREFIX-VALIDATE"
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 8000,
+          "admin_plane": false
+        }
       ],
       "fixtures": []
     },
     "pd-kv-poison": {
       "replay": [],
       "fixtures": [
-        {"kind": "suricata", "src": "10.42.0.21", "dest_ip": "10.42.0.9", "dest_port": 45678, "proto": "tcp", "uri": "/kv/transfer"},
-        {"kind": "falco", "event_type": "nccl_join", "channel": "kv-cache-transfer", "external_rank": true, "dest_port": 45678, "source_zone": "tenant-workload"}
+        {
+          "kind": "suricata",
+          "src": "10.42.0.21",
+          "dest_ip": "10.42.0.9",
+          "dest_port": 45678,
+          "proto": "tcp",
+          "uri": "/kv/transfer"
+        },
+        {
+          "kind": "falco",
+          "event_type": "nccl_join",
+          "channel": "kv-cache-transfer",
+          "external_rank": true,
+          "dest_port": 45678,
+          "source_zone": "tenant-workload"
+        }
       ]
     },
     "vpc-cni-dual-control-plane-lateral": {
       "replay": [],
       "fixtures": [
-        {"kind": "suricata", "src": "10.42.0.21", "dest_ip": "169.254.169.254", "dest_port": 80, "proto": "tcp", "uri": "/latest/meta-data/iam/security-credentials/role", "sg_gap": true}
+        {
+          "kind": "suricata",
+          "src": "10.42.0.21",
+          "dest_ip": "169.254.169.254",
+          "dest_port": 80,
+          "proto": "tcp",
+          "uri": "/latest/meta-data/iam/security-credentials/role",
+          "sg_gap": true
+        }
       ]
     },
     "agent-platform-zero-precondition-lateral": {
       "replay": [
-        {"module": "dify-local-sandbox-unauth-rce", "method": "POST", "path": "/v1/jobs/run", "body": {"script": "echo trident-probe"}, "dest_ip": "10.42.0.9", "dest_port": 80, "admin_plane": false, "on_success": "sandbox-exec"},
-        {"module": "metadata-egress", "method": "GET", "path": "/mock-imds/aliyun/latest/meta-data/ram/security-credentials/", "body": null, "dest_ip": "169.254.169.254", "dest_port": 80, "admin_plane": false}
+        {
+          "module": "dify-local-sandbox-unauth-rce",
+          "method": "POST",
+          "path": "/v1/jobs/run",
+          "body": {
+            "script": "echo trident-probe"
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 80,
+          "admin_plane": false,
+          "on_success": "sandbox-exec"
+        },
+        {
+          "module": "metadata-egress",
+          "method": "GET",
+          "path": "/mock-imds/aliyun/latest/meta-data/ram/security-credentials/",
+          "body": null,
+          "dest_ip": "169.254.169.254",
+          "dest_port": 80,
+          "admin_plane": false
+        }
       ],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "default-token-sa"}, "subject_sa": "system:serviceaccount:ml-agent:default"}
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "get",
+          "objectRef": {
+            "resource": "secret",
+            "name": "default-token-sa"
+          },
+          "subject_sa": "system:serviceaccount:ml-agent:default"
+        }
       ]
     },
     "agent-platform-cross-tenant-data-chain": {
       "replay": [
-        {"module": "dify-snapshot-cross-tenant-theft", "method": "POST", "path": "/api/v1/bindings", "body": {"name": "trident-validate"}, "dest_ip": "10.42.0.9", "dest_port": 80, "admin_plane": false, "on_success": "tenant-binding"}
+        {
+          "module": "dify-snapshot-cross-tenant-theft",
+          "method": "POST",
+          "path": "/api/v1/bindings",
+          "body": {
+            "name": "trident-validate"
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 80,
+          "admin_plane": false,
+          "on_success": "tenant-binding"
+        }
       ],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "kubernetes", "service": "audit"}, "verb": "get", "objectRef": {"resource": "secret", "name": "tenant-dataset-credentials"}, "subject_sa": "system:serviceaccount:ml-agent:default"}
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "get",
+          "objectRef": {
+            "resource": "secret",
+            "name": "tenant-dataset-credentials"
+          },
+          "subject_sa": "system:serviceaccount:ml-agent:default"
+        }
       ]
     },
     "gpu-tenant-residue-chain": {
       "replay": [
-        {"module": "gpu-pool-scheduler-unauth", "method": "POST", "path": "/gpu/allocate", "body": {"tenant": "tenant-a", "device": "gpu-b-0", "namespace": "ns-a-infer", "marker": "TRIDENT-BENIGN-VALIDATE"}, "dest_ip": "10.42.0.9", "dest_port": 8080, "admin_plane": true, "on_success": "gpu-pool-admin"},
-        {"module": "gpu-pool-scheduler-unauth", "method": "POST", "path": "/gpu/release", "body": {"tenant": "tenant-a", "device": "gpu-b-0"}, "dest_ip": "10.42.0.9", "dest_port": 8080, "admin_plane": true},
-        {"module": "gpu-tenant-residue", "method": "GET", "path": "/gpu/residue?device=gpu-b-0&tenant=tenant-b", "body": null, "dest_ip": "10.42.0.9", "dest_port": 8080, "admin_plane": false},
-        {"module": "gpu-metrics-tenant-leak", "method": "GET", "path": "/gpu/metrics", "body": null, "dest_ip": "10.42.0.9", "dest_port": 8080, "admin_plane": false}
+        {
+          "module": "gpu-pool-scheduler-unauth",
+          "method": "POST",
+          "path": "/gpu/allocate",
+          "body": {
+            "tenant": "tenant-a",
+            "device": "gpu-b-0",
+            "namespace": "ns-a-infer",
+            "marker": "TRIDENT-BENIGN-VALIDATE"
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 8080,
+          "admin_plane": true,
+          "on_success": "gpu-pool-admin"
+        },
+        {
+          "module": "gpu-pool-scheduler-unauth",
+          "method": "POST",
+          "path": "/gpu/release",
+          "body": {
+            "tenant": "tenant-a",
+            "device": "gpu-b-0"
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 8080,
+          "admin_plane": true
+        },
+        {
+          "module": "gpu-tenant-residue",
+          "method": "GET",
+          "path": "/gpu/residue?device=gpu-b-0&tenant=tenant-b",
+          "body": null,
+          "dest_ip": "10.42.0.9",
+          "dest_port": 8080,
+          "admin_plane": false
+        },
+        {
+          "module": "gpu-metrics-tenant-leak",
+          "method": "GET",
+          "path": "/gpu/metrics",
+          "body": null,
+          "dest_ip": "10.42.0.9",
+          "dest_port": 8080,
+          "admin_plane": false
+        }
       ],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "gpu-pooling", "service": "scheduler"}, "action": "allocate", "authenticated": false, "cross_tenant": true, "device": "gpu-b-0"},
-        {"kind": "falco", "event_type": "mount", "device": "/dev/nvidia0", "cross_namespace": true, "proc": "python", "namespace": "ns-a-dev", "resident_namespace": "ns-a-infer"},
-        {"kind": "falco", "event_type": "exec", "proc": "nvidia-smi", "mig_reconfig": true, "device": "gpu-b-1", "profile": "1g.10gb"}
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "gpu-pooling",
+            "service": "scheduler"
+          },
+          "action": "allocate",
+          "authenticated": false,
+          "cross_tenant": true,
+          "device": "gpu-b-0"
+        },
+        {
+          "kind": "falco",
+          "event_type": "mount",
+          "device": "/dev/nvidia0",
+          "cross_namespace": true,
+          "proc": "python",
+          "namespace": "ns-a-dev",
+          "resident_namespace": "ns-a-infer"
+        },
+        {
+          "kind": "falco",
+          "event_type": "exec",
+          "proc": "nvidia-smi",
+          "mig_reconfig": true,
+          "device": "gpu-b-1",
+          "profile": "1g.10gb"
+        }
       ]
     },
     "cloud-cross-tenant-role-assume": {
       "replay": [
-        {"module": "cloud-irsa-trust-wildcard", "method": "GET", "path": "/cloud/identity?role=weight-reader", "body": null, "dest_ip": "10.42.0.9", "dest_port": 443, "admin_plane": false},
-        {"module": "cloud-irsa-trust-wildcard", "method": "POST", "path": "/cloud/identity/assume-role", "body": {"role": "weight-reader", "source_account": "999999999999"}, "dest_ip": "10.42.0.9", "dest_port": 443, "admin_plane": false, "on_success": "cloud-assume-role"},
-        {"module": "cloud-bucket-cross-tenant", "method": "GET", "path": "/cloud/bucket/list?bucket=weights-b", "body": null, "dest_ip": "10.42.0.9", "dest_port": 443, "admin_plane": false}
+        {
+          "module": "cloud-irsa-trust-wildcard",
+          "method": "GET",
+          "path": "/cloud/identity?role=weight-reader",
+          "body": null,
+          "dest_ip": "10.42.0.9",
+          "dest_port": 443,
+          "admin_plane": false
+        },
+        {
+          "module": "cloud-irsa-trust-wildcard",
+          "method": "POST",
+          "path": "/cloud/identity/assume-role",
+          "body": {
+            "role": "weight-reader",
+            "source_account": "999999999999"
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 443,
+          "admin_plane": false,
+          "on_success": "cloud-assume-role"
+        },
+        {
+          "module": "cloud-bucket-cross-tenant",
+          "method": "GET",
+          "path": "/cloud/bucket/list?bucket=weights-b",
+          "body": null,
+          "dest_ip": "10.42.0.9",
+          "dest_port": 443,
+          "admin_plane": false
+        }
       ],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "aws", "service": "cloudtrail"}, "eventName": "AssumeRole", "crossAccount": true, "trustPolicyWildcard": true, "sourceAccount": "999999999999"}
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "aws",
+            "service": "cloudtrail"
+          },
+          "eventName": "AssumeRole",
+          "crossAccount": true,
+          "trustPolicyWildcard": true,
+          "sourceAccount": "999999999999"
+        }
       ]
     },
     "ai-gateway-key-exfil": {
       "sim": "ai-gateway",
       "replay": [
-        {"sim": "ai-gateway", "module": "aigateway-fingerprint", "method": "GET", "path": "/health", "body": null, "dest_ip": "10.42.0.9", "dest_port": 4000, "admin_plane": false},
-        {"sim": "ai-gateway", "module": "aigateway-auth-bypass", "method": "POST", "path": "/v1/chat/completions", "body": {"model": "gpt-4o", "messages": [{"role": "user", "content": "trident-validate"}]}, "headers": {"Authorization": "Bearer MOCK-master-key-4c7a", "X-Forwarded-User": "admin"}, "dest_ip": "10.42.0.9", "dest_port": 4000, "admin_plane": true, "on_success": "gateway-default-key"},
-        {"sim": "ai-gateway", "module": "aigateway-upstream-key-exfil", "method": "GET", "path": "/config", "body": null, "headers": {"Authorization": "Bearer MOCK-master-key-4c7a", "X-Forwarded-User": "admin"}, "dest_ip": "10.42.0.9", "dest_port": 4000, "admin_plane": true, "on_success": "gateway-config-read"},
-        {"sim": "ai-gateway", "module": "model-registry-exposure", "method": "GET", "path": "/models", "body": null, "dest_ip": "10.42.0.9", "dest_port": 4000, "admin_plane": false},
-        {"sim": "ai-gateway", "module": "aigateway-auth-bypass", "method": "POST", "path": "/key/generate", "body": {"key_alias": "trident-validate", "tenant": "tenant-b"}, "dest_ip": "10.42.0.9", "dest_port": 4000, "admin_plane": true, "on_success": "gateway-admin-call"}
+        {
+          "sim": "ai-gateway",
+          "module": "aigateway-fingerprint",
+          "method": "GET",
+          "path": "/health",
+          "body": null,
+          "dest_ip": "10.42.0.9",
+          "dest_port": 4000,
+          "admin_plane": false
+        },
+        {
+          "sim": "ai-gateway",
+          "module": "aigateway-auth-bypass",
+          "method": "POST",
+          "path": "/v1/chat/completions",
+          "body": {
+            "model": "gpt-4o",
+            "messages": [
+              {
+                "role": "user",
+                "content": "trident-validate"
+              }
+            ]
+          },
+          "headers": {
+            "Authorization": "Bearer MOCK-master-key-4c7a",
+            "X-Forwarded-User": "admin"
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 4000,
+          "admin_plane": true,
+          "on_success": "gateway-default-key"
+        },
+        {
+          "sim": "ai-gateway",
+          "module": "aigateway-upstream-key-exfil",
+          "method": "GET",
+          "path": "/config",
+          "body": null,
+          "headers": {
+            "Authorization": "Bearer MOCK-master-key-4c7a",
+            "X-Forwarded-User": "admin"
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 4000,
+          "admin_plane": true,
+          "on_success": "gateway-config-read"
+        },
+        {
+          "sim": "ai-gateway",
+          "module": "model-registry-exposure",
+          "method": "GET",
+          "path": "/models",
+          "body": null,
+          "dest_ip": "10.42.0.9",
+          "dest_port": 4000,
+          "admin_plane": false
+        },
+        {
+          "sim": "ai-gateway",
+          "module": "aigateway-auth-bypass",
+          "method": "POST",
+          "path": "/key/generate",
+          "body": {
+            "key_alias": "trident-validate",
+            "tenant": "tenant-b"
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 4000,
+          "admin_plane": true,
+          "on_success": "gateway-admin-call"
+        }
       ],
       "fixtures": []
     },
     "fabric-silent-corruption-chain": {
       "sim": "fabric",
       "replay": [
-        {"sim": "fabric", "module": "sharp-in-network-poison", "method": "POST", "path": "/sharp/sessions", "body": {"op": "join", "session_id": "train-job-alpha", "rank": "trident-validate"}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false, "on_success": "fabric-sharp-join"},
-        {"sim": "fabric", "module": "sharp-in-network-poison", "method": "POST", "path": "/sharp/reduce", "body": {"session_id": "train-job-alpha", "contributions": [1, 2, 3, 4, 5, 6, 7, 8], "tamper_factor": 3.0}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false},
-        {"sim": "fabric", "module": "ib-subnet-manager-hijack", "method": "POST", "path": "/ib/sm/partition", "body": {"pkey": "0x8001", "add_members": ["guid-trident-validate"]}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false}
+        {
+          "sim": "fabric",
+          "module": "sharp-in-network-poison",
+          "method": "POST",
+          "path": "/sharp/sessions",
+          "body": {
+            "op": "join",
+            "session_id": "train-job-alpha",
+            "rank": "trident-validate"
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 8000,
+          "admin_plane": false,
+          "on_success": "fabric-sharp-join"
+        },
+        {
+          "sim": "fabric",
+          "module": "sharp-in-network-poison",
+          "method": "POST",
+          "path": "/sharp/reduce",
+          "body": {
+            "session_id": "train-job-alpha",
+            "contributions": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+            ],
+            "tamper_factor": 3.0
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 8000,
+          "admin_plane": false
+        },
+        {
+          "sim": "fabric",
+          "module": "ib-subnet-manager-hijack",
+          "method": "POST",
+          "path": "/ib/sm/partition",
+          "body": {
+            "pkey": "0x8001",
+            "add_members": [
+              "guid-trident-validate"
+            ]
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 8000,
+          "admin_plane": false
+        }
       ],
       "fixtures": [
-        {"kind": "falco", "event_type": "collective_reduce", "channel": "sharp-aggregation", "tampered": true, "dest_port": 8000, "source_zone": "tenant-workload"},
-        {"kind": "falco", "event_type": "fabric_config_write", "component": "partition", "authorized": false, "dest_port": 8000}
+        {
+          "kind": "falco",
+          "event_type": "collective_reduce",
+          "channel": "sharp-aggregation",
+          "tampered": true,
+          "dest_port": 8000,
+          "source_zone": "tenant-workload"
+        },
+        {
+          "kind": "falco",
+          "event_type": "fabric_config_write",
+          "component": "partition",
+          "authorized": false,
+          "dest_port": 8000
+        }
       ]
     },
     "fabric-exhaustion-chain": {
       "sim": "fabric",
       "replay": [
-        {"sim": "fabric", "module": "nccl-port-exhaustion", "method": "POST", "path": "/nccl/bootstrap", "body": {"job": "trident-validate", "ranks": 2}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false},
-        {"sim": "fabric", "module": "gang-scheduler-abuse", "method": "POST", "path": "/sched/gang", "body": {"job_id": "placeholder-validate", "gang_size": 8, "placeholders": 8, "hold": true}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false},
-        {"sim": "fabric", "module": "checkpoint-io-storm", "method": "POST", "path": "/checkpoint/io", "body": {"bytes_mb": 4096, "burst": 4}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false},
-        {"sim": "fabric", "module": "roce-pfc-storm", "method": "POST", "path": "/roce/pfc", "body": {"mode": "storm", "interfaces": ["all"]}, "dest_ip": "10.42.0.9", "dest_port": 8000, "admin_plane": false}
+        {
+          "sim": "fabric",
+          "module": "nccl-port-exhaustion",
+          "method": "POST",
+          "path": "/nccl/bootstrap",
+          "body": {
+            "job": "trident-validate",
+            "ranks": 2
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 8000,
+          "admin_plane": false
+        },
+        {
+          "sim": "fabric",
+          "module": "gang-scheduler-abuse",
+          "method": "POST",
+          "path": "/sched/gang",
+          "body": {
+            "job_id": "placeholder-validate",
+            "gang_size": 8,
+            "placeholders": 8,
+            "hold": true
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 8000,
+          "admin_plane": false
+        },
+        {
+          "sim": "fabric",
+          "module": "checkpoint-io-storm",
+          "method": "POST",
+          "path": "/checkpoint/io",
+          "body": {
+            "bytes_mb": 4096,
+            "burst": 4
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 8000,
+          "admin_plane": false
+        },
+        {
+          "sim": "fabric",
+          "module": "roce-pfc-storm",
+          "method": "POST",
+          "path": "/roce/pfc",
+          "body": {
+            "mode": "storm",
+            "interfaces": [
+              "all"
+            ]
+          },
+          "dest_ip": "10.42.0.9",
+          "dest_port": 8000,
+          "admin_plane": false
+        }
       ],
       "fixtures": [
-        {"kind": "sigma", "logsource": {"product": "fabric", "service": "resource-quota"}, "action": "port_alloc", "quota_enforced": false, "job": "trident-validate"},
-        {"kind": "falco", "event_type": "fabric_config_write", "component": "pfc", "authorized": false, "dest_port": 8000}
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "fabric",
+            "service": "resource-quota"
+          },
+          "action": "port_alloc",
+          "quota_enforced": false,
+          "job": "trident-validate"
+        },
+        {
+          "kind": "falco",
+          "event_type": "fabric_config_write",
+          "component": "pfc",
+          "authorized": false,
+          "dest_port": 8000
+        }
+      ]
+    },
+    "cluster-takeover-objective": {
+      "replay": [],
+      "fixtures": [
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "list",
+          "objectRef": {
+            "resource": "services"
+          },
+          "subject_sa": "system:serviceaccount:trident-killchain:trident-operator",
+          "responseStatus": {
+            "code": 200
+          }
+        },
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "serviceaccounts",
+            "subresource": "token",
+            "name": "trident-operator"
+          },
+          "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+        },
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "clusterrolebindings",
+            "name": "trident-pwn-crb-demo",
+            "roleRef": {
+              "name": "cluster-admin"
+            }
+          },
+          "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+        },
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pods",
+            "name": "trident-pwn-pod-demo"
+          },
+          "requestObject": {
+            "privileged": true,
+            "hostPID": true
+          },
+          "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+        },
+        {
+          "kind": "falco",
+          "event_type": "open_write",
+          "path": "/root/TRIDENT-PROOF-demo",
+          "proc": "sh",
+          "privileged": true,
+          "container": "proof"
+        },
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "list",
+          "objectRef": {
+            "resource": "secrets"
+          },
+          "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+        },
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "delete",
+          "objectRef": {
+            "resource": "clusterrolebindings",
+            "name": "trident-pwn-crb-demo"
+          },
+          "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+        },
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "clusterrolebinding",
+            "name": "trident-pwn-crb-demo",
+            "roleRef": {
+              "name": "cluster-admin"
+            }
+          },
+          "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+        },
+        {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pods",
+            "subresource": "exec",
+            "name": "trident-pwn-pod-demo"
+          },
+          "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+        }
       ]
     }
   }

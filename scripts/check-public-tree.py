@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Iterable
 
 DEFAULT_EXCLUDED_DIRS = frozenset({
-    ".git", ".superpowers", "__pycache__", ".pytest_cache", ".mypy_cache",
+    ".git", ".superpowers", "__pycache__", ".pytest_cache", ".mypy_cache", ".cache", ".envs",
     ".venv", "venv", "env", "node_modules", ".idea", ".vscode",
     # 本地 VM/QEMU 实验产物（第三方 QEMU 文档含 Windows 示例路径，不属于本仓公开源码）
     "qemu-k3s",

@@ -1,0 +1,179 @@
+{
+  "id": "cluster-takeover-objective",
+  "title": {
+    "zh": "内网入口 → 集群最高权限（夺权证明链）",
+    "en": "Intranet entry → highest cluster privilege (takeover proof chain)"
+  },
+  "category": "经典攻击链",
+  "requires": [
+    "exposure-mapping",
+    "rbac-mapping",
+    "escape-primitives",
+    "overprivileged-sa-escalation"
+  ],
+  "preconditions": [
+    {"expr": "findings('exposure-mapping').count >= 1"},
+    {"expr": "findings('rbac-mapping').count >= 1"}
+  ],
+  "steps": [
+    {"id": "stage-1-entry", "module": "cluster-entry",
+     "params": {"stage": 1, "mode": "read-only-discovery"}, "writes": false,
+     "backup_targets": []},
+    {"id": "stage-2-credential", "module": "cluster-credential",
+     "params": {"stage": 2, "mode": "token-request"}, "writes": false,
+     "backup_targets": [], "depends_on": ["stage-1-entry"]},
+    {"id": "stage-3-rbac-escalation", "module": "cluster-rbac-escalation",
+     "params": {"stage": 3, "mode": "cluster-admin-binding"}, "writes": true,
+     "backup_targets": [
+       {"kind": "kube", "resource": "rolebinding", "name": "trident-pwn-rb-<proof-marker>", "namespace": "trident-killchain"},
+       {"kind": "kube", "resource": "clusterrolebinding", "name": "trident-pwn-crb-<proof-marker>", "namespace": ""}
+     ], "depends_on": ["stage-2-credential"]},
+    {"id": "stage-4-privileged-pod", "module": "cluster-privileged-pod",
+     "params": {"stage": 4, "mode": "privileged-hostpath-pod"}, "writes": true,
+     "backup_targets": [
+       {"kind": "kube", "resource": "pod", "name": "trident-pwn-pod-<proof-marker>", "namespace": "trident-killchain"}
+     ], "depends_on": ["stage-3-rbac-escalation"]},
+    {"id": "stage-5-node-marker", "module": "cluster-node-marker",
+     "params": {"stage": 5, "mode": "host-root-write"}, "writes": true,
+     "backup_targets": [
+       {"kind": "node-file", "path": "/root/TRIDENT-PROOF-<proof-marker>", "via": "trident-pwn-pod-<proof-marker>"}
+     ], "depends_on": ["stage-4-privileged-pod"]},
+    {"id": "stage-6-cluster-proof", "module": "cluster-proof",
+     "params": {"stage": 6, "mode": "secret-enumeration-and-test-objects"}, "writes": true,
+     "backup_targets": [
+       {"kind": "kube", "resource": "namespace", "name": "trident-proof-<proof-marker>", "namespace": ""},
+       {"kind": "kube", "resource": "configmap", "name": "trident-proof", "namespace": "trident-proof-<proof-marker>"}
+     ], "depends_on": ["stage-5-node-marker"]},
+    {"id": "stage-7-cleanup", "module": "cluster-cleanup",
+     "params": {"stage": 7, "mode": "delete-and-verify"}, "writes": true,
+     "backup_targets": [
+       {"kind": "kube", "resource": "clusterrolebinding", "name": "trident-pwn-crb-<proof-marker>", "namespace": ""},
+       {"kind": "kube", "resource": "rolebinding", "name": "trident-pwn-rb-<proof-marker>", "namespace": "trident-killchain"},
+       {"kind": "kube", "resource": "pod", "name": "trident-pwn-pod-<proof-marker>", "namespace": "trident-killchain"},
+       {"kind": "node-file", "path": "/root/TRIDENT-PROOF-<proof-marker>", "via": "trident-pwn-pod-<proof-marker>"}
+     ], "depends_on": ["stage-6-cluster-proof"]}
+  ],
+  "objective": {
+    "version": 1,
+    "chain": "cluster-takeover-objective",
+    "highest_privilege": "cluster-admin + node root",
+    "proof_marker_prefix": "TRIDENT-PROOF",
+    "namespace_default": "trident-killchain",
+    "fixture": {
+      "namespace": "trident-killchain",
+      "serviceaccount": "trident-operator",
+      "clusterrole": "trident-operator-broad",
+      "clusterrolebinding": "trident-operator-broad",
+      "note": "实验室夹具：over-broad ClusterRole + 可创建 RoleBinding；真实评估中该夹具代表既有 operator 权限姿态"
+    },
+    "hardware_gates": [
+      {"id": "switch-fabric", "status": "read-only-version-gate", "max_action": "只读",
+       "reason": "无物理交换机/带外管理访问；以版本矩阵与只读证据代替，不执行硬件写入"},
+      {"id": "bmc-oob", "status": "read-only-version-gate", "max_action": "只读",
+       "reason": "不触达 BMC/带外控制面；仅登记版本与暴露面证据"}
+    ],
+    "stages": [
+      {
+        "index": 1, "id": "stage-1-entry", "module": "cluster-entry",
+        "title": {"zh": "入口：暴露服务 / Ray / 网关 / 训练控制面", "en": "Entry: exposed service / Ray / gateway / training control plane"},
+        "primitive": "NodePort/Service 暴露面枚举 + 未授权/弱鉴权控制面识别 + operator SA 权限盘点",
+        "writes": false,
+        "preconditions": ["集群 /readyz 返回 ok", "至少一个 NodePort/Service 暴露面可枚举", "目标 operator ServiceAccount 存在且 RBAC 可读"],
+        "backup_targets": [],
+        "success_evidence": ["kubectl get svc -A -o json 的服务清单", "入口 URL 的 HTTP 探测结果", "kubectl auth can-i --list --as=<operator SA> 的权限矩阵"],
+        "fallback": "若入口 HTTP 不可达：仅以 API 层 Service 暴露证据降级，不进入凭据阶段",
+        "timeout_s": 90, "confirm": true,
+        "detection_rules": ["sigma-cluster-takeover-entry"]
+      },
+      {
+        "index": 2, "id": "stage-2-credential", "module": "cluster-credential",
+        "title": {"zh": "凭据与 SA：token / IRSA / 默认 key", "en": "Credentials and SA: token / IRSA / default key"},
+        "primitive": "ServiceAccount TokenRequest 取得 bearer token；盘点 IRSA/默认 key 分支并标注版本闸门",
+        "writes": false,
+        "preconditions": ["operator ServiceAccount 存在", "TokenRequest 成功且 whoami 返回该 SA", "token 具备 create rolebindings/clusterrolebindings 权限"],
+        "backup_targets": [],
+        "success_evidence": ["token 指纹（sha256 前 16 位 + 尾 4 位，不落明文）", "kubectl auth whoami 的身份结果", "token 作用域的 can-i 矩阵", "IRSA/默认 key 分支的版本闸门声明"],
+        "fallback": "token 不可用：回退到默认 SA token 只读盘点；若仍不可用则中止，不使用任何默认口令尝试",
+        "timeout_s": 60, "confirm": true,
+        "detection_rules": ["sigma-cluster-token-harvest"]
+      },
+      {
+        "index": 3, "id": "stage-3-rbac-escalation", "module": "cluster-rbac-escalation",
+        "title": {"zh": "RBAC 提权：operator ClusterRole → create RoleBinding cluster-admin", "en": "RBAC escalation: operator ClusterRole → create cluster-admin binding"},
+        "primitive": "使用窃取的 operator token 创建 namespace RoleBinding + ClusterRoleBinding 指向 cluster-admin，验证集群级 can-i 全通",
+        "writes": true,
+        "preconditions": ["token 有效且 whoami 为 operator SA", "token 具备 create rolebindings 与 create clusterrolebindings", "目标 namespace 已存在"],
+        "backup_targets": [
+          {"kind": "kube", "resource": "rolebinding", "name": "trident-pwn-rb-<proof-marker>", "namespace": "trident-killchain"},
+          {"kind": "kube", "resource": "clusterrolebinding", "name": "trident-pwn-crb-<proof-marker>", "namespace": ""}
+        ],
+        "success_evidence": ["两个绑定的对象 JSON（roleRef.name=cluster-admin）", "token 作用域 kubectl auth can-i '*' '*' --all-namespaces = yes", "cluster-admin 绑定创建前后的 can-i 对比"],
+        "fallback": "ClusterRoleBinding 被 RBAC 防提权拒绝：降级为 namespace RoleBinding 并标记未达集群级，不伪造 PROOF",
+        "timeout_s": 60, "confirm": true,
+        "detection_rules": ["sigma-cluster-rbac-takeover", "alert-rolebinding-creation"]
+      },
+      {
+        "index": 4, "id": "stage-4-privileged-pod", "module": "cluster-privileged-pod",
+        "title": {"zh": "特权 Pod：hostPath / socket / caps", "en": "Privileged Pod: hostPath / socket / caps"},
+        "primitive": "以 cluster-admin token 创建 privileged + hostPID + hostPath=/ 的 Pod，取得节点文件系统写入面",
+        "writes": true,
+        "preconditions": ["cluster-admin can-i 已验证", "目标 namespace 存在", "Pod 可调度到 Ready 节点"],
+        "backup_targets": [
+          {"kind": "kube", "resource": "pod", "name": "trident-pwn-pod-<proof-marker>", "namespace": "trident-killchain"}
+        ],
+        "success_evidence": ["Pod 对象 JSON：privileged=true / hostPID=true / hostPath=/", "Pod phase=Running", "准入策略对照（deny-privileged-pod 默认 monitor）"],
+        "fallback": "Pod 被准入拒绝或镜像不可拉取：保留 RBAC 证据并以准入证据降级，不宣称节点 root",
+        "timeout_s": 180, "confirm": true,
+        "detection_rules": ["sigma-cluster-privileged-pod", "deny-privileged-pod"]
+      },
+      {
+        "index": 5, "id": "stage-5-node-marker", "module": "cluster-node-marker",
+        "title": {"zh": "节点 root marker：hostPath 写入 + 回读哈希", "en": "Node root marker: hostPath write + read-back hash"},
+        "primitive": "在特权 Pod 内以 uid=0 向 /host/root 写入唯一 marker，sha256sum 回读并与本地哈希比对",
+        "writes": true,
+        "preconditions": ["特权 Pod Running", "hostPath=/ 已挂载到 /host", "Pod 内 uid=0"],
+        "backup_targets": [
+          {"kind": "node-file", "path": "/root/TRIDENT-PROOF-<proof-marker>", "via": "trident-pwn-pod-<proof-marker>"}
+        ],
+        "success_evidence": ["id 输出 uid=0(root)", "cat /host/etc/hostname 的节点名", "节点 marker 内容 + sha256 + 回读一致", "marker 路径位于节点 /root（非容器可写层）"],
+        "fallback": "写入失败：删除 Pod 并以 Pod 逃逸原语证据降级；不伪造节点 root 结论",
+        "timeout_s": 120, "confirm": true,
+        "detection_rules": ["falco-node-root-marker-write"]
+      },
+      {
+        "index": 6, "id": "stage-6-cluster-proof", "module": "cluster-proof",
+        "title": {"zh": "集群级证明：列举 secrets / 创建测试 ns / 读取测试 ConfigMap / 节点 proof 文件", "en": "Cluster-level proof: list secrets / create test namespace / read test ConfigMap / node proof file"},
+        "primitive": "以 cluster-admin token 列举全集群 secret 名称、创建测试 namespace 与 ConfigMap、回读对象，并复核节点 proof 文件",
+        "writes": true,
+        "preconditions": ["cluster-admin token 有效", "节点 marker 仍可回读", "可创建 namespace（cluster-scope create）"],
+        "backup_targets": [
+          {"kind": "kube", "resource": "namespace", "name": "trident-proof-<proof-marker>", "namespace": ""},
+          {"kind": "kube", "resource": "configmap", "name": "trident-proof", "namespace": "trident-proof-<proof-marker>"}
+        ],
+        "success_evidence": ["集群 secret 名称清单（不读取 value）", "测试 namespace 创建成功", "测试 ConfigMap 创建 + 回读一致", "节点 proof 文件 sha256 复核"],
+        "fallback": "namespace 创建失败：以 secret 列举 + 节点 marker 作为集群级证据，并标记测试对象缺失",
+        "timeout_s": 90, "confirm": true,
+        "detection_rules": ["sigma-cluster-proof-actions"]
+      },
+      {
+        "index": 7, "id": "stage-7-cleanup", "module": "cluster-cleanup",
+        "title": {"zh": "清理：删除测试对象、回滚、校验无残留", "en": "Cleanup: delete test objects, roll back, verify no residue"},
+        "primitive": "删除测试 namespace/ConfigMap、pwn 绑定、特权 Pod、节点 marker；按基线比对 namespace/secret 集合并输出清理回执",
+        "writes": true,
+        "preconditions": ["阶段 1–6 已记录创建对象清单", "备份回执可读", "清理 Pod 仍可用于删除节点文件"],
+        "backup_targets": [
+          {"kind": "kube", "resource": "clusterrolebinding", "name": "trident-pwn-crb-<proof-marker>", "namespace": ""},
+          {"kind": "kube", "resource": "rolebinding", "name": "trident-pwn-rb-<proof-marker>", "namespace": "trident-killchain"},
+          {"kind": "kube", "resource": "pod", "name": "trident-pwn-pod-<proof-marker>", "namespace": "trident-killchain"},
+          {"kind": "node-file", "path": "/root/TRIDENT-PROOF-<proof-marker>", "via": "trident-pwn-pod-<proof-marker>"}
+        ],
+        "success_evidence": ["namespace/rolebinding/clusterrolebinding/pod NotFound", "节点 marker test ! -f 通过", "namespace 与 secret 名称集合与基线一致", "清理回执 JSON + 残留清单为空"],
+        "fallback": "清理失败：立即停止、输出残留清单与非零退出码；不宣称已清理",
+        "timeout_s": 180, "confirm": false,
+        "detection_rules": ["sigma-cluster-cleanup-trail"]
+      }
+    ]
+  },
+  "evidence": ["kubectl-call-trace", "stage-artifact-sha256", "proof-json-sha256", "cleanup-receipt", "terminal-capture"],
+  "mitre": ["T1078", "T1098", "T1610", "T1611", "T1552"]
+}

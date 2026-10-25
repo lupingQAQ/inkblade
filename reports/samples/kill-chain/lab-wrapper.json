@@ -1,0 +1,14 @@
+{
+  "generated_at": "2026-10-25T17:18:23Z",
+  "backend": {
+    "kind": "kubectl",
+    "real_cluster": true,
+    "note": "real Kubernetes API"
+  },
+  "fixture_namespace_absent": true,
+  "duration_seconds": 75.83,
+  "result_ok": true,
+  "complete": true,
+  "failed_stage": null,
+  "proof_sha256": "1617a34f7061126bb94270f3745096c5f827962844fcdb187cf8261080ec2c94"
+}

@@ -132,5 +132,76 @@
       "all": {"config_class": ["upstream-credentials", "provider-secrets"],
               "proc": {"re": "(?i)(litellm|higress|envoy)"}}
     }
+  },
+  {
+    "id": "falco-fabric-collective-poison",
+    "rule": "TRIDENT In-network collective reduce poisoned by external member",
+    "desc": "在网聚合 reduce 结果被外部成员篡改（all-reduce 静默损坏面）。English: in-network collective reduce result tampered by an external session member.",
+    "condition": "evt.type in (connect, accept) and evt.arg.channel in (sharp-aggregation, in-network-collective) and evt.arg.tampered=true and not k8s.ns.label in (training-allowlist)",
+    "output": "collective poison channel=%evt.arg.channel rank_src=%fd.cip result_delta=%evt.arg.delta ns=%k8s.ns.name",
+    "priority": "CRITICAL",
+    "tags": ["trident", "network", "collective", "monitor"],
+    "blocks_modules": ["sharp-in-network-poison", "training-silent-corruption"],
+    "tuning": {
+      "zh": "需要 fabric 控制器/交换机导出 reduce 会话事件（含 tampered 标记与结果差分）；与 sigma-fabric-sharp-unauth-join 联动区分「入组尝试」与「结果已被篡改」；命中即 critical",
+      "en": "Requires fabric controller/switch export of reduce-session events (tampered flag + result delta); correlate with sigma-fabric-sharp-unauth-join to separate join attempts from actual result tampering; keep hits critical"
+    },
+    "match": {
+      "engine": "falco",
+      "event_type": ["collective_reduce"],
+      "all": {"tampered": true}
+    }
+  },
+  {
+    "id": "falco-fabric-control-plane-mutation",
+    "rule": "TRIDENT Fabric control-plane config mutated by unauthorized subject",
+    "desc": "fabric 控制面配置（IB Partition 成员 / PFC 档位 / rail 绑定 / GPU 健康 Xid）被未授权主体改写。English: unauthorized mutation of fabric control-plane config (IB partition / PFC / rail binding / GPU health).",
+    "condition": "evt.type in (open, openat, openat2) and evt.is_open_write=true and evt.arg.component in (pfc, partition, rail, xid) and not proc.name in (fabric-operator-allowlist)",
+    "output": "fabric config write component=%evt.arg.component proc=%proc.name src=%fd.cip container=%container.name",
+    "priority": "CRITICAL",
+    "tags": ["trident", "network", "filesystem", "monitor"],
+    "blocks_modules": ["ib-subnet-manager-hijack", "roce-pfc-storm", "rail-mismatch-forcing", "driver-reset-trigger"],
+    "tuning": {
+      "zh": "component 枚举对齐客户 fabric 控制器（SM/PFC Agent/拓扑服务/GPU 健康服务）；写主体白名单=网络 operator 与驱动 DaemonSet；storm 档与 Xid 复位族直接 critical",
+      "en": "Align the component enum with the customer fabric controllers (SM/PFC agent/topology service/GPU health service); allowlist writers = network operator and driver DaemonSets; escalate storm profiles and reset-class Xid writes to critical"
+    },
+    "match": {
+      "engine": "falco",
+      "event_type": ["fabric_config_write"],
+      "all": {"component": {"re": "pfc|partition|rail|xid"}, "authorized": false}
+    }
+  },
+  {
+    "id": "falco-node-root-marker-write",
+    "rule": "TRIDENT Node root proof marker write from privileged container",
+    "desc": "??????? /root ?? TRIDENT-PROOF ????? root ?????English: privileged container writes a TRIDENT-PROOF marker into host /root.",
+    "condition": "(evt.type in (open, openat, openat2) and evt.is_open_write=true) and fd.name contains TRIDENT-PROOF and container.privileged=true",
+    "output": "node-root marker write path=%fd.name proc=%proc.name container=%container.name",
+    "priority": "CRITICAL",
+    "tags": [
+      "trident",
+      "filesystem",
+      "privilege",
+      "monitor"
+    ],
+    "blocks_modules": [
+      "cluster-node-marker"
+    ],
+    "tuning": {
+      "zh": "???????? TRIDENT-PROOF???????????? /root?/etc?/var/lib/kubelet ???????????????????????? critical",
+      "en": "Keep TRIDENT-PROOF as the assessment marker; in production include all host-path writes under /root, /etc, /var/lib/kubelet; any privileged container host-path write is critical"
+    },
+    "match": {
+      "engine": "falco",
+      "event_type": [
+        "open_write"
+      ],
+      "all": {
+        "path": {
+          "re": "TRIDENT-PROOF-"
+        },
+        "privileged": true
+      }
+    }
   }
 ]

