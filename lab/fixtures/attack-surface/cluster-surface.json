@@ -1,0 +1,889 @@
+{
+ "cluster": {
+  "name": "surface-lab",
+  "provider": "eks",
+  "version": "1.28.3"
+ },
+ "namespaces": [
+  "default",
+  "train",
+  "infer",
+  "ray-system",
+  "kube-system"
+ ],
+ "services": [
+  {
+   "name": "ray-dashboard",
+   "namespace": "ray-system",
+   "type": "LoadBalancer",
+   "ports": [
+    {
+     "name": "dashboard",
+     "port": 8265
+    }
+   ]
+  },
+  {
+   "name": "sglang-server",
+   "namespace": "infer",
+   "type": "NodePort",
+   "ports": [
+    {
+     "name": "http",
+     "port": 30000,
+     "nodePort": 31000
+    }
+   ]
+  },
+  {
+   "name": "kubernetes",
+   "namespace": "default",
+   "type": "ClusterIP",
+   "ports": [
+    {
+     "name": "https",
+     "port": 443
+    }
+   ]
+  }
+ ],
+ "pods": [
+  {
+   "name": "gpu-trainer-0",
+   "namespace": "train",
+   "serviceAccount": "trainer",
+   "hostPID": true,
+   "hostIPC": true,
+   "volumes": [
+    {
+     "name": "sock",
+     "hostPath": {
+      "path": "/var/run/docker.sock"
+     }
+    },
+    {
+     "name": "logs",
+     "hostPath": {
+      "path": "/var/log"
+     }
+    },
+    {
+     "name": "modules",
+     "hostPath": {
+      "path": "/lib/modules"
+     }
+    }
+   ],
+   "containers": [
+    {
+     "name": "trainer",
+     "image": "pytorch/pytorch:2.4",
+     "securityContext": {
+      "privileged": true,
+      "capabilities": {
+       "add": [
+        "SYS_ADMIN",
+        "SYS_MODULE",
+        "SYS_PTRACE"
+       ]
+      },
+      "seccompProfile": {
+       "type": "Unconfined"
+      }
+     },
+     "env": [
+      {
+       "name": "AWS_ACCESS_KEY_ID",
+       "value": "AKIAIOSFODNN7EXAMPLE"
+      },
+      {
+       "name": "AWS_SECRET_ACCESS_KEY",
+       "value": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+      },
+      {
+       "name": "HF_TOKEN",
+       "value": "hf_abcdefghijklmnopqrstuvwxyz0123456789"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "ray-head-0",
+   "namespace": "ray-system",
+   "serviceAccount": "ray-operator",
+   "hostNetwork": true,
+   "volumes": [
+    {
+     "name": "kube",
+     "hostPath": {
+      "path": "/etc/kubernetes"
+     }
+    }
+   ],
+   "containers": [
+    {
+     "name": "ray",
+     "image": "rayproject/ray:2.40.0",
+     "securityContext": {
+      "runAsUser": 0
+     }
+    }
+   ]
+  },
+  {
+   "name": "sglang-server-0",
+   "namespace": "infer",
+   "serviceAccount": "sglang-sa",
+   "volumes": [
+    {
+     "name": "dev",
+     "hostPath": {
+      "path": "/dev"
+     }
+    },
+    {
+     "name": "proc",
+     "hostPath": {
+      "path": "/proc"
+     }
+    }
+   ],
+   "containers": [
+    {
+     "name": "sglang",
+     "image": "lmsysorg/sglang:v0.5.22",
+     "securityContext": {
+      "privileged": true
+     }
+    }
+   ]
+  },
+  {
+   "name": "node-agent",
+   "namespace": "kube-system",
+   "serviceAccount": "node-agent",
+   "volumes": [
+    {
+     "name": "root",
+     "hostPath": {
+      "path": "/"
+     }
+    }
+   ],
+   "containers": [
+    {
+     "name": "agent",
+     "image": "registry.local/node-agent:1",
+     "securityContext": {
+      "capabilities": {
+       "add": [
+        "DAC_READ_SEARCH"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "clean-app-0",
+   "namespace": "default",
+   "serviceAccount": "default",
+   "automountServiceAccountToken": false,
+   "containers": [
+    {
+     "name": "web",
+     "image": "nginx:1.27",
+     "securityContext": {
+      "runAsNonRoot": true,
+      "seccompProfile": {
+       "type": "RuntimeDefault"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "cani": [
+  {
+   "subject": "system:serviceaccount:train:trainer",
+   "allowed": [
+    "*"
+   ]
+  },
+  {
+   "subject": "system:serviceaccount:ray-system:ray-operator",
+   "allowed": [
+    "create pods",
+    "get pods",
+    "list pods",
+    "list secrets",
+    "pods/exec"
+   ]
+  },
+  {
+   "subject": "system:serviceaccount:infer:sglang-sa",
+   "allowed": [
+    "get secrets",
+    "list configmaps",
+    "create pods",
+    "create pods/exec"
+   ]
+  },
+  {
+   "subject": "system:serviceaccount:kube-system:node-agent",
+   "allowed": [
+    "get nodes/proxy",
+    "create tokenreviews",
+    "create selfsubjectaccessreviews",
+    "get secrets"
+   ]
+  },
+  {
+   "subject": "user:intern",
+   "allowed": [
+    "get pods",
+    "list pods",
+    "impersonate users",
+    "create rolebindings",
+    "get secrets"
+   ]
+  }
+ ],
+ "clusterroles": [
+  {
+   "name": "app-wildcard",
+   "rules": [
+    {
+     "verbs": [
+      "*"
+     ],
+     "resources": [
+      "*"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "secret-reader",
+   "rules": [
+    {
+     "verbs": [
+      "get",
+      "list"
+     ],
+     "resources": [
+      "secrets"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "backdoor-admin",
+   "rules": [
+    {
+     "verbs": [
+      "*"
+     ],
+     "resources": [
+      "*"
+     ]
+    }
+   ]
+  }
+ ],
+ "clusterrolebindings": [
+  {
+   "name": "app-wildcard-binding",
+   "role": "app-wildcard",
+   "subjects": [
+    "system:serviceaccount:train:trainer"
+   ]
+  },
+  {
+   "name": "intern-admin",
+   "role": "cluster-admin",
+   "subjects": [
+    "user:intern"
+   ]
+  },
+  {
+   "name": "backdoor-admin-binding",
+   "role": "backdoor-admin",
+   "subjects": [
+    "user:backdoor"
+   ]
+  }
+ ],
+ "secrets": [
+  {
+   "name": "default-token-kx2f",
+   "namespace": "default",
+   "type": "kubernetes.io/service-account-token",
+   "data": {
+    "token": "***",
+    "ca.crt": "***"
+   }
+  },
+  {
+   "name": "registry-pull",
+   "namespace": "default",
+   "type": "kubernetes.io/dockerconfigjson",
+   "data": {
+    ".dockerconfigjson": "***"
+   }
+  },
+  {
+   "name": "tenant-b-model-key",
+   "namespace": "infer",
+   "type": "Opaque",
+   "data": {
+    "apiKey": "***"
+   }
+  },
+  {
+   "name": "trainer-token-9x1",
+   "namespace": "train",
+   "type": "kubernetes.io/service-account-token",
+   "data": {
+    "token": "***"
+   }
+  }
+ ],
+ "configmaps": [
+  {
+   "name": "gateway-config",
+   "namespace": "default",
+   "data": {
+    "AWS_ACCESS_KEY_ID": "AKIAIOSFODNN7EXAMPLE",
+    "AWS_SECRET_ACCESS_KEY": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+    "OPENAI_API_KEY": "sk-proj-abcdefghijklmnopqrstuvwxyz0123456789",
+    "DB_PASSWORD": "correct-horse-battery-staple"
+   }
+  },
+  {
+   "name": "kubeconfig-admin",
+   "namespace": "kube-system",
+   "data": {
+    "config": "apiVersion: v1\nkind: Config\nclusters:\n- name: prod\n  cluster:\n    server: https://10.0.0.1:6443\nclient-key-data: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0t\n"
+   }
+  },
+  {
+   "name": "gcp-sa",
+   "namespace": "train",
+   "data": {
+    "key.json": "{\"type\": \"service_account\", \"project_id\": \"ml-prod\", \"private_key\": \"-----BEGIN PRIVATE KEY-----\\nMIIE\\n-----END PRIVATE KEY-----\\n\"}"
+   }
+  }
+ ],
+ "nodes": [
+  {
+   "name": "gpu-node-1",
+   "os": "Ubuntu 22.04",
+   "kernel": "5.15.0-91-generic",
+   "containerRuntime": "docker://24.0.5",
+   "runc": "1.1.4",
+   "cgroups": "v1",
+   "kubelet": "1.28.3"
+  },
+  {
+   "name": "gpu-node-2",
+   "os": "Ubuntu 22.04",
+   "kernel": "6.1.0-18-generic",
+   "containerRuntime": "containerd://1.7.13",
+   "runc": "1.1.10",
+   "cgroups": "v2",
+   "kubelet": "1.28.3"
+  }
+ ],
+ "apiserver": {
+  "version": "1.28.3",
+  "anonymous_auth": true,
+  "insecure_port": 8080,
+  "audit_log": "",
+  "profiling": true,
+  "authorization_mode": [
+   "AlwaysAllow"
+  ],
+  "enable_admission_plugins": [
+   "NamespaceLifecycle"
+  ],
+  "disable_admission_plugins": [
+   "NodeRestriction"
+  ],
+  "http2": true,
+  "service_account_issuer": "https://kubernetes.default.svc"
+ },
+ "kubelet": [
+  {
+   "node": "gpu-node-1",
+   "port": 10250,
+   "read_only_port": 10255,
+   "anonymous_auth": true,
+   "authorization_mode": "AlwaysAllow",
+   "protect_kernel_defaults": false,
+   "endpoints": [
+    "stats",
+    "metrics",
+    "logs",
+    "spec",
+    "pods",
+    "healthz",
+    "configz",
+    "containerLogs",
+    "run",
+    "exec",
+    "cri",
+    "attach",
+    "portForward",
+    "runningpods",
+    "debug"
+   ]
+  },
+  {
+   "node": "gpu-node-2",
+   "port": 10250,
+   "read_only_port": 0,
+   "anonymous_auth": false,
+   "authorization_mode": "Webhook",
+   "protect_kernel_defaults": true,
+   "endpoints": [
+    "healthz",
+    "metrics"
+   ]
+  }
+ ],
+ "etcd": [
+  {
+   "endpoint": "https://10.0.0.5:2379",
+   "client_cert_auth": false,
+   "auto_tls": true,
+   "version": "3.5.9",
+   "writable": true,
+   "peer_tls": false
+  }
+ ],
+ "dashboard": [
+  {
+   "url": "https://10.0.0.6:8443",
+   "anonymous": true,
+   "exposed": "LoadBalancer"
+  }
+ ],
+ "proxy": [
+  {
+   "node": "gpu-node-1",
+   "port": 8001,
+   "exposed": true,
+   "auth": false
+  }
+ ],
+ "certificates": [
+  {
+   "name": "apiserver",
+   "expires_in_days": 3650,
+   "key_bits": 2048,
+   "signature": "sha256"
+  },
+  {
+   "name": "kubelet-client",
+   "expires_in_days": 120,
+   "key_bits": 1024,
+   "signature": "sha1"
+  }
+ ],
+ "admission": {
+  "pod_security_enforced": false,
+  "dry_run": [
+   {
+    "template": "privileged",
+    "allowed": true,
+    "reason": "no policy"
+   },
+   {
+    "template": "priv-escalation",
+    "allowed": true,
+    "reason": "no policy"
+   },
+   {
+    "template": "hostnetwork",
+    "allowed": false,
+    "reason": "restricted"
+   },
+   {
+    "template": "hostpath",
+    "allowed": true,
+    "reason": "no policy"
+   },
+   {
+    "template": "runasroot",
+    "allowed": false,
+    "reason": "restricted"
+   },
+   {
+    "template": "hostpid",
+    "allowed": true,
+    "reason": "no policy"
+   }
+  ]
+ },
+ "cis": {
+  "profile": "cis-1.28",
+  "apiserver": {
+   "anonymous-auth": "true",
+   "insecure-port": "8080",
+   "authorization-mode": "AlwaysAllow",
+   "audit-log-path": "",
+   "profiling": "true",
+   "enable-admission-plugins": "NamespaceLifecycle",
+   "disable-admission-plugins": "",
+   "tls-cert-file": "",
+   "client-ca-file": ""
+  },
+  "controllermanager": {
+   "use-service-account-credentials": "false",
+   "insecure-port": "10252",
+   "profiling": "true",
+   "bind-address": "0.0.0.0"
+  },
+  "scheduler": {
+   "profiling": "true",
+   "bind-address": "0.0.0.0"
+  },
+  "etcd": {
+   "client-cert-auth": "false",
+   "auto-tls": "true",
+   "peer-client-cert-auth": "false"
+  },
+  "kubelet": {
+   "anonymous-auth": "true",
+   "authorization-mode": "AlwaysAllow",
+   "read-only-port": "10255",
+   "protect-kernel-defaults": "false",
+   "streaming-connection-idle-timeout": "0"
+  },
+  "config": {
+   "kubeconfig_permissions": "644",
+   "admin_cert_permissions": "644",
+   "etcd_data_permissions": "755"
+  }
+ },
+ "manifests": [
+  {
+   "path": "deploy/gateway.yaml",
+   "kind": "Deployment",
+   "namespace": "default",
+   "doc": {
+    "kind": "Deployment",
+    "spec": {
+     "template": {
+      "spec": {
+       "serviceAccountName": "default",
+       "containers": [
+        {
+         "name": "gateway",
+         "image": "ghcr.io/acme/gateway:1.2.3",
+         "securityContext": {
+          "privileged": true
+         },
+         "env": [
+          {
+           "name": "AWS_ACCESS_KEY_ID",
+           "value": "AKIAIOSFODNN7EXAMPLE"
+          },
+          {
+           "name": "AWS_SECRET_ACCESS_KEY",
+           "value": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+          },
+          {
+           "name": "AZURE_CLIENT_SECRET",
+           "value": "az~secret~value~0123456789abcdef"
+          },
+          {
+           "name": "OPENAI_API_KEY",
+           "value": "sk-proj-abcdefghijklmnopqrstuvwxyz0123456789"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "path": "ops/pull-secret.yaml",
+   "kind": "Secret",
+   "namespace": "default",
+   "doc": {
+    "type": "kubernetes.io/dockerconfigjson",
+    "data": {
+     ".dockerconfigjson": "eyJhdXRocyI6eyJyZWciOnsiYXV0aCI6ImR1bW15In19fQ=="
+    }
+   }
+  },
+  {
+   "path": "ops/shadow-kubeconfig.yaml",
+   "kind": "ConfigMap",
+   "namespace": "kube-system",
+   "doc": {
+    "data": {
+     "kubeconfig": "apiVersion: v1\nkind: Config\nclient-key-data: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0t\n"
+    }
+   }
+  }
+ ],
+ "inpod": {
+  "identity": {
+   "uid": 0,
+   "user": "root",
+   "groups": [
+    0
+   ],
+   "hostname": "gpu-trainer-0"
+  },
+  "namespace": "train",
+  "service_account": {
+   "name": "trainer",
+   "automount": true,
+   "audience": "https://kubernetes.default.svc"
+  },
+  "token": {
+   "path": "/var/run/secrets/kubernetes.io/serviceaccount/token",
+   "jwt": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmRlZmF1bHQ6ZGVmYXVsdCIsImF1ZCI6WyJodHRwczovL2t1YmVybmV0ZXMuZGVmYXVsdC5zdmMiXSwiZXhwIjoyNTM0MDIzMDA3OTksImlhdCI6MTcwMDAwMDAwMCwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImRlZmF1bHQiLCJ1aWQiOiJ1LTAwMDEifX19.",
+   "legacy": true
+  },
+  "environment": {
+   "AWS_REGION": "us-east-1",
+   "AZURE_CLIENT_ID": "00000000-0000-0000-0000-000000000000",
+   "GOOGLE_APPLICATION_CREDENTIALS": "/var/run/secrets/gcp/key.json"
+  },
+  "proc": {
+   "pid_namespace": "host",
+   "hidepid": 0,
+   "host_pid_visible": true
+  },
+  "sys": {
+   "/proc/sys/kernel/core_pattern": "|/bin/sh -c id",
+   "/proc/sys/kernel/modprobe": "/sbin/modprobe"
+  },
+  "filesystem": {
+   "mounts": [
+    {
+     "path": "/",
+     "type": "overlay",
+     "rw": true
+    },
+    {
+     "path": "/var/run/docker.sock",
+     "type": "sock",
+     "rw": true
+    },
+    {
+     "path": "/proc/sys",
+     "type": "proc",
+     "rw": true
+    },
+    {
+     "path": "/etc/kubernetes",
+     "type": "hostPath",
+     "rw": true
+    },
+    {
+     "path": "/dev/nvidia0",
+     "type": "dev",
+     "rw": true
+    }
+   ]
+  },
+  "runtime": {
+   "socket": "/var/run/docker.sock",
+   "engine": "docker",
+   "version": "24.0.5",
+   "containerd": "/run/containerd/containerd.sock",
+   "dind": true
+  },
+  "capabilities": {
+   "effective": [
+    "SYS_ADMIN",
+    "SYS_MODULE",
+    "DAC_READ_SEARCH",
+    "NET_ADMIN"
+   ],
+   "bounding": [
+    "SYS_ADMIN",
+    "SYS_MODULE",
+    "DAC_READ_SEARCH",
+    "NET_ADMIN"
+   ]
+  },
+  "cgroups": {
+   "version": "v1",
+   "writable": true,
+   "release_agent": "/x"
+  },
+  "seccomp": {
+   "mode": "Unconfined"
+  },
+  "apparmor": {
+   "mode": "unconfined"
+  },
+  "userns": {
+   "mode": "host"
+  },
+  "lxcfs": {
+   "mounted": true
+  },
+  "devices": [
+   "/dev/nvidia0",
+   "/dev/nvidiactl",
+   "/dev/kfd"
+  ],
+  "node": {
+   "name": "gpu-node-1",
+   "kernel": "5.15.0-91-generic",
+   "os": "Ubuntu 22.04"
+  },
+  "cloud_metadata": {
+   "aws": {
+    "reachable": true,
+    "role": "ml-node-role"
+   },
+   "azure": {
+    "reachable": true,
+    "msi": true
+   },
+   "gcp": {
+    "reachable": false
+   }
+  },
+  "kubeconfig": {
+   "path": "/root/.kube/config",
+   "readable": true,
+   "clusters": 3
+  },
+  "credentials": {
+   "files": [
+    {
+     "path": "/root/.aws/credentials",
+     "readable": true,
+     "kind": "aws"
+    },
+    {
+     "path": "/etc/shadow",
+     "readable": true,
+     "kind": "shadow"
+    },
+    {
+     "path": "/root/.docker/config.json",
+     "readable": true,
+     "kind": "docker"
+    }
+   ]
+  }
+ },
+ "tokens": [
+  {
+   "name": "default-token-kx2f",
+   "namespace": "default",
+   "jwt": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmRlZmF1bHQ6ZGVmYXVsdCIsImF1ZCI6WyJodHRwczovL2t1YmVybmV0ZXMuZGVmYXVsdC5zdmMiXSwiZXhwIjoyNTM0MDIzMDA3OTksImlhdCI6MTcwMDAwMDAwMCwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImRlZmF1bHQiLCJ1aWQiOiJ1LTAwMDEifX19.",
+   "subject": "system:serviceaccount:default:default",
+   "legacy": true,
+   "exp": 253402300799,
+   "audience": [
+    "https://kubernetes.default.svc"
+   ],
+   "allowed": [
+    "get pods",
+    "list pods"
+   ]
+  },
+  {
+   "name": "trainer-token-9x1",
+   "namespace": "train",
+   "jwt": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmRlZmF1bHQ6ZGVmYXVsdCIsImF1ZCI6WyJodHRwczovL2t1YmVybmV0ZXMuZGVmYXVsdC5zdmMiXSwiZXhwIjoyNTM0MDIzMDA3OTksImlhdCI6MTcwMDAwMDAwMCwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImRlZmF1bHQiLCJ1aWQiOiJ1LTAwMDEifX19.",
+   "subject": "system:serviceaccount:train:trainer",
+   "legacy": true,
+   "exp": 253402300799,
+   "audience": [
+    "https://kubernetes.default.svc"
+   ],
+   "allowed": [
+    "*"
+   ]
+  },
+  {
+   "name": "bound-token-2f",
+   "namespace": "infer",
+   "jwt": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmRlZmF1bHQ6ZGVmYXVsdCIsImF1ZCI6WyJodHRwczovL2t1YmVybmV0ZXMuZGVmYXVsdC5zdmMiXSwiZXhwIjoyNTM0MDIzMDA3OTksImlhdCI6MTcwMDAwMDAwMCwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImRlZmF1bHQiLCJ1aWQiOiJ1LTAwMDEifX19.",
+   "subject": "system:serviceaccount:infer:sglang-sa",
+   "legacy": false,
+   "exp": 1800000000,
+   "audience": [
+    "https://kubernetes.default.svc"
+   ],
+   "allowed": [
+    "get secrets"
+   ]
+  }
+ ],
+ "persistence": {
+  "shadow_kubeconfigs": [
+   "/root/.kube/config",
+   "/tmp/.kube/config"
+  ],
+  "suspicious_bindings": [
+   {
+    "name": "backdoor-admin-binding",
+    "role": "backdoor-admin",
+    "subject": "user:backdoor"
+   },
+   {
+    "name": "intern-admin",
+    "role": "cluster-admin",
+    "subject": "user:intern"
+   }
+  ],
+  "workloads": [
+   {
+    "name": "telemetry-agent",
+    "namespace": "kube-system",
+    "kind": "DaemonSet",
+    "image": "registry.local/telemetry:1",
+    "privileged": true,
+    "hostPath": "/"
+   },
+   {
+    "name": "backup-job",
+    "namespace": "kube-system",
+    "kind": "CronJob",
+    "image": "registry.local/backup:1",
+    "privileged": false,
+    "hostPath": ""
+   }
+  ],
+  "token_requests": [
+   {
+    "subject": "system:serviceaccount:train:trainer",
+    "expiration": 63072000
+   }
+  ],
+  "pull_secret_patches": [
+   {
+    "serviceaccount": "default",
+    "namespace": "default",
+    "secret": "registry-pull"
+   }
+  ],
+  "webhooks": [
+   {
+    "name": "mutate-pods.example.com",
+    "failurePolicy": "Ignore",
+    "url": "https://attacker.invalid/mutate"
+   }
+  ],
+  "static_pods": [
+   "/etc/kubernetes/manifests/kube-apiserver.yaml"
+  ]
+ }
+}

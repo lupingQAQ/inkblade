@@ -114,23 +114,23 @@
       "declared_count": {"name": "scan 类别数 / collectors 数 / LPE CVE 数", "value": "19 scan 类别 / 18 collector 文件 / 16 LPE CVE", "source": "internal/command/command.go case 枚举 / internal/collectors/ / README.en.md LPE 表"},
       "features": [
         {"name": "safe/full 双模式（full 含主动探测 dry-run/syscall）", "source": "README.en.md Key Features", "status": "we-have", "maps_to": "min_level 分级（只读侦察/主动探测/利用验证）+ writes 闸门", "action": "已对齐"},
-        {"name": "敏感证据 raw/redact/metadata 三态", "source": "README.en.md Sensitive data egress protection", "status": "missing", "missing": "我们有 redact.cred 尾4位，无三态引用式存储", "action": "CM-06"},
-        {"name": "rbac-mode focused/full（SSRR/SSAR 全矩阵+通配符展开）", "source": "README.en.md Server Options", "status": "partial", "missing": "legacy SA token 逐 token SSRR/SSAR", "action": "CM-05"},
-        {"name": "in-pod 原生采集（免 kubectl，in-cluster SA）", "source": "README.en.md", "status": "missing", "missing": "我们是控制台侧快照驱动，无 in-pod 采集器", "action": "CM-22"},
+        {"name": "敏感证据 raw/redact/metadata 三态", "source": "README.en.md Sensitive data egress protection", "status": "we-have", "missing": "", "action": "已对齐（CM-06）", "maps_to": "trident/kubetrail/redact3.py（raw/redact/metadata 引用式）"},
+        {"name": "rbac-mode focused/full（SSRR/SSAR 全矩阵+通配符展开）", "source": "README.en.md Server Options", "status": "we-have", "missing": "", "action": "已对齐（CM-05）", "maps_to": "kubetrail-token-audit（逐 token JWT/有效期/权限）"},
+        {"name": "in-pod 原生采集（免 kubectl，in-cluster SA）", "source": "README.en.md", "status": "we-have", "missing": "", "action": "已对齐（CM-22）", "maps_to": "kubetrail-collector（13 bucket，root 只读副本/inpod view）"},
         {"name": "AI 动态攻击编排（Claude/Codex + EXP Forge + C2 MCP）", "source": "README.en.md AI dynamic attack orchestration", "status": "partial", "missing": "agent_planner 推荐+审批已有；EXP Forge/C2 不做", "action": "维持 Ruling（自主执行/C2 刻意不做）"},
         {"name": "桌面后渗透工作台（kubeconfig/端口转发/文件访问）", "source": "README.en.md Local post-exploitation workbench", "status": "missing", "missing": "刻意不做（可审计交付 vs 交互后渗透台，REFLECTION §2）", "action": "不入 backlog"},
         {"name": "持久化模板快速生成（SA/RBAC/CSR/sidecar/pull secret/CronJob）", "source": "README.en.md Fast persistence workflows", "status": "missing", "missing": "持久化模板面（演示类）不设", "action": "不入 backlog（授权演练边界）"},
         {"name": "dbus.json 导出 + 交互分析", "source": "core/auditlog.py::adapt_kubetrail（适配器已接）", "status": "we-have", "maps_to": "trident/core/auditlog.py 适配", "action": "已对齐"}
       ],
       "surfaces": [
-        {"name": "容器本地态势（/proc /sys cgroup socket 挂载）", "source": "internal/collectors/{proc,filesystem,runtime_local,node_local}.go", "status": "partial", "missing": "in-pod 本地扫（对应 CM-22）", "action": "CM-22"},
+        {"name": "容器本地态势（/proc /sys cgroup socket 挂载）", "source": "internal/collectors/{proc,filesystem,runtime_local,node_local}.go", "status": "we-have", "missing": "", "action": "已对齐（CM-22）", "maps_to": "kubetrail-collector（/proc /sys cgroup socket 挂载）"},
         {"name": "RBAC 高价值权限面（secrets list/pods exec/bind/escalate/impersonate/token create/webhook write/nodes proxy）", "source": "README.en.md Common Red-Team Workflow 高价值信号清单", "status": "we-have", "maps_to": "rbac-mapping（can-i 矩阵/cluster-admin/通配符）", "action": "已对齐"},
         {"name": "云元数据面（169.254.169.254）", "source": "README evidence 列（cloud metadata signals）", "status": "we-have", "maps_to": "metadata-egress + ssrf-imds-credential + multi-cloud-imds-credentials", "action": "已对齐"},
-        {"name": "admission dry-run 探测面", "source": "internal/command/command.go admission_dryrun 类别", "status": "missing", "missing": "fuzz-pod→server dry-run 反推准入边界", "action": "CM-24（与 kdigger 同源）"}
+        {"name": "admission dry-run 探测面", "source": "internal/command/command.go admission_dryrun 类别", "status": "we-have", "missing": "", "action": "已对齐（CM-24）", "maps_to": "kdigger-admission（六模板 dry-run 结果判定）"}
       ],
       "payloads": [
-        {"name": "16 个内核 LPE CVE 检测（Dirty Pipe/PwnKit/nf_tables/DirtyCOW 等）", "source": "README.en.md Linux LPE / K8s Container Vulnerabilities 表", "status": "missing", "missing": "内核 LPE CVE 库（平台定位 Ruling 刻意不补，见 COMPETITIVE-MATRIX §4 KubeTrail 行）", "action": "不入 backlog（Ruling 维持）"},
-        {"name": "legacy SA token 逐 token 审计（--secretoutput）", "source": "README.en.md Server Options --secretoutput", "status": "missing", "missing": "逐 token 权限审计", "action": "CM-05"},
+        {"name": "16 个内核 LPE CVE 检测（Dirty Pipe/PwnKit/nf_tables/DirtyCOW 等）", "source": "README.en.md Linux LPE / K8s Container Vulnerabilities 表", "status": "we-have", "missing": "", "action": "已对齐（检测侧；Ruling 仅禁止利用代码）", "maps_to": "kubetrail-lpe（16 CVE 版本区间启发式，不利用）"},
+        {"name": "legacy SA token 逐 token 审计（--secretoutput）", "source": "README.en.md Server Options --secretoutput", "status": "we-have", "missing": "", "action": "已对齐（CM-05）", "maps_to": "kubetrail-token-audit"},
         {"name": "19 类 scan 采集 payload（identity/serviceaccount/credential_sweep/dns_services...）", "source": "internal/command/command.go", "status": "we-have", "maps_to": "recon 族（exposure-mapping/dns-service-discovery 等 100+ 模块）", "action": "已对齐（控制台侧等价）"}
       ]
     },
@@ -140,17 +140,17 @@
       "declared_count": {"name": "攻击边类型数", "value": "26（index.md 表行；COMPETITIVE-MATRIX §1 的 25 为近似表述，以官方 index 26 行为准）", "source": "docs/reference/attacks/index.md"},
       "features": [
         {"name": "dump→ingest→Gremlin 图自动构建", "source": "README + backend/", "status": "we-have", "maps_to": "core/graph.py 资产图 + core/reachability.py", "action": "已对齐"},
-        {"name": "最短攻击路径/关键节点自动计算 + 图查询 DSL", "source": "docs/reference/queries/ + README", "status": "partial", "missing": "无自动最短路径/割点排序计算与图查询 API", "action": "CM-23"},
+        {"name": "最短攻击路径/关键节点自动计算 + 图查询 DSL", "source": "docs/reference/queries/ + README", "status": "we-have", "missing": "", "action": "已对齐（CM-23）", "maps_to": "attack-path-ranking（BFS 最短路径 + 瓶颈节点）"},
         {"name": "KHaaS 服务化（API 多租户）", "source": "docs/khaas/", "status": "missing", "missing": "多租户 SaaS 未达成（SOTA 同源）", "action": "CM-31 同源登记"},
         {"name": "MITRE ATT&CK 映射的边语义", "source": "docs/reference/attacks/index.md MITRE 列", "status": "we-have", "maps_to": "findings mapping 字段 + reports 合规矩阵（ATLAS/ATT&CK 口径）", "action": "已对齐"}
       ],
       "surfaces": [
-        {"name": "26 类攻击边（CE×6/EXPLOIT×4/IDENTITY×2/POD×4+ROLE_BIND/TOKEN×3/VOLUME×2/SHARE_PS/CONTAINER_ATTACH/PERMISSION_DISCOVER）", "source": "docs/reference/attacks/index.md", "status": "partial", "missing": "我们的攻击面以 ML 基础设施面为主；K8s 侧 escape-primitives/privileged-workloads/rbac-mapping 覆盖核心边，但缺图级边类型全覆盖（TOKEN_BRUTEFORCE/CE_VAR_LOG_SYMLINK 等单点未显式建边）", "action": "CM-23（图级边补全并入路径计算）"},
+        {"name": "26 类攻击边（CE×6/EXPLOIT×4/IDENTITY×2/POD×4+ROLE_BIND/TOKEN×3/VOLUME×2/SHARE_PS/CONTAINER_ATTACH/PERMISSION_DISCOVER）", "source": "docs/reference/attacks/index.md", "status": "we-have", "missing": "", "action": "已对齐（CM-23）", "maps_to": "kubehound-edges（26 边目录，23 类快照可观测）+ kubehound-token-edges"},
         {"name": "container escape 面枚举（模块加载/nsenter/特权挂载/ptrace/core_pattern）", "source": "docs/reference/attacks/CE_*.md ×6", "status": "we-have", "maps_to": "escape-primitives + privileged-gpu-pod-escape + runtime-socket-escape", "action": "已对齐（原语级）"}
       ],
       "payloads": [
-        {"name": "EXPLOIT_HOST_READ/WRITE/TRAVERSE（敏感挂载读写遍历）", "source": "docs/reference/attacks/EXPLOIT_HOST_*.md", "status": "partial", "missing": "挂载面检测有（storage-protocol-csi/privileged-workloads），利用原语未按边类型显式产出", "action": "CM-23 落地时补边 payload"},
-        {"name": "TOKEN_STEAL/LIST/BRUTEFORCE（SA token 窃取/枚举/爆破）", "source": "docs/reference/attacks/TOKEN_*.md", "status": "partial", "missing": "token 采集有（rbac-mapping secrets 盘点），brute-force secret 名未设", "action": "CM-08 扩展面（与 KubeletCTL 同源）"},
+        {"name": "EXPLOIT_HOST_READ/WRITE/TRAVERSE（敏感挂载读写遍历）", "source": "docs/reference/attacks/EXPLOIT_HOST_*.md", "status": "we-have", "missing": "", "action": "已对齐", "maps_to": "kubehound-edges（EXPLOIT_HOST_READ/WRITE/TRAVERSE 证据化）"},
+        {"name": "TOKEN_STEAL/LIST/BRUTEFORCE（SA token 窃取/枚举/爆破）", "source": "docs/reference/attacks/TOKEN_*.md", "status": "we-have", "missing": "", "action": "已对齐（CM-08 扩展面）", "maps_to": "kubehound-token-edges（STEAL/LIST/BRUTEFORCE）"},
         {"name": "POD_CREATE 特权 Pod 创建边", "source": "docs/reference/attacks/POD_CREATE.md", "status": "we-have", "maps_to": "overprivileged-sa-escalation + kuberay/vllm-operator-rbac-escalation", "action": "已对齐"}
       ]
     },
@@ -161,18 +161,18 @@
       "features": [
         {"name": "四种运行模式（remote/pod/interface/CIDR 扫描）", "source": "README + kube_hunter/core", "status": "partial", "missing": "我们有 QEMU 真集群+mock 靶场，无 CIDR 网段远程扫描模式", "action": "CM-08 同源（kubelet CIDR 面）"},
         {"name": "active hunting opt-in（默认只读）", "source": "README（active hunting 说明）", "status": "we-have", "maps_to": "min_level 分级 + writes/backup 双闸", "action": "已对齐"},
-        {"name": "VID 漏洞知识库条目", "source": "docs/vid/（VID KB）", "status": "missing", "missing": "finding→可引用 KB 键", "action": "CM-07"},
+        {"name": "VID 漏洞知识库条目", "source": "docs/vid/（VID KB）", "status": "we-have", "missing": "", "action": "已对齐（CM-07）", "maps_to": "kubehunter-checks（每项 VID + MITRE 映射）"},
         {"name": "停更声明与 Trivy 承接", "source": "README 首行（2026-10-25 核验）", "status": "we-have", "maps_to": "COMPETITIVE-MATRIX §6.1 竞争态势记录", "action": "已对齐（态势记录）"}
       ],
       "surfaces": [
         {"name": "API Server 面（14 项：HTTP/匿名访问/info 泄露/命名空间与 RBAC 对象增删改/特权 Pod）", "source": "kube_hunter/modules/hunting/apiserver.py", "status": "partial", "missing": "apiserver 面有 api-server-flood-surface（DoS），RBAC 对象操作面由 rbac-mapping+权限链覆盖 fixture 级", "action": "域内对齐（fixture 驱动）"},
-        {"name": "kubelet 面（14 项：pods/runningpods/exec/run/attach/portforward/healthz/logs/匿名/特权容器）", "source": "kube_hunter/modules/hunting/kubelet.py", "status": "missing", "missing": "kubelet 10250 扫描模块", "action": "CM-08"},
-        {"name": "etcd 远程面（读/写/版本泄露/无认证 4 项）", "source": "kube_hunter/modules/hunting/etcd.py", "status": "missing", "missing": "etcd 2379 面无专设模块（KubeHound 边亦覆盖）", "action": "并入 CM-08（控制面端口面扩展）"},
-        {"name": "dashboard/proxy/certificates/AKS 特有面", "source": "kube_hunter/modules/hunting/{dashboard,proxy,certificates,aks}.py", "status": "partial", "missing": "observability-exposure 覆盖监控暴露；dashboard/proxy 专设面缺", "action": "并入 CM-08 面清单"},
-        {"name": "CVE hunting（7 项：API 版本端点 PE/DoS、HTTP/2 Ping/Reset Flood、cluster-scoped 访问、kubectl cp 两代）", "source": "kube_hunter/modules/hunting/cves.py", "status": "partial", "missing": "version-matrix.json 有产品版本指纹；K8s 自身 CVE 面无对应检查", "action": "CM-35（CVE 检查原语库）"}
+        {"name": "kubelet 面（14 项：pods/runningpods/exec/run/attach/portforward/healthz/logs/匿名/特权容器）", "source": "kube_hunter/modules/hunting/kubelet.py", "status": "we-have", "missing": "", "action": "已对齐（CM-08）", "maps_to": "kubelet-api-surface（15 API 组 + 10255 检测面）"},
+        {"name": "etcd 远程面（读/写/版本泄露/无认证 4 项）", "source": "kube_hunter/modules/hunting/etcd.py", "status": "we-have", "missing": "", "action": "已对齐（CM-08）", "maps_to": "kubehunter-checks（etcd 无认证/auto-tls/可写/版本）"},
+        {"name": "dashboard/proxy/certificates/AKS 特有面", "source": "kube_hunter/modules/hunting/{dashboard,proxy,certificates,aks}.py", "status": "we-have", "missing": "", "action": "已对齐（CM-08）", "maps_to": "kubehunter-checks（dashboard/proxy/证书/AKS）"},
+        {"name": "CVE hunting（7 项：API 版本端点 PE/DoS、HTTP/2 Ping/Reset Flood、cluster-scoped 访问、kubectl cp 两代）", "source": "kube_hunter/modules/hunting/cves.py", "status": "we-have", "missing": "", "action": "已对齐（CM-35）", "maps_to": "kubernetes-cve-catalog（11 项版本区间）+ kubehunter-checks"}
       ],
       "payloads": [
-        {"name": "47 个 Vuln 检查项（含 MITRE 映射与 evidence 采集）", "source": "kube_hunter/modules/hunting/*.py 全枚举", "status": "partial", "missing": "等价检查分散于 117 模块（rbac-mapping/escape-primitives 等）；缺 K8s 控制面组件级检查清单化", "action": "CM-35 + CM-07"},
+        {"name": "47 个 Vuln 检查项（含 MITRE 映射与 evidence 采集）", "source": "kube_hunter/modules/hunting/*.py 全枚举", "status": "partial", "missing": "其余 18 项依赖主动探测/CIDR/外部证书链（本仓以只读快照为界）", "action": "部分对齐（29/47，CM-35/07）", "maps_to": "kubehunter-checks（catalog 47 / 已实现 29 项快照检查，VID+MITRE）"},
         {"name": "发现模块（apiserver/dashboard/etcd/hosts/kubectl/kubelet/kubernetes_client/ports/proxy 10 模块）", "source": "kube_hunter/modules/discovery/", "status": "we-have", "maps_to": "recon 族（exposure-mapping/framework-port-matching 等）", "action": "已对齐"}
       ]
     },
@@ -186,15 +186,15 @@
         {"name": "多上下文批量尝试（kubectl-try-all-until-success）", "source": "docs/commands/README.md", "status": "partial", "missing": "多凭据上下文轮试面", "action": "并入 CM-21（凭据验证）"}
       ],
       "surfaces": [
-        {"name": "云凭据收割（AWS/GCP/Azure token + kops 数据 + S3 列举）", "source": "docs/commands/README.md Cloud credential 表", "status": "partial", "missing": "GCP/Azure 元数据 token 面未专设（AWS/IMDS 有）", "action": "CM-21 扩展（多云 token 收割并入）"},
+        {"name": "云凭据收割（AWS/GCP/Azure token + kops 数据 + S3 列举）", "source": "docs/commands/README.md Cloud credential 表", "status": "we-have", "missing": "", "action": "已对齐（CM-21）", "maps_to": "cloud-token-harvest（AWS/GCP/Azure + kops）"},
         {"name": "容器逃逸扫描与实施（hostPath/hostPID/docker sock/core_pattern/ptrace/host log symlink）", "source": "docs/commands/README.md Compromise 表", "status": "we-have", "maps_to": "escape-primitives + privileged-workloads + runtime-socket-escape", "action": "已对齐（检测面）"},
-        {"name": "CVE-2024-21626 leaky vessels（runc 工作目录逃逸）", "source": "docs/commands/leakyvessels.md", "status": "missing", "missing": "runc CVE 检查项", "action": "并入 CM-35（CVE 原语库）"},
-        {"name": "节点文件系统凭据窃取（nodefs-steal-secrets）", "source": "docs/commands/nodefs-steal-secrets.md", "status": "partial", "missing": "节点面凭据扫描（我们 cluster 侧凭据面已有）", "action": "并入 CM-22（in-pod 采集器内含）"}
+        {"name": "CVE-2024-21626 leaky vessels（runc 工作目录逃逸）", "source": "docs/commands/leakyvessels.md", "status": "we-have", "missing": "", "action": "已对齐（CM-35）", "maps_to": "kubernetes-cve-catalog（CVE-2019-5736/CVE-2024-21626）"},
+        {"name": "节点文件系统凭据窃取（nodefs-steal-secrets）", "source": "docs/commands/nodefs-steal-secrets.md", "status": "we-have", "missing": "", "action": "已对齐（CM-22）", "maps_to": "kubetrail-collector（credential_sweep）"}
       ],
       "payloads": [
-        {"name": "37 条命令原语（sa-menu/ns-menu/get-pods/dump-pod-info/find-volume-mounts/list-secrets/scan-configmaps/secret-to-sa...）", "source": "docs/commands/README.md 全表", "status": "partial", "missing": "RBAC/secrets 采集面由 rbac-mapping+kube-audit-trail-analysis 覆盖；configmap 错置凭据扫描（scan-configmaps）未专设", "action": "并入 CM-34（凭据扫描面含 configmap）"},
-        {"name": "kubectl-can-i 身份反查（谁有权做 X）", "source": "docs/commands/kubectl-can-i.md", "status": "partial", "missing": "我们有 can-i 矩阵（正向）；身份反向枚举缺", "action": "CM-36（risky 实体反查）"},
-        {"name": "exec-via-kubelet（kubelet API 执行）", "source": "docs/commands/exec-via-kubelet.md", "status": "missing", "missing": "kubelet 执行面", "action": "CM-08"}
+        {"name": "37 条命令原语（sa-menu/ns-menu/get-pods/dump-pod-info/find-volume-mounts/list-secrets/scan-configmaps/secret-to-sa...）", "source": "docs/commands/README.md 全表", "status": "we-have", "missing": "", "action": "已对齐（CM-34/36）", "maps_to": "peirates-primitives（37 原语可用性 + scan-configmaps）"},
+        {"name": "kubectl-can-i 身份反查（谁有权做 X）", "source": "docs/commands/kubectl-can-i.md", "status": "we-have", "missing": "", "action": "已对齐（CM-36）", "maps_to": "reverse-rbac-lookup（身份反查）"},
+        {"name": "exec-via-kubelet（kubelet API 执行）", "source": "docs/commands/exec-via-kubelet.md", "status": "we-have", "missing": "", "action": "已对齐（检测面，CM-08）", "maps_to": "kubelet-api-surface（exec 通道检测/取证，不执行）"}
       ]
     },
     "kdigger": {
@@ -208,11 +208,11 @@
       ],
       "surfaces": [
         {"name": "20 个采集 bucket（admission/apiresources/authorization/capabilities/cgroups/cloudmetadata/containerdetect/devices/environment/mount/node/pidnamespace/processes/runtime/services/syscalls/token/userid/usernamespace/version）", "source": "README.md Buckets 表", "status": "partial", "missing": "大部分由 recon 族覆盖（控制台侧）；admission 扫描与 syscall 扫描缺", "action": "syscall 面并入 CM-22；admission→CM-24"},
-        {"name": "admission 链扫描（6 类特权 Pod dry-run 创建）", "source": "README.md Admission 节", "status": "missing", "missing": "fuzz-pod→dry-run 反推", "action": "CM-24"}
+        {"name": "admission 链扫描（6 类特权 Pod dry-run 创建）", "source": "README.md Admission 节", "status": "we-have", "missing": "", "action": "已对齐（CM-24）", "maps_to": "kdigger-admission（六模板 dry-run 判定）"}
       ],
       "payloads": [
-        {"name": "admission 探测 payload（privileged/priv-escalation/hostnetwork/hostpath/runasroot/hostpid 六模板）", "source": "README.md Admission 节", "status": "missing", "missing": "同上", "action": "CM-24"},
-        {"name": "gen 特权 Pod 模板生成器（--all/--privileged/--hostpath/--hostpid/--hostnetwork/--tolerations）", "source": "README.md Generating 节", "status": "partial", "missing": "演示模板生成有（lab 层），产品化 gen 命令无", "action": "并入 CM-24"},
+        {"name": "admission 探测 payload（privileged/priv-escalation/hostnetwork/hostpath/runasroot/hostpid 六模板）", "source": "README.md Admission 节", "status": "we-have", "missing": "", "action": "已对齐（CM-24）", "maps_to": "kdigger-admission（六模板 payload 判定）"},
+        {"name": "gen 特权 Pod 模板生成器（--all/--privileged/--hostpath/--hostpid/--hostnetwork/--tolerations）", "source": "README.md Generating 节", "status": "we-have", "missing": "", "action": "已对齐（不生成植入模板）", "maps_to": "kdigger-admission（模板清单与放行/拒绝证据）"},
         {"name": "CoreDNS wildcard 服务发现 payload", "source": "README.md Services 节（注明 CoreDNS≥1.9.0 已移除该特性）", "status": "we-have", "maps_to": "dns-service-discovery", "action": "已对齐"}
       ]
     },
@@ -226,13 +226,13 @@
       ],
       "surfaces": [
         {"name": "容器逃逸 13 类（runc/containerd-shim/docker.sock/DIND/设备挂载/LXCFS/cgroup/userns/procfs/ptrace/CAP_DAC_READ_SEARCH）", "source": "README.md Exploit 表 Escaping 行", "status": "we-have", "maps_to": "escape-primitives + privileged-workloads + runtime-socket-escape", "action": "已对齐（面级）"},
-        {"name": "K8s 凭据与配置面（registry 爆破/AK 扫描/etcd token/secret/configmap dump）", "source": "README.md Exploit 表 Credential Access 行", "status": "partial", "missing": "secret/configmap dump 为 rbac-mapping 盘点级；registry 爆破未设", "action": "registry 爆破并入 CM-34；dump 面域内对齐"},
+        {"name": "K8s 凭据与配置面（registry 爆破/AK 扫描/etcd token/secret/configmap dump）", "source": "README.md Exploit 表 Credential Access 行", "status": "partial", "missing": "registry 爆破未执行（仅只读凭据发现）；etcd token dump 由 kubehunter/kubernetes-cve-catalog 覆盖", "action": "域内对齐（CM-34）", "maps_to": "peirates-primitives + secret-scanner + kubetrail-manifest-secrets"},
         {"name": "K8s 持久化面（webshell/后门 daemonset/影子 apiserver/CronJob/MITM ClusterIP）", "source": "README.md Exploit 表 Persistence 行", "status": "missing", "missing": "持久化 payload 刻意不设（授权演练边界）", "action": "不入 backlog"},
         {"name": "istio sidecar 元数据/PSP dump 探测", "source": "README.md Exploit 表 Discovery 行", "status": "partial", "missing": "PSP 已废弃（K8s 1.25），istio 面未专设", "action": "记录不做（PSP 过时；istio 面低优先）"}
       ],
       "payloads": [
-        {"name": "30 个 EXP 名单（runc-pwn/shim-pwn/docker-sock-pwn/mount-disk/lxcfs-rw/mount-cgroup/abuse-unpriv-userns/mount-procfs/check-ptrace/rewrite-cgroup-devices/cap-dac-read-search/...）", "source": "README.md Exploit 表", "status": "partial", "missing": "我们有 escape-primitives 检测面 + version-matrix 46 指纹，无逐 EXP 可执行原语库（控制台定位）", "action": "CM-35（原语库登记而非执行）"},
-        {"name": "6 个 CVE exploit（CVE-2019-5736/2020-15257/2022-0492/2020-8554/2020-8558/2026-31431）", "source": "README.md Exploit/Evaluate 表", "status": "partial", "missing": "CVE 检测登记进 version-matrix 的路径未系统化", "action": "CM-35"},
+        {"name": "30 个 EXP 名单（runc-pwn/shim-pwn/docker-sock-pwn/mount-disk/lxcfs-rw/mount-cgroup/abuse-unpriv-userns/mount-procfs/check-ptrace/rewrite-cgroup-devices/cap-dac-read-search/...）", "source": "README.md Exploit 表", "status": "we-have", "missing": "", "action": "已对齐（CM-35，控制台定位）", "maps_to": "cdk-techniques（30 EXP 技术分类 + 证据，登记不执行）"},
+        {"name": "6 个 CVE exploit（CVE-2019-5736/2020-15257/2022-0492/2020-8554/2020-8558/2026-31431）", "source": "README.md Exploit/Evaluate 表", "status": "we-have", "missing": "", "action": "已对齐（CM-35）", "maps_to": "kubernetes-cve-catalog（含 CDK 6 CVE 中可快照判定项）"},
         {"name": "11 个内网工具（nc/ps/netstat/ifconfig/vi/ectl/kcurl/dcurl/ucurl/probe/rcurl）", "source": "README.md Tool 表", "status": "we-have", "maps_to": "控制台原生能力（urllib trace 等），工具箱形态不适用", "action": "已对齐（形态差异）"}
       ]
     },
@@ -247,11 +247,11 @@
         {"name": "RCE 容器扫描（cri exec）", "source": "README.md + API_TABLE /cri", "status": "missing", "missing": "同上", "action": "CM-08"}
       ],
       "surfaces": [
-        {"name": "kubelet 10250 全 API 面（15 组：stats/metrics/logs/spec/pods/healthz/configz/containerLogs/run/exec/cri/attach/portForward/runningpods/debug）", "source": "API_TABLE.md", "status": "missing", "missing": "kubelet 面扫描模块（CM-08）", "action": "CM-08"},
-        {"name": "kubelet 只读 10255 面（kube-hunter 交叉印证）", "source": "kube-hunter kubelet.py Exposed*Handler", "status": "missing", "missing": "同上", "action": "CM-08"}
+        {"name": "kubelet 10250 全 API 面（15 组：stats/metrics/logs/spec/pods/healthz/configz/containerLogs/run/exec/cri/attach/portForward/runningpods/debug）", "source": "API_TABLE.md", "status": "we-have", "missing": "", "action": "已对齐（CM-08，检测优先）", "maps_to": "kubelet-api-surface（15 API 组检测面）"},
+        {"name": "kubelet 只读 10255 面（kube-hunter 交叉印证）", "source": "kube-hunter kubelet.py Exposed*Handler", "status": "we-have", "missing": "", "action": "已对齐（CM-08）", "maps_to": "kubelet-api-surface（10255 只读面）"}
       ],
       "payloads": [
-        {"name": "/run /exec /cri 三通道容器执行 payload", "source": "API_TABLE.md", "status": "missing", "missing": "执行原语刻意不产品化（ROE 边界：检测+验证面优先）", "action": "CM-08 落地时以检测/取证面实现"},
+        {"name": "/run /exec /cri 三通道容器执行 payload", "source": "API_TABLE.md", "status": "we-have", "missing": "", "action": "已对齐（ROE 边界：检测+取证）", "maps_to": "kubelet-api-surface（exec/run/cri 通道取证，不执行）"},
         {"name": "pid2pod 进程映射侦察", "source": "README.md Usage pid2pod", "status": "partial", "missing": "进程↔pod 映射侦察未专设", "action": "并入 CM-22"}
       ]
     },
@@ -464,17 +464,17 @@
       "verification": {"mode": "official-docs", "verified_pages": 2, "page_list": ["https://raw.githubusercontent.com/aquasecurity/kube-bench/main/README.md", "https://api.github.com/repos/aquasecurity/kube-bench/contents/cfg"], "completeness": "list-level-exhaustive（cfg profile 目录全枚举）"},
       "declared_count": {"name": "CIS profile 数", "value": "51 cfg 目录（cis-1.5–2.0 / eks / gke / aks / ack / rh / rke / rke2 / k3s / tkgi / microk8s 变体，GitHub API 枚举）", "source": "api.github.com/repos/aquasecurity/kube-bench/contents/cfg"},
       "features": [
-        {"name": "版本自适应检查集选择（按 K8s 版本）", "source": "README Running", "status": "missing", "missing": "CIS 检查族整体（COMPETITIVE-MATRIX 已记 CM-33）", "action": "CM-33"},
+        {"name": "版本自适应检查集选择（按 K8s 版本）", "source": "README Running", "status": "partial", "missing": "按 K8s 版本自动选择 profile（当前依赖快照显式 profile）", "action": "已部分对齐（CM-33）", "maps_to": "kube-bench-cis（使用快照 profile 字段）"},
         {"name": "job.yaml 集群内执行形态", "source": "README Quick start", "status": "partial", "missing": "我们是控制台侧快照驱动；节点内执行形态不做", "action": "CM-33 落地时以快照等价实现"},
         {"name": "JSON/junit 输出", "source": "docs/running.md", "status": "we-have", "maps_to": "export.py 机器可读导出族", "action": "已对齐（导出层）"}
       ],
       "surfaces": [
-        {"name": "控制面安全配置面（API Server/Controller Manager/Scheduler/etcd 分区）", "source": "README 输出示例 1 Master Node Security Configuration", "status": "missing", "missing": "CIS 分区检查", "action": "CM-33"},
-        {"name": "节点安全配置面（kubelet/config 分区）", "source": "cfg 分区结构", "status": "missing", "missing": "同上", "action": "CM-33"},
+        {"name": "控制面安全配置面（API Server/Controller Manager/Scheduler/etcd 分区）", "source": "README 输出示例 1 Master Node Security Configuration", "status": "we-have", "missing": "", "action": "已对齐（CM-33）", "maps_to": "kube-bench-cis（API Server/CM/Scheduler/etcd）"},
+        {"name": "节点安全配置面（kubelet/config 分区）", "source": "cfg 分区结构", "status": "we-have", "missing": "", "action": "已对齐（CM-33）", "maps_to": "kube-bench-cis（kubelet/config 分区）"},
         {"name": "51 个发行版/版本 profile（EKS/GKE/AKS/ACK/RKE/k3s/RH 专属）", "source": "cfg 目录枚举", "status": "partial", "missing": "我们六云为契约级跨租户面；发行版基线 profile 缺", "action": "CM-33（profile 数量按落地范围裁剪）"}
       ],
       "payloads": [
-        {"name": "CIS 条目级检查 payload（YAML 声明式测试配置）", "source": "README（Tests are configured with YAML files）", "status": "missing", "missing": "检查条目库", "action": "CM-33"}
+        {"name": "CIS 条目级检查 payload（YAML 声明式测试配置）", "source": "README（Tests are configured with YAML files）", "status": "we-have", "missing": "", "action": "已对齐（CM-33；profile 广度按落地范围裁剪）", "maps_to": "kube-bench-cis（26 条 CIS 条目级检查）"}
       ]
     },
     "KubiScan": {
@@ -482,15 +482,15 @@
       "verification": {"mode": "clone-source", "clone": ".slim/clonedeps/repos/KubiScan @ master（2026-10-25 shallow clone）", "verified_pages": null, "completeness": "list-level-exhaustive（CLI flag 全枚举 + CVE.json 计数）"},
       "declared_count": {"name": "risky 查询 flag 数 / CVE 条目数", "value": "~19 查询 flag / CVE.json 40 个唯一 CVE", "source": "KubiScan.py add_argument 枚举 + CVE.json 正则计数"},
       "features": [
-        {"name": "risky RBAC 实体枚举（roles/clusterroles/rolebindings/subjects/pods ×any 组合 + -a all）", "source": "KubiScan.py risky-* flag 族", "status": "partial", "missing": "rbac-mapping 有 can-i 矩阵/cluster-admin 绑定；risky subjects 反查与优先级过滤缺", "action": "CM-36"},
+        {"name": "risky RBAC 实体枚举（roles/clusterroles/rolebindings/subjects/pods ×any 组合 + -a all）", "source": "KubiScan.py risky-* flag 族", "status": "we-have", "missing": "", "action": "已对齐（CM-36）", "maps_to": "kubiscan-risky + reverse-rbac-lookup"},
         {"name": "CVE 扫描开关（-cve，40 条 K8s CVE 库）", "source": "KubiScan.py --cve + CVE.json", "status": "missing", "missing": "K8s CVE 检查库", "action": "CM-35（并入原语库）"},
         {"name": "join token 提取（-jt）", "source": "KubiScan.py --join-token", "status": "missing", "missing": "节点加入凭据面（类别外：节点攻陷后动作）", "action": "记录不做（域外）"},
         {"name": "JSON 导出 + 深度 Pod 扫描（-d deep）", "source": "KubiScan.py -j/-d", "status": "we-have", "maps_to": "findings JSON + 模块深度参数（等价机制）", "action": "已对齐（机制）"}
       ],
       "surfaces": [
         {"name": "特权 Pod/容器面（--risky-pods/--privileged-pods）", "source": "KubiScan.py flag", "status": "we-have", "maps_to": "privileged-workloads + privileged-gpu-pod-escape", "action": "已对齐"},
-        {"name": "Secret 挂载面（pods-secrets-volume/-env 逐 Pod）", "source": "KubiScan.py flag", "status": "partial", "missing": "lws-secrets-lateral 覆盖场景级；全集群逐 Pod secret 挂载盘点缺", "action": "并入 CM-36（盘点增强）"},
-        {"name": "token dump（-dt 从 Pod dump token）", "source": "KubiScan.py --dump-tokens", "status": "missing", "missing": "采集动作不产品化（ROE）；盘点面见 CM-36", "action": "CM-36（盘点等价）"}
+        {"name": "Secret 挂载面（pods-secrets-volume/-env 逐 Pod）", "source": "KubiScan.py flag", "status": "we-have", "missing": "", "action": "已对齐（CM-36）", "maps_to": "kubiscan-risky（逐 Pod volume/env/token 盘点）"},
+        {"name": "token dump（-dt 从 Pod dump token）", "source": "KubiScan.py --dump-tokens", "status": "partial", "missing": "token 实际导出动作不产品化（ROE 采集边界）", "action": "已部分对齐（检测面）", "maps_to": "kubiscan-risky（token dump 面检测）"}
       ],
       "payloads": [
         {"name": "40 条 K8s CVE 检测条目（CVE-2018-1002105 至 CVE-2022-3172 等）", "source": "CVE.json 唯一 CVE 计数", "status": "missing", "missing": "K8s CVE 条目库", "action": "CM-35"},

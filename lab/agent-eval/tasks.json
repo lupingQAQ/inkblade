@@ -1,0 +1,176 @@
+{
+  "schema": "trident-agent-eval-tasks-v1",
+  "generated": "2026-10-25",
+  "note": "截图/仿真靶场全部本地（127.0.0.1），无外部网络依赖；mode=probe-only，写类模块不参与评测。",
+  "tasks": [
+    {
+      "id": "recon-exposure",
+      "category": "recon",
+      "goal": "发现集群暴露面与逃逸原语（LoadBalancer/NodePort/特权/宿主挂载）",
+      "kind": "snapshot",
+      "params": {"snapshot": "lab/fixtures/recon/cluster-snapshot.json"},
+      "modules": ["exposure-mapping", "escape-primitives"],
+      "expect_findings_min": 5,
+      "expect_any_title": ["Ray"]
+    },
+    {
+      "id": "recon-kubelet",
+      "category": "recon",
+      "goal": "盘点 kubelet API 面与 kube-hunter 控制面检查缺口",
+      "kind": "snapshot",
+      "params": {"snapshot": "lab/fixtures/attack-surface/cluster-surface.json"},
+      "modules": ["kubelet-api-surface", "kubehunter-checks"],
+      "expect_findings_min": 10,
+      "expect_any_title": ["kubelet"]
+    },
+    {
+      "id": "recon-cis",
+      "category": "recon",
+      "goal": "CIS 基线与 CDK 技术面联合评估",
+      "kind": "snapshot",
+      "params": {"snapshot": "lab/fixtures/attack-surface/cluster-surface.json"},
+      "modules": ["kube-bench-cis", "cdk-techniques"],
+      "expect_findings_min": 10,
+      "expect_any_title": ["CIS"]
+    },
+    {
+      "id": "recon-secrets",
+      "category": "recon",
+      "goal": "manifest/configmap 云密钥扫描 + risky 实体与 Secret 挂载盘点",
+      "kind": "snapshot",
+      "params": {"snapshot": "lab/fixtures/attack-surface/cluster-surface.json"},
+      "modules": ["secret-scanner", "kubetrail-manifest-secrets", "kubiscan-risky"],
+      "expect_findings_min": 8,
+      "expect_any_title": ["凭据"]
+    },
+    {
+      "id": "exploit-socket",
+      "category": "exploit",
+      "goal": "验证特权/宿主挂载逃逸原语与运行时 socket 闭环",
+      "kind": "snapshot",
+      "params": {
+        "snapshot": "lab/fixtures/attack-surface/cluster-surface.json",
+        "backup_targets": [
+          {"kind": "kube", "name": "gpu-trainer-0",
+           "manifest": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: gpu-trainer-0\n  namespace: train\n"}
+        ]
+      },
+      "modules": ["privileged-gpu-pod-escape", "runtime-socket-escape"],
+      "expect_findings_min": 2,
+      "expect_any_title": ["socket"]
+    },
+    {
+      "id": "exploit-cve",
+      "category": "exploit",
+      "goal": "K8s/运行时 CVE 版本区间与 LPE 启发式联合判定",
+      "kind": "snapshot",
+      "params": {"snapshot": "lab/fixtures/attack-surface/cluster-surface.json"},
+      "modules": ["kubernetes-cve-catalog", "kubetrail-lpe"],
+      "expect_findings_min": 6,
+      "expect_any_title": ["CVE-2024-21626"]
+    },
+    {
+      "id": "exploit-rbac",
+      "category": "exploit",
+      "goal": "RBAC 身份反查 + SA token 边（谁能读 token / 谁能 exec）",
+      "kind": "snapshot",
+      "params": {"snapshot": "lab/fixtures/attack-surface/cluster-surface.json"},
+      "modules": ["reverse-rbac-lookup", "kubehound-token-edges"],
+      "expect_findings_min": 6,
+      "expect_any_title": ["TOKEN_STEAL"]
+    },
+    {
+      "id": "chain-weight-poison",
+      "category": "chain",
+      "goal": "权重投毒链前置判定并执行只读前置（暴露面/特权工作负载）",
+      "kind": "chain",
+      "chain": "flat-network-admin-plane-weight-poison",
+      "params": {"snapshot": "lab/fixtures/recon/cluster-snapshot.json"},
+      "modules": ["exposure-mapping", "privileged-workloads"],
+      "expect_findings_min": 3,
+      "expect_verdict": ["部分成立"],
+      "expect_chain_steps": 2
+    },
+    {
+      "id": "chain-gpu-tenant",
+      "category": "chain",
+      "goal": "GPU 租户残留链前置判定（调度器未鉴权）并评估网络算子姿态",
+      "kind": "chain",
+      "chain": "gpu-tenant-residue-chain",
+      "params": {"snapshot": "lab/fixtures/attack-surface/cluster-surface.json"},
+      "modules": ["gpu-network-operator-posture"],
+      "expect_findings_min": 0,
+      "expect_verdict": ["不成立"],
+      "expect_chain_steps": 3
+    },
+    {
+      "id": "longctx-window",
+      "category": "long-context",
+      "goal": "长上下文窗口耗尽与上限绕过（128k 声明/超发）",
+      "kind": "http",
+      "sim": "longctx",
+      "params": {"mode": "probe-only"},
+      "modules": ["long-context-window-exhaustion", "context-limit-bypass"],
+      "expect_findings_min": 2,
+      "expect_any_title": ["上下文"]
+    },
+    {
+      "id": "longctx-cache",
+      "category": "long-context",
+      "goal": "prefix cache 跨租户复用与内存放大",
+      "kind": "http",
+      "sim": "longctx",
+      "params": {"mode": "probe-only"},
+      "modules": ["prefix-cache-cross-tenant-leak", "long-context-memory-amplification"],
+      "expect_findings_min": 2,
+      "expect_any_title": ["cache"]
+    },
+    {
+      "id": "gateway-auth",
+      "category": "gateway",
+      "goal": "AI 网关认证绕过 + 上游 key 外泄 + 指纹",
+      "kind": "http",
+      "sim": "gateway",
+      "params": {"mode": "probe-only"},
+      "modules": ["aigateway-auth-bypass", "aigateway-upstream-key-exfil", "aigateway-fingerprint"],
+      "expect_findings_min": 3,
+      "expect_any_title": ["网关"]
+    },
+    {
+      "id": "gateway-cache",
+      "category": "gateway",
+      "goal": "语义缓存跨租户 + 配额绕过 + 日志 PII",
+      "kind": "http",
+      "sim": "gateway",
+      "params": {"mode": "probe-only"},
+      "modules": ["aigateway-cache-cross-tenant", "aigateway-quota-bypass", "aigateway-log-pii-leak"],
+      "expect_findings_min": 3,
+      "expect_any_title": ["租户"]
+    },
+    {
+      "id": "gpu-metrics",
+      "category": "gpu-tenant",
+      "goal": "GPU 指标/设备跨命名空间泄露",
+      "kind": "http",
+      "sim": "gpu",
+      "params": {"mode": "probe-only"},
+      "modules": ["gpu-metrics-tenant-leak", "gpu-device-cross-namespace"],
+      "expect_findings_min": 2,
+      "expect_any_title": ["GPU"]
+    },
+    {
+      "id": "gpu-mps",
+      "category": "gpu-tenant",
+      "goal": "MPS context 共享与 GPU 网络算子姿态",
+      "kind": "http",
+      "sim": "gpu",
+      "params": {"mode": "probe-only"},
+      "modules": ["mps-context-shared", "gpu-network-operator-posture"],
+      "module_params": {
+        "gpu-network-operator-posture": {"snapshot": "lab/fixtures/attack-surface/cluster-surface.json"}
+      },
+      "expect_findings_min": 1,
+      "expect_any_title": ["MPS"]
+    }
+  ]
+}

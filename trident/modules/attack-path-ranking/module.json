@@ -1,0 +1,18 @@
+{
+  "key": "attack-path-ranking",
+  "name": {
+    "zh": "攻击路径排序",
+    "en": "Attack path ranking"
+  },
+  "series": "侦察",
+  "description": "从 RBAC/Pod/节点/云面构图：最短攻击路径（BFS）+ 割点/瓶颈节点排序，把散点发现收敛为可执行链优先级（KubeHound CM-23）。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群/节点快照 dict 或 lab/fixtures/attack-surface/cluster-surface.json 路径",
+    "limit": "可选：最多输出的发现数（默认全部）"
+  },
+  "produces": "attack-path-ranking",
+  "knowledge": "KubeHound 最短路径/关键节点（CM-23）"
+}

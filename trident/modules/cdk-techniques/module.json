@@ -1,0 +1,18 @@
+{
+  "key": "cdk-techniques",
+  "name": {
+    "zh": "CDK 技术分类",
+    "en": "CDK technique taxonomy"
+  },
+  "series": "侦察",
+  "description": "CDK 30 EXP / 13 evaluate 技术分类映射：按 in-pod/集群面命中逐项标注 technique id、类别（exploit/evaluate）与证据；只登记不执行。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群/节点快照 dict 或 lab/fixtures/attack-surface/cluster-surface.json 路径",
+    "limit": "可选：最多输出的发现数（默认全部）"
+  },
+  "produces": "cdk-techniques",
+  "knowledge": "CDK README Exploit/Evaluate 表（30/13）"
+}

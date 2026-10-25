@@ -1,0 +1,18 @@
+{
+  "key": "kdigger-admission",
+  "name": {
+    "zh": "kdigger Admission 探测",
+    "en": "kdigger admission probes"
+  },
+  "series": "侦察",
+  "description": "kdigger admission 六模板（privileged/priv-escalation/hostnetwork/hostpath/runasroot/hostpid）dry-run 结果反推准入边界；只读 consumed 结果，不创建对象。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群/节点快照 dict 或 lab/fixtures/attack-surface/cluster-surface.json 路径",
+    "limit": "可选：最多输出的发现数（默认全部）"
+  },
+  "produces": "kdigger-admission",
+  "knowledge": "kdigger README Admission 节（CM-24）"
+}

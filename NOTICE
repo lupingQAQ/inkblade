@@ -7,44 +7,70 @@ This product is licensed under the Apache License, Version 2.0 (see LICENSE).
 Third-party and interoperability notices
 --------------------------------------------------------------------------
 
-1. ARTEX (AGPL-3.0) — black-box comparison only
+1. ARTEX (AGPL-3.0) — clean-room functional parity + black-box comparison
 
    ARTEX (upstream: Autumn-27/ARTEX; maintained fork: RuoJi6/ARTEX) is an
    independent open-source project licensed under the GNU Affero General
    Public License, version 3 (AGPL-3.0).
 
    Trident does NOT include, copy, link, embed, or derive from ARTEX source
-   code. No ARTEX code is distributed in this repository. ARTEX is used only
-   as an optional external black-box comparison target in
+   code. No ARTEX code is distributed in this repository.
+
+   The ARTEX-parity features added under `trident/core/` — multi-model LLM
+   pool (`llmpool.py`), notification channels/rules (`notify.py`), task
+   templates (`templates.py`), one-shot calendar windows (`calendar.py`),
+   in-run side questions (`threads.py`), graph snapshots/diffs
+   (`graphsnap.py`), read-only cross-run blackboard (`blackboard.py`), and
+   bounded concurrent execution of approved proposals (explorer `workers`) —
+   are independent clean-room implementations. They were designed solely from
+   public functional descriptions (feature/competitive matrices and generic
+   protocol knowledge). No ARTEX source file was read, copied, adapted, or
+   line-by-line translated; interfaces, data models, gates, and tests are
+   independently designed.
+
+   ARTEX is also used as an optional external black-box comparison target in
    `lab/bench/artex-bench.sh`, which is executed separately in a lab
    environment against an independently cloned ARTEX checkout. Because there
    is no code reuse or derivative work, the ARTEX AGPL license does not apply
    to Trident or to this repository.
 
    Any ARTEX source you clone remains governed by its own AGPL-3.0 terms.
+   Parity evidence: `docs/ARTEX-PARITY.md` and `docs/artex-parity-rows.json`.
 
-1a. KubeTrail (Apache-2.0) and Datadog MKAT (Apache-2.0) — read-only comparison
+1a. KubeTrail (Apache-2.0) — ported (independent reimplementation)
 
-   In October 2026, Trident added a K8s audit-trail analysis capability and
-   compared against two independently cloned, read-only checkouts (workspace
-   level, outside this repository's distribution):
+   KubeTrail — https://github.com/ekkoo-z/KubeTrail — Apache License 2.0,
+   Copyright the KubeTrail Authors. The repository README footer says
+   "MIT License" but the LICENSE file is the authoritative Apache-2.0 text;
+   this discrepancy is noted for honesty.
 
-   - KubeTrail — https://github.com/ekkoo-z/KubeTrail — Apache License 2.0
-     (its README footer says "MIT License" but the LICENSE file in the
-     repository is the authoritative Apache-2.0 text; discrepancy noted here
-     for honesty). Used to define the `dbus.json` export Document shape that
-     `trident/core/auditlog.py::adapt_kubetrail` can ingest.
-     Note: the frequently cited "DataDog/kubetrail" repository does NOT exist
-     (GitHub 404, verified 2026-10-25).
-   - Managed Kubernetes Auditing Toolkit (MKAT) —
-     https://github.com/DataDog/managed-kubernetes-auditing-toolkit — Apache
-     License 2.0, Copyright 2023-Present Datadog, Inc. — capability
-     comparison only (IRSA/Pod-Identity trust graphs, hardcoded cloud
-     credentials, IMDS reachability).
+   Trident includes an independent Python reimplementation of selected
+   KubeTrail capabilities under `trident/kubetrail/`:
 
-   No source code from either project is included, copied, linked, embedded,
-   or derived from in this repository; both are used as external read-only
-   comparison references and export-format documentation only.
+   - in-pod collectors (identity/environment/serviceaccount/proc/proc_sys_escape/
+     filesystem/node_local/runtime_local/k8s_context/k8s_permissions/
+     credential_sweep/cloud_metadata/syscalls);
+   - legacy ServiceAccount token audit (JWT decode without signature
+     verification, expiry/audience/permission/default-SA risk);
+   - sensitive-value tri-state storage (raw / redact / metadata);
+   - manifest and ConfigMap cloud-key scanning;
+   - Linux LPE heuristics (16-CVE version-range table, no exploit code);
+   - persistence detection for the seven KubeTrail template classes.
+
+   No Go source code from KubeTrail is copied, linked, or embedded; the port is
+   a clean-room Python reimplementation of observable behavior and public
+   documentation. Upstream copyright and Apache-2.0 attribution are retained
+   here, in `docs/KUBETRAIL-PORT.md`, and in each `trident/kubetrail/*.py`
+   header. `LICENSE` contains the full Apache-2.0 text; modified/derived files
+   are marked. See `tools/check-notices.py` for the automated check.
+
+1b. Datadog MKAT (Apache-2.0) — read-only comparison
+
+   Managed Kubernetes Auditing Toolkit (MKAT) —
+   https://github.com/DataDog/managed-kubernetes-auditing-toolkit — Apache
+   License 2.0, Copyright 2023-Present Datadog, Inc. — capability comparison
+   only (IRSA/Pod-Identity trust graphs, hardcoded cloud credentials, IMDS
+   reachability). No MKAT source code is included or derived from.
 
 2. Vendored browser assets (MIT)
 

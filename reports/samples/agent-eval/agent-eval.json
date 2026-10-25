@@ -1,0 +1,725 @@
+{
+ "schema": "trident-agent-eval-v1",
+ "generated_at": "2026-10-25T14:30:12Z",
+ "tasks_file": "lab/agent-eval/tasks.json",
+ "task_count": 15,
+ "categories": {
+  "recon": [
+   "recon-exposure",
+   "recon-kubelet",
+   "recon-cis",
+   "recon-secrets"
+  ],
+  "exploit": [
+   "exploit-socket",
+   "exploit-cve",
+   "exploit-rbac"
+  ],
+  "chain": [
+   "chain-weight-poison",
+   "chain-gpu-tenant"
+  ],
+  "long-context": [
+   "longctx-window",
+   "longctx-cache"
+  ],
+  "gateway": [
+   "gateway-auth",
+   "gateway-cache"
+  ],
+  "gpu-tenant": [
+   "gpu-metrics",
+   "gpu-mps"
+  ]
+ },
+ "config": {
+  "workers": 4,
+  "max_attempts": 2,
+  "approval_policy": {
+   "deterministic": "batch (1 per run)",
+   "supervisor-worker": "per-action"
+  },
+  "fault_injection": [
+   {
+    "task": "gateway-auth",
+    "module": "aigateway-auth-bypass",
+    "attempt": 1,
+    "error": "TimeoutError"
+   }
+  ],
+  "network": "127.0.0.1 simulators + local fixtures only",
+  "writes": "写类模块不参与（mode=probe-only）"
+ },
+ "modes": {
+  "deterministic": {
+   "mode": "deterministic",
+   "tasks": [
+    {
+     "id": "recon-exposure",
+     "category": "recon",
+     "ok": true,
+     "reason": "",
+     "findings": 18,
+     "titles": [
+      "LoadBalancer 服务暴露：ray-system/ray-dashboard（端口 8265）",
+      "NodePort 服务暴露：infer/vllm-plugins（端口 8000）",
+      "LoadBalancer 服务暴露：monitoring/grafana（端口 3000）",
+      "NodePort 服务暴露：monitoring/prometheus（端口 9090）",
+      "Ingress 暴露：ml.ml-lab.internal → ops/mlflow:5000",
+      "Ingress 暴露：nb.ml-lab.internal → ops/jupyter:8888",
+      "Gateway API HTTPRoute 暴露：llm.ml-lab.internal → infer/llm-router:8000",
+      "InferencePool failureMode=FailOpen：llm-pool（故障域放大）"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 250,
+     "tokens": 414,
+     "chain": null
+    },
+    {
+     "id": "recon-kubelet",
+     "category": "recon",
+     "ok": true,
+     "reason": "",
+     "findings": 47,
+     "titles": [
+      "kubelet gpu-node-1：匿名认证开启（任意 API 组可达）",
+      "kubelet gpu-node-1：只读端口 10255 开放",
+      "kubelet gpu-node-1：API 组 stats 可达",
+      "kubelet gpu-node-1：API 组 metrics 可达",
+      "kubelet gpu-node-1：API 组 logs 可达",
+      "kubelet gpu-node-1：API 组 spec 可达",
+      "kubelet gpu-node-1：API 组 pods 可达",
+      "kubelet gpu-node-1：API 组 healthz 可达"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 343,
+     "tokens": 626,
+     "chain": null
+    },
+    {
+     "id": "recon-cis",
+     "category": "recon",
+     "ok": true,
+     "reason": "",
+     "findings": 50,
+     "titles": [
+      "CIS 1.2.1 未通过：API Server 匿名认证",
+      "CIS 1.2.2 未通过：API Server insecure-port",
+      "CIS 1.2.3 未通过：授权模式",
+      "CIS 1.2.4 未通过：审计日志",
+      "CIS 1.2.5 未通过：profiling",
+      "CIS 1.2.6 未通过：准入插件",
+      "CIS 1.2.8 未通过：TLS 证书",
+      "CIS 1.2.9 未通过：客户端 CA"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 344,
+     "tokens": 667,
+     "chain": null
+    },
+    {
+     "id": "recon-secrets",
+     "category": "recon",
+     "ok": true,
+     "reason": "",
+     "findings": 48,
+     "titles": [
+      "deploy/gateway.yaml: aws-access-key 明文凭据（AKIA************MPLE）",
+      "deploy/gateway.yaml: openai-key 明文凭据（sk-p************************************6789）",
+      "ops/shadow-kubeconfig.yaml: kubeconfig 明文凭据（clie********ata:）",
+      "deploy/gateway.yaml: high-entropy 明文凭据（sk-p************************************6789）",
+      "deploy/gateway.yaml: high-entropy 明文凭据（wJal********************************EKEY）",
+      "ops/pull-secret.yaml: high-entropy 明文凭据（eyJh****************************************fQ==）",
+      "ConfigMap configmap/default/gateway-config: aws-access-key 明文凭据（AKIA************MPLE）",
+      "ConfigMap configmap/train/gcp-sa: gcp-service-account 明文凭据（\\\"ty*********************nt\\\"）"
+     ],
+     "failures": [],
+     "modules": 3,
+     "duration_ms": 467,
+     "tokens": 1090,
+     "chain": null
+    },
+    {
+     "id": "exploit-socket",
+     "category": "exploit",
+     "ok": true,
+     "reason": "",
+     "findings": 2,
+     "titles": [
+      "Pod「gpu-trainer-privileged」特权原语组合可宿主逃逸",
+      "Pod「gpu-trainer-privileged」挂载容器运行时 socket（宿主逃逸原语）"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 282,
+     "tokens": 128,
+     "chain": null
+    },
+    {
+     "id": "exploit-cve",
+     "category": "exploit",
+     "ok": true,
+     "reason": "",
+     "findings": 13,
+     "titles": [
+      "CVE-2024-21626 受影响面：runc Leaky Vessels 工作目录逃逸",
+      "CVE-2020-8558 受影响面：kubelet 只读端口 + localhost 边界绕过",
+      "CVE-2022-0492 受影响面：cgroups v1 release_agent 逃逸",
+      "LPE 面：CVE-2022-0847 Dirty Pipe（heuristic）",
+      "LPE 面：CVE-2024-1086 nf_tables use-after-free（heuristic）",
+      "LPE 面：CVE-2022-0492 cgroups v1 release_agent（heuristic）",
+      "LPE 面：CVE-2024-21626 Leaky Vessels (runc)（heuristic）",
+      "LPE 面：CVE-2022-2588 cls_route UAF（heuristic）"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 250,
+     "tokens": 247,
+     "chain": null
+    },
+    {
+     "id": "exploit-rbac",
+     "category": "exploit",
+     "ok": true,
+     "reason": "",
+     "findings": 20,
+     "titles": [
+      "谁可以 get secrets：4 个主体",
+      "非系统主体持有高风险权限：user:intern → get secrets",
+      "谁可以 list secrets：2 个主体",
+      "谁可以 create pods/exec：2 个主体",
+      "谁可以 create pods：3 个主体",
+      "谁可以 create rolebindings：2 个主体",
+      "非系统主体持有高风险权限：user:intern → create rolebindings",
+      "谁可以 create clusterrolebindings：1 个主体"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 296,
+     "tokens": 370,
+     "chain": null
+    },
+    {
+     "id": "chain-weight-poison",
+     "category": "chain",
+     "ok": true,
+     "reason": "",
+     "findings": 15,
+     "titles": [
+      "LoadBalancer 服务暴露：ray-system/ray-dashboard（端口 8265）",
+      "NodePort 服务暴露：infer/vllm-plugins（端口 8000）",
+      "LoadBalancer 服务暴露：monitoring/grafana（端口 3000）",
+      "NodePort 服务暴露：monitoring/prometheus（端口 9090）",
+      "Ingress 暴露：ml.ml-lab.internal → ops/mlflow:5000",
+      "Ingress 暴露：nb.ml-lab.internal → ops/jupyter:8888",
+      "Gateway API HTTPRoute 暴露：llm.ml-lab.internal → infer/llm-router:8000",
+      "InferencePool failureMode=FailOpen：llm-pool（故障域放大）"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 312,
+     "tokens": 260,
+     "chain": {
+      "chain": "flat-network-admin-plane-weight-poison",
+      "verdict": "部分成立",
+      "missing": [
+       "findings('framework-port-matching').reachable.any(port == 30000)"
+      ],
+      "steps": [
+       "sglang-admin-failopen",
+       "slime-weight-pull-poison"
+      ],
+      "planned": 2
+     }
+    },
+    {
+     "id": "chain-gpu-tenant",
+     "category": "chain",
+     "ok": true,
+     "reason": "",
+     "findings": 1,
+     "titles": [
+      "未检测到 GPU/网络 Operator 组件"
+     ],
+     "failures": [],
+     "modules": 1,
+     "duration_ms": 125,
+     "tokens": 60,
+     "chain": {
+      "chain": "gpu-tenant-residue-chain",
+      "verdict": "不成立",
+      "missing": [
+       "findings('gpu-pool-scheduler-unauth').count > 0"
+      ],
+      "steps": [
+       "gpu-pool-scheduler-unauth",
+       "gpu-metrics-tenant-leak",
+       "gpu-tenant-residue"
+      ],
+      "planned": 3
+     }
+    },
+    {
+     "id": "longctx-window",
+     "category": "long-context",
+     "ok": true,
+     "reason": "",
+     "findings": 2,
+     "titles": [
+      "超窗请求被接受且 prefill 队列增长（长上下文窗口耗尽）",
+      "上下文上限绕过：声明 128k 实发 900k 仍被接受"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 360,
+     "tokens": 78,
+     "chain": null
+    },
+    {
+     "id": "longctx-cache",
+     "category": "long-context",
+     "ok": true,
+     "reason": "",
+     "findings": 2,
+     "titles": [
+      "prefix cache 跨租户复用：无 cache_salt 仍命中他租户 prefix",
+      "长上下文内存放大：小 prompt 触发大 KV 预留（窗口声明即分配）"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 327,
+     "tokens": 80,
+     "chain": null
+    },
+    {
+     "id": "gateway-auth",
+     "category": "gateway",
+     "ok": false,
+     "reason": "TimeoutError: injected transient failure",
+     "findings": 0,
+     "titles": [],
+     "failures": [
+      "TimeoutError: injected transient failure"
+     ],
+     "modules": 3,
+     "duration_ms": 0,
+     "tokens": 39,
+     "chain": null
+    },
+    {
+     "id": "gateway-cache",
+     "category": "gateway",
+     "ok": true,
+     "reason": "",
+     "findings": 3,
+     "titles": [
+      "语义缓存跨租户命中：tenant-a 读取到 tenant-b 的缓存响应",
+      "配额绕过：轮换 X-Forwarded-For 后 6 次请求 0 限流（桶数 6）",
+      "AI 网关日志 PII 泄露：2 租户明文 prompt（邮箱 1 / 卡号 1）"
+     ],
+     "failures": [],
+     "modules": 3,
+     "duration_ms": 484,
+     "tokens": 103,
+     "chain": null
+    },
+    {
+     "id": "gpu-metrics",
+     "category": "gpu-tenant",
+     "ok": true,
+     "reason": "",
+     "findings": 2,
+     "titles": [
+      "DCGM 指标泄露他租户进程名与租户标签",
+      "GPU 设备跨 namespace 共享挂载（同卡多租户/多命名空间）"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 327,
+     "tokens": 68,
+     "chain": null
+    },
+    {
+     "id": "gpu-mps",
+     "category": "gpu-tenant",
+     "ok": true,
+     "reason": "",
+     "findings": 2,
+     "titles": [
+      "MPS context 跨租户共享（client/pipe 隔离失效）",
+      "未检测到 GPU/网络 Operator 组件"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 407,
+     "tokens": 58,
+     "chain": null
+    }
+   ],
+   "summary": {
+    "mode": "deterministic",
+    "tasks": 15,
+    "success": 14,
+    "success_rate": 0.933,
+    "duration_ms": 4844,
+    "tokens": 4288,
+    "approvals": 1,
+    "retries": 0,
+    "findings": 225,
+    "workers": 1,
+    "max_attempts": 1
+   }
+  },
+  "supervisor-worker": {
+   "mode": "supervisor-worker",
+   "tasks": [
+    {
+     "id": "recon-exposure",
+     "category": "recon",
+     "ok": true,
+     "reason": "",
+     "findings": 18,
+     "titles": [
+      "LoadBalancer 服务暴露：ray-system/ray-dashboard（端口 8265）",
+      "NodePort 服务暴露：infer/vllm-plugins（端口 8000）",
+      "LoadBalancer 服务暴露：monitoring/grafana（端口 3000）",
+      "NodePort 服务暴露：monitoring/prometheus（端口 9090）",
+      "Ingress 暴露：ml.ml-lab.internal → ops/mlflow:5000",
+      "Ingress 暴露：nb.ml-lab.internal → ops/jupyter:8888",
+      "Gateway API HTTPRoute 暴露：llm.ml-lab.internal → infer/llm-router:8000",
+      "InferencePool failureMode=FailOpen：llm-pool（故障域放大）"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 329,
+     "tokens": 414,
+     "chain": null,
+     "attempts": 2
+    },
+    {
+     "id": "recon-kubelet",
+     "category": "recon",
+     "ok": true,
+     "reason": "",
+     "findings": 47,
+     "titles": [
+      "kubelet gpu-node-1：匿名认证开启（任意 API 组可达）",
+      "kubelet gpu-node-1：只读端口 10255 开放",
+      "kubelet gpu-node-1：API 组 stats 可达",
+      "kubelet gpu-node-1：API 组 metrics 可达",
+      "kubelet gpu-node-1：API 组 logs 可达",
+      "kubelet gpu-node-1：API 组 spec 可达",
+      "kubelet gpu-node-1：API 组 pods 可达",
+      "kubelet gpu-node-1：API 组 healthz 可达"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 395,
+     "tokens": 626,
+     "chain": null,
+     "attempts": 2
+    },
+    {
+     "id": "recon-cis",
+     "category": "recon",
+     "ok": true,
+     "reason": "",
+     "findings": 50,
+     "titles": [
+      "CIS 1.2.1 未通过：API Server 匿名认证",
+      "CIS 1.2.2 未通过：API Server insecure-port",
+      "CIS 1.2.3 未通过：授权模式",
+      "CIS 1.2.4 未通过：审计日志",
+      "CIS 1.2.5 未通过：profiling",
+      "CIS 1.2.6 未通过：准入插件",
+      "CIS 1.2.8 未通过：TLS 证书",
+      "CIS 1.2.9 未通过：客户端 CA"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 451,
+     "tokens": 667,
+     "chain": null,
+     "attempts": 2
+    },
+    {
+     "id": "recon-secrets",
+     "category": "recon",
+     "ok": true,
+     "reason": "",
+     "findings": 48,
+     "titles": [
+      "deploy/gateway.yaml: aws-access-key 明文凭据（AKIA************MPLE）",
+      "deploy/gateway.yaml: openai-key 明文凭据（sk-p************************************6789）",
+      "ops/shadow-kubeconfig.yaml: kubeconfig 明文凭据（clie********ata:）",
+      "deploy/gateway.yaml: high-entropy 明文凭据（sk-p************************************6789）",
+      "deploy/gateway.yaml: high-entropy 明文凭据（wJal********************************EKEY）",
+      "ops/pull-secret.yaml: high-entropy 明文凭据（eyJh****************************************fQ==）",
+      "ConfigMap configmap/default/gateway-config: aws-access-key 明文凭据（AKIA************MPLE）",
+      "ConfigMap configmap/train/gcp-sa: gcp-service-account 明文凭据（\\\"ty*********************nt\\\"）"
+     ],
+     "failures": [],
+     "modules": 3,
+     "duration_ms": 702,
+     "tokens": 1090,
+     "chain": null,
+     "attempts": 3
+    },
+    {
+     "id": "exploit-socket",
+     "category": "exploit",
+     "ok": true,
+     "reason": "",
+     "findings": 2,
+     "titles": [
+      "Pod「gpu-trainer-privileged」特权原语组合可宿主逃逸",
+      "Pod「gpu-trainer-privileged」挂载容器运行时 socket（宿主逃逸原语）"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 283,
+     "tokens": 128,
+     "chain": null,
+     "attempts": 2
+    },
+    {
+     "id": "exploit-cve",
+     "category": "exploit",
+     "ok": true,
+     "reason": "",
+     "findings": 13,
+     "titles": [
+      "CVE-2024-21626 受影响面：runc Leaky Vessels 工作目录逃逸",
+      "CVE-2020-8558 受影响面：kubelet 只读端口 + localhost 边界绕过",
+      "CVE-2022-0492 受影响面：cgroups v1 release_agent 逃逸",
+      "LPE 面：CVE-2022-0847 Dirty Pipe（heuristic）",
+      "LPE 面：CVE-2024-1086 nf_tables use-after-free（heuristic）",
+      "LPE 面：CVE-2022-0492 cgroups v1 release_agent（heuristic）",
+      "LPE 面：CVE-2024-21626 Leaky Vessels (runc)（heuristic）",
+      "LPE 面：CVE-2022-2588 cls_route UAF（heuristic）"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 519,
+     "tokens": 247,
+     "chain": null,
+     "attempts": 2
+    },
+    {
+     "id": "exploit-rbac",
+     "category": "exploit",
+     "ok": true,
+     "reason": "",
+     "findings": 20,
+     "titles": [
+      "谁可以 get secrets：4 个主体",
+      "非系统主体持有高风险权限：user:intern → get secrets",
+      "谁可以 list secrets：2 个主体",
+      "谁可以 create pods/exec：2 个主体",
+      "谁可以 create pods：3 个主体",
+      "谁可以 create rolebindings：2 个主体",
+      "非系统主体持有高风险权限：user:intern → create rolebindings",
+      "谁可以 create clusterrolebindings：1 个主体"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 438,
+     "tokens": 370,
+     "chain": null,
+     "attempts": 2
+    },
+    {
+     "id": "chain-weight-poison",
+     "category": "chain",
+     "ok": true,
+     "reason": "",
+     "findings": 15,
+     "titles": [
+      "LoadBalancer 服务暴露：ray-system/ray-dashboard（端口 8265）",
+      "NodePort 服务暴露：infer/vllm-plugins（端口 8000）",
+      "LoadBalancer 服务暴露：monitoring/grafana（端口 3000）",
+      "NodePort 服务暴露：monitoring/prometheus（端口 9090）",
+      "Ingress 暴露：ml.ml-lab.internal → ops/mlflow:5000",
+      "Ingress 暴露：nb.ml-lab.internal → ops/jupyter:8888",
+      "Gateway API HTTPRoute 暴露：llm.ml-lab.internal → infer/llm-router:8000",
+      "InferencePool failureMode=FailOpen：llm-pool（故障域放大）"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 471,
+     "tokens": 260,
+     "chain": {
+      "chain": "flat-network-admin-plane-weight-poison",
+      "verdict": "部分成立",
+      "missing": [
+       "findings('framework-port-matching').reachable.any(port == 30000)"
+      ],
+      "steps": [
+       "sglang-admin-failopen",
+       "slime-weight-pull-poison"
+      ],
+      "planned": 2
+     },
+     "attempts": 2
+    },
+    {
+     "id": "chain-gpu-tenant",
+     "category": "chain",
+     "ok": true,
+     "reason": "",
+     "findings": 1,
+     "titles": [
+      "未检测到 GPU/网络 Operator 组件"
+     ],
+     "failures": [],
+     "modules": 1,
+     "duration_ms": 227,
+     "tokens": 60,
+     "chain": {
+      "chain": "gpu-tenant-residue-chain",
+      "verdict": "不成立",
+      "missing": [
+       "findings('gpu-pool-scheduler-unauth').count > 0"
+      ],
+      "steps": [
+       "gpu-pool-scheduler-unauth",
+       "gpu-metrics-tenant-leak",
+       "gpu-tenant-residue"
+      ],
+      "planned": 3
+     },
+     "attempts": 1
+    },
+    {
+     "id": "longctx-window",
+     "category": "long-context",
+     "ok": true,
+     "reason": "",
+     "findings": 2,
+     "titles": [
+      "超窗请求被接受且 prefill 队列增长（长上下文窗口耗尽）",
+      "上下文上限绕过：声明 128k 实发 900k 仍被接受"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 302,
+     "tokens": 78,
+     "chain": null,
+     "attempts": 2
+    },
+    {
+     "id": "longctx-cache",
+     "category": "long-context",
+     "ok": true,
+     "reason": "",
+     "findings": 2,
+     "titles": [
+      "prefix cache 跨租户复用：无 cache_salt 仍命中他租户 prefix",
+      "长上下文内存放大：小 prompt 触发大 KV 预留（窗口声明即分配）"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 282,
+     "tokens": 80,
+     "chain": null,
+     "attempts": 2
+    },
+    {
+     "id": "gateway-auth",
+     "category": "gateway",
+     "ok": true,
+     "reason": "",
+     "findings": 5,
+     "titles": [
+      "AI 网关推理面无鉴权：/v1/chat/completions 匿名可调用",
+      "伪造 X-Forwarded-User 越权：/key/info 返回全局 key 清单",
+      "伪造 X-Forwarded-User 越权：/logs 返回全租户明文日志",
+      "AI 网关上游 provider key 明文外泄：2 个 provider 凭据可读",
+      "AI 网关 litellm-sim 指纹命中：4 个管理面无需凭据可读"
+     ],
+     "failures": [],
+     "modules": 3,
+     "duration_ms": 884,
+     "tokens": 138,
+     "chain": null,
+     "attempts": 4
+    },
+    {
+     "id": "gateway-cache",
+     "category": "gateway",
+     "ok": true,
+     "reason": "",
+     "findings": 3,
+     "titles": [
+      "语义缓存跨租户命中：tenant-a 读取到 tenant-b 的缓存响应",
+      "配额绕过：轮换 X-Forwarded-For 后 6 次请求 0 限流（桶数 6）",
+      "AI 网关日志 PII 泄露：2 租户明文 prompt（邮箱 1 / 卡号 1）"
+     ],
+     "failures": [],
+     "modules": 3,
+     "duration_ms": 567,
+     "tokens": 103,
+     "chain": null,
+     "attempts": 3
+    },
+    {
+     "id": "gpu-metrics",
+     "category": "gpu-tenant",
+     "ok": true,
+     "reason": "",
+     "findings": 2,
+     "titles": [
+      "DCGM 指标泄露他租户进程名与租户标签",
+      "GPU 设备跨 namespace 共享挂载（同卡多租户/多命名空间）"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 308,
+     "tokens": 68,
+     "chain": null,
+     "attempts": 2
+    },
+    {
+     "id": "gpu-mps",
+     "category": "gpu-tenant",
+     "ok": true,
+     "reason": "",
+     "findings": 2,
+     "titles": [
+      "MPS context 跨租户共享（client/pipe 隔离失效）",
+      "未检测到 GPU/网络 Operator 组件"
+     ],
+     "failures": [],
+     "modules": 2,
+     "duration_ms": 436,
+     "tokens": 58,
+     "chain": null,
+     "attempts": 2
+    }
+   ],
+   "summary": {
+    "mode": "supervisor-worker",
+    "tasks": 15,
+    "success": 15,
+    "success_rate": 1.0,
+    "duration_ms": 2899,
+    "tokens": 4387,
+    "approvals": 32,
+    "retries": 1,
+    "findings": 230,
+    "workers": 4,
+    "max_attempts": 2,
+    "module_runs": 33
+   }
+  }
+ },
+ "comparison": {
+  "success_delta": 0.067,
+  "duration_delta_pct": -40.2,
+  "token_delta_pct": 2.3,
+  "approval_delta": 31
+ }
+}

@@ -35,20 +35,20 @@
 | Pentera | 自主渗透（商业） | 攻击节流/影响上限/紧急停止/只读模式 | https://pentera.io/pentera-platform/ | we-have | - | 已对齐 |
 | Pentera | 自主渗透（商业） | 8 类集成（云安全/代码安全/EASM/身份 SSO/工单/平台/自带数据） | https://pentera.io/pentera-platform/ | partial | MCP 只读 5 工具 + SARIF/OCSF/OpenVEX 导出；无 SIEM/工单/SSO 直连 | CM-15 + SOTA D17 未达成项 |
 | KubeTrail | K8s 攻防（克隆） | safe/full 双模式（full 含主动探测 dry-run/syscall） | README.en.md Key Features | we-have | - | 已对齐 |
-| KubeTrail | K8s 攻防（克隆） | 敏感证据 raw/redact/metadata 三态 | README.en.md Sensitive data egress protection | missing | 我们有 redact.cred 尾4位，无三态引用式存储 | CM-06 |
-| KubeTrail | K8s 攻防（克隆） | rbac-mode focused/full（SSRR/SSAR 全矩阵+通配符展开） | README.en.md Server Options | partial | legacy SA token 逐 token SSRR/SSAR | CM-05 |
-| KubeTrail | K8s 攻防（克隆） | in-pod 原生采集（免 kubectl，in-cluster SA） | README.en.md | missing | 我们是控制台侧快照驱动，无 in-pod 采集器 | CM-22 |
+| KubeTrail | K8s 攻防（克隆） | 敏感证据 raw/redact/metadata 三态 | README.en.md Sensitive data egress protection | we-have | - | 已对齐（CM-06） |
+| KubeTrail | K8s 攻防（克隆） | rbac-mode focused/full（SSRR/SSAR 全矩阵+通配符展开） | README.en.md Server Options | we-have | - | 已对齐（CM-05） |
+| KubeTrail | K8s 攻防（克隆） | in-pod 原生采集（免 kubectl，in-cluster SA） | README.en.md | we-have | - | 已对齐（CM-22） |
 | KubeTrail | K8s 攻防（克隆） | AI 动态攻击编排（Claude/Codex + EXP Forge + C2 MCP） | README.en.md AI dynamic attack orchestration | partial | agent_planner 推荐+审批已有；EXP Forge/C2 不做 | 维持 Ruling（自主执行/C2 刻意不做） |
 | KubeTrail | K8s 攻防（克隆） | 桌面后渗透工作台（kubeconfig/端口转发/文件访问） | README.en.md Local post-exploitation workbench | missing | 刻意不做（可审计交付 vs 交互后渗透台，REFLECTION §2） | 不入 backlog |
 | KubeTrail | K8s 攻防（克隆） | 持久化模板快速生成（SA/RBAC/CSR/sidecar/pull secret/CronJob） | README.en.md Fast persistence workflows | missing | 持久化模板面（演示类）不设 | 不入 backlog（授权演练边界） |
 | KubeTrail | K8s 攻防（克隆） | dbus.json 导出 + 交互分析 | core/auditlog.py::adapt_kubetrail（适配器已接） | we-have | - | 已对齐 |
 | KubeHound | K8s 攻防（克隆） | dump→ingest→Gremlin 图自动构建 | README + backend/ | we-have | - | 已对齐 |
-| KubeHound | K8s 攻防（克隆） | 最短攻击路径/关键节点自动计算 + 图查询 DSL | docs/reference/queries/ + README | partial | 无自动最短路径/割点排序计算与图查询 API | CM-23 |
+| KubeHound | K8s 攻防（克隆） | 最短攻击路径/关键节点自动计算 + 图查询 DSL | docs/reference/queries/ + README | we-have | - | 已对齐（CM-23） |
 | KubeHound | K8s 攻防（克隆） | KHaaS 服务化（API 多租户） | docs/khaas/ | missing | 多租户 SaaS 未达成（SOTA 同源） | CM-31 同源登记 |
 | KubeHound | K8s 攻防（克隆） | MITRE ATT&CK 映射的边语义 | docs/reference/attacks/index.md MITRE 列 | we-have | - | 已对齐 |
 | kube-hunter | K8s 攻防（克隆，官方声明停更） | 四种运行模式（remote/pod/interface/CIDR 扫描） | README + kube_hunter/core | partial | 我们有 QEMU 真集群+mock 靶场，无 CIDR 网段远程扫描模式 | CM-08 同源（kubelet CIDR 面） |
 | kube-hunter | K8s 攻防（克隆，官方声明停更） | active hunting opt-in（默认只读） | README（active hunting 说明） | we-have | - | 已对齐 |
-| kube-hunter | K8s 攻防（克隆，官方声明停更） | VID 漏洞知识库条目 | docs/vid/（VID KB） | missing | finding→可引用 KB 键 | CM-07 |
+| kube-hunter | K8s 攻防（克隆，官方声明停更） | VID 漏洞知识库条目 | docs/vid/（VID KB） | we-have | - | 已对齐（CM-07） |
 | kube-hunter | K8s 攻防（克隆，官方声明停更） | 停更声明与 Trivy 承接 | README 首行（2026-10-25 核验） | we-have | - | 已对齐（态势记录） |
 | Peirates | K8s 攻防（官方 README） | 交互式攻击操作台（sa-context 切换/namespace 切换） | docs/commands/README.md | missing | 刻意不做（可审计交付定位，COMPETITIVE-MATRIX §4 Peirates 行：无补齐项） | 不入 backlog |
 | Peirates | K8s 攻防（官方 README） | 一次性模块模式（peirates -m '<command>' 非交互） | docs/commands/README.md | we-have | - | 已对齐 |
@@ -100,10 +100,10 @@
 | Syft | 其他（官方 README） | 多格式 SBOM + 格式互转 | README Features（conversion） | partial | 我们输出 CycloneDX ML-BOM 单格式；转换矩阵缺 | CM-13 并入（格式转换） |
 | Syft | 其他（官方 README） | in-toto 签名 attestation | README Features | we-have | - | 已对齐 |
 | Syft | 其他（官方 README） | 多扫描目标（镜像/文件系统/归档/OCI/Docker/Singularity） | README Features | partial | 我们 SBOM 面向模型权重链；容器镜像/FS 扫描目标缺 | 并入 CM-13 |
-| kube-bench | 其他（官方 README+cfg 枚举） | 版本自适应检查集选择（按 K8s 版本） | README Running | missing | CIS 检查族整体（COMPETITIVE-MATRIX 已记 CM-33） | CM-33 |
+| kube-bench | 其他（官方 README+cfg 枚举） | 版本自适应检查集选择（按 K8s 版本） | README Running | partial | 按 K8s 版本自动选择 profile（当前依赖快照显式 profile） | 已部分对齐（CM-33） |
 | kube-bench | 其他（官方 README+cfg 枚举） | job.yaml 集群内执行形态 | README Quick start | partial | 我们是控制台侧快照驱动；节点内执行形态不做 | CM-33 落地时以快照等价实现 |
 | kube-bench | 其他（官方 README+cfg 枚举） | JSON/junit 输出 | docs/running.md | we-have | - | 已对齐（导出层） |
-| KubiScan | K8s 攻防（新克隆） | risky RBAC 实体枚举（roles/clusterroles/rolebindings/subjects/pods ×any 组合 + -a all） | KubiScan.py risky-* flag 族 | partial | rbac-mapping 有 can-i 矩阵/cluster-admin 绑定；risky subjects 反查与优先级过滤缺 | CM-36 |
+| KubiScan | K8s 攻防（新克隆） | risky RBAC 实体枚举（roles/clusterroles/rolebindings/subjects/pods ×any 组合 + -a all） | KubiScan.py risky-* flag 族 | we-have | - | 已对齐（CM-36） |
 | KubiScan | K8s 攻防（新克隆） | CVE 扫描开关（-cve，40 条 K8s CVE 库） | KubiScan.py --cve + CVE.json | missing | K8s CVE 检查库 | CM-35（并入原语库） |
 | KubiScan | K8s 攻防（新克隆） | join token 提取（-jt） | KubiScan.py --join-token | missing | 节点加入凭据面（类别外：节点攻陷后动作） | 记录不做（域外） |
 | KubiScan | K8s 攻防（新克隆） | JSON 导出 + 深度 Pod 扫描（-d deep） | KubiScan.py -j/-d | we-have | - | 已对齐（机制） |

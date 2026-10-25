@@ -1,0 +1,18 @@
+{
+  "key": "kubetrail-collector",
+  "name": {
+    "zh": "KubeTrail in-pod 采集",
+    "en": "KubeTrail in-pod collector"
+  },
+  "series": "侦察",
+  "description": "KubeTrail 13 个 in-pod 采集 bucket（safe/full 标注）最小闭环：root 只读文件树或快照 view → 身份/SA/挂载/运行时/凭据/元数据暴露面。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群/节点快照 dict 或 lab/fixtures/attack-surface/cluster-surface.json 路径",
+    "limit": "可选：最多输出的发现数（默认全部）"
+  },
+  "produces": "kubetrail-collector",
+  "knowledge": "KubeTrail internal/collectors/（Apache-2.0 移植）"
+}

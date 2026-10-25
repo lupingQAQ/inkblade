@@ -3,6 +3,7 @@
   "verified_at": "2026-10-25",
   "method_note": "指纹→受影响版本区间→已修复版本→绕过变体。affected/fixed 依据 = 本仓库审计轮次（模块 run.py 探针语义 + lab 两态仿真器 + 真 k3s/QEMU 实测，见 audit_refs）+ 官方 release notes 抽查（products[].release_notes，2026-10-25 webfetch 核验）。未见证官方修复的 fixed=null 并给 fixed_note；绝不臆造修复版本。",
   "products": {
+    "kubernetes": {"name": "Kubernetes (native control plane surfaces)", "repo": "kubernetes/kubernetes", "latest_tag_checked": "v1.34.0", "checked_at": "2026-10-25", "note": "K8s 原生配置面（RBAC/挂载/元数据/CIS）非版本 CVE，affected 以 * 表示「取决于部署配置」；补变体用于参数面覆盖，不代表新增漏洞。"},
     "vllm": {"repo": "vllm-project/vllm", "latest_tag_checked": "v0.32.0", "release_notes": "https://github.com/vllm-project/vllm/releases", "checked_at": "2026-10-25", "note": "v0.32.0 官方 Security 节（GHSA-4hhp-h66f-j5j7/#50300、GHSA-q97c-p368-75c4/#59491、GHSA-frvg-qw88-hww9/#51504、CORS 默认收紧 #61009）未见 /plugins/* 鉴权修复"},
     "sglang": {"repo": "sgl-project/sglang", "latest_tag_checked": "v0.5.22", "release_notes": "https://github.com/sgl-project/sglang/releases", "checked_at": "2026-10-25", "note": "v0.5.14–v0.5.22 release notes 未见 /pause /freeze /update_weights_from_disk 管理路由鉴权（fail-open 默认仍在）"},
     "ray": {"repo": "ray-project/ray", "latest_tag_checked": "ray-2.59.0", "release_notes": "https://github.com/ray-project/ray/releases", "checked_at": "2026-10-25", "note": "2.59.0 本地集群默认 token 认证 #64755；2.58.0 修 Serve ASGI 绕过 token #65189、read_lance pickle RCE #64881；2.57.0 read_numpy 默认 allow_pickle=False #64684；远程/多节点仍默认无鉴权"},
@@ -393,6 +394,803 @@
        {"id": "v1-encoded-request", "kind": "encoding", "request": "编码变体 benign 请求", "transform": {"op": "param", "arg": ["technique", "encoded-request"]}},
        {"id": "v2-alt-endpoint", "kind": "path", "request": "别名端点变体", "transform": {"op": "param", "arg": ["technique", "alt-endpoint"]}}],
      "sources": ["本仓库 core/defenseprobe.py 审计轮次"],
-     "audit_refs": ["trident/modules/defense-bypass-waf-inference/run.py"]}
+     "audit_refs": ["trident/modules/defense-bypass-waf-inference/run.py"]},
+    {
+      "module": "overprivileged-sa-escalation",
+      "product": "kubernetes",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "快照中 ServiceAccount/RoleBinding 通配符或 cluster-admin 绑定 → 提权面",
+        "routes": [
+          "service_account",
+          "namespace",
+          "role_verb"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "SA 提权为配置面问题（非版本 CVE）；补参数变体覆盖不同 SA/命名空间/动词。",
+      "variants": [
+        {
+          "id": "v1-sa-cluster-admin",
+          "kind": "params",
+          "request": "service_account=cluster-admin-sa",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "service_account",
+              "cluster-admin-sa"
+            ]
+          }
+        },
+        {
+          "id": "v2-ns-kube-system",
+          "kind": "params",
+          "request": "namespace=kube-system",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "namespace",
+              "kube-system"
+            ]
+          }
+        },
+        {
+          "id": "v3-verb-escalate",
+          "kind": "params",
+          "request": "role_verb=escalate",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "role_verb",
+              "escalate"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/overprivileged-sa-escalation/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/overprivileged-sa-escalation/run.py"
+      ]
+    },
+    {
+      "module": "privileged-gpu-pod-escape",
+      "product": "kubernetes",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "特权 × GPU 工作负载模板 → 宿主逃逸原语",
+        "routes": [
+          "host_path",
+          "privileged",
+          "mount"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "配置面（privileged/hostPath 组合），无官方修复版本概念。",
+      "variants": [
+        {
+          "id": "v1-host-root",
+          "kind": "params",
+          "request": "host_path=/",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "host_path",
+              "/"
+            ]
+          }
+        },
+        {
+          "id": "v2-docker-sock",
+          "kind": "params",
+          "request": "host_path=/var/run/docker.sock",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "host_path",
+              "/var/run/docker.sock"
+            ]
+          }
+        },
+        {
+          "id": "v3-privileged-flag",
+          "kind": "params",
+          "request": "privileged=true",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "privileged",
+              "true"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/privileged-gpu-pod-escape/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/privileged-gpu-pod-escape/run.py"
+      ]
+    },
+    {
+      "module": "runtime-socket-escape",
+      "product": "kubernetes",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "容器内 runtime socket 挂载 → 宿主特权容器",
+        "routes": [
+          "socket",
+          "runtime"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "配置面（socket 挂载），非版本 CVE。",
+      "variants": [
+        {
+          "id": "v1-containerd-sock",
+          "kind": "params",
+          "request": "socket=/run/containerd/containerd.sock",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "socket",
+              "/run/containerd/containerd.sock"
+            ]
+          }
+        },
+        {
+          "id": "v2-crio-sock",
+          "kind": "params",
+          "request": "socket=/var/run/crio/crio.sock",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "socket",
+              "/var/run/crio/crio.sock"
+            ]
+          }
+        },
+        {
+          "id": "v3-docker-sock",
+          "kind": "params",
+          "request": "socket=/var/run/docker.sock",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "socket",
+              "/var/run/docker.sock"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/runtime-socket-escape/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/runtime-socket-escape/run.py"
+      ]
+    },
+    {
+      "module": "kuberay-operator-escalation",
+      "product": "kuberay",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "KubeRay operator 宽 RBAC/命名空间越界 → 集群提权",
+        "routes": [
+          "namespace",
+          "service_account"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "KubeRay RBAC 配置面；未核验官方修复版本（operator 权限随版本/Helm values 变化）。",
+      "variants": [
+        {
+          "id": "v1-ns-kube-system",
+          "kind": "params",
+          "request": "namespace=kube-system",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "namespace",
+              "kube-system"
+            ]
+          }
+        },
+        {
+          "id": "v2-sa-ray-operator",
+          "kind": "params",
+          "request": "service_account=ray-operator",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "service_account",
+              "ray-operator"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/kuberay-operator-escalation/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/kuberay-operator-escalation/run.py"
+      ]
+    },
+    {
+      "module": "vllm-operator-rbac-escalation",
+      "product": "vllm",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "vLLM operator 角色可写跨命名空间 → 提权",
+        "routes": [
+          "namespace",
+          "cluster_role"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "operator RBAC 配置面；未核验官方修复版本。",
+      "variants": [
+        {
+          "id": "v1-ns-kube-system",
+          "kind": "params",
+          "request": "namespace=kube-system",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "namespace",
+              "kube-system"
+            ]
+          }
+        },
+        {
+          "id": "v2-role-cluster-admin",
+          "kind": "params",
+          "request": "cluster_role=cluster-admin",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "cluster_role",
+              "cluster-admin"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/vllm-operator-rbac-escalation/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/vllm-operator-rbac-escalation/run.py"
+      ]
+    },
+    {
+      "module": "lws-secrets-lateral",
+      "product": "kubernetes",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "LeaderWorkerSet 共享卷/Secret 读取 → 横向",
+        "routes": [
+          "secret_name",
+          "secret_namespace"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "配置面（Secret 挂载/读取权限），非版本 CVE。",
+      "variants": [
+        {
+          "id": "v1-victim-token",
+          "kind": "params",
+          "request": "secret_name=victim-token",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "secret_name",
+              "victim-token"
+            ]
+          }
+        },
+        {
+          "id": "v2-ns-kube-system",
+          "kind": "params",
+          "request": "secret_namespace=kube-system",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "secret_namespace",
+              "kube-system"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/lws-secrets-lateral/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/lws-secrets-lateral/run.py"
+      ]
+    },
+    {
+      "module": "metadata-egress",
+      "product": "kubernetes",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "Pod 出网可达云元数据 → 实例凭据读取",
+        "routes": [
+          "endpoint",
+          "provider"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "网络配置面（元数据可达性），非版本 CVE。",
+      "variants": [
+        {
+          "id": "v1-aws-imds",
+          "kind": "params",
+          "request": "endpoint=http://169.254.169.254/latest/meta-data/",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "endpoint",
+              "http://169.254.169.254/latest/meta-data/"
+            ]
+          }
+        },
+        {
+          "id": "v2-aws-ipv6",
+          "kind": "params",
+          "request": "endpoint=http://[fd00:ec2::254]/latest/meta-data/",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "endpoint",
+              "http://[fd00:ec2::254]/latest/meta-data/"
+            ]
+          }
+        },
+        {
+          "id": "v3-aliyun",
+          "kind": "params",
+          "request": "endpoint=http://100.100.100.200/latest/meta-data/",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "endpoint",
+              "http://100.100.100.200/latest/meta-data/"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/metadata-egress/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/metadata-egress/run.py"
+      ]
+    },
+    {
+      "module": "outbound-ssrf",
+      "product": "kubernetes",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "出网 SSRF 到云元数据 → 凭据外带",
+        "routes": [
+          "url",
+          "method"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "配置面（出网/SSRF），非版本 CVE。",
+      "variants": [
+        {
+          "id": "v1-aws-role",
+          "kind": "params",
+          "request": "url=http://169.254.169.254/latest/meta-data/iam/security-credentials/",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "url",
+              "http://169.254.169.254/latest/meta-data/iam/security-credentials/"
+            ]
+          }
+        },
+        {
+          "id": "v2-gcp-token",
+          "kind": "params",
+          "request": "url=http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "url",
+              "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/outbound-ssrf/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/outbound-ssrf/run.py"
+      ]
+    },
+    {
+      "module": "long-context-window-exhaustion",
+      "product": "vllm",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "声明窗口与实际计数不一致 → 前缀排队/内存放大",
+        "routes": [
+          "context_window",
+          "prompt_tokens"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "能力面（长上下文资源放大）；未核验官方修复版本。",
+      "variants": [
+        {
+          "id": "v1-1m-window",
+          "kind": "params",
+          "request": "context_window=1m",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "context_window",
+              "1m"
+            ]
+          }
+        },
+        {
+          "id": "v2-1m-tokens",
+          "kind": "params",
+          "request": "prompt_tokens=1000000",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "prompt_tokens",
+              "1000000"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/long-context-window-exhaustion/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/long-context-window-exhaustion/run.py"
+      ]
+    },
+    {
+      "module": "context-limit-bypass",
+      "product": "vllm",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "编码/头部/多轮绕过上下文限制",
+        "routes": [
+          "header",
+          "encoding"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "能力面（限制绕过）；未核验官方修复版本。",
+      "variants": [
+        {
+          "id": "v1-header-window",
+          "kind": "params",
+          "request": "header=X-Context-Window: 1000000",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "header",
+              "X-Context-Window: 1000000"
+            ]
+          }
+        },
+        {
+          "id": "v2-utf16-encoding",
+          "kind": "params",
+          "request": "encoding=utf-16",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "encoding",
+              "utf-16"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/context-limit-bypass/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/context-limit-bypass/run.py"
+      ]
+    },
+    {
+      "module": "gpu-tenant-residue",
+      "product": "hami",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "GPU 释放后残留（MIG/MPS/显存）跨租户读取",
+        "routes": [
+          "device",
+          "victim_tenant"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "HAMi 调度/隔离配置面；未核验官方修复版本。",
+      "variants": [
+        {
+          "id": "v1-gpu-b-1",
+          "kind": "params",
+          "request": "device=gpu-b-1",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "device",
+              "gpu-b-1"
+            ]
+          }
+        },
+        {
+          "id": "v2-tenant-c",
+          "kind": "params",
+          "request": "victim_tenant=tenant-c",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "victim_tenant",
+              "tenant-c"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/gpu-tenant-residue/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/gpu-tenant-residue/run.py"
+      ]
+    },
+    {
+      "module": "kv-oom-bomb",
+      "product": "sglang",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "并发 KV 申请 → OOM/排队放大",
+        "routes": [
+          "requests",
+          "max_tokens"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "能力面（资源耗尽）；未核验官方修复版本。",
+      "variants": [
+        {
+          "id": "v1-64-requests",
+          "kind": "params",
+          "request": "requests=64",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "requests",
+              "64"
+            ]
+          }
+        },
+        {
+          "id": "v2-max-tokens",
+          "kind": "params",
+          "request": "max_tokens=4096",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "max_tokens",
+              "4096"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/kv-oom-bomb/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/kv-oom-bomb/run.py"
+      ]
+    },
+    {
+      "module": "multi-cloud-imds-credentials",
+      "product": "kubernetes",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "多云元数据端点凭据读取",
+        "routes": [
+          "provider",
+          "endpoint"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "网络/身份配置面，非版本 CVE。",
+      "variants": [
+        {
+          "id": "v1-azure",
+          "kind": "params",
+          "request": "provider=azure",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "provider",
+              "azure"
+            ]
+          }
+        },
+        {
+          "id": "v2-gcp",
+          "kind": "params",
+          "request": "provider=gcp",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "provider",
+              "gcp"
+            ]
+          }
+        },
+        {
+          "id": "v3-aliyun",
+          "kind": "params",
+          "request": "provider=aliyun",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "provider",
+              "aliyun"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/multi-cloud-imds-credentials/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/multi-cloud-imds-credentials/run.py"
+      ]
+    },
+    {
+      "module": "model-registry-exposure",
+      "product": "litellm",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "模型注册表/别名未鉴权暴露",
+        "routes": [
+          "path",
+          "tenant"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "网关配置面；未核验官方修复版本。",
+      "variants": [
+        {
+          "id": "v1-model-info",
+          "kind": "params",
+          "request": "path=/model/info",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "path",
+              "/model/info"
+            ]
+          }
+        },
+        {
+          "id": "v2-tenant-b",
+          "kind": "params",
+          "request": "tenant=tenant-b",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "tenant",
+              "tenant-b"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/model-registry-exposure/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/model-registry-exposure/run.py"
+      ]
+    },
+    {
+      "module": "vector-db-exposure",
+      "product": "open-webui",
+      "kind": "exploit",
+      "surface": "params",
+      "fingerprint": {
+        "probe": "向量库 collection 跨租户读取",
+        "routes": [
+          "collection",
+          "tenant"
+        ]
+      },
+      "affected": "*",
+      "fixed": null,
+      "fixed_note": "RAG/向量库租户隔离配置面；未核验官方修复版本。",
+      "variants": [
+        {
+          "id": "v1-tenant-b-docs",
+          "kind": "params",
+          "request": "collection=tenant-b-docs",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "collection",
+              "tenant-b-docs"
+            ]
+          }
+        },
+        {
+          "id": "v2-shared-kb",
+          "kind": "params",
+          "request": "collection=shared-kb",
+          "transform": {
+            "op": "param",
+            "arg": [
+              "collection",
+              "shared-kb"
+            ]
+          }
+        }
+      ],
+      "sources": [
+        "本仓库攻击面/权限链/长上下文/网关/GPU 模块审计轮次（2026-10-25 补变体）",
+        "trident/modules/vector-db-exposure/module.json"
+      ],
+      "audit_refs": [
+        "trident/modules/vector-db-exposure/run.py"
+      ]
+    }
   ]
 }

@@ -13,24 +13,24 @@
 | NodeZero | 自主渗透（商业） | 非破坏性利用链（弱点链式组合演示影响） | https://horizon3.ai/nodezero/ | we-have | - | 已对齐 |
 | Pentera | 自主渗透（商业） | AD 域管枚举+破解链 | https://pentera.io/pentera-platform/（客户证言） | missing | AD 类别外 | 不入 backlog |
 | Pentera | 自主渗透（商业） | 泄露凭据有效性验证（暴露凭据→验证可用性） | https://pentera.io/pentera-platform/ | partial | 凭据集→租户内有效性判定模块 | CM-21 |
-| KubeTrail | K8s 攻防（克隆） | 16 个内核 LPE CVE 检测（Dirty Pipe/PwnKit/nf_tables/DirtyCOW 等） | README.en.md Linux LPE / K8s Container Vulnerabilities 表 | missing | 内核 LPE CVE 库（平台定位 Ruling 刻意不补，见 COMPETITIVE-MATRIX §4 KubeTrail 行） | 不入 backlog（Ruling 维持） |
-| KubeTrail | K8s 攻防（克隆） | legacy SA token 逐 token 审计（--secretoutput） | README.en.md Server Options --secretoutput | missing | 逐 token 权限审计 | CM-05 |
+| KubeTrail | K8s 攻防（克隆） | 16 个内核 LPE CVE 检测（Dirty Pipe/PwnKit/nf_tables/DirtyCOW 等） | README.en.md Linux LPE / K8s Container Vulnerabilities 表 | we-have | - | 已对齐（检测侧；Ruling 仅禁止利用代码） |
+| KubeTrail | K8s 攻防（克隆） | legacy SA token 逐 token 审计（--secretoutput） | README.en.md Server Options --secretoutput | we-have | - | 已对齐（CM-05） |
 | KubeTrail | K8s 攻防（克隆） | 19 类 scan 采集 payload（identity/serviceaccount/credential_sweep/dns_services...） | internal/command/command.go | we-have | - | 已对齐（控制台侧等价） |
-| KubeHound | K8s 攻防（克隆） | EXPLOIT_HOST_READ/WRITE/TRAVERSE（敏感挂载读写遍历） | docs/reference/attacks/EXPLOIT_HOST_*.md | partial | 挂载面检测有（storage-protocol-csi/privileged-workloads），利用原语未按边类型显式产出 | CM-23 落地时补边 payload |
-| KubeHound | K8s 攻防（克隆） | TOKEN_STEAL/LIST/BRUTEFORCE（SA token 窃取/枚举/爆破） | docs/reference/attacks/TOKEN_*.md | partial | token 采集有（rbac-mapping secrets 盘点），brute-force secret 名未设 | CM-08 扩展面（与 KubeletCTL 同源） |
+| KubeHound | K8s 攻防（克隆） | EXPLOIT_HOST_READ/WRITE/TRAVERSE（敏感挂载读写遍历） | docs/reference/attacks/EXPLOIT_HOST_*.md | we-have | - | 已对齐 |
+| KubeHound | K8s 攻防（克隆） | TOKEN_STEAL/LIST/BRUTEFORCE（SA token 窃取/枚举/爆破） | docs/reference/attacks/TOKEN_*.md | we-have | - | 已对齐（CM-08 扩展面） |
 | KubeHound | K8s 攻防（克隆） | POD_CREATE 特权 Pod 创建边 | docs/reference/attacks/POD_CREATE.md | we-have | - | 已对齐 |
-| kube-hunter | K8s 攻防（克隆，官方声明停更） | 47 个 Vuln 检查项（含 MITRE 映射与 evidence 采集） | kube_hunter/modules/hunting/*.py 全枚举 | partial | 等价检查分散于 117 模块（rbac-mapping/escape-primitives 等）；缺 K8s 控制面组件级检查清单化 | CM-35 + CM-07 |
+| kube-hunter | K8s 攻防（克隆，官方声明停更） | 47 个 Vuln 检查项（含 MITRE 映射与 evidence 采集） | kube_hunter/modules/hunting/*.py 全枚举 | partial | 其余 18 项依赖主动探测/CIDR/外部证书链（本仓以只读快照为界） | 部分对齐（29/47，CM-35/07） |
 | kube-hunter | K8s 攻防（克隆，官方声明停更） | 发现模块（apiserver/dashboard/etcd/hosts/kubectl/kubelet/kubernetes_client/ports/proxy 10 模块） | kube_hunter/modules/discovery/ | we-have | - | 已对齐 |
-| Peirates | K8s 攻防（官方 README） | 37 条命令原语（sa-menu/ns-menu/get-pods/dump-pod-info/find-volume-mounts/list-secrets/scan-configmaps/secret-to-sa...） | docs/commands/README.md 全表 | partial | RBAC/secrets 采集面由 rbac-mapping+kube-audit-trail-analysis 覆盖；configmap 错置凭据扫描（scan-configmaps）未专设 | 并入 CM-34（凭据扫描面含 configmap） |
-| Peirates | K8s 攻防（官方 README） | kubectl-can-i 身份反查（谁有权做 X） | docs/commands/kubectl-can-i.md | partial | 我们有 can-i 矩阵（正向）；身份反向枚举缺 | CM-36（risky 实体反查） |
-| Peirates | K8s 攻防（官方 README） | exec-via-kubelet（kubelet API 执行） | docs/commands/exec-via-kubelet.md | missing | kubelet 执行面 | CM-08 |
-| kdigger | K8s 攻防（官方 README） | admission 探测 payload（privileged/priv-escalation/hostnetwork/hostpath/runasroot/hostpid 六模板） | README.md Admission 节 | missing | 同上 | CM-24 |
-| kdigger | K8s 攻防（官方 README） | gen 特权 Pod 模板生成器（--all/--privileged/--hostpath/--hostpid/--hostnetwork/--tolerations） | README.md Generating 节 | partial | 演示模板生成有（lab 层），产品化 gen 命令无 | 并入 CM-24 |
+| Peirates | K8s 攻防（官方 README） | 37 条命令原语（sa-menu/ns-menu/get-pods/dump-pod-info/find-volume-mounts/list-secrets/scan-configmaps/secret-to-sa...） | docs/commands/README.md 全表 | we-have | - | 已对齐（CM-34/36） |
+| Peirates | K8s 攻防（官方 README） | kubectl-can-i 身份反查（谁有权做 X） | docs/commands/kubectl-can-i.md | we-have | - | 已对齐（CM-36） |
+| Peirates | K8s 攻防（官方 README） | exec-via-kubelet（kubelet API 执行） | docs/commands/exec-via-kubelet.md | we-have | - | 已对齐（检测面，CM-08） |
+| kdigger | K8s 攻防（官方 README） | admission 探测 payload（privileged/priv-escalation/hostnetwork/hostpath/runasroot/hostpid 六模板） | README.md Admission 节 | we-have | - | 已对齐（CM-24） |
+| kdigger | K8s 攻防（官方 README） | gen 特权 Pod 模板生成器（--all/--privileged/--hostpath/--hostpid/--hostnetwork/--tolerations） | README.md Generating 节 | we-have | - | 已对齐（不生成植入模板） |
 | kdigger | K8s 攻防（官方 README） | CoreDNS wildcard 服务发现 payload | README.md Services 节（注明 CoreDNS≥1.9.0 已移除该特性） | we-have | - | 已对齐 |
-| CDK | K8s 攻防（官方 README） | 30 个 EXP 名单（runc-pwn/shim-pwn/docker-sock-pwn/mount-disk/lxcfs-rw/mount-cgroup/abuse-unpriv-userns/mount-procfs/check-ptrace/rewrite-cgroup-devices/cap-dac-read-search/...） | README.md Exploit 表 | partial | 我们有 escape-primitives 检测面 + version-matrix 46 指纹，无逐 EXP 可执行原语库（控制台定位） | CM-35（原语库登记而非执行） |
-| CDK | K8s 攻防（官方 README） | 6 个 CVE exploit（CVE-2019-5736/2020-15257/2022-0492/2020-8554/2020-8558/2026-31431） | README.md Exploit/Evaluate 表 | partial | CVE 检测登记进 version-matrix 的路径未系统化 | CM-35 |
+| CDK | K8s 攻防（官方 README） | 30 个 EXP 名单（runc-pwn/shim-pwn/docker-sock-pwn/mount-disk/lxcfs-rw/mount-cgroup/abuse-unpriv-userns/mount-procfs/check-ptrace/rewrite-cgroup-devices/cap-dac-read-search/...） | README.md Exploit 表 | we-have | - | 已对齐（CM-35，控制台定位） |
+| CDK | K8s 攻防（官方 README） | 6 个 CVE exploit（CVE-2019-5736/2020-15257/2022-0492/2020-8554/2020-8558/2026-31431） | README.md Exploit/Evaluate 表 | we-have | - | 已对齐（CM-35） |
 | CDK | K8s 攻防（官方 README） | 11 个内网工具（nc/ps/netstat/ifconfig/vi/ectl/kcurl/dcurl/ucurl/probe/rcurl） | README.md Tool 表 | we-have | - | 已对齐（形态差异） |
-| KubeletCTL | K8s 攻防（官方 README） | /run /exec /cri 三通道容器执行 payload | API_TABLE.md | missing | 执行原语刻意不产品化（ROE 边界：检测+验证面优先） | CM-08 落地时以检测/取证面实现 |
+| KubeletCTL | K8s 攻防（官方 README） | /run /exec /cri 三通道容器执行 payload | API_TABLE.md | we-have | - | 已对齐（ROE 边界：检测+取证） |
 | KubeletCTL | K8s 攻防（官方 README） | pid2pod 进程映射侦察 | README.md Usage pid2pod | partial | 进程↔pod 映射侦察未专设 | 并入 CM-22 |
 | Falco | 运行时/准入（官方文档） | 99 条默认规则（Disallowed SSH/Write below etc|root|dev|rpm/bin dir/Non sudo setuid/Privileged container started/CVE-2024-3094 liblzma/...） | default-rules 页全量 | partial | 我们 Falco 目标 5 条（面向 ML 面）；基线广度差距即 CM-37 | CM-37 |
 | Falco | 运行时/准入（官方文档） | 用户可调 whitelist/exception 模式（user_known_* 宏） | default-rules 页条件字段 | partial | 规则模板无用户白名单宏机制 | CM-09 并入 |
@@ -50,7 +50,7 @@
 | Trivy | 其他（官方 README） | KBOM/镜像清单导出 payload | trivy k8s --report summary（kube-hunter 停更承接口径） | partial | AI SBOM 已有（模型/权重级）；集群 BOM 缺 | 并入 CM-13 |
 | Trivy | 其他（官方 README） | CIS 基线扫描（kube-bench 承接） | kube-bench README 交叉声明 | missing | CIS 检查族 | CM-33 |
 | Syft | 其他（官方 README） | SBOM 格式族 payload（CycloneDX/SPDX/Syft JSON） | README Features | partial | 格式转换矩阵 | CM-13 并入 |
-| kube-bench | 其他（官方 README+cfg 枚举） | CIS 条目级检查 payload（YAML 声明式测试配置） | README（Tests are configured with YAML files） | missing | 检查条目库 | CM-33 |
+| kube-bench | 其他（官方 README+cfg 枚举） | CIS 条目级检查 payload（YAML 声明式测试配置） | README（Tests are configured with YAML files） | we-have | - | 已对齐（CM-33；profile 广度按落地范围裁剪） |
 | KubiScan | K8s 攻防（新克隆） | 40 条 K8s CVE 检测条目（CVE-2018-1002105 至 CVE-2022-3172 等） | CVE.json 唯一 CVE 计数 | missing | K8s CVE 条目库 | CM-35 |
 | KubiScan | K8s 攻防（新克隆） | risky 静态角色库（static_risky_roles.py 预置危险角色定义） | static_risky_roles.py | partial | 危险角色模式库（我们以 can-i 矩阵+通配符检测等价覆盖核心） | CM-36 并入 |
 | DeepCE | K8s 攻防（新克隆） | 5 类 payload（reverse TCP/读 /etc/shadow/加 root 用户/自定义命令/自定义二进制） | README Payloads | missing | post-exploit payload 刻意不产品化（授权边界+可审计定位） | 不入 backlog（执行原语） |

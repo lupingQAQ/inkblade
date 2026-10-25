@@ -1,0 +1,18 @@
+{
+  "key": "peirates-primitives",
+  "name": {
+    "zh": "Peirates 命令原语",
+    "en": "Peirates command primitives"
+  },
+  "series": "侦察",
+  "description": "Peirates 37 条命令原语映射：secret/configmap 盘点、secret-to-sa、volume 挂载、token、云凭据、kubelet 执行面等按可用性判定；含 scan-configmaps 凭据扫描。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群/节点快照 dict 或 lab/fixtures/attack-surface/cluster-surface.json 路径",
+    "limit": "可选：最多输出的发现数（默认全部）"
+  },
+  "produces": "peirates-primitives",
+  "knowledge": "Peirates docs/commands/README.md（37）"
+}
