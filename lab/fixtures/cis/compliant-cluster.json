@@ -1,0 +1,239 @@
+{
+  "_meta": {
+    "name": "lab-cis-compliant",
+    "profile": "cis-1.8",
+    "benchmark": "CIS Kubernetes Benchmark v1.8.0",
+    "k8s_version": "1.29.4",
+    "distribution": "kubeadm",
+    "note": "合规基线：所有自动化项证据齐全且通过；Manual 项保持 manual。"
+  },
+  "components": {
+    "apiserver": {
+      "args": [
+        "kube-apiserver",
+        "--anonymous-auth=false",
+        "--authorization-mode=Node,RBAC",
+        "--kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt",
+        "--kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key",
+        "--kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt",
+        "--enable-admission-plugins=NodeRestriction,EventRateLimit,AlwaysPullImages,DenyServiceExternalIPs,ServiceAccount,NamespaceLifecycle",
+        "--disable-admission-plugins=",
+        "--profiling=false",
+        "--audit-log-path=/var/log/kubernetes/audit.log",
+        "--audit-log-maxage=30",
+        "--audit-log-maxbackup=10",
+        "--audit-log-maxsize=100",
+        "--request-timeout=60s",
+        "--service-account-lookup=true",
+        "--service-account-key-file=/etc/kubernetes/pki/sa.pub",
+        "--etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt",
+        "--etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client.key",
+        "--tls-cert-file=/etc/kubernetes/pki/apiserver.crt",
+        "--tls-private-key-file=/etc/kubernetes/pki/apiserver.key",
+        "--client-ca-file=/etc/kubernetes/pki/ca.crt",
+        "--etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt",
+        "--encryption-provider-config=/etc/kubernetes/encryption-config.yaml",
+        "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_AES_128_GCM_SHA256"
+      ]
+    },
+    "controller-manager": {
+      "args": [
+        "kube-controller-manager",
+        "--terminated-pod-gc-threshold=12500",
+        "--profiling=false",
+        "--use-service-account-credentials=true",
+        "--service-account-private-key-file=/etc/kubernetes/pki/sa.key",
+        "--root-ca-file=/etc/kubernetes/pki/ca.crt",
+        "--feature-gates=RotateKubeletServerCertificate=true",
+        "--bind-address=127.0.0.1"
+      ]
+    },
+    "scheduler": {
+      "args": [
+        "kube-scheduler",
+        "--profiling=false",
+        "--bind-address=127.0.0.1"
+      ]
+    },
+    "etcd": {
+      "args": [
+        "etcd",
+        "--cert-file=/etc/kubernetes/pki/etcd/server.crt",
+        "--key-file=/etc/kubernetes/pki/etcd/server.key",
+        "--client-cert-auth=true",
+        "--peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt",
+        "--peer-key-file=/etc/kubernetes/pki/etcd/peer.key",
+        "--peer-client-cert-auth=true"
+      ]
+    },
+    "kube-proxy": {
+      "args": [
+        "kube-proxy",
+        "--metrics-bind-address=127.0.0.1:10249"
+      ]
+    }
+  },
+  "files": {
+    "/etc/kubernetes/manifests/kube-apiserver.yaml": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/kubernetes/manifests/kube-controller-manager.yaml": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/kubernetes/manifests/kube-scheduler.yaml": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/kubernetes/manifests/etcd.yaml": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/cni/net.d/10-calico.conflist": {"mode": "600", "owner": "root", "group": "root"},
+    "/var/lib/etcd": {"mode": "700", "owner": "etcd", "group": "etcd"},
+    "/etc/kubernetes/admin.conf": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/kubernetes/scheduler.conf": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/kubernetes/controller-manager.conf": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/kubernetes/pki": {"mode": "700", "owner": "root", "group": "root"},
+    "/etc/kubernetes/pki/apiserver.crt": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/kubernetes/pki/apiserver-etcd-client.crt": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/kubernetes/pki/ca.crt": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/kubernetes/pki/apiserver.key": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/kubernetes/pki/ca.key": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/kubernetes/pki/etcd/server.key": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/systemd/system/kubelet.service.d/10-kubeadm.conf": {"mode": "600", "owner": "root", "group": "root"},
+    "/etc/kubernetes/kubelet.conf": {"mode": "600", "owner": "root", "group": "root"},
+    "/var/lib/kubelet/config.yaml": {"mode": "600", "owner": "root", "group": "root"}
+  },
+  "nodes": [
+    {
+      "name": "cp-1",
+      "role": "control-plane",
+      "kubelet": {
+        "config": {
+          "authentication": {
+            "anonymous": {"enabled": false},
+            "x509": {"clientCAFile": "/etc/kubernetes/pki/ca.crt"}
+          },
+          "authorization": {"mode": "Webhook"},
+          "readOnlyPort": 0,
+          "streamingConnectionIdleTimeout": "4h0m0s",
+          "makeIPTablesUtilChains": true,
+          "eventRecordQPS": 5,
+          "tlsCertFile": "/var/lib/kubelet/pki/kubelet.crt",
+          "tlsPrivateKeyFile": "/var/lib/kubelet/pki/kubelet.key",
+          "rotateCertificates": true,
+          "featureGates": {"RotateKubeletServerCertificate": true},
+          "tlsCipherSuites": [
+            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+            "TLS_AES_128_GCM_SHA256"
+          ],
+          "podPidsLimit": 4096
+        }
+      }
+    },
+    {
+      "name": "gpu-1",
+      "role": "worker",
+      "kubelet": {
+        "config": {
+          "authentication": {
+            "anonymous": {"enabled": false},
+            "x509": {"clientCAFile": "/etc/kubernetes/pki/ca.crt"}
+          },
+          "authorization": {"mode": "Webhook"},
+          "readOnlyPort": 0,
+          "streamingConnectionIdleTimeout": "4h0m0s",
+          "makeIPTablesUtilChains": true,
+          "eventRecordQPS": 5,
+          "tlsCertFile": "/var/lib/kubelet/pki/kubelet.crt",
+          "tlsPrivateKeyFile": "/var/lib/kubelet/pki/kubelet.key",
+          "rotateCertificates": true,
+          "featureGates": {"RotateKubeletServerCertificate": true},
+          "tlsCipherSuites": [
+            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+            "TLS_AES_128_GCM_SHA256"
+          ],
+          "podPidsLimit": 4096
+        }
+      }
+    }
+  ],
+  "host": {
+    "sysctl": {
+      "fs.suid_dumpable": "0",
+      "kernel.randomize_va_space": "2",
+      "net.ipv4.conf.all.accept_source_route": "0",
+      "net.ipv4.conf.all.accept_redirects": "0",
+      "net.ipv4.conf.all.secure_redirects": "0",
+      "net.ipv4.conf.all.log_martians": "1",
+      "net.ipv4.icmp_echo_ignore_broadcasts": "1",
+      "net.ipv4.icmp_ignore_bogus_error_responses": "1",
+      "net.ipv6.conf.all.accept_ra": "0"
+    },
+    "modules": {
+      "cramfs": "disabled",
+      "freevxfs": "disabled",
+      "jffs2": "disabled",
+      "hfs": "disabled",
+      "hfsplus": "disabled",
+      "squashfs": "disabled"
+    },
+    "packages": {"prelink": false, "auditd": true},
+    "auditd": {"max_log_file": 8},
+    "sshd": {"maxauthtries": 4, "permitrootlogin": "no"},
+    "accounts": {"empty_password": 0},
+    "file_modes": {
+      "/etc/passwd": "644",
+      "/etc/shadow": "640",
+      "/etc/group": "644",
+      "/etc/gshadow": "640"
+    }
+  },
+  "k3s": {
+    "secrets_encryption": true,
+    "etcd_snapshot_schedule": "0 */6 * * *",
+    "audit_policy": true,
+    "traefik_dashboard": false,
+    "servicelb": false
+  },
+  "policies": {
+    "audit_policy": "minimal",
+    "encryption": {"provider_configured": true}
+  },
+  "ml": {
+    "gpu_operator": {
+      "installed": true,
+      "version": "v24.9.2",
+      "namespace_psa": "restricted",
+      "dcgm_exporter_service_type": "ClusterIP",
+      "nfd_worker_privileged": false,
+      "mig_manager_privileged": false,
+      "validator_enabled": true
+    },
+    "inference": {"network_policy": true},
+    "vllm": {
+      "deployments": [
+        {
+          "name": "vllm-qwen",
+          "image": "vllm/vllm-openai@sha256:8f3c2d1a4b5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8",
+          "image_digest_pinned": true,
+          "api_key_set": true,
+          "args": ["--host=127.0.0.1", "--port=8000"],
+          "metrics_public": false,
+          "privileged": false,
+          "host_network": false,
+          "run_as_non_root": true,
+          "seccomp": "RuntimeDefault",
+          "host_paths": ["/models"]
+        }
+      ]
+    },
+    "sglang": {
+      "deployments": [
+        {
+          "name": "sglang-llama",
+          "image": "lmsysorg/sglang@sha256:1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f809",
+          "image_digest_pinned": true,
+          "api_key_set": true,
+          "args": ["--host=127.0.0.1", "--port=30000"],
+          "metrics_public": false,
+          "privileged": false,
+          "host_network": false,
+          "run_as_non_root": true,
+          "seccomp": "RuntimeDefault",
+          "host_paths": ["/models"]
+        }
+      ]
+    }
+  }
+}

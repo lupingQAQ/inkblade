@@ -1,0 +1,81 @@
+{
+  "_meta": {
+    "name": "kernel-lpe-matrix",
+    "note": "多版本内核 + 用户态组件清单；detection-only，用于验证版本区间/前置门控/新版不误报。",
+    "sources": "kernel.org stable 修复版本；Ubuntu/Debian/CentOS 发行版版本号"
+  },
+  "nodes": [
+    {
+      "name": "lab-legacy-3-10",
+      "role": "worker",
+      "kernel": "3.10.0-1160.el7.x86_64",
+      "os": "CentOS Linux 7",
+      "userns": false,
+      "capabilities": [],
+      "cgroups": {"version": "v1", "writable": false},
+      "sysctl": {"unprivileged_bpf_disabled": 2}
+    },
+    {
+      "name": "lab-dirtypipe-5-8",
+      "role": "worker",
+      "kernel": "5.8.18-200-generic",
+      "os": "Ubuntu 20.04",
+      "userns": true,
+      "capabilities": ["NET_ADMIN"],
+      "cgroups": {"version": "v2", "writable": false},
+      "sysctl": {"unprivileged_bpf_disabled": 1}
+    },
+    {
+      "name": "lab-nft-6-1-50",
+      "role": "gpu-worker",
+      "kernel": "6.1.50-generic",
+      "os": "Debian GNU/Linux 12",
+      "userns": true,
+      "capabilities": ["NET_ADMIN"],
+      "cgroups": {"version": "v2", "writable": false},
+      "sysctl": {"unprivileged_bpf_disabled": 2}
+    },
+    {
+      "name": "lab-modern-6-12",
+      "role": "control-plane",
+      "kernel": "6.12.0-24-generic",
+      "os": "Ubuntu 24.04",
+      "userns": true,
+      "capabilities": [],
+      "cgroups": {"version": "v2", "writable": false},
+      "sysctl": {"unprivileged_bpf_disabled": 2},
+      "components": {
+        "runc": "1.2.2",
+        "containerd": "1.7.24",
+        "sudo": "1.9.15p5",
+        "pkexec": {"present": false}
+      }
+    },
+    {
+      "name": "lab-caps-none-5-15",
+      "role": "worker",
+      "kernel": "5.15.24-200-generic",
+      "os": "Ubuntu 22.04",
+      "userns": false,
+      "capabilities": [],
+      "cgroups": {"version": "v2", "writable": false},
+      "sysctl": {"unprivileged_bpf_disabled": 2}
+    },
+    {
+      "name": "lab-userspace",
+      "role": "worker",
+      "kernel": "6.12.0-24-generic",
+      "os": "Ubuntu 24.04",
+      "userns": true,
+      "capabilities": [],
+      "cgroups": {"version": "v2", "writable": false},
+      "sysctl": {"unprivileged_bpf_disabled": 2},
+      "components": {
+        "pkexec": {"present": true, "version": "0.105"},
+        "sudo": "1.8.21p2",
+        "runc": "1.1.5",
+        "containerd": "1.3.4"
+      }
+    }
+  ]
+}
