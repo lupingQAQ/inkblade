@@ -1,0 +1,26 @@
+{
+  "key": "firmware-signature-inventory",
+  "name": {
+    "zh": "固件签名清单（厂商 X.509 链 + 分离签名）",
+    "en": "Firmware signature inventory (vendor X.509 chain + detached signatures)"
+  },
+  "series": "侦察",
+  "description": "B 级保障性审计：对固件/微码清单做真实非对称验签（RSA/ECDSA，非 HMAC 占位）、pinned 根链校验、哈希/吊销/弱算法检查，并按厂商安全基线比较 CPU 微码 revision。检测供应链/持久化风险，不刷新固件。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "surfaces": [
+    {
+      "type": "config-file",
+      "selector": "firmware/vendor-inventory.json"
+    }
+  ],
+  "params_schema": {
+    "manifest": "{\"vendor\", \"trust_root_pem\", \"revoked_serials\", \"components\": [{\"name\",\"file\"|\"content_b64\",\"sha256\",\"signature_b64\",\"chain_pem\",\"algorithm\",\"kind\",\"version\",\"min_version\"}]} 或 JSON 路径",
+    "blobs_dir": "可选固件 blob 目录（缺省为 manifest 所在目录）"
+  },
+  "produces": "firmware-signature-inventory.json + 组件验签/链/微码证据",
+  "knowledge": "B 级保障性审计：NIST SP 800-193、厂商 X.509 PKI、Intel/AMD 微码 revision guidance；与 hardware-supply-chain 的 HMAC fixture 明确区分",
+  "combo_signature": "firmware-signature-inventory",
+  "necessity": "B"
+}

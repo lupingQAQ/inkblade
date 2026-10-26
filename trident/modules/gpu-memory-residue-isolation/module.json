@@ -1,0 +1,34 @@
+{
+  "key": "gpu-memory-residue-isolation",
+  "name": {
+    "zh": "GPU 显存残留隔离（MIG/MPS 释放后对抗）",
+    "en": "GPU memory residue isolation (MIG/MPS post-release adversarial)"
+  },
+  "series": "网络架构",
+  "description": "A 级真实攻击路径：只读分析 MIG/MPS 释放后残留导出（跨租户、未清零、MPS 共享上下文），并可在 backup-write 下对授权靶场执行 benign marker 分配→释放→读回，断言释放后仍可读且 sha256 一致。写类模块必须先取得备份回执。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "surfaces": [
+    {
+      "type": "k8s-object",
+      "selector": "Node/gpu-0"
+    },
+    {
+      "type": "config-file",
+      "selector": "gpu/sharing.json"
+    }
+  ],
+  "params_schema": {
+    "snapshot": "只读导出：{\"requester_tenant\", \"policy\", \"allocations\": [...]} 或 JSON 路径",
+    "target": "backup-write 目标基址（如 http://127.0.0.1:PORT）",
+    "mode": "probe-only（默认）| backup-write（需 backup_targets）",
+    "backup_targets": "runner 备份闸门目标（backup-write 必填）",
+    "tenant": "攻击者租户（默认 tenant-a）",
+    "own_device": "自有设备（默认 gpu-a-1）"
+  },
+  "produces": "gpu-memory-residue-isolation.json + 残留/跨租户/marker sha256 证据",
+  "knowledge": "A 级真实攻击路径：MIG 硬件分区 vs MPS 共享上下文；NVIDIA MIG 释放生命周期与 VRAM 清零；benign marker 是唯一写入内容",
+  "combo_signature": "gpu-memory-residue-isolation",
+  "necessity": "A"
+}

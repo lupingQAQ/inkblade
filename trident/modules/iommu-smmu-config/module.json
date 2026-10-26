@@ -1,0 +1,25 @@
+{
+  "key": "iommu-smmu-config",
+  "name": {
+    "zh": "IOMMU/SMMU 直通与 DMA 隔离",
+    "en": "IOMMU/SMMU passthrough and DMA isolation"
+  },
+  "series": "侦察",
+  "description": "A 级真实攻击路径：解析内核 cmdline、IOMMU/SMMU 状态与 IOMMU group，检出 iommu=off/iommu=pt/passthrough、设备组直通、ACS 缺失、ATS 无保护、ARM SMMU 未启用与 strict=0。只读，不绑定 vfio、不写 sysfs。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "surfaces": [
+    {
+      "type": "config-file",
+      "selector": "iommu/kernel-cmdline.txt"
+    }
+  ],
+  "params_schema": {
+    "snapshot": "{\"arch\", \"kernel_cmdline\", \"iommu\": {...}, \"dma_protection\", \"groups\": [...]} 或 JSON 路径"
+  },
+  "produces": "iommu-smmu-config.json + cmdline/group/ACS/ATS/SMMU 证据",
+  "knowledge": "A 级真实攻击路径：Intel VT-d/AMD-Vi/Arm SMMUv3 直通可导致节点 DMA 越权；Linux iommu=pt/iommu.passthrough=1 语义",
+  "combo_signature": "iommu-smmu-config",
+  "necessity": "A"
+}

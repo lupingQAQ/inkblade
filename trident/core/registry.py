@@ -61,6 +61,9 @@ class ModuleMeta:
     private: bool = False
     required_surfaces: list[dict] = field(default_factory=list)
     default_enabled: bool = True
+    research_only: bool = False
+    default_disabled_reason: str = ""
+    necessity: str = ""
     path: Path | None = None
 
 
@@ -96,6 +99,9 @@ def load_modules(modules_dir: Path | str) -> dict[str, ModuleMeta]:
                                    or _surface_map().get(raw["key"], [])),
             default_enabled=bool(raw.get("default_enabled",
                                          raw["key"] not in _quarantine())),
+            research_only=bool(raw.get("research_only", False)),
+            default_disabled_reason=str(raw.get("default_disabled_reason") or ""),
+            necessity=str(raw.get("necessity") or ""),
             path=d,
         )
     for m in mods.values():

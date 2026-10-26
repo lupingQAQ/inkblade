@@ -72,6 +72,10 @@ EXPECTED_IDS = {
     "depth-gpu-operator-config",
     "depth-sonic-fabric-link",
     "depth-identity-federation",
+    "chip-cc-attestation-tamper",
+    "chip-iommu-passthrough",
+    "chip-pcr-baseline-offset",
+    "chip-gpu-memory-residue",
 }
 
 

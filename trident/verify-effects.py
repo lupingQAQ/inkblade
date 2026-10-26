@@ -68,6 +68,7 @@ from lab.gpu_cloud_sim import start_all as start_gpu_cloud  # noqa: E402
 from lab.fabric_dos_sim import start_all as start_fabric  # noqa: E402
 from lab.privesc_sim import SCENARIOS as PRIVESC_SCENARIOS, run_fake_closure  # noqa: E402
 from lab.hardware_sim import FIXTURES as HARDWARE_FIXTURES, start_all as start_hardware  # noqa: E402
+from lab.chipsec_sim import start_all as start_chipsec  # noqa: E402
 from lab.infra2026_sim import start_all as start_infra2026  # noqa: E402
 from lab.cve_sim import start_all as start_cve_sim  # noqa: E402
 from lab.trainstack_sim import (  # noqa: E402
@@ -102,9 +103,9 @@ FAKE_TOKEN = "hf_FAKEtokenDoNotUseSampleABCD1234wxyz"
 
 SCOPE = (
     "本机真实进程 + 真实 HTTP（127.0.0.1 回环 mock 靶场：mock_targets / longctx_sim / gpu_cloud_sim / "
-    "ai_gateway_sim / fabric_dos_sim / hardware_sim）+ fake-kubectl 提权闭环（lab/privesc_sim.py）"
+    "ai_gateway_sim / fabric_dos_sim / hardware_sim / chipsec_sim）+ fake-kubectl 提权闭环（lab/privesc_sim.py）"
     "效果级验证；非 live K8s 集群 / 真实 GPU 驱动 / "
-    "真实 BMC / 真实交换机 / 真实云账号。"
+    "真实 BMC / 真实交换机 / 真实云账号 / 硅片实验室。"
     "KIND/ARTEX 需启用虚拟化后按 lab/kind 与 lab/bench 脚本执行；"
     "真集群提权见 docs/PRIVESC-VERIFICATION.md。"
 )
@@ -120,6 +121,8 @@ LIMITATIONS = [
     "硬件/交换机面为 lab/hardware_sim.py 的只读 mock（Redfish/SONiC/NVSwitch/DPU/telemetry）与 "
     "lab/hardware-fixtures 的合成 fixture；无真实 GPU/BMC/交换机验证，固件签名仅 HMAC fixture，"
     "不等于厂商 PKI/生产供应链。",
+    "芯片/加速器面为 lab/chipsec_sim.py 双态 mock 与自签 JWT/X.509 fixture；无真实 H100/H200/GB200、"
+    "真实 NRAS 生产 JWT、真实 CXL/IMEX/SPDM 设备；不做硅片实验室/物理故障注入/Rowhammer/微架构侧信道实操。",
     "KIND hostNetwork 绕过 NetworkPolicy 实证需启用 WSL2/虚拟化后执行 lab/kind/run-proof.sh。",
     "ARTEX（AGPL）仅作外部黑盒对标，本仓库不复用其代码；对标需虚拟化环境执行 lab/bench/artex-bench.sh。",
     "提权 4 项（escalate/bind/SA token/webhook）使用 lab/privesc_sim.py 的 fake-kubectl 内存态闭环；"
@@ -235,7 +238,7 @@ class _Checks:
 
 
 def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, Any]:
-    """执行全部实效验证项（当前含 fabric 三项与硬件两项）；输出 effects.json + effects.md（可选写 docs/EFFECT-VERIFICATION.md）。"""
+    """执行全部实效验证项（含 fabric、硬件两项与芯片四项）；输出 effects.json + effects.md（可选写 docs/EFFECT-VERIFICATION.md）。"""
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     checks = _Checks()
@@ -270,6 +273,8 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
         fabric = start_fabric(mode="vulnerable")
         ai_gateway = start_ai_gateway(mode="vulnerable")
         hardware = start_hardware(mode="vulnerable")
+        chip_vuln = start_chipsec(mode="vulnerable")
+        chip_fixed = start_chipsec(mode="fixed")
         infra2026 = start_infra2026(mode="vulnerable")
         cve_sim = start_cve_sim(mode="vulnerable", root=lab_root / "cve")
         trainstack = start_trainstack(mode="vulnerable", root=lab_root / "trainstack")
@@ -1150,6 +1155,196 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                        "固件清单篡改实效：blob 哈希不匹配（签名仍有效），finding 为 high",
                        hardware_firmware_manifest_tamper)
 
+            def _chip_summary(module_key: str) -> dict[str, Any]:
+                rows = run.query(
+                    "SELECT result_summary FROM steps WHERE run=? AND step_key=? ORDER BY id DESC LIMIT 1",
+                    (run.name, module_key),
+                )
+                return json.loads(rows[0][0]) if rows else {}
+
+            def chip_cc_attestation_tamper() -> dict[str, Any]:
+                probe = _http_json(chip_vuln.url("/chip/gpu-cc"))
+                if probe["status"] != 200:
+                    raise AssertionError(f"/chip/gpu-cc 读失败：{probe['status']}")
+                payload = probe["payload"]
+                evidence = {
+                    "token": payload["valid_reference"],
+                    "jwks": payload["jwks"],
+                    "expected_nonce": payload["nonce"],
+                }
+                before = len(run.findings)
+                run_module(store, tester, "gpu-cc-attestation-chain",
+                           {"evidence": evidence}, modules_dir=MODULES_DIR, run=run)
+                valid_new = run.findings[before:]
+                valid_high = len([f for f in valid_new if f["severity"] == "high"])
+                if valid_high:
+                    raise AssertionError("有效证明 token 不应产出 high finding")
+                valid_summary = _chip_summary("gpu-cc-attestation-chain")
+
+                evidence_tampered = dict(evidence, token=payload["token"])
+                before = len(run.findings)
+                run_module(store, tester, "gpu-cc-attestation-chain",
+                           {"evidence": evidence_tampered}, modules_dir=MODULES_DIR, run=run)
+                tampered_new = run.findings[before:]
+                tampered_high = len([f for f in tampered_new if f["severity"] == "high"])
+                if tampered_high < 1:
+                    raise AssertionError("篡改证明 token 未产出 high finding")
+                summary = _chip_summary("gpu-cc-attestation-chain")
+                if summary.get("signature_valid") is not False:
+                    raise AssertionError("篡改 token 的 signature_valid 不是 false")
+                if summary.get("nonce_bound") is not True:
+                    raise AssertionError("nonce 未绑定")
+                return {
+                    "valid_high": valid_high,
+                    "valid_signature_valid": valid_summary.get("signature_valid"),
+                    "tampered_high": tampered_high,
+                    "signature_valid": summary.get("signature_valid"),
+                    "claims_valid": summary.get("claims_valid"),
+                    "nonce": payload["nonce"],
+                    "jwks_source": summary.get("jwks_source"),
+                    "detected": True,
+                    "route": "/chip/gpu-cc + NRAS fixture JWKS",
+                }
+
+            checks.run("chip-cc-attestation-tamper",
+                       "GPU CC 证明篡改实效：有效 JWT 通过、改 payload 后验签失败（NRAS JWKS）",
+                       chip_cc_attestation_tamper)
+
+            def chip_iommu_passthrough() -> dict[str, Any]:
+                risky = _http_json(chip_vuln.url("/chip/iommu"))
+                if risky["status"] != 200:
+                    raise AssertionError(f"/chip/iommu 读失败：{risky['status']}")
+                before = len(run.findings)
+                run_module(store, tester, "iommu-smmu-config",
+                           {"snapshot": risky["payload"]}, modules_dir=MODULES_DIR, run=run)
+                high = [f for f in run.findings[before:]
+                        if f["severity"] == "high" and "IOMMU" in f["title"]]
+                if not high:
+                    raise AssertionError("IOMMU 直通未产出 high finding")
+                summary = _chip_summary("iommu-smmu-config")
+                if not summary.get("passthrough"):
+                    raise AssertionError("summary.passthrough 不是 true")
+                if int(summary.get("risky_groups") or 0) < 1:
+                    raise AssertionError("risky_groups < 1")
+
+                fixed = _http_json(chip_fixed.url("/chip/iommu"))
+                before = len(run.findings)
+                run_module(store, tester, "iommu-smmu-config",
+                           {"snapshot": fixed["payload"]}, modules_dir=MODULES_DIR, run=run)
+                fixed_high = len([f for f in run.findings[before:] if f["severity"] == "high"])
+                if fixed_high:
+                    raise AssertionError("fixed IOMMU 不应产出 high finding")
+                return {
+                    "passthrough": summary.get("passthrough"),
+                    "iommu_enabled": summary.get("iommu_enabled"),
+                    "risky_groups": summary.get("risky_groups"),
+                    "kernel_cmdline": summary.get("kernel_cmdline"),
+                    "fixed_high": fixed_high,
+                    "detected": True,
+                    "route": "/chip/iommu vulnerable/fixed",
+                }
+
+            checks.run("chip-iommu-passthrough",
+                       "IOMMU 直通实效：vulnerable iommu=pt + 多设备 identity 组 → high；fixed 无 high",
+                       chip_iommu_passthrough)
+
+            def chip_pcr_baseline_offset() -> dict[str, Any]:
+                risky = _http_json(chip_vuln.url("/chip/boot"))
+                if risky["status"] != 200:
+                    raise AssertionError(f"/chip/boot 读失败：{risky['status']}")
+                before = len(run.findings)
+                run_module(store, tester, "secure-boot-chain",
+                           {"snapshot": risky["payload"]}, modules_dir=MODULES_DIR, run=run)
+                high = [f for f in run.findings[before:]
+                        if f["severity"] == "high" and "PCR" in f["title"]]
+                if not high:
+                    raise AssertionError("PCR 基线偏移未产出 high finding")
+                summary = _chip_summary("secure-boot-chain")
+                mismatches = int(summary.get("pcr_mismatches") or 0)
+                if mismatches < 2:
+                    raise AssertionError(f"pcr_mismatches < 2：{mismatches}")
+                if "0" not in (summary.get("mismatched_pcrs") or []):
+                    raise AssertionError("PCR 0 未检出偏移")
+                if "4" not in (summary.get("mismatched_pcrs") or []):
+                    raise AssertionError("PCR 4 未检出偏移")
+
+                fixed = _http_json(chip_fixed.url("/chip/boot"))
+                before = len(run.findings)
+                run_module(store, tester, "secure-boot-chain",
+                           {"snapshot": fixed["payload"]}, modules_dir=MODULES_DIR, run=run)
+                fixed_high = len([f for f in run.findings[before:] if f["severity"] == "high"])
+                fixed_summary = _chip_summary("secure-boot-chain")
+                if fixed_high:
+                    raise AssertionError("fixed PCR 不应产出 high finding")
+                if int(fixed_summary.get("pcr_mismatches") or 0) != 0:
+                    raise AssertionError("fixed pcr_mismatches 不为 0")
+                return {
+                    "pcr_mismatches": mismatches,
+                    "mismatched_pcrs": summary.get("mismatched_pcrs"),
+                    "uki_signature_valid": summary.get("uki_signature_valid"),
+                    "fixed_mismatches": fixed_summary.get("pcr_mismatches"),
+                    "fixed_high": fixed_high,
+                    "detected": True,
+                    "route": "/chip/boot vulnerable/fixed",
+                }
+
+            checks.run("chip-pcr-baseline-offset",
+                       "PCR 基线偏移实效：PCR 0/4 与 golden 不一致 → high；fixed 0 偏移",
+                       chip_pcr_baseline_offset)
+
+            def chip_gpu_memory_residue() -> dict[str, Any]:
+                backup = [{"kind": "http", "url": chip_vuln.url("/chip/gpu/allocate"),
+                           "state": {}}]
+                before = len(run.findings)
+                run_module(store, tester, "gpu-memory-residue-isolation",
+                           {"target": chip_vuln.url("/chip"), "mode": "backup-write",
+                            "tenant": "tenant-a", "own_device": "gpu-a-1",
+                            "backup_targets": backup},
+                           modules_dir=MODULES_DIR, run=run)
+                high = [f for f in run.findings[before:]
+                        if f["severity"] == "high" and "残留" in f["title"]]
+                if not high:
+                    raise AssertionError("释放后显存残留未产出 high finding")
+                summary = _chip_summary("gpu-memory-residue-isolation")
+                active = summary.get("active") or {}
+                if active.get("readback_status") != 200:
+                    raise AssertionError(f"readback_status != 200：{active.get('readback_status')}")
+                if not active.get("marker_sha256_match"):
+                    raise AssertionError("marker_sha256 不一致")
+                if not active.get("readable_after_release"):
+                    raise AssertionError("released=true 但 readback 不可读")
+
+                fixed_backup = [{"kind": "http", "url": chip_fixed.url("/chip/gpu/allocate"),
+                                 "state": {}}]
+                before = len(run.findings)
+                run_module(store, tester, "gpu-memory-residue-isolation",
+                           {"target": chip_fixed.url("/chip"), "mode": "backup-write",
+                            "tenant": "tenant-a", "own_device": "gpu-a-1",
+                            "backup_targets": fixed_backup},
+                           modules_dir=MODULES_DIR, run=run)
+                fixed_high = len([f for f in run.findings[before:] if f["severity"] == "high"])
+                fixed_summary = _chip_summary("gpu-memory-residue-isolation")
+                fixed_active = fixed_summary.get("active") or {}
+                if fixed_high:
+                    raise AssertionError("fixed 释放后残留不应产出 high finding")
+                if fixed_active.get("readback_status") != 404:
+                    raise AssertionError("fixed readback 不是 404")
+                return {
+                    "readback_status": active.get("readback_status"),
+                    "marker_sha256": active.get("marker_sha256"),
+                    "marker_sha256_match": active.get("marker_sha256_match"),
+                    "readable_after_release": active.get("readable_after_release"),
+                    "zeroized": active.get("zeroized"),
+                    "fixed_readback_status": fixed_active.get("readback_status"),
+                    "fixed_high": fixed_high,
+                    "detected": True,
+                    "route": "/chip/gpu/allocate → release → residue",
+                }
+
+            checks.run("chip-gpu-memory-residue",
+                       "显存残留实效：benign marker 释放后读回 + sha256 一致 → high；fixed 404",
+                       chip_gpu_memory_residue)
+
             def _infra_summary(module_key: str) -> dict[str, Any]:
                 rows = run.query(
                     "SELECT result_summary FROM steps WHERE run=? AND step_key=? ORDER BY id DESC LIMIT 1",
@@ -1614,6 +1809,8 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
             }
         finally:
             trainstack.shutdown()
+            chip_fixed.shutdown()
+            chip_vuln.shutdown()
             hardware.shutdown()
             infra2026.shutdown()
             cve_sim.shutdown()

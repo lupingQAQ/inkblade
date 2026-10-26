@@ -308,14 +308,17 @@ class MockBackedModuleTest(HardwareModuleTestBase):
             "check_default_credentials": True,
         })
         high = [f for f in findings if f["severity"] == "high"]
-        self.assertEqual(len(high), 1, _titles(findings))
-        detail = _detail(high[0])
+        self.assertGreaterEqual(len(high), 1, _titles(findings))
+        cred = next(f for f in high if "默认凭据" in f["title"])
+        detail = _detail(cred)
         self.assertEqual(detail["default_login_status"], 200)
         self.assertEqual(detail["default_username"], "root")
         self.assertEqual(detail["credential_class"], "vendor-default")
         self.assertTrue(detail["ipmi_over_lan"])
         self.assertEqual(detail["ipmi_port"], 623)
         self.assertTrue(detail["anonymous_manager_read"])
+        self.assertIn("Redfish 更新服务匿名可写", _titles(findings))
+        self.assertIn("Redfish 固件清单显示未签名组件", _titles(findings))
         self.assertNotIn("calvin", json.dumps(findings, ensure_ascii=False).lower())
         _, fixed, _ = self._run("bmc-ipmi-exposure", {
             "target": self.fixed.url(""),

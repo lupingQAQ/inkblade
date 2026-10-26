@@ -41,7 +41,7 @@ K8s 控制面审计能看到 Pod、Service、RBAC，却看不到下面四类真�
 | 模块 | 级别 / 写 | 输入 | 只读证据 | 典型 finding | 当前限制 |
 |---|---|---|---|---|---|
 | `gpu-driver-firmware-surface` | 只读侦察 / `writes=false` | `nvidia-smi --query-gpu` CSV、NVML JSON、Xid 事件 | 设备数、驱动/CUDA/VBIOS 版本、ECC、Xid、持久化模式 | 驱动低于基线、同池版本不一致、VBIOS 不一致、ECC 关闭、Xid 复位族 | fixture 解析；未执行真实 `nvidia-smi`，未接 NVML |
-| `bmc-ipmi-exposure` | 主动探测 / `writes=false` | Redfish 基址（可选 Basic 默认凭据） | 服务根、Manager、NetworkProtocol、Accounts、Systems 状态 | 默认凭据可登录、IPMI over LAN、SSH 密码认证、管理详情匿名可读 | mock 只读；生产默认凭据验证需授权并评估锁定策略 |
+| `bmc-ipmi-exposure` | 主动探测 / `writes=false` | Redfish 基址（可选 Basic 默认凭据）、`UpdateService`、`FirmwareInventory` | 服务根、Manager、NetworkProtocol、Accounts、Systems 状态；更新服务认证/传输；固件清单签名标记 | 默认凭据可登录、IPMI over LAN、SSH 密码认证、管理详情匿名可读、更新服务匿名/明文、固件清单未签名 | mock 只读；生产默认凭据验证需授权并评估锁定策略 |
 | `nvswitch-nvlink-topology` | 只读侦察 / `writes=false` | NVSwitch/NVLink/IMEX 拓扑 JSON | 交换机固件、链路状态、分区、IMEX 通道 | 分区跨租户、IMEX 跨租户、共享交换机、链路 down/degraded、固件不一致 | fixture 解析；未读取真实 NVSwitch |
 | `dpu-smartnic-surface` | 主动探测 / `writes=false` | DPU 服务清单 HTTP、可选凭据面 | 服务/端口/鉴权标记、SSH 密码认证、rshim、凭据面状态 | 管理服务未鉴权、工厂/默认凭据明文暴露、SSH 密码认证、rshim 暴露 | mock 只读；未登录 BlueField/DOCA，未验证真实服务 |
 | `switch-os-config-surface` | 只读侦察 / `writes=false` | SONiC `config_db.json` 或 Cumulus 导出 JSON | PFC watchdog、ECN/WRED、管理 ACL、SNMP、NTP、AAA | PFC watchdog 关闭、ECN 未启用、管理 ACL 放行任意来源、SNMP public、缺少远程 AAA | 只解析 JSON 导出；**不登录设备**，不解析二进制/私有格式 |
@@ -86,9 +86,9 @@ POST/PUT/PATCH/DELETE 一律 405。它模拟两个平面 × 两种姿态：
 > 厂商签名链、密钥轮换、离线根、TUF/in-toto 或生产供应链完整性。生产应以厂商
 > 非对称签名（如 RSA/ECDSA/Ed25519）+ 公钥指纹 + 独立下载渠道 + 双人复核替代。
 
-### 3.2 实效验证 +2
+### 3.2 实效验证（硬件 +2，芯片 +4）
 
-`trident/verify-effects.py` 新增两项（合计 22 项）：
+`trident/verify-effects.py` 新增硬件两项与芯片四项（本文件相关六项；全套 47 项）：
 
 1. `hardware-bmc-default-credential`：对 `lab/hardware_sim.py` vulnerable 态执行
    `bmc-ipmi-exposure`，断言默认凭据登录 HTTP 200、IPMI over LAN 开启、finding 为 high；
@@ -96,8 +96,16 @@ POST/PUT/PATCH/DELETE 一律 405。它模拟两个平面 × 两种姿态：
 2. `hardware-firmware-manifest-tamper`：复制固件 fixture 到临时目录，篡改
    `nvswitch-fw` blob，执行 `hardware-supply-chain`，断言清单签名仍有效但哈希不匹配，
    finding 为 high 且 `tampered_components` 含 `nvswitch-fw`。
+3. `chip-cc-attestation-tamper`：有效 NRAS 风格 JWT 通过；改 payload 后同一 JWKS
+   验签失败，finding 为 high。
+4. `chip-iommu-passthrough`：vulnerable `iommu=pt` + 多设备 identity 组 → high；
+   fixed 无 high。
+5. `chip-pcr-baseline-offset`：PCR 0/4 与 golden 不一致 → high；fixed 0 偏移。
+6. `chip-gpu-memory-residue`：benign marker 释放后读回且 sha256 一致 → high；
+   fixed 释放即清零并 404。
 
-这两项证明的是「检测逻辑在本机 mock/fixture 上真实触发」，**不是**真实 BMC/固件被攻破。
+这六项证明的是「检测逻辑在本机 mock/fixture 上真实触发」，**不是**真实 BMC/固件/GPU
+被攻破。芯片/加速器范围的 A/B/C/D 分级见 `docs/CHIP-SECURITY-SCOPE.md`。
 
 ---
 

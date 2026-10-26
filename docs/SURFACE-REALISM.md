@@ -8,12 +8,12 @@ Generated from `trident/profiles/*.json`, `trident/profiles/surface-map.json` an
 
 | Profile | Platform | Default modules | production-testable | conditional | no-surface | Production coverage | Operable coverage | Default-exploitable PoCs |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
-| `airgapped` | Air-gapped self-managed Kubernetes: local registry, SPIRE id | 244 | 187 | 45 | 12 | **76.64%** | 95.08% | 1 |
-| `bare-k8s-gpu` | Self-managed Kubernetes with GPU worker nodes, direct vLLM s | 244 | 178 | 32 | 34 | **72.95%** | 86.07% | 1 |
-| `gpu-pooling` | Kubernetes GPU pooling with HAMi/cGPU sharing, SGLang PD dis | 244 | 160 | 42 | 42 | **65.57%** | 82.79% | 2 |
-| `managed-ack-tke` | Managed ACK/TKE control plane: no direct etcd or node BMC ac | 244 | 183 | 31 | 30 | **75.0%** | 87.7% | 0 |
-| `ray-vllm` | KubeRay control plane with vLLM/SGLang inference, LWS multi- | 244 | 185 | 31 | 28 | **75.82%** | 88.52% | 2 |
-| `slurm-hpc` | Bare-metal Slurm HPC cluster: no Kubernetes API, BMC/IB swit | 244 | 41 | 62 | 141 | **16.8%** | 42.21% | 0 |
+| `airgapped` | Air-gapped self-managed Kubernetes: local registry, SPIRE id | 249 | 191 | 46 | 12 | **76.71%** | 95.18% | 1 |
+| `bare-k8s-gpu` | Self-managed Kubernetes with GPU worker nodes, direct vLLM s | 249 | 182 | 33 | 34 | **73.09%** | 86.35% | 1 |
+| `gpu-pooling` | Kubernetes GPU pooling with HAMi/cGPU sharing, SGLang PD dis | 249 | 161 | 43 | 45 | **64.66%** | 81.93% | 2 |
+| `managed-ack-tke` | Managed ACK/TKE control plane: no direct etcd or node BMC ac | 249 | 183 | 33 | 33 | **73.49%** | 86.75% | 0 |
+| `ray-vllm` | KubeRay control plane with vLLM/SGLang inference, LWS multi- | 249 | 185 | 33 | 31 | **74.3%** | 87.55% | 2 |
+| `slurm-hpc` | Bare-metal Slurm HPC cluster: no Kubernetes API, BMC/IB swit | 249 | 44 | 62 | 143 | **17.67%** | 42.57% | 0 |
 
 Production coverage = `default_production_testable / default_enabled`. Quarantined modules (`default_enabled=false`) are excluded from the denominator.
 
@@ -21,9 +21,12 @@ Production coverage = `default_production_testable / default_enabled`. Quarantin
 
 | Module | Required surfaces | No-surface in all profiles | Reason |
 |---|---|---|---|
+| `cxl-memory-security` | config-file:cxl/inventory.json | yes | C 级前瞻项：六个主流画像均无 CXL 面；仅客户实际部署 CXL 时显式启用，默认关闭，不计入芯片渗透能力。 |
 | `federated-learning-audit` | http-endpoint:/fl; k8s-object:Deployment/nvflare; k8s-object:Deployment/flower | yes | Component not present in the six mainstream deployment profiles; kept for customers that actually deploy it. |
 | `model-watermark-backdoor-audit` | http-endpoint:/watermark; model-file:watermark | yes | Component not present in the six mainstream deployment profiles; kept for customers that actually deploy it. |
+| `nvlink-imex-isolation` | config-file:nvswitch/imex.json | no | C 级前瞻项：NVLink/IMEX 仅 GB200/NVL 多节点客户需要；默认关闭，不计入芯片渗透能力。 |
 | `post-quantum-tls-audit` | http-endpoint:/tls | yes | Component not present in the six mainstream deployment profiles; kept for customers that actually deploy it. |
+| `spdm-pcie-doe` | config-file:spdm/device-export.json | no | C 级前瞻项：SPDM 细项仅在 GB200/NVL 或明确部署 CMA/SPDM 的客户环境启用；默认关闭，不计入芯片渗透能力。 |
 | `wasm-runtime-audit` | k8s-object:RuntimeClass/wasm; runtime-agent:wasmtime | yes | Component not present in the six mainstream deployment profiles; kept for customers that actually deploy it. |
 
 ### No-surface rows not yet quarantined
@@ -34,7 +37,7 @@ Production coverage = `default_production_testable / default_enabled`. Quarantin
 | `post-quantum-tls-posture` | http-endpoint:/tls | No surface in all six profiles; kept enabled by a parallel workstream pending its owner's quarantine decision. It is still `no-surface` and cannot run when the surface gate is enabled. |
 | `wasm-workload-surface` | k8s-object:RuntimeClass/wasm; runtime-agent:wasmtime | No surface in all six profiles; kept enabled by a parallel workstream pending its owner's quarantine decision. It is still `no-surface` and cannot run when the surface gate is enabled. |
 
-Global no-surface rows: **7**; explicitly quarantined: **4**.
+Global no-surface rows: **8**; explicitly quarantined: **7**.
 
 
 These modules remain callable explicitly (`trident run --module ... --probe` or with a real `--collect` / `--profile`). They are excluded from the default chain and from the default coverage denominator, so a green default report no longer implies coverage of an undeployed component. Other `no-surface` rows owned by parallel workstreams remain enabled until their owner applies the same quarantine; their verdict is still `no-surface` and they cannot execute when the surface gate is on.
@@ -98,6 +101,7 @@ Legend: **production-testable** = execute against this profile without extra con
 | `csi-node-plugin-escape` | k8s-object:Node; http-endpoint:/healthz; k8s-object:CSIDriver; runtime-agent:csi; k8s-object:Pod | production-testable | production-testable | production-testable | conditional | production-testable | no-surface |
 | `csr-approve` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `cumulus-nvue-injection` | switch:switch/sonic | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
+| `cxl-memory-security` | config-file:cxl/inventory.json | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
 | `data-pipeline-poison` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `data-provenance-audit` | http-endpoint:/provenance/attestation | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
 | `deepspeed-checkpoint-rce` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
@@ -131,14 +135,17 @@ Legend: **production-testable** = execute against this profile without extra con
 | `fabric-topology-isolation` | switch:switch/fabric | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `federated-learning-audit` | http-endpoint:/fl; k8s-object:Deployment/nvflare; k8s-object:Deployment/flower | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
 | `federated-learning-surface` | http-endpoint:/fl; k8s-object:Deployment | conditional | conditional | conditional | conditional | conditional | no-surface |
+| `firmware-signature-inventory` | config-file:firmware/vendor-inventory.json | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
 | `framework-port-matching` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `gang-scheduler-abuse` | k8s-object:Pod; config-file:scheduler | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `gateway-api-ambient-mesh` | k8s-object:DaemonSet/ztunnel; runtime-agent:ztunnel; http-endpoint:/healthz/ready | no-surface | no-surface | no-surface | production-testable | no-surface | no-surface |
 | `gitops-secret-read` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `gitops-supply-chain` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
+| `gpu-cc-attestation-chain` | k8s-object:Node/gpu-0; config-file:attest/gpu-cc.json | production-testable | production-testable | conditional | conditional | conditional | no-surface |
 | `gpu-device-cross-namespace` | k8s-object:Node; runtime-agent:nvidia-device-plugin | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `gpu-dra-mig-policy` | k8s-object:Node; runtime-agent:nvidia-device-plugin | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `gpu-driver-firmware-surface` | k8s-object:Node; runtime-agent:nvidia-device-plugin | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
+| `gpu-memory-residue-isolation` | k8s-object:Node/gpu-0; config-file:gpu/sharing.json | conditional | conditional | production-testable | conditional | conditional | no-surface |
 | `gpu-metrics-tenant-leak` | k8s-object:Node; runtime-agent:nvidia-device-plugin | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `gpu-network-operator-posture` | switch:switch/fabric; k8s-object:Node; http-endpoint:/healthz; runtime-agent:nvidia-device-plugin | production-testable | conditional | conditional | conditional | conditional | conditional |
 | `gpu-operator-config-depth` | k8s-object:Node; runtime-agent:nvidia-device-plugin; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
@@ -155,6 +162,7 @@ Legend: **production-testable** = execute against this profile without extra con
 | `image-pull-secret-theft` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `impersonate-abuse` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `inference-gateway-pd` | k8s-object:LeaderWorkerSet; http-endpoint:/healthz; http-endpoint:/v1/chat/completions; k8s-object:Pod | conditional | conditional | conditional | conditional | production-testable | no-surface |
+| `iommu-smmu-config` | config-file:iommu/kernel-cmdline.txt | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
 | `ipmi-cipher-zero-bypass` | bmc:bmc/redfish | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
 | `kdigger-admission` | k8s-object:ValidatingWebhookConfiguration; http-endpoint:/validate; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `kdigger-buckets` | k8s-object:ValidatingWebhookConfiguration; http-endpoint:/validate; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
@@ -206,6 +214,7 @@ Legend: **production-testable** = execute against this profile without extra con
 | `nccl-straggler-injection` | http-endpoint:/dpu; bmc:bmc/dpu; k8s-object:Pod; runtime-agent:nccl | conditional | production-testable | conditional | conditional | conditional | conditional |
 | `network-policy-coverage` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `nvidia-toolkit-escape-detect` | k8s-object:Node; runtime-agent:nvidia-device-plugin; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
+| `nvlink-imex-isolation` | config-file:nvswitch/imex.json | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
 | `nvswitch-nvlink-topology` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `observability-exposure` | http-endpoint:/api; model-file:model; http-endpoint:/metrics; k8s-object:Pod | production-testable | conditional | conditional | production-testable | production-testable | conditional |
 | `oidc-issuer-confusion` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
@@ -247,6 +256,7 @@ Legend: **production-testable** = execute against this profile without extra con
 | `sandbox-runtime-surface` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `scheduler-network-semantics` | k8s-object:Pod; config-file:scheduler | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `secret-scanner` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
+| `secure-boot-chain` | bmc:tpm/tpm2; config-file:attest/tpm.json | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
 | `sft-framework-surface` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `sglang-admin-failopen` | http-endpoint:/admin; config-file:sglang | conditional | conditional | conditional | production-testable | production-testable | no-surface |
 | `sglang-omni-profiler-write` | http-endpoint:/v1/models; config-file:sglang | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
@@ -264,6 +274,7 @@ Legend: **production-testable** = execute against this profile without extra con
 | `sonic-config-plane-write` | switch:switch/sonic | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `sonic-fabric-config-audit` | switch:switch/sonic; switch:switch/fabric | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `sonic-rsyslog-injection` | switch:switch/sonic | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
+| `spdm-pcie-doe` | config-file:spdm/device-export.json | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
 | `spiffe-spire-audit` | k8s-object:Deployment/spire-server; runtime-agent:spire-agent; config-file:spire | production-testable | no-surface | no-surface | no-surface | no-surface | no-surface |
 | `spiffe-spire-surface` | k8s-object:Deployment/spire-server; runtime-agent:spire-agent; config-file:spire | production-testable | no-surface | no-surface | no-surface | no-surface | no-surface |
 | `ssrf-imds-credential` | http-endpoint:metadata; k8s-object:Pod | conditional | conditional | conditional | production-testable | conditional | no-surface |
@@ -320,4 +331,23 @@ trident run --module sglang-route-poison --profile ray-vllm --collect collection
 Fixture mode is explicit: `trident collect --fixture --profile ray-vllm`.
 Every fixture collection and report section is stamped **FIXTURE DATA — not a production verdict**; fixture mode never counts toward a customer production report.
 
-Snapshot: 248 modules, 6 profiles, 4 quarantined modules, 7 globally no-surface.
+## 6. Accelerator chip posture (A/B/C boundary)
+
+A/B/C/D necessity tiers are defined in [`CHIP-SECURITY-SCOPE.md`](CHIP-SECURITY-SCOPE.md). Only A (real attack path) counts as chip pentest capability; B is assurance detection; C is research-only and default-disabled; D (silicon lab, physical fault injection, Rowhammer/microarchitectural exploitation) is explicitly out of scope. **C/D are never counted as chip pentest capability.**
+
+A2 (BMC/DPU/IPMI out-of-band takeover) is covered by existing `bmc-ipmi-exposure`, `dpu-smartnic-surface`, `redfish-default-credentials` and `ipmi-cipher-zero-bypass`; this workstream adds the Redfish UpdateService / FirmwareInventory read-only face.
+
+| Module | Tier | Default | Research-only | Required surfaces | `airgapped` | `bare-k8s-gpu` | `gpu-pooling` | `managed-ack-tke` | `ray-vllm` | `slurm-hpc` |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `cxl-memory-security` | C | off | yes | config-file:cxl/inventory.json | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
+| `firmware-signature-inventory` | B | on | no | config-file:firmware/vendor-inventory.json | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
+| `gpu-cc-attestation-chain` | B | on | no | k8s-object:Node/gpu-0; config-file:attest/gpu-cc.json | production-testable | production-testable | conditional | conditional | conditional | no-surface |
+| `gpu-memory-residue-isolation` | A | on | no | k8s-object:Node/gpu-0; config-file:gpu/sharing.json | conditional | conditional | production-testable | conditional | conditional | no-surface |
+| `iommu-smmu-config` | A | on | no | config-file:iommu/kernel-cmdline.txt | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
+| `nvlink-imex-isolation` | C | off | yes | config-file:nvswitch/imex.json | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
+| `secure-boot-chain` | B | on | no | bmc:tpm/tpm2; config-file:attest/tpm.json | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
+| `spdm-pcie-doe` | C | off | yes | config-file:spdm/device-export.json | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
+
+C-tier rows remain callable only with an explicit `--probe` / customer profile; their presence in this matrix is not a claim of production chip coverage.
+
+Snapshot: 256 modules, 6 profiles, 7 quarantined modules, 8 globally no-surface.

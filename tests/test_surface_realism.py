@@ -36,8 +36,11 @@ FOCUS = {
 }
 NO_SURFACE = {
     "wasm-runtime-audit", "post-quantum-tls-audit", "federated-learning-audit",
-    "model-watermark-backdoor-audit",
+    "model-watermark-backdoor-audit", "cxl-memory-security",
 }
+# C-tier research-only modules: implemented and surface-gated, but excluded
+# from the default chain/coverage denominator until a customer opts in.
+RESEARCH_ONLY = {"spdm-pcie-doe", "nvlink-imex-isolation", "cxl-memory-security"}
 # Owned by a parallel infra2026 workstream; its module.json stays default-enabled
 # until that owner applies quarantine, but the profile matrix still proves it
 # has no production surface in the six mainstream deployments.
@@ -197,10 +200,21 @@ class TestProfilesAndMetadata(unittest.TestCase):
         for key in FOCUS:
             self.assertTrue(self.mods[key].required_surfaces, key)
         quarantined = {k for k, m in self.mods.items() if not m.default_enabled}
-        self.assertEqual(quarantined, NO_SURFACE)
+        self.assertEqual(quarantined, NO_SURFACE | RESEARCH_ONLY)
         for key in PARALLEL_NO_SURFACE:
             self.assertTrue(self.mods[key].default_enabled)
         self.assertTrue(self.mods["dpu-smartnic-surface"].default_enabled)
+
+    def test_research_only_modules_are_marked(self):
+        for key in RESEARCH_ONLY:
+            self.assertTrue(self.mods[key].research_only, key)
+            self.assertFalse(self.mods[key].default_enabled, key)
+            self.assertTrue(self.mods[key].default_disabled_reason, key)
+        for key in ("iommu-smmu-config", "gpu-memory-residue-isolation",
+                    "gpu-cc-attestation-chain", "firmware-signature-inventory",
+                    "secure-boot-chain"):
+            self.assertFalse(self.mods[key].research_only, key)
+            self.assertTrue(self.mods[key].default_enabled, key)
 
     def test_profiles_are_complete_and_have_coverage(self):
         self.assertEqual(set(self.profiles), {
@@ -229,6 +243,20 @@ class TestProfilesAndMetadata(unittest.TestCase):
             ("confidential-containers-audit", "airgapped"): "production-testable",
             ("tpm-attestation-audit", "ray-vllm"): "no-surface",
             ("tpm-attestation-audit", "bare-k8s-gpu"): "production-testable",
+            # chip/accelerator posture: configured exports vs unconfigured profiles
+            ("gpu-cc-attestation-chain", "bare-k8s-gpu"): "production-testable",
+            ("gpu-cc-attestation-chain", "airgapped"): "production-testable",
+            ("gpu-cc-attestation-chain", "gpu-pooling"): "conditional",
+            ("gpu-cc-attestation-chain", "slurm-hpc"): "no-surface",
+            ("spdm-pcie-doe", "slurm-hpc"): "production-testable",
+            ("spdm-pcie-doe", "gpu-pooling"): "no-surface",
+            ("iommu-smmu-config", "bare-k8s-gpu"): "production-testable",
+            ("secure-boot-chain", "slurm-hpc"): "production-testable",
+            ("firmware-signature-inventory", "airgapped"): "production-testable",
+            ("gpu-memory-residue-isolation", "gpu-pooling"): "production-testable",
+            ("gpu-memory-residue-isolation", "ray-vllm"): "conditional",
+            ("nvlink-imex-isolation", "airgapped"): "production-testable",
+            ("cxl-memory-security", "bare-k8s-gpu"): "no-surface",
         }
         cache = {name: surface.matrix(name, modules=self.mods) for name in self.profiles}
         for (module, profile), verdict in expected.items():

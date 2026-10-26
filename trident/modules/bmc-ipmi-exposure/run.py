@@ -37,6 +37,8 @@ def run(ctx: dict, params: dict) -> dict:
     manager = t.get(f"{target}/redfish/v1/Managers/BMC")
     protocol = t.get(f"{target}/redfish/v1/Managers/BMC/NetworkProtocol")
     accounts = t.get(f"{target}/redfish/v1/Managers/BMC/Accounts")
+    update = t.get(f"{target}/redfish/v1/UpdateService")
+    inventory = t.get(f"{target}/redfish/v1/UpdateService/FirmwareInventory")
 
     protocol_doc = _C.resp(protocol)
     ipmi = protocol_doc.get("IPMI") or {}
@@ -120,6 +122,48 @@ def run(ctx: dict, params: dict) -> dict:
             fix="禁用/改密默认账号并核对账号锁定与审计策略",
         ))
 
+    update_doc = _C.resp(update)
+    inventory_doc = _C.resp(inventory)
+    update_anonymous = (update.get("status") == 200
+                        and str(update_doc.get("Authentication") or "").lower() in ("none", ""))
+    inventory_anonymous = inventory.get("status") == 200
+    unsigned_firmware = [
+        str(m.get("Name") or m.get("SoftwareId") or "?")
+        for m in inventory_doc.get("Members") or []
+        if isinstance(m, dict) and m.get("Signed") is False
+    ]
+    if update_anonymous or (update.get("status") == 200
+                            and str(update_doc.get("TransferProtocol") or "").upper() == "HTTP"):
+        findings.append(_C.finding(
+            "high", "Redfish 更新服务匿名可写/明文传输",
+            {"detected": True, "update_status": update.get("status"),
+             "authentication": update_doc.get("Authentication"),
+             "transfer_protocol": update_doc.get("TransferProtocol"),
+             "http_push_uri": update_doc.get("HttpPushUri"),
+             "multipart_push_uri": update_doc.get("MultipartHttpPushUri")},
+            evidence=f"UpdateService auth={update_doc.get('Authentication')!r} "
+                     f"transport={update_doc.get('TransferProtocol')!r}",
+            mapping="Redfish UpdateService / firmware update trust boundary",
+            fix="UpdateService 强制认证 + HTTPS；禁止匿名 multipart push；固件更新走变更窗口",
+        ))
+    if inventory_anonymous:
+        findings.append(_C.finding(
+            "medium", "Redfish 固件清单匿名可读",
+            {"detected": True, "inventory_status": inventory.get("status"),
+             "members": len(inventory_doc.get("Members") or [])},
+            evidence="FirmwareInventory 200 without auth",
+            fix="固件清单要求认证；仅暴露必要健康状态",
+        ))
+    if unsigned_firmware:
+        findings.append(_C.finding(
+            "high", "Redfish 固件清单显示未签名组件",
+            {"detected": True, "components": unsigned_firmware,
+             "members": inventory_doc.get("Members") or []},
+            evidence=f"unsigned={unsigned_firmware}",
+            mapping="Redfish FirmwareInventory / vendor signature",
+            fix="只允许厂商签名固件；核对 UpdateService 签名验证策略",
+        ))
+
     extra = {
         "service_root_status": detail["service_root_status"],
         "manager_status": detail["manager_status"],
@@ -133,7 +177,12 @@ def run(ctx: dict, params: dict) -> dict:
         "ipmi_port": detail["ipmi_port"],
         "ssh_password_auth": ssh_password_auth,
         "anonymous_manager_read": anonymous_manager_read,
-        "detected": detail["detected"],
+        "update_service_status": update.get("status"),
+        "update_anonymous": update_anonymous,
+        "firmware_inventory_status": inventory.get("status"),
+        "firmware_inventory_anonymous": inventory_anonymous,
+        "unsigned_firmware": unsigned_firmware,
+        "detected": detail["detected"] or bool(update_anonymous or unsigned_firmware),
     }
     summary = _C.summary_json("BMC/IPMI 暴露面", findings, extra=extra, source=target)
     artifact = _C.write_artifact(ctx, f"{KEY}.json", {

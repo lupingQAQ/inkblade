@@ -201,6 +201,43 @@ def _redfish_system(ctx: _RequestContext):
     }
 
 
+def _redfish_update_service(ctx: _RequestContext):
+    if ctx.mode == "fixed" and not ctx.admin:
+        return 401, {"error": "unauthorized", "service": "redfish-update"}
+    if ctx.mode == "fixed":
+        return 200, {
+            "@odata.id": "/redfish/v1/UpdateService",
+            "ServiceEnabled": True,
+            "HttpPushUri": "/redfish/v1/UpdateService/update",
+            "MultipartHttpPushUri": "/redfish/v1/UpdateService/update-multipart",
+            "Authentication": "Basic",
+            "TransferProtocol": "HTTPS",
+            "FirmwareInventory": {"@odata.id": "/redfish/v1/UpdateService/FirmwareInventory"},
+        }
+    return 200, {
+        "@odata.id": "/redfish/v1/UpdateService",
+        "ServiceEnabled": True,
+        "HttpPushUri": "/redfish/v1/UpdateService/update",
+        "MultipartHttpPushUri": "/redfish/v1/UpdateService/update-multipart",
+        "Authentication": "None",
+        "TransferProtocol": "HTTP",
+        "FirmwareInventory": {"@odata.id": "/redfish/v1/UpdateService/FirmwareInventory"},
+    }
+
+
+def _redfish_firmware_inventory(ctx: _RequestContext):
+    if ctx.mode == "fixed" and not ctx.admin:
+        return 401, {"error": "unauthorized", "service": "redfish-firmware-inventory"}
+    signed = ctx.mode == "fixed"
+    members = [
+        {"Name": "GPU VBIOS", "Version": "96.00.89.00.01", "Updateable": True,
+         "Signed": signed, "SoftwareId": "NVIDIA-VBIOS"},
+        {"Name": "BMC Firmware", "Version": "2.10.0", "Updateable": True,
+         "Signed": signed, "SoftwareId": "MOCK-BMC"},
+    ]
+    return 200, {"Members": members, "Members@odata.count": len(members)}
+
+
 def _sonic_config(ctx: _RequestContext):
     return 200, ctx.state.sonic
 
@@ -355,6 +392,13 @@ ROUTE_TABLE = [
     {"service": "redfish", "path": "/redfish/v1/Systems/1", "plane": "redfish",
      "method": "GET", "vulnerable": 200, "fixed": 200, "writes": False,
      "title": "BMC 主机系统详情（需 Basic 认证）", "behavior": _redfish_system},
+    {"service": "redfish", "path": "/redfish/v1/UpdateService", "plane": "firmware",
+     "method": "GET", "vulnerable": 200, "fixed": 401, "writes": False,
+     "title": "Redfish 更新服务（匿名可写/传输协议）", "behavior": _redfish_update_service},
+    {"service": "redfish", "path": "/redfish/v1/UpdateService/FirmwareInventory",
+     "plane": "firmware", "method": "GET", "vulnerable": 200, "fixed": 401,
+     "writes": False, "title": "Redfish 固件清单（签名/版本）",
+     "behavior": _redfish_firmware_inventory},
     {"service": "sonic", "path": "/sonic/config", "plane": "config", "method": "GET",
      "vulnerable": 200, "fixed": 200, "writes": False,
      "title": "SONiC config_db 导出（PFC/ECN/ACL/管理面）", "behavior": _sonic_config},

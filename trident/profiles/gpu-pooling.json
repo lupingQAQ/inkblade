@@ -22,6 +22,7 @@
     {"type": "http-endpoint", "selector": "/register_dp_rank"},
     {"type": "http-endpoint", "selector": "/query_dp_ranks"},
     {"type": "config-file", "selector": "hami/config.yaml"},
+    {"type": "config-file", "selector": "gpu/sharing.json"},
     {"type": "config-file", "selector": "sglang/config.yaml"},
     {"type": "runtime-agent", "selector": "runtime-agent/hami-device-plugin"},
     {"type": "runtime-agent", "selector": "runtime-agent/hami-scheduler"},

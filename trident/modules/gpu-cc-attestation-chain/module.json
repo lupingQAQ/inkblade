@@ -1,0 +1,34 @@
+{
+  "key": "gpu-cc-attestation-chain",
+  "name": {
+    "zh": "GPU CC 证明链（NRAS JWKS + nonce + claims）",
+    "en": "GPU confidential-computing attestation chain (NRAS JWKS + nonce + claims)"
+  },
+  "series": "侦察",
+  "description": "只读核验 NVIDIA NRAS 风格 attestation JWT：JWKS 结构、RS256/ES384/ES256 验签、exp/nbf/iat/iss/aud/eat_nonce/dbgstat/secboot/overall-att-result/版本下限，支持 detached EAT token 列表与 expected_claims 固定。复用 trident/tee 在线校验器；不把 fixture 自签样本冒充 NRAS 生产证明。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "surfaces": [
+    {
+      "type": "k8s-object",
+      "selector": "Node/gpu-0"
+    },
+    {
+      "type": "config-file",
+      "selector": "attest/gpu-cc.json"
+    }
+  ],
+  "params_schema": {
+    "evidence": "{\"token\"/\"tokens\"/\"overall\": NRAS JWT, \"jwks\": dict/path/\"cache\"/\"live\", \"expected_nonce\": hex, \"expected_claims\": {...}} 或 JSON 路径",
+    "jwks": "可选 JWKS dict/路径/cache/live；缺省读 trident/tee/online_cache",
+    "expected_nonce": "证明请求的 32 字节随机数（hex/字符串）",
+    "issuer": "默认 https://nras.attestation.nvidia.com",
+    "audience": "默认 nras",
+    "now": "可选校验时刻（epoch 或 ISO8601），用于重放/过期回归"
+  },
+  "produces": "gpu-cc-attestation-chain.json + JWKS/claims/验签证据",
+  "knowledge": "B 级保障性审计（合规/防 false trust）；NVIDIA NRAS JWT/JWKS 与 EAT claims；离线 fixture 只证明验签逻辑",
+  "combo_signature": "gpu-cc-attestation-chain",
+  "necessity": "B"
+}

@@ -91,6 +91,8 @@ K8s 调度 Pod；Pod 带着 RBAC 身份；Service 把 Pod 暴露成入口；Netw
 
 第二，**GPU 和集合通信面**。MIG 档位、MPS 共享、GPU 显存残留、NCCL 端口、IB Partition、SHARP 会话、PFC 风暴。这些不是 K8s API 对象，普通扫描器的清单里没有它们。
 
+**芯片/加速器能力边界（必要性分级，2026-10-26 收紧）**：只有 A 类算“芯片渗透能力”——A1 IOMMU/SMMU 直通与 DMA、A2 BMC/DPU/IPMI 带外接管（补 Redfish UpdateService/FirmwareInventory 只读面）、A3 GPU 显存/MIG/MPS 跨租户残留与隔离绕过。B 类是保障性检测：GPU CC 证明链（NRAS JWKS/nonce/claims）、固件签名/安全启动/TPM/微码吊销；报告写“检测到 false trust/持久化风险”，不写“攻破”。C 类 SPDM 细项、NVLink/IMEX、CXL 标 `research-only`、默认关闭，**不计入芯片渗透能力**；D 类 RTL/GDSII/DFT、功耗电磁/毛刺/开盖、Rowhammer/微架构侧信道实操明确不做。详见 `docs/CHIP-SECURITY-SCOPE.md`。
+
 第三，**推理与网关面**。KV cache 跨租户、prefix cache 复用、prefill 队列打爆、网关 master key、语义缓存键、配额绕过。这些是“请求级”问题，不是“资源配置级”问题。
 
 第四，**证据与影响**。甲方要的不是“疑似有漏洞”，而是“我能在不改坏生产的前提下，证明这条链能走到哪、影响是什么、怎么回滚、怎么复测”。普通扫描器给的是清单，Trident 给的是案卷。

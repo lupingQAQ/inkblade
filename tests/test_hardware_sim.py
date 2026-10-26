@@ -60,7 +60,6 @@ class HardwareSimTest(unittest.TestCase):
             self.assertEqual(entry["method"], "GET", entry["path"])
             self.assertFalse(entry["writes"], entry["path"])
             self.assertIn(entry["plane"], {"redfish", "config", "dpu", "telemetry", "firmware"})
-
     def test_routes_manifest_and_stats(self):
         status, doc = _get(self.vulnerable.url("/__routes__"))
         self.assertEqual(status, 200)
@@ -178,6 +177,25 @@ class HardwareSimTest(unittest.TestCase):
         for component in manifest["components"]:
             self.assertTrue((FIXTURES / "firmware" / component["file"]).is_file(),
                             component["file"])
+
+    def test_redfish_firmware_surface(self):
+        status, update = _get(self.vulnerable.url("/redfish/v1/UpdateService"))
+        self.assertEqual(status, 200)
+        self.assertEqual(update["Authentication"], "None")
+        self.assertEqual(update["TransferProtocol"], "HTTP")
+        self.assertIn("HttpPushUri", update)
+        status, inventory = _get(
+            self.vulnerable.url("/redfish/v1/UpdateService/FirmwareInventory"))
+        self.assertEqual(status, 200)
+        self.assertTrue(any(m.get("Signed") is False for m in inventory["Members"]))
+        self.assertEqual(_get(self.fixed.url("/redfish/v1/UpdateService"))[0], 401)
+        self.assertEqual(
+            _get(self.fixed.url("/redfish/v1/UpdateService/FirmwareInventory"))[0], 401)
+        status, fixed_inventory = _get(
+            self.fixed.url("/redfish/v1/UpdateService/FirmwareInventory"),
+            _basic(ADMIN_USER, ADMIN_PASSWORD))
+        self.assertEqual(status, 200)
+        self.assertTrue(all(m.get("Signed") is True for m in fixed_inventory["Members"]))
 
     def test_post_not_allowed_and_invalid_mode(self):
         req = Request(self.vulnerable.url("/redfish/v1/"), data=b"{}", method="POST")

@@ -82,9 +82,11 @@ def main() -> int:
         meta = mods[key]
         req = "; ".join(f"{r.get('type')}:{r.get('selector')}"
                         for r in meta.required_surfaces) or "—"
+        reason = meta.default_disabled_reason or (
+            "Component not present in the six mainstream deployment profiles; "
+            "kept for customers that actually deploy it.")
         lines.append(f"| `{key}` | {req} | {'yes' if key in globally_absent else 'no'} | "
-                     "Component not present in the six mainstream deployment profiles; "
-                     "kept for customers that actually deploy it. |")
+                     f"{reason} |")
     if not quarantined:
         lines.append("| — | — | — | — |")
     pending = [k for k in globally_absent if k not in quarantined]
@@ -166,6 +168,38 @@ def main() -> int:
         "Fixture mode is explicit: `trident collect --fixture --profile ray-vllm`.",
         "Every fixture collection and report section is stamped **FIXTURE DATA — not a "
         "production verdict**; fixture mode never counts toward a customer production report.",
+        "",
+        "## 6. Accelerator chip posture (A/B/C boundary)",
+        "",
+        "A/B/C/D necessity tiers are defined in [`CHIP-SECURITY-SCOPE.md`](CHIP-SECURITY-SCOPE.md). "
+        "Only A (real attack path) counts as chip pentest capability; B is assurance "
+        "detection; C is research-only and default-disabled; D (silicon lab, physical "
+        "fault injection, Rowhammer/microarchitectural exploitation) is explicitly out "
+        "of scope. **C/D are never counted as chip pentest capability.**",
+        "",
+        "A2 (BMC/DPU/IPMI out-of-band takeover) is covered by existing "
+        "`bmc-ipmi-exposure`, `dpu-smartnic-surface`, `redfish-default-credentials` and "
+        "`ipmi-cipher-zero-bypass`; this workstream adds the Redfish UpdateService / "
+        "FirmwareInventory read-only face.",
+        "",
+        "| Module | Tier | Default | Research-only | Required surfaces | "
+        + " | ".join(f"`{n}`" for n in matrices) + " |",
+        "|---|---|---|---|---|" + "---|" * len(matrices),
+    ]
+    chip_mods = sorted(k for k, m in mods.items() if m.necessity in ("A", "B", "C"))
+    for key in chip_mods:
+        meta = mods[key]
+        req = _req(next((r for r in matrices[next(iter(matrices))]["modules"]
+                         if r["module"] == key), {"required_surfaces": []}))
+        cells = " | ".join(verdicts.get(key, {}).get(name, "no-surface") for name in matrices)
+        lines.append(
+            f"| `{key}` | {meta.necessity} | "
+            f"{'on' if meta.default_enabled else 'off'} | "
+            f"{'yes' if meta.research_only else 'no'} | {req} | {cells} |")
+    lines += [
+        "",
+        "C-tier rows remain callable only with an explicit `--probe` / customer profile; "
+        "their presence in this matrix is not a claim of production chip coverage.",
         "",
         f"Snapshot: {len(mods)} modules, {len(matrices)} profiles, "
         f"{len(quarantined)} quarantined modules, {len(globally_absent)} globally no-surface.",
