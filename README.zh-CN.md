@@ -2,10 +2,13 @@
 
 **训练与推理集群渗透测试平台**
 
-`v0.2.0` · Apache-2.0 · Python 3.10 – 3.13 · 零运行时依赖 · 默认离线
+`v0.2.0 preview` · Apache-2.0 · Python 3.10 – 3.13 · 零运行时依赖 · 默认离线
 
 > **仅限授权使用。** InkBlade 只应指向有书面授权的资产。consent/ROE 哈希钉存、技术级别闸门、写类模块的强制备份闸门、
 > 逐动作审计，全部由代码执行。没有签署记录时，CLI 与 HTTP API 都会拒绝执行，而且没有跳过闸门的开关。
+
+预览说明：扫描、证据与报告路径可以用于试点。in-pod 采集正在迁往静态 Rust probe；迁移完成前，
+`core/inpod.py` 的 Python 快照解析仍是参照实现。
 
 ## 为什么做这个
 
@@ -54,7 +57,7 @@ helm install inkblade deploy/helm/inkblade --namespace inkblade --create-namespa
 
 ## 能力
 
-- **七层架构。** 授权、编排、模块、证据、报告、可视化、规则转化。每一层都有明确的拒绝方式。
+- **十层覆盖、七层运行。** 覆盖层是测什么：架构、框架、Operator、Fabric、数据与权重、租户隔离、供应链与身份、缓存、组合、防御绕过。运行层是代码怎么分：授权、编排、模块、证据、报告、可视化、规则转化。每一层都有明确的拒绝方式。
 - **286 个模块、29 条链。** 侦察、横向、网络架构、权限链、核心代码、窃取、混合云、情报。
 - **每步三层证据。** 上下文日志、SQLite 审计表、带 SHA-256 清单的单步归档。报告锚点是步骤哈希。
 - **双语报告。** PTES 结构的渗透叙事 + 修复清单，同一套证据，中英各一份。
@@ -96,6 +99,8 @@ helm install inkblade deploy/helm/inkblade --namespace inkblade --create-namespa
 | 防守规则 | `inkblade rules generate` · `rules validate` |
 | 复测 / CI | `inkblade schedule run-due` · `ci-gate --fail-on high --new-only` |
 | 嵌入 | `inkblade mcp` · `inkblade sdk list` |
+| 可选模型 | `inkblade llm-pool status` · `llm-pool add`（默认关闭） |
+| 有界自治 | `inkblade autonomy grant` · `explore autonomy --autonomy L3` |
 
 每个参数见 [`docs/USAGE.md`](docs/USAGE.md)，那里还有完整的快速参考表。
 
@@ -140,7 +145,8 @@ helm install inkblade deploy/helm/inkblade --namespace inkblade --create-namespa
 | [`docs/MODULES.md`](docs/MODULES.md) | 模块族、级别、链、manifest 契约 |
 | [`docs/VULNERABILITY-COVERAGE.md`](docs/VULNERABILITY-COVERAGE.md) | 组件/类别覆盖表 |
 | [`docs/FAQ.md`](docs/FAQ.md) | 短答案，包括不太好回答的那些 |
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | 七层架构与各层职责 |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | 十层覆盖、七层运行、各层职责 |
+| [`docs/AGENT-LLM.md`](docs/AGENT-LLM.md) | 可选模型池、L3 前置条件、数据边界 |
 | [`SECURITY.md`](SECURITY.md) | 漏洞报告与支持窗口 |
 | [`docs/VERSIONING.md`](docs/VERSIONING.md) | pre-1.0 版本政策 |
 
@@ -153,7 +159,7 @@ InkBlade 不是“更好的扫描器”。形状不一样：它是给已经知�
 - **覆盖不齐。** Kubernetes 画像 60–71%，Slurm 25%。缺的模块列出来，不平均。
 - **验证是部分的。** 152 条里 37 条动态验证，其余是带书面阻塞原因的假设，而且会一直标着。
 - **覆盖行是线索，不是判决。** 每条只在一个 commit、一种配置上复现过。
-- **自治有边界。** 有规划器和探索器，默认停在“提议并等待”。
+- **自治有边界。** 有规划器和探索器，默认停在“提议并等待”；L3 需要 lead 签发的 grant，带 TTL、白名单与预算硬顶。
 - **pre-1.0。** 接口会动。合规试点请钉版本。
 
 它不是什么：不是 SaaS，不是常驻写权限的 agent，不是零配置扫描器，也替代不了一场关于交战规则的对话。

@@ -2,27 +2,29 @@
 
 **Training & Inference Cluster Penetration Testing Platform**
 
-`v0.2.0` · Apache-2.0 · Python 3.10 – 3.13 · no runtime dependencies · offline by default
+`v0.2.0 preview` · Apache-2.0 · Python 3.10 – 3.13 · no runtime dependencies · offline by default
 
 > Authorized use only. Consent pinning, technical-level gates, a mandatory backup gate for write
 > modules, and per-action auditing are enforced in code. Without a signed record, the CLI and the
 > HTTP API both refuse to execute. There is no override flag.
 
+Preview note. The scan, evidence and report paths are usable for pilots. The in-pod collector is
+mid-migration to the static Rust probe; the Python snapshot parser in `core/inpod.py` stays the
+reference until that migration closes.
+
 ## Why it exists
 
-We built this after the fourth time a platform team told us the dashboard was only on the VPN.
+We wrote InkBlade after a run of the same conversation. A dashboard was "only on the VPN". It was
+not. It sat on a NodePort with no auth, and the proxy that used to front it had been deleted two
+releases before. The runbook still had the old diagram.
 
-It was not on the VPN. It was on a NodePort, the NodePort had no auth, and the proxy in front of
-it had been removed two releases earlier while the runbook kept describing the old topology.
+The clusters we test are rarely broken in one place. They are assembled: managed control plane
+here, GPU operator there, an inference gateway pointed at the shared storage, a training job that
+loads whatever checkpoint it is given. Each decision was reasonable at the time. The path between
+them was never reviewed by anyone.
 
-That is the shape of most of what we find. Not a clever exploit — a seam between two things that
-were each individually fine. A service account that can read the model registry. An admission
-webhook that fails open. A weight-sync endpoint with no auth. A checkpoint loader nobody expected
-to see untrusted input.
-
-So the tool does three things. It inventories, read-only, and says "unknown" instead of guessing.
-It waits for a signature before it runs anything. And it keeps receipts: every step gets a hash and
-an archive, so a challenged finding is replayed, not argued about.
+InkBlade inventories, quietly. It will not run a module without a signed scope. It records every
+step with a hash and an archive, which is what makes a finding survive review.
 
 ## What you get
 
@@ -30,10 +32,10 @@ an archive, so a challenged finding is replayed, not argued about.
 |---|---|
 | Consent | Signed records, four cumulative technical levels, four roles, no override |
 | Orchestration | Ordered chains, dry-run plan, dependency topology, backup gate, rollback |
-| Modules | 286 manifests across 8 families; 275 enabled, 11 quarantined for missing surfaces |
-| Evidence | Context journal, SQLite audit tables, per-step archive with SHA-256 manifest |
-| Reporting | PTES narrative + remediation checklist, bilingual, CVSS 3.1, NIST / GB-T 20984 |
-| Console | Six-view local SPA, static export that opens from the filesystem |
+| Modules | 286 manifests in 8 families; 275 enabled, 11 quarantined for missing surfaces |
+| Evidence | Context journal, SQLite audit tables, per-step archive with a SHA-256 manifest |
+| Reporting | PTES narrative and remediation checklist, bilingual, CVSS 3.1, NIST / GB-T 20984 |
+| Console | Six-view local SPA; static export opens from the filesystem |
 | Defence | Admission, network, detection and convergence packs, replayed per chain |
 | Probe | Static Rust collector for in-pod facts: caps, seccomp, mounts, GPU/RDMA, token presence |
 
@@ -46,8 +48,8 @@ python -m inkblade ui                # local console on 127.0.0.1:8765
 python -m inkblade exploit --list    # weapon packs with their deployment requirement
 ```
 
-`pilot --dry-run` writes a profile, a plan and an approval list, and never opens a connection.
-When you have a cluster you are allowed to read:
+`pilot --dry-run` writes a profile, a plan and an approval list. It opens no connections. When you
+have a cluster you may read:
 
 ```bash
 python -m inkblade pilot --kubeconfig ~/.kube/config --out reports/pilot
@@ -82,43 +84,48 @@ helm install inkblade deploy/helm/inkblade --namespace inkblade --create-namespa
 | Retest / CI | `inkblade schedule run-due` · `ci-gate --fail-on high --new-only` |
 | In-pod probe | `inkblade-probe --emit probes` (see `probe/`) |
 | Embedding | `inkblade mcp` · `inkblade sdk list` |
+| Optional model | `inkblade llm-pool status` · `llm-pool add` (off by default) |
+| Bounded autonomy | `inkblade autonomy grant` · `explore autonomy --autonomy L3` |
 
 ## Vulnerability coverage
 
-41 verified primitives, 24 components. The rule for the table: reproduced dynamically on a pinned
-upstream version, and the novelty check found no matching public advisory.
+41 verified primitives across 24 components. A row enters the table after dynamic reproduction on a
+pinned upstream version and a novelty check that found no matching public advisory.
 
-Component, class, affected versions, verification shape. No reproduction steps, no payloads, no
-target list.
+The table lists component, class, affected versions and verification shape. No reproduction steps,
+no payloads, no target list.
 
-[`docs/VULNERABILITY-COVERAGE.md`](docs/VULNERABILITY-COVERAGE.md)
+Read the coverage table in [`VULNERABILITY-COVERAGE.md`](docs/VULNERABILITY-COVERAGE.md).
 
 ## Documentation
 
-| Document | What's in it |
+| Document | What is in it |
 |---|---|
-| [`docs/USAGE.md`](docs/USAGE.md) | Command guide, workspace layout, troubleshooting |
-| [`docs/INSTALL.md`](docs/INSTALL.md) | Wheel, checkout, container, Helm, air-gapped |
-| [`docs/FEATURES.md`](docs/FEATURES.md) | Capability inventory with verified / simulated / gap states |
-| [`docs/WORKFLOW.md`](docs/WORKFLOW.md) | The eleven stages, gate by gate |
-| [`docs/MODULES.md`](docs/MODULES.md) | Module families, levels, chains, manifest contract |
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Seven layers, component probe, runtime boundaries |
-| [`docs/FAQ.md`](docs/FAQ.md) | Short answers, including the uncomfortable ones |
-| [`SECURITY.md`](SECURITY.md) | Vulnerability reporting and support window |
-| [`docs/VERSIONING.md`](docs/VERSIONING.md) | Pre-1.0 versioning policy |
+| [Usage guide](docs/USAGE.md) | Command guide, workspace layout, troubleshooting |
+| [Install guide](docs/INSTALL.md) | Wheel, checkout, container, Helm, air-gapped |
+| [Features](docs/FEATURES.md) | Capability inventory with verified / simulated / gap states |
+| [Workflow](docs/WORKFLOW.md) | The eleven stages, gate by gate |
+| [Modules](docs/MODULES.md) | Module families, levels, chains, manifest contract |
+| [Architecture](docs/ARCHITECTURE.md) | Ten coverage layers, seven runtime layers, component probe |
+| [Agent & LLM](docs/AGENT-LLM.md) | Optional model pool, L3 preconditions, data boundary |
+| [FAQ](docs/FAQ.md) | Short answers, including the uncomfortable ones |
+| [Versioning](docs/VERSIONING.md) | Pre-1.0 versioning policy |
+| [Security policy](SECURITY.md) | Vulnerability reporting and support window |
 
 The site is generated from these files and published from `docs/`
-([`docs/README-SITE.md`](docs/README-SITE.md)).
+([site notes](docs/README-SITE.md)).
 
 ## Limits
 
-- Coverage is uneven. 60–71% on Kubernetes profiles, 25% on Slurm. The missing modules are listed.
-- Verification is partial: 37 of 152 catalogue entries, the rest are hypotheses with a blocker.
-- A coverage row is a lead, not a verdict — one commit, one config.
-- Autonomy is bounded. The default stops at "propose and wait".
+- Coverage is uneven: 60–71% on Kubernetes profiles, 25% on Slurm. Missing modules are listed.
+- Verification is partial: 37 of 152 catalogue entries. The rest are hypotheses with a blocker.
+- A coverage row is a lead. It was reproduced on one commit and one config.
+- Autonomy is bounded. The default is propose-and-wait; L3 needs a lead grant with a TTL, an
+  allowlist and budget caps.
 - Pre-1.0. Pin a version for a regulated pilot.
 
-Not a SaaS, not an agent with standing write access, not a zero-configuration scanner.
+It is not a SaaS. It is not an agent with standing write access. It does not scan without
+configuration.
 
 ## AI-assisted writing
 

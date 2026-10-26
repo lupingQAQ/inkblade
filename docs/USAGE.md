@@ -43,6 +43,10 @@ subcommand, so `inkblade run --help` is the reference for `run`.
 | Gate | `inkblade ci-gate --run <id> --fail-on high --new-only` | Exit-code contract. |
 | Embed | `inkblade mcp` | Read-only MCP server over stdio. |
 | Embed | `inkblade sdk list` | Plugin SDK: new, lint, validate, trust, run, list. |
+| Agent | `inkblade llm-pool status` | Optional model pool: endpoints, health, daily usage. |
+| Agent | `inkblade llm-pool add --base-url <root> --model <name> --api-key-env <var>` | Add an endpoint; lead or admin. |
+| Agent | `inkblade autonomy grant --allowlist <keys>` | Lead pre-authorization for L3: token, TTL, budgets. |
+| Agent | `inkblade explore autonomy --autonomy L3 --preauth-token <token>` | Pre-authorized loop; actions still pass every runner gate. |
 
 ### 1. Workspace and people
 
@@ -141,6 +145,31 @@ python -m inkblade ci-gate --run <id> --fail-on high --new-only
 approves. The plugin SDK is for modules in your repository, pinned by SHA-256 fingerprint — no
 auto-trust path.
 
+### 10. Agent and LLM (optional)
+
+Nothing in sections 1 to 9 needs a model. If you want one, add it to the workspace pool and switch
+the pool on:
+
+```bash
+export INKBLADE_LLM_API_KEY_LOCAL='<token>'
+export SCHEME=https                # plaintext scheme only on loopback
+python -m inkblade llm-pool add --workspace local-lab --role lead \
+  --base-url "$SCHEME://127.0.0.1:8000/v1" --model local-instruct \
+  --api-key-env INKBLADE_LLM_API_KEY_LOCAL --quota-requests 200
+python -m inkblade llm-pool enable --workspace local-lab --role lead
+python -m inkblade llm-pool status --workspace local-lab
+python -m inkblade llm-pool health --workspace local-lab --role lead
+```
+
+`$SCHEME` is `https` for a TLS gateway, `http` only on loopback. The pool file lives at
+`<home>/evidence/<workspace>/llm_pool.json`. With no endpoint, `explore propose` orders candidates by
+rules and sets `mode: rules`.
+
+L3 is opt-in and takes more than an endpoint: `inkblade autonomy grant` issues a lead token with a
+TTL, a module allowlist and four budget caps, then `explore autonomy --autonomy L3` runs the loop
+with that token. Writes stay off unless granted, and the guard stops after two consecutive failures.
+Fields, data boundary and failure behaviour: [Agent & LLM](AGENT-LLM.md).
+
 ### Troubleshooting
 
 | Symptom | Likely cause | Fix |
@@ -195,6 +224,10 @@ auto-trust path.
 | 门禁 | `inkblade ci-gate --run <id> --fail-on high --new-only` | 给流水线的退出码契约。 |
 | 嵌入 | `inkblade mcp` | 只读 MCP 服务，stdio JSON-RPC。 |
 | 嵌入 | `inkblade sdk list` | 插件 SDK：new、lint、validate、trust、run、list。 |
+| Agent | `inkblade llm-pool status` | 可选模型池：端点、健康、当日用量。 |
+| Agent | `inkblade llm-pool add --base-url <根地址> --model <模型> --api-key-env <变量>` | 加一个端点；需 lead 或 admin。 |
+| Agent | `inkblade autonomy grant --allowlist <模块>` | L3 的 lead 预授权：token、TTL、预算。 |
+| Agent | `inkblade explore autonomy --autonomy L3 --preauth-token <token>` | 预授权循环；每个动作仍过 runner 全部闸门。 |
 
 ### 1. 先建工作区和人
 
@@ -307,6 +340,29 @@ python -m inkblade ci-gate --run <id> --fail-on high --new-only
 `inkblade mcp` 用 stdio 说 MCP，只暴露只读工具；`inkblade plan` 产出排序后的建议，但仍需 `lead` 审批。
 插件 SDK（`sdk new`、`lint`、`validate`、`trust`、`run`）是给放进你自己仓库的模块用的。信任是你显式接受的
 SHA-256 指纹，没有自动信任通道。
+
+### 10. Agent 与 LLM（可选）
+
+第 1 到第 9 节都不需要模型。要接的话，先往工作区模型池加端点，再打开池：
+
+```bash
+export INKBLADE_LLM_API_KEY_LOCAL='<口令>'
+export SCHEME=https                # 只有回环地址才用明文协议
+python -m inkblade llm-pool add --workspace local-lab --role lead \
+  --base-url "$SCHEME://127.0.0.1:8000/v1" --model local-instruct \
+  --api-key-env INKBLADE_LLM_API_KEY_LOCAL --quota-requests 200
+python -m inkblade llm-pool enable --workspace local-lab --role lead
+python -m inkblade llm-pool status --workspace local-lab
+python -m inkblade llm-pool health --workspace local-lab --role lead
+```
+
+`$SCHEME` 在 TLS 网关上是 `https`，只有回环地址才用 `http`。池文件在
+`<home>/evidence/<workspace>/llm_pool.json`。没有端点时，`explore propose` 按规则排序，并把模式记成
+`mode: rules`。
+
+L3 要的不只是一个端点：`inkblade autonomy grant` 签发带 TTL 的 lead token、模块白名单与四项预算硬顶，
+再用 `explore autonomy --autonomy L3` 跑循环。写动作默认关闭，连续两次失败即停。字段、数据边界与失败
+行为见 [Agent 与 LLM](AGENT-LLM.md)。
 
 ### 排障
 

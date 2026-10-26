@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent &amp; LLM — InkBlade</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand"><b>InkBlade</b><span>ML cluster penetration testing platform · v0.2.0 preview</span></div>
+  <nav class="top"><a href="index.html">Home</a><a href="INSTALL.html">Install</a><a href="USAGE.html">Usage</a><a href="FEATURES.html">Features</a><a href="WORKFLOW.html">Workflow</a><a href="MODULES.html">Modules</a><a href="ARCHITECTURE.html">Architecture</a><a href="AGENT-LLM.html">Agent &amp; LLM</a><a href="VULNERABILITY-COVERAGE.html">Vulnerability coverage</a><a href="PILOT-KIT.html">Pilot kit</a><a href="PLUGIN-SDK.html">Plugin SDK</a><a href="FAQ.html">FAQ</a><a href="VERSIONING.html">Versioning</a></nav>
+</div></header>
+<main><div class="wrap">
+<h1 id="agent-and-llm-configuration-optional-agent-与-llm-配置可选">Agent and LLM configuration (optional) / Agent 与 LLM 配置（可选）</h1>
+<p><a href="#english">English</a> · <a href="#中文">中文</a></p>
+<hr>
+<h2 id="english">English</h2>
+<h3 id="the-scan-path-has-no-model-in-it">The scan path has no model in it</h3>
+<p>Recon, module execution, chain planning, evidence, exports and the body of every report run on the Python standard library. Nothing in that path loads weights, calls an inference server or needs a key. A laptop with the network unplugged produces the same plan, the same evidence tree and the same report as a host with an endpoint configured.</p>
+<p>A model, when you attach one, reorders work the rule engine already proposed. It cannot invent a module, widen a scope, lower a technical level or approve an action.</p>
+<h3 id="where-a-model-can-be-called">Where a model can be called</h3>
+<table><thead><tr><th>Path</th><th>What the model does</th><th>With no endpoint</th></tr></thead><tbody><tr><td><code>explore propose</code></td><td>Ranks the candidate list produced by the deterministic planner, returns at most five module keys</td><td>Rules order the list: read-only first, asset-targeted first</td></tr><tr><td><code>explore autonomy --autonomy L3</code></td><td>Same ranking inside the pre-authorized loop</td><td><code>--llm</code> refuses at preflight; without <code>--llm</code> the loop runs on rules</td></tr><tr><td><code>report-ctem</code></td><td>Writes one optional narrative paragraph from a facts dictionary</td><td>A fixed template paragraph</td></tr></tbody></table>
+<p>Everything else stays local: collect, discover, module runs, chains, backup, rollback, the three evidence layers, report sections, SARIF/OCSF/VEX export and rule generation.</p>
+<h3 id="two-ways-to-attach-an-endpoint">Two ways to attach an endpoint</h3>
+<p><strong>Pool, <code>llm_pool.json</code>.</strong> Several endpoints, weights, per-endpoint quotas, cooldown and failover. This is what <code>explore</code> prefers once it is enabled. Two ways to enable it: <code>&quot;enabled&quot;: true</code> in the file, or the environment variable <code>INKBLADE_LLM_POOL=1</code>.</p>
+<p><strong>One endpoint by environment.</strong> <code>INKBLADE_LLM_BASE_URL</code>, <code>INKBLADE_LLM_API_KEY</code> and <code>INKBLADE_LLM_MODEL</code>. The explorer and the L3 preflight read these. There are no weights, quotas or health records on this path, and it is never enabled by accident: no base URL, no calls. When both exist, the pool is tried first and the environment endpoint is the fallback.</p>
+<pre><code>export INKBLADE_LLM_API_KEY_LOCAL=&#x27;&lt;token&gt;&#x27;
+export SCHEME=https                # plaintext scheme only on loopback
+
+# add one endpoint, then switch the pool on (lead or admin)
+inkblade --home ./lab llm-pool add --workspace local-lab --role lead \
+  --base-url &quot;$SCHEME://127.0.0.1:8000/v1&quot; \
+  --model local-instruct \
+  --api-key-env INKBLADE_LLM_API_KEY_LOCAL \
+  --weight 1 --quota-requests 200 --quota-tokens 200000
+
+inkblade --home ./lab llm-pool enable --workspace local-lab --role lead
+inkblade --home ./lab llm-pool health --workspace local-lab --role lead</code></pre>
+<p><code>$SCHEME</code> is <code>https</code> for a TLS gateway, or <code>http</code> only on loopback. <code>add</code> writes the entry but does not enable the pool; <code>enable</code> does. <code>health</code> sends <code>GET /models</code> to every enabled endpoint and needs the pool to be on.</p>
+<h3 id="llm_pooljson"><code>llm_pool.json</code></h3>
+<p>The CLI writes it to <code>&lt;home&gt;/evidence/&lt;workspace&gt;/llm_pool.json</code>. Hand edits are fine; the file is read on every call. A minimal file:</p>
+<pre><code>{
+  &quot;enabled&quot;: true,
+  &quot;endpoints&quot;: [
+    {
+      &quot;id&quot;: &quot;ep-01&quot;,
+      &quot;base_url&quot;: &quot;&lt;scheme&gt;://127.0.0.1:8000/v1&quot;,
+      &quot;model&quot;: &quot;local-instruct&quot;,
+      &quot;api_key_env&quot;: &quot;INKBLADE_LLM_API_KEY_LOCAL&quot;,
+      &quot;weight&quot;: 1,
+      &quot;quota_requests&quot;: 200,
+      &quot;quota_tokens&quot;: 200000
+    }
+  ]
+}</code></pre>
+<table><thead><tr><th>Field</th><th>Required</th><th>Meaning</th></tr></thead><tbody><tr><td><code>enabled</code></td><td>yes</td><td>Master switch. Missing or <code>false</code> means every <code>complete</code> call raises <code>PoolDisabled</code>.</td></tr><tr><td><code>endpoints[].id</code></td><td>no</td><td>Stable name; generated as <code>ep-01</code>, <code>ep-02</code> when omitted.</td></tr><tr><td><code>base_url</code></td><td>yes</td><td>OpenAI-compatible root. Host part is <code>127.0.0.1:8000/v1</code>; the loader rejects a value without a transport scheme, so write <code>&lt;scheme&gt;</code> as your gateway&#x27;s scheme.</td></tr><tr><td><code>model</code></td><td>yes</td><td>Model name sent in the request body.</td></tr><tr><td><code>api_key</code></td><td>one of</td><td>Literal key kept in the workspace file.</td></tr><tr><td><code>api_key_env</code></td><td>one of</td><td>Name of the environment variable holding the key. Wins over <code>api_key</code> when both are set.</td></tr><tr><td><code>weight</code></td><td>no</td><td>1 to 100, smooth weighted round-robin. Default 1.</td></tr><tr><td><code>quota_requests</code></td><td>no</td><td>Calls per endpoint per UTC day. <code>0</code> means no cap.</td></tr><tr><td><code>quota_tokens</code></td><td>no</td><td>Tokens per endpoint per UTC day. <code>0</code> means no cap.</td></tr></tbody></table>
+<p>On failure the endpoint is cooled down for 30 seconds, then 60, 120 and so on, capped at 600. The call moves to the next healthy endpoint within the same request. If every endpoint is down, cooled down or out of quota, the caller gets <code>NoHealthyEndpoint</code> and falls back to rule ordering.</p>
+<p>The pool stores health and daily usage in the same JSON file. It does not store prompts or responses. <code>llm_pool_records.jsonl</code> keeps endpoint, model, purpose, token count, latency and the error string. <code>audit.jsonl</code> gets an <code>llm.complete</code> row for each success and each failure.</p>
+<h3 id="commands">Commands</h3>
+<table><thead><tr><th>Command</th><th>What it does</th><th>Role</th></tr></thead><tbody><tr><td><code>inkblade llm-pool status</code></td><td>Config path, endpoints, health, usage, quota state</td><td>any</td></tr><tr><td><code>inkblade llm-pool add</code></td><td>Adds one endpoint (<code>--base-url</code>, <code>--model</code>, <code>--api-key-env</code>, <code>--weight</code>, <code>--quota-requests</code>, <code>--quota-tokens</code>, <code>--id</code>)</td><td>lead, admin</td></tr><tr><td><code>inkblade llm-pool remove --id ep-01</code></td><td>Drops the endpoint and its health/usage rows</td><td>lead, admin</td></tr><tr><td><code>inkblade llm-pool enable</code> / <code>disable</code></td><td>Flips the master switch</td><td>lead, admin</td></tr><tr><td><code>inkblade llm-pool health</code></td><td>Live <code>/models</code> probe, updates cooldown</td><td>lead, admin</td></tr><tr><td><code>inkblade llm-pool models</code></td><td>Endpoint and model pairs</td><td>any</td></tr><tr><td><code>inkblade llm-pool records</code></td><td>Metadata-only call log</td><td>any</td></tr><tr><td><code>inkblade llm-pool tokens</code></td><td>Token totals by day</td><td>any</td></tr><tr><td><code>inkblade llm-pool reset --id ep-01 --usage</code></td><td>Clears cooldown; <code>--usage</code> also clears the stored usage history</td><td>lead, admin</td></tr></tbody></table>
+<p>The CLI has no flag that puts a key on the command line. Use <code>--api-key-env</code>, or edit the file if your policy allows a literal key there.</p>
+<h3 id="l3-what-must-be-true-before-the-loop-runs">L3: what must be true before the loop runs</h3>
+<p>L3 is a lead pre-authorization with runtime edges, not a model with a shell. Preflight refuses unless all of the following hold:</p>
+<ol><li>Consent is signed and the HMAC verifies. A missing or edited record stops here.</li><li>The technical level is the top one, full-impact demo. Exploit verification and below are</li></ol>
+<p>refused.</p>
+<ol><li><code>autonomy/grant.json</code> exists, carries an HMAC over every field, is <code>active</code> and has not expired.</li><li><code>--preauth-token</code> matches <code>token_sha256</code> in constant time. The default TTL is 1800 seconds.</li></ol>
+<p><code>inkblade autonomy revoke</code> marks the grant <code>revoked</code>; the next preflight fails.</p>
+<ol><li>The allowlist is not empty. <code>max_actions</code> is 1 to 50, <code>max_steps</code> is 1 to 20, and all four</li></ol>
+<p>budgets (tokens, latency, approvals, interventions) are positive. Zero is rejected: a budget of zero is not &quot;unlimited&quot;.</p>
+<ol><li>With <code>--llm</code>, a real endpoint exists. No endpoint means refusal at startup, not a silent</li></ol>
+<p>drop to rules.</p>
+<p>At run time the guard checks every action against the allowlist, refuses writes unless <code>--allow-writes</code> was granted, rechecks namespace/host scope, pre-charges the budget before the action, enforces one per-step action cap, and stops after two consecutive failures. Write modules still pass the runner&#x27;s backup gate; the grant does not replace it.</p>
+<p>Each step appends <code>autonomy.*</code> audit rows and a trace row carrying <code>plan_sha256</code> over the decision surface. <code>inkblade autonomy replay</code> replays those decisions without executing modules. To run again, issue a new grant.</p>
+<pre><code>inkblade autonomy grant --workspace l3-lab --role lead \
+  --allowlist rbac-mapping,network-policy-coverage,escape-primitives \
+  --max-actions 4 --max-steps 3 --ttl-seconds 1800 \
+  --budget-tokens 20000 --budget-latency-ms 120000 \
+  --budget-approvals 6 --budget-interventions 2
+
+inkblade explore autonomy --workspace l3-lab --autonomy L3 \
+  --llm --preauth-token &#x27;&lt;token printed once&gt;&#x27; --workers 2
+
+inkblade autonomy status --workspace l3-lab
+inkblade autonomy revoke --workspace l3-lab --reason &quot;window closed&quot;</code></pre>
+<h3 id="data-boundary">Data boundary</h3>
+<p>A prompt can contain candidate module keys, product names, asset counts, eligible chain ids, the RoE level, and the blackboard summaries a lead pinned: finding title, severity, evidence anchor, asset key, product, address and note. <code>report-ctem</code> sends a small facts dictionary: run name, counts, module series, asset count, retest count.</p>
+<p>It does not send credentials, service-account tokens, request or response bodies, evidence archives, <code>context.jsonl.gz</code> content, report bodies or API keys. Audit records carry endpoint id, model, token count and latency, not prompt text.</p>
+<p>Use a local endpoint, or one your security team has approved for this data. Keep TLS for anything that is not on the same host. Put the key in an environment variable through <code>api_key_env</code> and keep it out of the repository. If you do use <code>api_key</code>, remember that the workspace file now holds a secret.</p>
+<h3 id="what-changes-without-a-model">What changes without a model</h3>
+<table><thead><tr><th>Behaviour</th><th>With an endpoint</th><th>Without</th></tr></thead><tbody><tr><td>Candidate order</td><td>Model ranking, validated against the candidate set; out-of-set keys are dropped</td><td>Fixed rule order</td></tr><tr><td>Proposal mode</td><td><code>llm</code> when the model returned a usable sequence</td><td><code>rules</code>, no error</td></tr><tr><td>Report narrative</td><td>One model-written paragraph</td><td>Template paragraph</td></tr><tr><td>L3 with <code>--llm</code></td><td>Runs</td><td>Refused at preflight</td></tr><tr><td>L3 without <code>--llm</code></td><td>Rule-ranked loop</td><td>Same</td></tr><tr><td>Quotas and audit</td><td><code>llm.complete</code> rows, per-endpoint counters</td><td>None</td></tr></tbody></table>
+<p>If you want the deterministic path every time, pass <code>--use-llm false</code> to <code>explore propose</code>, or leave both the file and the environment unset. L3 without <code>--llm</code> never calls a model.</p>
+<hr>
+<h2 id="中文">中文</h2>
+<h3 id="扫描本身不需要模型">扫描本身不需要模型</h3>
+<p>侦察、模块执行、链规划、证据、导出、报告正文，全部只依赖 Python 标准库。这条路径不加载权重、不连推理服务、也不要 key。断网的笔记本和配好端点的机器，产出的计划、证据树与报告是同一份。</p>
+<p>接上模型以后，它只对规则引擎已经给出的候选做排序。它不能新增模块、放大范围、降低技术级别，也不能批准动作。</p>
+<h3 id="会调用模型的三处">会调用模型的三处</h3>
+<table><thead><tr><th>路径</th><th>模型做什么</th><th>没有端点时</th></tr></thead><tbody><tr><td><code>explore propose</code></td><td>对确定性规划器给出的候选排序，最多返回 5 个模块 key</td><td>规则排序：只读在前、有资产目标在前</td></tr><tr><td><code>explore autonomy --autonomy L3</code></td><td>在预授权循环里做同样的排序</td><td>带 <code>--llm</code> 时预检直接拒绝；不带则按规则跑</td></tr><tr><td><code>report-ctem</code></td><td>依据 facts 字段写一段可选叙述</td><td>固定模板段落</td></tr></tbody></table>
+<p>其余的 collect、discover、单模块、链、备份、回滚、三层证据、报告主体、SARIF/OCSF/VEX 导出、规则生成，都不出网。</p>
+<h3 id="两种接法">两种接法</h3>
+<p><strong>模型池 <code>llm_pool.json</code>。</strong> 支持多端点、权重、端点级配额、冷却与失败切换。<code>explore</code> 在池开启时优先用它。开启方式有两种：文件里 <code>&quot;enabled&quot;: true</code>，或环境变量 <code>INKBLADE_LLM_POOL=1</code>。</p>
+<p><strong>环境变量接单端点。</strong> <code>INKBLADE_LLM_BASE_URL</code>、<code>INKBLADE_LLM_API_KEY</code>、<code>INKBLADE_LLM_MODEL</code>。 explorer 与 L3 预检会读它们。这条路径没有权重、配额和健康记录，也不会被误开：不设 base URL 就不调用。两者同时存在时，先试池，失败再走环境端点。</p>
+<pre><code>export INKBLADE_LLM_API_KEY_LOCAL=&#x27;&lt;口令&gt;&#x27;
+export SCHEME=https                # 只有回环地址才用明文协议
+
+# 加一个端点，再打开池（需要 lead 或 admin）
+inkblade --home ./lab llm-pool add --workspace local-lab --role lead \
+  --base-url &quot;$SCHEME://127.0.0.1:8000/v1&quot; \
+  --model local-instruct \
+  --api-key-env INKBLADE_LLM_API_KEY_LOCAL \
+  --weight 1 --quota-requests 200 --quota-tokens 200000
+
+inkblade --home ./lab llm-pool enable --workspace local-lab --role lead
+inkblade --home ./lab llm-pool health --workspace local-lab --role lead</code></pre>
+<p><code>$SCHEME</code> 在 TLS 网关上是 <code>https</code>，只有回环地址才用 <code>http</code>。<code>add</code> 只写端点，不打开池；<code>enable</code> 才打开。<code>health</code> 会对每个启用端点发 <code>GET /models</code>，池未开启时拒绝执行。</p>
+<h3 id="llm_pooljson-字段"><code>llm_pool.json</code> 字段</h3>
+<p>CLI 把它写到 <code>&lt;home&gt;/evidence/&lt;workspace&gt;/llm_pool.json</code>。手改也可以，每次调用都会重新读。最小示例：</p>
+<pre><code>{
+  &quot;enabled&quot;: true,
+  &quot;endpoints&quot;: [
+    {
+      &quot;id&quot;: &quot;ep-01&quot;,
+      &quot;base_url&quot;: &quot;&lt;scheme&gt;://127.0.0.1:8000/v1&quot;,
+      &quot;model&quot;: &quot;local-instruct&quot;,
+      &quot;api_key_env&quot;: &quot;INKBLADE_LLM_API_KEY_LOCAL&quot;,
+      &quot;weight&quot;: 1,
+      &quot;quota_requests&quot;: 200,
+      &quot;quota_tokens&quot;: 200000
+    }
+  ]
+}</code></pre>
+<table><thead><tr><th>字段</th><th>必填</th><th>含义</th></tr></thead><tbody><tr><td><code>enabled</code></td><td>是</td><td>总开关。缺失或 <code>false</code> 时，<code>complete</code> 一律抛 <code>PoolDisabled</code>。</td></tr><tr><td><code>endpoints[].id</code></td><td>否</td><td>稳定名称；省略时按 <code>ep-01</code>、<code>ep-02</code> 生成。</td></tr><tr><td><code>base_url</code></td><td>是</td><td>OpenAI 兼容根地址。主机部分是 <code>127.0.0.1:8000/v1</code>；加载器不接受没有传输协议的写法，所以 <code>&lt;scheme&gt;</code> 要换成网关实际使用的协议。</td></tr><tr><td><code>model</code></td><td>是</td><td>请求体里的模型名。</td></tr><tr><td><code>api_key</code></td><td>二选一</td><td>明文 key，落在工作区文件里。</td></tr><tr><td><code>api_key_env</code></td><td>二选一</td><td>存 key 的环境变量名。两者都在时以它为准。</td></tr><tr><td><code>weight</code></td><td>否</td><td>1 到 100，平滑加权轮询。默认 1。</td></tr><tr><td><code>quota_requests</code></td><td>否</td><td>每端点每 UTC 日请求数，<code>0</code> 表示不限。</td></tr><tr><td><code>quota_tokens</code></td><td>否</td><td>每端点每 UTC 日 token 数，<code>0</code> 表示不限。</td></tr></tbody></table>
+<p>端点失败后冷却 30 秒，随后 60、120 秒递增，上限 600 秒。同一次调用内切到下一个健康端点；全部不可用时抛 <code>NoHealthyEndpoint</code>，调用方降级到规则排序。</p>
+<p>池把健康状态与当日用量写回同一个 JSON，不保存提示词与响应。<code>llm_pool_records.jsonl</code> 只存端点、模型、用途、token 数、时延与错误串。<code>audit.jsonl</code> 每次成功或失败都追加一行 <code>llm.complete</code>。</p>
+<h3 id="命令">命令</h3>
+<table><thead><tr><th>命令</th><th>作用</th><th>角色</th></tr></thead><tbody><tr><td><code>inkblade llm-pool status</code></td><td>配置路径、端点、健康、用量、配额状态</td><td>任意</td></tr><tr><td><code>inkblade llm-pool add</code></td><td>加端点（<code>--base-url</code>、<code>--model</code>、<code>--api-key-env</code>、<code>--weight</code>、<code>--quota-requests</code>、<code>--quota-tokens</code>、<code>--id</code>）</td><td>lead、admin</td></tr><tr><td><code>inkblade llm-pool remove --id ep-01</code></td><td>删端点及其健康/用量记录</td><td>lead、admin</td></tr><tr><td><code>inkblade llm-pool enable</code> / <code>disable</code></td><td>切换总开关</td><td>lead、admin</td></tr><tr><td><code>inkblade llm-pool health</code></td><td>实时探测 <code>/models</code>，更新冷却</td><td>lead、admin</td></tr><tr><td><code>inkblade llm-pool models</code></td><td>端点与模型对照</td><td>任意</td></tr><tr><td><code>inkblade llm-pool records</code></td><td>只含元数据的调用记录</td><td>任意</td></tr><tr><td><code>inkblade llm-pool tokens</code></td><td>按天统计 token</td><td>任意</td></tr><tr><td><code>inkblade llm-pool reset --id ep-01 --usage</code></td><td>清冷却；<code>--usage</code> 同时清掉已存的用量记录</td><td>lead、admin</td></tr></tbody></table>
+<p>CLI 没有把 key 放到命令行上的参数。用 <code>--api-key-env</code>；策略允许明文时才手改文件。</p>
+<h3 id="l3-的前置条件">L3 的前置条件</h3>
+<p>L3 是 lead 预授权加运行时硬边界，不是给模型一个 shell。以下任一条不成立，预检就拒绝：</p>
+<ol><li>授权已签且 HMAC 验签通过。记录缺失或被改动，到这里就停。</li><li>技术级别是最高级「全影响演示」。「利用验证」及以下直接拒绝。</li><li><code>autonomy/grant.json</code> 存在，HMAC 覆盖全部字段，<code>status</code> 为 <code>active</code>，且未过期。</li><li><code>--preauth-token</code> 与 <code>token_sha256</code> 常量时间比对通过。默认 TTL 1800 秒。<code>inkblade autonomy revoke</code></li></ol>
+<p>把 grant 标成 <code>revoked</code>，下一次预检即失败。</p>
+<ol><li>白名单非空；<code>max_actions</code> 1 到 50，<code>max_steps</code> 1 到 20；tokens、latency、approvals、interventions</li></ol>
+<p>四项预算都必须为正。写 0 会被拒：预算为 0 不等于「不限」。</p>
+<ol><li>带 <code>--llm</code> 时必须存在真实端点。没有端点就在启动时拒绝，不静默降级。</li></ol>
+<p>运行时，护栏逐个动作检查白名单；未授权 <code>--allow-writes</code> 时拒绝写动作；复核 namespace/host 范围；动作前预扣预算；限制单步动作数；连续两次失败即停。写模块照旧过 runner 的备份闸门，grant 不能替代它。</p>
+<p>每一步都会写 <code>autonomy.*</code> 审计行，以及带 <code>plan_sha256</code> 的 trace。<code>inkblade autonomy replay</code> 只重放决策，不执行模块。要再跑一次，只能签发新 grant。</p>
+<pre><code>inkblade autonomy grant --workspace l3-lab --role lead \
+  --allowlist rbac-mapping,network-policy-coverage,escape-primitives \
+  --max-actions 4 --max-steps 3 --ttl-seconds 1800 \
+  --budget-tokens 20000 --budget-latency-ms 120000 \
+  --budget-approvals 6 --budget-interventions 2
+
+inkblade explore autonomy --workspace l3-lab --autonomy L3 \
+  --llm --preauth-token &#x27;&lt;只显示一次的 token&gt;&#x27; --workers 2
+
+inkblade autonomy status --workspace l3-lab
+inkblade autonomy revoke --workspace l3-lab --reason &quot;窗口结束&quot;</code></pre>
+<h3 id="数据边界">数据边界</h3>
+<p>提示词里可能出现：候选模块 key、产品名、资产数量、成立的链 id、RoE 级别，以及 lead 固定到黑板的摘要（发现标题、严重度、证据锚点、资产 key、产品、地址、备注）。<code>report-ctem</code> 会发一个很小的 facts 字典： run 名、各项计数、模块系列、资产数、复测数。</p>
+<p>不会发送：凭据、ServiceAccount 令牌、请求或响应正文、证据归档、<code>context.jsonl.gz</code> 内容、报告正文、 API key。审计只记端点、模型、token 数与时延，不记提示词。</p>
+<p>端点用本地的，或者安全团队为这类数据批准过的。不在同一台主机上就上 TLS。key 放环境变量，通过 <code>api_key_env</code> 引用，不要进仓库。如果确实用了 <code>api_key</code>，就把工作区文件当成密件。</p>
+<h3 id="没有模型时差在哪">没有模型时差在哪</h3>
+<table><thead><tr><th>行为</th><th>有端点</th><th>没有</th></tr></thead><tbody><tr><td>候选顺序</td><td>模型排序，并按候选集校验；集外 key 丢弃</td><td>固定规则顺序</td></tr><tr><td>提议模式</td><td>模型给出可用序列时记 <code>llm</code></td><td>记 <code>rules</code>，不报错</td></tr><tr><td>报告叙述</td><td>模型写的一段</td><td>模板段落</td></tr><tr><td>带 <code>--llm</code> 的 L3</td><td>运行</td><td>预检拒绝</td></tr><tr><td>不带 <code>--llm</code> 的 L3</td><td>规则排序循环</td><td>相同</td></tr><tr><td>配额与审计</td><td><code>llm.complete</code> 行与端点计数</td><td>无</td></tr></tbody></table>
+<p>想始终走确定性路径，就给 <code>explore propose</code> 加 <code>--use-llm false</code>，或者文件和两个环境变量都不设。不带 <code>--llm</code> 的 L3 不会调用模型。</p>
+<hr>
+<p>See also: <a href="INSTALL.html">Install</a> · <a href="USAGE.html">Usage</a> · <a href="ARCHITECTURE.html">Architecture</a> · <a href="FAQ.html">FAQ</a></p>
+</div></main>
+<footer><div class="wrap">
+  InkBlade 0.2.0 preview · Apache-2.0 · authorized testing only · no telemetry, no external assets.
+</div></footer>
+</body>
+</html>

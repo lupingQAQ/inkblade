@@ -16,6 +16,34 @@ access. `ui` serves the console on loopback.
 
 No. There is no account system beyond the local `users.json`, no licence check, and no outbound
 telemetry. Optional integrations — SIEM, ITSM, the LLM pool — stay off until you configure them.
+The scan path never needs a model key.
+
+### Does it need an LLM?
+
+No. Recon, module runs, chains, evidence, exports and report bodies are deterministic, and the
+runtime is the Python standard library. A model is optional and off by default. When attached, it
+only ranks the candidate modules the rule engine already produced, or runs inside the L3 loop. With
+no endpoint the planner falls back to fixed rule order and records the downgrade as `mode: rules`.
+
+One exception is deliberate: `explore autonomy --llm` refuses at preflight when no endpoint exists.
+A rehearsal should not pass green while the model was never contacted.
+
+### What data can reach a model?
+
+Prompts can carry candidate module keys, product names, asset counts, eligible chain ids, the RoE
+level and the blackboard summaries a lead pinned: finding title, severity, evidence anchor, asset
+key, product and address. The narrative report sends counts. Credentials, service-account tokens,
+request bodies, evidence archives and report text stay local. Audit rows store endpoint, model,
+token count and latency, not prompt text. Point it at a local or approved endpoint; the rest is in
+[Agent & LLM](AGENT-LLM.md).
+
+### Can it run on its own?
+
+Only under L3, and only after a lead pre-authorizes it. The consent level must be full-impact demo,
+the grant carries a token with a TTL that can be revoked, the module allowlist must be non-empty,
+and four budget caps must be positive. At run time the guard stops on a scope miss, an unlisted
+module, an unauthorized write, a budget overrun or two consecutive failures. Anything less is
+propose-and-wait. See [Agent & LLM](AGENT-LLM.md).
 
 ### Why only the Python standard library?
 
@@ -115,7 +143,29 @@ coverage denominator.
 ### 需要 API key、账号或授权服务器吗？
 
 都不需要。除了本地的 `users.json`，没有账号体系，没有许可证校验，也没有外发遥测。SIEM、ITSM、LLM 池这些
-可选集成，你不配置就一直关着。
+可选集成，你不配置就一直关着。扫描路径本身不需要模型 key。
+
+### 需要 LLM 吗？
+
+不需要。侦察、模块执行、链、证据、导出与报告正文都是确定性执行，运行时只用 Python 标准库。模型是可选项，
+默认关闭。接上以后，它只给规则引擎已经产出的候选排序，或者在 L3 循环里工作。没有端点时，规划器回到固定
+规则顺序，并把降级记成 `mode: rules`。
+
+有一个例外是故意的：`explore autonomy --llm` 在没有端点时于预检阶段直接拒绝。演练不该在模型从未被调用
+的情况下显示通过。
+
+### 哪些数据可能发给模型？
+
+提示词里可能有候选模块 key、产品名、资产数量、成立的链 id、RoE 级别，以及 lead 固定到黑板的摘要：发现
+标题、严重度、证据锚点、资产 key、产品与地址。叙述型报告只发计数。凭据、ServiceAccount 令牌、请求正文、
+证据归档与报告正文留在本地。审计行只记端点、模型、token 数与延时，不记提示词。端点用本地的，或安全团队
+批准过的；细节见 [Agent 与 LLM](AGENT-LLM.md)。
+
+### 它能自己跑吗？
+
+只有 L3 可以，而且必须先由 lead 预授权。授权级别要是「全影响演示」，grant 里带一个有 TTL、可撤销的 token，
+模块白名单非空，四项预算都为正。运行时护栏在范围不符、模块不在白名单、未授权写、预算越顶、连续两次失败时
+都会停。除此之外都是“提议并等待”。细节见 [Agent 与 LLM](AGENT-LLM.md)。
 
 ### 为什么只用 Python 标准库？
 

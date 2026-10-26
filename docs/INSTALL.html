@@ -8,8 +8,8 @@
 </head>
 <body>
 <header><div class="wrap">
-  <div class="brand"><b>InkBlade</b><span>ML cluster penetration testing platform · v0.2.0</span></div>
-  <nav class="top"><a href="index.html">Home</a><a href="INSTALL.html">Install</a><a href="USAGE.html">Usage</a><a href="FEATURES.html">Features</a><a href="WORKFLOW.html">Workflow</a><a href="MODULES.html">Modules</a><a href="ARCHITECTURE.html">Architecture</a><a href="VULNERABILITY-COVERAGE.html">Vulnerability coverage</a><a href="PILOT-KIT.html">Pilot kit</a><a href="PLUGIN-SDK.html">Plugin SDK</a><a href="FAQ.html">FAQ</a><a href="VERSIONING.html">Versioning</a></nav>
+  <div class="brand"><b>InkBlade</b><span>ML cluster penetration testing platform · v0.2.0 preview</span></div>
+  <nav class="top"><a href="index.html">Home</a><a href="INSTALL.html">Install</a><a href="USAGE.html">Usage</a><a href="FEATURES.html">Features</a><a href="WORKFLOW.html">Workflow</a><a href="MODULES.html">Modules</a><a href="ARCHITECTURE.html">Architecture</a><a href="AGENT-LLM.html">Agent &amp; LLM</a><a href="VULNERABILITY-COVERAGE.html">Vulnerability coverage</a><a href="PILOT-KIT.html">Pilot kit</a><a href="PLUGIN-SDK.html">Plugin SDK</a><a href="FAQ.html">FAQ</a><a href="VERSIONING.html">Versioning</a></nav>
 </div></header>
 <main><div class="wrap">
 <h1 id="install-安装">Install / 安装</h1>
@@ -17,10 +17,10 @@
 <hr>
 <h2 id="english">English</h2>
 <h3 id="download">Download</h3>
-<p>There is no binary to fetch and no package index entry to trust yet. The supported way to get InkBlade today is a git checkout: clone the repository (or unpack a release archive), then install from that directory. Publishing a wheel and a container image is wired into the release workflow, but nothing is announced until the first tagged release exists — when it does, this page will say so, with the version and the checksum.</p>
+<p>There is no binary to fetch and no package index entry to trust yet. The supported way to get InkBlade today is a git checkout: clone the repository (or unpack a release archive), then install from that directory. A wheel and a container image are built in CI, but neither is announced before the first tagged release; when that happens, this page will list the version and the checksum.</p>
 <p>That is not modesty. A pre-1.0 security tool should be installed from something you can read.</p>
 <h3 id="requirements">Requirements</h3>
-<table><thead><tr><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>Python</td><td>3.10 – 3.13</td><td>Standard library only. No compiler, no Rust, no protobuf build step.</td></tr><tr><td>Disk</td><td>~200 MB</td><td>Workspace, reports, bundled console. Real evidence grows with the engagement.</td></tr><tr><td>Terminal</td><td>any POSIX shell, PowerShell or cmd</td><td>The commands below work in all three.</td></tr><tr><td>Docker</td><td>24+</td><td>Optional, only for the container path.</td></tr><tr><td>Helm</td><td>3.8+</td><td>Optional, only for the chart.</td></tr><tr><td>kubeconfig</td><td>—</td><td>Optional. Not needed for <code>doctor</code>, <code>pilot --dry-run</code> or <code>ui</code>.</td></tr></tbody></table>
+<table><thead><tr><th>Need</th><th>Version</th><th>Notes</th></tr></thead><tbody><tr><td>Python</td><td>3.10 – 3.13</td><td>Standard library only. No compiler, no Rust, no protobuf build step.</td></tr><tr><td>Disk</td><td>~200 MB</td><td>Workspace, reports, bundled console. Real evidence grows with the engagement.</td></tr><tr><td>Terminal</td><td>any POSIX shell, PowerShell or cmd</td><td>The commands below work in all three.</td></tr><tr><td>Docker</td><td>24+</td><td>Optional, only for the container path.</td></tr><tr><td>Helm</td><td>3.8+</td><td>Optional, only for the chart.</td></tr><tr><td>kubeconfig</td><td>—</td><td>Optional. Not needed for <code>doctor</code>, <code>pilot --dry-run</code> or <code>ui</code>.</td></tr></tbody></table>
 <p>No outbound network access is needed at runtime. No API key, no licence server, no account.</p>
 <h3 id="install-from-a-checkout">Install from a checkout</h3>
 <pre><code>python -m pip install -e .
@@ -61,12 +61,17 @@ python -m pip install --no-index --find-links dist/ inkblade</code></pre>
 ├── consent/              signed records, one file per engagement window
 ├── assets.json           incremental asset table
 ├── inventory.json        software inventory used for CVE applicability
-├── evidence/&lt;run&gt;/       context.jsonl.gz, evidence.db, steps/*.tar.gz
+├── evidence/&lt;workspace&gt;/
+│   ├── audit.jsonl       workspace audit trail
+│   ├── llm_pool.json     optional model pool: endpoints, health, daily usage
+│   ├── autonomy/         L3 grant and decision trace (opt-in)
+│   └── &lt;run&gt;/            context.jsonl.gz, evidence.db, steps/*.tar.gz
 ├── reports/&lt;run&gt;/        pentest and remediation output
 └── rules/&lt;run&gt;/          generated rule packs and replay matrix</code></pre>
 <p><code>--home</code> points at the root. Most commands also accept <code>--workspace</code> for compatibility with scripts that pass it explicitly. Nothing is written outside this tree.</p>
 <h3 id="environment-variables">Environment variables</h3>
-<table><thead><tr><th>---</th><th>---</th></tr></thead><tbody><tr><td><code>INKBLADE_DATA</code></td><td>Overrides the data root when a deployment sets one.</td></tr><tr><td><code>INKBLADE_TOKEN</code></td><td>API token for the local console (optional).</td></tr><tr><td><code>INKBLADE_REPORT_KEY</code></td><td>Key used to encrypt report bundles (optional).</td></tr><tr><td><code>INKBLADE_LLM_BASE_URL</code>, <code>INKBLADE_LLM_API_KEY</code>, <code>INKBLADE_LLM_MODEL</code></td><td>Only read when the LLM pool is enabled; off by default.</td></tr><tr><td><code>INKBLADE_SANDBOX_*</code></td><td>CPU, memory and network limits for sandboxed probes.</td></tr><tr><td><code>PYTHONIOENCODING=utf-8</code></td><td>Windows consoles with a legacy code page.</td></tr></tbody></table>
+<table><thead><tr><th>Variable</th><th>Purpose</th></tr></thead><tbody><tr><td><code>INKBLADE_DATA</code></td><td>Overrides the data root when a deployment sets one.</td></tr><tr><td><code>INKBLADE_TOKEN</code></td><td>API token for the local console (optional).</td></tr><tr><td><code>INKBLADE_REPORT_KEY</code></td><td>Key used to encrypt report bundles (optional).</td></tr><tr><td><code>INKBLADE_LLM_POOL</code></td><td>Set to <code>1</code> to switch the workspace model pool on; off by default.</td></tr><tr><td><code>INKBLADE_LLM_BASE_URL</code>, <code>INKBLADE_LLM_API_KEY</code>, <code>INKBLADE_LLM_MODEL</code></td><td>Single-endpoint path read by the explorer and the L3 preflight. No base URL, no calls.</td></tr><tr><td><code>INKBLADE_SANDBOX_*</code></td><td>CPU, memory and network limits for sandboxed probes.</td></tr><tr><td><code>PYTHONIOENCODING=utf-8</code></td><td>Windows consoles with a legacy code page.</td></tr></tbody></table>
+<p>The model pool is optional and ships disabled. Configure it with <code>inkblade llm-pool add</code>, or edit <code>evidence/&lt;workspace&gt;/llm_pool.json</code>; keys belong in an environment variable referenced by <code>api_key_env</code>, not in the repository. Without an endpoint the planner runs on rules. Fields, quotas, L3 preconditions and the data boundary are in <a href="AGENT-LLM.html"><code>AGENT-LLM.md</code></a>.</p>
 <h3 id="before-you-point-it-at-a-cluster">Before you point it at a cluster</h3>
 <ul><li>Read the security policy in the repository root (<code>SECURITY.md</code>) and the boundaries page in</li></ul>
 <p>this folder (<code>FAQ.md</code>, section “Limits”).</p>
@@ -76,16 +81,16 @@ python -m pip install --no-index --find-links dist/ inkblade</code></pre>
 <hr>
 <h2 id="中文">中文</h2>
 <h3 id="下载">下载</h3>
-<p>现在没有可下载的二进制，也没有可以信任的包索引条目。当前唯一受支持的方式是源码检出：克隆仓库（或解开 release 压缩包），在目录里安装。wheel 与容器镜像的发布流程已经接进 CI，但第一个 tag 出来之前不会对外宣布； 真到了那天，这一页会写清版本与校验值。</p>
+<p>现在没有可下载的二进制，也没有可以信任的包索引条目。当前唯一受支持的方式是源码检出：克隆仓库（或解开 release 压缩包），在目录里安装。wheel 与容器镜像的发布流程已经接进 CI，但第一个 tag 出来之前不会对外宣布；真到了那天，这一页会写清版本与校验值。</p>
 <p>这不是谦虚。pre-1.0 的安全工具，应该从你能读的源码装。</p>
 <h3 id="环境要求">环境要求</h3>
-<table><thead><tr><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>Python</td><td>3.10 – 3.13</td><td>只用标准库。不要编译器、不要 Rust、不要 protobuf 构建步骤。</td></tr><tr><td>磁盘</td><td>约 200 MB</td><td>工作区、报告、内置控制台。真实项目的证据会随工期增长。</td></tr><tr><td>终端</td><td>任意 POSIX shell、PowerShell 或 cmd</td><td>下面的命令三种都能跑。</td></tr><tr><td>Docker</td><td>24+</td><td>可选，只用于容器路线。</td></tr><tr><td>Helm</td><td>3.8+</td><td>可选，只用于 Chart。</td></tr><tr><td>kubeconfig</td><td>—</td><td>可选。<code>doctor</code>、<code>pilot --dry-run</code>、<code>ui</code> 都不需要。</td></tr></tbody></table>
+<table><thead><tr><th>需要</th><th>版本</th><th>说明</th></tr></thead><tbody><tr><td>Python</td><td>3.10 – 3.13</td><td>只用标准库。不要编译器、不要 Rust、不要 protobuf 构建步骤。</td></tr><tr><td>磁盘</td><td>约 200 MB</td><td>工作区、报告、内置控制台。真实项目的证据会随工期增长。</td></tr><tr><td>终端</td><td>任意 POSIX shell、PowerShell 或 cmd</td><td>下面的命令三种都能跑。</td></tr><tr><td>Docker</td><td>24+</td><td>可选，只用于容器路线。</td></tr><tr><td>Helm</td><td>3.8+</td><td>可选，只用于 Chart。</td></tr><tr><td>kubeconfig</td><td>—</td><td>可选。<code>doctor</code>、<code>pilot --dry-run</code>、<code>ui</code> 都不需要。</td></tr></tbody></table>
 <p>运行时不需要外网、不需要 API key、没有授权服务器、不要账号。</p>
 <h3 id="从代码检出安装">从代码检出安装</h3>
 <pre><code>python -m pip install -e .
 python -m inkblade --help</code></pre>
-<p>如果策略不允许 <code>pip install</code>，跳过它。所有命令都能在仓库根目录用 <code>python -m inkblade ...</code> 运行， 损失的只是一个短命令。</p>
-<p>Windows 注意：如果 <code>python</code> 打开的是 Microsoft Store，说明 Python 其实没装。装上并勾选 “Add to PATH”， 或者显式用 <code>py -3.12</code>。</p>
+<p>如果策略不允许 <code>pip install</code>，跳过它。所有命令都能在仓库根目录用 <code>python -m inkblade ...</code> 运行，损失的只是一个短命令。</p>
+<p>Windows 注意：如果 <code>python</code> 打开的是 Microsoft Store，说明 Python 其实没装。装上并勾选 “Add to PATH”，或者显式用 <code>py -3.12</code>。</p>
 <h3 id="验证安装">验证安装</h3>
 <pre><code>python -m inkblade doctor</code></pre>
 <p><code>doctor</code> 每项检查一行：解释器、命令入口、写权限、可用磁盘、8765 端口、可选依赖、集群是否可达。 <code>WARN</code> 不影响使用；<code>FAIL</code> 会连同修复方法一起打印。接着做一次无集群的首次演练：</p>
@@ -105,11 +110,11 @@ docker run --rm -v inkblade-data:/data inkblade:0.2.0 trial</code></pre>
 <pre><code>helm lint deploy/helm/inkblade
 helm install inkblade deploy/helm/inkblade --namespace inkblade --create-namespace
 helm get notes inkblade --namespace inkblade</code></pre>
-<p>默认值刻意保守：<code>readOnly: true</code>、<code>runAsUser: 10001</code>、<code>readOnlyRootFilesystem: true</code>， 一块 PVC 存证据。要写必须同时打开两个开关（<code>readOnly=false</code> 与 <code>rbac.allowWrite=true</code>）， 而且工作区里没有签署记录时应用仍返回 HTTP 423。</p>
+<p>默认值刻意保守：<code>readOnly: true</code>、<code>runAsUser: 10001</code>、<code>readOnlyRootFilesystem: true</code>，一块 PVC 存证据。要写必须同时打开两个开关（<code>readOnly=false</code> 与 <code>rbac.allowWrite=true</code>），而且工作区里没有签署记录时应用仍返回 HTTP 423。</p>
 <p>值得记住的 <code>values.yaml</code> 键：<code>image.repository</code>、<code>image.tag</code>、<code>persistence.existingClaim</code>、 <code>rbac.clusterWide</code>、<code>rbac.namespaces</code>、<code>usersSecret.name</code>、<code>extraArgs</code>、<code>probes.*</code>。</p>
 <p>卸载不会删除 PVC。这是故意的：证据要比 release 活得久。</p>
 <h3 id="离线安装">离线安装</h3>
-<p>需要带过隔离边界的东西只有三样：源码树（或构建好的 wheel）、Python 3.10+ 解释器、以及别的什么都不需要。 不带模型权重、不连包索引、没有遥测端点。</p>
+<p>需要带过隔离边界的东西只有三样：源码树（或构建好的 wheel）、Python 3.10+ 解释器、以及别的什么都不需要。不带模型权重、不连包索引、没有遥测端点。</p>
 <pre><code>python -m pip wheel . --no-deps -w dist/
 # 把 dist/inkblade-0.2.0-py3-none-any.whl 带过边界
 python -m pip install --no-index --find-links dist/ inkblade</code></pre>
@@ -120,17 +125,22 @@ python -m pip install --no-index --find-links dist/ inkblade</code></pre>
 ├── consent/              签署记录，每个授权窗口一份
 ├── assets.json           增量资产表
 ├── inventory.json        用于 CVE 适用性判断的软件清单
-├── evidence/&lt;run&gt;/       context.jsonl.gz、evidence.db、steps/*.tar.gz
+├── evidence/&lt;workspace&gt;/
+│   ├── audit.jsonl       工作区审计流水
+│   ├── llm_pool.json     可选模型池：端点、健康、当日用量
+│   ├── autonomy/         L3 预授权与决策 trace（需显式开启）
+│   └── &lt;run&gt;/            context.jsonl.gz、evidence.db、steps/*.tar.gz
 ├── reports/&lt;run&gt;/        渗透与修复报告
 └── rules/&lt;run&gt;/          生成的规则包与重放矩阵</code></pre>
-<p><code>--home</code> 指向根目录；多数命令也接受 <code>--workspace</code>，方便显式传参的脚本。除了你主动要求的 <code>--temp</code>， 不会往这棵树之外写任何东西。</p>
+<p><code>--home</code> 指向根目录；多数命令也接受 <code>--workspace</code>，方便显式传参的脚本。除了你主动要求的 <code>--temp</code>，不会往这棵树之外写任何东西。</p>
 <h3 id="环境变量">环境变量</h3>
-<table><thead><tr><th>---</th><th>---</th></tr></thead><tbody><tr><td><code>INKBLADE_DATA</code></td><td>部署时覆盖数据根目录。</td></tr><tr><td><code>INKBLADE_TOKEN</code></td><td>本地控制台的 API token（可选）。</td></tr><tr><td><code>INKBLADE_REPORT_KEY</code></td><td>报告包加密密钥（可选）。</td></tr><tr><td><code>INKBLADE_LLM_BASE_URL</code>、<code>INKBLADE_LLM_API_KEY</code>、<code>INKBLADE_LLM_MODEL</code></td><td>仅在开启 LLM 池时读取，默认关闭。</td></tr><tr><td><code>INKBLADE_SANDBOX_*</code></td><td>沙箱探测的 CPU、内存与网络限制。</td></tr><tr><td><code>PYTHONIOENCODING=utf-8</code></td><td>Windows 旧代码页控制台。</td></tr></tbody></table>
+<table><thead><tr><th>变量</th><th>用途</th></tr></thead><tbody><tr><td><code>INKBLADE_DATA</code></td><td>部署时覆盖数据根目录。</td></tr><tr><td><code>INKBLADE_TOKEN</code></td><td>本地控制台的 API token（可选）。</td></tr><tr><td><code>INKBLADE_REPORT_KEY</code></td><td>报告包加密密钥（可选）。</td></tr><tr><td><code>INKBLADE_LLM_POOL</code></td><td>设为 <code>1</code> 打开工作区模型池；默认关闭。</td></tr><tr><td><code>INKBLADE_LLM_BASE_URL</code>、<code>INKBLADE_LLM_API_KEY</code>、<code>INKBLADE_LLM_MODEL</code></td><td>单端点路径，explorer 与 L3 预检会读。不设 base URL 就不调用。</td></tr><tr><td><code>INKBLADE_SANDBOX_*</code></td><td>沙箱探测的 CPU、内存与网络限制。</td></tr><tr><td><code>PYTHONIOENCODING=utf-8</code></td><td>Windows 旧代码页控制台。</td></tr></tbody></table>
+<p>模型池是可选项，出厂关闭。用 <code>inkblade llm-pool add</code> 配置，或手改 <code>evidence/&lt;workspace&gt;/llm_pool.json</code>；key 放在环境变量里，由 <code>api_key_env</code> 引用，不要进仓库。没有端点时规划器按规则运行。字段、配额、L3 前置条件与数据边界见 <a href="AGENT-LLM.html"><code>AGENT-LLM.md</code></a>。</p>
 <h3 id="指向集群之前">指向集群之前</h3>
 <ul><li>读仓库根目录的安全政策（<code>SECURITY.md</code>），以及本目录里的边界说明（<code>FAQ.md</code> 的“边界”一节）。</li><li>先跑 <code>pilot</code>，读它产出的审批清单。如果有让你意外的东西，停下。</li><li>确认授权记录覆盖了即将触碰的资产。工具会检查，你也该检查。</li><li>在第一次 run 之前决定证据放哪，而不是之后。</li></ul>
 </div></main>
 <footer><div class="wrap">
-  InkBlade 0.2.0 · Apache-2.0 · authorized testing only · no telemetry, no external assets.
+  InkBlade 0.2.0 preview · Apache-2.0 · authorized testing only · no telemetry, no external assets.
 </div></footer>
 </body>
 </html>

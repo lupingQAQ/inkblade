@@ -9,10 +9,9 @@
 ### Download
 
 There is no binary to fetch and no package index entry to trust yet. The supported way to get
-InkBlade today is a git checkout: clone the repository (or unpack a release archive), then
-install from that directory. Publishing a wheel and a container image is wired into the release
-workflow, but nothing is announced until the first tagged release exists — when it does, this
-page will say so, with the version and the checksum.
+InkBlade today is a git checkout: clone the repository (or unpack a release archive), then install
+from that directory. A wheel and a container image are built in CI, but neither is announced before
+the first tagged release; when that happens, this page will list the version and the checksum.
 
 That is not modesty. A pre-1.0 security tool should be installed from something you can read.
 
@@ -124,7 +123,11 @@ tooling — or no Helm at all.
 ├── consent/              signed records, one file per engagement window
 ├── assets.json           incremental asset table
 ├── inventory.json        software inventory used for CVE applicability
-├── evidence/<run>/       context.jsonl.gz, evidence.db, steps/*.tar.gz
+├── evidence/<workspace>/
+│   ├── audit.jsonl       workspace audit trail
+│   ├── llm_pool.json     optional model pool: endpoints, health, daily usage
+│   ├── autonomy/         L3 grant and decision trace (opt-in)
+│   └── <run>/            context.jsonl.gz, evidence.db, steps/*.tar.gz
 ├── reports/<run>/        pentest and remediation output
 └── rules/<run>/          generated rule packs and replay matrix
 ```
@@ -139,9 +142,15 @@ scripts that pass it explicitly. Nothing is written outside this tree.
 | `INKBLADE_DATA` | Overrides the data root when a deployment sets one. |
 | `INKBLADE_TOKEN` | API token for the local console (optional). |
 | `INKBLADE_REPORT_KEY` | Key used to encrypt report bundles (optional). |
-| `INKBLADE_LLM_BASE_URL`, `INKBLADE_LLM_API_KEY`, `INKBLADE_LLM_MODEL` | Only read when the LLM pool is enabled; off by default. |
+| `INKBLADE_LLM_POOL` | Set to `1` to switch the workspace model pool on; off by default. |
+| `INKBLADE_LLM_BASE_URL`, `INKBLADE_LLM_API_KEY`, `INKBLADE_LLM_MODEL` | Single-endpoint path read by the explorer and the L3 preflight. No base URL, no calls. |
 | `INKBLADE_SANDBOX_*` | CPU, memory and network limits for sandboxed probes. |
 | `PYTHONIOENCODING=utf-8` | Windows consoles with a legacy code page. |
+
+The model pool is optional and ships disabled. Configure it with `inkblade llm-pool add`, or edit
+`evidence/<workspace>/llm_pool.json`; keys belong in an environment variable referenced by
+`api_key_env`, not in the repository. Without an endpoint the planner runs on rules. Fields, quotas,
+L3 preconditions and the data boundary are in [`AGENT-LLM.md`](AGENT-LLM.md).
 
 ### Before you point it at a cluster
 
@@ -266,7 +275,11 @@ python -m pip install --no-index --find-links dist/ inkblade
 ├── consent/              签署记录，每个授权窗口一份
 ├── assets.json           增量资产表
 ├── inventory.json        用于 CVE 适用性判断的软件清单
-├── evidence/<run>/       context.jsonl.gz、evidence.db、steps/*.tar.gz
+├── evidence/<workspace>/
+│   ├── audit.jsonl       工作区审计流水
+│   ├── llm_pool.json     可选模型池：端点、健康、当日用量
+│   ├── autonomy/         L3 预授权与决策 trace（需显式开启）
+│   └── <run>/            context.jsonl.gz、evidence.db、steps/*.tar.gz
 ├── reports/<run>/        渗透与修复报告
 └── rules/<run>/          生成的规则包与重放矩阵
 ```
@@ -281,9 +294,14 @@ python -m pip install --no-index --find-links dist/ inkblade
 | `INKBLADE_DATA` | 部署时覆盖数据根目录。 |
 | `INKBLADE_TOKEN` | 本地控制台的 API token（可选）。 |
 | `INKBLADE_REPORT_KEY` | 报告包加密密钥（可选）。 |
-| `INKBLADE_LLM_BASE_URL`、`INKBLADE_LLM_API_KEY`、`INKBLADE_LLM_MODEL` | 仅在开启 LLM 池时读取，默认关闭。 |
+| `INKBLADE_LLM_POOL` | 设为 `1` 打开工作区模型池；默认关闭。 |
+| `INKBLADE_LLM_BASE_URL`、`INKBLADE_LLM_API_KEY`、`INKBLADE_LLM_MODEL` | 单端点路径，explorer 与 L3 预检会读。不设 base URL 就不调用。 |
 | `INKBLADE_SANDBOX_*` | 沙箱探测的 CPU、内存与网络限制。 |
 | `PYTHONIOENCODING=utf-8` | Windows 旧代码页控制台。 |
+
+模型池是可选项，出厂关闭。用 `inkblade llm-pool add` 配置，或手改
+`evidence/<workspace>/llm_pool.json`；key 放在环境变量里，由 `api_key_env` 引用，不要进仓库。没有端点时
+规划器按规则运行。字段、配额、L3 前置条件与数据边界见 [`AGENT-LLM.md`](AGENT-LLM.md)。
 
 ### 指向集群之前
 

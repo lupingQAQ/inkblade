@@ -8,8 +8,8 @@
 </head>
 <body>
 <header><div class="wrap">
-  <div class="brand"><b>InkBlade</b><span>ML cluster penetration testing platform · v0.2.0</span></div>
-  <nav class="top"><a href="index.html">Home</a><a href="INSTALL.html">Install</a><a href="USAGE.html">Usage</a><a href="FEATURES.html">Features</a><a href="WORKFLOW.html">Workflow</a><a href="MODULES.html">Modules</a><a href="ARCHITECTURE.html">Architecture</a><a href="VULNERABILITY-COVERAGE.html">Vulnerability coverage</a><a href="PILOT-KIT.html">Pilot kit</a><a href="PLUGIN-SDK.html">Plugin SDK</a><a href="FAQ.html">FAQ</a><a href="VERSIONING.html">Versioning</a></nav>
+  <div class="brand"><b>InkBlade</b><span>ML cluster penetration testing platform · v0.2.0 preview</span></div>
+  <nav class="top"><a href="index.html">Home</a><a href="INSTALL.html">Install</a><a href="USAGE.html">Usage</a><a href="FEATURES.html">Features</a><a href="WORKFLOW.html">Workflow</a><a href="MODULES.html">Modules</a><a href="ARCHITECTURE.html">Architecture</a><a href="AGENT-LLM.html">Agent &amp; LLM</a><a href="VULNERABILITY-COVERAGE.html">Vulnerability coverage</a><a href="PILOT-KIT.html">Pilot kit</a><a href="PLUGIN-SDK.html">Plugin SDK</a><a href="FAQ.html">FAQ</a><a href="VERSIONING.html">Versioning</a></nav>
 </div></header>
 <main><div class="wrap">
 <h1 id="faq-常见问题">FAQ / 常见问题</h1>
@@ -19,7 +19,14 @@
 <h3 id="do-i-need-a-cluster-to-try-it">Do I need a cluster to try it?</h3>
 <p>No. <code>doctor</code> and <code>pilot --dry-run</code> run entirely offline. The dry run writes an empty profile, a plan and an approval list, so you can see the shape of the deliverable before you ask anyone for access. <code>ui</code> serves the console on loopback.</p>
 <h3 id="does-it-need-an-api-key-an-account-or-a-licence-server">Does it need an API key, an account or a licence server?</h3>
-<p>No. There is no account system beyond the local <code>users.json</code>, no licence check, and no outbound telemetry. Optional integrations — SIEM, ITSM, the LLM pool — stay off until you configure them.</p>
+<p>No. There is no account system beyond the local <code>users.json</code>, no licence check, and no outbound telemetry. Optional integrations — SIEM, ITSM, the LLM pool — stay off until you configure them. The scan path never needs a model key.</p>
+<h3 id="does-it-need-an-llm">Does it need an LLM?</h3>
+<p>No. Recon, module runs, chains, evidence, exports and report bodies are deterministic, and the runtime is the Python standard library. A model is optional and off by default. When attached, it only ranks the candidate modules the rule engine already produced, or runs inside the L3 loop. With no endpoint the planner falls back to fixed rule order and records the downgrade as <code>mode: rules</code>.</p>
+<p>One exception is deliberate: <code>explore autonomy --llm</code> refuses at preflight when no endpoint exists. A rehearsal should not pass green while the model was never contacted.</p>
+<h3 id="what-data-can-reach-a-model">What data can reach a model?</h3>
+<p>Prompts can carry candidate module keys, product names, asset counts, eligible chain ids, the RoE level and the blackboard summaries a lead pinned: finding title, severity, evidence anchor, asset key, product and address. The narrative report sends counts. Credentials, service-account tokens, request bodies, evidence archives and report text stay local. Audit rows store endpoint, model, token count and latency, not prompt text. Point it at a local or approved endpoint; the rest is in <a href="AGENT-LLM.html">Agent &amp; LLM</a>.</p>
+<h3 id="can-it-run-on-its-own">Can it run on its own?</h3>
+<p>Only under L3, and only after a lead pre-authorizes it. The consent level must be full-impact demo, the grant carries a token with a TTL that can be revoked, the module allowlist must be non-empty, and four budget caps must be positive. At run time the guard stops on a scope miss, an unlisted module, an unauthorized write, a budget overrun or two consecutive failures. Anything less is propose-and-wait. See <a href="AGENT-LLM.html">Agent &amp; LLM</a>.</p>
 <h3 id="why-only-the-python-standard-library">Why only the Python standard library?</h3>
 <p>Because a security tool that needs a compiler and forty dependencies is hard to run inside a bank, and harder to audit. Standard library means <code>pip install</code> is optional, the container is small, and you can read exactly what executes.</p>
 <p>The trade-off is real: no numpy, no async framework, no third-party parser. Where that hurt, we wrote the small thing ourselves and tested it.</p>
@@ -50,22 +57,29 @@
 <hr>
 <h2 id="中文">中文</h2>
 <h3 id="没有集群能试吗">没有集群能试吗？</h3>
-<p>能。<code>doctor</code> 与 <code>pilot --dry-run</code> 全部离线。离线演练会写出空画像、计划和审批清单， 你可以在向任何人申请权限之前，先把交付物的形状看一遍。<code>ui</code> 只在回环地址上提供控制台。</p>
+<p>能。<code>doctor</code> 与 <code>pilot --dry-run</code> 全部离线。离线演练会写出空画像、计划和审批清单，你可以在向任何人申请权限之前，先把交付物的形状看一遍。<code>ui</code> 只在回环地址上提供控制台。</p>
 <h3 id="需要-api-key账号或授权服务器吗">需要 API key、账号或授权服务器吗？</h3>
-<p>都不需要。除了本地的 <code>users.json</code>，没有账号体系，没有许可证校验，也没有外发遥测。SIEM、ITSM、LLM 池这些 可选集成，你不配置就一直关着。</p>
+<p>都不需要。除了本地的 <code>users.json</code>，没有账号体系，没有许可证校验，也没有外发遥测。SIEM、ITSM、LLM 池这些可选集成，你不配置就一直关着。扫描路径本身不需要模型 key。</p>
+<h3 id="需要-llm-吗">需要 LLM 吗？</h3>
+<p>不需要。侦察、模块执行、链、证据、导出与报告正文都是确定性执行，运行时只用 Python 标准库。模型是可选项，默认关闭。接上以后，它只给规则引擎已经产出的候选排序，或者在 L3 循环里工作。没有端点时，规划器回到固定规则顺序，并把降级记成 <code>mode: rules</code>。</p>
+<p>有一个例外是故意的：<code>explore autonomy --llm</code> 在没有端点时于预检阶段直接拒绝。演练不该在模型从未被调用的情况下显示通过。</p>
+<h3 id="哪些数据可能发给模型">哪些数据可能发给模型？</h3>
+<p>提示词里可能有候选模块 key、产品名、资产数量、成立的链 id、RoE 级别，以及 lead 固定到黑板的摘要：发现标题、严重度、证据锚点、资产 key、产品与地址。叙述型报告只发计数。凭据、ServiceAccount 令牌、请求正文、证据归档与报告正文留在本地。审计行只记端点、模型、token 数与延时，不记提示词。端点用本地的，或安全团队批准过的；细节见 <a href="AGENT-LLM.html">Agent 与 LLM</a>。</p>
+<h3 id="它能自己跑吗">它能自己跑吗？</h3>
+<p>只有 L3 可以，而且必须先由 lead 预授权。授权级别要是「全影响演示」，grant 里带一个有 TTL、可撤销的 token，模块白名单非空，四项预算都为正。运行时护栏在范围不符、模块不在白名单、未授权写、预算越顶、连续两次失败时都会停。除此之外都是“提议并等待”。细节见 <a href="AGENT-LLM.html">Agent 与 LLM</a>。</p>
 <h3 id="为什么只用-python-标准库">为什么只用 Python 标准库？</h3>
-<p>因为一个需要编译器和四十个依赖的安全工具，在银行里很难跑起来，更难审计。只用标准库意味着 <code>pip install</code> 是可选的、 镜像很小，而且你能读清楚到底执行了什么。</p>
+<p>因为一个需要编译器和四十个依赖的安全工具，在银行里很难跑起来，更难审计。只用标准库意味着 <code>pip install</code> 是可选的、镜像很小，而且你能读清楚到底执行了什么。</p>
 <p>代价是真实的：没有 numpy、没有异步框架、没有第三方解析器。疼的地方，就自己写小实现，然后测它。</p>
 <h3 id="生产可用吗">生产可用吗？</h3>
-<p>不可用。pre-1.0。接口会在次版本间变，没有 HA 方案、没有厂商 SLA、没有认证。它有证据、有闸门、有一份写明白的 缺口清单。拿它做试点和项目可以；别把它塞进受监管的生产路径然后当没事。</p>
+<p>不可用。pre-1.0。接口会在次版本间变，没有 HA 方案、没有厂商 SLA、没有认证。它有证据、有闸门、有一份写明白的缺口清单。拿它做试点和项目可以；别把它塞进受监管的生产路径然后当没事。</p>
 <h3 id="仅限授权测试具体是什么意思">“仅限授权测试”具体是什么意思？</h3>
-<p>意思是：没有写明范围、级别、时间窗的授权记录，工具就不跑。这是技术控制，不是建议。手上没有书面授权时， 正确动作是去拿授权，而不是找一个跳过闸门的开关——没有这个开关。</p>
+<p>意思是：没有写明范围、级别、时间窗的授权记录，工具就不跑。这是技术控制，不是建议。手上没有书面授权时，正确动作是去拿授权，而不是找一个跳过闸门的开关——没有这个开关。</p>
 <h3 id="覆盖表怎么算">覆盖表怎么算？</h3>
-<p>两个条件：在上游固定版本上动态复现成功，且查新没有找到匹配的公开 advisory。纯静态命中不进表。 当前数字：24 个组件、41 条独立原语，已合并同一 sink 的变体。</p>
+<p>两个条件：在上游固定版本上动态复现成功，且查新没有找到匹配的公开 advisory。纯静态命中不进表。当前数字：24 个组件、41 条独立原语，已合并同一 sink 的变体。</p>
 <h3 id="公开的覆盖表里为什么没有可执行利用代码">公开的覆盖表里为什么没有可执行利用代码？</h3>
-<p>因为版本号加漏洞类别，足够防守方判断暴露面；利用代码不够。表里只有组件、类别、受影响版本和验证形态。 代码、请求内容、根因位置不进入公开仓库。</p>
+<p>因为版本号加漏洞类别，足够防守方判断暴露面；利用代码不够。表里只有组件、类别、受影响版本和验证形态。代码、请求内容、根因位置不进入公开仓库。</p>
 <h3 id="我能自己验证这些说法吗">我能自己验证这些说法吗？</h3>
-<p>大部分可以。站上的数字来自生成的文档和你能跑的命令：覆盖率用 <code>surfaces</code>，重放覆盖用 <code>rules validate</code>，证据用 <code>report</code>，行为用测试套件。覆盖表由工具自带的清单生成，行数可复算。 外部无法验证的只有 advisory 的处理过程。</p>
+<p>大部分可以。站上的数字来自生成的文档和你能跑的命令：覆盖率用 <code>surfaces</code>，重放覆盖用 <code>rules validate</code>，证据用 <code>report</code>，行为用测试套件。覆盖表由工具自带的清单生成，行数可复算。外部无法验证的只有 advisory 的处理过程。</p>
 <h3 id="windows-和-macos-能用吗">Windows 和 macOS 能用吗？</h3>
 <p>控制端可以。需要 Unix socket 或 Linux 专用工具的模块会被标记并在其他平台上跳过，而不是跑到一半失败。 CI 覆盖 Windows 与 Linux；macOS 是受支持的控制端，但还不是 CI 目标。</p>
 <h3 id="能离线部署吗">能离线部署吗？</h3>
@@ -73,16 +87,16 @@
 <h3 id="可以商用吗可以-fork-吗">可以商用吗？可以 fork 吗？</h3>
 <p>Apache-2.0 两个都允许。保留声明，包括 <code>NOTICE</code>。许可证不授予商标权，所以 fork 别叫 InkBlade。</p>
 <h3 id="inkblade-自身有漏洞怎么报">InkBlade 自身有漏洞怎么报？</h3>
-<p>走托管平台的私密漏洞报告通道，协调披露目标 90 天。别开公开 issue 贴利用细节；实在没有私密通道时， 开一个只写“我需要一个私密联系方式”的最小 issue 即可。</p>
+<p>走托管平台的私密漏洞报告通道，协调披露目标 90 天。别开公开 issue 贴利用细节；实在没有私密通道时，开一个只写“我需要一个私密联系方式”的最小 issue 即可。</p>
 <h3 id="怎么加模块">怎么加模块？</h3>
 <p><code>inkblade sdk new</code> 生成骨架，<code>sdk lint</code>、<code>sdk validate</code> 校验，<code>sdk trust</code> 记录指纹。向上游提交需要 manifest、 dry-run 路径和测试。只能对着真实集群跑的模块，请附 fixture，否则 CI 没法验证。</p>
 <h3 id="噪音大吗">噪音大吗？</h3>
-<p>看模块。只读枚举天生安静；主动探测和利用验证会产生流量与日志。报告把“观测到”和“推断出”分开， 每条发现都有证据锚点，审阅者可以把站不住的删掉。误报会减少，不会消失。</p>
+<p>看模块。只读枚举天生安静；主动探测和利用验证会产生流量与日志。报告把“观测到”和“推断出”分开，每条发现都有证据锚点，审阅者可以把站不住的删掉。误报会减少，不会消失。</p>
 <h3 id="为什么隔离了-11-个模块">为什么隔离了 11 个模块？</h3>
-<p>它们需要的部署面，六个参考画像里都没有——比如 Agent 原生控制面。默认开启它们，只会用永远不适用的模块把覆盖率撑好看。 它们留在树里，给确实有这些部署面的客户用，但不进覆盖率分母。</p>
+<p>它们需要的部署面，六个参考画像里都没有——比如 Agent 原生控制面。默认开启它们，只会用永远不适用的模块把覆盖率撑好看。它们留在树里，给确实有这些部署面的客户用，但不进覆盖率分母。</p>
 </div></main>
 <footer><div class="wrap">
-  InkBlade 0.2.0 · Apache-2.0 · authorized testing only · no telemetry, no external assets.
+  InkBlade 0.2.0 preview · Apache-2.0 · authorized testing only · no telemetry, no external assets.
 </div></footer>
 </body>
 </html>

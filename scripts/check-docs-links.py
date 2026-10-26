@@ -29,10 +29,11 @@ PUBLIC_FILES = [
     f"docs/{name}"
     for name in (
         "INSTALL.html", "USAGE.html", "FEATURES.html", "WORKFLOW.html",
-        "MODULES.html", "ARCHITECTURE.html", "VULNERABILITY-COVERAGE.html",
+        "MODULES.html", "ARCHITECTURE.html", "AGENT-LLM.html",
+        "VULNERABILITY-COVERAGE.html",
         "PILOT-KIT.html", "PLUGIN-SDK.html", "FAQ.html", "VERSIONING.html",
         "README-SITE.md", "INSTALL.md", "USAGE.md", "FEATURES.md",
-        "WORKFLOW.md", "MODULES.md", "ARCHITECTURE.md",
+        "WORKFLOW.md", "MODULES.md", "ARCHITECTURE.md", "AGENT-LLM.md",
         "VULNERABILITY-COVERAGE.md", "PILOT-KIT.md", "PLUGIN-SDK.md",
         "FAQ.md", "VERSIONING.md",
     )

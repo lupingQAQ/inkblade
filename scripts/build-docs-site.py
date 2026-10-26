@@ -25,6 +25,7 @@ PAGES = [
     ("WORKFLOW.md", "Workflow", "流程"),
     ("MODULES.md", "Modules", "模块"),
     ("ARCHITECTURE.md", "Architecture", "架构"),
+    ("AGENT-LLM.md", "Agent & LLM", "Agent 与 LLM"),
     ("VULNERABILITY-COVERAGE.md", "Vulnerability coverage", "漏洞覆盖"),
     ("PILOT-KIT.md", "Pilot kit", "试点工具包"),
     ("PLUGIN-SDK.md", "Plugin SDK", "插件 SDK"),
@@ -43,6 +44,17 @@ def slug(text: str) -> str:
     text = re.sub(r"`", "", text)
     text = re.sub(r"[^\w\u4e00-\u9fff -]", "", text).strip().lower()
     return re.sub(r"\s+", "-", text) or "section"
+
+
+def join_lines(parts: list[str]) -> str:
+    """Join wrapped source lines. CJK text keeps no space at the break."""
+    cjk = re.compile(r"[\u3000-\u303f\u4e00-\u9fff\uff00-\uffef]")
+    out = ""
+    for part in parts:
+        if out and not (cjk.match(out[-1]) and cjk.match(part[:1])):
+            out += " "
+        out += part
+    return out
 
 
 def inline(text: str) -> str:
@@ -91,7 +103,7 @@ def render_markdown(text: str) -> str:
                 rows.append(lines[i])
                 i += 1
             cells = [[c.strip() for c in r.strip().strip("|").split("|")] for r in rows]
-            head, body = cells[1], cells[2:]
+            head, body = cells[0], cells[2:]
             t = ["<table><thead><tr>"]
             t += [f"<th>{inline(c)}</th>" for c in head]
             t.append("</tr></thead><tbody>")
@@ -119,7 +131,7 @@ def render_markdown(text: str) -> str:
             while i < len(lines) and lines[i].startswith(">"):
                 buf.append(lines[i].lstrip("> ").strip())
                 i += 1
-            out.append("<blockquote>" + inline(" ".join(buf)) + "</blockquote>")
+            out.append("<blockquote>" + inline(join_lines(buf)) + "</blockquote>")
             continue
         if line.strip() in ("---", "***"):
             out.append("<hr>")
@@ -135,7 +147,7 @@ def render_markdown(text: str) -> str:
         ):
             buf.append(lines[i].strip())
             i += 1
-        out.append("<p>" + inline(" ".join(buf)) + "</p>")
+        out.append("<p>" + inline(join_lines(buf)) + "</p>")
     return "\n".join(out)
 
 
@@ -190,7 +202,7 @@ footer { border-top: 1px solid var(--edge); color: var(--muted); font-size: 13px
 
 
 def page(title: str, body: str, *, home: bool = False) -> str:
-    links = "".join(f'<a href="{md[:-3]}.html">{en}</a>' for md, en, _ in PAGES)
+    links = "".join(f'<a href="{md[:-3]}.html">{html.escape(en)}</a>' for md, en, _ in PAGES)
     prefix = "" if home else ""
     return f"""<!doctype html>
 <html lang="en">
@@ -202,14 +214,14 @@ def page(title: str, body: str, *, home: bool = False) -> str:
 </head>
 <body>
 <header><div class="wrap">
-  <div class="brand"><b>InkBlade</b><span>ML cluster penetration testing platform · v0.2.0</span></div>
+  <div class="brand"><b>InkBlade</b><span>ML cluster penetration testing platform · v0.2.0 preview</span></div>
   <nav class="top"><a href="index.html">Home</a>{links}</nav>
 </div></header>
 <main><div class="wrap">
 {body}
 </div></main>
 <footer><div class="wrap">
-  InkBlade 0.2.0 · Apache-2.0 · authorized testing only · no telemetry, no external assets.
+  InkBlade 0.2.0 preview · Apache-2.0 · authorized testing only · no telemetry, no external assets.
 </div></footer>
 </body>
 </html>
@@ -217,10 +229,12 @@ def page(title: str, body: str, *, home: bool = False) -> str:
 
 
 INDEX = """<section class="hero">
-<h1>InkBlade <span class="badge">v0.2.0</span></h1>
-<p><strong>Authorized penetration testing for Kubernetes ML training and inference clusters.</strong>
-Consent pinning, technical-level gates, a backup gate for write modules and per-action auditing are
-enforced in code. Without a signed record the CLI and the HTTP API both refuse to run.</p>
+<h1>InkBlade <span class="badge">v0.2.0 preview</span></h1>
+<p><strong>Authorized pentesting for Kubernetes ML training and inference clusters.</strong>
+Consent pinning, level gates, a backup gate for write modules and per-action auditing are enforced
+in code. Without a signed record the CLI and the HTTP API refuse to run.</p>
+<p>Preview build: scan, evidence and report paths are usable for pilots. The in-pod collector is
+moving to the static Rust probe; Python stays the reference until that closes.</p>
 </section>
 
 <section>
@@ -229,50 +243,60 @@ enforced in code. Without a signed record the CLI and the HTTP API both refuse t
 python -m inkblade pilot --dry-run   # offline rehearsal: profile + plan, no cluster contact
 python -m inkblade ui                # local console on 127.0.0.1:8765
 python -m inkblade exploit --list    # weapon packs and their deployment requirement</code></pre>
-<p>With a cluster you are allowed to read: <code>inkblade pilot --kubeconfig ~/.kube/config</code>.
-Execution of any module needs a signed scope first — <code>inkblade quickstart</code> walks through it.</p>
+<p>To read a cluster you are allowed to test, run
+<code>inkblade pilot --kubeconfig ~/.kube/config</code>. Running a module needs a signed scope first;
+<code>inkblade quickstart</code> writes one.</p>
 </section>
 
 <section>
 <h2>What it covers</h2>
 <div class="grid">
-  <div class="card"><h3>286 modules, 29 chains</h3><p>Recon, lateral movement, network architecture,
-  privilege chains, core code paths, exfiltration, hybrid cloud, intelligence.</p></div>
-  <div class="card"><h3>Three evidence layers</h3><p>Context journal, SQLite audit tables and a
-  per-step archive with a SHA-256 manifest. Report anchors are step hashes.</p></div>
-  <div class="card"><h3>Bilingual reports</h3><p>PTES-style pentest narrative plus a remediation
-  checklist, generated from the same evidence, in Chinese and English.</p></div>
-  <div class="card"><h3>Vulnerability coverage</h3><p>41 verified primitives across 24 components,
-  listed by component, class and affected version — no payloads, no target lists.</p></div>
+  <div class="card"><h3>286 modules, 29 chains</h3><p>Recon, lateral movement, network, privilege,
+  code paths, exfiltration, hybrid cloud.</p></div>
+  <div class="card"><h3>Three evidence layers</h3><p>Context journal, SQLite audit tables, per-step
+  archive with a SHA-256 manifest.</p></div>
+  <div class="card"><h3>Bilingual reports</h3><p>PTES narrative and remediation checklist from one
+  evidence tree.</p></div>
+  <div class="card"><h3>Vulnerability coverage</h3><p>41 primitives, 24 components, affected
+  versions; no payloads.</p></div>
 </div>
+</section>
+
+<section>
+<h2>Agent &amp; LLM (optional)</h2>
+<p>Scanning, exploitation, evidence and reporting are deterministic and need no model. A model can
+rank candidate modules or run inside L3. Both are off by default; with no endpoint the planner keeps
+rule order and records the downgrade. L3 needs a signed full-impact RoE, a revocable lead token, an
+allowlist and four budget caps. Prompts can carry evidence summaries; the page lists what is sent and
+what stays local. <a href="AGENT-LLM.html">Configuration, data boundary, failure modes</a>.</p>
 </section>
 
 <section>
 <h2>Documentation</h2>
 <table><thead><tr><th>Page</th><th>What is in it</th></tr></thead><tbody>
-<tr><td><a href="INSTALL.html">Install</a></td><td>Wheel, checkout, container, Helm, air-gapped.</td></tr>
-<tr><td><a href="USAGE.html">Usage</a></td><td>Command reference, workspace layout, troubleshooting.</td></tr>
-<tr><td><a href="FEATURES.html">Features</a></td><td>Capability inventory with verified / simulated / gap states.</td></tr>
-<tr><td><a href="WORKFLOW.html">Workflow</a></td><td>The eleven stages, gate by gate.</td></tr>
-<tr><td><a href="MODULES.html">Modules</a></td><td>Module families, levels, chains, manifest contract.</td></tr>
-<tr><td><a href="ARCHITECTURE.html">Architecture</a></td><td>Seven layers and their responsibilities.</td></tr>
-<tr><td><a href="VULNERABILITY-COVERAGE.html">Vulnerability coverage</a></td><td>Component / class / affected versions / status.</td></tr>
-<tr><td><a href="PILOT-KIT.html">Pilot kit</a></td><td>Read-only pilot, approvals, deliverable set.</td></tr>
-<tr><td><a href="PLUGIN-SDK.html">Plugin SDK</a></td><td>Manifest contract, trust store, scaffolding.</td></tr>
-<tr><td><a href="FAQ.html">FAQ</a></td><td>Short answers, including the uncomfortable ones.</td></tr>
-<tr><td><a href="VERSIONING.html">Versioning</a></td><td>Pre-1.0 policy and deprecation rules.</td></tr>
+<tr><td><a href="INSTALL.html">Install</a></td><td>Wheel, container, Helm, offline.</td></tr>
+<tr><td><a href="USAGE.html">Usage</a></td><td>Commands, workspace, troubleshooting.</td></tr>
+<tr><td><a href="FEATURES.html">Features</a></td><td>Verified, simulated, gap.</td></tr>
+<tr><td><a href="WORKFLOW.html">Workflow</a></td><td>Eleven stages, gate by gate.</td></tr>
+<tr><td><a href="MODULES.html">Modules</a></td><td>Families, levels, chains.</td></tr>
+<tr><td><a href="ARCHITECTURE.html">Architecture</a></td><td>Ten coverage layers, seven runtime layers.</td></tr>
+<tr><td><a href="AGENT-LLM.html">Agent &amp; LLM</a></td><td>Optional pool, L3, data boundary.</td></tr>
+<tr><td><a href="VULNERABILITY-COVERAGE.html">Vulnerability coverage</a></td><td>Components, classes, versions.</td></tr>
+<tr><td><a href="PILOT-KIT.html">Pilot kit</a></td><td>Read-only pilot, deliverables.</td></tr>
+<tr><td><a href="PLUGIN-SDK.html">Plugin SDK</a></td><td>Manifest, trust, scaffolding.</td></tr>
+<tr><td><a href="FAQ.html">FAQ</a></td><td>Short answers.</td></tr>
+<tr><td><a href="VERSIONING.html">Versioning</a></td><td>Pre-1.0 policy.</td></tr>
 </tbody></table>
 </section>
 
 <section>
 <h2>中文</h2>
-<p>InkBlade 是面向 Kubernetes 训练/推理集群的授权渗透测试平台。授权范围、技术级别、写操作备份与逐动作审计
-都在代码里强制执行；没有签署记录时，CLI 与 HTTP API 都会拒绝执行。</p>
-<pre><code>python -m inkblade doctor            # 解释器、写权限、端口、可选依赖
-python -m inkblade pilot --dry-run   # 离线演练：画像 + 计划，不连接集群
-python -m inkblade ui                # 本地控制台 127.0.0.1:8765
-python -m inkblade exploit --list    # 武器包与部署前提</code></pre>
-<p>有可读集群时用 <code>inkblade pilot --kubeconfig</code>；执行任何模块前都需要先签授权范围。</p>
+<p>面向 Kubernetes 训练与推理集群的授权渗透测试。授权范围、技术级别、写操作备份与逐动作审计都在代码里强制执行；没有签署记录时，CLI 与 HTTP API 都拒绝执行。</p>
+<p>扫描、利用、证据与报告不需要 LLM。模型只给候选排序或在 L3 循环里工作，默认关闭；没有端点时回到规则排序，并把降级写进提议。</p>
+<pre><code>python -m inkblade doctor            # 解释器、写权限、端口
+python -m inkblade pilot --dry-run   # 离线演练，不连集群
+python -m inkblade ui                # 本地控制台 127.0.0.1:8765</code></pre>
+<p>有可读集群时用 <code>inkblade pilot --kubeconfig</code>；跑模块前先签授权。</p>
 </section>
 """
 

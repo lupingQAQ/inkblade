@@ -19,20 +19,20 @@ HTML; the HTML is overwritten.
 
 - `index.html` — bilingual landing page with the quick-start commands.
 - One page per guide: install, usage, features, workflow, modules, architecture,
-  vulnerability coverage, pilot kit, plugin SDK, FAQ, versioning.
+  agent/LLM configuration, vulnerability coverage, pilot kit, plugin SDK, FAQ, versioning.
 - `assets/style.css` — the dark theme. No webfonts, no CDN, no analytics.
 - `.nojekyll` — Pages serves the files as-is.
 
 ## Rules
 
-1. **No external references.** No `http://` or `https://` in `href`, `src`, CSS
-   `url()` or `@import`. The site must render with the network unplugged. A link to
-   another project belongs in a code sample or nowhere.
+1. **No external references.** No absolute URL with a network scheme in `href`, `src`, CSS
+   `url()` or `@import`, and none in body text. The site must render with the network unplugged.
+   A link to another project belongs in a code sample or nowhere.
 2. **Relative links only.** `scripts/check-docs-links.py` resolves every relative
    link and fragment against the committed files.
 3. **No internal material.** Screenshots of real clusters, customer names, internal
    paths and unpublished findings never go in this directory.
-4. **Regenerate, then commit.** A stale site fails the `pages` workflow.
+4. **Regenerate, then commit.** A stale site fails the docs check in CI.
 
 ## 中文
 
