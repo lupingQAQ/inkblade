@@ -1,57 +1,61 @@
 {
-  "id": "llamafactory-fsdp2-py-torch-load-any-l517-regex",
-  "source": "mining",
-  "title": "llamafactory: torch-load-any @ v1/plugins/.../fsdp2.py:517",
-  "version": "v0.9.5",
-  "version_ref": {
-    "kind": "git",
-    "repo": "hiyouga/LlamaFactory",
-    "tag": "v0.9.5",
-    "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5"
-  },
-  "install": "pinned source vendored under lab/upstream_verify/upstream/",
-  "root_cause": {
-    "file": "src/llamafactory/v1/plugins/trainer_plugins/distributed/fsdp2.py",
-    "line": 517,
-    "function": "load_checkpoint",
-    "snippet": "state_dict = torch.load(ckpt_file, map_location=\"cpu\")",
-    "source": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/v1/plugins/trainer_plugins/distributed/fsdp2.py",
-    "source_sha256": "8360ab323161eacabefde47e86b9269bd2fb42ca14f5b51676f02d34cc9d8887",
-    "note": "FSDP2 plugin loads full-checkpoint state with torch.load(ckpt_file, map_location='cpu') and no weights_only pin. On torch>=2.6 the weights_only default is True, so the unpickling surface is closed on current stacks; on torch<2.6 the same line is a checkpoint-dir pickle RCE. Recorded as a version-paired trust boundary, not a dynamically reproduced sink on this host (torch 2.14.1/2.5.1 split)."
-  },
-  "preconditions": [
-    "attacker can write an FSDP2 checkpoint file",
-    "victim resumes with torch<2.6 (weights_only defaults False)"
-  ],
-  "steps": [
-    "resolve the pinned tag and file:line",
-    "verify the claimed snippet and source SHA256",
-    "record a static-only verdict (no exploit execution)"
-  ],
-  "expected_evidence": [
-    "static-check.json with source hash and line match"
-  ],
-  "cleanup": "temporary files under evidence/ are rewritten on every run",
-  "status": "static-only",
-  "method": "static-source",
-  "module": null,
-  "python": "reproenv",
-  "advisory": "reports/samples/mining-trainstack/mining-report.json",
-  "marker_text": "TRIDENT-UV-llamafactory-fsdp2-py-torch-load-any-l517-regex",
-  "notes": "FSDP2 plugin loads full-checkpoint state with torch.load(ckpt_file, map_location='cpu') and no weights_only pin. On torch>=2.6 the weights_only default is True, so the unpickling surface is closed on current stacks; on torch<2.6 the same line is a checkpoint-dir pickle RCE. Recorded as a version-paired trust boundary, not a dynamically reproduced sink on this host (torch 2.14.1/2.5.1 split).",
-  "static_evidence_level": "source-line",
-  "static_analysis": "FSDP2 plugin loads full-checkpoint state with torch.load(ckpt_file, map_location='cpu') and no weights_only pin. On torch>=2.6 the weights_only default is True, so the unpickling surface is closed on current stacks; on torch<2.6 the same line is a checkpoint-dir pickle RCE. Recorded as a version-paired trust boundary, not a dynamically reproduced sink on this host (torch 2.14.1/2.5.1 split).",
-  "static_verdict": "torch-version-paired trust boundary; weights_only default True on torch>=2.6 blocks the unpickling on current stacks",
-  "unsupported": {},
-  "mining": {
-    "rule": "torch-load-any",
-    "channel": "regex",
-    "file": "fsdp2.py",
-    "line": 517,
-    "snippet": "state_dict = torch.load(ckpt_file, map_location=\"cpu\")",
-    "original_status": "pending-manual-review",
-    "promoted": false
-  },
-  "schema": "trident-upstream-case-v1",
-  "component": "llamafactory"
+ "id": "llamafactory-fsdp2-py-torch-load-any-l517-regex",
+ "source": "mining",
+ "title": "llamafactory: torch-load-any @ v1/plugins/.../fsdp2.py:517",
+ "version": "v0.9.5",
+ "version_ref": {
+  "kind": "git",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5"
+ },
+ "install": "pinned source vendored under lab/upstream_verify/upstream/",
+ "root_cause": {
+  "file": "src/llamafactory/v1/plugins/trainer_plugins/distributed/fsdp2.py",
+  "line": 517,
+  "function": "load_checkpoint",
+  "snippet": "state_dict = torch.load(ckpt_file, map_location=\"cpu\")",
+  "source": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/v1/plugins/trainer_plugins/distributed/fsdp2.py",
+  "source_sha256": "8360ab323161eacabefde47e86b9269bd2fb42ca14f5b51676f02d34cc9d8887",
+  "note": "FSDP2 plugin loads full-checkpoint state with torch.load(ckpt_file, map_location='cpu') and no weights_only pin. On torch>=2.6 the weights_only default is True, so the unpickling surface is closed on current stacks; on torch<2.6 the same line is a checkpoint-dir pickle RCE. Recorded as a version-paired trust boundary, not a dynamically reproduced sink on this host (torch 2.14.1/2.5.1 split)."
+ },
+ "preconditions": [
+  "attacker can write an FSDP2 checkpoint file",
+  "victim resumes with torch<2.6 (weights_only defaults False)"
+ ],
+ "steps": [
+  "resolve the pinned tag and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "temporary files under evidence/ are rewritten on every run",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-llamafactory-fsdp2-py-torch-load-any-l517-regex",
+ "notes": "FSDP2 plugin loads full-checkpoint state with torch.load(ckpt_file, map_location='cpu') and no weights_only pin. On torch>=2.6 the weights_only default is True, so the unpickling surface is closed on current stacks; on torch<2.6 the same line is a checkpoint-dir pickle RCE. Recorded as a version-paired trust boundary, not a dynamically reproduced sink on this host (torch 2.14.1/2.5.1 split).",
+ "static_evidence_level": "source-line",
+ "static_analysis": "FSDP2 plugin loads full-checkpoint state with torch.load(ckpt_file, map_location='cpu') and no weights_only pin. On torch>=2.6 the weights_only default is True, so the unpickling surface is closed on current stacks; on torch<2.6 the same line is a checkpoint-dir pickle RCE. Recorded as a version-paired trust boundary, not a dynamically reproduced sink on this host (torch 2.14.1/2.5.1 split).",
+ "static_verdict": "torch-version-paired trust boundary; weights_only default True on torch>=2.6 blocks the unpickling on current stacks",
+ "unsupported": {},
+ "mining": {
+  "rule": "torch-load-any",
+  "channel": "regex",
+  "file": "fsdp2.py",
+  "line": 517,
+  "snippet": "state_dict = torch.load(ckpt_file, map_location=\"cpu\")",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "llamafactory",
+ "static_blocker": {
+  "category": "dependency-default-blocks",
+  "reason": "Upstream omits weights_only, but the pinned torch (2.14.1) defaults to weights_only=True, so a reducing payload is refused before any object is constructed. Not exploitable with this dependency pairing."
+ }
 }

@@ -52,5 +52,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "ucxpy"
+ "component": "ucxpy",
+ "static_blocker": {
+  "category": "pattern-false-positive",
+  "reason": "The cloudpickle payload is the local `func` argument passed by the test harness (start_process), not bytes received from the network; the debug server also needs UCX/GPU."
+ }
 }

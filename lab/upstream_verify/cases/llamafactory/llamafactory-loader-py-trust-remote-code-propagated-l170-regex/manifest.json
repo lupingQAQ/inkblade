@@ -53,5 +53,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "llamafactory"
+ "component": "llamafactory",
+ "static_blocker": {
+  "category": "hygiene-not-exploitable",
+  "reason": "trust_remote_code propagation is an explicit operator opt-in; a malicious model repository is required, and the flag's execution primitive is already verified in the transformers cases."
+ }
 }

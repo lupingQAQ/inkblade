@@ -20,8 +20,17 @@ pocs/             PoC templates copied into cases by the builder
 ```
 
 `python` in a manifest is a logical key (`reproenv`, `litellm`, `mlflow3`,
-`mlflow2`, `torch`), resolved by `harness.py`; this keeps host drive paths out
-of the committed tree.
+`mlflow2`, `torch`, `lfa`, `ray280`), resolved by `harness.py`; this keeps host
+drive paths out of the committed tree.  `ray280` is a dedicated cp311
+interpreter under `.envs/` (gitignored) because Ray 2.8.0 has no cp312 wheel;
+its setup and the two host shims (absent `nvidia-smi`/`wmic`, Ray's Windows
+`preexec_fn` bug) are documented in the `CVE-2023-48022` manifest.
+
+Service-level cases use `lab/upstream_verify/servicelib.py` to start/stop the
+real daemon (`RayHead`) and to talk HTTP with an unprivileged client.
+Static-only cases must declare `static_blocker = {category, reason}`; the
+taxonomy is enforced by `tools/verify-exploits.py` and rendered in
+`docs/EXPLOIT-VERIFICATION.md`.
 
 ## Commands
 

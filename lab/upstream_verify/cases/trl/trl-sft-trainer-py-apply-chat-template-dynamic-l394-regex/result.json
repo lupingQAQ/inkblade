@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/trl/trl-sft-trainer-py-apply-chat-template-dynamic-l394-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.082,
- "started_at": "2026-10-25T18:07:15+00:00",
+ "duration_s": 0.128,
+ "started_at": "2026-10-26T09:23:45+00:00",
  "marker": {
   "text": "TRIDENT-UV-trl-sft-trainer-py-apply-chat-template-dynamic-l394-regex",
   "before": "ABSENT",
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-apply-chat-template-dynamic-l394-regex/evidence/log.txt",
-   "sha256": "2a289563bf282f68dca8bc112324f6be9d574cf063e4fb6ab85fe92d1f3ceeb4",
+   "sha256": "7794eb4e6697feed1d3c1a6c1595abfe982bf3f45d01f6404b33d0e7f48d8742",
    "size": 281
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-apply-chat-template-dynamic-l394-regex/evidence/static-check.json",
-   "sha256": "5ba5b9a8a2ad0e3f31acd5db3a3c46ee7b87ca94bc96744395aab9c2e2c34a46",
+   "sha256": "a365a89dd752f9ac108d63f5b6906efa10eed3ae353a1e47427b7aede928ef64",
    "size": 1163
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "99be504b14f76e999bb5aa953fca6b7628cb8f8fc27eb4f67b43eb88fa0d96ab",
+ "manifest_sha256": "fee2f2dcdb8f0a7612d8d48f2bb17c425cf36e665889db32d0caf6712e7ae507",
  "stdout": "{\"status\": \"static-only\", \"case\": \"trl-sft-trainer-py-apply-chat-template-dynamic-l394-regex\"}\n",
  "stderr": "",
  "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."

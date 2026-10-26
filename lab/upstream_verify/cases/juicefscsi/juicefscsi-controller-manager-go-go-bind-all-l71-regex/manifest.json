@@ -52,5 +52,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "juicefscsi"
+ "component": "juicefscsi",
+ "static_blocker": {
+  "category": "host-toolchain-missing",
+  "reason": "Go toolchain and container runtime are absent on this Windows host; the pinned service/binary cannot be built or started, so the sink cannot be driven dynamically. Source-line root cause and pin remain recorded."
+ }
 }

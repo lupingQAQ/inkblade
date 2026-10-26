@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/trl/trl-sft-trainer-py-missing-revision-l310-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.08,
- "started_at": "2026-10-25T18:07:15+00:00",
+ "duration_s": 0.137,
+ "started_at": "2026-10-26T09:23:45+00:00",
  "marker": {
   "text": "TRIDENT-UV-trl-sft-trainer-py-missing-revision-l310-regex",
   "before": "ABSENT",
@@ -47,8 +47,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-missing-revision-l310-regex/evidence/log.txt",
-   "sha256": "c7411c111d5da7e139f6ba25dea338842a0f6b3bea5699dd89f90e25fb822518",
-   "size": 258
+   "sha256": "611e89f84a51aabc75d19158f8e2873c35ab664abd6601e406fa75d6bdbf3a3b",
+   "size": 259
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-missing-revision-l310-regex/evidence/marker.txt",
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-missing-revision-l310-regex/evidence/static-check.json",
-   "sha256": "f28c53383917242677a38338b375ee7ed3a22c99f70a3f085bd34feb8b9c68d3",
+   "sha256": "b6e75c78afd150ec81a208ac9e5590e0b5ee6ee23415f2b271e4b2d01fa2ceb1",
    "size": 1187
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "4fe459dc833e35f73d8006fe8ee79f1bdc3c13a5dc56c3ebd00b1436557ba1ce",
+ "manifest_sha256": "01171b8fd6c1f8112fb46ded31e55d388b424de690ff108e8b094b53ed965baa",
  "stdout": "{\"status\": \"static-only\", \"case\": \"trl-sft-trainer-py-missing-revision-l310-regex\"}\n",
  "stderr": "",
  "notes": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."

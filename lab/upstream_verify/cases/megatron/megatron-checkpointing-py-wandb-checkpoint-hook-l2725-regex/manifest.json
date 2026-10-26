@@ -53,5 +53,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "megatron"
+ "component": "megatron",
+ "static_blocker": {
+  "category": "pattern-false-positive",
+  "reason": "The matched line calls a wandb bookkeeping hook; it is not a sink and takes no attacker-controlled input."
+ }
 }

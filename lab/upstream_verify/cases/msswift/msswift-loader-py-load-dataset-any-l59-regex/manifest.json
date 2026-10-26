@@ -53,5 +53,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "msswift"
+ "component": "msswift",
+ "static_blocker": {
+  "category": "hygiene-not-exploitable",
+  "reason": "load_dataset() is driven by the operator's dataset id/local file argument; no attacker-controlled path reaches it."
+ }
 }

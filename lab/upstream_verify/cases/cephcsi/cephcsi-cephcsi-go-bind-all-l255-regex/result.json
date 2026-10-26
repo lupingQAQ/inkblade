@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/cephcsi/cephcsi-cephcsi-go-bind-all-l255-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.121,
- "started_at": "2026-10-26T05:01:20+00:00",
+ "duration_s": 0.157,
+ "started_at": "2026-10-26T09:23:20+00:00",
  "marker": {
   "text": "TRIDENT-UV-cephcsi-cephcsi-go-bind-all-l255-regex",
   "before": "ABSENT",
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/cephcsi/cephcsi-cephcsi-go-bind-all-l255-regex/evidence/log.txt",
-   "sha256": "44020b72a1d24d4c0011aed63a64ec6da087bb19deb3d681801649f84d6330e0",
+   "sha256": "d18959459672d49f5561426b494617116345c7be89c93307849a80a217a63b33",
    "size": 247
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/cephcsi/cephcsi-cephcsi-go-bind-all-l255-regex/evidence/static-check.json",
-   "sha256": "17b4431e68f254c7bec6afb9982c0039428f1afe1cd62bc636262f6b019adac7",
+   "sha256": "381fa0e768affec3b5dc318fa7a31b243418e6564f2041cea85ab9e310485a74",
    "size": 1269
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "e0a2ac2c3d1a0885553735efc98caed92d5f4419ddf2e64076bd9985f2dd2b38",
+ "manifest_sha256": "45b76e9f0424233b1b098f69f479e107d9e11d6d87edac2199aada4502906b18",
  "stdout": "{\"status\": \"static-only\", \"case\": \"cephcsi-cephcsi-go-bind-all-l255-regex\"}\n",
  "stderr": "",
  "notes": "cephcsi defaults MetricsIP to 0.0.0.0; the same default-mux listener serves the unauthenticated pprof endpoints verified dynamically in cephcsi-httpserver-go-pprof-exposed-l37-regex. This entry pins the bind-all default at cmd/cephcsi.go:255."

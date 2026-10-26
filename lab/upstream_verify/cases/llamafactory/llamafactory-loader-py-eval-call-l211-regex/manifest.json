@@ -53,5 +53,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "llamafactory"
+ "component": "llamafactory",
+ "static_blocker": {
+  "category": "pattern-false-positive",
+  "reason": "The rule matched `<module>.eval()` (torch train/eval mode) or a `def eval` method, not Python's builtin eval; there is no code evaluation."
+ }
 }

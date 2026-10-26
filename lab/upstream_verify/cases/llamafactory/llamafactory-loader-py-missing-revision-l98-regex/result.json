@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-missing-revision-l98-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.086,
- "started_at": "2026-10-25T18:06:57+00:00",
+ "duration_s": 0.148,
+ "started_at": "2026-10-26T09:23:28+00:00",
  "marker": {
   "text": "TRIDENT-UV-llamafactory-loader-py-missing-revision-l98-regex",
   "before": "ABSENT",
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-missing-revision-l98-regex/evidence/log.txt",
-   "sha256": "504211f1c52aab668b159960c37beb9d269de74e478f7b88b0eefc7c58c1f447",
+   "sha256": "3fba755e1913721f9ac802ecc5df47ba1e7c92d83ca1e01ec2fa7e1b95074251",
    "size": 274
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-missing-revision-l98-regex/evidence/static-check.json",
-   "sha256": "cfd354d0ad19a0f5c08a203cccf58c8560038e6b8761cc84addc28b479ac145d",
+   "sha256": "9ea1a5429fff5b11117013fff7cc9a66b70ef5f3aceca439e27231d097a7871f",
    "size": 1134
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "2679adb0ceda02f3bfe6b4340ec7c61b9e16f7842976bc75b45d620c976d5828",
+ "manifest_sha256": "9297df33786af5a6529b986e7d632cd2230ca54b8847bd258c6ea2203d59a642",
  "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-loader-py-missing-revision-l98-regex\"}\n",
  "stderr": "",
  "notes": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."

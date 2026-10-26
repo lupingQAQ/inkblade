@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/megatron/megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.105,
- "started_at": "2026-10-25T18:07:03+00:00",
+ "duration_s": 0.137,
+ "started_at": "2026-10-26T09:23:29+00:00",
  "marker": {
   "text": "TRIDENT-UV-megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex",
   "before": "ABSENT",
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex/evidence/log.txt",
-   "sha256": "999a06e96cef826543524ec41fd0bf59a4c82f90aa9913c4ee8b57d07168385f",
+   "sha256": "0afe21db32ea87af63110118e0495294d34c99e9087281372998b77ba5406a8a",
    "size": 290
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex/evidence/static-check.json",
-   "sha256": "b82628bc9e4a315f5d014e49d14d396a82cd7029924cbd7af6a658689ecb7073",
+   "sha256": "45cef0487122ec5c17e540ea69fbdfb746618b10b073c531db6649432dfb83bb",
    "size": 1150
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "2ab7671f43051536de24c0e0cc2b75ab38d35ad9ed8921269dece02f0faa1560",
+ "manifest_sha256": "3c4cac49b55c0d43d4e414c07e4aa043786e5ab6a7a7baa0ae09dbb449975f11",
  "stdout": "{\"status\": \"static-only\", \"case\": \"megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex\"}\n",
  "stderr": "",
  "notes": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."

@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/trl/trl-sft-trainer-py-load-dataset-any-l527-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.082,
- "started_at": "2026-10-25T18:07:15+00:00",
+ "duration_s": 0.142,
+ "started_at": "2026-10-26T09:23:45+00:00",
  "marker": {
   "text": "TRIDENT-UV-trl-sft-trainer-py-load-dataset-any-l527-regex",
   "before": "ABSENT",
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-load-dataset-any-l527-regex/evidence/log.txt",
-   "sha256": "7e2717d40f231dc3ff678d21c2791f2238ded1e8d00df8a9f80f40642ba1df83",
+   "sha256": "bea93de2ab0fb4ec1b4df98d6d7fbba58c59df7227854f1ad2c0df74e1fb373f",
    "size": 259
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-load-dataset-any-l527-regex/evidence/static-check.json",
-   "sha256": "2060325de977e88ddc46d16fc94057b3a196165bcd45fb5f08b13c6b986339aa",
+   "sha256": "0e815d322e7e0bbe72a2538202c9a69199bd859456ac3f4ada6229da4ffe163e",
    "size": 1198
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "72d7f8b15ccabfbfbbb3ee21a40ff5634f479ec4e4005bb919ec5976ed8a004d",
+ "manifest_sha256": "131d71ca68a44f1f2e9c8507d0c25ad12190b1e7e70fb00e40b8485ef98d3614",
  "stdout": "{\"status\": \"static-only\", \"case\": \"trl-sft-trainer-py-load-dataset-any-l527-regex\"}\n",
  "stderr": "",
  "notes": "Dataset loading is intended functionality; remote dataset trust is a documented boundary."

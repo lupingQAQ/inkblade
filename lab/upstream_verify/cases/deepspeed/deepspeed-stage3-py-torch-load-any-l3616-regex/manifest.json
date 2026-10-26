@@ -53,5 +53,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "deepspeed"
+ "component": "deepspeed",
+ "static_blocker": {
+  "category": "pattern-false-positive",
+  "reason": "Line 3616 is inside the class docstring example; it is never executed."
+ }
 }

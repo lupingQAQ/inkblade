@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-app-py-go-bind-all-l130-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.078,
- "started_at": "2026-10-25T18:06:56+00:00",
+ "duration_s": 0.15,
+ "started_at": "2026-10-26T09:23:25+00:00",
  "marker": {
   "text": "TRIDENT-UV-llamafactory-app-py-go-bind-all-l130-regex",
   "before": "ABSENT",
@@ -47,8 +47,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-app-py-go-bind-all-l130-regex/evidence/log.txt",
-   "sha256": "97c2d391b2ba12e704398dc991e8f5fba040806b0f5f9e34a99054d795c862fe",
-   "size": 260
+   "sha256": "07813a5ee4f9e4e97b033e1f4b88f224be5d76dc2833b6c9563ea61cca72cb0e",
+   "size": 259
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-app-py-go-bind-all-l130-regex/evidence/marker.txt",
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-app-py-go-bind-all-l130-regex/evidence/static-check.json",
-   "sha256": "284e85e219ad62e007a0b77c58a9794e0064ee6ea3b26828064eee1c7bf7c3dc",
+   "sha256": "aa8de157eac653911cab80f0f94b46909b034a5dbee0ab73d24595ae0815deba",
    "size": 1119
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "0f89b5b85a744cf585e6d5ec35675b351113a21a4cb082ea7e1150c2658ebee5",
+ "manifest_sha256": "e08933070818aec37b02ed3172b25bc48e01abca040fa6d6b131386e45d91db2",
  "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-app-py-go-bind-all-l130-regex\"}\n",
  "stderr": "",
  "notes": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution."

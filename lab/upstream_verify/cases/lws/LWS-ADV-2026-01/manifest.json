@@ -41,5 +41,9 @@
  "static_verdict": "not-dynamically-verified",
  "unsupported": {},
  "schema": "trident-upstream-case-v1",
- "component": "lws"
+ "component": "lws",
+ "static_blocker": {
+  "category": "requires-k8s",
+  "reason": "Requires a live Kubernetes API server/kubelet (Linux node, admission plugins, CRDs); no cluster is available in this lab, so the cross-component path cannot be executed end-to-end."
+ }
 }

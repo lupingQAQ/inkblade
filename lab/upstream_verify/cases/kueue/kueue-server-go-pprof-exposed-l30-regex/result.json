@@ -32,8 +32,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.123,
- "started_at": "2026-10-26T05:27:07+00:00",
+ "duration_s": 0.141,
+ "started_at": "2026-10-26T09:23:24+00:00",
  "marker": {
   "text": "TRIDENT-UV-kueue-server-go-pprof-exposed-l30-regex",
   "before": "ABSENT",
@@ -46,7 +46,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/log.txt",
-   "sha256": "0a9082f6ee1d378f0179b75e181736d756539ec537a02a7cd25921235f1834e5",
+   "sha256": "6a022c8b054995280f40fa51acf682793ffd2f6c68c63c19815141a91ab4b65f",
    "size": 247
   },
   {
@@ -56,12 +56,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/static-check.json",
-   "sha256": "c7339aadd593d5c9263619662e89592c2563d1423e960ab755d2620448a56087",
+   "sha256": "29f9dc4b037841790e5b01d943bd6835f08febb656220b6521e0e8cd132f002a",
    "size": 1539
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "2e96db6851aed9f625d636dd06534f0409951888569d6bf75e486ee449acecd1",
+ "manifest_sha256": "618ec62f919534013f5aa873cc8c4187e98e89d7a46030db7d4f55481bfb85d0",
  "stdout": "{\"status\": \"static-only\", \"case\": \"kueue-server-go-pprof-exposed-l30-regex\"}\n",
  "stderr": "",
  "notes": "Kueue kueueviz backend: KUEUEVIZ_AUTH_MODE defaults to 'Disabled' (server.go:49) and main.go:112 only mounts the TokenReview authenticator middleware when the mode equals TokenReview, so a default deployment serves cluster queue/workload routes (and websocket data) without authentication; config/server.go also imports net/http/pprof with a localhost:6060 listener in dev mode. Not run end-to-end: the backend requires a live kubeconfig/apiserver; recorded as a verified-by-source default-auth posture."

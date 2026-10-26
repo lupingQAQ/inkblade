@@ -53,5 +53,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "llamafactory"
+ "component": "llamafactory",
+ "static_blocker": {
+  "category": "exposure-only",
+  "reason": "Default 0.0.0.0 binding is an exposure posture, not an exploit: no authentication bypass, write or code execution is demonstrated."
+ }
 }

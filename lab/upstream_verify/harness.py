@@ -47,6 +47,9 @@ INTERPRETERS = {
     "mlflow2": VERIFY_ROOT / ".envs" / "mlflow281" / "Scripts" / "python.exe",
     "torch": WORKSPACE / "env" / "uv-torch251" / "Scripts" / "python.exe",
     "lfa": WORKSPACE / "env" / "venv-lfa" / "Scripts" / "python.exe",
+    # Ray 2.8.0 is cp311-only; the lab keeps a dedicated interpreter under
+    # .envs (gitignored, rebuilt from the manifest's install notes).
+    "ray280": VERIFY_ROOT / ".envs" / "python311" / "python.exe",
 }
 
 STATUSES = ("verified", "static-only", "unsupported")

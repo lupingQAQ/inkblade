@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l213-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.082,
- "started_at": "2026-10-25T18:07:14+00:00",
+ "duration_s": 0.14,
+ "started_at": "2026-10-26T09:23:43+00:00",
  "marker": {
   "text": "TRIDENT-UV-trl-data-utils-py-apply-chat-template-dynamic-l213-regex",
   "before": "ABSENT",
@@ -47,8 +47,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l213-regex/evidence/log.txt",
-   "sha256": "577287ecce67d4088bde50b7c7e204a56b317344f9a39d345e7ac80440ca2ede",
-   "size": 279
+   "sha256": "457d28dd032a6f61b6bb87cadc1b1a758e33ddbff03cd86846b43e6fdcb25592",
+   "size": 278
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l213-regex/evidence/marker.txt",
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l213-regex/evidence/static-check.json",
-   "sha256": "22728367a9f9aeb6abd19708b46d58c2bd691fb1dd4bfcec170466c1aff12ec4",
+   "sha256": "0ae30a4347266dd38dbd942213a97ea58cb8739d8d1bd87744d3163b26135d5c",
    "size": 1147
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "5fc46ee2ce6f6ef1b024d4a23243adbea2bf8b303a141613725498ca485259c6",
+ "manifest_sha256": "42259644cf63535cef0510d25cef48cfbe2700d4ee6f3b6791b98607939b5998",
  "stdout": "{\"status\": \"static-only\", \"case\": \"trl-data-utils-py-apply-chat-template-dynamic-l213-regex\"}\n",
  "stderr": "",
  "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."

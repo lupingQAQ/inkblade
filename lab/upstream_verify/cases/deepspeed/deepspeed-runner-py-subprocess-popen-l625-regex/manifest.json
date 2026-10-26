@@ -53,5 +53,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "deepspeed"
+ "component": "deepspeed",
+ "static_blocker": {
+  "category": "hygiene-not-exploitable",
+  "reason": "The command and argv come from the local launcher/daemon configuration (operator CLI), not from a tenant/network input; no privilege boundary is crossed."
+ }
 }

@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/msswift/msswift-base-py-apply-chat-template-dynamic-l1283-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.08,
- "started_at": "2026-10-25T18:07:06+00:00",
+ "duration_s": 0.146,
+ "started_at": "2026-10-26T09:23:29+00:00",
  "marker": {
   "text": "TRIDENT-UV-msswift-base-py-apply-chat-template-dynamic-l1283-regex",
   "before": "ABSENT",
@@ -47,8 +47,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/msswift/msswift-base-py-apply-chat-template-dynamic-l1283-regex/evidence/log.txt",
-   "sha256": "9d6a904ec3ecf1e09d938acc33de198339c6a4b6c085684570d4e5ed11633c8c",
-   "size": 280
+   "sha256": "0115ad6cd831b8bdef5d8ea9610b029753f4427b4cc8e3564b7386f5f4f4947a",
+   "size": 281
   },
   {
    "path": "lab/upstream_verify/cases/msswift/msswift-base-py-apply-chat-template-dynamic-l1283-regex/evidence/marker.txt",
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/msswift/msswift-base-py-apply-chat-template-dynamic-l1283-regex/evidence/static-check.json",
-   "sha256": "290b4ca5b0e26e03afb23aeb7c6583417cf4287a2b69f89844636f51c5d4dbae",
+   "sha256": "4f0c4d1d1abe46c6b27e7a715230590ab253187230da8cf475db4f42e70c2187",
    "size": 1153
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "2bbcf4d1e467567023dbbcdf9a4ed16f0f92307a273de720ceb314a082d5d372",
+ "manifest_sha256": "be0f0bebbc72ceb95695738cbb308e58a4ac457367c0a61f9a2c8e4223af9856",
  "stdout": "{\"status\": \"static-only\", \"case\": \"msswift-base-py-apply-chat-template-dynamic-l1283-regex\"}\n",
  "stderr": "",
  "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."

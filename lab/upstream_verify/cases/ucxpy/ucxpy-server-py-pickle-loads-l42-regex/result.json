@@ -32,8 +32,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/ucxpy/ucxpy-server-py-pickle-loads-l42-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.114,
- "started_at": "2026-10-26T05:01:21+00:00",
+ "duration_s": 0.139,
+ "started_at": "2026-10-26T09:23:46+00:00",
  "marker": {
   "text": "TRIDENT-UV-ucxpy-server-py-pickle-loads-l42-regex",
   "before": "ABSENT",
@@ -46,7 +46,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/ucxpy/ucxpy-server-py-pickle-loads-l42-regex/evidence/log.txt",
-   "sha256": "7fdfc937d0bd5793b26f8b4c4553b03426b56f4dbf8832f0d7ccd298f924a35e",
+   "sha256": "e0cb8992372067821bd75ceac5fc383adff223644faee6683d38438ebab66140",
    "size": 245
   },
   {
@@ -56,12 +56,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/ucxpy/ucxpy-server-py-pickle-loads-l42-regex/evidence/static-check.json",
-   "sha256": "6f1992eb37a5df64ba626e018c7e5181eb241182609622577a2aa1268102185a",
+   "sha256": "410d8faf4d261cd779e34c0dde4806b7fc1ef0ade4a5d00af1f0694bf01722b9",
    "size": 1418
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "6fdfb5fd41c5b17e6ff9dc98b77a8c8f1d7693e325354c17a71937be1cffe5d5",
+ "manifest_sha256": "0e7668ceec8f4ec14549c0768bedcf4d74ff0c1cad10de46f6bcdcd4b6fc2dd7",
  "stdout": "{\"status\": \"static-only\", \"case\": \"ucxpy-server-py-pickle-loads-l42-regex\"}\n",
  "stderr": "",
  "notes": "ucx-py debug-tests server deserialises a client-supplied cloudpickle payload (cloudpickle.loads(func)) with no authentication: any peer reaching the debug endpoint gets arbitrary code execution by design of the debug tool. Debug tooling is not the production wheel path, and the server needs CUDA/UCX/distributed stacks that this Windows host cannot run, so the case is static-only with the trust boundary recorded."

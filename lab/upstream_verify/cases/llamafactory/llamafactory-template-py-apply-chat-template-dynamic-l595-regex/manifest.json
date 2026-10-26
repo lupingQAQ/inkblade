@@ -53,5 +53,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "llamafactory"
+ "component": "llamafactory",
+ "static_blocker": {
+  "category": "dependency-default-blocks",
+  "reason": "The template is Jinja-compiled inside transformers' ImmutableSandboxedEnvironment; the hit is template/data manipulation, not code execution, and the sandbox blocks attribute escapes."
+ }
 }

@@ -29,8 +29,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/litellm/LITELLM-DEFAULT-KEY/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.075,
- "started_at": "2026-10-25T18:06:56+00:00",
+ "duration_s": 0.146,
+ "started_at": "2026-10-26T09:23:25+00:00",
  "marker": {
   "text": "TRIDENT-UV-LITELLM-DEFAULT-KEY",
   "before": "ABSENT",
@@ -43,7 +43,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/litellm/LITELLM-DEFAULT-KEY/evidence/log.txt",
-   "sha256": "ed0b55cb7ad72ed8400ca2c1789aa4d9cd112f5124b9e3a2426d6737fe5ded31",
+   "sha256": "6dfaa95628f29aafd2932dc2a634986ebb8e65d9f57ebc98064c6f83775528e8",
    "size": 209
   },
   {
@@ -53,12 +53,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/litellm/LITELLM-DEFAULT-KEY/evidence/static-check.json",
-   "sha256": "34130b0d3c2337da870191898d44ed559f63725a78adaf0d7b28dd5d37ac088b",
+   "sha256": "7818421da050a80d278c74143de47996f2931f9772cb3115db27bb3eee0b65d5",
    "size": 870
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "54bbf33fb78c27c09f597aec12b05f8c60081a4c11056af74de726dba437fc83",
+ "manifest_sha256": "1eb8a3cfdc4a25576f33239ba2978935a80543379859e1e8847209205a398d4f",
  "stdout": "{\"status\": \"static-only\", \"case\": \"LITELLM-DEFAULT-KEY\"}\n",
  "stderr": "",
  "notes": "Default/master-key misconfiguration is deployment-dependent; no upstream version boundary, static-only."

@@ -32,8 +32,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/volcano/volcano-scheduler-server-go-pprof-exposed-l162-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.097,
- "started_at": "2026-10-26T05:25:16+00:00",
+ "duration_s": 0.137,
+ "started_at": "2026-10-26T09:23:47+00:00",
  "marker": {
   "text": "TRIDENT-UV-volcano-scheduler-server-go-pprof-exposed-l162-regex",
   "before": "ABSENT",
@@ -46,7 +46,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/volcano/volcano-scheduler-server-go-pprof-exposed-l162-regex/evidence/log.txt",
-   "sha256": "1e5d0a55e9ad6eee664d28119d3fb4df9fe8123a5046fc1a948496e28c4703b2",
+   "sha256": "394bbc029ed4e28acc7e01d002ef7eec8fb5f2b785cb298b694ada5f5e9d984c",
    "size": 275
   },
   {
@@ -56,12 +56,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/volcano/volcano-scheduler-server-go-pprof-exposed-l162-regex/evidence/static-check.json",
-   "sha256": "3549ac7c66c1c7590e959ef4d0434fb7cea6bb866ced4fe55d9fa07fa9e67810",
+   "sha256": "be6da44c01217f49df4b96f5f6f59b282a13cc989479d697ebb932bd44962156",
    "size": 1402
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "b5c35d1078897ea99199507a023330a0310741da43e0ae6e723ceff0b017d093",
+ "manifest_sha256": "a2c0fcfdb5350a6d750d031a2fa22b86122db1bd04a8cbd10d853903d6df510d",
  "stdout": "{\"status\": \"static-only\", \"case\": \"volcano-scheduler-server-go-pprof-exposed-l162-regex\"}\n",
  "stderr": "",
  "notes": "Volcano scheduler mounts the complete /debug/pprof/* handler set on its debug mux when pprof scheduling options are enabled. Exposure is flag-gated, so it is a deployment posture (leak of heap/cpu profiles with scheduler state) rather than an always-on sink; the volcano agent DaemonSet (hostNetwork + hostPath elevated-pod-spec hits) is the paired posture finding."

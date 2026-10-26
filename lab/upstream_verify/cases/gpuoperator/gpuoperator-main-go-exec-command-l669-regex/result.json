@@ -32,8 +32,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/gpuoperator/gpuoperator-main-go-exec-command-l669-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.101,
- "started_at": "2026-10-26T05:01:20+00:00",
+ "duration_s": 0.189,
+ "started_at": "2026-10-26T09:23:23+00:00",
  "marker": {
   "text": "TRIDENT-UV-gpuoperator-main-go-exec-command-l669-regex",
   "before": "ABSENT",
@@ -46,7 +46,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-main-go-exec-command-l669-regex/evidence/log.txt",
-   "sha256": "21e0c6c08ef40e37af7dc90376690cf017daff3820ab37f67fd3c10e2f6a9480",
+   "sha256": "2f0e2538208d3fa8363acc34a0a95496b82e8e44682c05a8fce5cbbaa08ab4fc",
    "size": 261
   },
   {
@@ -56,12 +56,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-main-go-exec-command-l669-regex/evidence/static-check.json",
-   "sha256": "0a79cf9618010d4c9e68feb4a08c5e77f6a5ce1a185c2b37a7f06257f8c289b8",
+   "sha256": "186f9584b89ced24e59df6eb4880585c35504754f36885e4d5444e5c71bff058",
    "size": 1474
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "21ee6992da22e45d74bcd1d8a20b05888661279f010056e24dbb5f82f7e07fdf",
+ "manifest_sha256": "6bcdd6795ae5dfffa8a86989e1e18fa3fedcf0c661f90f214c9446a9ce49fcac",
  "stdout": "{\"status\": \"static-only\", \"case\": \"gpuoperator-main-go-exec-command-l669-regex\"}\n",
  "stderr": "",
  "notes": "NVIDIA GPU Operator validator pods run privileged with hostPath mounts (see 0500_daemonset posture case) and execute shell/nvidia-smi via runCommand. Callers are fixed in-tree (shell/nvidiaSMIPath), so the exec sink is not tenant-reachable by itself; the finding is the privileged execution surface of validator/driver DaemonSets, which pairs with the elevated-pod-spec hits in manifests/state-driver/0500_daemonset.yaml."

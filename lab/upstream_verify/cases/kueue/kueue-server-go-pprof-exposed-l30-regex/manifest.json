@@ -1,56 +1,60 @@
 {
-  "id": "kueue-server-go-pprof-exposed-l30-regex",
-  "source": "mining",
-  "title": "kueue kueueviz: pprof-exposed-go + default-disabled auth @ backend/config/server.go:30",
-  "version": "v0.20.3",
-  "version_ref": {
-    "kind": "git",
-    "repo": "kubernetes-sigs/kueue",
-    "tag": "v0.20.3"
-  },
-  "install": "pinned source vendored under lab/upstream_verify/upstream/",
-  "root_cause": {
-    "file": "cmd/kueueviz/backend/config/server.go",
-    "line": 30,
-    "function": "(pprof import / SetupPprof)",
-    "snippet": "_ \"net/http/pprof\"",
-    "source": "lab/upstream_verify/upstream/kubernetes-sigs/kueue/v0.20.3/cmd/kueueviz/backend/config/server.go",
-    "source_sha256": "345dd8e23b3a8d1f6844e0110f8c7216aeefd690210a4049fefedcf94d2a80ce",
-    "note": "kueueviz backend imports net/http/pprof and defaults KUEUEVIZ_AUTH_MODE to Disabled."
-  },
-  "preconditions": [
-    "kueueviz backend deployed with default env (auth Disabled)",
-    "port 8080 reachable"
-  ],
-  "steps": [
-    "resolve the pinned tag/commit and file:line",
-    "verify the claimed snippet and source SHA256",
-    "record a static-only verdict (no exploit execution)"
-  ],
-  "expected_evidence": [
-    "static-check.json with source hash and line match"
-  ],
-  "cleanup": "none (read-only)",
-  "status": "static-only",
-  "method": "static-source",
-  "module": null,
-  "python": "reproenv",
-  "advisory": "reports/samples/mining-infra/mining-report.json",
-  "marker_text": "TRIDENT-UV-kueue-server-go-pprof-exposed-l30-regex",
-  "notes": "Kueue kueueviz backend: KUEUEVIZ_AUTH_MODE defaults to 'Disabled' (server.go:49) and main.go:112 only mounts the TokenReview authenticator middleware when the mode equals TokenReview, so a default deployment serves cluster queue/workload routes (and websocket data) without authentication; config/server.go also imports net/http/pprof with a localhost:6060 listener in dev mode. Not run end-to-end: the backend requires a live kubeconfig/apiserver; recorded as a verified-by-source default-auth posture.",
-  "static_evidence_level": "source-line",
-  "static_analysis": "Kueue kueueviz backend: KUEUEVIZ_AUTH_MODE defaults to 'Disabled' (server.go:49) and main.go:112 only mounts the TokenReview authenticator middleware when the mode equals TokenReview, so a default deployment serves cluster queue/workload routes (and websocket data) without authentication; config/server.go also imports net/http/pprof with a localhost:6060 listener in dev mode. Not run end-to-end: the backend requires a live kubeconfig/apiserver; recorded as a verified-by-source default-auth posture.",
-  "static_verdict": "not-dynamically-verified",
-  "unsupported": {},
-  "mining": {
-    "rule": "pprof-exposed-go",
-    "channel": "regex",
-    "file": "server.go",
-    "line": 30,
-    "snippet": "_ \"net/http/pprof\"",
-    "original_status": "pending-manual-review",
-    "promoted": false
-  },
-  "schema": "trident-upstream-case-v1",
-  "component": "kueue"
+ "id": "kueue-server-go-pprof-exposed-l30-regex",
+ "source": "mining",
+ "title": "kueue kueueviz: pprof-exposed-go + default-disabled auth @ backend/config/server.go:30",
+ "version": "v0.20.3",
+ "version_ref": {
+  "kind": "git",
+  "repo": "kubernetes-sigs/kueue",
+  "tag": "v0.20.3"
+ },
+ "install": "pinned source vendored under lab/upstream_verify/upstream/",
+ "root_cause": {
+  "file": "cmd/kueueviz/backend/config/server.go",
+  "line": 30,
+  "function": "(pprof import / SetupPprof)",
+  "snippet": "_ \"net/http/pprof\"",
+  "source": "lab/upstream_verify/upstream/kubernetes-sigs/kueue/v0.20.3/cmd/kueueviz/backend/config/server.go",
+  "source_sha256": "345dd8e23b3a8d1f6844e0110f8c7216aeefd690210a4049fefedcf94d2a80ce",
+  "note": "kueueviz backend imports net/http/pprof and defaults KUEUEVIZ_AUTH_MODE to Disabled."
+ },
+ "preconditions": [
+  "kueueviz backend deployed with default env (auth Disabled)",
+  "port 8080 reachable"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-kueue-server-go-pprof-exposed-l30-regex",
+ "notes": "Kueue kueueviz backend: KUEUEVIZ_AUTH_MODE defaults to 'Disabled' (server.go:49) and main.go:112 only mounts the TokenReview authenticator middleware when the mode equals TokenReview, so a default deployment serves cluster queue/workload routes (and websocket data) without authentication; config/server.go also imports net/http/pprof with a localhost:6060 listener in dev mode. Not run end-to-end: the backend requires a live kubeconfig/apiserver; recorded as a verified-by-source default-auth posture.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Kueue kueueviz backend: KUEUEVIZ_AUTH_MODE defaults to 'Disabled' (server.go:49) and main.go:112 only mounts the TokenReview authenticator middleware when the mode equals TokenReview, so a default deployment serves cluster queue/workload routes (and websocket data) without authentication; config/server.go also imports net/http/pprof with a localhost:6060 listener in dev mode. Not run end-to-end: the backend requires a live kubeconfig/apiserver; recorded as a verified-by-source default-auth posture.",
+ "static_verdict": "not-dynamically-verified",
+ "unsupported": {},
+ "mining": {
+  "rule": "pprof-exposed-go",
+  "channel": "regex",
+  "file": "server.go",
+  "line": 30,
+  "snippet": "_ \"net/http/pprof\"",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "kueue",
+ "static_blocker": {
+  "category": "host-toolchain-missing",
+  "reason": "Go toolchain and container runtime are absent on this Windows host; the pinned service/binary cannot be built or started, so the sink cannot be driven dynamically. Source-line root cause and pin remain recorded."
+ }
 }

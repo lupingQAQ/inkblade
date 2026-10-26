@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/juicefscsi/juicefscsi-controller-manager-go-go-bind-all-l71-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.103,
- "started_at": "2026-10-26T05:01:20+00:00",
+ "duration_s": 0.165,
+ "started_at": "2026-10-26T09:23:23+00:00",
  "marker": {
   "text": "TRIDENT-UV-juicefscsi-controller-manager-go-go-bind-all-l71-regex",
   "before": "ABSENT",
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/juicefscsi/juicefscsi-controller-manager-go-go-bind-all-l71-regex/evidence/log.txt",
-   "sha256": "794b0d167014753808dbd1d9a47099eb17c309f18516d6369b5f279fc907200c",
+   "sha256": "d1c00b1af743e5398d3d3300d992e4c4a46e78712280c2b0cf9907d3244d6b78",
    "size": 282
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/juicefscsi/juicefscsi-controller-manager-go-go-bind-all-l71-regex/evidence/static-check.json",
-   "sha256": "c04415ad556392ee1de2893fd32d79dc2818a60cb98a3eb7e95bfc64c9c267da",
+   "sha256": "06670e49c37911485efb609d0b929f10058509711bc7263fa88ac08b3bea27e9",
    "size": 1331
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "cde327223f355b35d81627e9854dcb7d1df90a16ad2faecb6120709cca960d4d",
+ "manifest_sha256": "6ce9cc6fb7eb4a8fb4baf27a5daa7bf1299e41ac73af87c0511a08d3f1d6d59a",
  "stdout": "{\"status\": \"static-only\", \"case\": \"juicefscsi-controller-manager-go-go-bind-all-l71-regex\"}\n",
  "stderr": "",
  "notes": "JuiceFSCSI controller (and pod manager, 0.0.0.0:8082) bind their controller-runtime metrics listeners on all interfaces with no authentication; cmd/main.go additionally blank-imports net/http/pprof (default-mux registration). Cluster-internal posture exposure: queue depths, volume names and pprof surface."

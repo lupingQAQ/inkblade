@@ -51,5 +51,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "gpuoperator"
+ "component": "gpuoperator",
+ "static_blocker": {
+  "category": "requires-k8s",
+  "reason": "Privileged/hostNetwork DaemonSet posture in a Helm manifest; evaluating it needs a live cluster and GPU nodes."
+ }
 }

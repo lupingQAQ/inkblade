@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/msswift/msswift-loader-py-load-dataset-any-l341-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.078,
- "started_at": "2026-10-25T18:07:07+00:00",
+ "duration_s": 0.141,
+ "started_at": "2026-10-26T09:23:30+00:00",
  "marker": {
   "text": "TRIDENT-UV-msswift-loader-py-load-dataset-any-l341-regex",
   "before": "ABSENT",
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/msswift/msswift-loader-py-load-dataset-any-l341-regex/evidence/log.txt",
-   "sha256": "b1683ea99b2ef861537c87c82b1ba0e96d4554d106f7ae92899ca997ee40ef7b",
+   "sha256": "c40b3fd0631db556fcc83f0b1d08e468a08fe0d5ef6c966209ee538032ccdc4c",
    "size": 261
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/msswift/msswift-loader-py-load-dataset-any-l341-regex/evidence/static-check.json",
-   "sha256": "9c9f413c8b7f38e8f4aa4dde16a72b49ee982363b26693e1c3c8704817672bba",
+   "sha256": "6b0ca9ae277118a8bc47377dd03e6540cb203a1aaa017b6bff6526c647f651d6",
    "size": 1103
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "07e57e0fac27397c8e07d7dcda4feb14fb56138572d5f55172613441ddbcd0e3",
+ "manifest_sha256": "413a7ec89935a22ec0bd983839c65c82190d56f56f281f65d6f66830efbc1628",
  "stdout": "{\"status\": \"static-only\", \"case\": \"msswift-loader-py-load-dataset-any-l341-regex\"}\n",
  "stderr": "",
  "notes": "Dataset loading is intended functionality; remote dataset trust is a documented boundary."

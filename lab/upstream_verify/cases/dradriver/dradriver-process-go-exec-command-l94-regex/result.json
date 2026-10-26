@@ -32,8 +32,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/dradriver/dradriver-process-go-exec-command-l94-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.114,
- "started_at": "2026-10-26T05:01:20+00:00",
+ "duration_s": 0.151,
+ "started_at": "2026-10-26T09:23:23+00:00",
  "marker": {
   "text": "TRIDENT-UV-dradriver-process-go-exec-command-l94-regex",
   "before": "ABSENT",
@@ -46,7 +46,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/dradriver/dradriver-process-go-exec-command-l94-regex/evidence/log.txt",
-   "sha256": "57001cf8877bd81f528b786cb993b7c5eb2c9f0446ebfce03dc17d15dbafae26",
+   "sha256": "b1052032818d905841c9bf76d1365cac721fa2f99c0919202fc122231f8d2ddc",
    "size": 259
   },
   {
@@ -56,12 +56,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/dradriver/dradriver-process-go-exec-command-l94-regex/evidence/static-check.json",
-   "sha256": "dd44e02f97cdbc6abd545da7befddbe23b3d30950a90344d5884f7a90fdf439d",
+   "sha256": "7ae50b4b5b7de749f787dd222c8afebe47e0c25d408f0e462793189f3c3e795e",
    "size": 1377
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "88729f906a16fe85e9f404f53eb70812f8107d8d83b55acd0628452db3db74d3",
+ "manifest_sha256": "e910d0db8a1af8c93239dc8788615e4b88a6eb57a630cf707ea1f211872da7bd",
  "stdout": "{\"status\": \"static-only\", \"case\": \"dradriver-process-go-exec-command-l94-regex\"}\n",
  "stderr": "",
  "notes": "The compute-domain daemon executes m.cmd from its config (ConfigMap-sourced). The sink is real but the input is admin-controlled config, not tenant PVC data; recorded as a config-trust boundary for DRA deployments, plus the kubeletplugin.yaml privileged/hostPath posture (elevated-pod-spec hits)."

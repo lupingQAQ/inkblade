@@ -32,8 +32,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/gpuoperator/gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.104,
- "started_at": "2026-10-26T05:01:20+00:00",
+ "duration_s": 0.162,
+ "started_at": "2026-10-26T09:23:23+00:00",
  "marker": {
   "text": "TRIDENT-UV-gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex",
   "before": "ABSENT",
@@ -46,7 +46,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex/evidence/log.txt",
-   "sha256": "ce7d1018a6de66a7f9e06831ee7f19dc0353aaae6414c7c0c15fcf4c1e766ac4",
+   "sha256": "156c9e1d37c411233ea68a95ce0457fb7afba0c8c82922a807148c6b4063e040",
    "size": 295
   },
   {
@@ -56,12 +56,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex/evidence/static-check.json",
-   "sha256": "6b37b5ba6eec5835d8cbe4f0caf077e4f2aa29fd73714f9fc6f925b3fbc535e9",
+   "sha256": "84923dcbc0df5dfb30e5bf2f8a840aee77d0d7f1b1045d25368a3cdc3b83a29a",
    "size": 1416
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "e76f85fb1b28f5eafe1e96bdae68091b928815cdfb71947822b7f0134f164a07",
+ "manifest_sha256": "2e3265ec23af72fc23bb34bc897435a516a28c7e79b6275ea49488b9be929a32",
  "stdout": "{\"status\": \"static-only\", \"case\": \"gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex\"}\n",
  "stderr": "",
  "notes": "The NVIDIA driver DaemonSet combines hostNetwork: true, privileged containers and hostPath mounts of /, /dev, /sys, kernel modules and container runtime sockets - the canonical privileged-node posture. Any container escape or compromised image in this DaemonSet is instant node takeover; recorded as posture (static), paired with the validator exec surface case."

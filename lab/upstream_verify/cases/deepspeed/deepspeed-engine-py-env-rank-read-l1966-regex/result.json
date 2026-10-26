@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-engine-py-env-rank-read-l1966-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.115,
- "started_at": "2026-10-25T18:06:41+00:00",
+ "duration_s": 0.15,
+ "started_at": "2026-10-26T09:23:21+00:00",
  "marker": {
   "text": "TRIDENT-UV-deepspeed-engine-py-env-rank-read-l1966-regex",
   "before": "ABSENT",
@@ -47,8 +47,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-engine-py-env-rank-read-l1966-regex/evidence/log.txt",
-   "sha256": "040de6f2e81d5336f1af1169b74dcf6554b313b22b8cbf6a7f01c6066eac418f",
-   "size": 263
+   "sha256": "a2ec318e9714309eab8698e4690aaa3b54dd066e9884f537eb4290fbac93b761",
+   "size": 262
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-engine-py-env-rank-read-l1966-regex/evidence/marker.txt",
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-engine-py-env-rank-read-l1966-regex/evidence/static-check.json",
-   "sha256": "571e5f00ff80467373f80d85bee1d1e9b2f632a0b97397777cfff69d7e6480f5",
+   "sha256": "d039333caca5a2f46a7973d05b0412b1e0c04126ed206eb5503841d96ce046a6",
    "size": 1122
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "f770cea0f11a496bb2f8595da433e2d713b141adb7dc618be44b3dd3e36c9dda",
+ "manifest_sha256": "eb22703ecb4f00c250cb7c4fe2030018f2a395217c93f8dd45a720dbeeccc27e",
  "stdout": "{\"status\": \"static-only\", \"case\": \"deepspeed-engine-py-env-rank-read-l1966-regex\"}\n",
  "stderr": "",
  "notes": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."

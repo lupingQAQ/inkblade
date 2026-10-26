@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-template-py-apply-chat-template-dynamic-l587-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.085,
- "started_at": "2026-10-25T18:06:58+00:00",
+ "duration_s": 0.155,
+ "started_at": "2026-10-26T09:23:28+00:00",
  "marker": {
   "text": "TRIDENT-UV-llamafactory-template-py-apply-chat-template-dynamic-l587-regex",
   "before": "ABSENT",
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-template-py-apply-chat-template-dynamic-l587-regex/evidence/log.txt",
-   "sha256": "8d763b0f157029efed857f86d2b9efbf7f124fa327038891b28e406092a529c8",
+   "sha256": "7bb34a1ae35249a22950725f6663289bebcf75236d4c9db0b39d2d279bcf2341",
    "size": 302
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-template-py-apply-chat-template-dynamic-l587-regex/evidence/static-check.json",
-   "sha256": "1ea16d550aa358cbc81823b8ad0182834d6f0704aae100ed21dbc248c044b188",
+   "sha256": "966d47c53bded5abf2ad9051f496be2792d329d7d78b36c680dad5dea4b09231",
    "size": 1322
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "efce7761f84d495d3e71770b2c32107a78ed741165f89651b8273cb6987a55bb",
+ "manifest_sha256": "91cc373f7aff94be7125ec0a9a3bba96969c683ae3bd512e128a909670f8bd9a",
  "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-template-py-apply-chat-template-dynamic-l587-regex\"}\n",
  "stderr": "",
  "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."

@@ -53,5 +53,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "trl"
+ "component": "trl",
+ "static_blocker": {
+  "category": "pattern-false-positive",
+  "reason": "The matched line is a function definition, a wrapper return, or a docstring example; the rule matched the API name, not an execution sink."
+ }
 }

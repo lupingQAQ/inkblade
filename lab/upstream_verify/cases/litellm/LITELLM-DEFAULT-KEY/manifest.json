@@ -41,5 +41,9 @@
  "static_verdict": "not-dynamically-verified",
  "unsupported": {},
  "schema": "trident-upstream-case-v1",
- "component": "litellm"
+ "component": "litellm",
+ "static_blocker": {
+  "category": "deployment-misconfig",
+  "reason": "1.82.0 ships no default master key; the proxy runs open only when the operator omits LITELLM_MASTER_KEY, and DB-less management calls still fail. Deployment guidance, not a version-bounded vulnerability."
+ }
 }

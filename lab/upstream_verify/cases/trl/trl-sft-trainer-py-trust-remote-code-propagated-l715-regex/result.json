@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/trl/trl-sft-trainer-py-trust-remote-code-propagated-l715-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.081,
- "started_at": "2026-10-25T18:07:16+00:00",
+ "duration_s": 0.152,
+ "started_at": "2026-10-26T09:23:46+00:00",
  "marker": {
   "text": "TRIDENT-UV-trl-sft-trainer-py-trust-remote-code-propagated-l715-regex",
   "before": "ABSENT",
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-trust-remote-code-propagated-l715-regex/evidence/log.txt",
-   "sha256": "f7fa0f0c9cbc14b0724d88ac92ee8dd5ccdd8318761298da8618fde186c968f2",
+   "sha256": "d8db059a834c7c16e2c455456336555fa99878b9121e77ec6e22315b7b03378a",
    "size": 283
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-trust-remote-code-propagated-l715-regex/evidence/static-check.json",
-   "sha256": "1cd0060a004c192f54a428efdd2c6b9ea9330dde341d6d3abdb0f174bca44654",
+   "sha256": "b1a0a60427721da9ea9106c5c45dcec9281868ee2ca60eaae6ddb6c7ea3b8ea4",
    "size": 1334
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "38d98f5b785d7f77025f1c3db7db04cf8fbbd1533d9836bfe48b923e2ea3873e",
+ "manifest_sha256": "0f1fa9f7fdc576d11b64a2583234c8d01d57994f99d595b6dddccc34a38169b3",
  "stdout": "{\"status\": \"static-only\", \"case\": \"trl-sft-trainer-py-trust-remote-code-propagated-l715-regex\"}\n",
  "stderr": "",
  "notes": "Explicit trust_remote_code opt-in; requires a malicious model repository and user consent. Not a vulnerability by itself."

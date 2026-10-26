@@ -53,5 +53,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "msswift"
+ "component": "msswift",
+ "static_blocker": {
+  "category": "pattern-false-positive",
+  "reason": "The matched line is a docstring example (>>> load_dataset(...)), not executable code."
+ }
 }

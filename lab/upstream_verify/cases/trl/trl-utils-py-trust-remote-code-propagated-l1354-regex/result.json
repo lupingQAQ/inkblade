@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/trl/trl-utils-py-trust-remote-code-propagated-l1354-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.081,
- "started_at": "2026-10-25T18:07:16+00:00",
+ "duration_s": 0.162,
+ "started_at": "2026-10-26T09:23:46+00:00",
  "marker": {
   "text": "TRIDENT-UV-trl-utils-py-trust-remote-code-propagated-l1354-regex",
   "before": "ABSENT",
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/trl/trl-utils-py-trust-remote-code-propagated-l1354-regex/evidence/log.txt",
-   "sha256": "fb97cd435c0ba13425f60b0baff35b24b2b5ba3dc2bb2a3e1634975495420f4e",
+   "sha256": "e3486fd745ebd30ce385e97882bb442803d78bf9537785aa71f1846bb56d29d2",
    "size": 273
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-utils-py-trust-remote-code-propagated-l1354-regex/evidence/static-check.json",
-   "sha256": "6115ad474dba1029de9af1e997950e8cee98b90c1ca8ebe76ed39b3fc25ec104",
+   "sha256": "b9541c32e2829ec4370e66aaab4ec315d25ac7fb6f42608f3576fa9e1cbcdcc8",
    "size": 1324
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "1db60d37aad1e3c03dee3d5964edb9cd217623971c8f0d771b4b9ba64caa1581",
+ "manifest_sha256": "f65aff754ed97a740625d98ed4384636a2fd180883c24904d24d8a37de3fde45",
  "stdout": "{\"status\": \"static-only\", \"case\": \"trl-utils-py-trust-remote-code-propagated-l1354-regex\"}\n",
  "stderr": "",
  "notes": "Explicit trust_remote_code opt-in; requires a malicious model repository and user consent. Not a vulnerability by itself."

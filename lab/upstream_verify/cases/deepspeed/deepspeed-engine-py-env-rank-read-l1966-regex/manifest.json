@@ -53,5 +53,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "deepspeed"
+ "component": "deepspeed",
+ "static_blocker": {
+  "category": "hygiene-not-exploitable",
+  "reason": "Reading LOCAL_RANK/RANK from the environment is normal distributed startup behaviour; the value is not attacker-controlled."
+ }
 }

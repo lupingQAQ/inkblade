@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.086,
- "started_at": "2026-10-25T18:06:57+00:00",
+ "duration_s": 0.174,
+ "started_at": "2026-10-26T09:23:26+00:00",
  "marker": {
   "text": "TRIDENT-UV-llamafactory-loader-py-eval-call-l211-regex",
   "before": "ABSENT",
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-regex/evidence/log.txt",
-   "sha256": "4933c1cb212cf1e380be20d91573cca815721ce358c4f412bcfdacef30531db0",
+   "sha256": "bc3dcd147c789fa3bc02e7b139dd835c8323ed6cc6e0334454e67138bd2f6f06",
    "size": 262
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-regex/evidence/static-check.json",
-   "sha256": "0538514dc67008ce7c5d8a39fe52795931099865a8f301a0a015abf367c230b0",
+   "sha256": "7637a481f28d6286802ea28caa9834729fd3c41af761b442813775f29000e016",
    "size": 1038
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "bf5ee2dd03dc5eff68548aba31b2fc9a47ca05d6274dc4dd2690b3ed6f254dda",
+ "manifest_sha256": "cf05e493360397afb4cab386044128343d1f80707d1d701967a35f6950a896b4",
  "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-loader-py-eval-call-l211-regex\"}\n",
  "stderr": "",
  "notes": "False positive: the matched text is model.eval(), not Python eval()."

@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-runner-py-subprocess-popen-l504-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.076,
- "started_at": "2026-10-25T18:06:41+00:00",
+ "duration_s": 0.175,
+ "started_at": "2026-10-26T09:23:22+00:00",
  "marker": {
   "text": "TRIDENT-UV-deepspeed-runner-py-subprocess-popen-l504-regex",
   "before": "ABSENT",
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-runner-py-subprocess-popen-l504-regex/evidence/log.txt",
-   "sha256": "046015f746c71056bfc448dabba5bc0ca17f7457b3892a06e8b2b31effa17b38",
+   "sha256": "071cf22c66f45e798285cc3a1ed3fad9553eed875ca561933a657c51e8914fc7",
    "size": 267
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-runner-py-subprocess-popen-l504-regex/evidence/static-check.json",
-   "sha256": "244fa44f9eac535abdec2e8456d30ce3ae4af8a87e66e286b6028e8b8a7f33f9",
+   "sha256": "5794b82bae27b8f77cc60d22f6f35c117f42697d5eb825bf6b12401360c9a693",
    "size": 1123
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "d31c203cc8ae0e7d05f6da9343bd88699543a620ed83d98d3c1faf2387886de8",
+ "manifest_sha256": "6d48f3b8fa6e1c3a5aa37c6b1c4b3da7e5d484798b5bed676ed3945472449822",
  "stdout": "{\"status\": \"static-only\", \"case\": \"deepspeed-runner-py-subprocess-popen-l504-regex\"}\n",
  "stderr": "",
  "notes": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."

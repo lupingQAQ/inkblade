@@ -3486,10 +3486,10 @@
         "trident/modules/ray-job-marker-rce/run.py"
       ],
       "verified": false,
-      "verification_status": "static-only",
+      "verification_status": "partial",
       "verification_cves": {
-        "CVE-2023-48022": "static-only",
-        "CVE-2023-48023": "static-only",
+        "CVE-2023-48022": "verified",
+        "CVE-2023-48023": "verified",
         "CVE-2026-32981": "static-only",
         "KUBERAY-ADV-2026-01": "static-only"
       },

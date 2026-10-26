@@ -53,5 +53,9 @@
   "promoted": false
  },
  "schema": "trident-upstream-case-v1",
- "component": "trl"
+ "component": "trl",
+ "static_blocker": {
+  "category": "hygiene-not-exploitable",
+  "reason": "from_pretrained()/load_dataset() without a revision is a supply-chain reproducibility gap; exploiting it requires control of the upstream Hub repository (TOCTOU), which is not a local attacker path."
+ }
 }

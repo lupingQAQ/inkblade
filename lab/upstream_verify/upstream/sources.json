@@ -486,5 +486,10 @@
  "vllm/v0.8.4/vllm/distributed/kv_transfer/kv_pipe/pynccl_pipe.py": "ba72ba88e72704c1101726a85f35e5c844256d15d2b727974f0a791131549439",
  "vllm/v0.8.4/vllm/distributed/utils.py": "396ad3eeac1b94d3e78f32a38435f25299e4151d4c57a5b36644b75f405a6ec1",
  "vllm/v0.8.4/vllm/entrypoints/openai/api_server.py": "33cb3282d495471e5fe8055046a138a3df0847a6792d1e0463043874860ebe48",
- "volcano-sh/volcano/v1.16.0/cmd/scheduler/app/server.go": "815cd111dacdc6dcc783b18cd2e3f8f2ec7b1f1947e3f7084f9f8a467d1e945b"
+ "volcano-sh/volcano/v1.16.0/cmd/scheduler/app/server.go": "815cd111dacdc6dcc783b18cd2e3f8f2ec7b1f1947e3f7084f9f8a467d1e945b",
+ "ray/ray-2.8.0/ray/dashboard/http_server_head.py": "e9eaf6836d38615547665b692cb5b0bfd49f11f64619816bbbeb07a7187f5b38",
+ "ray/ray-2.8.0/ray/dashboard/modules/job/job_agent.py": "12fa8bb4590461f16bf7a9c2ede5c53c64ce577cfe6ccb8781220f622df67ac2",
+ "ray/ray-2.8.0/ray/dashboard/modules/job/job_head.py": "789ab201e8580a137d911d3616bb8ca5ca9e0a24a1113096ac6f63de7209b793",
+ "ray/ray-2.8.0/ray/dashboard/modules/job/job_manager.py": "411938187dbcd8963733477edda314897d400804a9fc94e9b4a1d352e19224d3",
+ "ray/ray-2.8.0/ray/dashboard/modules/log/log_head.py": "b9fe731482d50feffaaca4a1e573d1baa84637e13094ec72e88ef767ef17687b"
 }

@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-ast/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.085,
- "started_at": "2026-10-25T18:06:57+00:00",
+ "duration_s": 0.187,
+ "started_at": "2026-10-26T09:23:26+00:00",
  "marker": {
   "text": "TRIDENT-UV-llamafactory-loader-py-eval-call-l211-ast",
   "before": "ABSENT",
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-ast/evidence/log.txt",
-   "sha256": "2754ae900b1fdec9788003baed584761f61e99dabd133fe0741d078c8d658cda",
+   "sha256": "d8197841ac14d01bc563b01e3637f0fcd708020c9b9c021a54c275e9a92dae9e",
    "size": 258
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-ast/evidence/static-check.json",
-   "sha256": "467f1c89754767940090646dae3615a7deff157dc6320eb9130e6292ff60965b",
+   "sha256": "fcaa78cb9c970f3a6dfa40cfae41169d25c709f438c773d524c95fc6e8607b66",
    "size": 1034
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "b15b115ec880065cf879dc01f811cd4a90b8a39bcb60c951dd3ad7a8da5d85ea",
+ "manifest_sha256": "bb665b8d0fef5549515834a8efeb6529f8c1d7b624313a4344233622bf839424",
  "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-loader-py-eval-call-l211-ast\"}\n",
  "stderr": "",
  "notes": "False positive: the matched text is model.eval(), not Python eval()."
