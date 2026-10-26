@@ -320,6 +320,7 @@ def find_probe_binary(explicit: str | Path | None = None) -> Path | None:
     root = _repo_root()
     candidates = [
         *[root / "dist" / name for name in _asset_names()],
+        *[root / "probe" / "dist" / name for name in _asset_names()],
         root / "probe" / "target" / "release" / "inkblade-probe",
         root / "probe" / "target" / "release" / "inkblade-probe.exe",
         root / "probe" / "target" / "debug" / "inkblade-probe",

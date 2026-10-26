@@ -138,3 +138,11 @@ VM 已就绪（SSH 2222 / 串口 4555 均 `TcpTestSucceeded=True`），原计划
 上传 `probe.tar.gz` → `cargo build --release` → `scp` 回二进制。因路径 A 一次成功且已在真实
 Linux runner 完成自测，未再消耗 VM 构建时间；该路径保留为 CI 额度/权限不可用时的回退方案
 （脚本草稿见 `scripts/build-probe-vm.py`）。
+
+## 7. Release 资产（CI 发布）
+
+`probe-release.yml` 在 `probe-v*` tag 上追加 `release` job：把两个 musl 二进制、
+`SHA256SUMS`（以及 `ENABLE_COSIGN=true` 时的 `SHA256SUMS.sigstore.json`）上传到
+GitHub Release。`python-dynamic` job 用真实 amd64 二进制跑
+`tests/test_probe_rust_dynamic` 与 `tests/test_probe_channel`。二进制始终由 CI
+构建，不入源码树；本机 ELF 只能在 Linux（或 CI runner）执行。

@@ -30,6 +30,8 @@ def _binary() -> Path | None:
     candidates += [
         ROOT / "dist" / "inkblade-probe-linux-amd64",
         ROOT / "dist" / "inkblade-probe-linux-arm64",
+        ROOT / "probe" / "dist" / "inkblade-probe-linux-amd64",
+        ROOT / "probe" / "dist" / "inkblade-probe-linux-arm64",
         ROOT / "probe" / "target" / "release" / "inkblade-probe",
         ROOT / "probe" / "target" / "release" / "inkblade-probe.exe",
     ]
@@ -40,6 +42,12 @@ def _binary() -> Path | None:
 
 
 BINARY = _binary()
+if BINARY is not None and os.name == "nt":
+    try:
+        if BINARY.read_bytes()[:4] == b"\x7fELF":
+            BINARY = None
+    except OSError:
+        BINARY = None
 
 
 class _Handler(http.server.BaseHTTPRequestHandler):
@@ -93,7 +101,7 @@ class _Echo:
             pass
 
 
-@unittest.skipUnless(BINARY is not None, "Rust probe binary not built (CI builds linux-musl)")
+@unittest.skipUnless(BINARY is not None, "no runnable Rust probe binary (Linux ELF; CI builds musl)")
 class RustProbeDynamic(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
