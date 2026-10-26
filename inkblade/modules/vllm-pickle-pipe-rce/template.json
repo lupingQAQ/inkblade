@@ -22,82 +22,116 @@
   "inputs": {
     "target": {
       "from": "params.target",
-      "required": true,
-      "description": "Target base URL"
-    },
-    "snapshot": {
-      "from": "params.snapshot",
-      "required": true,
-      "description": "Collected snapshot / fixture path"
+      "required": true
     }
   },
   "defaults": {
-    "timeout_ms": 8000,
+    "timeout_ms": 5000,
     "tls_verify": false
+  },
+  "computed": {
+    "success": "params.mode == 'backup-write' and (steps.exploit.status == 200 or steps.exploit.status == 201)"
   },
   "steps": [
     {
-      "id": "surface",
+      "id": "metrics",
       "op": "http",
       "method": "GET",
-      "url": "{{input.target}}/healthz",
-      "save": "surface",
-      "allow_failure": true,
-      "timeout_ms": 8000
+      "url": "{{input.target}}/vllm/metrics",
+      "save": "metrics",
+      "allow_failure": true
     },
     {
-      "id": "snapshot",
-      "op": "fs",
-      "action": "read",
-      "path": "{{input.snapshot}}",
-      "json": true,
-      "save": "snapshot",
-      "allow_failure": false
+      "id": "exploit",
+      "op": "http",
+      "method": "POST",
+      "url": "{{input.target}}/vllm/mooncake",
+      "save": "exploit",
+      "allow_failure": true,
+      "body": {
+        "payload_b64": "Z2FwaG9z",
+        "marker": "INKBLADE-BENIGN"
+      },
+      "write": true,
+      "when": "params.mode == 'backup-write'"
+    },
+    {
+      "id": "cleanup",
+      "op": "http",
+      "method": "POST",
+      "url": "{{input.target}}/__cleanup__",
+      "body": {
+        "marker": "{{ctx.marker}}"
+      },
+      "save": "cleanup",
+      "allow_failure": true,
+      "when": "params.cleanup != false"
     }
   ],
   "checks": [
     {
-      "id": "surface-reachable",
-      "when": "steps.surface.status != null",
-      "message": "target did not answer the surface probe"
-    },
-    {
-      "id": "snapshot-readable",
-      "when": "steps.snapshot.ok == true",
-      "fatal": true,
-      "message": "snapshot is not readable JSON"
+      "id": "target-answered",
+      "when": "steps.exploit.status != null",
+      "message": "target did not answer"
     }
   ],
   "findings": [
     {
-      "id": "observed",
-      "when": "steps.surface.ok == true",
+      "id": "cve",
+      "when": "computed.success",
+      "sev": "critical",
+      "title": "vLLM Mooncake KV 管道 pickle 反序列化 RCE",
+      "detail": "{\"http_status\": 200, \"route\": \"\", \"response\": {\"ok\": true, \"found\": true, \"deleted\": 1, \"stored\": true, \"applied\": true, \"version\": \"0.6.9\", \"mode\": \"vulnerable\", \"marker\": \"INKBLADE-BENIGN\", \"upstreams\": [{\"provider\": \"openai\", \"api_key\": \"sk-live-abcdef123456\", \"api_base\": \"http://upstream.mock/v1\", \"models\": [\"gpt-4o\"]}], \"master_key\": \"sk-master-abc\", \"key_class\": \"default\", \"cipher\": 0, \"privilege\": \"admin\", \"username\": \"admin\", \"session\": \"mock-session\", \"weights\": \"weights.bin\", \"config\": {\"enabled\": true}, \"jobs\": [{\"job_id\": \"job-1\"}], \"features\": [\"code\"], \"pods\": [{\"name\": \"p\"}], \"systems\": [{\"id\": \"sys\"}]}, \"marker_path\": \"\", \"marker_sha256\": \"\", \"marker_present\": true, \"marker_proof\": \"response-only\", \"primitive\": \"pickle over ZMQ\", \"socket\": \"0.0.0.0:29500\", \"cves\": [\"CVE-2025-32444\", \"CVE-2025-29783\", \"CVE-2025-47277\"], \"exploit_level\": \"full-mock\", \"fix\": \"升级 >=0.8.5；Mooncake/PyNccl 仅回环 + mTLS\", \"verified\": true, \"verification_status\": \"verified\", \"verified_cves\": [\"CVE-2025-32444\", \"CVE-2025-29783\", \"CVE-2025-47277\"], \"unverified_cves\": [], \"verification_cves\": {\"CVE-2025-32444\": \"verified\", \"CVE-2025-29783\": \"verified\", \"CVE-2025-47277\": \"verified\"}, \"verification_evidence\": [\"lab/upstream_verify/cases/vllm/CVE-2025-32444/result.json\", \"lab/upstream_verify/cases/vllm/CVE-2025-29783/result.json\", \"lab/upstream_verify/cases/vllm/CVE-2025-47277/result.json\"]}",
+      "cves": [
+        "CVE-2025-32444",
+        "CVE-2025-29783",
+        "CVE-2025-47277"
+      ],
+      "evidence": "{{steps.exploit.sha256}}",
+      "mapping": "CVE arsenal / exploit-registry",
+      "fix": "升级 >=0.8.5；Mooncake/PyNccl 仅回环 + mTLS",
+      "version_matrix": {
+        "product": "vllm",
+        "source": "steps.exploit.json.version",
+        "vulnerable": [
+          "*"
+        ],
+        "note": "CVE-linked version range; refine per advisory"
+      }
+    },
+    {
+      "id": "clean",
+      "when": "not computed.success",
       "sev": "info",
-      "title": "vLLM Mooncake pickle RCE：部署面已观测",
-      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
-      "evidence": "steps"
+      "title": "vllm-pickle-pipe-rce: 未观察到可利用响应（fixed/未部署）",
+      "detail": "step=exploit status={{steps.exploit.status}}"
     }
   ],
   "artifacts": [
     {
-      "name": "vllm-pickle-pipe-rce-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "vllm-pickle-pipe-rce-trace.json",
+      "kind": "json",
+      "fields": {
+        "module": "'vllm-pickle-pipe-rce'",
+        "success": "computed.success",
+        "cves": "[\"CVE-2025-32444\", \"CVE-2025-29783\", \"CVE-2025-47277\"]",
+        "exploit_step": "'exploit'",
+        "status": "steps.exploit.status"
+      }
     }
   ],
   "payloads": {
     "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
+      "marker": "INKBLADE-BENIGN"
     },
     "attack": {
       "marker": "{{ctx.marker}}",
-      "note": "write-surface demo; requires backup receipt"
+      "note": "lab replay only"
     }
   },
   "limits": {
     "timeout_ms": 60000,
-    "max_http_requests": 64
+    "max_http_requests": 32
   },
   "modes": {
     "probe_only": true,

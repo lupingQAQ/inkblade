@@ -357,13 +357,14 @@
     },
     "checkpoint-shard-poison": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
-      "findings_positive": 3,
+      "findings_positive": 2,
       "findings_negative": 0,
-      "steps": 2,
-      "evidence": "075a1b08ae8dce6973ecacff601eb2bb93f2bd5c34dbc248ea78585c97007216",
-      "at": "2026-10-26T21:54:18Z"
+      "steps": 4,
+      "evidence": "c959d40309efbaaaa14657de38237489bfb8992ac25037113e70404f56de23df",
+      "at": "2026-10-26T22:19:04Z",
+      "note": "longctx_sim two-state"
     },
     "cis-benchmark-audit": {
       "tested": true,
@@ -528,13 +529,14 @@
     },
     "context-limit-bypass": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
-      "findings_positive": 2,
-      "findings_negative": 0,
-      "steps": 2,
-      "evidence": "408344325e05a1daf5d972b59a8e3cbc46bf7783b3cc14054926f90c27a328a8",
-      "at": "2026-10-26T21:54:38Z"
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 3,
+      "evidence": "b329184396ce341b8af83334b86e8a6d5cdcf9bd33448af2d94c7f0a9ec77724",
+      "at": "2026-10-26T22:19:03Z",
+      "note": "longctx_sim two-state"
     },
     "crd-conversion-webhook": {
       "tested": true,
@@ -571,13 +573,14 @@
     },
     "cumulus-nvue-injection": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "750aa1d32a0745378a24456c38988c77828b961a33c184602bf8e6e8fda2421a",
-      "at": "2026-10-26T21:54:43Z"
+      "steps": 3,
+      "evidence": "57a0f79898cdbf1676befcf030aaeef2d17929b2e8e25a2c01d880f5f58e9b6c",
+      "at": "2026-10-26T22:16:38Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "cxl-memory-security": {
       "tested": true,
@@ -611,13 +614,14 @@
     },
     "deepspeed-checkpoint-rce": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
       "steps": 2,
-      "evidence": "4c453cc6afcde606d4133ce8aea0c4e1f91c23ebae8b788cacb6579253aeb92e",
-      "at": "2026-10-26T21:54:47Z"
+      "evidence": "d86135fbc6ae2c646ac5def317d19271e0599231dea33e84681e3fbc992f835d",
+      "at": "2026-10-26T22:17:00Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "defense-bypass-admission": {
       "tested": true,
@@ -742,13 +746,14 @@
     },
     "dify-code-node-escape": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "bca43564e40ceb4263fbff684964c9aaf4446ff4b5b9633abd2b0fd3fc0d9a7f",
-      "at": "2026-10-26T21:55:01Z"
+      "steps": 3,
+      "evidence": "5050bf86530002651148dfe920df77d98b17e6fe1a27f80a3b82adb952629a37",
+      "at": "2026-10-26T22:16:40Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "dify-control-plane-failopen": {
       "tested": true,
@@ -1115,13 +1120,14 @@
     },
     "hami-scheduler-auth-gap": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "a221e21cc4b703ab8e2911f5027c85216841460c692b1ac2346841315c0f7fd7",
-      "at": "2026-10-26T21:55:47Z"
+      "steps": 3,
+      "evidence": "32c4f4ca68161bebbbff3bfce26440a6fdb65f589e1dfd36bb5a5dc2a5da7c3f",
+      "at": "2026-10-26T22:17:06Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "hardware-supply-chain": {
       "tested": true,
@@ -1237,13 +1243,14 @@
     },
     "ipmi-cipher-zero-bypass": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "71af0c2e54224472de3bdd798a1f7e9c38270d04e00b427251020ae2925821c6",
-      "at": "2026-10-26T21:56:02Z"
+      "steps": 3,
+      "evidence": "cc655237091fc011b1c73ee631f1b0b07c89d1ee852fd439b86fddcd84f41d39",
+      "at": "2026-10-26T22:16:26Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "kdigger-admission": {
       "tested": true,
@@ -1448,13 +1455,14 @@
     },
     "kv-cache-integrity-poison": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
-      "findings_positive": 4,
+      "findings_positive": 1,
       "findings_negative": 0,
-      "steps": 2,
-      "evidence": "0bc4f531abc6764bc715c723f7662fc2af5f1aa7abee768256d3b92461d1ec5d",
-      "at": "2026-10-26T21:56:25Z"
+      "steps": 3,
+      "evidence": "ac9334d953060240ea260f5c3c1d152f9052fa8d7f22e6863dcf9689330d184f",
+      "at": "2026-10-26T22:19:03Z",
+      "note": "longctx_sim two-state"
     },
     "kv-oom-bomb": {
       "tested": true,
@@ -1468,33 +1476,36 @@
     },
     "litellm-config-update-rce": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "145b03268662c17a243e75dd6573d383fd5a06a6eeeca647c26b7923ef19a339",
-      "at": "2026-10-26T21:56:28Z"
+      "steps": 3,
+      "evidence": "823e49908b615f32956eb88560f576a942f6ed5ba651ef1bd808c2a3409545f5",
+      "at": "2026-10-26T22:16:23Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "litellm-default-key-exfil": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
       "steps": 2,
-      "evidence": "5d9a789eb55177bce1241a3386fe52f2aaa063d278d83d430b935c515df2672a",
-      "at": "2026-10-26T21:56:29Z"
+      "evidence": "6722239b093a6ad8d349685242a4f2364a6ceb3763740f5e42588be38edd1ef4",
+      "at": "2026-10-26T22:16:20Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "llamafactory-checkpoint-rce": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
       "steps": 2,
-      "evidence": "001c1fa409f8ad45cc70ece5ce8e15af47fc9f8f177b17e8292637fe4349109e",
-      "at": "2026-10-26T21:56:30Z"
+      "evidence": "e0cd6a104210c8f33c840bc85efe9dceef226d3598a40e16dcbdb33965af5953",
+      "at": "2026-10-26T22:16:51Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "llm2jev-file-read": {
       "tested": true,
@@ -1508,33 +1519,36 @@
     },
     "long-context-memory-amplification": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
-      "findings_positive": 2,
-      "findings_negative": 0,
-      "steps": 2,
-      "evidence": "3f964da23e890b96f260a40bd2d39d4d9f95d57a62b3441cd6dd8a9cefb1e2e2",
-      "at": "2026-10-26T21:56:33Z"
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 3,
+      "evidence": "12165c64aec1376d2611749e630dd2a2d683898d0cdea7968c1454036e8bba8b",
+      "at": "2026-10-26T22:19:03Z",
+      "note": "longctx_sim two-state"
     },
     "long-context-training-collective-surface": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
-      "findings_positive": 2,
-      "findings_negative": 0,
-      "steps": 2,
-      "evidence": "56fd7c4e45f33e823a305285800bf591f314df53805e9eda39915d0cd041e217",
-      "at": "2026-10-26T21:56:35Z"
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "7c82b1d2e623c150e35f8bc01238cb73b9f7a9f2a810350b65e062f62574efd7",
+      "at": "2026-10-26T22:19:04Z",
+      "note": "longctx_sim two-state"
     },
     "long-context-window-exhaustion": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
-      "findings_negative": 0,
-      "steps": 2,
-      "evidence": "caff551aaddc8b0539b65b755842ccef926f10253d578e936dfbd0f7da6e526f",
-      "at": "2026-10-26T21:56:36Z"
+      "findings_negative": 1,
+      "steps": 3,
+      "evidence": "0858fc31c57f1e8b92e1ac0eecd87e579a9268926aaafb5e1ae2a3143982117a",
+      "at": "2026-10-26T22:19:03Z",
+      "note": "longctx_sim two-state"
     },
     "lora-adapter-injection": {
       "tested": true,
@@ -1578,13 +1592,14 @@
     },
     "megatron-checkpoint-rce": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
       "steps": 2,
-      "evidence": "e7d7c4c7d587c4c9b4ff7f9a9459ec76ac8359d96e655c72f59dc84a81380a9c",
-      "at": "2026-10-26T21:56:44Z"
+      "evidence": "3b319e70ed3ab9135671aa2fe504ff3cf75a8392ffb09636707170b9dc41d885",
+      "at": "2026-10-26T22:16:57Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "megatron-deepspeed-config-surface": {
       "tested": true,
@@ -1618,23 +1633,25 @@
     },
     "mlflow-model-rce": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
       "steps": 2,
-      "evidence": "455f27b65baa4ad53c9d219aae2d5deada7f0f8233b93c229663d613c8e49b96",
-      "at": "2026-10-26T21:56:49Z"
+      "evidence": "d84bfe65a1c68cba5f410fdd8baef7cd4325b3c6f1dc80c1cce5b8d7e7d083a7",
+      "at": "2026-10-26T22:16:48Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "mlflow-trace-write": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
       "steps": 2,
-      "evidence": "05deb88b5a52c2b9bfe15191d9dae0d54e8851b4b38cca0086ad0404f8960aaf",
-      "at": "2026-10-26T21:56:50Z"
+      "evidence": "e4f5d44dae1f2041603bafca68c5e17e2bcc383b6702cc4f14c9f4a4297d6fe7",
+      "at": "2026-10-26T22:16:45Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "model-registry-exposure": {
       "tested": true,
@@ -1678,13 +1695,14 @@
     },
     "msswift-dataset-pickle-rce": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
       "steps": 2,
-      "evidence": "29bf271f3f806af0e3056e13958034e8a1190f65bb1a0686c240fd97079f5f15",
-      "at": "2026-10-26T21:56:56Z"
+      "evidence": "255f6dbce512d52001eb1bf16dae0c19af688d227efa6b26b91e7d1aa1521225",
+      "at": "2026-10-26T22:16:54Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "msswift-eval-escape": {
       "tested": true,
@@ -1868,13 +1886,14 @@
     },
     "open-webui-file-overwrite": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
       "steps": 2,
-      "evidence": "a3e2e41525dea284ab568655e4cdc31b5571f52bc959833a1e613264f1cdbd0f",
-      "at": "2026-10-26T21:57:19Z"
+      "evidence": "7d8cab5ee518444e252a719ec53a6337071b24212c39cf1acd8bac6a12330712",
+      "at": "2026-10-26T22:16:43Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "open-webui-indirect-injection-exec": {
       "tested": true,
@@ -1998,23 +2017,25 @@
     },
     "prefill-decode-kv-channel-unauth": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
-      "findings_positive": 2,
-      "findings_negative": 0,
+      "findings_positive": 1,
+      "findings_negative": 1,
       "steps": 2,
-      "evidence": "85e8f6397b348c49b886fc7b199905acb832d2b2ffe401eb39717eb798150dcc",
-      "at": "2026-10-26T21:57:36Z"
+      "evidence": "a713cd89e472f7bd10a463f1528bbcee5bb657a3b75ec1ea6055422b80be4e96",
+      "at": "2026-10-26T22:19:03Z",
+      "note": "longctx_sim two-state"
     },
     "prefix-cache-cross-tenant-leak": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
-      "findings_positive": 2,
-      "findings_negative": 0,
+      "findings_positive": 1,
+      "findings_negative": 1,
       "steps": 2,
-      "evidence": "43fae350c1c9a90ea543a46c5e0930b90252e7a9f9ed57d6ad733aa2837caf83",
-      "at": "2026-10-26T21:57:37Z"
+      "evidence": "29bc92c116c1637a9d7aef098ab81c0f437cb6d233e735d1dd21606be2567890",
+      "at": "2026-10-26T22:19:03Z",
+      "note": "longctx_sim two-state"
     },
     "pretrain-job-escape": {
       "tested": true,
@@ -2098,13 +2119,14 @@
     },
     "ray-job-marker-rce": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "9a8b2a29ea399bdd231c98a0c90d54147b8b12437df481aa4d9566cb61d2d0cc",
-      "at": "2026-10-26T21:57:48Z"
+      "steps": 4,
+      "evidence": "3d4d61201060d2086904f0139c2569af9a1f6818b1bce0827210b2c8150b7dcf",
+      "at": "2026-10-26T22:16:04Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "rbac-bind-verb": {
       "tested": true,
@@ -2140,13 +2162,14 @@
     },
     "redfish-default-credentials": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "703b5a16683a2c38eb0608c286853ade21d487e11f8f56e184dc9f98304ed2f8",
-      "at": "2026-10-26T21:57:53Z"
+      "steps": 4,
+      "evidence": "cec11c236f7806af491ce95ed4abe4c912f9566dfcf87f570f5a00c5aabea5c3",
+      "at": "2026-10-26T22:16:29Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "remote-kv-pool-isolation": {
       "tested": true,
@@ -2323,33 +2346,36 @@
     },
     "sglang-route-poison": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "e453076aca50cfb46c0907313146b9017ba98265f84f26ab35f58521573d9b98",
-      "at": "2026-10-26T21:58:17Z"
+      "steps": 3,
+      "evidence": "9c5af2bda1aa6f75fd723599f103912dedc7a8ce75138320d4822c8367dbc7f3",
+      "at": "2026-10-26T22:16:09Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "sglang-weight-exfil": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "c67a9aaa20453ff01f95e14e73c885e7e880f6e68c921c61d8d5ed5aad2115d6",
-      "at": "2026-10-26T21:58:18Z"
+      "steps": 3,
+      "evidence": "24aacec82666f98c4d659e869608f51caceb8fb9c861c3c5e970982b5824f0ce",
+      "at": "2026-10-26T22:16:12Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "sglang-zmq-pickle-rce": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "256b68c99b6d37dfb11bc820bc766eb275b4aaaefdc175a899e58b3f7f09c47f",
-      "at": "2026-10-26T21:58:20Z"
+      "steps": 3,
+      "evidence": "aeea224654f9b6c95bcd1183ad6c702cc4bbb4cf85bf4eeb3f0ebb669c8c9913",
+      "at": "2026-10-26T22:16:07Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "shared-volume-weight-copy": {
       "tested": true,
@@ -2554,13 +2580,14 @@
     },
     "sonic-config-plane-write": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "5d49e405737db62281dcaf27709f134e1cdc3e2acf848214e21da829cc805a49",
-      "at": "2026-10-26T21:58:49Z"
+      "steps": 3,
+      "evidence": "2ed6b10246f0882c889a956e730553b3deae6f964f6c69ae40cebc53eeb6703d",
+      "at": "2026-10-26T22:16:32Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "sonic-fabric-config-audit": {
       "tested": true,
@@ -2574,13 +2601,14 @@
     },
     "sonic-rsyslog-injection": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "6a57bad84640af42a243830e33b3276912e7f5d1b97b0acdeb29583659decbc6",
-      "at": "2026-10-26T21:58:52Z"
+      "steps": 3,
+      "evidence": "00c47bf66e845dd271401ccba7f842ca0d0966b46b78f288e416f43506076d59",
+      "at": "2026-10-26T22:16:35Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "spank-plugin-integrity": {
       "tested": true,
@@ -2694,13 +2722,14 @@
     },
     "torch-weights-bypass-rce": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
       "steps": 2,
-      "evidence": "b1de3f5a86d99e583783a74cdbf5dae6b293a11ce93c01e5cf0c44a0f621511d",
-      "at": "2026-10-26T21:59:09Z"
+      "evidence": "e7ef99826b8122e139c3cb22c9bc2f81eafd6a501007f4f5ba5e7272dbbac736",
+      "at": "2026-10-26T22:17:03Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "torchrun-elastic-surface": {
       "tested": true,
@@ -2834,13 +2863,14 @@
     },
     "vllm-pickle-pipe-rce": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "1d605d11fb5a0fafed40b3aee5c95a746ae34cbd69479f0ab12455462695bff3",
-      "at": "2026-10-26T21:59:30Z"
+      "steps": 3,
+      "evidence": "4fa1a96b2a7d04db08df12674f7a795d45b0a69b1cdcaf51ebf937f48b4aa938",
+      "at": "2026-10-26T22:16:15Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "vllm-plugin-auth-bypass": {
       "tested": true,
@@ -2874,13 +2904,14 @@
     },
     "vllm-timing-oracle": {
       "tested": true,
-      "mode": "both",
+      "mode": "vulnerable/fixed",
       "runtime": "reference",
       "findings_positive": 1,
       "findings_negative": 1,
-      "steps": 2,
-      "evidence": "d80c24fd8577b81c4a4014eca7aafc2bfa7b1260001000604b903dd3a2ea2719",
-      "at": "2026-10-26T21:59:36Z"
+      "steps": 3,
+      "evidence": "e39bbc7587606248c22812c9b93fd867fc9de863f0f57a0c4f99d91ca21d803e",
+      "at": "2026-10-26T22:16:18Z",
+      "note": "template_range HTTP replay; CVE ids preserved"
     },
     "wasm-runtime-audit": {
       "tested": true,
@@ -2903,5 +2934,5 @@
       "at": "2026-10-26T21:59:39Z"
     }
   },
-  "updated_at": "2026-10-26T22:15:16Z"
+  "updated_at": "2026-10-26T22:19:04Z"
 }

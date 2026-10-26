@@ -13,84 +13,103 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
     "target": {
       "from": "params.target",
-      "required": true,
-      "description": "Target base URL"
+      "required": true
     }
   },
   "defaults": {
-    "timeout_ms": 8000,
-    "tls_verify": false
+    "timeout_ms": 8000
+  },
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN"
+    }
+  },
+  "limits": {
+    "timeout_ms": 30000,
+    "max_http_requests": 16
+  },
+  "computed": {
+    "prime_ok": "steps.prime.status == 200",
+    "reuse_cached": "steps.reuse.json.usage.cached_tokens",
+    "leak": "steps.reuse.status == 200 and steps.reuse.json.usage.cached_tokens > 0"
   },
   "steps": [
     {
-      "id": "surface",
+      "id": "prime",
       "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/healthz",
-      "save": "surface",
-      "allow_failure": true,
-      "timeout_ms": 8000
+      "method": "POST",
+      "url": "{{input.target}}/v1/chat/completions",
+      "headers": {
+        "X-Tenant": "tenant-b"
+      },
+      "body": {
+        "model": "longctx-mock",
+        "max_tokens": 1,
+        "messages": [
+          {
+            "role": "user",
+            "content": "tenant-b confidential prefix INKBLADE-BENIGN cache seed"
+          }
+        ]
+      },
+      "save": "prime",
+      "allow_failure": true
     },
     {
-      "id": "probe1",
+      "id": "reuse",
       "op": "http",
-      "method": "GET",
+      "method": "POST",
       "url": "{{input.target}}/v1/chat/completions",
-      "headers": {},
-      "save": "probe1",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    }
-  ],
-  "checks": [
-    {
-      "id": "surface-reachable",
-      "when": "steps.surface.status != null",
-      "message": "target did not answer the surface probe"
+      "headers": {
+        "X-Tenant": "tenant-a"
+      },
+      "body": {
+        "model": "longctx-mock",
+        "max_tokens": 1,
+        "messages": [
+          {
+            "role": "user",
+            "content": "tenant-b confidential prefix INKBLADE-BENIGN cache seed"
+          }
+        ]
+      },
+      "save": "reuse",
+      "allow_failure": true
     }
   ],
   "findings": [
     {
-      "id": "f1",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "id": "leak",
+      "when": "computed.leak",
       "sev": "high",
-      "title": "prefix cache 跨租户复用：无 cache_salt 仍命中他租户 prefix",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/LONG-CONTEXT.md 第 2 节：prefix cache 隔离；spec 5.2 网络架构层 + 5.6 服务网关层",
-      "fix": ""
+      "title": "长上下文前缀缓存跨租户命中（tenant-a 复用 tenant-b 前缀）",
+      "detail": "cached_tokens={{computed.reuse_cached}} context_window={{steps.reuse.json.context_window}} tenant=tenant-a",
+      "evidence": "{{steps.reuse.sha256}}",
+      "mapping": "OWASP LLM08",
+      "fix": "前缀键包含 tenant|salt；跨租户复用返回 403"
     },
     {
-      "id": "f2",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "id": "clean",
+      "when": "not computed.leak",
       "sev": "info",
-      "title": "prefix cache 未跨租户复用（cached_tokens=0 或复用被拒绝）",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/LONG-CONTEXT.md 第 2 节：prefix cache 隔离；spec 5.2 网络架构层 + 5.6 服务网关层",
-      "fix": ""
+      "title": "前缀缓存按租户隔离",
+      "detail": "status={{steps.reuse.status}} cached={{steps.reuse.json.usage.cached_tokens}}"
     }
   ],
   "artifacts": [
     {
-      "name": "prefix-cache-cross-tenant-leak-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "prefix-cache-cross-tenant-leak.json",
+      "kind": "json",
+      "fields": {
+        "leak": "computed.leak",
+        "cached_tokens": "computed.reuse_cached",
+        "route": "'/v1/chat/completions'"
+      }
     }
-  ],
-  "payloads": {
-    "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
-    }
-  },
-  "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
-  }
+  ]
 }

