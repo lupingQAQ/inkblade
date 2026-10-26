@@ -1,0 +1,81 @@
+name: Security report
+description: READ THIS FIRST - do not disclose vulnerability details in a public issue.
+title: "[security] private channel request"
+labels: ["security", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Stop - do not describe the vulnerability here
+
+        This form exists only so you can reach a private channel. **Do not** include
+        proof-of-concept code, affected endpoints, payloads, or the names of systems
+        you tested.
+
+        Preferred route: **Security -> Advisories -> Report a vulnerability**
+        (private vulnerability reporting). See `SECURITY.md` for scope, the 90-day
+        coordinated disclosure window, acknowledgement and triage SLAs.
+
+        If private reporting is unavailable, state only that you need a private
+        security contact. A maintainer will open a private thread.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected component (no details)
+      options:
+        - Platform core (authorization, runner, evidence, reporting)
+        - CLI
+        - Web UI / HTTP API
+        - Plugin SDK / plugin loading
+        - Supply chain (packaging, vendored assets, signing)
+        - Container image / Helm chart
+        - Documentation (misleading security guidance)
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: class
+    attributes:
+      label: Issue class (no details)
+      description: A coarse category is enough to route the report.
+      options:
+        - Authorization bypass / RoE gate
+        - Injection (command, template, path)
+        - Authentication / session handling
+        - Secret or data exposure
+        - Evidence tampering
+        - Supply-chain integrity
+        - Denial of service
+        - Other / prefer not to say
+
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Exact tag/commit if known; a range is fine.
+      placeholder: "v0.2.0"
+
+  - type: dropdown
+    id: channel
+    attributes:
+      label: Preferred private channel
+      options:
+        - GitHub private vulnerability reporting
+        - Email (a maintainer will propose an address in-thread)
+        - PGP-encrypted attachment (say so, do not paste the key here)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: ack
+    attributes:
+      label: Acknowledgement
+      options:
+        - label: I have not included vulnerability details in this public form.
+          required: true
+        - label: I understand the coordinated disclosure window (90 days by default, earlier by agreement).
+          required: true
+        - label: My testing stayed within authorization for the systems involved.
+          required: true

@@ -1,0 +1,81 @@
+name: Feature request
+description: Propose a capability, a module, an integration or a workflow change.
+title: "[feature] "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        InkBlade is a dual-use security platform. Proposals that increase blast
+        radius must say how they stay inside the authorization model (RoE level
+        gates, backup/rollback, evidence).
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What assessment question cannot be answered today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What should InkBlade do? Concrete commands, flags, artifacts.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - New module / detection
+        - New chain / attack path
+        - Reporting and export
+        - Plugin SDK
+        - Deployment (container / helm)
+        - Performance / scale
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: level
+    attributes:
+      label: Lowest authorization level required
+      description: If this feature changes state, it cannot run below exploit verification.
+      options:
+        - read-only recon (只读侦察)
+        - active probing (主动探测)
+        - exploit verification (利用验证)
+        - full impact demo (全影响演示)
+        - not applicable
+    validations:
+      required: true
+
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety and blast radius
+      description: Does it write? What rollback exists? Which surfaces must be present? What is the worst case if it misfires?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Existing modules, external tools, manual process.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I checked the module registry and the docs for an existing capability.
+          required: true
+        - label: I understand that write-capable features need RoE gating and a rollback path.
+          required: true

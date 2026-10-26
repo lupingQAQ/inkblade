@@ -1,0 +1,93 @@
+name: Bug report
+description: Something broke - install, demo, CLI, report, container or chart.
+title: "[bug] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please do **not** paste real credentials, customer
+        data or cluster identifiers. Redact hostnames and tokens.
+
+        Security issues in InkBlade itself: use **Security -> Advisories ->
+        Report a vulnerability** instead of this form (see `SECURITY.md`).
+
+  - type: input
+    id: version
+    attributes:
+      label: InkBlade version
+      description: The `version:` line printed by `inkblade trial`, or the release tag.
+      placeholder: "0.2.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install
+    attributes:
+      label: Install method
+      options:
+        - pip install -e .
+        - wheel / sdist
+        - container image
+        - helm chart
+        - other (describe below)
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: OS, Python, container runtime
+      placeholder: "Windows 11 / Python 3.12.15 / Docker 27; or Ubuntu 24.04 / 3.11 / k3s 1.31"
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Command(s) and parameters
+      description: Exact command line, with secrets removed.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: Include the traceback or the unexpected output.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Environment self-check
+      description: Output of `inkblade doctor --mode mock --json` (or `--mode cluster` with redaction).
+      render: json
+
+  - type: textarea
+    id: artifacts
+    attributes:
+      label: Attachments
+      description: Relevant `*.log`, `reports/trial-report.json`, screenshots. Drag files here.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues for the same symptom.
+          required: true
+        - label: This is not a security vulnerability in InkBlade (those go to private reporting).
+          required: true
+        - label: I removed credentials, customer names and cluster identifiers from the report.
+          required: true

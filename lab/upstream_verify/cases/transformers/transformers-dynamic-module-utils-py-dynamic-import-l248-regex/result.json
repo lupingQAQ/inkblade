@@ -62,11 +62,6 @@
    "size": 523
   },
   {
-   "path": "lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-regex/evidence/evil-model/configuration_tridentevil.py",
-   "sha256": "e1d943624d2fb379cdb6def86b1b9c6b11a9010b62bcefd996f061e09ce8c5c8",
-   "size": 520
-  },
-  {
    "path": "lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-regex/evidence/log.txt",
    "sha256": "581913f6c5245cfdb16366e877cd1d0727a7dcff18d6740bede806c1c44b2ec8",
    "size": 438

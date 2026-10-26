@@ -23,6 +23,37 @@
 - 目录与样张：`inkblade/{core,modules,chains,rules,reports,webui}`；
   `reports/samples/perf/grid/*-inkblade.json`、`reports/samples/rules-pack/{falco/inkblade-rules.yaml,suricata/inkblade.rules}`。
 
+### Added
+
+- 发布工程 / release engineering：`.github/workflows/{ci,release,docker}.yml`
+  （Windows + Ubuntu × Python 3.10-3.13；tag 触发 wheel/sdist、CycloneDX SBOM、
+  `SHA256SUMS`、cosign keyless bundle、GitHub Release、PyPI trusted publishing 占位；
+  GHCR `linux/amd64` + `linux/arm64` manifest list）。所有发布步骤 opt-in，失败不阻塞 CI。
+- 分发 / distribution：`Dockerfile`（python:3.12-slim、uid 10001、非 root、
+  `HEALTHCHECK`、`ENTRYPOINT inkblade`）、`deploy/helm/inkblade`
+  （Deployment/Service/PVC/ServiceAccount/RBAC/Ingress/NOTES，默认只读 RBAC）、
+  `Makefile`、`scripts/release/{build,verify,sign}.{ps1,sh}` 以及
+  build/sbom/compile-check/smoke/verify 门禁脚本。
+- 插件 SDK / plugin SDK：`inkblade/sdk`（严格清单校验、entrypoint 目录约束、
+  SHA-256 指纹 + trust store、结果 schema 校验、模板脚手架、
+  `examples/hello-surface`）与 `inkblade sdk {new,lint,validate,trust,run,list}`。
+- 试用与试点 / trial & pilot：`inkblade trial`（离线 demo → `reports/trial-report.json`
+  + 下一步）、`ui --host`（容器/反向代理部署）、`docs/TRIAL.md`、
+  `docs/PILOT-KIT.md`、`docs/FEEDBACK.md`。
+- 治理与自审 / governance：`CODE_OF_CONDUCT.md`、`CODEOWNERS`、issue forms
+  （bug/feature/security）、PR 模板、`docs/PLUGIN-SDK.md`、`docs/VERSIONING.md`
+  （SemVer/LTS/弃用）、`docs/AUDIT-PACKAGE.md`（威胁模型/攻击面/测试证据/已知限制/外审清单）；
+  `SECURITY.md` 补充 CVE 申请、CVSS 3.1 分级与 90 天披露 SLA。
+
+### Security
+
+- 外部插件默认拒绝执行：SHA-256 指纹 + trust store 固定后才加载
+  （否则必须显式 `allow_unsigned=True`）；清单在导入前校验：entrypoint 必须位于插件目录内、
+  `writes=true` 至少需要 `利用验证` 级别、`research_only` 必须默认禁用。
+- 容器与 Chart 默认最小权限：uid/gid 10001、drop ALL capabilities、
+  只读根文件系统、RBAC 默认仅 get/list/watch（写权限需 `readOnly=false` 且
+  `rbac.allowWrite=true`，并且仍需已签 RoE）。
+
 ### Deprecated
 
 - `trident` 命令行入口保留一个版本：执行时在 stderr 打印迁移提示，内部转交

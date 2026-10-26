@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/inkblade/inkblade/security/advisories/new
+    about: Report privately. Never post vulnerability details in a public issue.
+  - name: Trial guide
+    url: https://github.com/inkblade/inkblade/blob/main/docs/TRIAL.md
+    about: Install, run the 5-minute demo, and see what it produces.
+  - name: Pilot kit
+    url: https://github.com/inkblade/inkblade/blob/main/docs/PILOT-KIT.md
+    about: RoE template, scope, metrics, FP/FN labelling, exit criteria.
+  - name: Plugin SDK
+    url: https://github.com/inkblade/inkblade/blob/main/docs/PLUGIN-SDK.md
+    about: Author, validate and trust-pin a module.
+  - name: Trial feedback
+    url: https://github.com/inkblade/inkblade/blob/main/docs/FEEDBACK.md
+    about: Structured evaluation form for pilots.

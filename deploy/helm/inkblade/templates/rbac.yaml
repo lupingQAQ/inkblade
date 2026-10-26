@@ -1,0 +1,83 @@
+{{- if .Values.rbac.create }}
+{{- $readVerbs := list "get" "list" "watch" -}}
+{{- $verbs := $readVerbs -}}
+{{- if and (not .Values.readOnly) .Values.rbac.allowWrite -}}
+{{- $verbs = concat $readVerbs (list "create" "update" "patch" "delete") -}}
+{{- end -}}
+{{- $coreResources := list "pods" "pods/log" "services" "endpoints" "configmaps" "serviceaccounts" "namespaces" "nodes" "persistentvolumeclaims" "persistentvolumes" "events" "resourcequotas" "limitranges" -}}
+{{- if .Values.rbac.includeSecrets -}}
+{{- $coreResources = concat $coreResources (list "secrets") -}}
+{{- end -}}
+{{- $rules := list
+      (dict "apiGroups" (list "") "resources" $coreResources "verbs" $verbs)
+      (dict "apiGroups" (list "apps") "resources" (list "deployments" "statefulsets" "daemonsets" "replicasets") "verbs" $verbs)
+      (dict "apiGroups" (list "batch") "resources" (list "jobs" "cronjobs") "verbs" $verbs)
+      (dict "apiGroups" (list "rbac.authorization.k8s.io") "resources" (list "roles" "rolebindings" "clusterroles" "clusterrolebindings") "verbs" $verbs)
+      (dict "apiGroups" (list "networking.k8s.io") "resources" (list "ingresses" "networkpolicies") "verbs" $verbs)
+      (dict "apiGroups" (list "policy") "resources" (list "poddisruptionbudgets") "verbs" $verbs)
+      (dict "apiGroups" (list "storage.k8s.io") "resources" (list "storageclasses" "csidrivers" "csistoragecapacities" "volumeattachments") "verbs" $verbs)
+      (dict "apiGroups" (list "apiextensions.k8s.io") "resources" (list "customresourcedefinitions") "verbs" $verbs)
+      (dict "apiGroups" (list "node.k8s.io") "resources" (list "runtimeclasses") "verbs" $verbs)
+      (dict "apiGroups" (list "scheduling.k8s.io") "resources" (list "priorityclasses") "verbs" $verbs)
+      (dict "apiGroups" (list "metrics.k8s.io") "resources" (list "pods" "nodes") "verbs" $readVerbs)
+-}}
+{{- $rules = concat $rules (.Values.rbac.extraRules | default list) -}}
+{{- if .Values.rbac.clusterWide }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "inkblade.fullname" . }}
+  labels:
+    {{- include "inkblade.labels" . | nindent 4 }}
+rules:
+  {{- toYaml $rules | nindent 2 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "inkblade.fullname" . }}
+  labels:
+    {{- include "inkblade.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "inkblade.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "inkblade.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- else }}
+{{- $namespaces := .Values.rbac.namespaces -}}
+{{- if not $namespaces -}}
+{{- $namespaces = list .Release.Namespace -}}
+{{- end -}}
+{{- range $ns := $namespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "inkblade.fullname" $ }}
+  namespace: {{ $ns }}
+  labels:
+    {{- include "inkblade.labels" $ | nindent 4 }}
+rules:
+  {{- toYaml $rules | nindent 2 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "inkblade.fullname" $ }}
+  namespace: {{ $ns }}
+  labels:
+    {{- include "inkblade.labels" $ | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "inkblade.fullname" $ }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "inkblade.serviceAccountName" $ }}
+    namespace: {{ $.Release.Namespace }}
+{{- end }}
+{{- end }}
+{{- end }}

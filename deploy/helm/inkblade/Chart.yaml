@@ -1,0 +1,23 @@
+apiVersion: v2
+name: inkblade
+description: InkBlade - authorized security assessment platform for Kubernetes ML training and inference clusters
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+kubeVersion: ">=1.26.0-0"
+home: https://github.com/inkblade/inkblade
+sources:
+  - https://github.com/inkblade/inkblade
+keywords:
+  - security
+  - kubernetes
+  - ml
+  - llm
+  - pentest
+  - assessment
+annotations:
+  category: Security
+  licenses: Apache-2.0
+maintainers:
+  - name: The InkBlade Authors
+    url: https://github.com/inkblade/inkblade
