@@ -1,0 +1,28 @@
+{
+  "key": "skyrl-fetch-weights-traversal",
+  "name": {
+    "zh": "SkyRL fetch_weights 路径穿越",
+    "en": "SkyRL fetch_weights Path Traversal"
+  },
+  "series": "横向利用",
+  "description": "SkyRL a1e34db /fetch_weights joins payload_files into cache_dir without normalising '..', so an attacker writes outside the cache and controls the next loaded weights.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标 URL，例如 http://host:port（真实模式必需）",
+    "mode": "probe-only（默认，只读探测）| backup-write（写模块需 backup_targets）",
+    "local_path": "function-level 模块的本地文件/模型目录（仅读取，不反序列化）"
+  },
+  "produces": "weight-cache-write",
+  "knowledge": "docs/WEAPON-READINESS.md#skyrl-fetch-weights-traversal",
+  "combo_signature": "skyrl-fetch-weights-traversal",
+  "weapon_pack": true,
+  "surfaces": [
+    {
+      "type": "http-endpoint",
+      "selector": "/fetch_weights"
+    }
+  ],
+  "default_enabled": true
+}

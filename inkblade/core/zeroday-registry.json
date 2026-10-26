@@ -21,7 +21,7 @@
      "text": "HTTP request -> /awex -> torch.save(path) + NCCL group join(master_addr/port) -> weight/gradient injection."
     }
    ],
-   "reserve": 0,
+   "reserve": 4,
    "verified": 4
   },
   "bmc": {
@@ -397,7 +397,7 @@
      "text": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
     }
    ],
-   "reserve": 0,
+   "reserve": 2,
    "verified": 6
   },
   "llm2jev": {
@@ -433,7 +433,7 @@
      "text": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."
     }
    ],
-   "reserve": 0,
+   "reserve": 1,
    "verified": 1
   },
   "msswift": {
@@ -685,7 +685,7 @@
      "text": "HTTP request -> /skyrl/v1/load_lora_adapter -> lora_path -> vLLM runtime adapter load; static evidence only."
     }
    ],
-   "reserve": 1,
+   "reserve": 3,
    "verified": 3
   },
   "slime": {
@@ -701,7 +701,7 @@
      "text": "shared checkpoint file -> torch.load(weights_only=False) -> pickle execution in training process."
     }
    ],
-   "reserve": 0,
+   "reserve": 2,
    "verified": 2
   },
   "sonicrestapi": {
@@ -937,7 +937,7 @@
      "text": "checkpoint path -> fs.py os.system('hdfs dfs ... ' + path) -> shell metacharacters -> command execution."
     }
    ],
-   "reserve": 0,
+   "reserve": 3,
    "verified": 4
   },
   "vllm": {
@@ -1064,7 +1064,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:04+00:00",
+    "checked_at": "2026-10-26T17:35:25+00:00",
     "id": "vllm-jev-plugin-auth-bypass",
     "matched": [],
     "providers": {
@@ -1164,10 +1164,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 1 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 1 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "vllm@0.31.0",
+      "query_mode": "pin",
       "related": [
        {
         "aliases": [
@@ -1191,7 +1192,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -1219,7 +1220,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v0.31.0 + vllm-jev 57226d4"
+   "version": "v0.31.0 + vllm-jev 57226d4",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "vllm_jev/endpoint.py:530 registers /plugins/vllm-jev/choice outside vLLM's GUARDED_PREFIX (/v1,/v2,/inference,/cohere); the vllm-jev plugin (57226d4) must be installed before the route exists.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "djev",
@@ -1263,7 +1268,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:05+00:00",
+    "checked_at": "2026-10-26T17:35:25+00:00",
     "id": "djev-open-proxy",
     "matched": [],
     "providers": {
@@ -1302,10 +1307,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "djev@e5841cf41e9211608e698492658685c36e24e77a",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -1320,7 +1326,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -1347,7 +1353,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "e5841cf"
+   "version": "e5841cf",
+   "deployment_requirement": "default-exposed",
+   "deployment_evidence": "djev/structured_server.py do_POST/do_GET serve 0.0.0.0:8011; API_KEY is optional and the GET management routes never check it.",
+   "deployment_basis": "runtime",
+   "default_exposed": true
   },
   {
    "component": "sglang",
@@ -1397,7 +1407,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:06+00:00",
+    "checked_at": "2026-10-26T17:35:25+00:00",
     "id": "sglang-admin-optional-failopen",
     "matched": [
      {
@@ -1411,82 +1421,6 @@
      }
     ],
     "providers": {
-     "github_advisories": {
-      "detail": "GitHub advisory database has no strong-term match for the package",
-      "matches": [],
-      "provider": "github_advisories",
-      "related": [],
-      "status": "ok"
-     },
-     "nvd": {
-      "detail": "NVD keyword search returned no strong-term match",
-      "keywords": [
-       "sglang"
-      ],
-      "matches": [],
-      "provider": "nvd",
-      "related": [
-       {
-        "id": "CVE-2025-10164",
-        "summary": "A security flaw has been discovered in lmsys sglang 0.4.6. Affected by this vulnerability is the function main of the file /update_weights_from_tensor. The manipulation of the argument serialized_named_tensors results in deserialization. The attack can be launched remotely. The exploit has been rele",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-10164"
-       },
-       {
-        "id": "CVE-2026-3059",
-        "summary": "SGLang's multimodal generation module is vulnerable to unauthenticated remote code execution through the ZMQ broker, which deserializes untrusted data using pickle.loads() without authentication.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3059"
-       },
-       {
-        "id": "CVE-2026-3060",
-        "summary": "SGLang' encoder parallel disaggregation system is vulnerable to unauthenticated remote code execution through the disaggregation module, which deserializes untrusted data using pickle.loads() without authentication.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3060"
-       },
-       {
-        "id": "CVE-2026-3989",
-        "summary": "SGLangs `replay_request_dump.py` contains an insecure pickle.load() without validation and proper deserialization. An attacker can take advantage of this by providing a malicious .pkl file, which will execute the attackers code on the device running the script.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3989"
-       },
-       {
-        "id": "CVE-2026-5760",
-        "summary": "SGLang's reranking endpoint (/v1/rerank) achieves Remote Code Execution (RCE) when a model file containing a malcious tokenizer.chat_template is loaded, as the Jinja2 chat templates are rendered using an unsandboxed jinja2.Environment().",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-5760"
-       },
-       {
-        "id": "CVE-2026-7669",
-        "summary": "A vulnerability was detected in sgl-project SGLang up to 0.5.9. Impacted is the function get_tokenizer of the file python/sglang/srt/utils/hf_transformers_utils.py of the component HuggingFace Transformer Handler. The manipulation of the argument trust_remote_code with the input False as part of Boo",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7669"
-       },
-       {
-        "id": "CVE-2026-7301",
-        "summary": "SGLangs multimodal generation runtime scheduler's ROUTER socket binds to 0.0.0.0 by default and contains a sink that calls pickle.loads() on incoming messages, enabling RCE when exposed to the internet.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7301"
-       },
-       {
-        "id": "CVE-2026-7302",
-        "summary": "SGLangs multimodal generation runtime is vulnerable to an unauthenticated path traversal vulnerability, allowing an attacker to write arbitrary files anywhere the server process has write access, by including ../ sequences in the upload filename when sent to specific endpoints.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7302"
-       },
-       {
-        "id": "CVE-2026-7304",
-        "summary": "SGLangs multimodal generation runtime is vulnerable to unauthenticated remote code execution when the --enable-custom-logit-processor option is enabled, as Python objects loaded via dill.loads() will be deserialized without validation.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7304"
-       },
-       {
-        "id": "CVE-2026-10300",
-        "summary": "A security vulnerability has been detected in SGLang 0.5.10.post1. Impacted is an unknown function of the file python/sglang/srt/lora/lora_manager.py of the component Inference HTTP Endpoint. Such manipulation of the argument lora_path leads to reachable assertion. The attack can be launched remotel",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10300"
-       }
-      ],
-      "status": "ok"
-     },
-     "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-      "matches": [],
-      "provider": "osv",
-      "queried": "sglang@0.5.21",
-      "related": [],
-      "status": "ok"
-     },
      "registry": {
       "detail": "known_public field from the source audit/finding registry",
       "matches": [
@@ -1502,19 +1436,10 @@
       ],
       "provider": "registry",
       "status": "match"
-     },
-     "vendor": {
-      "detail": "vendor pages fetched clean",
-      "fetched": [
-       "https://github.com/sgl-project/sglang/security/advisories"
-      ],
-      "matches": [],
-      "provider": "vendor",
-      "status": "ok"
      }
     },
     "reason": "source audit already cites public reference(s): CVE-2026-15978, VU#281278, GHSA-2wvm-gjg7-5jfm, GHSA-h6rf-77vv-9mvj",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "already-public"
    },
    "preconditions": [
@@ -1582,7 +1507,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:07+00:00",
+    "checked_at": "2026-10-26T17:35:25+00:00",
     "id": "slime-pull-weights",
     "matched": [],
     "providers": {
@@ -1632,8 +1557,16 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "no version/commit pin; OSV cannot answer for a floating package",
+      "detail": "no version/commit pin and PyPI 'slime' is an unrelated placeholder release (0.0.0: Simple linear mixed effects modelwith priors and constraints.); OSV cannot answer for the unpublished upstream tree",
+      "justified": true,
       "matches": [],
+      "package_identity": {
+       "evidence": "https://pypi.org/project/slime/",
+       "exists": true,
+       "placeholder": true,
+       "summary": "Simple linear mixed effects modelwith priors and constraints.",
+       "version": "0.0.0"
+      },
       "provider": "osv",
       "status": "not-applicable"
      },
@@ -1647,9 +1580,9 @@
       "status": "ok"
      }
     },
-    "reason": "provider(s) unavailable/skipped: osv: no version/commit pin; OSV cannot answer for a floating package",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "inconclusive"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match; justified non-answer: osv: no version/commit pin and PyPI 'slime' is an unrelated placeholder release (0.0.0: Simple linear mixed effects modelwith priors and constraints.); OSV cannot answer for the unpublished upstream tree",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "slime patch stack deployed",
@@ -1668,7 +1601,7 @@
    "source_tags": [
     "omni-jev"
    ],
-   "state": "verified-exploitable",
+   "state": "novelty-checked",
    "title": "slime private /pull_weights patch: ADMIN_OPTIONAL + request-controlled source_dir/local_checkpoint_dir",
    "verification": {
     "dynamic": true,
@@ -1676,7 +1609,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "slime 05e3b01 / SGLang v0.5.15.post1"
+   "version": "slime 05e3b01 / SGLang v0.5.15.post1",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "Patched SGLang /pull_weights requires the slime patch stack (SGLang v0.5.15.post1) and a shared PVC/NFS writable by the attacker.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "sglang-omni",
@@ -1720,7 +1657,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:08+00:00",
+    "checked_at": "2026-10-26T17:35:25+00:00",
     "id": "sglang-omni-admin-failopen",
     "matched": [],
     "providers": {
@@ -1759,10 +1696,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "sglang-omni@204ba29a5303c25ca74238cc7f1e1356b494dd24",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -1777,7 +1715,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -1801,7 +1739,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "HEAD 204ba29"
+   "version": "HEAD 204ba29",
+   "deployment_requirement": "default-exposed",
+   "deployment_evidence": "sglang_omni/http/admin_auth.py:28 returns _no_auth when SGLANG_OMNI_ADMIN_KEY is unset; POST /start_profile accepts event_dir and writes JSONL under it.",
+   "deployment_basis": "runtime",
+   "default_exposed": true
   },
   {
    "component": "openjev-sglang",
@@ -1907,7 +1849,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:08+00:00",
+    "checked_at": "2026-10-26T17:35:25+00:00",
     "id": "skyrl-vllm-devmode",
     "matched": [],
     "providers": {
@@ -2011,10 +1953,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "skyrl@a1e34dbf21003f66bd7921487fd47db6c154aba2",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -2029,7 +1972,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -2053,7 +1996,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "a1e34db"
+   "version": "a1e34db",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "SkyRL forces VLLM_SERVER_DEV_MODE=1 in skyrl_train/workers/vllm_server_actor.py:216; the /update_weights pickle route only exists in that training recipe.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "skyrl",
@@ -2096,40 +2043,9 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:08+00:00",
+    "checked_at": "2026-10-26T17:35:26+00:00",
     "id": "skyrl-tinker-api",
-    "matched": [
-     {
-      "id": "78e45c76c184ac7b2433f1f4ffb1b84733c20714",
-      "repo": "NovaSky-AI/SkyRL",
-      "summary": "[fix] Fix AMD Tinker FSDP Docker runtime (#2520)",
-      "url": "https://github.com/NovaSky-AI/SkyRL/commit/78e45c76c184ac7b2433f1f4ffb1b84733c20714"
-     },
-     {
-      "id": "adcb93eb87bfcf169fa3835a8f8e5282bf75d81f",
-      "repo": "NovaSky-AI/SkyRL",
-      "summary": "[tx] Implement Qwen 3.5 model architecture (#1228)",
-      "url": "https://github.com/NovaSky-AI/SkyRL/commit/adcb93eb87bfcf169fa3835a8f8e5282bf75d81f"
-     },
-     {
-      "id": "f3f2dbffaede4db50bfb11b73378b0c0104c2ceb",
-      "repo": "NovaSky-AI/SkyRL",
-      "summary": "[tx] Update README.md and move tx over to skyrl/ folder (#1226)",
-      "url": "https://github.com/NovaSky-AI/SkyRL/commit/f3f2dbffaede4db50bfb11b73378b0c0104c2ceb"
-     },
-     {
-      "id": "9172197644228d23206ab91325834d29fb66f339",
-      "repo": "NovaSky-AI/SkyRL",
-      "summary": "[tx][megatron] making megatron skyrl-train worker usable as TX backend (#1067)",
-      "url": "https://github.com/NovaSky-AI/SkyRL/commit/9172197644228d23206ab91325834d29fb66f339"
-     },
-     {
-      "id": "72b165fd4877773d9ae4e8a8c95e9f39369e2f2e",
-      "repo": "NovaSky-AI/SkyRL",
-      "summary": "[feat][tinker] New inference client in the skyrl-train tinker backend (#1452)",
-      "url": "https://github.com/NovaSky-AI/SkyRL/commit/72b165fd4877773d9ae4e8a8c95e9f39369e2f2e"
-     }
-    ],
+    "matched": [],
     "providers": {
      "github_advisories": {
       "detail": "GitHub advisory database has no strong-term match for the package",
@@ -2157,39 +2073,8 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "5 security-relevant commit(s) mention tinker/api",
-      "matches": [
-       {
-        "id": "78e45c76c184ac7b2433f1f4ffb1b84733c20714",
-        "repo": "NovaSky-AI/SkyRL",
-        "summary": "[fix] Fix AMD Tinker FSDP Docker runtime (#2520)",
-        "url": "https://github.com/NovaSky-AI/SkyRL/commit/78e45c76c184ac7b2433f1f4ffb1b84733c20714"
-       },
-       {
-        "id": "adcb93eb87bfcf169fa3835a8f8e5282bf75d81f",
-        "repo": "NovaSky-AI/SkyRL",
-        "summary": "[tx] Implement Qwen 3.5 model architecture (#1228)",
-        "url": "https://github.com/NovaSky-AI/SkyRL/commit/adcb93eb87bfcf169fa3835a8f8e5282bf75d81f"
-       },
-       {
-        "id": "f3f2dbffaede4db50bfb11b73378b0c0104c2ceb",
-        "repo": "NovaSky-AI/SkyRL",
-        "summary": "[tx] Update README.md and move tx over to skyrl/ folder (#1226)",
-        "url": "https://github.com/NovaSky-AI/SkyRL/commit/f3f2dbffaede4db50bfb11b73378b0c0104c2ceb"
-       },
-       {
-        "id": "9172197644228d23206ab91325834d29fb66f339",
-        "repo": "NovaSky-AI/SkyRL",
-        "summary": "[tx][megatron] making megatron skyrl-train worker usable as TX backend (#1067)",
-        "url": "https://github.com/NovaSky-AI/SkyRL/commit/9172197644228d23206ab91325834d29fb66f339"
-       },
-       {
-        "id": "72b165fd4877773d9ae4e8a8c95e9f39369e2f2e",
-        "repo": "NovaSky-AI/SkyRL",
-        "summary": "[feat][tinker] New inference client in the skyrl-train tinker backend (#1452)",
-        "url": "https://github.com/NovaSky-AI/SkyRL/commit/72b165fd4877773d9ae4e8a8c95e9f39369e2f2e"
-       }
-      ],
+      "detail": "no security-relevant commit matched tinker/api",
+      "matches": [],
       "provider": "github_commits",
       "query": "\"tinker/api\" repo:NovaSky-AI/SkyRL",
       "related": [
@@ -2198,6 +2083,12 @@
         "repo": "NovaSky-AI/SkyRL",
         "summary": "[tinker] expose dppo through tinker api (#1876)",
         "url": "https://github.com/NovaSky-AI/SkyRL/commit/6233c149a94a6ddc6136b941de52d8b1739e02e0"
+       },
+       {
+        "id": "78e45c76c184ac7b2433f1f4ffb1b84733c20714",
+        "repo": "NovaSky-AI/SkyRL",
+        "summary": "[fix] Fix AMD Tinker FSDP Docker runtime (#2520)",
+        "url": "https://github.com/NovaSky-AI/SkyRL/commit/78e45c76c184ac7b2433f1f4ffb1b84733c20714"
        },
        {
         "id": "c0241450438086cc3295af2679e0fbd3cc55076f",
@@ -2246,15 +2137,9 @@
         "repo": "NovaSky-AI/SkyRL",
         "summary": "[tinker][docs] update tinker API docs to use qwen3-4b-instruct-2507 (#1740)",
         "url": "https://github.com/NovaSky-AI/SkyRL/commit/4e37dde4db16ed0b87b373a76e75de85e9bc1a42"
-       },
-       {
-        "id": "8f9a3e68acbbd006b78bfdb8b7686300db293818",
-        "repo": "NovaSky-AI/SkyRL",
-        "summary": "[fix][tinker] 14/n towards Kimi K2.6: sleep colocated engines around Tinker API checkpoint ops (#2065)",
-        "url": "https://github.com/NovaSky-AI/SkyRL/commit/8f9a3e68acbbd006b78bfdb8b7686300db293818"
        }
       ],
-      "status": "match"
+      "status": "ok"
      },
      "nvd": {
       "detail": "NVD keyword search returned no strong-term match",
@@ -2267,10 +2152,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "skyrl@a1e34dbf21003f66bd7921487fd47db6c154aba2",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -2284,9 +2170,9 @@
       "status": "ok"
      }
     },
-    "reason": "public disclosure match: github_commits=78e45c76c184ac7b2433f1f4ffb1b84733c20714",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "already-public"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "Tinker API started",
@@ -2301,7 +2187,7 @@
     "snippet": ""
    },
    "source": "audit-history",
-   "state": "public",
+   "state": "novelty-checked",
    "title": "SkyRL Tinker API binds 0.0.0.0:8000 and has no authentication on 8 endpoints",
    "verification": {
     "dynamic": true,
@@ -2309,7 +2195,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "a1e34db"
+   "version": "a1e34db",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "The Tinker FastAPI app has no auth dependency and defaults to 0.0.0.0:8000, but it is an optional SkyRL serving entrypoint that must be started explicitly.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "trl",
@@ -2352,7 +2242,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:09+00:00",
+    "checked_at": "2026-10-26T17:35:26+00:00",
     "id": "trl-vllm-serve-devmode",
     "matched": [],
     "providers": {
@@ -2475,10 +2365,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "trl@1.15.0",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -2494,7 +2385,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -2518,7 +2409,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "1.15.0"
+   "version": "1.15.0",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "trl vllm-serve mounts dev weight/cache routes only in dev mode (TRL 1.15.0); the default serving command does not register them.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "areal",
@@ -2562,7 +2457,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:10+00:00",
+    "checked_at": "2026-10-26T17:35:26+00:00",
     "id": "areal-unauth-engine-control",
     "matched": [],
     "providers": {
@@ -2608,29 +2503,36 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "HTTP 422",
+      "detail": "no security-relevant commit matched proxy_rollout_server.py",
       "matches": [],
       "provider": "github_commits",
-      "raw": {
-       "body": {
-        "documentation_url": "https://docs.github.com/v3/search/",
-        "errors": [
-         {
-          "code": "invalid",
-          "field": "q",
-          "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
-          "resource": "Search"
-         }
-        ],
-        "message": "Validation Failed",
-        "status": "422"
+      "query": "\"proxy_rollout_server.py\" repo:areal-project/AReaL",
+      "related": [
+       {
+        "id": "3a23418cddcba16f0c679e140f52ff2b1c87f46a",
+        "repo": "areal-project/AReaL",
+        "summary": "refactor: consolidate admin key validation into shared helper (#1328)",
+        "url": "https://github.com/areal-project/AReaL/commit/3a23418cddcba16f0c679e140f52ff2b1c87f46a"
        },
-       "cache_hit": false,
-       "http_status": 422,
-       "status": "http-error",
-       "url": "https://api.github.com/search/commits?q=%22proxy_rollout_server.py%22+repo%3AinclusionAI%2FAReaL&per_page=20"
+       {
+        "id": "0e4b69474650200223a19edfa11e23c975b7eeff",
+        "repo": "areal-project/AReaL",
+        "summary": "fix(proxy): use unique role names for proxy workers to fix rollout dump version=0 bug (#941)",
+        "url": "https://github.com/areal-project/AReaL/commit/0e4b69474650200223a19edfa11e23c975b7eeff"
+       },
+       {
+        "id": "a5bb0cd3f1ea9fa591b6d68a12310acc8ea6fa57",
+        "repo": "areal-project/AReaL",
+        "summary": "refactor(openai): modularize proxy architecture and add inline mode (#829)",
+        "url": "https://github.com/areal-project/AReaL/commit/a5bb0cd3f1ea9fa591b6d68a12310acc8ea6fa57"
+       }
+      ],
+      "repo_resolution": {
+       "archived": false,
+       "repo": "areal-project/AReaL",
+       "resolved": true
       },
-      "status": "error"
+      "status": "ok"
      },
      "nvd": {
       "detail": "NVD keyword search returned no strong-term match",
@@ -2659,10 +2561,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "areal@448de5235341482465362e8b831097685d8e305d",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -2676,9 +2579,9 @@
       "status": "ok"
      }
     },
-    "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "inconclusive"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "AReaL proxy rollout server exposed",
@@ -2693,7 +2596,7 @@
     "snippet": ""
    },
    "source": "audit-history",
-   "state": "verified-exploitable",
+   "state": "novelty-checked",
    "title": "AReaL proxy rollout control plane: unauthenticated /set_env + /create_engine + /call",
    "verification": {
     "dynamic": true,
@@ -2701,7 +2604,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "448de52"
+   "version": "448de52",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "areal/experimental/proxy_rollout_server.py:445 /set_env + /create_engine have no auth, but the proxy rollout server is an optional AReaL training component.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "areal",
@@ -2745,7 +2652,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:10+00:00",
+    "checked_at": "2026-10-26T17:35:26+00:00",
     "id": "areal-dataservice-pickle",
     "matched": [],
     "providers": {
@@ -2766,29 +2673,24 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "HTTP 422",
+      "detail": "no security-relevant commit matched data_service/worker",
       "matches": [],
       "provider": "github_commits",
-      "raw": {
-       "body": {
-        "documentation_url": "https://docs.github.com/v3/search/",
-        "errors": [
-         {
-          "code": "invalid",
-          "field": "q",
-          "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
-          "resource": "Search"
-         }
-        ],
-        "message": "Validation Failed",
-        "status": "422"
-       },
-       "cache_hit": false,
-       "http_status": 422,
-       "status": "http-error",
-       "url": "https://api.github.com/search/commits?q=%22data_service%2Fworker%22+repo%3AinclusionAI%2FAReaL&per_page=20"
+      "query": "\"data_service/worker\" repo:areal-project/AReaL",
+      "related": [
+       {
+        "id": "ad622efd47c2d261dd6c4560bb63a1a69667b2b9",
+        "repo": "areal-project/AReaL",
+        "summary": "fix(infra): move data service seed to worker-level config (#1210)",
+        "url": "https://github.com/areal-project/AReaL/commit/ad622efd47c2d261dd6c4560bb63a1a69667b2b9"
+       }
+      ],
+      "repo_resolution": {
+       "archived": false,
+       "repo": "areal-project/AReaL",
+       "resolved": true
       },
-      "status": "error"
+      "status": "ok"
      },
      "nvd": {
       "detail": "NVD keyword search returned no strong-term match",
@@ -2817,10 +2719,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "areal@448de5235341482465362e8b831097685d8e305d",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -2834,9 +2737,9 @@
       "status": "ok"
      }
     },
-    "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "inconclusive"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "data-service worker exposed",
@@ -2852,7 +2755,7 @@
     "snippet": ""
    },
    "source": "audit-history",
-   "state": "verified-exploitable",
+   "state": "novelty-checked",
    "title": "AReaL data-service worker /run accepts pickle.load without auth",
    "verification": {
     "dynamic": true,
@@ -2860,7 +2763,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "448de52"
+   "version": "448de52",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "AReaL dataservice pickle.loads on the request body requires the dataservice port to be exposed by the training deployment.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "openrlhf",
@@ -2902,7 +2809,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:11+00:00",
+    "checked_at": "2026-10-26T17:35:26+00:00",
     "id": "openrlhf-serve-rm",
     "matched": [],
     "providers": {
@@ -2966,10 +2873,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "openrlhf@0.11.2",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -2984,7 +2892,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -3008,7 +2916,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "0.11.2 / dc2a7ad"
+   "version": "0.11.2 / dc2a7ad",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "Requires OpenRLHF 0.11.2 started with --serve-rm; the reward-model HTTP server is not part of the default training launch.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "llamafactory",
@@ -3054,7 +2966,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:12+00:00",
+    "checked_at": "2026-10-26T17:35:26+00:00",
     "id": "llamafactory-webui-rce",
     "matched": [
      {
@@ -3065,61 +2977,6 @@
      }
     ],
     "providers": {
-     "github_advisories": {
-      "detail": "GitHub advisory database has no strong-term match for the package",
-      "matches": [],
-      "provider": "github_advisories",
-      "related": [],
-      "status": "ok"
-     },
-     "nvd": {
-      "detail": "1 NVD CVE(s) matched strong terms",
-      "keywords": [
-       "llama-factory"
-      ],
-      "matches": [
-       {
-        "id": "CVE-2026-58116",
-        "matched_terms": [
-         "trust_remote_code"
-        ],
-        "summary": "LLaMA-Factory through 0.9.5 contains a remote code execution vulnerability that allows attackers with WebUI access to execute arbitrary Python code by supplying a malicious model path in the Chat or Training interfaces. The application passes user-supplied model path input unvalidated into AutoToken",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-58116"
-       }
-      ],
-      "provider": "nvd",
-      "related": [
-       {
-        "id": "CVE-2025-46567",
-        "summary": "LLama Factory enables fine-tuning of large language models. Prior to version 1.0.0, a critical vulnerability exists in the `llamafy_baichuan2.py` script of the LLaMA-Factory project. The script performs insecure deserialization using `torch.load()` on user-supplied `.bin` files from an input directo",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-46567"
-       },
-       {
-        "id": "CVE-2025-53002",
-        "summary": "LLaMA-Factory is a tuning library for large language models. A remote code execution vulnerability was discovered in LLaMA-Factory versions up to and including 0.9.3 during the LLaMA-Factory training process. This vulnerability arises because the `vhead_file` is loaded without proper safeguards, all",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-53002"
-       },
-       {
-        "id": "CVE-2025-61784",
-        "summary": "LLaMA-Factory is a tuning library for large language models. Prior to version 0.9.4, a Server-Side Request Forgery (SSRF) vulnerability in the chat API allows any authenticated user to force the server to make arbitrary HTTP requests to internal and external networks. This can lead to the exposure o",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61784"
-       },
-       {
-        "id": "CVE-2026-85673",
-        "summary": "LLaMA-Factory contains a server-side request forgery vulnerability in the OpenAI-compatible API multimodal media URL handler that allows unauthenticated attackers to bypass SSRF validation. The check_ssrf_url guard validates URLs once but requests.get follows redirects and re-resolves DNS without re",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85673"
-       }
-      ],
-      "status": "match"
-     },
-     "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-      "matches": [],
-      "provider": "osv",
-      "queried": "llamafactory@0.9.5",
-      "related": [],
-      "status": "ok"
-     },
      "registry": {
       "detail": "known_public field from the source audit/finding registry",
       "matches": [
@@ -3132,19 +2989,10 @@
       ],
       "provider": "registry",
       "status": "match"
-     },
-     "vendor": {
-      "detail": "vendor pages fetched clean",
-      "fetched": [
-       "https://github.com/hiyouga/LLaMA-Factory/security/advisories"
-      ],
-      "matches": [],
-      "provider": "vendor",
-      "status": "ok"
      }
     },
     "reason": "source audit already cites public reference(s): CVE-2026-58116",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "already-public"
    },
    "preconditions": [
@@ -3212,7 +3060,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:13+00:00",
+    "checked_at": "2026-10-26T17:35:26+00:00",
     "id": "msswift-trust-remote-code",
     "matched": [],
     "providers": {
@@ -3300,10 +3148,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "ms-swift@4.5.3",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -3318,7 +3167,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -3342,7 +3191,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "4.5.3 / fbc61cf"
+   "version": "4.5.3 / fbc61cf",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "ms-swift 4.5.3 loads a model's auto_map via trust_remote_code from the operator-controlled model path; execution is in the training/inference process.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "verl",
@@ -3389,7 +3242,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:14+00:00",
+    "checked_at": "2026-10-26T17:35:26+00:00",
     "id": "verl-prime-math-eval",
     "matched": [
      {
@@ -3400,93 +3253,6 @@
      }
     ],
     "providers": {
-     "github_advisories": {
-      "detail": "GitHub advisory database has no strong-term match for the package",
-      "matches": [],
-      "provider": "github_advisories",
-      "related": [],
-      "status": "ok"
-     },
-     "nvd": {
-      "detail": "1 NVD CVE(s) matched strong terms",
-      "keywords": [
-       "verl"
-      ],
-      "matches": [
-       {
-        "id": "CVE-2026-6878",
-        "matched_terms": [
-         "prime_math",
-         "grader",
-         "grader.py"
-        ],
-        "summary": "A vulnerability was identified in ByteDance verl up to 0.7.0. Affected is the function math_equal of the file prime_math/grader.py. The manipulation leads to sandbox issue. It is possible to initiate the attack remotely. The complexity of an attack is rather high. The exploitability is told to be di",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-6878"
-       }
-      ],
-      "provider": "nvd",
-      "related": [
-       {
-        "id": "CVE-2006-6666",
-        "summary": "PHP remote file inclusion vulnerability in index.php in VerliAdmin 0.3 and earlier allows remote authenticated users to execute arbitrary PHP code via a URL in the q parameter.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6666"
-       },
-       {
-        "id": "CVE-2006-6667",
-        "summary": "Multiple SQL injection vulnerabilities in VerliAdmin 0.3 and earlier allow remote attackers to execute arbitrary SQL commands via the (1) nick_mod or (2) nick parameter to (a) repass.php or (b) verify.php. NOTE: The provenance of this information is unknown; the details are obtained solely from thir",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6667"
-       },
-       {
-        "id": "CVE-2006-6668",
-        "summary": "Cross-site scripting (XSS) vulnerability in VerliAdmin 0.3 and earlier allows remote attackers to inject arbitrary web script or HTML via unspecified vectors.  NOTE: The provenance of this information is unknown; the details are obtained solely from third party information.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6668"
-       },
-       {
-        "id": "CVE-2007-0098",
-        "summary": "Directory traversal vulnerability in language.php in VerliAdmin 0.3 and earlier, when magic_quotes_gpc is disabled, allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the lang cookie, as demonstrated by injecting PHP sequences into an Apache HTTP Server log fi",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2007-0098"
-       },
-       {
-        "id": "CVE-2007-5321",
-        "summary": "Directory traversal vulnerability in index.php in Verlihub Control Panel (VHCP) 1.7 and earlier allows remote attackers to include arbitrary files via a .. (dot dot) in the page parameter.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2007-5321"
-       },
-       {
-        "id": "CVE-2008-5705",
-        "summary": "The cTrigger::DoIt function in src/ctrigger.cpp in the trigger mechanism in the daemon in Verlihub 0.9.8d-RC2 and earlier, when user triggers are enabled, allows remote attackers to execute arbitrary commands via shell metacharacters in an argument.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-5705"
-       },
-       {
-        "id": "CVE-2008-5706",
-        "summary": "The cTrigger::DoIt function in src/ctrigger.cpp in the trigger mechanism in the daemon in Verlihub 0.9.8d-RC2 and earlier allows local users to overwrite arbitrary files via a symlink attack on the /tmp/trigger.tmp temporary file.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-5706"
-       },
-       {
-        "id": "CVE-2009-2569",
-        "summary": "Multiple cross-site scripting (XSS) vulnerabilities in Verlihub Control Panel (VHCP) 1.7e allow remote attackers to inject arbitrary web script or HTML via (1) the nick parameter in a login action to index.php or (2) the URI in a news request to index.html.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-2569"
-       },
-       {
-        "id": "CVE-2009-2571",
-        "summary": "Multiple cross-site scripting (XSS) vulnerabilities in index.php in VerliAdmin 0.3.7 and 0.3.8 allow remote attackers to inject arbitrary web script or HTML via (1) the URI, (2) the q parameter, (3) the nick parameter, or (4) the nick parameter in a bantest action.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-2571"
-       },
-       {
-        "id": "CVE-2025-50461",
-        "summary": "A deserialization vulnerability exists in Volcengine's verl 3.0.0, specifically in the scripts/model_merger.py script when using the \"fsdp\" backend. The script calls torch.load() with weights_only=False on user-supplied .pt files, allowing attackers to execute arbitrary code if a maliciously crafted",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50461"
-       }
-      ],
-      "status": "match"
-     },
-     "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-      "matches": [],
-      "provider": "osv",
-      "queried": "verl@76e837e0bfcb18b380a66c0ba56ef9f0ac840f09",
-      "related": [],
-      "status": "ok"
-     },
      "registry": {
       "detail": "known_public field from the source audit/finding registry",
       "matches": [
@@ -3499,19 +3265,10 @@
       ],
       "provider": "registry",
       "status": "match"
-     },
-     "vendor": {
-      "detail": "vendor pages fetched clean",
-      "fetched": [
-       "https://github.com/volcengine/verl/security/advisories"
-      ],
-      "matches": [],
-      "provider": "vendor",
-      "status": "ok"
      }
     },
     "reason": "source audit already cites public reference(s): CVE-2026-6878",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "already-public"
    },
    "preconditions": [
@@ -3579,7 +3336,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:14+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "verl-prime-code-exec",
     "matched": [],
     "providers": {
@@ -3681,29 +3438,24 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "HTTP 422",
+      "detail": "no security-relevant commit matched testing_util.py",
       "matches": [],
       "provider": "github_commits",
-      "raw": {
-       "body": {
-        "documentation_url": "https://docs.github.com/v3/search/",
-        "errors": [
-         {
-          "code": "invalid",
-          "field": "q",
-          "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
-          "resource": "Search"
-         }
-        ],
-        "message": "Validation Failed",
-        "status": "422"
-       },
-       "cache_hit": false,
-       "http_status": 422,
-       "status": "http-error",
-       "url": "https://api.github.com/search/commits?q=%22testing_util.py%22+repo%3Avolcengine%2Fverl&per_page=20"
+      "query": "\"testing_util.py\" repo:verl-project/verl",
+      "related": [
+       {
+        "id": "8e5ad4688a13de81727c014a3c2e2fb26324bc20",
+        "repo": "verl-project/verl",
+        "summary": "[Lint] fix: linting errors in all files (#1280)",
+        "url": "https://github.com/verl-project/verl/commit/8e5ad4688a13de81727c014a3c2e2fb26324bc20"
+       }
+      ],
+      "repo_resolution": {
+       "archived": false,
+       "repo": "verl-project/verl",
+       "resolved": true
       },
-      "status": "error"
+      "status": "ok"
      },
      "nvd": {
       "detail": "NVD keyword search returned no strong-term match",
@@ -3767,10 +3519,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "verl@76e837e0bfcb18b380a66c0ba56ef9f0ac840f09",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -3784,9 +3537,9 @@
       "status": "ok"
      }
     },
-    "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "inconclusive"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "training job uses prime_code reward",
@@ -3801,7 +3554,7 @@
     "snippet": ""
    },
    "source": "audit-history",
-   "state": "verified-exploitable",
+   "state": "novelty-checked",
    "title": "verl prime_code executes model-generated code with exec() and no sandbox",
    "verification": {
     "dynamic": true,
@@ -3809,7 +3562,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "76e837e"
+   "version": "76e837e",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "verl 76e837e eval() of generated reward code runs on the training host through the reward-function configuration (local code path).",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "verl",
@@ -3853,7 +3610,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:14+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "verl-checkpoint-pickle",
     "matched": [],
     "providers": {
@@ -3955,29 +3712,78 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "HTTP 422",
+      "detail": "no security-relevant commit matched checkpoint_engine",
       "matches": [],
       "provider": "github_commits",
-      "raw": {
-       "body": {
-        "documentation_url": "https://docs.github.com/v3/search/",
-        "errors": [
-         {
-          "code": "invalid",
-          "field": "q",
-          "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
-          "resource": "Search"
-         }
-        ],
-        "message": "Validation Failed",
-        "status": "422"
+      "query": "\"checkpoint_engine\" repo:verl-project/verl",
+      "related": [
+       {
+        "id": "e4a4c1894c3c148da324f3a52e883c128f55baac",
+        "repo": "verl-project/verl",
+        "summary": "[ckpt] feat: pass global steps to checkpoint engines (#6507)",
+        "url": "https://github.com/verl-project/verl/commit/e4a4c1894c3c148da324f3a52e883c128f55baac"
        },
-       "cache_hit": false,
-       "http_status": 422,
-       "status": "http-error",
-       "url": "https://api.github.com/search/commits?q=%22checkpoint_engine%22+repo%3Avolcengine%2Fverl&per_page=20"
+       {
+        "id": "6f33c553b703525b8fc48a09bb8bec3d6f7d294f",
+        "repo": "verl-project/verl",
+        "summary": "[ckpt] feat: add checkpoint-engine abstraction (#4775)",
+        "url": "https://github.com/verl-project/verl/commit/6f33c553b703525b8fc48a09bb8bec3d6f7d294f"
+       },
+       {
+        "id": "e71ae41d294fa36d3feb1032ebdc4378c72bf2d0",
+        "repo": "verl-project/verl",
+        "summary": "[BREAKING][ckpt] refactor: rename misleading `trainer` arg to `actor_wg` (#6724)",
+        "url": "https://github.com/verl-project/verl/commit/e71ae41d294fa36d3feb1032ebdc4378c72bf2d0"
+       },
+       {
+        "id": "32f5d433284e5c99bc8687e428c417e11b721cc8",
+        "repo": "verl-project/verl",
+        "summary": "[docker] feat: bump aarch64 vllm 0.17->0.18 (#6222)",
+        "url": "https://github.com/verl-project/verl/commit/32f5d433284e5c99bc8687e428c417e11b721cc8"
+       },
+       {
+        "id": "a9b024d45d23c49427887d245b0ba1c55fca8c2e",
+        "repo": "verl-project/verl",
+        "summary": "[rollout,vllm] feat: split large weight into chunks in NCCL/NIXL checkpoint engine (#6091)",
+        "url": "https://github.com/verl-project/verl/commit/a9b024d45d23c49427887d245b0ba1c55fca8c2e"
+       },
+       {
+        "id": "b5021d3da11fe78e64e9dbfc175641e7a0a874fd",
+        "repo": "verl-project/verl",
+        "summary": "[ckpt] feat: add save_lora_only checkpoint support (#7061)",
+        "url": "https://github.com/verl-project/verl/commit/b5021d3da11fe78e64e9dbfc175641e7a0a874fd"
+       },
+       {
+        "id": "1252cc71aa5bd82e5604322064d69bfe6454c660",
+        "repo": "verl-project/verl",
+        "summary": "[ckpt] fix: drain Mooncake completion slots across weight versions (#7764)",
+        "url": "https://github.com/verl-project/verl/commit/1252cc71aa5bd82e5604322064d69bfe6454c660"
+       },
+       {
+        "id": "ef6eaa05dcd8beb6f02ef352d637af8a17acaf63",
+        "repo": "verl-project/verl",
+        "summary": "[ckpt] feat: add CheckpointEngineManager (#5031)",
+        "url": "https://github.com/verl-project/verl/commit/ef6eaa05dcd8beb6f02ef352d637af8a17acaf63"
+       },
+       {
+        "id": "e4f860dc1341585c1fdeb3433b98563fe1c798df",
+        "repo": "verl-project/verl",
+        "summary": "[ckpt] fix: load custom_backend_module in CheckpointEngineManager on driver (#5911)",
+        "url": "https://github.com/verl-project/verl/commit/e4f860dc1341585c1fdeb3433b98563fe1c798df"
+       },
+       {
+        "id": "5b0da583b379e663ea142ee1cddc67f2bc9e9a74",
+        "repo": "verl-project/verl",
+        "summary": "[ckpt, trainer] feat: Add plugin hooks for custom CheckpointEngineManager and CheckpointEngine (#5718)",
+        "url": "https://github.com/verl-project/verl/commit/5b0da583b379e663ea142ee1cddc67f2bc9e9a74"
+       }
+      ],
+      "repo_resolution": {
+       "archived": false,
+       "repo": "verl-project/verl",
+       "resolved": true
       },
-      "status": "error"
+      "status": "ok"
      },
      "nvd": {
       "detail": "NVD keyword search returned no strong-term match",
@@ -4041,10 +3847,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "verl@76e837e0bfcb18b380a66c0ba56ef9f0ac840f09",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -4058,9 +3865,9 @@
       "status": "ok"
      }
     },
-    "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "inconclusive"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "checkpoint engine binds a reachable tcp://ip:port",
@@ -4075,7 +3882,7 @@
     "snippet": ""
    },
    "source": "audit-history",
-   "state": "verified-exploitable",
+   "state": "novelty-checked",
    "title": "verl checkpoint engine recv_pyobj: pickle over TCP/ZMQ without auth",
    "verification": {
     "dynamic": true,
@@ -4083,7 +3890,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "76e837e"
+   "version": "76e837e",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "verl checkpoint-channel pickle loads inside the training worker; requires the checkpoint RPC channel of a running verl job.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "skyrl",
@@ -4127,22 +3938,9 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:15+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "skyrl-fetch-weights",
-    "matched": [
-     {
-      "id": "46afa94fe0059a42f9959918dc12aad9b8988554",
-      "repo": "NovaSky-AI/SkyRL",
-      "summary": "[refactor] vLLM Stateful Weight Sync Sender (#2142)",
-      "url": "https://github.com/NovaSky-AI/SkyRL/commit/46afa94fe0059a42f9959918dc12aad9b8988554"
-     },
-     {
-      "id": "23a210970cb86fc6fb247fd93f31103e3f2923e5",
-      "repo": "NovaSky-AI/SkyRL",
-      "summary": "[feat] Add Delta Weight Sync Support in SkyRL (#1935)",
-      "url": "https://github.com/NovaSky-AI/SkyRL/commit/23a210970cb86fc6fb247fd93f31103e3f2923e5"
-     }
-    ],
+    "matched": [],
     "providers": {
      "github_advisories": {
       "detail": "GitHub advisory database has no strong-term match for the package",
@@ -4234,8 +4032,11 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "2 security-relevant commit(s) mention fetch_weights",
-      "matches": [
+      "detail": "no security-relevant commit matched fetch_weights",
+      "matches": [],
+      "provider": "github_commits",
+      "query": "\"fetch_weights\" repo:NovaSky-AI/SkyRL",
+      "related": [
        {
         "id": "46afa94fe0059a42f9959918dc12aad9b8988554",
         "repo": "NovaSky-AI/SkyRL",
@@ -4249,10 +4050,7 @@
         "url": "https://github.com/NovaSky-AI/SkyRL/commit/23a210970cb86fc6fb247fd93f31103e3f2923e5"
        }
       ],
-      "provider": "github_commits",
-      "query": "\"fetch_weights\" repo:NovaSky-AI/SkyRL",
-      "related": [],
-      "status": "match"
+      "status": "ok"
      },
      "nvd": {
       "detail": "NVD keyword search returned no strong-term match",
@@ -4265,10 +4063,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "skyrl@a1e34dbf21003f66bd7921487fd47db6c154aba2",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -4282,9 +4081,9 @@
       "status": "ok"
      }
     },
-    "reason": "public disclosure match: github_commits=46afa94fe0059a42f9959918dc12aad9b8988554",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "already-public"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "/fetch_weights reachable",
@@ -4299,7 +4098,7 @@
     "snippet": ""
    },
    "source": "audit-history",
-   "state": "public",
+   "state": "novelty-checked",
    "title": "SkyRL /fetch_weights payload_files path traversal write + weight poisoning",
    "verification": {
     "dynamic": true,
@@ -4307,7 +4106,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "a1e34db"
+   "version": "a1e34db",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "SkyRL a1e34db /fetch_weights joins payload_files into cache_dir; the route exists only in the SkyRL training recipe with a reachable worker port.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "openrlhf",
@@ -4350,7 +4153,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:15+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "openrlhf-vllm-insecure",
     "matched": [],
     "providers": {
@@ -4470,10 +4273,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "openrlhf@0.11.2",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -4488,7 +4292,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -4512,7 +4316,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "0.11.2 / dc2a7ad"
+   "version": "0.11.2 / dc2a7ad",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "OpenRLHF 0.11.2 forces vLLM insecure serialization through env/config; the pickle IPC is enabled by that training deployment setting.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "areal",
@@ -4556,7 +4364,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:15+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "areal-v2-worker",
     "matched": [],
     "providers": {
@@ -4658,29 +4466,54 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "HTTP 422",
+      "detail": "no security-relevant commit matched fsdp_engine.py",
       "matches": [],
       "provider": "github_commits",
-      "raw": {
-       "body": {
-        "documentation_url": "https://docs.github.com/v3/search/",
-        "errors": [
-         {
-          "code": "invalid",
-          "field": "q",
-          "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
-          "resource": "Search"
-         }
-        ],
-        "message": "Validation Failed",
-        "status": "422"
+      "query": "\"fsdp_engine.py\" repo:areal-project/AReaL",
+      "related": [
+       {
+        "id": "9ba6dc4539acf4062b0397a44372c399367c3779",
+        "repo": "areal-project/AReaL",
+        "summary": "feat. Add more optimizer choice (#431)",
+        "url": "https://github.com/areal-project/AReaL/commit/9ba6dc4539acf4062b0397a44372c399367c3779"
        },
-       "cache_hit": false,
-       "http_status": 422,
-       "status": "http-error",
-       "url": "https://api.github.com/search/commits?q=%22fsdp_engine.py%22+repo%3AinclusionAI%2FAReaL&per_page=20"
+       {
+        "id": "cc35b3d600f8723093f54b2a2f848e03acc69bf2",
+        "repo": "areal-project/AReaL",
+        "summary": "fix update weights from disk in FSDP engine (#443)",
+        "url": "https://github.com/areal-project/AReaL/commit/cc35b3d600f8723093f54b2a2f848e03acc69bf2"
+       },
+       {
+        "id": "f34bea8b2b541f992536c8e7fd64f9cd3a28ca65",
+        "repo": "areal-project/AReaL",
+        "summary": "fix(engine): use meta device for non-rank-0 in FSDP memory_efficient_load (#1182)",
+        "url": "https://github.com/areal-project/AReaL/commit/f34bea8b2b541f992536c8e7fd64f9cd3a28ca65"
+       },
+       {
+        "id": "ef56f5b798eb5625ab25d33c9d0c11e50fb69e7a",
+        "repo": "areal-project/AReaL",
+        "summary": "feat: Add AgentWorkflow API and migrate workflow resolution to RemoteInfEngine (#825)",
+        "url": "https://github.com/areal-project/AReaL/commit/ef56f5b798eb5625ab25d33c9d0c11e50fb69e7a"
+       },
+       {
+        "id": "89b99358613c350a3db8f5bf768ef726c458005b",
+        "repo": "areal-project/AReaL",
+        "summary": "[WIP][BugFix] Fix forward bug of LLM and VLM  (#218)",
+        "url": "https://github.com/areal-project/AReaL/commit/89b99358613c350a3db8f5bf768ef726c458005b"
+       },
+       {
+        "id": "094adbb6c6c86ddb3d5e83e60d6141cf52f8c383",
+        "repo": "areal-project/AReaL",
+        "summary": "Refactor stage #1: AReaL-lite (#154)",
+        "url": "https://github.com/areal-project/AReaL/commit/094adbb6c6c86ddb3d5e83e60d6141cf52f8c383"
+       }
+      ],
+      "repo_resolution": {
+       "archived": false,
+       "repo": "areal-project/AReaL",
+       "resolved": true
       },
-      "status": "error"
+      "status": "ok"
      },
      "nvd": {
       "detail": "NVD keyword search returned no strong-term match",
@@ -4709,10 +4542,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "areal@448de5235341482465362e8b831097685d8e305d",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -4726,9 +4560,9 @@
       "status": "ok"
      }
     },
-    "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "inconclusive"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "v2 worker reachable",
@@ -4743,7 +4577,7 @@
     "snippet": ""
    },
    "source": "audit-history",
-   "state": "verified-exploitable",
+   "state": "novelty-checked",
    "title": "AReaL v2 worker /load -> torch.load(weights_only=False) without auth (+/save, /data, /awex)",
    "verification": {
     "dynamic": true,
@@ -4751,7 +4585,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "448de52"
+   "version": "448de52",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "A malicious .pt is loaded with torch.load(weights_only=False) in the AReaL v2 worker; the attacker must control a checkpoint consumed by training.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "slime",
@@ -4794,7 +4632,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:15+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "slime-torch-load",
     "matched": [],
     "providers": {
@@ -4844,8 +4682,16 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "no version/commit pin; OSV cannot answer for a floating package",
+      "detail": "no version/commit pin and PyPI 'slime' is an unrelated placeholder release (0.0.0: Simple linear mixed effects modelwith priors and constraints.); OSV cannot answer for the unpublished upstream tree",
+      "justified": true,
       "matches": [],
+      "package_identity": {
+       "evidence": "https://pypi.org/project/slime/",
+       "exists": true,
+       "placeholder": true,
+       "summary": "Simple linear mixed effects modelwith priors and constraints.",
+       "version": "0.0.0"
+      },
       "provider": "osv",
       "status": "not-applicable"
      },
@@ -4859,9 +4705,9 @@
       "status": "ok"
      }
     },
-    "reason": "provider(s) unavailable/skipped: osv: no version/commit pin; OSV cannot answer for a floating package",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "inconclusive"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match; justified non-answer: osv: no version/commit pin and PyPI 'slime' is an unrelated placeholder release (0.0.0: Simple linear mixed effects modelwith priors and constraints.); OSV cannot answer for the unpublished upstream tree",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "shared NFS/JuiceFS writable by attacker",
@@ -4876,7 +4722,7 @@
     "snippet": ""
    },
    "source": "audit-history",
-   "state": "verified-exploitable",
+   "state": "novelty-checked",
    "title": "slime debug/resume data torch.load(weights_only=False) in multiple sinks",
    "verification": {
     "dynamic": true,
@@ -4884,7 +4730,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "05e3b01"
+   "version": "05e3b01",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "slime 05e3b01 torch.load(weights_only=False) on a training checkpoint; local checkpoint path, no default service route.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "openjev",
@@ -4928,7 +4778,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:16+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "openjev-clef-release-module",
     "matched": [],
     "providers": {
@@ -4967,10 +4817,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "openjev@b4339c640f5331ef75098637d1be2c787715ee88",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -4985,7 +4836,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -5009,7 +4860,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "b4339c6"
+   "version": "b4339c6",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "openjev/clef_vllm.py:40 exec_module on a model-provided joint_schema_model.py; requires write access to the shared model cache/PVC.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "msswift",
@@ -5052,7 +4907,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:16+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "msswift-eval-escape",
     "matched": [],
     "providers": {
@@ -5188,10 +5043,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "ms-swift@4.5.3",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -5206,7 +5062,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -5230,7 +5086,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "4.5.3 / fbc61cf"
+   "version": "4.5.3 / fbc61cf",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "ms-swift 4.5.3 eval() of the ranks expression with restricted builtins escapes to code execution; local training argument, no service route.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "areal",
@@ -5273,7 +5133,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:16+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "areal-awex",
     "matched": [],
     "providers": {
@@ -5375,29 +5235,24 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "HTTP 422",
+      "detail": "no security-relevant commit matched master_addr",
       "matches": [],
       "provider": "github_commits",
-      "raw": {
-       "body": {
-        "documentation_url": "https://docs.github.com/v3/search/",
-        "errors": [
-         {
-          "code": "invalid",
-          "field": "q",
-          "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
-          "resource": "Search"
-         }
-        ],
-        "message": "Validation Failed",
-        "status": "422"
-       },
-       "cache_hit": false,
-       "http_status": 422,
-       "status": "http-error",
-       "url": "https://api.github.com/search/commits?q=%22master_addr%22+repo%3AinclusionAI%2FAReaL&per_page=20"
+      "query": "\"master_addr\" repo:areal-project/AReaL",
+      "related": [
+       {
+        "id": "522de3952795fcbc380f0ce76a0b6be2df8daceb",
+        "repo": "areal-project/AReaL",
+        "summary": "fix(v2/awex): unblock weight-update bring-up (#1401)",
+        "url": "https://github.com/areal-project/AReaL/commit/522de3952795fcbc380f0ce76a0b6be2df8daceb"
+       }
+      ],
+      "repo_resolution": {
+       "archived": false,
+       "repo": "areal-project/AReaL",
+       "resolved": true
       },
-      "status": "error"
+      "status": "ok"
      },
      "nvd": {
       "detail": "NVD keyword search returned no strong-term match",
@@ -5426,10 +5281,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "areal@448de5235341482465362e8b831097685d8e305d",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -5443,9 +5299,9 @@
       "status": "ok"
      }
     },
-    "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "inconclusive"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "AReaL SGLang /awex endpoint reachable",
@@ -5460,7 +5316,7 @@
     "snippet": ""
    },
    "source": "audit-history",
-   "state": "verified-exploitable",
+   "state": "novelty-checked",
    "title": "AReaL SGLang /awex/* unauthenticated: arbitrary torch.save + join arbitrary NCCL group",
    "verification": {
     "dynamic": true,
@@ -5468,7 +5324,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "448de52"
+   "version": "448de52",
+   "deployment_requirement": "hardware-only",
+   "deployment_evidence": "AReaL AWEX joins an NCCL collective with attacker master_addr/port and needs a GPU/NCCL fabric; not reachable from a CPU-only workload.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "vllm-omni",
@@ -5516,7 +5376,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:17+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "vllm-omni-media-ssrf",
     "matched": [
      {
@@ -5529,31 +5389,6 @@
      }
     ],
     "providers": {
-     "github_advisories": {
-      "detail": "GitHub advisory database has no strong-term match for the package",
-      "matches": [],
-      "provider": "github_advisories",
-      "related": [],
-      "status": "ok"
-     },
-     "nvd": {
-      "detail": "NVD keyword search returned no strong-term match",
-      "keywords": [
-       "vllm-omni"
-      ],
-      "matches": [],
-      "provider": "nvd",
-      "related": [],
-      "status": "ok"
-     },
-     "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-      "matches": [],
-      "provider": "osv",
-      "queried": "vllm-omni@b463516ff4cfe6d3c3e46aaad07f58e6ce63ac40",
-      "related": [],
-      "status": "ok"
-     },
      "registry": {
       "detail": "known_public field from the source audit/finding registry",
       "matches": [
@@ -5568,19 +5403,10 @@
       ],
       "provider": "registry",
       "status": "match"
-     },
-     "vendor": {
-      "detail": "vendor pages fetched clean",
-      "fetched": [
-       "https://github.com/vllm-project/vllm-omni/security/advisories"
-      ],
-      "matches": [],
-      "provider": "vendor",
-      "status": "ok"
      }
     },
     "reason": "source audit already cites public reference(s): CVE-2026-24779, CVE-2026-73560, CVE-2026-34753",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "already-public"
    },
    "preconditions": [
@@ -5647,7 +5473,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:18+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "onejev-media-ssrf",
     "matched": [],
     "providers": {
@@ -5686,10 +5512,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "onejev@6122519058af23504a33d944f0e63b2d868c8a4b",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -5704,7 +5531,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -5728,7 +5555,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "6122519"
+   "version": "6122519",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "onejev 6122519 fetches a caller-supplied media URL via urllib; requires the multimodal chat endpoint and a reachable internal target.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "llm2jev",
@@ -5771,7 +5602,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:19+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "llm2jev-image-file",
     "matched": [],
     "providers": {
@@ -5867,10 +5698,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "llm2jev@f2bdad648e7a34bfce64401fb0f7c44bc13209ae",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -5885,7 +5717,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -5909,7 +5741,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "f2bdad6"
+   "version": "f2bdad6",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "llm2jev f2bdad6 image_url accepts file:// and local paths then reads/parses them; requires the multimodal endpoint.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "siliconlab",
@@ -5953,7 +5789,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:19+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "siliconlab-credential-exfil",
     "matched": [],
     "providers": {
@@ -6025,10 +5861,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "openjev-siliconlabai@a08e969c37b2e4a37f95b3426f983bd94303590c",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -6043,7 +5880,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -6067,7 +5904,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "a08e969"
+   "version": "a08e969",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "OpenJev-SiliconLabAI server/index.ts:40 evaluate() posts to a caller-supplied base_url/decider_url with the server's provider key; requires the service.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "llamafactory",
@@ -6115,7 +5956,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:19+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "llamafactory-ssrf-redirect",
     "matched": [
      {
@@ -6127,64 +5968,6 @@
      }
     ],
     "providers": {
-     "github_advisories": {
-      "detail": "GitHub advisory database has no strong-term match for the package",
-      "matches": [],
-      "provider": "github_advisories",
-      "related": [],
-      "status": "ok"
-     },
-     "nvd": {
-      "detail": "2 NVD CVE(s) matched strong terms",
-      "keywords": [
-       "llama-factory"
-      ],
-      "matches": [
-       {
-        "id": "CVE-2025-61784",
-        "matched_terms": [
-         "requests.get"
-        ],
-        "summary": "LLaMA-Factory is a tuning library for large language models. Prior to version 0.9.4, a Server-Side Request Forgery (SSRF) vulnerability in the chat API allows any authenticated user to force the server to make arbitrary HTTP requests to internal and external networks. This can lead to the exposure o",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61784"
-       },
-       {
-        "id": "CVE-2026-85673",
-        "matched_terms": [
-         "requests.get"
-        ],
-        "summary": "LLaMA-Factory contains a server-side request forgery vulnerability in the OpenAI-compatible API multimodal media URL handler that allows unauthenticated attackers to bypass SSRF validation. The check_ssrf_url guard validates URLs once but requests.get follows redirects and re-resolves DNS without re",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85673"
-       }
-      ],
-      "provider": "nvd",
-      "related": [
-       {
-        "id": "CVE-2025-46567",
-        "summary": "LLama Factory enables fine-tuning of large language models. Prior to version 1.0.0, a critical vulnerability exists in the `llamafy_baichuan2.py` script of the LLaMA-Factory project. The script performs insecure deserialization using `torch.load()` on user-supplied `.bin` files from an input directo",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-46567"
-       },
-       {
-        "id": "CVE-2025-53002",
-        "summary": "LLaMA-Factory is a tuning library for large language models. A remote code execution vulnerability was discovered in LLaMA-Factory versions up to and including 0.9.3 during the LLaMA-Factory training process. This vulnerability arises because the `vhead_file` is loaded without proper safeguards, all",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-53002"
-       },
-       {
-        "id": "CVE-2026-58116",
-        "summary": "LLaMA-Factory through 0.9.5 contains a remote code execution vulnerability that allows attackers with WebUI access to execute arbitrary Python code by supplying a malicious model path in the Chat or Training interfaces. The application passes user-supplied model path input unvalidated into AutoToken",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-58116"
-       }
-      ],
-      "status": "match"
-     },
-     "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-      "matches": [],
-      "provider": "osv",
-      "queried": "llamafactory@0.9.5",
-      "related": [],
-      "status": "ok"
-     },
      "registry": {
       "detail": "known_public field from the source audit/finding registry",
       "matches": [
@@ -6198,19 +5981,10 @@
       ],
       "provider": "registry",
       "status": "match"
-     },
-     "vendor": {
-      "detail": "vendor pages fetched clean",
-      "fetched": [
-       "https://github.com/hiyouga/LLaMA-Factory/security/advisories"
-      ],
-      "matches": [],
-      "provider": "vendor",
-      "status": "ok"
      }
     },
     "reason": "source audit already cites public reference(s): CVE-2025-61784, CVE-2026-85673",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "already-public"
    },
    "preconditions": [
@@ -6277,7 +6051,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:20+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "verl-hdfs-command-injection",
     "matched": [],
     "providers": {
@@ -6379,29 +6153,17 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "HTTP 422",
+      "detail": "no security-relevant commit matched checkpoint_handler.py",
       "matches": [],
       "provider": "github_commits",
-      "raw": {
-       "body": {
-        "documentation_url": "https://docs.github.com/v3/search/",
-        "errors": [
-         {
-          "code": "invalid",
-          "field": "q",
-          "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
-          "resource": "Search"
-         }
-        ],
-        "message": "Validation Failed",
-        "status": "422"
-       },
-       "cache_hit": false,
-       "http_status": 422,
-       "status": "http-error",
-       "url": "https://api.github.com/search/commits?q=%22checkpoint_handler.py%22+repo%3Avolcengine%2Fverl&per_page=20"
+      "query": "\"checkpoint_handler.py\" repo:verl-project/verl",
+      "related": [],
+      "repo_resolution": {
+       "archived": false,
+       "repo": "verl-project/verl",
+       "resolved": true
       },
-      "status": "error"
+      "status": "ok"
      },
      "nvd": {
       "detail": "NVD keyword search returned no strong-term match",
@@ -6465,10 +6227,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "verl@76e837e0bfcb18b380a66c0ba56ef9f0ac840f09",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -6482,9 +6245,9 @@
       "status": "ok"
      }
     },
-    "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "inconclusive"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "HDFS checkpoint path attacker-influenced",
@@ -6499,7 +6262,7 @@
     "snippet": ""
    },
    "source": "audit-history",
-   "state": "verified-exploitable",
+   "state": "novelty-checked",
    "title": "verl HDFS path is interpolated into os.system (command injection)",
    "verification": {
     "dynamic": true,
@@ -6507,7 +6270,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "76e837e"
+   "version": "76e837e",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "verl 76e837e passes an HDFS path into os.system; requires the HDFS dataloader path and a reachable training job.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "ray",
@@ -6554,7 +6321,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:20+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "ray-dashboard-unauth",
     "matched": [
      {
@@ -6566,82 +6333,6 @@
      }
     ],
     "providers": {
-     "github_advisories": {
-      "detail": "GitHub advisory database has no strong-term match for the package",
-      "matches": [],
-      "provider": "github_advisories",
-      "related": [],
-      "status": "ok"
-     },
-     "nvd": {
-      "detail": "NVD keyword search returned no strong-term match",
-      "keywords": [
-       "ray"
-      ],
-      "matches": [],
-      "provider": "nvd",
-      "related": [
-       {
-        "id": "CVE-1999-1436",
-        "summary": "Ray Chan WWW Authorization Gateway 0.1 CGI program allows remote attackers to execute arbitrary commands via shell metacharacters in the \"user\" parameter.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-1999-1436"
-       },
-       {
-        "id": "CVE-2001-0636",
-        "summary": "Buffer overflows in Raytheon SilentRunner allow remote attackers to (1) cause a denial of service in the collector (cle.exe) component of SilentRunner 2.0 via traffic containing long passwords, or (2) execute arbitrary commands via long HTTP queries in the Knowledge Browser component in SilentRunner",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2001-0636"
-       },
-       {
-        "id": "CVE-2002-2036",
-        "summary": "Sun Ray Server Software (SRSS) 1.3, when Non-Smartcard Mobility (NSCM) is enabled, allows remote attackers to login as another user by running dtlogin from a system that supports the XDMCP client.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2002-2036"
-       },
-       {
-        "id": "CVE-2004-0701",
-        "summary": "Sun Ray Server Software (SRSS) 1.3 and 2.0 for Solaris 2.6, 7 and 8 does not properly detect a smartcard removal when the card is quickly removed, reinserted, and removed again, which could cause a user session to stay logged in and allow local users to gain unauthorized access.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2004-0701"
-       },
-       {
-        "id": "CVE-2005-1420",
-        "summary": "Raysoft/Raybase Video Cam Server 1.0.0 beta allows remote attackers to determine the full pathname of the server via a request for an invalid page, as demonstrated using \"%20\" (hex-encoded space).",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2005-1420"
-       },
-       {
-        "id": "CVE-2005-1421",
-        "summary": "Directory traversal vulnerability in Raysoft/Raybase Video Cam Server 1.0.0 beta allows remote attackers to read arbitrary files via \"..\" (dot dot) sequences in an HTTP request.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2005-1421"
-       },
-       {
-        "id": "CVE-2005-1422",
-        "summary": "Raysoft/Raybase Video Cam Server 1.0.0 beta allows remote attackers to conduct administrator operations and cause a denial of service (server or camera shutdown) via a direct request to admin.html.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2005-1422"
-       },
-       {
-        "id": "CVE-2006-0628",
-        "summary": "myquiz.pl in Dale Ray MyQuiz 1.01 allows remote attackers to execute arbitrary commands via shell metacharacters in the URL, which are not properly handled as part of the PATH_INFO environment variable.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-0628"
-       },
-       {
-        "id": "CVE-2006-2408",
-        "summary": "Multiple buffer overflows in Raydium before SVN revision 310 allow remote attackers to execute arbitrary code via a large packet when logged via (1) the raydium_log function in log.c or (2) the raydium_console_line_add function in console.c, possibly from a long player name.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-2408"
-       },
-       {
-        "id": "CVE-2006-2409",
-        "summary": "Format string vulnerability in the raydium_log function in console.c in Raydium before SVN revision 310 allows local users to execute arbitrary code via format string specifiers in the format parameter, which are not properly handled in a call to raydium_console_line_add.",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-2409"
-       }
-      ],
-      "status": "ok"
-     },
-     "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-      "matches": [],
-      "provider": "osv",
-      "queried": "ray@2.59.0",
-      "related": [],
-      "status": "ok"
-     },
      "registry": {
       "detail": "known_public field from the source audit/finding registry",
       "matches": [
@@ -6655,33 +6346,10 @@
       ],
       "provider": "registry",
       "status": "match"
-     },
-     "vendor": {
-      "detail": "1 vendor page(s) contain a public advisory id",
-      "fetched": [
-       "https://raw.githubusercontent.com/ray-project/ray/HEAD/SECURITY.md",
-       "https://github.com/ray-project/ray/security/advisories"
-      ],
-      "matches": [
-       {
-        "ids": [
-         "GHSA-hhrp-gw25-jr43",
-         "GHSA-mw35-8rx3-xf9r",
-         "GHSA-q279-jhrf-cc6v",
-         "GHSA-q5fh-2hc8-f6rq"
-        ],
-        "matched_terms": [
-         "dashboard"
-        ],
-        "url": "https://github.com/ray-project/ray/security/advisories"
-       }
-      ],
-      "provider": "vendor",
-      "status": "match"
      }
     },
     "reason": "source audit already cites public reference(s): CVE-2023-48022, CVE-2023-48023",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "already-public"
    },
    "preconditions": [
@@ -6948,7 +6616,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:21+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "vllm-omni-trust-remote-code",
     "matched": [
      {
@@ -6961,31 +6629,6 @@
      }
     ],
     "providers": {
-     "github_advisories": {
-      "detail": "GitHub advisory database has no strong-term match for the package",
-      "matches": [],
-      "provider": "github_advisories",
-      "related": [],
-      "status": "ok"
-     },
-     "nvd": {
-      "detail": "NVD keyword search returned no strong-term match",
-      "keywords": [
-       "vllm-omni"
-      ],
-      "matches": [],
-      "provider": "nvd",
-      "related": [],
-      "status": "ok"
-     },
-     "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-      "matches": [],
-      "provider": "osv",
-      "queried": "vllm-omni@b463516ff4cfe6d3c3e46aaad07f58e6ce63ac40",
-      "related": [],
-      "status": "ok"
-     },
      "registry": {
       "detail": "known_public field from the source audit/finding registry",
       "matches": [
@@ -7000,19 +6643,10 @@
       ],
       "provider": "registry",
       "status": "match"
-     },
-     "vendor": {
-      "detail": "vendor pages fetched clean",
-      "fetched": [
-       "https://github.com/vllm-project/vllm-omni/security/advisories"
-      ],
-      "matches": [],
-      "provider": "vendor",
-      "status": "ok"
      }
     },
     "reason": "source audit already cites public reference(s): CVE-2026-27893, CVE-2026-22807, CVE-2026-90553",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "already-public"
    },
    "preconditions": [
@@ -7453,7 +7087,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:21+00:00",
+    "checked_at": "2026-10-26T17:35:27+00:00",
     "id": "dify-shellctl-unauth-rce",
     "matched": [],
     "providers": {
@@ -7552,10 +7186,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "dify@1.17.1",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -7571,7 +7206,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -7595,7 +7230,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v1.17.1"
+   "version": "v1.17.1",
+   "deployment_requirement": "default-exposed",
+   "deployment_evidence": "dify-agent/docker/docker-compose.yaml:559 shellctl listens on 0.0.0.0:5004 with no token; POST /v1/jobs/run executes commands and reads tenant homes.",
+   "deployment_basis": "runtime",
+   "default_exposed": true
   },
   {
    "component": "dify",
@@ -7638,7 +7277,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:21+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "dify-agent-auth-failopen",
     "matched": [],
     "providers": {
@@ -7809,10 +7448,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "dify@1.17.1",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -7828,7 +7468,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -7852,7 +7492,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v1.17.1 / bbfac7a"
+   "version": "v1.17.1 / bbfac7a",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "Dify agent control plane v1.17.1 accepts missing/wrong Bearer tokens on binding creation; requires the agent service and a tenant binding.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "dify",
@@ -7895,7 +7539,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:21+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "dify-stub-jwe-default-key",
     "matched": [],
     "providers": {
@@ -7985,10 +7629,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "dify@1.17.1",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -8004,7 +7649,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -8028,7 +7673,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v1.17.1"
+   "version": "v1.17.1",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "A Dify stub JWE token can be forged with the shipped default key; requires the agent-stub service to be deployed.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "dify",
@@ -8072,7 +7721,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:21+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "dify-home-snapshot-cross-tenant",
     "matched": [],
     "providers": {
@@ -8162,10 +7811,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "dify@1.17.1",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -8181,7 +7831,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -8205,7 +7855,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v1.17.1"
+   "version": "v1.17.1",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "Dify v1.17.1 snapshot materialization crosses tenant homes; requires two agent bindings and the snapshot API.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "open-webui",
@@ -8248,7 +7902,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:48:22+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "openwebui-code-execute",
     "matched": [
      {
@@ -8403,10 +8057,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "open-webui@0.12.3",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -8421,7 +8076,7 @@
      }
     },
     "reason": "public disclosure match: github_code=CVE-2026-456724",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "already-public"
    },
    "preconditions": [
@@ -8488,7 +8143,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:15+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "openwebui-code-interpreter-bypass",
     "matched": [],
     "providers": {
@@ -8659,10 +8314,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "open-webui@0.12.3",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -8677,7 +8333,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -8701,7 +8357,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v0.12.3 / 91ea4e3"
+   "version": "v0.12.3 / 91ea4e3",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "Open WebUI v0.12.3 code interpreter must be enabled (features.code_interpreter) and a model must emit the <code_interpreter> block.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "vllm",
@@ -8746,7 +8406,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:16+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "vllm-rl-dev-auth-bypass",
     "matched": [],
     "providers": {
@@ -8991,10 +8651,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "vllm@0.32.0",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -9010,7 +8671,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -9035,7 +8696,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v0.32.0"
+   "version": "v0.32.0",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "vLLM 0.32.0 RL dev routes are mounted only with VLLM_SERVER_DEV_MODE=1 (SkyRL/TRL recipes); --api-key guards only /v1,/v2,/inference,/cohere.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "sglang",
@@ -9079,7 +8744,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:17+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "sglang-legacy-tar-weights-rce",
     "matched": [
      {
@@ -9252,10 +8917,11 @@
       "status": "match"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "sglang@0.5.22",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -9270,7 +8936,7 @@
      }
     },
     "reason": "public disclosure match: nvd=CVE-2026-15976",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "already-public"
    },
    "preconditions": [
@@ -9339,7 +9005,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:18+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "deepspeed-autoep-unsafe-load",
     "matched": [],
     "providers": {
@@ -9384,10 +9050,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "deepspeed@0.19.8",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -9403,7 +9070,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -9427,7 +9094,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v0.19.8"
+   "version": "v0.19.8",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "DeepSpeed v0.19.8 AutoEP torch.load(weights_only=False) on layer_<n>_expert_<e>_mp_rank_0_model_states.pt checkpoints; local checkpoint path.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "msswift",
@@ -9443,7 +9114,7 @@
    "evidence_sha256": "75f35cffbb5121db92c1e652f7d3414c999714ea23febcef94ee6370871d40da",
    "exploit": "image/audio/video local path -> SafeMediaPath default allow-all -> open(path).read() -> base64 returned",
    "id": "msswift-media-local-read",
-   "module": "msswift-trust-remote-code",
+   "module": "msswift-media-local-read",
    "notes": "",
    "novelty": {
     "ghsa_ecosystem": "pip",
@@ -9472,7 +9143,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:18+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "msswift-media-local-read",
     "matched": [],
     "providers": {
@@ -9576,10 +9247,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "ms-swift@4.6.0",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -9594,7 +9266,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -9619,7 +9291,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v4.6.0"
+   "version": "v4.6.0",
+   "deployment_requirement": "default-exposed",
+   "deployment_evidence": "swift/infer_engine/protocol.py:275 opens a request-supplied media path when SWIFT_MEDIA_ALLOWED_DIRS is unset (the default allow-all); served by the normal inference deployment.",
+   "deployment_basis": "runtime",
+   "default_exposed": true
   },
   {
    "component": "bmc",
@@ -9780,7 +9456,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:19+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "cephcsi-httpserver-go-pprof-exposed-l37-regex",
     "matched": [],
     "providers": {
@@ -9819,10 +9495,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "cephcsi@3.18.1",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -9837,7 +9514,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -9862,7 +9539,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v3.18.1"
+   "version": "v3.18.1",
+   "deployment_requirement": "default-exposed",
+   "deployment_evidence": "internal/util/httpserver.go:37 registers pprof on the default CSI metrics mux; cmd/cephcsi.go:255 MetricsIP defaults to 0.0.0.0 with no auth.",
+   "deployment_basis": "runtime",
+   "default_exposed": true
   },
   {
    "component": "deepspeed",
@@ -10442,7 +10123,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:19+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "deepspeed-stage3-py-torch-load-any-l3660-regex",
     "matched": [],
     "providers": {
@@ -10489,10 +10170,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "deepspeed@0.19.8",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -10508,7 +10190,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -10532,7 +10214,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v0.19.8"
+   "version": "v0.19.8",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "deepspeed/runtime/zero/stage3.py:3660 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "deepspeed",
@@ -10572,7 +10258,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:19+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "deepspeed-stage3-py-torch-load-any-l3770-regex",
     "matched": [],
     "providers": {
@@ -10659,10 +10345,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "deepspeed@0.19.8",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -10678,7 +10365,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -10702,7 +10389,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v0.19.8"
+   "version": "v0.19.8",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "deepspeed/runtime/zero/stage3.py:3770 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "deepspeed",
@@ -10742,7 +10433,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:19+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-ast",
     "matched": [],
     "providers": {
@@ -10789,10 +10480,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "deepspeed@0.19.8",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -10808,7 +10500,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -10832,7 +10524,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v0.19.8"
+   "version": "v0.19.8",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "deepspeed/runtime/zero/stage3.py:3660 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "deepspeed",
@@ -10872,7 +10568,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:19+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-regex",
     "matched": [],
     "providers": {
@@ -10919,10 +10615,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "deepspeed@0.19.8",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -10938,7 +10635,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -10962,7 +10659,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v0.19.8"
+   "version": "v0.19.8",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "deepspeed/runtime/zero/stage3.py:3660 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "deepspeed",
@@ -11002,7 +10703,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:19+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "deepspeed-stage3-py-torch-load-unsafe-l3770-ast",
     "matched": [],
     "providers": {
@@ -11089,10 +10790,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "deepspeed@0.19.8",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -11108,7 +10810,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -11132,7 +10834,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v0.19.8"
+   "version": "v0.19.8",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "deepspeed/runtime/zero/stage3.py:3770 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "dradriver",
@@ -11593,7 +11299,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:19+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "llamafactory-checkpoint-py-torch-load-unsafe-l136-ast",
     "matched": [
      {
@@ -11769,29 +11475,17 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "HTTP 422",
+      "detail": "no security-relevant commit matched load_rng_state",
       "matches": [],
       "provider": "github_commits",
-      "raw": {
-       "body": {
-        "documentation_url": "https://docs.github.com/v3/search/",
-        "errors": [
-         {
-          "code": "invalid",
-          "field": "q",
-          "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
-          "resource": "Search"
-         }
-        ],
-        "message": "Validation Failed",
-        "status": "422"
-       },
-       "cache_hit": false,
-       "http_status": 422,
-       "status": "http-error",
-       "url": "https://api.github.com/search/commits?q=%22load_rng_state%22+repo%3Ahiyouga%2FLLaMA-Factory&per_page=20"
+      "query": "\"load_rng_state\" repo:hiyouga/LlamaFactory",
+      "related": [],
+      "repo_resolution": {
+       "archived": false,
+       "repo": "hiyouga/LlamaFactory",
+       "resolved": true
       },
-      "status": "error"
+      "status": "ok"
      },
      "nvd": {
       "detail": "NVD keyword search returned no strong-term match",
@@ -11830,10 +11524,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "llamafactory@0.9.5",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -11848,7 +11543,7 @@
      }
     },
     "reason": "public disclosure match: github_code=CVE-2026-1839",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "already-public"
    },
    "preconditions": [
@@ -11912,7 +11607,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:19+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "llamafactory-checkpoint-py-torch-load-unsafe-l136-regex",
     "matched": [
      {
@@ -12088,29 +11783,17 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "HTTP 422",
+      "detail": "no security-relevant commit matched load_rng_state",
       "matches": [],
       "provider": "github_commits",
-      "raw": {
-       "body": {
-        "documentation_url": "https://docs.github.com/v3/search/",
-        "errors": [
-         {
-          "code": "invalid",
-          "field": "q",
-          "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
-          "resource": "Search"
-         }
-        ],
-        "message": "Validation Failed",
-        "status": "422"
-       },
-       "cache_hit": false,
-       "http_status": 422,
-       "status": "http-error",
-       "url": "https://api.github.com/search/commits?q=%22load_rng_state%22+repo%3Ahiyouga%2FLLaMA-Factory&per_page=20"
+      "query": "\"load_rng_state\" repo:hiyouga/LlamaFactory",
+      "related": [],
+      "repo_resolution": {
+       "archived": false,
+       "repo": "hiyouga/LlamaFactory",
+       "resolved": true
       },
-      "status": "error"
+      "status": "ok"
      },
      "nvd": {
       "detail": "NVD keyword search returned no strong-term match",
@@ -12149,10 +11832,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "llamafactory@0.9.5",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -12167,7 +11851,7 @@
      }
     },
     "reason": "public disclosure match: github_code=CVE-2026-1839",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "already-public"
    },
    "preconditions": [
@@ -12231,7 +11915,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:19+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
     "matched": [],
     "providers": {
@@ -12254,29 +11938,17 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "HTTP 422",
+      "detail": "no security-relevant commit matched TrainingCheckpointCoordinator.resume",
       "matches": [],
       "provider": "github_commits",
-      "raw": {
-       "body": {
-        "documentation_url": "https://docs.github.com/v3/search/",
-        "errors": [
-         {
-          "code": "invalid",
-          "field": "q",
-          "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
-          "resource": "Search"
-         }
-        ],
-        "message": "Validation Failed",
-        "status": "422"
-       },
-       "cache_hit": false,
-       "http_status": 422,
-       "status": "http-error",
-       "url": "https://api.github.com/search/commits?q=%22TrainingCheckpointCoordinator.resume%22+repo%3Ahiyouga%2FLLaMA-Factory&per_page=20"
+      "query": "\"TrainingCheckpointCoordinator.resume\" repo:hiyouga/LlamaFactory",
+      "related": [],
+      "repo_resolution": {
+       "archived": false,
+       "repo": "hiyouga/LlamaFactory",
+       "resolved": true
       },
-      "status": "error"
+      "status": "ok"
      },
      "nvd": {
       "detail": "NVD keyword search returned no strong-term match",
@@ -12315,10 +11987,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "llamafactory@0.9.5",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -12332,9 +12005,9 @@
       "status": "ok"
      }
     },
-    "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "inconclusive"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "attacker can write a LlamaFactory v1 training checkpoint directory",
@@ -12349,7 +12022,7 @@
     "snippet": ""
    },
    "source": "mining",
-   "state": "verified-exploitable",
+   "state": "novelty-checked",
    "title": "llamafactory: torch-load-unsafe @ v1/core/utils/checkpoint.py:334",
    "verification": {
     "dynamic": true,
@@ -12357,7 +12030,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v0.9.5"
+   "version": "v0.9.5",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "src/llamafactory/v1/core/utils/checkpoint.py:334 torch.load(weights_only=False) on a checkpoint consumed by the local training job.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "llamafactory",
@@ -12397,7 +12074,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:19+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex",
     "matched": [],
     "providers": {
@@ -12420,29 +12097,17 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "HTTP 422",
+      "detail": "no security-relevant commit matched TrainingCheckpointCoordinator.resume",
       "matches": [],
       "provider": "github_commits",
-      "raw": {
-       "body": {
-        "documentation_url": "https://docs.github.com/v3/search/",
-        "errors": [
-         {
-          "code": "invalid",
-          "field": "q",
-          "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
-          "resource": "Search"
-         }
-        ],
-        "message": "Validation Failed",
-        "status": "422"
-       },
-       "cache_hit": false,
-       "http_status": 422,
-       "status": "http-error",
-       "url": "https://api.github.com/search/commits?q=%22TrainingCheckpointCoordinator.resume%22+repo%3Ahiyouga%2FLLaMA-Factory&per_page=20"
+      "query": "\"TrainingCheckpointCoordinator.resume\" repo:hiyouga/LlamaFactory",
+      "related": [],
+      "repo_resolution": {
+       "archived": false,
+       "repo": "hiyouga/LlamaFactory",
+       "resolved": true
       },
-      "status": "error"
+      "status": "ok"
      },
      "nvd": {
       "detail": "NVD keyword search returned no strong-term match",
@@ -12481,10 +12146,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "llamafactory@0.9.5",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -12498,9 +12164,9 @@
       "status": "ok"
      }
     },
-    "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "inconclusive"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "attacker can write a LlamaFactory v1 training checkpoint directory",
@@ -12515,7 +12181,7 @@
     "snippet": ""
    },
    "source": "mining",
-   "state": "verified-exploitable",
+   "state": "novelty-checked",
    "title": "llamafactory: torch-load-unsafe @ v1/core/utils/checkpoint.py:334",
    "verification": {
     "dynamic": true,
@@ -12523,7 +12189,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v0.9.5"
+   "version": "v0.9.5",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "src/llamafactory/v1/core/utils/checkpoint.py:334 torch.load(weights_only=False) on a checkpoint consumed by the local training job.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "llamafactory",
@@ -13704,7 +13374,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:20+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
     "matched": [],
     "providers": {
@@ -13861,10 +13531,20 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "no version/commit pin; OSV cannot answer for a floating package",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
+      "package_identity": {
+       "evidence": "https://pypi.org/project/megatron-core/",
+       "exists": true,
+       "placeholder": false,
+       "summary": "Megatron Core - a library for efficient and scalable training of transformer based models",
+       "version": "0.19.2"
+      },
       "provider": "osv",
-      "status": "not-applicable"
+      "queried": "megatron-core (package-level, all versions)",
+      "query_mode": "package-level",
+      "related": [],
+      "status": "ok"
      },
      "vendor": {
       "detail": "vendor pages fetched clean",
@@ -13877,9 +13557,9 @@
       "status": "ok"
      }
     },
-    "reason": "provider(s) unavailable/skipped: osv: no version/commit pin; OSV cannot answer for a floating package",
-    "schema": "trident-novelty-result-v1",
-    "verdict": "inconclusive"
+    "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+    "schema": "inkblade-novelty-result-v1",
+    "verdict": "confirmed-unpublished"
    },
    "preconditions": [
     "attacker can write the Megatron checkpoint directory",
@@ -13895,7 +13575,7 @@
     "snippet": ""
    },
    "source": "mining",
-   "state": "verified-exploitable",
+   "state": "novelty-checked",
    "title": "megatron: torch-load-any @ checkpointing.py:1739",
    "verification": {
     "dynamic": true,
@@ -13903,7 +13583,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "core_v0.19.2"
+   "version": "core_v0.19.2",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "megatron/training/checkpointing.py:1739 torch.load(checkpoint_name) in the local checkpoint loader.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "megatron",
@@ -14183,7 +13867,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:20+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "msswift-indexed-dataset-py-pickle-loads-l112-ast",
     "matched": [],
     "providers": {
@@ -14305,10 +13989,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "ms-swift@4.6.0",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -14323,7 +14008,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -14347,7 +14032,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v4.6.0"
+   "version": "v4.6.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "swift/dataset/indexed_dataset.py:112 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "msswift",
@@ -14387,7 +14076,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:20+00:00",
+    "checked_at": "2026-10-26T17:35:28+00:00",
     "id": "msswift-indexed-dataset-py-pickle-loads-l112-regex",
     "matched": [],
     "providers": {
@@ -14509,10 +14198,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "ms-swift@4.6.0",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -14527,7 +14217,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -14551,7 +14241,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v4.6.0"
+   "version": "v4.6.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "swift/dataset/indexed_dataset.py:112 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "msswift",
@@ -14591,7 +14285,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:20+00:00",
+    "checked_at": "2026-10-26T17:35:29+00:00",
     "id": "msswift-indexed-dataset-py-pickle-loads-l129-ast",
     "matched": [],
     "providers": {
@@ -14657,10 +14351,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "ms-swift@4.6.0",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -14675,7 +14370,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -14699,7 +14394,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v4.6.0"
+   "version": "v4.6.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "swift/dataset/indexed_dataset.py:129 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "msswift",
@@ -14739,7 +14438,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:21+00:00",
+    "checked_at": "2026-10-26T17:35:29+00:00",
     "id": "msswift-indexed-dataset-py-pickle-loads-l129-regex",
     "matched": [],
     "providers": {
@@ -14805,10 +14504,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "ms-swift@4.6.0",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -14823,7 +14523,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -14847,7 +14547,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v4.6.0"
+   "version": "v4.6.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "swift/dataset/indexed_dataset.py:129 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "msswift",
@@ -15247,7 +14951,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:21+00:00",
+    "checked_at": "2026-10-26T17:35:29+00:00",
     "id": "msswift-torch-utils-py-pickle-loads-l340-ast",
     "matched": [],
     "providers": {
@@ -15345,10 +15049,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "ms-swift@4.6.0",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -15363,7 +15068,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -15387,7 +15092,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v4.6.0"
+   "version": "v4.6.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "swift/utils/torch_utils.py:340 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "msswift",
@@ -15427,7 +15136,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:21+00:00",
+    "checked_at": "2026-10-26T17:35:29+00:00",
     "id": "msswift-torch-utils-py-pickle-loads-l340-regex",
     "matched": [],
     "providers": {
@@ -15525,10 +15234,11 @@
       "status": "ok"
      },
      "osv": {
-      "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+      "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
       "matches": [],
       "provider": "osv",
       "queried": "ms-swift@4.6.0",
+      "query_mode": "pin",
       "related": [],
       "status": "ok"
      },
@@ -15543,7 +15253,7 @@
      }
     },
     "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-    "schema": "trident-novelty-result-v1",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "confirmed-unpublished"
    },
    "preconditions": [
@@ -15567,7 +15277,11 @@
     "reason": "",
     "status": "verified"
    },
-   "version": "v4.6.0"
+   "version": "v4.6.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "swift/utils/torch_utils.py:340 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "deployment_basis": "runtime",
+   "default_exposed": false
   },
   {
    "component": "nccl",
@@ -15729,7 +15443,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:22+00:00",
+    "checked_at": "2026-10-26T17:35:29+00:00",
     "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-ast",
     "matched": [
      {
@@ -15771,36 +15485,6 @@
       ],
       "summary": "A vulnerability in Hugging Face Transformers (versions 4.57.0 to 5.16.1) allows remote Python files to be written to local disk without user consent when using GenerativePreTrainedModel.load_custom_generate(). The function fetches and caches a remote module file before performing the required trust_",
       "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-80047"
-     },
-     {
-      "id": "df03fc1f9cac4ff8ec7f57a599b274768180f765",
-      "repo": "huggingface/transformers",
-      "summary": "Improve module name handling for local custom code (#40809)",
-      "url": "https://github.com/huggingface/transformers/commit/df03fc1f9cac4ff8ec7f57a599b274768180f765"
-     },
-     {
-      "id": "1ca0be502a9366dc81f588732ece9f6808b30602",
-      "repo": "huggingface/transformers",
-      "summary": "Fix custom-module copies inheriting read-only permissions (#45686)",
-      "url": "https://github.com/huggingface/transformers/commit/1ca0be502a9366dc81f588732ece9f6808b30602"
-     },
-     {
-      "id": "908f67e864fade680ac0114dccbec147b141d381",
-      "repo": "huggingface/transformers",
-      "summary": "fix: include transitive relative imports when loading from local directory (#46022)",
-      "url": "https://github.com/huggingface/transformers/commit/908f67e864fade680ac0114dccbec147b141d381"
-     },
-     {
-      "id": "0e0e5c10441e807d55cc675900d3debf81834025",
-      "repo": "huggingface/transformers",
-      "summary": "[generate] Run custom generation code from the Hub (#36405)",
-      "url": "https://github.com/huggingface/transformers/commit/0e0e5c10441e807d55cc675900d3debf81834025"
-     },
-     {
-      "id": "82ffeb28ad926938db1f81e2423b6ba4ffbed579",
-      "repo": "huggingface/transformers",
-      "summary": "Add Top-H decoding (entropy-bounded truncation) as a LogitsWarper for text generation (#40837)",
-      "url": "https://github.com/huggingface/transformers/commit/82ffeb28ad926938db1f81e2423b6ba4ffbed579"
      },
      {
       "id": null,
@@ -15913,13 +15597,28 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "5 security-relevant commit(s) mention dynamic_module_utils.py",
-      "matches": [
+      "detail": "no security-relevant commit matched dynamic_module_utils.py",
+      "matches": [],
+      "provider": "github_commits",
+      "query": "\"dynamic_module_utils.py\" repo:huggingface/transformers",
+      "related": [
        {
         "id": "df03fc1f9cac4ff8ec7f57a599b274768180f765",
         "repo": "huggingface/transformers",
         "summary": "Improve module name handling for local custom code (#40809)",
         "url": "https://github.com/huggingface/transformers/commit/df03fc1f9cac4ff8ec7f57a599b274768180f765"
+       },
+       {
+        "id": "abbed7010be490a24c46aa90dedaa7aa48d78487",
+        "repo": "huggingface/transformers",
+        "summary": "Fix dotted model names (#40745)",
+        "url": "https://github.com/huggingface/transformers/commit/abbed7010be490a24c46aa90dedaa7aa48d78487"
+       },
+       {
+        "id": "000e52aec8850d3fe2f360adc6fd256e5b47fe4c",
+        "repo": "huggingface/transformers",
+        "summary": "More error message fixup, plus some linebreaks! (#26296)",
+        "url": "https://github.com/huggingface/transformers/commit/000e52aec8850d3fe2f360adc6fd256e5b47fe4c"
        },
        {
         "id": "1ca0be502a9366dc81f588732ece9f6808b30602",
@@ -15934,6 +15633,18 @@
         "url": "https://github.com/huggingface/transformers/commit/908f67e864fade680ac0114dccbec147b141d381"
        },
        {
+        "id": "cc832cbd191176dd95c591c6fa0c847fd3f9c7bb",
+        "repo": "huggingface/transformers",
+        "summary": "filter flash_attn optional imports loading remote code (#30954)",
+        "url": "https://github.com/huggingface/transformers/commit/cc832cbd191176dd95c591c6fa0c847fd3f9c7bb"
+       },
+       {
+        "id": "c5a1ff9ef010c9e886522d03afe7b4c3080cab68",
+        "repo": "huggingface/transformers",
+        "summary": "feat: filter try/except when looking at custom code (#21914)",
+        "url": "https://github.com/huggingface/transformers/commit/c5a1ff9ef010c9e886522d03afe7b4c3080cab68"
+       },
+       {
         "id": "0e0e5c10441e807d55cc675900d3debf81834025",
         "repo": "huggingface/transformers",
         "summary": "[generate] Run custom generation code from the Hub (#36405)",
@@ -15946,35 +15657,7 @@
         "url": "https://github.com/huggingface/transformers/commit/82ffeb28ad926938db1f81e2423b6ba4ffbed579"
        }
       ],
-      "provider": "github_commits",
-      "query": "\"dynamic_module_utils.py\" repo:huggingface/transformers",
-      "related": [
-       {
-        "id": "abbed7010be490a24c46aa90dedaa7aa48d78487",
-        "repo": "huggingface/transformers",
-        "summary": "Fix dotted model names (#40745)",
-        "url": "https://github.com/huggingface/transformers/commit/abbed7010be490a24c46aa90dedaa7aa48d78487"
-       },
-       {
-        "id": "000e52aec8850d3fe2f360adc6fd256e5b47fe4c",
-        "repo": "huggingface/transformers",
-        "summary": "More error message fixup, plus some linebreaks! (#26296)",
-        "url": "https://github.com/huggingface/transformers/commit/000e52aec8850d3fe2f360adc6fd256e5b47fe4c"
-       },
-       {
-        "id": "cc832cbd191176dd95c591c6fa0c847fd3f9c7bb",
-        "repo": "huggingface/transformers",
-        "summary": "filter flash_attn optional imports loading remote code (#30954)",
-        "url": "https://github.com/huggingface/transformers/commit/cc832cbd191176dd95c591c6fa0c847fd3f9c7bb"
-       },
-       {
-        "id": "c5a1ff9ef010c9e886522d03afe7b4c3080cab68",
-        "repo": "huggingface/transformers",
-        "summary": "feat: filter try/except when looking at custom code (#21914)",
-        "url": "https://github.com/huggingface/transformers/commit/c5a1ff9ef010c9e886522d03afe7b4c3080cab68"
-       }
-      ],
-      "status": "match"
+      "status": "ok"
      },
      "nvd": {
       "detail": "2 NVD CVE(s) matched strong terms",
@@ -16084,6 +15767,7 @@
       ],
       "provider": "osv",
       "queried": "transformers@4.57.1",
+      "query_mode": "pin",
       "related": [
        {
         "aliases": [
@@ -16187,8 +15871,8 @@
       "status": "ok"
      }
     },
-    "reason": "public disclosure match: osv=GHSA-x9r9-c232-4q39, nvd=CVE-2025-3264, github_commits=df03fc1f9cac4ff8ec7f57a599b274768180f765, github_code=https://github.com/pypa/advisory-database/blob/HEAD/vulns/transformers/PYSEC-2026-1985.yaml",
-    "schema": "trident-novelty-result-v1",
+    "reason": "public disclosure match: osv=GHSA-x9r9-c232-4q39, nvd=CVE-2025-3264, github_code=https://github.com/pypa/advisory-database/blob/HEAD/vulns/transformers/PYSEC-2026-1985.yaml",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "already-public"
    },
    "preconditions": [
@@ -16252,7 +15936,7 @@
     ]
    },
    "novelty_result": {
-    "checked_at": "2026-10-26T11:49:22+00:00",
+    "checked_at": "2026-10-26T17:35:29+00:00",
     "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-regex",
     "matched": [
      {
@@ -16294,36 +15978,6 @@
       ],
       "summary": "A vulnerability in Hugging Face Transformers (versions 4.57.0 to 5.16.1) allows remote Python files to be written to local disk without user consent when using GenerativePreTrainedModel.load_custom_generate(). The function fetches and caches a remote module file before performing the required trust_",
       "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-80047"
-     },
-     {
-      "id": "df03fc1f9cac4ff8ec7f57a599b274768180f765",
-      "repo": "huggingface/transformers",
-      "summary": "Improve module name handling for local custom code (#40809)",
-      "url": "https://github.com/huggingface/transformers/commit/df03fc1f9cac4ff8ec7f57a599b274768180f765"
-     },
-     {
-      "id": "1ca0be502a9366dc81f588732ece9f6808b30602",
-      "repo": "huggingface/transformers",
-      "summary": "Fix custom-module copies inheriting read-only permissions (#45686)",
-      "url": "https://github.com/huggingface/transformers/commit/1ca0be502a9366dc81f588732ece9f6808b30602"
-     },
-     {
-      "id": "908f67e864fade680ac0114dccbec147b141d381",
-      "repo": "huggingface/transformers",
-      "summary": "fix: include transitive relative imports when loading from local directory (#46022)",
-      "url": "https://github.com/huggingface/transformers/commit/908f67e864fade680ac0114dccbec147b141d381"
-     },
-     {
-      "id": "0e0e5c10441e807d55cc675900d3debf81834025",
-      "repo": "huggingface/transformers",
-      "summary": "[generate] Run custom generation code from the Hub (#36405)",
-      "url": "https://github.com/huggingface/transformers/commit/0e0e5c10441e807d55cc675900d3debf81834025"
-     },
-     {
-      "id": "82ffeb28ad926938db1f81e2423b6ba4ffbed579",
-      "repo": "huggingface/transformers",
-      "summary": "Add Top-H decoding (entropy-bounded truncation) as a LogitsWarper for text generation (#40837)",
-      "url": "https://github.com/huggingface/transformers/commit/82ffeb28ad926938db1f81e2423b6ba4ffbed579"
      },
      {
       "id": null,
@@ -16436,13 +16090,28 @@
       "via": "grep.app+local-tree"
      },
      "github_commits": {
-      "detail": "5 security-relevant commit(s) mention dynamic_module_utils.py",
-      "matches": [
+      "detail": "no security-relevant commit matched dynamic_module_utils.py",
+      "matches": [],
+      "provider": "github_commits",
+      "query": "\"dynamic_module_utils.py\" repo:huggingface/transformers",
+      "related": [
        {
         "id": "df03fc1f9cac4ff8ec7f57a599b274768180f765",
         "repo": "huggingface/transformers",
         "summary": "Improve module name handling for local custom code (#40809)",
         "url": "https://github.com/huggingface/transformers/commit/df03fc1f9cac4ff8ec7f57a599b274768180f765"
+       },
+       {
+        "id": "abbed7010be490a24c46aa90dedaa7aa48d78487",
+        "repo": "huggingface/transformers",
+        "summary": "Fix dotted model names (#40745)",
+        "url": "https://github.com/huggingface/transformers/commit/abbed7010be490a24c46aa90dedaa7aa48d78487"
+       },
+       {
+        "id": "000e52aec8850d3fe2f360adc6fd256e5b47fe4c",
+        "repo": "huggingface/transformers",
+        "summary": "More error message fixup, plus some linebreaks! (#26296)",
+        "url": "https://github.com/huggingface/transformers/commit/000e52aec8850d3fe2f360adc6fd256e5b47fe4c"
        },
        {
         "id": "1ca0be502a9366dc81f588732ece9f6808b30602",
@@ -16457,6 +16126,18 @@
         "url": "https://github.com/huggingface/transformers/commit/908f67e864fade680ac0114dccbec147b141d381"
        },
        {
+        "id": "cc832cbd191176dd95c591c6fa0c847fd3f9c7bb",
+        "repo": "huggingface/transformers",
+        "summary": "filter flash_attn optional imports loading remote code (#30954)",
+        "url": "https://github.com/huggingface/transformers/commit/cc832cbd191176dd95c591c6fa0c847fd3f9c7bb"
+       },
+       {
+        "id": "c5a1ff9ef010c9e886522d03afe7b4c3080cab68",
+        "repo": "huggingface/transformers",
+        "summary": "feat: filter try/except when looking at custom code (#21914)",
+        "url": "https://github.com/huggingface/transformers/commit/c5a1ff9ef010c9e886522d03afe7b4c3080cab68"
+       },
+       {
         "id": "0e0e5c10441e807d55cc675900d3debf81834025",
         "repo": "huggingface/transformers",
         "summary": "[generate] Run custom generation code from the Hub (#36405)",
@@ -16469,35 +16150,7 @@
         "url": "https://github.com/huggingface/transformers/commit/82ffeb28ad926938db1f81e2423b6ba4ffbed579"
        }
       ],
-      "provider": "github_commits",
-      "query": "\"dynamic_module_utils.py\" repo:huggingface/transformers",
-      "related": [
-       {
-        "id": "abbed7010be490a24c46aa90dedaa7aa48d78487",
-        "repo": "huggingface/transformers",
-        "summary": "Fix dotted model names (#40745)",
-        "url": "https://github.com/huggingface/transformers/commit/abbed7010be490a24c46aa90dedaa7aa48d78487"
-       },
-       {
-        "id": "000e52aec8850d3fe2f360adc6fd256e5b47fe4c",
-        "repo": "huggingface/transformers",
-        "summary": "More error message fixup, plus some linebreaks! (#26296)",
-        "url": "https://github.com/huggingface/transformers/commit/000e52aec8850d3fe2f360adc6fd256e5b47fe4c"
-       },
-       {
-        "id": "cc832cbd191176dd95c591c6fa0c847fd3f9c7bb",
-        "repo": "huggingface/transformers",
-        "summary": "filter flash_attn optional imports loading remote code (#30954)",
-        "url": "https://github.com/huggingface/transformers/commit/cc832cbd191176dd95c591c6fa0c847fd3f9c7bb"
-       },
-       {
-        "id": "c5a1ff9ef010c9e886522d03afe7b4c3080cab68",
-        "repo": "huggingface/transformers",
-        "summary": "feat: filter try/except when looking at custom code (#21914)",
-        "url": "https://github.com/huggingface/transformers/commit/c5a1ff9ef010c9e886522d03afe7b4c3080cab68"
-       }
-      ],
-      "status": "match"
+      "status": "ok"
      },
      "nvd": {
       "detail": "2 NVD CVE(s) matched strong terms",
@@ -16607,6 +16260,7 @@
       ],
       "provider": "osv",
       "queried": "transformers@4.57.1",
+      "query_mode": "pin",
       "related": [
        {
         "aliases": [
@@ -16710,8 +16364,8 @@
       "status": "ok"
      }
     },
-    "reason": "public disclosure match: osv=GHSA-x9r9-c232-4q39, nvd=CVE-2025-3264, github_commits=df03fc1f9cac4ff8ec7f57a599b274768180f765, github_code=https://github.com/pypa/advisory-database/blob/HEAD/vulns/transformers/PYSEC-2026-1985.yaml",
-    "schema": "trident-novelty-result-v1",
+    "reason": "public disclosure match: osv=GHSA-x9r9-c232-4q39, nvd=CVE-2025-3264, github_code=https://github.com/pypa/advisory-database/blob/HEAD/vulns/transformers/PYSEC-2026-1985.yaml",
+    "schema": "inkblade-novelty-result-v1",
     "verdict": "already-public"
    },
    "preconditions": [
@@ -19807,17 +19461,15 @@
    "version": "v4.57.1"
   }
  ],
- "generated_at": "2026-10-26T12:40:32+00:00",
- "inventory": "trident-zeroday-inventory-v1",
+ "generated_at": "2026-10-26T18:02:01+00:00",
+ "inventory": "inkblade-zeroday-inventory-v1",
  "reserve_rule": "verified (dynamic) + confirmed-unpublished; already-public/inconclusive never count",
- "schema": "trident-zeroday-registry-v1",
+ "schema": "inkblade-zeroday-registry-v1",
  "summary": {
   "already_public_ids": [
    "sglang-admin-optional-failopen",
-   "skyrl-tinker-api",
    "llamafactory-webui-rce",
    "verl-prime-math-eval",
-   "skyrl-fetch-weights",
    "vllm-omni-media-ssrf",
    "llamafactory-ssrf-redirect",
    "ray-dashboard-unauth",
@@ -19843,12 +19495,12 @@
     "verified": 6
    },
    "audit-history": {
-    "confirmed": 8,
+    "confirmed": 19,
     "failed": 0,
-    "inconclusive": 9,
+    "inconclusive": 0,
     "label": "审计历史-核心框架",
-    "public": 7,
-    "reserve": 8,
+    "public": 5,
+    "reserve": 19,
     "static": 3,
     "total": 27,
     "unsupported": 0,
@@ -19867,12 +19519,12 @@
     "verified": 0
    },
    "mining": {
-    "confirmed": 12,
+    "confirmed": 15,
     "failed": 0,
-    "inconclusive": 3,
+    "inconclusive": 0,
     "label": "挖掘候选",
     "public": 4,
-    "reserve": 11,
+    "reserve": 14,
     "static": 73,
     "total": 96,
     "unsupported": 4,
@@ -19903,42 +19555,40 @@
     "verified": 7
    }
   },
-  "confirmed": 33,
+  "confirmed": 47,
   "excluded_non_0day": [
    "cephcsi-httpserver-go-pprof-exposed-l37-regex"
   ],
   "failed": 0,
-  "inconclusive": 12,
-  "inconclusive_ids": [
-   "slime-pull-weights",
-   "areal-unauth-engine-control",
-   "areal-dataservice-pickle",
-   "verl-prime-code-exec",
-   "verl-checkpoint-pickle",
-   "areal-v2-worker",
-   "slime-torch-load",
-   "areal-awex",
-   "verl-hdfs-command-injection",
-   "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
-   "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex",
-   "megatron-checkpointing-py-torch-load-any-l1739-regex"
-  ],
-  "public": 15,
-  "reserve": 32,
+  "inconclusive": 0,
+  "inconclusive_ids": [],
+  "public": 13,
+  "reserve": 46,
   "reserve_ids": [
    "vllm-jev-plugin-auth-bypass",
    "djev-open-proxy",
+   "slime-pull-weights",
    "sglang-omni-admin-failopen",
    "skyrl-vllm-devmode",
+   "skyrl-tinker-api",
    "trl-vllm-serve-devmode",
+   "areal-unauth-engine-control",
+   "areal-dataservice-pickle",
    "openrlhf-serve-rm",
    "msswift-trust-remote-code",
+   "verl-prime-code-exec",
+   "verl-checkpoint-pickle",
+   "skyrl-fetch-weights",
    "openrlhf-vllm-insecure",
+   "areal-v2-worker",
+   "slime-torch-load",
    "openjev-clef-release-module",
    "msswift-eval-escape",
+   "areal-awex",
    "onejev-media-ssrf",
    "llm2jev-image-file",
    "siliconlab-credential-exfil",
+   "verl-hdfs-command-injection",
    "dify-shellctl-unauth-rce",
    "dify-agent-auth-failopen",
    "dify-stub-jwe-default-key",
@@ -19952,6 +19602,9 @@
    "deepspeed-stage3-py-torch-load-unsafe-l3660-ast",
    "deepspeed-stage3-py-torch-load-unsafe-l3660-regex",
    "deepspeed-stage3-py-torch-load-unsafe-l3770-ast",
+   "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
+   "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex",
+   "megatron-checkpointing-py-torch-load-any-l1739-regex",
    "msswift-indexed-dataset-py-pickle-loads-l112-ast",
    "msswift-indexed-dataset-py-pickle-loads-l112-regex",
    "msswift-indexed-dataset-py-pickle-loads-l129-ast",
@@ -19959,21 +19612,32 @@
    "msswift-torch-utils-py-pickle-loads-l340-ast",
    "msswift-torch-utils-py-pickle-loads-l340-regex"
   ],
-  "reserve_unique": 26,
+  "reserve_unique": 39,
   "reserve_unique_ids": [
    "vllm-jev-plugin-auth-bypass",
    "djev-open-proxy",
+   "slime-pull-weights",
    "sglang-omni-admin-failopen",
    "skyrl-vllm-devmode",
+   "skyrl-tinker-api",
    "trl-vllm-serve-devmode",
+   "areal-unauth-engine-control",
+   "areal-dataservice-pickle",
    "openrlhf-serve-rm",
    "msswift-trust-remote-code",
+   "verl-prime-code-exec",
+   "verl-checkpoint-pickle",
+   "skyrl-fetch-weights",
    "openrlhf-vllm-insecure",
+   "areal-v2-worker",
+   "slime-torch-load",
    "openjev-clef-release-module",
    "msswift-eval-escape",
+   "areal-awex",
    "onejev-media-ssrf",
    "llm2jev-image-file",
    "siliconlab-credential-exfil",
+   "verl-hdfs-command-injection",
    "dify-shellctl-unauth-rce",
    "dify-agent-auth-failopen",
    "dify-stub-jwe-default-key",
@@ -19984,6 +19648,8 @@
    "msswift-media-local-read",
    "deepspeed-stage3-py-torch-load-any-l3660-regex",
    "deepspeed-stage3-py-torch-load-any-l3770-regex",
+   "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
+   "megatron-checkpointing-py-torch-load-any-l1739-regex",
    "msswift-indexed-dataset-py-pickle-loads-l112-ast",
    "msswift-indexed-dataset-py-pickle-loads-l129-ast",
    "msswift-torch-utils-py-pickle-loads-l340-ast"
@@ -19992,5 +19658,23 @@
   "total": 169,
   "unsupported": 4,
   "verified": 60
+ },
+ "deployment": {
+  "schema": "inkblade-deployment-requirement-v1",
+  "scope": "reserve (state=novelty-checked)",
+  "counts": {
+   "default-exposed": 5,
+   "needs-config": 20,
+   "function-level": 21,
+   "hardware-only": 1
+  },
+  "default_exposed": [
+   "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+   "dify-shellctl-unauth-rce",
+   "djev-open-proxy",
+   "msswift-media-local-read",
+   "sglang-omni-admin-failopen"
+  ],
+  "evidence_rule": "each reserve entry carries deployment_evidence naming the bind, missing flag/env, admin key or local checkpoint path"
  }
 }

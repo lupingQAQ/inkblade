@@ -1,0 +1,32 @@
+{
+  "key": "msswift-eval-escape",
+  "name": {
+    "zh": "ms-swift ranks 表达式逃逸",
+    "en": "ms-swift ranks Expression Sandbox Escape"
+  },
+  "series": "核心代码",
+  "description": "ms-swift 4.5.3 evaluates the ranks expression with a restricted builtins dict; attribute traversal via __builtins__.__import__ escapes the dict and executes code on the training host.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标 URL，例如 http://host:port（真实模式必需）",
+    "mode": "probe-only（默认，只读探测）| backup-write（写模块需 backup_targets）",
+    "local_path": "function-level 模块的本地文件/模型目录（仅读取，不反序列化）"
+  },
+  "produces": "expression-sandbox-escape",
+  "knowledge": "docs/WEAPON-READINESS.md#msswift-eval-escape",
+  "combo_signature": "msswift-ranks-eval-escape",
+  "weapon_pack": true,
+  "surfaces": [
+    {
+      "type": "http-endpoint",
+      "selector": "/webui"
+    },
+    {
+      "type": "config-file",
+      "selector": "ms-swift"
+    }
+  ],
+  "default_enabled": true
+}

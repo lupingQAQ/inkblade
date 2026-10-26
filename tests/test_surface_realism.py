@@ -13,21 +13,21 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import mock
 
-from trident.collect import files as files_collect
-from trident.collect import fixture_collection
-from trident.collect import hardware as hardware_collect
-from trident.collect import http as http_collect
-from trident.collect import k8s as k8s_collect
-from trident.core import surface
-from trident.core.evidence import EvidenceStore
-from trident.core.registry import load_modules
-from trident.core.roe import init_roe
-from trident.core.runner import run_module
-from trident.core.users import Session
+from inkblade.collect import files as files_collect
+from inkblade.collect import fixture_collection
+from inkblade.collect import hardware as hardware_collect
+from inkblade.collect import http as http_collect
+from inkblade.collect import k8s as k8s_collect
+from inkblade.core import surface
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.registry import load_modules
+from inkblade.core.roe import init_roe
+from inkblade.core.runner import run_module
+from inkblade.core.users import Session
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ROOT / "trident" / "modules"
-REGISTRY = ROOT / "trident" / "core" / "exploit-registry.json"
+MODULES = ROOT / "inkblade" / "modules"
+REGISTRY = ROOT / "inkblade" / "core" / "exploit-registry.json"
 FOCUS = {
     "confidential-containers-audit", "spiffe-spire-audit", "ambient-mesh-audit",
     "wasm-runtime-audit", "post-quantum-tls-audit", "federated-learning-audit",
@@ -117,7 +117,7 @@ class TestSurfaceGate(SurfaceCase):
     def test_unknown_requires_probe(self):
         sentinel = self._module("test-unknown", [{"type": "config-file",
                                                   "selector": "special.yaml"}])
-        collection = {"schema": "trident-collection-v1", "mode": "live", "fixture": False,
+        collection = {"schema": "inkblade-collection-v1", "mode": "live", "fixture": False,
                       "k8s": {"status": "unavailable", "objects": []},
                       "http": {"status": "unavailable", "endpoints": []},
                       "files": {"status": "unavailable", "files": []},
@@ -151,7 +151,7 @@ class TestSurfaceGate(SurfaceCase):
     def test_default_chain_marks_quarantine_blocked(self):
         self._module("test-chain-off", [{"type": "http-endpoint", "selector": "/never"}],
                      default=False)
-        from trident.core.chains import dry_run
+        from inkblade.core.chains import dry_run
 
         chain = {"id": "test-chain", "title": {"zh": "t", "en": "t"},
                  "category": "经典攻击链",
@@ -311,7 +311,7 @@ class TestCollect(unittest.TestCase):
             calls.append(cmd)
             return subprocess.CompletedProcess(cmd, 0, json.dumps(payload), "")
 
-        with mock.patch("trident.collect.k8s.subprocess.run", side_effect=fake_run):
+        with mock.patch("inkblade.collect.k8s.subprocess.run", side_effect=fake_run):
             doc = k8s_collect.collect(kubectl="kubectl", timeout=1)
         self.assertEqual(doc["status"], "ok")
         self.assertEqual(doc["verb"], "get")
@@ -388,17 +388,27 @@ class TestDocsAndRegistry(unittest.TestCase):
         allowed = {"default-exposed", "needs-config", "function-level", "hardware-only"}
         for entry in entries:
             self.assertIn(entry.get("deployment_requirement"), allowed, entry["id"])
+            self.assertTrue(entry.get("deployment_evidence"), entry["id"])
         dep = registry["deployment"]
-        self.assertEqual(dep["schema"], "trident-deployment-requirement-v1")
+        self.assertEqual(dep["schema"], "inkblade-deployment-requirement-v1")
         for bucket, count in dep["counts"].items():
             self.assertEqual(count, sum(1 for e in entries
                                         if e["deployment_requirement"] == bucket))
-        self.assertEqual(sorted(dep["default_exploitable"]),
+        self.assertEqual(sorted(dep["default_exposed"]),
                          sorted(e["id"] for e in entries
                                 if e["deployment_requirement"] == "default-exposed"))
+        self.assertEqual(sorted(dep["default_exploitable"]),
+                         sorted(e["id"] for e in entries
+                                if e["deployment_requirement"] == "default-exposed"
+                                and e["status"] == "verified"))
+        self.assertEqual(sorted(dep["default_exposure_verified"]),
+                         sorted(e["id"] for e in entries
+                                if e["deployment_requirement"] == "default-exposed"
+                                and e["status"] == "exposure-verified"))
         for entry in entries:
             if entry["deployment_requirement"] == "default-exposed":
-                self.assertEqual(entry["status"], "verified", entry["id"])
+                self.assertIn(entry["status"], {"verified", "exposure-verified",
+                                                "static-only"}, entry["id"])
         text = (ROOT / "docs" / "EXPLOIT-VERIFICATION.md").read_text(encoding="utf-8")
         self.assertIn("deployment_requirement", text)
         self.assertIn("default-exposed", text)
@@ -406,7 +416,7 @@ class TestDocsAndRegistry(unittest.TestCase):
 
     def test_cli_surfaces(self):
         proc = subprocess.run(
-            [sys.executable, "-m", "trident", "surfaces", "--profile", "ray-vllm", "--json"],
+            [sys.executable, "-m", "inkblade", "surfaces", "--profile", "ray-vllm", "--json"],
             cwd=str(ROOT), capture_output=True, text=True, encoding="utf-8",
             errors="replace", timeout=120)
         self.assertEqual(proc.returncode, 0, proc.stderr)

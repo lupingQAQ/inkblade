@@ -17,31 +17,30 @@
   "snippet": "api_host = os.getenv(\"API_HOST\", \"0.0.0.0\")",
   "source": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/api/app.py",
   "source_sha256": "99369f350ca92c3efd87625505fc17bd185b6eafbd6c28b9551126a28197f6a3",
-  "note": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution."
+  "note": "Live default-bind proof: src/llamafactory/api/app.py:130 defaults to 0.0.0.0 when the override env var is unset; the real upstream app answers an unauthenticated request from a non-loopback address. Exposure only, no RCE claimed."
  },
  "preconditions": [
   "pinned upstream source or advisory is available"
  ],
  "steps": [
-  "resolve the pinned tag/commit and file:line",
-  "verify the claimed snippet and source SHA256",
-  "record a static-only verdict (no exploit execution)"
+  "verify the pinned source line and hash",
+  "launch the real upstream app with vendor defaults (override env unset)",
+  "observe the non-loopback listener and fetch the route without Authorization",
+  "record exposure.json + marker; never claim an RCE primitive"
  ],
  "expected_evidence": [
-  "static-check.json with source hash and line match"
+  "exposure.json with bind=0.0.0.0, unauthenticated=true and the HTTP status",
+  "listeners.txt showing the port bound on 0.0.0.0/::",
+  "http.txt with the no-Authorization request from the non-loopback address"
  ],
  "cleanup": "none (read-only)",
- "status": "static-only",
- "method": "static-source",
- "module": null,
- "python": "reproenv",
+ "status": "exposure-verified",
+ "method": "dynamic-exposure",
+ "module": "exposure-mapping",
+ "python": "lfa",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-llamafactory-app-py-bind-all-interfaces-l130-regex",
- "notes": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution.",
- "static_evidence_level": "source-line",
- "static_analysis": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution.",
- "static_verdict": "risk-not-vuln",
- "unsupported": {},
+ "marker_text": "INKBLADE-UV-llamafactory-app-py-bind-all-interfaces-l130-regex",
+ "notes": "Promoted 2026-10-27 to exposure-verified (not RCE). The real LLaMA-Factory v0.9.5 app was launched with GRADIO_SERVER_NAME/API_HOST unset, listened on 0.0.0.0, and served the route with no Authorization header from the host's non-loopback address.",
  "mining": {
   "candidate_index": 18,
   "rule": "bind-all-interfaces",
@@ -52,10 +51,7 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "llamafactory",
- "static_blocker": {
-  "category": "exposure-only",
-  "reason": "Default 0.0.0.0 binding is an exposure posture, not an exploit: no authentication bypass, write or code execution is demonstrated."
- }
+ "exposure_verified": true
 }

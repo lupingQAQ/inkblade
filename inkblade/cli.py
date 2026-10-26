@@ -1,13 +1,13 @@
-"""Trident 命令行入口：python -m trident <子命令>。"""
+"""InkBlade 命令行入口：python -m inkblade <子命令>。"""
 
 from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 from pathlib import Path
 
+from .core.env import getenv, lookup
 from .core.registry import load_modules
 from .core.users import ROLES, UserStore
 
@@ -21,7 +21,7 @@ def _store(home: Path, ws: str):
 
 
 def _modules_dir(home: Path, explicit: str | None = None) -> Path:
-    """显式 --modules-dir 优先；否则工作区 modules/，再回落安装包内 trident/modules。"""
+    """显式 --modules-dir 优先；否则工作区 modules/，再回落安装包内 inkblade/modules。"""
     if explicit:
         return Path(explicit)
     ws_modules = Path(home) / "modules"
@@ -65,7 +65,7 @@ def _inventory_for_cli(home: Path, explicit: str | None, *, required: bool = Fal
     if p is None:
         if required:
             raise InventoryError(
-                "缺少环境清单：先运行 trident assess inventory --kubeconfig <路径> "
+                "缺少环境清单：先运行 inkblade assess inventory --kubeconfig <路径> "
                 "或 --snapshot <快照>，再传 --inventory。"
             )
         return None, None
@@ -93,17 +93,27 @@ def _print_json(data) -> None:
 
 
 def main(argv=None) -> int:
-    """CLI 入口：未捕获异常统一转人话，堆栈仅在 TRIDENT_DEBUG=1 时暴露。"""
+    """CLI 入口：未捕获异常统一转人话，堆栈仅在 INKBLADE_DEBUG=1 时暴露。"""
     try:
         return _main(argv)
     except KeyboardInterrupt:
         print("\n已取消（Ctrl+C）。", file=sys.stderr)
         return 130
     except Exception as exc:  # noqa: BLE001 —— 陌生用户默认不该看到堆栈
-        if os.environ.get("TRIDENT_DEBUG") == "1":
+        if getenv("DEBUG") == "1":
             raise
         _human_error(exc)
         return 2
+
+
+def legacy_main(argv=None) -> int:
+    """已弃用的旧入口（``trident`` console script）：提示迁移后转交 ``inkblade``。"""
+    print(
+        "DEPRECATED: `trident` 是 InkBlade 的旧命令名，将在 0.3.0 移除；"
+        "请改用 `inkblade`（或 `python -m inkblade`）。",
+        file=sys.stderr,
+    )
+    return main(argv)
 
 
 def _main(argv=None) -> int:
@@ -114,7 +124,7 @@ def _main(argv=None) -> int:
         sys.stderr.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
-    ap = argparse.ArgumentParser(prog="trident", description="Trident ML-cluster pentest platform (authorized testing)")
+    ap = argparse.ArgumentParser(prog="inkblade", description="InkBlade ML-cluster pentest platform (authorized testing)")
     ap.add_argument("--home", default=".", help="工作区根目录（含 evidence/ modules/ users.json）")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
@@ -125,7 +135,7 @@ def _main(argv=None) -> int:
 
     srf = sub.add_parser("surfaces", help="真实部署面矩阵：每模块 required_surfaces × 部署画像")
     srf.add_argument("--profile", required=True)
-    srf.add_argument("--collect", default=None, help="trident collect 输出目录")
+    srf.add_argument("--collect", default=None, help="inkblade collect 输出目录")
     srf.add_argument("--json", action="store_true")
     srf.add_argument("--out", default=None, help="写 .json/.md（按扩展名）")
     srf.add_argument("--fixture", action="store_true",
@@ -181,11 +191,30 @@ def _main(argv=None) -> int:
     exq.add_argument("--modules-dir", default=None)
     exq.add_argument("--inventory", default=None,
                      help="环境清单 inventory.json；缺省自动发现 <home>/inventory.json")
-    exq.add_argument("--catalog", default=None, help="CVE 目录路径（缺省 trident/core/cve-catalog.json）")
+    exq.add_argument("--catalog", default=None, help="CVE 目录路径（缺省 inkblade/core/cve-catalog.json）")
     exq.add_argument("--profile", default=None, help="部署画像（启用真实面闸门）")
     exq.add_argument("--collect", default=None, help="采集链输出目录")
     exq.add_argument("--probe", action="store_true", help="显式确认 unknown 面已部署")
     exq.add_argument("--fixture", action="store_true", help="显式 fixture 数据")
+
+    wep = sub.add_parser(
+        "exploit",
+        help="武器包一键入口：inkblade exploit <id>（默认干跑；--real 走 RoE/备份/面闸门）")
+    wep.add_argument("id", nargs="?", help="武器包 id / 模块名 / 唯一前缀；省略时配合 --list")
+    wep.add_argument("--list", action="store_true", help="列出全部武器包与就绪度")
+    wep.add_argument("--real", action="store_true", help="真实执行（默认只输出干跑计划）")
+    wep.add_argument("--target", default=None, help="目标 URL / 本地文件/模型目录")
+    wep.add_argument("--params", default=None, help="附加参数 JSON 或 @file")
+    wep.add_argument("--backup-target", action="append", default=[],
+                     help="写模块备份目标（JSON 或路径）；写模块缺少即拒绝（91）")
+    wep.add_argument("--workspace", default="local-lab")
+    wep.add_argument("--actor", default="cli")
+    wep.add_argument("--role", choices=list(ROLES), default="tester")
+    wep.add_argument("--run", default=None, help="复用已有 run 目录")
+    wep.add_argument("--modules-dir", default=None)
+    wep.add_argument("--profile", default=None, help="部署画像（真实面闸门）")
+    wep.add_argument("--probe", action="store_true", help="显式确认 unknown 面已部署")
+    wep.add_argument("--fixture", action="store_true", help="显式 fixture 数据")
 
     obj = sub.add_parser("objective", help="目标链编排：三闸门/逐阶段确认/阶段超时/清理校验")
     objsub = obj.add_subparsers(dest="objective_cmd", required=True)
@@ -194,7 +223,7 @@ def _main(argv=None) -> int:
     oc.add_argument("--actor", default="cli")
     oc.add_argument("--role", choices=list(ROLES), default="lead")
     oc.add_argument("--proof-marker", required=True)
-    oc.add_argument("--namespace", default=None, help="目标命名空间（默认 trident-killchain）")
+    oc.add_argument("--namespace", default=None, help="目标命名空间（默认 inkblade-killchain）")
     oc.add_argument("--max-stage", type=int, default=7, help="只执行到第 N 阶段；随后强制清理")
     oc.add_argument("--stage-timeout", type=float, default=None, help="覆盖每阶段超时秒数")
     oc.add_argument("--auto-approve", action="store_true",
@@ -317,7 +346,10 @@ def _main(argv=None) -> int:
     ua.add_argument("role", choices=["admin", "lead", "tester", "auditor"])
     ua.add_argument("--workspaces", default="local-lab")
 
-    sub.add_parser("ui", help="启动本地 Web 控制台").add_argument("--port", type=int, default=8765)
+    uip = sub.add_parser("ui", help="启动本地 Web 控制台")
+    uip.add_argument("--port", type=int, default=8765)
+    uip.add_argument("--host", default="127.0.0.1",
+                     help="绑定地址（默认 127.0.0.1；容器/反向代理后使用 0.0.0.0）")
 
     doc = sub.add_parser("doctor", help="环境自检：Python/写权限/端口/可选依赖/mock 或真集群")
     doc.add_argument("--port", type=int, default=8765, help="检查 Web UI 端口（默认 8765）")
@@ -336,10 +368,21 @@ def _main(argv=None) -> int:
     dem.add_argument("--json", action="store_true", help="机器可读摘要")
 
     qs = sub.add_parser("quickstart", help="5 问交互向导：目标/范围/级别/用户/签授权")
-    qs.add_argument("--workspace-dir", default="trident-workspace",
-                    help="工作区根目录（默认 ./trident-workspace）")
+    qs.add_argument("--workspace-dir", default="inkblade-workspace",
+                    help="工作区根目录（默认 ./inkblade-workspace）")
     qs.add_argument("--yes", action="store_true", help="全部使用默认值（CI/非交互）")
     qs.add_argument("--json", action="store_true", help="机器可读摘要")
+
+    tr = sub.add_parser("trial", help="试用：离线 demo + 试用报告 + 下一步（无需集群）")
+    tr.add_argument("--out", default="demo-trial", help="输出目录（默认 ./demo-trial）")
+    tr.add_argument("--no-demo", action="store_true", help="只做环境检查，不跑离线 demo")
+    tr.add_argument("--kubeconfig", default=None,
+                    help="可选：有授权集群时用于生成 pilot 下一步提示（不会连接）")
+    tr.add_argument("--json", action="store_true", help="机器可读试用报告")
+
+    sdkp = sub.add_parser("sdk", help="插件 SDK：new|lint|validate|trust|run|list")
+    sdkp.add_argument("sdk_args", nargs=argparse.REMAINDER,
+                      help="透传给 inkblade.sdk 的子命令参数")
 
     pilot = sub.add_parser("pilot", help="试点模式：kubeconfig 只读清点→画像/热图/计划/审批清单")
     pilot.add_argument("--kubeconfig", action="append", default=[],
@@ -369,7 +412,7 @@ def _main(argv=None) -> int:
     ent.add_argument("--send", action="store_true", help="真实发送（缺省 dry-run）")
     ent.add_argument("--report", default=None)
     ent.add_argument("--signer", default="lead")
-    ent.add_argument("--key-env", default="TRIDENT_REPORT_KEY")
+    ent.add_argument("--key-env", default="INKBLADE_REPORT_KEY")
     ent.add_argument("--dir", default=None)
     ent.add_argument("--retain-days", type=int, default=365)
     ent.add_argument("--out", default=None)
@@ -377,8 +420,8 @@ def _main(argv=None) -> int:
     mcp = sub.add_parser("mcp", help="MCP 只读服务器（stdio JSON-RPC）")
     mcp.add_argument("--workspace", default="local-lab")
     mcp.add_argument("--users", default=None, help="users.json（可选；配合 --token）")
-    mcp.add_argument("--token", default=os.environ.get("TRIDENT_TOKEN"),
-                     help="会话 token（默认取 TRIDENT_TOKEN；缺省为本机只读操作员）")
+    mcp.add_argument("--token", default=getenv("TOKEN"),
+                     help="会话 token（默认取 INKBLADE_TOKEN；缺省为本机只读操作员）")
     mcp.add_argument("--actor", default="mcp-readonly")
     mcp.add_argument("--role", choices=list(ROLES), default="auditor")
     mcp.add_argument("--chains-dir", default=None)
@@ -417,8 +460,8 @@ def _main(argv=None) -> int:
     skl.add_argument("--artifact", required=True)
     skl.add_argument("--out", default=None)
     skl.add_argument("--identity-token-env", default="SIGSTORE_ID_TOKEN")
-    skl.add_argument("--identity", default="fixture@trident.local")
-    skl.add_argument("--issuer", default="https://fixture.trident.local")
+    skl.add_argument("--identity", default="fixture@inkblade.local")
+    skl.add_argument("--issuer", default="https://fixture.inkblade.local")
     skl.add_argument("--offline-fixture", action="store_true",
                      help="强制本地 Fulcio/Rekor fixture（不使用 OIDC token）")
     skl.add_argument("--live-rekor-key-entry", action="store_true",
@@ -705,11 +748,22 @@ def _main(argv=None) -> int:
 
         return run_quickstart(args.workspace_dir, yes=args.yes, json_out=args.json)
 
+    if args.cmd == "trial":
+        from .trial import run_trial
+
+        return run_trial(args.out, no_demo=args.no_demo, json_out=args.json,
+                         kubeconfig=args.kubeconfig)
+
+    if args.cmd == "sdk":
+        from .sdk.__main__ import main as sdk_main
+
+        return sdk_main(list(args.sdk_args or []))
+
     if args.cmd == "pilot":
         from .pilot import KubectlCollector, PilotError, PilotGateRefused, run_pilot
 
         if not args.kubeconfig and not args.snapshot:
-            print("trident pilot: 需要 --kubeconfig 或 --snapshot", file=sys.stderr)
+            print("inkblade pilot: 需要 --kubeconfig 或 --snapshot", file=sys.stderr)
             return 2
         collector = (KubectlCollector(args.kubectl, timeout=args.timeout)
                      if args.kubeconfig and not args.snapshot else None)
@@ -728,10 +782,10 @@ def _main(argv=None) -> int:
                 collector=collector,
             )
         except PilotGateRefused as exc:
-            _human_error(exc, context={"workspace": args.workspace, "action": "trident pilot"})
+            _human_error(exc, context={"workspace": args.workspace, "action": "inkblade pilot"})
             return 91
         except (PilotError, OSError, ValueError) as exc:
-            print(f"trident pilot: {exc}", file=sys.stderr)
+            print(f"inkblade pilot: {exc}", file=sys.stderr)
             return 2
         if args.format == "json":
             _print_json(result)
@@ -778,28 +832,28 @@ def _main(argv=None) -> int:
                 return 0 if doc["summary"]["ok"] else 1
             if args.action == "retention":
                 if not args.dir:
-                    print("trident enterprise: --dir 必填", file=sys.stderr)
+                    print("inkblade enterprise: --dir 必填", file=sys.stderr)
                     return 2
                 _print_json(retention_plan(Path(args.dir).glob("*"),
                                             retain_days=args.retain_days, legal_hold=False))
                 return 0
             if args.action == "sign-report":
                 if not args.report:
-                    print("trident enterprise: --report 必填", file=sys.stderr)
+                    print("inkblade enterprise: --report 必填", file=sys.stderr)
                     return 2
-                key = os.environ.get(args.key_env, "")
+                key = lookup(args.key_env, "")
                 if not key:
-                    print(f"trident enterprise: 缺少签名密钥环境变量 {args.key_env}", file=sys.stderr)
+                    print(f"inkblade enterprise: 缺少签名密钥环境变量 {args.key_env}", file=sys.stderr)
                     return 2
                 _print_json(sign_report(args.report, signer=args.signer, key=key, out=args.out))
                 return 0
             if args.action == "signoff":
                 if not args.report:
-                    print("trident enterprise: --report 必填", file=sys.stderr)
+                    print("inkblade enterprise: --report 必填", file=sys.stderr)
                     return 2
-                key = os.environ.get(args.key_env, "")
+                key = lookup(args.key_env, "")
                 if not key:
-                    print(f"trident enterprise: 缺少签名密钥环境变量 {args.key_env}", file=sys.stderr)
+                    print(f"inkblade enterprise: 缺少签名密钥环境变量 {args.key_env}", file=sys.stderr)
                     return 2
                 _print_json(create_signoff(
                     args.report,
@@ -811,17 +865,17 @@ def _main(argv=None) -> int:
                     key=key, out=args.out))
                 return 0
             if not args.run:
-                print("trident enterprise: deliver 需要 --run", file=sys.stderr)
+                print("inkblade enterprise: deliver 需要 --run", file=sys.stderr)
                 return 2
             from .export import export_run
 
             doc = export_run(_store(home, args.workspace), args.run, "ocsf")
             if not args.url:
-                print("trident enterprise: --url 必填", file=sys.stderr)
+                print("inkblade enterprise: --url 必填", file=sys.stderr)
                 return 2
             if args.kind in ("jira", "servicenow"):
                 if not doc.get("events"):
-                    print("trident enterprise: run 无 findings", file=sys.stderr)
+                    print("inkblade enterprise: run 无 findings", file=sys.stderr)
                     return 2
                 ev = doc["events"][0]
                 finding = {"title": ev.get("finding_info", {}).get("title", ""),
@@ -835,9 +889,9 @@ def _main(argv=None) -> int:
                              "payload": jsonio.redact(payload)})
                 return 0
             if args.kind == "splunk":
-                adapter = SplunkHEC(args.url, args.token, index="trident")
+                adapter = SplunkHEC(args.url, args.token, index="inkblade")
             elif args.kind == "elastic":
-                adapter = ElasticBulk(args.url, index="trident-findings", api_key=args.token)
+                adapter = ElasticBulk(args.url, index="inkblade-findings", api_key=args.token)
             else:
                 adapter = WebhookSink(args.url, secret=args.token)
             body = adapter.build_payload(doc)
@@ -847,7 +901,7 @@ def _main(argv=None) -> int:
                 print(body.decode("utf-8"))
             return 0
         except (ValueError, OSError, KeyError) as exc:
-            print(f"trident enterprise: {exc}", file=sys.stderr)
+            print(f"inkblade enterprise: {exc}", file=sys.stderr)
             return 2
 
     if args.cmd == "module" and args.mcmd == "list":
@@ -875,7 +929,7 @@ def _main(argv=None) -> int:
                 doc = matrix(profile, collection=args.collect,
                              include_disabled=args.include_disabled)
         except (OSError, ValueError) as exc:
-            print(f"trident surfaces: {exc}", file=sys.stderr)
+            print(f"inkblade surfaces: {exc}", file=sys.stderr)
             return 2
         text_md = render_matrix_md(doc)
         if args.out:
@@ -908,7 +962,7 @@ def _main(argv=None) -> int:
                 verify_tls=not args.insecure, fixture=args.fixture)
             path = write_collection(doc, args.out)
         except (OSError, ValueError) as exc:
-            print(f"trident collect: {exc}", file=sys.stderr)
+            print(f"inkblade collect: {exc}", file=sys.stderr)
             return 2
         print(json.dumps({"collection": str(path), **summarize(doc)},
                          ensure_ascii=False, indent=2))
@@ -932,14 +986,19 @@ def _main(argv=None) -> int:
         from .webui.server import make_server
 
         # SO_REUSEADDR 在 Windows 上可能让第二个进程也 bind 成功，先显式探活端口
+        bind_host = args.host
+        if bind_host not in ("127.0.0.1", "localhost", "::1"):
+            print(f"警告: Web 控制台绑定 {bind_host}，将对网络可达；仅在隔离网络或反向代理后使用。",
+                  file=sys.stderr)
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
             try:
-                probe.bind(("127.0.0.1", int(args.port)))
+                probe.bind((bind_host, int(args.port)))
             except OSError as exc:
-                raise OSError(10048, f"address already in use: 127.0.0.1:{args.port}") from exc
+                raise OSError(10048, f"address already in use: {bind_host}:{args.port}") from exc
         users = UserStore(home / "users.json")
-        httpd = make_server(home, users, port=args.port)
-        print(f"Trident 控制台: http://127.0.0.1:{httpd.port} （Ctrl+C 退出）")
+        httpd = make_server(home, users, host=bind_host, port=args.port)
+        shown = "127.0.0.1" if bind_host in ("0.0.0.0", "::") else bind_host
+        print(f"InkBlade 控制台: http://{shown}:{httpd.port} （Ctrl+C 退出）")
         try:
             import time
 
@@ -960,7 +1019,7 @@ def _main(argv=None) -> int:
                 chains_dir=args.chains_dir, modules_dir=args.modules_dir,
             )
         except ValueError as exc:
-            print(f"trident mcp: {exc}", file=sys.stderr)
+            print(f"inkblade mcp: {exc}", file=sys.stderr)
             return 2
 
     if args.cmd == "plan":
@@ -969,7 +1028,7 @@ def _main(argv=None) -> int:
         try:
             inventory, _ = _inventory_for_cli(home, args.inventory)
         except (OSError, ValueError) as exc:
-            print(f"trident plan: 环境清单读取失败：{exc}", file=sys.stderr)
+            print(f"inkblade plan: 环境清单读取失败：{exc}", file=sys.stderr)
             return 2
         try:
             data = plan_workspace(
@@ -983,7 +1042,7 @@ def _main(argv=None) -> int:
                 data["decisions"] = record_plan(_store(home, args.workspace), data,
                                                 actor=args.actor)
         except (KeyError, ValueError) as exc:
-            print(f"trident plan: {exc}", file=sys.stderr)
+            print(f"inkblade plan: {exc}", file=sys.stderr)
             return 2
         if args.format == "md":
             print(render_plan_md(data))
@@ -998,7 +1057,7 @@ def _main(argv=None) -> int:
             models = json.loads(Path(args.models).read_text(encoding="utf-8"))
             doc = sc.write_sbom(models, args.out, root=args.root)
         except (OSError, ValueError) as exc:
-            print(f"trident sbom: {exc}", file=sys.stderr)
+            print(f"inkblade sbom: {exc}", file=sys.stderr)
             return 2
         if args.out is None:
             print(json.dumps(doc, ensure_ascii=False, indent=2))
@@ -1014,7 +1073,7 @@ def _main(argv=None) -> int:
                                       expected_source=args.expected_source)
             sc.write_verdict(verdict, args.out)
         except (OSError, ValueError) as exc:
-            print(f"trident verify-model: {exc}", file=sys.stderr)
+            print(f"inkblade verify-model: {exc}", file=sys.stderr)
             return 2
         if args.out is None:
             print(json.dumps(verdict, ensure_ascii=False, indent=2))
@@ -1028,7 +1087,7 @@ def _main(argv=None) -> int:
             verdict = sc.verify_attestation(args.evidence, policy)
             sc.write_verdict(verdict, args.out)
         except (OSError, ValueError) as exc:
-            print(f"trident attest: {exc}", file=sys.stderr)
+            print(f"inkblade attest: {exc}", file=sys.stderr)
             return 2
         if args.out is None:
             print(json.dumps(verdict, ensure_ascii=False, indent=2))
@@ -1039,7 +1098,7 @@ def _main(argv=None) -> int:
 
         try:
             artifact = Path(args.artifact).read_bytes()
-            token = None if args.offline_fixture else os.environ.get(args.identity_token_env)
+            token = None if args.offline_fixture else lookup(args.identity_token_env)
             bundle = None
             fallback = ""
             if token:
@@ -1049,21 +1108,21 @@ def _main(argv=None) -> int:
                         rekor_url=args.rekor_url, upload=not args.no_upload)
                 except sk.SigstoreError as exc:
                     fallback = str(exc)
-                    print(f"trident sign-keyless: live 失败，降级 fixture：{exc}", file=sys.stderr)
+                    print(f"inkblade sign-keyless: live 失败，降级 fixture：{exc}", file=sys.stderr)
             if bundle is None:
                 bundle = sk.keyless_sign(
                     artifact, identity=args.identity, issuer=args.issuer,
                     rekor_url=args.rekor_url, live_rekor_key_entry=args.live_rekor_key_entry)
             if fallback:
-                bundle.setdefault("trident", {})["fallback_reason"] = fallback
+                bundle.setdefault("inkblade", {})["fallback_reason"] = fallback
             if args.out:
                 Path(args.out).parent.mkdir(parents=True, exist_ok=True)
                 Path(args.out).write_text(json.dumps(bundle, ensure_ascii=False, indent=2) + "\n",
                                           encoding="utf-8")
         except (OSError, ValueError) as exc:
-            print(f"trident sign-keyless: {exc}", file=sys.stderr)
+            print(f"inkblade sign-keyless: {exc}", file=sys.stderr)
             return 2
-        mode = (bundle.get("trident") or {}).get("mode", "unknown")
+        mode = (bundle.get("inkblade") or {}).get("mode", "unknown")
         if args.out is None:
             print(json.dumps(bundle, ensure_ascii=False, indent=2))
         else:
@@ -1087,7 +1146,7 @@ def _main(argv=None) -> int:
                 Path(args.out).write_text(json.dumps(verdict, ensure_ascii=False, indent=2) + "\n",
                                           encoding="utf-8")
         except (OSError, ValueError) as exc:
-            print(f"trident verify-keyless: {exc}", file=sys.stderr)
+            print(f"inkblade verify-keyless: {exc}", file=sys.stderr)
             return 2
         if args.out is None:
             print(json.dumps(verdict, ensure_ascii=False, indent=2))
@@ -1102,10 +1161,10 @@ def _main(argv=None) -> int:
             doc = export_run(_store(home, args.workspace), args.run, args.format)
             write_export(doc, args.out)
         except KeyError as exc:
-            print(f"trident export: {exc}", file=sys.stderr)
+            print(f"inkblade export: {exc}", file=sys.stderr)
             return 2
         except ValueError as exc:
-            print(f"trident export: {exc}", file=sys.stderr)
+            print(f"inkblade export: {exc}", file=sys.stderr)
             return 2
         if args.out is None:
             print(json.dumps(doc, ensure_ascii=False, indent=2))
@@ -1121,7 +1180,7 @@ def _main(argv=None) -> int:
             inv = AssetInventory(_store(home, args.workspace))
             diff = inv.ingest(seeds, source=args.source)
         except (OSError, ValueError) as exc:
-            print(f"trident discover: {exc}", file=sys.stderr)
+            print(f"inkblade discover: {exc}", file=sys.stderr)
             return 2
         payload = inv.graph() if args.graph else {"assets": inv.list(include_missing=True)}
         print(json.dumps({"diff": diff, **payload}, ensure_ascii=False, indent=2))
@@ -1165,10 +1224,10 @@ def _main(argv=None) -> int:
                     raise ValueError("--id 必填")
                 data = ex.execute(session, args.id, workers=args.workers)
         except (ApprovalDenied, PermissionError) as exc:
-            print(f"trident explore: {exc}", file=sys.stderr)
+            print(f"inkblade explore: {exc}", file=sys.stderr)
             return 2
         except ValueError as exc:
-            print(f"trident explore: {exc}", file=sys.stderr)
+            print(f"inkblade explore: {exc}", file=sys.stderr)
             return 2
         print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
         return 0
@@ -1201,7 +1260,7 @@ def _main(argv=None) -> int:
                                  modules_dir=home / "modules")
                 data = sup.run()
         except (PermissionError, ValueError) as exc:
-            print(f"trident supervisor: {exc}", file=sys.stderr)
+            print(f"inkblade supervisor: {exc}", file=sys.stderr)
             return 2
         print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
         return 0
@@ -1234,7 +1293,7 @@ def _main(argv=None) -> int:
             finally:
                 swarm.close()
         except (OSError, ValueError) as exc:
-            print(f"trident swarm: {exc}", file=sys.stderr)
+            print(f"inkblade swarm: {exc}", file=sys.stderr)
             return 2
         print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
         return 0
@@ -1279,7 +1338,7 @@ def _main(argv=None) -> int:
             else:
                 data = replay_trace(store, path=args.trace)
         except (PermissionError, ValueError) as exc:
-            print(f"trident autonomy: {exc}", file=sys.stderr)
+            print(f"inkblade autonomy: {exc}", file=sys.stderr)
             return 2
         print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
         return 0
@@ -1303,7 +1362,7 @@ def _main(argv=None) -> int:
             else:
                 data = sched.run_due(session)
         except (ValueError, PermissionError) as exc:
-            print(f"trident schedule: {exc}", file=sys.stderr)
+            print(f"inkblade schedule: {exc}", file=sys.stderr)
             return 2
         print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
         return 0
@@ -1329,7 +1388,7 @@ def _main(argv=None) -> int:
                 data = traffic_mod.replay(store, session, args.run, module=args.module,
                                           live=args.live)
         except (ValueError, PermissionError, KeyError) as exc:
-            print(f"trident traffic: {exc}", file=sys.stderr)
+            print(f"inkblade traffic: {exc}", file=sys.stderr)
             return 2
         print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
         return 0
@@ -1346,7 +1405,7 @@ def _main(argv=None) -> int:
             else:
                 report = run_pipeline(out, targets=targets)
         except ValueError as exc:
-            print(f"trident mine: {exc}", file=sys.stderr)
+            print(f"inkblade mine: {exc}", file=sys.stderr)
             return 2
         print(json.dumps({k: report[k] for k in ("validation", "targets", "candidates_total")},
                          ensure_ascii=False, indent=2))
@@ -1383,7 +1442,7 @@ def _main(argv=None) -> int:
             else:
                 data = pool.health_check(session)
         except (ValueError, PermissionError) as exc:
-            print(f"trident llm-pool: {exc}", file=sys.stderr)
+            print(f"inkblade llm-pool: {exc}", file=sys.stderr)
             return 2
         _print_json(data)
         return 0
@@ -1422,7 +1481,7 @@ def _main(argv=None) -> int:
             else:
                 data = nm.set_enabled(session, args.action == "enable")
         except (ValueError, PermissionError) as exc:
-            print(f"trident notify: {exc}", file=sys.stderr)
+            print(f"inkblade notify: {exc}", file=sys.stderr)
             return 2
         _print_json(data)
         return 0
@@ -1463,7 +1522,7 @@ def _main(argv=None) -> int:
             else:
                 data = ts.delete(session, args.id)
         except (ValueError, PermissionError) as exc:
-            print(f"trident template: {exc}", file=sys.stderr)
+            print(f"inkblade template: {exc}", file=sys.stderr)
             return 2
         _print_json(data)
         return 0
@@ -1493,7 +1552,7 @@ def _main(argv=None) -> int:
             else:
                 data = cal.event_calendar(days=args.days)
         except (ValueError, PermissionError) as exc:
-            print(f"trident calendar: {exc}", file=sys.stderr)
+            print(f"inkblade calendar: {exc}", file=sys.stderr)
             return 2
         _print_json(data)
         return 0
@@ -1521,7 +1580,7 @@ def _main(argv=None) -> int:
             else:
                 data = th.summary(args.run or None)
         except (ValueError, PermissionError, KeyError) as exc:
-            print(f"trident threads: {exc}", file=sys.stderr)
+            print(f"inkblade threads: {exc}", file=sys.stderr)
             return 2
         _print_json(data)
         return 0
@@ -1544,7 +1603,7 @@ def _main(argv=None) -> int:
             else:
                 data = gs.neighbors(args.id, args.node)
         except (ValueError, PermissionError) as exc:
-            print(f"trident graph: {exc}", file=sys.stderr)
+            print(f"inkblade graph: {exc}", file=sys.stderr)
             return 2
         _print_json(data)
         return 0
@@ -1570,7 +1629,7 @@ def _main(argv=None) -> int:
             else:
                 data = bb.unpin(session, args.ref)
         except (ValueError, PermissionError) as exc:
-            print(f"trident blackboard: {exc}", file=sys.stderr)
+            print(f"inkblade blackboard: {exc}", file=sys.stderr)
             return 2
         _print_json(data)
         return 0
@@ -1587,7 +1646,7 @@ def _main(argv=None) -> int:
                 "allow_zeroday": args.allow_zeroday,
             })
         except ValueError as exc:
-            print(f"trident ci-gate: {exc}", file=sys.stderr)
+            print(f"inkblade ci-gate: {exc}", file=sys.stderr)
             return 1
         if args.out:
             write_summary(result, args.out)
@@ -1601,7 +1660,7 @@ def _main(argv=None) -> int:
             doc = json.loads(Path(args.doc).read_text(encoding="utf-8"))
             result = ingest(_store(home, args.workspace), args.run, doc, source=args.source)
         except (OSError, ValueError) as exc:
-            print(f"trident import-scan: {exc}", file=sys.stderr)
+            print(f"inkblade import-scan: {exc}", file=sys.stderr)
             return 2
         _print_json(result)
         return 0
@@ -1614,7 +1673,7 @@ def _main(argv=None) -> int:
             result = validate_file(args.fixture)
             result["probe_plan"] = probe_plan(fixture)
         except (OSError, ValueError) as exc:
-            print(f"trident credcheck: {exc}", file=sys.stderr)
+            print(f"inkblade credcheck: {exc}", file=sys.stderr)
             return 2
         print(render_md(result))
         _print_json(result)
@@ -1626,7 +1685,7 @@ def _main(argv=None) -> int:
         try:
             report = build(_store(home, args.workspace), args.run)
         except (ValueError, KeyError) as exc:
-            print(f"trident report-ctem: {exc}", file=sys.stderr)
+            print(f"inkblade report-ctem: {exc}", file=sys.stderr)
             return 2
         if args.out:
             out = Path(args.out)
@@ -1799,7 +1858,7 @@ def _main(argv=None) -> int:
                 print(explain_cve(assessment, args.cve))
             return 0
         except (InventoryError, ApplicabilityError, OSError, ValueError) as exc:
-            print(f"trident assess: {exc}", file=sys.stderr)
+            print(f"inkblade assess: {exc}", file=sys.stderr)
             return 2
 
     # ---- run / execute / rollback / abort / report / rules --------------------
@@ -1813,13 +1872,13 @@ def _main(argv=None) -> int:
         try:
             params = _json_arg(args.params, {})
         except (OSError, ValueError) as exc:
-            print(f"trident run: --params 解析失败：{exc}", file=sys.stderr)
+            print(f"inkblade run: --params 解析失败：{exc}", file=sys.stderr)
             return 2
         mods_dir = _modules_dir(home, args.modules_dir)
         try:
             assessment, _ = _assessment_for_cli(home, args.inventory, args.catalog)
         except (OSError, ValueError) as exc:
-            print(f"trident run: CVE 适用性评估失败：{exc}", file=sys.stderr)
+            print(f"inkblade run: CVE 适用性评估失败：{exc}", file=sys.stderr)
             return 2
         if assessment is not None:
             from .core.applicability import gate_module
@@ -1828,14 +1887,14 @@ def _main(argv=None) -> int:
             if gate.get("gated") and not gate.get("allow"):
                 _print_json({"module": args.module, "status": "blocked",
                              "exit_code": 91, "applicability": gate})
-                print(f"trident run: {args.module} 被 CVE 适用性闸门拒绝"
+                print(f"inkblade run: {args.module} 被 CVE 适用性闸门拒绝"
                       f"（{gate.get('state')}）：{'；'.join(gate.get('basis') or [])}",
                       file=sys.stderr)
                 return 91
         try:
             run = store.open_run(args.run) if args.run else None
         except KeyError as exc:
-            print(f"trident run: {exc}", file=sys.stderr)
+            print(f"inkblade run: {exc}", file=sys.stderr)
             return 2
         sctx = None
         if args.profile or args.collect or args.probe or args.fixture:
@@ -1846,7 +1905,7 @@ def _main(argv=None) -> int:
                                             params=params, probe=args.probe,
                                             fixture=args.fixture, enforce=True)
             except (OSError, ValueError) as exc:
-                print(f"trident run: {exc}", file=sys.stderr)
+                print(f"inkblade run: {exc}", file=sys.stderr)
                 return 2
         try:
             result = run_module(store, session, args.module, params, mods_dir, run=run,
@@ -1855,8 +1914,86 @@ def _main(argv=None) -> int:
             _human_error(exc, context={"workspace": args.workspace})
             return 2
         except (ExecutionLocked, BackupGateRefused, ZerodayLocked, PermissionError) as exc:
-            _human_error(exc, context={"workspace": args.workspace, "action": "trident run"})
+            _human_error(exc, context={"workspace": args.workspace, "action": "inkblade run"})
             return 91
+        _print_json(result)
+        return 0
+
+    if args.cmd == "exploit":
+        from .core.roe import ExecutionLocked
+        from .core.runner import BackupGateRefused
+        from .core.weapon_runner import execute, plan
+        from .core.weaponization import WeaponPackError, readiness, resolve
+
+        mods_dir = _modules_dir(home, args.modules_dir)
+        if args.list:
+            data = readiness(modules_dir=mods_dir)
+            _print_json({
+                "reserve": {k: v for k, v in data["reserve"].items() if k != "components"},
+                "exploit_registry": {k: v for k, v in data["exploit_registry"].items()
+                                     if k != "components"},
+                "combined": {k: v for k, v in data["combined"].items() if k != "components"},
+                "components": data["combined"]["components"],
+            })
+            return 0
+        if not args.id:
+            print("inkblade exploit: 需要武器包 id（或 --list）", file=sys.stderr)
+            return 2
+        try:
+            pack = resolve(args.id)
+        except WeaponPackError as exc:
+            print(f"inkblade exploit: {exc}", file=sys.stderr)
+            return 2
+        if not args.real:
+            try:
+                _print_json(plan(pack, modules_dir=mods_dir))
+            except WeaponPackError as exc:
+                print(f"inkblade exploit: {exc}", file=sys.stderr)
+                return 2
+            return 0
+        try:
+            params = _json_arg(args.params, {}) or {}
+        except (OSError, ValueError) as exc:
+            print(f"inkblade exploit: --params 解析失败：{exc}", file=sys.stderr)
+            return 2
+        if args.target:
+            params["target"] = args.target
+        backups = []
+        for raw in args.backup_target:
+            if raw.startswith("{"):
+                try:
+                    backups.append(json.loads(raw))
+                    continue
+                except ValueError:
+                    pass
+            backups.append({"path": raw})
+        store = _store(home, args.workspace)
+        session = _session(args.workspace, args.actor, args.role)
+        try:
+            run = store.open_run(args.run) if args.run else None
+        except KeyError as exc:
+            print(f"inkblade exploit: {exc}", file=sys.stderr)
+            return 2
+        sctx = None
+        if args.profile or args.probe or args.fixture:
+            from .core.surface import SurfaceContext
+
+            try:
+                sctx = SurfaceContext.build(profile=args.profile, params=params,
+                                            probe=args.probe, fixture=args.fixture,
+                                            enforce=True)
+            except (OSError, ValueError) as exc:
+                print(f"inkblade exploit: {exc}", file=sys.stderr)
+                return 2
+        try:
+            result = execute(pack, store, session, params, modules_dir=mods_dir,
+                             backup_targets=backups, run=run, surface_ctx=sctx)
+        except (ExecutionLocked, BackupGateRefused, PermissionError) as exc:
+            _human_error(exc, context={"workspace": args.workspace, "action": "inkblade exploit"})
+            return 91
+        except WeaponPackError as exc:
+            print(f"inkblade exploit: {exc}", file=sys.stderr)
+            return 2
         _print_json(result)
         return 0
 
@@ -1873,21 +2010,21 @@ def _main(argv=None) -> int:
         try:
             chains = load_chains(chains_dir)
         except ValueError as exc:
-            print(f"trident execute: 链目录非法：{exc}", file=sys.stderr)
+            print(f"inkblade execute: 链目录非法：{exc}", file=sys.stderr)
             return 2
         if args.chain not in chains:
-            print(f"trident execute: 未知链 {args.chain}（{chains_dir}）", file=sys.stderr)
+            print(f"inkblade execute: 未知链 {args.chain}（{chains_dir}）", file=sys.stderr)
             return 2
         try:
             findings = _json_arg(args.findings, []) or []
         except (OSError, ValueError) as exc:
-            print(f"trident execute: --findings 解析失败：{exc}", file=sys.stderr)
+            print(f"inkblade execute: --findings 解析失败：{exc}", file=sys.stderr)
             return 2
         chain = chains[args.chain]
         try:
             assessment, _ = _assessment_for_cli(home, args.inventory, args.catalog)
         except (OSError, ValueError) as exc:
-            print(f"trident execute: CVE 适用性评估失败：{exc}", file=sys.stderr)
+            print(f"inkblade execute: CVE 适用性评估失败：{exc}", file=sys.stderr)
             return 2
         sctx = None
         if args.profile or args.collect or args.probe or args.fixture:
@@ -1898,7 +2035,7 @@ def _main(argv=None) -> int:
                                             probe=args.probe, fixture=args.fixture,
                                             enforce=True)
             except (OSError, ValueError) as exc:
-                print(f"trident execute: {exc}", file=sys.stderr)
+                print(f"inkblade execute: {exc}", file=sys.stderr)
                 return 2
         if args.dry_run:
             _print_json(dry_run(chain, findings, mods_dir, applicability=assessment,
@@ -1912,7 +2049,7 @@ def _main(argv=None) -> int:
                              applicability=assessment, surface_ctx=sctx)
         except (PreconditionError, ExecutionLocked, BackupGateRefused, ZerodayLocked,
                 PermissionError) as exc:
-            _human_error(exc, context={"workspace": args.workspace, "action": "trident execute"})
+            _human_error(exc, context={"workspace": args.workspace, "action": "inkblade execute"})
             return 91
         _print_json(result)
         return 0 if result.get("ok") else 3
@@ -1924,8 +2061,8 @@ def _main(argv=None) -> int:
                 run_objective, write_report,
             )
         except ImportError:
-            print("trident objective: kill-chain objective 模块在并行任务中（当前版本提供 "
-                  "`trident privesc` 与 core.objective.plan_objective 提权选路）", file=sys.stderr)
+            print("inkblade objective: kill-chain objective 模块在并行任务中（当前版本提供 "
+                  "`inkblade privesc` 与 core.objective.plan_objective 提权选路）", file=sys.stderr)
             return 2
 
         chains_dir = home / "chains"
@@ -1934,7 +2071,7 @@ def _main(argv=None) -> int:
         try:
             chain = load_objective(chains_dir)
         except (OSError, ValueError) as exc:
-            print(f"trident objective: 链定义非法：{exc}", file=sys.stderr)
+            print(f"inkblade objective: 链定义非法：{exc}", file=sys.stderr)
             return 2
         store = _store(home, args.workspace)
         session = _session(args.workspace, args.actor, args.role)
@@ -1949,7 +2086,7 @@ def _main(argv=None) -> int:
             if candidate.readyz().get("ok"):
                 backend = candidate
             elif args.backend == "kubectl":
-                print("trident objective: kubectl 后端不可用（--backend kubectl 显式要求）",
+                print("inkblade objective: kubectl 后端不可用（--backend kubectl 显式要求）",
                       file=sys.stderr)
                 return 91
             else:
@@ -1957,7 +2094,7 @@ def _main(argv=None) -> int:
         try:
             assessment, _ = _assessment_for_cli(home, args.inventory, args.catalog)
         except (OSError, ValueError) as exc:
-            print(f"trident objective: CVE 适用性评估失败：{exc}", file=sys.stderr)
+            print(f"inkblade objective: CVE 适用性评估失败：{exc}", file=sys.stderr)
             return 2
         try:
             result = run_objective(
@@ -1971,10 +2108,10 @@ def _main(argv=None) -> int:
             )
         except GateRefused as exc:
             _human_error(exc, context={"workspace": args.workspace,
-                                       "action": "trident objective"})
+                                       "action": "inkblade objective"})
             return 91
         except (ValueError, OSError) as exc:
-            print(f"trident objective: {exc}", file=sys.stderr)
+            print(f"inkblade objective: {exc}", file=sys.stderr)
             return 2
         if assessment is not None:
             from .core.applicability import gate_chain
@@ -2016,12 +2153,12 @@ def _main(argv=None) -> int:
         try:
             disclosed = _json_arg(args.disclosed, None)
         except (OSError, ValueError) as exc:
-            print(f"trident report: --disclosed 解析失败：{exc}", file=sys.stderr)
+            print(f"inkblade report: --disclosed 解析失败：{exc}", file=sys.stderr)
             return 2
         try:
             inventory, _ = _inventory_for_cli(home, args.inventory)
         except (OSError, ValueError) as exc:
-            print(f"trident report: 环境清单读取失败：{exc}", file=sys.stderr)
+            print(f"inkblade report: 环境清单读取失败：{exc}", file=sys.stderr)
             return 2
         try:
             if args.kind == "remediation":
@@ -2046,7 +2183,7 @@ def _main(argv=None) -> int:
                 text += "\n\n" + report_section(args.profile or sctx.profile_name,
                                                 collection=sctx.collection)
             except (OSError, ValueError) as exc:
-                print(f"trident report: {exc}", file=sys.stderr)
+                print(f"inkblade report: {exc}", file=sys.stderr)
                 return 2
         if args.out:
             out = Path(args.out)
@@ -2103,7 +2240,7 @@ def _main(argv=None) -> int:
                 else:
                     snapshot = load_snapshot(args.snapshot) if args.snapshot else {}
             except (OSError, ValueError, KeyError, PrivescError) as exc:
-                _human_error(exc, context={"action": "trident privesc infer"})
+                _human_error(exc, context={"action": "inkblade privesc infer"})
                 return 2
             principals = infer_principals(snapshot)
             if args.json:
@@ -2127,7 +2264,7 @@ def _main(argv=None) -> int:
             paths = graph.paths(args.from_principal, to=args.to,
                                 limit=args.limit, mode=getattr(args, "mode", "weight"))
         except (OSError, ValueError, KeyError, PrivescError) as exc:
-            _human_error(exc, context={"action": "trident privesc paths"})
+            _human_error(exc, context={"action": "inkblade privesc paths"})
             return 2
         if args.pcmd == "paths":
             if args.json:
@@ -2176,13 +2313,13 @@ def _main(argv=None) -> int:
             try:
                 findings = _json_arg(args.findings, []) or []
             except (OSError, ValueError) as exc:
-                print(f"trident rules: --findings 解析失败：{exc}", file=sys.stderr)
+                print(f"inkblade rules: --findings 解析失败：{exc}", file=sys.stderr)
                 return 2
             try:
                 pack = generate_all(chains_dir, findings=findings, cni=args.cni,
                                     out_dir=out_dir)
             except (RuleCoverageError, ValueError, OSError) as exc:
-                print(f"trident rules generate: {exc}", file=sys.stderr)
+                print(f"inkblade rules generate: {exc}", file=sys.stderr)
                 return 2
             privesc_summary = {}
             try:
@@ -2196,7 +2333,7 @@ def _main(argv=None) -> int:
                     mapping_path.write_text(json.dumps(mapping, ensure_ascii=False, indent=2),
                                             encoding="utf-8")
             except (OSError, ValueError) as exc:
-                print(f"trident rules generate: 提权规则包失败：{exc}", file=sys.stderr)
+                print(f"inkblade rules generate: 提权规则包失败：{exc}", file=sys.stderr)
                 return 2
             _print_json({"pack": str(out_dir), "rules": pack.total_rules,
                          "chains": pack.covered_chain_count, "files": len(pack.files),
@@ -2205,12 +2342,12 @@ def _main(argv=None) -> int:
             return 0
         pack_dir = Path(args.pack) if args.pack else home / "reports" / "rules-pack"
         if not (pack_dir / "mapping.json").is_file():
-            print(f"trident rules validate: 缺 {pack_dir / 'mapping.json'}", file=sys.stderr)
+            print(f"inkblade rules validate: 缺 {pack_dir / 'mapping.json'}", file=sys.stderr)
             return 2
         try:
             matrix = validate(pack_dir, mock_base=args.mock_base)
         except (ValueError, OSError, KeyError) as exc:
-            print(f"trident rules validate: {exc}", file=sys.stderr)
+            print(f"inkblade rules validate: {exc}", file=sys.stderr)
             return 2
         try:
             from .rules.privesc import purple_replay
@@ -2221,7 +2358,7 @@ def _main(argv=None) -> int:
                                  "missed": [m["vector"] for m in privesc["missed"]]}
             matrix["ok"] = bool(matrix.get("ok")) and bool(privesc["ok"])
         except (ValueError, OSError, KeyError) as exc:
-            print(f"trident rules validate: 提权紫队重放失败：{exc}", file=sys.stderr)
+            print(f"inkblade rules validate: 提权紫队重放失败：{exc}", file=sys.stderr)
             return 2
         _print_json(matrix)
         return 0 if matrix.get("ok") else 3

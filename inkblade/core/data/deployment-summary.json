@@ -1,0 +1,106 @@
+{
+ "schema": "inkblade-deployment-summary-v1",
+ "exploit_registry": {
+  "total": 152,
+  "counts": {
+   "default-exposed": 11,
+   "needs-config": 27,
+   "function-level": 91,
+   "hardware-only": 23
+  },
+  "default_exposed": [
+   "CVE-2026-92972",
+   "cephcsi-cephcsi-go-bind-all-l255-regex",
+   "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+   "juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+   "kueue-server-go-pprof-exposed-l30-regex",
+   "llamafactory-app-py-bind-all-interfaces-l130-regex",
+   "llamafactory-app-py-go-bind-all-l130-regex",
+   "llamafactory-interface-py-bind-all-interfaces-l103-regex",
+   "llamafactory-interface-py-bind-all-interfaces-l94-regex",
+   "llamafactory-interface-py-go-bind-all-l103-regex",
+   "llamafactory-interface-py-go-bind-all-l94-regex"
+  ],
+  "default_exploitable": [
+   "CVE-2026-92972",
+   "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+   "juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+   "kueue-server-go-pprof-exposed-l30-regex"
+  ],
+  "default_exposure_verified": [
+   "llamafactory-app-py-bind-all-interfaces-l130-regex",
+   "llamafactory-app-py-go-bind-all-l130-regex",
+   "llamafactory-interface-py-bind-all-interfaces-l103-regex",
+   "llamafactory-interface-py-bind-all-interfaces-l94-regex",
+   "llamafactory-interface-py-go-bind-all-l103-regex",
+   "llamafactory-interface-py-go-bind-all-l94-regex"
+  ],
+  "by_profile": {
+   "airgapped": {
+    "default_exposed": 3,
+    "ids": [
+     "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+     "kueue-server-go-pprof-exposed-l30-regex",
+     "llamafactory-interface-py-go-bind-all-l94-regex"
+    ],
+    "coverage_pct": 70.91
+   },
+   "bare-k8s-gpu": {
+    "default_exposed": 2,
+    "ids": [
+     "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+     "llamafactory-interface-py-go-bind-all-l94-regex"
+    ],
+    "coverage_pct": 67.64
+   },
+   "gpu-pooling": {
+    "default_exposed": 3,
+    "ids": [
+     "CVE-2026-92972",
+     "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+     "llamafactory-interface-py-go-bind-all-l94-regex"
+    ],
+    "coverage_pct": 60.0
+   },
+   "managed-ack-tke": {
+    "default_exposed": 2,
+    "ids": [
+     "kueue-server-go-pprof-exposed-l30-regex",
+     "llamafactory-interface-py-go-bind-all-l94-regex"
+    ],
+    "coverage_pct": 68.0
+   },
+   "ray-vllm": {
+    "default_exposed": 4,
+    "ids": [
+     "CVE-2026-92972",
+     "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+     "kueue-server-go-pprof-exposed-l30-regex",
+     "llamafactory-interface-py-go-bind-all-l94-regex"
+    ],
+    "coverage_pct": 68.73
+   },
+   "slurm-hpc": {
+    "default_exposed": 0,
+    "ids": [],
+    "coverage_pct": 25.09
+   }
+  }
+ },
+ "zeroday_reserve": {
+  "total": 47,
+  "counts": {
+   "default-exposed": 5,
+   "needs-config": 20,
+   "function-level": 21,
+   "hardware-only": 1
+  },
+  "default_exposed": [
+   "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+   "dify-shellctl-unauth-rce",
+   "djev-open-proxy",
+   "msswift-media-local-read",
+   "sglang-omni-admin-failopen"
+  ]
+ }
+}

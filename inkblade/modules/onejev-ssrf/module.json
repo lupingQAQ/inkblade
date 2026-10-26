@@ -1,0 +1,28 @@
+{
+  "key": "onejev-ssrf",
+  "name": {
+    "zh": "onejev 媒体 URL SSRF",
+    "en": "onejev Media URL SSRF"
+  },
+  "series": "横向利用",
+  "description": "onejev 6122519 fetches caller-supplied media URLs with urllib and no address filter; the request reaches loopback, link-local metadata and internal services.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标 URL，例如 http://host:port（真实模式必需）",
+    "mode": "probe-only（默认，只读探测）| backup-write（写模块需 backup_targets）",
+    "local_path": "function-level 模块的本地文件/模型目录（仅读取，不反序列化）"
+  },
+  "produces": "media-ssrf",
+  "knowledge": "docs/WEAPON-READINESS.md#onejev-ssrf",
+  "combo_signature": "onejev-media-ssrf",
+  "weapon_pack": true,
+  "surfaces": [
+    {
+      "type": "http-endpoint",
+      "selector": "/v1/systemone"
+    }
+  ],
+  "default_enabled": true
+}

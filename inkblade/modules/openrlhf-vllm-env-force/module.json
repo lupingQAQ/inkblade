@@ -1,0 +1,32 @@
+{
+  "key": "openrlhf-vllm-env-force",
+  "name": {
+    "zh": "OpenRLHF 强制 vLLM 不安全序列化",
+    "en": "OpenRLHF Forced vLLM Insecure Serialization"
+  },
+  "series": "横向利用",
+  "description": "OpenRLHF 0.11.2 injects vLLM environment/config that re-enables pickle IPC. On a flat training network an adjacent actor reaches the worker's ZeroMQ/socket channel and deserialises attacker bytes.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标 URL，例如 http://host:port（真实模式必需）",
+    "mode": "probe-only（默认，只读探测）| backup-write（写模块需 backup_targets）",
+    "local_path": "function-level 模块的本地文件/模型目录（仅读取，不反序列化）"
+  },
+  "produces": "pickle-ipc-enablement",
+  "knowledge": "docs/WEAPON-READINESS.md#openrlhf-vllm-env-force",
+  "combo_signature": "openrlhf-vllm-insecure-env",
+  "weapon_pack": true,
+  "surfaces": [
+    {
+      "type": "config-file",
+      "selector": "openrlhf"
+    },
+    {
+      "type": "runtime-agent",
+      "selector": "vllm"
+    }
+  ],
+  "default_enabled": true
+}

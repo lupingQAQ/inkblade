@@ -1,14 +1,15 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "llamafactory-interface-py-go-bind-all-l94-regex",
  "source": "mining",
  "component": "llamafactory",
  "title": "llamafactory: go-bind-all @ interface.py:94",
- "status": "static-only",
- "declared_status": "static-only",
- "method": "static-source",
+ "status": "exposure-verified",
+ "declared_status": "exposure-verified",
+ "method": "dynamic-exposure",
  "verified": false,
- "module": null,
+ "exposure_verified": true,
+ "module": "exposure-mapping",
  "version": "v0.9.5",
  "version_ref": {
   "kind": "git",
@@ -29,41 +30,61 @@
   "advisory": "reports/samples/mining-trainstack/mining-report.json",
   "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
  },
- "python": "reproenv",
- "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-go-bind-all-l94-regex/poc.py",
+ "python": "lfa",
+ "command": "[lfa] lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-go-bind-all-l94-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.188,
- "started_at": "2026-10-26T09:23:26+00:00",
+ "duration_s": 29.127,
+ "started_at": "2026-10-26T20:03:24+00:00",
  "marker": {
-  "text": "TRIDENT-UV-llamafactory-interface-py-go-bind-all-l94-regex",
+  "text": "INKBLADE-UV-llamafactory-interface-py-go-bind-all-l94-regex",
   "before": "ABSENT",
-  "after_has_marker": false,
-  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+  "after_has_marker": true,
+  "after_sha256": "b5bdb7985bfd9e1b089337fd715cf7fc371139cf99358b83a078dc7f785ce26d"
  },
  "request_response": [],
  "state_before": "ABSENT",
- "state_after": "ABSENT",
+ "state_after": "INKBLADE-UV-llamafactory-interface-py-go-bind-all-l94-regex",
  "evidence": [
   {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-go-bind-all-l94-regex/evidence/exposure.json",
+   "sha256": "644de4d22778153bb6ab226a5bd09e1362c4746e2930a8de95263e085ccc5cc3",
+   "size": 1038
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-go-bind-all-l94-regex/evidence/http.txt",
+   "sha256": "7b86d65afedfff31b4a183352316486ddb024b8d8af1f96aa2da982305ba6bf5",
+   "size": 125
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-go-bind-all-l94-regex/evidence/listeners.txt",
+   "sha256": "4c409c1646c28221a20d1b1c5699e6f664448b399f9f3ec2f03c07aaaa0bb206",
+   "size": 224
+  },
+  {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-go-bind-all-l94-regex/evidence/log.txt",
-   "sha256": "59af2563455fda50a3df798ff0c15de9fc67655883161beb10c54c1c5b07d9ad",
-   "size": 270
+   "sha256": "2c0c727b8286c8068b44a8eeb2a72d2a3b962d8b9e7e0515e3dae5993fefc367",
+   "size": 397
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-go-bind-all-l94-regex/evidence/marker.txt",
-   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
-   "size": 6
+   "sha256": "b5bdb7985bfd9e1b089337fd715cf7fc371139cf99358b83a078dc7f785ce26d",
+   "size": 59
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-go-bind-all-l94-regex/evidence/run.json",
+   "sha256": "890ec312ffaf6069d50099bd159b11d0aca937d69b6d09573c68cc4f83960dbe",
+   "size": 1641
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-go-bind-all-l94-regex/evidence/static-check.json",
-   "sha256": "f131bbb405170e136953ede33d291e5b8fd3f9d5472bb8d965b4c55f4c3d5589",
-   "size": 1227
+   "sha256": "0d247c0a5905e54a6fa5ceca405392b2bf5f1ae0a88841afaafdafad054f095b",
+   "size": 1228
   }
  ],
- "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "765493f8faeccf8147f948f2e0a6a3d627560267cea925b1c8a08330ed2dce86",
- "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-interface-py-go-bind-all-l94-regex\"}\n",
+ "poc_sha256": "401e761ee8dbd650ce62dc0e20b1bc4a78c41f4080cd1723edd0cba3d69a5caf",
+ "manifest_sha256": "b8a346236449e289e7cbdbb178ec47f52a57cf3a274b8ac6c75959b74c00811d",
+ "stdout": "{\"status\": \"exposure-verified\", \"marker\": \"INKBLADE-UV-llamafactory-interface-py-go-bind-all-l94-regex\", \"evidence\": \"lab/upstream_verify/cases/llamafactory/llamafactory-interface-py-go-bind-all-l94-regex/evidence\"}\n",
  "stderr": "",
- "notes": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution."
+ "notes": "Promoted 2026-10-27 to exposure-verified (not RCE). The real LLaMA-Factory v0.9.5 app was launched with GRADIO_SERVER_NAME/API_HOST unset, listened on 0.0.0.0, and served the route with no Authorization header from the host's non-loopback address."
 }

@@ -35,7 +35,7 @@ from typing import Iterable
 ROOT = Path(__file__).resolve().parents[2]
 VERIFY_ROOT = Path(__file__).resolve().parent
 CASES = VERIFY_ROOT / "cases"
-REGISTRY = ROOT / "trident" / "core" / "exploit-registry.json"
+REGISTRY = ROOT / "inkblade" / "core" / "exploit-registry.json"
 
 # Workspace-relative interpreters keep the public tree free of drive-letter
 # paths.  The actual paths are derived at runtime from the repo location.
@@ -52,7 +52,7 @@ INTERPRETERS = {
     "ray280": VERIFY_ROOT / ".envs" / "python311" / "python.exe",
 }
 
-STATUSES = ("verified", "static-only", "unsupported")
+STATUSES = ("verified", "exposure-verified", "static-only", "unsupported")
 SOURCE_KINDS = ("cve", "mining")
 
 
@@ -222,7 +222,7 @@ def run_case(case_dir: Path, *, timeout: int = 900, keep_log: bool = True) -> di
     marker = evidence / "marker.txt"
     marker.write_text("ABSENT", encoding="utf-8")
     marker_before = "ABSENT"
-    marker_text = str(manifest.get("marker_text") or f"TRIDENT-UV-{case_id}")
+    marker_text = str(manifest.get("marker_text") or f"INKBLADE-UV-{case_id}")
 
     env = dict(os.environ)
     env.update(
@@ -279,6 +279,13 @@ def run_case(case_dir: Path, *, timeout: int = 900, keep_log: bool = True) -> di
             final_status = "failed"
         elif not run_json.is_file() or run_payload.get("status") != "verified":
             final_status = "failed"
+    elif status == "exposure-verified":
+        if marker_text not in marker_after:
+            final_status = "failed"
+        elif not (evidence / "exposure.json").is_file():
+            final_status = "failed"
+        elif not run_json.is_file() or run_payload.get("status") != "exposure-verified":
+            final_status = "failed"
     elif status == "static-only":
         if not (evidence / "static-check.json").is_file():
             final_status = "failed"
@@ -291,7 +298,7 @@ def run_case(case_dir: Path, *, timeout: int = 900, keep_log: bool = True) -> di
             final_status = "failed"
 
     result = {
-        "schema": "trident-upstream-result-v1",
+        "schema": "inkblade-upstream-result-v1",
         "id": case_id,
         "source": manifest.get("source"),
         "component": manifest.get("component"),
@@ -300,6 +307,7 @@ def run_case(case_dir: Path, *, timeout: int = 900, keep_log: bool = True) -> di
         "declared_status": status,
         "method": manifest.get("method"),
         "verified": final_status == "verified",
+        "exposure_verified": final_status == "exposure-verified",
         "module": manifest.get("module"),
         "version": manifest.get("version"),
         "version_ref": manifest.get("version_ref"),
@@ -341,6 +349,7 @@ def _summary(entries: list[dict]) -> dict:
         return {
             "total": len(items),
             "verified": sum(1 for e in items if e["status"] == "verified"),
+            "exposure_verified": sum(1 for e in items if e["status"] == "exposure-verified"),
             "static_only": sum(1 for e in items if e["status"] == "static-only"),
             "unsupported": sum(1 for e in items if e["status"] == "unsupported"),
             "failed": sum(1 for e in items if e["status"] == "failed"),
@@ -353,9 +362,34 @@ def _summary(entries: list[dict]) -> dict:
     }
 
 
+def _previous_deployment() -> dict[str, dict]:
+    """Keep the deployment axis when rebuilding from result.json.
+
+    The harness owns status/evidence hashes; ``tools/classify-deployment.py``
+    owns deployment_requirement/evidence.  Rebuilding must not silently drop
+    the classification, otherwise the readiness report would regress to the
+    pre-classification default of "needs-config" for every entry.
+    """
+    try:
+        registry = load_json(REGISTRY)
+    except (OSError, ValueError):
+        return {}
+    out: dict[str, dict] = {}
+    for entry in registry.get("entries") or []:
+        if not entry.get("deployment_requirement"):
+            continue
+        out[str(entry.get("id"))] = {
+            "deployment_requirement": entry["deployment_requirement"],
+            "deployment_evidence": entry.get("deployment_evidence", ""),
+            "deployment_basis": entry.get("deployment_basis", ""),
+        }
+    return out
+
+
 def build_registry(*, write: bool = True, allow_failed: bool = False) -> dict:
     entries: list[dict] = []
     missing: list[str] = []
+    previous = _previous_deployment()
     for case_dir in iter_case_dirs():
         manifest = load_json(case_dir / "manifest.json")
         case_id = str(manifest["id"])
@@ -385,16 +419,18 @@ def build_registry(*, write: bool = True, allow_failed: bool = False) -> dict:
                 "manifest_sha256": result.get("manifest_sha256"),
                 "evidence_hashes": result.get("evidence") or [],
                 "notes": manifest.get("notes", ""),
+                **previous.get(case_id, {}),
             }
         )
     entries.sort(key=lambda x: (x["source"], x["component"], x["id"]))
     summary = _summary(entries)
     registry = {
-        "schema": "trident-exploit-registry-v1",
+        "schema": "inkblade-exploit-registry-v1",
         "generated_at": now(),
         "method": "dynamic upstream reproduction first; static-only is not exploitable",
         "summary": summary,
         "exploitable": [e["id"] for e in entries if e["status"] == "verified"],
+        "exposure_verified": [e["id"] for e in entries if e["status"] == "exposure-verified"],
         "static_only": [e["id"] for e in entries if e["status"] == "static-only"],
         "unsupported": [e["id"] for e in entries if e["status"] == "unsupported"],
         "missing": missing,

@@ -26,7 +26,7 @@ from pathlib import Path
 CASE_DIR = Path(os.environ.get("UV_CASE_DIR") or Path(__file__).resolve().parent)
 EVIDENCE_DIR = Path(os.environ.get("UV_EVIDENCE_DIR") or (CASE_DIR / "evidence"))
 MARKER_FILE = Path(os.environ.get("UV_MARKER") or (EVIDENCE_DIR / "marker.txt"))
-MARKER_TEXT = os.environ.get("UV_MARKER_TEXT") or "TRIDENT-UPSTREAM-VERIFIED"
+MARKER_TEXT = os.environ.get("UV_MARKER_TEXT") or "INKBLADE-UPSTREAM-VERIFIED"
 REPO_ROOT = Path(os.environ.get("UV_REPO_ROOT") or Path(__file__).resolve().parents[2])
 
 EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
@@ -91,7 +91,7 @@ def finish_verified(payload: dict, *, marker: str | None = None) -> None:
     payload = dict(payload)
     payload.update(
         {
-            "schema": "trident-upstream-run-v1",
+            "schema": "inkblade-upstream-run-v1",
             "status": "verified",
             "finished_at": now(),
             "marker_text": text,
@@ -105,9 +105,39 @@ def finish_verified(payload: dict, *, marker: str | None = None) -> None:
     sys.exit(0)
 
 
+def finish_exposure(payload: dict, *, marker: str | None = None) -> None:
+    """Finish an exposure-only case (bind/auth posture, no RCE claimed).
+
+    The marker is still required so the evidence chain is tamper-evident, but
+    ``status`` is ``exposure-verified`` and ``verified`` stays false.  The
+    registry keeps this cohort in a separate list and never calls it RCE.
+    """
+    text = marker or MARKER_TEXT
+    if text not in read_text(MARKER_FILE, ""):
+        fail("marker not observed after exposure proof", **payload)
+    payload = dict(payload)
+    payload.update(
+        {
+            "schema": "inkblade-upstream-run-v1",
+            "status": "exposure-verified",
+            "exposure_verified": True,
+            "impact": "exposure",
+            "finished_at": now(),
+            "marker_text": text,
+            "marker_file": rel(MARKER_FILE),
+            "marker_sha256": sha256_file(MARKER_FILE),
+            "exit_code": 0,
+        }
+    )
+    write_json("run.json", payload)
+    print(json.dumps({"status": "exposure-verified", "marker": text,
+                      "evidence": rel(EVIDENCE_DIR)}))
+    sys.exit(0)
+
+
 def fail(message: str, **extra) -> None:
     payload = {
-        "schema": "trident-upstream-run-v1",
+        "schema": "inkblade-upstream-run-v1",
         "status": "failed",
         "finished_at": now(),
         "error": message,
@@ -133,7 +163,7 @@ def upstream_path(relative: str) -> Path:
 
 def static_result(manifest: dict, *, ok: bool, evidence: dict) -> None:
     payload = {
-        "schema": "trident-upstream-static-check-v1",
+        "schema": "inkblade-upstream-static-check-v1",
         "status": "static-only" if ok else "failed",
         "finished_at": now(),
         "case_id": manifest.get("id"),
@@ -147,7 +177,7 @@ def static_result(manifest: dict, *, ok: bool, evidence: dict) -> None:
 
 def unsupported_result(manifest: dict, *, reason: str, evidence: dict | None = None) -> None:
     payload = {
-        "schema": "trident-upstream-unsupported-v1",
+        "schema": "inkblade-upstream-unsupported-v1",
         "status": "unsupported",
         "finished_at": now(),
         "case_id": manifest.get("id"),

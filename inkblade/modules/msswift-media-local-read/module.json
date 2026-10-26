@@ -1,0 +1,32 @@
+{
+  "key": "msswift-media-local-read",
+  "name": {
+    "zh": "ms-swift 媒体路径本地读取",
+    "en": "ms-swift Media Path Local Read"
+  },
+  "series": "窃取与数据泄露",
+  "description": "ms-swift 4.6.0 MultiModalRequestMixin.to_base64 opens a request-supplied media path when SWIFT_MEDIA_ALLOWED_DIRS is unset (the default allow-all) and returns the bytes base64-encoded.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标 URL，例如 http://host:port（真实模式必需）",
+    "mode": "probe-only（默认，只读探测）| backup-write（写模块需 backup_targets）",
+    "local_path": "function-level 模块的本地文件/模型目录（仅读取，不反序列化）"
+  },
+  "produces": "media-local-read",
+  "knowledge": "docs/WEAPON-READINESS.md#msswift-media-local-read",
+  "combo_signature": "msswift-media-local-read",
+  "weapon_pack": true,
+  "surfaces": [
+    {
+      "type": "http-endpoint",
+      "selector": "/v1/chat/completions"
+    },
+    {
+      "type": "config-file",
+      "selector": "ms-swift"
+    }
+  ],
+  "default_enabled": true
+}
