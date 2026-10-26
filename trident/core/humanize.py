@@ -156,21 +156,44 @@ class _ApiError(Exception):
         self.status = status
 
 
-def _materialize(spec: tuple[str, BaseException | dict]) -> BaseException:
-    if not isinstance(spec, dict):
+_BUILTIN_EXCEPTIONS = {
+    "FileNotFoundError": FileNotFoundError,
+    "ModuleNotFoundError": ModuleNotFoundError,
+    "ConnectionRefusedError": ConnectionRefusedError,
+    "TimeoutError": TimeoutError,
+    "PermissionError": PermissionError,
+    "ValueError": ValueError,
+    "KeyError": KeyError,
+    "RuntimeError": RuntimeError,
+    "OSError": OSError,
+}
+
+
+def _materialize(spec: BaseException | dict) -> BaseException:
+    """把 fixture 还原成真实异常对象（保留 isinstance / errno / name 语义）。"""
+    if isinstance(spec, BaseException):
         return spec
     kind = spec["kind"]
     msg = spec.get("msg", "")
     if kind == "ApiError":
         cls = type("ApiError", (_ApiError,), {})
         return cls(msg, spec.get("status", 0))
-    attrs: dict = {}
-    if kind in ("ChaosAbortSignalled", "ChaosSteadyStateError", "ChaosRollbackError"):
-        attrs["trident_code"] = {"ChaosAbortSignalled": "E501",
-                                 "ChaosSteadyStateError": "E502",
-                                 "ChaosRollbackError": "E503"}[kind]
-    cls = type(kind, (Exception,), attrs)
-    exc = cls(msg)
+
+    builtin = _BUILTIN_EXCEPTIONS.get(kind)
+    if builtin is ModuleNotFoundError:
+        m = re.search(r"No module named '([^']+)'", msg)
+        exc: BaseException = ModuleNotFoundError(msg, name=m.group(1) if m else None)
+    elif builtin is OSError and "errno" in spec:
+        exc = OSError(spec["errno"], msg)
+    elif builtin is not None:
+        exc = builtin(msg)
+    else:
+        attrs: dict = {}
+        if kind in ("ChaosAbortSignalled", "ChaosSteadyStateError", "ChaosRollbackError"):
+            attrs["trident_code"] = {"ChaosAbortSignalled": "E501",
+                                     "ChaosSteadyStateError": "E502",
+                                     "ChaosRollbackError": "E503"}[kind]
+        exc = type(kind, (Exception,), attrs)(msg)
     if "errno" in spec:
         exc.errno = spec["errno"]  # type: ignore[attr-defined]
     return exc
@@ -179,8 +202,8 @@ def _materialize(spec: tuple[str, BaseException | dict]) -> BaseException:
 def catalog() -> list[HumanError]:
     """错误码目录（人话化覆盖面的可数口径；测试与文档用）。"""
     seen: dict[str, HumanError] = {}
-    for code, spec in _REPRESENTATIVE_FIXTURES:
-        err = explain_exception(_materialize((code, spec)))
+    for _code, spec in _REPRESENTATIVE_FIXTURES:
+        err = explain_exception(_materialize(spec))
         seen[err.code] = err
     return [seen[c] for c in sorted(seen)]
 
@@ -261,6 +284,18 @@ def explain_exception(
     chaos = _chaos_error(exc)
     if chaos is not None:
         return chaos
+
+    # ---- E7xx 试点输入：必须先于通用 YAML/JSON 解析兜底，否则被 E111 吞掉 ----
+    if type(exc).__name__ == "PilotError":
+        return HumanError(
+            "E701",
+            "kubeconfig / 试点输入不可用",
+            f"试点模式输入校验失败：{msg}。",
+            "kubeconfig 不是合法 YAML/JSON、缺 clusters/contexts/users 键，或合并后没有 context。",
+            "先跑导入向导校验：python -m trident onboard-cluster --dry-run；"
+            "离线场景改用 --snapshot（kubectl get 导出的 JSON）；"
+            "多文件合并冲突项见输出的 inventory.conflicts。",
+        )
 
     # ---- demo / quickstart 自身的可预期拒绝 -------------------------------
     if type(exc).__name__ == "DemoRefused":
@@ -399,7 +434,7 @@ def explain_exception(
             f"写入文件时磁盘已满：{msg or 'no space left on device'}。",
             "证据归档/报告/备份需要落盘；剩余空间不足会中断 run 并留下未完成目录。",
             "清理 --home 下的 chaos-runs/、reports/ 或临时目录后重试；"
-            "Windows 查看占用：Get-PSDrive C；归档可迁移到其他盘（--home D:\\...）。",
+            "Windows 查看占用：Get-PSDrive C；归档可迁移到其他盘（--home <盘符>:\\workspace）。",
         )
 
     if _is_bad_config(exc):

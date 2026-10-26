@@ -1,0 +1,279 @@
+{
+  "schema": "trident-chaos-run/1",
+  "generated_at": "2026-10-26T05:41:44Z",
+  "mode": "sequential",
+  "cycles": 1,
+  "every_s": 0.0,
+  "experiment_count": 3,
+  "boundary": "全部注入仅作用于本地 mock/仿真靶场（127.0.0.1 进程内）；不对真实集群/GPU/交换机执行",
+  "results": [
+    {
+      "id": "net-latency-step-degradation",
+      "title": "网络延迟注入 → 训练步时退化",
+      "category": "network",
+      "target": "fabric-dos",
+      "ml_specific": true,
+      "slo": "训练步请求（含通信）客户端时延 < 250ms；注入 400ms 单向延迟后 ≥ 350ms（≥3× 基线）即 SLO 破坏",
+      "started_at": "2026-10-26T05:41:44Z",
+      "phases": {
+        "steady_state": [
+          {
+            "name": "step-latency-baseline",
+            "ok": true,
+            "value": 34.5996666389207,
+            "op": "lt",
+            "threshold": 250,
+            "detail": "34.6ms (mean of 3)",
+            "samples": 3
+          }
+        ],
+        "inject": {
+          "kind": "proxy",
+          "detail": "fault profile → {'delay_ms': 400, 'drop_rate': 0.0, 'block_groups': [], 'seed': 7}"
+        },
+        "measure": [
+          {
+            "name": "step-latency-degraded",
+            "ok": true,
+            "value": 406.61876668067026,
+            "op": "ge",
+            "threshold": 350,
+            "detail": "406.6ms (mean of 3)",
+            "samples": 3
+          }
+        ],
+        "abort_when": [
+          {
+            "name": "latency-safety-valve",
+            "ok": false,
+            "value": 403.32159999525174,
+            "op": "gt",
+            "threshold": 10000,
+            "detail": "403.3ms (mean of 1)",
+            "samples": 1
+          }
+        ],
+        "rollback": {
+          "kind": "proxy",
+          "detail": "fault profile → {'delay_ms': 0, 'drop_rate': 0.0, 'block_groups': [], 'seed': 7}"
+        },
+        "recovery": [
+          {
+            "name": "step-latency-baseline",
+            "ok": true,
+            "value": 2.915600004295508,
+            "op": "lt",
+            "threshold": 250,
+            "detail": "2.9ms (mean of 3)",
+            "samples": 3
+          }
+        ]
+      },
+      "slo_impact": {
+        "baseline": {
+          "step-latency-baseline": 34.5996666389207
+        },
+        "during": {
+          "step-latency-degraded": 406.61876668067026
+        },
+        "degraded": true,
+        "recovered": true
+      },
+      "outcome": "completed",
+      "duration_s": 1.7874,
+      "completed_at": "2026-10-26T05:41:46Z",
+      "cycle": 0
+    },
+    {
+      "id": "net-disconnect-workers",
+      "title": "Worker 断连 → 训练请求 100% 失败",
+      "category": "network",
+      "target": "fabric-dos",
+      "ml_specific": false,
+      "slo": "训练面请求成功率 = 100%；断连后成功率 = 0%，错误率 > 50% 触发中止条件并自动回滚",
+      "started_at": "2026-10-26T05:41:46Z",
+      "phases": {
+        "steady_state": [
+          {
+            "name": "step-success-baseline",
+            "ok": true,
+            "value": 1.0,
+            "op": "eq",
+            "threshold": 1,
+            "detail": "success_rate=1.00 errors=0",
+            "samples": 4
+          }
+        ],
+        "inject": {
+          "kind": "proxy",
+          "detail": "fault profile → {'delay_ms': 0, 'drop_rate': 1.0, 'block_groups': [], 'seed': 7}"
+        },
+        "measure": [
+          {
+            "name": "step-success-during",
+            "ok": true,
+            "value": 0.0,
+            "op": "eq",
+            "threshold": 0,
+            "detail": "success_rate=0.00 errors=4",
+            "samples": 4
+          }
+        ],
+        "abort_when": [
+          {
+            "name": "error-rate-limit",
+            "ok": true,
+            "value": 1.0,
+            "op": "gt",
+            "threshold": 0.5,
+            "detail": "error_rate=1.00 errors=3",
+            "samples": 3
+          }
+        ],
+        "rollback": {
+          "kind": "proxy",
+          "detail": "fault profile → {'delay_ms': 0, 'drop_rate': 0.0, 'block_groups': [], 'seed': 7}"
+        },
+        "recovery": [
+          {
+            "name": "step-success-baseline",
+            "ok": true,
+            "value": 1.0,
+            "op": "eq",
+            "threshold": 1,
+            "detail": "success_rate=1.00 errors=0",
+            "samples": 4
+          }
+        ]
+      },
+      "slo_impact": {
+        "degraded": true,
+        "recovered": true,
+        "abort_reason": "中止条件命中: error-rate-limit",
+        "baseline": {
+          "step-success-baseline": 1.0
+        },
+        "during": {
+          "step-success-during": 0.0
+        }
+      },
+      "outcome": "aborted_by_condition",
+      "duration_s": 0.0273,
+      "completed_at": "2026-10-26T05:41:46Z",
+      "cycle": 0
+    },
+    {
+      "id": "fabric-pfc-storm",
+      "title": "RoCE PFC 暂停风暴（联动 fabric-sim）→ 集合通信面破坏",
+      "category": "fabric",
+      "target": "fabric-sim",
+      "ml_specific": true,
+      "slo": "无风暴：storm_active=false；注入后 PFC 暂停帧 Δ ≥ 25000 且 storm_active=true；回滚（clear）后 storm_active=false",
+      "started_at": "2026-10-26T05:41:46Z",
+      "phases": {
+        "steady_state": [
+          {
+            "name": "storm-flag-clear",
+            "ok": true,
+            "value": 0.0,
+            "op": "eq",
+            "threshold": 0,
+            "detail": "pfc.storm=0.0",
+            "samples": 1
+          }
+        ],
+        "inject": {
+          "kind": "http",
+          "detail": "POST /roce/pfc ×1 → last HTTP 200",
+          "repeat_results": [
+            {
+              "i": 0,
+              "status": 200,
+              "error": ""
+            }
+          ]
+        },
+        "measure": [
+          {
+            "name": "storm-active",
+            "ok": true,
+            "value": 1.0,
+            "op": "eq",
+            "threshold": 1,
+            "detail": "pfc.storm=1.0",
+            "samples": 1
+          },
+          {
+            "name": "pfc-delta",
+            "ok": true,
+            "value": 25096.0,
+            "op": "ge",
+            "threshold": 25000,
+            "detail": "pfc_pause_frames=25096.0",
+            "samples": 1
+          }
+        ],
+        "abort_when": [
+          {
+            "name": "storm-overflow",
+            "ok": false,
+            "value": 25096.0,
+            "op": "gt",
+            "threshold": 10000000,
+            "detail": "pfc_pause_frames=25096.0",
+            "samples": 1
+          }
+        ],
+        "rollback": {
+          "kind": "http",
+          "detail": "POST /roce/pfc ×1 → last HTTP 200",
+          "repeat_results": [
+            {
+              "i": 0,
+              "status": 200,
+              "error": ""
+            }
+          ]
+        },
+        "recovery": [
+          {
+            "name": "storm-cleared",
+            "ok": true,
+            "value": 0.0,
+            "op": "eq",
+            "threshold": 0,
+            "detail": "pfc.storm=0.0",
+            "samples": 1
+          }
+        ]
+      },
+      "slo_impact": {
+        "baseline": {
+          "storm-flag-clear": 0.0
+        },
+        "during": {
+          "storm-active": 1.0,
+          "pfc-delta": 25096.0
+        },
+        "degraded": true,
+        "recovered": true
+      },
+      "outcome": "completed",
+      "duration_s": 0.0388,
+      "completed_at": "2026-10-26T05:41:46Z",
+      "cycle": 0
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "outcomes": {
+      "completed": 2,
+      "aborted_by_condition": 1
+    },
+    "degraded": 3,
+    "recovered": 3,
+    "steady_break_then_recover": 3,
+    "duration_s": 1.8535
+  },
+  "report_path": "<abs-path>"
+}

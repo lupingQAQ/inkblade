@@ -1,0 +1,340 @@
+{
+  "schema": "trident-usability-walkthrough/1",
+  "generated_at": "2026-10-26T13:55:04+08:00",
+  "method": "expert heuristic walkthrough（专家走查，非真实用户研究）",
+  "disclaimer": "专家走查（expert heuristic walkthrough）：由实现者按 5 个 persona 脚本执行，为非真实用户数据（not real-user data），不构成 SUS 分数、统计显著性、可用性认证或 SLA。SUS 仅提供模板，需由真实受试者独立填写后另行分析。",
+  "environment": {
+    "python": "3.12.15",
+    "platform": "win32",
+    "repo": "<repo>",
+    "tmp_root": "<tmp>",
+    "network": "无外网；真实集群仅离线 snapshot；chaos 仅本地仿真靶场"
+  },
+  "run_id": "demo-20261026-135457",
+  "roles": [
+    {
+      "id": "platform-admin",
+      "name_zh": "平台管理员",
+      "name_en": "Platform admin",
+      "goal": "确认环境可用，跑出第一条本地发现",
+      "steps": 2,
+      "failed": 0,
+      "duration_s": 4.253
+    },
+    {
+      "id": "security-lead",
+      "name_zh": "安全负责人",
+      "name_en": "Security lead",
+      "goal": "确认授权状态，并对真实集群做只读上手预演",
+      "steps": 2,
+      "failed": 0,
+      "duration_s": 0.508
+    },
+    {
+      "id": "pentester",
+      "name_zh": "渗透测试员",
+      "name_en": "Pentester",
+      "goal": "查看模块清单并对攻击链做 dry-run 计划",
+      "steps": 2,
+      "failed": 0,
+      "duration_s": 0.683
+    },
+    {
+      "id": "auditor",
+      "name_zh": "审计员",
+      "name_en": "Auditor",
+      "goal": "从同一次 run 复现双语报告与 CTEM 叙事",
+      "steps": 2,
+      "failed": 0,
+      "duration_s": 0.809
+    },
+    {
+      "id": "ml-engineer",
+      "name_zh": "ML 平台工程师",
+      "name_en": "ML platform engineer",
+      "goal": "列混沌实验并实跑延迟/断连/PFC 三条，观察稳态破坏与恢复",
+      "steps": 2,
+      "failed": 0,
+      "duration_s": 3.486
+    }
+  ],
+  "steps": [
+    {
+      "role": "platform-admin",
+      "role_name": "平台管理员",
+      "name": "doctor",
+      "argv": [
+        "<abs-path>",
+        "-m",
+        "trident",
+        "--home",
+        "<tmp>\\home",
+        "doctor",
+        "--mode",
+        "mock"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "duration_ms": 494.9,
+      "errors": [],
+      "stderr_tail": "",
+      "first_result": false
+    },
+    {
+      "role": "platform-admin",
+      "role_name": "平台管理员",
+      "name": "demo",
+      "argv": [
+        "<abs-path>",
+        "-m",
+        "trident",
+        "--home",
+        "<tmp>\\home",
+        "demo",
+        "--out",
+        "<tmp>/demo-out",
+        "--json"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "duration_ms": 3758.4,
+      "errors": [],
+      "stderr_tail": "",
+      "first_result": true
+    },
+    {
+      "role": "security-lead",
+      "role_name": "安全负责人",
+      "name": "roe",
+      "argv": [
+        "<abs-path>",
+        "-m",
+        "trident",
+        "--home",
+        "<tmp>\\pilot-home",
+        "roe",
+        "--workspace",
+        "demo-lab"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "duration_ms": 251.4,
+      "errors": [],
+      "stderr_tail": "",
+      "first_result": false
+    },
+    {
+      "role": "security-lead",
+      "role_name": "安全负责人",
+      "name": "onboard-dry-run",
+      "argv": [
+        "<abs-path>",
+        "-m",
+        "trident",
+        "--home",
+        "<tmp>\\pilot-home",
+        "onboard-cluster",
+        "--snapshot",
+        "lab/enterprise-fixtures/clusters/east-prod.json",
+        "--dry-run",
+        "--out",
+        "<tmp>/pilot-lead"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "duration_ms": 256.8,
+      "errors": [],
+      "stderr_tail": "",
+      "first_result": false
+    },
+    {
+      "role": "pentester",
+      "role_name": "渗透测试员",
+      "name": "module-list",
+      "argv": [
+        "<abs-path>",
+        "-m",
+        "trident",
+        "--home",
+        "<tmp>\\demo-out\\workspace",
+        "module",
+        "list",
+        "--modules-dir",
+        "trident/modules"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "duration_ms": 301.9,
+      "errors": [],
+      "stderr_tail": "",
+      "first_result": false
+    },
+    {
+      "role": "pentester",
+      "role_name": "渗透测试员",
+      "name": "chain-dry-run",
+      "argv": [
+        "<abs-path>",
+        "-m",
+        "trident",
+        "--home",
+        "<tmp>\\demo-out\\workspace",
+        "execute",
+        "--chain",
+        "flat-network-admin-plane-weight-poison",
+        "--workspace",
+        "demo-lab",
+        "--dry-run"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "duration_ms": 381.2,
+      "errors": [],
+      "stderr_tail": "",
+      "first_result": false
+    },
+    {
+      "role": "auditor",
+      "role_name": "审计员",
+      "name": "report",
+      "argv": [
+        "<abs-path>",
+        "-m",
+        "trident",
+        "--home",
+        "<tmp>\\demo-out\\workspace",
+        "report",
+        "--run",
+        "demo-20261026-135457",
+        "--workspace",
+        "demo-lab",
+        "--kind",
+        "pentest",
+        "--lang",
+        "bi",
+        "--out",
+        "<tmp>/audit/pentest-bi.md"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "duration_ms": 493.9,
+      "errors": [],
+      "stderr_tail": "",
+      "first_result": false
+    },
+    {
+      "role": "auditor",
+      "role_name": "审计员",
+      "name": "report-ctem",
+      "argv": [
+        "<abs-path>",
+        "-m",
+        "trident",
+        "--home",
+        "<tmp>\\demo-out\\workspace",
+        "report-ctem",
+        "--run",
+        "demo-20261026-135457",
+        "--workspace",
+        "demo-lab",
+        "--out",
+        "<tmp>/audit/ctem.md"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "duration_ms": 315.3,
+      "errors": [],
+      "stderr_tail": "",
+      "first_result": false
+    },
+    {
+      "role": "ml-engineer",
+      "role_name": "ML 平台工程师",
+      "name": "chaos-list",
+      "argv": [
+        "<abs-path>",
+        "-m",
+        "trident",
+        "--home",
+        "<tmp>\\chaos-home",
+        "chaos",
+        "list",
+        "--json"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "duration_ms": 338.0,
+      "errors": [],
+      "stderr_tail": "",
+      "first_result": false
+    },
+    {
+      "role": "ml-engineer",
+      "role_name": "ML 平台工程师",
+      "name": "chaos-run",
+      "argv": [
+        "<abs-path>",
+        "-m",
+        "trident",
+        "--home",
+        "<tmp>\\chaos-home",
+        "chaos",
+        "run",
+        "net-latency-step-degradation",
+        "net-disconnect-workers",
+        "fabric-pfc-storm",
+        "--json-out",
+        "<tmp>/chaos/three.json"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "duration_ms": 3148.1,
+      "errors": [],
+      "stderr_tail": "",
+      "first_result": false
+    }
+  ],
+  "metrics": {
+    "steps": 10,
+    "failed_steps": 0,
+    "success_rate": 1.0,
+    "total_duration_s": 9.74,
+    "avg_step_ms": 974.0,
+    "p50_step_ms": 338.0,
+    "p95_step_ms": 3758.4,
+    "error_classes": [],
+    "roles": [
+      "auditor",
+      "ml-engineer",
+      "pentester",
+      "platform-admin",
+      "security-lead"
+    ],
+    "first_result_s": 3.758,
+    "roles_success": 5,
+    "role_count": 5
+  },
+  "sus_template": {
+    "status": "template-only（未施测；不得作为 SUS 分数引用）",
+    "scale": "1=非常不同意 … 5=非常同意",
+    "questions": [
+      "我愿意经常使用这个系统。 / I think that I would like to use this system frequently.",
+      "我觉得系统 unnecessarily complex。 / I found the system unnecessarily complex.",
+      "我认为系统容易使用。 / I thought the system was easy to use.",
+      "我需要技术支援才能使用这个系统。 / I think that I would need the support of a technical person to be able to use this system.",
+      "我觉得系统各功能整合得很好。 / I found the various functions in this system were well integrated.",
+      "我觉得系统有太多不一致。 / I thought there was too much inconsistency in this system.",
+      "我认为大多数人能很快学会使用。 / I would imagine that most people would learn to use this system very quickly.",
+      "我觉得系统使用起来很笨重。 / I found the system very cumbersome to use.",
+      "我对使用系统很有信心。 / I felt very confident using the system.",
+      "我需要先学很多东西才能上手。 / I needed to learn a lot of things before I could get going with this system."
+    ],
+    "responses": [],
+    "scoring": {
+      "scale": "1=非常不同意 … 5=非常同意",
+      "formula": "奇数题得分 = 响应-1；偶数题得分 = 5-响应；总分 = 10 题得分和 × 2.5（0–100）",
+      "note": "模板未施测；n<10 时不应报告中位数/均值作为产品结论。"
+    },
+    "disclaimer": "专家走查（expert heuristic walkthrough）：由实现者按 5 个 persona 脚本执行，为非真实用户数据（not real-user data），不构成 SUS 分数、统计显著性、可用性认证或 SLA。SUS 仅提供模板，需由真实受试者独立填写后另行分析。"
+  }
+}

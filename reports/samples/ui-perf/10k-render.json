@@ -1,0 +1,135 @@
+{
+  "schema": "trident-ui-perf/1",
+  "generated_at": "2026-10-26T13:55:46+08:00",
+  "browser": "chrome.exe",
+  "export": "lab/bench/out/ui-10k/export",
+  "fixture": "synthetic 10,000 findings",
+  "runs_per_mode": 3,
+  "summary": {
+    "paged": {
+      "runs": 3,
+      "click_ms_median": 6.7,
+      "rows_median": 200,
+      "report_nodes_median": 1840,
+      "body_nodes_median": 1994,
+      "heap_bytes_median": 5862094,
+      "load_ms_median": 319.7,
+      "raw": [
+        {
+          "mode": "paged",
+          "clickMs": 6.7,
+          "meta": {
+            "total": 10000,
+            "renderedRows": 200,
+            "pageSize": 200,
+            "legacy": false,
+            "renderMs": 5.9
+          },
+          "rows": 200,
+          "reportNodes": 1840,
+          "bodyNodes": 1994,
+          "heap": 5862094,
+          "loadMs": 319.7,
+          "title": "BENCH"
+        },
+        {
+          "mode": "paged",
+          "clickMs": 5.3,
+          "meta": {
+            "total": 10000,
+            "renderedRows": 200,
+            "pageSize": 200,
+            "legacy": false,
+            "renderMs": 4.3
+          },
+          "rows": 200,
+          "reportNodes": 1840,
+          "bodyNodes": 1994,
+          "heap": 5786234,
+          "loadMs": 316.6,
+          "title": "BENCH"
+        },
+        {
+          "mode": "paged",
+          "clickMs": 7.7,
+          "meta": {
+            "total": 10000,
+            "renderedRows": 200,
+            "pageSize": 200,
+            "legacy": false,
+            "renderMs": 6.7
+          },
+          "rows": 200,
+          "reportNodes": 1840,
+          "bodyNodes": 1994,
+          "heap": 6202814,
+          "loadMs": 343,
+          "title": "BENCH"
+        }
+      ]
+    },
+    "legacy": {
+      "runs": 3,
+      "click_ms_median": 114.2,
+      "rows_median": 10000,
+      "report_nodes_median": 90040,
+      "body_nodes_median": 90195,
+      "heap_bytes_median": 7917547,
+      "load_ms_median": 268.7,
+      "raw": [
+        {
+          "mode": "legacy",
+          "clickMs": 110.6,
+          "meta": {
+            "total": 10000,
+            "renderedRows": 10000,
+            "pageSize": 200,
+            "legacy": true,
+            "renderMs": 108.1
+          },
+          "rows": 10000,
+          "reportNodes": 90040,
+          "bodyNodes": 90195,
+          "heap": 7943995,
+          "loadMs": 265.9,
+          "title": "BENCH"
+        },
+        {
+          "mode": "legacy",
+          "clickMs": 115.9,
+          "meta": {
+            "total": 10000,
+            "renderedRows": 10000,
+            "pageSize": 200,
+            "legacy": true,
+            "renderMs": 113.3
+          },
+          "rows": 10000,
+          "reportNodes": 90040,
+          "bodyNodes": 90195,
+          "heap": 7917547,
+          "loadMs": 313.4,
+          "title": "BENCH"
+        },
+        {
+          "mode": "legacy",
+          "clickMs": 114.2,
+          "meta": {
+            "total": 10000,
+            "renderedRows": 10000,
+            "pageSize": 200,
+            "legacy": true,
+            "renderMs": 112.3
+          },
+          "rows": 10000,
+          "reportNodes": 90040,
+          "bodyNodes": 90195,
+          "heap": 7903651,
+          "loadMs": 268.7,
+          "title": "BENCH"
+        }
+      ]
+    }
+  },
+  "boundary": "本机 Chromium headless；合成数据；非真实用户样本/SLA"
+}
