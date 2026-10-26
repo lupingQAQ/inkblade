@@ -1,0 +1,15 @@
+{
+  "key": "identity-federation-trust-matrix",
+  "name": {"zh": "IRSA/RRSA/PodIdentity/Workload Identity 信任矩阵", "en": "Identity Federation Trust Matrix"},
+  "series": "混合云",
+  "description": "20 个跨云 trust 策略用例：AWS wildcard/root Principal、sub/aud/iss 缺失或通配、ForAnyValue/ForAllValues/Null、SourceAccount/SourceArn、ExternalId、GCP principalSet/attributeCondition、Azure issuer/subject/audiences、EKS Pod Identity namespace/SA 通配；含加固与合法请求对照。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "可选，identity cases JSON；省略使用内置 20 用例"
+  },
+  "produces": "identity-federation-matrix（逐用例 allow/deny + 原因）",
+  "knowledge": "docs/DEPTH-REVIEW.md §6；trident/depth/identity.py",
+  "combo_signature": "identity-federation-trust"
+}

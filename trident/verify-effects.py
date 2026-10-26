@@ -76,6 +76,7 @@ from lab.trainstack_sim import (  # noqa: E402
     template_path as trainstack_template,
 )
 from trident.cve_effects import run_cve_checks  # noqa: E402
+from trident.depth_effects import run_depth_checks  # noqa: E402
 from lab.ai_gateway_sim import (  # noqa: E402
     MASTER_KEY as AI_GATEWAY_MASTER_KEY,
     TENANT_KEYS as AI_GATEWAY_TENANT_KEYS,
@@ -124,6 +125,9 @@ LIMITATIONS = [
     "QEMU k3s 真集群 4 条路径证据见 reports/samples/privesc/real-paths.json 与 docs/PRIVESC-VERIFICATION.md。",
     "训练栈仿真是 lab/trainstack_sim.py（真实 HTTP + 真实文件落盘）：不加载 Megatron/DeepSpeed 权重、"
     "不执行 LLaMA-Factory/ms-swift/TRL 训练、不连接真实 MLflow/W&B/TensorBoard 或 etcd。",
+    "研究级深度六项（depth-*）为 lab/depth_sim.py 双态 HTTP、配置快照与准入/信任语义引擎："
+    "不连接 live K8s、真实 GPU 驱动、真实交换机/IB SM/SHARP 或真实云账号；"
+    "vLLM 240 用例只读探针不投递真实 pickle、不下载权重。",
 ]
 
 _ABS_PATH_RES = (
@@ -1468,6 +1472,9 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
 
             run_cve_checks(checks, store=store, tester=tester, run=run,
                            lab_root=lab_root, cve_server=cve_sim)
+
+            # 研究级深度六类效果：vLLM 接口 fuzz、准入学、eBPF、GPU、fabric、身份联邦
+            run_depth_checks(checks)
 
             # 提权原语 4 项：fake-kubectl 内存态闭环（真集群证据另见 docs/PRIVESC-VERIFICATION.md）
             fake_privesc = run_fake_closure()

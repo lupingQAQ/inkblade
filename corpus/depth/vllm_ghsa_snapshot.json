@@ -1,0 +1,282 @@
+[
+ {
+  "ghsa": "GHSA-vvpg-rrww-wpmh",
+  "cve": null,
+  "severity": "low",
+  "summary": "Permissive default CORS origins allow cross-origin requests to the vLLM HTTP server",
+  "published": "2026-10-20T07:37:49Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-vvpg-rrww-wpmh",
+  "affected": "All versions (default config) ",
+  "fixed": "0.32.0"
+ },
+ {
+  "ghsa": "GHSA-5fj9-pfhr-6j48",
+  "cve": "CVE-2026-105759",
+  "severity": "medium",
+  "summary": "Unbounded Prometheus label cardinality from attacker-controlled HTTP method tokens in the vLLM Rust frontend metrics middleware (unauthenticated denial of service)",
+  "published": "2026-09-23T10:23:16Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-5fj9-pfhr-6j48",
+  "affected": "< v0.30.0",
+  "fixed": ">= 0.30.0"
+ },
+ {
+  "ghsa": "GHSA-h3rc-j82p-2c3h",
+  "cve": null,
+  "severity": "high",
+  "summary": "Untrusted EPS inputs can trigger denial of service or Ghostscript RCE in vLLM",
+  "published": "2026-10-20T07:36:56Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-h3rc-j82p-2c3h",
+  "affected": "0.30.0",
+  "fixed": "0.32.0"
+ },
+ {
+  "ghsa": "GHSA-25q3-v2hm-8vpf",
+  "cve": "CVE-2026-93592",
+  "severity": "high",
+  "summary": "Denial of service: a negative token id in `/v1/embeddings` or `/pooling` input kills the vLLM engine via a CUDA device-side assertion",
+  "published": "2026-09-03T18:08:31Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-25q3-v2hm-8vpf",
+  "affected": "< 0.28.0",
+  "fixed": "0.28.0"
+ },
+ {
+  "ghsa": "GHSA-p92p-rxj5-7p2x",
+  "cve": "CVE-2026-114050",
+  "severity": "medium",
+  "summary": "Forged multimodal UUID + P0/P1 processor-cache eviction drift: unauthenticated remote crash of the whole vLLM engine",
+  "published": "2026-10-06T07:10:22Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-p92p-rxj5-7p2x",
+  "affected": "< 0.31.0",
+  "fixed": ">= 0.31.0"
+ },
+ {
+  "ghsa": "GHSA-4xqp-c3mv-qff7",
+  "cve": null,
+  "severity": "medium",
+  "summary": "An oversized min_tokens in one request hangs the vLLM engine while /health stays green",
+  "published": "2026-10-06T06:58:15Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-4xqp-c3mv-qff7",
+  "affected": "< 0.31.0",
+  "fixed": ">= 0.31.0"
+ },
+ {
+  "ghsa": "GHSA-x6mc-67gf-chw4",
+  "cve": "CVE-2026-105758",
+  "severity": "medium",
+  "summary": "Qwen2-VL / Qwen3-VL video samplers bound on request-controlled max_frames, which the num_frames ceiling does not reach",
+  "published": "2026-09-23T10:25:42Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-x6mc-67gf-chw4",
+  "affected": ">= 0.24.0",
+  "fixed": ">= 0.30.0"
+ },
+ {
+  "ghsa": "GHSA-823j-m4cj-hmjf",
+  "cve": "CVE-2026-114052",
+  "severity": "high",
+  "summary": "MOSS-Audio request-controlled processor cache permits remote memory exhaustion",
+  "published": "2026-10-06T06:59:51Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-823j-m4cj-hmjf",
+  "affected": "> 0.24.0, < 0.31.0",
+  "fixed": ">= 0.31.0"
+ },
+ {
+  "ghsa": "GHSA-h3rc-6mm3-gc2m",
+  "cve": null,
+  "severity": "high",
+  "summary": "Request-controlled mm_processor_kwargs.code_revision allows remote code execution",
+  "published": "2026-10-06T07:06:53Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-h3rc-6mm3-gc2m",
+  "affected": ">= 0.7.3, < 0.31.0",
+  "fixed": ">= 0.31.0"
+ },
+ {
+  "ghsa": "GHSA-wpww-v874-ph2p",
+  "cve": "CVE-2026-100647",
+  "severity": "medium",
+  "summary": "vLLM DoS via unbounded `cache_salt` length: multi-hundred-MB salt stalls the single EngineCore scheduler thread (CPU exhaustion)",
+  "published": "2026-09-12T08:49:34Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-wpww-v874-ph2p",
+  "affected": "<0.29.0",
+  "fixed": ">=0.29.0"
+ },
+ {
+  "ghsa": "GHSA-3c86-2m5g-59q7",
+  "cve": "CVE-2026-90553",
+  "severity": "high",
+  "summary": "LlavaOnevision2 processor loader executes attacker model code with `trust_remote_code=False` (inert `trust_remote_code` kwarg to `transformers.get_class_from_dynamic_module`) — RCE from a malicious model",
+  "published": "2026-08-28T18:05:36Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-3c86-2m5g-59q7",
+  "affected": "< 0.28.0",
+  "fixed": ">= 0.28.0"
+ },
+ {
+  "ghsa": "GHSA-6757-hggm-hp2w",
+  "cve": null,
+  "severity": "high",
+  "summary": "Public multimodal SHM handle forgery reaches worker-side `pickle.loads()` with insecure serialization disabled",
+  "published": "2026-10-20T07:36:30Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-6757-hggm-hp2w",
+  "affected": "<= 0.25.1",
+  "fixed": "0.32.0"
+ },
+ {
+  "ghsa": "GHSA-vfp2-c8pq-v6h6",
+  "cve": null,
+  "severity": "high",
+  "summary": "SSRF via X-Request-Id header drives P2pNcclConnector outbound ZMQ+NCCL pair, leaking KV-cache tensors",
+  "published": "2026-10-09T07:58:03Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-vfp2-c8pq-v6h6",
+  "affected": ">= 0.9.2, < 0.24.0",
+  "fixed": "0.24.0"
+ },
+ {
+  "ghsa": "GHSA-mm38-5g96-7j6x",
+  "cve": null,
+  "severity": "high",
+  "summary": "Nemotron-VL processors disable Pillow decompression-bomb guard globally, enabling unauthenticated DoS",
+  "published": "2026-10-09T08:12:07Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-mm38-5g96-7j6x",
+  "affected": "<= 0.8.5",
+  "fixed": ">= 0.25.0"
+ },
+ {
+  "ghsa": "GHSA-542m-9234-8gvf",
+  "cve": null,
+  "severity": "medium",
+  "summary": "DoS via unbounded chat_template Jinja2 rendering exhausts the renderer thread pool",
+  "published": "2026-10-20T07:33:26Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-542m-9234-8gvf",
+  "affected": ">= 0.19.0",
+  "fixed": "0.32.0"
+ },
+ {
+  "ghsa": "GHSA-85xf-c7hm-whqw",
+  "cve": "CVE-2026-105757",
+  "severity": "medium",
+  "summary": "Structured-output request errors escape the request boundary and terminate the shared EngineCore — engine-fatal denial of service (3 sites)",
+  "published": "2026-09-23T10:16:15Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-85xf-c7hm-whqw",
+  "affected": "< 0.30.0",
+  "fixed": ">= 0.30.0"
+ },
+ {
+  "ghsa": "GHSA-q97c-p368-75c4",
+  "cve": null,
+  "severity": "medium",
+  "summary": "Out-of-vocabulary prompt token id passes input validation and triggers a CUDA device-side assert (engine crash / DoS)",
+  "published": "2026-10-20T07:35:17Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-q97c-p368-75c4",
+  "affected": "<= 0.30.0",
+  "fixed": "0.32.0"
+ },
+ {
+  "ghsa": "GHSA-gq5q-89c7-vhvx",
+  "cve": null,
+  "severity": "medium",
+  "summary": "DeepSeek-OCR family: an image whose normalized pixels sum to exactly 0 makes embed_multimodal return None, tripping the encoder-output sanity assert — one unauthenticated request kills the whole vLLM engine (default config)",
+  "published": "2026-10-20T07:37:11Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-gq5q-89c7-vhvx",
+  "affected": "0.30.0",
+  "fixed": "0.32.0"
+ },
+ {
+  "ghsa": "GHSA-6pgw-f3pv-4h8q",
+  "cve": null,
+  "severity": "medium",
+  "summary": "Rust gRPC output_candidates.token_ids bypasses logprob_token_ids limits and can terminate EngineCore",
+  "published": "2026-10-09T07:47:33Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-6pgw-f3pv-4h8q",
+  "affected": ">= 0.22.0, < 0.24.0",
+  "fixed": "0.24.0"
+ },
+ {
+  "ghsa": "GHSA-r45p-7qwx-qwjw",
+  "cve": null,
+  "severity": "medium",
+  "summary": "Multimodal chat audio decoding bypasses the decompression-bomb duration limit",
+  "published": "2026-10-09T07:55:16Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-r45p-7qwx-qwjw",
+  "affected": ">= 0.19.0, < 0.24.0",
+  "fixed": "0.24.0"
+ },
+ {
+  "ghsa": "GHSA-33cg-gxv8-3p8g",
+  "cve": "CVE-2026-55514",
+  "severity": "medium",
+  "summary": "DoS caused by sending `/v1/completions` with prompt embeds payload with models that use M-RoPE",
+  "published": "2026-07-02T07:12:18Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-33cg-gxv8-3p8g",
+  "affected": ">=0.12.0",
+  "fixed": ">=0.24.0"
+ },
+ {
+  "ghsa": "GHSA-7m6h-x95x-82q5",
+  "cve": "CVE-2026-73558",
+  "severity": "medium",
+  "summary": "Cross-User Data Leak Vulnerability",
+  "published": "2026-08-11T06:40:00Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-7m6h-x95x-82q5",
+  "affected": "< 0.21.0",
+  "fixed": ">= 0.27.0"
+ },
+ {
+  "ghsa": "GHSA-4m6g-h9mv-wqjc",
+  "cve": null,
+  "severity": "high",
+  "summary": "Frame-count cap bypass in VideoMediaIO.load_base64 for video/jpeg via media_io_kwargs.video.num_frames",
+  "published": "2026-10-09T08:24:22Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-4m6g-h9mv-wqjc",
+  "affected": ">= 0.18.0, < 0.31.0",
+  "fixed": ">= 0.31.0"
+ },
+ {
+  "ghsa": "GHSA-rhcx-5729-88vg",
+  "cve": null,
+  "severity": "high",
+  "summary": "Cross-tenant DoS via uninitialized LogprobsTensors with prompt_logprobs",
+  "published": "2026-10-09T06:39:02Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-rhcx-5729-88vg",
+  "affected": ">= v0.8.5",
+  "fixed": ">= 0.31.0"
+ },
+ {
+  "ghsa": "GHSA-8wr5-jm2h-8r4f",
+  "cve": "CVE-2026-54234",
+  "severity": "high",
+  "summary": "Remote DoS in vLLM via Invalid Recovered Token Reinjection",
+  "published": "2026-07-02T07:50:33Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-8wr5-jm2h-8r4f",
+  "affected": "=< 0.17.1",
+  "fixed": ">=0.24.0"
+ },
+ {
+  "ghsa": "GHSA-8c65-hq7q-r7jm",
+  "cve": null,
+  "severity": "high",
+  "summary": "Remote DoS in vLLM via allowed_token_ids Speculative-Decoding Metadata Mismatch",
+  "published": "2026-10-09T07:34:18Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-8c65-hq7q-r7jm",
+  "affected": ">= 0.11.1, < 0.18.0",
+  "fixed": "0.18.0"
+ },
+ {
+  "ghsa": "GHSA-w2v2-5662-8v5q",
+  "cve": null,
+  "severity": "medium",
+  "summary": "Rust gRPC Generate accepts out-of-vocabulary prompt token IDs and can terminate EngineCore",
+  "published": "2026-10-09T07:49:41Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-w2v2-5662-8v5q",
+  "affected": ">= 0.22.0, < 0.24.0",
+  "fixed": "0.24.0"
+ },
+ {
+  "ghsa": "GHSA-hhv2-872h-628q",
+  "cve": null,
+  "severity": "medium",
+  "summary": "Incomplete artifact pin propagation in FunAudioChat and Tarsier2",
+  "published": "2026-09-12T14:47:49Z",
+  "html_url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-hhv2-872h-628q",
+  "affected": ">= 0.22.1, <= 0.28.0",
+  "fixed": ">= 0.28.0"
+ }
+]

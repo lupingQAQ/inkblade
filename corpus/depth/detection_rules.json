@@ -1,0 +1,143 @@
+{
+  "schema": "trident-depth-detection-rules-v1",
+  "verified_at": "2026-10-26",
+  "note": "研究级深度六类的检测规则索引；sigma/falco 为事件语义，kyverno/gatekeeper 为阻断策略语义。规则文本是行为特征，不含可直接复用的利用载荷。",
+  "rules": [
+    {
+      "id": "sigma-vllm-operator-surface-unauth",
+      "engine": "sigma",
+      "title": "vLLM 运维面未认证 200 而 /v1/models 401",
+      "module": "vllm-surface-fuzz",
+      "severity": "high",
+      "match": "http.route in (/admin/config,/plugins/list,/dev/exec,/update_weights_from_tensor,/pull_weights) AND http.status=200 AND auth.credentials absent AND control.route=/v1/models AND control.status=401"
+    },
+    {
+      "id": "sigma-vllm-plugin-invoke-external",
+      "engine": "sigma",
+      "title": "外部源调用 vLLM 插件路由",
+      "module": "vllm-surface-fuzz",
+      "severity": "high",
+      "match": "http.route=/plugins/invoke AND src.ip not in (pod_cidr,node_cidr) AND http.method=POST"
+    },
+    {
+      "id": "falco-vllm-worker-pickle-load",
+      "engine": "falco",
+      "title": "vLLM worker 从非 rank 源加载 pickle",
+      "module": "vllm-surface-fuzz",
+      "severity": "critical",
+      "match": "evt.type in (execve,openat,fexecve) AND proc.name=python AND fd.name contains _pickle AND k8s.pod.name contains vllm AND src.ip not in worker_peers"
+    },
+    {
+      "id": "sigma-vllm-dev-code-revision",
+      "engine": "sigma",
+      "title": "请求携带 mm_processor_kwargs.code_revision 触发动态代码",
+      "module": "vllm-sglang-patch-matrix",
+      "severity": "high",
+      "match": "http.route in (/v1/chat/completions,/v1/completions) AND request.body contains code_revision AND vllm.trust_remote_code=true"
+    },
+    {
+      "id": "kyverno-deny-privileged-all-containers",
+      "engine": "kyverno",
+      "title": "Kyverno 阻断 containers/initContainers/ephemeralContainers privileged",
+      "module": "admission-kyverno-semantics",
+      "severity": "critical",
+      "match": "spec.containers[].securityContext.privileged=true OR spec.initContainers[].securityContext.privileged=true OR spec.ephemeralContainers[].securityContext.privileged=true"
+    },
+    {
+      "id": "kyverno-deny-exec-subresource",
+      "engine": "kyverno",
+      "title": "Kyverno 覆盖 pods/exec 与 ephemeralcontainers",
+      "module": "admission-crd-subresource-gap",
+      "severity": "high",
+      "match": "request.subResource in (exec,ephemeralcontainers) AND request.object.command in (/bin/sh,/bin/bash)"
+    },
+    {
+      "id": "gatekeeper-deny-auditmode-privileged",
+      "engine": "gatekeeper",
+      "title": "Gatekeeper constraint 必须 enforcementAction=deny",
+      "module": "admission-gatekeeper-semantics",
+      "severity": "high",
+      "match": "constraint.kind=K8sDenyPrivileged AND constraint.spec.enforcementAction in (dryrun,warn)"
+    },
+    {
+      "id": "gatekeeper-crd-all-versions",
+      "engine": "gatekeeper",
+      "title": "Constraint 覆盖 CRD 所有 served version 与 cluster scope",
+      "module": "admission-crd-subresource-gap",
+      "severity": "high",
+      "match": "constraint.spec.match.kinds[].apiGroups contains example.com AND object.apiVersion not in constraint.spec.match.kinds[].apiVersions"
+    },
+    {
+      "id": "falco-execveat-memfd",
+      "engine": "falco",
+      "title": "execveat/fexecve/memfd 无文件执行",
+      "module": "ebpf-runtime-coverage-gap",
+      "severity": "critical",
+      "match": "evt.type in (execveat,fexecve,memfd_create) OR (evt.type=execve AND proc.exe startswith memfd:)"
+    },
+    {
+      "id": "falco-post-escape-host-namespace",
+      "engine": "falco",
+      "title": "逃逸后 host namespace 操作",
+      "module": "ebpf-runtime-coverage-gap",
+      "severity": "critical",
+      "match": "evt.type in (setns,unshare,mount,ptrace) AND proc.pidns.host=true AND container.id in (,host)"
+    },
+    {
+      "id": "sigma-gpu-driver-privileged",
+      "engine": "sigma",
+      "title": "GPU driver/toolkit Pod privileged 或宿主 /dev 挂载",
+      "module": "gpu-operator-config-depth",
+      "severity": "critical",
+      "match": "k8s.deployment.name contains nvidia-driver AND (pod.securityContext.privileged=true OR volume.hostPath.path startswith /dev)"
+    },
+    {
+      "id": "sigma-dcgm-nodeport-unauth",
+      "engine": "sigma",
+      "title": "DCGM exporter NodePort 且无鉴权",
+      "module": "gpu-operator-config-depth",
+      "severity": "high",
+      "match": "k8s.service.name contains dcgm AND k8s.service.type in (NodePort,LoadBalancer) AND service.auth=false"
+    },
+    {
+      "id": "gatekeeper-dra-admin-access",
+      "engine": "gatekeeper",
+      "title": "DRA ResourceClaim adminAccess=true",
+      "module": "gpu-dra-mig-policy",
+      "severity": "critical",
+      "match": "request.kind=ResourceClaim AND request.object.spec.devices.requests[].adminAccess=true"
+    },
+    {
+      "id": "sigma-sonic-pfc-watchdog-off",
+      "engine": "sigma",
+      "title": "SONiC PFC watchdog 关闭或阈值异常",
+      "module": "sonic-fabric-config-audit",
+      "severity": "high",
+      "match": "sonic.config.pfc_watchdog != detect OR sonic.config.pfc_storm_threshold < 1000"
+    },
+    {
+      "id": "falco-sharp-unauth-session",
+      "engine": "falco",
+      "title": "SHARP 会话建立无作业令牌",
+      "module": "sharp-session-trust-audit",
+      "severity": "critical",
+      "match": "evt.type=connect AND fd.sport=18515 AND sharp.session.auth=false AND src.ip not in job_ranks"
+    },
+    {
+      "id": "sigma-irsa-wildcard-principal",
+      "engine": "sigma",
+      "title": "IRSA/RRSA trust Principal 通配",
+      "module": "identity-federation-trust-matrix",
+      "severity": "critical",
+      "match": "cloud.iam.trust.principal in (*, arn:aws:iam::*:root) AND cloud.iam.action=sts:AssumeRoleWithWebIdentity"
+    },
+    {
+      "id": "sigma-oidc-subject-wildcard",
+      "engine": "sigma",
+      "title": "OIDC sub/aud/iss 条件缺失或通配",
+      "module": "oidc-issuer-confusion",
+      "severity": "high",
+      "match": "cloud.iam.trust.condition has no token.actions.githubusercontent.com:sub OR value contains * OR no token.actions.githubusercontent.com:iss"
+    }
+  ]
+}

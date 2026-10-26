@@ -1,0 +1,15 @@
+{
+  "key": "vllm-sglang-patch-matrix",
+  "name": {"zh": "vLLM/SGLang 版本补丁差异矩阵", "en": "vLLM/SGLang Patch-Difference Matrix"},
+  "series": "侦察",
+  "description": "按 40 条公开公告/研究接口行（32 条带修复版本）评估观测版本；覆盖 admin/plugin/dev-mode/serialization/weights 五接口面与 CVE-2025-32444 等历史 RCE。只读，不连接目标。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "versions": "组件到版本映射，例如 {\"vllm\":\"0.8.4\",\"sglang\":\"0.5.10\"}；省略时只输出矩阵"
+  },
+  "produces": "version-patch-matrix（命中条目 + 接口面验证状态）",
+  "knowledge": "docs/DEPTH-REVIEW.md §1；corpus/depth/vllm_patch_matrix.json",
+  "combo_signature": "vllm-sglang-patch-diff"
+}

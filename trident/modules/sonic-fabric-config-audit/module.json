@@ -1,0 +1,15 @@
+{
+  "key": "sonic-fabric-config-audit",
+  "name": {"zh": "SONiC/IB/SHARP Fabric 配置审计", "en": "SONiC/IB/SHARP Fabric Configuration Audit"},
+  "series": "网络架构",
+  "description": "28 项只读检查：SONiC PFC watchdog/ECN/buffer/ACL/gNMI/SNMP/AAA/rsyslog/ZTP/镜像签名/管理 VRF；IB SM 冗余/默认分区/跨租户/IPoIB/QoS/routing；SHARP 会话鉴权/reduce ACL/聚合树/版本。输出 fabric_sim 场景映射。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "可选，fabric 配置 JSON 或路径；省略使用内置 vulnerable fixture"
+  },
+  "produces": "fabric-config-posture（28 检查 + PFC/ECN/rail 仿真场景）",
+  "knowledge": "docs/DEPTH-REVIEW.md §5；trident/depth/fabric.py；lab/fabric_sim",
+  "combo_signature": "fabric-config-depth"
+}

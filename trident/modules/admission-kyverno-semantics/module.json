@@ -1,0 +1,15 @@
+{
+  "key": "admission-kyverno-semantics",
+  "name": {"zh": "Kyverno 准入语义绕过审计", "en": "Kyverno Admission Semantics Audit"},
+  "series": "权限链",
+  "description": "以 10 个语义用例覆盖 Kyverno validationFailureAction=Audit、namespace/label 豁免、mutation 顺序、initContainers、ephemeralContainers、pods/exec、precondition、CRD 多版本与 cluster-scoped 规则失配；只读快照评估。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "可选，admission cases JSON（{cases:[...]}）；省略使用内置 10 个 Kyverno 用例"
+  },
+  "produces": "admission-semantics-matrix（逐用例可回放 trace + 加固对照）",
+  "knowledge": "docs/DEPTH-REVIEW.md §2；trident/depth/admission.py",
+  "combo_signature": "kyverno-semantic-bypass"
+}

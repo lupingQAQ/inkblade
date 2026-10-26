@@ -1,0 +1,15 @@
+{
+  "key": "admission-gatekeeper-semantics",
+  "name": {"zh": "Gatekeeper 准入语义绕过审计", "en": "Gatekeeper Admission Semantics Audit"},
+  "series": "权限链",
+  "description": "以 10 个语义用例覆盖 Gatekeeper enforcementAction=dryrun/warn、excludedNamespaces、namespaceSelector、labelSelector 被 mutation 改写、exec 子资源、CRD 版本、scope 与参数通配豁免；只读快照评估。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "可选，admission cases JSON；省略使用内置 10 个 Gatekeeper 用例"
+  },
+  "produces": "admission-semantics-matrix（逐用例可回放 trace + 加固对照）",
+  "knowledge": "docs/DEPTH-REVIEW.md §2；trident/depth/admission.py",
+  "combo_signature": "gatekeeper-semantic-bypass"
+}

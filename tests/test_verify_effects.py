@@ -66,6 +66,12 @@ EXPECTED_IDS = {
     "privesc-bind",
     "privesc-sa-token",
     "privesc-webhook",
+    "depth-vllm-fuzz",
+    "depth-admission-semantics",
+    "depth-ebpf-blindspot",
+    "depth-gpu-operator-config",
+    "depth-sonic-fabric-link",
+    "depth-identity-federation",
 }
 
 
