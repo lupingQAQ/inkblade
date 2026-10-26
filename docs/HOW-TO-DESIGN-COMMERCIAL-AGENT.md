@@ -1254,7 +1254,7 @@ Testing gains a probe/template layer: every template runs vulnerable and fixed a
 - 协议与错误码：`PROBE-PROTOCOL.md`、`probe/src/protocol.rs`。
 - 投放与写闸门：`PROBE-DEPLOY.md`、`probe/src/config.rs`、`probe/src/spawn.rs`。
 - 动态验证标准：`DYNAMIC-VERIFICATION.md`、`probe/schema/probe-template.schema.json`。
-- 第 10 层：`PRODUCT.md`、`inkblade/core/defenseprobe.py`。
+- 第 10 层：[`PRODUCT.md`](PRODUCT.md)、`inkblade/core/defenseprobe.py`。
 
 **限制**
 

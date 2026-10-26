@@ -221,6 +221,8 @@ The first session should be read-only and narrow: one namespace, one Pod, one te
 
 For air-gapped installs, carry the controller wheel, a Python interpreter, both probe binaries, templates, and rule packs. `doctor --offline` marks network checks as skipped, not passed.
 
+四种投放方式与写闸门见 [`docs/PROBE-DEPLOY.md`](PROBE-DEPLOY.md)。
+
 ## 证据 / 限制
 
 **证据**

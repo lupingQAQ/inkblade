@@ -238,6 +238,8 @@ InkBlade is a probe-centric testing product for ML clusters. The target-side run
 
 The tenth layer is a first-class product capability, not an add-on. Eleven `defense-bypass-*` modules measure whether Elkeid, AgentSmith, veinmind, Falco, Tetragon, KubeArmor, Kyverno/Gatekeeper, Trivy/grype, Wazuh/Osquery, ModSecurity/Coraza/SafeLine, and Hubble/Calico actually see benign, authorized activity. Each module returns detected techniques, blind spots, and hardening advice, and feeds Kyverno, Sigma, Falco, and Suricata rule packs.
 
+覆盖率明细与生成式表格见 [`docs/PROBE-COVERAGE.md`](PROBE-COVERAGE.md)。
+
 ## 证据 / 限制
 
 **证据**

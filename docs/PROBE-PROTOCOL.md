@@ -259,6 +259,8 @@ Frames are length-prefixed JSON, capped at 8 MiB. The handshake is `hello` / `au
 
 Budgets are enforced at the probe: per-task wall clock, output size, HTTP request count, in-flight window, child count, and orphan TTL. Files move in 1 MiB chunks with offsets and a whole-file SHA-256. Cleanup is idempotent, child-first, and reports failures instead of hiding them.
 
+架构背景与投放方式见 [`docs/ARCHITECTURE-PROBE.md`](ARCHITECTURE-PROBE.md)、[`docs/PROBE-DEPLOY.md`](PROBE-DEPLOY.md)。
+
 ## 证据 / 限制
 
 **证据**

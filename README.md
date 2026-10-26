@@ -166,6 +166,8 @@ actually available. Current completion is tracked in [`docs/DYNAMIC-VERIFICATION
 This README is the English entry point. The Chinese version is
 [`README.zh-CN.md`](README.zh-CN.md); both describe the same architecture and the same limits.
 
+Coverage details and the current Rust-runtime gap: [`docs/PROBE-COVERAGE.md`](docs/PROBE-COVERAGE.md) and [`docs/DYNAMIC-VERIFICATION.md`](docs/DYNAMIC-VERIFICATION.md).
+
 ## 证据 / 限制
 
 **Evidence**

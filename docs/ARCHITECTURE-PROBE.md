@@ -266,6 +266,8 @@ There is exactly one supported execution path: foothold, Rust probe, framed chan
 
 The Python controller owns consent, scope, template selection, budgets, evidence storage, reporting, and rule generation. It never executes target-side logic. Child probes inherit stricter limits, get their own token, and are tracked as a tree with `probe_id` / `parent_id`.
 
+动态验证标准与当前覆盖率见 [`docs/DYNAMIC-VERIFICATION.md`](DYNAMIC-VERIFICATION.md)、[`docs/PROBE-COVERAGE.md`](PROBE-COVERAGE.md)。
+
 ## 证据 / 限制
 
 **证据**

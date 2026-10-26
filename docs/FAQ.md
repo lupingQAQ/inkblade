@@ -144,6 +144,8 @@ Yes. Carry the controller wheel, Python, both probe binaries, templates, and rul
 
 Apache-2.0 permits commercial use and forks; keep `LICENSE` and `NOTICE`, and do not use the InkBlade trademark for a fork.
 
+十层检测点与 11 个防护绕过模块的逐项输出见 [`docs/PRODUCT.md`](PRODUCT.md)。
+
 ## 证据 / 限制
 
 **证据**

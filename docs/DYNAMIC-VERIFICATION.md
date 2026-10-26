@@ -70,6 +70,8 @@ Every template must run in two states against a local mock target: vulnerable (e
 
 As of 2026-10-27 the migration is in its final window: 287 module directories, 286 `template.json` files, one bootstrap module, and 286 legacy `run.py` files awaiting removal. The reference evaluator has two-state evidence for 286/286 templates, but every entry says `runtime=reference`; Rust-runtime verification is still zero. The 11 defense-bypass modules have fixture-based two-state assessment under the same reference runtime and are not counted as Rust coverage.
 
+生成式覆盖率表见 [`docs/PROBE-COVERAGE.md`](PROBE-COVERAGE.md)；注意其中 `runtime=reference` 与本文的 Rust 标准不同。
+
 ## 证据 / 限制
 
 **证据**

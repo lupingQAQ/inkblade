@@ -224,6 +224,8 @@ Start with `doctor`, create a session with scope and time window, deploy a probe
 
 Probe trees are explicit: child probes inherit stricter limits, cross-namespace spawn needs scope coverage, and cleanup is child-first. Writes need authorization, `--allow-write`, `meta.writes`, `backup-write` mode, and a backup receipt.
 
+协议帧与投放前置条件见 [`docs/PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md)、[`docs/PROBE-DEPLOY.md`](PROBE-DEPLOY.md)。
+
 ## 证据 / 限制
 
 **证据**

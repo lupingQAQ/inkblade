@@ -145,6 +145,8 @@ Ship two static Linux binaries plus `SHA256SUMS`. Deploy through authorized RCE 
 
 Read-only is the default. Writes require five things at once: signed authorization, `--allow-write`, a template that declares `meta.writes`, `backup-write` mode, and a backup receipt. Cleanup is child-first and idempotent; failures are reported.
 
+帧格式、认证与错误码见 [`docs/PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md)。
+
 ## 证据 / 限制
 
 **证据**

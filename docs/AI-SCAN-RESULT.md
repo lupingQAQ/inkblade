@@ -1,6 +1,6 @@
 # AI-likeness scan / AI 相似度扫描结果
 
-**Date:** 2026-10-27 · **Threshold:** 30 · **Aggregate:** **21.09** (PASS) · **Scored words:** 10,463
+**Date:** 2026-10-27 · **Threshold:** 30 · **Aggregate:** **20.68** (PASS) · **Scored words:** 10,528
 
 ## English
 
@@ -22,20 +22,20 @@ python scripts/ai-scan.py README.md README.zh-CN.md docs/PRODUCT.md \
 
 | File | Words | Score |
 |---|---:|---:|
-| `README.md` | 1599 | 39.27 |
-| `README.zh-CN.md` | 672 | 17.04 |
-| `docs/PRODUCT.md` | 1501 | 14.40 |
-| `docs/ARCHITECTURE-PROBE.md` | 1297 | 34.90 |
-| `docs/PROBE-PROTOCOL.md` | 1069 | 38.07 |
-| `docs/PROBE-DEPLOY.md` | 735 | 22.53 |
-| `docs/DYNAMIC-VERIFICATION.md` | 653 | 0.00 |
-| `docs/INSTALL.md` | 775 | 19.41 |
-| `docs/USAGE.md` | 920 | 0.00 |
-| `docs/FAQ.md` | 743 | 9.75 |
-| `docs/DOC-INDEX.md` | 518 | 0.00 |
+| `README.md` | 1612 | 37.01 |
+| `README.zh-CN.md` | 681 | 16.81 |
+| `docs/PRODUCT.md` | 1505 | 14.40 |
+| `docs/ARCHITECTURE-PROBE.md` | 1304 | 34.39 |
+| `docs/PROBE-PROTOCOL.md` | 1076 | 37.83 |
+| `docs/PROBE-DEPLOY.md` | 739 | 22.41 |
+| `docs/DYNAMIC-VERIFICATION.md` | 661 | 0.00 |
+| `docs/INSTALL.md` | 779 | 19.30 |
+| `docs/USAGE.md` | 927 | 0.00 |
+| `docs/FAQ.md` | 749 | 10.44 |
+| `docs/DOC-INDEX.md` | 524 | 0.00 |
 
-The word-weighted aggregate is **21.09**, below the 30 threshold. Three files are above 30 on their
-own: `README.md` 39.27, `PROBE-PROTOCOL.md` 38.07, `ARCHITECTURE-PROBE.md` 34.90. The aggregate
+The word-weighted aggregate is **20.68**, below the 30 threshold. Three files are above 30 on their
+own: `README.md` 37.01, `PROBE-PROTOCOL.md` 37.83, `ARCHITECTURE-PROBE.md` 34.39. The aggregate
 passes because the larger documents score lower, but the individual numbers are listed rather than
 hidden.
 
@@ -79,20 +79,20 @@ python scripts/ai-scan.py README.md README.zh-CN.md docs/PRODUCT.md \
 
 | 文件 | 词数 | 分数 |
 |---|---:|---:|
-| `README.md` | 1599 | 39.27 |
-| `README.zh-CN.md` | 672 | 17.04 |
-| `docs/PRODUCT.md` | 1501 | 14.40 |
-| `docs/ARCHITECTURE-PROBE.md` | 1297 | 34.90 |
-| `docs/PROBE-PROTOCOL.md` | 1069 | 38.07 |
-| `docs/PROBE-DEPLOY.md` | 735 | 22.53 |
-| `docs/DYNAMIC-VERIFICATION.md` | 653 | 0.00 |
-| `docs/INSTALL.md` | 775 | 19.41 |
-| `docs/USAGE.md` | 920 | 0.00 |
-| `docs/FAQ.md` | 743 | 9.75 |
-| `docs/DOC-INDEX.md` | 518 | 0.00 |
+| `README.md` | 1612 | 37.01 |
+| `README.zh-CN.md` | 681 | 16.81 |
+| `docs/PRODUCT.md` | 1505 | 14.40 |
+| `docs/ARCHITECTURE-PROBE.md` | 1304 | 34.39 |
+| `docs/PROBE-PROTOCOL.md` | 1076 | 37.83 |
+| `docs/PROBE-DEPLOY.md` | 739 | 22.41 |
+| `docs/DYNAMIC-VERIFICATION.md` | 661 | 0.00 |
+| `docs/INSTALL.md` | 779 | 19.30 |
+| `docs/USAGE.md` | 927 | 0.00 |
+| `docs/FAQ.md` | 749 | 10.44 |
+| `docs/DOC-INDEX.md` | 524 | 0.00 |
 
-词数加权聚合值为 **21.09**，低于阈值 30。有三份文件单独超过 30：`README.md` 39.27、
-`PROBE-PROTOCOL.md` 38.07、`ARCHITECTURE-PROBE.md` 34.90。聚合通过的原因是长文档分数更低，但这三份照样列出，
+词数加权聚合值为 **20.68**，低于阈值 30。有三份文件单独超过 30：`README.md` 37.01、
+`PROBE-PROTOCOL.md` 37.83、`ARCHITECTURE-PROBE.md` 34.39。聚合通过的原因是长文档分数更低，但这三份照样列出，
 没有悄悄删掉。
 
 ### 方法
@@ -116,12 +116,12 @@ python scripts/ai-scan.py README.md README.zh-CN.md docs/PRODUCT.md \
 **证据**
 
 - 运行器：`scripts/ai-scan.py`；命令与逐文件分数见上表。
-- 扫描时间：2026-10-27；阈值 30；聚合 21.09；评分词数 10,463；失败块 0。
+- 扫描时间：2026-10-27；阈值 30；聚合 20.68；评分词数 10,528；失败块 0。
 - 文件清单与仓库路径一致；未扫描内部审计台账。
 
 **限制**
 
-- ZeroGPT 是启发式服务，同一文本多次运行可能相差很大；21.09 是这一次的结果，不是长期保证。
+- ZeroGPT 是启发式服务，同一文本多次运行可能相差很大；20.68 是这一次的结果，不是长期保证。
 - 中英混排、技术表格和命令块会干扰评分；分数不能替代人工审阅。
 - 三份文件单独超过 30，聚合通过不代表每篇都通过。
 - 本文不评价内容正确性；正确性由 `tests/test_docs_index.py`、文档交叉链接和人工复核保证。

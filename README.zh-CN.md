@@ -148,6 +148,8 @@ python -m inkblade report --session pilot-01 --lang bi
 | [`docs/DOC-INDEX.md`](docs/DOC-INDEX.md) | 完整文档索引 |
 | [`docs/HOW-TO-DESIGN-COMMERCIAL-AGENT.md`](docs/HOW-TO-DESIGN-COMMERCIAL-AGENT.md) | 工程手册，含探针架构修订章 |
 
+覆盖率明细与 Rust 运行时差距：[`docs/PROBE-COVERAGE.md`](docs/PROBE-COVERAGE.md)、[`docs/DYNAMIC-VERIFICATION.md`](docs/DYNAMIC-VERIFICATION.md)。
+
 ## 证据 / 限制
 
 **证据**
