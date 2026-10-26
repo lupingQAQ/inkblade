@@ -1,0 +1,33 @@
+{
+ "key": "pii-logs-card-numbers",
+ "title": {
+  "zh": "日志内银行卡号明文暴露",
+  "en": "Plaintext card numbers in logs"
+ },
+ "category": "pii-leak",
+ "face": "gateway",
+ "target_face": "gateway-logs",
+ "preconditions": [
+  "lab/ai_gateway_sim /logs 可达"
+ ],
+ "request": [
+  {
+   "method": "GET",
+   "path": "/logs",
+   "auth": "none",
+   "body": null
+  }
+ ],
+ "detector": {
+  "kind": "regex",
+  "patterns": [
+   "4111 1111 1111 1111"
+  ]
+ },
+ "severity": "critical",
+ "rule_key": "sigma-llm-probe-pii-leak",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

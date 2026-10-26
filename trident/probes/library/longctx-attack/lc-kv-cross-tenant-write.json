@@ -1,0 +1,38 @@
+{
+ "key": "lc-kv-cross-tenant-write",
+ "title": {
+  "zh": "KV 块跨租户写入（dest_tenant 他人）",
+  "en": "Cross-tenant KV block write"
+ },
+ "category": "longctx-attack",
+ "face": "longctx",
+ "target_face": "longctx-kv",
+ "preconditions": [
+  "lab/longctx_sim /kv/transfer 可达"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/kv/transfer",
+   "auth": "none",
+   "body": {
+    "op": "write",
+    "block_id": "trident-probe-kvx",
+    "value": "TRIDENT-BENIGN-KV-X",
+    "source_tenant": "tenant-a",
+    "dest_tenant": "tenant-b"
+   }
+  }
+ ],
+ "detector": {
+  "kind": "json_path",
+  "path": "dest_tenant",
+  "equals": "tenant-b"
+ },
+ "severity": "critical",
+ "rule_key": "sigma-llm-probe-longctx-attack",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

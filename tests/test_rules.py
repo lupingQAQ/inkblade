@@ -74,8 +74,10 @@ class RuleGenerationTest(unittest.TestCase):
         mapping = _load_mapping(self.pack_dir)
         covered: dict[str, list[str]] = {}
         for rule in mapping["rules"]:
-            if rule.get("scope") == "cve-catalog":
-                continue  # CVE catalog rules cover all CVEs; they are not bound to a single chain
+            if rule.get("scope") in ("cve-catalog", "llm-probe"):
+                # CVE catalog rules cover all CVEs; llm-probe rules are SOC detections for
+                # probe traffic (trident/probes) keyed by OWASP category, not chain replays.
+                continue
             self.assertTrue(rule["blocks_chains"], f"规则 {rule['id']} 未映射任何链")
             for cid in rule["blocks_chains"]:
                 self.assertIn(cid, chains, f"规则映射到不存在的链 {cid}")

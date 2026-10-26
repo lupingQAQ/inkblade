@@ -1,0 +1,33 @@
+{
+ "key": "ta-agent-binding-create",
+ "title": {
+  "zh": "dify-agent 绑定未授权创建",
+  "en": "Unauth dify-agent binding creation"
+ },
+ "category": "tool-abuse",
+ "face": "relay",
+ "target_face": "relay-agent",
+ "preconditions": [
+  "lab/mock_targets /api/v1/bindings 可达"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/api/v1/bindings",
+   "auth": "none",
+   "body": {
+    "name": "trident-probe-binding"
+   }
+  }
+ ],
+ "detector": {
+  "kind": "status",
+  "equals": 200
+ },
+ "severity": "high",
+ "rule_key": "sigma-llm-probe-tool-abuse",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

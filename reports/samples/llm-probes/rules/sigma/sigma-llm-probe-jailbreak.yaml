@@ -1,0 +1,31 @@
+title: LLM 越狱尝试（模板/多语言/编码）
+id: a81b37f2-69da-7f02-f7e9-c1a73330a11f
+status: stable
+description: "LLM jailbreak attempts (templates/multilingual/encoding). 对已知越狱模板（DAN/AIM/Developer Mode/角色扮演）、多语言混合与编码载荷的请求命中；来源=LLM 探针矩阵 jailbreak 类。 检测规则与 trident/probes 探针库 jailbreak 类一一联动（每类 ≥1 规则）。"
+references:
+  - "trident-rules-mapping: sigma-llm-probe-jailbreak"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: litellm
+  service: llm-probes
+detection:
+  selection:
+    event_kind:
+      - llm_probe_sweep
+      - llm_request
+    category:
+      - jailbreak
+  condition: selection
+falsepositives:
+  - 安全研究红队演练流量（以授权演练源与计划窗口白名单）
+level: high
+tags:
+  - attack.t1059
+  - trident
+  - llm-probe
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: 以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针
+  trident-blocks-chains: ""

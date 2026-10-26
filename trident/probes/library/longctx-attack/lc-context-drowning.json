@@ -1,0 +1,42 @@
+{
+ "key": "lc-context-drowning",
+ "title": {
+  "zh": "上下文淹没（超窗仍 200 排队）",
+  "en": "Context drowning (over-window still 200 + queued)"
+ },
+ "category": "longctx-attack",
+ "face": "longctx",
+ "target_face": "longctx-chat",
+ "preconditions": [
+  "lab/longctx_sim /v1/chat/completions 可达（X-Tenant 必需）"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/v1/chat/completions",
+   "auth": "tenant",
+   "body": {
+    "model": "longctx-mock",
+    "context_window": "128k",
+    "prompt_tokens": 999999,
+    "messages": [
+     {
+      "role": "user",
+      "content": "drowning filler"
+     }
+    ]
+   }
+  }
+ ],
+ "detector": {
+  "kind": "json_path",
+  "path": "choices.0.finish_reason",
+  "equals": "length"
+ },
+ "severity": "high",
+ "rule_key": "sigma-llm-probe-longctx-attack",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

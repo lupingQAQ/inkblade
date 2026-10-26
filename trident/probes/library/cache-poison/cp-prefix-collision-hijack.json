@@ -1,0 +1,44 @@
+{
+ "key": "cp-prefix-collision-hijack",
+ "title": {
+  "zh": "前缀归一化碰撞劫持（尾随空白）",
+  "en": "Prefix-normalization collision hijack (trailing whitespace)"
+ },
+ "category": "cache-poison",
+ "face": "gateway",
+ "target_face": "gateway-cache",
+ "preconditions": [
+  "lab/ai_gateway_sim /cache/* 可达"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/cache/store",
+   "auth": "tenant",
+   "body": {
+    "text": "Quarterly revenue guidance for fiscal 2026: 42.7M USD   ",
+    "response": "hijacked TRIDENT-POISON-COLLISION"
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/cache/lookup",
+   "auth": "victim-tenant",
+   "body": {
+    "text": "Quarterly revenue guidance for fiscal 2026: 42.7M USD"
+   }
+  }
+ ],
+ "detector": {
+  "kind": "regex",
+  "patterns": [
+   "TRIDENT-POISON-COLLISION"
+  ]
+ },
+ "severity": "high",
+ "rule_key": "sigma-llm-probe-cache-poison",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

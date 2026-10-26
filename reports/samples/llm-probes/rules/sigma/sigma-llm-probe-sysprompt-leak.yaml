@@ -1,0 +1,31 @@
+title: 系统提示泄露尝试
+id: 862dae38-68a6-d00e-d426-43ffab0bab15
+status: stable
+description: "System-prompt exfiltration attempts. 逐字复述/分隔符混淆/翻译把戏等系统提示抽取话术命中；来源=LLM 探针矩阵 sysprompt-leak 类。 检测规则与 trident/probes 探针库 sysprompt-leak 类一一联动（每类 ≥1 规则）。"
+references:
+  - "trident-rules-mapping: sigma-llm-probe-sysprompt-leak"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: litellm
+  service: llm-probes
+detection:
+  selection:
+    event_kind:
+      - llm_probe_sweep
+      - llm_request
+    category:
+      - sysprompt-leak
+  condition: selection
+falsepositives:
+  - 授权红队演练流量（以演练计划窗口与来源白名单收敛）
+level: high
+tags:
+  - attack.t1552
+  - trident
+  - llm-probe
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: 以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针
+  trident-blocks-chains: ""

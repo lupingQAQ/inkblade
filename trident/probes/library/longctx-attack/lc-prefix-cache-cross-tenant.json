@@ -1,0 +1,60 @@
+{
+ "key": "lc-prefix-cache-cross-tenant",
+ "title": {
+  "zh": "prefix cache 跨租户复用",
+  "en": "Prefix-cache cross-tenant reuse"
+ },
+ "category": "longctx-attack",
+ "face": "longctx",
+ "target_face": "longctx-chat",
+ "preconditions": [
+  "lab/longctx_sim /v1/chat/completions 可达（X-Tenant 必需）"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/v1/chat/completions",
+   "auth": "tenant",
+   "body": {
+    "model": "longctx-mock",
+    "prompt_tokens": 100,
+    "messages": [
+     {
+      "role": "user",
+      "content": "Quarterly revenue guidance for fiscal 2026: 42.7M USD"
+     }
+    ]
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/v1/chat/completions",
+   "auth": "tenant",
+   "headers": {
+    "X-Tenant": "tenant-b"
+   },
+   "body": {
+    "model": "longctx-mock",
+    "prompt_tokens": 100,
+    "messages": [
+     {
+      "role": "user",
+      "content": "Quarterly revenue guidance for fiscal 2026: 42.7M USD"
+     }
+    ]
+   }
+  }
+ ],
+ "detector": {
+  "kind": "json_path",
+  "path": "usage.cached_tokens",
+  "op": "gt",
+  "value": 0
+ },
+ "severity": "high",
+ "rule_key": "sigma-llm-probe-longctx-attack",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

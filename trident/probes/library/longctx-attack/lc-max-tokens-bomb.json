@@ -1,0 +1,41 @@
+{
+ "key": "lc-max-tokens-bomb",
+ "title": {
+  "zh": "max_tokens 炸弹（解码预算失控）",
+  "en": "max_tokens bomb (unbounded decode budget)"
+ },
+ "category": "longctx-attack",
+ "face": "longctx",
+ "target_face": "longctx-chat",
+ "preconditions": [
+  "lab/longctx_sim /v1/chat/completions 可达（X-Tenant 必需）"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/v1/chat/completions",
+   "auth": "tenant",
+   "body": {
+    "model": "longctx-mock",
+    "prompt_tokens": 100,
+    "max_tokens": 99999,
+    "messages": [
+     {
+      "role": "user",
+      "content": "generate indefinitely"
+     }
+    ]
+   }
+  }
+ ],
+ "detector": {
+  "kind": "status",
+  "equals": 200
+ },
+ "severity": "medium",
+ "rule_key": "sigma-llm-probe-longctx-attack",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

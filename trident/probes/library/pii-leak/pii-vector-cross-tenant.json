@@ -1,0 +1,38 @@
+{
+ "key": "pii-vector-cross-tenant",
+ "title": {
+  "zh": "向量库跨租户检索命中机密",
+  "en": "Cross-tenant vector search hits confidential docs"
+ },
+ "category": "pii-leak",
+ "face": "gateway",
+ "target_face": "gateway-vector",
+ "preconditions": [
+  "lab/ai_gateway_sim /vector/query 可达"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/vector/query",
+   "auth": "tenant",
+   "body": {
+    "collection": "tenant-b-docs",
+    "query": "confidential",
+    "top_k": 2
+   }
+  }
+ ],
+ "detector": {
+  "kind": "keywords",
+  "any_of": [
+   "tenant-b confidential",
+   "acquisition target acme"
+  ]
+ },
+ "severity": "critical",
+ "rule_key": "sigma-llm-probe-pii-leak",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

@@ -1,0 +1,46 @@
+{
+ "key": "ga-quota-rotation-bypass",
+ "title": {
+  "zh": "配额分桶按 XFF 可轮换绕过",
+  "en": "Quota bucketed by XFF is rotation-bypassable"
+ },
+ "category": "gateway-abuse",
+ "face": "gateway",
+ "target_face": "gateway-quota",
+ "preconditions": [
+  "lab/ai_gateway_sim /quota 可达"
+ ],
+ "request": [
+  {
+   "method": "GET",
+   "path": "/quota",
+   "auth": "none",
+   "headers": {
+    "X-Forwarded-For": "10.9.9.1"
+   },
+   "body": null
+  },
+  {
+   "method": "GET",
+   "path": "/quota",
+   "auth": "none",
+   "headers": {
+    "X-Forwarded-For": "10.9.9.2"
+   },
+   "body": null
+  }
+ ],
+ "detector": {
+  "kind": "keywords",
+  "any_of": [
+   "rotate x-forwarded-for"
+  ],
+  "target": "any"
+ },
+ "severity": "medium",
+ "rule_key": "sigma-llm-probe-gateway-abuse",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

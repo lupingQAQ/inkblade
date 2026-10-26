@@ -1,0 +1,43 @@
+{
+ "key": "cp-benign-own-tenant-cache",
+ "title": {
+  "zh": "本租户缓存良性读写（不误伤对照）",
+  "en": "Benign own-tenant cache round-trip (no-false-denial control)"
+ },
+ "category": "cache-poison",
+ "face": "gateway",
+ "target_face": "gateway-cache",
+ "preconditions": [
+  "lab/ai_gateway_sim /cache/* 可达"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/cache/store",
+   "auth": "tenant",
+   "body": {
+    "text": "tenant a onboarding faq draft",
+    "response": "benign own-tenant answer"
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/cache/lookup",
+   "auth": "tenant",
+   "body": {
+    "text": "tenant a onboarding faq draft"
+   }
+  }
+ ],
+ "detector": {
+  "kind": "json_path",
+  "path": "entry.tenant",
+  "equals": "tenant-a"
+ },
+ "severity": "low",
+ "rule_key": "sigma-llm-probe-cache-poison",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "hit"
+ }
+}
