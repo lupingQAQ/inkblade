@@ -4,11 +4,11 @@
  "source": "mining",
  "component": "megatron",
  "title": "megatron: torch-load-any @ checkpointing.py:1739",
- "status": "static-only",
- "declared_status": "static-only",
- "method": "static-source",
- "verified": false,
- "module": null,
+ "status": "verified",
+ "declared_status": "verified",
+ "method": "dynamic-function",
+ "verified": true,
+ "module": "megatron-checkpoint-rce",
  "version": "core_v0.19.2",
  "version_ref": {
   "kind": "git",
@@ -29,31 +29,52 @@
   "advisory": "reports/samples/mining-trainstack/mining-report.json",
   "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
  },
- "python": "reproenv",
- "command": "[reproenv] lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/poc.py",
+ "python": "torch",
+ "command": "[torch] lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.084,
- "started_at": "2026-10-25T18:07:02+00:00",
+ "duration_s": 3.283,
+ "started_at": "2026-10-26T02:42:12+00:00",
  "marker": {
   "text": "TRIDENT-UV-megatron-checkpointing-py-torch-load-any-l1739-regex",
   "before": "ABSENT",
-  "after_has_marker": false,
-  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+  "after_has_marker": true,
+  "after_sha256": "135571bc85f53da66ccfa41dc98f4f01510f2862326b2bc661286dfcaadfbd81"
  },
- "request_response": [],
- "state_before": "ABSENT",
- "state_after": "ABSENT",
+ "request_response": [
+  {
+   "dir": "untrusted checkpoint dir -> torch.load(weights_only=False)",
+   "payload": "pickle reduce",
+   "result": "marker written inside torch.load"
+  }
+ ],
+ "state_before": "marker=ABSENT",
+ "state_after": "marker contains proof text",
  "evidence": [
   {
+   "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/checkpoint/iter_0000001/mp_rank_00/model_optim_rng.pt",
+   "sha256": "28fd61b881167acdbd3998cbbba6e029253458f98d4de21897869d3347603bb5",
+   "size": 282
+  },
+  {
+   "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/checkpoint/latest_checkpointed_iteration.txt",
+   "sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+   "size": 1
+  },
+  {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/log.txt",
-   "sha256": "88dfda22d1a23ace0ba641769999940a0aa11df7335fa519bafc915ed68b25ca",
-   "size": 276
+   "sha256": "14fb11f83005f48cdd18fc335bcfe15da27b13b71dfe44dc7d6eacbf41deddeb",
+   "size": 1508
   },
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/marker.txt",
-   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
-   "size": 6
+   "sha256": "135571bc85f53da66ccfa41dc98f4f01510f2862326b2bc661286dfcaadfbd81",
+   "size": 63
+  },
+  {
+   "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/run.json",
+   "sha256": "7ae3117761ce96e51b5ceca1ebf344fdb374442c7eccd353fafa0e9fc732ef3b",
+   "size": 1671
   },
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/static-check.json",
@@ -61,9 +82,9 @@
    "size": 1401
   }
  ],
- "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "9a3095fbadc82414294265268776ce9dca2a24f1bfeef4381193f0ec41698fa0",
- "stdout": "{\"status\": \"static-only\", \"case\": \"megatron-checkpointing-py-torch-load-any-l1739-regex\"}\n",
- "stderr": "",
- "notes": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced."
+ "poc_sha256": "2aee550920b588411084b8240fd88863c71d277d576e19cd556edf68e51935fb",
+ "manifest_sha256": "a3c04538f9be465ad2ce028d6800b499a4c76a27938187911f67dd845772f59e",
+ "stdout": "could not load the checkpoint\nInvalid magic number; corrupt file?\n{\"status\": \"verified\", \"marker\": \"TRIDENT-UV-megatron-checkpointing-py-torch-load-any-l1739-regex\", \"evidence\": \"lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence\"}\n",
+ "stderr": "<repo>\\lab\\upstream_verify\\upstream\\NVIDIA\\Megatron-LM\\core_v0.19.2\\megatron\\training\\checkpointing.py:1739: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.\n  state_dict = torch.load(checkpoint_name, map_location='cpu')\n",
+ "notes": "torch.load(checkpoint_name, map_location='cpu') with no weights_only pin inside the Megatron-LM checkpoint loader: a poisoned checkpoint directory executes pickle code on resume. Reproduced against the verbatim pinned checkpointing.py; megatron.* siblings stubbed because megatron-core 0.19.x hard-imports triton, torch is real 2.5.1+cpu where weights_only still defaults to False."
 }

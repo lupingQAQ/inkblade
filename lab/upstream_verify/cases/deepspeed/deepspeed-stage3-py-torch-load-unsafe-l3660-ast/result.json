@@ -4,11 +4,11 @@
  "source": "mining",
  "component": "deepspeed",
  "title": "deepspeed: torch-load-unsafe @ stage3.py:3660",
- "status": "static-only",
- "declared_status": "static-only",
- "method": "static-source",
- "verified": false,
- "module": null,
+ "status": "verified",
+ "declared_status": "verified",
+ "method": "dynamic-function",
+ "verified": true,
+ "module": "deepspeed-checkpoint-rce",
  "version": "v0.19.8",
  "version_ref": {
   "kind": "git",
@@ -33,27 +33,43 @@
  "command": "[reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-ast/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.077,
- "started_at": "2026-10-25T18:06:42+00:00",
+ "duration_s": 2.091,
+ "started_at": "2026-10-26T03:21:06+00:00",
  "marker": {
   "text": "TRIDENT-UV-deepspeed-stage3-py-torch-load-unsafe-l3660-ast",
   "before": "ABSENT",
-  "after_has_marker": false,
-  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+  "after_has_marker": true,
+  "after_sha256": "85317657632d42a15344953907de203c5ad5deeedda932556b4bc51b763e9f7e"
  },
- "request_response": [],
- "state_before": "ABSENT",
- "state_after": "ABSENT",
+ "request_response": [
+  {
+   "dir": "untrusted checkpoint dir -> torch.load(weights_only=False)",
+   "payload": "pickle reduce",
+   "result": "marker written before any state validation"
+  }
+ ],
+ "state_before": "marker=ABSENT",
+ "state_after": "marker contains proof text",
  "evidence": [
   {
+   "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-ast/evidence/ckpt/zero/optimizer_state.pt",
+   "sha256": "b6d39073c2c0b37af32a4372ce70892c3ed8e8f61afac94cad1b9ff9c17b0e31",
+   "size": 277
+  },
+  {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-ast/evidence/log.txt",
-   "sha256": "7470c716e88739fb12a439a09e089336c32ac74db978b31b960c6c631d82d942",
-   "size": 267
+   "sha256": "0bf159474fa7b08971a3d135e6d3fb6bc6f24deae33d1c863fde96c8f7e8fbe4",
+   "size": 385
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-ast/evidence/marker.txt",
-   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
-   "size": 6
+   "sha256": "85317657632d42a15344953907de203c5ad5deeedda932556b4bc51b763e9f7e",
+   "size": 58
+  },
+  {
+   "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-ast/evidence/run.json",
+   "sha256": "ef2b15d3ec8b141ef1a17b97eed005a0c028d8a059621a797ec6e400b00c210b",
+   "size": 1623
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-ast/evidence/static-check.json",
@@ -61,9 +77,9 @@
    "size": 1295
   }
  ],
- "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "5c88f2a1e652ec03e8925364dd9b8abcbd7a134ba7c9d9f662b4e5a4ee39beb5",
- "stdout": "{\"status\": \"static-only\", \"case\": \"deepspeed-stage3-py-torch-load-unsafe-l3660-ast\"}\n",
+ "poc_sha256": "dfc57e095c497965d13dadea6ee771bf3d721faa0708ea7b54f678c815436261",
+ "manifest_sha256": "2ab791d865314ac531e202a41389e74f4358b4145f56ac9ba481e07e9f5ad39d",
+ "stdout": "{\"status\": \"verified\", \"marker\": \"TRIDENT-UV-deepspeed-stage3-py-torch-load-unsafe-l3660-ast\", \"evidence\": \"lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-ast/evidence\"}\n",
  "stderr": "",
- "notes": "Explicit weights_only=False is reachable only with an untrusted checkpoint; candidate is a trust-boundary warning, not a new sink. Static-only."
+ "notes": "Explicit torch.load(weights_only=False) inside the ZeRO-3 universal-checkpoint loader: any actor able to write the checkpoint directory gets pickle code execution when the victim resumes. Reproduced at function level against the verbatim pinned stage3.py; the DeepSpeed package tree is stubbed (no CUDA/MSVC on this Windows host) while torch is the real installed build."
 }

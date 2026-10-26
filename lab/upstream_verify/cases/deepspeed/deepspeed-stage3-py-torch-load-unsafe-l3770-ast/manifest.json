@@ -13,34 +13,36 @@
  "root_cause": {
   "file": "deepspeed/runtime/zero/stage3.py",
   "line": 3770,
-  "function": "",
+  "function": "load_hp_checkpoint_state",
   "snippet": "ckpt_dict = torch.load(os.path.join(folder, f\"{key}.pt\"), weights_only=False)",
   "source": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/runtime/zero/stage3.py",
   "source_sha256": "4ff3fdb4cbabaddfeaa866e43785b49a69cdfe35db4e0ceda6f1b432b6fbf9d7",
-  "note": "Explicit weights_only=False is reachable only with an untrusted checkpoint; candidate is a trust-boundary warning, not a new sink. Static-only."
+  "note": "Explicit torch.load(weights_only=False) inside the ZeRO-3 universal-checkpoint loader: any actor able to write the checkpoint directory gets pickle code execution when the victim resumes. Reproduced at function level against the verbatim pinned stage3.py; the DeepSpeed package tree is stubbed (no CUDA/MSVC on this Windows host) while torch is the real installed build."
  },
  "preconditions": [
-  "pinned upstream source or advisory is available"
+  "attacker can write the ZeRO-3 universal checkpoint directory",
+  "victim resumes training with load_optimizer_states for that checkpoint"
  ],
  "steps": [
-  "resolve the pinned tag/commit and file:line",
-  "verify the claimed snippet and source SHA256",
-  "record a static-only verdict (no exploit execution)"
+  "load the verbatim pinned stage3.py with the DeepSpeed tree stubbed",
+  "place a pickled reducing payload at the path the loader reads",
+  "call the real loader method and observe marker creation inside torch.load"
  ],
  "expected_evidence": [
-  "static-check.json with source hash and line match"
+  "marker written by the pickle before any state validation",
+  "run.json + log.txt with source hash and post-sink error"
  ],
- "cleanup": "none (read-only)",
- "status": "static-only",
- "method": "static-source",
- "module": null,
+ "cleanup": "temporary checkpoint directory under evidence/ is rewritten on every run",
+ "status": "verified",
+ "method": "dynamic-function",
+ "module": "deepspeed-checkpoint-rce",
  "python": "reproenv",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
  "marker_text": "TRIDENT-UV-deepspeed-stage3-py-torch-load-unsafe-l3770-ast",
- "notes": "Explicit weights_only=False is reachable only with an untrusted checkpoint; candidate is a trust-boundary warning, not a new sink. Static-only.",
+ "notes": "Explicit torch.load(weights_only=False) inside the ZeRO-3 universal-checkpoint loader: any actor able to write the checkpoint directory gets pickle code execution when the victim resumes. Reproduced at function level against the verbatim pinned stage3.py; the DeepSpeed package tree is stubbed (no CUDA/MSVC on this Windows host) while torch is the real installed build.",
  "static_evidence_level": "source-line",
  "static_analysis": "Explicit weights_only=False is reachable only with an untrusted checkpoint; candidate is a trust-boundary warning, not a new sink. Static-only.",
- "static_verdict": "risk-not-vuln",
+ "static_verdict": "verified-dynamic",
  "unsupported": {},
  "mining": {
   "candidate_index": 17,

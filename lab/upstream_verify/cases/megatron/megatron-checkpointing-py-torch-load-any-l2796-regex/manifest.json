@@ -1,7 +1,7 @@
 {
  "id": "megatron-checkpointing-py-torch-load-any-l2796-regex",
  "source": "mining",
- "title": "megatron: torch-load-any @ checkpointing.py:2796",
+ "title": "megatron: torch-load-any @ checkpointing.py:2796 (sink unreachable)",
  "version": "core_v0.19.2",
  "version_ref": {
   "kind": "git",
@@ -13,34 +13,34 @@
  "root_cause": {
   "file": "megatron/training/checkpointing.py",
   "line": 2796,
-  "function": "",
+  "function": "load_biencoder_checkpoint",
   "snippet": "state_dict = torch.load(checkpoint_name, map_location='cpu')",
   "source": "lab/upstream_verify/upstream/NVIDIA/Megatron-LM/core_v0.19.2/megatron/training/checkpointing.py",
   "source_sha256": "b4b4fcc725d543dd382a838dc72679c9de4dca8502ee274d8864c46ab55bba49",
-  "note": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced."
+  "note": "torch.load at checkpointing.py:2796 is a real unpinned sink, but its only caller load_biencoder_checkpoint passes args.use_distributed_optimizer positionally into get_checkpoint_name(release=...) and also passes release=False, so the call raises TypeError on every invocation. The sink is dead code in core_v0.19.2; not exploitable through any upstream entry point."
  },
  "preconditions": [
-  "pinned upstream source or advisory is available"
+  "attacker can write the Megatron biencoder checkpoint directory"
  ],
  "steps": [
-  "resolve the pinned tag/commit and file:line",
-  "verify the claimed snippet and source SHA256",
-  "record a static-only verdict (no exploit execution)"
+  "load the verbatim pinned checkpointing.py with megatron siblings stubbed",
+  "call the real load_biencoder_checkpoint against a poisoned checkpoint directory",
+  "record that the caller fails before torch.load"
  ],
  "expected_evidence": [
-  "static-check.json with source hash and line match"
+  "unsupported.json with the observed TypeError and the callee signature"
  ],
- "cleanup": "none (read-only)",
- "status": "static-only",
- "method": "static-source",
+ "cleanup": "temporary checkpoint directory under evidence/ is rewritten on every run",
+ "status": "unsupported",
+ "method": "dynamic-unreachable",
  "module": null,
- "python": "reproenv",
+ "python": "torch",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
  "marker_text": "TRIDENT-UV-megatron-checkpointing-py-torch-load-any-l2796-regex",
- "notes": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced.",
+ "notes": "torch.load at checkpointing.py:2796 is a real unpinned sink, but its only caller load_biencoder_checkpoint passes args.use_distributed_optimizer positionally into get_checkpoint_name(release=...) and also passes release=False, so the call raises TypeError on every invocation. The sink is dead code in core_v0.19.2; not exploitable through any upstream entry point.",
  "static_evidence_level": "source-line",
  "static_analysis": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced.",
- "static_verdict": "duplicate-static-only",
+ "static_verdict": "unreachable-dead-code",
  "unsupported": {},
  "mining": {
   "candidate_index": 3,

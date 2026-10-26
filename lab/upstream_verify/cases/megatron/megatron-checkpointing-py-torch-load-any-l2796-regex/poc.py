@@ -1,80 +1,106 @@
-"""Static-only case check.
+"""megatron-checkpointing-py-torch-load-any-l2796-regex: sink exists but is unreachable.
 
-This is deliberately not an exploit.  It re-validates the pinned upstream
-source line (or, when no source is vendored, the advisory anchor) and records
-a ``static-only`` verdict.  Static cases are never placed in the registry's
-``exploitable`` array.
+``load_biencoder_checkpoint`` builds the checkpoint path with
+
+    get_checkpoint_name(load_path, iteration, args.use_distributed_optimizer, release=False)
+
+while the callee signature is ``get_checkpoint_name(checkpoints_path, iteration,
+release=False, ...)``.  The third positional argument already binds ``release``,
+so the additional ``release=False`` keyword raises ``TypeError`` on every call -
+``torch.load`` at line 2796 is never reached.
+
+This PoC drives the real upstream function against a real poisoned checkpoint
+directory and records the observed failure instead of claiming a reproduction.
 """
 
 from __future__ import annotations
 
 import json
+import pickle
 import sys
+import types
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 import poclib  # noqa: E402
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "lab" / "upstream_verify"))
+from stublib import StubTree  # noqa: E402
 
-def _normalize(text: str) -> str:
-    return " ".join(text.strip().split())
+
+def _materialize(marker_path: str):
+    Path(marker_path).write_text("UNREACHABLE", encoding="utf-8")
+    return {"model": []}
+
+
+class _Payload:
+    def __reduce__(self):
+        return (_materialize, (str(poclib.MARKER_FILE),))
 
 
 def main() -> None:
     manifest = json.loads((poclib.CASE_DIR / "manifest.json").read_text(encoding="utf-8"))
-    rc = manifest.get("root_cause") or {}
-    source = rc.get("source")
-    expected = rc.get("snippet") or ""
-    evidence = {
-        "case_id": manifest.get("id"),
-        "root_cause": {k: rc.get(k) for k in ("file", "line", "function", "snippet", "note")},
-        "advisory": manifest.get("advisory"),
-        "verdict": manifest.get("static_verdict", "not-dynamically-verified"),
-    }
+    source = poclib.upstream_path(manifest["root_cause"]["source"])
+    if not source.is_file():
+        poclib.fail(f"missing pinned upstream source: {source}")
 
-    if source:
-        path = poclib.upstream_path(source)
-        if not path.is_file():
-            poclib.static_result(manifest, ok=False, evidence={**evidence, "error": f"missing source {path}"})
-        data = path.read_bytes()
-        text = data.decode("utf-8", errors="replace")
-        lines = text.splitlines()
-        line = int(rc.get("line") or 0)
-        actual = lines[line - 1] if 0 < line <= len(lines) else ""
-        source_ok = bool(expected) and (
-            _normalize(expected) in _normalize(actual) or _normalize(actual) in _normalize(expected)
-        )
-        if manifest.get("static_evidence_level") == "source-line" and not source_ok:
-            poclib.static_result(
-                manifest,
-                ok=False,
-                evidence={
-                    **evidence,
-                    "source": poclib.rel(path),
-                    "expected": expected,
-                    "actual": actual,
-                    "error": "pinned line does not match claimed snippet",
-                },
-            )
-        evidence.update(
-            {
-                "source": poclib.rel(path),
-                "source_sha256": poclib.sha256_file(path),
-                "source_size": len(data),
-                "line": line,
-                "actual_line": actual.strip(),
-                "line_matches": source_ok,
-                "source_line_verified": source_ok,
-            }
-        )
-    else:
-        if manifest.get("static_evidence_level") == "source-line":
-            poclib.static_result(manifest, ok=False, evidence={**evidence, "error": "source-line level without source"})
-        evidence["source_line_verified"] = False
-        evidence["advisory_sha256"] = poclib.sha256_text(str(manifest.get("advisory") or ""))
+    tree = StubTree(["megatron"]).install()
+    tree.seed("megatron.core.msc_utils")
+    tree.seed("megatron.core", mpu=types.SimpleNamespace(get_data_parallel_rank=lambda: 0))
+    tree.seed("megatron.training")
+    module = tree.load(source, "megatron.training.checkpointing")
 
-    evidence["analysis"] = manifest.get("static_analysis") or ""
-    poclib.static_result(manifest, ok=True, evidence=evidence)
+    poclib.start_marker("ABSENT")
+    root = poclib.EVIDENCE_DIR / "checkpoint"
+    if root.exists():
+        import shutil
+
+        shutil.rmtree(root)
+    (root / "iter_0000001" / "mp_rank_00").mkdir(parents=True)
+    (root / "latest_checkpointed_iteration.txt").write_text("1", encoding="utf-8")
+    (root / "iter_0000001" / "mp_rank_00" / "model_optim_rng.pt").write_bytes(
+        pickle.dumps(_Payload(), protocol=4)
+    )
+
+    module.get_args = lambda: types.SimpleNamespace(load=str(root), use_distributed_optimizer=False)
+    module.unwrap_model = lambda model: model
+    error = None
+    try:
+        module.load_biencoder_checkpoint([object()], custom_load_path=str(root))
+    except Exception as exc:
+        error = f"{type(exc).__name__}: {exc}"
+
+    reached_sink = poclib.marker_ok()
+    signature = None
+    try:
+        import inspect
+
+        signature = str(inspect.signature(module.get_checkpoint_name))
+    except Exception:
+        pass
+
+    if reached_sink:
+        poclib.fail("sink unexpectedly reachable; re-classify this case as verified", error=error)
+
+    poclib.unsupported_result(
+        manifest,
+        reason=(
+            "sink unreachable in core_v0.19.2: load_biencoder_checkpoint passes "
+            "args.use_distributed_optimizer as the third positional argument of "
+            "get_checkpoint_name (already bound to `release`) and also passes release=False, "
+            "so every call raises TypeError before torch.load(line 2796)"
+        ),
+        evidence={
+            "entrypoint": "megatron.training.checkpointing.load_biencoder_checkpoint",
+            "source": poclib.rel(source),
+            "source_sha256": poclib.sha256_file(source),
+            "get_checkpoint_name_signature": signature,
+            "observed_error": error,
+            "sink_reached": reached_sink,
+            "marker_after": poclib.read_text(poclib.MARKER_FILE, "").strip(),
+            "stubbed_modules": tree.manifest()["stubbed_modules"],
+        },
+    )
 
 
 if __name__ == "__main__":

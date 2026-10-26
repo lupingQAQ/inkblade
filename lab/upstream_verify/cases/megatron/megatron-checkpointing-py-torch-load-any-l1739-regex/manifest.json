@@ -13,34 +13,37 @@
  "root_cause": {
   "file": "megatron/training/checkpointing.py",
   "line": 1739,
-  "function": "",
+  "function": "_load_base_checkpoint",
   "snippet": "state_dict = torch.load(checkpoint_name, map_location='cpu')",
   "source": "lab/upstream_verify/upstream/NVIDIA/Megatron-LM/core_v0.19.2/megatron/training/checkpointing.py",
   "source_sha256": "b4b4fcc725d543dd382a838dc72679c9de4dca8502ee274d8864c46ab55bba49",
-  "note": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced."
+  "note": "torch.load(checkpoint_name, map_location='cpu') with no weights_only pin inside the Megatron-LM checkpoint loader: a poisoned checkpoint directory executes pickle code on resume. Reproduced against the verbatim pinned checkpointing.py; megatron.* siblings stubbed because megatron-core 0.19.x hard-imports triton, torch is real 2.5.1+cpu where weights_only still defaults to False."
  },
  "preconditions": [
-  "pinned upstream source or advisory is available"
+  "attacker can write the Megatron checkpoint directory",
+  "victim resumes training or loads a biencoder checkpoint from it",
+  "torch < 2.6 (weights_only defaults to False)"
  ],
  "steps": [
-  "resolve the pinned tag/commit and file:line",
-  "verify the claimed snippet and source SHA256",
-  "record a static-only verdict (no exploit execution)"
+  "load the verbatim pinned checkpointing.py with megatron siblings stubbed",
+  "write a poisoned model_optim_rng.pt plus the iteration tracker",
+  "call the real loader and observe marker creation inside torch.load"
  ],
  "expected_evidence": [
-  "static-check.json with source hash and line match"
+  "marker written inside torch.load",
+  "run.json + log.txt with source hash"
  ],
- "cleanup": "none (read-only)",
- "status": "static-only",
- "method": "static-source",
- "module": null,
- "python": "reproenv",
+ "cleanup": "temporary checkpoint directory under evidence/ is rewritten on every run",
+ "status": "verified",
+ "method": "dynamic-function",
+ "module": "megatron-checkpoint-rce",
+ "python": "torch",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
  "marker_text": "TRIDENT-UV-megatron-checkpointing-py-torch-load-any-l1739-regex",
- "notes": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced.",
+ "notes": "torch.load(checkpoint_name, map_location='cpu') with no weights_only pin inside the Megatron-LM checkpoint loader: a poisoned checkpoint directory executes pickle code on resume. Reproduced against the verbatim pinned checkpointing.py; megatron.* siblings stubbed because megatron-core 0.19.x hard-imports triton, torch is real 2.5.1+cpu where weights_only still defaults to False.",
  "static_evidence_level": "source-line",
  "static_analysis": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced.",
- "static_verdict": "duplicate-static-only",
+ "static_verdict": "verified-dynamic",
  "unsupported": {},
  "mining": {
   "candidate_index": 1,
