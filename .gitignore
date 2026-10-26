@@ -37,3 +37,5 @@ lab/bench/out/
 lab/upstream_verify/.cache/
 lab/upstream_verify/.envs/
 lab/upstream_verify/**/__pycache__/
+
+lab/upstream_verify/scratch/
