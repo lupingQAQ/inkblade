@@ -1,0 +1,20 @@
+{
+  "key": "gpu-metrics-tenant-leak",
+  "name": {
+    "zh": "DCGM 指标跨租户泄露",
+    "en": "DCGM Metrics Cross-Tenant Leak"
+  },
+  "series": "网络架构",
+  "description": "DCGM 风格 /gpu/metrics 暴露他租户进程名、PID、namespace、模型标记与 MIG 档位。fixed：按 X-Tenant 过滤进程列表。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "tenant": "请求租户（默认 tenant-a）",
+    "token": "可选租户 token（fixed 模式读身份）"
+  },
+  "produces": "gpu-metrics-tenant-leak",
+  "knowledge": "DCGM exporter 租户标签与进程级指标暴露面；GPU 可观测性与多租户隔离",
+  "combo_signature": "gpu-metrics-tenant-leak"
+}

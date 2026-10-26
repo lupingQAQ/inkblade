@@ -1,0 +1,39 @@
+{
+  "id": "agent-platform-zero-precondition-lateral",
+  "title": {
+    "zh": "智能体平台零前置执行 → 训练集群横向",
+    "en": "Agent platform zero-precondition execution → training cluster lateral"
+  },
+  "category": "深度链",
+  "requires": [
+    "dify-local-sandbox-unauth-rce",
+    "exposure-mapping",
+    "metadata-egress"
+  ],
+  "preconditions": [],
+  "steps": [
+    {
+      "id": "sandbox-entry",
+      "module": "dify-local-sandbox-unauth-rce",
+      "params": {"mode": "backup-write", "cmd": "enumerate-tenants", "marker": "INKBLADE-${run.name}"},
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "http://sandbox-host/sandbox/tenants", "state": {}}
+      ]
+    },
+    {
+      "id": "internal-map",
+      "module": "exposure-mapping",
+      "params": {},
+      "depends_on": ["sandbox-entry"]
+    },
+    {
+      "id": "cloud-cred-face",
+      "module": "metadata-egress",
+      "params": {},
+      "depends_on": ["internal-map"]
+    }
+  ],
+  "evidence": ["http-trace", "sandbox-marker", "rollback-receipt"],
+  "mitre": ["T1190", "T1610"]
+}

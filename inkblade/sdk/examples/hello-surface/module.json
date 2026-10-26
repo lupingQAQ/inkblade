@@ -1,0 +1,27 @@
+{
+  "key": "hello-surface",
+  "name": {
+    "en": "Hello Surface (SDK reference plugin)",
+    "zh": "示例插件：目标表面摘要"
+  },
+  "series": "侦察",
+  "description": "Reference plugin for the InkBlade plugin SDK. Records the assessment target, the run marker and the declared scope without opening a network connection, then emits one informational finding plus a JSON artifact. Use it as the baseline for read-only collectors.",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "in-scope target identifier or URL, echoed back in the artifact",
+    "note": "free-form operator note stored in the artifact"
+  },
+  "produces": "hello-surface.json artifact + one info finding",
+  "knowledge": "docs/PLUGIN-SDK.md",
+  "default_enabled": true,
+  "surfaces": [],
+  "sdk": {
+    "api": 1,
+    "entrypoint": "run.py",
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/inkblade/inkblade",
+    "publisher": "InkBlade maintainers"
+  }
+}

@@ -1,0 +1,33 @@
+{
+ "key": "ga-config-provider-keys",
+ "title": {
+  "zh": "/config 明文上游 provider key",
+  "en": "Plaintext upstream provider keys in /config"
+ },
+ "category": "gateway-abuse",
+ "face": "gateway",
+ "target_face": "gateway-admin",
+ "preconditions": [
+  "lab/ai_gateway_sim /config 可达"
+ ],
+ "request": [
+  {
+   "method": "GET",
+   "path": "/config",
+   "auth": "none",
+   "body": null
+  }
+ ],
+ "detector": {
+  "kind": "regex",
+  "patterns": [
+   "MOCK-openai-upstream-key"
+  ]
+ },
+ "severity": "critical",
+ "rule_key": "sigma-llm-probe-gateway-abuse",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

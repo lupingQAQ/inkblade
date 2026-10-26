@@ -1,0 +1,32 @@
+{
+  "key": "openjev-clef-release-module",
+  "name": {
+    "zh": "OpenJEV clef 发布模块加载",
+    "en": "OpenJEV clef Release-Module Load"
+  },
+  "series": "窃取与数据泄露",
+  "description": "openjev b4339c6 clef_vllm.release_module exec_module()s joint_schema_model.py from the model directory. A tenant with model-cache write access executes Python in the serving process.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标 URL，例如 http://host:port（真实模式必需）",
+    "mode": "probe-only（默认，只读探测）| backup-write（写模块需 backup_targets）",
+    "local_path": "function-level 模块的本地文件/模型目录（仅读取，不反序列化）"
+  },
+  "produces": "release-module-execution",
+  "knowledge": "docs/WEAPON-READINESS.md#openjev-clef-release-module",
+  "combo_signature": "openjev-clef-release-module",
+  "weapon_pack": true,
+  "surfaces": [
+    {
+      "type": "model-file",
+      "selector": "model"
+    },
+    {
+      "type": "config-file",
+      "selector": "openjev"
+    }
+  ],
+  "default_enabled": true
+}

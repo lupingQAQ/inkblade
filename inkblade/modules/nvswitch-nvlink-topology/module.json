@@ -1,0 +1,18 @@
+{
+  "key": "nvswitch-nvlink-topology",
+  "name": {
+    "zh": "NVSwitch/NVLink 拓扑与分区（只读）",
+    "en": "NVSwitch/NVLink topology and partitions (read-only)"
+  },
+  "series": "网络架构",
+  "description": "解析 NVSwitch/NVLink/IMEX 拓扑 JSON：GPU 分区归属、租户交叠、共享交换机、固件版本、链路 up/down/degraded、IMEX channel 成员。只读，不连接 NVSwitch、不写分区/路由。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "NVSwitch 拓扑 JSON（switches/links/partitions/imex）路径或 dict（必填）"
+  },
+  "produces": "nvswitch-nvlink-topology.json + 跨租户/链路/固件证据",
+  "knowledge": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T1；NVIDIA NVLink/NVSwitch、IMEX/ComputeDomain 隔离语义",
+  "combo_signature": "nvlink-partition-cross-tenant"
+}

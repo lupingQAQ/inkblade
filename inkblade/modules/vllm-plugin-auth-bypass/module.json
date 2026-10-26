@@ -1,0 +1,16 @@
+{
+  "key": "vllm-plugin-auth-bypass",
+  "name": {"zh": "vLLM 插件路由鉴权绕过", "en": "vLLM Plugin Route Auth Bypass"},
+  "series": "横向利用",
+  "description": "vLLM /plugins/* 插件端点绕过 api-key：/plugins/list 无 key 200 枚举插件，/plugins/invoke 无 key 调用；/v1/* 对照面要求 key（差分即绕过证据）。实验室 face：GET /plugins/list + POST /plugins/invoke（X-Mock-Service: vllm 消歧仅 /v1/models 需要）。",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认）| backup-write（本模块只读面，无写分支）"
+  },
+  "produces": "auth-bypass-proof（插件面绕过 api-key 证据）",
+  "knowledge": "docs/design.md 第 1–5 节：vLLM + vllm-jev 插件路由绕鉴权",
+  "combo_signature": "vllm-plugin-route-bypass"
+}

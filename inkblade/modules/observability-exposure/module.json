@@ -1,0 +1,15 @@
+{
+  "key": "observability-exposure",
+  "name": { "zh": "观测面暴露测绘", "en": "Observability exposure" },
+  "series": "侦察",
+  "description": "DCGM/Prometheus/Grafana/MLflow/Jupyter/TensorBoard 观测面暴露定位（对外=高，Ingress=中，集群内=低）",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群快照 dict 或 lab/fixtures/recon/*.json 路径（services/ingresses 节）",
+    "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
+  },
+  "produces": "observability-findings",
+  "knowledge": "链「观测面 → 精准打点」：监控/面板暴露 = 资产地图与路径选择器"
+}

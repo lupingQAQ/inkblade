@@ -1,0 +1,24 @@
+{
+  "key": "slurmctld-config-audit",
+  "name": {
+    "zh": "slurmctld 控制面配置审计",
+    "en": "slurmctld control-plane configuration audit"
+  },
+  "series": "侦察",
+  "description": "解析 slurm.conf 控制面安全项：认证/加密算法、SlurmUser、PrivateData、DisableRootJobs、TaskPlugin/ProctrackType、StateSaveLocation 权限与记账后端。只读导出，不连接 slurmctld。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "配置文件导出目录（slurm.conf + inventory.json）或 JSON 快照"
+  },
+  "produces": "slurmctld-config-audit.json + 控制面配置 findings",
+  "knowledge": "SchedMD slurm.conf(5) / slurmctld(8) 官方手册；docs/SLURM-HPC-COVERAGE.md 控制面配置面",
+  "necessity": "slurmctld 是集群唯一调度权威；AuthType/CryptoType/PrivateData/StateSaveLocation 任一弱化都会让普通用户伪造作业、读取他人作业或篡改调度状态，且这些键在默认安装中并不安全。",
+  "combo_signature": "slurm-control-plane-weak-auth",
+  "surfaces": [
+    {"type": "config-file", "selector": "slurm/slurm.conf"},
+    {"type": "runtime-agent", "selector": "runtime-agent/slurmctld"}
+  ],
+  "default_enabled": true
+}

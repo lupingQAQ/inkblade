@@ -1,0 +1,28 @@
+{
+  "key": "spdm-pcie-doe",
+  "name": {
+    "zh": "SPDM/PCIe DOE 姿态（research-only）",
+    "en": "SPDM/PCIe DOE posture (research-only)"
+  },
+  "series": "侦察",
+  "description": "只读解析设备导出的 SPDM 版本、证书链、MeasurementRecord/摘要、双向认证/安全会话与 PCIe DOE/IDE/TDISP 状态。C 级前瞻项：仅 GB200/NVL 或明确部署 SPDM 的客户按需启用；默认关闭，不计入芯片渗透能力。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "default_enabled": false,
+  "research_only": true,
+  "default_disabled_reason": "C 级前瞻项：SPDM 细项仅在 GB200/NVL 或明确部署 CMA/SPDM 的客户环境启用；默认关闭，不计入芯片渗透能力。",
+  "surfaces": [
+    {
+      "type": "config-file",
+      "selector": "spdm/device-export.json"
+    }
+  ],
+  "params_schema": {
+    "export": "{\"spdm\": {\"version\", \"chain_pem\", \"trust_anchor_pem\", \"measurement_record_hex\", \"measurement_summary\", \"mutual_auth\", \"session\"}, \"pcie\": {\"doe\", \"ide\", \"tdisp\"}} 或 JSON 路径"
+  },
+  "produces": "spdm-pcie-doe.json + 版本/证书链/测量摘要/DOE 证据",
+  "knowledge": "C 级 research-only；DMTF DSP0274 SPDM 1.1 安全会话/双向认证、PCI-SIG DOE/CMA/TDISP；测量摘要只按导出端原始 MeasurementRecord 重算",
+  "combo_signature": "spdm-pcie-doe",
+  "necessity": "C"
+}

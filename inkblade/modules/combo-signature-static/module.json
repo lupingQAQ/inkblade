@@ -1,0 +1,14 @@
+{
+  "key": "combo-signature-static",
+  "name": { "zh": "组合签名静态检测", "en": "Combo Signature Static Detection" },
+  "series": "核心代码",
+  "description": "已知脆弱组合在代码/配置/清单中的共存证据（如 trust_remote_code+无 revision、0.0.0.0+eval）",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "root": "客户代码仓库/挂载卷路径（默认 lab/sample-vuln-repo）"
+  },
+  "produces": "combo-signature",
+  "knowledge": "设计基线三轮审计：跨问题组合（框架×插件×operator×存储）静态共存证据"
+}

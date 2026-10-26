@@ -1,0 +1,32 @@
+{
+  "id": "ssrf-sa-token-cloud-metadata",
+  "title": {
+    "zh": "SSRF / SA Token → 云元数据",
+    "en": "SSRF / SA token → cloud metadata"
+  },
+  "category": "经典攻击链",
+  "requires": [
+    "ssrf-imds-credential",
+    "metadata-egress",
+    "multi-cloud-imds-credentials"
+  ],
+  "preconditions": [
+    {"expr": "findings('metadata-egress').any(egress == 'open')"},
+    {"expr": "findings('metadata-egress').any(automount == true)"}
+  ],
+  "steps": [
+    {
+      "id": "ssrf-imds-fetch",
+      "module": "ssrf-imds-credential",
+      "params": {"mode": "probe-only", "redact": true}
+    },
+    {
+      "id": "imds-role-proof",
+      "module": "multi-cloud-imds-credentials",
+      "params": {"provider": "auto", "redact": true},
+      "depends_on": ["ssrf-imds-fetch"]
+    }
+  ],
+  "evidence": ["http-trace", "redacted-credential-receipt"],
+  "mitre": ["T1552.005", "T1078"]
+}

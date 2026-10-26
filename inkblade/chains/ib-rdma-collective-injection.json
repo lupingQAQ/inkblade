@@ -1,0 +1,37 @@
+{
+  "id": "ib-rdma-collective-injection",
+  "title": {
+    "zh": "IB/RDMA 平面 → 集合通信注入",
+    "en": "IB/RDMA plane → collective communication injection"
+  },
+  "category": "网络利用链",
+  "requires": [
+    "fabric-topology-isolation",
+    "multus-sriov-rdma-bypass",
+    "collective-communication-surface",
+    "nccl-collective-join"
+  ],
+  "preconditions": [
+    {"expr": "findings('fabric-topology-isolation').any(ib_partition == 'none')"},
+    {"expr": "findings('multus-sriov-rdma-bypass').count > 0"}
+  ],
+  "steps": [
+    {
+      "id": "rdma-bypass-proof",
+      "module": "multus-sriov-rdma-bypass",
+      "params": {"mode": "probe-only"}
+    },
+    {
+      "id": "collective-join",
+      "module": "nccl-collective-join",
+      "params": {"mode": "backup-write", "tensor": "marker", "marker": "INKBLADE-${run.name}"},
+      "depends_on": ["rdma-bypass-proof"],
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "http://ib-fabric/rendezvous", "state": {}}
+      ]
+    }
+  ],
+  "evidence": ["http-trace", "before-after-sha256", "rollback-receipt"],
+  "mitre": ["T1557", "T1565.001"]
+}

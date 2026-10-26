@@ -1,0 +1,24 @@
+{
+  "key": "cloud-snapshot-share",
+  "name": {
+    "zh": "云快照跨账户共享",
+    "en": "Cloud Snapshot Cross-Account Share"
+  },
+  "series": "混合云",
+  "description": "快照（含权重/数据卷）public 或共享给任意外部账户：/cloud/snapshot/share 清单暴露 shared_with；backup-write 下真实发起跨账户共享。fixed：仅 owner + 同账户 allowlist（403）。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅共享清单）| backup-write（需 backup_targets，发起共享）",
+    "snapshot": "目标快照（默认 snap-weights-b）",
+    "target_account": "共享目标账户（默认 999999999999）",
+    "tenant": "请求租户（默认 tenant-a）",
+    "token": "可选租户 token（fixed 模式读身份）",
+    "admin_token": "可选平台 admin token（fixed 模式写身份）"
+  },
+  "produces": "snapshot-cross-account-share",
+  "knowledge": "EBS/云盘快照共享、OSS/COS 快照、跨账户加密密钥（KMS grant）联动风险",
+  "combo_signature": "cloud-snapshot-share"
+}

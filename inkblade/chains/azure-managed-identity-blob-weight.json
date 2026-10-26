@@ -1,0 +1,36 @@
+{
+  "id": "azure-managed-identity-blob-weight",
+  "title": {
+    "zh": "Azure 托管身份 → Blob 权重",
+    "en": "Azure managed identity → Blob weights"
+  },
+  "category": "云侧权重桶链",
+  "requires": [
+    "cloud-integration-fingerprint",
+    "multi-cloud-imds-credentials",
+    "cloud-role-overprivilege"
+  ],
+  "preconditions": [
+    {"expr": "findings('cloud-integration-fingerprint').any(provider == 'aks')"},
+    {"expr": "findings('multi-cloud-imds-credentials').reachable.any(port == 80)"}
+  ],
+  "steps": [
+    {
+      "id": "imds-credential-proof",
+      "module": "multi-cloud-imds-credentials",
+      "params": {"provider": "azure", "flow": "acquire-token", "redact": true}
+    },
+    {
+      "id": "role-bucket-proof",
+      "module": "cloud-role-overprivilege",
+      "params": {"provider": "azure", "bucket_kind": "blob", "mode": "backup-write", "marker": "INKBLADE-${run.name}"},
+      "depends_on": ["imds-credential-proof"],
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "https://checkpointacct.blob.core.windows.net/weights", "state": {}}
+      ]
+    }
+  ],
+  "evidence": ["redacted-credential-receipt", "before-after-sha256", "rollback-receipt"],
+  "mitre": ["T1552.005", "T1530"]
+}

@@ -1,0 +1,22 @@
+{
+  "key": "rail-mismatch-forcing",
+  "name": {
+    "zh": "rail 错配强制（破坏 rail-optimized 局部性）",
+    "en": "Rail mismatch forcing breaking rail-optimized locality"
+  },
+  "series": "网络架构",
+  "description": "rail 绑定写面无鉴权：强制 rank 绑定到错误 rail 即制造跨 rail 流（cross_rail_flows 计数增长、步时劣化），在多平面/多 rail fabric 中放大收敛与拥塞（效果以计数+步时度量）；fixed 姿态 401。写面走 backup_targets 备份闸门。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "fabric 拓扑/rail 控制基址（必填）",
+    "mode": "probe-only（默认，仅 rail 图读回）| backup-write（需 backup_targets：强制错配）",
+    "rank": "目标 rank（缺省 rank-7）",
+    "force_rail": "强制 rail（默认 rail-0，与原 rail 不同即错配）",
+    "backup_targets": "backup-write 必需：rail 绑定快照目标（runner 备份闸门）"
+  },
+  "produces": "rail-mismatch-forcing.json + rail 图/跨 rail 流计数证据",
+  "knowledge": "docs/FABRIC-ATTACK-SURFACE.md §2.11；语料 nvidia-spectrum-x-multiplane-paper（多平面拓扑）/ alibaba-hpn（双平面 rail-optimized）",
+  "combo_signature": "rail-mismatch-locality-break"
+}

@@ -1,0 +1,22 @@
+{
+  "key": "kv-cache-integrity-poison",
+  "name": {
+    "zh": "KV cache 完整性污染",
+    "en": "KV cache integrity poisoning"
+  },
+  "series": "横向利用",
+  "description": "PD 分离 KV 通道（NIXL/Mooncake 类）无鉴权可写：写入良性 marker KV 块并独立读回 sha256 一致，等价于跨租户 KV cache 完整性污染（推理输出操纵原语）。写面走 backup_targets 备份闸门。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "推理服务基址（必填）",
+    "mode": "probe-only（默认，仅只读握手）| backup-write（需 backup_targets）",
+    "block_id": "目标 KV 块 id（缺省按 run marker 生成）",
+    "tenant": "源租户（缺省 tenant-a；dest 固定 tenant-b 体现跨租户）",
+    "backup_targets": "backup-write 必需：KV 块/通道状态快照目标（runner 备份闸门）"
+  },
+  "produces": "kv-cache-integrity-poison.json + KV 读回 sha256 证据",
+  "knowledge": "docs/LONG-CONTEXT.md 第 2 节：PD 分离 KV 通道与 KV cache 生命周期；spec 5.2 + 6.2 KV 通道链",
+  "combo_signature": "pd-kv-cache-integrity-poison"
+}

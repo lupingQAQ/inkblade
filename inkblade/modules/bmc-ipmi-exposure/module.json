@@ -1,0 +1,19 @@
+{
+  "key": "bmc-ipmi-exposure",
+  "name": {
+    "zh": "BMC/IPMI 暴露面（Redfish 只读 + 默认凭据面）",
+    "en": "BMC/IPMI exposure (Redfish read-only + default credential surface)"
+  },
+  "series": "侦察",
+  "description": "Redfish 只读指纹：服务根/Manager/NetworkProtocol/Accounts，以及单次厂商默认凭据（root/calvin、admin/admin，最多 2 次）验证 /redfish/v1/Systems/1 是否可登录。检测 IPMI over LAN、SSH 密码认证、管理详情匿名可读。主动探测级；不爆破、不改密、不写。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "Redfish/BMC 基址（必填，例如 https://bmc.example）",
+    "check_default_credentials": "是否尝试厂商默认凭据（默认 true；生产需评估锁定策略，可设 false 只做只读枚举）"
+  },
+  "produces": "bmc-ipmi-exposure.json + Redfish 状态/默认凭据/协议面证据（不输出密码）",
+  "knowledge": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；Redfish Service Root/Manager/NetworkProtocol/Accounts/Systems 语义",
+  "combo_signature": "bmc-default-credential-surface"
+}

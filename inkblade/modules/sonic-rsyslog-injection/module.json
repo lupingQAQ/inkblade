@@ -1,0 +1,29 @@
+{
+  "key": "sonic-rsyslog-injection",
+  "name": {
+    "zh": "SONiC rsyslog injection",
+    "en": "SONiC rsyslog injection"
+  },
+  "series": "网络架构",
+  "description": "SONiC rsyslog injection; covers GHSA-h26v-922j-28cg. Write surface: requires mode=backup-write and backup_targets (runner backup gate); marker is proven then cleaned.",
+  "min_level": "全影响演示",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "sonic-rsyslog",
+  "knowledge": "docs/CVE-CATALOG.md + inkblade/core/cve-catalog.json",
+  "combo_signature": "sonic-rsyslog",
+  "verified": false,
+  "verification_status": "unsupported",
+  "verification_cves": {
+    "GHSA-h26v-922j-28cg": "unsupported"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/sonic/GHSA-h26v-922j-28cg/result.json"
+  ]
+}

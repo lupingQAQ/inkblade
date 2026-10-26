@@ -1,0 +1,16 @@
+{
+  "key": "dify-snapshot-cross-tenant-theft",
+  "name": { "zh": "Dify 赃快照跨租户窃取", "en": "Dify snapshot cross-tenant theft" },
+  "series": "横向利用",
+  "description": "快照/绑定控制租约可写根为公共祖先 → 任意 binding 家目录快照物化到攻击者 binding → 读出机密（深度，已公开）",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "base_url": "mock 靶场地址（lab/mock_targets.py，仅限授权范围）",
+    "marker": "运行标记（缺省取 ctx.marker）",
+    "backup_targets": "写面备份（远端状态：探测响应存档条目）"
+  },
+  "produces": "is_novel finding（跨租户快照物化作业被接受=命中）",
+  "knowledge": "深度漏洞模块（已公开）：智能体平台跨租户快照条目（已公开，细节随模块展示）"
+}

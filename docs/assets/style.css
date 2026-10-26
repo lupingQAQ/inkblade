@@ -1,0 +1,47 @@
+
+:root {
+  --bg: #0b0d10;
+  --panel: #12161b;
+  --edge: #232a33;
+  --ink: #d7dde5;
+  --muted: #8b96a5;
+  --accent: #7dd3fc;
+  --accent-2: #a78bfa;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.65 ui-sans-serif, system-ui, "Segoe UI", "Noto Sans SC", sans-serif; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+header { border-bottom: 1px solid var(--edge); background: #0e1116; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+.brand { display: flex; align-items: baseline; gap: 12px; padding: 18px 0; }
+.brand b { font-size: 18px; letter-spacing: .3px; }
+.brand span { color: var(--muted); font-size: 13px; }
+nav.top { display: flex; flex-wrap: wrap; gap: 16px; padding: 0 0 14px; font-size: 14px; }
+main { padding: 32px 0 64px; }
+h1 { font-size: 30px; line-height: 1.25; margin: 0 0 12px; }
+h2 { font-size: 21px; margin: 34px 0 10px; color: #e8eef5; }
+h3 { font-size: 17px; margin: 26px 0 8px; color: #cbd5e1; }
+p, li { color: var(--ink); }
+code { background: #1a1f26; border: 1px solid var(--edge); border-radius: 4px;
+  padding: 1px 5px; font-size: .9em; }
+pre { background: #0f1419; border: 1px solid var(--edge); border-radius: 8px;
+  padding: 14px 16px; overflow-x: auto; }
+pre code { background: none; border: 0; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid var(--edge); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #161b22; color: #e6edf3; }
+tbody tr:nth-child(even) { background: #10141a; }
+blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--accent-2);
+  background: #12161b; color: #c3ccd8; }
+hr { border: 0; border-top: 1px solid var(--edge); margin: 28px 0; }
+.hero { padding: 44px 0 8px; }
+.hero p { color: var(--muted); max-width: 720px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 22px 0; }
+.card { background: var(--panel); border: 1px solid var(--edge); border-radius: 10px; padding: 16px 18px; }
+.card h3 { margin: 0 0 6px; font-size: 15px; color: #e8eef5; }
+.card p { margin: 0; color: var(--muted); font-size: 14px; }
+footer { border-top: 1px solid var(--edge); color: var(--muted); font-size: 13px; padding: 20px 0 40px; }
+.badge { display: inline-block; border: 1px solid var(--edge); border-radius: 999px;
+  padding: 2px 10px; font-size: 12px; color: var(--muted); margin-right: 8px; }

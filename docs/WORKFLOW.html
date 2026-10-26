@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workflow — InkBlade</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand"><b>InkBlade</b><span>ML cluster penetration testing platform · v0.2.0</span></div>
+  <nav class="top"><a href="index.html">Home</a><a href="INSTALL.html">Install</a><a href="USAGE.html">Usage</a><a href="FEATURES.html">Features</a><a href="WORKFLOW.html">Workflow</a><a href="MODULES.html">Modules</a><a href="ARCHITECTURE.html">Architecture</a><a href="VULNERABILITY-COVERAGE.html">Vulnerability coverage</a><a href="PILOT-KIT.html">Pilot kit</a><a href="PLUGIN-SDK.html">Plugin SDK</a><a href="FAQ.html">FAQ</a><a href="VERSIONING.html">Versioning</a></nav>
+</div></header>
+<main><div class="wrap">
+<h1 id="workflow-流程">Workflow / 流程</h1>
+<p><a href="#english">English</a> · <a href="#中文">中文</a></p>
+<p>The order is the product. Each stage leaves behind something the next stage can check, and any stage can refuse. This page is the long version of the eleven-step list on the site.</p>
+<hr>
+<h2 id="english">English</h2>
+<p>Eleven stages. Each one has a command, a gate and an artifact; nothing moves to the next stage without the gate.</p>
+<table><thead><tr><th>---:</th><th>---</th><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>1</td><td>Authorization</td><td><code>quickstart</code>, <code>roe</code></td><td>Signed consent record, hash pinned</td><td><code>consent/</code></td></tr><tr><td>2</td><td>Assets</td><td><code>discover</code>, <code>import-scan</code>, <code>collect</code></td><td>Read-only sources only</td><td><code>assets.json</code>, snapshot</td></tr><tr><td>3</td><td>Reconnaissance</td><td><code>run --module</code>, <code>surfaces</code></td><td>Level 1–2 only</td><td>findings, surface matrix</td></tr><tr><td>4</td><td>Combination</td><td><code>module list</code>, <code>assess explain</code></td><td>No execution</td><td>ranked combinations</td></tr><tr><td>5</td><td>Chain planning</td><td><code>execute --chain &lt;id&gt; --dry-run</code></td><td>Preconditions evaluated</td><td>plan, write surface</td></tr><tr><td>6</td><td>Approval</td><td><code>explore approve</code>, <code>autonomy</code>, <code>calendar</code></td><td>Human decision or bounded pre-auth</td><td>approval record</td></tr><tr><td>7</td><td>Execution</td><td><code>execute</code>, <code>exploit --real</code></td><td>Consent + level + backup</td><td>action log, backups</td></tr><tr><td>8</td><td>Evidence</td><td>automatic</td><td>Manifest verified per step</td><td><code>context.jsonl.gz</code>, <code>evidence.db</code>, <code>steps/</code></td></tr><tr><td>9</td><td>Report</td><td><code>report</code>, <code>export</code></td><td><code>--redact</code> before external release</td><td>reports, SARIF/OCSF/VEX</td></tr><tr><td>10</td><td>Rules</td><td><code>rules generate</code>, <code>rules validate</code></td><td>Replay must run</td><td>packs, coverage matrix</td></tr><tr><td>11</td><td>Retest</td><td><code>schedule run-due</code>, <code>ci-gate</code></td><td>Baseline exists</td><td>drift report, exit code</td></tr></tbody></table>
+<p><strong>1 — Authorization.</strong> <code>user add</code> creates the people; <code>quickstart</code> writes the record binding scope, level, window and contact. The record is hashed and the hash travels with every run. Ask &quot;under what authority was this executed&quot; and the answer is one file.</p>
+<p><strong>2 — Assets.</strong> <code>discover</code> expands namespaces and services, <code>import-scan</code> folds Trivy / Syft / grype into the same findings model, <code>collect</code> takes a read-only snapshot. A missing namespace produces a clean report with a hole in it, which is worse than a noisy report with a caveat.</p>
+<p><strong>3 — Reconnaissance.</strong> Levels 1 and 2 only: 191 of 286 modules, read-only enumeration and active probing, no state change. <code>surfaces --collect</code> gives the honest answer about what is testable.</p>
+<p><strong>4 — Combination.</strong> Manifests carry combination signatures. Two low-severity findings that compose into cluster takeover are surfaced together, preconditions written out. Nothing executes.</p>
+<p><strong>5 — Planning.</strong> <code>--dry-run</code> prints the graph and the write surface. If it would touch a shared PVC, an admission webhook or a controller namespace, fix the scope instead of trusting last week&#x27;s approval. Preconditions use a small expression language, not <code>eval</code>; unknown means skipped.</p>
+<p><strong>6 — Approval.</strong> Three ways to say yes: one-off with a name, bounded pre-authorisation with an expiry, or a calendar window. All three leave a record. <code>autonomy</code> cannot exceed the consent level.</p>
+<p><strong>7 — Execution.</strong> A write module without a backup target exits 91. With one, the runner snapshots first, executes second, records both. <code>rollback --step &lt;n&gt;</code> restores one step and prints a receipt; a failed restore exits 3 and marks the run.</p>
+<p><strong>8 — Evidence.</strong> Context journal, SQLite audit tables, per-step tar + manifest. Hashes are computed over the archive and reports anchor to them. A finding that cannot be replayed is downgraded before a client sees it.</p>
+<p><strong>9 — Reporting.</strong> PTES structure plus the ML chapters, remediation as a checklist, <code>--lang bi</code> for both languages in one file. <code>export</code> emits SARIF 2.1.0, OCSF or OpenVEX.</p>
+<p><strong>10 — Rules.</strong> Each chain maps to at least one rule. <code>rules validate</code> replays against fixture targets and produces blocked / detected / missed per chain. The missed column is the useful one.</p>
+<p><strong>11 — Retest.</strong> <code>schedule run-due</code> reruns what is due and diffs against the baseline. <code>ci-gate --fail-on high --new-only</code> fails on new high findings and ignores the accepted backlog.</p>
+<h3 id="failure-modes-worth-knowing">Failure modes worth knowing</h3>
+<table><thead><tr><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>Consent expired mid-engagement</td><td>Every run exits 91</td><td>Re-sign with a new window; old evidence stays valid</td></tr><tr><td>Chain precondition false</td><td>Step skipped</td><td>Run the prerequisite module first</td></tr><tr><td>Backup target fills up</td><td>Write step refuses</td><td>Free space or point at a new target</td></tr><tr><td>Surface unknown</td><td>Module skipped unless <code>--probe</code></td><td>Confirm with the platform owner, then probe</td></tr><tr><td>Rollback fails</td><td>Exit 3, run marked</td><td>Report the unrestored step as a finding</td></tr></tbody></table>
+<hr>
+<h2 id="中文">中文</h2>
+<h3 id="十一个阶段">十一个阶段</h3>
+<table><thead><tr><th>---:</th><th>---</th><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>1</td><td>授权</td><td><code>quickstart</code>、<code>roe</code></td><td>签署记录，哈希钉存</td><td><code>consent/</code></td></tr><tr><td>2</td><td>资产</td><td><code>discover</code>、<code>import-scan</code>、<code>collect</code></td><td>只接受只读来源</td><td><code>assets.json</code>、采集快照</td></tr><tr><td>3</td><td>侦察</td><td><code>run --module</code>、<code>surfaces</code></td><td>仅 1–2 级</td><td>发现、部署面矩阵</td></tr><tr><td>4</td><td>组合</td><td><code>module list</code>、<code>assess explain</code></td><td>不执行</td><td>组合排序</td></tr><tr><td>5</td><td>链编排</td><td><code>execute --chain &lt;id&gt; --dry-run</code></td><td>前置条件求值</td><td>计划、写面</td></tr><tr><td>6</td><td>审批</td><td><code>explore approve</code>、<code>autonomy</code>、<code>calendar</code></td><td>人工决定或有界预授权</td><td>审批记录</td></tr><tr><td>7</td><td>执行</td><td><code>execute</code>、<code>exploit --real</code></td><td>授权 + 级别 + 备份</td><td>动作日志、备份</td></tr><tr><td>8</td><td>证据</td><td>自动</td><td>每步校验 manifest</td><td><code>context.jsonl.gz</code>、<code>evidence.db</code>、<code>steps/</code></td></tr><tr><td>9</td><td>报告</td><td><code>report</code>、<code>export</code></td><td>外发前 <code>--redact</code></td><td>双语报告、SARIF/OCSF/VEX</td></tr><tr><td>10</td><td>规则</td><td><code>rules generate</code>、<code>rules validate</code></td><td>必须完成重放</td><td>规则包、覆盖矩阵</td></tr><tr><td>11</td><td>复测</td><td><code>schedule run-due</code>、<code>ci-gate</code></td><td>存在基线</td><td>漂移报告、退出码</td></tr></tbody></table>
+<h3 id="第-1-步-授权">第 1 步 — 授权</h3>
+<p>两条命令，一个目的。<code>user add</code> 建人，<code>quickstart</code> 写记录：范围、级别、时间窗、应急联系人。记录会算哈希， 哈希跟着每一次 run 走。日后有人问“凭什么是你们做的”，答案是一个文件，不是一场会。</p>
+<p>常见错误：记录里写了一个还不存在的命名空间。闸门不管这个。它会老老实实让你测一个名字，然后给你一堆空发现。 先核对目标清单。</p>
+<h3 id="第-2-步-资产">第 2 步 — 资产</h3>
+<p>种子进去，资产表出来。<code>discover</code> 展开命名空间与服务；<code>import-scan</code> 把 Trivy、Syft、grype 的结果折进同一套 发现模型；<code>collect</code> 对集群、HTTP 端点、文件与硬件清单做只读快照。</p>
+<p>资产质量决定后面一切。漏掉一个命名空间，会得到一份干净但带洞的报告——比一份有噪音但写明前提的报告更糟。</p>
+<h3 id="第-3-步-侦察">第 3 步 — 侦察</h3>
+<p>只跑 1、2 级模块。286 个模块里有 191 个处在这两级：只读枚举和主动探测，不改状态。把采集目录交给 <code>surfaces</code>， 你会得到“这里到底能测什么”的诚实答案，包括那些不能测的。</p>
+<h3 id="第-4-步-组合">第 4 步 — 组合</h3>
+<p>单条发现很少是有意思的部分。manifest 里带组合签名；两条单独看都不严重、叠起来能接管集群的发现，会被摆在一起， 前置条件写清楚。这个阶段不执行任何东西。</p>
+<h3 id="第-5-步-编排">第 5 步 — 编排</h3>
+<p><code>--dry-run</code> 打印解析后的链图。读写面。如果某条链会碰你没预料到的东西——共享 PVC、准入 webhook、控制器命名空间—— 停下来修范围，而不是相信上周的审批。</p>
+<p>前置条件用一个小的表达式求值器判断，不用 <code>eval</code>。前置未知的步骤会被跳过，不会被尝试。</p>
+<h3 id="第-6-步-审批">第 6 步 — 审批</h3>
+<p>三种“同意”：署名的一次性批准；带级别与有效期的有界预授权；维护窗口内自动开启的日历窗口。三种都留记录。 没有“全部批准”开关，<code>autonomy</code> 也不能超过授权记录里的级别。</p>
+<h3 id="第-7-步-执行">第 7 步 — 执行</h3>
+<p>备份闸门很直白：写类模块没有备份目标就退出 91。有目标时，先快照、再执行、两者都记录。链中途失败时， 依赖不满足的后续步骤不会运行。</p>
+<p><code>rollback --run &lt;id&gt; --step &lt;n&gt;</code> 恢复单步并打印回执。恢复失败退出 3 并把这次 run 标记出来；这个标记会进报告， 这正是它该在的地方。</p>
+<h3 id="第-8-步-证据">第 8 步 — 证据</h3>
+<p>每一步三层。上下文日志告诉你测试者当时看到了什么；SQLite 库回答查询：哪些发现、哪些动作、哪些备份、哪些回滚； tar 归档加 manifest 让第三方只验一步，不必拿到整次 run。</p>
+<p>哈希算在归档上，报告锚点指向它。审阅时无法重放的发现会被降级——在我们手里降，不是在客户面前。</p>
+<h3 id="第-9-步-报告">第 9 步 — 报告</h3>
+<p>两份报告，一套证据。渗透报告按 PTES 结构写，带 ML 专章；修复报告是给平台组的清单。<code>--lang bi</code> 一次出双语。 <code>--redact</code> 在报告离开项目前剥掉深层细节。</p>
+<p><code>export</code> 给机器看：SARIF 2.1.0 进代码扫描面板，OCSF 进 SIEM，OpenVEX 用来声明“不受影响”。</p>
+<h3 id="第-10-步-规则">第 10 步 — 规则</h3>
+<p>每条链至少对应一条规则。<code>rules generate --cni cilium</code> 生成准入、网络、检测、收敛四类规则包。 <code>rules validate</code> 对着 fixture 目标重放，逐链产出矩阵：拦截、检出、漏过。</p>
+<p>“漏过”那一列最有用。一条所有人都以为有效、重放却说无效的策略，正是紫队该交出来的发现。</p>
+<h3 id="第-11-步-复测">第 11 步 — 复测</h3>
+<p><code>schedule add</code> 接受 cron 表达式或固定间隔，加一个链子集。<code>schedule run-due</code> 跑到期的任务，与基线做差异： 新增发现、已修复发现、配置漂移。</p>
+<p>流水线用 <code>ci-gate --fail-on high --new-only</code>：新增高危才非零退出，已接受的存量不管。这个区别决定了门禁是被保留， 还是周五被人关掉。</p>
+<h3 id="值得记住的失败模式">值得记住的失败模式</h3>
+<table><thead><tr><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>授权中途过期</td><td>所有 run 退出 91</td><td>用新窗口重签；旧证据仍然有效</td></tr><tr><td>链前置条件为假</td><td>跳过该步，能继续的继续</td><td>先跑前置模块</td></tr><tr><td>备份目标写满</td><td>写步骤拒绝</td><td>腾空间或换目标；不要跳过</td></tr><tr><td>部署面未知</td><td>模块跳过，除非 <code>--probe</code></td><td>先与平台负责人确认，再探测</td></tr><tr><td>回滚失败</td><td>退出 3，run 被标记</td><td>把恢复不了的那一步当发现报出去</td></tr></tbody></table>
+</div></main>
+<footer><div class="wrap">
+  InkBlade 0.2.0 · Apache-2.0 · authorized testing only · no telemetry, no external assets.
+</div></footer>
+</body>
+</html>

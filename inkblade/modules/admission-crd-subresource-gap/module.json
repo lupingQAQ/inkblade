@@ -1,0 +1,15 @@
+{
+  "key": "admission-crd-subresource-gap",
+  "name": {"zh": "CRD/子资源准入覆盖面缺口", "en": "CRD and Subresource Admission Coverage Gap"},
+  "series": "权限链",
+  "description": "聚焦 CRD 多版本 conversion、pods/exec、pods/ephemeralcontainers 子资源、ephemeral/init 容器与 cluster-scoped 资源五类覆盖面缺口；输出可回放 trace 与加固对照。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "可选，admission cases JSON；省略使用内置用例"
+  },
+  "produces": "admission-coverage-gap（机制级 findings）",
+  "knowledge": "docs/DEPTH-REVIEW.md §2；inkblade/depth/admission.py",
+  "combo_signature": "admission-coverage-gap"
+}

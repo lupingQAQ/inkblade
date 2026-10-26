@@ -1,0 +1,15 @@
+{
+  "key": "storage-protocol-csi",
+  "name": {"zh": "存储协议与 CSI 面", "en": "Storage Protocol and CSI Surface"},
+  "series": "网络架构",
+  "description": "NFSv4 AUTH_SYS uid 可伪造、JuiceFS/CephFS/Lustre、CSI node plugin 特权与宿主挂载、RWX 语义、checkpoint 原子性",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "fixture dict 或 lab/fixtures/network/ 路径（storageclasses.json）"
+  },
+  "produces": "storage-protocol-csi.json + AUTH_SYS/RWX/CSI 特权 findings",
+  "knowledge": "spec 5.2 网络架构模块 + 5.6 存储数据面层；组合签名 shared-pvc-hf-cache-supply-chain",
+  "combo_signature": "shared-pvc-hf-cache-supply-chain"
+}

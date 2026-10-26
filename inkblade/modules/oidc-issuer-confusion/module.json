@@ -1,0 +1,15 @@
+{
+  "key": "oidc-issuer-confusion",
+  "name": {"zh": "OIDC issuer/audience/subject 混淆审计", "en": "OIDC Issuer and Audience Confusion Audit"},
+  "series": "混合云",
+  "description": "从身份联邦矩阵中抽取 issuer 混用、audience 缺失/通配、subject 通配类用例，验证攻击者 OIDC token 与合法 token 的 allow/deny 差分；只读。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "可选，identity cases JSON；省略使用内置用例"
+  },
+  "produces": "oidc-confusion-matrix（issuer/audience/subject 三类）",
+  "knowledge": "docs/DEPTH-REVIEW.md §6；inkblade/depth/identity.py",
+  "combo_signature": "oidc-confusion"
+}

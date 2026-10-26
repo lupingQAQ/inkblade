@@ -1,0 +1,14 @@
+{
+  "key": "shared-volume-weight-copy",
+  "name": { "zh": "共享卷权重直读", "en": "Shared Volume Weight Copy" },
+  "series": "窃取与数据泄露",
+  "description": "枚举共享卷上权重/数据集文件并逐个 sha256 存证（偷换一体：可读即可换）",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "volume_root": "共享卷根目录（默认 lab/fixtures/theft/shared-volume）"
+  },
+  "produces": "weight-exposure",
+  "knowledge": "设计基线第 6 节：RWX 共享卷上权重未授权读（哈希存证 + 偷换风险）"
+}

@@ -1,0 +1,137 @@
+# Default values for the InkBlade chart.
+#
+# The defaults are deliberately conservative:
+#   * readOnly=true  -> the ServiceAccount only receives get/list/watch verbs
+#   * non-root, read-only root filesystem, all capabilities dropped
+#   * no ingress, ClusterIP service only
+#   * persistence enabled so evidence survives pod restarts
+#
+# Trial evaluation does not need any of the overrides below. See NOTES.txt
+# after `helm install` for the five-minute path.
+
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: ghcr.io/inkblade/inkblade
+  # Defaults to .Chart.AppVersion when empty.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+replicaCount: 1
+
+# readOnly keeps the Kubernetes RBAC surface at get/list/watch. InkBlade's own
+# RoE (rules of engagement) gate additionally blocks any write-class action
+# until a signed RoE exists for the workspace.
+readOnly: true
+
+# Workspace created inside /data and selected by the UI.
+workspace: local-lab
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+  automountServiceAccountToken: true
+
+rbac:
+  create: true
+  # clusterWide=false renders a namespaced Role/RoleBinding instead.
+  clusterWide: true
+  # Only used when clusterWide=false. Empty means the release namespace.
+  namespaces: []
+  # Read access to Secrets is required for credential-exposure findings; turn
+  # it off for least-privilege pilots that already know their secret hygiene.
+  includeSecrets: true
+  # Adds create/update/patch/delete verbs. Never enable outside an authorized
+  # change window; see docs/PILOT-KIT.md.
+  allowWrite: false
+  extraRules: []
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8765
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: inkblade.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+persistence:
+  enabled: true
+  # Use an existing PVC instead of creating one.
+  existingClaim: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+  storageClass: ""
+  annotations: {}
+
+# Optional Secret containing a users.json produced by `inkblade user add`.
+# When set, the file is mounted read-only at /data/users.json.
+usersSecret:
+  name: ""
+  key: users.json
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+  fsGroupChangePolicy: OnRootMismatch
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  privileged: false
+  capabilities:
+    drop:
+      - ALL
+
+probes:
+  liveness:
+    enabled: true
+    path: /api/v1/openapi.json
+    initialDelaySeconds: 20
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readiness:
+    enabled: true
+    path: /api/v1/openapi.json
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 3
+    failureThreshold: 3
+
+podAnnotations: {}
+podLabels: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+topologySpreadConstraints: []
+
+env: []
+extraArgs: []
+
+terminationGracePeriodSeconds: 30

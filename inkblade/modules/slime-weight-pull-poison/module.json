@@ -1,0 +1,20 @@
+{
+  "key": "slime-weight-pull-poison",
+  "name": {
+    "zh": "slime 权重拉取投毒",
+    "en": "slime Weight Pull Poisoning"
+  },
+  "series": "横向利用",
+  "description": "/pull_weights 请求可控 source_dir/local_checkpoint_dir → 跨租户权重写。实验室 face：slime /pull_weights（靶场 writes=True：probe-only 仅 GET 指纹，POST 仅 backup-write）。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）",
+    "backup_targets": "backup-write 模式必需的备份目标清单（runner 备份闸门）"
+  },
+  "produces": "weight-poison-primitive",
+  "knowledge": "docs/design.md 第 1–5 节：SGLang+slime 权重拉取补丁跨租户权重写",
+  "combo_signature": "sglang-slime-weight-write"
+}

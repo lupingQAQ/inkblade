@@ -1,0 +1,23 @@
+{
+  "key": "similarity-cache-false-hit",
+  "name": {
+    "zh": "近似缓存误命中泄露",
+    "en": "Similarity cache false-hit leak"
+  },
+  "series": "窃取与数据泄露",
+  "description": "近似/语义缓存按相似度阈值全局检索：注入与受害租户缓存文本高相似的良性前缀（单 token 变异），阈值内误命中并读回他租户缓存的模型响应（含 benign 标记）；fixed 姿态仅本租户检索，恒 miss。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "缓存面服务基址（必填）",
+    "victim_probe_text": "高相似受害探测文本（缺省内置单 token 变异样例）",
+    "control_probe_text": "本租户正对照文本（缺省内置对照样例）",
+    "marker_needle": "受害响应中的 benign 标记串（缺省 INKBLADE-BENIGN-APPROX-VICTIM）",
+    "tenant": "探测租户（缺省 tenant-a）",
+    "victim_tenant": "受害租户（缺省 tenant-b）"
+  },
+  "produces": "similarity-cache-false-hit.json + matched 条目租户/相似度/响应摘录证据",
+  "knowledge": "docs/CACHE-SECURITY.md 第 3 节：近似缓存（GPTCache 类语义缓存误命中面）",
+  "combo_signature": "cache-plane-unisolated"
+}

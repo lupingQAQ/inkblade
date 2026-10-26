@@ -1,0 +1,29 @@
+{
+  "id": "nccl-gradient-injection",
+  "title": {
+    "zh": "NCCL → 梯度注入",
+    "en": "NCCL → gradient injection"
+  },
+  "category": "经典攻击链",
+  "requires": [
+    "collective-communication-surface",
+    "nccl-collective-join"
+  ],
+  "preconditions": [
+    {"expr": "findings('collective-communication-surface').any(auth == 'none')"},
+    {"expr": "findings('collective-communication-surface').reachable.any(port == 29500)"}
+  ],
+  "steps": [
+    {
+      "id": "collective-join",
+      "module": "nccl-collective-join",
+      "params": {"mode": "backup-write", "tensor": "marker", "marker": "INKBLADE-${run.name}"},
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "http://target:29500/rendezvous", "state": {}}
+      ]
+    }
+  ],
+  "evidence": ["http-trace", "before-after-sha256", "rollback-receipt"],
+  "mitre": ["T1557", "T1565.001"]
+}

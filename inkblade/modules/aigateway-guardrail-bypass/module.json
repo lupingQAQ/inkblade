@@ -1,0 +1,20 @@
+{
+  "key": "aigateway-guardrail-bypass",
+  "name": {
+    "zh": "AI 网关 guardrail 绕过（角色分层 / 多消息）",
+    "en": "AI Gateway Guardrail Bypass (role layering / multi-message)"
+  },
+  "series": "横向利用",
+  "description": "网关 guardrail 仅检查首条消息时，把注入/密钥外泄指令放入后续 user/developer 消息即可绕过。vulnerable：200 + 回显 system prompt canary；fixed：全量消息检查 400 guardrail_blocked。",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "tenant_key": "fixed 模式合法租户 key",
+    "tenant": "租户标识（缺省 tenant-a）"
+  },
+  "produces": "guardrail-bypass-proof + canary",
+  "knowledge": "docs/AI-GATEWAY.md 第 9 节：guardrail 检查面与角色分层",
+  "combo_signature": "ai-gateway-guardrail-bypass"
+}

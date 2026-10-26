@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modules — InkBlade</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand"><b>InkBlade</b><span>ML cluster penetration testing platform · v0.2.0</span></div>
+  <nav class="top"><a href="index.html">Home</a><a href="INSTALL.html">Install</a><a href="USAGE.html">Usage</a><a href="FEATURES.html">Features</a><a href="WORKFLOW.html">Workflow</a><a href="MODULES.html">Modules</a><a href="ARCHITECTURE.html">Architecture</a><a href="VULNERABILITY-COVERAGE.html">Vulnerability coverage</a><a href="PILOT-KIT.html">Pilot kit</a><a href="PLUGIN-SDK.html">Plugin SDK</a><a href="FAQ.html">FAQ</a><a href="VERSIONING.html">Versioning</a></nav>
+</div></header>
+<main><div class="wrap">
+<h1 id="module-catalogue-模块目录">Module catalogue / 模块目录</h1>
+<p><a href="#english">English</a> · <a href="#中文">中文</a></p>
+<p>286 manifests, 275 enabled by default, 11 quarantined. This page explains how the catalogue is organised and how to browse it on your own machine. The authoritative list is always the tree: <code>inkblade/modules/&lt;key&gt;/module.json</code>.</p>
+<hr>
+<h2 id="english">English</h2>
+<h3 id="browse-it">Browse it</h3>
+<pre><code>python -m inkblade module list
+python -m inkblade module list --modules-dir inkblade/modules
+python -m inkblade surfaces --profile airgapped --fixture</code></pre>
+<p><code>module list</code> prints key, series, technical level, read/write and required surface count per module. Add <code>--json</code> where the subcommand supports it when you want to feed a dashboard. <code>surfaces</code> answers a different question: of these modules, which ones can actually run against this deployment shape?</p>
+<h3 id="families">Families</h3>
+<table><thead><tr><th>---</th><th>---:</th><th>---</th></tr></thead><tbody><tr><td>Reconnaissance</td><td>67</td><td>Control plane objects, schedulers, gateways, storage, identity. Enumeration only.</td></tr><tr><td>Lateral movement</td><td>66</td><td>Service-to-service pivots, gateway abuse, worker takeover, token reuse.</td></tr><tr><td>Network architecture</td><td>52</td><td>CNI behaviour, policy coverage, service mesh, multi-NIC, fabric reachability.</td></tr><tr><td>Privilege chains</td><td>43</td><td>RBAC escalation, admission gaps, service-account trust, operator permissions.</td></tr><tr><td>Core code paths</td><td>22</td><td>Deserialisation, template injection, eval sinks, checkpoint loaders.</td></tr><tr><td>Exfiltration</td><td>19</td><td>Dataset, checkpoint and credential exposure across tenant boundaries.</td></tr><tr><td>Hybrid cloud</td><td>11</td><td>Instance metadata, workload identity, cloud storage trust edges.</td></tr><tr><td>Intelligence</td><td>6</td><td>Version and advisory correlation; turns inventory into applicability.</td></tr></tbody></table>
+<h3 id="technical-levels">Technical levels</h3>
+<table><thead><tr><th>---</th><th>---:</th><th>---</th></tr></thead><tbody><tr><td>Read-only recon</td><td>119</td><td>Enumerate. No state change.</td></tr><tr><td>Active probing</td><td>72</td><td>Send traffic to confirm a surface. Still no writes.</td></tr><tr><td>Exploit verification</td><td>80</td><td>Prove a primitive with a harmless marker inside the approved window.</td></tr><tr><td>Full-impact demo</td><td>15</td><td>Change state on purpose. Backup first, always.</td></tr></tbody></table>
+<p>The level is enforced against the consent record, not against a flag. A level 3 module under a level 2 record exits 91 before it opens a socket.</p>
+<h3 id="chains">Chains</h3>
+<p>29 chains, 71 steps, five families:</p>
+<table><thead><tr><th>---</th><th>---:</th></tr></thead><tbody><tr><td>Network exploitation</td><td>12</td></tr><tr><td>Classic kill chain</td><td>9</td></tr><tr><td>Cloud weight buckets</td><td>5</td></tr><tr><td>Deep-dive chains</td><td>2</td></tr><tr><td>AI gateway chains</td><td>1</td></tr></tbody></table>
+<p>Chain files live in <code>inkblade/chains/*.json</code>. Each step names one module, optionally depends on earlier steps, and carries parameters. Preconditions use a small expression language — no <code>eval</code> and no arbitrary Python.</p>
+<h3 id="the-manifest-contract">The manifest contract</h3>
+<pre><code>{
+  &quot;key&quot;: &quot;example-module&quot;,
+  &quot;series&quot;: &quot;权限链&quot;,
+  &quot;min_level&quot;: &quot;只读侦察&quot;,
+  &quot;writes&quot;: false,
+  &quot;requires&quot;: [&quot;k8s-object:ClusterRole&quot;],
+  &quot;combo_signature&quot;: [&quot;example-combination&quot;],
+  &quot;produces&quot;: [&quot;findings&quot;]
+}</code></pre>
+<p>Fields that matter: <code>writes</code> triggers the backup gate; <code>requires</code> drives the surface matrix; <code>min_level</code> is checked against the consent record; <code>combo_signature</code> is what lets the platform say “these two findings are one problem”.</p>
+<h3 id="quarantined-modules">Quarantined modules</h3>
+<p>Eleven modules need a surface that none of the six reference profiles contains: agent-native control planes, two vendor runtime APIs, one hardware-only path. They stay in the tree because customers do deploy those things. They are excluded from coverage denominators and are never enabled by a profile.</p>
+<h3 id="adding-your-own">Adding your own</h3>
+<pre><code>python -m inkblade sdk new my-module
+python -m inkblade sdk lint my-module
+python -m inkblade sdk validate my-module</code></pre>
+<p>The SDK enforces a strict manifest profile, keeps the entry point inside the module directory, records a SHA-256 fingerprint you accept explicitly, and validates the result schema. There is no auto-trust: a plugin you have not fingerprinted will not run, even if it is on disk.</p>
+<p>Submissions upstream need three things: a manifest, a dry-run path, and tests. Modules that only work against a live cluster are welcome, but they need a recorded fixture so CI can exercise them.</p>
+<hr>
+<h2 id="中文">中文</h2>
+<h3 id="怎么浏览">怎么浏览</h3>
+<pre><code>python -m inkblade module list
+python -m inkblade module list --modules-dir inkblade/modules
+python -m inkblade surfaces --profile airgapped --fixture</code></pre>
+<p><code>module list</code> 每个模块一行：key、族、技术级别、读写属性、所需部署面数量。要喂给面板时，支持 <code>--json</code> 的子命令 直接加参数。<code>surfaces</code> 回答的是另一个问题：这些模块里，哪些真能对着这种部署形态跑。</p>
+<h3 id="模块族">模块族</h3>
+<table><thead><tr><th>---</th><th>---:</th><th>---</th></tr></thead><tbody><tr><td>侦察</td><td>67</td><td>控制面对象、调度器、网关、存储、身份。只做枚举。</td></tr><tr><td>横向利用</td><td>66</td><td>服务间横向、网关滥用、worker 接管、令牌复用。</td></tr><tr><td>网络架构</td><td>52</td><td>CNI 行为、策略覆盖、服务网格、多网卡、fabric 可达性。</td></tr><tr><td>权限链</td><td>43</td><td>RBAC 提权、准入缺口、服务账号信任、operator 权限。</td></tr><tr><td>核心代码</td><td>22</td><td>反序列化、模板注入、eval sink、checkpoint loader。</td></tr><tr><td>窃取与数据泄露</td><td>19</td><td>数据集、checkpoint、凭据的跨租户暴露。</td></tr><tr><td>混合云</td><td>11</td><td>实例元数据、工作负载身份、云存储信任边。</td></tr><tr><td>情报</td><td>6</td><td>版本与公告关联，把清单变成适用性判断。</td></tr></tbody></table>
+<h3 id="技术级别">技术级别</h3>
+<table><thead><tr><th>---</th><th>---:</th><th>---</th></tr></thead><tbody><tr><td>只读侦察</td><td>119</td><td>枚举。不改状态。</td></tr><tr><td>主动探测</td><td>72</td><td>发流量确认部署面存在。仍然不写。</td></tr><tr><td>利用验证</td><td>80</td><td>在批准窗口内，用一个无害标记证明原语成立。</td></tr><tr><td>全影响演示</td><td>15</td><td>有意改变状态。必须先备份。</td></tr></tbody></table>
+<p>级别是对着授权记录校验的，不是对着命令行开关。2 级授权下的 3 级模块，在开 socket 之前就退出 91。</p>
+<h3 id="链">链</h3>
+<p>29 条链、71 步、五个族：</p>
+<table><thead><tr><th>---</th><th>---:</th></tr></thead><tbody><tr><td>网络利用链</td><td>12</td></tr><tr><td>经典攻击链</td><td>9</td></tr><tr><td>云侧权重桶链</td><td>5</td></tr><tr><td>深度链</td><td>2</td></tr><tr><td>AI 网关链</td><td>1</td></tr></tbody></table>
+<p>链文件在 <code>inkblade/chains/*.json</code>。每一步指定一个模块，可以依赖前面的步骤，并带参数。前置条件用一个小表达式语言， 不用 <code>eval</code>，也不跑任意 Python。</p>
+<h3 id="manifest-契约">manifest 契约</h3>
+<pre><code>{
+  &quot;key&quot;: &quot;example-module&quot;,
+  &quot;series&quot;: &quot;权限链&quot;,
+  &quot;min_level&quot;: &quot;只读侦察&quot;,
+  &quot;writes&quot;: false,
+  &quot;requires&quot;: [&quot;k8s-object:ClusterRole&quot;],
+  &quot;combo_signature&quot;: [&quot;example-combination&quot;],
+  &quot;produces&quot;: [&quot;findings&quot;]
+}</code></pre>
+<p>关键字段：<code>writes</code> 触发备份闸门；<code>requires</code> 驱动部署面矩阵；<code>min_level</code> 对着授权记录检查； <code>combo_signature</code> 让平台能说“这两条发现其实是同一个问题”。</p>
+<h3 id="隔离模块">隔离模块</h3>
+<p>有 11 个模块需要的部署面，在六个参考画像里都不存在：Agent 原生控制面、两个厂商运行时 API、一条纯硬件路径。 它们留在树里，因为确实有客户那样部署；但不计入覆盖率分母，也不会被任何画像默认开启。</p>
+<h3 id="加自己的模块">加自己的模块</h3>
+<pre><code>python -m inkblade sdk new my-module
+python -m inkblade sdk lint my-module
+python -m inkblade sdk validate my-module</code></pre>
+<p>SDK 会强制严格 manifest、把入口限制在模块目录内、记录一个需要你显式接受的 SHA-256 指纹，并校验结果 schema。 没有自动信任：没录过指纹的插件，就算躺在磁盘上也不会运行。</p>
+<p>向上游提交需要三样：manifest、dry-run 路径、测试。只能对着真实集群跑的模块也欢迎，但要附一份可回放的 fixture， 否则 CI 没法验证。</p>
+</div></main>
+<footer><div class="wrap">
+  InkBlade 0.2.0 · Apache-2.0 · authorized testing only · no telemetry, no external assets.
+</div></footer>
+</body>
+</html>

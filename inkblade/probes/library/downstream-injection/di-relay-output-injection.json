@@ -1,0 +1,39 @@
+{
+ "key": "di-relay-output-injection",
+ "title": {
+  "zh": "开放中继输出注入面（未鉴权 chat）",
+  "en": "Open-relay output-injection surface (unauth chat)"
+ },
+ "category": "downstream-injection",
+ "face": "relay",
+ "target_face": "relay-chat",
+ "preconditions": [
+  "lab/mock_targets djev /v1/chat/completions 可达"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/v1/chat/completions",
+   "auth": "none",
+   "body": {
+    "model": "mock-model",
+    "messages": [
+     {
+      "role": "user",
+      "content": "relay unvalidated output for downstream agents"
+     }
+    ]
+   }
+  }
+ ],
+ "detector": {
+  "kind": "status",
+  "equals": 200
+ },
+ "severity": "high",
+ "rule_key": "sigma-llm-probe-downstream-injection",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

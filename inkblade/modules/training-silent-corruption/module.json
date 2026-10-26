@@ -1,0 +1,21 @@
+{
+  "key": "training-silent-corruption",
+  "name": {
+    "zh": "训练静默损坏（Byzantine 梯度/损失篡改面）",
+    "en": "Training silent corruption via Byzantine gradient surface"
+  },
+  "series": "横向利用",
+  "description": "梯度/损失写面无 peer 校验：提交 Byzantine 梯度贡献后 loss 轨迹静默发散（silent=true、无告警事件），corruption_events 计数增长——训练无效但监控不报警的最坏组合。写面走 backup_targets 备份闸门。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "fabric 训练数值面基址（必填）",
+    "mode": "probe-only（默认，仅 loss 基线）| backup-write（需 backup_targets：Byzantine 贡献+loss 对比）",
+    "scale": "篡改尺度（默认 3.0）",
+    "backup_targets": "backup-write 必需：训练数值快照目标（runner 备份闸门）"
+  },
+  "produces": "training-silent-corruption.json + loss 前后对比与静默性证据",
+  "knowledge": "docs/FABRIC-ATTACK-SURFACE.md §2.8；语料 nvidia-sharp-in-network（梯度在网聚合=单点篡改面）/ areal-awex-nccl-injection 模块族",
+  "combo_signature": "training-byzantine-silent-corruption"
+}

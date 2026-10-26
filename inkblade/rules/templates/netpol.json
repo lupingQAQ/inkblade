@@ -1,0 +1,57 @@
+{
+  "admin_cidr": "192.168.10.0/24",
+  "admin_ports": [8265, 30000, 9000],
+  "collective_ports": [29400, 29500, 29501, 29511, 45678],
+  "dns_port": 53,
+  "zones": [
+    {
+      "name": "ray-system",
+      "namespace": "ray-system",
+      "label": "inkblade-io-zone",
+      "allow_ingress_from": ["ml-training", "admin-bastion"],
+      "allow_egress_to": ["ml-training", "ml-inference", "monitoring"],
+      "ports": [8265, 10001, 6379]
+    },
+    {
+      "name": "ml-training",
+      "namespace": "ml-training",
+      "label": "inkblade-io-zone",
+      "allow_ingress_from": ["ray-system", "ml-training", "admin-bastion"],
+      "allow_egress_to": ["ray-system", "ml-inference", "monitoring"],
+      "ports": [29400, 29500, 29501, 29511, 45678]
+    },
+    {
+      "name": "ml-inference",
+      "namespace": "ml-inference",
+      "label": "inkblade-io-zone",
+      "allow_ingress_from": ["monitoring", "admin-bastion"],
+      "allow_egress_to": ["ray-system", "monitoring"],
+      "ports": [30000, 9000, 8000]
+    },
+    {
+      "name": "monitoring",
+      "namespace": "monitoring",
+      "label": "inkblade-io-zone",
+      "allow_ingress_from": ["admin-bastion"],
+      "allow_egress_to": ["ray-system", "ml-training", "ml-inference"],
+      "ports": [9090, 9092]
+    },
+    {
+      "name": "ml-agent",
+      "namespace": "ml-agent",
+      "label": "inkblade-io-zone",
+      "allow_ingress_from": ["admin-bastion"],
+      "allow_egress_to": [],
+      "ports": [80, 8080]
+    }
+  ],
+  "rdma_statement": {
+    "zh": "显式声明：RDMA / SR-IOV VF / IB / macvlan 与 hostNetwork/hostDevice 路径不经 CNI 转发，任何 NetworkPolicy（原生 / Calico / Cilium）与 VPC 安全组均不覆盖该面；集合通信隔离必须依赖 IB Partition（PKey）/ Subnet Manager 隔离与 rail/plane 分区，另见 network/ib-partition-advice.yaml 与 network/rdma-sriov-uncovered.md。",
+    "en": "Explicit declaration: RDMA / SR-IOV VF / IB / macvlan and hostNetwork/hostDevice paths bypass the CNI forwarding plane and are NOT covered by any NetworkPolicy (native / Calico / Cilium) nor by VPC security groups; collective-communication isolation must rely on IB Partition (PKey) / Subnet Manager isolation and rail/plane partitioning - see network/ib-partition-advice.yaml and network/rdma-sriov-uncovered.md."
+  },
+  "hostnetwork_convergence": [
+    "逐 DaemonSet 审计 hostNetwork=true 必要性（GPU 驱动、SR-IOV device plugin、ib-kubernetes），能收敛即收敛",
+    "hostNetwork Pod 出网仅放行到显式白名单 CIDR（监控/registry/时间同步）",
+    "hostDevice / SR-IOV 附件统一走专用命名空间并登记到例外通道"
+  ]
+}

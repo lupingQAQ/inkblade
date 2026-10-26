@@ -1,0 +1,22 @@
+{
+  "key": "checkpoint-shard-poison",
+  "name": {
+    "zh": "checkpoint 分片投毒",
+    "en": "Checkpoint shard poisoning"
+  },
+  "series": "横向利用",
+  "description": "大规模训练 checkpoint 分片写面无鉴权：可写入带 benign marker 的分片并读回（sha256 一致），等价于训练恢复污染。写面走 backup_targets 备份闸门，file 快照可精确回滚（sha256 复原）。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "checkpoint/分片服务基址（必填）",
+    "mode": "probe-only（默认，仅读回）| backup-write（需 backup_targets）",
+    "shard_id": "分片 id（缺省按 run marker 生成）",
+    "payload": "自定义 benign payload（缺省含 run marker 的 JSON 行）",
+    "backup_targets": "backup-write 必需：分片文件快照目标（runner 备份闸门）"
+  },
+  "produces": "checkpoint-shard-poison.json + 分片读回 sha256 证据",
+  "knowledge": "docs/LONG-CONTEXT.md 第 1 节：checkpoint 原子性与权重面（A5）；spec 5.4 存储数据面 + 6.2 共享 PVC 供应链链",
+  "combo_signature": "checkpoint-shard-write-poison"
+}

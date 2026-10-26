@@ -1,0 +1,15 @@
+{
+  "key": "ebpf-runtime-coverage-gap",
+  "name": {"zh": "Falco/Tetragon 运行时覆盖盲区", "en": "Falco/Tetragon Runtime Coverage Gap"},
+  "series": "横向利用",
+  "description": "以 14 个合成事件重放覆盖 syscall 过滤（execveat/fexecve/io_uring/ptrace/bpf）、逃逸后 host namespace、hostPID、hostNetwork/Multus、短生命周期与 ring buffer 丢事件；给出两引擎 missed_by 与加固后覆盖差分。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "可选事件 JSON（{cases:[...]}）；省略使用内置 14 用例"
+  },
+  "produces": "runtime-coverage-matrix（Falco/Tetragon 双引擎逐事件判定）",
+  "knowledge": "docs/DEPTH-REVIEW.md §3；inkblade/depth/ebpf.py",
+  "combo_signature": "ebpf-runtime-blindspot"
+}

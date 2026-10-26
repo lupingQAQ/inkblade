@@ -1,0 +1,21 @@
+{
+  "key": "aigateway-quota-bypass",
+  "name": {
+    "zh": "AI 网关配额绕过（X-Forwarded-For 轮换）",
+    "en": "AI Gateway Quota Bypass via X-Forwarded-For Rotation"
+  },
+  "series": "横向利用",
+  "description": "网关按 X-Forwarded-For 记账限流时，轮换源地址即可无限重置桶；配额应绑定 API key/租户。vulnerable：6 次不同 XFF 全 200、/quota 出现多个桶且 enforced=false；fixed：超过 limit 返回 429，桶只有当前 key。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "tenant_key": "fixed 模式对照用合法租户 key",
+    "tenant": "租户标识（缺省 tenant-a）",
+    "requests": "探测请求数（缺省 6，需大于 target 的 limit）"
+  },
+  "produces": "quota-bypass-proof",
+  "knowledge": "docs/AI-GATEWAY.md 第 7 节：配额键与信任边界",
+  "combo_signature": "ai-gateway-quota-bypass"
+}

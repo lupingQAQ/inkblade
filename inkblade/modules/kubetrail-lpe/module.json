@@ -1,0 +1,18 @@
+{
+  "key": "kubetrail-lpe",
+  "name": {
+    "zh": "KubeTrail LPE 启发式",
+    "en": "KubeTrail LPE heuristics"
+  },
+  "series": "侦察",
+  "description": "16 条内核 LPE CVE 版本区间 + 逃逸原语启发式（能力/seccomp/userns/cgroups/运行时），confidence=heuristic，只判定不利用。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群/节点快照 dict 或 lab/fixtures/attack-surface/cluster-surface.json 路径",
+    "limit": "可选：最多输出的发现数（默认全部）"
+  },
+  "produces": "kubetrail-lpe",
+  "knowledge": "KubeTrail README LPE 表（16 CVE）"
+}

@@ -1,0 +1,20 @@
+{
+  "key": "kv-oom-bomb",
+  "name": {
+    "zh": "KV/激活 OOM 炸弹（超长上下文无 max 生效）",
+    "en": "KV/activation OOM bomb via unenforced context max"
+  },
+  "series": "网络架构",
+  "description": "训练/推理上下文预留面只看声明不看实际（或完全无上限）：一个超长 context_tokens 请求即可把 KV/激活池推过容量（oom_events 计数、silent=true），等价于单请求显存炸弹；fixed 姿态超限 400。只读探测级。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "fabric 训练内存预留基址（必填）",
+    "context_tokens": "实际上下文 token 数（默认 4000000）",
+    "declared_context_tokens": "声明上下文（默认 8192，制造声明/实际不一致）"
+  },
+  "produces": "kv-oom-bomb.json + kv_bytes/oom_events 计数证据",
+  "knowledge": "docs/FABRIC-ATTACK-SURFACE.md §2.7；docs/LONG-CONTEXT.md §2.5（内存放大）；语料 google-tpu-ironwood-ocs（192GB HBM KV 压力）/ deepseek-prefill-decode",
+  "combo_signature": "kv-activation-oom-bomb"
+}

@@ -1,0 +1,22 @@
+{
+  "key": "rl-rollout-buffer-poison",
+  "name": {
+    "zh": "RL 回放缓冲跨租户投毒",
+    "en": "RL rollout buffer poisoning"
+  },
+  "series": "横向利用",
+  "description": "RL 轨迹/回放缓冲的共享写面：租户 A 以租户 B 身份写入带 benign marker 的轨迹（服务端 cross_tenant=true），再读回验证 marker 与 sha256，等价于向他人策略回放/优势估计注入高奖励样本。写面走 backup_targets 备份闸门；fixed 跨租户写/读 403。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "训练栈仿真/真实 RL 回放服务基址（必填）",
+    "mode": "probe-only（默认，仅读缓冲统计）| backup-write（需 backup_targets）",
+    "tenant": "写入者租户（缺省 tenant-a）",
+    "victim_tenant": "受害租户（缺省 tenant-b）",
+    "backup_targets": "backup-write 必需：回放缓冲文件快照目标（runner 备份闸门）"
+  },
+  "produces": "rl-rollout-buffer-poison.json + 跨租户写/读回 sha256 与 marker",
+  "knowledge": "docs/PRETRAIN-SFT-RL-COVERAGE.md 第 7 节：轨迹/回放缓冲跨租户与篡改；ms-swift rollout agent_loop 与 TRL AsyncGRPO 快照",
+  "combo_signature": "rollout-buffer-cross-tenant-write"
+}

@@ -1,0 +1,17 @@
+{
+  "key": "kube-audit-trail-analysis",
+  "name": { "zh": "K8s 审计轨迹分析", "en": "K8s audit trail analysis" },
+  "series": "侦察",
+  "description": "apiserver 审计日志 JSON Lines 流的 who-did-what 追溯：RoleBinding→cluster-admin 创建/特权 Pod/Ray 作业 runtime Pod/Secret 异常读/pods/exec/权重 PVC 异常写六类检测，输出主体/动词/资源/时间/映射链名/建议规则键；附 KubeTrail（ekkoo-z/KubeTrail）dbus.json 导出适配器",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "auditlog": "K8s audit log JSON Lines 文件路径，或事件 dict 列表",
+    "kubetrail_export": "可选：KubeTrail dbus.json 导出文件路径（或 Document dict），适配为 InkBlade findings",
+    "baseline_subjects": "可选：基线主体白名单列表（默认与 Sigma not_in 白名单同源）",
+    "include_denied": "可选：默认 False；True 时 403 已拒绝尝试以 low 报出（紫队验证准入拦截证据）"
+  },
+  "produces": "audit-trail-findings",
+  "knowledge": "K8s apiserver 审计日志的 who-did-what 追溯；适配 KubeTrail（ekkoo-z/KubeTrail，Apache-2.0）的 dbus.json 导出与 DataDog MKAT 的只读检查项"
+}

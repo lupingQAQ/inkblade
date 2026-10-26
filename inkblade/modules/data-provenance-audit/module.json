@@ -1,0 +1,18 @@
+{
+  "key": "data-provenance-audit",
+  "name": {
+    "zh": "数据/制品来源证明审计面",
+    "en": "Data and artifact provenance audit surface"
+  },
+  "series": "情报",
+  "description": "只读检查 SLSA/in-toto/Sigstore 证明：签名无效、builder 未知、缺少 materials/SBOM、SLSA 等级不足、未接 Rekor、来源漂移。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "data-provenance-audit.json + 证明/SBOM 证据",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "provenance-signature-bypass"
+}

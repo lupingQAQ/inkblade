@@ -1,0 +1,19 @@
+{
+  "key": "experiment-tracker-exposure",
+  "name": {
+    "zh": "实验追踪器未授权暴露",
+    "en": "Experiment tracker exposure"
+  },
+  "series": "窃取与数据泄露",
+  "description": "MLflow / W&B / TensorBoard 三类实验追踪器的未授权读：跨租户 run 与指标、MLflow 后端连接串与 s3 artifact root、W&B API key（finding 仅 MOCK****尾4位，全文只进 trace 归档）。判据为多源组合，单点 run 可读不结论。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "训练栈仿真/真实追踪器服务基址（必填）",
+    "tenant": "请求租户（X-Tenant，缺省 tenant-a；他租户数据用于跨租户判据）"
+  },
+  "produces": "experiment-tracker-exposure.json + 四路由 trace（含脱敏后的 key 尾4位）",
+  "knowledge": "docs/PRETRAIN-SFT-RL-COVERAGE.md 第 5 节：实验追踪器暴露面；MLflow/W&B/TensorBoard 默认无鉴权部署姿势",
+  "combo_signature": "tracker-unauth-cross-tenant-and-credentials"
+}

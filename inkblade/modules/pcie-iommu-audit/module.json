@@ -1,0 +1,25 @@
+{
+  "key": "pcie-iommu-audit",
+  "name": {
+    "zh": "PCIe/IOMMU 直通隔离面审计",
+    "en": "PCIe/IOMMU passthrough isolation audit"
+  },
+  "series": "侦察",
+  "description": "检测节点 IOMMU 内核参数与 GPU/DPU PCIe 直通配置；IOMMU 关闭、ACS 绕过或整组直通时记为风险。仅在采集到节点与 IOMMU 配置时执行。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "collect": "inkblade collect 输出目录",
+    "profile": "部署画像名",
+    "iommu": "可选：{enabled, groups, acs_enabled}"
+  },
+  "produces": "pcie-iommu-audit.json + IOMMU 面 findings",
+  "knowledge": "docs/SURFACE-REALISM.md PCIe/IOMMU 面",
+  "combo_signature": "iommu-passthrough-isolation-gap",
+  "surfaces": [
+    {"type": "k8s-object", "selector": "Node"},
+    {"type": "config-file", "selector": "iommu"}
+  ],
+  "default_enabled": true
+}

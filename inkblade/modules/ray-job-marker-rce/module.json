@@ -1,0 +1,35 @@
+{
+  "key": "ray-job-marker-rce",
+  "name": {
+    "zh": "Ray dashboard unauthenticated job RCE",
+    "en": "Ray dashboard unauthenticated job RCE"
+  },
+  "series": "横向利用",
+  "description": "Ray dashboard unauthenticated job RCE; covers CVE-2023-48022/48023/2026-32981. Write surface: requires mode=backup-write and backup_targets (runner backup gate); marker is proven then cleaned.",
+  "min_level": "全影响演示",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "ray-job-rce",
+  "knowledge": "docs/CVE-CATALOG.md + inkblade/core/cve-catalog.json",
+  "combo_signature": "ray-job-rce",
+  "verified": false,
+  "verification_status": "partial",
+  "verification_cves": {
+    "CVE-2023-48022": "verified",
+    "CVE-2023-48023": "verified",
+    "CVE-2026-32981": "static-only",
+    "KUBERAY-ADV-2026-01": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/ray/CVE-2023-48022/result.json",
+    "lab/upstream_verify/cases/ray/CVE-2023-48023/result.json",
+    "lab/upstream_verify/cases/ray/CVE-2026-32981/result.json",
+    "lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/result.json"
+  ]
+}

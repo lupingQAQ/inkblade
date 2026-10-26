@@ -1,0 +1,18 @@
+{
+  "key": "kube-bench-cis",
+  "name": {
+    "zh": "kube-bench CIS 基线",
+    "en": "kube-bench CIS baseline"
+  },
+  "series": "侦察",
+  "description": "kube-bench CIS 条目级检查（API Server/Controller Manager/Scheduler/etcd/kubelet/config 六分区），按 K8s 版本选 profile，逐项 CIS id + 修复建议。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群/节点快照 dict 或 lab/fixtures/attack-surface/cluster-surface.json 路径",
+    "limit": "可选：最多输出的发现数（默认全部）"
+  },
+  "produces": "kube-bench-cis",
+  "knowledge": "kube-bench cfg profiles（51）+ CIS 1.8/2.0"
+}

@@ -1,0 +1,32 @@
+{
+  "key": "gpu-pool-scheduler-unauth",
+  "name": {
+    "zh": "GPU 池调度 admin 无鉴权（跨租户分配/迁移）",
+    "en": "GPU Pool Scheduler Unauthenticated Admin (cross-tenant allocate/migrate)"
+  },
+  "series": "网络架构",
+  "description": "HAMi/OrionX/cGPU 风格组卡池化调度面：/gpu/pools 无鉴权枚举全租户设备，/gpu/allocate 可占用他租户已分配设备并迁移（旧分配残留保留）。fixed：租户 token 过滤 + admin 同租户校验 + 已分配 409。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅池清单）| backup-write（需 backup_targets，执行分配/迁移）",
+    "tenant": "攻击者租户（默认 tenant-a）",
+    "victim_tenant": "受害者租户（默认 tenant-b）",
+    "device": "目标设备（默认 gpu-b-0）",
+    "token": "可选租户 token（fixed 模式读身份）",
+    "admin_token": "可选平台 admin token（fixed 模式写身份）"
+  },
+  "produces": "gpu-pool-cross-tenant-allocation",
+  "knowledge": "GPU 组卡/池化隔离模型（HAMi 分数卡、OrionX vGPU、cGPU 时间片、MIG/MPS）与池调度面鉴权边界",
+  "combo_signature": "gpu-pool-scheduler-unauth",
+  "verified": false,
+  "verification_status": "unsupported",
+  "verification_cves": {
+    "HAMI-ADV-2026-01": "unsupported"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/hami/HAMI-ADV-2026-01/result.json"
+  ]
+}

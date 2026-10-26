@@ -1,0 +1,18 @@
+{
+  "key": "cis-benchmark-audit",
+  "name": {
+    "zh": "CIS 基准全集审计（K8s v1.8.x + 节点/发行版 + ML 基线）",
+    "en": "CIS benchmark audit (K8s v1.8.x + node/distro + ML baseline)"
+  },
+  "series": "侦察",
+  "description": "只读 fixture 判定：kube-bench cis-1.8 官方 130 项逐条覆盖（控制面/etcd/kubelet/调度器/策略），另含节点主机 CIS 26 项、k3s 自管面 5 项与 1.9 前向项 1 项；输出 pass/fail/manual 矩阵与按 section 的计分。超出项独立评估 GPU Operator/vLLM/SGLang 部署基线（19 项）。缺失证据一律 manual，不臆造 pass/fail。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "fixture dict 或 JSON 路径（lab/fixtures/cis/*.json：components/files/nodes/host/k3s/policies/ml）",
+    "include_ml": "是否评估 GPU Operator/vLLM/SGLang 部署基线（默认 true）"
+  },
+  "produces": "pass/fail/manual 矩阵（按 CIS section + tier）+ 未通过项 findings（含修复建议）",
+  "knowledge": "docs/CIS-PARITY.md；kube-bench cfg/cis-1.8（130 项）；CIS DIL v2.0；k3s security hardening"
+}

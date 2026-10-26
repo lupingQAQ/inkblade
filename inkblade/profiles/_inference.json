@@ -1,0 +1,21 @@
+{
+  "schema": "inkblade-profile-v1",
+  "name": "_inference",
+  "complete": true,
+  "description": "Common LLM inference service surfaces (OpenAI-compatible vLLM/SGLang and cache/router telemetry).",
+  "surfaces": [
+    {"type": "http-endpoint", "selector": "/v1/models"},
+    {"type": "http-endpoint", "selector": "/v1/chat/completions"},
+    {"type": "http-endpoint", "selector": "/health"},
+    {"type": "http-endpoint", "selector": "/metrics"},
+    {"type": "http-endpoint", "selector": "/version"},
+    {"type": "config-file", "selector": "vllm/config.yaml"},
+    {"type": "config-file", "selector": "sglang/config.yaml"},
+    {"type": "config-file", "selector": "train/config.yaml"},
+    {"type": "config-file", "selector": "tokenizer/tokenizer_config.json"},
+    {"type": "config-file", "selector": "ai-infra/inventory.json"},
+    {"type": "config-file", "selector": "inference/tenant-policy.json"},
+    {"type": "runtime-agent", "selector": "runtime-agent/vllm"},
+    {"type": "model-file", "selector": "model/weights/model.safetensors"}
+  ]
+}

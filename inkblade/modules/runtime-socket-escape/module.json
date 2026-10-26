@@ -1,0 +1,16 @@
+{
+  "key": "runtime-socket-escape",
+  "name": { "zh": "容器运行时 Socket 逃逸", "en": "Runtime Socket Escape" },
+  "series": "权限链",
+  "description": "解析 Pod 清单：docker.sock/containerd.sock hostPath 挂载 → 在宿主拉起特权容器",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "fixture": "PodList 清单 JSON（默认 lab/fixtures/perm/privileged-pods.json）",
+    "mode": "detect | backup-write（演示分支，需 demo_target）",
+    "demo_target": "backup-write 模式下的演示写入文件（socket 挂载点 marker 证明）"
+  },
+  "produces": "host-escape",
+  "knowledge": "设计基线第 11 节：运行时 socket 挂载逃逸（docker.sock/containerd.sock → 宿主特权容器）"
+}

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InkBlade 控制台 · 十视图</title>
+<link rel="stylesheet" href="vendor/reactflow.style.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="brand">InkBlade<small data-i18n="brand.sub">ML 集群渗透测试控制台 · 十视图</small></div>
+  <span class="pill" id="mode-pill">本地模式 · 全离线</span>
+  <span class="pill" id="session-pill" hidden></span>
+  <form id="login-form" hidden>
+    <input id="in-user" data-i18n-placeholder="login.user" placeholder="用户名" autocomplete="username">
+    <input id="in-pass" type="password" data-i18n-placeholder="login.pass" placeholder="密码" autocomplete="current-password">
+    <input id="in-ws" data-i18n-placeholder="login.ws" placeholder="工作区" value="local-lab">
+    <button type="submit" id="btn-login" data-i18n="login.submit">登录</button>
+    <button type="button" id="btn-runs" data-i18n="login.runs" hidden>刷新运行</button>
+    <button type="button" id="btn-abort" data-i18n="login.abort" hidden title="终止执行中的子进程并记录中断点">紧急停止</button>
+  </form>
+  <button type="button" id="lang-toggle" class="lang-toggle" aria-label="切换语言 / Switch language" title="切换语言 / Switch language">EN</button>
+</header>
+
+<section id="demo-guide" class="demo-guide" aria-label="首次使用引导">
+  <div class="demo-guide-copy">
+    <strong data-i18n="guide.title">第一次用 InkBlade？2 条命令看结果</strong>
+    <span data-i18n="guide.body">本地 mock 靶场，不碰真实集群；约 10–20 秒生成发现、双语报告与规则包。</span>
+    <div class="demo-guide-cmds">
+      <code>python -m inkblade doctor</code><span>→</span><code>python -m inkblade demo</code>
+    </div>
+    <div class="demo-guide-flow">
+      <span><b>1</b> <span data-i18n="guide.step1">环境自检</span> <code>doctor</code></span>
+      <span><b>2</b> <span data-i18n="guide.step2">本地看结果</span> <code>demo</code></span>
+      <span><b>3</b> <span data-i18n="guide.step3">真实集群（只读）</span> <code>onboard-cluster --dry-run</code></span>
+    </div>
+  </div>
+  <div class="demo-guide-actions">
+    <span class="hint"><span data-i18n="guide.cluster">真实集群：</span><code>python -m inkblade onboard-cluster --dry-run</code></span>
+    <span class="hint" data-i18n="guide.kubeconfig">自动发现 KUBECONFIG / ~/.kube/config；先 dry-run 不碰集群。</span>
+    <button type="button" id="demo-guide-close" data-i18n="guide.dismiss">知道了</button>
+  </div>
+</section>
+
+<nav id="views">
+  <button data-view="dag" class="active"><span class="n">①</span><span data-i18n="nav.dag">工作流 DAG</span></button>
+  <button data-view="chain"><span class="n">②</span><span data-i18n="nav.chain">攻击链图</span></button>
+  <button data-view="timeline"><span class="n">③</span><span data-i18n="nav.timeline">执行时间线</span></button>
+  <button data-view="evidence"><span class="n">④</span><span data-i18n="nav.evidence">证据浏览器</span></button>
+  <button data-view="report"><span class="n">⑤</span><span data-i18n="nav.report">报告预览</span></button>
+  <button data-view="rules"><span class="n">⑥</span><span data-i18n="nav.rules">规则视图</span></button>
+  <button data-view="assets"><span class="n">⑦</span><span data-i18n="nav.assets">资产图</span></button>
+  <button data-view="drift"><span class="n">⑧</span><span data-i18n="nav.drift">差异视图</span></button>
+  <button data-view="approvals"><span class="n">⑨</span><span data-i18n="nav.approvals">审批队列</span></button>
+  <button data-view="schedules"><span class="n">⑩</span><span data-i18n="nav.schedules">计划任务</span></button>
+</nav>
+
+<main>
+  <!-- ① 工作流 DAG：节点=步骤，状态色 待执行/运行中/成功/降级/阻断；侧栏=步骤详情 -->
+  <section id="view-dag" class="view active">
+    <div id="dag-layout">
+      <div>
+        <div id="dag-canvas"><div class="dag-empty">暂无步骤数据</div></div>
+        <div class="legend">
+          <span class="i-pending"><i></i><span data-i18n="status.pending">待执行</span></span>
+          <span class="i-running"><i></i><span data-i18n="status.running">运行中</span></span>
+          <span class="i-success"><i></i><span data-i18n="status.success">成功</span></span>
+          <span class="i-degraded"><i></i><span data-i18n="status.degraded">降级</span></span>
+          <span class="i-blocked"><i></i><span data-i18n="status.blocked">阻断</span></span>
+        </div>
+      </div>
+      <aside id="dag-sidebar" class="panel">
+        <h3 data-i18n="dag.sidebar">步骤详情</h3>
+        <div class="hint" data-i18n="dag.sidebarHint">点击节点查看 prompt/命令、环境、结果与三层证据指针。</div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ② 攻击链图：资产节点 + 利用边（严重度着色，按链分组） -->
+  <section id="view-chain" class="view">
+    <div class="panel">
+      <div class="chain-controls">
+        <label class="hint" data-i18n="chain.filter">链过滤</label>
+        <select id="chain-filter"><option value="*">全部链</option></select>
+        <span class="hint" data-i18n="chain.legend">边色：红=可达利用 / 橙=高危路径 / 黄虚线=降级 / 灰虚线=阻断·不可达</span>
+      </div>
+      <div id="chain-canvas"></div>
+    </div>
+  </section>
+
+  <!-- ③ 执行时间线：Argo 风格瀑布（起止/耗时/并行度） -->
+  <section id="view-timeline" class="view">
+    <div class="panel">
+      <h3 data-i18n="timeline.title">执行瀑布</h3>
+      <div class="hint" id="tl-summary"></div>
+      <div id="timeline-body"></div>
+    </div>
+  </section>
+
+  <!-- ④ 证据浏览器：数据库层 → 上下文摘要层 → 归档层（SHA256）三层穿透 -->
+  <section id="view-evidence" class="view">
+    <div id="ev-layout">
+      <div class="panel">
+        <h3 data-i18n="evidence.steps">运行步骤</h3>
+        <div id="ev-steps"></div>
+      </div>
+      <div class="panel" id="ev-detail">
+        <h3 data-i18n="evidence.threeLayers">三层证据</h3>
+        <div class="hint" data-i18n="evidence.pickHint">选择左侧步骤查看 prompt/命令、环境、归档哈希与上下文摘要指针。</div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3 data-i18n="evidence.manifest">归档清单 manifest.sha256</h3>
+      <pre class="manifest" id="ev-manifest">（无）</pre>
+    </div>
+  </section>
+
+  <!-- ⑤ 报告预览：双语报告渲染 + 导出（占位 /api/report，静态模式内嵌渲染） -->
+  <section id="view-report" class="view">
+    <div id="report-body"></div>
+  </section>
+
+  <!-- ⑥ 规则视图：规则↔攻击链映射矩阵 + 覆盖情况 + 紫队验证标记 -->
+  <section id="view-rules" class="view">
+    <div class="panel">
+      <h3 data-i18n="rules.title">规则 ↔ 攻击链映射矩阵</h3>
+      <div class="hint" data-i18n="rules.hint">行=防御/检测规则（Kyverno·Gatekeeper·NetworkPolicy·PSS·Sigma·Falco·Suricata），列=攻击链；●=规则覆盖该链。</div>
+      <div id="rules-body"></div>
+    </div>
+  </section>
+
+  <!-- ⑦ 资产图：发现 → 增量资产清单（assets 表）namespace→service 层级 -->
+  <section id="view-assets" class="view">
+    <div class="panel">
+      <h3 data-i18n="assets.title">资产图（增量资产清单）</h3>
+      <div class="hint" data-i18n="assets.hint">种子（命名空间/服务清单/kubeconfig 快照）→ core/discovery 增量入库；模块经资产解析目标而非散装参数。</div>
+      <div id="assets-body"></div>
+    </div>
+  </section>
+
+  <!-- ⑧ 差异视图：周期重测 drift（新增/已修复/未变） -->
+  <section id="view-drift" class="view">
+    <div class="panel">
+      <h3 data-i18n="drift.title">重测差异（drift）</h3>
+      <div class="hint" data-i18n="drift.hint">scheduler 到期跑链子集，与上次 findings 逐键差异：新增（红）/已修复（绿）/未变。</div>
+      <div id="drift-body"></div>
+    </div>
+  </section>
+
+  <!-- ⑨ 审批队列：explorer 提议 → lead 批准 → 人触发执行 -->
+  <section id="view-approvals" class="view">
+    <div class="panel">
+      <h3 data-i18n="approvals.title">审批队列（审批制自主探索）</h3>
+      <div class="hint" data-i18n="approvals.hint">LLM 可选（OpenAI 兼容 env）+ 规则兜底；逐动作 dry-run 预览（写面/备份闸门），lead 批准后才可执行。</div>
+      <div id="approvals-body"></div>
+    </div>
+  </section>
+
+  <!-- ⑩ 计划任务：cron 式周期重测 -->
+  <section id="view-schedules" class="view">
+    <div class="panel">
+      <h3 data-i18n="schedules.title">计划任务（周期重测）</h3>
+      <div class="hint" data-i18n="schedules.hint">cron/interval 计划 → 到期自动跑指定链子集 → drift 报告。</div>
+      <div id="schedules-body"></div>
+    </div>
+  </section>
+</main>
+
+<footer><span data-i18n="footer.line">InkBlade · 资产全部本地内嵌（无 CDN）· 证据三层：上下文摘要 / 数据库 / 归档（tar+SHA256）</span></footer>
+
+<script src="vendor/react.production.min.js"></script>
+<script src="vendor/react-dom.production.min.js"></script>
+<script src="vendor/reactflow.umd.min.js"></script>
+<!-- INKBLADE_DATA -->
+<script src="app.js"></script>
+</body>
+</html>

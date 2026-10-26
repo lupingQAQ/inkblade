@@ -1,0 +1,35 @@
+{
+ "key": "ta-code-execute-shared",
+ "title": {
+  "zh": "open-webui 共享沙箱代码执行",
+  "en": "open-webui shared-sandbox code execution"
+ },
+ "category": "tool-abuse",
+ "face": "relay",
+ "target_face": "relay-code-exec",
+ "preconditions": [
+  "lab/mock_targets /api/v1/utils/code/execute 可达"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/api/v1/utils/code/execute",
+   "auth": "none",
+   "body": {
+    "code": "print('INKBLADE-BENIGN')"
+   }
+  }
+ ],
+ "detector": {
+  "kind": "keywords",
+  "any_of": [
+   "b-was-here"
+  ]
+ },
+ "severity": "critical",
+ "rule_key": "sigma-llm-probe-tool-abuse",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

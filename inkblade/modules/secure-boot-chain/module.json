@@ -1,0 +1,29 @@
+{
+  "key": "secure-boot-chain",
+  "name": {
+    "zh": "安全启动 + TPM PCR 基线 + UKI 签名",
+    "en": "Secure Boot + TPM PCR baseline + UKI signature"
+  },
+  "series": "侦察",
+  "description": "B 级保障性审计：核对 Secure Boot/Setup Mode、eventlog 重放、PCR 0/4/7/11 与 golden 基线、dbx 撤销库年龄、PCR bank，以及 UKI detached 签名（RSA/ECDSA）或外部 Authenticode 验证结果。检测持久化/引导链漂移，不做攻击。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "surfaces": [
+    {
+      "type": "bmc",
+      "selector": "tpm/tpm2"
+    },
+    {
+      "type": "config-file",
+      "selector": "attest/tpm.json"
+    }
+  ],
+  "params_schema": {
+    "snapshot": "{\"secure_boot\", \"setup_mode\", \"eventlog_verified\", \"pcrs\", \"baseline\", \"dbx\", \"tpm\", \"uki\"} 或 JSON 路径"
+  },
+  "produces": "secure-boot-chain.json + PCR 差异/UKI 验签/dbx 证据",
+  "knowledge": "B 级保障性审计：TCG PC Client Platform Firmware Profile、UEFI Secure Boot dbx、UAPI UKI/PCR 11；Authenticode/PKCS#7 需外部 sbverify/pesign，本地只验 detached raw 签名",
+  "combo_signature": "secure-boot-chain",
+  "necessity": "B"
+}

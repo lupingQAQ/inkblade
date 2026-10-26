@@ -1,0 +1,24 @@
+{
+  "key": "slurm-jwt-auth-audit",
+  "name": {
+    "zh": "Slurm JWT 认证与密钥生命周期审计",
+    "en": "Slurm JWT authentication and key lifecycle audit"
+  },
+  "series": "权限链",
+  "description": "审计 AuthAltTypes/auth/jwt、JWT key 文件权限与年龄、算法（HS256 共享密钥 vs RS256）、令牌有效期、audience 校验、轮换周期与密钥泄漏路径（镜像/家目录）。只读。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "包含 jwt.json、slurm.conf、inventory.json 的导出目录"
+  },
+  "produces": "slurm-jwt-auth-audit.json + JWT findings",
+  "knowledge": "SchedMD auth/jwt 文档 / slurmrestd JWT；RFC 7519；docs/SLURM-HPC-COVERAGE.md JWT 面",
+  "necessity": "auth/jwt 是 slurmrestd 与跨集群提交的主要认证方式；HS256 短密钥、无 audience/过期校验或 key 落在镜像/家目录，会让令牌被伪造或长期重放，绕过 Munge 的 UID 绑定。",
+  "combo_signature": "slurm-jwt-forgery",
+  "surfaces": [
+    {"type": "config-file", "selector": "slurm/jwt.json"},
+    {"type": "config-file", "selector": "slurm/slurm.conf"}
+  ],
+  "default_enabled": true
+}

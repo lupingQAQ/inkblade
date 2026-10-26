@@ -1,0 +1,15 @@
+{
+  "key": "exposure-mapping",
+  "name": { "zh": "暴露面测绘", "en": "Exposure mapping" },
+  "series": "侦察",
+  "description": "Service/Ingress/NodePort/LoadBalancer 暴露面测绘（含 Gateway API HTTPRoute 与 InferencePool failureMode）",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群快照 dict 或 lab/fixtures/recon/*.json 路径（services/ingresses/httproutes 节）",
+    "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
+  },
+  "produces": "exposure-findings",
+  "knowledge": "spec 5.2 侦察表；K8S-AUDIT-REPORT 暴露面章节"
+}

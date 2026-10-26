@@ -1,0 +1,19 @@
+{
+  "key": "reward-model-abuse",
+  "name": {
+    "zh": "奖励模型打分面滥用",
+    "en": "Reward Model Scoring Abuse"
+  },
+  "series": "横向利用",
+  "description": "serve_rm 默认 0.0.0.0 无鉴权 → 伪造训练信号。实验室 face：djev /v1/chat/completions 同构承载未鉴权打分面（连续 3 次调用证明配额失效）。",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）"
+  },
+  "produces": "reward-signal-forgery",
+  "knowledge": "docs/design.md 第 1–5 节：serve_rm 无鉴权打分面",
+  "combo_signature": "reward-plane-abuse"
+}

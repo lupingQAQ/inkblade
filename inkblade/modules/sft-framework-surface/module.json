@@ -1,0 +1,21 @@
+{
+  "key": "sft-framework-surface",
+  "name": {
+    "zh": "SFT 框架提交面（LLaMA-Factory/ms-swift/TRL）",
+    "en": "SFT framework surface"
+  },
+  "series": "横向利用",
+  "description": "SFT 框架族（LLaMA-Factory v0.9.5 / ms-swift v4.6.0 / TRL v1.16.0）的提交面：WebUI/API 绑定 0.0.0.0 且无鉴权、接受 file:// 数据路径与 trust_remote_code、跨租户数据集目录可见，并可无鉴权提交训练任务（benign marker run_name，不执行训练）。写面走 backup_targets 备份闸门。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "训练栈仿真/真实 SFT 服务基址（必填）",
+    "mode": "probe-only（默认，仅读状态/选项/数据集）| backup-write（需 backup_targets）",
+    "backup_targets": "backup-write 必需：任务队列文件快照目标（runner 备份闸门）",
+    "tenant": "请求租户（X-Tenant；用于跨租户数据集判据）"
+  },
+  "produces": "sft-framework-surface.json + 状态/选项/数据集/提交 trace",
+  "knowledge": "docs/PRETRAIN-SFT-RL-COVERAGE.md 第 6 节：SFT 框架无鉴权/代码执行/数据路径；LLaMA-Factory v0.9.5 api/app.py 0.0.0.0 与 file:// 数据路径、TRL v1.16.0 trust_remote_code 传播、ms-swift v4.6.0 load_dataset 快照",
+  "combo_signature": "sft-unauth-submit-file-scheme"
+}

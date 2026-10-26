@@ -1,0 +1,410 @@
+{
+  "ptes": [
+    {
+      "key": "scope",
+      "zh": "范围与约定",
+      "en": "Scope and Rules of Engagement",
+      "nist_phase_zh": "计划阶段（规划与准备）",
+      "nist_phase_en": "Planning and Preparation",
+      "nist_ref": "NIST SP 800-115 §5",
+      "zh_body": "测试范围、授权与技术级别以工作区 scope.yaml 及其哈希签存为准；测试窗口、禁止项与紧急联系人遵照授权书记载。本报告仅覆盖授权范围内资产。",
+      "en_body": "Scope, authorization and technical level follow the workspace scope.yaml with hash-pinned consent; testing window, prohibitions and emergency contacts follow the engagement letter. Only in-scope assets are covered."
+    },
+    {
+      "key": "intel",
+      "zh": "情报收集",
+      "en": "Intelligence Gathering",
+      "nist_phase_zh": "执行阶段（发现）",
+      "nist_phase_en": "Execution (Discovery)",
+      "nist_ref": "NIST SP 800-115 §6",
+      "zh_body": "情报来自只读侦察模块输出与架构情报语料（2026-10 公开基线），覆盖自建训练组网、六云商 K8s、混合互联与网络专源。",
+      "en_body": "Intelligence derives from read-only recon modules and the architecture-intel corpus (2026-10 public baseline), covering self-built training fabrics, six CSP Kubernetes flavors, hybrid interconnects and network-specific sources."
+    },
+    {
+      "key": "threat-model",
+      "zh": "威胁建模",
+      "en": "Threat Modeling",
+      "nist_phase_zh": "计划阶段（规划与准备）",
+      "nist_phase_en": "Planning and Preparation",
+      "nist_ref": "NIST SP 800-115 §5",
+      "zh_body": "威胁建模采用七层网络模型（物理 fabric / 主机网络 / CNI / 服务与网关 / 集合通信 / 存储数据面 / 云与混合边界），结合 MITRE ATT&CK 与 ATLAS 技术视角。",
+      "en_body": "Threat modeling applies the seven-layer network model (physical fabric, host network, CNI, services and gateways, collective communication, storage data plane, cloud and hybrid boundary) with MITRE ATT&CK and ATLAS perspectives."
+    },
+    {
+      "key": "vuln-analysis",
+      "zh": "漏洞分析",
+      "en": "Vulnerability Analysis",
+      "nist_phase_zh": "执行阶段（发现与分析）",
+      "nist_phase_en": "Execution (Discovery and Analysis)",
+      "nist_ref": "NIST SP 800-115 §6–§7",
+      "zh_body": "逐项发现的严重度、CNVD/CNNVD 习惯定级与证据锚（步骤 + manifest sha256 前 16 位）见下表；深度发现（已公开模块）默认展示细节，可选脱敏开关仅输出影响已验证与证据哈希。",
+      "en_body": "Each finding lists severity, CNVD/CNNVD-style grading and an evidence anchor (step + first 16 hex of manifest sha256) in the table below; deep-dive findings (public modules) show details by default, with an optional redaction switch that emits impact-verified plus evidence hash only."
+    },
+    {
+      "key": "exploitation",
+      "zh": "利用",
+      "en": "Exploitation",
+      "nist_phase_zh": "执行阶段（攻击与利用）",
+      "nist_phase_en": "Execution (Attack and Exploitation)",
+      "nist_ref": "NIST SP 800-115 §7",
+      "zh_body": "执行步骤由编排引擎逐项记录（prompt/命令 + 环境 + 结果摘要）并归档于三层证据（上下文摘要 / SQLite / tar+SHA256）。",
+      "en_body": "Executed steps are recorded by the orchestration engine (prompt/command + environment + result summary) and archived in the three-layer evidence store (context digest / SQLite / tar+SHA256)."
+    },
+    {
+      "key": "post-exploit",
+      "zh": "后利用（影响证明）",
+      "en": "Post-Exploitation (Impact Proof)",
+      "nist_phase_zh": "执行阶段（攻击与利用）",
+      "nist_phase_en": "Execution (Attack and Exploitation)",
+      "nist_ref": "NIST SP 800-115 §7",
+      "zh_body": "影响证明严格限定在授权技术级别内；全部写类动作均通过备份闸门取得回执，并保留按步回滚记录。",
+      "en_body": "Impact demonstration is strictly bounded by the authorized technical level; every write action passed the backup gate with a receipt and per-step rollback records are kept."
+    },
+    {
+      "key": "risk-rating",
+      "zh": "风险评级与修复",
+      "en": "Risk Rating and Remediation",
+      "nist_phase_zh": "后置阶段（报告）",
+      "nist_phase_en": "Post-Testing (Reporting)",
+      "nist_ref": "NIST SP 800-115 §8",
+      "zh_body": "风险评级结合 CVSS 3.1 基础评分、CNVD/CNNVD 习惯定级、GB/T 20984 资产-威胁-脆弱性计算与修复基线优先级（立即/短期/中期），修复建议详见配套修复报告。",
+      "en_body": "Risk rating combines CVSS 3.1 base scores, CNVD/CNNVD grading conventions, GB/T 20984 asset-threat-vulnerability computation and baseline remediation priorities (immediate / short-term / mid-term); see the companion remediation report."
+    }
+  ],
+  "special": [
+    {
+      "key": "combo-risk",
+      "zh": "组合层风险",
+      "en": "Combination-Layer Risks",
+      "zh_body": "组合命中来自框架×插件×operator×存储×通信×硬件路线的交叉判定（combos 表）：单一组件各自合规时组合仍可成立攻击链，单点修复不消除组合层风险。",
+      "en_body": "Combination hits come from cross-checking framework x plugin x operator x storage x transport x hardware routes (combos table): a chain can hold even when every single component is individually compliant, so point fixes do not remove combination-layer risk."
+    },
+    {
+      "key": "training-data-leak",
+      "zh": "训练数据泄露面",
+      "en": "Training Data Exposure Surface",
+      "zh_body": "覆盖数据集挂载越权、checkpoint/权重出网通道、推理日志与提示回显三条泄露路径，逐条给出证据锚与定位。",
+      "en_body": "Covers three leakage paths — over-privileged dataset mounts, checkpoint/weight egress channels, and inference-log/prompt echo — each with evidence anchors and localization."
+    },
+    {
+      "key": "core-code",
+      "zh": "核心代码问题清单（file:line）",
+      "en": "Core Code Issues (file:line)",
+      "zh_body": "核心代码问题带 file:line 定位，来自已复现漏洞知识库（推理引擎/RL 框架/operator 源码级取证）。",
+      "en_body": "Core code issues carry file:line anchors from the reproduced vulnerability knowledge base (source-level forensics on inference engines, RL frameworks and operators)."
+    },
+    {
+      "key": "network-threat-model",
+      "zh": "网络分层威胁模型",
+      "en": "Layered Network Threat Model",
+      "zh_body": "按七层模型输出威胁面：物理 fabric / 主机网络 / CNI / 服务与网关 / 集合通信（RDMA·IB 旁路实证）/ 存储数据面 / 云与混合边界，并附 CNI 语义可达性矩阵与判定方式。",
+      "en_body": "Threat surfaces are presented per the seven-layer model — physical fabric, host network, CNI, services and gateways, collective communication (RDMA/IB bypass with proof), storage data plane, cloud and hybrid boundary — plus the CNI-semantic reachability matrix and verdict methods."
+    },
+    {
+      "key": "hybrid-cloud-boundary",
+      "zh": "混合云边界（IMDS/角色/互联）",
+      "en": "Hybrid Cloud Boundary (IMDS/Roles/Interconnect)",
+      "zh_body": "混合云边界关注云元数据服务（IMDS）临时凭据获取、跨账号角色扮演与云互联/专线暴露面，及六云商 K8s 的网络策略差异。",
+      "en_body": "The hybrid boundary covers cloud metadata service (IMDS) temporary credential theft, cross-account role assumption, interconnect/direct-link exposure, and NetworkPolicy differences across six CSP Kubernetes flavors."
+    }
+  ],
+  "nist": {
+    "intro_zh": "NIST SP 800-115 章节映射（计划—执行—后置三阶段与 PTES 段落交叉引用）：",
+    "intro_en": "NIST SP 800-115 section mapping (Planning–Execution–Post-Testing phases cross-referenced with PTES stages):",
+    "phases": [
+      {"zh": "计划", "en": "Planning", "ref": "NIST SP 800-115 §5"},
+      {"zh": "执行", "en": "Execution", "ref": "NIST SP 800-115 §6–§7"},
+      {"zh": "后置", "en": "Post-Testing", "ref": "NIST SP 800-115 §8"}
+    ]
+  },
+  "djbh_intro_zh": "等保 2.0（GB/T 22239-2019）与 GB/T 20984 条款映射（发现类别 → 安全要求条款）：",
+  "djbh_intro_en": "CPS 2.0 (GB/T 22239-2019) and GB/T 20984 clause mapping (finding category -> security requirement clause):",
+  "djbh": [
+    {"clause": "GB/T 22239-2019 8.1.2.1", "zh": "安全通信网络—网络架构", "en": "Secure Communication Network — Network Architecture", "maps": "network-architecture"},
+    {"clause": "GB/T 22239-2019 8.1.3.1", "zh": "安全区域边界—边界防护", "en": "Security Area Boundary — Boundary Protection", "maps": "boundary-bypass"},
+    {"clause": "GB/T 22239-2019 8.1.3.2", "zh": "安全区域边界—访问控制", "en": "Security Area Boundary — Access Control", "maps": "mgmt-port-exposure"},
+    {"clause": "GB/T 22239-2019 8.1.3.3", "zh": "安全区域边界—入侵防范", "en": "Security Area Boundary — Intrusion Prevention", "maps": "intrusion-detection"},
+    {"clause": "GB/T 22239-2019 8.1.4.1", "zh": "安全计算环境—身份鉴别", "en": "Secure Computing Environment — Identity Authentication", "maps": "authn-bypass"},
+    {"clause": "GB/T 22239-2019 8.1.4.2", "zh": "安全计算环境—访问控制", "en": "Secure Computing Environment — Access Control", "maps": "rbac-escape"},
+    {"clause": "GB/T 22239-2019 8.1.4.7", "zh": "安全计算环境—数据完整性", "en": "Secure Computing Environment — Data Integrity", "maps": "weight-poison"},
+    {"clause": "GB/T 22239-2019 8.1.4.8", "zh": "安全计算环境—数据保密性", "en": "Secure Computing Environment — Data Confidentiality", "maps": "data-exfiltration"},
+    {"clause": "GB/T 20984-2022", "zh": "信息安全风险评估—资产/威胁/脆弱性计算", "en": "Information Security Risk Assessment — asset/threat/vulnerability computation", "maps": "risk-calculation"}
+  ],
+  "compliance": {
+    "intro_zh": "本矩阵把每条发现映射至 2026-10 公开可用的七套 AI 安全与治理框架：OWASP LLM Top 10（2026 正式版，附 2025 旧编号 crosswalk）、OWASP Agentic AI Top 10（ASI01–ASI10，2026）、MITRE ATLAS 技术、NIST AI RMF 1.0、ISO/IEC 42001:2023、EU AI Act GPAI 义务（Art. 53/55）与 TC260/《生成式人工智能服务管理暂行办法》。映射为工程辅助与整改追踪口径，不构成合规认证结论；未命中具体类别的发现使用平台面兜底条款。",
+    "intro_en": "This matrix maps every finding to seven publicly available AI security and governance frameworks as of 2026-10: OWASP LLM Top 10 (2026 release with 2025 ID crosswalk), OWASP Agentic AI Top 10 (ASI01-ASI10, 2026), MITRE ATLAS techniques, NIST AI RMF 1.0, ISO/IEC 42001:2023, EU AI Act GPAI obligations (Art. 53/55) and TC260 / China Interim Measures for Generative AI Services. Mapping is an engineering aid and remediation-tracking convention, not a certification opinion; findings without a specific category fall back to platform-level clauses.",
+    "disclaimer_zh": "条款映射依据模块语义与发现上下文自动归类（多标签并集），同一发现可命中多个框架条款；框架官方文本与本报告不一致时以官方文本为准。",
+    "disclaimer_en": "Clause mapping is auto-classified from module semantics and finding context (multi-label union), so one finding may hit several clauses; where this report differs from the official framework text, the official text prevails.",
+    "fallback": "infrastructure",
+    "frameworks": [
+      {
+        "key": "owasp_llm",
+        "name_zh": "OWASP LLM Top 10（2026 正式版，含 2025 编号 crosswalk）",
+        "name_en": "OWASP LLM Top 10 (2026, with 2025 crosswalk)",
+        "version": "2026",
+        "url": "https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/",
+        "clauses": [
+          {"id": "LLM01", "zh": "提示词注入", "en": "Prompt Injection"},
+          {"id": "LLM02", "zh": "敏感信息泄露", "en": "Sensitive Information Leak"},
+          {"id": "LLM03", "zh": "过度代理权限", "en": "Excessive Agency", "legacy_2025": "LLM06"},
+          {"id": "LLM04", "zh": "供应链风险", "en": "Supply Chain", "legacy_2025": "LLM03"},
+          {"id": "LLM05", "zh": "数据与模型投毒", "en": "Data and Model Poisoning", "legacy_2025": "LLM04"},
+          {"id": "LLM06", "zh": "无界资源消耗", "en": "Unbounded Consumption", "legacy_2025": "LLM10"},
+          {"id": "LLM07", "zh": "错误信息", "en": "Misinformation", "legacy_2025": "LLM09"},
+          {"id": "LLM08", "zh": "隐藏上下文暴露", "en": "Hidden Context Exposure", "legacy_2025": "LLM07"},
+          {"id": "LLM09", "zh": "向量与嵌入弱点", "en": "Vector and Embedding Weaknesses", "legacy_2025": "LLM08"},
+          {"id": "LLM10", "zh": "不当输出处理", "en": "Improper Output Handling", "legacy_2025": "LLM05"}
+        ]
+      },
+      {
+        "key": "owasp_agentic",
+        "name_zh": "OWASP Agentic AI Top 10（ASI01–ASI10，2026）",
+        "name_en": "OWASP Agentic AI Top 10 (ASI01-ASI10, 2026)",
+        "version": "2026",
+        "url": "https://genai.owasp.org/2025/12/09/owasp-top-10-for-agentic-applications-the-benchmark-for-agentic-security-in-the-age-of-autonomous-ai",
+        "clauses": [
+          {"id": "ASI01", "zh": "智能体目标劫持", "en": "Agent Goal Hijack"},
+          {"id": "ASI02", "zh": "工具滥用与利用", "en": "Tool Misuse and Exploitation"},
+          {"id": "ASI03", "zh": "身份与权限滥用", "en": "Identity and Privilege Abuse"},
+          {"id": "ASI04", "zh": "智能体供应链脆弱性", "en": "Agentic Supply Chain Vulnerabilities"},
+          {"id": "ASI05", "zh": "非预期代码执行", "en": "Unexpected Code Execution (RCE)"},
+          {"id": "ASI06", "zh": "记忆与上下文投毒", "en": "Memory and Context Poisoning"},
+          {"id": "ASI07", "zh": "智能体间通信不安全", "en": "Insecure Inter-Agent Communication"},
+          {"id": "ASI08", "zh": "级联失效", "en": "Cascading Failures"},
+          {"id": "ASI09", "zh": "人机信任利用", "en": "Human-Agent Trust Exploitation"},
+          {"id": "ASI10", "zh": "失控智能体", "en": "Rogue Agents"}
+        ]
+      },
+      {
+        "key": "atlas",
+        "name_zh": "MITRE ATLAS 技术矩阵",
+        "name_en": "MITRE ATLAS Techniques",
+        "version": "2026-10",
+        "url": "https://atlas.mitre.org/techniques/",
+        "clauses": [
+          {"id": "AML.T0010", "zh": "ML 供应链攻陷", "en": "ML Supply Chain Compromise"},
+          {"id": "AML.T0015", "zh": "规避 ML 模型", "en": "Evade ML Model"},
+          {"id": "AML.T0018", "zh": "模型后门", "en": "Backdoor ML Model"},
+          {"id": "AML.T0019", "zh": "发布投毒数据集", "en": "Publish Poisoned Datasets"},
+          {"id": "AML.T0020", "zh": "训练数据投毒", "en": "Poison Training Data"},
+          {"id": "AML.T0024", "zh": "经 ML 推理 API 外泄", "en": "Exfiltration via ML Inference API"},
+          {"id": "AML.T0025", "zh": "经网络手段外泄", "en": "Exfiltration via Cyber Means"},
+          {"id": "AML.T0029", "zh": "拒绝 ML 服务", "en": "Denial of ML Service"},
+          {"id": "AML.T0031", "zh": "侵蚀模型完整性", "en": "Erode ML Model Integrity"},
+          {"id": "AML.T0034", "zh": "成本收割", "en": "Cost Harvesting"},
+          {"id": "AML.T0040", "zh": "ML 模型推理 API 访问", "en": "ML Model Inference API Access"},
+          {"id": "AML.T0043", "zh": "构造对抗样本", "en": "Craft Adversarial Data"},
+          {"id": "AML.T0044", "zh": "完整模型访问", "en": "Full ML Model Access"},
+          {"id": "AML.T0048", "zh": "社会危害", "en": "Societal Harm"},
+          {"id": "AML.T0049", "zh": "利用公网应用", "en": "Exploit Public-Facing Application"},
+          {"id": "AML.T0050", "zh": "命令与脚本解释器", "en": "Command and Scripting Interpreter"},
+          {"id": "AML.T0051", "zh": "LLM 提示词注入", "en": "LLM Prompt Injection"},
+          {"id": "AML.T0053", "zh": "AI 智能体工具调用", "en": "AI Agent Tool Invocation"},
+          {"id": "AML.T0054", "zh": "LLM 越狱", "en": "LLM Jailbreak"},
+          {"id": "AML.T0055", "zh": "未加固凭据", "en": "Unsecured Credentials"},
+          {"id": "AML.T0056", "zh": "提取 LLM 系统提示", "en": "Extract LLM System Prompt"},
+          {"id": "AML.T0057", "zh": "LLM 数据泄露", "en": "LLM Data Leakage"},
+          {"id": "AML.T0058", "zh": "发布投毒模型", "en": "Publish Poisoned Models"}
+        ]
+      },
+      {
+        "key": "nist_ai_rmf",
+        "name_zh": "NIST AI RMF 1.0（AI 100-1）",
+        "name_en": "NIST AI RMF 1.0 (AI 100-1)",
+        "version": "1.0",
+        "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+        "clauses": [
+          {"id": "GV.1.1", "zh": "风险管理策略与治理职责", "en": "Risk policies and accountability"},
+          {"id": "GV.2.1", "zh": "角色与责任", "en": "Roles and responsibilities"},
+          {"id": "GV.6.1", "zh": "第三方与供应链风险管理", "en": "Third-party and supply-chain risk"},
+          {"id": "MP.1.1", "zh": "使用场景与影响映射", "en": "Context and impact mapping"},
+          {"id": "MP.5.1", "zh": "第三方与生态风险映射", "en": "Third-party and ecosystem risk mapping"},
+          {"id": "MS.2.7", "zh": "安全性与韧性评估", "en": "Security and resilience evaluation"},
+          {"id": "MS.3.2", "zh": "对抗性测试与红队", "en": "Adversarial testing and red teaming"},
+          {"id": "MG.2.3", "zh": "风险处置与缓解", "en": "Risk treatment and mitigation"},
+          {"id": "MG.4.1", "zh": "部署后监控与响应", "en": "Post-deployment monitoring and response"}
+        ]
+      },
+      {
+        "key": "iso_42001",
+        "name_zh": "ISO/IEC 42001:2023 AI 管理体系",
+        "name_en": "ISO/IEC 42001:2023 AI Management System",
+        "version": "2023",
+        "url": "https://www.iso.org/standard/42001",
+        "clauses": [
+          {"id": "A.2", "zh": "AI 政策", "en": "Policies related to AI"},
+          {"id": "A.3", "zh": "内部组织", "en": "Internal organization"},
+          {"id": "A.4", "zh": "AI 系统资源", "en": "Resources for AI systems"},
+          {"id": "A.5", "zh": "AI 系统影响评估", "en": "Assessing impacts of AI systems"},
+          {"id": "A.6", "zh": "AI 系统生命周期", "en": "AI system life cycle"},
+          {"id": "A.7", "zh": "AI 系统数据", "en": "Data for AI systems"},
+          {"id": "A.8", "zh": "利益相关方信息", "en": "Information for interested parties"},
+          {"id": "A.9", "zh": "AI 系统使用", "en": "Use of AI systems"},
+          {"id": "A.10", "zh": "第三方与客户关系", "en": "Third-party and customer relationships"}
+        ]
+      },
+      {
+        "key": "eu_ai_act",
+        "name_zh": "EU AI Act GPAI 义务（Art. 51/53/55）",
+        "name_en": "EU AI Act GPAI Obligations (Art. 51/53/55)",
+        "version": "2024/2025",
+        "url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+        "clauses": [
+          {"id": "Art. 51", "zh": "系统性风险模型分类", "en": "Classification of systemic-risk models"},
+          {"id": "Art. 53(1)(a)", "zh": "技术文档", "en": "Technical documentation"},
+          {"id": "Art. 53(1)(b)", "zh": "向下游提供方提供信息", "en": "Information for downstream providers"},
+          {"id": "Art. 53(1)(c)", "zh": "版权政策", "en": "Copyright policy"},
+          {"id": "Art. 53(1)(d)", "zh": "训练内容摘要", "en": "Training content summary"},
+          {"id": "Art. 55(1)(a)", "zh": "模型评估", "en": "Model evaluation"},
+          {"id": "Art. 55(1)(b)", "zh": "对抗性测试", "en": "Adversarial testing"},
+          {"id": "Art. 55(1)(c)", "zh": "严重事件报告", "en": "Serious incident reporting"},
+          {"id": "Art. 55(1)(d)", "zh": "网络安全保护", "en": "Cybersecurity protection"}
+        ]
+      },
+      {
+        "key": "tc260",
+        "name_zh": "TC260 生成式 AI 安全要求 + 生成式人工智能服务管理暂行办法",
+        "name_en": "TC260 Generative AI Security Requirements + Interim Measures for Generative AI Services",
+        "version": "2024/2026",
+        "url": "https://www.tc260.org.cn/",
+        "clauses": [
+          {"id": "暂行办法 4", "zh": "内容合法合规", "en": "Content legality"},
+          {"id": "暂行办法 7", "zh": "训练数据来源与质量", "en": "Training data provenance and quality"},
+          {"id": "暂行办法 9", "zh": "服务提供者安全主体责任", "en": "Provider security responsibility"},
+          {"id": "暂行办法 12", "zh": "生成内容标识", "en": "AI-generated content labelling"},
+          {"id": "暂行办法 14", "zh": "违法内容处置", "en": "Unlawful content remediation"},
+          {"id": "暂行办法 17", "zh": "安全评估与算法备案", "en": "Security assessment and algorithm filing"},
+          {"id": "TC260-003 5.1", "zh": "语料来源安全", "en": "Corpus source security"},
+          {"id": "TC260-003 5.2", "zh": "语料内容安全", "en": "Corpus content security"},
+          {"id": "TC260-003 6", "zh": "模型安全", "en": "Model security"},
+          {"id": "TC260-003 7", "zh": "安全措施", "en": "Security measures"}
+        ]
+      }
+    ],
+    "categories": [
+      {"key": "system-prompt", "zh": "系统提示词泄露", "en": "System prompt leakage",
+       "keywords": ["system prompt", "system-prompt", "系统提示", "提示词泄露", "prompt leak"]},
+      {"key": "prompt-injection", "zh": "提示词/上下文注入", "en": "Prompt/context injection",
+       "keywords": ["prompt injection", "prompt-injection", "提示词注入", "jailbreak", "越狱", "indirect injection", "间接注入", "注入指令"]},
+      {"key": "model-poisoning", "zh": "模型/数据/权重投毒", "en": "Model/data/weight poisoning",
+       "keywords": ["weight poison", "权重投毒", "weight", "权重", "poison", "投毒", "backdoor", "后门", "checkpoint", "lora", "adapter", "reward model", "奖励模型", "数据集投毒", "training data poison"]},
+      {"key": "data-leak", "zh": "敏感数据与训练数据泄露", "en": "Sensitive and training-data leakage",
+       "keywords": ["data leak", "data-leak", "数据泄露", "训练数据泄露", "泄露", "leak", "exfil", "窃取", "credential", "凭据", "secret", "token 泄露", "training-data", "snapshot"]},
+      {"key": "unsafe-code-exec", "zh": "非预期代码/命令执行", "en": "Unexpected code/command execution",
+       "keywords": ["pickle", "deserial", "反序列化", "rce", "code exec", "代码执行", "命令执行", "command injection", "命令注入", "sandbox", "沙箱", "trust remote code", "eval"]},
+      {"key": "excessive-agency", "zh": "智能体过度代理/工具滥用", "en": "Excessive agency / tool misuse",
+       "keywords": ["excessive agency", "过度代理", "agent tool", "工具调用", "tool invocation", "autonomous", "自主", "agent platform", "智能体平台", "mcp", "intercept"]},
+      {"key": "embedding", "zh": "向量与嵌入弱点", "en": "Vector and embedding weaknesses",
+       "keywords": ["embedding", "向量", "vector", "rag", "知识库"]},
+      {"key": "misinformation", "zh": "错误信息/内容安全", "en": "Misinformation / content safety",
+       "keywords": ["misinformation", "hallucination", "幻觉", "虚假信息", "内容安全"]},
+      {"key": "resource-abuse", "zh": "无界资源消耗/级联失效", "en": "Unbounded consumption / cascading failure",
+       "keywords": ["denial", "dos", "资源耗尽", "unbounded", "无限查询", "distillation", "蒸馏", "quota", "配额", "cost"]},
+      {"key": "supply-chain", "zh": "模型与软件供应链", "en": "Model and software supply chain",
+       "keywords": ["supply chain", "supply-chain", "供应链", "sbom", "registry", "镜像签名", "image sign", "pinning", "固定 digest", "dependency", "依赖", "artifact"]},
+      {"key": "infrastructure", "zh": "ML 平台与基础设施面", "en": "ML platform and infrastructure surface",
+       "keywords": ["rbac", "k8s", "kubernetes", "network", "网络", "imds", "metadata", "ssrf", "nccl", "rdma", "nvidia", "gpu", "operator", "privileged", "提权", "escape", "逃逸", "namespace", "租户", "tenant", "端口", "port"]}
+    ],
+    "mapping": {
+      "system-prompt": {
+        "owasp_llm": ["LLM08"],
+        "owasp_agentic": ["ASI06"],
+        "atlas": ["AML.T0056"],
+        "nist_ai_rmf": ["MS.2.7"],
+        "iso_42001": ["A.8", "A.9"],
+        "eu_ai_act": ["Art. 53(1)(b)", "Art. 55(1)(d)"],
+        "tc260": ["TC260-003 5.2", "暂行办法 9"]
+      },
+      "prompt-injection": {
+        "owasp_llm": ["LLM01"],
+        "owasp_agentic": ["ASI01", "ASI02"],
+        "atlas": ["AML.T0051", "AML.T0054"],
+        "nist_ai_rmf": ["MS.2.7", "MS.3.2"],
+        "iso_42001": ["A.9"],
+        "eu_ai_act": ["Art. 55(1)(b)", "Art. 55(1)(d)"],
+        "tc260": ["TC260-003 5.2", "暂行办法 4"]
+      },
+      "model-poisoning": {
+        "owasp_llm": ["LLM05"],
+        "owasp_agentic": ["ASI04", "ASI06"],
+        "atlas": ["AML.T0018", "AML.T0019", "AML.T0020"],
+        "nist_ai_rmf": ["MS.2.7", "MG.2.3"],
+        "iso_42001": ["A.5", "A.6", "A.7"],
+        "eu_ai_act": ["Art. 53(1)(a)", "Art. 53(1)(d)", "Art. 55(1)(a)"],
+        "tc260": ["TC260-003 5.1", "TC260-003 5.2", "暂行办法 7"]
+      },
+      "data-leak": {
+        "owasp_llm": ["LLM02"],
+        "owasp_agentic": ["ASI03"],
+        "atlas": ["AML.T0025", "AML.T0057"],
+        "nist_ai_rmf": ["MS.2.7", "MG.4.1"],
+        "iso_42001": ["A.7", "A.8"],
+        "eu_ai_act": ["Art. 53(1)(b)", "Art. 55(1)(c)"],
+        "tc260": ["TC260-003 5.2", "暂行办法 9"]
+      },
+      "unsafe-code-exec": {
+        "owasp_llm": ["LLM10"],
+        "owasp_agentic": ["ASI05"],
+        "atlas": ["AML.T0049", "AML.T0050"],
+        "nist_ai_rmf": ["MS.2.7"],
+        "iso_42001": ["A.6", "A.9"],
+        "eu_ai_act": ["Art. 55(1)(d)"],
+        "tc260": ["TC260-003 6", "暂行办法 9"]
+      },
+      "excessive-agency": {
+        "owasp_llm": ["LLM03"],
+        "owasp_agentic": ["ASI02", "ASI03", "ASI10"],
+        "atlas": ["AML.T0053"],
+        "nist_ai_rmf": ["GV.1.1", "MG.2.3"],
+        "iso_42001": ["A.3", "A.9"],
+        "eu_ai_act": ["Art. 55(1)(c)", "Art. 55(1)(d)"],
+        "tc260": ["TC260-003 6", "暂行办法 9"]
+      },
+      "embedding": {
+        "owasp_llm": ["LLM09"],
+        "owasp_agentic": ["ASI06"],
+        "atlas": ["AML.T0018", "AML.T0020"],
+        "nist_ai_rmf": ["MS.2.7"],
+        "iso_42001": ["A.7"],
+        "eu_ai_act": ["Art. 55(1)(a)"],
+        "tc260": ["TC260-003 5.1"]
+      },
+      "misinformation": {
+        "owasp_llm": ["LLM07"],
+        "owasp_agentic": ["ASI09"],
+        "atlas": ["AML.T0048"],
+        "nist_ai_rmf": ["MG.4.1", "MS.2.7"],
+        "iso_42001": ["A.8"],
+        "eu_ai_act": ["Art. 55(1)(c)"],
+        "tc260": ["TC260-003 5.2", "暂行办法 4"]
+      },
+      "resource-abuse": {
+        "owasp_llm": ["LLM06"],
+        "owasp_agentic": ["ASI08"],
+        "atlas": ["AML.T0029", "AML.T0034"],
+        "nist_ai_rmf": ["MS.2.7", "MG.2.3"],
+        "iso_42001": ["A.6"],
+        "eu_ai_act": ["Art. 55(1)(d)"],
+        "tc260": ["TC260-003 6"]
+      },
+      "supply-chain": {
+        "owasp_llm": ["LLM04"],
+        "owasp_agentic": ["ASI04"],
+        "atlas": ["AML.T0010", "AML.T0058"],
+        "nist_ai_rmf": ["GV.6.1", "MP.5.1", "MS.2.7"],
+        "iso_42001": ["A.6", "A.10"],
+        "eu_ai_act": ["Art. 53(1)(a)", "Art. 53(1)(d)"],
+        "tc260": ["TC260-003 5.1", "暂行办法 7"]
+      },
+      "infrastructure": {
+        "owasp_llm": ["LLM04"],
+        "owasp_agentic": ["ASI03", "ASI05"],
+        "atlas": ["AML.T0049", "AML.T0055"],
+        "nist_ai_rmf": ["GV.1.1", "MP.1.1", "MS.2.7"],
+        "iso_42001": ["A.4", "A.6", "A.9"],
+        "eu_ai_act": ["Art. 55(1)(d)"],
+        "tc260": ["TC260-003 7", "暂行办法 9"]
+      }
+    }
+  }
+}

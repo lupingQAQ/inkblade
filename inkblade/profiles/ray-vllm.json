@@ -1,0 +1,43 @@
+{
+  "schema": "inkblade-profile-v1",
+  "name": "ray-vllm",
+  "description": "KubeRay control plane with vLLM/SGLang inference, LWS multi-node serving and an AI gateway; no BMC or cloud metadata surface.",
+  "platform": "kubernetes",
+  "complete": true,
+  "inherit": ["_k8s-core", "_inference"],
+  "components": {
+    "orchestrator": "kubernetes",
+    "scheduler": "kube-scheduler + kube-ray",
+    "gpu_sharing": "none",
+    "inference": ["vllm", "sglang"],
+    "hardware": ["gpu"],
+    "cloud_metadata": "absent"
+  },
+  "surfaces": [
+    {"type": "k8s-object", "selector": "RayCluster/ray"},
+    {"type": "k8s-object", "selector": "RayJob/rayjob"},
+    {"type": "k8s-object", "selector": "RayService/ray"},
+    {"type": "k8s-object", "selector": "LeaderWorkerSet/vllm"},
+    {"type": "k8s-object", "selector": "Deployment/litellm"},
+    {"type": "k8s-object", "selector": "Deployment/open-webui"},
+    {"type": "k8s-object", "selector": "Deployment/mlflow"},
+    {"type": "k8s-object", "selector": "Deployment/dify"},
+    {"type": "http-endpoint", "selector": "/dashboard"},
+    {"type": "http-endpoint", "selector": "/api/jobs"},
+    {"type": "http-endpoint", "selector": "/route"},
+    {"type": "http-endpoint", "selector": "/register_dp_rank"},
+    {"type": "http-endpoint", "selector": "/query_dp_ranks"},
+    {"type": "http-endpoint", "selector": "/key/info"},
+    {"type": "http-endpoint", "selector": "/config"},
+    {"type": "http-endpoint", "selector": "/admin/console"},
+    {"type": "http-endpoint", "selector": "/api"},
+    {"type": "http-endpoint", "selector": "/collections"},
+    {"type": "config-file", "selector": "ray/cluster.yaml"},
+    {"type": "config-file", "selector": "litellm/config.yaml"},
+    {"type": "config-file", "selector": "open-webui/config.yaml"},
+    {"type": "config-file", "selector": "mlflow/config.yaml"},
+    {"type": "config-file", "selector": "dify/config.yaml"},
+    {"type": "runtime-agent", "selector": "runtime-agent/ray"},
+    {"type": "runtime-agent", "selector": "runtime-agent/vllm"}
+  ]
+}

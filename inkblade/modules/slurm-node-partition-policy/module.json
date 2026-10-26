@@ -1,0 +1,25 @@
+{
+  "key": "slurm-node-partition-policy",
+  "name": {
+    "zh": "Slurm 节点 drain/分区/QOS 配额审计",
+    "en": "Slurm node drain, partition and QOS quota policy audit"
+  },
+  "series": "侦察",
+  "description": "审计 sinfo/scontrol 导出：DRAIN/DOWN 节点是否仍可调度、drain 原因超期、分区 AllowGroups/AllowAccounts、MaxNodes/MaxTime、OverSubscribe、默认分区与 QOS GrpTRES/MaxTRESPerUser/DenyOnLimit。只读。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "包含 nodes.json、partitions.json、qos.json（sinfo/scontrol show -j 导出）的目录"
+  },
+  "produces": "slurm-node-partition-policy.json + 调度配额 findings",
+  "knowledge": "SchedMD sinfo(1)/scontrol(1)/QOS 文档；docs/SLURM-HPC-COVERAGE.md 节点与分区面",
+  "necessity": "drain 节点带病返池、ALL/ALL 分区与 UNLIMITED QOS 会把故障节点和无限配额暴露给任意租户；这是 Slurm 集群最常见的横向资源滥用入口。",
+  "combo_signature": "slurm-scheduler-quota-bypass",
+  "surfaces": [
+    {"type": "config-file", "selector": "slurm/nodes.json"},
+    {"type": "config-file", "selector": "slurm/partitions.json"},
+    {"type": "config-file", "selector": "slurm/qos.json"}
+  ],
+  "default_enabled": true
+}

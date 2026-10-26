@@ -1,0 +1,21 @@
+{
+  "key": "cloud-sg-imds-exposure",
+  "name": {
+    "zh": "云安全组放开 IMDS（IMDSv1/hop limit）",
+    "en": "Cloud Security Group IMDS Exposure"
+  },
+  "series": "混合云",
+  "description": "GPU 节点安全组 0.0.0.0/0 入站 + IMDSv1（http_tokens=optional）+ hop limit=2，Pod 可直取节点角色。检测 GET /cloud/security-group 配置差分；fixed：内网入站 + IMDSv2 + hop limit=1。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "group": "目标安全组（默认 sg-gpu-nodes）",
+    "tenant": "请求租户（默认 tenant-a）",
+    "token": "可选租户 token（fixed 模式读身份）"
+  },
+  "produces": "sg-imds-exposure",
+  "knowledge": "AWS IMDSv2 Hop Limit / SG for Pods、Azure NSG、阿里安全组、腾讯安全组与 IMDS 等价控制",
+  "combo_signature": "cloud-sg-imds-exposure"
+}

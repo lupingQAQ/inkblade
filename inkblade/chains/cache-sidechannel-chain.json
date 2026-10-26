@@ -1,0 +1,30 @@
+{
+  "id": "cache-sidechannel-chain",
+  "title": {
+    "zh": "缓存时序侧信道 → 成员推断 → 前缀字典提取",
+    "en": "Cache timing side channel → membership inference → prefix dictionary extraction"
+  },
+  "category": "网络利用链",
+  "requires": [
+    "cache-timing-sidechannel",
+    "router-cache-metrics-leak"
+  ],
+  "preconditions": [
+    {"expr": "findings('cache-timing-sidechannel').any(severity == 'high')"}
+  ],
+  "steps": [
+    {
+      "id": "timing-sidechannel",
+      "module": "cache-timing-sidechannel",
+      "params": {"per_class": 30, "alpha": 0.05, "min_effect_ms": 30}
+    },
+    {
+      "id": "router-metrics",
+      "module": "router-cache-metrics-leak",
+      "params": {},
+      "depends_on": ["timing-sidechannel"]
+    }
+  ],
+  "evidence": ["http-trace", "ttft-samples", "welch-ttest", "per-tenant-metrics"],
+  "mitre": ["T1592", "T1213"]
+}

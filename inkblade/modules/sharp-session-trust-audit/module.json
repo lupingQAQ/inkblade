@@ -1,0 +1,15 @@
+{
+  "key": "sharp-session-trust-audit",
+  "name": {"zh": "SHARP 会话与聚合树信任审计", "en": "SHARP Session and Reduction-Tree Trust Audit"},
+  "series": "网络架构",
+  "description": "聚焦 SHARP 会话鉴权、跨租户共享、reduce 成员 ACL、聚合树越界成员、会话遥测暴露与 v3/v4 混跑；输出与 fabric_sim 场景的联动证据。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "可选，fabric 配置 JSON 或路径；省略使用内置 vulnerable fixture"
+  },
+  "produces": "sharp-trust-posture（会话面 findings + sim 场景）",
+  "knowledge": "docs/DEPTH-REVIEW.md §5；inkblade/depth/fabric.py",
+  "combo_signature": "sharp-session-trust"
+}

@@ -1,0 +1,28 @@
+{
+  "key": "nvlink-imex-isolation",
+  "name": {
+    "zh": "NVLink/IMEX 域与分区隔离（research-only）",
+    "en": "NVLink/IMEX domain and partition isolation (research-only)"
+  },
+  "series": "网络架构",
+  "description": "C 级前瞻项：只读解析 IMEX 域成员/导入导出权限/通道权限、NVLink 分区与 Fabric Manager 配置，检出跨租户域、通配权限与默认分区多租户。仅 GB200/NVL 或明确使用多节点 NVLink 的客户按需启用；默认关闭，不计入芯片渗透能力。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "default_enabled": false,
+  "research_only": true,
+  "default_disabled_reason": "C 级前瞻项：NVLink/IMEX 仅 GB200/NVL 多节点客户需要；默认关闭，不计入芯片渗透能力。",
+  "surfaces": [
+    {
+      "type": "config-file",
+      "selector": "nvswitch/imex.json"
+    }
+  ],
+  "params_schema": {
+    "snapshot": "{\"imex\": {...}, \"domains\": [...], \"partitions\": [...], \"fabric_manager\": {...}} 或 JSON 路径"
+  },
+  "produces": "nvlink-imex-isolation.json + 域/权限/通道/分区证据",
+  "knowledge": "C 级 research-only：NVIDIA IMEX 域（nodes_config.cfg）、IMEX channel、NVLSM/Fabric Manager 分区；只在有面客户做配置审计",
+  "combo_signature": "nvlink-imex-isolation",
+  "necessity": "C"
+}

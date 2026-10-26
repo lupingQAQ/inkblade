@@ -1,0 +1,21 @@
+{
+  "key": "defense-bypass-elkeid",
+  "name": {
+    "zh": "字节 Elkeid 绕过面",
+    "en": "Elkeid Bypass Surface"
+  },
+  "series": "横向利用",
+  "description": "Elkeid HIDS（elkeid-agent/elkeid.ko(别名 olehid)/server 指纹）：白名单路径写入、工具改名执行、driver 未加载降级态、规则集盲区类别",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "deploy_snapshot": "部署面快照 dict（daemonsets/deployments/pods/images/rules/configs/kernel_modules/agent_status/kernel_params/crds/webhooks/ingresses）",
+    "fixture": "快照 fixture JSON 文件路径（默认 lab/defense-deploy/fixtures/<product>-deployed.json）",
+    "state": "可选强制评估态: deployed | degraded | absent（缺省按快照指纹自动判定）",
+    "artifact_dir": "矩阵产物目录（缺省=证据 run 目录）"
+  },
+  "produces": "defense-coverage-matrix（检出/盲区矩阵 + 硬化建议 hardening 列表）",
+  "knowledge": "设计基线 5.2 防护产品绕过模块（v7：字节系开源产品为重点）；组件命名取各产品公开仓库",
+  "combo_signature": ""
+}

@@ -1,0 +1,25 @@
+{
+  "key": "hypervisor-audit-integrity",
+  "name": {
+    "zh": "Hypervisor 侧可信审计完整性检查",
+    "en": "Hypervisor-side trusted audit integrity check"
+  },
+  "series": "侦察",
+  "description": "检查审计采集器信任边界：guest 内核内采集、日志可被 guest 改写、无 hypervisor 审计流、无采集器证明与远程 mTLS。对应 HyperAudit（USENIX Security 2026）指出的 rootkit 竞态篡改。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "审计管线导出 JSON（collector/log_path/hypervisor/race_window_ms）"
+  },
+  "produces": "hypervisor-audit-integrity.json + 审计信任边界 findings",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md R01 / I01（USENIX Security 2026 HyperAudit）",
+  "necessity": "guest 内核内的采集器与 rootkit 共享同一信任域，竞态窗口内可被静默改写；只有 hypervisor 侧独立采集/证明才能为云平台提供不可抵赖审计。",
+  "combo_signature": "hypervisor-audit-tamper",
+  "surfaces": [
+    {"type": "config-file", "selector": "audit/hypervisor-audit.json"},
+    {"type": "runtime-agent", "selector": "audit-collector"}
+  ],
+  "default_enabled": false,
+  "default_disabled_reason": "主流六画像无 hypervisor 审计采集器面；保留给实际部署 HyperAudit/云平台审计的客户，显式 --probe 或采集到 audit/hypervisor-audit.json 后启用。"
+}

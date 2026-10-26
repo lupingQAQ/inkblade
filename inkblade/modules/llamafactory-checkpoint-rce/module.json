@@ -1,0 +1,28 @@
+{
+  "key": "llamafactory-checkpoint-rce",
+  "name": {
+    "zh": "LLaMA-Factory 检查点反序列化 RCE",
+    "en": "LLaMA-Factory checkpoint deserialization RCE"
+  },
+  "series": "核心代码",
+  "description": "LLaMA-Factory v1 resume path restores rng_state and dataloader state with explicit torch.load(weights_only=False); whoever can write the checkpoint directory gets pickle code execution on resume. Verified at function level against the pinned llamafactory 0.9.5 wheel (venv-lfa).",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "checkpoint directory or dataset cache path (read-only proof)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "llamafactory-checkpoint",
+  "knowledge": "docs/EXPLOIT-VERIFICATION.md + lab/upstream_verify/cases/llamafactory/",
+  "combo_signature": "trainstack-checkpoint-config",
+  "verified": true,
+  "verification_status": "verified",
+  "verification_cves": {},
+  "verification_evidence": [
+    "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l136-regex/result.json",
+    "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l334-regex/result.json"
+  ]
+}

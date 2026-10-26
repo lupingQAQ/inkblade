@@ -1,0 +1,25 @@
+{
+  "id": "prefill-decode-kv-inference-manipulation",
+  "title": {
+    "zh": "预填充-解码 KV 通道 → 推理操纵",
+    "en": "Prefill-decode KV channel → inference manipulation"
+  },
+  "category": "网络利用链",
+  "requires": [
+    "inference-gateway-pd",
+    "collective-communication-surface"
+  ],
+  "preconditions": [
+    {"expr": "findings('inference-gateway-pd').any(failure_mode == 'FailOpen')"},
+    {"expr": "findings('inference-gateway-pd').any(kv_transport == 'nixl')"}
+  ],
+  "steps": [
+    {
+      "id": "kv-channel-probe",
+      "module": "inference-gateway-pd",
+      "params": {"probe": "kv-channel", "marker": "INKBLADE-${run.name}", "snapshot": "lab/fixtures/network"}
+    }
+  ],
+  "evidence": ["http-trace"],
+  "mitre": ["T1557"]
+}

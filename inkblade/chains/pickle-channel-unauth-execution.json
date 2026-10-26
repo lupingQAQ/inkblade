@@ -1,0 +1,30 @@
+{
+  "id": "pickle-channel-unauth-execution",
+  "title": {
+    "zh": "pickle 通道 → 未授权执行",
+    "en": "pickle channel → unauthenticated execution"
+  },
+  "category": "经典攻击链",
+  "requires": [
+    "framework-port-matching",
+    "verl-checkpoint-pickle",
+    "areal-load-pickle"
+  ],
+  "preconditions": [
+    {"expr": "findings('framework-port-matching').count > 0"}
+  ],
+  "steps": [
+    {
+      "id": "verl-channel-probe",
+      "module": "verl-checkpoint-pickle",
+      "params": {"mode": "probe-only", "marker": "INKBLADE-${run.name}"}
+    },
+    {
+      "id": "areal-load-probe",
+      "module": "areal-load-pickle",
+      "params": {"mode": "probe-only", "marker": "INKBLADE-${run.name}"}
+    }
+  ],
+  "evidence": ["http-trace"],
+  "mitre": ["T1203"]
+}

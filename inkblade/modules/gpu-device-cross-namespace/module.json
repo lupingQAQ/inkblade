@@ -1,0 +1,20 @@
+{
+  "key": "gpu-device-cross-namespace",
+  "name": {
+    "zh": "GPU 设备跨 namespace 共享挂载",
+    "en": "GPU Device Cross-Namespace Mount"
+  },
+  "series": "网络架构",
+  "description": "同一 GPU 设备被多个 namespace / 租户 Pod 同时挂载（device plugin 未独占），/gpu/pools 的 pods 视图暴露跨 ns 分配。fixed：租户过滤且每设备单 namespace。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "tenant": "请求租户（默认 tenant-a）",
+    "token": "可选租户 token（fixed 模式读身份）"
+  },
+  "produces": "gpu-device-cross-namespace",
+  "knowledge": "K8s device plugin 分配语义 / DRA ResourceClaim / MIG 独占与 namespace 边界",
+  "combo_signature": "gpu-device-cross-namespace"
+}

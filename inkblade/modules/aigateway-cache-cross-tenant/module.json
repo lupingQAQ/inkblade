@@ -1,0 +1,23 @@
+{
+  "key": "aigateway-cache-cross-tenant",
+  "name": {
+    "zh": "语义缓存跨租户命中",
+    "en": "Semantic Cache Cross-Tenant Hit"
+  },
+  "series": "窃取与数据泄露",
+  "description": "向量语义缓存以「共享前缀哈希」为键：tenant-a 用 tenant-b 已缓存的 prompt 查询即可命中并拿到响应。vulnerable：命中且返回 entry.tenant=tenant-b；fixed：缓存键含租户 → miss，且两租户键不同。",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "requester_tenant": "发起查询的租户（缺省 tenant-a）",
+    "victim_tenant": "缓存条目的受害租户（缺省 tenant-b）",
+    "victim_prompt": "受害租户已缓存的 prompt（缺省实验室内置季度营收样张）",
+    "tenant_key": "fixed 模式 requester 的合法租户 key",
+    "victim_tenant_key": "fixed 模式 victim 的合法租户 key"
+  },
+  "produces": "cache-cross-tenant-proof",
+  "knowledge": "docs/AI-GATEWAY.md 第 6 节：语义缓存键与租户隔离",
+  "combo_signature": "ai-gateway-cache-cross-tenant"
+}

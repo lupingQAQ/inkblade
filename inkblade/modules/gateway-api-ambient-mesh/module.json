@@ -1,0 +1,18 @@
+{
+  "key": "gateway-api-ambient-mesh",
+  "name": {
+    "zh": "Gateway API/Ambient Mesh 策略面",
+    "en": "Gateway API/ambient mesh policy surface"
+  },
+  "series": "网络架构",
+  "description": "只读检查 Gateway listener、HTTPRoute 与 ambient waypoint：明文 HTTP、通配主机、跨命名空间/全来源放行、L7 授权未强制、ztunnel 旁路。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "gateway-api-ambient-mesh.json + listener/route/policy 矩阵",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "ambient-waypoint-bypass"
+}

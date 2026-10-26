@@ -1,0 +1,21 @@
+{
+  "key": "prefix-cache-cross-tenant-leak",
+  "name": {
+    "zh": "prefix cache 跨租户泄露",
+    "en": "Prefix cache cross-tenant leak"
+  },
+  "series": "窃取与数据泄露",
+  "description": "prefix cache 未按 cache_salt/租户隔离：租户 B 不带 cache_salt 复用租户 A 的 prefix KV，响应 usage.cached_tokens>0，构成跨租户上下文侧信道与潜在 KV 内容推断。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "推理服务基址（必填）",
+    "prompt_prefix": "复用的 prefix 文本（缺省按 run marker 生成）",
+    "prefix_tokens": "prefix token 数（缺省 4096）",
+    "cache_salt": "租户 A 预热时使用的 cache_salt（缺省 salt-tenant-a）"
+  },
+  "produces": "prefix-cache-cross-tenant-leak.json + usage.cached_tokens 证据",
+  "knowledge": "docs/LONG-CONTEXT.md 第 2 节：prefix cache 隔离；spec 5.2 网络架构层 + 5.6 服务网关层",
+  "combo_signature": "prefix-cache-cross-tenant-reuse"
+}

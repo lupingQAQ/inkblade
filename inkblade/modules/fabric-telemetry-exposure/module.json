@@ -1,0 +1,18 @@
+{
+  "key": "fabric-telemetry-exposure",
+  "name": {
+    "zh": "fabric 遥测暴露面（gNMI/SNMP/TSDB）",
+    "en": "Fabric telemetry exposure (gNMI/SNMP/TSDB)"
+  },
+  "series": "网络架构",
+  "description": "只读探测 fabric telemetry 配置与指标：gNMI TLS/鉴权、SNMP 版本/团体名、tenant/serial 标签是否匿名暴露。不写 gNMI、不 SET SNMP、不改订阅。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "telemetry/gNMI 基址（必填，例如 https://leaf-01.example）"
+  },
+  "produces": "fabric-telemetry-exposure.json + gNMI/SNMP/标签暴露证据",
+  "knowledge": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；gNMI/SNMP 遥测面与多租户标签",
+  "combo_signature": "fabric-telemetry-exposure"
+}

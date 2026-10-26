@@ -1,0 +1,28 @@
+InkBlade {{ .Chart.AppVersion }} is installed as release "{{ .Release.Name }}" in namespace "{{ .Release.Namespace }}".
+
+Mode: {{ if .Values.readOnly }}READ-ONLY (RBAC verbs limited to get/list/watch){{ else }}WRITE ENABLED (create/update/patch/delete granted){{ end }}
+
+1) Wait for the pod
+   kubectl -n {{ .Release.Namespace }} rollout status deploy/{{ include "inkblade.fullname" . }}
+
+2) Create a local operator account (run on your workstation, not in the pod)
+   inkblade user add --home ./inkblade-home --user admin --role lead
+   kubectl -n {{ .Release.Namespace }} create secret generic {{ include "inkblade.fullname" . }}-users \
+     --from-file=users.json=./inkblade-home/users.json
+   helm upgrade {{ .Release.Name }} {{ .Chart.Name }} -n {{ .Release.Namespace }} \
+     --reuse-values --set usersSecret.name={{ include "inkblade.fullname" . }}-users
+
+3) Open the UI
+   kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "inkblade.fullname" . }} 8765:{{ .Values.service.port }}
+   Then browse http://127.0.0.1:8765 and sign in.
+
+4) Rules of engagement
+   Until a rules-of-engagement record is signed for workspace "{{ .Values.workspace }}",
+   the API answers 423 Locked for every run/execute call. This is intentional:
+   no assessment activity without written authorization.
+
+5) Tear down
+   helm uninstall {{ .Release.Name }} -n {{ .Release.Namespace }}
+   The PVC {{ include "inkblade.dataClaimName" . }} is kept on purpose (evidence retention).
+
+Docs: docs/TRIAL.md (5-minute path), docs/PILOT-KIT.md (RoE, scope, metrics).

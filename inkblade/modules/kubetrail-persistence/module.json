@@ -1,0 +1,18 @@
+{
+  "key": "kubetrail-persistence",
+  "name": {
+    "zh": "KubeTrail 持久化检测",
+    "en": "KubeTrail persistence detection"
+  },
+  "series": "侦察",
+  "description": "KubeTrail kube/persistence.go 七模板检测侧（SA/CRB、CronJob/DaemonSet、影子 kubeconfig、TokenRequest、pull secret、webhook、static pod）。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群/节点快照 dict 或 lab/fixtures/attack-surface/cluster-surface.json 路径",
+    "limit": "可选：最多输出的发现数（默认全部）"
+  },
+  "produces": "kubetrail-persistence",
+  "knowledge": "KubeTrail kube/persistence.go（K8 7 模板）"
+}

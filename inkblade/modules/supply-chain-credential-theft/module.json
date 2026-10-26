@@ -1,0 +1,14 @@
+{
+  "key": "supply-chain-credential-theft",
+  "name": { "zh": "供应链凭据直取", "en": "Supply Chain Credential Theft" },
+  "series": "窃取与数据泄露",
+  "description": "扫描 HF_TOKEN/云凭据等供应链凭据残留 → 私有仓库/桶直取（全程脱敏存证，仅留尾4位）",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "scan_root": "凭据残留扫描根目录（默认 lab/fixtures/theft/credentials）"
+  },
+  "produces": "credential-exposure",
+  "knowledge": "设计基线第 6 节：环境变量/netrc/pip 配置中的供应链凭据残留"
+}

@@ -1,0 +1,22 @@
+{
+  "key": "long-context-window-exhaustion",
+  "name": {
+    "zh": "长上下文窗口耗尽",
+    "en": "Long-context window exhaustion"
+  },
+  "series": "网络架构",
+  "description": "超窗请求被推理服务接受并持续占用 prefill 队列（128k/1M 窗口未强制校验）→ 长上下文请求级 DoS 与队列挤压。证据来自真实 HTTP：usage.prefill_tokens > context_window 且 /metrics queue_depth 增长。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "推理服务基址 http://host:port（必填）",
+    "tenant": "X-Tenant 租户标识（缺省 tenant-a）",
+    "context_window": "声明窗口 128k|1m（缺省 128k）",
+    "prompt_tokens": "请求 token 数（缺省 200000，确定性计数提示）",
+    "max_tokens": "生成上限（缺省 32）"
+  },
+  "produces": "long-context-window-exhaustion.json + prefill 队列计数器证据",
+  "knowledge": "docs/LONG-CONTEXT.md 第 2 节：128K–1M 推理窗口强制与 KV 生命周期；spec 5.2 网络架构层 + 5.6 服务网关层",
+  "combo_signature": "long-context-prefill-queue-exhaustion"
+}

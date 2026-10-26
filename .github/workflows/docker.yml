@@ -1,0 +1,138 @@
+name: docker
+
+# Multi-arch container publication to GHCR.
+# - pull requests:            build only (no push, no registry credentials needed)
+# - main / tags / manual run: push a single manifest list for linux/amd64 + linux/arm64
+#                             with provenance + SBOM attestations
+# Push failures (fork, missing packages:write) are warnings, never blockers.
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+  pull_request:
+    paths:
+      - "Dockerfile"
+      - ".dockerignore"
+      - "pyproject.toml"
+      - "**/*.py"
+      - ".github/workflows/docker.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/inkblade
+
+jobs:
+  build:
+    name: buildx (amd64 + arm64 manifest list)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        continue-on-error: true
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        if: github.event_name != 'pull_request'
+        continue-on-error: true
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix=sha-,format=short
+          labels: |
+            org.opencontainers.image.title=InkBlade
+            org.opencontainers.image.description=Authorized security assessment platform for Kubernetes ML clusters
+            org.opencontainers.image.licenses=Apache-2.0
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+
+      - name: Build multi-arch (push outside PRs)
+        id: build
+        continue-on-error: ${{ github.event_name != 'pull_request' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: ${{ github.event_name != 'pull_request' }}
+          sbom: ${{ github.event_name != 'pull_request' }}
+          build-args: |
+            INKBLADE_VERSION=${{ github.ref_name }}
+
+      - name: Image summary
+        if: always()
+        run: |
+          echo "### docker" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "digest: ${{ steps.build.outputs.digest }}" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "${{ steps.meta.outputs.tags }}" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+  smoke:
+    name: container smoke (amd64, PR only)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build local image
+        run: docker build -t inkblade:ci .
+
+      - name: Healthcheck-style self test
+        run: docker run --rm --entrypoint inkblade inkblade:ci module list > /dev/null
+
+      - name: Doctor in mock mode
+        run: |
+          docker run --rm --entrypoint inkblade inkblade:ci doctor --mode mock --json \
+            | tee doctor.json
+          python -c "import json; d=json.load(open('doctor.json')); print('fails:', d.get('fails'))"
+
+      - name: Offline rehearsal (no cluster contact)
+        run: |
+          docker run --rm --entrypoint inkblade inkblade:ci pilot --dry-run \
+            --out /tmp/pilot --format json > pilot.json
+          python -c "import json; d=json.load(open('pilot.json')); print(d.get('mode'), d['summary']['clusters'])"
+
+      - name: Verify non-root
+        run: |
+          uid=$(docker run --rm --entrypoint id inkblade:ci -u)
+          echo "container uid: $uid"
+          test "$uid" != "0"
+
+      - name: Verify read-only root filesystem
+        run: docker run --rm --read-only --tmpfs /tmp --entrypoint inkblade inkblade:ci --help > /dev/null

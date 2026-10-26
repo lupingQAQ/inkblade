@@ -1,0 +1,24 @@
+{
+  "key": "slurm-accountingdbd-audit",
+  "name": {
+    "zh": "SlurmDBD 记账库配置审计",
+    "en": "SlurmDBD accounting database configuration audit"
+  },
+  "series": "侦察",
+  "description": "审计 slurmdbd.conf：StoragePass/StoragePassFile、DbdHost 绑定、SlurmUser、PrivateData、备份主机、TLS 参数、DebugLevel 与配置文件权限。只读。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "包含 slurmdbd.conf、inventory.json 的导出目录"
+  },
+  "produces": "slurm-accountingdbd-audit.json + 记账库 findings",
+  "knowledge": "SchedMD slurmdbd.conf(5) / accounting_storage；docs/SLURM-HPC-COVERAGE.md 记账面",
+  "necessity": "slurmdbd 保存全集群作业、用户与 QOS 记账；明文数据库口令、0.0.0.0 绑定或缺少 TLS/备份会让攻击者读取全部作业历史并篡改配额审计。",
+  "combo_signature": "slurmdbd-credential-exposure",
+  "surfaces": [
+    {"type": "config-file", "selector": "slurm/slurmdbd.conf"},
+    {"type": "runtime-agent", "selector": "runtime-agent/slurmdbd"}
+  ],
+  "default_enabled": true
+}

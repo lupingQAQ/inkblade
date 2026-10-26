@@ -1,0 +1,25 @@
+{
+  "key": "munge-auth-audit",
+  "name": {
+    "zh": "Munge 认证面审计",
+    "en": "Munge authentication surface audit"
+  },
+  "series": "权限链",
+  "description": "审计 Munge 密钥权限/属主/年龄/跨集群复用/镜像内嵌、socket 权限、MUNGE_OPTIONS 日志泄漏与 slurm.conf AuthType 一致性。不读取密钥内容，只比对元数据与指纹。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "包含 munge.key.meta、munge.conf、slurm.conf 与 inventory.json 的导出目录"
+  },
+  "produces": "munge-auth-audit.json + Munge 认证 findings",
+  "knowledge": "SchedMD auth/munge 文档；Munge man page；docs/SLURM-HPC-COVERAGE.md Munge 面",
+  "necessity": "Slurm 默认用 Munge 做节点与用户凭证；密钥全局共享，一旦可读或跨集群复用，攻击者可在任一节点伪造任意 UID 的作业/步骤凭证。",
+  "combo_signature": "munge-key-compromise",
+  "surfaces": [
+    {"type": "config-file", "selector": "slurm/munge.conf"},
+    {"type": "config-file", "selector": "slurm/munge.key.meta"},
+    {"type": "runtime-agent", "selector": "runtime-agent/munge"}
+  ],
+  "default_enabled": true
+}

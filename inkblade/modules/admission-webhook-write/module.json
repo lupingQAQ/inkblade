@@ -1,0 +1,20 @@
+{
+  "key": "admission-webhook-write",
+  "name": {
+    "zh": "准入 Webhook 写入",
+    "en": "Admission webhook injection"
+  },
+  "series": "权限链",
+  "description": "检测 fail-open/http/空 selector 的 mutating/validating webhook，可注入特权 Pod；含可回滚演示清单。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "fixture": "提权快照 JSON 路径（缺省 lab/fixtures/privesc/<fixture>.json）",
+    "mode": "probe-only | backup-write（写类模块）",
+    "demo_target": "backup-write 演示写入目标文件（写类模块）",
+    "backup_targets": "写类模块备份目标（runner 备份闸门）"
+  },
+  "produces": "admission-webhook-write-findings",
+  "knowledge": "提权矩阵 rbac-admission-webhook-write；K8s admission webhook 文档"
+}

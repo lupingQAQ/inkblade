@@ -1,0 +1,221 @@
+name: release
+
+# Tag-driven release: build sdist+wheel, CycloneDX SBOM, SHA-256 checksums,
+# keyless (OIDC) cosign signature bundles, GitHub Release, and a PyPI trusted
+# publishing placeholder. Every publishing step is opt-in and non-blocking:
+# a missing secret/permission never fails the CI pipeline.
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      publish_pypi:
+        description: "Also publish to PyPI (requires trusted publisher + environment)"
+        type: boolean
+        default: false
+      draft:
+        description: "Create the GitHub Release as a draft"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PYTHONIOENCODING: utf-8
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+jobs:
+  build:
+    name: build artifacts + SBOM
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build frontend
+        run: python -m pip install --upgrade pip build
+
+      - name: Build wheel + sdist
+        run: python scripts/release/build.py --out dist --clean
+
+      - name: Version
+        id: version
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import os, pathlib, tomllib
+          data = tomllib.loads(pathlib.Path("pyproject.toml").read_text(encoding="utf-8"))
+          version = data["project"]["version"]
+          ref = os.environ.get("GITHUB_REF_NAME", "")
+          print(f"version={version}")
+          print(f"tag={ref or 'v' + version}")
+          PY
+
+      - name: CycloneDX SBOM
+        run: python scripts/release/sbom.py --dist dist --out dist/sbom.cdx.json
+
+      - name: SHA-256 checksums
+        run: |
+          cd dist
+          rm -f SHA256SUMS
+          sha256sum *.whl *.tar.gz sbom.cdx.json > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Release hygiene gate
+        run: python scripts/release/verify.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: |
+            dist/*.whl
+            dist/*.tar.gz
+            dist/sbom.cdx.json
+            dist/SHA256SUMS
+          retention-days: 14
+          if-no-files-found: error
+
+  sign:
+    name: cosign keyless signature (best effort)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - uses: sigstore/cosign-installer@v3
+        continue-on-error: true
+
+      - name: Verify cosign availability
+        id: probe
+        run: |
+          if command -v cosign >/dev/null 2>&1; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::cosign not installed; skipping keyless signing"
+          fi
+
+      - name: Sign blobs (keyless / Fulcio + Rekor)
+        if: steps.probe.outputs.available == 'true'
+        continue-on-error: true
+        run: |
+          cd dist
+          for f in *.whl *.tar.gz sbom.cdx.json SHA256SUMS; do
+            cosign sign-blob --yes --bundle "${f}.sigstore.json" "$f" \
+              || echo "::warning::keyless signing failed for $f"
+          done
+          ls -1 *.sigstore.json || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: signatures
+          path: dist/*.sigstore.json
+          retention-days: 14
+          if-no-files-found: warn
+
+  github-release:
+    name: GitHub Release (best effort)
+    needs: [build, sign]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: signatures
+          path: dist
+
+      - name: Publish release
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          TAG="${{ needs.build.outputs.tag }}"
+          DRAFT="--draft"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.draft }}" = "false" ]; then
+            DRAFT=""
+          fi
+          gh release view "$TAG" >/dev/null 2>&1 && {
+            echo "::notice::release $TAG already exists"; exit 0;
+          }
+          shopt -s nullglob
+          files=(dist/*.whl dist/*.tar.gz dist/sbom.cdx.json dist/SHA256SUMS)
+          for sig in dist/*.sigstore.json; do files+=("$sig"); done
+          gh release create "$TAG" \
+            $DRAFT \
+            --verify-tag \
+            --generate-notes \
+            --title "InkBlade $TAG" \
+            "${files[@]}"
+
+  pypi:
+    name: PyPI trusted publishing (placeholder)
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/') || inputs.publish_pypi
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: pypi
+      url: https://pypi.org/p/inkblade
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Gate on PyPI opt-in
+        id: gate
+        run: |
+          if [ "${{ vars.PYPI_PUBLISH }}" = "true" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::PYPI_PUBLISH != true; skipping upload (trusted publisher is pre-configured)"
+          fi
+
+      - name: Publish to PyPI
+        if: steps.gate.outputs.enabled == 'true'
+        continue-on-error: true
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist
+          skip-existing: true
+          print-hash: true

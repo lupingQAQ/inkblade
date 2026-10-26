@@ -1,0 +1,28 @@
+{
+  "key": "cxl-memory-security",
+  "name": {
+    "zh": "CXL 内存安全（research-only，有面才启用）",
+    "en": "CXL memory security (research-only, surface-gated)"
+  },
+  "series": "侦察",
+  "description": "C 级前瞻项：只读解析 CXL 设备 IDE/TSP/解码区域/mailbox 鉴权/固件签名，检出明文链路、TSP 未启用与跨租户共享区域。六个主流画像均无 CXL 面，默认关闭；仅客户实际部署 CXL 时显式 --probe 启用，不计入芯片渗透能力。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "default_enabled": false,
+  "research_only": true,
+  "default_disabled_reason": "C 级前瞻项：六个主流画像均无 CXL 面；仅客户实际部署 CXL 时显式启用，默认关闭，不计入芯片渗透能力。",
+  "surfaces": [
+    {
+      "type": "config-file",
+      "selector": "cxl/inventory.json"
+    }
+  ],
+  "params_schema": {
+    "snapshot": "{\"host\": {...}, \"devices\": [{\"id\",\"ide\":{...},\"tsp\":{...},\"mailbox\":{...},\"decoder\":{...},\"firmware\":{...}}]} 或 JSON 路径"
+  },
+  "produces": "cxl-memory-security.json + IDE/TSP/区域/固件证据",
+  "knowledge": "C 级 research-only：CXL 2.0 IDE、CXL 3.0 TSP、CXL 3.2 安全增强；无面则 no-surface + default_enabled=false",
+  "combo_signature": "cxl-memory-security",
+  "necessity": "C"
+}

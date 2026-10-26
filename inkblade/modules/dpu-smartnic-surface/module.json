@@ -1,0 +1,23 @@
+{
+  "key": "dpu-smartnic-surface",
+  "name": {
+    "zh": "BlueField/DPU 服务与凭据面",
+    "en": "BlueField/DPU service and credential surface"
+  },
+  "series": "侦察",
+  "description": "只读探测 DPU 健康、服务清单（端口/协议/管理面/鉴权标记）与凭据面：管理服务未鉴权、工厂/默认凭据明文、SSH 密码认证、rshim 暴露。不登录 SSH/gRPC、不修改服务。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "DPU 管理服务基址（必填，例如 https://dpu.example）"
+  },
+  "produces": "dpu-smartnic-surface.json + 服务/凭据/鉴权证据（不回显密码）",
+  "knowledge": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；BlueField DPU DOCA/rshim/Redfish 服务语义",
+  "combo_signature": "dpu-unauth-service-surface",
+  "surfaces": [
+    {"type": "http-endpoint", "selector": "/dpu"},
+    {"type": "bmc", "selector": "bmc/dpu"}
+  ],
+  "default_enabled": true
+}

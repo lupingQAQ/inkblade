@@ -1,0 +1,24 @@
+{
+  "key": "cache-poison-persistence",
+  "name": {
+    "zh": "毒化块逐出存续",
+    "en": "Poisoned block eviction persistence"
+  },
+  "series": "横向利用",
+  "description": "远程 KV 池逐出策略可被普通租户设置时，攻击者写入带 run marker 的良性 KV 块并标 pinned：洪泛逐出压力（逐出计数增长为证）下毒化块持久存续（读回 sha256 一致）→ 缓存完整性污染驻留；fixed 姿态 pinned 仅管理密钥可设（普通租户降级 lru），洪泛后毒化块被逐出。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "缓存面服务基址（必填）",
+    "mode": "backup-write 触发写面（需 backup_targets）；缺省 probe-only 只读探读面",
+    "block_id": "毒化块 id（缺省 poison-<run marker>）",
+    "namespace": "写入命名空间（缺省本租户）",
+    "payload": "块值（缺省带 marker 的良性 JSON）",
+    "flood_count": "逐出压力洪泛唯一前缀数（缺省 160）",
+    "backup_targets": "备份闸门目标（backup-write 必填）"
+  },
+  "produces": "cache-poison-persistence.json + pinned 生效/逐出计数差分/读回 sha256 证据",
+  "knowledge": "docs/CACHE-SECURITY.md 第 7 节：投毒与存续（逐出策略面）",
+  "combo_signature": "cache-pool-unisolated"
+}

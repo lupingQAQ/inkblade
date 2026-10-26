@@ -1,0 +1,29 @@
+{
+  "key": "containerd-shim-escape-detect",
+  "name": {
+    "zh": "containerd shim escape detection",
+    "en": "containerd shim escape detection"
+  },
+  "series": "权限链",
+  "description": "containerd shim escape detection; covers CVE-2020-15257/2024-25621. Read-only: version/evidence collection, no target writes.",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "containerd-shim",
+  "knowledge": "docs/CVE-CATALOG.md + inkblade/core/cve-catalog.json",
+  "combo_signature": "containerd-shim",
+  "verified": false,
+  "verification_status": "unsupported",
+  "verification_cves": {
+    "CVE-2020-15257": "unsupported"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/containerd/CVE-2020-15257/result.json"
+  ]
+}

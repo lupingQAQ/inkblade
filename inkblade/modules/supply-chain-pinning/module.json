@@ -1,0 +1,14 @@
+{
+  "key": "supply-chain-pinning",
+  "name": { "zh": "供应链固定", "en": "Supply Chain Pinning" },
+  "series": "核心代码",
+  "description": "trust_remote_code 硬编码、revision 缺失、可写模型目录代码加载、LoRA 路径可控",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "root": "客户代码仓库/挂载卷路径（默认 lab/sample-vuln-repo）"
+  },
+  "produces": "supply-chain-gap",
+  "knowledge": "设计基线第 6 节：trust_remote_code/revision 固定缺失（供应链投毒面）"
+}

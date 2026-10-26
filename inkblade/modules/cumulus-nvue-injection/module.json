@@ -1,0 +1,31 @@
+{
+  "key": "cumulus-nvue-injection",
+  "name": {
+    "zh": "Cumulus NVUE injection",
+    "en": "Cumulus NVUE injection"
+  },
+  "series": "网络架构",
+  "description": "Cumulus NVUE injection; covers CVE-2025-33180/2026-24184. Write surface: requires mode=backup-write and backup_targets (runner backup gate); marker is proven then cleaned.",
+  "min_level": "全影响演示",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "cumulus-nvue",
+  "knowledge": "docs/CVE-CATALOG.md + inkblade/core/cve-catalog.json",
+  "combo_signature": "cumulus-nvue",
+  "verified": false,
+  "verification_status": "unsupported",
+  "verification_cves": {
+    "CVE-2025-33180": "unsupported",
+    "CVE-2026-24184": "unsupported"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/cumulus/CVE-2025-33180/result.json",
+    "lab/upstream_verify/cases/cumulus/CVE-2026-24184/result.json"
+  ]
+}

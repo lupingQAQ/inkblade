@@ -1,0 +1,19 @@
+{
+  "key": "trl-serve-dev-mode",
+  "name": {
+    "zh": "TRL 服务开发模式",
+    "en": "TRL Serve Dev Mode"
+  },
+  "series": "横向利用",
+  "description": "vllm-serve 默认 0.0.0.0 + 无 key + dev-mode。实验室 face：djev /v1/* 同构承载无 key 推理服务面。",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）"
+  },
+  "produces": "dev-mode-exposure",
+  "knowledge": "docs/design.md 第 1–5 节：TRL vllm-serve dev 模式暴露",
+  "combo_signature": "trl-serve-devface"
+}

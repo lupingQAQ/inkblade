@@ -1,0 +1,15 @@
+{
+  "key": "metadata-egress",
+  "name": { "zh": "元数据与出网面", "en": "Metadata and egress surface" },
+  "series": "侦察",
+  "description": "SA token 自动挂载、云/HF 凭据环境变量名称（值不入证据）、出网缺口（含 hostNetwork 绕过）",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群快照 dict 或 lab/fixtures/recon/*.json 路径（pods/serviceaccounts/networkpolicies 节）",
+    "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
+  },
+  "produces": "metadata-egress-findings",
+  "knowledge": "链「SSRF / SA Token → 云元数据」；设计基线 5.6 云与混合边界层：元数据凭据是云横向枢纽"
+}

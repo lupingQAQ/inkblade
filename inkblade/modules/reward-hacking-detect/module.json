@@ -1,0 +1,20 @@
+{
+  "key": "reward-hacking-detect",
+  "name": {
+    "zh": "奖励作弊多指标检测",
+    "en": "Reward hacking detection"
+  },
+  "series": "情报",
+  "description": "对 RL 训练曲线做多指标共变判定，避免单点误报：奖励上升而 pass_rate 不升、响应长度膨胀、KL 坍塌、熵下降、裁判一致率下降、答案同质化、训练-评测差距扩大。命中 ≥3 项独立信号才报 high（2 项 medium，其余 info）。只读，不做任何写操作。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "训练栈仿真/真实 RL 指标服务基址（必填）",
+    "run": "训练 run id（缺省 grpo-1）",
+    "tenant": "请求租户（X-Tenant）"
+  },
+  "produces": "reward-hacking-detect.json + 逐信号命中与阈值证据",
+  "knowledge": "docs/PRETRAIN-SFT-RL-COVERAGE.md 第 8 节：奖励作弊与多指标共变；TRL GRPO/AsyncGRPO 奖励与 KL/熵指标",
+  "combo_signature": "reward-hacking-multi-signal"
+}

@@ -1,0 +1,24 @@
+__pycache__/
+*.pyc
+*.pyo
+evidence/
+*.sqlite3
+*.tar.gz
+*.zst
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+# 上手命令的默认输出（安全隔离，不入库）
+/inkblade-workspace/
+# 本地运行日志（可随时重跑）
+*.log
+# kubectl 本地发现缓存（由 kubeconfig/集群重算）
+/.kube/
+# 站点构建产物
+_site/
+# rust build output
+probe/target/
+.pilot-dry/
+reports/

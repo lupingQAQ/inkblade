@@ -1,0 +1,15 @@
+{
+  "key": "privileged-workloads",
+  "name": { "zh": "特权工作负载盘点", "en": "Privileged workloads inventory" },
+  "series": "侦察",
+  "description": "privileged/hostNetwork/hostIPC/hostPID/seccomp 豁免/敏感 hostPath/危险 capabilities 盘点",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群快照 dict 或 lab/fixtures/recon/*.json 路径（pods 节）",
+    "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
+  },
+  "produces": "privileged-workload-findings",
+  "knowledge": "设计基线第 11 节：四框架特权部署；spec 5.2 侦察表"
+}

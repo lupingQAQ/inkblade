@@ -1,0 +1,29 @@
+{
+  "key": "sglang-weight-exfil",
+  "name": {
+    "zh": "SGLang weight exfiltration",
+    "en": "SGLang weight exfiltration"
+  },
+  "series": "核心代码",
+  "description": "SGLang weight exfiltration; covers CVE-2026-15978. Read-only: version/evidence collection, no target writes.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "sglang-weight-exfil",
+  "knowledge": "docs/CVE-CATALOG.md + inkblade/core/cve-catalog.json",
+  "combo_signature": "sglang-weight-exfil",
+  "verified": false,
+  "verification_status": "static-only",
+  "verification_cves": {
+    "CVE-2026-15978": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/sglang/CVE-2026-15978/result.json"
+  ]
+}

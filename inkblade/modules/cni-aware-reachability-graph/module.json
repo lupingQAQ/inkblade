@@ -1,0 +1,26 @@
+{
+  "key": "cni-aware-reachability-graph",
+  "name": {"zh": "CNI 语义可达性图", "en": "CNI-aware Reachability Graph"},
+  "series": "网络架构",
+  "description": "输入 CNI 类型+策略+hostNetwork+Multus 附件+VPC 安全组+IB 分区，推演并（授权时）实测五维可达矩阵：pod↔pod / pod↔宿主 / pod↔IB / pod↔元数据 / 跨集群",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [
+    "fabric-topology-isolation",
+    "cni-stack-capability",
+    "multus-sriov-rdma-bypass",
+    "collective-communication-surface",
+    "gpu-network-operator-posture",
+    "inference-gateway-pd",
+    "storage-protocol-csi",
+    "dns-service-discovery",
+    "scheduler-network-semantics"
+  ],
+  "params_schema": {
+    "snapshot": "fixture dict 或 lab/fixtures/network/ 路径（可选；快照可自带 fingerprints 键）",
+    "fingerprints": "可选：直接传入聚合指纹 dict（否则聚合 run 内前序模块 findings 的 ||fingerprints= 标记）"
+  },
+  "produces": "reachability-matrix.json（五维矩阵）+ graph 落库（graph_nodes/graph_edges）+ 五维矩阵 finding",
+  "knowledge": "spec 5.2 网络架构模块 + 5.6 设计约束（结论必须注明层级与判定方式）；core/reachability.py 七层/四判定方式",
+  "combo_signature": ""
+}

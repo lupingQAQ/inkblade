@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pilot kit — InkBlade</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand"><b>InkBlade</b><span>ML cluster penetration testing platform · v0.2.0</span></div>
+  <nav class="top"><a href="index.html">Home</a><a href="INSTALL.html">Install</a><a href="USAGE.html">Usage</a><a href="FEATURES.html">Features</a><a href="WORKFLOW.html">Workflow</a><a href="MODULES.html">Modules</a><a href="ARCHITECTURE.html">Architecture</a><a href="VULNERABILITY-COVERAGE.html">Vulnerability coverage</a><a href="PILOT-KIT.html">Pilot kit</a><a href="PLUGIN-SDK.html">Plugin SDK</a><a href="FAQ.html">FAQ</a><a href="VERSIONING.html">Versioning</a></nav>
+</div></header>
+<main><div class="wrap">
+<h1 id="pilot-kit---running-inkblade-on-a-real-cluster">Pilot kit - running InkBlade on a real cluster</h1>
+<p>A pilot is bounded, authorized and read-first. Scope: one cluster (or one namespace set), one window, 1–2 testers, 5–10 working days. Copy this into your change record; do not run from memory.</p>
+<h2 id="1-roles">1. Roles</h2>
+<table><thead><tr><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>Sponsor (platform owner)</td><td>budget, cluster access decision</td><td>authorization</td></tr><tr><td>Assessment lead</td><td>RoE, scope, level, reporting</td><td>RoE + final report</td></tr><tr><td>Tester / operator</td><td>execution, evidence integrity</td><td>run log</td></tr><tr><td>Observer (SRE/SecOps)</td><td>blast-radius veto, incident bridge</td><td>stop conditions</td></tr><tr><td>Legal / compliance</td><td>data handling, notification duties</td><td>retention + publication</td></tr></tbody></table>
+<p>Two-person rule above <code>probe</code>: someone who is not driving watches the run.</p>
+<h2 id="2-authorization-pack">2. Authorization pack</h2>
+<p>Without a pinned, signed RoE the CLI exits <code>91</code> and the API returns <code>423 Locked</code>. The RoE carries a SHA-256 of its canonical fields plus an HMAC bound to the workspace key.</p>
+<h3 id="21-scope-worksheet">2.1 Scope worksheet</h3>
+<table><thead><tr><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>Cluster / context</td><td><code>prod-ml-eu1</code></td><td>one context per RoE</td></tr><tr><td>Namespaces</td><td><code>train, infer, ray-system</code></td><td>explicit list, no wildcards</td></tr><tr><td>CIDRs</td><td><code>10.20.0.0/16</code></td><td>egress targets; loopback-only by default</td></tr><tr><td>Level</td><td><code>只读侦察</code></td><td>see 2.2</td></tr><tr><td>Window</td><td><code>2026-11-03T08:00Z .. 2026-11-07T18:00Z</code></td><td>UTC, contiguous</td></tr><tr><td>Client</td><td><code>ACME Platform Security</code></td><td>named team, not a ticket number</td></tr><tr><td>Exclusions</td><td><code>namespace: kube-system</code></td><td>written down even when empty</td></tr><tr><td>Data handling</td><td>90-day retention, then destroy</td><td>matches your policy</td></tr></tbody></table>
+<h3 id="22-levels">2.2 Levels</h3>
+<table><thead><tr><th>---</th><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>Read-only recon</td><td><code>只读侦察</code></td><td><code>kubectl get</code>, GET fingerprints, config export</td><td>none</td></tr><tr><td>Active probing</td><td><code>主动探测</code></td><td>benign probes, auth attempts with test accounts</td><td>low</td></tr><tr><td>Exploit verification</td><td><code>利用验证</code></td><td>PoC execution against in-scope targets</td><td>medium</td></tr><tr><td>Full impact demo</td><td><code>全影响演示</code></td><td>data-plane impact, e.g. canary weight tampering</td><td>high</td></tr></tbody></table>
+<p>Level is a ceiling: modules with a higher <code>min_level</code> refuse to run, and raising it needs a new signed RoE.</p>
+<h3 id="23-signing">2.3 Signing</h3>
+<pre><code>inkblade quickstart                       # interactive: scope, level, users, signature
+inkblade --home ./pilot-home roe --workspace pilot</code></pre>
+<p><code>consent.json</code> lands next to <code>evidence.db</code>. Archive it with the report.</p>
+<h2 id="3-runbook">3. Runbook</h2>
+<table><thead><tr><th>---</th><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>P0 prep</td><td>0</td><td><code>--home ./pilot-home</code>, accounts, baseline snapshot outside the tool</td><td>sponsor approved 2.1</td></tr><tr><td>P1 inventory</td><td>1</td><td><code>pilot --kubeconfig K --out reports/pilot --format both --workspace pilot</code></td><td>observer confirms scope</td></tr><tr><td>P2 surfaces</td><td>1–2</td><td><code>collect --kubeconfig K --out ./pilot-home/collect</code> then <code>surfaces --profile P --collect ./pilot-home/collect --json</code></td><td>profile chosen, gaps recorded</td></tr><tr><td>P3 planning</td><td>2</td><td><code>execute --chain C --workspace pilot --dry-run</code></td><td>lead writes approval in the run log</td></tr><tr><td>P4 execution</td><td>2–4</td><td><code>run --module M --params @p.json --actor tester --role tester</code></td><td>writes need RoE <code>利用验证</code>, <code>--allow-write</code>, rollback</td></tr><tr><td>P5 handover</td><td>4–5</td><td><code>report</code>, <code>export --format sarif</code>, <code>rules generate</code></td><td>deliverables acknowledged</td></tr></tbody></table>
+<pre><code># P5, in full
+inkblade report --run R --kind pentest --workspace pilot
+inkblade report --run R --kind remediation --workspace pilot
+inkblade export --run R --format sarif --workspace pilot --out ./pilot-home/export.sarif
+inkblade rules generate --out ./pilot-home/rules</code></pre>
+<p>Profiles: <code>bare-k8s-gpu</code>, <code>ray-vllm</code>, <code>managed-ack-tke</code>, <code>slurm-hpc</code>, <code>airgapped</code>, <code>gpu-pooling</code>. Absent surfaces are skipped, never marked PASS. <code>run --module</code> has no dry-run switch; writes are gated at execution.</p>
+<h2 id="4-metrics">4. Metrics</h2>
+<table><thead><tr><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>Coverage</td><td>runnable / profile modules</td><td><code>surfaces --json</code> (<code>coverage_pct</code>)</td></tr><tr><td>Executed</td><td>modules run, by level</td><td><code>steps/</code></td></tr><tr><td>Verified findings</td><td>evidenced / total</td><td>report front matter</td></tr><tr><td>High+</td><td>confirmed high + critical</td><td><code>pentest-bi.md</code></td></tr><tr><td>False positives</td><td>refuted / total</td><td>section 5</td></tr><tr><td>False negatives</td><td>known-true issues missed</td><td>section 5</td></tr><tr><td>Time to first finding</td><td>window start → first confirmed</td><td>run timestamps</td></tr><tr><td>Operator effort</td><td>person-hours by role</td><td>timesheet</td></tr><tr><td>Blast radius</td><td>resources written, incidents</td><td>run log + observer notes</td></tr><tr><td>Evidence completeness</td><td>steps with manifest + artefacts</td><td><code>export</code></td></tr><tr><td>Noise</td><td>findings/hour, review hours per 10</td><td>derived</td></tr></tbody></table>
+<h3 id="41-worked-example">4.1 Worked example</h3>
+<table><thead><tr><th>---</th><th>---</th></tr></thead><tbody><tr><td>Coverage</td><td>70.4%</td></tr><tr><td>Executed</td><td>41 modules (read-only + probe)</td></tr><tr><td>Verified findings</td><td>18 / 21</td></tr><tr><td>High+</td><td>7</td></tr><tr><td>False positives</td><td>3 / 21 = 14.3%</td></tr><tr><td>Time to first finding</td><td>11 min</td></tr><tr><td>Operator effort</td><td>6.5 person-hours</td></tr><tr><td>Blast radius</td><td>0 writes</td></tr><tr><td>Evidence completeness</td><td>21 / 21</td></tr></tbody></table>
+<h2 id="5-labelling">5. Labelling</h2>
+<table><thead><tr><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td><code>finding_id</code></td><td>free text</td><td><code>F-001</code> or module key + index</td></tr><tr><td><code>module_key</code></td><td>registry key</td><td>producing module</td></tr><tr><td><code>reported_sev</code></td><td>critical/high/medium/low/info</td><td>as reported</td></tr><tr><td><code>label</code></td><td>TP / FP / FN / inconclusive</td><td>human adjudication</td></tr><tr><td><code>reason</code></td><td>short text</td><td>why</td></tr><tr><td><code>evidence_ref</code></td><td>path or step id</td><td>artefact that decided it</td></tr><tr><td><code>customer_owner</code></td><td>team</td><td>who can fix it</td></tr><tr><td><code>adjudicated_by</code> / <code>_at</code></td><td>name / ISO-8601</td><td>human, timestamp</td></tr></tbody></table>
+<p><code>FP</code> needs a refutation artefact; a missing artefact is <code>inconclusive</code>, never <code>TP</code>. <code>FN</code> is recorded against the module that should have caught it, so the gap becomes a regression test.</p>
+<h3 id="51-known-fn-sources">5.1 Known FN sources</h3>
+<table><thead><tr><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>Static-only CVE cases</td><td>not weaponisable without a full stack</td><td>read <code>static_blocker</code> before reporting absence</td></tr><tr><td>Managed control planes</td><td>node/kubelet surfaces unreachable</td><td><code>managed-ack-tke</code> profile, report as gap</td></tr><tr><td>Hardware-only modules</td><td>need BMC/switch/NVLink</td><td>declare <code>hardware-only</code> scope</td></tr><tr><td>Quarantined modules</td><td>excluded from the denominator</td><td>list them in the appendix</td></tr></tbody></table>
+<h2 id="6-exit-criteria">6. Exit criteria</h2>
+<table><thead><tr><th>---</th><th>---</th></tr></thead><tbody><tr><td>1</td><td>every approved module executed, skipped with a recorded reason, or excluded by the customer</td></tr><tr><td>2</td><td>every finding has an evidence reference and a human label</td></tr><tr><td>3</td><td>report, remediation list, rules pack and archive delivered and acknowledged</td></tr><tr><td>4</td><td>rollback confirmed for any write activity</td></tr><tr><td>5</td><td>data handling executed (retention or destruction)</td></tr><tr><td>6</td><td>retrospective written</td></tr></tbody></table>
+<h3 id="61-go-no-go">6.1 Go / no-go</h3>
+<table><thead><tr><th>---</th><th>---</th></tr></thead><tbody><tr><td>False positives</td><td>≤ 20%, all with refutation artefacts</td></tr><tr><td>Evidence completeness</td><td>100% of confirmed findings</td></tr><tr><td>Incidents caused</td><td>0</td></tr><tr><td>Operator effort</td><td>≤ 1 person-hour per confirmed high+</td></tr><tr><td>Critical-surface coverage</td><td>≥ 60%, or gaps accepted in writing</td></tr></tbody></table>
+<p>Any failed row means &quot;pilot again with scoped changes&quot;, not &quot;adopt&quot;.</p>
+<h2 id="7-stop-conditions">7. Stop conditions</h2>
+<table><thead><tr><th>---</th><th>---</th></tr></thead><tbody><tr><td>A write lands outside declared namespaces/CIDRs</td><td>stop, preserve evidence, notify</td></tr><tr><td>A finding suggests data outside scope (weights, PII, secrets)</td><td>stop, preserve, notify</td></tr><tr><td>Control-plane or GPU-operator health degrades</td><td>stop</td></tr><tr><td>RoE window expires mid-run</td><td>finish the current step, export, re-sign</td></tr><tr><td>Anyone is unsure the activity is authorized</td><td>stop</td></tr></tbody></table>
+<p>Incident path: observer → sponsor → legal/DPO. Preserve <code>evidence.db</code> and <code>steps/</code> before cleanup.</p>
+<h2 id="8-offboarding">8. Offboarding</h2>
+<table><thead><tr><th>---</th><th>---</th></tr></thead><tbody><tr><td>1</td><td><code>export</code> the evidence bundle, record its SHA-256 in the handover ticket</td></tr><tr><td>2</td><td>destroy the workspace copy after the RoE retention period</td></tr><tr><td>3</td><td>rotate credentials used during the pilot</td></tr><tr><td>4</td><td>remove the ServiceAccount/RBAC and the Helm release</td></tr><tr><td>5</td><td>confirm deletion in writing, attach it to the report</td></tr></tbody></table>
+<h2 id="9-cheat-sheet">9. Cheat sheet</h2>
+<pre><code>inkblade pilot --dry-run                         # offline rehearsal, no cluster contact
+inkblade doctor --mode cluster --kubeconfig K    # environment + cluster readiness
+inkblade pilot --kubeconfig K --out reports/pilot
+inkblade collect --kubeconfig K --out ./collect
+inkblade surfaces --profile ray-vllm --collect ./collect --json
+inkblade execute --chain C --workspace pilot --dry-run
+inkblade run --module M --params @p.json --actor tester --role tester
+inkblade report --run R --kind pentest --workspace pilot
+inkblade export --run R --format sarif --workspace pilot --out export.sarif
+inkblade rules generate --out ./rules</code></pre>
+<p>Full CLI reference: <code>inkblade --help</code> and <code>inkblade &lt;cmd&gt; --help</code>.</p>
+</div></main>
+<footer><div class="wrap">
+  InkBlade 0.2.0 · Apache-2.0 · authorized testing only · no telemetry, no external assets.
+</div></footer>
+</body>
+</html>

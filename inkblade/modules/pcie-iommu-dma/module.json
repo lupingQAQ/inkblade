@@ -1,0 +1,18 @@
+{
+  "key": "pcie-iommu-dma",
+  "name": {
+    "zh": "PCIe IOMMU/DMA 隔离面",
+    "en": "PCIe IOMMU/DMA isolation surface"
+  },
+  "series": "网络架构",
+  "description": "只读检查 sysfs/IOMMU 快照：IOMMU 关闭、设备共享 IOMMU 组、passthrough、ACS 未启用、ATS 无保护、内核 DMA 保护关闭。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "pcie-iommu-dma.json + group/ACS 矩阵",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "iommu-group-dma-passthrough"
+}

@@ -1,0 +1,14 @@
+{
+  "key": "python-dangerous-sinks",
+  "name": { "zh": "Python 危险调用点", "en": "Python Dangerous Sinks" },
+  "series": "核心代码",
+  "description": "eval/exec（模型输出可达）、torch.load(weights_only=False)、pickle、os.system/subprocess 拼接、动态导入用户输入",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "root": "客户代码仓库/挂载卷路径（默认 lab/sample-vuln-repo）"
+  },
+  "produces": "dangerous-sink",
+  "knowledge": "设计基线三轮审计 sink 模式（核心代码检测首批规则）"
+}

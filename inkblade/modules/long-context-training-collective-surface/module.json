@@ -1,0 +1,18 @@
+{
+  "key": "long-context-training-collective-surface",
+  "name": {
+    "zh": "大规模训练集合通信面",
+    "en": "Large-scale training collective surface"
+  },
+  "series": "网络架构",
+  "description": "长上下文训练（TP/PP/EP/CP/SP + ring attention + 层级 all-reduce）的并行拓扑与集合通信端口经未鉴权指标面暴露：world_size/并行度/collective_ports/NCCL bootstrap 端口可枚举，直接支撑集合通信入组与 rank 注入。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "推理/训练服务指标面基址（必填）"
+  },
+  "produces": "long-context-training-collective-surface.json + training 拓扑证据",
+  "knowledge": "docs/LONG-CONTEXT.md 第 1 节：TP/PP/EP/CP/SP、ring attention、层级 all-reduce 与 A1–A8 万卡假设；spec 5.2 网络架构层",
+  "combo_signature": "training-collective-topology-exposure"
+}

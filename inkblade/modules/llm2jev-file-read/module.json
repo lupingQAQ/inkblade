@@ -1,0 +1,32 @@
+{
+  "key": "llm2jev-file-read",
+  "name": {
+    "zh": "llm2jev image_url 本地文件读取",
+    "en": "llm2jev image_url Local File Read"
+  },
+  "series": "窃取与数据泄露",
+  "description": "llm2jev f2bdad6 accepts file:// and plain local paths in image_url, then reads and parses the target. A tenant reads arbitrary files from the serving container.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标 URL，例如 http://host:port（真实模式必需）",
+    "mode": "probe-only（默认，只读探测）| backup-write（写模块需 backup_targets）",
+    "local_path": "function-level 模块的本地文件/模型目录（仅读取，不反序列化）"
+  },
+  "produces": "local-file-read",
+  "knowledge": "docs/WEAPON-READINESS.md#llm2jev-file-read",
+  "combo_signature": "llm2jev-image-file-read",
+  "weapon_pack": true,
+  "surfaces": [
+    {
+      "type": "http-endpoint",
+      "selector": "/v1/systemone"
+    },
+    {
+      "type": "config-file",
+      "selector": "llm2jev"
+    }
+  ],
+  "default_enabled": true
+}

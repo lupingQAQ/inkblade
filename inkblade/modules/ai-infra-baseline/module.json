@@ -1,0 +1,24 @@
+{
+  "key": "ai-infra-baseline",
+  "name": {
+    "zh": "AI 基础设施统一基线（Ray/Notebook/推理）",
+    "en": "Unified AI infrastructure baseline (Ray/Notebook/inference)"
+  },
+  "series": "侦察",
+  "description": "对 Ray dashboard/job、Jupyter、vLLM/SGLang 管理面做统一基线：未认证 + 0.0.0.0、无 TLS、admin API 暴露、已知受影响版本、推理进程可出网/触达 IMDS。对应 RSA 2026 AI Security in the Wild（I55）。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "AI 基础设施清单 JSON（services/egress/known_vulnerable）"
+  },
+  "produces": "ai-infra-baseline.json + 统一基线 findings",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md R05 / I55（RSA 2026）",
+  "necessity": "Ray/Jupyter/推理服务默认常无认证且监听全网；分散的 ray-control-plane、vllm-* 模块只覆盖单点，客户需要一个跨组件统一基线来回答“哪些 AI 服务暴露且可出网”。",
+  "combo_signature": "ai-infra-exposed-admin-plane",
+  "surfaces": [
+    {"type": "http-endpoint", "selector": "/v1/models"},
+    {"type": "config-file", "selector": "ai-infra/inventory.json"}
+  ],
+  "default_enabled": true
+}

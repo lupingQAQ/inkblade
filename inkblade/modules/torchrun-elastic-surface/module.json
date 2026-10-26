@@ -1,0 +1,19 @@
+{
+  "key": "torchrun-elastic-surface",
+  "name": {
+    "zh": "torchrun 弹性 rendezvous 面",
+    "en": "torchrun elastic rendezvous surface"
+  },
+  "series": "网络架构",
+  "description": "只读调查 torchrun/torch.distributed 弹性训练面：rendezvous 后端与端点、etcd 鉴权与 TLS、动态成员开关、可见成员与 c10d 端口。etcd 无鉴权 + 明文 + 动态成员意味着可注册伪 rank 或改写 rendezvous 视图，属于训练成员注入原语。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "训练栈仿真/真实 rendezvous 服务基址（必填）",
+    "tenant": "请求租户（X-Tenant，缺省 tenant-a）"
+  },
+  "produces": "torchrun-elastic-surface.json + /train/elastic trace",
+  "knowledge": "docs/PRETRAIN-SFT-RL-COVERAGE.md 第 1 节：弹性训练成员面；torchrun --rdzv-backend etcd 语义",
+  "combo_signature": "elastic-rendezvous-member-injection"
+}

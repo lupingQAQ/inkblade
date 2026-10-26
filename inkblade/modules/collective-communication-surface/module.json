@@ -1,0 +1,15 @@
+{
+  "key": "collective-communication-surface",
+  "name": {"zh": "集合通信面测绘", "en": "Collective Communication Surface Mapping"},
+  "series": "网络架构",
+  "description": "NCCL bootstrap（TCPStore/rendezvous）、NCCL 环境变量基线、DeepEP/NVSHMEM/Mooncake/NIXL 通道与端口、rank 入组可行性",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "fixture dict 或 lab/fixtures/network/ 路径（workload-pods / headless-services）"
+  },
+  "produces": "collective-surface.json + bootstrap 无认证 / KV 通道 findings",
+  "knowledge": "spec 5.2 网络架构模块 + 5.6 集合通信层；组合签名 areal-sglang-nccl-rdma-flatnet / pd-split-nixl-rdma-kv-channel",
+  "combo_signature": "pd-split-nixl-rdma-kv-channel"
+}

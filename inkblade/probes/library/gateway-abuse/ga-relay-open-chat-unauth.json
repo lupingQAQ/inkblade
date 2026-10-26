@@ -1,0 +1,39 @@
+{
+ "key": "ga-relay-open-chat-unauth",
+ "title": {
+  "zh": "开放中继未鉴权 chat（无界消耗）",
+  "en": "Open-relay unauth chat (unbounded consumption)"
+ },
+ "category": "gateway-abuse",
+ "face": "relay",
+ "target_face": "relay-chat",
+ "preconditions": [
+  "lab/mock_targets djev /v1/chat/completions 可达"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/v1/chat/completions",
+   "auth": "none",
+   "body": {
+    "model": "mock-model",
+    "messages": [
+     {
+      "role": "user",
+      "content": "freeform unauth relay"
+     }
+    ]
+   }
+  }
+ ],
+ "detector": {
+  "kind": "status",
+  "equals": 200
+ },
+ "severity": "high",
+ "rule_key": "sigma-llm-probe-gateway-abuse",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

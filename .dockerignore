@@ -1,0 +1,36 @@
+# Build context for the InkBlade image: keep it small and secret-free.
+.git
+.gitignore
+.github
+build
+dist
+*.egg-info
+__pycache__
+**/__pycache__
+*.pyc
+*.pyo
+*.log
+.venv
+venv
+env
+.pytest_cache
+.mypy_cache
+
+# local artifacts, never part of the runtime image
+corpus
+reports
+evidence
+tools
+scripts
+docs
+tests
+.wip
+.kube
+inkblade-workspace
+
+# large or sensitive local fixtures
+lab/qemu-k3s
+*.iso
+*.tar.gz
+*.zst
+*.sqlite3

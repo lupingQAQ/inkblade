@@ -1,0 +1,30 @@
+{
+  "id": "observability-pivot-precision-strike",
+  "title": {
+    "zh": "观测面 → 精准打点",
+    "en": "Observability plane → precision targeting"
+  },
+  "category": "经典攻击链",
+  "requires": [
+    "observability-exposure",
+    "exposure-mapping"
+  ],
+  "preconditions": [
+    {"expr": "findings('observability-exposure').count > 0"},
+    {"expr": "findings('exposure-mapping').count > 0"}
+  ],
+  "steps": [
+    {
+      "id": "observe-plane-map",
+      "module": "observability-exposure",
+      "params": {"panels": ["dcgm", "prometheus", "grafana", "mlflow", "jupyter"]}
+    },
+    {
+      "id": "exposure-map",
+      "module": "exposure-mapping",
+      "params": {}
+    }
+  ],
+  "evidence": ["asset-map"],
+  "mitre": ["T1592.001"]
+}

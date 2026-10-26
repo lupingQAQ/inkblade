@@ -1,0 +1,15 @@
+{
+  "key": "gpu-dra-mig-policy",
+  "name": {"zh": "GPU MIG 策略与 DRA 设备声明审计", "en": "GPU MIG and DRA Policy Audit"},
+  "series": "权限链",
+  "description": "聚焦 MIG strategy/profile/device-plugin advertise 与 DRA adminAccess、通配 deviceClass、空 nodeSelector、Immediate 预分配、恒真 CEL 选择器；只读配置评估。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "可选，operator 配置 JSON 或路径；省略使用内置 vulnerable fixture"
+  },
+  "produces": "mig-dra-posture（MIG/DRA 域 findings）",
+  "knowledge": "docs/DEPTH-REVIEW.md §4；inkblade/depth/gpu.py",
+  "combo_signature": "gpu-mig-dra-depth"
+}

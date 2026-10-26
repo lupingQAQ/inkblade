@@ -1,0 +1,15 @@
+{
+  "key": "inference-gateway-pd",
+  "name": {"zh": "推理网关与预填充-解码分离", "en": "Inference Gateway and Prefill-Decode Split"},
+  "series": "网络架构",
+  "description": "Gateway API/HTTPRoute/InferencePool+EPP/llm-d/LWS/router；failureMode=FailOpen、管理端口、KV-cache 路由信息面、分离信任边界",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "fixture dict 或 lab/fixtures/network/ 路径（inference-gateway / workload-pods）"
+  },
+  "produces": "inference-gateway-pd.json + FailOpen/KV 路由/信任边界 findings",
+  "knowledge": "spec 5.2 网络架构模块 + 5.6 服务与网关层 + 12.1 Gateway API Inference Extension；组合签名 inferencepool-failopen-gateway / pd-split-nixl-rdma-kv-channel / sglang-lws-pd-split",
+  "combo_signature": "inferencepool-failopen-gateway"
+}

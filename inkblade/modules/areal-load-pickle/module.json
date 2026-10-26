@@ -1,0 +1,20 @@
+{
+  "key": "areal-load-pickle",
+  "name": {
+    "zh": "AReaL 权重加载反序列化",
+    "en": "AReaL Weight Load Pickle"
+  },
+  "series": "横向利用",
+  "description": "worker /load torch.load(weights_only=False)；/save 任意路径写。实验室 face：/pull_weights 同构承载未鉴权权重加载/保存通道。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）",
+    "backup_targets": "backup-write 模式必需的备份目标清单"
+  },
+  "produces": "pickle-load-primitive",
+  "knowledge": "docs/design.md 第 1–5 节：AReaL 权重加载反序列化",
+  "combo_signature": "areal-pickle-channel"
+}

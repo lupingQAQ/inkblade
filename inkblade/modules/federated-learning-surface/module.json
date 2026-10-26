@@ -1,0 +1,18 @@
+{
+  "key": "federated-learning-surface",
+  "name": {
+    "zh": "联邦学习聚合面",
+    "en": "Federated learning aggregation surface"
+  },
+  "series": "情报",
+  "description": "只读检查联邦轮次：更新未签名/未验证、未启用安全聚合、未启用差分隐私、无拜占庭过滤、更新范数异常。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "federated-learning-surface.json + 轮次/更新证据",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "federated-unverified-update"
+}

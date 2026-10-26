@@ -1,0 +1,21 @@
+{
+  "key": "vector-db-exposure",
+  "name": {
+    "zh": "向量库跨租户暴露",
+    "en": "Vector DB Cross-Tenant Exposure"
+  },
+  "series": "侦察",
+  "description": "向量库 collection 清单与检索面无鉴权/无租户 scope：匿名枚举全租户 collection 并可检索他人文档。vulnerable：/vector/collections 全量 + /vector/query 命中 tenant-b 文档；fixed：401，租户 key 仅见本租户+shared，越权 collection 403。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "tenant_key": "fixed 模式同租户对照 key",
+    "tenant": "租户标识（缺省 tenant-a）",
+    "victim_collection": "待越权检索的 collection（缺省 tenant-b-docs）"
+  },
+  "produces": "vector-db-exposure-finding + 跨租户文档样张",
+  "knowledge": "docs/AI-GATEWAY.md 第 11 节：向量库与 embedding 面",
+  "combo_signature": "ai-gateway-vector-exposure"
+}

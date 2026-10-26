@@ -1,0 +1,21 @@
+{
+  "key": "context-limit-bypass",
+  "name": {
+    "zh": "上下文上限绕过",
+    "en": "Context limit bypass"
+  },
+  "series": "网络架构",
+  "description": "服务仅校验声明的 context_window 而不校验实际 prompt token：声明 128k、实发 900k 仍返回 200，usage.prefill_tokens 远超窗口，绕过上下文上限并触发队列/内存挤压。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "推理服务基址（必填）",
+    "context_window": "声明窗口（缺省 128k）",
+    "prompt_tokens": "绕过请求的实际 token 数（缺省 900000）",
+    "tenant": "X-Tenant 租户标识（缺省 tenant-a）"
+  },
+  "produces": "context-limit-bypass.json + baseline/bypass 差分与 queue 计数器",
+  "knowledge": "docs/LONG-CONTEXT.md 第 2 节：128K–1M 窗口强制；spec 5.2 网络架构层 + 5.6 服务网关层",
+  "combo_signature": "context-window-declaration-bypass"
+}

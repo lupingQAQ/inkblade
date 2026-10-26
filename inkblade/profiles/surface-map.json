@@ -1,0 +1,2690 @@
+{
+  "schema": "inkblade-surface-map-v1",
+  "description": "Declared deployment surfaces per module. Explicit module.json surfaces win; this map covers legacy modules.",
+  "modules": {
+    "admission-crd-subresource-gap": [
+      {
+        "type": "k8s-object",
+        "selector": "ValidatingWebhookConfiguration"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/validate"
+      }
+    ],
+    "admission-gatekeeper-semantics": [
+      {
+        "type": "k8s-object",
+        "selector": "ValidatingWebhookConfiguration"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/validate"
+      }
+    ],
+    "admission-kyverno-semantics": [
+      {
+        "type": "k8s-object",
+        "selector": "ValidatingWebhookConfiguration"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/validate"
+      }
+    ],
+    "admission-webhook-write": [
+      {
+        "type": "k8s-object",
+        "selector": "ValidatingWebhookConfiguration"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/validate"
+      }
+    ],
+    "aigateway-auth-bypass": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "litellm"
+      }
+    ],
+    "aigateway-cache-cross-tenant": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "litellm"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "aigateway-fingerprint": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "litellm"
+      }
+    ],
+    "aigateway-guardrail-bypass": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "litellm"
+      }
+    ],
+    "aigateway-log-pii-leak": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "litellm"
+      }
+    ],
+    "aigateway-quota-bypass": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "litellm"
+      }
+    ],
+    "aigateway-route-hijack": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "litellm"
+      }
+    ],
+    "aigateway-upstream-key-exfil": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "litellm"
+      }
+    ],
+    "ambient-mesh-audit": [
+      {
+        "type": "k8s-object",
+        "selector": "DaemonSet/ztunnel"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "ztunnel"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz/ready"
+      }
+    ],
+    "api-server-flood-surface": [
+      {
+        "type": "k8s-object",
+        "selector": "APIService"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "apiservice-hijack": [
+      {
+        "type": "k8s-object",
+        "selector": "APIService"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "areal-awex-nccl-injection": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nccl"
+      }
+    ],
+    "areal-load-pickle": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "areal-setenv-engine-rce": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "attack-path-ranking": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "auth-gap-detection": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "bmc-ipmi-exposure": [
+      {
+        "type": "bmc",
+        "selector": "bmc/redfish"
+      }
+    ],
+    "cache-eviction-residue": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "cache-poison-persistence": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "cache-salt-policy-audit": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "cache-timing-sidechannel": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "cdk-persistence-detect": [
+      {
+        "type": "k8s-object",
+        "selector": "APIService"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "ValidatingWebhookConfiguration"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/validate"
+      }
+    ],
+    "cdk-techniques": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "cert-manager-webhook-tls": [
+      {
+        "type": "k8s-object",
+        "selector": "ValidatingWebhookConfiguration"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/validate"
+      }
+    ],
+    "cgpu-isolation-audit": [
+      {
+        "type": "k8s-object",
+        "selector": "DaemonSet/hami-device-plugin"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/metrics"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      }
+    ],
+    "checkpoint-io-storm": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "checkpoint-optimizer-state-poison": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "checkpoint-shard-poison": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "cis-benchmark-audit": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": ":2379"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "vllm"
+      },
+      {
+        "type": "config-file",
+        "selector": "sglang"
+      },
+      {
+        "type": "config-file",
+        "selector": "kubelet"
+      }
+    ],
+    "cloud-bucket-cross-tenant": [
+      {
+        "type": "http-endpoint",
+        "selector": "metadata"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "cloud-integration-fingerprint": [
+      {
+        "type": "http-endpoint",
+        "selector": "metadata"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "CSIDriver"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "csi"
+      }
+    ],
+    "cloud-irsa-trust-wildcard": [
+      {
+        "type": "http-endpoint",
+        "selector": "metadata"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "cloud-role-overprivilege": [
+      {
+        "type": "http-endpoint",
+        "selector": "metadata"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "cloud-sg-imds-exposure": [
+      {
+        "type": "http-endpoint",
+        "selector": "metadata"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "cloud-snapshot-share": [
+      {
+        "type": "http-endpoint",
+        "selector": "metadata"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "cloud-token-harvest": [
+      {
+        "type": "http-endpoint",
+        "selector": "metadata"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "cni-aware-reachability-graph": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "cni-plugin-exec": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "cni-stack-capability": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "collective-communication-surface": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nccl"
+      }
+    ],
+    "combo-signature-static": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "confidential-containers-attestation": [
+      {
+        "type": "k8s-object",
+        "selector": "RuntimeClass/kata-cc"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "kata"
+      },
+      {
+        "type": "config-file",
+        "selector": "kata"
+      },
+      {
+        "type": "bmc",
+        "selector": "tpm"
+      },
+      {
+        "type": "config-file",
+        "selector": "attest"
+      }
+    ],
+    "confidential-containers-audit": [
+      {
+        "type": "k8s-object",
+        "selector": "RuntimeClass/kata-cc"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "kata"
+      },
+      {
+        "type": "config-file",
+        "selector": "kata"
+      }
+    ],
+    "containerd-shim-escape-detect": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "context-limit-bypass": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "crd-conversion-webhook": [
+      {
+        "type": "k8s-object",
+        "selector": "ValidatingWebhookConfiguration"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/validate"
+      }
+    ],
+    "csi-node-plugin-escape": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "CSIDriver"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "csi"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "csr-approve": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "cumulus-nvue-injection": [
+      {
+        "type": "switch",
+        "selector": "switch/sonic"
+      }
+    ],
+    "data-pipeline-poison": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "data-provenance-audit": [
+      {
+        "type": "http-endpoint",
+        "selector": "/provenance/attestation"
+      }
+    ],
+    "deepspeed-checkpoint-rce": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "defense-bypass-admission": [
+      {
+        "type": "k8s-object",
+        "selector": "ValidatingWebhookConfiguration"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/validate"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "runtime-agent"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "defense-bypass-agentsmith": [
+      {
+        "type": "runtime-agent",
+        "selector": "runtime-agent"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "defense-bypass-elkeid": [
+      {
+        "type": "runtime-agent",
+        "selector": "runtime-agent"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "defense-bypass-falco": [
+      {
+        "type": "runtime-agent",
+        "selector": "runtime-agent"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "defense-bypass-hostagent": [
+      {
+        "type": "runtime-agent",
+        "selector": "runtime-agent"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "defense-bypass-imagescan": [
+      {
+        "type": "runtime-agent",
+        "selector": "runtime-agent"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "defense-bypass-kubearmor": [
+      {
+        "type": "runtime-agent",
+        "selector": "runtime-agent"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "defense-bypass-netobserv": [
+      {
+        "type": "runtime-agent",
+        "selector": "runtime-agent"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "defense-bypass-tetragon": [
+      {
+        "type": "runtime-agent",
+        "selector": "runtime-agent"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "defense-bypass-veinmind": [
+      {
+        "type": "runtime-agent",
+        "selector": "runtime-agent"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "defense-bypass-waf-inference": [
+      {
+        "type": "runtime-agent",
+        "selector": "runtime-agent"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "dify-code-node-escape": [
+      {
+        "type": "http-endpoint",
+        "selector": "/api"
+      },
+      {
+        "type": "config-file",
+        "selector": "app"
+      }
+    ],
+    "dify-control-plane-failopen": [
+      {
+        "type": "http-endpoint",
+        "selector": "/api"
+      },
+      {
+        "type": "config-file",
+        "selector": "app"
+      }
+    ],
+    "dify-local-sandbox-unauth-rce": [
+      {
+        "type": "http-endpoint",
+        "selector": "/api"
+      },
+      {
+        "type": "config-file",
+        "selector": "app"
+      }
+    ],
+    "dify-snapshot-cross-tenant-theft": [
+      {
+        "type": "http-endpoint",
+        "selector": "/api"
+      },
+      {
+        "type": "config-file",
+        "selector": "app"
+      }
+    ],
+    "dify-stub-token-forgery": [
+      {
+        "type": "http-endpoint",
+        "selector": "/api"
+      },
+      {
+        "type": "config-file",
+        "selector": "app"
+      }
+    ],
+    "djev-open-proxy": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "dns-service-discovery": [
+      {
+        "type": "k8s-object",
+        "selector": "RayCluster"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/dashboard"
+      }
+    ],
+    "dpu-ipu-offload": [
+      {
+        "type": "http-endpoint",
+        "selector": "/dpu"
+      },
+      {
+        "type": "bmc",
+        "selector": "bmc/dpu"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "config-file",
+        "selector": "iommu"
+      }
+    ],
+    "dpu-smartnic-surface": [
+      {
+        "type": "http-endpoint",
+        "selector": "/dpu"
+      },
+      {
+        "type": "bmc",
+        "selector": "bmc/dpu"
+      }
+    ],
+    "driver-reset-trigger": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      }
+    ],
+    "ebpf-runtime-coverage-gap": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "escape-primitives": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "etcd-direct-access": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": ":2379"
+      }
+    ],
+    "experiment-tracker-exposure": [
+      {
+        "type": "http-endpoint",
+        "selector": "/api"
+      },
+      {
+        "type": "model-file",
+        "selector": "model"
+      }
+    ],
+    "exposure-mapping": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "fabric-telemetry-exposure": [
+      {
+        "type": "switch",
+        "selector": "switch/fabric"
+      }
+    ],
+    "fabric-topology-isolation": [
+      {
+        "type": "switch",
+        "selector": "switch/fabric"
+      }
+    ],
+    "federated-learning-audit": [
+      {
+        "type": "http-endpoint",
+        "selector": "/fl"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Deployment/nvflare"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Deployment/flower"
+      }
+    ],
+    "federated-learning-surface": [
+      {
+        "type": "http-endpoint",
+        "selector": "/fl"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Deployment"
+      }
+    ],
+    "framework-port-matching": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "gang-scheduler-abuse": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "scheduler"
+      }
+    ],
+    "gateway-api-ambient-mesh": [
+      {
+        "type": "k8s-object",
+        "selector": "DaemonSet/ztunnel"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "ztunnel"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz/ready"
+      }
+    ],
+    "gitops-secret-read": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "gitops-supply-chain": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "gpu-device-cross-namespace": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      }
+    ],
+    "gpu-dra-mig-policy": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      }
+    ],
+    "gpu-driver-firmware-surface": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      }
+    ],
+    "gpu-metrics-tenant-leak": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      }
+    ],
+    "gpu-network-operator-posture": [
+      {
+        "type": "switch",
+        "selector": "switch/fabric"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      }
+    ],
+    "gpu-operator-config-depth": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "gpu-operator-driver-audit": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      }
+    ],
+    "gpu-operator-driver-escape": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "gpu-pool-scheduler-unauth": [
+      {
+        "type": "k8s-object",
+        "selector": "DaemonSet/hami-device-plugin"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/metrics"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "scheduler"
+      }
+    ],
+    "gpu-tenant-residue": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      }
+    ],
+    "hami-scheduler-auth-gap": [
+      {
+        "type": "k8s-object",
+        "selector": "DaemonSet/hami-device-plugin"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/metrics"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "scheduler"
+      }
+    ],
+    "hardware-supply-chain": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "hybrid-cloud-egress-pivot": [
+      {
+        "type": "http-endpoint",
+        "selector": "metadata"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "ib-sm-partition-audit": [
+      {
+        "type": "switch",
+        "selector": "switch/fabric"
+      }
+    ],
+    "ib-subnet-manager-hijack": [
+      {
+        "type": "switch",
+        "selector": "switch/fabric"
+      }
+    ],
+    "identity-federation-trust-matrix": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "image-pull-secret-theft": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "impersonate-abuse": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "inference-gateway-pd": [
+      {
+        "type": "k8s-object",
+        "selector": "LeaderWorkerSet"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "ipmi-cipher-zero-bypass": [
+      {
+        "type": "bmc",
+        "selector": "bmc/redfish"
+      }
+    ],
+    "kdigger-admission": [
+      {
+        "type": "k8s-object",
+        "selector": "ValidatingWebhookConfiguration"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/validate"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "kdigger-buckets": [
+      {
+        "type": "k8s-object",
+        "selector": "ValidatingWebhookConfiguration"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/validate"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "kernel-lpe-audit": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "audit"
+      }
+    ],
+    "kube-audit-trail-analysis": [
+      {
+        "type": "k8s-object",
+        "selector": "APIService"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "RayCluster"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/dashboard"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "CSIDriver"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "csi"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "audit"
+      }
+    ],
+    "kube-bench-cis": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": ":2379"
+      },
+      {
+        "type": "config-file",
+        "selector": "kubelet"
+      },
+      {
+        "type": "config-file",
+        "selector": "scheduler"
+      }
+    ],
+    "kubehound-edges": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "kubehound-token-edges": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "kubehunter-checks": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": ":2379"
+      }
+    ],
+    "kubelet-10250-exec": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "kubelet-api-surface": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "kubelet-gitrepo-exec-detect": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "kubelet-surface": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "kuberay-operator-escalation": [
+      {
+        "type": "k8s-object",
+        "selector": "RayCluster"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/dashboard"
+      }
+    ],
+    "kubernetes-cve-catalog": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "kubetrail-collector": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "audit"
+      }
+    ],
+    "kubetrail-lpe": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "audit"
+      }
+    ],
+    "kubetrail-manifest-secrets": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "audit"
+      }
+    ],
+    "kubetrail-persistence": [
+      {
+        "type": "k8s-object",
+        "selector": "ValidatingWebhookConfiguration"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/validate"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "audit"
+      }
+    ],
+    "kubetrail-token-audit": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "audit"
+      }
+    ],
+    "kubiscan-risky": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "kv-cache-integrity-poison": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "kv-oom-bomb": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "litellm-config-update-rce": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "litellm"
+      }
+    ],
+    "litellm-default-key-exfil": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "litellm"
+      }
+    ],
+    "llamafactory-checkpoint-rce": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "long-context-memory-amplification": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "long-context-training-collective-surface": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nccl"
+      }
+    ],
+    "long-context-window-exhaustion": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "lora-adapter-injection": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "lws-leader-endpoint-audit": [
+      {
+        "type": "k8s-object",
+        "selector": "LeaderWorkerSet"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "lws-secrets-lateral": [
+      {
+        "type": "k8s-object",
+        "selector": "LeaderWorkerSet"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "megatron-checkpoint-rce": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "megatron-deepspeed-config-surface": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "metadata-egress": [
+      {
+        "type": "http-endpoint",
+        "selector": "metadata"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "mig-profile-mismatch": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      }
+    ],
+    "mlflow-model-rce": [
+      {
+        "type": "http-endpoint",
+        "selector": "/api"
+      },
+      {
+        "type": "model-file",
+        "selector": "model"
+      }
+    ],
+    "mlflow-trace-write": [
+      {
+        "type": "http-endpoint",
+        "selector": "/api"
+      },
+      {
+        "type": "model-file",
+        "selector": "model"
+      }
+    ],
+    "model-registry-exposure": [
+      {
+        "type": "http-endpoint",
+        "selector": "/api"
+      },
+      {
+        "type": "model-file",
+        "selector": "model"
+      }
+    ],
+    "model-watermark-backdoor-audit": [
+      {
+        "type": "http-endpoint",
+        "selector": "/watermark"
+      },
+      {
+        "type": "model-file",
+        "selector": "watermark"
+      }
+    ],
+    "model-watermark-backdoor-detect": [
+      {
+        "type": "http-endpoint",
+        "selector": "/watermark"
+      },
+      {
+        "type": "model-file",
+        "selector": "model"
+      }
+    ],
+    "mps-context-shared": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      }
+    ],
+    "msswift-dataset-pickle-rce": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "multi-cloud-imds-credentials": [
+      {
+        "type": "http-endpoint",
+        "selector": "metadata"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "multi-cluster-federation": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "multus-sriov-rdma-bypass": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "nccl-collective-join": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nccl"
+      }
+    ],
+    "nccl-port-exhaustion": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nccl"
+      }
+    ],
+    "nccl-straggler-injection": [
+      {
+        "type": "http-endpoint",
+        "selector": "/dpu"
+      },
+      {
+        "type": "bmc",
+        "selector": "bmc/dpu"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nccl"
+      }
+    ],
+    "network-policy-coverage": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "nvidia-toolkit-escape-detect": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "nvswitch-nvlink-topology": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "observability-exposure": [
+      {
+        "type": "http-endpoint",
+        "selector": "/api"
+      },
+      {
+        "type": "model-file",
+        "selector": "model"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/metrics"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "oidc-issuer-confusion": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "open-webui-code-execute-rce": [
+      {
+        "type": "http-endpoint",
+        "selector": "/api"
+      },
+      {
+        "type": "config-file",
+        "selector": "app"
+      }
+    ],
+    "open-webui-file-overwrite": [
+      {
+        "type": "http-endpoint",
+        "selector": "/api"
+      },
+      {
+        "type": "config-file",
+        "selector": "app"
+      }
+    ],
+    "open-webui-indirect-injection-exec": [
+      {
+        "type": "http-endpoint",
+        "selector": "/api"
+      },
+      {
+        "type": "config-file",
+        "selector": "app"
+      }
+    ],
+    "outbound-ssrf": [
+      {
+        "type": "http-endpoint",
+        "selector": "metadata"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "overprivileged-sa-escalation": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "pcie-iommu-audit": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "config-file",
+        "selector": "iommu"
+      }
+    ],
+    "pcie-iommu-dma": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "config-file",
+        "selector": "iommu"
+      }
+    ],
+    "peirates-primitives": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "post-quantum-tls-audit": [
+      {
+        "type": "http-endpoint",
+        "selector": "/tls"
+      }
+    ],
+    "post-quantum-tls-posture": [
+      {
+        "type": "http-endpoint",
+        "selector": "/tls"
+      }
+    ],
+    "prefill-decode-kv-channel-unauth": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "prefix-cache-cross-tenant-leak": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "pretrain-job-escape": [
+      {
+        "type": "k8s-object",
+        "selector": "RayCluster"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/dashboard"
+      },
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "privileged-gpu-pod-escape": [
+      {
+        "type": "k8s-object",
+        "selector": "Node"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nvidia-device-plugin"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "privileged-workloads": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "python-dangerous-sinks": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "rag-vector-injection": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "rail-mismatch-forcing": [
+      {
+        "type": "switch",
+        "selector": "switch/fabric"
+      }
+    ],
+    "ray-control-plane": [
+      {
+        "type": "k8s-object",
+        "selector": "RayCluster"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/dashboard"
+      }
+    ],
+    "ray-dashboard-job": [
+      {
+        "type": "k8s-object",
+        "selector": "RayCluster"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/dashboard"
+      }
+    ],
+    "ray-job-marker-rce": [
+      {
+        "type": "k8s-object",
+        "selector": "RayCluster"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/dashboard"
+      }
+    ],
+    "rbac-bind-verb": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "rbac-escalate-verb": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "rbac-mapping": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "redfish-default-credentials": [
+      {
+        "type": "bmc",
+        "selector": "bmc/redfish"
+      }
+    ],
+    "remote-kv-pool-isolation": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "reverse-rbac-lookup": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "reward-hacking-detect": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "reward-model-abuse": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "rl-rollout-buffer-poison": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "roce-pfc-storm": [
+      {
+        "type": "switch",
+        "selector": "switch/fabric"
+      }
+    ],
+    "router-cache-metrics-leak": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "vllm"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "runc-escape-detect": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "runtime-socket-escape": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "sa-token-request": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "sandbox-runtime-surface": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "scheduler-network-semantics": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "config-file",
+        "selector": "scheduler"
+      }
+    ],
+    "secret-scanner": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "sft-framework-surface": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "sglang-admin-failopen": [
+      {
+        "type": "http-endpoint",
+        "selector": "/admin"
+      },
+      {
+        "type": "config-file",
+        "selector": "sglang"
+      }
+    ],
+    "sglang-omni-profiler-write": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "sglang"
+      }
+    ],
+    "sglang-route-poison": [
+      {
+        "type": "http-endpoint",
+        "selector": "/route"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/register_dp_rank"
+      },
+      {
+        "type": "config-file",
+        "selector": "sglang"
+      }
+    ],
+    "sglang-weight-exfil": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "model-file",
+        "selector": "model"
+      }
+    ],
+    "sglang-zmq-pickle-rce": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "sglang"
+      }
+    ],
+    "shared-volume-weight-copy": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "sharp-collective-config": [
+      {
+        "type": "switch",
+        "selector": "switch/fabric"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "nccl"
+      }
+    ],
+    "sharp-in-network-poison": [
+      {
+        "type": "switch",
+        "selector": "switch/fabric"
+      }
+    ],
+    "sharp-session-trust-audit": [
+      {
+        "type": "switch",
+        "selector": "switch/fabric"
+      }
+    ],
+    "similarity-cache-false-hit": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/chat/completions"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "skyrl-dev-pickle-rce": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "skyrl-tinker-hijack": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "slime-weight-pull-poison": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "sonic-config-plane-write": [
+      {
+        "type": "switch",
+        "selector": "switch/sonic"
+      }
+    ],
+    "sonic-fabric-config-audit": [
+      {
+        "type": "switch",
+        "selector": "switch/sonic"
+      },
+      {
+        "type": "switch",
+        "selector": "switch/fabric"
+      }
+    ],
+    "sonic-rsyslog-injection": [
+      {
+        "type": "switch",
+        "selector": "switch/sonic"
+      }
+    ],
+    "spiffe-spire-audit": [
+      {
+        "type": "k8s-object",
+        "selector": "Deployment/spire-server"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "spire-agent"
+      },
+      {
+        "type": "config-file",
+        "selector": "spire"
+      }
+    ],
+    "spiffe-spire-surface": [
+      {
+        "type": "k8s-object",
+        "selector": "Deployment/spire-server"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "spire-agent"
+      },
+      {
+        "type": "config-file",
+        "selector": "spire"
+      }
+    ],
+    "ssrf-imds-credential": [
+      {
+        "type": "http-endpoint",
+        "selector": "metadata"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "storage-protocol-csi": [
+      {
+        "type": "k8s-object",
+        "selector": "CSIDriver"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "csi"
+      }
+    ],
+    "storage-sharing": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "CSIDriver"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "csi"
+      }
+    ],
+    "supply-chain-credential-theft": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "supply-chain-pinning": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "switch-os-config-surface": [
+      {
+        "type": "switch",
+        "selector": "switch/sonic"
+      }
+    ],
+    "tokenizer-template-injection": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "torch-weights-bypass-rce": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "torchrun-elastic-surface": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": ":2379"
+      },
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "tpm-attestation-audit": [
+      {
+        "type": "bmc",
+        "selector": "tpm"
+      },
+      {
+        "type": "config-file",
+        "selector": "attest"
+      }
+    ],
+    "tpm-measured-boot": [
+      {
+        "type": "bmc",
+        "selector": "tpm"
+      },
+      {
+        "type": "config-file",
+        "selector": "attest"
+      }
+    ],
+    "training-data-leak": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "training-silent-corruption": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "trl-serve-dev-mode": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "vllm"
+      },
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "trust-remote-code-supply-chain": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "vllm"
+      }
+    ],
+    "unlimited-query-distillation": [
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/healthz"
+      }
+    ],
+    "vector-db-exposure": [
+      {
+        "type": "http-endpoint",
+        "selector": "/collections"
+      }
+    ],
+    "verl-checkpoint-pickle": [
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "verl-hdfs-command-injection": [
+      {
+        "type": "k8s-object",
+        "selector": "RayCluster"
+      },
+      {
+        "type": "http-endpoint",
+        "selector": "/dashboard"
+      },
+      {
+        "type": "config-file",
+        "selector": "train"
+      },
+      {
+        "type": "model-file",
+        "selector": "checkpoint"
+      }
+    ],
+    "vllm-operator-rbac-escalation": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "vllm"
+      },
+      {
+        "type": "k8s-object",
+        "selector": "Pod"
+      }
+    ],
+    "vllm-pickle-pipe-rce": [
+      {
+        "type": "config-file",
+        "selector": "vllm"
+      },
+      {
+        "type": "model-file",
+        "selector": "model"
+      }
+    ],
+    "vllm-plugin-auth-bypass": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "vllm"
+      }
+    ],
+    "vllm-sglang-patch-matrix": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "vllm"
+      },
+      {
+        "type": "config-file",
+        "selector": "sglang"
+      }
+    ],
+    "vllm-surface-fuzz": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "vllm"
+      }
+    ],
+    "vllm-timing-oracle": [
+      {
+        "type": "http-endpoint",
+        "selector": "/v1/models"
+      },
+      {
+        "type": "config-file",
+        "selector": "vllm"
+      }
+    ],
+    "wasm-runtime-audit": [
+      {
+        "type": "k8s-object",
+        "selector": "RuntimeClass/wasm"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "wasmtime"
+      }
+    ],
+    "wasm-workload-surface": [
+      {
+        "type": "k8s-object",
+        "selector": "RuntimeClass/wasm"
+      },
+      {
+        "type": "runtime-agent",
+        "selector": "wasmtime"
+      }
+    ]
+  }
+}

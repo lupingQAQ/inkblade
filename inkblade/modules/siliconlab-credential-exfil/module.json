@@ -1,0 +1,28 @@
+{
+  "key": "siliconlab-credential-exfil",
+  "name": {
+    "zh": "OpenJev-SiliconLab 凭据外带",
+    "en": "OpenJev-SiliconLab Credential Exfiltration"
+  },
+  "series": "窃取与数据泄露",
+  "description": "OpenJev-SiliconLabAI server/index.ts:40 evaluate() posts to a caller-supplied base_url/decider_url with the server's provider key, exfiltrating the credential to an attacker-chosen endpoint.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标 URL，例如 http://host:port（真实模式必需）",
+    "mode": "probe-only（默认，只读探测）| backup-write（写模块需 backup_targets）",
+    "local_path": "function-level 模块的本地文件/模型目录（仅读取，不反序列化）"
+  },
+  "produces": "credential-exfiltration",
+  "knowledge": "docs/WEAPON-READINESS.md#siliconlab-credential-exfil",
+  "combo_signature": "siliconlab-base-url-exfil",
+  "weapon_pack": true,
+  "surfaces": [
+    {
+      "type": "http-endpoint",
+      "selector": "/evaluate"
+    }
+  ],
+  "default_enabled": true
+}

@@ -1,0 +1,20 @@
+{
+  "key": "multi-cloud-imds-credentials",
+  "name": {
+    "zh": "多云元数据凭据面",
+    "en": "Multi-cloud IMDS Credentials"
+  },
+  "series": "混合云",
+  "description": "AWS IMDSv1/v2、Azure IMDS + Managed Identity、阿里 ECS 元数据（RAM）、腾讯 CVM 元数据（CAM）、GCP 元数据：角色/凭据可达性证明（脱敏存证）。实验室 face：五云 /mock-imds/* 攻击姿态差分；GCP 非差分仅记可达性。",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）",
+    "imds_base": "IMDS 基址（缺省取 target）"
+  },
+  "produces": "cloud-credential-surface",
+  "knowledge": "设计基线 5.6 云与混合边界层 + 设计基线第 1–5 节 SSRF→IMDS",
+  "combo_signature": "imds-credential-hub"
+}

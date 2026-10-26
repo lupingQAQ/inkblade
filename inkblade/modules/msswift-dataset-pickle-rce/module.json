@@ -1,0 +1,29 @@
+{
+  "key": "msswift-dataset-pickle-rce",
+  "name": {
+    "zh": "ms-swift 数据集/序列化 pickle RCE",
+    "en": "ms-swift dataset/serializer pickle RCE"
+  },
+  "series": "核心代码",
+  "description": "ms-swift v4.6.0 packing cache (IndexedDataset data.idx/data-*.bin) and the rank/node Serializer.from_tensor channel unpickle attacker-controlled bytes with pickle.load/pickle.loads; whoever can write the dataset cache or inject the carried tensor gets code execution. Verified at function level against the verbatim pinned v4.6.0 upstream files.",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "packing cache directory or tensor channel (read-only proof)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "msswift-dataset",
+  "knowledge": "docs/EXPLOIT-VERIFICATION.md + lab/upstream_verify/cases/msswift/",
+  "combo_signature": "trainstack-sft-data-path",
+  "verified": true,
+  "verification_status": "verified",
+  "verification_cves": {},
+  "verification_evidence": [
+    "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l112-regex/result.json",
+    "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l129-regex/result.json",
+    "lab/upstream_verify/cases/msswift/msswift-torch-utils-py-pickle-loads-l340-regex/result.json"
+  ]
+}

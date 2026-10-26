@@ -1,0 +1,33 @@
+{
+ "key": "lc-metrics-unauth",
+ "title": {
+  "zh": "/metrics 未授权泄露训练拓扑",
+  "en": "Unauth /metrics leaks training topology"
+ },
+ "category": "longctx-attack",
+ "face": "longctx",
+ "target_face": "longctx-metrics",
+ "preconditions": [
+  "lab/longctx_sim /metrics 可达"
+ ],
+ "request": [
+  {
+   "method": "GET",
+   "path": "/metrics",
+   "auth": "none",
+   "body": null
+  }
+ ],
+ "detector": {
+  "kind": "json_path",
+  "path": "training.world_size",
+  "op": "gt",
+  "value": 0
+ },
+ "severity": "medium",
+ "rule_key": "sigma-llm-probe-longctx-attack",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

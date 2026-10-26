@@ -1,0 +1,18 @@
+{
+  "key": "multi-cluster-federation",
+  "name": {
+    "zh": "Karmada/Cluster API 多集群联邦面",
+    "en": "Karmada/Cluster API federation surface"
+  },
+  "series": "混合云",
+  "description": "只读检查 Karmada/Cluster API 联邦：通配传播到全部集群、kubeconfig 共享、无审批、无自动故障转移、命名空间未隔离。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "multi-cluster-federation.json + 传播/审批矩阵",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "karmada-wildcard-propagation"
+}

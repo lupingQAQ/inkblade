@@ -1,0 +1,25 @@
+{
+  "key": "example-hello",
+  "name": {
+    "en": "Example hello module",
+    "zh": "示例模块：只读摘要"
+  },
+  "series": "侦察",
+  "description": "Reference module for the public build. Records the target, the run marker and the declared scope without opening a network connection, then emits one informational finding plus a JSON artifact. Start here when you write your own read-only collector.",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "in-scope target identifier or URL, echoed back in the artifact",
+    "note": "free-form operator note stored in the artifact"
+  },
+  "produces": "hello-surface.json artifact + one info finding",
+  "knowledge": "docs/PLUGIN-SDK.md; examples/README.md",
+  "default_enabled": true,
+  "surfaces": [],
+  "sdk": {
+    "api": 1,
+    "entrypoint": "run.py",
+    "license": "Apache-2.0"
+  }
+}

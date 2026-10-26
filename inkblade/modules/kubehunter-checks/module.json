@@ -1,0 +1,18 @@
+{
+  "key": "kubehunter-checks",
+  "name": {
+    "zh": "kube-hunter 检查清单",
+    "en": "kube-hunter checks"
+  },
+  "series": "侦察",
+  "description": "kube-hunter 47 Vuln 检查族中的控制面/节点具象检查（API Server/Kubelet/etcd/dashboard/proxy/certificates/AKS），每项带 VID 键与 MITRE 映射。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群/节点快照 dict 或 lab/fixtures/attack-surface/cluster-surface.json 路径",
+    "limit": "可选：最多输出的发现数（默认全部）"
+  },
+  "produces": "kubehunter-checks",
+  "knowledge": "kube_hunter/modules/hunting/*（47 类）"
+}

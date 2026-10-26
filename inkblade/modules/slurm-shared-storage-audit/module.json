@@ -1,0 +1,24 @@
+{
+  "key": "slurm-shared-storage-audit",
+  "name": {
+    "zh": "Slurm 共享存储客户端审计（Lustre/GPFS）",
+    "en": "Slurm shared-storage client audit (Lustre/GPFS)"
+  },
+  "series": "窃取与数据泄露",
+  "description": "审计 Lustre/GPFS/NFS 客户端挂载与导出：nosuid/nodev、root_squash、导出网段、客户端配额、LNet 加密、UID 映射、GPFS ACL 与 world-writable 共享目录。只读。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "包含 storage/lustre-mounts.json、storage/gpfs-mounts.json 的导出目录"
+  },
+  "produces": "slurm-shared-storage-audit.json + 共享存储 findings",
+  "knowledge": "Lustre 2.x 手册（mount.lustre/lnet）、IBM Spectrum Scale（GPFS）文档；docs/SLURM-HPC-COVERAGE.md 共享存储面",
+  "necessity": "HPC 的权重/检查点/数据集都在共享文件系统；root_squash 关闭、导出 * 或 noexec/nosuid 缺失会让任一计算节点用户改写全局权重或执行 setuid 载荷，跨租户影响整个集群。",
+  "combo_signature": "slurm-shared-storage-tamper",
+  "surfaces": [
+    {"type": "config-file", "selector": "storage/lustre/mounts.json"},
+    {"type": "config-file", "selector": "storage/gpfs/mounts.json"}
+  ],
+  "default_enabled": true
+}

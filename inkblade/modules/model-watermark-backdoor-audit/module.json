@@ -1,0 +1,25 @@
+{
+  "key": "model-watermark-backdoor-audit",
+  "name": {
+    "zh": "模型水印/后门服务面审计",
+    "en": "Model watermark/backdoor service surface audit"
+  },
+  "series": "侦察",
+  "description": "检测水印验证/触发器服务与模型元数据中的后门标记；仅在实际部署水印或模型验收服务时执行。默认链不启用：主流画像没有该组件。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "collect": "inkblade collect 输出目录",
+    "profile": "部署画像名",
+    "model_metadata": "可选的模型元数据（trigger/backdoor 字段）"
+  },
+  "produces": "model-watermark-backdoor-audit.json + 水印/后门 findings",
+  "knowledge": "docs/SURFACE-REALISM.md no-surface 模块隔离",
+  "combo_signature": "watermark-service-trigger-leak",
+  "surfaces": [
+    {"type": "http-endpoint", "selector": "/watermark"},
+    {"type": "model-file", "selector": "watermark"}
+  ],
+  "default_enabled": false
+}

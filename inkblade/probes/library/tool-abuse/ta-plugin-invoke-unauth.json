@@ -1,0 +1,39 @@
+{
+ "key": "ta-plugin-invoke-unauth",
+ "title": {
+  "zh": "vLLM 插件端点未授权调用",
+  "en": "Unauth vLLM plugin invocation"
+ },
+ "category": "tool-abuse",
+ "face": "relay",
+ "target_face": "relay-plugins",
+ "preconditions": [
+  "lab/mock_targets /plugins/invoke 可达（X-Mock-Service: vllm 面）"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/plugins/invoke",
+   "auth": "none",
+   "headers": {
+    "X-Mock-Service": "vllm"
+   },
+   "body": {
+    "plugin": "jev",
+    "args": {
+     "probe": "INKBLADE-BENIGN"
+    }
+   }
+  }
+ ],
+ "detector": {
+  "kind": "status",
+  "equals": 200
+ },
+ "severity": "critical",
+ "rule_key": "sigma-llm-probe-tool-abuse",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

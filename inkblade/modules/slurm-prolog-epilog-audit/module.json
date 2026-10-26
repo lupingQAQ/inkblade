@@ -1,0 +1,24 @@
+{
+  "key": "slurm-prolog-epilog-audit",
+  "name": {
+    "zh": "Slurm Prolog/Epilog 生命周期执行审计",
+    "en": "Slurm prolog/epilog lifecycle execution audit"
+  },
+  "series": "权限链",
+  "description": "审计 Prolog/Epilog/PrologSlurmctld/EpilogSlurmctld 脚本属主/权限/签名、PrologFlags=Contain、路径是否在用户可写目录与 root 执行面。只读。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "包含 prolog-epilog.json、slurm.conf、inventory.json 的导出目录"
+  },
+  "produces": "slurm-prolog-epilog-audit.json + 生命周期脚本 findings",
+  "knowledge": "SchedMD prolog/epilog / PrologFlags 文档；docs/SLURM-HPC-COVERAGE.md 作业生命周期面",
+  "necessity": "prolog/epilog 由 slurmd 以 root 在作业前后执行；用户可写或未签名脚本等于计算节点 root 持久化，PrologFlags 不含 Contain 还会让作业逃出 cgroup。",
+  "combo_signature": "slurm-prolog-root-exec",
+  "surfaces": [
+    {"type": "config-file", "selector": "slurm/prolog-epilog.json"},
+    {"type": "config-file", "selector": "slurm/slurm.conf"}
+  ],
+  "default_enabled": true
+}

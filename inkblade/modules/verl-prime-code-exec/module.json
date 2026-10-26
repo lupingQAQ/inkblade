@@ -1,0 +1,32 @@
+{
+  "key": "verl-prime-code-exec",
+  "name": {
+    "zh": "verl prime 奖励函数代码执行",
+    "en": "verl Prime Reward-Code Execution"
+  },
+  "series": "核心代码",
+  "description": "verl 76e837e evaluates generated prime reward code on the training host. A tenant who can write the reward configuration reaches eval() with attacker-controlled Python.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标 URL，例如 http://host:port（真实模式必需）",
+    "mode": "probe-only（默认，只读探测）| backup-write（写模块需 backup_targets）",
+    "local_path": "function-level 模块的本地文件/模型目录（仅读取，不反序列化）"
+  },
+  "produces": "reward-code-execution",
+  "knowledge": "docs/WEAPON-READINESS.md#verl-prime-code-exec",
+  "combo_signature": "verl-prime-code-exec",
+  "weapon_pack": true,
+  "surfaces": [
+    {
+      "type": "config-file",
+      "selector": "verl"
+    },
+    {
+      "type": "runtime-agent",
+      "selector": "reward"
+    }
+  ],
+  "default_enabled": true
+}

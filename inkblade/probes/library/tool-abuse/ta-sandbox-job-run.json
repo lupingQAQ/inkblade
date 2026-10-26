@@ -1,0 +1,33 @@
+{
+ "key": "ta-sandbox-job-run",
+ "title": {
+  "zh": "dify 沙箱作业未授权提交",
+  "en": "Unauth dify sandbox job submission"
+ },
+ "category": "tool-abuse",
+ "face": "relay",
+ "target_face": "relay-sandbox",
+ "preconditions": [
+  "lab/mock_targets /v1/jobs/run 可达"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/v1/jobs/run",
+   "auth": "none",
+   "body": {
+    "script": "echo INKBLADE-BENIGN"
+   }
+  }
+ ],
+ "detector": {
+  "kind": "status",
+  "equals": 200
+ },
+ "severity": "critical",
+ "rule_key": "sigma-llm-probe-tool-abuse",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

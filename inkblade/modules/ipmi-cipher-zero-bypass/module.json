@@ -1,0 +1,29 @@
+{
+  "key": "ipmi-cipher-zero-bypass",
+  "name": {
+    "zh": "IPMI cipher-zero bypass",
+    "en": "IPMI cipher-zero bypass"
+  },
+  "series": "网络架构",
+  "description": "IPMI cipher-zero bypass; covers CVE-2013-4786. Read-only: version/evidence collection, no target writes.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "ipmi-cipher-zero",
+  "knowledge": "docs/CVE-CATALOG.md + inkblade/core/cve-catalog.json",
+  "combo_signature": "ipmi-cipher-zero",
+  "verified": false,
+  "verification_status": "unsupported",
+  "verification_cves": {
+    "CVE-2013-4786": "unsupported"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/bmc/CVE-2013-4786/result.json"
+  ]
+}

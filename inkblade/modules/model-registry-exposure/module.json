@@ -1,0 +1,20 @@
+{
+  "key": "model-registry-exposure",
+  "name": {
+    "zh": "模型注册表暴露",
+    "en": "Model Registry Exposure"
+  },
+  "series": "侦察",
+  "description": "/models 与 /ai/route 暴露私有模型、租户归属与后端地址。vulnerable：匿名可读全部模型（含 tenant-b 私有模型与内网 backend）；fixed：401 或仅本租户/公开模型且 backend 脱敏。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "tenant_key": "fixed 模式同租户对照 key",
+    "tenant": "租户标识（缺省 tenant-a）"
+  },
+  "produces": "model-registry-exposure-finding",
+  "knowledge": "docs/AI-GATEWAY.md 第 10 节：模型注册表与路由表暴露面",
+  "combo_signature": "ai-gateway-registry-exposure"
+}

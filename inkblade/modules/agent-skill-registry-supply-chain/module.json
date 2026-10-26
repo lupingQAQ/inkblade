@@ -1,0 +1,25 @@
+{
+  "key": "agent-skill-registry-supply-chain",
+  "name": {
+    "zh": "Agent Skill 注册表供应链检查",
+    "en": "Agent skill registry supply-chain check"
+  },
+  "series": "情报",
+  "description": "检查 skill 注册表签名要求、发布者白名单、权限（fs/net/exec）、隐藏指令、安装脚本、版本/哈希固定与 rug-pull 变化。对应 98,380 个 skill 中 157 个恶意的野外面（USENIX Security 2026 I08）与 OWASP Agentic Skills Top 10。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "skill 注册表导出 JSON（registry/skills）"
+  },
+  "produces": "agent-skill-registry-supply-chain.json + skill 供应链 findings",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md R02 / I08,I35,I54",
+  "necessity": "skill 在 agent 进程内以用户权限执行并可读文档/网络；无签名、通配权限或安装脚本任意下载时，单个 skill 即可完成 RCE + 文档注入 + 凭据外联。",
+  "combo_signature": "agent-skill-supply-chain",
+  "surfaces": [
+    {"type": "config-file", "selector": "agent/skills/registry.json"},
+    {"type": "http-endpoint", "selector": "/skills/registry"}
+  ],
+  "default_enabled": false,
+  "default_disabled_reason": "主流六画像未声明 agent skill 注册表；客户实际部署 agent 平台并导出注册表后显式启用。"
+}

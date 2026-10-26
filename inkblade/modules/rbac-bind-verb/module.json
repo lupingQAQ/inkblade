@@ -1,0 +1,20 @@
+{
+  "key": "rbac-bind-verb",
+  "name": {
+    "zh": "RBAC bind 自绑",
+    "en": "Bind to cluster-admin"
+  },
+  "series": "权限链",
+  "description": "检测 bind 动词与 create 绑定组合：可创建指向 cluster-admin 的 ClusterRoleBinding；含可回滚演示清单。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "fixture": "提权快照 JSON 路径（缺省 lab/fixtures/privesc/<fixture>.json）",
+    "mode": "probe-only | backup-write（写类模块）",
+    "demo_target": "backup-write 演示写入目标文件（写类模块）",
+    "backup_targets": "写类模块备份目标（runner 备份闸门）"
+  },
+  "produces": "rbac-bind-verb-findings",
+  "knowledge": "提权矩阵 rbac-bind-verb；K8s RBAC 文档；KubeHound BIND 边"
+}

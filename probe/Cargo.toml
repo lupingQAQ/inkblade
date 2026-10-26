@@ -1,0 +1,26 @@
+[package]
+name = "inkblade-probe"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.74"
+description = "Read-only in-pod fact collector for the InkBlade platform"
+license = "Apache-2.0"
+repository = "https://github.com/lupingQAQ/inkblade"
+readme = "README.md"
+keywords = ["kubernetes", "security", "probe", "read-only"]
+categories = ["command-line-utilities"]
+
+# No dependencies on purpose: the binary builds offline, links statically
+# against musl, and has no supply chain beyond the Rust standard library.
+[dependencies]
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[[bin]]
+name = "inkblade-probe"
+path = "src/main.rs"

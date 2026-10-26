@@ -1,0 +1,24 @@
+{
+  "key": "slurmd-config-audit",
+  "name": {
+    "zh": "slurmd 节点守护进程配置审计",
+    "en": "slurmd node-daemon configuration audit"
+  },
+  "series": "侦察",
+  "description": "解析 slurm.conf 中影响节点执行面的配置：SlurmdUser、TaskPlugin、SlurmdSpoolDir 权限、SlurmdParameters、HealthCheckProgram、Prolog/Epilog 与 JobAcctGatherType。只读。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "配置文件导出目录（slurm.conf + inventory.json）或 JSON 快照"
+  },
+  "produces": "slurmd-config-audit.json + 节点守护进程 findings",
+  "knowledge": "SchedMD slurmd(8) / slurm.conf(5)；docs/SLURM-HPC-COVERAGE.md 节点守护进程面",
+  "necessity": "slurmd 以 root 在计算节点执行 prolog/epilog 与健康检查；SlurmdUser=root、TaskPlugin 缺失或 spool 目录可写会把作业边界直接变成节点 root 执行面。",
+  "combo_signature": "slurmd-node-exec-boundary",
+  "surfaces": [
+    {"type": "config-file", "selector": "slurm/slurm.conf"},
+    {"type": "runtime-agent", "selector": "runtime-agent/slurmd"}
+  ],
+  "default_enabled": true
+}

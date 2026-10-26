@@ -1,0 +1,16 @@
+{
+  "key": "privileged-gpu-pod-escape",
+  "name": { "zh": "特权 GPU Pod 宿主逃逸", "en": "Privileged GPU Pod Host Escape" },
+  "series": "权限链",
+  "description": "解析特权 Pod 清单：privileged/hostPath//hostPID/hostIPC/caps/GPU 设备组合 → 宿主 root",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "fixture": "PodList 清单 JSON（默认 lab/fixtures/perm/privileged-pods.json）",
+    "mode": "detect | backup-write（演示分支，需 demo_target）",
+    "demo_target": "backup-write 模式下的演示写入文件（宿主挂载点 marker 证明）"
+  },
+  "produces": "host-escape",
+  "knowledge": "设计基线第 11 节：四框架特权部署（hostPath/socket/caps/设备组合逃逸）"
+}

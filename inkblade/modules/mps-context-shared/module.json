@@ -1,0 +1,20 @@
+{
+  "key": "mps-context-shared",
+  "name": {
+    "zh": "MPS context 跨租户共享",
+    "en": "MPS Context Shared Across Tenants"
+  },
+  "series": "网络架构",
+  "description": "NVIDIA MPS server/pipe 跨租户共享：/gpu/mps/status 暴露他租户 client、pid、pipe 与 namespace，context 隔离失效。fixed：按 X-Tenant 过滤并独立 pipe。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "tenant": "请求租户（默认 tenant-a）",
+    "token": "可选租户 token（fixed 模式读身份）"
+  },
+  "produces": "mps-shared-context",
+  "knowledge": "CUDA MPS context/pipe 共享模型与多租户隔离边界（MPS 默认单 server 单用户假设）",
+  "combo_signature": "mps-context-shared"
+}

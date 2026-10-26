@@ -1,0 +1,20 @@
+{
+  "key": "aigateway-log-pii-leak",
+  "name": {
+    "zh": "AI 网关日志 PII 泄露",
+    "en": "AI Gateway Log PII Leak"
+  },
+  "series": "窃取与数据泄露",
+  "description": "/logs 暴露明文 prompt（邮箱/电话/卡号）与 Authorization 头。vulnerable：全租户明文；fixed：租户过滤 + <email>/<phone>/<card> 脱敏且 Authorization 掩码。finding 仅记录模式计数，不回显原始 PII。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "tenant_key": "fixed 模式合法租户 key",
+    "tenant": "租户标识（缺省 tenant-a）"
+  },
+  "produces": "log-pii-leak-finding + 脱敏计数",
+  "knowledge": "docs/AI-GATEWAY.md 第 8 节：日志与可观测面 PII",
+  "combo_signature": "ai-gateway-log-pii-leak"
+}

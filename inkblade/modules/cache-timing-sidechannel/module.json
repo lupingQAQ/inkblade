@@ -1,0 +1,23 @@
+{
+  "key": "cache-timing-sidechannel",
+  "name": {
+    "zh": "缓存命中时序侧信道（成员推断）",
+    "en": "Cache timing side channel (membership inference)"
+  },
+  "series": "窃取与数据泄露",
+  "description": "同一 prompt 命中/未命中前缀缓存的 TTFT 分属两档：对成员前缀（受害租户已缓存）与对照前缀交替各测 ≥25 次（默认 30+30=60≥50），Welch t 检验断言差分显著（p<0.05 且 Δ≥30ms）→ 跨租户缓存成员推断与前缀字典提取；fixed 键含 tenant|salt，两类皆未命中，无差分。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "缓存面服务基址（必填）",
+    "member_prefixes": "成员前缀列表（受害租户已缓存；缺省按靶场种子模板生成 30 条）",
+    "control_prefixes": "对照前缀列表（未缓存；缺省生成 30 条）",
+    "per_class": "每类样本数（缺省 30，总样本 ≥50 断言）",
+    "alpha": "显著性水平（缺省 0.05）",
+    "min_effect_ms": "最小效应差（缺省 30ms）"
+  },
+  "produces": "cache-timing-sidechannel.json + ttft 样本/Welch t/df/p 值/字典提取率证据",
+  "knowledge": "docs/CACHE-SECURITY.md 第 4 节：时序侧信道（NDSS'25 PROMPTPEEK / SafeKV 研究对标）",
+  "combo_signature": "cache-sidechannel-differential"
+}

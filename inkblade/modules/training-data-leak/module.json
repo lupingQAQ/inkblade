@@ -1,0 +1,14 @@
+{
+  "key": "training-data-leak",
+  "name": { "zh": "训练数据泄露", "en": "Training Data Leak" },
+  "series": "窃取与数据泄露",
+  "description": "共享数据集卷/RWX 未授权读、webdataset/parquet 缓存、训练日志与 trace 中 prompt/PII、RL 轨迹跨租户残留",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "data_root": "数据面扫描根目录（默认 lab/fixtures/theft）"
+  },
+  "produces": "data-leak-surface",
+  "knowledge": "设计基线第 6 节 + 训练数据面扩展：日志 PII / 轨迹残留 / 缓存残留"
+}

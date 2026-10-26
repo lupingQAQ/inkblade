@@ -1,0 +1,42 @@
+{
+  "id": "fabric-exhaustion-chain",
+  "title": {
+    "zh": "fabric 资源耗尽（端口/I-O/配额/队列）→ 集群级 DoS",
+    "en": "Fabric resource exhaustion (ports/IO/quota/queue) → cluster-level DoS"
+  },
+  "category": "网络利用链",
+  "requires": [
+    "nccl-port-exhaustion",
+    "nccl-straggler-injection",
+    "checkpoint-io-storm",
+    "api-server-flood-surface",
+    "kv-oom-bomb",
+    "gang-scheduler-abuse",
+    "roce-pfc-storm",
+    "driver-reset-trigger"
+  ],
+  "preconditions": [
+    {"expr": "findings('nccl-port-exhaustion').any(severity == 'high')"}
+  ],
+  "steps": [
+    {
+      "id": "bootstrap-port-exhaust",
+      "module": "nccl-port-exhaustion",
+      "params": {"job": "inkblade-exhaust", "max_allocs": 30}
+    },
+    {
+      "id": "gang-queue-clog",
+      "module": "gang-scheduler-abuse",
+      "params": {"gang_size": 8, "rounds": 5},
+      "depends_on": ["bootstrap-port-exhaust"]
+    },
+    {
+      "id": "checkpoint-io-burst",
+      "module": "checkpoint-io-storm",
+      "params": {"bytes_mb": 4096, "burst": 4, "rounds": 5},
+      "depends_on": ["gang-queue-clog"]
+    }
+  ],
+  "evidence": ["http-trace", "counter-diffs", "victim-refusal"],
+  "mitre": ["T1499.002", "T1498", "T0814"]
+}

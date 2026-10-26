@@ -1,0 +1,18 @@
+{
+  "key": "switch-os-config-surface",
+  "name": {
+    "zh": "交换机 OS 配置面（SONiC/Cumulus 导出解析）",
+    "en": "Switch OS config surface (SONiC/Cumulus export parsing)"
+  },
+  "series": "网络架构",
+  "description": "解析客户提供的 SONiC config_db 或 Cumulus/NVUE JSON 导出：PFC watchdog、ECN/WRED、管理 ACL、SNMP、NTP、AAA。只读；不 SSH/NETCONF/gNMI 登录设备，不下发配置。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "config": "SONiC/Cumulus JSON 导出路径或 dict（必填）；也可用 snapshot 别名"
+  },
+  "produces": "switch-os-config-surface.json + PFC/ECN/ACL/管理面事实与 findings",
+  "knowledge": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T1；SONiC config_db 与 Cumulus/NVUE 常见字段",
+  "combo_signature": "switch-os-management-plane"
+}

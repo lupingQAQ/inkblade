@@ -1,0 +1,25 @@
+{
+  "key": "tpm-attestation-audit",
+  "name": {
+    "zh": "TPM/证明链面审计",
+    "en": "TPM and attestation-chain surface audit"
+  },
+  "series": "侦察",
+  "description": "检测节点 TPM2、EK/AK 与 measured-boot/证明配置；TPM 存在但未启用证明、EK 缺失或 PCR 基线为空时记为风险。仅在采集到 TPM/证明导出时执行。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "collect": "inkblade collect 输出目录",
+    "profile": "部署画像名",
+    "attestation": "可选：{enabled, pcr_baseline, ek_sha256}"
+  },
+  "produces": "tpm-attestation-audit.json + 证明链 findings",
+  "knowledge": "docs/SURFACE-REALISM.md TPM/证明面",
+  "combo_signature": "tpm-present-attestation-disabled",
+  "surfaces": [
+    {"type": "bmc", "selector": "tpm"},
+    {"type": "config-file", "selector": "attest"}
+  ],
+  "default_enabled": true
+}

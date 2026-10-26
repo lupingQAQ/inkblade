@@ -1,0 +1,21 @@
+{
+  "key": "roce-pfc-storm",
+  "name": {
+    "zh": "RoCE PFC 暂停风暴（配置面可写）",
+    "en": "RoCE PFC pause storm via writable config plane"
+  },
+  "series": "网络架构",
+  "description": "RoCE PFC 配置写面无鉴权：写入 storm 档即触发暂停帧风暴（pfc_pause_frames 计数暴增、ECN 同步增长），等价于 fabric 级无损队列停摆（效果以计数器度量，不真破坏）。写面走 backup_targets 备份闸门。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "RoCE/fabric 基址（必填）",
+    "mode": "probe-only（默认，仅读配置/计数）| backup-write（需 backup_targets：注入风暴档）",
+    "rounds": "风暴调用轮数（默认 3）",
+    "backup_targets": "backup-write 必需：PFC 配置快照目标（runner 备份闸门）"
+  },
+  "produces": "roce-pfc-storm.json + 暂停帧/ECN 计数差分证据",
+  "knowledge": "docs/FABRIC-ATTACK-SURFACE.md §2.3（PFC/ECN 面）；语料 meta-roce-fabric / bytedance-megascale（PFC 治理）/ ultra-ethernet-spec-2026（CSIG 拥塞语义）",
+  "combo_signature": "roce-pfc-pause-storm"
+}

@@ -1,0 +1,24 @@
+{
+  "key": "operator-cross-namespace-reference",
+  "name": {
+    "zh": "Kubernetes Operator 跨 namespace 引用图检查",
+    "en": "Kubernetes operator cross-namespace reference graph check"
+  },
+  "series": "权限链",
+  "description": "从 CRD/Operator/RBAC/CR 引用导出构建引用图：Operator 全 namespace watch + cluster-admin、CR 跨 ns 引用 Secret/ConfigMap、conversion webhook 无 CA/跳过校验、跨 ns ownerRef 与 secrets 通配 RBAC。对应 NDSS 2026 Breaking the Bulkhead（I11）。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "CRD/Operator/CR 引用图 JSON（crds/operators/rbac/conversion_webhooks）"
+  },
+  "produces": "operator-cross-namespace-reference.json + 引用图 findings",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md R03 / I11（NDSS 2026）",
+  "necessity": "Operator 常以 cluster-admin 运行并按 CR 中的 namespace 引用读取 Secret；跨 namespace 引用把低权限租户的 CR 变成读取他租户凭据的跳板，单看 RBAC 模块无法发现。",
+  "combo_signature": "operator-cross-namespace-secret-read",
+  "surfaces": [
+    {"type": "k8s-object", "selector": "CustomResourceDefinition/*"},
+    {"type": "k8s-object", "selector": "ClusterRole/*"}
+  ],
+  "default_enabled": true
+}

@@ -1,0 +1,24 @@
+{
+  "key": "wasm-runtime-audit",
+  "name": {
+    "zh": "WASM 运行时与主机挂载面审计",
+    "en": "WASM runtime and host-mount surface audit"
+  },
+  "series": "侦察",
+  "description": "检测 Wasm RuntimeClass/containerd shim 与 .wasm 制品；WASM 沙箱配置主机挂载、网络或宿主目录时记为风险。默认链不启用：六大主流画像均无该组件，仅有实际 WASM 运行时的客户显式调用。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "collect": "inkblade collect 输出目录",
+    "profile": "部署画像名"
+  },
+  "produces": "wasm-runtime-audit.json + WASM 运行时 findings",
+  "knowledge": "docs/SURFACE-REALISM.md no-surface 模块隔离",
+  "combo_signature": "wasm-host-mount-escape",
+  "surfaces": [
+    {"type": "k8s-object", "selector": "RuntimeClass/wasm"},
+    {"type": "runtime-agent", "selector": "wasmtime"}
+  ],
+  "default_enabled": false
+}

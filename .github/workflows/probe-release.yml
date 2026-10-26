@@ -1,0 +1,117 @@
+name: probe-release
+
+# Builds the in-pod probe for both Linux architectures and attaches the static
+# binaries plus SHA256SUMS to a GitHub Release. Binaries are never committed to
+# the repository; this workflow is the only source of release artifacts.
+
+on:
+  push:
+    tags:
+      - "probe-v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: probe-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build ${{ matrix.asset }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-musl
+            asset: inkblade-probe-linux-amd64
+          - target: aarch64-unknown-linux-musl
+            asset: inkblade-probe-linux-arm64
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build (amd64, musl)
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        working-directory: probe
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends musl-tools
+          rustup target add x86_64-unknown-linux-musl
+          cargo build --release --target x86_64-unknown-linux-musl
+          install -m 0755 "target/${{ matrix.target }}/release/inkblade-probe" "../${{ matrix.asset }}"
+
+      - name: Build (arm64, musl, cross)
+        if: matrix.target == 'aarch64-unknown-linux-musl'
+        working-directory: probe
+        run: |
+          docker run --rm \
+            -v "$PWD":/src -w /src \
+            ghcr.io/cross-rs/aarch64-unknown-linux-musl:0.2.5 \
+            cargo build --release --target aarch64-unknown-linux-musl
+          sudo chown -R "$(id -u):$(id -g)" target
+          install -m 0755 "target/${{ matrix.target }}/release/inkblade-probe" "../${{ matrix.asset }}"
+
+      - name: Smoke (host-runnable targets only)
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: |
+          ./${{ matrix.asset }} --version
+          ./${{ matrix.asset }} --emit probes > /dev/null
+          ./${{ matrix.asset }} --bogus-flag || test $? -eq 2
+
+      - name: Checksum
+        run: |
+          sha256sum "${{ matrix.asset }}" > "${{ matrix.asset }}.sha256"
+          cat "${{ matrix.asset }}.sha256"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: |
+            ${{ matrix.asset }}
+            ${{ matrix.asset }}.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+  release:
+    name: publish release assets
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Assemble SHA256SUMS
+        run: |
+          cd dist
+          ls -l
+          grep -h . *.sha256 | sort -k2 > SHA256SUMS
+          cat SHA256SUMS
+          sha256sum -c SHA256SUMS
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: "inkblade-probe ${{ github.ref_name }}"
+          files: |
+            dist/inkblade-probe-linux-amd64
+            dist/inkblade-probe-linux-arm64
+            dist/SHA256SUMS
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          body: |
+            Static in-pod probe for InkBlade.
+
+            | Asset | Target |
+            |---|---|
+            | `inkblade-probe-linux-amd64` | x86_64-unknown-linux-musl |
+            | `inkblade-probe-linux-arm64` | aarch64-unknown-linux-musl |
+
+            Verify with `sha256sum -c SHA256SUMS`. Source: `probe/` in this repository.

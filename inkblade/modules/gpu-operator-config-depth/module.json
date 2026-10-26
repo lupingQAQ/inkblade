@@ -1,0 +1,15 @@
+{
+  "key": "gpu-operator-config-depth",
+  "name": {"zh": "GPU Operator/NVIDIA 配置面深度审计", "en": "GPU Operator Configuration Depth Audit"},
+  "series": "权限链",
+  "description": "20 项只读检查覆盖 privileged driver、hostPath/CDI、MIG strategy/profile、DCGM NodePort/hostNetwork/RBAC、device plugin time slicing 与 DRA adminAccess/deviceClass/CEL；输入为 operator 配置快照。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "可选，operator 配置 JSON 或路径；省略使用内置 vulnerable fixture"
+  },
+  "produces": "gpu-operator-posture（20 项检查 + 域级 severity）",
+  "knowledge": "docs/DEPTH-REVIEW.md §4；inkblade/depth/gpu.py",
+  "combo_signature": "gpu-operator-config-depth"
+}

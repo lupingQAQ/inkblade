@@ -1,0 +1,21 @@
+{
+  "key": "aigateway-auth-bypass",
+  "name": {
+    "zh": "AI 网关鉴权绕过（默认凭据 / 伪造身份头）",
+    "en": "AI Gateway Auth Bypass (default credential / forged identity header)"
+  },
+  "series": "横向利用",
+  "description": "默认 master key 是否可直接调用推理面、/v1/chat/completions 是否无鉴权可用，以及 X-Forwarded-User 伪造能否越权读取全局 key 清单与全租户日志。vulnerable：默认 key 可用 + X-Forwarded-User=admin 全局可见；fixed：默认 key 401、伪造头 403、租户 key 仅本租户。",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "master_key": "待验证的默认 master key（缺省实验室默认 MOCK-master-key-4c7a）",
+    "tenant_key": "fixed 模式对照用合法租户 key（缺省 MOCK-tenant-a-key-a1b2）",
+    "spoof_user": "待伪造的 X-Forwarded-User（缺省 admin）"
+  },
+  "produces": "auth-bypass-proof + impersonation-proof",
+  "knowledge": "docs/AI-GATEWAY.md 第 2 节：默认凭据与信任代理头错配",
+  "combo_signature": "ai-gateway-default-credential"
+}

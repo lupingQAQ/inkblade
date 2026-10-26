@@ -1,0 +1,36 @@
+{
+ "key": "lc-checkpoint-shard-write",
+ "title": {
+  "zh": "checkpoint 分片未授权写面",
+  "en": "Unauth checkpoint shard write"
+ },
+ "category": "longctx-attack",
+ "face": "longctx",
+ "target_face": "longctx-checkpoint",
+ "preconditions": [
+  "lab/longctx_sim /checkpoint/shards 可达"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/checkpoint/shards",
+   "auth": "none",
+   "body": {
+    "shard_id": "inkblade-probe-shard",
+    "payload": "INKBLADE-BENIGN-SHARD"
+   }
+  }
+ ],
+ "detector": {
+  "kind": "json_path",
+  "path": "bytes",
+  "op": "gt",
+  "value": 0
+ },
+ "severity": "critical",
+ "rule_key": "sigma-llm-probe-longctx-attack",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

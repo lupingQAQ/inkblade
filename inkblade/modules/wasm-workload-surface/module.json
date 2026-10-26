@@ -1,0 +1,18 @@
+{
+  "key": "wasm-workload-surface",
+  "name": {
+    "zh": "WASM 工作负载权限面",
+    "en": "WASM workload capability surface"
+  },
+  "series": "核心代码",
+  "description": "只读检查 SpinKube/wasmCloud 模块能力：宿主文件系统/网络、环境变量继承、WASI unstable、未签名模块。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "wasm-workload-surface.json + 模块能力矩阵",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "wasm-capability-overgrant"
+}

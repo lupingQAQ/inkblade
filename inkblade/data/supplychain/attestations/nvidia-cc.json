@@ -1,0 +1,28 @@
+{
+ "tee": "nvidia-cc",
+ "version": 1,
+ "nonce": "fixture-nonce-2026-10",
+ "model_sha256": "5b9c7e1b20f0b6cf507885381162b6c0dbb8368aa3ce34cd5a37f4f139bba925",
+ "report_data": "5d5c6c555bf407a0844a01fb5cafde30c47b3ed9457d9677de1f41e224774999",
+ "generated_at": 1790000000,
+ "quote": {
+  "measurement": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+  "tcb": {
+   "status": "UpToDate",
+   "driver": "550.127.08"
+  },
+  "debug": false
+ },
+ "claims": {
+  "attester": "nvidia-cc-fixture",
+  "gpu_cc": true,
+  "gpu_cc_mode": "on",
+  "gpu_arch": "hopper",
+  "debug": false
+ },
+ "signature": {
+  "keyid": "fixture-nvidia-root",
+  "alg": "HMAC-SHA256",
+  "value": "aa61c18ed680ab4d08e5356a2a9019e7ee55e59017efbd2695f9dd2c47224e3c"
+ }
+}

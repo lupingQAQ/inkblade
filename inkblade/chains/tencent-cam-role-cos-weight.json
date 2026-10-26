@@ -1,0 +1,36 @@
+{
+  "id": "tencent-cam-role-cos-weight",
+  "title": {
+    "zh": "腾讯 CAM 角色 → COS 权重",
+    "en": "Tencent CAM role → COS weights"
+  },
+  "category": "云侧权重桶链",
+  "requires": [
+    "cloud-integration-fingerprint",
+    "multi-cloud-imds-credentials",
+    "cloud-role-overprivilege"
+  ],
+  "preconditions": [
+    {"expr": "findings('cloud-integration-fingerprint').any(provider == 'tke')"},
+    {"expr": "findings('multi-cloud-imds-credentials').reachable.any(port == 80)"}
+  ],
+  "steps": [
+    {
+      "id": "imds-credential-proof",
+      "module": "multi-cloud-imds-credentials",
+      "params": {"provider": "tencent", "flow": "cam-role", "redact": true}
+    },
+    {
+      "id": "role-bucket-proof",
+      "module": "cloud-role-overprivilege",
+      "params": {"provider": "tencent", "bucket_kind": "cos", "mode": "backup-write", "marker": "INKBLADE-${run.name}"},
+      "depends_on": ["imds-credential-proof"],
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "https://checkpoint-bucket.cos.internal.myqcloud.com/", "state": {}}
+      ]
+    }
+  ],
+  "evidence": ["redacted-credential-receipt", "before-after-sha256", "rollback-receipt"],
+  "mitre": ["T1552.005", "T1530"]
+}

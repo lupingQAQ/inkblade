@@ -1,0 +1,24 @@
+{
+  "key": "mig-profile-mismatch",
+  "name": {
+    "zh": "MIG profile 不匹配（隔离档位降级）",
+    "en": "MIG Profile Mismatch (isolation downgrade)"
+  },
+  "series": "网络架构",
+  "description": "MIG 调度声明与设备生效档位不一致（active != requested），且可无鉴权在线重配（含已分配设备）。fixed：租户过滤 + admin/同租户校验 + 已分配 409。",
+  "min_level": "主动探测",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅档位清单）| backup-write（需 backup_targets，执行在线重配）",
+    "tenant": "攻击者租户（默认 tenant-a）",
+    "device": "目标设备（默认 gpu-b-1）",
+    "profile": "重配目标档位（默认 1g.10gb）",
+    "token": "可选租户 token（fixed 模式读身份）",
+    "admin_token": "可选平台 admin token（fixed 模式写身份）"
+  },
+  "produces": "mig-profile-mismatch",
+  "knowledge": "MIG 1g/2g/3g/7g slice 隔离模型；schedule-time profile 与 device 实际 profile 的双侧核对",
+  "combo_signature": "mig-profile-mismatch"
+}

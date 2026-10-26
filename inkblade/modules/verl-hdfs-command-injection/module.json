@@ -1,0 +1,20 @@
+{
+  "key": "verl-hdfs-command-injection",
+  "name": {
+    "zh": "verl HDFS 命令注入",
+    "en": "verl HDFS Command Injection"
+  },
+  "series": "横向利用",
+  "description": "HDFS 路径拼入 os.system。实验室 face：ray POST /api/jobs/ 同构承载未鉴权命令串提交执行。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）",
+    "backup_targets": "backup-write 模式必需的备份目标清单"
+  },
+  "produces": "command-injection-primitive",
+  "knowledge": "docs/design.md 第 1–5 节：verl HDFS 路径命令注入",
+  "combo_signature": "verl-hdfs-injection"
+}

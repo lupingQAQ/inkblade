@@ -1,0 +1,22 @@
+{
+  "key": "cloud-role-overprivilege",
+  "name": {
+    "zh": "云角色过权",
+    "en": "Cloud Role Overprivilege"
+  },
+  "series": "混合云",
+  "description": "节点实例角色/IRSA/OIDC 服务账户：checkpoint 与权重桶（S3/OSS/COS/Blob）读写、跨账户、KMS 过权枚举（fixture 驱动，不真实调用云 API；凭据可达为分析闸门）。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）",
+    "imds_base": "IMDS 基址（缺省取 target）",
+    "provider": "aws | azure | aliyun | tencent（缺省 aws）",
+    "role_snapshot": "角色权限快照 fixture：{provider, role_name, permissions: [{action, resource}]}"
+  },
+  "produces": "role-overprivilege-matrix",
+  "knowledge": "设计基线 6.3 云侧权重桶链 + 5.6 云与混合边界层",
+  "combo_signature": "cloud-role-weight-bucket"
+}

@@ -1,0 +1,41 @@
+{
+  "id": "agent-platform-cross-tenant-data-chain",
+  "title": {
+    "zh": "智能体平台跨租户窃取 → 数据面串联",
+    "en": "Agent platform cross-tenant theft → data plane chain"
+  },
+  "category": "深度链",
+  "requires": [
+    "dify-snapshot-cross-tenant-theft",
+    "storage-sharing",
+    "training-data-leak"
+  ],
+  "preconditions": [
+    {"expr": "findings('storage-sharing').any(access_mode == 'ReadWriteMany')"}
+  ],
+  "steps": [
+    {
+      "id": "share-map",
+      "module": "storage-sharing",
+      "params": {}
+    },
+    {
+      "id": "snapshot-theft",
+      "module": "dify-snapshot-cross-tenant-theft",
+      "params": {"mode": "backup-write", "marker": "INKBLADE-${run.name}"},
+      "depends_on": ["share-map"],
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "http://control-plane/v1/snapshots", "state": {}}
+      ]
+    },
+    {
+      "id": "training-data-chain",
+      "module": "training-data-leak",
+      "params": {"sample": true, "redact": true},
+      "depends_on": ["snapshot-theft"]
+    }
+  ],
+  "evidence": ["redacted-sample-receipt", "rollback-receipt"],
+  "mitre": ["T1530"]
+}

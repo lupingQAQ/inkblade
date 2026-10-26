@@ -1,0 +1,32 @@
+{
+  "key": "msswift-trust-remote-code",
+  "name": {
+    "zh": "ms-swift trust_remote_code 模型加载",
+    "en": "ms-swift trust_remote_code Model Load"
+  },
+  "series": "核心代码",
+  "description": "ms-swift 4.5.3 loads a model's auto_map through transformers trust_remote_code. A model directory controlled by a tenant executes Python in the training/inference process when the victim loads it.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标 URL，例如 http://host:port（真实模式必需）",
+    "mode": "probe-only（默认，只读探测）| backup-write（写模块需 backup_targets）",
+    "local_path": "function-level 模块的本地文件/模型目录（仅读取，不反序列化）"
+  },
+  "produces": "model-load-code-execution",
+  "knowledge": "docs/WEAPON-READINESS.md#msswift-trust-remote-code",
+  "combo_signature": "msswift-trust-remote-code",
+  "weapon_pack": true,
+  "surfaces": [
+    {
+      "type": "model-file",
+      "selector": "model"
+    },
+    {
+      "type": "config-file",
+      "selector": "ms-swift"
+    }
+  ],
+  "default_enabled": true
+}

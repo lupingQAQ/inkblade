@@ -1,0 +1,21 @@
+{
+  "key": "ssrf-imds-credential",
+  "name": {
+    "zh": "SSRF 到云元数据",
+    "en": "SSRF to Cloud Metadata"
+  },
+  "series": "横向利用",
+  "description": "媒体 URL/重定向绕过 → IMDS → 云凭据（脱敏存证，尾 4 位）。实验室 face：/mock-imds/aws/latest/api/token（PUT）+ /latest/meta-data/iam/security-credentials/{role}（无 token GET=v1 攻击姿态）。",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）",
+    "imds_base": "IMDS 基址（缺省取 target）",
+    "role": "目标角色名（缺省 role）"
+  },
+  "produces": "cloud-credential-proof",
+  "knowledge": "docs/design.md 第 1–5 节：媒体 URL/重定向 SSRF→IMDS",
+  "combo_signature": "ssrf-imds-chain"
+}

@@ -1,0 +1,18 @@
+{
+  "key": "ib-sm-partition-audit",
+  "name": {
+    "zh": "IB Subnet Manager/Partition 配置审计",
+    "en": "IB Subnet Manager/Partition config audit"
+  },
+  "series": "网络架构",
+  "description": "解析 SM/Partition/节点导出 JSON：SM 冗余、默认分区 0x7fff 成员、PKey 跨租户、IPoIB、SM 主机位置。只读，不连接 OpenSM/UFM、不改成员。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "SM/Partition/节点导出 JSON 路径或 dict（sm/partitions/nodes，必填）"
+  },
+  "produces": "ib-sm-partition-audit.json + SM/Partition/IPoIB 证据",
+  "knowledge": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T1；IB Partition/PKey 是 RDMA 唯一原生隔离手段",
+  "combo_signature": "ib-partition-audit"
+}

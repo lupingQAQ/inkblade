@@ -1,0 +1,30 @@
+{
+  "id": "approx-cache-cross-tenant-chain",
+  "title": {
+    "zh": "cache_salt 缺失 → 近似缓存误命中 → 跨租户数据泄露",
+    "en": "Missing per-tenant salt → approximate cache false hit → cross-tenant data leak"
+  },
+  "category": "网络利用链",
+  "requires": [
+    "cache-salt-policy-audit",
+    "similarity-cache-false-hit"
+  ],
+  "preconditions": [
+    {"expr": "findings('cache-salt-policy-audit').any(severity == 'high')"}
+  ],
+  "steps": [
+    {
+      "id": "salt-policy",
+      "module": "cache-salt-policy-audit",
+      "params": {"prefix_tokens": 2048, "cache_salt": "salt-tenant-a"}
+    },
+    {
+      "id": "approx-false-hit",
+      "module": "similarity-cache-false-hit",
+      "params": {},
+      "depends_on": ["salt-policy"]
+    }
+  ],
+  "evidence": ["http-trace", "cache-policy-config", "approx-similarity", "victim-marker-readback"],
+  "mitre": ["T1552", "T1213"]
+}

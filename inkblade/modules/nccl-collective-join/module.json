@@ -1,0 +1,21 @@
+{
+  "key": "nccl-collective-join",
+  "name": {
+    "zh": "NCCL 集合通信入组",
+    "en": "NCCL Collective Join"
+  },
+  "series": "横向利用",
+  "description": "无认证入组 → 梯度/权重注入。实验室 face：areal /call 同构承载 rendezvous 入组+张量回显；params.collective_snapshot 为网络模块联动 fixture。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "mode": "probe-only（默认，仅探测）| backup-write（需 backup_targets，写演示+可回滚）",
+    "backup_targets": "backup-write 模式必需的备份目标清单",
+    "collective_snapshot": "网络模块联动 fixture：{reachable, auth, bootstrap_url, world_size}（reachable=false 或 auth!=none 时前置不成立）"
+  },
+  "produces": "collective-join-proof",
+  "knowledge": "docs/design.md 第 1–5 节 + 5.6 集合通信层：NCCL bootstrap 无认证入组",
+  "combo_signature": "nccl-unauth-join"
+}

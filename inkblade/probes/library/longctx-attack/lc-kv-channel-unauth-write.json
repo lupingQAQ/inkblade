@@ -1,0 +1,35 @@
+{
+ "key": "lc-kv-channel-unauth-write",
+ "title": {
+  "zh": "PD KV 通道未授权写入",
+  "en": "Unauth PD KV-channel write"
+ },
+ "category": "longctx-attack",
+ "face": "longctx",
+ "target_face": "longctx-kv",
+ "preconditions": [
+  "lab/longctx_sim /kv/transfer 可达"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/kv/transfer",
+   "auth": "none",
+   "body": {
+    "op": "write",
+    "block_id": "inkblade-probe-kv",
+    "value": "INKBLADE-BENIGN-KV-PROBE"
+   }
+  }
+ ],
+ "detector": {
+  "kind": "status",
+  "equals": 200
+ },
+ "severity": "critical",
+ "rule_key": "sigma-llm-probe-longctx-attack",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

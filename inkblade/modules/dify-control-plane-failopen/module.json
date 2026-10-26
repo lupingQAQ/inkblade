@@ -1,0 +1,16 @@
+{
+  "key": "dify-control-plane-failopen",
+  "name": { "zh": "Dify 控制面默认放行", "en": "Dify control plane fail-open" },
+  "series": "横向利用",
+  "description": "鉴权 fail-open × compose 默认公开开发令牌 → 未鉴权创建/销毁 binding、驱动沙箱作业（实验室 mock 同构验证，深度，已公开）",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "base_url": "mock 靶场地址（lab/mock_targets.py，仅限授权范围）",
+    "marker": "运行标记（缺省取 ctx.marker）",
+    "backup_targets": "写面备份（远端状态：探测响应存档条目）"
+  },
+  "produces": "is_novel finding（未鉴权 binding 创建成功=命中）",
+  "knowledge": "深度漏洞模块（已公开）：智能体平台控制面条目（已公开，细节随模块展示）"
+}

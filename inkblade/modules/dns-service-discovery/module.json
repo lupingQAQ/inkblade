@@ -1,0 +1,15 @@
+{
+  "key": "dns-service-discovery",
+  "name": {"zh": "DNS 与服务发现", "en": "DNS and Service Discovery"},
+  "series": "网络架构",
+  "description": "CoreDNS 配置/转发、headless Service、Ray GCS 发现、跨集群 MCS/Submariner、DNS 投毒",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "fixture dict 或 lab/fixtures/network/ 路径（coredns-configmap / headless-services）"
+  },
+  "produces": "dns-service-discovery.json + 转发/投毒/跨集群 findings",
+  "knowledge": "spec 5.2 网络架构模块 + 5.6 服务与网关层；链路联动 ray-dashboard-job / nccl-collective-join",
+  "combo_signature": ""
+}

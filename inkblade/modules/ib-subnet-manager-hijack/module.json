@@ -1,0 +1,21 @@
+{
+  "key": "ib-subnet-manager-hijack",
+  "name": {
+    "zh": "IB Subnet Manager Partition 劫持（信任域改写）",
+    "en": "InfiniBand Subnet Manager partition hijack"
+  },
+  "series": "横向利用",
+  "description": "IB SM Partition 成员面可写：无鉴权增删 partition 成员即改写通信信任域（跨租户/跨作业 RDMA 可达性被重定义），membership_changes 计数增长 + benign 成员读回一致。写面走 backup_targets 备份闸门。",
+  "min_level": "利用验证",
+  "writes": true,
+  "requires": [],
+  "params_schema": {
+    "target": "IB SM/fabric 基址（必填）",
+    "mode": "probe-only（默认，仅 partition 枚举）| backup-write（需 backup_targets：成员改写+读回）",
+    "pkey": "目标 partition（缺省 0x8001）",
+    "backup_targets": "backup-write 必需：SM 配置快照目标（runner 备份闸门）"
+  },
+  "produces": "ib-subnet-manager-hijack.json + 成员改写/读回证据",
+  "knowledge": "docs/FABRIC-ATTACK-SURFACE.md §2.2（IB SM/Partition 面）；语料 ib-partition-rdma / nvidia-quantum-x800",
+  "combo_signature": "ib-sm-partition-trust-rewrite"
+}

@@ -1,0 +1,15 @@
+{
+  "key": "network-policy-coverage",
+  "name": { "zh": "网络策略覆盖分析", "en": "Network policy coverage" },
+  "series": "侦察",
+  "description": "NetworkPolicy 覆盖缺口与默认拒绝检测（结果供 CNI 语义可达性图与链前置判定使用）",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "集群快照 dict 或 lab/fixtures/recon/*.json 路径（networkpolicies/pods/namespaces 节）",
+    "findings_tsv": "可选：既有 recon 输出 TSV 直通（列 severity/id/title/evidence/mapping/fix）"
+  },
+  "produces": "policy-coverage-findings",
+  "knowledge": "spec 5.2 侦察表与 5.6 设计约束 1（不得把「有 NetworkPolicy」等同于「隔离有效」）"
+}

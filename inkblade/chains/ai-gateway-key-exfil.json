@@ -1,0 +1,99 @@
+{
+  "id": "ai-gateway-key-exfil",
+  "title": {
+    "zh": "AI 网关默认凭据 → 上游 provider key → 模型/云资源接管",
+    "en": "AI gateway default credential → upstream provider key → model/cloud resource takeover"
+  },
+  "category": "AI 网关链",
+  "requires": [
+    "aigateway-fingerprint",
+    "aigateway-auth-bypass",
+    "aigateway-upstream-key-exfil",
+    "model-registry-exposure"
+  ],
+  "preconditions": [
+    {
+      "expr": "findings('aigateway-fingerprint').count >= 1"
+    }
+  ],
+  "steps": [
+    {
+      "id": "gateway-fingerprint",
+      "module": "aigateway-fingerprint",
+      "params": {
+        "target": "",
+        "mode": "probe-only"
+      }
+    },
+    {
+      "id": "default-key-auth",
+      "module": "aigateway-auth-bypass",
+      "params": {
+        "target": "",
+        "mode": "probe-only",
+        "spoof_user": "admin"
+      },
+      "depends_on": [
+        "gateway-fingerprint"
+      ]
+    },
+    {
+      "id": "upstream-key-exfil",
+      "module": "aigateway-upstream-key-exfil",
+      "params": {
+        "target": "",
+        "mode": "probe-only"
+      },
+      "depends_on": [
+        "default-key-auth"
+      ]
+    },
+    {
+      "id": "model-registry-map",
+      "module": "model-registry-exposure",
+      "params": {
+        "target": "",
+        "mode": "probe-only"
+      },
+      "depends_on": [
+        "upstream-key-exfil"
+      ]
+    },
+    {
+      "id": "route-hijack",
+      "module": "aigateway-route-hijack",
+      "params": {
+        "target": "",
+        "mode": "backup-write",
+        "alias": "gpt-4o-mini"
+      },
+      "depends_on": [
+        "model-registry-map"
+      ],
+      "writes": true,
+      "backup_targets": [
+        {
+          "kind": "http",
+          "url": "http://ai-gateway/ai/model-alias",
+          "state": {}
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    "http-trace",
+    "masked-upstream-key",
+    "alias-table-sha256",
+    "rollback-receipt"
+  ],
+  "mitre": [
+    "T1552",
+    "T1078",
+    "T1090"
+  ],
+  "cves": [
+    "LITELLM-DEFAULT-KEY",
+    "CVE-2026-35029",
+    "CVE-2026-42208"
+  ]
+}

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versioning — InkBlade</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand"><b>InkBlade</b><span>ML cluster penetration testing platform · v0.2.0</span></div>
+  <nav class="top"><a href="index.html">Home</a><a href="INSTALL.html">Install</a><a href="USAGE.html">Usage</a><a href="FEATURES.html">Features</a><a href="WORKFLOW.html">Workflow</a><a href="MODULES.html">Modules</a><a href="ARCHITECTURE.html">Architecture</a><a href="VULNERABILITY-COVERAGE.html">Vulnerability coverage</a><a href="PILOT-KIT.html">Pilot kit</a><a href="PLUGIN-SDK.html">Plugin SDK</a><a href="FAQ.html">FAQ</a><a href="VERSIONING.html">Versioning</a></nav>
+</div></header>
+<main><div class="wrap">
+<h1 id="versioning-compatibility-and-deprecation">Versioning, compatibility and deprecation</h1>
+<p>Semantic Versioning 2.0.0. Tags are <code>v</code>-prefixed; pre-releases use <code>-rc.N</code> / <code>-beta.N</code>.</p>
+<table><thead><tr><th>---</th><th>---</th></tr></thead><tbody><tr><td><code>MAJOR</code></td><td>a documented contract breaks: CLI flags/exit codes, report schema, manifest contract, <code>sdk.api</code>, HTTP API, evidence layout</td></tr><tr><td><code>MINOR</code></td><td>backward-compatible additions: modules, commands, optional manifest fields, export formats</td></tr><tr><td><code>PATCH</code></td><td>backward-compatible fixes only: security, false positives, docs, performance</td></tr></tbody></table>
+<p>While <code>MAJOR == 0</code>: a <code>MINOR</code> bump may break something, but only through the deprecation cycle below and a &quot;Breaking&quot; entry in <code>CHANGELOG.md</code>. At <code>1.0.0</code> the windows become binding.</p>
+<h2 id="contracts">Contracts</h2>
+<table><thead><tr><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>CLI flags</td><td><code>inkblade --help</code></td><td>never removed without deprecation; additions only</td></tr><tr><td>Exit codes</td><td><code>91</code> refusal, <code>2</code> usage, <code>1</code> failure</td><td>stable meaning; new codes may appear</td></tr><tr><td>Reports</td><td><code>reports/<em>.md</code>, <code></em>.json</code></td><td>additive keys; keys are never repurposed</td></tr><tr><td>Evidence</td><td><code>evidence.db</code>, <code>steps/*/manifest.sha256</code>, <code>consent.json</code></td><td>readable across supported minors</td></tr><tr><td><code>module.json</code></td><td>module manifests</td><td>new optional fields only</td></tr><tr><td>Plugin SDK</td><td><code>inkblade.sdk</code>, <code>sdk.api</code></td><td><code>sdk.api</code> bumps on a break, old value kept one minor</td></tr><tr><td>HTTP API</td><td><code>/api/v1/...</code></td><td>path version is the contract; a break means <code>/api/v2</code></td></tr><tr><td>Exports</td><td>SARIF 2.1.0, OCSF, OpenVEX, CycloneDX</td><td>upstream spec versions, announced in the changelog</td></tr><tr><td>Chart</td><td><code>deploy/helm/inkblade</code></td><td>chart <code>version</code> is SemVer; <code>appVersion</code> tracks the release</td></tr></tbody></table>
+<h2 id="support">Support</h2>
+<table><thead><tr><th>---</th><th>---</th><th>---</th><th>---</th></tr></thead><tbody><tr><td>latest <code>MINOR</code></td><td>full</td><td>yes</td><td>active development</td></tr><tr><td>previous <code>MINOR</code></td><td>bug fixes</td><td>until next <code>MINOR</code> + 30 days</td><td>upgrade window</td></tr><tr><td>older <code>MINOR</code></td><td>none</td><td>critical, best effort</td><td>see LTS</td></tr><tr><td>LTS (<code>x.y</code> in release notes)</td><td>12 months</td><td>yes</td><td>regulated pilots</td></tr></tbody></table>
+<h2 id="deprecation">Deprecation</h2>
+<table><thead><tr><th>---</th><th>---</th></tr></thead><tbody><tr><td>Announce</td><td><code>CHANGELOG.md</code> under &quot;Deprecated&quot;, and in <code>--help</code> where the flag lives</td></tr><tr><td>Keep</td><td>one <code>MINOR</code> cycle, minimum 30 days</td></tr><tr><td>Remove</td><td>next <code>MINOR</code> (0.x) or next <code>MAJOR</code> (1.x+), with a &quot;Removed&quot; entry naming the replacement</td></tr><tr><td>Security</td><td>a fix may shorten the cycle; it does not skip the changelog entry</td></tr></tbody></table>
+<h2 id="release-checklist">Release checklist</h2>
+<table><thead><tr><th>---</th><th>---</th></tr></thead><tbody><tr><td>tests on Windows + Linux, Python 3.10–3.13</td><td><code>python scripts/run-public-tests.py</code></td></tr><tr><td>changelog has version and date</td><td>manual</td></tr><tr><td>wheel, sdist, <code>SHA256SUMS</code>, SBOM</td><td><code>python scripts/release/build.py --out dist</code></td></tr><tr><td>container image with an immutable digest</td><td><code>docker.yml</code></td></tr><tr><td>docs regenerated and link-clean</td><td><code>python scripts/build-docs-site.py --check</code></td></tr></tbody></table>
+</div></main>
+<footer><div class="wrap">
+  InkBlade 0.2.0 · Apache-2.0 · authorized testing only · no telemetry, no external assets.
+</div></footer>
+</body>
+</html>

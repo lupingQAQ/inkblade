@@ -1,0 +1,24 @@
+{
+  "key": "slurm-gres-gpu-isolation",
+  "name": {
+    "zh": "Slurm GRES/GPU 设备隔离审计",
+    "en": "Slurm GRES/GPU device isolation audit"
+  },
+  "series": "权限链",
+  "description": "审计 GresTypes/AutoDetect、ConstrainDevices、GRES binding、MIG、device cgroup allowlist 与 cgroup.conf 设备约束联动；全设备放行或 binding=none 时同节点租户可越界使用 GPU。只读。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "包含 gres.json、cgroup.conf 的导出目录"
+  },
+  "produces": "slurm-gres-gpu-isolation.json + GRES findings",
+  "knowledge": "SchedMD GRES / gres.conf(5) / ConstrainDevices；docs/SLURM-HPC-COVERAGE.md GRES 面",
+  "necessity": "Slurm 通过 cgroup device allowlist 把 GRES 分配给作业；`a *:* rwm` 或 ConstrainDevices=no 会让作业看到全部 GPU/NVLink 设备，跨租户读写显存与 P2P。",
+  "combo_signature": "slurm-gres-device-escape",
+  "surfaces": [
+    {"type": "config-file", "selector": "slurm/gres.json"},
+    {"type": "config-file", "selector": "slurm/cgroup.conf"}
+  ],
+  "default_enabled": true
+}

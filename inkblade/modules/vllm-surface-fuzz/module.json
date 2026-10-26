@@ -1,0 +1,16 @@
+{
+  "key": "vllm-surface-fuzz",
+  "name": {"zh": "vLLM 五类接口面差分 fuzz", "en": "vLLM Five-Surface Differential Fuzz"},
+  "series": "横向利用",
+  "description": "对 vLLM admin/plugin/dev-mode/serialization/weights 五个运维面执行 240 个确定性用例（4 认证态 × 12 路径/头/方法变形），以 /v1/models 401 为对照识别鉴权域差异；只读，不写配置、不投递真实 pickle、不下载权重。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "timeout": "单请求超时秒数（默认 4）"
+  },
+  "produces": "auth-differential-matrix（240 用例逐条状态 + 面级差分）",
+  "knowledge": "docs/DEPTH-REVIEW.md §1；corpus/depth/vllm_patch_matrix.json",
+  "combo_signature": "vllm-five-surface-auth-diff"
+}

@@ -1,0 +1,1650 @@
+[
+  {
+    "id": "sigma-rolebinding-cluster-admin",
+    "title": "指向 cluster-admin 的 RoleBinding 创建",
+    "description": "K8s audit: creation of RoleBinding/ClusterRoleBinding referencing cluster-admin (operator/RBAC takeover primitive). English: audit-detect RoleBinding creation pointing at cluster-admin.",
+    "level": "critical",
+    "tags": ["attack.privilege_escalation", "attack.t1098", "inkblade"],
+    "logsource": {"product": "kubernetes", "service": "audit"},
+    "detection": {
+      "selection": {
+        "verb": ["create"],
+        "objectRef.resource": ["rolebinding", "clusterrolebinding"],
+        "objectRef.roleRef.name": "cluster-admin"
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["gitops/CI 同步主体的合法绑定（以主体白名单收敛）"],
+    "blocks_modules": ["overprivileged-sa-escalation"],
+    "tuning": {
+      "zh": "对 argocd/gitops 与 operator 的常规绑定建立主体白名单（user.username/serviceaccount），仅对指向 cluster-admin 的增量绑定保持 critical；建议同时监控 rolebindings 的 delete（清理痕迹）",
+      "en": "Baseline gitops/operator binding subjects into an allowlist; keep critical severity for new cluster-admin references; also watch rolebinding deletes (cleanup trails)"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "kubernetes", "service": "audit"},
+      "selection": {"verb": ["create"], "objectRef.resource": ["rolebinding", "clusterrolebinding"], "objectRef.roleRef.name": "cluster-admin"},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-privileged-pod-create",
+    "title": "特权 Pod 创建",
+    "description": "K8s audit: pod created with privileged securityContext or hostPath/hostPID/hostIPC. 审计检测特权/宿主面 Pod 创建（GPU operator 逃逸面、SA 提权落地）。",
+    "level": "high",
+    "tags": ["attack.privilege_escalation", "attack.t1611", "inkblade"],
+    "logsource": {"product": "kubernetes", "service": "audit"},
+    "detection": {
+      "selection": {
+        "verb": ["create"],
+        "objectRef.resource": "pod",
+        "requestObject.privileged": true
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["GPU 驱动/device plugin DaemonSet（例外通道命名空间内放行）"],
+    "blocks_modules": ["privileged-gpu-pod-escape", "gpu-network-operator-posture"],
+    "tuning": {
+      "zh": "以例外通道命名空间（GPU operator 专用）过滤基线 DaemonSet；非例外 ns 的特权创建保持 high；可按 requestObject.hostPath.* 前缀细分严重级",
+      "en": "Filter baseline DaemonSets via the GPU operator exception namespace; keep high severity for privileged creates elsewhere; optionally grade by requestObject.hostPath.* prefixes"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "kubernetes", "service": "audit"},
+      "selection": {"verb": ["create"], "objectRef.resource": "pod", "requestObject.privileged": true},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-ray-job-submit",
+    "title": "Ray 作业提交（dashboard 无鉴权面）",
+    "description": "Ray dashboard audit: job submission events on the job API (unauthenticated head-node command surface). 检测 Ray 8265 作业提交（头节点任意命令入口）。",
+    "level": "high",
+    "tags": ["attack.execution", "attack.t1610", "inkblade"],
+    "logsource": {"product": "ray", "service": "dashboard"},
+    "detection": {
+      "selection": {
+        "verb": ["create", "submit"],
+        "objectRef.resource": "job"
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["合法训练平台调度器主体（按提交主体/入口网段白名单）"],
+    "blocks_modules": ["ray-dashboard-job"],
+    "tuning": {
+      "zh": "按提交来源收敛：仅调度器服务账号与 bastion 网段可提交；其余来源直接升级 critical；配合 8265 端口 NetworkPolicy 分区限源",
+      "en": "Restrict submitters to the scheduler service account and bastion CIDR; escalate everything else to critical; pair with NetworkPolicy source restriction on port 8265"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "ray", "service": "dashboard"},
+      "selection": {"verb": ["create", "submit"], "objectRef.resource": "job"},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-secret-abnormal-read",
+    "title": "异常主体读取 Secret",
+    "description": "K8s audit: non-baseline subject reads/list secrets (SA token / cloud credential theft primitives). 审计检测非基线主体的 Secret 读取（SA 令牌、云凭据面）。",
+    "level": "high",
+    "tags": ["attack.credential_access", "attack.t1552", "inkblade"],
+    "logsource": {"product": "kubernetes", "service": "audit"},
+    "detection": {
+      "selection": {
+        "verb": ["get", "list", "watch"],
+        "objectRef.resource": "secret",
+        "subject_sa": {"not_in": ["system:serviceaccount:kube-system:generic-garbage-collector", "system:serviceaccount:monitoring:prometheus"]}
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["CI/CD 部署主体、密钥轮转 Job（按主体+时间段白名单）"],
+    "blocks_modules": ["ssrf-imds-credential", "multi-cloud-imds-credentials", "metadata-egress", "dify-snapshot-cross-tenant-theft", "training-data-leak"],
+    "tuning": {
+      "zh": "以 30 天 audit 基线提取合法读 Secret 主体清单替换 not_in 白名单；对 instance-role/云凭据类 Secret 名称单独加规则并降低 list 误报（改 watch 审计）",
+      "en": "Derive the not_in allowlist from a 30-day audit baseline of legitimate secret readers; add a dedicated rule for instance-role/cloud-credential secret names and reduce list noise by preferring watch auditing"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "kubernetes", "service": "audit"},
+      "selection": {"verb": ["get", "list", "watch"], "objectRef.resource": "secret", "subject_sa": {"not_in": ["system:serviceaccount:kube-system:generic-garbage-collector", "system:serviceaccount:monitoring:prometheus"]}},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-gpu-pool-admin-unauth",
+    "title": "GPU 池调度 admin 无鉴权（跨租户分配/迁移）",
+    "description": "GPU pooling scheduler audit: allocation/migration accepted without authenticated admin and across tenant boundary. 池化调度面未鉴权跨租户分配/迁移（HAMi/OrionX/cGPU 风格）。",
+    "level": "high",
+    "tags": ["attack.resource_development", "attack.t1496", "inkblade"],
+    "logsource": {"product": "gpu-pooling", "service": "scheduler"},
+    "detection": {
+      "selection": {
+        "action": ["allocate", "migrate"],
+        "authenticated": false,
+        "cross_tenant": true
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["平台维护窗口内的受控迁移（按操作主体/工单白名单）"],
+    "blocks_modules": ["gpu-pool-scheduler-unauth", "gpu-tenant-residue", "mig-profile-mismatch"],
+    "tuning": {
+      "zh": "先以工单/维护窗口白名单过滤平台管理员的计划内迁移；对非 admin 主体 + 跨 tenant 的 allocate/migrate 保持 high；同时监控 /gpu/release 后残留未清理（联合 gpu-tenant-residue）",
+      "en": "Allowlist planned migrations by ticket/maintenance window first; keep high for non-admin cross-tenant allocate/migrate; also watch for residue left after /gpu/release (pair with gpu-tenant-residue)"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "gpu-pooling", "service": "scheduler"},
+      "selection": {"action": ["allocate", "migrate"], "authenticated": false, "cross_tenant": true},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cloud-cross-account-assume",
+    "title": "跨账户 AssumeRole（trust policy 通配）",
+    "description": "CloudTrail STS: AssumeRole from a foreign account against a role whose trust policy has a wildcard principal. 云身份联邦通配信任导致跨账户角色假定。",
+    "level": "critical",
+    "tags": ["attack.credential_access", "attack.t1552.005", "inkblade"],
+    "logsource": {"product": "aws", "service": "cloudtrail"},
+    "detection": {
+      "selection": {
+        "eventName": "AssumeRole",
+        "crossAccount": true,
+        "trustPolicyWildcard": true
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["集团统一身份提供商下的合法跨账户角色链（按 sourceAccount+roleArn 白名单）"],
+    "blocks_modules": ["cloud-irsa-trust-wildcard", "cloud-bucket-cross-tenant"],
+    "tuning": {
+      "zh": "以组织级 sourceAccount/roleArn 白名单收敛合法跨账户链路；对 Principal='*' 且无 sts:ExternalId/Condition 的角色直接 critical；联动 CloudTrail AssumeRole + S3 ListBucket 事件",
+      "en": "Constrain legitimate cross-account chains with an org-level sourceAccount/roleArn allowlist; mark roles with Principal='*' and no sts:ExternalId/Condition as critical; correlate AssumeRole with S3 ListBucket events"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "aws", "service": "cloudtrail"},
+      "selection": {"eventName": "AssumeRole", "crossAccount": true, "trustPolicyWildcard": true},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-gateway-admin-api-no-auth",
+    "title": "AI 网关管理 API 无鉴权调用（key 签发 / 配置 / 控制台）",
+    "description": "AI gateway admin API (key issuance, provider config, web console) invoked without credentials or with tenant-scoped credentials. 检测 AI 网关管理面未授权调用，覆盖默认凭据与越权访问两类入口。",
+    "level": "high",
+    "tags": ["attack.credential_access", "attack.t1552", "inkblade"],
+    "logsource": {"product": "litellm", "service": "gateway-admin"},
+    "detection": {
+      "selection": {
+        "verb": ["admin_api_call"],
+        "path": ["/key/generate", "/config", "/admin/console"],
+        "auth": ["none", "tenant"]
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["受控运维脚本/巡检（以管理员主体 + bastion 网段白名单收敛）"],
+    "blocks_modules": ["aigateway-auth-bypass", "aigateway-upstream-key-exfil"],
+    "tuning": {
+      "zh": "先以管理员主体（serviceaccount/运维网段）建立 allowlist，仅对匿名或租户级凭据访问 key 签发/配置/控制台保持 high；/key/generate 建议同时记录签发的 key 别名与目标租户，异常租户直接升级 critical",
+      "en": "Build an allowlist from admin subjects (service accounts/ops CIDR); keep high only for anonymous or tenant-scoped calls to key issuance/config/console; log the issued key alias and target tenant for /key/generate and escalate unknown tenants to critical"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "litellm", "service": "gateway-admin"},
+      "selection": {"verb": ["admin_api_call"], "path": {"re": "^/(key/generate|config|admin/console)$"}, "auth": ["none", "tenant"]},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-gateway-default-master-key-use",
+    "title": "AI 网关默认 master key 使用",
+    "description": "Authentication with the well-known default master key (vendor default / sample config) succeeding against the AI gateway. 检测默认 master key 认证成功——默认凭据是上游 provider key 外泄链的第一步。",
+    "level": "critical",
+    "tags": ["attack.credential_access", "attack.t1078", "inkblade"],
+    "logsource": {"product": "litellm", "service": "gateway-auth"},
+    "detection": {
+      "selection": {
+        "verb": ["authenticate"],
+        "key_class": "default_master",
+        "status": [200]
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["尚未完成 master key 轮换的初始化窗口（应以一次性 bootstrap token 替代）"],
+    "blocks_modules": ["aigateway-auth-bypass", "aigateway-upstream-key-exfil"],
+    "tuning": {
+      "zh": "默认 master key 在任何时点成功都应 critical；初始化窗口以一次性 bootstrap token（单次使用 + 自动失效）替代；同时监控 /key/generate 的 admin=true 签发与 master key 的调用来源网段",
+      "en": "Any successful default master key auth is critical; replace bootstrap windows with single-use auto-expiring tokens; also watch admin=true issuances from /key/generate and the source CIDR of master key calls"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "litellm", "service": "gateway-auth"},
+      "selection": {"verb": ["authenticate"], "key_class": "default_master", "status": [200]},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-sa-token-mint",
+    "title": "ServiceAccount Token 铸造（TokenRequest）",
+    "description": "K8s audit: create serviceaccounts/token (TokenRequest) minting a bearer credential for a service account. 检测 SA token 铸造——为 SA 生成可带外使用的长期凭据（权限面外泄；配合绑定即横向闭环）。永不基线化：任何主体铸造都留痕。",
+    "level": "high",
+    "tags": ["attack.credential_access", "attack.t1550.001", "inkblade"],
+    "logsource": {"product": "kubernetes", "service": "audit"},
+    "detection": {
+      "selection": {
+        "verb": ["create"],
+        "objectRef.resource": ["serviceaccounts"],
+        "objectRef.subresource": ["token"]
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["控制器例行短期铸造（应由平台控制器主体发起且 expirationSeconds ≤ 3600；即便如此也建议留痕复核）"],
+    "blocks_modules": ["overprivileged-sa-escalation", "supply-chain-credential-theft"],
+    "tuning": {
+      "zh": "TokenRequest 收敛到控制器主体并在准入限制 audiences/expirationSeconds；租户命名空间的自助铸造直接 critical；与随后同主体的绑定创建做序列关联（铸造→绑定→横向）",
+      "en": "Constrain TokenRequest to controller subjects and gate audiences/expirationSeconds at admission; escalate tenant-namespace self-minting to critical; correlate with a follow-up binding create by the same subject (mint -> bind -> lateral)"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "kubernetes", "service": "audit"},
+      "selection": {"verb": ["create"], "objectRef.resource": ["serviceaccounts"], "objectRef.subresource": ["token"]},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-pods-portforward-tunnel",
+    "title": "pods/portforward 隧道",
+    "description": "K8s audit: create pods/portforward tunnelling a pod port out through the apiserver, bypassing NetworkPolicy and ingress auditing. 检测 portforward 隧道——隐蔽数据外传与管理面直达通道。永不基线化。",
+    "level": "high",
+    "tags": ["attack.command_and_control", "attack.t1610", "inkblade"],
+    "logsource": {"product": "kubernetes", "service": "audit"},
+    "detection": {
+      "selection": {
+        "verb": ["create"],
+        "objectRef.resource": ["pods"],
+        "objectRef.subresource": ["portforward"]
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["平台调试主体受审计的临时隧道（专用调试 SA + 时间窗 + 会话留痕）"],
+    "blocks_modules": ["overprivileged-sa-escalation"],
+    "tuning": {
+      "zh": "portforward 权限从租户角色移除；平台调试主体入白名单并强制会话审计；对指向管理面/数据库/模型服务端口的隧道直接 critical",
+      "en": "Remove portforward from tenant roles; allowlist the dedicated platform-debug SA with forced session audit; escalate tunnels targeting management/database/model-serving ports to critical"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "kubernetes", "service": "audit"},
+      "selection": {"verb": ["create"], "objectRef.resource": ["pods"], "objectRef.subresource": ["portforward"]},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-pods-exec-lateral",
+    "title": "非基线主体 pods/exec 会话",
+    "description": "K8s audit: exec/attach session into a pod by a non-baseline subject (lateral movement / borrowed-identity primitive). 审计检测非基线主体的 pods/exec/attach 会话（横向与借用身份支点）。",
+    "level": "high",
+    "tags": ["attack.lateral_movement", "attack.t1609", "inkblade"],
+    "logsource": {"product": "kubernetes", "service": "audit"},
+    "detection": {
+      "selection": {
+        "verb": ["create"],
+        "objectRef.resource": ["pods"],
+        "objectRef.subresource": ["exec", "attach"],
+        "subject_sa": {"not_in": ["system:serviceaccount:kube-system:inkblade-break-glass"]}
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["运维 break-glass 会话（专用跳板主体 + 时间窗白名单）"],
+    "blocks_modules": ["overprivileged-sa-escalation"],
+    "tuning": {
+      "zh": "把运维跳板主体（专用 break-glass SA + bastion 网段）加入 not_in 白名单；对进入特权/GPU 命名空间的 exec 直接升级 critical；配合会话录像与 kubectl audit 注解核对操作者",
+      "en": "Allowlist the dedicated break-glass SA plus bastion CIDR; escalate exec into privileged/GPU namespaces to critical; pair with session recording and operator identity from audit annotations"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "kubernetes", "service": "audit"},
+      "selection": {"verb": ["create"], "objectRef.resource": ["pods"], "objectRef.subresource": ["exec", "attach"], "subject_sa": {"not_in": ["system:serviceaccount:kube-system:inkblade-break-glass"]}},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-weight-pvc-abnormal-write",
+    "title": "权重/检查点 PVC 异常写（claim 级变更或非基线主体挂载）",
+    "description": "K8s audit: create/update/patch of weight/checkpoint-class PersistentVolumeClaims by a non-baseline subject, or pod creation mounting them outside the platform scheduler. 检测共享模型数据面（权重/检查点 PVC）的异常写通道（供应链投毒入口）。",
+    "level": "high",
+    "tags": ["attack.impact", "attack.t1565.001", "inkblade"],
+    "logsource": {"product": "kubernetes", "service": "audit"},
+    "detection": {
+      "selection": {
+        "verb": ["create", "update", "patch"],
+        "objectRef.resource": ["persistentvolumeclaims"],
+        "subject_sa": {"not_in": ["system:serviceaccount:ml-training:platform-scheduler", "system:serviceaccount:kube-system:storage-operator"]}
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["存储运维扩容（storage-operator 主体白名单）、平台调度器例行挂载（platform-scheduler）"],
+    "blocks_modules": ["shared-volume-weight-copy"],
+    "tuning": {
+      "zh": "先收敛 claim 写主体到存储运维/平台调度器两个 SA；权重类名称（weights/model-weights/hf-cache/checkpoint）单独加正则子规则并保持 high；挂载级异常与 falco-weight-file-abnormal-write 联动定位写进程",
+      "en": "Constrain claim writers to the storage-operator and platform-scheduler SAs; add a regex sub-rule for weight-class names (weights/model-weights/hf-cache/checkpoint) kept at high; correlate mount-level anomalies with falco-weight-file-abnormal-write to locate the writing process"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "kubernetes", "service": "audit"},
+      "selection": {"verb": ["create", "update", "patch"], "objectRef.resource": ["persistentvolumeclaims"], "subject_sa": {"not_in": ["system:serviceaccount:ml-training:platform-scheduler", "system:serviceaccount:kube-system:storage-operator"]}},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-fabric-sharp-unauth-join",
+    "title": "fabric 在网聚合会话无鉴权入组/篡改（SHARP all-reduce 面）",
+    "description": "fabric 控制器审计：外部主体入组在网聚合会话或提交 reduce 贡献且无作业身份（集合通信域被外部 rank 混入）。English: fabric controller audit - unauthenticated join/submit on in-network aggregation sessions.",
+    "level": "critical",
+    "tags": ["attack.execution", "attack.t1550", "inkblade"],
+    "logsource": {"product": "fabric", "service": "sharp-controller"},
+    "detection": {
+      "selection": {
+        "action": ["join", "reduce"],
+        "authenticated": false
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["调试窗口内的合法外部 eval 作业（按作业清单白名单）"],
+    "blocks_modules": ["sharp-in-network-poison", "training-silent-corruption", "ib-subnet-manager-hijack"],
+    "tuning": {
+      "zh": "入组/贡献事件按作业调度器签发的身份（job token/mTLS SPIFFE）判定 authenticated；fabric 控制器需输出该字段后规则才可执行；跨作业会话命中即 critical",
+      "en": "Mark authenticated from scheduler-issued job identity (job token / mTLS SPIFFE); the rule needs the fabric controller to emit that field; cross-job session hits stay critical"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "fabric", "service": "sharp-controller"},
+      "selection": {"action": ["join", "reduce"], "authenticated": false},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-fabric-exhaustion-quota-miss",
+    "title": "fabric 资源耗尽事件（端口/IO/请求洪/队列无配额）",
+    "description": "fabric 审计：端口分配、checkpoint I/O、apiserver 请求与 gang 提交在无配额强制下放量增长（集群级资源耗尽特征）。English: fabric audit - exhaustion-class actions without quota enforcement.",
+    "level": "high",
+    "tags": ["attack.impact", "attack.t1499", "inkblade"],
+    "logsource": {"product": "fabric", "service": "resource-quota"},
+    "detection": {
+      "selection": {
+        "action": ["port_alloc", "io_burst", "request_flood", "gang_submit"],
+        "quota_enforced": false
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["平台侧批量拉起大作业（调度器来源 + 白名单窗口）"],
+    "blocks_modules": ["nccl-port-exhaustion", "checkpoint-io-storm", "api-server-flood-surface", "gang-scheduler-abuse", "kv-oom-bomb"],
+    "tuning": {
+      "zh": "按作业/租户聚合端口与 I/O 配额事件，单作业逼近池上限即告警；request_flood 以 apiserver 限流器事件为源；gang_submit 与调度器准入日志对账（占位 job 特征：placeholders+hold）",
+      "en": "Aggregate port/IO quota events per job and alert as a single job nears pool exhaustion; source request_flood from the apiserver rate-limiter; reconcile gang_submit with admission logs (placeholder signature: placeholders+hold)"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"product": "fabric", "service": "resource-quota"},
+      "selection": {"action": ["port_alloc", "io_burst", "request_flood", "gang_submit"], "quota_enforced": false},
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cluster-takeover-entry",
+    "title": "??? operator ????????",
+    "description": "K8s audit: an operator-class service account enumerates services/pods (entry discovery against an exposed training/inference control plane). ???? operator ???????/?????????",
+    "level": "medium",
+    "tags": [
+      "attack.discovery",
+      "attack.t1046",
+      "inkblade"
+    ],
+    "logsource": {
+      "product": "kubernetes",
+      "service": "audit"
+    },
+    "detection": {
+      "selection": {
+        "verb": [
+          "get",
+          "list"
+        ],
+        "objectRef.resource": [
+          "services",
+          "pods"
+        ],
+        "subject_sa": {
+          "re": "serviceaccount:.*operator"
+        }
+      },
+      "condition": "selection"
+    },
+    "falsepositives": [
+      "?????????/???????????????????"
+    ],
+    "blocks_modules": [
+      "cluster-entry"
+    ],
+    "tuning": {
+      "zh": "? 30 ?????????????????operator ?????????? list services/pods ?? high??? NodePort ?????????",
+      "en": "Baseline platform discovery vs external enumeration over 30 days; escalate high when operator subjects list services/pods outside change windows; correlate with the NodePort exposure inventory"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "selection": {
+        "verb": [
+          "get",
+          "list"
+        ],
+        "objectRef.resource": [
+          "services",
+          "pods"
+        ],
+        "subject_sa": {
+          "re": "serviceaccount:.*operator"
+        }
+      },
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cluster-token-harvest",
+    "title": "ServiceAccount TokenRequest ????",
+    "description": "K8s audit: service account token request/create by a workload-class subject (credential acquisition for RBAC escalation). ???????????? TokenRequest???????",
+    "level": "high",
+    "tags": [
+      "attack.credential_access",
+      "attack.t1552",
+      "inkblade"
+    ],
+    "logsource": {
+      "product": "kubernetes",
+      "service": "audit"
+    },
+    "detection": {
+      "selection": {
+        "verb": [
+          "create",
+          "get"
+        ],
+        "objectRef.resource": [
+          "serviceaccounts",
+          "secrets"
+        ],
+        "objectRef.subresource": [
+          "token"
+        ],
+        "subject_sa": {
+          "re": "serviceaccount:.*operator"
+        }
+      },
+      "condition": "selection"
+    },
+    "falsepositives": [
+      "?? operator ??? token ??????+???????"
+    ],
+    "blocks_modules": [
+      "cluster-credential"
+    ],
+    "tuning": {
+      "zh": "???? TokenRequest ???serviceaccounts/token???? CI/? operator ???????? high?token ??????????? jti/??/???",
+      "en": "Ingest serviceaccounts/token audit events first; keep high for issuers outside CI/operator controllers; never log the token itself, only jti/subject/expiry"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "selection": {
+        "verb": [
+          "create",
+          "get"
+        ],
+        "objectRef.resource": [
+          "serviceaccounts",
+          "secrets"
+        ],
+        "objectRef.subresource": [
+          "token"
+        ],
+        "subject_sa": {
+          "re": "serviceaccount:.*operator"
+        }
+      },
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cluster-rbac-takeover",
+    "title": "operator ???? cluster-admin ????????",
+    "description": "K8s audit: operator-class subject creates RoleBinding/ClusterRoleBinding to cluster-admin (RBAC takeover). ???? operator ?????? cluster-admin ????????????",
+    "level": "critical",
+    "tags": [
+      "attack.privilege_escalation",
+      "attack.t1098",
+      "inkblade"
+    ],
+    "logsource": {
+      "product": "kubernetes",
+      "service": "audit"
+    },
+    "detection": {
+      "selection": {
+        "verb": [
+          "create",
+          "patch"
+        ],
+        "objectRef.resource": [
+          "rolebindings",
+          "clusterrolebindings"
+        ],
+        "objectRef.roleRef.name": "cluster-admin"
+      },
+      "condition": "selection"
+    },
+    "falsepositives": [
+      "gitops/CI ????????????????? + ?????"
+    ],
+    "blocks_modules": [
+      "cluster-rbac-escalation"
+    ],
+    "tuning": {
+      "zh": "?? cluster-admin ??????? critical ?????????? gitops ?????????????????????????? bind/escalate ????",
+      "en": "Any incremental binding to cluster-admin is critical and should be blocked; allow only the gitops sync subject with two-person approval; also watch binding deletions (cleanup trails) and bind/escalate grants"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "selection": {
+        "verb": [
+          "create",
+          "patch"
+        ],
+        "objectRef.resource": [
+          "rolebindings",
+          "clusterrolebindings"
+        ],
+        "objectRef.roleRef.name": "cluster-admin"
+      },
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cluster-privileged-pod",
+    "title": "???????/??? Pod",
+    "description": "K8s audit: pod created with privileged + hostPID/hostPath after a cluster-admin binding (node takeover). ????????? privileged+hostPID ???? Pod?",
+    "level": "critical",
+    "tags": [
+      "attack.privilege_escalation",
+      "attack.t1611",
+      "inkblade"
+    ],
+    "logsource": {
+      "product": "kubernetes",
+      "service": "audit"
+    },
+    "detection": {
+      "selection": {
+        "verb": [
+          "create"
+        ],
+        "objectRef.resource": [
+          "pods"
+        ],
+        "requestObject.privileged": true,
+        "requestObject.hostPID": true
+      },
+      "condition": "selection"
+    },
+    "falsepositives": [
+      "GPU operator/?? DaemonSet???????? + ??????"
+    ],
+    "blocks_modules": [
+      "cluster-privileged-pod"
+    ],
+    "tuning": {
+      "zh": "?? monitor 7 ???? Enforce?GPU ??/device plugin ??????????????? cluster-admin ???????? critical",
+      "en": "Run monitor for 7 days then switch to Enforce; allow GPU driver/device plugin only in the exception namespace; correlate with the cluster-admin binding rule and escalate to critical"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "selection": {
+        "verb": [
+          "create"
+        ],
+        "objectRef.resource": [
+          "pods"
+        ],
+        "requestObject.privileged": true,
+        "requestObject.hostPID": true
+      },
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cluster-proof-actions",
+    "title": "?????????? secrets / ???? namespace",
+    "description": "K8s audit: cluster-scope secret enumeration and namespace creation by an operator-class subject (post-takeover proof). ???????? secret ????? namespace ???",
+    "level": "critical",
+    "tags": [
+      "attack.collection",
+      "attack.t1530",
+      "inkblade"
+    ],
+    "logsource": {
+      "product": "kubernetes",
+      "service": "audit"
+    },
+    "detection": {
+      "selection": {
+        "verb": [
+          "list",
+          "create"
+        ],
+        "objectRef.resource": [
+          "secrets",
+          "namespaces"
+        ],
+        "subject_sa": {
+          "re": "serviceaccount:.*operator"
+        }
+      },
+      "condition": "selection"
+    },
+    "falsepositives": [
+      "??/???????????? secret ??????? value?"
+    ],
+    "blocks_modules": [
+      "cluster-proof"
+    ],
+    "tuning": {
+      "zh": "secret ?????????????/??/?????namespace ??????????? gitops?? operator ?????? list secrets ?? critical",
+      "en": "Allowlist secret listers (backup/audit/controllers); namespace creation restricted to platform controllers and gitops; cluster-wide secret listing by operator subjects is critical"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "selection": {
+        "verb": [
+          "list",
+          "create"
+        ],
+        "objectRef.resource": [
+          "secrets",
+          "namespaces"
+        ],
+        "subject_sa": {
+          "re": "serviceaccount:.*operator"
+        }
+      },
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cluster-cleanup-trail",
+    "title": "????????????/?? namespace",
+    "description": "K8s audit: deletion of cluster-admin bindings or proof namespaces shortly after creation (cleanup trail). ???????????/?? namespace ??????",
+    "level": "high",
+    "tags": [
+      "attack.defense_evasion",
+      "attack.t1070",
+      "inkblade"
+    ],
+    "logsource": {
+      "product": "kubernetes",
+      "service": "audit"
+    },
+    "detection": {
+      "selection": {
+        "verb": [
+          "delete"
+        ],
+        "objectRef.resource": [
+          "rolebindings",
+          "clusterrolebindings",
+          "namespaces"
+        ]
+      },
+      "condition": "selection"
+    },
+    "falsepositives": [
+      "gitops/?? namespace ??????????????????"
+    ],
+    "blocks_modules": [
+      "cluster-cleanup"
+    ],
+    "tuning": {
+      "zh": "?????????????? 30 ???????? cluster-admin ??/namespace ?? critical????????????",
+      "en": "Correlate with creation events: same subject deleting a cluster-admin binding/namespace within 30 minutes is critical; preserve the deletion timeline for forensics"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "selection": {
+        "verb": [
+          "delete"
+        ],
+        "objectRef.resource": [
+          "rolebindings",
+          "clusterrolebindings",
+          "namespaces"
+        ]
+      },
+      "condition": "all"
+    }
+  },
+  {
+    "id": "sigma-cve-arsenal-surface",
+    "title": "CVE 武器化面：Ray / LiteLLM / IPMI / Redfish / runc 探测",
+    "description": "Correlate management-plane probes for public CVE surfaces: Ray job API, LiteLLM config, IPMI RMCP, Redfish session service, and runtime escape reconnaissance. 仅行为特征，不含利用载荷。",
+    "level": "high",
+    "tags": ["attack.lateral_movement", "attack.t1210", "inkblade"],
+    "logsource": {"category": "webserver"},
+    "detection": {
+      "selection": {
+        "cs-uri|contains": [
+          "/ray/api/jobs",
+          "/litellm/config",
+          "/ipmi/rmcp",
+          "/redfish/v1",
+          "/runc"
+        ]
+      },
+      "condition": "selection"
+    },
+    "falsepositives": ["资产盘点/合规扫描", "运维脚本访问 BMC 管理面"],
+    "blocks_modules": [
+      "ray-job-marker-rce",
+      "litellm-config-update-rce",
+      "ipmi-cipher-zero-bypass",
+      "redfish-default-credentials",
+      "runc-escape-detect"
+    ],
+    "tuning": {
+      "zh": "按管理网段与来源身份白名单调参；同一来源在 10 分钟内同时命中 Ray 与 BMC 面时升级为 critical",
+      "en": "Allowlist admin CIDRs and operator identities; escalate to critical when the same source hits Ray and BMC surfaces within 10 minutes"
+    },
+    "match": {
+      "engine": "sigma",
+      "logsource": {"category": "webserver"},
+      "selection": {"cs-uri": "*"},
+      "condition": "all"
+    }
+  },
+{
+  "id": "sigma-llm-probe-jailbreak",
+  "title": "LLM 越狱尝试（模板/多语言/编码）",
+  "description": "LLM jailbreak attempts (templates/multilingual/encoding). 对已知越狱模板（DAN/AIM/Developer Mode/角色扮演）、多语言混合与编码载荷的请求命中；来源=LLM 探针矩阵 jailbreak 类。 检测规则与 inkblade/probes 探针库 jailbreak 类一一联动（每类 ≥1 规则）。",
+  "level": "high",
+  "tags": [
+    "attack.t1059",
+    "inkblade",
+    "llm-probe"
+  ],
+  "logsource": {
+    "product": "litellm",
+    "service": "llm-probes"
+  },
+  "detection": {
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "jailbreak"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "安全研究红队演练流量（以授权演练源与计划窗口白名单）"
+  ],
+  "blocks_modules": [],
+  "scope": "llm-probe",
+  "tuning": {
+    "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+    "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+  },
+  "match": {
+    "engine": "sigma",
+    "logsource": {
+      "product": "litellm",
+      "service": "llm-probes"
+    },
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "jailbreak"
+      ]
+    },
+    "condition": "all"
+  }
+},
+{
+  "id": "sigma-llm-probe-prompt-injection",
+  "title": "提示注入（直接/间接/工具描述）",
+  "description": "Prompt injection (direct/indirect/tool-description). 直接指令覆盖、不可信内容间接注入、工具描述/schema 注入与伪造角色消息；来源=LLM 探针矩阵 prompt-injection 类。 检测规则与 inkblade/probes 探针库 prompt-injection 类一一联动（每类 ≥1 规则）。",
+  "level": "critical",
+  "tags": [
+    "attack.t1059",
+    "inkblade",
+    "llm-probe"
+  ],
+  "logsource": {
+    "product": "litellm",
+    "service": "llm-probes"
+  },
+  "detection": {
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "prompt-injection"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "授权红队演练流量（以演练计划窗口与来源白名单收敛）"
+  ],
+  "blocks_modules": [],
+  "scope": "llm-probe",
+  "tuning": {
+    "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+    "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+  },
+  "match": {
+    "engine": "sigma",
+    "logsource": {
+      "product": "litellm",
+      "service": "llm-probes"
+    },
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "prompt-injection"
+      ]
+    },
+    "condition": "all"
+  }
+},
+{
+  "id": "sigma-llm-probe-sysprompt-leak",
+  "title": "系统提示泄露尝试",
+  "description": "System-prompt exfiltration attempts. 逐字复述/分隔符混淆/翻译把戏等系统提示抽取话术命中；来源=LLM 探针矩阵 sysprompt-leak 类。 检测规则与 inkblade/probes 探针库 sysprompt-leak 类一一联动（每类 ≥1 规则）。",
+  "level": "high",
+  "tags": [
+    "attack.t1552",
+    "inkblade",
+    "llm-probe"
+  ],
+  "logsource": {
+    "product": "litellm",
+    "service": "llm-probes"
+  },
+  "detection": {
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "sysprompt-leak"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "授权红队演练流量（以演练计划窗口与来源白名单收敛）"
+  ],
+  "blocks_modules": [],
+  "scope": "llm-probe",
+  "tuning": {
+    "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+    "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+  },
+  "match": {
+    "engine": "sigma",
+    "logsource": {
+      "product": "litellm",
+      "service": "llm-probes"
+    },
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "sysprompt-leak"
+      ]
+    },
+    "condition": "all"
+  }
+},
+{
+  "id": "sigma-llm-probe-traindata-extraction",
+  "title": "训练数据成员抽取",
+  "description": "Training-data membership extraction. canary 重复、前缀补全、成员逐字抽取等训练记忆抽取模式；来源=LLM 探针矩阵 traindata-extraction 类。 检测规则与 inkblade/probes 探针库 traindata-extraction 类一一联动（每类 ≥1 规则）。",
+  "level": "high",
+  "tags": [
+    "attack.t1005",
+    "inkblade",
+    "llm-probe"
+  ],
+  "logsource": {
+    "product": "litellm",
+    "service": "llm-probes"
+  },
+  "detection": {
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "traindata-extraction"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "授权红队演练流量（以演练计划窗口与来源白名单收敛）"
+  ],
+  "blocks_modules": [],
+  "scope": "llm-probe",
+  "tuning": {
+    "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+    "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+  },
+  "match": {
+    "engine": "sigma",
+    "logsource": {
+      "product": "litellm",
+      "service": "llm-probes"
+    },
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "traindata-extraction"
+      ]
+    },
+    "condition": "all"
+  }
+},
+{
+  "id": "sigma-llm-probe-pii-leak",
+  "title": "PII 索取与日志明文暴露",
+  "description": "PII solicitation and plaintext log exposure. 对话内 SSN/卡号索取、网关日志未授权拉取（邮箱/电话/卡号/Bearer 凭据）；来源=LLM 探针矩阵 pii-leak 类。 检测规则与 inkblade/probes 探针库 pii-leak 类一一联动（每类 ≥1 规则）。",
+  "level": "critical",
+  "tags": [
+    "attack.t1530",
+    "inkblade",
+    "llm-probe"
+  ],
+  "logsource": {
+    "product": "litellm",
+    "service": "llm-probes"
+  },
+  "detection": {
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "pii-leak"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "授权红队演练流量（以演练计划窗口与来源白名单收敛）"
+  ],
+  "blocks_modules": [],
+  "scope": "llm-probe",
+  "tuning": {
+    "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+    "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+  },
+  "match": {
+    "engine": "sigma",
+    "logsource": {
+      "product": "litellm",
+      "service": "llm-probes"
+    },
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "pii-leak"
+      ]
+    },
+    "condition": "all"
+  }
+},
+{
+  "id": "sigma-llm-probe-unsafe-advice",
+  "title": "不安全建议请求（未拒绝）",
+  "description": "Unsafe-advice requests answered without refusal. 恶意软件/危险品/欺诈类请求且模型未拒绝（guardrail 放行面）；来源=LLM 探针矩阵 unsafe-advice 类。 检测规则与 inkblade/probes 探针库 unsafe-advice 类一一联动（每类 ≥1 规则）。",
+  "level": "high",
+  "tags": [
+    "attack.t1204",
+    "inkblade",
+    "llm-probe"
+  ],
+  "logsource": {
+    "product": "litellm",
+    "service": "llm-probes"
+  },
+  "detection": {
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "unsafe-advice"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "授权红队演练流量（以演练计划窗口与来源白名单收敛）"
+  ],
+  "blocks_modules": [],
+  "scope": "llm-probe",
+  "tuning": {
+    "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+    "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+  },
+  "match": {
+    "engine": "sigma",
+    "logsource": {
+      "product": "litellm",
+      "service": "llm-probes"
+    },
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "unsafe-advice"
+      ]
+    },
+    "condition": "all"
+  }
+},
+{
+  "id": "sigma-llm-probe-tool-abuse",
+  "title": "智能体工具滥用（ASI02）",
+  "description": "Agentic tool misuse (ASI02). 工具描述遮蔽、伪造工具输出回灌与未授权插件/沙箱/代码执行面调用；来源=LLM 探针矩阵 tool-abuse 类。 检测规则与 inkblade/probes 探针库 tool-abuse 类一一联动（每类 ≥1 规则）。",
+  "level": "critical",
+  "tags": [
+    "attack.t1210",
+    "inkblade",
+    "llm-probe"
+  ],
+  "logsource": {
+    "product": "litellm",
+    "service": "llm-probes"
+  },
+  "detection": {
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "tool-abuse"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "授权红队演练流量（以演练计划窗口与来源白名单收敛）"
+  ],
+  "blocks_modules": [],
+  "scope": "llm-probe",
+  "tuning": {
+    "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+    "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+  },
+  "match": {
+    "engine": "sigma",
+    "logsource": {
+      "product": "litellm",
+      "service": "llm-probes"
+    },
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "tool-abuse"
+      ]
+    },
+    "condition": "all"
+  }
+},
+{
+  "id": "sigma-llm-probe-multimodal-injection",
+  "title": "多模态载荷注入（图像/音频）",
+  "description": "Multimodal payload injection (image/audio). 图像 alt 文本、OCR 隐藏文本、音频转写内嵌指令命中；来源=LLM 探针矩阵 multimodal-injection 类。 检测规则与 inkblade/probes 探针库 multimodal-injection 类一一联动（每类 ≥1 规则）。",
+  "level": "high",
+  "tags": [
+    "attack.t1059",
+    "inkblade",
+    "llm-probe"
+  ],
+  "logsource": {
+    "product": "litellm",
+    "service": "llm-probes"
+  },
+  "detection": {
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "multimodal-injection"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "授权红队演练流量（以演练计划窗口与来源白名单收敛）"
+  ],
+  "blocks_modules": [],
+  "scope": "llm-probe",
+  "tuning": {
+    "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+    "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+  },
+  "match": {
+    "engine": "sigma",
+    "logsource": {
+      "product": "litellm",
+      "service": "llm-probes"
+    },
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "multimodal-injection"
+      ]
+    },
+    "condition": "all"
+  }
+},
+{
+  "id": "sigma-llm-probe-longctx-attack",
+  "title": "长上下文滥用（超窗/KV/prefix cache）",
+  "description": "Long-context abuse (over-window/KV/prefix cache). 超窗请求仍放行、prefix cache 跨租户复用、KV 通道与 checkpoint 分片未授权写；来源=LLM 探针矩阵 longctx-attack 类。 检测规则与 inkblade/probes 探针库 longctx-attack 类一一联动（每类 ≥1 规则）。",
+  "level": "high",
+  "tags": [
+    "attack.t1499",
+    "inkblade",
+    "llm-probe"
+  ],
+  "logsource": {
+    "product": "litellm",
+    "service": "llm-probes"
+  },
+  "detection": {
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "longctx-attack"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "授权红队演练流量（以演练计划窗口与来源白名单收敛）"
+  ],
+  "blocks_modules": [],
+  "scope": "llm-probe",
+  "tuning": {
+    "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+    "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+  },
+  "match": {
+    "engine": "sigma",
+    "logsource": {
+      "product": "litellm",
+      "service": "llm-probes"
+    },
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "longctx-attack"
+      ]
+    },
+    "condition": "all"
+  }
+},
+{
+  "id": "sigma-llm-probe-cache-poison",
+  "title": "语义缓存跨租户投毒",
+  "description": "Semantic-cache cross-tenant poisoning. 共享前缀键跨租户命中、缓存条目覆写与前缀归一化碰撞劫持；来源=LLM 探针矩阵 cache-poison 类。 检测规则与 inkblade/probes 探针库 cache-poison 类一一联动（每类 ≥1 规则）。",
+  "level": "critical",
+  "tags": [
+    "attack.t1550",
+    "inkblade",
+    "llm-probe"
+  ],
+  "logsource": {
+    "product": "litellm",
+    "service": "llm-probes"
+  },
+  "detection": {
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "cache-poison"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "授权红队演练流量（以演练计划窗口与来源白名单收敛）"
+  ],
+  "blocks_modules": [],
+  "scope": "llm-probe",
+  "tuning": {
+    "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+    "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+  },
+  "match": {
+    "engine": "sigma",
+    "logsource": {
+      "product": "litellm",
+      "service": "llm-probes"
+    },
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "cache-poison"
+      ]
+    },
+    "condition": "all"
+  }
+},
+{
+  "id": "sigma-llm-probe-downstream-injection",
+  "title": "输出注入到下游 agent",
+  "description": "Output injection into downstream agents. 模型输出内嵌 agent 指令/伪造 tool-call JSON/MCP 结果投毒；来源=LLM 探针矩阵 downstream-injection 类。 检测规则与 inkblade/probes 探针库 downstream-injection 类一一联动（每类 ≥1 规则）。",
+  "level": "high",
+  "tags": [
+    "attack.t1204",
+    "inkblade",
+    "llm-probe"
+  ],
+  "logsource": {
+    "product": "litellm",
+    "service": "llm-probes"
+  },
+  "detection": {
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "downstream-injection"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "授权红队演练流量（以演练计划窗口与来源白名单收敛）"
+  ],
+  "blocks_modules": [],
+  "scope": "llm-probe",
+  "tuning": {
+    "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+    "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+  },
+  "match": {
+    "engine": "sigma",
+    "logsource": {
+      "product": "litellm",
+      "service": "llm-probes"
+    },
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "downstream-injection"
+      ]
+    },
+    "condition": "all"
+  }
+},
+{
+  "id": "sigma-llm-probe-guardrail-bypass",
+  "title": "guardrail 检查面绕过",
+  "description": "Guardrail inspection-surface bypass. 角色分层/多消息深埋/单长消息深位/混合语言绕过首条消息检查；来源=LLM 探针矩阵 guardrail-bypass 类。 检测规则与 inkblade/probes 探针库 guardrail-bypass 类一一联动（每类 ≥1 规则）。",
+  "level": "high",
+  "tags": [
+    "attack.t1562",
+    "inkblade",
+    "llm-probe"
+  ],
+  "logsource": {
+    "product": "litellm",
+    "service": "llm-probes"
+  },
+  "detection": {
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "guardrail-bypass"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "授权红队演练流量（以演练计划窗口与来源白名单收敛）"
+  ],
+  "blocks_modules": [],
+  "scope": "llm-probe",
+  "tuning": {
+    "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+    "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+  },
+  "match": {
+    "engine": "sigma",
+    "logsource": {
+      "product": "litellm",
+      "service": "llm-probes"
+    },
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "guardrail-bypass"
+      ]
+    },
+    "condition": "all"
+  }
+},
+{
+  "id": "sigma-llm-probe-gateway-abuse",
+  "title": "AI 网关权限/资源滥用",
+  "description": "AI gateway privilege and resource abuse. 未授权 key 签发、模型清单枚举、明文上游凭据、配额 XFF 轮换与开放中继；来源=LLM 探针矩阵 gateway-abuse 类。 检测规则与 inkblade/probes 探针库 gateway-abuse 类一一联动（每类 ≥1 规则）。",
+  "level": "high",
+  "tags": [
+    "attack.t1078",
+    "inkblade",
+    "llm-probe"
+  ],
+  "logsource": {
+    "product": "litellm",
+    "service": "llm-probes"
+  },
+  "detection": {
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "gateway-abuse"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "内部巡检/压测作业（以管理员主体与 bastion 网段白名单）"
+  ],
+  "blocks_modules": [],
+  "scope": "llm-probe",
+  "tuning": {
+    "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+    "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+  },
+  "match": {
+    "engine": "sigma",
+    "logsource": {
+      "product": "litellm",
+      "service": "llm-probes"
+    },
+    "selection": {
+      "event_kind": [
+        "llm_probe_sweep",
+        "llm_request"
+      ],
+      "category": [
+        "gateway-abuse"
+      ]
+    },
+    "condition": "all"
+  }
+},
+{
+  "id": "sigma-cache-tenant-isolation-missing",
+  "title": "推理缓存隔离策略缺失（cache_salt 未启用/全局键）",
+  "description": "缓存策略读取事件显示 prefix cache 的 cache_salt 隔离关闭或键 scope 为全局，跨租户 prefix/近似缓存复用成为可能。English: cache policy audit event with salt isolation disabled and global key scope.",
+  "level": "high",
+  "tags": [
+   "attack.credential_access",
+   "attack.t1552",
+   "inkblade"
+  ],
+  "logsource": {
+   "product": "inference-cache",
+   "service": "engine-config"
+  },
+  "detection": {
+   "selection": {
+    "event": [
+     "cache_policy_read"
+    ],
+    "cache_salt_enabled": [
+     false
+    ],
+    "key_scope": [
+     "global"
+    ]
+   },
+   "condition": "selection"
+  },
+  "falsepositives": [
+   "单租户独占集群的策略灰度窗口（以租户清单白名单收敛）"
+  ],
+  "blocks_modules": [
+   "cache-salt-policy-audit",
+   "similarity-cache-false-hit"
+  ],
+  "tuning": {
+   "zh": "对多租户生产集群把 cache_salt 策略纳入基线核查（vLLM cache_salt / 网关键 scope）；单租户集群可按命名空间白名单降噪；策略读取事件建议只对变更与巡检双通道采集",
+   "en": "Baseline the cache_salt policy for multi-tenant fleets (vLLM cache_salt / gateway key scope); allowlist single-tenant namespaces to cut noise; collect policy reads from both change and audit pipelines"
+  },
+  "match": {
+   "engine": "sigma",
+   "logsource": {
+    "product": "inference-cache",
+    "service": "engine-config"
+   },
+   "selection": {
+    "event": [
+     "cache_policy_read"
+    ],
+    "cache_salt_enabled": [
+     false
+    ],
+    "key_scope": [
+     "global"
+    ]
+   }
+  }
+ }
+,
+{
+  "id": "sigma-cache-probing-burst",
+  "title": "前缀缓存探测突发（同源大量唯一前缀扫描）",
+  "description": "单一来源短窗口内对推理面发起 ≥50 条唯一前缀探测（命中/未命中交替，缓存成员推断与时序侧信道特征）。English: one source issuing 50+ unique prefix probes against the inference plane in a short window.",
+  "level": "high",
+  "tags": [
+   "attack.discovery",
+   "attack.t1592",
+   "inkblade"
+  ],
+  "logsource": {
+   "category": "llm-gateway",
+   "service": "inference"
+  },
+  "detection": {
+   "selection": {
+    "action": [
+     "chat_completion"
+    ],
+    "distinct_prefix_probe_count": {
+     "re": "^(?:[5-9][0-9]|[1-9][0-9]{2,})$"
+    }
+   },
+   "condition": "selection"
+  },
+  "falsepositives": [
+   "合规压测/评测批处理（以作业服务账号与计划窗口白名单收敛）"
+  ],
+  "blocks_modules": [
+   "cache-timing-sidechannel",
+   "cache-eviction-residue"
+  ],
+  "tuning": {
+   "zh": "以 5 分钟窗口聚合同源唯一 prompt_prefix 数；压测与评测账号先入白名单；触发后按租户限速并保留样本供成员推断复盘，不建议直接封禁",
+   "en": "Aggregate distinct prompt prefixes per source over 5-minute windows; allowlist load-test/eval service accounts first; rate-limit the tenant on trigger and keep samples for membership-inference review instead of hard blocking"
+  },
+  "match": {
+   "engine": "sigma",
+   "logsource": {
+    "category": "llm-gateway",
+    "service": "inference"
+   },
+   "selection": {
+    "action": [
+     "chat_completion"
+    ],
+    "distinct_prefix_probe_count": {
+     "re": "^(?:[5-9][0-9]|[1-9][0-9]{2,})$"
+    }
+   }
+  }
+ }
+,
+{
+  "id": "sigma-router-cache-metrics-leak",
+  "title": "路由器缓存指标按租户无鉴权读取",
+  "description": "EPP/路由器缓存指标（KV 利用率/前缀命中率/独立前缀数）被非管理身份按租户粒度读取，泄露他租户缓存行为。English: per-tenant cache metrics read without admin authentication on the EPP router.",
+  "level": "medium",
+  "tags": [
+   "attack.discovery",
+   "attack.t1213",
+   "inkblade"
+  ],
+  "logsource": {
+   "product": "epp-router",
+   "service": "metrics"
+  },
+  "detection": {
+   "selection": {
+    "action": [
+     "metrics_read"
+    ],
+    "per_tenant": [
+     true
+    ],
+    "authenticated": [
+     false
+    ]
+   },
+   "condition": "selection"
+  },
+  "falsepositives": [
+   "平台监控账号的常规抓取（以监控网段与服务账号白名单收敛）"
+  ],
+  "blocks_modules": [
+   "router-cache-metrics-leak"
+  ],
+  "tuning": {
+   "zh": "指标面收敛为管理鉴权 + 仅本租户视图；监控采集走专用账号并按 1 分钟节流；对 per_tenant 明细查询单独告警（聚合视图不告）",
+   "en": "Require admin auth and own-tenant views on metrics; throttle monitoring accounts to 1-minute scrapes; alert specifically on per-tenant detail queries (not aggregate)"
+  },
+  "match": {
+   "engine": "sigma",
+   "logsource": {
+    "product": "epp-router",
+    "service": "metrics"
+   },
+   "selection": {
+    "action": [
+     "metrics_read"
+    ],
+    "per_tenant": [
+     true
+    ],
+    "authenticated": [
+     false
+    ]
+   }
+  }
+ }
+]

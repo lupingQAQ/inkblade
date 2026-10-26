@@ -1,0 +1,25 @@
+{
+  "key": "inference-tenant-isolation-baseline",
+  "name": {
+    "zh": "多租户推理统一隔离基线",
+    "en": "Multi-tenant inference unified isolation baseline"
+  },
+  "series": "情报",
+  "description": "把缓存 salt、prefix cache、权重/KV 命名空间、计时旁路、GPU 释放残留、每租户配额与日志租户标识合成一条多租户推理基线。对应 KCon 2026 多租户 AI 推理方向（I58）。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "推理租户策略 JSON（cache_salt/prefix_cache_shared/weight_namespace/kv_namespace/quota）"
+  },
+  "produces": "inference-tenant-isolation-baseline.json + 隔离基线 findings",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md R06 / I58（KCon 2026 方向）",
+  "necessity": "缓存/权重/计时/GPU 残留分别由不同模块覆盖，客户验收需要一条可签核的统一基线；任一维度缺失都意味着跨租户可读或可推断。",
+  "combo_signature": "inference-tenant-isolation-gap",
+  "surfaces": [
+    {"type": "http-endpoint", "selector": "/v1/models"},
+    {"type": "http-endpoint", "selector": "/v1/chat/completions"},
+    {"type": "config-file", "selector": "inference/tenant-policy.json"}
+  ],
+  "default_enabled": true
+}

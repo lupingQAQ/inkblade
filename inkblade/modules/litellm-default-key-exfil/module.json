@@ -1,0 +1,31 @@
+{
+  "key": "litellm-default-key-exfil",
+  "name": {
+    "zh": "LiteLLM default master key",
+    "en": "LiteLLM default master key"
+  },
+  "series": "横向利用",
+  "description": "LiteLLM default master key; covers LITELLM-DEFAULT-KEY. Read-only: version/evidence collection, no target writes.",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "litellm-default-key",
+  "knowledge": "docs/CVE-CATALOG.md + inkblade/core/cve-catalog.json",
+  "combo_signature": "litellm-default-key",
+  "verified": false,
+  "verification_status": "static-only",
+  "verification_cves": {
+    "LITELLM-DEFAULT-KEY": "static-only",
+    "CVE-2026-4993": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/litellm/LITELLM-DEFAULT-KEY/result.json",
+    "lab/upstream_verify/cases/wandb/CVE-2026-4993/result.json"
+  ]
+}

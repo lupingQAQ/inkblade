@@ -1,0 +1,25 @@
+{
+  "id": "example-audit-trail",
+  "title": {
+    "zh": "示例：审计轨迹分析",
+    "en": "Example: audit trail analysis"
+  },
+  "category": "经典攻击链",
+  "requires": [
+    "kube-audit-trail-analysis"
+  ],
+  "preconditions": [],
+  "steps": [
+    {
+      "id": "audit-trail",
+      "module": "kube-audit-trail-analysis",
+      "params": {
+        "include_denied": true
+      }
+    }
+  ],
+  "description": {
+    "zh": "单步链：把 apiserver 审计日志解析成 who-did-what 发现。",
+    "en": "Single-step chain: parse an apiserver audit log into who-did-what findings."
+  }
+}

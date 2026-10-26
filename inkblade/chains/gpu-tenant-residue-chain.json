@@ -1,0 +1,55 @@
+{
+  "id": "gpu-tenant-residue-chain",
+  "title": {
+    "zh": "GPU 池化调度 → 残留显存/显存快照 → 他租户模型数据",
+    "en": "GPU pooling scheduler → residual VRAM/snapshot → victim tenant model data"
+  },
+  "category": "网络利用链",
+  "requires": [
+    "gpu-pool-scheduler-unauth",
+    "gpu-tenant-residue",
+    "gpu-metrics-tenant-leak"
+  ],
+  "preconditions": [
+    {"expr": "findings('gpu-pool-scheduler-unauth').count > 0"}
+  ],
+  "steps": [
+    {
+      "id": "pool-scheduler-takeover",
+      "module": "gpu-pool-scheduler-unauth",
+      "params": {
+        "mode": "backup-write",
+        "tenant": "tenant-a",
+        "victim_tenant": "tenant-b",
+        "device": "gpu-b-0"
+      },
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "https://gpu-pool.mock/api/allocate", "state": {"revision": 0}}
+      ]
+    },
+    {
+      "id": "metrics-leak-map",
+      "module": "gpu-metrics-tenant-leak",
+      "params": {"tenant": "tenant-a"},
+      "depends_on": ["pool-scheduler-takeover"]
+    },
+    {
+      "id": "residue-readback",
+      "module": "gpu-tenant-residue",
+      "params": {
+        "mode": "backup-write",
+        "tenant": "tenant-a",
+        "victim_tenant": "tenant-b",
+        "device": "gpu-b-0"
+      },
+      "writes": true,
+      "backup_targets": [
+        {"kind": "http", "url": "https://gpu-pool.mock/api/residue", "state": {"retained": false}}
+      ],
+      "depends_on": ["pool-scheduler-takeover"]
+    }
+  ],
+  "evidence": ["http-trace", "benign-marker-sha256", "cross-tenant-residue", "metrics-process-leak"],
+  "mitre": ["T1005", "T1530"]
+}

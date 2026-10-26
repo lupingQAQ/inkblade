@@ -1,0 +1,190 @@
+{
+  "schema": "inkblade-inventory-v1",
+  "collected_at": "2026-10-26T00:00:00Z",
+  "source": {
+    "mode": "snapshot",
+    "label": "fixture:four-states",
+    "path": "tests/fixtures/assess/inventory-four-states.json",
+    "cluster": "four-states-lab",
+    "version": "v1.28.3",
+    "provider": "aws"
+  },
+  "cluster": {
+    "name": "four-states-lab",
+    "version": "v1.28.3",
+    "provider": "aws",
+    "node_count": 1,
+    "source": "snapshot"
+  },
+  "nodes": [
+    {
+      "name": "gpu-node-1",
+      "os": "linux",
+      "os_image": "Ubuntu 22.04.4 LTS",
+      "kernel": "5.15.0-105-generic",
+      "kubelet": "v1.28.3",
+      "container_runtime": "containerd://1.4.2",
+      "runtime_type": "containerd",
+      "runtime_version": "1.4.2",
+      "containerd": "1.4.2",
+      "runc": "1.1.11",
+      "runc_present": true,
+      "provider_id": "aws:///us-east-1a/i-0123456789abcdef0",
+      "capacity": {"nvidia.com/gpu": "1"},
+      "gpu": {"count": 1, "driver_version": "535.129.03", "product": "NVIDIA A100"},
+      "labels": {"nvidia.com/gpu.product": "NVIDIA-A100-SXM4-80GB"},
+      "source": "snapshot:nodes"
+    }
+  ],
+  "namespaces": ["default", "infer", "train", "ray-system"],
+  "pods": [
+    {
+      "namespace": "train",
+      "name": "gpu-trainer-0",
+      "phase": "Running",
+      "node": "gpu-node-1",
+      "service_account": "train-sa",
+      "automount_sa_token": true,
+      "host_network": false,
+      "host_pid": false,
+      "host_ipc": false,
+      "containers": [
+        {
+          "name": "trainer",
+          "image": "registry.lab/train:v1.0.0",
+          "privileged": true,
+          "cap_add": ["SYS_ADMIN"],
+          "env": {"TRAIN_MODE": "rl"}
+        }
+      ],
+      "volumes": [
+        {"name": "host-root", "host_path": "/"},
+        {"name": "run", "host_path": "/var/run/containerd/containerd.sock"}
+      ],
+      "host_paths": ["/", "/var/run/containerd/containerd.sock"],
+      "runtime_socket_mounts": ["/var/run/containerd/containerd.sock"],
+      "source": "snapshot:pods"
+    }
+  ],
+  "daemonsets": [],
+  "components": [
+    {
+      "kind": "Pod",
+      "namespace": "ray-system",
+      "name": "ray-head-0",
+      "image": "rayproject/ray:2.7.0",
+      "repo": "rayproject/ray",
+      "tag": "2.7.0",
+      "version": "2.7.0",
+      "product": "ray",
+      "source": "snapshot:pods"
+    },
+    {
+      "kind": "Deployment",
+      "namespace": "infer",
+      "name": "vllm-0",
+      "image": "vllm/vllm-openai:v0.5.0",
+      "repo": "vllm/vllm-openai",
+      "tag": "v0.5.0",
+      "version": "v0.5.0",
+      "product": "vllm",
+      "source": "snapshot:deployments"
+    }
+  ],
+  "serviceaccounts": [
+    {"namespace": "train", "name": "train-sa", "automount_service_account_token": true}
+  ],
+  "crds": [],
+  "cni": {"name": "calico", "version": "3.26.1", "source": "snapshot:cni"},
+  "ingress": {"controllers": [], "classes": []},
+  "gateway": {"components": [], "classes": [], "gateways": []},
+  "gpu": {
+    "nodes": ["gpu-node-1"],
+    "operator": {"name": "gpu-operator", "version": "23.9.0", "source": "snapshot:gpu"},
+    "toolkit": {"name": "nvidia-container-toolkit", "version": "1.14.3", "source": "snapshot:gpu"},
+    "driver_version": "535.129.03",
+    "source": "snapshot:gpu"
+  },
+  "ray": {"versions": ["2.7.0"], "crd": true},
+  "kuberay": {"versions": [], "crd": true},
+  "lws": {"versions": [], "crd": false},
+  "storage": {"classes": [], "csi_drivers": [], "pvs": 0, "pvcs": 0},
+  "cloud": {"provider": "aws", "identity_hints": [], "imds_reachable": false},
+  "bmc": [],
+  "switches": [],
+  "rbac": {"create_pods": true, "get_secrets": true},
+  "feature_gates": {"HTTP2": true},
+  "apiserver": {"flags": {}, "anonymous_auth": false, "authorization_mode": "RBAC"},
+  "kubelet": {"read_only_port": 0, "anonymous_auth": false},
+  "probes": {
+    "imds_reachable": false,
+    "network_reachable": true
+  },
+  "facts": {
+    "cluster.version": "v1.28.3",
+    "node.kernel": ["5.15.0-105-generic"],
+    "node.os": ["linux"],
+    "node.cgroups_version": "v2",
+    "workloads.privileged": true,
+    "workloads.host_path": true,
+    "workloads.host_network": false,
+    "workloads.host_pid": false,
+    "workloads.host_ipc": false,
+    "workloads.automount_sa_token": true,
+    "workloads.runtime_socket": true,
+    "workloads.cap_sys_admin": true,
+    "kubelet.read_only_port": 0,
+    "kubelet.anonymous_auth": false,
+    "apiserver.auth_disabled": false,
+    "apiserver.authorization_mode": "RBAC",
+    "feature_gates.HTTP2": true,
+    "cloud.provider": "aws",
+    "gpu.driver_version": "535.129.03",
+    "gpu.operator_version": "23.9.0",
+    "rbac.create_pods": true,
+    "rbac.get_secrets": true
+  },
+  "fact_sources": {
+    "cluster.version": "snapshot:cluster",
+    "node.kernel": "snapshot:nodes",
+    "node.cgroups_version": "snapshot:nodes",
+    "workloads.privileged": "snapshot:pods",
+    "workloads.host_path": "snapshot:pods",
+    "workloads.host_network": "snapshot:pods",
+    "workloads.automount_sa_token": "snapshot:pods",
+    "kubelet.read_only_port": "snapshot:kubelet",
+    "apiserver.auth_disabled": "snapshot:apiserver",
+    "feature_gates.HTTP2": "snapshot:metrics",
+    "cloud.provider": "snapshot:nodes"
+  },
+  "coverage": {
+    "nodes": true,
+    "pods": true,
+    "daemonsets": true,
+    "crds": true,
+    "serviceaccounts": true,
+    "storage": true,
+    "ingress": true,
+    "gateway": true,
+    "rbac": true,
+    "kubelet_config": true,
+    "apiserver_flags": true,
+    "metrics": true,
+    "components": true,
+    "hardware": false
+  },
+  "collection": {
+    "read_only": true,
+    "mode": "snapshot",
+    "commands": [],
+    "errors": []
+  },
+  "evidence": [
+    {"field": "cluster.version", "value": "v1.28.3", "source": "snapshot:cluster"},
+    {"field": "nodes[0].runc", "value": "1.1.11", "source": "snapshot:nodes"},
+    {"field": "nodes[0].containerd", "value": "1.4.2", "source": "snapshot:nodes"},
+    {"field": "workloads.privileged", "value": true, "source": "snapshot:pods"},
+    {"field": "workloads.host_path", "value": true, "source": "snapshot:pods"},
+    {"field": "kubelet.read_only_port", "value": 0, "source": "snapshot:kubelet"}
+  ]
+}

@@ -1,0 +1,43 @@
+{
+ "key": "cp-cache-key-enumeration",
+ "title": {
+  "zh": "未授权缓存键枚举（无凭据命中）",
+  "en": "Unauth cache-key enumeration (credential-less hit)"
+ },
+ "category": "cache-poison",
+ "face": "gateway",
+ "target_face": "gateway-cache",
+ "preconditions": [
+  "lab/ai_gateway_sim /cache/* 可达"
+ ],
+ "request": [
+  {
+   "method": "POST",
+   "path": "/cache/store",
+   "auth": "victim-tenant",
+   "body": {
+    "text": "Quarterly revenue guidance for fiscal 2026: 42.7M USD",
+    "response": "tenant-b confidential reseed INKBLADE-VICTIM-ENTRY"
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/cache/lookup",
+   "auth": "none",
+   "body": {
+    "text": "Quarterly revenue guidance for fiscal 2026: 42.7M USD"
+   }
+  }
+ ],
+ "detector": {
+  "kind": "json_path",
+  "path": "entry.tenant",
+  "equals": "tenant-b"
+ },
+ "severity": "high",
+ "rule_key": "sigma-llm-probe-cache-poison",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

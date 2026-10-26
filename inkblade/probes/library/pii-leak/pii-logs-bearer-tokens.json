@@ -1,0 +1,33 @@
+{
+ "key": "pii-logs-bearer-tokens",
+ "title": {
+  "zh": "日志内 Authorization 凭据明文暴露",
+  "en": "Plaintext Authorization tokens in logs"
+ },
+ "category": "pii-leak",
+ "face": "gateway",
+ "target_face": "gateway-logs",
+ "preconditions": [
+  "lab/ai_gateway_sim /logs 可达"
+ ],
+ "request": [
+  {
+   "method": "GET",
+   "path": "/logs",
+   "auth": "none",
+   "body": null
+  }
+ ],
+ "detector": {
+  "kind": "regex",
+  "patterns": [
+   "Bearer MOCK-tenant-[ab]-key"
+  ]
+ },
+ "severity": "critical",
+ "rule_key": "sigma-llm-probe-pii-leak",
+ "expect": {
+  "vulnerable": "hit",
+  "fixed": "miss"
+ }
+}

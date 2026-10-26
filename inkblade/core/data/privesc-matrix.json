@@ -1,0 +1,3646 @@
+{
+  "schema": "inkblade-privesc-matrix-v1",
+  "version": "2026.10",
+  "target_default": "cluster-admin",
+  "categories": {
+    "rbac": {
+      "zh": "RBAC 提权",
+      "en": "RBAC escalation"
+    },
+    "workload": {
+      "zh": "工作负载提权",
+      "en": "Workload escalation"
+    },
+    "credential": {
+      "zh": "凭据窃取与云身份",
+      "en": "Credential theft and cloud identity"
+    },
+    "node": {
+      "zh": "节点与控制面",
+      "en": "Node and control plane"
+    },
+    "platform": {
+      "zh": "平台组件",
+      "en": "Platform components"
+    }
+  },
+  "node_labels": {
+    "cap:rbac-escalate": "escalate 动词",
+    "cap:rbac-escalate-admin": "已绑定角色被改写为全权限",
+    "cap:rbac-bind": "bind 动词",
+    "cap:rbac-bind-create": "bind + 创建绑定",
+    "cap:rbac-create-clusterrole": "创建 ClusterRole",
+    "cap:rbac-create-binding": "创建 RoleBinding",
+    "cap:impersonate": "impersonate 动词",
+    "cap:sa-token-create": "TokenRequest 权限",
+    "cap:sa-token-of-privileged": "高权 SA token",
+    "cap:sa-token-read": "可读 SA token",
+    "cap:pod-create": "创建 Pod",
+    "cap:pod-exec": "pods/exec",
+    "cap:secret-read": "读 Secret",
+    "cap:webhook-write": "写准入 Webhook",
+    "cap:admission-control": "控制准入链",
+    "cap:apiservice-write": "写 APIService",
+    "cap:apiserver-token-theft": "窃取 apiserver token",
+    "cap:crd-write": "写 CRD",
+    "cap:csr-approve": "批准 CSR",
+    "cap:client-cert": "管理员客户端证书",
+    "cap:privileged-pod-create": "创建特权 Pod",
+    "cap:hostpath-pod-create": "hostPath Pod",
+    "cap:host-namespace-pod": "host 命名空间 Pod",
+    "cap:capability-pod": "危险 capabilities Pod",
+    "cap:ephemeral-container": "Ephemeral Container",
+    "cap:init-container-override": "initContainer 绕过",
+    "cap:kubelet-admin": "kubelet 目录/凭据",
+    "cap:runtime-socket": "运行时 socket",
+    "cap:host-root": "宿主 root",
+    "cap:static-pod-write": "静态 Pod 写入",
+    "cap:registry-push": "镜像仓库推送",
+    "cap:supply-chain-code-exec": "供应链代码执行",
+    "cap:git-token": "Git/CI token",
+    "cap:repo-write": "仓库写权限",
+    "cap:gitops-sync": "GitOps 同步",
+    "cap:gitops-write": "GitOps 仓库写",
+    "cap:ml-platform-token": "HF/W&B/MLflow token",
+    "cap:artifact-write": "模型 artifact 写",
+    "cap:cloud-imds": "IMDS 可达",
+    "cap:cloud-role": "云实例角色凭据",
+    "cap:cloud-identity": "云身份联合",
+    "cap:kubelet-10250": "kubelet 10250 可达",
+    "cap:kubelet-exec": "kubelet /exec",
+    "cap:kubelet-run": "kubelet /run",
+    "cap:etcd-access": "etcd 2379 可达",
+    "cap:node-proxy": "nodes/proxy",
+    "cap:kernel-escape": "内核/runc 逃逸",
+    "cap:gpu-operator-write": "GPU Operator 写",
+    "cap:gpu-driver-container": "GPU driver 容器",
+    "cap:device-plugin-write": "device plugin 写",
+    "cap:gpu-device-access": "GPU 设备访问",
+    "cap:cni-write": "CNI 写",
+    "cap:cni-plugin-exec": "CNI 插件执行",
+    "cap:csi-write": "CSI 写",
+    "cap:csi-node-plugin": "CSI node plugin",
+    "cap:ingress-write": "Ingress 写",
+    "cap:traffic-hijack": "流量劫持",
+    "cap:cert-manager-write": "cert-manager 写",
+    "cap:queue-write": "队列写",
+    "cap:pod-create-as-privileged-sa": "以高权 SA 创建 Pod",
+    "cap:ray-control": "Ray 控制面",
+    "cap:lws-control": "LWS 控制面",
+    "cap:notebook-write": "Notebook 写",
+    "cap:mlflow-write": "MLflow 写",
+    "cap:projected-token": "projected token",
+    "cap:legacy-sa-secret": "legacy SA Secret",
+    "target:cluster-admin": "cluster-admin",
+    "target:node-root": "节点 root",
+    "target:cloud-admin": "云管理员"
+  },
+  "vectors": [
+    {
+      "id": "rbac-escalate-verb",
+      "category": "rbac",
+      "title": {
+        "zh": "escalate 动词改写已绑定角色",
+        "en": "Escalate verb rewrites a bound role"
+      },
+      "subject": "已绑定任意 Role/ClusterRole 且拥有 escalate 动词的主体（SA/User/Group）",
+      "requires": [
+        "escalate on roles 或 clusterroles",
+        "update/patch 已绑定角色（或用 create 自建角色后绑定）"
+      ],
+      "primitive": "用 escalate 把已绑定角色改写为 verbs/resources/apiGroups=*；既有绑定立即生效，无需重新授权。",
+      "impact": {
+        "node": "可创建特权 Pod 间接获得节点 root",
+        "cluster": "等价 cluster-admin（全 API 写权限）",
+        "cloud": "可读云身份 Secret/SA token，进一步 AssumeRole"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：update/patch clusterroles/roles 且新 rules.verbs 含 *",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "update",
+            "patch"
+          ],
+          "objectRef.resource": [
+            "clusterroles",
+            "roles"
+          ],
+          "requestObject.rules.verbs": "*"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "patch",
+          "objectRef": {
+            "resource": "clusterroles"
+          },
+          "requestObject": {
+            "rules": [
+              {
+                "apiGroups": [
+                  "*"
+                ],
+                "resources": [
+                  "*"
+                ],
+                "verbs": [
+                  "*"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "module": "rbac-escalate-verb",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes RBAC 文档 https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:rbac-escalate",
+          "to": "cap:rbac-escalate-admin",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:rbac-escalate-admin",
+          "to": "target:cluster-admin",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1098"
+      ]
+    },
+    {
+      "id": "rbac-bind-verb",
+      "category": "rbac",
+      "title": {
+        "zh": "bind 动词直接绑定 cluster-admin",
+        "en": "Bind verb binds cluster-admin"
+      },
+      "subject": "拥有 bind 动词（对 cluster-admin 或目标 ClusterRole）且可创建 RoleBinding/ClusterRoleBinding 的主体",
+      "requires": [
+        "bind on clusterroles（resourceName=cluster-admin）",
+        "create rolebindings/clusterrolebindings"
+      ],
+      "primitive": "创建指向 cluster-admin 的 ClusterRoleBinding 并绑定自身 SA；kube-apiserver 的提权防护因 bind 而放行。",
+      "impact": {
+        "node": "可创建任意特权工作负载",
+        "cluster": "直接 cluster-admin",
+        "cloud": "可读取全部云身份 Secret 与 IRSA token"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：创建/更新 roleRef=cluster-admin 的绑定",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "update"
+          ],
+          "objectRef.resource": [
+            "rolebindings",
+            "clusterrolebindings"
+          ],
+          "objectRef.roleRef.name": "cluster-admin"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "clusterrolebindings",
+            "roleRef": {
+              "name": "cluster-admin"
+            }
+          }
+        }
+      },
+      "module": "rbac-bind-verb",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes RBAC 文档 https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:rbac-bind",
+          "to": "target:cluster-admin",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1098"
+      ]
+    },
+    {
+      "id": "rbac-impersonate",
+      "category": "rbac",
+      "title": {
+        "zh": "impersonate 冒充管理员主体",
+        "en": "Impersonate an admin principal"
+      },
+      "subject": "拥有 impersonate 动词（users/groups/serviceaccounts）的主体",
+      "requires": [
+        "impersonate on users 或 groups 或 serviceaccounts",
+        "目标主体已绑定 cluster-admin 或 system:masters"
+      ],
+      "primitive": "请求头 Impersonate-User/Impersonate-Group 冒充 cluster-admin 用户或组；审计只记录冒充者与被冒充者。",
+      "impact": {
+        "node": "以管理员身份创建特权 Pod",
+        "cluster": "等价 cluster-admin",
+        "cloud": "可冒充云身份联合主体读取云凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：impersonatedUser 字段非空且执行敏感动作",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "impersonatedUser.username": "*"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "get",
+          "objectRef": {
+            "resource": "nodes"
+          },
+          "impersonatedUser": {
+            "username": "privesc-superuser"
+          }
+        }
+      },
+      "module": "impersonate-abuse",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes 认证/授权概览 https://kubernetes.io/docs/reference/access-authn-authz/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1078 Valid Accounts https://attack.mitre.org/techniques/T1078/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:impersonate",
+          "to": "target:cluster-admin",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1078"
+      ]
+    },
+    {
+      "id": "rbac-sa-token-request",
+      "category": "rbac",
+      "title": {
+        "zh": "TokenRequest 申请高权 SA token",
+        "en": "TokenRequest for a privileged SA"
+      },
+      "subject": "拥有 create serviceaccounts/token 且目标 SA 已绑定高权角色的主体",
+      "requires": [
+        "create serviceaccounts/token",
+        "目标高权 ServiceAccount 存在"
+      ],
+      "primitive": "调用 TokenRequest 子资源为特权 SA 申请短期 token；无需读取 Secret 即可获得其身份。",
+      "impact": {
+        "node": "以特权 SA 创建 Pod 控制节点",
+        "cluster": "以目标 SA 身份获得 cluster-admin",
+        "cloud": "可获得 IRSA/Workload Identity 交换凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：create serviceaccounts/token 子资源",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "serviceaccounts"
+          ],
+          "objectRef.subresource": "token"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "serviceaccounts",
+            "subresource": "token"
+          }
+        }
+      },
+      "module": "sa-token-request",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes TokenRequest API https://kubernetes.io/docs/reference/kubernetes-api/authentication-resources/token-request-v1/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:sa-token-create",
+          "to": "cap:sa-token-of-privileged",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1552"
+      ]
+    },
+    {
+      "id": "rbac-pods-exec",
+      "category": "rbac",
+      "title": {
+        "zh": "pods/exec 进入特权容器",
+        "en": "pods/exec into a privileged pod"
+      },
+      "subject": "拥有 create pods/exec 的主体；目标命名空间存在特权/宿主挂载/带高权 SA 的 Pod",
+      "requires": [
+        "create pods/exec",
+        "可定位目标 Pod（get/list pods）"
+      ],
+      "primitive": "exec 进入特权或 hostPath 容器，读取 SA token、宿主机文件系统或直接 nsenter 到宿主命名空间。",
+      "impact": {
+        "node": "exec 到特权容器后可 nsenter 宿主",
+        "cluster": "读取目标 Pod 的高权 SA token 接管集群",
+        "cloud": "读取容器内云凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：create pods/exec",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "pods/exec"
+          ]
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pods/exec"
+          }
+        }
+      },
+      "module": "overprivileged-sa-escalation",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes RBAC 文档 https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
+        },
+        {
+          "type": "research",
+          "ref": "Peirates Kubernetes 提权 https://github.com/inguardians/peirates"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:pod-exec",
+          "to": "cap:sa-token-of-privileged",
+          "weight": 1.5
+        },
+        {
+          "from": "cap:pod-exec",
+          "to": "cap:host-root",
+          "weight": 2.0
+        }
+      ],
+      "mitre": [
+        "T1610",
+        "T1611"
+      ]
+    },
+    {
+      "id": "rbac-rolebinding-cluster-admin",
+      "category": "rbac",
+      "title": {
+        "zh": "RoleBinding 自绑 cluster-admin",
+        "en": "Self RoleBinding to cluster-admin"
+      },
+      "subject": "可创建 RoleBinding/ClusterRoleBinding 且对目标角色具备 bind（或已拥有同等权限）的主体",
+      "requires": [
+        "create rolebindings/clusterrolebindings",
+        "bind on 目标 ClusterRole（或等价权限）"
+      ],
+      "primitive": "创建 RoleBinding/ClusterRoleBinding，把自身 SA/User 绑定到 cluster-admin；命名空间 RoleBinding 只能提升至该命名空间。",
+      "impact": {
+        "node": "命名空间内可创建特权 Pod",
+        "cluster": "ClusterRoleBinding 直接 cluster-admin",
+        "cloud": "可读取命名空间内云凭据 Secret"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：create rolebindings/clusterrolebindings",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "rolebindings",
+            "clusterrolebindings"
+          ]
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "clusterrolebindings"
+          }
+        }
+      },
+      "module": "overprivileged-sa-escalation",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes RBAC 文档 https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:rbac-bind-create",
+          "to": "target:cluster-admin",
+          "weight": 1.2
+        }
+      ],
+      "mitre": [
+        "T1098"
+      ]
+    },
+    {
+      "id": "rbac-aggregated-clusterrole",
+      "category": "rbac",
+      "title": {
+        "zh": "聚合 ClusterRole 权限汇集",
+        "en": "Aggregated ClusterRole privilege collection"
+      },
+      "subject": "可创建/更新 ClusterRole（aggregationRule）或给高权角色打聚合标签的主体",
+      "requires": [
+        "create/update clusterroles",
+        "可写 aggregationRule 或 labels"
+      ],
+      "primitive": "定义聚合 ClusterRole，由 controller 自动合并所有带指定 label 的规则；若该角色已绑定，则被动获得新增高权规则。",
+      "impact": {
+        "node": "间接获得节点管理权限",
+        "cluster": "通过聚合规则汇集 cluster-admin 级权限",
+        "cloud": "可读取云凭据相关资源"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：创建/更新带 aggregationRule 的 ClusterRole",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "update",
+            "patch"
+          ],
+          "objectRef.resource": [
+            "clusterroles"
+          ],
+          "requestObject.aggregationRule": "*"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "clusterroles"
+          },
+          "requestObject": {
+            "aggregationRule": {
+              "clusterRoleSelectors": [
+                {
+                  "matchLabels": {
+                    "x": "y"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "module": "rbac-escalate-verb",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes 聚合 API https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:rbac-create-clusterrole",
+          "to": "cap:rbac-escalate-admin",
+          "weight": 1.2
+        }
+      ],
+      "mitre": [
+        "T1098"
+      ]
+    },
+    {
+      "id": "rbac-admission-webhook-write",
+      "category": "rbac",
+      "title": {
+        "zh": "写入准入 Webhook 注入特权",
+        "en": "Write admission webhook to inject privileges"
+      },
+      "subject": "可创建/更新 MutatingWebhookConfiguration 或 ValidatingWebhookConfiguration 的主体",
+      "requires": [
+        "create/update mutatingwebhookconfigurations",
+        "可提供 HTTPS 服务或指向可达 URL"
+      ],
+      "primitive": "注册 mutating webhook，对所有 Pod CREATE 注入 privileged/hostPath/额外卷，或窃取 AdmissionReview 中的 Secret；failurePolicy=Ignore 可静默放行。",
+      "impact": {
+        "node": "经 webhook 注入的 Pod 获得宿主 root",
+        "cluster": "可篡改任意工作负载与准入结果",
+        "cloud": "可拦截云凭据挂载请求"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：创建/更新 admission webhook 配置",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "update",
+            "patch"
+          ],
+          "objectRef.resource": [
+            "mutatingwebhookconfigurations",
+            "validatingwebhookconfigurations"
+          ]
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "mutatingwebhookconfigurations"
+          }
+        }
+      },
+      "module": "admission-webhook-write",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes 准入 Webhook https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:webhook-write",
+          "to": "cap:admission-control",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:admission-control",
+          "to": "cap:privileged-pod-create",
+          "weight": 1.5
+        }
+      ],
+      "mitre": [
+        "T1098"
+      ]
+    },
+    {
+      "id": "rbac-apiservice-hijack",
+      "category": "rbac",
+      "title": {
+        "zh": "APIService 聚合层劫持",
+        "en": "APIService aggregation hijack"
+      },
+      "subject": "可创建/更新 APIService 的主体；通常为 apiserver-aggregator 或运维角色",
+      "requires": [
+        "create/update apiservices",
+        "可提供后端 Service/URL 与 TLS 证书"
+      ],
+      "primitive": "注册指向攻击者后端的 APIService，接管某个 API group 的请求；可窃取所有 bearer token、返回伪造对象或触发控制器提权。",
+      "impact": {
+        "node": "经控制器读取节点凭据",
+        "cluster": "劫持 API group、窃取 token 并提升至 cluster-admin",
+        "cloud": "窃取云身份联合 token"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：创建/更新 APIService 且 insecureSkipTLSVerify=true",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "update",
+            "patch"
+          ],
+          "objectRef.resource": [
+            "apiservices"
+          ],
+          "requestObject.spec.insecureSkipTLSVerify": true
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "apiservices"
+          },
+          "requestObject": {
+            "spec": {
+              "insecureSkipTLSVerify": true
+            }
+          }
+        }
+      },
+      "module": "apiservice-hijack",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes 聚合 API https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:apiservice-write",
+          "to": "cap:apiserver-token-theft",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:apiserver-token-theft",
+          "to": "target:cluster-admin",
+          "weight": 2.0
+        }
+      ],
+      "mitre": [
+        "T1098",
+        "T1552"
+      ]
+    },
+    {
+      "id": "rbac-crd-conversion-webhook",
+      "category": "rbac",
+      "title": {
+        "zh": "CRD conversion webhook 拦截/伪造",
+        "en": "CRD conversion webhook interception"
+      },
+      "subject": "可创建/更新 CRD（conversion.strategy=Webhook）或控制 CRD 转换服务的主体",
+      "requires": [
+        "create/update customresourcedefinitions",
+        "可提供转换 webhook 服务"
+      ],
+      "primitive": "接管 CRD 版本转换，读取/篡改所有 CR 对象（训练作业、凭据引用、RayCluster 配置），或返回恶意转换结果触发控制器 RCE。",
+      "impact": {
+        "node": "经 operator 控制节点工作负载",
+        "cluster": "篡改 CR 触发 operator 提权",
+        "cloud": "读取 CR 中引用的云凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：CRD 创建/更新且 conversion.strategy=Webhook",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "update",
+            "patch"
+          ],
+          "objectRef.resource": [
+            "customresourcedefinitions"
+          ],
+          "requestObject.spec.conversion.strategy": "Webhook"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "customresourcedefinitions"
+          },
+          "requestObject": {
+            "spec": {
+              "conversion": {
+                "strategy": "Webhook"
+              }
+            }
+          }
+        }
+      },
+      "module": "crd-conversion-webhook",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes CRD conversion https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definition-versioning/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:crd-write",
+          "to": "cap:sa-token-of-privileged",
+          "weight": 2.0
+        }
+      ],
+      "mitre": [
+        "T1098"
+      ]
+    },
+    {
+      "id": "workload-privileged-pod",
+      "category": "workload",
+      "title": {
+        "zh": "特权 Pod 直接宿主逃逸",
+        "en": "Privileged pod host escape"
+      },
+      "subject": "可创建 Pod/Deployment/DaemonSet 的主体（含 operator/CI/notebook SA）",
+      "requires": [
+        "create pods 或 workload controller",
+        "准入未阻断 privileged"
+      ],
+      "primitive": "提交 securityContext.privileged=true 的 Pod，挂载宿主根或使用 nsenter 进入宿主命名空间。",
+      "impact": {
+        "node": "直接节点 root（/host 挂载）",
+        "cluster": "可读取节点 kubeconfig 接管集群",
+        "cloud": "可读取节点上的云实例角色凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：create pod 且 privileged=true；Falco 亦覆盖 privileged 容器启动",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "pods"
+          ],
+          "requestObject.privileged": true
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pods"
+          },
+          "requestObject": {
+            "privileged": true
+          }
+        }
+      },
+      "module": "privileged-workloads",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        },
+        {
+          "type": "research",
+          "ref": "Peirates Kubernetes 提权 https://github.com/inguardians/peirates"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:pod-create",
+          "to": "cap:privileged-pod-create",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:privileged-pod-create",
+          "to": "cap:host-root",
+          "weight": 1.5
+        }
+      ],
+      "mitre": [
+        "T1610",
+        "T1611"
+      ]
+    },
+    {
+      "id": "workload-hostpath-hostroot",
+      "category": "workload",
+      "title": {
+        "zh": "hostPath 挂载宿主根",
+        "en": "hostPath mount of host root"
+      },
+      "subject": "可创建 Pod 且可写 hostPath 卷的主体",
+      "requires": [
+        "create pods",
+        "准入未限制 hostPath /"
+      ],
+      "primitive": "挂载 hostPath: / 到容器，读写 /etc/kubernetes、/var/lib/kubelet、宿主进程文件系统。",
+      "impact": {
+        "node": "节点 root 文件系统读写",
+        "cluster": "读取节点 admin kubeconfig / 篡改静态 Pod",
+        "cloud": "读取节点云凭据与 metadata token"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：create pod 且 hostPath 为 / 或敏感前缀",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "pods"
+          ],
+          "requestObject.hostPath": "/"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pods"
+          },
+          "requestObject": {
+            "hostPath": "/"
+          }
+        }
+      },
+      "module": "privileged-workloads",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        },
+        {
+          "type": "research",
+          "ref": "CDK 容器逃逸工具集 https://github.com/cdk-team/CDK"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:pod-create",
+          "to": "cap:hostpath-pod-create",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:hostpath-pod-create",
+          "to": "cap:host-root",
+          "weight": 1.5
+        }
+      ],
+      "mitre": [
+        "T1610",
+        "T1611"
+      ]
+    },
+    {
+      "id": "workload-hostpid-hostnetwork",
+      "category": "workload",
+      "title": {
+        "zh": "hostPID/hostNetwork/hostIPC 宿主命名空间",
+        "en": "Host namespaces (PID/network/IPC)"
+      },
+      "subject": "可创建 Pod 且准入未禁止 host 命名空间的主体",
+      "requires": [
+        "create pods",
+        "hostPID/hostNetwork/hostIPC 未被阻断"
+      ],
+      "primitive": "共享宿主 PID/网络/IPC 命名空间：nsenter 进入宿主进程、抓取节点流量、访问 localhost 管理面与 kubelet。",
+      "impact": {
+        "node": "nsenter 宿主 PID 1 获得 root",
+        "cluster": "访问 kubelet 10250 / etcd 2379 控制面",
+        "cloud": "嗅探云 metadata 流量"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：create pod 且 hostPID/hostNetwork/hostIPC=true",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "pods"
+          ],
+          "requestObject.hostPID": true
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pods"
+          },
+          "requestObject": {
+            "hostPID": true
+          }
+        }
+      },
+      "module": "privileged-workloads",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        },
+        {
+          "type": "research",
+          "ref": "Peirates Kubernetes 提权 https://github.com/inguardians/peirates"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:pod-create",
+          "to": "cap:host-namespace-pod",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:host-namespace-pod",
+          "to": "cap:host-root",
+          "weight": 2.0
+        }
+      ],
+      "mitre": [
+        "T1610",
+        "T1611"
+      ]
+    },
+    {
+      "id": "workload-dangerous-caps",
+      "category": "workload",
+      "title": {
+        "zh": "危险 Linux capabilities",
+        "en": "Dangerous Linux capabilities"
+      },
+      "subject": "可创建 Pod 且可添加 capabilities 的主体",
+      "requires": [
+        "create pods",
+        "SYS_ADMIN/SYS_PTRACE/SYS_MODULE/NET_ADMIN 未禁用"
+      ],
+      "primitive": "添加 SYS_ADMIN 挂载/命名空间操作、SYS_PTRACE 注入宿主进程、SYS_MODULE 加载内核模块，突破容器边界。",
+      "impact": {
+        "node": "cap_sys_admin 挂载宿主设备/逃逸",
+        "cluster": "篡改节点内核或运行时",
+        "cloud": "绕过网络隔离访问 metadata"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：create pod 且 capabilities 含 SYS_ADMIN/SYS_PTRACE/SYS_MODULE",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "pods"
+          ],
+          "requestObject.capabilities": [
+            "SYS_ADMIN",
+            "SYS_PTRACE",
+            "SYS_MODULE"
+          ]
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pods"
+          },
+          "requestObject": {
+            "capabilities": [
+              "SYS_ADMIN"
+            ]
+          }
+        }
+      },
+      "module": "privileged-workloads",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        },
+        {
+          "type": "research",
+          "ref": "CDK 容器逃逸工具集 https://github.com/cdk-team/CDK"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:pod-create",
+          "to": "cap:capability-pod",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:capability-pod",
+          "to": "cap:host-root",
+          "weight": 2.0
+        }
+      ],
+      "mitre": [
+        "T1611"
+      ]
+    },
+    {
+      "id": "workload-ephemeral-container",
+      "category": "workload",
+      "title": {
+        "zh": "Ephemeral Container 调试注入",
+        "en": "Ephemeral container injection"
+      },
+      "subject": "拥有 update pods/ephemeralcontainers 的主体（常被误授予 debug 角色）",
+      "requires": [
+        "update/patch pods/ephemeralcontainers",
+        "目标 Pod 正在运行"
+      ],
+      "primitive": "向运行中 Pod 注入 ephemeral container，复用目标 Pod 的 SA token、卷与网络命名空间；可挂载宿主路径或读取 Secret。",
+      "impact": {
+        "node": "在特权目标 Pod 内获得宿主能力",
+        "cluster": "借用高权 SA token",
+        "cloud": "读取目标 Pod 挂载的云凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：update pods/ephemeralcontainers",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "update",
+            "patch"
+          ],
+          "objectRef.resource": [
+            "pods"
+          ],
+          "objectRef.subresource": "ephemeralcontainers"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "update",
+          "objectRef": {
+            "resource": "pods",
+            "subresource": "ephemeralcontainers"
+          }
+        }
+      },
+      "module": "privileged-workloads",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Ephemeral Containers https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:pod-exec",
+          "to": "cap:ephemeral-container",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:ephemeral-container",
+          "to": "cap:host-root",
+          "weight": 2.0
+        }
+      ],
+      "mitre": [
+        "T1610",
+        "T1611"
+      ]
+    },
+    {
+      "id": "workload-init-container-override",
+      "category": "workload",
+      "title": {
+        "zh": "initContainer 绕过准入检查",
+        "en": "initContainer admission bypass"
+      },
+      "subject": "可创建 Pod 的主体；准入策略仅检查 containers 而未覆盖 initContainers",
+      "requires": [
+        "create pods",
+        "准入策略遗漏 initContainers/ephemeralContainers"
+      ],
+      "primitive": "把特权/hostPath 配置放进 initContainers，利用策略只遍历 spec.containers 的盲区完成逃逸或写入宿主。",
+      "impact": {
+        "node": "initContainer 获取宿主 root",
+        "cluster": "绕过 Pod Security 策略",
+        "cloud": "读取节点云凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：create pod 且 initContainers 含 privileged/hostPath",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "pods"
+          ],
+          "requestObject.initContainerPrivileged": true
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pods"
+          },
+          "requestObject": {
+            "initContainerPrivileged": true
+          }
+        }
+      },
+      "module": "privileged-workloads",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:pod-create",
+          "to": "cap:init-container-override",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:init-container-override",
+          "to": "cap:host-root",
+          "weight": 2.0
+        }
+      ],
+      "mitre": [
+        "T1610",
+        "T1611"
+      ]
+    },
+    {
+      "id": "workload-hostpath-kubelet",
+      "category": "workload",
+      "title": {
+        "zh": "hostPath 读取 kubelet 目录",
+        "en": "hostPath into kubelet directory"
+      },
+      "subject": "可创建 Pod 且可挂载 /var/lib/kubelet、/etc/kubernetes 的主体",
+      "requires": [
+        "create pods",
+        "hostPath /var/lib/kubelet 或 /etc/kubernetes 未阻断"
+      ],
+      "primitive": "读写 kubelet 的 pods 目录、静态 Pod 清单、kubeconfig 与证书；可植入静态 Pod 或窃取 kubelet 客户端证书。",
+      "impact": {
+        "node": "植入静态 Pod 获得节点 root",
+        "cluster": "窃取 kubelet admin 凭据接管集群",
+        "cloud": "读取节点云身份"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：create pod 且 hostPath 指向 kubelet/kubernetes 目录",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "pods"
+          ],
+          "requestObject.hostPath": "/var/lib/kubelet"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pods"
+          },
+          "requestObject": {
+            "hostPath": "/var/lib/kubelet"
+          }
+        }
+      },
+      "module": "privileged-workloads",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes kubelet 认证/授权 https://kubernetes.io/docs/reference/access-authn-authz/kubelet-authn-authz/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        },
+        {
+          "type": "research",
+          "ref": "CDK 容器逃逸工具集 https://github.com/cdk-team/CDK"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:hostpath-pod-create",
+          "to": "cap:kubelet-admin",
+          "weight": 1.2
+        },
+        {
+          "from": "cap:kubelet-admin",
+          "to": "cap:host-root",
+          "weight": 1.5
+        }
+      ],
+      "mitre": [
+        "T1611"
+      ]
+    },
+    {
+      "id": "workload-hostpath-runtime-socket",
+      "category": "workload",
+      "title": {
+        "zh": "hostPath 挂载运行时 socket",
+        "en": "hostPath runtime socket"
+      },
+      "subject": "可创建 Pod 且可挂载 containerd/docker/crio socket 的主体",
+      "requires": [
+        "create pods",
+        "hostPath /var/run/containerd/containerd.sock、/var/run/docker.sock 或 /run/crio/crio.sock 未阻断"
+      ],
+      "primitive": "挂载运行时 socket，使用 ctr/docker/crictl 在宿主命名空间启动 privileged 容器并挂载宿主根。",
+      "impact": {
+        "node": "经运行时创建特权容器获得节点 root",
+        "cluster": "可在任意节点执行容器",
+        "cloud": "读取运行时环境中的云凭据"
+      },
+      "detect": {
+        "engine": "falco",
+        "point": "Falco：容器内进程打开容器运行时 socket",
+        "event_type": [
+          "open"
+        ],
+        "filter": {
+          "proc": "ctr",
+          "path": {
+            "re": "containerd\\.sock$"
+          }
+        },
+        "event": {
+          "kind": "falco",
+          "event_type": "open",
+          "proc": "ctr",
+          "path": "/var/run/containerd/containerd.sock",
+          "container": true
+        }
+      },
+      "module": "runtime-socket-escape",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        },
+        {
+          "type": "research",
+          "ref": "CDK 容器逃逸工具集 https://github.com/cdk-team/CDK"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:hostpath-pod-create",
+          "to": "cap:runtime-socket",
+          "weight": 1.2
+        },
+        {
+          "from": "cap:runtime-socket",
+          "to": "cap:host-root",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1611"
+      ]
+    },
+    {
+      "id": "workload-static-pod-write",
+      "category": "workload",
+      "title": {
+        "zh": "静态 Pod 清单写入",
+        "en": "Static pod manifest write"
+      },
+      "subject": "已获得节点文件系统写权限或可写 /etc/kubernetes/manifests 的主体",
+      "requires": [
+        "宿主文件系统写（hostPath/host root）",
+        "kubelet staticPodPath 可写"
+      ],
+      "primitive": "向 kubelet 静态 Pod 目录写入 privileged + hostPath 的 Pod 清单，kubelet 自动拉起并以节点身份运行。",
+      "impact": {
+        "node": "节点 root（静态 Pod 挂载宿主）",
+        "cluster": "可读取 kubeconfig 接管控制面",
+        "cloud": "节点云身份可用"
+      },
+      "detect": {
+        "engine": "falco",
+        "point": "Falco：写入 kubelet 静态 Pod 目录",
+        "event_type": [
+          "open_write"
+        ],
+        "filter": {
+          "path": {
+            "re": "^/etc/kubernetes/manifests/"
+          }
+        },
+        "event": {
+          "kind": "falco",
+          "event_type": "open_write",
+          "path": "/etc/kubernetes/manifests/inkblade.yaml",
+          "proc": "sh",
+          "container": true
+        }
+      },
+      "module": "runtime-socket-escape",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Static Pods https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:host-root",
+          "to": "target:cluster-admin",
+          "weight": 1.2
+        }
+      ],
+      "mitre": [
+        "T1611"
+      ]
+    },
+    {
+      "id": "cred-sa-token-automount",
+      "category": "credential",
+      "title": {
+        "zh": "自动挂载 SA token 读取",
+        "en": "Automounted SA token read"
+      },
+      "subject": "任意可创建 Pod 或已进入 Pod 的主体；Pod 使用 automountServiceAccountToken=true",
+      "requires": [
+        "create pods 或 pods/exec",
+        "目标 SA 具高权绑定"
+      ],
+      "primitive": "读取 /var/run/secrets/kubernetes.io/serviceaccount/token 与 ca.crt，直接以该 SA 身份调用 apiserver。",
+      "impact": {
+        "node": "以高权 SA 创建特权 Pod",
+        "cluster": "SA 绑定 cluster-admin 时直接接管",
+        "cloud": "可换取 IRSA/Workload Identity token"
+      },
+      "detect": {
+        "engine": "falco",
+        "point": "Falco：容器读取 automount SA token",
+        "event_type": [
+          "open_read"
+        ],
+        "filter": {
+          "path": "/var/run/secrets/kubernetes.io/serviceaccount/token"
+        },
+        "event": {
+          "kind": "falco",
+          "event_type": "open_read",
+          "path": "/var/run/secrets/kubernetes.io/serviceaccount/token",
+          "proc": "cat",
+          "container": true
+        }
+      },
+      "module": "secret-scanner",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Secret 文档 https://kubernetes.io/docs/concepts/configuration/secret/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:pod-create",
+          "to": "cap:sa-token-read",
+          "weight": 0.8
+        },
+        {
+          "from": "cap:sa-token-read",
+          "to": "cap:sa-token-of-privileged",
+          "weight": 2.0
+        }
+      ],
+      "mitre": [
+        "T1552"
+      ]
+    },
+    {
+      "id": "cred-projected-token",
+      "category": "credential",
+      "title": {
+        "zh": "Projected SA token 过度授权",
+        "en": "Over-privileged projected SA token"
+      },
+      "subject": "可创建 Pod 并配置 projected serviceAccountToken 卷的主体",
+      "requires": [
+        "create pods",
+        "目标 SA 具高权绑定；audience/expiration 未限制"
+      ],
+      "primitive": "在 Pod 中挂载目标 SA 的 projected token（受众/有效期可调），把 token 外带到集群外长期使用。",
+      "impact": {
+        "node": "以高权 SA 创建特权 Pod",
+        "cluster": "token 外带后长期 cluster-admin",
+        "cloud": "可换取云身份 token"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：create pod 且 volume 使用 projected serviceAccountToken",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "pods"
+          ],
+          "requestObject.projectedToken": true
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pods"
+          },
+          "requestObject": {
+            "projectedToken": true
+          }
+        }
+      },
+      "module": "sa-token-request",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Secret 文档 https://kubernetes.io/docs/concepts/configuration/secret/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:pod-create",
+          "to": "cap:projected-token",
+          "weight": 0.8
+        },
+        {
+          "from": "cap:projected-token",
+          "to": "cap:sa-token-of-privileged",
+          "weight": 1.5
+        }
+      ],
+      "mitre": [
+        "T1552"
+      ]
+    },
+    {
+      "id": "cred-legacy-sa-secret",
+      "category": "credential",
+      "title": {
+        "zh": "legacy SA token Secret 读取",
+        "en": "Legacy SA token Secret read"
+      },
+      "subject": "拥有 get/list secrets 的主体；集群仍生成 kubernetes.io/service-account-token Secret",
+      "requires": [
+        "get/list secrets",
+        "存在 legacy SA token Secret"
+      ],
+      "primitive": "读取 type=kubernetes.io/service-account-token 的 Secret，获得永不过期（或长期）SA token。",
+      "impact": {
+        "node": "以高权 SA 创建特权 Pod",
+        "cluster": "长期 cluster-admin token",
+        "cloud": "可换取云身份"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：读取 legacy SA token Secret",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "get",
+            "list"
+          ],
+          "objectRef.resource": [
+            "secrets"
+          ],
+          "requestObject.secretType": "kubernetes.io/service-account-token"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "get",
+          "objectRef": {
+            "resource": "secrets"
+          },
+          "requestObject": {
+            "secretType": "kubernetes.io/service-account-token"
+          }
+        }
+      },
+      "module": "secret-scanner",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Secret 文档 https://kubernetes.io/docs/concepts/configuration/secret/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:secret-read",
+          "to": "cap:legacy-sa-secret",
+          "weight": 0.8
+        },
+        {
+          "from": "cap:legacy-sa-secret",
+          "to": "cap:sa-token-of-privileged",
+          "weight": 1.5
+        }
+      ],
+      "mitre": [
+        "T1552"
+      ]
+    },
+    {
+      "id": "cred-image-pull-secret",
+      "category": "credential",
+      "title": {
+        "zh": "imagePullSecret 窃取/镜像投毒",
+        "en": "imagePullSecret theft and image poisoning"
+      },
+      "subject": "可读 Secret（imagePullSecrets）或推送镜像仓库的主体",
+      "requires": [
+        "get secrets（dockerconfigjson）",
+        "有目标仓库 push 权限"
+      ],
+      "primitive": "读取 dockerconfigjson 凭据，向训练/推理镜像仓库推送恶意镜像；operator/DaemonSet 拉取后获得其 SA 权限。",
+      "impact": {
+        "node": "经恶意 DaemonSet 获得节点 root",
+        "cluster": "经 operator 镜像投毒获得 cluster-admin",
+        "cloud": "窃取仓库附带的云 registry 凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：读取 dockerconfigjson Secret",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "get",
+            "list"
+          ],
+          "objectRef.resource": [
+            "secrets"
+          ],
+          "requestObject.secretType": "kubernetes.io/dockerconfigjson"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "get",
+          "objectRef": {
+            "resource": "secrets"
+          },
+          "requestObject": {
+            "secretType": "kubernetes.io/dockerconfigjson"
+          }
+        }
+      },
+      "module": "image-pull-secret-theft",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Secret 文档 https://kubernetes.io/docs/concepts/configuration/secret/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1525 Implant Internal Image https://attack.mitre.org/techniques/T1525/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:secret-read",
+          "to": "cap:registry-push",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:registry-push",
+          "to": "cap:supply-chain-code-exec",
+          "weight": 2.0
+        },
+        {
+          "from": "cap:supply-chain-code-exec",
+          "to": "target:cluster-admin",
+          "weight": 2.0
+        }
+      ],
+      "mitre": [
+        "T1525",
+        "T1195"
+      ]
+    },
+    {
+      "id": "cred-git-ci-token",
+      "category": "credential",
+      "title": {
+        "zh": "Git/CI 凭据窃取到 GitOps",
+        "en": "Git/CI token theft to GitOps"
+      },
+      "subject": "可读 Pod env/Secret 或 CI runner 文件系统的主体；仓库受 ArgoCD/Flux 同步",
+      "requires": [
+        "读 git-credentials/CI token",
+        "对 GitOps 仓库有写权限"
+      ],
+      "primitive": "窃取 Git/CI token，向 GitOps 仓库提交带 cluster-admin 绑定的清单；ArgoCD/Flux 自动 sync 落地。",
+      "impact": {
+        "node": "经 GitOps 部署特权 DaemonSet",
+        "cluster": "GitOps 控制器以 cluster-admin 应用恶意清单",
+        "cloud": "窃取 CI 中的云部署凭据"
+      },
+      "detect": {
+        "engine": "falco",
+        "point": "Falco：容器/CI 读取 git 凭据文件",
+        "event_type": [
+          "open_read"
+        ],
+        "filter": {
+          "path": {
+            "re": "\\.git-credentials$"
+          }
+        },
+        "event": {
+          "kind": "falco",
+          "event_type": "open_read",
+          "path": "/home/runner/.git-credentials",
+          "proc": "cat",
+          "container": true
+        }
+      },
+      "module": "gitops-secret-read",
+      "sources": [
+        {
+          "type": "vendor-doc",
+          "ref": "Argo CD 安全文档 https://argo-cd.readthedocs.io/en/stable/operator-manual/security/"
+        },
+        {
+          "type": "vendor-doc",
+          "ref": "Flux 安全文档 https://fluxcd.io/flux/security/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:git-token",
+          "to": "cap:repo-write",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:repo-write",
+          "to": "cap:gitops-sync",
+          "weight": 1.5
+        },
+        {
+          "from": "cap:gitops-sync",
+          "to": "target:cluster-admin",
+          "weight": 1.5
+        }
+      ],
+      "mitre": [
+        "T1552",
+        "T1078"
+      ]
+    },
+    {
+      "id": "cred-ml-platform-token",
+      "category": "credential",
+      "title": {
+        "zh": "HF/W&B/MLflow token 窃取与模型投毒",
+        "en": "HF/W&B/MLflow token theft and model poisoning"
+      },
+      "subject": "可读训练 Pod env/Secret、MLflow tracking 或模型仓库的主体",
+      "requires": [
+        "读 HF_TOKEN/WANDB_API_KEY/MLFLOW_TRACKING_TOKEN",
+        "对模型仓库/artifact 有写权限"
+      ],
+      "primitive": "窃取模型平台 token，向权重/数据集/MLflow artifact 写入恶意内容；推理服务拉取后执行或输出被操纵。",
+      "impact": {
+        "node": "经模型加载 RCE 获得 Pod/节点能力",
+        "cluster": "经训练平台供应链进入集群",
+        "cloud": "可访问云模型仓库与关联 IAM"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：读取标注 ml-platform-token 的 Secret；平台侧审计 token 写入",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "get",
+            "list"
+          ],
+          "objectRef.resource": [
+            "secrets"
+          ],
+          "requestObject.secretLabel": "ml-platform-token"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "get",
+          "objectRef": {
+            "resource": "secrets"
+          },
+          "requestObject": {
+            "secretLabel": "ml-platform-token"
+          }
+        }
+      },
+      "module": "supply-chain-credential-theft",
+      "sources": [
+        {
+          "type": "vendor-doc",
+          "ref": "Hugging Face token 安全 https://huggingface.co/docs/hub/security-tokens"
+        },
+        {
+          "type": "vendor-doc",
+          "ref": "Weights & Biases 服务账号/密钥 https://docs.wandb.ai/guides/technical-faq"
+        },
+        {
+          "type": "vendor-doc",
+          "ref": "MLflow 认证/安全 https://mlflow.org/docs/latest/auth/index.html"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:ml-platform-token",
+          "to": "cap:artifact-write",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:artifact-write",
+          "to": "cap:supply-chain-code-exec",
+          "weight": 2.0
+        }
+      ],
+      "mitre": [
+        "T1552",
+        "T1195"
+      ]
+    },
+    {
+      "id": "cred-cloud-imds",
+      "category": "credential",
+      "title": {
+        "zh": "云 metadata (IMDS) 凭据窃取",
+        "en": "Cloud metadata (IMDS) credential theft"
+      },
+      "subject": "可从 Pod 访问 169.254.169.254 或云 metadata 端点的主体（含 SSRF）",
+      "requires": [
+        "Pod 出网到 metadata 端点",
+        "IMDSv1 或 token 可获取"
+      ],
+      "primitive": "请求 169.254.169.254/latest/meta-data/iam/security-credentials/ 获取实例角色临时凭据，调用云 API。",
+      "impact": {
+        "node": "读取节点实例角色凭据",
+        "cluster": "经云 API 修改节点/集群",
+        "cloud": "跨账户 AssumeRole / 桶/快照访问"
+      },
+      "detect": {
+        "engine": "falco",
+        "point": "Falco：容器连接云 metadata 地址",
+        "event_type": [
+          "connect"
+        ],
+        "filter": {
+          "dest_ip": "169.254.169.254"
+        },
+        "event": {
+          "kind": "falco",
+          "event_type": "connect",
+          "dest_ip": "169.254.169.254",
+          "dest_port": 80,
+          "proc": "curl",
+          "container": true
+        }
+      },
+      "module": "metadata-egress",
+      "sources": [
+        {
+          "type": "vendor-doc",
+          "ref": "AWS IMDS 安全 https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+        },
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes 安全清单 https://kubernetes.io/docs/concepts/security/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:cloud-imds",
+          "to": "cap:cloud-role",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:cloud-role",
+          "to": "target:cloud-admin",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1552"
+      ]
+    },
+    {
+      "id": "cred-cloud-federation",
+      "category": "credential",
+      "title": {
+        "zh": "IRSA/RRSA/PodIdentity/CAM 信任滥用",
+        "en": "Cloud identity federation trust abuse"
+      },
+      "subject": "可创建/修改 ServiceAccount annotation、信任策略或 Pod 的主体",
+      "requires": [
+        "update serviceaccounts（eks.amazonaws.com/role-arn 等）",
+        "云侧 trust policy 允许该 SA/OIDC subject"
+      ],
+      "primitive": "把高权云角色绑定到可控 SA，或利用通配 trust policy（sub=*）跨账户 AssumeRole；Pod 内直接获得云权限。",
+      "impact": {
+        "node": "云角色可修改节点/快照",
+        "cluster": "经 EKS/GKE/AKS/ACK/TKE 控制面接管集群",
+        "cloud": "跨账户云资源接管"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "CloudTrail：跨账户 AssumeRole 且 trust policy 含通配",
+        "logsource": {
+          "product": "aws",
+          "service": "cloudtrail"
+        },
+        "selection": {
+          "eventName": "AssumeRole",
+          "requestParameters.crossAccount": true
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "aws",
+            "service": "cloudtrail"
+          },
+          "eventName": "AssumeRole",
+          "requestParameters": {
+            "crossAccount": true
+          },
+          "userIdentity": {
+            "type": "AssumedRole"
+          }
+        }
+      },
+      "module": "cloud-irsa-trust-wildcard",
+      "sources": [
+        {
+          "type": "vendor-doc",
+          "ref": "EKS IRSA 文档 https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html"
+        },
+        {
+          "type": "vendor-doc",
+          "ref": "AKS Workload Identity https://learn.microsoft.com/azure/aks/workload-identity-overview"
+        },
+        {
+          "type": "vendor-doc",
+          "ref": "GKE Workload Identity https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity"
+        },
+        {
+          "type": "vendor-doc",
+          "ref": "TKE CAM 角色 https://cloud.tencent.com/document/product/457/48710"
+        },
+        {
+          "type": "vendor-doc",
+          "ref": "ACK RRSA https://help.aliyun.com/zh/ack/ack-managed-and-ack-dedicated/user-guide/use-rrsa-to-authorize-pods-to-access-different-cloud-services"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:cloud-identity",
+          "to": "target:cloud-admin",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1078",
+        "T1552"
+      ]
+    },
+    {
+      "id": "node-kubelet-10250-exec",
+      "category": "node",
+      "title": {
+        "zh": "kubelet 10250 /exec 无认证",
+        "en": "Unauthenticated kubelet 10250 /exec"
+      },
+      "subject": "可网络访问节点 10250 且 kubelet anonymous-auth=true / authorization-mode=AlwaysAllow 的主体",
+      "requires": [
+        "网络可达 10250",
+        "kubelet 认证/授权配置缺陷"
+      ],
+      "primitive": "调用 kubelet /exec 进入任意 Pod，复用其 SA token/卷；若目标特权则直接宿主逃逸。",
+      "impact": {
+        "node": "exec 进特权 Pod 获得节点 root",
+        "cluster": "窃取高权 SA token 接管集群",
+        "cloud": "读取 Pod 内云凭据"
+      },
+      "detect": {
+        "engine": "falco",
+        "point": "Falco/eBPF：非 kube-apiserver 主体连接 kubelet 10250",
+        "event_type": [
+          "connect"
+        ],
+        "filter": {
+          "dest_port": 10250
+        },
+        "event": {
+          "kind": "falco",
+          "event_type": "connect",
+          "dest_port": 10250,
+          "proc": "curl",
+          "container": true
+        }
+      },
+      "module": "kubelet-10250-exec",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes kubelet 认证/授权 https://kubernetes.io/docs/reference/access-authn-authz/kubelet-authn-authz/"
+        },
+        {
+          "type": "research",
+          "ref": "kube-hunter kubelet/etcd 检测 https://github.com/aquasecurity/kube-hunter"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:kubelet-10250",
+          "to": "cap:kubelet-exec",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:kubelet-exec",
+          "to": "cap:pod-exec",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1610"
+      ]
+    },
+    {
+      "id": "node-kubelet-10250-run",
+      "category": "node",
+      "title": {
+        "zh": "kubelet 10250 /run 启动特权容器",
+        "en": "kubelet 10250 /run privileged container"
+      },
+      "subject": "可访问 kubelet /run 端点且 kubelet 授权宽松的主体",
+      "requires": [
+        "网络可达 10250",
+        "kubelet /run 未限制"
+      ],
+      "primitive": "通过 kubelet /run 创建 privileged + hostPath 容器，直接挂载宿主根。",
+      "impact": {
+        "node": "节点 root",
+        "cluster": "读取 kubeconfig 接管集群",
+        "cloud": "节点云身份可用"
+      },
+      "detect": {
+        "engine": "falco",
+        "point": "Falco：kubelet /run 端点访问",
+        "event_type": [
+          "connect"
+        ],
+        "filter": {
+          "dest_port": 10250
+        },
+        "event": {
+          "kind": "falco",
+          "event_type": "connect",
+          "dest_port": 10250,
+          "proc": "curl",
+          "container": true
+        }
+      },
+      "module": "kubelet-10250-exec",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes kubelet 认证/授权 https://kubernetes.io/docs/reference/access-authn-authz/kubelet-authn-authz/"
+        },
+        {
+          "type": "research",
+          "ref": "kube-hunter kubelet/etcd 检测 https://github.com/aquasecurity/kube-hunter"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:kubelet-10250",
+          "to": "cap:kubelet-run",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:kubelet-run",
+          "to": "cap:host-root",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1611"
+      ]
+    },
+    {
+      "id": "node-etcd-direct",
+      "category": "node",
+      "title": {
+        "zh": "etcd 2379 直连读取全部 Secret",
+        "en": "Direct etcd 2379 access"
+      },
+      "subject": "可网络访问 etcd 2379 且未启用 mTLS/客户端证书保护的主体（或已取得节点证书）",
+      "requires": [
+        "网络可达 2379/2380",
+        "etcd 客户端证书或匿名访问"
+      ],
+      "primitive": "直接读写 etcd：读取所有 Secret/SA token/集群状态，或写入恶意 RBAC 对象；等价 cluster-admin。",
+      "impact": {
+        "node": "读取节点与控制面全部数据",
+        "cluster": "直接 cluster-admin（全 Secret + RBAC 写）",
+        "cloud": "读取云身份 Secret 与 IRSA token"
+      },
+      "detect": {
+        "engine": "falco",
+        "point": "Falco/eBPF：非控制面进程连接 etcd 2379",
+        "event_type": [
+          "connect"
+        ],
+        "filter": {
+          "dest_port": 2379
+        },
+        "event": {
+          "kind": "falco",
+          "event_type": "connect",
+          "dest_port": 2379,
+          "proc": "etcdctl",
+          "container": true
+        }
+      },
+      "module": "etcd-direct-access",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes etcd 运维 https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/"
+        },
+        {
+          "type": "research",
+          "ref": "kube-hunter kubelet/etcd 检测 https://github.com/aquasecurity/kube-hunter"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:etcd-access",
+          "to": "target:cluster-admin",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1552"
+      ]
+    },
+    {
+      "id": "node-proxy",
+      "category": "node",
+      "title": {
+        "zh": "nodes/proxy 访问 kubelet API",
+        "en": "nodes/proxy to kubelet API"
+      },
+      "subject": "拥有 get/create nodes/proxy 的主体（常见于监控/日志组件）",
+      "requires": [
+        "get nodes/proxy",
+        "kubelet 10250 可达"
+      ],
+      "primitive": "经 apiserver 代理访问 kubelet API（/exec、/run、/logs、/metrics），绕过节点网络隔离。",
+      "impact": {
+        "node": "经 kubelet exec/run 获得节点 root",
+        "cluster": "以 apiserver 身份访问 kubelet 管理面",
+        "cloud": "读取节点/容器内云凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：get nodes/proxy",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "get",
+            "create"
+          ],
+          "objectRef.resource": [
+            "nodes"
+          ],
+          "objectRef.subresource": "proxy"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "get",
+          "objectRef": {
+            "resource": "nodes",
+            "subresource": "proxy"
+          }
+        }
+      },
+      "module": "kubelet-api-surface",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes kubelet 认证/授权 https://kubernetes.io/docs/reference/access-authn-authz/kubelet-authn-authz/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:node-proxy",
+          "to": "cap:kubelet-10250",
+          "weight": 0.8
+        }
+      ],
+      "mitre": [
+        "T1610"
+      ]
+    },
+    {
+      "id": "node-runtime-socket",
+      "category": "node",
+      "title": {
+        "zh": "运行时 socket 逃逸",
+        "en": "Container runtime socket escape"
+      },
+      "subject": "已在容器内且可访问 /var/run/containerd/containerd.sock 或 docker.sock 的主体",
+      "requires": [
+        "容器内可写运行时 socket",
+        "ctr/docker/crictl 可用"
+      ],
+      "primitive": "通过运行时 socket 在宿主命名空间启动 privileged 容器并挂载 /，或直接操作现有容器。",
+      "impact": {
+        "node": "节点 root",
+        "cluster": "以节点身份读取 kubeconfig 接管集群",
+        "cloud": "节点云身份可用"
+      },
+      "detect": {
+        "engine": "falco",
+        "point": "Falco：容器内打开 docker/containerd socket",
+        "event_type": [
+          "open"
+        ],
+        "filter": {
+          "path": {
+            "re": "docker\\.sock$"
+          }
+        },
+        "event": {
+          "kind": "falco",
+          "event_type": "open",
+          "path": "/var/run/docker.sock",
+          "proc": "docker",
+          "container": true
+        }
+      },
+      "module": "runtime-socket-escape",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        },
+        {
+          "type": "research",
+          "ref": "CDK 容器逃逸工具集 https://github.com/cdk-team/CDK"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:runtime-socket",
+          "to": "cap:host-root",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1611"
+      ]
+    },
+    {
+      "id": "node-kernel-runc",
+      "category": "node",
+      "title": {
+        "zh": "内核/runc 漏洞容器逃逸",
+        "en": "Kernel/runc vulnerability escape"
+      },
+      "subject": "可在容器内执行代码且节点内核/runc 存在已知漏洞的主体",
+      "requires": [
+        "容器内代码执行",
+        "runc <=1.1.11 或内核 cgroup 漏洞未修补"
+      ],
+      "primitive": "利用 runc 文件描述符泄漏（CVE-2024-21626）或 cgroup release_agent（CVE-2022-0492）逃逸到宿主。",
+      "impact": {
+        "node": "节点 root",
+        "cluster": "读取节点 kubeconfig 接管集群",
+        "cloud": "读取节点云元数据凭据"
+      },
+      "detect": {
+        "engine": "falco",
+        "point": "Falco：runc 异常执行/文件描述符泄漏行为",
+        "event_type": [
+          "exec"
+        ],
+        "filter": {
+          "proc": "runc",
+          "suspicious": true
+        },
+        "event": {
+          "kind": "falco",
+          "event_type": "exec",
+          "proc": "runc",
+          "suspicious": true,
+          "container": true
+        }
+      },
+      "module": "kubernetes-cve-catalog",
+      "sources": [
+        {
+          "type": "research",
+          "ref": "CVE-2024-21626 runc 容器逃逸"
+        },
+        {
+          "type": "research",
+          "ref": "CVE-2022-0492 cgroups release_agent 逃逸"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:pod-create",
+          "to": "cap:kernel-escape",
+          "weight": 2.0
+        },
+        {
+          "from": "cap:kernel-escape",
+          "to": "target:node-root",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1611"
+      ]
+    },
+    {
+      "id": "node-host-root-kubeconfig",
+      "category": "node",
+      "title": {
+        "zh": "宿主 root 读取 kubeconfig",
+        "en": "Host root reads kubeconfig"
+      },
+      "subject": "已获得节点 root 文件系统读写的主体",
+      "requires": [
+        "节点 root/宿主文件系统写",
+        "可读 /etc/kubernetes/admin.conf 或 /etc/rancher/k3s/k3s.yaml"
+      ],
+      "primitive": "读取控制面 admin kubeconfig 或 k3s.yaml，直接以 cluster-admin 调用 apiserver；或写静态 Pod。",
+      "impact": {
+        "node": "节点 root",
+        "cluster": "直接 cluster-admin",
+        "cloud": "读取节点上的云凭据/实例角色"
+      },
+      "detect": {
+        "engine": "falco",
+        "point": "Falco：容器/宿主进程读取 admin kubeconfig",
+        "event_type": [
+          "open_read"
+        ],
+        "filter": {
+          "path": {
+            "re": "(admin\\.conf|k3s\\.yaml)$"
+          }
+        },
+        "event": {
+          "kind": "falco",
+          "event_type": "open_read",
+          "path": "/etc/kubernetes/admin.conf",
+          "proc": "cat",
+          "container": true
+        }
+      },
+      "module": "runtime-socket-escape",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes kubeconfig https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:host-root",
+          "to": "target:cluster-admin",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1552",
+        "T1078"
+      ]
+    },
+    {
+      "id": "cred-privileged-sa-token-use",
+      "category": "credential",
+      "title": {
+        "zh": "高权 SA token 直接使用",
+        "en": "Privileged SA token use"
+      },
+      "subject": "已获取高权 SA token（automount/projected/legacy/TokenRequest/exec）的主体",
+      "requires": [
+        "持有高权 SA token",
+        "网络可达 apiserver"
+      ],
+      "primitive": "以 Bearer token 调用 apiserver，创建 ClusterRoleBinding/特权 Pod；token 短期但足以完成接管。",
+      "impact": {
+        "node": "创建特权 Pod 获得节点 root",
+        "cluster": "直接 cluster-admin",
+        "cloud": "换取云身份联合 token"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：高权 SA 主体创建敏感绑定",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "clusterrolebindings"
+          ],
+          "authenticationInfo.username": {
+            "re": "^system:serviceaccount:.*$"
+          }
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "clusterrolebindings"
+          },
+          "authenticationInfo": {
+            "username": "system:serviceaccount:privesc-lab:privesc-admin"
+          }
+        }
+      },
+      "module": "sa-token-request",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Secret 文档 https://kubernetes.io/docs/concepts/configuration/secret/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
+        },
+        {
+          "type": "research",
+          "ref": "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:sa-token-of-privileged",
+          "to": "target:cluster-admin",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1552",
+        "T1078"
+      ]
+    },
+    {
+      "id": "platform-gpu-operator-driver",
+      "category": "platform",
+      "title": {
+        "zh": "GPU Operator driver 容器逃逸",
+        "en": "GPU Operator driver container escape"
+      },
+      "subject": "可修改 GPU Operator DaemonSet/driver 容器或节点上驱动容器的主体",
+      "requires": [
+        "update daemonsets（gpu-operator）",
+        "driver 容器 privileged/hostPath"
+      ],
+      "primitive": "向 driver 容器注入命令或替换驱动镜像；driver 容器通常 privileged 且挂载 /dev、/run、宿主驱动目录，直接获得节点 root。",
+      "impact": {
+        "node": "节点 root（driver 容器特权）",
+        "cluster": "以 GPU 节点身份读取 kubeconfig",
+        "cloud": "读取 GPU 节点云实例角色"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：更新 daemonset 且模板 privileged",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "update",
+            "patch"
+          ],
+          "objectRef.resource": [
+            "daemonsets"
+          ],
+          "requestObject.privileged": true
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "update",
+          "objectRef": {
+            "resource": "daemonsets"
+          },
+          "requestObject": {
+            "privileged": true
+          }
+        }
+      },
+      "module": "gpu-operator-driver-escape",
+      "sources": [
+        {
+          "type": "vendor-doc",
+          "ref": "NVIDIA GPU Operator 文档 https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:gpu-operator-write",
+          "to": "cap:gpu-driver-container",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:gpu-driver-container",
+          "to": "cap:host-root",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1611"
+      ]
+    },
+    {
+      "id": "platform-device-plugin",
+      "category": "platform",
+      "title": {
+        "zh": "device plugin 滥用 GPU 分配",
+        "en": "Device plugin GPU allocation abuse"
+      },
+      "subject": "可修改 device plugin DaemonSet 或注册伪造 device plugin 的主体",
+      "requires": [
+        "create/update daemonsets（device-plugin）",
+        "可写 /var/lib/kubelet/device-plugins"
+      ],
+      "primitive": "伪造 device plugin 注册任意资源、跨命名空间暴露 GPU，或利用其 hostPath/特权挂载获得节点能力。",
+      "impact": {
+        "node": "经 device plugin hostPath 获得节点文件",
+        "cluster": "把 GPU 分配给未授权租户/工作负载",
+        "cloud": "GPU 节点云身份"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：device plugin DaemonSet hostPath 变更",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "update"
+          ],
+          "objectRef.resource": [
+            "daemonsets"
+          ],
+          "requestObject.hostPath": "/var/lib/kubelet/device-plugins"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "update",
+          "objectRef": {
+            "resource": "daemonsets"
+          },
+          "requestObject": {
+            "hostPath": "/var/lib/kubelet/device-plugins"
+          }
+        }
+      },
+      "module": "gpu-device-cross-namespace",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Device Plugin https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/"
+        },
+        {
+          "type": "vendor-doc",
+          "ref": "NVIDIA GPU Operator 文档 https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:device-plugin-write",
+          "to": "cap:gpu-device-access",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:gpu-device-access",
+          "to": "cap:host-root",
+          "weight": 2.0
+        }
+      ],
+      "mitre": [
+        "T1611"
+      ]
+    },
+    {
+      "id": "platform-cni-plugin",
+      "category": "platform",
+      "title": {
+        "zh": "CNI 插件二进制替换",
+        "en": "CNI plugin binary replacement"
+      },
+      "subject": "可修改 CNI DaemonSet（Calico/Cilium）或写 /opt/cni/bin 的主体",
+      "requires": [
+        "update daemonsets（cni）",
+        "hostPath /opt/cni/bin 或 /var/run/netns 可写"
+      ],
+      "primitive": "替换 CNI 二进制或注入 hook；CNI 以节点 root 运行，下一次 Pod 网络配置时执行恶意代码，获得所有节点 root。",
+      "impact": {
+        "node": "所有节点 root（CNI 特权 DaemonSet）",
+        "cluster": "篡改全集群网络策略/流量",
+        "cloud": "读取节点云凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：CNI DaemonSet hostPath /opt/cni/bin 变更",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "update",
+            "patch"
+          ],
+          "objectRef.resource": [
+            "daemonsets"
+          ],
+          "requestObject.hostPath": "/opt/cni/bin"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "update",
+          "objectRef": {
+            "resource": "daemonsets"
+          },
+          "requestObject": {
+            "hostPath": "/opt/cni/bin"
+          }
+        }
+      },
+      "module": "cni-plugin-exec",
+      "sources": [
+        {
+          "type": "research",
+          "ref": "CNI 规范 https://www.cni.dev/docs/spec/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        },
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:cni-write",
+          "to": "cap:cni-plugin-exec",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:cni-plugin-exec",
+          "to": "cap:host-root",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1611"
+      ]
+    },
+    {
+      "id": "platform-csi-node-plugin",
+      "category": "platform",
+      "title": {
+        "zh": "CSI node plugin 逃逸/卷越权",
+        "en": "CSI node plugin escape / volume abuse"
+      },
+      "subject": "可修改 CSI node DaemonSet 或控制 CSI 插件的主体",
+      "requires": [
+        "update daemonsets（csi）",
+        "插件 privileged/挂载宿主根或 /dev"
+      ],
+      "primitive": "篡改 CSI node plugin（特权、hostPath /var/lib/kubelet、/dev），在挂载/卸载时执行宿主命令或跨租户读取卷。",
+      "impact": {
+        "node": "节点 root（CSI 特权 DaemonSet）",
+        "cluster": "跨租户卷访问与集群存储接管",
+        "cloud": "云盘/快照跨账户访问"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：CSI node DaemonSet 特权/宿主挂载变更",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "update",
+            "patch"
+          ],
+          "objectRef.resource": [
+            "daemonsets"
+          ],
+          "requestObject.privileged": true
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "update",
+          "objectRef": {
+            "resource": "daemonsets"
+          },
+          "requestObject": {
+            "privileged": true
+          }
+        }
+      },
+      "module": "csi-node-plugin-escape",
+      "sources": [
+        {
+          "type": "research",
+          "ref": "CSI 规范 https://github.com/container-storage-interface/spec"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
+        },
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:csi-write",
+          "to": "cap:csi-node-plugin",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:csi-node-plugin",
+          "to": "cap:host-root",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1611"
+      ]
+    },
+    {
+      "id": "platform-ingress-secret",
+      "category": "platform",
+      "title": {
+        "zh": "Ingress 控制器读全集群 TLS/流量",
+        "en": "Ingress controller reads cluster TLS/traffic"
+      },
+      "subject": "可修改 Ingress/IngressClass 或控制 ingress-nginx 控制器的主体",
+      "requires": [
+        "create/update ingresses",
+        "控制器有 secrets 读权限/默认 TLS 证书"
+      ],
+      "primitive": "通过恶意 Ingress/Annotation 读取任意命名空间 TLS Secret、代理到内部服务、注入配置执行（CVE 历史）或劫持流量。",
+      "impact": {
+        "node": "经控制器 Pod 逃逸/读宿主",
+        "cluster": "窃取全集群 TLS 与 SA token",
+        "cloud": "劫持云负载均衡流量"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：Ingress 创建/更新含危险 annotation",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "update"
+          ],
+          "objectRef.resource": [
+            "ingresses"
+          ],
+          "requestObject.annotation": {
+            "re": "nginx\\.ingress\\.kubernetes\\.io/"
+          }
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "ingresses"
+          },
+          "requestObject": {
+            "annotation": "nginx.ingress.kubernetes.io/configuration-snippet"
+          }
+        }
+      },
+      "module": "observability-exposure",
+      "sources": [
+        {
+          "type": "vendor-doc",
+          "ref": "ingress-nginx 安全公告/文档 https://kubernetes.github.io/ingress-nginx/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:ingress-write",
+          "to": "cap:traffic-hijack",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:traffic-hijack",
+          "to": "cap:sa-token-read",
+          "weight": 2.0
+        }
+      ],
+      "mitre": [
+        "T1098",
+        "T1552"
+      ]
+    },
+    {
+      "id": "platform-cert-manager",
+      "category": "platform",
+      "title": {
+        "zh": "cert-manager/CSR 签发管理员证书",
+        "en": "cert-manager/CSR admin certificate issuance"
+      },
+      "subject": "可创建 ClusterIssuer/修改 cert-manager 或 approve CSR 的主体",
+      "requires": [
+        "create/update clusterissuers 或 approve certificatesigningrequests",
+        "可签发 client cert"
+      ],
+      "primitive": "用 CA/Issuer 签发 O=system:masters 的 client 证书，或批准恶意 CSR；以证书直接认证为 cluster-admin。",
+      "impact": {
+        "node": "以管理员证书创建特权 Pod",
+        "cluster": "直接 cluster-admin（system:masters）",
+        "cloud": "以集群身份访问云 API"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：CSR approval 子资源更新",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "update",
+            "approve"
+          ],
+          "objectRef.resource": [
+            "certificatesigningrequests"
+          ],
+          "objectRef.subresource": "approval"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "update",
+          "objectRef": {
+            "resource": "certificatesigningrequests",
+            "subresource": "approval"
+          }
+        }
+      },
+      "module": "csr-approve",
+      "sources": [
+        {
+          "type": "k8s-doc",
+          "ref": "Kubernetes CSR API https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/"
+        },
+        {
+          "type": "vendor-doc",
+          "ref": "cert-manager 文档 https://cert-manager.io/docs/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:cert-manager-write",
+          "to": "cap:client-cert",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:client-cert",
+          "to": "target:cluster-admin",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:csr-approve",
+          "to": "cap:client-cert",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1098"
+      ]
+    },
+    {
+      "id": "platform-argocd-flux",
+      "category": "platform",
+      "title": {
+        "zh": "ArgoCD/Flux GitOps 接管",
+        "en": "ArgoCD/Flux GitOps takeover"
+      },
+      "subject": "可写 GitOps 仓库、修改 Application/Kustomization 或控制 ArgoCD/Flux 控制器的主体",
+      "requires": [
+        "repo write 或 update applications/kustomizations",
+        "控制器以 cluster-admin 同步"
+      ],
+      "primitive": "提交带 ClusterRoleBinding/特权 DaemonSet 的清单，由 GitOps 控制器自动 apply；或直接修改 Application 目标仓库。",
+      "impact": {
+        "node": "经 GitOps 部署特权 DaemonSet 获得节点 root",
+        "cluster": "GitOps 控制器权限即 cluster-admin",
+        "cloud": "读取 GitOps 中的云部署凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：ArgoCD Application/Flux Kustomization 变更",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "update",
+            "patch"
+          ],
+          "objectRef.resource": [
+            "applications",
+            "kustomizations"
+          ]
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "update",
+          "objectRef": {
+            "resource": "applications"
+          }
+        }
+      },
+      "module": "gitops-secret-read",
+      "sources": [
+        {
+          "type": "vendor-doc",
+          "ref": "Argo CD 安全文档 https://argo-cd.readthedocs.io/en/stable/operator-manual/security/"
+        },
+        {
+          "type": "vendor-doc",
+          "ref": "Flux 安全文档 https://fluxcd.io/flux/security/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:gitops-sync",
+          "to": "target:cluster-admin",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1098"
+      ]
+    },
+    {
+      "id": "platform-kueue-volcano",
+      "category": "platform",
+      "title": {
+        "zh": "Kueue/Volcano 队列提权",
+        "en": "Kueue/Volcano queue privilege escalation"
+      },
+      "subject": "可修改 ClusterQueue/Queue/Job 或队列管理主体的主体",
+      "requires": [
+        "create/update clusterqueues.kueue.x-k8s.io 或 queues.volcano.sh",
+        "可提交 Job/Pod"
+      ],
+      "primitive": "篡改队列资源配额/命名空间映射，把高权命名空间的 Pod 调度到攻击者模板；或提交 privileged Job 绕过准入。",
+      "impact": {
+        "node": "以特权 Job 获得节点 root",
+        "cluster": "越权调度到高权命名空间",
+        "cloud": "读取训练命名空间云凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：队列/配额对象变更",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "update"
+          ],
+          "objectRef.resource": [
+            "clusterqueues",
+            "queues"
+          ]
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "update",
+          "objectRef": {
+            "resource": "clusterqueues"
+          }
+        }
+      },
+      "module": "gang-scheduler-abuse",
+      "sources": [
+        {
+          "type": "vendor-doc",
+          "ref": "Kueue 文档 https://kueue.sigs.k8s.io/docs/"
+        },
+        {
+          "type": "vendor-doc",
+          "ref": "Volcano 文档 https://volcano.sh/en/docs/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:queue-write",
+          "to": "cap:pod-create-as-privileged-sa",
+          "weight": 1.0
+        },
+        {
+          "from": "cap:pod-create-as-privileged-sa",
+          "to": "cap:pod-create",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1610"
+      ]
+    },
+    {
+      "id": "platform-ray-kuberay-autoscaler",
+      "category": "platform",
+      "title": {
+        "zh": "KubeRay/Ray autoscaler 提权",
+        "en": "KubeRay/Ray autoscaler escalation"
+      },
+      "subject": "可提交 RayJob/RayCluster 或控制 autoscaler SA 的主体",
+      "requires": [
+        "create rayjobs/rayclusters",
+        "operator/autoscaler SA 具高权"
+      ],
+      "primitive": "提交带 privileged pod template 或 hostPath 的 RayJob；Ray operator 以高权 SA 创建 worker，直接获得节点/集群能力。",
+      "impact": {
+        "node": "Ray worker 特权获得节点 root",
+        "cluster": "经 operator SA 创建 cluster-admin 资源",
+        "cloud": "读取 Ray 节点云凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：创建 RayJob/RayCluster 且使用高权 SA",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "rayjobs",
+            "rayclusters"
+          ],
+          "requestObject.serviceAccountName": "*"
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "rayjobs"
+          },
+          "requestObject": {
+            "serviceAccountName": "ray-operator"
+          }
+        }
+      },
+      "module": "kuberay-operator-escalation",
+      "sources": [
+        {
+          "type": "vendor-doc",
+          "ref": "KubeRay 安全/配置 https://docs.ray.io/en/latest/cluster/kubernetes/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:ray-control",
+          "to": "cap:pod-create",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1610"
+      ]
+    },
+    {
+      "id": "platform-lws-operator",
+      "category": "platform",
+      "title": {
+        "zh": "LWS operator 秘密读取/工作负载提权",
+        "en": "LWS operator secret read/workload escalation"
+      },
+      "subject": "可创建 LeaderWorkerSet 或修改 LWS operator 的主体",
+      "requires": [
+        "create leaderworkerset",
+        "operator SA 可读 secrets/创建 Pod"
+      ],
+      "primitive": "提交恶意 LeaderWorkerSet 模板，借用 operator 的集群级 secrets 读权限或高权 SA 创建特权 worker。",
+      "impact": {
+        "node": "worker 特权获得节点 root",
+        "cluster": "经 operator SA 读取全集群 Secret",
+        "cloud": "读取训练云凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：LeaderWorkerSet 创建/更新",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "update"
+          ],
+          "objectRef.resource": [
+            "leaderworkerset"
+          ]
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "leaderworkerset"
+          }
+        }
+      },
+      "module": "lws-secrets-lateral",
+      "sources": [
+        {
+          "type": "vendor-doc",
+          "ref": "LeaderWorkerSet 文档 https://lws.sigs.k8s.io/docs/"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:lws-control",
+          "to": "cap:secret-read",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1610",
+        "T1552"
+      ]
+    },
+    {
+      "id": "platform-jupyter-notebook",
+      "category": "platform",
+      "title": {
+        "zh": "Jupyter Notebook 代码执行",
+        "en": "Jupyter Notebook code execution"
+      },
+      "subject": "可访问/写入 JupyterHub notebook 或控制 notebook Pod 的主体",
+      "requires": [
+        "访问 notebook server 或写入 .ipynb",
+        "notebook Pod 挂载 SA token"
+      ],
+      "primitive": "在 notebook 内执行 Python/shell，读取 SA token、访问集群 API 或挂载的宿主/共享卷，进入训练命名空间。",
+      "impact": {
+        "node": "经 notebook Pod 特权/宿主挂载逃逸",
+        "cluster": "以 notebook SA 调用 apiserver",
+        "cloud": "读取训练数据与云凭据"
+      },
+      "detect": {
+        "engine": "sigma",
+        "point": "K8s audit：Jupyter SA 发起 pods/exec",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "pods/exec"
+          ],
+          "authenticationInfo.username": {
+            "re": "serviceaccount:.*:jupyter"
+          }
+        },
+        "event": {
+          "kind": "sigma",
+          "logsource": {
+            "product": "kubernetes",
+            "service": "audit"
+          },
+          "verb": "create",
+          "objectRef": {
+            "resource": "pods/exec"
+          },
+          "authenticationInfo": {
+            "username": "system:serviceaccount:ops:jupyter"
+          }
+        }
+      },
+      "module": "framework-port-matching",
+      "sources": [
+        {
+          "type": "vendor-doc",
+          "ref": "JupyterHub 安全文档 https://jupyterhub.readthedocs.io/en/stable/reference/security.html"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:notebook-write",
+          "to": "cap:pod-exec",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1610"
+      ]
+    },
+    {
+      "id": "platform-mlflow-tracking",
+      "category": "platform",
+      "title": {
+        "zh": "MLflow tracking 管理员/artifact 投毒",
+        "en": "MLflow tracking admin/artifact poisoning"
+      },
+      "subject": "可访问 MLflow tracking server 管理员接口或写入 artifact 仓库的主体",
+      "requires": [
+        "MLflow admin token 或未授权 API",
+        "artifact 仓库写权限"
+      ],
+      "primitive": "篡改 run artifact/模型版本，使下游推理/训练拉取恶意 pickle/权重；或读取环境中的云/仓库 token。",
+      "impact": {
+        "node": "经模型加载 RCE 获得 Pod/节点能力",
+        "cluster": "污染训练/推理供应链",
+        "cloud": "读取 MLflow 后端云存储凭据"
+      },
+      "detect": {
+        "engine": "falco",
+        "point": "Falco：写入 MLflow artifact/模型目录",
+        "event_type": [
+          "open_write"
+        ],
+        "filter": {
+          "path": {
+            "re": "^/mlflow/artifacts/"
+          }
+        },
+        "event": {
+          "kind": "falco",
+          "event_type": "open_write",
+          "path": "/mlflow/artifacts/model.pkl",
+          "proc": "python",
+          "container": true
+        }
+      },
+      "module": "training-data-leak",
+      "sources": [
+        {
+          "type": "vendor-doc",
+          "ref": "MLflow 认证/安全 https://mlflow.org/docs/latest/auth/index.html"
+        },
+        {
+          "type": "mitre",
+          "ref": "MITRE ATT&CK T1195 Supply Chain Compromise https://attack.mitre.org/techniques/T1195/"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cap:mlflow-write",
+          "to": "cap:artifact-write",
+          "weight": 1.0
+        }
+      ],
+      "mitre": [
+        "T1195"
+      ]
+    }
+  ]
+}

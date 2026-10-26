@@ -1,0 +1,22 @@
+{
+  "key": "cloud-irsa-trust-wildcard",
+  "name": {
+    "zh": "云身份联邦 trust policy 通配（跨账户 AssumeRole）",
+    "en": "Cloud Identity Trust Policy Wildcard (cross-account AssumeRole)"
+  },
+  "series": "混合云",
+  "description": "IRSA/RRSA/WorkloadIdentity 注解与 trust policy：Principal='*'、无 ExternalId → 外部账户可 AssumeRole 读取权重桶角色。检测 GET /cloud/identity + POST /cloud/identity/assume-role 真实 HTTP 差分；凭据脱敏存证。fixed：同账户 + ExternalId（403）。",
+  "min_level": "利用验证",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "目标基址 http://host:port（必填）",
+    "role": "目标角色（默认 weight-reader）",
+    "source_account": "攻击者云账户（默认 999999999999）",
+    "tenant": "请求租户（默认 tenant-a）",
+    "token": "可选租户 token（fixed 模式读身份）"
+  },
+  "produces": "cloud-assume-role-proof",
+  "knowledge": "EKS IRSA / 阿里 RRSA / GKE Workload Identity / Azure Workload Identity 的 trust policy 与 OIDC subject 约束",
+  "combo_signature": "cloud-irsa-trust-wildcard"
+}

@@ -1,0 +1,18 @@
+{
+  "key": "spiffe-spire-surface",
+  "name": {
+    "zh": "SPIFFE/SPIRE 工作负载身份面",
+    "en": "SPIFFE/SPIRE workload identity surface"
+  },
+  "series": "权限链",
+  "description": "只读枚举 SPIRE 注册条目与服务配置：通配 SPIFFE ID、空选择器、TTL=0/超长、admin socket 无 ACL、监听 0.0.0.0。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "spiffe-spire-surface.json + 条目/服务证据",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "spire-wildcard-identity"
+}

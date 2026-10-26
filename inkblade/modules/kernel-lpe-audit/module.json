@@ -1,0 +1,17 @@
+{
+  "key": "kernel-lpe-audit",
+  "name": {
+    "zh": "内核 LPE 检测库（版本区间 + 前置面）",
+    "en": "Kernel LPE audit (version ranges + preconditions)"
+  },
+  "series": "侦察",
+  "description": "51 条 Linux 内核/本地提权 CVE 检测目录（KubeTrail 16 条全量超集）：Dirty Pipe/Dirty COW、io_uring、nftables、overlayfs、eBPF、userns、cgroups、ptrace、netfilter/net_sched 等。按 introduced/stable 分支修复版本判定受影响区间，并用 userns/CAP_NET_ADMIN/unprivileged_bpf/cgroups v1 等前置面门控降低误报；同时检测 pkexec/sudo/runc/containerd 版本。仅版本与配置判定，不包含利用代码、不执行 PoC。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "多节点内核/组件快照 dict 或 JSON 路径（lab/fixtures/lpe/kernels.json：nodes[].kernel/os/userns/capabilities/cgroups/sysctl/components）"
+  },
+  "produces": "每节点命中 CVE + 受影响区间 + fixed_in + 前置面 + detection-only 标记；汇总 rules/nodes/hit_cves",
+  "knowledge": "docs/LPE-PARITY.md；NVD/CVE.org + kernel.org stable；KubeTrail README LPE 16 CVE"
+}

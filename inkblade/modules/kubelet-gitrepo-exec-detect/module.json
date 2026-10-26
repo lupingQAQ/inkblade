@@ -1,0 +1,31 @@
+{
+  "key": "kubelet-gitrepo-exec-detect",
+  "name": {
+    "zh": "kubelet gitRepo detection",
+    "en": "kubelet gitRepo detection"
+  },
+  "series": "权限链",
+  "description": "kubelet gitRepo detection; covers CVE-2024-10220/2024-3177. Read-only: version/evidence collection, no target writes.",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "base URL http://host:port (HTTP modules)",
+    "snapshot": "snapshot JSON path or dict (read-only modules)",
+    "mode": "probe-only (default) | backup-write (write modules need backup_targets)",
+    "backup_targets": "backup target list for the runner backup gate"
+  },
+  "produces": "kubelet-gitrepo",
+  "knowledge": "docs/CVE-CATALOG.md + inkblade/core/cve-catalog.json",
+  "combo_signature": "kubelet-gitrepo",
+  "verified": false,
+  "verification_status": "static-only",
+  "verification_cves": {
+    "CVE-2024-10220": "static-only",
+    "CVE-2024-3177": "static-only"
+  },
+  "verification_evidence": [
+    "lab/upstream_verify/cases/kubernetes/CVE-2024-10220/result.json",
+    "lab/upstream_verify/cases/kubernetes/CVE-2024-3177/result.json"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "key": "slurmrestd-exposure",
+  "name": {
+    "zh": "slurmrestd REST API 暴露面审计",
+    "en": "slurmrestd REST API exposure audit"
+  },
+  "series": "网络架构",
+  "description": "审计 slurmrestd 绑定地址/端口、认证模式、TLS、运行用户、调试级别、最大连接数与 rest_auth 插件：0.0.0.0 无认证暴露等价于集群调度面未授权读写。只读配置导出，可选 GET 探测。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "包含 slurmrestd.env、inventory.json 的导出目录",
+    "target": "可选：slurmrestd 基址（只在显式提供时 GET /slurm/v0.0.40/jobs）"
+  },
+  "produces": "slurmrestd-exposure.json + REST 暴露 findings",
+  "knowledge": "SchedMD slurmrestd(8) / REST API v0.0.40；docs/SLURM-HPC-COVERAGE.md slurmrestd 面",
+  "necessity": "slurmrestd 把作业提交/取消/节点状态暴露为 HTTP；默认示例常监听 0.0.0.0 且认证可选，未授权者可提交作业、读他人作业环境或 drain 节点。",
+  "combo_signature": "slurmrestd-unauth-api",
+  "surfaces": [
+    {"type": "config-file", "selector": "slurm/slurmrestd.env"},
+    {"type": "http-endpoint", "selector": "/slurm/v0.0.40/jobs"}
+  ],
+  "default_enabled": true
+}

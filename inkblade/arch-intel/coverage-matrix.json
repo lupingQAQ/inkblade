@@ -1,0 +1,1983 @@
+{
+  "schema": "inkblade-arch-intel-coverage-matrix",
+  "generated_on": "2026-10-25",
+  "spec": "万卡语料推倒重收（2026-10-25 任务口径）：≥10k GPU 实践 + 官方技术博客优先 + 中外并收；硬门槛见 thresholds",
+  "thresholds": {
+    "official-cn": 12,
+    "official-en": 12,
+    "wanka-evidence": 20,
+    "new-this-round": 30,
+    "new-official-ratio": 0.7,
+    "network-elements": [
+      "rail-optimized",
+      "multi-plane",
+      "in-network-computing",
+      "congestion-control",
+      "optical-switching",
+      "multi-tenancy",
+      "isolation",
+      "ops-fault-surface"
+    ],
+    "classes": [
+      "official-cn",
+      "official-en",
+      "paper"
+    ]
+  },
+  "notes": [
+    "核验方法：websearch/webfetch 逐源抓取（官方工程博客/产品页/帮助中心/新闻室/官方规范与论文页），日期均为 2026-10-25；每篇 corpus 文件含万卡证据（原文摘录）与网络要素标注。",
+    "不可达源（显式记录）：x.ai ECONNREFUSED（xai-colossus 以检索快照佐证）；cloud.google.com 拒连（google-next26-80k 以快照佐证）；oracle.com 403 WAF（oracle-zettascale 以快照佐证）；dl.acm.org Cloudflare 403（jupiter-evolving 以斯坦福镜像/快照佐证）；paper.people.com.cn 未直读（people-daily-42-wanka 快照佐证）。",
+    "JS 渲染不可提取：docs.volcengine.com 与 mthreads.com 新闻正文需 JS（标题可取），以检索快照佐证原句，状态保持 verified 并在 method 中注明。",
+    "规划口径不计入万卡证据源：jd-mthreads-10w（拟建十万卡）、jdcloud-jiushu（25 年万卡规划）、nvidia-quantum-x800/uec-spec（平台能力/目标宣称）。",
+    "verified-partial 源（xai-colossus/google-next26-80k/oracle-zettascale/jupiter-evolving/people-daily-42-wanka）不计入任何门槛，仅作证据补强。",
+    "检索式与未找到项（Anthropic/Mistral/Cohere 官方集群博客、Meta Polar 智能网卡、阿里云 ACES 原文、Kimi K2 官方集群规模、阶跃星辰官方万卡披露等）见 docs/RESEARCH-COVERAGE.md。",
+    "旧 35 源全部保留并迁移至三分类目录（official-cn/official-en/paper），分类映射见各源 class 字段。",
+    "gen-26 并行批次（fabric 面，13 源：UEC 生态/SHARP/Spectrum-X multiplane/NVLink Fusion/SONiC 白盒安全/Prometheus/Colossus 2/Ironwood OCS/MegaScale 推理/Trainium UltraServer）以 batch=gen-26-fabric 并入本矩阵，保留其原始字段，不计入本任务 added_this_round 门槛；nvidia-quantum-x800 撞名条目归 gen-26 批次。"
+  ],
+  "sources": [
+    {
+      "id": "alibaba-hpn",
+      "file": "inkblade/arch-intel/corpus/paper/alibaba-hpn.md",
+      "class": "paper",
+      "source_type": "paper",
+      "organization": "Alibaba",
+      "system": "HPN 双平面组网",
+      "urls": [
+        "https://dl.acm.org/doi/10.1145/3651890.3672265",
+        "https://ennanzhai.github.io/pub/sigcomm24-hpn.pdf"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "websearch+webfetch（SIGCOMM'24 论文 PDF/DOI 摘要）",
+        "summary": "15K GPU 单 Pod；双 ToR + 双平面转发；rail-optimized；400Gbps/NIC"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "15K GPU 单 Pod；双 ToR + 双平面；rail-optimized；400Gbps/NIC（SIGCOMM'24 摘要）",
+      "network_elements": [
+        "rail-optimized",
+        "multi-plane"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "meta-roce-fabric",
+      "file": "inkblade/arch-intel/corpus/paper/meta-roce-fabric.md",
+      "class": "paper",
+      "source_type": "paper",
+      "organization": "Meta",
+      "system": "RoCE 以太网训练网",
+      "urls": [
+        "https://conferences.sigcomm.org/sigcomm/2024/program/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（SIGCOMM 2024 官方议程页命中论文条目与摘要）",
+        "summary": "Experience Track 论文《RDMA over Ethernet for Distributed Training at Meta Scale》：独立 GPU backend 网、路由多轮迭代、弃用 DCQCN"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "同系统官方博客口径：interconnecting tens of thousands of GPUs；24k 级集群（engineering.fb.com）",
+      "network_elements": [
+        "congestion-control",
+        "ops-fault-surface"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "bytedance-megascale",
+      "file": "inkblade/arch-intel/corpus/paper/bytedance-megascale.md",
+      "class": "paper",
+      "source_type": "paper",
+      "organization": "ByteDance",
+      "system": "MegaScale 10K+ GPU 训练",
+      "urls": [
+        "https://www.usenix.org/conference/nsdi24/presentation/jiang-ziheng",
+        "https://arxiv.org/abs/2402.15627"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "websearch+webfetch（USENIX NSDI'24 页面与 PDF 全文）",
+        "summary": "12,288 GPU 训练 175B，55.2% MFU；CLOS 64×400Gbps 交换机；1:1 上下行；拓扑感知并行；可观测性与故障恢复"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "12,288 GPU 训练 175B（NSDI'24 摘要）",
+      "network_elements": [
+        "congestion-control",
+        "ops-fault-surface"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "deepseek-prefill-decode",
+      "file": "inkblade/arch-intel/corpus/paper/deepseek-prefill-decode.md",
+      "class": "paper",
+      "source_type": "tech-report",
+      "organization": "DeepSeek",
+      "system": "V3 预填充-解码分离部署",
+      "urls": [
+        "https://arxiv.org/abs/2412.19437",
+        "https://arxiv.org/html/2412.19437"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（arXiv 摘要页 + HTML 全文目录：Inference and Deployment → Prefilling / Decoding 分节）",
+        "summary": "671B MoE（激活 37B）、MLA；预填充节点与解码节点分离部署；2.788M H800 GPU 小时；14.8T token"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [],
+      "added_this_round": false
+    },
+    {
+      "id": "mooncake-kv-transfer",
+      "file": "inkblade/arch-intel/corpus/paper/mooncake-kv-transfer.md",
+      "class": "paper",
+      "source_type": "paper",
+      "organization": "Moonshot AI",
+      "system": "Mooncake KV 分离架构",
+      "urls": [
+        "https://arxiv.org/abs/2407.00079"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（arXiv 摘要页）",
+        "summary": "KVCache 为中心的分离式服务：预填充/解码集群分离 + CPU/DRAM/SSD 分层 KV 池 + 传输引擎（RDMA）；Kimi 生产平台"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "multi-tenancy"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "microsoft-singularity",
+      "file": "inkblade/arch-intel/corpus/paper/microsoft-singularity.md",
+      "class": "paper",
+      "source_type": "paper",
+      "organization": "Microsoft",
+      "system": "Singularity 全球调度",
+      "urls": [
+        "https://arxiv.org/abs/2202.07848"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（arXiv API 检索命中 v2 摘要）",
+        "summary": "全球分布式 AI 调度服务：所有作业默认可抢占/可迁移/可弹性伸缩，跨集群/数据中心/区域透明迁移；全球加速器舰队（GPU/FPGA）"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "multi-tenancy"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "nvidia-gb200-nvl72",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-gb200-nvl72.md",
+      "class": "official-en",
+      "source_type": "vendor-docs",
+      "organization": "NVIDIA",
+      "system": "GB200 NVL72 机架级 NVLink 域",
+      "urls": [
+        "https://www.nvidia.com/en-us/data-center/gb200-nvl72/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "http fetch（nvidia.com 产品页 200；正文含 NVL72 机架规格）",
+        "summary": "72 GPU 机架级 NVLink 交换域（NVL72）；液冷；NVLink 域内 130TB/s 级 GPU 互联；DRA/ComputeDomain/IMEX 的目标硬件"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [],
+      "added_this_round": false
+    },
+    {
+      "id": "google-tpu-oci",
+      "file": "inkblade/arch-intel/corpus/paper/google-tpu-oci.md",
+      "class": "paper",
+      "source_type": "paper",
+      "organization": "Google",
+      "system": "TPU v4 OCS 重构拓扑",
+      "urls": [
+        "https://arxiv.org/abs/2304.01433"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（arXiv API 检索命中 ISCA'23 论文摘要）",
+        "summary": "TPU v4：4096 芯片超算 Pod；OCS 光交换动态重构拓扑（palisade/扭曲 3D torus）；OCS 低于 IB 成本/功耗；论文明确把 security 列为 OCS 收益之一"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "optical-switching",
+        "multi-tenancy"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "xai-colossus",
+      "file": "inkblade/arch-intel/corpus/official-en/xai-colossus.md",
+      "class": "official-en",
+      "source_type": "newsroom",
+      "organization": "xAI",
+      "system": "Colossus 超算",
+      "urls": [
+        "https://x.ai/news/colossus",
+        "https://www.toutiao.com/article/7596640714268672552/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified-partial",
+        "method": "bing 检索快照 + 中文科技媒体快照（x.ai 主站在本实验网络不可达 ECONNREFUSED）",
+        "summary": "Colossus 1：孟菲斯 100K→200K H100、约 200MW、122 天建成；Colossus 2：2026-01 投运、Blackwell/GB200、GW 级；网络为以太网 RoCE（Spectrum-X 系）公开报道（主站自实验网络拒连/不可达，以检索快照佐证）"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "Then we doubled it in 92 days to 200k GPUs — 200,000 H100 GPUs in a single interconnected cluster（x.ai/colossus 官方页，本网络拒连，检索快照佐证）",
+      "network_elements": [],
+      "added_this_round": false
+    },
+    {
+      "id": "aws-eks-efa-dra",
+      "file": "inkblade/arch-intel/corpus/official-en/aws-eks-efa-dra.md",
+      "class": "official-en",
+      "source_type": "vendor-docs",
+      "organization": "AWS",
+      "system": "EKS EFA 设备管理（DRA/DRANET）",
+      "urls": [
+        "https://raw.githubusercontent.com/awsdocs/amazon-eks-user-guide/mainline/latest/ug/ml/device-management-efa.adoc",
+        "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（awsdocs/amazon-eks-user-guide GitHub 原文 latest/ug/ml/device-management-efa.adoc）",
+        "summary": "EKS 双通道管理 EFA：EFA DRA 驱动（DRANET，K8s≥1.34，ResourceSlice 富属性+拓扑亲和+共享 ResourceClaim）与 EFA device plugin（vpc.amazonaws.com/efa 扩展资源）；Auto Mode 不支持 DRA"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "multi-tenancy"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "aws-eks-auto-mode-accelerated",
+      "file": "inkblade/arch-intel/corpus/official-en/aws-eks-auto-mode-accelerated.md",
+      "class": "official-en",
+      "source_type": "vendor-docs",
+      "organization": "AWS",
+      "system": "EKS Auto Mode 加速负载",
+      "urls": [
+        "https://raw.githubusercontent.com/awsdocs/amazon-eks-user-guide/mainline/latest/ug/automode/auto-accelerated.adoc"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（awsdocs GitHub 原文）",
+        "summary": "Auto Mode 内置 NVIDIA/Neuron 驱动与 device plugin（不以 DaemonSet 可见）；Trainium/Inferentia/GPU；缩容到零；NodeClass/NodePool（Karpenter 语义）"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [],
+      "added_this_round": false
+    },
+    {
+      "id": "azure-aks-gpu",
+      "file": "inkblade/arch-intel/corpus/official-en/azure-aks-gpu.md",
+      "class": "official-en",
+      "source_type": "vendor-docs",
+      "organization": "Azure",
+      "system": "AKS GPU 节点池",
+      "urls": [
+        "https://learn.microsoft.com/en-us/azure/aks/use-nvidia-gpu"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（Microsoft Learn 页面，gpu-cluster → use-nvidia-gpu 重定向）",
+        "summary": "AKS GPU：托管驱动（AKS-managed）vs 自管（GPU Operator/设备插件 DaemonSet）；--gpu-driver none；hostPath /var/lib/kubelet/device-plugins；sku=gpu:NoSchedule 污点"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "multi-tenancy"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "azure-nd-h100-infiniband",
+      "file": "inkblade/arch-intel/corpus/official-en/azure-nd-h100-infiniband.md",
+      "class": "official-en",
+      "source_type": "vendor-docs",
+      "organization": "Azure",
+      "system": "ND H100 v5 InfiniBand 实例",
+      "urls": [
+        "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/ndh100v5-series"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（Microsoft Learn VM 规格页）",
+        "summary": "Standard_ND96isr_H100_v5：8×H100 + 每 GPU 独占 400Gbps Quantum-2 CX7 IB；同 VMSS 内自动组网；GPUDirect RDMA；NCCL 支持；不支持实时迁移/嵌套虚拟化"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "aliyun-terway",
+      "file": "inkblade/arch-intel/corpus/official-cn/aliyun-terway.md",
+      "class": "official-cn",
+      "source_type": "vendor-docs",
+      "organization": "Alibaba Cloud",
+      "system": "ACK Terway VPC 原生 CNI",
+      "urls": [
+        "https://help.aliyun.com/zh/ack/ack-managed-and-ack-dedicated/user-guide/work-with-terway"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（阿里云帮助中心全文）",
+        "summary": "Terway：VPC 原生 ENI/IP 模式（共享 ENI/独占 ENI/Trunk ENI）；DataPath V2（eBPF，1.34+ 无 kube-proxy）；eBPF NetworkPolicy（v1.9.2+）；独占 ENI 节点池不支持 NetworkPolicy；Egress NetworkPolicy 会断 hostNetwork Pod 访问；CRD podnetworkings 等"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation",
+        "multi-tenancy"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "aliyun-ack-erdma",
+      "file": "inkblade/arch-intel/corpus/official-cn/aliyun-ack-erdma.md",
+      "class": "official-cn",
+      "source_type": "vendor-docs",
+      "organization": "Alibaba Cloud",
+      "system": "ACK eRDMA 加速容器网络",
+      "urls": [
+        "https://help.aliyun.com/zh/ack/ack-managed-and-ack-dedicated/user-guide/use-erdma-in-ack-clusters"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（阿里云帮助中心全文）",
+        "summary": "eRDMA：神龙 4 代 VPC 内 RDMA；容器资源 aliyun/erdma:1；/dev/infiniband/uverbs0；preferDriver ofed/compat；NCCL 加速；NUMA 拓扑分配；Terway ENI 白名单"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "tencent-tke-gpu-manager",
+      "file": "inkblade/arch-intel/corpus/official-cn/tencent-tke-gpu-manager.md",
+      "class": "official-cn",
+      "source_type": "vendor-docs",
+      "organization": "Tencent",
+      "system": "TKE GPU Manager/vCUDA",
+      "urls": [
+        "https://raw.githubusercontent.com/tkestack/gpu-manager/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（tkestack/gpu-manager README）",
+        "summary": "GPU Manager 设备插件：tencent.com/vcuda-core（100=1 卡）与 vcuda-memory（1=256MiB）扩展资源；配合 gpu-admission 调度插件；DaemonSet + cluster-admin SA；分数卡依赖 vcuda-controller"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "multi-tenancy"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "tencent-tkestack",
+      "file": "inkblade/arch-intel/corpus/official-cn/tencent-tkestack.md",
+      "class": "official-cn",
+      "source_type": "vendor-docs",
+      "organization": "Tencent",
+      "system": "TKEStack 多集群平台",
+      "urls": [
+        "https://raw.githubusercontent.com/tkestack/tke/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（tkestack/tke README）",
+        "summary": "TKEStack：中心化管理多 K8s 集群；多租户（team/user 隔离容器/构建/网络通信）；Galaxy 网络插件；GPUManage；平台级统一授权到 K8s 资源级"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "multi-tenancy"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "gcp-ai-on-gke",
+      "file": "inkblade/arch-intel/corpus/official-en/gcp-ai-on-gke.md",
+      "class": "official-en",
+      "source_type": "official-repo",
+      "organization": "Google Cloud",
+      "system": "AI on GKE（GPU/TPU 部署样例库）",
+      "urls": [
+        "https://raw.githubusercontent.com/GoogleCloudPlatform/ai-on-gke/main/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（GoogleCloudPlatform/ai-on-gke README；仓库已归档只读）",
+        "summary": "Google 官方 GKE AI 部署样例/最佳实践合集（GPU/TPU/L4/A3 等；cloud.google.com 文档站在本实验网络不可达，已用官方 GitHub 仓替代并记录）"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "multi-tenancy"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "gcp-tpu-pytorch-xla",
+      "file": "inkblade/arch-intel/corpus/official-en/gcp-tpu-pytorch-xla.md",
+      "class": "official-en",
+      "source_type": "official-repo",
+      "organization": "Google Cloud",
+      "system": "TPU 软件栈（PyTorch/XLA→TorchTPU）",
+      "urls": [
+        "https://raw.githubusercontent.com/pytorch/xla/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（pytorch/xla README；项目弃用公告：2026-11-15 归档，迁移 TorchTPU）",
+        "summary": "TPU 软件栈公开入口：XLA/PJRT 多进程 TPU VM 架构；官方指向 docs.cloud.google.com/tpu（TorchTPU）；印证 TPU Pod 多主机进程模型"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [],
+      "added_this_round": false
+    },
+    {
+      "id": "huawei-cce-turbo",
+      "file": "inkblade/arch-intel/corpus/official-cn/huawei-cce-turbo.md",
+      "class": "official-cn",
+      "source_type": "vendor-docs",
+      "organization": "Huawei Cloud",
+      "system": "CCE Standard/Turbo/Autopilot",
+      "urls": [
+        "https://www.huaweicloud.com/intl/en-us/product/cce.html"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "http fetch（华为云国际站产品页；CCE Turbo 云原生 2.0）",
+        "summary": "CCE 三形态：Standard（VPC 叠加容器网）/Turbo（软硬件协同、VPC 网络）/Autopilot（免节点）；调度用 Huawei Volcano；节点规模 50–2000"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [],
+      "added_this_round": false
+    },
+    {
+      "id": "huawei-ascend-device-plugin",
+      "file": "inkblade/arch-intel/corpus/official-cn/huawei-ascend-device-plugin.md",
+      "class": "official-cn",
+      "source_type": "official-repo",
+      "organization": "Huawei",
+      "system": "Ascend Device Plugin（昇腾 K8s 设备接入）",
+      "urls": [
+        "https://gitee.com/ascend/ascend-device-plugin/raw/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "http fetch（Gitee 昇腾社区仓 README；仓库迁移公告在文首）",
+        "summary": "昇腾 NPU 的 K8s 设备插件：组件介绍/安装/版本配套；配合 Ascend Docker Runtime（MindX DL 套件成员）"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "alibaba-cen-tr",
+      "file": "inkblade/arch-intel/corpus/official-cn/alibaba-cen-tr.md",
+      "class": "official-cn",
+      "source_type": "vendor-docs",
+      "organization": "Alibaba Cloud",
+      "system": "云企业网 CEN/转发路由器",
+      "urls": [
+        "https://help.aliyun.com/zh/cen/product-overview/what-is-cen/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（阿里云帮助中心全文）",
+        "summary": "CEN：全球私网；TR 转发路由器（地域级）；VPC/ECR/VBR/VPN/CCN 全挂载；同地域 TR 1000 VPC；跨地域连接+QoS；自定义路由策略做安全域隔离/DMZ/服务链"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "azure-expressroute",
+      "file": "inkblade/arch-intel/corpus/official-en/azure-expressroute.md",
+      "class": "official-en",
+      "source_type": "vendor-docs",
+      "organization": "Microsoft Azure",
+      "system": "ExpressRoute 专线",
+      "urls": [
+        "https://learn.microsoft.com/en-us/azure/expressroute/expressroute-introduction"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（Microsoft Learn 概览页）",
+        "summary": "ExpressRoute：专线接入 Azure（不公网）；对等（private/Azure public/Microsoft）；跨 region premium；与 VPN 共存做故障切换"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "alibaba-private-link",
+      "file": "inkblade/arch-intel/corpus/official-cn/alibaba-private-link.md",
+      "class": "official-cn",
+      "source_type": "vendor-docs",
+      "organization": "Alibaba Cloud",
+      "system": "PrivateLink 私网连接",
+      "urls": [
+        "https://help.aliyun.com/zh/private-link/product-overview/what-is-private-link/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（阿里云帮助中心，页面 200；正文经前端渲染，产品语义以官方文档树为准）",
+        "summary": "PrivateLink：VPC/本地数据中心经私网端点（终端节点 ENI）访问云服务/跨 VPC 服务，流量不出阿里云骨干；服务提供方/使用方解耦"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "kubernetes-cni-spec",
+      "file": "inkblade/arch-intel/corpus/official-en/kubernetes-cni-spec.md",
+      "class": "official-en",
+      "source_type": "official-repo",
+      "organization": "CNCF/CNI",
+      "system": "CNI 规范 v1.1.0",
+      "urls": [
+        "https://raw.githubusercontent.com/containernetworking/cni/main/SPEC.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（SPEC.md 全文）",
+        "summary": "CNI 1.1.0：ADD/DEL/CHECK/STATUS/GC/VERSION；插件链与委托（IPAM）；capabilities/runtimeConfig；规范只管接口对接——不含任何策略/隔离语义"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "cni-policy-calico-cilium",
+      "file": "inkblade/arch-intel/corpus/official-en/cni-policy-calico-cilium.md",
+      "class": "official-en",
+      "source_type": "vendor-docs",
+      "organization": "Tigera/Isovalent",
+      "system": "Calico/Cilium 策略语义",
+      "urls": [
+        "https://docs.cilium.io/en/latest/security/host-firewall/",
+        "https://raw.githubusercontent.com/projectcalico/calico/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（Cilium 主机防火墙文档 200；Calico raw README 当日抓取超时，以 Cilium 官方文档 + Calico 仓库为引）",
+        "summary": "Cilium：eBPF 数据面、身份级策略（label identity）、Host Firewall 保护节点自身、节点间加密；Calico：同仓系策略引擎（GlobalNetworkPolicy 跨命名空间、宿主保护端点）"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "multus-sriov-operator",
+      "file": "inkblade/arch-intel/corpus/official-en/multus-sriov-operator.md",
+      "class": "official-en",
+      "source_type": "official-repo",
+      "organization": "NPWG",
+      "system": "Multus + SR-IOV Network Operator",
+      "urls": [
+        "https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/README.md",
+        "https://raw.githubusercontent.com/k8snetworkplumbingwg/sriov-network-operator/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（两个 README 全文）",
+        "summary": "Multus：meta-plugin 按 NPWG CRD（NetworkAttachmentDefinition）多网卡挂 Pod；SR-IOV Operator：SriovNetworkNodePolicy 配 VF，Config Daemon 节点配置，Resource Injector 注入资源请求；PSA 需 privileged 命名空间"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "nvidia-network-operator",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-network-operator.md",
+      "class": "official-en",
+      "source_type": "official-repo",
+      "organization": "NVIDIA",
+      "system": "Network Operator（NicClusterPolicy）",
+      "urls": [
+        "https://raw.githubusercontent.com/Mellanox/network-operator/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（README 全文）",
+        "summary": "NicClusterPolicy 子状态：ofedDriver（特权驱动容器）/rdmaSharedDevicePlugin/sriovDevicePlugin/ibKubernetes/secondaryNetwork（Multus+IPoIB）/nvIpam；HostDeviceNetwork/MacvlanNetwork→NAD；驱动容器特权运行"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "kubernetes-dra",
+      "file": "inkblade/arch-intel/corpus/official-en/kubernetes-dra.md",
+      "class": "official-en",
+      "source_type": "official-repo",
+      "organization": "Kubernetes",
+      "system": "DRA 动态资源分配（KEP-4381）",
+      "urls": [
+        "https://raw.githubusercontent.com/kubernetes/enhancements/master/keps/sig-node/4381-dra-structured-parameters/README.md",
+        "https://raw.githubusercontent.com/kubernetes/enhancements/master/keps/sig-node/3063-dynamic-resource-allocation/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（KEP-4381 与 KEP-3063 全文）",
+        "summary": "结构化参数 DRA：ResourceSlice 发布设备、DeviceClass 管理员参数、ResourceClaim 请求、kubelet 插件以 CDI 注入；KEP-3063（控制面控制器版）1.32 撤回、4381 成基线；KEP 内置威胁分析（被 compromise 的 kubelet 插件=节点 root）"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "nvidia-compute-domain-imex",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-compute-domain-imex.md",
+      "class": "official-en",
+      "source_type": "official-repo",
+      "organization": "NVIDIA",
+      "system": "DRA 驱动 + ComputeDomain/IMEX",
+      "urls": [
+        "https://raw.githubusercontent.com/NVIDIA/k8s-dra-driver-gpu/main/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（README 全文）",
+        "summary": "NVIDIA k8s-dra-driver-gpu：gpu-kubelet-plugin + compute-domain-kubelet-plugin；ComputeDomain=多节点 NVLink（MNNVL）抽象，“域内可达+域外安全隔离”，随工作负载生命周期；GB200 上的 IMEX daemon/domain/channel 原语"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "gateway-api-inference-extension",
+      "file": "inkblade/arch-intel/corpus/official-en/gateway-api-inference-extension.md",
+      "class": "official-en",
+      "source_type": "official-repo",
+      "organization": "Kubernetes",
+      "system": "Gateway API Inference Extension",
+      "urls": [
+        "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api-inference-extension/main/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（README 全文）",
+        "summary": "InferencePool + EPP（ext-proc Router，已 GA 项目）；EPP 主仓迁移至 llm-d/llm-d-router，本仓留轻量 LWEPP 供一致性测试；KV-cache/请求成本感知调度；LoRA 适配器可用性参与路由决策"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "multi-tenancy"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "llm-d-nixl",
+      "file": "inkblade/arch-intel/corpus/official-en/llm-d-nixl.md",
+      "class": "official-en",
+      "source_type": "official-repo",
+      "organization": "llm-d 社区",
+      "system": "llm-d + NIXL 分布式推理",
+      "urls": [
+        "https://raw.githubusercontent.com/llm-d/llm-d/main/README.md",
+        "https://raw.githubusercontent.com/ai-dynamo/nixl/main/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（两 README 全文）",
+        "summary": "llm-d：K8s 分布式推理栈（vLLM/SGLang 底座；预填充-解码分离；prefix-cache 感知路由；分层 KV 卸载；多租户流控）；NIXL：NVIDIA 推理传输库（UCX/verbs/GDRCopy；POSIX/OBJ/AZURE_BLOB/HF3FS/MOONCAKE/UCCL 等插件；可选 etcd 元数据协调）"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "multi-tenancy"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "nccl-transports",
+      "file": "inkblade/arch-intel/corpus/official-en/nccl-transports.md",
+      "class": "official-en",
+      "source_type": "vendor-docs",
+      "organization": "NVIDIA",
+      "system": "NCCL 集合通信库",
+      "urls": [
+        "https://raw.githubusercontent.com/NVIDIA/nccl/master/README.md",
+        "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（README 全文；用户指南官方链接）",
+        "summary": "NCCL：all-reduce/all-gather/broadcast/reduce-scatter + 点对点；传输=PCIe/NVLink/NVSwitch/IB Verbs/TCP sockets；单/多进程、跨节点任意 GPU 数；bootstrap 无认证语义"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [],
+      "added_this_round": false
+    },
+    {
+      "id": "ib-partition-rdma",
+      "file": "inkblade/arch-intel/corpus/official-en/ib-partition-rdma.md",
+      "class": "official-en",
+      "source_type": "vendor-docs",
+      "organization": "NVIDIA/Mellanox",
+      "system": "ib-kubernetes 与 IB 分区",
+      "urls": [
+        "https://raw.githubusercontent.com/Mellanox/ib-kubernetes/master/README.md"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（README 全文）",
+        "summary": "ib-kubernetes：IB 设备插件 + CNI；Subnet Manager 插件（引导 SM 的 PKey/GUID 管理）给 Pod 划分 IB 分区成员资格；IB 网络唯一隔离手段=SM/Partition"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "storage-protocol-csi",
+      "file": "inkblade/arch-intel/corpus/official-en/storage-protocol-csi.md",
+      "class": "official-en",
+      "source_type": "official-repo",
+      "organization": "Kubernetes/NFS",
+      "system": "存储协议与 CSI 安全面",
+      "urls": [
+        "https://kubernetes-csi.github.io/docs/",
+        "https://www.rfc-editor.org/rfc/rfc8881.html"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（kubernetes-csi 文档站 200；RFC 8881 全文 2.5MB 抓取成功）",
+        "summary": "CSI：驱动以 node plugin（特权 DaemonSet）+ controller 实现；kubernetes-csi 官方开发/部署文档。NFSv4.1（RFC 8881）：RPC 安全含 AUTH_SYS（uid/gid 明文可伪造）等 flavor；KERB 可选"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": false
+    },
+    {
+      "id": "ultra-ethernet-spec-2026",
+      "file": "inkblade/arch-intel/corpus/official-en/ultra-ethernet-spec-2026.md",
+      "category": "network-specialized",
+      "organization": "Ultra Ethernet Consortium",
+      "system": "UE Specification 1.0→1.1",
+      "urls": [
+        "https://ultraethernet.org/ultra-ethernet-consortium-releases-specification-1-1-advancing-ai-and-hpc-networking/",
+        "https://ultraethernet.org/specification-history/",
+        "https://ultraethernet.org/wp-content/uploads/sites/20/2026/01/UE-Specification-1.0.2-1.pdf"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（UEC 官网 1.1 发布页 + 规范历史页直读）",
+        "summary": "Spec 1.1（2026-10-12）：scale-up（UFH/Unified Local）、In-Network Collectives（INC 约 2× 通信加速）、CSIG L2 遥测 + NSCC/RCCC、PCM 可编程拥塞控制；版本线 1.0(2025-06-11)→1.0.3(2026-07-16)→1.1"
+      },
+      "topics": [
+        "ultra-ethernet",
+        "in-network-computing"
+      ],
+      "class": "official-en",
+      "wanka_evidence": false,
+      "network_elements": [
+        "in-network-computing",
+        "congestion-control"
+      ],
+      "added_this_round": false,
+      "source_type": "vendor-docs",
+      "wanka_quote": "",
+      "batch": "gen-26-fabric"
+    },
+    {
+      "id": "ultra-ethernet-member-arista",
+      "file": "inkblade/arch-intel/corpus/official-en/ultra-ethernet-member-arista.md",
+      "category": "network-specialized",
+      "organization": "Arista Networks",
+      "system": "Demystifying Ultra Ethernet（成员白皮书）",
+      "urls": [
+        "https://blogs.arista.com/blog/demystifying-ultra-ethernet"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（Arista 官方博客直读，2026-10-16 更新）",
+        "summary": "UET：>1M endpoint、原生乱序、逐包 spray、NSCC/RCCC、libfabric 2.0 原生传输；安全为 optional——组密钥加密气泡（encrypted bubble）防跨租户注入/外带，缺省部署无集合通信身份"
+      },
+      "topics": [
+        "ultra-ethernet",
+        "roce-fabric"
+      ],
+      "class": "official-en",
+      "wanka_evidence": false,
+      "network_elements": [
+        "congestion-control",
+        "isolation",
+        "multi-tenancy"
+      ],
+      "added_this_round": false,
+      "source_type": "vendor-docs",
+      "wanka_quote": "",
+      "batch": "gen-26-fabric"
+    },
+    {
+      "id": "nvidia-sharp-in-network",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-sharp-in-network.md",
+      "category": "network-specialized",
+      "organization": "NVIDIA",
+      "system": "SHARP v1–v4 在网计算",
+      "urls": [
+        "https://developer.nvidia.com/blog/advancing-performance-with-nvidia-sharp-in-network-computing/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（NVIDIA 开发者博客直读）",
+        "summary": "SHARP 把 all-reduce 卸载进交换机 ASIC；v3（Quantum-2）多租户在网计算，Azure 报 AllReduce 时延近一个数量级收益；v4 随 Quantum-X800；与 NCCL user buffer registration 集成"
+      },
+      "topics": [
+        "in-network-computing",
+        "ib-roce",
+        "nccl"
+      ],
+      "class": "official-en",
+      "wanka_evidence": false,
+      "network_elements": [
+        "in-network-computing",
+        "multi-tenancy"
+      ],
+      "added_this_round": false,
+      "source_type": "vendor-docs",
+      "wanka_quote": "",
+      "batch": "gen-26-fabric"
+    },
+    {
+      "id": "nvidia-quantum-x800",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-quantum-x800.md",
+      "category": "network-specialized",
+      "organization": "NVIDIA",
+      "system": "Quantum-X800 InfiniBand 平台",
+      "urls": [
+        "https://www.nvidia.com/en-us/networking/products/infiniband/quantum-x800/",
+        "https://nvidianews.nvidia.com/news/networking-switches-gpu-computing-ai"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（nvidia.com 产品页直读，2026-10-25 更新）",
+        "summary": "144×800G/交换机；SHARP v4 在网计算、硬件自适应路由、遥测拥塞控制与性能隔离；ConnectX-8 1.6Tb/s/GPU；共封硅光面向数百万 GPU 多站 AI 工厂；UFM 管理面"
+      },
+      "topics": [
+        "ib-roce",
+        "in-network-computing"
+      ],
+      "class": "official-en",
+      "wanka_evidence": false,
+      "network_elements": [
+        "in-network-computing",
+        "congestion-control",
+        "isolation"
+      ],
+      "added_this_round": false,
+      "source_type": "vendor-docs",
+      "wanka_quote": "",
+      "batch": "gen-26-fabric"
+    },
+    {
+      "id": "nvidia-spectrum-x-adaptive",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-spectrum-x-adaptive.md",
+      "category": "network-specialized",
+      "organization": "NVIDIA",
+      "system": "Spectrum-X 以太网平台（自适应路由）",
+      "urls": [
+        "https://www.nvidia.com/en-us/networking/spectrumx/",
+        "https://resources.nvidia.com/en-us-networking-ai/nvidia-spectrum-x"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（nvidia.com 平台页直读 + 白皮书入口）",
+        "summary": "交换机+SuperNIC 协同自适应路由（1.6× OTS 以太网）；XGS 拓扑感知拥塞控制+端到端遥测（跨 DC 1.9× NCCL）；Multiplane 两层 128K GPU；运行 SONiC/Cumulus；官方页确认支撑 xAI 最大 AI 超算"
+      },
+      "topics": [
+        "roce-fabric",
+        "ib-roce",
+        "switch-os-security",
+        "multi-plane"
+      ],
+      "class": "official-en",
+      "wanka_evidence": true,
+      "wanka_quote": "up to 128K GPUs in two tiers (64x more than single-plane networks)",
+      "network_elements": [
+        "multi-plane",
+        "congestion-control",
+        "isolation"
+      ],
+      "added_this_round": false,
+      "source_type": "vendor-docs",
+      "batch": "gen-26-fabric"
+    },
+    {
+      "id": "nvidia-spectrum-x-multiplane-paper",
+      "file": "inkblade/arch-intel/corpus/paper/nvidia-spectrum-x-multiplane-paper.md",
+      "category": "network-specialized",
+      "organization": "NVIDIA/Technion",
+      "system": "Spectrum-X Multiplane 论文（arXiv 2605.21187）",
+      "urls": [
+        "https://arxiv.org/abs/2605.21187",
+        "https://people.csail.mit.edu/ghobadi/papers/rail_llm_hotnets_2023.pdf"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（arXiv 摘要页直读 v2 2026-10；HotNets rail_llm 关联检索）",
+        "summary": "多平面以拓扑并行替代层级深度；NIC+交换机硬件负载均衡微秒级响应；98% 线速、跨租户强隔离、10% 链路故障仅 7% 时延增加；对照 rail-optimized（HotNets'23 跨 rail 瓶颈）范式"
+      },
+      "topics": [
+        "multi-plane",
+        "rail-optimized"
+      ],
+      "class": "paper",
+      "wanka_evidence": true,
+      "wanka_quote": "predictable, stable network performance for AI training spanning hundreds of thousands of GPUs",
+      "network_elements": [
+        "multi-plane",
+        "rail-optimized",
+        "congestion-control",
+        "isolation"
+      ],
+      "added_this_round": false,
+      "source_type": "vendor-docs",
+      "batch": "gen-26-fabric"
+    },
+    {
+      "id": "nvidia-nvlink-fusion",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-nvlink-fusion.md",
+      "category": "network-specialized",
+      "organization": "NVIDIA",
+      "system": "NVLink Fusion / NVLink 6（GB300→VR200 NVL72）",
+      "urls": [
+        "https://www.nvidia.com/en-us/data-center/nvlink-fusion/",
+        "https://developer.nvidia.com/blog/nvidia-nvlink-the-scale-up-network-for-ai-factories/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（nvidia.com NVLink Fusion 页直读 2026-10-25；开发者博客 2026-07-20 检索命中）",
+        "summary": "半定制 XPU/CPU 接入 rack 级 MGX；NVLink 6 72 XPU 全互联 3.6TB/s（域路线图至 1152）、NVL72 域 260TB/s、SHARP FP8 4× 带宽效率；Vera Rubin NVL72 同柜混布；Annapurna 首个 NVHBM 伙伴"
+      },
+      "topics": [
+        "scale-up-interconnect",
+        "in-network-computing"
+      ],
+      "class": "official-en",
+      "wanka_evidence": false,
+      "network_elements": [
+        "in-network-computing"
+      ],
+      "added_this_round": false,
+      "source_type": "vendor-docs",
+      "wanka_quote": "",
+      "batch": "gen-26-fabric"
+    },
+    {
+      "id": "sonic-whitebox-security",
+      "file": "inkblade/arch-intel/corpus/paper/sonic-whitebox-security.md",
+      "category": "network-specialized",
+      "organization": "Dell（Enterprise SONiC）/ 白盒 NOS 生态",
+      "system": "SONiC/白盒交换机 OS 安全公告",
+      "urls": [
+        "https://zeropath.com/blog/cve-2025-38741-dell-sonic-ssh-key-vulnerability",
+        "https://www.dell.com/support/kbdoc/en-us/000278568/dsa-2025-057-security-update-for-dell-enterprise-sonic-distribution-vulnerability",
+        "https://nvd.nist.gov/vuln/detail/CVE-2025-38741"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（ZeroPath CVE 评析直读；Dell KB/NVD 本网络 403/空响应，以公告引用记录缺口）",
+        "summary": "CVE-2025-38741：Dell Enterprise SONiC 4.5.0 SSH 硬编码密钥（CWE-321），未认证远程可 compromise 管理通信，修复 4.5.0a+；CVE-2025-23374（DSA-2025-057）日志敏感信息写入；白盒 NOS=fabric 控制面入口"
+      },
+      "topics": [
+        "switch-os-security"
+      ],
+      "class": "paper",
+      "wanka_evidence": false,
+      "network_elements": [
+        "ops-fault-surface",
+        "isolation"
+      ],
+      "added_this_round": false,
+      "source_type": "vendor-docs",
+      "wanka_quote": "",
+      "batch": "gen-26-fabric"
+    },
+    {
+      "id": "meta-prometheus",
+      "file": "inkblade/arch-intel/corpus/official-en/meta-prometheus.md",
+      "category": "self-built-networking",
+      "organization": "Meta",
+      "system": "Prometheus 吉瓦级超集群（2026-10 工程实录）",
+      "urls": [
+        "https://engineering.fb.com/2026/10/19/data-center-engineering/inside-prometheus-meta-gigawatt-scale-supercluster/",
+        "https://engineering.fb.com/2026/02/09/data-center-engineering/building-prometheus-how-backend-aggregation-enables-gigawatt-scale-ai-clusters/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（Meta engineering 官方博客直读，2026-10-19）",
+        "summary": "数百 k GPU 多楼栋锁步（满配约 100 万）；楼栋 fabric ≤20736 GPU：DSF→NSF（51.2T 浅缓冲 + DLB/自适应路由 + FBOSS）；BAG hub-spoke（Arista 7800/Jericho3，2km–100km+）；GB200/GB300/VR-NVL72 谱系；NVL72=9× 故障域、PAFT+delta checkpoint；中断一年降 99%"
+      },
+      "topics": [
+        "backend-network",
+        "multi-building-fabric",
+        "adaptive-routing"
+      ],
+      "class": "official-en",
+      "wanka_evidence": true,
+      "wanka_quote": "At full scale, Prometheus will comprise roughly 1 million distributed GPUs",
+      "network_elements": [
+        "multi-plane",
+        "congestion-control",
+        "ops-fault-surface"
+      ],
+      "added_this_round": false,
+      "source_type": "vendor-docs",
+      "batch": "gen-26-fabric"
+    },
+    {
+      "id": "xai-colossus-two",
+      "file": "inkblade/arch-intel/corpus/paper/xai-colossus-two.md",
+      "category": "self-built-networking",
+      "organization": "xAI（SpaceXAI）",
+      "system": "Colossus 2（Memphis 二代吉瓦集群）",
+      "urls": [
+        "https://introl.com/blog/xai-colossus-2-gigawatt-expansion-555k-gpus-january-2026",
+        "https://newsletter.semianalysis.com/p/xais-colossus-2-first-gigawatt-datacenter",
+        "https://x.ai/colossus"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "websearch+webfetch（introl 2026-01 扩张实录直读 + Spectrum-X 官方页交叉；x.ai 主站本网络拒连，缺口已记录）",
+        "summary": "Colossus 1：19 天建成 100K→200K H100；Colossus 2：2025-07 首批 550K GB200/GB300 上线（~1GW），2025-12-30 扩至 ~2GW/555K+ GPU（$18B）；NVIDIA 口径 Spectrum-X 以太网支撑该最大 AI 超算"
+      },
+      "topics": [
+        "spectrum-x-ethernet",
+        "gigawatt-cluster"
+      ],
+      "class": "paper",
+      "wanka_evidence": true,
+      "wanka_quote": "~2 GW total capacity with 555,000+ NVIDIA GPUs (world's largest single-site AI training installation)",
+      "network_elements": [
+        "multi-plane"
+      ],
+      "added_this_round": false,
+      "source_type": "vendor-docs",
+      "batch": "gen-26-fabric"
+    },
+    {
+      "id": "google-tpu-ironwood-ocs",
+      "file": "inkblade/arch-intel/corpus/paper/google-tpu-ironwood-ocs.md",
+      "category": "self-built-networking",
+      "organization": "Google",
+      "system": "TPU v7 Ironwood（9216 片 superpod + OCS）",
+      "urls": [
+        "https://introl.com/blog/google-tpu-architecture-complete-guide-7-generations",
+        "https://newsletter.semianalysis.com/p/tpuv7-google-takes-a-swing-at-the",
+        "https://cloud.google.com/blog/products/compute/inside-the-ironwood-tpu-codesigned-ai-stack"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "websearch+webfetch（introl 7 代架构指南直读 + SemiAnalysis 检索；cloud.google.com 本网络超时，官方页直读待复验——与既有 GCP 缺口一致）",
+        "summary": "Ironwood：FP8 4.6 PFLOPS/片、ICI 9.6Tbps 3D torus、superpod 9216 片（42.5 EFLOPS FP8）；OCS MEMS 镜阵亚 10ns 重配、故障光旁路；Jupiter 理论聚合约 43 superpod（≈40 万片）；Anthropic 2026 起 100 万+ 片"
+      },
+      "topics": [
+        "ocs-optical-switching",
+        "torus-topology"
+      ],
+      "class": "paper",
+      "wanka_evidence": true,
+      "wanka_quote": "9,216-chip superpods delivering 42.5 exaflops; Anthropic committed to over one million Ironwood chips beginning in 2026",
+      "network_elements": [
+        "optical-switching"
+      ],
+      "added_this_round": false,
+      "source_type": "vendor-docs",
+      "batch": "gen-26-fabric"
+    },
+    {
+      "id": "bytedance-megascale-infer",
+      "file": "inkblade/arch-intel/corpus/paper/bytedance-megascale-infer.md",
+      "category": "self-built-networking",
+      "organization": "ByteDance Seed & 北大",
+      "system": "MegaScale-Infer（SIGCOMM 2025，MoE 推理规模化）",
+      "urls": [
+        "https://arxiv.org/abs/2504.02263",
+        "https://chaojin0310.github.io/files/papers/SIGCOMM25-MegaScale-Infer.pdf"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（arXiv 摘要页直读；SIGCOMM'25 PDF 检索命中）",
+        "summary": "attention/FFN 解耦部署 + ping-pong pipeline + M2N token 分发库；每 GPU 吞吐 +1.90×；与训练侧 MegaScale 共用生产 fabric 与可观测体系"
+      },
+      "topics": [
+        "moe-serving",
+        "disaggregated-inference"
+      ],
+      "class": "paper",
+      "wanka_evidence": false,
+      "network_elements": [],
+      "added_this_round": false,
+      "source_type": "vendor-docs",
+      "wanka_quote": "",
+      "batch": "gen-26-fabric"
+    },
+    {
+      "id": "aws-trainium-ultraserver",
+      "file": "inkblade/arch-intel/corpus/official-en/aws-trainium-ultraserver.md",
+      "category": "cloud-provider",
+      "organization": "AWS",
+      "system": "EC2 Trn2 / Trn2 UltraServer / UltraClusters",
+      "cloud": "aws",
+      "urls": [
+        "https://aws.amazon.com/ec2/instance-types/trn2/",
+        "https://aws.amazon.com/ec2/ultraservers/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（aws.amazon.com 实例页直读，2026-10-16 更新）",
+        "summary": "Trn2 实例 16 片/EFAv3 3.2Tbps；UltraServer NeuronLink 64 片（83.2 FP8 PFLOPS、12.8Tbps）；UltraCluster 数万片 P 比特无阻塞网；EFA/Nitro 传输加密无性能损耗；Trn3 UltraServer（144 片）已宣布"
+      },
+      "topics": [
+        "scale-up-interconnect",
+        "efa-networking"
+      ],
+      "class": "official-en",
+      "wanka_evidence": true,
+      "wanka_quote": "tens of thousands of Trainium2 chips on a single petabit-scale, non-blocking network",
+      "network_elements": [
+        "multi-tenancy"
+      ],
+      "added_this_round": false,
+      "source_type": "vendor-docs",
+      "batch": "gen-26-fabric"
+    },
+    {
+      "id": "aliyun-lingjun",
+      "file": "inkblade/arch-intel/corpus/official-cn/aliyun-lingjun.md",
+      "class": "official-cn",
+      "source_type": "vendor-docs",
+      "organization": "Alibaba Cloud",
+      "system": "智能计算灵骏/HPN",
+      "urls": [
+        "https://www.aliyun.com/product/lingjun",
+        "https://help.aliyun.com/zh/intelligent-computing-lingjun/what-is-lingjun-intelligent-calculation-service"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（官方产品页+帮助中心直读）",
+        "summary": "灵骏支持十万卡级的高性能网络扩展能力；HPN 单层千卡/两层万卡扩展"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "灵骏支持十万卡级的高性能网络扩展能力，单任务可支持万卡规模扩展性（阿里云帮助中心原句）",
+      "network_elements": [
+        "multi-plane",
+        "rail-optimized"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "tencent-xingmai-2",
+      "file": "inkblade/arch-intel/corpus/official-cn/tencent-xingmai-2.md",
+      "class": "official-cn",
+      "source_type": "engineering-blog",
+      "organization": "Tencent",
+      "system": "星脉网络 2.0（TiTa2.0/TCCL2.0）",
+      "urls": [
+        "https://cloud.tencent.com/developer/article/2433459",
+        "https://cloud.tencent.com/developer/news/1116208"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（腾讯云开发者社区官方发布文直读）",
+        "summary": "支持单集群10万卡GPU以上规模；TiTa2.0 主动拥塞控制；故障定位分钟级"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "星脉网络2.0可支撑的整体组网规模实现翻倍，支持单集群10万卡GPU以上的规模（官方发布文原句）",
+      "network_elements": [
+        "congestion-control",
+        "ops-fault-surface",
+        "multi-plane"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "tencent-tccl-docs",
+      "file": "inkblade/arch-intel/corpus/official-cn/tencent-tccl-docs.md",
+      "class": "official-cn",
+      "source_type": "vendor-docs",
+      "organization": "Tencent Cloud",
+      "system": "TCCL 集合通信库（TACO Train）",
+      "urls": [
+        "https://cloud.tencent.com/document/product/1573/74385",
+        "https://cloud.tencent.com/document/product/560/61564"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（官方文档中心直读，301 跳转记录）",
+        "summary": "TCCL 针对星脉网络架构定制；网络故障快速感知与自愈智能运维"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "ops-fault-surface"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "huawei-ascend-cloud",
+      "file": "inkblade/arch-intel/corpus/official-cn/huawei-ascend-cloud.md",
+      "class": "official-cn",
+      "source_type": "vendor-docs",
+      "organization": "Huawei Cloud",
+      "system": "昇腾云服务（CloudMatrix384 超节点）",
+      "urls": [
+        "https://www.huaweicloud.com/product/modelarts/ascend-cloud.html"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（华为云官方产品页直读）",
+        "summary": "支持最大16万卡集群，高速总线互联替代传统以太，带宽+15倍/时延-10倍"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "支持最大支持16万卡集群，用高速总线互联替代传统以太（华为云官方产品页原句）",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "huawei-ascend-10k-stability",
+      "file": "inkblade/arch-intel/corpus/official-cn/huawei-ascend-10k-stability.md",
+      "class": "official-cn",
+      "source_type": "newsroom",
+      "organization": "Huawei Cloud",
+      "system": "昇腾万卡级集群稳定性",
+      "urls": [
+        "https://www.huaweicloud.com/lab/algorithm/news/Ascend_10k_cards_level_computing_power_cluster_breakthrough.html"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（华为云官网新闻直读）",
+        "summary": "万卡级集群接近永不罢工；训练可用度98%；秒级恢复分钟级诊断"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "其万卡级算力集群实现了接近“永不罢工”的稳定性表现；训练可用度高达98%（官方新闻原句）",
+      "network_elements": [
+        "ops-fault-surface"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "baidu-kunlun-10k",
+      "file": "inkblade/arch-intel/corpus/official-cn/baidu-kunlun-10k.md",
+      "class": "official-cn",
+      "source_type": "newsroom",
+      "organization": "Baidu Cloud",
+      "system": "昆仑芯三代万卡集群+百舸4.0",
+      "urls": [
+        "https://cloud.baidu.com/news/news_9d90bec5-d18b-46aa-a5c5-f18cf5470340"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（百度智能云官网新闻直读）",
+        "summary": "国内首个正式点亮的自研万卡集群；将点亮3万卡；超大规模HPN高性能网络，带宽有效性90%+"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "百度智能云成功点亮昆仑芯三代万卡集群，这也是国内首个正式点亮的自研万卡集群（官方新闻原句）",
+      "network_elements": [
+        "ops-fault-surface"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "kunlunxin-supernode",
+      "file": "inkblade/arch-intel/corpus/official-cn/kunlunxin-supernode.md",
+      "class": "official-cn",
+      "source_type": "newsroom",
+      "organization": "Kunlunxin",
+      "system": "昆仑芯超节点",
+      "urls": [
+        "https://www.kunlunxin.com/news/4541.html"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（昆仑科技官网新闻直读）",
+        "summary": "单柜32/64卡全互联；机柜间IB/RoCE；支持万卡以上规模智算集群构建"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "机柜间支持IB/RoCE通信……支持万卡以上规模的智算集群构建（官网原句）",
+      "network_elements": [],
+      "added_this_round": true
+    },
+    {
+      "id": "china-telecom-10k",
+      "file": "inkblade/arch-intel/corpus/official-cn/china-telecom-10k.md",
+      "class": "official-cn",
+      "source_type": "newsroom",
+      "organization": "China Telecom",
+      "system": "京津冀智能算力中心万卡池（息壤）",
+      "urls": [
+        "https://www.chinatelecom.com.cn/ct/news/yunjisuanjisuanli/154877.html"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（中国电信官网新闻直读）",
+        "summary": "2+3+7+X 公共智算资源池；京津冀/长三角两大国产液冷单集群万卡智算池；全光算力网络 1ms 入算"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "在京津冀、长三角地区建设两大国产液冷单集群万卡智算池（中国电信官网原句）",
+      "network_elements": [
+        "multi-tenancy"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "sasac-telecom-10k",
+      "file": "inkblade/arch-intel/corpus/official-cn/sasac-telecom-10k.md",
+      "class": "official-cn",
+      "source_type": "newsroom",
+      "organization": "国务院国资委(发布)/中国电信",
+      "system": "全国首个投运国产化单池万卡液冷集群",
+      "urls": [
+        "http://www.sasac.gov.cn/n2588025/n2588119/c33240552/content.html"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（国资委官网直读）",
+        "summary": "全国首个正式投运国产化单池万卡液冷智算集群（沪/京）；21.5EFLOPS；400Gbps 全光骨干"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "率先建成全国首个正式投入运营的国产化单池万卡液冷智算集群，并先后在上海、北京两地投入运营，智能算力规模达21.5EFLOPS（国资委原句）",
+      "network_elements": [],
+      "added_this_round": true
+    },
+    {
+      "id": "meituan-longcat-2",
+      "file": "inkblade/arch-intel/corpus/official-cn/meituan-longcat-2.md",
+      "class": "official-cn",
+      "source_type": "engineering-blog",
+      "organization": "Meituan",
+      "system": "LongCat-2.0（五万卡国产集群）",
+      "urls": [
+        "https://tech.meituan.com/2026/06/30/LongCat2.0.html"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（美团技术团队官方博客直读）",
+        "summary": "五万卡国产算力集群全流程训练推理 1.6T MoE；月均日故障率降70%+"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "业界首个在五万卡国产算力集群上完成全流程训练与推理的万亿参数模型（官方博客原句）",
+      "network_elements": [
+        "ops-fault-surface"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "jdcloud-jiushu",
+      "file": "inkblade/arch-intel/corpus/official-cn/jdcloud-jiushu.md",
+      "class": "official-cn",
+      "source_type": "engineering-blog",
+      "organization": "JD Cloud",
+      "system": "京东零售九数算法中台 AI 引擎",
+      "urls": [
+        "https://developer.jdcloud.com/article/4224"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（京东云开发者社区直读）",
+        "summary": "千卡集群已建+国产NPU/GPU混调；25年实现万卡级别高性能网络（规划口径，不计入万卡证据）"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "集群将在25年实现万卡级别高性能网络及调度能力（规划原句——未计入万卡证据源）",
+      "network_elements": [
+        "multi-tenancy"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "jd-mthreads-10w",
+      "file": "inkblade/arch-intel/corpus/official-cn/jd-mthreads-10w.md",
+      "class": "official-cn",
+      "source_type": "newsroom",
+      "organization": "JD Cloud × Moore Threads",
+      "system": "拟建十万卡国产智算集群",
+      "urls": [
+        "https://www.mthreads.com/news/345"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch 页面标题命中 + websearch 快照佐证（正文 JS 渲染不可提取）",
+        "summary": "京东云拟建设十万卡全功能GPU集群（摩尔线程为算力底座）——规划口径，不计入万卡证据"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "京东云宣布拟建设十万卡全功能GPU集群（官网新闻标题+快照——拟建口径，未计入万卡证据源）",
+      "network_elements": [],
+      "added_this_round": true
+    },
+    {
+      "id": "volcengine-hpc-rdma",
+      "file": "inkblade/arch-intel/corpus/official-cn/volcengine-hpc-rdma.md",
+      "class": "official-cn",
+      "source_type": "vendor-docs",
+      "organization": "Volcengine",
+      "system": "高性能计算集群 RDMA 互通/隔离",
+      "urls": [
+        "https://docs.volcengine.com/docs/gpu/HPC-cluster-overview",
+        "https://www.volcengine.com/docs/gpu/Buying-High-Performance-Computing-Optimized-instances"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch 需 JS 不可提取；websearch 官方文档快照佐证",
+        "summary": "同一集群内 RDMA 互联互通、不同集群相互隔离；RDMA 直访 vePFS；默认 RDMA IP 段固定"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "火山引擎官方文档无 ≥10k 口径（发布会万卡级表述经媒体通稿，MegaScale 12,288 卡证据在 paper 条目）——不计入万卡证据源",
+      "network_elements": [
+        "isolation"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "deepseek-api-docs",
+      "file": "inkblade/arch-intel/corpus/official-cn/deepseek-api-docs.md",
+      "class": "official-cn",
+      "source_type": "vendor-docs",
+      "organization": "DeepSeek",
+      "system": "官方更新日志（无集群规模披露）",
+      "urls": [
+        "https://api-docs.deepseek.com/zh-cn/updates",
+        "https://api-docs.deepseek.com/zh-cn/news/news250821"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（api-docs.deepseek.com 直读）",
+        "summary": "官方渠道仅模型/API 更新；V3 规模口径（2048×H800）在 arXiv 技术报告"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [],
+      "added_this_round": true
+    },
+    {
+      "id": "minimax-m1",
+      "file": "inkblade/arch-intel/corpus/official-cn/minimax-m1.md",
+      "class": "official-cn",
+      "source_type": "newsroom",
+      "organization": "MiniMax",
+      "system": "MiniMax-M1（512×H800 官方披露）",
+      "urls": [
+        "https://www.minimax.io/news/minimaxm1",
+        "https://arxiv.org/abs/2506.13585"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（minimax.io 官方新闻直读）",
+        "summary": "RL 阶段仅 512 H800×3 周、$534,700——小规模高效口径样本（未达万卡）"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "The entire reinforcement learning phase used only 512 H800s for three weeks（官方原句——未达 ≥10k，不计入万卡证据源）",
+      "network_elements": [],
+      "added_this_round": true
+    },
+    {
+      "id": "people-daily-42-wanka",
+      "file": "inkblade/arch-intel/corpus/official-cn/people-daily-42-wanka.md",
+      "class": "official-cn",
+      "source_type": "newsroom",
+      "organization": "人民日报",
+      "system": "42 个万卡级智算集群统计",
+      "urls": [
+        "http://paper.people.com.cn/rmrb/pc/content/202605/28/content_30159577.html"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified-partial",
+        "method": "paper.people.com.cn 未直读成功；websearch 快照佐证（标题+原句）",
+        "summary": "我国已建成42个万卡级智算集群（2026-05 口径）；算力中心总用电 1700 亿千瓦时（核验不完整：以检索快照佐证，缺口待复验）"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "我国已建成42个万卡级智算集群，全国算力中心总用电量达1700亿千瓦时（快照原句；本源为 verified-partial 不计入门槛）",
+      "network_elements": [],
+      "added_this_round": true
+    },
+    {
+      "id": "meta-genai-infra",
+      "file": "inkblade/arch-intel/corpus/official-en/meta-genai-infra.md",
+      "class": "official-en",
+      "source_type": "engineering-blog",
+      "organization": "Meta Engineering",
+      "system": "GenAI Infrastructure（24,576×2 集群）",
+      "urls": [
+        "https://engineering.fb.com/2024/03/12/data-center-engineering/building-metas-genai-infrastructure/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（官方博文全文直读）",
+        "summary": "two 24,576-GPU clusters（RoCE+IB 各一，400G endpoints）；2024 底 350,000 H100（≈600k 等效）；desync debug/flight recorder"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "two versions of our 24,576-GPU data center scale cluster...will include 350,000 NVIDIA H100 GPUs（官方原句）",
+      "network_elements": [
+        "ops-fault-surface"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "meta-roce-blog",
+      "file": "inkblade/arch-intel/corpus/official-en/meta-roce-blog.md",
+      "class": "official-en",
+      "source_type": "engineering-blog",
+      "organization": "Meta Engineering",
+      "system": "RoCE Networks for AI at Scale（官方博客版）",
+      "urls": [
+        "https://engineering.fb.com/2024/08/05/data-center-engineering/roce-network-distributed-ai-training-at-scale/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（官方博文全文直读）",
+        "summary": "FE/BE 分离；AI Zone 两级 Clos+ATSW；ECMP→path-pinning→E-ECMP+QP scaling；400G 弃 DCQCN 仅 PFC+CTS 接收端准入"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "AI networks...interconnecting tens of thousands of GPUs together（官方原句）",
+      "network_elements": [
+        "congestion-control",
+        "ops-fault-surface"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "meta-infra-evolution",
+      "file": "inkblade/arch-intel/corpus/official-en/meta-infra-evolution.md",
+      "class": "official-en",
+      "source_type": "engineering-blog",
+      "organization": "Meta Engineering",
+      "system": "Infrastructure Evolution（129k→Prometheus/Hyperion）",
+      "urls": [
+        "https://engineering.fb.com/2025/09/29/data-infrastructure/metas-infrastructure-evolution-and-the-advent-of-ai/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（官方博文全文直读）",
+        "summary": "129k H100 单集群（清空五栋 DC）；Prometheus 1GW；Hyperion 5GW；silicon photonics；跨 DC 训练（Twine/MAST）"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "we were able to build a single AI cluster with 129k H100 GPUs（官方原句）",
+      "network_elements": [
+        "ops-fault-surface"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "msft-fairwater-superfactory",
+      "file": "inkblade/arch-intel/corpus/official-en/msft-fairwater-superfactory.md",
+      "class": "official-en",
+      "source_type": "engineering-blog",
+      "organization": "Microsoft Azure",
+      "system": "Azure AI 超工厂（Fairwater Atlanta）",
+      "urls": [
+        "https://blogs.microsoft.com/blog/2025/11/12/infinite-scale-the-architecture-behind-the-azure-ai-superfactory/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（官方博文全文直读）",
+        "summary": "single flat network 数十万 GB200/GB300；two-tier ethernet backend 800G；packet spray/trimming+高频遥测拥塞控制；SONiC；AI WAN 光骨干"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "a single flat network that can integrate hundreds of thousands of the latest NVIDIA GB200 and GB300 GPUs（官方原句）",
+      "network_elements": [
+        "congestion-control"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "msft-fairwater-wisconsin",
+      "file": "inkblade/arch-intel/corpus/official-en/msft-fairwater-wisconsin.md",
+      "class": "official-en",
+      "source_type": "engineering-blog",
+      "organization": "Microsoft Azure",
+      "system": "Fairwater Wisconsin AI 数据中心",
+      "urls": [
+        "https://blogs.microsoft.com/blog/2025/09/18/inside-the-worlds-most-powerful-ai-datacenter/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（官方博文全文直读）",
+        "summary": "single flat networking 数十万 GPU；IB+Ethernet 800G fat-tree non-blocking；GB200 rack 72GPU/1.8TB NVLink；AI WAN"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "one massive AI supercomputer using a single flat networking interconnecting hundreds of thousands of the latest NVIDIA GPUs（官方原句）",
+      "network_elements": [],
+      "added_this_round": true
+    },
+    {
+      "id": "msft-openai-sc-2020",
+      "file": "inkblade/arch-intel/corpus/official-en/msft-openai-sc-2020.md",
+      "class": "official-en",
+      "source_type": "newsroom",
+      "organization": "Microsoft",
+      "system": "OpenAI 专用超算（2020）",
+      "urls": [
+        "https://news.microsoft.com/source/features/ai/openai-azure-supercomputer/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（微软官方专题直读）",
+        "summary": "单系统 285,000 CPU 核心+10,000 GPU+每 GPU 服务器 400Gbps；TOP500 前五口径"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "a single system with more than 285,000 CPU cores, 10,000 GPUs and 400 gigabits per second of network connectivity for each GPU server（官方原句）",
+      "network_elements": [],
+      "added_this_round": true
+    },
+    {
+      "id": "openai-nvidia-10gw",
+      "file": "inkblade/arch-intel/corpus/official-en/openai-nvidia-10gw.md",
+      "class": "official-en",
+      "source_type": "newsroom",
+      "organization": "OpenAI × NVIDIA",
+      "system": "10GW/数百万 GPU 合作",
+      "urls": [
+        "https://openai.com/index/openai-nvidia-systems-partnership/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（openai.com 官方公告直读）",
+        "summary": "至少 10GW AI 数据中心、数百万 GPU；2026H2 首个 GW（Vera Rubin）"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "at least 10 gigawatts of AI datacenters with NVIDIA systems representing millions of GPUs（官方原句）",
+      "network_elements": [],
+      "added_this_round": true
+    },
+    {
+      "id": "google-ironwood",
+      "file": "inkblade/arch-intel/corpus/official-en/google-ironwood.md",
+      "class": "official-en",
+      "source_type": "engineering-blog",
+      "organization": "Google",
+      "system": "Ironwood TPU（9,216 芯片 superpod）",
+      "urls": [
+        "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/ironwood-google-tpu-things-to-know/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（blog.google 直读；cloud.google.com 拒连见 notes）",
+        "summary": "9,216 芯片 superpod（未达 10k，如实标注）；ICI 9.6 Tb/s；1.77PB 共享 HBM"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "With Ironwood, we can scale up to 9,216 chips in a superpod（官方原句——9,216<10,000 未计入万卡证据源）",
+      "network_elements": [],
+      "added_this_round": true
+    },
+    {
+      "id": "google-next26-80k",
+      "file": "inkblade/arch-intel/corpus/official-en/google-next26-80k.md",
+      "class": "official-en",
+      "source_type": "engineering-blog",
+      "organization": "Google Cloud",
+      "system": "AI infrastructure at Next '26",
+      "urls": [
+        "https://cloud.google.com/blog/products/compute/ai-infrastructure-at-next26"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified-partial",
+        "method": "cloud.google.com 拒连（ECONNREFUSED）；websearch 快照佐证原句",
+        "summary": "单数据中心最高 80,000 GPU、跨区域 960,000 GPU 口径（verified-partial 不计门槛）（核验不完整：以检索快照佐证，缺口待复验）"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "supporting up to 80,000 GPUs in a single data center, and up to 960,000 GPUs across（快照原句；本源为 verified-partial 不计入门槛）",
+      "network_elements": [],
+      "added_this_round": true
+    },
+    {
+      "id": "aws-project-rainier",
+      "file": "inkblade/arch-intel/corpus/official-en/aws-project-rainier.md",
+      "class": "official-en",
+      "source_type": "newsroom",
+      "organization": "AWS × Anthropic",
+      "system": "Project Rainier（~500k Trainium2）",
+      "urls": [
+        "https://www.aboutamazon.com/news/aws/aws-project-rainier-ai-trainium-chips-compute-cluster",
+        "https://aws.amazon.com/ai/machine-learning/trainium/customers/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（aboutamazon 官方新闻直读）",
+        "summary": "近 50 万 Trainium2 全量运营（Claude 已用 100 万+）；NeuronLink 柜内+EFA 跨 UltraServer/跨 DC 两级"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "nearly half a million Trainium2 chips（官方原句）",
+      "network_elements": [],
+      "added_this_round": true
+    },
+    {
+      "id": "nvidia-spectrum-x",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-spectrum-x.md",
+      "class": "official-en",
+      "source_type": "vendor-docs",
+      "organization": "NVIDIA",
+      "system": "Spectrum-X Ethernet（multiplane/128K GPU）",
+      "urls": [
+        "https://www.nvidia.com/en-us/networking/spectrumx/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（nvidia.com 官方平台页直读）",
+        "summary": "multiplane 平网两级到 128K GPU（64x 单平面）；100,000-GPU xAI 系统；XGS 跨 DC 拓扑感知拥塞控制 1.9x NCCL；性能隔离；SONiC"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "Spectrum-X Ethernet makes the colossal NVIDIA Hopper 100,000-GPU system possible（官方原句）",
+      "network_elements": [
+        "multi-plane",
+        "congestion-control",
+        "isolation"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "uec-spec",
+      "file": "inkblade/arch-intel/corpus/official-en/uec-spec.md",
+      "class": "official-en",
+      "source_type": "official-repo",
+      "organization": "Ultra Ethernet Consortium",
+      "system": "UE Specification 1.0/1.1",
+      "urls": [
+        "https://ultraethernet.org/ultra-ethernet-consortium-uec-launches-specification-1-0-transforming-ethernet-for-ai-and-hpc-at-scale/",
+        "https://ultraethernet.org/ultra-ethernet-consortium-releases-specification-1-1-advancing-ai-and-hpc-networking/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（ultraethernet.org 官方公告直读）",
+        "summary": "1.0（2025-06-11）完整以太栈；1.1（2026-10）：scale-up、INC 在网聚合、CSIG 遥测拥塞信令、PCM 可编程拥塞管理"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "UEC scales to millions of endpoints（规模目标口径——不计入万卡证据源）",
+      "network_elements": [
+        "in-network-computing",
+        "congestion-control"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "sonic-foundation",
+      "file": "inkblade/arch-intel/corpus/official-en/sonic-foundation.md",
+      "class": "official-en",
+      "source_type": "official-repo",
+      "organization": "SONiC Foundation/Linux Foundation",
+      "system": "SONiC 开放网络 OS",
+      "urls": [
+        "https://sonicfoundation.dev/",
+        "https://azure.microsoft.com/en-us/blog/sonic-the-networking-switch-software-that-powers-the-microsoft-global-cloud/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（sonicfoundation.dev 与 Azure 官方博文直读）",
+        "summary": "多厂商交换机/ASIC 的 Linux NOS；BGP/RDMA 生产硬化；Azure 数百 DC 数万交换机；SAI 抽象"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "ops-fault-surface"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "oracle-zettascale",
+      "file": "inkblade/arch-intel/corpus/official-en/oracle-zettascale.md",
+      "class": "official-en",
+      "source_type": "newsroom",
+      "organization": "Oracle",
+      "system": "OCI Zettascale Supercluster",
+      "urls": [
+        "https://www.oracle.com/news/announcement/ocw24-oracle-offers-first-zettascale-cloud-computing-cluster-2024-09-11/",
+        "https://www.oracle.com/ai-infrastructure/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified-partial",
+        "method": "oracle.com webfetch 403（WAF）；websearch 快照引用官网原句",
+        "summary": "H100 16,384 GPU/13Pb/s；B200 131,072；GB200 100,000+（verified-partial 不计门槛）（核验不完整：以检索快照佐证，缺口待复验）"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "OCI Superclusters with H100 GPUs can scale up to 16,384 GPUs with...13Pb/s of aggregated network throughput（官网快照原句；本源为 verified-partial 不计入门槛）",
+      "network_elements": [],
+      "added_this_round": true
+    },
+    {
+      "id": "llama3-herd",
+      "file": "inkblade/arch-intel/corpus/paper/llama3-herd.md",
+      "class": "paper",
+      "source_type": "paper",
+      "organization": "Meta AI",
+      "system": "The Llama 3 Herd of Models",
+      "urls": [
+        "https://arxiv.org/abs/2407.21783",
+        "https://engineering.fb.com/2024/03/12/data-center-engineering/building-metas-genai-infrastructure/"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified",
+        "method": "webfetch（arXiv 摘要页直读；集群规模以同系统官方博文交叉佐证）",
+        "summary": "Llama 3 训练：24,576-GPU×2 集群（RoCE+IB，官方同系统口径）；中断率降 ~50x"
+      },
+      "wanka_evidence": true,
+      "wanka_quote": "two versions of our 24,576-GPU data center scale cluster...We use this cluster design for Llama 3 training（Meta Engineering 同系统原句）",
+      "network_elements": [
+        "ops-fault-surface"
+      ],
+      "added_this_round": true
+    },
+    {
+      "id": "jupiter-evolving",
+      "file": "inkblade/arch-intel/corpus/paper/jupiter-evolving.md",
+      "class": "paper",
+      "source_type": "paper",
+      "organization": "Google",
+      "system": "Jupiter Evolving（OCS/SDN）",
+      "urls": [
+        "https://dl.acm.org/doi/10.1145/3544216.3544471",
+        "https://web.stanford.edu/class/cs244/papers/poutievski-sigcomm22.pdf"
+      ],
+      "verification": {
+        "date": "2026-10-25",
+        "status": "verified-partial",
+        "method": "dl.acm.org webfetch 403（Cloudflare）；websearch 快照佐证摘要",
+        "summary": "OCS 光路交换+SDN 十年演进；5x 速率/容量、capex -30%、功耗 -41%（快照摘要口径）"
+      },
+      "wanka_evidence": false,
+      "wanka_quote": "",
+      "network_elements": [
+        "optical-switching"
+      ],
+      "added_this_round": true
+    }
+  ]
+}

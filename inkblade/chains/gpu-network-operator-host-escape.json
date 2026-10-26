@@ -1,0 +1,67 @@
+{
+  "id": "gpu-network-operator-host-escape",
+  "title": {
+    "zh": "GPU 与网络 Operator → 宿主逃逸",
+    "en": "GPU and network operator → host escape"
+  },
+  "category": "网络利用链",
+  "requires": [
+    "gpu-network-operator-posture",
+    "privileged-gpu-pod-escape",
+    "runtime-socket-escape"
+  ],
+  "preconditions": [
+    {
+      "expr": "findings('gpu-network-operator-posture').any(privileged == true)"
+    }
+  ],
+  "steps": [
+    {
+      "id": "privileged-gpu-escape",
+      "module": "privileged-gpu-pod-escape",
+      "params": {
+        "mode": "marker-write",
+        "marker": "INKBLADE-${run.name}"
+      },
+      "writes": true,
+      "backup_targets": [
+        {
+          "kind": "kube",
+          "resource": "pod",
+          "name": "inkblade-escape-proof",
+          "manifest": ""
+        }
+      ]
+    },
+    {
+      "id": "runtime-socket-escape",
+      "module": "runtime-socket-escape",
+      "params": {
+        "mode": "marker-write",
+        "marker": "INKBLADE-${run.name}"
+      },
+      "depends_on": [
+        "privileged-gpu-escape"
+      ],
+      "writes": true,
+      "backup_targets": [
+        {
+          "kind": "file",
+          "path": "/run/containerd/containerd.sock"
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    "marker-receipt",
+    "rollback-receipt"
+  ],
+  "mitre": [
+    "T1611",
+    "T1068"
+  ],
+  "cves": [
+    "CVE-2024-0132",
+    "CVE-2025-23266"
+  ]
+}

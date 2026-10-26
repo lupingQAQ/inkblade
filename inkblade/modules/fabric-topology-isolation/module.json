@@ -1,0 +1,15 @@
+{
+  "key": "fabric-topology-isolation",
+  "name": {"zh": "Fabric 拓扑与隔离测绘", "en": "Fabric Topology and Isolation Mapping"},
+  "series": "网络架构",
+  "description": "IB/RoCE/EFA/NVLink 拓扑识别：rail/plane 对齐、双平面、SM/Partition 线索、IMEX ComputeDomain 资源；IB 无认证可达面",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "fixture dict 或 lab/fixtures/network/ 路径（cluster-fabric.json / compute-domains.json）"
+  },
+  "produces": "fabric-topology.json + 指纹 findings（ib-fabric / ib-no-partition / nvl-host / dra / computedomain）",
+  "knowledge": "spec 5.2 网络架构模块 + 5.6 七层网络模型（物理 Fabric 层）；组合签名 ib-flatnet-no-partition / nvl-dra-imex-domain",
+  "combo_signature": "ib-flatnet-no-partition"
+}
