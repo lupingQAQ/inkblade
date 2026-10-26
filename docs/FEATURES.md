@@ -28,6 +28,31 @@ data crossing tenants, or that a collective trusts whoever joins it.
 | 8. Cache security | Prefix cache, semantic cache, salt, eviction residue, remote KV pools, PD channel, EPP metrics, TTFT timing | Verified with timing and collision tests | `DETECTION-LAYERS.md` |
 | 9. Cross-combination | 14 declared signatures, deduplicated against component findings | Declared and tested; r2egym signature has no module yet | `DETECTION-LAYERS.md` |
 
+### In-pod probe / channel (component layer)
+
+The component layer has a native execution substrate, not just checks. A single
+static Rust binary is injected into a target Pod and speaks an authenticated
+length-prefixed JSON protocol over `kubectl exec -i` (or an RCE callback). It
+provides `collect`, `exec` (argv allow-list), `dial` (SOCKS5/port-forward),
+`upload`/`download` (chunked + SHA-256), `spawn` (parent/child probes) and
+declarative `http/tcp/exec/fs/k8s/socks` tasks. Read-only is the default; no
+Python or shell interpreter is placed in the Pod. SOCKS and forward listeners
+bind `127.0.0.1` only.
+
+Entry and session logic is explicit: `kubeconfig`, `external` and `foothold`
+modes; external must prove reachability and a vulnerable version/route before
+any exploit, and no foothold means read-only recon. Host kubectl is used only
+for the first bootstrap; thereafter every module action goes through a probe
+and is audited. See [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md) and
+[`PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md).
+
+组件层现在有原生执行底座：单个静态 Rust 探针经 `kubectl exec -i`（或 RCE
+回调）进入目标 Pod，提供 collect/exec/dial/upload/download/spawn 与声明式
+http/tcp/exec/fs/k8s/socks 任务；默认只读，Pod 内无 Python/解释器；SOCKS 与
+端口转发只监听回环。入口分 kubeconfig/external/foothold 三种，external 必须
+先证明可达与脆弱版本/路由，未取得 foothold 只允许只读侦察；host kubectl
+仅用于首次 bootstrap，之后所有模块动作都经探针并留审计。
+
 ### Framework matrix
 
 | Framework | Distinctive checks | Modules | State |
@@ -77,7 +102,7 @@ air-gapped run is the normal case.
 
 ## 中文
 
-### 九层，一个产品
+### 十层，一个产品
 
 通用集群扫描器查 RBAC、准入、暴露 API、镜像 CVE。有用，但不够。它不知道 GPU 按 rail 布线，
 不知道权重在加载时可写，不知道 KV 缓存是会跨租户的数据，也不知道集合通信默认信任加入者。
@@ -93,6 +118,19 @@ air-gapped run is the normal case.
 | 7. 供应链 / 身份层 | `trust_remote_code`、revision 固定、签名与证明、SBOM、IRSA 通配、IMDS | 已验证，TEE 在线校验单独跟踪 | `KEYLESS-VERIFICATION.md` |
 | 8. 缓存安全层 | 前缀缓存、语义缓存、salt、逐出残留、远程 KV 池、PD 通道、EPP 指标、TTFT 时序 | 已用计时与碰撞测试验证 | `DETECTION-LAYERS.md` |
 | 9. 跨组合层 | 14 条已声明签名，与组件级发现去重 | 已声明并测试；r2egym 签名尚无模块 | `DETECTION-LAYERS.md` |
+
+### 组件层内置 in-pod 探针 / 通道
+
+组件层不只有检查项，还有原生执行底座：单个静态 Rust 探针经
+`kubectl exec -i`（或 RCE 回调）进入目标 Pod，提供 collect/exec（argv
+白名单）/dial（SOCKS5/端口转发）/upload/download（分块 + SHA256）/spawn
+（父子探针）与声明式 http/tcp/exec/fs/k8s/socks 任务。默认只读；目标 Pod
+内没有 Python/解释器；SOCKS 与转发只监听 `127.0.0.1`。
+
+入口分 `kubeconfig`、`external`、`foothold` 三种会话；external 必须先证明
+可达与脆弱版本/路由，未取得 foothold 只允许只读侦察。host kubectl 仅用于
+首次 bootstrap；之后每个模块动作都经探针并留审计。详见
+[`PROBE-CHANNEL.md`](PROBE-CHANNEL.md) 与 [`PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md)。
 
 ### 框架矩阵
 

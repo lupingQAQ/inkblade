@@ -13,8 +13,8 @@ pub const READ_ONLY_COMMANDS: &[&str] = &[
     "id", "hostname", "uname", "whoami", "ps", "df", "ls", "cat", "head", "tail",
     "wc", "grep", "find", "ip", "ss", "netstat", "getent", "nslookup", "dig",
     "nvidia-smi", "rocm-smi", "lscpu", "free", "uptime", "mount", "lsblk",
-    "stat", "readlink", "file", "sha256sum", "sha1sum", "date", "printenv",
-    "groups", "tty", "du", "sort", "uniq", "cut", "tr", "awk", "sed",
+    "stat", "readlink", "file", "sha256sum", "sha1sum", "date", "groups",
+    "tty", "du", "sort", "uniq", "cut", "tr",
 ];
 
 const UNSAFE_FIND_FLAGS: &[&str] = &[

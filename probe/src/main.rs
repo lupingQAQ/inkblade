@@ -9,6 +9,7 @@
 //!   inkblade-probe cleanup --path /tmp/.inkblade-probe-child-a1b2
 
 mod audit;
+mod auth;
 mod base64;
 mod collect;
 mod config;
@@ -121,10 +122,7 @@ fn run() -> Result<i32, String> {
             Ok(0)
         }
         "cleanup" => {
-            let mut paths: Vec<String> = positional.clone();
-            for path in &positional {
-                paths.push(path.clone());
-            }
+            let paths: Vec<String> = positional.clone();
             let removed = spawn::cleanup_paths(&paths);
             println!(
                 "{}",
@@ -221,6 +219,9 @@ fn parse_options(args: Vec<String>) -> Result<(Options, Vec<String>), String> {
             }
             "--port" => {
                 positional.push(next_value(&args, &mut index, "--port")?);
+            }
+            "--path" => {
+                positional.push(next_value(&args, &mut index, "--path")?);
             }
             "--" => {
                 positional.extend(args[index..].iter().cloned());

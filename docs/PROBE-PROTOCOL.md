@@ -277,3 +277,49 @@ Budgets are enforced at the probe: per-task wall clock, output size, HTTP reques
 - `event` 不保证可靠交付；需要证据的事实必须走 `result`。
 - 文件分块只做完整性与顺序校验，不做加密；证据加密由控制端负责。
 - 错误码表是稳定契约，但具体 `message` 文案可能随版本调整，调用方不得解析文案。
+
+## 12. 当前实现兼容层 / Implemented compatibility layer
+
+> 本节记录 `probe/src` 与 `inkblade/channel.py` 的**已实现**线格式；上文是
+> v1 目标语义。两者不矛盾时以上文为准，字段名以本节为准，避免“文档先行、
+> 代码未跟上”的误读。
+
+当前探针启动帧同时是 `hello`：
+
+```json
+{"v":1,"type":"hello","probe_id":"probe-...","parent_id":null,
+ "version":"0.1.0","challenge":"<hex>","nonce":"<hex>",
+ "auth":"hmac-sha256","read_only":true,"window":4}
+```
+
+客户端发送：
+
+```json
+{"v":1,"type":"auth","nonce":"<client nonce>",
+ "mac":"<hex HMAC(token, 'inkblade-probe/v1|nonce|challenge')>",
+ "proof":"<optional b64 HMAC(token, nonce||probe_id||parent_id)>"}
+```
+
+探针接受 `mac`（`v1|nonce|challenge`）或目标语义的 `proof`（
+`nonce||probe_id||parent_id`）任一；成功后回 `ready`，含 `caps`、`read_only`、
+`window`、`max_output`。`LocalFramedClient` 与 Python `ProbeConnection` 使用
+`mac` 形式。
+
+请求/响应使用 `req`/`resp` 信封：
+
+```json
+{"v":1,"type":"req","id":"t1","op":"task",
+ "args":{"task_id":"t1","template":{...},"params":{...}}}
+{"v":1,"type":"resp","id":"t1","ok":true,"data":{"ok":true,"steps":[...],
+ "vars":{"steps.x":{...}},"probe_id":"probe-..."}}
+```
+
+协议也接受目标语义的 `type:"task"`（`op:"template"` 映射为 `task`）；响应仍
+使用 `resp`，以保持 `tpl.probe.LocalFramedClient` 的单一读取路径。实际 op：
+`ping/beacon/collect/exec/dial/task/upload/download/spawn/cleanup/socks/k8s`。
+错误码是 `auth_failed`、`unknown_op`、`exec_failed`、`dial_failed`、
+`task_failed`、`upload_failed`、`download_failed`、`spawn_failed`、
+`k8s_failed`、`probe_not_found`；控制器按类型映射到上文 `E_*` 语义。
+子探针帧带 `probe_id`/`parent_id`；父探针按 `probe` 字段转发。
+
+实际实现见 [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md) 与 `probe/src/server.rs`。

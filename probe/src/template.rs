@@ -15,7 +15,7 @@ use crate::exec;
 use crate::fsops;
 use crate::http::{self, HttpRequest};
 use crate::json::{self, Value};
-use crate::k8s::{self, K8sConfig};
+use crate::k8s::K8sConfig;
 use crate::net;
 use crate::spawn;
 use crate::util;

@@ -10,6 +10,7 @@ use std::thread;
 use std::time::Instant;
 
 use crate::audit::Audit;
+use crate::auth;
 use crate::base64;
 use crate::collect;
 use crate::config::Options;
@@ -54,11 +55,27 @@ impl State {
     }
 
     fn response(&self, id: &str, data: Value) {
-        self.send_raw(protocol::response(id, data));
+        let mut value = protocol::response(id, data);
+        if let Value::Obj(items) = &mut value {
+            items.push(("probe_id".to_string(), json::string(self.opts.probe_id.clone())));
+            items.push((
+                "parent_id".to_string(),
+                self.opts.parent_id.clone().map(json::string).unwrap_or(Value::Null),
+            ));
+        }
+        self.send_raw(value);
     }
 
     fn failure(&self, id: &str, code: &str, message: &str) {
-        self.send_raw(protocol::failure(id, code, message));
+        let mut value = protocol::failure(id, code, message);
+        if let Value::Obj(items) = &mut value {
+            items.push(("probe_id".to_string(), json::string(self.opts.probe_id.clone())));
+            items.push((
+                "parent_id".to_string(),
+                self.opts.parent_id.clone().map(json::string).unwrap_or(Value::Null),
+            ));
+        }
+        self.send_raw(value);
     }
 }
 
@@ -106,15 +123,17 @@ pub fn serve(opts: Options) -> Result<(), String> {
 }
 
 fn handshake(state: &State) -> Result<(), String> {
-    let challenge = util::random_hex(16);
+    let challenge = auth::new_challenge();
+    let server_nonce = auth::new_challenge();
     state.send(json::object(vec![
         ("v", json::number(1)),
-        ("type", json::string("challenge")),
+        ("type", json::string("hello")),
         ("server", json::string("inkblade-probe")),
         ("version", json::string(VERSION)),
         ("probe_id", json::string(state.opts.probe_id.clone())),
         ("parent_id", state.opts.parent_id.clone().map(json::string).unwrap_or(Value::Null)),
         ("challenge", json::string(challenge.clone())),
+        ("nonce", json::string(server_nonce.clone())),
         ("auth", json::string("hmac-sha256")),
         ("read_only", json::bool_value(state.opts.read_only)),
         ("window", json::number(state.opts.max_window as u64)),
@@ -129,23 +148,34 @@ fn handshake(state: &State) -> Result<(), String> {
     let nonce = frame
         .get("nonce")
         .and_then(Value::as_str)
-        .ok_or_else(|| "auth nonce missing".to_string())?;
-    let mac = frame
-        .get("mac")
-        .and_then(Value::as_str)
-        .ok_or_else(|| "auth mac missing".to_string())?;
-    let message = format!("inkblade-probe/v1|{nonce}|{challenge}");
-    let expected = crate::sha256::hmac_sha256(state.opts.token.as_bytes(), message.as_bytes());
-    let ok = match base64::unhex(mac) {
-        Ok(provided) => crate::sha256::constant_time_eq(&provided, &expected),
-        Err(_) => false,
+        .map(str::to_string)
+        .unwrap_or_else(|| server_nonce.clone());
+    let mac = frame.get("mac").and_then(Value::as_str);
+    let proof = frame.get("proof").and_then(Value::as_str);
+    let ok = if let Some(mac) = mac {
+        auth::verify(&state.opts.token, &nonce, &challenge, mac)
+    } else if let Some(proof) = proof {
+        verify_proof(state, &nonce, proof)
+    } else {
+        false
     };
     if !ok {
         state.audit.event(
             "probe.auth_failed",
             json::object(vec![("remote", json::string("stdio"))]),
         );
-        state.failure("auth", "auth_failed", "challenge-HMAC verification failed");
+        state.send_raw(json::object(vec![
+            ("v", json::number(1)),
+            ("type", json::string("error")),
+            ("ok", json::bool_value(false)),
+            (
+                "error",
+                json::object(vec![
+                    ("code", json::string("auth_failed")),
+                    ("message", json::string("challenge-HMAC verification failed")),
+                ]),
+            ),
+        ]));
         return Err("authentication failed".to_string());
     }
     state.send(json::object(vec![
@@ -174,16 +204,40 @@ fn handshake(state: &State) -> Result<(), String> {
     Ok(())
 }
 
+fn verify_proof(state: &State, nonce: &str, proof: &str) -> bool {
+    let trimmed = proof.strip_prefix("b64:").unwrap_or(proof);
+    let provided = base64::decode(trimmed)
+        .or_else(|_| base64::decode_url(trimmed))
+        .or_else(|_| base64::unhex(trimmed));
+    let provided = match provided {
+        Ok(value) => value,
+        Err(_) => return false,
+    };
+    let parent = state.opts.parent_id.clone().unwrap_or_default();
+    let message = format!("{nonce}{}{parent}", state.opts.probe_id);
+    let expected = crate::sha256::hmac_sha256(state.opts.token.as_bytes(), message.as_bytes());
+    crate::sha256::constant_time_eq(&provided, &expected)
+}
+
 fn handle_frame(state: &Arc<State>, frame: Value) -> Result<(), String> {
     let frame_type = frame.get("type").and_then(Value::as_str).unwrap_or("");
     if frame_type == "data" || frame_type == "stream-eof" || frame_type == "stream-close" {
         return handle_stream_frame(state, &frame);
     }
-    if frame_type != "req" {
+    if frame_type == "result" || frame_type == "event" {
+        return Ok(());
+    }
+    if frame_type == "bye" {
+        return Err("client said bye".to_string());
+    }
+    if frame_type != "req" && frame_type != "task" {
         return Ok(());
     }
     let id = frame.get("id").and_then(Value::as_str).unwrap_or("").to_string();
-    let op = frame.get("op").and_then(Value::as_str).unwrap_or("").to_string();
+    let mut op = frame.get("op").and_then(Value::as_str).unwrap_or("").to_string();
+    if frame_type == "task" && (op.is_empty() || op == "template") {
+        op = "task".to_string();
+    }
     let args = frame.get("args").cloned().unwrap_or(Value::Null);
     if let Some(target) = frame.get("probe").and_then(Value::as_str) {
         if target != state.opts.probe_id {
@@ -705,6 +759,17 @@ fn cleanup_streams(state: &State) {
 fn shutdown(state: &State) {
     cleanup_children(state);
     cleanup_streams(state);
+    if !state.opts.keep_binary {
+        if let Ok(executable) = std::env::current_exe() {
+            let name = executable
+                .file_name()
+                .map(|value| value.to_string_lossy().to_string())
+                .unwrap_or_default();
+            if name.starts_with(".inkblade-probe") {
+                let _ = std::fs::remove_file(executable);
+            }
+        }
+    }
     state.audit.event(
         "probe.shutdown",
         json::object(vec![("probe_id", json::string(state.opts.probe_id.clone()))]),
