@@ -1,0 +1,213 @@
+{
+  "_cached_at": "2026-10-26T12:15:00+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 17,
+            "val": "Python"
+          },
+          {
+            "count": 9,
+            "val": "YAML"
+          },
+          {
+            "count": 3,
+            "val": "Go"
+          },
+          {
+            "count": 3,
+            "val": "Markdown"
+          },
+          {
+            "count": 2,
+            "val": "Shell"
+          },
+          {
+            "count": 2,
+            "val": "TypeScript"
+          },
+          {
+            "count": 1,
+            "val": "Makefile"
+          },
+          {
+            "count": 1,
+            "val": "Smarty"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 15,
+            "val": "dify-agent/"
+          },
+          {
+            "count": 7,
+            "val": "shell-session-manager/"
+          },
+          {
+            "count": 4,
+            "val": "ci/"
+          },
+          {
+            "count": 4,
+            "val": "dify-agent-runtime/"
+          },
+          {
+            "count": 4,
+            "val": "docker/"
+          },
+          {
+            "count": 3,
+            "val": "charts/dify/"
+          },
+          {
+            "count": 3,
+            "val": "e2e/"
+          },
+          {
+            "count": 1,
+            "val": "services/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 26,
+            "owner_id": "127165244",
+            "val": "langgenius/dify"
+          },
+          {
+            "count": 7,
+            "owner_id": "12964401",
+            "val": "BorisPolonsky/dify-helm"
+          },
+          {
+            "count": 7,
+            "owner_id": "32453863",
+            "val": "BeautyyuYanli/Kapybara"
+          },
+          {
+            "count": 1,
+            "owner_id": "38184623",
+            "val": "av/harbor"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"51\"><td><div class=\"lineno\">51</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;DIFY_AGENT_LOCAL_SANDBOX_AUTH_TOKEN&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"52\"><td><div class=\"lineno\">52</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;DIFY_AGENT_<mark>SHELLCTL_AUTH_TOKEN</mark>&quot;</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"84\"><td><div class=\"lineno\">84</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">openshell_egress_allow</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;&quot;</span></pre></div></td></tr><tr data-line=\"85\"><td><div class=\"lineno\">85</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">openshell_<mark>shellctl_auth_token</mark></span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;&quot;</span></pre></div></td></tr><tr data-line=\"86\"><td><div class=\"lineno\">86</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">openshell_shellctl_port</span><span class=\"p\">:</span> <span class=\"nb\">int</span> <span class=\"o\">=</span> <span class=\"n\">Field</span><span class=\"p\">(</span><span class=\"n\">default</span><span class=\"o\">=</span><span class=\"mi\">5004</span><span class=\"p\">,</span> <span class=\"n\">ge</span><span class=\"o\">=</span><span class=\"mi\">1</span><span class=\"p\">,</span> <span class=\"n\">le</span><span class=\"o\">=</span><span class=\"mi\">65535</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"137\"><td><div class=\"lineno\">137</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">_</span> <span class=\"o\">=</span> <span class=\"n\">_parse_openshell_egress_allow</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">openshell_egress_allow</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"138\"><td><div class=\"lineno\">138</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">if</span> <span class=\"ow\">not</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">openshell_<mark>shellctl_auth_token</mark></span><span class=\"o\">.</span><span class=\"n\">strip</span><span class=\"p\">():</span></pre></div></td></tr><tr data-line=\"139\"><td><div class=\"lineno\">139</div></td><td><div class=\"highlight\"><pre>                    <span class=\"k\">raise</span> <span class=\"ne\">ValueError</span><span class=\"p\">(</span><span class=\"s2\">&quot;openshell_<mark>shellctl_auth_token</mark> is required for the openshell runtime backend&quot;</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "127165244",
+          "path": "dify-agent/src/dify_agent/runtime_backend/profile.py",
+          "repo": "langgenius/dify",
+          "total_matches": "6"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"138\"><td><div class=\"lineno\">138</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"kt\">process.env.DIFY_AGENT_REDIS_URL</span><span class=\"w\"> </span><span class=\"o\">||</span><span class=\"w\"> </span><span class=\"sb\">`redis://:</span><span class=\"si\">${</span><span class=\"nx\">redisPassword</span><span class=\"si\">}</span><span class=\"sb\">@127.0.0.1:6379/0`</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"139\"><td><div class=\"lineno\">139</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"nx\">DIFY_AGENT_<mark>SHELLCTL_AUTH_TOKEN</mark></span><span class=\"o\">:</span></pre></div></td></tr><tr data-line=\"140\"><td><div class=\"lineno\">140</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"kt\">process.env.DIFY_AGENT_<mark>SHELLCTL_AUTH_TOKEN</mark></span><span class=\"w\"> </span><span class=\"o\">||</span><span class=\"w\"> </span><span class=\"nx\">process</span><span class=\"p\">.</span><span class=\"nx\">env</span><span class=\"p\">.</span><span class=\"nx\">E2E_<mark>SHELLCTL_AUTH_TOKEN</mark></span><span class=\"w\"> </span><span class=\"o\">||</span><span class=\"w\"> </span><span class=\"s1\">&#39;&#39;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"141\"><td><div class=\"lineno\">141</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"nx\">DIFY_AGENT_SHELLCTL_ENTRYPOINT</span><span class=\"o\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"430\"><td><div class=\"lineno\">430</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"sb\">`</span><span class=\"si\">${</span><span class=\"nx\">shellctlHost</span><span class=\"si\">}</span><span class=\"sb\">:</span><span class=\"si\">${</span><span class=\"nx\">shellctlPort</span><span class=\"si\">}</span><span class=\"sb\">:5004`</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"431\"><td><div class=\"lineno\">431</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"p\">...(</span><span class=\"nx\">process</span><span class=\"p\">.</span><span class=\"nx\">env</span><span class=\"p\">.</span><span class=\"nx\">E2E_<mark>SHELLCTL_AUTH_TOKEN</mark></span></pre></div></td></tr><tr data-line=\"432\"><td><div class=\"lineno\">432</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"o\">?</span><span class=\"w\"> </span><span class=\"p\">[</span><span class=\"s1\">&#39;-e&#39;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"sb\">`<mark>SHELLCTL_AUTH_TOKEN</mark>=</span><span class=\"si\">${</span><span class=\"nx\">process</span><span class=\"p\">.</span><span class=\"nx\">env</span><span class=\"p\">.</span><span class=\"nx\">E2E_<mark>SHELLCTL_AUTH_TOKEN</mark></span><span class=\"si\">}</span><span class=\"sb\">`</span><span class=\"p\">]</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "127165244",
+          "path": "e2e/scripts/setup.ts",
+          "repo": "langgenius/dify",
+          "total_matches": "6"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"504\"><td><div class=\"lineno\">504</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">control_plane</span><span class=\"p\">:</span> <span class=\"n\">OpenShellControlPlane</span></pre></div></td></tr><tr data-line=\"505\"><td><div class=\"lineno\">505</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>shellctl_auth_token</mark></span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;&quot;</span></pre></div></td></tr><tr data-line=\"506\"><td><div class=\"lineno\">506</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">shellctl_port</span><span class=\"p\">:</span> <span class=\"nb\">int</span> <span class=\"o\">=</span> <span class=\"mi\">5004</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"674\"><td><div class=\"lineno\">674</div></td><td><div class=\"highlight\"><pre>                <span class=\"sa\">f</span><span class=\"s2\">&quot;export HOME=</span><span class=\"si\">{</span><span class=\"n\">shlex</span><span class=\"o\">.</span><span class=\"n\">quote</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">layout</span><span class=\"o\">.</span><span class=\"n\">home_dir</span><span class=\"p\">)</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"675\"><td><div class=\"lineno\">675</div></td><td><div class=\"highlight\"><pre>                <span class=\"sa\">f</span><span class=\"s2\">&quot;export <mark>SHELLCTL_AUTH_TOKEN</mark>=</span><span class=\"si\">{</span><span class=\"n\">shlex</span><span class=\"o\">.</span><span class=\"n\">quote</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>shellctl_auth_token</mark></span><span class=\"p\">)</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"676\"><td><div class=\"lineno\">676</div></td><td><div class=\"highlight\"><pre>                <span class=\"s2\">&quot;export SHELLCTL_ENABLE_PATH_ISOLATION=false&quot;</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"705\"><td><div class=\"lineno\">705</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">ShellctlClientProtocol</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"706\"><td><div class=\"lineno\">706</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">cast</span><span class=\"p\">(</span><span class=\"nb\">object</span><span class=\"p\">,</span> <span class=\"n\">ShellctlClient</span><span class=\"p\">(</span><span class=\"n\">base_url</span><span class=\"p\">,</span> <span class=\"n\">token</span><span class=\"o\">=</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>shellctl_auth_token</mark></span><span class=\"p\">,</span> <span class=\"n\">client</span><span class=\"o\">=</span><span class=\"n\">http_client</span><span class=\"p\">)),</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "127165244",
+          "path": "dify-agent/src/dify_agent/runtime_backend/openshell.py",
+          "repo": "langgenius/dify",
+          "total_matches": "5"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"72\"><td><div class=\"lineno\">72</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">default</span><span class=\"o\">=</span><span class=\"kc\">None</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"73\"><td><div class=\"lineno\">73</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">validation_alias</span><span class=\"o\">=</span><span class=\"n\">AliasChoices</span><span class=\"p\">(</span><span class=\"s2\">&quot;DIFY_AGENT_LOCAL_SANDBOX_AUTH_TOKEN&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;DIFY_AGENT_<mark>SHELLCTL_AUTH_TOKEN</mark>&quot;</span><span class=\"p\">),</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"101\"><td><div class=\"lineno\">101</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">openshell_egress_allow</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;&quot;</span></pre></div></td></tr><tr data-line=\"102\"><td><div class=\"lineno\">102</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">openshell_<mark>shellctl_auth_token</mark></span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;&quot;</span></pre></div></td></tr><tr data-line=\"103\"><td><div class=\"lineno\">103</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">openshell_shellctl_port</span><span class=\"p\">:</span> <span class=\"nb\">int</span> <span class=\"o\">=</span> <span class=\"n\">Field</span><span class=\"p\">(</span><span class=\"n\">default</span><span class=\"o\">=</span><span class=\"mi\">5004</span><span class=\"p\">,</span> <span class=\"n\">ge</span><span class=\"o\">=</span><span class=\"mi\">1</span><span class=\"p\">,</span> <span class=\"n\">le</span><span class=\"o\">=</span><span class=\"mi\">65535</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"257\"><td><div class=\"lineno\">257</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">openshell_egress_allow</span><span class=\"o\">=</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">openshell_egress_allow</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"258\"><td><div class=\"lineno\">258</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">openshell_<mark>shellctl_auth_token</mark></span><span class=\"o\">=</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">openshell_<mark>shellctl_auth_token</mark></span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"259\"><td><div class=\"lineno\">259</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">openshell_shellctl_port</span><span class=\"o\">=</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">openshell_shellctl_port</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "127165244",
+          "path": "dify-agent/src/dify_agent/server/settings.py",
+          "repo": "langgenius/dify",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"92\"><td><div class=\"lineno\">92</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"nx\">E2E_SLOW_MO</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">process.env.E2E_SLOW_MO</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"93\"><td><div class=\"lineno\">93</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"nx\">E2E_<mark>SHELLCTL_AUTH_TOKEN</mark></span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">process.env.E2E_<mark>SHELLCTL_AUTH_TOKEN</mark></span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"94\"><td><div class=\"lineno\">94</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"nx\">E2E_SHELLCTL_CONTAINER_NAME</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">process.env.E2E_SHELLCTL_CONTAINER_NAME</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"125\"><td><div class=\"lineno\">125</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"nx\">E2E_SLOW_MO</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">z.coerce.number</span><span class=\"p\">().</span><span class=\"nx\">nonnegative</span><span class=\"p\">().</span><span class=\"nx\">optional</span><span class=\"p\">(),</span></pre></div></td></tr><tr data-line=\"126\"><td><div class=\"lineno\">126</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"nx\">E2E_<mark>SHELLCTL_AUTH_TOKEN</mark></span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">z.string</span><span class=\"p\">().</span><span class=\"nx\">min</span><span class=\"p\">(</span><span class=\"mf\">1</span><span class=\"p\">).</span><span class=\"nx\">optional</span><span class=\"p\">(),</span></pre></div></td></tr><tr data-line=\"127\"><td><div class=\"lineno\">127</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"nx\">E2E_SHELLCTL_CONTAINER_NAME</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">z.string</span><span class=\"p\">().</span><span class=\"nx\">min</span><span class=\"p\">(</span><span class=\"mf\">1</span><span class=\"p\">).</span><span class=\"nx\">optional</span><span class=\"p\">(),</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "127165244",
+          "path": "e2e/scripts/env.ts",
+          "repo": "langgenius/dify",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"135\"><td><div class=\"lineno\">135</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">openshell_driver_config</span><span class=\"o\">=</span><span class=\"s2\">&quot;</span><span class=\"si\">{}</span><span class=\"s2\">&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"136\"><td><div class=\"lineno\">136</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">openshell_<mark>shellctl_auth_token</mark></span><span class=\"o\">=</span><span class=\"s2\">&quot;token-1&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"137\"><td><div class=\"lineno\">137</div></td><td><div class=\"highlight\"><pre>        <span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"138\"><td><div class=\"lineno\">138</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"139\"><td><div class=\"lineno\">139</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"140\"><td><div class=\"lineno\">140</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">test_openshell_backend_requires_<mark>shellctl_auth_token</mark></span><span class=\"p\">()</span> <span class=\"o\">-&gt;</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"141\"><td><div class=\"lineno\">141</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">with</span> <span class=\"n\">pytest</span><span class=\"o\">.</span><span class=\"n\">raises</span><span class=\"p\">(</span><span class=\"n\">ValidationError</span><span class=\"p\">,</span> <span class=\"n\">match</span><span class=\"o\">=</span><span class=\"s2\">&quot;openshell_<mark>shellctl_auth_token</mark>&quot;</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"142\"><td><div class=\"lineno\">142</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">_</span> <span class=\"o\">=</span> <span class=\"n\">RuntimeBackendSettings</span><span class=\"p\">(</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"155\"><td><div class=\"lineno\">155</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">openshell_<mark>shellctl_auth_token</mark></span><span class=\"o\">=</span><span class=\"s2\">&quot;token-1&quot;</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "127165244",
+          "path": "dify-agent/tests/local/dify_agent/runtime_backend/test_profile.py",
+          "repo": "langgenius/dify",
+          "total_matches": "10"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"59\"><td><div class=\"lineno\">59</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t</span>-p<span class=\"w\"> </span><span class=\"k\">$(</span>HOST_PORT<span class=\"k\">)</span>:5004<span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"60\"><td><div class=\"lineno\">60</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t</span>-e<span class=\"w\"> </span><span class=\"nv\"><mark>SHELLCTL_AUTH_TOKEN</mark></span><span class=\"o\">=</span><span class=\"k\">$(</span>AUTH_TOKEN<span class=\"k\">)</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"61\"><td><div class=\"lineno\">61</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t</span><span class=\"k\">$(</span>IMAGE_NAME<span class=\"k\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"85\"><td><div class=\"lineno\">85</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t</span>-p<span class=\"w\"> </span><span class=\"k\">$(</span>HOST_PORT_NOISO<span class=\"k\">)</span>:5004<span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"86\"><td><div class=\"lineno\">86</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t</span>-e<span class=\"w\"> </span><span class=\"nv\"><mark>SHELLCTL_AUTH_TOKEN</mark></span><span class=\"o\">=</span><span class=\"k\">$(</span>AUTH_TOKEN_NOISO<span class=\"k\">)</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"87\"><td><div class=\"lineno\">87</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t</span>-e<span class=\"w\"> </span><span class=\"nv\">SHELLCTL_ENABLE_PATH_ISOLATION</span><span class=\"o\">=</span><span class=\"nb\">false</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "127165244",
+          "path": "dify-agent-runtime/Makefile",
+          "repo": "langgenius/dify",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"41\"><td><div class=\"lineno\">41</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">test_server_settings_reads_<mark>shellctl_auth_token</mark>_from_env</span><span class=\"p\">(</span><span class=\"n\">monkeypatch</span><span class=\"p\">:</span> <span class=\"n\">pytest</span><span class=\"o\">.</span><span class=\"n\">MonkeyPatch</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"42\"><td><div class=\"lineno\">42</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">monkeypatch</span><span class=\"o\">.</span><span class=\"n\">setenv</span><span class=\"p\">(</span><span class=\"s2\">&quot;DIFY_AGENT_<mark>SHELLCTL_AUTH_TOKEN</mark>&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;shell-secret&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"163\"><td><div class=\"lineno\">163</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">test_server_settings_defaults_<mark>shellctl_auth_token</mark>_to_none</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"164\"><td><div class=\"lineno\">164</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">monkeypatch</span><span class=\"p\">:</span> <span class=\"n\">pytest</span><span class=\"o\">.</span><span class=\"n\">MonkeyPatch</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"165\"><td><div class=\"lineno\">165</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">tmp_path</span><span class=\"p\">:</span> <span class=\"n\">Path</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"166\"><td><div class=\"lineno\">166</div></td><td><div class=\"highlight\"><pre><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"167\"><td><div class=\"lineno\">167</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">monkeypatch</span><span class=\"o\">.</span><span class=\"n\">delenv</span><span class=\"p\">(</span><span class=\"s2\">&quot;DIFY_AGENT_<mark>SHELLCTL_AUTH_TOKEN</mark>&quot;</span><span class=\"p\">,</span> <span class=\"n\">raising</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"168\"><td><div class=\"lineno\">168</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">monkeypatch</span><span class=\"o\">.</span><span class=\"n\">chdir</span><span class=\"p\">(</span><span class=\"n\">tmp_path</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "127165244",
+          "path": "dify-agent/tests/local/dify_agent/server/test_settings.py",
+          "repo": "langgenius/dify",
+          "total_matches": "7"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"70\"><td><div class=\"lineno\">70</div></td><td><div class=\"highlight\"><pre><span class=\"s\">vault kv get -field=&quot;<mark>shellctl_auth_token</mark>&quot; &quot;secret/dify/agent-backend&quot; &gt;/dev/null 2&gt;&amp;1 &amp;&amp; echo &quot;SUCCESS:dify/agent-backend:<mark>shellctl_auth_token</mark>&quot; || echo &quot;ERROR:dify/agent-backend:<mark>shellctl_auth_token</mark>&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"154\"><td><div class=\"lineno\">154</div></td><td><div class=\"highlight\"><pre><span class=\"s1\">echo &quot;Setting up agent backend secrets...&quot;</span></pre></div></td></tr><tr data-line=\"155\"><td><div class=\"lineno\">155</div></td><td><div class=\"highlight\"><pre><span class=\"s1\">vault kv put secret/dify/agent-backend api_token=&quot;test-agent-api-token&quot; server_secret_key=&quot;MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY&quot; <mark>shellctl_auth_token</mark>=&quot;test-shellctl-auth-token&quot;</span></pre></div></td></tr><tr data-line=\"156\"><td><div class=\"lineno\">156</div></td><td><div class=\"highlight\"><pre><span class=\"s1\">echo &quot;All secrets setup completed successfully&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "12964401",
+          "path": "ci/scripts/setup-and-validate-vault.sh",
+          "repo": "BorisPolonsky/dify-helm",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre><span class=\"nv\">token</span><span class=\"o\">=</span><span class=\"s2\">&quot;</span><span class=\"si\">${</span><span class=\"nv\">DIFY_AGENT_TEST_LOCAL_<mark>SHELLCTL_AUTH_TOKEN</mark></span><span class=\"k\">:-</span><span class=\"nv\">runtime</span><span class=\"p\">-backend-integration</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"17\"><td><div class=\"lineno\">17</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span>--env<span class=\"w\"> </span><span class=\"nv\">SHELLCTL_ENABLE_PATH_ISOLATION</span><span class=\"o\">=</span><span class=\"nb\">true</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"18\"><td><div class=\"lineno\">18</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span>--env<span class=\"w\"> </span><span class=\"nv\"><mark>SHELLCTL_AUTH_TOKEN</mark></span><span class=\"o\">=</span><span class=\"s2\">&quot;</span><span class=\"nv\">$token</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"19\"><td><div class=\"lineno\">19</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span>--publish<span class=\"w\"> </span><span class=\"m\">127</span>.0.0.1::5004<span class=\"w\"> </span><span class=\"se\">\\</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"36\"><td><div class=\"lineno\">36</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nv\">DIFY_AGENT_TEST_LOCAL_SHELLCTL_ENDPOINT</span><span class=\"o\">=</span><span class=\"s2\">&quot;</span><span class=\"nv\">$endpoint</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"37\"><td><div class=\"lineno\">37</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nv\">DIFY_AGENT_TEST_LOCAL_<mark>SHELLCTL_AUTH_TOKEN</mark></span><span class=\"o\">=</span><span class=\"s2\">&quot;</span><span class=\"nv\">$token</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"38\"><td><div class=\"lineno\">38</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span>pdm<span class=\"w\"> </span>run<span class=\"w\"> </span>pytest<span class=\"w\"> </span>--import-mode<span class=\"o\">=</span>importlib<span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "127165244",
+          "path": "dify-agent/tests/integration/dify_agent/runtime_backend/run_local_integration.sh",
+          "repo": "langgenius/dify",
+          "total_matches": "3"
+        }
+      ],
+      "total": 41
+    },
+    "time": 94
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=SHELLCTL_AUTH_TOKEN"
+}

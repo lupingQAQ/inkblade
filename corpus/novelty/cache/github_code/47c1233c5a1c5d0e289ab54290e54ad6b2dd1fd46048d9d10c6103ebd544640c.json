@@ -1,0 +1,185 @@
+{
+  "_cached_at": "2026-10-26T11:37:02+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 8,
+            "val": "Python"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 1,
+            "val": "Megatron-LM/megatron/core/datasets/"
+          },
+          {
+            "count": 1,
+            "val": "aiak_megatron/megatron/core/datasets/"
+          },
+          {
+            "count": 1,
+            "val": "code/finetune/core/datasets/"
+          },
+          {
+            "count": 1,
+            "val": "megatron/core/datasets/"
+          },
+          {
+            "count": 1,
+            "val": "models/Megatron/megatron/core/datasets/"
+          },
+          {
+            "count": 1,
+            "val": "pretrain/megatron/core/datasets/"
+          },
+          {
+            "count": 1,
+            "val": "projects/train_perf/Megatron-LM/megatron/core/datasets/"
+          },
+          {
+            "count": 1,
+            "val": "touchnet/data/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 1,
+            "owner_id": "101862282",
+            "val": "JieShibo/MoLE"
+          },
+          {
+            "count": 1,
+            "owner_id": "13466943",
+            "val": "xingchensong/TouchNet"
+          },
+          {
+            "count": 1,
+            "owner_id": "154951679",
+            "val": "EvolvingLMMs-Lab/LLaVA-OneVision-2"
+          },
+          {
+            "count": 1,
+            "owner_id": "170080102",
+            "val": "WtxwNs/BACH"
+          },
+          {
+            "count": 1,
+            "owner_id": "1728152",
+            "val": "NVIDIA/Megatron-LM"
+          },
+          {
+            "count": 1,
+            "owner_id": "197493814",
+            "val": "Gen-Verse/OpenClaw-RL"
+          },
+          {
+            "count": 1,
+            "owner_id": "280753787",
+            "val": "Shao-Music-AI/Shao"
+          },
+          {
+            "count": 1,
+            "owner_id": "4158466",
+            "val": "bytedance/xpu-perf"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"683\"><td><div class=\"lineno\">683</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        This method is called by <mark>IndexedDataset.__init__</mark> during object creation and by</span></pre></div></td></tr><tr data-line=\"684\"><td><div class=\"lineno\">684</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        IndexedDataset.__setstate__ during un-pickling</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1728152",
+          "path": "megatron/core/datasets/indexed_dataset.py",
+          "repo": "NVIDIA/Megatron-LM",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"615\"><td><div class=\"lineno\">615</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        This method is called by <mark>IndexedDataset.__init__</mark> during object creation and by</span></pre></div></td></tr><tr data-line=\"616\"><td><div class=\"lineno\">616</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        IndexedDataset.__setstate__ during un-pickling</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "197493814",
+          "path": "Megatron-LM/megatron/core/datasets/indexed_dataset.py",
+          "repo": "Gen-Verse/OpenClaw-RL",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"557\"><td><div class=\"lineno\">557</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        This method is called by <mark>IndexedDataset.__init__</mark> during object creation and by</span></pre></div></td></tr><tr data-line=\"558\"><td><div class=\"lineno\">558</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        IndexedDataset.__setstate__ during un-pickling</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "154951679",
+          "path": "aiak_megatron/megatron/core/datasets/indexed_dataset.py",
+          "repo": "EvolvingLMMs-Lab/LLaVA-OneVision-2",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"547\"><td><div class=\"lineno\">547</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        This method is called by <mark>IndexedDataset.__init__</mark> during object creation and by</span></pre></div></td></tr><tr data-line=\"548\"><td><div class=\"lineno\">548</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        IndexedDataset.__setstate__ during un-pickling</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "4158466",
+          "path": "projects/train_perf/Megatron-LM/megatron/core/datasets/indexed_dataset.py",
+          "repo": "bytedance/xpu-perf",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"615\"><td><div class=\"lineno\">615</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        This method is called by <mark>IndexedDataset.__init__</mark> during object creation and by</span></pre></div></td></tr><tr data-line=\"616\"><td><div class=\"lineno\">616</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        IndexedDataset.__setstate__ during un-pickling</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "280753787",
+          "path": "models/Megatron/megatron/core/datasets/indexed_dataset.py",
+          "repo": "Shao-Music-AI/Shao",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"357\"><td><div class=\"lineno\">357</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        This method is called by MMap<mark>IndexedDataset.__init__</mark> during object creation and by</span></pre></div></td></tr><tr data-line=\"358\"><td><div class=\"lineno\">358</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        MMapIndexedDataset.__setstate__ during un-puckling</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "170080102",
+          "path": "code/finetune/core/datasets/indexed_dataset.py",
+          "repo": "WtxwNs/BACH",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"431\"><td><div class=\"lineno\">431</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        This method is called by <mark>IndexedDataset.__init__</mark> during object creation and by</span></pre></div></td></tr><tr data-line=\"432\"><td><div class=\"lineno\">432</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        IndexedDataset.__setstate__ during un-pickling</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "13466943",
+          "path": "touchnet/data/dataset.py",
+          "repo": "xingchensong/TouchNet",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"356\"><td><div class=\"lineno\">356</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        This method is called by <mark>IndexedDataset.__init__</mark> during object creation and by</span></pre></div></td></tr><tr data-line=\"357\"><td><div class=\"lineno\">357</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        IndexedDataset.__setstate__ during un-puckling</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "101862282",
+          "path": "pretrain/megatron/core/datasets/indexed_dataset.py",
+          "repo": "JieShibo/MoLE",
+          "total_matches": "1"
+        }
+      ],
+      "total": 8
+    },
+    "time": 229
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=IndexedDataset.__init__"
+}

@@ -1,0 +1,139 @@
+{
+  "_cached_at": "2026-10-26T11:37:05+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 6,
+            "val": "Python"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 3,
+            "val": "swift/"
+          },
+          {
+            "count": 1,
+            "val": "VBench-2.0/vbench2/third_party/Instance_detector/swift/plugin/"
+          },
+          {
+            "count": 1,
+            "val": "deepanalyze/ms-swift/swift/plugin/"
+          },
+          {
+            "count": 1,
+            "val": "parsing/train/ms-swift/swift/plugin/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 1,
+            "owner_id": "109945100",
+            "val": "modelscope/ms-swift"
+          },
+          {
+            "count": 1,
+            "owner_id": "145264752",
+            "val": "Vchitect/VBench"
+          },
+          {
+            "count": 1,
+            "owner_id": "215250636",
+            "val": "ECNU-SII/Continual-NExT"
+          },
+          {
+            "count": 1,
+            "owner_id": "34134635",
+            "val": "Yuliang-Liu/MonkeyOCRv2"
+          },
+          {
+            "count": 1,
+            "owner_id": "53161950",
+            "val": "yfzhang114/Thyme"
+          },
+          {
+            "count": 1,
+            "owner_id": "76154266",
+            "val": "ruc-datalab/DeepAnalyze"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"43\"><td><div class=\"lineno\">43</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">for</span> <span class=\"n\">i</span> <span class=\"ow\">in</span> <span class=\"nb\">range</span><span class=\"p\">(</span><span class=\"n\">preds</span><span class=\"o\">.</span><span class=\"n\">shape</span><span class=\"p\">[</span><span class=\"mi\">0</span><span class=\"p\">]):</span></pre></div></td></tr><tr data-line=\"44\"><td><div class=\"lineno\">44</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">new_preds</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"n\"><mark class=\"m-l\">Serializer</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_tensor</mark></span><span class=\"p\">(</span><span class=\"n\">preds</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]))</span></pre></div></td></tr><tr data-line=\"45\"><td><div class=\"lineno\">45</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">new_labels</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"n\"><mark class=\"m-l\">Serializer</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_tensor</mark></span><span class=\"p\">(</span><span class=\"n\">labels</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]))</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "109945100",
+          "path": "swift/metrics/nlg.py",
+          "repo": "modelscope/ms-swift",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"143\"><td><div class=\"lineno\">143</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">for</span> <span class=\"n\">i</span> <span class=\"ow\">in</span> <span class=\"nb\">range</span><span class=\"p\">(</span><span class=\"n\">preds</span><span class=\"o\">.</span><span class=\"n\">shape</span><span class=\"p\">[</span><span class=\"mi\">0</span><span class=\"p\">]):</span></pre></div></td></tr><tr data-line=\"144\"><td><div class=\"lineno\">144</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">new_preds</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"n\"><mark class=\"m-l\">Serializer</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_tensor</mark></span><span class=\"p\">(</span><span class=\"n\">preds</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]))</span></pre></div></td></tr><tr data-line=\"145\"><td><div class=\"lineno\">145</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">new_labels</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"n\"><mark class=\"m-l\">Serializer</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_tensor</mark></span><span class=\"p\">(</span><span class=\"n\">labels</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]))</span></pre></div></td></tr><tr data-line=\"146\"><td><div class=\"lineno\">146</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">return</span> <span class=\"n\">compute_rouge_bleu</span><span class=\"p\">(</span><span class=\"n\">new_preds</span><span class=\"p\">,</span> <span class=\"n\">new_labels</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "34134635",
+          "path": "parsing/train/ms-swift/swift/plugin/metric.py",
+          "repo": "Yuliang-Liu/MonkeyOCRv2",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"133\"><td><div class=\"lineno\">133</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">for</span> <span class=\"n\">i</span> <span class=\"ow\">in</span> <span class=\"nb\">range</span><span class=\"p\">(</span><span class=\"n\">preds</span><span class=\"o\">.</span><span class=\"n\">shape</span><span class=\"p\">[</span><span class=\"mi\">0</span><span class=\"p\">]):</span></pre></div></td></tr><tr data-line=\"134\"><td><div class=\"lineno\">134</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">new_preds</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"n\"><mark class=\"m-l\">Serializer</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_tensor</mark></span><span class=\"p\">(</span><span class=\"n\">preds</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]))</span></pre></div></td></tr><tr data-line=\"135\"><td><div class=\"lineno\">135</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">new_labels</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"n\"><mark class=\"m-l\">Serializer</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_tensor</mark></span><span class=\"p\">(</span><span class=\"n\">labels</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]))</span></pre></div></td></tr><tr data-line=\"136\"><td><div class=\"lineno\">136</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">return</span> <span class=\"n\">compute_rouge_bleu</span><span class=\"p\">(</span><span class=\"n\">new_preds</span><span class=\"p\">,</span> <span class=\"n\">new_labels</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "76154266",
+          "path": "deepanalyze/ms-swift/swift/plugin/metric.py",
+          "repo": "ruc-datalab/DeepAnalyze",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"126\"><td><div class=\"lineno\">126</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">for</span> <span class=\"n\">i</span> <span class=\"ow\">in</span> <span class=\"nb\">range</span><span class=\"p\">(</span><span class=\"n\">preds</span><span class=\"o\">.</span><span class=\"n\">shape</span><span class=\"p\">[</span><span class=\"mi\">0</span><span class=\"p\">]):</span></pre></div></td></tr><tr data-line=\"127\"><td><div class=\"lineno\">127</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">new_preds</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"n\"><mark class=\"m-l\">Serializer</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_tensor</mark></span><span class=\"p\">(</span><span class=\"n\">preds</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]))</span></pre></div></td></tr><tr data-line=\"128\"><td><div class=\"lineno\">128</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">new_labels</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"n\"><mark class=\"m-l\">Serializer</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_tensor</mark></span><span class=\"p\">(</span><span class=\"n\">labels</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]))</span></pre></div></td></tr><tr data-line=\"129\"><td><div class=\"lineno\">129</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">return</span> <span class=\"n\">compute_rouge_bleu</span><span class=\"p\">(</span><span class=\"n\">new_preds</span><span class=\"p\">,</span> <span class=\"n\">new_labels</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "215250636",
+          "path": "swift/plugin/metric.py",
+          "repo": "ECNU-SII/Continual-NExT",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"126\"><td><div class=\"lineno\">126</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">for</span> <span class=\"n\">i</span> <span class=\"ow\">in</span> <span class=\"nb\">range</span><span class=\"p\">(</span><span class=\"n\">preds</span><span class=\"o\">.</span><span class=\"n\">shape</span><span class=\"p\">[</span><span class=\"mi\">0</span><span class=\"p\">]):</span></pre></div></td></tr><tr data-line=\"127\"><td><div class=\"lineno\">127</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">new_preds</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"n\"><mark class=\"m-l\">Serializer</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_tensor</mark></span><span class=\"p\">(</span><span class=\"n\">preds</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]))</span></pre></div></td></tr><tr data-line=\"128\"><td><div class=\"lineno\">128</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">new_labels</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"n\"><mark class=\"m-l\">Serializer</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_tensor</mark></span><span class=\"p\">(</span><span class=\"n\">labels</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]))</span></pre></div></td></tr><tr data-line=\"129\"><td><div class=\"lineno\">129</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">return</span> <span class=\"n\">compute_rouge_bleu</span><span class=\"p\">(</span><span class=\"n\">new_preds</span><span class=\"p\">,</span> <span class=\"n\">new_labels</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "53161950",
+          "path": "swift/plugin/metric.py",
+          "repo": "yfzhang114/Thyme",
+          "total_matches": "2"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"126\"><td><div class=\"lineno\">126</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">for</span> <span class=\"n\">i</span> <span class=\"ow\">in</span> <span class=\"nb\">range</span><span class=\"p\">(</span><span class=\"n\">preds</span><span class=\"o\">.</span><span class=\"n\">shape</span><span class=\"p\">[</span><span class=\"mi\">0</span><span class=\"p\">]):</span></pre></div></td></tr><tr data-line=\"127\"><td><div class=\"lineno\">127</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">new_preds</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"n\"><mark class=\"m-l\">Serializer</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_tensor</mark></span><span class=\"p\">(</span><span class=\"n\">preds</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]))</span></pre></div></td></tr><tr data-line=\"128\"><td><div class=\"lineno\">128</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">new_labels</span><span class=\"o\">.</span><span class=\"n\">append</span><span class=\"p\">(</span><span class=\"n\"><mark class=\"m-l\">Serializer</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_tensor</mark></span><span class=\"p\">(</span><span class=\"n\">labels</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]))</span></pre></div></td></tr><tr data-line=\"129\"><td><div class=\"lineno\">129</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">return</span> <span class=\"n\">compute_rouge_bleu</span><span class=\"p\">(</span><span class=\"n\">new_preds</span><span class=\"p\">,</span> <span class=\"n\">new_labels</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "145264752",
+          "path": "VBench-2.0/vbench2/third_party/Instance_detector/swift/plugin/metric.py",
+          "repo": "Vchitect/VBench",
+          "total_matches": "2"
+        }
+      ],
+      "total": 6
+    },
+    "time": 229
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=Serializer.from_tensor"
+}

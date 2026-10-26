@@ -1,0 +1,19 @@
+{
+  "_cached_at": "2026-10-26T11:36:53+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": []
+      }
+    },
+    "hits": {
+      "hits": [],
+      "total": 0
+    },
+    "time": 215
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=addPath+%2F+EnableProfiling+%2F+StartMetricsServer"
+}

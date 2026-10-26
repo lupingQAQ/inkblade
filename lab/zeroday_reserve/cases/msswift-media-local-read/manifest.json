@@ -1,0 +1,40 @@
+{
+ "id": "msswift-media-local-read",
+ "source": "new-discovery",
+ "component": "msswift",
+ "title": "ms-swift 4.6.0 deploy media path reads arbitrary host files by default",
+ "version": "v4.6.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2"
+ },
+ "root_cause": {
+  "file": "swift/infer_engine/protocol.py",
+  "line": 275,
+  "function": "MultiModalRequestMixin.to_base64",
+  "snippet": "SafeMediaPath.check(mm_data)",
+  "source": "lab/zeroday_reserve/upstream/ms-swift-4.6.0/swift/infer_engine/protocol.py",
+  "note": "swift deploy accepts image/audio/video fields from chat requests. `to_base64` checks the local path with SafeMediaPath and then opens it, but SafeMediaPath returns the path unchanged when SWIFT_MEDIA_ALLOWED_DIRS is unset (the default). A caller can therefore name any host file; its bytes are inlined into the request and can be read back through the model or error behavior. The 4.6.0 guard is opt-in, so the default deployment remains an arbitrary-file-read primitive."
+ },
+ "preconditions": [
+  "swift deploy (OpenAI-compatible server) reachable",
+  "SWIFT_MEDIA_ALLOWED_DIRS is unset (default)",
+  "attacker can send a chat/completion request with a local media path"
+ ],
+ "steps": [
+  "extract the verbatim upstream SafeMediaPath class and MultiModalRequestMixin.to_base64 function",
+  "call to_base64 with a canary file path outside any allowed directory",
+  "decode the returned base64 and verify the canary content; then set SWIFT_MEDIA_ALLOWED_DIRS to an empty dir and observe the refusal"
+ ],
+ "expected_evidence": [
+  "base64 returned by the upstream function decodes to the canary marker",
+  "with the allowlist set, SafeMediaPath raises ValueError"
+ ],
+ "cleanup": "canary files under evidence/ are rewritten per run",
+ "status": "verified",
+ "method": "dynamic-function",
+ "marker_text": "TRIDENT-ZD-msswift-media-local-read",
+ "notes": "Function-level reproduction of the real 4.6.0 guard + inlining path; the FastAPI server/model are not started because the host has no GPU. The default-unsafe branch and the explicit allowlist branch are both the upstream code."
+}

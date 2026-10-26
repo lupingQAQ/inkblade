@@ -1,0 +1,178 @@
+{
+  "_cached_at": "2026-10-26T12:15:18+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 16,
+            "val": "Python"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 9,
+            "val": "deepspeed/"
+          },
+          {
+            "count": 3,
+            "val": "benchmark/third_party/DeepSpeed/deepspeed/"
+          },
+          {
+            "count": 2,
+            "val": "opensora/adaptor/"
+          },
+          {
+            "count": 1,
+            "val": "src/treetune/trainers/"
+          },
+          {
+            "count": 1,
+            "val": "tests/unit/checkpoint/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 7,
+            "owner_id": "74068820",
+            "val": "deepspeedai/DeepSpeed"
+          },
+          {
+            "count": 3,
+            "owner_id": "125944572",
+            "val": "FMInference/FlexLLMGen"
+          },
+          {
+            "count": 3,
+            "owner_id": "22693362",
+            "val": "CoinCheung/gdGPT"
+          },
+          {
+            "count": 2,
+            "owner_id": "135824553",
+            "val": "PKU-YuanGroup/Open-Sora-Plan"
+          },
+          {
+            "count": 1,
+            "owner_id": "73149310",
+            "val": "McGill-NLP/VinePPO"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"149\"><td><div class=\"lineno\">149</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">folder</span><span class=\"p\">,</span> <span class=\"n\">tp_rank</span><span class=\"p\">,</span> <span class=\"n\">tp_world_size</span><span class=\"p\">,</span> <span class=\"n\">ep_rank</span><span class=\"o\">=</span><span class=\"mi\">0</span><span class=\"p\">,</span> <span class=\"n\">ep_size</span><span class=\"o\">=</span><span class=\"mi\">1</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"150\"><td><div class=\"lineno\">150</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">hp_mapping</span> <span class=\"o\">=</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_hp_mapping</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"295\"><td><div class=\"lineno\">295</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">for</span> <span class=\"n\">param</span> <span class=\"ow\">in</span> <span class=\"n\">param_list</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"296\"><td><div class=\"lineno\">296</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">param</span><span class=\"o\">.</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark></span> <span class=\"o\">=</span> <span class=\"n\">types</span><span class=\"o\">.</span><span class=\"n\">MethodType</span><span class=\"p\">(</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark></span><span class=\"p\">,</span> <span class=\"n\">param</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "deepspeed/checkpoint/universal_checkpoint.py",
+          "repo": "deepspeedai/DeepSpeed",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"431\"><td><div class=\"lineno\">431</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span> <span class=\"nf\">_load_universal_checkpoint</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_folder</span><span class=\"p\">,</span> <span class=\"n\">load_optimizer_states</span><span class=\"p\">,</span> <span class=\"n\">load_from_fp32_weights</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"432\"><td><div class=\"lineno\">432</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"n\">checkpoint_folder</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"439\"><td><div class=\"lineno\">439</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span> <span class=\"nf\">_<mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_dir</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"440\"><td><div class=\"lineno\">440</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">checkpoint_dir</span> <span class=\"o\">=</span> <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">path</span><span class=\"o\">.</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"n\">checkpoint_dir</span><span class=\"p\">,</span> <span class=\"s2\">&quot;zero&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"447\"><td><div class=\"lineno\">447</div></td><td><div class=\"highlight\"><pre>                    <span class=\"c1\">#print(f&quot;Loading {self.param_names[lp]} {tp_rank=} {tp_world_size=}&quot;)</span></pre></div></td></tr><tr data-line=\"448\"><td><div class=\"lineno\">448</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">lp</span><span class=\"o\">.</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">path</span><span class=\"o\">.</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"n\">checkpoint_dir</span><span class=\"p\">,</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">param_names</span><span class=\"p\">[</span><span class=\"n\">lp</span><span class=\"p\">]),</span> <span class=\"n\">tp_rank</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"449\"><td><div class=\"lineno\">449</div></td><td><div class=\"highlight\"><pre>                                                <span class=\"n\">tp_world_size</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "135824553",
+          "path": "opensora/adaptor/bf16_optimizer.py",
+          "repo": "PKU-YuanGroup/Open-Sora-Plan",
+          "total_matches": "3"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"3372\"><td><div class=\"lineno\">3372</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">load_optimizer_states</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"3373\"><td><div class=\"lineno\">3373</div></td><td><div class=\"highlight\"><pre>            <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark>_from_checkpoint_dir_stage3</span><span class=\"p\">(</span><span class=\"n\">checkpoint_folder</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"3374\"><td><div class=\"lineno\">3374</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">else</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"3375\"><td><div class=\"lineno\">3375</div></td><td><div class=\"highlight\"><pre>            <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">load_module_checkpoint_state_from_checkpoint_dir_stage3</span><span class=\"p\">(</span><span class=\"n\">checkpoint_folder</span><span class=\"p\">,</span> <span class=\"n\">load_from_fp32_weights</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"3376\"><td><div class=\"lineno\">3376</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"3377\"><td><div class=\"lineno\">3377</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>load_hp_checkpoint_state</mark>_from_checkpoint_dir_stage3</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_dir</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"3378\"><td><div class=\"lineno\">3378</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"sd\">&quot;&quot;&quot; Load optimizer and model states from the checkpoint directory. &quot;&quot;&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"3397\"><td><div class=\"lineno\">3397</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">param_name</span> <span class=\"o\">=</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">param_names</span><span class=\"p\">[</span><span class=\"n\">param</span><span class=\"p\">]</span></pre></div></td></tr><tr data-line=\"3398\"><td><div class=\"lineno\">3398</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">key_layer_state_partition</span> <span class=\"o\">=</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">path</span><span class=\"o\">.</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"n\">checkpoint_dir</span><span class=\"p\">,</span> <span class=\"n\">param_name</span><span class=\"p\">),</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "deepspeed/runtime/zero/stage3.py",
+          "repo": "deepspeedai/DeepSpeed",
+          "total_matches": "5"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"27\"><td><div class=\"lineno\">27</div></td><td><div class=\"highlight\"><pre>                                                       <span class=\"n\"><mark>load_hp_checkpoint_state</mark></span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">deepspeed.pipe</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">PipelineModule</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"322\"><td><div class=\"lineno\">322</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">test_<mark>load_hp_checkpoint_state</mark>_prefers_autotp_metadata</span><span class=\"p\">(</span><span class=\"n\">tmp_path</span><span class=\"p\">,</span> <span class=\"n\">monkeypatch</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"323\"><td><div class=\"lineno\">323</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">param</span> <span class=\"o\">=</span> <span class=\"n\">_make_param</span><span class=\"p\">(</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"334\"><td><div class=\"lineno\">334</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">param</span><span class=\"o\">.</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark></span> <span class=\"o\">=</span> <span class=\"n\">types</span><span class=\"o\">.</span><span class=\"n\">MethodType</span><span class=\"p\">(</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark></span><span class=\"p\">,</span> <span class=\"n\">param</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"350\"><td><div class=\"lineno\">350</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">step</span> <span class=\"o\">=</span> <span class=\"n\">param</span><span class=\"o\">.</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"nb\">str</span><span class=\"p\">(</span><span class=\"n\">ckpt_dir</span><span class=\"p\">),</span> <span class=\"n\">tp_rank</span><span class=\"o\">=</span><span class=\"mi\">1</span><span class=\"p\">,</span> <span class=\"n\">tp_world_size</span><span class=\"o\">=</span><span class=\"mi\">2</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "tests/unit/checkpoint/test_autotp_uc_checkpoint.py",
+          "repo": "deepspeedai/DeepSpeed",
+          "total_matches": "9"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"332\"><td><div class=\"lineno\">332</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>load_hp_checkpoint_state</mark>_from_checkpoint_dir</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">lp_groups_name</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_dir</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"333\"><td><div class=\"lineno\">333</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">checkpoint_dir</span> <span class=\"o\">=</span> <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">path</span><span class=\"o\">.</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"n\">checkpoint_dir</span><span class=\"p\">,</span> <span class=\"s2\">&quot;zero&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"360\"><td><div class=\"lineno\">360</div></td><td><div class=\"highlight\"><pre>                    <span class=\"c1\">#print(f&quot;Loading {self.param_names[lp]} {tp_rank=} {tp_world_size=}&quot;)</span></pre></div></td></tr><tr data-line=\"361\"><td><div class=\"lineno\">361</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">step</span> <span class=\"o\">=</span> <span class=\"n\">lp</span><span class=\"o\">.</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">path</span><span class=\"o\">.</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"n\">checkpoint_dir</span><span class=\"p\">,</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">param_names</span><span class=\"p\">[</span><span class=\"n\">lp</span><span class=\"p\">]),</span></pre></div></td></tr><tr data-line=\"362\"><td><div class=\"lineno\">362</div></td><td><div class=\"highlight\"><pre>                                                       <span class=\"n\">tp_rank</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "deepspeed/runtime/base_optimizer.py",
+          "repo": "deepspeedai/DeepSpeed",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"2281\"><td><div class=\"lineno\">2281</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span> <span class=\"nf\">_load_universal_checkpoint</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_folder</span><span class=\"p\">,</span> <span class=\"n\">load_optimizer_states</span><span class=\"p\">,</span> <span class=\"n\">load_from_fp32_weights</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"2282\"><td><div class=\"lineno\">2282</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"n\">checkpoint_folder</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"2289\"><td><div class=\"lineno\">2289</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span> <span class=\"nf\">_<mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_dir</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"2290\"><td><div class=\"lineno\">2290</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">checkpoint_dir</span> <span class=\"o\">=</span> <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">path</span><span class=\"o\">.</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"n\">checkpoint_dir</span><span class=\"p\">,</span> <span class=\"s2\">&quot;zero&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"2304\"><td><div class=\"lineno\">2304</div></td><td><div class=\"highlight\"><pre>                    <span class=\"c1\"># print(f&quot;Loading {self.param_names[lp]} {tp_rank=} {tp_world_size=}&quot;)</span></pre></div></td></tr><tr data-line=\"2305\"><td><div class=\"lineno\">2305</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">lp</span><span class=\"o\">.</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">path</span><span class=\"o\">.</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"n\">checkpoint_dir</span><span class=\"p\">,</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">param_names</span><span class=\"p\">[</span><span class=\"n\">lp</span><span class=\"p\">]),</span> <span class=\"n\">tp_rank</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"2306\"><td><div class=\"lineno\">2306</div></td><td><div class=\"highlight\"><pre>                                                <span class=\"n\">tp_world_size</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "135824553",
+          "path": "opensora/adaptor/stage_1_and_2.py",
+          "repo": "PKU-YuanGroup/Open-Sora-Plan",
+          "total_matches": "3"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"87\"><td><div class=\"lineno\">87</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># Similarly, <mark>load_hp_checkpoint_state</mark> has to take the needed actions when loading from universal.</span></pre></div></td></tr><tr data-line=\"88\"><td><div class=\"lineno\">88</div></td><td><div class=\"highlight\"><pre><span class=\"n\">PARAM_N_SUB_PARAMS</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;param_n_sub_params&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "deepspeed/checkpoint/constants.py",
+          "repo": "deepspeedai/DeepSpeed",
+          "total_matches": "1"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"557\"><td><div class=\"lineno\">557</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">_load_universal_checkpoint</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_folder</span><span class=\"p\">,</span> <span class=\"n\">load_optimizer_states</span><span class=\"p\">,</span> <span class=\"n\">load_from_fp32_weights</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"558\"><td><div class=\"lineno\">558</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark>_from_checkpoint_dir</span><span class=\"p\">(</span><span class=\"s2\">&quot;bf16_groups&quot;</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_folder</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "deepspeed/runtime/bf16_optimizer.py",
+          "repo": "deepspeedai/DeepSpeed",
+          "total_matches": "1"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"12\"><td><div class=\"lineno\">12</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span> <span class=\"nf\"><mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">folder</span><span class=\"p\">,</span> <span class=\"n\">tp_rank</span><span class=\"p\">,</span> <span class=\"n\">tp_world_size</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"13\"><td><div class=\"lineno\">13</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">hp_mapping</span> <span class=\"o\">=</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_hp_mapping</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"94\"><td><div class=\"lineno\">94</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">for</span> <span class=\"n\">param</span> <span class=\"ow\">in</span> <span class=\"n\">param_list</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"95\"><td><div class=\"lineno\">95</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">param</span><span class=\"o\">.</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark></span> <span class=\"o\">=</span> <span class=\"n\">types</span><span class=\"o\">.</span><span class=\"n\">MethodType</span><span class=\"p\">(</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark></span><span class=\"p\">,</span> <span class=\"n\">param</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "22693362",
+          "path": "deepspeed/checkpoint/universal_checkpoint.py",
+          "repo": "CoinCheung/gdGPT",
+          "total_matches": "3"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"398\"><td><div class=\"lineno\">398</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span> <span class=\"nf\">_load_universal_checkpoint</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_folder</span><span class=\"p\">,</span> <span class=\"n\">load_optimizer_states</span><span class=\"p\">,</span> <span class=\"n\">load_from_fp32_weights</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"399\"><td><div class=\"lineno\">399</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"n\">checkpoint_folder</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"406\"><td><div class=\"lineno\">406</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span> <span class=\"nf\">_<mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_dir</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"407\"><td><div class=\"lineno\">407</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">checkpoint_dir</span> <span class=\"o\">=</span> <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">path</span><span class=\"o\">.</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"n\">checkpoint_dir</span><span class=\"p\">,</span> <span class=\"s2\">&quot;zero&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"414\"><td><div class=\"lineno\">414</div></td><td><div class=\"highlight\"><pre>                    <span class=\"c1\">#print(f&quot;Loading {self.param_names[lp]} {tp_rank=} {tp_world_size=}&quot;)</span></pre></div></td></tr><tr data-line=\"415\"><td><div class=\"lineno\">415</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">lp</span><span class=\"o\">.</span><span class=\"n\"><mark>load_hp_checkpoint_state</mark></span><span class=\"p\">(</span><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">path</span><span class=\"o\">.</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"n\">checkpoint_dir</span><span class=\"p\">,</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">param_names</span><span class=\"p\">[</span><span class=\"n\">lp</span><span class=\"p\">]),</span> <span class=\"n\">tp_rank</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"416\"><td><div class=\"lineno\">416</div></td><td><div class=\"highlight\"><pre>                                                <span class=\"n\">tp_world_size</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "22693362",
+          "path": "deepspeed/runtime/bf16_optimizer.py",
+          "repo": "CoinCheung/gdGPT",
+          "total_matches": "3"
+        }
+      ],
+      "total": 16
+    },
+    "time": 73
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=load_hp_checkpoint_state"
+}

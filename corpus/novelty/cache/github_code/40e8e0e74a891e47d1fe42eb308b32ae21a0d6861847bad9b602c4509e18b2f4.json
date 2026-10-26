@@ -1,0 +1,187 @@
+{
+  "_cached_at": "2026-10-26T12:15:09+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 6,
+            "val": "Diff"
+          },
+          {
+            "count": 3,
+            "val": "Python"
+          },
+          {
+            "count": 1,
+            "val": "YAML"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 4,
+            "val": "docker/patch/"
+          },
+          {
+            "count": 3,
+            "val": "test/registered/unit/utils/"
+          },
+          {
+            "count": 2,
+            "val": "training/slime/docker/patch/"
+          },
+          {
+            "count": 1,
+            "val": "candidates/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 2,
+            "owner_id": "147780389",
+            "val": "sgl-project/sglang"
+          },
+          {
+            "count": 2,
+            "owner_id": "256302077",
+            "val": "redai-studio/Relax"
+          },
+          {
+            "count": 2,
+            "owner_id": "48590610",
+            "val": "THUDM/DeepDive"
+          },
+          {
+            "count": 2,
+            "owner_id": "48590610",
+            "val": "THUDM/slime"
+          },
+          {
+            "count": 1,
+            "owner_id": "290217419",
+            "val": "rednote-machine-learning/RedKnot"
+          },
+          {
+            "count": 1,
+            "owner_id": "39571499",
+            "val": "mit-han-lab/KernelWiki"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"14\"><td><div class=\"lineno\">14</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">&quot;&quot;&quot;Unit tests for sglang/srt/utils<mark>/weight_checker</mark>_comparator.py.&quot;&quot;&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "147780389",
+          "path": "test/registered/unit/utils/test_weight_checker_comparator.py",
+          "repo": "sgl-project/sglang",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"14\"><td><div class=\"lineno\">14</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">&quot;&quot;&quot;Unit tests for sglang/srt/utils<mark>/weight_checker</mark>.py.&quot;&quot;&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "147780389",
+          "path": "test/registered/unit/utils/test_weight_checker.py",
+          "repo": "sgl-project/sglang",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"2836\"><td><div class=\"lineno\">2836</div></td><td><div class=\"highlight\"><pre><span class=\"w\"> </span>    DENY_CLASSES = {</pre></div></td></tr><tr data-line=\"2837\"><td><div class=\"lineno\">2837</div></td><td><div class=\"highlight\"><pre><span class=\"gh\">diff --git a/python/sglang/srt/utils<mark>/weight_checker</mark>.py b/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"2838\"><td><div class=\"lineno\">2838</div></td><td><div class=\"highlight\"><pre><span class=\"gh\">index 5556697..46c1771 100644</span></pre></div></td></tr><tr data-line=\"2839\"><td><div class=\"lineno\">2839</div></td><td><div class=\"highlight\"><pre><span class=\"gd\">--- a/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"2840\"><td><div class=\"lineno\">2840</div></td><td><div class=\"highlight\"><pre><span class=\"gi\">+++ b/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"2841\"><td><div class=\"lineno\">2841</div></td><td><div class=\"highlight\"><pre><span class=\"gu\">@@ -168,6 +168,9 @@ def _check_tensors(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "48590610",
+          "path": "docker/patch/v0.5.12.post1/sglang.patch",
+          "repo": "THUDM/slime",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"14\"><td><div class=\"lineno\">14</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">&quot;&quot;&quot;Unit tests for sglang/srt/utils<mark>/weight_checker</mark>.py.&quot;&quot;&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "290217419",
+          "path": "test/registered/unit/utils/test_weight_checker.py",
+          "repo": "rednote-machine-learning/RedKnot",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"3202\"><td><div class=\"lineno\">3202</div></td><td><div class=\"highlight\"><pre><span class=\"w\"> </span>    DENY_CLASSES = {</pre></div></td></tr><tr data-line=\"3203\"><td><div class=\"lineno\">3203</div></td><td><div class=\"highlight\"><pre><span class=\"gh\">diff --git a/python/sglang/srt/utils<mark>/weight_checker</mark>.py b/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"3204\"><td><div class=\"lineno\">3204</div></td><td><div class=\"highlight\"><pre><span class=\"gh\">index 3be16446e0..1b2371c839 100644</span></pre></div></td></tr><tr data-line=\"3205\"><td><div class=\"lineno\">3205</div></td><td><div class=\"highlight\"><pre><span class=\"gd\">--- a/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"3206\"><td><div class=\"lineno\">3206</div></td><td><div class=\"highlight\"><pre><span class=\"gi\">+++ b/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"3207\"><td><div class=\"lineno\">3207</div></td><td><div class=\"highlight\"><pre><span class=\"gu\">@@ -69,6 +69,9 @@ def _check_tensors(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "48590610",
+          "path": "docker/patch/v0.5.9/sglang.patch",
+          "repo": "THUDM/slime",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"2923\"><td><div class=\"lineno\">2923</div></td><td><div class=\"highlight\"><pre><span class=\"w\"> </span>    DENY_CLASSES = {</pre></div></td></tr><tr data-line=\"2924\"><td><div class=\"lineno\">2924</div></td><td><div class=\"highlight\"><pre><span class=\"gh\">diff --git a/python/sglang/srt/utils<mark>/weight_checker</mark>.py b/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"2925\"><td><div class=\"lineno\">2925</div></td><td><div class=\"highlight\"><pre><span class=\"gh\">index 55566973af..46c1771af8 100644</span></pre></div></td></tr><tr data-line=\"2926\"><td><div class=\"lineno\">2926</div></td><td><div class=\"highlight\"><pre><span class=\"gd\">--- a/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"2927\"><td><div class=\"lineno\">2927</div></td><td><div class=\"highlight\"><pre><span class=\"gi\">+++ b/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"2928\"><td><div class=\"lineno\">2928</div></td><td><div class=\"highlight\"><pre><span class=\"gu\">@@ -168,6 +168,9 @@ def _check_tensors(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "256302077",
+          "path": "docker/patch/sglang/v0.5.12.post1.patch",
+          "repo": "redai-studio/Relax",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"3460\"><td><div class=\"lineno\">3460</div></td><td><div class=\"highlight\"><pre><span class=\"w\"> </span>    DENY_CLASSES = {</pre></div></td></tr><tr data-line=\"3461\"><td><div class=\"lineno\">3461</div></td><td><div class=\"highlight\"><pre><span class=\"gh\">diff --git a/python/sglang/srt/utils<mark>/weight_checker</mark>.py b/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"3462\"><td><div class=\"lineno\">3462</div></td><td><div class=\"highlight\"><pre><span class=\"gh\">index 3be16446e..a0ef921da 100644</span></pre></div></td></tr><tr data-line=\"3463\"><td><div class=\"lineno\">3463</div></td><td><div class=\"highlight\"><pre><span class=\"gd\">--- a/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"3464\"><td><div class=\"lineno\">3464</div></td><td><div class=\"highlight\"><pre><span class=\"gi\">+++ b/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"3465\"><td><div class=\"lineno\">3465</div></td><td><div class=\"highlight\"><pre><span class=\"gu\">@@ -69,6 +69,9 @@ def _check_tensors(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "256302077",
+          "path": "docker/patch/sglang/v0.5.9.patch",
+          "repo": "redai-studio/Relax",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"2836\"><td><div class=\"lineno\">2836</div></td><td><div class=\"highlight\"><pre><span class=\"w\"> </span>    DENY_CLASSES = {</pre></div></td></tr><tr data-line=\"2837\"><td><div class=\"lineno\">2837</div></td><td><div class=\"highlight\"><pre><span class=\"gh\">diff --git a/python/sglang/srt/utils<mark>/weight_checker</mark>.py b/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"2838\"><td><div class=\"lineno\">2838</div></td><td><div class=\"highlight\"><pre><span class=\"gh\">index 5556697..46c1771 100644</span></pre></div></td></tr><tr data-line=\"2839\"><td><div class=\"lineno\">2839</div></td><td><div class=\"highlight\"><pre><span class=\"gd\">--- a/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"2840\"><td><div class=\"lineno\">2840</div></td><td><div class=\"highlight\"><pre><span class=\"gi\">+++ b/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"2841\"><td><div class=\"lineno\">2841</div></td><td><div class=\"highlight\"><pre><span class=\"gu\">@@ -168,6 +168,9 @@ def _check_tensors(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "48590610",
+          "path": "training/slime/docker/patch/v0.5.12.post1/sglang.patch",
+          "repo": "THUDM/DeepDive",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"3202\"><td><div class=\"lineno\">3202</div></td><td><div class=\"highlight\"><pre><span class=\"w\"> </span>    DENY_CLASSES = {</pre></div></td></tr><tr data-line=\"3203\"><td><div class=\"lineno\">3203</div></td><td><div class=\"highlight\"><pre><span class=\"gh\">diff --git a/python/sglang/srt/utils<mark>/weight_checker</mark>.py b/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"3204\"><td><div class=\"lineno\">3204</div></td><td><div class=\"highlight\"><pre><span class=\"gh\">index 3be16446e0..1b2371c839 100644</span></pre></div></td></tr><tr data-line=\"3205\"><td><div class=\"lineno\">3205</div></td><td><div class=\"highlight\"><pre><span class=\"gd\">--- a/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"3206\"><td><div class=\"lineno\">3206</div></td><td><div class=\"highlight\"><pre><span class=\"gi\">+++ b/python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"3207\"><td><div class=\"lineno\">3207</div></td><td><div class=\"highlight\"><pre><span class=\"gu\">@@ -69,6 +69,9 @@ def _check_tensors(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "48590610",
+          "path": "training/slime/docker/patch/v0.5.9/sglang.patch",
+          "repo": "THUDM/DeepDive",
+          "total_matches": "4"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"4480\"><td><div class=\"lineno\">4480</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nt\">files_changed</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"4481\"><td><div class=\"lineno\">4481</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"p p-Indicator\">-</span><span class=\"w\"> </span><span class=\"l l-Scalar l-Scalar-Plain\">python/sglang/srt/utils<mark>/weight_checker</mark>.py</span></pre></div></td></tr><tr data-line=\"4482\"><td><div class=\"lineno\">4482</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nt\">files_reviewed_count</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"l l-Scalar l-Scalar-Plain\">1</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "39571499",
+          "path": "candidates/sglang.yaml",
+          "repo": "mit-han-lab/KernelWiki",
+          "total_matches": "1"
+        }
+      ],
+      "total": 10
+    },
+    "time": 236
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=%2Fweight_checker"
+}

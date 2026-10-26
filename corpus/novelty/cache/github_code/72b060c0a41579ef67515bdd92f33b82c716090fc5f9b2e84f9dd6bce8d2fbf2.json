@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T11:36:27+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 9552,
+            "val": "Python"
+          },
+          {
+            "count": 7648,
+            "val": "Shell"
+          },
+          {
+            "count": 2617,
+            "val": "Markdown"
+          },
+          {
+            "count": 633,
+            "val": "YAML"
+          },
+          {
+            "count": 551,
+            "val": "C++"
+          },
+          {
+            "count": 413,
+            "val": "C"
+          },
+          {
+            "count": 328,
+            "val": "Rust"
+          },
+          {
+            "count": 148,
+            "val": "Java"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 2022,
+            "val": "examples/"
+          },
+          {
+            "count": 1997,
+            "val": "scripts/"
+          },
+          {
+            "count": 1270,
+            "val": "src/"
+          },
+          {
+            "count": 1100,
+            "val": "tests/"
+          },
+          {
+            "count": 969,
+            "val": "docs/"
+          },
+          {
+            "count": 497,
+            "val": "tools/"
+          },
+          {
+            "count": 490,
+            "val": "training/"
+          },
+          {
+            "count": 459,
+            "val": "verl/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 475,
+            "owner_id": "17074854",
+            "val": "yugabyte/yugabyte-db"
+          },
+          {
+            "count": 339,
+            "owner_id": "109567851",
+            "val": "FlagAI-Open/FlagAI"
+          },
+          {
+            "count": 304,
+            "owner_id": "251454410",
+            "val": "baidu-baige/LoongForge"
+          },
+          {
+            "count": 239,
+            "owner_id": "181000646",
+            "val": "AI-Hypercomputer/gpu-recipes"
+          },
+          {
+            "count": 169,
+            "owner_id": "82455566",
+            "val": "bigscience-workshop/bigscience"
+          },
+          {
+            "count": 160,
+            "owner_id": "1961952",
+            "val": "alibaba/Pai-Megatron-Patch"
+          },
+          {
+            "count": 123,
+            "owner_id": "6154722",
+            "val": "microsoft/LMOps"
+          },
+          {
+            "count": 122,
+            "owner_id": "141981933",
+            "val": "aigc-apps/VideoX-Fun"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"33\"><td><div class=\"lineno\">33</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>master_addr</mark>ess</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">|</span> <span class=\"kc\">None</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"34\"><td><div class=\"lineno\">34</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">master_port</span><span class=\"p\">:</span> <span class=\"nb\">int</span> <span class=\"o\">|</span> <span class=\"kc\">None</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"39\"><td><div class=\"lineno\">39</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">has_uid</span> <span class=\"o\">=</span> <span class=\"nb\">bool</span><span class=\"p\">(</span><span class=\"n\">nccl_unique_id_b64</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"40\"><td><div class=\"lineno\">40</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">has_addr</span> <span class=\"o\">=</span> <span class=\"n\"><mark>master_addr</mark>ess</span> <span class=\"ow\">is</span> <span class=\"ow\">not</span> <span class=\"kc\">None</span></pre></div></td></tr><tr data-line=\"41\"><td><div class=\"lineno\">41</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">has_port</span> <span class=\"o\">=</span> <span class=\"n\">master_port</span> <span class=\"ow\">is</span> <span class=\"ow\">not</span> <span class=\"kc\">None</span></pre></div></td></tr><tr data-line=\"42\"><td><div class=\"lineno\">42</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"43\"><td><div class=\"lineno\">43</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">if</span> <span class=\"n\">has_uid</span> <span class=\"ow\">and</span> <span class=\"p\">(</span><span class=\"n\">has_addr</span> <span class=\"ow\">or</span> <span class=\"n\">has_port</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"44\"><td><div class=\"lineno\">44</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">raise</span> <span class=\"ne\">ValueError</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"45\"><td><div class=\"lineno\">45</div></td><td><div class=\"highlight\"><pre>            <span class=\"sa\">f</span><span class=\"s2\">&quot;</span><span class=\"si\">{</span><span class=\"n\">ctx</span><span class=\"si\">}</span><span class=\"s2\">: pass nccl_unique_id_b64 OR <mark>master_addr</mark>ess/master_port, not both&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "vllm/distributed/weight_transfer/nccl_common.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "21"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"57\"><td><div class=\"lineno\">57</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">world_size</span><span class=\"p\">:</span> <span class=\"nb\">int</span></pre></div></td></tr><tr data-line=\"58\"><td><div class=\"lineno\">58</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">tcp_store_<mark>master_addr</mark></span><span class=\"p\">:</span> <span class=\"nb\">str</span></pre></div></td></tr><tr data-line=\"59\"><td><div class=\"lineno\">59</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">tcp_store_master_port</span><span class=\"p\">:</span> <span class=\"nb\">int</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"74\"><td><div class=\"lineno\">74</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># Let coordinator rank find a port on the localhost.</span></pre></div></td></tr><tr data-line=\"75\"><td><div class=\"lineno\">75</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># Broadcast the (<mark>master_addr</mark>, port) to all ranks; each rank in the</span></pre></div></td></tr><tr data-line=\"76\"><td><div class=\"lineno\">76</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># checkpoint daemon process will use TCPStore (<mark>master_addr</mark>, port)</span></pre></div></td></tr><tr data-line=\"77\"><td><div class=\"lineno\">77</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># for collective communication.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"84\"><td><div class=\"lineno\">84</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">get_<mark>master_addr</mark>_and_port</span><span class=\"p\">()</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">tuple</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"nb\">int</span><span class=\"p\">]:</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "21003710",
+          "path": "torch/distributed/checkpoint/_async_process_executor.py",
+          "repo": "pytorch/pytorch",
+          "total_matches": "19"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"68\"><td><div class=\"lineno\">68</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span> <span class=\"nf\">_query_tpu_system_metadata</span><span class=\"p\">(</span><span class=\"n\"><mark>master_addr</mark>ess</span><span class=\"p\">,</span> <span class=\"n\">cluster_def</span><span class=\"o\">=</span><span class=\"kc\">None</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"69\"><td><div class=\"lineno\">69</div></td><td><div class=\"highlight\"><pre>                               <span class=\"n\">query_topology</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">):</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"86\"><td><div class=\"lineno\">86</div></td><td><div class=\"highlight\"><pre>      <span class=\"n\">logging</span><span class=\"o\">.</span><span class=\"n\">info</span><span class=\"p\">(</span><span class=\"s1\">&#39;Querying Tensorflow master (</span><span class=\"si\">%s</span><span class=\"s1\">) for TPU system metadata.&#39;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"87\"><td><div class=\"lineno\">87</div></td><td><div class=\"highlight\"><pre>                   <span class=\"n\"><mark>master_addr</mark>ess</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"88\"><td><div class=\"lineno\">88</div></td><td><div class=\"highlight\"><pre>      <span class=\"k\">try</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"89\"><td><div class=\"lineno\">89</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">with</span> <span class=\"n\">ops</span><span class=\"o\">.</span><span class=\"n\">Graph</span><span class=\"p\">()</span><span class=\"o\">.</span><span class=\"n\">as_default</span><span class=\"p\">():</span></pre></div></td></tr><tr data-line=\"90\"><td><div class=\"lineno\">90</div></td><td><div class=\"highlight\"><pre>          <span class=\"k\">with</span> <span class=\"n\">session_lib</span><span class=\"o\">.</span><span class=\"n\">Session</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"91\"><td><div class=\"lineno\">91</div></td><td><div class=\"highlight\"><pre>              <span class=\"n\"><mark>master_addr</mark>ess</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"92\"><td><div class=\"lineno\">92</div></td><td><div class=\"highlight\"><pre>              <span class=\"n\">config</span><span class=\"o\">=</span><span class=\"n\">get_session_config_with_timeout</span><span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "15658638",
+          "path": "tensorflow/python/tpu/tpu_system_metadata.py",
+          "repo": "tensorflow/tensorflow",
+          "total_matches": "10"
+        },
+        {
+          "branch": "py3",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"18\"><td><div class=\"lineno\">18</div></td><td><div class=\"highlight\"><pre><span class=\"k\">try</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"19\"><td><div class=\"lineno\">19</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">local_<mark>master_addr</mark>esses</span> <span class=\"o\">=</span> <span class=\"nb\">set</span><span class=\"p\">(</span><span class=\"n\">json</span><span class=\"o\">.</span><span class=\"n\">load</span><span class=\"p\">(</span><span class=\"nb\">open</span><span class=\"p\">(</span><span class=\"s2\">&quot;</span><span class=\"si\">%s</span><span class=\"s2\">/users.json&quot;</span> <span class=\"o\">%</span> <span class=\"n\">config</span><span class=\"o\">.</span><span class=\"n\">data_dir</span><span class=\"p\">))</span><span class=\"o\">.</span><span class=\"n\">keys</span><span class=\"p\">())</span>  <span class=\"c1\"># Users in users.json</span></pre></div></td></tr><tr data-line=\"20\"><td><div class=\"lineno\">20</div></td><td><div class=\"highlight\"><pre><span class=\"k\">except</span> <span class=\"ne\">Exception</span> <span class=\"k\">as</span> <span class=\"n\">err</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"21\"><td><div class=\"lineno\">21</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">local_<mark>master_addr</mark>esses</span> <span class=\"o\">=</span> <span class=\"nb\">set</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"52\"><td><div class=\"lineno\">52</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">path_parts</span> <span class=\"o\">=</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">parsePath</span><span class=\"p\">(</span><span class=\"n\">path</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"53\"><td><div class=\"lineno\">53</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">if</span> <span class=\"ow\">not</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">server</span><span class=\"o\">.</span><span class=\"n\">site_manager</span><span class=\"o\">.</span><span class=\"n\">get</span><span class=\"p\">(</span><span class=\"n\">match</span><span class=\"o\">.</span><span class=\"n\">group</span><span class=\"p\">(</span><span class=\"s2\">&quot;address&quot;</span><span class=\"p\">))</span> <span class=\"ow\">and</span> <span class=\"p\">(</span><span class=\"ow\">not</span> <span class=\"n\">user</span> <span class=\"ow\">or</span> <span class=\"n\">user</span><span class=\"o\">.</span><span class=\"n\"><mark>master_addr</mark>ess</span> <span class=\"ow\">not</span> <span class=\"ow\">in</span> <span class=\"n\">local_<mark>master_addr</mark>esses</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"54\"><td><div class=\"lineno\">54</div></td><td><div class=\"highlight\"><pre>                <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">sendHeader</span><span class=\"p\">(</span><span class=\"mi\">404</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"60\"><td><div class=\"lineno\">60</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">extra_headers</span><span class=\"p\">[</span><span class=\"s1\">&#39;Set-Cookie&#39;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;<mark>master_addr</mark>ess=</span><span class=\"si\">%s</span><span class=\"s2\">;path=/;max-age=2592000;&quot;</span> <span class=\"o\">%</span> <span class=\"n\">user</span><span class=\"o\">.</span><span class=\"n\"><mark>master_addr</mark>ess</span>  <span class=\"c1\"># = 30 days</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "10350359",
+          "path": "plugins/disabled-Multiuser/MultiuserPlugin.py",
+          "repo": "HelloZeroNet/ZeroNet",
+          "total_matches": "35"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"68\"><td><div class=\"lineno\">68</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                     if not specified then will choose a random free port</span></pre></div></td></tr><tr data-line=\"69\"><td><div class=\"lineno\">69</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        <mark>master_addr</mark>: fixed <mark>master_addr</mark> to run the c10d store on rank 0</span></pre></div></td></tr><tr data-line=\"70\"><td><div class=\"lineno\">70</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                     if not specified then will choose hostname on agent rank 0</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"98\"><td><div class=\"lineno\">98</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">master_port</span><span class=\"p\">:</span> <span class=\"nb\">int</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span></pre></div></td></tr><tr data-line=\"99\"><td><div class=\"lineno\">99</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>master_addr</mark></span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span></pre></div></td></tr><tr data-line=\"100\"><td><div class=\"lineno\">100</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">local_addr</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"279\"><td><div class=\"lineno\">279</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;state&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"280\"><td><div class=\"lineno\">280</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;<mark>master_addr</mark>&quot;</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "21003710",
+          "path": "torch/distributed/elastic/agent/server/api.py",
+          "repo": "pytorch/pytorch",
+          "total_matches": "15"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"471\"><td><div class=\"lineno\">471</div></td><td><div class=\"highlight\"><pre><span class=\"n\">ULIMIT_ERR_CODE</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;LOW_ULIMITS&quot;</span></pre></div></td></tr><tr data-line=\"472\"><td><div class=\"lineno\">472</div></td><td><div class=\"highlight\"><pre><span class=\"n\">TS_<mark>MASTER_ADDR</mark>S_FLAG</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;tserver_<mark>master_addr</mark>s&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"818\"><td><div class=\"lineno\">818</div></td><td><div class=\"highlight\"><pre>            <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">configs</span><span class=\"o\">.</span><span class=\"n\">save_configs</span><span class=\"p\">()</span></pre></div></td></tr><tr data-line=\"819\"><td><div class=\"lineno\">819</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\"><mark>master_addr</mark>esses</span> <span class=\"o\">=</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">configs</span><span class=\"o\">.</span><span class=\"n\">saved_data</span><span class=\"o\">.</span><span class=\"n\">get</span><span class=\"p\">(</span><span class=\"s2\">&quot;current_masters&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"820\"><td><div class=\"lineno\">820</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">if</span> <span class=\"n\"><mark>master_addr</mark>esses</span> <span class=\"o\">==</span> <span class=\"s1\">&#39;&#39;</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"821\"><td><div class=\"lineno\">821</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">Output</span><span class=\"o\">.</span><span class=\"n\">log_error_and_exit</span><span class=\"p\">(</span><span class=\"n\">Output</span><span class=\"o\">.</span><span class=\"n\">make_red</span><span class=\"p\">(</span><span class=\"s2\">&quot;Error&quot;</span><span class=\"p\">)</span> <span class=\"o\">+</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"979\"><td><div class=\"lineno\">979</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>master_addr</mark>esses</span> <span class=\"o\">=</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">configs</span><span class=\"o\">.</span><span class=\"n\">saved_data</span><span class=\"o\">.</span><span class=\"n\">get</span><span class=\"p\">(</span><span class=\"s2\">&quot;current_masters&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"980\"><td><div class=\"lineno\">980</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">schedules</span> <span class=\"o\">=</span> <span class=\"n\">YBAdminProxy</span><span class=\"o\">.</span><span class=\"n\">list_schedules</span><span class=\"p\">(</span><span class=\"n\"><mark>master_addr</mark>esses</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "17074854",
+          "path": "bin/yugabyted",
+          "repo": "yugabyte/yugabyte-db",
+          "total_matches": "100+"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"84\"><td><div class=\"lineno\">84</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">fsdp_world_size</span><span class=\"p\">:</span> <span class=\"nb\">int</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"85\"><td><div class=\"lineno\">85</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">fsdp_<mark>master_addr</mark></span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"86\"><td><div class=\"lineno\">86</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">fsdp_master_port</span><span class=\"p\">:</span> <span class=\"nb\">int</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"87\"><td><div class=\"lineno\">87</div></td><td><div class=\"highlight\"><pre>    <span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"88\"><td><div class=\"lineno\">88</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">rank</span> <span class=\"o\">=</span> <span class=\"n\">rank</span></pre></div></td></tr><tr data-line=\"89\"><td><div class=\"lineno\">89</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">engine</span> <span class=\"o\">=</span> <span class=\"kc\">None</span></pre></div></td></tr><tr data-line=\"90\"><td><div class=\"lineno\">90</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"91\"><td><div class=\"lineno\">91</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"p\">[</span><span class=\"s2\">&quot;<mark>MASTER_ADDR</mark>&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"n\">fsdp_<mark>master_addr</mark></span></pre></div></td></tr><tr data-line=\"92\"><td><div class=\"lineno\">92</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"p\">[</span><span class=\"s2\">&quot;MASTER_PORT&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"nb\">str</span><span class=\"p\">(</span><span class=\"n\">fsdp_master_port</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "examples/rl/rlhf_nccl_fsdp_ep.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "11"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"308\"><td><div class=\"lineno\">308</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">num_workers</span> <span class=\"o\">=</span> <span class=\"n\">ray_args</span><span class=\"o\">.</span><span class=\"n\">ray_num_workers</span></pre></div></td></tr><tr data-line=\"309\"><td><div class=\"lineno\">309</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>master_addr</mark></span> <span class=\"o\">=</span> <span class=\"n\">ray_args</span><span class=\"o\">.</span><span class=\"n\"><mark>master_addr</mark></span></pre></div></td></tr><tr data-line=\"310\"><td><div class=\"lineno\">310</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">master_port</span> <span class=\"o\">=</span> <span class=\"n\">ray_args</span><span class=\"o\">.</span><span class=\"n\">master_port</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"328\"><td><div class=\"lineno\">328</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># verify <mark>master_addr</mark></span></pre></div></td></tr><tr data-line=\"329\"><td><div class=\"lineno\">329</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">if</span> <span class=\"n\"><mark>master_addr</mark></span> <span class=\"ow\">is</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"330\"><td><div class=\"lineno\">330</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>master_addr</mark></span> <span class=\"o\">=</span> <span class=\"n\">get_ray_head_node_ip</span><span class=\"p\">()</span></pre></div></td></tr><tr data-line=\"331\"><td><div class=\"lineno\">331</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">logger</span><span class=\"o\">.</span><span class=\"n\">info</span><span class=\"p\">(</span><span class=\"sa\">f</span><span class=\"s2\">&quot;`<mark>master_addr</mark>` is not specified, using head node ip: </span><span class=\"si\">{</span><span class=\"n\"><mark>master_addr</mark></span><span class=\"si\">}</span><span class=\"s2\">.&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"332\"><td><div class=\"lineno\">332</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">else</span><span class=\"p\">:</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "16256802",
+          "path": "src/llamafactory/train/tuner.py",
+          "repo": "hiyouga/LlamaFactory",
+          "total_matches": "13"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"67\"><td><div class=\"lineno\">67</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">/// This is the lowest-priority source: `build()` uses it only when</span></pre></div></td></tr><tr data-line=\"68\"><td><div class=\"lineno\">68</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">/// neither `GOOSEFS_<mark>MASTER_ADDR</mark>` nor `goosefs-site.properties` declares a</span></pre></div></td></tr><tr data-line=\"69\"><td><div class=\"lineno\">69</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">/// master address, and fails with `ConfigInvalid` when no source supplies</span></pre></div></td></tr><tr data-line=\"70\"><td><div class=\"lineno\">70</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">/// one. See [`crate::GoosefsConfig::<mark>master_addr</mark>`] for the full resolution</span></pre></div></td></tr><tr data-line=\"71\"><td><div class=\"lineno\">71</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">/// order and its rationale.</span></pre></div></td></tr><tr data-line=\"72\"><td><div class=\"lineno\">72</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">pub</span><span class=\"w\"> </span><span class=\"k\">fn</span><span class=\"w\"> </span><span class=\"nf\"><mark>master_addr</mark></span><span class=\"p\">(</span><span class=\"k\">mut</span><span class=\"w\"> </span><span class=\"bp\">self</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">addr</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"kp\">&amp;</span><span class=\"kt\">str</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">-&gt;</span><span class=\"w\"> </span><span class=\"nc\">Self</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"73\"><td><div class=\"lineno\">73</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"k\">if</span><span class=\"w\"> </span><span class=\"o\">!</span><span class=\"n\">addr</span><span class=\"p\">.</span><span class=\"n\">is_empty</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"74\"><td><div class=\"lineno\">74</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\">config</span><span class=\"p\">.</span><span class=\"n\"><mark>master_addr</mark></span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"nb\">Some</span><span class=\"p\">(</span><span class=\"n\">addr</span><span class=\"p\">.</span><span class=\"n\">to_string</span><span class=\"p\">());</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"128\"><td><div class=\"lineno\">128</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">/// a master address: when neither `GOOSEFS_<mark>MASTER_ADDR</mark>` nor</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "47359",
+          "path": "core/services/goosefs/src/backend.rs",
+          "repo": "apache/opendal",
+          "total_matches": "82"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"122\"><td><div class=\"lineno\">122</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"n\">placement_uuid</span><span class=\"p\">(</span><span class=\"n\">options</span><span class=\"p\">.</span><span class=\"n\">placement_uuid</span><span class=\"p\">),</span></pre></div></td></tr><tr data-line=\"123\"><td><div class=\"lineno\">123</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"n\"><mark>master_addr</mark>esses_flag</span><span class=\"p\">(</span><span class=\"n\">options</span><span class=\"p\">.</span><span class=\"n\"><mark>master_addr</mark>esses_flag</span><span class=\"p\">),</span></pre></div></td></tr><tr data-line=\"124\"><td><div class=\"lineno\">124</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"n\">server_broadcast_addresses</span><span class=\"p\">(</span><span class=\"n\">options</span><span class=\"p\">.</span><span class=\"n\">server_broadcast_addresses</span><span class=\"p\">),</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"165\"><td><div class=\"lineno\">165</div></td><td><div class=\"highlight\"><pre><span class=\"kt\">void</span><span class=\"w\"> </span><span class=\"n\">ServerBaseOptions</span><span class=\"o\">::</span><span class=\"n\">SetMasterAddressesNoValidation</span><span class=\"p\">(</span><span class=\"n\">MasterAddressesPtr</span><span class=\"w\"> </span><span class=\"n\"><mark>master_addr</mark>esses</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"166\"><td><div class=\"lineno\">166</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"k\">if</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"n\"><mark>master_addr</mark>esses</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"167\"><td><div class=\"lineno\">167</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"n\">LOG</span><span class=\"p\">(</span><span class=\"n\">INFO</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"o\">&lt;&lt;</span><span class=\"w\"> </span><span class=\"s\">&quot;Updating master addrs to &quot;</span><span class=\"w\"> </span><span class=\"o\">&lt;&lt;</span><span class=\"w\"> </span><span class=\"n\">MasterAddressesToString</span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\"><mark>master_addr</mark>esses</span><span class=\"p\">);</span></pre></div></td></tr><tr data-line=\"168\"><td><div class=\"lineno\">168</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"p\">}</span></pre></div></td></tr><tr data-line=\"169\"><td><div class=\"lineno\">169</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"170\"><td><div class=\"lineno\">170</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"n\">std</span><span class=\"o\">::</span><span class=\"n\">lock_guard</span><span class=\"w\"> </span><span class=\"n\">l</span><span class=\"p\">(</span><span class=\"n\"><mark>master_addr</mark>esses_mtx_</span><span class=\"p\">);</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "17074854",
+          "path": "src/yb/server/server_base_options.cc",
+          "repo": "yugabyte/yugabyte-db",
+          "total_matches": "33"
+        }
+      ],
+      "total": 23324
+    },
+    "time": 218
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=master_addr"
+}

@@ -1,0 +1,229 @@
+{
+  "_cached_at": "2026-10-26T11:36:38+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 11,
+            "val": "Python"
+          },
+          {
+            "count": 9,
+            "val": "Go"
+          },
+          {
+            "count": 8,
+            "val": "YAML"
+          },
+          {
+            "count": 7,
+            "val": "Markdown"
+          },
+          {
+            "count": 2,
+            "val": "C++"
+          },
+          {
+            "count": 1,
+            "val": "Cython"
+          },
+          {
+            "count": 1,
+            "val": "reStructuredText"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 8,
+            "val": "python/ray/"
+          },
+          {
+            "count": 6,
+            "val": "ray-operator/"
+          },
+          {
+            "count": 5,
+            "val": "historyserver/"
+          },
+          {
+            "count": 4,
+            "val": "doc/source/"
+          },
+          {
+            "count": 3,
+            "val": "src/"
+          },
+          {
+            "count": 3,
+            "val": "tests/"
+          },
+          {
+            "count": 2,
+            "val": "data/"
+          },
+          {
+            "count": 2,
+            "val": "docs/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 14,
+            "owner_id": "22125274",
+            "val": "ray-project/ray"
+          },
+          {
+            "count": 11,
+            "owner_id": "22125274",
+            "val": "ray-project/kuberay"
+          },
+          {
+            "count": 6,
+            "owner_id": "1567626",
+            "val": "karminski/PromptXRay"
+          },
+          {
+            "count": 2,
+            "owner_id": "18461506",
+            "val": "Tencent/AI-Infra-Guard"
+          },
+          {
+            "count": 2,
+            "owner_id": "36015203",
+            "val": "kubernetes-sigs/kueue"
+          },
+          {
+            "count": 2,
+            "owner_id": "49863538",
+            "val": "danielgafni/dagster-ray"
+          },
+          {
+            "count": 1,
+            "owner_id": "1728152",
+            "val": "NVIDIA/cosmos-curator"
+          },
+          {
+            "count": 1,
+            "owner_id": "49853598",
+            "val": "JSONbored/awesome-claude"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"77\"><td><div class=\"lineno\">77</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            ignore_auth_mode: If True, bypass auth mode check and attempt to load token</span></pre></div></td></tr><tr data-line=\"78\"><td><div class=\"lineno\">78</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                            regardless of <mark>RAY_AUTH_MODE</mark> setting.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"118\"><td><div class=\"lineno\">118</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            ignore_auth_mode: If True, bypass auth mode check and attempt to load token</span></pre></div></td></tr><tr data-line=\"119\"><td><div class=\"lineno\">119</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                            regardless of <mark>RAY_AUTH_MODE</mark> setting.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"140\"><td><div class=\"lineno\">140</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            ignore_auth_mode: If True, bypass auth mode check and attempt to load token</span></pre></div></td></tr><tr data-line=\"141\"><td><div class=\"lineno\">141</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                            regardless of <mark>RAY_AUTH_MODE</mark> setting.</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "22125274",
+          "path": "python/ray/includes/rpc_token_authentication.pxi",
+          "repo": "ray-project/ray",
+          "total_matches": "3"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"15\"><td><div class=\"lineno\">15</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span><span class=\"nx\">RAY_AUTH_TOKEN_ENV_VAR</span><span class=\"w\">            </span><span class=\"p\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;RAY_AUTH_TOKEN&quot;</span></pre></div></td></tr><tr data-line=\"16\"><td><div class=\"lineno\">16</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span><span class=\"nx\"><mark>RAY_AUTH_MODE</mark>_ENV_VAR</span><span class=\"w\">             </span><span class=\"p\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;<mark>RAY_AUTH_MODE</mark>&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre><span class=\"kd\">func</span><span class=\"w\"> </span><span class=\"nx\">isRayAuthEnabled</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"kt\">bool</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"29\"><td><div class=\"lineno\">29</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span><span class=\"k\">return</span><span class=\"w\"> </span><span class=\"nx\">strings</span><span class=\"p\">.</span><span class=\"nx\">EqualFold</span><span class=\"p\">(</span><span class=\"nx\">os</span><span class=\"p\">.</span><span class=\"nx\">Getenv</span><span class=\"p\">(</span><span class=\"nx\"><mark>RAY_AUTH_MODE</mark>_ENV_VAR</span><span class=\"p\">),</span><span class=\"w\"> </span><span class=\"nx\">RayAuthModeToken</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"57\"><td><div class=\"lineno\">57</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t</span><span class=\"nx\">errRayAuthConfig</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nx\"><mark>RAY_AUTH_MODE</mark>_ENV_VAR</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nx\">RayAuthModeToken</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nx\">RAY_AUTH_TOKEN_ENV_VAR</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nx\">RAY_ENABLE_K8S_TOKEN_AUTH_ENV_VAR</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nx\">RayTokenMountPath</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"58\"><td><div class=\"lineno\">58</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span><span class=\"k\">default</span><span class=\"p\">:</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "22125274",
+          "path": "historyserver/pkg/utils/auth.go",
+          "repo": "ray-project/kuberay",
+          "total_matches": "4"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"571\"><td><div class=\"lineno\">571</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    Only applicable when `<mark>RAY_AUTH_MODE</mark>` is not set to `disabled`.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"581\"><td><div class=\"lineno\">581</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"fm\">__str__</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">str</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"582\"><td><div class=\"lineno\">582</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># Check if <mark>RAY_AUTH_MODE</mark> is set to token and add a heads-up if not</span></pre></div></td></tr><tr data-line=\"583\"><td><div class=\"lineno\">583</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">auth_mode_note</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"593\"><td><div class=\"lineno\">593</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">auth_mode_note</span> <span class=\"o\">=</span> <span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"594\"><td><div class=\"lineno\">594</div></td><td><div class=\"highlight\"><pre>                <span class=\"sa\">f</span><span class=\"s2\">&quot; Note: <mark>RAY_AUTH_MODE</mark> is currently &#39;</span><span class=\"si\">{</span><span class=\"n\">mode_name</span><span class=\"si\">}</span><span class=\"s2\">&#39; (not &#39;token&#39;).&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "22125274",
+          "path": "python/ray/exceptions.py",
+          "repo": "ray-project/ray",
+          "total_matches": "3"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"50\"><td><div class=\"lineno\">50</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    This interceptor checks the &quot;authorization&quot; metadata header for a valid</span></pre></div></td></tr><tr data-line=\"51\"><td><div class=\"lineno\">51</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    Bearer token when token authentication is enabled via <mark>RAY_AUTH_MODE</mark>=token.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"155\"><td><div class=\"lineno\">155</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    This interceptor checks the &quot;authorization&quot; metadata header for a valid</span></pre></div></td></tr><tr data-line=\"156\"><td><div class=\"lineno\">156</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    Bearer token when token authentication is enabled via <mark>RAY_AUTH_MODE</mark>=token.</span></pre></div></td></tr><tr data-line=\"157\"><td><div class=\"lineno\">157</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    If the token is missing or invalid, the request is rejected with UNAUTHENTICATED status.</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "22125274",
+          "path": "python/ray/_private/authentication/grpc_authentication_server_interceptor.py",
+          "repo": "ray-project/ray",
+          "total_matches": "2"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"193\"><td><div class=\"lineno\">193</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span><span class=\"c1\">// <mark>RAY_AUTH_MODE</mark>_ENV_VAR is the Ray environment variable for configuring the authentication mode</span></pre></div></td></tr><tr data-line=\"194\"><td><div class=\"lineno\">194</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span><span class=\"nx\"><mark>RAY_AUTH_MODE</mark>_ENV_VAR</span><span class=\"w\"> </span><span class=\"p\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;<mark>RAY_AUTH_MODE</mark>&quot;</span></pre></div></td></tr><tr data-line=\"195\"><td><div class=\"lineno\">195</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span><span class=\"c1\">// RAY_AUTH_TOKEN_ENV_VAR is the Ray environment variable containing the authentication token.</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "22125274",
+          "path": "ray-operator/controllers/ray/utils/constant.go",
+          "repo": "ray-project/kuberay",
+          "total_matches": "3"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"282\"><td><div class=\"lineno\">282</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t</span><span class=\"c1\">// Configure RAY_AUTH_TOKEN and <mark>RAY_AUTH_MODE</mark> if auth is enabled.</span></pre></div></td></tr><tr data-line=\"283\"><td><div class=\"lineno\">283</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t</span><span class=\"k\">if</span><span class=\"w\"> </span><span class=\"nx\">utils</span><span class=\"p\">.</span><span class=\"nx\">IsAuthEnabled</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"nx\">instance</span><span class=\"p\">.</span><span class=\"nx\">Spec</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">{</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"415\"><td><div class=\"lineno\">415</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span><span class=\"k\">if</span><span class=\"w\"> </span><span class=\"p\">!</span><span class=\"nx\">utils</span><span class=\"p\">.</span><span class=\"nx\">EnvVarExists</span><span class=\"p\">(</span><span class=\"nx\">utils</span><span class=\"p\">.</span><span class=\"nx\"><mark>RAY_AUTH_MODE</mark>_ENV_VAR</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nx\">container</span><span class=\"p\">.</span><span class=\"nx\">Env</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"416\"><td><div class=\"lineno\">416</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t</span><span class=\"nx\">container</span><span class=\"p\">.</span><span class=\"nx\">Env</span><span class=\"w\"> </span><span class=\"p\">=</span><span class=\"w\"> </span><span class=\"nb\">append</span><span class=\"p\">(</span><span class=\"nx\">container</span><span class=\"p\">.</span><span class=\"nx\">Env</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nx\">corev1</span><span class=\"p\">.</span><span class=\"nx\">EnvVar</span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"417\"><td><div class=\"lineno\">417</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t</span><span class=\"nx\">Name</span><span class=\"p\">:</span><span class=\"w\">  </span><span class=\"nx\">utils</span><span class=\"p\">.</span><span class=\"nx\"><mark>RAY_AUTH_MODE</mark>_ENV_VAR</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"418\"><td><div class=\"lineno\">418</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t</span><span class=\"nx\">Value</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"nb\">string</span><span class=\"p\">(</span><span class=\"nx\">rayv1</span><span class=\"p\">.</span><span class=\"nx\">AuthModeToken</span><span class=\"p\">),</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "22125274",
+          "path": "ray-operator/controllers/ray/common/pod.go",
+          "repo": "ray-project/kuberay",
+          "total_matches": "3"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"15\"><td><div class=\"lineno\">15</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span><span class=\"nx\">t</span><span class=\"p\">.</span><span class=\"nx\">Helper</span><span class=\"p\">()</span></pre></div></td></tr><tr data-line=\"16\"><td><div class=\"lineno\">16</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span><span class=\"nx\">t</span><span class=\"p\">.</span><span class=\"nx\">Setenv</span><span class=\"p\">(</span><span class=\"nx\"><mark>RAY_AUTH_MODE</mark>_ENV_VAR</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"17\"><td><div class=\"lineno\">17</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span><span class=\"nx\">t</span><span class=\"p\">.</span><span class=\"nx\">Setenv</span><span class=\"p\">(</span><span class=\"nx\">RAY_AUTH_TOKEN_ENV_VAR</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"35\"><td><div class=\"lineno\">35</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t</span><span class=\"nx\">clearAuthEnv</span><span class=\"p\">(</span><span class=\"nx\">t</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"36\"><td><div class=\"lineno\">36</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t</span><span class=\"nx\">t</span><span class=\"p\">.</span><span class=\"nx\">Setenv</span><span class=\"p\">(</span><span class=\"nx\"><mark>RAY_AUTH_MODE</mark>_ENV_VAR</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nx\">tc</span><span class=\"p\">.</span><span class=\"nx\">authMode</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"37\"><td><div class=\"lineno\">37</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t</span><span class=\"nx\">assert</span><span class=\"p\">.</span><span class=\"nx\">Equal</span><span class=\"p\">(</span><span class=\"nx\">t</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nx\">tc</span><span class=\"p\">.</span><span class=\"nx\">expected</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nx\">isRayAuthEnabled</span><span class=\"p\">())</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"74\"><td><div class=\"lineno\">74</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t</span><span class=\"nx\">clearAuthEnv</span><span class=\"p\">(</span><span class=\"nx\">t</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"75\"><td><div class=\"lineno\">75</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t</span><span class=\"nx\">t</span><span class=\"p\">.</span><span class=\"nx\">Setenv</span><span class=\"p\">(</span><span class=\"nx\"><mark>RAY_AUTH_MODE</mark>_ENV_VAR</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nx\">RayAuthModeToken</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "22125274",
+          "path": "historyserver/pkg/utils/auth_test.go",
+          "repo": "ray-project/kuberay",
+          "total_matches": "5"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"3\"><td><div class=\"lineno\">3</div></td><td><div class=\"highlight\"><pre>  html_meta:</pre></div></td></tr><tr data-line=\"4\"><td><div class=\"lineno\">4</div></td><td><div class=\"highlight\"><pre><span class=\"gu\">    description: &quot;Configure token-based authentication for Ray clusters with <mark>RAY_AUTH_MODE</mark>=token and ray get-auth-token, including token storage and TLS.&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"19\"><td><div class=\"lineno\">19</div></td><td><div class=\"highlight\"><pre>To enable token authentication, set the environment variable <span class=\"sb\">`<mark>RAY_AUTH_MODE</mark>=token`</span> before starting your Ray cluster. When you start a Ray cluster with authentication enabled, all external Ray APIs and internal communications are authenticated using the token as a shared secret.</pre></div></td></tr></table>"
+          },
+          "owner_id": "22125274",
+          "path": "doc/source/ray-security/token-auth.md",
+          "repo": "ray-project/ray",
+          "total_matches": "16"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"248\"><td><div class=\"lineno\">248</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span> <span class=\"o\">=</span> <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"o\">.</span><span class=\"n\">copy</span><span class=\"p\">()</span></pre></div></td></tr><tr data-line=\"249\"><td><div class=\"lineno\">249</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"p\">[</span><span class=\"s2\">&quot;<mark>RAY_AUTH_MODE</mark>&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;token&quot;</span></pre></div></td></tr><tr data-line=\"250\"><td><div class=\"lineno\">250</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"o\">.</span><span class=\"n\">pop</span><span class=\"p\">(</span><span class=\"s2\">&quot;RAY_AUTH_TOKEN&quot;</span><span class=\"p\">,</span> <span class=\"kc\">None</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"283\"><td><div class=\"lineno\">283</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"p\">[</span><span class=\"s2\">&quot;RAY_AUTH_TOKEN&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"n\">test_token</span></pre></div></td></tr><tr data-line=\"284\"><td><div class=\"lineno\">284</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"p\">[</span><span class=\"s2\">&quot;<mark>RAY_AUTH_MODE</mark>&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;token&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"337\"><td><div class=\"lineno\">337</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span> <span class=\"o\">=</span> <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"o\">.</span><span class=\"n\">copy</span><span class=\"p\">()</span></pre></div></td></tr><tr data-line=\"338\"><td><div class=\"lineno\">338</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"p\">[</span><span class=\"s2\">&quot;<mark>RAY_AUTH_MODE</mark>&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;token&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "22125274",
+          "path": "python/ray/tests/test_token_auth_integration.py",
+          "repo": "ray-project/ray",
+          "total_matches": "3"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"86\"><td><div class=\"lineno\">86</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">raise</span> <span class=\"ne\">RuntimeError</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"87\"><td><div class=\"lineno\">87</div></td><td><div class=\"highlight\"><pre>                <span class=\"s2\">&quot;Set authentication mode can only be set with the `<mark>RAY_AUTH_MODE</mark>` environment variable, not using the system_config.&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "22125274",
+          "path": "python/ray/_private/authentication/authentication_token_setup.py",
+          "repo": "ray-project/ray",
+          "total_matches": "1"
+        }
+      ],
+      "total": 40
+    },
+    "time": 181
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=RAY_AUTH_MODE"
+}

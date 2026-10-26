@@ -1,0 +1,71 @@
+{
+  "_cached_at": "2026-10-26T12:14:33+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 2,
+            "val": "Markdown"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 1,
+            "val": ".claude/docs/"
+          },
+          {
+            "count": 1,
+            "val": "tutorials/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 1,
+            "owner_id": "194174999",
+            "val": "NovaSky-AI/SkyRL"
+          },
+          {
+            "count": 1,
+            "owner_id": "220441404",
+            "val": "thinking-machines-lab/tinker-cookbook"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"88\"><td><div class=\"lineno\">88</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span><span class=\"gs\">**Full documentation**</span>: see the [<span class=\"nt\">Tinker docs site</span>](<span class=\"na\">https://tinker-docs.thinkingmachines.ai</span>)</pre></div></td></tr><tr data-line=\"89\"><td><div class=\"lineno\">89</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span><span class=\"gs\">**API reference**</span>: see the [<span class=\"nt\">Tinker API reference</span>](<span class=\"na\">https://tinker-docs.thinkingmachines.ai/<mark>tinker/api</mark>-reference/serviceclient/</span>)</pre></div></td></tr></table>"
+          },
+          "owner_id": "220441404",
+          "path": "tutorials/README.md",
+          "repo": "thinking-machines-lab/tinker-cookbook",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"7\"><td><div class=\"lineno\">7</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span><span class=\"gs\">**`skyrl/<mark>tinker/api</mark>.py`**</span> -- FastAPI HTTP server. Receives Tinker SDK requests, writes them to SQLite/Postgres, returns future IDs.</pre></div></td></tr></table>"
+          },
+          "owner_id": "194174999",
+          "path": ".claude/docs/tinker.md",
+          "repo": "NovaSky-AI/SkyRL",
+          "total_matches": "1"
+        }
+      ],
+      "total": 2
+    },
+    "time": 234
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=tinker%2Fapi"
+}

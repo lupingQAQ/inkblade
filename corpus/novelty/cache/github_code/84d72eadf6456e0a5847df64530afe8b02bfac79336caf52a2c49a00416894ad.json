@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T11:21:56+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 520992,
+            "val": "Python"
+          },
+          {
+            "count": 321198,
+            "val": "Markdown"
+          },
+          {
+            "count": 121338,
+            "val": "XML"
+          },
+          {
+            "count": 91350,
+            "val": "TypeScript"
+          },
+          {
+            "count": 70776,
+            "val": "JavaScript"
+          },
+          {
+            "count": 69732,
+            "val": "JSON"
+          },
+          {
+            "count": 67914,
+            "val": "Text"
+          },
+          {
+            "count": 62256,
+            "val": "YAML"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 228456,
+            "val": "src/"
+          },
+          {
+            "count": 94098,
+            "val": "docs/"
+          },
+          {
+            "count": 65688,
+            "val": "tests/"
+          },
+          {
+            "count": 36522,
+            "val": "packages/"
+          },
+          {
+            "count": 29334,
+            "val": "examples/"
+          },
+          {
+            "count": 27174,
+            "val": "lib/"
+          },
+          {
+            "count": 26220,
+            "val": "skills/"
+          },
+          {
+            "count": 26070,
+            "val": "scripts/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 4326,
+            "owner_id": "23086798",
+            "val": "javaee/jersey"
+          },
+          {
+            "count": 4050,
+            "owner_id": "44808635",
+            "val": "open5gs/open5gs"
+          },
+          {
+            "count": 3906,
+            "owner_id": "93353392",
+            "val": "0xPlaygrounds/rig"
+          },
+          {
+            "count": 3876,
+            "owner_id": "68924597",
+            "val": "EleutherAI/lm-evaluation-harness"
+          },
+          {
+            "count": 3672,
+            "owner_id": "25206055",
+            "val": "aligungr/UERANSIM"
+          },
+          {
+            "count": 3606,
+            "owner_id": "53976615",
+            "val": "allthemusicllc/atm-cli"
+          },
+          {
+            "count": 3150,
+            "owner_id": "96339824",
+            "val": "ed-donner/llm_engineering"
+          },
+          {
+            "count": 3138,
+            "owner_id": "1426033",
+            "val": "ONLYOFFICE/CommunityServer"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1\"><td><div class=\"lineno\">1</div></td><td><div class=\"highlight\"><pre><span class=\"c1\">// Builds provider auth <mark>choice</mark> lists from plugin setup metadata.</span></pre></div></td></tr><tr data-line=\"2\"><td><div class=\"lineno\">2</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">sanitizeForLog</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../../packages/terminal-core/src/ansi.js&quot;</span><span class=\"p\">;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"7\"><td><div class=\"lineno\">7</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">PluginManifestRecord</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;./manifest-registry.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">PluginManifestProviderAuth<mark>Choice</mark></span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;./manifest-types.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"9\"><td><div class=\"lineno\">9</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"16\"><td><div class=\"lineno\">16</div></td><td><div class=\"highlight\"><pre><span class=\"k\">export</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">ProviderAuth<mark>Choice</mark>Metadata</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"nx\">Omit</span><span class=\"o\">&lt;</span></pre></div></td></tr><tr data-line=\"17\"><td><div class=\"lineno\">17</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">PluginManifestProviderAuth<mark>Choice</mark></span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"18\"><td><div class=\"lineno\">18</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"s2\">&quot;provider&quot;</span><span class=\"w\"> </span><span class=\"o\">|</span><span class=\"w\"> </span><span class=\"s2\">&quot;method&quot;</span><span class=\"w\"> </span><span class=\"o\">|</span><span class=\"w\"> </span><span class=\"s2\">&quot;<mark>choice</mark>Label&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "252820863",
+          "path": "src/plugins/provider-auth-choices.ts",
+          "repo": "openclaw/openclaw",
+          "total_matches": "100+"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"2\"><td><div class=\"lineno\">2</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">AuthProfileCredential</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../agents/auth-profiles/types.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"3\"><td><div class=\"lineno\">3</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">compareProviderAuth<mark>Choice</mark>Groups</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../plugins/provider-auth-<mark>choice</mark>-order.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"4\"><td><div class=\"lineno\">4</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">ProviderAuth<mark>Choice</mark>Metadata</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../plugins/provider-auth-<mark>choice</mark>s.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"5\"><td><div class=\"lineno\">5</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">ProviderInstallCatalogEntry</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../plugins/provider-install-catalog.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"6\"><td><div class=\"lineno\">6</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"7\"><td><div class=\"lineno\">7</div></td><td><div class=\"highlight\"><pre><span class=\"k\">export</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">SetupInferenceManualProvider</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"cm\">/** Provider-auth <mark>choice</mark> id sent back to `openclaw.setup.activate`. */</span></pre></div></td></tr><tr data-line=\"9\"><td><div class=\"lineno\">9</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">id</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">string</span><span class=\"p\">;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"21\"><td><div class=\"lineno\">21</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"cm\">/** Provider-auth <mark>choice</mark> id sent to `openclaw.setup.auth.start`. */</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "252820863",
+          "path": "src/system-agent/setup-inference-auth-options.ts",
+          "repo": "openclaw/openclaw",
+          "total_matches": "100+"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1\"><td><div class=\"lineno\">1</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">compareProviderAuth<mark>Choice</mark>Groups</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;./provider-auth-<mark>choice</mark>-order.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"2\"><td><div class=\"lineno\">2</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"3\"><td><div class=\"lineno\">3</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">resolveManifestDeclaredProviderAuth<mark>Choice</mark>s</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"4\"><td><div class=\"lineno\">4</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">ProviderAuth<mark>Choice</mark>Metadata</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"5\"><td><div class=\"lineno\">5</div></td><td><div class=\"highlight\"><pre><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;./provider-auth-<mark>choice</mark>s.js&quot;</span><span class=\"p\">;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"18\"><td><div class=\"lineno\">18</div></td><td><div class=\"highlight\"><pre><span class=\"k\">export</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">ProviderChannelLogin<mark>Choice</mark></span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"19\"><td><div class=\"lineno\">19</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\"><mark>choice</mark>Id</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">string</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"20\"><td><div class=\"lineno\">20</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">pluginId</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">string</span><span class=\"p\">;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "252820863",
+          "path": "src/plugins/provider-login-options.ts",
+          "repo": "openclaw/openclaw",
+          "total_matches": "100+"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"14\"><td><div class=\"lineno\">14</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">resolveOfficialExternalPluginInstall</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"15\"><td><div class=\"lineno\">15</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">OfficialExternalProviderAuth<mark>Choice</mark></span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"16\"><td><div class=\"lineno\">16</div></td><td><div class=\"highlight\"><pre><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;./official-external-plugin-catalog.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"17\"><td><div class=\"lineno\">17</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">normalizePluginInstallDefault<mark>Choice</mark></span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;./plugin-install-default-<mark>choice</mark>.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"18\"><td><div class=\"lineno\">18</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">PluginOrigin</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;./plugin-origin.types.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"19\"><td><div class=\"lineno\">19</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">loadPluginRegistrySnapshot</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">PluginRegistryRecord</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;./plugin-registry.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"20\"><td><div class=\"lineno\">20</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"21\"><td><div class=\"lineno\">21</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">resolveManifestProviderAuth<mark>Choice</mark>s</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"22\"><td><div class=\"lineno\">22</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">ProviderAuth<mark>Choice</mark>Metadata</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"23\"><td><div class=\"lineno\">23</div></td><td><div class=\"highlight\"><pre><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;./provider-auth-<mark>choice</mark>s.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "252820863",
+          "path": "src/plugins/provider-install-catalog.ts",
+          "repo": "openclaw/openclaw",
+          "total_matches": "100+"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"24\"><td><div class=\"lineno\">24</div></td><td><div class=\"highlight\"><pre><span class=\"kd\">const</span><span class=\"w\"> </span><span class=\"nx\">MAX_FIELD_TEXT</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mf\">512</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"25\"><td><div class=\"lineno\">25</div></td><td><div class=\"highlight\"><pre><span class=\"kd\">const</span><span class=\"w\"> </span><span class=\"nx\">MAX_<mark>CHOICE</mark>_COUNT</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mf\">4</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"26\"><td><div class=\"lineno\">26</div></td><td><div class=\"highlight\"><pre><span class=\"kd\">const</span><span class=\"w\"> </span><span class=\"nx\">MAX_<mark>CHOICE</mark>_LABEL</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mf\">64</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"27\"><td><div class=\"lineno\">27</div></td><td><div class=\"highlight\"><pre><span class=\"kd\">const</span><span class=\"w\"> </span><span class=\"nx\">MAX_<mark>CHOICE</mark>_VALUE</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mf\">256</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre><span class=\"kd\">const</span><span class=\"w\"> </span><span class=\"nx\">MAX_IMAGE_PICKER_ID</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mf\">128</span><span class=\"p\">;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"39\"><td><div class=\"lineno\">39</div></td><td><div class=\"highlight\"><pre><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\"><mark>Choice</mark></span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">value</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">string</span><span class=\"p\">;</span><span class=\"w\"> </span><span class=\"nx\">label</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">string</span><span class=\"p\">;</span><span class=\"w\"> </span><span class=\"nx\">description?</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">string</span><span class=\"w\"> </span><span class=\"p\">};</span></pre></div></td></tr><tr data-line=\"40\"><td><div class=\"lineno\">40</div></td><td><div class=\"highlight\"><pre><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">DecodeValue</span><span class=\"w\"> </span><span class=\"o\">=</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"71\"><td><div class=\"lineno\">71</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"kd\">const</span><span class=\"w\"> </span><span class=\"nx\"><mark>choice</mark>s</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"nx\">read<mark>Choice</mark>s</span><span class=\"p\">(</span><span class=\"nx\">schema</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nx\">options</span><span class=\"p\">);</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "252820863",
+          "path": "src/agents/harness/structured-input-schema.ts",
+          "repo": "openclaw/openclaw",
+          "total_matches": "100+"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1\"><td><div class=\"lineno\">1</div></td><td><div class=\"highlight\"><pre><span class=\"c1\">// Applies an onboarding auth <mark>choice</mark> through provider setup flows and legacy normalization.</span></pre></div></td></tr><tr data-line=\"2\"><td><div class=\"lineno\">2</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">formatCliCommand</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../cli/command-format.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"3\"><td><div class=\"lineno\">3</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">prepareAuth<mark>Choice</mark>LoadedPluginProvider</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../plugins/provider-auth-<mark>choice</mark>.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"4\"><td><div class=\"lineno\">4</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"5\"><td><div class=\"lineno\">5</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">ApplyAuth<mark>Choice</mark>Params</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"6\"><td><div class=\"lineno\">6</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">ApplyAuth<mark>Choice</mark>Result</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"7\"><td><div class=\"lineno\">7</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">PreparedAuth<mark>Choice</mark>Result</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;./auth-<mark>choice</mark>.apply.types.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"9\"><td><div class=\"lineno\">9</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">Auth<mark>Choice</mark></span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;./onboard-types.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "252820863",
+          "path": "src/commands/auth-choice.apply.ts",
+          "repo": "openclaw/openclaw",
+          "total_matches": "91"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../commands/onboard-agent-target.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"9\"><td><div class=\"lineno\">9</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">Auth<mark>Choice</mark></span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nx\">OnboardOptions</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../commands/onboard-types.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"10\"><td><div class=\"lineno\">10</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">OpenClawConfig</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../config/types.openclaw.js&quot;</span><span class=\"p\">;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"17\"><td><div class=\"lineno\">17</div></td><td><div class=\"highlight\"><pre><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">PreparedAuth<mark>Choice</mark>Result</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"nx\">Awaited</span><span class=\"o\">&lt;</span></pre></div></td></tr><tr data-line=\"18\"><td><div class=\"lineno\">18</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">ReturnType</span><span class=\"o\">&lt;</span><span class=\"ow\">typeof</span><span class=\"w\"> </span><span class=\"k\">import</span><span class=\"p\">(</span><span class=\"s2\">&quot;../commands/auth-<mark>choice</mark>.js&quot;</span><span class=\"p\">).</span><span class=\"nx\">prepareAuth<mark>Choice</mark></span><span class=\"o\">&gt;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"22\"><td><div class=\"lineno\">22</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">config</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">OpenClawConfig</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"23\"><td><div class=\"lineno\">23</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">authProfiles</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">PreparedAuth<mark>Choice</mark>Result</span><span class=\"p\">[</span><span class=\"s2\">&quot;authProfiles&quot;</span><span class=\"p\">];</span></pre></div></td></tr><tr data-line=\"24\"><td><div class=\"lineno\">24</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">persistAuthProfiles</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">PreparedAuth<mark>Choice</mark>Result</span><span class=\"p\">[</span><span class=\"s2\">&quot;persistAuthProfiles&quot;</span><span class=\"p\">];</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "252820863",
+          "path": "src/wizard/setup.model-auth.ts",
+          "repo": "openclaw/openclaw",
+          "total_matches": "96"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"23\"><td><div class=\"lineno\">23</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">applyProviderPluginAuthMethodResultConfig</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"24\"><td><div class=\"lineno\">24</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">prepareAuth<mark>Choice</mark>LoadedPluginProvider</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"25\"><td><div class=\"lineno\">25</div></td><td><div class=\"highlight\"><pre><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../plugins/provider-auth-<mark>choice</mark>.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"26\"><td><div class=\"lineno\">26</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"27\"><td><div class=\"lineno\">27</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">ProviderAuth<mark>Choice</mark>Metadata</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">resolveManifestProviderAuth<mark>Choice</mark></span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"29\"><td><div class=\"lineno\">29</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">resolveManifestProviderAuth<mark>Choice</mark>s</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"30\"><td><div class=\"lineno\">30</div></td><td><div class=\"highlight\"><pre><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../plugins/provider-auth-<mark>choice</mark>s.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"31\"><td><div class=\"lineno\">31</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">runProviderPluginAuthMethodUnpersisted</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../plugins/provider-auth-method.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "252820863",
+          "path": "src/system-agent/setup-inference-credentials.ts",
+          "repo": "openclaw/openclaw",
+          "total_matches": "95"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"14\"><td><div class=\"lineno\">14</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">assertSupportedRuntime</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../infra/runtime-guard.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"15\"><td><div class=\"lineno\">15</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">resolveProviderMatch</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../plugins/provider-auth-<mark>choice</mark>-helpers.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"16\"><td><div class=\"lineno\">16</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">resolvePluginProviders</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../plugins/provider-auth-<mark>choice</mark>.runtime.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"17\"><td><div class=\"lineno\">17</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"18\"><td><div class=\"lineno\">18</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">ProviderAuth<mark>Choice</mark>Metadata</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"19\"><td><div class=\"lineno\">19</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">resolveManifestProviderAuth<mark>Choice</mark>s</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"20\"><td><div class=\"lineno\">20</div></td><td><div class=\"highlight\"><pre><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../plugins/provider-auth-<mark>choice</mark>s.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"21\"><td><div class=\"lineno\">21</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">normalizeTokenProviderInput</span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;../plugins/provider-auth-input.js&quot;</span><span class=\"p\">;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"29\"><td><div class=\"lineno\">29</div></td><td><div class=\"highlight\"><pre><span class=\"k\">import</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"nx\">resolveLegacyOnboardAuth<mark>Choice</mark></span><span class=\"w\"> </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"kr\">from</span><span class=\"w\"> </span><span class=\"s2\">&quot;./auth-<mark>choice</mark>-legacy.js&quot;</span><span class=\"p\">;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "252820863",
+          "path": "src/commands/onboard.ts",
+          "repo": "openclaw/openclaw",
+          "total_matches": "93"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"35\"><td><div class=\"lineno\">35</div></td><td><div class=\"highlight\"><pre><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">OpenAIResponsesTool<mark>Choice</mark></span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"nx\">ResponseCreateParamsStreaming</span><span class=\"p\">[</span><span class=\"s2\">&quot;tool_<mark>choice</mark>&quot;</span><span class=\"p\">];</span></pre></div></td></tr><tr data-line=\"36\"><td><div class=\"lineno\">36</div></td><td><div class=\"highlight\"><pre><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">OpenAIResponsesAllowedTool<mark>Choice</mark></span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"nx\">Extract</span><span class=\"o\">&lt;</span></pre></div></td></tr><tr data-line=\"37\"><td><div class=\"lineno\">37</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">OpenAIResponsesTool<mark>Choice</mark></span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"38\"><td><div class=\"lineno\">38</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"s2\">&quot;allowed_tools&quot;</span><span class=\"w\"> </span><span class=\"p\">}</span></pre></div></td></tr><tr data-line=\"39\"><td><div class=\"lineno\">39</div></td><td><div class=\"highlight\"><pre><span class=\"o\">&gt;</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"40\"><td><div class=\"lineno\">40</div></td><td><div class=\"highlight\"><pre><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">OpenAICompletionsSdkTool<mark>Choice</mark></span><span class=\"w\"> </span><span class=\"o\">=</span></pre></div></td></tr><tr data-line=\"41\"><td><div class=\"lineno\">41</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">OpenAI</span><span class=\"p\">.</span><span class=\"nx\">Chat</span><span class=\"p\">.</span><span class=\"nx\">Completions</span><span class=\"p\">.</span><span class=\"nx\">ChatCompletionCreateParamsStreaming</span><span class=\"p\">[</span><span class=\"s2\">&quot;tool_<mark>choice</mark>&quot;</span><span class=\"p\">];</span></pre></div></td></tr><tr data-line=\"42\"><td><div class=\"lineno\">42</div></td><td><div class=\"highlight\"><pre><span class=\"kr\">type</span><span class=\"w\"> </span><span class=\"nx\">OpenAICompletionsAllowedTool<mark>Choice</mark></span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"nx\">Extract</span><span class=\"o\">&lt;</span></pre></div></td></tr><tr data-line=\"43\"><td><div class=\"lineno\">43</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">OpenAICompletionsSdkTool<mark>Choice</mark></span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"44\"><td><div class=\"lineno\">44</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"p\">{</span><span class=\"w\"> </span><span class=\"kr\">type</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"s2\">&quot;allowed_tools&quot;</span><span class=\"w\"> </span><span class=\"p\">}</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "252820863",
+          "path": "packages/ai/src/providers/openai-tool-projection.ts",
+          "repo": "openclaw/openclaw",
+          "total_matches": "73"
+        }
+      ],
+      "total": 1994000
+    },
+    "time": 254
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=choice"
+}

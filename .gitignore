@@ -50,4 +50,13 @@ lab/upstream_verify/scratch/
 /.wip/
 
 # --- bench/perf 可再生输出（lab/bench/perf/ 源码仍入库） ---
-lab/bench/perf/out/
+lab/bench/perf/out/\n
+# --- 0day reserve dynamic evidence is part of the proof ---
+!lab/zeroday_reserve/
+!lab/zeroday_reserve/cases/
+!lab/zeroday_reserve/cases/*/
+!lab/zeroday_reserve/cases/*/evidence/
+!lab/zeroday_reserve/cases/*/evidence/**
+
+# --- vendor HTML cache is large and reproducible; distilled matches stay in prov-vendor.json ---
+corpus/novelty/cache/vendor/

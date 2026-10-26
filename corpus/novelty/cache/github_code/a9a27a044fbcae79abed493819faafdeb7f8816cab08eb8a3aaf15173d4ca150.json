@@ -1,0 +1,123 @@
+{
+  "_cached_at": "2026-10-26T12:15:06+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 3,
+            "val": "YAML"
+          },
+          {
+            "count": 1,
+            "val": "JSON"
+          },
+          {
+            "count": 1,
+            "val": "Markdown"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 2,
+            "val": "data/"
+          },
+          {
+            "count": 1,
+            "val": "2026/"
+          },
+          {
+            "count": 1,
+            "val": "vulns/open-webui/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 2,
+            "owner_id": "18461506",
+            "val": "Tencent/AI-Infra-Guard"
+          },
+          {
+            "count": 1,
+            "owner_id": "6109463",
+            "val": "ncecere/terraform-provider-openwebui"
+          },
+          {
+            "count": 1,
+            "owner_id": "62057399",
+            "val": "trickest/cve"
+          },
+          {
+            "count": 1,
+            "owner_id": "647025",
+            "val": "pypa/advisory-database"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"3\"><td><div class=\"lineno\">3</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nt\">cve</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"l l-Scalar l-Scalar-Plain\">CVE-2026-45672</span></pre></div></td></tr><tr data-line=\"4\"><td><div class=\"lineno\">4</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nt\">summary</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"l l-Scalar l-Scalar-Plain\">Open WebUI 是一个自托管的 AI 平台，设计为完全离线运行。在 0.8.12 版本之前，<mark>/api/v1/utils/code/execute</mark></span></pre></div></td></tr><tr data-line=\"5\"><td><div class=\"lineno\">5</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"l l-Scalar l-Scalar-Plain\">端点可绕过管理员配置执行任意 Python 代码</span></pre></div></td></tr><tr data-line=\"6\"><td><div class=\"lineno\">6</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nt\">details</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"l l-Scalar l-Scalar-Plain\">Open WebUI 是一个自托管的 AI 平台，设计为完全离线运行。在 0.8.12 版本之前，<mark>/api/v1/utils/code/execute</mark></span></pre></div></td></tr><tr data-line=\"7\"><td><div class=\"lineno\">7</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"l l-Scalar l-Scalar-Plain\">端点可通过 Jupyter 为任何已验证用户执行任意 Python 代码，即使管理员已设置 ENABLE_CODE_EXECUTION=false。该功能开关未在</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "18461506",
+          "path": "data/vuln/openwebui/CVE-2026-45672.yaml",
+          "repo": "Tencent/AI-Infra-Guard",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre><span class=\"nt\">details</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"s\">&quot;###</span><span class=\"nv\"> </span><span class=\"s\">Summary\\n\\nThe</span><span class=\"nv\"> </span><span class=\"s\">`<mark>/api/v1/utils/code/execute</mark>`</span><span class=\"nv\"> </span><span class=\"s\">endpoint</span><span class=\"nv\"> </span><span class=\"s\">executes</span><span class=\"nv\"> </span><span class=\"s\">arbitrary</span><span class=\"nv\"> </span><span class=\"s\">Python</span><span class=\"nv\"> </span><span class=\"s\">code</span><span class=\"nv\"> </span><span class=\"s\">via</span><span class=\"nv\"> </span><span class=\"s\">Jupyter</span><span class=\"nv\"> </span><span class=\"s\">for</span><span class=\"nv\"> </span><span class=\"s\">any</span><span class=\"nv\"> </span><span class=\"s\">verified</span><span class=\"nv\"> </span><span class=\"s\">user,</span><span class=\"nv\"> </span><span class=\"s\">even</span><span class=\"nv\"> </span><span class=\"s\">when</span><span class=\"nv\"> </span><span class=\"s\">the</span><span class=\"nv\"> </span><span class=\"s\">admin</span><span class=\"nv\"> </span><span class=\"s\">has</span><span class=\"nv\"> </span><span class=\"s\">set</span><span class=\"nv\"> </span><span class=\"s\">`ENABLE_CODE_EXECUTION=false`.</span><span class=\"nv\"> </span><span class=\"s\">The</span><span class=\"nv\"> </span><span class=\"s\">feature</span><span class=\"nv\"> </span><span class=\"s\">ga</span><span class=\"truncated\">&hellip;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "647025",
+          "path": "vulns/open-webui/PYSEC-2026-2698.yaml",
+          "repo": "pypa/advisory-database",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre>Open WebUI is a self-hosted artificial intelligence platform designed to operate entirely offline. Prior to 0.8.12, the <mark>/api/v1/utils/code/execute</mark> endpoint executes arbitrary Python code via Jupyter for any verified user, even when the admin has set ENABLE_CODE_EXECUTION=false. The feature gate is not enforced on the API endpoint — the configuration says &quot;disabled&quot; but code still executes. This vulnerability is fixed in 0.8.12.</pre></div></td></tr></table>"
+          },
+          "owner_id": "62057399",
+          "path": "2026/CVE-2026-45672.md",
+          "repo": "trickest/cve",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"6\"><td><div class=\"lineno\">6</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nt\">details</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"l l-Scalar l-Scalar-Plain\">Open WebUI is a self-hosted artificial intelligence platform designed to</span></pre></div></td></tr><tr data-line=\"7\"><td><div class=\"lineno\">7</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"l l-Scalar l-Scalar-Plain\">operate entirely offline. Prior to 0.8.12, the <mark>/api/v1/utils/code/execute</mark> endpoint</span></pre></div></td></tr><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"l l-Scalar l-Scalar-Plain\">executes arbitrary Python code via Jupyter for any verified user, even when the</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "18461506",
+          "path": "data/vuln_en/openwebui/CVE-2026-45672.yaml",
+          "repo": "Tencent/AI-Infra-Guard",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"17526\"><td><div class=\"lineno\">17526</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"nt\">&quot;<mark>/api/v1/utils/code/execute</mark>&quot;</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"17527\"><td><div class=\"lineno\">17527</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"nt\">&quot;post&quot;</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6109463",
+          "path": "openapi.json",
+          "repo": "ncecere/terraform-provider-openwebui",
+          "total_matches": "1"
+        }
+      ],
+      "total": 5
+    },
+    "time": 94
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=%2Fapi%2Fv1%2Futils%2Fcode%2Fexecute"
+}

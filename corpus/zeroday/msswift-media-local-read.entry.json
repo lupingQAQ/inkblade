@@ -1,0 +1,65 @@
+{
+ "id": "msswift-media-local-read",
+ "source": "new-discovery",
+ "component": "msswift",
+ "product": "modelscope/ms-swift",
+ "title": "ms-swift 4.6.0 deploy media path reads arbitrary host files by default",
+ "module": "msswift-trust-remote-code",
+ "version": "v4.6.0",
+ "root_cause": {
+  "file": "swift/infer_engine/protocol.py",
+  "line": 275,
+  "function": "MultiModalRequestMixin.to_base64",
+  "snippet": ""
+ },
+ "preconditions": [
+  "swift deploy reachable",
+  "SWIFT_MEDIA_ALLOWED_DIRS unset (default)",
+  "request carries a local media path"
+ ],
+ "exploit": "image/audio/video local path -> SafeMediaPath default allow-all -> open(path).read() -> base64 returned",
+ "evidence": {
+  "path": "lab/zeroday_reserve/cases/msswift-media-local-read/result.json",
+  "mode": "evidence-reused",
+  "kind": "dynamic"
+ },
+ "verification": {
+  "status": "verified",
+  "dynamic": true,
+  "method": "dynamic-function",
+  "reason": ""
+ },
+ "reachability": "HTTP chat/completion request -> MultiModalRequestMixin.to_base64 -> SafeMediaPath.check (env unset -> allow) -> open(mm_data,'rb') -> base64 in request.",
+ "novelty": {
+  "osv_package": "ms-swift",
+  "osv_ecosystem": "PyPI",
+  "osv_version": "4.6.0",
+  "ghsa_package": "ms-swift",
+  "ghsa_ecosystem": "pip",
+  "repo": "modelscope/ms-swift",
+  "nvd_keywords": [
+   "msswift",
+   "ms-swift",
+   "media"
+  ],
+  "strong_terms": [
+   "MultiModalRequestMixin.to_base64",
+   "SafeMediaPath",
+   "SWIFT_MEDIA_ALLOWED_DIRS",
+   "to_base64",
+   "protocol.py"
+  ],
+  "keywords": [
+   "msswift",
+   "ms-swift",
+   "media",
+   "deploy"
+  ],
+  "local_source": null
+ },
+ "disclosure": {
+  "status": "undisclosed",
+  "channel": "vendor security policy"
+ },
+ "notes": ""
+}

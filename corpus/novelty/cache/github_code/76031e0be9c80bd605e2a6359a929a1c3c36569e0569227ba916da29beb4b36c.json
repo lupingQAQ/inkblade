@@ -1,0 +1,145 @@
+{
+  "_cached_at": "2026-10-26T12:14:56+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 3,
+            "val": "JSON"
+          },
+          {
+            "count": 2,
+            "val": "Python"
+          },
+          {
+            "count": 1,
+            "val": "Markdown"
+          },
+          {
+            "count": 1,
+            "val": "YAML"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 3,
+            "val": "scholar-agent/examples/autoresearch/real_repositories/results/"
+          },
+          {
+            "count": 1,
+            "val": ".github/workflows/"
+          },
+          {
+            "count": 1,
+            "val": "docker/"
+          },
+          {
+            "count": 1,
+            "val": "docs/developer/ci/"
+          },
+          {
+            "count": 1,
+            "val": "tests/ci/test/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 4,
+            "owner_id": "223053390",
+            "val": "radixark/miles"
+          },
+          {
+            "count": 3,
+            "owner_id": "175149126",
+            "val": "yu-xin-c/Sea-mult-agent"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"12\"><td><div class=\"lineno\">12</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">Usage:</span></pre></div></td></tr><tr data-line=\"13\"><td><div class=\"lineno\">13</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    python docker/<mark>image_inputs.py</mark>                 # hash the working tree</span></pre></div></td></tr><tr data-line=\"14\"><td><div class=\"lineno\">14</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    python docker/<mark>image_inputs.py</mark> --rev HEAD^1    # hash a git revision</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "223053390",
+          "path": "docker/image_inputs.py",
+          "repo": "radixark/miles",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"338\"><td><div class=\"lineno\">338</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># Rebuilds follow the build inputs, not whether the PR diff touched them.</span></pre></div></td></tr><tr data-line=\"339\"><td><div class=\"lineno\">339</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">assert</span> <span class=\"s2\">&quot;python3 docker/<mark>image_inputs.py</mark> --rev HEAD^1&quot;</span> <span class=\"ow\">in</span> <span class=\"n\">reusable</span></pre></div></td></tr><tr data-line=\"340\"><td><div class=\"lineno\">340</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">assert</span> <span class=\"s2\">&quot;python3 docker/<mark>image_inputs.py</mark> --read-label&quot;</span> <span class=\"ow\">in</span> <span class=\"n\">reusable</span></pre></div></td></tr><tr data-line=\"341\"><td><div class=\"lineno\">341</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">assert</span> <span class=\"s2\">&quot;github.event.pull_request.head.repo.full_name == github.repository&quot;</span> <span class=\"ow\">in</span> <span class=\"n\">reusable</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"348\"><td><div class=\"lineno\">348</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">compare</span> <span class=\"o\">=</span> <span class=\"n\">decide_job</span><span class=\"o\">.</span><span class=\"n\">index</span><span class=\"p\">(</span><span class=\"s2\">&quot;python3 docker/<mark>image_inputs.py</mark> --rev HEAD^1&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"349\"><td><div class=\"lineno\">349</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">login</span> <span class=\"o\">=</span> <span class=\"n\">decide_job</span><span class=\"o\">.</span><span class=\"n\">index</span><span class=\"p\">(</span><span class=\"s2\">&quot;- name: Login to Docker Hub&quot;</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "223053390",
+          "path": "tests/ci/test/test_run_suite.py",
+          "repo": "radixark/miles",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"50\"><td><div class=\"lineno\">50</div></td><td><div class=\"highlight\"><pre><span class=\"w\">          </span><span class=\"no\"># recorded base.sha, which can lag main and pull in unrelated changes.</span></pre></div></td></tr><tr data-line=\"51\"><td><div class=\"lineno\">51</div></td><td><div class=\"highlight\"><pre><span class=\"w\">          </span><span class=\"no\">CURRENT=$(python3 docker/<mark>image_inputs.py</mark> --rev HEAD)</span></pre></div></td></tr><tr data-line=\"52\"><td><div class=\"lineno\">52</div></td><td><div class=\"highlight\"><pre><span class=\"w\">          </span><span class=\"no\">BASE=$(python3 docker/<mark>image_inputs.py</mark> --rev HEAD^1)</span></pre></div></td></tr><tr data-line=\"53\"><td><div class=\"lineno\">53</div></td><td><div class=\"highlight\"><pre><span class=\"w\">          </span><span class=\"no\">if [ &quot;$CURRENT&quot; = &quot;$BASE&quot; ]; then</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"124\"><td><div class=\"lineno\">124</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"no\">--format &#39;{{ json .Image }}&#39; 2&gt;/dev/null \\</span></pre></div></td></tr><tr data-line=\"125\"><td><div class=\"lineno\">125</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"no\">| python3 docker/<mark>image_inputs.py</mark> --read-label || true)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "223053390",
+          "path": ".github/workflows/_build-pr-ci-image.yml",
+          "repo": "radixark/miles",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"65\"><td><div class=\"lineno\">65</div></td><td><div class=\"highlight\"><pre>| <span class=\"sb\">`docker-decide`</span> | hashes the build inputs (<span class=\"sb\">`docker/<mark>image_inputs.py</mark>`</span>) and compares. Inputs equal to the base branch → no PR image, suites run on <span class=\"sb\">`dev`</span>. Otherwise it reads the <span class=\"sb\">`miles.image-inputs`</span> label off the published <span class=\"sb\">`pr-&lt;num&gt;`</span> tag: same hash → reuse it, different or absent → rebuild. Fork PRs cannot publish, so they always test on <span class=\"sb\">`dev`</span> |</pre></div></td></tr></table>"
+          },
+          "owner_id": "223053390",
+          "path": "docs/developer/ci/02-docker-build.md",
+          "repo": "radixark/miles",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1\"><td><div class=\"lineno\">1</div></td><td><div class=\"highlight\"><pre><span class=\"truncated\">&hellip;</span>&quot;tests/llm/test_tokenizer_split_truncate_contract.py\\&quot;,\\&quot;tests/llm/test_utils_llm_cache.py\\&quot;,\\&quot;tests/llm/test_vlm_cache_key.py\\&quot;,\\&quot;tests/llm/test_vlm_<mark>image_inputs.py</mark>\\&quot;,\\&quot;tests/llm/test_vlm_json_escape_repair.py\\&quot;,\\&quot;tests/llm/voyageai_impl/__init__.py\\&quot;,\\&quot;tests/llm/voyageai_impl/test_voyageai_embed.py\\&quot;,\\&quot;tests/llm</span><span class=\"truncated\">&hellip;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "175149126",
+          "path": "scholar-agent/examples/autoresearch/real_repositories/results/2026-08-10_lightrag_e2e.json",
+          "repo": "yu-xin-c/Sea-mult-agent",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1\"><td><div class=\"lineno\">1</div></td><td><div class=\"highlight\"><pre><span class=\"truncated\">&hellip;</span>&quot;tests/llm/test_tokenizer_split_truncate_contract.py\\&quot;,\\&quot;tests/llm/test_utils_llm_cache.py\\&quot;,\\&quot;tests/llm/test_vlm_cache_key.py\\&quot;,\\&quot;tests/llm/test_vlm_<mark>image_inputs.py</mark>\\&quot;,\\&quot;tests/llm/test_vlm_json_escape_repair.py\\&quot;,\\&quot;tests/llm/voyageai_impl/__init__.py\\&quot;,\\&quot;tests/llm/voyageai_impl/test_voyageai_embed.py\\&quot;,\\&quot;tests/llm</span><span class=\"truncated\">&hellip;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "175149126",
+          "path": "scholar-agent/examples/autoresearch/real_repositories/results/2026-08-10_lightrag_target_stop_e2e.json",
+          "repo": "yu-xin-c/Sea-mult-agent",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1\"><td><div class=\"lineno\">1</div></td><td><div class=\"highlight\"><pre><span class=\"truncated\">&hellip;</span>&quot;tests/llm/test_tokenizer_split_truncate_contract.py\\&quot;,\\&quot;tests/llm/test_utils_llm_cache.py\\&quot;,\\&quot;tests/llm/test_vlm_cache_key.py\\&quot;,\\&quot;tests/llm/test_vlm_<mark>image_inputs.py</mark>\\&quot;,\\&quot;tests/llm/test_vlm_json_escape_repair.py\\&quot;,\\&quot;tests/llm/voyageai_impl/__init__.py\\&quot;,\\&quot;tests/llm/voyageai_impl/test_voyageai_embed.py\\&quot;,\\&quot;tests/llm</span><span class=\"truncated\">&hellip;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "175149126",
+          "path": "scholar-agent/examples/autoresearch/real_repositories/results/2026-08-10_lightrag_pinned_revision_e2e.json",
+          "repo": "yu-xin-c/Sea-mult-agent",
+          "total_matches": "1"
+        }
+      ],
+      "total": 7
+    },
+    "time": 366
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=image_inputs.py"
+}

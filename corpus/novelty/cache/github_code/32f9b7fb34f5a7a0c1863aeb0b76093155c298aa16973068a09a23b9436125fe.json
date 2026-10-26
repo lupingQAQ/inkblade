@@ -1,0 +1,144 @@
+{
+  "_cached_at": "2026-10-26T11:20:50+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 6,
+            "val": "Python"
+          },
+          {
+            "count": 1,
+            "val": "YAML"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 4,
+            "val": "python/sglang/"
+          },
+          {
+            "count": 2,
+            "val": "tests/"
+          },
+          {
+            "count": 1,
+            "val": "vulns/lmdeploy/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 2,
+            "owner_id": "147780389",
+            "val": "sgl-project/sglang"
+          },
+          {
+            "count": 2,
+            "owner_id": "290217419",
+            "val": "rednote-machine-learning/RedKnot"
+          },
+          {
+            "count": 1,
+            "owner_id": "48077327",
+            "val": "MonsieurMiku/SSS-Net"
+          },
+          {
+            "count": 1,
+            "owner_id": "51358498",
+            "val": "geezacoleman/OpenWeedLocator"
+          },
+          {
+            "count": 1,
+            "owner_id": "647025",
+            "val": "pypa/advisory-database"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"337\"><td><div class=\"lineno\">337</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>_load_pt_file</mark></span><span class=\"p\">(</span><span class=\"n\">bin_file</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">device</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">dict</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"338\"><td><div class=\"lineno\">338</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Load a PyTorch checkpoint file, handling legacy tar format.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"372\"><td><div class=\"lineno\">372</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">state</span> <span class=\"o\">=</span> <span class=\"n\"><mark>_load_pt_file</mark></span><span class=\"p\">(</span><span class=\"n\">bin_file</span><span class=\"p\">,</span> <span class=\"n\">device</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"373\"><td><div class=\"lineno\">373</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">yield from</span> <span class=\"n\">state</span><span class=\"o\">.</span><span class=\"n\">items</span><span class=\"p\">()</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "147780389",
+          "path": "python/sglang/multimodal_gen/runtime/loader/weight_utils.py",
+          "repo": "sgl-project/sglang",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1381\"><td><div class=\"lineno\">1381</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>_load_pt_file</mark></span><span class=\"p\">(</span><span class=\"n\">bin_file</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">dict</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"1382\"><td><div class=\"lineno\">1382</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Load a PyTorch checkpoint file, handling legacy tar format.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1415\"><td><div class=\"lineno\">1415</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">state</span> <span class=\"o\">=</span> <span class=\"n\"><mark>_load_pt_file</mark></span><span class=\"p\">(</span><span class=\"n\">bin_file</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"1416\"><td><div class=\"lineno\">1416</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">yield from</span> <span class=\"n\">state</span><span class=\"o\">.</span><span class=\"n\">items</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1430\"><td><div class=\"lineno\">1430</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">futures</span> <span class=\"o\">=</span> <span class=\"p\">[</span></pre></div></td></tr><tr data-line=\"1431\"><td><div class=\"lineno\">1431</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\">submit</span><span class=\"p\">(</span><span class=\"n\"><mark>_load_pt_file</mark></span><span class=\"p\">,</span> <span class=\"n\">bin_file</span><span class=\"p\">)</span> <span class=\"k\">for</span> <span class=\"n\">bin_file</span> <span class=\"ow\">in</span> <span class=\"n\">hf_weights_files</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "147780389",
+          "path": "python/sglang/srt/model_loader/weight_utils.py",
+          "repo": "sgl-project/sglang",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"256\"><td><div class=\"lineno\">256</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>_load_pt_file</mark></span><span class=\"p\">(</span><span class=\"n\">bin_file</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">device</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">dict</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"257\"><td><div class=\"lineno\">257</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Load a PyTorch checkpoint file, handling legacy tar format.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"291\"><td><div class=\"lineno\">291</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">state</span> <span class=\"o\">=</span> <span class=\"n\"><mark>_load_pt_file</mark></span><span class=\"p\">(</span><span class=\"n\">bin_file</span><span class=\"p\">,</span> <span class=\"n\">device</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"292\"><td><div class=\"lineno\">292</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">yield from</span> <span class=\"n\">state</span><span class=\"o\">.</span><span class=\"n\">items</span><span class=\"p\">()</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "290217419",
+          "path": "python/sglang/multimodal_gen/runtime/loader/weight_utils.py",
+          "repo": "rednote-machine-learning/RedKnot",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1104\"><td><div class=\"lineno\">1104</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>_load_pt_file</mark></span><span class=\"p\">(</span><span class=\"n\">bin_file</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">dict</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"1105\"><td><div class=\"lineno\">1105</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Load a PyTorch checkpoint file, handling legacy tar format.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1138\"><td><div class=\"lineno\">1138</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">state</span> <span class=\"o\">=</span> <span class=\"n\"><mark>_load_pt_file</mark></span><span class=\"p\">(</span><span class=\"n\">bin_file</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"1139\"><td><div class=\"lineno\">1139</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">yield from</span> <span class=\"n\">state</span><span class=\"o\">.</span><span class=\"n\">items</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1153\"><td><div class=\"lineno\">1153</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">futures</span> <span class=\"o\">=</span> <span class=\"p\">[</span></pre></div></td></tr><tr data-line=\"1154\"><td><div class=\"lineno\">1154</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\">submit</span><span class=\"p\">(</span><span class=\"n\"><mark>_load_pt_file</mark></span><span class=\"p\">,</span> <span class=\"n\">bin_file</span><span class=\"p\">)</span> <span class=\"k\">for</span> <span class=\"n\">bin_file</span> <span class=\"ow\">in</span> <span class=\"n\">hf_weights_files</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "290217419",
+          "path": "python/sglang/srt/model_loader/weight_utils.py",
+          "repo": "rednote-machine-learning/RedKnot",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"107\"><td><div class=\"lineno\">107</div></td><td><div class=\"highlight\"><pre>    <span class=\"nd\">@patch</span><span class=\"p\">(</span><span class=\"s1\">&#39;utils.greenongreen.YOLO&#39;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"108\"><td><div class=\"lineno\">108</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">test<mark>_load_pt_file</mark>_in_dir</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">mock_yolo_cls</span><span class=\"p\">,</span> <span class=\"n\">tmp_path</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"109\"><td><div class=\"lineno\">109</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"sd\">&quot;&quot;&quot;Parent dir with .pt file loads the .pt file.&quot;&quot;&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "51358498",
+          "path": "tests/test_greenongreen.py",
+          "repo": "geezacoleman/OpenWeedLocator",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre><span class=\"truncated\">&hellip;</span>m</span><span class=\"nv\"> </span><span class=\"s\">acknowledgement.\\n4.</span><span class=\"nv\"> </span><span class=\"s\">Request</span><span class=\"nv\"> </span><span class=\"s\">CVE</span><span class=\"nv\"> </span><span class=\"s\">through</span><span class=\"nv\"> </span><span class=\"s\">GHSA</span><span class=\"nv\"> </span><span class=\"s\">flow</span><span class=\"nv\"> </span><span class=\"s\">once</span><span class=\"nv\"> </span><span class=\"s\">the</span><span class=\"nv\"> </span><span class=\"s\">patch</span><span class=\"nv\"> </span><span class=\"s\">lands.\\n\\n##</span><span class=\"nv\"> </span><span class=\"s\">Why</span><span class=\"nv\"> </span><span class=\"s\">static-only</span><span class=\"nv\"> </span><span class=\"s\">is</span><span class=\"nv\"> </span><span class=\"s\">sufficient</span><span class=\"nv\"> </span><span class=\"s\">here\\n\\nUnlike</span><span class=\"nv\"> </span><span class=\"s\">F11</span><span class=\"nv\"> </span><span class=\"s\">(RCE</span><span class=\"nv\"> </span><span class=\"s\">chain</span><span class=\"nv\"> </span><span class=\"s\">through</span><span class=\"nv\"> </span><span class=\"s\">`<mark>_load_pt_file</mark>`)</span><span class=\"nv\"> </span><span class=\"s\">which</span><span class=\"nv\"> </span><span class=\"s\">required</span><span class=\"nv\"> </span><span class=\"s\">a\\nruntime</span><span class=\"nv\"> </span><span class=\"s\">PoC</span><span class=\"nv\"> </span><span class=\"s\">to</span><span class=\"nv\"> </span><span class=\"s\">demonstrate</span><span class=\"nv\"> </span><span class=\"s\">the</span><span class=\"nv\"> </span><span class=\"s\">pickle</span><span class=\"nv\"> </span><span class=\"s\">gadget</span><span class=\"nv\"> </span><span class=\"s\">execution,</span><span class=\"nv\"> </span><span class=\"s\">this</span><span class=\"nv\"> </span><span class=\"s\">finding\\nis</span><span class=\"nv\"> </span><span class=\"s\">a</span><span class=\"nv\"> </span><span class=\"s\">**single</span><span class=\"nv\"> </span><span class=\"s\">trust-flag</span><span class=\"nv\"> </span><span class=\"s\">flip**</span><span class=\"nv\"> </span><span class=\"s\">—</span><span class=\"nv\"> </span><span class=\"s\">the</span><span class=\"nv\"> </span><span class=\"s\">behaviour</span><span class=\"nv\"> </span><span class=\"s\">of\\n`AutoCo</span><span class=\"truncated\">&hellip;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "647025",
+          "path": "vulns/lmdeploy/PYSEC-2026-2608.yaml",
+          "repo": "pypa/advisory-database",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"17\"><td><div class=\"lineno\">17</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">test<mark>_load_pt_file</mark></span><span class=\"p\">():</span></pre></div></td></tr><tr data-line=\"18\"><td><div class=\"lineno\">18</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">test_tensor</span> <span class=\"o\">=</span> <span class=\"n\">torch</span><span class=\"o\">.</span><span class=\"n\">tensor</span><span class=\"p\">([[</span><span class=\"mi\">5</span><span class=\"p\">,</span> <span class=\"mi\">6</span><span class=\"p\">],</span> <span class=\"p\">[</span><span class=\"mi\">7</span><span class=\"p\">,</span> <span class=\"mi\">8</span><span class=\"p\">]])</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "48077327",
+          "path": "tests/test_data_loader.py",
+          "repo": "MonsieurMiku/SSS-Net",
+          "total_matches": "1"
+        }
+      ],
+      "total": 7
+    },
+    "time": 300
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=_load_pt_file"
+}

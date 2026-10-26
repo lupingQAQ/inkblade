@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T12:14:43+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 122,
+            "val": "Python"
+          },
+          {
+            "count": 22,
+            "val": "Markdown"
+          },
+          {
+            "count": 16,
+            "val": "OpenCL"
+          },
+          {
+            "count": 14,
+            "val": "Rust"
+          },
+          {
+            "count": 7,
+            "val": "Cuda"
+          },
+          {
+            "count": 5,
+            "val": "Shell"
+          },
+          {
+            "count": 4,
+            "val": "JSON"
+          },
+          {
+            "count": 3,
+            "val": "C++"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 34,
+            "val": "src/"
+          },
+          {
+            "count": 22,
+            "val": "topics/"
+          },
+          {
+            "count": 16,
+            "val": "lightx2v/"
+          },
+          {
+            "count": 11,
+            "val": "lib/"
+          },
+          {
+            "count": 11,
+            "val": "tests/"
+          },
+          {
+            "count": 6,
+            "val": "skyrl/backends/skyrl_train/"
+          },
+          {
+            "count": 5,
+            "val": "core/registry/"
+          },
+          {
+            "count": 5,
+            "val": "frontend/src/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 22,
+            "owner_id": "6665005",
+            "val": "sagecodes/ai-build-and-learn"
+          },
+          {
+            "count": 18,
+            "owner_id": "69665675",
+            "val": "ModelTC/LightX2V"
+          },
+          {
+            "count": 16,
+            "owner_id": "55443902",
+            "val": "openvinotoolkit/openvino"
+          },
+          {
+            "count": 10,
+            "owner_id": "206516623",
+            "val": "sqliteai/warp"
+          },
+          {
+            "count": 9,
+            "owner_id": "95529662",
+            "val": "cisco-open/flame"
+          },
+          {
+            "count": 8,
+            "owner_id": "194174999",
+            "val": "NovaSky-AI/SkyRL"
+          },
+          {
+            "count": 8,
+            "owner_id": "19442459",
+            "val": "pecu/FinancialVision"
+          },
+          {
+            "count": 8,
+            "owner_id": "3189299",
+            "val": "Xilinx/finn"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"131\"><td><div class=\"lineno\">131</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"k\">if</span><span class=\"w\"> </span><span class=\"kd\">let</span><span class=\"w\"> </span><span class=\"nb\">Some</span><span class=\"p\">(</span><span class=\"n\">weights</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\"><mark>fetch_weights</mark></span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">sampling_point</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"132\"><td><div class=\"lineno\">132</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"kd\">let</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"n\">ia</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">wa</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">weights</span><span class=\"p\">[</span><span class=\"mi\">0</span><span class=\"p\">];</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"166\"><td><div class=\"lineno\">166</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"k\">if</span><span class=\"w\"> </span><span class=\"kd\">let</span><span class=\"w\"> </span><span class=\"nb\">Some</span><span class=\"p\">(</span><span class=\"n\">weights</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\"><mark>fetch_weights</mark></span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">sampling_point</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"167\"><td><div class=\"lineno\">167</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"kd\">let</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"n\">ia</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">wa</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">weights</span><span class=\"p\">[</span><span class=\"mi\">0</span><span class=\"p\">];</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"338\"><td><div class=\"lineno\">338</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">pub</span><span class=\"w\"> </span><span class=\"k\">fn</span><span class=\"w\"> </span><span class=\"nf\"><mark>fetch_weights</mark></span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"bp\">self</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">sampling_point</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"nc\">Vector2</span><span class=\"o\">&lt;</span><span class=\"kt\">f32</span><span class=\"o\">&gt;</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">-&gt;</span><span class=\"w\"> </span><span class=\"nb\">Option</span><span class=\"o\">&lt;</span><span class=\"p\">[(</span><span class=\"kt\">usize</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"kt\">f32</span><span class=\"p\">);</span><span class=\"w\"> </span><span class=\"mi\">3</span><span class=\"p\">]</span><span class=\"o\">&gt;</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"339\"><td><div class=\"lineno\">339</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"k\">if</span><span class=\"w\"> </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\">points</span><span class=\"p\">.</span><span class=\"n\">is_empty</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"p\">{</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"478\"><td><div class=\"lineno\">478</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"n\">blend_space</span><span class=\"p\">.</span><span class=\"n\"><mark>fetch_weights</mark></span><span class=\"p\">(</span><span class=\"nb\">Default</span><span class=\"p\">::</span><span class=\"n\">default</span><span class=\"p\">());</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "83981865",
+          "path": "fyrox-animation/src/machine/node/blendspace.rs",
+          "repo": "FyroxEngine/Fyrox",
+          "total_matches": "9"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"750\"><td><div class=\"lineno\">750</div></td><td><div class=\"highlight\"><pre>                <span class=\"c1\"># AXI-MM / <mark>fetch_weights</mark> path (MLO and external_mem): external memory</span></pre></div></td></tr><tr data-line=\"751\"><td><div class=\"lineno\">751</div></td><td><div class=\"highlight\"><pre>                <span class=\"c1\"># (DDR, HBM, ...) holds one IWSIMD group per DWC output beat, each</span></pre></div></td></tr><tr data-line=\"752\"><td><div class=\"lineno\">752</div></td><td><div class=\"highlight\"><pre>                <span class=\"c1\"># byte-aligned to DS_BITS_BA = roundup(IWSIMD*bitwidth, 8) bits. IWSIMD</span></pre></div></td></tr><tr data-line=\"753\"><td><div class=\"lineno\">753</div></td><td><div class=\"highlight\"><pre>                <span class=\"c1\"># is (PE*SIMD)/TH for TH&gt;1, SIMD otherwise.</span></pre></div></td></tr><tr data-line=\"754\"><td><div class=\"lineno\">754</div></td><td><div class=\"highlight\"><pre>                <span class=\"c1\">#</span></pre></div></td></tr><tr data-line=\"755\"><td><div class=\"lineno\">755</div></td><td><div class=\"highlight\"><pre>                <span class=\"c1\"># The within-group ordering depends on how <mark>fetch_weights</mark> delivers the</span></pre></div></td></tr><tr data-line=\"756\"><td><div class=\"lineno\">756</div></td><td><div class=\"highlight\"><pre>                <span class=\"c1\"># stream to the MVU:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1003\"><td><div class=\"lineno\">1003</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">case</span> <span class=\"s2\">&quot;external_mem&quot;</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"1004\"><td><div class=\"lineno\">1004</div></td><td><div class=\"highlight\"><pre>                <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">generate_hdl_<mark>fetch_weights</mark></span><span class=\"p\">()</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "3189299",
+          "path": "src/finn/custom_op/fpgadataflow/matrixvectoractivation.py",
+          "repo": "Xilinx/finn",
+          "total_matches": "9"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"855\"><td><div class=\"lineno\">855</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;verify&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"856\"><td><div class=\"lineno\">856</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;<mark>fetch_weights</mark>&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"857\"><td><div class=\"lineno\">857</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;persist&quot;</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1092\"><td><div class=\"lineno\">1092</div></td><td><div class=\"highlight\"><pre>        <span class=\"p\">(</span><span class=\"s2\">&quot;verify&quot;</span><span class=\"p\">,</span> <span class=\"n\">_step_verify</span><span class=\"p\">),</span></pre></div></td></tr><tr data-line=\"1093\"><td><div class=\"lineno\">1093</div></td><td><div class=\"highlight\"><pre>        <span class=\"p\">(</span><span class=\"s2\">&quot;<mark>fetch_weights</mark>&quot;</span><span class=\"p\">,</span> <span class=\"n\">_step_<mark>fetch_weights</mark></span><span class=\"p\">),</span></pre></div></td></tr><tr data-line=\"1094\"><td><div class=\"lineno\">1094</div></td><td><div class=\"highlight\"><pre>        <span class=\"p\">(</span><span class=\"s2\">&quot;persist&quot;</span><span class=\"p\">,</span> <span class=\"n\">_step_persist</span><span class=\"p\">),</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1501\"><td><div class=\"lineno\">1501</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">_step_<mark>fetch_weights</mark></span><span class=\"p\">(</span><span class=\"n\">spec</span><span class=\"p\">:</span> <span class=\"n\">SidecarSpec</span><span class=\"p\">,</span> <span class=\"n\">job</span><span class=\"p\">:</span> <span class=\"nb\">dict</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"1502\"><td><div class=\"lineno\">1502</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">step</span> <span class=\"o\">=</span> <span class=\"n\">_job_step</span><span class=\"p\">(</span><span class=\"n\">job</span><span class=\"p\">,</span> <span class=\"s2\">&quot;<mark>fetch_weights</mark>&quot;</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "4178343",
+          "path": "backend/services/sidecar_install.py",
+          "repo": "debpalash/VoiceStudio",
+          "total_matches": "5"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"389\"><td><div class=\"lineno\">389</div></td><td><div class=\"highlight\"><pre>    <span class=\"nd\">@staticmethod</span></pre></div></td></tr><tr data-line=\"390\"><td><div class=\"lineno\">390</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">_get_ignore_patterns</span><span class=\"p\">(</span><span class=\"n\">repo_id</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">skip_pre<mark>fetch_weights</mark></span><span class=\"p\">:</span> <span class=\"nb\">bool</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"n\">List</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">]:</span></pre></div></td></tr><tr data-line=\"391\"><td><div class=\"lineno\">391</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"sd\">&quot;&quot;&quot;Get the ignore patterns for the HF repo.&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"392\"><td><div class=\"lineno\">392</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">ignore_patterns</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"s2\">&quot;*.pt&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;*.pth&quot;</span><span class=\"p\">]</span></pre></div></td></tr><tr data-line=\"393\"><td><div class=\"lineno\">393</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">bin_pattern</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;*.bin*&quot;</span></pre></div></td></tr><tr data-line=\"394\"><td><div class=\"lineno\">394</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">safetensors_pattern</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;*.safetensors*&quot;</span></pre></div></td></tr><tr data-line=\"395\"><td><div class=\"lineno\">395</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">skip_pre<mark>fetch_weights</mark></span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"396\"><td><div class=\"lineno\">396</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">ignore_patterns</span><span class=\"o\">.</span><span class=\"n\">extend</span><span class=\"p\">([</span><span class=\"n\">bin_pattern</span><span class=\"p\">,</span> <span class=\"n\">safetensors_pattern</span><span class=\"p\">])</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"468\"><td><div class=\"lineno\">468</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">_prefetch_checkpoint</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">model_name_or_path</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">skip_pre<mark>fetch_weights</mark></span><span class=\"p\">:</span> <span class=\"nb\">bool</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">str</span><span class=\"p\">:</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1728152",
+          "path": "tensorrt_llm/_torch/auto_deploy/models/hf.py",
+          "repo": "NVIDIA/TensorRT-LLM",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"358\"><td><div class=\"lineno\">358</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">generate_hdl_<mark>fetch_weights</mark></span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"359\"><td><div class=\"lineno\">359</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"sd\">&quot;&quot;&quot;Helper function to generate verilog code for <mark>fetch_weights</mark> component.</span></pre></div></td></tr><tr data-line=\"360\"><td><div class=\"lineno\">360</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        Currently utilized by MVAU.&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"361\"><td><div class=\"lineno\">361</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">ops</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"s2\">&quot;MVAU_hls&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;MVAU_rtl&quot;</span><span class=\"p\">]</span></pre></div></td></tr><tr data-line=\"362\"><td><div class=\"lineno\">362</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">onnx_node</span><span class=\"o\">.</span><span class=\"n\">op_type</span> <span class=\"ow\">in</span> <span class=\"n\">ops</span> <span class=\"ow\">or</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">onnx_node</span><span class=\"o\">.</span><span class=\"n\">op_type</span><span class=\"o\">.</span><span class=\"n\">startswith</span><span class=\"p\">(</span><span class=\"s2\">&quot;Elementwise&quot;</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"363\"><td><div class=\"lineno\">363</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">template_path</span> <span class=\"o\">=</span> <span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"364\"><td><div class=\"lineno\">364</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"p\">[</span><span class=\"s2\">&quot;FINN_ROOT&quot;</span><span class=\"p\">]</span> <span class=\"o\">+</span> <span class=\"s2\">&quot;/finn-rtllib/<mark>fetch_weights</mark>/<mark>fetch_weights</mark>_wrapper.v&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"390\"><td><div class=\"lineno\">390</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">code_gen_dict</span> <span class=\"o\">=</span> <span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"391\"><td><div class=\"lineno\">391</div></td><td><div class=\"highlight\"><pre>                <span class=\"s2\">&quot;$MODULE_NAME_AXI_WRAPPER$&quot;</span><span class=\"p\">:</span> <span class=\"p\">[</span><span class=\"n\">mname</span> <span class=\"o\">+</span> <span class=\"s2\">&quot;_<mark>fetch_weights</mark>_wrapper&quot;</span><span class=\"p\">],</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "3189299",
+          "path": "src/finn/custom_op/fpgadataflow/hwcustomop.py",
+          "repo": "Xilinx/finn",
+          "total_matches": "6"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"404\"><td><div class=\"lineno\">404</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># Most weight-sync endpoints are registered by vLLM dev mode. SkyRL</span></pre></div></td></tr><tr data-line=\"405\"><td><div class=\"lineno\">405</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># adds /<mark>fetch_weights</mark> because checkpoint-delta pulls and applies</span></pre></div></td></tr><tr data-line=\"406\"><td><div class=\"lineno\">406</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># payloads before the paused /update_weights reload.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"419\"><td><div class=\"lineno\">419</div></td><td><div class=\"highlight\"><pre>        <span class=\"nd\">@app</span><span class=\"o\">.</span><span class=\"n\">post</span><span class=\"p\">(</span><span class=\"s2\">&quot;/<mark>fetch_weights</mark>&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"420\"><td><div class=\"lineno\">420</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">async</span> <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">_<mark>fetch_weights</mark></span><span class=\"p\">(</span><span class=\"n\">request</span><span class=\"p\">:</span> <span class=\"n\">Request</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"421\"><td><div class=\"lineno\">421</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"sd\">&quot;&quot;&quot;Fetch/apply checkpoint-delta payloads before the paused reload phase.&quot;&quot;&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"431\"><td><div class=\"lineno\">431</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">kwargs</span><span class=\"p\">[</span><span class=\"s2\">&quot;uri&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"n\">body</span><span class=\"p\">[</span><span class=\"s2\">&quot;uri&quot;</span><span class=\"p\">]</span></pre></div></td></tr><tr data-line=\"432\"><td><div class=\"lineno\">432</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">engine</span><span class=\"o\">.</span><span class=\"n\">collective_rpc</span><span class=\"p\">(</span><span class=\"s2\">&quot;<mark>fetch_weights</mark>&quot;</span><span class=\"p\">,</span> <span class=\"n\">kwargs</span><span class=\"o\">=</span><span class=\"n\">kwargs</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "194174999",
+          "path": "skyrl/backends/skyrl_train/inference_servers/vllm_server_actor.py",
+          "repo": "NovaSky-AI/SkyRL",
+          "total_matches": "5"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"3\"><td><div class=\"lineno\">3</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># Copyright 2026 SQLite Cloud, Inc.</span></pre></div></td></tr><tr data-line=\"4\"><td><div class=\"lineno\">4</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># <mark>fetch_weights</mark>.sh — long-haul download of a very large model, built to survive.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"26\"><td><div class=\"lineno\">26</div></td><td><div class=\"highlight\"><pre><span class=\"c1\">#   tools/<mark>fetch_weights</mark>.sh --dry-run          # preflight only, no download</span></pre></div></td></tr><tr data-line=\"27\"><td><div class=\"lineno\">27</div></td><td><div class=\"highlight\"><pre><span class=\"c1\">#   tools/<mark>fetch_weights</mark>.sh                    # start or resume</span></pre></div></td></tr><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre><span class=\"c1\">#   tools/<mark>fetch_weights</mark>.sh --check            # verify what is on disk, no fetch</span></pre></div></td></tr><tr data-line=\"29\"><td><div class=\"lineno\">29</div></td><td><div class=\"highlight\"><pre><span class=\"c1\">#   tools/<mark>fetch_weights</mark>.sh --repo moonshotai/Kimi-Linear --dest /data/kl</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "206516623",
+          "path": "tools/fetch_weights.sh",
+          "repo": "sqliteai/warp",
+          "total_matches": "5"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"26\"><td><div class=\"lineno\">26</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">ultravox.training</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">trainer</span> <span class=\"k\">as</span> <span class=\"n\">ultra_trainer</span></pre></div></td></tr><tr data-line=\"27\"><td><div class=\"lineno\">27</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">ultravox.training.helpers</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">pre<mark>fetch_weights</mark></span></pre></div></td></tr><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">ultravox.utils</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">device_helpers</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"132\"><td><div class=\"lineno\">132</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">with</span> <span class=\"n\">ddp_utils</span><span class=\"o\">.</span><span class=\"n\">run_on_master_first</span><span class=\"p\">():</span></pre></div></td></tr><tr data-line=\"133\"><td><div class=\"lineno\">133</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># For larger models, we assume that the weights are already downloaded via pre<mark>fetch_weights</mark>.py</span></pre></div></td></tr><tr data-line=\"134\"><td><div class=\"lineno\">134</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># Otherwise the barrier call can timeout.</span></pre></div></td></tr><tr data-line=\"135\"><td><div class=\"lineno\">135</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># This call is only here as a backstop in case pre<mark>fetch_weights</mark>.py was not run, for example in a local/test run.</span></pre></div></td></tr><tr data-line=\"136\"><td><div class=\"lineno\">136</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">weights_to_download</span> <span class=\"o\">=</span> <span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "104391453",
+          "path": "ultravox/training/train.py",
+          "repo": "fixie-ai/ultravox",
+          "total_matches": "4"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"562\"><td><div class=\"lineno\">562</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"s\">python_modelangelo</span></pre></div></td></tr><tr data-line=\"563\"><td><div class=\"lineno\">563</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"s\">python_<mark>fetch_weights</mark></span></pre></div></td></tr><tr data-line=\"564\"><td><div class=\"lineno\">564</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span><span class=\"s\">python_tomo_import</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"582\"><td><div class=\"lineno\">582</div></td><td><div class=\"highlight\"><pre><span class=\"nb\">option</span><span class=\"p\">(</span><span class=\"s\"><mark>FETCH_WEIGHTS</mark></span><span class=\"w\"> </span><span class=\"s2\">&quot;Download model weights for dependent packages&quot;</span><span class=\"w\"> </span><span class=\"s\">ON</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"583\"><td><div class=\"lineno\">583</div></td><td><div class=\"highlight\"><pre><span class=\"nb\">if</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"s\"><mark>FETCH_WEIGHTS</mark></span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"584\"><td><div class=\"lineno\">584</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span><span class=\"nb\">message</span><span class=\"p\">(</span><span class=\"s\">STATUS</span></pre></div></td></tr><tr data-line=\"585\"><td><div class=\"lineno\">585</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t</span><span class=\"s2\">&quot;Will attempts to download model weights for dependent packages...&quot;</span></pre></div></td></tr><tr data-line=\"586\"><td><div class=\"lineno\">586</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t</span><span class=\"s2\">&quot;\\n&quot;</span></pre></div></td></tr><tr data-line=\"587\"><td><div class=\"lineno\">587</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t</span><span class=\"s2\">&quot;NOTE: You can skip this step by setting -D<mark>FETCH_WEIGHTS</mark>=OFF&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "25255652",
+          "path": "CMakeLists.txt",
+          "repo": "3dem/relion",
+          "total_matches": "6"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"32\"><td><div class=\"lineno\">32</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>fetch_weights</mark></span><span class=\"p\">()</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">dict</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">Tensor</span><span class=\"p\">]:</span></pre></div></td></tr><tr data-line=\"33\"><td><div class=\"lineno\">33</div></td><td><div class=\"highlight\"><pre>  <span class=\"c1\"># TODO: make this lazy so the 3 fetches can happen in parallel</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"56\"><td><div class=\"lineno\">56</div></td><td><div class=\"highlight\"><pre>  <span class=\"k\">with</span> <span class=\"n\">Timing</span><span class=\"p\">(</span><span class=\"s2\">&quot;load weights to GPU: &quot;</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"57\"><td><div class=\"lineno\">57</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">nhf_state</span> <span class=\"o\">=</span> <span class=\"n\">convert_from_huggingface</span><span class=\"p\">(</span><span class=\"n\"><mark>fetch_weights</mark></span><span class=\"p\">(),</span> <span class=\"mi\">16</span><span class=\"p\">,</span> <span class=\"mi\">16</span><span class=\"p\">,</span> <span class=\"mi\">16</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "132956020",
+          "path": "examples/olmoe.py",
+          "repo": "tinygrad/tinygrad",
+          "total_matches": "2"
+        }
+      ],
+      "total": 210
+    },
+    "time": 126
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=fetch_weights"
+}

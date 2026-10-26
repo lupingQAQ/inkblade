@@ -25,7 +25,7 @@ from typing import Iterable
 
 DEFAULT_EXCLUDED_DIRS = frozenset({
     ".git", ".superpowers", "__pycache__", ".pytest_cache", ".mypy_cache", ".cache", ".envs",
-    ".venv", "venv", "env", "node_modules", ".idea", ".vscode",
+    ".venv", "venv", "env", "node_modules", ".idea", ".vscode", ".wip",
     # 本地 VM/QEMU 实验产物（第三方 QEMU 文档含 Windows 示例路径，不属于本仓公开源码）
     "qemu-k3s",
     # 上游只读源码快照（Apache-2.0，零复用）：第三方代码可能含盘符样文本
@@ -81,6 +81,12 @@ def scan_tree(
         if not path.is_file():
             continue
         rel = path.relative_to(root)
+        # Raw third-party HTTP bodies (OSV/NVD/GHSA/vendor pages) are cached
+        # verbatim for offline novelty checks.  They are upstream data, not
+        # project artifacts, and can legitimately contain Windows paths or
+        # source snippets from other projects.
+        if rel.as_posix().startswith("corpus/novelty/cache/"):
+            continue
         if any(part in excluded for part in rel.parts):
             continue
         if not _is_text_candidate(path):

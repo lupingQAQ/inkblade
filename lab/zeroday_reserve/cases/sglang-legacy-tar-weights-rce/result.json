@@ -1,0 +1,87 @@
+{
+ "command": "<workspace>\\env\\reproenv-d\\Scripts\\python.exe lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/poc.py",
+ "component": "sglang",
+ "duration_s": 3.291,
+ "evidence": [
+  {
+   "path": "lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/evidence/log.txt",
+   "sha256": "4b2262b01d95faa1c6af3dbbc632fa5377cc3557e148bf7995c3e907791470da",
+   "size": 635
+  },
+  {
+   "path": "lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/evidence/marker.txt",
+   "sha256": "38f2042b4c516a1059c57086e45b7773539999177a85fddb7ff64b8980259cda",
+   "size": 40
+  },
+  {
+   "path": "lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/evidence/work/pytorch_model-00001-of-00001.bin",
+   "sha256": "d4e88c33d944be33663db648d90370324edf8389ccb1ce1aed18b7b4c9c951b0",
+   "size": 10240
+  }
+ ],
+ "exit_code": 0,
+ "id": "sglang-legacy-tar-weights-rce",
+ "manifest_sha256": "8ce613258c550acaf16a86c69bcc4b46a81f69bd6fe078d51ffc002c2f532eb6",
+ "marker": {
+  "after_has_marker": true,
+  "after_sha256": "38f2042b4c516a1059c57086e45b7773539999177a85fddb7ff64b8980259cda",
+  "text": "TRIDENT-ZD-sglang-legacy-tar-weights-rce"
+ },
+ "method": "dynamic-function",
+ "notes": "Function-level reproduction of the verbatim upstream `_load_pt_file`; the rest of SGLang is not imported because the host has no GPU. The sink and fallback branch are the real 0.5.22 code.",
+ "payload": {
+  "marker": "TRIDENT-ZD-sglang-legacy-tar-weights-rce",
+  "marker_path": "lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/evidence/marker.txt",
+  "marker_sha256": "38f2042b4c516a1059c57086e45b7773539999177a85fddb7ff64b8980259cda",
+  "request_response": [
+   {
+    "result": "RuntimeError: legacy .tar format",
+    "step": "torch.load(weights_only=True)"
+   },
+   {
+    "result": "pickle executed, marker written",
+    "step": "upstream fallback torch.load(weights_only=False)"
+   }
+  ],
+  "state_after": "marker contains proof text",
+  "state_before": "marker=ABSENT",
+  "status": "verified",
+  "transport": {
+   "function_line": 1398,
+   "payload": "tar member 'storages' -> pickle __reduce__ -> poclib.mark",
+   "post_sink_error": "TypeError: 'NoneType' object cannot be interpreted as an integer",
+   "shard": "lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/evidence/work/pytorch_model-00001-of-00001.bin",
+   "sink": "weights_only=False fallback after legacy .tar RuntimeError",
+   "source": "lab/zeroday_reserve/upstream/sglang-0.5.22/python/sglang/srt/model_loader/weight_utils.py",
+   "source_sha256": "a7757701b108c2c383d315ede8b37a2c18ab0f393529ff8c06bdd290a020da64",
+   "torch_version": "2.14.1+cpu",
+   "type": "verbatim upstream function (AST source segment) + torch.load",
+   "upstream": "SGLang v0.5.22"
+  }
+ },
+ "poc_sha256": "169aecce3b1835779e0b9ac750b62711ad0c16fe754a2418a297d8f776b728a7",
+ "root_cause": {
+  "file": "python/sglang/srt/model_loader/weight_utils.py",
+  "function": "_load_pt_file",
+  "line": 1414,
+  "note": "_load_pt_file first calls torch.load(weights_only=True). If the file is a legacy tar checkpoint, torch raises RuntimeError('legacy .tar format') and the code deliberately retries with weights_only=False. A model repository (or any writable model directory/PVC) can therefore ship a legacy-tar .bin whose storages entry is a pickle; the victim's model load executes it. The comment says 'trusted sources (HuggingFace Hub)', but Hub models are exactly the attacker-controlled supply-chain input.",
+  "snippet": "return torch.load(bin_file, map_location=\"cpu\", weights_only=False)",
+  "source": "lab/zeroday_reserve/upstream/sglang-0.5.22/python/sglang/srt/model_loader/weight_utils.py"
+ },
+ "schema": "trident-zeroday-result-v1",
+ "source_sha256": "a7757701b108c2c383d315ede8b37a2c18ab0f393529ff8c06bdd290a020da64",
+ "started_at": "2026-10-26T12:07:44+00:00",
+ "status": "verified",
+ "stderr": "Loading pytorch_model-00001-of-00001.bin with weights_only=False (legacy tar format)\n",
+ "stdout": "{\"marker\": \"TRIDENT-ZD-sglang-legacy-tar-weights-rce\", \"marker_path\": \"lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/evidence/marker.txt\", \"marker_sha256\": \"38f2042b4c516a1059c57086e45b7773539999177a85fddb7ff64b8980259cda\", \"request_response\": [{\"result\": \"RuntimeError: legacy .tar format\", \"step\": \"torch.load(weights_only=True)\"}, {\"result\": \"pickle executed, marker written\", \"step\": \"upstream fallback torch.load(weights_only=False)\"}], \"state_after\": \"marker contains proof text\", \"state_before\": \"marker=ABSENT\", \"status\": \"verified\", \"transport\": {\"function_line\": 1398, \"payload\": \"tar member 'storages' -> pickle __reduce__ -> poclib.mark\", \"post_sink_error\": \"TypeError: 'NoneType' object cannot be interpreted as an integer\", \"shard\": \"lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/evidence/work/pytorch_model-00001-of-00001.bin\", \"sink\": \"weights_only=False fallback after legacy .tar RuntimeError\", \"source\": \"lab/zeroday_reserve/upstream/sglang-0.5.22/python/sglang/srt/model_loader/weight_utils.py\", \"source_sha256\": \"a7757701b108c2c383d315ede8b37a2c18ab0f393529ff8c06bdd290a020da64\", \"torch_version\": \"2.14.1+cpu\", \"type\": \"verbatim upstream function (AST source segment) + torch.load\", \"upstream\": \"SGLang v0.5.22\"}}\n",
+ "timed_out": false,
+ "title": "SGLang pt loader falls back to weights_only=False for legacy tar model shards",
+ "verified": true,
+ "version": "v0.5.22",
+ "version_ref": {
+  "commit": "baa9befa381511cd4d56f83980951e5a45fffc6d",
+  "kind": "git",
+  "repo": "sgl-project/sglang",
+  "tag": "v0.5.22"
+ }
+}

@@ -1,0 +1,205 @@
+{
+  "_cached_at": "2026-10-26T11:37:00+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 60,
+            "val": "Python"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 8,
+            "val": "megatron/"
+          },
+          {
+            "count": 6,
+            "val": "tests/"
+          },
+          {
+            "count": 6,
+            "val": "tools/"
+          },
+          {
+            "count": 5,
+            "val": "parsing/train/ms-swift/swift/megatron/"
+          },
+          {
+            "count": 4,
+            "val": "Megatron-LM/"
+          },
+          {
+            "count": 4,
+            "val": "aiak_megatron/megatron/"
+          },
+          {
+            "count": 4,
+            "val": "models/Megatron/"
+          },
+          {
+            "count": 3,
+            "val": "projects/train_perf/Megatron-LM/megatron/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 6,
+            "owner_id": "148021798",
+            "val": "IEIT-Yuan/Yuan2.0-M32"
+          },
+          {
+            "count": 5,
+            "owner_id": "1728152",
+            "val": "NVIDIA/Megatron-LM"
+          },
+          {
+            "count": 5,
+            "owner_id": "34134635",
+            "val": "Yuliang-Liu/MonkeyOCRv2"
+          },
+          {
+            "count": 4,
+            "owner_id": "154951679",
+            "val": "EvolvingLMMs-Lab/LLaVA-OneVision-2"
+          },
+          {
+            "count": 4,
+            "owner_id": "197493814",
+            "val": "Gen-Verse/OpenClaw-RL"
+          },
+          {
+            "count": 4,
+            "owner_id": "280753787",
+            "val": "Shao-Music-AI/Shao"
+          },
+          {
+            "count": 3,
+            "owner_id": "213689629",
+            "val": "NVIDIA-NeMo/Megatron-Bridge"
+          },
+          {
+            "count": 3,
+            "owner_id": "4158466",
+            "val": "bytedance/xpu-perf"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"22\"><td><div class=\"lineno\">22</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">megatron.training.checkpointing</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"23\"><td><div class=\"lineno\">23</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"24\"><td><div class=\"lineno\">24</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">checkpoint_exists</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"58\"><td><div class=\"lineno\">58</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># Non-sharded</span></pre></div></td></tr><tr data-line=\"59\"><td><div class=\"lineno\">59</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">state_dict</span><span class=\"p\">,</span> <span class=\"n\">_</span><span class=\"p\">,</span> <span class=\"n\">_</span> <span class=\"o\">=</span> <span class=\"n\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span><span class=\"n\">checkpoint_path</span><span class=\"p\">,</span> <span class=\"n\">rank0</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"60\"><td><div class=\"lineno\">60</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">if</span> <span class=\"n\">state_dict</span> <span class=\"ow\">is</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"113\"><td><div class=\"lineno\">113</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">try</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"114\"><td><div class=\"lineno\">114</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">state_dict</span><span class=\"p\">,</span> <span class=\"n\">_</span><span class=\"p\">,</span> <span class=\"n\">_</span> <span class=\"o\">=</span> <span class=\"n\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span><span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\">load</span><span class=\"p\">,</span> <span class=\"n\">rank0</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1728152",
+          "path": "megatron/post_training/checkpointing.py",
+          "repo": "NVIDIA/Megatron-LM",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"47\"><td><div class=\"lineno\">47</div></td><td><div class=\"highlight\"><pre><span class=\"nd\">@contextmanager</span></pre></div></td></tr><tr data-line=\"48\"><td><div class=\"lineno\">48</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">patch<mark>_load_base_checkpoint</mark></span><span class=\"p\">():</span></pre></div></td></tr><tr data-line=\"49\"><td><div class=\"lineno\">49</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">origin_<mark>_load_base_checkpoint</mark></span> <span class=\"o\">=</span> <span class=\"n\">checkpointing</span><span class=\"o\">.</span><span class=\"n\"><mark>_load_base_checkpoint</mark></span></pre></div></td></tr><tr data-line=\"50\"><td><div class=\"lineno\">50</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"51\"><td><div class=\"lineno\">51</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">_args</span><span class=\"p\">,</span> <span class=\"o\">**</span><span class=\"n\">kwargs</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"52\"><td><div class=\"lineno\">52</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">sharded_state_dict</span> <span class=\"o\">=</span> <span class=\"n\">kwargs</span><span class=\"o\">.</span><span class=\"n\">get</span><span class=\"p\">(</span><span class=\"s1\">&#39;sharded_state_dict&#39;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"53\"><td><div class=\"lineno\">53</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">sharded_state_dict</span> <span class=\"ow\">is</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"54\"><td><div class=\"lineno\">54</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">return</span> <span class=\"n\">origin_<mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">_args</span><span class=\"p\">,</span> <span class=\"o\">**</span><span class=\"n\">kwargs</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"55\"><td><div class=\"lineno\">55</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">model_keys</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">k</span> <span class=\"k\">for</span> <span class=\"n\">k</span> <span class=\"ow\">in</span> <span class=\"n\">sharded_state_dict</span><span class=\"o\">.</span><span class=\"n\">keys</span><span class=\"p\">()</span> <span class=\"k\">if</span> <span class=\"n\">k</span><span class=\"o\">.</span><span class=\"n\">startswith</span><span class=\"p\">(</span><span class=\"s1\">&#39;model&#39;</span><span class=\"p\">)]</span>  <span class=\"c1\"># compat vpp</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "34134635",
+          "path": "parsing/train/ms-swift/swift/megatron/utils/patcher.py",
+          "repo": "Yuliang-Liu/MonkeyOCRv2",
+          "total_matches": "10"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"2006\"><td><div class=\"lineno\">2006</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"2007\"><td><div class=\"lineno\">2007</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">load_dir</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"2126\"><td><div class=\"lineno\">2126</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">rank0</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"2127\"><td><div class=\"lineno\">2127</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># <mark>_load_base_checkpoint</mark> is called from load_args_from_checkpoint. torch.distributed is not initialized.</span></pre></div></td></tr><tr data-line=\"2128\"><td><div class=\"lineno\">2128</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># Load only metadata.</span></pre></div></td></tr><tr data-line=\"2129\"><td><div class=\"lineno\">2129</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">state_dict</span> <span class=\"o\">=</span> <span class=\"p\">{</span><span class=\"s1\">&#39;args&#39;</span><span class=\"p\">:</span> <span class=\"kc\">None</span><span class=\"p\">,</span> <span class=\"s1\">&#39;iteration&#39;</span><span class=\"p\">:</span> <span class=\"kc\">None</span><span class=\"p\">}</span></pre></div></td></tr><tr data-line=\"2130\"><td><div class=\"lineno\">2130</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">torch</span><span class=\"o\">.</span><span class=\"n\">distributed</span><span class=\"o\">.</span><span class=\"n\">checkpoint</span><span class=\"o\">.</span><span class=\"n\">load</span><span class=\"p\">(</span><span class=\"n\">state_dict</span><span class=\"o\">=</span><span class=\"n\">state_dict</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_id</span><span class=\"o\">=</span><span class=\"n\">checkpoint_name</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"2131\"><td><div class=\"lineno\">2131</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">else</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"2132\"><td><div class=\"lineno\">2132</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># <mark>_load_base_checkpoint</mark> is called from load_checkpoint with a proper state dict.</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1728152",
+          "path": "megatron/training/checkpointing.py",
+          "repo": "NVIDIA/Megatron-LM",
+          "total_matches": "7"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"13\"><td><div class=\"lineno\">13</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">megatron.training</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">get_args</span></pre></div></td></tr><tr data-line=\"14\"><td><div class=\"lineno\">14</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">megatron.training.checkpointing</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">,</span> <span class=\"n\">load_checkpoint</span></pre></div></td></tr><tr data-line=\"15\"><td><div class=\"lineno\">15</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">megatron.training.utils</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">print_rank_0</span><span class=\"p\">,</span> <span class=\"n\">unwrap_model</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"34\"><td><div class=\"lineno\">34</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># Non-sharded</span></pre></div></td></tr><tr data-line=\"35\"><td><div class=\"lineno\">35</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">state_dict</span><span class=\"p\">,</span> <span class=\"n\">_</span><span class=\"p\">,</span> <span class=\"n\">_</span> <span class=\"o\">=</span> <span class=\"n\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span><span class=\"n\">checkpoint_path</span><span class=\"p\">,</span> <span class=\"n\">rank0</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"36\"><td><div class=\"lineno\">36</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">if</span> <span class=\"n\">state_dict</span> <span class=\"ow\">is</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"108\"><td><div class=\"lineno\">108</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">try</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"109\"><td><div class=\"lineno\">109</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">state_dict</span><span class=\"p\">,</span> <span class=\"n\">_</span><span class=\"p\">,</span> <span class=\"n\">_</span> <span class=\"o\">=</span> <span class=\"n\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span><span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\">load</span><span class=\"p\">,</span> <span class=\"n\">rank0</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "197493814",
+          "path": "Megatron-LM/megatron/post_training/checkpointing.py",
+          "repo": "Gen-Verse/OpenClaw-RL",
+          "total_matches": "5"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"163\"><td><div class=\"lineno\">163</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">sharded_state_dict</span> <span class=\"ow\">is</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"164\"><td><div class=\"lineno\">164</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">return</span> <span class=\"n\">checkpointing</span><span class=\"o\">.</span><span class=\"n\">origin_<mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">_args</span><span class=\"p\">,</span> <span class=\"o\">**</span><span class=\"n\">kwargs</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"165\"><td><div class=\"lineno\">165</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">model_keys</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">k</span> <span class=\"k\">for</span> <span class=\"n\">k</span> <span class=\"ow\">in</span> <span class=\"n\">sharded_state_dict</span><span class=\"o\">.</span><span class=\"n\">keys</span><span class=\"p\">()</span> <span class=\"k\">if</span> <span class=\"n\">k</span><span class=\"o\">.</span><span class=\"n\">startswith</span><span class=\"p\">(</span><span class=\"s1\">&#39;model&#39;</span><span class=\"p\">)]</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"180\"><td><div class=\"lineno\">180</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">patch_merge_fn</span><span class=\"p\">(</span><span class=\"n\">state_dict_model</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"181\"><td><div class=\"lineno\">181</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">res</span> <span class=\"o\">=</span> <span class=\"n\">checkpointing</span><span class=\"o\">.</span><span class=\"n\">origin_<mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">_args</span><span class=\"p\">,</span> <span class=\"o\">**</span><span class=\"n\">kwargs</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"182\"><td><div class=\"lineno\">182</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">for</span> <span class=\"n\">model_k</span> <span class=\"ow\">in</span> <span class=\"n\">model_keys</span><span class=\"p\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"189\"><td><div class=\"lineno\">189</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"o\">*</span><span class=\"n\">_args</span><span class=\"p\">,</span> <span class=\"o\">**</span><span class=\"n\">kwargs</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"190\"><td><div class=\"lineno\">190</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">sharded_state_dict</span> <span class=\"o\">=</span> <span class=\"n\">kwargs</span><span class=\"o\">.</span><span class=\"n\">get</span><span class=\"p\">(</span><span class=\"s1\">&#39;sharded_state_dict&#39;</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "34134635",
+          "path": "parsing/train/ms-swift/swift/megatron/trainers/base.py",
+          "repo": "Yuliang-Liu/MonkeyOCRv2",
+          "total_matches": "12"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"181\"><td><div class=\"lineno\">181</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">sharded_state_dict</span> <span class=\"ow\">is</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"182\"><td><div class=\"lineno\">182</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">return</span> <span class=\"n\">checkpointing</span><span class=\"o\">.</span><span class=\"n\">origin_<mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">_args</span><span class=\"p\">,</span> <span class=\"o\">**</span><span class=\"n\">kwargs</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"183\"><td><div class=\"lineno\">183</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">model_keys</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">k</span> <span class=\"k\">for</span> <span class=\"n\">k</span> <span class=\"ow\">in</span> <span class=\"n\">sharded_state_dict</span><span class=\"o\">.</span><span class=\"n\">keys</span><span class=\"p\">()</span> <span class=\"k\">if</span> <span class=\"n\">k</span><span class=\"o\">.</span><span class=\"n\">startswith</span><span class=\"p\">(</span><span class=\"s1\">&#39;model&#39;</span><span class=\"p\">)]</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"198\"><td><div class=\"lineno\">198</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">patch_merge_fn</span><span class=\"p\">(</span><span class=\"n\">state_dict_model</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"199\"><td><div class=\"lineno\">199</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">res</span> <span class=\"o\">=</span> <span class=\"n\">checkpointing</span><span class=\"o\">.</span><span class=\"n\">origin_<mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">_args</span><span class=\"p\">,</span> <span class=\"o\">**</span><span class=\"n\">kwargs</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"200\"><td><div class=\"lineno\">200</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">for</span> <span class=\"n\">model_k</span> <span class=\"ow\">in</span> <span class=\"n\">model_keys</span><span class=\"p\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"207\"><td><div class=\"lineno\">207</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"o\">*</span><span class=\"n\">_args</span><span class=\"p\">,</span> <span class=\"o\">**</span><span class=\"n\">kwargs</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"208\"><td><div class=\"lineno\">208</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">sharded_state_dict</span> <span class=\"o\">=</span> <span class=\"n\">kwargs</span><span class=\"o\">.</span><span class=\"n\">get</span><span class=\"p\">(</span><span class=\"s1\">&#39;sharded_state_dict&#39;</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "55748410",
+          "path": "ms-swift/swift/megatron/trainers/base.py",
+          "repo": "Osilly/Vision-DeepResearch",
+          "total_matches": "12"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1095\"><td><div class=\"lineno\">1095</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"1096\"><td><div class=\"lineno\">1096</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">load_dir</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1205\"><td><div class=\"lineno\">1205</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">rank0</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"1206\"><td><div class=\"lineno\">1206</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># <mark>_load_base_checkpoint</mark> is called from load_args_from_checkpoint. torch.distributed is not initialized.</span></pre></div></td></tr><tr data-line=\"1207\"><td><div class=\"lineno\">1207</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># Load only metadata.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1213\"><td><div class=\"lineno\">1213</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">else</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"1214\"><td><div class=\"lineno\">1214</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># <mark>_load_base_checkpoint</mark> is called from load_checkpoint with a proper state dict.</span></pre></div></td></tr><tr data-line=\"1215\"><td><div class=\"lineno\">1215</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">state_dict</span> <span class=\"o\">=</span> <span class=\"n\">sharded_state_dict</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "197493814",
+          "path": "Megatron-LM/megatron/training/checkpointing.py",
+          "repo": "Gen-Verse/OpenClaw-RL",
+          "total_matches": "7"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"61\"><td><div class=\"lineno\">61</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        for :attr:`model` and :attr:`optimizer`. In case of running FSDP2 with mcore distributed</span></pre></div></td></tr><tr data-line=\"62\"><td><div class=\"lineno\">62</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        checkpointing, the tensors are already loaded in-place by `<mark>_load_base_checkpoint</mark>`.</span></pre></div></td></tr><tr data-line=\"63\"><td><div class=\"lineno\">63</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    &quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"64\"><td><div class=\"lineno\">64</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">state_dict</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_name</span><span class=\"p\">,</span> <span class=\"n\">release</span><span class=\"p\">,</span> <span class=\"n\">ckpt_type</span> <span class=\"o\">=</span> <span class=\"n\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"65\"><td><div class=\"lineno\">65</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">load_dir</span><span class=\"p\">,</span> <span class=\"n\">rank0</span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">,</span> <span class=\"n\">checkpointing_context</span><span class=\"o\">=</span><span class=\"n\">checkpointing_context</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"74\"><td><div class=\"lineno\">74</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">sharded_state_dict</span> <span class=\"o\">=</span> <span class=\"n\">generate_state_dict</span><span class=\"p\">(</span><span class=\"n\">ddp_model</span><span class=\"p\">,</span> <span class=\"n\">model_sd_kwargs</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"75\"><td><div class=\"lineno\">75</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">state_dict</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_name</span><span class=\"p\">,</span> <span class=\"n\">release</span><span class=\"p\">,</span> <span class=\"n\">ckpt_type</span> <span class=\"o\">=</span> <span class=\"n\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"102\"><td><div class=\"lineno\">102</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1961952",
+          "path": "verl_patch/utils/model.py",
+          "repo": "alibaba/Pai-Megatron-Patch",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"12\"><td><div class=\"lineno\">12</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">megatron.training</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">get_args</span></pre></div></td></tr><tr data-line=\"13\"><td><div class=\"lineno\">13</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">megatron.training.checkpointing</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">,</span> <span class=\"n\">load_checkpoint</span></pre></div></td></tr><tr data-line=\"14\"><td><div class=\"lineno\">14</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">megatron.training.utils</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">print_rank_0</span><span class=\"p\">,</span> <span class=\"n\">unwrap_model</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"110\"><td><div class=\"lineno\">110</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">try</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"111\"><td><div class=\"lineno\">111</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">state_dict</span><span class=\"p\">,</span> <span class=\"n\">_</span><span class=\"p\">,</span> <span class=\"n\">_</span> <span class=\"o\">=</span> <span class=\"n\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span><span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\">load</span><span class=\"p\">,</span> <span class=\"n\">rank0</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"112\"><td><div class=\"lineno\">112</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">except</span> <span class=\"ne\">Exception</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"113\"><td><div class=\"lineno\">113</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">print_rank_0</span><span class=\"p\">(</span><span class=\"s2\">&quot;Failed to load base checkpoint via megatron <mark>_load_base_checkpoint</mark>!&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"114\"><td><div class=\"lineno\">114</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">return</span> <span class=\"p\">{}</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "154951679",
+          "path": "aiak_megatron/megatron/post_training/checkpointing.py",
+          "repo": "EvolvingLMMs-Lab/LLaVA-OneVision-2",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1317\"><td><div class=\"lineno\">1317</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>_load_base_checkpoint</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"1318\"><td><div class=\"lineno\">1318</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">load_dir</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1416\"><td><div class=\"lineno\">1416</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">rank0</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"1417\"><td><div class=\"lineno\">1417</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># <mark>_load_base_checkpoint</mark> is called from load_args_from_checkpoint. torch.distributed is not initialized.</span></pre></div></td></tr><tr data-line=\"1418\"><td><div class=\"lineno\">1418</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># Load only metadata.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1424\"><td><div class=\"lineno\">1424</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">else</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"1425\"><td><div class=\"lineno\">1425</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># <mark>_load_base_checkpoint</mark> is called from load_checkpoint with a proper state dict.</span></pre></div></td></tr><tr data-line=\"1426\"><td><div class=\"lineno\">1426</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">state_dict</span> <span class=\"o\">=</span> <span class=\"n\">sharded_state_dict</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "242732894",
+          "path": "flagscale/train/megatron/training/checkpointing.py",
+          "repo": "flagos-ai/FlagScale",
+          "total_matches": "7"
+        }
+      ],
+      "total": 60
+    },
+    "time": 167
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=_load_base_checkpoint"
+}

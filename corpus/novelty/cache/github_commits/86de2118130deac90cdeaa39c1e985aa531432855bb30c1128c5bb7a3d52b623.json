@@ -1,0 +1,12 @@
+{
+  "_cached_at": "2026-10-26T12:12:53+00:00",
+  "body": {
+    "incomplete_results": false,
+    "items": [],
+    "total_count": 0
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://api.github.com/search/commits?q=%22legacy+.tar+format%22+repo%3Asgl-project%2Fsglang&per_page=20"
+}

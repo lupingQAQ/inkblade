@@ -1,0 +1,87 @@
+{
+ "command": "<workspace>\\env\\reproenv-d\\Scripts\\python.exe lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/poc.py",
+ "component": "deepspeed",
+ "duration_s": 3.393,
+ "evidence": [
+  {
+   "path": "lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/evidence/log.txt",
+   "sha256": "2e8572f6afb4995e23137e17b5a4ea88155bbcb38675883e5031218755e6132d",
+   "size": 654
+  },
+  {
+   "path": "lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/evidence/marker.txt",
+   "sha256": "751d3c56247d92a0aa346c18f9a8a5e214f21e12fbeb89c35a6532d00d1cae39",
+   "size": 39
+  },
+  {
+   "path": "lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/evidence/work/ckpt/layer_0_expert_0_mp_rank_0_model_states.pt",
+   "sha256": "44c6287e6e7c1185a3ac9c075aa960af86cc98b35f99c1c5c8b425e8168e295d",
+   "size": 76
+  }
+ ],
+ "exit_code": 0,
+ "id": "deepspeed-autoep-unsafe-load",
+ "manifest_sha256": "b06f438bcd61f8c07b59127a63b3df54e456ef04125b2aa0e6f8ffcb4f2652c7",
+ "marker": {
+  "after_has_marker": true,
+  "after_sha256": "751d3c56247d92a0aa346c18f9a8a5e214f21e12fbeb89c35a6532d00d1cae39",
+  "text": "TRIDENT-ZD-deepspeed-autoep-unsafe-load"
+ },
+ "method": "dynamic-function",
+ "notes": "Imports the real v0.19.8 autoep_universal module (vendored source tree, empty package __init__ only) and uses the real installed torch 2.14 CPU build. No CUDA is required for this conversion path.",
+ "payload": {
+  "marker": "TRIDENT-ZD-deepspeed-autoep-unsafe-load",
+  "marker_path": "lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/evidence/marker.txt",
+  "marker_sha256": "751d3c56247d92a0aa346c18f9a8a5e214f21e12fbeb89c35a6532d00d1cae39",
+  "request_response": [
+   {
+    "result": "torch.load executed malicious shard",
+    "step": "consolidate_autoep_expert_files(checkpoint_dir)"
+   },
+   {
+    "result": "failed after proof: RuntimeError: Invalid magic number; corrupt file?",
+    "step": "expected key validation"
+   }
+  ],
+  "state_after": "marker contains proof text",
+  "state_before": "marker=ABSENT",
+  "status": "verified",
+  "transport": {
+   "payload": "pickle __reduce__ -> poclib.mark",
+   "post_sink_error": "RuntimeError: Invalid magic number; corrupt file?",
+   "shard": "lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/evidence/work/ckpt/layer_0_expert_0_mp_rank_0_model_states.pt",
+   "sink": "torch.load(..., weights_only=False)",
+   "sink_line": 459,
+   "source": "lab/zeroday_reserve/upstream/deepspeed-0.19.8/deepspeed/checkpoint/autoep_universal.py",
+   "source_sha256": "bc8e0a4f4560a3610473fb2215598b481cb1149ab1275ec0ee13ac3159b97727",
+   "torch_version": "2.14.1+cpu",
+   "type": "real vendored upstream module + torch.load",
+   "upstream": "DeepSpeed v0.19.8"
+  }
+ },
+ "poc_sha256": "530cf2f9a31bda79c972d7b57cfa25b89d07b41efc99a3cad633d9d5c649a5c9",
+ "root_cause": {
+  "file": "deepspeed/checkpoint/autoep_universal.py",
+  "function": "consolidate_autoep_expert_files",
+  "line": 459,
+  "note": "The AutoEP universal converter walks layer_<n>_expert_<e>_mp_rank_*.pt files in an attacker-writable checkpoint directory and loads each one with weights_only=False. The new file landed in v0.19.8 (2026-10-20). A malicious expert shard executes during ds_to_universal conversion, before the expected-key check.",
+  "snippet": "sd = torch.load(ckpt_path, map_location='cpu', weights_only=False)",
+  "source": "lab/zeroday_reserve/upstream/deepspeed-0.19.8/deepspeed/checkpoint/autoep_universal.py"
+ },
+ "schema": "trident-zeroday-result-v1",
+ "source_sha256": "bc8e0a4f4560a3610473fb2215598b481cb1149ab1275ec0ee13ac3159b97727",
+ "started_at": "2026-10-26T12:07:41+00:00",
+ "status": "verified",
+ "stderr": "",
+ "stdout": "{\"marker\": \"TRIDENT-ZD-deepspeed-autoep-unsafe-load\", \"marker_path\": \"lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/evidence/marker.txt\", \"marker_sha256\": \"751d3c56247d92a0aa346c18f9a8a5e214f21e12fbeb89c35a6532d00d1cae39\", \"request_response\": [{\"result\": \"torch.load executed malicious shard\", \"step\": \"consolidate_autoep_expert_files(checkpoint_dir)\"}, {\"result\": \"failed after proof: RuntimeError: Invalid magic number; corrupt file?\", \"step\": \"expected key validation\"}], \"state_after\": \"marker contains proof text\", \"state_before\": \"marker=ABSENT\", \"status\": \"verified\", \"transport\": {\"payload\": \"pickle __reduce__ -> poclib.mark\", \"post_sink_error\": \"RuntimeError: Invalid magic number; corrupt file?\", \"shard\": \"lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/evidence/work/ckpt/layer_0_expert_0_mp_rank_0_model_states.pt\", \"sink\": \"torch.load(..., weights_only=False)\", \"sink_line\": 459, \"source\": \"lab/zeroday_reserve/upstream/deepspeed-0.19.8/deepspeed/checkpoint/autoep_universal.py\", \"source_sha256\": \"bc8e0a4f4560a3610473fb2215598b481cb1149ab1275ec0ee13ac3159b97727\", \"torch_version\": \"2.14.1+cpu\", \"type\": \"real vendored upstream module + torch.load\", \"upstream\": \"DeepSpeed v0.19.8\"}}\n",
+ "timed_out": false,
+ "title": "DeepSpeed 0.19.8 AutoEP universal conversion loads expert shards with weights_only=False",
+ "verified": true,
+ "version": "v0.19.8",
+ "version_ref": {
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c",
+  "kind": "git",
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8"
+ }
+}

@@ -1,0 +1,99 @@
+{
+  "_cached_at": "2026-10-26T12:14:57+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 3,
+            "val": "Python"
+          },
+          {
+            "count": 1,
+            "val": "Markdown"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 2,
+            "val": "deployment/"
+          },
+          {
+            "count": 1,
+            "val": "agent_rr/agent/"
+          },
+          {
+            "count": 1,
+            "val": "app/routes/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 3,
+            "owner_id": "228519809",
+            "val": "IPADS-SAI/MobiAgent"
+          },
+          {
+            "count": 1,
+            "owner_id": "18539691",
+            "val": "cisagov/decider"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"390\"><td><div class=\"lineno\">390</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">parser</span><span class=\"o\">.</span><span class=\"n\">add_argument</span><span class=\"p\">(</span><span class=\"s2\">&quot;--planner_url&quot;</span><span class=\"p\">,</span> <span class=\"nb\">type</span><span class=\"o\">=</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">help</span><span class=\"o\">=</span><span class=\"s2\">&quot;Base URL for planner model service&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"391\"><td><div class=\"lineno\">391</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">parser</span><span class=\"o\">.</span><span class=\"n\">add_argument</span><span class=\"p\">(</span><span class=\"s2\">&quot;--<mark>decider_url</mark>&quot;</span><span class=\"p\">,</span> <span class=\"nb\">type</span><span class=\"o\">=</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">help</span><span class=\"o\">=</span><span class=\"s2\">&quot;Base URL for decider model service&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"392\"><td><div class=\"lineno\">392</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">parser</span><span class=\"o\">.</span><span class=\"n\">add_argument</span><span class=\"p\">(</span><span class=\"s2\">&quot;--grounder_url&quot;</span><span class=\"p\">,</span> <span class=\"nb\">type</span><span class=\"o\">=</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">help</span><span class=\"o\">=</span><span class=\"s2\">&quot;Base URL for grounder model service&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"393\"><td><div class=\"lineno\">393</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">parser</span><span class=\"o\">.</span><span class=\"n\">add_argument</span><span class=\"p\">(</span><span class=\"s2\">&quot;--use_qwen3&quot;</span><span class=\"p\">,</span> <span class=\"n\">action</span><span class=\"o\">=</span><span class=\"s1\">&#39;store_true&#39;</span><span class=\"p\">,</span> <span class=\"n\">help</span><span class=\"o\">=</span><span class=\"s2\">&quot;Use Qwen3-VL model format&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"394\"><td><div class=\"lineno\">394</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">args</span> <span class=\"o\">=</span> <span class=\"n\">parser</span><span class=\"o\">.</span><span class=\"n\">parse_args</span><span class=\"p\">()</span></pre></div></td></tr><tr data-line=\"395\"><td><div class=\"lineno\">395</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">use_qwen3</span> <span class=\"o\">=</span> <span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\">use_qwen3</span></pre></div></td></tr><tr data-line=\"396\"><td><div class=\"lineno\">396</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">decider_client</span> <span class=\"o\">=</span> <span class=\"n\">OpenAI</span><span class=\"p\">(</span><span class=\"n\">api_key</span><span class=\"o\">=</span><span class=\"s2\">&quot;0&quot;</span><span class=\"p\">,</span> <span class=\"n\">base_url</span><span class=\"o\">=</span><span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\"><mark>decider_url</mark></span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"397\"><td><div class=\"lineno\">397</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">grounder_client</span> <span class=\"o\">=</span> <span class=\"n\">OpenAI</span><span class=\"p\">(</span><span class=\"n\">api_key</span><span class=\"o\">=</span><span class=\"s2\">&quot;0&quot;</span><span class=\"p\">,</span> <span class=\"n\">base_url</span><span class=\"o\">=</span><span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\">grounder_url</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "228519809",
+          "path": "deployment/server.py",
+          "repo": "IPADS-SAI/MobiAgent",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"18\"><td><div class=\"lineno\">18</div></td><td><div class=\"highlight\"><pre><span class=\"k\">class</span><span class=\"w\"> </span><span class=\"nc\">RemoteMultiLevelGeneralAgent</span><span class=\"p\">(</span><span class=\"n\">Agent</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"19\"><td><div class=\"lineno\">19</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"fm\">__init__</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\"><mark>decider_url</mark></span><span class=\"p\">,</span> <span class=\"n\">grounder_url</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"20\"><td><div class=\"lineno\">20</div></td><td><div class=\"highlight\"><pre>        <span class=\"nb\">super</span><span class=\"p\">()</span><span class=\"o\">.</span><span class=\"fm\">__init__</span><span class=\"p\">()</span></pre></div></td></tr><tr data-line=\"21\"><td><div class=\"lineno\">21</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">decider_client</span> <span class=\"o\">=</span> <span class=\"n\">OpenAI</span><span class=\"p\">(</span><span class=\"n\">api_key</span><span class=\"o\">=</span><span class=\"s2\">&quot;0&quot;</span><span class=\"p\">,</span> <span class=\"n\">base_url</span><span class=\"o\">=</span><span class=\"n\"><mark>decider_url</mark></span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"22\"><td><div class=\"lineno\">22</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">grounder_client</span> <span class=\"o\">=</span> <span class=\"n\">OpenAI</span><span class=\"p\">(</span><span class=\"n\">api_key</span><span class=\"o\">=</span><span class=\"s2\">&quot;0&quot;</span><span class=\"p\">,</span> <span class=\"n\">base_url</span><span class=\"o\">=</span><span class=\"n\">grounder_url</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "228519809",
+          "path": "agent_rr/agent/agent.py",
+          "repo": "IPADS-SAI/MobiAgent",
+          "total_matches": "2"
+        },
+        {
+          "branch": "develop",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"210\"><td><div class=\"lineno\">210</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;attack_url&quot;</span><span class=\"p\">:</span> <span class=\"n\">tech</span><span class=\"o\">.</span><span class=\"n\">tech_url</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"211\"><td><div class=\"lineno\">211</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;<mark>decider_url</mark>&quot;</span><span class=\"p\">:</span> <span class=\"n\">build_url</span><span class=\"p\">(</span><span class=\"n\">tech</span><span class=\"p\">,</span> <span class=\"s2\">&quot;TA0000&quot;</span><span class=\"p\">,</span> <span class=\"n\">version</span><span class=\"p\">),</span>  <span class=\"c1\"># /no_tactic/ URLs, implicit end=True</span></pre></div></td></tr><tr data-line=\"212\"><td><div class=\"lineno\">212</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;description&quot;</span><span class=\"p\">:</span> <span class=\"n\">tech</span><span class=\"o\">.</span><span class=\"n\">tech_description</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "18539691",
+          "path": "app/routes/api.py",
+          "repo": "cisagov/decider",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"15\"><td><div class=\"lineno\">15</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span>--port<span class=\"w\"> </span>&lt;server<span class=\"w\"> </span>port&gt;<span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"16\"><td><div class=\"lineno\">16</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span>--<mark>decider_url</mark><span class=\"w\"> </span>&lt;base<span class=\"w\"> </span>url<span class=\"w\"> </span><span class=\"k\">for</span><span class=\"w\"> </span>decider<span class=\"w\"> </span>model&gt;<span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"17\"><td><div class=\"lineno\">17</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span>--grounder_url<span class=\"w\"> </span>&lt;base<span class=\"w\"> </span>url<span class=\"w\"> </span><span class=\"k\">for</span><span class=\"w\"> </span>grounder<span class=\"w\"> </span>model&gt;<span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "228519809",
+          "path": "deployment/README.md",
+          "repo": "IPADS-SAI/MobiAgent",
+          "total_matches": "1"
+        }
+      ],
+      "total": 4
+    },
+    "time": 175
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=decider_url"
+}

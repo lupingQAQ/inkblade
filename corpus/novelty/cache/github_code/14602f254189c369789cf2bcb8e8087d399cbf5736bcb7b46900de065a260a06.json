@@ -1,0 +1,90 @@
+{
+  "_cached_at": "2026-10-26T11:36:09+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 3,
+            "val": "Text"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 1,
+            "val": "OpenRLHF-STILL/openrlhf.egg-info/"
+          },
+          {
+            "count": 1,
+            "val": "UR2_RL/OpenRLHF-RAG/openrlhf.egg-info/"
+          },
+          {
+            "count": 1,
+            "val": "openrlhf.egg-info/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 1,
+            "owner_id": "154398527",
+            "val": "Tsinghua-dhy/UR2"
+          },
+          {
+            "count": 1,
+            "owner_id": "197343938",
+            "val": "satori-reasoning/Satori"
+          },
+          {
+            "count": 1,
+            "owner_id": "54706620",
+            "val": "RUCAIBox/Slow_Thinking_with_LLMs"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"13\"><td><div class=\"lineno\">13</div></td><td><div class=\"highlight\"><pre>openrlhf/cli/interactive_chat.py</pre></div></td></tr><tr data-line=\"14\"><td><div class=\"lineno\">14</div></td><td><div class=\"highlight\"><pre>openrlhf/cli/<mark>serve_rm.py</mark></pre></div></td></tr><tr data-line=\"15\"><td><div class=\"lineno\">15</div></td><td><div class=\"highlight\"><pre>openrlhf/cli/server_false-1_true1_unknown-1_5.py</pre></div></td></tr></table>"
+          },
+          "owner_id": "54706620",
+          "path": "OpenRLHF-STILL/openrlhf.egg-info/SOURCES.txt",
+          "repo": "RUCAIBox/Slow_Thinking_with_LLMs",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"13\"><td><div class=\"lineno\">13</div></td><td><div class=\"highlight\"><pre>openrlhf/cli/interactive_chat.py</pre></div></td></tr><tr data-line=\"14\"><td><div class=\"lineno\">14</div></td><td><div class=\"highlight\"><pre>openrlhf/cli/<mark>serve_rm.py</mark></pre></div></td></tr><tr data-line=\"15\"><td><div class=\"lineno\">15</div></td><td><div class=\"highlight\"><pre>openrlhf/cli/server_dpsk_tuple.py</pre></div></td></tr></table>"
+          },
+          "owner_id": "154398527",
+          "path": "UR2_RL/OpenRLHF-RAG/openrlhf.egg-info/SOURCES.txt",
+          "repo": "Tsinghua-dhy/UR2",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"14\"><td><div class=\"lineno\">14</div></td><td><div class=\"highlight\"><pre>openrlhf/cli/lora_combiner.py</pre></div></td></tr><tr data-line=\"15\"><td><div class=\"lineno\">15</div></td><td><div class=\"highlight\"><pre>openrlhf/cli/<mark>serve_rm.py</mark></pre></div></td></tr><tr data-line=\"16\"><td><div class=\"lineno\">16</div></td><td><div class=\"highlight\"><pre>openrlhf/cli/train_dpo.py</pre></div></td></tr></table>"
+          },
+          "owner_id": "197343938",
+          "path": "openrlhf.egg-info/SOURCES.txt",
+          "repo": "satori-reasoning/Satori",
+          "total_matches": "1"
+        }
+      ],
+      "total": 3
+    },
+    "time": 64
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=serve_rm.py"
+}

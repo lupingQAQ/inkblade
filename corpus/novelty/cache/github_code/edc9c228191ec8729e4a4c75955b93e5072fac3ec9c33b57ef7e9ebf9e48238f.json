@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T11:09:22+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 420,
+            "val": "Python"
+          },
+          {
+            "count": 43,
+            "val": "Markdown"
+          },
+          {
+            "count": 26,
+            "val": "Rust"
+          },
+          {
+            "count": 12,
+            "val": "Shell"
+          },
+          {
+            "count": 5,
+            "val": "C++"
+          },
+          {
+            "count": 3,
+            "val": "Diff"
+          },
+          {
+            "count": 2,
+            "val": "TypeScript"
+          },
+          {
+            "count": 2,
+            "val": "YAML"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 90,
+            "val": "tests/"
+          },
+          {
+            "count": 49,
+            "val": "examples/"
+          },
+          {
+            "count": 30,
+            "val": "test/"
+          },
+          {
+            "count": 29,
+            "val": "docs/"
+          },
+          {
+            "count": 25,
+            "val": "python/"
+          },
+          {
+            "count": 20,
+            "val": "areal/"
+          },
+          {
+            "count": 19,
+            "val": "slime/"
+          },
+          {
+            "count": 14,
+            "val": "src/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 35,
+            "owner_id": "283073558",
+            "val": "areal-project/AReaL"
+          },
+          {
+            "count": 33,
+            "owner_id": "147780389",
+            "val": "sgl-project/sglang"
+          },
+          {
+            "count": 31,
+            "owner_id": "223053390",
+            "val": "radixark/miles"
+          },
+          {
+            "count": 22,
+            "owner_id": "256302077",
+            "val": "redai-studio/Relax"
+          },
+          {
+            "count": 21,
+            "owner_id": "135356492",
+            "val": "InternLM/xtuner"
+          },
+          {
+            "count": 20,
+            "owner_id": "201626793",
+            "val": "ai-dynamo/dynamo"
+          },
+          {
+            "count": 18,
+            "owner_id": "136984999",
+            "val": "vllm-project/vllm"
+          },
+          {
+            "count": 18,
+            "owner_id": "213689629",
+            "val": "NVIDIA-NeMo/RL"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"95\"><td><div class=\"lineno\">95</div></td><td><div class=\"highlight\"><pre><span class=\"n\">_SGLANG_<mark>PAUSE_GENERATION</mark>_MODE</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;retract&quot;</span></pre></div></td></tr><tr data-line=\"96\"><td><div class=\"lineno\">96</div></td><td><div class=\"highlight\"><pre><span class=\"n\">_SGLANG_<mark>PAUSE_GENERATION</mark>_MODE_ENV</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;TORCHRL_SGLANG_<mark>PAUSE_GENERATION</mark>_MODE&quot;</span></pre></div></td></tr><tr data-line=\"97\"><td><div class=\"lineno\">97</div></td><td><div class=\"highlight\"><pre><span class=\"n\">_SGLANG_PAUSE_POLL_INTERVAL</span> <span class=\"o\">=</span> <span class=\"mf\">0.05</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"108\"><td><div class=\"lineno\">108</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">_<mark>pause_generation</mark>_mode</span><span class=\"p\">()</span> <span class=\"o\">-&gt;</span> <span class=\"n\">Literal</span><span class=\"p\">[</span><span class=\"s2\">&quot;abort&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;retract&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;in_place&quot;</span><span class=\"p\">]:</span></pre></div></td></tr><tr data-line=\"109\"><td><div class=\"lineno\">109</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">mode</span> <span class=\"o\">=</span> <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"o\">.</span><span class=\"n\">get</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"110\"><td><div class=\"lineno\">110</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">_SGLANG_<mark>PAUSE_GENERATION</mark>_MODE_ENV</span><span class=\"p\">,</span> <span class=\"n\">_SGLANG_<mark>PAUSE_GENERATION</mark>_MODE</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"113\"><td><div class=\"lineno\">113</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">raise</span> <span class=\"ne\">ValueError</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"114\"><td><div class=\"lineno\">114</div></td><td><div class=\"highlight\"><pre>            <span class=\"sa\">f</span><span class=\"s2\">&quot;</span><span class=\"si\">{</span><span class=\"n\">_SGLANG_<mark>PAUSE_GENERATION</mark>_MODE_ENV</span><span class=\"si\">}</span><span class=\"s2\"> must be one of &quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "21003710",
+          "path": "torchrl/weight_update/llm/sglang_nccl.py",
+          "repo": "pytorch/rl",
+          "total_matches": "16"
+        },
+        {
+          "branch": "develop",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"20\"><td><div class=\"lineno\">20</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">pub</span><span class=\"w\"> </span><span class=\"n\">transitioned</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"kt\">bool</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"21\"><td><div class=\"lineno\">21</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">pub</span><span class=\"w\"> </span><span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"kt\">i64</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"22\"><td><div class=\"lineno\">22</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">pub</span><span class=\"w\"> </span><span class=\"n\">captured_turn_count</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"kt\">usize</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"42\"><td><div class=\"lineno\">42</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">pub</span><span class=\"w\"> </span><span class=\"n\">episode_id</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"nb\">String</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"43\"><td><div class=\"lineno\">43</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">pub</span><span class=\"w\"> </span><span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"kt\">i64</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"44\"><td><div class=\"lineno\">44</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">pub</span><span class=\"w\"> </span><span class=\"n\">total_count</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"kt\">usize</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"81\"><td><div class=\"lineno\">81</div></td><td><div class=\"highlight\"><pre><span class=\"s\">            pause_request_id TEXT NOT NULL CHECK(length(trim(pause_request_id)) &gt; 0),</span></pre></div></td></tr><tr data-line=\"82\"><td><div class=\"lineno\">82</div></td><td><div class=\"highlight\"><pre><span class=\"s\">            <mark>pause_generation</mark> INTEGER NOT NULL CHECK(<mark>pause_generation</mark> &gt;= 2),</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "132798821",
+          "path": "src-tauri/crates/agent-core/src/core/coordination/agent_org_pause.rs",
+          "repo": "org2AI/ORG2",
+          "total_matches": "20"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"167\"><td><div class=\"lineno\">167</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">llm</span> <span class=\"o\">=</span> <span class=\"n\">raw_request</span><span class=\"o\">.</span><span class=\"n\">app</span><span class=\"o\">.</span><span class=\"n\">state</span><span class=\"o\">.</span><span class=\"n\">engine_client</span></pre></div></td></tr><tr data-line=\"168\"><td><div class=\"lineno\">168</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">await</span> <span class=\"n\">llm</span><span class=\"o\">.</span><span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">(</span><span class=\"n\">wait_for_inflight_requests</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">,</span> <span class=\"n\">clear_cache</span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"169\"><td><div class=\"lineno\">169</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">await</span> <span class=\"n\">llm</span><span class=\"o\">.</span><span class=\"n\">reset_mm_cache</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"187\"><td><div class=\"lineno\">187</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">llm</span> <span class=\"o\">=</span> <span class=\"n\">raw_request</span><span class=\"o\">.</span><span class=\"n\">app</span><span class=\"o\">.</span><span class=\"n\">state</span><span class=\"o\">.</span><span class=\"n\">engine_client</span></pre></div></td></tr><tr data-line=\"188\"><td><div class=\"lineno\">188</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">await</span> <span class=\"n\">llm</span><span class=\"o\">.</span><span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">(</span><span class=\"n\">wait_for_inflight_requests</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">,</span> <span class=\"n\">clear_cache</span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"189\"><td><div class=\"lineno\">189</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">await</span> <span class=\"n\">llm</span><span class=\"o\">.</span><span class=\"n\">reset_mm_cache</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"210\"><td><div class=\"lineno\">210</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">llm</span> <span class=\"o\">=</span> <span class=\"n\">raw_request</span><span class=\"o\">.</span><span class=\"n\">app</span><span class=\"o\">.</span><span class=\"n\">state</span><span class=\"o\">.</span><span class=\"n\">engine_client</span></pre></div></td></tr><tr data-line=\"211\"><td><div class=\"lineno\">211</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">await</span> <span class=\"n\">llm</span><span class=\"o\">.</span><span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">(</span><span class=\"n\">wait_for_inflight_requests</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">,</span> <span class=\"n\">clear_cache</span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "283073558",
+          "path": "areal/engine/vllm_ext/areal_vllm_server.py",
+          "repo": "areal-project/AReaL",
+          "total_matches": "8"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"385\"><td><div class=\"lineno\">385</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># POST /<mark>pause_generation</mark>/{worker_id} — admin key ONLY, target single worker</span></pre></div></td></tr><tr data-line=\"386\"><td><div class=\"lineno\">386</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># =========================================================================</span></pre></div></td></tr><tr data-line=\"387\"><td><div class=\"lineno\">387</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"388\"><td><div class=\"lineno\">388</div></td><td><div class=\"highlight\"><pre>    <span class=\"nd\">@app</span><span class=\"o\">.</span><span class=\"n\">post</span><span class=\"p\">(</span><span class=\"s2\">&quot;/<mark>pause_generation</mark>/</span><span class=\"si\">{worker_id}</span><span class=\"s2\">&quot;</span><span class=\"p\">,</span> <span class=\"n\">response_model</span><span class=\"o\">=</span><span class=\"n\">BroadcastResponse</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"389\"><td><div class=\"lineno\">389</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">async</span> <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>pause_generation</mark></span><span class=\"p\">(</span><span class=\"n\">worker_id</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">request</span><span class=\"p\">:</span> <span class=\"n\">Request</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"390\"><td><div class=\"lineno\">390</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">require_admin_key</span><span class=\"p\">(</span><span class=\"n\">request</span><span class=\"p\">,</span> <span class=\"n\">config</span><span class=\"o\">.</span><span class=\"n\">admin_api_key</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"404\"><td><div class=\"lineno\">404</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">results</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">broadcast_to_workers</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"405\"><td><div class=\"lineno\">405</div></td><td><div class=\"highlight\"><pre>            <span class=\"p\">[</span><span class=\"n\">worker_addr</span><span class=\"p\">],</span> <span class=\"s2\">&quot;/<mark>pause_generation</mark>&quot;</span><span class=\"p\">,</span> <span class=\"n\">body</span><span class=\"p\">,</span> <span class=\"n\">headers</span><span class=\"p\">,</span> <span class=\"n\">client</span><span class=\"o\">=</span><span class=\"n\">_client</span><span class=\"p\">()</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "283073558",
+          "path": "areal/v2/inference_service/gateway/app.py",
+          "repo": "areal-project/AReaL",
+          "total_matches": "8"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"353\"><td><div class=\"lineno\">353</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"kd\">let</span><span class=\"w\"> </span><span class=\"k\">mut</span><span class=\"w\"> </span><span class=\"n\">controls</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"fm\">vec!</span><span class=\"p\">[</span></pre></div></td></tr><tr data-line=\"354\"><td><div class=\"lineno\">354</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"s\">&quot;<mark>pause_generation</mark>&quot;</span><span class=\"p\">.</span><span class=\"n\">to_string</span><span class=\"p\">(),</span></pre></div></td></tr><tr data-line=\"355\"><td><div class=\"lineno\">355</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"s\">&quot;resume_generation&quot;</span><span class=\"p\">.</span><span class=\"n\">to_string</span><span class=\"p\">(),</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"368\"><td><div class=\"lineno\">368</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"k\">match</span><span class=\"w\"> </span><span class=\"n\">control</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"369\"><td><div class=\"lineno\">369</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"s\">&quot;<mark>pause_generation</mark>&quot;</span><span class=\"w\"> </span><span class=\"o\">=&gt;</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"370\"><td><div class=\"lineno\">370</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"n\">pause_mode</span><span class=\"p\">(</span><span class=\"n\">body</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;<mark>pause_generation</mark>&quot;</span><span class=\"p\">)</span><span class=\"o\">?</span><span class=\"p\">;</span></pre></div></td></tr><tr data-line=\"371\"><td><div class=\"lineno\">371</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"n\">optional_bool</span><span class=\"p\">(</span><span class=\"n\">body</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;clear_cache&quot;</span><span class=\"p\">)</span><span class=\"o\">?</span><span class=\"p\">;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"392\"><td><div class=\"lineno\">392</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"s\">&quot;<mark>pause_generation</mark>&quot;</span><span class=\"w\"> </span><span class=\"o\">=&gt;</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "201626793",
+          "path": "lib/sidecar/vllm/src/engine.rs",
+          "repo": "ai-dynamo/dynamo",
+          "total_matches": "6"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"588\"><td><div class=\"lineno\">588</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"n\">request</span><span class=\"o\">-&gt;</span><span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">(</span><span class=\"n\">pause_gen_status</span><span class=\"p\">);</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"667\"><td><div class=\"lineno\">667</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"k\">for</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"k\">auto</span><span class=\"o\">&amp;</span><span class=\"w\"> </span><span class=\"n\">awaiting_request</span><span class=\"w\"> </span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"n\">m_awaiting_requests</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"668\"><td><div class=\"lineno\">668</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"n\">awaiting_request</span><span class=\"o\">-&gt;</span><span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">(</span><span class=\"nb\">true</span><span class=\"p\">);</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"703\"><td><div class=\"lineno\">703</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"n\">request</span><span class=\"o\">-&gt;</span><span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">(</span><span class=\"nb\">true</span><span class=\"p\">);</span></pre></div></td></tr><tr data-line=\"704\"><td><div class=\"lineno\">704</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"k\">else</span><span class=\"w\"> </span><span class=\"k\">if</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"o\">!</span><span class=\"n\">sampling_params</span><span class=\"p\">.</span><span class=\"n\">is_tree_search</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"o\">&amp;&amp;</span><span class=\"w\"> </span><span class=\"n\">request</span><span class=\"o\">-&gt;</span><span class=\"n\">get_num_processed_tokens</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"o\">&gt;=</span><span class=\"w\"> </span><span class=\"n\">request</span><span class=\"o\">-&gt;</span><span class=\"n\">get_prompt_len</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"o\">&amp;&amp;</span></pre></div></td></tr><tr data-line=\"705\"><td><div class=\"lineno\">705</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"p\">(</span><span class=\"n\">request</span><span class=\"o\">-&gt;</span><span class=\"n\">get_num_processed_tokens</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"o\">-</span><span class=\"w\"> </span><span class=\"n\">request</span><span class=\"o\">-&gt;</span><span class=\"n\">get_prompt_len</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"o\">+</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"o\">&gt;=</span><span class=\"w\"> </span><span class=\"n\">request</span><span class=\"o\">-&gt;</span><span class=\"n\">get_max_new_tokens</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"o\">-</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"706\"><td><div class=\"lineno\">706</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"n\">request</span><span class=\"o\">-&gt;</span><span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">(</span><span class=\"nb\">true</span><span class=\"p\">);</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "55443902",
+          "path": "src/cpp/src/speculative_decoding/continuous_batching/pipeline_impl.cpp",
+          "repo": "openvinotoolkit/openvino.genai",
+          "total_matches": "12"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"66\"><td><div class=\"lineno\">66</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">launch_vllm_serve</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"67\"><td><div class=\"lineno\">67</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"68\"><td><div class=\"lineno\">68</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">resume_generation</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"236\"><td><div class=\"lineno\">236</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">(</span><span class=\"n\">VLLM_ENDPOINT</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"237\"><td><div class=\"lineno\">237</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">t0</span> <span class=\"o\">=</span> <span class=\"n\">time</span><span class=\"o\">.</span><span class=\"n\">perf_counter</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"247\"><td><div class=\"lineno\">247</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># Sync again; replay must be stable, so generation must not move.</span></pre></div></td></tr><tr data-line=\"248\"><td><div class=\"lineno\">248</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">(</span><span class=\"n\">VLLM_ENDPOINT</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"249\"><td><div class=\"lineno\">249</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">t0</span> <span class=\"o\">=</span> <span class=\"n\">time</span><span class=\"o\">.</span><span class=\"n\">perf_counter</span><span class=\"p\">()</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "examples/rl/rlhf_sharded_rdt_small_ep.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"6\"><td><div class=\"lineno\">6</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">  1. Set the PauseState flag to True</span></pre></div></td></tr><tr data-line=\"7\"><td><div class=\"lineno\">7</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">  2. Call SGLang POST /<mark>pause_generation</mark> (aborting in-flight requests)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"47\"><td><div class=\"lineno\">47</div></td><td><div class=\"highlight\"><pre><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"48\"><td><div class=\"lineno\">48</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Call SGLang POST /<mark>pause_generation</mark> to abort in-flight requests.&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"49\"><td><div class=\"lineno\">49</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">if</span> <span class=\"n\">client</span> <span class=\"ow\">is</span> <span class=\"ow\">not</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"50\"><td><div class=\"lineno\">50</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">resp</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">client</span><span class=\"o\">.</span><span class=\"n\">post</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"51\"><td><div class=\"lineno\">51</div></td><td><div class=\"highlight\"><pre>            <span class=\"sa\">f</span><span class=\"s2\">&quot;</span><span class=\"si\">{</span><span class=\"n\">backend_addr</span><span class=\"si\">}</span><span class=\"s2\">/<mark>pause_generation</mark>&quot;</span><span class=\"p\">,</span> <span class=\"n\">json</span><span class=\"o\">=</span><span class=\"p\">{},</span> <span class=\"n\">timeout</span><span class=\"o\">=</span><span class=\"mf\">10.0</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"56\"><td><div class=\"lineno\">56</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">resp</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">c</span><span class=\"o\">.</span><span class=\"n\">post</span><span class=\"p\">(</span><span class=\"sa\">f</span><span class=\"s2\">&quot;</span><span class=\"si\">{</span><span class=\"n\">backend_addr</span><span class=\"si\">}</span><span class=\"s2\">/<mark>pause_generation</mark>&quot;</span><span class=\"p\">,</span> <span class=\"n\">json</span><span class=\"o\">=</span><span class=\"p\">{})</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "283073558",
+          "path": "areal/v2/inference_service/data_proxy/pause.py",
+          "repo": "areal-project/AReaL",
+          "total_matches": "5"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"72\"><td><div class=\"lineno\">72</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">scheduler</span><span class=\"o\">.</span><span class=\"n\">waiting_queue</span> <span class=\"o\">=</span> <span class=\"p\">[]</span></pre></div></td></tr><tr data-line=\"73\"><td><div class=\"lineno\">73</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># <mark>pause_generation</mark> zeros gen_throughput and flushes KV events.</span></pre></div></td></tr><tr data-line=\"74\"><td><div class=\"lineno\">74</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">scheduler</span><span class=\"o\">.</span><span class=\"n\">metrics_reporter</span> <span class=\"o\">=</span> <span class=\"n\">MagicMock</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"138\"><td><div class=\"lineno\">138</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">scheduler</span><span class=\"o\">.</span><span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">(</span><span class=\"n\">PauseGenerationReqInput</span><span class=\"p\">(</span><span class=\"n\">mode</span><span class=\"o\">=</span><span class=\"s2\">&quot;in_place&quot;</span><span class=\"p\">))</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"171\"><td><div class=\"lineno\">171</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">scheduler</span><span class=\"o\">.</span><span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">(</span><span class=\"n\">PauseGenerationReqInput</span><span class=\"p\">(</span><span class=\"n\">mode</span><span class=\"o\">=</span><span class=\"s2\">&quot;in_place&quot;</span><span class=\"p\">))</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"183\"><td><div class=\"lineno\">183</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">scheduler</span><span class=\"o\">.</span><span class=\"n\"><mark>pause_generation</mark></span><span class=\"p\">(</span><span class=\"n\">PauseGenerationReqInput</span><span class=\"p\">(</span><span class=\"n\">mode</span><span class=\"o\">=</span><span class=\"s2\">&quot;in_place&quot;</span><span class=\"p\">))</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "147780389",
+          "path": "test/registered/unit/managers/test_scheduler_pause_generation.py",
+          "repo": "sgl-project/sglang",
+          "total_matches": "20"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"96\"><td><div class=\"lineno\">96</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">_warmup_update</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"97\"><td><div class=\"lineno\">97</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">backend</span><span class=\"p\">,</span> <span class=\"n\">engine</span><span class=\"p\">,</span> <span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">names</span><span class=\"p\">,</span> <span class=\"n\">dtypes</span><span class=\"p\">,</span> <span class=\"n\">shapes</span><span class=\"p\">,</span> <span class=\"n\">load_format</span><span class=\"p\">,</span> <span class=\"n\"><mark>pause_generation</mark>_mode</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"116\"><td><div class=\"lineno\">116</div></td><td><div class=\"highlight\"><pre>                <span class=\"s2\">&quot;load_format&quot;</span><span class=\"p\">:</span> <span class=\"n\">load_format</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"117\"><td><div class=\"lineno\">117</div></td><td><div class=\"highlight\"><pre>                <span class=\"s2\">&quot;flush_cache&quot;</span><span class=\"p\">:</span> <span class=\"ow\">not</span> <span class=\"p\">(</span><span class=\"n\"><mark>pause_generation</mark>_mode</span> <span class=\"o\">==</span> <span class=\"s2\">&quot;in_place&quot;</span><span class=\"p\">),</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"134\"><td><div class=\"lineno\">134</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">barrier</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"135\"><td><div class=\"lineno\">135</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>pause_generation</mark>_mode</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"166\"><td><div class=\"lineno\">166</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\"><mark>pause_generation</mark>_mode</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "147780389",
+          "path": "test/registered/rl/test_update_weights_from_distributed.py",
+          "repo": "sgl-project/sglang",
+          "total_matches": "20"
+        }
+      ],
+      "total": 515
+    },
+    "time": 46
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=pause_generation"
+}

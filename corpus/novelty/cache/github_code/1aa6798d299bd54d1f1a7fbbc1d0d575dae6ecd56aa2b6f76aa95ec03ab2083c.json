@@ -1,0 +1,213 @@
+{
+  "_cached_at": "2026-10-26T12:14:59+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 40,
+            "val": "Python"
+          },
+          {
+            "count": 1,
+            "val": "JSON"
+          },
+          {
+            "count": 1,
+            "val": "Markdown"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 41,
+            "val": "checkpoint/orbax/checkpoint/"
+          },
+          {
+            "count": 5,
+            "val": "utils/"
+          },
+          {
+            "count": 1,
+            "val": "benchmark_outputs/"
+          },
+          {
+            "count": 1,
+            "val": "clip_jax/maxtext/"
+          },
+          {
+            "count": 1,
+            "val": "examples/gemma/"
+          },
+          {
+            "count": 1,
+            "val": "src/levanter/"
+          },
+          {
+            "count": 1,
+            "val": "t5x/"
+          },
+          {
+            "count": 1,
+            "val": "tests/unit/server/handlers/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 41,
+            "owner_id": "1342004",
+            "val": "google/orbax"
+          },
+          {
+            "count": 1,
+            "owner_id": "128334726",
+            "val": "Lyy-iiis/BiFlow"
+          },
+          {
+            "count": 1,
+            "owner_id": "128334726",
+            "val": "Lyy-iiis/imeanflow"
+          },
+          {
+            "count": 1,
+            "owner_id": "128334726",
+            "val": "Lyy-iiis/pMF"
+          },
+          {
+            "count": 1,
+            "owner_id": "1342004",
+            "val": "google/flax"
+          },
+          {
+            "count": 1,
+            "owner_id": "150129845",
+            "val": "lllllllama/RigorPilot-Skills"
+          },
+          {
+            "count": 1,
+            "owner_id": "18630903",
+            "val": "Gsunshine/meanflow"
+          },
+          {
+            "count": 1,
+            "owner_id": "210491432",
+            "val": "marin-community/levanter"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"74\"><td><div class=\"lineno\">74</div></td><td><div class=\"highlight\"><pre>      <span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">abstract_pytree</span><span class=\"p\">:</span> <span class=\"n\">Any</span><span class=\"p\">,</span> <span class=\"n\">replica_axis_index</span><span class=\"p\">:</span> <span class=\"nb\">int</span></pre></div></td></tr><tr data-line=\"75\"><td><div class=\"lineno\">75</div></td><td><div class=\"highlight\"><pre>  <span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeRestoreArgs</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"76\"><td><div class=\"lineno\">76</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Constructs the restore args for a single replica restore.&quot;&quot;&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"92\"><td><div class=\"lineno\">92</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">restore_args</span> <span class=\"o\">=</span> <span class=\"n\">jax</span><span class=\"o\">.</span><span class=\"n\">tree_util</span><span class=\"o\">.</span><span class=\"n\">tree_map</span><span class=\"p\">(</span><span class=\"n\">map_to_pspec</span><span class=\"p\">,</span> <span class=\"n\">abstract_pytree</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"93\"><td><div class=\"lineno\">93</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">return</span> <span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeRestoreArgs</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"94\"><td><div class=\"lineno\">94</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">item</span><span class=\"o\">=</span><span class=\"n\">abstract_pytree</span><span class=\"p\">,</span> <span class=\"n\">restore_args</span><span class=\"o\">=</span><span class=\"n\">restore_args</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"132\"><td><div class=\"lineno\">132</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">handler</span> <span class=\"o\">=</span> <span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeCheckpointHandler</span><span class=\"p\">()</span></pre></div></td></tr><tr data-line=\"133\"><td><div class=\"lineno\">133</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">checkpointer</span> <span class=\"o\">=</span> <span class=\"n\">async_checkpointer</span><span class=\"o\">.</span><span class=\"n\">AsyncCheckpointer</span><span class=\"p\">(</span><span class=\"n\">handler</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1342004",
+          "path": "checkpoint/orbax/checkpoint/_src/testing/benchmarks/single_replica_benchmark.py",
+          "repo": "google/orbax",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"181\"><td><div class=\"lineno\">181</div></td><td><div class=\"highlight\"><pre>  <span class=\"k\">with</span> <span class=\"n\">checkpointer</span><span class=\"o\">.</span><span class=\"n\">Checkpointer</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"182\"><td><div class=\"lineno\">182</div></td><td><div class=\"highlight\"><pre>      <span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeCheckpointHandler</span><span class=\"p\">(</span><span class=\"n\">use_ocdbt</span><span class=\"o\">=</span><span class=\"n\">use_ocdbt</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"183\"><td><div class=\"lineno\">183</div></td><td><div class=\"highlight\"><pre>  <span class=\"p\">)</span> <span class=\"k\">as</span> <span class=\"n\">ckptr</span><span class=\"p\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"255\"><td><div class=\"lineno\">255</div></td><td><div class=\"highlight\"><pre>  <span class=\"k\">with</span> <span class=\"n\">checkpointer</span><span class=\"o\">.</span><span class=\"n\">Checkpointer</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"256\"><td><div class=\"lineno\">256</div></td><td><div class=\"highlight\"><pre>      <span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeCheckpointHandler</span><span class=\"p\">(</span><span class=\"n\">use_ocdbt</span><span class=\"o\">=</span><span class=\"n\">use_ocdbt</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"257\"><td><div class=\"lineno\">257</div></td><td><div class=\"highlight\"><pre>  <span class=\"p\">)</span> <span class=\"k\">as</span> <span class=\"n\">ckptr</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"258\"><td><div class=\"lineno\">258</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">pytree</span> <span class=\"o\">=</span> <span class=\"n\">ckptr</span><span class=\"o\">.</span><span class=\"n\">restore</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"259\"><td><div class=\"lineno\">259</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">path</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"260\"><td><div class=\"lineno\">260</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">args</span><span class=\"o\">=</span><span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeRestoreArgs</span><span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1342004",
+          "path": "checkpoint/orbax/checkpoint/_src/testing/benchmarks/core/checkpoint_generation.py",
+          "repo": "google/orbax",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"105\"><td><div class=\"lineno\">105</div></td><td><div class=\"highlight\"><pre>    <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_supported_types</span> <span class=\"o\">=</span> <span class=\"n\">checkpoint_utils</span><span class=\"o\">.</span><span class=\"n\">STANDARD_ARRAY_TYPES</span></pre></div></td></tr><tr data-line=\"106\"><td><div class=\"lineno\">106</div></td><td><div class=\"highlight\"><pre>    <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_impl</span> <span class=\"o\">=</span> <span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeCheckpointHandler</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"107\"><td><div class=\"lineno\">107</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">save_concurrent_gb</span><span class=\"o\">=</span><span class=\"n\">save_concurrent_gb</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"183\"><td><div class=\"lineno\">183</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">directory</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"184\"><td><div class=\"lineno\">184</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">args</span><span class=\"o\">=</span><span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeSaveArgs</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"185\"><td><div class=\"lineno\">185</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">item</span><span class=\"o\">=</span><span class=\"n\">item</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"266\"><td><div class=\"lineno\">266</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">directory</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"267\"><td><div class=\"lineno\">267</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">args</span><span class=\"o\">=</span><span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeRestoreArgs</span><span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1342004",
+          "path": "checkpoint/orbax/checkpoint/_src/handlers/standard_checkpoint_handler.py",
+          "repo": "google/orbax",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"46\"><td><div class=\"lineno\">46</div></td><td><div class=\"highlight\"><pre><span class=\"n\">JsonSaveArgs</span> <span class=\"o\">=</span> <span class=\"n\">json_checkpoint_handler</span><span class=\"o\">.</span><span class=\"n\">JsonSaveArgs</span></pre></div></td></tr><tr data-line=\"47\"><td><div class=\"lineno\">47</div></td><td><div class=\"highlight\"><pre><span class=\"n\">PyTreeRestoreArgs</span> <span class=\"o\">=</span> <span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeRestoreArgs</span></pre></div></td></tr><tr data-line=\"48\"><td><div class=\"lineno\">48</div></td><td><div class=\"highlight\"><pre><span class=\"n\">PyTreeSaveArgs</span> <span class=\"o\">=</span> <span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeSaveArgs</span></pre></div></td></tr><tr data-line=\"49\"><td><div class=\"lineno\">49</div></td><td><div class=\"highlight\"><pre><span class=\"n\">register_with_handler</span> <span class=\"o\">=</span> <span class=\"n\">checkpoint_args</span><span class=\"o\">.</span><span class=\"n\">register_with_handler</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1342004",
+          "path": "checkpoint/orbax/checkpoint/_src/handlers/random_key_checkpoint_handler.py",
+          "repo": "google/orbax",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"133\"><td><div class=\"lineno\">133</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">args</span><span class=\"o\">=</span><span class=\"n\">composite_checkpoint_handler</span><span class=\"o\">.</span><span class=\"n\">CompositeArgs</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"134\"><td><div class=\"lineno\">134</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">state</span><span class=\"o\">=</span><span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeRestoreArgs</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"135\"><td><div class=\"lineno\">135</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">restore_args</span><span class=\"o\">=</span><span class=\"n\">restore_args</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"265\"><td><div class=\"lineno\">265</div></td><td><div class=\"highlight\"><pre>              <span class=\"n\">args</span><span class=\"o\">=</span><span class=\"n\">composite_checkpoint_handler</span><span class=\"o\">.</span><span class=\"n\">CompositeArgs</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"266\"><td><div class=\"lineno\">266</div></td><td><div class=\"highlight\"><pre>                  <span class=\"n\">state</span><span class=\"o\">=</span><span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeSaveArgs</span><span class=\"p\">(</span><span class=\"n\">pytree</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1342004",
+          "path": "checkpoint/orbax/checkpoint/_src/testing/benchmarks/emergency_checkpoint_manager_benchmark.py",
+          "repo": "google/orbax",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"147\"><td><div class=\"lineno\">147</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">args</span><span class=\"o\">=</span><span class=\"n\">p2p_args_lib</span><span class=\"o\">.</span><span class=\"n\">Composite</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"148\"><td><div class=\"lineno\">148</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">state</span><span class=\"o\">=</span><span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeRestoreArgs</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"149\"><td><div class=\"lineno\">149</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">restore_args</span><span class=\"o\">=</span><span class=\"n\">restore_args</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"228\"><td><div class=\"lineno\">228</div></td><td><div class=\"highlight\"><pre>              <span class=\"n\">args</span><span class=\"o\">=</span><span class=\"n\">p2p_args_lib</span><span class=\"o\">.</span><span class=\"n\">Composite</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"229\"><td><div class=\"lineno\">229</div></td><td><div class=\"highlight\"><pre>                  <span class=\"n\">state</span><span class=\"o\">=</span><span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeSaveArgs</span><span class=\"p\">(</span><span class=\"n\">pytree</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1342004",
+          "path": "checkpoint/orbax/checkpoint/_src/testing/benchmarks/p2p_checkpoint_manager_benchmark.py",
+          "repo": "google/orbax",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"24\"><td><div class=\"lineno\">24</div></td><td><div class=\"highlight\"><pre>  <span class=\"kn\">from</span> <span class=\"nn\">orbax.checkpoint</span> <span class=\"kn\">import</span> <span class=\"n\">pytree_checkpoint_handler</span><span class=\"p\">,</span> <span class=\"n\">type_handlers</span></pre></div></td></tr><tr data-line=\"25\"><td><div class=\"lineno\">25</div></td><td><div class=\"highlight\"><pre>  <span class=\"n\">PyTreeCheckpointHandler</span> <span class=\"o\">=</span> <span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeCheckpointHandler</span></pre></div></td></tr><tr data-line=\"26\"><td><div class=\"lineno\">26</div></td><td><div class=\"highlight\"><pre><span class=\"k\">except</span> <span class=\"ne\">ImportError</span><span class=\"p\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"38\"><td><div class=\"lineno\">38</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># PyTreeCheckpointHandler = pytree_<mark>checkpoint_handler.Py</mark>TreeCheckpointHandler</span></pre></div></td></tr><tr data-line=\"39\"><td><div class=\"lineno\">39</div></td><td><div class=\"highlight\"><pre><span class=\"n\">LocalCheckpointOptions</span> <span class=\"o\">=</span> <span class=\"n\">emergency_checkpoint_manager</span><span class=\"o\">.</span><span class=\"n\">LocalCheckpointOptions</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "54112784",
+          "path": "tokenformer-tpu/MaxText/checkpointing.py",
+          "repo": "Haiyang-W/TokenFormer",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"278\"><td><div class=\"lineno\">278</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">setup_sharded_pytree</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"279\"><td><div class=\"lineno\">279</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">pytree</span><span class=\"p\">:</span> <span class=\"n\">Optional</span><span class=\"p\">[</span><span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>Tree</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"kc\">None</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"280\"><td><div class=\"lineno\">280</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">reverse_devices</span><span class=\"p\">:</span> <span class=\"nb\">bool</span> <span class=\"o\">=</span> <span class=\"kc\">False</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"488\"><td><div class=\"lineno\">488</div></td><td><div class=\"highlight\"><pre><span class=\"k\">class</span><span class=\"w\"> </span><span class=\"nc\">PyTreeCheckpointHandler</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"489\"><td><div class=\"lineno\">489</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeCheckpointHandler</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"504\"><td><div class=\"lineno\">504</div></td><td><div class=\"highlight\"><pre>      <span class=\"bp\">self</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"505\"><td><div class=\"lineno\">505</div></td><td><div class=\"highlight\"><pre>      <span class=\"n\">handler</span><span class=\"p\">:</span> <span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeCheckpointHandler</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"506\"><td><div class=\"lineno\">506</div></td><td><div class=\"highlight\"><pre>      <span class=\"n\">executor</span><span class=\"p\">:</span> <span class=\"n\">futures</span><span class=\"o\">.</span><span class=\"n\">ThreadPoolExecutor</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1342004",
+          "path": "checkpoint/orbax/checkpoint/test_utils.py",
+          "repo": "google/orbax",
+          "total_matches": "6"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"58\"><td><div class=\"lineno\">58</div></td><td><div class=\"highlight\"><pre><span class=\"n\">PyTreeCheckpointHandler</span> <span class=\"o\">=</span> <span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeCheckpointHandler</span></pre></div></td></tr><tr data-line=\"59\"><td><div class=\"lineno\">59</div></td><td><div class=\"highlight\"><pre><span class=\"n\">AsyncCheckpointHandler</span> <span class=\"o\">=</span> <span class=\"n\">async_checkpoint_handler</span><span class=\"o\">.</span><span class=\"n\">AsyncCheckpointHandler</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"710\"><td><div class=\"lineno\">710</div></td><td><div class=\"highlight\"><pre>              <span class=\"n\">directory</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"711\"><td><div class=\"lineno\">711</div></td><td><div class=\"highlight\"><pre>              <span class=\"n\">args</span><span class=\"o\">=</span><span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeRestoreArgs</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"712\"><td><div class=\"lineno\">712</div></td><td><div class=\"highlight\"><pre>                  <span class=\"n\">item</span><span class=\"o\">=</span><span class=\"n\">reference_item</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"731\"><td><div class=\"lineno\">731</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">directory</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"732\"><td><div class=\"lineno\">732</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">args</span><span class=\"o\">=</span><span class=\"n\">pytree_<mark class=\"m-l\">checkpoint_handler</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">Py</mark>TreeRestoreArgs</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"733\"><td><div class=\"lineno\">733</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">item</span><span class=\"o\">=</span><span class=\"n\">reference_item</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1342004",
+          "path": "checkpoint/orbax/checkpoint/_src/checkpointers/checkpointer_test_utils.py",
+          "repo": "google/orbax",
+          "total_matches": "5"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"140\"><td><div class=\"lineno\">140</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># Constant copied from orbax/checkpoint/pytree_<mark>checkpoint_handler.py</mark></span></pre></div></td></tr><tr data-line=\"141\"><td><div class=\"lineno\">141</div></td><td><div class=\"highlight\"><pre><span class=\"n\">_METADATA_FILE</span> <span class=\"o\">=</span> <span class=\"s1\">&#39;_METADATA&#39;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "43830688",
+          "path": "t5x/checkpoint_utils.py",
+          "repo": "google-research/t5x",
+          "total_matches": "1"
+        }
+      ],
+      "total": 53
+    },
+    "time": 134
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=checkpoint_handler.py"
+}

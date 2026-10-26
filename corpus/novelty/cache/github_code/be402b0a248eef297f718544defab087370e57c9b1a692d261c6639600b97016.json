@@ -1,0 +1,66 @@
+{
+  "_cached_at": "2026-10-26T12:14:28+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 1,
+            "val": "Dockerfile"
+          },
+          {
+            "count": 1,
+            "val": "Shell"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 1,
+            "val": "docker/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 2,
+            "owner_id": "48590610",
+            "val": "THUDM/slime"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"139\"><td><div class=\"lineno\">139</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nb\">cd</span><span class=\"w\"> </span>/sgl-workspace/sglang<span class=\"w\"> </span><span class=\"o\">&amp;&amp;</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"140\"><td><div class=\"lineno\">140</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"k\">for</span><span class=\"w\"> </span>patch<span class=\"w\"> </span><span class=\"k\">in</span><span class=\"w\"> </span>sglang.patch<span class=\"w\"> </span>sglang-top_p.patch<span class=\"w\"> </span>sglang-release_hicache.patch<span class=\"w\"> </span><mark>sglang-pull_weights.patch</mark><span class=\"w\"> </span>sglang-deterministic.patch<span class=\"p\">;</span><span class=\"w\"> </span><span class=\"k\">do</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"141\"><td><div class=\"lineno\">141</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">if</span><span class=\"w\"> </span><span class=\"o\">[</span><span class=\"w\"> </span>!<span class=\"w\"> </span>-f<span class=\"w\"> </span><span class=\"s2\">&quot;</span><span class=\"nv\">$patch</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span><span class=\"o\">]</span><span class=\"p\">;</span><span class=\"w\"> </span><span class=\"k\">then</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "48590610",
+          "path": "docker/Dockerfile",
+          "repo": "THUDM/slime",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"197\"><td><div class=\"lineno\">197</div></td><td><div class=\"highlight\"><pre><span class=\"nb\">cd</span><span class=\"w\"> </span><span class=\"nv\">$BASE_DIR</span>/sglang</pre></div></td></tr><tr data-line=\"198\"><td><div class=\"lineno\">198</div></td><td><div class=\"highlight\"><pre><span class=\"k\">for</span><span class=\"w\"> </span>patch_name<span class=\"w\"> </span><span class=\"k\">in</span><span class=\"w\"> </span>sglang.patch<span class=\"w\"> </span>sglang-top_p.patch<span class=\"w\"> </span>sglang-release_hicache.patch<span class=\"w\"> </span><mark>sglang-pull_weights.patch</mark><span class=\"w\"> </span>sglang-deterministic.patch<span class=\"p\">;</span><span class=\"w\"> </span><span class=\"k\">do</span></pre></div></td></tr><tr data-line=\"199\"><td><div class=\"lineno\">199</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nv\">patch_path</span><span class=\"o\">=</span><span class=\"s2\">&quot;</span><span class=\"nv\">$patch_dir</span><span class=\"s2\">/</span><span class=\"si\">${</span><span class=\"nv\">patch_name</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "48590610",
+          "path": "build_conda.sh",
+          "repo": "THUDM/slime",
+          "total_matches": "1"
+        }
+      ],
+      "total": 2
+    },
+    "time": 109
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=sglang-pull_weights.patch"
+}

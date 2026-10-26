@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T11:36:11+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 36856,
+            "val": "Python"
+          },
+          {
+            "count": 5930,
+            "val": "YAML"
+          },
+          {
+            "count": 3370,
+            "val": "Markdown"
+          },
+          {
+            "count": 2060,
+            "val": "Jupyter Notebook"
+          },
+          {
+            "count": 1066,
+            "val": "Shell"
+          },
+          {
+            "count": 413,
+            "val": "JSON"
+          },
+          {
+            "count": 129,
+            "val": "reStructuredText"
+          },
+          {
+            "count": 99,
+            "val": "HTML"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 2933,
+            "val": "src/"
+          },
+          {
+            "count": 2760,
+            "val": "examples/"
+          },
+          {
+            "count": 2527,
+            "val": "tests/"
+          },
+          {
+            "count": 2162,
+            "val": "verl/"
+          },
+          {
+            "count": 1188,
+            "val": "scripts/"
+          },
+          {
+            "count": 1089,
+            "val": "docs/"
+          },
+          {
+            "count": 1004,
+            "val": "configs/"
+          },
+          {
+            "count": 844,
+            "val": "python/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 1121,
+            "owner_id": "94522163",
+            "val": "OpenGVLab/VideoChat-Flash"
+          },
+          {
+            "count": 682,
+            "owner_id": "135356492",
+            "val": "InternLM/xtuner"
+          },
+          {
+            "count": 630,
+            "owner_id": "94522163",
+            "val": "OpenGVLab/InternVideo"
+          },
+          {
+            "count": 597,
+            "owner_id": "201914393",
+            "val": "ScienceOne-AI/DeepSeek-671B-SFT-Guide"
+          },
+          {
+            "count": 562,
+            "owner_id": "17202268",
+            "val": "lxtGH/OMG-Seg"
+          },
+          {
+            "count": 541,
+            "owner_id": "1728152",
+            "val": "NVIDIA/TensorRT-LLM"
+          },
+          {
+            "count": 431,
+            "owner_id": "213689629",
+            "val": "NVIDIA-NeMo/Automodel"
+          },
+          {
+            "count": 398,
+            "owner_id": "167452922",
+            "val": "oumi-ai/oumi"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"90\"><td><div class=\"lineno\">90</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"p\">:</span> <span class=\"nb\">bool</span> <span class=\"o\">=</span> <span class=\"kc\">False</span></pre></div></td></tr><tr data-line=\"91\"><td><div class=\"lineno\">91</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;The `<mark>trust_remote_code</mark>` level required to load the model.&quot;&quot;&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"201\"><td><div class=\"lineno\">201</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;ArceeForCausalLM&quot;</span><span class=\"p\">:</span> <span class=\"n\">_HfExamplesInfo</span><span class=\"p\">(</span><span class=\"s2\">&quot;arcee-ai/AFM-4.5B-Base&quot;</span><span class=\"p\">),</span></pre></div></td></tr><tr data-line=\"202\"><td><div class=\"lineno\">202</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;AXK1ForCausalLM&quot;</span><span class=\"p\">:</span> <span class=\"n\">_HfExamplesInfo</span><span class=\"p\">(</span><span class=\"s2\">&quot;skt/A.X-K1&quot;</span><span class=\"p\">,</span> <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">),</span></pre></div></td></tr><tr data-line=\"203\"><td><div class=\"lineno\">203</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;BailingMoeForCausalLM&quot;</span><span class=\"p\">:</span> <span class=\"n\">_HfExamplesInfo</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"204\"><td><div class=\"lineno\">204</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;inclusionAI/Ling-lite-1.5&quot;</span><span class=\"p\">,</span> <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"kc\">True</span></pre></div></td></tr><tr data-line=\"205\"><td><div class=\"lineno\">205</div></td><td><div class=\"highlight\"><pre>    <span class=\"p\">),</span></pre></div></td></tr><tr data-line=\"206\"><td><div class=\"lineno\">206</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;BailingMoeV2ForCausalLM&quot;</span><span class=\"p\">:</span> <span class=\"n\">_HfExamplesInfo</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"207\"><td><div class=\"lineno\">207</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;inclusionAI/Ling-mini-2.0&quot;</span><span class=\"p\">,</span> <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"kc\">True</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "tests/models/registry.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "100+"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"204\"><td><div class=\"lineno\">204</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">revision</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"205\"><td><div class=\"lineno\">205</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"p\">:</span> <span class=\"nb\">bool</span> <span class=\"o\">=</span> <span class=\"kc\">False</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"206\"><td><div class=\"lineno\">206</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">processor_cls</span><span class=\"p\">:</span> <span class=\"nb\">type</span><span class=\"p\">[</span><span class=\"n\">_P</span><span class=\"p\">]</span> <span class=\"o\">|</span> <span class=\"nb\">tuple</span><span class=\"p\">[</span><span class=\"nb\">type</span><span class=\"p\">[</span><span class=\"n\">_P</span><span class=\"p\">],</span> <span class=\"o\">...</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"n\">ProcessorMixin</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"230\"><td><div class=\"lineno\">230</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">revision</span><span class=\"o\">=</span><span class=\"n\">revision</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"231\"><td><div class=\"lineno\">231</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"232\"><td><div class=\"lineno\">232</div></td><td><div class=\"highlight\"><pre>                <span class=\"o\">**</span><span class=\"n\">kwargs</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"238\"><td><div class=\"lineno\">238</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">revision</span><span class=\"o\">=</span><span class=\"n\">revision</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"239\"><td><div class=\"lineno\">239</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "vllm/transformers_utils/processor.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "35"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"387\"><td><div class=\"lineno\">387</div></td><td><div class=\"highlight\"><pre><span class=\"truncated\">&hellip;</span><span class=\"kc\">None</span><span class=\"p\">,</span> <span class=\"n\">device</span><span class=\"p\">:</span> <span class=\"nb\">int</span> <span class=\"o\">|</span> <span class=\"nb\">str</span> <span class=\"o\">|</span> <span class=\"n\">torch</span><span class=\"o\">.</span><span class=\"n\">device</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span><span class=\"p\">,</span> <span class=\"n\">device_map</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">|</span> <span class=\"nb\">dict</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"nb\">int</span> <span class=\"o\">|</span> <span class=\"nb\">str</span><span class=\"p\">]</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span><span class=\"p\">,</span> <span class=\"n\">dtype</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">|</span> <span class=\"n\">torch</span><span class=\"o\">.</span><span class=\"n\">dtype</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;auto&quot;</span><span class=\"p\">,</span> <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"p\">:</span> <span class=\"nb\">bool</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span><span class=\"p\">,</span> <span class=\"n\">model_kwargs</span><span class=\"p\">:</span> <span class=\"nb\">dict</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">Any</span><span class=\"p\">]</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span><span class=\"p\">,</span> <span class=\"n\">pipeline_class</span><span class=\"p\">:</span> <span class=\"n\">Any</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span><span class=\"p\">,</span> <span class=\"o\">**</span><span class=\"n\">kwargs</span><span class=\"p\">:</span> <span class=\"n\">Any</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"n\">Pipeline</span><span class=\"p\">:</span> <span class=\"o\">...</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "25720743",
+          "path": "src/transformers/pipelines/__init__.py",
+          "repo": "huggingface/transformers",
+          "total_matches": "34"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"58\"><td><div class=\"lineno\">58</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">add_to_mapping</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"59\"><td><div class=\"lineno\">59</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">layer_name</span><span class=\"p\">,</span> <span class=\"n\">device</span><span class=\"p\">,</span> <span class=\"n\">repo_name</span><span class=\"p\">,</span> <span class=\"n\">mode</span><span class=\"p\">,</span> <span class=\"n\">compatible_mapping</span><span class=\"p\">,</span> <span class=\"n\">version</span><span class=\"o\">=</span><span class=\"mi\">1</span><span class=\"p\">,</span> <span class=\"n\">revision</span><span class=\"o\">=</span><span class=\"kc\">None</span><span class=\"p\">,</span> <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"kc\">False</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"73\"><td><div class=\"lineno\">73</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">revision</span><span class=\"o\">=</span><span class=\"n\">revision</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"74\"><td><div class=\"lineno\">74</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"110\"><td><div class=\"lineno\">110</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">update_kernel</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"111\"><td><div class=\"lineno\">111</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">repo_id</span><span class=\"p\">,</span> <span class=\"n\">registered_name</span><span class=\"p\">,</span> <span class=\"n\">layer_name</span><span class=\"p\">,</span> <span class=\"n\">device</span><span class=\"p\">,</span> <span class=\"n\">mode</span><span class=\"p\">,</span> <span class=\"n\">revision</span><span class=\"o\">=</span><span class=\"kc\">None</span><span class=\"p\">,</span> <span class=\"n\">version</span><span class=\"o\">=</span><span class=\"mi\">1</span><span class=\"p\">,</span> <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"kc\">False</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"122\"><td><div class=\"lineno\">122</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "25720743",
+          "path": "src/transformers/utils/kernel_config.py",
+          "repo": "huggingface/transformers",
+          "total_matches": "22"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"33\"><td><div class=\"lineno\">33</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">parse_safetensors_file_metadata</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"34\"><td><div class=\"lineno\">34</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">without_<mark>trust_remote_code</mark></span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"346\"><td><div class=\"lineno\">346</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"p\">:</span> <span class=\"nb\">bool</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"347\"><td><div class=\"lineno\">347</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">revision</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"348\"><td><div class=\"lineno\">348</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">code_revision</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"349\"><td><div class=\"lineno\">349</div></td><td><div class=\"highlight\"><pre>        <span class=\"o\">**</span><span class=\"n\">kwargs</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"350\"><td><div class=\"lineno\">350</div></td><td><div class=\"highlight\"><pre>    <span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">tuple</span><span class=\"p\">[</span><span class=\"nb\">dict</span><span class=\"p\">,</span> <span class=\"n\">PretrainedConfig</span><span class=\"p\">]:</span></pre></div></td></tr><tr data-line=\"351\"><td><div class=\"lineno\">351</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">kwargs</span><span class=\"p\">[</span><span class=\"s2\">&quot;local_files_only&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"n\">huggingface_hub</span><span class=\"o\">.</span><span class=\"n\">constants</span><span class=\"o\">.</span><span class=\"n\">HF_HUB_OFFLINE</span></pre></div></td></tr><tr data-line=\"352\"><td><div class=\"lineno\">352</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>trust_remote_code</mark></span> <span class=\"o\">|=</span> <span class=\"n\">kwargs</span><span class=\"o\">.</span><span class=\"n\">get</span><span class=\"p\">(</span><span class=\"s2\">&quot;<mark>trust_remote_code</mark>&quot;</span><span class=\"p\">,</span> <span class=\"kc\">False</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "vllm/transformers_utils/config.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "36"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"88\"><td><div class=\"lineno\">88</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">limit_mm_per_prompt</span><span class=\"o\">=</span><span class=\"p\">{</span><span class=\"n\">modality</span><span class=\"p\">:</span> <span class=\"mi\">1</span><span class=\"p\">},</span></pre></div></td></tr><tr data-line=\"89\"><td><div class=\"lineno\">89</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"103\"><td><div class=\"lineno\">103</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">model</span><span class=\"o\">=</span><span class=\"n\">model_name</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"104\"><td><div class=\"lineno\">104</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"105\"><td><div class=\"lineno\">105</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">max_model_len</span><span class=\"o\">=</span><span class=\"mi\">8192</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"282\"><td><div class=\"lineno\">282</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">limit_mm_per_prompt</span><span class=\"o\">=</span><span class=\"p\">{</span><span class=\"n\">modality</span><span class=\"p\">:</span> <span class=\"mi\">1</span><span class=\"p\">},</span></pre></div></td></tr><tr data-line=\"283\"><td><div class=\"lineno\">283</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "examples/generate/multimodal/vision_language_offline.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "40"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"58\"><td><div class=\"lineno\">58</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">tokenizer_mode</span><span class=\"o\">=</span><span class=\"s2\">&quot;slow&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"59\"><td><div class=\"lineno\">59</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"60\"><td><div class=\"lineno\">60</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">dtype</span><span class=\"o\">=</span><span class=\"s2\">&quot;bfloat16&quot;</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"84\"><td><div class=\"lineno\">84</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">limit_mm_per_prompt</span><span class=\"o\">=</span><span class=\"p\">{</span><span class=\"s2\">&quot;image&quot;</span><span class=\"p\">:</span> <span class=\"nb\">len</span><span class=\"p\">(</span><span class=\"n\">image_urls</span><span class=\"p\">)},</span></pre></div></td></tr><tr data-line=\"85\"><td><div class=\"lineno\">85</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"99\"><td><div class=\"lineno\">99</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">processor</span> <span class=\"o\">=</span> <span class=\"n\">AutoProcessor</span><span class=\"o\">.</span><span class=\"n\">from_pretrained</span><span class=\"p\">(</span><span class=\"n\">model_name</span><span class=\"p\">,</span> <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"317\"><td><div class=\"lineno\">317</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "examples/generate/multimodal/vision_language_multi_image_offline.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "29"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"212\"><td><div class=\"lineno\">212</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">parser</span><span class=\"o\">.</span><span class=\"n\">add_argument</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"213\"><td><div class=\"lineno\">213</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;--<mark>trust_remote_code</mark>&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"214\"><td><div class=\"lineno\">214</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">action</span><span class=\"o\">=</span><span class=\"s2\">&quot;store_true&quot;</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"341\"><td><div class=\"lineno\">341</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">raw_datasets</span> <span class=\"o\">=</span> <span class=\"n\">load_dataset</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"342\"><td><div class=\"lineno\">342</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\">dataset_name</span><span class=\"p\">,</span> <span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\">dataset_config_name</span><span class=\"p\">,</span> <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\"><mark>trust_remote_code</mark></span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"348\"><td><div class=\"lineno\">348</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">split</span><span class=\"o\">=</span><span class=\"sa\">f</span><span class=\"s2\">&quot;train[:</span><span class=\"si\">{</span><span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\">validation_split_percentage</span><span class=\"si\">}</span><span class=\"s2\">%]&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"349\"><td><div class=\"lineno\">349</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "25720743",
+          "path": "examples/pytorch/language-modeling/run_clm_no_trainer.py",
+          "repo": "huggingface/transformers",
+          "total_matches": "19"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"22\"><td><div class=\"lineno\">22</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">...configuration_utils</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">PreTrainedConfig</span></pre></div></td></tr><tr data-line=\"23\"><td><div class=\"lineno\">23</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">...dynamic_module_utils</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">get_class_from_dynamic_module</span><span class=\"p\">,</span> <span class=\"n\">resolve_<mark>trust_remote_code</mark></span></pre></div></td></tr><tr data-line=\"24\"><td><div class=\"lineno\">24</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">...feature_extraction_utils</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">FeatureExtractionMixin</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"169\"><td><div class=\"lineno\">169</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                `kwargs` which has not been used to update `feature_extractor` and is otherwise ignored.</span></pre></div></td></tr><tr data-line=\"170\"><td><div class=\"lineno\">170</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            <mark>trust_remote_code</mark> (`bool`, *optional*, defaults to `False`):</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"196\"><td><div class=\"lineno\">196</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">config</span> <span class=\"o\">=</span> <span class=\"n\">kwargs</span><span class=\"o\">.</span><span class=\"n\">pop</span><span class=\"p\">(</span><span class=\"s2\">&quot;config&quot;</span><span class=\"p\">,</span> <span class=\"kc\">None</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"197\"><td><div class=\"lineno\">197</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>trust_remote_code</mark></span> <span class=\"o\">=</span> <span class=\"n\">kwargs</span><span class=\"o\">.</span><span class=\"n\">pop</span><span class=\"p\">(</span><span class=\"s2\">&quot;<mark>trust_remote_code</mark>&quot;</span><span class=\"p\">,</span> <span class=\"kc\">None</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"198\"><td><div class=\"lineno\">198</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">kwargs</span><span class=\"p\">[</span><span class=\"s2\">&quot;_from_auto&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"kc\">True</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "25720743",
+          "path": "src/transformers/models/auto/processing_auto.py",
+          "repo": "huggingface/transformers",
+          "total_matches": "16"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"219\"><td><div class=\"lineno\">219</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">parser</span><span class=\"o\">.</span><span class=\"n\">add_argument</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"220\"><td><div class=\"lineno\">220</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;--<mark>trust_remote_code</mark>&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"221\"><td><div class=\"lineno\">221</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">action</span><span class=\"o\">=</span><span class=\"s2\">&quot;store_true&quot;</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"340\"><td><div class=\"lineno\">340</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">raw_datasets</span> <span class=\"o\">=</span> <span class=\"n\">load_dataset</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"341\"><td><div class=\"lineno\">341</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\">dataset_name</span><span class=\"p\">,</span> <span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\">dataset_config_name</span><span class=\"p\">,</span> <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\"><mark>trust_remote_code</mark></span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"347\"><td><div class=\"lineno\">347</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">split</span><span class=\"o\">=</span><span class=\"sa\">f</span><span class=\"s2\">&quot;train[:</span><span class=\"si\">{</span><span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\">validation_split_percentage</span><span class=\"si\">}</span><span class=\"s2\">%]&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"348\"><td><div class=\"lineno\">348</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"o\">=</span><span class=\"n\">args</span><span class=\"o\">.</span><span class=\"n\"><mark>trust_remote_code</mark></span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "25720743",
+          "path": "examples/pytorch/language-modeling/run_mlm_no_trainer.py",
+          "repo": "huggingface/transformers",
+          "total_matches": "19"
+        }
+      ],
+      "total": 50739
+    },
+    "time": 657
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=trust_remote_code"
+}

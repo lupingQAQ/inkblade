@@ -1,0 +1,39 @@
+{
+ "id": "sglang-legacy-tar-weights-rce",
+ "source": "new-discovery",
+ "component": "sglang",
+ "title": "SGLang pt loader falls back to weights_only=False for legacy tar model shards",
+ "version": "v0.5.22",
+ "version_ref": {
+  "kind": "git",
+  "repo": "sgl-project/sglang",
+  "tag": "v0.5.22",
+  "commit": "baa9befa381511cd4d56f83980951e5a45fffc6d"
+ },
+ "root_cause": {
+  "file": "python/sglang/srt/model_loader/weight_utils.py",
+  "line": 1414,
+  "function": "_load_pt_file",
+  "snippet": "return torch.load(bin_file, map_location=\"cpu\", weights_only=False)",
+  "source": "lab/zeroday_reserve/upstream/sglang-0.5.22/python/sglang/srt/model_loader/weight_utils.py",
+  "note": "_load_pt_file first calls torch.load(weights_only=True). If the file is a legacy tar checkpoint, torch raises RuntimeError('legacy .tar format') and the code deliberately retries with weights_only=False. A model repository (or any writable model directory/PVC) can therefore ship a legacy-tar .bin whose storages entry is a pickle; the victim's model load executes it. The comment says 'trusted sources (HuggingFace Hub)', but Hub models are exactly the attacker-controlled supply-chain input."
+ },
+ "preconditions": [
+  "victim loads a model directory/PVC containing an attacker-controlled .bin/.pt shard",
+  "the shard is a legacy tar checkpoint (or is crafted to look like one)"
+ ],
+ "steps": [
+  "build a tar archive with a malicious pickle in the `storages` member",
+  "call the verbatim upstream `_load_pt_file`",
+  "observe weights_only=True -> RuntimeError('legacy .tar format') and fallback weights_only=False -> pickle execution"
+ ],
+ "expected_evidence": [
+  "marker written from the malicious `storages` pickle",
+  "log shows the exact legacy-tar RuntimeError and the fallback call"
+ ],
+ "cleanup": "temp dir under evidence/ is rewritten per run",
+ "status": "verified",
+ "method": "dynamic-function",
+ "marker_text": "TRIDENT-ZD-sglang-legacy-tar-weights-rce",
+ "notes": "Function-level reproduction of the verbatim upstream `_load_pt_file`; the rest of SGLang is not imported because the host has no GPU. The sink and fallback branch are the real 0.5.22 code."
+}

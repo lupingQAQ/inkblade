@@ -1,0 +1,154 @@
+{
+  "generated_at": "2026-10-26T11:20:23+00:00",
+  "offline": false,
+  "schema": "trident-novelty-results-v1",
+  "verdicts": {
+    "msswift-media-local-read": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:20:23+00:00",
+      "id": "msswift-media-local-read",
+      "offline": false,
+      "providers": {
+        "github_advisories": {
+          "detail": "GitHub advisory database has no strong-term match for the package",
+          "matches": [],
+          "provider": "github_advisories",
+          "related": [],
+          "status": "ok"
+        },
+        "github_code": {
+          "detail": "grep.app returned 8 hit(s), 6 outside the upstream repo",
+          "external_hits": [
+            {
+              "path": "parsing/train/ms-swift/swift/llm/infer/deploy.py",
+              "repo": "Yuliang-Liu/MonkeyOCRv2",
+              "snippet": "144                if isinstance(content, dict) and content[&#39;type&#39;] == &#39;image&#39;:145                    b64_image = MultiModalRequestMixin.to_base64(content[&#39;image&#39;])146                    response.choices[i].message.content[j][&#39;image&#39;] = f&#39;data:image/jpg;base64,{b6"
+            },
+            {
+              "path": "parsing/train/ms-swift/swift/llm/infer/protocol.py",
+              "repo": "Yuliang-Liu/MonkeyOCRv2",
+              "snippet": "381                for i, value in enumerate(values):382                    values[i] = MultiModalRequestMixin.to_base64(value)383                self.rollout_infos[key] = values"
+            },
+            {
+              "path": "deepanalyze/ms-swift/swift/llm/infer/deploy.py",
+              "repo": "ruc-datalab/DeepAnalyze",
+              "snippet": "130                if content[&quot;type&quot;] == &quot;image&quot;:131                    b64_image = MultiModalRequestMixin.to_base64(content[&quot;image&quot;])132                    response.choices[i].message.content[j]["
+            },
+            {
+              "path": "swift/llm/infer/deploy.py",
+              "repo": "ECNU-SII/Continual-NExT",
+              "snippet": "118                if content[&#39;type&#39;] == &#39;image&#39;:119                    b64_image = MultiModalRequestMixin.to_base64(content[&#39;image&#39;])120                    response.choices[i].message.content[j][&#39;image&#39;] = f&#39;data:image/jpg;base64,{b64_image}&#39;"
+            },
+            {
+              "path": "swift/llm/infer/deploy.py",
+              "repo": "yfzhang114/Thyme",
+              "snippet": "118                if content[&#39;type&#39;] == &#39;image&#39;:119                    b64_image = MultiModalRequestMixin.to_base64(content[&#39;image&#39;])120                    response.choices[i].message.content[j][&#39;image&#39;] = f&#39;data:image/jpg;base64,{b64_image}&#39;"
+            },
+            {
+              "path": "VBench-2.0/vbench2/third_party/Instance_detector/swift/llm/infer/deploy.py",
+              "repo": "Vchitect/VBench",
+              "snippet": "118                if content[&#39;type&#39;] == &#39;image&#39;:119                    b64_image = MultiModalRequestMixin.to_base64(content[&#39;image&#39;])120                    response.choices[i].message.content[j][&#39;image&#39;] = f&#39;data:image/jpg;base64,{b64_image}&#39;"
+            }
+          ],
+          "local_tree_hits": [],
+          "matches": [],
+          "status": "ok",
+          "via": "grep.app+local-tree"
+        },
+        "github_commits": {
+          "detail": "no security-relevant commit matched MultiModalRequestMixin.to_base64",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"MultiModalRequestMixin.to_base64\" repo:modelscope/ms-swift",
+          "related": [],
+          "status": "ok"
+        },
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "msswift",
+            "ms-swift",
+            "media"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-50460",
+              "summary": "A remote code execution (RCE) vulnerability exists in the ms-swift project version 3.3.0 due to unsafe deserialization in tests/run.py using yaml.load() from the PyYAML library (versions = 5.3.1). If an attacker can control the content of the YAML configuration file passed to the --run_config parame",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50460"
+            },
+            {
+              "id": "CVE-2026-10801",
+              "summary": "A security vulnerability has been detected in modelscope ms-swift up to 4.2.0. This affects the function Template._save_pil_image of the file swift/template/base.py of the component PIL Image Cache Key Handler. The manipulation leads to use of weak hash. An attack has to be approached locally. A hig",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10801"
+            },
+            {
+              "id": "CVE-2026-85686",
+              "summary": "ms-swift 4.5.2 contains a server-side request forgery vulnerability in the swift deploy OpenAI-compatible API that fetches multimodal media URLs without validation or redirect filtering. Unauthenticated attackers can supply arbitrary image_url, audio_url, or video_url parameters to make the server i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85686"
+            },
+            {
+              "id": "CVE-1999-0326",
+              "summary": "Vulnerability in HP-UX mediainit program.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-1999-0326"
+            },
+            {
+              "id": "CVE-1999-0329",
+              "summary": "SGI mediad program allows local users to gain root access.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-1999-0329"
+            },
+            {
+              "id": "CVE-1999-0594",
+              "summary": "A Windows NT system does not restrict access to removable media drives such as a floppy disk drive or CDROM drive.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-1999-0594"
+            },
+            {
+              "id": "CVE-2000-0371",
+              "summary": "The libmediatool library used for the KDE mediatool allows local users to create arbitrary files via a symlink attack.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2000-0371"
+            },
+            {
+              "id": "CVE-1999-1369",
+              "summary": "Real Media RealServer (rmserver) 6.0.3.353 stores a password in plaintext in the world-readable rmserver.cfg file, which allows local users to gain privileges.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-1999-1369"
+            },
+            {
+              "id": "CVE-1999-0931",
+              "summary": "Buffer overflow in Mediahouse Statistics Server allows remote attackers to execute commands.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-1999-0931"
+            },
+            {
+              "id": "CVE-1999-0932",
+              "summary": "Mediahouse Statistics Server allows remote attackers to read the administrator password, which is stored in cleartext in the ss.cfg file.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-1999-0932"
+            }
+          ],
+          "status": "ok"
+        },
+        "osv": {
+          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "matches": [],
+          "provider": "osv",
+          "queried": "ms-swift@4.6.0",
+          "related": [],
+          "status": "ok"
+        },
+        "vendor": {
+          "detail": "vendor pages fetched clean",
+          "fetched": [
+            "https://raw.githubusercontent.com/modelscope/ms-swift/HEAD/.github/SECURITY.md",
+            "https://github.com/modelscope/ms-swift/security/advisories",
+            "https://github.com/modelscope/ms-swift/releases"
+          ],
+          "matches": [],
+          "provider": "vendor",
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    }
+  }
+}

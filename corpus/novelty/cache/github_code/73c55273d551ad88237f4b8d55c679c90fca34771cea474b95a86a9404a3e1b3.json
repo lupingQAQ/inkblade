@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T12:14:31+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 112,
+            "val": "Python"
+          },
+          {
+            "count": 61,
+            "val": "Markdown"
+          },
+          {
+            "count": 52,
+            "val": "YAML"
+          },
+          {
+            "count": 28,
+            "val": "Shell"
+          },
+          {
+            "count": 8,
+            "val": "Rust"
+          },
+          {
+            "count": 4,
+            "val": "Go"
+          },
+          {
+            "count": 3,
+            "val": "Gettext Catalog"
+          },
+          {
+            "count": 2,
+            "val": "JSON"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 49,
+            "val": "docs/"
+          },
+          {
+            "count": 39,
+            "val": "tests/"
+          },
+          {
+            "count": 28,
+            "val": "examples/"
+          },
+          {
+            "count": 14,
+            "val": "brixbench/benchmark/testdata/deployments/"
+          },
+          {
+            "count": 13,
+            "val": "vllm/"
+          },
+          {
+            "count": 10,
+            "val": ".buildkite/"
+          },
+          {
+            "count": 7,
+            "val": "python/"
+          },
+          {
+            "count": 7,
+            "val": "recipes/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 33,
+            "owner_id": "136984999",
+            "val": "vllm-project/vllm"
+          },
+          {
+            "count": 27,
+            "owner_id": "136984999",
+            "val": "vllm-project/aibrix"
+          },
+          {
+            "count": 26,
+            "owner_id": "25720743",
+            "val": "huggingface/trl"
+          },
+          {
+            "count": 22,
+            "owner_id": "43349905",
+            "val": "mitkox/vllm-turboquant"
+          },
+          {
+            "count": 19,
+            "owner_id": "136984999",
+            "val": "vllm-project/vllm-ascend"
+          },
+          {
+            "count": 12,
+            "owner_id": "171091289",
+            "val": "LMCache/LMCache"
+          },
+          {
+            "count": 11,
+            "owner_id": "201626793",
+            "val": "ai-dynamo/dynamo"
+          },
+          {
+            "count": 11,
+            "owner_id": "211387470",
+            "val": "llm-d-incubation/llm-d-fast-model-actuation"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"37\"><td><div class=\"lineno\">37</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    ``<mark>VLLM_SERVER_DEV_MODE</mark>`` exposes the RLHF weight-sync routes; the Ray v2</span></pre></div></td></tr><tr data-line=\"38\"><td><div class=\"lineno\">38</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    executor makes the workers tensor-transport actors (RDT&#39;s data plane). The</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"77\"><td><div class=\"lineno\">77</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"78\"><td><div class=\"lineno\">78</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>VLLM_SERVER_DEV_MODE</mark></span><span class=\"o\">=</span><span class=\"s2\">&quot;1&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"79\"><td><div class=\"lineno\">79</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">VLLM_USE_RAY_V2_EXECUTOR_BACKEND</span><span class=\"o\">=</span><span class=\"s2\">&quot;1&quot;</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "examples/rl/rdt_vllm_serve.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"51\"><td><div class=\"lineno\">51</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">stdout</span><span class=\"o\">=</span><span class=\"kc\">None</span> <span class=\"k\">if</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">show_stdout</span> <span class=\"k\">else</span> <span class=\"n\">subprocess</span><span class=\"o\">.</span><span class=\"n\">DEVNULL</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"52\"><td><div class=\"lineno\">52</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># Need `<mark>VLLM_SERVER_DEV_MODE</mark>=1` for `_reset_caches`</span></pre></div></td></tr><tr data-line=\"53\"><td><div class=\"lineno\">53</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">env</span><span class=\"o\">=</span><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span> <span class=\"o\">|</span> <span class=\"p\">{</span><span class=\"s2\">&quot;<mark>VLLM_SERVER_DEV_MODE</mark>&quot;</span><span class=\"p\">:</span> <span class=\"s2\">&quot;1&quot;</span><span class=\"p\">},</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "vllm/benchmarks/sweep/server.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"168\"><td><div class=\"lineno\">168</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">VLLM_RUST_FRONTEND_PATH</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;auto&quot;</span></pre></div></td></tr><tr data-line=\"169\"><td><div class=\"lineno\">169</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>VLLM_SERVER_DEV_MODE</mark></span><span class=\"p\">:</span> <span class=\"nb\">bool</span> <span class=\"o\">=</span> <span class=\"kc\">False</span></pre></div></td></tr><tr data-line=\"170\"><td><div class=\"lineno\">170</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">VLLM_V1_OUTPUT_PROC_CHUNK_SIZE</span><span class=\"p\">:</span> <span class=\"nb\">int</span> <span class=\"o\">=</span> <span class=\"mi\">128</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1427\"><td><div class=\"lineno\">1427</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># e.g. `/reset_prefix_cache`</span></pre></div></td></tr><tr data-line=\"1428\"><td><div class=\"lineno\">1428</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;<mark>VLLM_SERVER_DEV_MODE</mark>&quot;</span><span class=\"p\">:</span> <span class=\"k\">lambda</span><span class=\"p\">:</span> <span class=\"nb\">bool</span><span class=\"p\">(</span><span class=\"nb\">int</span><span class=\"p\">(</span><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">getenv</span><span class=\"p\">(</span><span class=\"s2\">&quot;<mark>VLLM_SERVER_DEV_MODE</mark>&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;0&quot;</span><span class=\"p\">))),</span></pre></div></td></tr><tr data-line=\"1429\"><td><div class=\"lineno\">1429</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># Controls the maximum number of requests to handle in a</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"2287\"><td><div class=\"lineno\">2287</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;LD_LIBRARY_PATH&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"2288\"><td><div class=\"lineno\">2288</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;<mark>VLLM_SERVER_DEV_MODE</mark>&quot;</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "vllm/envs.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">/// Reset the server&#39;s prefix cache by calling POST /reset_prefix_cache.</span></pre></div></td></tr><tr data-line=\"9\"><td><div class=\"lineno\">9</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">/// Requires <mark>VLLM_SERVER_DEV_MODE</mark>=1 on the vLLM server.</span></pre></div></td></tr><tr data-line=\"10\"><td><div class=\"lineno\">10</div></td><td><div class=\"highlight\"><pre><span class=\"k\">async</span><span class=\"w\"> </span><span class=\"k\">fn</span><span class=\"w\"> </span><span class=\"nf\">reset_prefix_cache</span><span class=\"p\">(</span><span class=\"n\">base_url</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"kp\">&amp;</span><span class=\"kt\">str</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">-&gt;</span><span class=\"w\"> </span><span class=\"nb\">Result</span><span class=\"o\">&lt;</span><span class=\"p\">()</span><span class=\"o\">&gt;</span><span class=\"w\"> </span><span class=\"p\">{</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"24\"><td><div class=\"lineno\">24</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"s\">&quot;Failed to reset prefix cache: HTTP {status} — {body}. \\</span></pre></div></td></tr><tr data-line=\"25\"><td><div class=\"lineno\">25</div></td><td><div class=\"highlight\"><pre><span class=\"s\">             Is <mark>VLLM_SERVER_DEV_MODE</mark>=1 set on the server?&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "rust/src/bench/src/sweep.rs",
+          "repo": "vllm-project/vllm",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"104\"><td><div class=\"lineno\">104</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"nb\">local</span><span class=\"w\"> </span><span class=\"nv\">profile_config_json</span><span class=\"o\">=</span><span class=\"s2\">&quot;{\\&quot;profiler\\&quot;: \\&quot;torch\\&quot;, \\&quot;torch_profiler_dir\\&quot;: \\&quot;</span><span class=\"nv\">$profile_dir</span><span class=\"s2\">\\&quot;}&quot;</span></pre></div></td></tr><tr data-line=\"105\"><td><div class=\"lineno\">105</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"nv\"><mark>VLLM_SERVER_DEV_MODE</mark></span><span class=\"o\">=</span><span class=\"m\">1</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"106\"><td><div class=\"lineno\">106</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span>vllm<span class=\"w\"> </span>serve<span class=\"w\"> </span>--profiler-config<span class=\"w\"> </span><span class=\"s2\">&quot;</span><span class=\"nv\">$profile_config_json</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span><span class=\"s2\">&quot;</span><span class=\"si\">${</span><span class=\"nv\">common_args_array</span><span class=\"p\">[@]</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span>&gt;<span class=\"w\"> </span><span class=\"s2\">&quot;</span><span class=\"nv\">$vllm_log</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span><span class=\"m\">2</span>&gt;<span class=\"p\">&amp;</span><span class=\"m\">1</span><span class=\"w\"> </span><span class=\"p\">&amp;</span></pre></div></td></tr><tr data-line=\"107\"><td><div class=\"lineno\">107</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">else</span></pre></div></td></tr><tr data-line=\"108\"><td><div class=\"lineno\">108</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"c1\"># Start server without profiling</span></pre></div></td></tr><tr data-line=\"109\"><td><div class=\"lineno\">109</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"nv\"><mark>VLLM_SERVER_DEV_MODE</mark></span><span class=\"o\">=</span><span class=\"m\">1</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"110\"><td><div class=\"lineno\">110</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span>vllm<span class=\"w\"> </span>serve<span class=\"w\"> </span><span class=\"s2\">&quot;</span><span class=\"si\">${</span><span class=\"nv\">common_args_array</span><span class=\"p\">[@]</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span>&gt;<span class=\"w\"> </span><span class=\"s2\">&quot;</span><span class=\"nv\">$vllm_log</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span><span class=\"m\">2</span>&gt;<span class=\"p\">&amp;</span><span class=\"m\">1</span><span class=\"w\"> </span><span class=\"p\">&amp;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "benchmarks/auto_tune/auto_tune.sh",
+          "repo": "vllm-project/vllm",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"187\"><td><div class=\"lineno\">187</div></td><td><div class=\"highlight\"><pre><span class=\"nb\">export</span><span class=\"w\"> </span><span class=\"nv\">VLLM_ALLOW_INSECURE_SERIALIZATION</span><span class=\"o\">=</span><span class=\"s2\">&quot;</span><span class=\"si\">${</span><span class=\"nv\">VLLM_ALLOW_INSECURE_SERIALIZATION</span><span class=\"k\">:-</span><span class=\"nv\">1</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span></pre></div></td></tr><tr data-line=\"188\"><td><div class=\"lineno\">188</div></td><td><div class=\"highlight\"><pre><span class=\"nb\">export</span><span class=\"w\"> </span><span class=\"nv\"><mark>VLLM_SERVER_DEV_MODE</mark></span><span class=\"o\">=</span><span class=\"s2\">&quot;</span><span class=\"si\">${</span><span class=\"nv\"><mark>VLLM_SERVER_DEV_MODE</mark></span><span class=\"k\">:-</span><span class=\"nv\">1</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span></pre></div></td></tr><tr data-line=\"189\"><td><div class=\"lineno\">189</div></td><td><div class=\"highlight\"><pre><span class=\"nb\">export</span><span class=\"w\"> </span><span class=\"nv\">VLLM_USE_V1</span><span class=\"o\">=</span><span class=\"s2\">&quot;</span><span class=\"si\">${</span><span class=\"nv\">VLLM_USE_V1</span><span class=\"k\">:-</span><span class=\"nv\">1</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"297\"><td><div class=\"lineno\">297</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nb\">echo</span><span class=\"w\"> </span><span class=\"s2\">&quot;Starting </span><span class=\"nv\">$source_name</span><span class=\"s2\"> port=</span><span class=\"si\">${</span><span class=\"nv\">SERVER_PORTS</span><span class=\"p\">[</span><span class=\"nv\">$idx</span><span class=\"p\">]</span><span class=\"si\">}</span><span class=\"s2\"> gpus=</span><span class=\"si\">${</span><span class=\"nv\">SERVER_GPU_GROUPS</span><span class=\"p\">[</span><span class=\"nv\">$idx</span><span class=\"p\">]</span><span class=\"si\">}</span><span class=\"s2\"> log=</span><span class=\"nv\">$log_file</span><span class=\"s2\">&quot;</span></pre></div></td></tr><tr data-line=\"298\"><td><div class=\"lineno\">298</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nv\">SKYRL_EXTERNAL_SERVER_IDX</span><span class=\"o\">=</span><span class=\"s2\">&quot;</span><span class=\"nv\">$idx</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span><span class=\"nv\"><mark>VLLM_SERVER_DEV_MODE</mark></span><span class=\"o\">=</span><span class=\"m\">1</span><span class=\"w\"> </span><span class=\"nv\">CUDA_VISIBLE_DEVICES</span><span class=\"o\">=</span><span class=\"s2\">&quot;</span><span class=\"si\">${</span><span class=\"nv\">SERVER_GPU_GROUPS</span><span class=\"p\">[</span><span class=\"nv\">$idx</span><span class=\"p\">]</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span><span class=\"s2\">&quot;</span><span class=\"nv\">$PYTHON_BIN</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"299\"><td><div class=\"lineno\">299</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span>-m<span class=\"w\"> </span><span class=\"s2\">&quot;</span><span class=\"nv\">$VLLM_SERVER_MODULE</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "194174999",
+          "path": "examples/train/thunder_agent/scripts/r2egym_32b/start_rollout_servers.sh",
+          "repo": "NovaSky-AI/SkyRL",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"276\"><td><div class=\"lineno\">276</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># The weight-transfer and prefix-cache endpoints that trainers rely on live behind vLLM&#39;s dev mode.</span></pre></div></td></tr><tr data-line=\"277\"><td><div class=\"lineno\">277</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"p\">[</span><span class=\"s2\">&quot;<mark>VLLM_SERVER_DEV_MODE</mark>&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;1&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"286\"><td><div class=\"lineno\">286</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;directly instead:</span><span class=\"se\">\\n\\n</span><span class=\"s2\">&quot;</span></pre></div></td></tr><tr data-line=\"287\"><td><div class=\"lineno\">287</div></td><td><div class=\"highlight\"><pre>        <span class=\"sa\">f</span><span class=\"s2\">&quot;    <mark>VLLM_SERVER_DEV_MODE</mark>=1 VLLM_WORKER_MULTIPROC_METHOD=spawn </span><span class=\"si\">{</span><span class=\"n\">equivalent</span><span class=\"si\">}</span><span class=\"se\">\\n</span><span class=\"s2\">&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"288\"><td><div class=\"lineno\">288</div></td><td><div class=\"highlight\"><pre>        <span class=\"ne\">FutureWarning</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "25720743",
+          "path": "trl/scripts/vllm_serve.py",
+          "repo": "huggingface/trl",
+          "total_matches": "2"
+        },
+        {
+          "branch": "dev",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"135\"><td><div class=\"lineno\">135</div></td><td><div class=\"highlight\"><pre><span class=\"nv\"><mark>VLLM_SERVER_DEV_MODE</mark></span><span class=\"o\">=</span><span class=\"m\">1</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"136\"><td><div class=\"lineno\">136</div></td><td><div class=\"highlight\"><pre><span class=\"nv\">VLLM_BATCH_INVARIANT</span><span class=\"o\">=</span><span class=\"m\">1</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"184\"><td><div class=\"lineno\">184</div></td><td><div class=\"highlight\"><pre><span class=\"nv\">LMCACHE_CONFIG_FILE</span><span class=\"o\">=</span>cpu.yaml<span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"185\"><td><div class=\"lineno\">185</div></td><td><div class=\"highlight\"><pre><span class=\"nv\"><mark>VLLM_SERVER_DEV_MODE</mark></span><span class=\"o\">=</span><span class=\"m\">1</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"186\"><td><div class=\"lineno\">186</div></td><td><div class=\"highlight\"><pre><span class=\"nv\">VLLM_BATCH_INVARIANT</span><span class=\"o\">=</span><span class=\"m\">1</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "171091289",
+          "path": ".buildkite/scripts/vllm-correctness.sh",
+          "repo": "LMCache/LMCache",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"68\"><td><div class=\"lineno\">68</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    Weight sync uses vLLM native endpoints (/init_weight_transfer_engine,</span></pre></div></td></tr><tr data-line=\"69\"><td><div class=\"lineno\">69</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    /update_weights, /get_world_size) from the RLHF router when <mark>VLLM_SERVER_DEV_MODE</mark>=1.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"156\"><td><div class=\"lineno\">156</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># Ensure vLLM sleep endpoints are enabled by using dev mode</span></pre></div></td></tr><tr data-line=\"157\"><td><div class=\"lineno\">157</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"p\">[</span><span class=\"s2\">&quot;<mark>VLLM_SERVER_DEV_MODE</mark>&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;1&quot;</span></pre></div></td></tr><tr data-line=\"158\"><td><div class=\"lineno\">158</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># Enable runtime LoRA loading/unloading via /v1/load_lora_adapter endpoint</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"681\"><td><div class=\"lineno\">681</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># CUDA-IPC weight transfer.</span></pre></div></td></tr><tr data-line=\"682\"><td><div class=\"lineno\">682</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"p\">[</span><span class=\"s2\">&quot;<mark>VLLM_SERVER_DEV_MODE</mark>&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;1&quot;</span></pre></div></td></tr><tr data-line=\"683\"><td><div class=\"lineno\">683</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"p\">[</span><span class=\"s2\">&quot;VLLM_ALLOW_RUNTIME_LORA_UPDATING&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;1&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "194174999",
+          "path": "skyrl/backends/skyrl_train/inference_servers/vllm_server_actor.py",
+          "repo": "NovaSky-AI/SkyRL",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"34\"><td><div class=\"lineno\">34</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"o\">.</span><span class=\"n\">setdefault</span><span class=\"p\">(</span><span class=\"s2\">&quot;NCCL_CUMEM_ENABLE&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;0&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"35\"><td><div class=\"lineno\">35</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"o\">.</span><span class=\"n\">setdefault</span><span class=\"p\">(</span><span class=\"s2\">&quot;<mark>VLLM_SERVER_DEV_MODE</mark>&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;1&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"36\"><td><div class=\"lineno\">36</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"o\">.</span><span class=\"n\">setdefault</span><span class=\"p\">(</span><span class=\"s2\">&quot;VLLM_ALLOW_INSECURE_SERIALIZATION&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;1&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"113\"><td><div class=\"lineno\">113</div></td><td><div class=\"highlight\"><pre>            <span class=\"sa\">f</span><span class=\"s2\">&quot;export PYTHONPATH=</span><span class=\"si\">{</span><span class=\"n\">slime_root</span><span class=\"si\">}</span><span class=\"s2\">:/root/Megatron-LM; &quot;</span></pre></div></td></tr><tr data-line=\"114\"><td><div class=\"lineno\">114</div></td><td><div class=\"highlight\"><pre>            <span class=\"sa\">f</span><span class=\"s2\">&quot;export <mark>VLLM_SERVER_DEV_MODE</mark>=1 VLLM_ALLOW_INSECURE_SERIALIZATION=1; &quot;</span></pre></div></td></tr><tr data-line=\"115\"><td><div class=\"lineno\">115</div></td><td><div class=\"highlight\"><pre>            <span class=\"sa\">f</span><span class=\"s2\">&quot;torchrun --nproc_per_node=</span><span class=\"si\">{</span><span class=\"n\">tp</span><span class=\"si\">}</span><span class=\"s2\"> </span><span class=\"si\">{</span><span class=\"n\">trainer</span><span class=\"si\">}</span><span class=\"s2\"> --vllm-url </span><span class=\"si\">{</span><span class=\"n\">url</span><span class=\"si\">}</span><span class=\"s2\"> </span><span class=\"si\">{</span><span class=\"n\">name_arg</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "33612283",
+          "path": "rl/vllm_megatron_ipc/colocate_megatron_weight_sync_demo/run_single.py",
+          "repo": "CalvinXKY/InfraTech",
+          "total_matches": "2"
+        }
+      ],
+      "total": 279
+    },
+    "time": 115
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=VLLM_SERVER_DEV_MODE"
+}

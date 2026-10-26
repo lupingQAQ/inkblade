@@ -1,0 +1,877 @@
+{
+  "_cached_at": "2026-10-26T11:28:00+00:00",
+  "body": {
+    "format": "NVD_CVE",
+    "resultsPerPage": 5,
+    "startIndex": 0,
+    "timestamp": "2026-10-26T11:27:59.255",
+    "totalResults": 5,
+    "version": "2.0",
+    "vulnerabilities": [
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "LLaMA-Factory",
+                  "vendor": "hiyouga",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "< 1.0.0"
+                    }
+                  ]
+                }
+              ],
+              "source": "security-advisories@github.com"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:hiyouga:llama-factory:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "CCE62620-4488-49A9-BA7B-C8E2790768AC",
+                      "versionEndExcluding": "1.0.0",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "LLama Factory enables fine-tuning of large language models. Prior to version 1.0.0, a critical vulnerability exists in the `llamafy_baichuan2.py` script of the LLaMA-Factory project. The script performs insecure deserialization using `torch.load()` on user-supplied `.bin` files from an input directory. An attacker can exploit this behavior by crafting a malicious `.bin` file that executes arbitrary commands during deserialization. This issue has been patched in version 1.0.0."
+            },
+            {
+              "lang": "es",
+              "value": "LLama Factory permite el ajuste fino de modelos de lenguaje grandes. Antes de la versión 1.0.0, existía una vulnerabilidad crítica en el script `llamafy_baichuan2.py` del proyecto LLaMA-Factory. Este script realiza una deserialización insegura mediante `torch.load()` en archivos `.bin` proporcionados por el usuario desde un directorio de entrada. Un atacante puede explotar este comportamiento manipulando un archivo `.bin` malicioso que ejecute comandos arbitrarios durante la deserialización. Este problema se ha corregido en la versión 1.0.0."
+            }
+          ],
+          "id": "CVE-2025-46567",
+          "lastModified": "2026-06-17T09:26:38.183",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "LOCAL",
+                  "availabilityImpact": "LOW",
+                  "baseScore": 6.1,
+                  "baseSeverity": "MEDIUM",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "LOW",
+                  "privilegesRequired": "LOW",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:H/I:L/A:L",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.3,
+                "impactScore": 4.7,
+                "source": "security-advisories@github.com",
+                "type": "Secondary"
+              },
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "LOCAL",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 7.8,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.8,
+                "impactScore": 5.9,
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2025-46567",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2025-05-02T17:29:42.693942Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2025-05-01T18:15:58.117",
+          "references": [
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://github.com/hiyouga/LLaMA-Factory/commit/2989d39239d2f46e584c1e1180ba46b9768afb2a"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Exploit",
+                "Vendor Advisory"
+              ],
+              "url": "https://github.com/hiyouga/LLaMA-Factory/security/advisories/GHSA-f2f7-gj54-6vpv"
+            },
+            {
+              "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+              "tags": [
+                "Exploit",
+                "Vendor Advisory"
+              ],
+              "url": "https://github.com/hiyouga/LLaMA-Factory/security/advisories/GHSA-f2f7-gj54-6vpv"
+            }
+          ],
+          "sourceIdentifier": "security-advisories@github.com",
+          "vulnStatus": "Analyzed",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-502"
+                }
+              ],
+              "source": "security-advisories@github.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "LLaMA-Factory",
+                  "vendor": "hiyouga",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "< 0.9.4"
+                    }
+                  ]
+                }
+              ],
+              "source": "security-advisories@github.com"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:hiyouga:llama-factory:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "B9CFDBF9-20D2-4910-BD79-B1F8F7F60071",
+                      "versionEndExcluding": "0.9.4",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "LLaMA-Factory is a tuning library for large language models. A remote code execution vulnerability was discovered in LLaMA-Factory versions up to and including 0.9.3 during the LLaMA-Factory training process. This vulnerability arises because the `vhead_file` is loaded without proper safeguards, allowing malicious attackers to execute arbitrary malicious code on the host system simply by passing a malicious `Checkpoint path` parameter through the `WebUI` interface. The attack is stealthy, as the victim remains unaware of the exploitation. The root cause is that the `vhead_file` argument is loaded without the secure parameter `weights_only=True`. Version 0.9.4 contains a fix for the issue."
+            },
+            {
+              "lang": "es",
+              "value": "LLaMA-Factory es una librería de optimización para modelos de lenguaje grandes. Se descubrió una vulnerabilidad de ejecución remota de código en versiones de LLaMA-Factory hasta la 0.9.3 (incluida) durante su entrenamiento. Esta vulnerabilidad surge porque el `vhead_file` se carga sin las protecciones adecuadas, lo que permite a atacantes maliciosos ejecutar código malicioso arbitrario en el sistema host simplemente pasando el parámetro `Checkpoint path` malicioso a través de la interfaz `WebUI`. El ataque es sigiloso, ya que la víctima desconoce la explotación. La causa principal es que el argumento `vhead_file` se carga sin el parámetro seguro `weights_only=True`. La versión 0.9.4 contiene una solución para este problema."
+            }
+          ],
+          "id": "CVE-2025-53002",
+          "lastModified": "2026-06-17T09:37:27.313",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 8.3,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "LOW",
+                  "privilegesRequired": "LOW",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 2.8,
+                "impactScore": 5.5,
+                "source": "security-advisories@github.com",
+                "type": "Secondary"
+              },
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 9.8,
+                  "baseSeverity": "CRITICAL",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 3.9,
+                "impactScore": 5.9,
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2025-53002",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2025-06-26T15:05:57.527009Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2025-06-26T15:15:23.873",
+          "references": [
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Exploit"
+              ],
+              "url": "https://drive.google.com/file/d/1AddKm2mllsXfuvL4Tvbn_WJdjEOYXx4y/view?usp=sharing"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://github.com/hiyouga/LLaMA-Factory/commit/bb7bf51554d4ba8432333c35a5e3b52705955ede"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Exploit",
+                "Third Party Advisory"
+              ],
+              "url": "https://github.com/hiyouga/LLaMA-Factory/security/advisories/GHSA-xj56-p8mm-qmxj"
+            }
+          ],
+          "sourceIdentifier": "security-advisories@github.com",
+          "vulnStatus": "Analyzed",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-94"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-502"
+                }
+              ],
+              "source": "security-advisories@github.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "LLaMA-Factory",
+                  "vendor": "hiyouga",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "< 0.9.4"
+                    }
+                  ]
+                }
+              ],
+              "source": "security-advisories@github.com"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:hiyouga:llama-factory:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "B9CFDBF9-20D2-4910-BD79-B1F8F7F60071",
+                      "versionEndExcluding": "0.9.4",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "LLaMA-Factory is a tuning library for large language models. Prior to version 0.9.4, a Server-Side Request Forgery (SSRF) vulnerability in the chat API allows any authenticated user to force the server to make arbitrary HTTP requests to internal and external networks. This can lead to the exposure of sensitive internal services, reconnaissance of the internal network, or interaction with third-party services. The same mechanism also allows for a Local File Inclusion (LFI) vulnerability, enabling users to read arbitrary files from the server's filesystem. The vulnerability exists in the `_process_request` function within `src/llamafactory/api/chat.py.` This function is responsible for processing incoming multimodal content, including images, videos, and audio provided via URLs. The function checks if the provided URL is a base64 data URI or a local file path (`os.path.isfile`). If neither is true, it falls back to treating the URL as a web URI and makes a direct HTTP GET request using `requests.get(url, stream=True).raw` without any validation or sanitization of the URL. Version 0.9.4 fixes the underlying issue."
+            },
+            {
+              "lang": "es",
+              "value": "LLaMA-Factory es una biblioteca de ajuste para modelos de lenguaje grandes. Antes de la versión 0.9.4, una vulnerabilidad de falsificación de petición del lado del servidor (SSRF) en la API de chat permite a cualquier usuario autenticado forzar al servidor a realizar peticiones HTTP arbitrarias a redes internas y externas. Esto puede llevar a la exposición de servicios internos sensibles, al reconocimiento de la red interna o a la interacción con servicios de terceros. El mismo mecanismo también permite una vulnerabilidad de inclusión local de ficheros (LFI), permitiendo a los usuarios leer ficheros arbitrarios del sistema de ficheros del servidor. La vulnerabilidad existe en la función '_process_request' dentro de 'src/llamafactory/api/chat.py'. Esta función es responsable de procesar contenido multimodal entrante, incluyendo imágenes, vídeos y audio proporcionados a través de URLs. La función comprueba si la URL proporcionada es una URI de datos base64 o una ruta de fichero local ('os.path.isfile'). Si ninguna de las dos es verdadera, recurre a tratar la URL como una URI web y realiza una petición GET HTTP directa utilizando 'requests.get(url, stream=True).raw' sin ninguna validación o saneamiento de la URL. La versión 0.9.4 corrige el problema subyacente."
+            }
+          ],
+          "id": "CVE-2025-61784",
+          "lastModified": "2026-10-08T13:10:00.200",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "LOW",
+                  "baseScore": 7.6,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "LOW",
+                  "privilegesRequired": "LOW",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:L",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 2.8,
+                "impactScore": 4.7,
+                "source": "security-advisories@github.com",
+                "type": "Secondary"
+              },
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "NONE",
+                  "baseScore": 8.1,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "LOW",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 2.8,
+                "impactScore": 5.2,
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2025-61784",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2025-10-07T19:24:17.811030Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2025-10-07T19:15:39.133",
+          "references": [
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://github.com/hiyouga/LLaMA-Factory/commit/95b7188090a1018935c9dc072bfc97f24f1c96e9"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Exploit",
+                "Third Party Advisory"
+              ],
+              "url": "https://github.com/hiyouga/LLaMA-Factory/security/advisories/GHSA-527m-2xhr-j27g"
+            },
+            {
+              "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+              "tags": [
+                "Exploit",
+                "Third Party Advisory"
+              ],
+              "url": "https://github.com/hiyouga/LLaMA-Factory/security/advisories/GHSA-527m-2xhr-j27g"
+            }
+          ],
+          "sourceIdentifier": "security-advisories@github.com",
+          "vulnStatus": "Analyzed",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-22"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-918"
+                }
+              ],
+              "source": "security-advisories@github.com",
+              "type": "Secondary"
+            },
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-918"
+                }
+              ],
+              "source": "nvd@nist.gov",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "defaultStatus": "affected",
+                  "packageURL": "pkg:github/hiyouga/LlamaFactory",
+                  "product": "LlamaFactory",
+                  "repo": "https://github.com/hiyouga/LlamaFactory",
+                  "vendor": "hiyouga",
+                  "versions": [
+                    {
+                      "lessThanOrEqual": "0.9.5",
+                      "status": "affected",
+                      "version": "0",
+                      "versionType": "semver"
+                    }
+                  ]
+                }
+              ],
+              "source": "disclosure@vulncheck.com"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:hiyouga:llama-factory:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "9377EA12-7143-4ACE-88F3-C69BDC88DD86",
+                      "versionEndIncluding": "0.9.5",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "LLaMA-Factory through 0.9.5 contains a remote code execution vulnerability that allows attackers with WebUI access to execute arbitrary Python code by supplying a malicious model path in the Chat or Training interfaces. The application passes user-supplied model path input unvalidated into AutoTokenizer.from_pretrained() and AutoModel.from_pretrained() with a hardcoded trust_remote_code=True parameter, causing the Hugging Face transformers library to fetch and execute arbitrary code from a remote or local model repository with the privileges of the server process."
+            },
+            {
+              "lang": "es",
+              "value": "LLaMA-Factory hasta la versión 0.9.5 contiene una vulnerabilidad de ejecución remota de código que permite a atacantes con acceso a la interfaz de usuario web (WebUI) ejecutar código Python arbitrario al proporcionar una ruta de modelo maliciosa en las interfaces de Chat o Entrenamiento. La aplicación pasa la entrada de la ruta del modelo proporcionada por el usuario sin validar a AutoTokenizer.from_pretrained() y AutoModel.from_pretrained() con un parámetro trust_remote_code=True codificado de forma rígida, lo que hace que la biblioteca Hugging Face transformers obtenga y ejecute código arbitrario desde un repositorio de modelos remoto o local con los privilegios del proceso del servidor."
+            }
+          ],
+          "id": "CVE-2026-58116",
+          "lastModified": "2026-10-25T21:10:00.770",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 9.8,
+                  "baseSeverity": "CRITICAL",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 3.9,
+                "impactScore": 5.9,
+                "source": "disclosure@vulncheck.com",
+                "type": "Secondary"
+              },
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 8.8,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "LOW",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 2.8,
+                "impactScore": 5.9,
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "NONE",
+                  "attackVector": "NETWORK",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 9.3,
+                  "baseSeverity": "CRITICAL",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "NOT_DEFINED",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "NONE",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "NONE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "HIGH",
+                  "vulnConfidentialityImpact": "HIGH",
+                  "vulnIntegrityImpact": "HIGH",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "disclosure@vulncheck.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-58116",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "yes"
+                    },
+                    {
+                      "technicalImpact": "total"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-06-30T14:04:48.098673Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-06-30T13:19:18.490",
+          "references": [
+            {
+              "source": "disclosure@vulncheck.com",
+              "tags": [
+                "Exploit",
+                "Mitigation",
+                "Third Party Advisory"
+              ],
+              "url": "https://gist.github.com/henrrrychau/08d76ec672f42136bbc1449c4f2973f8"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "tags": [
+                "Third Party Advisory"
+              ],
+              "url": "https://www.vulncheck.com/advisories/llama-factory-remote-code-execution-via-webui-model-path"
+            }
+          ],
+          "sourceIdentifier": "disclosure@vulncheck.com",
+          "vulnStatus": "Analyzed",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-94"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-829"
+                }
+              ],
+              "source": "disclosure@vulncheck.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "defaultStatus": "unaffected",
+                  "packageURL": "pkg:pypi/llamafactory",
+                  "product": "LlamaFactory",
+                  "vendor": "hiyouga",
+                  "versions": [
+                    {
+                      "lessThanOrEqual": "0.9.5",
+                      "status": "affected",
+                      "version": "0",
+                      "versionType": "semver"
+                    }
+                  ]
+                }
+              ],
+              "source": "disclosure@vulncheck.com"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "LLaMA-Factory contains a server-side request forgery vulnerability in the OpenAI-compatible API multimodal media URL handler that allows unauthenticated attackers to bypass SSRF validation. The check_ssrf_url guard validates URLs once but requests.get follows redirects and re-resolves DNS without re-validation, enabling attackers to use HTTP redirects or DNS rebinding to access internal addresses and cloud metadata endpoints."
+            }
+          ],
+          "id": "CVE-2026-85673",
+          "lastModified": "2026-09-24T20:43:32.537",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "NONE",
+                  "baseScore": 7.5,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "NONE",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 3.9,
+                "impactScore": 3.6,
+                "source": "disclosure@vulncheck.com",
+                "type": "Secondary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "NONE",
+                  "attackVector": "NETWORK",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 8.7,
+                  "baseSeverity": "HIGH",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "NOT_DEFINED",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "NONE",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "NONE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "NONE",
+                  "vulnConfidentialityImpact": "HIGH",
+                  "vulnIntegrityImpact": "NONE",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "disclosure@vulncheck.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-85673",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "yes"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-09-04T15:16:16.164011Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-09-04T15:17:45.440",
+          "references": [
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/hiyouga/LlamaFactory"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/hiyouga/LlamaFactory/blob/v0.9.5/src/llamafactory/api/chat.py"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/hiyouga/LlamaFactory/blob/v0.9.5/src/llamafactory/api/common.py"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/hiyouga/LlamaFactory/issues/10646"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://www.vulncheck.com/advisories/llama-factory-ssrf-guard-bypass-via-redirect-and-dns-rebinding"
+            },
+            {
+              "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+              "url": "https://github.com/hiyouga/LlamaFactory/issues/10646"
+            }
+          ],
+          "sourceIdentifier": "disclosure@vulncheck.com",
+          "vulnStatus": "Deferred",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-918"
+                }
+              ],
+              "source": "disclosure@vulncheck.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=llama-factory&resultsPerPage=50"
+}

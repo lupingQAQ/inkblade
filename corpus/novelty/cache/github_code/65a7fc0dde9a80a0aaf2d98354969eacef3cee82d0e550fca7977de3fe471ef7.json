@@ -1,0 +1,111 @@
+{
+  "_cached_at": "2026-10-26T11:35:59+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 6,
+            "val": "Python"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 4,
+            "val": "test/registered/unit/utils/"
+          },
+          {
+            "count": 2,
+            "val": "python/sglang/srt/utils/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 3,
+            "owner_id": "147780389",
+            "val": "sgl-project/sglang"
+          },
+          {
+            "count": 3,
+            "owner_id": "290217419",
+            "val": "rednote-machine-learning/RedKnot"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">auth_level</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"9\"><td><div class=\"lineno\">9</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>decide_request_auth</mark></span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"45\"><td><div class=\"lineno\">45</div></td><td><div class=\"highlight\"><pre><span class=\"k\">class</span><span class=\"w\"> </span><span class=\"nc\">TestDecideRequestAuth</span><span class=\"p\">(</span><span class=\"n\">CustomTestCase</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"46\"><td><div class=\"lineno\">46</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Tests for the pure <mark>decide_request_auth</mark> function.&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"47\"><td><div class=\"lineno\">47</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"48\"><td><div class=\"lineno\">48</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># ==================== Always-Allowed Paths ====================</span></pre></div></td></tr><tr data-line=\"49\"><td><div class=\"lineno\">49</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"50\"><td><div class=\"lineno\">50</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">test_options_method_always_allowed</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"51\"><td><div class=\"lineno\">51</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">decision</span> <span class=\"o\">=</span> <span class=\"n\"><mark>decide_request_auth</mark></span><span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "147780389",
+          "path": "test/registered/unit/utils/test_auth.py",
+          "repo": "sgl-project/sglang",
+          "total_matches": "24"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"74\"><td><div class=\"lineno\">74</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>decide_request_auth</mark></span><span class=\"p\">(</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"155\"><td><div class=\"lineno\">155</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Add middleware for three endpoint auth levels: normal/admin_optional/admin_force.&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"156\"><td><div class=\"lineno\">156</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># Import lazily so `<mark>decide_request_auth</mark>()` can be unit-tested without FastAPI installed.</span></pre></div></td></tr><tr data-line=\"157\"><td><div class=\"lineno\">157</div></td><td><div class=\"highlight\"><pre>    <span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">fastapi.responses</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">ORJSONResponse</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"177\"><td><div class=\"lineno\">177</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">level</span> <span class=\"o\">=</span> <span class=\"n\">_get_auth_level_from_app_and_scope</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">fastapi_app</span><span class=\"p\">,</span> <span class=\"n\">scope</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"178\"><td><div class=\"lineno\">178</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">decision</span> <span class=\"o\">=</span> <span class=\"n\"><mark>decide_request_auth</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"179\"><td><div class=\"lineno\">179</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">method</span><span class=\"o\">=</span><span class=\"n\">request</span><span class=\"o\">.</span><span class=\"n\">method</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "147780389",
+          "path": "python/sglang/srt/utils/auth.py",
+          "repo": "sgl-project/sglang",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">auth_level</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"9\"><td><div class=\"lineno\">9</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>decide_request_auth</mark></span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"62\"><td><div class=\"lineno\">62</div></td><td><div class=\"highlight\"><pre><span class=\"k\">class</span><span class=\"w\"> </span><span class=\"nc\">TestDecideRequestAuth</span><span class=\"p\">(</span><span class=\"n\">CustomTestCase</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"63\"><td><div class=\"lineno\">63</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Tests for the pure <mark>decide_request_auth</mark> function.&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"64\"><td><div class=\"lineno\">64</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"65\"><td><div class=\"lineno\">65</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># ==================== Always-Allowed Paths ====================</span></pre></div></td></tr><tr data-line=\"66\"><td><div class=\"lineno\">66</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"67\"><td><div class=\"lineno\">67</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">test_options_method_always_allowed</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"68\"><td><div class=\"lineno\">68</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">decision</span> <span class=\"o\">=</span> <span class=\"n\"><mark>decide_request_auth</mark></span><span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "290217419",
+          "path": "test/registered/unit/utils/test_auth.py",
+          "repo": "rednote-machine-learning/RedKnot",
+          "total_matches": "24"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"74\"><td><div class=\"lineno\">74</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>decide_request_auth</mark></span><span class=\"p\">(</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"155\"><td><div class=\"lineno\">155</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Add middleware for three endpoint auth levels: normal/admin_optional/admin_force.&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"156\"><td><div class=\"lineno\">156</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># Import lazily so `<mark>decide_request_auth</mark>()` can be unit-tested without FastAPI installed.</span></pre></div></td></tr><tr data-line=\"157\"><td><div class=\"lineno\">157</div></td><td><div class=\"highlight\"><pre>    <span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">fastapi.responses</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">ORJSONResponse</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"177\"><td><div class=\"lineno\">177</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">level</span> <span class=\"o\">=</span> <span class=\"n\">_get_auth_level_from_app_and_scope</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">fastapi_app</span><span class=\"p\">,</span> <span class=\"n\">scope</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"178\"><td><div class=\"lineno\">178</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">decision</span> <span class=\"o\">=</span> <span class=\"n\"><mark>decide_request_auth</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"179\"><td><div class=\"lineno\">179</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">method</span><span class=\"o\">=</span><span class=\"n\">request</span><span class=\"o\">.</span><span class=\"n\">method</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "290217419",
+          "path": "python/sglang/srt/utils/auth.py",
+          "repo": "rednote-machine-learning/RedKnot",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"10\"><td><div class=\"lineno\">10</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">sglang.srt.utils.auth</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">AuthLevel</span><span class=\"p\">,</span> <span class=\"n\"><mark>decide_request_auth</mark></span></pre></div></td></tr><tr data-line=\"11\"><td><div class=\"lineno\">11</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">sglang.test.ci.ci_register</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">register_cpu_ci</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">return</span> <span class=\"n\"><mark>decide_request_auth</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"29\"><td><div class=\"lineno\">29</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">method</span><span class=\"o\">=</span><span class=\"n\">method</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "147780389",
+          "path": "test/registered/unit/utils/test_http_server_auth.py",
+          "repo": "sgl-project/sglang",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"10\"><td><div class=\"lineno\">10</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">sglang.srt.utils.auth</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">AuthLevel</span><span class=\"p\">,</span> <span class=\"n\"><mark>decide_request_auth</mark></span></pre></div></td></tr><tr data-line=\"11\"><td><div class=\"lineno\">11</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">sglang.test.ci.ci_register</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">register_cpu_ci</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"27\"><td><div class=\"lineno\">27</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">return</span> <span class=\"n\"><mark>decide_request_auth</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">method</span><span class=\"o\">=</span><span class=\"n\">method</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "290217419",
+          "path": "test/registered/unit/utils/test_http_server_auth.py",
+          "repo": "rednote-machine-learning/RedKnot",
+          "total_matches": "2"
+        }
+      ],
+      "total": 6
+    },
+    "time": 312
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=decide_request_auth"
+}

@@ -1,0 +1,19 @@
+{
+  "_cached_at": "2026-10-26T11:23:40+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": []
+      }
+    },
+    "hits": {
+      "hits": [],
+      "total": 0
+    },
+    "time": 54
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=djev%2Fstructured_server.py"
+}

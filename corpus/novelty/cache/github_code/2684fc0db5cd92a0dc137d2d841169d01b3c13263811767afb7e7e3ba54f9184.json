@@ -1,0 +1,196 @@
+{
+  "_cached_at": "2026-10-26T11:36:12+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 10,
+            "val": "Python"
+          },
+          {
+            "count": 1,
+            "val": "Shell"
+          },
+          {
+            "count": 1,
+            "val": "TypeScript"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 5,
+            "val": "swift/"
+          },
+          {
+            "count": 4,
+            "val": "tests/"
+          },
+          {
+            "count": 1,
+            "val": "controller/src/modules/models/recipes/"
+          },
+          {
+            "count": 1,
+            "val": "ms_agent/tools/"
+          },
+          {
+            "count": 1,
+            "val": "vllm_musa/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 6,
+            "owner_id": "109945100",
+            "val": "modelscope/ms-swift"
+          },
+          {
+            "count": 2,
+            "owner_id": "284200730",
+            "val": "sybil-solutions/local-studio"
+          },
+          {
+            "count": 1,
+            "owner_id": "109945100",
+            "val": "modelscope/ms-agent"
+          },
+          {
+            "count": 1,
+            "owner_id": "148393222",
+            "val": "meizhong986/WhisperJAV"
+          },
+          {
+            "count": 1,
+            "owner_id": "55295854",
+            "val": "quic/efficient-transformers"
+          },
+          {
+            "count": 1,
+            "owner_id": "5762953",
+            "val": "maziyarpanahi/openmed"
+          },
+          {
+            "count": 1,
+            "owner_id": "85613129",
+            "val": "MooreThreads/tutorial_on_musa"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"160\"><td><div class=\"lineno\">160</div></td><td><div class=\"highlight\"><pre><span class=\"k\">class</span><span class=\"w\"> </span><span class=\"nc\">ModelLoader</span><span class=\"p\">(</span><span class=\"n\">BaseModelLoader</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"161\"><td><div class=\"lineno\">161</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>default_trust_remote_code</mark></span> <span class=\"o\">=</span> <span class=\"kc\">True</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"248\"><td><div class=\"lineno\">248</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">auto_config_cls</span> <span class=\"o\">=</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">auto_config_cls</span> <span class=\"ow\">or</span> <span class=\"n\">AutoConfig</span></pre></div></td></tr><tr data-line=\"249\"><td><div class=\"lineno\">249</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">return</span> <span class=\"n\">auto_config_cls</span><span class=\"o\">.</span><span class=\"n\">from_pretrained</span><span class=\"p\">(</span><span class=\"n\">model_dir</span><span class=\"p\">,</span> <span class=\"n\">trust_remote_code</span><span class=\"o\">=</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>default_trust_remote_code</mark></span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"267\"><td><div class=\"lineno\">267</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">auto_tokenizer_cls</span> <span class=\"o\">=</span> <span class=\"n\">AutoTokenizer</span></pre></div></td></tr><tr data-line=\"268\"><td><div class=\"lineno\">268</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">return</span> <span class=\"n\">auto_tokenizer_cls</span><span class=\"o\">.</span><span class=\"n\">from_pretrained</span><span class=\"p\">(</span><span class=\"n\">model_dir</span><span class=\"p\">,</span> <span class=\"n\">trust_remote_code</span><span class=\"o\">=</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>default_trust_remote_code</mark></span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"287\"><td><div class=\"lineno\">287</div></td><td><div class=\"highlight\"><pre>                        <span class=\"n\">model_dir</span><span class=\"p\">,</span> <span class=\"n\">config</span><span class=\"o\">=</span><span class=\"n\">config</span><span class=\"p\">,</span> <span class=\"n\">trust_remote_code</span><span class=\"o\">=</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>default_trust_remote_code</mark></span><span class=\"p\">,</span> <span class=\"o\">**</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">model_kwargs</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "109945100",
+          "path": "swift/model/register.py",
+          "repo": "modelscope/ms-swift",
+          "total_matches": "6"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"76\"><td><div class=\"lineno\">76</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">_build_sub_agent</span><span class=\"p\">(</span><span class=\"n\">spec</span><span class=\"p\">:</span> <span class=\"n\">_AgentToolSpec</span><span class=\"p\">,</span> <span class=\"n\"><mark>default_trust_remote_code</mark></span><span class=\"p\">:</span> <span class=\"nb\">bool</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"77\"><td><div class=\"lineno\">77</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">if</span> <span class=\"n\">spec</span><span class=\"o\">.</span><span class=\"n\">inline_config</span> <span class=\"ow\">is</span> <span class=\"ow\">not</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"91\"><td><div class=\"lineno\">91</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">if</span> <span class=\"n\">trust_remote_code</span> <span class=\"ow\">is</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"92\"><td><div class=\"lineno\">92</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">trust_remote_code</span> <span class=\"o\">=</span> <span class=\"n\"><mark>default_trust_remote_code</mark></span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"119\"><td><div class=\"lineno\">119</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">spec</span><span class=\"p\">:</span> <span class=\"n\">_AgentToolSpec</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"120\"><td><div class=\"lineno\">120</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>default_trust_remote_code</mark></span><span class=\"p\">:</span> <span class=\"nb\">bool</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"121\"><td><div class=\"lineno\">121</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">payload</span><span class=\"p\">:</span> <span class=\"n\">Any</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "109945100",
+          "path": "ms_agent/tools/agent_tool.py",
+          "repo": "modelscope/ms-agent",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"208\"><td><div class=\"lineno\">208</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"c1\">// operators can flip the default off with</span></pre></div></td></tr><tr data-line=\"209\"><td><div class=\"lineno\">209</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"c1\">// LOCAL_STUDIO_<mark>DEFAULT_TRUST_REMOTE_CODE</mark>=false.</span></pre></div></td></tr><tr data-line=\"210\"><td><div class=\"lineno\">210</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"nx\">trust_remote_code</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"kt\">Schema.Boolean</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"247\"><td><div class=\"lineno\">247</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"nx\">normalized</span><span class=\"p\">[</span><span class=\"s2\">&quot;trust_remote_code&quot;</span><span class=\"p\">],</span></pre></div></td></tr><tr data-line=\"248\"><td><div class=\"lineno\">248</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"nx\">process</span><span class=\"p\">.</span><span class=\"nx\">env</span><span class=\"p\">[</span><span class=\"s2\">&quot;LOCAL_STUDIO_<mark>DEFAULT_TRUST_REMOTE_CODE</mark>&quot;</span><span class=\"p\">]</span><span class=\"w\"> </span><span class=\"o\">!==</span><span class=\"w\"> </span><span class=\"s2\">&quot;false&quot;</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "284200730",
+          "path": "controller/src/modules/models/recipes/recipe-serializer.ts",
+          "repo": "sybil-solutions/local-studio",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre><span class=\"k\">class</span><span class=\"w\"> </span><span class=\"nc\">NemotronHLoader</span><span class=\"p\">(</span><span class=\"n\">ModelLoader</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"9\"><td><div class=\"lineno\">9</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>default_trust_remote_code</mark></span> <span class=\"o\">=</span> <span class=\"kc\">False</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "109945100",
+          "path": "swift/model/models/nvidia.py",
+          "repo": "modelscope/ms-swift",
+          "total_matches": "1"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"9\"><td><div class=\"lineno\">9</div></td><td><div class=\"highlight\"><pre><span class=\"nv\">DEFAULT_TP_SIZE</span><span class=\"o\">=</span><span class=\"m\">1</span></pre></div></td></tr><tr data-line=\"10\"><td><div class=\"lineno\">10</div></td><td><div class=\"highlight\"><pre><span class=\"nv\"><mark>DEFAULT_TRUST_REMOTE_CODE</mark></span><span class=\"o\">=</span><span class=\"nb\">true</span></pre></div></td></tr><tr data-line=\"11\"><td><div class=\"lineno\">11</div></td><td><div class=\"highlight\"><pre><span class=\"nv\">DEFUALT_SERVED_MODEL_NAME</span><span class=\"o\">=</span><span class=\"s2\">&quot;&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"73\"><td><div class=\"lineno\">73</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span>--trust-remote-code<span class=\"o\">)</span></pre></div></td></tr><tr data-line=\"74\"><td><div class=\"lineno\">74</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"nv\"><mark>DEFAULT_TRUST_REMOTE_CODE</mark></span><span class=\"o\">=</span><span class=\"nb\">true</span></pre></div></td></tr><tr data-line=\"75\"><td><div class=\"lineno\">75</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"nb\">shift</span></pre></div></td></tr><tr data-line=\"76\"><td><div class=\"lineno\">76</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"p\">;;</span></pre></div></td></tr><tr data-line=\"77\"><td><div class=\"lineno\">77</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span>--no-trust-remote-code<span class=\"o\">)</span></pre></div></td></tr><tr data-line=\"78\"><td><div class=\"lineno\">78</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"nv\"><mark>DEFAULT_TRUST_REMOTE_CODE</mark></span><span class=\"o\">=</span><span class=\"nb\">false</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "85613129",
+          "path": "vllm_musa/start_vllm_server.sh",
+          "repo": "MooreThreads/tutorial_on_musa",
+          "total_matches": "5"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"89\"><td><div class=\"lineno\">89</div></td><td><div class=\"highlight\"><pre><span class=\"k\">class</span><span class=\"w\"> </span><span class=\"nc\">PaddleOCR1_5Loader</span><span class=\"p\">(</span><span class=\"n\">ModelLoader</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"90\"><td><div class=\"lineno\">90</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>default_trust_remote_code</mark></span> <span class=\"o\">=</span> <span class=\"kc\">False</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "109945100",
+          "path": "swift/model/models/baidu.py",
+          "repo": "modelscope/ms-swift",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"170\"><td><div class=\"lineno\">170</div></td><td><div class=\"highlight\"><pre><span class=\"k\">class</span><span class=\"w\"> </span><span class=\"nc\">MinimaxM3VLLoader</span><span class=\"p\">(</span><span class=\"n\">ModelLoader</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"171\"><td><div class=\"lineno\">171</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>default_trust_remote_code</mark></span> <span class=\"o\">=</span> <span class=\"kc\">False</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "109945100",
+          "path": "swift/model/models/minimax.py",
+          "repo": "modelscope/ms-swift",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"265\"><td><div class=\"lineno\">265</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">disk_config</span> <span class=\"o\">=</span> <span class=\"n\">AutoConfig</span><span class=\"o\">.</span><span class=\"n\">from_pretrained</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"266\"><td><div class=\"lineno\">266</div></td><td><div class=\"highlight\"><pre>                <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">model_dir</span><span class=\"p\">,</span> <span class=\"n\">trust_remote_code</span><span class=\"o\">=</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">model_meta</span><span class=\"o\">.</span><span class=\"n\">loader</span><span class=\"o\">.</span><span class=\"n\"><mark>default_trust_remote_code</mark></span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"267\"><td><div class=\"lineno\">267</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">except</span> <span class=\"ne\">Exception</span><span class=\"p\">:</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "109945100",
+          "path": "swift/infer_engine/vllm_engine.py",
+          "repo": "modelscope/ms-swift",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"471\"><td><div class=\"lineno\">471</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">loader</span><span class=\"o\">.</span><span class=\"n\">return_dummy_model</span> <span class=\"o\">=</span> <span class=\"kc\">False</span></pre></div></td></tr><tr data-line=\"472\"><td><div class=\"lineno\">472</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">loader</span><span class=\"o\">.</span><span class=\"n\"><mark>default_trust_remote_code</mark></span> <span class=\"o\">=</span> <span class=\"kc\">True</span></pre></div></td></tr><tr data-line=\"473\"><td><div class=\"lineno\">473</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">loader</span><span class=\"o\">.</span><span class=\"n\">model_info</span> <span class=\"o\">=</span> <span class=\"n\">SimpleNamespace</span><span class=\"p\">(</span><span class=\"n\">task_type</span><span class=\"o\">=</span><span class=\"s1\">&#39;causal_lm&#39;</span><span class=\"p\">,</span> <span class=\"n\">quant_method</span><span class=\"o\">=</span><span class=\"kc\">None</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "109945100",
+          "path": "tests/general/test_qwen3_5_fp32_weights.py",
+          "repo": "modelscope/ms-swift",
+          "total_matches": "1"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"108\"><td><div class=\"lineno\">108</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">test_<mark>default_trust_remote_code</mark>_is_false</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"109\"><td><div class=\"lineno\">109</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"sd\">&quot;&quot;&quot;If a caller does not opt in, the constructor must not load with</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "5762953",
+          "path": "tests/unit/test_privacy_filter_security.py",
+          "repo": "maziyarpanahi/openmed",
+          "total_matches": "1"
+        }
+      ],
+      "total": 13
+    },
+    "time": 193
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=default_trust_remote_code"
+}

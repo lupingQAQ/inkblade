@@ -1,0 +1,39 @@
+{
+ "id": "deepspeed-autoep-unsafe-load",
+ "source": "new-discovery",
+ "component": "deepspeed",
+ "title": "DeepSpeed 0.19.8 AutoEP universal conversion loads expert shards with weights_only=False",
+ "version": "v0.19.8",
+ "version_ref": {
+  "kind": "git",
+  "repo": "deepspeedai/DeepSpeed",
+  "tag": "v0.19.8",
+  "commit": "0eb3a8bcc6d9a8775478e5377482c4bf2dd23c1c"
+ },
+ "root_cause": {
+  "file": "deepspeed/checkpoint/autoep_universal.py",
+  "line": 459,
+  "function": "consolidate_autoep_expert_files",
+  "snippet": "sd = torch.load(ckpt_path, map_location='cpu', weights_only=False)",
+  "source": "lab/zeroday_reserve/upstream/deepspeed-0.19.8/deepspeed/checkpoint/autoep_universal.py",
+  "note": "The AutoEP universal converter walks layer_<n>_expert_<e>_mp_rank_*.pt files in an attacker-writable checkpoint directory and loads each one with weights_only=False. The new file landed in v0.19.8 (2026-10-20). A malicious expert shard executes during ds_to_universal conversion, before the expected-key check."
+ },
+ "preconditions": [
+  "attacker can write an AutoEP checkpoint directory (shared NFS/PVC, poisoned peer rank, or model mirror)",
+  "victim runs DeepSpeed universal checkpoint conversion on that directory"
+ ],
+ "steps": [
+  "add the pinned v0.19.8 source tree to sys.path and import the real autoep_universal module",
+  "write a malicious layer_0_expert_0_mp_rank_0_model_states.pt",
+  "call consolidate_autoep_expert_files and observe the marker before the expected-key error"
+ ],
+ "expected_evidence": [
+  "marker written inside torch.load(weights_only=False)",
+  "log with source hash, sink line 459, and the post-sink error"
+ ],
+ "cleanup": "temp checkpoint/output dirs under evidence/ are rewritten per run",
+ "status": "verified",
+ "method": "dynamic-function",
+ "marker_text": "TRIDENT-ZD-deepspeed-autoep-unsafe-load",
+ "notes": "Imports the real v0.19.8 autoep_universal module (vendored source tree, empty package __init__ only) and uses the real installed torch 2.14 CPU build. No CUDA is required for this conversion path."
+}

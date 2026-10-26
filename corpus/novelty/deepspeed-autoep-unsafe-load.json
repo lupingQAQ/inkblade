@@ -1,0 +1,83 @@
+{
+  "generated_at": "2026-10-26T11:16:03+00:00",
+  "offline": false,
+  "schema": "trident-novelty-results-v1",
+  "verdicts": {
+    "deepspeed-autoep-unsafe-load": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:16:03+00:00",
+      "id": "deepspeed-autoep-unsafe-load",
+      "offline": false,
+      "providers": {
+        "github_advisories": {
+          "detail": "GitHub advisory database has no strong-term match for the package",
+          "matches": [],
+          "provider": "github_advisories",
+          "related": [],
+          "status": "ok"
+        },
+        "github_code": {
+          "detail": "grep.app returned 2 hit(s), 0 outside the upstream repo",
+          "external_hits": [],
+          "local_tree_hits": [],
+          "matches": [],
+          "status": "ok",
+          "via": "grep.app+local-tree"
+        },
+        "github_commits": {
+          "detail": "no security-relevant commit matched deepspeed/checkpoint/autoep_universal.py",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"deepspeed/checkpoint/autoep_universal.py\" repo:deepspeedai/DeepSpeed",
+          "related": [],
+          "status": "ok"
+        },
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "deepspeed",
+            "deepspeed",
+            "autoep"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2024-43497",
+              "summary": "DeepSpeed Remote Code Execution Vulnerability",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-43497"
+            },
+            {
+              "id": "CVE-2024-43497",
+              "summary": "DeepSpeed Remote Code Execution Vulnerability",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-43497"
+            }
+          ],
+          "status": "ok"
+        },
+        "osv": {
+          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "matches": [],
+          "provider": "osv",
+          "queried": "deepspeed@0.19.8",
+          "related": [],
+          "status": "ok"
+        },
+        "vendor": {
+          "detail": "vendor pages fetched clean",
+          "fetched": [
+            "https://raw.githubusercontent.com/deepspeedai/DeepSpeed/HEAD/SECURITY.md",
+            "https://github.com/deepspeedai/DeepSpeed/security/advisories",
+            "https://github.com/deepspeedai/DeepSpeed/releases"
+          ],
+          "matches": [],
+          "provider": "vendor",
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    }
+  }
+}

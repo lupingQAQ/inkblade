@@ -1,0 +1,178 @@
+{
+  "_cached_at": "2026-10-26T11:36:51+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 10,
+            "val": "Python"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 4,
+            "val": "python/sglang/"
+          },
+          {
+            "count": 2,
+            "val": "deepnvme/model_checkpoint/torch/"
+          },
+          {
+            "count": 2,
+            "val": "phyai/"
+          },
+          {
+            "count": 1,
+            "val": "test/"
+          },
+          {
+            "count": 1,
+            "val": "torch/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 2,
+            "owner_id": "147780389",
+            "val": "sgl-project/sglang"
+          },
+          {
+            "count": 2,
+            "owner_id": "21003710",
+            "val": "pytorch/pytorch"
+          },
+          {
+            "count": 2,
+            "owner_id": "270852931",
+            "val": "mingti-org/phyai"
+          },
+          {
+            "count": 2,
+            "owner_id": "290217419",
+            "val": "rednote-machine-learning/RedKnot"
+          },
+          {
+            "count": 2,
+            "owner_id": "74068820",
+            "val": "deepspeedai/DeepSpeedExamples"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"347\"><td><div class=\"lineno\">347</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">except</span> <span class=\"ne\">RuntimeError</span> <span class=\"k\">as</span> <span class=\"n\">e</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"348\"><td><div class=\"lineno\">348</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"s2\">&quot;<mark>legacy .tar format</mark>&quot;</span> <span class=\"ow\">in</span> <span class=\"nb\">str</span><span class=\"p\">(</span><span class=\"n\">e</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"349\"><td><div class=\"lineno\">349</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">logger</span><span class=\"o\">.</span><span class=\"n\">warning</span><span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "147780389",
+          "path": "python/sglang/multimodal_gen/runtime/loader/weight_utils.py",
+          "repo": "sgl-project/sglang",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1760\"><td><div class=\"lineno\">1760</div></td><td><div class=\"highlight\"><pre>                    <span class=\"s2\">&quot;Cannot use ``weights_only=True`` with files saved in the &quot;</span></pre></div></td></tr><tr data-line=\"1761\"><td><div class=\"lineno\">1761</div></td><td><div class=\"highlight\"><pre>                    <span class=\"s2\">&quot;<mark>legacy .tar format</mark>. &quot;</span> <span class=\"o\">+</span> <span class=\"n\">UNSAFE_MESSAGE</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "21003710",
+          "path": "torch/serialization.py",
+          "repo": "pytorch/pytorch",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"266\"><td><div class=\"lineno\">266</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">except</span> <span class=\"ne\">RuntimeError</span> <span class=\"k\">as</span> <span class=\"n\">e</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"267\"><td><div class=\"lineno\">267</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"s2\">&quot;<mark>legacy .tar format</mark>&quot;</span> <span class=\"ow\">in</span> <span class=\"nb\">str</span><span class=\"p\">(</span><span class=\"n\">e</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"268\"><td><div class=\"lineno\">268</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">logger</span><span class=\"o\">.</span><span class=\"n\">warning</span><span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "290217419",
+          "path": "python/sglang/multimodal_gen/runtime/loader/weight_utils.py",
+          "repo": "rednote-machine-learning/RedKnot",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1391\"><td><div class=\"lineno\">1391</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">except</span> <span class=\"ne\">RuntimeError</span> <span class=\"k\">as</span> <span class=\"n\">e</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"1392\"><td><div class=\"lineno\">1392</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"s2\">&quot;<mark>legacy .tar format</mark>&quot;</span> <span class=\"ow\">in</span> <span class=\"nb\">str</span><span class=\"p\">(</span><span class=\"n\">e</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"1393\"><td><div class=\"lineno\">1393</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">logger</span><span class=\"o\">.</span><span class=\"n\">warning</span><span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "147780389",
+          "path": "python/sglang/srt/model_loader/weight_utils.py",
+          "repo": "sgl-project/sglang",
+          "total_matches": "1"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1598\"><td><div class=\"lineno\">1598</div></td><td><div class=\"highlight\"><pre>                    <span class=\"s2\">&quot;Cannot use ``weights_only=True`` with files saved in the &quot;</span></pre></div></td></tr><tr data-line=\"1599\"><td><div class=\"lineno\">1599</div></td><td><div class=\"highlight\"><pre>                    <span class=\"s2\">&quot;<mark>legacy .tar format</mark>. &quot;</span> <span class=\"o\">+</span> <span class=\"n\">UNSAFE_MESSAGE</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "deepnvme/model_checkpoint/torch/serialization_orig_v2.6.0.py",
+          "repo": "deepspeedai/DeepSpeedExamples",
+          "total_matches": "1"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1602\"><td><div class=\"lineno\">1602</div></td><td><div class=\"highlight\"><pre>                    <span class=\"s2\">&quot;Cannot use ``weights_only=True`` with files saved in the &quot;</span></pre></div></td></tr><tr data-line=\"1603\"><td><div class=\"lineno\">1603</div></td><td><div class=\"highlight\"><pre>                    <span class=\"s2\">&quot;<mark>legacy .tar format</mark>. &quot;</span> <span class=\"o\">+</span> <span class=\"n\">UNSAFE_MESSAGE</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "deepnvme/model_checkpoint/torch/serialization_fast_v2.6.0.py",
+          "repo": "deepspeedai/DeepSpeedExamples",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1114\"><td><div class=\"lineno\">1114</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">except</span> <span class=\"ne\">RuntimeError</span> <span class=\"k\">as</span> <span class=\"n\">e</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"1115\"><td><div class=\"lineno\">1115</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"s2\">&quot;<mark>legacy .tar format</mark>&quot;</span> <span class=\"ow\">in</span> <span class=\"nb\">str</span><span class=\"p\">(</span><span class=\"n\">e</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"1116\"><td><div class=\"lineno\">1116</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">logger</span><span class=\"o\">.</span><span class=\"n\">warning</span><span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "290217419",
+          "path": "python/sglang/srt/model_loader/weight_utils.py",
+          "repo": "rednote-machine-learning/RedKnot",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"218\"><td><div class=\"lineno\">218</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">except</span> <span class=\"ne\">RuntimeError</span> <span class=\"k\">as</span> <span class=\"n\">exc</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"219\"><td><div class=\"lineno\">219</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"s2\">&quot;<mark>legacy .tar format</mark>&quot;</span> <span class=\"ow\">not</span> <span class=\"ow\">in</span> <span class=\"nb\">str</span><span class=\"p\">(</span><span class=\"n\">exc</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">lower</span><span class=\"p\">():</span></pre></div></td></tr><tr data-line=\"220\"><td><div class=\"lineno\">220</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">raise</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "270852931",
+          "path": "phyai/src/phyai/weights/loader.py",
+          "repo": "mingti-org/phyai",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"591\"><td><div class=\"lineno\">591</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">kwargs</span><span class=\"p\">[</span><span class=\"s2\">&quot;weights_only&quot;</span><span class=\"p\">]</span> <span class=\"ow\">is</span> <span class=\"kc\">True</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"592\"><td><div class=\"lineno\">592</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">raise</span> <span class=\"ne\">RuntimeError</span><span class=\"p\">(</span><span class=\"s2\">&quot;Cannot load weights in <mark>legacy .tar format</mark>&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"593\"><td><div class=\"lineno\">593</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">return</span> <span class=\"p\">{</span><span class=\"s2\">&quot;weight&quot;</span><span class=\"p\">:</span> <span class=\"n\">tensor</span><span class=\"p\">}</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "270852931",
+          "path": "phyai/tests/weights/test_loader.py",
+          "repo": "mingti-org/phyai",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"571\"><td><div class=\"lineno\">571</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">with</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">assertRaisesRegex</span><span class=\"p\">(</span><span class=\"ne\">RuntimeError</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"572\"><td><div class=\"lineno\">572</div></td><td><div class=\"highlight\"><pre>                                        <span class=\"s2\">&quot;Cannot use ``weights_only=True`` with files saved in the <mark>legacy .tar format</mark>.&quot;</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"573\"><td><div class=\"lineno\">573</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">c</span> <span class=\"o\">=</span> <span class=\"n\">torch</span><span class=\"o\">.</span><span class=\"n\">load</span><span class=\"p\">(</span><span class=\"n\">path</span><span class=\"p\">,</span> <span class=\"n\">weights_only</span><span class=\"o\">=</span><span class=\"n\">weights_only</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "21003710",
+          "path": "test/test_serialization.py",
+          "repo": "pytorch/pytorch",
+          "total_matches": "1"
+        }
+      ],
+      "total": 10
+    },
+    "time": 144
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=legacy+.tar+format"
+}

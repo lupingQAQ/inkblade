@@ -1,0 +1,225 @@
+{
+  "_cached_at": "2026-10-26T12:15:29+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 3,
+            "val": "Python"
+          },
+          {
+            "count": 3,
+            "val": "Text"
+          },
+          {
+            "count": 1,
+            "val": "JSON"
+          },
+          {
+            "count": 1,
+            "val": "Jupyter Notebook"
+          },
+          {
+            "count": 1,
+            "val": "Markdown"
+          },
+          {
+            "count": 1,
+            "val": "YAML"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 2,
+            "val": "python/sglang/srt/utils/"
+          },
+          {
+            "count": 1,
+            "val": "benchmarks/retrieval/"
+          },
+          {
+            "count": 1,
+            "val": "chinese_llama/"
+          },
+          {
+            "count": 1,
+            "val": "dpkd/transformers/utils/"
+          },
+          {
+            "count": 1,
+            "val": "examples/use-cases/openvla-oft/kubernetes/libero/"
+          },
+          {
+            "count": 1,
+            "val": "logs/"
+          },
+          {
+            "count": 1,
+            "val": "ms_swift.egg-info/"
+          },
+          {
+            "count": 1,
+            "val": "olive/common/hf/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 1,
+            "owner_id": "130462897",
+            "val": "Storia-AI/sage"
+          },
+          {
+            "count": 1,
+            "owner_id": "147780389",
+            "val": "sgl-project/sglang"
+          },
+          {
+            "count": 1,
+            "owner_id": "215250636",
+            "val": "ECNU-SII/Continual-NExT"
+          },
+          {
+            "count": 1,
+            "owner_id": "25720743",
+            "val": "huggingface/transformers"
+          },
+          {
+            "count": 1,
+            "owner_id": "290217419",
+            "val": "rednote-machine-learning/RedKnot"
+          },
+          {
+            "count": 1,
+            "owner_id": "30610553",
+            "val": "yuanzhoulvpi2017/zero_nlp"
+          },
+          {
+            "count": 1,
+            "owner_id": "3299148",
+            "val": "awslabs/awsome-distributed-ai"
+          },
+          {
+            "count": 1,
+            "owner_id": "6154722",
+            "val": "microsoft/LMOps"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"208\"><td><div class=\"lineno\">208</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    Remote model code (e.g. DeepSeek-OCR) still imports these.</span></pre></div></td></tr><tr data-line=\"209\"><td><div class=\"lineno\">209</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    ``check_imports`` in ``<mark>dynamic_module_utils.py</mark>`` validates imports at</span></pre></div></td></tr><tr data-line=\"210\"><td><div class=\"lineno\">210</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    config-load time, so these must exist before any ``from_pretrained``.</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "147780389",
+          "path": "python/sglang/srt/utils/hf_transformers_patches.py",
+          "repo": "sgl-project/sglang",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"212\"><td><div class=\"lineno\">212</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    Remote model code (e.g. DeepSeek-OCR) still imports these.</span></pre></div></td></tr><tr data-line=\"213\"><td><div class=\"lineno\">213</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    ``check_imports`` in ``<mark>dynamic_module_utils.py</mark>`` validates imports at</span></pre></div></td></tr><tr data-line=\"214\"><td><div class=\"lineno\">214</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    config-load time, so these must exist before any ``from_pretrained``.</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "290217419",
+          "path": "python/sglang/srt/utils/hf_transformers_patches.py",
+          "repo": "rednote-machine-learning/RedKnot",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"471\"><td><div class=\"lineno\">471</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># https://github.com/huggingface/transformers/blob/9d6c0641c4a3c2c5ecf4d49d7609edd5b745d9bc/src/transformers/<mark>dynamic_module_utils.py</mark>#L493</span></pre></div></td></tr><tr data-line=\"472\"><td><div class=\"lineno\">472</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># we could get the file from the loaded class but that requires us to force trust_remote_code=True</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "olive/common/hf/utils.py",
+          "repo": "microsoft/Olive",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"35\"><td><div class=\"lineno\">35</div></td><td><div class=\"highlight\"><pre><span class=\"w\">       </span><span class=\"s2\">&quot;&lt;span style=\\&quot;color: #800000; text-decoration-color: #800000\\&quot;&gt;│&lt;/span&gt; &lt;span style=\\&quot;color: #808000; text-decoration-color: #808000\\&quot;&gt;c:\\\\Users\\\\yuanz\\\\anaconda3\\\\envs\\\\mynet\\\\lib\\\\site-packages\\\\transformers\\\\<mark>dynamic_module_utils.py</mark>&lt;/span&gt;:&lt;span style=\\&quot;color: #0000ff; text-decoration-color: #0000ff\\&quot;&gt;388&lt;/span&gt;   &lt;span style=\\&quot;color: #800000; text-decoration-color: #800000\\&quot;&gt;│&lt;/span&gt;\\n&quot;</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "30610553",
+          "path": "chinese_llama/infer.ipynb",
+          "repo": "yuanzhoulvpi2017/zero_nlp",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"553\"><td><div class=\"lineno\">553</div></td><td><div class=\"highlight\"><pre>[rank0]:     model_class = get_class_from_dynamic_module(</pre></div></td></tr><tr data-line=\"554\"><td><div class=\"lineno\">554</div></td><td><div class=\"highlight\"><pre>[rank0]:   File &quot;/root/storage/miniconda3/envs/vlmevalkit/lib/python3.10/site-packages/transformers/<mark>dynamic_module_utils.py</mark>&quot;, line 627, in get_class_from_dynamic_module</pre></div></td></tr><tr data-line=\"555\"><td><div class=\"lineno\">555</div></td><td><div class=\"highlight\"><pre>[rank0]:     return get_class_in_module(class_name, final_module, force_reload=force_download)</pre></div></td></tr><tr data-line=\"556\"><td><div class=\"lineno\">556</div></td><td><div class=\"highlight\"><pre>[rank0]:   File &quot;/root/storage/miniconda3/envs/vlmevalkit/lib/python3.10/site-packages/transformers/<mark>dynamic_module_utils.py</mark>&quot;, line 297, in get_class_in_module</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"558\"><td><div class=\"lineno\">558</div></td><td><div class=\"highlight\"><pre>[rank0]:   File &quot;/root/storage/miniconda3/envs/vlmevalkit/lib/python3.10/site-packages/transformers/<mark>dynamic_module_utils.py</mark>&quot;, line 164, in get_relative_import_files</pre></div></td></tr></table>"
+          },
+          "owner_id": "93142335",
+          "path": "logs/internvl35_8b_resume_20260608_162344.log",
+          "repo": "Hunter-Wrynn/MMR-Bench",
+          "total_matches": "32"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"299\"><td><div class=\"lineno\">299</div></td><td><div class=\"highlight\"><pre>src/transformers/dependency_versions_table.py</pre></div></td></tr><tr data-line=\"300\"><td><div class=\"lineno\">300</div></td><td><div class=\"highlight\"><pre>src/transformers/<mark>dynamic_module_utils.py</mark></pre></div></td></tr><tr data-line=\"301\"><td><div class=\"lineno\">301</div></td><td><div class=\"highlight\"><pre>src/transformers/feature_extraction_sequence_utils.py</pre></div></td></tr></table>"
+          },
+          "owner_id": "25720743",
+          "path": "utils/not_doctested.txt",
+          "repo": "huggingface/transformers",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre><span class=\"truncated\">&hellip;</span></span><span class=\"s\">Denial</span><span class=\"nv\"> </span><span class=\"s\">of</span><span class=\"nv\"> </span><span class=\"s\">Service</span><span class=\"nv\"> </span><span class=\"s\">(ReDoS)</span><span class=\"nv\"> </span><span class=\"s\">vulnerability</span><span class=\"nv\"> </span><span class=\"s\">was</span><span class=\"nv\"> </span><span class=\"s\">discovered</span><span class=\"nv\"> </span><span class=\"s\">in</span><span class=\"nv\"> </span><span class=\"s\">the</span><span class=\"nv\"> </span><span class=\"s\">Hugging</span><span class=\"nv\"> </span><span class=\"s\">Face</span><span class=\"nv\"> </span><span class=\"s\">Transformers</span><span class=\"nv\"> </span><span class=\"s\">library,</span><span class=\"nv\"> </span><span class=\"s\">specifically</span><span class=\"nv\"> </span><span class=\"s\">in</span><span class=\"nv\"> </span><span class=\"s\">the</span><span class=\"nv\"> </span><span class=\"s\">`get_imports()`</span><span class=\"nv\"> </span><span class=\"s\">function</span><span class=\"nv\"> </span><span class=\"s\">within</span><span class=\"nv\"> </span><span class=\"s\">`<mark>dynamic_module_utils.py</mark>`.</span><span class=\"nv\"> </span><span class=\"s\">This</span><span class=\"nv\"> </span><span class=\"s\">vulnerability</span><span class=\"nv\"> </span><span class=\"s\">affects</span><span class=\"nv\"> </span><span class=\"s\">versions</span><span class=\"nv\"> </span><span class=\"s\">4.49.0</span><span class=\"nv\"> </span><span class=\"s\">and</span><span class=\"nv\"> </span><span class=\"s\">is</span><span class=\"nv\"> </span><span class=\"s\">fixed</span><span class=\"nv\"> </span><span class=\"s\">in</span><span class=\"nv\"> </span><span class=\"s\">version</span><span class=\"nv\"> </span><span class=\"s\">4.51.0.</span><span class=\"nv\"> </span><span class=\"s\">The</span><span class=\"nv\"> </span><span class=\"s\">issue</span><span class=\"nv\"> </span><span class=\"s\">arises</span><span class=\"nv\"> </span><span class=\"s\">from</span><span class=\"nv\"> </span><span class=\"s\">a</span><span class=\"nv\"> </span><span class=\"s\">regular</span><span class=\"nv\"> </span><span class=\"s\">expression</span><span class=\"nv\"> </span><span class=\"s\">pattern</span><span class=\"nv\"> </span><span class=\"s\">`\\\\s*try\\\\s*:.*?excep</span><span class=\"truncated\">&hellip;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "647025",
+          "path": "vulns/transformers/PYSEC-2026-1985.yaml",
+          "repo": "pypa/advisory-database",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"362\"><td><div class=\"lineno\">362</div></td><td><div class=\"highlight\"><pre>src/transformers/dependency_versions_table.py</pre></div></td></tr><tr data-line=\"363\"><td><div class=\"lineno\">363</div></td><td><div class=\"highlight\"><pre>src/transformers/<mark>dynamic_module_utils.py</mark></pre></div></td></tr><tr data-line=\"364\"><td><div class=\"lineno\">364</div></td><td><div class=\"highlight\"><pre>src/transformers/feature_extraction_sequence_utils.py</pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "dpkd/transformers/utils/not_doctested.txt",
+          "repo": "microsoft/LMOps",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"856\"><td><div class=\"lineno\">856</div></td><td><div class=\"highlight\"><pre>The traceback runs through `transformers/<mark>dynamic_module_utils.py</mark>:</pre></div></td></tr><tr data-line=\"857\"><td><div class=\"lineno\">857</div></td><td><div class=\"highlight\"><pre>get_class_in_module()`.</pre></div></td></tr></table>"
+          },
+          "owner_id": "3299148",
+          "path": "examples/use-cases/openvla-oft/kubernetes/libero/README.md",
+          "repo": "awslabs/awsome-distributed-ai",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"544\"><td><div class=\"lineno\">544</div></td><td><div class=\"highlight\"><pre>transformers_/dependency_versions_table.py</pre></div></td></tr><tr data-line=\"545\"><td><div class=\"lineno\">545</div></td><td><div class=\"highlight\"><pre>transformers_/<mark>dynamic_module_utils.py</mark></pre></div></td></tr><tr data-line=\"546\"><td><div class=\"lineno\">546</div></td><td><div class=\"highlight\"><pre>transformers_/feature_extraction_sequence_utils.py</pre></div></td></tr></table>"
+          },
+          "owner_id": "215250636",
+          "path": "ms_swift.egg-info/SOURCES.txt",
+          "repo": "ECNU-SII/Continual-NExT",
+          "total_matches": "1"
+        }
+      ],
+      "total": 11
+    },
+    "time": 344
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=dynamic_module_utils.py"
+}

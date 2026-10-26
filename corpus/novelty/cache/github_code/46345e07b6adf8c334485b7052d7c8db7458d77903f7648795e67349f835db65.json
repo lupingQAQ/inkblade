@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T12:15:08+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 132,
+            "val": "Python"
+          },
+          {
+            "count": 8,
+            "val": "Jupyter Notebook"
+          },
+          {
+            "count": 6,
+            "val": "Markdown"
+          },
+          {
+            "count": 4,
+            "val": "Ruby"
+          },
+          {
+            "count": 4,
+            "val": "Rust"
+          },
+          {
+            "count": 2,
+            "val": "C++"
+          },
+          {
+            "count": 2,
+            "val": "Lua"
+          },
+          {
+            "count": 2,
+            "val": "PHP"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 26,
+            "val": "python/"
+          },
+          {
+            "count": 13,
+            "val": "src/"
+          },
+          {
+            "count": 10,
+            "val": "tests/"
+          },
+          {
+            "count": 8,
+            "val": "ai/agents/agentchat/"
+          },
+          {
+            "count": 8,
+            "val": "eval/OSWorldv2-harness/OSWorld-V2/mm_agents/"
+          },
+          {
+            "count": 8,
+            "val": "mm_agents/"
+          },
+          {
+            "count": 6,
+            "val": ".test/"
+          },
+          {
+            "count": 4,
+            "val": "chapter5/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 20,
+            "owner_id": "6154722",
+            "val": "microsoft/autogen"
+          },
+          {
+            "count": 8,
+            "owner_id": "128829376",
+            "val": "xlang-ai/OSWorld"
+          },
+          {
+            "count": 8,
+            "owner_id": "151041383",
+            "val": "DeepInsight-AI/DeepBI"
+          },
+          {
+            "count": 8,
+            "owner_id": "202896035",
+            "val": "AMAP-ML/LongHorizon-Harness"
+          },
+          {
+            "count": 7,
+            "owner_id": "28866236",
+            "val": "questcollector/autogen-kubernetes"
+          },
+          {
+            "count": 6,
+            "owner_id": "141457985",
+            "val": "Skyvern-AI/skyvern"
+          },
+          {
+            "count": 6,
+            "owner_id": "168765251",
+            "val": "databricks-solutions/ai-dev-kit"
+          },
+          {
+            "count": 4,
+            "owner_id": "106546034",
+            "val": "databricks-industry-solutions/many-model-forecasting"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"68\"><td><div class=\"lineno\">68</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                code_blocks = [CodeBlock(code=&quot;print(&#39;hello world!&#39;)&quot;, language=&quot;python&quot;)]</span></pre></div></td></tr><tr data-line=\"69\"><td><div class=\"lineno\">69</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                code_result = await executor.<mark>execute_code_block</mark>s(code_blocks, cancel_token)</span></pre></div></td></tr><tr data-line=\"70\"><td><div class=\"lineno\">70</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                print(code_result)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"162\"><td><div class=\"lineno\">162</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">async</span> <span class=\"k\">def</span> <span class=\"nf\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"163\"><td><div class=\"lineno\">163</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">code_blocks</span><span class=\"p\">:</span> <span class=\"nb\">list</span><span class=\"p\">[</span><span class=\"n\">CodeBlock</span><span class=\"p\">],</span> <span class=\"n\">cancellation_token</span><span class=\"p\">:</span> <span class=\"n\">CancellationToken</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"177\"><td><div class=\"lineno\">177</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">for</span> <span class=\"n\">code_block</span> <span class=\"ow\">in</span> <span class=\"n\">code_blocks</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"178\"><td><div class=\"lineno\">178</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark>execute_code_block</mark></span><span class=\"p\">(</span><span class=\"n\">code_block</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"179\"><td><div class=\"lineno\">179</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">exit_code</span> <span class=\"o\">=</span> <span class=\"n\">result</span><span class=\"o\">.</span><span class=\"n\">exit_code</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "python/packages/autogen-ext/src/autogen_ext/code_executors/jupyter/_jupyter_code_executor.py",
+          "repo": "microsoft/autogen",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"541\"><td><div class=\"lineno\">541</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">return</span></pre></div></td></tr><tr data-line=\"542\"><td><div class=\"lineno\">542</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">execution_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark></span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"543\"><td><div class=\"lineno\">543</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">yield</span> <span class=\"n\">Response</span><span class=\"p\">(</span><span class=\"n\">chat_message</span><span class=\"o\">=</span><span class=\"n\">TextMessage</span><span class=\"p\">(</span><span class=\"n\">content</span><span class=\"o\">=</span><span class=\"n\">execution_result</span><span class=\"o\">.</span><span class=\"n\">output</span><span class=\"p\">,</span> <span class=\"n\">source</span><span class=\"o\">=</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">name</span><span class=\"p\">))</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"612\"><td><div class=\"lineno\">612</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># Step 8: Execute the extracted code blocks</span></pre></div></td></tr><tr data-line=\"613\"><td><div class=\"lineno\">613</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">execution_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark></span><span class=\"p\">(</span><span class=\"n\">inferred_text_message</span><span class=\"o\">.</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"687\"><td><div class=\"lineno\">687</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">async</span> <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>execute_code_block</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"688\"><td><div class=\"lineno\">688</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">code_blocks</span><span class=\"p\">:</span> <span class=\"n\">List</span><span class=\"p\">[</span><span class=\"n\">CodeBlock</span><span class=\"p\">],</span> <span class=\"n\">cancellation_token</span><span class=\"p\">:</span> <span class=\"n\">CancellationToken</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_code_executor_agent.py",
+          "repo": "microsoft/autogen",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"69\"><td><div class=\"lineno\">69</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_blocks</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">CodeBlock</span><span class=\"p\">(</span><span class=\"n\">code</span><span class=\"o\">=</span><span class=\"s2\">&quot;import sys; print(&#39;hello world!&#39;)&quot;</span><span class=\"p\">,</span> <span class=\"n\">language</span><span class=\"o\">=</span><span class=\"s2\">&quot;python&quot;</span><span class=\"p\">)]</span></pre></div></td></tr><tr data-line=\"70\"><td><div class=\"lineno\">70</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"78\"><td><div class=\"lineno\">78</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"79\"><td><div class=\"lineno\">79</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">assert</span> <span class=\"p\">(</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"88\"><td><div class=\"lineno\">88</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">code_blocks</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">CodeBlock</span><span class=\"p\">(</span><span class=\"n\">code</span><span class=\"o\">=</span><span class=\"s2\">&quot;echo &#39;hello world!&#39;&quot;</span><span class=\"p\">,</span> <span class=\"n\">language</span><span class=\"o\">=</span><span class=\"s2\">&quot;bash&quot;</span><span class=\"p\">)]</span></pre></div></td></tr><tr data-line=\"89\"><td><div class=\"lineno\">89</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"95\"><td><div class=\"lineno\">95</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "python/packages/autogen-ext/tests/code_executors/test_docker_commandline_code_executor.py",
+          "repo": "microsoft/autogen",
+          "total_matches": "17"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"128\"><td><div class=\"lineno\">128</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_blocks</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">CodeBlock</span><span class=\"p\">(</span><span class=\"n\">code</span><span class=\"o\">=</span><span class=\"s2\">&quot;import sys; print(&#39;hello world!&#39;)&quot;</span><span class=\"p\">,</span> <span class=\"n\">language</span><span class=\"o\">=</span><span class=\"s2\">&quot;python&quot;</span><span class=\"p\">)]</span></pre></div></td></tr><tr data-line=\"129\"><td><div class=\"lineno\">129</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"137\"><td><div class=\"lineno\">137</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"138\"><td><div class=\"lineno\">138</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">assert</span> <span class=\"p\">(</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"147\"><td><div class=\"lineno\">147</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">code_blocks</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">CodeBlock</span><span class=\"p\">(</span><span class=\"n\">code</span><span class=\"o\">=</span><span class=\"s2\">&quot;echo &#39;hello world!&#39;&quot;</span><span class=\"p\">,</span> <span class=\"n\">language</span><span class=\"o\">=</span><span class=\"s2\">&quot;bash&quot;</span><span class=\"p\">)]</span></pre></div></td></tr><tr data-line=\"148\"><td><div class=\"lineno\">148</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"154\"><td><div class=\"lineno\">154</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "python/packages/autogen-ext/tests/code_executors/test_commandline_code_executor.py",
+          "repo": "microsoft/autogen",
+          "total_matches": "16"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"74\"><td><div class=\"lineno\">74</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                    code_blocks = [CodeBlock(code=&quot;print(&#39;hello world!&#39;)&quot;, language=&quot;python&quot;)]</span></pre></div></td></tr><tr data-line=\"75\"><td><div class=\"lineno\">75</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                    code_result = await executor.<mark>execute_code_block</mark>s(code_blocks, cancellation_token=CancellationToken())</span></pre></div></td></tr><tr data-line=\"76\"><td><div class=\"lineno\">76</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                    print(code_result)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"94\"><td><div class=\"lineno\">94</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                    code_blocks = [CodeBlock(code=&quot;print(&#39;hello world!&#39;)&quot;, language=&quot;python&quot;)]</span></pre></div></td></tr><tr data-line=\"95\"><td><div class=\"lineno\">95</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                    code_result = await executor.<mark>execute_code_block</mark>s(code_blocks, cancellation_token=CancellationToken())</span></pre></div></td></tr><tr data-line=\"96\"><td><div class=\"lineno\">96</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">                    print(code_result)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"197\"><td><div class=\"lineno\">197</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">async</span> <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "python/packages/autogen-ext/src/autogen_ext/code_executors/docker_jupyter/_docker_jupyter.py",
+          "repo": "microsoft/autogen",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"15\"><td><div class=\"lineno\">15</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">code_blocks</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">CodeBlock</span><span class=\"p\">(</span><span class=\"n\">code</span><span class=\"o\">=</span><span class=\"s2\">&quot;import sys; print(&#39;hello world!&#39;)&quot;</span><span class=\"p\">,</span> <span class=\"n\">language</span><span class=\"o\">=</span><span class=\"s2\">&quot;python&quot;</span><span class=\"p\">)]</span></pre></div></td></tr><tr data-line=\"16\"><td><div class=\"lineno\">16</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">CancellationToken</span><span class=\"p\">())</span></pre></div></td></tr><tr data-line=\"17\"><td><div class=\"lineno\">17</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">assert</span> <span class=\"n\">code_result</span> <span class=\"o\">==</span> <span class=\"n\">JupyterCodeResult</span><span class=\"p\">(</span><span class=\"n\">exit_code</span><span class=\"o\">=</span><span class=\"mi\">0</span><span class=\"p\">,</span> <span class=\"n\">output</span><span class=\"o\">=</span><span class=\"s2\">&quot;hello world!</span><span class=\"se\">\\n</span><span class=\"s2\">&quot;</span><span class=\"p\">,</span> <span class=\"n\">output_files</span><span class=\"o\">=</span><span class=\"p\">[])</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"25\"><td><div class=\"lineno\">25</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">code_blocks</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">CodeBlock</span><span class=\"p\">(</span><span class=\"n\">code</span><span class=\"o\">=</span><span class=\"s2\">&quot;print(undefined_variable)&quot;</span><span class=\"p\">,</span> <span class=\"n\">language</span><span class=\"o\">=</span><span class=\"s2\">&quot;python&quot;</span><span class=\"p\">)]</span></pre></div></td></tr><tr data-line=\"26\"><td><div class=\"lineno\">26</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">CancellationToken</span><span class=\"p\">())</span></pre></div></td></tr><tr data-line=\"27\"><td><div class=\"lineno\">27</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">assert</span> <span class=\"n\">code_result</span> <span class=\"o\">==</span> <span class=\"n\">JupyterCodeResult</span><span class=\"p\">(</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"50\"><td><div class=\"lineno\">50</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">CancellationToken</span><span class=\"p\">())</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "python/packages/autogen-ext/tests/code_executors/test_jupyter_code_executor.py",
+          "repo": "microsoft/autogen",
+          "total_matches": "12"
+        },
+        {
+          "branch": "dev",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"18\"><td><div class=\"lineno\">18</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">     conforms to `autogen_core.code_executor.CodeExecutor`. Every</span></pre></div></td></tr><tr data-line=\"19\"><td><div class=\"lineno\">19</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">     `<mark>execute_code_block</mark>s(...)` call exec&#39;s inside the sandbox.</span></pre></div></td></tr><tr data-line=\"20\"><td><div class=\"lineno\">20</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">  2. Builds an AutoGen `ConversableAgent` whose `code_execution_config`</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"89\"><td><div class=\"lineno\">89</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        Stateless from AutoGen&#39;s point of view: each `<mark>execute_code_block</mark>s`</span></pre></div></td></tr><tr data-line=\"90\"><td><div class=\"lineno\">90</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        call runs in a fresh `python3 -c`. The sandbox itself accumulates</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"103\"><td><div class=\"lineno\">103</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">async</span> <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"104\"><td><div class=\"lineno\">104</div></td><td><div class=\"highlight\"><pre>            <span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">code_blocks</span><span class=\"p\">:</span> <span class=\"nb\">list</span><span class=\"p\">[</span><span class=\"n\">CodeBlock</span><span class=\"p\">],</span> <span class=\"n\">cancellation_token</span><span class=\"p\">:</span> <span class=\"n\">Any</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "282846749",
+          "path": "recipes/autogen-branch/demo.py",
+          "repo": "deeplethe/forkd",
+          "total_matches": "5"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"56\"><td><div class=\"lineno\">56</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_blocks</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">CodeBlock</span><span class=\"p\">(</span><span class=\"n\">code</span><span class=\"o\">=</span><span class=\"s2\">&quot;import sys; print(&#39;hello world!&#39;)&quot;</span><span class=\"p\">,</span> <span class=\"n\">language</span><span class=\"o\">=</span><span class=\"s2\">&quot;python&quot;</span><span class=\"p\">)]</span></pre></div></td></tr><tr data-line=\"57\"><td><div class=\"lineno\">57</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"58\"><td><div class=\"lineno\">58</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">assert</span> <span class=\"n\">code_result</span><span class=\"o\">.</span><span class=\"n\">exit_code</span> <span class=\"o\">==</span> <span class=\"mi\">0</span> <span class=\"ow\">and</span> <span class=\"s2\">&quot;hello world!&quot;</span> <span class=\"ow\">in</span> <span class=\"n\">code_result</span><span class=\"o\">.</span><span class=\"n\">output</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"65\"><td><div class=\"lineno\">65</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"70\"><td><div class=\"lineno\">70</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">code_blocks</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">CodeBlock</span><span class=\"p\">(</span><span class=\"n\">code</span><span class=\"o\">=</span><span class=\"s2\">&quot;echo &#39;hello world!&#39;&quot;</span><span class=\"p\">,</span> <span class=\"n\">language</span><span class=\"o\">=</span><span class=\"s2\">&quot;bash&quot;</span><span class=\"p\">)]</span></pre></div></td></tr><tr data-line=\"71\"><td><div class=\"lineno\">71</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"72\"><td><div class=\"lineno\">72</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">assert</span> <span class=\"s2\">&quot;unknown language&quot;</span> <span class=\"ow\">in</span> <span class=\"n\">code_result</span><span class=\"o\">.</span><span class=\"n\">output</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "python/packages/autogen-ext/tests/code_executors/test_aca_dynamic_sessions.py",
+          "repo": "microsoft/autogen",
+          "total_matches": "9"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"56\"><td><div class=\"lineno\">56</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_blocks</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">CodeBlock</span><span class=\"p\">(</span><span class=\"n\">code</span><span class=\"o\">=</span><span class=\"s2\">&quot;import sys; print(&#39;hello world!&#39;)&quot;</span><span class=\"p\">,</span> <span class=\"n\">language</span><span class=\"o\">=</span><span class=\"s2\">&quot;python&quot;</span><span class=\"p\">)]</span></pre></div></td></tr><tr data-line=\"57\"><td><div class=\"lineno\">57</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"o\">=</span><span class=\"n\">CancellationToken</span><span class=\"p\">())</span></pre></div></td></tr><tr data-line=\"58\"><td><div class=\"lineno\">58</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">assert</span> <span class=\"n\">code_result</span><span class=\"o\">.</span><span class=\"n\">exit_code</span> <span class=\"o\">==</span> <span class=\"mi\">0</span> <span class=\"ow\">and</span> <span class=\"s2\">&quot;hello world!&quot;</span> <span class=\"ow\">in</span> <span class=\"n\">code_result</span><span class=\"o\">.</span><span class=\"n\">output</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"65\"><td><div class=\"lineno\">65</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"o\">=</span><span class=\"n\">CancellationToken</span><span class=\"p\">())</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"70\"><td><div class=\"lineno\">70</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_blocks</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"n\">CodeBlock</span><span class=\"p\">(</span><span class=\"n\">code</span><span class=\"o\">=</span><span class=\"s2\">&quot;</span><span class=\"se\">\\n</span><span class=\"s2\">&quot;</span><span class=\"o\">.</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"n\">file_lines</span><span class=\"p\">),</span> <span class=\"n\">language</span><span class=\"o\">=</span><span class=\"s2\">&quot;python&quot;</span><span class=\"p\">)]</span></pre></div></td></tr><tr data-line=\"71\"><td><div class=\"lineno\">71</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">code_result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span><span class=\"n\">code_blocks</span><span class=\"p\">,</span> <span class=\"n\">cancellation_token</span><span class=\"o\">=</span><span class=\"n\">CancellationToken</span><span class=\"p\">())</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"84\"><td><div class=\"lineno\">84</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">code_result_first</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "python/packages/autogen-ext/tests/code_executors/test_docker_jupyter_code_executor.py",
+          "repo": "microsoft/autogen",
+          "total_matches": "8"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"71\"><td><div class=\"lineno\">71</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"72\"><td><div class=\"lineno\">72</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">code_blocks</span><span class=\"o\">=</span><span class=\"p\">[</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"129\"><td><div class=\"lineno\">129</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">result</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"130\"><td><div class=\"lineno\">130</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">code_blocks</span><span class=\"o\">=</span><span class=\"p\">[</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"152\"><td><div class=\"lineno\">152</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">with</span> <span class=\"n\">pytest</span><span class=\"o\">.</span><span class=\"n\">raises</span><span class=\"p\">(</span><span class=\"ne\">ValueError</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"153\"><td><div class=\"lineno\">153</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">await</span> <span class=\"n\">executor</span><span class=\"o\">.</span><span class=\"n\"><mark>execute_code_block</mark>s</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"154\"><td><div class=\"lineno\">154</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">code_blocks</span><span class=\"o\">=</span><span class=\"p\">[</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "python/packages/autogen-ext/tests/code_executors/test_user_defined_functions.py",
+          "repo": "microsoft/autogen",
+          "total_matches": "8"
+        }
+      ],
+      "total": 164
+    },
+    "time": 271
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=execute_code_block"
+}

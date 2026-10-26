@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T12:15:02+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 1245,
+            "val": "Python"
+          },
+          {
+            "count": 161,
+            "val": "Rust"
+          },
+          {
+            "count": 80,
+            "val": "Markdown"
+          },
+          {
+            "count": 70,
+            "val": "Ruby"
+          },
+          {
+            "count": 48,
+            "val": "C++"
+          },
+          {
+            "count": 40,
+            "val": "Elixir"
+          },
+          {
+            "count": 32,
+            "val": "JavaScript"
+          },
+          {
+            "count": 25,
+            "val": "Shell"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 203,
+            "val": "tests/"
+          },
+          {
+            "count": 190,
+            "val": "transformers/"
+          },
+          {
+            "count": 149,
+            "val": "src/"
+          },
+          {
+            "count": 134,
+            "val": "dpkd/transformers/"
+          },
+          {
+            "count": 118,
+            "val": "benchmark/third_party/transformers/"
+          },
+          {
+            "count": 79,
+            "val": "examples/"
+          },
+          {
+            "count": 69,
+            "val": "cli/"
+          },
+          {
+            "count": 63,
+            "val": "transformers-4.2.1/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 134,
+            "owner_id": "6154722",
+            "val": "microsoft/LMOps"
+          },
+          {
+            "count": 119,
+            "owner_id": "25720743",
+            "val": "huggingface/transformers"
+          },
+          {
+            "count": 118,
+            "owner_id": "125944572",
+            "val": "FMInference/FlexLLMGen"
+          },
+          {
+            "count": 95,
+            "owner_id": "29054786",
+            "val": "XiangLi1999/Diffusion-LM"
+          },
+          {
+            "count": 94,
+            "owner_id": "453694",
+            "val": "salesforce/CodeRL"
+          },
+          {
+            "count": 73,
+            "owner_id": "6154722",
+            "val": "microsoft/LoRA"
+          },
+          {
+            "count": 63,
+            "owner_id": "26344602",
+            "val": "voidism/DiffCSE"
+          },
+          {
+            "count": 61,
+            "owner_id": "72390107",
+            "val": "csebuetnlp/xl-sum"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"115\"><td><div class=\"lineno\">115</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t\t\t</span><span class=\"n\">error</span><span class=\"p\">(</span><span class=\"n\">MF_PARSER_UNEXPECTED_1</span><span class=\"p\">(</span><span class=\"n\">token</span><span class=\"p\">.</span><span class=\"n\">str</span><span class=\"p\">()));</span></pre></div></td></tr><tr data-line=\"116\"><td><div class=\"lineno\">116</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t\t</span><span class=\"n\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">m_tok_paren_left</span><span class=\"p\">);</span></pre></div></td></tr><tr data-line=\"117\"><td><div class=\"lineno\">117</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t\t</span><span class=\"n\">token_t</span><span class=\"w\"> </span><span class=\"n\">name</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">get_token</span><span class=\"p\">();</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"161\"><td><div class=\"lineno\">161</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t\t\t</span><span class=\"n\">error</span><span class=\"p\">(</span><span class=\"n\">MF_UNEXPECTED_NETLIST_EXTERNAL</span><span class=\"p\">());</span></pre></div></td></tr><tr data-line=\"162\"><td><div class=\"lineno\">162</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t\t</span><span class=\"n\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">m_tok_paren_left</span><span class=\"p\">);</span></pre></div></td></tr><tr data-line=\"163\"><td><div class=\"lineno\">163</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t\t</span><span class=\"n\">token_t</span><span class=\"w\"> </span><span class=\"n\">name</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">get_token</span><span class=\"p\">();</span></pre></div></td></tr><tr data-line=\"164\"><td><div class=\"lineno\">164</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t\t\t</span><span class=\"n\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">m_tok_paren_right</span><span class=\"p\">);</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"182\"><td><div class=\"lineno\">182</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t\t</span><span class=\"n\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">m_tok_paren_right</span><span class=\"p\">);</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "9024458",
+          "path": "src/lib/netlist/nl_parser.cpp",
+          "repo": "mamedev/mame",
+          "total_matches": "59"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">value</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">|</span> <span class=\"kc\">None</span><span class=\"p\">,</span> <span class=\"n\">label</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">str</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"29\"><td><div class=\"lineno\">29</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Return ``value`` stripped, or raise ``ValueError`` if it is empty or not a plain token.&quot;&quot;&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"75\"><td><div class=\"lineno\">75</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">region_</span> <span class=\"o\">=</span> <span class=\"n\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">region</span><span class=\"p\">,</span> <span class=\"s2\">&quot;Region&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"76\"><td><div class=\"lineno\">76</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">cloud_</span> <span class=\"o\">=</span> <span class=\"n\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">cloud</span><span class=\"p\">,</span> <span class=\"s2\">&quot;Cloud&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"77\"><td><div class=\"lineno\">77</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">org</span> <span class=\"o\">=</span> <span class=\"n\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">organization_id</span><span class=\"p\">,</span> <span class=\"s2\">&quot;Organization ID&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"78\"><td><div class=\"lineno\">78</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span> <span class=\"o\">=</span> <span class=\"n\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">environment_id</span><span class=\"p\">,</span> <span class=\"s2\">&quot;Environment ID&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"79\"><td><div class=\"lineno\">79</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">lkc</span> <span class=\"o\">=</span> <span class=\"n\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">kafka_cluster_id</span><span class=\"p\">,</span> <span class=\"s2\">&quot;Kafka cluster ID&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"80\"><td><div class=\"lineno\">80</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">return</span> <span class=\"p\">(</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "85702467",
+          "path": "src/bundles/confluent/src/lfx_confluent/components/confluent/_common.py",
+          "repo": "langflow-ai/langflow",
+          "total_matches": "10"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"29\"><td><div class=\"lineno\">29</div></td><td><div class=\"highlight\"><pre><span class=\"n\">_get_dashboard_plugins</span> <span class=\"o\">=</span> <span class=\"n\">late</span><span class=\"p\">(</span><span class=\"s2\">&quot;_get_dashboard_plugins&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"30\"><td><div class=\"lineno\">30</div></td><td><div class=\"highlight\"><pre><span class=\"n\">_<mark>require_token</mark></span> <span class=\"o\">=</span> <span class=\"n\">late</span><span class=\"p\">(</span><span class=\"s2\">&quot;_<mark>require_token</mark>&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"31\"><td><div class=\"lineno\">31</div></td><td><div class=\"highlight\"><pre><span class=\"n\">load_config</span> <span class=\"o\">=</span> <span class=\"n\">late</span><span class=\"p\">(</span><span class=\"s2\">&quot;load_config&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;hermes_cli.config&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"153\"><td><div class=\"lineno\">153</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Unified agent plugins + dashboard extension metadata (session protected).&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"154\"><td><div class=\"lineno\">154</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">_<mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">request</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"155\"><td><div class=\"lineno\">155</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">try</span><span class=\"p\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"175\"><td><div class=\"lineno\">175</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Curated plugin catalog merged with installed state (session protected).&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"176\"><td><div class=\"lineno\">176</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">_<mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">request</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "134168893",
+          "path": "hermes_cli/web_routers/dashboard_ui.py",
+          "repo": "NousResearch/hermes-agent",
+          "total_matches": "8"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"686\"><td><div class=\"lineno\">686</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">fn</span><span class=\"w\"> </span><span class=\"nf\">require_name</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"k\">mut</span><span class=\"w\"> </span><span class=\"bp\">self</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">-&gt;</span><span class=\"w\"> </span><span class=\"nc\">S</span><span class=\"p\">::</span><span class=\"n\">Output</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"687\"><td><div class=\"lineno\">687</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">TokenKind</span><span class=\"p\">::</span><span class=\"n\">Name</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">Errors</span><span class=\"p\">::</span><span class=\"n\">error1004</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"699\"><td><div class=\"lineno\">699</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"p\">}</span><span class=\"w\"> </span><span class=\"k\">else</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"700\"><td><div class=\"lineno\">700</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">TokenKind</span><span class=\"p\">::</span><span class=\"n\">Name</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">Errors</span><span class=\"p\">::</span><span class=\"n\">error1004</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"716\"><td><div class=\"lineno\">716</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">fn</span><span class=\"w\"> </span><span class=\"nf\">require_function</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"k\">mut</span><span class=\"w\"> </span><span class=\"bp\">self</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">-&gt;</span><span class=\"w\"> </span><span class=\"nc\">S</span><span class=\"p\">::</span><span class=\"n\">Output</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"717\"><td><div class=\"lineno\">717</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">TokenKind</span><span class=\"p\">::</span><span class=\"n\">Function</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">Errors</span><span class=\"p\">::</span><span class=\"n\">error1003</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"721\"><td><div class=\"lineno\">721</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\"><mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">TokenKind</span><span class=\"p\">::</span><span class=\"n\">Variable</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">Errors</span><span class=\"p\">::</span><span class=\"n\">error1008</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "69631",
+          "path": "hphp/hack/src/parser/core/parser_trait.rs",
+          "repo": "facebook/hhvm",
+          "total_matches": "26"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"9\"><td><div class=\"lineno\">9</div></td><td><div class=\"highlight\"><pre><span class=\"c1\">// All token_verification tests run on the main MUC component.</span></pre></div></td></tr><tr data-line=\"10\"><td><div class=\"lineno\">10</div></td><td><div class=\"highlight\"><pre><span class=\"c1\">// token_verification_<mark>require_token</mark>_for_moderation = true is set on</span></pre></div></td></tr><tr data-line=\"11\"><td><div class=\"lineno\">11</div></td><td><div class=\"highlight\"><pre><span class=\"c1\">// conference.localhost in the test config; focus@auth.localhost is a Prosody</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"175\"><td><div class=\"lineno\">175</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"c1\">// ── token_verification_<mark>require_token</mark>_for_moderation ──────────────────────</span></pre></div></td></tr><tr data-line=\"176\"><td><div class=\"lineno\">176</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"c1\">//</span></pre></div></td></tr><tr data-line=\"177\"><td><div class=\"lineno\">177</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"c1\">// conference.localhost has <mark>require_token</mark>_for_moderation = true.</span></pre></div></td></tr><tr data-line=\"178\"><td><div class=\"lineno\">178</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"c1\">// Unauthenticated users (no token) are blocked from sending muc#owner IQs,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"186\"><td><div class=\"lineno\">186</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"nx\">describe</span><span class=\"p\">(</span><span class=\"s1\">&#39;token_verification_<mark>require_token</mark>_for_moderation&#39;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"p\">=&gt;</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "3671647",
+          "path": "tests/prosody/mod_token_verification_spec.js",
+          "repo": "jitsi/jitsi-meet",
+          "total_matches": "8"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"71\"><td><div class=\"lineno\">71</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"c1\"># Should never be cached.</span></pre></div></td></tr><tr data-line=\"72\"><td><div class=\"lineno\">72</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"no\"><mark>REQUIRE_TOKEN</mark></span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"sx\">%w(</span></pre></div></td></tr><tr data-line=\"73\"><td><div class=\"lineno\">73</div></td><td><div class=\"highlight\"><pre><span class=\"sx\">    /api/v1/announcements</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"115\"><td><div class=\"lineno\">115</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"c1\"># and thus should not be cached in this mode.</span></pre></div></td></tr><tr data-line=\"116\"><td><div class=\"lineno\">116</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"no\"><mark>REQUIRE_TOKEN</mark></span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"sx\">%w(</span></pre></div></td></tr><tr data-line=\"117\"><td><div class=\"lineno\">117</div></td><td><div class=\"highlight\"><pre><span class=\"sx\">      /api/v1/custom_emojis</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"241\"><td><div class=\"lineno\">241</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"p\">(</span><span class=\"no\">TestEndpoints</span><span class=\"o\">::</span><span class=\"no\">REQUIRE_SIGNATURE</span><span class=\"w\"> </span><span class=\"o\">+</span><span class=\"w\"> </span><span class=\"no\">TestEndpoints</span><span class=\"o\">::</span><span class=\"no\">REQUIRE_LOGIN</span><span class=\"w\"> </span><span class=\"o\">+</span><span class=\"w\"> </span><span class=\"no\">TestEndpoints</span><span class=\"o\">::</span><span class=\"no\"><mark>REQUIRE_TOKEN</mark></span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">each</span><span class=\"w\"> </span><span class=\"k\">do</span><span class=\"w\"> </span><span class=\"o\">|</span><span class=\"n\">endpoint</span><span class=\"o\">|</span></pre></div></td></tr><tr data-line=\"242\"><td><div class=\"lineno\">242</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"n\">describe</span><span class=\"w\"> </span><span class=\"n\">endpoint</span><span class=\"w\"> </span><span class=\"k\">do</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "24979032",
+          "path": "spec/requests/cache_spec.rb",
+          "repo": "mastodon/mastodon",
+          "total_matches": "8"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"91\"><td><div class=\"lineno\">91</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">_<mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">account</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;&quot;</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">dict</span> <span class=\"o\">|</span> <span class=\"nb\">str</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"92\"><td><div class=\"lineno\">92</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"sd\">&quot;&quot;&quot;Get token or return error dict.&quot;&quot;&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"136\"><td><div class=\"lineno\">136</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">token</span> <span class=\"o\">=</span> <span class=\"n\">_<mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">account</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"137\"><td><div class=\"lineno\">137</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"nb\">isinstance</span><span class=\"p\">(</span><span class=\"n\">token</span><span class=\"p\">,</span> <span class=\"nb\">dict</span><span class=\"p\">):</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"191\"><td><div class=\"lineno\">191</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">token</span> <span class=\"o\">=</span> <span class=\"n\">_<mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">account</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"192\"><td><div class=\"lineno\">192</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"nb\">isinstance</span><span class=\"p\">(</span><span class=\"n\">token</span><span class=\"p\">,</span> <span class=\"nb\">dict</span><span class=\"p\">):</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"272\"><td><div class=\"lineno\">272</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">token</span> <span class=\"o\">=</span> <span class=\"n\">_<mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">account</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "262650699",
+          "path": "tools/src/aden_tools/tools/gmail_tool/gmail_tool.py",
+          "repo": "aden-hive/hive",
+          "total_matches": "11"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"20\"><td><div class=\"lineno\">20</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">_<mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">value</span><span class=\"p\">:</span> <span class=\"nb\">object</span><span class=\"p\">,</span> <span class=\"o\">*</span><span class=\"p\">,</span> <span class=\"n\">kind</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">pattern</span><span class=\"p\">:</span> <span class=\"n\">re</span><span class=\"o\">.</span><span class=\"n\">Pattern</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">])</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">str</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"21\"><td><div class=\"lineno\">21</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">normalized</span> <span class=\"o\">=</span> <span class=\"nb\">str</span><span class=\"p\">(</span><span class=\"n\">value</span> <span class=\"ow\">or</span> <span class=\"s2\">&quot;&quot;</span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">strip</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"41\"><td><div class=\"lineno\">41</div></td><td><div class=\"highlight\"><pre>        <span class=\"nb\">object</span><span class=\"o\">.</span><span class=\"fm\">__setattr__</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"42\"><td><div class=\"lineno\">42</div></td><td><div class=\"highlight\"><pre>            <span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"s2\">&quot;subject_type&quot;</span><span class=\"p\">,</span> <span class=\"n\">_<mark>require_token</mark></span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">subject_type</span><span class=\"p\">,</span> <span class=\"n\">kind</span><span class=\"o\">=</span><span class=\"s2\">&quot;subject type&quot;</span><span class=\"p\">,</span> <span class=\"n\">pattern</span><span class=\"o\">=</span><span class=\"n\">_TYPE_RE</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"43\"><td><div class=\"lineno\">43</div></td><td><div class=\"highlight\"><pre>        <span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"44\"><td><div class=\"lineno\">44</div></td><td><div class=\"highlight\"><pre>        <span class=\"nb\">object</span><span class=\"o\">.</span><span class=\"fm\">__setattr__</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"s2\">&quot;subject_id&quot;</span><span class=\"p\">,</span> <span class=\"n\">_require_id</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">subject_id</span><span class=\"p\">,</span> <span class=\"n\">kind</span><span class=\"o\">=</span><span class=\"s2\">&quot;subject id&quot;</span><span class=\"p\">))</span></pre></div></td></tr><tr data-line=\"45\"><td><div class=\"lineno\">45</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">relation</span> <span class=\"ow\">is</span> <span class=\"ow\">not</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"46\"><td><div class=\"lineno\">46</div></td><td><div class=\"highlight\"><pre>            <span class=\"nb\">object</span><span class=\"o\">.</span><span class=\"fm\">__setattr__</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"47\"><td><div class=\"lineno\">47</div></td><td><div class=\"highlight\"><pre>                <span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"s2\">&quot;relation&quot;</span><span class=\"p\">,</span> <span class=\"n\">_<mark>require_token</mark></span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">relation</span><span class=\"p\">,</span> <span class=\"n\">kind</span><span class=\"o\">=</span><span class=\"s2\">&quot;subject relation&quot;</span><span class=\"p\">,</span> <span class=\"n\">pattern</span><span class=\"o\">=</span><span class=\"n\">_RELATION_RE</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "103249391",
+          "path": "src/backend/bisheng/permission/application/relation_api.py",
+          "repo": "dataelement/bisheng",
+          "total_matches": "11"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"30\"><td><div class=\"lineno\">30</div></td><td><div class=\"highlight\"><pre><span class=\"n\">_profile_scope</span> <span class=\"o\">=</span> <span class=\"n\">late</span><span class=\"p\">(</span><span class=\"s2\">&quot;_profile_scope&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;hermes_cli.web_server_profiles&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"31\"><td><div class=\"lineno\">31</div></td><td><div class=\"highlight\"><pre><span class=\"n\">_<mark>require_token</mark></span> <span class=\"o\">=</span> <span class=\"n\">late</span><span class=\"p\">(</span><span class=\"s2\">&quot;_<mark>require_token</mark>&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"32\"><td><div class=\"lineno\">32</div></td><td><div class=\"highlight\"><pre><span class=\"n\">_resolve_profile_dir</span> <span class=\"o\">=</span> <span class=\"n\">late</span><span class=\"p\">(</span><span class=\"s2\">&quot;_resolve_profile_dir&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;hermes_cli.web_server_profiles&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"620\"><td><div class=\"lineno\">620</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Disconnect an OAuth provider. Token-protected (matches /env/reveal).&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"621\"><td><div class=\"lineno\">621</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">_<mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">request</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"675\"><td><div class=\"lineno\">675</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Initiate an OAuth login flow. Token-protected.&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"676\"><td><div class=\"lineno\">676</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">_<mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">request</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"677\"><td><div class=\"lineno\">677</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">_gc_oauth_sessions</span><span class=\"p\">()</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "134168893",
+          "path": "hermes_cli/web_routers/oauth.py",
+          "repo": "NousResearch/hermes-agent",
+          "total_matches": "6"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"30\"><td><div class=\"lineno\">30</div></td><td><div class=\"highlight\"><pre><span class=\"n\">_config_profile_scope</span> <span class=\"o\">=</span> <span class=\"n\">late</span><span class=\"p\">(</span><span class=\"s2\">&quot;_config_profile_scope&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;hermes_cli.web_server_profiles&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"31\"><td><div class=\"lineno\">31</div></td><td><div class=\"highlight\"><pre><span class=\"n\">_<mark>require_token</mark></span> <span class=\"o\">=</span> <span class=\"n\">late</span><span class=\"p\">(</span><span class=\"s2\">&quot;_<mark>require_token</mark>&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"32\"><td><div class=\"lineno\">32</div></td><td><div class=\"highlight\"><pre><span class=\"n\">_run_dashboard_mcp_oauth</span> <span class=\"o\">=</span> <span class=\"n\">late</span><span class=\"p\">(</span><span class=\"s2\">&quot;_run_dashboard_mcp_oauth&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;hermes_cli.web_server_mcp&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"217\"><td><div class=\"lineno\">217</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">_<mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">request</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"218\"><td><div class=\"lineno\">218</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">_gc_mcp_oauth_flows</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"264\"><td><div class=\"lineno\">264</div></td><td><div class=\"highlight\"><pre><span class=\"k\">async</span> <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">mcp_oauth_flow_status</span><span class=\"p\">(</span><span class=\"n\">flow_id</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">request</span><span class=\"p\">:</span> <span class=\"n\">Request</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"265\"><td><div class=\"lineno\">265</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">_<mark>require_token</mark></span><span class=\"p\">(</span><span class=\"n\">request</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"266\"><td><div class=\"lineno\">266</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">_gc_mcp_oauth_flows</span><span class=\"p\">()</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "134168893",
+          "path": "hermes_cli/web_routers/mcp.py",
+          "repo": "NousResearch/hermes-agent",
+          "total_matches": "5"
+        }
+      ],
+      "total": 1848
+    },
+    "time": 170
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=require_token"
+}

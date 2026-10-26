@@ -1,0 +1,65 @@
+{
+ "id": "vllm-rl-dev-auth-bypass",
+ "source": "new-discovery",
+ "component": "vllm",
+ "product": "vllm-project/vllm",
+ "title": "vLLM 0.32.0 RL control router is mounted at / and bypasses --api-key",
+ "module": "vllm-plugin-auth-bypass",
+ "version": "v0.32.0",
+ "root_cause": {
+  "file": "vllm/entrypoints/rl/online/api_router.py",
+  "line": 31,
+  "function": "pause_generation",
+  "snippet": ""
+ },
+ "preconditions": [
+  "VLLM_SERVER_DEV_MODE=1 (SkyRL/TRL recipes)",
+  "vLLM --api-key configured",
+  "port reachable"
+ ],
+ "exploit": "POST /pause, /resume, /abort_requests, /update_weights, /weight_checker without Authorization -> 200; /v1/* -> 401",
+ "evidence": {
+  "path": "lab/zeroday_reserve/cases/vllm-rl-dev-auth-bypass/result.json",
+  "mode": "evidence-reused",
+  "kind": "dynamic"
+ },
+ "verification": {
+  "status": "verified",
+  "dynamic": true,
+  "method": "dynamic-http",
+  "reason": ""
+ },
+ "reachability": "HTTP request -> real vLLM AuthenticationMiddleware (GUARDED_PREFIX excludes /) -> real RL router /pause or /weight_checker -> engine control; --api-key only guards /v1,/v2,/inference,/cohere.",
+ "novelty": {
+  "osv_package": "vllm",
+  "osv_ecosystem": "PyPI",
+  "osv_version": "0.32.0",
+  "ghsa_package": "vllm",
+  "ghsa_ecosystem": "pip",
+  "repo": "vllm-project/vllm",
+  "nvd_keywords": [
+   "vllm",
+   "vllm",
+   "rl"
+  ],
+  "strong_terms": [
+   "pause_generation",
+   "/weight_checker",
+   "pause_generation",
+   "GUARDED_PREFIX",
+   "api_router.py"
+  ],
+  "keywords": [
+   "vllm",
+   "vllm",
+   "rl",
+   "dev"
+  ],
+  "local_source": null
+ },
+ "disclosure": {
+  "status": "undisclosed",
+  "channel": "vendor security policy"
+ },
+ "notes": ""
+}

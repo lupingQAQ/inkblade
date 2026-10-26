@@ -1,0 +1,52 @@
+{
+  "_cached_at": "2026-10-26T12:15:25+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 1,
+            "val": "Python"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 1,
+            "val": "python/metatensor_learn/metatensor_learn/data/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 1,
+            "owner_id": "144240893",
+            "val": "metatensor/metatensor"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"256\"><td><div class=\"lineno\">256</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    return the data object for that sample ID. This data field for a given sample is</span></pre></div></td></tr><tr data-line=\"257\"><td><div class=\"lineno\">257</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    then only lazily loaded into memory when :py:meth:`<mark>IndexedDataset.__getitem__</mark>` or</span></pre></div></td></tr><tr data-line=\"258\"><td><div class=\"lineno\">258</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    :py:meth:`IndexedDataset.get_sample` methods are called.</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "144240893",
+          "path": "python/metatensor_learn/metatensor_learn/data/_dataset.py",
+          "repo": "metatensor/metatensor",
+          "total_matches": "1"
+        }
+      ],
+      "total": 1
+    },
+    "time": 29
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=IndexedDataset.__getitem__"
+}

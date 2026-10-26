@@ -1,0 +1,159 @@
+{
+  "_cached_at": "2026-10-26T11:19:22+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 8,
+            "val": "Python"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 4,
+            "val": "swift/"
+          },
+          {
+            "count": 2,
+            "val": "parsing/train/ms-swift/swift/llm/infer/"
+          },
+          {
+            "count": 1,
+            "val": "VBench-2.0/vbench2/third_party/Instance_detector/swift/llm/infer/"
+          },
+          {
+            "count": 1,
+            "val": "deepanalyze/ms-swift/swift/llm/infer/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 2,
+            "owner_id": "109945100",
+            "val": "modelscope/ms-swift"
+          },
+          {
+            "count": 2,
+            "owner_id": "34134635",
+            "val": "Yuliang-Liu/MonkeyOCRv2"
+          },
+          {
+            "count": 1,
+            "owner_id": "145264752",
+            "val": "Vchitect/VBench"
+          },
+          {
+            "count": 1,
+            "owner_id": "215250636",
+            "val": "ECNU-SII/Continual-NExT"
+          },
+          {
+            "count": 1,
+            "owner_id": "53161950",
+            "val": "yfzhang114/Thyme"
+          },
+          {
+            "count": 1,
+            "owner_id": "76154266",
+            "val": "ruc-datalab/DeepAnalyze"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"225\"><td><div class=\"lineno\">225</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">if</span> <span class=\"nb\">isinstance</span><span class=\"p\">(</span><span class=\"n\">content</span><span class=\"p\">,</span> <span class=\"nb\">dict</span><span class=\"p\">)</span> <span class=\"ow\">and</span> <span class=\"n\">content</span><span class=\"p\">[</span><span class=\"s1\">&#39;type&#39;</span><span class=\"p\">]</span> <span class=\"o\">==</span> <span class=\"s1\">&#39;image&#39;</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"226\"><td><div class=\"lineno\">226</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">b64_image</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">MultiModalRequestMixin</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">to_base64</mark></span><span class=\"p\">(</span><span class=\"n\">content</span><span class=\"p\">[</span><span class=\"s1\">&#39;image&#39;</span><span class=\"p\">])</span></pre></div></td></tr><tr data-line=\"227\"><td><div class=\"lineno\">227</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">response</span><span class=\"o\">.</span><span class=\"n\">choices</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]</span><span class=\"o\">.</span><span class=\"n\">message</span><span class=\"o\">.</span><span class=\"n\">content</span><span class=\"p\">[</span><span class=\"n\">j</span><span class=\"p\">][</span><span class=\"s1\">&#39;image&#39;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"sa\">f</span><span class=\"s1\">&#39;data:image/jpg;base64,</span><span class=\"si\">{</span><span class=\"n\">b64_image</span><span class=\"si\">}</span><span class=\"s1\">&#39;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "109945100",
+          "path": "swift/pipelines/infer/deploy.py",
+          "repo": "modelscope/ms-swift",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"549\"><td><div class=\"lineno\">549</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">for</span> <span class=\"n\">i</span><span class=\"p\">,</span> <span class=\"n\">value</span> <span class=\"ow\">in</span> <span class=\"nb\">enumerate</span><span class=\"p\">(</span><span class=\"n\">values</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"550\"><td><div class=\"lineno\">550</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">values</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">MultiModalRequestMixin</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">to_base64</mark></span><span class=\"p\">(</span><span class=\"n\">value</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"551\"><td><div class=\"lineno\">551</div></td><td><div class=\"highlight\"><pre>                <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">rollout_infos</span><span class=\"p\">[</span><span class=\"n\">key</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"n\">values</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "109945100",
+          "path": "swift/infer_engine/protocol.py",
+          "repo": "modelscope/ms-swift",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"144\"><td><div class=\"lineno\">144</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">if</span> <span class=\"nb\">isinstance</span><span class=\"p\">(</span><span class=\"n\">content</span><span class=\"p\">,</span> <span class=\"nb\">dict</span><span class=\"p\">)</span> <span class=\"ow\">and</span> <span class=\"n\">content</span><span class=\"p\">[</span><span class=\"s1\">&#39;type&#39;</span><span class=\"p\">]</span> <span class=\"o\">==</span> <span class=\"s1\">&#39;image&#39;</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"145\"><td><div class=\"lineno\">145</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">b64_image</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">MultiModalRequestMixin</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">to_base64</mark></span><span class=\"p\">(</span><span class=\"n\">content</span><span class=\"p\">[</span><span class=\"s1\">&#39;image&#39;</span><span class=\"p\">])</span></pre></div></td></tr><tr data-line=\"146\"><td><div class=\"lineno\">146</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">response</span><span class=\"o\">.</span><span class=\"n\">choices</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]</span><span class=\"o\">.</span><span class=\"n\">message</span><span class=\"o\">.</span><span class=\"n\">content</span><span class=\"p\">[</span><span class=\"n\">j</span><span class=\"p\">][</span><span class=\"s1\">&#39;image&#39;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"sa\">f</span><span class=\"s1\">&#39;data:image/jpg;base64,</span><span class=\"si\">{</span><span class=\"n\">b64_image</span><span class=\"si\">}</span><span class=\"s1\">&#39;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "34134635",
+          "path": "parsing/train/ms-swift/swift/llm/infer/deploy.py",
+          "repo": "Yuliang-Liu/MonkeyOCRv2",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"381\"><td><div class=\"lineno\">381</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">for</span> <span class=\"n\">i</span><span class=\"p\">,</span> <span class=\"n\">value</span> <span class=\"ow\">in</span> <span class=\"nb\">enumerate</span><span class=\"p\">(</span><span class=\"n\">values</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"382\"><td><div class=\"lineno\">382</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">values</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">MultiModalRequestMixin</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">to_base64</mark></span><span class=\"p\">(</span><span class=\"n\">value</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"383\"><td><div class=\"lineno\">383</div></td><td><div class=\"highlight\"><pre>                <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">rollout_infos</span><span class=\"p\">[</span><span class=\"n\">key</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"n\">values</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "34134635",
+          "path": "parsing/train/ms-swift/swift/llm/infer/protocol.py",
+          "repo": "Yuliang-Liu/MonkeyOCRv2",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"130\"><td><div class=\"lineno\">130</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">if</span> <span class=\"n\">content</span><span class=\"p\">[</span><span class=\"s2\">&quot;type&quot;</span><span class=\"p\">]</span> <span class=\"o\">==</span> <span class=\"s2\">&quot;image&quot;</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"131\"><td><div class=\"lineno\">131</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">b64_image</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">MultiModalRequestMixin</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">to_base64</mark></span><span class=\"p\">(</span><span class=\"n\">content</span><span class=\"p\">[</span><span class=\"s2\">&quot;image&quot;</span><span class=\"p\">])</span></pre></div></td></tr><tr data-line=\"132\"><td><div class=\"lineno\">132</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">response</span><span class=\"o\">.</span><span class=\"n\">choices</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]</span><span class=\"o\">.</span><span class=\"n\">message</span><span class=\"o\">.</span><span class=\"n\">content</span><span class=\"p\">[</span><span class=\"n\">j</span><span class=\"p\">][</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "76154266",
+          "path": "deepanalyze/ms-swift/swift/llm/infer/deploy.py",
+          "repo": "ruc-datalab/DeepAnalyze",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"118\"><td><div class=\"lineno\">118</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">if</span> <span class=\"n\">content</span><span class=\"p\">[</span><span class=\"s1\">&#39;type&#39;</span><span class=\"p\">]</span> <span class=\"o\">==</span> <span class=\"s1\">&#39;image&#39;</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"119\"><td><div class=\"lineno\">119</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">b64_image</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">MultiModalRequestMixin</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">to_base64</mark></span><span class=\"p\">(</span><span class=\"n\">content</span><span class=\"p\">[</span><span class=\"s1\">&#39;image&#39;</span><span class=\"p\">])</span></pre></div></td></tr><tr data-line=\"120\"><td><div class=\"lineno\">120</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">response</span><span class=\"o\">.</span><span class=\"n\">choices</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]</span><span class=\"o\">.</span><span class=\"n\">message</span><span class=\"o\">.</span><span class=\"n\">content</span><span class=\"p\">[</span><span class=\"n\">j</span><span class=\"p\">][</span><span class=\"s1\">&#39;image&#39;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"sa\">f</span><span class=\"s1\">&#39;data:image/jpg;base64,</span><span class=\"si\">{</span><span class=\"n\">b64_image</span><span class=\"si\">}</span><span class=\"s1\">&#39;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "215250636",
+          "path": "swift/llm/infer/deploy.py",
+          "repo": "ECNU-SII/Continual-NExT",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"118\"><td><div class=\"lineno\">118</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">if</span> <span class=\"n\">content</span><span class=\"p\">[</span><span class=\"s1\">&#39;type&#39;</span><span class=\"p\">]</span> <span class=\"o\">==</span> <span class=\"s1\">&#39;image&#39;</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"119\"><td><div class=\"lineno\">119</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">b64_image</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">MultiModalRequestMixin</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">to_base64</mark></span><span class=\"p\">(</span><span class=\"n\">content</span><span class=\"p\">[</span><span class=\"s1\">&#39;image&#39;</span><span class=\"p\">])</span></pre></div></td></tr><tr data-line=\"120\"><td><div class=\"lineno\">120</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">response</span><span class=\"o\">.</span><span class=\"n\">choices</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]</span><span class=\"o\">.</span><span class=\"n\">message</span><span class=\"o\">.</span><span class=\"n\">content</span><span class=\"p\">[</span><span class=\"n\">j</span><span class=\"p\">][</span><span class=\"s1\">&#39;image&#39;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"sa\">f</span><span class=\"s1\">&#39;data:image/jpg;base64,</span><span class=\"si\">{</span><span class=\"n\">b64_image</span><span class=\"si\">}</span><span class=\"s1\">&#39;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "53161950",
+          "path": "swift/llm/infer/deploy.py",
+          "repo": "yfzhang114/Thyme",
+          "total_matches": "1"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"118\"><td><div class=\"lineno\">118</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">if</span> <span class=\"n\">content</span><span class=\"p\">[</span><span class=\"s1\">&#39;type&#39;</span><span class=\"p\">]</span> <span class=\"o\">==</span> <span class=\"s1\">&#39;image&#39;</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"119\"><td><div class=\"lineno\">119</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">b64_image</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">MultiModalRequestMixin</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">to_base64</mark></span><span class=\"p\">(</span><span class=\"n\">content</span><span class=\"p\">[</span><span class=\"s1\">&#39;image&#39;</span><span class=\"p\">])</span></pre></div></td></tr><tr data-line=\"120\"><td><div class=\"lineno\">120</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">response</span><span class=\"o\">.</span><span class=\"n\">choices</span><span class=\"p\">[</span><span class=\"n\">i</span><span class=\"p\">]</span><span class=\"o\">.</span><span class=\"n\">message</span><span class=\"o\">.</span><span class=\"n\">content</span><span class=\"p\">[</span><span class=\"n\">j</span><span class=\"p\">][</span><span class=\"s1\">&#39;image&#39;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"sa\">f</span><span class=\"s1\">&#39;data:image/jpg;base64,</span><span class=\"si\">{</span><span class=\"n\">b64_image</span><span class=\"si\">}</span><span class=\"s1\">&#39;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "145264752",
+          "path": "VBench-2.0/vbench2/third_party/Instance_detector/swift/llm/infer/deploy.py",
+          "repo": "Vchitect/VBench",
+          "total_matches": "1"
+        }
+      ],
+      "total": 8
+    },
+    "time": 61
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=MultiModalRequestMixin.to_base64"
+}

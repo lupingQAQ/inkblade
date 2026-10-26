@@ -1,0 +1,63 @@
+{
+ "id": "sglang-legacy-tar-weights-rce",
+ "source": "new-discovery",
+ "component": "sglang",
+ "product": "sgl-project/sglang",
+ "title": "SGLang pt loader falls back to torch.load(weights_only=False) for legacy tar model shards",
+ "module": "sglang-admin-failopen",
+ "version": "v0.5.22",
+ "root_cause": {
+  "file": "python/sglang/srt/model_loader/weight_utils.py",
+  "line": 1414,
+  "function": "_load_pt_file",
+  "snippet": ""
+ },
+ "preconditions": [
+  "victim loads a model directory containing an attacker-controlled .bin/.pt shard",
+  "shard is legacy tar format"
+ ],
+ "exploit": "crafted legacy-tar .bin -> weights_only=True raises -> fallback weights_only=False -> pickle -> marker",
+ "evidence": {
+  "path": "lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/result.json",
+  "mode": "evidence-reused",
+  "kind": "dynamic"
+ },
+ "verification": {
+  "status": "verified",
+  "dynamic": true,
+  "method": "dynamic-function",
+  "reason": ""
+ },
+ "reachability": "model load -> pt_weights_iterator -> _load_pt_file -> weights_only=True RuntimeError('legacy .tar format') -> weights_only=False -> pickle reduce -> RCE.",
+ "novelty": {
+  "osv_package": "sglang",
+  "osv_ecosystem": "PyPI",
+  "osv_version": "0.5.22",
+  "ghsa_package": "sglang",
+  "ghsa_ecosystem": "pip",
+  "repo": "sgl-project/sglang",
+  "nvd_keywords": [
+   "sglang",
+   "sglang",
+   "model loader"
+  ],
+  "strong_terms": [
+   "_load_pt_file",
+   "_load_pt_file",
+   "legacy .tar format",
+   "weights_only=False",
+   "weight_utils.py"
+  ],
+  "keywords": [
+   "sglang",
+   "sglang",
+   "model loader"
+  ],
+  "local_source": null
+ },
+ "disclosure": {
+  "status": "undisclosed",
+  "channel": "vendor security policy"
+ },
+ "notes": ""
+}

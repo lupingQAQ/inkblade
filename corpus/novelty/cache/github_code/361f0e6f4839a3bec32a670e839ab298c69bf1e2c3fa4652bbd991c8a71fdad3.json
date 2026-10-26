@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T12:14:51+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 68,
+            "val": "Markdown"
+          },
+          {
+            "count": 22,
+            "val": "Python"
+          },
+          {
+            "count": 5,
+            "val": "Gettext Catalog"
+          },
+          {
+            "count": 5,
+            "val": "Jupyter Notebook"
+          },
+          {
+            "count": 5,
+            "val": "Text"
+          },
+          {
+            "count": 5,
+            "val": "YAML"
+          },
+          {
+            "count": 4,
+            "val": "Shell"
+          },
+          {
+            "count": 3,
+            "val": "Diff"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 29,
+            "val": "docs/"
+          },
+          {
+            "count": 10,
+            "val": "tests/"
+          },
+          {
+            "count": 5,
+            "val": "koalixcrm/reporting/locale/"
+          },
+          {
+            "count": 4,
+            "val": "api_emulator/redfish/"
+          },
+          {
+            "count": 3,
+            "val": ".github/"
+          },
+          {
+            "count": 3,
+            "val": "datastream_utils/"
+          },
+          {
+            "count": 3,
+            "val": "examples/"
+          },
+          {
+            "count": 2,
+            "val": ".claude/skills/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 18,
+            "owner_id": "1728152",
+            "val": "NVIDIA/TensorRT-LLM"
+          },
+          {
+            "count": 5,
+            "owner_id": "191566945",
+            "val": "NetAlsGroup/GAPA"
+          },
+          {
+            "count": 5,
+            "owner_id": "59331843",
+            "val": "KoalixSwitzerland/koalixcrm"
+          },
+          {
+            "count": 5,
+            "owner_id": "9056627",
+            "val": "DMTF/Redfish-Interface-Emulator"
+          },
+          {
+            "count": 3,
+            "owner_id": "123612964",
+            "val": "703519523/Emote_Widget"
+          },
+          {
+            "count": 3,
+            "owner_id": "199755",
+            "val": "icarito/gtk-llm-chat"
+          },
+          {
+            "count": 3,
+            "owner_id": "2211051",
+            "val": "HariSekhon/DevOps-Python-tools"
+          },
+          {
+            "count": 3,
+            "owner_id": "23534030",
+            "val": "PaddlePaddle/FastDeploy"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"84\"><td><div class=\"lineno\">84</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span>@echo<span class=\"w\"> </span><span class=\"s2\">&quot;To clean up resources, run &#39;make aws-practice-cleanup&#39; instead.&quot;</span></pre></div></td></tr><tr data-line=\"85\"><td><div class=\"lineno\">85</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span>@python<span class=\"w\"> </span>scripts/aws_<mark>resource_manager.py</mark></pre></div></td></tr><tr data-line=\"86\"><td><div class=\"lineno\">86</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"87\"><td><div class=\"lineno\">87</div></td><td><div class=\"highlight\"><pre><span class=\"nf\">aws-practice-cleanup</span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"c\">## Clean up AWS resources used in practice</span></pre></div></td></tr><tr data-line=\"88\"><td><div class=\"lineno\">88</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span>@echo<span class=\"w\"> </span><span class=\"s2\">&quot;Cleaning up AWS resources...&quot;</span></pre></div></td></tr><tr data-line=\"89\"><td><div class=\"lineno\">89</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span>@echo<span class=\"w\"> </span><span class=\"s2\">&quot;This will attempt to remove resources created during practice.&quot;</span></pre></div></td></tr><tr data-line=\"90\"><td><div class=\"lineno\">90</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span>@echo<span class=\"w\"> </span><span class=\"s2\">&quot;S3 buckets will not be deleted for safety reasons.&quot;</span></pre></div></td></tr><tr data-line=\"91\"><td><div class=\"lineno\">91</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span>@python<span class=\"w\"> </span>scripts/aws_<mark>resource_manager.py</mark><span class=\"w\"> </span>--clean</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"178\"><td><div class=\"lineno\">178</div></td><td><div class=\"highlight\"><pre><span class=\"w\">\t</span>@python<span class=\"w\"> </span>scripts/aws_<mark>resource_manager.py</mark><span class=\"w\"> </span>audit</pre></div></td></tr></table>"
+          },
+          "owner_id": "35480",
+          "path": "Makefile",
+          "repo": "jwalsh/aif-c01",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"66\"><td><div class=\"lineno\">66</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">except</span> <span class=\"ne\">Exception</span> <span class=\"k\">as</span> <span class=\"n\">e</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"67\"><td><div class=\"lineno\">67</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">logger</span><span class=\"o\">.</span><span class=\"n\">error</span><span class=\"p\">(</span><span class=\"s2\">&quot;superagi/resource_manager/<mark>resource_manager.py</mark> - create_llama_document_s3 threw : &quot;</span><span class=\"p\">,</span> <span class=\"n\">e</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"68\"><td><div class=\"lineno\">68</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">finally</span><span class=\"p\">:</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "133493246",
+          "path": "superagi/resource_manager/resource_manager.py",
+          "repo": "TransformerOptimus/SuperAGI",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"77\"><td><div class=\"lineno\">77</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># Mirrors tensorrt_llm/_torch/pyexecutor/kv_cache/kv_cache_manager_v2.py and</span></pre></div></td></tr><tr data-line=\"78\"><td><div class=\"lineno\">78</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># <mark>resource_manager.py</mark>, so the bench heuristic agrees with the runtime.</span></pre></div></td></tr><tr data-line=\"79\"><td><div class=\"lineno\">79</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">mla_head_dim</span> <span class=\"o\">=</span> <span class=\"n\">model_config</span><span class=\"o\">.</span><span class=\"n\">kv_lora_rank</span> <span class=\"o\">+</span> <span class=\"n\">model_config</span><span class=\"o\">.</span><span class=\"n\">qk_rope_head_dim</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1728152",
+          "path": "tensorrt_llm/bench/tuning/heuristics.py",
+          "repo": "NVIDIA/TensorRT-LLM",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"829\"><td><div class=\"lineno\">829</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># <mark>resource_manager.py</mark>:1820 now casts ``int(max_num_tokens)`` at the assign</span></pre></div></td></tr><tr data-line=\"830\"><td><div class=\"lineno\">830</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># site.  The tests below lock in that invariant: (a) the replay test</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"839\"><td><div class=\"lineno\">839</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    Reproduces the exact arithmetic from ``<mark>resource_manager.py</mark>``</span></pre></div></td></tr><tr data-line=\"840\"><td><div class=\"lineno\">840</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    ``KVCacheManagerV2.__init__`` lines 1813-1825.  Pre-fix, the ``if``</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"850\"><td><div class=\"lineno\">850</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">assert</span> <span class=\"nb\">isinstance</span><span class=\"p\">(</span><span class=\"n\">clamp_float_result</span><span class=\"p\">,</span> <span class=\"nb\">float</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"851\"><td><div class=\"lineno\">851</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># Match the production code block (<mark>resource_manager.py</mark>:1816-1825).</span></pre></div></td></tr><tr data-line=\"852\"><td><div class=\"lineno\">852</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">self_max_seq_len</span> <span class=\"o\">=</span> <span class=\"n\">initial_max_seq_len</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1728152",
+          "path": "tests/unittest/_torch/executor/kv_cache/test_kv_cache_estimation.py",
+          "repo": "NVIDIA/TensorRT-LLM",
+          "total_matches": "3"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1915\"><td><div class=\"lineno\">1915</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">size</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;small&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"1916\"><td><div class=\"lineno\">1916</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">srcs</span> <span class=\"o\">=</span> <span class=\"p\">[</span><span class=\"s2\">&quot;tests/test_<mark>resource_manager.py</mark>&quot;</span><span class=\"p\">],</span></pre></div></td></tr><tr data-line=\"1917\"><td><div class=\"lineno\">1917</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">tags</span> <span class=\"o\">=</span> <span class=\"p\">[</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "22125274",
+          "path": "python/ray/data/BUILD.bazel",
+          "repo": "ray-project/ray",
+          "total_matches": "1"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"22\"><td><div class=\"lineno\">22</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">Tip: run this against a load balancer in front of your Resource Manager or with</span></pre></div></td></tr><tr data-line=\"23\"><td><div class=\"lineno\">23</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">find_active_hadoop_yarn_<mark>resource_manager.py</mark> to check that you always have an active master available</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "2211051",
+          "path": "check_hadoop_yarn_resource_manager_ha_state.py",
+          "repo": "HariSekhon/Nagios-Plugins",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"643\"><td><div class=\"lineno\">643</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"c1\">// Per-window query.  windowSize is required (no aggregation): the Python</span></pre></div></td></tr><tr data-line=\"644\"><td><div class=\"lineno\">644</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"c1\">// wrapper in <mark>resource_manager.py</mark> provides a &quot;default to first window&quot;</span></pre></div></td></tr><tr data-line=\"645\"><td><div class=\"lineno\">645</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                </span><span class=\"c1\">// convenience layer; the C++/nanobind boundary stays explicit so that</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1728152",
+          "path": "cpp/tensorrt_llm/nanobind/batch_manager/kvCacheManager.cpp",
+          "repo": "NVIDIA/TensorRT-LLM",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"12\"><td><div class=\"lineno\">12</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># be paired with an appropriate Resource template file in the</span></pre></div></td></tr><tr data-line=\"13\"><td><div class=\"lineno\">13</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># api_emulator/redfish/templates directory. The <mark>resource_manager.py</mark></span></pre></div></td></tr><tr data-line=\"14\"><td><div class=\"lineno\">14</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># file in the api_emulator directory can then be edited to use these</span></pre></div></td></tr><tr data-line=\"15\"><td><div class=\"lineno\">15</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># files to make the resource dynamic.</span></pre></div></td></tr><tr data-line=\"16\"><td><div class=\"lineno\">16</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"17\"><td><div class=\"lineno\">17</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"18\"><td><div class=\"lineno\">18</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">These APIs are attached to Collection Resources or Singleton</span></pre></div></td></tr><tr data-line=\"19\"><td><div class=\"lineno\">19</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">Resources by the <mark>resource_manager.py</mark> file.</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "9056627",
+          "path": "api_emulator/redfish/eg_resource_api.py",
+          "repo": "DMTF/Redfish-Interface-Emulator",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"186\"><td><div class=\"lineno\">186</div></td><td><div class=\"highlight\"><pre>zip<span class=\"w\"> </span>-g<span class=\"w\"> </span>-r<span class=\"w\"> </span><span class=\"s2\">&quot;</span><span class=\"nv\">$build_dist_dir</span><span class=\"s2\">&quot;</span>/custom_resource.zip<span class=\"w\"> </span>custom_resource.py<span class=\"w\"> </span><mark>resource_manager.py</mark><span class=\"w\"> </span>log_group_retention.py<span class=\"w\"> </span>lib<span class=\"w\"> </span>operations</pre></div></td></tr></table>"
+          },
+          "owner_id": "49037648",
+          "path": "deployment/build-s3-dist.sh",
+          "repo": "aws-solutions/aws-waf-security-automations",
+          "total_matches": "1"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"77\"><td><div class=\"lineno\">77</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    ./find_active_hadoop_yarn_<mark>resource_manager.py</mark>  resourcemanager1 resourcemanager2</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "2211051",
+          "path": "find_active_server.py",
+          "repo": "HariSekhon/DevOps-Python-tools",
+          "total_matches": "1"
+        }
+      ],
+      "total": 132
+    },
+    "time": 194
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=resource_manager.py"
+}

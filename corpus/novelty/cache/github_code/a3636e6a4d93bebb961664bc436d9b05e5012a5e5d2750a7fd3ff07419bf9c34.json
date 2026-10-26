@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T11:36:14+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 975,
+            "val": "Python"
+          },
+          {
+            "count": 34,
+            "val": "Markdown"
+          },
+          {
+            "count": 15,
+            "val": "Jupyter Notebook"
+          },
+          {
+            "count": 5,
+            "val": "Elixir"
+          },
+          {
+            "count": 5,
+            "val": "Rust"
+          },
+          {
+            "count": 3,
+            "val": "YAML"
+          },
+          {
+            "count": 2,
+            "val": "Java"
+          },
+          {
+            "count": 2,
+            "val": "JavaScript"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 175,
+            "val": "verl/"
+          },
+          {
+            "count": 72,
+            "val": "examples/"
+          },
+          {
+            "count": 33,
+            "val": "tests/"
+          },
+          {
+            "count": 32,
+            "val": "qc_grader/"
+          },
+          {
+            "count": 29,
+            "val": "src/"
+          },
+          {
+            "count": 22,
+            "val": "evaluation/"
+          },
+          {
+            "count": 19,
+            "val": "eval/"
+          },
+          {
+            "count": 19,
+            "val": "mnemosyne/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 33,
+            "owner_id": "52251474",
+            "val": "qiskit-community/Quantum-Challenge-Grader"
+          },
+          {
+            "count": 30,
+            "owner_id": "32872675",
+            "val": "mnemosyne-proj/mnemosyne"
+          },
+          {
+            "count": 27,
+            "owner_id": "5618407",
+            "val": "rasbt/reasoning-from-scratch"
+          },
+          {
+            "count": 20,
+            "owner_id": "227490022",
+            "val": "DrStranded/Co-RL"
+          },
+          {
+            "count": 20,
+            "owner_id": "60415163",
+            "val": "zli12321/MM-Zero"
+          },
+          {
+            "count": 15,
+            "owner_id": "114994859",
+            "val": "wyf3/llm_related"
+          },
+          {
+            "count": 14,
+            "owner_id": "6154722",
+            "val": "microsoft/LMOps"
+          },
+          {
+            "count": 11,
+            "owner_id": "186755503",
+            "val": "aiming-lab/Agent0"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"586\"><td><div class=\"lineno\">586</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_mathd</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"587\"><td><div class=\"lineno\">587</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">ground_truth_normalized_mathd</span> <span class=\"o\">=</span> <span class=\"n\">mathd_normalize_answer</span><span class=\"p\">(</span><span class=\"n\">ground_truth</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"781\"><td><div class=\"lineno\">781</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_sympy</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"782\"><td><div class=\"lineno\">782</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">ground_truth_normalized</span> <span class=\"o\">=</span> <span class=\"n\">sympy_normalize_answer</span><span class=\"p\">(</span><span class=\"n\">ground_truth</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"901\"><td><div class=\"lineno\">901</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_math_verify</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"902\"><td><div class=\"lineno\">902</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">try</span><span class=\"p\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1006\"><td><div class=\"lineno\">1006</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_xverify</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">problem</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1728152",
+          "path": "evaluation/cosmos3/reasoner/vlmevalkit/vlmeval/dataset/utils/hipho_verifier.py",
+          "repo": "NVIDIA/cosmos",
+          "total_matches": "21"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"586\"><td><div class=\"lineno\">586</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_mathd</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"587\"><td><div class=\"lineno\">587</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">ground_truth_normalized_mathd</span> <span class=\"o\">=</span> <span class=\"n\">mathd_normalize_answer</span><span class=\"p\">(</span><span class=\"n\">ground_truth</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"781\"><td><div class=\"lineno\">781</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_sympy</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"782\"><td><div class=\"lineno\">782</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">ground_truth_normalized</span> <span class=\"o\">=</span> <span class=\"n\">sympy_normalize_answer</span><span class=\"p\">(</span><span class=\"n\">ground_truth</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"901\"><td><div class=\"lineno\">901</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_math_verify</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"902\"><td><div class=\"lineno\">902</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">try</span><span class=\"p\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1006\"><td><div class=\"lineno\">1006</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_xverify</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">problem</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "143521324",
+          "path": "vlmeval/dataset/utils/hipho_verifier.py",
+          "repo": "open-compass/VLMEvalKit",
+          "total_matches": "21"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"3\"><td><div class=\"lineno\">3</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">Grading is join-free by construction: every prediction is graded through</span></pre></div></td></tr><tr data-line=\"4\"><td><div class=\"lineno\">4</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">``<mark>grade_answer</mark>(prediction, reference)`` — two strings, no policy identity —</span></pre></div></td></tr><tr data-line=\"5\"><td><div class=\"lineno\">5</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">and only afterwards joined back to its policy through the stable row ID.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"21\"><td><div class=\"lineno\">21</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">.config</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">EvaluationConfig</span></pre></div></td></tr><tr data-line=\"22\"><td><div class=\"lineno\">22</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">.grading</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">GRADER_VERSION</span><span class=\"p\">,</span> <span class=\"n\"><mark>grade_answer</mark></span></pre></div></td></tr><tr data-line=\"23\"><td><div class=\"lineno\">23</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">.policy</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">PolicyResult</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"52\"><td><div class=\"lineno\">52</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_rows</span><span class=\"p\">(</span><span class=\"n\">cases</span><span class=\"p\">:</span> <span class=\"nb\">list</span><span class=\"p\">[</span><span class=\"n\">PreparedCase</span><span class=\"p\">],</span> <span class=\"n\">results_by_row</span><span class=\"p\">:</span> <span class=\"nb\">dict</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">PolicyResult</span><span class=\"p\">],</span> <span class=\"n\">rows</span><span class=\"p\">:</span> <span class=\"nb\">dict</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"nb\">dict</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">Any</span><span class=\"p\">]],</span> <span class=\"o\">*</span><span class=\"p\">,</span> <span class=\"n\">expected_fingerprints</span><span class=\"p\">:</span> <span class=\"nb\">dict</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"nb\">str</span><span class=\"p\">])</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">list</span><span class=\"p\">[</span><span class=\"nb\">dict</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">Any</span><span class=\"p\">]]:</span></pre></div></td></tr><tr data-line=\"53\"><td><div class=\"lineno\">53</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">cases_by_id</span> <span class=\"o\">=</span> <span class=\"p\">{</span><span class=\"n\">case</span><span class=\"o\">.</span><span class=\"n\">case_id</span><span class=\"p\">:</span> <span class=\"n\">case</span> <span class=\"k\">for</span> <span class=\"n\">case</span> <span class=\"ow\">in</span> <span class=\"n\">cases</span><span class=\"p\">}</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "4158466",
+          "path": "backend/scripts/benchmark/deermem_eviction/report.py",
+          "repo": "bytedance/deer-flow",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"8\"><td><div class=\"lineno\">8</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">scripts.benchmark.deermem_eviction.config</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">load_evaluation_config</span></pre></div></td></tr><tr data-line=\"9\"><td><div class=\"lineno\">9</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">scripts.benchmark.deermem_eviction.grading</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">GRADER_VERSION</span><span class=\"p\">,</span> <span class=\"n\">OVERLAP_THRESHOLD</span><span class=\"p\">,</span> <span class=\"n\"><mark>grade_answer</mark></span><span class=\"p\">,</span> <span class=\"n\">normalize_answer</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"19\"><td><div class=\"lineno\">19</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">test_grader_is_blind_by_construction</span><span class=\"p\">()</span> <span class=\"o\">-&gt;</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"20\"><td><div class=\"lineno\">20</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">parameters</span> <span class=\"o\">=</span> <span class=\"n\">inspect</span><span class=\"o\">.</span><span class=\"n\">signature</span><span class=\"p\">(</span><span class=\"n\"><mark>grade_answer</mark></span><span class=\"p\">)</span><span class=\"o\">.</span><span class=\"n\">parameters</span></pre></div></td></tr><tr data-line=\"21\"><td><div class=\"lineno\">21</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">assert</span> <span class=\"nb\">list</span><span class=\"p\">(</span><span class=\"n\">parameters</span><span class=\"p\">)</span> <span class=\"o\">==</span> <span class=\"p\">[</span><span class=\"s2\">&quot;prediction&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;reference&quot;</span><span class=\"p\">]</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"32\"><td><div class=\"lineno\">32</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">test_empty_and_insufficient_predictions_are_rejected</span><span class=\"p\">()</span> <span class=\"o\">-&gt;</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"33\"><td><div class=\"lineno\">33</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">empty</span> <span class=\"o\">=</span> <span class=\"n\"><mark>grade_answer</mark></span><span class=\"p\">(</span><span class=\"s2\">&quot;&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;3 weeks&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"34\"><td><div class=\"lineno\">34</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">assert</span> <span class=\"ow\">not</span> <span class=\"n\">empty</span><span class=\"o\">.</span><span class=\"n\">correct</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "4158466",
+          "path": "backend/tests/test_bench_deermem_eviction_grading.py",
+          "repo": "bytedance/deer-flow",
+          "total_matches": "30"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"47\"><td><div class=\"lineno\">47</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">/// Grade an answer against expected with smart matching (exact, extracted, numeric).</span></pre></div></td></tr><tr data-line=\"48\"><td><div class=\"lineno\">48</div></td><td><div class=\"highlight\"><pre><span class=\"k\">pub</span><span class=\"w\"> </span><span class=\"k\">fn</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark></span><span class=\"p\">(</span><span class=\"n\">predicted</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"kp\">&amp;</span><span class=\"kt\">str</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">expected</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"kp\">&amp;</span><span class=\"kt\">str</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">tolerance</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"kt\">f64</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">-&gt;</span><span class=\"w\"> </span><span class=\"kt\">bool</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"49\"><td><div class=\"lineno\">49</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"kd\">let</span><span class=\"w\"> </span><span class=\"n\">p</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">predicted</span><span class=\"p\">.</span><span class=\"n\">trim</span><span class=\"p\">();</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"269\"><td><div class=\"lineno\">269</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"cp\">#[test]</span></pre></div></td></tr><tr data-line=\"270\"><td><div class=\"lineno\">270</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">fn</span><span class=\"w\"> </span><span class=\"nf\">test_<mark>grade_answer</mark>_exact</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"271\"><td><div class=\"lineno\">271</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"fm\">assert!</span><span class=\"p\">(</span><span class=\"n\"><mark>grade_answer</mark></span><span class=\"p\">(</span><span class=\"s\">&quot;Hello&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;hello&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mf\">1e-6</span><span class=\"p\">));</span></pre></div></td></tr><tr data-line=\"272\"><td><div class=\"lineno\">272</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"fm\">assert!</span><span class=\"p\">(</span><span class=\"n\"><mark>grade_answer</mark></span><span class=\"p\">(</span><span class=\"s\">&quot;  42  &quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;42&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mf\">1e-6</span><span class=\"p\">));</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"276\"><td><div class=\"lineno\">276</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"k\">fn</span><span class=\"w\"> </span><span class=\"nf\">test_<mark>grade_answer</mark>_numeric</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "266162746",
+          "path": "rust/crates/openjarvis-learning/src/orchestrator_types.rs",
+          "repo": "open-jarvis/OpenJarvis",
+          "total_matches": "12"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"40\"><td><div class=\"lineno\">40</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>grade_answer</mark>_report</span><span class=\"p\">:</span> <span class=\"n\">GradeAnswerModel</span> <span class=\"o\">=</span> <span class=\"n\">grading_answer</span><span class=\"p\">(</span><span class=\"n\">predicted_answer</span><span class=\"p\">,</span> <span class=\"n\">question</span><span class=\"p\">,</span> <span class=\"n\">answer</span><span class=\"p\">,</span> <span class=\"n\">model_config</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"41\"><td><div class=\"lineno\">41</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>grade_answer</mark></span> <span class=\"o\">=</span> <span class=\"n\"><mark>grade_answer</mark>_report</span><span class=\"o\">.</span><span class=\"n\"><mark>grade_answer</mark></span></pre></div></td></tr><tr data-line=\"42\"><td><div class=\"lineno\">42</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"43\"><td><div class=\"lineno\">43</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">is_correct_val</span> <span class=\"o\">=</span> <span class=\"n\"><mark>grade_answer</mark></span> <span class=\"o\">==</span> <span class=\"s2\">&quot;CORRECT&quot;</span></pre></div></td></tr><tr data-line=\"44\"><td><div class=\"lineno\">44</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">is_incorrect_val</span> <span class=\"o\">=</span> <span class=\"n\"><mark>grade_answer</mark></span> <span class=\"o\">==</span> <span class=\"s2\">&quot;INCORRECT&quot;</span></pre></div></td></tr><tr data-line=\"45\"><td><div class=\"lineno\">45</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">is_not_attempted_val</span> <span class=\"o\">=</span> <span class=\"n\"><mark>grade_answer</mark></span> <span class=\"o\">==</span> <span class=\"s2\">&quot;NOT_ATTEMPTED&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"56\"><td><div class=\"lineno\">56</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;fail_search&quot;</span><span class=\"p\">:</span> <span class=\"kc\">True</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"57\"><td><div class=\"lineno\">57</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;<mark>grade_answer</mark>_report&quot;</span><span class=\"p\">:</span> <span class=\"s2\">&quot;None&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"58\"><td><div class=\"lineno\">58</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;Error text&quot;</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">(</span><span class=\"n\">ex</span><span class=\"p\">),</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "235311819",
+          "path": "benchmark/run_simpleqa_bench.py",
+          "repo": "vamplabAI/sgr-agent-core",
+          "total_matches": "11"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"372\"><td><div class=\"lineno\">372</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_sympy</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"373\"><td><div class=\"lineno\">373</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">ground_truth_normalized</span> <span class=\"o\">=</span> <span class=\"n\">_normalize</span><span class=\"p\">(</span><span class=\"n\">ground_truth</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"405\"><td><div class=\"lineno\">405</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_mathd</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"406\"><td><div class=\"lineno\">406</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">ground_truth_normalized_mathd</span> <span class=\"o\">=</span> <span class=\"n\">mathd_normalize_answer</span><span class=\"p\">(</span><span class=\"n\">ground_truth</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"407\"><td><div class=\"lineno\">407</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">given_answer_normalized_mathd</span> <span class=\"o\">=</span> <span class=\"n\">mathd_normalize_answer</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"408\"><td><div class=\"lineno\">408</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">return</span> <span class=\"n\">ground_truth_normalized_mathd</span> <span class=\"o\">==</span> <span class=\"n\">given_answer_normalized_mathd</span></pre></div></td></tr><tr data-line=\"409\"><td><div class=\"lineno\">409</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"410\"><td><div class=\"lineno\">410</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"411\"><td><div class=\"lineno\">411</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark></span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "175771028",
+          "path": "openrlhf/utils/math_utils.py",
+          "repo": "OpenRLHF/OpenRLHF",
+          "total_matches": "5"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"4\"><td><div class=\"lineno\">4</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">Call <mark>grade_answer</mark>(given_answer: str, ground_truth: str).</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"496\"><td><div class=\"lineno\">496</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_sympy</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"497\"><td><div class=\"lineno\">497</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">ground_truth_normalized</span> <span class=\"o\">=</span> <span class=\"n\">_normalize</span><span class=\"p\">(</span><span class=\"n\">ground_truth</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"533\"><td><div class=\"lineno\">533</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_mathd</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"534\"><td><div class=\"lineno\">534</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">ground_truth_normalized_mathd</span> <span class=\"o\">=</span> <span class=\"n\">mathd_normalize_answer</span><span class=\"p\">(</span><span class=\"n\">ground_truth</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"553\"><td><div class=\"lineno\">553</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_verl</span><span class=\"p\">(</span><span class=\"n\">solution_str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"554\"><td><div class=\"lineno\">554</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">if</span> <span class=\"ow\">not</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "221438497",
+          "path": "rllm/rewards/math_utils/utils.py",
+          "repo": "rllm-org/rllm",
+          "total_matches": "6"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"5\"><td><div class=\"lineno\">5</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">Call <mark>grade_answer</mark>(given_answer: str, ground_truth: str).</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"429\"><td><div class=\"lineno\">429</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_sympy</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"430\"><td><div class=\"lineno\">430</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">ground_truth_normalized</span> <span class=\"o\">=</span> <span class=\"n\">_normalize</span><span class=\"p\">(</span><span class=\"n\">ground_truth</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"468\"><td><div class=\"lineno\">468</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_mathd</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"469\"><td><div class=\"lineno\">469</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">ground_truth_normalized_mathd</span> <span class=\"o\">=</span> <span class=\"n\">mathd_normalize_answer</span><span class=\"p\">(</span><span class=\"n\">ground_truth</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"484\"><td><div class=\"lineno\">484</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_verl</span><span class=\"p\">(</span><span class=\"n\">solution_str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"485\"><td><div class=\"lineno\">485</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">if</span> <span class=\"ow\">not</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "48590610",
+          "path": "slime/rollout/rm_hub/math_utils.py",
+          "repo": "THUDM/slime",
+          "total_matches": "6"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"4\"><td><div class=\"lineno\">4</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">Call <mark>grade_answer</mark>(given_answer: str, ground_truth: str).</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"430\"><td><div class=\"lineno\">430</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_sympy</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"431\"><td><div class=\"lineno\">431</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">ground_truth_normalized</span> <span class=\"o\">=</span> <span class=\"n\">_normalize</span><span class=\"p\">(</span><span class=\"n\">ground_truth</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"469\"><td><div class=\"lineno\">469</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_mathd</span><span class=\"p\">(</span><span class=\"n\">given_answer</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">bool</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"470\"><td><div class=\"lineno\">470</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">ground_truth_normalized_mathd</span> <span class=\"o\">=</span> <span class=\"n\">mathd_normalize_answer</span><span class=\"p\">(</span><span class=\"n\">ground_truth</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"483\"><td><div class=\"lineno\">483</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>grade_answer</mark>_verl</span><span class=\"p\">(</span><span class=\"n\">solution_str</span><span class=\"p\">,</span> <span class=\"n\">ground_truth</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"484\"><td><div class=\"lineno\">484</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">if</span> <span class=\"ow\">not</span> <span class=\"n\">ground_truth</span><span class=\"p\">:</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "gad/deepscaler/rewards/math_utils/utils.py",
+          "repo": "microsoft/LMOps",
+          "total_matches": "6"
+        }
+      ],
+      "total": 1050
+    },
+    "time": 275
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=grade_answer"
+}

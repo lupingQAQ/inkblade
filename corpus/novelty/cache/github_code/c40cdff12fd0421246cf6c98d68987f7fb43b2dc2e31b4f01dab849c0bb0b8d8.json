@@ -1,0 +1,80 @@
+{
+  "_cached_at": "2026-10-26T12:14:34+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 2,
+            "val": "Markdown"
+          },
+          {
+            "count": 1,
+            "val": "Python"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 2,
+            "val": "docs/"
+          },
+          {
+            "count": 1,
+            "val": "tests/experimental/openai/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 3,
+            "owner_id": "283073558",
+            "val": "areal-project/AReaL"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"27\"><td><div class=\"lineno\">27</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># Helpers (same pattern as test_<mark>proxy_rollout_server.py</mark>)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "283073558",
+          "path": "tests/experimental/openai/test_streaming_chat_completions.py",
+          "repo": "areal-project/AReaL",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"217\"><td><div class=\"lineno\">217</div></td><td><div class=\"highlight\"><pre><span class=\"gs\">**关键文件：**</span> <span class=\"sb\">`areal/experimental/openai/proxy/<mark>proxy_rollout_server.py</mark>`</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "283073558",
+          "path": "docs/zh/reference/agent_workflow.md",
+          "repo": "areal-project/AReaL",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"233\"><td><div class=\"lineno\">233</div></td><td><div class=\"highlight\"><pre><span class=\"gs\">**Key file:**</span> <span class=\"sb\">`areal/experimental/openai/proxy/<mark>proxy_rollout_server.py</mark>`</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "283073558",
+          "path": "docs/en/reference/agent_workflow.md",
+          "repo": "areal-project/AReaL",
+          "total_matches": "1"
+        }
+      ],
+      "total": 3
+    },
+    "time": 117
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=proxy_rollout_server.py"
+}

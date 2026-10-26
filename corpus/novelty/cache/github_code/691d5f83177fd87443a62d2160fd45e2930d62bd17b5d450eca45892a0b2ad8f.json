@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T12:15:20+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 690,
+            "val": "Python"
+          },
+          {
+            "count": 24,
+            "val": "YAML"
+          },
+          {
+            "count": 4,
+            "val": "Shell"
+          },
+          {
+            "count": 3,
+            "val": "Diff"
+          },
+          {
+            "count": 3,
+            "val": "Markdown"
+          },
+          {
+            "count": 2,
+            "val": "JSON"
+          },
+          {
+            "count": 1,
+            "val": "Jupyter Notebook"
+          },
+          {
+            "count": 1,
+            "val": "Text"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 237,
+            "val": "verl/"
+          },
+          {
+            "count": 50,
+            "val": "src/"
+          },
+          {
+            "count": 23,
+            "val": "configs/"
+          },
+          {
+            "count": 12,
+            "val": "train/"
+          },
+          {
+            "count": 11,
+            "val": "llava/"
+          },
+          {
+            "count": 9,
+            "val": "lerobot/"
+          },
+          {
+            "count": 9,
+            "val": "lhotse/"
+          },
+          {
+            "count": 9,
+            "val": "training/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 25,
+            "owner_id": "69665675",
+            "val": "ModelTC/EasyLLM"
+          },
+          {
+            "count": 15,
+            "owner_id": "215250636",
+            "val": "ECNU-SII/MIA"
+          },
+          {
+            "count": 13,
+            "owner_id": "6154722",
+            "val": "microsoft/LMOps"
+          },
+          {
+            "count": 12,
+            "owner_id": "114994859",
+            "val": "wyf3/llm_related"
+          },
+          {
+            "count": 10,
+            "owner_id": "73500193",
+            "val": "lhotse-speech/lhotse"
+          },
+          {
+            "count": 8,
+            "owner_id": "186755503",
+            "val": "aiming-lab/Agent0"
+          },
+          {
+            "count": 6,
+            "owner_id": "139615285",
+            "val": "RUC-NLPIR/ARPO"
+          },
+          {
+            "count": 6,
+            "owner_id": "154449623",
+            "val": "InternScience/InternAgent"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1380\"><td><div class=\"lineno\">1380</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">patch_unsafe_trainer_rng_load</span><span class=\"p\">():</span></pre></div></td></tr><tr data-line=\"1381\"><td><div class=\"lineno\">1381</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Harden Trainer._<mark>load_rng_state</mark> against CVE-2026-1839 (RCE from a malicious</span></pre></div></td></tr><tr data-line=\"1382\"><td><div class=\"lineno\">1382</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    rng_state.pth on resume). Hardens only the rng torch.load, via a thread-local</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1392\"><td><div class=\"lineno\">1392</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">return</span></pre></div></td></tr><tr data-line=\"1393\"><td><div class=\"lineno\">1393</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>load_rng_state</mark></span> <span class=\"o\">=</span> <span class=\"nb\">getattr</span><span class=\"p\">(</span><span class=\"n\">Trainer</span><span class=\"p\">,</span> <span class=\"s2\">&quot;_<mark>load_rng_state</mark>&quot;</span><span class=\"p\">,</span> <span class=\"kc\">None</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"1394\"><td><div class=\"lineno\">1394</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">if</span> <span class=\"n\"><mark>load_rng_state</mark></span> <span class=\"ow\">is</span> <span class=\"kc\">None</span> <span class=\"ow\">or</span> <span class=\"nb\">getattr</span><span class=\"p\">(</span><span class=\"n\"><mark>load_rng_state</mark></span><span class=\"p\">,</span> <span class=\"s2\">&quot;_unsloth_safe_rng_load&quot;</span><span class=\"p\">,</span> <span class=\"kc\">False</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"1395\"><td><div class=\"lineno\">1395</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">return</span></pre></div></td></tr><tr data-line=\"1396\"><td><div class=\"lineno\">1396</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">try</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"1397\"><td><div class=\"lineno\">1397</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">source</span> <span class=\"o\">=</span> <span class=\"n\">inspect</span><span class=\"o\">.</span><span class=\"n\">getsource</span><span class=\"p\">(</span><span class=\"n\"><mark>load_rng_state</mark></span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "150920049",
+          "path": "unsloth/import_fixes.py",
+          "repo": "unslothai/unsloth",
+          "total_matches": "14"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"50\"><td><div class=\"lineno\">50</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">rng_state</span> <span class=\"o\">=</span> <span class=\"kc\">None</span></pre></div></td></tr><tr data-line=\"51\"><td><div class=\"lineno\">51</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">need_<mark>load_rng_state</mark></span> <span class=\"o\">=</span> <span class=\"kc\">False</span></pre></div></td></tr><tr data-line=\"52\"><td><div class=\"lineno\">52</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">load_all_state</span> <span class=\"o\">=</span> <span class=\"n\">load_all_state</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"65\"><td><div class=\"lineno\">65</div></td><td><div class=\"highlight\"><pre>            <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">rng_state</span> <span class=\"o\">=</span> <span class=\"n\">meta</span><span class=\"o\">.</span><span class=\"n\">get</span><span class=\"p\">(</span><span class=\"s1\">&#39;rng_state&#39;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"66\"><td><div class=\"lineno\">66</div></td><td><div class=\"highlight\"><pre>            <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">need_<mark>load_rng_state</mark></span> <span class=\"o\">=</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">load_all_state</span></pre></div></td></tr><tr data-line=\"67\"><td><div class=\"lineno\">67</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"68\"><td><div class=\"lineno\">68</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span> <span class=\"nf\">before_train_iter</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">trainer</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"69\"><td><div class=\"lineno\">69</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">need_<mark>load_rng_state</mark></span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"70\"><td><div class=\"lineno\">70</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">if</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">rng_state</span> <span class=\"ow\">is</span> <span class=\"ow\">not</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "109945100",
+          "path": "modelscope/trainers/hooks/checkpoint/load_checkpoint_hook.py",
+          "repo": "modelscope/modelscope",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"128\"><td><div class=\"lineno\">128</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">ckpt_dir</span><span class=\"p\">:</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">rank</span><span class=\"p\">:</span> <span class=\"nb\">int</span><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"129\"><td><div class=\"lineno\">129</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Restore per-rank RNG states from a checkpoint.&quot;&quot;&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"340\"><td><div class=\"lineno\">340</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_dist_name</span> <span class=\"o\">!=</span> <span class=\"s2\">&quot;deepspeed&quot;</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"341\"><td><div class=\"lineno\">341</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\"><mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">ckpt_dir</span><span class=\"p\">,</span> <span class=\"n\">rank</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "16256802",
+          "path": "src/llamafactory/v1/core/utils/checkpoint.py",
+          "repo": "hiyouga/LlamaFactory",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"70\"><td><div class=\"lineno\">70</div></td><td><div class=\"highlight\"><pre>    <span class=\"s1\">&#39;get_rng_state&#39;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"71\"><td><div class=\"lineno\">71</div></td><td><div class=\"highlight\"><pre>    <span class=\"s1\">&#39;<mark>load_rng_state</mark>&#39;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"72\"><td><div class=\"lineno\">72</div></td><td><div class=\"highlight\"><pre>    <span class=\"s1\">&#39;MAX_SEED&#39;</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"86\"><td><div class=\"lineno\">86</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">yield</span></pre></div></td></tr><tr data-line=\"87\"><td><div class=\"lineno\">87</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">rng_state</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"197\"><td><div class=\"lineno\">197</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span> <span class=\"nf\"><mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">rng_state_dicts</span><span class=\"p\">:</span> <span class=\"nb\">list</span><span class=\"p\">[</span><span class=\"nb\">dict</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">Any</span><span class=\"p\">]]):</span></pre></div></td></tr><tr data-line=\"198\"><td><div class=\"lineno\">198</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Restore the RNG state.</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "75143706",
+          "path": "composer/utils/reproducibility.py",
+          "repo": "mosaicml/composer",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"761\"><td><div class=\"lineno\">761</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">should_load_extra</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"762\"><td><div class=\"lineno\">762</div></td><td><div class=\"highlight\"><pre>            <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>load_rng_state</mark>s</span><span class=\"p\">(</span><span class=\"n\">state_dict</span><span class=\"p\">[</span><span class=\"s2\">&quot;rng_state&quot;</span><span class=\"p\">])</span></pre></div></td></tr><tr data-line=\"763\"><td><div class=\"lineno\">763</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">log_with_rank</span><span class=\"p\">(</span><span class=\"sa\">f</span><span class=\"s2\">&quot;Loaded RNG states from </span><span class=\"si\">{</span><span class=\"n\">local_path</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"p\">,</span> <span class=\"n\">rank</span><span class=\"o\">=</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">rank</span><span class=\"p\">,</span> <span class=\"n\">logger</span><span class=\"o\">=</span><span class=\"n\">logger</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"813\"><td><div class=\"lineno\">813</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>load_rng_state</mark>s</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">rng_states</span><span class=\"p\">,</span> <span class=\"n\">data_parallel_random_init</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">,</span> <span class=\"n\">use_dist_ckpt</span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"814\"><td><div class=\"lineno\">814</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">use_megatron_fsdp</span><span class=\"p\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"978\"><td><div class=\"lineno\">978</div></td><td><div class=\"highlight\"><pre>            <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>load_rng_state</mark>s</span><span class=\"p\">(</span><span class=\"n\">loaded_extra</span><span class=\"p\">[</span><span class=\"s2\">&quot;rng_state&quot;</span><span class=\"p\">])</span></pre></div></td></tr><tr data-line=\"979\"><td><div class=\"lineno\">979</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">log_with_rank</span><span class=\"p\">(</span><span class=\"sa\">f</span><span class=\"s2\">&quot;Loaded RNG states from </span><span class=\"si\">{</span><span class=\"n\">extra_dist_path</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"p\">,</span> <span class=\"n\">rank</span><span class=\"o\">=</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">rank</span><span class=\"p\">,</span> <span class=\"n\">logger</span><span class=\"o\">=</span><span class=\"n\">logger</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "212961691",
+          "path": "verl/utils/checkpoint/megatron_checkpoint_manager.py",
+          "repo": "verl-project/verl",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"392\"><td><div class=\"lineno\">392</div></td><td><div class=\"highlight\"><pre>                <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">resume_from_checkpoint</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"432\"><td><div class=\"lineno\">432</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">if</span> <span class=\"n\">rng_to_sync</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"433\"><td><div class=\"lineno\">433</div></td><td><div class=\"highlight\"><pre>                    <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">resume_from_checkpoint</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"434\"><td><div class=\"lineno\">434</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">rng_to_sync</span> <span class=\"o\">=</span> <span class=\"kc\">False</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"441\"><td><div class=\"lineno\">441</div></td><td><div class=\"highlight\"><pre>                    <span class=\"k\">if</span> <span class=\"n\">steps_trained_in_current_epoch</span> <span class=\"o\">==</span> <span class=\"mi\">0</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"442\"><td><div class=\"lineno\">442</div></td><td><div class=\"highlight\"><pre>                        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">resume_from_checkpoint</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"443\"><td><div class=\"lineno\">443</div></td><td><div class=\"highlight\"><pre>                    <span class=\"k\">continue</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "2695301",
+          "path": "llava/model/coat/fp8_trainer.py",
+          "repo": "NVlabs/VILA",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"65\"><td><div class=\"lineno\">65</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">lerobot.utils.io_utils</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">load_json</span><span class=\"p\">,</span> <span class=\"n\">write_json</span></pre></div></td></tr><tr data-line=\"66\"><td><div class=\"lineno\">66</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">lerobot.utils.random_utils</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\"><mark>load_rng_state</mark></span><span class=\"p\">,</span> <span class=\"n\">save_rng_state</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"362\"><td><div class=\"lineno\">362</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">_guard_resume_changes</span><span class=\"p\">(</span><span class=\"n\">cfg</span><span class=\"p\">,</span> <span class=\"n\">metadata</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"363\"><td><div class=\"lineno\">363</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">training_state_dir</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"364\"><td><div class=\"lineno\">364</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">return</span> <span class=\"n\">metadata</span><span class=\"p\">[</span><span class=\"s2\">&quot;step&quot;</span><span class=\"p\">]</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "25720743",
+          "path": "src/lerobot/common/train_utils.py",
+          "repo": "huggingface/lerobot",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"107\"><td><div class=\"lineno\">107</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">lerobot.utils.process</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">ProcessSignalHandler</span><span class=\"p\">,</span> <span class=\"n\">ensure_multiprocessing_start_method</span></pre></div></td></tr><tr data-line=\"108\"><td><div class=\"lineno\">108</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">lerobot.utils.random_utils</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\"><mark>load_rng_state</mark></span><span class=\"p\">,</span> <span class=\"n\">set_seed</span></pre></div></td></tr><tr data-line=\"109\"><td><div class=\"lineno\">109</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">lerobot.utils.utils</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"p\">(</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"744\"><td><div class=\"lineno\">744</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">training_state_dir</span> <span class=\"o\">=</span> <span class=\"n\">checkpoint_dir</span> <span class=\"o\">/</span> <span class=\"n\">TRAINING_STATE_DIR</span></pre></div></td></tr><tr data-line=\"745\"><td><div class=\"lineno\">745</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">training_state_dir</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"746\"><td><div class=\"lineno\">746</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">step</span> <span class=\"o\">=</span> <span class=\"n\">load_training_metadata</span><span class=\"p\">(</span><span class=\"n\">training_state_dir</span><span class=\"p\">)[</span><span class=\"s2\">&quot;step&quot;</span><span class=\"p\">]</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "25720743",
+          "path": "src/lerobot/rl/learner.py",
+          "repo": "huggingface/lerobot",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"329\"><td><div class=\"lineno\">329</div></td><td><div class=\"highlight\"><pre>                <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">resume_from_checkpoint</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"343\"><td><div class=\"lineno\">343</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">if</span> <span class=\"n\">rng_to_sync</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"344\"><td><div class=\"lineno\">344</div></td><td><div class=\"highlight\"><pre>                    <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">resume_from_checkpoint</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"345\"><td><div class=\"lineno\">345</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">rng_to_sync</span> <span class=\"o\">=</span> <span class=\"kc\">False</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"352\"><td><div class=\"lineno\">352</div></td><td><div class=\"highlight\"><pre>                    <span class=\"k\">if</span> <span class=\"n\">steps_trained_in_current_epoch</span> <span class=\"o\">==</span> <span class=\"mi\">0</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"353\"><td><div class=\"lineno\">353</div></td><td><div class=\"highlight\"><pre>                        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">resume_from_checkpoint</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"354\"><td><div class=\"lineno\">354</div></td><td><div class=\"highlight\"><pre>                    <span class=\"k\">continue</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "135356492",
+          "path": "InternLM-XComposer-2.5-Reward/training/trainer.py",
+          "repo": "InternLM/InternLM-XComposer",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1863\"><td><div class=\"lineno\">1863</div></td><td><div class=\"highlight\"><pre>                <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">resume_from_checkpoint</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1876\"><td><div class=\"lineno\">1876</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">if</span> <span class=\"n\">rng_to_sync</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"1877\"><td><div class=\"lineno\">1877</div></td><td><div class=\"highlight\"><pre>                    <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">resume_from_checkpoint</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"1878\"><td><div class=\"lineno\">1878</div></td><td><div class=\"highlight\"><pre>                    <span class=\"n\">rng_to_sync</span> <span class=\"o\">=</span> <span class=\"kc\">False</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1885\"><td><div class=\"lineno\">1885</div></td><td><div class=\"highlight\"><pre>                    <span class=\"k\">if</span> <span class=\"n\">steps_trained_in_current_epoch</span> <span class=\"o\">==</span> <span class=\"mi\">0</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"1886\"><td><div class=\"lineno\">1886</div></td><td><div class=\"highlight\"><pre>                        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark>load_rng_state</mark></span><span class=\"p\">(</span><span class=\"n\">resume_from_checkpoint</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"1887\"><td><div class=\"lineno\">1887</div></td><td><div class=\"highlight\"><pre>                    <span class=\"k\">continue</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "48590610",
+          "path": "ptuning/trainer.py",
+          "repo": "THUDM/ChatGLM-6B",
+          "total_matches": "4"
+        }
+      ],
+      "total": 729
+    },
+    "time": 138
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=load_rng_state"
+}

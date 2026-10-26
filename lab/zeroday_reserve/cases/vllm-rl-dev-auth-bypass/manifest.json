@@ -1,0 +1,40 @@
+{
+ "id": "vllm-rl-dev-auth-bypass",
+ "source": "new-discovery",
+ "component": "vllm",
+ "title": "vLLM 0.32.0 RL control router mounted at / bypasses --api-key",
+ "version": "v0.32.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "vllm-project/vllm",
+  "tag": "v0.32.0",
+  "commit": "5df63a7203cdb9328d824a27b682e77c7b9928be"
+ },
+ "root_cause": {
+  "file": "vllm/entrypoints/rl/online/api_router.py",
+  "line": 31,
+  "function": "pause_generation",
+  "snippet": "@router.post(\"/pause\")",
+  "source": "lab/zeroday_reserve/upstream/vllm-0.32.0/vllm/entrypoints/rl/online/api_router.py",
+  "note": "The RL router is included without a prefix (`app.include_router(rl_router)`) and therefore mounts /pause, /resume, /update_weights, /weight_checker at the application root. vLLM's AuthenticationMiddleware only guards GUARDED_PREFIX=('/v1','/v2','/inference','/cohere'); with --api-key set, /v1/* returns 401 while these root-mounted control routes still execute. Registration is gated by VLLM_SERVER_DEV_MODE, which SkyRL and TRL force in their recipes (audit history 1.7/1.9)."
+ },
+ "preconditions": [
+  "vLLM 0.32.0 with VLLM_SERVER_DEV_MODE=1 (SkyRL/TRL default)",
+  "vLLM started with --api-key",
+  "attacker can reach the API port"
+ ],
+ "steps": [
+  "load the verbatim vLLM 0.32.0 RL router and AuthenticationMiddleware",
+  "build the real FastAPI app with the middleware and a fake engine client",
+  "send /v1/ping without a token (control) and /pause, /weight_checker, /update_weights without a token"
+ ],
+ "expected_evidence": [
+  "/v1/ping -> 401, /pause -> 200, /weight_checker reset -> 200",
+  "marker written inside the fake engine pause/reset callbacks reached by the real routes"
+ ],
+ "cleanup": "in-memory ASGI app; only evidence/ is written",
+ "status": "verified",
+ "method": "dynamic-http",
+ "marker_text": "TRIDENT-ZD-vllm-rl-dev-auth-bypass",
+ "notes": "Dynamic HTTP-level reproduction against the real vLLM router and middleware; the engine client is a stub because the host has no GPU. The auth decision is the real vLLM code path."
+}

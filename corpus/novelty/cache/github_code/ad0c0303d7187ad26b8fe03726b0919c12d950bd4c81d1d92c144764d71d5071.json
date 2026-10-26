@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T11:36:17+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 372,
+            "val": "Python"
+          },
+          {
+            "count": 103,
+            "val": "Shell"
+          },
+          {
+            "count": 76,
+            "val": "YAML"
+          },
+          {
+            "count": 58,
+            "val": "Markdown"
+          },
+          {
+            "count": 19,
+            "val": "JSON"
+          },
+          {
+            "count": 7,
+            "val": "reStructuredText"
+          },
+          {
+            "count": 6,
+            "val": "C++"
+          },
+          {
+            "count": 5,
+            "val": "Jupyter Notebook"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 151,
+            "val": "verl/"
+          },
+          {
+            "count": 79,
+            "val": "tests/"
+          },
+          {
+            "count": 40,
+            "val": "docs/"
+          },
+          {
+            "count": 32,
+            "val": "examples/"
+          },
+          {
+            "count": 31,
+            "val": "src/"
+          },
+          {
+            "count": 22,
+            "val": "benchmarks/"
+          },
+          {
+            "count": 21,
+            "val": "deepspeed/"
+          },
+          {
+            "count": 21,
+            "val": "nemo_rl/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 93,
+            "owner_id": "212961691",
+            "val": "verl-project/verl"
+          },
+          {
+            "count": 66,
+            "owner_id": "96673402",
+            "val": "DLYuanGod/MegaTrain"
+          },
+          {
+            "count": 37,
+            "owner_id": "213689629",
+            "val": "NVIDIA-NeMo/RL"
+          },
+          {
+            "count": 34,
+            "owner_id": "109945100",
+            "val": "modelscope/twinkle"
+          },
+          {
+            "count": 29,
+            "owner_id": "212961691",
+            "val": "verl-project/verl-omni"
+          },
+          {
+            "count": 28,
+            "owner_id": "129152888",
+            "val": "MoonshotAI/checkpoint-engine"
+          },
+          {
+            "count": 27,
+            "owner_id": "212961691",
+            "val": "verl-project/verl-ascend-recipe"
+          },
+          {
+            "count": 27,
+            "owner_id": "212961691",
+            "val": "verl-project/verl-recipe"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"94\"><td><div class=\"lineno\">94</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># get HF checkpoint engine</span></pre></div></td></tr><tr data-line=\"95\"><td><div class=\"lineno\">95</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>checkpoint_engine</mark></span> <span class=\"o\">=</span> <span class=\"n\">HuggingFaceCheckpointEngine</span><span class=\"p\">(</span><span class=\"n\">path</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"96\"><td><div class=\"lineno\">96</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"97\"><td><div class=\"lineno\">97</div></td><td><div class=\"highlight\"><pre>        <span class=\"c1\"># get model config from HF AutoConfig</span></pre></div></td></tr><tr data-line=\"98\"><td><div class=\"lineno\">98</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">model_config</span> <span class=\"o\">=</span> <span class=\"n\"><mark>checkpoint_engine</mark></span><span class=\"o\">.</span><span class=\"n\">model_config</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"107\"><td><div class=\"lineno\">107</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">policy</span> <span class=\"o\">=</span> <span class=\"n\">OPTPolicy</span><span class=\"p\">(</span><span class=\"n\">model_config</span><span class=\"p\">,</span> <span class=\"n\"><mark>checkpoint_engine</mark></span><span class=\"o\">=</span><span class=\"n\"><mark>checkpoint_engine</mark></span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"108\"><td><div class=\"lineno\">108</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">elif</span> <span class=\"n\">model_config</span><span class=\"o\">.</span><span class=\"n\">model_type</span> <span class=\"o\">==</span> <span class=\"s2\">&quot;llama&quot;</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"109\"><td><div class=\"lineno\">109</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">policy</span> <span class=\"o\">=</span> <span class=\"n\">Llama2Policy</span><span class=\"p\">(</span><span class=\"n\">model_config</span><span class=\"p\">,</span> <span class=\"n\"><mark>checkpoint_engine</mark></span><span class=\"o\">=</span><span class=\"n\"><mark>checkpoint_engine</mark></span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"110\"><td><div class=\"lineno\">110</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">elif</span> <span class=\"n\">model_config</span><span class=\"o\">.</span><span class=\"n\">model_type</span> <span class=\"o\">==</span> <span class=\"s2\">&quot;mistral&quot;</span><span class=\"p\">:</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "deepspeed/inference/v2/engine_factory.py",
+          "repo": "deepspeedai/DeepSpeed",
+          "total_matches": "26"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"13\"><td><div class=\"lineno\">13</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span> <span class=\"nn\">deepspeed.utils</span> <span class=\"kn\">import</span> <span class=\"n\">logger</span></pre></div></td></tr><tr data-line=\"14\"><td><div class=\"lineno\">14</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span> <span class=\"nn\">deepspeed.runtime.<mark>checkpoint_engine</mark>.torch_<mark>checkpoint_engine</mark></span> <span class=\"kn\">import</span> <span class=\"n\">TorchCheckpointEngine</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"23\"><td><div class=\"lineno\">23</div></td><td><div class=\"highlight\"><pre>    <span class=\"nd\">@staticmethod</span></pre></div></td></tr><tr data-line=\"24\"><td><div class=\"lineno\">24</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span> <span class=\"nf\">get_sd_loader_json</span><span class=\"p\">(</span><span class=\"n\">json_file</span><span class=\"p\">,</span> <span class=\"n\"><mark>checkpoint_engine</mark></span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"25\"><td><div class=\"lineno\">25</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"nb\">isinstance</span><span class=\"p\">(</span><span class=\"n\">json_file</span><span class=\"p\">,</span> <span class=\"nb\">str</span><span class=\"p\">):</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"37\"><td><div class=\"lineno\">37</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">return</span> <span class=\"n\">data</span></pre></div></td></tr><tr data-line=\"38\"><td><div class=\"lineno\">38</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">return</span> <span class=\"n\">SDLoaderFactory</span><span class=\"o\">.</span><span class=\"n\">get_sd_loader</span><span class=\"p\">(</span><span class=\"n\">ckpt_list</span><span class=\"p\">,</span> <span class=\"n\"><mark>checkpoint_engine</mark></span><span class=\"p\">,</span> <span class=\"n\">sd_type</span><span class=\"p\">,</span> <span class=\"n\">version</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "deepspeed/runtime/state_dict_factory.py",
+          "repo": "deepspeedai/DeepSpeed",
+          "total_matches": "17"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"55\"><td><div class=\"lineno\">55</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># its own transport dependency (cupy for nccl/nixl, nixl, torch_npu for hccl,</span></pre></div></td></tr><tr data-line=\"56\"><td><div class=\"lineno\">56</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># ...) and `verl.<mark>checkpoint_engine</mark>` imports them all optionally, so a missing</span></pre></div></td></tr><tr data-line=\"57\"><td><div class=\"lineno\">57</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># dependency would otherwise only show up as an unregistered backend.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"325\"><td><div class=\"lineno\">325</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">server_adapter</span><span class=\"p\">:</span> <span class=\"n\">BaseRollout</span> <span class=\"o\">=</span> <span class=\"n\">server_adapter</span></pre></div></td></tr><tr data-line=\"326\"><td><div class=\"lineno\">326</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">backend</span> <span class=\"o\">=</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">rollout_config</span><span class=\"o\">.</span><span class=\"n\"><mark>checkpoint_engine</mark></span><span class=\"o\">.</span><span class=\"n\">backend</span></pre></div></td></tr><tr data-line=\"327\"><td><div class=\"lineno\">327</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">backend</span> <span class=\"o\">==</span> <span class=\"s2\">&quot;delta_sharded&quot;</span> <span class=\"ow\">and</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">rollout_config</span><span class=\"o\">.</span><span class=\"n\">name</span> <span class=\"ow\">not</span> <span class=\"ow\">in</span> <span class=\"p\">{</span><span class=\"s2\">&quot;sglang&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;vllm&quot;</span><span class=\"p\">}:</span></pre></div></td></tr><tr data-line=\"328\"><td><div class=\"lineno\">328</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">raise</span> <span class=\"ne\">NotImplementedError</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"329\"><td><div class=\"lineno\">329</div></td><td><div class=\"highlight\"><pre>                <span class=\"sa\">f</span><span class=\"s2\">&quot;<mark>checkpoint_engine</mark>.backend=</span><span class=\"si\">{</span><span class=\"n\">backend</span><span class=\"si\">!r}</span><span class=\"s2\"> has no delta weight consumer for &quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "212961691",
+          "path": "verl/checkpoint_engine/base.py",
+          "repo": "verl-project/verl",
+          "total_matches": "17"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"113\"><td><div class=\"lineno\">113</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">deepspeed.runtime.data_pipeline.curriculum_scheduler</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">CurriculumScheduler</span></pre></div></td></tr><tr data-line=\"114\"><td><div class=\"lineno\">114</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">deepspeed.runtime.<mark>checkpoint_engine</mark></span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"p\">(</span><span class=\"n\">create_<mark>checkpoint_engine</mark></span><span class=\"p\">,</span> <span class=\"n\">TorchCheckpointEngine</span><span class=\"p\">,</span> <span class=\"n\">CheckpointCommitInfo</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"565\"><td><div class=\"lineno\">565</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">use_ds_comm</span> <span class=\"o\">=</span> <span class=\"kc\">False</span>  <span class=\"c1\"># False --&gt; Use torch.dist, True --&gt; Use ds.comm backend.</span></pre></div></td></tr><tr data-line=\"566\"><td><div class=\"lineno\">566</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>checkpoint_engine</mark></span> <span class=\"o\">=</span> <span class=\"kc\">None</span></pre></div></td></tr><tr data-line=\"567\"><td><div class=\"lineno\">567</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">optimizer</span> <span class=\"o\">=</span> <span class=\"kc\">None</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1148\"><td><div class=\"lineno\">1148</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>checkpoint_engine</mark></span> <span class=\"o\">=</span> <span class=\"nb\">getattr</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"s2\">&quot;<mark>checkpoint_engine</mark>&quot;</span><span class=\"p\">,</span> <span class=\"kc\">None</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"1149\"><td><div class=\"lineno\">1149</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\"><mark>checkpoint_engine</mark></span> <span class=\"ow\">is</span> <span class=\"ow\">not</span> <span class=\"kc\">None</span> <span class=\"ow\">and</span> <span class=\"n\"><mark>checkpoint_engine</mark></span><span class=\"o\">.</span><span class=\"n\">is_decoupled</span><span class=\"p\">():</span></pre></div></td></tr><tr data-line=\"1150\"><td><div class=\"lineno\">1150</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\"><mark>checkpoint_engine</mark></span><span class=\"o\">.</span><span class=\"n\">cleanup</span><span class=\"p\">()</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "deepspeed/runtime/engine.py",
+          "repo": "deepspeedai/DeepSpeed",
+          "total_matches": "48"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"38\"><td><div class=\"lineno\">38</div></td><td><div class=\"highlight\"><pre><span class=\"k\">try</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"39\"><td><div class=\"lineno\">39</div></td><td><div class=\"highlight\"><pre>    <span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">.nccl_<mark>checkpoint_engine</mark></span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">NCCLCheckpointEngine</span></pre></div></td></tr><tr data-line=\"40\"><td><div class=\"lineno\">40</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"41\"><td><div class=\"lineno\">41</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">__all__</span> <span class=\"o\">+=</span> <span class=\"p\">[</span><span class=\"s2\">&quot;NCCLCheckpointEngine&quot;</span><span class=\"p\">]</span></pre></div></td></tr><tr data-line=\"42\"><td><div class=\"lineno\">42</div></td><td><div class=\"highlight\"><pre><span class=\"k\">except</span> <span class=\"ne\">ImportError</span> <span class=\"k\">as</span> <span class=\"n\">e</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"43\"><td><div class=\"lineno\">43</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">CheckpointEngineRegistry</span><span class=\"o\">.</span><span class=\"n\">record_import_error</span><span class=\"p\">(</span><span class=\"s2\">&quot;nccl_<mark>checkpoint_engine</mark>&quot;</span><span class=\"p\">,</span> <span class=\"n\">e</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"44\"><td><div class=\"lineno\">44</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">NCCLCheckpointEngine</span> <span class=\"o\">=</span> <span class=\"kc\">None</span></pre></div></td></tr><tr data-line=\"45\"><td><div class=\"lineno\">45</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"46\"><td><div class=\"lineno\">46</div></td><td><div class=\"highlight\"><pre><span class=\"k\">try</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"47\"><td><div class=\"lineno\">47</div></td><td><div class=\"highlight\"><pre>    <span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">.hccl_<mark>checkpoint_engine</mark></span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">HCCLCheckpointEngine</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "212961691",
+          "path": "verl/checkpoint_engine/__init__.py",
+          "repo": "verl-project/verl",
+          "total_matches": "12"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"31\"><td><div class=\"lineno\">31</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">verl.<mark>checkpoint_engine</mark></span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">CheckpointEngineRegistry</span></pre></div></td></tr><tr data-line=\"32\"><td><div class=\"lineno\">32</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">verl.single_controller.base</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">Worker</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"678\"><td><div class=\"lineno\">678</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"s2\">&quot;actor&quot;</span> <span class=\"ow\">in</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">role</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"679\"><td><div class=\"lineno\">679</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\"><mark>checkpoint_engine</mark>_config</span> <span class=\"o\">=</span> <span class=\"n\">omega_conf_to_dataclass</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">config</span><span class=\"o\">.</span><span class=\"n\">rollout</span><span class=\"o\">.</span><span class=\"n\"><mark>checkpoint_engine</mark></span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"680\"><td><div class=\"lineno\">680</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">backend</span> <span class=\"o\">=</span> <span class=\"n\"><mark>checkpoint_engine</mark>_config</span><span class=\"o\">.</span><span class=\"n\">backend</span></pre></div></td></tr><tr data-line=\"681\"><td><div class=\"lineno\">681</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">bucket_size</span> <span class=\"o\">=</span> <span class=\"n\"><mark>checkpoint_engine</mark>_config</span><span class=\"o\">.</span><span class=\"n\">update_weights_bucket_megabytes</span> <span class=\"o\">&lt;&lt;</span> <span class=\"mi\">20</span></pre></div></td></tr><tr data-line=\"682\"><td><div class=\"lineno\">682</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">engine_kwargs</span> <span class=\"o\">=</span> <span class=\"n\"><mark>checkpoint_engine</mark>_config</span><span class=\"o\">.</span><span class=\"n\">engine_kwargs</span><span class=\"o\">.</span><span class=\"n\">get</span><span class=\"p\">(</span><span class=\"n\">backend</span><span class=\"p\">,</span> <span class=\"p\">{})</span></pre></div></td></tr><tr data-line=\"683\"><td><div class=\"lineno\">683</div></td><td><div class=\"highlight\"><pre>            <span class=\"c1\"># If custom_backend_module is set, import it so plugins can register</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "212961691",
+          "path": "verl/workers/engine_workers.py",
+          "repo": "verl-project/verl",
+          "total_matches": "15"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"113\"><td><div class=\"lineno\">113</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">model_config</span><span class=\"p\">:</span> <span class=\"n\">Any</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"114\"><td><div class=\"lineno\">114</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>checkpoint_engine</mark></span><span class=\"p\">:</span> <span class=\"n\">Optional</span><span class=\"p\">[</span><span class=\"n\">CheckpointEngineBase</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"kc\">None</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"115\"><td><div class=\"lineno\">115</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">inf_checkpoint_path</span><span class=\"p\">:</span> <span class=\"n\">Optional</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"kc\">None</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"121\"><td><div class=\"lineno\">121</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        The first is the generalized ``<mark>checkpoint_engine</mark>`` which</span></pre></div></td></tr><tr data-line=\"122\"><td><div class=\"lineno\">122</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        will iterate over the parameters of the model and provide them to the policy. These in</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"130\"><td><div class=\"lineno\">130</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\"><mark>checkpoint_engine</mark></span> <span class=\"ow\">is</span> <span class=\"kc\">None</span> <span class=\"ow\">and</span> <span class=\"n\">inf_checkpoint_path</span> <span class=\"ow\">is</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"131\"><td><div class=\"lineno\">131</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">raise</span> <span class=\"ne\">ValueError</span><span class=\"p\">(</span><span class=\"s2\">&quot;Either <mark>checkpoint_engine</mark> or ds_checkpoint_path must be provided.&quot;</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "deepspeed/inference/v2/model_implementations/inference_policy_base.py",
+          "repo": "deepspeedai/DeepSpeed",
+          "total_matches": "10"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"26\"><td><div class=\"lineno\">26</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">verl</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">DataProto</span></pre></div></td></tr><tr data-line=\"27\"><td><div class=\"lineno\">27</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">verl.<mark>checkpoint_engine</mark></span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">CheckpointEngineManager</span></pre></div></td></tr><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">verl.experimental.fully_async_policy.detach_utils</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"p\">(</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"219\"><td><div class=\"lineno\">219</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">replicas</span> <span class=\"o\">=</span> <span class=\"k\">await</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">rollouter</span><span class=\"o\">.</span><span class=\"n\">get_replicas</span><span class=\"o\">.</span><span class=\"n\">remote</span><span class=\"p\">()</span></pre></div></td></tr><tr data-line=\"220\"><td><div class=\"lineno\">220</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>checkpoint_engine</mark>_config</span> <span class=\"o\">=</span> <span class=\"n\">omega_conf_to_dataclass</span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">config</span><span class=\"o\">.</span><span class=\"n\">actor_rollout_ref</span><span class=\"o\">.</span><span class=\"n\">rollout</span><span class=\"o\">.</span><span class=\"n\"><mark>checkpoint_engine</mark></span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"221\"><td><div class=\"lineno\">221</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">checkpoint_manager</span> <span class=\"o\">=</span> <span class=\"n\">CheckpointEngineManager</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"222\"><td><div class=\"lineno\">222</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">config</span><span class=\"o\">=</span><span class=\"n\"><mark>checkpoint_engine</mark>_config</span><span class=\"p\">,</span> <span class=\"n\">actor_wg</span><span class=\"o\">=</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">actor_wg</span><span class=\"p\">,</span> <span class=\"n\">replicas</span><span class=\"o\">=</span><span class=\"n\">replicas</span></pre></div></td></tr><tr data-line=\"223\"><td><div class=\"lineno\">223</div></td><td><div class=\"highlight\"><pre>        <span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"224\"><td><div class=\"lineno\">224</div></td><td><div class=\"highlight\"><pre>        <span class=\"nb\">print</span><span class=\"p\">(</span><span class=\"sa\">f</span><span class=\"s2\">&quot;[FullyAsyncTrainer] Checkpoint manager initialized (backend=</span><span class=\"si\">{</span><span class=\"n\"><mark>checkpoint_engine</mark>_config</span><span class=\"o\">.</span><span class=\"n\">backend</span><span class=\"si\">}</span><span class=\"s2\">)&quot;</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "212961691",
+          "path": "verl/experimental/fully_async_policy/fully_async_trainer.py",
+          "repo": "verl-project/verl",
+          "total_matches": "15"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"25\"><td><div class=\"lineno\">25</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">nemo_rl.weight_sync.<mark>checkpoint_engine</mark>_config</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"26\"><td><div class=\"lineno\">26</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>checkpoint_engine</mark>_refit_config</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"27\"><td><div class=\"lineno\">27</div></td><td><div class=\"highlight\"><pre><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"29\"><td><div class=\"lineno\">29</div></td><td><div class=\"highlight\"><pre><span class=\"k\">if</span> <span class=\"n\">TYPE_CHECKING</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"30\"><td><div class=\"lineno\">30</div></td><td><div class=\"highlight\"><pre>    <span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">nemo_rl.utils.<mark>checkpoint_engine</mark>s.base</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">CheckpointEngine</span></pre></div></td></tr><tr data-line=\"31\"><td><div class=\"lineno\">31</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"32\"><td><div class=\"lineno\">32</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"33\"><td><div class=\"lineno\">33</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\">maybe_preinit_nixl_<mark>checkpoint_engine</mark></span><span class=\"p\">(</span><span class=\"n\">config</span><span class=\"p\">:</span> <span class=\"nb\">dict</span><span class=\"p\">[</span><span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">Any</span><span class=\"p\">])</span> <span class=\"o\">-&gt;</span> <span class=\"n\">Any</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"34\"><td><div class=\"lineno\">34</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Preinitialize NIXL when checkpoint-engine refit is configured.&quot;&quot;&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "213689629",
+          "path": "nemo_rl/models/policy/workers/checkpoint_engine.py",
+          "repo": "NVIDIA-NeMo/RL",
+          "total_matches": "41"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"26\"><td><div class=\"lineno\">26</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">nemo_rl.weight_sync.<mark>checkpoint_engine</mark>_config</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"27\"><td><div class=\"lineno\">27</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>checkpoint_engine</mark>_refit_config</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"29\"><td><div class=\"lineno\">29</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"30\"><td><div class=\"lineno\">30</div></td><td><div class=\"highlight\"><pre><span class=\"k\">if</span> <span class=\"n\">TYPE_CHECKING</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"31\"><td><div class=\"lineno\">31</div></td><td><div class=\"highlight\"><pre>    <span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">nemo_rl.utils.<mark>checkpoint_engine</mark>s.base</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"n\">CheckpointEngine</span></pre></div></td></tr><tr data-line=\"32\"><td><div class=\"lineno\">32</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"33\"><td><div class=\"lineno\">33</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"34\"><td><div class=\"lineno\">34</div></td><td><div class=\"highlight\"><pre><span class=\"n\">NIXL_VLLM_WORKER</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;nemo_rl.models.generation.vllm.vllm_backend.NixlVllmWorker&quot;</span></pre></div></td></tr><tr data-line=\"35\"><td><div class=\"lineno\">35</div></td><td><div class=\"highlight\"><pre><span class=\"n\">_NIXL_CONFIG_KEY</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;nemo_rl_<mark>checkpoint_engine</mark>&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "213689629",
+          "path": "nemo_rl/models/generation/vllm/checkpoint_engine.py",
+          "repo": "NVIDIA-NeMo/RL",
+          "total_matches": "37"
+        }
+      ],
+      "total": 662
+    },
+    "time": 205
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=checkpoint_engine"
+}

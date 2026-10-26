@@ -1,0 +1,90 @@
+{
+  "_cached_at": "2026-10-26T11:36:29+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 3,
+            "val": "Markdown"
+          },
+          {
+            "count": 1,
+            "val": "Python"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 3,
+            "val": "vllm_omni/entrypoints/openai/"
+          },
+          {
+            "count": 1,
+            "val": "tools/pre_commit/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 4,
+            "owner_id": "136984999",
+            "val": "vllm-project/vllm-omni"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"77\"><td><div class=\"lineno\">77</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;vllm_omni/entrypoints/openai/serving_speech_stream.py&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"78\"><td><div class=\"lineno\">78</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;vllm_omni/entrypoints/openai/<mark>video_api_utils.py</mark>&quot;</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"79\"><td><div class=\"lineno\">79</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;vllm_omni/entrypoints/openai/video_stream_base.py&quot;</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "tools/pre_commit/check_forbidden_imports.py",
+          "repo": "vllm-project/vllm-omni",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"5\"><td><div class=\"lineno\">5</div></td><td><div class=\"highlight\"><pre><span class=\"gu\">## `<mark>video_api_utils.py</mark>` vs `video/generation/helpers.py` (no overlap)</span></pre></div></td></tr><tr data-line=\"6\"><td><div class=\"lineno\">6</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"7\"><td><div class=\"lineno\">7</div></td><td><div class=\"highlight\"><pre>| | <span class=\"sb\">`openai/<mark>video_api_utils.py</mark>`</span> | <span class=\"sb\">`openai/video/generation/helpers.py`</span> |</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"16\"><td><div class=\"lineno\">16</div></td><td><div class=\"highlight\"><pre><span class=\"gs\">**Prefer growing `generation/helpers.py`.**</span> Do not grow root <span class=\"sb\">`<mark>video_api_utils.py</mark>`</span> unless the symbol is clearly shared media.</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"31\"><td><div class=\"lineno\">31</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span>Generic server utilities.</pre></div></td></tr><tr data-line=\"32\"><td><div class=\"lineno\">32</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span>Shared media encode/decode that already lives in root <span class=\"sb\">`<mark>video_api_utils.py</mark>`</span>.</pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "vllm_omni/entrypoints/openai/video/README.md",
+          "repo": "vllm-project/vllm-omni",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"12\"><td><div class=\"lineno\">12</div></td><td><div class=\"highlight\"><pre>| <span class=\"sb\">`openai/<mark>video_api_utils.py</mark>`</span> | Shared encode/decode/media backends only | Form/job/store orchestration | <span class=\"gs\">**Temporary.**</span> TODO(#5227, P1.3): move into e.g. <span class=\"sb\">`media.py`</span> |</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"29\"><td><div class=\"lineno\">29</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span>Generic video encoding/decoding helpers used outside this resource family</pre></div></td></tr><tr data-line=\"30\"><td><div class=\"lineno\">30</div></td><td><div class=\"highlight\"><pre>  (keep those in <span class=\"sb\">`<mark>video_api_utils.py</mark>`</span> until the P1.3 video family PR moves them).</pre></div></td></tr><tr data-line=\"31\"><td><div class=\"lineno\">31</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"32\"><td><div class=\"lineno\">32</div></td><td><div class=\"highlight\"><pre>The P0.2 helper migration places non-route video generation code here first. Full</pre></div></td></tr><tr data-line=\"33\"><td><div class=\"lineno\">33</div></td><td><div class=\"highlight\"><pre>route extraction (P0.3) and <span class=\"sb\">`<mark>video_api_utils.py</mark>`</span> cleanup (P1.3) are tracked by <span class=\"ni\">#5227</span>.</pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "vllm_omni/entrypoints/openai/video/generation/README.md",
+          "repo": "vllm-project/vllm-omni",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"12\"><td><div class=\"lineno\">12</div></td><td><div class=\"highlight\"><pre>| Shared media / serving utils | root <span class=\"sb\">`image_api_utils.py`</span>, <span class=\"sb\">`<mark>video_api_utils.py</mark>`</span>, <span class=\"sb\">`audio_utils_mixin.py`</span>, <span class=\"sb\">`utils.py`</span> | <span class=\"gs\">**Temporary.**</span> TODO(#5227, Phase 1): tidy up / absorb into endpoint-family packages in Phase 1 modality PRs (P1.1-P1.3) | Codec / bytes / format / pure media conversion; cross-cutting stage/pipeline helpers reused by protocol + multiple serving paths | HTTP form parsing, FastAPI <span class=\"sb\">`Request`</span> / app-state orchestration, job runners, endpoint response factories from <span class=\"sb\">`api_server.py`</span> |</pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "vllm_omni/entrypoints/openai/README.md",
+          "repo": "vllm-project/vllm-omni",
+          "total_matches": "3"
+        }
+      ],
+      "total": 4
+    },
+    "time": 411
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=video_api_utils.py"
+}

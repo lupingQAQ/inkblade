@@ -1,0 +1,225 @@
+{
+  "_cached_at": "2026-10-26T12:14:45+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 177,
+            "val": "Python"
+          },
+          {
+            "count": 45,
+            "val": "Shell"
+          },
+          {
+            "count": 27,
+            "val": "Markdown"
+          },
+          {
+            "count": 8,
+            "val": "YAML"
+          },
+          {
+            "count": 3,
+            "val": "TOML"
+          },
+          {
+            "count": 1,
+            "val": "Gettext Catalog"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 91,
+            "val": "tests/"
+          },
+          {
+            "count": 36,
+            "val": "scripts/"
+          },
+          {
+            "count": 14,
+            "val": "docs/"
+          },
+          {
+            "count": 10,
+            "val": "EvoTrainer/"
+          },
+          {
+            "count": 9,
+            "val": "examples/"
+          },
+          {
+            "count": 7,
+            "val": ".buildkite/"
+          },
+          {
+            "count": 7,
+            "val": "rl/vllm_megatron_ipc/"
+          },
+          {
+            "count": 7,
+            "val": "src/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 56,
+            "owner_id": "136984999",
+            "val": "vllm-project/vllm"
+          },
+          {
+            "count": 34,
+            "owner_id": "43349905",
+            "val": "mitkox/vllm-turboquant"
+          },
+          {
+            "count": 22,
+            "owner_id": "5667695",
+            "val": "allenai/open-instruct"
+          },
+          {
+            "count": 15,
+            "owner_id": "18461506",
+            "val": "Tencent/AngelSlim"
+          },
+          {
+            "count": 13,
+            "owner_id": "60851473",
+            "val": "wuwangzhang1216/abliterix"
+          },
+          {
+            "count": 12,
+            "owner_id": "1961952",
+            "val": "alibaba/ROLL"
+          },
+          {
+            "count": 10,
+            "owner_id": "109347596",
+            "val": "AlibabaResearch/DAMO-ConvAI"
+          },
+          {
+            "count": 7,
+            "owner_id": "33612283",
+            "val": "CalvinXKY/InfraTech"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"79\"><td><div class=\"lineno\">79</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;Allowing insecure serialization using pickle due to &quot;</span></pre></div></td></tr><tr data-line=\"80\"><td><div class=\"lineno\">80</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>=1&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"161\"><td><div class=\"lineno\">161</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">oob_tensor_consumer</span> <span class=\"o\">=</span> <span class=\"n\">oob_tensor_consumer</span></pre></div></td></tr><tr data-line=\"162\"><td><div class=\"lineno\">162</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">envs</span><span class=\"o\">.</span><span class=\"n\"><mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark></span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"163\"><td><div class=\"lineno\">163</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">_log_insecure_serialization_warning</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"212\"><td><div class=\"lineno\">212</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">result</span> <span class=\"o\">=</span> <span class=\"n\">obj</span><span class=\"o\">.</span><span class=\"n\">result</span></pre></div></td></tr><tr data-line=\"213\"><td><div class=\"lineno\">213</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">if</span> <span class=\"ow\">not</span> <span class=\"n\">envs</span><span class=\"o\">.</span><span class=\"n\"><mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark></span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"214\"><td><div class=\"lineno\">214</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">return</span> <span class=\"kc\">None</span><span class=\"p\">,</span> <span class=\"n\">result</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "vllm/v1/serial_utils.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "9"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"20\"><td><div class=\"lineno\">20</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">IPC handles are pickled for HTTP transport, so both sides need</span></pre></div></td></tr><tr data-line=\"21\"><td><div class=\"lineno\">21</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">`<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>=1`; this script sets it for itself and for</span></pre></div></td></tr><tr data-line=\"22\"><td><div class=\"lineno\">22</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">the server it spawns.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"56\"><td><div class=\"lineno\">56</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># Needed to (de)serialize IPC handles across the HTTP boundary.</span></pre></div></td></tr><tr data-line=\"57\"><td><div class=\"lineno\">57</div></td><td><div class=\"highlight\"><pre><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"p\">[</span><span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;1&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"89\"><td><div class=\"lineno\">89</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"p\">[</span><span class=\"s2\">&quot;VLLM_SERVER_DEV_MODE&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;1&quot;</span></pre></div></td></tr><tr data-line=\"90\"><td><div class=\"lineno\">90</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"p\">[</span><span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;1&quot;</span></pre></div></td></tr><tr data-line=\"91\"><td><div class=\"lineno\">91</div></td><td><div class=\"highlight\"><pre>    <span class=\"nb\">print</span><span class=\"p\">(</span><span class=\"sa\">f</span><span class=\"s2\">&quot;[server] Launching: </span><span class=\"si\">{</span><span class=\"s1\">&#39; &#39;</span><span class=\"o\">.</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"n\">serve_args</span><span class=\"p\">)</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "examples/rl/rlhf_http_ipc.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"80\"><td><div class=\"lineno\">80</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;Allowing insecure serialization using pickle due to &quot;</span></pre></div></td></tr><tr data-line=\"81\"><td><div class=\"lineno\">81</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>=1&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"162\"><td><div class=\"lineno\">162</div></td><td><div class=\"highlight\"><pre>        <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">oob_tensor_consumer</span> <span class=\"o\">=</span> <span class=\"n\">oob_tensor_consumer</span></pre></div></td></tr><tr data-line=\"163\"><td><div class=\"lineno\">163</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">envs</span><span class=\"o\">.</span><span class=\"n\"><mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark></span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"164\"><td><div class=\"lineno\">164</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">_log_insecure_serialization_warning</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"213\"><td><div class=\"lineno\">213</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">result</span> <span class=\"o\">=</span> <span class=\"n\">obj</span><span class=\"o\">.</span><span class=\"n\">result</span></pre></div></td></tr><tr data-line=\"214\"><td><div class=\"lineno\">214</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">if</span> <span class=\"ow\">not</span> <span class=\"n\">envs</span><span class=\"o\">.</span><span class=\"n\"><mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark></span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"215\"><td><div class=\"lineno\">215</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">return</span> <span class=\"kc\">None</span><span class=\"p\">,</span> <span class=\"n\">result</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "43349905",
+          "path": "vllm/v1/serial_utils.py",
+          "repo": "mitkox/vllm-turboquant",
+          "total_matches": "9"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"167\"><td><div class=\"lineno\">167</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"p\">[</span><span class=\"s2\">&quot;VLLM_SERVER_DEV_MODE&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;1&quot;</span>  <span class=\"c1\"># exposes weight-transfer + sleep endpoints</span></pre></div></td></tr><tr data-line=\"168\"><td><div class=\"lineno\">168</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"p\">[</span><span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;1&quot;</span>  <span class=\"c1\"># IPC handles over HTTP</span></pre></div></td></tr><tr data-line=\"169\"><td><div class=\"lineno\">169</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">env</span><span class=\"p\">[</span><span class=\"s2\">&quot;VLLM_WORKER_MULTIPROC_METHOD&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;spawn&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"237\"><td><div class=\"lineno\">237</div></td><td><div class=\"highlight\"><pre>                <span class=\"c1\"># The trainer pickles IPC handles for the HTTP client.</span></pre></div></td></tr><tr data-line=\"238\"><td><div class=\"lineno\">238</div></td><td><div class=\"highlight\"><pre>                <span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>&quot;</span><span class=\"p\">:</span> <span class=\"s2\">&quot;1&quot;</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "examples/rl/rlhf_ipc_fsdp_ep.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"87\"><td><div class=\"lineno\">87</div></td><td><div class=\"highlight\"><pre>            <span class=\"k\">if</span> <span class=\"ow\">not</span> <span class=\"n\">envs</span><span class=\"o\">.</span><span class=\"n\"><mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark></span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"88\"><td><div class=\"lineno\">88</div></td><td><div class=\"highlight\"><pre>                <span class=\"k\">raise</span> <span class=\"ne\">ValueError</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"89\"><td><div class=\"lineno\">89</div></td><td><div class=\"highlight\"><pre>                    <span class=\"s2\">&quot;Refusing to deserialize `ipc_handles_pickled` without &quot;</span></pre></div></td></tr><tr data-line=\"90\"><td><div class=\"lineno\">90</div></td><td><div class=\"highlight\"><pre>                    <span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>=1&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "vllm/distributed/weight_transfer/ipc_engine.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"225\"><td><div class=\"lineno\">225</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">VLLM_MSGPACK_ZERO_COPY_THRESHOLD</span><span class=\"p\">:</span> <span class=\"nb\">int</span> <span class=\"o\">=</span> <span class=\"mi\">256</span></pre></div></td></tr><tr data-line=\"226\"><td><div class=\"lineno\">226</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark></span><span class=\"p\">:</span> <span class=\"nb\">bool</span> <span class=\"o\">=</span> <span class=\"kc\">False</span></pre></div></td></tr><tr data-line=\"227\"><td><div class=\"lineno\">227</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">VLLM_DISABLE_REQUEST_ID_RANDOMIZATION</span><span class=\"p\">:</span> <span class=\"nb\">bool</span> <span class=\"o\">=</span> <span class=\"kc\">False</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"1663\"><td><div class=\"lineno\">1663</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># insecure method and it is needed for some reason.</span></pre></div></td></tr><tr data-line=\"1664\"><td><div class=\"lineno\">1664</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>&quot;</span><span class=\"p\">:</span> <span class=\"k\">lambda</span><span class=\"p\">:</span> <span class=\"nb\">bool</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"1665\"><td><div class=\"lineno\">1665</div></td><td><div class=\"highlight\"><pre>        <span class=\"nb\">int</span><span class=\"p\">(</span><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">getenv</span><span class=\"p\">(</span><span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;0&quot;</span><span class=\"p\">))</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "vllm/envs.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "3"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"432\"><td><div class=\"lineno\">432</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># For single DP (dp_size=1), they should be inherited from the shell environment</span></pre></div></td></tr><tr data-line=\"433\"><td><div class=\"lineno\">433</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># Only set <mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark> if it&#39;s not already set</span></pre></div></td></tr><tr data-line=\"434\"><td><div class=\"lineno\">434</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">if</span> <span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>&quot;</span> <span class=\"ow\">not</span> <span class=\"ow\">in</span> <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"435\"><td><div class=\"lineno\">435</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"p\">[</span><span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;1&quot;</span></pre></div></td></tr><tr data-line=\"436\"><td><div class=\"lineno\">436</div></td><td><div class=\"highlight\"><pre>        <span class=\"nb\">print</span><span class=\"p\">(</span><span class=\"s2\">&quot;  Set <mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>=1 (not set in environment)&quot;</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "18461506",
+          "path": "tools/run_vllm_calibrate.py",
+          "repo": "Tencent/AngelSlim",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"18\"><td><div class=\"lineno\">18</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    $ VLLM_SERVER_DEV_MODE=1 <mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>=1 \\</span></pre></div></td></tr><tr data-line=\"19\"><td><div class=\"lineno\">19</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        vllm serve Qwen/Qwen3-0.6b --enforce-eager \\</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"53\"><td><div class=\"lineno\">53</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># Enable insecure serialization for IPC handle serialization over HTTP</span></pre></div></td></tr><tr data-line=\"54\"><td><div class=\"lineno\">54</div></td><td><div class=\"highlight\"><pre><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"p\">[</span><span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>&quot;</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;1&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "examples/rl/rlhf_http_npu_ipc.py",
+          "repo": "vllm-project/vllm-ascend",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"16\"><td><div class=\"lineno\">16</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">&quot;&quot;&quot;Set ``<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>=1`` before vLLM is imported so</span></pre></div></td></tr><tr data-line=\"17\"><td><div class=\"lineno\">17</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">``LLM.collective_rpc(callable)`` can pickle worker callables. pytest loads</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"24\"><td><div class=\"lineno\">24</div></td><td><div class=\"highlight\"><pre><span class=\"n\">os</span><span class=\"o\">.</span><span class=\"n\">environ</span><span class=\"o\">.</span><span class=\"n\">setdefault</span><span class=\"p\">(</span><span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;1&quot;</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1728152",
+          "path": "tests/gpu_vllm/conftest.py",
+          "repo": "NVIDIA/Model-Optimizer",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"27\"><td><div class=\"lineno\">27</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># to use apply_model</span></pre></div></td></tr><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">monkeypatch</span><span class=\"o\">.</span><span class=\"n\">setenv</span><span class=\"p\">(</span><span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;1&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"29\"><td><div class=\"lineno\">29</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">with</span> <span class=\"n\">vllm_runner</span><span class=\"p\">(</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"70\"><td><div class=\"lineno\">70</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># to use apply_model</span></pre></div></td></tr><tr data-line=\"71\"><td><div class=\"lineno\">71</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">monkeypatch</span><span class=\"o\">.</span><span class=\"n\">setenv</span><span class=\"p\">(</span><span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;1&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"72\"><td><div class=\"lineno\">72</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">with</span> <span class=\"n\">vllm_runner</span><span class=\"p\">(</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"113\"><td><div class=\"lineno\">113</div></td><td><div class=\"highlight\"><pre>    <span class=\"c1\"># to use apply_model</span></pre></div></td></tr><tr data-line=\"114\"><td><div class=\"lineno\">114</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">monkeypatch</span><span class=\"o\">.</span><span class=\"n\">setenv</span><span class=\"p\">(</span><span class=\"s2\">&quot;<mark>VLLM_ALLOW_INSECURE_SERIALIZATION</mark>&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;1&quot;</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "tests/model_executor/test_model_load_with_params.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "3"
+        }
+      ],
+      "total": 261
+    },
+    "time": 128
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=VLLM_ALLOW_INSECURE_SERIALIZATION"
+}

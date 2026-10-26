@@ -1,0 +1,229 @@
+{
+  "generated_at": "2026-10-26T11:12:17+00:00",
+  "offline": false,
+  "schema": "trident-novelty-results-v1",
+  "verdicts": {
+    "vllm-rl-dev-auth-bypass": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:12:17+00:00",
+      "id": "vllm-rl-dev-auth-bypass",
+      "offline": false,
+      "providers": {
+        "github_advisories": {
+          "detail": "GitHub advisory database has no strong-term match for the package",
+          "matches": [],
+          "provider": "github_advisories",
+          "related": [
+            {
+              "cve_id": "CVE-2026-114055",
+              "id": "GHSA-gx7p-2j49-hfq4",
+              "summary": "vLLM : DoS via unvalidated mm_processor_kwargs in multimodal image processors (Isaac, InternVL, H2OVL, etc.)",
+              "url": "https://github.com/advisories/GHSA-gx7p-2j49-hfq4"
+            },
+            {
+              "cve_id": "CVE-2026-114050",
+              "id": "GHSA-p92p-rxj5-7p2x",
+              "summary": "vLLM: Forged multimodal UUID + P0/P1 processor-cache eviction drift: unauthenticated remote crash of the whole vLLM engine",
+              "url": "https://github.com/advisories/GHSA-p92p-rxj5-7p2x"
+            },
+            {
+              "cve_id": null,
+              "id": "GHSA-3cgq-c484-rx5j",
+              "summary": "Duplicate Advisory: vLLM 0.7.3 before 0.31.0 DoS via Unvalidated mm_processor_kwargs",
+              "url": "https://github.com/advisories/GHSA-3cgq-c484-rx5j"
+            },
+            {
+              "cve_id": null,
+              "id": "GHSA-hfwf-hgvp-4rr8",
+              "summary": "Duplicate Advisory: vLLM vulnerable to remote denial of service through forged multimodal UUID cache desynchronization",
+              "url": "https://github.com/advisories/GHSA-hfwf-hgvp-4rr8"
+            },
+            {
+              "cve_id": "CVE-2026-114055",
+              "id": "GHSA-gx7p-2j49-hfq4",
+              "summary": "vLLM : DoS via unvalidated mm_processor_kwargs in multimodal image processors (Isaac, InternVL, H2OVL, etc.)",
+              "url": "https://github.com/advisories/GHSA-gx7p-2j49-hfq4"
+            },
+            {
+              "cve_id": "CVE-2026-114050",
+              "id": "GHSA-p92p-rxj5-7p2x",
+              "summary": "vLLM: Forged multimodal UUID + P0/P1 processor-cache eviction drift: unauthenticated remote crash of the whole vLLM engine",
+              "url": "https://github.com/advisories/GHSA-p92p-rxj5-7p2x"
+            },
+            {
+              "cve_id": null,
+              "id": "GHSA-3cgq-c484-rx5j",
+              "summary": "Duplicate Advisory: vLLM 0.7.3 before 0.31.0 DoS via Unvalidated mm_processor_kwargs",
+              "url": "https://github.com/advisories/GHSA-3cgq-c484-rx5j"
+            },
+            {
+              "cve_id": null,
+              "id": "GHSA-hfwf-hgvp-4rr8",
+              "summary": "Duplicate Advisory: vLLM vulnerable to remote denial of service through forged multimodal UUID cache desynchronization",
+              "url": "https://github.com/advisories/GHSA-hfwf-hgvp-4rr8"
+            },
+            {
+              "cve_id": "CVE-2026-114055",
+              "id": "GHSA-gx7p-2j49-hfq4",
+              "summary": "vLLM : DoS via unvalidated mm_processor_kwargs in multimodal image processors (Isaac, InternVL, H2OVL, etc.)",
+              "url": "https://github.com/advisories/GHSA-gx7p-2j49-hfq4"
+            },
+            {
+              "cve_id": "CVE-2026-114050",
+              "id": "GHSA-p92p-rxj5-7p2x",
+              "summary": "vLLM: Forged multimodal UUID + P0/P1 processor-cache eviction drift: unauthenticated remote crash of the whole vLLM engine",
+              "url": "https://github.com/advisories/GHSA-p92p-rxj5-7p2x"
+            }
+          ],
+          "status": "ok"
+        },
+        "github_code": {
+          "detail": "grep.app returned 10 hit(s), 9 outside the upstream repo",
+          "external_hits": [
+            {
+              "path": "torchrl/weight_update/llm/sglang_nccl.py",
+              "repo": "pytorch/rl",
+              "snippet": "95_SGLANG_PAUSE_GENERATION_MODE = &quot;retract&quot;96_SGLANG_PAUSE_GENERATION_MODE_ENV = &quot;TORCHRL_SGLANG_PAUSE_GENERATION_MODE&quot;97_SGLANG_PAUSE_POLL_INTERVAL = 0.05108def _pause_generation_mode() -&gt; Literal[&quot;abort&quot;, &quot;retract&quot;, &quot;in_place&quot;]:109    mode = os."
+            },
+            {
+              "path": "src-tauri/crates/agent-core/src/core/coordination/agent_org_pause.rs",
+              "repo": "org2AI/ORG2",
+              "snippet": "20    pub transitioned: bool,21    pub pause_generation: i64,22    pub captured_turn_count: usize,42    pub episode_id: String,43    pub pause_generation: i64,44    pub total_count: usize,81            pause_request_id TEXT NOT NULL CHECK(length(trim(pause_request_id)) &gt; 0),82            pause_ge"
+            },
+            {
+              "path": "areal/engine/vllm_ext/areal_vllm_server.py",
+              "repo": "areal-project/AReaL",
+              "snippet": "167    llm = raw_request.app.state.engine_client168    await llm.pause_generation(wait_for_inflight_requests=False, clear_cache=True)169    await llm.reset_mm_cache()187    llm = raw_request.app.state.engine_client188    await llm.pause_generation(wait_for_inflight_requests=False, clear_cache=True)1"
+            },
+            {
+              "path": "areal/v2/inference_service/gateway/app.py",
+              "repo": "areal-project/AReaL",
+              "snippet": "385    # POST /pause_generation/{worker_id} — admin key ONLY, target single worker386    # =========================================================================387388    @app.post(&quot;/pause_generation/{worker_id}&quot;, response_model=BroadcastResponse)389    async def pause_generation(worker"
+            },
+            {
+              "path": "lib/sidecar/vllm/src/engine.rs",
+              "repo": "ai-dynamo/dynamo",
+              "snippet": "353        let mut controls = vec![354            &quot;pause_generation&quot;.to_string(),355            &quot;resume_generation&quot;.to_string(),368        match control {369            &quot;pause_generation&quot; =&gt; {370                pause_mode(body, &quot;pause_generation&quot;)?;371     "
+            },
+            {
+              "path": "src/cpp/src/speculative_decoding/continuous_batching/pipeline_impl.cpp",
+              "repo": "openvinotoolkit/openvino.genai",
+              "snippet": "588            request-&gt;pause_generation(pause_gen_status);667        for (auto&amp; awaiting_request : m_awaiting_requests) {668            awaiting_request-&gt;pause_generation(true);703                request-&gt;pause_generation(true);704            } else if (!sampling_params.is_tree_search("
+            },
+            {
+              "path": "areal/v2/inference_service/data_proxy/pause.py",
+              "repo": "areal-project/AReaL",
+              "snippet": "6  1. Set the PauseState flag to True7  2. Call SGLang POST /pause_generation (aborting in-flight requests)47) -&gt; None:48    &quot;&quot;&quot;Call SGLang POST /pause_generation to abort in-flight requests.&quot;&quot;&quot;49    if client is not None:50        resp = await client.post(51        "
+            },
+            {
+              "path": "test/registered/unit/managers/test_scheduler_pause_generation.py",
+              "repo": "sgl-project/sglang",
+              "snippet": "72        scheduler.waiting_queue = []73        # pause_generation zeros gen_throughput and flushes KV events.74        scheduler.metrics_reporter = MagicMock()138        scheduler.pause_generation(PauseGenerationReqInput(mode=&quot;in_place&quot;))171        scheduler.pause_generation(PauseGenerati"
+            },
+            {
+              "path": "test/registered/rl/test_update_weights_from_distributed.py",
+              "repo": "sgl-project/sglang",
+              "snippet": "96def _warmup_update(97    backend, engine, url, names, dtypes, shapes, load_format, pause_generation_mode116                &quot;load_format&quot;: load_format,117                &quot;flush_cache&quot;: not (pause_generation_mode == &quot;in_place&quot;),134    barrier,135    pause_generation_mod"
+            }
+          ],
+          "local_tree_hits": [],
+          "matches": [],
+          "status": "ok",
+          "via": "grep.app+local-tree"
+        },
+        "github_commits": {
+          "detail": "no security-relevant commit matched vllm/entrypoints/rl/online/api_router.py",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"vllm/entrypoints/rl/online/api_router.py\" repo:vllm-project/vllm",
+          "related": [],
+          "status": "ok"
+        },
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "vllm",
+            "vllm",
+            "rl"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2024-4839",
+              "summary": "A Cross-Site Request Forgery (CSRF) vulnerability exists in the 'Servers Configurations' function of the parisneo/lollms-webui, versions 9.6 to the latest. The affected functions include Elastic search Service (under construction), XTTS service, Petals service, vLLM service, and Motion Ctrl service,",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-4839"
+            },
+            {
+              "id": "CVE-2024-8768",
+              "summary": "A flaw was found in the vLLM library. A completions API request with an empty prompt will crash the vLLM API server, resulting in a denial of service.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-8768"
+            },
+            {
+              "id": "CVE-2024-8939",
+              "summary": "A vulnerability was found in the ilab model serve component, where improper handling of the best_of parameter in the vllm JSON web API can lead to a Denial of Service (DoS). The API used for LLM-based sentence or chat completion accepts a best_of parameter to return the best completion from several ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-8939"
+            },
+            {
+              "id": "CVE-2025-24357",
+              "summary": "vLLM is a library for LLM inference and serving. vllm/model_executor/weight_utils.py implements hf_model_weights_iterator to load the model checkpoint, which is downloaded from huggingface. It uses the torch.load function and the weights_only parameter defaults to False. When torch.load loads malici",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-24357"
+            },
+            {
+              "id": "CVE-2025-25183",
+              "summary": "vLLM is a high-throughput and memory-efficient inference and serving engine for LLMs. Maliciously constructed statements can lead to hash collisions, resulting in cache reuse, which can interfere with subsequent responses and cause unintended behavior. Prefix caching makes use of Python's built-in h",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-25183"
+            },
+            {
+              "id": "CVE-2025-1953",
+              "summary": "A vulnerability has been found in vLLM AIBrix 0.2.0 and classified as problematic. Affected by this vulnerability is an unknown functionality of the file pkg/plugins/gateway/prefixcacheindexer/hash.go of the component Prefix Caching. The manipulation leads to insufficiently random values. The comple",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-1953"
+            },
+            {
+              "id": "CVE-2025-29770",
+              "summary": "vLLM is a high-throughput and memory-efficient inference and serving engine for LLMs. The outlines library is one of the backends used by vLLM to support structured output (a.k.a. guided decoding). Outlines provides an optional cache for its compiled grammars on the local filesystem. This cache has ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-29770"
+            },
+            {
+              "id": "CVE-2025-29783",
+              "summary": "vLLM is a high-throughput and memory-efficient inference and serving engine for LLMs. When vLLM is configured to use Mooncake, unsafe deserialization exposed directly over ZMQ/TCP on all network interfaces will allow attackers to execute remote code on distributed hosts. This is a remote code execut",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-29783"
+            },
+            {
+              "id": "CVE-2024-11041",
+              "summary": "vllm-project vllm version v0.6.2 contains a vulnerability in the MessageQueue.dequeue() API function. The function uses pickle.loads to parse received sockets directly, leading to a remote code execution vulnerability. An attacker can exploit this by sending a malicious payload to the MessageQueue, ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-11041"
+            },
+            {
+              "id": "CVE-2024-9053",
+              "summary": "vllm-project vllm version 0.6.0 contains a vulnerability in the AsyncEngineRPCServer() RPC server entrypoints. The core functionality run_server_loop() calls the function _make_handler_coro(), which directly uses cloudpickle.loads() on received messages without any sanitization. This can result in r",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-9053"
+            }
+          ],
+          "status": "ok"
+        },
+        "osv": {
+          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "matches": [],
+          "provider": "osv",
+          "queried": "vllm@0.32.0",
+          "related": [],
+          "status": "ok"
+        },
+        "vendor": {
+          "detail": "vendor pages fetched clean",
+          "fetched": [
+            "https://github.com/vllm-project/vllm/security/advisories",
+            "https://github.com/vllm-project/vllm/releases"
+          ],
+          "matches": [],
+          "provider": "vendor",
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+upstream=lab/zeroday_reserve/upstream/deepspeed-0.19.8/deepspeed/checkpoint/autoep_universal.py
+module=<repo>\lab\zeroday_reserve\upstream\deepspeed-0.19.8\deepspeed\checkpoint\autoep_universal.py
+source_sha256=bc8e0a4f4560a3610473fb2215598b481cb1149ab1275ec0ee13ac3159b97727
+sink_line=459
+shard=lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/evidence/work/ckpt/layer_0_expert_0_mp_rank_0_model_states.pt
+consolidate_autoep_expert_files -> resolve_expert_ckpt_path -> torch.load(weights_only=False)
+post_sink_error=RuntimeError: Invalid magic number; corrupt file?
+marker=TRIDENT-ZD-deepspeed-autoep-unsafe-load
+torch_version=2.14.1+cpu

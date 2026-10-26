@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T11:36:35+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 130547,
+            "val": "Python"
+          },
+          {
+            "count": 11837,
+            "val": "Markdown"
+          },
+          {
+            "count": 7858,
+            "val": "Jupyter Notebook"
+          },
+          {
+            "count": 3686,
+            "val": "TypeScript"
+          },
+          {
+            "count": 3300,
+            "val": "Java"
+          },
+          {
+            "count": 1589,
+            "val": "JavaScript"
+          },
+          {
+            "count": 770,
+            "val": "Go"
+          },
+          {
+            "count": 676,
+            "val": "JSON"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 12556,
+            "val": "src/"
+          },
+          {
+            "count": 8879,
+            "val": "tests/"
+          },
+          {
+            "count": 3849,
+            "val": "scripts/"
+          },
+          {
+            "count": 3831,
+            "val": "docs/"
+          },
+          {
+            "count": 2588,
+            "val": "examples/"
+          },
+          {
+            "count": 2562,
+            "val": "skills/"
+          },
+          {
+            "count": 1777,
+            "val": "tools/"
+          },
+          {
+            "count": 1698,
+            "val": "backend/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 691,
+            "owner_id": "48558747",
+            "val": "selfteaching/selfteaching-python-camp"
+          },
+          {
+            "count": 691,
+            "owner_id": "96339824",
+            "val": "ed-donner/llm_engineering"
+          },
+          {
+            "count": 679,
+            "owner_id": "54370274",
+            "val": "camenduru/comfyui-colab"
+          },
+          {
+            "count": 669,
+            "owner_id": "60720343",
+            "val": "mims-harvard/ToolUniverse"
+          },
+          {
+            "count": 640,
+            "owner_id": "54370274",
+            "val": "camenduru/stable-diffusion-webui-colab"
+          },
+          {
+            "count": 551,
+            "owner_id": "51362701",
+            "val": "SCAMagic/SCAMagicScan"
+          },
+          {
+            "count": 458,
+            "owner_id": "42035259",
+            "val": "qiubo123/xiaofeixia-sec"
+          },
+          {
+            "count": 416,
+            "owner_id": "213859472",
+            "val": "jeremylongshore/tons-of-skills-marketplace"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"65\"><td><div class=\"lineno\">65</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">while</span> <span class=\"kc\">True</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"66\"><td><div class=\"lineno\">66</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"n\">params</span><span class=\"p\">,</span> <span class=\"n\">headers</span><span class=\"o\">=</span><span class=\"n\">headers</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"67\"><td><div class=\"lineno\">67</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">data_json</span> <span class=\"o\">=</span> <span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">json</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"131\"><td><div class=\"lineno\">131</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"n\">params</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"132\"><td><div class=\"lineno\">132</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">data_json</span> <span class=\"o\">=</span> <span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">json</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"225\"><td><div class=\"lineno\">225</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"n\">params</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"226\"><td><div class=\"lineno\">226</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">data_json</span> <span class=\"o\">=</span> <span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">json</span><span class=\"p\">()</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "91018023",
+          "path": "akshare/economic/macro_china.py",
+          "repo": "akfamily/akshare",
+          "total_matches": "86"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"39\"><td><div class=\"lineno\">39</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"o\">&amp;&amp;</span><span class=\"w\"> </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\">is_ready_for_query</span><span class=\"p\">.</span><span class=\"n\">get</span><span class=\"p\">()</span></pre></div></td></tr><tr data-line=\"40\"><td><div class=\"lineno\">40</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"o\">&amp;&amp;</span><span class=\"w\"> </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\">nonpipelinable_<mark class=\"m-l\">requests</mark></span><span class=\"p\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"o\">==</span><span class=\"w\"> </span><span class=\"mi\">0</span></pre></div></td></tr><tr data-line=\"41\"><td><div class=\"lineno\">41</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"o\">&amp;&amp;</span><span class=\"w\"> </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\">pipelined_<mark class=\"m-l\">requests</mark></span><span class=\"p\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"o\">==</span><span class=\"w\"> </span><span class=\"mi\">0</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"48\"><td><div class=\"lineno\">48</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"o\">&amp;&amp;</span><span class=\"w\"> </span><span class=\"o\">!</span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\">waiting_to_prepare</span><span class=\"p\">.</span><span class=\"n\">get</span><span class=\"p\">()</span></pre></div></td></tr><tr data-line=\"49\"><td><div class=\"lineno\">49</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"o\">&amp;&amp;</span><span class=\"w\"> </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\">pipelined_<mark class=\"m-l\">requests</mark></span><span class=\"p\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"o\">==</span><span class=\"w\"> </span><span class=\"mi\">0</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"78\"><td><div class=\"lineno\">78</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\">is_ready_for_query</span><span class=\"p\">.</span><span class=\"n\">get</span><span class=\"p\">()</span></pre></div></td></tr><tr data-line=\"79\"><td><div class=\"lineno\">79</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"o\">&amp;&amp;</span><span class=\"w\"> </span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\">nonpipelinable_<mark class=\"m-l\">requests</mark></span><span class=\"p\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"o\">==</span><span class=\"w\"> </span><span class=\"mi\">0</span><span class=\"w\"> </span><span class=\"c1\">// need to wait for non pipelinable requests to finish</span></pre></div></td></tr><tr data-line=\"80\"><td><div class=\"lineno\">80</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"o\">&amp;&amp;</span><span class=\"w\"> </span><span class=\"o\">!</span><span class=\"bp\">self</span><span class=\"p\">.</span><span class=\"n\">waiting_to_prepare</span><span class=\"p\">.</span><span class=\"n\">get</span><span class=\"p\">()</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "108928776",
+          "path": "src/sql_jsc/mysql/MySQLRequestQueue.rs",
+          "repo": "oven-sh/bun",
+          "total_matches": "16"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"42\"><td><div class=\"lineno\">42</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">headers</span><span class=\"o\">=</span><span class=\"n\">headers</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"n\">params</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"43\"><td><div class=\"lineno\">43</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">data_json</span> <span class=\"o\">=</span> <span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">json</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"61\"><td><div class=\"lineno\">61</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">headers</span><span class=\"o\">=</span><span class=\"n\">headers</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"n\">params</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"62\"><td><div class=\"lineno\">62</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">data_json</span> <span class=\"o\">=</span> <span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">json</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"100\"><td><div class=\"lineno\">100</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">headers</span><span class=\"o\">=</span><span class=\"n\">headers</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"n\">params</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"101\"><td><div class=\"lineno\">101</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">data_json</span> <span class=\"o\">=</span> <span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">json</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"119\"><td><div class=\"lineno\">119</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">headers</span><span class=\"o\">=</span><span class=\"n\">headers</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"n\">params</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "91018023",
+          "path": "akshare/economic/macro_euro.py",
+          "repo": "akfamily/akshare",
+          "total_matches": "30"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"331\"><td><div class=\"lineno\">331</div></td><td><div class=\"highlight\"><pre>                <span class=\"nb\">print</span><span class=\"p\">(</span><span class=\"s2\">&quot;=== EDIT CARD ===</span><span class=\"se\">\\n</span><span class=\"s2\">&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"332\"><td><div class=\"lineno\">332</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">body</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">edcard</span><span class=\"p\">,</span> <span class=\"n\">headers</span><span class=\"o\">=</span><span class=\"n\">headers</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"333\"><td><div class=\"lineno\">333</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">data2</span> <span class=\"o\">=</span> <span class=\"n\">body</span><span class=\"o\">.</span><span class=\"n\">text</span><span class=\"o\">.</span><span class=\"n\">replace</span><span class=\"p\">(</span><span class=\"s1\">&#39;}&#39;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;}</span><span class=\"se\">\\n</span><span class=\"s2\">&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"374\"><td><div class=\"lineno\">374</div></td><td><div class=\"highlight\"><pre>        <span class=\"nb\">print</span><span class=\"p\">(</span><span class=\"s2\">&quot;=== EDIT CARD ===</span><span class=\"se\">\\n</span><span class=\"s2\">&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"375\"><td><div class=\"lineno\">375</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">body</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">edcard</span><span class=\"p\">,</span> <span class=\"n\">headers</span><span class=\"o\">=</span><span class=\"n\">headers</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"376\"><td><div class=\"lineno\">376</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">data2</span> <span class=\"o\">=</span> <span class=\"n\">body</span><span class=\"o\">.</span><span class=\"n\">text</span><span class=\"o\">.</span><span class=\"n\">replace</span><span class=\"p\">(</span><span class=\"s1\">&#39;}&#39;</span><span class=\"p\">,</span><span class=\"s2\">&quot;}</span><span class=\"se\">\\n</span><span class=\"s2\">&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"413\"><td><div class=\"lineno\">413</div></td><td><div class=\"highlight\"><pre>        <span class=\"nb\">print</span><span class=\"p\">(</span><span class=\"s2\">&quot;=== ADD LABEL ===</span><span class=\"se\">\\n</span><span class=\"s2\">&quot;</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"414\"><td><div class=\"lineno\">414</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">body</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">edcard</span><span class=\"p\">,</span> <span class=\"n\">headers</span><span class=\"o\">=</span><span class=\"n\">headers</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "11725037",
+          "path": "api.py",
+          "repo": "wekan/wekan",
+          "total_matches": "46"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"41\"><td><div class=\"lineno\">41</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"n\">params</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"42\"><td><div class=\"lineno\">42</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">data_json</span> <span class=\"o\">=</span> <span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">json</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"184\"><td><div class=\"lineno\">184</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">url</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;https://data.eastmoney.com/hsgtcg/list.html&quot;</span></pre></div></td></tr><tr data-line=\"185\"><td><div class=\"lineno\">185</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"186\"><td><div class=\"lineno\">186</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">soup</span> <span class=\"o\">=</span> <span class=\"n\">BeautifulSoup</span><span class=\"p\">(</span><span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">text</span><span class=\"p\">,</span> <span class=\"n\">features</span><span class=\"o\">=</span><span class=\"s2\">&quot;lxml&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"227\"><td><div class=\"lineno\">227</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"n\">params</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"228\"><td><div class=\"lineno\">228</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">data_json</span> <span class=\"o\">=</span> <span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">json</span><span class=\"p\">()</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "91018023",
+          "path": "akshare/stock_feature/stock_hsgt_em.py",
+          "repo": "akfamily/akshare",
+          "total_matches": "30"
+        },
+        {
+          "branch": "trunk",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"178\"><td><div class=\"lineno\">178</div></td><td><div class=\"highlight\"><pre><span class=\"w\">      </span><span class=\"n\">LOG</span><span class=\"p\">.</span><span class=\"na\">debug</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"179\"><td><div class=\"lineno\">179</div></td><td><div class=\"highlight\"><pre><span class=\"w\">          </span><span class=\"s\">&quot;one level listing with prefix=&quot;</span><span class=\"w\"> </span><span class=\"o\">+</span><span class=\"w\"> </span><span class=\"n\">oneLevelList<mark class=\"m-l\">Requests</mark></span><span class=\"p\"><mark class=\"m-m\">.</mark></span><span class=\"na\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">i</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"180\"><td><div class=\"lineno\">180</div></td><td><div class=\"highlight\"><pre><span class=\"w\">              </span><span class=\"p\">.</span><span class=\"na\">getPrefix</span><span class=\"p\">()</span></pre></div></td></tr><tr data-line=\"181\"><td><div class=\"lineno\">181</div></td><td><div class=\"highlight\"><pre><span class=\"w\">              </span><span class=\"o\">+</span><span class=\"w\"> </span><span class=\"s\">&quot;, marker=&quot;</span><span class=\"w\"> </span><span class=\"o\">+</span><span class=\"w\"> </span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"182\"><td><div class=\"lineno\">182</div></td><td><div class=\"highlight\"><pre><span class=\"w\">              </span><span class=\"n\">oneLevelList<mark class=\"m-l\">Requests</mark></span><span class=\"p\"><mark class=\"m-m\">.</mark></span><span class=\"na\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">i</span><span class=\"p\">).</span><span class=\"na\">getMarker</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"o\">!=</span><span class=\"w\"> </span><span class=\"kc\">null</span></pre></div></td></tr><tr data-line=\"183\"><td><div class=\"lineno\">183</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                  </span><span class=\"o\">?</span><span class=\"w\"> </span><span class=\"n\">oneLevelList<mark class=\"m-l\">Requests</mark></span><span class=\"p\"><mark class=\"m-m\">.</mark></span><span class=\"na\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">i</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"184\"><td><div class=\"lineno\">184</div></td><td><div class=\"highlight\"><pre><span class=\"w\">                  </span><span class=\"p\">.</span><span class=\"na\">getMarker</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"199\"><td><div class=\"lineno\">199</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"k\">if</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"n\">commonPrefix</span><span class=\"p\">.</span><span class=\"na\">equals</span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"200\"><td><div class=\"lineno\">200</div></td><td><div class=\"highlight\"><pre><span class=\"w\">            </span><span class=\"n\">oneLevelList<mark class=\"m-l\">Requests</mark></span><span class=\"p\"><mark class=\"m-m\">.</mark></span><span class=\"na\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">i</span><span class=\"p\">).</span><span class=\"na\">getPrefix</span><span class=\"p\">()))</span><span class=\"w\"> </span><span class=\"p\">{</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "47359",
+          "path": "hadoop-cloud-storage-project/hadoop-huaweicloud/src/main/java/org/apache/hadoop/fs/obs/OBSFsDFSListing.java",
+          "repo": "apache/hadoop",
+          "total_matches": "20"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"28\"><td><div class=\"lineno\">28</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">params</span> <span class=\"o\">=</span> <span class=\"p\">{</span><span class=\"s2\">&quot;type&quot;</span><span class=\"p\">:</span> <span class=\"s2\">&quot;web&quot;</span><span class=\"p\">,</span> <span class=\"s2\">&quot;code&quot;</span><span class=\"p\">:</span> <span class=\"n\">symbol</span><span class=\"o\">.</span><span class=\"n\">lower</span><span class=\"p\">()}</span></pre></div></td></tr><tr data-line=\"29\"><td><div class=\"lineno\">29</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"n\">params</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"30\"><td><div class=\"lineno\">30</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">soup</span> <span class=\"o\">=</span> <span class=\"n\">BeautifulSoup</span><span class=\"p\">(</span><span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">text</span><span class=\"p\">,</span> <span class=\"n\">features</span><span class=\"o\">=</span><span class=\"s2\">&quot;lxml&quot;</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"51\"><td><div class=\"lineno\">51</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"n\">params</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"52\"><td><div class=\"lineno\">52</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">data_json</span> <span class=\"o\">=</span> <span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">json</span><span class=\"p\">()</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"69\"><td><div class=\"lineno\">69</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"n\">params</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"70\"><td><div class=\"lineno\">70</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">data_json</span> <span class=\"o\">=</span> <span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">json</span><span class=\"p\">()</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "91018023",
+          "path": "akshare/stock_feature/stock_three_report_em.py",
+          "repo": "akfamily/akshare",
+          "total_matches": "22"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"281\"><td><div class=\"lineno\">281</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"sd\">&quot;&quot;&quot;Get or create the state entry for a kv_request_id.&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"282\"><td><div class=\"lineno\">282</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">st</span> <span class=\"o\">=</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">kv_request_id</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"283\"><td><div class=\"lineno\">283</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">st</span> <span class=\"ow\">is</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"289\"><td><div class=\"lineno\">289</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"sd\">&quot;&quot;&quot;Drop the entry once it holds no live state.&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"290\"><td><div class=\"lineno\">290</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">st</span> <span class=\"o\">=</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">kv_request_id</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"291\"><td><div class=\"lineno\">291</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"p\">(</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"354\"><td><div class=\"lineno\">354</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">st</span> <span class=\"o\">=</span> <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_<mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">kv_request_id</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"355\"><td><div class=\"lineno\">355</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">existing</span> <span class=\"o\">=</span> <span class=\"n\">st</span><span class=\"o\">.</span><span class=\"n\">outbound</span><span class=\"o\">.</span><span class=\"n\">get</span><span class=\"p\">(</span><span class=\"n\">round_seq</span><span class=\"p\">)</span> <span class=\"k\">if</span> <span class=\"n\">st</span> <span class=\"ow\">is</span> <span class=\"ow\">not</span> <span class=\"kc\">None</span> <span class=\"k\">else</span> <span class=\"kc\">None</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "vllm/v1/kv_offload/tiering/p2p/session/server.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "14"
+        },
+        {
+          "branch": "dev",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"58\"><td><div class=\"lineno\">58</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">try</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"59\"><td><div class=\"lineno\">59</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">response</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">resource</span><span class=\"p\">,</span> <span class=\"n\">timeout</span><span class=\"o\">=</span><span class=\"mi\">10</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"60\"><td><div class=\"lineno\">60</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">except</span> <span class=\"n\">requests</span><span class=\"o\">.</span><span class=\"n\">exceptions</span><span class=\"o\">.</span><span class=\"n\">MissingSchema</span><span class=\"p\">:</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"115\"><td><div class=\"lineno\">115</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">request</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"sa\">f</span><span class=\"s2\">&quot;</span><span class=\"si\">{</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_resource</span><span class=\"si\">}</span><span class=\"s2\">/</span><span class=\"si\">{</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_func</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"p\">,</span> <span class=\"n\">timeout</span><span class=\"o\">=</span><span class=\"mi\">10</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"130\"><td><div class=\"lineno\">130</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"sd\">&quot;&quot;&quot;Turn the device on.&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"131\"><td><div class=\"lineno\">131</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">request</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"132\"><td><div class=\"lineno\">132</div></td><td><div class=\"highlight\"><pre>            <span class=\"sa\">f</span><span class=\"s2\">&quot;</span><span class=\"si\">{</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_resource</span><span class=\"si\">}</span><span class=\"s2\">/</span><span class=\"si\">{</span><span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">_func</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"p\">,</span> <span class=\"n\">timeout</span><span class=\"o\">=</span><span class=\"mi\">10</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"p\">{</span><span class=\"s2\">&quot;params&quot;</span><span class=\"p\">:</span> <span class=\"s2\">&quot;1&quot;</span><span class=\"p\">}</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "13844975",
+          "path": "homeassistant/components/arest/switch.py",
+          "repo": "home-assistant/core",
+          "total_matches": "9"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"71\"><td><div class=\"lineno\">71</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">headers</span><span class=\"o\">=</span><span class=\"n\">headers</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"72\"><td><div class=\"lineno\">72</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">encoding</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;gb2312&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"165\"><td><div class=\"lineno\">165</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">params</span><span class=\"o\">=</span><span class=\"n\">params</span><span class=\"p\">,</span> <span class=\"n\">headers</span><span class=\"o\">=</span><span class=\"n\">headers</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"166\"><td><div class=\"lineno\">166</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">data_text</span> <span class=\"o\">=</span> <span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">text</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"225\"><td><div class=\"lineno\">225</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">url</span> <span class=\"o\">=</span> <span class=\"s2\">&quot;https://fund.eastmoney.com/js/fundcode_search.js&quot;</span></pre></div></td></tr><tr data-line=\"226\"><td><div class=\"lineno\">226</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">r</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">requests</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">get</mark></span><span class=\"p\">(</span><span class=\"n\">url</span><span class=\"p\">,</span> <span class=\"n\">headers</span><span class=\"o\">=</span><span class=\"n\">headers</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"227\"><td><div class=\"lineno\">227</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">text_data</span> <span class=\"o\">=</span> <span class=\"n\">r</span><span class=\"o\">.</span><span class=\"n\">text</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "91018023",
+          "path": "akshare/fund/fund_em.py",
+          "repo": "akfamily/akshare",
+          "total_matches": "24"
+        }
+      ],
+      "total": 165096
+    },
+    "time": 423
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=requests.get"
+}

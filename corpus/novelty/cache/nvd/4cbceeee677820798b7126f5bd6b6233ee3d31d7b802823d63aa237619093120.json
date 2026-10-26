@@ -1,0 +1,4443 @@
+{
+  "_cached_at": "2026-10-26T11:20:43+00:00",
+  "body": {
+    "format": "NVD_CVE",
+    "resultsPerPage": 23,
+    "startIndex": 0,
+    "timestamp": "2026-10-26T11:20:42.050",
+    "totalResults": 23,
+    "version": "2.0",
+    "vulnerabilities": [
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "n/a",
+                  "vendor": "n/a",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "n/a"
+                    }
+                  ]
+                }
+              ],
+              "source": "cve@mitre.org"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:sun:jdk:*:update9:*:*:*:*:*:*",
+                      "matchCriteriaId": "0CF0BED7-BF52-47DF-9199-D832FDFEC87D",
+                      "versionEndIncluding": "1.5.0",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:a:sun:jdk:*:update1:*:*:*:*:*:*",
+                      "matchCriteriaId": "08459E48-A158-4089-8BEB-0F54836C1AB2",
+                      "versionEndIncluding": "1.6.0",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:a:sun:jre:*:update11:*:*:*:*:*:*",
+                      "matchCriteriaId": "CB640827-CF8F-481A-9603-B7AEEB4647E8",
+                      "versionEndIncluding": "1.5.0",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:a:sun:jre:*:update1:*:*:*:*:*:*",
+                      "matchCriteriaId": "2CE4D7F3-A393-40E7-A08D-60527A1658DA",
+                      "versionEndIncluding": "1.6.0",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:a:sun:sdk:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "EBB813FF-7910-4CF6-8AAD-0556FCC39394",
+                      "versionEndIncluding": "1.4.2_14",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Unspecified vulnerability in the Java Runtime Environment (JRE) Applet Class Loader in Sun JDK and JRE 5.0 Update 11 and earlier, 6 through 6 Update 1, and SDK and JRE 1.4.2_14 and earlier, allows remote attackers to violate the security model for an applet's outbound connections by connecting to certain localhost services running on the machine that loaded the applet."
+            },
+            {
+              "lang": "es",
+              "value": "Vulnerabilidad no especificada en Java Runtime Environment (JRE) Applet Class Loader en Sun JDK y JRE 5.0 Update 11 y versiones anteriores   , 6 hasta 6 Update 1, y SDK y JRE 1.4.2_14 y versiones anteriores, permite a atacantes remotos romper el modelo de seguridad en las conexiones salientes de un applet al conectarse a determinados servicios localhost ejecutándose en la máquina que cargó el applet."
+            }
+          ],
+          "id": "CVE-2007-3922",
+          "lastModified": "2026-06-16T22:43:03.793",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "MEDIUM",
+                "cvssData": {
+                  "accessComplexity": "MEDIUM",
+                  "accessVector": "NETWORK",
+                  "authentication": "NONE",
+                  "availabilityImpact": "PARTIAL",
+                  "baseScore": 6.8,
+                  "confidentialityImpact": "PARTIAL",
+                  "integrityImpact": "PARTIAL",
+                  "vectorString": "AV:N/AC:M/Au:N/C:P/I:P/A:P",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 8.6,
+                "impactScore": 6.4,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": true,
+                "obtainUserPrivilege": false,
+                "source": "nvd@nist.gov",
+                "type": "Primary",
+                "userInteractionRequired": false
+              }
+            ]
+          },
+          "published": "2007-07-21T00:30:00.000",
+          "references": [
+            {
+              "source": "cve@mitre.org",
+              "url": "http://dev2dev.bea.com/pub/advisory/248"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://docs.info.apple.com/article.html?artnum=307177"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://h20000.www2.hp.com/bizsupport/TechSupport/Document.jsp?objectID=c01269450"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://lists.apple.com/archives/Security-announce/2007/Dec/msg00001.html"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://secunia.com/advisories/26314"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://secunia.com/advisories/26369"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://secunia.com/advisories/26631"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://secunia.com/advisories/26645"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://secunia.com/advisories/26933"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://secunia.com/advisories/27266"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://secunia.com/advisories/27635"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://secunia.com/advisories/28115"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://secunia.com/advisories/30805"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://slackware.com/security/viewer.php?l=slackware-security&y=2007&m=slackware-security.486841"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://sunsolve.sun.com/search/document.do?assetkey=1-26-102995-1"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://support.avaya.com/elmodocs2/security/ASA-2007-322.htm"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.gentoo.org/security/en/glsa/glsa-200709-15.xml"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.novell.com/linux/security/advisories/2007_56_ibmjava.html"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.redhat.com/support/errata/RHSA-2007-0818.html"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.redhat.com/support/errata/RHSA-2007-0829.html"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.redhat.com/support/errata/RHSA-2008-0133.html"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.securityfocus.com/bid/25054"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.securitytracker.com/id?1018428"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.vupen.com/english/advisories/2007/2573"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.vupen.com/english/advisories/2007/3009"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.vupen.com/english/advisories/2007/3861"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.vupen.com/english/advisories/2007/4224"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://exchange.xforce.ibmcloud.com/vulnerabilities/35491"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://oval.cisecurity.org/repository/search/definition/oval%3Aorg.mitre.oval%3Adef%3A10387"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://dev2dev.bea.com/pub/advisory/248"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://docs.info.apple.com/article.html?artnum=307177"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://h20000.www2.hp.com/bizsupport/TechSupport/Document.jsp?objectID=c01269450"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://lists.apple.com/archives/Security-announce/2007/Dec/msg00001.html"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://secunia.com/advisories/26314"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://secunia.com/advisories/26369"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://secunia.com/advisories/26631"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://secunia.com/advisories/26645"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://secunia.com/advisories/26933"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://secunia.com/advisories/27266"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://secunia.com/advisories/27635"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://secunia.com/advisories/28115"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://secunia.com/advisories/30805"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://slackware.com/security/viewer.php?l=slackware-security&y=2007&m=slackware-security.486841"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://sunsolve.sun.com/search/document.do?assetkey=1-26-102995-1"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://support.avaya.com/elmodocs2/security/ASA-2007-322.htm"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.gentoo.org/security/en/glsa/glsa-200709-15.xml"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.novell.com/linux/security/advisories/2007_56_ibmjava.html"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.redhat.com/support/errata/RHSA-2007-0818.html"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.redhat.com/support/errata/RHSA-2007-0829.html"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.redhat.com/support/errata/RHSA-2008-0133.html"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.securityfocus.com/bid/25054"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.securitytracker.com/id?1018428"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.vupen.com/english/advisories/2007/2573"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.vupen.com/english/advisories/2007/3009"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.vupen.com/english/advisories/2007/3861"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.vupen.com/english/advisories/2007/4224"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "https://exchange.xforce.ibmcloud.com/vulnerabilities/35491"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "https://oval.cisecurity.org/repository/search/definition/oval%3Aorg.mitre.oval%3Adef%3A10387"
+            }
+          ],
+          "sourceIdentifier": "cve@mitre.org",
+          "vulnStatus": "Modified",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "NVD-CWE-noinfo"
+                }
+              ],
+              "source": "nvd@nist.gov",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "ParlAI",
+                  "vendor": "facebookresearch",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "< 1.1.0"
+                    }
+                  ]
+                }
+              ],
+              "source": "security-advisories@github.com"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:facebook:parlai:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "024C0A42-7DCA-4692-8BFD-E6BEFF796D84",
+                      "versionEndExcluding": "1.1.0",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "parlai is a framework for training and evaluating AI models on a variety of openly available dialogue datasets. In affected versions the package is vulnerable to YAML deserialization attack caused by unsafe loading which leads to Arbitary code execution. This security bug is patched by avoiding unsafe loader users should update to version above v1.1.0. If upgrading is not possible then users can change the Loader used to SafeLoader as a workaround. See commit 507d066ef432ea27d3e201da08009872a2f37725 for details."
+            },
+            {
+              "lang": "es",
+              "value": "parlai es un marco de trabajo para entrenar y evaluar modelos de IA en una variedad de conjuntos de datos de diálogo disponibles abiertamente. En las versiones afectadas el paquete es vulnerable a un ataque de deserialización de YAML causado por una carga no segura que conlleva a una ejecución de código arbitrario. Este bug de seguridad es parcheado al evitar una carga no segura, los usuarios deben actualizar a una versión superior a v1.1.0. Si la actualización no es posible, entonces los usuarios pueden cambiar el Cargador usado a SafeLoader como solución. Consulte el commit 507d066ef432ea27d3e201da08009872a2f37725 para más detalles"
+            }
+          ],
+          "id": "CVE-2021-39207",
+          "lastModified": "2026-06-17T04:03:18.797",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "MEDIUM",
+                "cvssData": {
+                  "accessComplexity": "LOW",
+                  "accessVector": "NETWORK",
+                  "authentication": "SINGLE",
+                  "availabilityImpact": "PARTIAL",
+                  "baseScore": 6.5,
+                  "confidentialityImpact": "PARTIAL",
+                  "integrityImpact": "PARTIAL",
+                  "vectorString": "AV:N/AC:L/Au:S/C:P/I:P/A:P",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 8.0,
+                "impactScore": 6.4,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": false,
+                "obtainUserPrivilege": false,
+                "source": "nvd@nist.gov",
+                "type": "Primary",
+                "userInteractionRequired": false
+              }
+            ],
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "HIGH",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "LOW",
+                  "baseScore": 8.4,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "LOW",
+                  "scope": "CHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:H/A:L",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.8,
+                "impactScore": 6.0,
+                "source": "security-advisories@github.com",
+                "type": "Secondary"
+              },
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 8.8,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "LOW",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 2.8,
+                "impactScore": 5.9,
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            ]
+          },
+          "published": "2021-09-10T23:15:07.343",
+          "references": [
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Patch",
+                "Third Party Advisory"
+              ],
+              "url": "https://github.com/facebookresearch/ParlAI/commit/4374fa2aba383db6526ab36e939eb1cf8ef99879"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Patch",
+                "Third Party Advisory"
+              ],
+              "url": "https://github.com/facebookresearch/ParlAI/commit/507d066ef432ea27d3e201da08009872a2f37725"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Patch",
+                "Third Party Advisory"
+              ],
+              "url": "https://github.com/facebookresearch/ParlAI/security/advisories/GHSA-m87f-9fvv-2mgg"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Patch",
+                "Third Party Advisory"
+              ],
+              "url": "https://github.com/facebookresearch/ParlAI/commit/4374fa2aba383db6526ab36e939eb1cf8ef99879"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Patch",
+                "Third Party Advisory"
+              ],
+              "url": "https://github.com/facebookresearch/ParlAI/commit/507d066ef432ea27d3e201da08009872a2f37725"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Patch",
+                "Third Party Advisory"
+              ],
+              "url": "https://github.com/facebookresearch/ParlAI/security/advisories/GHSA-m87f-9fvv-2mgg"
+            }
+          ],
+          "sourceIdentifier": "security-advisories@github.com",
+          "vulnStatus": "Modified",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-502"
+                }
+              ],
+              "source": "security-advisories@github.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "defaultStatus": "unknown",
+                  "modules": [
+                    "bhyveload"
+                  ],
+                  "product": "FreeBSD",
+                  "vendor": "FreeBSD",
+                  "versions": [
+                    {
+                      "lessThan": "p5",
+                      "status": "affected",
+                      "version": "14.0-RELEASE",
+                      "versionType": "release"
+                    },
+                    {
+                      "lessThan": "p10",
+                      "status": "affected",
+                      "version": "13.2-RELEASE",
+                      "versionType": "release"
+                    }
+                  ]
+                }
+              ],
+              "source": "secteam@freebsd.org"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "69125938-D4B2-43D0-AA23-1CCCEB114936",
+                      "versionEndExcluding": "13.2",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "49A95FB1-562D-4804-ACB6-73193028DAE7",
+                      "versionEndExcluding": "14.0",
+                      "versionStartIncluding": "13.3",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:13.2:p1:*:*:*:*:*:*",
+                      "matchCriteriaId": "2888B0C1-4D85-42EC-9696-03FAD0A9C28F",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:13.2:p2:*:*:*:*:*:*",
+                      "matchCriteriaId": "A3306F11-D3C0-41D6-BB5E-2ABDC3927715",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:13.2:p3:*:*:*:*:*:*",
+                      "matchCriteriaId": "9E584FE1-3A34-492B-B10F-508DA7CBA768",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:13.2:p4:*:*:*:*:*:*",
+                      "matchCriteriaId": "A5605E90-D125-4CC9-8B9F-F5EED9D4EE0C",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:13.2:p5:*:*:*:*:*:*",
+                      "matchCriteriaId": "761B4382-E857-4868-9F80-189B7F60256B",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:13.2:p6:*:*:*:*:*:*",
+                      "matchCriteriaId": "51B17801-15FD-4425-BA6C-BE06B14F1BFE",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:13.2:p7:*:*:*:*:*:*",
+                      "matchCriteriaId": "E9CAFF74-AD36-4D29-83F3-23E0417C485D",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:13.2:p8:*:*:*:*:*:*",
+                      "matchCriteriaId": "1B2D2A82-BFFE-45FE-9F79-4AF12C6DE69D",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:13.2:p9:*:*:*:*:*:*",
+                      "matchCriteriaId": "E7A81663-047E-4328-BE3A-CF65AB55B29F",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:14.0:beta5:*:*:*:*:*:*",
+                      "matchCriteriaId": "DB7B021E-F4AD-44AC-96AB-8ACAF8AB1B88",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:14.0:p1:*:*:*:*:*:*",
+                      "matchCriteriaId": "69A72B5A-2189-4700-8E8B-1E5E7CA86C40",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:14.0:p2:*:*:*:*:*:*",
+                      "matchCriteriaId": "5771F187-281B-4680-B562-EFC7441A8F88",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:14.0:p3:*:*:*:*:*:*",
+                      "matchCriteriaId": "0A4437F5-9DDA-4769-974E-23BFA085E0DB",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:14.0:p4:*:*:*:*:*:*",
+                      "matchCriteriaId": "A9C3A3D4-C9F4-41EB-B532-821AF83470B1",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:14.0:rc3:*:*:*:*:*:*",
+                      "matchCriteriaId": "038E5B85-7F60-4D71-8D3F-EDBF6E036CE0",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:freebsd:freebsd:14.0:rc4-p1:*:*:*:*:*:*",
+                      "matchCriteriaId": "BF309824-D379-4749-A1FA-BCB2987DD671",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "`bhyveload -h <host-path>` may be used to grant loader access to the <host-path> directory tree on the host.  Affected versions of bhyveload(8) do not make any attempt to restrict loader's access to <host-path>, allowing the loader to read any file the host user has access to. In the bhyveload(8) model, the host supplies a userboot.so to boot with, but the loader scripts generally come from the guest image.  A maliciously crafted script could be used to exfiltrate sensitive data from the host accessible to the user running bhyhveload(8), which is often the system root."
+            },
+            {
+              "lang": "es",
+              "value": "`bhyveload -h ` se puede usar para otorgar acceso al cargador al árbol de directorios  en el host. Las versiones afectadas de bhyveload(8) no intentan restringir el acceso del cargador a , lo que le permite leer cualquier archivo al que el usuario host tenga acceso. En el modelo bhyveload(8), el host proporciona un userboot.so para arrancar, pero los scripts del cargador generalmente provienen de la imagen del invitado. Se podría utilizar un script creado con fines malintencionados para extraer datos confidenciales del host al que puede acceder el usuario que ejecuta bhyhveload(8), que suele ser la raíz del sistema."
+            }
+          ],
+          "id": "CVE-2024-25940",
+          "lastModified": "2026-06-17T07:16:45.890",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "LOW",
+                  "baseScore": 6.3,
+                  "baseSeverity": "MEDIUM",
+                  "confidentialityImpact": "LOW",
+                  "integrityImpact": "LOW",
+                  "privilegesRequired": "LOW",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 2.8,
+                "impactScore": 3.4,
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2024-25940",
+                  "options": [
+                    {
+                      "exploitation": "none"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2024-02-21T20:43:31.439077Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2024-02-15T05:15:11.100",
+          "references": [
+            {
+              "source": "secteam@freebsd.org",
+              "tags": [
+                "Vendor Advisory"
+              ],
+              "url": "https://security.freebsd.org/advisories/FreeBSD-SA-24:01.bhyveload.asc"
+            },
+            {
+              "source": "secteam@freebsd.org",
+              "tags": [
+                "Third Party Advisory"
+              ],
+              "url": "https://security.netapp.com/advisory/ntap-20240419-0004/"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Vendor Advisory"
+              ],
+              "url": "https://security.freebsd.org/advisories/FreeBSD-SA-24:01.bhyveload.asc"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Third Party Advisory"
+              ],
+              "url": "https://security.netapp.com/advisory/ntap-20240419-0004/"
+            }
+          ],
+          "sourceIdentifier": "secteam@freebsd.org",
+          "vulnStatus": "Analyzed",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-922"
+                }
+              ],
+              "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "defaultStatus": "unaffected",
+                  "product": "Linux",
+                  "programFiles": [
+                    "drivers/base/firmware_loader/main.c"
+                  ],
+                  "repo": "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git",
+                  "vendor": "Linux",
+                  "versions": [
+                    {
+                      "lessThan": "d1768e5535d3ded59f888637016e6f821f4e069f",
+                      "status": "affected",
+                      "version": "abb139e75c2cdbb955e840d6331cb5863e409d0e",
+                      "versionType": "git"
+                    },
+                    {
+                      "lessThan": "9b1ca33ebd05b3acef5b976c04e5e791af93ce1b",
+                      "status": "affected",
+                      "version": "abb139e75c2cdbb955e840d6331cb5863e409d0e",
+                      "versionType": "git"
+                    },
+                    {
+                      "lessThan": "c30558e6c5c9ad6c86459d9acce1520ceeab9ea6",
+                      "status": "affected",
+                      "version": "abb139e75c2cdbb955e840d6331cb5863e409d0e",
+                      "versionType": "git"
+                    },
+                    {
+                      "lessThan": "a77fc4acfd49fc6076e565445b2bc5fdc3244da4",
+                      "status": "affected",
+                      "version": "abb139e75c2cdbb955e840d6331cb5863e409d0e",
+                      "versionType": "git"
+                    },
+                    {
+                      "lessThan": "3d2411f4edcb649eaf232160db459bb4770b5251",
+                      "status": "affected",
+                      "version": "abb139e75c2cdbb955e840d6331cb5863e409d0e",
+                      "versionType": "git"
+                    },
+                    {
+                      "lessThan": "7420c1bf7fc784e587b87329cc6dfa3dca537aa4",
+                      "status": "affected",
+                      "version": "abb139e75c2cdbb955e840d6331cb5863e409d0e",
+                      "versionType": "git"
+                    },
+                    {
+                      "lessThan": "28f1cd94d3f1092728fb775a0fe26c5f1ac2ebeb",
+                      "status": "affected",
+                      "version": "abb139e75c2cdbb955e840d6331cb5863e409d0e",
+                      "versionType": "git"
+                    },
+                    {
+                      "lessThan": "6c4e13fdfcab34811c3143a0a03c05fec4e870ec",
+                      "status": "affected",
+                      "version": "abb139e75c2cdbb955e840d6331cb5863e409d0e",
+                      "versionType": "git"
+                    },
+                    {
+                      "lessThan": "f0e5311aa8022107d63c54e2f03684ec097d1394",
+                      "status": "affected",
+                      "version": "abb139e75c2cdbb955e840d6331cb5863e409d0e",
+                      "versionType": "git"
+                    }
+                  ]
+                },
+                {
+                  "defaultStatus": "affected",
+                  "product": "Linux",
+                  "programFiles": [
+                    "drivers/base/firmware_loader/main.c"
+                  ],
+                  "repo": "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git",
+                  "vendor": "Linux",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "3.7"
+                    },
+                    {
+                      "lessThan": "3.7",
+                      "status": "unaffected",
+                      "version": "0",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThanOrEqual": "4.19.*",
+                      "status": "unaffected",
+                      "version": "4.19.323",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThanOrEqual": "5.4.*",
+                      "status": "unaffected",
+                      "version": "5.4.285",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThanOrEqual": "5.10.*",
+                      "status": "unaffected",
+                      "version": "5.10.227",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThanOrEqual": "5.15.*",
+                      "status": "unaffected",
+                      "version": "5.15.168",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThanOrEqual": "6.1.*",
+                      "status": "unaffected",
+                      "version": "6.1.113",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThanOrEqual": "6.6.*",
+                      "status": "unaffected",
+                      "version": "6.6.54",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThanOrEqual": "6.10.*",
+                      "status": "unaffected",
+                      "version": "6.10.13",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThanOrEqual": "6.11.*",
+                      "status": "unaffected",
+                      "version": "6.11.2",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThanOrEqual": "*",
+                      "status": "unaffected",
+                      "version": "6.12",
+                      "versionType": "original_commit_for_fix"
+                    }
+                  ]
+                }
+              ],
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:o:debian:debian_linux:11.0:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "FA6FEEC2-9F11-4643-8827-749718254FED",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            },
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "02E209D0-429E-482D-972E-CBF56B5FB05A",
+                      "versionEndExcluding": "4.19.323",
+                      "versionStartIncluding": "3.7",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "B5A89369-320F-47FC-8695-56F61F87E4C0",
+                      "versionEndExcluding": "5.4.285",
+                      "versionStartIncluding": "4.20",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "795A3EE6-0CAB-4409-A903-151C94ACECC0",
+                      "versionEndExcluding": "5.10.227",
+                      "versionStartIncluding": "5.5",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "4D51C05D-455B-4D8D-89E7-A58E140B864C",
+                      "versionEndExcluding": "5.15.168",
+                      "versionStartIncluding": "5.11",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "D01BD22E-ACD1-4618-9D01-6116570BE1EE",
+                      "versionEndExcluding": "6.1.113",
+                      "versionStartIncluding": "5.16",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "D448821D-C085-4CAF-88FA-2DDE7BE21976",
+                      "versionEndExcluding": "6.6.54",
+                      "versionStartIncluding": "6.2",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "CE94BB8D-B0AB-4563-9ED7-A12122B56EBE",
+                      "versionEndExcluding": "6.10.13",
+                      "versionStartIncluding": "6.7",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "AB755D26-97F4-43B6-8604-CD076811E181",
+                      "versionEndExcluding": "6.11.2",
+                      "versionStartIncluding": "6.11",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "In the Linux kernel, the following vulnerability has been resolved:\n\nfirmware_loader: Block path traversal\n\nMost firmware names are hardcoded strings, or are constructed from fairly\nconstrained format strings where the dynamic parts are just some hex\nnumbers or such.\n\nHowever, there are a couple codepaths in the kernel where firmware file\nnames contain string components that are passed through from a device or\nsemi-privileged userspace; the ones I could find (not counting interfaces\nthat require root privileges) are:\n\n - lpfc_sli4_request_firmware_update() seems to construct the firmware\n   filename from \"ModelName\", a string that was previously parsed out of\n   some descriptor (\"Vital Product Data\") in lpfc_fill_vpd()\n - nfp_net_fw_find() seems to construct a firmware filename from a model\n   name coming from nfp_hwinfo_lookup(pf->hwinfo, \"nffw.partno\"), which I\n   think parses some descriptor that was read from the device.\n   (But this case likely isn't exploitable because the format string looks\n   like \"netronome/nic_%s\", and there shouldn't be any *folders* starting\n   with \"netronome/nic_\". The previous case was different because there,\n   the \"%s\" is *at the start* of the format string.)\n - module_flash_fw_schedule() is reachable from the\n   ETHTOOL_MSG_MODULE_FW_FLASH_ACT netlink command, which is marked as\n   GENL_UNS_ADMIN_PERM (meaning CAP_NET_ADMIN inside a user namespace is\n   enough to pass the privilege check), and takes a userspace-provided\n   firmware name.\n   (But I think to reach this case, you need to have CAP_NET_ADMIN over a\n   network namespace that a special kind of ethernet device is mapped into,\n   so I think this is not a viable attack path in practice.)\n\nFix it by rejecting any firmware names containing \"..\" path components.\n\nFor what it's worth, I went looking and haven't found any USB device\ndrivers that use the firmware loader dangerously."
+            },
+            {
+              "lang": "es",
+              "value": "En el kernel de Linux, se ha resuelto la siguiente vulnerabilidad: firmware_loader: Block path traversal La mayoría de los nombres de firmware son cadenas codificadas o se construyen a partir de cadenas de formato bastante restringidas donde las partes dinámicas son solo algunos números hexadecimales o algo así. Sin embargo, hay un par de rutas de código en el kernel donde los nombres de archivo de firmware contienen componentes de cadena que se pasan desde un dispositivo o un espacio de usuario semiprivilegiado; los que pude encontrar (sin contar las interfaces que requieren privilegios de root) son: - lpfc_sli4_request_firmware_update() parece construir el nombre de archivo de firmware a partir de \"ModelName\", una cadena que se analizó previamente a partir de algún descriptor (\"Vital Product Data\") en lpfc_fill_vpd() - nfp_net_fw_find() parece construir un nombre de archivo de firmware a partir de un nombre de modelo que proviene de nfp_hwinfo_lookup(pf-&gt;hwinfo, \"nffw.partno\"), que creo que analiza algún descriptor que se leyó desde el dispositivo. (Pero este caso probablemente no sea explotable porque la cadena de formato se parece a \"netronome/nic_%s\", y no debería haber ninguna *carpeta* que comience con \"netronome/nic_\". El caso anterior era diferente porque allí, el \"%s\" está *al comienzo* de la cadena de formato). - module_flash_fw_schedule() es accesible desde el comando netlink ETHTOOL_MSG_MODULE_FW_FLASH_ACT, que está marcado como GENL_UNS_ADMIN_PERM (lo que significa que CAP_NET_ADMIN dentro de un espacio de nombres de usuario es suficiente para pasar la verificación de privilegios), y toma un nombre de firmware provisto por el espacio de usuario. (Pero creo que para llegar a este caso, necesita tener CAP_NET_ADMIN sobre un espacio de nombres de red en el que se asigna un tipo especial de dispositivo Ethernet, por lo que creo que esta no es una ruta de ataque viable en la práctica). Arréglelo rechazando cualquier nombre de firmware que contenga componentes de ruta \"..\" Por si sirve de algo, he buscado y no he encontrado ningún controlador de dispositivo USB que utilice el cargador de firmware de forma peligrosa."
+            }
+          ],
+          "id": "CVE-2024-47742",
+          "lastModified": "2026-08-04T11:20:47.217",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "LOCAL",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 7.8,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "LOW",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.8,
+                "impactScore": 5.9,
+                "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+                "type": "Secondary"
+              },
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "LOCAL",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 7.8,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "LOW",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.8,
+                "impactScore": 5.9,
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2024-47742",
+                  "options": [
+                    {
+                      "exploitation": "none"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2024-10-21T12:59:04.060717Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2024-10-21T13:15:04.297",
+          "references": [
+            {
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://git.kernel.org/stable/c/28f1cd94d3f1092728fb775a0fe26c5f1ac2ebeb"
+            },
+            {
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://git.kernel.org/stable/c/3d2411f4edcb649eaf232160db459bb4770b5251"
+            },
+            {
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://git.kernel.org/stable/c/6c4e13fdfcab34811c3143a0a03c05fec4e870ec"
+            },
+            {
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://git.kernel.org/stable/c/7420c1bf7fc784e587b87329cc6dfa3dca537aa4"
+            },
+            {
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://git.kernel.org/stable/c/9b1ca33ebd05b3acef5b976c04e5e791af93ce1b"
+            },
+            {
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://git.kernel.org/stable/c/a77fc4acfd49fc6076e565445b2bc5fdc3244da4"
+            },
+            {
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://git.kernel.org/stable/c/c30558e6c5c9ad6c86459d9acce1520ceeab9ea6"
+            },
+            {
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://git.kernel.org/stable/c/d1768e5535d3ded59f888637016e6f821f4e069f"
+            },
+            {
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://git.kernel.org/stable/c/f0e5311aa8022107d63c54e2f03684ec097d1394"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Mailing List",
+                "Third Party Advisory"
+              ],
+              "url": "https://lists.debian.org/debian-lts-announce/2025/01/msg00001.html"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Mailing List",
+                "Third Party Advisory"
+              ],
+              "url": "https://lists.debian.org/debian-lts-announce/2025/03/msg00002.html"
+            }
+          ],
+          "sourceIdentifier": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+          "vulnStatus": "Modified",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-22"
+                }
+              ],
+              "source": "nvd@nist.gov",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "collectionURL": "https://github.com",
+                  "defaultStatus": "unaffected",
+                  "packageName": "ollama/ollama",
+                  "product": "ollama",
+                  "programFiles": [
+                    "fs/ggml/gguf.go",
+                    "server/quantization.go"
+                  ],
+                  "repo": "https://github.com/ollama/ollama",
+                  "vendor": "ollama",
+                  "versions": [
+                    {
+                      "lessThan": "0.17.1",
+                      "status": "affected",
+                      "version": "0",
+                      "versionType": "semver"
+                    }
+                  ]
+                }
+              ],
+              "source": "abd028dc-c042-4c4d-9749-38d0f850af89"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:ollama:ollama:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "18CE34C3-1F67-46CE-8B8D-5B54FC3996EF",
+                      "versionEndExcluding": "0.17.1",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Ollama before 0.17.1 contains a heap out-of-bounds read vulnerability in the GGUF model loader. The /api/create endpoint accepts an attacker-supplied GGUF file in which the declared tensor offset and size exceed the file's actual length; during quantization in fs/ggml/gguf.go and server/quantization.go (WriteTo()), the server reads past the allocated heap buffer. The leaked memory contents may include environment variables, API keys, system prompts, and concurrent users' conversation data, and can be exfiltrated by uploading the resulting model artifact through the /api/push endpoint to an attacker-controlled registry. The /api/create and /api/push endpoints have no authentication in the upstream distribution. Default deployments bind to 127.0.0.1, but the documented OLLAMA_HOST=0.0.0.0 configuration is widely used in practice (large public-internet exposure observed)."
+            }
+          ],
+          "id": "CVE-2026-7482",
+          "lastModified": "2026-06-17T11:02:30.040",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 9.1,
+                  "baseSeverity": "CRITICAL",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "NONE",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 3.9,
+                "impactScore": 5.2,
+                "source": "abd028dc-c042-4c4d-9749-38d0f850af89",
+                "type": "Secondary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "YES",
+                  "Recovery": "AUTOMATIC",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "NONE",
+                  "attackVector": "NETWORK",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 8.8,
+                  "baseSeverity": "HIGH",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "NOT_DEFINED",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "NONE",
+                  "providerUrgency": "RED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "NONE",
+                  "valueDensity": "DIFFUSE",
+                  "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:N/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:Y/R:A/V:D/RE:L/U:Red",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "HIGH",
+                  "vulnConfidentialityImpact": "HIGH",
+                  "vulnIntegrityImpact": "NONE",
+                  "vulnerabilityResponseEffort": "LOW"
+                },
+                "source": "abd028dc-c042-4c4d-9749-38d0f850af89",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-7482",
+                  "options": [
+                    {
+                      "exploitation": "none"
+                    },
+                    {
+                      "automatable": "yes"
+                    },
+                    {
+                      "technicalImpact": "total"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-05-04T13:48:32.181054Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-05-04T13:16:01.727",
+          "references": [
+            {
+              "source": "abd028dc-c042-4c4d-9749-38d0f850af89",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://github.com/ollama/ollama/commit/88d57d0483cca907e0b23a968c83627a20b21047"
+            },
+            {
+              "source": "abd028dc-c042-4c4d-9749-38d0f850af89",
+              "tags": [
+                "Issue Tracking",
+                "Patch"
+              ],
+              "url": "https://github.com/ollama/ollama/pull/14406"
+            },
+            {
+              "source": "abd028dc-c042-4c4d-9749-38d0f850af89",
+              "tags": [
+                "Release Notes"
+              ],
+              "url": "https://github.com/ollama/ollama/releases/tag/v0.17.1"
+            }
+          ],
+          "sourceIdentifier": "abd028dc-c042-4c4d-9749-38d0f850af89",
+          "vulnStatus": "Analyzed",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-125"
+                }
+              ],
+              "source": "abd028dc-c042-4c4d-9749-38d0f850af89",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "stanza",
+                  "vendor": "stanfordnlp",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "< 1.12.2"
+                    }
+                  ]
+                }
+              ],
+              "source": "security-advisories@github.com"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:stanford:stanza:*:*:*:*:*:python:*:*",
+                      "matchCriteriaId": "E88A6152-9471-45B4-9E83-DC16C7FFBB6A",
+                      "versionEndExcluding": "1.12.2",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Stanza is a Stanford NLP Python library for tokenization, sentence segmentation, NER, and parsing of many human languages. Prior to 1.12.2, Stanza model loaders such as stanza.models.common.pretrain.Pretrain.load() attempt torch.load(..., weights_only=True) but fall back to torch.load(..., weights_only=False) on attacker-controllable pickle.UnpicklingError, allowing a malicious .pt pretrain or model file to execute arbitrary pickle code when a Stanza NLP pipeline loads it. This issue is fixed in version 1.12.2."
+            },
+            {
+              "lang": "es",
+              "value": "Stanza es una biblioteca Python de PNL de Stanford para tokenización, segmentación de oraciones, NER y análisis sintáctico de muchos lenguajes humanos. Antes de la versión 1.12.2, los cargadores de modelos de Stanza, como stanza.models.common.pretrain.Pretrain.load(), intentan torch.load(..., weights_only=True) pero recurren a torch.load(..., weights_only=False) ante un pickle.UnpicklingError controlable por el atacante, lo que permite que un archivo de preentrenamiento o modelo .pt malicioso ejecute código pickle arbitrario cuando una canalización de PNL de Stanza lo carga. Este problema está solucionado en la versión 1.12.2."
+            }
+          ],
+          "id": "CVE-2026-54499",
+          "lastModified": "2026-10-25T17:10:00.197",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "HIGH",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 7.5,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.6,
+                "impactScore": 5.9,
+                "source": "security-advisories@github.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-54499",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "total"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-07-09T13:13:21.918884Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-07-08T23:16:54.690",
+          "references": [
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://github.com/stanfordnlp/stanza/commit/b745008c68c9e50ccb5acd537cb6f2453f8b7ad4"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Issue Tracking",
+                "Patch"
+              ],
+              "url": "https://github.com/stanfordnlp/stanza/pull/1587"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Release Notes"
+              ],
+              "url": "https://github.com/stanfordnlp/stanza/releases/tag/v1.12.2"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Exploit",
+                "Vendor Advisory"
+              ],
+              "url": "https://github.com/stanfordnlp/stanza/security/advisories/GHSA-v5jw-96jm-7h2c"
+            },
+            {
+              "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+              "tags": [
+                "Exploit",
+                "Vendor Advisory"
+              ],
+              "url": "https://github.com/stanfordnlp/stanza/security/advisories/GHSA-v5jw-96jm-7h2c"
+            }
+          ],
+          "sourceIdentifier": "security-advisories@github.com",
+          "vulnStatus": "Analyzed",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-502"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-676"
+                }
+              ],
+              "source": "security-advisories@github.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "Flowise",
+                  "vendor": "FlowiseAI",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "< 3.1.3"
+                    }
+                  ]
+                }
+              ],
+              "source": "security-advisories@github.com"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:flowiseai:flowise:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "8C8B3FC2-6070-4400-9690-FCBE0C5C1D37",
+                      "versionEndExcluding": "3.1.3",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Flowise is a drag & drop user interface to build a customized large language model flow. Prior to 3.1.3, Flowise's HTTP security module httpSecurity.ts did not normalize IPv4-mapped IPv6 addresses such as ::ffff:127.0.0.1 and ::ffff:169.254.169.254 before checking them against the deny list. Because ipaddr.js reports these addresses as ipv6 while IPv4 CIDR deny-list entries are ipv4, isDeniedIP() skipped the IPv4 CIDR checks. An attacker who controls DNS resolution for a hostname used by the HTTP Node, API Chain, Document Loader, MCP tool, or other paths using secureAxiosRequest(), secureFetch(), or checkDenyList() could return a AAAA record for an IPv4-mapped target and cause requests to reach localhost, internal services, or cloud metadata endpoints. This issue is fixed in version 3.1.3."
+            },
+            {
+              "lang": "es",
+              "value": "Flowise es una interfaz de usuario de arrastrar y soltar para construir un flujo de modelo de lenguaje grande personalizado. Antes de la versión 3.1.3, el módulo de seguridad HTTP de Flowise, httpSecurity.ts, no normalizaba las direcciones IPv6 mapeadas a IPv4, como ::ffff:127.0.0.1 y ::ffff:169.254.169.254, antes de verificarlas contra la lista de denegación. Debido a que ipaddr.js informa estas direcciones como ipv6 mientras que las entradas de la lista de denegación CIDR IPv4 son ipv4, isDeniedIP() omitía las comprobaciones CIDR IPv4. Un atacante que controla la resolución DNS para un nombre de host utilizado por el Nodo HTTP, la Cadena API, el Cargador de Documentos, la herramienta MCP u otras rutas que utilizan secureAxiosRequest(), secureFetch() o checkDenyList() podría devolver un registro AAAA para un objetivo mapeado a IPv4 y hacer que las solicitudes lleguen a localhost, servicios internos o puntos finales de metadatos en la nube. Este problema está solucionado en la versión 3.1.3."
+            }
+          ],
+          "id": "CVE-2026-69257",
+          "lastModified": "2026-10-24T16:10:00.153",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "NONE",
+                  "baseScore": 8.6,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "NONE",
+                  "privilegesRequired": "NONE",
+                  "scope": "CHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 3.9,
+                "impactScore": 4.0,
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "PRESENT",
+                  "attackVector": "NETWORK",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 7.6,
+                  "baseSeverity": "HIGH",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "NOT_DEFINED",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "LOW",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "NONE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:N/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:L/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "LOW",
+                  "vulnConfidentialityImpact": "HIGH",
+                  "vulnIntegrityImpact": "HIGH",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "security-advisories@github.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-69257",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "total"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-08-04T16:34:45.470567Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-08-04T17:17:00.840",
+          "references": [
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Patch"
+              ],
+              "url": "https://github.com/FlowiseAI/Flowise/commit/0fc769208395641c1411ccdb9c81416e54802155"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Issue Tracking",
+                "Patch"
+              ],
+              "url": "https://github.com/FlowiseAI/Flowise/pull/6431"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Patch",
+                "Release Notes"
+              ],
+              "url": "https://github.com/FlowiseAI/Flowise/releases/tag/flowise@3.1.3"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "tags": [
+                "Exploit",
+                "Mitigation",
+                "Vendor Advisory"
+              ],
+              "url": "https://github.com/FlowiseAI/Flowise/security/advisories/GHSA-c6xh-wv4j-ppv5"
+            },
+            {
+              "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+              "tags": [
+                "Exploit",
+                "Mitigation",
+                "Vendor Advisory"
+              ],
+              "url": "https://github.com/FlowiseAI/Flowise/security/advisories/GHSA-c6xh-wv4j-ppv5"
+            }
+          ],
+          "sourceIdentifier": "security-advisories@github.com",
+          "vulnStatus": "Analyzed",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-918"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-1389"
+                }
+              ],
+              "source": "security-advisories@github.com",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "PraisonAI",
+                  "vendor": "MervinPraison",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": ">= 3.9.26, < 4.6.58"
+                    }
+                  ]
+                },
+                {
+                  "product": "praisonaiagents",
+                  "vendor": "MervinPraison",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": ">= 0.12.12, < 1.6.58"
+                    }
+                  ]
+                }
+              ],
+              "source": "security-advisories@github.com"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "PraisonAI is a multi-agent teams system. In versions 3.9.26 through 4.6.57 of praiseonai and 0.12.12 through 1.6.57 of praiseonaiagents, the workflow \"include\" feature is vulnerable to code execution. Workflow._execute_include() implicitly imports and runs an included recipe's tools.py via a raw importlib.util.spec_from_file_location() and spec.loader.exec_module() call, without honoring the PRAISONAI_ALLOW_TEMPLATE_TOOLS/PRAISONAI_ALLOW_LOCAL_TOOLS autoload opt-in gates or routing through the centralized safe loader that protects the other tools.py autoload paths. As a result, a workflow that includes an attacker-controlled local recipe directory executes arbitrary module-level Python code during include setup, before any child workflow parsing or model call, and the same sink is reachable through the higher-level praisonai.recipe.run() recipe API. An attacker who can cause a victim process to run a workflow or recipe that includes an untrusted local recipe achieves arbitrary Python code execution as the PraisonAI process user, a variant that bypasses the hardening applied to the previously disclosed automatic tools.py RCE advisory family. This issue has been fixed in version 4.6.58 of praisonai and 1.6.58 of praisonaiagents."
+            },
+            {
+              "lang": "es",
+              "value": "PraisonAI es un sistema de equipos multiagente. En las versiones 3.9.26 a 4.6.57 de praiseonai y 0.12.12 a 1.6.57 de praiseonaiagents, la característica ’include’ del flujo de trabajo es vulnerable a la ejecución de código. Workflow._execute_include() importa y ejecuta implícitamente el archivo tools.py de una receta incluida a través de una llamada directa a importlib.util.spec_from_file_location() y spec.loader.exec_module(), sin respetar las puertas de activación de carga automática PRAISONAI_ALLOW_TEMPLATE_TOOLS/PRAISONAI_ALLOW_LOCAL_TOOLS ni el enrutamiento a través del cargador seguro centralizado que protege las otras rutas de carga automática de tools.py. Como resultado, un flujo de trabajo que incluye un directorio de recetas local controlado por un atacante ejecuta código Python arbitrario a nivel de módulo durante la configuración de la inclusión, antes de cualquier análisis de flujo de trabajo secundario o llamada a modelo, y el mismo ’sink’ es accesible a través de la API de recetas praisonai.recipe.run() de nivel superior. Un atacante que puede hacer que un proceso víctima ejecute un flujo de trabajo o una receta que incluye una receta local no confiable logra la ejecución arbitraria de código Python como el usuario del proceso de PraisonAI, una variante que elude el endurecimiento aplicado a la familia de avisos de RCE automática de tools.py previamente divulgada. Este problema ha sido solucionado en la versión 4.6.58 de praisonai y 1.6.58 de praisonaiagents."
+            }
+          ],
+          "id": "CVE-2026-55522",
+          "lastModified": "2026-10-24T16:10:00.153",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "LOCAL",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 7.8,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.8,
+                "impactScore": 5.9,
+                "source": "security-advisories@github.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-55522",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "total"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-08-06T18:43:28.382511Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-08-05T20:17:10.453",
+          "references": [
+            {
+              "source": "security-advisories@github.com",
+              "url": "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-hxmv-c4g6-5fqc"
+            },
+            {
+              "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+              "url": "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-hxmv-c4g6-5fqc"
+            }
+          ],
+          "sourceIdentifier": "security-advisories@github.com",
+          "vulnStatus": "Deferred",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-94"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-426"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-829"
+                }
+              ],
+              "source": "security-advisories@github.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "hydra",
+                  "vendor": "facebookresearch",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "< 1.3.4"
+                    }
+                  ]
+                }
+              ],
+              "source": "security-advisories@github.com"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Hydra is a framework for elegantly configuring complex applications. Prior to 1.3.4, hydra.utils.instantiate() resolves and calls Python objects selected by configuration through _resolve_target() in hydra/_internal/instantiate/_instantiate2.py, allowing attacker-controlled target values and arguments to choose dangerous callables. A consuming application, library, CLI workflow, or model loader that passes untrusted configuration, CLI overrides, or model metadata into hydra.utils.instantiate() can therefore execute arbitrary code in its own process, including reading or modifying files and credentials or terminating the process. Version 1.3.4 adds target blocking with an explicit HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE escape hatch. This issue is fixed in version 1.3.4."
+            },
+            {
+              "lang": "es",
+              "value": "Hydra es un framework para configurar elegantemente aplicaciones complejas. Antes de la versión 1.3.4, hydra.utils.instantiate() resuelve y llama a objetos Python seleccionados por configuración a través de _resolve_target() en hydra/_internal/instantiate/_instantiate2.py, permitiendo que valores objetivo y argumentos controlados por el atacante elijan elementos invocables peligrosos. Una aplicación consumidora, biblioteca, flujo de trabajo CLI o cargador de modelos que pasa configuración no confiable, anulaciones de CLI o metadatos de modelo a hydra.utils.instantiate() puede, por lo tanto, ejecutar código arbitrario en su propio proceso, incluyendo la lectura o modificación de archivos y credenciales o la terminación del proceso. La versión 1.3.4 añade bloqueo de objetivos con una vía de escape explícita HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE. Este problema está solucionado en la versión 1.3.4."
+            }
+          ],
+          "id": "CVE-2026-68508",
+          "lastModified": "2026-10-12T16:10:00.220",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "LOCAL",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 7.8,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.8,
+                "impactScore": 5.9,
+                "source": "security-advisories@github.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-68508",
+                  "options": [
+                    {
+                      "exploitation": "none"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "total"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-08-21T21:00:05.560003Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-08-21T21:17:02.963",
+          "references": [
+            {
+              "source": "security-advisories@github.com",
+              "url": "https://github.com/hydra-ecosystem/hydra/commit/7faad0dcedfb4c0a364aa1067c0080fd6fdf8dca"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "url": "https://github.com/hydra-ecosystem/hydra/issues/3259"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "url": "https://github.com/hydra-ecosystem/hydra/pull/3261"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "url": "https://github.com/hydra-ecosystem/hydra/releases/tag/v1.3.4"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "url": "https://github.com/hydra-ecosystem/hydra/security/advisories/GHSA-2cp2-2r3c-7p7r"
+            }
+          ],
+          "sourceIdentifier": "security-advisories@github.com",
+          "vulnStatus": "Deferred",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-94"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-470"
+                }
+              ],
+              "source": "security-advisories@github.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "collectionURL": "https://pypi.org/project/xinference/",
+                  "defaultStatus": "unaffected",
+                  "packageName": "xinference",
+                  "packageURL": "pkg:pypi/xinference",
+                  "product": "inference",
+                  "vendor": "xorbitsai",
+                  "versions": [
+                    {
+                      "lessThan": "2.12.0",
+                      "status": "affected",
+                      "version": "0",
+                      "versionType": "semver"
+                    }
+                  ]
+                }
+              ],
+              "source": "disclosure@vulncheck.com"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Xinference loads models with Hugging Face remote code execution unconditionally enabled, and before version 2.12.0 exposes no setting to disable it. Six loader call sites pass trust_remote_code=True as a literal or as an unconditional default: RerankModel._get_tokenizer in xinference/model/rerank/core.py, SentenceTransformerRerankModel.load in xinference/model/rerank/sentence_transformers/core.py, SentenceTransformerEmbeddingModel.load in xinference/model/embedding/sentence_transformers/core.py, FlagEmbeddingModel.load in xinference/model/embedding/flag/core.py, and two sites in xinference/model/llm/transformers/core.py where PytorchModel._sanitize_model_config and PytorchModel._get_components default the value to True. Because a caller with model launch access can register a model whose type is unknown and supply an arbitrary model path, the server reaches _auto_detect_type and then AutoTokenizer.from_pretrained, which imports and executes Python declared by the model directory's own tokenizer_config.json auto_map, running attacker-supplied code with the privileges of the worker process. Version 2.12.0 gates every site behind allow_trust_remote_code and the XINFERENCE_TRUST_REMOTE_CODE setting, permitting remote code only for bundled built-in models."
+            },
+            {
+              "lang": "es",
+              "value": "Xinference carga modelos con la ejecución remota de código de Hugging Face habilitada incondicionalmente, y antes de la versión 2.12.0 no expone ninguna configuración para deshabilitarla. Seis sitios de llamada del cargador pasan trust_remote_code=True como un literal o como un valor predeterminado incondicional: RerankModel._get_tokenizer en xinference/model/rerank/core.py, SentenceTransformerRerankModel.load en xinference/model/rerank/sentence_transformers/core.py, SentenceTransformerEmbeddingModel.load en xinference/model/embedding/sentence_transformers/core.py, FlagEmbeddingModel.load en xinference/model/embedding/flag/core.py, y dos sitios en xinference/model/llm/transformers/core.py donde PytorchModel._sanitize_model_config y PytorchModel._get_components establecen el valor predeterminado en True. Debido a que un llamador con acceso al lanzamiento de modelos puede registrar un modelo cuyo tipo es desconocido y proporcionar una ruta de modelo arbitraria, el servidor alcanza _auto_detect_type y luego AutoTokenizer.from_pretrained, que importa y ejecuta Python declarado por el auto_map de tokenizer_config.json del propio directorio del modelo, ejecutando código suministrado por el atacante con los privilegios del proceso de trabajo. La versión 2.12.0 protege cada sitio detrás de allow_trust_remote_code y la configuración XINFERENCE_TRUST_REMOTE_CODE, permitiendo código remoto solo para modelos integrados empaquetados."
+            }
+          ],
+          "id": "CVE-2026-76841",
+          "lastModified": "2026-10-12T15:10:00.207",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 8.8,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "LOW",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 2.8,
+                "impactScore": 5.9,
+                "source": "disclosure@vulncheck.com",
+                "type": "Secondary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "NONE",
+                  "attackVector": "NETWORK",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 8.7,
+                  "baseSeverity": "HIGH",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "NOT_DEFINED",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "LOW",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "NONE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "HIGH",
+                  "vulnConfidentialityImpact": "HIGH",
+                  "vulnIntegrityImpact": "HIGH",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "disclosure@vulncheck.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-76841",
+                  "options": [
+                    {
+                      "exploitation": "none"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "total"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-08-26T15:56:50.906437Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-08-24T14:17:01.760",
+          "references": [
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/xorbitsai/inference"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/xorbitsai/inference/blob/v2.11.0/xinference/model/rerank/core.py"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/xorbitsai/inference/issues/5023"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/xorbitsai/inference/pull/5027"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://www.vulncheck.com/advisories/xinference-through-remote-code-execution-via-hardcoded-trust-remote-code-in-model-loaders"
+            }
+          ],
+          "sourceIdentifier": "disclosure@vulncheck.com",
+          "vulnStatus": "Deferred",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-94"
+                }
+              ],
+              "source": "disclosure@vulncheck.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "defaultStatus": "unaffected",
+                  "packageURL": "pkg:pypi/nltk",
+                  "product": "nltk",
+                  "vendor": "nltk",
+                  "versions": [
+                    {
+                      "lessThan": "3.10.3",
+                      "status": "affected",
+                      "version": "0",
+                      "versionType": "semver"
+                    },
+                    {
+                      "status": "unaffected",
+                      "version": "3.10.3",
+                      "versionType": "semver"
+                    }
+                  ]
+                }
+              ],
+              "source": "disclosure@vulncheck.com"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:nltk:nltk:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "907206A4-3761-4899-9D77-F79C72F6229B",
+                      "versionEndExcluding": "3.10.3",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "NLTK versions before 3.10.3 contain a remote code execution vulnerability in allowlisted pickle loaders that trust entire module namespaces instead of specific safe callables. Attackers can craft malicious pickle payloads invoking dangerous in-namespace functions like ReppTokenizer._execute and numpy.f2py.crackfortran.myeval through pickle REDUCE to execute arbitrary commands during model or tokenizer artifact loading."
+            }
+          ],
+          "id": "CVE-2026-79657",
+          "lastModified": "2026-10-08T16:17:44.427",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 9.8,
+                  "baseSeverity": "CRITICAL",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 3.9,
+                "impactScore": 5.9,
+                "source": "disclosure@vulncheck.com",
+                "type": "Secondary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "NONE",
+                  "attackVector": "NETWORK",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 9.3,
+                  "baseSeverity": "CRITICAL",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "NOT_DEFINED",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "NONE",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "NONE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "HIGH",
+                  "vulnConfidentialityImpact": "HIGH",
+                  "vulnIntegrityImpact": "HIGH",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "disclosure@vulncheck.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-79657",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "yes"
+                    },
+                    {
+                      "technicalImpact": "total"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-08-25T15:58:28.455681Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-08-25T12:16:28.870",
+          "references": [
+            {
+              "source": "disclosure@vulncheck.com",
+              "tags": [
+                "Exploit",
+                "Vendor Advisory"
+              ],
+              "url": "https://github.com/nltk/nltk/security/advisories/GHSA-x99w-6fgc-pmfw"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "tags": [
+                "Third Party Advisory"
+              ],
+              "url": "https://www.vulncheck.com/advisories/nltk-before-3.10.3-remote-code-execution-via-unsafe-pickle-deserialization"
+            },
+            {
+              "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+              "tags": [
+                "Exploit",
+                "Vendor Advisory"
+              ],
+              "url": "https://github.com/nltk/nltk/security/advisories/GHSA-x99w-6fgc-pmfw"
+            }
+          ],
+          "sourceIdentifier": "disclosure@vulncheck.com",
+          "vulnStatus": "Analyzed",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-502"
+                }
+              ],
+              "source": "disclosure@vulncheck.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "defaultStatus": "unaffected",
+                  "packageURL": "pkg:pypi/vllm",
+                  "product": "vLLM",
+                  "vendor": "vllm-project",
+                  "versions": [
+                    {
+                      "lessThan": "0.28.0",
+                      "status": "affected",
+                      "version": "0",
+                      "versionType": "semver"
+                    },
+                    {
+                      "status": "unaffected",
+                      "version": "0.28.0",
+                      "versionType": "semver"
+                    }
+                  ]
+                }
+              ],
+              "source": "disclosure@vulncheck.com"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:vllm:vllm:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "348E22A1-F884-4209-9464-6ACE00818B2F",
+                      "versionEndExcluding": "0.28.0",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "vLLM before 0.28.0 contains a remote code execution vulnerability in the LlavaOnevision2 processor loader that ignores the trust_remote_code parameter when loading remote processor classes. Attackers can craft a malicious model with arbitrary code in processing_llava_onevision2.py that executes with vLLM process authority even when trust_remote_code is set to False."
+            }
+          ],
+          "id": "CVE-2026-90553",
+          "lastModified": "2026-09-16T17:31:40.200",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "LOCAL",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 7.8,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.8,
+                "impactScore": 5.9,
+                "source": "disclosure@vulncheck.com",
+                "type": "Secondary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "NONE",
+                  "attackVector": "LOCAL",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 8.5,
+                  "baseSeverity": "HIGH",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "NOT_DEFINED",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "NONE",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "PASSIVE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "HIGH",
+                  "vulnConfidentialityImpact": "HIGH",
+                  "vulnIntegrityImpact": "HIGH",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "disclosure@vulncheck.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-90553",
+                  "options": [
+                    {
+                      "exploitation": "none"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "total"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-09-14T18:25:25.303206Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-09-12T13:16:53.887",
+          "references": [
+            {
+              "source": "disclosure@vulncheck.com",
+              "tags": [
+                "Vendor Advisory"
+              ],
+              "url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-3c86-2m5g-59q7"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "tags": [
+                "Third Party Advisory"
+              ],
+              "url": "https://www.vulncheck.com/advisories/vllm-before-0.28.0-remote-code-execution-via-llavaonevision2-processor"
+            }
+          ],
+          "sourceIdentifier": "disclosure@vulncheck.com",
+          "vulnStatus": "Analyzed",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-94"
+                }
+              ],
+              "source": "disclosure@vulncheck.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "pocketsphinx",
+                  "vendor": "cmusphinx",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "< 5.1.1"
+                    }
+                  ]
+                }
+              ],
+              "source": "security-advisories@github.com"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "PocketSphinx is a small speech recognizer. Prior to 5.1.1, the trie language-model loaders in src/lm/ngram_model_trie.c do not adequately validate boundary conditions in ARPA, DMP, and binary format headers, and the acoustic-model loaders in src/mdef.c and src/util/bio.c use sscanf with unbounded string fields. Loading an invalid, corrupted, or malicious language or acoustic model can therefore cause stack or heap buffer overflows and memory corruption. An attacker who can write to a directory selected by POCKETSPHINX_PATH can replace or add a model file that PocketSphinx later loads; users of PocketSphinx 5prealpha have no backported patch and must migrate to the fixed release. This issue is fixed in version 5.1.1."
+            }
+          ],
+          "id": "CVE-2026-54559",
+          "lastModified": "2026-09-30T17:51:36.337",
+          "metrics": {
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "NONE",
+                  "attackVector": "NETWORK",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 6.9,
+                  "baseSeverity": "MEDIUM",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "NOT_DEFINED",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "NONE",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "NONE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:L/VA:N/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "NONE",
+                  "vulnConfidentialityImpact": "NONE",
+                  "vulnIntegrityImpact": "LOW",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "security-advisories@github.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-54559",
+                  "options": [
+                    {
+                      "exploitation": "none"
+                    },
+                    {
+                      "automatable": "yes"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-09-15T19:30:28.938576Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-09-14T20:16:46.573",
+          "references": [
+            {
+              "source": "security-advisories@github.com",
+              "url": "https://github.com/cmusphinx/pocketsphinx/commit/2a3c03788a9973eff548664334fb781e9f4ad4a5"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "url": "https://github.com/cmusphinx/pocketsphinx/releases/tag/v5.1.1"
+            },
+            {
+              "source": "security-advisories@github.com",
+              "url": "https://github.com/cmusphinx/pocketsphinx/security/advisories/GHSA-56r5-2p2f-7cxp"
+            }
+          ],
+          "sourceIdentifier": "security-advisories@github.com",
+          "vulnStatus": "Awaiting Analysis",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-119"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-121"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-122"
+                }
+              ],
+              "source": "security-advisories@github.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "cpes": [
+                    "cpe:2.3:a:piskvorky:gensim:*:*:*:*:*:*:*:*"
+                  ],
+                  "modules": [
+                    "Model Loader"
+                  ],
+                  "product": "gensim",
+                  "vendor": "piskvorky",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "4.0"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "4.1"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "4.2"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "4.3"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "4.4.0"
+                    }
+                  ]
+                }
+              ],
+              "source": "cna@vuldb.com"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "A weakness has been identified in piskvorky gensim up to 4.4.0. The impacted element is the function Load of the file gensim/utils.py of the component Model Loader. This manipulation of the argument fname causes deserialization. It is possible to initiate the attack remotely. The exploit has been made available to the public and could be used for attacks. Maintainer closed #3663 same-day with no comment, PR, or fix; repo's last push (2025-11-01) predates the report, so the unsafe pickle.load in SaveLoad.load remains unguarded at develop HEAD."
+            }
+          ],
+          "id": "CVE-2026-94091",
+          "lastModified": "2026-09-21T13:33:33.387",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "MEDIUM",
+                "cvssData": {
+                  "accessComplexity": "LOW",
+                  "accessVector": "NETWORK",
+                  "authentication": "SINGLE",
+                  "availabilityImpact": "PARTIAL",
+                  "baseScore": 6.5,
+                  "confidentialityImpact": "PARTIAL",
+                  "integrityImpact": "PARTIAL",
+                  "vectorString": "AV:N/AC:L/Au:S/C:P/I:P/A:P",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 8.0,
+                "impactScore": 6.4,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": false,
+                "obtainUserPrivilege": false,
+                "source": "cna@vuldb.com",
+                "type": "Secondary",
+                "userInteractionRequired": false
+              }
+            ],
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "LOW",
+                  "baseScore": 5.5,
+                  "baseSeverity": "MEDIUM",
+                  "confidentialityImpact": "LOW",
+                  "integrityImpact": "LOW",
+                  "privilegesRequired": "LOW",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:L/I:L/A:L",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 2.1,
+                "impactScore": 3.4,
+                "source": "cna@vuldb.com",
+                "type": "Secondary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "NONE",
+                  "attackVector": "NETWORK",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 2.0,
+                  "baseSeverity": "LOW",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "PROOF_OF_CONCEPT",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "LOW",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "PASSIVE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:P/VC:L/VI:L/VA:L/SC:N/SI:N/SA:N/E:P/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "LOW",
+                  "vulnConfidentialityImpact": "LOW",
+                  "vulnIntegrityImpact": "LOW",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "cna@vuldb.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-94091",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-09-21T10:57:26.650011Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-09-20T23:17:02.977",
+          "references": [
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://github.com/piskvorky/gensim/"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://github.com/piskvorky/gensim/issues/3663"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/cve/CVE-2026-94091"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/submit/952644"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/vuln/408020"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/vuln/408020/cti"
+            }
+          ],
+          "sourceIdentifier": "cna@vuldb.com",
+          "vulnStatus": "Deferred",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-20"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-502"
+                }
+              ],
+              "source": "cna@vuldb.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "defaultStatus": "unaffected",
+                  "product": "Linux",
+                  "programFiles": [
+                    "kernel/bpf/verifier.c"
+                  ],
+                  "repo": "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git",
+                  "vendor": "Linux",
+                  "versions": [
+                    {
+                      "lessThan": "cebda2a2bb4183550eae9dcf888c16407b4fffda",
+                      "status": "affected",
+                      "version": "8674e2db06cff6b50f2216eed9a761d15425bb34",
+                      "versionType": "git"
+                    },
+                    {
+                      "lessThan": "3484a99303912db62428494a9061212049027e57",
+                      "status": "affected",
+                      "version": "ce01a4e5cfac7adbe0be565f90cd32ecbb2f8337",
+                      "versionType": "git"
+                    },
+                    {
+                      "lessThan": "bc489c0c9b8c86bd7fac42cfd1bb152f042fca56",
+                      "status": "affected",
+                      "version": "ee861486e377edc55361c08dcbceab3f6b6577bd",
+                      "versionType": "git"
+                    },
+                    {
+                      "lessThan": "e7d28823c662128caae63f14e16bd394916c139b",
+                      "status": "affected",
+                      "version": "ee861486e377edc55361c08dcbceab3f6b6577bd",
+                      "versionType": "git"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "928d354ae3557e8f755a227e67be88034eb3cd7f",
+                      "versionType": "git"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "8a800497d9f6c2ec9c2c1ba7b71d0ac2ea7f7bbe",
+                      "versionType": "git"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "de1055e7f9e67af32b1f3376066272b04e5223c0",
+                      "versionType": "git"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "37ad2bb11e9de92cb7b94548705eeedd87f7d392",
+                      "versionType": "git"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "d846d83bdacbd8f14fc45c63b8c1d22608452e1c",
+                      "versionType": "git"
+                    },
+                    {
+                      "lessThan": "6.12.114",
+                      "status": "affected",
+                      "version": "6.12.101",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThan": "6.18.53",
+                      "status": "affected",
+                      "version": "6.18.42",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThan": "5.11",
+                      "status": "affected",
+                      "version": "5.10.265",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThan": "5.16",
+                      "status": "affected",
+                      "version": "5.15.216",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThan": "6.2",
+                      "status": "affected",
+                      "version": "6.1.183",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThan": "6.7",
+                      "status": "affected",
+                      "version": "6.6.148",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThan": "7.1",
+                      "status": "affected",
+                      "version": "7.0.10",
+                      "versionType": "semver"
+                    }
+                  ]
+                },
+                {
+                  "defaultStatus": "affected",
+                  "product": "Linux",
+                  "programFiles": [
+                    "kernel/bpf/verifier.c"
+                  ],
+                  "repo": "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git",
+                  "vendor": "Linux",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "7.1"
+                    },
+                    {
+                      "lessThan": "7.1",
+                      "status": "unaffected",
+                      "version": "0",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThanOrEqual": "6.12.*",
+                      "status": "unaffected",
+                      "version": "6.12.114",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThanOrEqual": "6.18.*",
+                      "status": "unaffected",
+                      "version": "6.18.53",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThanOrEqual": "7.2.*",
+                      "status": "unaffected",
+                      "version": "7.2.7",
+                      "versionType": "semver"
+                    },
+                    {
+                      "lessThanOrEqual": "*",
+                      "status": "unaffected",
+                      "version": "7.3",
+                      "versionType": "original_commit_for_fix"
+                    }
+                  ]
+                }
+              ],
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "In the Linux kernel, the following vulnerability has been resolved:\n\nbpf: Reject legacy packet loads from callbacks\n\ncheck_ld_abs() models a failed BPF_LD_ABS or BPF_LD_IND in a\nsubprogram as an implicit return with R0 set to zero. It calls\nprepare_func_exit() to explore this synthesized path.\n\nWhen the load is reached directly from a synchronous callback,\nprepare_func_exit() enforces the callback return contract and marks R0\nprecise. R0 is not derived from a real instruction on this path, so\nprecision backtracking reaches the callback call with R0 still requested\nand triggers the \"callback unexpected regs\" verifier bug. A privileged\nprogram loader can therefore cause a verifier warning and an -EFAULT\nBPF_PROG_LOAD.\n\nThese legacy packet-load instructions are deprecated. Reject them from\ncallbacks rather than complicating their implicit-return model. Check all\nactive frames before constructing the implicit return so nested static\nsubprograms cannot hide the callback context.\n\nGlobal functions are verified independently with a fresh frame zero, so\nan active-frame check cannot identify a global function called from a\ncallback. Also check the complete subprogram call graph during stack-depth\nvalidation and reject a function containing a legacy load when any caller\nis a callback. This covers global and static descendants without making\nhas_ld_abs transitive, preserving its per-function BTF return-type check.\nOrdinary uses outside callbacks remain supported."
+            }
+          ],
+          "id": "CVE-2026-98044",
+          "lastModified": "2026-10-21T13:21:20.053",
+          "metrics": {},
+          "published": "2026-09-25T11:17:33.200",
+          "references": [
+            {
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+              "url": "https://git.kernel.org/stable/c/3484a99303912db62428494a9061212049027e57"
+            },
+            {
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+              "url": "https://git.kernel.org/stable/c/bc489c0c9b8c86bd7fac42cfd1bb152f042fca56"
+            },
+            {
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+              "url": "https://git.kernel.org/stable/c/cebda2a2bb4183550eae9dcf888c16407b4fffda"
+            },
+            {
+              "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+              "url": "https://git.kernel.org/stable/c/e7d28823c662128caae63f14e16bd394916c139b"
+            }
+          ],
+          "sourceIdentifier": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+          "vulnStatus": "Received"
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "defaultStatus": "unaffected",
+                  "product": "CTranslate2",
+                  "vendor": "OpenNMT",
+                  "versions": [
+                    {
+                      "lessThan": "4.8.1",
+                      "status": "affected",
+                      "version": "0",
+                      "versionType": "semver"
+                    },
+                    {
+                      "status": "unaffected",
+                      "version": "4.8.1",
+                      "versionType": "semver"
+                    }
+                  ]
+                }
+              ],
+              "source": "disclosure@vulncheck.com"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "CTranslate2 before 4.8.1 contains a heap-based buffer overflow in the binary model loader that fails to validate payload length against allocated buffer size. Attackers can craft malicious model files with oversized payload lengths to write past heap allocation boundaries, causing crashes or arbitrary code execution."
+            }
+          ],
+          "id": "CVE-2026-102566",
+          "lastModified": "2026-09-30T17:23:08.953",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "LOCAL",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 7.8,
+                  "baseSeverity": "HIGH",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.8,
+                "impactScore": 5.9,
+                "source": "disclosure@vulncheck.com",
+                "type": "Primary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "NONE",
+                  "attackVector": "LOCAL",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 8.5,
+                  "baseSeverity": "HIGH",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "NOT_DEFINED",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "NONE",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "PASSIVE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "HIGH",
+                  "vulnConfidentialityImpact": "HIGH",
+                  "vulnIntegrityImpact": "HIGH",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "disclosure@vulncheck.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-102566",
+                  "options": [
+                    {
+                      "exploitation": "none"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "total"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-09-29T14:48:31.801016Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-09-29T15:17:18.003",
+          "references": [
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/OpenNMT/CTranslate2"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/OpenNMT/CTranslate2/blob/v4.8.0/src/models/model.cc#L656-L657"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/OpenNMT/CTranslate2/commit/d9b991e0700933a0c05373df8b52ed89cdcab96d"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/OpenNMT/CTranslate2/pull/2068"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/OpenNMT/CTranslate2/releases/tag/v4.8.1"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://www.vulncheck.com/advisories/ctranslate2-before-4.8.1-heap-buffer-overflow-via-model-bin"
+            }
+          ],
+          "sourceIdentifier": "disclosure@vulncheck.com",
+          "vulnStatus": "Awaiting Analysis",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-787"
+                }
+              ],
+              "source": "disclosure@vulncheck.com",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "defaultStatus": "unaffected",
+                  "product": "CTranslate2",
+                  "vendor": "OpenNMT",
+                  "versions": [
+                    {
+                      "lessThan": "4.8.1",
+                      "status": "affected",
+                      "version": "0",
+                      "versionType": "semver"
+                    },
+                    {
+                      "status": "unaffected",
+                      "version": "4.8.1",
+                      "versionType": "semver"
+                    }
+                  ]
+                }
+              ],
+              "source": "disclosure@vulncheck.com"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "CTranslate2 before 4.8.1 contains an out-of-bounds heap read vulnerability in the binary model loader when deserializing string fields without null terminators. Attackers can craft malicious model files to trigger heap memory reads past buffer boundaries, causing crashes or disclosing adjacent heap memory contents."
+            }
+          ],
+          "id": "CVE-2026-102567",
+          "lastModified": "2026-09-30T17:23:08.953",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "LOCAL",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 6.1,
+                  "baseSeverity": "MEDIUM",
+                  "confidentialityImpact": "LOW",
+                  "integrityImpact": "NONE",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.8,
+                "impactScore": 4.2,
+                "source": "disclosure@vulncheck.com",
+                "type": "Primary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "NONE",
+                  "attackVector": "LOCAL",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 6.9,
+                  "baseSeverity": "MEDIUM",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "NOT_DEFINED",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "NONE",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "PASSIVE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:L/VI:N/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "HIGH",
+                  "vulnConfidentialityImpact": "LOW",
+                  "vulnIntegrityImpact": "NONE",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "disclosure@vulncheck.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-102567",
+                  "options": [
+                    {
+                      "exploitation": "none"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-09-29T14:57:23.531287Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-09-29T15:17:18.177",
+          "references": [
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/OpenNMT/CTranslate2"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/OpenNMT/CTranslate2/blob/v4.8.0/src/models/model.cc#L81-L87"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/OpenNMT/CTranslate2/commit/d9b991e0700933a0c05373df8b52ed89cdcab96d"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/OpenNMT/CTranslate2/pull/2068"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://github.com/OpenNMT/CTranslate2/releases/tag/v4.8.1"
+            },
+            {
+              "source": "disclosure@vulncheck.com",
+              "url": "https://www.vulncheck.com/advisories/ctranslate2-before-4.8.1-out-of-bounds-read-via-model-deserialization"
+            }
+          ],
+          "sourceIdentifier": "disclosure@vulncheck.com",
+          "vulnStatus": "Awaiting Analysis",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-125"
+                }
+              ],
+              "source": "disclosure@vulncheck.com",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "ExLlamaV3",
+                  "vendor": "Turboderp-org",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "3"
+                    }
+                  ]
+                }
+              ],
+              "source": "cret@cert.org"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "ExLlamaV3’s EXL3 loader uses an untrusted, model-supplied index to select a CUDA kernel without first verifying that the index is within bounds. A malicious model can force the code to read and invoke an out‑of‑range function pointer, resulting in a reproducible crash. Under specific conditions involving certain host memory layouts, it may be possible for an attacker to exploit this vulnerability to achieve controlled indirect kernel dispatch during model load."
+            }
+          ],
+          "id": "CVE-2026-84286",
+          "lastModified": "2026-10-19T12:17:10.860",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "HIGH",
+                  "baseScore": 9.8,
+                  "baseSeverity": "CRITICAL",
+                  "confidentialityImpact": "HIGH",
+                  "integrityImpact": "HIGH",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 3.9,
+                "impactScore": 5.9,
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-84286",
+                  "options": [
+                    {
+                      "exploitation": "none"
+                    },
+                    {
+                      "automatable": "yes"
+                    },
+                    {
+                      "technicalImpact": "total"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-10-19T11:04:41.538596Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-10-12T17:17:35.873",
+          "references": [
+            {
+              "source": "cret@cert.org",
+              "url": "https://github.com/turboderp-org/exllamav3/pull/310"
+            },
+            {
+              "source": "cret@cert.org",
+              "url": "https://kb.cert.org/vuls/id/369611"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "https://www.kb.cert.org/vuls/id/369611"
+            }
+          ],
+          "sourceIdentifier": "cret@cert.org",
+          "vulnStatus": "Awaiting Analysis",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-20"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-125"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-787"
+                }
+              ],
+              "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "defaultStatus": "unknown",
+                  "modules": [
+                    "Binary resource loader"
+                  ],
+                  "product": "Godot Engine",
+                  "programFiles": [
+                    "core/io/resource_format_binary.cpp"
+                  ],
+                  "programRoutines": [
+                    {
+                      "name": "ResourceLoaderBinary::get_unicode_string"
+                    }
+                  ],
+                  "repo": "https://github.com/godotengine/godot",
+                  "vendor": "godotengine",
+                  "versions": [
+                    {
+                      "lessThanOrEqual": "4.7.2",
+                      "status": "affected",
+                      "version": "1.0.0",
+                      "versionType": "semver"
+                    }
+                  ]
+                }
+              ],
+              "source": "cve@mitre.org"
+            }
+          ],
+          "cveTags": [
+            {
+              "sourceIdentifier": "cve@mitre.org",
+              "tags": [
+                "disputed"
+              ]
+            }
+          ],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Godot Engine through 4.7.2 has a heap out-of-bounds write in the binary resource loader (core/io/resource_format_binary.cpp, ResourceLoaderBinary::get_unicode_string). A string length is read from the resource file into a signed 32-bit integer and compared against the destination buffer size with a signed comparison, which conditionally resizes the buffer. A negative length value skips the resize; the same value is then passed to the copy routine as an unsigned byte count, where it sign-extends to a huge value, copying file-controlled data far past the undersized heap allocation. The defect is reached when the product or an exported game loads a crafted binary resource file (.res). NOTE: the Supplier's position is that the research has identified \"no security issues\" because the required attacker access is outside of the current Godot Engine threat model."
+            }
+          ],
+          "id": "CVE-2026-110735",
+          "lastModified": "2026-10-20T02:17:10.757",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "HIGH",
+                  "attackVector": "LOCAL",
+                  "availabilityImpact": "NONE",
+                  "baseScore": 2.5,
+                  "baseSeverity": "LOW",
+                  "confidentialityImpact": "NONE",
+                  "integrityImpact": "LOW",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:N/I:L/A:N",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.0,
+                "impactScore": 1.4,
+                "source": "cve@mitre.org",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-110735",
+                  "options": [
+                    {
+                      "exploitation": "none"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-10-20T01:36:11.111269Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-10-14T16:17:44.467",
+          "references": [
+            {
+              "source": "cve@mitre.org",
+              "url": "https://axeghost.offprint.app/a/3mvs6zo4blo23-three-memory-safety-bugs-in-godots-untrusted-file-parsers"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://github.com/godotengine/godot/issues/123608"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.openwall.com/lists/oss-security/2026/10/15/3"
+            }
+          ],
+          "sourceIdentifier": "cve@mitre.org",
+          "vulnStatus": "Awaiting Analysis",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-195"
+                }
+              ],
+              "source": "cve@mitre.org",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "defaultStatus": "unknown",
+                  "modules": [
+                    "Translation system"
+                  ],
+                  "product": "Godot Engine",
+                  "programFiles": [
+                    "core/string/optimized_translation.cpp"
+                  ],
+                  "programRoutines": [
+                    {
+                      "name": "OptimizedTranslation::get_message"
+                    }
+                  ],
+                  "repo": "https://github.com/godotengine/godot",
+                  "vendor": "godotengine",
+                  "versions": [
+                    {
+                      "lessThanOrEqual": "4.7.2",
+                      "status": "affected",
+                      "version": "1.0.0",
+                      "versionType": "semver"
+                    }
+                  ]
+                }
+              ],
+              "source": "cve@mitre.org"
+            }
+          ],
+          "cveTags": [
+            {
+              "sourceIdentifier": "cve@mitre.org",
+              "tags": [
+                "disputed"
+              ]
+            }
+          ],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Godot Engine through 4.7.2 has an out-of-bounds read in the optimized translation loader (core/string/optimized_translation.cpp, OptimizedTranslation::get_message). Offsets read from the hash table of a crafted .translation resource are used as indices into the bucket table without bounds validation; only a single sentinel value is rejected. A crafted file can point an index far past the allocated buffer. Depending on the values, the result is a crash, or a string lookup (tr()) returns raw bytes from elsewhere in the process heap as the translated string, disclosing process memory. The defect is reached when the product or an exported game loads and performs lookups in a crafted translation file. NOTE: the Supplier's position is that the research has identified \"no security issues\" because the required attacker access is outside of the current Godot Engine threat model."
+            }
+          ],
+          "id": "CVE-2026-110736",
+          "lastModified": "2026-10-16T19:55:59.740",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "HIGH",
+                  "attackVector": "LOCAL",
+                  "availabilityImpact": "LOW",
+                  "baseScore": 3.6,
+                  "baseSeverity": "LOW",
+                  "confidentialityImpact": "LOW",
+                  "integrityImpact": "NONE",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:L/I:N/A:L",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.0,
+                "impactScore": 2.5,
+                "source": "cve@mitre.org",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-110736",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-10-15T14:06:55.514452Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-10-14T16:17:44.607",
+          "references": [
+            {
+              "source": "cve@mitre.org",
+              "url": "https://axeghost.offprint.app/a/3mvs6zo4blo23-three-memory-safety-bugs-in-godots-untrusted-file-parsers"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://github.com/godotengine/godot/issues/123608"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.openwall.com/lists/oss-security/2026/10/15/2"
+            },
+            {
+              "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+              "url": "https://axeghost.offprint.app/a/3mvs6zo4blo23-three-memory-safety-bugs-in-godots-untrusted-file-parsers"
+            }
+          ],
+          "sourceIdentifier": "cve@mitre.org",
+          "vulnStatus": "Awaiting Analysis",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-1285"
+                }
+              ],
+              "source": "cve@mitre.org",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "cpes": [
+                    "cpe:2.3:a:oaid:tengine:*:*:*:*:*:*:*:*"
+                  ],
+                  "modules": [
+                    "tmfile Model Loader"
+                  ],
+                  "product": "Tengine",
+                  "vendor": "OAID",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "1.0"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.1"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.2"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.3"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.4"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.5"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.6"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.7"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.8"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.9"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.10"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.11"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.12.0"
+                    }
+                  ]
+                }
+              ],
+              "source": "cna@vuldb.com"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "A vulnerability has been found in OAID Tengine up to 1.12.0. This vulnerability affects the function get_tm_file_model of the file source/serializer/tmfile/tm2_serializer.c of the component tmfile Model Loader. Such manipulation of the argument offset_root leads to out-of-bounds read. It is possible to launch the attack remotely. The exploit has been disclosed to the public and may be used. The project was informed of the problem early through an issue report but has not responded yet."
+            }
+          ],
+          "id": "CVE-2026-110694",
+          "lastModified": "2026-10-15T14:45:38.353",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "HIGH",
+                "cvssData": {
+                  "accessComplexity": "LOW",
+                  "accessVector": "NETWORK",
+                  "authentication": "NONE",
+                  "availabilityImpact": "PARTIAL",
+                  "baseScore": 7.5,
+                  "confidentialityImpact": "PARTIAL",
+                  "integrityImpact": "PARTIAL",
+                  "vectorString": "AV:N/AC:L/Au:N/C:P/I:P/A:P",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 10.0,
+                "impactScore": 6.4,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": false,
+                "obtainUserPrivilege": false,
+                "source": "cna@vuldb.com",
+                "type": "Secondary",
+                "userInteractionRequired": false
+              }
+            ],
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "LOW",
+                  "baseScore": 6.3,
+                  "baseSeverity": "MEDIUM",
+                  "confidentialityImpact": "LOW",
+                  "integrityImpact": "LOW",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:L",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 2.8,
+                "impactScore": 3.4,
+                "source": "cna@vuldb.com",
+                "type": "Secondary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "NONE",
+                  "attackVector": "NETWORK",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 2.1,
+                  "baseSeverity": "LOW",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "PROOF_OF_CONCEPT",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "NONE",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "PASSIVE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:P/VC:L/VI:L/VA:L/SC:N/SI:N/SA:N/E:P/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "LOW",
+                  "vulnConfidentialityImpact": "LOW",
+                  "vulnIntegrityImpact": "LOW",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "cna@vuldb.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-110694",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-10-15T13:49:05.276438Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-10-14T21:17:36.617",
+          "references": [
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://github.com/OAID/Tengine/"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://github.com/OAID/Tengine/issues/1453"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/cve/CVE-2026-110694"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/submit/1003957"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/vuln/419841"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/vuln/419841/cti"
+            }
+          ],
+          "sourceIdentifier": "cna@vuldb.com",
+          "vulnStatus": "Deferred",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-119"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-125"
+                }
+              ],
+              "source": "cna@vuldb.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "cpes": [
+                    "cpe:2.3:a:praat:praat:*:*:*:*:*:*:*:*"
+                  ],
+                  "modules": [
+                    "Model Loader"
+                  ],
+                  "product": "Praat",
+                  "vendor": "n/a",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "7.0.02"
+                    }
+                  ]
+                }
+              ],
+              "source": "cna@vuldb.com"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "A security vulnerability has been detected in Praat up to 7.0.02. Affected is the function whisper_model_load of the file external/whispercpp/whisper.cpp of the component Model Loader. The manipulation of the argument n_dims leads to out-of-bounds write. The attack can be initiated remotely. The exploit has been disclosed publicly and may be used. The identifier of the patch is a910d21a2705ef4cd16d91f29cdc8da1ab1a7221. To fix this issue, it is recommended to deploy a patch. The project maintainer confirms: \"We did a quick fix (suggested fix 1) for Praat version 7.0.03, and scheduled a better fix (suggested fix 2).\""
+            }
+          ],
+          "id": "CVE-2026-110698",
+          "lastModified": "2026-10-20T03:17:13.360",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "HIGH",
+                "cvssData": {
+                  "accessComplexity": "LOW",
+                  "accessVector": "NETWORK",
+                  "authentication": "NONE",
+                  "availabilityImpact": "PARTIAL",
+                  "baseScore": 7.5,
+                  "confidentialityImpact": "PARTIAL",
+                  "integrityImpact": "PARTIAL",
+                  "vectorString": "AV:N/AC:L/Au:N/C:P/I:P/A:P",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 10.0,
+                "impactScore": 6.4,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": false,
+                "obtainUserPrivilege": false,
+                "source": "cna@vuldb.com",
+                "type": "Secondary",
+                "userInteractionRequired": false
+              }
+            ],
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "LOW",
+                  "baseScore": 6.3,
+                  "baseSeverity": "MEDIUM",
+                  "confidentialityImpact": "LOW",
+                  "integrityImpact": "LOW",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:L",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 2.8,
+                "impactScore": 3.4,
+                "source": "cna@vuldb.com",
+                "type": "Secondary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "NONE",
+                  "attackVector": "NETWORK",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 2.1,
+                  "baseSeverity": "LOW",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "PROOF_OF_CONCEPT",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "NONE",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "PASSIVE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:P/VC:L/VI:L/VA:L/SC:N/SI:N/SA:N/E:P/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "LOW",
+                  "vulnConfidentialityImpact": "LOW",
+                  "vulnIntegrityImpact": "LOW",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "cna@vuldb.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-110698",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-10-20T02:14:59.760472Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-10-14T22:17:23.050",
+          "references": [
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://github.com/PaulBoersma/praat/commit/a910d21a2705ef4cd16d91f29cdc8da1ab1a7221"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://github.com/praat/praat.github.io/issues/3348"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/cve/CVE-2026-110698"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/submit/1004713"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/vuln/419892"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/vuln/419892/cti"
+            }
+          ],
+          "sourceIdentifier": "cna@vuldb.com",
+          "vulnStatus": "Deferred",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-119"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-787"
+                }
+              ],
+              "source": "cna@vuldb.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "cpes": [
+                    "cpe:2.3:a:ggml-org:whisper.cpp:*:*:*:*:*:*:*:*"
+                  ],
+                  "modules": [
+                    "Model Loader"
+                  ],
+                  "product": "whisper.cpp",
+                  "vendor": "ggml-org",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "1.9.0"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.9.1"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.9.2"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.9.3"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "1.9.4"
+                    },
+                    {
+                      "status": "unaffected",
+                      "version": "1.9.5"
+                    }
+                  ]
+                }
+              ],
+              "source": "cna@vuldb.com"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "A vulnerability was detected in ggml-org whisper.cpp up to 1.9.4. This affects the function whisper_model_load of the file src/whisper.cpp of the component Model Loader. Performing a manipulation of the argument ttype results in out-of-bounds read. The attack must be initiated from a local position. The exploit is now public and may be used. Upgrading to version 1.9.5 is able to mitigate this issue. The patch is named 60c0be6ac8fa71b1a2ae2dd938a31a34a508e774. It is recommended to upgrade the affected component. The vendor was contacted early, responded in a very professional manner and quickly released a fixed version of the affected product."
+            }
+          ],
+          "id": "CVE-2026-110810",
+          "lastModified": "2026-10-15T16:17:46.883",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "LOW",
+                "cvssData": {
+                  "accessComplexity": "LOW",
+                  "accessVector": "LOCAL",
+                  "authentication": "SINGLE",
+                  "availabilityImpact": "PARTIAL",
+                  "baseScore": 1.7,
+                  "confidentialityImpact": "NONE",
+                  "integrityImpact": "NONE",
+                  "vectorString": "AV:L/AC:L/Au:S/C:N/I:N/A:P",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 3.1,
+                "impactScore": 2.9,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": false,
+                "obtainUserPrivilege": false,
+                "source": "cna@vuldb.com",
+                "type": "Secondary",
+                "userInteractionRequired": false
+              }
+            ],
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "LOCAL",
+                  "availabilityImpact": "LOW",
+                  "baseScore": 2.8,
+                  "baseSeverity": "LOW",
+                  "confidentialityImpact": "NONE",
+                  "integrityImpact": "NONE",
+                  "privilegesRequired": "LOW",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "REQUIRED",
+                  "vectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:N/I:N/A:L",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 1.3,
+                "impactScore": 1.4,
+                "source": "cna@vuldb.com",
+                "type": "Secondary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "LOW",
+                  "attackRequirements": "NONE",
+                  "attackVector": "LOCAL",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 0.9,
+                  "baseSeverity": "LOW",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "PROOF_OF_CONCEPT",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "LOW",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "PASSIVE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:L/AC:L/AT:N/PR:L/UI:P/VC:N/VI:N/VA:L/SC:N/SI:N/SA:N/E:P/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "LOW",
+                  "vulnConfidentialityImpact": "NONE",
+                  "vulnIntegrityImpact": "NONE",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "cna@vuldb.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-110810",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-10-15T15:33:57.530568Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-10-15T01:19:27.600",
+          "references": [
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://github.com/ggml-org/whisper.cpp/"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://github.com/ggml-org/whisper.cpp/commit/60c0be6ac8fa71b1a2ae2dd938a31a34a508e774"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://github.com/ggml-org/whisper.cpp/issues/4090"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://github.com/ggml-org/whisper.cpp/pull/4091"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://github.com/ggml-org/whisper.cpp/releases/tag/v1.9.5"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/cve/CVE-2026-110810"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/submit/1004714"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/vuln/420280"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/vuln/420280/cti"
+            }
+          ],
+          "sourceIdentifier": "cna@vuldb.com",
+          "vulnStatus": "Deferred",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-119"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-125"
+                }
+              ],
+              "source": "cna@vuldb.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=model+loader&resultsPerPage=50"
+}

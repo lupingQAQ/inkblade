@@ -1,0 +1,52 @@
+{
+  "_cached_at": "2026-10-26T12:15:16+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 1,
+            "val": "Python"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 1,
+            "val": "deepspeed/runtime/zero/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 1,
+            "owner_id": "74068820",
+            "val": "deepspeedai/DeepSpeed"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"3372\"><td><div class=\"lineno\">3372</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"n\">load_optimizer_states</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"3373\"><td><div class=\"lineno\">3373</div></td><td><div class=\"highlight\"><pre>            <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\"><mark>load_hp_checkpoint_state_from_checkpoint_dir_stage3</mark></span><span class=\"p\">(</span><span class=\"n\">checkpoint_folder</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"3374\"><td><div class=\"lineno\">3374</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">else</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"3375\"><td><div class=\"lineno\">3375</div></td><td><div class=\"highlight\"><pre>            <span class=\"bp\">self</span><span class=\"o\">.</span><span class=\"n\">load_module_checkpoint_state_from_checkpoint_dir_stage3</span><span class=\"p\">(</span><span class=\"n\">checkpoint_folder</span><span class=\"p\">,</span> <span class=\"n\">load_from_fp32_weights</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"3376\"><td><div class=\"lineno\">3376</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"3377\"><td><div class=\"lineno\">3377</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>load_hp_checkpoint_state_from_checkpoint_dir_stage3</mark></span><span class=\"p\">(</span><span class=\"bp\">self</span><span class=\"p\">,</span> <span class=\"n\">checkpoint_dir</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"3378\"><td><div class=\"lineno\">3378</div></td><td><div class=\"highlight\"><pre><span class=\"w\">        </span><span class=\"sd\">&quot;&quot;&quot; Load optimizer and model states from the checkpoint directory. &quot;&quot;&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "deepspeed/runtime/zero/stage3.py",
+          "repo": "deepspeedai/DeepSpeed",
+          "total_matches": "2"
+        }
+      ],
+      "total": 1
+    },
+    "time": 63
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=load_hp_checkpoint_state_from_checkpoint_dir_stage3"
+}

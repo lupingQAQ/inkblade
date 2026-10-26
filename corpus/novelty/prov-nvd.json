@@ -1,0 +1,2632 @@
+{
+  "generated_at": "2026-10-26T11:30:00+00:00",
+  "offline": false,
+  "schema": "trident-novelty-results-v1",
+  "verdicts": {
+    "areal-awex": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "areal-awex",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "areal"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2023-50356",
+              "summary": "SSL connections to some LDAP servers are vulnerable to a man-in-the-middle attack due to improper certificate validation in AREAL Topkapi Vision (Server). This allows a remote unauthenticated attacker to gather sensitive information and prevent valid users from login.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-50356"
+            },
+            {
+              "id": "CVE-2023-50357",
+              "summary": "A cross site scripting vulnerability in the AREAL SAS Websrv1 ASP website allows a remote low-privileged attacker to gain escalated privileges of other non-admin users.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-50357"
+            },
+            {
+              "id": "CVE-2017-20195",
+              "summary": "A vulnerability was found in LUNAD3v AreaLoad up to 1a1103182ed63a06dde63d1712f3262eda19c3ec. It has been rated as critical. This issue affects some unknown processing of the file request.php. The manipulation of the argument phone leads to sql injection. This product does not use versioning. This i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-20195"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "areal-dataservice-pickle": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "areal-dataservice-pickle",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "areal"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2023-50356",
+              "summary": "SSL connections to some LDAP servers are vulnerable to a man-in-the-middle attack due to improper certificate validation in AREAL Topkapi Vision (Server). This allows a remote unauthenticated attacker to gather sensitive information and prevent valid users from login.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-50356"
+            },
+            {
+              "id": "CVE-2023-50357",
+              "summary": "A cross site scripting vulnerability in the AREAL SAS Websrv1 ASP website allows a remote low-privileged attacker to gain escalated privileges of other non-admin users.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-50357"
+            },
+            {
+              "id": "CVE-2017-20195",
+              "summary": "A vulnerability was found in LUNAD3v AreaLoad up to 1a1103182ed63a06dde63d1712f3262eda19c3ec. It has been rated as critical. This issue affects some unknown processing of the file request.php. The manipulation of the argument phone leads to sql injection. This product does not use versioning. This i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-20195"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "areal-unauth-engine-control": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "areal-unauth-engine-control",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "areal"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2023-50356",
+              "summary": "SSL connections to some LDAP servers are vulnerable to a man-in-the-middle attack due to improper certificate validation in AREAL Topkapi Vision (Server). This allows a remote unauthenticated attacker to gather sensitive information and prevent valid users from login.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-50356"
+            },
+            {
+              "id": "CVE-2023-50357",
+              "summary": "A cross site scripting vulnerability in the AREAL SAS Websrv1 ASP website allows a remote low-privileged attacker to gain escalated privileges of other non-admin users.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-50357"
+            },
+            {
+              "id": "CVE-2017-20195",
+              "summary": "A vulnerability was found in LUNAD3v AreaLoad up to 1a1103182ed63a06dde63d1712f3262eda19c3ec. It has been rated as critical. This issue affects some unknown processing of the file request.php. The manipulation of the argument phone leads to sql injection. This product does not use versioning. This i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-20195"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "areal-v2-worker": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "areal-v2-worker",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "areal"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2023-50356",
+              "summary": "SSL connections to some LDAP servers are vulnerable to a man-in-the-middle attack due to improper certificate validation in AREAL Topkapi Vision (Server). This allows a remote unauthenticated attacker to gather sensitive information and prevent valid users from login.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-50356"
+            },
+            {
+              "id": "CVE-2023-50357",
+              "summary": "A cross site scripting vulnerability in the AREAL SAS Websrv1 ASP website allows a remote low-privileged attacker to gain escalated privileges of other non-admin users.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-50357"
+            },
+            {
+              "id": "CVE-2017-20195",
+              "summary": "A vulnerability was found in LUNAD3v AreaLoad up to 1a1103182ed63a06dde63d1712f3262eda19c3ec. It has been rated as critical. This issue affects some unknown processing of the file request.php. The manipulation of the argument phone leads to sql injection. This product does not use versioning. This i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-20195"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "cephcsi-httpserver-go-pprof-exposed-l37-regex": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "cephcsi"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "deepspeed-autoep-unsafe-load": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "deepspeed-autoep-unsafe-load",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "deepspeed"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2024-43497",
+              "summary": "DeepSpeed Remote Code Execution Vulnerability",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-43497"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "deepspeed-stage3-py-torch-load-any-l3660-regex": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "deepspeed-stage3-py-torch-load-any-l3660-regex",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "deepspeed"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2024-43497",
+              "summary": "DeepSpeed Remote Code Execution Vulnerability",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-43497"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "deepspeed-stage3-py-torch-load-any-l3770-regex": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "deepspeed-stage3-py-torch-load-any-l3770-regex",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "deepspeed"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2024-43497",
+              "summary": "DeepSpeed Remote Code Execution Vulnerability",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-43497"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "deepspeed-stage3-py-torch-load-unsafe-l3660-ast": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-ast",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "deepspeed"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2024-43497",
+              "summary": "DeepSpeed Remote Code Execution Vulnerability",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-43497"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "deepspeed-stage3-py-torch-load-unsafe-l3660-regex": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-regex",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "deepspeed"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2024-43497",
+              "summary": "DeepSpeed Remote Code Execution Vulnerability",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-43497"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "deepspeed-stage3-py-torch-load-unsafe-l3770-ast": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "deepspeed-stage3-py-torch-load-unsafe-l3770-ast",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "deepspeed"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2024-43497",
+              "summary": "DeepSpeed Remote Code Execution Vulnerability",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-43497"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "dify-agent-auth-failopen": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "dify-agent-auth-failopen",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "dify"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2024-10252",
+              "summary": "A vulnerability in langgenius/dify versions <=v0.9.1 allows for code injection via internal SSRF requests in the Dify sandbox service. This vulnerability enables an attacker to execute arbitrary Python code with root privileges within the sandbox environment, potentially leading to the deletion of t",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-10252"
+            },
+            {
+              "id": "CVE-2025-0185",
+              "summary": "A vulnerability in the Dify Tools' Vanna module of the langgenius/dify repository allows for a Pandas Query Injection in the latest version. The vulnerability occurs in the function `vn.get_training_plan_generic(df_information_schema)`, which does not properly sanitize user inputs before executing q",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-0185"
+            },
+            {
+              "id": "CVE-2025-29720",
+              "summary": "Dify v1.0 was discovered to contain a Server-Side Request Forgery (SSRF) via the component controllers.console.remote_files.RemoteFileUploadApi.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-29720"
+            },
+            {
+              "id": "CVE-2025-32790",
+              "summary": "Dify is an open-source LLM app development platform. In versions 0.6.8 and prior, a vulnerability was identified in the DIFY AI where normal users are improperly granted permissions to export APP DSL. The feature in '/export' should only allow administrator users to export DSL. A workaround for this",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-32790"
+            },
+            {
+              "id": "CVE-2025-32795",
+              "summary": "Dify is an open-source LLM app development platform. Prior to version 0.6.12, a vulnerability was identified in the DIFY where normal users are improperly granted permissions to edit APP names, descriptions and icons. This access control flaw allows non-admin users to modify app details, despite bei",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-32795"
+            },
+            {
+              "id": "CVE-2025-32796",
+              "summary": "Dify is an open-source LLM app development platform. Prior to version 0.6.12, a vulnerability was identified in the DIFY where normal users can enable or disable apps through the API, even though the web UI button for this action is disabled and normal users are not permitted to make such changes. T",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-32796"
+            },
+            {
+              "id": "CVE-2025-43862",
+              "summary": "Dify is an open-source LLM app development platform. Prior to version 0.6.12, a normal user is able to access and modify APP orchestration, even though the web UI of APP orchestration is not presented for a normal user. This access control flaw allows non-admin users to make unauthorized access and ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-43862"
+            },
+            {
+              "id": "CVE-2025-43854",
+              "summary": "DIFY is an open-source LLM app development platform. Prior to version 1.3.0, a clickjacking vulnerability was found in the default setup of the DIFY application, allowing malicious actors to trick users into clicking on elements of the web page without their knowledge or consent. This can lead to un",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-43854"
+            },
+            {
+              "id": "CVE-2025-49149",
+              "summary": "Dify is an open-source LLM app development platform. In version 1.2.0, there is insufficient filtering of user input by web applications. Attackers can use website vulnerabilities to inject malicious script code into web pages. This may result in a cross-site scripting (XSS) attack when a user brows",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-49149"
+            },
+            {
+              "id": "CVE-2025-3466",
+              "summary": "langgenius/dify versions 1.1.0 to 1.1.2 are vulnerable to unsanitized input in the code node, allowing execution of arbitrary code with full root permissions. The vulnerability arises from the ability to override global functions in JavaScript, such as parseInt, before sandbox security restrictions ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-3466"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "dify-home-snapshot-cross-tenant": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "dify-home-snapshot-cross-tenant",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "dify"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2024-10252",
+              "summary": "A vulnerability in langgenius/dify versions <=v0.9.1 allows for code injection via internal SSRF requests in the Dify sandbox service. This vulnerability enables an attacker to execute arbitrary Python code with root privileges within the sandbox environment, potentially leading to the deletion of t",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-10252"
+            },
+            {
+              "id": "CVE-2025-0185",
+              "summary": "A vulnerability in the Dify Tools' Vanna module of the langgenius/dify repository allows for a Pandas Query Injection in the latest version. The vulnerability occurs in the function `vn.get_training_plan_generic(df_information_schema)`, which does not properly sanitize user inputs before executing q",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-0185"
+            },
+            {
+              "id": "CVE-2025-29720",
+              "summary": "Dify v1.0 was discovered to contain a Server-Side Request Forgery (SSRF) via the component controllers.console.remote_files.RemoteFileUploadApi.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-29720"
+            },
+            {
+              "id": "CVE-2025-32790",
+              "summary": "Dify is an open-source LLM app development platform. In versions 0.6.8 and prior, a vulnerability was identified in the DIFY AI where normal users are improperly granted permissions to export APP DSL. The feature in '/export' should only allow administrator users to export DSL. A workaround for this",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-32790"
+            },
+            {
+              "id": "CVE-2025-32795",
+              "summary": "Dify is an open-source LLM app development platform. Prior to version 0.6.12, a vulnerability was identified in the DIFY where normal users are improperly granted permissions to edit APP names, descriptions and icons. This access control flaw allows non-admin users to modify app details, despite bei",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-32795"
+            },
+            {
+              "id": "CVE-2025-32796",
+              "summary": "Dify is an open-source LLM app development platform. Prior to version 0.6.12, a vulnerability was identified in the DIFY where normal users can enable or disable apps through the API, even though the web UI button for this action is disabled and normal users are not permitted to make such changes. T",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-32796"
+            },
+            {
+              "id": "CVE-2025-43862",
+              "summary": "Dify is an open-source LLM app development platform. Prior to version 0.6.12, a normal user is able to access and modify APP orchestration, even though the web UI of APP orchestration is not presented for a normal user. This access control flaw allows non-admin users to make unauthorized access and ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-43862"
+            },
+            {
+              "id": "CVE-2025-43854",
+              "summary": "DIFY is an open-source LLM app development platform. Prior to version 1.3.0, a clickjacking vulnerability was found in the default setup of the DIFY application, allowing malicious actors to trick users into clicking on elements of the web page without their knowledge or consent. This can lead to un",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-43854"
+            },
+            {
+              "id": "CVE-2025-49149",
+              "summary": "Dify is an open-source LLM app development platform. In version 1.2.0, there is insufficient filtering of user input by web applications. Attackers can use website vulnerabilities to inject malicious script code into web pages. This may result in a cross-site scripting (XSS) attack when a user brows",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-49149"
+            },
+            {
+              "id": "CVE-2025-3466",
+              "summary": "langgenius/dify versions 1.1.0 to 1.1.2 are vulnerable to unsanitized input in the code node, allowing execution of arbitrary code with full root permissions. The vulnerability arises from the ability to override global functions in JavaScript, such as parseInt, before sandbox security restrictions ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-3466"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "dify-shellctl-unauth-rce": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "dify-shellctl-unauth-rce",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "dify"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2024-10252",
+              "summary": "A vulnerability in langgenius/dify versions <=v0.9.1 allows for code injection via internal SSRF requests in the Dify sandbox service. This vulnerability enables an attacker to execute arbitrary Python code with root privileges within the sandbox environment, potentially leading to the deletion of t",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-10252"
+            },
+            {
+              "id": "CVE-2025-0185",
+              "summary": "A vulnerability in the Dify Tools' Vanna module of the langgenius/dify repository allows for a Pandas Query Injection in the latest version. The vulnerability occurs in the function `vn.get_training_plan_generic(df_information_schema)`, which does not properly sanitize user inputs before executing q",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-0185"
+            },
+            {
+              "id": "CVE-2025-29720",
+              "summary": "Dify v1.0 was discovered to contain a Server-Side Request Forgery (SSRF) via the component controllers.console.remote_files.RemoteFileUploadApi.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-29720"
+            },
+            {
+              "id": "CVE-2025-32790",
+              "summary": "Dify is an open-source LLM app development platform. In versions 0.6.8 and prior, a vulnerability was identified in the DIFY AI where normal users are improperly granted permissions to export APP DSL. The feature in '/export' should only allow administrator users to export DSL. A workaround for this",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-32790"
+            },
+            {
+              "id": "CVE-2025-32795",
+              "summary": "Dify is an open-source LLM app development platform. Prior to version 0.6.12, a vulnerability was identified in the DIFY where normal users are improperly granted permissions to edit APP names, descriptions and icons. This access control flaw allows non-admin users to modify app details, despite bei",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-32795"
+            },
+            {
+              "id": "CVE-2025-32796",
+              "summary": "Dify is an open-source LLM app development platform. Prior to version 0.6.12, a vulnerability was identified in the DIFY where normal users can enable or disable apps through the API, even though the web UI button for this action is disabled and normal users are not permitted to make such changes. T",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-32796"
+            },
+            {
+              "id": "CVE-2025-43862",
+              "summary": "Dify is an open-source LLM app development platform. Prior to version 0.6.12, a normal user is able to access and modify APP orchestration, even though the web UI of APP orchestration is not presented for a normal user. This access control flaw allows non-admin users to make unauthorized access and ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-43862"
+            },
+            {
+              "id": "CVE-2025-43854",
+              "summary": "DIFY is an open-source LLM app development platform. Prior to version 1.3.0, a clickjacking vulnerability was found in the default setup of the DIFY application, allowing malicious actors to trick users into clicking on elements of the web page without their knowledge or consent. This can lead to un",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-43854"
+            },
+            {
+              "id": "CVE-2025-49149",
+              "summary": "Dify is an open-source LLM app development platform. In version 1.2.0, there is insufficient filtering of user input by web applications. Attackers can use website vulnerabilities to inject malicious script code into web pages. This may result in a cross-site scripting (XSS) attack when a user brows",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-49149"
+            },
+            {
+              "id": "CVE-2025-3466",
+              "summary": "langgenius/dify versions 1.1.0 to 1.1.2 are vulnerable to unsanitized input in the code node, allowing execution of arbitrary code with full root permissions. The vulnerability arises from the ability to override global functions in JavaScript, such as parseInt, before sandbox security restrictions ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-3466"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "dify-stub-jwe-default-key": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "dify-stub-jwe-default-key",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "dify"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2024-10252",
+              "summary": "A vulnerability in langgenius/dify versions <=v0.9.1 allows for code injection via internal SSRF requests in the Dify sandbox service. This vulnerability enables an attacker to execute arbitrary Python code with root privileges within the sandbox environment, potentially leading to the deletion of t",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-10252"
+            },
+            {
+              "id": "CVE-2025-0185",
+              "summary": "A vulnerability in the Dify Tools' Vanna module of the langgenius/dify repository allows for a Pandas Query Injection in the latest version. The vulnerability occurs in the function `vn.get_training_plan_generic(df_information_schema)`, which does not properly sanitize user inputs before executing q",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-0185"
+            },
+            {
+              "id": "CVE-2025-29720",
+              "summary": "Dify v1.0 was discovered to contain a Server-Side Request Forgery (SSRF) via the component controllers.console.remote_files.RemoteFileUploadApi.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-29720"
+            },
+            {
+              "id": "CVE-2025-32790",
+              "summary": "Dify is an open-source LLM app development platform. In versions 0.6.8 and prior, a vulnerability was identified in the DIFY AI where normal users are improperly granted permissions to export APP DSL. The feature in '/export' should only allow administrator users to export DSL. A workaround for this",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-32790"
+            },
+            {
+              "id": "CVE-2025-32795",
+              "summary": "Dify is an open-source LLM app development platform. Prior to version 0.6.12, a vulnerability was identified in the DIFY where normal users are improperly granted permissions to edit APP names, descriptions and icons. This access control flaw allows non-admin users to modify app details, despite bei",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-32795"
+            },
+            {
+              "id": "CVE-2025-32796",
+              "summary": "Dify is an open-source LLM app development platform. Prior to version 0.6.12, a vulnerability was identified in the DIFY where normal users can enable or disable apps through the API, even though the web UI button for this action is disabled and normal users are not permitted to make such changes. T",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-32796"
+            },
+            {
+              "id": "CVE-2025-43862",
+              "summary": "Dify is an open-source LLM app development platform. Prior to version 0.6.12, a normal user is able to access and modify APP orchestration, even though the web UI of APP orchestration is not presented for a normal user. This access control flaw allows non-admin users to make unauthorized access and ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-43862"
+            },
+            {
+              "id": "CVE-2025-43854",
+              "summary": "DIFY is an open-source LLM app development platform. Prior to version 1.3.0, a clickjacking vulnerability was found in the default setup of the DIFY application, allowing malicious actors to trick users into clicking on elements of the web page without their knowledge or consent. This can lead to un",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-43854"
+            },
+            {
+              "id": "CVE-2025-49149",
+              "summary": "Dify is an open-source LLM app development platform. In version 1.2.0, there is insufficient filtering of user input by web applications. Attackers can use website vulnerabilities to inject malicious script code into web pages. This may result in a cross-site scripting (XSS) attack when a user brows",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-49149"
+            },
+            {
+              "id": "CVE-2025-3466",
+              "summary": "langgenius/dify versions 1.1.0 to 1.1.2 are vulnerable to unsanitized input in the code node, allowing execution of arbitrary code with full root permissions. The vulnerability arises from the ability to override global functions in JavaScript, such as parseInt, before sandbox security restrictions ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-3466"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "djev-open-proxy": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "djev-open-proxy",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "djev"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "llamafactory-checkpoint-py-torch-load-unsafe-l136-ast": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "llamafactory-checkpoint-py-torch-load-unsafe-l136-ast",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "llama-factory"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-46567",
+              "summary": "LLama Factory enables fine-tuning of large language models. Prior to version 1.0.0, a critical vulnerability exists in the `llamafy_baichuan2.py` script of the LLaMA-Factory project. The script performs insecure deserialization using `torch.load()` on user-supplied `.bin` files from an input directo",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-46567"
+            },
+            {
+              "id": "CVE-2025-53002",
+              "summary": "LLaMA-Factory is a tuning library for large language models. A remote code execution vulnerability was discovered in LLaMA-Factory versions up to and including 0.9.3 during the LLaMA-Factory training process. This vulnerability arises because the `vhead_file` is loaded without proper safeguards, all",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-53002"
+            },
+            {
+              "id": "CVE-2025-61784",
+              "summary": "LLaMA-Factory is a tuning library for large language models. Prior to version 0.9.4, a Server-Side Request Forgery (SSRF) vulnerability in the chat API allows any authenticated user to force the server to make arbitrary HTTP requests to internal and external networks. This can lead to the exposure o",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61784"
+            },
+            {
+              "id": "CVE-2026-58116",
+              "summary": "LLaMA-Factory through 0.9.5 contains a remote code execution vulnerability that allows attackers with WebUI access to execute arbitrary Python code by supplying a malicious model path in the Chat or Training interfaces. The application passes user-supplied model path input unvalidated into AutoToken",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-58116"
+            },
+            {
+              "id": "CVE-2026-85673",
+              "summary": "LLaMA-Factory contains a server-side request forgery vulnerability in the OpenAI-compatible API multimodal media URL handler that allows unauthenticated attackers to bypass SSRF validation. The check_ssrf_url guard validates URLs once but requests.get follows redirects and re-resolves DNS without re",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85673"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "llamafactory-checkpoint-py-torch-load-unsafe-l136-regex": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "llamafactory-checkpoint-py-torch-load-unsafe-l136-regex",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "llama-factory"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-46567",
+              "summary": "LLama Factory enables fine-tuning of large language models. Prior to version 1.0.0, a critical vulnerability exists in the `llamafy_baichuan2.py` script of the LLaMA-Factory project. The script performs insecure deserialization using `torch.load()` on user-supplied `.bin` files from an input directo",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-46567"
+            },
+            {
+              "id": "CVE-2025-53002",
+              "summary": "LLaMA-Factory is a tuning library for large language models. A remote code execution vulnerability was discovered in LLaMA-Factory versions up to and including 0.9.3 during the LLaMA-Factory training process. This vulnerability arises because the `vhead_file` is loaded without proper safeguards, all",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-53002"
+            },
+            {
+              "id": "CVE-2025-61784",
+              "summary": "LLaMA-Factory is a tuning library for large language models. Prior to version 0.9.4, a Server-Side Request Forgery (SSRF) vulnerability in the chat API allows any authenticated user to force the server to make arbitrary HTTP requests to internal and external networks. This can lead to the exposure o",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61784"
+            },
+            {
+              "id": "CVE-2026-58116",
+              "summary": "LLaMA-Factory through 0.9.5 contains a remote code execution vulnerability that allows attackers with WebUI access to execute arbitrary Python code by supplying a malicious model path in the Chat or Training interfaces. The application passes user-supplied model path input unvalidated into AutoToken",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-58116"
+            },
+            {
+              "id": "CVE-2026-85673",
+              "summary": "LLaMA-Factory contains a server-side request forgery vulnerability in the OpenAI-compatible API multimodal media URL handler that allows unauthenticated attackers to bypass SSRF validation. The check_ssrf_url guard validates URLs once but requests.get follows redirects and re-resolves DNS without re",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85673"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "llama-factory"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-46567",
+              "summary": "LLama Factory enables fine-tuning of large language models. Prior to version 1.0.0, a critical vulnerability exists in the `llamafy_baichuan2.py` script of the LLaMA-Factory project. The script performs insecure deserialization using `torch.load()` on user-supplied `.bin` files from an input directo",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-46567"
+            },
+            {
+              "id": "CVE-2025-53002",
+              "summary": "LLaMA-Factory is a tuning library for large language models. A remote code execution vulnerability was discovered in LLaMA-Factory versions up to and including 0.9.3 during the LLaMA-Factory training process. This vulnerability arises because the `vhead_file` is loaded without proper safeguards, all",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-53002"
+            },
+            {
+              "id": "CVE-2025-61784",
+              "summary": "LLaMA-Factory is a tuning library for large language models. Prior to version 0.9.4, a Server-Side Request Forgery (SSRF) vulnerability in the chat API allows any authenticated user to force the server to make arbitrary HTTP requests to internal and external networks. This can lead to the exposure o",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61784"
+            },
+            {
+              "id": "CVE-2026-58116",
+              "summary": "LLaMA-Factory through 0.9.5 contains a remote code execution vulnerability that allows attackers with WebUI access to execute arbitrary Python code by supplying a malicious model path in the Chat or Training interfaces. The application passes user-supplied model path input unvalidated into AutoToken",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-58116"
+            },
+            {
+              "id": "CVE-2026-85673",
+              "summary": "LLaMA-Factory contains a server-side request forgery vulnerability in the OpenAI-compatible API multimodal media URL handler that allows unauthenticated attackers to bypass SSRF validation. The check_ssrf_url guard validates URLs once but requests.get follows redirects and re-resolves DNS without re",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85673"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "llama-factory"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-46567",
+              "summary": "LLama Factory enables fine-tuning of large language models. Prior to version 1.0.0, a critical vulnerability exists in the `llamafy_baichuan2.py` script of the LLaMA-Factory project. The script performs insecure deserialization using `torch.load()` on user-supplied `.bin` files from an input directo",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-46567"
+            },
+            {
+              "id": "CVE-2025-53002",
+              "summary": "LLaMA-Factory is a tuning library for large language models. A remote code execution vulnerability was discovered in LLaMA-Factory versions up to and including 0.9.3 during the LLaMA-Factory training process. This vulnerability arises because the `vhead_file` is loaded without proper safeguards, all",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-53002"
+            },
+            {
+              "id": "CVE-2025-61784",
+              "summary": "LLaMA-Factory is a tuning library for large language models. Prior to version 0.9.4, a Server-Side Request Forgery (SSRF) vulnerability in the chat API allows any authenticated user to force the server to make arbitrary HTTP requests to internal and external networks. This can lead to the exposure o",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61784"
+            },
+            {
+              "id": "CVE-2026-58116",
+              "summary": "LLaMA-Factory through 0.9.5 contains a remote code execution vulnerability that allows attackers with WebUI access to execute arbitrary Python code by supplying a malicious model path in the Chat or Training interfaces. The application passes user-supplied model path input unvalidated into AutoToken",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-58116"
+            },
+            {
+              "id": "CVE-2026-85673",
+              "summary": "LLaMA-Factory contains a server-side request forgery vulnerability in the OpenAI-compatible API multimodal media URL handler that allows unauthenticated attackers to bypass SSRF validation. The check_ssrf_url guard validates URLs once but requests.get follows redirects and re-resolves DNS without re",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85673"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "llamafactory-ssrf-redirect": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "llamafactory-ssrf-redirect",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "2 NVD CVE(s) matched strong terms",
+          "keywords": [
+            "llama-factory"
+          ],
+          "matches": [
+            {
+              "id": "CVE-2025-61784",
+              "matched_terms": [
+                "requests.get"
+              ],
+              "summary": "LLaMA-Factory is a tuning library for large language models. Prior to version 0.9.4, a Server-Side Request Forgery (SSRF) vulnerability in the chat API allows any authenticated user to force the server to make arbitrary HTTP requests to internal and external networks. This can lead to the exposure o",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61784"
+            },
+            {
+              "id": "CVE-2026-85673",
+              "matched_terms": [
+                "requests.get"
+              ],
+              "summary": "LLaMA-Factory contains a server-side request forgery vulnerability in the OpenAI-compatible API multimodal media URL handler that allows unauthenticated attackers to bypass SSRF validation. The check_ssrf_url guard validates URLs once but requests.get follows redirects and re-resolves DNS without re",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85673"
+            }
+          ],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-46567",
+              "summary": "LLama Factory enables fine-tuning of large language models. Prior to version 1.0.0, a critical vulnerability exists in the `llamafy_baichuan2.py` script of the LLaMA-Factory project. The script performs insecure deserialization using `torch.load()` on user-supplied `.bin` files from an input directo",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-46567"
+            },
+            {
+              "id": "CVE-2025-53002",
+              "summary": "LLaMA-Factory is a tuning library for large language models. A remote code execution vulnerability was discovered in LLaMA-Factory versions up to and including 0.9.3 during the LLaMA-Factory training process. This vulnerability arises because the `vhead_file` is loaded without proper safeguards, all",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-53002"
+            },
+            {
+              "id": "CVE-2026-58116",
+              "summary": "LLaMA-Factory through 0.9.5 contains a remote code execution vulnerability that allows attackers with WebUI access to execute arbitrary Python code by supplying a malicious model path in the Chat or Training interfaces. The application passes user-supplied model path input unvalidated into AutoToken",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-58116"
+            }
+          ],
+          "status": "match"
+        }
+      },
+      "reason": "public disclosure match: nvd=CVE-2025-61784",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "llamafactory-webui-rce": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "llamafactory-webui-rce",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "1 NVD CVE(s) matched strong terms",
+          "keywords": [
+            "llama-factory"
+          ],
+          "matches": [
+            {
+              "id": "CVE-2026-58116",
+              "matched_terms": [
+                "trust_remote_code"
+              ],
+              "summary": "LLaMA-Factory through 0.9.5 contains a remote code execution vulnerability that allows attackers with WebUI access to execute arbitrary Python code by supplying a malicious model path in the Chat or Training interfaces. The application passes user-supplied model path input unvalidated into AutoToken",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-58116"
+            }
+          ],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-46567",
+              "summary": "LLama Factory enables fine-tuning of large language models. Prior to version 1.0.0, a critical vulnerability exists in the `llamafy_baichuan2.py` script of the LLaMA-Factory project. The script performs insecure deserialization using `torch.load()` on user-supplied `.bin` files from an input directo",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-46567"
+            },
+            {
+              "id": "CVE-2025-53002",
+              "summary": "LLaMA-Factory is a tuning library for large language models. A remote code execution vulnerability was discovered in LLaMA-Factory versions up to and including 0.9.3 during the LLaMA-Factory training process. This vulnerability arises because the `vhead_file` is loaded without proper safeguards, all",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-53002"
+            },
+            {
+              "id": "CVE-2025-61784",
+              "summary": "LLaMA-Factory is a tuning library for large language models. Prior to version 0.9.4, a Server-Side Request Forgery (SSRF) vulnerability in the chat API allows any authenticated user to force the server to make arbitrary HTTP requests to internal and external networks. This can lead to the exposure o",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-61784"
+            },
+            {
+              "id": "CVE-2026-85673",
+              "summary": "LLaMA-Factory contains a server-side request forgery vulnerability in the OpenAI-compatible API multimodal media URL handler that allows unauthenticated attackers to bypass SSRF validation. The check_ssrf_url guard validates URLs once but requests.get follows redirects and re-resolves DNS without re",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85673"
+            }
+          ],
+          "status": "match"
+        }
+      },
+      "reason": "public disclosure match: nvd=CVE-2026-58116",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "llm2jev-image-file": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "llm2jev-image-file",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "llm2jev"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "megatron-checkpointing-py-torch-load-any-l1739-regex": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "megatron"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-23264",
+              "summary": "NVIDIA Megatron-LM for all platforms contains a vulnerability in a python component where an attacker may cause a code injection issue by providing a malicious file. A successful exploit of this vulnerability may lead to Code Execution, Escalation of Privileges, Information Disclosure and Data Tampe",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-23264"
+            },
+            {
+              "id": "CVE-2025-23265",
+              "summary": "NVIDIA Megatron-LM for all platforms contains a vulnerability in a python component where an attacker may cause a code injection issue by providing a malicious file. A successful exploit of this vulnerability may lead to Code Execution, Escalation of Privileges, Information Disclosure and Data Tampe",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-23265"
+            },
+            {
+              "id": "CVE-2025-23305",
+              "summary": "NVIDIA Megatron-LM for all platforms contains a vulnerability in the tools component, where an attacker may exploit a code injection issue. A successful exploit of this vulnerability may lead to code execution, escalation of privileges, information disclosure, and data tampering.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-23305"
+            },
+            {
+              "id": "CVE-2025-23306",
+              "summary": "NVIDIA Megatron-LM for all platforms contains a vulnerability in the megatron/training/\narguments.py component where an attacker could cause a code injection issue by providing a malicious input. A successful exploit of this vulnerability may lead to code execution, escalation of privileges, informa",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-23306"
+            },
+            {
+              "id": "CVE-2025-23348",
+              "summary": "NVIDIA Megatron-LM for all platforms contains a vulnerability in the pretrain_gpt script, where malicious data created by an attacker may cause a code injection issue. A successful exploit of this vulnerability may lead to code execution, escalation of privileges, information disclosure, and data ta",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-23348"
+            },
+            {
+              "id": "CVE-2025-23349",
+              "summary": "NVIDIA Megatron-LM for all platforms contains a vulnerability in the tasks/orqa/unsupervised/nq.py component, where an attacker may cause a code injection. A successful exploit of this vulnerability may lead to code execution, escalation of privileges, information disclosure, and data tampering.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-23349"
+            },
+            {
+              "id": "CVE-2025-23353",
+              "summary": "NVIDIA Megatron-LM for all platforms contains a vulnerability in the msdp preprocessing script where malicious data created by an attacker may cause an injection. A successful exploit of this vulnerability may lead to code execution, escalation of privileges, Information disclosure, and data tamperi",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-23353"
+            },
+            {
+              "id": "CVE-2025-23354",
+              "summary": "NVIDIA Megatron-LM for all platforms contains a vulnerability in the ensemble_classifer script where malicious data created by an attacker may cause an injection. A successful exploit of this vulnerability may lead to code execution, escalation of privileges, Information disclosure, and data tamperi",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-23354"
+            },
+            {
+              "id": "CVE-2025-23357",
+              "summary": "NVIDIA Megatron-LM for all platforms contains a vulnerability in a script, where malicious data created by an attacker may cause a code injection issue. A successful exploit of this vulnerability may lead to code execution, escalation of privileges, information disclosure, data tampering.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-23357"
+            },
+            {
+              "id": "CVE-2025-14924",
+              "summary": "Hugging Face Transformers megatron_gpt2 Deserialization of Untrusted Data Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of Hugging Face Transformers. User interaction is required to exploit this vulnerability in th",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-14924"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-eval-escape": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "msswift-eval-escape",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "ms-swift"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-50460",
+              "summary": "A remote code execution (RCE) vulnerability exists in the ms-swift project version 3.3.0 due to unsafe deserialization in tests/run.py using yaml.load() from the PyYAML library (versions = 5.3.1). If an attacker can control the content of the YAML configuration file passed to the --run_config parame",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50460"
+            },
+            {
+              "id": "CVE-2026-10801",
+              "summary": "A security vulnerability has been detected in modelscope ms-swift up to 4.2.0. This affects the function Template._save_pil_image of the file swift/template/base.py of the component PIL Image Cache Key Handler. The manipulation leads to use of weak hash. An attack has to be approached locally. A hig",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10801"
+            },
+            {
+              "id": "CVE-2026-85686",
+              "summary": "ms-swift 4.5.2 contains a server-side request forgery vulnerability in the swift deploy OpenAI-compatible API that fetches multimodal media URLs without validation or redirect filtering. Unauthenticated attackers can supply arbitrary image_url, audio_url, or video_url parameters to make the server i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85686"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-indexed-dataset-py-pickle-loads-l112-ast": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "msswift-indexed-dataset-py-pickle-loads-l112-ast",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "ms-swift"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-50460",
+              "summary": "A remote code execution (RCE) vulnerability exists in the ms-swift project version 3.3.0 due to unsafe deserialization in tests/run.py using yaml.load() from the PyYAML library (versions = 5.3.1). If an attacker can control the content of the YAML configuration file passed to the --run_config parame",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50460"
+            },
+            {
+              "id": "CVE-2026-10801",
+              "summary": "A security vulnerability has been detected in modelscope ms-swift up to 4.2.0. This affects the function Template._save_pil_image of the file swift/template/base.py of the component PIL Image Cache Key Handler. The manipulation leads to use of weak hash. An attack has to be approached locally. A hig",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10801"
+            },
+            {
+              "id": "CVE-2026-85686",
+              "summary": "ms-swift 4.5.2 contains a server-side request forgery vulnerability in the swift deploy OpenAI-compatible API that fetches multimodal media URLs without validation or redirect filtering. Unauthenticated attackers can supply arbitrary image_url, audio_url, or video_url parameters to make the server i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85686"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-indexed-dataset-py-pickle-loads-l112-regex": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "msswift-indexed-dataset-py-pickle-loads-l112-regex",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "ms-swift"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-50460",
+              "summary": "A remote code execution (RCE) vulnerability exists in the ms-swift project version 3.3.0 due to unsafe deserialization in tests/run.py using yaml.load() from the PyYAML library (versions = 5.3.1). If an attacker can control the content of the YAML configuration file passed to the --run_config parame",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50460"
+            },
+            {
+              "id": "CVE-2026-10801",
+              "summary": "A security vulnerability has been detected in modelscope ms-swift up to 4.2.0. This affects the function Template._save_pil_image of the file swift/template/base.py of the component PIL Image Cache Key Handler. The manipulation leads to use of weak hash. An attack has to be approached locally. A hig",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10801"
+            },
+            {
+              "id": "CVE-2026-85686",
+              "summary": "ms-swift 4.5.2 contains a server-side request forgery vulnerability in the swift deploy OpenAI-compatible API that fetches multimodal media URLs without validation or redirect filtering. Unauthenticated attackers can supply arbitrary image_url, audio_url, or video_url parameters to make the server i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85686"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-indexed-dataset-py-pickle-loads-l129-ast": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "msswift-indexed-dataset-py-pickle-loads-l129-ast",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "ms-swift"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-50460",
+              "summary": "A remote code execution (RCE) vulnerability exists in the ms-swift project version 3.3.0 due to unsafe deserialization in tests/run.py using yaml.load() from the PyYAML library (versions = 5.3.1). If an attacker can control the content of the YAML configuration file passed to the --run_config parame",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50460"
+            },
+            {
+              "id": "CVE-2026-10801",
+              "summary": "A security vulnerability has been detected in modelscope ms-swift up to 4.2.0. This affects the function Template._save_pil_image of the file swift/template/base.py of the component PIL Image Cache Key Handler. The manipulation leads to use of weak hash. An attack has to be approached locally. A hig",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10801"
+            },
+            {
+              "id": "CVE-2026-85686",
+              "summary": "ms-swift 4.5.2 contains a server-side request forgery vulnerability in the swift deploy OpenAI-compatible API that fetches multimodal media URLs without validation or redirect filtering. Unauthenticated attackers can supply arbitrary image_url, audio_url, or video_url parameters to make the server i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85686"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-indexed-dataset-py-pickle-loads-l129-regex": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "msswift-indexed-dataset-py-pickle-loads-l129-regex",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "ms-swift"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-50460",
+              "summary": "A remote code execution (RCE) vulnerability exists in the ms-swift project version 3.3.0 due to unsafe deserialization in tests/run.py using yaml.load() from the PyYAML library (versions = 5.3.1). If an attacker can control the content of the YAML configuration file passed to the --run_config parame",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50460"
+            },
+            {
+              "id": "CVE-2026-10801",
+              "summary": "A security vulnerability has been detected in modelscope ms-swift up to 4.2.0. This affects the function Template._save_pil_image of the file swift/template/base.py of the component PIL Image Cache Key Handler. The manipulation leads to use of weak hash. An attack has to be approached locally. A hig",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10801"
+            },
+            {
+              "id": "CVE-2026-85686",
+              "summary": "ms-swift 4.5.2 contains a server-side request forgery vulnerability in the swift deploy OpenAI-compatible API that fetches multimodal media URLs without validation or redirect filtering. Unauthenticated attackers can supply arbitrary image_url, audio_url, or video_url parameters to make the server i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85686"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-media-local-read": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "msswift-media-local-read",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "ms-swift"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-50460",
+              "summary": "A remote code execution (RCE) vulnerability exists in the ms-swift project version 3.3.0 due to unsafe deserialization in tests/run.py using yaml.load() from the PyYAML library (versions = 5.3.1). If an attacker can control the content of the YAML configuration file passed to the --run_config parame",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50460"
+            },
+            {
+              "id": "CVE-2026-10801",
+              "summary": "A security vulnerability has been detected in modelscope ms-swift up to 4.2.0. This affects the function Template._save_pil_image of the file swift/template/base.py of the component PIL Image Cache Key Handler. The manipulation leads to use of weak hash. An attack has to be approached locally. A hig",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10801"
+            },
+            {
+              "id": "CVE-2026-85686",
+              "summary": "ms-swift 4.5.2 contains a server-side request forgery vulnerability in the swift deploy OpenAI-compatible API that fetches multimodal media URLs without validation or redirect filtering. Unauthenticated attackers can supply arbitrary image_url, audio_url, or video_url parameters to make the server i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85686"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-torch-utils-py-pickle-loads-l340-ast": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "msswift-torch-utils-py-pickle-loads-l340-ast",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "ms-swift"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-50460",
+              "summary": "A remote code execution (RCE) vulnerability exists in the ms-swift project version 3.3.0 due to unsafe deserialization in tests/run.py using yaml.load() from the PyYAML library (versions = 5.3.1). If an attacker can control the content of the YAML configuration file passed to the --run_config parame",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50460"
+            },
+            {
+              "id": "CVE-2026-10801",
+              "summary": "A security vulnerability has been detected in modelscope ms-swift up to 4.2.0. This affects the function Template._save_pil_image of the file swift/template/base.py of the component PIL Image Cache Key Handler. The manipulation leads to use of weak hash. An attack has to be approached locally. A hig",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10801"
+            },
+            {
+              "id": "CVE-2026-85686",
+              "summary": "ms-swift 4.5.2 contains a server-side request forgery vulnerability in the swift deploy OpenAI-compatible API that fetches multimodal media URLs without validation or redirect filtering. Unauthenticated attackers can supply arbitrary image_url, audio_url, or video_url parameters to make the server i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85686"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-torch-utils-py-pickle-loads-l340-regex": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "msswift-torch-utils-py-pickle-loads-l340-regex",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "ms-swift"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-50460",
+              "summary": "A remote code execution (RCE) vulnerability exists in the ms-swift project version 3.3.0 due to unsafe deserialization in tests/run.py using yaml.load() from the PyYAML library (versions = 5.3.1). If an attacker can control the content of the YAML configuration file passed to the --run_config parame",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50460"
+            },
+            {
+              "id": "CVE-2026-10801",
+              "summary": "A security vulnerability has been detected in modelscope ms-swift up to 4.2.0. This affects the function Template._save_pil_image of the file swift/template/base.py of the component PIL Image Cache Key Handler. The manipulation leads to use of weak hash. An attack has to be approached locally. A hig",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10801"
+            },
+            {
+              "id": "CVE-2026-85686",
+              "summary": "ms-swift 4.5.2 contains a server-side request forgery vulnerability in the swift deploy OpenAI-compatible API that fetches multimodal media URLs without validation or redirect filtering. Unauthenticated attackers can supply arbitrary image_url, audio_url, or video_url parameters to make the server i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85686"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-trust-remote-code": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "msswift-trust-remote-code",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "ms-swift"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-50460",
+              "summary": "A remote code execution (RCE) vulnerability exists in the ms-swift project version 3.3.0 due to unsafe deserialization in tests/run.py using yaml.load() from the PyYAML library (versions = 5.3.1). If an attacker can control the content of the YAML configuration file passed to the --run_config parame",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50460"
+            },
+            {
+              "id": "CVE-2026-10801",
+              "summary": "A security vulnerability has been detected in modelscope ms-swift up to 4.2.0. This affects the function Template._save_pil_image of the file swift/template/base.py of the component PIL Image Cache Key Handler. The manipulation leads to use of weak hash. An attack has to be approached locally. A hig",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10801"
+            },
+            {
+              "id": "CVE-2026-85686",
+              "summary": "ms-swift 4.5.2 contains a server-side request forgery vulnerability in the swift deploy OpenAI-compatible API that fetches multimodal media URLs without validation or redirect filtering. Unauthenticated attackers can supply arbitrary image_url, audio_url, or video_url parameters to make the server i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85686"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "onejev-media-ssrf": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "onejev-media-ssrf",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "onejev"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "openjev-clef-release-module": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "openjev-clef-release-module",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "openjev"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "openrlhf-serve-rm": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "openrlhf-serve-rm",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "openrlhf"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "openrlhf-vllm-insecure": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "openrlhf-vllm-insecure",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "openrlhf"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "openwebui-code-execute": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "openwebui-code-execute",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "open webui"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2011-0462",
+              "summary": "Multiple cross-site scripting (XSS) vulnerabilities in the login page in the webui component in SUSE openSUSE Build Service (OBS) before 2.1.6 allow remote attackers to inject arbitrary web script or HTML via unspecified vectors.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2011-0462"
+            },
+            {
+              "id": "CVE-2020-10706",
+              "summary": "A flaw was found in OpenShift Container Platform where OAuth tokens are not encrypted when the encryption of data at rest is enabled. This flaw allows an attacker with access to a backup to obtain OAuth tokens and then use them to log into the cluster as any user who logged into the cluster via the ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-10706"
+            },
+            {
+              "id": "CVE-2021-28122",
+              "summary": "A request-validation issue was discovered in Open5GS 2.1.3 through 2.2.x before 2.2.1. The WebUI component allows an unauthenticated user to use a crafted HTTP API request to create, read, update, or delete entries in the subscriber database. For example, new administrative users can be added. The i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-28122"
+            },
+            {
+              "id": "CVE-2022-24756",
+              "summary": "Bareos is open source software for backup, archiving, and recovery of data for operating systems. When Bareos Director >= 18.2 but prior to 21.1.0, 20.0.6, and 19.2.12 is built and configured for PAM authentication, a failed PAM authentication will leak a small amount of memory. An attacker that is ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-24756"
+            },
+            {
+              "id": "CVE-2022-24796",
+              "summary": "RaspberryMatic is a free and open-source operating system for running a cloud-free smart-home using the homematicIP / HomeMatic hardware line of IoT devices. A Remote Code Execution (RCE) vulnerability in the file upload facility of the WebUI interface of RaspberryMatic exists. Missing input validat",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-24796"
+            },
+            {
+              "id": "CVE-2022-46165",
+              "summary": "Syncthing is an open source, continuous file synchronization program. In versions prior to 1.23.5 a compromised instance with shared folders could sync malicious files which contain arbitrary HTML and JavaScript in the name. If the owner of another device looks over the shared folder settings and mo",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-46165"
+            },
+            {
+              "id": "CVE-2024-30256",
+              "summary": "Open WebUI is a user-friendly WebUI for LLMs. Open-webui is vulnerable to authenticated blind server-side request forgery. This vulnerability is fixed in 0.1.117.\n",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-30256"
+            },
+            {
+              "id": "CVE-2024-36110",
+              "summary": "ansibleguy-webui is an open source WebUI for using Ansible. Multiple forms in versions < 0.0.21 allowed injection of HTML elements. These are returned to the user after executing job actions and thus evaluated by the browser. These issues have been addressed in version 0.0.21 (0.0.21.post2 on pypi).",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-36110"
+            },
+            {
+              "id": "CVE-2024-43801",
+              "summary": "Jellyfin is an open source self hosted media server. The Jellyfin user profile image upload accepts SVG files, allowing for a stored XSS attack against an admin user via a specially crafted malicious SVG file. When viewed by an admin outside of the Jellyfin Web UI (e.g. via \"view image\" in a browser",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-43801"
+            },
+            {
+              "id": "CVE-2025-46571",
+              "summary": "Open WebUI is a self-hosted artificial intelligence platform designed to operate entirely offline. Prior to version 0.6.6, low privileged users can upload HTML files which contain JavaScript code via the `/api/v1/files/` backend endpoint. This endpoint returns a file id, which can be used to open th",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-46571"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "openwebui-code-interpreter-bypass": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "openwebui-code-interpreter-bypass",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "open webui"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2011-0462",
+              "summary": "Multiple cross-site scripting (XSS) vulnerabilities in the login page in the webui component in SUSE openSUSE Build Service (OBS) before 2.1.6 allow remote attackers to inject arbitrary web script or HTML via unspecified vectors.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2011-0462"
+            },
+            {
+              "id": "CVE-2020-10706",
+              "summary": "A flaw was found in OpenShift Container Platform where OAuth tokens are not encrypted when the encryption of data at rest is enabled. This flaw allows an attacker with access to a backup to obtain OAuth tokens and then use them to log into the cluster as any user who logged into the cluster via the ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-10706"
+            },
+            {
+              "id": "CVE-2021-28122",
+              "summary": "A request-validation issue was discovered in Open5GS 2.1.3 through 2.2.x before 2.2.1. The WebUI component allows an unauthenticated user to use a crafted HTTP API request to create, read, update, or delete entries in the subscriber database. For example, new administrative users can be added. The i",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-28122"
+            },
+            {
+              "id": "CVE-2022-24756",
+              "summary": "Bareos is open source software for backup, archiving, and recovery of data for operating systems. When Bareos Director >= 18.2 but prior to 21.1.0, 20.0.6, and 19.2.12 is built and configured for PAM authentication, a failed PAM authentication will leak a small amount of memory. An attacker that is ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-24756"
+            },
+            {
+              "id": "CVE-2022-24796",
+              "summary": "RaspberryMatic is a free and open-source operating system for running a cloud-free smart-home using the homematicIP / HomeMatic hardware line of IoT devices. A Remote Code Execution (RCE) vulnerability in the file upload facility of the WebUI interface of RaspberryMatic exists. Missing input validat",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-24796"
+            },
+            {
+              "id": "CVE-2022-46165",
+              "summary": "Syncthing is an open source, continuous file synchronization program. In versions prior to 1.23.5 a compromised instance with shared folders could sync malicious files which contain arbitrary HTML and JavaScript in the name. If the owner of another device looks over the shared folder settings and mo",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-46165"
+            },
+            {
+              "id": "CVE-2024-30256",
+              "summary": "Open WebUI is a user-friendly WebUI for LLMs. Open-webui is vulnerable to authenticated blind server-side request forgery. This vulnerability is fixed in 0.1.117.\n",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-30256"
+            },
+            {
+              "id": "CVE-2024-36110",
+              "summary": "ansibleguy-webui is an open source WebUI for using Ansible. Multiple forms in versions < 0.0.21 allowed injection of HTML elements. These are returned to the user after executing job actions and thus evaluated by the browser. These issues have been addressed in version 0.0.21 (0.0.21.post2 on pypi).",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-36110"
+            },
+            {
+              "id": "CVE-2024-43801",
+              "summary": "Jellyfin is an open source self hosted media server. The Jellyfin user profile image upload accepts SVG files, allowing for a stored XSS attack against an admin user via a specially crafted malicious SVG file. When viewed by an admin outside of the Jellyfin Web UI (e.g. via \"view image\" in a browser",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-43801"
+            },
+            {
+              "id": "CVE-2025-46571",
+              "summary": "Open WebUI is a self-hosted artificial intelligence platform designed to operate entirely offline. Prior to version 0.6.6, low privileged users can upload HTML files which contain JavaScript code via the `/api/v1/files/` backend endpoint. This endpoint returns a file id, which can be used to open th",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-46571"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "ray-dashboard-unauth": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "ray-dashboard-unauth",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "ray"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-1999-1436",
+              "summary": "Ray Chan WWW Authorization Gateway 0.1 CGI program allows remote attackers to execute arbitrary commands via shell metacharacters in the \"user\" parameter.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-1999-1436"
+            },
+            {
+              "id": "CVE-2001-0636",
+              "summary": "Buffer overflows in Raytheon SilentRunner allow remote attackers to (1) cause a denial of service in the collector (cle.exe) component of SilentRunner 2.0 via traffic containing long passwords, or (2) execute arbitrary commands via long HTTP queries in the Knowledge Browser component in SilentRunner",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2001-0636"
+            },
+            {
+              "id": "CVE-2002-2036",
+              "summary": "Sun Ray Server Software (SRSS) 1.3, when Non-Smartcard Mobility (NSCM) is enabled, allows remote attackers to login as another user by running dtlogin from a system that supports the XDMCP client.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2002-2036"
+            },
+            {
+              "id": "CVE-2004-0701",
+              "summary": "Sun Ray Server Software (SRSS) 1.3 and 2.0 for Solaris 2.6, 7 and 8 does not properly detect a smartcard removal when the card is quickly removed, reinserted, and removed again, which could cause a user session to stay logged in and allow local users to gain unauthorized access.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2004-0701"
+            },
+            {
+              "id": "CVE-2005-1420",
+              "summary": "Raysoft/Raybase Video Cam Server 1.0.0 beta allows remote attackers to determine the full pathname of the server via a request for an invalid page, as demonstrated using \"%20\" (hex-encoded space).",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2005-1420"
+            },
+            {
+              "id": "CVE-2005-1421",
+              "summary": "Directory traversal vulnerability in Raysoft/Raybase Video Cam Server 1.0.0 beta allows remote attackers to read arbitrary files via \"..\" (dot dot) sequences in an HTTP request.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2005-1421"
+            },
+            {
+              "id": "CVE-2005-1422",
+              "summary": "Raysoft/Raybase Video Cam Server 1.0.0 beta allows remote attackers to conduct administrator operations and cause a denial of service (server or camera shutdown) via a direct request to admin.html.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2005-1422"
+            },
+            {
+              "id": "CVE-2006-0628",
+              "summary": "myquiz.pl in Dale Ray MyQuiz 1.01 allows remote attackers to execute arbitrary commands via shell metacharacters in the URL, which are not properly handled as part of the PATH_INFO environment variable.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-0628"
+            },
+            {
+              "id": "CVE-2006-2408",
+              "summary": "Multiple buffer overflows in Raydium before SVN revision 310 allow remote attackers to execute arbitrary code via a large packet when logged via (1) the raydium_log function in log.c or (2) the raydium_console_line_add function in console.c, possibly from a long player name.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-2408"
+            },
+            {
+              "id": "CVE-2006-2409",
+              "summary": "Format string vulnerability in the raydium_log function in console.c in Raydium before SVN revision 310 allows local users to execute arbitrary code via format string specifiers in the format parameter, which are not properly handled in a call to raydium_console_line_add.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-2409"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "sglang-admin-optional-failopen": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "sglang-admin-optional-failopen",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "sglang"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-10164",
+              "summary": "A security flaw has been discovered in lmsys sglang 0.4.6. Affected by this vulnerability is the function main of the file /update_weights_from_tensor. The manipulation of the argument serialized_named_tensors results in deserialization. The attack can be launched remotely. The exploit has been rele",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-10164"
+            },
+            {
+              "id": "CVE-2026-3059",
+              "summary": "SGLang's multimodal generation module is vulnerable to unauthenticated remote code execution through the ZMQ broker, which deserializes untrusted data using pickle.loads() without authentication.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3059"
+            },
+            {
+              "id": "CVE-2026-3060",
+              "summary": "SGLang' encoder parallel disaggregation system is vulnerable to unauthenticated remote code execution through the disaggregation module, which deserializes untrusted data using pickle.loads() without authentication.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3060"
+            },
+            {
+              "id": "CVE-2026-3989",
+              "summary": "SGLangs `replay_request_dump.py` contains an insecure pickle.load() without validation and proper deserialization. An attacker can take advantage of this by providing a malicious .pkl file, which will execute the attackers code on the device running the script.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3989"
+            },
+            {
+              "id": "CVE-2026-5760",
+              "summary": "SGLang's reranking endpoint (/v1/rerank) achieves Remote Code Execution (RCE) when a model file containing a malcious tokenizer.chat_template is loaded, as the Jinja2 chat templates are rendered using an unsandboxed jinja2.Environment().",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-5760"
+            },
+            {
+              "id": "CVE-2026-7669",
+              "summary": "A vulnerability was detected in sgl-project SGLang up to 0.5.9. Impacted is the function get_tokenizer of the file python/sglang/srt/utils/hf_transformers_utils.py of the component HuggingFace Transformer Handler. The manipulation of the argument trust_remote_code with the input False as part of Boo",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7669"
+            },
+            {
+              "id": "CVE-2026-7301",
+              "summary": "SGLangs multimodal generation runtime scheduler's ROUTER socket binds to 0.0.0.0 by default and contains a sink that calls pickle.loads() on incoming messages, enabling RCE when exposed to the internet.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7301"
+            },
+            {
+              "id": "CVE-2026-7302",
+              "summary": "SGLangs multimodal generation runtime is vulnerable to an unauthenticated path traversal vulnerability, allowing an attacker to write arbitrary files anywhere the server process has write access, by including ../ sequences in the upload filename when sent to specific endpoints.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7302"
+            },
+            {
+              "id": "CVE-2026-7304",
+              "summary": "SGLangs multimodal generation runtime is vulnerable to unauthenticated remote code execution when the --enable-custom-logit-processor option is enabled, as Python objects loaded via dill.loads() will be deserialized without validation.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7304"
+            },
+            {
+              "id": "CVE-2026-10300",
+              "summary": "A security vulnerability has been detected in SGLang 0.5.10.post1. Impacted is an unknown function of the file python/sglang/srt/lora/lora_manager.py of the component Inference HTTP Endpoint. Such manipulation of the argument lora_path leads to reachable assertion. The attack can be launched remotel",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10300"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "sglang-legacy-tar-weights-rce": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "sglang-legacy-tar-weights-rce",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "1 NVD CVE(s) matched strong terms",
+          "keywords": [
+            "sglang"
+          ],
+          "matches": [
+            {
+              "id": "CVE-2026-15976",
+              "matched_terms": [
+                "weights_only=False"
+              ],
+              "summary": "SGLang contains a RCE vulnerability when attempting to load model weights from a HuggingFace repository, specifically within the /update_weights_from_disk, where torch.load(..., weights_only=False) fallback enables pickle deserialization of .bin files.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-15976"
+            }
+          ],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-10164",
+              "summary": "A security flaw has been discovered in lmsys sglang 0.4.6. Affected by this vulnerability is the function main of the file /update_weights_from_tensor. The manipulation of the argument serialized_named_tensors results in deserialization. The attack can be launched remotely. The exploit has been rele",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-10164"
+            },
+            {
+              "id": "CVE-2026-3059",
+              "summary": "SGLang's multimodal generation module is vulnerable to unauthenticated remote code execution through the ZMQ broker, which deserializes untrusted data using pickle.loads() without authentication.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3059"
+            },
+            {
+              "id": "CVE-2026-3060",
+              "summary": "SGLang' encoder parallel disaggregation system is vulnerable to unauthenticated remote code execution through the disaggregation module, which deserializes untrusted data using pickle.loads() without authentication.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3060"
+            },
+            {
+              "id": "CVE-2026-3989",
+              "summary": "SGLangs `replay_request_dump.py` contains an insecure pickle.load() without validation and proper deserialization. An attacker can take advantage of this by providing a malicious .pkl file, which will execute the attackers code on the device running the script.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3989"
+            },
+            {
+              "id": "CVE-2026-5760",
+              "summary": "SGLang's reranking endpoint (/v1/rerank) achieves Remote Code Execution (RCE) when a model file containing a malcious tokenizer.chat_template is loaded, as the Jinja2 chat templates are rendered using an unsandboxed jinja2.Environment().",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-5760"
+            },
+            {
+              "id": "CVE-2026-7669",
+              "summary": "A vulnerability was detected in sgl-project SGLang up to 0.5.9. Impacted is the function get_tokenizer of the file python/sglang/srt/utils/hf_transformers_utils.py of the component HuggingFace Transformer Handler. The manipulation of the argument trust_remote_code with the input False as part of Boo",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7669"
+            },
+            {
+              "id": "CVE-2026-7301",
+              "summary": "SGLangs multimodal generation runtime scheduler's ROUTER socket binds to 0.0.0.0 by default and contains a sink that calls pickle.loads() on incoming messages, enabling RCE when exposed to the internet.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7301"
+            },
+            {
+              "id": "CVE-2026-7302",
+              "summary": "SGLangs multimodal generation runtime is vulnerable to an unauthenticated path traversal vulnerability, allowing an attacker to write arbitrary files anywhere the server process has write access, by including ../ sequences in the upload filename when sent to specific endpoints.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7302"
+            },
+            {
+              "id": "CVE-2026-7304",
+              "summary": "SGLangs multimodal generation runtime is vulnerable to unauthenticated remote code execution when the --enable-custom-logit-processor option is enabled, as Python objects loaded via dill.loads() will be deserialized without validation.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7304"
+            },
+            {
+              "id": "CVE-2026-10300",
+              "summary": "A security vulnerability has been detected in SGLang 0.5.10.post1. Impacted is an unknown function of the file python/sglang/srt/lora/lora_manager.py of the component Inference HTTP Endpoint. Such manipulation of the argument lora_path leads to reachable assertion. The attack can be launched remotel",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10300"
+            }
+          ],
+          "status": "match"
+        }
+      },
+      "reason": "public disclosure match: nvd=CVE-2026-15976",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "sglang-omni-admin-failopen": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "sglang-omni-admin-failopen",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "sglang-omni"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "siliconlab-credential-exfil": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "siliconlab-credential-exfil",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "openjev"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "skyrl-fetch-weights": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "skyrl-fetch-weights",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "skyrl"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "skyrl-tinker-api": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "skyrl-tinker-api",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "skyrl"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "skyrl-vllm-devmode": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "skyrl-vllm-devmode",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "skyrl"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "slime-pull-weights": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "slime-pull-weights",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "slime"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2016-10625",
+              "summary": "headless-browser-lite is a minimal npm installer for phantomjs and slimerjs with no external dependencies. headless-browser-lite downloads binary resources over HTTP, which leaves it vulnerable to MITM attacks. It may be possible to cause remote code execution (RCE) by swapping out the requested bin",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-10625"
+            },
+            {
+              "id": "CVE-2016-10644",
+              "summary": "slimerjs-edge is a npm wrapper for installing the bleeding edge version of slimerjs. slimerjs-edge downloads binary resources over HTTP, which leaves it vulnerable to MITM attacks. It may be possible to cause remote code execution (RCE) by swapping out the requested binary with an attacker controlle",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-10644"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "slime-torch-load": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "slime-torch-load",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "slime"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2016-10625",
+              "summary": "headless-browser-lite is a minimal npm installer for phantomjs and slimerjs with no external dependencies. headless-browser-lite downloads binary resources over HTTP, which leaves it vulnerable to MITM attacks. It may be possible to cause remote code execution (RCE) by swapping out the requested bin",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-10625"
+            },
+            {
+              "id": "CVE-2016-10644",
+              "summary": "slimerjs-edge is a npm wrapper for installing the bleeding edge version of slimerjs. slimerjs-edge downloads binary resources over HTTP, which leaves it vulnerable to MITM attacks. It may be possible to cause remote code execution (RCE) by swapping out the requested binary with an attacker controlle",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-10644"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "transformers-dynamic-module-utils-py-dynamic-import-l248-ast": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-ast",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "2 NVD CVE(s) matched strong terms",
+          "keywords": [
+            "transformers"
+          ],
+          "matches": [
+            {
+              "id": "CVE-2025-3264",
+              "matched_terms": [
+                "dynamic_module_utils.py"
+              ],
+              "summary": "A Regular Expression Denial of Service (ReDoS) vulnerability was discovered in the Hugging Face Transformers library, specifically in the `get_imports()` function within `dynamic_module_utils.py`. This vulnerability affects versions 4.49.0 and is fixed in version 4.51.0. The issue arises from a regu",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-3264"
+            },
+            {
+              "id": "CVE-2026-80047",
+              "matched_terms": [
+                "dynamic_module_utils.py"
+              ],
+              "summary": "A vulnerability in Hugging Face Transformers (versions 4.57.0 to 5.16.1) allows remote Python files to be written to local disk without user consent when using GenerativePreTrainedModel.load_custom_generate(). The function fetches and caches a remote module file before performing the required trust_",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-80047"
+            }
+          ],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2021-28796",
+              "summary": "Increments Qiita::Markdown before 0.33.0 allows XSS in transformers.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-28796"
+            },
+            {
+              "id": "CVE-2024-21799",
+              "summary": "Path traversal for some Intel(R) Extension for Transformers software before version 1.5 may allow an authenticated user to potentially enable escalation of privilege via local access.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-21799"
+            },
+            {
+              "id": "CVE-2024-11392",
+              "summary": "Hugging Face Transformers MobileViTV2 Deserialization of Untrusted Data Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of Hugging Face Transformers. User interaction is required to exploit this vulnerability in that",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-11392"
+            },
+            {
+              "id": "CVE-2024-11393",
+              "summary": "Hugging Face Transformers MaskFormer Model Deserialization of Untrusted Data Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of Hugging Face Transformers. User interaction is required to exploit this vulnerability in",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-11393"
+            },
+            {
+              "id": "CVE-2024-11394",
+              "summary": "Hugging Face Transformers Trax Model Deserialization of Untrusted Data Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of Hugging Face Transformers. User interaction is required to exploit this vulnerability in that ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-11394"
+            },
+            {
+              "id": "CVE-2025-3263",
+              "summary": "A Regular Expression Denial of Service (ReDoS) vulnerability was discovered in the Hugging Face Transformers library, specifically in the `get_configuration_file()` function within the `transformers.configuration_utils` module. The affected version is 4.49.0, and the issue is resolved in version 4.5",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-3263"
+            },
+            {
+              "id": "CVE-2025-3777",
+              "summary": "Hugging Face Transformers versions up to 4.49.0 are affected by an improper input validation vulnerability in the `image_utils.py` file. The vulnerability arises from insecure URL validation using the `startswith()` method, which can be bypassed through URL username injection. This allows attackers ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-3777"
+            },
+            {
+              "id": "CVE-2025-3933",
+              "summary": "A Regular Expression Denial of Service (ReDoS) vulnerability was discovered in the Hugging Face Transformers library, specifically within the DonutProcessor class's `token2json()` method. This vulnerability affects versions 4.50.3 and earlier, and is fixed in version 4.52.1. The issue arises from th",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-3933"
+            },
+            {
+              "id": "CVE-2025-5197",
+              "summary": "A Regular Expression Denial of Service (ReDoS) vulnerability exists in the Hugging Face Transformers library, specifically in the `convert_tf_weight_name_to_pt_weight_name()` function. This function, responsible for converting TensorFlow weight names to PyTorch format, uses a regex pattern `/[^/]*__",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-5197"
+            },
+            {
+              "id": "CVE-2025-23298",
+              "summary": "NVIDIA Merlin Transformers4Rec for all platforms contains a vulnerability in a python dependency, where an attacker could cause a code injection issue. A successful exploit of this vulnerability might lead to code execution, escalation of privileges, information disclosure, and data tampering.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-23298"
+            }
+          ],
+          "status": "match"
+        }
+      },
+      "reason": "public disclosure match: nvd=CVE-2025-3264",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "transformers-dynamic-module-utils-py-dynamic-import-l248-regex": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-regex",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "2 NVD CVE(s) matched strong terms",
+          "keywords": [
+            "transformers"
+          ],
+          "matches": [
+            {
+              "id": "CVE-2025-3264",
+              "matched_terms": [
+                "dynamic_module_utils.py"
+              ],
+              "summary": "A Regular Expression Denial of Service (ReDoS) vulnerability was discovered in the Hugging Face Transformers library, specifically in the `get_imports()` function within `dynamic_module_utils.py`. This vulnerability affects versions 4.49.0 and is fixed in version 4.51.0. The issue arises from a regu",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-3264"
+            },
+            {
+              "id": "CVE-2026-80047",
+              "matched_terms": [
+                "dynamic_module_utils.py"
+              ],
+              "summary": "A vulnerability in Hugging Face Transformers (versions 4.57.0 to 5.16.1) allows remote Python files to be written to local disk without user consent when using GenerativePreTrainedModel.load_custom_generate(). The function fetches and caches a remote module file before performing the required trust_",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-80047"
+            }
+          ],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2021-28796",
+              "summary": "Increments Qiita::Markdown before 0.33.0 allows XSS in transformers.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-28796"
+            },
+            {
+              "id": "CVE-2024-21799",
+              "summary": "Path traversal for some Intel(R) Extension for Transformers software before version 1.5 may allow an authenticated user to potentially enable escalation of privilege via local access.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-21799"
+            },
+            {
+              "id": "CVE-2024-11392",
+              "summary": "Hugging Face Transformers MobileViTV2 Deserialization of Untrusted Data Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of Hugging Face Transformers. User interaction is required to exploit this vulnerability in that",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-11392"
+            },
+            {
+              "id": "CVE-2024-11393",
+              "summary": "Hugging Face Transformers MaskFormer Model Deserialization of Untrusted Data Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of Hugging Face Transformers. User interaction is required to exploit this vulnerability in",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-11393"
+            },
+            {
+              "id": "CVE-2024-11394",
+              "summary": "Hugging Face Transformers Trax Model Deserialization of Untrusted Data Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of Hugging Face Transformers. User interaction is required to exploit this vulnerability in that ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-11394"
+            },
+            {
+              "id": "CVE-2025-3263",
+              "summary": "A Regular Expression Denial of Service (ReDoS) vulnerability was discovered in the Hugging Face Transformers library, specifically in the `get_configuration_file()` function within the `transformers.configuration_utils` module. The affected version is 4.49.0, and the issue is resolved in version 4.5",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-3263"
+            },
+            {
+              "id": "CVE-2025-3777",
+              "summary": "Hugging Face Transformers versions up to 4.49.0 are affected by an improper input validation vulnerability in the `image_utils.py` file. The vulnerability arises from insecure URL validation using the `startswith()` method, which can be bypassed through URL username injection. This allows attackers ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-3777"
+            },
+            {
+              "id": "CVE-2025-3933",
+              "summary": "A Regular Expression Denial of Service (ReDoS) vulnerability was discovered in the Hugging Face Transformers library, specifically within the DonutProcessor class's `token2json()` method. This vulnerability affects versions 4.50.3 and earlier, and is fixed in version 4.52.1. The issue arises from th",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-3933"
+            },
+            {
+              "id": "CVE-2025-5197",
+              "summary": "A Regular Expression Denial of Service (ReDoS) vulnerability exists in the Hugging Face Transformers library, specifically in the `convert_tf_weight_name_to_pt_weight_name()` function. This function, responsible for converting TensorFlow weight names to PyTorch format, uses a regex pattern `/[^/]*__",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-5197"
+            },
+            {
+              "id": "CVE-2025-23298",
+              "summary": "NVIDIA Merlin Transformers4Rec for all platforms contains a vulnerability in a python dependency, where an attacker could cause a code injection issue. A successful exploit of this vulnerability might lead to code execution, escalation of privileges, information disclosure, and data tampering.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-23298"
+            }
+          ],
+          "status": "match"
+        }
+      },
+      "reason": "public disclosure match: nvd=CVE-2025-3264",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "trl-vllm-serve-devmode": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "trl-vllm-serve-devmode",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "trl"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2006-3859",
+              "summary": "IBM Informix Dynamic Server (IDS) allows remote authenticated users to create and overwrite arbitrary files via the (1) LOTOFILE and (2) trl_tracefile_set functions, and the (3) \"SET DEBUG FILE\" commands.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-3859"
+            },
+            {
+              "id": "CVE-2008-3754",
+              "summary": "SQL injection vulnerability in trl.php in YourFreeWorld Stylish Text Ads Script allows remote attackers to execute arbitrary SQL commands via the id parameter.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-3754"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "verl-checkpoint-pickle": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "verl-checkpoint-pickle",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "verl"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2006-6666",
+              "summary": "PHP remote file inclusion vulnerability in index.php in VerliAdmin 0.3 and earlier allows remote authenticated users to execute arbitrary PHP code via a URL in the q parameter.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6666"
+            },
+            {
+              "id": "CVE-2006-6667",
+              "summary": "Multiple SQL injection vulnerabilities in VerliAdmin 0.3 and earlier allow remote attackers to execute arbitrary SQL commands via the (1) nick_mod or (2) nick parameter to (a) repass.php or (b) verify.php. NOTE: The provenance of this information is unknown; the details are obtained solely from thir",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6667"
+            },
+            {
+              "id": "CVE-2006-6668",
+              "summary": "Cross-site scripting (XSS) vulnerability in VerliAdmin 0.3 and earlier allows remote attackers to inject arbitrary web script or HTML via unspecified vectors.  NOTE: The provenance of this information is unknown; the details are obtained solely from third party information.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6668"
+            },
+            {
+              "id": "CVE-2007-0098",
+              "summary": "Directory traversal vulnerability in language.php in VerliAdmin 0.3 and earlier, when magic_quotes_gpc is disabled, allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the lang cookie, as demonstrated by injecting PHP sequences into an Apache HTTP Server log fi",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2007-0098"
+            },
+            {
+              "id": "CVE-2007-5321",
+              "summary": "Directory traversal vulnerability in index.php in Verlihub Control Panel (VHCP) 1.7 and earlier allows remote attackers to include arbitrary files via a .. (dot dot) in the page parameter.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2007-5321"
+            },
+            {
+              "id": "CVE-2008-5705",
+              "summary": "The cTrigger::DoIt function in src/ctrigger.cpp in the trigger mechanism in the daemon in Verlihub 0.9.8d-RC2 and earlier, when user triggers are enabled, allows remote attackers to execute arbitrary commands via shell metacharacters in an argument.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-5705"
+            },
+            {
+              "id": "CVE-2008-5706",
+              "summary": "The cTrigger::DoIt function in src/ctrigger.cpp in the trigger mechanism in the daemon in Verlihub 0.9.8d-RC2 and earlier allows local users to overwrite arbitrary files via a symlink attack on the /tmp/trigger.tmp temporary file.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-5706"
+            },
+            {
+              "id": "CVE-2009-2569",
+              "summary": "Multiple cross-site scripting (XSS) vulnerabilities in Verlihub Control Panel (VHCP) 1.7e allow remote attackers to inject arbitrary web script or HTML via (1) the nick parameter in a login action to index.php or (2) the URI in a news request to index.html.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-2569"
+            },
+            {
+              "id": "CVE-2009-2571",
+              "summary": "Multiple cross-site scripting (XSS) vulnerabilities in index.php in VerliAdmin 0.3.7 and 0.3.8 allow remote attackers to inject arbitrary web script or HTML via (1) the URI, (2) the q parameter, (3) the nick parameter, or (4) the nick parameter in a bantest action.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-2571"
+            },
+            {
+              "id": "CVE-2025-50461",
+              "summary": "A deserialization vulnerability exists in Volcengine's verl 3.0.0, specifically in the scripts/model_merger.py script when using the \"fsdp\" backend. The script calls torch.load() with weights_only=False on user-supplied .pt files, allowing attackers to execute arbitrary code if a maliciously crafted",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50461"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "verl-hdfs-command-injection": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "verl-hdfs-command-injection",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "verl"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2006-6666",
+              "summary": "PHP remote file inclusion vulnerability in index.php in VerliAdmin 0.3 and earlier allows remote authenticated users to execute arbitrary PHP code via a URL in the q parameter.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6666"
+            },
+            {
+              "id": "CVE-2006-6667",
+              "summary": "Multiple SQL injection vulnerabilities in VerliAdmin 0.3 and earlier allow remote attackers to execute arbitrary SQL commands via the (1) nick_mod or (2) nick parameter to (a) repass.php or (b) verify.php. NOTE: The provenance of this information is unknown; the details are obtained solely from thir",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6667"
+            },
+            {
+              "id": "CVE-2006-6668",
+              "summary": "Cross-site scripting (XSS) vulnerability in VerliAdmin 0.3 and earlier allows remote attackers to inject arbitrary web script or HTML via unspecified vectors.  NOTE: The provenance of this information is unknown; the details are obtained solely from third party information.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6668"
+            },
+            {
+              "id": "CVE-2007-0098",
+              "summary": "Directory traversal vulnerability in language.php in VerliAdmin 0.3 and earlier, when magic_quotes_gpc is disabled, allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the lang cookie, as demonstrated by injecting PHP sequences into an Apache HTTP Server log fi",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2007-0098"
+            },
+            {
+              "id": "CVE-2007-5321",
+              "summary": "Directory traversal vulnerability in index.php in Verlihub Control Panel (VHCP) 1.7 and earlier allows remote attackers to include arbitrary files via a .. (dot dot) in the page parameter.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2007-5321"
+            },
+            {
+              "id": "CVE-2008-5705",
+              "summary": "The cTrigger::DoIt function in src/ctrigger.cpp in the trigger mechanism in the daemon in Verlihub 0.9.8d-RC2 and earlier, when user triggers are enabled, allows remote attackers to execute arbitrary commands via shell metacharacters in an argument.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-5705"
+            },
+            {
+              "id": "CVE-2008-5706",
+              "summary": "The cTrigger::DoIt function in src/ctrigger.cpp in the trigger mechanism in the daemon in Verlihub 0.9.8d-RC2 and earlier allows local users to overwrite arbitrary files via a symlink attack on the /tmp/trigger.tmp temporary file.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-5706"
+            },
+            {
+              "id": "CVE-2009-2569",
+              "summary": "Multiple cross-site scripting (XSS) vulnerabilities in Verlihub Control Panel (VHCP) 1.7e allow remote attackers to inject arbitrary web script or HTML via (1) the nick parameter in a login action to index.php or (2) the URI in a news request to index.html.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-2569"
+            },
+            {
+              "id": "CVE-2009-2571",
+              "summary": "Multiple cross-site scripting (XSS) vulnerabilities in index.php in VerliAdmin 0.3.7 and 0.3.8 allow remote attackers to inject arbitrary web script or HTML via (1) the URI, (2) the q parameter, (3) the nick parameter, or (4) the nick parameter in a bantest action.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-2571"
+            },
+            {
+              "id": "CVE-2025-50461",
+              "summary": "A deserialization vulnerability exists in Volcengine's verl 3.0.0, specifically in the scripts/model_merger.py script when using the \"fsdp\" backend. The script calls torch.load() with weights_only=False on user-supplied .pt files, allowing attackers to execute arbitrary code if a maliciously crafted",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50461"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "verl-prime-code-exec": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "verl-prime-code-exec",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "verl"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2006-6666",
+              "summary": "PHP remote file inclusion vulnerability in index.php in VerliAdmin 0.3 and earlier allows remote authenticated users to execute arbitrary PHP code via a URL in the q parameter.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6666"
+            },
+            {
+              "id": "CVE-2006-6667",
+              "summary": "Multiple SQL injection vulnerabilities in VerliAdmin 0.3 and earlier allow remote attackers to execute arbitrary SQL commands via the (1) nick_mod or (2) nick parameter to (a) repass.php or (b) verify.php. NOTE: The provenance of this information is unknown; the details are obtained solely from thir",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6667"
+            },
+            {
+              "id": "CVE-2006-6668",
+              "summary": "Cross-site scripting (XSS) vulnerability in VerliAdmin 0.3 and earlier allows remote attackers to inject arbitrary web script or HTML via unspecified vectors.  NOTE: The provenance of this information is unknown; the details are obtained solely from third party information.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6668"
+            },
+            {
+              "id": "CVE-2007-0098",
+              "summary": "Directory traversal vulnerability in language.php in VerliAdmin 0.3 and earlier, when magic_quotes_gpc is disabled, allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the lang cookie, as demonstrated by injecting PHP sequences into an Apache HTTP Server log fi",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2007-0098"
+            },
+            {
+              "id": "CVE-2007-5321",
+              "summary": "Directory traversal vulnerability in index.php in Verlihub Control Panel (VHCP) 1.7 and earlier allows remote attackers to include arbitrary files via a .. (dot dot) in the page parameter.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2007-5321"
+            },
+            {
+              "id": "CVE-2008-5705",
+              "summary": "The cTrigger::DoIt function in src/ctrigger.cpp in the trigger mechanism in the daemon in Verlihub 0.9.8d-RC2 and earlier, when user triggers are enabled, allows remote attackers to execute arbitrary commands via shell metacharacters in an argument.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-5705"
+            },
+            {
+              "id": "CVE-2008-5706",
+              "summary": "The cTrigger::DoIt function in src/ctrigger.cpp in the trigger mechanism in the daemon in Verlihub 0.9.8d-RC2 and earlier allows local users to overwrite arbitrary files via a symlink attack on the /tmp/trigger.tmp temporary file.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-5706"
+            },
+            {
+              "id": "CVE-2009-2569",
+              "summary": "Multiple cross-site scripting (XSS) vulnerabilities in Verlihub Control Panel (VHCP) 1.7e allow remote attackers to inject arbitrary web script or HTML via (1) the nick parameter in a login action to index.php or (2) the URI in a news request to index.html.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-2569"
+            },
+            {
+              "id": "CVE-2009-2571",
+              "summary": "Multiple cross-site scripting (XSS) vulnerabilities in index.php in VerliAdmin 0.3.7 and 0.3.8 allow remote attackers to inject arbitrary web script or HTML via (1) the URI, (2) the q parameter, (3) the nick parameter, or (4) the nick parameter in a bantest action.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-2571"
+            },
+            {
+              "id": "CVE-2025-50461",
+              "summary": "A deserialization vulnerability exists in Volcengine's verl 3.0.0, specifically in the scripts/model_merger.py script when using the \"fsdp\" backend. The script calls torch.load() with weights_only=False on user-supplied .pt files, allowing attackers to execute arbitrary code if a maliciously crafted",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50461"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "verl-prime-math-eval": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "verl-prime-math-eval",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "1 NVD CVE(s) matched strong terms",
+          "keywords": [
+            "verl"
+          ],
+          "matches": [
+            {
+              "id": "CVE-2026-6878",
+              "matched_terms": [
+                "prime_math",
+                "grader",
+                "grader.py"
+              ],
+              "summary": "A vulnerability was identified in ByteDance verl up to 0.7.0. Affected is the function math_equal of the file prime_math/grader.py. The manipulation leads to sandbox issue. It is possible to initiate the attack remotely. The complexity of an attack is rather high. The exploitability is told to be di",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-6878"
+            }
+          ],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2006-6666",
+              "summary": "PHP remote file inclusion vulnerability in index.php in VerliAdmin 0.3 and earlier allows remote authenticated users to execute arbitrary PHP code via a URL in the q parameter.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6666"
+            },
+            {
+              "id": "CVE-2006-6667",
+              "summary": "Multiple SQL injection vulnerabilities in VerliAdmin 0.3 and earlier allow remote attackers to execute arbitrary SQL commands via the (1) nick_mod or (2) nick parameter to (a) repass.php or (b) verify.php. NOTE: The provenance of this information is unknown; the details are obtained solely from thir",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6667"
+            },
+            {
+              "id": "CVE-2006-6668",
+              "summary": "Cross-site scripting (XSS) vulnerability in VerliAdmin 0.3 and earlier allows remote attackers to inject arbitrary web script or HTML via unspecified vectors.  NOTE: The provenance of this information is unknown; the details are obtained solely from third party information.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-6668"
+            },
+            {
+              "id": "CVE-2007-0098",
+              "summary": "Directory traversal vulnerability in language.php in VerliAdmin 0.3 and earlier, when magic_quotes_gpc is disabled, allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the lang cookie, as demonstrated by injecting PHP sequences into an Apache HTTP Server log fi",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2007-0098"
+            },
+            {
+              "id": "CVE-2007-5321",
+              "summary": "Directory traversal vulnerability in index.php in Verlihub Control Panel (VHCP) 1.7 and earlier allows remote attackers to include arbitrary files via a .. (dot dot) in the page parameter.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2007-5321"
+            },
+            {
+              "id": "CVE-2008-5705",
+              "summary": "The cTrigger::DoIt function in src/ctrigger.cpp in the trigger mechanism in the daemon in Verlihub 0.9.8d-RC2 and earlier, when user triggers are enabled, allows remote attackers to execute arbitrary commands via shell metacharacters in an argument.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-5705"
+            },
+            {
+              "id": "CVE-2008-5706",
+              "summary": "The cTrigger::DoIt function in src/ctrigger.cpp in the trigger mechanism in the daemon in Verlihub 0.9.8d-RC2 and earlier allows local users to overwrite arbitrary files via a symlink attack on the /tmp/trigger.tmp temporary file.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-5706"
+            },
+            {
+              "id": "CVE-2009-2569",
+              "summary": "Multiple cross-site scripting (XSS) vulnerabilities in Verlihub Control Panel (VHCP) 1.7e allow remote attackers to inject arbitrary web script or HTML via (1) the nick parameter in a login action to index.php or (2) the URI in a news request to index.html.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-2569"
+            },
+            {
+              "id": "CVE-2009-2571",
+              "summary": "Multiple cross-site scripting (XSS) vulnerabilities in index.php in VerliAdmin 0.3.7 and 0.3.8 allow remote attackers to inject arbitrary web script or HTML via (1) the URI, (2) the q parameter, (3) the nick parameter, or (4) the nick parameter in a bantest action.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-2571"
+            },
+            {
+              "id": "CVE-2025-50461",
+              "summary": "A deserialization vulnerability exists in Volcengine's verl 3.0.0, specifically in the scripts/model_merger.py script when using the \"fsdp\" backend. The script calls torch.load() with weights_only=False on user-supplied .pt files, allowing attackers to execute arbitrary code if a maliciously crafted",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50461"
+            }
+          ],
+          "status": "match"
+        }
+      },
+      "reason": "public disclosure match: nvd=CVE-2026-6878",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "vllm-jev-plugin-auth-bypass": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "vllm-jev-plugin-auth-bypass",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "vllm-jev"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "vllm-omni-media-ssrf": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "vllm-omni-media-ssrf",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "vllm-omni"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "vllm-omni-trust-remote-code": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "vllm-omni-trust-remote-code",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "vllm-omni"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "vllm-rl-dev-auth-bypass": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:30:00+00:00",
+      "id": "vllm-rl-dev-auth-bypass",
+      "offline": false,
+      "providers": {
+        "nvd": {
+          "detail": "NVD keyword search returned no strong-term match",
+          "keywords": [
+            "vllm"
+          ],
+          "matches": [],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2024-4839",
+              "summary": "A Cross-Site Request Forgery (CSRF) vulnerability exists in the 'Servers Configurations' function of the parisneo/lollms-webui, versions 9.6 to the latest. The affected functions include Elastic search Service (under construction), XTTS service, Petals service, vLLM service, and Motion Ctrl service,",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-4839"
+            },
+            {
+              "id": "CVE-2024-8768",
+              "summary": "A flaw was found in the vLLM library. A completions API request with an empty prompt will crash the vLLM API server, resulting in a denial of service.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-8768"
+            },
+            {
+              "id": "CVE-2024-8939",
+              "summary": "A vulnerability was found in the ilab model serve component, where improper handling of the best_of parameter in the vllm JSON web API can lead to a Denial of Service (DoS). The API used for LLM-based sentence or chat completion accepts a best_of parameter to return the best completion from several ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-8939"
+            },
+            {
+              "id": "CVE-2025-24357",
+              "summary": "vLLM is a library for LLM inference and serving. vllm/model_executor/weight_utils.py implements hf_model_weights_iterator to load the model checkpoint, which is downloaded from huggingface. It uses the torch.load function and the weights_only parameter defaults to False. When torch.load loads malici",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-24357"
+            },
+            {
+              "id": "CVE-2025-25183",
+              "summary": "vLLM is a high-throughput and memory-efficient inference and serving engine for LLMs. Maliciously constructed statements can lead to hash collisions, resulting in cache reuse, which can interfere with subsequent responses and cause unintended behavior. Prefix caching makes use of Python's built-in h",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-25183"
+            },
+            {
+              "id": "CVE-2025-1953",
+              "summary": "A vulnerability has been found in vLLM AIBrix 0.2.0 and classified as problematic. Affected by this vulnerability is an unknown functionality of the file pkg/plugins/gateway/prefixcacheindexer/hash.go of the component Prefix Caching. The manipulation leads to insufficiently random values. The comple",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-1953"
+            },
+            {
+              "id": "CVE-2025-29770",
+              "summary": "vLLM is a high-throughput and memory-efficient inference and serving engine for LLMs. The outlines library is one of the backends used by vLLM to support structured output (a.k.a. guided decoding). Outlines provides an optional cache for its compiled grammars on the local filesystem. This cache has ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-29770"
+            },
+            {
+              "id": "CVE-2025-29783",
+              "summary": "vLLM is a high-throughput and memory-efficient inference and serving engine for LLMs. When vLLM is configured to use Mooncake, unsafe deserialization exposed directly over ZMQ/TCP on all network interfaces will allow attackers to execute remote code on distributed hosts. This is a remote code execut",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-29783"
+            },
+            {
+              "id": "CVE-2024-11041",
+              "summary": "vllm-project vllm version v0.6.2 contains a vulnerability in the MessageQueue.dequeue() API function. The function uses pickle.loads to parse received sockets directly, leading to a remote code execution vulnerability. An attacker can exploit this by sending a malicious payload to the MessageQueue, ",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-11041"
+            },
+            {
+              "id": "CVE-2024-9053",
+              "summary": "vllm-project vllm version 0.6.0 contains a vulnerability in the AsyncEngineRPCServer() RPC server entrypoints. The core functionality run_server_loop() calls the function _make_handler_coro(), which directly uses cloudpickle.loads() on received messages without any sanitization. This can result in r",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-9053"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    }
+  }
+}

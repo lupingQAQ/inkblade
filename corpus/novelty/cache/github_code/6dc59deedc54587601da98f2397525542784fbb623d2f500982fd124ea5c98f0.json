@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T11:36:39+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 13522,
+            "val": "Python"
+          },
+          {
+            "count": 500,
+            "val": "Markdown"
+          },
+          {
+            "count": 391,
+            "val": "Jupyter Notebook"
+          },
+          {
+            "count": 82,
+            "val": "YAML"
+          },
+          {
+            "count": 18,
+            "val": "JavaScript"
+          },
+          {
+            "count": 18,
+            "val": "Shell"
+          },
+          {
+            "count": 10,
+            "val": "Diff"
+          },
+          {
+            "count": 10,
+            "val": "reStructuredText"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 1119,
+            "val": "src/"
+          },
+          {
+            "count": 831,
+            "val": "tests/"
+          },
+          {
+            "count": 701,
+            "val": "examples/"
+          },
+          {
+            "count": 546,
+            "val": "verl/"
+          },
+          {
+            "count": 425,
+            "val": "models/"
+          },
+          {
+            "count": 394,
+            "val": "scripts/"
+          },
+          {
+            "count": 371,
+            "val": "llava/"
+          },
+          {
+            "count": 264,
+            "val": "transformers/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 273,
+            "owner_id": "31675368",
+            "val": "onnx/turnkeyml"
+          },
+          {
+            "count": 226,
+            "owner_id": "6154722",
+            "val": "microsoft/LMOps"
+          },
+          {
+            "count": 165,
+            "owner_id": "25720743",
+            "val": "huggingface/transformers"
+          },
+          {
+            "count": 139,
+            "owner_id": "125944572",
+            "val": "FMInference/FlexLLMGen"
+          },
+          {
+            "count": 129,
+            "owner_id": "213689629",
+            "val": "NVIDIA-NeMo/Automodel"
+          },
+          {
+            "count": 112,
+            "owner_id": "29054786",
+            "val": "XiangLi1999/Diffusion-LM"
+          },
+          {
+            "count": 109,
+            "owner_id": "453694",
+            "val": "salesforce/CodeRL"
+          },
+          {
+            "count": 101,
+            "owner_id": "55295854",
+            "val": "quic/efficient-transformers"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"281\"><td><div class=\"lineno\">281</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    when created with the [`~<mark>AutoConfig.from_pretrained</mark>`] class method.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"288\"><td><div class=\"lineno\">288</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;AutoConfig is designed to be instantiated &quot;</span></pre></div></td></tr><tr data-line=\"289\"><td><div class=\"lineno\">289</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;using the `<mark>AutoConfig.from_pretrained</mark>(pretrained_model_name_or_path)` method.&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"356\"><td><div class=\"lineno\">356</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        &gt;&gt;&gt; # Download configuration from huggingface.co and cache.</span></pre></div></td></tr><tr data-line=\"357\"><td><div class=\"lineno\">357</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        &gt;&gt;&gt; config = <mark>AutoConfig.from_pretrained</mark>(&quot;google-bert/bert-base-uncased&quot;)</span></pre></div></td></tr><tr data-line=\"358\"><td><div class=\"lineno\">358</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"359\"><td><div class=\"lineno\">359</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        &gt;&gt;&gt; # Download configuration from huggingface.co (user-uploaded) and cache.</span></pre></div></td></tr><tr data-line=\"360\"><td><div class=\"lineno\">360</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        &gt;&gt;&gt; config = <mark>AutoConfig.from_pretrained</mark>(&quot;dbmdz/bert-base-german-cased&quot;)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "25720743",
+          "path": "src/transformers/models/auto/configuration_auto.py",
+          "repo": "huggingface/transformers",
+          "total_matches": "8"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"86\"><td><div class=\"lineno\">86</div></td><td><div class=\"highlight\"><pre><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"n\">RunnerOutput</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"87\"><td><div class=\"lineno\">87</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">config</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span><span class=\"n\">model</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"88\"><td><div class=\"lineno\">88</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">mm_token_id</span> <span class=\"o\">=</span> <span class=\"n\">config</span><span class=\"o\">.</span><span class=\"n\">image_token_index</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"94\"><td><div class=\"lineno\">94</div></td><td><div class=\"highlight\"><pre><span class=\"p\">)</span> <span class=\"o\">-&gt;</span> <span class=\"nb\">tuple</span><span class=\"p\">[</span><span class=\"nb\">list</span><span class=\"p\">[</span><span class=\"nb\">int</span><span class=\"p\">],</span> <span class=\"nb\">str</span><span class=\"p\">,</span> <span class=\"n\">SampleLogprobs</span> <span class=\"o\">|</span> <span class=\"kc\">None</span><span class=\"p\">]:</span></pre></div></td></tr><tr data-line=\"95\"><td><div class=\"lineno\">95</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">config</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span><span class=\"n\">model</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"96\"><td><div class=\"lineno\">96</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">mm_token_id</span> <span class=\"o\">=</span> <span class=\"n\">config</span><span class=\"o\">.</span><span class=\"n\">video_token_index</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"126\"><td><div class=\"lineno\">126</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Workaround to fix the sliding window issue in llava_onevision.&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"127\"><td><div class=\"lineno\">127</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">config</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span><span class=\"n\">model</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "136984999",
+          "path": "tests/models/multimodal/generation/vlm_utils/model_utils.py",
+          "repo": "vllm-project/vllm",
+          "total_matches": "9"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"573\"><td><div class=\"lineno\">573</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; # Download configuration from huggingface.co and cache.</span></pre></div></td></tr><tr data-line=\"574\"><td><div class=\"lineno\">574</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; config = TF<mark>AutoConfig.from_pretrained</mark>(&#39;bert-base-uncased&#39;)</span></pre></div></td></tr><tr data-line=\"575\"><td><div class=\"lineno\">575</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; model = TFAutoModel.from_config(config)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"612\"><td><div class=\"lineno\">612</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"ow\">not</span> <span class=\"nb\">isinstance</span><span class=\"p\">(</span><span class=\"n\">config</span><span class=\"p\">,</span> <span class=\"n\">PretrainedConfig</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"613\"><td><div class=\"lineno\">613</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">config</span><span class=\"p\">,</span> <span class=\"n\">kwargs</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"614\"><td><div class=\"lineno\">614</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">pretrained_model_name_or_path</span><span class=\"p\">,</span> <span class=\"n\">return_unused_kwargs</span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">,</span> <span class=\"o\">**</span><span class=\"n\">kwargs</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"667\"><td><div class=\"lineno\">667</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; # Download configuration from huggingface.co and cache.</span></pre></div></td></tr><tr data-line=\"668\"><td><div class=\"lineno\">668</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; config = <mark>AutoConfig.from_pretrained</mark>(&#39;bert-base-uncased&#39;)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "examples/NLU/src/transformers/models/auto/modeling_tf_auto.py",
+          "repo": "microsoft/LoRA",
+          "total_matches": "22"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"769\"><td><div class=\"lineno\">769</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; # Download configuration from huggingface.co and cache.</span></pre></div></td></tr><tr data-line=\"770\"><td><div class=\"lineno\">770</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; config = <mark>AutoConfig.from_pretrained</mark>(&#39;bert-base-uncased&#39;)</span></pre></div></td></tr><tr data-line=\"771\"><td><div class=\"lineno\">771</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; model = AutoModel.from_config(config)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"808\"><td><div class=\"lineno\">808</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"ow\">not</span> <span class=\"nb\">isinstance</span><span class=\"p\">(</span><span class=\"n\">config</span><span class=\"p\">,</span> <span class=\"n\">PretrainedConfig</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"809\"><td><div class=\"lineno\">809</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">config</span><span class=\"p\">,</span> <span class=\"n\">kwargs</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"810\"><td><div class=\"lineno\">810</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">pretrained_model_name_or_path</span><span class=\"p\">,</span> <span class=\"n\">return_unused_kwargs</span><span class=\"o\">=</span><span class=\"kc\">True</span><span class=\"p\">,</span> <span class=\"o\">**</span><span class=\"n\">kwargs</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"863\"><td><div class=\"lineno\">863</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; # Download configuration from huggingface.co and cache.</span></pre></div></td></tr><tr data-line=\"864\"><td><div class=\"lineno\">864</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; config = <mark>AutoConfig.from_pretrained</mark>(&#39;bert-base-uncased&#39;)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "examples/NLU/src/transformers/models/auto/modeling_auto.py",
+          "repo": "microsoft/LoRA",
+          "total_matches": "24"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"89\"><td><div class=\"lineno\">89</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        that will be instantiated as one of the configuration classes of the library</span></pre></div></td></tr><tr data-line=\"90\"><td><div class=\"lineno\">90</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        when created with the :func:`~transformers.<mark>AutoConfig.from_pretrained</mark>` class method.</span></pre></div></td></tr><tr data-line=\"91\"><td><div class=\"lineno\">91</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"92\"><td><div class=\"lineno\">92</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        The :func:`~transformers.<mark>AutoConfig.from_pretrained</mark>` method takes care of returning the correct model class instance</span></pre></div></td></tr><tr data-line=\"93\"><td><div class=\"lineno\">93</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">        based on the `model_type` property of the config object, or when it&#39;s missing,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"99\"><td><div class=\"lineno\">99</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;AutoConfig is designed to be instantiated &quot;</span></pre></div></td></tr><tr data-line=\"100\"><td><div class=\"lineno\">100</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;using the `<mark>AutoConfig.from_pretrained</mark>(pretrained_model_name_or_path)` method.&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"171\"><td><div class=\"lineno\">171</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            config = <mark>AutoConfig.from_pretrained</mark>(&#39;bert-base-uncased&#39;)  # Download configuration from S3 and cache.</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "xtune/src/transformers/configuration_auto.py",
+          "repo": "microsoft/unilm",
+          "total_matches": "8"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"307\"><td><div class=\"lineno\">307</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;AllenaiLongformerBase&quot;</span><span class=\"p\">:</span> <span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"308\"><td><div class=\"lineno\">308</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span><span class=\"s2\">&quot;allenai/longformer-base-4096&quot;</span><span class=\"p\">),</span></pre></div></td></tr><tr data-line=\"309\"><td><div class=\"lineno\">309</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">AutoModelForMaskedLM</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"315\"><td><div class=\"lineno\">315</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;T5Small&quot;</span><span class=\"p\">:</span> <span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"316\"><td><div class=\"lineno\">316</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span><span class=\"s2\">&quot;t5-small&quot;</span><span class=\"p\">),</span></pre></div></td></tr><tr data-line=\"317\"><td><div class=\"lineno\">317</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\">AutoModelForSeq2SeqLM</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"323\"><td><div class=\"lineno\">323</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;DistillGPT2&quot;</span><span class=\"p\">:</span> <span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"324\"><td><div class=\"lineno\">324</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span><span class=\"s2\">&quot;distilgpt2&quot;</span><span class=\"p\">),</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "21003710",
+          "path": "benchmarks/dynamo/huggingface.py",
+          "repo": "pytorch/pytorch",
+          "total_matches": "5"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"81\"><td><div class=\"lineno\">81</div></td><td><div class=\"highlight\"><pre><span class=\"k\">class</span><span class=\"w\"> </span><span class=\"nc\">Step3p5PretrainedConfig</span><span class=\"p\">(</span><span class=\"n\">PretrainedConfig</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"82\"><td><div class=\"lineno\">82</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Custom PretrainedConfig for Step-3.5 so <mark>AutoConfig.from_pretrained</mark>() works.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"150\"><td><div class=\"lineno\">150</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    in transformers, and ships no ``auto_map``.  Registering this stub</span></pre></div></td></tr><tr data-line=\"151\"><td><div class=\"lineno\">151</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    lets ``<mark>AutoConfig.from_pretrained</mark>`` succeed without a manual JSON</span></pre></div></td></tr><tr data-line=\"152\"><td><div class=\"lineno\">152</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    fallback.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"180\"><td><div class=\"lineno\">180</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    sparse attention (indexer) and registers itself so that</span></pre></div></td></tr><tr data-line=\"181\"><td><div class=\"lineno\">181</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    ``<mark>AutoConfig.from_pretrained</mark>`` can load DeepSeek-V3.2 repos.</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "150859076",
+          "path": "max/python/max/pipelines/architectures/hf_config_shims.py",
+          "repo": "modular/modular",
+          "total_matches": "6"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"289\"><td><div class=\"lineno\">289</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    when created with the :meth:`~transformers.<mark>AutoConfig.from_pretrained</mark>` class method.</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"296\"><td><div class=\"lineno\">296</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;AutoConfig is designed to be instantiated &quot;</span></pre></div></td></tr><tr data-line=\"297\"><td><div class=\"lineno\">297</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;using the `<mark>AutoConfig.from_pretrained</mark>(pretrained_model_name_or_path)` method.&quot;</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"366\"><td><div class=\"lineno\">366</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; # Download configuration from huggingface.co and cache.</span></pre></div></td></tr><tr data-line=\"367\"><td><div class=\"lineno\">367</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; config = <mark>AutoConfig.from_pretrained</mark>(&#39;bert-base-uncased&#39;)</span></pre></div></td></tr><tr data-line=\"368\"><td><div class=\"lineno\">368</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"369\"><td><div class=\"lineno\">369</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; # Download configuration from huggingface.co (user-uploaded) and cache.</span></pre></div></td></tr><tr data-line=\"370\"><td><div class=\"lineno\">370</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">            &gt;&gt;&gt; config = <mark>AutoConfig.from_pretrained</mark>(&#39;dbmdz/bert-base-german-cased&#39;)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "6154722",
+          "path": "examples/NLU/src/transformers/models/auto/configuration_auto.py",
+          "repo": "microsoft/LoRA",
+          "total_matches": "8"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"58\"><td><div class=\"lineno\">58</div></td><td><div class=\"highlight\"><pre>        <span class=\"k\">if</span> <span class=\"s2\">&quot;lora&quot;</span> <span class=\"ow\">in</span> <span class=\"n\">model_name</span><span class=\"o\">.</span><span class=\"n\">lower</span><span class=\"p\">()</span> <span class=\"ow\">and</span> <span class=\"n\">model_base</span> <span class=\"ow\">is</span> <span class=\"ow\">not</span> <span class=\"kc\">None</span><span class=\"p\">:</span></pre></div></td></tr><tr data-line=\"59\"><td><div class=\"lineno\">59</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">lora_cfg_pretrained</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span><span class=\"n\">model_path</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"60\"><td><div class=\"lineno\">60</div></td><td><div class=\"highlight\"><pre>            <span class=\"n\">tokenizer</span> <span class=\"o\">=</span> <span class=\"n\">AutoTokenizer</span><span class=\"o\">.</span><span class=\"n\">from_pretrained</span><span class=\"p\">(</span><span class=\"n\">model_base</span><span class=\"p\">,</span> <span class=\"n\">use_fast</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"119\"><td><div class=\"lineno\">119</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">tokenizer</span> <span class=\"o\">=</span> <span class=\"n\">AutoTokenizer</span><span class=\"o\">.</span><span class=\"n\">from_pretrained</span><span class=\"p\">(</span><span class=\"n\">model_base</span><span class=\"p\">,</span> <span class=\"n\">use_fast</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"120\"><td><div class=\"lineno\">120</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">cfg_pretrained</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span><span class=\"n\">model_path</span><span class=\"p\">)</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"123\"><td><div class=\"lineno\">123</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">tokenizer</span> <span class=\"o\">=</span> <span class=\"n\">AutoTokenizer</span><span class=\"o\">.</span><span class=\"n\">from_pretrained</span><span class=\"p\">(</span><span class=\"n\">model_base</span><span class=\"p\">,</span> <span class=\"n\">use_fast</span><span class=\"o\">=</span><span class=\"kc\">False</span><span class=\"p\">)</span></pre></div></td></tr><tr data-line=\"124\"><td><div class=\"lineno\">124</div></td><td><div class=\"highlight\"><pre>                <span class=\"n\">cfg_pretrained</span> <span class=\"o\">=</span> <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span><span class=\"n\">model_path</span><span class=\"p\">)</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "1720200",
+          "path": "Video-RAG_Training_Free_Retrieval_for_Long_Video_LVLMs/builder.py",
+          "repo": "spmallick/learnopencv",
+          "total_matches": "5"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"33\"><td><div class=\"lineno\">33</div></td><td><div class=\"highlight\"><pre><span class=\"n\">MODEL_CONFIGS</span> <span class=\"o\">=</span> <span class=\"p\">{</span></pre></div></td></tr><tr data-line=\"34\"><td><div class=\"lineno\">34</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;100m&quot;</span><span class=\"p\">:</span> <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"35\"><td><div class=\"lineno\">35</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;deepseek-ai/deepseek-moe-16b-base&quot;</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"49\"><td><div class=\"lineno\">49</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;7b&quot;</span><span class=\"p\">:</span> <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"50\"><td><div class=\"lineno\">50</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;deepseek-ai/deepseek-moe-16b-base&quot;</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"56\"><td><div class=\"lineno\">56</div></td><td><div class=\"highlight\"><pre>    <span class=\"s2\">&quot;14b&quot;</span><span class=\"p\">:</span> <span class=\"n\"><mark class=\"m-l\">AutoConfig</mark></span><span class=\"o\"><mark class=\"m-m\">.</mark></span><span class=\"n\"><mark class=\"m-r\">from_pretrained</mark></span><span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"57\"><td><div class=\"lineno\">57</div></td><td><div class=\"highlight\"><pre>        <span class=\"s2\">&quot;deepseek-ai/deepseek-moe-16b-base&quot;</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "88699314",
+          "path": "examples/language/deepseek/benchmark.py",
+          "repo": "hpcaitech/ColossalAI",
+          "total_matches": "5"
+        }
+      ],
+      "total": 14586
+    },
+    "time": 469
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=AutoConfig.from_pretrained"
+}

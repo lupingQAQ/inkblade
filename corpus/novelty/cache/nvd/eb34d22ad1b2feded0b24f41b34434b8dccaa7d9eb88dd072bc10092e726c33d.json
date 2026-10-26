@@ -1,0 +1,1537 @@
+{
+  "_cached_at": "2026-10-26T11:28:05+00:00",
+  "body": {
+    "format": "NVD_CVE",
+    "resultsPerPage": 11,
+    "startIndex": 0,
+    "timestamp": "2026-10-26T11:28:05.557",
+    "totalResults": 11,
+    "version": "2.0",
+    "vulnerabilities": [
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "n/a",
+                  "vendor": "n/a",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "n/a"
+                    }
+                  ]
+                }
+              ],
+              "source": "cve@mitre.org"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:verliadmin:verliadmin:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "F6D10FC7-9906-47C7-B5B7-0B1032DF1FBD",
+                      "versionEndIncluding": "0.3",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "PHP remote file inclusion vulnerability in index.php in VerliAdmin 0.3 and earlier allows remote authenticated users to execute arbitrary PHP code via a URL in the q parameter."
+            },
+            {
+              "lang": "es",
+              "value": "Vulnerabilidad de inclusión remota de archivo en PHP en index.php del VerliAdmin 0.3 y versiones anteriores permite a usuarios remotos autenticados ejecutar código PHP de su elección     mediante una URL en el parámetro q."
+            }
+          ],
+          "id": "CVE-2006-6666",
+          "lastModified": "2026-06-16T22:33:33.847",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "HIGH",
+                "cvssData": {
+                  "accessComplexity": "LOW",
+                  "accessVector": "NETWORK",
+                  "authentication": "NONE",
+                  "availabilityImpact": "PARTIAL",
+                  "baseScore": 7.5,
+                  "confidentialityImpact": "PARTIAL",
+                  "integrityImpact": "PARTIAL",
+                  "vectorString": "AV:N/AC:L/Au:N/C:P/I:P/A:P",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 10.0,
+                "impactScore": 6.4,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": true,
+                "obtainUserPrivilege": false,
+                "source": "nvd@nist.gov",
+                "type": "Primary",
+                "userInteractionRequired": false
+              }
+            ]
+          },
+          "published": "2006-12-20T23:28:00.000",
+          "references": [
+            {
+              "source": "cve@mitre.org",
+              "url": "http://secunia.com/advisories/23418"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.securityfocus.com/bid/21640"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.vupen.com/english/advisories/2006/5059"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://www.exploit-db.com/exploits/2944"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://secunia.com/advisories/23418"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.securityfocus.com/bid/21640"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.vupen.com/english/advisories/2006/5059"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "https://www.exploit-db.com/exploits/2944"
+            }
+          ],
+          "sourceIdentifier": "cve@mitre.org",
+          "vulnStatus": "Modified",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "NVD-CWE-Other"
+                }
+              ],
+              "source": "nvd@nist.gov",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "n/a",
+                  "vendor": "n/a",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "n/a"
+                    }
+                  ]
+                }
+              ],
+              "source": "cve@mitre.org"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:verliadmin:verliadmin:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "F6D10FC7-9906-47C7-B5B7-0B1032DF1FBD",
+                      "versionEndIncluding": "0.3",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Multiple SQL injection vulnerabilities in VerliAdmin 0.3 and earlier allow remote attackers to execute arbitrary SQL commands via the (1) nick_mod or (2) nick parameter to (a) repass.php or (b) verify.php. NOTE: The provenance of this information is unknown; the details are obtained solely from third party information."
+            },
+            {
+              "lang": "es",
+              "value": "Múltiples vulnerabilidades de inyección SQL en     el VerliAdmin 0.3 y versiones anteriores permite a atacantes remotos ejecutar comandos SQL de su elección mediante los parámetros (1) nick_mod o (2) nick en (a) repass.php o (b) verify.php. NOTA: la procedencia de esta información es desconocida; los detalles se obtienen a partir de la información de terceros."
+            }
+          ],
+          "id": "CVE-2006-6667",
+          "lastModified": "2026-06-16T22:33:33.950",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "HIGH",
+                "cvssData": {
+                  "accessComplexity": "LOW",
+                  "accessVector": "NETWORK",
+                  "authentication": "NONE",
+                  "availabilityImpact": "PARTIAL",
+                  "baseScore": 7.5,
+                  "confidentialityImpact": "PARTIAL",
+                  "integrityImpact": "PARTIAL",
+                  "vectorString": "AV:N/AC:L/Au:N/C:P/I:P/A:P",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 10.0,
+                "impactScore": 6.4,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": true,
+                "obtainUserPrivilege": false,
+                "source": "nvd@nist.gov",
+                "type": "Primary",
+                "userInteractionRequired": false
+              }
+            ]
+          },
+          "published": "2006-12-20T23:28:00.000",
+          "references": [
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.vupen.com/english/advisories/2006/5059"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.vupen.com/english/advisories/2006/5059"
+            }
+          ],
+          "sourceIdentifier": "cve@mitre.org",
+          "vulnStatus": "Modified",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "NVD-CWE-Other"
+                }
+              ],
+              "source": "nvd@nist.gov",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "n/a",
+                  "vendor": "n/a",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "n/a"
+                    }
+                  ]
+                }
+              ],
+              "source": "cve@mitre.org"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:verliadmin:verliadmin:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "F6D10FC7-9906-47C7-B5B7-0B1032DF1FBD",
+                      "versionEndIncluding": "0.3",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Cross-site scripting (XSS) vulnerability in VerliAdmin 0.3 and earlier allows remote attackers to inject arbitrary web script or HTML via unspecified vectors.  NOTE: The provenance of this information is unknown; the details are obtained solely from third party information."
+            },
+            {
+              "lang": "es",
+              "value": "Vulnerabilidad de secuencias de comandos en sitios cruzados (XSS) en VerliAdmin 0.3 y versiones anteriores permite a atacantes remotos la inyección de secuencias de comandos web o HTML de su elección mediante vectores sin especificar. NOTA: la procedencia de esta información es desconocida; los detalles se obtienen a partir de la información de terceros."
+            }
+          ],
+          "id": "CVE-2006-6668",
+          "lastModified": "2026-06-16T22:33:34.050",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "MEDIUM",
+                "cvssData": {
+                  "accessComplexity": "MEDIUM",
+                  "accessVector": "NETWORK",
+                  "authentication": "NONE",
+                  "availabilityImpact": "PARTIAL",
+                  "baseScore": 6.8,
+                  "confidentialityImpact": "PARTIAL",
+                  "integrityImpact": "PARTIAL",
+                  "vectorString": "AV:N/AC:M/Au:N/C:P/I:P/A:P",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 8.6,
+                "impactScore": 6.4,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": true,
+                "obtainUserPrivilege": false,
+                "source": "nvd@nist.gov",
+                "type": "Primary",
+                "userInteractionRequired": false
+              }
+            ]
+          },
+          "published": "2006-12-20T23:28:00.000",
+          "references": [
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.vupen.com/english/advisories/2006/5059"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.vupen.com/english/advisories/2006/5059"
+            }
+          ],
+          "sourceIdentifier": "cve@mitre.org",
+          "vulnStatus": "Modified",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "NVD-CWE-Other"
+                }
+              ],
+              "source": "nvd@nist.gov",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "n/a",
+                  "vendor": "n/a",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "n/a"
+                    }
+                  ]
+                }
+              ],
+              "source": "cve@mitre.org"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:verliadmin:verliadmin:*:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "F6D10FC7-9906-47C7-B5B7-0B1032DF1FBD",
+                      "versionEndIncluding": "0.3",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Directory traversal vulnerability in language.php in VerliAdmin 0.3 and earlier, when magic_quotes_gpc is disabled, allows remote attackers to include and execute arbitrary local files via a .. (dot dot) in the lang cookie, as demonstrated by injecting PHP sequences into an Apache HTTP Server log file, which is then included by language.php."
+            },
+            {
+              "lang": "es",
+              "value": "Vulnerabilidad de salto de directorio en language.php en VerliAdmin 0.3 y anteriores, cuando magic_quotes_gpc está desactivado, permite a atacantes remotos incluir o ejecutar archivos locales a través de la secuencia .. (punto punto) en la cookie lang, como se demostró por inyección de secuencias PHP dentro de un fichero de log del Apache HTTP Server, lo cual está entonces incluido por language.php."
+            }
+          ],
+          "id": "CVE-2007-0098",
+          "lastModified": "2026-06-16T22:34:54.590",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "MEDIUM",
+                "cvssData": {
+                  "accessComplexity": "MEDIUM",
+                  "accessVector": "NETWORK",
+                  "authentication": "NONE",
+                  "availabilityImpact": "PARTIAL",
+                  "baseScore": 6.8,
+                  "confidentialityImpact": "PARTIAL",
+                  "integrityImpact": "PARTIAL",
+                  "vectorString": "AV:N/AC:M/Au:N/C:P/I:P/A:P",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 8.6,
+                "impactScore": 6.4,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": true,
+                "obtainUserPrivilege": false,
+                "source": "nvd@nist.gov",
+                "type": "Primary",
+                "userInteractionRequired": false
+              }
+            ]
+          },
+          "published": "2007-01-05T18:28:00.000",
+          "references": [
+            {
+              "source": "cve@mitre.org",
+              "url": "http://osvdb.org/32352"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.vupen.com/english/advisories/2007/0035"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://exchange.xforce.ibmcloud.com/vulnerabilities/31241"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://www.exploit-db.com/exploits/3075"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://osvdb.org/32352"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.vupen.com/english/advisories/2007/0035"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "https://exchange.xforce.ibmcloud.com/vulnerabilities/31241"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "https://www.exploit-db.com/exploits/3075"
+            }
+          ],
+          "sourceIdentifier": "cve@mitre.org",
+          "vulnStatus": "Modified",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "NVD-CWE-Other"
+                }
+              ],
+              "source": "nvd@nist.gov",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "n/a",
+                  "vendor": "n/a",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "n/a"
+                    }
+                  ]
+                }
+              ],
+              "source": "cve@mitre.org"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:verlihub-project:verlihub_control_panel:1.7:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "D1F9BB56-6A33-4301-9B73-9CA044C3DF4F",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Directory traversal vulnerability in index.php in Verlihub Control Panel (VHCP) 1.7 and earlier allows remote attackers to include arbitrary files via a .. (dot dot) in the page parameter."
+            },
+            {
+              "lang": "es",
+              "value": "Vulnerabilidad de salto de directorio en index.php de Verlihub Control Panel (VHCP) 1.7 y anteriores permite a atacantes remotos incluir ficheros de su elección mediante secuencias .. (punto punto) en el parámetro page."
+            }
+          ],
+          "evaluatorComment": "Successful exploitation requires that \"magic_quotes_gpc\" is disabled.\r\n",
+          "id": "CVE-2007-5321",
+          "lastModified": "2026-06-16T22:45:53.027",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "MEDIUM",
+                "cvssData": {
+                  "accessComplexity": "MEDIUM",
+                  "accessVector": "NETWORK",
+                  "authentication": "NONE",
+                  "availabilityImpact": "PARTIAL",
+                  "baseScore": 6.8,
+                  "confidentialityImpact": "PARTIAL",
+                  "integrityImpact": "PARTIAL",
+                  "vectorString": "AV:N/AC:M/Au:N/C:P/I:P/A:P",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 8.6,
+                "impactScore": 6.4,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": false,
+                "obtainUserPrivilege": false,
+                "source": "nvd@nist.gov",
+                "type": "Primary",
+                "userInteractionRequired": false
+              }
+            ]
+          },
+          "published": "2007-10-09T22:17:00.000",
+          "references": [
+            {
+              "source": "cve@mitre.org",
+              "url": "http://osvdb.org/37612"
+            },
+            {
+              "source": "cve@mitre.org",
+              "tags": [
+                "Vendor Advisory"
+              ],
+              "url": "http://secunia.com/advisories/27113"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.securityfocus.com/bid/25968"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.vupen.com/english/advisories/2007/3421"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://exchange.xforce.ibmcloud.com/vulnerabilities/37002"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://www.exploit-db.com/exploits/4494"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://osvdb.org/37612"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Vendor Advisory"
+              ],
+              "url": "http://secunia.com/advisories/27113"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.securityfocus.com/bid/25968"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.vupen.com/english/advisories/2007/3421"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "https://exchange.xforce.ibmcloud.com/vulnerabilities/37002"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "https://www.exploit-db.com/exploits/4494"
+            }
+          ],
+          "sourceIdentifier": "cve@mitre.org",
+          "vulnStatus": "Modified",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-22"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-94"
+                }
+              ],
+              "source": "nvd@nist.gov",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "n/a",
+                  "vendor": "n/a",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "n/a"
+                    }
+                  ]
+                }
+              ],
+              "source": "cve@mitre.org"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:verlihub-project:verlihub:0.9.8d:rc2:*:*:*:*:*:*",
+                      "matchCriteriaId": "1E2C134F-9B54-4964-A2C4-30C99B0A0A23",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "The cTrigger::DoIt function in src/ctrigger.cpp in the trigger mechanism in the daemon in Verlihub 0.9.8d-RC2 and earlier, when user triggers are enabled, allows remote attackers to execute arbitrary commands via shell metacharacters in an argument."
+            },
+            {
+              "lang": "es",
+              "value": "La función cTrigger::DoIt de src/ctrigger.cpp en el mecanismo de lanzamiento (trigger) en el  demonio de Verlihub 0.9.8d-RC2 y anteriores, cuando están habilitados los lanzamientos de usuario (user triggers), permite a atacantes remotos ejecutar comandos de su elección a través de metacaracteres de línea de comandos en un argumento."
+            }
+          ],
+          "id": "CVE-2008-5705",
+          "lastModified": "2026-06-16T23:00:50.707",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "HIGH",
+                "cvssData": {
+                  "accessComplexity": "MEDIUM",
+                  "accessVector": "NETWORK",
+                  "authentication": "NONE",
+                  "availabilityImpact": "COMPLETE",
+                  "baseScore": 9.3,
+                  "confidentialityImpact": "COMPLETE",
+                  "integrityImpact": "COMPLETE",
+                  "vectorString": "AV:N/AC:M/Au:N/C:C/I:C/A:C",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 8.6,
+                "impactScore": 10.0,
+                "obtainAllPrivilege": true,
+                "obtainOtherPrivilege": false,
+                "obtainUserPrivilege": false,
+                "source": "nvd@nist.gov",
+                "type": "Primary",
+                "userInteractionRequired": false
+              }
+            ]
+          },
+          "published": "2008-12-22T15:30:00.780",
+          "references": [
+            {
+              "source": "cve@mitre.org",
+              "url": "http://bugs.debian.org/506530"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://openwall.com/lists/oss-security/2008/12/17/16"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://securityreason.com/securityalert/4800"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.securityfocus.com/bid/32420"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://exchange.xforce.ibmcloud.com/vulnerabilities/46801"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://www.exploit-db.com/exploits/7183"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://bugs.debian.org/506530"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://openwall.com/lists/oss-security/2008/12/17/16"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://securityreason.com/securityalert/4800"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.securityfocus.com/bid/32420"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "https://exchange.xforce.ibmcloud.com/vulnerabilities/46801"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "https://www.exploit-db.com/exploits/7183"
+            }
+          ],
+          "sourceIdentifier": "cve@mitre.org",
+          "vulnStatus": "Modified",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-20"
+                }
+              ],
+              "source": "nvd@nist.gov",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "n/a",
+                  "vendor": "n/a",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "n/a"
+                    }
+                  ]
+                }
+              ],
+              "source": "cve@mitre.org"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:verlihub-project:verlihub:0.9.8d:rc2:*:*:*:*:*:*",
+                      "matchCriteriaId": "1E2C134F-9B54-4964-A2C4-30C99B0A0A23",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "The cTrigger::DoIt function in src/ctrigger.cpp in the trigger mechanism in the daemon in Verlihub 0.9.8d-RC2 and earlier allows local users to overwrite arbitrary files via a symlink attack on the /tmp/trigger.tmp temporary file."
+            },
+            {
+              "lang": "es",
+              "value": "La función cTrigger::DoIt de src/ctrigger.cpp en el mecanismo de lanzamiento (trigger) en el  demonio de Verlihub 0.9.8d-RC2 y anteriores, permite a usuarios locales sobrescribir ficheros de su elección a través de un ataque de enlace simbólico en el fichero temporal /tmp/trigger.tmp."
+            }
+          ],
+          "id": "CVE-2008-5706",
+          "lastModified": "2026-06-16T23:00:50.817",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "MEDIUM",
+                "cvssData": {
+                  "accessComplexity": "MEDIUM",
+                  "accessVector": "LOCAL",
+                  "authentication": "NONE",
+                  "availabilityImpact": "COMPLETE",
+                  "baseScore": 6.9,
+                  "confidentialityImpact": "COMPLETE",
+                  "integrityImpact": "COMPLETE",
+                  "vectorString": "AV:L/AC:M/Au:N/C:C/I:C/A:C",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 3.4,
+                "impactScore": 10.0,
+                "obtainAllPrivilege": true,
+                "obtainOtherPrivilege": false,
+                "obtainUserPrivilege": false,
+                "source": "nvd@nist.gov",
+                "type": "Primary",
+                "userInteractionRequired": false
+              }
+            ]
+          },
+          "published": "2008-12-22T15:30:00.813",
+          "references": [
+            {
+              "source": "cve@mitre.org",
+              "url": "http://bugs.debian.org/506530"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://openwall.com/lists/oss-security/2008/12/17/16"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://securityreason.com/securityalert/4800"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "http://www.securityfocus.com/bid/32889"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://www.exploit-db.com/exploits/7183"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://bugs.debian.org/506530"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://openwall.com/lists/oss-security/2008/12/17/16"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://securityreason.com/securityalert/4800"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "http://www.securityfocus.com/bid/32889"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "https://www.exploit-db.com/exploits/7183"
+            }
+          ],
+          "sourceIdentifier": "cve@mitre.org",
+          "vulnStatus": "Modified",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-59"
+                }
+              ],
+              "source": "nvd@nist.gov",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "n/a",
+                  "vendor": "n/a",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "n/a"
+                    }
+                  ]
+                }
+              ],
+              "source": "cve@mitre.org"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:verlihub-project:verlihub_control_panel:1.7e:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "E2374800-ADA3-4A44-B3F0-001C13BBD025",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Multiple cross-site scripting (XSS) vulnerabilities in Verlihub Control Panel (VHCP) 1.7e allow remote attackers to inject arbitrary web script or HTML via (1) the nick parameter in a login action to index.php or (2) the URI in a news request to index.html."
+            },
+            {
+              "lang": "es",
+              "value": "Múltiples vulnerabilidades de ejecución de secuencias de comandos en sitios cruzados (XSS)en Verlihub control Panel (VHCP) v1.7e permite a atacantes remotos inyectar código web y HTML a su elección a través de (1) el parámetro nombre en la acción de ingreso de index.php or (2) la URI en peticiones de noticias de index.html."
+            }
+          ],
+          "id": "CVE-2009-2569",
+          "lastModified": "2026-06-16T23:09:43.827",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "MEDIUM",
+                "cvssData": {
+                  "accessComplexity": "MEDIUM",
+                  "accessVector": "NETWORK",
+                  "authentication": "NONE",
+                  "availabilityImpact": "NONE",
+                  "baseScore": 4.3,
+                  "confidentialityImpact": "NONE",
+                  "integrityImpact": "PARTIAL",
+                  "vectorString": "AV:N/AC:M/Au:N/C:N/I:P/A:N",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 8.6,
+                "impactScore": 2.9,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": false,
+                "obtainUserPrivilege": false,
+                "source": "nvd@nist.gov",
+                "type": "Primary",
+                "userInteractionRequired": true
+              }
+            ]
+          },
+          "published": "2009-07-22T17:30:00.390",
+          "references": [
+            {
+              "source": "cve@mitre.org",
+              "tags": [
+                "Exploit"
+              ],
+              "url": "http://packetstorm.linuxsecurity.com/0905-exploits/verlihub-xss.txt"
+            },
+            {
+              "source": "cve@mitre.org",
+              "tags": [
+                "Vendor Advisory"
+              ],
+              "url": "http://secunia.com/advisories/34941"
+            },
+            {
+              "source": "cve@mitre.org",
+              "tags": [
+                "Exploit"
+              ],
+              "url": "http://www.securityfocus.com/bid/34856"
+            },
+            {
+              "source": "cve@mitre.org",
+              "tags": [
+                "Vendor Advisory"
+              ],
+              "url": "http://www.vupen.com/english/advisories/2009/1264"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Exploit"
+              ],
+              "url": "http://packetstorm.linuxsecurity.com/0905-exploits/verlihub-xss.txt"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Vendor Advisory"
+              ],
+              "url": "http://secunia.com/advisories/34941"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Exploit"
+              ],
+              "url": "http://www.securityfocus.com/bid/34856"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Vendor Advisory"
+              ],
+              "url": "http://www.vupen.com/english/advisories/2009/1264"
+            }
+          ],
+          "sourceIdentifier": "cve@mitre.org",
+          "vulnStatus": "Modified",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-79"
+                }
+              ],
+              "source": "nvd@nist.gov",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "n/a",
+                  "vendor": "n/a",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "n/a"
+                    }
+                  ]
+                }
+              ],
+              "source": "cve@mitre.org"
+            }
+          ],
+          "configurations": [
+            {
+              "nodes": [
+                {
+                  "cpeMatch": [
+                    {
+                      "criteria": "cpe:2.3:a:verliadmin:verliadmin:0.3.7:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "B98F7430-A7EF-4532-872B-0ABD7908F364",
+                      "vulnerable": true
+                    },
+                    {
+                      "criteria": "cpe:2.3:a:verliadmin:verliadmin:0.3.8:*:*:*:*:*:*:*",
+                      "matchCriteriaId": "2156AE9E-F770-4BBC-88E7-41710DD689B3",
+                      "vulnerable": true
+                    }
+                  ],
+                  "negate": false,
+                  "operator": "OR"
+                }
+              ]
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "Multiple cross-site scripting (XSS) vulnerabilities in index.php in VerliAdmin 0.3.7 and 0.3.8 allow remote attackers to inject arbitrary web script or HTML via (1) the URI, (2) the q parameter, (3) the nick parameter, or (4) the nick parameter in a bantest action."
+            },
+            {
+              "lang": "es",
+              "value": "Múltiples vulnerabilidades de ejecución de secuencias de comandos en sitios cruzados (XSS) en index.php en VerliAdmin v0.3.7 y v0.3.8 permite a atacantes remotos inyectar código web o HTML a su elección a través de (1) la URI, (2) el parámetro q, (3) el parámetro nombre, o (4) el parámetro nombre en un acción \"bantest\"."
+            }
+          ],
+          "id": "CVE-2009-2571",
+          "lastModified": "2026-06-16T23:09:44.097",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "MEDIUM",
+                "cvssData": {
+                  "accessComplexity": "MEDIUM",
+                  "accessVector": "NETWORK",
+                  "authentication": "NONE",
+                  "availabilityImpact": "NONE",
+                  "baseScore": 4.3,
+                  "confidentialityImpact": "NONE",
+                  "integrityImpact": "PARTIAL",
+                  "vectorString": "AV:N/AC:M/Au:N/C:N/I:P/A:N",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 8.6,
+                "impactScore": 2.9,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": false,
+                "obtainUserPrivilege": false,
+                "source": "nvd@nist.gov",
+                "type": "Primary",
+                "userInteractionRequired": true
+              }
+            ]
+          },
+          "published": "2009-07-22T17:30:00.453",
+          "references": [
+            {
+              "source": "cve@mitre.org",
+              "tags": [
+                "Exploit"
+              ],
+              "url": "http://packetstormsecurity.org/0905-exploits/verliadmin-xss.txt"
+            },
+            {
+              "source": "cve@mitre.org",
+              "tags": [
+                "Exploit"
+              ],
+              "url": "http://www.securityfocus.com/bid/34845"
+            },
+            {
+              "source": "cve@mitre.org",
+              "tags": [
+                "Vendor Advisory"
+              ],
+              "url": "http://www.vupen.com/english/advisories/2009/1265"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://exchange.xforce.ibmcloud.com/vulnerabilities/50347"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Exploit"
+              ],
+              "url": "http://packetstormsecurity.org/0905-exploits/verliadmin-xss.txt"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Exploit"
+              ],
+              "url": "http://www.securityfocus.com/bid/34845"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "tags": [
+                "Vendor Advisory"
+              ],
+              "url": "http://www.vupen.com/english/advisories/2009/1265"
+            },
+            {
+              "source": "af854a3a-2127-422b-91ae-364da2661108",
+              "url": "https://exchange.xforce.ibmcloud.com/vulnerabilities/50347"
+            }
+          ],
+          "sourceIdentifier": "cve@mitre.org",
+          "vulnStatus": "Modified",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-79"
+                }
+              ],
+              "source": "nvd@nist.gov",
+              "type": "Primary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "n/a",
+                  "vendor": "n/a",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "n/a"
+                    }
+                  ]
+                }
+              ],
+              "source": "cve@mitre.org"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "A deserialization vulnerability exists in Volcengine's verl 3.0.0, specifically in the scripts/model_merger.py script when using the \"fsdp\" backend. The script calls torch.load() with weights_only=False on user-supplied .pt files, allowing attackers to execute arbitrary code if a maliciously crafted model file is loaded. An attacker can exploit this by convincing a victim to download and place a malicious model file in a local directory with a specific filename pattern. This vulnerability may lead to arbitrary code execution with the privileges of the user running the script."
+            },
+            {
+              "lang": "es",
+              "value": "Existe una vulnerabilidad de deserialización en la versión 3.0.0 de Volcengine, específicamente en el script scripts/model_merger.py al usar el backend \"fsdp\". El script llama a torch.load() con weights_only=False en archivos .pt proporcionados por el usuario, lo que permite a los atacantes ejecutar código arbitrario si se carga un archivo de modelo malicioso. Un atacante puede explotar esto convenciendo a la víctima para que descargue y coloque un archivo de modelo malicioso en un directorio local con un patrón de nombre de archivo específico. Esta vulnerabilidad puede provocar la ejecución de código arbitrario con los privilegios del usuario que ejecuta el script."
+            }
+          ],
+          "id": "CVE-2025-50461",
+          "lastModified": "2026-06-17T09:35:04.997",
+          "metrics": {
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "LOW",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "NONE",
+                  "baseScore": 6.5,
+                  "baseSeverity": "MEDIUM",
+                  "confidentialityImpact": "LOW",
+                  "integrityImpact": "LOW",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 3.9,
+                "impactScore": 2.5,
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2025-50461",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "yes"
+                    },
+                    {
+                      "technicalImpact": "total"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2025-08-19T19:43:45.795617Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2025-08-19T14:15:39.533",
+          "references": [
+            {
+              "source": "cve@mitre.org",
+              "url": "https://github.com/Anchor0221/CVE-2025-50461"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://github.com/pytorch/pytorch/blob/main/SECURITY.md#loading-untrusted-data"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://github.com/volcengine/verl"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://github.com/volcengine/verl/blob/main/scripts/model_merger.py#L152"
+            },
+            {
+              "source": "cve@mitre.org",
+              "url": "https://pytorch.org/docs/stable/generated/torch.load.html"
+            }
+          ],
+          "sourceIdentifier": "cve@mitre.org",
+          "vulnStatus": "Deferred",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-77"
+                }
+              ],
+              "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+              "type": "Secondary"
+            }
+          ]
+        }
+      },
+      {
+        "cve": {
+          "affected": [
+            {
+              "affectedData": [
+                {
+                  "product": "verl",
+                  "vendor": "ByteDance",
+                  "versions": [
+                    {
+                      "status": "affected",
+                      "version": "0.1"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "0.2"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "0.3"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "0.4"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "0.5"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "0.6"
+                    },
+                    {
+                      "status": "affected",
+                      "version": "0.7.0"
+                    }
+                  ]
+                }
+              ],
+              "source": "cna@vuldb.com"
+            }
+          ],
+          "cveTags": [],
+          "descriptions": [
+            {
+              "lang": "en",
+              "value": "A vulnerability was identified in ByteDance verl up to 0.7.0. Affected is the function math_equal of the file prime_math/grader.py. The manipulation leads to sandbox issue. It is possible to initiate the attack remotely. The complexity of an attack is rather high. The exploitability is told to be difficult. The exploit is publicly available and might be used. The vendor was contacted early about this disclosure but did not respond in any way."
+            }
+          ],
+          "id": "CVE-2026-6878",
+          "lastModified": "2026-06-17T11:01:28.160",
+          "metrics": {
+            "cvssMetricV2": [
+              {
+                "acInsufInfo": false,
+                "baseSeverity": "MEDIUM",
+                "cvssData": {
+                  "accessComplexity": "HIGH",
+                  "accessVector": "NETWORK",
+                  "authentication": "NONE",
+                  "availabilityImpact": "PARTIAL",
+                  "baseScore": 5.1,
+                  "confidentialityImpact": "PARTIAL",
+                  "integrityImpact": "PARTIAL",
+                  "vectorString": "AV:N/AC:H/Au:N/C:P/I:P/A:P",
+                  "version": "2.0"
+                },
+                "exploitabilityScore": 4.9,
+                "impactScore": 6.4,
+                "obtainAllPrivilege": false,
+                "obtainOtherPrivilege": false,
+                "obtainUserPrivilege": false,
+                "source": "cna@vuldb.com",
+                "type": "Secondary",
+                "userInteractionRequired": false
+              }
+            ],
+            "cvssMetricV31": [
+              {
+                "cvssData": {
+                  "attackComplexity": "HIGH",
+                  "attackVector": "NETWORK",
+                  "availabilityImpact": "LOW",
+                  "baseScore": 5.6,
+                  "baseSeverity": "MEDIUM",
+                  "confidentialityImpact": "LOW",
+                  "integrityImpact": "LOW",
+                  "privilegesRequired": "NONE",
+                  "scope": "UNCHANGED",
+                  "userInteraction": "NONE",
+                  "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:L",
+                  "version": "3.1"
+                },
+                "exploitabilityScore": 2.2,
+                "impactScore": 3.4,
+                "source": "cna@vuldb.com",
+                "type": "Secondary"
+              }
+            ],
+            "cvssMetricV40": [
+              {
+                "cvssData": {
+                  "Automatable": "NOT_DEFINED",
+                  "Recovery": "NOT_DEFINED",
+                  "Safety": "NOT_DEFINED",
+                  "attackComplexity": "HIGH",
+                  "attackRequirements": "NONE",
+                  "attackVector": "NETWORK",
+                  "availabilityRequirement": "NOT_DEFINED",
+                  "baseScore": 2.9,
+                  "baseSeverity": "LOW",
+                  "confidentialityRequirement": "NOT_DEFINED",
+                  "exploitMaturity": "PROOF_OF_CONCEPT",
+                  "integrityRequirement": "NOT_DEFINED",
+                  "modifiedAttackComplexity": "NOT_DEFINED",
+                  "modifiedAttackRequirements": "NOT_DEFINED",
+                  "modifiedAttackVector": "NOT_DEFINED",
+                  "modifiedPrivilegesRequired": "NOT_DEFINED",
+                  "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                  "modifiedUserInteraction": "NOT_DEFINED",
+                  "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                  "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                  "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                  "privilegesRequired": "NONE",
+                  "providerUrgency": "NOT_DEFINED",
+                  "subAvailabilityImpact": "NONE",
+                  "subConfidentialityImpact": "NONE",
+                  "subIntegrityImpact": "NONE",
+                  "userInteraction": "NONE",
+                  "valueDensity": "NOT_DEFINED",
+                  "vectorString": "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:N/VC:L/VI:L/VA:L/SC:N/SI:N/SA:N/E:P/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                  "version": "4.0",
+                  "vulnAvailabilityImpact": "LOW",
+                  "vulnConfidentialityImpact": "LOW",
+                  "vulnIntegrityImpact": "LOW",
+                  "vulnerabilityResponseEffort": "NOT_DEFINED"
+                },
+                "source": "cna@vuldb.com",
+                "type": "Secondary"
+              }
+            ],
+            "ssvcV203": [
+              {
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "ssvcData": {
+                  "id": "CVE-2026-6878",
+                  "options": [
+                    {
+                      "exploitation": "poc"
+                    },
+                    {
+                      "automatable": "no"
+                    },
+                    {
+                      "technicalImpact": "partial"
+                    }
+                  ],
+                  "role": "CISA Coordinator",
+                  "timestamp": "2026-04-23T12:48:50.323942Z",
+                  "version": "2.0.3"
+                }
+              }
+            ]
+          },
+          "published": "2026-04-23T00:16:47.233",
+          "references": [
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://github.com/zast-ai/vulnerability-reports/blob/main/bytedance/verl_rce.md"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/submit/795257"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/vuln/359040"
+            },
+            {
+              "source": "cna@vuldb.com",
+              "url": "https://vuldb.com/vuln/359040/cti"
+            }
+          ],
+          "sourceIdentifier": "cna@vuldb.com",
+          "vulnStatus": "Deferred",
+          "weaknesses": [
+            {
+              "description": [
+                {
+                  "lang": "en",
+                  "value": "CWE-264"
+                },
+                {
+                  "lang": "en",
+                  "value": "CWE-265"
+                }
+              ],
+              "source": "cna@vuldb.com",
+              "type": "Secondary"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=verl&resultsPerPage=50"
+}

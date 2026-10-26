@@ -1,0 +1,1629 @@
+{
+  "generated_at": "2026-10-26T12:14:25+00:00",
+  "offline": false,
+  "schema": "trident-novelty-results-v1",
+  "verdicts": {
+    "areal-awex": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:11:35+00:00",
+      "id": "areal-awex",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "HTTP 422",
+          "matches": [],
+          "provider": "github_commits",
+          "raw": {
+            "body": {
+              "documentation_url": "https://docs.github.com/v3/search/",
+              "errors": [
+                {
+                  "code": "invalid",
+                  "field": "q",
+                  "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
+                  "resource": "Search"
+                }
+              ],
+              "message": "Validation Failed",
+              "status": "422"
+            },
+            "cache_hit": false,
+            "http_status": 422,
+            "status": "http-error",
+            "url": "https://api.github.com/search/commits?q=%22master_addr%22+repo%3AinclusionAI%2FAReaL&per_page=20"
+          },
+          "status": "error"
+        }
+      },
+      "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "inconclusive"
+    },
+    "areal-dataservice-pickle": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:10:24+00:00",
+      "id": "areal-dataservice-pickle",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "HTTP 422",
+          "matches": [],
+          "provider": "github_commits",
+          "raw": {
+            "body": {
+              "documentation_url": "https://docs.github.com/v3/search/",
+              "errors": [
+                {
+                  "code": "invalid",
+                  "field": "q",
+                  "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
+                  "resource": "Search"
+                }
+              ],
+              "message": "Validation Failed",
+              "status": "422"
+            },
+            "cache_hit": false,
+            "http_status": 422,
+            "status": "http-error",
+            "url": "https://api.github.com/search/commits?q=%22data_service%2Fworker%22+repo%3AinclusionAI%2FAReaL&per_page=20"
+          },
+          "status": "error"
+        }
+      },
+      "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "inconclusive"
+    },
+    "areal-unauth-engine-control": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:10:17+00:00",
+      "id": "areal-unauth-engine-control",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "HTTP 422",
+          "matches": [],
+          "provider": "github_commits",
+          "raw": {
+            "body": {
+              "documentation_url": "https://docs.github.com/v3/search/",
+              "errors": [
+                {
+                  "code": "invalid",
+                  "field": "q",
+                  "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
+                  "resource": "Search"
+                }
+              ],
+              "message": "Validation Failed",
+              "status": "422"
+            },
+            "cache_hit": false,
+            "http_status": 422,
+            "status": "http-error",
+            "url": "https://api.github.com/search/commits?q=%22proxy_rollout_server.py%22+repo%3AinclusionAI%2FAReaL&per_page=20"
+          },
+          "status": "error"
+        }
+      },
+      "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "inconclusive"
+    },
+    "areal-v2-worker": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:11:09+00:00",
+      "id": "areal-v2-worker",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "HTTP 422",
+          "matches": [],
+          "provider": "github_commits",
+          "raw": {
+            "body": {
+              "documentation_url": "https://docs.github.com/v3/search/",
+              "errors": [
+                {
+                  "code": "invalid",
+                  "field": "q",
+                  "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
+                  "resource": "Search"
+                }
+              ],
+              "message": "Validation Failed",
+              "status": "422"
+            },
+            "cache_hit": false,
+            "http_status": 422,
+            "status": "http-error",
+            "url": "https://api.github.com/search/commits?q=%22fsdp_engine.py%22+repo%3AinclusionAI%2FAReaL&per_page=20"
+          },
+          "status": "error"
+        }
+      },
+      "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "inconclusive"
+    },
+    "cephcsi-httpserver-go-pprof-exposed-l37-regex": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:13:13+00:00",
+      "id": "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched addPath / EnableProfiling / StartMetricsServer",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"addPath / EnableProfiling / StartMetricsServer\" repo:ceph/ceph-csi",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "deepspeed-autoep-unsafe-load": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:13:00+00:00",
+      "id": "deepspeed-autoep-unsafe-load",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched consolidate_autoep_expert_files",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"consolidate_autoep_expert_files\" repo:deepspeedai/DeepSpeed",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "deepspeed-stage3-py-torch-load-any-l3660-regex": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:13:19+00:00",
+      "id": "deepspeed-stage3-py-torch-load-any-l3660-regex",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched load_hp_checkpoint_state_from_checkpoint_dir_stage3",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"load_hp_checkpoint_state_from_checkpoint_dir_stage3\" repo:deepspeedai/DeepSpeed",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "deepspeed-stage3-py-torch-load-any-l3770-regex": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:13:26+00:00",
+      "id": "deepspeed-stage3-py-torch-load-any-l3770-regex",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched load_hp_checkpoint_state",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"load_hp_checkpoint_state\" repo:deepspeedai/DeepSpeed",
+          "related": [
+            {
+              "id": "eec237ee892901f4f239bb23cfe2cfbd85f4dc3b",
+              "repo": "deepspeedai/DeepSpeed",
+              "summary": "[AutoTP] Fix ZeRO-3 checkpoint consolidation to gather across TP and DP (#8168)",
+              "url": "https://github.com/deepspeedai/DeepSpeed/commit/eec237ee892901f4f239bb23cfe2cfbd85f4dc3b"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "deepspeed-stage3-py-torch-load-unsafe-l3660-ast": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:13:26+00:00",
+      "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-ast",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched load_hp_checkpoint_state_from_checkpoint_dir_stage3",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"load_hp_checkpoint_state_from_checkpoint_dir_stage3\" repo:deepspeedai/DeepSpeed",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "deepspeed-stage3-py-torch-load-unsafe-l3660-regex": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:13:26+00:00",
+      "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-regex",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched load_hp_checkpoint_state_from_checkpoint_dir_stage3",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"load_hp_checkpoint_state_from_checkpoint_dir_stage3\" repo:deepspeedai/DeepSpeed",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "deepspeed-stage3-py-torch-load-unsafe-l3770-ast": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:13:26+00:00",
+      "id": "deepspeed-stage3-py-torch-load-unsafe-l3770-ast",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched load_hp_checkpoint_state",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"load_hp_checkpoint_state\" repo:deepspeedai/DeepSpeed",
+          "related": [
+            {
+              "id": "eec237ee892901f4f239bb23cfe2cfbd85f4dc3b",
+              "repo": "deepspeedai/DeepSpeed",
+              "summary": "[AutoTP] Fix ZeRO-3 checkpoint consolidation to gather across TP and DP (#8168)",
+              "url": "https://github.com/deepspeedai/DeepSpeed/commit/eec237ee892901f4f239bb23cfe2cfbd85f4dc3b"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "dify-agent-auth-failopen": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:12:14+00:00",
+      "id": "dify-agent-auth-failopen",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched require_token",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"require_token\" repo:langgenius/dify",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "dify-home-snapshot-cross-tenant": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:12:27+00:00",
+      "id": "dify-home-snapshot-cross-tenant",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched runtime_backend/local",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"runtime_backend/local\" repo:langgenius/dify",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "dify-shellctl-unauth-rce": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:12:08+00:00",
+      "id": "dify-shellctl-unauth-rce",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched SHELLCTL_AUTH_TOKEN",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"SHELLCTL_AUTH_TOKEN\" repo:langgenius/dify",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "dify-stub-jwe-default-key": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:12:21+00:00",
+      "id": "dify-stub-jwe-default-key",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched AGENT_STUB_SECRET",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"AGENT_STUB_SECRET\" repo:langgenius/dify",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "djev-open-proxy": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:09:38+00:00",
+      "id": "djev-open-proxy",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched structured_server.py",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"structured_server.py\" repo:mmastrac/djev",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "llamafactory-checkpoint-py-torch-load-unsafe-l136-ast": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:13:32+00:00",
+      "id": "llamafactory-checkpoint-py-torch-load-unsafe-l136-ast",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "HTTP 422",
+          "matches": [],
+          "provider": "github_commits",
+          "raw": {
+            "body": {
+              "documentation_url": "https://docs.github.com/v3/search/",
+              "errors": [
+                {
+                  "code": "invalid",
+                  "field": "q",
+                  "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
+                  "resource": "Search"
+                }
+              ],
+              "message": "Validation Failed",
+              "status": "422"
+            },
+            "cache_hit": false,
+            "http_status": 422,
+            "status": "http-error",
+            "url": "https://api.github.com/search/commits?q=%22load_rng_state%22+repo%3Ahiyouga%2FLLaMA-Factory&per_page=20"
+          },
+          "status": "error"
+        }
+      },
+      "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "inconclusive"
+    },
+    "llamafactory-checkpoint-py-torch-load-unsafe-l136-regex": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:13:39+00:00",
+      "id": "llamafactory-checkpoint-py-torch-load-unsafe-l136-regex",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "HTTP 422",
+          "matches": [],
+          "provider": "github_commits",
+          "raw": {
+            "body": {
+              "documentation_url": "https://docs.github.com/v3/search/",
+              "errors": [
+                {
+                  "code": "invalid",
+                  "field": "q",
+                  "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
+                  "resource": "Search"
+                }
+              ],
+              "message": "Validation Failed",
+              "status": "422"
+            },
+            "cache_hit": false,
+            "http_status": 422,
+            "status": "http-error",
+            "url": "https://api.github.com/search/commits?q=%22load_rng_state%22+repo%3Ahiyouga%2FLLaMA-Factory&per_page=20"
+          },
+          "status": "error"
+        }
+      },
+      "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "inconclusive"
+    },
+    "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:13:45+00:00",
+      "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "HTTP 422",
+          "matches": [],
+          "provider": "github_commits",
+          "raw": {
+            "body": {
+              "documentation_url": "https://docs.github.com/v3/search/",
+              "errors": [
+                {
+                  "code": "invalid",
+                  "field": "q",
+                  "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
+                  "resource": "Search"
+                }
+              ],
+              "message": "Validation Failed",
+              "status": "422"
+            },
+            "cache_hit": false,
+            "http_status": 422,
+            "status": "http-error",
+            "url": "https://api.github.com/search/commits?q=%22TrainingCheckpointCoordinator.resume%22+repo%3Ahiyouga%2FLLaMA-Factory&per_page=20"
+          },
+          "status": "error"
+        }
+      },
+      "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "inconclusive"
+    },
+    "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:13:52+00:00",
+      "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "HTTP 422",
+          "matches": [],
+          "provider": "github_commits",
+          "raw": {
+            "body": {
+              "documentation_url": "https://docs.github.com/v3/search/",
+              "errors": [
+                {
+                  "code": "invalid",
+                  "field": "q",
+                  "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
+                  "resource": "Search"
+                }
+              ],
+              "message": "Validation Failed",
+              "status": "422"
+            },
+            "cache_hit": false,
+            "http_status": 422,
+            "status": "http-error",
+            "url": "https://api.github.com/search/commits?q=%22TrainingCheckpointCoordinator.resume%22+repo%3Ahiyouga%2FLLaMA-Factory&per_page=20"
+          },
+          "status": "error"
+        }
+      },
+      "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "inconclusive"
+    },
+    "llamafactory-ssrf-redirect": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:11:55+00:00",
+      "id": "llamafactory-ssrf-redirect",
+      "offline": false,
+      "providers": {
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2025-61784",
+              "ids": [
+                "CVE-2025-61784",
+                "CVE-2026-85673"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
+        }
+      },
+      "reason": "source audit already cites public reference(s): CVE-2025-61784, CVE-2026-85673",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "llamafactory-webui-rce": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:10:30+00:00",
+      "id": "llamafactory-webui-rce",
+      "offline": false,
+      "providers": {
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-58116",
+              "ids": [
+                "CVE-2026-58116"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
+        }
+      },
+      "reason": "source audit already cites public reference(s): CVE-2026-58116",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "llm2jev-image-file": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:11:48+00:00",
+      "id": "llm2jev-image-file",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched image_inputs.py",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"image_inputs.py\" repo:Yinsongxu/LLM2Jev",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "megatron-checkpointing-py-torch-load-any-l1739-regex": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:13:58+00:00",
+      "id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched _load_base_checkpoint",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"_load_base_checkpoint\" repo:NVIDIA/Megatron-LM",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-eval-escape": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:11:29+00:00",
+      "id": "msswift-eval-escape",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched resource_manager.py",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"resource_manager.py\" repo:modelscope/ms-swift",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-indexed-dataset-py-pickle-loads-l112-ast": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:14:05+00:00",
+      "id": "msswift-indexed-dataset-py-pickle-loads-l112-ast",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched IndexedDataset.__init__",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"IndexedDataset.__init__\" repo:modelscope/ms-swift",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-indexed-dataset-py-pickle-loads-l112-regex": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:14:05+00:00",
+      "id": "msswift-indexed-dataset-py-pickle-loads-l112-regex",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched IndexedDataset.__init__",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"IndexedDataset.__init__\" repo:modelscope/ms-swift",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-indexed-dataset-py-pickle-loads-l129-ast": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:14:11+00:00",
+      "id": "msswift-indexed-dataset-py-pickle-loads-l129-ast",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched IndexedDataset.__getitem__",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"IndexedDataset.__getitem__\" repo:modelscope/ms-swift",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-indexed-dataset-py-pickle-loads-l129-regex": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:14:11+00:00",
+      "id": "msswift-indexed-dataset-py-pickle-loads-l129-regex",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched IndexedDataset.__getitem__",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"IndexedDataset.__getitem__\" repo:modelscope/ms-swift",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-media-local-read": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:13:06+00:00",
+      "id": "msswift-media-local-read",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched MultiModalRequestMixin.to_base64",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"MultiModalRequestMixin.to_base64\" repo:modelscope/ms-swift",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-torch-utils-py-pickle-loads-l340-ast": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:14:18+00:00",
+      "id": "msswift-torch-utils-py-pickle-loads-l340-ast",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched Serializer.from_tensor",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"Serializer.from_tensor\" repo:modelscope/ms-swift",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-torch-utils-py-pickle-loads-l340-regex": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:14:18+00:00",
+      "id": "msswift-torch-utils-py-pickle-loads-l340-regex",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched Serializer.from_tensor",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"Serializer.from_tensor\" repo:modelscope/ms-swift",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "msswift-trust-remote-code": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:10:37+00:00",
+      "id": "msswift-trust-remote-code",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched default_trust_remote_code",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"default_trust_remote_code\" repo:modelscope/ms-swift",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "onejev-media-ssrf": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:11:42+00:00",
+      "id": "onejev-media-ssrf",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched qev/media",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"qev/media\" repo:OmniJev/OneJev",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "openjev-clef-release-module": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:11:22+00:00",
+      "id": "openjev-clef-release-module",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched joint_schema_model",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"joint_schema_model\" repo:razorback16/openjev",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "openrlhf-serve-rm": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:10:30+00:00",
+      "id": "openrlhf-serve-rm",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched serve_rm.py",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"serve_rm.py\" repo:OpenRLHF/OpenRLHF",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "openrlhf-vllm-insecure": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:11:03+00:00",
+      "id": "openrlhf-vllm-insecure",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched VLLM_ALLOW_INSECURE_SERIALIZATION",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"VLLM_ALLOW_INSECURE_SERIALIZATION\" repo:OpenRLHF/OpenRLHF",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "openwebui-code-execute": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:12:34+00:00",
+      "id": "openwebui-code-execute",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched /api/v1/utils/code/execute",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"/api/v1/utils/code/execute\" repo:open-webui/open-webui",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "openwebui-code-interpreter-bypass": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:12:40+00:00",
+      "id": "openwebui-code-interpreter-bypass",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched execute_code_block",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"execute_code_block\" repo:open-webui/open-webui",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "ray-dashboard-unauth": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:12:01+00:00",
+      "id": "ray-dashboard-unauth",
+      "offline": false,
+      "providers": {
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2023-48022",
+              "ids": [
+                "CVE-2023-48022",
+                "CVE-2023-48023"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
+        }
+      },
+      "reason": "source audit already cites public reference(s): CVE-2023-48022, CVE-2023-48023",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "sglang-admin-optional-failopen": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:09:38+00:00",
+      "id": "sglang-admin-optional-failopen",
+      "offline": false,
+      "providers": {
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-15978",
+              "ids": [
+                "CVE-2026-15978",
+                "VU#281278",
+                "GHSA-2wvm-gjg7-5jfm",
+                "GHSA-h6rf-77vv-9mvj"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
+        }
+      },
+      "reason": "source audit already cites public reference(s): CVE-2026-15978, VU#281278, GHSA-2wvm-gjg7-5jfm, GHSA-h6rf-77vv-9mvj",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "sglang-legacy-tar-weights-rce": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:12:53+00:00",
+      "id": "sglang-legacy-tar-weights-rce",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched legacy .tar format",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"legacy .tar format\" repo:sgl-project/sglang",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "sglang-omni-admin-failopen": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:09:51+00:00",
+      "id": "sglang-omni-admin-failopen",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched make_admin_auth_dependency",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"make_admin_auth_dependency\" repo:sgl-project/sglang-omni",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "siliconlab-credential-exfil": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:11:55+00:00",
+      "id": "siliconlab-credential-exfil",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched decider_url",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"decider_url\" repo:SiliconLabAI/OpenJev",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "skyrl-fetch-weights": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:10:56+00:00",
+      "id": "skyrl-fetch-weights",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "2 security-relevant commit(s) mention fetch_weights",
+          "matches": [
+            {
+              "id": "46afa94fe0059a42f9959918dc12aad9b8988554",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[refactor] vLLM Stateful Weight Sync Sender (#2142)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/46afa94fe0059a42f9959918dc12aad9b8988554"
+            },
+            {
+              "id": "23a210970cb86fc6fb247fd93f31103e3f2923e5",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[feat] Add Delta Weight Sync Support in SkyRL (#1935)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/23a210970cb86fc6fb247fd93f31103e3f2923e5"
+            }
+          ],
+          "provider": "github_commits",
+          "query": "\"fetch_weights\" repo:NovaSky-AI/SkyRL",
+          "related": [],
+          "status": "match"
+        }
+      },
+      "reason": "public disclosure match: github_commits=46afa94fe0059a42f9959918dc12aad9b8988554",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "skyrl-tinker-api": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:10:05+00:00",
+      "id": "skyrl-tinker-api",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "5 security-relevant commit(s) mention tinker/api",
+          "matches": [
+            {
+              "id": "78e45c76c184ac7b2433f1f4ffb1b84733c20714",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[fix] Fix AMD Tinker FSDP Docker runtime (#2520)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/78e45c76c184ac7b2433f1f4ffb1b84733c20714"
+            },
+            {
+              "id": "adcb93eb87bfcf169fa3835a8f8e5282bf75d81f",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[tx] Implement Qwen 3.5 model architecture (#1228)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/adcb93eb87bfcf169fa3835a8f8e5282bf75d81f"
+            },
+            {
+              "id": "f3f2dbffaede4db50bfb11b73378b0c0104c2ceb",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[tx] Update README.md and move tx over to skyrl/ folder (#1226)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/f3f2dbffaede4db50bfb11b73378b0c0104c2ceb"
+            },
+            {
+              "id": "9172197644228d23206ab91325834d29fb66f339",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[tx][megatron] making megatron skyrl-train worker usable as TX backend (#1067)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/9172197644228d23206ab91325834d29fb66f339"
+            },
+            {
+              "id": "72b165fd4877773d9ae4e8a8c95e9f39369e2f2e",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[feat][tinker] New inference client in the skyrl-train tinker backend (#1452)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/72b165fd4877773d9ae4e8a8c95e9f39369e2f2e"
+            }
+          ],
+          "provider": "github_commits",
+          "query": "\"tinker/api\" repo:NovaSky-AI/SkyRL",
+          "related": [
+            {
+              "id": "6233c149a94a6ddc6136b941de52d8b1739e02e0",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[tinker] expose dppo through tinker api (#1876)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/6233c149a94a6ddc6136b941de52d8b1739e02e0"
+            },
+            {
+              "id": "c0241450438086cc3295af2679e0fbd3cc55076f",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[megatron] 11/n towards Kimi K2.6: file-backed offload of frozen masters so Tinker API LoRA training fits host RAM (#2062)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/c0241450438086cc3295af2679e0fbd3cc55076f"
+            },
+            {
+              "id": "eb03ef7600c5fff8b0f2b125e1242bf17c13dcb3",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[tinker] 15/n towards Kimi K2.6: continuous sampling for the Tinker API engine under colocate_all (#2066)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/eb03ef7600c5fff8b0f2b125e1242bf17c13dcb3"
+            },
+            {
+              "id": "50ebff5a01b8750cf670e948ded945cd3a956232",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[tinker] Fix loss_fn_outputs right-aligned slicing in Tinker API path (#1367)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/50ebff5a01b8750cf670e948ded945cd3a956232"
+            },
+            {
+              "id": "497e73d56713abb06aeedd74d0fa2997b2f1dcf8",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[tinker] Route uvicorn's access log to a plain handler instead of Rich (#2160)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/497e73d56713abb06aeedd74d0fa2997b2f1dcf8"
+            },
+            {
+              "id": "22b668fb9896ba71db46e9d5553bf494dce7b0fb",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "Expose native GSPO through Tinker API (#2044)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/22b668fb9896ba71db46e9d5553bf494dce7b0fb"
+            },
+            {
+              "id": "53b53c9043adb2a4172b46774a05c7138a15a222",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "Add SkyRLInferenceClient adapter and Tinker API tests (Stage 2) (#929)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/53b53c9043adb2a4172b46774a05c7138a15a222"
+            },
+            {
+              "id": "53b11553a3e1ea6b4156fdc36d0322823b679270",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[feat][tinker] 13/n towards Kimi K2.6: adapter-only colocated weight sync for Tinker API LoRA (merge_lora=false) (#2064)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/53b11553a3e1ea6b4156fdc36d0322823b679270"
+            },
+            {
+              "id": "4e37dde4db16ed0b87b373a76e75de85e9bc1a42",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[tinker][docs] update tinker API docs to use qwen3-4b-instruct-2507 (#1740)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/4e37dde4db16ed0b87b373a76e75de85e9bc1a42"
+            },
+            {
+              "id": "8f9a3e68acbbd006b78bfdb8b7686300db293818",
+              "repo": "NovaSky-AI/SkyRL",
+              "summary": "[fix][tinker] 14/n towards Kimi K2.6: sleep colocated engines around Tinker API checkpoint ops (#2065)",
+              "url": "https://github.com/NovaSky-AI/SkyRL/commit/8f9a3e68acbbd006b78bfdb8b7686300db293818"
+            }
+          ],
+          "status": "match"
+        }
+      },
+      "reason": "public disclosure match: github_commits=78e45c76c184ac7b2433f1f4ffb1b84733c20714",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "skyrl-vllm-devmode": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:09:58+00:00",
+      "id": "skyrl-vllm-devmode",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched VLLM_SERVER_DEV_MODE",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"VLLM_SERVER_DEV_MODE\" repo:NovaSky-AI/SkyRL",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "slime-pull-weights": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:09:45+00:00",
+      "id": "slime-pull-weights",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched sglang-pull_weights.patch",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"sglang-pull_weights.patch\" repo:THUDM/slime",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "slime-torch-load": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:11:16+00:00",
+      "id": "slime-torch-load",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched load_debug_rollout_data.py",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"load_debug_rollout_data.py\" repo:THUDM/slime",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "transformers-dynamic-module-utils-py-dynamic-import-l248-ast": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:14:25+00:00",
+      "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-ast",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "5 security-relevant commit(s) mention dynamic_module_utils.py",
+          "matches": [
+            {
+              "id": "df03fc1f9cac4ff8ec7f57a599b274768180f765",
+              "repo": "huggingface/transformers",
+              "summary": "Improve module name handling for local custom code (#40809)",
+              "url": "https://github.com/huggingface/transformers/commit/df03fc1f9cac4ff8ec7f57a599b274768180f765"
+            },
+            {
+              "id": "1ca0be502a9366dc81f588732ece9f6808b30602",
+              "repo": "huggingface/transformers",
+              "summary": "Fix custom-module copies inheriting read-only permissions (#45686)",
+              "url": "https://github.com/huggingface/transformers/commit/1ca0be502a9366dc81f588732ece9f6808b30602"
+            },
+            {
+              "id": "908f67e864fade680ac0114dccbec147b141d381",
+              "repo": "huggingface/transformers",
+              "summary": "fix: include transitive relative imports when loading from local directory (#46022)",
+              "url": "https://github.com/huggingface/transformers/commit/908f67e864fade680ac0114dccbec147b141d381"
+            },
+            {
+              "id": "0e0e5c10441e807d55cc675900d3debf81834025",
+              "repo": "huggingface/transformers",
+              "summary": "[generate] Run custom generation code from the Hub (#36405)",
+              "url": "https://github.com/huggingface/transformers/commit/0e0e5c10441e807d55cc675900d3debf81834025"
+            },
+            {
+              "id": "82ffeb28ad926938db1f81e2423b6ba4ffbed579",
+              "repo": "huggingface/transformers",
+              "summary": "Add Top-H decoding (entropy-bounded truncation) as a LogitsWarper for text generation (#40837)",
+              "url": "https://github.com/huggingface/transformers/commit/82ffeb28ad926938db1f81e2423b6ba4ffbed579"
+            }
+          ],
+          "provider": "github_commits",
+          "query": "\"dynamic_module_utils.py\" repo:huggingface/transformers",
+          "related": [
+            {
+              "id": "abbed7010be490a24c46aa90dedaa7aa48d78487",
+              "repo": "huggingface/transformers",
+              "summary": "Fix dotted model names (#40745)",
+              "url": "https://github.com/huggingface/transformers/commit/abbed7010be490a24c46aa90dedaa7aa48d78487"
+            },
+            {
+              "id": "000e52aec8850d3fe2f360adc6fd256e5b47fe4c",
+              "repo": "huggingface/transformers",
+              "summary": "More error message fixup, plus some linebreaks! (#26296)",
+              "url": "https://github.com/huggingface/transformers/commit/000e52aec8850d3fe2f360adc6fd256e5b47fe4c"
+            },
+            {
+              "id": "cc832cbd191176dd95c591c6fa0c847fd3f9c7bb",
+              "repo": "huggingface/transformers",
+              "summary": "filter flash_attn optional imports loading remote code (#30954)",
+              "url": "https://github.com/huggingface/transformers/commit/cc832cbd191176dd95c591c6fa0c847fd3f9c7bb"
+            },
+            {
+              "id": "c5a1ff9ef010c9e886522d03afe7b4c3080cab68",
+              "repo": "huggingface/transformers",
+              "summary": "feat: filter try/except when looking at custom code (#21914)",
+              "url": "https://github.com/huggingface/transformers/commit/c5a1ff9ef010c9e886522d03afe7b4c3080cab68"
+            }
+          ],
+          "status": "match"
+        }
+      },
+      "reason": "public disclosure match: github_commits=df03fc1f9cac4ff8ec7f57a599b274768180f765",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "transformers-dynamic-module-utils-py-dynamic-import-l248-regex": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:14:25+00:00",
+      "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-regex",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "5 security-relevant commit(s) mention dynamic_module_utils.py",
+          "matches": [
+            {
+              "id": "df03fc1f9cac4ff8ec7f57a599b274768180f765",
+              "repo": "huggingface/transformers",
+              "summary": "Improve module name handling for local custom code (#40809)",
+              "url": "https://github.com/huggingface/transformers/commit/df03fc1f9cac4ff8ec7f57a599b274768180f765"
+            },
+            {
+              "id": "1ca0be502a9366dc81f588732ece9f6808b30602",
+              "repo": "huggingface/transformers",
+              "summary": "Fix custom-module copies inheriting read-only permissions (#45686)",
+              "url": "https://github.com/huggingface/transformers/commit/1ca0be502a9366dc81f588732ece9f6808b30602"
+            },
+            {
+              "id": "908f67e864fade680ac0114dccbec147b141d381",
+              "repo": "huggingface/transformers",
+              "summary": "fix: include transitive relative imports when loading from local directory (#46022)",
+              "url": "https://github.com/huggingface/transformers/commit/908f67e864fade680ac0114dccbec147b141d381"
+            },
+            {
+              "id": "0e0e5c10441e807d55cc675900d3debf81834025",
+              "repo": "huggingface/transformers",
+              "summary": "[generate] Run custom generation code from the Hub (#36405)",
+              "url": "https://github.com/huggingface/transformers/commit/0e0e5c10441e807d55cc675900d3debf81834025"
+            },
+            {
+              "id": "82ffeb28ad926938db1f81e2423b6ba4ffbed579",
+              "repo": "huggingface/transformers",
+              "summary": "Add Top-H decoding (entropy-bounded truncation) as a LogitsWarper for text generation (#40837)",
+              "url": "https://github.com/huggingface/transformers/commit/82ffeb28ad926938db1f81e2423b6ba4ffbed579"
+            }
+          ],
+          "provider": "github_commits",
+          "query": "\"dynamic_module_utils.py\" repo:huggingface/transformers",
+          "related": [
+            {
+              "id": "abbed7010be490a24c46aa90dedaa7aa48d78487",
+              "repo": "huggingface/transformers",
+              "summary": "Fix dotted model names (#40745)",
+              "url": "https://github.com/huggingface/transformers/commit/abbed7010be490a24c46aa90dedaa7aa48d78487"
+            },
+            {
+              "id": "000e52aec8850d3fe2f360adc6fd256e5b47fe4c",
+              "repo": "huggingface/transformers",
+              "summary": "More error message fixup, plus some linebreaks! (#26296)",
+              "url": "https://github.com/huggingface/transformers/commit/000e52aec8850d3fe2f360adc6fd256e5b47fe4c"
+            },
+            {
+              "id": "cc832cbd191176dd95c591c6fa0c847fd3f9c7bb",
+              "repo": "huggingface/transformers",
+              "summary": "filter flash_attn optional imports loading remote code (#30954)",
+              "url": "https://github.com/huggingface/transformers/commit/cc832cbd191176dd95c591c6fa0c847fd3f9c7bb"
+            },
+            {
+              "id": "c5a1ff9ef010c9e886522d03afe7b4c3080cab68",
+              "repo": "huggingface/transformers",
+              "summary": "feat: filter try/except when looking at custom code (#21914)",
+              "url": "https://github.com/huggingface/transformers/commit/c5a1ff9ef010c9e886522d03afe7b4c3080cab68"
+            }
+          ],
+          "status": "match"
+        }
+      },
+      "reason": "public disclosure match: github_commits=df03fc1f9cac4ff8ec7f57a599b274768180f765",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "trl-vllm-serve-devmode": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:10:11+00:00",
+      "id": "trl-vllm-serve-devmode",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched VLLM_SERVER_DEV_MODE",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"VLLM_SERVER_DEV_MODE\" repo:huggingface/trl",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "verl-checkpoint-pickle": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:10:50+00:00",
+      "id": "verl-checkpoint-pickle",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "HTTP 422",
+          "matches": [],
+          "provider": "github_commits",
+          "raw": {
+            "body": {
+              "documentation_url": "https://docs.github.com/v3/search/",
+              "errors": [
+                {
+                  "code": "invalid",
+                  "field": "q",
+                  "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
+                  "resource": "Search"
+                }
+              ],
+              "message": "Validation Failed",
+              "status": "422"
+            },
+            "cache_hit": false,
+            "http_status": 422,
+            "status": "http-error",
+            "url": "https://api.github.com/search/commits?q=%22checkpoint_engine%22+repo%3Avolcengine%2Fverl&per_page=20"
+          },
+          "status": "error"
+        }
+      },
+      "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "inconclusive"
+    },
+    "verl-hdfs-command-injection": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:12:01+00:00",
+      "id": "verl-hdfs-command-injection",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "HTTP 422",
+          "matches": [],
+          "provider": "github_commits",
+          "raw": {
+            "body": {
+              "documentation_url": "https://docs.github.com/v3/search/",
+              "errors": [
+                {
+                  "code": "invalid",
+                  "field": "q",
+                  "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
+                  "resource": "Search"
+                }
+              ],
+              "message": "Validation Failed",
+              "status": "422"
+            },
+            "cache_hit": false,
+            "http_status": 422,
+            "status": "http-error",
+            "url": "https://api.github.com/search/commits?q=%22checkpoint_handler.py%22+repo%3Avolcengine%2Fverl&per_page=20"
+          },
+          "status": "error"
+        }
+      },
+      "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "inconclusive"
+    },
+    "verl-prime-code-exec": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:10:43+00:00",
+      "id": "verl-prime-code-exec",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "HTTP 422",
+          "matches": [],
+          "provider": "github_commits",
+          "raw": {
+            "body": {
+              "documentation_url": "https://docs.github.com/v3/search/",
+              "errors": [
+                {
+                  "code": "invalid",
+                  "field": "q",
+                  "message": "The listed users and repositories cannot be searched either because the resources do not exist or you do not have permission to view them.",
+                  "resource": "Search"
+                }
+              ],
+              "message": "Validation Failed",
+              "status": "422"
+            },
+            "cache_hit": false,
+            "http_status": 422,
+            "status": "http-error",
+            "url": "https://api.github.com/search/commits?q=%22testing_util.py%22+repo%3Avolcengine%2Fverl&per_page=20"
+          },
+          "status": "error"
+        }
+      },
+      "reason": "provider(s) unavailable/skipped: github_commits: HTTP 422",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "inconclusive"
+    },
+    "verl-prime-math-eval": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:10:37+00:00",
+      "id": "verl-prime-math-eval",
+      "offline": false,
+      "providers": {
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-6878",
+              "ids": [
+                "CVE-2026-6878"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
+        }
+      },
+      "reason": "source audit already cites public reference(s): CVE-2026-6878",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "vllm-jev-plugin-auth-bypass": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:09:32+00:00",
+      "id": "vllm-jev-plugin-auth-bypass",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched plugins/vllm-jev",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"plugins/vllm-jev\" repo:mode-io/vllm-jev",
+          "related": [],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    },
+    "vllm-omni-media-ssrf": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:11:35+00:00",
+      "id": "vllm-omni-media-ssrf",
+      "offline": false,
+      "providers": {
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-24779",
+              "ids": [
+                "CVE-2026-24779",
+                "CVE-2026-73560",
+                "CVE-2026-34753"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
+        }
+      },
+      "reason": "source audit already cites public reference(s): CVE-2026-24779, CVE-2026-73560, CVE-2026-34753",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "vllm-omni-trust-remote-code": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:12:01+00:00",
+      "id": "vllm-omni-trust-remote-code",
+      "offline": false,
+      "providers": {
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-27893",
+              "ids": [
+                "CVE-2026-27893",
+                "CVE-2026-22807",
+                "CVE-2026-90553"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
+        }
+      },
+      "reason": "source audit already cites public reference(s): CVE-2026-27893, CVE-2026-22807, CVE-2026-90553",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    },
+    "vllm-rl-dev-auth-bypass": {
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T12:12:47+00:00",
+      "id": "vllm-rl-dev-auth-bypass",
+      "offline": false,
+      "providers": {
+        "github_commits": {
+          "detail": "no security-relevant commit matched /weight_checker",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"/weight_checker\" repo:vllm-project/vllm",
+          "related": [
+            {
+              "id": "749192ff41f4fddd6e5d3c4ef1eb5851175e8fc2",
+              "repo": "vllm-project/vllm",
+              "summary": "[CI] Skip the IPC weight-checker test on non-CUDA platforms (#59398)",
+              "url": "https://github.com/vllm-project/vllm/commit/749192ff41f4fddd6e5d3c4ef1eb5851175e8fc2"
+            },
+            {
+              "id": "42d9f8ccdbbb7e24c173272809c66ad627a0de9d",
+              "repo": "vllm-project/vllm",
+              "summary": "support rl feature : weight checker (#51350)",
+              "url": "https://github.com/vllm-project/vllm/commit/42d9f8ccdbbb7e24c173272809c66ad627a0de9d"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
+    }
+  }
+}

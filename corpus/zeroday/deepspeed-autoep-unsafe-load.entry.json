@@ -1,0 +1,64 @@
+{
+ "id": "deepspeed-autoep-unsafe-load",
+ "source": "new-discovery",
+ "component": "deepspeed",
+ "product": "deepspeedai/DeepSpeed",
+ "title": "DeepSpeed 0.19.8 AutoEP universal conversion loads expert shards with weights_only=False",
+ "module": "deepspeed-checkpoint-rce",
+ "version": "v0.19.8",
+ "root_cause": {
+  "file": "deepspeed/checkpoint/autoep_universal.py",
+  "line": 459,
+  "function": "consolidate_autoep_expert_files",
+  "snippet": ""
+ },
+ "preconditions": [
+  "attacker can write an AutoEP checkpoint directory",
+  "victim runs ds_to_universal conversion"
+ ],
+ "exploit": "malicious layer_<n>_expert_<e>_mp_rank_0_model_states.pt -> torch.load(weights_only=False) -> marker",
+ "evidence": {
+  "path": "lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/result.json",
+  "mode": "evidence-reused",
+  "kind": "dynamic"
+ },
+ "verification": {
+  "status": "verified",
+  "dynamic": true,
+  "method": "dynamic-function",
+  "reason": ""
+ },
+ "reachability": "checkpoint dir -> consolidate_autoep_expert_files -> resolve_expert_ckpt_path/torch.load(weights_only=False) -> pickle reduce -> RCE in conversion process.",
+ "novelty": {
+  "osv_package": "deepspeed",
+  "osv_ecosystem": "PyPI",
+  "osv_version": "0.19.8",
+  "ghsa_package": "deepspeed",
+  "ghsa_ecosystem": "pip",
+  "repo": "deepspeedai/DeepSpeed",
+  "nvd_keywords": [
+   "deepspeed",
+   "deepspeed",
+   "autoep"
+  ],
+  "strong_terms": [
+   "consolidate_autoep_expert_files",
+   "autoep_universal",
+   "consolidate_autoep_expert_files",
+   "weights_only=False",
+   "autoep_universal.py"
+  ],
+  "keywords": [
+   "deepspeed",
+   "deepspeed",
+   "autoep",
+   "checkpoint"
+  ],
+  "local_source": null
+ },
+ "disclosure": {
+  "status": "undisclosed",
+  "channel": "vendor security policy"
+ },
+ "notes": ""
+}

@@ -1,0 +1,179 @@
+{
+  "generated_at": "2026-10-26T11:20:54+00:00",
+  "offline": false,
+  "schema": "trident-novelty-results-v1",
+  "verdicts": {
+    "sglang-legacy-tar-weights-rce": {
+      "cache_dir": "<repo>\\corpus\\novelty\\cache",
+      "checked_at": "2026-10-26T11:20:54+00:00",
+      "id": "sglang-legacy-tar-weights-rce",
+      "offline": false,
+      "providers": {
+        "github_advisories": {
+          "detail": "GitHub advisory database has no strong-term match for the package",
+          "matches": [],
+          "provider": "github_advisories",
+          "related": [],
+          "status": "ok"
+        },
+        "github_code": {
+          "detail": "grep.app returned 7 hit(s), 5 outside the upstream repo",
+          "external_hits": [
+            {
+              "path": "python/sglang/multimodal_gen/runtime/loader/weight_utils.py",
+              "repo": "rednote-machine-learning/RedKnot",
+              "snippet": "256def _load_pt_file(bin_file: str, device: str) -&gt; dict:257    &quot;&quot;&quot;Load a PyTorch checkpoint file, handling legacy tar format.291        state = _load_pt_file(bin_file, device)292        yield from state.items()"
+            },
+            {
+              "path": "python/sglang/srt/model_loader/weight_utils.py",
+              "repo": "rednote-machine-learning/RedKnot",
+              "snippet": "1104def _load_pt_file(bin_file: str) -&gt; dict:1105    &quot;&quot;&quot;Load a PyTorch checkpoint file, handling legacy tar format.1138        state = _load_pt_file(bin_file)1139        yield from state.items()1153        futures = [1154            executor.submit(_load_pt_file, bin_file) for bin_"
+            },
+            {
+              "path": "tests/test_greenongreen.py",
+              "repo": "geezacoleman/OpenWeedLocator",
+              "snippet": "107    @patch(&#39;utils.greenongreen.YOLO&#39;)108    def test_load_pt_file_in_dir(self, mock_yolo_cls, tmp_path):109        &quot;&quot;&quot;Parent dir with .pt file loads the .pt file.&quot;&quot;&quot;"
+            },
+            {
+              "path": "vulns/lmdeploy/PYSEC-2026-2608.yaml",
+              "repo": "pypa/advisory-database",
+              "snippet": "8&hellip;m acknowledgement.\\n4. Request CVE through GHSA flow once the patch lands.\\n\\n## Why static-only is sufficient here\\n\\nUnlike F11 (RCE chain through `_load_pt_file`) which required a\\nruntime PoC to demonstrate the pickle gadget execution, this finding\\nis a **single trust-flag flip** — the"
+            },
+            {
+              "path": "tests/test_data_loader.py",
+              "repo": "MonsieurMiku/SSS-Net",
+              "snippet": "17def test_load_pt_file():18    test_tensor = torch.tensor([[5, 6], [7, 8]])"
+            }
+          ],
+          "local_tree_hits": [],
+          "matches": [
+            {
+              "path": "vulns/lmdeploy/PYSEC-2026-2608.yaml",
+              "repo": "pypa/advisory-database",
+              "snippet": "8&hellip;m acknowledgement.\\n4. Request CVE through GHSA flow once the patch lands.\\n\\n## Why static-only is sufficient here\\n\\nUnlike F11 (RCE chain through `_load_pt_file`) which required a\\nruntime PoC to demonstrate the pickle gadget execution, this finding\\nis a **single trust-flag flip** — the"
+            }
+          ],
+          "status": "match",
+          "via": "grep.app+local-tree"
+        },
+        "github_commits": {
+          "detail": "no security-relevant commit matched python/sglang/srt/model_loader/weight_utils.py",
+          "matches": [],
+          "provider": "github_commits",
+          "query": "\"python/sglang/srt/model_loader/weight_utils.py\" repo:sgl-project/sglang",
+          "related": [],
+          "status": "ok"
+        },
+        "nvd": {
+          "detail": "3 NVD CVE(s) matched strong terms",
+          "keywords": [
+            "sglang",
+            "sglang",
+            "model loader"
+          ],
+          "matches": [
+            {
+              "id": "CVE-2026-15976",
+              "matched_terms": [
+                "weights_only=False"
+              ],
+              "summary": "SGLang contains a RCE vulnerability when attempting to load model weights from a HuggingFace repository, specifically within the /update_weights_from_disk, where torch.load(..., weights_only=False) fallback enables pickle deserialization of .bin files.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-15976"
+            },
+            {
+              "id": "CVE-2026-15976",
+              "matched_terms": [
+                "weights_only=False"
+              ],
+              "summary": "SGLang contains a RCE vulnerability when attempting to load model weights from a HuggingFace repository, specifically within the /update_weights_from_disk, where torch.load(..., weights_only=False) fallback enables pickle deserialization of .bin files.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-15976"
+            },
+            {
+              "id": "CVE-2026-54499",
+              "matched_terms": [
+                "weights_only=False"
+              ],
+              "summary": "Stanza is a Stanford NLP Python library for tokenization, sentence segmentation, NER, and parsing of many human languages. Prior to 1.12.2, Stanza model loaders such as stanza.models.common.pretrain.Pretrain.load() attempt torch.load(..., weights_only=True) but fall back to torch.load(..., weights_o",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-54499"
+            }
+          ],
+          "provider": "nvd",
+          "related": [
+            {
+              "id": "CVE-2025-10164",
+              "summary": "A security flaw has been discovered in lmsys sglang 0.4.6. Affected by this vulnerability is the function main of the file /update_weights_from_tensor. The manipulation of the argument serialized_named_tensors results in deserialization. The attack can be launched remotely. The exploit has been rele",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-10164"
+            },
+            {
+              "id": "CVE-2026-3059",
+              "summary": "SGLang's multimodal generation module is vulnerable to unauthenticated remote code execution through the ZMQ broker, which deserializes untrusted data using pickle.loads() without authentication.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3059"
+            },
+            {
+              "id": "CVE-2026-3060",
+              "summary": "SGLang' encoder parallel disaggregation system is vulnerable to unauthenticated remote code execution through the disaggregation module, which deserializes untrusted data using pickle.loads() without authentication.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3060"
+            },
+            {
+              "id": "CVE-2026-3989",
+              "summary": "SGLangs `replay_request_dump.py` contains an insecure pickle.load() without validation and proper deserialization. An attacker can take advantage of this by providing a malicious .pkl file, which will execute the attackers code on the device running the script.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3989"
+            },
+            {
+              "id": "CVE-2026-5760",
+              "summary": "SGLang's reranking endpoint (/v1/rerank) achieves Remote Code Execution (RCE) when a model file containing a malcious tokenizer.chat_template is loaded, as the Jinja2 chat templates are rendered using an unsandboxed jinja2.Environment().",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-5760"
+            },
+            {
+              "id": "CVE-2026-7669",
+              "summary": "A vulnerability was detected in sgl-project SGLang up to 0.5.9. Impacted is the function get_tokenizer of the file python/sglang/srt/utils/hf_transformers_utils.py of the component HuggingFace Transformer Handler. The manipulation of the argument trust_remote_code with the input False as part of Boo",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7669"
+            },
+            {
+              "id": "CVE-2026-7301",
+              "summary": "SGLangs multimodal generation runtime scheduler's ROUTER socket binds to 0.0.0.0 by default and contains a sink that calls pickle.loads() on incoming messages, enabling RCE when exposed to the internet.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7301"
+            },
+            {
+              "id": "CVE-2026-7302",
+              "summary": "SGLangs multimodal generation runtime is vulnerable to an unauthenticated path traversal vulnerability, allowing an attacker to write arbitrary files anywhere the server process has write access, by including ../ sequences in the upload filename when sent to specific endpoints.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7302"
+            },
+            {
+              "id": "CVE-2026-7304",
+              "summary": "SGLangs multimodal generation runtime is vulnerable to unauthenticated remote code execution when the --enable-custom-logit-processor option is enabled, as Python objects loaded via dill.loads() will be deserialized without validation.",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7304"
+            },
+            {
+              "id": "CVE-2026-10300",
+              "summary": "A security vulnerability has been detected in SGLang 0.5.10.post1. Impacted is an unknown function of the file python/sglang/srt/lora/lora_manager.py of the component Inference HTTP Endpoint. Such manipulation of the argument lora_path leads to reachable assertion. The attack can be launched remotel",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10300"
+            }
+          ],
+          "status": "match"
+        },
+        "osv": {
+          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "matches": [],
+          "provider": "osv",
+          "queried": "sglang@0.5.22",
+          "related": [],
+          "status": "ok"
+        },
+        "vendor": {
+          "detail": "vendor pages fetched clean",
+          "fetched": [
+            "https://github.com/sgl-project/sglang/security/advisories",
+            "https://github.com/sgl-project/sglang/releases"
+          ],
+          "matches": [],
+          "provider": "vendor",
+          "status": "ok"
+        }
+      },
+      "reason": "public disclosure match: nvd=CVE-2026-15976, ?=None",
+      "schema": "trident-novelty-result-v1",
+      "verdict": "already-public"
+    }
+  }
+}

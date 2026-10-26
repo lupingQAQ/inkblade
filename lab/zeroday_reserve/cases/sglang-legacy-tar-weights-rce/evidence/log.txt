@@ -1,0 +1,9 @@
+upstream=lab/zeroday_reserve/upstream/sglang-0.5.22/python/sglang/srt/model_loader/weight_utils.py
+function=_load_pt_file line=1398
+source_sha256=a7757701b108c2c383d315ede8b37a2c18ab0f393529ff8c06bdd290a020da64
+shard=lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/evidence/work/pytorch_model-00001-of-00001.bin
+tar_magic=b'stor'
+step1: torch.load(weights_only=True) -> RuntimeError('legacy .tar format')
+step2: upstream fallback torch.load(weights_only=False) -> storages pickle executed
+post_sink_error=TypeError: 'NoneType' object cannot be interpreted as an integer
+marker=TRIDENT-ZD-sglang-legacy-tar-weights-rce

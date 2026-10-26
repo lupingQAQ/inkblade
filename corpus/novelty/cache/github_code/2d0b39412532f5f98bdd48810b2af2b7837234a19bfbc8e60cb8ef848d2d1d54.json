@@ -1,0 +1,66 @@
+{
+  "_cached_at": "2026-10-26T11:14:19+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 2,
+            "val": "Python"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 1,
+            "val": "deepspeed/checkpoint/"
+          },
+          {
+            "count": 1,
+            "val": "tests/unit/v1/moe/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 2,
+            "owner_id": "74068820",
+            "val": "deepspeedai/DeepSpeed"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"352\"><td><div class=\"lineno\">352</div></td><td><div class=\"highlight\"><pre><span class=\"k\">def</span><span class=\"w\"> </span><span class=\"nf\"><mark>consolidate_autoep_expert_files</mark></span><span class=\"p\">(</span><span class=\"n\">checkpoint_dir</span><span class=\"p\">,</span> <span class=\"n\">output_dir</span><span class=\"p\">,</span> <span class=\"n\">autoep_layers_metadata</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"353\"><td><div class=\"lineno\">353</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;Consolidate per-expert checkpoint files into full-expert universal format.</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "deepspeed/checkpoint/autoep_universal.py",
+          "repo": "deepspeedai/DeepSpeed",
+          "total_matches": "1"
+        },
+        {
+          "branch": "master",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"15\"><td><div class=\"lineno\">15</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">from</span><span class=\"w\"> </span><span class=\"nn\">deepspeed.checkpoint.autoep_universal</span><span class=\"w\"> </span><span class=\"kn\">import</span> <span class=\"p\">(</span></pre></div></td></tr><tr data-line=\"16\"><td><div class=\"lineno\">16</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\"><mark>consolidate_autoep_expert_files</mark></span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"17\"><td><div class=\"lineno\">17</div></td><td><div class=\"highlight\"><pre>    <span class=\"n\">make_folding_metadata</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"204\"><td><div class=\"lineno\">204</div></td><td><div class=\"highlight\"><pre>    <span class=\"k\">with</span> <span class=\"n\">pytest</span><span class=\"o\">.</span><span class=\"n\">raises</span><span class=\"p\">(</span><span class=\"ne\">NotImplementedError</span><span class=\"p\">,</span> <span class=\"n\">match</span><span class=\"o\">=</span><span class=\"s2\">&quot;folded AutoEP</span><span class=\"se\">\\\\</span><span class=\"s2\">+AutoTP expert shards&quot;</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"205\"><td><div class=\"lineno\">205</div></td><td><div class=\"highlight\"><pre>        <span class=\"n\"><mark>consolidate_autoep_expert_files</mark></span><span class=\"p\">(</span><span class=\"nb\">str</span><span class=\"p\">(</span><span class=\"n\">checkpoint_dir</span><span class=\"p\">),</span> <span class=\"nb\">str</span><span class=\"p\">(</span><span class=\"n\">output_dir</span><span class=\"p\">),</span> <span class=\"p\">[{</span></pre></div></td></tr><tr data-line=\"206\"><td><div class=\"lineno\">206</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;moe_layer_id&quot;</span><span class=\"p\">:</span> <span class=\"mi\">0</span><span class=\"p\">,</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "74068820",
+          "path": "tests/unit/v1/moe/test_autoep_autotp_checkpoint.py",
+          "repo": "deepspeedai/DeepSpeed",
+          "total_matches": "2"
+        }
+      ],
+      "total": 2
+    },
+    "time": 51
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=consolidate_autoep_expert_files"
+}

@@ -1,0 +1,233 @@
+{
+  "_cached_at": "2026-10-26T11:36:15+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 68,
+            "val": "Python"
+          },
+          {
+            "count": 9,
+            "val": "Markdown"
+          },
+          {
+            "count": 7,
+            "val": "Text"
+          },
+          {
+            "count": 1,
+            "val": "Dockerfile"
+          },
+          {
+            "count": 1,
+            "val": "INI"
+          },
+          {
+            "count": 1,
+            "val": "Ignore List"
+          },
+          {
+            "count": 1,
+            "val": "JSON"
+          },
+          {
+            "count": 1,
+            "val": "Meson"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 13,
+            "val": "rllm/"
+          },
+          {
+            "count": 10,
+            "val": "marti/verifiers/"
+          },
+          {
+            "count": 5,
+            "val": "eval/"
+          },
+          {
+            "count": 5,
+            "val": "examples/"
+          },
+          {
+            "count": 4,
+            "val": "src/"
+          },
+          {
+            "count": 4,
+            "val": "training/"
+          },
+          {
+            "count": 3,
+            "val": "evals/elsuite/hr_ml_agent_bench/benchmarks/parkinsons_disease/"
+          },
+          {
+            "count": 3,
+            "val": "open_thoughts_3/dcft/data_strategies/Stratos/bespoke-stratos-data-generation-original/util/testing/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 5,
+            "owner_id": "113813910",
+            "val": "TsinghuaC3I/MARTI"
+          },
+          {
+            "count": 5,
+            "owner_id": "139851596",
+            "val": "ltjed/multiagent-coaching"
+          },
+          {
+            "count": 4,
+            "owner_id": "2695301",
+            "val": "NVlabs/ToolOrchestra"
+          },
+          {
+            "count": 3,
+            "owner_id": "113566496",
+            "val": "kxfan2002/Reagent"
+          },
+          {
+            "count": 3,
+            "owner_id": "14957082",
+            "val": "openai/evals"
+          },
+          {
+            "count": 3,
+            "owner_id": "167806754",
+            "val": "bespokelabsai/curator"
+          },
+          {
+            "count": 3,
+            "owner_id": "16943930",
+            "val": "facebookresearch/airs-bench"
+          },
+          {
+            "count": 3,
+            "owner_id": "196696926",
+            "val": "open-thoughts/open-thoughts"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"7\"><td><div class=\"lineno\">7</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">Part of the codes are from https://github.com/NovaSky-AI/SkyThought/blob/main/skythought/tools/util/livecodebench/<mark>testing_util.py</mark></span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"63\"><td><div class=\"lineno\">63</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># Helper classes for stdin/stdout capture (from official LiveCodeBench <mark>testing_util.py</mark>)</span></pre></div></td></tr><tr data-line=\"64\"><td><div class=\"lineno\">64</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"65\"><td><div class=\"lineno\">65</div></td><td><div class=\"highlight\"><pre><span class=\"k\">class</span><span class=\"w\"> </span><span class=\"nc\">Capturing</span><span class=\"p\">(</span><span class=\"nb\">list</span><span class=\"p\">):</span></pre></div></td></tr><tr data-line=\"66\"><td><div class=\"lineno\">66</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span><span class=\"sd\">&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"67\"><td><div class=\"lineno\">67</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    Context manager to capture stdout as a list.</span></pre></div></td></tr><tr data-line=\"68\"><td><div class=\"lineno\">68</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    From official LiveCodeBench <mark>testing_util.py</mark>:59-70</span></pre></div></td></tr><tr data-line=\"69\"><td><div class=\"lineno\">69</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    From https://stackoverflow.com/a/16571630/6416660</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "321491504",
+          "path": "evaluation/livecodebench_utils.py",
+          "repo": "apple-aiml-research/ml-ssd",
+          "total_matches": "15"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"87\"><td><div class=\"lineno\">87</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;code.py&quot;</span><span class=\"p\">:</span> <span class=\"n\">generation</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"88\"><td><div class=\"lineno\">88</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;<mark>testing_util.py</mark>&quot;</span><span class=\"p\">:</span> <span class=\"n\">TEST_UTIL</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"105\"><td><div class=\"lineno\">105</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;code.py&quot;</span><span class=\"p\">:</span> <span class=\"n\">generation</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"106\"><td><div class=\"lineno\">106</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;<mark>testing_util.py</mark>&quot;</span><span class=\"p\">:</span> <span class=\"n\">TEST_UTIL</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"107\"><td><div class=\"lineno\">107</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;run.py&quot;</span><span class=\"p\">:</span> <span class=\"n\">TEST_CODE</span> <span class=\"o\">%</span> <span class=\"p\">{</span><span class=\"s2\">&quot;timeout&quot;</span><span class=\"p\">:</span> <span class=\"n\">timeout</span><span class=\"p\">},</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "220441404",
+          "path": "tinker_cookbook/recipes/code_rl/code_grading.py",
+          "repo": "thinking-machines-lab/tinker-cookbook",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1\"><td><div class=\"lineno\">1</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># ruff: noqa</span></pre></div></td></tr><tr data-line=\"2\"><td><div class=\"lineno\">2</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">&quot;&quot;&quot;Code from https://github.com/NovaSky-AI/SkyThought/blob/e855aad095f4eeee00ba6a909dfe4300faf6d853/skythought/tools/util/taco/<mark>testing_util.py</mark>&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"3\"><td><div class=\"lineno\">3</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># modifed from https://github.com/hendrycks/apps/blob/main/eval/<mark>testing_util.py</mark> to fix some evaluation bugs and add instructions</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "196696926",
+          "path": "open_thoughts_3/dcft/data_strategies/Stratos/bespoke-stratos-data-generation-original/util/testing/taco.py",
+          "repo": "open-thoughts/open-thoughts",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"31\"><td><div class=\"lineno\">31</div></td><td><div class=\"highlight\"><pre><span class=\"n\">supplemental_csv</span> <span class=\"o\">=</span> <span class=\"n\">dataset_dir</span> <span class=\"o\">/</span> <span class=\"s2\">&quot;supplemental_clinical_data.csv&quot;</span></pre></div></td></tr><tr data-line=\"32\"><td><div class=\"lineno\">32</div></td><td><div class=\"highlight\"><pre><span class=\"n\">utils_py</span> <span class=\"o\">=</span> <span class=\"n\">dataset_dir</span> <span class=\"o\">/</span> <span class=\"s2\">&quot;public_timeseries_<mark>testing_util.py</mark>&quot;</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "14957082",
+          "path": "evals/elsuite/hr_ml_agent_bench/benchmarks/parkinsons_disease/scripts/prepare.py",
+          "repo": "openai/evals",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"87\"><td><div class=\"lineno\">87</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;code.py&quot;</span><span class=\"p\">:</span> <span class=\"n\">generation</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"88\"><td><div class=\"lineno\">88</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;<mark>testing_util.py</mark>&quot;</span><span class=\"p\">:</span> <span class=\"n\">TEST_UTIL</span><span class=\"p\">,</span></pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"105\"><td><div class=\"lineno\">105</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;code.py&quot;</span><span class=\"p\">:</span> <span class=\"n\">generation</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"106\"><td><div class=\"lineno\">106</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;<mark>testing_util.py</mark>&quot;</span><span class=\"p\">:</span> <span class=\"n\">TEST_UTIL</span><span class=\"p\">,</span></pre></div></td></tr><tr data-line=\"107\"><td><div class=\"lineno\">107</div></td><td><div class=\"highlight\"><pre>            <span class=\"s2\">&quot;run.py&quot;</span><span class=\"p\">:</span> <span class=\"n\">TEST_CODE</span> <span class=\"o\">%</span> <span class=\"p\">{</span><span class=\"s2\">&quot;timeout&quot;</span><span class=\"p\">:</span> <span class=\"n\">timeout</span><span class=\"p\">},</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "56672509",
+          "path": "tinker-cookbook/tinker_cookbook/recipes/code_rl/code_grading.py",
+          "repo": "pat-jj/harness-1",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1\"><td><div class=\"lineno\">1</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># ruff: noqa</span></pre></div></td></tr><tr data-line=\"2\"><td><div class=\"lineno\">2</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">&quot;&quot;&quot;Code from https://github.com/NovaSky-AI/SkyThought/blob/e855aad095f4eeee00ba6a909dfe4300faf6d853/skythought/tools/util/taco/<mark>testing_util.py</mark>&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"3\"><td><div class=\"lineno\">3</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># modifed from https://github.com/hendrycks/apps/blob/main/eval/<mark>testing_util.py</mark> to fix some evaluation bugs and add instructions</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "167806754",
+          "path": "examples/bespoke-stratos-data-generation/util/testing/taco.py",
+          "repo": "bespokelabsai/curator",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"2\"><td><div class=\"lineno\">2</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">copied directly from livecodebench</span></pre></div></td></tr><tr data-line=\"3\"><td><div class=\"lineno\">3</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">https://github.com/LiveCodeBench/LiveCodeBench/blob/main/lcb_runner/evaluation/<mark>testing_util.py</mark></span></pre></div></td></tr></table>"
+          },
+          "owner_id": "5667695",
+          "path": "open_instruct/code_utils/testing_util.py",
+          "repo": "allenai/open-instruct",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1\"><td><div class=\"lineno\">1</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># Taken from https://github.com/LiveCodeBench/LiveCodeBench/blob/998c52d394b836f15fff3b9a29866191108ff81b/lcb_runner/evaluation/<mark>testing_util.py</mark></span></pre></div></td></tr><tr data-line=\"2\"><td><div class=\"lineno\">2</div></td><td><div class=\"highlight\"><pre><span class=\"kn\">import</span><span class=\"w\"> </span><span class=\"nn\">ast</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "221438497",
+          "path": "rllm/rewards/code_utils/livecodebench.py",
+          "repo": "rllm-org/rllm",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"1\"><td><div class=\"lineno\">1</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># modifed from https://github.com/hendrycks/apps/blob/main/eval/<mark>testing_util.py</mark> to fix some evaluation bugs and add instructions</span></pre></div></td></tr><tr data-line=\"2\"><td><div class=\"lineno\">2</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># https://github.com/NovaSky-AI/SkyThought/blob/main/skythought/skythought_evals/tasks/taco/taco_util.py</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "221438497",
+          "path": "rllm/rewards/code_utils/taco.py",
+          "repo": "rllm-org/rllm",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"2\"><td><div class=\"lineno\">2</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">Modified from https://github.com/FlagOpen/TACO/blob/main/metrics/<mark>testing_util.py</mark> to accelerate the evaluation process.</span></pre></div></td></tr><tr data-line=\"3\"><td><div class=\"lineno\">3</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"4\"><td><div class=\"lineno\">4</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">ADaM-Lab, 2024.12.10</span></pre></div></td></tr><tr data-line=\"5\"><td><div class=\"lineno\">5</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">&quot;&quot;&quot;</span></pre></div></td></tr><tr data-line=\"6\"><td><div class=\"lineno\">6</div></td><td><div class=\"highlight\"><pre><span class=\"c1\"># modifed from https://github.com/hendrycks/apps/blob/main/eval/<mark>testing_util.py</mark> to fix some evaluation bugs and add instructions</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "56618977",
+          "path": "src/RL/rewards/testing_util.py",
+          "repo": "ADaM-BJTU/O1-CODER",
+          "total_matches": "2"
+        }
+      ],
+      "total": 91
+    },
+    "time": 91
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=testing_util.py"
+}

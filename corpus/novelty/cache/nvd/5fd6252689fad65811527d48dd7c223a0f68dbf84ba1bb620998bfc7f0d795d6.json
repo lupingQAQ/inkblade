@@ -1,0 +1,16 @@
+{
+  "_cached_at": "2026-10-26T11:21:46+00:00",
+  "body": {
+    "format": "NVD_CVE",
+    "resultsPerPage": 0,
+    "startIndex": 0,
+    "timestamp": "2026-10-26T11:21:46.748",
+    "totalResults": 0,
+    "version": "2.0",
+    "vulnerabilities": []
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=vllm-jev&resultsPerPage=50"
+}

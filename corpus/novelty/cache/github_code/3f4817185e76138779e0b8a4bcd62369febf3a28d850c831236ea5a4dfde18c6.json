@@ -1,0 +1,207 @@
+{
+  "_cached_at": "2026-10-26T11:36:21+00:00",
+  "body": {
+    "facets": {
+      "lang": {
+        "buckets": [
+          {
+            "count": 21,
+            "val": "Markdown"
+          },
+          {
+            "count": 2,
+            "val": "YAML"
+          },
+          {
+            "count": 1,
+            "val": "Python"
+          },
+          {
+            "count": 1,
+            "val": "Shell"
+          }
+        ]
+      },
+      "path": {
+        "buckets": [
+          {
+            "count": 6,
+            "val": "docs/"
+          },
+          {
+            "count": 5,
+            "val": ".agents/"
+          },
+          {
+            "count": 3,
+            "val": "scripts/areal/analysis/reports/"
+          },
+          {
+            "count": 2,
+            "val": ".claude/"
+          },
+          {
+            "count": 2,
+            "val": ".opencode/"
+          },
+          {
+            "count": 2,
+            "val": "rlhf/areal/"
+          },
+          {
+            "count": 2,
+            "val": "tests/"
+          },
+          {
+            "count": 1,
+            "val": ".codex/agents/"
+          }
+        ]
+      },
+      "repo": {
+        "buckets": [
+          {
+            "count": 15,
+            "owner_id": "283073558",
+            "val": "areal-project/AReaL"
+          },
+          {
+            "count": 3,
+            "owner_id": "134388954",
+            "val": "camel-ai/seta"
+          },
+          {
+            "count": 3,
+            "owner_id": "212961691",
+            "val": "verl-project/verl-omni"
+          },
+          {
+            "count": 2,
+            "owner_id": "74843776",
+            "val": "zhaochenyang20/Awesome-ML-SYS-Tutorial"
+          },
+          {
+            "count": 1,
+            "owner_id": "265008810",
+            "val": "Sim2Reason/Sim2Reason"
+          },
+          {
+            "count": 1,
+            "owner_id": "96673402",
+            "val": "DLYuanGod/MegaTrain"
+          }
+        ]
+      }
+    },
+    "hits": {
+      "hits": [
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"33\"><td><div class=\"lineno\">33</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    download Hub kernels at engine init. Falls back to native/SDPA when FA3 deps</span></pre></div></td></tr><tr data-line=\"34\"><td><div class=\"lineno\">34</div></td><td><div class=\"highlight\"><pre><span class=\"sd\">    are missing (same idea as ``tests/workers/test_diffusers_<mark>fsdp_engine.py</mark>``).</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "212961691",
+          "path": "tests/utils/smoke_attention.py",
+          "repo": "verl-project/verl-omni",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"20\"><td><div class=\"lineno\">20</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span>env<span class=\"w\"> </span><span class=\"nv\">CUDA_VISIBLE_DEVICES</span><span class=\"o\">=</span><span class=\"s2\">&quot;</span><span class=\"si\">${</span><span class=\"nv\">CUDA_DEVICE_LIST</span><span class=\"si\">}</span><span class=\"s2\">&quot;</span><span class=\"w\"> </span><span class=\"se\">\\</span></pre></div></td></tr><tr data-line=\"21\"><td><div class=\"lineno\">21</div></td><td><div class=\"highlight\"><pre><span class=\"w\">    </span>python3<span class=\"w\"> </span>-m<span class=\"w\"> </span>pytest<span class=\"w\"> </span>-s<span class=\"w\"> </span>tests/workers/test_diffusers_<mark>fsdp_engine.py</mark></pre></div></td></tr></table>"
+          },
+          "owner_id": "212961691",
+          "path": "tests/gpu_smoke/run_gpu_smoke_core.sh",
+          "repo": "verl-project/verl-omni",
+          "total_matches": "1"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"27\"><td><div class=\"lineno\">27</div></td><td><div class=\"highlight\"><pre>| <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span>                | <span class=\"sb\">`AutoConfig`</span>, <span class=\"sb\">`AutoModelForCausalLM`</span>, <span class=\"sb\">`AutoModelForImageTextToText`</span>, <span class=\"sb\">`AutoModelForTokenClassification`</span>, <span class=\"sb\">`PretrainedConfig`</span>, <span class=\"sb\">`PreTrainedTokenizerFast`</span>, <span class=\"sb\">`ProcessorMixin`</span>, <span class=\"sb\">`get_linear_schedule_with_warmup`</span>, <span class=\"sb\">`get_constant_schedule_with_warmup`</span> |</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"73\"><td><div class=\"lineno\">73</div></td><td><div class=\"highlight\"><pre>Called in <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span>:</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"121\"><td><div class=\"lineno\">121</div></td><td><div class=\"highlight\"><pre>Called in <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span>, <span class=\"sb\">`areal/engine/megatron_engine.py`</span>,</pre></div></td></tr><tr data-line=\"122\"><td><div class=\"lineno\">122</div></td><td><div class=\"highlight\"><pre><span class=\"sb\">`areal/engine/fsdp_utils/parallel.py`</span>, <span class=\"sb\">`areal/experimental/engine/archon_engine.py`</span>,</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"199\"><td><div class=\"lineno\">199</div></td><td><div class=\"highlight\"><pre><span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span> (<span class=\"sb\">`ProcessorMixin`</span>).</pre></div></td></tr></table>"
+          },
+          "owner_id": "283073558",
+          "path": ".agents/skills/upgrade-deps/checklists/transformers.md",
+          "repo": "areal-project/AReaL",
+          "total_matches": "5"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"17\"><td><div class=\"lineno\">17</div></td><td><div class=\"highlight\"><pre>| <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span> | <span class=\"sb\">`LoraConfig`</span>, <span class=\"sb\">`TaskType`</span>, <span class=\"sb\">`get_peft_model`</span> |</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"49\"><td><div class=\"lineno\">49</div></td><td><div class=\"highlight\"><pre>Called in <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span> (<span class=\"sb\">`_apply_peft_wrapper`</span>, lines 930–946):</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"81\"><td><div class=\"lineno\">81</div></td><td><div class=\"highlight\"><pre>Called in <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span> (<span class=\"sb\">`_apply_peft_wrapper`</span>, lines 948–953), after</pre></div></td></tr><tr data-line=\"82\"><td><div class=\"lineno\">82</div></td><td><div class=\"highlight\"><pre><span class=\"sb\">`model.enable_input_require_grads()`</span> and before FSDP sharding:</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"158\"><td><div class=\"lineno\">158</div></td><td><div class=\"highlight\"><pre>Populated in <span class=\"sb\">`areal/engine/megatron_engine.py`</span> (lines 1196–1203) and</pre></div></td></tr><tr data-line=\"159\"><td><div class=\"lineno\">159</div></td><td><div class=\"highlight\"><pre><span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span> (lines 1148–1153):</pre></div></td></tr></table>"
+          },
+          "owner_id": "283073558",
+          "path": ".agents/skills/upgrade-deps/checklists/peft.md",
+          "repo": "areal-project/AReaL",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"131\"><td><div class=\"lineno\">131</div></td><td><div class=\"highlight\"><pre>For deeper issues, examine FSDP wrapping, communication patterns, or memory usage</pre></div></td></tr><tr data-line=\"132\"><td><div class=\"lineno\">132</div></td><td><div class=\"highlight\"><pre>directly in <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span>.</pre></div></td></tr><tr data-line=\"133\"><td><div class=\"lineno\">133</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"134\"><td><div class=\"lineno\">134</div></td><td><div class=\"highlight\"><pre><span class=\"gu\">## Implementation Structure</span></pre></div></td></tr><tr data-line=\"135\"><td><div class=\"lineno\">135</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"136\"><td><div class=\"lineno\">136</div></td><td><div class=\"highlight\"><pre><span class=\"gs\">**Core Engine**</span>: <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span> - Main engine class and</pre></div></td></tr><tr data-line=\"137\"><td><div class=\"lineno\">137</div></td><td><div class=\"highlight\"><pre>algorithm-specific subclasses</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"188\"><td><div class=\"lineno\">188</div></td><td><div class=\"highlight\"><pre><span class=\"gs\">**Algorithm-Specific Subclasses**</span> (in <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span>):</pre></div></td></tr></table>"
+          },
+          "owner_id": "283073558",
+          "path": ".codex/agents/fsdp-expert.md",
+          "repo": "areal-project/AReaL",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"142\"><td><div class=\"lineno\">142</div></td><td><div class=\"highlight\"><pre>For deeper issues, examine FSDP wrapping, communication patterns, or memory usage</pre></div></td></tr><tr data-line=\"143\"><td><div class=\"lineno\">143</div></td><td><div class=\"highlight\"><pre>directly in <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span>.</pre></div></td></tr><tr data-line=\"144\"><td><div class=\"lineno\">144</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"145\"><td><div class=\"lineno\">145</div></td><td><div class=\"highlight\"><pre><span class=\"gu\">## Implementation Structure</span></pre></div></td></tr><tr data-line=\"146\"><td><div class=\"lineno\">146</div></td><td><div class=\"highlight\"><pre><br/></pre></div></td></tr><tr data-line=\"147\"><td><div class=\"lineno\">147</div></td><td><div class=\"highlight\"><pre><span class=\"gs\">**Core Engine**</span>: <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span> - Main engine class and</pre></div></td></tr><tr data-line=\"148\"><td><div class=\"lineno\">148</div></td><td><div class=\"highlight\"><pre>algorithm-specific subclasses</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"199\"><td><div class=\"lineno\">199</div></td><td><div class=\"highlight\"><pre><span class=\"gs\">**Algorithm-Specific Subclasses**</span> (in <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span>):</pre></div></td></tr></table>"
+          },
+          "owner_id": "283073558",
+          "path": ".opencode/agents/fsdp-expert.md",
+          "repo": "areal-project/AReaL",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"142\"><td><div class=\"lineno\">142</div></td><td><div class=\"highlight\"><pre>For deeper issues, examine FSDP wrapping, communication patterns, or memory usage</pre></div></td></tr><tr data-line=\"143\"><td><div class=\"lineno\">143</div></td><td><div class=\"highlight\"><pre>directly in <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span>.</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"159\"><td><div class=\"lineno\">159</div></td><td><div class=\"highlight\"><pre><span class=\"gs\">**Core Engine**</span>: <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span> - Main engine class and</pre></div></td></tr><tr data-line=\"160\"><td><div class=\"lineno\">160</div></td><td><div class=\"highlight\"><pre>algorithm-specific subclasses</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"211\"><td><div class=\"lineno\">211</div></td><td><div class=\"highlight\"><pre><span class=\"gs\">**Algorithm-Specific Subclasses**</span> (in <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span>):</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"249\"><td><div class=\"lineno\">249</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span><span class=\"gs\">**Main implementation**</span>: <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span></pre></div></td></tr><tr data-line=\"250\"><td><div class=\"lineno\">250</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span><span class=\"gs\">**Configuration**</span>: <span class=\"sb\">`areal/api/cli_args.py`</span> (<span class=\"sb\">`TrainEngineConfig`</span>)</pre></div></td></tr></table>"
+          },
+          "owner_id": "283073558",
+          "path": ".claude/agents/fsdp-engine-expert.md",
+          "repo": "areal-project/AReaL",
+          "total_matches": "4"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"281\"><td><div class=\"lineno\">281</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span>[<span class=\"sb\">`<mark>fsdp_engine.py</mark>`</span>](/Users/qijia/Documents/code/terminal_agent/external/areal/areal/engine/<mark>fsdp_engine.py</mark>#L644)</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"301\"><td><div class=\"lineno\">301</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span>backward over all microbatches:</pre></div></td></tr><tr data-line=\"302\"><td><div class=\"lineno\">302</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"k\">-</span><span class=\"w\"> </span>[<span class=\"sb\">`<mark>fsdp_engine.py</mark>`</span>](/Users/qijia/Documents/code/terminal_agent/external/areal/areal/engine/<mark>fsdp_engine.py</mark>#L625)</pre></div></td></tr><tr data-line=\"303\"><td><div class=\"lineno\">303</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span>grad norm:</pre></div></td></tr><tr data-line=\"304\"><td><div class=\"lineno\">304</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"k\">-</span><span class=\"w\"> </span>[<span class=\"sb\">`<mark>fsdp_engine.py</mark>`</span>](/Users/qijia/Documents/code/terminal_agent/external/areal/areal/engine/<mark>fsdp_engine.py</mark>#L644)</pre></div></td></tr><tr data-line=\"305\"><td><div class=\"lineno\">305</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span>log return:</pre></div></td></tr><tr data-line=\"306\"><td><div class=\"lineno\">306</div></td><td><div class=\"highlight\"><pre><span class=\"w\">  </span><span class=\"k\">-</span><span class=\"w\"> </span>[<span class=\"sb\">`<mark>fsdp_engine.py</mark>`</span>](/Users/qijia/Documents/code/terminal_agent/external/areal/areal/engine/<mark>fsdp_engine.py</mark>#L657)</pre></div></td></tr></table>"
+          },
+          "owner_id": "134388954",
+          "path": "scripts/areal/analysis/reports/per_turn_training_semantics.md",
+          "repo": "camel-ai/seta",
+          "total_matches": "8"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"26\"><td><div class=\"lineno\">26</div></td><td><div class=\"highlight\"><pre>| <span class=\"sb\">`fsdp_core`</span>                | <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span>, <span class=\"sb\">`areal/engine/fsdp_utils/`</span>                                      | <span class=\"sb\">`FSDP`</span>, <span class=\"sb\">`fully_shard`</span>, <span class=\"sb\">`FullyShardedDataParallel`</span>                                                                                                                         |</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"136\"><td><div class=\"lineno\">136</div></td><td><div class=\"highlight\"><pre>  <span class=\"sb\">`areal/experimental/engine/archon_engine.py`</span></pre></div></td></tr><tr data-line=\"137\"><td><div class=\"lineno\">137</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span>FSDP core: <span class=\"sb\">`areal/engine/fsdp_utils/`</span>, <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span></pre></div></td></tr><tr data-line=\"138\"><td><div class=\"lineno\">138</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span>Megatron core: <span class=\"sb\">`areal/engine/megatron_engine.py`</span>, <span class=\"sb\">`areal/engine/megatron_utils/`</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "283073558",
+          "path": ".agents/skills/review-pr/references/review-pr-domains-and-signals.md",
+          "repo": "areal-project/AReaL",
+          "total_matches": "2"
+        },
+        {
+          "branch": "main",
+          "content": {
+            "snippet": "<table class=\"highlight-table\"><tr data-line=\"26\"><td><div class=\"lineno\">26</div></td><td><div class=\"highlight\"><pre>| <span class=\"sb\">`fsdp_core`</span>                | <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span>, <span class=\"sb\">`areal/engine/fsdp_utils/`</span>                                      | <span class=\"sb\">`FSDP`</span>, <span class=\"sb\">`fully_shard`</span>, <span class=\"sb\">`FullyShardedDataParallel`</span>                                                                                                                         |</pre><div class=\"jump\"></div></div></td></tr><tr data-line=\"136\"><td><div class=\"lineno\">136</div></td><td><div class=\"highlight\"><pre>  <span class=\"sb\">`areal/experimental/engine/archon_engine.py`</span></pre></div></td></tr><tr data-line=\"137\"><td><div class=\"lineno\">137</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span>FSDP core: <span class=\"sb\">`areal/engine/fsdp_utils/`</span>, <span class=\"sb\">`areal/engine/<mark>fsdp_engine.py</mark>`</span></pre></div></td></tr><tr data-line=\"138\"><td><div class=\"lineno\">138</div></td><td><div class=\"highlight\"><pre><span class=\"k\">-</span><span class=\"w\"> </span>Megatron core: <span class=\"sb\">`areal/engine/megatron_engine.py`</span>, <span class=\"sb\">`areal/engine/megatron_utils/`</span></pre></div></td></tr></table>"
+          },
+          "owner_id": "283073558",
+          "path": ".claude/data/review-pr-domains-and-signals.md",
+          "repo": "areal-project/AReaL",
+          "total_matches": "2"
+        }
+      ],
+      "total": 25
+    },
+    "time": 55
+  },
+  "cache_hit": false,
+  "http_status": 200,
+  "status": "ok",
+  "url": "https://grep.app/api/search?q=fsdp_engine.py"
+}
