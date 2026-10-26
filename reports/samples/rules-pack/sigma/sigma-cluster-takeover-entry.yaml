@@ -1,0 +1,34 @@
+title: "??? operator ????????"
+id: 5034b3fa-ed49-d7e1-0f6e-57e289ba5553
+status: stable
+description: "K8s audit: an operator-class service account enumerates services/pods (entry discovery against an exposed training/inference control plane). ???? operator ???????/?????????"
+references:
+  - "trident-rules-mapping: sigma-cluster-takeover-entry"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - get
+      - list
+    objectRef.resource:
+      - services
+      - pods
+    subject_sa:
+      re: "serviceaccount:.*operator"
+  condition: selection
+falsepositives:
+  - "?????????/???????????????????"
+level: medium
+tags:
+  - attack.discovery
+  - attack.t1046
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: "? 30 ?????????????????operator ?????????? list services/pods ?? high??? NodePort ?????????"
+  trident-blocks-chains: cluster-takeover-objective

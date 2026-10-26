@@ -15,11 +15,13 @@
 > | 可利用性核验 | **32 verified / 98 static-only / 22 unsupported**（共 152） | `trident/core/exploit-registry.json` |
 > | 画像覆盖（production，6 画像） | 73.48% / 70.08% / 62.12% / 70.45% / 71.21% / **25.76%**（Slurm 域级 88.2%） | `docs/SURFACE-REALISM.md`、`docs/SLURM-HPC-COVERAGE.md` |
 > | 默认 PoC | **2**（六画像默认可利用 1/1/2/0/2/0） | `exploit-registry.json` + `SURFACE-REALISM.md` |
-> | 无面模块 | **12**（11 个已隔离；1 个待 owner 决定） | `docs/SURFACE-REALISM.md` §2 |
+> | 无面模块 | **12**（9 个已隔离 + 3 个待 owner；另 2 个隔离项仅部分画像无面） | `docs/SURFACE-REALISM.md` §2 |
 > | 未达成项 | **11 条**（见 §7.7） | 本文 §7、`docs/SOTA-2026-10.md` |
 >
 > 口径：模块/画像/无面为静态统计；测试为本轮全量 `unittest discover` 实测；verified 只认
 > `exploit-registry.json` 的 `verified`，static-only/unsupported 不计入可利用清单。
+> 测试计数补充：1933 来自并行批次 `407d9af` 合并后的全量运行；本任务独立实测为 1891（101 红全部来自
+> 4 个并行未完成模块）与干净 overlay 1904（1 时间戳跨秒 flake，重跑通过），逐项归因见 `DEV-LOG.md` §D。
 
 ---
 
@@ -682,7 +684,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | 6 | 模型注册中心 / 权重仓库直连 | 只读本地清单/权重 | HF/OCI 拉取 + 在线验签 + 断网/篡改/吊销负例 |
 | 7 | SIEM/SOAR 真实投递 | 只有 SARIF/OCSF/VEX 产物 | Splunk HEC/Elastic/Sentinel 投递 + 幂等/回压/审计 |
 | 8 | 漏洞挖掘披露闭环 | 候选停在 `pending-manual-review` | 人工确认 + 负责任披露流程 + 状态回写 |
-| 9 | 无面模块治理 | 12 个六画像全无面；11 个已隔离，1 个待 owner 决定 | 1 个模块隔离或补面；面闸门默认开启 |
+| 9 | 无面模块治理 | 12 个六画像全无面；9 个已隔离，3 个待 owner 决定 | 3 个模块隔离或补面；面闸门默认开启 |
 | 10 | 画像覆盖缺口 | `slurm-hpc` 25.76%（Slurm 17 域覆盖 88.2%），其余 62.12%–73.48% | 六画像 production coverage ≥90% |
 | 11 | 可利用性核验缺口 | 152 条中 32 verified / 98 static-only / 22 unsupported | 真实 GPU/内核/硬件环境升级 static-only/unsupported |
 

@@ -9,7 +9,7 @@
     "vpc-native"
   ],
   "inputs": {
-    "chains": 27,
+    "chains": 29,
     "findings": 2
   },
   "rules": [
@@ -701,6 +701,109 @@
       "scope": "chain"
     },
     {
+      "id": "sigma-sa-token-mint",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "ServiceAccount Token 铸造（TokenRequest）",
+        "en": "ServiceAccount Token 铸造（TokenRequest）"
+      },
+      "files": [
+        "sigma/sigma-sa-token-mint.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "TokenRequest 收敛到控制器主体并在准入限制 audiences/expirationSeconds；租户命名空间的自助铸造直接 critical；与随后同主体的绑定创建做序列关联（铸造→绑定→横向）",
+        "en": "Constrain TokenRequest to controller subjects and gate audiences/expirationSeconds at admission; escalate tenant-namespace self-minting to critical; correlate with a follow-up binding create by the same subject (mint -> bind -> lateral)"
+      },
+      "log_source": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "blocks_modules": [
+        "overprivileged-sa-escalation",
+        "supply-chain-credential-theft"
+      ],
+      "blocks_chains": [
+        "cluster-takeover-objective",
+        "ray-dashboard-cluster-takeover"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "serviceaccounts"
+          ],
+          "objectRef.subresource": [
+            "token"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
+      "id": "sigma-pods-portforward-tunnel",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "pods/portforward 隧道",
+        "en": "pods/portforward 隧道"
+      },
+      "files": [
+        "sigma/sigma-pods-portforward-tunnel.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "portforward 权限从租户角色移除；平台调试主体入白名单并强制会话审计；对指向管理面/数据库/模型服务端口的隧道直接 critical",
+        "en": "Remove portforward from tenant roles; allowlist the dedicated platform-debug SA with forced session audit; escalate tunnels targeting management/database/model-serving ports to critical"
+      },
+      "log_source": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "blocks_modules": [
+        "overprivileged-sa-escalation"
+      ],
+      "blocks_chains": [
+        "cluster-takeover-objective",
+        "ray-dashboard-cluster-takeover"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "pods"
+          ],
+          "objectRef.subresource": [
+            "portforward"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
       "id": "sigma-pods-exec-lateral",
       "engines": [
         "sigma"
@@ -1259,6 +1362,724 @@
           "cs-uri": "*"
         },
         "condition": "all"
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
+      "id": "sigma-llm-probe-jailbreak",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "LLM 越狱尝试（模板/多语言/编码）",
+        "en": "LLM 越狱尝试（模板/多语言/编码）"
+      },
+      "files": [
+        "sigma/sigma-llm-probe-jailbreak.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+        "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "llm-probes"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "llm-probes"
+        },
+        "selection": {
+          "event_kind": [
+            "llm_probe_sweep",
+            "llm_request"
+          ],
+          "category": [
+            "jailbreak"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "llm-probe"
+    },
+    {
+      "id": "sigma-llm-probe-prompt-injection",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "提示注入（直接/间接/工具描述）",
+        "en": "提示注入（直接/间接/工具描述）"
+      },
+      "files": [
+        "sigma/sigma-llm-probe-prompt-injection.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+        "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "llm-probes"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "llm-probes"
+        },
+        "selection": {
+          "event_kind": [
+            "llm_probe_sweep",
+            "llm_request"
+          ],
+          "category": [
+            "prompt-injection"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "llm-probe"
+    },
+    {
+      "id": "sigma-llm-probe-sysprompt-leak",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "系统提示泄露尝试",
+        "en": "系统提示泄露尝试"
+      },
+      "files": [
+        "sigma/sigma-llm-probe-sysprompt-leak.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+        "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "llm-probes"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "llm-probes"
+        },
+        "selection": {
+          "event_kind": [
+            "llm_probe_sweep",
+            "llm_request"
+          ],
+          "category": [
+            "sysprompt-leak"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "llm-probe"
+    },
+    {
+      "id": "sigma-llm-probe-traindata-extraction",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "训练数据成员抽取",
+        "en": "训练数据成员抽取"
+      },
+      "files": [
+        "sigma/sigma-llm-probe-traindata-extraction.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+        "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "llm-probes"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "llm-probes"
+        },
+        "selection": {
+          "event_kind": [
+            "llm_probe_sweep",
+            "llm_request"
+          ],
+          "category": [
+            "traindata-extraction"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "llm-probe"
+    },
+    {
+      "id": "sigma-llm-probe-pii-leak",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "PII 索取与日志明文暴露",
+        "en": "PII 索取与日志明文暴露"
+      },
+      "files": [
+        "sigma/sigma-llm-probe-pii-leak.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+        "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "llm-probes"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "llm-probes"
+        },
+        "selection": {
+          "event_kind": [
+            "llm_probe_sweep",
+            "llm_request"
+          ],
+          "category": [
+            "pii-leak"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "llm-probe"
+    },
+    {
+      "id": "sigma-llm-probe-unsafe-advice",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "不安全建议请求（未拒绝）",
+        "en": "不安全建议请求（未拒绝）"
+      },
+      "files": [
+        "sigma/sigma-llm-probe-unsafe-advice.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+        "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "llm-probes"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "llm-probes"
+        },
+        "selection": {
+          "event_kind": [
+            "llm_probe_sweep",
+            "llm_request"
+          ],
+          "category": [
+            "unsafe-advice"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "llm-probe"
+    },
+    {
+      "id": "sigma-llm-probe-tool-abuse",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "智能体工具滥用（ASI02）",
+        "en": "智能体工具滥用（ASI02）"
+      },
+      "files": [
+        "sigma/sigma-llm-probe-tool-abuse.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+        "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "llm-probes"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "llm-probes"
+        },
+        "selection": {
+          "event_kind": [
+            "llm_probe_sweep",
+            "llm_request"
+          ],
+          "category": [
+            "tool-abuse"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "llm-probe"
+    },
+    {
+      "id": "sigma-llm-probe-multimodal-injection",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "多模态载荷注入（图像/音频）",
+        "en": "多模态载荷注入（图像/音频）"
+      },
+      "files": [
+        "sigma/sigma-llm-probe-multimodal-injection.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+        "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "llm-probes"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "llm-probes"
+        },
+        "selection": {
+          "event_kind": [
+            "llm_probe_sweep",
+            "llm_request"
+          ],
+          "category": [
+            "multimodal-injection"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "llm-probe"
+    },
+    {
+      "id": "sigma-llm-probe-longctx-attack",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "长上下文滥用（超窗/KV/prefix cache）",
+        "en": "长上下文滥用（超窗/KV/prefix cache）"
+      },
+      "files": [
+        "sigma/sigma-llm-probe-longctx-attack.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+        "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "llm-probes"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "llm-probes"
+        },
+        "selection": {
+          "event_kind": [
+            "llm_probe_sweep",
+            "llm_request"
+          ],
+          "category": [
+            "longctx-attack"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "llm-probe"
+    },
+    {
+      "id": "sigma-llm-probe-cache-poison",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "语义缓存跨租户投毒",
+        "en": "语义缓存跨租户投毒"
+      },
+      "files": [
+        "sigma/sigma-llm-probe-cache-poison.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+        "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "llm-probes"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "llm-probes"
+        },
+        "selection": {
+          "event_kind": [
+            "llm_probe_sweep",
+            "llm_request"
+          ],
+          "category": [
+            "cache-poison"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "llm-probe"
+    },
+    {
+      "id": "sigma-llm-probe-downstream-injection",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "输出注入到下游 agent",
+        "en": "输出注入到下游 agent"
+      },
+      "files": [
+        "sigma/sigma-llm-probe-downstream-injection.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+        "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "llm-probes"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "llm-probes"
+        },
+        "selection": {
+          "event_kind": [
+            "llm_probe_sweep",
+            "llm_request"
+          ],
+          "category": [
+            "downstream-injection"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "llm-probe"
+    },
+    {
+      "id": "sigma-llm-probe-guardrail-bypass",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "guardrail 检查面绕过",
+        "en": "guardrail 检查面绕过"
+      },
+      "files": [
+        "sigma/sigma-llm-probe-guardrail-bypass.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+        "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "llm-probes"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "llm-probes"
+        },
+        "selection": {
+          "event_kind": [
+            "llm_probe_sweep",
+            "llm_request"
+          ],
+          "category": [
+            "guardrail-bypass"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "llm-probe"
+    },
+    {
+      "id": "sigma-llm-probe-gateway-abuse",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "AI 网关权限/资源滥用",
+        "en": "AI 网关权限/资源滥用"
+      },
+      "files": [
+        "sigma/sigma-llm-probe-gateway-abuse.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针",
+        "en": "Aggregate alerts by the gateway LLM telemetry category field (escalate to critical when one session trips multiple categories); allowlist authorized red-team windows and restore afterwards; record trace_id for probe replay triage"
+      },
+      "log_source": {
+        "product": "litellm",
+        "service": "llm-probes"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "litellm",
+          "service": "llm-probes"
+        },
+        "selection": {
+          "event_kind": [
+            "llm_probe_sweep",
+            "llm_request"
+          ],
+          "category": [
+            "gateway-abuse"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "llm-probe"
+    },
+    {
+      "id": "sigma-cache-tenant-isolation-missing",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "推理缓存隔离策略缺失（cache_salt 未启用/全局键）",
+        "en": "推理缓存隔离策略缺失（cache_salt 未启用/全局键）"
+      },
+      "files": [
+        "sigma/sigma-cache-tenant-isolation-missing.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "对多租户生产集群把 cache_salt 策略纳入基线核查（vLLM cache_salt / 网关键 scope）；单租户集群可按命名空间白名单降噪；策略读取事件建议只对变更与巡检双通道采集",
+        "en": "Baseline the cache_salt policy for multi-tenant fleets (vLLM cache_salt / gateway key scope); allowlist single-tenant namespaces to cut noise; collect policy reads from both change and audit pipelines"
+      },
+      "log_source": {
+        "product": "inference-cache",
+        "service": "engine-config"
+      },
+      "blocks_modules": [
+        "cache-salt-policy-audit",
+        "similarity-cache-false-hit"
+      ],
+      "blocks_chains": [
+        "approx-cache-cross-tenant-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "inference-cache",
+          "service": "engine-config"
+        },
+        "selection": {
+          "event": [
+            "cache_policy_read"
+          ],
+          "cache_salt_enabled": [
+            false
+          ],
+          "key_scope": [
+            "global"
+          ]
+        }
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
+      "id": "sigma-cache-probing-burst",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "前缀缓存探测突发（同源大量唯一前缀扫描）",
+        "en": "前缀缓存探测突发（同源大量唯一前缀扫描）"
+      },
+      "files": [
+        "sigma/sigma-cache-probing-burst.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "以 5 分钟窗口聚合同源唯一 prompt_prefix 数；压测与评测账号先入白名单；触发后按租户限速并保留样本供成员推断复盘，不建议直接封禁",
+        "en": "Aggregate distinct prompt prefixes per source over 5-minute windows; allowlist load-test/eval service accounts first; rate-limit the tenant on trigger and keep samples for membership-inference review instead of hard blocking"
+      },
+      "log_source": {
+        "category": "llm-gateway",
+        "service": "inference"
+      },
+      "blocks_modules": [
+        "cache-eviction-residue",
+        "cache-timing-sidechannel"
+      ],
+      "blocks_chains": [
+        "cache-sidechannel-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "category": "llm-gateway",
+          "service": "inference"
+        },
+        "selection": {
+          "action": [
+            "chat_completion"
+          ],
+          "distinct_prefix_probe_count": {
+            "re": "^(?:[5-9][0-9]|[1-9][0-9]{2,})$"
+          }
+        }
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
+      "id": "sigma-router-cache-metrics-leak",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "路由器缓存指标按租户无鉴权读取",
+        "en": "路由器缓存指标按租户无鉴权读取"
+      },
+      "files": [
+        "sigma/sigma-router-cache-metrics-leak.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "指标面收敛为管理鉴权 + 仅本租户视图；监控采集走专用账号并按 1 分钟节流；对 per_tenant 明细查询单独告警（聚合视图不告）",
+        "en": "Require admin auth and own-tenant views on metrics; throttle monitoring accounts to 1-minute scrapes; alert specifically on per-tenant detail queries (not aggregate)"
+      },
+      "log_source": {
+        "product": "epp-router",
+        "service": "metrics"
+      },
+      "blocks_modules": [
+        "router-cache-metrics-leak"
+      ],
+      "blocks_chains": [
+        "cache-sidechannel-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "epp-router",
+          "service": "metrics"
+        },
+        "selection": {
+          "action": [
+            "metrics_read"
+          ],
+          "per_tenant": [
+            true
+          ],
+          "authenticated": [
+            false
+          ]
+        }
       },
       "cves": [],
       "scope": "chain"
@@ -4015,6 +4836,49 @@
       "scope": "chain"
     },
     {
+      "id": "suricata-cache-plane-uri",
+      "engines": [
+        "suricata"
+      ],
+      "title": {
+        "zh": "缓存面端点 URI 签名（KV 池/近似缓存/残留/路由指标）",
+        "en": "缓存面端点 URI 签名（KV 池/近似缓存/残留/路由指标）"
+      },
+      "files": [
+        "suricata/trident.rules"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "HOME_NET/ML_NET 变量按分区模板配置；缓存面端点仅应从引擎与 bastion 访问，其余来源先计数后告警；自研路由按 URI 清单追加",
+        "en": "Set HOME_NET/ML_NET from the partition template; cache-plane endpoints should only be reached from engines and bastions — count first, alert on others; append customer router URIs to the list"
+      },
+      "log_source": "Suricata EVE json",
+      "blocks_modules": [
+        "cache-eviction-residue",
+        "cache-poison-persistence",
+        "cache-salt-policy-audit",
+        "cache-timing-sidechannel",
+        "remote-kv-pool-isolation",
+        "router-cache-metrics-leak",
+        "similarity-cache-false-hit"
+      ],
+      "blocks_chains": [
+        "approx-cache-cross-tenant-chain",
+        "cache-sidechannel-chain"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "suricata",
+        "any_of": [
+          {
+            "uri_re": "/kvpool/blocks|/approx/lookup|/cache/residue|/router/metrics"
+          }
+        ]
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
       "id": "zeroday-agent-sandbox-unexpected-parent-exec",
       "engines": [
         "falco"
@@ -4175,6 +5039,21 @@
         "suricata-imds-egress"
       ]
     },
+    "approx-cache-cross-tenant-chain": {
+      "category": "网络利用链",
+      "title": {
+        "zh": "cache_salt 缺失 → 近似缓存误命中 → 跨租户数据泄露",
+        "en": "Missing per-tenant salt → approximate cache false hit → cross-tenant data leak"
+      },
+      "modules": [
+        "cache-salt-policy-audit",
+        "similarity-cache-false-hit"
+      ],
+      "rules": [
+        "sigma-cache-tenant-isolation-missing",
+        "suricata-cache-plane-uri"
+      ]
+    },
     "aws-role-weight-bucket": {
       "category": "云侧权重桶链",
       "title": {
@@ -4205,6 +5084,22 @@
       "rules": [
         "sigma-secret-abnormal-read",
         "suricata-imds-egress"
+      ]
+    },
+    "cache-sidechannel-chain": {
+      "category": "网络利用链",
+      "title": {
+        "zh": "缓存时序侧信道 → 成员推断 → 前缀字典提取",
+        "en": "Cache timing side channel → membership inference → prefix dictionary extraction"
+      },
+      "modules": [
+        "cache-timing-sidechannel",
+        "router-cache-metrics-leak"
+      ],
+      "rules": [
+        "sigma-cache-probing-burst",
+        "sigma-router-cache-metrics-leak",
+        "suricata-cache-plane-uri"
       ]
     },
     "cloud-cross-tenant-role-assume": {
@@ -4246,6 +5141,8 @@
         "alert-rolebinding-creation",
         "netpol-default-deny-partition",
         "sigma-rolebinding-cluster-admin",
+        "sigma-sa-token-mint",
+        "sigma-pods-portforward-tunnel",
         "sigma-pods-exec-lateral",
         "sigma-cluster-takeover-entry",
         "sigma-cluster-token-harvest",
@@ -4514,6 +5411,8 @@
         "netpol-default-deny-partition",
         "sigma-rolebinding-cluster-admin",
         "sigma-ray-job-submit",
+        "sigma-sa-token-mint",
+        "sigma-pods-portforward-tunnel",
         "sigma-pods-exec-lateral",
         "falco-admin-plane-unauth-access"
       ]

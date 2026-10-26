@@ -1,0 +1,30 @@
+title: 前缀缓存探测突发（同源大量唯一前缀扫描）
+id: 9cd57084-c895-0c60-1529-a870b1819a59
+status: stable
+description: "单一来源短窗口内对推理面发起 ≥50 条唯一前缀探测（命中/未命中交替，缓存成员推断与时序侧信道特征）。English: one source issuing 50+ unique prefix probes against the inference plane in a short window."
+references:
+  - "trident-rules-mapping: sigma-cache-probing-burst"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  category: llm-gateway
+  service: inference
+detection:
+  selection:
+    action:
+      - chat_completion
+    distinct_prefix_probe_count:
+      re: "^(?:[5-9][0-9]|[1-9][0-9]{2,})$"
+  condition: selection
+falsepositives:
+  - 合规压测/评测批处理（以作业服务账号与计划窗口白名单收敛）
+level: high
+tags:
+  - attack.discovery
+  - attack.t1592
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: 以 5 分钟窗口聚合同源唯一 prompt_prefix 数；压测与评测账号先入白名单；触发后按租户限速并保留样本供成员推断复盘，不建议直接封禁
+  trident-blocks-chains: cache-sidechannel-chain

@@ -146,3 +146,36 @@ Ruling（本轮）：
   `6390185` DEV-LOG · `e3657e3` 性能网格 · `e09320c` SOTA 收尾 · `b824631` 样张重生成 ·
   `28d7d14` BOM 容错 · `f953c07` 离线样张确定性。
 
+## D. 2026-10-26 终版：仓库卫生、样张复跑与文档收口
+
+- 起始工作树 `git status --porcelain` **111 项**（15 改 + 96 未跟踪）。口径：能复跑的样张与漏加源码入库，
+  可再生日志/缓存忽略，归属不明的在途文件移入 `.wip/` 并留清单，不删除内容。
+- 并行提交 `407d9af`（residual gaps + slurm depth）在本轮中途落盘，带走了 README/MASTER/SOTA/effects/progress
+  的合并版本；本提交在其之上只保留尚未入库的 13 个样张 + 81 条 Sigma + 漏加源码 + EXPLOIT/无面更正 + 台账。
+- 入库（本提交）：**102 个文件** = 13 个重生成样张（e2e 2 + effects 矩阵 2 + 双语报告 2 + rules-pack 4 +
+  static-export 3）+ 81 条 Sigma 样张 + `.gitignore` + `docs/EXPLOIT-VERIFICATION.md`（registry 152/32 对齐）+
+  `lab/bench/perf/` 5 个源码 + `trident/modules/_chip-common.py`（被 8 个 chip 模块与测试引用，此前漏 add）。
+  另更新 `docs/MASTER-REPORT.md`、`docs/SOTA-2026-10.md`（无面模块拆分纠正）、本台账与 `progress.md`。
+- 忽略：`*.log`（根级 11 个运行日志 + 后续 e2e/bench 输出；已跟踪的 fixture 日志不受影响）+ `.kube/`（kubectl 发现缓存）+ `/.wip/` + `lab/bench/perf/out/`。
+- 移入 `.wip/`：`scripts/_add_cache_rules.py`（一次性、非幂等模板追加器）、`reports/_dump_ctx.py`、
+  `reports/_static_ctx.txt`（测试期并行分析 scratch，未被代码引用），共 3 个文件；原路径/恢复方式见 `.wip/README.md`。
+- 样张复跑：`trident/e2e-check.py --samples <tmp> --run-name e2e-acceptance` → **15/15 PASS**
+  （29 链 / 121 规则 / 28 链紫队）；132 个生成文件中 129 个与库内样张逐字节一致，3 个（双语报告 ×2、
+  `static-export/index.html`）仅差靶场证据 sha（sampledet 已声明为数据面差异）。`tests/test_e2e.py` 以
+  `--normalize` 再生成一次，仍 15/15。
+- 仓库扫描：`python scripts/check-public-tree.py` → **0 hits**（含新增 81 条 Sigma 与文档改动）。
+  vendor 无变动，`tests/test_vendor_checksums.py` 通过（`trident/webui/static/vendor/SHA256SUMS` 全匹配）。
+- 全量测试（实际记录）：
+  - 256 模块快照（并行 Slurm 批次落盘前）：**Ran 1891 · FAILED（failures=2, errors=99, skipped=2）**。
+    101 个红项全部来自 4 个并行未完成模块目录：`slurm-accountingdbd-audit`（71）、`munge-auth-audit`（22）、
+    `agent-native-control-plane`（4）、`slurm-gres-gpu-isolation`（2），根因均为 `load_modules: 缺 run.py`；
+    派生失败为 `test_memory` 语义索引为空、`test_cli_surfaces` 返回 2。并行任务随后补齐 `run.py`，275 模块可加载。
+  - 干净 overlay（HEAD `8ca29d5` + 本提交文件，256 模块；补回本地被忽略的 case evidence/upstream 源）：
+    **Ran 1904 · 1 flaky（`test_reports_network_layers::test_section_is_deterministic` 两次渲染跨秒，单测重跑 OK）
+    · 7 skipped**。fresh worktree 需把 `poc.py` 恢复 LF，否则 CRLF 会使 manifest 记录 sha 不符（Git 行尾设置问题）。
+  - 并行提交 `407d9af` 后工作树为 275 模块；其文档记录 **Ran 1933 · OK（2 skipped；公开树 1 项在途红除外）**。
+    本任务未在其 214 项 manifest/result 在途重写期间重复全量跑，只把该口径与上述实测并列登记。
+- 提交：`chore: repository hygiene and final docs`（显式 `git add`，未使用 `git add -A`；并行 overlay 的
+  `trident/modules/slurm-*`、`lab/fixtures/*`、profiles 与 manifest/result 重写均未纳入）。
+
+

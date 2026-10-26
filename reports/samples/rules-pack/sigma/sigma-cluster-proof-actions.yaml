@@ -1,0 +1,34 @@
+title: "?????????? secrets / ???? namespace"
+id: 65b83dbc-cac2-e543-bdc0-a225d2be8129
+status: stable
+description: "K8s audit: cluster-scope secret enumeration and namespace creation by an operator-class subject (post-takeover proof). ???????? secret ????? namespace ???"
+references:
+  - "trident-rules-mapping: sigma-cluster-proof-actions"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - list
+      - create
+    objectRef.resource:
+      - secrets
+      - namespaces
+    subject_sa:
+      re: "serviceaccount:.*operator"
+  condition: selection
+falsepositives:
+  - "??/???????????? secret ??????? value?"
+level: critical
+tags:
+  - attack.collection
+  - attack.t1530
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: "secret ?????????????/??/?????namespace ??????????? gitops?? operator ?????? list secrets ?? critical"
+  trident-blocks-chains: cluster-takeover-objective

@@ -89,7 +89,7 @@
         },
         {
           "kind": "fixture",
-          "count": 2
+          "count": 4
         }
       ],
       "rules": [
@@ -134,6 +134,22 @@
           ],
           "status": "检测",
           "evidence": "事件命中: sigma create job"
+        },
+        {
+          "rule": "sigma-sa-token-mint",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create serviceaccounts"
+        },
+        {
+          "rule": "sigma-pods-portforward-tunnel",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create pods"
         },
         {
           "rule": "sigma-pods-exec-lateral",
@@ -1284,7 +1300,7 @@
       "probe": [
         {
           "kind": "fixture",
-          "count": 9
+          "count": 10
         }
       ],
       "rules": [
@@ -1321,6 +1337,22 @@
           ],
           "status": "检测",
           "evidence": "事件命中: sigma create clusterrolebinding"
+        },
+        {
+          "rule": "sigma-sa-token-mint",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create serviceaccounts"
+        },
+        {
+          "rule": "sigma-pods-portforward-tunnel",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create pods"
         },
         {
           "rule": "sigma-pods-exec-lateral",
@@ -1388,15 +1420,111 @@
         }
       ],
       "state": "拦截+检测"
+    },
+    "approx-cache-cross-tenant-chain": {
+      "title": {
+        "zh": "cache_salt 缺失 → 近似缓存误命中 → 跨租户数据泄露",
+        "en": "Missing per-tenant salt → approximate cache false hit → cross-tenant data leak"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "cache-salt-policy-audit",
+          "method": "GET",
+          "path": "/config",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "similarity-cache-false-hit",
+          "method": "POST",
+          "path": "/approx/lookup",
+          "status": 200,
+          "outcome": "reproduced"
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-cache-tenant-isolation-missing",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma None "
+        },
+        {
+          "rule": "suricata-cache-plane-uri",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.11:8300 uri=/approx/lookup"
+        }
+      ],
+      "state": "检测"
+    },
+    "cache-sidechannel-chain": {
+      "title": {
+        "zh": "缓存时序侧信道 → 成员推断 → 前缀字典提取",
+        "en": "Cache timing side channel → membership inference → prefix dictionary extraction"
+      },
+      "category": "网络利用链",
+      "probe": [
+        {
+          "kind": "http",
+          "module": "cache-timing-sidechannel",
+          "method": "POST",
+          "path": "/v1/chat/completions",
+          "status": 200,
+          "outcome": "reproduced"
+        },
+        {
+          "kind": "http",
+          "module": "router-cache-metrics-leak",
+          "method": "GET",
+          "path": "/router/metrics",
+          "status": 200,
+          "outcome": "reproduced"
+        }
+      ],
+      "rules": [
+        {
+          "rule": "sigma-cache-probing-burst",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma chat_completion "
+        },
+        {
+          "rule": "sigma-router-cache-metrics-leak",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma metrics_read "
+        },
+        {
+          "rule": "suricata-cache-plane-uri",
+          "engines": [
+            "suricata"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: suricata 10.42.0.11:8300 uri=/router/metrics"
+        }
+      ],
+      "state": "检测"
     }
   },
   "summary": {
-    "chains": 26,
-    "covered": 26,
+    "chains": 28,
+    "covered": 28,
     "missed": 0,
-    "rules_evaluated": 89,
+    "rules_evaluated": 98,
     "rules_blocked": 21,
-    "rules_detected": 64,
+    "rules_detected": 73,
     "rules_missed": 0
   },
   "ok": true,

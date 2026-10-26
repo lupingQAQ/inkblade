@@ -1,0 +1,32 @@
+title: 推理缓存隔离策略缺失（cache_salt 未启用/全局键）
+id: e65a2984-1f8c-a82e-3c8e-1ef81472f12a
+status: stable
+description: "缓存策略读取事件显示 prefix cache 的 cache_salt 隔离关闭或键 scope 为全局，跨租户 prefix/近似缓存复用成为可能。English: cache policy audit event with salt isolation disabled and global key scope."
+references:
+  - "trident-rules-mapping: sigma-cache-tenant-isolation-missing"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: inference-cache
+  service: engine-config
+detection:
+  selection:
+    event:
+      - cache_policy_read
+    cache_salt_enabled:
+      - false
+    key_scope:
+      - global
+  condition: selection
+falsepositives:
+  - 单租户独占集群的策略灰度窗口（以租户清单白名单收敛）
+level: high
+tags:
+  - attack.credential_access
+  - attack.t1552
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: 对多租户生产集群把 cache_salt 策略纳入基线核查（vLLM cache_salt / 网关键 scope）；单租户集群可按命名空间白名单降噪；策略读取事件建议只对变更与巡检双通道采集
+  trident-blocks-chains: approx-cache-cross-tenant-chain

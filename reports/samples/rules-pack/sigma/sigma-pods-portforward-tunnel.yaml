@@ -1,0 +1,32 @@
+title: pods/portforward 隧道
+id: 15cef59d-4348-00f9-9bc5-573a26c3a334
+status: stable
+description: "K8s audit: create pods/portforward tunnelling a pod port out through the apiserver, bypassing NetworkPolicy and ingress auditing. 检测 portforward 隧道——隐蔽数据外传与管理面直达通道。永不基线化。"
+references:
+  - "trident-rules-mapping: sigma-pods-portforward-tunnel"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - pods
+    objectRef.subresource:
+      - portforward
+  condition: selection
+falsepositives:
+  - 平台调试主体受审计的临时隧道（专用调试 SA + 时间窗 + 会话留痕）
+level: high
+tags:
+  - attack.command_and_control
+  - attack.t1610
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: portforward 权限从租户角色移除；平台调试主体入白名单并强制会话审计；对指向管理面/数据库/模型服务端口的隧道直接 critical
+  trident-blocks-chains: "cluster-takeover-objective,ray-dashboard-cluster-takeover"

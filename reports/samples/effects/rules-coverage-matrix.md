@@ -1,13 +1,13 @@
 # Trident 紫队验证覆盖率矩阵（defense validation）
 
-- 时间：2026-10-25T17:01:52Z；靶场：http://127.0.0.1:50492/（mode=vulnerable，仅 127.0.0.1）
-- 摘要：链 26 条，覆盖 26，漏过 0；规则评估 89 项（拦截 21 / 检测 64 / 漏过 0）
+- 时间：2026-10-26T08:23:37Z；靶场：http://127.0.0.1:53900/（mode=vulnerable，仅 127.0.0.1）
+- 摘要：链 28 条，覆盖 28，漏过 0；规则评估 98 项（拦截 21 / 检测 73 / 漏过 0）
 - 判定口径：合成事件使用探测规格声明的业务端口（mock 基座端口随机分配）；匹配器：内置简化 sigma/falco/suricata 匹配器（selection/event_type/any_of 语义子集）
 
 | 链 | 类别 | 探针重放 | 状态 |
 |---|---|---|---|
 | flat-network-admin-plane-weight-poison | 经典攻击链 | POST /pause → 200 复现；POST /pull_weights → 200 复现 | 拦截+检测 |
-| ray-dashboard-cluster-takeover | 经典攻击链 | POST /api/jobs/ → 200 复现；fixture×2 | 拦截+检测 |
+| ray-dashboard-cluster-takeover | 经典攻击链 | POST /api/jobs/ → 200 复现；fixture×4 | 拦截+检测 |
 | nccl-gradient-injection | 经典攻击链 | fixture×2 | 拦截+检测 |
 | shared-pvc-supply-chain-poison | 经典攻击链 | fixture×3 | 检测 |
 | ssrf-sa-token-cloud-metadata | 经典攻击链 | GET /mock-imds/azure/metadata/instance?api-version=2021-02-01 → 200 复现；fixture×1 | 拦截+检测 |
@@ -31,7 +31,9 @@
 | ai-gateway-key-exfil | AI 网关链 | GET /health → 200 复现；POST /v1/chat/completions → 200 复现；GET /config → 200 复现；GET /models → 200 复现；POST /key/generate → 200 复现 | 检测 |
 | fabric-silent-corruption-chain | 网络利用链 | POST /sharp/sessions → 200 复现；POST /sharp/reduce → 200 复现；POST /ib/sm/partition → 200 复现；fixture×2 | 检测 |
 | fabric-exhaustion-chain | 网络利用链 | POST /nccl/bootstrap → 200 复现；POST /sched/gang → 200 复现；POST /checkpoint/io → 200 复现；POST /roce/pfc → 200 复现；fixture×2 | 检测 |
-| cluster-takeover-objective | 经典攻击链 | fixture×9 | 拦截+检测 |
+| cluster-takeover-objective | 经典攻击链 | fixture×10 | 拦截+检测 |
+| approx-cache-cross-tenant-chain | 网络利用链 | GET /config → 200 复现；POST /approx/lookup → 200 复现 | 检测 |
+| cache-sidechannel-chain | 网络利用链 | POST /v1/chat/completions → 200 复现；GET /router/metrics → 200 复现 | 检测 |
 
 ## 规则命中明细
 
@@ -48,6 +50,8 @@
 - [拦截] netpol-default-deny-partition（netpol）— 策略文件在包内齐备（默认 monitor，Enforce 后即拦截）
 - [检测] sigma-rolebinding-cluster-admin（sigma）— 事件命中: sigma create rolebinding
 - [检测] sigma-ray-job-submit（sigma）— 事件命中: sigma create job
+- [检测] sigma-sa-token-mint（sigma）— 事件命中: sigma create serviceaccounts
+- [检测] sigma-pods-portforward-tunnel（sigma）— 事件命中: sigma create pods
 - [检测] sigma-pods-exec-lateral（sigma）— 事件命中: sigma create pods
 - [检测] falco-admin-plane-unauth-access（falco）— 事件命中: falco connect port=8265 parent=-
 
@@ -167,6 +171,8 @@
 - [拦截] alert-rolebinding-creation（kyverno/gatekeeper）— 策略文件在包内齐备（默认 monitor，Enforce 后即拦截）
 - [拦截] netpol-default-deny-partition（netpol）— 策略文件在包内齐备（默认 monitor，Enforce 后即拦截）
 - [检测] sigma-rolebinding-cluster-admin（sigma）— 事件命中: sigma create clusterrolebinding
+- [检测] sigma-sa-token-mint（sigma）— 事件命中: sigma create serviceaccounts
+- [检测] sigma-pods-portforward-tunnel（sigma）— 事件命中: sigma create pods
 - [检测] sigma-pods-exec-lateral（sigma）— 事件命中: sigma create pods
 - [检测] sigma-cluster-takeover-entry（sigma）— 事件命中: sigma list services
 - [检测] sigma-cluster-token-harvest（sigma）— 事件命中: sigma create serviceaccounts
@@ -175,6 +181,15 @@
 - [检测] sigma-cluster-proof-actions（sigma）— 事件命中: sigma list secrets
 - [检测] sigma-cluster-cleanup-trail（sigma）— 事件命中: sigma delete clusterrolebindings
 - [检测] falco-node-root-marker-write（falco）— 事件命中: falco open_write port=- parent=-
+
+### approx-cache-cross-tenant-chain（检测）
+- [检测] sigma-cache-tenant-isolation-missing（sigma）— 事件命中: sigma None 
+- [检测] suricata-cache-plane-uri（suricata）— 事件命中: suricata 10.42.0.11:8300 uri=/approx/lookup
+
+### cache-sidechannel-chain（检测）
+- [检测] sigma-cache-probing-burst（sigma）— 事件命中: sigma chat_completion 
+- [检测] sigma-router-cache-metrics-leak（sigma）— 事件命中: sigma metrics_read 
+- [检测] suricata-cache-plane-uri（suricata）— 事件命中: suricata 10.42.0.11:8300 uri=/router/metrics
 
 ## 知识闭环
 

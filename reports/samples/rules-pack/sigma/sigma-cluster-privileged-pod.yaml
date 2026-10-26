@@ -1,0 +1,32 @@
+title: "???????/??? Pod"
+id: aa6f3d51-52db-4ee0-12fb-6d103a1fee51
+status: stable
+description: "K8s audit: pod created with privileged + hostPID/hostPath after a cluster-admin binding (node takeover). ????????? privileged+hostPID ???? Pod?"
+references:
+  - "trident-rules-mapping: sigma-cluster-privileged-pod"
+author: Trident rules engine
+date: 2026/10/25
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+    objectRef.resource:
+      - pods
+    requestObject.privileged: true
+    requestObject.hostPID: true
+  condition: selection
+falsepositives:
+  - "GPU operator/?? DaemonSet???????? + ??????"
+level: critical
+tags:
+  - attack.privilege_escalation
+  - attack.t1611
+  - trident
+  - trident-mode-monitor
+custom:
+  trident-mode: monitor
+  trident-tuning: "?? monitor 7 ???? Enforce?GPU ??/device plugin ??????????????? cluster-admin ???????? critical"
+  trident-blocks-chains: cluster-takeover-objective

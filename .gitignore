@@ -39,3 +39,15 @@ lab/upstream_verify/.envs/
 lab/upstream_verify/**/__pycache__/
 
 lab/upstream_verify/scratch/
+
+# --- 本地运行日志（unittest/e2e/bench 输出，可随时重跑；已跟踪的 fixture 日志不受影响） ---
+*.log
+
+# --- kubectl 本地发现缓存（由 kubeconfig/集群重算） ---
+/.kube/
+
+# --- 无法判定归属的在途文件暂存区（见 .wip/README.md，不删除内容） ---
+/.wip/
+
+# --- bench/perf 可再生输出（lab/bench/perf/ 源码仍入库） ---
+lab/bench/perf/out/

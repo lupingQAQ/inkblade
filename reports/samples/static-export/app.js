@@ -59,14 +59,354 @@
     token: null, role: null, workspace: "local-lab",
     runs: [], data: window.TRIDENT_DATA || null,
     selectedStep: null, view: "dag", reportRemote: null, redactZeroday: false,
+    lang: "zh",
   };
   var STATIC_MODE = !!window.TRIDENT_DATA;
+
+  /* ================= 双语（zh/en） =================
+   * 静态文案走 index.html 的 data-i18n；动态视图走 t(key)。
+   * 没有构建步骤，字典随 app.js 全离线内嵌。 */
+  var I18N = {
+    zh: {
+      "brand.sub": "ML 集群渗透测试控制台 · 十视图",
+      "mode.offline": "本地模式 · 全离线",
+      "mode.static": "静态导出 · 免服务打开",
+      "mode.service": "服务模式 · 本地",
+      "login.user": "用户名", "login.pass": "密码", "login.ws": "工作区",
+      "login.submit": "登录", "login.runs": "刷新运行", "login.abort": "紧急停止",
+      "lang.switch": "切换语言 / Switch language",
+      "guide.title": "第一次用 Trident？2 条命令看结果",
+      "guide.body": "本地 mock 靶场，不碰真实集群；约 10–20 秒生成发现、双语报告与规则包。",
+      "guide.step1": "环境自检", "guide.step2": "本地看结果", "guide.step3": "真实集群（只读）",
+      "guide.cluster": "真实集群：", "guide.kubeconfig": "自动发现 KUBECONFIG / ~/.kube/config；先 dry-run 不碰集群。",
+      "guide.dismiss": "知道了",
+      "nav.dag": "工作流 DAG", "nav.chain": "攻击链图", "nav.timeline": "执行时间线",
+      "nav.evidence": "证据浏览器", "nav.report": "报告预览", "nav.rules": "规则视图",
+      "nav.assets": "资产图", "nav.drift": "差异视图", "nav.approvals": "审批队列",
+      "nav.schedules": "计划任务",
+      "status.pending": "待执行", "status.running": "运行中", "status.success": "成功",
+      "status.degraded": "降级", "status.blocked": "阻断",
+      "dag.sidebar": "步骤详情",
+      "dag.sidebarHint": "点击节点查看 prompt/命令、环境、结果与三层证据指针。",
+      "chain.filter": "链过滤", "chain.all": "全部链",
+      "chain.legend": "边色：红=可达利用 / 橙=高危路径 / 黄虚线=降级 / 灰虚线=阻断·不可达",
+      "timeline.title": "执行瀑布",
+      "evidence.steps": "运行步骤", "evidence.threeLayers": "三层证据",
+      "evidence.pickHint": "选择左侧步骤查看 prompt/命令、环境、归档哈希与上下文摘要指针。",
+      "evidence.manifest": "归档清单 manifest.sha256",
+      "rules.title": "规则 ↔ 攻击链映射矩阵",
+      "rules.hint": "行=防御/检测规则（Kyverno·Gatekeeper·NetworkPolicy·PSS·Sigma·Falco·Suricata），列=攻击链；●=规则覆盖该链。",
+      "assets.title": "资产图（增量资产清单）",
+      "assets.hint": "种子（命名空间/服务清单/kubeconfig 快照）→ core/discovery 增量入库；模块经资产解析目标而非散装参数。",
+      "drift.title": "重测差异（drift）",
+      "drift.hint": "scheduler 到期跑链子集，与上次 findings 逐键差异：新增（红）/已修复（绿）/未变。",
+      "approvals.title": "审批队列（审批制自主探索）",
+      "approvals.hint": "LLM 可选（OpenAI 兼容 env）+ 规则兜底；逐动作 dry-run 预览（写面/备份闸门），lead 批准后才可执行。",
+      "schedules.title": "计划任务（周期重测）",
+      "schedules.hint": "cron/interval 计划 → 到期自动跑指定链子集 → drift 报告。",
+      "footer.line": "Trident · 资产全部本地内嵌（无 CDN）· 证据三层：上下文摘要 / 数据库 / 归档（tar+SHA256）",
+      "common.copy": "复制", "common.copied": "已复制",
+      "common.demo": "本地 demo", "common.cluster": "真实集群（只读）",
+      "run.staticMeta": "运行 {run} · 状态 {status} · 步骤 {steps} · 发现 {findings}",
+      "run.serviceMeta": "本工作区运行数：{n}（{runs}）",
+      "run.serviceEmpty": "已登录（服务模式暂无步骤只读端点；步骤级数据请用静态导出查看）",
+      "run.loadFail": "获取运行失败：",
+      "report.total": "发现总数", "report.steps": "执行步骤",
+      "report.findings": "发现清单（Findings）",
+      "report.redact": "零日级细节脱敏（可选；默认展示已公开细节）",
+      "report.showing": "已渲染 {shown} / {total} 条（分页渲染，避免一次性构建 {total} 个 DOM 行）",
+      "report.showMore": "显示更多（+{n}）",
+      "report.legacy": "legacy 基准模式：全量渲染（仅用于优化前后对比）",
+      "report.severity": "严重度", "report.titleCol": "标题", "report.step": "步骤",
+      "report.evidence": "证据（归档层引用）", "report.zeroday": "零日",
+      "report.sectionTitle": "结构对齐（PTES / NIST SP 800-115 / 等保 2.0 · GB/T 20984 / CVSS 3.1 / ATT&CK·ATLAS）",
+      "report.sectionBody": "预览页仅渲染发现表与统计；正式双语报告由报告引擎生成（渗透 + 修复 + 防御规则包交付文档），含组合层风险 / 训练数据泄露面 / 核心代码清单 / 网络分层威胁模型 / 混合云边界专节。",
+      "report.remote": "服务端报告已返回（占位端点）；以下为本地内嵌渲染：",
+      "report.fallback": "api/report 不可用（未实现或未登录）——以内嵌渲染兜底；完整报告请运行报告引擎或使用静态导出。",
+      "report.zerodayYes": "是（零日级，已公开）", "report.zerodayRedacted": "是（可选脱敏）",
+      "report.no": "否", "report.redactedTitle": "【脱敏】影响已验证（零日级，已公开；未展示细节）",
+      "timeline.summary": "步骤 {steps} · 总耗时 {total} · 累计执行 {sum} · 峰值并行度 {par}",
+      "empty.dag.title": "这个视图还没有步骤",
+      "empty.dag.body": "DAG 来自一次 run 的 steps 表。先跑本地 demo 生成真实步骤与三层证据；已有 run 时请用静态导出打开。",
+      "empty.dag.action": "python -m trident demo",
+      "empty.dag.next": "真实集群只读清点：python -m trident onboard-cluster --dry-run",
+      "empty.chain.title": "还没有攻击链图",
+      "empty.chain.body": "图数据来自 graph_nodes / graph_edges。demo 会写入可达性边；真实集群先用 pilot 只读清点建立基线。",
+      "empty.chain.action": "python -m trident demo",
+      "empty.chain.next": "接入真实集群：python -m trident onboard-cluster --dry-run",
+      "empty.timeline.title": "还没有执行时间线",
+      "empty.timeline.body": "时间线需要带起止时间的 steps 记录。跑一次 demo 或从服务模式登录后查看运行列表。",
+      "empty.timeline.action": "python -m trident demo",
+      "empty.timeline.next": "服务模式：python -m trident ui --port 8765",
+      "empty.evidence.title": "还没有证据可浏览",
+      "empty.evidence.body": "三层证据（context.jsonl.gz / evidence.db / tar+SHA256 归档）由 run 产生；先跑 demo 再回到此页。",
+      "empty.evidence.action": "python -m trident demo",
+      "empty.evidence.next": "静态导出：python -m trident ui --export-static <run> <out>",
+      "empty.report.title": "还没有发现（findings）",
+      "empty.report.body": "报告预览从 findings 表读取。demo 会生成 10 条发现与双语报告；真实集群请先签授权再执行只读模块。",
+      "empty.report.action": "python -m trident demo",
+      "empty.report.next": "授权与范围：python -m trident quickstart",
+      "empty.rules.title": "规则目录为空",
+      "empty.rules.body": "规则包由规则引擎生成；本地仓库应自带 Kyverno/PSS/Sigma/Falco/Suricata 规则目录。",
+      "empty.rules.action": "python -m trident rules generate --help",
+      "empty.rules.next": "规则校验：python -m trident rules validate <pack>",
+      "empty.assets.title": "资产库为空",
+      "empty.assets.body": "资产图来自 assets 表（种子 → 增量发现）。demo 会写入命名空间/服务；真实集群用 discover 或 pilot。",
+      "empty.assets.action": "python -m trident demo",
+      "empty.assets.next": "资产发现：python -m trident discover --seeds <seeds.json>",
+      "empty.drift.title": "还没有 drift 报告",
+      "empty.drift.body": "drift 由周期重测生成：scheduler 到期跑链子集，与上次 findings 逐键比较。",
+      "empty.drift.action": "python -m trident schedule list",
+      "empty.drift.next": "立即跑到期计划：python -m trident schedule run-due",
+      "empty.approvals.title": "审批队列为空",
+      "empty.approvals.body": "审批制自主探索的提议由 explorer propose 生成；lead 批准后才会执行。",
+      "empty.approvals.action": "python -m trident explore propose --help",
+      "empty.approvals.next": "查看队列：python -m trident explore list",
+      "empty.schedules.title": "还没有计划任务",
+      "empty.schedules.body": "周期重测用 cron/interval 计划驱动；先创建计划，再 run-due 生成 drift。",
+      "empty.schedules.action": "python -m trident schedule add --help",
+      "empty.schedules.next": "查看计划：python -m trident schedule list",
+      "assets.loading": "资产清单加载中…", "assets.loadFail": "资产清单加载失败（未发现或未登录）。",
+      "assets.login": "登录后加载资产清单（api/v1/assets）。",
+      "drift.empty": "无漂移数据（周期重测后由 scheduler 生成 drift.json）。",
+      "drift.login": "登录后加载差异视图（api/v1/drift）。",
+      "drift.fail": "差异数据加载失败（{msg}）；周期重测 run-due 后生成 drift.json，或查看静态导出。",
+      "approvals.empty": "审批队列为空（explorer propose 生成提议）。",
+      "approvals.login": "登录后加载审批队列（api/v1/explorer）。",
+      "schedules.empty": "无周期重测计划（api/v1/scheduler/add 创建）。",
+      "schedules.login": "登录后加载计划任务（api/v1/scheduler）。",
+    },
+    en: {
+      "brand.sub": "ML cluster pentest console · 10 views",
+      "mode.offline": "Local mode · fully offline",
+      "mode.static": "Static export · open without server",
+      "mode.service": "Service mode · local",
+      "login.user": "User", "login.pass": "Password", "login.ws": "Workspace",
+      "login.submit": "Sign in", "login.runs": "Refresh runs", "login.abort": "Abort",
+      "lang.switch": "Switch language / 切换语言",
+      "guide.title": "New to Trident? Two commands to first result",
+      "guide.body": "Local mock lab, no real cluster touched; findings, bilingual report and rule pack in ~10–20s.",
+      "guide.step1": "Environment check", "guide.step2": "Local result", "guide.step3": "Real cluster (read-only)",
+      "guide.cluster": "Real cluster:", "guide.kubeconfig": "Auto-discovers KUBECONFIG / ~/.kube/config; dry-run touches nothing.",
+      "guide.dismiss": "Got it",
+      "nav.dag": "Workflow DAG", "nav.chain": "Attack chain", "nav.timeline": "Timeline",
+      "nav.evidence": "Evidence", "nav.report": "Report", "nav.rules": "Rules",
+      "nav.assets": "Assets", "nav.drift": "Drift", "nav.approvals": "Approvals",
+      "nav.schedules": "Schedules",
+      "status.pending": "Pending", "status.running": "Running", "status.success": "Success",
+      "status.degraded": "Degraded", "status.blocked": "Blocked",
+      "dag.sidebar": "Step detail",
+      "dag.sidebarHint": "Click a node to inspect prompt/command, environment, result and three-layer evidence pointers.",
+      "chain.filter": "Chain filter", "chain.all": "All chains",
+      "chain.legend": "Edge colors: red=reachable exploit / orange=high-risk path / dashed yellow=degraded / dashed grey=blocked",
+      "timeline.title": "Execution waterfall",
+      "evidence.steps": "Run steps", "evidence.threeLayers": "Three-layer evidence",
+      "evidence.pickHint": "Select a step to inspect prompt/command, environment, archive hash and context-summary pointer.",
+      "evidence.manifest": "Archive manifest.sha256",
+      "rules.title": "Rule ↔ attack-chain matrix",
+      "rules.hint": "Rows=defense/detection rules (Kyverno·Gatekeeper·NetworkPolicy·PSS·Sigma·Falco·Suricata), columns=attack chains; ●=covered.",
+      "assets.title": "Asset graph (incremental inventory)",
+      "assets.hint": "Seeds (namespaces/services/kubeconfig snapshot) → core/discovery; modules resolve targets from assets.",
+      "drift.title": "Retest drift",
+      "drift.hint": "Scheduler re-runs chain subsets and diffs findings: new (red) / fixed (green) / unchanged.",
+      "approvals.title": "Approval queue (approval-gated autonomy)",
+      "approvals.hint": "LLM optional (OpenAI-compatible env) + rule fallback; dry-run preview per action, lead approval required.",
+      "schedules.title": "Schedules (periodic retest)",
+      "schedules.hint": "cron/interval schedule → run chain subset when due → drift report.",
+      "footer.line": "Trident · all assets embedded locally (no CDN) · three evidence layers: context summary / database / archive (tar+SHA256)",
+      "common.copy": "Copy", "common.copied": "Copied",
+      "common.demo": "Local demo", "common.cluster": "Real cluster (read-only)",
+      "run.staticMeta": "Run {run} · status {status} · steps {steps} · findings {findings}",
+      "run.serviceMeta": "Runs in this workspace: {n} ({runs})",
+      "run.serviceEmpty": "Signed in (service mode has no read-only step endpoint; use static export for step-level data)",
+      "run.loadFail": "Failed to load runs: ",
+      "report.total": "Total findings", "report.steps": "Steps",
+      "report.findings": "Findings",
+      "report.redact": "Redact zero-day details (optional; public details shown by default)",
+      "report.showing": "Rendered {shown} / {total} rows (paged to avoid building {total} DOM rows at once)",
+      "report.showMore": "Show more (+{n})",
+      "report.legacy": "legacy benchmark mode: render all rows (before/after comparison only)",
+      "report.severity": "Severity", "report.titleCol": "Title", "report.step": "Step",
+      "report.evidence": "Evidence (archive ref)", "report.zeroday": "Zero-day",
+      "report.sectionTitle": "Structural alignment (PTES / NIST SP 800-115 / GB/T 20984 / CVSS 3.1 / ATT&CK·ATLAS)",
+      "report.sectionBody": "Preview renders findings and counts only; the report engine produces the full bilingual pentest + remediation + defense rule pack, including combo risk, training-data exposure, code inventory, network threat model and hybrid-cloud boundary.",
+      "report.remote": "Server report returned (placeholder endpoint); rendering embedded data below:",
+      "report.fallback": "api/report unavailable (not implemented or not signed in) — falling back to embedded rendering; use the report engine or static export for the full report.",
+      "report.zerodayYes": "Yes (zero-day, public)", "report.zerodayRedacted": "Yes (redacted)",
+      "report.no": "No", "report.redactedTitle": "[Redacted] impact verified (zero-day, public; details hidden)",
+      "timeline.summary": "Steps {steps} · span {total} · cumulative {sum} · peak parallelism {par}",
+      "empty.dag.title": "No steps in this view yet",
+      "empty.dag.body": "The DAG comes from a run's steps table. Run the local demo to generate steps and three-layer evidence, or open a static export.",
+      "empty.dag.action": "python -m trident demo",
+      "empty.dag.next": "Read-only real cluster: python -m trident onboard-cluster --dry-run",
+      "empty.chain.title": "No attack-chain graph yet",
+      "empty.chain.body": "Graph data comes from graph_nodes / graph_edges. demo writes reachability edges; use pilot for a real-cluster baseline.",
+      "empty.chain.action": "python -m trident demo",
+      "empty.chain.next": "Connect a cluster: python -m trident onboard-cluster --dry-run",
+      "empty.timeline.title": "No execution timeline yet",
+      "empty.timeline.body": "The timeline needs steps with start/end times. Run demo or sign in to service mode and open a run.",
+      "empty.timeline.action": "python -m trident demo",
+      "empty.timeline.next": "Service mode: python -m trident ui --port 8765",
+      "empty.evidence.title": "No evidence to browse yet",
+      "empty.evidence.body": "Three evidence layers (context.jsonl.gz / evidence.db / tar+SHA256 archive) are produced by a run; run demo first.",
+      "empty.evidence.action": "python -m trident demo",
+      "empty.evidence.next": "Static export: python -m trident ui --export-static <run> <out>",
+      "empty.report.title": "No findings yet",
+      "empty.report.body": "Report preview reads the findings table. demo creates 10 findings plus a bilingual report; for a real cluster sign consent first.",
+      "empty.report.action": "python -m trident demo",
+      "empty.report.next": "Consent and scope: python -m trident quickstart",
+      "empty.rules.title": "Rule catalog is empty",
+      "empty.rules.body": "Rule packs are generated by the rules engine; a local checkout ships Kyverno/PSS/Sigma/Falco/Suricata rules.",
+      "empty.rules.action": "python -m trident rules generate --help",
+      "empty.rules.next": "Validate: python -m trident rules validate <pack>",
+      "empty.assets.title": "Asset inventory is empty",
+      "empty.assets.body": "The asset graph comes from the assets table (seed → incremental discovery). demo writes namespaces/services; use discover or pilot for a real cluster.",
+      "empty.assets.action": "python -m trident demo",
+      "empty.assets.next": "Discover: python -m trident discover --seeds <seeds.json>",
+      "empty.drift.title": "No drift report yet",
+      "empty.drift.body": "Drift is produced by periodic retests: scheduler runs chain subsets and diffs findings against the previous run.",
+      "empty.drift.action": "python -m trident schedule list",
+      "empty.drift.next": "Run due schedules: python -m trident schedule run-due",
+      "empty.approvals.title": "Approval queue is empty",
+      "empty.approvals.body": "Approval-gated exploration proposals come from explorer propose; execution only starts after lead approval.",
+      "empty.approvals.action": "python -m trident explore propose --help",
+      "empty.approvals.next": "Inspect queue: python -m trident explore list",
+      "empty.schedules.title": "No schedules yet",
+      "empty.schedules.body": "Periodic retests are driven by cron/interval schedules; create one, then run-due to produce drift.",
+      "empty.schedules.action": "python -m trident schedule add --help",
+      "empty.schedules.next": "List schedules: python -m trident schedule list",
+      "assets.loading": "Loading asset inventory…", "assets.loadFail": "Failed to load assets (none found or not signed in).",
+      "assets.login": "Sign in to load asset inventory (api/v1/assets).",
+      "drift.empty": "No drift data (scheduler writes drift.json after a periodic retest).",
+      "drift.login": "Sign in to load drift view (api/v1/drift).",
+      "drift.fail": "Failed to load drift ({msg}); run scheduler run-due or use a static export.",
+      "approvals.empty": "Approval queue is empty (explorer propose creates proposals).",
+      "approvals.login": "Sign in to load the approval queue (api/v1/explorer).",
+      "schedules.empty": "No schedules (create one via api/v1/scheduler/add).",
+      "schedules.login": "Sign in to load schedules (api/v1/scheduler).",
+    },
+  };
+
+  function t(key, vars) {
+    var table = I18N[STATE.lang] || I18N.zh;
+    var text = table[key] !== undefined ? table[key] : (I18N.zh[key] !== undefined ? I18N.zh[key] : key);
+    if (vars) {
+      Object.keys(vars).forEach(function (k) {
+        text = text.replace(new RegExp("\\{" + k + "\\}", "g"), String(vars[k]));
+      });
+    }
+    return text;
+  }
+
+  function statusLabel(st) { return t("status." + (st || "pending")); }
 
   function steps() { return (STATE.data && STATE.data.steps) || []; }
   function findings() { return (STATE.data && STATE.data.findings) || []; }
   function nodes() { return (STATE.data && STATE.data.nodes) || []; }
   function edges() { return (STATE.data && STATE.data.edges) || []; }
   function stepStatus(s) { return s && STATUS_ZH[s.status] ? s.status : "pending"; }
+
+  /* ================= 引导空态（十个视图统一） ================= */
+
+  var EMPTY_STATES = {
+    dag: "①", chain: "②", timeline: "③", evidence: "④", report: "⑤",
+    rules: "⑥", assets: "⑦", drift: "⑧", approvals: "⑨", schedules: "⑩",
+  };
+
+  function copyText(text, btn) {
+    function done() {
+      btn.textContent = t("common.copied");
+      setTimeout(function () { btn.textContent = t("common.copy"); }, 1400);
+    }
+    function fallback() {
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        done();
+      } catch (e) { /* 复制不可用时保留命令文本供手动选择 */ }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  function cmdRow(cmd, label) {
+    var row = el("div", "cmd-row");
+    if (label) row.appendChild(el("span", "hint", label));
+    row.appendChild(el("code", null, cmd));
+    var btn = el("button", null, t("common.copy"));
+    btn.type = "button";
+    btn.addEventListener("click", function () { copyText(cmd, btn); });
+    row.appendChild(btn);
+    return row;
+  }
+
+  function emptyState(view, opts) {
+    opts = opts || {};
+    var box = el("div", "empty-state");
+    box.setAttribute("data-empty-state", view);
+    box.appendChild(el("div", "empty-state-icon", opts.icon || EMPTY_STATES[view] || "◇"));
+    box.appendChild(el("h4", null, opts.title || t("empty." + view + ".title")));
+    box.appendChild(el("p", null, opts.body || t("empty." + view + ".body")));
+    var actions = el("div", "empty-actions");
+    actions.appendChild(cmdRow(t("empty." + view + ".action"), t("common.demo")));
+    actions.appendChild(cmdRow("python -m trident onboard-cluster --dry-run", t("common.cluster")));
+    box.appendChild(actions);
+    var next = opts.next || t("empty." + view + ".next");
+    if (next) box.appendChild(el("div", "empty-next", next));
+    if (opts.extra) box.appendChild(opts.extra);
+    return box;
+  }
+
+  function applyI18n() {
+    document.documentElement.lang = STATE.lang === "zh" ? "zh-CN" : "en";
+    document.querySelectorAll("[data-i18n]").forEach(function (n) {
+      n.textContent = t(n.getAttribute("data-i18n"));
+    });
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(function (n) {
+      n.setAttribute("placeholder", t(n.getAttribute("data-i18n-placeholder")));
+    });
+    var toggle = document.getElementById("lang-toggle");
+    if (toggle) {
+      toggle.textContent = STATE.lang === "zh" ? "EN" : "中文";
+      toggle.title = t("lang.switch");
+      toggle.setAttribute("aria-label", t("lang.switch"));
+    }
+    var modePill = document.getElementById("mode-pill");
+    if (modePill) modePill.textContent = t(STATIC_MODE ? "mode.static" : "mode.service");
+  }
+
+  function setLang(lang, persist) {
+    STATE.lang = lang === "en" ? "en" : "zh";
+    if (persist !== false) {
+      try { localStorage.setItem("trident-lang", STATE.lang); } catch (e) { /* file:// 隐私模式 */ }
+    }
+    applyI18n();
+    renderCurrent();
+    renderRunMeta();
+  }
+
+  function bindLang() {
+    var saved = null;
+    try { saved = localStorage.getItem("trident-lang"); } catch (e) { /* ignore */ }
+    STATE.lang = saved === "en" ? "en" : "zh";
+    var toggle = document.getElementById("lang-toggle");
+    if (toggle) {
+      toggle.addEventListener("click", function () {
+        setLang(STATE.lang === "zh" ? "en" : "zh", true);
+      });
+    }
+    applyI18n();
+  }
+
 
   /* ================= 导航 ================= */
 
@@ -110,12 +450,12 @@
   function bindSession() {
     var form = document.getElementById("login-form");
     if (STATIC_MODE) {
-      document.getElementById("mode-pill").textContent = "静态导出 · 免服务打开";
+      document.getElementById("mode-pill").textContent = t("mode.static");
       document.getElementById("mode-pill").classList.add("static");
       return; // 静态模式无登录
     }
     form.hidden = false;
-    document.getElementById("mode-pill").textContent = "服务模式 · 本地";
+    document.getElementById("mode-pill").textContent = t("mode.service");
     form.addEventListener("submit", function (ev) {
       ev.preventDefault();
       login();
@@ -123,7 +463,7 @@
     document.getElementById("btn-runs").addEventListener("click", loadRuns);
     document.getElementById("btn-abort").addEventListener("click", function () {
       fetch("api/abort", { method: "POST" }).catch(function () {});
-      this.textContent = "已请求停止";
+      this.textContent = t("login.abort");
     });
   }
   function api(path, opts) {
@@ -162,7 +502,7 @@
       .then(function (body) { STATE.runs = body.runs || []; renderRunMeta(); })
       .catch(function (e) {
         var pill = document.getElementById("session-pill");
-        pill.textContent = "获取运行失败：" + e.message;
+        pill.textContent = t("run.loadFail") + e.message;
       });
   }
   function renderRunMeta() {
@@ -170,13 +510,15 @@
     if (!host) return;
     if (STATIC_MODE) {
       var d = STATE.data;
-      host.textContent = "运行 " + d.run.name + " · 状态 " + (d.run.status || "—") +
-        " · 步骤 " + d.steps.length + " · 发现 " + d.findings.length;
+      host.textContent = t("run.staticMeta", {
+        run: d.run.name, status: d.run.status || "—",
+        steps: d.steps.length, findings: d.findings.length,
+      });
       return;
     }
     host.textContent = STATE.runs.length
-      ? "本工作区运行数：" + STATE.runs.length + "（" + STATE.runs.join("、") + "）"
-      : "已登录（服务模式暂无步骤只读端点；步骤级数据请用静态导出查看）";
+      ? t("run.serviceMeta", { n: STATE.runs.length, runs: STATE.runs.join(", ") })
+      : t("run.serviceEmpty");
   }
 
   /* ================= ① 工作流 DAG ================= */
@@ -188,9 +530,7 @@
     var list = steps();
     clear(host);
     if (!list.length) {
-      var empty = el("div", "dag-empty",
-        STATIC_MODE ? "该运行无步骤记录" : "服务模式暂无步骤只读端点 —— 用静态导出（trident ui --export-static）查看完整 DAG");
-      host.appendChild(empty);
+      host.appendChild(emptyState("dag", { icon: "①" }));
       return;
     }
     var RF = window.ReactFlowCore;
@@ -208,7 +548,7 @@
     var st = d.status || "pending";
     return e("div", { className: "rf-step-node st-" + st },
       e("div", { className: "rf-step-title" }, d.label),
-      e("div", { className: "rf-step-status" }, STATUS_ZH[st] || st),
+      e("div", { className: "rf-step-status" }, statusLabel(st)),
       e(window.ReactFlowCore.Handle, { type: "target", position: window.ReactFlowCore.Position.Left }),
       e(window.ReactFlowCore.Handle, { type: "source", position: window.ReactFlowCore.Position.Right }));
   }
@@ -291,7 +631,7 @@
       var title = svgEl("text", { x: p.x + NW / 2, y: p.y + 19, "text-anchor": "middle" });
       title.textContent = s.step_key.length > 26 ? s.step_key.slice(0, 25) + "…" : s.step_key;
       var stz = svgEl("text", { x: p.x + NW / 2, y: p.y + 36, "text-anchor": "middle" });
-      stz.textContent = STATUS_ZH[st] || st;
+      stz.textContent = statusLabel(st);
       g.appendChild(title); g.appendChild(stz);
       g.addEventListener("click", function () { onClick(s.step_key); });
       g.style.cursor = "pointer";
@@ -315,7 +655,7 @@
     clear(head);
     head.appendChild(el("div", null, s.step_key)).style.fontWeight = "700";
     head.appendChild(el("div", null, "")).className = "badge st-" + stepStatus(s);
-    head.lastChild.textContent = STATUS_ZH[stepStatus(s)];
+    head.lastChild.textContent = statusLabel(stepStatus(s));
     side.appendChild(head);
 
     var p = el("div", "panel");
@@ -377,9 +717,7 @@
     var ns = nodes(), es = edges();
     clear(host);
     if (!ns.length && !es.length) {
-      host.appendChild(el("div", "empty",
-        STATIC_MODE ? "该运行未记录图数据（graph_nodes/graph_edges）" :
-          "服务模式暂无图数据端点 —— 静态导出包含可达性图（资产节点 + 利用边）"));
+      host.appendChild(emptyState("chain", { icon: "②" }));
       return;
     }
     // 链过滤选项
@@ -387,7 +725,7 @@
     es.forEach(function (e2) { if (e2.chain) chains[e2.chain] = true; });
     var cur = filter.value || "*";
     clear(filter);
-    filter.appendChild(el("option", null, "全部链")).value = "*";
+    filter.appendChild(el("option", null, t("chain.all"))).value = "*";
     Object.keys(chains).forEach(function (c) {
       var o = el("option", null, c);
       o.value = c;
@@ -481,7 +819,7 @@
     clear(body);
     var list = steps();
     if (!list.length) {
-      body.appendChild(el("div", "empty", STATIC_MODE ? "该运行无步骤" : "服务模式无时间线数据（静态导出含起止时间）"));
+      body.appendChild(emptyState("timeline", { icon: "③" }));
       return;
     }
     var rows = list.map(function (s) {
@@ -498,13 +836,13 @@
     if (!isFinite(t0) || t1 <= t0) { t0 = 0; t1 = 1; }
 
     var axis = el("div", "tl-axis");
-    axis.appendChild(el("div", null, "步骤"));
+    axis.appendChild(el("div", null, t("report.step")));
     var marks = el("div", "marks");
     marks.appendChild(el("span", null, fmtTime(t0)));
     marks.appendChild(el("span", null, fmtTime((t0 + t1) / 2)));
     marks.appendChild(el("span", null, fmtTime(t1)));
     axis.appendChild(marks);
-    axis.appendChild(el("div", null, "耗时"));
+    axis.appendChild(el("div", null, STATE.lang === "zh" ? "耗时" : "Duration"));
     body.appendChild(axis);
 
     var maxPar = 1;
@@ -519,7 +857,7 @@
       var width = Math.max(0.5, ((r.end - r.start) / (t1 - t0)) * 100);
       bar.style.left = left + "%";
       bar.style.width = width + "%";
-      bar.title = fmtTime(r.start) + " → " + fmtTime(r.end) + " · " + STATUS_ZH[r.st];
+      bar.title = fmtTime(r.start) + " → " + fmtTime(r.end) + " · " + statusLabel(r.st);
       track.appendChild(bar);
       row.appendChild(track);
       row.appendChild(el("div", "tl-dur", (r.end && r.start) ? fmtDur((r.end - r.start) * 1000) : "—"));
@@ -536,9 +874,10 @@
       }
     });
     var sum = rows.reduce(function (a, r) { return a + Math.max(0, (r.end - r.start)); }, 0);
-    body.appendChild(el("div", "hint",
-      "步骤 " + rows.length + " · 总耗时 " + fmtDur((t1 - t0) * 1000) +
-      " · 累计执行 " + fmtDur(sum * 1000) + " · 峰值并行度 " + maxPar));
+    body.appendChild(el("div", "hint", t("timeline.summary", {
+      steps: rows.length, total: fmtDur((t1 - t0) * 1000),
+      sum: fmtDur(sum * 1000), par: maxPar,
+    })));
   }
 
   /* ================= ④ 证据浏览器 ================= */
@@ -550,14 +889,14 @@
     clear(list); clear(detail);
     var st = steps();
     if (!st.length) {
-      list.appendChild(el("div", "empty", STATIC_MODE ? "无步骤" : "服务模式：登录后运行列表见时间线页头部；步骤级三层证据请用静态导出"));
-      detail.appendChild(el("h3", null, "三层证据"));
-      detail.appendChild(el("div", "hint", "（未选择）"));
+      list.appendChild(emptyState("evidence", { icon: "④" }));
+      detail.appendChild(el("h3", null, t("evidence.threeLayers")));
+      detail.appendChild(el("div", "hint", "（—）"));
     } else {
       st.forEach(function (s) {
         var card = el("div", "ev-step" + (STATE.selectedStep === s.step_key ? " selected" : ""));
         var head = el("div");
-        head.appendChild(el("span", "badge st-" + stepStatus(s), STATUS_ZH[stepStatus(s)]));
+        head.appendChild(el("span", "badge st-" + stepStatus(s), statusLabel(stepStatus(s))));
         head.appendChild(document.createTextNode(" " + s.step_key));
         card.appendChild(head);
         var evs = s.evidence || [];
@@ -594,7 +933,7 @@
       tr.appendChild(td);
       tbl.appendChild(tr);
     }
-    kv("状态", el("span", "badge st-" + stepStatus(s), STATUS_ZH[stepStatus(s)]));
+    kv("状态", el("span", "badge st-" + stepStatus(s), statusLabel(stepStatus(s))));
     var promptDiv = el("div");
     (s.prompts || []).forEach(function (pr) {
       var b = el("div");
@@ -634,6 +973,14 @@
 
   /* ================= ⑤ 报告预览 ================= */
 
+  /* 10k findings 实测：一次性建 10k 行 DOM 会阻塞主线程数百毫秒。
+   * 默认按 200 行/页渐进渲染；`?perf=legacy` 保留全量渲染，仅用于优化前后
+   * 对照（docs/UI-PERF.md 的基准口径），不影响普通用户路径。 */
+  var REPORT_PAGE_SIZE = 200;
+  var reportVisible = REPORT_PAGE_SIZE;
+  var LEGACY_PERF = !!window.__TRIDENT_FORCE_LEGACY ||
+    /(?:^|[?&])perf=legacy(?:&|$)/.test(window.location.search);
+
   function renderReport() {
     var host = document.getElementById("report-body");
     clear(host);
@@ -642,18 +989,19 @@
     api("api/report?run=&lang=bi")
       .then(function (body) {
         STATE.reportRemote = body;
-        host.appendChild(el("div", "panel", "服务端报告已返回（占位端点）；以下为本地内嵌渲染："));
+        host.appendChild(el("div", "panel", t("report.remote")));
         renderReportData(host);
       })
       .catch(function () {
-        host.appendChild(el("div", "panel hint",
-          "api/report 不可用（未实现或未登录）——以内嵌渲染兜底；完整报告请运行报告引擎或使用静态导出。"));
+        host.appendChild(el("div", "panel hint", t("report.fallback")));
         renderReportData(host);
       });
   }
 
   function renderReportData(host) {
+    var startedAt = (window.performance && performance.now) ? performance.now() : Date.now();
     var fs = findings();
+    var total = fs.length;
     var cards = el("div", "rep-cards");
     function card(num, lbl, color) {
       var c = el("div", "rep-card");
@@ -665,15 +1013,15 @@
     }
     var bySev = {};
     fs.forEach(function (f) { var s = (f.severity || "info").toLowerCase(); bySev[s] = (bySev[s] || 0) + 1; });
-    cards.appendChild(card(fs.length, "发现总数"));
+    cards.appendChild(card(total, t("report.total")));
     SEV_ORDER.forEach(function (s) {
       cards.appendChild(card(bySev[s] || 0, s.toUpperCase(), "var(--sev-" + s + ")"));
     });
-    cards.appendChild(card(steps().length, "执行步骤"));
+    cards.appendChild(card(steps().length, t("report.steps")));
     host.appendChild(cards);
 
     var panel = el("div", "panel");
-    panel.appendChild(el("h3", null, "发现清单（Findings）"));
+    panel.appendChild(el("h3", null, t("report.findings")));
     // 可选脱敏开关：默认关闭（零日级漏洞模块已公开，细节正常展示）；供未来真私有发现使用。
     var toggle = el("label", "hint");
     var cb = document.createElement("input");
@@ -684,48 +1032,84 @@
       renderReport();
     });
     toggle.appendChild(cb);
-    toggle.appendChild(document.createTextNode(" 零日级细节脱敏（可选；默认展示已公开细节）"));
+    toggle.appendChild(document.createTextNode(" " + t("report.redact")));
     panel.appendChild(toggle);
-    if (!fs.length) {
-      panel.appendChild(el("div", "hint", STATIC_MODE ? "该运行无发现" : "服务模式无发现数据（静态导出内嵌 findings 表）"));
+
+    if (!total) {
+      panel.appendChild(emptyState("report", { icon: "⑤" }));
     } else {
+      var limit = LEGACY_PERF ? total : Math.min(reportVisible, total);
+      var visibleFindings = LEGACY_PERF ? fs : fs.slice(0, limit);
+      panel.appendChild(el("div", "hint report-progress", t("report.showing", {
+        shown: visibleFindings.length, total: total,
+      })));
+      if (LEGACY_PERF) panel.appendChild(el("div", "hint", t("report.legacy")));
+
       var tbl = el("table", "data");
+      tbl.setAttribute("data-rendered-rows", String(visibleFindings.length));
       var thead = el("thead");
       var htr = el("tr");
-      ["严重度", "标题", "步骤", "证据（归档层引用）", "零日"].forEach(function (h) { htr.appendChild(el("th", null, h)); });
+      [t("report.severity"), t("report.titleCol"), t("report.step"),
+       t("report.evidence"), t("report.zeroday")].forEach(function (h) {
+        htr.appendChild(el("th", null, h));
+      });
       thead.appendChild(htr); tbl.appendChild(thead);
       var tbody = el("tbody");
-      fs.forEach(function (f) {
+      var fragment = document.createDocumentFragment();
+      visibleFindings.forEach(function (f) {
         var tr = el("tr");
         var sev = (f.severity || "info").toLowerCase();
         tr.appendChild(el("td")).appendChild(el("span", "badge sev-" + (SEV_ORDER.indexOf(sev) >= 0 ? sev : "info"), sev.toUpperCase()));
         // 默认展示全部细节；勾选可选脱敏后仅对 is_zeroday 发现隐藏细节（保留证据哈希引用）。
         var redact = !!STATE.redactZeroday && !!f.is_zeroday;
         var titleTd = el("td");
-        titleTd.textContent = redact ? "【脱敏】影响已验证（零日级，已公开；未展示细节）" : (f.title || "");
+        titleTd.textContent = redact ? t("report.redactedTitle") : (f.title || "");
         if (!redact && f.detail) {
           titleTd.appendChild(el("div", "hint", f.detail));
         }
         if (redact && f.evidence_path) {
-          titleTd.appendChild(el("div", "hint", "证据：" + f.evidence_path));
+          titleTd.appendChild(el("div", "hint", "evidence: " + f.evidence_path));
         }
         tr.appendChild(titleTd);
         tr.appendChild(el("td", null, f.step_key || ""));
         tr.appendChild(el("td")).appendChild(el("code", null, f.evidence_path || "—"));
-        tr.appendChild(el("td", null, f.is_zeroday ? (redact ? "是（可选脱敏）" : "是（零日级，已公开）") : "否"));
-        tbody.appendChild(tr);
+        tr.appendChild(el("td", null, f.is_zeroday
+          ? (redact ? t("report.zerodayRedacted") : t("report.zerodayYes"))
+          : t("report.no")));
+        fragment.appendChild(tr);
       });
+      tbody.appendChild(fragment);
       tbl.appendChild(tbody);
       panel.appendChild(tbl);
+      if (!LEGACY_PERF && visibleFindings.length < total) {
+        var more = el("button", "report-more", t("report.showMore", {
+          n: Math.min(REPORT_PAGE_SIZE, total - visibleFindings.length),
+        }));
+        more.type = "button";
+        more.addEventListener("click", function () {
+          reportVisible += REPORT_PAGE_SIZE;
+          clear(host);
+          renderReportData(host);
+        });
+        panel.appendChild(more);
+      }
     }
     host.appendChild(panel);
 
     var sec = el("div", "panel rep-section");
-    sec.appendChild(el("h4", null, "结构对齐（PTES / NIST SP 800-115 / 等保 2.0 · GB/T 20984 / CVSS 3.1 / ATT&CK·ATLAS）"));
-    sec.appendChild(el("div", "hint",
-      "预览页仅渲染发现表与统计；正式双语报告由报告引擎生成（渗透 + 修复 + 防御规则包交付文档），" +
-      "含组合层风险 / 训练数据泄露面 / 核心代码清单 / 网络分层威胁模型 / 混合云边界专节。"));
+    sec.appendChild(el("h4", null, t("report.sectionTitle")));
+    sec.appendChild(el("div", "hint", t("report.sectionBody")));
     host.appendChild(sec);
+
+    // 基准与自动化测试可读的渲染元数据（不含发现内容）。
+    var endedAt = (window.performance && performance.now) ? performance.now() : Date.now();
+    window.__TRIDENT_REPORT_META = {
+      total: total,
+      renderedRows: (document.querySelectorAll("#report-body tbody tr") || []).length,
+      pageSize: REPORT_PAGE_SIZE,
+      legacy: LEGACY_PERF,
+      renderMs: Math.round((endedAt - startedAt) * 100) / 100,
+    };
   }
 
   /* ================= ⑥ 规则视图（规则↔链映射矩阵） ================= */
@@ -790,6 +1174,10 @@
   function renderRules() {
     var host = document.getElementById("rules-body");
     clear(host);
+    if (!RULE_CATALOG.length) {
+      host.appendChild(emptyState("rules", { icon: "⑥" }));
+      return;
+    }
     // 列 = 数据中出现的链 ∪ 目录链（数据优先排序）
     var dataChains = [];
     edges().forEach(function (e2) {
@@ -862,8 +1250,12 @@
     if (!body) return;
     var render = function (data, opts) {
       opts = opts || {};
-      var g = data.graph || { nodes: [], edges: [] };
+      var g = data.graph || data || { nodes: [], edges: [] };
       var allNodes = g.nodes || [];
+      if (!allNodes.length) {
+        body.appendChild(emptyState("assets", { icon: "⑦" }));
+        return;
+      }
       var wrap = el("div", "chain-controls");
       wrap.appendChild(el("span", "hint",
         "资产 " + allNodes.length + " · 关系 " + (g.edges || []).length + " · 来源：core/discovery（assets 表，种子→增量）"));
@@ -938,11 +1330,11 @@
         render(data, { kind: kind, product: product });
       }).catch(function () {
         clear(body);
-        body.appendChild(el("div", "hint", "资产清单加载失败（未发现或未登录）。"));
+        body.appendChild(emptyState("assets", { icon: "⑦" }));
       });
     };
     if (STATIC_MODE || STATE.data) return render(assetsData(), {});
-    if (!STATE.token) { body.appendChild(el("div", "hint", "登录后加载资产清单（api/v1/assets）。")); return; }
+    if (!STATE.token) { body.appendChild(emptyState("assets", { icon: "⑦" })); return; }
     load("");
   }
 
@@ -950,7 +1342,7 @@
     var body = ensureSection("drift-body");
     if (!body) return;
     var render = function (d) {
-      if (!d) { body.appendChild(el("div", "hint", "无漂移数据（周期重测后由 scheduler 生成 drift.json）。")); return; }
+      if (!d) { body.appendChild(emptyState("drift", { icon: "⑧" })); return; }
       var c = (d.counts) || {};
       var cards = el("div", "sev-cards");
       [["新增", c.new || 0, "critical"], ["已修复", c.fixed || 0, "success-ish"], ["未变", c.unchanged || 0, "info"]].forEach(function (x) {
@@ -977,13 +1369,12 @@
       });
     };
     if (STATIC_MODE || STATE.data) return render(driftData());
-    if (!STATE.token) { body.appendChild(el("div", "hint", "登录后加载差异视图（api/v1/drift）。")); return; }
+    if (!STATE.token) { body.appendChild(emptyState("drift", { icon: "⑧" })); return; }
     var qs = "api/v1/drift?workspace=" + encodeURIComponent(STATE.workspace);
     if (STATE.selectedRun) qs += "&run=" + encodeURIComponent(STATE.selectedRun);
     api(qs).then(function (body2) { render(body2.drift || body2); })
       .catch(function (e) {
-        body.appendChild(el("div", "hint", "差异数据加载失败（" + e.message +
-          "）；周期重测 run-due 后生成 drift.json，或查看静态导出。"));
+        body.appendChild(el("div", "hint", t("drift.fail", { msg: e.message })));
       });
   }
 
@@ -995,7 +1386,7 @@
     var body = ensureSection("approvals-body");
     if (!body) return;
     var render = function (list) {
-      if (!list.length) { body.appendChild(el("div", "hint", "审批队列为空（explorer propose 生成提议）。")); return; }
+      if (!list.length) { body.appendChild(emptyState("approvals", { icon: "⑨" })); return; }
       var tbl = el("table", "rules-matrix");
       var hr = el("tr"); ["提议", "模式", "动作序列", "写面", "状态", "创建者"].forEach(function (t) { hr.appendChild(el("th", null, t)); });
       tbl.appendChild(hr);
@@ -1015,7 +1406,7 @@
       body.appendChild(el("div", "hint", "审批制自主探索：propose（只读）→ lead 批准 → 人触发执行；LLM 可选、规则兜底。"));
     };
     if (STATIC_MODE || STATE.data) return render(approvalsData());
-    if (!STATE.token) { body.appendChild(el("div", "hint", "登录后加载审批队列（api/v1/explorer）。")); return; }
+    if (!STATE.token) { body.appendChild(emptyState("approvals", { icon: "⑨" })); return; }
     api("api/v1/explorer?workspace=" + encodeURIComponent(STATE.workspace))
       .then(function (b) { render(b.proposals || []); })
       .catch(function () { render([]); });
@@ -1025,7 +1416,7 @@
     var body = ensureSection("schedules-body");
     if (!body) return;
     var render = function (list, due) {
-      if (!list.length) { body.appendChild(el("div", "hint", "无周期重测计划（api/v1/scheduler/add 创建）。")); return; }
+      if (!list.length) { body.appendChild(emptyState("schedules", { icon: "⑩" })); return; }
       var tbl = el("table", "rules-matrix");
       var hr = el("tr"); ["计划", "触发", "链子集", "启用", "上次 run", "下次触发"].forEach(function (t) { hr.appendChild(el("th", null, t)); });
       tbl.appendChild(hr);
@@ -1043,7 +1434,7 @@
       body.appendChild(el("div", "hint", "到期自动跑链子集并与上次 findings 差异（新增/已修复），drift 报告落 run 目录。"));
     };
     if (STATIC_MODE || STATE.data) return render(schedulesData(), []);
-    if (!STATE.token) { body.appendChild(el("div", "hint", "登录后加载计划任务（api/v1/scheduler）。")); return; }
+    if (!STATE.token) { body.appendChild(emptyState("schedules", { icon: "⑩" })); return; }
     api("api/v1/scheduler?workspace=" + encodeURIComponent(STATE.workspace))
       .then(function (b) { render(b.schedules || [], b.due || []); })
       .catch(function () { render([], []); });
@@ -1069,9 +1460,11 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+    bindLang();
     bindDemoGuide();
     bindNav();
     bindSession();
+    applyI18n();
     renderAll();
   });
 })();
