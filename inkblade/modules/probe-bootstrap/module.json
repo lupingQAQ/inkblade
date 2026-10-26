@@ -10,6 +10,7 @@
   "writes": false,
   "requires": [],
   "execution": "bootstrap",
+  "surfaces": [{"type": "runtime-agent", "selector": "inkblade-probe"}],
   "params_schema": {
     "probe_binary": "host 侧 Rust 探针二进制路径（缺省读 inkblade/probe-bootstrap.json 的 source）",
     "remote_path": "Pod 内落地路径（缺省 /tmp/inkblade-probe）",

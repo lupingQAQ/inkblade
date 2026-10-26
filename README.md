@@ -2,7 +2,15 @@
 
 **Probe-centric penetration testing for training and inference clusters**
 
-`v0.2.0` · Apache-2.0 · Python 3.10–3.13 controller · static Rust probe · read-only by default
+`v0.2.0` · Apache-2.0 · Python 3.10–3.13 controller · static Rust probe (source in git, binaries via CI) · read-only by default
+
+> **Build status (2026-10-27).** This is the probe-migration window, not a GA release. The controller
+> command surface that ships today is `session · probe · channel · module · run · execute · template ·
+> surfaces · collect · report · rules · exploit · objective · assess · doctor`. The `exec` / `scan`
+> shorthands below are **not implemented**; use `session run`, `template` and `run` instead. The Rust
+> probe source is tracked and CI publishes amd64/arm64 builds, but `runtime=rust` evidence is still
+> zero. Every number in this README is reconciled in
+> [`docs/REQUIREMENTS-MATRIX.md`](docs/REQUIREMENTS-MATRIX.md).
 
 > **Authorized use only.** Point InkBlade at assets you have written authorization for. Consent and
 > ROE records are hash-pinned. Scope, level and time window are enforced in code. Writes need a
@@ -82,7 +90,7 @@ product ships the rules and the replay matrix, not just a warning that a product
   `backup-write` mode and a backup receipt.
 - **Evidence at the boundary.** Per-task results, step logs, artifacts, SHA-256 manifests, probe
   identity, cleanup receipts.
-- **Ten detection layers.** 287 module directories, 29 chains, 11 defense-bypass modules.
+- **Ten detection layers.** 287 module directories, 286 templates, 29 chains, 11 defense-bypass modules.
 - **Rules you can replay.** Admission, runtime and network packs with blocked/detected/missed
   matrices.
 - **No telemetry.** No account, no cloud key, no licence server.
@@ -99,7 +107,9 @@ product ships the rules and the replay matrix, not just a warning that a product
 
 ## Quick start
 
-The product path is `doctor → session → probe → exec/scan → report`.
+The product path is `doctor → session → probe → exec/scan → report`. `session`, `probe` and `channel`
+exist in 0.2.0; `exec` and `scan` are shorthands that are **not implemented** — use `session run`,
+`template run` or `run` for the same work.
 
 ```bash
 python -m pip install -e .
@@ -108,20 +118,19 @@ python -m pip install -e .
 python -m inkblade doctor
 
 # 2. Authorized session
-python -m inkblade session start \
+python -m inkblade session open \
   --name pilot-01 --workspace ./work \
   --kubeconfig ~/.kube/config \
   --scope namespace:ml-team --level read-only
 
-# 3. Deploy the probe
+# 3. Deploy the probe (dry-run by default; writes need --allow-write)
 python -m inkblade probe deploy \
   --session pilot-01 --target ml-team/infer-0 \
   --method kubectl-exec --binary ./inkblade-probe-linux-amd64
 
-# 4. Run one template, or a layer scan
-python -m inkblade exec --session pilot-01 --probe p-7f3a1c9e \
+# 4. Run one template through the session (exec/scan shorthands are not implemented)
+python -m inkblade session run --session pilot-01 \
   --template service-account-token-exposure
-python -m inkblade scan --session pilot-01 --profile ray-vllm --layers 1,3,5
 
 # 5. Report
 python -m inkblade report --session pilot-01 --lang bi
@@ -129,22 +138,38 @@ python -m inkblade report --session pilot-01 --lang bi
 
 There is no demo or trial path: a session requires an authorized target and a signed consent record.
 The 2026-10 probe migration is in its final window; `doctor` reports the command surface that is
-actually available. Current completion is tracked in [`docs/DYNAMIC-VERIFICATION.md`](docs/DYNAMIC-VERIFICATION.md).
+actually available. Current completion is tracked in [`docs/DYNAMIC-VERIFICATION.md`](docs/DYNAMIC-VERIFICATION.md)
+and [`docs/REQUIREMENTS-MATRIX.md`](docs/REQUIREMENTS-MATRIX.md).
+
+## 5 分钟上手 / Five-minute onboarding
+
+Three commands cover the first run; all three work offline and never touch a real cluster.
+
+```bash
+python -m inkblade doctor       # environment, probe binary, optional deps, mock or real cluster
+python -m inkblade demo         # mock range -> signed consent -> 2 modules + 1 chain -> report + rules
+python -m inkblade quickstart   # 5 questions: target, scope, level, users, consent
+```
+
+`doctor` prints a plain-language fix line for every failed check. `demo` writes a workspace under
+`./demo` with bilingual report and rule pack. `quickstart` is re-entrant: answer the five questions,
+sign consent, then run `inkblade execute --dry-run` before anything else.
 
 ## Command map
 
 | Task | Command |
 |---|---|
 | Environment check | `inkblade doctor` |
-| Session | `inkblade session start|list|show|close` |
-| Probe deployment | `inkblade probe deploy|list|show|collect|spawn|tree|cleanup` |
-| One template | `inkblade exec --template <key>` |
-| Layer scan | `inkblade scan --profile <name> --layers <n,n>` |
-| Dry run | `inkblade scan ... --dry-run` |
+| Session | `inkblade session open` / `status` / `close` / `run` |
+| Probe deployment | `inkblade probe list` / `deploy` / `collect` / `exec` / `upload` / `download` / `spawn` / `cleanup` / `run` |
+| Probe channel | `inkblade channel` (framed transport diagnostics) |
+| One template | `inkblade template run --module <key>` or `inkblade run --module <key>` |
+| Layer scan | **not implemented** (`scan` shorthand missing; run the layer's modules explicitly) |
+| Dry run | `inkblade execute ... --dry-run` |
 | Report | `inkblade report --session <id> --lang bi` |
 | Export | `inkblade export --format sarif|ocsf|vex` |
-| Rule packs | `inkblade rules generate|validate` |
-| Template check | `inkblade template lint|validate` |
+| Rule packs | `inkblade rules generate` / `validate` |
+| Template check | `inkblade template lint` / `validate` |
 
 ## Documentation
 
@@ -159,6 +184,9 @@ actually available. Current completion is tracked in [`docs/DYNAMIC-VERIFICATION
 | [`docs/USAGE.md`](docs/USAGE.md) | Five-step workflow, scenarios, output reading, exit codes |
 | [`docs/FAQ.md`](docs/FAQ.md) | Boundaries, migration status, writes, detection, licensing |
 | [`docs/DOC-INDEX.md`](docs/DOC-INDEX.md) | Complete documentation index |
+| [`docs/REQUIREMENTS-MATRIX.md`](docs/REQUIREMENTS-MATRIX.md) | Single source of truth: 124 requirements, number reconciliation, open gaps |
+| [`docs/SOTA-2026-10.md`](docs/SOTA-2026-10.md) | Capability matrix: 25 verified / 10 simulated / 4 not achieved, with evidence paths |
+| [`docs/MODULES.md`](docs/MODULES.md) | Module catalogue, series, levels and keys |
 | [`docs/HOW-TO-DESIGN-COMMERCIAL-AGENT.md`](docs/HOW-TO-DESIGN-COMMERCIAL-AGENT.md) | Engineering handbook, including the probe-centric revision |
 
 ## English / 中文
@@ -178,10 +206,13 @@ Coverage details and the current Rust-runtime gap: [`docs/PROBE-COVERAGE.md`](do
 - Defense-bypass assessment: `inkblade/core/defenseprobe.py` and 11 `inkblade/modules/defense-bypass-*`
   modules.
 - Current counts: 287 module directories (286 templates plus one bootstrap), 29 chains, 11
-  defense-bypass modules. Migration window: 286 legacy `run.py` files remain and must be removed
-  before release; the registry already ignores them.
+  defense-bypass modules. The 286 legacy `run.py` files were deleted in the working tree during the
+  migration and are still present at `HEAD` until the migration commit lands; the registry only
+  accepts templates.
 - Rust-runtime dynamic verification is still 0. The 286/286 two-state results in the coverage
-  report use `runtime=reference`; they are useful for template logic, not for probe evidence.
+  report use `runtime=reference`; they are useful for template logic, not for probe evidence. The
+  probe source is tracked; binaries are built in CI (`docs/PROBE-BUILD.md`) and kept out of git
+  (`probe/dist/`).
 
 **Limits**
 
@@ -208,3 +239,12 @@ reads like a machine wrote it, it probably started that way. Numbers that look w
 
 Code, manifests, rule packs and evidence artefacts come from the software; this statement covers
 prose.
+
+## Clean-room 声明 / Clean-room statement
+
+InkBlade is a clean-room implementation: no ARTEX (AGPL-3.0) source file was
+read, copied, linked or derived ("未读取、未复制"). Public documentation and
+observable behaviour were used as functional references only; the module and
+template code is original.
+See [`NOTICE`](NOTICE) for the full clean-room functional parity statement and
+the AGPL boundary. 禁止链接/派生：不得把 InkBlade 代码与 AGPL 项目链接或派生。

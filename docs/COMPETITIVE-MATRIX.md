@@ -288,10 +288,11 @@ kube-bench D13 ✓ = 输出即 CIS Benchmark 条目级合规报告（按定义�
 | CM-29 | LLM 行为面多轮攻击策略链（Crescendo/TAP 式升级链 + 评分器框架） | D5 ML 域专长 | M | - | PyRIT | done — `core/llmredteam.py` / `tests/test_backlog_m.py` |
 | CM-30 | agent 工具面注入基准场景（工具环境间接注入→执行的套件化基准与评分） | D5 ML 域专长 | M | - | AgentDojo | done — `core/agentbench.py` / `tests/test_backlog_m.py` |
 | CM-31 | 多租户并发/分布式调度（与 SOTA 未达成项「多租户 SaaS」同源，登记不重复实施） | D18 持续化 | L | gen-27（XBow 派生·并发规模对照） | XBow | open — L（超出本轮 S/M 范围；多租户 SaaS 同源未达成项） |
-| CM-32 | LLM 行为面探针族（注入/越狱/泄露/毒性探针库，garak 级广度） | D5 ML 域专长 | L | - | garak | open — L（超出本轮 S/M 范围） |
-| CM-33 | CIS K8s Benchmark 检查模块族 + 合规框架 CIS 条目（standards.json） | D13 双语合规报告 | L | - | kube-bench | open — L（超出本轮 S/M 范围） |
+| CM-32 | LLM 行为面探针族（注入/越狱/泄露/毒性探针库，garak 级广度） | D5 ML 域专长 | L | - | garak | partial — `inkblade/probes/library/` 87 探针 / 13 类（OWASP LLM 10/10 + ASI 10/10），garak 146 类的 60%；`tests/test_llm_probes.py`、`docs/PROBE-PARITY.md` |
+| CM-33 | CIS K8s Benchmark 检查模块族 + 合规框架 CIS 条目（standards.json） | D13 双语合规报告 | L | - | kube-bench | done — `inkblade/cis/catalog.py` 161 项（kube-bench 130 超集）+ `cis-benchmark-audit` 模板；`docs/CIS-PARITY.md` |
 
 计数：**33 项 = S 13 · M 17 · L 3**；其中 gen-27 重叠 4 项（CM-03/14/15/31）。
+状态：S 13 done · M 17 done / 1 限定（CM-18 离线 pcap）· L 项 CM-31 open、CM-32 partial、CM-33 done。
 
 ## 6. 竞争态势与数据源备注（诚实声明）
 

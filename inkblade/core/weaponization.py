@@ -26,6 +26,18 @@ MATRIX_PATH = ROOT / "inkblade" / "core" / "data" / "version-matrix.json"
 EXPLOIT_PATH = ROOT / "inkblade" / "core" / "exploit-registry.json"
 MODULES_DIR = ROOT / "inkblade" / "modules"
 
+
+def module_runnable(module_dir: Path) -> bool:
+    """A module is runnable when it has metadata and an execution body.
+
+    Post-migration the body is ``template.json`` (Rust probe); the legacy
+    ``run.py`` is accepted only while the file still exists so the transition
+    does not report every module as missing.
+    """
+    if not (module_dir / "module.json").is_file():
+        return False
+    return (module_dir / "template.json").is_file() or (module_dir / "run.py").is_file()
+
 SCHEMA = "inkblade-weapon-packs-v1"
 REQUIREMENTS = ("default-exposed", "needs-config", "function-level", "hardware-only")
 
@@ -102,7 +114,7 @@ def pack_from_registry(identifier: str, *, registry_path: Path | str = EXPLOIT_P
         return None
     module = str(entry.get("module") or "")
     module_dir = Path(modules_dir) / module
-    if not module or not (module_dir / "run.py").is_file():
+    if not module or not module_runnable(module_dir):
         raise WeaponPackError(
             f"{identifier} has no module (status={entry.get('status')}); "
             "only classified, module-backed entries are one-click runnable")
@@ -145,7 +157,7 @@ def registry_packs(*, modules_dir: Path | str = MODULES_DIR) -> list[dict]:
     modules = Path(modules_dir)
     for entry in doc.get("entries") or []:
         module = str(entry.get("module") or "")
-        if module and (modules / module / "run.py").is_file():
+        if module and module_runnable(modules / module):
             pack = pack_from_registry(entry["id"], modules_dir=modules_dir)
             if pack is not None:
                 out.append(pack)
@@ -185,8 +197,8 @@ def validate(path: Path | str = PACKS_PATH, *, modules_dir: Path | str = MODULES
         seen.add(pid)
         module = str(pack.get("module") or "")
         module_dir = modules / module
-        if not (module_dir / "module.json").is_file() or not (module_dir / "run.py").is_file():
-            errors.append(f"{pid}: module {module!r} missing run.py/module.json")
+        if not module_runnable(module_dir):
+            errors.append(f"{pid}: module {module!r} missing template.json/module.json (or legacy run.py)")
         if module not in matrix:
             errors.append(f"{pid}: module {module!r} has no version-matrix row")
         variants = list(pack.get("variants") or [])
@@ -281,7 +293,7 @@ def registry_rows(*, registry_path: Path | str = EXPLOIT_PATH,
         module = str(entry.get("module") or "")
         if module:
             row["variants"] += len((matrix.get(module) or {}).get("variants") or [])
-            if (modules / module / "run.py").is_file():
+            if module_runnable(modules / module):
                 row["one_click"] += 1
     return [grouped[key] for key in sorted(grouped)]
 

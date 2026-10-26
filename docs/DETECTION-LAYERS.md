@@ -177,7 +177,8 @@ explains are folded into it. If it does not fire, the component findings stand o
 通用 Kubernetes 扫描器问的是：这个命名空间是不是 privileged，那个 API 是不是匿名可读，这个镜像有没有 CVE。
 这些问题有用，但漏掉了训练集群之所以是训练集群的部分。
 
-InkBlade 按九层组织，这九层是 ML 基础设施与普通 Kubernetes 的差异所在：GPU fabric 与集合通信、权重与 checkpoint、
+InkBlade 的检测模型共十层；本文完整展开前九层，第十层（防护绕过与检测对抗）见
+[`PRODUCT.md`](PRODUCT.md)。这九层是 ML 基础设施与普通 Kubernetes 的差异所在：GPU fabric 与集合通信、权重与 checkpoint、
 KV 缓存、租户残留，以及只有框架、Operator 与网络插件凑在一起才成立的组合。
 
 最后一层的规则：需要两个组件同时成立才算问题的，只报一次，报在组合上，不拆成两条低危。

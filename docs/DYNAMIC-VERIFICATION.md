@@ -50,7 +50,7 @@ mock 靶场要能本地启动，不依赖外网，端口固定。vulnerable 态�
 
 ## 7. 当前完成度
 
-截至 2026-10-27，迁移进入收尾。以下数字来自当前工作树：模块目录 287 个，其中 286 个有 `template.json`，1 个是 `probe-bootstrap`；迁移窗口内仍保留 286 个旧 `run.py`，注册表在过渡期忽略它们，发布前必须删除。参考评估器已经能跑 286 个模板，`reports/probe-coverage/evidence.json` 里有 286 条两态记录；但这些记录的 `runtime` 都是 `reference`，不是 `rust`。
+截至 2026-10-27，迁移进入收尾。以下数字来自当前工作树：模块目录 287 个，其中 286 个有 `template.json`，1 个是 `probe-bootstrap`；旧 `run.py` 已在工作树中全部删除（**0 个**），但删除尚未提交，`HEAD` 仍是 **286 个**，迁移提交落盘后才算完成。参考评估器已经能跑 286 个模板，`reports/probe-coverage/evidence.json` 里有 286 条两态记录；但这些记录的 `runtime` 都是 `reference`，不是 `rust`。
 
 这里有一个必须说清的差异。`docs/PROBE-COVERAGE.md` 的汇总行写“动态模板验证 286/286（100.0%）”，它统计的是参考评估器两态结果；按本文第 2 节的标准，Rust 探针动态验证仍然是 0。两个数字不矛盾，但口径不同。产品对外只能说“参考评估器两态完成 286/286；Rust 运行时验证待重跑”，不能说“全量 Rust 动态验证完成”。
 
@@ -68,7 +68,7 @@ mock 靶场要能本地启动，不依赖外网，端口固定。vulnerable 态�
 
 Every template must run in two states against a local mock target: vulnerable (expected finding) and fixed (no such finding), three times, deterministically, offline. Results are stored with template hash, probe version, protocol version, steps, checks, findings, cleanup, and a SHA-256 manifest. The coverage table counts only Rust probe runs; reference-evaluator and single-state fixture results do not count.
 
-As of 2026-10-27 the migration is in its final window: 287 module directories, 286 `template.json` files, one bootstrap module, and 286 legacy `run.py` files awaiting removal. The reference evaluator has two-state evidence for 286/286 templates, but every entry says `runtime=reference`; Rust-runtime verification is still zero. The 11 defense-bypass modules have fixture-based two-state assessment under the same reference runtime and are not counted as Rust coverage.
+As of 2026-10-27 the migration is in its final window: 287 module directories, 286 `template.json` files, one bootstrap module, and 0 legacy `run.py` files in the working tree (286 still at `HEAD` until the migration commit lands). The reference evaluator has two-state evidence for 286/286 templates, but every entry says `runtime=reference`; Rust-runtime verification is still zero. The 11 defense-bypass modules have fixture-based two-state assessment under the same reference runtime and are not counted as Rust coverage.
 
 生成式覆盖率表见 [`docs/PROBE-COVERAGE.md`](PROBE-COVERAGE.md)；注意其中 `runtime=reference` 与本文的 Rust 标准不同。
 
@@ -78,12 +78,12 @@ As of 2026-10-27 the migration is in its final window: 287 module directories, 2
 
 - 模板 schema：`probe/schema/probe-template.schema.json`；参考评估器：`inkblade/tpl/engine.py`。
 - 模板加载与校验：`inkblade/tpl/schema.py`（`template_path`、`iter_templates`、`validate`）。
-- 注册表强制模板：`inkblade/core/registry.py`（缺 `template.json` 报错；迁移窗口内 `run.py` 被忽略，发布门负责删除）。
-- 当前计数：模块目录 287，`template.json` 286，bootstrap 1，迁移窗口 `run.py` 286，defense-bypass 模块 11；参考评估器两态证据 286 条，`runtime=reference`。
+- 注册表强制模板：`inkblade/core/registry.py`（缺 `template.json` 报错；工作树已无 `run.py`，没有回退路径）。
+- 当前计数：模块目录 287，`template.json` 286，bootstrap 1，旧 `run.py` 工作树 0 / HEAD 286，defense-bypass 模块 11；参考评估器两态证据 286 条，`runtime=reference`。
 
 **限制**
 
-- 参考评估器覆盖率 286/286 不等于 Rust 运行时覆盖率；后者仍为 0。旧 `run.py` 在迁移窗口内保留，不能算作“已删除”或“已 Rust 验证”。
+- 参考评估器覆盖率 286/286 不等于 Rust 运行时覆盖率；后者仍为 0。旧 `run.py` 在工作树已删除但未提交，不能算作「已提交删除」或「已 Rust 验证」。
 - mock 靶场只能验证判定逻辑和协议行为，不能证明真实集群的版本、配置、权限组合；真实部署态需要单独回放并记录。
 - 需要特权、GPU、hostNetwork、节点访问的模板在普通 CI 里会 `blocked`；这不是通过。
 - 动态验证不能发现“模板本身设计错了检测点”的问题；那需要人工评审和真实环境对照。

@@ -17,9 +17,16 @@ OUT = ROOT / "docs" / "SURFACE-REALISM.md"
 REGISTRY = ROOT / "inkblade" / "core" / "exploit-registry.json"
 
 
+def _surface_text(item) -> str:
+    if isinstance(item, str):
+        return item
+    if isinstance(item, dict) and "surface" in item:
+        item = item["surface"]
+    return f"{item.get('type')}:{item.get('selector')}"
+
+
 def _req(row: dict) -> str:
-    return "; ".join(f"{r['surface']['type']}:{r['surface']['selector']}"
-                     for r in row["required_surfaces"]) or "—"
+    return "; ".join(_surface_text(r) for r in row["required_surfaces"]) or "-"
 
 
 def main() -> int:
@@ -80,7 +87,7 @@ def main() -> int:
     ]
     for key in quarantined:
         meta = mods[key]
-        req = "; ".join(f"{r.get('type')}:{r.get('selector')}"
+        req = "; ".join(_surface_text(r)
                         for r in meta.required_surfaces) or "—"
         reason = meta.default_disabled_reason or (
             "Component not present in the six mainstream deployment profiles; "
@@ -100,7 +107,7 @@ def main() -> int:
         ]
         for key in pending:
             meta = mods[key]
-            req = "; ".join(f"{r.get('type')}:{r.get('selector')}"
+            req = "; ".join(_surface_text(r)
                             for r in meta.required_surfaces) or "—"
             lines.append(f"| `{key}` | {req} | No surface in all six profiles; "
                          "kept enabled by a parallel workstream pending its owner's "

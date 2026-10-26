@@ -12,21 +12,24 @@
 | [`docs/PRODUCT.md`](PRODUCT.md) | 产品定位、适用对象、十层检测表、第 10 层防护绕过与检测对抗 |
 | [`docs/ARCHITECTURE-PROBE.md`](ARCHITECTURE-PROBE.md) | 唯一执行路径：立足→Rust 探针→通道→内部横向；父子树与零 Python 边界 |
 | [`docs/PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md) | 长度前缀 JSON 帧、认证、任务/结果、预算、文件分块、清理与错误码 |
+| [`docs/PROBE-CHANNEL.md`](PROBE-CHANNEL.md) | 入口会话与 `kubectl exec -i` 通道：投放、SOCKS/端口转发、权限边界 |
 | [`docs/PROBE-DEPLOY.md`](PROBE-DEPLOY.md) | RCE/memfd、kubectl cp/exec、EphemeralContainer、共享卷、发布物与写闸门 |
 | [`docs/DYNAMIC-VERIFICATION.md`](DYNAMIC-VERIFICATION.md) | 每个模板的两态 mock 验证标准、证据格式、覆盖率字段与当前完成度 |
 | [`docs/PROBE-COVERAGE.md`](PROBE-COVERAGE.md) | 生成式模板覆盖率表：模块、执行载体、两态结果、证据哈希（注意 `runtime=reference`） |
 | [`docs/PROBE-MIGRATION-BRIEF.md`](PROBE-MIGRATION-BRIEF.md) | 模块模板化迁移须知：运行时契约、schema、禁止 host fallback |
+| [`docs/PROBE-BUILD.md`](PROBE-BUILD.md) | Rust 探针构建：CI musl amd64/arm64、SHA-256、本机限制与自测项 |
 | [`docs/INSTALL.md`](INSTALL.md) | 控制器与探针安装、容器/Helm、离线、工作区布局、首次会话 |
 | [`docs/USAGE.md`](USAGE.md) | 五步主路径、典型场景、结果阅读、退出码、规则包与排障 |
 | [`docs/FAQ.md`](FAQ.md) | 目标依赖、Rust 选择、投放、写闸门、迁移状态、许可与边界 |
 | [`docs/DETECTION-LAYERS.md`](DETECTION-LAYERS.md) | 前九层逐层四列表的完整版（检测点/为何独有/模块键/证据） |
 | [`docs/DOC-INDEX.md`](DOC-INDEX.md) | 本索引 |
+| [`docs/REQUIREMENTS-MATRIX.md`](REQUIREMENTS-MATRIX.md) | **唯一需求事实源**：124 条需求、数字对账、未完成清单与依赖 |
 
 ## 2. 架构与工程
 
 | 文档 | 说明 |
 |---|---|
-| [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) | 七层控制端架构：治理、编排、模块、证据、报告、可视化、规则 |
+| [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) | 控制端七组件架构：治理、编排、模块、证据、报告、可视化、规则（检测模型为十层） |
 | [`docs/design.md`](design.md) | 设计基线与早期约束；部分执行模型已被探针架构修订 |
 | [`docs/MODULES.md`](MODULES.md) | 模块目录、系列、级别与键的说明 |
 | [`docs/FEATURES.md`](FEATURES.md) | 功能清单与能力边界 |
@@ -52,6 +55,7 @@
 | [`docs/PRIVESC-MATRIX.md`](PRIVESC-MATRIX.md) | P1–P6 提权链矩阵、前置条件与检测建议 |
 | [`docs/REAL-CLUSTER-VERIFICATION.md`](REAL-CLUSTER-VERIFICATION.md) | 真实 k3s 集群上的探测与证据记录 |
 | [`docs/ENTERPRISE-LAB-RESULTS.md`](ENTERPRISE-LAB-RESULTS.md) | 企业真实感实验室的结果与偏差 |
+| [`docs/DEFENSE-LAB-RESULTS.md`](DEFENSE-LAB-RESULTS.md) | 第 10 层防护绕过在 QEMU k3s 真机的部署与回放结果（4 产品 + 7 个 N/A 原因） |
 | [`docs/ENTERPRISE-LOCAL-VERIFICATION.md`](ENTERPRISE-LOCAL-VERIFICATION.md) | 企业黄项的本地补验记录 |
 | [`docs/ENTERPRISE-READINESS.md`](ENTERPRISE-READINESS.md) | 企业就绪差距、准入门与 50+ 检查项 |
 | [`docs/KILL-CHAIN.md`](KILL-CHAIN.md) | 内网入口到集群最高权限的夺权链与证明 |
@@ -117,6 +121,7 @@
 |---|---|
 | [`docs/AGENT-ARCHITECTURE-2026.md`](AGENT-ARCHITECTURE-2026.md) | 2026 Agent 架构研究与差距反思 |
 | [`docs/AGENT-ARCHITECTURE-UPGRADE-2026.md`](AGENT-ARCHITECTURE-UPGRADE-2026.md) | Agent 架构升级实施说明 |
+| [`docs/AGENT-AUTONOMY.md`](AGENT-AUTONOMY.md) | 事件溯源图运行时、调度/worker/协议/评测与一次授权边界 |
 | [`docs/AGENT-EVAL-RESULTS.md`](AGENT-EVAL-RESULTS.md) | deterministic vs supervisor-worker 的评测结果 |
 | [`docs/AUTONOMY.md`](AUTONOMY.md) | L3 预授权、硬边界与可回放 |
 | [`docs/SWARM-EVAL.md`](SWARM-EVAL.md) | 1 个 vs 4 个角色化 worker 的评测 |

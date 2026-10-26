@@ -6,22 +6,27 @@
 > 全文字数约 1.8 万汉字（含表格与代码共 5.3 万字符）。所有数字给出来源文件；没有来源的数字不写。
 > **证据日期：2026-10-27（终版）**。本轮计数与仓库当前实际同步，复跑命令见 §10.7。
 
-> **终版计数（证据日期：2026-10-27）**
+> **终版计数（证据日期：2026-10-27；唯一事实源为 [`REQUIREMENTS-MATRIX.md`](REQUIREMENTS-MATRIX.md) §1）**
 >
 > | 项 | 当前实际 | 来源 |
 > |---|---:|---|
-> | 模块 | **275**（默认启用 264 / 隔离 11） | `inkblade/modules/*/module.json`、`docs/SURFACE-REALISM.md` |
-> | 单元测试 | **Ran 2003 · OK**（2 skipped；公开树 1 项为并行 scratch 在途红） | `python -m unittest discover -s tests`（§10.7） |
-> | 可利用性核验 | **37 verified / 93 static-only / 22 unsupported**（共 152） | `inkblade/core/exploit-registry.json` |
-> | 画像覆盖（production，6 画像） | 73.48% / 70.08% / 62.12% / 70.45% / 71.21% / **25.76%**（Slurm 域级 88.2%） | `docs/SURFACE-REALISM.md`、`docs/SLURM-HPC-COVERAGE.md` |
-> | 默认 PoC | **2**（六画像默认可利用 1/1/2/0/2/0） | `exploit-registry.json` + `SURFACE-REALISM.md` |
-> | 无面模块 | **12**（9 个已隔离 + 3 个待 owner；另 2 个隔离项仅部分画像无面） | `docs/SURFACE-REALISM.md` §2 |
-> | 未达成项 | **11 条**（见 §7.7） | 本文 §7、`docs/SOTA-2026-10.md` |
+> | 模块 / 模板 | **287 / 286**（默认启用 276 / 隔离 11；bootstrap 1） | `inkblade/modules/*/module.json`、`docs/SURFACE-REALISM.md` |
+> | 旧 `run.py` | **0（工作树）/ 286（HEAD，迁移在途）** | 目录扫描 + `git ls-tree HEAD` |
+> | 单元测试 | 见 `REQUIREMENTS-MATRIX.md` §5 实测块（迁移在途红测单列） | `python -m unittest discover -s tests`（§10.7） |
+> | 可利用性核验 | **37 verified / 6 exposure-verified / 87 static-only / 22 unsupported**（共 152） | `inkblade/core/exploit-registry.json` |
+> | 画像覆盖（production，6 画像） | 70.65% / 67.39% / 59.78% / 67.75% / 68.48% / **25.00%**（Slurm 域级 88.2%） | `docs/SURFACE-REALISM.md`、`docs/SLURM-HPC-COVERAGE.md` |
+> | 默认 PoC | **11**（六画像默认可利用 3/2/3/2/4/0） | `exploit-registry.json` + `SURFACE-REALISM.md` |
+> | 无面模块 | **19**（11 个已隔离 + 8 个待 owner） | `docs/SURFACE-REALISM.md` §2 |
+> | 语料 | **80 源**（cn 24 / en 42 / paper 14） | `inkblade/arch-intel/coverage-matrix.json` |
+> | 未达成项 | **12 条**（见 §7.7） | 本文 §7、`docs/SOTA-2026-10.md` |
 >
-> 口径：模块/画像/无面为静态统计；测试为本轮全量 `unittest discover` 实测；verified 只认
-> `exploit-registry.json` 的 `verified`，static-only/unsupported 不计入可利用清单。
-> 测试计数补充：2003 为本轮（2026-10-27）全量 `unittest discover` 实测；此前 1933/1891/1904
-> 为并行批次与 overlay 历史记录，逐项归因见 `DEV-LOG.md` §D。
+> 口径：模块/画像/无面为静态统计；测试为全量 `unittest discover` 实测（当前树有迁移在途红测，单列）；
+> verified 只认 `exploit-registry.json` 的 `verified`；exposure-verified 与 static-only/unsupported 不计入可利用清单。
+> 历史测试计数（1933/1891/1904/2003）为不同快照，逐项归因见 `DEV-LOG.md` §D 与 `progress.md`。
+>
+> **探针架构口径**：模块现在只有 `module.json` + `template.json`，执行载体是目标 Pod 内 Rust 探针；
+> 286 模板的两态证据目前全部为 `runtime=reference`，`runtime=rust` 为 **0**。不要把参考评估器结果写成
+> 「Rust 动态验证完成」，也不要把已删除的 `run.py` 写成「仍是 Python 模块成品」。
 >
 > **0.2.0 改名（2026-10-27）**：项目由 Trident 更名为 InkBlade（墨刃零）；本报告中的
 > 包路径、命令示例与规则命名空间已同步，改名记录见 [`CHANGELOG.md`](../CHANGELOG.md)。
@@ -132,7 +137,7 @@ K8s 调度 Pod；Pod 带着 RBAC 身份；Service 把 Pod 暴露成入口；Netw
 
 InkBlade 只做**授权测试**。它不内置真实凭据，不提供 C2，不自动武器化零日，不把无人审批的写操作放进生产。它的实验室靶场只监听 `127.0.0.1`。真实集群执行需要甲方提供 kubeconfig、网络可达性和授权材料。它擅长“ML 基础设施面的组合验证”，不擅长“通用 Web 漏洞挖掘、AD 域渗透、浏览器零日”。这些边界在第六章会逐项对照。
 
-**证据索引（本章）**：[七层架构](ARCHITECTURE.md) · [攻击面与模块映射](GAP-ATTACK-SURFACE.md) · [效果验证](EFFECT-VERIFICATION.md) · [真实集群验证](REAL-CLUSTER-VERIFICATION.md) · [授权与运行手册](RUNBOOK.md)
+**证据索引（本章）**：[控制端架构](ARCHITECTURE.md) · [检测十层](DETECTION-LAYERS.md) · [攻击面与模块映射](GAP-ATTACK-SURFACE.md) · [效果验证](EFFECT-VERIFICATION.md) · [真实集群验证](REAL-CLUSTER-VERIFICATION.md) · [授权与运行手册](RUNBOOK.md)
 
 ---
 
@@ -497,7 +502,7 @@ InkBlade 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 ### 5.5 怎么读这些数字
 
-第一，`+1,545%` 的吞吐差距不是“产品快 15 倍”。ARTEX 测的是 `/api/agents`，InkBlade 测的是 `/api/v1/graph`；ARTEX 跑在 QEMU TCG，InkBlade 跑在宿主。第二，`-99.2%` 的同靶场时延不是“产品快 128 倍”。它包含 TCG 放大、ARTEX 的 planner debounce、worker 轮询和 3 秒状态轮询。第三，`-83.5%` 的内存不是“同等功能下省 6 倍”。ARTEX 的值是长跑实例（含 PG 缓存），新起栈是 75.2 MiB；InkBlade 是单进程。第四，`-99.7%` 的磁盘不是同口径。ARTEX 是镜像，InkBlade 是代码树；证据库会随 run 增长。第五，`47/47` 是 `docs/EFFECT-VERIFICATION.md` 与 `reports/samples/effects/effects.json` 当前落盘的口径（含 chip 4 项）；此前 17/17、20/20 的旧口径已合并，不再引用。
+第一，`+1,545%` 的吞吐差距不是“产品快 15 倍”。ARTEX 测的是 `/api/agents`，InkBlade 测的是 `/api/v1/graph`；ARTEX 跑在 QEMU TCG，InkBlade 跑在宿主。第二，`-99.2%` 的同靶场时延不是“产品快 128 倍”。它包含 TCG 放大、ARTEX 的 planner debounce、worker 轮询和 3 秒状态轮询。第三，`-83.5%` 的内存不是“同等功能下省 6 倍”。ARTEX 的值是长跑实例（含 PG 缓存），新起栈是 75.2 MiB；InkBlade 是单进程。第四，`-99.7%` 的磁盘不是同口径。ARTEX 是镜像，InkBlade 是代码树；证据库会随 run 增长。第五，`53/53` 是 `docs/EFFECT-VERIFICATION.md` 与 `reports/samples/effects/effects.json` 当前落盘的口径（2026-10-26 运行，含 chip 与硬件批次）；此前 17/17、20/20、31/31、34/34、47/47 为历史阶段值，不再引用。
 
 **证据索引（本章）**：[腾讯微评测](SECTION3-METRICS.md) · [Agent 评测](AGENT-EVAL-RESULTS.md) · [性能对比](PERFORMANCE-COMPARISON.md) · [ARTEX 同靶场](ARTEX-BENCH-RESULT.md) · [规模压测](SCALE-RESULTS.md) · [效果验证](EFFECT-VERIFICATION.md) · [真实集群](REAL-CLUSTER-VERIFICATION.md)
 
@@ -527,7 +532,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 ### 6.4 Payload 差距
 
-我们的弹药是“42 条版本矩阵 + 35 个参数变体 + 6 个公开零日级模块”。对手的弹药是“库”：garak 41 族/170 类探针，PyRIT 9 种多轮策略/~90 个转换器，promptfoo 49 个插件/~35 个策略，trufflehog 892 个 detector，gitleaks 222 条规则，Falco 99 条默认规则。我们在“ML 基础设施 payload”上有针对性，但在“模型行为探针”和“通用密钥规则”上是明显短板。这些短板登记为 L 级 backlog（CM-32/34），本轮不假装补齐。
+我们的弹药是“103 条版本矩阵 + 150 个参数变体 + 47 个武器包（含 6 个公开零日级模块）”。对手的弹药是“库”：garak 41 族/170 类探针，PyRIT 9 种多轮策略/~90 个转换器，promptfoo 49 个插件/~35 个策略，trufflehog 892 个 detector，gitleaks 222 条规则，Falco 99 条默认规则。我们在“ML 基础设施 payload”上有针对性，但在“模型行为探针”（87 探针，约为 garak 146 类的 60%）和“通用密钥规则”上是明显短板。这些短板登记为 L 级 backlog（CM-32/34），部分已落地、部分仍是差距，不假装全部补齐。
 
 ### 6.5 性能差距
 
@@ -571,7 +576,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | 5 | 平台化多租户 SaaS | ARTEX 有 PG 任务实体 + Next.js；CyberStrike 有工作台 | 单机 CLI + 本地 WebUI | 没有跨副本队列、租户配额、按租户加密 | 需工程资源 |
 | 6 | ARTEX 功能全等价 | 515 行里 201 条部分、180 条曾缺失 | 70 条补上，110 条不做/不可行，201 条仍部分 | 产品形态差异 + clean-room 边界 | 只补与定位一致的 |
 | 7 | KubeTrail 全等价 | 286 行里 98 部分、120 缺失 | 59 已有 + 21 模块移植 | 桌面后渗透台/C2/持久化刻意不做；原矩阵未重算 | 部分追 |
-| 8 | Payload 广度 | garak 41/170、PyRIT ~90、trufflehog 892、gitleaks 222、Falco 99 | 42 条版本矩阵 + 35 变体 | L 级规则库/探针库，需持续投入 | 登记 CM-32/34 |
+| 8 | Payload 广度 | garak 41/170、PyRIT ~90、trufflehog 892、gitleaks 222、Falco 99 | 103 条版本矩阵 + 150 变体 + 47 武器包（87 探针） | L 级规则库/探针库，需持续投入 | 登记 CM-32/34 |
 | 9 | 检测规则广度 | Falco 99 条默认规则 | 5 条 ML 面 Falco 规则 | 我们做“ML 面精准规则”，不做通用规则全集 | 不追全集 |
 | 10 | 裸机性能 | ARTEX 可跑裸机/真实集群 | 只有 QEMU TCG 同宿主数据 | 无裸机/真实集群同口径复跑 | 需资源 |
 | 11 | 生产信任链 | cosign keyless + Fulcio/Rekor；真实 TEE | 验证侧已接公共 Fulcio/Rekor 样本；签名侧仍是 HMAC fixture | 本仓库产物没有 OIDC 身份，未向公共 Fulcio 签发 | 见第七章 |
@@ -599,7 +604,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 **终态**：真实：未达成。模拟：已做。未达成：10K+ GPU 裸机、真实 NCCL/RDMA/SHARP 数据面、真实故障域。
 
-**已做验证**：`docs/SCALE-RESULTS.md` 用合成 100/1,000/5,000/10,000 个 K8s 对象跑 11 个侦察模块、可达性图和规则生成：10,000 对象总耗时 1.645s，侦察 40.4ms，峰值 RSS 54MB，findings 10,891；三处 O(n²) 改索引后，同输入 330.8ms→46.5ms（×7.11），findings 逐条一致。真 k3s 只到 204 个对象：采集 6.4s，11 模块 199.7ms，145 findings。`docs/FABRIC-ATTACK-SURFACE.md` 用 `lab/fabric_dos_sim.py` 做 11 个 fabric 面的控制面/数据面语义仿真（SHARP 会话、IB SM、PFC、NCCL 端口、checkpoint IO、IMDS、KV OOM、梯度、gang、Xid、rail）；`docs/EFFECT-VERIFICATION.md` 与 `reports/samples/effects/effects.json` 当前落盘 **47/47 PASS**（含 chip 4 项），旧 17/20 口径已合并。`docs/FABRIC-SIM-RESULTS.md` 已落盘：1,024/10,000 节点 rail/多平面离散事件仿真（1,024 mixed：PFC 76,801,033、ECN 74、跨 rail 37、worst/median 9.04/2.06ms；10,000 mixed：PFC 102,401,629、ECN 133、跨 rail 64、worst/median 8.95/1.38ms），并调用真实 `fabric-topology-isolation` / `roce-pfc-storm` / `nccl-straggler-injection` 模块裁决（PFC/straggler 均 high）。**这些是仿真，不是真实交换机计数器。**
+**已做验证**：`docs/SCALE-RESULTS.md` 用合成 100/1,000/5,000/10,000 个 K8s 对象跑 11 个侦察模块、可达性图和规则生成：10,000 对象总耗时 1.645s，侦察 40.4ms，峰值 RSS 54MB，findings 10,891；三处 O(n²) 改索引后，同输入 330.8ms→46.5ms（×7.11），findings 逐条一致。真 k3s 只到 204 个对象：采集 6.4s，11 模块 199.7ms，145 findings。`docs/FABRIC-ATTACK-SURFACE.md` 用 `lab/fabric_dos_sim.py` 做 11 个 fabric 面的控制面/数据面语义仿真（SHARP 会话、IB SM、PFC、NCCL 端口、checkpoint IO、IMDS、KV OOM、梯度、gang、Xid、rail）；`docs/EFFECT-VERIFICATION.md` 与 `reports/samples/effects/effects.json` 当前落盘 **53/53 PASS**（2026-10-26 运行，含 chip 与硬件批次），旧 17/20/31/34/47 口径为历史阶段值。`docs/FABRIC-SIM-RESULTS.md` 已落盘：1,024/10,000 节点 rail/多平面离散事件仿真（1,024 mixed：PFC 76,801,033、ECN 74、跨 rail 37、worst/median 9.04/2.06ms；10,000 mixed：PFC 102,401,629、ECN 133、跨 rail 64、worst/median 8.95/1.38ms），并调用真实 `fabric-topology-isolation` / `roce-pfc-storm` / `nccl-straggler-injection` 模块裁决（PFC/straggler 均 high）。**这些是仿真，不是真实交换机计数器。**
 
 **能证明什么**：分析算法在对象规模上近似线性；10k 对象的分析不是瓶颈；fabric 控制面的“语义同构”可以被计数器验证；规则生成在 10,891 findings 下仍是 94ms。
 
@@ -675,7 +680,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 ### 7.7 未达成清单（终版，证据日期 2026-10-26）
 
-以下 11 条是**当前仍未达成**项，写死在终版里；未达成不等于失败，但不允许被“模拟通过”覆盖。
+以下 12 条是**当前仍未达成**项，写死在终版里；未达成不等于失败，但不允许被“模拟通过”覆盖。
 
 | # | 未达成项 | 当前状态 | 验收标准（达成后再改口径） |
 |---|---|---|---|
@@ -687,9 +692,10 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | 6 | 模型注册中心 / 权重仓库直连 | 只读本地清单/权重 | HF/OCI 拉取 + 在线验签 + 断网/篡改/吊销负例 |
 | 7 | SIEM/SOAR 真实投递 | 只有 SARIF/OCSF/VEX 产物 | Splunk HEC/Elastic/Sentinel 投递 + 幂等/回压/审计 |
 | 8 | 漏洞挖掘披露闭环 | 已建 CVE 适格筛选、CVE 5.1 请求体、脱敏证据包、90 天发布计划（未外发） | 人工发送 + 厂商回执 + CVE 分配 + 公开 advisory |
-| 9 | 无面模块治理 | 12 个六画像全无面；9 个已隔离，3 个待 owner 决定 | 3 个模块隔离或补面；面闸门默认开启 |
-| 10 | 画像覆盖缺口 | `slurm-hpc` 25.76%（Slurm 17 域覆盖 88.2%），其余 62.12%–73.48% | 六画像 production coverage ≥90% |
-| 11 | 可利用性核验缺口 | 152 条中 37 verified / 93 static-only / 22 unsupported | 真实 GPU/内核/硬件环境升级 static-only/unsupported |
+| 9 | 无面模块治理 | 19 个六画像全无面；11 个已隔离，8 个待 owner 决定 | 8 个模块隔离或补面；面闸门默认开启 |
+| 10 | 画像覆盖缺口 | `slurm-hpc` 25.00%（Slurm 17 域覆盖 88.2%），其余 59.78%–70.65% | 六画像 production coverage ≥90% |
+| 11 | 可利用性核验缺口 | 152 条中 37 verified / 6 exposure-verified / 87 static-only / 22 unsupported | 真实 GPU/内核/硬件环境升级 static-only/unsupported |
+| 12 | Rust 探针运行时 | 286 模板两态证据全为 `runtime=reference`；`runtime=rust` 为 0；源码已入库、CI 产出 amd64/arm64 二进制（本机 cargo 被 WDAC/SAC 拦截）；CLI 有 `session/probe/channel`，无 `exec/scan` | 286 模板的 Rust 两态重跑 + 证据含 probe_version |
 
 **证据索引（本章）**：[SOTA 与追赶路径](SOTA-2026-10.md) · [规模压测](SCALE-RESULTS.md) · [Fabric 攻击面](FABRIC-ATTACK-SURFACE.md) · [TEE 验证](TEE-VERIFICATION.md) · [六云矩阵](SIX-CLOUD-MATRIX.md) · [性能对比](PERFORMANCE-COMPARISON.md) · [供应链代码](../inkblade/supplychain.py) · [TEE 代码](../inkblade/tee/) · [六云仿真](../lab/cloud_six_sim.py)
 
@@ -871,8 +877,9 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | 文档 | 内容 |
 |---|---|
 | [README](../README.md) | 项目入口、快速开始、能力与边界 |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | 七层架构与职责边界 |
-| [SOTA-2026-10.md](SOTA-2026-10.md) | 38 项能力矩阵：25 真实验证 / 10 模拟验证 / 3 仍未达成（附证据路径） |
+| [REQUIREMENTS-MATRIX.md](REQUIREMENTS-MATRIX.md) | **唯一需求事实源**：124 条需求、数字对账、未完成清单与依赖 |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | 控制端七组件与职责边界（检测模型为十层，见 DETECTION-LAYERS） |
+| [SOTA-2026-10.md](SOTA-2026-10.md) | 39 项能力矩阵：25 真实验证 / 10 模拟验证 / 4 仍未达成（附证据路径） |
 | [design.md](design.md) | 设计基线与漏洞研究分类 |
 | [RUNBOOK.md](RUNBOOK.md) | 安装、授权、模块/链、报告、回滚、实验室边界 |
 | [DELIVERY.md](DELIVERY.md) | 交付包结构与样张说明 |
@@ -896,8 +903,8 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 | 文档 | 内容 |
 |---|---|
-| [EFFECT-VERIFICATION.md](EFFECT-VERIFICATION.md) | 本机真实进程/HTTP 效果验证，当前落盘 47/47 PASS |
-| [EXPLOIT-VERIFICATION.md](EXPLOIT-VERIFICATION.md) | 152 条可利用性核验：37 verified / 93 static-only / 22 unsupported |
+| [EFFECT-VERIFICATION.md](EFFECT-VERIFICATION.md) | 本机真实进程/HTTP 效果验证，当前落盘 53/53 PASS |
+| [EXPLOIT-VERIFICATION.md](EXPLOIT-VERIFICATION.md) | 152 条可利用性核验：37 verified / 6 exposure-verified / 87 static-only / 22 unsupported |
 | [SURFACE-REALISM.md](SURFACE-REALISM.md) | 256 模块 × 6 画像：production 覆盖、默认 PoC、无面/隔离清单 |
 | [REAL-CLUSTER-VERIFICATION.md](REAL-CLUSTER-VERIFICATION.md) | QEMU k3s 真集群：6 模块、16 findings、hostNetwork 绕过 |
 | [SCALE-RESULTS.md](SCALE-RESULTS.md) | 合成 100–10,000 对象曲线 + 真 k3s 204 对象点 |
@@ -966,7 +973,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | [lab/tencent-compare/run_eval.py](../lab/tencent-compare/run_eval.py) | OFF/ON 微评测生成器 |
 | [lab/agent-eval/run_eval.py](../lab/agent-eval/run_eval.py) | deterministic vs supervisor 评测 |
 | [inkblade/e2e-check.py](../inkblade/e2e-check.py) | 端到端验收 15/15 |
-| [inkblade/verify-effects.py](../inkblade/verify-effects.py) | 效果验证 47 项 |
+| [inkblade/verify-effects.py](../inkblade/verify-effects.py) | 效果验证 53 项 |
 | [tests/test_docs_master.py](../tests/test_docs_master.py) | 本报告的结构与底线断言 |
 
 ### 10.7 复现命令

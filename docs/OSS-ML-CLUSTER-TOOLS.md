@@ -15,7 +15,7 @@
 
 另以 **XBow / ARTEX** 两个自主渗透 agent 作参照（第六组，非测试工具）。
 
-**来源核验口径**：全部 32 个工具经官方源逐一核验（GitHub REST API 2026-10-26 实查 stars/pushed_at/license/archived；非 GitHub 分发件（ibdiagnet、tc/netem、XBow）以官方文档/官网为源并注明）。勘误四则登记在案：
+**来源核验口径**：全部 34 个工具经官方源逐一核验（GitHub REST API 2026-10-26 实查 stars/pushed_at/license/archived；非 GitHub 分发件（ibdiagnet、tc/netem、XBow）以官方文档/官网为源并注明）。勘误四则登记在案：
 
 - `meta-llama/picklescan` 不存在（404），真实仓库 = `mmaitre314/picklescan`
 - `NVIDIA/MFT` 与 `Mellanox/mft` 均 404：ibdiagnet 随 NVIDIA MFT 分发（官方手册 docs.nvidia.com v2.8），GitHub 遗留开源副本 `linux-rdma/infiniband-diags` 已于 2019 归档

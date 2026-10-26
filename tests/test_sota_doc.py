@@ -10,8 +10,8 @@ DOC = REPO / "docs" / "SOTA-2026-10.md"
 README = REPO / "README.md"
 
 STATUSES = {"真实验证", "模拟验证", "仍未达成"}
-# 38 行：25 真实验证 / 10 模拟验证 / 3 仍未达成。
-EXPECTED = {"真实验证": 25, "模拟验证": 10, "仍未达成": 3}
+# 39 行：25 真实验证 / 10 模拟验证 / 4 仍未达成（第 4 项为 Rust 探针运行时）。
+EXPECTED = {"真实验证": 25, "模拟验证": 10, "仍未达成": 4}
 
 
 def _rows() -> list[dict[str, str]]:
@@ -44,7 +44,7 @@ class TestSotaDoc(unittest.TestCase):
 
     def test_matrix_shape_and_three_state(self):
         rows = _rows()
-        self.assertEqual(len(rows), 38, f"矩阵行数不匹配: {len(rows)}")
+        self.assertEqual(len(rows), 39, f"矩阵行数不匹配: {len(rows)}")
         for row in rows:
             self.assertEqual(set(row), {"capability", "implementation", "reference",
                                         "status", "evidence"})

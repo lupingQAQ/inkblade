@@ -1,6 +1,6 @@
 # Weapon readiness — exposure classification, verification and one-click packs
 
-Generated: `2026-10-26T20:27:54+00:00`. Sources: `inkblade/core/exploit-registry.json` (152 catalog/mining entries), `inkblade/core/zeroday-registry.json` (47 reserve entries), `inkblade/core/data/weapon-packs.json` (reserve packs) and `inkblade/core/data/version-matrix.json` (payload variants).
+Generated: `2026-10-26T22:42:20+00:00`. Sources: `inkblade/core/exploit-registry.json` (152 catalog/mining entries), `inkblade/core/zeroday-registry.json` (47 reserve entries), `inkblade/core/data/weapon-packs.json` (reserve packs) and `inkblade/core/data/version-matrix.json` (payload variants).
 
 > **Rules.** `deployment_requirement` is independent of `status`. `default-exposed` means reachable with the vendor's default bind/config (evidence names the address/flag/file:line). `verified` still requires a dynamic reproduction with a proof marker. An exposure-only finding is never promoted to RCE.
 
@@ -49,11 +49,11 @@ Counts: `default-exposed`=11, `needs-config`=27, `function-level`=91, `hardware-
 | `wandb` | 1 | 0 | 0 | 0 | 1 | 2 | 1/1 |
 | **Total** | **152** | **37** | **11** | **27** | **91** | **150** | **84/152** |
 
-`one-click` = the entry owns a module with `run.py`; `inkblade exploit <id> --dry-run` resolves it (reserve packs win, catalog entries are synthesised on demand). Entries without a module stay classified but are not one-click runnable; that is the honest gap, not a hidden failure.
+`one-click` = the entry owns a module directory (`module.json` + `template.json`); `inkblade exploit <id> --dry-run` resolves it (reserve packs win, catalog entries are synthesised on demand). Entries without a module stay classified but are not one-click runnable; that is the honest gap, not a hidden failure.
 
-## 2. 0day reserve (47 entries, all weaponised)
+## 2. 0day reserve (novelty-checked entries, all weaponised)
 
-Counts: `default-exposed`=5, `needs-config`=20, `function-level`=21, `hardware-only`=1; modules: **33**; payload variants: **99**; one-click: **47/47**.
+Counts: `default-exposed`=5, `needs-config`=20, `function-level`=21, `hardware-only`=1; modules: **33**; payload variants: **99**; one-click: **47/47**. Note: `zeroday-registry.json` summary reports `reserve`=46 (reserve-eligible) and `reserve_unique`=39 (dedupe-keys); this section counts the 47 entries in state `novelty-checked`, which is the pack-building denominator.
 
 | Component | total | verified | default-exposed | needs-config | function-level | payload variants | one-click |
 |---|---:|---:|---:|---:|---:|---:|---:|

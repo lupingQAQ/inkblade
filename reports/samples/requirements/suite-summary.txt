@@ -1,0 +1,59 @@
+# Full unittest discover - in-flight snapshot (2026-10-27)
+
+command: python -m unittest discover -s tests -v
+
+Result (verbatim):
+Ran 2128 tests in 2159.553s
+FAILED (failures=99, errors=513, skipped=4)
+
+Red test files (45), counts, and whether the file still exists after the run:
+
+  37  test_modules_bypass                    exists=no
+  26  test_modules_recon                     exists=no
+  22  test_modules_infra2026                 exists=no
+  21  test_modules_cve                       exists=no
+  21  test_modules_lateral                   exists=no
+  20  test_modules_attack_surface            exists=no
+  19  test_modules_net                       exists=no
+  17  test_modules_fabric                    exists=no
+  16  test_chip_modules                      exists=no
+  14  test_modules_zeroday_mods              exists=no
+  14  test_trainstack_modules                exists=yes
+  11  test_verify_effects                    exists=yes
+   8  test_modules_residual2026              exists=no
+   6  test_privesc_modules                   exists=no
+   5  test_modules_hybrid                    exists=no
+   5  test_modules_code                      exists=no
+   4  test_modules_longctx                   exists=no
+   4  test_scale_bench                       exists=no
+   4  test_verify_effects_chip               exists=yes
+   3  test_depth_admission                   exists=no
+   3  test_verify_effects_infra2026          exists=yes
+   3  test_e2e                               exists=yes
+   3  test_sota_doc                          exists=yes
+   2  test_depth_fabric                      exists=no
+   2  test_depth_gpu                         exists=no
+   2  test_depth_identity                    exists=no
+   2  test_depth_vllm                        exists=no
+   2  test_sdk                               exists=yes
+   2  test_artex_parity                      exists=yes
+   2  test_modules_perm                      exists=no
+   2  test_modules_theft                     exists=no
+   1  test_backlog_s                         exists=yes
+   1  test_cis_benchmark                     exists=no
+   1  test_depth_ebpf                        exists=no
+   1  test_enterprise_lab                    exists=yes
+   1  test_fabric_sim                        exists=yes
+   1  test_kernel_lpe                        exists=no
+   1  test_modules_auditlog                  exists=no
+   1  test_modules_hardware                  exists=no
+   1  test_modules_slurm                     exists=no
+   1  test_modules_variants                  exists=no
+   1  test_onboarding                        exists=yes
+   1  test_verify_effects_hardware           exists=yes
+   1  test_chains_gpu_cloud                  exists=yes
+   1  test_weaponization                     exists=yes
+
+Note: another concurrent workstream was deleting 286 legacy run.py files and their
+tests while this run executed. The run therefore measured a moving tree; it is a
+migration snapshot, not a product defect baseline. See docs/REQUIREMENTS-MATRIX.md 3.4.

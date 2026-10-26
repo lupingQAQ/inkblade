@@ -127,16 +127,21 @@ def main() -> int:
         "",
         *table(data["exploit_registry"]["components"]),
         "",
-        "`one-click` = the entry owns a module with `run.py`; `inkblade exploit <id> --dry-run` "
-        "resolves it (reserve packs win, catalog entries are synthesised on demand). Entries "
-        "without a module stay classified but are not one-click runnable; that is the honest "
-        "gap, not a hidden failure.",
+        "`one-click` = the entry owns a module directory (`module.json` + `template.json`); "
+        "`inkblade exploit <id> --dry-run` resolves it (reserve packs win, catalog entries are "
+        "synthesised on demand). Entries without a module stay classified but are not one-click "
+        "runnable; that is the honest gap, not a hidden failure.",
         "",
-        "## 2. 0day reserve (47 entries, all weaponised)",
+        "## 2. 0day reserve (novelty-checked entries, all weaponised)",
         "",
         f"Counts: {', '.join(f'`{k}`={v}' for k, v in data['reserve']['by_requirement'].items())}; "
         f"modules: **{data['reserve']['modules']}**; payload variants: "
-        f"**{data['reserve']['variants']}**; one-click: **47/47**.",
+        f"**{data['reserve']['variants']}**; one-click: **{len(reserve)}/{len(reserve)}**. "
+        f"Note: `zeroday-registry.json` summary reports `reserve`="
+        f"{zeroday.get('summary', {}).get('reserve')} (reserve-eligible) and "
+        f"`reserve_unique`={zeroday.get('summary', {}).get('reserve_unique')} (dedupe-keys); "
+        f"this section counts the {len(reserve)} entries in state `novelty-checked`, which is the "
+        f"pack-building denominator.",
         "",
         *table(data["reserve"]["components"]),
         "",

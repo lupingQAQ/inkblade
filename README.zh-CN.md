@@ -2,7 +2,13 @@
 
 **面向训练与推理集群的探针式渗透测试产品**
 
-`v0.2.0` · Apache-2.0 · 控制端 Python 3.10–3.13 · 目标端静态 Rust 探针 · 默认只读
+`v0.2.0` · Apache-2.0 · 控制端 Python 3.10–3.13 · 目标端静态 Rust 探针（源码已入库，二进制由 CI 产出） · 默认只读
+
+> **构建状态（2026-10-27）**：当前是探针迁移窗口，不是 GA 版本。0.2.0 已有的命令面是
+> `session · probe · channel · module · run · execute · template · surfaces · collect · report · rules ·
+> exploit · objective · assess · doctor`；`exec` / `scan` 两个简写**未实现**，请用 `session run`、
+> `template` 与 `run`。Rust 探针源码已入库，amd64/arm64 二进制由 CI 产出，但 `runtime=rust` 证据仍为 0。本文件所有数字与
+> [`docs/REQUIREMENTS-MATRIX.md`](docs/REQUIREMENTS-MATRIX.md) 对账。
 
 > **仅限授权使用。** 只对你有书面授权的资产使用 InkBlade。consent 与 ROE 哈希钉存，范围、级别、时间窗由代码
 > 强制执行，写操作必须有备份回执。没有签署记录就不投放探针，也没有跳过闸门的开关。
@@ -71,7 +77,7 @@ Python、不需要 shell、不下发模块代码。
 - **探针树。** `probe_id` / `parent_id`、每个子探针独立 token、更严格的继承、深度/扇出限制、先子后父清理。
 - **默认只读。** 写操作需要授权、`--allow-write`、`meta.writes`、`backup-write` 模式和备份回执。
 - **证据在边界产生。** 任务结果、步骤日志、artifacts、SHA-256 manifest、探针身份、清理回执。
-- **十层检测。** 287 个模块目录、29 条链、11 个防护绕过模块。
+- **十层检测。** 287 个模块目录、286 个模板、29 条链、11 个防护绕过模块。
 - **规则可重放。** 准入、运行时、网络三类规则包，输出拦截/检出/漏过矩阵。
 - **无遥测。** 不要账号、不要云密钥、没有许可服务器。
 
@@ -87,7 +93,8 @@ Python、不需要 shell、不下发模块代码。
 
 ## 快速开始
 
-产品路径是 `doctor → session → probe → exec/scan → report`。
+产品路径是 `doctor → session → probe → exec/scan → report`。0.2.0 已有 `session`、`probe`、`channel`；
+`exec` 与 `scan` 是未实现的简写，请用 `session run`、`template run` 或 `run`。
 
 ```bash
 python -m pip install -e .
@@ -96,20 +103,19 @@ python -m pip install -e .
 python -m inkblade doctor
 
 # 2. 授权会话
-python -m inkblade session start \
+python -m inkblade session open \
   --name pilot-01 --workspace ./work \
   --kubeconfig ~/.kube/config \
   --scope namespace:ml-team --level read-only
 
-# 3. 投放探针
+# 3. 投放探针（默认干跑；写操作需 --allow-write）
 python -m inkblade probe deploy \
   --session pilot-01 --target ml-team/infer-0 \
   --method kubectl-exec --binary ./inkblade-probe-linux-amd64
 
-# 4. 单模板或按层扫描
-python -m inkblade exec --session pilot-01 --probe p-7f3a1c9e \
+# 4. 经会话跑一个模板（exec/scan 简写未实现）
+python -m inkblade session run --session pilot-01 \
   --template service-account-token-exposure
-python -m inkblade scan --session pilot-01 --profile ray-vllm --layers 1,3,5
 
 # 5. 报告
 python -m inkblade report --session pilot-01 --lang bi
@@ -158,10 +164,10 @@ python -m inkblade report --session pilot-01 --lang bi
 - 模板 schema：`probe/schema/probe-template.schema.json`；参考评估器：`inkblade/tpl/engine.py`（仅 mock/CI，
   默认拒绝运行）。
 - 防护绕过评估：`inkblade/core/defenseprobe.py` 与 11 个 `inkblade/modules/defense-bypass-*` 模块。
-- 当前计数：287 个模块目录（286 个模板 + 1 个 bootstrap）、29 条链、11 个防护绕过模块。迁移窗口内仍有
-  286 个旧 `run.py`，发布前必须删除；注册表在过渡期忽略它们。
+- 当前计数：287 个模块目录（286 个模板 + 1 个 bootstrap）、29 条链、11 个防护绕过模块。旧 `run.py` 已在工作树中删除
+  （0 个），HEAD 仍有 286 个，迁移提交落盘后归零；注册表只接受模板。
 - Rust 运行时动态验证仍为 0。覆盖率报告里的 286/286 两态结果使用 `runtime=reference`；它们能验证模板逻辑，
-  不能当作探针证据。
+  不能作为探针证据。探针源码已入库；二进制在 CI 构建（`docs/PROBE-BUILD.md`），不入 git（`probe/dist/`）。
 
 **限制**
 

@@ -410,4 +410,58 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 - `docs/REFLECTION-ARTEX-KUBETRAIL.md`：ARTEX/KubeTrail 源码深潜；本文不重复其证据链。
 - `docs/COMPETITIVE-MATRIX.md`：CM-01/02/03/16/30/31 是本文多条落伍点的 backlog 锚点。
 - `docs/SOTA-2026-10.md`：能力矩阵；本文的 P0 项应反向更新其「未达成/部分」行。
-- `docs/ARCHITECTURE.md`：七层架构；本文 §4 是其「外挂 agent 运行时」的演进版，不替换七层。
+- `docs/ARCHITECTURE.md`：控制端七组件架构；本文 §4 是其「外挂 agent 运行时」的演进版，不替换这七个组件。
+
+---
+
+## 六、2026-10 实装映射（事件溯源图运行时）
+
+本节把 §3 的 16 个设计点映射到本仓代码与测试。口径：**已落地** = 有产品代码 + 行为测试；
+**部分** = 核心接口已接线，但仍受基础设施/迁移约束；**未做** = 明确未实装并写原因。
+本节的运行时与执行内核解耦：agent 只产生 graph delta，目标侧动作仍由 Rust 探针执行。
+
+| ID | 设计点 | 代码 | 测试 | 状态 / 未做原因 |
+|---|---|---|---|---|
+| A01 | Durable journal：run/step 状态、input/output、恢复 | `inkblade/agent/runtime.py`（`EventLog`、`AgentRuntime`、`checkpoint`、`resume`、`replay`、`state_at`） | `tests/test_agent_runtime.py`、`tests/test_agent_supervisor.py`（resume/time-travel） | 已落地：append-only JSONL + SHA-256 链 + checkpoint；`resume` 跳过 done、重排中断的 claimed intent |
+| A02 | 任务队列 + worker 池：claim/lease/heartbeat、优先级、重试、死信 | `inkblade/agent/scheduler.py`、`inkblade/agent/workers/`、`inkblade/agent/supervisor.py` | `tests/test_agent_scheduler.py`、`tests/test_agent_supervisor.py` | 已落地：frontier、lease、heartbeat、retry、dead-letter、有界 worker；队列状态由事件图重建，未引入外部 broker |
+| A03 | 三层记忆：working / episodic / semantic | `inkblade/agent/memory.py` | `tests/test_agent_memory_skills.py` | 已落地：working 压缩、episodic 跨 run 检索与排序、semantic 版本/过期；episodic 已接入 scheduler 的 `priority_adjustment` |
+| A04 | 技能库：`SKILL.md` 包、渐进披露、版本、成功率、审批 | `inkblade/agent/skills.py`、`inkblade/agent/protocols.py`（`SkillPackage`） | `tests/test_agent_memory_skills.py`、`tests/test_agent_protocols.py` | 已落地：SEP-2640 元数据/正文/资源三层、allowed-tools 校验、版本历史、approved 才可检索、eval 分数晋升 |
+| A05 | 沙箱执行器：create/exec/upload/download/pause/kill/fork、默认禁网 | `inkblade/agent/probes.py`、`inkblade/agent/workers/probe.py`、既有 Rust probe | `tests/test_agent_supervisor.py`（探针唯一执行/无宿主回退） | **部分**：目标侧动作在目标 Pod 内由 Rust probe 原生执行，宿主无模块代码；未做 microVM/Firecracker + egress allowlist（需要基础设施，且本轮无 Rust/cargo 构建环境） |
+| A06 | 评测基座：任务集、成功率/步数/token/干预/证据覆盖 | `inkblade/agent/eval.py` | `tests/test_agent_eval_2026.py` | 已落地：deterministic / supervisor / graph-swarm 三模式；golden 8 步链；未接入真实 k3s/商业靶场（本轮无 kubectl/k3s） |
+| A07 | 审批即信号：durable task、`working/input-required/completed` | `inkblade/agent/policy.py`（`issue_start`/`AgentAuthorization`）、`inkblade/agent/protocols.py`（`MCPTaskStore`）、`--approval manual` | `tests/test_agent_supervisor.py`（manual/auto）、`tests/test_agent_protocols.py` | 已落地：默认一次授权 + 无逐步审批；manual 只对写 intent 产生 `approval.required`，审批状态可持久化；未做跨进程人工审批 UI |
+| A08 | Supervisor-worker：角色化 recon/exploit/verify/report、fan-out 上限 | `inkblade/agent/supervisor.py`、`inkblade/agent/workers/{recon,exploit,verify,report}.py`、`WorkerPool` | `tests/test_agent_supervisor.py`、`tests/test_agent_scheduler.py` | 已落地：supervisor 不执行，worker 在 1–8 有界池中执行；角色策略由 worker + guard 双重约束 |
+| A09 | Reflexion：run 结束生成反思并进入 episodic | `inkblade/agent/memory.py`（`AgentMemory.reflect`、`reflection.md`） | `tests/test_agent_memory_skills.py` | 已落地：零执行、证据锚、失败/阻塞分类、下一次排序可读；未强制用 LLM 生成反思（避免把主观评价写成事实） |
+| A10 | MCP 工具联邦：namespace、延迟发现、`server/discover`、只读提示 | `inkblade/agent/protocols.py`（`MCPToolRegistry`、`MCPFederation`） | `tests/test_agent_protocols.py` | 已落地：发现/搜索/调用，`readOnlyHint=false` 直接拒绝；未接生产 MCP 传输（stdio/SSE 适配仍是既有 `core/a2a.py` 的职责） |
+| A11 | A2A：agent card、任务生命周期、只读委派 | `inkblade/agent/protocols.py`（`A2AServer`、`A2AClient`、`A2AAgentCard`） | `tests/test_agent_protocols.py` | 已落地：card/get、message/send、tasks/get/cancel；写技能默认拒绝；未做跨组织网络传输与身份联邦 |
+| A12 | 预算/配额：token、步数、时长、动作 | `inkblade/agent/runtime.py`（`Budget`）、`inkblade/agent/scheduler.py`、`inkblade/agent/cli.py` | `tests/test_agent_runtime.py`、`tests/test_agent_scheduler.py`、`tests/test_agent_supervisor.py` | 已落地：四维硬顶、超限 status、预算事件；未做租户级计费/多租户配额服务 |
+| A13 | 决策轨迹：决策/选择/证据/预算 span | `inkblade/agent/runtime.py`（`decision.made`、`plan.proposed`、`trace`）、`inkblade/agent/cli.py`（`agent trace`） | `tests/test_agent_runtime.py`、`tests/test_agent_supervisor.py`、`tests/test_agent_cli.py` | 已落地：JSONL 事件即 trace，支持 `--to-seq` 回放；未做 OTel exporter |
+| A14 | 图记忆/血缘：goal→intent→fact→evidence 边 | `inkblade/agent/graph.py`（`PlanGraph`、因果边、`replay_graph`） | `tests/test_agent_graph.py`、`tests/test_agent_supervisor.py`（replay） | 已落地：Fact/Intent/Hint、requires/derived_from/produced_by 边、证据门控；未做 GraphRAG 社区摘要 |
+| A15 | 黑板/产物存储：大产物外置、引用共享 | `inkblade/agent/graph.py`（evidence ref/sha256）、`inkblade/agent/workers/report.py`、既有 evidence store | `tests/test_agent_supervisor.py`、`tests/test_agent_graph.py` | 已落地：证据指针 + SHA-256，报告/产物写 run 目录；未接入对象存储/多 worker 文件服务 |
+| A16 | 记忆/技能投毒防御：来源、签名、TTL、回滚、批准 | `inkblade/agent/memory.py`（`SemanticMemory` provenance/approval/rollback/expiry）、`inkblade/agent/skills.py`（approved/promote） | `tests/test_agent_memory_skills.py` | 已落地：无 source_ref 拒绝、skill/human 需 approved_by、版本回滚、TTL；未做密码学签名链（依赖工作区 HMAC/审批记录） |
+
+### 与 G04/G05/G06/G11/G12 的接线
+
+| 修复项 | 接线点 | 可观察证据 |
+|---|---|---|
+| G04 分层记忆 | `AgentMemory.priority_adjustment` → `PlanGraph.frontier` → `TaskScheduler.claim_next` | episodic 成功/失败改变 frontier 排序（`test_priority_and_memory_ranking`） |
+| G05 技能库 | `SkillLibrary.propose_from_graph → submit → approve → search → index_into(memory)` | 未批准技能不可检索；成功率/版本进入 semantic（`test_agent_memory_skills`） |
+| G06 自反思 | `AgentMemory.reflect` 在 finalize 读写 episodic + `reflection.md` | `executed=False`；失败原因进入 `next_avoid`（`test_reflection_is_zero_execution`） |
+| G11 成本预算 | `Budget` 四维硬顶 + `budget.spent/exceeded` 事件 | step/token 超限停止且 status 明确（`test_budget_*`） |
+| G12 决策轨迹 | `decision.made`/`plan.proposed`/`policy.refused`/`intent.*` 事件 | `agent trace` + `--to-seq` 回放（`test_trace_contains_decision_and_reason`、`test_replay_time_travel`） |
+
+### 明确未做（本轮）
+
+1. **A05 内核级沙箱**：本轮只确认 Rust probe 是目标侧唯一执行面，宿主不执行模块代码；
+   microVM/egress allowlist 需要节点权限与 Firecracker/CNI 基础设施，未在本机伪造。
+2. **真实 k3s 成绩**：开发机无 `kubectl`/`k3s`/`cargo`，8 步链和三种评测模式均在
+   `lab/template_range` + reference conformance runtime 上实测；不把 mock 结果写成 k3s 结果。
+3. **OTel/GraphRAG/对象存储/跨组织 A2A 传输**：接口与本地实现已就绪，网络/存储适配属于
+   部署层，未在本轮引入新依赖。
+
+### 验证口径
+
+- 新增测试：`tests/test_agent_{graph,runtime,scheduler,protocols,memory_skills,supervisor,eval_2026,cli}.py`
+  共 63 个用例；覆盖证据门控、lease/retry/dead-letter、预算硬顶、越界拒绝、无探针拒绝、
+  8 步自主链、resume、time-travel、MCP/A2A/技能/记忆/Reflexion/评测三模式。
+- 迁移在途红测：由 Rust 探针/模板迁移的并行工作造成，若出现 `run.py`/旧模板路径失败，
+  在提交说明中单列，不混入本运行时结论。
