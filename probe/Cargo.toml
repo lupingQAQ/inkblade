@@ -1,0 +1,33 @@
+[package]
+name = "inkblade-probe"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+description = "InkBlade in-pod probe: native template runtime (http/tcp/exec/fs/k8s/socks/spawn)"
+license = "Apache-2.0"
+publish = false
+
+[[bin]]
+name = "inkblade-probe"
+path = "src/main.rs"
+
+# Compile-time dependencies only.  The release binary is a single statically
+# linked musl executable and has no runtime library dependency.
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+ureq = { version = "2.12", default-features = false, features = ["tls"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+rustls-pemfile = "2"
+webpki-roots = "0.26"
+libc = "0.2"
+
+[workspace]
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
