@@ -1,6 +1,6 @@
 {
   "schema": "trident.oss-bench/1",
-  "generated_at": "2026-10-26T12:23:31+0800",
+  "generated_at": "2026-10-26T12:43:01+0800",
   "host": {
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.12.15",
@@ -175,25 +175,25 @@
       "runs": 3,
       "seconds": {
         "values": [
-          0.86,
-          0.876,
-          0.894
+          1.282,
+          1.129,
+          1.172
         ],
-        "median": 0.876,
-        "min": 0.86,
-        "max": 0.894
+        "median": 1.172,
+        "min": 1.129,
+        "max": 1.282
       },
       "peak_rss_kb": {
         "values": [
-          147300,
-          151348,
-          145256
+          154208,
+          148316,
+          151304
         ],
-        "median": 147300,
-        "min": 145256,
-        "max": 151348
+        "median": 151304,
+        "min": 148316,
+        "max": 154208
       },
-      "output_bytes": 429541,
+      "output_bytes": 429495,
       "detection": {
         "misconfigs": 86,
         "unique_misconfig_ids": 31,
@@ -249,25 +249,25 @@
       "runs": 3,
       "seconds": {
         "values": [
-          3.821,
-          3.895,
-          4.031
+          4.496,
+          4.787,
+          5.061
         ],
-        "median": 3.895,
-        "min": 3.821,
-        "max": 4.031
+        "median": 4.787,
+        "min": 4.496,
+        "max": 5.061
       },
       "peak_rss_kb": {
         "values": [
-          230456,
-          231656,
-          233700
+          243308,
+          226112,
+          247308
         ],
-        "median": 231656,
-        "min": 230456,
-        "max": 233700
+        "median": 243308,
+        "min": 226112,
+        "max": 247308
       },
-      "snapshot_seconds": 0.601,
+      "snapshot_seconds": 1.395,
       "output_bytes": 1169499,
       "detection": {
         "misconfigs": 247,
@@ -307,19 +307,19 @@
       "runs": 3,
       "seconds": {
         "values": [
-          1.595,
-          1.448,
-          1.537
+          1.966,
+          1.888,
+          1.93
         ],
-        "median": 1.537,
-        "min": 1.448,
-        "max": 1.595
+        "median": 1.93,
+        "min": 1.888,
+        "max": 1.966
       },
       "peak_rss_kb": {
         "values": [
-          22204,
-          21896,
-          21772
+          22164,
+          22212,
+          22144
         ],
         "note": "peak of the 14 single-file processes (max per run)"
       },
@@ -354,85 +354,85 @@
         "benign_array.npy": {
           "severity": null,
           "rc": 1,
-          "seconds": 0.107,
+          "seconds": 0.145,
           "status": "unsupported"
         },
         "benign_config.json": {
           "severity": null,
           "rc": 2,
-          "seconds": 0.114,
+          "seconds": 0.133,
           "status": "unsupported"
         },
         "benign_dict.pkl": {
           "severity": "LIKELY_SAFE",
           "rc": 0,
-          "seconds": 0.105,
+          "seconds": 0.133,
           "status": "scanned"
         },
         "benign_list.pkl": {
           "severity": "LIKELY_SAFE",
           "rc": 0,
-          "seconds": 0.106,
+          "seconds": 0.139,
           "status": "scanned"
         },
         "benign_model.pkl": {
           "severity": "LIKELY_UNSAFE",
           "rc": 1,
-          "seconds": 0.105,
+          "seconds": 0.138,
           "status": "scanned"
         },
         "benign_tensor.pt": {
           "severity": null,
           "rc": 2,
-          "seconds": 0.104,
+          "seconds": 0.137,
           "status": "unsupported"
         },
         "evil_b64_eval.pkl": {
           "severity": "OVERTLY_MALICIOUS",
           "rc": 1,
-          "seconds": 0.11,
+          "seconds": 0.13,
           "status": "scanned"
         },
         "evil_eval.pkl": {
           "severity": "OVERTLY_MALICIOUS",
           "rc": 1,
-          "seconds": 0.109,
+          "seconds": 0.133,
           "status": "scanned"
         },
         "evil_exec.pkl": {
           "severity": "OVERTLY_MALICIOUS",
           "rc": 1,
-          "seconds": 0.123,
+          "seconds": 0.137,
           "status": "scanned"
         },
         "evil_import.pkl": {
           "severity": "LIKELY_OVERTLY_MALICIOUS",
           "rc": 1,
-          "seconds": 0.112,
+          "seconds": 0.139,
           "status": "scanned"
         },
         "evil_os_system.pkl": {
           "severity": "LIKELY_OVERTLY_MALICIOUS",
           "rc": 1,
-          "seconds": 0.109,
+          "seconds": 0.151,
           "status": "scanned"
         },
         "evil_socket.pkl": {
           "severity": "LIKELY_OVERTLY_MALICIOUS",
           "rc": 1,
-          "seconds": 0.115,
+          "seconds": 0.147,
           "status": "scanned"
         },
         "evil_subprocess.pkl": {
           "severity": "LIKELY_OVERTLY_MALICIOUS",
           "rc": 1,
-          "seconds": 0.108,
+          "seconds": 0.135,
           "status": "scanned"
         },
         "evil_torch.pt": {
           "severity": null,
           "rc": 2,
-          "seconds": 0.11,
+          "seconds": 0.133,
           "status": "unsupported"
         }
       },
@@ -448,25 +448,25 @@
       "runs": 3,
       "seconds": {
         "values": [
-          0.265,
-          0.279,
-          0.292
+          0.357,
+          0.342,
+          0.369
         ],
-        "median": 0.279,
-        "min": 0.265,
-        "max": 0.292
+        "median": 0.357,
+        "min": 0.342,
+        "max": 0.369
       },
       "peak_rss_kb": {
         "values": [
-          38856,
-          37512,
-          38748
+          38016,
+          38992,
+          37760
         ],
-        "median": 38748,
-        "min": 37512,
-        "max": 38856
+        "median": 38016,
+        "min": 37760,
+        "max": 38992
       },
-      "output_bytes": 2688,
+      "output_bytes": 3287,
       "detection": {
         "fixtures": 14,
         "malicious": 8,
@@ -513,25 +513,25 @@
       "runs": 3,
       "seconds": {
         "values": [
-          0.151,
-          0.153,
-          0.155
+          0.202,
+          0.194,
+          0.203
         ],
-        "median": 0.153,
-        "min": 0.151,
-        "max": 0.155
+        "median": 0.202,
+        "min": 0.194,
+        "max": 0.203
       },
       "peak_rss_kb": {
         "values": [
-          24068,
-          25544,
-          25824
+          26764,
+          25616,
+          26644
         ],
-        "median": 25544,
-        "min": 24068,
-        "max": 25824
+        "median": 26644,
+        "min": 25616,
+        "max": 26764
       },
-      "output_bytes": 1083,
+      "output_bytes": 761,
       "detection": {
         "fixtures": 14,
         "malicious": 8,
@@ -578,25 +578,25 @@
       "runs": 3,
       "seconds": {
         "values": [
-          2.372,
-          2.161,
-          2.326
+          2.989,
+          2.922,
+          3.013
         ],
-        "median": 2.326,
-        "min": 2.161,
-        "max": 2.372
+        "median": 2.989,
+        "min": 2.922,
+        "max": 3.013
       },
       "peak_rss_kb": {
         "values": [
-          276708,
-          277056,
-          277068
+          277332,
+          277712,
+          277316
         ],
-        "median": 277056,
-        "min": 276708,
-        "max": 277068
+        "median": 277332,
+        "min": 277316,
+        "max": 277712
       },
-      "output_bytes": 80473,
+      "output_bytes": 83147,
       "detection": {
         "cases": 12,
         "assertions_passed": 12,

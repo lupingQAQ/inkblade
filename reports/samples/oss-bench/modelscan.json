@@ -6,25 +6,25 @@
   "runs": 3,
   "seconds": {
     "values": [
-      0.265,
-      0.279,
-      0.292
+      0.357,
+      0.342,
+      0.369
     ],
-    "median": 0.279,
-    "min": 0.265,
-    "max": 0.292
+    "median": 0.357,
+    "min": 0.342,
+    "max": 0.369
   },
   "peak_rss_kb": {
     "values": [
-      38856,
-      37512,
-      38748
+      38016,
+      38992,
+      37760
     ],
-    "median": 38748,
-    "min": 37512,
-    "max": 38856
+    "median": 38016,
+    "min": 37760,
+    "max": 38992
   },
-  "output_bytes": 2688,
+  "output_bytes": 3287,
   "detection": {
     "fixtures": 14,
     "malicious": 8,

@@ -6,19 +6,19 @@
   "runs": 3,
   "seconds": {
     "values": [
-      1.595,
-      1.448,
-      1.537
+      1.966,
+      1.888,
+      1.93
     ],
-    "median": 1.537,
-    "min": 1.448,
-    "max": 1.595
+    "median": 1.93,
+    "min": 1.888,
+    "max": 1.966
   },
   "peak_rss_kb": {
     "values": [
-      22204,
-      21896,
-      21772
+      22164,
+      22212,
+      22144
     ],
     "note": "peak of the 14 single-file processes (max per run)"
   },
@@ -53,85 +53,85 @@
     "benign_array.npy": {
       "severity": null,
       "rc": 1,
-      "seconds": 0.107,
+      "seconds": 0.145,
       "status": "unsupported"
     },
     "benign_config.json": {
       "severity": null,
       "rc": 2,
-      "seconds": 0.114,
+      "seconds": 0.133,
       "status": "unsupported"
     },
     "benign_dict.pkl": {
       "severity": "LIKELY_SAFE",
       "rc": 0,
-      "seconds": 0.105,
+      "seconds": 0.133,
       "status": "scanned"
     },
     "benign_list.pkl": {
       "severity": "LIKELY_SAFE",
       "rc": 0,
-      "seconds": 0.106,
+      "seconds": 0.139,
       "status": "scanned"
     },
     "benign_model.pkl": {
       "severity": "LIKELY_UNSAFE",
       "rc": 1,
-      "seconds": 0.105,
+      "seconds": 0.138,
       "status": "scanned"
     },
     "benign_tensor.pt": {
       "severity": null,
       "rc": 2,
-      "seconds": 0.104,
+      "seconds": 0.137,
       "status": "unsupported"
     },
     "evil_b64_eval.pkl": {
       "severity": "OVERTLY_MALICIOUS",
       "rc": 1,
-      "seconds": 0.11,
+      "seconds": 0.13,
       "status": "scanned"
     },
     "evil_eval.pkl": {
       "severity": "OVERTLY_MALICIOUS",
       "rc": 1,
-      "seconds": 0.109,
+      "seconds": 0.133,
       "status": "scanned"
     },
     "evil_exec.pkl": {
       "severity": "OVERTLY_MALICIOUS",
       "rc": 1,
-      "seconds": 0.123,
+      "seconds": 0.137,
       "status": "scanned"
     },
     "evil_import.pkl": {
       "severity": "LIKELY_OVERTLY_MALICIOUS",
       "rc": 1,
-      "seconds": 0.112,
+      "seconds": 0.139,
       "status": "scanned"
     },
     "evil_os_system.pkl": {
       "severity": "LIKELY_OVERTLY_MALICIOUS",
       "rc": 1,
-      "seconds": 0.109,
+      "seconds": 0.151,
       "status": "scanned"
     },
     "evil_socket.pkl": {
       "severity": "LIKELY_OVERTLY_MALICIOUS",
       "rc": 1,
-      "seconds": 0.115,
+      "seconds": 0.147,
       "status": "scanned"
     },
     "evil_subprocess.pkl": {
       "severity": "LIKELY_OVERTLY_MALICIOUS",
       "rc": 1,
-      "seconds": 0.108,
+      "seconds": 0.135,
       "status": "scanned"
     },
     "evil_torch.pt": {
       "severity": null,
       "rc": 2,
-      "seconds": 0.11,
+      "seconds": 0.133,
       "status": "unsupported"
     }
   },

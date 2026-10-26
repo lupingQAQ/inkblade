@@ -1,8 +1,8 @@
 {
-  "evalId": "eval-IZj-2026-10-26T04:13:16",
+  "evalId": "eval-FRv-2026-10-26T04:43:00",
   "results": {
     "version": 3,
-    "timestamp": "2026-10-26T04:13:16.994Z",
+    "timestamp": "2026-10-26T04:43:00.688Z",
     "prompts": [
       {
         "id": "effa18501e44aafd9bc42a2f64ffc9b6350f94025520ca2ed382f9bdc4b6e982",
@@ -108,7 +108,7 @@
             }
           ]
         },
-        "id": "08e18fee-161b-48ab-973e-0accc2072ebf",
+        "id": "90cc64f6-bbee-4a99-9f50-bd1f1e5eda3c",
         "latencyMs": 15,
         "namedScores": {},
         "prompt": {
@@ -312,7 +312,7 @@
             }
           ]
         },
-        "id": "2da1896f-b392-4a02-9acf-2ebf130247eb",
+        "id": "e3c74a2b-6be6-4d77-b90f-fbe4138d23bf",
         "latencyMs": 18,
         "namedScores": {},
         "prompt": {
@@ -516,7 +516,7 @@
             }
           ]
         },
-        "id": "78a02f87-5fc1-4dbf-957e-cb3fbdfd370d",
+        "id": "aea14784-3fa0-4d1e-846a-fc0e82dd50a5",
         "latencyMs": 19,
         "namedScores": {},
         "prompt": {
@@ -720,7 +720,7 @@
             }
           ]
         },
-        "id": "dba2de4a-e958-4a6b-b3ce-bdd2ae5a0241",
+        "id": "49629b83-a631-4566-a836-d8cbb6aaed32",
         "latencyMs": 22,
         "namedScores": {},
         "prompt": {
@@ -924,7 +924,7 @@
             }
           ]
         },
-        "id": "5d151cea-fbd2-43bf-8d2d-d3df44117d26",
+        "id": "282cbac2-a866-4f20-a256-f425220ff0d4",
         "latencyMs": 4,
         "namedScores": {},
         "prompt": {
@@ -1128,7 +1128,7 @@
             }
           ]
         },
-        "id": "7f8b1bac-39f6-449e-9d03-d08d518cf577",
+        "id": "8c7ea01a-10d9-49c1-b121-57bde3705fcf",
         "latencyMs": 6,
         "namedScores": {},
         "prompt": {
@@ -1332,7 +1332,7 @@
             }
           ]
         },
-        "id": "828de4c1-852c-418b-82c6-cdbe1f9db36e",
+        "id": "b650760e-3d7f-4433-a2ba-ea3515c09b7a",
         "latencyMs": 9,
         "namedScores": {},
         "prompt": {
@@ -1536,7 +1536,7 @@
             }
           ]
         },
-        "id": "ae2150c6-5eb4-4cd1-bd31-807ea525d42a",
+        "id": "fc2bdfc3-914a-4e26-b92e-e0d50f56f165",
         "latencyMs": 12,
         "namedScores": {},
         "prompt": {
@@ -1740,7 +1740,7 @@
             }
           ]
         },
-        "id": "5ec6fe11-fecc-49fc-9fb7-3d828f102e53",
+        "id": "90e3caa2-6d8e-4c8f-9209-5046e48a478d",
         "latencyMs": 5,
         "namedScores": {},
         "prompt": {
@@ -1944,7 +1944,7 @@
             }
           ]
         },
-        "id": "84b8b07a-286d-4521-a4fb-7c2b3ffa316c",
+        "id": "14d088e7-53e4-48b3-8439-6968346eb580",
         "latencyMs": 7,
         "namedScores": {},
         "prompt": {
@@ -2148,7 +2148,7 @@
             }
           ]
         },
-        "id": "45a3c4d2-49e7-4cbd-a05d-d082824c47b1",
+        "id": "01cf60f2-5644-48a4-83e6-d921848ec03c",
         "latencyMs": 9,
         "namedScores": {},
         "prompt": {
@@ -2352,7 +2352,7 @@
             }
           ]
         },
-        "id": "8ee08763-c074-420a-8b2c-0198dc76f349",
+        "id": "39e9ef28-48d7-445a-931e-354ba0083b8e",
         "latencyMs": 9,
         "namedScores": {},
         "prompt": {
@@ -2591,8 +2591,8 @@
           }
         }
       },
-      "durationMs": 159,
-      "evaluationDurationMs": 159,
+      "durationMs": 190,
+      "evaluationDurationMs": 190,
       "cacheHits": 12
     }
   },
@@ -2698,7 +2698,7 @@
       "options": {},
       "metadata": {}
     },
-    "basePath": "<abs-path>"
+    "basePath": ".\\lab\\oss_bench\\fixtures\\llm"
   },
   "shareableUrl": null,
   "metadata": {
@@ -2706,8 +2706,8 @@
     "nodeVersion": "v24.21.0",
     "platform": "win32",
     "arch": "x64",
-    "exportedAt": "2026-10-26T04:13:17.227Z",
-    "evaluationCreatedAt": "2026-10-26T04:13:16.994Z"
+    "exportedAt": "2026-10-26T04:43:01.084Z",
+    "evaluationCreatedAt": "2026-10-26T04:43:00.688Z"
   },
   "vars": [
     "prompt"

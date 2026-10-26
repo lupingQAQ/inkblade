@@ -3,9 +3,9 @@
   "Trivy": {
     "Version": "0.76.1"
   },
-  "ReportID": "01a17673-02e4-71ff-8b59-10b981bb7ccc",
-  "CreatedAt": "2026-10-26T12:23:31.3001309+08:00",
-  "ArtifactName": "D:/llm-audit-2026-10/projects/trident-2026-10/lab/oss_bench/fixtures/k8s",
+  "ReportID": "01a17682-d0c9-7b5e-9d7d-9c2a4397a113",
+  "CreatedAt": "2026-10-26T12:40:47.0497452+08:00",
+  "ArtifactName": "lab/oss_bench/fixtures/k8s",
   "ArtifactType": "filesystem",
   "Results": [
     {

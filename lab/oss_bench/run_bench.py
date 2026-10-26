@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import platform
 import re
 import statistics
@@ -46,17 +47,20 @@ sys.path.insert(0, str(PROJECT))
 from lab.oss_bench.mock_k8s import MockCluster  # noqa: E402
 from lab.oss_bench.mock_llm import MockLLM  # noqa: E402
 
-VENV_PY = Path(r"D:\llm-audit-2026-10\.slim\oss-bench-venv\Scripts\python.exe")
-TRIVY = Path(r"D:\llm-audit-2026-10\.slim\oss-bench-bin\trivy\trivy.exe")
-TOXIPROXY_SERVER = Path(r"D:\llm-audit-2026-10\.slim\oss-bench-bin\toxiproxy\toxiproxy-server-windows-amd64.exe")
-NODE = Path(r"C:\Users\21169\.local\nodejs\node.exe")
-PROMPTFOO_MAIN = Path(r"D:\llm-audit-2026-10\.slim\oss-bench-npm\node_modules\promptfoo\dist\src\entrypoint.js")
+# Tool locations come from the environment so no internal absolute path is
+# baked into the repo.  The bench venv python defaults to the interpreter this
+# runner itself executes under (that is the supported setup).
+VENV_PY = Path(os.environ.get("TRIDENT_OSSBENCH_PY") or sys.executable)
+TRIVY = os.environ.get("TRIDENT_TRIVY", "trivy")
+TOXIPROXY_SERVER = os.environ.get("TRIDENT_TOXIPROXY", "toxiproxy-server")
+NODE = os.environ.get("TRIDENT_NODE", "node")
+PROMPTFOO_MAIN = os.environ.get("TRIDENT_PROMPTFOO_MAIN", "")
 SSH_KEY = PROJECT / "lab" / "qemu-k3s" / "http" / "id_ed25519"
 SSH_KNOWN_HOSTS = PROJECT / "lab" / "qemu-k3s" / "out" / "known_hosts"
 K3S_KUBECONFIG = PROJECT / "lab" / "qemu-k3s" / "out" / "k3s.yaml"
 KUBEBENCH_GUEST_SH = Path(__file__).resolve().parent / "kubebench_guest.sh"
 
-FIXTURES = PROJECT / "lab" / "oss_bench" / "fixtures"
+FIXTURES = Path("lab/oss_bench/fixtures")  # relative to PROJECT (stays out of raw reports)
 MODELS = FIXTURES / "models"
 K8S_FIX = FIXTURES / "k8s"
 LLM_FIX = FIXTURES / "llm"
@@ -104,10 +108,14 @@ class RssSampler(threading.Thread):
 
 def run_timed(cmd: list[str], timeout: float = 600, env: dict | None = None,
               cwd: str | None = None) -> dict:
-    """Run a command once, sampling time/RSS; capture stderr as text."""
+    """Run a command once, sampling time/RSS; capture stderr as text.
+
+    Defaults to running in PROJECT so relative fixture/output paths stay
+    relative in the tools' own reports (keeps raw artifacts portable).
+    """
     t0 = time.perf_counter()
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                            env=env, cwd=cwd)
+                            env=env, cwd=cwd or str(PROJECT))
     sampler = RssSampler(psutil.Process(proc.pid))
     sampler.start()
     try:
@@ -299,7 +307,6 @@ def bench_trivy_k8s(out: Path, runs: int) -> dict:
     snapshot) and scans it with ``trivy fs`` -- same trivy checks, offline,
     reproducible.
     """
-    import os
     raw_dir = out / "raw"
     kubectl = PROJECT / "lab" / "qemu-k3s" / "kubectl.exe"
     snap_path = raw_dir / "k3s-snapshot.yaml"
@@ -314,7 +321,7 @@ def bench_trivy_k8s(out: Path, runs: int) -> dict:
     dump = subprocess.run(
         [str(kubectl), "--kubeconfig", str(K3S_KUBECONFIG),
          "get", resources, "-A", "-o", "yaml"],
-        capture_output=True, timeout=600,
+        capture_output=True, timeout=600, cwd=str(PROJECT),
     )
     dump_seconds = round(time.perf_counter() - t0, 3)
     if dump.returncode != 0 or not dump.stdout.strip():
@@ -405,6 +412,17 @@ def bench_modelscan(out: Path, runs: int) -> dict:
         parsed = json.loads(report_path.read_text(encoding="utf-8"))
     except Exception:
         parsed = {}
+    # modelscan embeds an absolute scan root; normalize to repo-relative
+    if isinstance(parsed, dict):
+        summary = parsed.get("summary", {})
+        if isinstance(summary, dict) and "absolute_path" in summary:
+            try:
+                summary["absolute_path"] = str(
+                    Path(str(summary["absolute_path"])).resolve().relative_to(PROJECT)
+                ).replace("\\", "/")
+            except ValueError:
+                summary["absolute_path"] = str(summary["absolute_path"]).replace("\\", "/")
+        report_path.write_text(json.dumps(parsed, indent=2) + "\n", encoding="utf-8")
     issues = parsed.get("issues", []) if isinstance(parsed, dict) else []
     # torch zip sources look like "evil_torch.pt:benign_tensor\data.pkl"
     flags = {Path(str(i.get("source", "")).split(":")[0]).name: True for i in issues}
@@ -503,7 +521,7 @@ def bench_picklescan(out: Path, runs: int) -> dict:
         t0 = time.perf_counter()
         proc = subprocess.Popen(
             [str(VENV_PY), "-m", "picklescan", "-p", str(MODELS)],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=str(PROJECT),
         )
         sampler = RssSampler(psutil.Process(proc.pid))
         sampler.start()
@@ -513,6 +531,9 @@ def bench_picklescan(out: Path, runs: int) -> dict:
         text = (stdout + b"\n" + stderr).decode("utf-8", "replace")
         runs_data.append({"rc": proc.returncode, "seconds": round(seconds, 3), "peak_rss_kb": peak_kb})
         report_text = text
+    # picklescan prints absolute paths for the scanned dir; normalize the
+    # workspace prefix to keep the raw evidence portable
+    report_text = report_text.replace(str(PROJECT) + os.sep, "").replace(str(PROJECT), ".")
     (out / "raw" / "picklescan.txt").write_text(report_text, encoding="utf-8")
     truth = load_manifest()
     flags = {}
@@ -547,12 +568,17 @@ def bench_picklescan(out: Path, runs: int) -> dict:
 def bench_promptfoo(out: Path, runs: int) -> dict:
     cfg = LLM_FIX / "promptfoo.yaml"
     result_path = out / "raw" / "promptfoo-results.json"
-    env = {
-        "SystemRoot": "C:\\Windows", "TEMP": str(out / "raw"),
-        "PROMPTFOO_DISABLE_TELEMETRY": "1", "PROMPTFOO_DISABLE_UPDATE": "1",
-        "PROMPTFOO_CONFIG_DIR": str(out / "raw" / "pf-config"),
-        "Path": "C:\\Windows\\System32",
-    }
+    env = dict(
+        os.environ,
+        PROMPTFOO_DISABLE_TELEMETRY="1", PROMPTFOO_DISABLE_UPDATE="1",
+        # keep promptfoo's runtime db/logs out of the evidence tree
+        PROMPTFOO_CONFIG_DIR=os.environ.get("TRIDENT_PF_CONFIG_DIR")
+        or str(Path(os.environ.get("TEMP", "/tmp")) / "trident-pf-config"),
+    )
+    if not PROMPTFOO_MAIN:
+        raise RuntimeError(
+            "promptfoo bench needs TRIDENT_PROMPTFOO_MAIN=<path to "
+            "node_modules/promptfoo/dist/src/entrypoint.js>")
     # warmup (node module cache) -- not measured
     with MockLLM():
         subprocess.run(
@@ -574,6 +600,18 @@ def bench_promptfoo(out: Path, runs: int) -> dict:
             parsed = json.loads(result_path.read_text(encoding="utf-8"))
         except Exception:
             parsed = {}
+    # promptfoo embeds the workspace basePath; normalize to repo-relative
+    if result_path.exists():
+        text = result_path.read_text(encoding="utf-8")
+        text = text.replace(str(PROJECT).replace("\\", "\\\\"), ".").replace(str(PROJECT), ".")
+        result_path.write_text(text, encoding="utf-8")
+        try:
+            parsed = json.loads(text)
+        except json.JSONDecodeError:
+            pass
+    warmup = out / "raw" / "pf-warmup.json"
+    if warmup.exists():
+        warmup.unlink()
     rs = parsed.get("results", {}).get("results", [])
     total = sum(
         int(p.get("statistics", {}).get("total", 0)) if "statistics" in p else 0

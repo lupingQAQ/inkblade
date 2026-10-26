@@ -12,7 +12,7 @@ import platform
 import time
 from pathlib import Path
 
-OUT = Path(r"D:\llm-audit-2026-10\projects\trident-2026-10\reports\samples\oss-bench")
+OUT = Path(__file__).resolve().parents[2] / "reports" / "samples" / "oss-bench"
 
 per_tool = {}
 for path in sorted(OUT.glob("*.json")):
