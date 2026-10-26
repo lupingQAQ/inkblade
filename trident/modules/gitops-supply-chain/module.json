@@ -1,0 +1,18 @@
+{
+  "key": "gitops-supply-chain",
+  "name": {
+    "zh": "GitOps 密钥与漂移面",
+    "en": "GitOps secrets and drift surface"
+  },
+  "series": "核心代码",
+  "description": "只读检查 Argo CD/Flux 仓库与同步策略：明文密钥、未加密、漂移未阻断、自动同步未签名、未 prune、未接 external-secrets。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "gitops-supply-chain.json + 密钥/漂移证据（不回显值）",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "gitops-plaintext-secret-drift"
+}

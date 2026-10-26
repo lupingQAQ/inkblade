@@ -1,0 +1,18 @@
+{
+  "key": "sandbox-runtime-surface",
+  "name": {
+    "zh": "gVisor/Firecracker 沙箱运行时面",
+    "en": "gVisor/Firecracker sandbox runtime surface"
+  },
+  "series": "权限链",
+  "description": "只读检查 RuntimeClass 与 Pod 安全上下文：Agent 工作负载使用 runc、seccomp Unconfined、SYS_ADMIN、hostPID/hostNetwork，是否具备 gVisor/Firecracker 隔离。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "sandbox-runtime-surface.json + runtime/pod 能力矩阵",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "agent-sandbox-escape"
+}

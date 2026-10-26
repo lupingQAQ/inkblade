@@ -1,0 +1,18 @@
+{
+  "key": "model-watermark-backdoor-detect",
+  "name": {
+    "zh": "模型水印与后门检测面",
+    "en": "Model watermark and backdoor detection surface"
+  },
+  "series": "情报",
+  "description": "只读检查模型注册表：无可验证水印、未执行触发器/后门扫描、来源未签名、权重哈希未绑定。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "model-watermark-backdoor-detect.json + 水印/扫描证据",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "model-watermark-removal"
+}

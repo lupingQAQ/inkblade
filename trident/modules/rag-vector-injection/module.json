@@ -1,0 +1,18 @@
+{
+  "key": "rag-vector-injection",
+  "name": {
+    "zh": "RAG 向量库注入面",
+    "en": "RAG vector injection surface"
+  },
+  "series": "窃取与数据泄露",
+  "description": "只读检查 RAG 集合：未签名外部注入文档、跨租户共享 embedding namespace、检索未按租户过滤、未清洗/无文档上限。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "rag-vector-injection.json + 文档/检索证据",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "rag-poisoned-retrieval"
+}

@@ -1,0 +1,18 @@
+{
+  "key": "confidential-containers-attestation",
+  "name": {
+    "zh": "CoCo/Kata/SEV-SNP 容器证明面",
+    "en": "CoCo/Kata/SEV-SNP container attestation surface"
+  },
+  "series": "核心代码",
+  "description": "只读读取 CoCo/SEV-SNP 证明报告与准入策略：测量值不匹配、TEE debug 开启、report_data 未绑定、未强制证明或允许任意镜像、initdata 未校验。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "confidential-containers-attestation.json + 证明/策略证据",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "coco-attestation-bypass"
+}

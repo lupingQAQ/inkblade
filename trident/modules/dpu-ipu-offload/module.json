@@ -1,0 +1,18 @@
+{
+  "key": "dpu-ipu-offload",
+  "name": {
+    "zh": "DPU/IPU 卸载与隔离面",
+    "en": "DPU/IPU offload and isolation surface"
+  },
+  "series": "网络架构",
+  "description": "只读检查 BlueField/IPU 卸载姿态：基础设施服务仍在宿主、IOMMU/switchdev 未启用、数据面未隔离、固件未验证。与 dpu-smartnic-surface 的服务/凭据面互补。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "dpu-ipu-offload.json + offload/IOMMU 证据",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "dpu-offload-host-bypass"
+}

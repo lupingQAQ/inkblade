@@ -1,0 +1,18 @@
+{
+  "key": "tpm-measured-boot",
+  "name": {
+    "zh": "TPM 测量启动与证明面",
+    "en": "TPM measured boot and attestation surface"
+  },
+  "series": "侦察",
+  "description": "只读检查 TPM eventlog：Secure Boot/Measured Boot 关闭、PCR 不匹配、SHA-1 bank、eventlog 未校验、证明密钥未保护。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "tpm-measured-boot.json + PCR/eventlog 证据",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "tpm-pcr-mismatch"
+}

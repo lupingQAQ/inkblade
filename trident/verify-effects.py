@@ -68,6 +68,7 @@ from lab.gpu_cloud_sim import start_all as start_gpu_cloud  # noqa: E402
 from lab.fabric_dos_sim import start_all as start_fabric  # noqa: E402
 from lab.privesc_sim import SCENARIOS as PRIVESC_SCENARIOS, run_fake_closure  # noqa: E402
 from lab.hardware_sim import FIXTURES as HARDWARE_FIXTURES, start_all as start_hardware  # noqa: E402
+from lab.infra2026_sim import start_all as start_infra2026  # noqa: E402
 from lab.cve_sim import start_all as start_cve_sim  # noqa: E402
 from lab.trainstack_sim import (  # noqa: E402
     data_shard_path as trainstack_data_shard,
@@ -269,6 +270,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
         fabric = start_fabric(mode="vulnerable")
         ai_gateway = start_ai_gateway(mode="vulnerable")
         hardware = start_hardware(mode="vulnerable")
+        infra2026 = start_infra2026(mode="vulnerable")
         cve_sim = start_cve_sim(mode="vulnerable", root=lab_root / "cve")
         trainstack = start_trainstack(mode="vulnerable", root=lab_root / "trainstack")
         try:
@@ -1148,6 +1150,110 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                        "固件清单篡改实效：blob 哈希不匹配（签名仍有效），finding 为 high",
                        hardware_firmware_manifest_tamper)
 
+            def _infra_summary(module_key: str) -> dict[str, Any]:
+                rows = run.query(
+                    "SELECT result_summary FROM steps WHERE run=? AND step_key=? ORDER BY id DESC LIMIT 1",
+                    (run.name, module_key),
+                )
+                return json.loads(rows[0][0]) if rows else {}
+
+            def infra2026_coco_attestation_mismatch() -> dict[str, Any]:
+                probe = _http_json(infra2026.url("/coco/attestation"))
+                if probe["status"] != 200:
+                    raise AssertionError(f"/coco/attestation 读失败：{probe['status']}")
+                run_module(store, tester, "confidential-containers-attestation",
+                           {"target": infra2026.url("")},
+                           modules_dir=MODULES_DIR, run=run)
+                high = [f for f in run.findings
+                        if f["step_key"] == "confidential-containers-attestation"
+                        and f["severity"] == "high"]
+                if not high:
+                    raise AssertionError("CoCo 测量值不匹配未产出 high finding")
+                detail = json.loads(high[0]["detail"])
+                summary = _infra_summary("confidential-containers-attestation")
+                if detail["measurement"] == detail["expected_measurement"]:
+                    raise AssertionError("measurement 与 expected 相同")
+                if not detail.get("detected"):
+                    raise AssertionError("finding 未标记 detected")
+                return {
+                    "http_status": probe["status"],
+                    "tee": detail.get("tee"),
+                    "measurement": detail["measurement"],
+                    "expected_measurement": detail["expected_measurement"],
+                    "debug": summary.get("debug"),
+                    "policy_enforced": summary.get("policy_enforced"),
+                    "detected": bool(detail.get("detected")),
+                    "route": "/coco/attestation,/coco/policy",
+                }
+
+            checks.run("infra2026-coco-attestation-mismatch",
+                       "CoCo 证明实效：SEV-SNP 测量值与预期不一致且 debug 开启，finding 为 high",
+                       infra2026_coco_attestation_mismatch)
+
+            def infra2026_spire_wildcard_identity() -> dict[str, Any]:
+                probe = _http_json(infra2026.url("/spire/entries"))
+                if probe["status"] != 200:
+                    raise AssertionError(f"/spire/entries 读失败：{probe['status']}")
+                run_module(store, tester, "spiffe-spire-surface",
+                           {"target": infra2026.url("")},
+                           modules_dir=MODULES_DIR, run=run)
+                summary = _infra_summary("spiffe-spire-surface")
+                high = [f for f in run.findings
+                        if f["step_key"] == "spiffe-spire-surface"
+                        and f["severity"] == "high"]
+                if not high:
+                    raise AssertionError("SPIRE 通配身份未产出 high finding")
+                if summary.get("wildcard_entries", 0) < 1:
+                    raise AssertionError("wildcard_entries < 1")
+                if summary.get("admin_acl") is not False:
+                    raise AssertionError("admin_acl 未标记 false")
+                return {
+                    "http_status": probe["status"],
+                    "trust_domain": summary.get("trust_domain"),
+                    "entries": summary.get("entries"),
+                    "wildcard_entries": summary.get("wildcard_entries"),
+                    "admin_acl": summary.get("admin_acl"),
+                    "detected": bool(high),
+                    "route": "/spire/entries",
+                }
+
+            checks.run("infra2026-spire-wildcard-identity",
+                       "SPIRE 实效：通配 SPIFFE ID + 无选择器 + admin 无 ACL，finding 为 high",
+                       infra2026_spire_wildcard_identity)
+
+            def infra2026_pq_tls_weak_posture() -> dict[str, Any]:
+                probe = _http_json(infra2026.url("/tls/posture"))
+                if probe["status"] != 200:
+                    raise AssertionError(f"/tls/posture 读失败：{probe['status']}")
+                run_module(store, tester, "post-quantum-tls-posture",
+                           {"target": infra2026.url("")},
+                           modules_dir=MODULES_DIR, run=run)
+                summary = _infra_summary("post-quantum-tls-posture")
+                high = [f for f in run.findings
+                        if f["step_key"] == "post-quantum-tls-posture"
+                        and f["severity"] == "high"]
+                if len(high) < 2:
+                    raise AssertionError(f"PQ TLS high finding 少于 2：{len(high)}")
+                if summary.get("min_version") != "TLS1.2":
+                    raise AssertionError("min_version 不是 TLS1.2")
+                if summary.get("key_exchange") != "rsa":
+                    raise AssertionError("key_exchange 不是 rsa")
+                if summary.get("hybrid_group"):
+                    raise AssertionError("hybrid_group 非空")
+                return {
+                    "http_status": probe["status"],
+                    "min_version": summary.get("min_version"),
+                    "key_exchange": summary.get("key_exchange"),
+                    "hybrid_group": summary.get("hybrid_group") or "",
+                    "hndl_exposed": summary.get("hndl_exposed"),
+                    "detected": bool(high),
+                    "route": "/tls/posture",
+                }
+
+            checks.run("infra2026-pq-tls-weak-posture",
+                       "后量子 TLS 实效：TLS1.2 + RSA 密钥交换 + 无 hybrid group，finding 为 high",
+                       infra2026_pq_tls_weak_posture)
+
             def data_leak() -> dict[str, Any]:
                 run_module(
                     store, tester, "training-data-leak",
@@ -1509,6 +1615,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
         finally:
             trainstack.shutdown()
             hardware.shutdown()
+            infra2026.shutdown()
             cve_sim.shutdown()
             ai_gateway.shutdown()
             fabric.shutdown()

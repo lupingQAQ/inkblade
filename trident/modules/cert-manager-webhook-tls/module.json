@@ -1,0 +1,18 @@
+{
+  "key": "cert-manager-webhook-tls",
+  "name": {
+    "zh": "cert-manager Webhook TLS 面",
+    "en": "cert-manager webhook TLS surface"
+  },
+  "series": "网络架构",
+  "description": "只读检查 admission/conversion webhook 证书：过期、SAN 与 Service 不匹配、CA bundle 不一致、insecureSkipVerify、未启用轮换。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "只读 API 基址（必填，例如 http://127.0.0.1:8080）"
+  },
+  "produces": "cert-manager-webhook-tls.json + 证书/CA 证据",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md + docs/INFRA-COVERAGE-2026.md（2026 会议议题核验）",
+  "combo_signature": "webhook-tls-expiry-bypass"
+}
