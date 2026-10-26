@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+ "source": "mining",
+ "component": "juicefscsi",
+ "title": "juicefs-csi: go-bind-all @ cmd/app/controller_manager.go:71",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v0.33.1",
+ "version_ref": {
+  "kind": "git",
+  "repo": "juicedata/juicefs-csi-driver",
+  "tag": "v0.33.1",
+  "commit": "ab62a2106b6993f260b9f4c82f5dba51463e6748"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v0.33.1",
+  "repo": "juicedata/juicefs-csi-driver",
+  "tag": "v0.33.1",
+  "commit": "ab62a2106b6993f260b9f4c82f5dba51463e6748",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/juicedata/juicefs-csi-driver/v0.33.1/cmd/app/controller_manager.go",
+  "artifact_sha256": "b933e2796904d47ef28c5e55f4a306b8d66830024dde6acf84ca8409d405ac7a",
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "advisory_sha256": "4b898807421021bf0bf0a4e4c7d163ccb1e9147fdc9f93ad644e141a88f64718"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/juicefscsi/juicefscsi-controller-manager-go-go-bind-all-l71-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.103,
+ "started_at": "2026-10-26T05:01:20+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/juicefscsi/juicefscsi-controller-manager-go-go-bind-all-l71-regex/evidence/log.txt",
+   "sha256": "794b0d167014753808dbd1d9a47099eb17c309f18516d6369b5f279fc907200c",
+   "size": 282
+  },
+  {
+   "path": "lab/upstream_verify/cases/juicefscsi/juicefscsi-controller-manager-go-go-bind-all-l71-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/juicefscsi/juicefscsi-controller-manager-go-go-bind-all-l71-regex/evidence/static-check.json",
+   "sha256": "c04415ad556392ee1de2893fd32d79dc2818a60cb98a3eb7e95bfc64c9c267da",
+   "size": 1331
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "cde327223f355b35d81627e9854dcb7d1df90a16ad2faecb6120709cca960d4d",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"juicefscsi-controller-manager-go-go-bind-all-l71-regex\"}\n",
+ "stderr": "",
+ "notes": "JuiceFSCSI controller (and pod manager, 0.0.0.0:8082) bind their controller-runtime metrics listeners on all interfaces with no authentication; cmd/main.go additionally blank-imports net/http/pprof (default-mux registration). Cluster-internal posture exposure: queue depths, volume names and pprof surface."
+}

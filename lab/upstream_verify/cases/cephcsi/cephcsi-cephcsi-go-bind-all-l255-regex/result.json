@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "cephcsi-cephcsi-go-bind-all-l255-regex",
+ "source": "mining",
+ "component": "cephcsi",
+ "title": "ceph-csi: go-bind-all @ cmd/cephcsi.go:255",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v3.18.1",
+ "version_ref": {
+  "kind": "git",
+  "repo": "ceph/ceph-csi",
+  "tag": "v3.18.1",
+  "commit": "e8688c3bf3d057daf1d7e679f3e0ed861a234c3b"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v3.18.1",
+  "repo": "ceph/ceph-csi",
+  "tag": "v3.18.1",
+  "commit": "e8688c3bf3d057daf1d7e679f3e0ed861a234c3b",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/ceph/ceph-csi/v3.18.1/cmd/cephcsi.go",
+  "artifact_sha256": "a75f0383daeb875c0d227eaa7853ef6da9817a00d1b3ad3037814b78ff1ef683",
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "advisory_sha256": "4b898807421021bf0bf0a4e4c7d163ccb1e9147fdc9f93ad644e141a88f64718"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/cephcsi/cephcsi-cephcsi-go-bind-all-l255-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.121,
+ "started_at": "2026-10-26T05:01:20+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-cephcsi-cephcsi-go-bind-all-l255-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/cephcsi/cephcsi-cephcsi-go-bind-all-l255-regex/evidence/log.txt",
+   "sha256": "44020b72a1d24d4c0011aed63a64ec6da087bb19deb3d681801649f84d6330e0",
+   "size": 247
+  },
+  {
+   "path": "lab/upstream_verify/cases/cephcsi/cephcsi-cephcsi-go-bind-all-l255-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/cephcsi/cephcsi-cephcsi-go-bind-all-l255-regex/evidence/static-check.json",
+   "sha256": "17b4431e68f254c7bec6afb9982c0039428f1afe1cd62bc636262f6b019adac7",
+   "size": 1269
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "e0a2ac2c3d1a0885553735efc98caed92d5f4419ddf2e64076bd9985f2dd2b38",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"cephcsi-cephcsi-go-bind-all-l255-regex\"}\n",
+ "stderr": "",
+ "notes": "cephcsi defaults MetricsIP to 0.0.0.0; the same default-mux listener serves the unauthenticated pprof endpoints verified dynamically in cephcsi-httpserver-go-pprof-exposed-l37-regex. This entry pins the bind-all default at cmd/cephcsi.go:255."
+}

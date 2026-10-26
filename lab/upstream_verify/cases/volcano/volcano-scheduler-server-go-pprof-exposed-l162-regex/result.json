@@ -1,0 +1,68 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "volcano-scheduler-server-go-pprof-exposed-l162-regex",
+ "source": "mining",
+ "component": "volcano",
+ "title": "volcano: pprof-exposed-go @ cmd/scheduler/app/server.go:162",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v1.16.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "volcano-sh/volcano",
+  "tag": "v1.16.0"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v1.16.0",
+  "repo": "volcano-sh/volcano",
+  "tag": "v1.16.0",
+  "commit": null,
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/volcano-sh/volcano/v1.16.0/cmd/scheduler/app/server.go",
+  "artifact_sha256": "815cd111dacdc6dcc783b18cd2e3f8f2ec7b1f1947e3f7084f9f8a467d1e945b",
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "advisory_sha256": "4b898807421021bf0bf0a4e4c7d163ccb1e9147fdc9f93ad644e141a88f64718"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/volcano/volcano-scheduler-server-go-pprof-exposed-l162-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.11,
+ "started_at": "2026-10-26T05:01:21+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-volcano-scheduler-server-go-pprof-exposed-l162-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/volcano/volcano-scheduler-server-go-pprof-exposed-l162-regex/evidence/log.txt",
+   "sha256": "b579398492689d26b7c1a8a1c0ee8ee7ede35e46a5f11923eb88e714b4d18151",
+   "size": 274
+  },
+  {
+   "path": "lab/upstream_verify/cases/volcano/volcano-scheduler-server-go-pprof-exposed-l162-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/volcano/volcano-scheduler-server-go-pprof-exposed-l162-regex/evidence/static-check.json",
+   "sha256": "24d0b9818b15f01a0c5daa2e2a6256962f59a31958df87bab192cf100684fb7d",
+   "size": 1402
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "e73c519f6dd56dcf43986094170efa4066c06f620b35e29e090829e592d72ce5",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"volcano-scheduler-server-go-pprof-exposed-l162-regex\"}\n",
+ "stderr": "",
+ "notes": "Volcano scheduler mounts the complete /debug/pprof/* handler set on its debug mux when pprof scheduling options are enabled. Exposure is flag-gated, so it is a deployment posture (leak of heap/cpu profiles with scheduler state) rather than an always-on sink; the volcano agent DaemonSet (hostNetwork + hostPath elevated-pod-spec hits) is the paired posture finding."
+}

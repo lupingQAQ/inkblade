@@ -41,7 +41,7 @@
       "id": "chain-catalog-dryrun",
       "title": "链目录齐全（经典/云侧/网络/零日）且 dry-run 输出可读计划（备份动作+写面）",
       "status": "PASS",
-      "detail": "25 链 / 5 类；flat-network-admin-plane-weight-poison 判定=部分成立（缺失 1 条前置）",
+      "detail": "27 链 / 5 类；flat-network-admin-plane-weight-poison 判定=部分成立（缺失 1 条前置）",
       "elapsed_ms": "<dynamic>"
     },
     {
@@ -69,21 +69,21 @@
       "id": "report-bilingual-public-details",
       "title": "双语渗透+修复报告渲染：PTES/专节/标准映射/CVSS/证据锚齐备；已公开零日级细节默认展示，可选脱敏开关生效",
       "status": "PASS",
-      "detail": "渗透 60937 字符 / 修复 58648 字符；默认展示✓ / 可选脱敏 59361 字符✓",
+      "detail": "渗透 72382 字符 / 修复 69045 字符；默认展示✓ / 可选脱敏 70806 字符✓",
       "elapsed_ms": "<dynamic>"
     },
     {
       "id": "rules-pack-coverage",
       "title": "规则包 generate_all：每链 ≥1 规则，三 CNI 变体 + Sigma/Falco/Suricata 产物齐备",
       "status": "PASS",
-      "detail": "38 规则 / 25 链全覆盖 / 三变体+四引擎✓",
+      "detail": "102 规则 / 27 链全覆盖 / 三变体+四引擎✓",
       "elapsed_ms": "<dynamic>"
     },
     {
       "id": "purple-coverage-matrix",
       "title": "紫队验证：mock 靶场重放 + 简化匹配器 → 覆盖率矩阵零漏过",
       "status": "PASS",
-      "detail": "25 链 / 0 漏过 / 态集合 ['拦截', '拦截+检测', '检测']",
+      "detail": "26 链 / 0 漏过 / 态集合 ['拦截', '拦截+检测', '检测']",
       "elapsed_ms": "<dynamic>"
     },
     {

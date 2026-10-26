@@ -14,8 +14,31 @@ finding, run_recon = _COMMON.finding, _COMMON.run_recon
 RBAC_OBJECTS = {"roles", "rolebindings", "clusterroles", "clusterrolebindings"}
 
 
+def _image_tag_mutable(image: str) -> bool:
+    """无 tag / :latest（可变标签）且无 digest 锚定 = 供应链可替换面。"""
+    if not image or "@" in image:  # digest 锚定（即使 tag 可变，内容固定）
+        return False
+    tag = image.rsplit("/", 1)[-1]
+    return ":" not in tag or tag.rsplit(":", 1)[1].lower() == "latest"
+
+
 def analyze(snapshot: dict, params: dict) -> list[dict]:
     findings: list[dict] = []
+
+    # 镜像可变标签盘点（供应链提权面：镜像引用可被仓库侧重放/替换）
+    for pod in snapshot.get("pods", []):
+        pid = f"{pod.get('namespace', 'default')}/{pod.get('name', '?')}"
+        for container in pod.get("containers", []):
+            image = str(container.get("image", ""))
+            if _image_tag_mutable(image):
+                findings.append(finding(
+                    "medium", f"{pid}：镜像可变标签（{image}）",
+                    detail="无 tag/:latest 且无 digest 锚定 = 镜像内容可被仓库侧重放"
+                           "（供应链注入→运行时提权面，绕过镜像扫描时点）。",
+                    evidence=f"pod={pid} image={image}",
+                    mapping="供应链投毒面；权限链「容器运行时 Socket 逃逸」上游",
+                    fix="镜像引用统一 digest 锚定（@sha256:…）+ 准入校验注册表白名单",
+                ))
 
     for scope, key in (("ClusterRole", "clusterroles"), ("Role", "roles")):
         for role in snapshot.get(key, []):

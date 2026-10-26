@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "msswift-indexed-dataset-py-pickle-loads-l112-regex",
+ "target": "msswift",
+ "repo": "modelscope/ms-swift",
+ "tag": "v4.6.0",
+ "status": "pending-manual-review",
+ "rule": "pickle-loads",
+ "channel": "regex",
+ "file": "indexed_dataset.py",
+ "line": 112,
+ "snippet": "idx_obj = pickle.load(f)",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-26T12:43:07"
+}

@@ -1,0 +1,27 @@
+- op: add
+  path: /rules/-
+  value:
+    apiGroups:
+      - ""
+    resources:
+      - pods/exec
+    verbs:
+      - '*'
+- op: add
+  path: /rules/-
+  value:
+    apiGroups:
+      - "apps"
+    resources:
+      - statefulsets
+    verbs:
+      - get
+- op: add
+  path: /rules/-
+  value:
+    apiGroups:
+      - "apps"
+    resources:
+      - replicasets
+    verbs:
+      - get

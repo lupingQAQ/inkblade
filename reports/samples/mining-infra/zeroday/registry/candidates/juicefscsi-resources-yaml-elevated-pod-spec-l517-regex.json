@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "juicefscsi-resources-yaml-elevated-pod-spec-l517-regex",
+ "target": "juicefscsi",
+ "repo": "juicedata/juicefs-csi-driver",
+ "tag": "v0.33.1",
+ "status": "pending-manual-review",
+ "rule": "elevated-pod-spec",
+ "channel": "regex",
+ "file": "resources.yaml",
+ "line": 517,
+ "snippet": "- hostPath:",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-26T12:43:07"
+}

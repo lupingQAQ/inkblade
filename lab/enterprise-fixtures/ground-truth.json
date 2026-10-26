@@ -60,7 +60,7 @@
     "scenario": "platform-baseline-noise",
     "label": "risk",
     "module": "escape-primitives",
-    "contains": "__not_detected__"
+    "contains": "Falco 检测缺口"
   },
   {
     "id": "benign-rbac-platform-operator",
@@ -165,7 +165,7 @@
     "scenario": "audit-flood-noise",
     "label": "risk",
     "module": "auditlog",
-    "contains": "tenant-b"
+    "contains": "pods/exec tenant-b/jupyter-bob-0"
   },
   {
     "id": "risk-audit-weight-pvc",
@@ -179,13 +179,13 @@
     "scenario": "audit-flood-noise",
     "label": "risk",
     "module": "auditlog",
-    "contains": "__not_detected__"
+    "contains": "serviceaccounts/token"
   },
   {
     "id": "fn-audit-portforward",
     "scenario": "audit-flood-noise",
     "label": "risk",
     "module": "auditlog",
-    "contains": "__not_detected__"
+    "contains": "pods/portforward"
   }
 ]

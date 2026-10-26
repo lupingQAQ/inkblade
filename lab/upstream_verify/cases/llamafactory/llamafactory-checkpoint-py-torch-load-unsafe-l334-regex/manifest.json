@@ -1,0 +1,58 @@
+{
+ "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex",
+ "source": "mining",
+ "title": "llamafactory: torch-load-unsafe @ v1/core/utils/checkpoint.py:334",
+ "version": "v0.9.5",
+ "version_ref": {
+  "kind": "git",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5"
+ },
+ "install": "pip install llamafactory==0.9.5 (wheel pinned; env venv-lfa)",
+ "root_cause": {
+  "file": "src/llamafactory/v1/core/utils/checkpoint.py",
+  "line": 334,
+  "function": "TrainingCheckpointCoordinator.resume",
+  "snippet": "self._t.train_batch_generator.load_state_dict(torch.load(dl_path, map_location=\"cpu\", weights_only=False))",
+  "source": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/v1/core/utils/checkpoint.py",
+  "source_sha256": "2802a32774cb6dacad64edee4309b225234cecd71edd9c5bd21bdc4f1d2f4cff",
+  "note": "TrainingCheckpointCoordinator.resume restores the dataloader state via torch.load(weights_only=False) on <ckpt>/dataloader/rank_<n>.pt. Same trust boundary as the rng_state sink: checkpoint write access equals pickle code execution on resume. Reproduced through the real upstream resume() flow (metadata.json + dataloader state only; the model path is absent so the surrounding code is inert) with the pinned installed package."
+ },
+ "preconditions": [
+  "attacker can write a LlamaFactory v1 training checkpoint directory",
+  "victim resumes training from that checkpoint (resume_from_checkpoint)"
+ ],
+ "steps": [
+  "install the pinned llamafactory 0.9.5 wheel (venv-lfa)",
+  "craft metadata.json plus a malicious dataloader/rank_0.pt payload",
+  "drive the real TrainingCheckpointCoordinator.resume() and observe the marker inside torch.load"
+ ],
+ "expected_evidence": [
+  "marker written by the pickle payload inside the upstream torch.load call",
+  "run.json + log.txt with the pinned wheel sha256 and source hash"
+ ],
+ "cleanup": "temporary files under evidence/ are rewritten on every run",
+ "status": "verified",
+ "method": "dynamic-function",
+ "module": "llamafactory-checkpoint-rce",
+ "python": "lfa",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-llamafactory-checkpoint-py-torch-load-unsafe-l334-regex",
+ "notes": "TrainingCheckpointCoordinator.resume restores the dataloader state via torch.load(weights_only=False) on <ckpt>/dataloader/rank_<n>.pt. Same trust boundary as the rng_state sink: checkpoint write access equals pickle code execution on resume. Reproduced through the real upstream resume() flow (metadata.json + dataloader state only; the model path is absent so the surrounding code is inert) with the pinned installed package.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "",
+ "static_verdict": "verified-dynamic",
+ "unsupported": {},
+ "mining": {
+  "rule": "torch-load-unsafe",
+  "channel": "regex",
+  "file": "checkpoint.py",
+  "line": 334,
+  "snippet": "self._t.train_batch_generator.load_state_dict(torch.load(dl_path, map_location=\"cpu\", weights_only=False))",
+  "original_status": "pending-manual-review",
+  "promoted": true
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "llamafactory"
+}

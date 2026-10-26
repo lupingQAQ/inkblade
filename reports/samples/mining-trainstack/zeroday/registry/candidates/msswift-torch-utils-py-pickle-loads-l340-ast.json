@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "msswift-torch-utils-py-pickle-loads-l340-ast",
+ "target": "msswift",
+ "repo": "modelscope/ms-swift",
+ "tag": "v4.6.0",
+ "status": "pending-manual-review",
+ "rule": "pickle-loads",
+ "channel": "ast",
+ "file": "torch_utils.py",
+ "line": 340,
+ "snippet": "pickle.loads(<不可信字节流>)",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-26T12:43:07"
+}

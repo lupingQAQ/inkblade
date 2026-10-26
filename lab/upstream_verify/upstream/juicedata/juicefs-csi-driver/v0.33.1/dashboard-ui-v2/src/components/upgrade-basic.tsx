@@ -1,0 +1,235 @@
+/*
+ * Copyright 2024 Juicedata Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import React from 'react'
+import { ProCard, ProDescriptions } from '@ant-design/pro-components'
+import { Button, Popconfirm, Space, Tooltip } from 'antd'
+import { Badge } from 'antd/lib'
+import { FormattedMessage } from 'react-intl'
+
+import { useDeleteUpgradeJob, useUpdateUpgradeJob } from '@/hooks/job-api.ts'
+import { DeleteIcon, PauseIcon, ResumeIcon, StopIcon } from '@/icons'
+import { UpgradeJob } from '@/types/k8s.ts'
+import { getUpgradeStatusBadge } from '@/utils'
+
+const UpgradeBasic: React.FC<{
+  upgradeJob: UpgradeJob
+  freshJob: () => void
+}> = (props) => {
+  const { upgradeJob, freshJob } = props
+  const [, action] = useDeleteUpgradeJob()
+  const [updateState, updateAction] = useUpdateUpgradeJob()
+  const updating = updateState.status === 'loading'
+  const status = upgradeJob.config.status || 'running'
+
+  const upgradeData = {
+    upgradeJob,
+  }
+
+  return (
+    <ProCard
+      title={<FormattedMessage id="basic" />}
+      extra={
+        <Space>
+          {canPause(status) ? (
+            <Tooltip title="Pause">
+              <Button
+                loading={updating}
+                disabled={updating}
+                onClick={() => {
+                  updateAction
+                    .execute(upgradeJob.job.metadata?.name || '', 'pause')
+                    .then(freshJob)
+                }}
+                icon={<PauseIcon />}
+              />
+            </Tooltip>
+          ) : null}
+          {canResume(status) ? (
+            <Tooltip title="Resume">
+              <Button
+                loading={updating}
+                disabled={updating}
+                onClick={() => {
+                  updateAction
+                    .execute(upgradeJob.job.metadata?.name || '', 'resume')
+                    .then(freshJob)
+                }}
+                icon={<ResumeIcon />}
+              />
+            </Tooltip>
+          ) : null}
+          {canStop(status) ? (
+            <Tooltip title="Stop">
+              <Button
+                loading={updating}
+                disabled={updating}
+                onClick={() => {
+                  updateAction
+                    .execute(upgradeJob.job.metadata?.name || '', 'stop')
+                    .then(freshJob)
+                }}
+                icon={<StopIcon />}
+              />
+            </Tooltip>
+          ) : null}
+          {canDelete(status) ? (
+            <Tooltip title="Delete">
+              <Popconfirm
+                placement="topRight"
+                title={<FormattedMessage id="deleteJob" />}
+                description={<FormattedMessage id="deleteJobDesc" />}
+                okText={<FormattedMessage id="yes" />}
+                cancelText={<FormattedMessage id="no" />}
+                onConfirm={() => {
+                  action.execute(upgradeJob.job.metadata?.name || '')
+                  window.location.href = `/jobs`
+                }}
+              >
+                <Button icon={<DeleteIcon />} />
+              </Popconfirm>
+            </Tooltip>
+          ) : null}
+        </Space>
+      }
+    >
+      <ProDescriptions
+        column={2}
+        dataSource={upgradeData}
+        columns={[
+          {
+            title: <FormattedMessage id="upgradeType" />,
+            key: 'type',
+            render: (_, data) => {
+              const upgradeType = getUpgradeType(data.upgradeJob)
+              return upgradeType === 'sidecar' ? 'Sidecar' : 'Mount Pod'
+            },
+          },
+          {
+            title: <FormattedMessage id="namespace" />,
+            key: 'namespace',
+            render: (_, data) => getUpgradeNamespace(data.upgradeJob) || '-',
+          },
+          {
+            title: <FormattedMessage id="parallelNum" />,
+            key: 'worker',
+            render: (_, data) => data.upgradeJob?.config.parallel || '-',
+          },
+          {
+            title: <FormattedMessage id="ignoreError" />,
+            key: 'ignoreError',
+            dataIndex: 'ignoreError',
+            render: (_, record) => {
+              if (record.upgradeJob?.config.ignoreError) {
+                return (
+                  <div>
+                    <FormattedMessage id="true" />
+                  </div>
+                )
+              } else {
+                return (
+                  <div>
+                    <FormattedMessage id="false" />
+                  </div>
+                )
+              }
+            },
+          },
+          {
+            title: <FormattedMessage id="status" />,
+            key: 'status',
+            dataIndex: 'status',
+            render: (_, data) => {
+              const status =
+                data.upgradeJob?.config.status === ''
+                  ? 'running'
+                  : data.upgradeJob?.config.status
+              return (
+                <Badge
+                  status={getUpgradeStatusBadge(status || 'running')}
+                  text={status}
+                ></Badge>
+              )
+            },
+          },
+        ]}
+      ></ProDescriptions>
+    </ProCard>
+  )
+}
+
+export default UpgradeBasic
+
+const getUpgradeType = (upgradeJob?: UpgradeJob): string => {
+  if (upgradeJob?.config?.kind === 'sidecar') {
+    return 'sidecar'
+  }
+  const batches = upgradeJob?.config?.batches || []
+  for (const batch of batches) {
+    for (const target of batch || []) {
+      if (target?.containerName) {
+        return 'sidecar'
+      }
+    }
+  }
+  return 'mountPod'
+}
+
+const getUpgradeNamespace = (upgradeJob?: UpgradeJob): string => {
+  if (upgradeJob?.config?.namespace) {
+    return upgradeJob.config.namespace
+  }
+  const batches = upgradeJob?.config?.batches
+  if (batches && batches.length > 0) {
+    for (const batch of batches) {
+      if (!batch || batch.length === 0) {
+        continue
+      }
+      for (const target of batch) {
+        if (target?.namespace) {
+          return target.namespace
+        }
+      }
+    }
+  }
+  return ''
+}
+
+const canPause = (status: string): boolean => {
+  return (
+    status !== 'stop' &&
+    status !== 'pause' &&
+    status !== 'fail' &&
+    status !== 'success'
+  )
+}
+
+const canStop = (status: string): boolean => {
+  return status !== 'fail' && status !== 'success' && status !== 'stop'
+}
+
+const canResume = (status: string): boolean => {
+  return status === 'pause'
+}
+
+const canDelete = (status: string): boolean => {
+  return (
+    status === 'fail' ||
+    status === 'success' ||
+    status === 'stop' ||
+    status === 'pause'
+  )
+}

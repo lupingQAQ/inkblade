@@ -1,0 +1,55 @@
+{
+ "id": "sonicrestapi-default-go-exec-command-l1881-regex",
+ "source": "mining",
+ "title": "sonic-restapi: exec-command-go @ go-server-server/go/default.go:1881",
+ "version": "a45b9bc",
+ "version_ref": {
+  "kind": "git",
+  "repo": "sonic-net/sonic-restapi",
+  "tag": "a45b9bc"
+ },
+ "install": "pinned source vendored under lab/upstream_verify/upstream/",
+ "root_cause": {
+  "file": "go-server-server/go/default.go",
+  "line": 1881,
+  "function": "ConfigPingPost",
+  "snippet": "out, err = exec.Command(PING_COMMAND_STR, args...).Output()",
+  "source": "lab/upstream_verify/upstream/sonic-net/sonic-restapi/a45b9bc/go-server-server/go/default.go",
+  "source_sha256": "e41aac6a82538d720aa32ab27c4388e31e97b79f2790f1015b5deefa1b4eebf4",
+  "note": "Ping POST handler joins attacker JSON (ip_address, count, vnet_id) into the ping argv."
+ },
+ "preconditions": [
+  "REST access to the SONiC switch REST server (TLS + client-cert CN allowlist)"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-sonicrestapi-default-go-exec-command-l1881-regex",
+ "notes": "SONiC REST PingPost builds the ping argv from request JSON (ip_address, count '-c ' concatenation, vnet_id). argv-list exec means no shell metacharacters, but option injection into ping and unauthenticated-by-default REST auth mode (community change to default 'user' is recent) make this a live probe/injection surface. Not run dynamically: the go-server-server package links swsscommon (C), which cannot build on this Windows host.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "SONiC REST PingPost builds the ping argv from request JSON (ip_address, count '-c ' concatenation, vnet_id). argv-list exec means no shell metacharacters, but option injection into ping and unauthenticated-by-default REST auth mode (community change to default 'user' is recent) make this a live probe/injection surface. Not run dynamically: the go-server-server package links swsscommon (C), which cannot build on this Windows host.",
+ "static_verdict": "not-dynamically-verified",
+ "unsupported": {},
+ "mining": {
+  "rule": "exec-command-go",
+  "channel": "regex",
+  "file": "default.go",
+  "line": 1881,
+  "snippet": "out, err = exec.Command(PING_COMMAND_STR, args...).Output()",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "sonicrestapi"
+}

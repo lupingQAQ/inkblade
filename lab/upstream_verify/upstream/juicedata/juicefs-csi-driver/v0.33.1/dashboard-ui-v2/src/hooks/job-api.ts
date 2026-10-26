@@ -1,0 +1,121 @@
+/*
+ * Copyright 2024 Juicedata Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { useAsync } from '@react-hookz/web'
+import useSWR from 'swr'
+
+import { UpgradeJobsPagingListArgs } from '@/types'
+import {
+  SidecarImageDiff,
+  UpgradeJob,
+  UpgradeJobWithDiff,
+  UpgradeTarget,
+} from '@/types/k8s.ts'
+import { apiFetch } from '@/utils'
+
+export type CreateUpgradeJobRequest = {
+  jobName?: string
+  targetKind: 'mountPod' | 'sidecar'
+  upgradeMethod: 'recreate' | 'binary'
+  namespace?: string
+  nodeName?: string
+  uniqueId?: string
+  worker: number
+  ignoreError: boolean
+}
+
+export function useCreateUpgradeJob() {
+  return useAsync(async (request: CreateUpgradeJobRequest) => {
+    const result: {
+      jobName: string
+    } = await apiFetch('/api/v1/batch/upgrade/jobs', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...request,
+        nodeName:
+          request.nodeName === 'All Nodes' ? '' : request.nodeName || '',
+        recreate: request.upgradeMethod === 'recreate',
+      }),
+    })
+    return result
+  })
+}
+
+export function useSidecarUpgradeTargets(namespace: string) {
+  return useSWR<{
+    targets: UpgradeTarget[]
+    total: number
+  }>(
+    namespace.trim()
+      ? `/api/v1/batch/upgrade/sidecar-targets?namespace=${encodeURIComponent(namespace.trim())}`
+      : null,
+  )
+}
+
+export function useUpgradeJob(jobName: string) {
+  return useSWR<UpgradeJobWithDiff>(`/api/v1/batch/upgrade/jobs/${jobName}`)
+}
+
+export function useUpgradeJobDiff(jobName: string, enabled: boolean = true) {
+  return useSWR<{ images: Record<string, SidecarImageDiff> }>(
+    enabled && jobName ? `/api/v1/batch/upgrade/jobs/${jobName}/diff` : null,
+  )
+}
+
+export function useUpgradeJobs(args: UpgradeJobsPagingListArgs) {
+  const order = args.sort?.['time'] || 'descend'
+  const namespace = args.namespace || ''
+  const name = args.name || ''
+  const pageSize = args.pageSize || 20
+  const current = args.current || 1
+  const continueToken = args.continue || ''
+
+  return useSWR<{
+    jobs: UpgradeJob[]
+    total: number
+    continue: string | undefined
+  }>(
+    `/api/v1/batch/upgrade/jobs?order=${order}&namespace=${namespace}&name=${name}&pageSize=${pageSize}&current=${current}&continue=${continueToken}`,
+  )
+}
+
+export function useDeleteUpgradeJob() {
+  return useAsync(async (jobName: string) => {
+    return await apiFetch(`/api/v1/batch/upgrade/jobs/${jobName}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  })
+}
+
+export function useUpdateUpgradeJob() {
+  return useAsync(async (jobName: string, action: string) => {
+    return await apiFetch(`/api/v1/batch/upgrade/jobs/${jobName}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: action,
+      }),
+    })
+  })
+}

@@ -9,7 +9,7 @@
     "vpc-native"
   ],
   "inputs": {
-    "chains": 25,
+    "chains": 27,
     "findings": 2
   },
   "rules": [
@@ -35,17 +35,21 @@
       },
       "log_source": "K8s admission review",
       "blocks_modules": [
+        "cluster-privileged-pod",
         "gpu-network-operator-posture",
         "overprivileged-sa-escalation",
         "privileged-gpu-pod-escape"
       ],
       "blocks_chains": [
+        "cluster-takeover-objective",
         "gpu-network-operator-host-escape",
         "imex-computedomain-gpu-memory-crossing",
         "ray-dashboard-cluster-takeover"
       ],
       "finding_links": [],
-      "match": null
+      "match": null,
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "deny-sensitive-hostpath",
@@ -76,7 +80,9 @@
         "gpu-network-operator-host-escape"
       ],
       "finding_links": [],
-      "match": null
+      "match": null,
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "deny-automount-serviceaccount-token",
@@ -108,7 +114,9 @@
         "ssrf-sa-token-cloud-metadata"
       ],
       "finding_links": [],
-      "match": null
+      "match": null,
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "alert-rolebinding-creation",
@@ -132,13 +140,17 @@
       },
       "log_source": "K8s admission review",
       "blocks_modules": [
+        "cluster-rbac-escalation",
         "overprivileged-sa-escalation"
       ],
       "blocks_chains": [
+        "cluster-takeover-objective",
         "ray-dashboard-cluster-takeover"
       ],
       "finding_links": [],
-      "match": null
+      "match": null,
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "alert-combo-signature",
@@ -170,7 +182,9 @@
       "finding_links": [
         "step_key:slime-weight-pull-poison"
       ],
-      "match": null
+      "match": null,
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "netpol-default-deny-partition",
@@ -204,6 +218,7 @@
       ],
       "blocks_chains": [
         "agent-platform-zero-precondition-lateral",
+        "cluster-takeover-objective",
         "flat-network-admin-plane-weight-poison",
         "ib-rdma-collective-injection",
         "nccl-gradient-injection",
@@ -214,7 +229,9 @@
         "vpc-cni-dual-control-plane-lateral"
       ],
       "finding_links": [],
-      "match": null
+      "match": null,
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "vpc-securitygroup-supplement",
@@ -242,7 +259,9 @@
         "vpc-cni-dual-control-plane-lateral"
       ],
       "finding_links": [],
-      "match": null
+      "match": null,
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "rdma-sriov-ib-partition-advice",
@@ -275,7 +294,9 @@
         "prefill-decode-kv-inference-manipulation"
       ],
       "finding_links": [],
-      "match": null
+      "match": null,
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "sigma-rolebinding-cluster-admin",
@@ -302,6 +323,7 @@
         "overprivileged-sa-escalation"
       ],
       "blocks_chains": [
+        "cluster-takeover-objective",
         "ray-dashboard-cluster-takeover"
       ],
       "finding_links": [],
@@ -322,7 +344,9 @@
           "objectRef.roleRef.name": "cluster-admin"
         },
         "condition": "all"
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "sigma-privileged-pod-create",
@@ -368,7 +392,9 @@
           "requestObject.privileged": true
         },
         "condition": "all"
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "sigma-ray-job-submit",
@@ -412,7 +438,9 @@
           "objectRef.resource": "job"
         },
         "condition": "all"
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "sigma-secret-abnormal-read",
@@ -473,7 +501,9 @@
           }
         },
         "condition": "all"
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "sigma-gpu-pool-admin-unauth",
@@ -520,7 +550,9 @@
           "cross_tenant": true
         },
         "condition": "all"
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "sigma-cloud-cross-account-assume",
@@ -563,7 +595,9 @@
           "trustPolicyWildcard": true
         },
         "condition": "all"
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "sigma-gateway-admin-api-no-auth",
@@ -613,7 +647,9 @@
           ]
         },
         "condition": "all"
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "sigma-gateway-default-master-key-use",
@@ -660,7 +696,9 @@
           ]
         },
         "condition": "all"
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "sigma-pods-exec-lateral",
@@ -687,6 +725,7 @@
         "overprivileged-sa-escalation"
       ],
       "blocks_chains": [
+        "cluster-takeover-objective",
         "ray-dashboard-cluster-takeover"
       ],
       "finding_links": [],
@@ -714,7 +753,9 @@
           }
         },
         "condition": "all"
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "sigma-weight-pvc-abnormal-write",
@@ -767,7 +808,9 @@
           }
         },
         "condition": "all"
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "sigma-fabric-sharp-unauth-join",
@@ -813,7 +856,9 @@
           "authenticated": false
         },
         "condition": "all"
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "sigma-fabric-exhaustion-quota-miss",
@@ -863,7 +908,2376 @@
           "quota_enforced": false
         },
         "condition": "all"
-      }
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
+      "id": "sigma-cluster-takeover-entry",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "??? operator ????????",
+        "en": "??? operator ????????"
+      },
+      "files": [
+        "sigma/sigma-cluster-takeover-entry.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "? 30 ?????????????????operator ?????????? list services/pods ?? high??? NodePort ?????????",
+        "en": "Baseline platform discovery vs external enumeration over 30 days; escalate high when operator subjects list services/pods outside change windows; correlate with the NodePort exposure inventory"
+      },
+      "log_source": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "blocks_modules": [
+        "cluster-entry"
+      ],
+      "blocks_chains": [
+        "cluster-takeover-objective"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "get",
+            "list"
+          ],
+          "objectRef.resource": [
+            "services",
+            "pods"
+          ],
+          "subject_sa": {
+            "re": "serviceaccount:.*operator"
+          }
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
+      "id": "sigma-cluster-token-harvest",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "ServiceAccount TokenRequest ????",
+        "en": "ServiceAccount TokenRequest ????"
+      },
+      "files": [
+        "sigma/sigma-cluster-token-harvest.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "???? TokenRequest ???serviceaccounts/token???? CI/? operator ???????? high?token ??????????? jti/??/???",
+        "en": "Ingest serviceaccounts/token audit events first; keep high for issuers outside CI/operator controllers; never log the token itself, only jti/subject/expiry"
+      },
+      "log_source": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "blocks_modules": [
+        "cluster-credential"
+      ],
+      "blocks_chains": [
+        "cluster-takeover-objective"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "get"
+          ],
+          "objectRef.resource": [
+            "serviceaccounts",
+            "secrets"
+          ],
+          "objectRef.subresource": [
+            "token"
+          ],
+          "subject_sa": {
+            "re": "serviceaccount:.*operator"
+          }
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
+      "id": "sigma-cluster-rbac-takeover",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "operator ???? cluster-admin ????????",
+        "en": "operator ???? cluster-admin ????????"
+      },
+      "files": [
+        "sigma/sigma-cluster-rbac-takeover.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "?? cluster-admin ??????? critical ?????????? gitops ?????????????????????????? bind/escalate ????",
+        "en": "Any incremental binding to cluster-admin is critical and should be blocked; allow only the gitops sync subject with two-person approval; also watch binding deletions (cleanup trails) and bind/escalate grants"
+      },
+      "log_source": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "blocks_modules": [
+        "cluster-rbac-escalation"
+      ],
+      "blocks_chains": [
+        "cluster-takeover-objective"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create",
+            "patch"
+          ],
+          "objectRef.resource": [
+            "rolebindings",
+            "clusterrolebindings"
+          ],
+          "objectRef.roleRef.name": "cluster-admin"
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
+      "id": "sigma-cluster-privileged-pod",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "???????/??? Pod",
+        "en": "???????/??? Pod"
+      },
+      "files": [
+        "sigma/sigma-cluster-privileged-pod.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "?? monitor 7 ???? Enforce?GPU ??/device plugin ??????????????? cluster-admin ???????? critical",
+        "en": "Run monitor for 7 days then switch to Enforce; allow GPU driver/device plugin only in the exception namespace; correlate with the cluster-admin binding rule and escalate to critical"
+      },
+      "log_source": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "blocks_modules": [
+        "cluster-privileged-pod"
+      ],
+      "blocks_chains": [
+        "cluster-takeover-objective"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "create"
+          ],
+          "objectRef.resource": [
+            "pods"
+          ],
+          "requestObject.privileged": true,
+          "requestObject.hostPID": true
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
+      "id": "sigma-cluster-proof-actions",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "?????????? secrets / ???? namespace",
+        "en": "?????????? secrets / ???? namespace"
+      },
+      "files": [
+        "sigma/sigma-cluster-proof-actions.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "secret ?????????????/??/?????namespace ??????????? gitops?? operator ?????? list secrets ?? critical",
+        "en": "Allowlist secret listers (backup/audit/controllers); namespace creation restricted to platform controllers and gitops; cluster-wide secret listing by operator subjects is critical"
+      },
+      "log_source": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "blocks_modules": [
+        "cluster-proof"
+      ],
+      "blocks_chains": [
+        "cluster-takeover-objective"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "list",
+            "create"
+          ],
+          "objectRef.resource": [
+            "secrets",
+            "namespaces"
+          ],
+          "subject_sa": {
+            "re": "serviceaccount:.*operator"
+          }
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
+      "id": "sigma-cluster-cleanup-trail",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "????????????/?? namespace",
+        "en": "????????????/?? namespace"
+      },
+      "files": [
+        "sigma/sigma-cluster-cleanup-trail.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "?????????????? 30 ???????? cluster-admin ??/namespace ?? critical????????????",
+        "en": "Correlate with creation events: same subject deleting a cluster-admin binding/namespace within 30 minutes is critical; preserve the deletion timeline for forensics"
+      },
+      "log_source": {
+        "product": "kubernetes",
+        "service": "audit"
+      },
+      "blocks_modules": [
+        "cluster-cleanup"
+      ],
+      "blocks_chains": [
+        "cluster-takeover-objective"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "product": "kubernetes",
+          "service": "audit"
+        },
+        "selection": {
+          "verb": [
+            "delete"
+          ],
+          "objectRef.resource": [
+            "rolebindings",
+            "clusterrolebindings",
+            "namespaces"
+          ]
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
+      "id": "sigma-cve-arsenal-surface",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 武器化面：Ray / LiteLLM / IPMI / Redfish / runc 探测",
+        "en": "CVE 武器化面：Ray / LiteLLM / IPMI / Redfish / runc 探测"
+      },
+      "files": [
+        "sigma/sigma-cve-arsenal-surface.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按管理网段与来源身份白名单调参；同一来源在 10 分钟内同时命中 Ray 与 BMC 面时升级为 critical",
+        "en": "Allowlist admin CIDRs and operator identities; escalate to critical when the same source hits Ray and BMC surfaces within 10 minutes"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [
+        "ipmi-cipher-zero-bypass",
+        "litellm-config-update-rce",
+        "ray-job-marker-rce",
+        "redfish-default-credentials",
+        "runc-escape-detect"
+      ],
+      "blocks_chains": [
+        "cve-weaponized-surface-takeover"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "sigma",
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri": "*"
+        },
+        "condition": "all"
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
+      "id": "sigma-cve-cve-2025-32444",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-32444 vLLM",
+        "en": "CVE 检测：CVE-2025-32444 vLLM"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-32444.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-32444"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-29783",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-29783 vLLM",
+        "en": "CVE 检测：CVE-2025-29783 vLLM"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-29783.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-29783"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-47277",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-47277 vLLM",
+        "en": "CVE 检测：CVE-2025-47277 vLLM"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-47277.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-47277"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-59425",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-59425 vLLM",
+        "en": "CVE 检测：CVE-2025-59425 vLLM"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-59425.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-59425"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-3059",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-3059 SGLang",
+        "en": "CVE 检测：CVE-2026-3059 SGLang"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-3059.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-3059"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-3060",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-3060 SGLang",
+        "en": "CVE 检测：CVE-2026-3060 SGLang"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-3060.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-3060"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-7301",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-7301 SGLang",
+        "en": "CVE 检测：CVE-2026-7301 SGLang"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-7301.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-7301"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-7302",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-7302 SGLang",
+        "en": "CVE 检测：CVE-2026-7302 SGLang"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-7302.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-7302"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-15978",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-15978 SGLang",
+        "en": "CVE 检测：CVE-2026-15978 SGLang"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-15978.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-15978"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-92972",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-92972 SGLang",
+        "en": "CVE 检测：CVE-2026-92972 SGLang"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-92972.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-92972"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2023-48022",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2023-48022 Ray",
+        "en": "CVE 检测：CVE-2023-48022 Ray"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2023-48022.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2023-48022"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2023-48023",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2023-48023 Ray",
+        "en": "CVE 检测：CVE-2023-48023 Ray"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2023-48023.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2023-48023"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-32981",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-32981 Ray",
+        "en": "CVE 检测：CVE-2026-32981 Ray"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-32981.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-32981"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-kuberay-adv-2026-01",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：KUBERAY-ADV-2026-01 KubeRay",
+        "en": "CVE 检测：KUBERAY-ADV-2026-01 KubeRay"
+      },
+      "files": [
+        "sigma/sigma-cve-kuberay-adv-2026-01.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "KUBERAY-ADV-2026-01"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-lws-adv-2026-01",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：LWS-ADV-2026-01 LeaderWorkerSet (LWS)",
+        "en": "CVE 检测：LWS-ADV-2026-01 LeaderWorkerSet (LWS)"
+      },
+      "files": [
+        "sigma/sigma-cve-lws-adv-2026-01.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "LWS-ADV-2026-01"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2024-21626",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2024-21626 runc",
+        "en": "CVE 检测：CVE-2024-21626 runc"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2024-21626.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2024-21626"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2020-15257",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2020-15257 containerd",
+        "en": "CVE 检测：CVE-2020-15257 containerd"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2020-15257.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2020-15257"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2022-0492",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2022-0492 Linux kernel (cgroups v1)",
+        "en": "CVE 检测：CVE-2022-0492 Linux kernel (cgroups v1)"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2022-0492.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "product": "kube-apiserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "product": "kube-apiserver"
+        },
+        "selection": {
+          "objectRef.resource": "*"
+        }
+      },
+      "cves": [
+        "CVE-2022-0492"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2024-10220",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2024-10220 Kubernetes kubelet",
+        "en": "CVE 检测：CVE-2024-10220 Kubernetes kubelet"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2024-10220.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2024-10220"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2024-3177",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2024-3177 Kubernetes",
+        "en": "CVE 检测：CVE-2024-3177 Kubernetes"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2024-3177.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2024-3177"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-31133",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-31133 runc",
+        "en": "CVE 检测：CVE-2025-31133 runc"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-31133.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-31133"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2024-0132",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2024-0132 NVIDIA Container Toolkit / GPU Operator",
+        "en": "CVE 检测：CVE-2024-0132 NVIDIA Container Toolkit / GPU Operator"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2024-0132.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2024-0132"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2024-0133",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2024-0133 NVIDIA Container Toolkit / GPU Operator",
+        "en": "CVE 检测：CVE-2024-0133 NVIDIA Container Toolkit / GPU Operator"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2024-0133.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2024-0133"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-23266",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-23266 NVIDIA Container Toolkit / GPU Operator",
+        "en": "CVE 检测：CVE-2025-23266 NVIDIA Container Toolkit / GPU Operator"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-23266.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-23266"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-23267",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-23267 NVIDIA Container Toolkit",
+        "en": "CVE 检测：CVE-2025-23267 NVIDIA Container Toolkit"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-23267.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-23267"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2013-4786",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2013-4786 IPMI 2.0 BMC",
+        "en": "CVE 检测：CVE-2013-4786 IPMI 2.0 BMC"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2013-4786.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2013-4786"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2023-34329",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2023-34329 AMI MegaRAC SPx",
+        "en": "CVE 检测：CVE-2023-34329 AMI MegaRAC SPx"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2023-34329.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2023-34329"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2017-12542",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2017-12542 HPE iLO 4",
+        "en": "CVE 检测：CVE-2017-12542 HPE iLO 4"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2017-12542.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2017-12542"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-38741",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-38741 Dell Enterprise SONiC OS",
+        "en": "CVE 检测：CVE-2025-38741 Dell Enterprise SONiC OS"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-38741.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-38741"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-23374",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-23374 Dell Enterprise SONiC OS",
+        "en": "CVE 检测：CVE-2025-23374 Dell Enterprise SONiC OS"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-23374.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-23374"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-33180",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-33180 NVIDIA Cumulus Linux",
+        "en": "CVE 检测：CVE-2025-33180 NVIDIA Cumulus Linux"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-33180.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-33180"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-24184",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-24184 NVIDIA Cumulus Linux",
+        "en": "CVE 检测：CVE-2026-24184 NVIDIA Cumulus Linux"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-24184.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-24184"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-ghsa-h26v-922j-28cg",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：GHSA-h26v-922j-28cg SONiC",
+        "en": "CVE 检测：GHSA-h26v-922j-28cg SONiC"
+      },
+      "files": [
+        "sigma/sigma-cve-ghsa-h26v-922j-28cg.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "GHSA-h26v-922j-28cg"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-hami-adv-2026-01",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：HAMI-ADV-2026-01 HAMi",
+        "en": "CVE 检测：HAMI-ADV-2026-01 HAMi"
+      },
+      "files": [
+        "sigma/sigma-cve-hami-adv-2026-01.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "HAMI-ADV-2026-01"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cgpu-adv-2026-01",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CGPU-ADV-2026-01 Alibaba cGPU",
+        "en": "CVE 检测：CGPU-ADV-2026-01 Alibaba cGPU"
+      },
+      "files": [
+        "sigma/sigma-cve-cgpu-adv-2026-01.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CGPU-ADV-2026-01"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-35029",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-35029 LiteLLM",
+        "en": "CVE 检测：CVE-2026-35029 LiteLLM"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-35029.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-35029"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-40217",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-40217 LiteLLM",
+        "en": "CVE 检测：CVE-2026-40217 LiteLLM"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-40217.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-40217"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-42203",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-42203 LiteLLM",
+        "en": "CVE 检测：CVE-2026-42203 LiteLLM"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-42203.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-42203"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-42208",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-42208 LiteLLM",
+        "en": "CVE 检测：CVE-2026-42208 LiteLLM"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-42208.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-42208"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-47102",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-47102 LiteLLM",
+        "en": "CVE 检测：CVE-2026-47102 LiteLLM"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-47102.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-47102"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-litellm-default-key",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：LITELLM-DEFAULT-KEY LiteLLM",
+        "en": "CVE 检测：LITELLM-DEFAULT-KEY LiteLLM"
+      },
+      "files": [
+        "sigma/sigma-cve-litellm-default-key.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "LITELLM-DEFAULT-KEY"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-3466",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-3466 Dify",
+        "en": "CVE 检测：CVE-2025-3466 Dify"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-3466.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-3466"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-63387",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-63387 Dify",
+        "en": "CVE 检测：CVE-2025-63387 Dify"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-63387.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-63387"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-56520",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-56520 Dify",
+        "en": "CVE 检测：CVE-2025-56520 Dify"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-56520.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-56520"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-28786",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-28786 Open WebUI",
+        "en": "CVE 检测：CVE-2026-28786 Open WebUI"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-28786.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-28786"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-28788",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-28788 Open WebUI",
+        "en": "CVE 检测：CVE-2026-28788 Open WebUI"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-28788.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-28788"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-64496",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-64496 Open WebUI",
+        "en": "CVE 检测：CVE-2025-64496 Open WebUI"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-64496.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-64496"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-23354",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-23354 NVIDIA Megatron-LM",
+        "en": "CVE 检测：CVE-2025-23354 NVIDIA Megatron-LM"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-23354.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-23354"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-33247",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-33247 NVIDIA Megatron-LM",
+        "en": "CVE 检测：CVE-2025-33247 NVIDIA Megatron-LM"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-33247.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-33247"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-65110",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-65110 NVIDIA Megatron-LM",
+        "en": "CVE 检测：CVE-2026-65110 NVIDIA Megatron-LM"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-65110.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-65110"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2024-43497",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2024-43497 Microsoft DeepSpeed",
+        "en": "CVE 检测：CVE-2024-43497 Microsoft DeepSpeed"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2024-43497.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2024-43497"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2025-32434",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2025-32434 PyTorch / torchrun",
+        "en": "CVE 检测：CVE-2025-32434 PyTorch / torchrun"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2025-32434.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "process_creation"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "process_creation"
+        },
+        "selection": {
+          "CommandLine|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2025-32434"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2024-0520",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2024-0520 MLflow",
+        "en": "CVE 检测：CVE-2024-0520 MLflow"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2024-0520.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2024-0520"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2024-37061",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2024-37061 MLflow",
+        "en": "CVE 检测：CVE-2024-37061 MLflow"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2024-37061.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2024-37061"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-53995",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-53995 MLflow",
+        "en": "CVE 检测：CVE-2026-53995 MLflow"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-53995.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "category": "webserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "category": "webserver"
+        },
+        "selection": {
+          "cs-uri|contains": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-53995"
+      ],
+      "scope": "cve-catalog"
+    },
+    {
+      "id": "sigma-cve-cve-2026-4993",
+      "engines": [
+        "sigma"
+      ],
+      "title": {
+        "zh": "CVE 检测：CVE-2026-4993 W&B OpenUI",
+        "en": "CVE 检测：CVE-2026-4993 W&B OpenUI"
+      },
+      "files": [
+        "sigma/sigma-cve-cve-2026-4993.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "按资产清单收敛 URI/命令行白名单；先 monitor 观察误报，再切阻断",
+        "en": "Baseline URI/command-line allowlists per asset inventory; run monitor first, then enforce"
+      },
+      "log_source": {
+        "product": "kube-apiserver"
+      },
+      "blocks_modules": [],
+      "blocks_chains": [],
+      "finding_links": [],
+      "match": {
+        "logsource": {
+          "product": "kube-apiserver"
+        },
+        "selection": {
+          "objectRef.resource": "*"
+        }
+      },
+      "cves": [
+        "CVE-2026-4993"
+      ],
+      "scope": "cve-catalog"
     },
     {
       "id": "falco-admin-plane-unauth-access",
@@ -913,7 +3327,9 @@
             ]
           }
         }
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "falco-pickle-deserialize-call",
@@ -955,7 +3371,9 @@
             "recv_pyobj"
           ]
         }
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "falco-weight-file-abnormal-write",
@@ -997,7 +3415,9 @@
           },
           "training_process": false
         }
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "falco-nccl-abnormal-join",
@@ -1036,7 +3456,9 @@
         "all": {
           "external_rank": true
         }
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "falco-gpu-device-cross-namespace",
@@ -1077,7 +3499,9 @@
           },
           "cross_namespace": true
         }
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "falco-mig-abnormal-reconfig",
@@ -1114,7 +3538,9 @@
           "proc": "nvidia-smi",
           "mig_reconfig": true
         }
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "falco-gateway-upstream-config-read",
@@ -1156,7 +3582,9 @@
             "re": "(?i)(litellm|higress|envoy)"
           }
         }
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "falco-fabric-collective-poison",
@@ -1192,7 +3620,9 @@
         "all": {
           "tampered": true
         }
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "falco-fabric-control-plane-mutation",
@@ -1234,7 +3664,49 @@
           },
           "authorized": false
         }
-      }
+      },
+      "cves": [],
+      "scope": "chain"
+    },
+    {
+      "id": "falco-node-root-marker-write",
+      "engines": [
+        "falco"
+      ],
+      "title": {
+        "zh": "TRIDENT Node root proof marker write from privileged container",
+        "en": "TRIDENT Node root proof marker write from privileged container"
+      },
+      "files": [
+        "falco/trident-rules.yaml"
+      ],
+      "mode": "monitor",
+      "tuning": {
+        "zh": "???????? TRIDENT-PROOF???????????? /root?/etc?/var/lib/kubelet ???????????????????????? critical",
+        "en": "Keep TRIDENT-PROOF as the assessment marker; in production include all host-path writes under /root, /etc, /var/lib/kubelet; any privileged container host-path write is critical"
+      },
+      "log_source": "Falco syscall/trace events",
+      "blocks_modules": [
+        "cluster-node-marker"
+      ],
+      "blocks_chains": [
+        "cluster-takeover-objective"
+      ],
+      "finding_links": [],
+      "match": {
+        "engine": "falco",
+        "event_type": [
+          "open_write"
+        ],
+        "all": {
+          "path": {
+            "re": "TRIDENT-PROOF-"
+          },
+          "privileged": true
+        }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "suricata-admin-endpoint-uri",
@@ -1274,7 +3746,9 @@
             "uri_re": "/pull_weights|/set_env|/create_engine|/fetch_weights|/awex|/update_weights_from_disk|/pause"
           }
         ]
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "suricata-imds-egress",
@@ -1320,7 +3794,9 @@
             "dest_ip_re": "^169\\.254\\.169\\.254$"
           }
         ]
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "suricata-nccl-kv-ports",
@@ -1364,7 +3840,9 @@
             ]
           }
         ]
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "suricata-longctx-kv-endpoints",
@@ -1406,7 +3884,9 @@
             "uri_re": "/v1/chat/completions|/kv/transfer|/checkpoint/shards|/metrics"
           }
         ]
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "suricata-gpu-cloud-tenant-uri",
@@ -1444,7 +3924,9 @@
             "uri_re": "/gpu/allocate|/gpu/release|/cloud/identity|/cloud/bucket/list"
           }
         ]
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "suricata-ai-gateway-admin-uri",
@@ -1480,7 +3962,9 @@
             "uri_re": "/key/generate|/config|/admin/console"
           }
         ]
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "suricata-fabric-control-uri",
@@ -1526,7 +4010,9 @@
             "uri_re": "/sharp/sessions|/sharp/reduce|/ib/sm/partition|/roce/pfc|/nccl/bootstrap|/nccl/rank|/nccl/rail|/checkpoint/io|/apiserver/request|/imds/request|/sched/gang|/gpu/health|/train/gradient|/train/context"
           }
         ]
-      }
+      },
+      "cves": [],
+      "scope": "chain"
     },
     {
       "id": "zeroday-agent-sandbox-unexpected-parent-exec",
@@ -1734,6 +4220,57 @@
       "rules": [
         "sigma-cloud-cross-account-assume",
         "suricata-gpu-cloud-tenant-uri"
+      ]
+    },
+    "cluster-takeover-objective": {
+      "category": "经典攻击链",
+      "title": {
+        "zh": "内网入口 → 集群最高权限（夺权证明链）",
+        "en": "Intranet entry → highest cluster privilege (takeover proof chain)"
+      },
+      "modules": [
+        "cluster-cleanup",
+        "cluster-credential",
+        "cluster-entry",
+        "cluster-node-marker",
+        "cluster-privileged-pod",
+        "cluster-proof",
+        "cluster-rbac-escalation",
+        "escape-primitives",
+        "exposure-mapping",
+        "overprivileged-sa-escalation",
+        "rbac-mapping"
+      ],
+      "rules": [
+        "deny-privileged-pod",
+        "alert-rolebinding-creation",
+        "netpol-default-deny-partition",
+        "sigma-rolebinding-cluster-admin",
+        "sigma-pods-exec-lateral",
+        "sigma-cluster-takeover-entry",
+        "sigma-cluster-token-harvest",
+        "sigma-cluster-rbac-takeover",
+        "sigma-cluster-privileged-pod",
+        "sigma-cluster-proof-actions",
+        "sigma-cluster-cleanup-trail",
+        "falco-node-root-marker-write"
+      ]
+    },
+    "cve-weaponized-surface-takeover": {
+      "category": "经典攻击链",
+      "title": {
+        "zh": "公开 CVE 武器化面 → 控制面/带外接管",
+        "en": "Public CVE arsenal -> control-plane / OOB takeover"
+      },
+      "modules": [
+        "ipmi-cipher-zero-bypass",
+        "litellm-config-update-rce",
+        "ray-job-marker-rce",
+        "redfish-default-credentials",
+        "runc-escape-detect"
+      ],
+      "rules": [
+        "sigma-cve-arsenal-surface"
       ]
     },
     "fabric-exhaustion-chain": {

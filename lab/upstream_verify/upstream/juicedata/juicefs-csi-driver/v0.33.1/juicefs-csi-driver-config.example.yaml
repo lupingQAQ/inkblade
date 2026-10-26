@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: juicefs-csi-driver-config
+  namespace: kube-system
+data:
+  config.yaml: |-
+    # Set to true to schedule Mount Pod to node with via nodeSelector, rather than nodeName
+    enableNodeSelector: false
+
+    # in sidecar mode, use k8s native sidecar instead of container
+    # If the k8s version is 1.29 and later, the default is true.
+    enableNativeSidecar: true
+
+    # enable set quota according to capacity settings
+    # the default is true.
+    enableSetQuota: true
+
+    # enable set quota in controller (CreateVolume/Provisioner)
+    # if enabled, SetQuota will be called in controller
+    # if disabled, SetQuota will be called in node (NodePublishVolume)
+    # the default is true.
+    enableControllerSetQuota: true
+
+    # enable auto remove request resources when pod has resources error
+    # the default is true
+    enableAutoRemoveRequestResources: true
+
+    # enable auto abort stuck mount pod after timeout
+    # the default is true
+    enableAutoAbortStuckMountPod: true
+
+    # use kubelet API to list mount pods on the node
+    # if enabled, the driver will try to use kubelet API to list mount pods on the node, and fall back to request api-server if kubelet API fails
+    # Kubelet synchronization of pods may have delays, which in high-concurrency scenarios could lead to mountpods not being reused.
+    enableKubeletListMountPod: true
+
+    # The mountPodPatch section defines the Mount Pod spec
+    # Each item will be recursively merged into PVC settings according to its pvcSelector
+    # If pvcSelector isn't set, the patch will be applied to all PVCs
+    # Variable templates are supported, e.g.  ${MOUNT_POINT}, ${SUB_PATH}, ${VOLUME_ID}
+    mountPodPatch:
+
+      # Select by StorageClass and add mount options
+      - pvcSelector:
+          matchStorageClassName: juicefs-sc
+        mountOptions:
+          - buffer-size=2048
+
+      # Select by PVC and add mount options
+      - pvcSelector:
+          matchName: pvc-name
+        mountOptions:
+          - buffer-size=2048
+
+      # Select by Node labels and add mount options
+      # - nodeSelector:
+      #     matchLabels:
+      #       mylabel: "value"
+      #   mountOptions:
+      #     - buffer-size=2048
+
+      # Select by both Node labels and PVC, and add mount options
+      # - nodeSelector:
+      #     matchLabels:
+      #       mylabel: "value"
+      #   pvcSelector:
+      #     matchName: pvc-name
+      #   mountOptions:
+      #     - buffer-size=2048
+
+      # Enable host network globally
+      # - hostNetwork: false
+
+      # Add custom labels to selected PVCs
+      # - pvcSelector:
+      #     matchLabels:
+      #       apply-labels: "true"
+      #   labels:
+      #     custom-labels: "mylabels"
+
+      # Change resource definition
+      # - pvcSelector:
+      #     matchLabels:
+      #       custom-resources: "true"
+      #   resources:
+      #     requests:
+      #       cpu: 100m
+      #       memory: 512Mi
+
+      # Change mount image
+      # - pvcSelector:
+      #     matchLabels:
+      #       custom-image: "true"
+      #   eeMountImage: "juicedata/mount:ee-5.2.22-87dfe77"
+      #   ceMountImage: "juicedata/mount:ce-v1.3.1"
+
+      # Change termination grace period seconds
+      # - terminationGracePeriodSeconds: 60
+
+      # Add readiness probe
+      # - readinessProbe:
+      #     exec:
+      #       command:
+      #       - stat
+      #       - ${MOUNT_POINT}/${SUB_PATH}
+      #     failureThreshold: 3
+      #     initialDelaySeconds: 10
+      #     periodSeconds: 5
+      #     successThreshold: 1
+
+      # For now, avoid actually using liveness probe, and prefer readiness probe instead
+      # JuiceFS client carries out its own liveness checks and restarts,
+      # giving no reason for additional external liveness checks
+      # - livenessProbe:
+      #     exec:
+      #       command:
+      #       - stat
+      #       - ${MOUNT_POINT}/${SUB_PATH}
+      #     failureThreshold: 3
+      #     initialDelaySeconds: 10
+      #     periodSeconds: 5
+      #     successThreshold: 1
+
+      # - annotations:
+      #     # Delayed Mount Pod deletion
+      #     juicefs-delete-delay: 5m
+      #     # Clean cache when Mount Pod exits
+      #     juicefs-clean-cache: "true"
+
+      # Add environment variables to the Mount Pod
+      # - env:
+      #   - name: DEMO_GREETING
+      #     value: "Hello from the environment"
+      #   - name: DEMO_FAREWELL
+      #     value: "Such a sweet sorrow"
+
+      # mount extra volumes or block devices to the Mount Pod
+      # - pvcSelector:
+      #     matchLabels:
+      #       need-block-device: "true"
+      #   volumeDevices:
+      #     - name: block-devices
+      #       devicePath: /dev/sda1
+      #   volumes:
+      #     - name: block-devices
+      #       persistentVolumeClaim:
+      #         claimName: block-pv
+
+      # Add extra init containers to the Mount Pod
+      # - initContainers:
+      #     - name: global-setup
+      #       image: busybox:latest
+      #       command: ["sh", "-c"]
+      #       args: ["echo 'Initializing volume ${VOLUME_ID} at ${MOUNT_POINT}' > /tmp/init.log"]
+
+      # Set DNS policy and DNS configuration
+      # - dnsPolicy: None
+      #   dnsConfig:
+      #     nameservers:
+      #       - 8.8.8.8
+      #       - 8.8.4.4
+      #     searches:
+      #       - my.dns.search.suffix
+      #     options:
+      #       - name: ndots
+      #         value: "5"

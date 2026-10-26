@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "ucxpy-server-py-subprocess-popen-l16-regex",
+ "target": "ucxpy",
+ "repo": "rapidsai/ucx-py",
+ "tag": "v0.45.00",
+ "status": "pending-manual-review",
+ "rule": "subprocess-popen",
+ "channel": "regex",
+ "file": "server.py",
+ "line": 16,
+ "snippet": "# subprocess.check_call(cmd, shell=True)",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-26T12:43:08"
+}

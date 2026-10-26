@@ -1,0 +1,70 @@
+{
+ "id": "NCCL-NCCLPLUGIN-HW",
+ "source": "mining",
+ "title": "NCCL collective library/plugin loading (hardware fabric path)",
+ "version": "v2.32.3-1",
+ "version_ref": {
+  "kind": "git",
+  "repo": "NVIDIA/nccl",
+  "tag": "v2.32.3-1",
+  "commit": "12df1a11afad322be5a204a2db890161cbf8131d"
+ },
+ "install": "hardware/Linux-runtime path; not installable on this host",
+ "root_cause": {
+  "file": "n/a (vendor firmware / Linux runtime / hardware fabric)",
+  "line": 0,
+  "function": "",
+  "snippet": "",
+  "source": null,
+  "source_sha256": null,
+  "note": "NCCL v2.32.3-1: pure C/CUDA; plugin .so loading (NCCL_IB_HCA / NCCL_PLUGIN) needs the hardware path. Marked unsupported; attack-surface conclusions live in the fabric modules (nccl-collective-join, ib-subnet-manager-hijack)."
+ },
+ "preconditions": [
+  "Linux runtime",
+  "NVIDIA GPU device",
+  "IB/RoCE or NVLink fabric"
+ ],
+ "steps": [
+  "resolve the pinned upstream tag",
+  "confirm the vulnerable path requires hardware/Linux runtime absent on this host",
+  "record an unsupported verdict (explicitly excluded from verified counts)"
+ ],
+ "expected_evidence": [
+  "unsupported.json with reason"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "unsupported",
+ "method": "unsupported",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-NCCL-NCCLPLUGIN-HW",
+ "notes": "NCCL v2.32.3-1: pure C/CUDA; plugin .so loading (NCCL_IB_HCA / NCCL_PLUGIN) needs the hardware path. Marked unsupported; attack-surface conclusions live in the fabric modules (nccl-collective-join, ib-subnet-manager-hijack).",
+ "static_evidence_level": "advisory",
+ "static_analysis": "NCCL v2.32.3-1: pure C/CUDA; plugin .so loading (NCCL_IB_HCA / NCCL_PLUGIN) needs the hardware path. Marked unsupported; attack-surface conclusions live in the fabric modules (nccl-collective-join, ib-subnet-manager-hijack).",
+ "static_verdict": "hardware-path",
+ "unsupported": {
+  "reason": "NCCL is a Linux/CUDA collective library: IB/RoCE/NVLink fabric, kernel modules and a GPU device are required; no .py/.go surface exists to scan and the library cannot load on this Windows host.",
+  "requires": [
+   "Linux runtime",
+   "NVIDIA GPU device",
+   "IB/RoCE or NVLink fabric"
+  ],
+  "blocked_by": [
+   "no Linux runtime (WSL virtualization disabled)",
+   "no GPU",
+   "fabric hardware absent"
+  ]
+ },
+ "mining": {
+  "rule": "hardware-boundary",
+  "channel": "none",
+  "file": "",
+  "line": 0,
+  "snippet": "",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "nccl"
+}

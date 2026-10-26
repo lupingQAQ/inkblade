@@ -1,0 +1,55 @@
+{
+ "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex",
+ "source": "mining",
+ "title": "gpu-operator: elevated-pod-spec @ manifests/state-driver/0500_daemonset.yaml:108",
+ "version": "v26.7.2",
+ "version_ref": {
+  "kind": "git",
+  "repo": "NVIDIA/gpu-operator",
+  "tag": "v26.7.2"
+ },
+ "install": "pinned source vendored under lab/upstream_verify/upstream/",
+ "root_cause": {
+  "file": "manifests/state-driver/0500_daemonset.yaml",
+  "line": 108,
+  "function": "",
+  "snippet": "hostNetwork: true",
+  "source": "lab/upstream_verify/upstream/NVIDIA/gpu-operator/v26.7.2/manifests/state-driver/0500_daemonset.yaml",
+  "source_sha256": "807e70dd4de403904a8247acb3dd084acd688032e92cb5344e1960b79aa987e7",
+  "note": "GPU driver DaemonSet: hostNetwork + privileged containers + broad hostPath mounts."
+ },
+ "preconditions": [
+  "GPU operator deployed with driver DaemonSet"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex",
+ "notes": "The NVIDIA driver DaemonSet combines hostNetwork: true, privileged containers and hostPath mounts of /, /dev, /sys, kernel modules and container runtime sockets - the canonical privileged-node posture. Any container escape or compromised image in this DaemonSet is instant node takeover; recorded as posture (static), paired with the validator exec surface case.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "The NVIDIA driver DaemonSet combines hostNetwork: true, privileged containers and hostPath mounts of /, /dev, /sys, kernel modules and container runtime sockets - the canonical privileged-node posture. Any container escape or compromised image in this DaemonSet is instant node takeover; recorded as posture (static), paired with the validator exec surface case.",
+ "static_verdict": "not-dynamically-verified",
+ "unsupported": {},
+ "mining": {
+  "rule": "elevated-pod-spec",
+  "channel": "regex",
+  "file": "0500_daemonset.yaml",
+  "line": 108,
+  "snippet": "hostNetwork: true",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "gpuoperator"
+}

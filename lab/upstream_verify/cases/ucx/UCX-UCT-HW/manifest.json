@@ -1,0 +1,67 @@
+{
+ "id": "UCX-UCT-HW",
+ "source": "mining",
+ "title": "UCX/UCT transport library (hardware fabric path)",
+ "version": "v1.22.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "openucx/ucx",
+  "tag": "v1.22.0",
+  "commit": "8a6b06fb880accbb933a79cda893883872c68d9d"
+ },
+ "install": "hardware/Linux-runtime path; not installable on this host",
+ "root_cause": {
+  "file": "n/a (vendor firmware / Linux runtime / hardware fabric)",
+  "line": 0,
+  "function": "",
+  "snippet": "",
+  "source": null,
+  "source_sha256": null,
+  "note": "UCX v1.22.0: C transport library. The ucx-py binding was mined separately (see ucxpy cases); the core library is hardware-bound and marked unsupported."
+ },
+ "preconditions": [
+  "Linux runtime",
+  "IB/RoCE or CUDA/ROCm device"
+ ],
+ "steps": [
+  "resolve the pinned upstream tag",
+  "confirm the vulnerable path requires hardware/Linux runtime absent on this host",
+  "record an unsupported verdict (explicitly excluded from verified counts)"
+ ],
+ "expected_evidence": [
+  "unsupported.json with reason"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "unsupported",
+ "method": "unsupported",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-UCX-UCT-HW",
+ "notes": "UCX v1.22.0: C transport library. The ucx-py binding was mined separately (see ucxpy cases); the core library is hardware-bound and marked unsupported.",
+ "static_evidence_level": "advisory",
+ "static_analysis": "UCX v1.22.0: C transport library. The ucx-py binding was mined separately (see ucxpy cases); the core library is hardware-bound and marked unsupported.",
+ "static_verdict": "hardware-path",
+ "unsupported": {
+  "reason": "UCX is a Linux C library: UCT transports need IB/ROCm/SM/shm devices; ucx-py (the Python binding) needs the libucp shared object which cannot build or load on this Windows host.",
+  "requires": [
+   "Linux runtime",
+   "IB/RoCE or CUDA/ROCm device"
+  ],
+  "blocked_by": [
+   "no Linux runtime",
+   "no fabric/GPU hardware"
+  ]
+ },
+ "mining": {
+  "rule": "hardware-boundary",
+  "channel": "none",
+  "file": "",
+  "line": 0,
+  "snippet": "",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "ucx"
+}

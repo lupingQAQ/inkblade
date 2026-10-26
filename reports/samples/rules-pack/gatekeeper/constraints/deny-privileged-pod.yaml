@@ -5,7 +5,7 @@ metadata:
   annotations:
     trident.io/mode: monitor
     trident.io/tuning: 先以 monitor（Audit）观察 7 天并列出命中清单；GPU Operator/NVIDIA 驱动与 SR-IOV device plugin DaemonSet 移入例外命名空间并加镜像白名单后，再切换 Enforce；例外通道任何新增条目需二次审计
-    trident.io/blocks-chains: "gpu-network-operator-host-escape,imex-computedomain-gpu-memory-crossing,ray-dashboard-cluster-takeover"
+    trident.io/blocks-chains: "cluster-takeover-objective,gpu-network-operator-host-escape,imex-computedomain-gpu-memory-crossing,ray-dashboard-cluster-takeover"
 spec:
   enforcementAction: dryrun
   match:

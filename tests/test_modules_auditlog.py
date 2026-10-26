@@ -51,7 +51,7 @@ class AuditLogEngineTest(unittest.TestCase):
         cls.benign = parse_jsonl((FIX_DIR / "benign-trail.jsonl").read_text(encoding="utf-8"))
 
     def test_attack_trail_six_detectors_hit(self):
-        """六类攻击形态逐一命中，且互不误报（每 finding 标注检测器）。"""
+        """八类攻击形态逐一命中，且互不误报（每 finding 标注检测器）。"""
         findings = analyze_events(self.attack)
         detectors = {f["detector"] for f in findings}
         self.assertEqual(detectors, {
@@ -60,6 +60,8 @@ class AuditLogEngineTest(unittest.TestCase):
             "ray-job-runtime-pod",
             "secret-abnormal-read",
             "pods-exec-session",
+            "sa-token-mint",
+            "pods-portforward",
             "weight-pvc-abnormal-write",
         }, detectors)
 
@@ -234,6 +236,49 @@ class AuditTrailModuleTest(unittest.TestCase):
 
 class RulesIntegrationTest(unittest.TestCase):
     """与规则引擎联动：新增 Sigma×2 进目录 + 紫队重放 fixture 使其可命中。"""
+
+    def test_sa_token_and_portforward_detectors_never_baselined(self):
+        """FN 补齐：token 铸造 / portforward 命中；主体白名单和学习模式都压不掉。"""
+        from trident.core import baseline as B
+
+        events = [
+            {"kind": "Event", "auditID": "g-1", "verb": "create",
+             "user": {"username": "system:serviceaccount:ci:ci-runner"},
+             "objectRef": {"resource": "serviceaccounts", "subresource": "token",
+                           "namespace": "ci", "name": "ci-runner"},
+             "responseStatus": {"code": 201},
+             "stageTimestamp": "2026-10-25T10:00:00Z"},
+            {"kind": "Event", "auditID": "g-2", "verb": "create",
+             "user": {"username": "system:serviceaccount:ci:ci-runner"},
+             "objectRef": {"resource": "pods", "subresource": "portforward",
+                           "namespace": "ci", "name": "build-0"},
+             "responseStatus": {"code": 200},
+             "stageTimestamp": "2026-10-25T10:00:01Z"},
+        ]
+        everything = B.EntityBaseline(
+            ci_service_accounts=["system:serviceaccount:ci:ci-runner"]).audit_subjects()
+        findings = analyze_events(events, baseline_subjects=everything)
+        dets = {f["detector"] for f in findings}
+        self.assertEqual(dets, {"sa-token-mint", "pods-portforward"}, dets)
+        self.assertIn("serviceaccounts/token", findings[0]["resource"])
+        self.assertIn("pods/portforward", findings[1]["resource"])
+        # 学习模式对这两个形态永不产出 allowlist 条目
+        learned = B.learn_from_events(events * 30, min_occurrences=10)
+        self.assertEqual([e for e in learned
+                          if e["pattern"] in ("create serviceaccounts/token",
+                                              "create pods/portforward")], [])
+
+    def test_denied_token_mint_low_when_include_denied(self):
+        events = [{"kind": "Event", "auditID": "g-3", "verb": "create",
+                   "user": {"username": "system:serviceaccount:tenant-x:x"},
+                   "objectRef": {"resource": "serviceaccounts", "subresource": "token",
+                                 "namespace": "tenant-x", "name": "x"},
+                   "responseStatus": {"code": 403},
+                   "stageTimestamp": "2026-10-25T10:00:02Z"}]
+        self.assertEqual(analyze_events(events), [])
+        denied = analyze_events(events, include_denied=True)
+        self.assertEqual([f["detector"] for f in denied], ["sa-token-mint"])
+        self.assertEqual(denied[0]["sev"], "low")
 
     def test_new_sigma_rules_in_catalog(self):
         catalog = load_catalog()

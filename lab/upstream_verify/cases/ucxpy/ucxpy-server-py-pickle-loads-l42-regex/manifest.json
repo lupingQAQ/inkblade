@@ -1,0 +1,56 @@
+{
+ "id": "ucxpy-server-py-pickle-loads-l42-regex",
+ "source": "mining",
+ "title": "ucx-py: pickle-loads @ debug-tests/server.py:42",
+ "version": "v0.45.00",
+ "version_ref": {
+  "kind": "git",
+  "repo": "rapidsai/ucx-py",
+  "tag": "v0.45.00"
+ },
+ "install": "pinned source vendored under lab/upstream_verify/upstream/",
+ "root_cause": {
+  "file": "debug-tests/server.py",
+  "line": 42,
+  "function": "write(ep)",
+  "snippet": "cuda_obj_generator = cloudpickle.loads(func)",
+  "source": "lab/upstream_verify/upstream/rapidsai/ucx-py/v0.45.00/debug-tests/server.py",
+  "source_sha256": "afdd0f2aaa81e90509c49b94c85a8fa599752182ec36611df27447434b090f5c",
+  "note": "Debug server unpickles client-supplied cloudpickle payloads."
+ },
+ "preconditions": [
+  "ucx-py debug server running (debug-tests)",
+  "attacker can reach its UCX endpoint"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-ucxpy-server-py-pickle-loads-l42-regex",
+ "notes": "ucx-py debug-tests server deserialises a client-supplied cloudpickle payload (cloudpickle.loads(func)) with no authentication: any peer reaching the debug endpoint gets arbitrary code execution by design of the debug tool. Debug tooling is not the production wheel path, and the server needs CUDA/UCX/distributed stacks that this Windows host cannot run, so the case is static-only with the trust boundary recorded.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "ucx-py debug-tests server deserialises a client-supplied cloudpickle payload (cloudpickle.loads(func)) with no authentication: any peer reaching the debug endpoint gets arbitrary code execution by design of the debug tool. Debug tooling is not the production wheel path, and the server needs CUDA/UCX/distributed stacks that this Windows host cannot run, so the case is static-only with the trust boundary recorded.",
+ "static_verdict": "not-dynamically-verified",
+ "unsupported": {},
+ "mining": {
+  "rule": "pickle-loads",
+  "channel": "regex",
+  "file": "server.py",
+  "line": 42,
+  "snippet": "cuda_obj_generator = cloudpickle.loads(func)",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "ucxpy"
+}

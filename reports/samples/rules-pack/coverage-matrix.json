@@ -1274,15 +1274,129 @@
         }
       ],
       "state": "检测"
+    },
+    "cluster-takeover-objective": {
+      "title": {
+        "zh": "内网入口 → 集群最高权限（夺权证明链）",
+        "en": "Intranet entry → highest cluster privilege (takeover proof chain)"
+      },
+      "category": "经典攻击链",
+      "probe": [
+        {
+          "kind": "fixture",
+          "count": 9
+        }
+      ],
+      "rules": [
+        {
+          "rule": "deny-privileged-pod",
+          "engines": [
+            "kyverno",
+            "gatekeeper"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "alert-rolebinding-creation",
+          "engines": [
+            "kyverno",
+            "gatekeeper"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "netpol-default-deny-partition",
+          "engines": [
+            "netpol"
+          ],
+          "status": "拦截",
+          "evidence": "策略文件在包内齐备（默认 monitor，Enforce 后即拦截）"
+        },
+        {
+          "rule": "sigma-rolebinding-cluster-admin",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create clusterrolebinding"
+        },
+        {
+          "rule": "sigma-pods-exec-lateral",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create pods"
+        },
+        {
+          "rule": "sigma-cluster-takeover-entry",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma list services"
+        },
+        {
+          "rule": "sigma-cluster-token-harvest",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create serviceaccounts"
+        },
+        {
+          "rule": "sigma-cluster-rbac-takeover",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create clusterrolebindings"
+        },
+        {
+          "rule": "sigma-cluster-privileged-pod",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma create pods"
+        },
+        {
+          "rule": "sigma-cluster-proof-actions",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma list secrets"
+        },
+        {
+          "rule": "sigma-cluster-cleanup-trail",
+          "engines": [
+            "sigma"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: sigma delete clusterrolebindings"
+        },
+        {
+          "rule": "falco-node-root-marker-write",
+          "engines": [
+            "falco"
+          ],
+          "status": "检测",
+          "evidence": "事件命中: falco open_write port=- parent=-"
+        }
+      ],
+      "state": "拦截+检测"
     }
   },
   "summary": {
-    "chains": 25,
-    "covered": 25,
+    "chains": 26,
+    "covered": 26,
     "missed": 0,
-    "rules_evaluated": 77,
-    "rules_blocked": 18,
-    "rules_detected": 55,
+    "rules_evaluated": 89,
+    "rules_blocked": 21,
+    "rules_detected": 64,
     "rules_missed": 0
   },
   "ok": true,

@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "cephcsi-cephcmds-go-exec-command-go-l89-regex",
+ "target": "cephcsi",
+ "repo": "ceph/ceph-csi",
+ "tag": "v3.18.1",
+ "status": "pending-manual-review",
+ "rule": "exec-command-go",
+ "channel": "regex",
+ "file": "cephcmds.go",
+ "line": 89,
+ "snippet": "cmd           = exec.Command(program, args...) // #nosec:G204, commands executing not vulnerable.",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-26T12:43:07"
+}

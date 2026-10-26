@@ -1,0 +1,85 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "msswift-indexed-dataset-py-pickle-loads-l129-regex",
+ "source": "mining",
+ "component": "msswift",
+ "title": "msswift: pickle-loads @ swift/dataset/indexed_dataset.py:129",
+ "status": "verified",
+ "declared_status": "verified",
+ "method": "dynamic-function",
+ "verified": true,
+ "module": "msswift-dataset-pickle-rce",
+ "version": "v4.6.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v4.6.0",
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/dataset/indexed_dataset.py",
+  "artifact_sha256": "87cd03d6975665fb9e93c9b2c86a6a838d1db07408cc00f183e9fe0342d1c2a6",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l129-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 2.724,
+ "started_at": "2026-10-26T05:02:54+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-msswift-indexed-dataset-py-pickle-loads-l129-regex",
+  "before": "ABSENT",
+  "after_has_marker": true,
+  "after_sha256": "25a4fbeecf87d443db061e615d0337cc3fb3730c3e3eb2d541ac4ca9ddf13302"
+ },
+ "request_response": [
+  {
+   "dir": "attacker-written packing shard -> BinReader.read_buffer -> pickle.loads",
+   "payload": "pickle reduce",
+   "result": "marker written inside the upstream sink"
+  }
+ ],
+ "state_before": "marker=ABSENT",
+ "state_after": "marker contains proof text",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l129-regex/evidence/log.txt",
+   "sha256": "307c60fd24a59a98036c8aa9399698d90c20b479333068cdc3a1f7c09327156b",
+   "size": 390
+  },
+  {
+   "path": "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l129-regex/evidence/marker.txt",
+   "sha256": "25a4fbeecf87d443db061e615d0337cc3fb3730c3e3eb2d541ac4ca9ddf13302",
+   "size": 61
+  },
+  {
+   "path": "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l129-regex/evidence/packing-cache/tmp/shard-poison/data-00000.bin",
+   "sha256": "d1807484de39d330900191d65661cdc312189ac2f3d76cf38cca6471d0c667cc",
+   "size": 261
+  },
+  {
+   "path": "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l129-regex/evidence/packing-cache/tmp/shard-poison/data.idx",
+   "sha256": "11ba8447fb9275fed0a4ef1b2fb96d26096b67673e4b59baa420823fff59d82c",
+   "size": 78
+  },
+  {
+   "path": "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l129-regex/evidence/run.json",
+   "sha256": "ffd0eea7e97d70cbfa59e604e3a5ea603717f9229c3d40d75a7a18418fc93e96",
+   "size": 1507
+  }
+ ],
+ "poc_sha256": "eb5839913cf21ad2f35d7f3c69ed5e47f1062853332b965ccb0c8fa424b07b5a",
+ "manifest_sha256": "b98ae167dde6eb999f93debcc6ee3dc0a571ffbf4bed6301266181f206a3a484",
+ "stdout": "{\"status\": \"verified\", \"marker\": \"TRIDENT-UV-msswift-indexed-dataset-py-pickle-loads-l129-regex\", \"evidence\": \"lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l129-regex/evidence\"}\n",
+ "stderr": "",
+ "notes": "IndexedDataset.__getitem__ deserialises every record with pickle.loads(buffer) straight from the packed data-*.bin shards. Whoever can write the shard files (shared dataset cache, poisoned packing pipeline) executes code on the first __getitem__ during training. Reproduced at function level: upstream __init__ builds the index, upstream __getitem__ unpickles the attacker slice and the marker is written before any downstream use."
+}

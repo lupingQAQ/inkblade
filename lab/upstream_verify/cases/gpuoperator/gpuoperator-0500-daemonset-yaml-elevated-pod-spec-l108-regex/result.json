@@ -1,0 +1,68 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex",
+ "source": "mining",
+ "component": "gpuoperator",
+ "title": "gpu-operator: elevated-pod-spec @ manifests/state-driver/0500_daemonset.yaml:108",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v26.7.2",
+ "version_ref": {
+  "kind": "git",
+  "repo": "NVIDIA/gpu-operator",
+  "tag": "v26.7.2"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v26.7.2",
+  "repo": "NVIDIA/gpu-operator",
+  "tag": "v26.7.2",
+  "commit": null,
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/NVIDIA/gpu-operator/v26.7.2/manifests/state-driver/0500_daemonset.yaml",
+  "artifact_sha256": "807e70dd4de403904a8247acb3dd084acd688032e92cb5344e1960b79aa987e7",
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "advisory_sha256": "4b898807421021bf0bf0a4e4c7d163ccb1e9147fdc9f93ad644e141a88f64718"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/gpuoperator/gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.104,
+ "started_at": "2026-10-26T05:01:20+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex/evidence/log.txt",
+   "sha256": "ce7d1018a6de66a7f9e06831ee7f19dc0353aaae6414c7c0c15fcf4c1e766ac4",
+   "size": 295
+  },
+  {
+   "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex/evidence/static-check.json",
+   "sha256": "6b37b5ba6eec5835d8cbe4f0caf077e4f2aa29fd73714f9fc6f925b3fbc535e9",
+   "size": 1416
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "e76f85fb1b28f5eafe1e96bdae68091b928815cdfb71947822b7f0134f164a07",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex\"}\n",
+ "stderr": "",
+ "notes": "The NVIDIA driver DaemonSet combines hostNetwork: true, privileged containers and hostPath mounts of /, /dev, /sys, kernel modules and container runtime sockets - the canonical privileged-node posture. Any container escape or compromised image in this DaemonSet is instant node takeover; recorded as posture (static), paired with the validator exec surface case."
+}

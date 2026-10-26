@@ -1,0 +1,876 @@
+/*
+Copyright 2021 Juicedata Inc
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+package builder
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"os"
+	"path"
+	"reflect"
+	"testing"
+
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"sigs.k8s.io/yaml"
+
+	"github.com/juicedata/juicefs-csi-driver/pkg/common"
+	"github.com/juicedata/juicefs-csi-driver/pkg/config"
+	"github.com/juicedata/juicefs-csi-driver/pkg/fuse/passfd"
+	"github.com/stretchr/testify/assert"
+)
+
+var (
+	defaultCmd                   = "exec /bin/mount.juicefs ${metaurl} /jfs/default-imagenet -o metrics=0.0.0.0:9567"
+	defaultMountPath             = "/jfs/default-imagenet"
+	isPrivileged                 = true
+	rootUser               int64 = 0
+	mp                           = corev1.MountPropagationBidirectional
+	dir                          = corev1.HostPathDirectoryOrCreate
+	file                         = corev1.HostPathFileOrCreate
+	gracePeriod                  = int64(10)
+	unsupoortFusePassImage       = "juicedata/mount:ce-dev"
+	podDefaultTest               = corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "juicefs-node-test",
+			Namespace: config.Namespace,
+			Labels: map[string]string{
+				common.PodTypeKey:             common.PodTypeValue,
+				common.PodUniqueIdLabelKey:    "",
+				common.PodJuiceHashLabelKey:   "test",
+				common.PodUpgradeUUIDLabelKey: "test",
+			},
+			Annotations: map[string]string{
+				common.JuiceFSUUID: "",
+				common.UniqueId:    "",
+			},
+			Finalizers: []string{common.Finalizer},
+		},
+		Spec: corev1.PodSpec{
+			Volumes: []corev1.Volume{
+				{
+					Name: JfsDirName,
+					VolumeSource: corev1.VolumeSource{
+						HostPath: &corev1.HostPathVolumeSource{
+							Path: config.MountPointPath,
+							Type: &dir,
+						},
+					},
+				}, {
+					Name: config.JfsFuseFdPathName,
+					VolumeSource: corev1.VolumeSource{
+						HostPath: &corev1.HostPathVolumeSource{
+							Path: path.Join(common.JfsFuseFsPathInHost, "test"),
+							Type: &dir,
+						},
+					},
+				}, {
+					Name: UpdateDBDirName,
+					VolumeSource: corev1.VolumeSource{
+						HostPath: &corev1.HostPathVolumeSource{
+							Path: UpdateDBCfgFile,
+							Type: &file,
+						},
+					},
+				},
+			},
+			Containers: []corev1.Container{{
+				Name:    "jfs-mount",
+				Image:   unsupoortFusePassImage,
+				Command: []string{"sh", "-c", defaultCmd},
+				Env: []corev1.EnvVar{
+					{
+						Name:  "JFS_INSIDE_CONTAINER",
+						Value: "1",
+					},
+					{
+						Name: "metaurl",
+						ValueFrom: &corev1.EnvVarSource{
+							SecretKeyRef: &corev1.SecretKeySelector{
+								LocalObjectReference: corev1.LocalObjectReference{
+									Name: "juicefs-node-test",
+								},
+								Key: "metaurl",
+							},
+						},
+					},
+					{
+						Name:  "JFS_FOREGROUND",
+						Value: "1",
+					},
+				},
+				VolumeMounts: []corev1.VolumeMount{
+					{
+						Name:             JfsDirName,
+						MountPath:        config.PodMountBase,
+						MountPropagation: &mp,
+					}, {
+						Name:      config.JfsFuseFdPathName,
+						MountPath: "/tmp",
+					}, {
+
+						Name:      UpdateDBDirName,
+						MountPath: UpdateDBCfgFile,
+					},
+				},
+				SecurityContext: &corev1.SecurityContext{
+					Privileged: &isPrivileged,
+					RunAsUser:  &rootUser,
+				},
+				Lifecycle: &corev1.Lifecycle{
+					PreStop: &corev1.LifecycleHandler{
+						Exec: &corev1.ExecAction{Command: []string{"sh", "-c", "+e", fmt.Sprintf("umount %s -l; rmdir %s; exit 0", "/jfs/default-imagenet", "/jfs/default-imagenet")}},
+					},
+				},
+				Ports: []corev1.ContainerPort{
+					{
+						Name:          "metrics",
+						ContainerPort: 9567,
+					},
+				},
+			}},
+			TerminationGracePeriodSeconds: &gracePeriod,
+			RestartPolicy:                 corev1.RestartPolicyOnFailure,
+			NodeName:                      "node",
+			Hostname:                      "test",
+			PriorityClassName:             config.JFSMountPriorityName,
+		},
+	}
+)
+
+func deepcopyPodFromDefault(pod *corev1.Pod) {
+	defaultValue, _ := json.Marshal(podDefaultTest)
+	defaultValueMap := make(map[string]interface{})
+	_ = json.Unmarshal(defaultValue, &defaultValueMap)
+	resMap := runtime.DeepCopyJSON(defaultValueMap)
+	resValue, _ := json.Marshal(resMap)
+	_ = json.Unmarshal(resValue, pod)
+}
+
+func Test_getCacheDirVolumes(t *testing.T) {
+	optionWithoutCacheDir := []string{}
+	optionWithCacheDir := []string{"cache-dir=/dev/shm/imagenet"}
+	optionWithCacheDir2 := []string{"cache-dir=/dev/shm/imagenet-0:/dev/shm/imagenet-1"}
+	optionWithCacheDir3 := []string{"cache-dir"}
+
+	r := PodBuilder{
+		BaseBuilder: BaseBuilder{nil, 0},
+	}
+
+	dir := corev1.HostPathDirectory
+	volumeMounts := []corev1.VolumeMount{{
+		Name:      JfsDirName,
+		MountPath: config.PodMountBase,
+	}}
+
+	volumes := []corev1.Volume{{
+		Name: JfsDirName,
+		VolumeSource: corev1.VolumeSource{HostPath: &corev1.HostPathVolumeSource{
+			Path: config.MountPointPath,
+			Type: &dir,
+		}}}}
+
+	s, _ := config.ParseSetting(context.TODO(), map[string]string{"name": "test"}, nil, optionWithoutCacheDir, "", "", "test", nil, nil)
+	s.HashVal = "test"
+	r.jfsSetting = s
+	cacheVolumes, cacheVolumeMounts := r.genCacheDirVolumes()
+	volumes = append(volumes, cacheVolumes...)
+	volumeMounts = append(volumeMounts, cacheVolumeMounts...)
+	if len(volumes) != 2 || len(volumeMounts) != 2 {
+		t.Error("getCacheDirVolumes can't work properly")
+	}
+
+	s, _ = config.ParseSetting(context.TODO(), map[string]string{"name": "test"}, nil, optionWithCacheDir, "", "", "test", nil, nil)
+	s.HashVal = "test"
+	r.jfsSetting = s
+	cacheVolumes, cacheVolumeMounts = r.genCacheDirVolumes()
+	volumes = append(volumes, cacheVolumes...)
+	volumeMounts = append(volumeMounts, cacheVolumeMounts...)
+	if len(volumes) != 3 || len(volumeMounts) != 3 {
+		t.Error("getCacheDirVolumes can't work properly")
+	}
+
+	s, _ = config.ParseSetting(context.TODO(), map[string]string{"name": "test"}, nil, optionWithCacheDir2, "", "", "test", nil, nil)
+	s.HashVal = "test"
+	r.jfsSetting = s
+	cacheVolumes, cacheVolumeMounts = r.genCacheDirVolumes()
+	volumes = append(volumes, cacheVolumes...)
+	volumeMounts = append(volumeMounts, cacheVolumeMounts...)
+	if len(volumes) != 5 || len(volumeMounts) != 5 {
+		t.Error("getCacheDirVolumes can't work properly")
+	}
+
+	s, _ = config.ParseSetting(context.TODO(), map[string]string{"name": "test"}, nil, optionWithCacheDir3, "", "", "test", nil, nil)
+	s.HashVal = "test"
+	r.jfsSetting = s
+	cacheVolumes, cacheVolumeMounts = r.genCacheDirVolumes()
+	volumes = append(volumes, cacheVolumes...)
+	volumeMounts = append(volumeMounts, cacheVolumeMounts...)
+	if len(volumes) != 6 || len(volumeMounts) != 6 {
+		t.Error("getCacheDirVolumes can't work properly")
+	}
+
+	// test ephemeral volume
+	savedNodeName := config.NodeName
+	config.NodeName = "test-node"
+	defer func() { config.NodeName = savedNodeName }()
+	storageClassName := "gp3"
+	ephemeralStorage := resource.MustParse("30Gi")
+	s, _ = config.ParseSetting(context.TODO(), map[string]string{"name": "test"}, nil, optionWithoutCacheDir, "", "", "test", nil, nil)
+	s.HashVal = "test"
+	s.CacheEphemeral = []*config.CacheEphemeral{
+		{
+			StorageClassName: &storageClassName,
+			Storage:          ephemeralStorage,
+			AccessModes:      []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
+			Path:             "/var/jfsCache-ephemeral-0",
+		},
+	}
+	r.jfsSetting = s
+	cacheVolumes, cacheVolumeMounts = r.genCacheDirVolumes()
+
+	// verify the ephemeral volume and mount are created correctly
+	foundEphemeralVolume := false
+	foundEphemeralMount := false
+	for _, v := range cacheVolumes {
+		if v.Name == "cachedir-ephemeral-0" {
+			foundEphemeralVolume = true
+			if v.VolumeSource.Ephemeral == nil {
+				t.Error("expected ephemeral volume source, got nil")
+			}
+			if v.VolumeSource.Ephemeral.VolumeClaimTemplate == nil {
+				t.Error("expected VolumeClaimTemplate, got nil")
+			}
+			tmpl := v.VolumeSource.Ephemeral.VolumeClaimTemplate
+			ann := tmpl.ObjectMeta.Annotations
+			if ann == nil || ann["volume.kubernetes.io/selected-node"] != "test-node" {
+				t.Errorf("expected selected-node annotation 'test-node', got %v", ann)
+			}
+			spec := tmpl.Spec
+			if *spec.StorageClassName != "gp3" {
+				t.Errorf("expected storageClassName gp3, got %s", *spec.StorageClassName)
+			}
+			storageReq := spec.Resources.Requests[corev1.ResourceStorage]
+			if storageReq.Cmp(ephemeralStorage) != 0 {
+				t.Errorf("expected storage 30Gi, got %s", storageReq.String())
+			}
+			if len(spec.AccessModes) != 1 || spec.AccessModes[0] != corev1.ReadWriteOnce {
+				t.Errorf("expected accessModes [ReadWriteOnce], got %v", spec.AccessModes)
+			}
+		}
+	}
+	for _, vm := range cacheVolumeMounts {
+		if vm.Name == "cachedir-ephemeral-0" {
+			foundEphemeralMount = true
+			if vm.MountPath != "/var/jfsCache-ephemeral-0" {
+				t.Errorf("expected mountPath /var/jfsCache-ephemeral-0, got %s", vm.MountPath)
+			}
+			if vm.ReadOnly {
+				t.Error("expected ReadOnly=false for ephemeral cache mount")
+			}
+		}
+	}
+	if !foundEphemeralVolume {
+		t.Error("ephemeral volume not found in genCacheDirVolumes output")
+	}
+	if !foundEphemeralMount {
+		t.Error("ephemeral volumeMount not found in genCacheDirVolumes output")
+	}
+}
+
+func TestNewMountPod(t *testing.T) {
+	defer func() { _ = os.RemoveAll("tmp") }()
+	passfd.InitTestFds()
+	config.NodeName = "node"
+	config.Namespace = ""
+	podLabelTest := corev1.Pod{}
+	deepcopyPodFromDefault(&podLabelTest)
+	podLabelTest.Labels["a"] = "b"
+	podLabelTest.Labels["c"] = "d"
+	// FusePass is now supported by default
+	podLabelTest.Spec.Containers[0].Env = append(podLabelTest.Spec.Containers[0].Env, corev1.EnvVar{
+		Name:  "JFS_SUPER_COMM",
+		Value: "tmp/fuse_fd_csi_comm.sock",
+	})
+	podLabelTest.Spec.Containers[0].Lifecycle = nil
+
+	podAnnoTest := corev1.Pod{}
+	deepcopyPodFromDefault(&podAnnoTest)
+	podAnnoTest.Annotations["a"] = "b"
+	// FusePass is now supported by default
+	podAnnoTest.Spec.Containers[0].Env = append(podAnnoTest.Spec.Containers[0].Env, corev1.EnvVar{
+		Name:  "JFS_SUPER_COMM",
+		Value: "tmp/fuse_fd_csi_comm.sock",
+	})
+	podAnnoTest.Spec.Containers[0].Lifecycle = nil
+
+	podSATest := corev1.Pod{}
+	deepcopyPodFromDefault(&podSATest)
+	podSATest.Spec.ServiceAccountName = "test"
+	// FusePass is now supported by default
+	podSATest.Spec.Containers[0].Env = append(podSATest.Spec.Containers[0].Env, corev1.EnvVar{
+		Name:  "JFS_SUPER_COMM",
+		Value: "tmp/fuse_fd_csi_comm.sock",
+	})
+	podSATest.Spec.Containers[0].Lifecycle = nil
+
+	podEnvTest := corev1.Pod{}
+	deepcopyPodFromDefault(&podEnvTest)
+	podEnvTest.Spec.Containers[0].Env = []corev1.EnvVar{
+		{Name: "JFS_INSIDE_CONTAINER", Value: "1"},
+		{Name: "metaurl", ValueFrom: &corev1.EnvVarSource{
+			SecretKeyRef: &corev1.SecretKeySelector{
+				LocalObjectReference: corev1.LocalObjectReference{Name: "juicefs-node-test"},
+				Key:                  "metaurl",
+			},
+		}},
+		{Name: "a", ValueFrom: &corev1.EnvVarSource{
+			SecretKeyRef: &corev1.SecretKeySelector{
+				LocalObjectReference: corev1.LocalObjectReference{Name: "juicefs-node-test"},
+				Key:                  "a",
+			},
+		}},
+		{Name: "JFS_FOREGROUND", Value: "1"},
+		{Name: "JFS_SUPER_COMM", Value: "tmp/fuse_fd_csi_comm.sock"},
+	}
+	// FusePass is now supported by default
+	podEnvTest.Spec.Containers[0].Lifecycle = nil
+
+	podConfigTest := corev1.Pod{}
+	deepcopyPodFromDefault(&podConfigTest)
+	podConfigTest.Spec.Volumes = append([]corev1.Volume{{
+		Name:         "config-1",
+		VolumeSource: corev1.VolumeSource{Secret: &corev1.SecretVolumeSource{SecretName: "secret-test"}},
+	}}, podConfigTest.Spec.Volumes...)
+	podConfigTest.Spec.Containers[0].VolumeMounts = append([]corev1.VolumeMount{{
+		Name:      "config-1",
+		MountPath: "/test",
+	}}, podConfigTest.Spec.Containers[0].VolumeMounts...)
+	// FusePass is now supported by default
+	podConfigTest.Spec.Containers[0].Env = append(podConfigTest.Spec.Containers[0].Env, corev1.EnvVar{
+		Name:  "JFS_SUPER_COMM",
+		Value: "tmp/fuse_fd_csi_comm.sock",
+	})
+	podConfigTest.Spec.Containers[0].Lifecycle = nil
+
+	s, _ := config.ParseSetting(context.TODO(), map[string]string{"name": "test"}, nil, []string{"cache-dir=/dev/shm/imagenet-0:/dev/shm/imagenet-1", "cache-size=10240", "metrics=0.0.0.0:9567"}, "", "", "test", nil, nil)
+	s.HashVal = "test"
+	r := PodBuilder{
+		BaseBuilder: BaseBuilder{s, 0},
+	}
+	cmdWithCacheDir := `exec /bin/mount.juicefs ${metaurl} /jfs/default-imagenet -o cache-dir=/dev/shm/imagenet-0:/dev/shm/imagenet-1,cache-size=10240,metrics=0.0.0.0:9567`
+	cacheVolumes, cacheVolumeMounts := r.genCacheDirVolumes()
+	podCacheTest := corev1.Pod{}
+	deepcopyPodFromDefault(&podCacheTest)
+	podCacheTest.Spec.Containers[0].Command = []string{"sh", "-c", cmdWithCacheDir}
+	podCacheTest.Spec.Volumes = append(podCacheTest.Spec.Volumes, cacheVolumes...)
+	podCacheTest.Spec.Containers[0].VolumeMounts = append(podCacheTest.Spec.Containers[0].VolumeMounts, cacheVolumeMounts...)
+	// FusePass is now supported by default
+	podCacheTest.Spec.Containers[0].Env = append(podCacheTest.Spec.Containers[0].Env, corev1.EnvVar{
+		Name:  "JFS_SUPER_COMM",
+		Value: "tmp/fuse_fd_csi_comm.sock",
+	})
+	podCacheTest.Spec.Containers[0].Lifecycle = nil
+
+	podMetricTest := corev1.Pod{}
+	cmdWithMetrics := `exec /bin/mount.juicefs ${metaurl} /jfs/default-imagenet -o metrics=0.0.0.0:9999`
+	deepcopyPodFromDefault(&podMetricTest)
+	podMetricTest.Spec.Containers[0].Command = []string{"sh", "-c", cmdWithMetrics}
+	podMetricTest.Spec.Containers[0].Ports = []corev1.ContainerPort{
+		{Name: "metrics", ContainerPort: 9999},
+	}
+	// FusePass is now supported by default
+	podMetricTest.Spec.Containers[0].Env = append(podMetricTest.Spec.Containers[0].Env, corev1.EnvVar{
+		Name:  "JFS_SUPER_COMM",
+		Value: "tmp/fuse_fd_csi_comm.sock",
+	})
+	podMetricTest.Spec.Containers[0].Lifecycle = nil
+
+	podfusePassTest := corev1.Pod{}
+	deepcopyPodFromDefault(&podfusePassTest)
+	podfusePassTest.Spec.Containers[0].Env = []corev1.EnvVar{
+		{Name: "JFS_INSIDE_CONTAINER", Value: "1"},
+		{Name: "metaurl", ValueFrom: &corev1.EnvVarSource{
+			SecretKeyRef: &corev1.SecretKeySelector{
+				LocalObjectReference: corev1.LocalObjectReference{Name: "juicefs-node-test"},
+				Key:                  "metaurl",
+			},
+		}},
+		{Name: "JFS_FOREGROUND", Value: "1"},
+		{Name: "JFS_SUPER_COMM", Value: "tmp/fuse_fd_csi_comm.sock"},
+	}
+	podfusePassTest.Spec.Containers[0].Lifecycle = nil
+	podfusePassTest.Spec.Containers[0].Image = config.DefaultCEMountImage
+
+	type args struct {
+		name           string
+		cmd            string
+		mountPath      string
+		configs        map[string]string
+		env            map[string]string
+		labels         map[string]string
+		annotations    map[string]string
+		serviceAccount string
+		options        []string
+		cacheDirs      []string
+		image          string
+	}
+	tests := []struct {
+		name string
+		args args
+		want corev1.Pod
+	}{
+		{
+			name: "test-labels",
+			args: args{
+				name:      "test",
+				labels:    map[string]string{"a": "b", "c": "d"},
+				cmd:       defaultCmd,
+				mountPath: defaultMountPath,
+			},
+			want: podLabelTest,
+		},
+		{
+			name: "test-annotation",
+			args: args{
+				name:        "test",
+				annotations: map[string]string{"a": "b"},
+				cmd:         defaultCmd,
+				mountPath:   defaultMountPath,
+			},
+			want: podAnnoTest,
+		},
+		{
+			name: "test-serviceaccount",
+			args: args{
+				name:           "test",
+				serviceAccount: "test",
+				cmd:            defaultCmd,
+				mountPath:      defaultMountPath,
+			},
+			want: podSATest,
+		},
+		{
+			name: "test-cache-dir",
+			args: args{
+				name:      "test",
+				mountPath: defaultMountPath,
+				cmd:       cmdWithCacheDir,
+				options:   []string{"cache-dir=/dev/shm/imagenet-0:/dev/shm/imagenet-1", "cache-size=10240"},
+				cacheDirs: []string{"/dev/shm/imagenet-0", "/dev/shm/imagenet-1"},
+			},
+			want: podCacheTest,
+		},
+		{
+			name: "test-config",
+			args: args{
+				name:      "test",
+				cmd:       defaultCmd,
+				mountPath: defaultMountPath,
+				configs:   map[string]string{"secret-test": "/test"},
+			},
+			want: podConfigTest,
+		},
+		{
+			name: "test-env",
+			args: args{
+				name:      "test",
+				cmd:       defaultCmd,
+				mountPath: defaultMountPath,
+				env:       map[string]string{"a": "b"},
+			},
+			want: podEnvTest,
+		},
+		{
+			name: "test-metrics",
+			args: args{
+				name:      "test",
+				cmd:       defaultCmd,
+				mountPath: defaultMountPath,
+				options:   []string{"metrics=0.0.0.0:9999"},
+			},
+			want: podMetricTest,
+		},
+		{
+			name: "test-fuse-pass",
+			args: args{
+				name:      "test",
+				cmd:       defaultCmd,
+				image:     config.DefaultCEMountImage,
+				mountPath: defaultMountPath,
+			},
+			want: podfusePassTest,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			podName := fmt.Sprintf("juicefs-%s-%s", config.NodeName, tt.args.name)
+			jfsSetting := &config.JfsSetting{
+				IsCe:        true,
+				Name:        tt.args.name,
+				HashVal:     "test",
+				UpgradeUUID: "test",
+				Source:      "redis://127.0.0.1:6379/0",
+				MetaUrl:     "redis://127.0.0.1:6379/0",
+				Configs:     tt.args.configs,
+				Envs:        tt.args.env,
+				MountPath:   tt.args.mountPath,
+				VolumeId:    tt.args.name,
+				Options:     tt.args.options,
+				CacheDirs:   tt.args.cacheDirs,
+				SecretName:  podName,
+				Attr: &config.PodAttr{
+					Labels:             tt.args.labels,
+					Annotations:        tt.args.annotations,
+					ServiceAccountName: tt.args.serviceAccount,
+					Namespace:          config.Namespace,
+					MountPointPath:     config.MountPointPath,
+					JFSConfigPath:      config.JFSConfigPath,
+					Image:              unsupoortFusePassImage,
+				},
+			}
+			if tt.args.image != "" {
+				jfsSetting.Attr.Image = tt.args.image
+			}
+			r := PodBuilder{
+				BaseBuilder: BaseBuilder{jfsSetting, 0},
+			}
+			got, _ := r.NewMountPod(podName)
+			gotStr, _ := yaml.Marshal(got)
+			wantStr, _ := yaml.Marshal(tt.want)
+			assert.Equal(t, string(wantStr), string(gotStr))
+		})
+	}
+}
+
+func TestNewMountPod_ExpandTemplateCacheDirFromPatch(t *testing.T) {
+	defer config.GlobalConfig.Reset()
+
+	config.NodeName = "node"
+	config.Namespace = ""
+	config.GlobalConfig.MountPodPatch = []config.MountPodPatch{
+		{
+			MountOptions: []string{"cache-dir=/var/jfsCache/${VOLUME_ID}"},
+		},
+	}
+
+	volumeID := "pvc-93d98c03-34dd-4455-b364-7384df4d872a"
+	podName := fmt.Sprintf("juicefs-%s-%s", config.NodeName, volumeID)
+	jfsSetting, err := config.ParseSetting(
+		context.TODO(),
+		map[string]string{
+			"name":    "test",
+			"metaurl": "redis://127.0.0.1:6379/0",
+		},
+		map[string]string{},
+		nil,
+		volumeID,
+		volumeID,
+		"test",
+		nil,
+		nil,
+	)
+	if !assert.NoError(t, err) {
+		return
+	}
+
+	jfsSetting.HashVal = "test"
+	jfsSetting.UpgradeUUID = "test"
+	jfsSetting.SecretName = podName
+	jfsSetting.MountPath = path.Join(config.PodMountBase, volumeID)
+	jfsSetting.Attr.Image = unsupoortFusePassImage
+	jfsSetting.PV = &corev1.PersistentVolume{
+		Spec: corev1.PersistentVolumeSpec{
+			PersistentVolumeSource: corev1.PersistentVolumeSource{
+				CSI: &corev1.CSIPersistentVolumeSource{
+					VolumeAttributes: map[string]string{},
+				},
+			},
+		},
+	}
+
+	r := PodBuilder{
+		BaseBuilder: BaseBuilder{jfsSetting, 0},
+	}
+	pod, err := r.NewMountPod(podName)
+	if !assert.NoError(t, err) {
+		return
+	}
+
+	expectedCacheDir := "/var/jfsCache/" + volumeID
+	assert.Contains(t, pod.Spec.Containers[0].Command[2], "cache-dir="+expectedCacheDir)
+
+	var cacheVolume *corev1.Volume
+	for i := range pod.Spec.Volumes {
+		if pod.Spec.Volumes[i].Name == "cachedir-0" {
+			cacheVolume = &pod.Spec.Volumes[i]
+			break
+		}
+	}
+	if assert.NotNil(t, cacheVolume) {
+		if assert.NotNil(t, cacheVolume.HostPath) {
+			assert.Equal(t, expectedCacheDir, cacheVolume.HostPath.Path)
+		}
+	}
+
+	var cacheMount *corev1.VolumeMount
+	for i := range pod.Spec.Containers[0].VolumeMounts {
+		if pod.Spec.Containers[0].VolumeMounts[i].Name == "cachedir-0" {
+			cacheMount = &pod.Spec.Containers[0].VolumeMounts[i]
+			break
+		}
+	}
+	if assert.NotNil(t, cacheMount) {
+		assert.Equal(t, expectedCacheDir, cacheMount.MountPath)
+	}
+}
+
+func TestNewMountPod_ExpandTemplateHostPath(t *testing.T) {
+	volumeID := "pvc-hostpath-template"
+	podName := fmt.Sprintf("juicefs-%s-%s", config.NodeName, volumeID)
+	jfsSetting, err := config.ParseSetting(
+		context.TODO(),
+		map[string]string{
+			"name":    "test",
+			"metaurl": "redis://127.0.0.1:6379/0",
+		},
+		map[string]string{common.MountPodHostPath: "/var/jfsCache/${VOLUME_ID}"},
+		nil,
+		volumeID,
+		volumeID,
+		"test",
+		nil,
+		nil,
+	)
+	if !assert.NoError(t, err) {
+		return
+	}
+
+	jfsSetting.HashVal = "test"
+	jfsSetting.UpgradeUUID = "test"
+	jfsSetting.SecretName = podName
+	jfsSetting.MountPath = path.Join(config.PodMountBase, volumeID)
+	jfsSetting.Attr.Image = unsupoortFusePassImage
+	jfsSetting.PV = &corev1.PersistentVolume{
+		Spec: corev1.PersistentVolumeSpec{
+			PersistentVolumeSource: corev1.PersistentVolumeSource{
+				CSI: &corev1.CSIPersistentVolumeSource{
+					VolumeAttributes: map[string]string{},
+				},
+			},
+		},
+	}
+
+	r := PodBuilder{
+		BaseBuilder: BaseBuilder{jfsSetting, 0},
+	}
+	pod, err := r.NewMountPod(podName)
+	if !assert.NoError(t, err) {
+		return
+	}
+
+	expectedHostPath := "/var/jfsCache/" + volumeID
+	var hostPathVolume *corev1.Volume
+	for i := range pod.Spec.Volumes {
+		if pod.Spec.Volumes[i].Name == "hostpath-0" {
+			hostPathVolume = &pod.Spec.Volumes[i]
+			break
+		}
+	}
+	if assert.NotNil(t, hostPathVolume) {
+		if assert.NotNil(t, hostPathVolume.HostPath) {
+			assert.Equal(t, expectedHostPath, hostPathVolume.HostPath.Path)
+		}
+	}
+
+	var hostPathMount *corev1.VolumeMount
+	for i := range pod.Spec.Containers[0].VolumeMounts {
+		if pod.Spec.Containers[0].VolumeMounts[i].Name == "hostpath-0" {
+			hostPathMount = &pod.Spec.Containers[0].VolumeMounts[i]
+			break
+		}
+	}
+	if assert.NotNil(t, hostPathMount) {
+		assert.Equal(t, expectedHostPath, hostPathMount.MountPath)
+	}
+}
+
+func TestPodMount_getCommand(t *testing.T) {
+	type args struct {
+		mountPath string
+		subPath   string
+		options   []string
+	}
+	tests := []struct {
+		name   string
+		isCe   bool
+		source string
+		args   args
+		want   string
+	}{
+		{
+			name:   "test-ce",
+			isCe:   true,
+			source: "redis://127.0.0.1:6379/0",
+			args: args{
+				mountPath: "/jfs/test-volume",
+				options:   []string{"debug"},
+			},
+			want: "exec /bin/mount.juicefs ${metaurl} /jfs/test-volume -o debug,metrics=0.0.0.0:9567",
+		},
+		{
+			name:   "test-ee",
+			isCe:   false,
+			source: "test",
+			args: args{
+				mountPath: "/jfs/test-volume",
+				options:   []string{"debug"},
+			},
+			want: "exec /sbin/mount.juicefs test /jfs/test-volume -o foreground,no-update,debug",
+		},
+		{
+			name:   "test-subpath",
+			isCe:   false,
+			source: "test",
+			args: args{
+				mountPath: "/jfs/test-volume",
+				options:   []string{"subdir=test"},
+				subPath:   "/jfs/test-volume/subpath",
+			},
+			want: "exec /sbin/mount.juicefs test /jfs/test-volume -o foreground,no-update,subdir=test/jfs/test-volume/subpath",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			jfsSetting := &config.JfsSetting{
+				Name:      tt.name,
+				HashVal:   "test",
+				Source:    tt.source,
+				IsCe:      tt.isCe,
+				MountPath: tt.args.mountPath,
+				SubPath:   tt.args.subPath,
+				Options:   tt.args.options,
+				Attr:      &config.PodAttr{},
+			}
+			r := PodBuilder{
+				BaseBuilder: BaseBuilder{jfsSetting, 0},
+			}
+			if got := r.genMountCommand(); got != tt.want {
+				t.Errorf("getCommand() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPodMount_getMetricsPort(t *testing.T) {
+	type args struct {
+		options []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want int32
+	}{
+		{
+			name: "test-metrics",
+			args: args{},
+			want: int32(9567),
+		},
+		{
+			name: "test-metrics-port",
+			args: args{
+				options: []string{"metrics=0.0.0.0:9999"},
+			},
+			want: int32(9999),
+		},
+		{
+			name: "test-metrics-port-string",
+			args: args{
+				options: []string{"metrics=0.0.0.0:foo"},
+			},
+			want: int32(9567),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			jfsSetting := &config.JfsSetting{
+				Name:    tt.name,
+				Options: tt.args.options,
+				HashVal: "test",
+			}
+			r := PodBuilder{
+				BaseBuilder: BaseBuilder{jfsSetting, 0},
+			}
+			if got := r.genMetricsPort(); got != tt.want {
+				t.Errorf("getMetricsPort() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestBuilder_genHostPathVolumes(t *testing.T) {
+	type fields struct {
+		jfsSetting *config.JfsSetting
+	}
+	tests := []struct {
+		name             string
+		fields           fields
+		wantVolumes      []corev1.Volume
+		wantVolumeMounts []corev1.VolumeMount
+	}{
+		{
+			name: "test",
+			fields: fields{
+				jfsSetting: &config.JfsSetting{
+					HostPath: []string{"/tmp"},
+				},
+			},
+			wantVolumes: []corev1.Volume{{
+				Name: "hostpath-0",
+				VolumeSource: corev1.VolumeSource{
+					HostPath: &corev1.HostPathVolumeSource{
+						Path: "/tmp",
+					},
+				},
+			}},
+			wantVolumeMounts: []corev1.VolumeMount{{
+				Name:      "hostpath-0",
+				MountPath: "/tmp",
+			}},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.fields.jfsSetting.HashVal = "test"
+			r := &PodBuilder{
+				BaseBuilder: BaseBuilder{
+					jfsSetting: tt.fields.jfsSetting,
+				},
+			}
+			gotVolumes, gotVolumeMounts := r.genHostPathVolumes()
+			if !reflect.DeepEqual(gotVolumes, tt.wantVolumes) {
+				t.Errorf("genHostPathVolumes() gotVolumes = %v, want %v", gotVolumes, tt.wantVolumes)
+			}
+			if !reflect.DeepEqual(gotVolumeMounts, tt.wantVolumeMounts) {
+				t.Errorf("genHostPathVolumes() gotVolumeMounts = %v, want %v", gotVolumeMounts, tt.wantVolumeMounts)
+			}
+		})
+	}
+}

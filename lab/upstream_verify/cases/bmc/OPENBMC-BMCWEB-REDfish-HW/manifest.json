@@ -1,0 +1,67 @@
+{
+ "id": "OPENBMC-BMCWEB-REDfish-HW",
+ "source": "mining",
+ "title": "OpenBMC bmcweb/Redfish + IPMI-BT service plane (BMC firmware path)",
+ "version": "master",
+ "version_ref": {
+  "kind": "git",
+  "repo": "openbmc/bmcweb",
+  "tag": "master",
+  "commit": "63a18f4e6188a77b713a8b22c8a95ab3d6c5a718"
+ },
+ "install": "hardware/Linux-runtime path; not installable on this host",
+ "root_cause": {
+  "file": "n/a (vendor firmware / Linux runtime / hardware fabric)",
+  "line": 0,
+  "function": "",
+  "snippet": "",
+  "source": null,
+  "source_sha256": null,
+  "note": "OpenBMC/BTI/Redfish: bmcweb (C++), phosphor daemons and the IPMI BT interface are firmware/hardware paths; explicitly unsupported on this host. Existing BMC-surface conclusions live in the bmc-ipmi-exposure and redfish-default-credentials modules; the three SONiC vendor CVEs remain unsupported for the same class of reason."
+ },
+ "preconditions": [
+  "OpenBMC image on BMC hardware (or QEMU OpenBMC target)",
+  "BMC SoC / IPMI BT device"
+ ],
+ "steps": [
+  "resolve the pinned upstream tag",
+  "confirm the vulnerable path requires hardware/Linux runtime absent on this host",
+  "record an unsupported verdict (explicitly excluded from verified counts)"
+ ],
+ "expected_evidence": [
+  "unsupported.json with reason"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "unsupported",
+ "method": "unsupported",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-OPENBMC-BMCWEB-REDfish-HW",
+ "notes": "OpenBMC/BTI/Redfish: bmcweb (C++), phosphor daemons and the IPMI BT interface are firmware/hardware paths; explicitly unsupported on this host. Existing BMC-surface conclusions live in the bmc-ipmi-exposure and redfish-default-credentials modules; the three SONiC vendor CVEs remain unsupported for the same class of reason.",
+ "static_evidence_level": "advisory",
+ "static_analysis": "OpenBMC/BTI/Redfish: bmcweb (C++), phosphor daemons and the IPMI BT interface are firmware/hardware paths; explicitly unsupported on this host. Existing BMC-surface conclusions live in the bmc-ipmi-exposure and redfish-default-credentials modules; the three SONiC vendor CVEs remain unsupported for the same class of reason.",
+ "static_verdict": "hardware-path",
+ "unsupported": {
+  "reason": "bmcweb is C++17 on OpenBMC systemd images and the Redfish/IPMI-BT planes ride BMC hardware (BMC SoC, IPMI BT block); no local runtime can host them. Redfish testing belongs to the BMC lab, not this Windows host.",
+  "requires": [
+   "OpenBMC image on BMC hardware (or QEMU OpenBMC target)",
+   "BMC SoC / IPMI BT device"
+  ],
+  "blocked_by": [
+   "no BMC firmware runtime",
+   "no IPMI BT hardware"
+  ]
+ },
+ "mining": {
+  "rule": "hardware-boundary",
+  "channel": "none",
+  "file": "",
+  "line": 0,
+  "snippet": "",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "bmc"
+}

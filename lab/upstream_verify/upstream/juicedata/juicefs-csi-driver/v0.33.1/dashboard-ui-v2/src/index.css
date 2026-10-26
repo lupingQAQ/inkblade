@@ -1,0 +1,160 @@
+/**
+ * Copyright 2024 Juicedata Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+:root {
+  font-family: sans-serif;
+  line-height: 1.15;
+  font-weight: 500;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #f5f5f5;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  /* display: flex;
+    align-items: center;
+    min-width: 100%;
+    min-height: 100vh; */
+}
+
+.ant-page-header {
+  height: 64px;
+}
+
+.config-page-header .ant-page-header {
+  height: unset !important;
+}
+.config-form .ant-space-item .ant-space {
+  /*width: 600px !important;*/
+  /*max-width: unset !important;*/
+}
+
+.ant-modal,
+.ant-modal-content {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  top: 0;
+}
+
+.ant-modal-body {
+  height: calc(100vh - 110px);
+}
+
+.add-worker-modal {
+  width: unset !important;
+}
+
+.add-worker-modal .ant-modal,
+.add-worker-modal .ant-modal-content,
+.add-worker-modal .ant-modal-body {
+  height: unset;
+  top: 100px;
+  margin: unset;
+  max-width: fit-content;
+  margin: auto;
+}
+
+.batch-upgrade-modal {
+  width: unset !important;
+}
+
+.batch-upgrade-modal .ant-modal,
+.batch-upgrade-modal .ant-modal-content,
+.batch-upgrade-modal .ant-modal-body {
+  height: unset;
+  top: 100px;
+  margin: unset;
+  width: fit-content;
+  margin: auto;
+}
+
+.patch-form-string-item {
+  width: 80%;
+}
+
+.patch-extra {
+  height: unset !important;
+}
+
+.patch-extra .ant-collapse-extra,
+.patch-extra .ant-pro-form-list-action {
+  height: 22px;
+  line-height: 22px;
+}
+
+.diff-pods-table {
+  /*width: fit-content;*/
+  /*justify-content: center;*/
+  margin-top: 20px;
+}
+
+.inlinecode {
+  background: #f5f5f5;
+  padding: 4px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 13px;
+  margin-bottom: 4px;
+  vertical-align: middle;
+  border: 1px solid #0505050f;
+}
+
+.patch-form-checkbox-item {
+  display: flex;
+  align-items: center;
+}
+
+.patch-form-checkbox-item input,
+.patch-form-checkbox-item .ant-checkbox-wrapper {
+  margin: 0;
+  height: 15px;
+}
+
+.config-detail-item-container {
+  display: flex;
+  gap: 12px;
+}
+
+.xterm-screen {
+  width: 100% !important;
+  height: calc(100vh - 110px) !important;
+}
+
+.header-button {
+  width: 24px;
+  height: 24px;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.header-subtitle-button {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.action-button {
+  border-color: #f4f5f6;
+  box-shadow: none;
+}

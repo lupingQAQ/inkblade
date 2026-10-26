@@ -1,0 +1,164 @@
+/*
+ Copyright 2024 Juicedata Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+
+package dashboard
+
+import (
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+	corev1 "k8s.io/api/core/v1"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/juicedata/juicefs-csi-driver/pkg/common"
+	"github.com/juicedata/juicefs-csi-driver/pkg/config"
+)
+
+func (api *API) getCSIConfig() gin.HandlerFunc {
+	cmName := config.GetGlobalConfigName()
+	return func(c *gin.Context) {
+		cm, err := api.client.CoreV1().ConfigMaps(api.sysNamespace).Get(c, cmName, metav1.GetOptions{})
+		if err != nil {
+			if k8serrors.IsNotFound(err) {
+				c.JSON(http.StatusNotFound, gin.H{"error": "config map " + cmName + " not found"})
+				return
+			}
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(200, cm)
+	}
+}
+
+func (api *API) putCSIConfig() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var cm corev1.ConfigMap
+		if err := c.ShouldBindJSON(&cm); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+		cmName := config.GetGlobalConfigName()
+		if cm.Name != cmName {
+			c.JSON(400, gin.H{"error": "invalid config map name"})
+			return
+		}
+		// validate global config
+		cfg := &config.Config{}
+		d := cm.Data["config.yaml"]
+		if err := cfg.Unmarshal([]byte(d)); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+		if err := cfg.Validate(); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		_, err := api.client.CoreV1().ConfigMaps(api.sysNamespace).Update(c, &cm, metav1.UpdateOptions{})
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+		s, err := metav1.LabelSelectorAsSelector(&metav1.LabelSelector{
+			MatchLabels: map[string]string{
+				"app.kubernetes.io/name": "juicefs-csi-driver",
+				"app":                    "juicefs-csi-node",
+			},
+		})
+		if err != nil {
+			c.String(500, "parse label selector error %v", err)
+			return
+		}
+		csiNodeList, err := api.client.CoreV1().Pods(api.sysNamespace).List(c, metav1.ListOptions{LabelSelector: s.String()})
+		if err != nil {
+			c.String(500, "list csi node error %v", err)
+			return
+		}
+		for _, pod := range csiNodeList.Items {
+			if pod.Annotations == nil {
+				pod.Annotations = make(map[string]string)
+			}
+			pod.Annotations["juicefs/update-time"] = metav1.Now().Format("2006-01-02T15:04:05Z")
+			_, err = api.client.CoreV1().Pods(api.sysNamespace).Update(c, &pod, metav1.UpdateOptions{})
+			if err != nil {
+				c.JSON(500, gin.H{"error": err.Error()})
+				return
+			}
+		}
+		c.JSON(200, cm)
+	}
+}
+
+func (api *API) getCSIConfigDiff() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		nodeName := c.Query("nodeName")
+		uniqueIds := c.Query("uniqueIds")
+
+		pods, err := api.podSvc.ListUpgradePods(c, uniqueIds, nodeName, true)
+		if err != nil {
+			c.String(500, "get upgrade pods error %v", err)
+			return
+		}
+		// skip pods which are already in running upgrade tasks
+		pods, skippedPods, err := config.FilterPodsNotInOngoingUpgrade(c, api.client, pods)
+		if err != nil {
+			c.String(500, "filter running upgrade pods error %v", err)
+			return
+		}
+		if len(skippedPods) > 0 {
+			batchLog.Info("Skip pods already in ongoing upgrade jobs", "pods", skippedPods)
+		}
+		_, podDiffs, err := api.genPodDiffs(c, pods, true)
+		if err != nil {
+			c.String(500, "get pods diff configs error %v", err)
+			return
+		}
+		pageSize, err := strconv.ParseUint(c.Query("pageSize"), 10, 64)
+		if err != nil || pageSize == 0 {
+			pageSize = uint64(len(podDiffs))
+		}
+		current, err := strconv.ParseUint(c.Query("current"), 10, 64)
+		if err != nil || current == 0 {
+			current = 1
+		}
+		result := ListDiffPodResult{
+			Total: len(podDiffs),
+			Pods:  make([]PodDiff, 0),
+		}
+		for i := (current - 1) * pageSize; i < current*pageSize && i < uint64(len(podDiffs)); i++ {
+			result.Pods = append(result.Pods, podDiffs[i])
+		}
+
+		c.IndentedJSON(200, result)
+	}
+}
+
+func DiffConfig(pod *corev1.Pod, pv *corev1.PersistentVolume, pvc *corev1.PersistentVolumeClaim, secret, custSecret *corev1.Secret) (bool, error) {
+	return DiffConfigWithNode(pod, pv, pvc, secret, custSecret, nil)
+}
+
+func DiffConfigWithNode(pod *corev1.Pod, pv *corev1.PersistentVolume, pvc *corev1.PersistentVolumeClaim, secret, custSecret *corev1.Secret, node *corev1.Node) (bool, error) {
+	setting, err := config.RevertSettingWithNode(pod, pvc, pv, secret, custSecret, node)
+	if err != nil {
+		return false, err
+	}
+	if err = setting.ReNew(pod, pvc, pv, custSecret); err != nil {
+		return false, err
+	}
+	return setting.HashVal != pod.Labels[common.PodJuiceHashLabelKey], nil
+}

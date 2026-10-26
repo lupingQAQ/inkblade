@@ -2,8 +2,11 @@
 
 设计约束（与 docs/HOW-TO-DESIGN-COMMERCIAL-AGENT.md 第九节一致）：
 - CLI 默认不把 Python 堆栈甩给陌生用户；堆栈只在 ``TRIDENT_DEBUG=1`` 时出现；
-- 每个错误有稳定错误码（E1xx 环境 / E2xx 授权 / E3xx 备份 / E4xx 存储 / E9xx 未知）；
-- 文案必须给出可复制执行的修复命令，不能只说「请检查配置」。
+- 每个错误有稳定错误码（E1xx 环境/系统 / E2xx 授权 / E3xx 备份与回滚 /
+  E4xx 存储与对象 / E5xx 混沌编排 / E6xx API 客户端 / E7xx 试点与 kubeconfig /
+  E8xx 计划任务 / E9xx 未知）；
+- 文案必须给出可复制执行的修复命令，不能只说「请检查配置」；
+- ``catalog()`` 返回 ≥30 类错误码目录（测试与文档的可数口径）。
 
 ``explain_exception`` 只依赖异常类型、消息与可选上下文，不 import 重模块，
 避免 CLI 在缺少可选依赖时二次失败。
@@ -75,6 +78,169 @@ def _is_port_in_use(exc: BaseException) -> bool:
     return "address already in use" in msg or "10048" in msg or "端口已被占用" in msg
 
 
+# --------------------------------------------------------------------------- E5xx 混沌
+# 混沌错误族自带稳定错误码（exc.trident_code），这里只负责渲染成人话。
+
+_CHAOS_CODE_TITLES = {
+    "E501": ("混沌实验被中止", "中止条件命中或外部中止信号（trident chaos abort）触发。"),
+    "E502": ("稳态未满足，已拒绝注入", "实验开始前的稳态假设探测未全部成立。"),
+    "E503": ("回滚后稳态未恢复", "自动回滚已执行，但稳态复测仍未通过。"),
+}
+
+
+def _chaos_error(exc: BaseException) -> HumanError | None:
+    code = getattr(exc, "trident_code", None)
+    if code not in _CHAOS_CODE_TITLES:
+        return None
+    title, why = _CHAOS_CODE_TITLES[code]
+    return HumanError(
+        code,
+        title,
+        _text(exc) or title,
+        why + "混沌编排只作用于本地仿真靶场，不影响真实集群。",
+        "先 trident chaos list 查看实验稳态要求；重跑：trident chaos run <实验id>；"
+        "持续失败时把 chaos-runs/latest.json 与报错一起提交。"
+        if code == "E502" else
+        "重试：trident chaos run <实验id>（回滚动作会先执行）；"
+        "查看报告：chaos-runs/latest.json 的 phases.rollback 字段。",
+    )
+
+
+# --------------------------------------------------------------------------- 错误码目录
+# 「≥30 类」的可数口径：每组规则一条 representative 异常 → 稳定错误码。
+# catalog() 供测试与文档断言（不参与运行时判定路径）。
+
+_REPRESENTATIVE_FIXTURES: tuple[tuple[str, BaseException | dict], ...] = (
+    ("E101", FileNotFoundError("kubeconfig: ~/.kube/config")),
+    ("E102", ModuleNotFoundError("No module named 'zstandard'")),
+    ("E103", OSError(10048, "address already in use")),
+    ("E104", FileNotFoundError("bash")),
+    ("E105", FileNotFoundError("missing.bin")),
+    ("E106", {"kind": "RuntimeError", "msg": "Python 3.9 不满足 requires-python >=3.10"}),
+    ("E107", OSError(errno.ENOSPC, "no space left on device")),
+    ("E108", ConnectionRefusedError(10061, "connection refused")),
+    ("E109", {"kind": "SSLError", "msg": "CERTIFICATE_VERIFY_FAILED"}),
+    ("E110", TimeoutError("timed out after 30s")),
+    ("E111", {"kind": "JSONDecodeError", "msg": "Expecting value: line 1 column 1"}),
+    ("E201", {"kind": "ExecutionLocked", "msg": "consent 未签署"}),
+    ("E202", {"kind": "ExecutionLocked", "msg": "授权级别不足：需要 利用验证"}),
+    ("E203", {"kind": "ExecutionLocked", "msg": "目标不在授权范围内: 10.0.0.0/8"}),
+    ("E204", {"kind": "ExecutionLocked", "msg": "时间窗已过期"}),
+    ("E205", PermissionError("access is denied")),
+    ("E206", ValueError("consent 字段缺失：level")),
+    ("E207", {"kind": "QuickstartAbort", "msg": "向导取消"}),
+    ("E208", ValueError("未知角色: superadmin")),
+    ("E301", {"kind": "BackupGateRefused", "msg": "backup_targets 缺失"}),
+    ("E302", KeyError("no-such-module")),
+    ("E303", RuntimeError("回滚失败：sha256 不一致")),
+    ("E401", FileNotFoundError("workspace run not found: r1")),
+    ("E402", {"kind": "DemoRefused", "msg": "目录不安全"}),
+    ("E403", {"kind": "DatabaseError", "msg": "file is not a database"}),
+    ("E501", {"kind": "ChaosAbortSignalled", "msg": "中止"}),
+    ("E502", {"kind": "ChaosSteadyStateError", "msg": "稳态未满足"}),
+    ("E503", {"kind": "ChaosRollbackError", "msg": "回滚未恢复"}),
+    ("E601", {"kind": "ApiError", "msg": "login required", "status": 401}),
+    ("E602", {"kind": "ApiError", "msg": "workspace 越权", "status": 403}),
+    ("E603", {"kind": "ApiError", "msg": "工作区授权未完成（consent 未签署）", "status": 423}),
+    ("E701", {"kind": "PilotError", "msg": "kubeconfig 解析失败"}),
+    ("E801", {"kind": "ScheduleError", "msg": "cron 表达式非法: 99 * * *"}),
+    ("E900", RuntimeError("surprise")),
+)
+
+
+class _ApiError(Exception):
+    """fixture：API 客户端错误（status + message）。"""
+
+    def __init__(self, msg: str, status: int = 0):
+        super().__init__(msg)
+        self.status = status
+
+
+def _materialize(spec: tuple[str, BaseException | dict]) -> BaseException:
+    if not isinstance(spec, dict):
+        return spec
+    kind = spec["kind"]
+    msg = spec.get("msg", "")
+    if kind == "ApiError":
+        cls = type("ApiError", (_ApiError,), {})
+        return cls(msg, spec.get("status", 0))
+    attrs: dict = {}
+    if kind in ("ChaosAbortSignalled", "ChaosSteadyStateError", "ChaosRollbackError"):
+        attrs["trident_code"] = {"ChaosAbortSignalled": "E501",
+                                 "ChaosSteadyStateError": "E502",
+                                 "ChaosRollbackError": "E503"}[kind]
+    cls = type(kind, (Exception,), attrs)
+    exc = cls(msg)
+    if "errno" in spec:
+        exc.errno = spec["errno"]  # type: ignore[attr-defined]
+    return exc
+
+
+def catalog() -> list[HumanError]:
+    """错误码目录（人话化覆盖面的可数口径；测试与文档用）。"""
+    seen: dict[str, HumanError] = {}
+    for code, spec in _REPRESENTATIVE_FIXTURES:
+        err = explain_exception(_materialize((code, spec)))
+        seen[err.code] = err
+    return [seen[c] for c in sorted(seen)]
+
+
+def catalog_codes() -> list[str]:
+    return [e.code for e in catalog()]
+
+
+def _is_conn_refused(exc: BaseException) -> bool:
+    if isinstance(exc, (ConnectionRefusedError, ConnectionResetError)):
+        return True
+    if getattr(exc, "errno", None) in (errno.ECONNREFUSED,):
+        return True
+    if getattr(exc, "winerror", None) in (10061, 10054):
+        return True
+    low = _text(exc).lower()
+    return ("connection refused" in low or "connection reset" in low
+            or "actively refused" in low or "目标不可达" in low
+            or "connection aborted" in low)
+
+
+def _is_timeout(exc: BaseException) -> bool:
+    if isinstance(exc, TimeoutError):
+        return True
+    low = _text(exc).lower()
+    return type(exc).__name__ in ("TimeoutError", "timeout", "URLError") and "timeout" in low \
+        or "timed out" in low or "请求超时" in low
+
+
+def _is_ssl_error(exc: BaseException) -> bool:
+    low = _text(exc).lower()
+    return "ssl" in type(exc).__name__.lower() or "certificate verify failed" in low \
+        or "CERTIFICATE_VERIFY_FAILED" in _text(exc)
+
+
+def _is_disk_full(exc: BaseException) -> bool:
+    if getattr(exc, "errno", None) == errno.ENOSPC:
+        return True
+    if getattr(exc, "winerror", None) == 112:
+        return True
+    low = _text(exc).lower()
+    return "no space left" in low or "磁盘空间不足" in low or "not enough disk" in low
+
+
+def _is_bad_config(exc: BaseException) -> bool:
+    if type(exc).__name__ in ("JSONDecodeError", "YAMLError", "ScannerError",
+                              "ParserError", "YamlishError", "ConfigError"):
+        return True
+    low = _text(exc).lower()
+    msg = _text(exc)
+    return "expecting value" in low or ("解析失败" in msg and (
+        "json" in low or "yaml" in low or "kubeconfig" in low or "配置" in msg))
+
+
+def _is_old_python(exc: BaseException) -> bool:
+    low = _text(exc).lower()
+    msg = _text(exc)
+    return "requires-python" in low or "python 版本" in low or ("python 3." in low and "不满足" in msg)
+
+
 def explain_exception(
     exc: BaseException,
     context: dict[str, Any] | None = None,
@@ -90,6 +256,11 @@ def explain_exception(
     if m:
         port = m.group(1)
     prefix = " ".join(filter(None, [_ctx(context, "action"), msg])).strip()
+
+    # ---- E5xx 混沌编排（异常自带稳定错误码） ------------------------------
+    chaos = _chaos_error(exc)
+    if chaos is not None:
+        return chaos
 
     # ---- demo / quickstart 自身的可预期拒绝 -------------------------------
     if type(exc).__name__ == "DemoRefused":
@@ -189,6 +360,69 @@ def explain_exception(
             "python -m pip install -e .；再运行 python -m trident doctor 确认。",
         )
 
+    # ---- E1xx 系统/网络（连接/超时/SSL/磁盘/配置/解释器版本） --------------
+    if _is_timeout(exc):
+        return HumanError(
+            "E110",
+            "请求超时",
+            f"等待目标响应超时：{msg or 'timed out'}。",
+            "目标服务响应慢或不可达（mock 靶场未启动 / kubectl 卡住 / 上游限流）。",
+            "先确认目标进程存活：python -m trident doctor；"
+            "调大 --timeout（如 trident pilot --timeout 120）后重试；"
+            "持续超时请检查代理设置（NO_PROXY=127.0.0.1）。",
+        )
+
+    if _is_conn_refused(exc):
+        return HumanError(
+            "E108",
+            "目标不可达（连接被拒绝/重置）",
+            f"无法连接目标服务：{msg or 'connection refused'}。",
+            "目标端口没有进程监听（服务未启动或已退出），或被防火墙/代理拦截。",
+            "mock 模式先运行 python -m trident demo（自动起本地靶场）；"
+            "已有靶场请检查 --target 端口；Windows 代理用户设置 NO_PROXY=127.0.0.1。",
+        )
+
+    if _is_ssl_error(exc):
+        return HumanError(
+            "E109",
+            "SSL/TLS 证书校验失败",
+            f"建立 HTTPS 连接时证书校验失败：{msg}。",
+            "自签证书/企业代理重签的 CA 不在系统信任库，或时间偏差导致证书失效。",
+            "企业内网 CA 先导入信任库（不要全局禁用校验）；"
+            "测试环境可设 SSL_CERT_FILE 指向内部 CA 捆绑文件后重试。",
+        )
+
+    if _is_disk_full(exc):
+        return HumanError(
+            "E107",
+            "磁盘空间不足",
+            f"写入文件时磁盘已满：{msg or 'no space left on device'}。",
+            "证据归档/报告/备份需要落盘；剩余空间不足会中断 run 并留下未完成目录。",
+            "清理 --home 下的 chaos-runs/、reports/ 或临时目录后重试；"
+            "Windows 查看占用：Get-PSDrive C；归档可迁移到其他盘（--home D:\\...）。",
+        )
+
+    if _is_bad_config(exc):
+        return HumanError(
+            "E111",
+            "配置文件解析失败",
+            f"JSON/YAML 配置无法解析：{msg}。",
+            "文件不是合法 JSON/YAML（多余逗号、Tab 缩进、引号不闭合），或文件被截断。",
+            "用编辑器打开报错行号检查语法；"
+            "kubeconfig 校验可先跑 python -m trident onboard-cluster --dry-run；"
+            "链/模块定义请对照 trident/chains/*.json 的格式。",
+        )
+
+    if _is_old_python(exc):
+        return HumanError(
+            "E106",
+            "Python 版本过低",
+            f"当前解释器不满足版本要求：{msg}。",
+            "Trident 需要 Python ≥ 3.10（match 语法与 dataclass 特性）；3.8/3.9 无法运行。",
+            "安装 Python 3.10+ 后重建环境：python -m pip install -e .；"
+            "或使用 uv/pyenv 切换版本：uv python install 3.12。",
+        )
+
     # ---- E2xx 授权 / 范围 / 权限 ------------------------------------------
     if _is_auth(exc):
         if "级别不足" in msg:
@@ -281,7 +515,101 @@ def explain_exception(
             "或用 --workspace 指定已存在的工作区。",
         )
 
-    # ---- E9xx 兜底 --------------------------------------------------------
+    # ---- E2xx 补充：consent 字段 / 角色 -----------------------------------
+    if "未知角色" in msg:
+        return HumanError(
+            "E208",
+            "未知角色",
+            f"角色名不在角色矩阵中：{msg}。",
+            "Trident 角色只有 admin/lead/tester/auditor 四种（能力位不同）；写错名字会在此处兜住。",
+            "改用 --role admin|lead|tester|auditor；"
+            "查看能力位：python -m trident user add --help。",
+        )
+
+    if "consent" in low and ("字段" in msg or "缺失" in msg):
+        return HumanError(
+            "E206",
+            "授权书字段不完整",
+            f"签署 consent 时缺少必填字段：{msg}。",
+            "quickstart/API 签授权都要 level/范围/时间窗齐备；缺字段不会写入半份授权。",
+            "交互式补签：python -m trident quickstart；"
+            "API 调 /api/v1/consent/sign 时补齐 fields（level 必填）。",
+        )
+
+    # ---- E3xx 补充：回滚失败 ----------------------------------------------
+    if "回滚失败" in msg or "rollback failed" in low:
+        return HumanError(
+            "E303",
+            "回滚失败",
+            f"从备份恢复目标文件失败：{msg}。",
+            "备份快照与目标当前内容校验不一致（期间被其他进程改动），或快照损坏。",
+            "查看 run 的 evidence 归档（tar 内含快照 sha256）人工比对；"
+            "重跑该模块前先确认目标文件未被他人占用；必要时手工恢复备份文件。",
+        )
+
+    # ---- E4xx 补充：证据库损坏 --------------------------------------------
+    if type(exc).__name__ == "DatabaseError" or "file is not a database" in low:
+        return HumanError(
+            "E403",
+            "证据库文件损坏",
+            f"SQLite 证据库无法读取：{msg}。",
+            "evidence.db 被截断/非 SQLite 格式（拷贝中断、磁盘满、0 字节覆盖）。",
+            "从归档层恢复：run 目录的 tar+SHA256 归档是最终事实源；"
+            "或换新 run 重跑（python -m trident demo 验证环境正常）。",
+        )
+
+    # ---- E6xx API 客户端 ---------------------------------------------------
+    api_status = getattr(exc, "status", None) or getattr(exc, "code", None)
+    if api_status == 401 or "login required" in low or "invalid credentials" in low:
+        return HumanError(
+            "E601",
+            "API 未登录或令牌失效",
+            f"API 调用被拒（401）：{msg}。",
+            "Bearer token 缺失/过期，或用户名密码错误；本地服务重启后旧 token 全部失效。",
+            "重新登录拿 token：POST /api/login；"
+            "MCP/脚本场景设置 TRIDENT_TOKEN；demo 工作区默认账号见 demo 输出。",
+        )
+    if api_status == 403 or "越权" in msg:
+        return HumanError(
+            "E602",
+            "API 工作区越权",
+            f"API 调用被拒（403）：{msg}。",
+            "会话只授权了部分工作区；访问未授权 workspace 会被拒（多租户隔离）。",
+            "用 users.json 中授权的工作区名重试；"
+            "需要扩权由 admin 重建用户：python -m trident user add --role <角色>。",
+        )
+    if api_status == 423 or ("consent 未签署" in msg and api_status):
+        return HumanError(
+            "E603",
+            "API 授权锁（423）",
+            f"执行类 API 被授权闸门锁定：{msg}。",
+            "该工作区 consent 未签署时，所有执行/写路径一律 423（与 CLI 同一把锁）。",
+            "先签署授权：python -m trident quickstart 或 POST /api/v1/consent/sign；"
+            "只读浏览不受此锁影响。",
+        )
+
+    # ---- E7xx / E8xx 集成与计划 -------------------------------------------
+    if type(exc).__name__ == "PilotError" or "kubeconfig" in low and "解析" in msg:
+        return HumanError(
+            "E701",
+            "kubeconfig / 试点输入不可用",
+            f"试点模式输入校验失败：{msg}。",
+            "kubeconfig 不是合法 YAML/JSON、缺 clusters/contexts/users 键，或合并后没有 context。",
+            "先跑导入向导校验：python -m trident onboard-cluster --dry-run；"
+            "离线场景改用 --snapshot（kubectl get 导出的 JSON）；"
+            "多文件合并冲突项见输出的 inventory.conflicts。",
+        )
+
+    if type(exc).__name__ == "ScheduleError" or "cron" in low and "非法" in msg:
+        return HumanError(
+            "E801",
+            "计划（cron/interval）非法",
+            f"创建计划任务被拒：{msg}。",
+            "cron 只接受 5 字段白名单表达式；interval 需为正整数秒；同名计划不可重复。",
+            "合法示例：--cron '0 3 * * *'（每日 03:00）或 --interval 86400；"
+            "查看现有计划：python -m trident schedule list。",
+        )
+
     return HumanError(
         "E900",
         "未预期的错误",

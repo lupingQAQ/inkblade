@@ -67,8 +67,9 @@ class TestTrainstackTargets(unittest.TestCase):
             mining.extract_latest("no-such-trainstack")
 
     def test_classic_targets_unchanged(self):
+        # 2026-10-26 push-2: 推理栈目标新增 transformers（其余五经典目标不变）
         self.assertEqual(set(mining.TARGETS),
-                         {"vllm", "sglang", "kuberay", "hami", "litellm"})
+                         {"vllm", "sglang", "kuberay", "hami", "litellm", "transformers"})
 
 
 class TestTrainstackPipeline(unittest.TestCase):

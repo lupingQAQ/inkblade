@@ -1,0 +1,55 @@
+{
+ "id": "dradriver-process-go-exec-command-l94-regex",
+ "source": "mining",
+ "title": "dra-driver: exec-command-go @ cmd/compute-domain-daemon/process.go:94",
+ "version": "v0.5.1",
+ "version_ref": {
+  "kind": "git",
+  "repo": "NVIDIA/k8s-dra-driver",
+  "tag": "v0.5.1"
+ },
+ "install": "pinned source vendored under lab/upstream_verify/upstream/",
+ "root_cause": {
+  "file": "cmd/compute-domain-daemon/process.go",
+  "line": 94,
+  "function": "processManager",
+  "snippet": "cmd := exec.Command(m.cmd[0], m.cmd[1:]...)",
+  "source": "lab/upstream_verify/upstream/NVIDIA/k8s-dra-driver/v0.5.1/cmd/compute-domain-daemon/process.go",
+  "source_sha256": "2e09a83a05881684ffa16a1b208a5766d02aefc65ba4a1178b80f08def3be913",
+  "note": "Compute-domain daemon restarts a configured command line from the DRA device plugin config."
+ },
+ "preconditions": [
+  "write access to the compute-domain daemon ConfigMap / plugin config"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-dradriver-process-go-exec-command-l94-regex",
+ "notes": "The compute-domain daemon executes m.cmd from its config (ConfigMap-sourced). The sink is real but the input is admin-controlled config, not tenant PVC data; recorded as a config-trust boundary for DRA deployments, plus the kubeletplugin.yaml privileged/hostPath posture (elevated-pod-spec hits).",
+ "static_evidence_level": "source-line",
+ "static_analysis": "The compute-domain daemon executes m.cmd from its config (ConfigMap-sourced). The sink is real but the input is admin-controlled config, not tenant PVC data; recorded as a config-trust boundary for DRA deployments, plus the kubeletplugin.yaml privileged/hostPath posture (elevated-pod-spec hits).",
+ "static_verdict": "not-dynamically-verified",
+ "unsupported": {},
+ "mining": {
+  "rule": "exec-command-go",
+  "channel": "regex",
+  "file": "process.go",
+  "line": 94,
+  "snippet": "cmd := exec.Command(m.cmd[0], m.cmd[1:]...)",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "dradriver"
+}

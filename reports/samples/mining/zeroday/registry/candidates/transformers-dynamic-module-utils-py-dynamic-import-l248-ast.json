@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-ast",
+ "target": "transformers",
+ "repo": "huggingface/transformers",
+ "tag": "v4.57.1",
+ "status": "pending-manual-review",
+ "rule": "dynamic-import",
+ "channel": "ast",
+ "file": "dynamic_module_utils.py",
+ "line": 248,
+ "snippet": "importlib.import_module(<运行期值>)",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-26T12:43:07"
+}

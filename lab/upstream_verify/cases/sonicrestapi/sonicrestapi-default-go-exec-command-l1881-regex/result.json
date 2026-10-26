@@ -1,0 +1,68 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "sonicrestapi-default-go-exec-command-l1881-regex",
+ "source": "mining",
+ "component": "sonicrestapi",
+ "title": "sonic-restapi: exec-command-go @ go-server-server/go/default.go:1881",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "a45b9bc",
+ "version_ref": {
+  "kind": "git",
+  "repo": "sonic-net/sonic-restapi",
+  "tag": "a45b9bc"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "a45b9bc",
+  "repo": "sonic-net/sonic-restapi",
+  "tag": "a45b9bc",
+  "commit": null,
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/sonic-net/sonic-restapi/a45b9bc/go-server-server/go/default.go",
+  "artifact_sha256": "e41aac6a82538d720aa32ab27c4388e31e97b79f2790f1015b5deefa1b4eebf4",
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "advisory_sha256": "4b898807421021bf0bf0a4e4c7d163ccb1e9147fdc9f93ad644e141a88f64718"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/sonicrestapi/sonicrestapi-default-go-exec-command-l1881-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.114,
+ "started_at": "2026-10-26T05:01:21+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-sonicrestapi-default-go-exec-command-l1881-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/sonicrestapi/sonicrestapi-default-go-exec-command-l1881-regex/evidence/log.txt",
+   "sha256": "27ff3857a610937c802adf9d2deaf973dd373f12cc75a5733c9f89ede23ed0ec",
+   "size": 272
+  },
+  {
+   "path": "lab/upstream_verify/cases/sonicrestapi/sonicrestapi-default-go-exec-command-l1881-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/sonicrestapi/sonicrestapi-default-go-exec-command-l1881-regex/evidence/static-check.json",
+   "sha256": "2965e0acc8c07b1c7fc6495d85dbd65bc18108296062efe29c8bf895bf17c344",
+   "size": 1547
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "9529f898fb2cb85886642c419aa79c18d93974432c230ac260545e0b4475e6d1",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"sonicrestapi-default-go-exec-command-l1881-regex\"}\n",
+ "stderr": "",
+ "notes": "SONiC REST PingPost builds the ping argv from request JSON (ip_address, count '-c ' concatenation, vnet_id). argv-list exec means no shell metacharacters, but option injection into ping and unauthenticated-by-default REST auth mode (community change to default 'user' is recent) make this a live probe/injection surface. Not run dynamically: the go-server-server package links swsscommon (C), which cannot build on this Windows host."
+}

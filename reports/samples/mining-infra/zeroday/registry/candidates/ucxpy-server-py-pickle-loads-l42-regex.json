@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "ucxpy-server-py-pickle-loads-l42-regex",
+ "target": "ucxpy",
+ "repo": "rapidsai/ucx-py",
+ "tag": "v0.45.00",
+ "status": "pending-manual-review",
+ "rule": "pickle-loads",
+ "channel": "regex",
+ "file": "server.py",
+ "line": 42,
+ "snippet": "cuda_obj_generator = cloudpickle.loads(func)",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-26T12:43:08"
+}

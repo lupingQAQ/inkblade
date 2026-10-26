@@ -1,0 +1,55 @@
+{
+ "id": "gpuoperator-main-go-exec-command-l669-regex",
+ "source": "mining",
+ "title": "gpu-operator: exec-command-go @ cmd/nvidia-validator/main.go:669",
+ "version": "v26.7.2",
+ "version_ref": {
+  "kind": "git",
+  "repo": "NVIDIA/gpu-operator",
+  "tag": "v26.7.2"
+ },
+ "install": "pinned source vendored under lab/upstream_verify/upstream/",
+ "root_cause": {
+  "file": "cmd/nvidia-validator/main.go",
+  "line": 669,
+  "function": "runCommand",
+  "snippet": "cmd := exec.Command(command, args...)",
+  "source": "lab/upstream_verify/upstream/NVIDIA/gpu-operator/v26.7.2/cmd/nvidia-validator/main.go",
+  "source_sha256": "62e35808d5773b15cbd92161827a43080d331c0d547eceae69def8ab13c98e3e",
+  "note": "Validator runCommand helper executes fixed in-tree commands inside privileged validator pods."
+ },
+ "preconditions": [
+  "validator pod compromised or validator spec command injection"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-gpuoperator-main-go-exec-command-l669-regex",
+ "notes": "NVIDIA GPU Operator validator pods run privileged with hostPath mounts (see 0500_daemonset posture case) and execute shell/nvidia-smi via runCommand. Callers are fixed in-tree (shell/nvidiaSMIPath), so the exec sink is not tenant-reachable by itself; the finding is the privileged execution surface of validator/driver DaemonSets, which pairs with the elevated-pod-spec hits in manifests/state-driver/0500_daemonset.yaml.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "NVIDIA GPU Operator validator pods run privileged with hostPath mounts (see 0500_daemonset posture case) and execute shell/nvidia-smi via runCommand. Callers are fixed in-tree (shell/nvidiaSMIPath), so the exec sink is not tenant-reachable by itself; the finding is the privileged execution surface of validator/driver DaemonSets, which pairs with the elevated-pod-spec hits in manifests/state-driver/0500_daemonset.yaml.",
+ "static_verdict": "not-dynamically-verified",
+ "unsupported": {},
+ "mining": {
+  "rule": "exec-command-go",
+  "channel": "regex",
+  "file": "main.go",
+  "line": 669,
+  "snippet": "cmd := exec.Command(command, args...)",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "gpuoperator"
+}

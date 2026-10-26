@@ -1,0 +1,205 @@
+/*
+ Copyright 2023 Juicedata Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+
+package resource
+
+import (
+	"context"
+	"fmt"
+	"os"
+	"strings"
+	"time"
+
+	batchv1 "k8s.io/api/batch/v1"
+	corev1 "k8s.io/api/core/v1"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/fields"
+	"k8s.io/klog/v2"
+
+	"github.com/juicedata/juicefs-csi-driver/pkg/common"
+	"github.com/juicedata/juicefs-csi-driver/pkg/config"
+	k8s "github.com/juicedata/juicefs-csi-driver/pkg/k8sclient"
+)
+
+var log = klog.NewKlogr().WithName("job-util")
+
+func GetUpgradeJobOwnerReferences(ctx context.Context, client *k8s.K8sClient) ([]metav1.OwnerReference, error) {
+	upgradeJobName := os.Getenv(common.JfsUpgradeJobName)
+	if upgradeJobName == "" {
+		return nil, nil
+	}
+	upgradeJob, err := client.BatchV1().Jobs(config.Namespace).Get(ctx, upgradeJobName, metav1.GetOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("get upgrade job %s: %w", upgradeJobName, err)
+	}
+	return []metav1.OwnerReference{
+		*metav1.NewControllerRef(upgradeJob, batchv1.SchemeGroupVersion.WithKind("Job")),
+	}, nil
+}
+
+func GetCanaryJobFailure(ctx context.Context, client *k8s.K8sClient, namespace, jobName, nodeName string, jobErr error) error {
+	labelSelector := metav1.LabelSelector{
+		MatchLabels: map[string]string{common.CanaryJobLabelKey: jobName},
+	}
+	var fieldSelector *fields.Set
+	if nodeName != "" {
+		selector := fields.Set{"spec.nodeName": nodeName}
+		fieldSelector = &selector
+	}
+	pods, err := client.ListPod(ctx, namespace, &labelSelector, fieldSelector)
+	if err != nil {
+		return fmt.Errorf("%w; failed to list canary pods: %v", jobErr, err)
+	}
+	if len(pods) == 0 {
+		return fmt.Errorf("%w; no canary pods found", jobErr)
+	}
+	if failure := formatCanaryJobFailure(jobErr, &pods[0]); failure != nil {
+		return failure
+	}
+
+	logLimit := int64(4096)
+	tailLines := int64(20)
+	logs, err := client.CoreV1().Pods(namespace).GetLogs(pods[0].Name, &corev1.PodLogOptions{
+		Container:  "canary",
+		TailLines:  &tailLines,
+		LimitBytes: &logLimit,
+	}).DoRaw(ctx)
+	if err != nil || strings.TrimSpace(string(logs)) == "" {
+		return fmt.Errorf("%w; canary pod %s status: %s",
+			jobErr, pods[0].Name, GetPodStatus(&pods[0]))
+	}
+	return fmt.Errorf("%w; canary pod %s status: %s; logs: %s",
+		jobErr, pods[0].Name, GetPodStatus(&pods[0]), string(logs))
+}
+
+func formatCanaryJobFailure(jobErr error, pod *corev1.Pod) error {
+	for _, status := range pod.Status.ContainerStatuses {
+		if status.Name != "canary" {
+			continue
+		}
+		if waiting := status.State.Waiting; waiting != nil && waiting.Reason != "" {
+			return fmt.Errorf("%w; canary pod %s container status: %s: %s",
+				jobErr, pod.Name, waiting.Reason, waiting.Message)
+		}
+		if terminated := status.State.Terminated; terminated != nil {
+			return fmt.Errorf("%w; canary pod %s container status: %s: %s, ExitCode:%d",
+				jobErr, pod.Name, terminated.Reason, terminated.Message, terminated.ExitCode)
+		}
+	}
+	return nil
+}
+
+func IsJobCompleted(job *batchv1.Job) bool {
+	if job.Status.Conditions != nil {
+		for _, cond := range job.Status.Conditions {
+			if cond.Status == corev1.ConditionTrue && cond.Type == batchv1.JobComplete {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func IsJobFailed(job *batchv1.Job) bool {
+	if job.Status.Conditions != nil {
+		for _, cond := range job.Status.Conditions {
+			if cond.Status == corev1.ConditionTrue && cond.Type == batchv1.JobFailed {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func GetJobStatus(job *batchv1.Job) string {
+	if job == nil {
+		return ""
+	}
+	jobStatus := "starting"
+	if job.Status.Active > 0 {
+		jobStatus = "active"
+	}
+	if job.Status.Succeeded > 0 {
+		jobStatus = "succeeded"
+	}
+	if job.Status.Failed > 0 {
+		jobStatus = "failed"
+	}
+	if job.Status.Terminating != nil && *job.Status.Terminating != 0 {
+		jobStatus = "terminating"
+	}
+	for _, cond := range job.Status.Conditions {
+		jobStatus += fmt.Sprintf(" %s=%s ", string(cond.Type), string(cond.Status))
+	}
+	return jobStatus
+}
+
+func IsJobShouldBeRecycled(job *batchv1.Job) bool {
+	// job not completed or not failed, should not be recycled
+	if !IsJobCompleted(job) && !IsJobFailed(job) {
+		return false
+	}
+	// job not set ttl, should be recycled
+	if job.Spec.TTLSecondsAfterFinished == nil {
+		return true
+	}
+
+	// job completionTime is nil, may be failed, should not be recycled. (will be recycled after ttl)
+	if job.Status.CompletionTime == nil {
+		return false
+	}
+
+	// job exits after ttl time, should be recycled (should not happen)
+	ttlTime := job.Status.CompletionTime.Add(time.Duration(*job.Spec.TTLSecondsAfterFinished) * time.Second)
+	return ttlTime.Before(time.Now())
+}
+
+func WaitForJobComplete(ctx context.Context, client *k8s.K8sClient, name string, timeout time.Duration) error {
+	waitCtx, cancel := context.WithTimeout(ctx, timeout)
+	defer cancel()
+	// Wait until the job is completed
+	log.Info("waiting for job complete", "name", name)
+	timer := time.NewTicker(2 * time.Second)
+	defer timer.Stop()
+	for {
+		select {
+		case <-waitCtx.Done():
+			job, err := client.GetJob(waitCtx, name, config.Namespace)
+			if err != nil {
+				return err
+			}
+			return fmt.Errorf("timeout, last status: %s", GetJobStatus(job))
+		case <-timer.C:
+			job, err := client.GetJob(waitCtx, name, config.Namespace)
+			if err != nil {
+				if err == context.Canceled || err == context.DeadlineExceeded {
+					return fmt.Errorf("timeout, last status: %s", GetJobStatus(job))
+				}
+				if k8serrors.IsNotFound(err) {
+					return nil
+				}
+				return err
+			}
+			if IsJobFailed(job) {
+				return fmt.Errorf("job %s failed, status: %s", name, GetJobStatus(job))
+			}
+			if IsJobCompleted(job) {
+				return nil
+			}
+		}
+	}
+}

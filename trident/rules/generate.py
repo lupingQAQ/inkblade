@@ -707,7 +707,7 @@ def generate_all(chains_dir: Path | str, findings: list | None = None,
         rel = write(f"sigma/{spec['id']}.yaml", yaml_dump(doc))
         register(spec["id"], ["sigma"], {"zh": spec["title"], "en": spec["title"]}, [rel],
                  spec["tuning"], spec["blocks_modules"], match=spec["match"],
-                 log_source=spec["logsource"])
+                 log_source=spec["logsource"], scope=spec.get("scope", "chain"))
 
     # 3b) CVE ??? ? ?? CVE/???? 1 ? Sigma?monitor?? cve ????
     for spec in cve_sigma_specs(cve_catalog.load()):

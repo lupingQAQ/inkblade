@@ -1,0 +1,67 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "OPENBMC-BMCWEB-REDfish-HW",
+ "source": "mining",
+ "component": "bmc",
+ "title": "OpenBMC bmcweb/Redfish + IPMI-BT service plane (BMC firmware path)",
+ "status": "unsupported",
+ "declared_status": "unsupported",
+ "method": "unsupported",
+ "verified": false,
+ "module": null,
+ "version": "master",
+ "version_ref": {
+  "kind": "git",
+  "repo": "openbmc/bmcweb",
+  "tag": "master",
+  "commit": "63a18f4e6188a77b713a8b22c8a95ab3d6c5a718"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "master",
+  "repo": "openbmc/bmcweb",
+  "tag": "master",
+  "commit": "63a18f4e6188a77b713a8b22c8a95ab3d6c5a718",
+  "package": null,
+  "wheel_sha256": null,
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "advisory_sha256": "4b898807421021bf0bf0a4e4c7d163ccb1e9147fdc9f93ad644e141a88f64718"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/bmc/OPENBMC-BMCWEB-REDfish-HW/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.116,
+ "started_at": "2026-10-26T05:01:38+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-OPENBMC-BMCWEB-REDfish-HW",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/bmc/OPENBMC-BMCWEB-REDfish-HW/evidence/log.txt",
+   "sha256": "4ba84caaf188a8be6bea9d2cad91f27c0de2f56e0fdf711626a7f0b489e3a906",
+   "size": 442
+  },
+  {
+   "path": "lab/upstream_verify/cases/bmc/OPENBMC-BMCWEB-REDfish-HW/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/bmc/OPENBMC-BMCWEB-REDfish-HW/evidence/unsupported.json",
+   "sha256": "19807bb0d811e5e58a69910dbd810e2e3c1e4eeea4bff5245bb0dbcf7f1607f9",
+   "size": 1212
+  }
+ ],
+ "poc_sha256": "cdd4a172ce321d9047bc0ea5ac3891e6352290228a85bba86955bcfd3178dd09",
+ "manifest_sha256": "7cef7eccae12a445f412536e584a768f7c3bc8cac4ae5d37e777b533e7bf8fd8",
+ "stdout": "{\"status\": \"unsupported\", \"case\": \"OPENBMC-BMCWEB-REDfish-HW\", \"reason\": \"bmcweb is C++17 on OpenBMC systemd images and the Redfish/IPMI-BT planes ride BMC hardware (BMC SoC, IPMI BT block); no local runtime can host them. Redfish testing belongs to the BMC lab, not this Windows host.\"}\n",
+ "stderr": "",
+ "notes": "OpenBMC/BTI/Redfish: bmcweb (C++), phosphor daemons and the IPMI BT interface are firmware/hardware paths; explicitly unsupported on this host. Existing BMC-surface conclusions live in the bmc-ipmi-exposure and redfish-default-credentials modules; the three SONiC vendor CVEs remain unsupported for the same class of reason."
+}

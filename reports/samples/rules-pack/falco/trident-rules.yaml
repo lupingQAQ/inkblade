@@ -91,6 +91,17 @@
     - filesystem
     - monitor
     - mode-monitor
+- rule: TRIDENT Node root proof marker write from privileged container
+  desc: "??????? /root ?? TRIDENT-PROOF ????? root ?????English: privileged container writes a TRIDENT-PROOF marker into host /root."
+  condition: "(evt.type in (open, openat, openat2) and evt.is_open_write=true) and fd.name contains TRIDENT-PROOF and container.privileged=true"
+  output: "node-root marker write path=%fd.name proc=%proc.name container=%container.name"
+  priority: CRITICAL
+  tags:
+    - trident
+    - filesystem
+    - privilege
+    - monitor
+    - mode-monitor
 - rule: TRIDENT Agent sandbox host unexpected parent execution
   desc: "Agent 平台沙箱宿主上，进程执行的父进程不在沙箱监管基线内（行为化异常执行面）。English: execution on an agent-platform sandbox host whose parent process is outside the sandbox supervisor baseline."
   condition: "spawned_process and k8s.ns.label[trident-io-zone]=ml-agent and not proc.aname in (sandbox-supervisor, containerd-shim, systemd)"

@@ -107,6 +107,74 @@
 | Dify 控制面默认放行：未鉴权创建 binding 成功 | critical | 立即 · Immediate | {"detail": "鉴权 fail-open × 默认公开开发令牌：无 Authorization 凭据即可创建/销毁 binding，并可链式驱动沙箱作业（见 dify-local-sandbox-unauth-rce）。", "verification": {"schema": "trident-poc-verification-v1", "module": "dify-control-plane-failopen", "steps": ["1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册", "2. 以 probe-only 参数重放模块 dify-control-plane-failopen（params 供 explorer/scheduler 传递）", "3. 比对重放 findings 标题集合与本 finding（存在即复现）", "4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）"], "expected_evidence": {"summary": "fingerprint 命中 dify-agent；无凭据创建 binding 成功（vulnerable 姿态）", "artifacts": [], "result_sha256": "16e806f6d62d902d6b38c7bd605c40316309913d7166f1750c4e05ba8e52fdd3", "rollback": "备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）", "trace": "traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）"}, "auto_reverify": "workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发", "params": {"base_url": "http://127.0.0.1:<port>/"}}} | 通用立即项：暴露面收敛与凭据复核 / Generic immediate: shrink exposure and review credentials |
 | Open WebUI 共享沙箱执行：任意登录用户可执行任意 Python | critical | 立即 · Immediate | {"detail": "工具端点把用户代码送入共享 Jupyter 沙箱：无模块黑名单、无用户隔离、跨用户残留互读——低权限对话用户即得服务端代码执行，并可读取其他用户残留会话与数据。", "verification": {"schema": "trident-poc-verification-v1", "module": "open-webui-code-execute-rce", "steps": ["1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册", "2. 以 probe-only 参数重放模块 open-webui-code-execute-rce（params 供 explorer/scheduler 传递）", "3. 比对重放 findings 标题集合与本 finding（存在即复现）", "4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）"], "expected_evidence": {"summary": "fingerprint 命中 open-webui；共享沙箱任意代码执行成立（vulnerable 姿态）", "artifacts": [], "result_sha256": "bfda29da51cf6e2e1ec8717c7e0deb13e256e06d3f3777a394ec47571ce976af", "rollback": "备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）", "trace": "traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）"}, "auto_reverify": "workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发", "params": {"base_url": "http://127.0.0.1:<port>/"}}} | 通用立即项：暴露面收敛与凭据复核 / Generic immediate: shrink exposure and review credentials |
 
+## 漏洞适用性矩阵（版本 × 前置 × 实测） / CVE Applicability Matrix (version × preconditions × live evidence)
+
+- 目录：`<abs-path>（56 条） · 清单：`未提供` · 采集时间：—
+- Catalog: `<abs-path> (56 entries) · Inventory: `not provided` · collected: -
+- 四态：适用 **0** · 前置不满足 **0** · 不适用 **0** · 信息不足 **56**
+- States: applicable **0** · blocked **0** · not applicable **0** · unknown **56**
+
+| CVE | 组件 / Component | 版本区间 / Affected | 观测 / Observed | 前置 / Preconditions | 实测证据 / Live evidence | 结论 / State | 模块·链 / Modules·chains |
+|---|---|---|---|---|---|---|---|
+| `CVE-2025-32444` | vllm | vllm: >=0.6.5,<0.8.5 | — | — | products.vllm.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | vllm-pickle-pipe-rce, flat-network-admin-plane-weight-poison |
+| `CVE-2025-29783` | vllm | vllm: >=0.6.5,<0.8.0 | — | — | products.vllm.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | vllm-pickle-pipe-rce |
+| `CVE-2025-47277` | vllm | vllm: >=0.6.5,<0.8.5 | — | — | products.vllm.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | vllm-pickle-pipe-rce |
+| `CVE-2025-59425` | vllm | vllm: <0.11 | — | — | products.vllm.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | vllm-timing-oracle |
+| `CVE-2026-3059` | sglang | sglang: ==0.5.10 | — | — | products.sglang.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | sglang-zmq-pickle-rce, flat-network-admin-plane-weight-poison |
+| `CVE-2026-3060` | sglang | sglang: ==0.5.10 | — | — | products.sglang.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | sglang-zmq-pickle-rce |
+| `CVE-2026-7301` | sglang | sglang: ==0.5.10 | — | — | products.sglang.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | sglang-zmq-pickle-rce |
+| `CVE-2026-7302` | sglang | sglang: ==0.5.10 | — | — | products.sglang.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | sglang-zmq-pickle-rce |
+| `CVE-2026-15978` | sglang | sglang: <=0.5.15 | — | — | products.sglang.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | sglang-weight-exfil |
+| `CVE-2026-92972` | sglang | sglang: <=0.5.19 | — | — | products.sglang.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | sglang-route-poison |
+| `CVE-2023-48022` | ray | ray: * | — | — | products.ray.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | ray-job-marker-rce, cve-weaponized-surface-takeover, ray-dashboard-cluster-takeover |
+| `CVE-2023-48023` | ray | ray: * | — | — | products.ray.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | ray-job-marker-rce, cve-weaponized-surface-takeover, ray-dashboard-cluster-takeover |
+| `CVE-2026-32981` | ray | ray: <2.8.1 | — | — | products.ray.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | ray-job-marker-rce, cve-weaponized-surface-takeover, ray-dashboard-cluster-takeover |
+| `KUBERAY-ADV-2026-01` | kuberay | kuberay: * | — | — | products.kuberay.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | ray-job-marker-rce, kuberay-operator-escalation, cve-weaponized-surface-takeover |
+| `LWS-ADV-2026-01` | lws | lws: * | — | — | products.lws.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | lws-leader-endpoint-audit |
+| `CVE-2024-21626` | runc | runc: <1.1.12 | — | — | products.runc.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | runc-escape-detect, cve-weaponized-surface-takeover |
+| `CVE-2020-15257` | containerd | containerd: <1.4.3 | — | — | products.containerd.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | containerd-shim-escape-detect |
+| `CVE-2022-0492` | linux-kernel | linux-kernel: <5.16.2 | — | — | products.linux-kernel.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | runc-escape-detect, cve-weaponized-surface-takeover |
+| `CVE-2024-10220` | kubernetes | kubernetes: <=1.30.2 | — | — | products.kubernetes.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | kubelet-gitrepo-exec-detect |
+| `CVE-2024-3177` | kubernetes | kubernetes: <=1.29.3 | — | — | products.kubernetes.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | kubelet-gitrepo-exec-detect |
+| `CVE-2025-31133` | runc | runc: <1.2.8 | — | — | products.runc.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | runc-escape-detect, cve-weaponized-surface-takeover |
+| `CVE-2024-0132` | nvidia | nvidia: <=1.16.1 | — | — | products.nvidia.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | nvidia-toolkit-escape-detect, gpu-network-operator-host-escape |
+| `CVE-2024-0133` | nvidia | nvidia: <=1.16.1 | — | — | products.nvidia.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | nvidia-toolkit-escape-detect |
+| `CVE-2025-23266` | nvidia | nvidia: <=1.17.7 | — | — | products.nvidia.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | gpu-operator-driver-audit, cve-weaponized-surface-takeover, gpu-network-operator-host-escape |
+| `CVE-2025-23267` | nvidia | nvidia: <=1.17.7 | — | — | products.nvidia.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | nvidia-toolkit-escape-detect |
+| `CVE-2013-4786` | bmc | bmc: * | — | — | products.bmc.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | ipmi-cipher-zero-bypass, cve-weaponized-surface-takeover |
+| `CVE-2023-34329` | bmc | bmc: >=12.0,<12.4 | — | — | products.bmc.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | redfish-default-credentials, cve-weaponized-surface-takeover |
+| `CVE-2017-12542` | bmc | bmc: <2.53 | — | — | products.bmc.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | redfish-default-credentials, cve-weaponized-surface-takeover |
+| `CVE-2025-38741` | sonic | sonic: ==4.5.0 | — | — | products.sonic.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | sonic-config-plane-write, cve-weaponized-surface-takeover |
+| `CVE-2025-23374` | sonic | sonic: <4.4.1 | — | — | products.sonic.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | sonic-config-plane-write |
+| `CVE-2025-33180` | cumulus | cumulus: <5.14 | — | — | products.cumulus.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | cumulus-nvue-injection, cve-weaponized-surface-takeover |
+| `CVE-2026-24184` | cumulus | cumulus: <5.16 | — | — | products.cumulus.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | cumulus-nvue-injection |
+| `GHSA-h26v-922j-28cg` | sonic | sonic: * | — | — | products.sonic.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | sonic-rsyslog-injection |
+| `HAMI-ADV-2026-01` | hami | hami: * | — | — | products.hami.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | hami-scheduler-auth-gap, gpu-pool-scheduler-unauth, gpu-tenant-residue-chain |
+| `CGPU-ADV-2026-01` | cgpu | cgpu: * | — | — | products.cgpu.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | cgpu-isolation-audit |
+| `CVE-2026-35029` | litellm | litellm: <1.83.0 | — | — | products.litellm.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | litellm-config-update-rce, ai-gateway-key-exfil, cve-weaponized-surface-takeover |
+| `CVE-2026-40217` | litellm | litellm: <1.83.0 | — | — | products.litellm.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | litellm-config-update-rce, cve-weaponized-surface-takeover |
+| `CVE-2026-42203` | litellm | litellm: >=1.80.5,<1.83.7 | — | — | products.litellm.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | litellm-config-update-rce, cve-weaponized-surface-takeover |
+| `CVE-2026-42208` | litellm | litellm: >=1.81.16,<1.83.7 | — | — | products.litellm.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | litellm-config-update-rce, ai-gateway-key-exfil, cve-weaponized-surface-takeover |
+| `CVE-2026-47102` | litellm | litellm: <1.83.10 | — | — | products.litellm.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | litellm-config-update-rce, cve-weaponized-surface-takeover |
+| `LITELLM-DEFAULT-KEY` | litellm | litellm: * | — | — | products.litellm.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | litellm-default-key-exfil, ai-gateway-key-exfil |
+| `CVE-2025-3466` | dify | dify: >=1.1.0,<1.1.3 | — | — | products.dify.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | dify-code-node-escape |
+| `CVE-2025-63387` | dify | dify: ==1.9.1 | — | — | products.dify.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | dify-code-node-escape |
+| `CVE-2025-56520` | dify | dify: ==1.6.0 | — | — | products.dify.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | dify-code-node-escape |
+| `CVE-2026-28786` | open-webui | open-webui: <0.8.6 | — | — | products.open-webui.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | open-webui-file-overwrite |
+| `CVE-2026-28788` | open-webui | open-webui: <0.8.6 | — | — | products.open-webui.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | open-webui-file-overwrite |
+| `CVE-2025-64496` | open-webui | open-webui: <=0.6.224 | — | — | products.open-webui.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | open-webui-file-overwrite |
+| `CVE-2025-23354` | megatron | megatron: <0.13.1 | — | — | products.megatron.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | megatron-checkpoint-rce |
+| `CVE-2025-33247` | megatron | megatron: <0.15.3 | — | — | products.megatron.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | megatron-checkpoint-rce |
+| `CVE-2026-65110` | megatron | megatron: >=0,<=17 | — | — | products.megatron.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | megatron-checkpoint-rce |
+| `CVE-2024-43497` | deepspeed | deepspeed: >=0.1.1,<0.15.1 | — | — | products.deepspeed.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | deepspeed-checkpoint-rce |
+| `CVE-2025-32434` | pytorch | pytorch: <=2.5.1 | — | — | products.pytorch.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | torch-weights-bypass-rce |
+| `CVE-2024-0520` | mlflow | mlflow: <2.9.0 | — | — | products.mlflow.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | mlflow-model-rce |
+| `CVE-2024-37061` | mlflow | mlflow: >=1.11.0 | — | — | products.mlflow.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | mlflow-model-rce |
+| `CVE-2026-53995` | mlflow | mlflow: <=3.17.1 | — | — | products.mlflow.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | mlflow-trace-write |
+| `CVE-2026-4993` | wandb | wandb: <=1.0 | — | — | products.wandb.present=清单无该产品版本 (inventory) | **信息不足 / unknown** | litellm-default-key-exfil |
+
+**读法**：`applicable` 才开放对应模块；`blocked` 列出缺失前置；`not-applicable` 为版本不命中/组件未部署；`unknown` 表示信息不足，不升级为适用。证据列格式为 `字段=值 (来源)`。 / **How to read**: only `applicable` opens the linked module; `blocked` lists missing preconditions; `not-applicable` means version mismatch/component absent; `unknown` is never upgraded to applicable. Evidence is `field=value (source)`.
+
 ## 复测计划 Retest Plan / Retest Plan
 
 修复完成后按同参数重放对应攻击链（先 dry-run 预览写面），并运行 `trident rules validate` 做紫队验证输出覆盖率矩阵；零日级发现细节默认展示，如启用可选脱敏开关则按合同分级开放细节后在授权窗口内复测。 / After fixes, replay the same chains with identical parameters (dry-run first to preview writes) and run `trident rules validate` for purple-team coverage; zero-day-class details are shown by default, and when the optional redaction switch is enabled, retest inside the authorized window once details are released per contract tier.

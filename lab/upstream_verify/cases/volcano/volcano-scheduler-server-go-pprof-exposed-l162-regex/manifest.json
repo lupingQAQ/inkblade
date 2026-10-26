@@ -1,0 +1,56 @@
+{
+ "id": "volcano-scheduler-server-go-pprof-exposed-l162-regex",
+ "source": "mining",
+ "title": "volcano: pprof-exposed-go @ cmd/scheduler/app/server.go:162",
+ "version": "v1.16.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "volcano-sh/volcano",
+  "tag": "v1.16.0"
+ },
+ "install": "pinned source vendored under lab/upstream_verify/upstream/",
+ "root_cause": {
+  "file": "cmd/scheduler/app/server.go",
+  "line": 162,
+  "function": "serve",
+  "snippet": "mux.HandleFunc(\"/debug/pprof/\", pprof.Index)",
+  "source": "lab/upstream_verify/upstream/volcano-sh/volcano/v1.16.0/cmd/scheduler/app/server.go",
+  "source_sha256": "815cd111dacdc6dcc783b18cd2e3f8f2ec7b1f1947e3f7084f9f8a467d1e945b",
+  "note": "Scheduler debug mux mounts full pprof handler set."
+ },
+ "preconditions": [
+  "--enable-pprof scheduling options set",
+  "debug port reachable"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-volcano-scheduler-server-go-pprof-exposed-l162-regex",
+ "notes": "Volcano scheduler mounts the complete /debug/pprof/* handler set on its debug mux when pprof scheduling options are enabled. Exposure is flag-gated, so it is a deployment posture (leak of heap/cpu profiles with scheduler state) rather than an always-on sink; the volcano agent DaemonSet (hostNetwork + hostPath elevated-pod-spec hits) is the paired posture finding.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Volcano scheduler mounts the complete /debug/pprof/* handler set on its debug mux when pprof scheduling options are enabled. Exposure is flag-gated, so it is a deployment posture (leak of heap/cpu profiles with scheduler state) rather than an always-on sink; the volcano agent DaemonSet (hostNetwork + hostPath elevated-pod-spec hits) is the paired posture finding.",
+ "static_verdict": "not-dynamically-verified",
+ "unsupported": {},
+ "mining": {
+  "rule": "pprof-exposed-go",
+  "channel": "regex",
+  "file": "server.go",
+  "line": 162,
+  "snippet": "mux.HandleFunc(\"/debug/pprof/\", pprof.Index)",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "volcano"
+}

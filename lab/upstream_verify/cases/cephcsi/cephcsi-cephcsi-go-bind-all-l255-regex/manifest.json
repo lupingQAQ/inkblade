@@ -1,0 +1,56 @@
+{
+ "id": "cephcsi-cephcsi-go-bind-all-l255-regex",
+ "source": "mining",
+ "title": "ceph-csi: go-bind-all @ cmd/cephcsi.go:255",
+ "version": "v3.18.1",
+ "version_ref": {
+  "kind": "git",
+  "repo": "ceph/ceph-csi",
+  "tag": "v3.18.1",
+  "commit": "e8688c3bf3d057daf1d7e679f3e0ed861a234c3b"
+ },
+ "install": "pinned source vendored under lab/upstream_verify/upstream/",
+ "root_cause": {
+  "file": "cmd/cephcsi.go",
+  "line": 255,
+  "function": "parseCliFlags/default MetricsIP",
+  "snippet": "conf.MetricsIP = \"0.0.0.0\"",
+  "source": "lab/upstream_verify/upstream/ceph/ceph-csi/v3.18.1/cmd/cephcsi.go",
+  "source_sha256": "a75f0383daeb875c0d227eaa7853ef6da9817a00d1b3ad3037814b78ff1ef683",
+  "note": "Metrics listener defaults to all interfaces; pairs with the verified unauth pprof case on the same listener."
+ },
+ "preconditions": [
+  "cephcsi pod network-reachable on the metrics port"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-cephcsi-cephcsi-go-bind-all-l255-regex",
+ "notes": "cephcsi defaults MetricsIP to 0.0.0.0; the same default-mux listener serves the unauthenticated pprof endpoints verified dynamically in cephcsi-httpserver-go-pprof-exposed-l37-regex. This entry pins the bind-all default at cmd/cephcsi.go:255.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "cephcsi defaults MetricsIP to 0.0.0.0; the same default-mux listener serves the unauthenticated pprof endpoints verified dynamically in cephcsi-httpserver-go-pprof-exposed-l37-regex. This entry pins the bind-all default at cmd/cephcsi.go:255.",
+ "static_verdict": "not-dynamically-verified",
+ "unsupported": {},
+ "mining": {
+  "rule": "go-bind-all",
+  "channel": "regex",
+  "file": "cephcsi.go",
+  "line": 255,
+  "snippet": "conf.MetricsIP = \"0.0.0.0\"",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "cephcsi"
+}

@@ -1051,7 +1051,25 @@
 
   /* ================= 启动 ================= */
 
+  /* ================= 首屏 demo 引导卡 ================= */
+
+  function bindDemoGuide() {
+    var card = document.getElementById("demo-guide");
+    if (!card) return;
+    var close = document.getElementById("demo-guide-close");
+    try {
+      if (localStorage.getItem("trident-demo-guide-dismissed") === "1") card.hidden = true;
+    } catch (e) { /* file:// 或隐私模式下 localStorage 可能不可用 */ }
+    if (close) {
+      close.addEventListener("click", function () {
+        card.hidden = true;
+        try { localStorage.setItem("trident-demo-guide-dismissed", "1"); } catch (e) {}
+      });
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
+    bindDemoGuide();
     bindNav();
     bindSession();
     renderAll();

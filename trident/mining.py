@@ -36,6 +36,7 @@ DEFAULT_FIXTURE_DIR = REPO_ROOT / "lab" / "mining-fixture"
 DEFAULT_SAMPLE_TREE = REPO_ROOT / "lab" / "sample-vuln-repo"
 BASELINE_PATH = Path(__file__).resolve().parent / "data" / "mining-baseline.json"
 TRAINSTACK_BASELINE_PATH = Path(__file__).resolve().parent / "data" / "trainstack-mining-baseline.json"
+INFRA_BASELINE_PATH = Path(__file__).resolve().parent / "data" / "infra-mining-baseline.json"
 
 # 挖掘目标（与任务口径一致：五仓库各一轮；latest_tag=2026-10-25 webfetch GitHub raw 快照）
 TARGETS = {
@@ -55,7 +56,26 @@ TRAINSTACK_TARGETS = {
     "trl": {"repo": "huggingface/trl", "tag": "v1.16.0"},
 }
 
-ALL_TARGETS = {**TARGETS, **TRAINSTACK_TARGETS}
+# 推理栈第二轮扩展（2026-10-26 push-2）：transformers 4.57.1（reproenv-d 实装同版）
+TARGETS["transformers"] = {"repo": "huggingface/transformers", "tag": "v4.57.1"}
+
+# 基础设施组件目标（2026-10-26 push-2，git clone --depth 1 --branch <tag> 快照）：
+# NCCL/UCX 为纯 C/CUDA（无可扫 .py/.go 源，硬件依赖），OpenBMC bmcweb 为 C++/systemd，
+# 三者不进本表，以 unsupported 案例显式登记（见 lab/upstream_verify/cases/{nccl,ucx,bmc}）。
+INFRA_TARGETS = {
+    "gpuoperator": {"repo": "NVIDIA/gpu-operator", "tag": "v26.7.2"},
+    "dradriver": {"repo": "NVIDIA/k8s-dra-driver", "tag": "v0.5.1"},
+    "juicefscsi": {"repo": "juicedata/juicefs-csi-driver", "tag": "v0.33.1"},
+    "cephcsi": {"repo": "ceph/ceph-csi", "tag": "v3.18.1"},
+    "kueue": {"repo": "kubernetes-sigs/kueue", "tag": "v0.20.3"},
+    "volcano": {"repo": "volcano-sh/volcano", "tag": "v1.16.0"},
+    "lws": {"repo": "kubernetes-sigs/lws", "tag": "v1.0.0"},
+    "sonicrestapi": {"repo": "sonic-net/sonic-restapi", "tag": "a45b9bc"},
+    "sonictelemetry": {"repo": "sonic-net/sonic-telemetry", "tag": "51beafc"},
+    "ucxpy": {"repo": "rapidsai/ucx-py", "tag": "v0.45.00"},
+}
+
+ALL_TARGETS = {**TARGETS, **TRAINSTACK_TARGETS, **INFRA_TARGETS}
 
 CANDIDATE_SCHEMA = "trident-mining-candidate-v1"
 
@@ -215,4 +235,18 @@ def run_trainstack_pipeline(out_dir: Path | str, **kwargs) -> dict[str, Any]:
     """
     kwargs.setdefault("targets", list(TRAINSTACK_TARGETS))
     kwargs.setdefault("baseline_path", TRAINSTACK_BASELINE_PATH)
+    return run_pipeline(out_dir, **kwargs)
+
+
+def run_infra_pipeline(out_dir: Path | str, **kwargs) -> dict[str, Any]:
+    """基础设施组件一轮挖掘（GPU Operator/DRA/JuiceFS/Ceph CSI/Kueue/Volcano/LWS/SONiC/UCX-Py）。
+
+    与主流水线共用三环闭环与 ``pending-manual-review`` 登记语义；基线独立
+    （``trident/data/infra-mining-baseline.json``）。Go 源走 regex 通道
+    （exec-command-go / go-bind-all / pprof-exposed-go / elevated-pod-spec）；
+    NCCL/UCX/OpenBMC（纯 C/CUDA/C++，硬件依赖）不参与代码扫描，以 unsupported
+    案例显式登记。
+    """
+    kwargs.setdefault("targets", list(INFRA_TARGETS))
+    kwargs.setdefault("baseline_path", INFRA_BASELINE_PATH)
     return run_pipeline(out_dir, **kwargs)

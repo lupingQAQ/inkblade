@@ -1,0 +1,80 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "msswift-indexed-dataset-py-pickle-loads-l112-regex",
+ "source": "mining",
+ "component": "msswift",
+ "title": "msswift: pickle-loads @ swift/dataset/indexed_dataset.py:112",
+ "status": "verified",
+ "declared_status": "verified",
+ "method": "dynamic-function",
+ "verified": true,
+ "module": "msswift-dataset-pickle-rce",
+ "version": "v4.6.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v4.6.0",
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/dataset/indexed_dataset.py",
+  "artifact_sha256": "87cd03d6975665fb9e93c9b2c86a6a838d1db07408cc00f183e9fe0342d1c2a6",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l112-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 2.554,
+ "started_at": "2026-10-26T05:02:49+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-msswift-indexed-dataset-py-pickle-loads-l112-regex",
+  "before": "ABSENT",
+  "after_has_marker": true,
+  "after_sha256": "6c4ea9895b54bc39c7724a9a65cb5cc265de58c3bebcbb1a6481a3e87fb871bd"
+ },
+ "request_response": [
+  {
+   "dir": "attacker-written packing cache -> IndexedDataset -> pickle.load",
+   "payload": "pickle reduce",
+   "result": "marker written inside the upstream sink"
+  }
+ ],
+ "state_before": "marker=ABSENT",
+ "state_after": "marker contains proof text",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l112-regex/evidence/log.txt",
+   "sha256": "1b6252d9adb63cc0043e1f40d3e50b95194ea0ca7aaf33dd25e180b9c1cad8fa",
+   "size": 390
+  },
+  {
+   "path": "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l112-regex/evidence/marker.txt",
+   "sha256": "6c4ea9895b54bc39c7724a9a65cb5cc265de58c3bebcbb1a6481a3e87fb871bd",
+   "size": 61
+  },
+  {
+   "path": "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l112-regex/evidence/packing-cache/tmp/poisoned/data.idx",
+   "sha256": "c1c91ccf7b73339a3ee4c6cae15c706853950fef609fb52f581fb68159e49cf6",
+   "size": 261
+  },
+  {
+   "path": "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l112-regex/evidence/run.json",
+   "sha256": "256cd66acccea94e93d205c0cab117d474f7d0ccf4a954ee6efbb0602bcf6a5d",
+   "size": 1461
+  }
+ ],
+ "poc_sha256": "b33abef47f55abd21f8df7497b646aef5cf3b94aa0b520134da01edf95ef8398",
+ "manifest_sha256": "6cda637d40eb045d248050d06503dddedd792d1fec73798369c2c25e66041ccb",
+ "stdout": "{\"status\": \"verified\", \"marker\": \"TRIDENT-UV-msswift-indexed-dataset-py-pickle-loads-l112-regex\", \"evidence\": \"lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l112-regex/evidence\"}\n",
+ "stderr": "",
+ "notes": "ms-swift packing cache loader IndexedDataset.__init__ opens data.idx with pickle.load(f). The cache dir (PACKING_CACHE or the swift cache) is attacker-writable in the shared-storage threat model; whoever plants data.idx gets pickle code execution the next time a training run opens the packed dataset. Reproduced at function level against the verbatim pinned v4.6.0 upstream file (package tree stubbed; os/pickle/real BinReader are the upstream code)."
+}

@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "cephcsi-volumemounter-go-exec-command-go-l66-regex",
+ "target": "cephcsi",
+ "repo": "ceph/ceph-csi",
+ "tag": "v3.18.1",
+ "status": "pending-manual-review",
+ "rule": "exec-command-go",
+ "channel": "regex",
+ "file": "volumemounter.go",
+ "line": 66,
+ "snippet": "fuseMounterProbe := exec.Command(\"ceph-fuse\", \"--version\")",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-26T12:43:08"
+}

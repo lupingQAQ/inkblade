@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+ "target": "juicefscsi",
+ "repo": "juicedata/juicefs-csi-driver",
+ "tag": "v0.33.1",
+ "status": "pending-manual-review",
+ "rule": "go-bind-all",
+ "channel": "regex",
+ "file": "controller_manager.go",
+ "line": 71,
+ "snippet": "BindAddress: \"0.0.0.0:8084\",",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-26T12:43:07"
+}

@@ -1,0 +1,58 @@
+{
+ "id": "msswift-indexed-dataset-py-pickle-loads-l129-regex",
+ "source": "mining",
+ "title": "msswift: pickle-loads @ swift/dataset/indexed_dataset.py:129",
+ "version": "v4.6.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "modelscope/ms-swift",
+  "tag": "v4.6.0",
+  "commit": "ad818a2cdfafaf4305ac40c4acd892a211978bc2"
+ },
+ "install": "pinned source vendored under lab/upstream_verify/upstream/",
+ "root_cause": {
+  "file": "swift/dataset/indexed_dataset.py",
+  "line": 129,
+  "function": "IndexedDataset.__getitem__",
+  "snippet": "return pickle.loads(buffer)",
+  "source": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/dataset/indexed_dataset.py",
+  "source_sha256": "87cd03d6975665fb9e93c9b2c86a6a838d1db07408cc00f183e9fe0342d1c2a6",
+  "note": "IndexedDataset.__getitem__ deserialises every record with pickle.loads(buffer) straight from the packed data-*.bin shards. Whoever can write the shard files (shared dataset cache, poisoned packing pipeline) executes code on the first __getitem__ during training. Reproduced at function level: upstream __init__ builds the index, upstream __getitem__ unpickles the attacker slice and the marker is written before any downstream use."
+ },
+ "preconditions": [
+  "attacker can write the swift packing cache dir (PACKING_CACHE or dataset cache)",
+  "a training job opens the packed IndexedDataset"
+ ],
+ "steps": [
+  "load the verbatim pinned v4.6.0 indexed_dataset.py with the swift/modelscope tree stubbed",
+  "plant a malicious data.idx (and data-00000.bin slice) under evidence/",
+  "call the real upstream __init__/__getitem__ and observe the marker inside pickle"
+ ],
+ "expected_evidence": [
+  "marker written by the pickle payload inside the upstream sink",
+  "run.json with source sha256 and stub manifest"
+ ],
+ "cleanup": "temporary files under evidence/ are rewritten on every run",
+ "status": "verified",
+ "method": "dynamic-function",
+ "module": "msswift-dataset-pickle-rce",
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-trainstack/mining-report.json",
+ "marker_text": "TRIDENT-UV-msswift-indexed-dataset-py-pickle-loads-l129-regex",
+ "notes": "IndexedDataset.__getitem__ deserialises every record with pickle.loads(buffer) straight from the packed data-*.bin shards. Whoever can write the shard files (shared dataset cache, poisoned packing pipeline) executes code on the first __getitem__ during training. Reproduced at function level: upstream __init__ builds the index, upstream __getitem__ unpickles the attacker slice and the marker is written before any downstream use.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "",
+ "static_verdict": "verified-dynamic",
+ "unsupported": {},
+ "mining": {
+  "rule": "pickle-loads",
+  "channel": "regex",
+  "file": "indexed_dataset.py",
+  "line": 129,
+  "snippet": "return pickle.loads(buffer)",
+  "original_status": "pending-manual-review",
+  "promoted": true
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "msswift"
+}

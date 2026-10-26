@@ -14,6 +14,23 @@
   "proxy_server.py:1408:dynamic-import:regex",
   "proxy_server.py:16397:auth-fail-open:regex",
   "proxy_server.py:16509:auth-fail-open:regex",
-  "proxy_server.py:16602:auth-fail-open:regex"
+  "proxy_server.py:16602:auth-fail-open:regex",
+  "proxy_server.py:4461:subprocess-popen:regex"
+ ],
+ "transformers": [
+  "dynamic_module_utils.py:248:dynamic-import:ast",
+  "dynamic_module_utils.py:248:dynamic-import:regex",
+  "dynamic_module_utils.py:698:trust-remote-code-propagated:regex",
+  "dynamic_module_utils.py:698:trust-remote-code:regex",
+  "dynamic_module_utils.py:750:trust-remote-code-propagated:regex",
+  "dynamic_module_utils.py:759:trust-remote-code-propagated:regex",
+  "dynamic_module_utils.py:759:trust-remote-code:regex",
+  "dynamic_module_utils.py:763:trust-remote-code-propagated:regex",
+  "dynamic_module_utils.py:763:trust-remote-code:regex",
+  "dynamic_module_utils.py:765:trust-remote-code-propagated:regex",
+  "dynamic_module_utils.py:771:trust-remote-code-propagated:regex",
+  "dynamic_module_utils.py:771:trust-remote-code:regex",
+  "dynamic_module_utils.py:784:trust-remote-code-propagated:regex",
+  "dynamic_module_utils.py:784:trust-remote-code:regex"
  ]
 }

@@ -29,4 +29,4 @@ tags:
 custom:
   trident-mode: monitor
   trident-tuning: 对 argocd/gitops 与 operator 的常规绑定建立主体白名单（user.username/serviceaccount），仅对指向 cluster-admin 的增量绑定保持 critical；建议同时监控 rolebindings 的 delete（清理痕迹）
-  trident-blocks-chains: ray-dashboard-cluster-takeover
+  trident-blocks-chains: "cluster-takeover-objective,ray-dashboard-cluster-takeover"

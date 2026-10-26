@@ -1,0 +1,58 @@
+{
+ "id": "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+ "source": "mining",
+ "title": "ceph-csi: pprof-exposed-go @ internal/util/httpserver.go:37",
+ "version": "v3.18.1",
+ "version_ref": {
+  "kind": "git",
+  "repo": "ceph/ceph-csi",
+  "tag": "v3.18.1",
+  "commit": "e8688c3bf3d057daf1d7e679f3e0ed861a234c3b"
+ },
+ "install": "pinned module github.com/ceph/ceph-csi v3.18.1 via go proxy (go.sum recorded in evidence); Go probe built with go1.27",
+ "root_cause": {
+  "file": "internal/util/httpserver.go",
+  "line": 37,
+  "function": "addPath / EnableProfiling / StartMetricsServer",
+  "snippet": "http.Handle(name, handler)",
+  "source": "lab/upstream_verify/upstream/ceph/ceph-csi/v3.18.1/internal/util/httpserver.go",
+  "source_sha256": "ca258baef88fcdcb7a1fa5532dd5046d187f59033712eff5626d9309685cdd68",
+  "note": "internal/util/httpserver.go imports net/http/pprof non-blank (line 6), so its init() registers /debug/pprof/* on the DEFAULT net/http mux; StartMetricsServer (line 29) serves that same default mux on MetricsIP:MetricsPort with no authentication and cmd/cephcsi.go:255 defaults MetricsIP to 0.0.0.0. Verified dynamically: /debug/pprof/cmdline, /debug/pprof/heap and /metrics all return 200 without credentials. Additional upstream defect observed while reproducing: the verbatim EnableProfiling/addPath registers profile names without a leading slash, which panics on Go >= 1.22 ServeMux pattern rules."
+ },
+ "preconditions": [
+  "cephcsi pod network-reachable on the metrics port (default bind 0.0.0.0)",
+  "profiling enabled via --enableprofiling (registration itself is unconditional in EnableProfiling)"
+ ],
+ "steps": [
+  "extract the verbatim pinned ValidateURL/StartMetricsServer/addPath/EnableProfiling and the Config struct",
+  "import the real internal/util/log package from the pinned module",
+  "call the real EnableProfiling() and StartMetricsServer() and fetch /debug/pprof/* + /metrics with no credentials"
+ ],
+ "expected_evidence": [
+  "HTTP 200 on /debug/pprof/cmdline and /metrics without authentication",
+  "run.json with the verbatim extraction hashes and module go.sum"
+ ],
+ "cleanup": "probe HTTP server runs in-process and exits with the probe",
+ "status": "verified",
+ "method": "dynamic-http",
+ "module": "storage-protocol-csi",
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-cephcsi-httpserver-go-pprof-exposed-l37-regex",
+ "notes": "Unauthenticated pprof + prometheus metrics ride the same default-mux listener the CSI binary serves; default bind is 0.0.0.0. Dynamic function-level reproduction with the verbatim pinned registration and server functions; impact = cpu/heap profiling (secret extraction surface) reachable without credentials.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Unauthenticated pprof + prometheus metrics ride the same default-mux listener the CSI binary serves; default bind is 0.0.0.0. Dynamic function-level reproduction with the verbatim pinned registration and server functions; impact = cpu/heap profiling (secret extraction surface) reachable without credentials.",
+ "static_verdict": "verified-dynamic",
+ "unsupported": {},
+ "mining": {
+  "rule": "pprof-exposed-go",
+  "channel": "regex",
+  "file": "httpserver.go",
+  "line": 37,
+  "snippet": "log.DebugLogMsg(\"DEBUG: registered profiling handler on /debug/pprof/%s\\n\", name)",
+  "original_status": "pending-manual-review",
+  "promoted": true
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "cephcsi"
+}

@@ -46,6 +46,7 @@ INTERPRETERS = {
     "mlflow3": WORKSPACE / "env" / "uv-mlflow3171" / "Scripts" / "python.exe",
     "mlflow2": VERIFY_ROOT / ".envs" / "mlflow281" / "Scripts" / "python.exe",
     "torch": WORKSPACE / "env" / "uv-torch251" / "Scripts" / "python.exe",
+    "lfa": WORKSPACE / "env" / "venv-lfa" / "Scripts" / "python.exe",
 }
 
 STATUSES = ("verified", "static-only", "unsupported")

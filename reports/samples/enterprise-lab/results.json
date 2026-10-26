@@ -1,6 +1,6 @@
 {
-  "schema": "trident-enterprise-lab/1",
-  "generated_at": "2026-10-25T16:16:41Z",
+  "schema": "trident-enterprise-lab/2",
+  "generated_at": "2026-10-26T05:23:01Z",
   "tool": "trident",
   "source": "fixture",
   "fixture": "lab/enterprise-fixtures",
@@ -13,91 +13,239 @@
       "medium",
       "low"
     ],
-    "labels": "ground-truth.json 固化，实现不临时改标签"
+    "labels": "ground-truth.json 固化（本版本把已补检测器的 __not_detected__ 占位锚点落位为证据锚，risk/benign 判定不变）"
+  },
+  "baseline": {
+    "module": "trident/core/baseline.py",
+    "classes": [
+      "CI 服务账号",
+      "安全扫描器",
+      "平台控制器/调度器",
+      "系统绑定",
+      "平台命名空间",
+      "平台工作负载三元组(ns,SA,image)"
+    ],
+    "learning": "时间切分：前 340 条历史事件 → 主体×动作形态频次(≥50)+仅 2xx；高危形态永不学习",
+    "suppression_semantics": "能力面发现(can-i)仅 CI/扫描器可抑制；行为面发现全部基线主体可抑制"
   },
   "scenarios": [
     {
       "id": "platform-baseline-noise",
       "title": "场景 1：平台组件基线噪声（privileged/hostPath/hostNetwork DaemonSet）",
       "source": "fixture",
-      "findings_total": 17,
-      "tp": 1,
-      "fp": 16,
-      "fn": 1,
+      "findings_total": 3,
+      "tp": 2,
+      "fp": 1,
+      "fn": 0,
       "risk_items": 2,
       "benign_items": 7,
-      "benign_hits": 13,
-      "fp_rate": 0.9412,
-      "fn_rate": 0.5
+      "benign_hits": 0,
+      "fp_rate": 0.3333,
+      "fn_rate": 0.0,
+      "tuning": {
+        "before": {
+          "findings_total": 17,
+          "tp": 1,
+          "fp": 16,
+          "fn": 1,
+          "fp_rate": 0.9412,
+          "fn_rate": 0.5
+        },
+        "after": {
+          "findings_total": 3,
+          "tp": 2,
+          "fp": 1,
+          "fn": 0,
+          "fp_rate": 0.3333,
+          "fn_rate": 0.0
+        },
+        "suppression": {
+          "suppressed": 15,
+          "by_source": {
+            "platform-workload": 13,
+            "subject-baseline": 2
+          },
+          "provenance": [
+            {
+              "source": "platform-workload",
+              "rule": "platform-workload",
+              "matched": 13,
+              "sample": "kube-system/aws-node-9k2lp：宿主容器运行时 socket 挂载（/var/run/docker.sock）"
+            },
+            {
+              "source": "subject-baseline",
+              "rule": "subject-baseline",
+              "matched": 2,
+              "sample": "SA 逃逸矩阵：system:serviceaccount:ml-training:platform-scheduler 可创建 Pod × 集群存在特权/socket 先例 → 节点逃逸路径成立"
+            }
+          ]
+        }
+      }
     },
     {
       "id": "rbac-intent-noise",
       "title": "场景 2：RBAC/NetworkPolicy 常规运维噪声（system wildcard / CI exec / 系统 NS）",
       "source": "fixture",
-      "findings_total": 20,
+      "findings_total": 8,
       "tp": 7,
-      "fp": 13,
+      "fp": 1,
       "fn": 1,
       "risk_items": 7,
       "benign_items": 6,
-      "benign_hits": 9,
-      "fp_rate": 0.65,
-      "fn_rate": 0.1429
+      "benign_hits": 0,
+      "fp_rate": 0.125,
+      "fn_rate": 0.1429,
+      "tuning": {
+        "before": {
+          "findings_total": 20,
+          "tp": 7,
+          "fp": 13,
+          "fn": 1,
+          "fp_rate": 0.65,
+          "fn_rate": 0.1429
+        },
+        "after": {
+          "findings_total": 8,
+          "tp": 7,
+          "fp": 1,
+          "fn": 1,
+          "fp_rate": 0.125,
+          "fn_rate": 0.1429
+        },
+        "suppression": {
+          "suppressed": 12,
+          "by_source": {
+            "controller-role-baseline": 3,
+            "platform-namespace-baseline": 6,
+            "subject-baseline": 1,
+            "system-binding-baseline": 2
+          },
+          "provenance": [
+            {
+              "source": "controller-role-baseline",
+              "rule": "controller-role-baseline",
+              "matched": 3,
+              "sample": "通配符ClusterRole：platform-operator"
+            },
+            {
+              "source": "platform-namespace-baseline",
+              "rule": "platform-namespace-baseline",
+              "matched": 6,
+              "sample": "命名空间 ingress-nginx 的 1 个 Pod 未被任何入站 NetworkPolicy 选择（覆盖缺口）"
+            },
+            {
+              "source": "subject-baseline",
+              "rule": "subject-baseline",
+              "matched": 1,
+              "sample": "can-i：system:serviceaccount:ci:ci-runner 可 exec Pod（提权/横向支点）"
+            },
+            {
+              "source": "system-binding-baseline",
+              "rule": "system-binding-baseline",
+              "matched": 2,
+              "sample": "cluster-admin 绑定：system:masters → Group:system:masters"
+            }
+          ]
+        }
+      }
     },
     {
       "id": "audit-flood-noise",
-      "title": "场景 3：审计事件洪水（340 良性 + 5 风险，2 未覆盖）",
+      "title": "场景 3：审计事件洪水（340 良性 + 5 风险）",
       "source": "fixture",
-      "findings_total": 3,
-      "tp": 3,
+      "findings_total": 5,
+      "tp": 5,
       "fp": 0,
-      "fn": 2,
+      "fn": 0,
       "risk_items": 5,
       "benign_items": 0,
       "benign_hits": 0,
       "fp_rate": 0.0,
-      "fn_rate": 0.4,
+      "fn_rate": 0.0,
       "tuning": {
-        "default_baseline": {
-          "findings_total": 183,
-          "tp": 3,
-          "fp": 180,
-          "fn": 2,
-          "risk_items": 5,
-          "benign_items": 0,
-          "benign_hits": 0,
-          "fp_rate": 0.9836,
-          "fn_rate": 0.4
-        },
-        "tuned_baseline": {
+        "before": {
           "findings_total": 3,
           "tp": 3,
           "fp": 0,
           "fn": 2,
-          "risk_items": 5,
-          "benign_items": 0,
-          "benign_hits": 0,
           "fp_rate": 0.0,
           "fn_rate": 0.4
         },
-        "baseline_added": [
-          "system:serviceaccount:ci:ci-runner",
-          "system:serviceaccount:security:scanner"
-        ],
-        "fp_before": 180,
-        "fp_after": 0,
-        "fp_reduction": 1.0
+        "after": {
+          "findings_total": 5,
+          "tp": 5,
+          "fp": 0,
+          "fn": 0,
+          "fp_rate": 0.0,
+          "fn_rate": 0.0
+        },
+        "default_baseline_rerun": {
+          "findings_total": 185,
+          "tp": 5,
+          "fp": 180,
+          "fn": 0,
+          "risk_items": 5,
+          "benign_items": 0,
+          "benign_hits": 0,
+          "fp_rate": 0.973,
+          "fn_rate": 0.0
+        },
+        "learned_only": {
+          "findings_total": 65,
+          "tp": 5,
+          "fp": 60,
+          "fn": 0,
+          "fp_rate": 0.9231,
+          "fn_rate": 0.0,
+          "learned_entries": [
+            {
+              "subject": "system:serviceaccount:ci:ci-runner",
+              "pattern": "create pods/exec",
+              "occurrences": 120
+            },
+            {
+              "subject": "system:serviceaccount:monitoring:prometheus",
+              "pattern": "get secrets",
+              "occurrences": 100
+            },
+            {
+              "subject": "system:serviceaccount:ml-training:platform-scheduler",
+              "pattern": "create pods",
+              "occurrences": 60
+            }
+          ],
+          "note": "仅用前 340 条历史学习（时间切分、不看标签）：CI/监控/调度主体被习得；扫描器 403 拒绝尝试不可学习 → 学习-only 仍有 FP，必须与审批清单合并使用"
+        }
       }
     }
   ],
   "overall": {
-    "tp": 11,
-    "fp": 29,
-    "fn": 4,
-    "findings_total": 40,
+    "tp": 14,
+    "fp": 2,
+    "fn": 1,
+    "findings_total": 16,
     "risk_items": 14,
-    "fp_rate": 0.725,
-    "fn_rate": 0.2857
+    "fp_rate": 0.125,
+    "fn_rate": 0.0714
+  },
+  "overall_tuning": {
+    "before": {
+      "findings_total": 40,
+      "tp": 11,
+      "fp": 29,
+      "fn": 4,
+      "fp_rate": 0.725,
+      "fn_rate": 0.2857
+    },
+    "after": {
+      "tp": 14,
+      "fp": 2,
+      "fn": 1,
+      "findings_total": 16,
+      "risk_items": 14,
+      "fp_rate": 0.125,
+      "fn_rate": 0.0714
+    }
   },
   "defenses": {
     "kyverno": {
@@ -141,7 +289,8 @@
   "gaps": [
     "fixture 不等于客户集群：版本/CNI/CRD/准入/遥测差异未覆盖",
     "审计场景只有 345 条事件，不等于客户日均百万级事件流",
-    "2 个风险（SA token 铸造、pods/portforward）当前检测器未覆盖 → 如实计 FN",
+    "残余 FN：mutable image tag（本夹具无该形态证据，检测器已备、不造证据）；客户环境需以真实快照重测",
+    "残余 FP 逐条列出（各场景 tuning.after）：多为真实风险形态但无标注，不静默吞掉",
     "真实集群车道无标注，不计算 FP/FN"
   ],
   "reproduce": "python lab/enterprise_lab.py"

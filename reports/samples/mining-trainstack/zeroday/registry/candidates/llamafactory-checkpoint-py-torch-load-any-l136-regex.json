@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "llamafactory-checkpoint-py-torch-load-any-l136-regex",
+ "target": "llamafactory",
+ "repo": "hiyouga/LlamaFactory",
+ "tag": "v0.9.5",
+ "status": "pending-manual-review",
+ "rule": "torch-load-any",
+ "channel": "regex",
+ "file": "checkpoint.py",
+ "line": 136,
+ "snippet": "rng_state = torch.load(path, map_location=\"cpu\", weights_only=False)",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-26T12:43:07"
+}

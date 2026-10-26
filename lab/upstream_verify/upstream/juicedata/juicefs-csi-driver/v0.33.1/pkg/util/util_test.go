@@ -1,0 +1,1982 @@
+//go:build !darwin
+// +build !darwin
+
+/*
+Copyright 2021 Juicedata Inc
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+package util
+
+import (
+	"context"
+	"errors"
+	"math"
+	"net/url"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"syscall"
+	"testing"
+	"time"
+
+	. "github.com/agiledragon/gomonkey/v2"
+	"github.com/juicedata/juicefs-csi-driver/pkg/common"
+	. "github.com/smartystreets/goconvey/convey"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
+
+func TestContainsString(t *testing.T) {
+	type args struct {
+		slice []string
+		s     string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "test-true",
+			args: args{
+				slice: []string{"a", "b"},
+				s:     "a",
+			},
+			want: true,
+		},
+		{
+			name: "test-false",
+			args: args{
+				slice: []string{"a", "b"},
+				s:     "c",
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ContainsString(tt.args.slice, tt.args.s); got != tt.want {
+				t.Errorf("ContainsString() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestParseEndpoint(t *testing.T) {
+	type args struct {
+		endpoint string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		want1   string
+		wantErr bool
+	}{
+		{
+			name: "test",
+			args: args{
+				endpoint: "unix://tmp/csi.sock",
+			},
+			want:    "unix",
+			want1:   "/tmp/csi.sock",
+			wantErr: false,
+		},
+		{
+			name: "test-error",
+			args: args{
+				endpoint: "http://test",
+			},
+			want:    "",
+			want1:   "",
+			wantErr: true,
+		},
+		{
+			name: "test-nil",
+			args: args{
+				endpoint: "",
+			},
+			want:    "",
+			want1:   "",
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1, err := ParseEndpoint(tt.args.endpoint)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ParseEndpoint() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("ParseEndpoint() got = %v, want %v", got, tt.want)
+			}
+			if got1 != tt.want1 {
+				t.Errorf("ParseEndpoint() got1 = %v, want %v", got1, tt.want1)
+			}
+		})
+	}
+}
+
+func TestParseEndpointError(t *testing.T) {
+	Convey("Test ParseEndpoint", t, func() {
+		Convey("parse error", func() {
+			patch1 := ApplyFunc(url.Parse, func(rawURL string) (*url.URL, error) {
+				return nil, errors.New("test")
+			})
+			defer patch1.Reset()
+			_, _, err := ParseEndpoint("unix://tmp/csi.sock")
+			So(err, ShouldNotBeNil)
+		})
+		Convey("not exist", func() {
+			patch1 := ApplyFunc(os.IsNotExist, func(err error) bool {
+				return false
+			})
+			defer patch1.Reset()
+			patch2 := ApplyFunc(os.Remove, func(addr string) error {
+				return errors.New("test")
+			})
+			defer patch2.Reset()
+			_, _, err := ParseEndpoint("unix://tmp/csi.sock")
+			So(err, ShouldNotBeNil)
+		})
+	})
+}
+
+func TestGetReferenceKey(t *testing.T) {
+	type args struct {
+		target string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "test",
+			args: args{
+				target: "test",
+			},
+			want: "juicefs-9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c1",
+		},
+		{
+			name: "test-nil",
+			args: args{
+				target: "",
+			},
+			want: "juicefs-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetReferenceKey(tt.args.target); got != tt.want {
+				t.Errorf("GetReferenceKey() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetTimeAfterDelay(t *testing.T) {
+	now := time.Now()
+	type args struct {
+		delayStr string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "test",
+			args: args{
+				delayStr: "1h",
+			},
+			want:    now.UTC().Add(1 * time.Hour).Format(time.RFC3339),
+			wantErr: false,
+		},
+		{
+			name: "test-err",
+			args: args{
+				delayStr: "1hour",
+			},
+			want:    "",
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := GetTimeAfterDelay(tt.args.delayStr)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetTimeAfterDelay() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("GetTimeAfterDelay() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetTime(t *testing.T) {
+	tests := []struct {
+		name    string
+		str     string
+		want    time.Time
+		wantErr bool
+	}{
+		{
+			name: "rfc3339-utc",
+			str:  "2026-05-29T12:20:38Z",
+			want: time.Date(2026, 5, 29, 12, 20, 38, 0, time.UTC),
+		},
+		{
+			name: "rfc3339-offset",
+			str:  "2026-05-29T20:20:38+08:00",
+			want: time.Date(2026, 5, 29, 12, 20, 38, 0, time.UTC),
+		},
+		{
+			name:    "invalid",
+			str:     "not-a-time",
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := GetTime(tt.str)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetTime() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr {
+				return
+			}
+			if !got.Equal(tt.want) {
+				t.Errorf("GetTime() got = %v, want (same instant) %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// legacy zone-less values were written in local time, so GetTime must parse them in local time.
+func TestGetTimeLegacyFormat(t *testing.T) {
+	orig := time.Local
+	defer func() { time.Local = orig }()
+	time.Local = time.FixedZone("CST", 8*3600) // UTC+8
+
+	got, err := GetTime("2026-05-29 12:20:38")
+	if err != nil {
+		t.Fatalf("GetTime legacy error: %v", err)
+	}
+	wantLocal := time.Date(2026, 5, 29, 12, 20, 38, 0, time.Local) // 12:20:38 CST
+	if !got.Equal(wantLocal) {
+		t.Errorf("legacy value parsed as %v, want %v (parsed in local zone, not UTC)", got, wantLocal)
+	}
+}
+
+// round-trip GetTime(GetTimeAfterDelay(d)) must be ~d regardless of local timezone.
+func TestGetTimeAfterDelayRoundTrip(t *testing.T) {
+	orig := time.Local
+	defer func() { time.Local = orig }()
+
+	for _, tz := range []*time.Location{
+		time.UTC,
+		time.FixedZone("CST", 8*3600),  // UTC+8
+		time.FixedZone("EST", -5*3600), // UTC-5
+	} {
+		time.Local = tz
+		const delay = 3 * time.Hour
+		s, err := GetTimeAfterDelay(delay.String())
+		if err != nil {
+			t.Fatalf("tz=%s GetTimeAfterDelay error: %v", tz, err)
+		}
+		at, err := GetTime(s)
+		if err != nil {
+			t.Fatalf("tz=%s GetTime error: %v", tz, err)
+		}
+		got := time.Until(at)
+		if diff := got - delay; diff < -2*time.Second || diff > 2*time.Second {
+			t.Errorf("tz=%s round-trip delay = %v, want ~%v (off by %v); writer/reader timezone mismatch", tz, got, delay, diff)
+		}
+	}
+}
+
+func Test_quoteForShell(t *testing.T) {
+	type args struct {
+		cmd string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "test-(",
+			args: args{
+				cmd: "mysql://user@(127.0.0.1:3306)/juicefs",
+			},
+			want: "mysql://user@\\(127.0.0.1:3306\\)/juicefs",
+		},
+		{
+			name: "test-none",
+			args: args{
+				cmd: "redis://127.0.0.1:6379/0",
+			},
+			want: "redis://127.0.0.1:6379/0",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := QuoteForShell(tt.args.cmd); got != tt.want {
+				t.Errorf("transformCmd() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStripPasswd(t *testing.T) {
+	type args struct {
+		uri string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "test1",
+			args: args{
+				uri: "redis://:abc@127.0.0.1:6379/0",
+			},
+			want: "redis://:****@127.0.0.1:6379/0",
+		},
+		{
+			name: "test2",
+			args: args{
+				uri: "redis://127.0.0.1:6379/0",
+			},
+			want: "redis://127.0.0.1:6379/0",
+		},
+		{
+			name: "test3",
+			args: args{
+				uri: "redis://abc:abc@127.0.0.1:6379/0",
+			},
+			want: "redis://abc:****@127.0.0.1:6379/0",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := StripPasswd(tt.args.uri); got != tt.want {
+				t.Errorf("StripPasswd() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCheckDynamicPV(t *testing.T) {
+	type args struct {
+		name string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    bool
+		wantErr bool
+	}{
+		{
+			name: "test-true",
+			args: args{
+				name: "pvc-95aba554-3fe4-4433-9d25-d2a63a114367",
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "test-false",
+			args: args{
+				name: "test",
+			},
+			want:    false,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := CheckDynamicPV(tt.args.name)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CheckDynamicPV() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("CheckDynamicPV() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestContainsPrefix(t *testing.T) {
+	type args struct {
+		slice []string
+		s     string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "test-true",
+			args: args{
+				slice: []string{"metrics=0.0.0.0:9567", "subdir=/metrics"},
+				s:     "metrics=",
+			},
+			want: true,
+		},
+		{
+			name: "test-false",
+			args: args{
+				slice: []string{"subdir=/metrics"},
+				s:     "metrics=",
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ContainsPrefix(tt.args.slice, tt.args.s); got != tt.want {
+				t.Errorf("ContainsPrefix() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStripReadonlyOption(t *testing.T) {
+	type args struct {
+		options []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "test-none",
+			args: args{
+				options: []string{},
+			},
+			want: []string{},
+		},
+		{
+			name: "test-ro",
+			args: args{
+				options: []string{"ro"},
+			},
+			want: []string{},
+		},
+		{
+			name: "test-read-only",
+			args: args{
+				options: []string{"read-only"},
+			},
+			want: []string{},
+		},
+		{
+			name: "test-no-ro",
+			args: args{
+				options: []string{"subdir=/metrics"},
+			},
+			want: []string{"subdir=/metrics"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := StripReadonlyOption(tt.args.options); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StripReadonlyOption() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCheckExpectValue(t *testing.T) {
+	type args struct {
+		m           map[string]string
+		key         string
+		targetValue string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "test-true",
+			args: args{
+				m: map[string]string{
+					"a": "b",
+					"c": "d",
+				},
+				key:         "a",
+				targetValue: "b",
+			},
+			want: true,
+		},
+		{
+			name: "test-false",
+			args: args{
+				m: map[string]string{
+					"a": "b",
+					"c": "d",
+				},
+				key:         "a",
+				targetValue: "c",
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := CheckExpectValue(tt.args.m, tt.args.key, tt.args.targetValue); got != tt.want {
+				t.Errorf("CheckExpectValue() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestImageResol(t *testing.T) {
+	type args struct {
+		image string
+	}
+	tests := []struct {
+		name      string
+		args      args
+		wantHasCE bool
+		wantHasEE bool
+	}{
+		{
+			name: "test-latest",
+			args: args{
+				image: "juicedata/mount:latest",
+			},
+			wantHasCE: true,
+			wantHasEE: false,
+		},
+		{
+			name: "test-ce",
+			args: args{
+				image: "juicedata/mount:ce-1.0.0",
+			},
+			wantHasCE: true,
+			wantHasEE: false,
+		},
+		{
+			name: "test-ee",
+			args: args{
+				image: "juicedata/mount:ee-4.9.0",
+			},
+			wantHasCE: false,
+			wantHasEE: true,
+		},
+		{
+			name: "test-both",
+			args: args{
+				image: "juicedata/mount:v1.0.0-4.9.0",
+			},
+			wantHasCE: true,
+			wantHasEE: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotHasCE, gotHasEE := ImageResol(tt.args.image)
+			if gotHasCE != tt.wantHasCE {
+				t.Errorf("ImageResol() gotHasCE = %v, want %v", gotHasCE, tt.wantHasCE)
+			}
+			if gotHasEE != tt.wantHasEE {
+				t.Errorf("ImageResol() gotHasEE = %v, want %v", gotHasEE, tt.wantHasEE)
+			}
+		})
+	}
+}
+
+func TestParseToBytes(t *testing.T) {
+	tests := []struct {
+		name    string
+		args    string
+		want    uint64
+		wantErr bool
+	}{
+		{
+			name: "test-normal",
+			args: "1",
+			want: 1 << 20,
+		},
+		{
+			name: "test-has-uint",
+			args: "1M",
+			want: 1 << 20,
+		},
+		{
+			name: "test-has-uint-2",
+			args: "1G",
+			want: 1 << 30,
+		},
+		{
+			name: "test-has-byte-uint",
+			args: "1048576B",
+			want: 1 << 20,
+		},
+		{
+			name:    "test-invalid",
+			args:    "1d",
+			wantErr: true,
+		},
+		{
+			name:    "test-invalid-lowercase-byte",
+			args:    "1048576b",
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ParseToBytes(tt.args)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ParseBytes() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("ParseBytes() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestParseClientVersion(t *testing.T) {
+	type args struct {
+		image string
+	}
+	tests := []struct {
+		name string
+		args args
+		want ClientVersion
+	}{
+		{
+			name: "ce-v1.1.1",
+			args: args{
+				image: "juicedata/mount:ce-v1.1.1",
+			},
+			want: ClientVersion{
+				IsCe:  true,
+				Dev:   false,
+				Major: 1,
+				Minor: 1,
+				Patch: 1,
+			},
+		},
+		{
+			name: "ce-nightly",
+			args: args{
+				image: "juicedata/mount:ce-nightly",
+			},
+			want: ClientVersion{
+				IsCe:    true,
+				Dev:     true,
+				Nightly: true,
+			},
+		},
+		{
+			name: "ce-latest",
+			args: args{
+				image: "juicedata/mount",
+			},
+			want: ClientVersion{
+				IsCe:  true,
+				Dev:   false,
+				Major: math.MaxInt32,
+			},
+		},
+		{
+			name: "ee-5.0.18-43a7d32",
+			args: args{
+				image: "juicedata/mount:ee-5.0.18-43a7d32",
+			},
+			want: ClientVersion{
+				IsCe:  false,
+				Dev:   false,
+				Major: 5,
+				Minor: 0,
+				Patch: 18,
+			},
+		},
+		{
+			name: "ee-nightly",
+			args: args{
+				image: "juicedata/mount:ee-nightly",
+			},
+			want: ClientVersion{
+				IsCe:    false,
+				Dev:     true,
+				Nightly: true,
+			},
+		},
+		{
+			name: "ce-with-registry-port",
+			args: args{
+				image: "registry.example.com:5000/juicedata/mount:ce-v1.2.3",
+			},
+			want: ClientVersion{
+				IsCe:  true,
+				Dev:   false,
+				Major: 1,
+				Minor: 2,
+				Patch: 3,
+			},
+		},
+		{
+			name: "ee-with-registry-port",
+			args: args{
+				image: "hub.example.com:8443/kbdp/mount:ee-5.1.0",
+			},
+			want: ClientVersion{
+				IsCe:  false,
+				Dev:   false,
+				Major: 5,
+				Minor: 1,
+				Patch: 0,
+			},
+		},
+		{
+			name: "ce-with-registry-port-and-digest",
+			args: args{
+				image: "registry.example.com:5000/juicedata/mount:ce-v1.2.3@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+			},
+			want: ClientVersion{
+				IsCe:  true,
+				Dev:   false,
+				Major: 1,
+				Minor: 2,
+				Patch: 3,
+			},
+		},
+		{
+			name: "ce-latest-with-registry-port",
+			args: args{
+				image: "registry.example.com:5000/juicedata/mount",
+			},
+			want: ClientVersion{
+				IsCe:  true,
+				Dev:   false,
+				Major: math.MaxInt32,
+			},
+		},
+		{
+			name: "dev",
+			args: args{
+				image: "juicedata/mount:2c5ca56",
+			},
+			want: ClientVersion{
+				IsCe:    false,
+				Dev:     true,
+				Nightly: false,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := parseClientVersionFromImage(tt.args.image); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ParseClientVersion() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSupportFusePassPod(t *testing.T) {
+	tests := []struct {
+		name string
+		pod  *corev1.Pod
+		want bool
+	}{
+		{
+			name: "nil pod",
+			pod:  nil,
+			want: false,
+		},
+		{
+			name: "pod without containers",
+			pod:  &corev1.Pod{},
+			want: false,
+		},
+		{
+			name: "pod with preStop umount command",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Image: "juicedata/mount:ce-v1.2.1",
+							Lifecycle: &corev1.Lifecycle{
+								PreStop: &corev1.LifecycleHandler{
+									Exec: &corev1.ExecAction{
+										Command: []string{"sh", "-c", "umount /mnt/jfs"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: false,
+		},
+		{
+			name: "pod with nightly image",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Image: "juicedata/mount:ce-nightly",
+						},
+					},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "pod with dev image",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Image: "juicedata/mount:v1.2.3-dev",
+						},
+					},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "pod with supporting image (ce-v1.2.1)",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Image: "juicedata/mount:ce-v1.2.1",
+						},
+					},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "pod with supporting image and registry port (ce-v1.2.3)",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Image: "hub.example.com:8443/kbdp/mount:ce-v1.2.3",
+						},
+					},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "pod with supporting image (ce-v1.3.0)",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Image: "juicedata/mount:ce-v1.3.0",
+						},
+					},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "pod with supporting image (ce-v2.0.0)",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Image: "juicedata/mount:ce-v2.0.0",
+						},
+					},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "pod with supporting image (ee-5.1.0)",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Image: "juicedata/mount:ee-5.1.0",
+						},
+					},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "pod with supporting image (ee-5.3.0)",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Image: "juicedata/mount:ee-5.3.0",
+						},
+					},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "pod with supporting image (ee-6.3.0)",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Image: "juicedata/mount:ee-6.3.0",
+						},
+					},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "pod with non-supporting image (ce-v1.1.0)",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Image: "juicedata/mount:ce-v1.1.0",
+						},
+					},
+				},
+			},
+			want: false,
+		},
+		{
+			name: "pod with non-supporting image (ee-4.9.0)",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Image: "juicedata/mount:ee-4.9.0",
+						},
+					},
+				},
+			},
+			want: false,
+		},
+		{
+			name: "pod with no version image",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Image: "juicedata/mount:2c5ca56",
+						},
+					},
+				},
+			},
+			want: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SupportFusePass(tt.pod); got != tt.want {
+				t.Errorf("SupportFusePass() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetMountPathOfPod(t *testing.T) {
+	type args struct {
+		pod corev1.Pod
+	}
+	var normalPod = corev1.Pod{Spec: corev1.PodSpec{
+		Containers: []corev1.Container{
+			{
+				Name:    "pvc-node01-xxx",
+				Image:   "juicedata/juicefs-csi-driver:v0.10.6",
+				Command: []string{"sh", "-c", "/bin/mount.juicefs redis://127.0.0.1/6379 /jfs/pvc-xxx"},
+			},
+		},
+	}}
+	var normalEEMountPod = corev1.Pod{Spec: corev1.PodSpec{
+		Containers: []corev1.Container{
+			{
+				Name:  "jfs-mount",
+				Image: "juicedata/mount:ee-nightly",
+				Command: []string{"sh", "-c", `juicefs auth test
+exec /sbin/mount.juicefs test /jfs/pvc-xxxx -o foreground,no-update`},
+			},
+		},
+	}}
+	var normalEEMountPodWithInitConfig = corev1.Pod{Spec: corev1.PodSpec{
+		Containers: []corev1.Container{
+			{
+				Name:  "jfs-mount",
+				Image: "juicedata/mount:ee-nightly",
+				Command: []string{"sh", "-c", `cp /etc/juicefs/test-vol.conf /root/.juicefs/test-vol.conf
+exec /sbin/mount.juicefs test /jfs/pvc-xxxx -o foreground,no-update`},
+			},
+		},
+	}}
+	var normalEEMountPodWithACL = corev1.Pod{Spec: corev1.PodSpec{
+		Containers: []corev1.Container{
+			{
+				Name:  "jfs-mount",
+				Image: "juicedata/mount:ee-nightly",
+				Command: []string{"sh", "-c", `cp /etc/juicefs/test-vol.conf /root/.juicefs/test-vol.conf && ln -sf /root/.acl/group /etc/group && ln -sf /root/.acl/passwd /etc/passwd
+exec /sbin/mount.juicefs test /jfs/pvc-xxxx -o foreground,no-update`},
+			},
+		},
+	}}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		want1   string
+		wantErr bool
+	}{
+		{
+			name:    "get mntPath from pod cmd success",
+			args:    args{pod: normalPod},
+			want:    "/jfs/pvc-xxx",
+			want1:   "pvc-xxx",
+			wantErr: false,
+		},
+		{
+			name:    "nil pod ",
+			args:    args{pod: corev1.Pod{}},
+			want:    "",
+			want1:   "",
+			wantErr: true,
+		},
+		{
+			name: "err-pod cmd <3",
+			//args:    args{cmd: "/bin/mount.juicefs redis://127.0.0.1/6379"},
+			args: args{pod: corev1.Pod{Spec: corev1.PodSpec{
+				Containers: []corev1.Container{
+					{
+						Name:    "pvc-node01-xxx",
+						Image:   "juicedata/juicefs-csi-driver:v0.10.6",
+						Command: []string{"sh", "-c"},
+					},
+				}}}},
+			want:    "",
+			want1:   "",
+			wantErr: true,
+		},
+		{
+			name: "err-cmd sourcePath no MountBase prefix",
+			args: args{pod: corev1.Pod{Spec: corev1.PodSpec{
+				Containers: []corev1.Container{
+					{
+						Name:    "pvc-node01-xxx",
+						Image:   "juicedata/juicefs-csi-driver:v0.10.6",
+						Command: []string{"sh", "-c", "/bin/mount.juicefs redis://127.0.0.1/6379 /err-jfs/pvc-xxx}"},
+					},
+				}}}},
+			want:    "",
+			want1:   "",
+			wantErr: true,
+		},
+		{
+			name:    "get mntPath from ee pod cmd success",
+			args:    args{pod: normalEEMountPod},
+			want:    "/jfs/pvc-xxxx",
+			want1:   "pvc-xxxx",
+			wantErr: false,
+		},
+		{
+			name:    "get mntPath from ee pod cmd with init config success",
+			args:    args{pod: normalEEMountPodWithInitConfig},
+			want:    "/jfs/pvc-xxxx",
+			want1:   "pvc-xxxx",
+			wantErr: false,
+		},
+		{
+			name:    "get mntPath from ee pod cmd with acl success",
+			args:    args{pod: normalEEMountPodWithACL},
+			want:    "/jfs/pvc-xxxx",
+			want1:   "pvc-xxxx",
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1, err := GetMountPathOfPod(tt.args.pod)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ParseMntPath() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("ParseMntPath() got = %v, want %v", got, tt.want)
+			}
+			if got1 != tt.want1 {
+				t.Errorf("ParseMntPath() got1 = %v, want %v", got1, tt.want1)
+			}
+		})
+	}
+}
+
+func TestParseMntPath(t *testing.T) {
+	type args struct {
+		cmd string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		want1   string
+		wantErr bool
+	}{
+		{
+			name:    "get sourcePath from pod cmd success",
+			args:    args{cmd: "/usr/local/bin/juicefs format --storage=s3 --bucket=http://juicefs-bucket.minio.default.svc.cluster.local:9000 --access-key=minioadmin --secret-key=${secretkey} ${metaurl} ce-secret\n/bin/mount.juicefs redis://127.0.0.1/6379 /jfs/pvc-xxx"},
+			want:    "/jfs/pvc-xxx",
+			want1:   "pvc-xxx",
+			wantErr: false,
+		},
+		{
+			name:    "get sourcePath from pod cmd with exec success",
+			args:    args{cmd: "/usr/local/bin/juicefs format --storage=s3 --bucket=http://juicefs-bucket.minio.default.svc.cluster.local:9000 --access-key=minioadmin --secret-key=${secretkey} ${metaurl} ce-secret\nexec /bin/mount.juicefs redis://127.0.0.1/6379 /jfs/pvc-xxx"},
+			want:    "/jfs/pvc-xxx",
+			want1:   "pvc-xxx",
+			wantErr: false,
+		},
+		{
+			name:    "without init cmd",
+			args:    args{cmd: "/bin/mount.juicefs redis://127.0.0.1/6379 /jfs/pvc-xxx"},
+			want:    "/jfs/pvc-xxx",
+			want1:   "pvc-xxx",
+			wantErr: false,
+		},
+		{
+			name:    "without mnt jfs",
+			args:    args{cmd: "/bin/mount.juicefs redis://127.0.0.1/6379 /mnt/jfs"},
+			want:    "/mnt/jfs",
+			want1:   "jfs",
+			wantErr: false,
+		},
+		{
+			name: "with create subpath",
+			args: args{cmd: "/usr/local/bin/juicefs format --storage=s3 --bucket=http://juicefs-bucket.minio.default.svc.cluster.local:9000 --access-key=minioadmin --secret-key=${secretkey} ${metaurl} ce-secret\n" +
+				"/bin/mount.juicefs ${metaurl} /mnt/jfs -o buffer-size=300,cache-size=100,enable-xattr\n" +
+				"if [ ! -d /mnt/jfs/pvc-fb2ec20c-474f-4804-9504-966da4af9b73 ]; then mkdir -m 777 /mnt/jfs/pvc-fb2ec20c-474f-4804-9504-966da4af9b73; fi;\n" +
+				"umount /mnt/jfs -l\n" +
+				"/bin/mount.juicefs redis://127.0.0.1/6379 /jfs/pvc-xxx"},
+			want:    "/jfs/pvc-xxx",
+			want1:   "pvc-xxx",
+			wantErr: false,
+		},
+		{
+			name:    "err-pod cmd args <3",
+			args:    args{cmd: "/usr/local/bin/juicefs format --storage=s3 --bucket=http://juicefs-bucket.minio.default.svc.cluster.local:9000 --access-key=minioadmin --secret-key=${secretkey} ${metaurl} ce-secret\n/bin/mount.juicefs redis://127.0.0.1/6379"},
+			want:    "",
+			want1:   "",
+			wantErr: true,
+		},
+		{
+			name:    "err-cmd sourcePath no MountBase prefix",
+			args:    args{cmd: "/usr/local/bin/juicefs format --storage=s3 --bucket=http://juicefs-bucket.minio.default.svc.cluster.local:9000 --access-key=minioadmin --secret-key=${secretkey} ${metaurl} ce-secret\n/bin/mount.juicefs redis://127.0.0.1/6379 /err-jfs/pvc-xxx"},
+			want:    "",
+			want1:   "",
+			wantErr: true,
+		},
+		{
+			name:    "err-cmd sourcePath length err",
+			args:    args{cmd: "/usr/local/bin/juicefs format --storage=s3 --bucket=http://juicefs-bucket.minio.default.svc.cluster.local:9000 --access-key=minioadmin --secret-key=${secretkey} ${metaurl} ce-secret\n/bin/mount.juicefs redis://127.0.0.1/6379 /jfs"},
+			want:    "",
+			want1:   "",
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1, err := parseMntPath(tt.args.cmd)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("parseMntPath() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("parseMntPath() got = %v, want %v", got, tt.want)
+			}
+			if got1 != tt.want1 {
+				t.Errorf("parseMntPath() got1 = %v, want %v", got1, tt.want1)
+			}
+		})
+	}
+}
+
+func TestSupportUpgradeRecreate(t *testing.T) {
+	type args struct {
+		ce      bool
+		version string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "test-5.1",
+			args: args{
+				ce:      false,
+				version: "juicefs version 5.1.0 (2024-09-09 5a1303e2)",
+			},
+			want: true,
+		},
+		{
+			name: "test-5.0",
+			args: args{
+				ce:      false,
+				version: "juicefs version 5.0.0 (2024-09-09 5a1303e2)",
+			},
+			want: false,
+		},
+		{
+			name: "test-4.9",
+			args: args{
+				ce:      false,
+				version: "JuiceFS version 4.9.0 (2023-03-28 bfeaf6a)",
+			},
+			want: false,
+		},
+		{
+			name: "test-1.2.0",
+			args: args{
+				ce:      true,
+				version: "juicefs version 1.2.0+2024-06-18.873c47b9",
+			},
+			want: false,
+		},
+		{
+			name: "test-1.1.0",
+			args: args{
+				ce:      true,
+				version: "juicefs version 1.1.0+2023-09-04.08c4ae62",
+			},
+			want: false,
+		},
+		{
+			name: "test-dev",
+			args: args{
+				ce:      true,
+				version: "juicefs version 1.3.0-dev+2024-08-23.f4e98bd3",
+			},
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SupportUpgradeRecreate(tt.args.ce, tt.args.version); got != tt.want {
+				t.Errorf("SupportUpgradeRecreate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSupportUpgradeBinary(t *testing.T) {
+	type args struct {
+		ce      bool
+		version string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "test-5.1",
+			args: args{
+				ce:      false,
+				version: "juicefs version 5.1.0 (2024-09-09 5a1303e2)",
+			},
+			want: true,
+		},
+		{
+			name: "test-5.0",
+			args: args{
+				ce:      false,
+				version: "juicefs version 5.0.0 (2024-09-09 5a1303e2)",
+			},
+			want: true,
+		},
+		{
+			name: "test-4.9",
+			args: args{
+				ce:      false,
+				version: "JuiceFS version 4.9.0 (2023-03-28 bfeaf6a)",
+			},
+			want: false,
+		},
+		{
+			name: "test-1.2.0",
+			args: args{
+				ce:      true,
+				version: "juicefs version 1.2.0+2024-06-18.873c47b9",
+			},
+			want: true,
+		},
+		{
+			name: "test-1.1.0",
+			args: args{
+				ce:      true,
+				version: "juicefs version 1.1.0+2023-09-04.08c4ae62",
+			},
+			want: false,
+		},
+		{
+			name: "test-dev",
+			args: args{
+				ce:      true,
+				version: "juicefs version 1.3.0-dev+2024-08-23.f4e98bd3",
+			},
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SupportUpgradeBinary(tt.args.ce, tt.args.version); got != tt.want {
+				t.Errorf("SupportUpgradeBinary() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetMountOptionsOfPod(t *testing.T) {
+	tests := []struct {
+		name string
+		pod  *corev1.Pod
+		want []string
+	}{
+		{
+			name: "test-valid-options",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Command: []string{"sh", "-c", "exec /sbin/mount.juicefs test /jfs/mntPath -o foreground,no-update"},
+						},
+					},
+				},
+			},
+			want: []string{"foreground", "no-update"},
+		},
+		{
+			name: "test-with-cp",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Command: []string{"sh", "-c", "cp test.config /root/test.config\n/sbin/mount.juicefs test /jfs/mntPath -o foreground,no-update"},
+						},
+					},
+				},
+			},
+			want: []string{"foreground", "no-update"},
+		},
+		{
+			name: "test-with-link",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Command: []string{"sh", "-c", "cp test.config /root/test.config && ln -sf /root/.acl/group /etc/group && ln -sf /root/.acl/passwd /etc/passwd\n/sbin/mount.juicefs test /jfs/mntPath -o foreground,no-update"},
+						},
+					},
+				},
+			},
+			want: []string{"foreground", "no-update"},
+		},
+		{
+			name: "test-without-exec",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Command: []string{"sh", "-c", "/sbin/mount.juicefs test /jfs/mntPath -o foreground,no-update"},
+						},
+					},
+				},
+			},
+			want: []string{"foreground", "no-update"},
+		},
+		{
+			name: "test-no-options",
+			pod: &corev1.Pod{
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Command: []string{"sh", "-c", "exec /sbin/mount.juicefs test /jfs/mntPath"},
+						},
+					},
+				},
+			},
+			want: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetMountOptionsOfPod(tt.pod); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetMountOptionsOfPod() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetJfsInternalFileNameOfContainer(t *testing.T) {
+	container := &corev1.Container{
+		Command: []string{"sh", "-c", "exec /sbin/mount.juicefs test /jfs/mntPath -o foreground,prefix-internal"},
+	}
+	if got, want := GetJfsInternalFileNameOfContainer(container, ".config"), ".jfs.config"; got != want {
+		t.Fatalf("GetJfsInternalFileNameOfContainer() = %q, want %q", got, want)
+	}
+}
+
+func TestSortBy(t *testing.T) {
+	ss := []string{"a", "b", "d", "e", "c"}
+	wantSS := []string{"a", "b", "c", "d", "e"}
+	SortBy(ss, func(i, j int) bool {
+		return strings.Compare(ss[i], ss[j]) < 0
+	})
+	if !reflect.DeepEqual(ss, wantSS) {
+		t.Errorf("SortBy() = %v, want %v", ss, wantSS)
+	}
+
+	sc := []corev1.EnvVar{
+		{Name: "d", Value: "4"},
+		{Name: "a", Value: "1"},
+		{Name: "b", Value: "2"},
+	}
+	wantSC := []corev1.EnvVar{
+		{Name: "a", Value: "1"},
+		{Name: "b", Value: "2"},
+		{Name: "d", Value: "4"},
+	}
+	SortBy(sc, func(i, j int) bool {
+		return strings.Compare(sc[i].Name, sc[j].Name) < 0
+	})
+	if !reflect.DeepEqual(sc, wantSC) {
+		t.Errorf("SortBy() = %v, want %v", sc, wantSC)
+	}
+}
+
+func TestMergeMap(t *testing.T) {
+	type args struct {
+		s map[string]string
+		d map[string]string
+	}
+	tests := []struct {
+		name string
+		args args
+		want map[string]string
+	}{
+		{
+			name: "test1",
+			args: args{
+				s: map[string]string{"a": "1", "b": "2"},
+				d: map[string]string{"c": "3", "d": "4"},
+			},
+			want: map[string]string{"a": "1", "b": "2", "c": "3", "d": "4"},
+		},
+		{
+			name: "test2",
+			args: args{
+				s: nil,
+				d: map[string]string{"c": "3", "d": "4"},
+			},
+			want: map[string]string{"c": "3", "d": "4"},
+		},
+		{
+			name: "test3",
+			args: args{s: map[string]string{"a": "1", "b": "2"}, d: nil},
+			want: map[string]string{"a": "1", "b": "2"},
+		},
+		{
+			name: "test4",
+			args: args{s: nil, d: nil},
+			want: nil,
+		},
+		{
+			name: "test5",
+			args: args{s: map[string]string{"a": "1", "b": "2"}, d: map[string]string{"a": "3", "d": "4"}},
+			want: map[string]string{"a": "1", "b": "2", "d": "4"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := MergeMap(tt.args.s, tt.args.d); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("MergeMap() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDeDuplicate(t *testing.T) {
+	type args struct {
+		target []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "test1",
+			args: args{
+				target: []string{"a", "b", "c", "a", "b"},
+			},
+			want: []string{"a", "b", "c"},
+		},
+		{
+			name: "test2",
+			args: args{
+				target: nil,
+			},
+			want: nil,
+		},
+		{
+			name: "test3",
+			args: args{
+				target: []string{"a", "b", "c"},
+			},
+			want: []string{"a", "b", "c"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := DeDuplicate(tt.args.target); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DeDuplicate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetMountPathOfSidecar(t *testing.T) {
+	type args struct {
+		pod           corev1.Pod
+		containerName string
+	}
+
+	var podNoSidecar = corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "pod-without-sidecar",
+		},
+	}
+
+	var podWithSidecar = corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "pod-with-sidecar",
+			Labels: map[string]string{
+				common.InjectSidecarDone: "true",
+			},
+		},
+		Spec: corev1.PodSpec{
+			Containers: []corev1.Container{
+				{
+					Name: "app-container",
+				},
+			},
+		},
+	}
+
+	var podWithShortCmd = corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "pod-with-short-cmd",
+			Labels: map[string]string{
+				common.InjectSidecarDone: "true",
+			},
+		},
+		Spec: corev1.PodSpec{
+			Containers: []corev1.Container{
+				{
+					Name:    "mount-sidecar",
+					Command: []string{"sh", "-c"},
+					// Command too short
+				},
+			},
+		},
+	}
+
+	var podWithValidSidecar = corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "pod-with-valid-sidecar",
+			Labels: map[string]string{
+				common.InjectSidecarDone: "true",
+			},
+		},
+		Spec: corev1.PodSpec{
+			Containers: []corev1.Container{
+				{
+					Name:    "mount-sidecar",
+					Command: []string{"sh", "-c", "/bin/mount.juicefs redis://127.0.0.1/6379 /jfs/pvc-xxx"},
+				},
+			},
+		},
+	}
+
+	var podWithInitSidecar = corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "pod-with-init-sidecar",
+			Labels: map[string]string{
+				common.InjectSidecarDone: "true",
+			},
+		},
+		Spec: corev1.PodSpec{
+			InitContainers: []corev1.Container{
+				{
+					Name:    "init-mount-sidecar",
+					Command: []string{"sh", "-c", "/bin/mount.juicefs redis://127.0.0.1/6379 /jfs/pvc-yyy"},
+				},
+			},
+		},
+	}
+
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		want1   string
+		wantErr bool
+	}{
+		{
+			name: "pod has no sidecar",
+			args: args{
+				pod:           podNoSidecar,
+				containerName: "mount-sidecar",
+			},
+			want:    "",
+			want1:   "",
+			wantErr: true,
+		},
+		{
+			name: "pod has sidecar but container not found",
+			args: args{
+				pod:           podWithSidecar,
+				containerName: "mount-sidecar",
+			},
+			want:    "",
+			want1:   "",
+			wantErr: true,
+		},
+		{
+			name: "pod has sidecar but command invalid",
+			args: args{
+				pod:           podWithShortCmd,
+				containerName: "mount-sidecar",
+			},
+			want:    "",
+			want1:   "",
+			wantErr: true,
+		},
+		{
+			name: "pod has sidecar with valid command",
+			args: args{
+				pod:           podWithValidSidecar,
+				containerName: "mount-sidecar",
+			},
+			want:    "/jfs/pvc-xxx",
+			want1:   "pvc-xxx",
+			wantErr: false,
+		},
+		{
+			name: "pod has init container with valid command",
+			args: args{
+				pod:           podWithInitSidecar,
+				containerName: "init-mount-sidecar",
+			},
+			want:    "/jfs/pvc-yyy",
+			want1:   "pvc-yyy",
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1, err := GetMountPathOfSidecar(tt.args.pod, tt.args.containerName)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetMountPathOfSidecar() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("GetMountPathOfSidecar() got = %v, want %v", got, tt.want)
+			}
+			if got1 != tt.want1 {
+				t.Errorf("GetMountPathOfSidecar() got1 = %v, want %v", got1, tt.want1)
+			}
+		})
+	}
+}
+
+func TestSupportQuotaPathCreate(t *testing.T) {
+	type args struct {
+		ce      bool
+		version string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "ce-nightly",
+			args: args{
+				ce:      true,
+				version: "nightly",
+			},
+			want: true,
+		},
+		{
+			name: "ce-below-minimum",
+			args: args{
+				ce:      true,
+				version: "juicefs version 1.2.0+2024-06-18.873c47b9",
+			},
+			want: false,
+		},
+		{
+			name: "ce-at-minimum",
+			args: args{
+				ce:      true,
+				version: "juicefs version 1.3.0+2024-06-18.873c47b9",
+			},
+			want: true,
+		},
+		{
+			name: "ee-below-minimum",
+			args: args{
+				ce:      false,
+				version: "juicefs version 4.9.0 (2023-03-28 bfeaf6a)",
+			},
+			want: false,
+		},
+		{
+			name: "ee-at-minimum",
+			args: args{
+				ce:      false,
+				version: "juicefs version 5.2.2 (2024-09-09 5a1303e2)",
+			},
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SupportQuotaPathCreate(tt.args.ce, tt.args.version); got != tt.want {
+				t.Errorf("SupportQuotaPathCreate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestIsConfigEncrypted(t *testing.T) {
+	tests := []struct {
+		name       string
+		initConfig string
+		want       bool
+	}{
+		{
+			name:       "empty config",
+			initConfig: "",
+			want:       false,
+		},
+		{
+			name:       "invalid JSON",
+			initConfig: "not a valid json",
+			want:       false,
+		},
+		{
+			name:       "JSON without encryptkeys",
+			initConfig: `{"otherKey": "value"}`,
+			want:       false,
+		},
+		{
+			name:       "encryptkeys not a boolean",
+			initConfig: `{"encryptkeys": "true"}`,
+			want:       false,
+		},
+		{
+			name:       "encryptkeys true",
+			initConfig: `{"encryptkeys": true}`,
+			want:       true,
+		},
+		{
+			name:       "encryptkeys false",
+			initConfig: `{"encryptkeys": false}`,
+			want:       false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsConfigEncrypted(tt.initConfig); got != tt.want {
+				t.Errorf("IsConfigEncrypted() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRemoveIllegalChars(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "no illegal characters",
+			input:    "Hello, World!",
+			expected: "Hello, World!",
+		},
+		{
+			name:     "empty string",
+			input:    "",
+			expected: "",
+		},
+		{
+			name:     "with escaped characters 1",
+			input:    "node.kubernetes.io/unreachable\\x00\\x00\\x00",
+			expected: "node.kubernetes.io/unreachable",
+		},
+		{
+			name:     "with escaped characters 2",
+			input:    "node.kubernetes.io/unreachable\x00",
+			expected: "node.kubernetes.io/unreachable",
+		},
+		{
+			name:     "with escaped characters 3",
+			input:    "Hello,\n\t World!",
+			expected: "Hello, World!",
+		},
+		{
+			name:     "with escaped characters 4",
+			input:    "Hello, 世界! 👋",
+			expected: "Hello, !",
+		},
+		{
+			name:     "with escaped characters 5",
+			input:    "\n\t\r\b\f\v",
+			expected: "",
+		},
+		{
+			name:     "with escaped characters 6",
+			input:    "ABC\nDEF\tGHI\rJKL",
+			expected: "ABCDEFGHIJKL",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := RemoveIllegalChars(tt.input)
+			if got != tt.expected {
+				t.Errorf("RemoveIllegalChars() = %q, want %q", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestExists(t *testing.T) {
+	root := t.TempDir()
+	if err := os.Symlink(filepath.Join(root, "loop"), filepath.Join(root, "loop")); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "file"), nil, 0644); err != nil {
+		t.Fatal(err)
+	}
+	locked := filepath.Join(root, "locked")
+	if err := os.Mkdir(locked, 0); err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		name       string
+		path       string
+		want       bool
+		wantErr    error
+		skipAsRoot bool
+	}{
+		{name: "existing", path: root, want: true},
+		{name: "missing", path: filepath.Join(root, "missing")},
+		{name: "symlink loop", path: filepath.Join(root, "loop"), wantErr: syscall.ELOOP},
+		{name: "under a file", path: filepath.Join(root, "file", "child"), wantErr: syscall.ENOTDIR},
+		// EACCES is what a corrupted mount point reports, so it counts as existing
+		{name: "corrupted", path: filepath.Join(locked, "child"), want: true, wantErr: syscall.EACCES, skipAsRoot: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.skipAsRoot && os.Geteuid() == 0 {
+				t.Skip("root is not refused by mode 0")
+			}
+			got, err := Exists(tt.path)
+			if got != tt.want {
+				t.Errorf("Exists() = %v, want %v", got, tt.want)
+			}
+			if !errors.Is(err, tt.wantErr) {
+				t.Errorf("Exists() error = %v, want %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestMkdirIfNotExist(t *testing.T) {
+	root := t.TempDir()
+	if err := os.Symlink(filepath.Join(root, "loop"), filepath.Join(root, "loop")); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "file"), nil, 0644); err != nil {
+		t.Fatal(err)
+	}
+	locked := filepath.Join(root, "locked")
+	if err := os.Mkdir(locked, 0); err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		name       string
+		path       string
+		wantErr    error
+		wantDir    bool
+		skipAsRoot bool
+	}{
+		{name: "existing", path: root, wantDir: true},
+		{name: "missing is created", path: filepath.Join(root, "a", "b"), wantDir: true},
+		{name: "symlink loop", path: filepath.Join(root, "loop"), wantErr: syscall.ELOOP},
+		{name: "under a file", path: filepath.Join(root, "file", "child"), wantErr: syscall.ENOTDIR},
+		{name: "corrupted is left alone", path: filepath.Join(locked, "child"), skipAsRoot: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.skipAsRoot && os.Geteuid() == 0 {
+				t.Skip("root is not refused by mode 0")
+			}
+			err := MkdirIfNotExist(context.Background(), tt.path)
+			if !errors.Is(err, tt.wantErr) {
+				t.Errorf("MkdirIfNotExist() error = %v, want %v", err, tt.wantErr)
+			}
+			fi, statErr := os.Stat(tt.path)
+			if isDir := statErr == nil && fi.IsDir(); isDir != tt.wantDir {
+				t.Errorf("directory exists = %v, want %v", isDir, tt.wantDir)
+			}
+		})
+	}
+}

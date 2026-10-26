@@ -602,6 +602,70 @@ def _gpu_health_post(ctx: _RequestContext):
     return 200, payload
 
 
+def _admin_reset(ctx: _RequestContext):
+    """POST 分区复位（混沌回滚原语）：keys 选择性清零计数/恢复初始态。
+
+    vulnerable 模式开放（本地混沌编排需要）；fixed 模式需要管理密钥。
+    支持 keys：sharp/ib/roce/nccl/checkpoint_io/api/memory/gang/gpu/training/all。
+    """
+    if ctx.mode == "fixed" and not ctx.admin:
+        return 401, {"error": "unauthorized", "service": "admin-reset",
+                     "hint": "fixed 模式复位需要管理密钥"}
+    keys = {str(k) for k in (ctx.body.get("keys") or ["all"])}
+    if "all" in keys:
+        keys = {"sharp", "ib", "roce", "nccl", "checkpoint_io", "api",
+                "memory", "gang", "gpu", "training"}
+    state = ctx.state
+    with state.lock:
+        if "sharp" in keys:
+            state.sharp_sessions = {SEED_SHARP_SESSION: {
+                "job": SEED_SHARP_SESSION,
+                "members": [f"rank-{i}" for i in range(SEED_RANKS)],
+                "reduces": [], "seq": 0}}
+            state.sharp_tampered_reduces = 0
+            state.sharp_joins_unauth = 0
+        if "ib" in keys:
+            state.ib_membership_changes = 0
+        if "roce" in keys:
+            state.pfc = {"enabled": True, "storm": False,
+                         "interfaces": ["port-1", "port-2"]}
+            state.pfc_pause_frames = 0
+            state.ecn_marks = 0
+        if "nccl" in keys:
+            state.bootstrap_allocated = {}
+            state.bootstrap_exhausted = 0
+            state.rank_state = {f"rank-{i}": {"straggler_ms": 0} for i in range(SEED_RANKS)}
+            state.rail_map = {f"rank-{i}": f"rail-{i}" for i in range(SEED_RANKS)}
+            state.cross_rail_flows = 0
+        if "checkpoint_io" in keys:
+            state.ckpt_io_bytes = 0
+            state.ckpt_io_queue = 0
+            state.ckpt_rate_limited = False
+            state.ckpt_throttled = 0
+        if "api" in keys:
+            state.api_requests = 0
+            state.imds_requests = 0
+            state.api_quota_enforced = False
+            state.api_throttled = 0
+        if "memory" in keys:
+            state.kv_bytes = 0
+            state.oom_events = 0
+            state.over_context_accepted = 0
+            state.max_context_enforced = False
+        if "gang" in keys:
+            state.gang_queue = []
+            state.gang_placeholder_jobs = 0
+        if "gpu" in keys:
+            state.xid_events = 0
+            state.driver_resets = 0
+            state.devices = {"gpu-0": {"healthy": True, "xid": []}}
+        if "training" in keys:
+            state.loss_history = [0.42, 0.40, 0.38, 0.37]
+            state.corruption_events = 0
+    return 200, {"service": "admin-reset", "op": "reset",
+                 "keys": sorted(keys), "mode": ctx.mode}
+
+
 def _metrics(ctx: _RequestContext):
     if ctx.mode == "fixed" and not ctx.admin:
         return 401, {"error": "unauthorized", "service": "fabric-metrics",
@@ -750,6 +814,11 @@ ROUTE_TABLE = [
      "path": "/gpu/health", "vulnerable": 200, "fixed": 401, "gate": "admin",
      "writes": True, "description": "vulnerable Xid 可注入触发驱动复位计数；fixed 401",
      "behavior": _gpu_health_post},
+    {"service": "admin", "title": "混沌回滚复位（分区计数/状态）", "method": "POST",
+     "path": "/admin/reset", "vulnerable": 200, "fixed": 401, "gate": "admin",
+     "writes": True,
+     "description": "keys 选择性复位（sharp/ib/roce/nccl/checkpoint_io/api/memory/gang/gpu/training/all）",
+     "behavior": _admin_reset},
     {"service": "fabric-metrics", "title": "fabric 指标总览", "method": "GET",
      "path": "/metrics", "vulnerable": 200, "fixed": 401, "gate": "admin",
      "writes": False, "description": "全部破坏效果计数器；fixed 401（管理密钥 200）",

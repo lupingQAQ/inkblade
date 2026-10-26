@@ -78,6 +78,13 @@ class _Handler(BaseHTTPRequestHandler):
                 return self._json(200, {"service": "roce-pfc", "op": "storm",
                                         "pfc_pause_frames": st.pfc,
                                         "storm_active": True})
+            if body.get("mode") == "clear":
+                # 混沌回滚原语：清除风暴档（计数器保持单调，storm 标志复位）
+                with st.lock:
+                    st.storm = False
+                return self._json(200, {"service": "roce-pfc", "op": "clear",
+                                        "pfc_pause_frames": st.pfc,
+                                        "storm_active": False})
             return self._json(200, {"service": "roce-pfc", "op": "configure"})
         if self.path == "/nccl/rank":
             with st.lock:

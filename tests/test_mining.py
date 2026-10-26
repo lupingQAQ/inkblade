@@ -25,8 +25,9 @@ class TestTemplates(unittest.TestCase):
 
 class TestExtract(unittest.TestCase):
     def test_targets_covered(self):
+        # 2026-10-26 push-2: transformers 加入推理栈挖掘目标（reproenv-d 实装 4.57.1）
         self.assertEqual(set(mining.TARGETS),
-                         {"vllm", "sglang", "kuberay", "hami", "litellm"})
+                         {"vllm", "sglang", "kuberay", "hami", "litellm", "transformers"})
 
     def test_extract_latest_hits(self):
         for t in mining.TARGETS:
@@ -46,12 +47,17 @@ class TestExtract(unittest.TestCase):
             mining.extract_latest("open-webui")
 
     def test_tags_are_latest_release_snapshots(self):
-        """五目标 tag 与版本矩阵 products 一致（2026-10-25 webfetch GitHub 核验）。"""
+        """五经典目标 tag 与版本矩阵 products 一致（2026-10-25 webfetch GitHub 核验）。
+
+        transformers（2026-10-26 push-2 扩展）以 reproenv-d 实装 wheel 4.57.1 为 pin，
+        不进入版本矩阵 products。
+        """
         from trident.core.version_matrix import products
 
         mx = products()
-        for t, spec in mining.TARGETS.items():
-            self.assertEqual(spec["tag"], mx[t]["latest_tag_checked"], t)
+        for t in ("vllm", "sglang", "kuberay", "hami", "litellm"):
+            self.assertEqual(mining.TARGETS[t]["tag"], mx[t]["latest_tag_checked"], t)
+        self.assertEqual(mining.TARGETS["transformers"]["tag"], "v4.57.1")
 
 
 class TestPipelineClosedLoop(unittest.TestCase):

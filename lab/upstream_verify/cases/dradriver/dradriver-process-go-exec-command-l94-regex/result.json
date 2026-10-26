@@ -1,0 +1,68 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "dradriver-process-go-exec-command-l94-regex",
+ "source": "mining",
+ "component": "dradriver",
+ "title": "dra-driver: exec-command-go @ cmd/compute-domain-daemon/process.go:94",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v0.5.1",
+ "version_ref": {
+  "kind": "git",
+  "repo": "NVIDIA/k8s-dra-driver",
+  "tag": "v0.5.1"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v0.5.1",
+  "repo": "NVIDIA/k8s-dra-driver",
+  "tag": "v0.5.1",
+  "commit": null,
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/NVIDIA/k8s-dra-driver/v0.5.1/cmd/compute-domain-daemon/process.go",
+  "artifact_sha256": "2e09a83a05881684ffa16a1b208a5766d02aefc65ba4a1178b80f08def3be913",
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "advisory_sha256": "4b898807421021bf0bf0a4e4c7d163ccb1e9147fdc9f93ad644e141a88f64718"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/dradriver/dradriver-process-go-exec-command-l94-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.114,
+ "started_at": "2026-10-26T05:01:20+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-dradriver-process-go-exec-command-l94-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/dradriver/dradriver-process-go-exec-command-l94-regex/evidence/log.txt",
+   "sha256": "57001cf8877bd81f528b786cb993b7c5eb2c9f0446ebfce03dc17d15dbafae26",
+   "size": 259
+  },
+  {
+   "path": "lab/upstream_verify/cases/dradriver/dradriver-process-go-exec-command-l94-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/dradriver/dradriver-process-go-exec-command-l94-regex/evidence/static-check.json",
+   "sha256": "dd44e02f97cdbc6abd545da7befddbe23b3d30950a90344d5884f7a90fdf439d",
+   "size": 1377
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "88729f906a16fe85e9f404f53eb70812f8107d8d83b55acd0628452db3db74d3",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"dradriver-process-go-exec-command-l94-regex\"}\n",
+ "stderr": "",
+ "notes": "The compute-domain daemon executes m.cmd from its config (ConfigMap-sourced). The sink is real but the input is admin-controlled config, not tenant PVC data; recorded as a config-trust boundary for DRA deployments, plus the kubeletplugin.yaml privileged/hostPath posture (elevated-pod-spec hits)."
+}

@@ -1,0 +1,85 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex",
+ "source": "mining",
+ "component": "llamafactory",
+ "title": "llamafactory: torch-load-unsafe @ v1/core/utils/checkpoint.py:334",
+ "status": "verified",
+ "declared_status": "verified",
+ "method": "dynamic-function",
+ "verified": true,
+ "module": "llamafactory-checkpoint-rce",
+ "version": "v0.9.5",
+ "version_ref": {
+  "kind": "git",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v0.9.5",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/v1/core/utils/checkpoint.py",
+  "artifact_sha256": "2802a32774cb6dacad64edee4309b225234cecd71edd9c5bd21bdc4f1d2f4cff",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "lfa",
+ "command": "[lfa] lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l334-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 1.991,
+ "started_at": "2026-10-26T04:23:51+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-llamafactory-checkpoint-py-torch-load-unsafe-l334-regex",
+  "before": "ABSENT",
+  "after_has_marker": true,
+  "after_sha256": "38bd1d55b6a3e3713b711c09c66b661cba8ae12add5293cd29fd66a9fec5f335"
+ },
+ "request_response": [
+  {
+   "dir": "untrusted checkpoint dir -> coordinator.resume -> torch.load(weights_only=False)",
+   "payload": "pickle reduce",
+   "result": "marker written inside the upstream sink"
+  }
+ ],
+ "state_before": "marker=ABSENT",
+ "state_after": "marker contains proof text",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l334-regex/evidence/ckpt/dataloader/rank_0.pt",
+   "sha256": "632c019dde09cb3c4ee3d511b83a59ac72ece53b87a6b4a47c7a10705c63b7a6",
+   "size": 276
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l334-regex/evidence/ckpt/metadata.json",
+   "sha256": "35b8541ba0d70cdbd2bc037ee14bb63f5a214f26d9f8dc66ed5c74a8953eaa84",
+   "size": 32
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l334-regex/evidence/log.txt",
+   "sha256": "5da00a3ec777bf6b455df4e0e0c750f574728582c413631e4b52ada5039646bc",
+   "size": 995
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l334-regex/evidence/marker.txt",
+   "sha256": "38bd1d55b6a3e3713b711c09c66b661cba8ae12add5293cd29fd66a9fec5f335",
+   "size": 66
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l334-regex/evidence/run.json",
+   "sha256": "385bb7994199e2292b82bba3f9bd28bdc27eed8baa3e7864ee7b71f7bd790c4e",
+   "size": 1631
+  }
+ ],
+ "poc_sha256": "0df592d481f8b4506969ed2724cb571b7f54765922a11a586622f40be0902b8a",
+ "manifest_sha256": "5e1d82002daab0e81652a1e869e4bc3c1a8328759fbaa6113137fabe2b830f91",
+ "stdout": "[INFO|2026-10-26 12:23:51] llamafactory.v1.accelerator.interface:107 >> DistributedInterface initialized: DistributedInterface(strategy=DistributedStrategy(mp_replicate_size=1, mp_shard_size=1, dp_size=1, cp_size=1)), is_distributed=False, current_device=cpu, rank=0, world_size=1, model_device_mesh=None, data_device_mesh=None.\n[WARNING|2026-10-26 12:23:51] llamafactory.v1.core.utils.checkpoint:112 >> No model weights found in <repo>\\lab\\upstream_verify\\cases\\llamafactory\\llamafactory-checkpoint-py-torch-load-unsafe-l334-regex\\evidence\\ckpt\\model, skipping model state restore.\n{\"status\": \"verified\", \"marker\": \"TRIDENT-UV-llamafactory-checkpoint-py-torch-load-unsafe-l334-regex\", \"evidence\": \"lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l334-regex/evidence\"}\n",
+ "stderr": "",
+ "notes": "TrainingCheckpointCoordinator.resume restores the dataloader state via torch.load(weights_only=False) on <ckpt>/dataloader/rank_<n>.pt. Same trust boundary as the rng_state sink: checkpoint write access equals pickle code execution on resume. Reproduced through the real upstream resume() flow (metadata.json + dataloader state only; the model path is absent so the surrounding code is inert) with the pinned installed package."
+}

@@ -132,5 +132,73 @@
         {"uri_re": "/key/generate|/config|/admin/console"}
       ]
     }
+  },
+  {
+    "id": "suricata-fabric-control-uri",
+    "title": "fabric 控制面 URI 异常访问（SHARP/IB SM/PFC/NCCL/调度/健康）",
+    "description": "非 fabric 运维来源访问在网聚合、IB SM Partition、PFC 配置、NCCL bootstrap/rank/rail、checkpoint I/O、控制面请求洪、gang 提交与 GPU 健康写面（万卡破坏面统一 URI 签名）。English: out-of-ops access to fabric control-plane URIs.",
+    "level": "critical",
+    "uris": ["/sharp/sessions", "/sharp/reduce", "/ib/sm/partition", "/roce/pfc", "/nccl/bootstrap", "/nccl/rank", "/nccl/rail", "/checkpoint/io", "/apiserver/request", "/imds/request", "/sched/gang", "/gpu/health", "/train/gradient", "/train/context"],
+    "sids": {"base": 9000601},
+    "blocks_modules": [
+      "sharp-in-network-poison",
+      "ib-subnet-manager-hijack",
+      "roce-pfc-storm",
+      "nccl-straggler-injection",
+      "nccl-port-exhaustion",
+      "checkpoint-io-storm",
+      "api-server-flood-surface",
+      "kv-oom-bomb",
+      "training-silent-corruption",
+      "gang-scheduler-abuse",
+      "driver-reset-trigger",
+      "rail-mismatch-forcing"
+    ],
+    "tuning": {
+      "zh": "fabric 运维网段（网络 operator/驱动 DaemonSet/调度器）入白名单；POST + 非白名单源直接 alert（GET 仅计数）；RDMA 数据面不可见，须配合 IB Partition/SM 隔离与 eBPF 导出（见 ib-partition-advice.yaml）",
+      "en": "Allowlist fabric ops CIDRs (network operator/driver DaemonSet/scheduler); alert on POST from non-allowlisted sources (count GETs); the RDMA data plane is invisible here - pair with IB Partition/SM isolation and eBPF export (see ib-partition-advice.yaml)"
+    },
+    "match": {
+      "engine": "suricata",
+      "any_of": [
+        {"uri_re": "/sharp/sessions|/sharp/reduce|/ib/sm/partition|/roce/pfc|/nccl/bootstrap|/nccl/rank|/nccl/rail|/checkpoint/io|/apiserver/request|/imds/request|/sched/gang|/gpu/health|/train/gradient|/train/context"}
+      ]
+    }
+  },
+{
+  "id": "suricata-cache-plane-uri",
+  "title": "缓存面端点 URI 签名（KV 池/近似缓存/残留/路由指标）",
+  "description": "命中多租户缓存面端点 URI（远程 KV 池块读写、近似缓存查询、逐出残留读、EPP 路由器指标），来源非 bastion。English: cache-plane endpoint URIs (KV pool blocks / approx lookup / eviction residue / router metrics) from non-bastion sources.",
+  "level": "medium",
+  "uris": [
+   "/kvpool/blocks",
+   "/approx/lookup",
+   "/cache/residue",
+   "/router/metrics"
+  ],
+  "sids": {
+   "base": 9000701
+  },
+  "blocks_modules": [
+   "cache-salt-policy-audit",
+   "similarity-cache-false-hit",
+   "cache-timing-sidechannel",
+   "cache-eviction-residue",
+   "remote-kv-pool-isolation",
+   "router-cache-metrics-leak",
+   "cache-poison-persistence"
+  ],
+  "tuning": {
+   "zh": "HOME_NET/ML_NET 变量按分区模板配置；缓存面端点仅应从引擎与 bastion 访问，其余来源先计数后告警；自研路由按 URI 清单追加",
+   "en": "Set HOME_NET/ML_NET from the partition template; cache-plane endpoints should only be reached from engines and bastions — count first, alert on others; append customer router URIs to the list"
+  },
+  "match": {
+   "engine": "suricata",
+   "any_of": [
+    {
+     "uri_re": "/kvpool/blocks|/approx/lookup|/cache/residue|/router/metrics"
+    }
+   ]
   }
+ }
 ]

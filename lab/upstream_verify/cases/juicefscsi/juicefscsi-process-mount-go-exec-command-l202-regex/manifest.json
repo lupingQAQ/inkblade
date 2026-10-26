@@ -1,0 +1,58 @@
+{
+ "id": "juicefscsi-process-mount-go-exec-command-l202-regex",
+ "source": "mining",
+ "title": "juicefs-csi: exec-command-go @ pkg/juicefs/mount/process_mount.go:202",
+ "version": "v0.33.1",
+ "version_ref": {
+  "kind": "git",
+  "repo": "juicedata/juicefs-csi-driver",
+  "tag": "v0.33.1",
+  "commit": "ab62a2106b6993f260b9f4c82f5dba51463e6748"
+ },
+ "install": "git checkout v0.33.1 (source vendored under lab/upstream_verify/upstream/); Go probe built with go1.27 + goproxy mirror",
+ "root_cause": {
+  "file": "pkg/juicefs/mount/process_mount.go",
+  "line": 202,
+  "function": "ProcessMount.jmount",
+  "snippet": "mntCmd := exec.Command(jfsConfig.CeMountPath, mountArgs...)",
+  "source": "lab/upstream_verify/upstream/juicedata/juicefs-csi-driver/v0.33.1/pkg/juicefs/mount/process_mount.go",
+  "source_sha256": "1fc370e9d83f8d690d3fa80ca6bf0731623e2990208860a61f0a4a0bf30135fa",
+  "note": "The privileged CSI node plugin builds the mount helper argv from JfsSetting.Options (StorageClass/PVC mountOptions, tenant-influenced) and JfsSetting.Source (volume secret metaurl), then runs /bin/mount.juicefs. Verified at function level with the verbatim pinned jmount: the shim at the resolved CeMountPath recorded the attacker-controlled argv (metrics bind 0.0.0.0:9567, access-log arbitrary path)."
+ },
+ "preconditions": [
+  "attacker can create/patch a PVC or StorageClass with juicefs mountOptions (or the volume secret metaurl)",
+  "CSI node plugin pod (privileged) mounts volumes with process mode"
+ ],
+ "steps": [
+  "extract the verbatim pinned jmount/struct/helpers into a Go probe (Linux-only pkg/util parts excluded)",
+  "place an argv-recording shim at the Windows-resolved CeMountPath of the upstream const",
+  "call the real jmount with attacker mountOptions and observe the privileged argv"
+ ],
+ "expected_evidence": [
+  "shim-argv.txt showing metrics=0.0.0.0:9567 / access-log attacker paths in the mount helper argv",
+  "run.json with source sha256 and the verbatim extraction hashes"
+ ],
+ "cleanup": "shim removed from <drive>:/bin and probe workspace under evidence/ is rebuilt every run",
+ "status": "verified",
+ "method": "dynamic-function",
+ "module": "csi-node-plugin-escape",
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-juicefscsi-process-mount-go-exec-command-l202-regex",
+ "notes": "Tenant-controlled JuiceFS mountOptions/source reach the privileged exec.Command argv of /bin/mount.juicefs in the CSI node pod. Dynamic function-level reproduction with the verbatim pinned upstream jmount; the argv shim technique follows the verified DeepSpeed CVE-2024-43497 dpkg.exe precedent.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "Tenant-controlled JuiceFS mountOptions/source reach the privileged exec.Command argv of /bin/mount.juicefs in the CSI node pod. Dynamic function-level reproduction with the verbatim pinned upstream jmount; the argv shim technique follows the verified DeepSpeed CVE-2024-43497 dpkg.exe precedent.",
+ "static_verdict": "verified-dynamic",
+ "unsupported": {},
+ "mining": {
+  "rule": "exec-command-go",
+  "channel": "regex",
+  "file": "process_mount.go",
+  "line": 202,
+  "snippet": "mntCmd := exec.Command(jfsConfig.CeMountPath, mountArgs...)",
+  "original_status": "pending-manual-review",
+  "promoted": true
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "juicefscsi"
+}

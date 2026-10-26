@@ -407,7 +407,10 @@ def ground_truth():
             "escape-primitives", name)
     add("risk-tenant-a-privileged-copy", "platform-baseline-noise", "risk",
         "escape-primitives", "model-copy-job")
-    add("fn-falco-gap", "platform-baseline-noise", "risk", "escape-primitives", "__not_detected__")
+    # 检测器已补齐（escape-primitives 防御验证联动）：占位锚点落位为具体证据锚。
+    # risk/benign 判定不变；改动仅是把 "__not_detected__" 占位替换为可命中锚点。
+    add("fn-falco-gap", "platform-baseline-noise", "risk",
+        "escape-primitives", "Falco 检测缺口")
 
     # 场景 2：常规 RBAC/网络运维噪声
     for needle in ("platform-operator", "system:controller", "ci-runner"):
@@ -422,14 +425,22 @@ def ground_truth():
     add("risk-platform-scheduler", "rbac-intent-noise", "risk", "rbac-mapping", "platform-scheduler")
     add("risk-tenant-b-netpol", "rbac-intent-noise", "risk", "network-policy-coverage", "tenant-b")
     add("risk-tenant-c-netpol", "rbac-intent-noise", "risk", "network-policy-coverage", "tenant-c")
+    # mutable image tag 检测器已存在（rbac-mapping 镜像可变标签盘点），但本夹具
+    # 快照中没有任何可变标签镜像证据 → 保留 "__not_detected__"，如实计 FN（不造证据）。
     add("fn-mutable-image", "rbac-intent-noise", "risk", "rbac-mapping", "__not_detected__")
 
     # 场景 3：审计洪水
     add("risk-audit-clusteradmin", "audit-flood-noise", "risk", "auditlog", "cluster-admin")
-    add("risk-audit-tenant-exec", "audit-flood-noise", "risk", "auditlog", "tenant-b")
+    # 锚点精确化：tenant-exec 用「subresource+目标 Pod」复合锚（"tenant-b" 会同时命中
+    # sa-token/portforward 发现的主体字段，"pods/exec" 会命中 CI 噪声 exec——复合锚
+    # 唯一标识该风险事件）；risk 判定不变。
+    add("risk-audit-tenant-exec", "audit-flood-noise", "risk", "auditlog",
+        "pods/exec tenant-b/jupyter-bob-0")
     add("risk-audit-weight-pvc", "audit-flood-noise", "risk", "auditlog", "model-weights-pvc")
-    add("fn-audit-sa-token", "audit-flood-noise", "risk", "auditlog", "__not_detected__")
-    add("fn-audit-portforward", "audit-flood-noise", "risk", "auditlog", "__not_detected__")
+    # 两条 FN 已补检测器（sa-token-mint / pods-portforward，core/auditlog.py）：
+    # 占位锚点落位为检测器产出的资源证据锚。
+    add("fn-audit-sa-token", "audit-flood-noise", "risk", "auditlog", "serviceaccounts/token")
+    add("fn-audit-portforward", "audit-flood-noise", "risk", "auditlog", "pods/portforward")
     return labels
 
 

@@ -573,6 +573,36 @@ def _main(argv=None) -> int:
     ctem.add_argument("--run", required=True)
     ctem.add_argument("--out", default=None, help="Markdown 输出路径（缺省 stdout）")
 
+    ch = sub.add_parser("chaos", help="混沌编排：list|run|abort（稳态→注入→中止→回滚→度量）")
+    csub = ch.add_subparsers(dest="chaos_cmd", required=True)
+    cl = csub.add_parser("list", help="实验目录（≥15：网络/DNS/fabric/GPU/节点/IO/内存/控制面/训练 ML）")
+    cl.add_argument("--json", action="store_true", help="输出 JSON")
+    cr = csub.add_parser("run", help="运行实验（默认自动拉起本地仿真靶场，仅 127.0.0.1）")
+    cr.add_argument("ids", nargs="+", help="实验 id（chaos list 查看；可多个）")
+    cr.add_argument("--mode", choices=["sequential", "parallel"], default="sequential")
+    cr.add_argument("--parallel", type=int, default=3, help="并行模式最大并发")
+    cr.add_argument("--every", type=float, default=0.0, help=">0 时定时循环：每 N 秒一轮")
+    cr.add_argument("--cycles", type=int, default=1, help="定时循环轮数（配合 --every）")
+    cr.add_argument("--target", action="append", default=[], metavar="NAME=URL",
+                    help="覆盖目标地址（可重复，如 fabric-dos=http://127.0.0.1:8000）")
+    cr.add_argument("--json-out", default=None, help="报告 JSON 追加写出路径")
+    cr.add_argument("--workspace", default="chaos")
+    ca = csub.add_parser("abort", help="中止运行中的混沌编排（写标记文件，编排器逐阶段轮询）")
+    ca.add_argument("--reason", default="manual")
+
+    obc = sub.add_parser("onboard-cluster", help="真实集群引导：kubeconfig 导入向导→pilot 一键只读画像")
+    obc.add_argument("--kubeconfig", action="append", default=[], help="显式 kubeconfig（可重复；缺省自动发现）")
+    obc.add_argument("--context", default=None, help="只扫描指定 context")
+    obc.add_argument("--snapshot", action="append", default=[], help="离线 snapshot JSON（可重复；免 kubectl）")
+    obc.add_argument("--out", default="reports/pilot", help="pilot 输出目录")
+    obc.add_argument("--workspace", default="pilot-onboard")
+    obc.add_argument("--actor", default="onboarding-wizard")
+    obc.add_argument("--role", choices=list(ROLES), default="auditor")
+    obc.add_argument("--kubectl", default="kubectl")
+    obc.add_argument("--timeout", type=int, default=30)
+    obc.add_argument("--yes", action="store_true", help="非交互（全部默认值）")
+    obc.add_argument("--dry-run", action="store_true", help="只做发现/校验/选择，不跑 pilot")
+
     args = ap.parse_args(argv)
     home = Path(args.home)
 
@@ -1334,6 +1364,71 @@ def _main(argv=None) -> int:
         else:
             print(render_md(report))
         return 0
+
+    if args.cmd == "chaos":
+        from .chaos import EXPERIMENTS, ChaosOrchestrator, abort_active_run, list_experiments
+        from .chaos.orchestrator import abort_reason_of, clear_abort
+
+        if args.chaos_cmd == "list":
+            items = list_experiments()
+            if args.json:
+                _print_json({"count": len(items), "experiments": items})
+                return 0
+            print(f"混沌实验目录（{len(EXPERIMENTS)} 个；仅本地仿真靶场，不碰真实集群）")
+            for it in items:
+                tag = " [ML 专属]" if it["ml_specific"] else ""
+                print(f"  {it['id']:<38} {it['category']:<14}{tag} {it['title']}")
+            return 0
+
+        if args.chaos_cmd == "run":
+            targets = {}
+            for item in args.target:
+                name, _, url = item.partition("=")
+                if not url:
+                    print(f"--target 需要 NAME=URL 形式，收到: {item}", file=sys.stderr)
+                    return 2
+                targets[name.strip()] = url.strip()
+            clear_abort(home)
+            orch = ChaosOrchestrator(home, targets=targets)
+            report = orch.run(args.ids, mode=args.mode, max_parallel=args.parallel,
+                              every_s=args.every, cycles=args.cycles)
+            for r in report["results"]:
+                impact = r.get("slo_impact") or {}
+                if "outcome" in r and "phases" not in r:
+                    print(f"[chaos] {r.get('id')}: {r.get('outcome')}（{r.get('detail', '')}）")
+                    continue
+                print(f"[chaos] {r['id']}: {r['outcome']}  "
+                      f"degraded={impact.get('degraded')} recovered={impact.get('recovered')}  "
+                      f"({r.get('duration_s', 0)}s)")
+                if impact.get("abort_reason"):
+                    print(f"          中止原因: {impact['abort_reason']}")
+            s = report["summary"]
+            print(f"汇总: {s['total']} 实验 · 稳态破坏并恢复 {s['steady_break_then_recover']} · "
+                  f"回滚失败 {s['outcomes'].get('rollback_failed', 0)} · 报告 {report.get('report_path')}")
+            if args.json_out:
+                out = Path(args.json_out)
+                out.parent.mkdir(parents=True, exist_ok=True)
+                out.write_text(json.dumps(report, ensure_ascii=False, indent=2),
+                               encoding="utf-8")
+                print(f"报告已写出: {out}")
+            return 0 if s.get("steady_break_then_recover", 0) or s.get("degraded", 0) else 1
+
+        if args.chaos_cmd == "abort":
+            doc = abort_active_run(home, args.reason)
+            reason = abort_reason_of(home)
+            print(f"已请求中止（原因: {reason}）。运行中的编排器将在当前阶段结束后回滚并退出。")
+            _print_json(doc)
+            return 0
+
+    if args.cmd == "onboard-cluster":
+        from .cluster_wizard import run_wizard
+
+        return run_wizard(
+            kubeconfigs=args.kubeconfig, context=args.context, snapshots=args.snapshot,
+            out_dir=args.out, workspace=args.workspace, actor=args.actor, role=args.role,
+            kubectl=args.kubectl, timeout=args.timeout, yes=args.yes, dry_run=args.dry_run,
+            home=home,
+        )
 
     if args.cmd == "assess":
         from .assess.inventory import (

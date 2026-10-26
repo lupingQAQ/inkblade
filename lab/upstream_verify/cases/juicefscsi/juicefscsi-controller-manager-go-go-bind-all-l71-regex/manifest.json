@@ -1,0 +1,56 @@
+{
+ "id": "juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+ "source": "mining",
+ "title": "juicefs-csi: go-bind-all @ cmd/app/controller_manager.go:71",
+ "version": "v0.33.1",
+ "version_ref": {
+  "kind": "git",
+  "repo": "juicedata/juicefs-csi-driver",
+  "tag": "v0.33.1",
+  "commit": "ab62a2106b6993f260b9f4c82f5dba51463e6748"
+ },
+ "install": "pinned source vendored under lab/upstream_verify/upstream/",
+ "root_cause": {
+  "file": "cmd/app/controller_manager.go",
+  "line": 71,
+  "function": "newManager",
+  "snippet": "BindAddress: \"0.0.0.0:8084\",",
+  "source": "lab/upstream_verify/upstream/juicedata/juicefs-csi-driver/v0.33.1/cmd/app/controller_manager.go",
+  "source_sha256": "b933e2796904d47ef28c5e55f4a306b8d66830024dde6acf84ca8409d405ac7a",
+  "note": "Controller metrics listener binds all interfaces."
+ },
+ "preconditions": [
+  "CSI controller pod network-reachable on 8084"
+ ],
+ "steps": [
+  "resolve the pinned tag/commit and file:line",
+  "verify the claimed snippet and source SHA256",
+  "record a static-only verdict (no exploit execution)"
+ ],
+ "expected_evidence": [
+  "static-check.json with source hash and line match"
+ ],
+ "cleanup": "none (read-only)",
+ "status": "static-only",
+ "method": "static-source",
+ "module": null,
+ "python": "reproenv",
+ "advisory": "reports/samples/mining-infra/mining-report.json",
+ "marker_text": "TRIDENT-UV-juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+ "notes": "JuiceFSCSI controller (and pod manager, 0.0.0.0:8082) bind their controller-runtime metrics listeners on all interfaces with no authentication; cmd/main.go additionally blank-imports net/http/pprof (default-mux registration). Cluster-internal posture exposure: queue depths, volume names and pprof surface.",
+ "static_evidence_level": "source-line",
+ "static_analysis": "JuiceFSCSI controller (and pod manager, 0.0.0.0:8082) bind their controller-runtime metrics listeners on all interfaces with no authentication; cmd/main.go additionally blank-imports net/http/pprof (default-mux registration). Cluster-internal posture exposure: queue depths, volume names and pprof surface.",
+ "static_verdict": "not-dynamically-verified",
+ "unsupported": {},
+ "mining": {
+  "rule": "go-bind-all",
+  "channel": "regex",
+  "file": "controller_manager.go",
+  "line": 71,
+  "snippet": "BindAddress: \"0.0.0.0:8084\",",
+  "original_status": "pending-manual-review",
+  "promoted": false
+ },
+ "schema": "trident-upstream-case-v1",
+ "component": "juicefscsi"
+}

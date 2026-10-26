@@ -1,0 +1,67 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "UCX-UCT-HW",
+ "source": "mining",
+ "component": "ucx",
+ "title": "UCX/UCT transport library (hardware fabric path)",
+ "status": "unsupported",
+ "declared_status": "unsupported",
+ "method": "unsupported",
+ "verified": false,
+ "module": null,
+ "version": "v1.22.0",
+ "version_ref": {
+  "kind": "git",
+  "repo": "openucx/ucx",
+  "tag": "v1.22.0",
+  "commit": "8a6b06fb880accbb933a79cda893883872c68d9d"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v1.22.0",
+  "repo": "openucx/ucx",
+  "tag": "v1.22.0",
+  "commit": "8a6b06fb880accbb933a79cda893883872c68d9d",
+  "package": null,
+  "wheel_sha256": null,
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "advisory_sha256": "4b898807421021bf0bf0a4e4c7d163ccb1e9147fdc9f93ad644e141a88f64718"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/ucx/UCX-UCT-HW/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.127,
+ "started_at": "2026-10-26T05:01:38+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-UCX-UCT-HW",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/ucx/UCX-UCT-HW/evidence/log.txt",
+   "sha256": "9f864612e284b249fe2150ae80d94e7d717fd5342354f4a8d47284e84421f9ba",
+   "size": 378
+  },
+  {
+   "path": "lab/upstream_verify/cases/ucx/UCX-UCT-HW/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/ucx/UCX-UCT-HW/evidence/unsupported.json",
+   "sha256": "4b5bfbe5b2cdd65d99588a6077d674fa358777187486e1021a426766fbe9d69e",
+   "size": 948
+  }
+ ],
+ "poc_sha256": "cdd4a172ce321d9047bc0ea5ac3891e6352290228a85bba86955bcfd3178dd09",
+ "manifest_sha256": "b26c291c19024928717331ae13538070df50f51ad180f61d8e314409d29673f8",
+ "stdout": "{\"status\": \"unsupported\", \"case\": \"UCX-UCT-HW\", \"reason\": \"UCX is a Linux C library: UCT transports need IB/ROCm/SM/shm devices; ucx-py (the Python binding) needs the libucp shared object which cannot build or load on this Windows host.\"}\n",
+ "stderr": "",
+ "notes": "UCX v1.22.0: C transport library. The ucx-py binding was mined separately (see ucxpy cases); the core library is hardware-bound and marked unsupported."
+}

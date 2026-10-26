@@ -1,0 +1,15 @@
+{
+ "schema": "trident-mining-candidate-v1",
+ "id": "msswift-torch-utils-py-env-rank-read-l349-regex",
+ "target": "msswift",
+ "repo": "modelscope/ms-swift",
+ "tag": "v4.6.0",
+ "status": "pending-manual-review",
+ "rule": "env-rank-read",
+ "channel": "regex",
+ "file": "torch_utils.py",
+ "line": 349,
+ "snippet": "os.environ['LOCAL_RANK'] = '0'",
+ "note": "规则命中≠漏洞：须人工复核可达性与可利用性后方可建模块；不自动入库",
+ "registered_at": "2026-10-26T12:43:07"
+}

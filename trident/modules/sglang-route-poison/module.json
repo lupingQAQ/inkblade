@@ -18,10 +18,10 @@
   "produces": "sglang-route-poison",
   "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
   "combo_signature": "sglang-route-poison",
-  "verified": false,
-  "verification_status": "static-only",
+  "verified": true,
+  "verification_status": "verified",
   "verification_cves": {
-    "CVE-2026-92972": "static-only"
+    "CVE-2026-92972": "verified"
   },
   "verification_evidence": [
     "lab/upstream_verify/cases/sglang/CVE-2026-92972/result.json"

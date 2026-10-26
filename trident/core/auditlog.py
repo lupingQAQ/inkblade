@@ -20,6 +20,8 @@
 - 仅已完成动作（responseStatus.code 2xx）默认入报；403 已拒绝尝试默认不报（include_denied=True 时以 low 报）
 - Secret 读：基线主体白名单（与 sigma-secret-abnormal-read not_in 一致）不报
 - 挂载权重 PVC：平台调度器主体不报（baseline_subjects 可扩展）
+- **永不基线化**：serviceaccounts/token 铸造与 pods/portforward 不吃主体白名单
+  （任何主体铸造/隧道都留痕；core/baseline.NEVER_LEARN_PATTERNS 同步封死学习路径）
 """
 
 from __future__ import annotations
@@ -49,6 +51,7 @@ RAY_JOB_NAME_RE = re.compile(r"^rayjob[-_]", re.I)
 
 _RBAC_BINDING_RESOURCES = {"rolebinding", "rolebindings", "clusterrolebinding", "clusterrolebindings"}
 _POD_RESOURCES = {"pod", "pods"}
+_SA_RESOURCES = {"serviceaccount", "serviceaccounts"}
 _SECRET_RESOURCES = {"secret", "secrets"}
 _PVC_RESOURCES = {"persistentvolumeclaim", "persistentvolumeclaims"}
 _READ_VERBS = {"get", "list", "watch"}
@@ -243,6 +246,52 @@ def _detect_pods_exec(event: dict, baseline: set[str]) -> dict | None:
     )
 
 
+def _detect_sa_token_mint(event: dict, baseline: set[str]) -> dict | None:
+    """serviceaccounts/token 创建（TokenRequest 铸造）——**永不基线化**。
+
+    铸造即获得该 SA 的长期凭据（忽略 baseline 主体白名单：任何主体铸造
+    token 都应留痕；学习模式在 core/baseline.NEVER_LEARN_PATTERNS 同步封死）。
+    """
+    ref = event.get("objectRef") or {}
+    if _verb(event) != "create" or _ref_resource(event) not in _SA_RESOURCES:
+        return None
+    if str(ref.get("subresource") or "").lower() != "token":
+        return None
+    denied = not _succeeded(event)
+    return _finding(
+        "sa-token-mint", "low" if denied else "high",
+        "审计轨迹：ServiceAccount Token 铸造" + ("（已拒绝尝试）" if denied else ""),
+        event,
+        detail=("serviceaccounts/token 创建 = 为该 SA 铸造可带外使用的凭据"
+                "（租户内自助铸造即权限面外泄；配合绑定即横向闭环）。"),
+        chains=["ssrf-sa-token-cloud-metadata"],
+        modules=["overprivileged-sa-escalation", "supply-chain-credential-theft"],
+        rule_keys=["sigma-sa-token-mint"],
+        fix="TokenRequest 收敛到控制器主体；租户 SA 禁止自助铸造；绑定 gkp/kyverno 准入告警",
+    )
+
+
+def _detect_pods_portforward(event: dict, baseline: set[str]) -> dict | None:
+    """pods/portforward 隧道——**永不基线化**（隐蔽数据面/管理面外带通道）。"""
+    ref = event.get("objectRef") or {}
+    if _verb(event) != "create" or _ref_resource(event) not in _POD_RESOURCES:
+        return None
+    if str(ref.get("subresource") or "").lower() != "portforward":
+        return None
+    denied = not _succeeded(event)
+    return _finding(
+        "pods-portforward", "low" if denied else "high",
+        "审计轨迹：pods/portforward 隧道" + ("（已拒绝尝试）" if denied else ""),
+        event,
+        detail=("portforward 把 Pod 端口经 apiserver 隧道外带：绕过 NetworkPolicy/入口审计，"
+                "常用于隐蔽数据外传与管理面直达。"),
+        chains=["ray-dashboard-cluster-takeover"],
+        modules=["overprivileged-sa-escalation"],
+        rule_keys=["sigma-pods-portforward-tunnel"],
+        fix="portforward 收敛到平台调试主体并强制会话审计；租户命名空间直接准入拒绝",
+    )
+
+
 def _detect_secret_abnormal_read(event: dict, baseline: set[str]) -> dict | None:
     if _verb(event) not in _READ_VERBS or _ref_resource(event) not in _SECRET_RESOURCES:
         return None
@@ -340,6 +389,8 @@ _DETECTORS = (
     _detect_rbac_clusteradmin_binding,
     _detect_privileged_pod,
     _detect_pods_exec,
+    _detect_sa_token_mint,
+    _detect_pods_portforward,
     _detect_ray_job_runtime_pod,
     _detect_secret_abnormal_read,
     _detect_weight_pvc_write,

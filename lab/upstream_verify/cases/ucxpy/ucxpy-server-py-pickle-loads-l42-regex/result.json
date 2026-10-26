@@ -1,0 +1,68 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "ucxpy-server-py-pickle-loads-l42-regex",
+ "source": "mining",
+ "component": "ucxpy",
+ "title": "ucx-py: pickle-loads @ debug-tests/server.py:42",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v0.45.00",
+ "version_ref": {
+  "kind": "git",
+  "repo": "rapidsai/ucx-py",
+  "tag": "v0.45.00"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v0.45.00",
+  "repo": "rapidsai/ucx-py",
+  "tag": "v0.45.00",
+  "commit": null,
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/rapidsai/ucx-py/v0.45.00/debug-tests/server.py",
+  "artifact_sha256": "afdd0f2aaa81e90509c49b94c85a8fa599752182ec36611df27447434b090f5c",
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "advisory_sha256": "4b898807421021bf0bf0a4e4c7d163ccb1e9147fdc9f93ad644e141a88f64718"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/ucxpy/ucxpy-server-py-pickle-loads-l42-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.114,
+ "started_at": "2026-10-26T05:01:21+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-ucxpy-server-py-pickle-loads-l42-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/ucxpy/ucxpy-server-py-pickle-loads-l42-regex/evidence/log.txt",
+   "sha256": "7fdfc937d0bd5793b26f8b4c4553b03426b56f4dbf8832f0d7ccd298f924a35e",
+   "size": 245
+  },
+  {
+   "path": "lab/upstream_verify/cases/ucxpy/ucxpy-server-py-pickle-loads-l42-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/ucxpy/ucxpy-server-py-pickle-loads-l42-regex/evidence/static-check.json",
+   "sha256": "6f1992eb37a5df64ba626e018c7e5181eb241182609622577a2aa1268102185a",
+   "size": 1418
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "6fdfb5fd41c5b17e6ff9dc98b77a8c8f1d7693e325354c17a71937be1cffe5d5",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"ucxpy-server-py-pickle-loads-l42-regex\"}\n",
+ "stderr": "",
+ "notes": "ucx-py debug-tests server deserialises a client-supplied cloudpickle payload (cloudpickle.loads(func)) with no authentication: any peer reaching the debug endpoint gets arbitrary code execution by design of the debug tool. Debug tooling is not the production wheel path, and the server needs CUDA/UCX/distributed stacks that this Windows host cannot run, so the case is static-only with the trust boundary recorded."
+}

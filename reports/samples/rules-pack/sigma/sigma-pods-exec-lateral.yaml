@@ -33,4 +33,4 @@ tags:
 custom:
   trident-mode: monitor
   trident-tuning: 把运维跳板主体（专用 break-glass SA + bastion 网段）加入 not_in 白名单；对进入特权/GPU 命名空间的 exec 直接升级 critical；配合会话录像与 kubectl audit 注解核对操作者
-  trident-blocks-chains: ray-dashboard-cluster-takeover
+  trident-blocks-chains: "cluster-takeover-objective,ray-dashboard-cluster-takeover"

@@ -91,6 +91,24 @@ def analyze(snapshot: dict, params: dict) -> list[dict]:
                     fix="收敛 host* 标志；例外登记并准入管控",
                 ))
 
+    # 运行时检测盲区：逃逸先例存在 × Falco 规则未加载（防御验证缺口本身是风险）
+    falco_rules = ((snapshot.get("defenses") or {}).get("falco") or {}).get("rules") or []
+    if falco_rules and privileged_precedent:
+        unloaded = sorted(str(r.get("name") or "?") for r in falco_rules
+                          if not r.get("loaded"))
+        if unloaded:
+            findings.append(finding(
+                "high",
+                f"Falco 检测缺口：平台存在特权/宿主面先例 × {len(unloaded)} 条运行时规则未加载",
+                detail=("逃逸原语（特权/socket/敏感挂载）已在静态面成立，而 Falco 运行时检测"
+                        f"缺位（未加载：{', '.join(unloaded[:6])}"
+                        + (" 等" if len(unloaded) > 6 else "") +
+                        "）——发生逃逸行为时无运行时告警，纵深防御只剩准入一层。"),
+                evidence=f"privileged_precedent=true falco_unloaded={len(unloaded)}",
+                mapping="防御验证（runtime detection gap）；逃逸原语检查联动",
+                fix="加载/修复缺失 Falco 规则并与逃逸先例清单对账；运行时检测恢复前，准入侧保持 Enforce",
+            ))
+
     # SA 逃逸矩阵：can-i 权限 × 集群特权先例
     for entry in snapshot.get("cani", []):
         subject = entry.get("subject", "?")

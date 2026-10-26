@@ -1,0 +1,68 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "gpuoperator-main-go-exec-command-l669-regex",
+ "source": "mining",
+ "component": "gpuoperator",
+ "title": "gpu-operator: exec-command-go @ cmd/nvidia-validator/main.go:669",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v26.7.2",
+ "version_ref": {
+  "kind": "git",
+  "repo": "NVIDIA/gpu-operator",
+  "tag": "v26.7.2"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v26.7.2",
+  "repo": "NVIDIA/gpu-operator",
+  "tag": "v26.7.2",
+  "commit": null,
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/NVIDIA/gpu-operator/v26.7.2/cmd/nvidia-validator/main.go",
+  "artifact_sha256": "62e35808d5773b15cbd92161827a43080d331c0d547eceae69def8ab13c98e3e",
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "advisory_sha256": "4b898807421021bf0bf0a4e4c7d163ccb1e9147fdc9f93ad644e141a88f64718"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/gpuoperator/gpuoperator-main-go-exec-command-l669-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.101,
+ "started_at": "2026-10-26T05:01:20+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-gpuoperator-main-go-exec-command-l669-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-main-go-exec-command-l669-regex/evidence/log.txt",
+   "sha256": "21e0c6c08ef40e37af7dc90376690cf017daff3820ab37f67fd3c10e2f6a9480",
+   "size": 261
+  },
+  {
+   "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-main-go-exec-command-l669-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-main-go-exec-command-l669-regex/evidence/static-check.json",
+   "sha256": "0a79cf9618010d4c9e68feb4a08c5e77f6a5ce1a185c2b37a7f06257f8c289b8",
+   "size": 1474
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "21ee6992da22e45d74bcd1d8a20b05888661279f010056e24dbb5f82f7e07fdf",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"gpuoperator-main-go-exec-command-l669-regex\"}\n",
+ "stderr": "",
+ "notes": "NVIDIA GPU Operator validator pods run privileged with hostPath mounts (see 0500_daemonset posture case) and execute shell/nvidia-smi via runCommand. Callers are fixed in-tree (shell/nvidiaSMIPath), so the exec sink is not tenant-reachable by itself; the finding is the privileged execution surface of validator/driver DaemonSets, which pairs with the elevated-pod-spec hits in manifests/state-driver/0500_daemonset.yaml."
+}

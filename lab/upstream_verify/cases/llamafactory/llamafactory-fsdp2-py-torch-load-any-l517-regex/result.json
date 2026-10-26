@@ -1,0 +1,69 @@
+{
+ "schema": "trident-upstream-result-v1",
+ "id": "llamafactory-fsdp2-py-torch-load-any-l517-regex",
+ "source": "mining",
+ "component": "llamafactory",
+ "title": "llamafactory: torch-load-any @ v1/plugins/.../fsdp2.py:517",
+ "status": "static-only",
+ "declared_status": "static-only",
+ "method": "static-source",
+ "verified": false,
+ "module": null,
+ "version": "v0.9.5",
+ "version_ref": {
+  "kind": "git",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5"
+ },
+ "version_hash": {
+  "kind": "git",
+  "version": "v0.9.5",
+  "repo": "hiyouga/LlamaFactory",
+  "tag": "v0.9.5",
+  "commit": "7af909522a951e3ad9f022ea6f88b6755257eaa5",
+  "package": null,
+  "wheel_sha256": null,
+  "artifact": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/v1/plugins/trainer_plugins/distributed/fsdp2.py",
+  "artifact_sha256": "ebf4bf9e1798b21a1981e59325ffec1b05d9da0b509e9460803d3c677d2f4478",
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
+ },
+ "python": "reproenv",
+ "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-fsdp2-py-torch-load-any-l517-regex/poc.py",
+ "exit_code": 0,
+ "timed_out": false,
+ "duration_s": 0.079,
+ "started_at": "2026-10-26T04:23:33+00:00",
+ "marker": {
+  "text": "TRIDENT-UV-llamafactory-fsdp2-py-torch-load-any-l517-regex",
+  "before": "ABSENT",
+  "after_has_marker": false,
+  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+ },
+ "request_response": [],
+ "state_before": "ABSENT",
+ "state_after": "ABSENT",
+ "evidence": [
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-fsdp2-py-torch-load-any-l517-regex/evidence/log.txt",
+   "sha256": "dcd56708ef1039e15616151b3265d9d3148f5196f8cd477b05cd730a9ab951f2",
+   "size": 270
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-fsdp2-py-torch-load-any-l517-regex/evidence/marker.txt",
+   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
+   "size": 6
+  },
+  {
+   "path": "lab/upstream_verify/cases/llamafactory/llamafactory-fsdp2-py-torch-load-any-l517-regex/evidence/static-check.json",
+   "sha256": "d463ff18dcfa8b67154def3a7f495f9af46635915476b37930b829585b7e4a43",
+   "size": 1968
+  }
+ ],
+ "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
+ "manifest_sha256": "bd61f770259649f39542d9a499c6df8c431b90824fc625404213d9d7214488f7",
+ "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-fsdp2-py-torch-load-any-l517-regex\"}\n",
+ "stderr": "",
+ "notes": "FSDP2 plugin loads full-checkpoint state with torch.load(ckpt_file, map_location='cpu') and no weights_only pin. On torch>=2.6 the weights_only default is True, so the unpickling surface is closed on current stacks; on torch<2.6 the same line is a checkpoint-dir pickle RCE. Recorded as a version-paired trust boundary, not a dynamically reproduced sink on this host (torch 2.14.1/2.5.1 split)."
+}

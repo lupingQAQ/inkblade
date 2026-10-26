@@ -305,6 +305,13 @@ def _network_layer_section(run, lang: str) -> str:
     return "\n".join(lines)
 
 
+def _probe_matrix_section(run, lang: str) -> str:
+    """LLM 探针矩阵节：消费 run 目录的 llm-probe-matrix.json（缺产物显式占位）。"""
+    from ..probes.matrix import section_for_run
+
+    return section_for_run(run.dir, lang)
+
+
 def _objective_section(run, lang: str) -> str:
     """Highest-privilege proof section (objective PROOF artifact when present)."""
     path = run.dir / "objective-proof.json"
@@ -539,6 +546,9 @@ def render_pentest(
     )
     mapping["title_hybrid"] = mapping.pop("title_hybrid_cloud_boundary")
     mapping["body_hybrid"] = mapping.pop("body_hybrid_cloud_boundary")
+    mapping["title_probe_matrix"] = _pick(
+        lang, "LLM 探针矩阵", "LLM Probe Matrix")
+    mapping["probe_matrix"] = _probe_matrix_section(run, lang)
     mapping["findings_table"] = _findings_table(run, lang, disclosed, sha_map, redact_zeroday)
     mapping["title_cve"] = _pick(lang, "CVE and Fixed Versions (catalog mapping)", "CVE and Fixed Versions (catalog mapping)")
     try:
