@@ -33,8 +33,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/cephcsi/cephcsi-httpserver-go-pprof-exposed-l37-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 2.903,
- "started_at": "2026-10-26T05:04:01+00:00",
+ "duration_s": 5.024,
+ "started_at": "2026-10-26T05:25:48+00:00",
  "marker": {
   "text": "TRIDENT-UV-cephcsi-httpserver-go-pprof-exposed-l37-regex",
   "before": "ABSENT",
@@ -43,12 +43,12 @@
  },
  "request_response": [
   {
-   "dir": "GET http://127.0.0.1:60237/debug/pprof/cmdline (no credentials)",
+   "dir": "GET http://127.0.0.1:64501/debug/pprof/cmdline (no credentials)",
    "payload": "-",
    "result": "HTTP 200"
   },
   {
-   "dir": "GET http://127.0.0.1:60237/metrics (no credentials)",
+   "dir": "GET http://127.0.0.1:64501/metrics (no credentials)",
    "payload": "-",
    "result": "HTTP 200"
   }
@@ -58,7 +58,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/cephcsi/cephcsi-httpserver-go-pprof-exposed-l37-regex/evidence/log.txt",
-   "sha256": "405d7fb4a9c8b8bdbcba7edb2f69496a5229ee22a5d1716f9e262af5dd6656cb",
+   "sha256": "9a3f6746291e1df02b887b5dc2f2ee1096b3feeaaa6c47a403761ad85b6d147b",
    "size": 375
   },
   {
@@ -78,7 +78,7 @@
   },
   {
    "path": "lab/upstream_verify/cases/cephcsi/cephcsi-httpserver-go-pprof-exposed-l37-regex/evidence/run.json",
-   "sha256": "8a266655762fe4a920fe585772895374c8181bbaa6fa50e5d6f447a3fc8a26b4",
+   "sha256": "3c50acbb08f88c3d2689ce326935c5304da65efeb56f95e25831d1bc262b5995",
    "size": 2307
   },
   {
@@ -98,12 +98,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/cephcsi/cephcsi-httpserver-go-pprof-exposed-l37-regex/evidence/work/probe/probe.exe",
-   "sha256": "89479640461cbab4a16ad7ed2850c2b32f4800d27b6198b27016d11f1c49faab",
+   "sha256": "d1140b72db4e575d69181de3d47f8eb1ae6a59d3655d741126ad64016984b97a",
    "size": 15523840
   }
  ],
- "poc_sha256": "d25325edf9c7cdcdab74f1e8f203039f02d84541c8e818f05bc20e684aea137c",
- "manifest_sha256": "ad0723cf05c74822d5c0d9dd52069e06c918d7bf2dfcd6cac40459f30dcc0f01",
+ "poc_sha256": "07e8bad5af4d15e30bebc98967c69cbb85ac80865c868cc9dbece5f550bc7a60",
+ "manifest_sha256": "9ee3fb476684664cf10c38a7a314c6050ebd430ef27aea5eb8fa025e018a6d0a",
  "stdout": "{\"status\": \"verified\", \"marker\": \"TRIDENT-UV-cephcsi-httpserver-go-pprof-exposed-l37-regex\", \"evidence\": \"lab/upstream_verify/cases/cephcsi/cephcsi-httpserver-go-pprof-exposed-l37-regex/evidence\"}\n",
  "stderr": "",
  "notes": "Unauthenticated pprof + prometheus metrics ride the same default-mux listener the CSI binary serves; default bind is 0.0.0.0. Dynamic function-level reproduction with the verbatim pinned registration and server functions; impact = cpu/heap profiling (secret extraction surface) reachable without credentials."

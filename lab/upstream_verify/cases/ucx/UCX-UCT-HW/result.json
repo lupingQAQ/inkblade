@@ -31,8 +31,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/ucx/UCX-UCT-HW/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.127,
- "started_at": "2026-10-26T05:01:38+00:00",
+ "duration_s": 0.095,
+ "started_at": "2026-10-26T05:23:42+00:00",
  "marker": {
   "text": "TRIDENT-UV-UCX-UCT-HW",
   "before": "ABSENT",
@@ -45,7 +45,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/ucx/UCX-UCT-HW/evidence/log.txt",
-   "sha256": "9f864612e284b249fe2150ae80d94e7d717fd5342354f4a8d47284e84421f9ba",
+   "sha256": "25ddad2ad5448537f5d25033034c5ab4177d46601e173e86fd3206a9c6c800b5",
    "size": 378
   },
   {
@@ -55,11 +55,11 @@
   },
   {
    "path": "lab/upstream_verify/cases/ucx/UCX-UCT-HW/evidence/unsupported.json",
-   "sha256": "4b5bfbe5b2cdd65d99588a6077d674fa358777187486e1021a426766fbe9d69e",
+   "sha256": "898721ea43c8b7f8c9dc06762ff60552b53fef4e07ca9633b508bf1b85deb2d4",
    "size": 948
   }
  ],
- "poc_sha256": "cdd4a172ce321d9047bc0ea5ac3891e6352290228a85bba86955bcfd3178dd09",
+ "poc_sha256": "8c43ff144a23e6e961076b0c4ab32cfe5e637403206fce521050ffb6dc8361c7",
  "manifest_sha256": "b26c291c19024928717331ae13538070df50f51ad180f61d8e314409d29673f8",
  "stdout": "{\"status\": \"unsupported\", \"case\": \"UCX-UCT-HW\", \"reason\": \"UCX is a Linux C library: UCT transports need IB/ROCm/SM/shm devices; ucx-py (the Python binding) needs the libucp shared object which cannot build or load on this Windows host.\"}\n",
  "stderr": "",

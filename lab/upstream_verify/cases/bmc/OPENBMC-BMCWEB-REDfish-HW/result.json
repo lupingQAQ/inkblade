@@ -31,8 +31,8 @@
  "command": "[reproenv] lab/upstream_verify/cases/bmc/OPENBMC-BMCWEB-REDfish-HW/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.116,
- "started_at": "2026-10-26T05:01:38+00:00",
+ "duration_s": 0.159,
+ "started_at": "2026-10-26T05:25:41+00:00",
  "marker": {
   "text": "TRIDENT-UV-OPENBMC-BMCWEB-REDfish-HW",
   "before": "ABSENT",
@@ -45,7 +45,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/bmc/OPENBMC-BMCWEB-REDfish-HW/evidence/log.txt",
-   "sha256": "4ba84caaf188a8be6bea9d2cad91f27c0de2f56e0fdf711626a7f0b489e3a906",
+   "sha256": "83c4db439e131510c903e4e09a7a03911bfea1b2d6bf53c130457784bc1db2d4",
    "size": 442
   },
   {
@@ -55,11 +55,11 @@
   },
   {
    "path": "lab/upstream_verify/cases/bmc/OPENBMC-BMCWEB-REDfish-HW/evidence/unsupported.json",
-   "sha256": "19807bb0d811e5e58a69910dbd810e2e3c1e4eeea4bff5245bb0dbcf7f1607f9",
+   "sha256": "6846399ab57d8069e203af15b1ad48c6f57bf4d41be318e676c8bafa5882167c",
    "size": 1212
   }
  ],
- "poc_sha256": "cdd4a172ce321d9047bc0ea5ac3891e6352290228a85bba86955bcfd3178dd09",
+ "poc_sha256": "8c43ff144a23e6e961076b0c4ab32cfe5e637403206fce521050ffb6dc8361c7",
  "manifest_sha256": "7cef7eccae12a445f412536e584a768f7c3bc8cac4ae5d37e777b533e7bf8fd8",
  "stdout": "{\"status\": \"unsupported\", \"case\": \"OPENBMC-BMCWEB-REDfish-HW\", \"reason\": \"bmcweb is C++17 on OpenBMC systemd images and the Redfish/IPMI-BT planes ride BMC hardware (BMC SoC, IPMI BT block); no local runtime can host them. Redfish testing belongs to the BMC lab, not this Windows host.\"}\n",
  "stderr": "",
