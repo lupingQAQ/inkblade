@@ -128,6 +128,9 @@ def _main(argv=None) -> int:
     ap.add_argument("--home", default=".", help="工作区根目录（含 evidence/ modules/ users.json）")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
+    from .agent.cli import register as _register_agent
+
+    _register_agent(sub)
     from .probe.cli import register as _register_probe_cli
 
     _register_probe_cli(sub)
@@ -739,6 +742,12 @@ def _main(argv=None) -> int:
         from .probe.cli import dispatch as _dispatch_probe_cli
 
         return _dispatch_probe_cli(args, home)
+
+    if args.cmd == "agent":
+        from .agent.cli import dispatch as _dispatch_agent
+
+        return _dispatch_agent(args, home)
+
     if args.cmd == "doctor":
         from .onboarding import doctor
 

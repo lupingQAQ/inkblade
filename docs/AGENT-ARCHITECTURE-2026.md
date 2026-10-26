@@ -461,7 +461,7 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 ### 验证口径
 
 - 新增测试：`tests/test_agent_{graph,runtime,scheduler,protocols,memory_skills,supervisor,eval_2026,cli}.py`
-  共 63 个用例；覆盖证据门控、lease/retry/dead-letter、预算硬顶、越界拒绝、无探针拒绝、
+  共 68 个用例；覆盖证据门控、lease/retry/dead-letter、预算硬顶、越界拒绝、无探针拒绝、
   8 步自主链、resume、time-travel、MCP/A2A/技能/记忆/Reflexion/评测三模式。
 - 迁移在途红测：由 Rust 探针/模板迁移的并行工作造成，若出现 `run.py`/旧模板路径失败，
   在提交说明中单列，不混入本运行时结论。
