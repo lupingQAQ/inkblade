@@ -13,63 +13,185 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
-    "fixture": {
-      "from": "params.fixture",
+    "deploy_snapshot": {
+      "from": "coalesce(params.deploy_snapshot, params.fixture)",
       "required": true,
-      "description": "Collected snapshot / fixture path"
+      "description": "deployed/degraded/absent deployment snapshot"
+    },
+    "ruleset": {
+      "from": "params.ruleset",
+      "required": false,
+      "description": "optional rule-set export {rules:[technique-id]}"
     }
   },
   "defaults": {
-    "timeout_ms": 8000,
-    "tls_verify": false
+    "timeout_ms": 8000
+  },
+  "vars": {
+    "product": "hostagent",
+    "display": "主机代理(Wazuh/Osquery)",
+    "vendor": "multi",
+    "techniques": [
+      {
+        "id": "monitored-path-write",
+        "name": "受监控路径类别良性写入",
+        "category": "monitored-path-write",
+        "detected": true,
+        "needs_driver": true,
+        "gap": "syscheck/监控目录覆盖 /tmp、/dev/shm 类别并保持 agent 在线"
+      },
+      {
+        "id": "ruleset-coverage-gap",
+        "name": "规则集覆盖缺口",
+        "category": "ruleset-coverage-gap",
+        "detected": false,
+        "needs_driver": false,
+        "gap": "规则集缺口评估常态化（decoders/rules 对照矩阵）"
+      },
+      {
+        "id": "stopped-agent-window",
+        "name": "agent 停用窗口",
+        "category": "stopped-agent-window",
+        "detected": false,
+        "needs_driver": false,
+        "gap": "agent 离线即告警，停用窗口视为盲区并计入 SLA"
+      },
+      {
+        "id": "tool-rename-exec",
+        "name": "改名工具执行 echo",
+        "category": "tool-rename-exec",
+        "detected": false,
+        "needs_driver": true,
+        "gap": "命令审计增加改名执行启发式"
+      }
+    ],
+    "deploy_text": "placeholder"
+  },
+  "computed": {
+    "deploy_text": "lower(str(steps.deploy.json))",
+    "hit": "contains(vars.deploy_text, 'wazuh') or contains(vars.deploy_text, 'ossec') or contains(vars.deploy_text, 'osquery')",
+    "driver_ok": "contains(steps.deploy.json.agent_status, 'online')",
+    "forced_degraded": "contains(vars.deploy_text, 'no-driver') or contains(vars.deploy_text, 'degraded')",
+    "state": "if(not vars.hit, 'absent', if(not vars.driver_ok or vars.forced_degraded, 'degraded', 'deployed'))",
+    "missing_driver": "if(contains(steps.deploy.json.agent_status, 'online'), '', if(len(filter([if(contains(steps.deploy.json.agent_status, 'online'), '', 'agent-online')], it != '')) == 0, 'driver', join(filter([if(contains(steps.deploy.json.agent_status, 'online'), '', 'agent-online')], it != ''), ',')))",
+    "hardening": "if(vars.state == 'absent', ['rule:product=hostagent:state=absent:category=deployment:建议=未检出 主机代理(Wazuh/Osquery)——确认是否需要部署；当前技术类别矩阵全盲区'], concat(if(vars.state == 'degraded', ['rule:product=hostagent:state=degraded:category=kernel-state:建议=恢复内核态/健康组件（缺失: ' + vars.missing_driver + '）；降级期间内核态依赖技术全部视为盲区'], []), map(filter(vars.techniques, not ((vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id)))), 'rule:product=hostagent:technique=' + it.id + ':state=' + vars.state + ':category=' + it.category + ':建议=' + it.gap)))",
+    "detected_count": "count_if(vars.techniques, (vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id)))",
+    "blindspot_count": "count_if(vars.techniques, not ((vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id))))",
+    "ruleset_supplied": "steps.ruleset.exists == true"
   },
   "steps": [
     {
-      "id": "snapshot",
+      "id": "deploy",
       "op": "fs",
       "action": "read",
-      "path": "{{input.fixture}}",
+      "path": "{{input.deploy_snapshot}}",
       "json": true,
-      "save": "snapshot",
-      "allow_failure": false
+      "save": "deploy"
+    },
+    {
+      "id": "ruleset",
+      "op": "fs",
+      "action": "read",
+      "when": "input.ruleset != null",
+      "path": "{{input.ruleset}}",
+      "json": true,
+      "save": "ruleset",
+      "allow_failure": true
     }
   ],
   "checks": [
     {
-      "id": "snapshot-readable",
-      "when": "steps.snapshot.ok == true",
+      "id": "deploy-readable",
+      "when": "steps.deploy.ok == true",
       "fatal": true,
-      "message": "snapshot is not readable JSON"
+      "message": "deployment snapshot is not readable JSON"
     }
   ],
   "findings": [
     {
-      "id": "observed",
-      "when": "steps.snapshot.exists == true",
+      "id": "fingerprint",
       "sev": "info",
-      "title": "主机代理盲区：部署面已观测",
-      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
-      "evidence": "steps"
+      "title": "[defense-bypass-hostagent] 指纹: {{vars.display}} = {{vars.state}}",
+      "detail": "matched=`{{vars.hit}}` driver_ok=`{{vars.driver_ok}}` forced_degraded=`{{vars.forced_degraded}}` ruleset=`{{vars.ruleset_supplied}}`",
+      "evidence": "{{steps.deploy.path}}",
+      "mapping": "防护产品指纹 / 部署面两态评估"
+    },
+    {
+      "id": "coverage-blindspots",
+      "when": "vars.blindspot_count > 0",
+      "sev": "medium",
+      "title": "[defense-bypass-hostagent] 覆盖矩阵: detected={{vars.detected_count}} blindspots={{vars.blindspot_count}}",
+      "detail": "检出=默认规则集能识别的技术类别；盲区=不能；benign-only 实验室断言。",
+      "mapping": "core/defenseprobe 技术类别矩阵"
+    },
+    {
+      "id": "coverage-complete",
+      "when": "vars.blindspot_count == 0",
+      "sev": "info",
+      "title": "[defense-bypass-hostagent] 覆盖矩阵: detected={{vars.detected_count}} blindspots=0",
+      "detail": "全部技术类别均在规则集覆盖内。"
+    },
+    {
+      "id": "blindspot",
+      "for_each": "vars.techniques",
+      "as": "t",
+      "when": "not ((vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id)))",
+      "sev": "low",
+      "title": "盲区: {{t.id}} — {{t.name}}",
+      "detail": "category={{t.category}} needs_driver={{t.needs_driver}} state={{vars.state}}",
+      "evidence": "step=deploy path={{steps.deploy.path}}",
+      "mapping": "rule:product=hostagent:technique={{t.id}}:state={{vars.state}}",
+      "fix": "{{t.gap}}"
+    },
+    {
+      "id": "detected",
+      "for_each": "vars.techniques",
+      "as": "t",
+      "when": "(vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id))",
+      "sev": "info",
+      "title": "检出: {{t.id}} — {{t.name}}",
+      "detail": "category={{t.category}} needs_driver={{t.needs_driver}} state={{vars.state}}",
+      "evidence": "step=deploy path={{steps.deploy.path}}",
+      "mapping": "rule:product=hostagent:technique={{t.id}}:state={{vars.state}}"
+    },
+    {
+      "id": "hardening",
+      "when": "vars.blindspot_count > 0",
+      "sev": "info",
+      "title": "[defense-bypass-hostagent] 硬化建议 ({{vars.blindspot_count}} 条)",
+      "detail": "{{join(vars.hardening, ' | ')}}",
+      "mapping": "hardening-advice"
     }
   ],
   "artifacts": [
     {
-      "name": "defense-bypass-hostagent-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "defense-bypass-hostagent-matrix.json",
+      "kind": "json",
+      "fields": {
+        "product": "vars.product",
+        "display": "vars.display",
+        "vendor": "vars.vendor",
+        "state": "vars.state",
+        "detected": "map(filter(vars.techniques, (vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id))), it.id)",
+        "blindspots": "map(filter(vars.techniques, not ((vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id)))), it.id)",
+        "hardening": "vars.hardening",
+        "techniques": "vars.techniques",
+        "ruleset_supplied": "vars.ruleset_supplied",
+        "benign_only": "true"
+      }
     }
   ],
   "payloads": {
     "benign": {
       "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
+      "note": "only benign markers; no malicious payload"
     }
   },
   "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
+    "timeout_ms": 30000,
+    "max_http_requests": 8
   }
 }

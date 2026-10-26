@@ -13,113 +13,122 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
     "target": {
       "from": "params.target",
-      "required": true,
-      "description": "Target base URL"
+      "required": true
     }
   },
   "defaults": {
     "timeout_ms": 8000,
     "tls_verify": false
   },
-  "steps": [
-    {
-      "id": "surface",
-      "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/healthz",
-      "save": "surface",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    },
-    {
-      "id": "probe1",
-      "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/kvpool/blocks",
-      "headers": {},
-      "save": "probe1",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    }
-  ],
-  "checks": [
-    {
-      "id": "surface-reachable",
-      "when": "steps.surface.status != null",
-      "message": "target did not answer the surface probe"
-    }
-  ],
-  "findings": [
-    {
-      "id": "f1",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
-      "sev": "high",
-      "title": "毒化 KV 块逐出策略绕过：pinned 生效且逐出压力下持久存续",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/CACHE-SECURITY.md 第 7 节：投毒与存续（逐出策略面）",
-      "fix": ""
-    },
-    {
-      "id": "f2",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
-      "sev": "info",
-      "title": "毒化块未持久存续（pinning 被拒或洪泛后被逐出），存续不成立",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/CACHE-SECURITY.md 第 7 节：投毒与存续（逐出策略面）",
-      "fix": ""
-    },
-    {
-      "id": "f3",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
-      "sev": "high",
-      "title": "远程 KV 池读面未隔离（毒化存续前置条件成立，写面未触碰）",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/CACHE-SECURITY.md 第 7 节：投毒与存续（逐出策略面）",
-      "fix": ""
-    },
-    {
-      "id": "f4",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
-      "sev": "info",
-      "title": "远程 KV 池读面按租户隔离（读探针被拒）",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/CACHE-SECURITY.md 第 7 节：投毒与存续（逐出策略面）",
-      "fix": ""
-    }
-  ],
-  "artifacts": [
-    {
-      "name": "cache-poison-persistence-probe.json",
-      "from": "steps",
-      "kind": "json"
-    }
-  ],
   "payloads": {
     "benign": {
       "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
-    },
-    "attack": {
-      "marker": "{{ctx.marker}}",
-      "note": "write-surface demo; requires backup receipt"
+      "note": "benign cache-lab markers only"
     }
   },
   "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
+    "timeout_ms": 30000,
+    "max_http_requests": 16
   },
   "modes": {
     "probe_only": true,
     "backup_write": true,
     "requires_backup": true
-  }
+  },
+  "computed": {
+    "victim_found": "steps.probe.status == 200 and steps.probe.json.found == true",
+    "pinned_applied": "steps.write.json.pinned == true",
+    "readback_found": "steps.readback.status == 200 and steps.readback.json.found == true"
+  },
+  "steps": [
+    {
+      "id": "probe",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/kvpool/blocks/tenant-b%2Fctx%2Fseed-001",
+      "headers": {
+        "X-Tenant": "tenant-a"
+      },
+      "save": "probe",
+      "allow_failure": true
+    },
+    {
+      "id": "write",
+      "op": "http",
+      "method": "POST",
+      "write": true,
+      "when": "params.mode == 'backup-write'",
+      "url": "{{input.target}}/kvpool/blocks",
+      "headers": {
+        "X-Tenant": "tenant-a"
+      },
+      "body": {
+        "block_id": "poison-{{ctx.marker}}",
+        "namespace": "tenant-a",
+        "value": "{\"marker\": \"{{ctx.marker}}\", \"benign\": true, \"class\": \"inkblade-lab-poison\"}",
+        "eviction_policy": "pinned"
+      },
+      "save": "write",
+      "allow_failure": true
+    },
+    {
+      "id": "readback",
+      "op": "http",
+      "method": "GET",
+      "when": "params.mode == 'backup-write'",
+      "url": "{{input.target}}/kvpool/blocks/poison-{{ctx.marker}}",
+      "headers": {
+        "X-Tenant": "tenant-a"
+      },
+      "save": "readback",
+      "allow_failure": true
+    }
+  ],
+  "findings": [
+    {
+      "id": "victim",
+      "when": "computed.victim_found",
+      "sev": "high",
+      "title": "KV 池 victim 块可跨租户读取（probe-only）",
+      "detail": "block=tenant-b/ctx/seed-001 status={{steps.probe.status}} tenant={{steps.probe.json.tenant}}",
+      "evidence": "{{steps.probe.sha256}}",
+      "mapping": "cache-poison-persistence",
+      "fix": "KV 池按租户鉴权；禁止跨命名空间读"
+    },
+    {
+      "id": "pinned",
+      "when": "params.mode == 'backup-write' and steps.write.ok and computed.pinned_applied and computed.readback_found",
+      "sev": "high",
+      "title": "pinned 逐出策略可被租户写入：毒化块持久驻留",
+      "detail": "block_id={{steps.write.json.block_id}} pinned={{computed.pinned_applied}} readback_sha256={{steps.readback.json.sha256}}",
+      "evidence": "{{steps.readback.sha256}}",
+      "mapping": "cache-poison-persistence",
+      "fix": "pinned 仅管理面可用；块命名空间绑定租户"
+    },
+    {
+      "id": "clean",
+      "when": "not computed.victim_found",
+      "sev": "info",
+      "title": "未发现跨租户 KV 块读取",
+      "detail": "status={{steps.probe.status}}"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "cache-poison-persistence.json",
+      "kind": "json",
+      "fields": {
+        "route": "'/kvpool/blocks'",
+        "victim_found": "computed.victim_found",
+        "pinned_applied": "computed.pinned_applied",
+        "readback_found": "computed.readback_found",
+        "mode": "params.mode"
+      }
+    }
+  ]
 }

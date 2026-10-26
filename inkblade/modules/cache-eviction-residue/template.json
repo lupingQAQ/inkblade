@@ -13,104 +13,94 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
     "target": {
       "from": "params.target",
-      "required": true,
-      "description": "Target base URL"
+      "required": true
     }
   },
   "defaults": {
     "timeout_ms": 8000,
     "tls_verify": false
   },
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "benign cache-lab markers only"
+    }
+  },
+  "limits": {
+    "timeout_ms": 30000,
+    "max_http_requests": 16
+  },
+  "computed": {
+    "found": "steps.residue.status == 200 and steps.residue.json.found == true",
+    "cross_tenant": "steps.residue.json.tenant == 'tenant-b'",
+    "marker_present": "contains(steps.residue.json.prefix_preview, 'INKBLADE-BENIGN-RESIDUE-VICTIM')"
+  },
   "steps": [
     {
-      "id": "surface",
+      "id": "flood",
       "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/healthz",
-      "save": "surface",
-      "allow_failure": true,
-      "timeout_ms": 8000
+      "method": "POST",
+      "url": "{{input.target}}/v1/chat/completions",
+      "headers": {
+        "X-Tenant": "tenant-a"
+      },
+      "body": {
+        "prompt_prefix": "evict-flood-{{ctx.marker}}-{{i}} unique corpus pressure",
+        "prefix_tokens": 2048,
+        "max_tokens": 1
+      },
+      "repeat": 140,
+      "save": "flood",
+      "allow_failure": true
     },
     {
-      "id": "probe1",
+      "id": "residue",
       "op": "http",
       "method": "GET",
-      "url": "{{input.target}}/cache/residue",
-      "headers": {},
-      "save": "probe1",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    },
-    {
-      "id": "probe2",
-      "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/router/metrics",
-      "headers": {},
-      "save": "probe2",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    }
-  ],
-  "checks": [
-    {
-      "id": "surface-reachable",
-      "when": "steps.surface.status != null",
-      "message": "target did not answer the surface probe"
+      "url": "{{input.target}}/cache/residue?prefix=tenant-b%20residue%20corpus%20marker%20INKBLADE-BENIGN-RESIDUE-VICTIM%20quarterly%20close%20data%20pack%20appendix",
+      "headers": {
+        "X-Tenant": "tenant-a"
+      },
+      "save": "residue",
+      "allow_failure": true
     }
   ],
   "findings": [
     {
-      "id": "f1",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "id": "residue",
+      "when": "computed.found and computed.cross_tenant and computed.marker_present",
       "sev": "high",
-      "title": "LRU 逐出后残留跨租户可读：{tenant} 读到 {residue_tenant} 被逐出前缀",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/CACHE-SECURITY.md 第 5 节：远程池逐出与残留（分层 KV 生命周期）",
-      "fix": ""
+      "title": "逐出后前缀残留跨租户可读（tenant-b 语料泄漏）",
+      "detail": "route=/cache/residue found=true tenant=tenant-b prefix_preview={{steps.residue.json.prefix_preview}} evicted_at={{steps.residue.json.evicted_at}}",
+      "evidence": "{{steps.residue.sha256}}",
+      "mapping": "KV 池 LRU 逐出残留；cache-eviction-residue",
+      "fix": "逐出即 zeroize；残留层按租户隔离并加密"
     },
     {
-      "id": "f2",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "id": "clean",
+      "when": "not (computed.found and computed.cross_tenant and computed.marker_present)",
       "sev": "info",
-      "title": "逐出已发生但残留层已 zeroize/不可读（跨租户残留未成立）",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/CACHE-SECURITY.md 第 5 节：远程池逐出与残留（分层 KV 生命周期）",
-      "fix": ""
-    },
-    {
-      "id": "f3",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
-      "sev": "info",
-      "title": "洪泛未触发逐出（容量过大或计数不可读），残留面未验证",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/CACHE-SECURITY.md 第 5 节：远程池逐出与残留（分层 KV 生命周期）",
-      "fix": ""
+      "title": "未发现跨租户逐出残留（zeroize 或租户隔离生效）",
+      "detail": "status={{steps.residue.status}} error={{steps.residue.error}}"
     }
   ],
   "artifacts": [
     {
-      "name": "cache-eviction-residue-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "cache-eviction-residue.json",
+      "kind": "json",
+      "fields": {
+        "route": "'/cache/residue'",
+        "found": "computed.found",
+        "cross_tenant": "computed.cross_tenant",
+        "marker_present": "computed.marker_present",
+        "tenant": "steps.residue.json.tenant",
+        "preview": "steps.residue.json.prefix_preview"
+      }
     }
-  ],
-  "payloads": {
-    "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
-    }
-  },
-  "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
-  }
+  ]
 }

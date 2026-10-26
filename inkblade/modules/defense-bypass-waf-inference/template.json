@@ -13,63 +13,193 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
-    "fixture": {
-      "from": "params.fixture",
+    "deploy_snapshot": {
+      "from": "coalesce(params.deploy_snapshot, params.fixture)",
       "required": true,
-      "description": "Collected snapshot / fixture path"
+      "description": "deployed/degraded/absent deployment snapshot"
+    },
+    "ruleset": {
+      "from": "params.ruleset",
+      "required": false,
+      "description": "optional rule-set export {rules:[technique-id]}"
     }
   },
   "defaults": {
-    "timeout_ms": 8000,
-    "tls_verify": false
+    "timeout_ms": 8000
+  },
+  "vars": {
+    "product": "waf-inference",
+    "display": "WAF(ModSecurity/Coraza/雷池)",
+    "vendor": "multi",
+    "techniques": [
+      {
+        "id": "plain-benign-request",
+        "name": "明文 benign 请求",
+        "category": "plain-benign-request",
+        "detected": true,
+        "needs_driver": false,
+        "gap": "推理端点保持 CRS 基线与请求观测（与无限查询蒸馏链联动）"
+      },
+      {
+        "id": "encoded-request-variant",
+        "name": "编码变体 benign 请求",
+        "category": "encoded-request-variant",
+        "detected": false,
+        "needs_driver": false,
+        "gap": "URL/hex 解码后再入规则匹配"
+      },
+      {
+        "id": "chunked-request-variant",
+        "name": "分块 benign 请求",
+        "category": "chunked-request-variant",
+        "detected": false,
+        "needs_driver": false,
+        "gap": "反分块缓冲（拒绝 chunked 拆解绕过）"
+      },
+      {
+        "id": "unicode-request-variant",
+        "name": "Unicode 变体 benign 请求",
+        "category": "unicode-request-variant",
+        "detected": false,
+        "needs_driver": false,
+        "gap": "输入规范化（Unicode/大小写折叠）后匹配"
+      },
+      {
+        "id": "oversized-benign-variant",
+        "name": "超长 benign 变体",
+        "category": "oversized-benign-variant",
+        "detected": false,
+        "needs_driver": false,
+        "gap": "限制异常头/参数长度，超限直接拒绝而非跳过检查"
+      }
+    ],
+    "deploy_text": "placeholder"
+  },
+  "computed": {
+    "deploy_text": "lower(str(steps.deploy.json))",
+    "hit": "contains(vars.deploy_text, 'modsecurity') or contains(vars.deploy_text, 'coraza') or contains(vars.deploy_text, 'safeline') or contains(vars.deploy_text, 'ce-waf') or contains(vars.deploy_text, '雷池')",
+    "driver_ok": "true",
+    "forced_degraded": "contains(vars.deploy_text, 'no-driver') or contains(vars.deploy_text, 'degraded')",
+    "state": "if(not vars.hit, 'absent', if(not vars.driver_ok or vars.forced_degraded, 'degraded', 'deployed'))",
+    "missing_driver": "''",
+    "hardening": "if(vars.state == 'absent', ['rule:product=waf-inference:state=absent:category=deployment:建议=未检出 WAF(ModSecurity/Coraza/雷池)——确认是否需要部署；当前技术类别矩阵全盲区'], concat(if(vars.state == 'degraded', ['rule:product=waf-inference:state=degraded:category=kernel-state:建议=恢复内核态/健康组件（缺失: ' + vars.missing_driver + '）；降级期间内核态依赖技术全部视为盲区'], []), map(filter(vars.techniques, not ((vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id)))), 'rule:product=waf-inference:technique=' + it.id + ':state=' + vars.state + ':category=' + it.category + ':建议=' + it.gap)))",
+    "detected_count": "count_if(vars.techniques, (vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id)))",
+    "blindspot_count": "count_if(vars.techniques, not ((vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id))))",
+    "ruleset_supplied": "steps.ruleset.exists == true"
   },
   "steps": [
     {
-      "id": "snapshot",
+      "id": "deploy",
       "op": "fs",
       "action": "read",
-      "path": "{{input.fixture}}",
+      "path": "{{input.deploy_snapshot}}",
       "json": true,
-      "save": "snapshot",
-      "allow_failure": false
+      "save": "deploy"
+    },
+    {
+      "id": "ruleset",
+      "op": "fs",
+      "action": "read",
+      "when": "input.ruleset != null",
+      "path": "{{input.ruleset}}",
+      "json": true,
+      "save": "ruleset",
+      "allow_failure": true
     }
   ],
   "checks": [
     {
-      "id": "snapshot-readable",
-      "when": "steps.snapshot.ok == true",
+      "id": "deploy-readable",
+      "when": "steps.deploy.ok == true",
       "fatal": true,
-      "message": "snapshot is not readable JSON"
+      "message": "deployment snapshot is not readable JSON"
     }
   ],
   "findings": [
     {
-      "id": "observed",
-      "when": "steps.snapshot.exists == true",
+      "id": "fingerprint",
       "sev": "info",
-      "title": "WAF 绕过（推理面）：部署面已观测",
-      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
-      "evidence": "steps"
+      "title": "[defense-bypass-waf-inference] 指纹: {{vars.display}} = {{vars.state}}",
+      "detail": "matched=`{{vars.hit}}` driver_ok=`{{vars.driver_ok}}` forced_degraded=`{{vars.forced_degraded}}` ruleset=`{{vars.ruleset_supplied}}`",
+      "evidence": "{{steps.deploy.path}}",
+      "mapping": "防护产品指纹 / 部署面两态评估"
+    },
+    {
+      "id": "coverage-blindspots",
+      "when": "vars.blindspot_count > 0",
+      "sev": "medium",
+      "title": "[defense-bypass-waf-inference] 覆盖矩阵: detected={{vars.detected_count}} blindspots={{vars.blindspot_count}}",
+      "detail": "检出=默认规则集能识别的技术类别；盲区=不能；benign-only 实验室断言。",
+      "mapping": "core/defenseprobe 技术类别矩阵"
+    },
+    {
+      "id": "coverage-complete",
+      "when": "vars.blindspot_count == 0",
+      "sev": "info",
+      "title": "[defense-bypass-waf-inference] 覆盖矩阵: detected={{vars.detected_count}} blindspots=0",
+      "detail": "全部技术类别均在规则集覆盖内。"
+    },
+    {
+      "id": "blindspot",
+      "for_each": "vars.techniques",
+      "as": "t",
+      "when": "not ((vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id)))",
+      "sev": "low",
+      "title": "盲区: {{t.id}} — {{t.name}}",
+      "detail": "category={{t.category}} needs_driver={{t.needs_driver}} state={{vars.state}}",
+      "evidence": "step=deploy path={{steps.deploy.path}}",
+      "mapping": "rule:product=waf-inference:technique={{t.id}}:state={{vars.state}}",
+      "fix": "{{t.gap}}"
+    },
+    {
+      "id": "detected",
+      "for_each": "vars.techniques",
+      "as": "t",
+      "when": "(vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id))",
+      "sev": "info",
+      "title": "检出: {{t.id}} — {{t.name}}",
+      "detail": "category={{t.category}} needs_driver={{t.needs_driver}} state={{vars.state}}",
+      "evidence": "step=deploy path={{steps.deploy.path}}",
+      "mapping": "rule:product=waf-inference:technique={{t.id}}:state={{vars.state}}"
+    },
+    {
+      "id": "hardening",
+      "when": "vars.blindspot_count > 0",
+      "sev": "info",
+      "title": "[defense-bypass-waf-inference] 硬化建议 ({{vars.blindspot_count}} 条)",
+      "detail": "{{join(vars.hardening, ' | ')}}",
+      "mapping": "hardening-advice"
     }
   ],
   "artifacts": [
     {
-      "name": "defense-bypass-waf-inference-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "defense-bypass-waf-inference-matrix.json",
+      "kind": "json",
+      "fields": {
+        "product": "vars.product",
+        "display": "vars.display",
+        "vendor": "vars.vendor",
+        "state": "vars.state",
+        "detected": "map(filter(vars.techniques, (vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id))), it.id)",
+        "blindspots": "map(filter(vars.techniques, not ((vars.state == 'deployed' or (vars.state == 'degraded' and not it.needs_driver)) and it.detected and (steps.ruleset.exists != true or contains(steps.ruleset.json.rules, it.id)))), it.id)",
+        "hardening": "vars.hardening",
+        "techniques": "vars.techniques",
+        "ruleset_supplied": "vars.ruleset_supplied",
+        "benign_only": "true"
+      }
     }
   ],
   "payloads": {
     "benign": {
       "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
+      "note": "only benign markers; no malicious payload"
     }
   },
   "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
+    "timeout_ms": 30000,
+    "max_http_requests": 8
   }
 }

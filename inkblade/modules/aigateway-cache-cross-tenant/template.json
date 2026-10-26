@@ -13,74 +13,101 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
     "target": {
       "from": "params.target",
-      "required": true,
-      "description": "Target base URL"
+      "required": true
     }
   },
   "defaults": {
     "timeout_ms": 8000,
     "tls_verify": false
   },
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "lab-only probe"
+    }
+  },
+  "limits": {
+    "timeout_ms": 30000,
+    "max_http_requests": 24
+  },
+  "vars": {
+    "prompt": "Quarterly revenue guidance for fiscal 2026: 42.7M USD"
+  },
+  "computed": {
+    "hit": "steps.lookup.status == 200 and steps.lookup.json.hit == true",
+    "entry_tenant": "steps.lookup.json.entry.tenant",
+    "cross": "steps.lookup.json.entry.tenant == 'tenant-b' and steps.lookup.json.requester_tenant == 'tenant-a'"
+  },
   "steps": [
     {
-      "id": "surface",
+      "id": "store",
       "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/healthz",
-      "save": "surface",
-      "allow_failure": true,
-      "timeout_ms": 8000
+      "method": "POST",
+      "url": "{{input.target}}/cache/store",
+      "headers": {
+        "X-Tenant": "tenant-b",
+        "Authorization": "Bearer MOCK-tenant-b-key-c3d4"
+      },
+      "body": {
+        "text": "{{vars.prompt}}",
+        "response": "tenant-b confidential: 42.7M USD"
+      },
+      "save": "store",
+      "allow_failure": true
     },
     {
-      "id": "probe1",
+      "id": "lookup",
       "op": "http",
-      "method": "GET",
+      "method": "POST",
       "url": "{{input.target}}/cache/lookup",
-      "headers": {},
-      "save": "probe1",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    }
-  ],
-  "checks": [
-    {
-      "id": "surface-reachable",
-      "when": "steps.surface.status != null",
-      "message": "target did not answer the surface probe"
+      "headers": {
+        "X-Tenant": "tenant-a",
+        "Authorization": "Bearer MOCK-tenant-a-key-a1b2"
+      },
+      "body": {
+        "text": "{{vars.prompt}}"
+      },
+      "save": "lookup",
+      "allow_failure": true
     }
   ],
   "findings": [
     {
-      "id": "f1",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "id": "cross",
+      "when": "computed.hit and computed.cross",
       "sev": "high",
-      "title": "语义缓存跨租户命中：{requester} 读取到 {entry_tenant} 的缓存响应",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/AI-GATEWAY.md 第 6 节：语义缓存键与租户隔离",
-      "fix": ""
+      "title": "AI 网关语义缓存跨租户命中：tenant-a 读取 tenant-b 缓存响应",
+      "detail": "requester=tenant-a entry_tenant={{computed.entry_tenant}} cache_key={{steps.lookup.json.cache_key}}",
+      "evidence": "{{steps.lookup.sha256}}",
+      "mapping": "OWASP LLM08",
+      "fix": "缓存键包含 tenant|salt；检索先做租户过滤"
+    },
+    {
+      "id": "clean",
+      "when": "not (computed.hit and computed.cross)",
+      "sev": "info",
+      "title": "语义缓存按租户隔离（无跨租户命中）",
+      "detail": "hit={{computed.hit}} entry_tenant={{steps.lookup.json.entry.tenant}}"
     }
   ],
   "artifacts": [
     {
-      "name": "aigateway-cache-cross-tenant-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "aigateway-cache-cross-tenant.json",
+      "kind": "json",
+      "fields": {
+        "hit": "computed.hit",
+        "cross": "computed.cross",
+        "entry_tenant": "computed.entry_tenant",
+        "route": "'/cache/lookup'"
+      }
     }
-  ],
-  "payloads": {
-    "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
-    }
-  },
-  "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
-  }
+  ]
 }

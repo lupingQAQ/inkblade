@@ -13,113 +13,108 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
     "target": {
       "from": "params.target",
-      "required": true,
-      "description": "Target base URL"
+      "required": true
     }
   },
   "defaults": {
     "timeout_ms": 8000,
     "tls_verify": false
   },
-  "steps": [
-    {
-      "id": "surface",
-      "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/healthz",
-      "save": "surface",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    },
-    {
-      "id": "probe1",
-      "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/ai/model-alias",
-      "headers": {},
-      "save": "probe1",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    },
-    {
-      "id": "probe2",
-      "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/ai/route",
-      "headers": {},
-      "save": "probe2",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    }
-  ],
-  "checks": [
-    {
-      "id": "surface-reachable",
-      "when": "steps.surface.status != null",
-      "message": "target did not answer the surface probe"
-    }
-  ],
-  "findings": [
-    {
-      "id": "f1",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
-      "sev": "critical",
-      "title": "模型别名 {alias} 路由劫持：推理流量导向未授权后端",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/AI-GATEWAY.md 第 5 节：模型别名与后端 allowlist",
-      "fix": ""
-    },
-    {
-      "id": "f2",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
-      "sev": "high",
-      "title": "模型别名 {alias} 被未授权改写（未观测到流量切换）",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/AI-GATEWAY.md 第 5 节：模型别名与后端 allowlist",
-      "fix": ""
-    },
-    {
-      "id": "f3",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
-      "sev": "medium",
-      "title": "AI 路由表未鉴权可读：模型别名→后端映射暴露",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/AI-GATEWAY.md 第 5 节：模型别名与后端 allowlist",
-      "fix": ""
-    }
-  ],
-  "artifacts": [
-    {
-      "name": "aigateway-route-hijack-probe.json",
-      "from": "steps",
-      "kind": "json"
-    }
-  ],
   "payloads": {
     "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
+      "marker": "INKBLADE-BENIGN"
     },
     "attack": {
       "marker": "{{ctx.marker}}",
-      "note": "write-surface demo; requires backup receipt"
+      "note": "lab-only probe"
     }
   },
   "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
+    "timeout_ms": 30000,
+    "max_http_requests": 24
   },
   "modes": {
     "probe_only": true,
     "backup_write": true,
     "requires_backup": true
-  }
+  },
+  "computed": {
+    "anon_read": "steps.route.status == 200 and steps.route.json.session == 'anonymous-admin'",
+    "aliases": "count(steps.route.json.aliases)",
+    "applied": "steps.alias.status == 200 and steps.alias.json.applied == true"
+  },
+  "steps": [
+    {
+      "id": "route",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/ai/route",
+      "save": "route",
+      "allow_failure": true
+    },
+    {
+      "id": "alias",
+      "op": "http",
+      "method": "POST",
+      "write": true,
+      "when": "params.mode == 'backup-write'",
+      "url": "{{input.target}}/ai/model-alias",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "alias": "inkblade-demo-alias",
+        "backend": "http://upstream-inkblade.mock/v1",
+        "visibility": "private"
+      },
+      "save": "alias",
+      "allow_failure": true
+    }
+  ],
+  "findings": [
+    {
+      "id": "anon",
+      "when": "computed.anon_read",
+      "sev": "high",
+      "title": "AI 路由表未鉴权可读：模型别名→后端映射暴露（anonymous-admin）",
+      "detail": "aliases={{computed.aliases}} allowlist={{str(steps.route.json.allowlist)}}",
+      "evidence": "{{steps.route.sha256}}",
+      "mapping": "CWE-306 缺失鉴权",
+      "fix": "路由表按调用主体过滤；管理面强制鉴权"
+    },
+    {
+      "id": "write",
+      "when": "params.mode == 'backup-write' and computed.applied",
+      "sev": "high",
+      "title": "模型别名可被低权写入：路由劫持到攻击者后端",
+      "detail": "alias={{steps.alias.json.alias}} backend={{steps.alias.json.backend}}",
+      "evidence": "{{steps.alias.sha256}}",
+      "mapping": "supply-chain-route-hijack",
+      "fix": "别名写入仅管理面；backend allowlist 强校验"
+    },
+    {
+      "id": "clean",
+      "when": "not computed.anon_read",
+      "sev": "info",
+      "title": "AI 路由表按租户/鉴权隔离",
+      "detail": "status={{steps.route.status}}"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "aigateway-route-hijack.json",
+      "kind": "json",
+      "fields": {
+        "anon_read": "computed.anon_read",
+        "aliases": "computed.aliases",
+        "route_status": "steps.route.status",
+        "mode": "params.mode"
+      }
+    }
+  ]
 }

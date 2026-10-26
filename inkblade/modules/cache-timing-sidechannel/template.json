@@ -11,7 +11,9 @@
     "min_level": "主动探测",
     "writes": false,
     "requires": [],
-    "surfaces": [],
+    "surfaces": [
+      "http-endpoint:/v1/chat/completions"
+    ],
     "cves": [],
     "fidelity": "reduced"
   },
@@ -19,88 +21,118 @@
     "target": {
       "from": "params.target",
       "required": true,
-      "description": "Target base URL"
+      "description": "Inference router base URL"
     }
   },
   "defaults": {
     "timeout_ms": 8000,
     "tls_verify": false
   },
+  "vars": {
+    "tenant": "tenant-a",
+    "victim": "tenant-b",
+    "min_effect_ms": "30"
+  },
+  "computed": {
+    "member_ttft": "steps.member.json.ttft_ms",
+    "control_ttft": "steps.control.json.ttft_ms",
+    "delta_ms": "steps.control.json.ttft_ms - steps.member.json.ttft_ms",
+    "member_cached": "steps.member.json.cached_tokens",
+    "significant": "steps.member.status == 200 and steps.control.status == 200 and (steps.control.json.ttft_ms - steps.member.json.ttft_ms) >= default(params.min_effect_ms, 30)"
+  },
   "steps": [
     {
-      "id": "surface",
+      "id": "member",
       "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/healthz",
-      "save": "surface",
-      "allow_failure": true,
-      "timeout_ms": 8000
+      "method": "POST",
+      "url": "{{input.target}}/v1/chat/completions",
+      "headers": {
+        "X-Tenant": "{{params.tenant}}"
+      },
+      "body": {
+        "prompt_prefix": "tenant-b member context 00 INKBLADE-BENIGN-TIMING corpus analytics monthly summary 00",
+        "prefix_tokens": 2048,
+        "max_tokens": 1
+      },
+      "save": "member",
+      "allow_failure": true
     },
     {
-      "id": "probe1",
+      "id": "control",
       "op": "http",
-      "method": "GET",
+      "method": "POST",
       "url": "{{input.target}}/v1/chat/completions",
-      "headers": {},
-      "save": "probe1",
-      "allow_failure": true,
-      "timeout_ms": 8000
+      "headers": {
+        "X-Tenant": "{{params.tenant}}"
+      },
+      "body": {
+        "prompt_prefix": "inkblade-control-corpus 00 unrelated analytics topic reference data pack",
+        "prefix_tokens": 2048,
+        "max_tokens": 1
+      },
+      "save": "control",
+      "allow_failure": true
     }
   ],
   "checks": [
     {
-      "id": "surface-reachable",
-      "when": "steps.surface.status != null",
-      "message": "target did not answer the surface probe"
+      "id": "member-answered",
+      "when": "steps.member.status != null",
+      "message": "member request did not answer"
+    },
+    {
+      "id": "control-answered",
+      "when": "steps.control.status != null",
+      "message": "control request did not answer"
     }
   ],
   "findings": [
     {
-      "id": "f1",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
-      "sev": "info",
-      "title": "样本不足（N={n_total}<{MIN_TOTAL_SAMPLES}），显著性断言不成立",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/CACHE-SECURITY.md 第 4 节：时序侧信道（NDSS'25 PROMPTPEEK / SafeKV 研究对标）",
-      "fix": ""
-    },
-    {
-      "id": "f2",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "id": "timing-delta",
+      "when": "steps.member.status == 200 and steps.control.status == 200 and (steps.control.json.ttft_ms - steps.member.json.ttft_ms) >= default(params.min_effect_ms, 30)",
       "sev": "high",
-      "title": "前缀缓存时序侧信道：TTFT 差分 {round(delta, 1)}ms（p={stats[",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/CACHE-SECURITY.md 第 4 节：时序侧信道（NDSS'25 PROMPTPEEK / SafeKV 研究对标）",
-      "fix": ""
+      "title": "前缀缓存时序侧信道：TTFT 差分 {{computed.delta_ms}}ms → 跨租户缓存成员推断成立",
+      "detail": "member_ttft={{computed.member_ttft}}ms control_ttft={{computed.control_ttft}}ms delta={{computed.delta_ms}}ms cached_tokens={{computed.member_cached}} route=/v1/chat/completions tenant={{params.tenant}} victim={{params.victim}}; 判定为前缀键跨租户共享（成员命中档显著低于对照）。注意：本模板为两样本降级判定，原 Python 模块使用 N>=50 Welch t 检验；完整统计口径见 docs/CACHE-SECURITY.md。",
+      "evidence": "{{steps.member.sha256}} {{steps.control.sha256}}",
+      "mapping": "cache-sidechannel-chain / OWASP LLM08",
+      "fix": "缓存键加入 tenant|cache_salt，禁用全局前缀键；对 ttft 差分做监控与噪声注入"
     },
     {
-      "id": "f3",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "id": "no-delta",
+      "when": "steps.member.status == 200 and steps.control.status == 200 and (steps.control.json.ttft_ms - steps.member.json.ttft_ms) < default(params.min_effect_ms, 30)",
       "sev": "info",
-      "title": "未观察到显著 TTFT 差分（Δ={round(delta, 1)}ms，p={stats[",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/CACHE-SECURITY.md 第 4 节：时序侧信道（NDSS'25 PROMPTPEEK / SafeKV 研究对标）",
-      "fix": ""
+      "title": "未观察到显著 TTFT 差分（Δ={{computed.delta_ms}}ms）——前缀键按租户隔离或命中不可观测",
+      "detail": "member_ttft={{computed.member_ttft}}ms control_ttft={{computed.control_ttft}}ms cached_tokens={{computed.member_cached}}",
+      "evidence": "{{steps.member.sha256}} {{steps.control.sha256}}",
+      "fix": "保持 cache_salt/租户前缀隔离"
     }
   ],
   "artifacts": [
     {
-      "name": "cache-timing-sidechannel-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "cache-timing-sidechannel.json",
+      "kind": "json",
+      "fields": {
+        "route": "'/v1/chat/completions'",
+        "tenant": "params.tenant",
+        "victim_tenant": "params.victim",
+        "member_ttft_ms": "computed.member_ttft",
+        "control_ttft_ms": "computed.control_ttft",
+        "delta_ms": "computed.delta_ms",
+        "cached_tokens": "computed.member_cached",
+        "significant": "computed.significant",
+        "samples": "2",
+        "note": "'two-sample reduced check; full Welch t-test N>=50 in docs/CACHE-SECURITY.md'"
+      }
     }
   ],
   "payloads": {
     "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
+      "marker": "INKBLADE-BENIGN-TIMING",
+      "note": "benign corpus prefixes only"
     }
   },
   "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
+    "timeout_ms": 30000,
+    "max_http_requests": 8
   }
 }

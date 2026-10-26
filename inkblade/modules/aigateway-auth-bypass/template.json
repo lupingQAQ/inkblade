@@ -13,104 +13,135 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
     "target": {
       "from": "params.target",
-      "required": true,
-      "description": "Target base URL"
+      "required": true
     }
   },
   "defaults": {
     "timeout_ms": 8000,
     "tls_verify": false
   },
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "lab-only probe"
+    }
+  },
+  "limits": {
+    "timeout_ms": 30000,
+    "max_http_requests": 24
+  },
+  "computed": {
+    "anon_ok": "steps.anon.status == 200",
+    "spoof_global": "steps.spoof.status == 200 and steps.spoof.json.scope == 'global'",
+    "master_ok": "steps.master.status == 200 and steps.master.json.scope == 'global'"
+  },
   "steps": [
     {
-      "id": "surface",
+      "id": "anon",
       "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/healthz",
-      "save": "surface",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    },
-    {
-      "id": "probe1",
-      "op": "http",
-      "method": "GET",
+      "method": "POST",
       "url": "{{input.target}}/v1/chat/completions",
-      "headers": {},
-      "save": "probe1",
-      "allow_failure": true,
-      "timeout_ms": 8000
+      "body": {
+        "model": "gpt-4o",
+        "messages": [
+          {
+            "role": "user",
+            "content": "INKBLADE-BENIGN probe"
+          }
+        ],
+        "max_tokens": 8
+      },
+      "save": "anon",
+      "allow_failure": true
     },
     {
-      "id": "probe2",
+      "id": "spoof",
       "op": "http",
       "method": "GET",
       "url": "{{input.target}}/key/info",
-      "headers": {},
-      "save": "probe2",
-      "allow_failure": true,
-      "timeout_ms": 8000
+      "headers": {
+        "X-Forwarded-User": "admin",
+        "X-Tenant": "tenant-b"
+      },
+      "save": "spoof",
+      "allow_failure": true
     },
     {
-      "id": "probe3",
+      "id": "master",
       "op": "http",
-      "method": "GET",
-      "url": "{{input.target}}/logs",
-      "headers": {},
-      "save": "probe3",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    }
-  ],
-  "checks": [
-    {
-      "id": "surface-reachable",
-      "when": "steps.surface.status != null",
-      "message": "target did not answer the surface probe"
+      "method": "POST",
+      "url": "{{input.target}}/v1/chat/completions",
+      "body": {
+        "model": "gpt-4o",
+        "messages": [
+          {
+            "role": "user",
+            "content": "INKBLADE-BENIGN probe"
+          }
+        ],
+        "max_tokens": 8
+      },
+      "headers": {
+        "Authorization": "Bearer MOCK-master-key-4c7a"
+      },
+      "save": "master",
+      "allow_failure": true
     }
   ],
   "findings": [
     {
-      "id": "f1",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "id": "anon",
+      "when": "computed.anon_ok",
       "sev": "high",
-      "title": "伪造 X-Forwarded-User 越权：/key/info 返回全局 key 清单",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/AI-GATEWAY.md 第 2 节：默认凭据与信任代理头错配",
-      "fix": ""
+      "title": "AI 网关未授权对话：匿名调用 /v1/chat/completions",
+      "detail": "status={{steps.anon.status}} model={{steps.anon.json.model}} — 默认凭据/未启用鉴权",
+      "evidence": "{{steps.anon.sha256}}",
+      "mapping": "OWASP LLM01/ASI03",
+      "fix": "所有推理路由强制 API key；禁用默认 master key"
     },
     {
-      "id": "f2",
-      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "id": "spoof",
+      "when": "computed.spoof_global",
       "sev": "high",
-      "title": "伪造 X-Forwarded-User 越权：/logs 返回全租户明文日志",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.probe1.status}}",
-      "mapping": "docs/AI-GATEWAY.md 第 2 节：默认凭据与信任代理头错配",
-      "fix": ""
+      "title": "伪造 X-Forwarded-User 越权：/key/info 返回全局 key 清单",
+      "detail": "subject={{steps.spoof.json.subject}} scope={{steps.spoof.json.scope}} visible={{str(steps.spoof.json.visible_tenants)}}",
+      "evidence": "{{steps.spoof.sha256}}",
+      "mapping": "CWE-290 身份伪造",
+      "fix": "信任边界仅接受网关自身注入的身份头；外部请求剥离 X-Forwarded-*"
+    },
+    {
+      "id": "master",
+      "when": "computed.master_ok",
+      "sev": "high",
+      "title": "默认 master key 仍可用：/key/info 返回全局作用域",
+      "detail": "status={{steps.master.status}} — 轮换 master key 并禁用默认值"
+    },
+    {
+      "id": "clean",
+      "when": "not computed.anon_ok and not computed.spoof_global",
+      "sev": "info",
+      "title": "鉴权基线正常：匿名调用与伪造身份均被拒绝",
+      "detail": "anon={{steps.anon.status}} spoof={{steps.spoof.status}} master={{steps.master.status}}"
     }
   ],
   "artifacts": [
     {
-      "name": "aigateway-auth-bypass-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "aigateway-auth-bypass.json",
+      "kind": "json",
+      "fields": {
+        "anon_status": "steps.anon.status",
+        "spoof_scope": "steps.spoof.json.scope",
+        "master_scope": "steps.master.json.scope",
+        "route": "'/v1/chat/completions'"
+      }
     }
-  ],
-  "payloads": {
-    "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
-    }
-  },
-  "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
-  }
+  ]
 }

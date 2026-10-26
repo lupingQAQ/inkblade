@@ -13,74 +13,76 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
     "target": {
       "from": "params.target",
-      "required": true,
-      "description": "Target base URL"
+      "required": true
     }
   },
   "defaults": {
     "timeout_ms": 8000,
     "tls_verify": false
   },
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "benign cache-lab markers only"
+    }
+  },
+  "limits": {
+    "timeout_ms": 30000,
+    "max_http_requests": 16
+  },
+  "computed": {
+    "found": "steps.victim.status == 200 and steps.victim.json.found == true",
+    "cross_tenant": "steps.victim.json.tenant == 'tenant-b'",
+    "marker": "contains(str(steps.victim.json.value), 'INKBLADE-BENIGN-POOL-VICTIM')"
+  },
   "steps": [
     {
-      "id": "surface",
+      "id": "victim",
       "op": "http",
       "method": "GET",
-      "url": "{{input.target}}/healthz",
-      "save": "surface",
-      "allow_failure": true,
-      "timeout_ms": 8000
-    }
-  ],
-  "checks": [
-    {
-      "id": "surface-reachable",
-      "when": "steps.surface.status != null",
-      "message": "target did not answer the surface probe"
+      "url": "{{input.target}}/kvpool/blocks/tenant-b%2Fctx%2Fseed-001",
+      "headers": {
+        "X-Tenant": "tenant-a"
+      },
+      "save": "victim",
+      "allow_failure": true
     }
   ],
   "findings": [
     {
-      "id": "f1",
-      "when": "steps.surface.ok == true",
+      "id": "cross-tenant",
+      "when": "computed.found and computed.cross_tenant",
       "sev": "high",
-      "title": "远程 KV 池命名空间绕过：{tenant} 直接读回 {block_tenant} 的 KV 块",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.snapshot.path}}",
-      "mapping": "docs/CACHE-SECURITY.md 第 5 节：远程 KV 池（Mooncake/LMCache 命名空间）",
-      "fix": ""
+      "title": "远程 KV 池跨租户命名空间读：tenant-a 读取 tenant-b 块",
+      "detail": "block=tenant-b/ctx/seed-001 status={{steps.victim.status}} tenant={{steps.victim.json.tenant}} marker_present={{computed.marker}} sha256={{steps.victim.json.sha256}}",
+      "evidence": "{{steps.victim.sha256}}",
+      "mapping": "remote-kv-pool-isolation",
+      "fix": "KV 池按租户命名空间鉴权；block id 校验 tenant 前缀"
     },
     {
-      "id": "f2",
-      "when": "steps.surface.ok == true",
+      "id": "clean",
+      "when": "not (computed.found and computed.cross_tenant)",
       "sev": "info",
-      "title": "远程 KV 池块读按租户命名空间隔离（越权 403 或块不可见）",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
-      "evidence": "{{steps.snapshot.path}}",
-      "mapping": "docs/CACHE-SECURITY.md 第 5 节：远程 KV 池（Mooncake/LMCache 命名空间）",
-      "fix": ""
+      "title": "KV 池命名空间隔离生效（跨租户读被拒绝）",
+      "detail": "status={{steps.victim.status}} error={{steps.victim.error}}"
     }
   ],
   "artifacts": [
     {
-      "name": "remote-kv-pool-isolation-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "remote-kv-pool-isolation.json",
+      "kind": "json",
+      "fields": {
+        "route": "'/kvpool/blocks/tenant-b/ctx/seed-001'",
+        "found": "computed.found",
+        "cross_tenant": "computed.cross_tenant",
+        "marker_present": "computed.marker",
+        "status": "steps.victim.status"
+      }
     }
-  ],
-  "payloads": {
-    "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
-    }
-  },
-  "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
-  }
+  ]
 }
