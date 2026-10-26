@@ -12,13 +12,14 @@
 
 | 工具 | 计数口径（实测） | 数量 | 类别组织方式 |
 |---|---|---|---|
-| garak | `garak/probes/*.py` 探针模块 / `class …(*Probe*)` | 41 模块 / **149** 类（含 3 个抽象基类；排除基类 **146**） | 按模块文件分类（dan/encoding/promptinject/leakreplay/sysprompt_extraction/latentinjection/atkgen/suffix/visual_jailbreak/ansiescape/smuggling/audio/fileformats/…） |
-| PyRIT | `pyrit/**` Converter 类 + jailbreak 模板数据集 | **114** Converter 类（含 4 个基类；排除基类 **110**）+ **94** 越狱模板 | Converter（变体改写）× Orchestrator（多轮编排）× 数据集组合式，无固定探针清单 |
+| garak | `garak/probes/*.py` 探针模块 / `class …(*Probe*)` | 41 模块 / **149** 类（含 3 个 `base.py` 中间基类；剔除后 **146**） | 按模块文件分类（dan/encoding/promptinject/leakreplay/sysprompt_extraction/latentinjection/atkgen/suffix/visual_jailbreak/ansiescape/smuggling/audio/fileformats/…） |
+| PyRIT | `pyrit/**` Converter 类 + jailbreak 模板数据集 | **114** Converter 类（含 2 个抽象基类；剔除后 **112**）+ **94** 越狱模板 | Converter（变体改写）× Orchestrator（多轮编排）× 数据集组合式，无固定探针清单 |
 | promptfoo | `src/redteam/plugins/*.ts` + `strategies/*.ts` | **54** 插件 + **32** 策略（均剔除 base/index） | 插件（攻击意图）× 策略（jailbreak:basic/iterative/prefix-split/crescendo 等改写） |
 | **Trident** | `trident/probes/library/**/*.json` | **87** 探针 / **13** 类 | 数据文件探针（键=文件名）× 判定器引擎 × 两态差分运行器 × 13 条 sigma 联动规则 |
 
-结论：按可执行的攻击探针计，Trident（87）达到 garak 具体 Probe 类（146）的 60%、原始类计数（149）的 58%，
-超过 promptfoo 单维插件数（54），达到 PyRIT 具体 Converter 类（110）的 79%；
+结论：按可执行的攻击探针计，Trident（87）达到 garak 剔除 `base.py` 中间基类后的 146 的 60%、
+原始类计数（149）的 58%，超过 promptfoo 单维插件数（54），
+达到 PyRIT 剔除 2 个抽象基类后的 112 的 78%；
 组织方式上 Trident 独有「每个探针 = 数据文件 + 判定器 + 严重度 + 规则键 + 两态预期（expect vulnerable/fixed）」，
 使探针命中可被自动化差分复核（87/87 confirmed：74 攻击差分 + 13 防误报对照）。
 
@@ -94,7 +95,7 @@
 
 - garak 探针清单（官方文档）：<https://garak.readthedocs.io/en/latest/probes.html>（模块即类别）
 - PyRIT 文档（converter/orchestrator/数据集口径）：<https://azure.github.io/PyRIT/>；
-  本仓克隆 `microsoft__PyRIT@246b659`（`pyrit/` 实测 114 Converter 类，含 4 个基类；94 jailbreak 模板）
+  本仓克隆 `microsoft__PyRIT@246b659`（`pyrit/` 实测 114 Converter 类，含 2 个抽象基类；94 jailbreak 模板）
 - promptfoo red team 插件与策略（官方文档）：<https://www.promptfoo.dev/docs/red-team/>；
   本仓克隆 `promptfoo__promptfoo@b4c2404`（54 插件 + 32 策略，剔除 index/base 计数）
 - 本库：`trident/probes/`（framework.py 分类学 + run.py 两态差分运行器 + library/ 87 探针），
