@@ -1,0 +1,227 @@
+{
+  "chaoslib-version": "1.45.1",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "node": "tiger",
+  "experiment": {
+    "version": "1.0.0",
+    "title": "trident-oss-bench local process chaos",
+    "description": "steady-state HTTP 200 on the victim, kill the victim process, expect the steady-state probe to fail afterwards",
+    "tags": [
+      "trident-oss-bench"
+    ],
+    "steady-state-hypothesis": {
+      "title": "victim endpoint keeps answering",
+      "probes": [
+        {
+          "type": "probe",
+          "name": "victim-answers-200",
+          "provider": {
+            "type": "http",
+            "url": "http://127.0.0.1:18100/",
+            "timeout": 3
+          },
+          "tolerance": 200
+        }
+      ]
+    },
+    "method": [
+      {
+        "type": "action",
+        "name": "kill-victim-process",
+        "provider": {
+          "type": "process",
+          "path": "taskkill",
+          "arguments": "/PID 24092 /F",
+          "timeout": 10
+        }
+      },
+      {
+        "type": "probe",
+        "name": "victim-still-alive",
+        "provider": {
+          "type": "http",
+          "url": "http://127.0.0.1:18100/",
+          "timeout": 3
+        },
+        "pauses": {
+          "after": 1
+        }
+      }
+    ],
+    "dry": null
+  },
+  "start": "2026-10-26T04:13:28.029008+00:00",
+  "status": "failed",
+  "deviated": true,
+  "steady_states": {
+    "before": {
+      "steady_state_met": true,
+      "probes": [
+        {
+          "activity": {
+            "type": "probe",
+            "name": "victim-answers-200",
+            "provider": {
+              "type": "http",
+              "url": "http://127.0.0.1:18100/",
+              "timeout": 3
+            },
+            "tolerance": 200
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "Server": "SimpleHTTP/0.6 Python/3.12.15",
+              "Date": "Mon, 26 Oct 2026 04:13:28 GMT",
+              "Content-type": "text/html; charset=utf-8",
+              "Content-Length": "2057"
+            },
+            "body": "<!DOCTYPE HTML>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Directory listing for /</title>\n</head>\n<body>\n<h1>Directory listing for /</h1>\n<hr>\n<ul>\n<li><a href=\".git/\">.git/</a></li>\n<li><a href=\".gitattributes\">.gitattributes</a></li>\n<li><a href=\".gitignore\">.gitignore</a></li>\n<li><a href=\".kube/\">.kube/</a></li>\n<li><a href=\".superpowers/\">.superpowers/</a></li>\n<li><a href=\".tmp-fick.py\">.tmp-fick.py</a></li>\n<li><a href=\".tmp-gh.json\">.tmp-gh.json</a></li>\n<li><a href=\".tmp-gh.py\">.tmp-gh.py</a></li>\n<li><a href=\".tmp-gh2.json\">.tmp-gh2.json</a></li>\n<li><a href=\".tmp-gh2.py\">.tmp-gh2.py</a></li>\n<li><a href=\".tmp-kh.py\">.tmp-kh.py</a></li>\n<li><a href=\".tmp-kh2.py\">.tmp-kh2.py</a></li>\n<li><a href=\".tmp-matrix.md\">.tmp-matrix.md</a></li>\n<li><a href=\".tmp-matrix.py\">.tmp-matrix.py</a></li>\n<li><a href=\".tmp-pf.py\">.tmp-pf.py</a></li>\n<li><a href=\".tmp-pypi.py\">.tmp-pypi.py</a></li>\n<li><a href=\".tmp-readmes.py\">.tmp-readmes.py</a></li>\n<li><a href=\".tmp-readmes2.py\">.tmp-readmes2.py</a></li>\n<li><a href=\".tmp-rel.py\">.tmp-rel.py</a></li>\n<li><a href=\".tmp-rel2.py\">.tmp-rel2.py</a></li>\n<li><a href=\"build/\">build/</a></li>\n<li><a href=\"CONTRIBUTING.md\">CONTRIBUTING.md</a></li>\n<li><a href=\"corpus/\">corpus/</a></li>\n<li><a href=\"docs/\">docs/</a></li>\n<li><a href=\"evidence/\">evidence/</a></li>\n<li><a href=\"final-enterprise-test.log\">final-enterprise-test.log</a></li>\n<li><a href=\"final-test.log\">final-test.log</a></li>\n<li><a href=\"lab/\">lab/</a></li>\n<li><a href=\"LICENSE\">LICENSE</a></li>\n<li><a href=\"NOTICE\">NOTICE</a></li>\n<li><a href=\"progress.md\">progress.md</a></li>\n<li><a href=\"pyproject.toml\">pyproject.toml</a></li>\n<li><a href=\"README.md\">README.md</a></li>\n<li><a href=\"reports/\">reports/</a></li>\n<li><a href=\"scripts/\">scripts/</a></li>\n<li><a href=\"SECURITY.md\">SECURITY.md</a></li>\n<li><a href=\"tests/\">tests/</a></li>\n<li><a href=\"tools/\">tools/</a></li>\n<li><a href=\"trident/\">trident/</a></li>\n<li><a href=\"trident_pentest.egg-info/\">trident_pentest.egg-info/</a></li>\n</ul>\n<hr>\n</body>\n</html>\n"
+          },
+          "start": "2026-10-26T04:13:28.029510+00:00",
+          "status": "succeeded",
+          "end": "2026-10-26T04:13:28.032521+00:00",
+          "duration": 0.003011,
+          "tolerance_met": true
+        }
+      ]
+    },
+    "after": {
+      "steady_state_met": false,
+      "probes": [
+        {
+          "activity": {
+            "type": "probe",
+            "name": "victim-answers-200",
+            "provider": {
+              "type": "http",
+              "url": "http://127.0.0.1:18100/",
+              "timeout": 3
+            },
+            "tolerance": 200
+          },
+          "output": null,
+          "start": "2026-10-26T04:13:31.174575+00:00",
+          "status": "failed",
+          "exception": [
+            "Traceback (most recent call last):\n",
+            "  File \"<abs-path>", line 239, in _new_conn\n    sock = connection.create_connection(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n",
+            "  File \"<abs-path>", line 85, in create_connection\n    raise err\n",
+            "  File \"<abs-path>", line 73, in create_connection\n    sock.connect(sa)\n",
+            "ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it\n",
+            "\nThe above exception was the direct cause of the following exceptio<abs-path>",
+            "Traceback (most recent call last):\n",
+            "  File \"<abs-path>", line 793, in urlopen\n    response = self._make_request(\n               ^^^^^^^^^^^^^^^^^^^\n",
+            "  File \"<abs-path>", line 499, in _make_request\n    conn.request(\n",
+            "  File \"<abs-path>", line 567, in request\n    self.endheaders()\n",
+            "  File \"<abs-path>", line 1381, in endheaders\n    self._send_output(message_body, encode_chunked=encode_chunked)\n",
+            "  File \"<abs-path>", line 1141, in _send_output\n    self.send(msg)\n",
+            "  File \"<abs-path>", line 1085, in send\n    self.connect()\n",
+            "  File \"<abs-path>", line 398, in connect\n    self.sock = self._new_conn()\n                ^^^^^^^^^^^^^^^^\n",
+            "  File \"<abs-path>", line 254, in _new_conn\n    raise NewConnectionError(\n",
+            "urllib3.exceptions.NewConnectionError: HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it\n",
+            "\nThe above exception was the direct cause of the following exceptio<abs-path>",
+            "Traceback (most recent call last):\n",
+            "  File \"<abs-path>", line 696, in send\n    resp = conn.urlopen(\n           ^^^^^^^^^^^^^\n",
+            "  File \"<abs-path>", line 847, in urlopen\n    retries = retries.increment(\n              ^^^^^^^^^^^^^^^^^^\n",
+            "  File \"<abs-path>", line 555, in increment\n    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n",
+            "urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it\"))\n",
+            "\nDuring handling of the above exception, another exception occurre<abs-path>",
+            "Traceback (most recent call last):\n",
+            "  File \"<abs-path>", line 51, in run_http_activity\n    r = s.get(\n        ^^^^^^\n",
+            "  File \"<abs-path>", line 671, in get\n    return self.request(\"GET\", url, params=params, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n",
+            "  File \"<abs-path>", line 651, in request\n    resp = self.send(prep, **send_kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n",
+            "  File \"<abs-path>", line 784, in send\n    r = adapter.send(request, **kwargs)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n",
+            "  File \"<abs-path>", line 729, in send\n    raise ConnectionError(e, request=request)\n",
+            "requests.exceptions.ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it\"))\n",
+            "\nDuring handling of the above exception, another exception occurre<abs-path>",
+            "chaoslib.exceptions.ActivityFailed: failed to connect to http://127.0.0.1:18100/: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it\"))\n"
+          ],
+          "end": "2026-10-26T04:13:33.223775+00:00",
+          "duration": 2.0492,
+          "tolerance_met": false
+        }
+      ]
+    },
+    "during": []
+  },
+  "run": [
+    {
+      "activity": {
+        "type": "action",
+        "name": "kill-victim-process",
+        "provider": {
+          "type": "process",
+          "path": "taskkill",
+          "arguments": "/PID 24092 /F",
+          "timeout": 10
+        }
+      },
+      "output": {
+        "status": 0,
+        "stdout": "SUCCESS: The process with PID 24092 has been terminated.\r\n",
+        "stderr": ""
+      },
+      "start": "2026-10-26T04:13:28.033022+00:00",
+      "status": "succeeded",
+      "end": "2026-10-26T04:13:28.122606+00:00",
+      "duration": 0.089584
+    },
+    {
+      "activity": {
+        "type": "probe",
+        "name": "victim-still-alive",
+        "provider": {
+          "type": "http",
+          "url": "http://127.0.0.1:18100/",
+          "timeout": 3
+        },
+        "pauses": {
+          "after": 1
+        }
+      },
+      "output": null,
+      "start": "2026-10-26T04:13:28.122606+00:00",
+      "status": "failed",
+      "exception": [
+        "Traceback (most recent call last):\n",
+        "  File \"<abs-path>", line 239, in _new_conn\n    sock = connection.create_connection(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n",
+        "  File \"<abs-path>", line 85, in create_connection\n    raise err\n",
+        "  File \"<abs-path>", line 73, in create_connection\n    sock.connect(sa)\n",
+        "ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it\n",
+        "\nThe above exception was the direct cause of the following exceptio<abs-path>",
+        "Traceback (most recent call last):\n",
+        "  File \"<abs-path>", line 793, in urlopen\n    response = self._make_request(\n               ^^^^^^^^^^^^^^^^^^^\n",
+        "  File \"<abs-path>", line 499, in _make_request\n    conn.request(\n",
+        "  File \"<abs-path>", line 567, in request\n    self.endheaders()\n",
+        "  File \"<abs-path>", line 1381, in endheaders\n    self._send_output(message_body, encode_chunked=encode_chunked)\n",
+        "  File \"<abs-path>", line 1141, in _send_output\n    self.send(msg)\n",
+        "  File \"<abs-path>", line 1085, in send\n    self.connect()\n",
+        "  File \"<abs-path>", line 398, in connect\n    self.sock = self._new_conn()\n                ^^^^^^^^^^^^^^^^\n",
+        "  File \"<abs-path>", line 254, in _new_conn\n    raise NewConnectionError(\n",
+        "urllib3.exceptions.NewConnectionError: HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it\n",
+        "\nThe above exception was the direct cause of the following exceptio<abs-path>",
+        "Traceback (most recent call last):\n",
+        "  File \"<abs-path>", line 696, in send\n    resp = conn.urlopen(\n           ^^^^^^^^^^^^^\n",
+        "  File \"<abs-path>", line 847, in urlopen\n    retries = retries.increment(\n              ^^^^^^^^^^^^^^^^^^\n",
+        "  File \"<abs-path>", line 555, in increment\n    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n",
+        "urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it\"))\n",
+        "\nDuring handling of the above exception, another exception occurre<abs-path>",
+        "Traceback (most recent call last):\n",
+        "  File \"<abs-path>", line 51, in run_http_activity\n    r = s.get(\n        ^^^^^^\n",
+        "  File \"<abs-path>", line 671, in get\n    return self.request(\"GET\", url, params=params, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n",
+        "  File \"<abs-path>", line 651, in request\n    resp = self.send(prep, **send_kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n",
+        "  File \"<abs-path>", line 784, in send\n    r = adapter.send(request, **kwargs)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n",
+        "  File \"<abs-path>", line 729, in send\n    raise ConnectionError(e, request=request)\n",
+        "requests.exceptions.ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it\"))\n",
+        "\nDuring handling of the above exception, another exception occurre<abs-path>",
+        "chaoslib.exceptions.ActivityFailed: failed to connect to http://127.0.0.1:18100/: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it\"))\n"
+      ],
+      "end": "2026-10-26T04:13:30.173323+00:00",
+      "duration": 2.050717
+    }
+  ],
+  "rollbacks": [],
+  "end": "2026-10-26T04:13:33.224278+00:00",
+  "duration": 5.195269823074341
+}

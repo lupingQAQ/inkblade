@@ -1,0 +1,120 @@
+{
+  "schema": "trident.oss-bench.fixtures/1",
+  "total": 14,
+  "malicious": 8,
+  "benign": 6,
+  "files": [
+    {
+      "file": "benign_array.npy",
+      "malicious": false,
+      "kind": "numpy",
+      "note": "npy array (non-pickle control)",
+      "bytes": 176,
+      "sha256": "8701435c6d9b4f7c4e1690598cc855762060ca8bdf57e4464a94fa8ca0ad2896"
+    },
+    {
+      "file": "benign_config.json",
+      "malicious": false,
+      "kind": "json",
+      "note": "non-serialization control",
+      "bytes": 33,
+      "sha256": "e0cb64a8e3f8b78ce9f977cd3cfe4b06ec16efae9029caea8f4541d0e2dcba99"
+    },
+    {
+      "file": "benign_dict.pkl",
+      "malicious": false,
+      "kind": "pickle",
+      "note": "plain dict",
+      "bytes": 49,
+      "sha256": "d6bf40f80684d7806925efdf158fa8bdd5e1b723ab946b48e5b4645e56f94774"
+    },
+    {
+      "file": "benign_list.pkl",
+      "malicious": false,
+      "kind": "pickle",
+      "note": "plain list",
+      "bytes": 24,
+      "sha256": "2d2d1d809e9bce229f0a766126ae75df14cadd1e8f182561ceae5ad5457a3c38"
+    },
+    {
+      "file": "benign_model.pkl",
+      "malicious": false,
+      "kind": "pickle",
+      "note": "benign user class instance (unknown global control)",
+      "bytes": 144,
+      "sha256": "a06aa110f64e1212659e2aa5ee7a8d390c8d7832e47ecf6aaa31c0320a55e9e7"
+    },
+    {
+      "file": "benign_tensor.pt",
+      "malicious": false,
+      "kind": "torch",
+      "note": "torch.save tensor + dict",
+      "bytes": 1683,
+      "sha256": "245020c58a546473e695ffde13432122435af949a74f5c86dde3b28a794b4158"
+    },
+    {
+      "file": "evil_b64_eval.pkl",
+      "malicious": true,
+      "kind": "pickle",
+      "note": "eval(base64.b64decode(...)) obfuscation",
+      "bytes": 85,
+      "sha256": "da7a8e01d381d0dea62ba575eaea933c359ab89c652d4f3fc43c15609274580f"
+    },
+    {
+      "file": "evil_eval.pkl",
+      "malicious": true,
+      "kind": "pickle",
+      "note": "builtins.eval via REDUCE",
+      "bytes": 64,
+      "sha256": "89a40ecdcc28715c8a606c15761d7a1f425af8d5621dd2f68d21c18935321b28"
+    },
+    {
+      "file": "evil_exec.pkl",
+      "malicious": true,
+      "kind": "pickle",
+      "note": "builtins.exec via REDUCE",
+      "bytes": 72,
+      "sha256": "bf24d636fe2db60152d9b49708334aca21687f97e37bdab123bd84f447a2449a"
+    },
+    {
+      "file": "evil_import.pkl",
+      "malicious": true,
+      "kind": "pickle",
+      "note": "builtins.__import__ via REDUCE",
+      "bytes": 47,
+      "sha256": "ba195ed9a59b865e5ce5ff22127226ce8b68830caa7065d8995e8b5b0a13975d"
+    },
+    {
+      "file": "evil_os_system.pkl",
+      "malicious": true,
+      "kind": "pickle",
+      "note": "os.system via REDUCE",
+      "bytes": 64,
+      "sha256": "126260b56f3a2b779f8ac353f32649ed70f668bf80b92d596c40a554d9afe30b"
+    },
+    {
+      "file": "evil_socket.pkl",
+      "malicious": true,
+      "kind": "pickle",
+      "note": "socket.create_connection via REDUCE",
+      "bytes": 63,
+      "sha256": "e8e97c90249b2e77beb99454edad6b7dca639010545ffcbafa08e1139edbde23"
+    },
+    {
+      "file": "evil_subprocess.pkl",
+      "malicious": true,
+      "kind": "pickle",
+      "note": "subprocess.run via REDUCE",
+      "bytes": 86,
+      "sha256": "5f58bdaffbc015a20b11401957b814d09a67be2f2552632b63cf0aa3483bcf5a"
+    },
+    {
+      "file": "evil_torch.pt",
+      "malicious": true,
+      "kind": "torch",
+      "note": "torch zip with malicious archive/data.pkl",
+      "bytes": 1067,
+      "sha256": "54750e8eeff9608e92c24043b499436492e50a902d216efe79427a4b5d4f2eb2"
+    }
+  ]
+}

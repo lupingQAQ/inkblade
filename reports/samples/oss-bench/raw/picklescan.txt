@@ -1,0 +1,13 @@
+D:\llm-audit-2026-10\projects\trident-2026-10\lab\oss_bench\fixtures\models\evil_b64_eval.pkl: dangerous import 'builtins eval' FOUND
+D:\llm-audit-2026-10\projects\trident-2026-10\lab\oss_bench\fixtures\models\evil_eval.pkl: dangerous import 'builtins eval' FOUND
+D:\llm-audit-2026-10\projects\trident-2026-10\lab\oss_bench\fixtures\models\evil_exec.pkl: dangerous import 'builtins exec' FOUND
+D:\llm-audit-2026-10\projects\trident-2026-10\lab\oss_bench\fixtures\models\evil_os_system.pkl: dangerous import 'nt system' FOUND
+D:\llm-audit-2026-10\projects\trident-2026-10\lab\oss_bench\fixtures\models\evil_socket.pkl: dangerous import 'socket create_connection' FOUND
+D:\llm-audit-2026-10\projects\trident-2026-10\lab\oss_bench\fixtures\models\evil_subprocess.pkl: dangerous import 'subprocess run' FOUND
+D:\llm-audit-2026-10\projects\trident-2026-10\lab\oss_bench\fixtures\models\evil_torch.pt:benign_tensor/data.pkl: dangerous import 'nt system' FOUND
+----------- SCAN SUMMARY -----------
+Scanned files: 12
+Infected files: 7
+Suspicious globals: 2
+Dangerous globals: 7
+

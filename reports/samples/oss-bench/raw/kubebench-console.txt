@@ -1,0 +1,10 @@
+__KB_IMAGE__ aquasec/kube-bench:v0.16.0
+__KB_IMGSIZE__ aquasec/kube-bench:v0.16.0 227MB
+__KB_RUN__ run=1 rc=0 elapsed_s=55 json_bytes=71280
+__KB_RUN__ run=2 rc=0 elapsed_s=59 json_bytes=71280
+__KB_RUN__ run=3 rc=0 elapsed_s=58 json_bytes=71280
+__KB_STDERR_TAIL__
+__KB_JSON_FOOTER__
+le":false,"expected_result":"","reason":"No tests defined"}]}],"total_pass":2,"total_fail":2,"total_warn":31,"total_info":0}],"Totals":{"total_pass":18,"total_fail":3,"total_warn":33,"total_info":5}}
+
+__KB_DONE__

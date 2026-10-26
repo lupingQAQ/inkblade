@@ -1,0 +1,65 @@
+{
+  "tool": "picklescan",
+  "version": "1.0.5",
+  "category": "model-inference",
+  "target": "fixtures/models (directory scan)",
+  "runs": 3,
+  "seconds": {
+    "values": [
+      0.151,
+      0.153,
+      0.155
+    ],
+    "median": 0.153,
+    "min": 0.151,
+    "max": 0.155
+  },
+  "peak_rss_kb": {
+    "values": [
+      24068,
+      25544,
+      25824
+    ],
+    "median": 25544,
+    "min": 24068,
+    "max": 25824
+  },
+  "output_bytes": 1083,
+  "detection": {
+    "fixtures": 14,
+    "malicious": 8,
+    "benign": 6,
+    "true_positives": 7,
+    "tp_files": [
+      "evil_b64_eval.pkl",
+      "evil_eval.pkl",
+      "evil_exec.pkl",
+      "evil_os_system.pkl",
+      "evil_socket.pkl",
+      "evil_subprocess.pkl",
+      "evil_torch.pt"
+    ],
+    "false_negatives": 1,
+    "fn_files": [
+      "evil_import.pkl"
+    ],
+    "false_positives": 0,
+    "fp_files": [],
+    "true_negatives": 6,
+    "precision": 1.0,
+    "recall": 0.875
+  },
+  "summary": {
+    "Scanned files": 12,
+    "Infected files": 7,
+    "Dangerous globals": 7,
+    "Suspicious globals": 2
+  },
+  "return_codes": [
+    0,
+    0,
+    0
+  ],
+  "notes": "exit code is 0 even with infected files (no --strict); flags parsed from FOUND lines",
+  "environment": "host python 3.12 (oss-bench-venv), Windows 11"
+}

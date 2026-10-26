@@ -1,0 +1,141 @@
+{
+  "tool": "fickling",
+  "version": "0.1.12",
+  "category": "model-inference",
+  "target": "fixtures/models (14 files, one CLI invocation per file)",
+  "runs": 3,
+  "seconds": {
+    "values": [
+      1.595,
+      1.448,
+      1.537
+    ],
+    "median": 1.537,
+    "min": 1.448,
+    "max": 1.595
+  },
+  "peak_rss_kb": {
+    "values": [
+      22204,
+      21896,
+      21772
+    ],
+    "note": "peak of the 14 single-file processes (max per run)"
+  },
+  "output_bytes": 6891,
+  "detection": {
+    "fixtures": 14,
+    "malicious": 8,
+    "benign": 6,
+    "true_positives": 7,
+    "tp_files": [
+      "evil_b64_eval.pkl",
+      "evil_eval.pkl",
+      "evil_exec.pkl",
+      "evil_import.pkl",
+      "evil_os_system.pkl",
+      "evil_socket.pkl",
+      "evil_subprocess.pkl"
+    ],
+    "false_negatives": 1,
+    "fn_files": [
+      "evil_torch.pt"
+    ],
+    "false_positives": 1,
+    "fp_files": [
+      "benign_model.pkl"
+    ],
+    "true_negatives": 5,
+    "precision": 0.875,
+    "recall": 0.875
+  },
+  "per_file": {
+    "benign_array.npy": {
+      "severity": null,
+      "rc": 1,
+      "seconds": 0.107,
+      "status": "unsupported"
+    },
+    "benign_config.json": {
+      "severity": null,
+      "rc": 2,
+      "seconds": 0.114,
+      "status": "unsupported"
+    },
+    "benign_dict.pkl": {
+      "severity": "LIKELY_SAFE",
+      "rc": 0,
+      "seconds": 0.105,
+      "status": "scanned"
+    },
+    "benign_list.pkl": {
+      "severity": "LIKELY_SAFE",
+      "rc": 0,
+      "seconds": 0.106,
+      "status": "scanned"
+    },
+    "benign_model.pkl": {
+      "severity": "LIKELY_UNSAFE",
+      "rc": 1,
+      "seconds": 0.105,
+      "status": "scanned"
+    },
+    "benign_tensor.pt": {
+      "severity": null,
+      "rc": 2,
+      "seconds": 0.104,
+      "status": "unsupported"
+    },
+    "evil_b64_eval.pkl": {
+      "severity": "OVERTLY_MALICIOUS",
+      "rc": 1,
+      "seconds": 0.11,
+      "status": "scanned"
+    },
+    "evil_eval.pkl": {
+      "severity": "OVERTLY_MALICIOUS",
+      "rc": 1,
+      "seconds": 0.109,
+      "status": "scanned"
+    },
+    "evil_exec.pkl": {
+      "severity": "OVERTLY_MALICIOUS",
+      "rc": 1,
+      "seconds": 0.123,
+      "status": "scanned"
+    },
+    "evil_import.pkl": {
+      "severity": "LIKELY_OVERTLY_MALICIOUS",
+      "rc": 1,
+      "seconds": 0.112,
+      "status": "scanned"
+    },
+    "evil_os_system.pkl": {
+      "severity": "LIKELY_OVERTLY_MALICIOUS",
+      "rc": 1,
+      "seconds": 0.109,
+      "status": "scanned"
+    },
+    "evil_socket.pkl": {
+      "severity": "LIKELY_OVERTLY_MALICIOUS",
+      "rc": 1,
+      "seconds": 0.115,
+      "status": "scanned"
+    },
+    "evil_subprocess.pkl": {
+      "severity": "LIKELY_OVERTLY_MALICIOUS",
+      "rc": 1,
+      "seconds": 0.108,
+      "status": "scanned"
+    },
+    "evil_torch.pt": {
+      "severity": null,
+      "rc": 2,
+      "seconds": 0.11,
+      "status": "unsupported"
+    }
+  },
+  "return_codes": "see per_file (1 = unsafe verdict, 2 = cannot parse)",
+  "notes": "CLI is per-file only; total time includes N interpreter startups -- compare with care. Severity LIKELY_UNSAFE/OVERTLY_MALICIOUS* counts as flagged; rc=2 (torch zip, json, npy) counts as unsupported, so the malicious torch fixture is a miss, not a skip",
+  "environment": "host python 3.12 (oss-bench-venv), Windows 11"
+}

@@ -1,0 +1,20 @@
+{
+  "models": {
+    "total": 14,
+    "malicious": 8
+  },
+  "k8s": {
+    "files": 10,
+    "seeded": [
+      "privileged",
+      "cluster-admin",
+      "mlflow secrets",
+      "jupyter no-auth",
+      "ray privileged",
+      "env file secrets"
+    ]
+  },
+  "llm": {
+    "cases": 12
+  }
+}

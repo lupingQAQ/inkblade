@@ -1,0 +1,74 @@
+{
+  "tool": "trivy-fs",
+  "version": "0.76.1",
+  "category": "cluster-scanning",
+  "target": "fixtures/k8s (10 files: 7 yaml + Dockerfile + requirements.txt + .env)",
+  "runs": 3,
+  "seconds": {
+    "values": [
+      0.86,
+      0.876,
+      0.894
+    ],
+    "median": 0.876,
+    "min": 0.86,
+    "max": 0.894
+  },
+  "peak_rss_kb": {
+    "values": [
+      147300,
+      151348,
+      145256
+    ],
+    "median": 147300,
+    "min": 145256,
+    "max": 151348
+  },
+  "output_bytes": 429541,
+  "detection": {
+    "misconfigs": 86,
+    "unique_misconfig_ids": 31,
+    "secrets": {
+      "aws-access-key-id": [
+        ".env"
+      ],
+      "github-pat": [
+        ".env"
+      ]
+    },
+    "seeded_categories": {
+      "privileged_pod": [
+        "KSV-0014",
+        "KSV-0016",
+        "KSV-0017"
+      ],
+      "cluster_admin_rbac": [
+        "KSV-0044"
+      ],
+      "hardcoded_secrets_env": [
+        "aws-access-key-id",
+        "github-pat"
+      ],
+      "jupyter_no_auth": [
+        "KSV-0011",
+        "KSV-0030"
+      ],
+      "ray_privileged": [
+        "KSV-0017"
+      ],
+      "dockerfile_root_and_pins": [
+        "DS-0002"
+      ]
+    },
+    "seeded_total": 6,
+    "seeded_hit": 6,
+    "not_flagged": "the canonical AWS example key AKIAIOSFODNN7EXAMPLE seeded in mlflow-insecure.yaml is NOT flagged (trivy blocklists the documentation example key); the synthetic keys in .env are flagged"
+  },
+  "return_codes": [
+    0,
+    0,
+    0
+  ],
+  "notes": "offline (embedded checks bundle; --skip-check-update), misconfig+secret scanners only",
+  "environment": "host binary trivy.exe, Windows 11"
+}

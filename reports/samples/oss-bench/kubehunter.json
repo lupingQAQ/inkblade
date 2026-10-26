@@ -1,0 +1,54 @@
+{
+  "tool": "kube-hunter",
+  "version": "0.6.8",
+  "category": "cluster-scanning",
+  "target": "mock cluster 127.0.0.1:6443 (unauth read API) + :10255 (read-only kubelet, 1 privileged pod)",
+  "runs": 3,
+  "seconds": {
+    "values": [
+      10.104,
+      10.084,
+      9.996
+    ],
+    "median": 10.084,
+    "min": 9.996,
+    "max": 10.104
+  },
+  "peak_rss_kb": {
+    "values": [
+      107936,
+      107880,
+      107792
+    ],
+    "median": 107880,
+    "min": 107792,
+    "max": 107936
+  },
+  "output_bytes": 4341,
+  "detection": {
+    "vulnerabilities": 8,
+    "by_severity": {
+      "high": 4,
+      "low": 1,
+      "medium": 3
+    },
+    "categories": [
+      "Discovery",
+      "Initial Access",
+      "Privilege Escalation"
+    ],
+    "seeded_findings": {
+      "privileged_container": true,
+      "read_only_kubelet": true
+    },
+    "seeded_total": 2,
+    "seeded_hit": 2
+  },
+  "return_codes": [
+    0,
+    0,
+    0
+  ],
+  "notes": "hunters see only the two seeded endpoints; active hunting disabled (--active not used)",
+  "environment": "host python 3.12 (oss-bench-venv), Windows 11, QEMU host"
+}

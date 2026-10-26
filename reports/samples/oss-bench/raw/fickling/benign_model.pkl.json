@@ -1,0 +1,10 @@
+{
+    "severity": "LIKELY_UNSAFE",
+    "analysis": "`from lab.oss_bench.benign_model import SimpleModel` imports a Python module that is not a part of the standard library; this can execute arbitrary code and is inherently unsafe\nCall to `SimpleModel.__new__(SimpleModel)` can execute arbitrary code and is inherently unsafe",
+    "detailed_results": {
+        "AnalysisResult": {
+            "NonStandardImports": "from lab.oss_bench.benign_model import SimpleModel",
+            "OvertlyBadEval": "SimpleModel.__new__(SimpleModel)"
+        }
+    }
+}

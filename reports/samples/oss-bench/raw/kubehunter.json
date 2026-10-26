@@ -1,0 +1,108 @@
+{
+  "nodes": [
+    {
+      "type": "Node/Master",
+      "location": "127.0.0.1"
+    }
+  ],
+  "services": [
+    {
+      "service": "Kubelet API (readonly)",
+      "location": "127.0.0.1:10255"
+    },
+    {
+      "service": "API Server",
+      "location": "127.0.0.1:6443"
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "location": "127.0.0.1:10255",
+      "vid": "KHV002",
+      "category": "Initial Access // Exposed sensitive interfaces",
+      "severity": "high",
+      "vulnerability": "K8s Version Disclosure",
+      "description": "The kubernetes version could be obtained from the /metrics endpointon Kubelet",
+      "evidence": "v1.28.0",
+      "avd_reference": "https://avd.aquasec.com/kube-hunter/khv002/",
+      "hunter": "Kubelet Readonly Ports Hunter"
+    },
+    {
+      "location": "127.0.0.1:10255",
+      "vid": "KHV044",
+      "category": "Privilege Escalation // Privileged container",
+      "severity": "high",
+      "vulnerability": "Privileged Container",
+      "description": "A Privileged container exist on a node\n    could expose the node/cluster to unwanted root operations",
+      "evidence": "pod: trainer-0, container: trainer, count: 1",
+      "avd_reference": "https://avd.aquasec.com/kube-hunter/khv044/",
+      "hunter": "Kubelet Readonly Ports Hunter"
+    },
+    {
+      "location": "127.0.0.1:10255",
+      "vid": "KHV043",
+      "category": "Initial Access // General Sensitive Information",
+      "severity": "low",
+      "vulnerability": "Cluster Health Disclosure",
+      "description": "By accessing the open /healthz handler,\n    an attacker could get the cluster health state without authenticating",
+      "evidence": "status: ok",
+      "avd_reference": "https://avd.aquasec.com/kube-hunter/khv043/",
+      "hunter": "Kubelet Readonly Ports Hunter"
+    },
+    {
+      "location": "127.0.0.1:10255",
+      "vid": "KHV052",
+      "category": "Discovery // Access Kubelet API",
+      "severity": "medium",
+      "vulnerability": "Exposed Pods",
+      "description": "An attacker could view sensitive information about pods that are\n    bound to a Node using the /pods endpoint",
+      "evidence": "count: 1",
+      "avd_reference": "https://avd.aquasec.com/kube-hunter/khv052/",
+      "hunter": "Kubelet Readonly Ports Hunter"
+    },
+    {
+      "location": "127.0.0.1:6443",
+      "vid": "KHV006",
+      "category": "Initial Access // Exposed sensitive interfaces",
+      "severity": "high",
+      "vulnerability": "Insecure (HTTP) access to API",
+      "description": "The API Server port is accessible over HTTP, and therefore unencrypted.\n    Depending on your RBAC settings this could expose access to or control of your cluster.",
+      "evidence": "b'{\"kind\": \"APIVersions\", \"versions\": [\"v1\"]}'",
+      "avd_reference": "https://avd.aquasec.com/kube-hunter/khv006/",
+      "hunter": "API Server Hunter"
+    },
+    {
+      "location": "127.0.0.1:6443",
+      "vid": "KHV002",
+      "category": "Initial Access // Exposed sensitive interfaces",
+      "severity": "high",
+      "vulnerability": "K8s Version Disclosure",
+      "description": "The kubernetes version could be obtained from the /version endpoint",
+      "evidence": "v1.28.0",
+      "avd_reference": "https://avd.aquasec.com/kube-hunter/khv002/",
+      "hunter": "Api Version Hunter"
+    },
+    {
+      "location": "127.0.0.1:6443",
+      "vid": "KHV007",
+      "category": "Discovery // Access the K8S API Server",
+      "severity": "medium",
+      "vulnerability": "Listing namespaces as anonymous user",
+      "description": "Accessing namespaces might give an attacker valuable information",
+      "evidence": "['ml']",
+      "avd_reference": "https://avd.aquasec.com/kube-hunter/khv007/",
+      "hunter": "API Server Hunter"
+    },
+    {
+      "location": "127.0.0.1:6443",
+      "vid": "KHV007",
+      "category": "Discovery // Access the K8S API Server",
+      "severity": "medium",
+      "vulnerability": "Listing pods as anonymous user",
+      "description": "Accessing pods might give an attacker valuable information",
+      "evidence": "[{'name': b'trainer-0', 'namespace': b'ml'}]",
+      "avd_reference": "https://avd.aquasec.com/kube-hunter/khv007/",
+      "hunter": "API Server Hunter"
+    }
+  ]
+}

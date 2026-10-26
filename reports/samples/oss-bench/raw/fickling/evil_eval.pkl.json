@@ -1,0 +1,12 @@
+{
+    "severity": "OVERTLY_MALICIOUS",
+    "analysis": "`from builtins import eval` imports `eval` which can execute arbitrary code\nCall to `eval(...)` is almost certainly evidence of a malicious pickle file\nCall to `eval(...)` is almost certainly evidence of a malicious pickle file\n`from builtins import eval` is suspicious and indicative of an overtly malicious pickle file\nVariable `_var0` is assigned value `eval(...)` but unused afterward; this is suspicious and indicative of a malicious pickle file",
+    "detailed_results": {
+        "AnalysisResult": {
+            "UnsafeImportsML": "from builtins import eval",
+            "OvertlyBadEval": "eval(...)",
+            "UnsafeImports": "from builtins import eval",
+            "UnusedVariables": "_var0: eval(...)"
+        }
+    }
+}

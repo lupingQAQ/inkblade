@@ -1,0 +1,657 @@
+{
+  "schema": "trident.oss-bench/1",
+  "generated_at": "2026-10-26T12:23:31+0800",
+  "host": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "python": "3.12.15",
+    "machine": "AMD64",
+    "note": "host timings; guest (QEMU TCG) timings marked per tool"
+  },
+  "results": [
+    {
+      "tool": "chaostoolkit",
+      "version": "1.21.4",
+      "category": "chaos",
+      "target": "local http.server victim process; action taskkill /PID <victim> /F",
+      "runs": 3,
+      "seconds": {
+        "values": [
+          5.627,
+          5.629,
+          5.564
+        ],
+        "median": 5.627,
+        "min": 5.564,
+        "max": 5.629
+      },
+      "peak_rss_kb": {
+        "values": [
+          64428,
+          64644,
+          64596
+        ],
+        "median": 64596,
+        "min": 64428,
+        "max": 64644
+      },
+      "output_bytes": 54339,
+      "chaos_effect": {
+        "deviated": [
+          true,
+          true,
+          true
+        ],
+        "victim_killed": [
+          true,
+          true,
+          true
+        ],
+        "all_runs_detected_deviation": true
+      },
+      "return_codes": [
+        1,
+        1,
+        1
+      ],
+      "notes": "chaos exits non-zero when the steady state is broken (expected); journal.json is the evidence",
+      "environment": "host python 3.12 (oss-bench-venv), Windows 11; process provider uses Windows taskkill"
+    },
+    {
+      "tool": "kube-bench",
+      "version": "0.16.0",
+      "category": "cluster-scanning",
+      "target": "live k3s v1.36.5+k3s1 node (QEMU TCG Alpine guest), docker container, KUBECONFIG=/etc/rancher/k3s/k3s.yaml",
+      "runs": 3,
+      "seconds": {
+        "values": [
+          55,
+          59,
+          58
+        ],
+        "median": 58,
+        "resolution": "1 s (busybox date +%s, measured inside guest)"
+      },
+      "peak_rss_kb": {
+        "note": "guest container; not sampled (docker run --rm, TCG) -- image size 227 MB recorded instead"
+      },
+      "output_bytes": 71280,
+      "detection": {
+        "totals": {
+          "total_pass": 18,
+          "total_fail": 3,
+          "total_warn": 33,
+          "total_info": 5
+        },
+        "benchmarks_run": [
+          "k3s-cis-1.9"
+        ],
+        "controls": 2,
+        "sections": [
+          {
+            "id": "4",
+            "text": "Worker Node Security Configuration",
+            "pass": 16,
+            "fail": 1,
+            "warn": 2,
+            "info": 5
+          },
+          {
+            "id": "5",
+            "text": "Kubernetes Policies",
+            "pass": 2,
+            "fail": 2,
+            "warn": 31,
+            "info": 0
+          }
+        ]
+      },
+      "return_codes": [
+        0,
+        0,
+        0
+      ],
+      "notes": "CIS profile auto-detected through the k3s kubeconfig; guest timings carry QEMU TCG amplification",
+      "environment": "guest: Alpine 3.24 / 6 vCPU TCG / docker 29.9.2; image aquasec/kube-bench:v0.16.0 (227 MB)"
+    },
+    {
+      "tool": "kube-hunter",
+      "version": "0.6.8",
+      "category": "cluster-scanning",
+      "target": "mock cluster 127.0.0.1:6443 (unauth read API) + :10255 (read-only kubelet, 1 privileged pod)",
+      "runs": 3,
+      "seconds": {
+        "values": [
+          10.104,
+          10.084,
+          9.996
+        ],
+        "median": 10.084,
+        "min": 9.996,
+        "max": 10.104
+      },
+      "peak_rss_kb": {
+        "values": [
+          107936,
+          107880,
+          107792
+        ],
+        "median": 107880,
+        "min": 107792,
+        "max": 107936
+      },
+      "output_bytes": 4341,
+      "detection": {
+        "vulnerabilities": 8,
+        "by_severity": {
+          "high": 4,
+          "low": 1,
+          "medium": 3
+        },
+        "categories": [
+          "Discovery",
+          "Initial Access",
+          "Privilege Escalation"
+        ],
+        "seeded_findings": {
+          "privileged_container": true,
+          "read_only_kubelet": true
+        },
+        "seeded_total": 2,
+        "seeded_hit": 2
+      },
+      "return_codes": [
+        0,
+        0,
+        0
+      ],
+      "notes": "hunters see only the two seeded endpoints; active hunting disabled (--active not used)",
+      "environment": "host python 3.12 (oss-bench-venv), Windows 11, QEMU host"
+    },
+    {
+      "tool": "trivy-fs",
+      "version": "0.76.1",
+      "category": "cluster-scanning",
+      "target": "fixtures/k8s (10 files: 7 yaml + Dockerfile + requirements.txt + .env)",
+      "runs": 3,
+      "seconds": {
+        "values": [
+          0.86,
+          0.876,
+          0.894
+        ],
+        "median": 0.876,
+        "min": 0.86,
+        "max": 0.894
+      },
+      "peak_rss_kb": {
+        "values": [
+          147300,
+          151348,
+          145256
+        ],
+        "median": 147300,
+        "min": 145256,
+        "max": 151348
+      },
+      "output_bytes": 429541,
+      "detection": {
+        "misconfigs": 86,
+        "unique_misconfig_ids": 31,
+        "secrets": {
+          "aws-access-key-id": [
+            ".env"
+          ],
+          "github-pat": [
+            ".env"
+          ]
+        },
+        "seeded_categories": {
+          "privileged_pod": [
+            "KSV-0014",
+            "KSV-0016",
+            "KSV-0017"
+          ],
+          "cluster_admin_rbac": [
+            "KSV-0044"
+          ],
+          "hardcoded_secrets_env": [
+            "aws-access-key-id",
+            "github-pat"
+          ],
+          "jupyter_no_auth": [
+            "KSV-0011",
+            "KSV-0030"
+          ],
+          "ray_privileged": [
+            "KSV-0017"
+          ],
+          "dockerfile_root_and_pins": [
+            "DS-0002"
+          ]
+        },
+        "seeded_total": 6,
+        "seeded_hit": 6,
+        "not_flagged": "the canonical AWS example key AKIAIOSFODNN7EXAMPLE seeded in mlflow-insecure.yaml is NOT flagged (trivy blocklists the documentation example key); the synthetic keys in .env are flagged"
+      },
+      "return_codes": [
+        0,
+        0,
+        0
+      ],
+      "notes": "offline (embedded checks bundle; --skip-check-update), misconfig+secret scanners only",
+      "environment": "host binary trivy.exe, Windows 11"
+    },
+    {
+      "tool": "trivy-k8s",
+      "version": "0.76.1",
+      "category": "cluster-scanning",
+      "target": "k3s v1.36.5+k3s1 full-cluster snapshot (kubectl get 19 resource kinds -A -o yaml, 301 KiB) from the QEMU TCG guest",
+      "runs": 3,
+      "seconds": {
+        "values": [
+          3.821,
+          3.895,
+          4.031
+        ],
+        "median": 3.895,
+        "min": 3.821,
+        "max": 4.031
+      },
+      "peak_rss_kb": {
+        "values": [
+          230456,
+          231656,
+          233700
+        ],
+        "median": 231656,
+        "min": 230456,
+        "max": 233700
+      },
+      "snapshot_seconds": 0.601,
+      "output_bytes": 1169499,
+      "detection": {
+        "misconfigs": 247,
+        "unique_ids": 33,
+        "artifacts_with_findings": [
+          {
+            "kind": "kubernetes",
+            "target": "all.yaml",
+            "misconfigurations": 247
+          }
+        ],
+        "top_ids": {
+          "KSV-0048": 38,
+          "KSV-0118": 19,
+          "KSV-0056": 14,
+          "KSV-0041": 12,
+          "KSV-0012": 11,
+          "KSV-0020": 11,
+          "KSV-0021": 11,
+          "KSV-0030": 11
+        }
+      },
+      "return_codes": [
+        0,
+        0,
+        0
+      ],
+      "live_scan_notes": "direct `trivy k8s --scanners misconfig` against this cluster was attempted 3x and failed before writing output ('get k8s artifacts with node info error: no compliance commands found' -- node-collector image cannot be pulled through the TCG guest; one earlier attempt did complete with node info and produced 86 misconfigs / 8 results); `--disable-node-collector` writes only '{\"ClusterName\": \"default\"}' in 0.76.1",
+      "notes": "snapshot + trivy fs (embedded checks, offline): same misconfig checks as trivy k8s, deterministic and repeatable; scan time excludes the one-time kubectl dump",
+      "environment": "host trivy.exe; snapshot taken over kubectl hostfwd :6445 to QEMU TCG guest"
+    },
+    {
+      "tool": "fickling",
+      "version": "0.1.12",
+      "category": "model-inference",
+      "target": "fixtures/models (14 files, one CLI invocation per file)",
+      "runs": 3,
+      "seconds": {
+        "values": [
+          1.595,
+          1.448,
+          1.537
+        ],
+        "median": 1.537,
+        "min": 1.448,
+        "max": 1.595
+      },
+      "peak_rss_kb": {
+        "values": [
+          22204,
+          21896,
+          21772
+        ],
+        "note": "peak of the 14 single-file processes (max per run)"
+      },
+      "output_bytes": 6891,
+      "detection": {
+        "fixtures": 14,
+        "malicious": 8,
+        "benign": 6,
+        "true_positives": 7,
+        "tp_files": [
+          "evil_b64_eval.pkl",
+          "evil_eval.pkl",
+          "evil_exec.pkl",
+          "evil_import.pkl",
+          "evil_os_system.pkl",
+          "evil_socket.pkl",
+          "evil_subprocess.pkl"
+        ],
+        "false_negatives": 1,
+        "fn_files": [
+          "evil_torch.pt"
+        ],
+        "false_positives": 1,
+        "fp_files": [
+          "benign_model.pkl"
+        ],
+        "true_negatives": 5,
+        "precision": 0.875,
+        "recall": 0.875
+      },
+      "per_file": {
+        "benign_array.npy": {
+          "severity": null,
+          "rc": 1,
+          "seconds": 0.107,
+          "status": "unsupported"
+        },
+        "benign_config.json": {
+          "severity": null,
+          "rc": 2,
+          "seconds": 0.114,
+          "status": "unsupported"
+        },
+        "benign_dict.pkl": {
+          "severity": "LIKELY_SAFE",
+          "rc": 0,
+          "seconds": 0.105,
+          "status": "scanned"
+        },
+        "benign_list.pkl": {
+          "severity": "LIKELY_SAFE",
+          "rc": 0,
+          "seconds": 0.106,
+          "status": "scanned"
+        },
+        "benign_model.pkl": {
+          "severity": "LIKELY_UNSAFE",
+          "rc": 1,
+          "seconds": 0.105,
+          "status": "scanned"
+        },
+        "benign_tensor.pt": {
+          "severity": null,
+          "rc": 2,
+          "seconds": 0.104,
+          "status": "unsupported"
+        },
+        "evil_b64_eval.pkl": {
+          "severity": "OVERTLY_MALICIOUS",
+          "rc": 1,
+          "seconds": 0.11,
+          "status": "scanned"
+        },
+        "evil_eval.pkl": {
+          "severity": "OVERTLY_MALICIOUS",
+          "rc": 1,
+          "seconds": 0.109,
+          "status": "scanned"
+        },
+        "evil_exec.pkl": {
+          "severity": "OVERTLY_MALICIOUS",
+          "rc": 1,
+          "seconds": 0.123,
+          "status": "scanned"
+        },
+        "evil_import.pkl": {
+          "severity": "LIKELY_OVERTLY_MALICIOUS",
+          "rc": 1,
+          "seconds": 0.112,
+          "status": "scanned"
+        },
+        "evil_os_system.pkl": {
+          "severity": "LIKELY_OVERTLY_MALICIOUS",
+          "rc": 1,
+          "seconds": 0.109,
+          "status": "scanned"
+        },
+        "evil_socket.pkl": {
+          "severity": "LIKELY_OVERTLY_MALICIOUS",
+          "rc": 1,
+          "seconds": 0.115,
+          "status": "scanned"
+        },
+        "evil_subprocess.pkl": {
+          "severity": "LIKELY_OVERTLY_MALICIOUS",
+          "rc": 1,
+          "seconds": 0.108,
+          "status": "scanned"
+        },
+        "evil_torch.pt": {
+          "severity": null,
+          "rc": 2,
+          "seconds": 0.11,
+          "status": "unsupported"
+        }
+      },
+      "return_codes": "see per_file (1 = unsafe verdict, 2 = cannot parse)",
+      "notes": "CLI is per-file only; total time includes N interpreter startups -- compare with care. Severity LIKELY_UNSAFE/OVERTLY_MALICIOUS* counts as flagged; rc=2 (torch zip, json, npy) counts as unsupported, so the malicious torch fixture is a miss, not a skip",
+      "environment": "host python 3.12 (oss-bench-venv), Windows 11"
+    },
+    {
+      "tool": "modelscan",
+      "version": "0.8.8",
+      "category": "model-inference",
+      "target": "fixtures/models (14 files vs manifest ground truth)",
+      "runs": 3,
+      "seconds": {
+        "values": [
+          0.265,
+          0.279,
+          0.292
+        ],
+        "median": 0.279,
+        "min": 0.265,
+        "max": 0.292
+      },
+      "peak_rss_kb": {
+        "values": [
+          38856,
+          37512,
+          38748
+        ],
+        "median": 38748,
+        "min": 37512,
+        "max": 38856
+      },
+      "output_bytes": 2688,
+      "detection": {
+        "fixtures": 14,
+        "malicious": 8,
+        "benign": 6,
+        "true_positives": 8,
+        "tp_files": [
+          "evil_b64_eval.pkl",
+          "evil_eval.pkl",
+          "evil_exec.pkl",
+          "evil_import.pkl",
+          "evil_os_system.pkl",
+          "evil_socket.pkl",
+          "evil_subprocess.pkl",
+          "evil_torch.pt"
+        ],
+        "false_negatives": 0,
+        "fn_files": [],
+        "false_positives": 0,
+        "fp_files": [],
+        "true_negatives": 6,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "scanned_files": 12,
+      "issues_by_severity": {
+        "LOW": 0,
+        "MEDIUM": 0,
+        "HIGH": 0,
+        "CRITICAL": 8
+      },
+      "return_codes": [
+        2,
+        2,
+        2
+      ],
+      "notes": "json report; flags = file appears in issues[] with any severity; scanned_files counts inner pickles (torch zip counts as one)",
+      "environment": "host python 3.12 (oss-bench-venv), Windows 11"
+    },
+    {
+      "tool": "picklescan",
+      "version": "1.0.5",
+      "category": "model-inference",
+      "target": "fixtures/models (directory scan)",
+      "runs": 3,
+      "seconds": {
+        "values": [
+          0.151,
+          0.153,
+          0.155
+        ],
+        "median": 0.153,
+        "min": 0.151,
+        "max": 0.155
+      },
+      "peak_rss_kb": {
+        "values": [
+          24068,
+          25544,
+          25824
+        ],
+        "median": 25544,
+        "min": 24068,
+        "max": 25824
+      },
+      "output_bytes": 1083,
+      "detection": {
+        "fixtures": 14,
+        "malicious": 8,
+        "benign": 6,
+        "true_positives": 7,
+        "tp_files": [
+          "evil_b64_eval.pkl",
+          "evil_eval.pkl",
+          "evil_exec.pkl",
+          "evil_os_system.pkl",
+          "evil_socket.pkl",
+          "evil_subprocess.pkl",
+          "evil_torch.pt"
+        ],
+        "false_negatives": 1,
+        "fn_files": [
+          "evil_import.pkl"
+        ],
+        "false_positives": 0,
+        "fp_files": [],
+        "true_negatives": 6,
+        "precision": 1.0,
+        "recall": 0.875
+      },
+      "summary": {
+        "Scanned files": 12,
+        "Infected files": 7,
+        "Dangerous globals": 7,
+        "Suspicious globals": 2
+      },
+      "return_codes": [
+        0,
+        0,
+        0
+      ],
+      "notes": "exit code is 0 even with infected files (no --strict); flags parsed from FOUND lines",
+      "environment": "host python 3.12 (oss-bench-venv), Windows 11"
+    },
+    {
+      "tool": "promptfoo",
+      "version": "0.125.1",
+      "category": "model-inference",
+      "target": "12 eval cases -> local echo provider (http://127.0.0.1:18082, no external model)",
+      "runs": 3,
+      "seconds": {
+        "values": [
+          2.372,
+          2.161,
+          2.326
+        ],
+        "median": 2.326,
+        "min": 2.161,
+        "max": 2.372
+      },
+      "peak_rss_kb": {
+        "values": [
+          276708,
+          277056,
+          277068
+        ],
+        "median": 277056,
+        "min": 276708,
+        "max": 277068
+      },
+      "output_bytes": 80473,
+      "detection": {
+        "cases": 12,
+        "assertions_passed": 12,
+        "pass_rate": 1.0
+      },
+      "return_codes": [
+        0,
+        0,
+        0
+      ],
+      "notes": "one warmup run excluded from timing (node/promptfoo cold start ~48 s first run)",
+      "environment": "host node 22, npm-installed promptfoo, Windows 11"
+    },
+    {
+      "tool": "toxiproxy",
+      "version": "2.13.0",
+      "category": "network-fabric",
+      "target": "proxy 127.0.0.1:18083 -> mock LLM :18082; toxics: latency 200 ms + timeout 0 (downstream)",
+      "runs": 3,
+      "seconds": {
+        "values": [
+          3.156,
+          3.11,
+          3.134
+        ],
+        "median": 3.134,
+        "min": 3.11,
+        "max": 3.156
+      },
+      "peak_rss_kb": {
+        "values": [
+          15436,
+          15464,
+          15512
+        ],
+        "median": 15464,
+        "min": 15436,
+        "max": 15512
+      },
+      "output_bytes": 210,
+      "injection_effect": {
+        "baseline_rtt_ms_median": 2.1,
+        "with_latency_tox_ms_median": 202.8,
+        "configured_latency_ms": 200,
+        "observed_added_latency_ms": 200.7,
+        "timeout_tox_dropped_connection": true,
+        "drop_error": "RemoteDisconnected"
+      },
+      "return_codes": [
+        0,
+        0,
+        0
+      ],
+      "notes": "effect measured on the client via the proxied /healthz endpoint; server process RSS sampled at 25 ms",
+      "environment": "host binaries toxiproxy-server-windows-amd64.exe, Windows 11"
+    }
+  ]
+}

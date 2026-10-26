@@ -1,0 +1,10 @@
+{
+    "severity": "LIKELY_OVERTLY_MALICIOUS",
+    "analysis": "`from subprocess import run` is suspicious and indicative of an overtly malicious pickle file\nVariable `_var0` is assigned value `run(...)` but unused afterward; this is suspicious and indicative of a malicious pickle file",
+    "detailed_results": {
+        "AnalysisResult": {
+            "UnsafeImports": "from subprocess import run",
+            "UnusedVariables": "_var0: run(...)"
+        }
+    }
+}

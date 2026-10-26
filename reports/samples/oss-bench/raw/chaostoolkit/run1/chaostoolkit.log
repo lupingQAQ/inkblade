@@ -1,0 +1,217 @@
+[36m[2026-10-26 12:13:27 DEBUG] [root:106][39m ###############################################################################
+[36m[2026-10-26 12:13:27 DEBUG] [root:107][39m Running command 'run'
+[36m[2026-10-26 12:13:27 DEBUG] [root:111][39m Using settings file 'C:\Users\21169\.chaostoolkit\settings.yaml'
+[36m[2026-10-26 12:13:27 DEBUG] [settings:31][39m The Chaos Toolkit settings file could not be found at 'C:\Users\21169\.chaostoolkit\settings.yaml'.
+[36m[2026-10-26 12:13:27 DEBUG] [__init__:468][39m No controls to apply on 'loader'
+[36m[2026-10-26 12:13:27 DEBUG] [__init__:468][39m No controls to apply on 'loader'
+[36m[2026-10-26 12:13:27 DEBUG] [caching:24][39m Building activity cache...
+[36m[2026-10-26 12:13:27 DEBUG] [caching:35][39m Cached 3 activities
+[32m[2026-10-26 12:13:27 INFO] [experiment:59][39m Validating the experiment's syntax
+[36m[2026-10-26 12:13:27 DEBUG] [configuration:64][39m Loading configuration...
+[36m[2026-10-26 12:13:27 DEBUG] [secret:79][39m Loading secrets...
+[36m[2026-10-26 12:13:27 DEBUG] [secret:104][39m Done loading secrets
+[32m[2026-10-26 12:13:27 INFO] [experiment:109][39m Experiment looks valid
+[36m[2026-10-26 12:13:27 DEBUG] [caching:42][39m Clearing activities cache
+[36m[2026-10-26 12:13:27 DEBUG] [run:334][39m Runtime strategies: hypothesis - default / rollbacks - default
+[36m[2026-10-26 12:13:27 DEBUG] [caching:24][39m Building activity cache...
+[36m[2026-10-26 12:13:27 DEBUG] [caching:35][39m Cached 3 activities
+[36m[2026-10-26 12:13:27 DEBUG] [configuration:64][39m Loading configuration...
+[36m[2026-10-26 12:13:27 DEBUG] [secret:79][39m Loading secrets...
+[36m[2026-10-26 12:13:27 DEBUG] [secret:104][39m Done loading secrets
+[36m[2026-10-26 12:13:27 DEBUG] [configuration:161][39m Loading dynamic configuration...
+[36m[2026-10-26 12:13:28 DEBUG] [exit:91][39m System 'Windows-11-10.0.26300-SP0' does not expose SIGUSR signals
+[32m[2026-10-26 12:13:28 INFO] [run:446][39m Running experiment: trident-oss-bench local process chaos
+[36m[2026-10-26 12:13:28 DEBUG] [__init__:68][39m Initializing controls
+[32m[2026-10-26 12:13:28 INFO] [run:477][39m Steady-state strategy: default
+[32m[2026-10-26 12:13:28 INFO] [run:483][39m Rollbacks strategy: default
+[36m[2026-10-26 12:13:28 DEBUG] [__init__:468][39m No controls to apply on 'experiment'
+[36m[2026-10-26 12:13:28 DEBUG] [run:660][39m Running steady-state hypothesis before the method
+[32m[2026-10-26 12:13:28 INFO] [hypothesis:200][39m Steady state hypothesis: victim endpoint keeps answering
+[36m[2026-10-26 12:13:28 DEBUG] [__init__:468][39m No controls to apply on 'hypothesis'
+[36m[2026-10-26 12:13:28 DEBUG] [__init__:468][39m No controls to apply on 'activity'
+[32m[2026-10-26 12:13:28 INFO] [activity:233][39m Probe: victim-answers-200
+[36m[2026-10-26 12:13:28 DEBUG] [activity:261][39m   => succeeded with '{'status': 200, 'headers': {'Server': 'SimpleHTTP/0.6 Python/3.12.15', 'Date': 'Mon, 26 Oct 2026 04:13:28 GMT', 'Content-type': 'text/html; charset=utf-8', 'Content-Length': '2057'}, 'body': '<!DOCTYPE HTML>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Directory listing for /</title>\n</head>\n<body>\n<h1>Directory listing for /</h1>\n<hr>\n<ul>\n<li><a href=".git/">.git/</a></li>\n<li><a href=".gitattributes">.gitattributes</a></li>\n<li><a href=".gitignore">.gitignore</a></li>\n<li><a href=".kube/">.kube/</a></li>\n<li><a href=".superpowers/">.superpowers/</a></li>\n<li><a href=".tmp-fick.py">.tmp-fick.py</a></li>\n<li><a href=".tmp-gh.json">.tmp-gh.json</a></li>\n<li><a href=".tmp-gh.py">.tmp-gh.py</a></li>\n<li><a href=".tmp-gh2.json">.tmp-gh2.json</a></li>\n<li><a href=".tmp-gh2.py">.tmp-gh2.py</a></li>\n<li><a href=".tmp-kh.py">.tmp-kh.py</a></li>\n<li><a href=".tmp-kh2.py">.tmp-kh2.py</a></li>\n<li><a href=".tmp-matrix.md">.tmp-matrix.md</a></li>\n<li><a href=".tmp-matrix.py">.tmp-matrix.py</a></li>\n<li><a href=".tmp-pf.py">.tmp-pf.py</a></li>\n<li><a href=".tmp-pypi.py">.tmp-pypi.py</a></li>\n<li><a href=".tmp-readmes.py">.tmp-readmes.py</a></li>\n<li><a href=".tmp-readmes2.py">.tmp-readmes2.py</a></li>\n<li><a href=".tmp-rel.py">.tmp-rel.py</a></li>\n<li><a href=".tmp-rel2.py">.tmp-rel2.py</a></li>\n<li><a href="build/">build/</a></li>\n<li><a href="CONTRIBUTING.md">CONTRIBUTING.md</a></li>\n<li><a href="corpus/">corpus/</a></li>\n<li><a href="docs/">docs/</a></li>\n<li><a href="evidence/">evidence/</a></li>\n<li><a href="final-enterprise-test.log">final-enterprise-test.log</a></li>\n<li><a href="final-test.log">final-test.log</a></li>\n<li><a href="lab/">lab/</a></li>\n<li><a href="LICENSE">LICENSE</a></li>\n<li><a href="NOTICE">NOTICE</a></li>\n<li><a href="progress.md">progress.md</a></li>\n<li><a href="pyproject.toml">pyproject.toml</a></li>\n<li><a href="README.md">README.md</a></li>\n<li><a href="reports/">reports/</a></li>\n<li><a href="scripts/">scripts/</a></li>\n<li><a href="SECURITY.md">SECURITY.md</a></li>\n<li><a href="tests/">tests/</a></li>\n<li><a href="tools/">tools/</a></li>\n<li><a href="trident/">trident/</a></li>\n<li><a href="trident_pentest.egg-info/">trident_pentest.egg-info/</a></li>\n</ul>\n<hr>\n</body>\n</html>\n'}'
+[36m[2026-10-26 12:13:28 DEBUG] [__init__:468][39m No controls to apply on 'activity'
+[36m[2026-10-26 12:13:28 DEBUG] [hypothesis:242][39m allowed tolerance is 200
+[32m[2026-10-26 12:13:28 INFO] [hypothesis:255][39m Steady state hypothesis is met!
+[36m[2026-10-26 12:13:28 DEBUG] [__init__:468][39m No controls to apply on 'hypothesis'
+[32m[2026-10-26 12:13:28 INFO] [run:784][39m Playing your experiment's method now...
+[36m[2026-10-26 12:13:28 DEBUG] [__init__:468][39m No controls to apply on 'method'
+[36m[2026-10-26 12:13:28 DEBUG] [__init__:468][39m No controls to apply on 'activity'
+[32m[2026-10-26 12:13:28 INFO] [activity:233][39m Action: kill-victim-process
+[36m[2026-10-26 12:13:28 DEBUG] [process:52][39m Running: C:\WINDOWS\system32\taskkill.EXE /PID 24092 /F
+[36m[2026-10-26 12:13:28 DEBUG] [activity:261][39m   => succeeded with '{'status': 0, 'stdout': 'SUCCESS: The process with PID 24092 has been terminated.\r\n', 'stderr': ''}'
+[36m[2026-10-26 12:13:28 DEBUG] [__init__:468][39m No controls to apply on 'activity'
+[36m[2026-10-26 12:13:28 DEBUG] [__init__:468][39m No controls to apply on 'activity'
+[32m[2026-10-26 12:13:28 INFO] [activity:233][39m Probe: victim-still-alive
+[36m[2026-10-26 12:13:30 DEBUG] [activity:318][39m Activity failed
+    Traceback (most recent call last):
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connection.py", line 239, in _new_conn
+        sock = connection.create_connection(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\util\connection.py", line 85, in create_connection
+        raise err
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\util\connection.py", line 73, in create_connection
+        sock.connect(sa)
+    ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+    
+    The above exception was the direct cause of the following exception:
+    
+    Traceback (most recent call last):
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connectionpool.py", line 793, in urlopen
+        response = self._make_request(
+                   ^^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connectionpool.py", line 499, in _make_request
+        conn.request(
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connection.py", line 567, in request
+        self.endheaders()
+      File "C:\Users\21169\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\http\client.py", line 1381, in endheaders
+        self._send_output(message_body, encode_chunked=encode_chunked)
+      File "C:\Users\21169\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\http\client.py", line 1141, in _send_output
+        self.send(msg)
+      File "C:\Users\21169\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\http\client.py", line 1085, in send
+        self.connect()
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connection.py", line 398, in connect
+        self.sock = self._new_conn()
+                    ^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connection.py", line 254, in _new_conn
+        raise NewConnectionError(
+    urllib3.exceptions.NewConnectionError: HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it
+    
+    The above exception was the direct cause of the following exception:
+    
+    Traceback (most recent call last):
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\requests\adapters.py", line 696, in send
+        resp = conn.urlopen(
+               ^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connectionpool.py", line 847, in urlopen
+        retries = retries.increment(
+                  ^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\util\retry.py", line 555, in increment
+        raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+    
+    During handling of the above exception, another exception occurred:
+    
+    Traceback (most recent call last):
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\chaoslib\provider\http.py", line 51, in run_http_activity
+        r = s.get(
+            ^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\requests\sessions.py", line 671, in get
+        return self.request("GET", url, params=params, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\requests\sessions.py", line 651, in request
+        resp = self.send(prep, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\requests\sessions.py", line 784, in send
+        r = adapter.send(request, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\requests\adapters.py", line 729, in send
+        raise ConnectionError(e, request=request)
+    requests.exceptions.ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+    
+    During handling of the above exception, another exception occurred:
+    
+    Traceback (most recent call last):
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\chaoslib\activity.py", line 315, in run_activity
+        result = run_http_activity(activity, configuration, secrets)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\chaoslib\provider\http.py", line 101, in run_http_activity
+        raise ActivityFailed(f"failed to connect to {url}: {cex!s}")
+    chaoslib.exceptions.ActivityFailed: failed to connect to http://127.0.0.1:18100/: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+[31m[2026-10-26 12:13:30 ERROR] [activity:269][39m   => failed: failed to connect to http://127.0.0.1:18100/: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+[32m[2026-10-26 12:13:30 INFO] [activity:281][39m Pausing after activity for 1s...
+[36m[2026-10-26 12:13:31 DEBUG] [__init__:468][39m No controls to apply on 'activity'
+[36m[2026-10-26 12:13:31 DEBUG] [__init__:468][39m No controls to apply on 'method'
+[36m[2026-10-26 12:13:31 DEBUG] [run:702][39m Running steady-state hypothesis after the method
+[32m[2026-10-26 12:13:31 INFO] [hypothesis:200][39m Steady state hypothesis: victim endpoint keeps answering
+[36m[2026-10-26 12:13:31 DEBUG] [__init__:468][39m No controls to apply on 'hypothesis'
+[36m[2026-10-26 12:13:31 DEBUG] [__init__:468][39m No controls to apply on 'activity'
+[32m[2026-10-26 12:13:31 INFO] [activity:233][39m Probe: victim-answers-200
+[36m[2026-10-26 12:13:33 DEBUG] [activity:318][39m Activity failed
+    Traceback (most recent call last):
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connection.py", line 239, in _new_conn
+        sock = connection.create_connection(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\util\connection.py", line 85, in create_connection
+        raise err
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\util\connection.py", line 73, in create_connection
+        sock.connect(sa)
+    ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+    
+    The above exception was the direct cause of the following exception:
+    
+    Traceback (most recent call last):
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connectionpool.py", line 793, in urlopen
+        response = self._make_request(
+                   ^^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connectionpool.py", line 499, in _make_request
+        conn.request(
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connection.py", line 567, in request
+        self.endheaders()
+      File "C:\Users\21169\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\http\client.py", line 1381, in endheaders
+        self._send_output(message_body, encode_chunked=encode_chunked)
+      File "C:\Users\21169\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\http\client.py", line 1141, in _send_output
+        self.send(msg)
+      File "C:\Users\21169\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\http\client.py", line 1085, in send
+        self.connect()
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connection.py", line 398, in connect
+        self.sock = self._new_conn()
+                    ^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connection.py", line 254, in _new_conn
+        raise NewConnectionError(
+    urllib3.exceptions.NewConnectionError: HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it
+    
+    The above exception was the direct cause of the following exception:
+    
+    Traceback (most recent call last):
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\requests\adapters.py", line 696, in send
+        resp = conn.urlopen(
+               ^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\connectionpool.py", line 847, in urlopen
+        retries = retries.increment(
+                  ^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\urllib3\util\retry.py", line 555, in increment
+        raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+    
+    During handling of the above exception, another exception occurred:
+    
+    Traceback (most recent call last):
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\chaoslib\provider\http.py", line 51, in run_http_activity
+        r = s.get(
+            ^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\requests\sessions.py", line 671, in get
+        return self.request("GET", url, params=params, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\requests\sessions.py", line 651, in request
+        resp = self.send(prep, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\requests\sessions.py", line 784, in send
+        r = adapter.send(request, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\requests\adapters.py", line 729, in send
+        raise ConnectionError(e, request=request)
+    requests.exceptions.ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+    
+    During handling of the above exception, another exception occurred:
+    
+    Traceback (most recent call last):
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\chaoslib\activity.py", line 315, in run_activity
+        result = run_http_activity(activity, configuration, secrets)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "D:\llm-audit-2026-10\.slim\oss-bench-venv\Lib\site-packages\chaoslib\provider\http.py", line 101, in run_http_activity
+        raise ActivityFailed(f"failed to connect to {url}: {cex!s}")
+    chaoslib.exceptions.ActivityFailed: failed to connect to http://127.0.0.1:18100/: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+[31m[2026-10-26 12:13:33 ERROR] [activity:269][39m   => failed: failed to connect to http://127.0.0.1:18100/: HTTPConnectionPool(host='127.0.0.1', port=18100): Max retries exceeded with url: / (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=18100): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+[36m[2026-10-26 12:13:33 DEBUG] [__init__:468][39m No controls to apply on 'activity'
+[33m[2026-10-26 12:13:33 WARNING] [hypothesis:227][39m Probe terminated unexpectedly, so its tolerance could not be validated
+[36m[2026-10-26 12:13:33 DEBUG] [__init__:468][39m No controls to apply on 'hypothesis'
+[31m[2026-10-26 12:13:33 CRITICAL] [run:722][39m Steady state probe 'victim-answers-200' is not in the given tolerance so failing this experiment
+[32m[2026-10-26 12:13:33 INFO] [run:604][39m Experiment ended with status: deviated
+[32m[2026-10-26 12:13:33 INFO] [run:606][39m The steady-state has deviated, a weakness may have been discovered
+[36m[2026-10-26 12:13:33 DEBUG] [__init__:468][39m No controls to apply on 'experiment'
+[36m[2026-10-26 12:13:33 DEBUG] [__init__:107][39m Cleaning up controls
+[36m[2026-10-26 12:13:33 DEBUG] [caching:42][39m Clearing activities cache

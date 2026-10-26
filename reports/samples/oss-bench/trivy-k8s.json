@@ -1,0 +1,58 @@
+{
+  "tool": "trivy-k8s",
+  "version": "0.76.1",
+  "category": "cluster-scanning",
+  "target": "k3s v1.36.5+k3s1 full-cluster snapshot (kubectl get 19 resource kinds -A -o yaml, 301 KiB) from the QEMU TCG guest",
+  "runs": 3,
+  "seconds": {
+    "values": [
+      3.821,
+      3.895,
+      4.031
+    ],
+    "median": 3.895,
+    "min": 3.821,
+    "max": 4.031
+  },
+  "peak_rss_kb": {
+    "values": [
+      230456,
+      231656,
+      233700
+    ],
+    "median": 231656,
+    "min": 230456,
+    "max": 233700
+  },
+  "snapshot_seconds": 0.601,
+  "output_bytes": 1169499,
+  "detection": {
+    "misconfigs": 247,
+    "unique_ids": 33,
+    "artifacts_with_findings": [
+      {
+        "kind": "kubernetes",
+        "target": "all.yaml",
+        "misconfigurations": 247
+      }
+    ],
+    "top_ids": {
+      "KSV-0048": 38,
+      "KSV-0118": 19,
+      "KSV-0056": 14,
+      "KSV-0041": 12,
+      "KSV-0012": 11,
+      "KSV-0020": 11,
+      "KSV-0021": 11,
+      "KSV-0030": 11
+    }
+  },
+  "return_codes": [
+    0,
+    0,
+    0
+  ],
+  "live_scan_notes": "direct `trivy k8s --scanners misconfig` against this cluster was attempted 3x and failed before writing output ('get k8s artifacts with node info error: no compliance commands found' -- node-collector image cannot be pulled through the TCG guest; one earlier attempt did complete with node info and produced 86 misconfigs / 8 results); `--disable-node-collector` writes only '{\"ClusterName\": \"default\"}' in 0.76.1",
+  "notes": "snapshot + trivy fs (embedded checks, offline): same misconfig checks as trivy k8s, deterministic and repeatable; scan time excludes the one-time kubectl dump",
+  "environment": "host trivy.exe; snapshot taken over kubectl hostfwd :6445 to QEMU TCG guest"
+}

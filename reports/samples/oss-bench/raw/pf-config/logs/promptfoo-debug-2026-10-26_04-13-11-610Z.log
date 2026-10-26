@@ -1,0 +1,517 @@
+2026-10-26T04:13:11.683Z [DEBUG] [logger-pCNnmVuz.js:1990]: Successfully enabled SQLite WAL mode
+2026-10-26T04:13:11.684Z [DEBUG] [logger-pCNnmVuz.js:1990]: Running database migrations from: D:\llm-audit-2026-10\.slim\oss-bench-npm\node_modules\promptfoo\dist\drizzle
+2026-10-26T04:13:11.690Z [DEBUG] [logger-pCNnmVuz.js:1990]: Database migrations completed
+2026-10-26T04:13:11.763Z [DEBUG] [logger-pCNnmVuz.js:1990]: Running database migrations from: D:\llm-audit-2026-10\.slim\oss-bench-npm\node_modules\promptfoo\dist\drizzle
+2026-10-26T04:13:11.768Z [DEBUG] [logger-pCNnmVuz.js:1990]: Database migrations completed
+2026-10-26T04:13:11.792Z [DEBUG] [logger-pCNnmVuz.js:1990]: Reading prompts from ["{{prompt}}"]
+2026-10-26T04:13:11.799Z [DEBUG] [logger-pCNnmVuz.js:1990]: Starting filterTests with options: {}
+2026-10-26T04:13:11.799Z [DEBUG] [logger-pCNnmVuz.js:1990]: Initial test count: 12
+2026-10-26T04:13:11.815Z [DEBUG] [logger-pCNnmVuz.js:1990]: Inserting prompt effa18501e44aafd9bc42a2f64ffc9b6350f94025520ca2ed382f9bdc4b6e982
+2026-10-26T04:13:11.817Z [DEBUG] [logger-pCNnmVuz.js:1990]: Inserting dataset 6db208964df316e62c2fb330ee4d599117e12df001571e4233b9124e96b979f9
+2026-10-26T04:13:12.011Z [DEBUG] [logger-pCNnmVuz.js:1996]: [EvaluatorTracing] Checking tracing configuration
+{
+  "testSuiteKeys": [
+    "basePath",
+    "description",
+    "tags",
+    "prompts",
+    "providers",
+    "tests",
+    "scenarios",
+    "defaultTest",
+    "derivedMetrics",
+    "nunjucksFilters",
+    "redteam",
+    "extensions",
+    "tracing",
+    "env"
+  ]
+}
+2026-10-26T04:13:12.011Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] Tracing not enabled or OTLP HTTP receiver not configured
+2026-10-26T04:13:12.012Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] tracing.enabled: undefined
+2026-10-26T04:13:12.012Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] tracing.otlp.http.enabled: undefined
+2026-10-26T04:13:12.013Z [INFO]: Starting evaluation eval-ENz-2026-10-26T04:13:11
+2026-10-26T04:13:12.023Z [DEBUG] [logger-pCNnmVuz.js:1990]: [Evaluator] Tracing check: env=false, testCase.metadata?.tracingEnabled=undefined, testSuite.tracing?.enabled=undefined, tracingEnabled=false
+2026-10-26T04:13:12.023Z [DEBUG] [logger-pCNnmVuz.js:1990]: [Evaluator] Tracing check: env=false, testCase.metadata?.tracingEnabled=undefined, testSuite.tracing?.enabled=undefined, tracingEnabled=false
+2026-10-26T04:13:12.023Z [DEBUG] [logger-pCNnmVuz.js:1990]: [Evaluator] Tracing check: env=false, testCase.metadata?.tracingEnabled=undefined, testSuite.tracing?.enabled=undefined, tracingEnabled=false
+2026-10-26T04:13:12.025Z [DEBUG] [logger-pCNnmVuz.js:1990]: [Evaluator] Tracing check: env=false, testCase.metadata?.tracingEnabled=undefined, testSuite.tracing?.enabled=undefined, tracingEnabled=false
+2026-10-26T04:13:12.025Z [DEBUG] [logger-pCNnmVuz.js:1990]: [Evaluator] Tracing check: env=false, testCase.metadata?.tracingEnabled=undefined, testSuite.tracing?.enabled=undefined, tracingEnabled=false
+2026-10-26T04:13:12.025Z [DEBUG] [logger-pCNnmVuz.js:1990]: [Evaluator] Tracing check: env=false, testCase.metadata?.tracingEnabled=undefined, testSuite.tracing?.enabled=undefined, tracingEnabled=false
+2026-10-26T04:13:12.027Z [DEBUG] [logger-pCNnmVuz.js:1990]: [Evaluator] Tracing check: env=false, testCase.metadata?.tracingEnabled=undefined, testSuite.tracing?.enabled=undefined, tracingEnabled=false
+2026-10-26T04:13:12.027Z [DEBUG] [logger-pCNnmVuz.js:1990]: [Evaluator] Tracing check: env=false, testCase.metadata?.tracingEnabled=undefined, testSuite.tracing?.enabled=undefined, tracingEnabled=false
+2026-10-26T04:13:12.027Z [DEBUG] [logger-pCNnmVuz.js:1990]: [Evaluator] Tracing check: env=false, testCase.metadata?.tracingEnabled=undefined, testSuite.tracing?.enabled=undefined, tracingEnabled=false
+2026-10-26T04:13:12.029Z [DEBUG] [logger-pCNnmVuz.js:1990]: [Evaluator] Tracing check: env=false, testCase.metadata?.tracingEnabled=undefined, testSuite.tracing?.enabled=undefined, tracingEnabled=false
+2026-10-26T04:13:12.029Z [DEBUG] [logger-pCNnmVuz.js:1990]: [Evaluator] Tracing check: env=false, testCase.metadata?.tracingEnabled=undefined, testSuite.tracing?.enabled=undefined, tracingEnabled=false
+2026-10-26T04:13:12.029Z [DEBUG] [logger-pCNnmVuz.js:1990]: [Evaluator] Tracing check: env=false, testCase.metadata?.tracingEnabled=undefined, testSuite.tracing?.enabled=undefined, tracingEnabled=false
+2026-10-26T04:13:12.031Z [DEBUG] [logger-pCNnmVuz.js:1990]: Progress bar settings: showProgressBar=false, isWebUI=false
+2026-10-26T04:13:12.032Z [INFO]: Running 12 test cases (up to 4 at a time)...
+2026-10-26T04:13:12.044Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] isTracingEnabled check: metadata=false, yamlConfig=false, env=false, result=false
+2026-10-26T04:13:12.044Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] isTracingEnabled check: metadata=false, yamlConfig=false, env=false, result=false
+2026-10-26T04:13:12.044Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] isTracingEnabled check: metadata=false, yamlConfig=false, env=false, result=false
+2026-10-26T04:13:12.044Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] isTracingEnabled check: metadata=false, yamlConfig=false, env=false, result=false
+2026-10-26T04:13:12.045Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider type: http://127.0.0.1:18082/
+2026-10-26T04:13:12.047Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider type: http://127.0.0.1:18082/
+2026-10-26T04:13:12.047Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider type: http://127.0.0.1:18082/
+2026-10-26T04:13:12.048Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider type: http://127.0.0.1:18082/
+2026-10-26T04:13:12.054Z [DEBUG] [logger-pCNnmVuz.js:1990]: [HTTP Provider]: Transformed prompt: "Summarize the training run in one sentence.". Original prompt: "Summarize the training run in one sentence."
+2026-10-26T04:13:12.055Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Calling http://127.0.0.1:18082/ with config.
+{
+  "config": {
+    "url": "http://127.0.0.1:18082/",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "prompt": "Summarize the training run in one sentence."
+    },
+    "transformResponse": "json.output"
+  }
+}
+2026-10-26T04:13:12.056Z [DEBUG] [logger-pCNnmVuz.js:1990]: [HTTP Provider]: Transformed prompt: "List two GPU metrics worth monitoring.". Original prompt: "List two GPU metrics worth monitoring."
+2026-10-26T04:13:12.056Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Calling http://127.0.0.1:18082/ with config.
+{
+  "config": {
+    "url": "http://127.0.0.1:18082/",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "prompt": "List two GPU metrics worth monitoring."
+    },
+    "transformResponse": "json.output"
+  }
+}
+2026-10-26T04:13:12.057Z [DEBUG] [logger-pCNnmVuz.js:1990]: [HTTP Provider]: Transformed prompt: "What does NCCL stand for?". Original prompt: "What does NCCL stand for?"
+2026-10-26T04:13:12.057Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Calling http://127.0.0.1:18082/ with config.
+{
+  "config": {
+    "url": "http://127.0.0.1:18082/",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "prompt": "What does NCCL stand for?"
+    },
+    "transformResponse": "json.output"
+  }
+}
+2026-10-26T04:13:12.057Z [DEBUG] [logger-pCNnmVuz.js:1990]: [HTTP Provider]: Transformed prompt: "Explain gradient accumulation briefly.". Original prompt: "Explain gradient accumulation briefly."
+2026-10-26T04:13:12.058Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Calling http://127.0.0.1:18082/ with config.
+{
+  "config": {
+    "url": "http://127.0.0.1:18082/",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "prompt": "Explain gradient accumulation briefly."
+    },
+    "transformResponse": "json.output"
+  }
+}
+2026-10-26T04:13:12.065Z [DEBUG] [logger-pCNnmVuz.js:1990]: Returning cached response for http://127.0.0.1:18082/: {"data":"{\"output\": \"OK Summarize the training run in one sentence.\", \"model\": \"mock-llm\"}","status":200,"statusText":"OK","headers":{"content-length":"81","content-type":"application/json","date":"Mon, 26 Oct 2026 04:13:09 GMT","server":"trident-oss-bench-mock-llm/1.0 Python/3.12.15"},"latencyMs":15}
+2026-10-26T04:13:12.065Z [DEBUG] [logger-pCNnmVuz.js:1990]: Returning cached response for http://127.0.0.1:18082/: {"data":"{\"output\": \"OK List two GPU metrics worth monitoring.\", \"model\": \"mock-llm\"}","status":200,"statusText":"OK","headers":{"content-length":"76","content-type":"application/json","date":"Mon, 26 Oct 2026 04:13:09 GMT","server":"trident-oss-bench-mock-llm/1.0 Python/3.12.15"},"latencyMs":18}
+2026-10-26T04:13:12.065Z [DEBUG] [logger-pCNnmVuz.js:1990]: Returning cached response for http://127.0.0.1:18082/: {"data":"{\"output\": \"OK What does NCCL stand for?\", \"model\": \"mock-llm\"}","status":200,"statusText":"OK","headers":{"content-length":"63","content-type":"application/json","date":"Mon, 26 Oct 2026 04:13:09 GMT","server":"trident-oss-bench-mock-llm/1.0 Python/3.12.15"},"latencyMs":19}
+2026-10-26T04:13:12.065Z [DEBUG] [logger-pCNnmVuz.js:1990]: Returning cached response for http://127.0.0.1:18082/: {"data":"{\"output\": \"OK Explain gradient accumulation briefly.\", \"model\": \"mock-llm\"}","status":200,"statusText":"OK","headers":{"content-length":"76","content-type":"application/json","date":"Mon, 26 Oct 2026 04:13:09 GMT","server":"trident-oss-bench-mock-llm/1.0 Python/3.12.15"},"latencyMs":22}
+2026-10-26T04:13:12.065Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Response (HTTP 200) received
+{
+  "length": 81,
+  "cached": true
+}
+2026-10-26T04:13:12.066Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Response (HTTP 200) received
+{
+  "length": 76,
+  "cached": true
+}
+2026-10-26T04:13:12.066Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Response (HTTP 200) received
+{
+  "length": 63,
+  "cached": true
+}
+2026-10-26T04:13:12.066Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Response (HTTP 200) received
+{
+  "length": 76,
+  "cached": true
+}
+2026-10-26T04:13:12.069Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response properties: raw, latencyMs, cached, metadata, output, tokenUsage
+2026-10-26T04:13:12.069Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response cached property explicitly: true
+2026-10-26T04:13:12.069Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response properties: raw, latencyMs, cached, metadata, output, tokenUsage
+2026-10-26T04:13:12.069Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response cached property explicitly: true
+2026-10-26T04:13:12.069Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response properties: raw, latencyMs, cached, metadata, output, tokenUsage
+2026-10-26T04:13:12.069Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response cached property explicitly: true
+2026-10-26T04:13:12.069Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response properties: raw, latencyMs, cached, metadata, output, tokenUsage
+2026-10-26T04:13:12.069Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response cached property explicitly: true
+2026-10-26T04:13:12.070Z [DEBUG] [logger-pCNnmVuz.js:1996]: Evaluator response
+{
+  "responsePreview": "{\"raw\":\"{\\\"output\\\": \\\"OK Summarize the training run in one sentence.\\\", \\\"model\\\": \\\"mock-llm\\\"}\",\""
+}
+2026-10-26T04:13:12.070Z [DEBUG] [logger-pCNnmVuz.js:1990]: Evaluator checking cached flag: response.cached = true, provider.delay = 0
+2026-10-26T04:13:12.070Z [DEBUG] [logger-pCNnmVuz.js:1990]: Skipping delay because response is cached
+2026-10-26T04:13:12.070Z [DEBUG] [logger-pCNnmVuz.js:1996]: Evaluator response
+{
+  "responsePreview": "{\"raw\":\"{\\\"output\\\": \\\"OK List two GPU metrics worth monitoring.\\\", \\\"model\\\": \\\"mock-llm\\\"}\",\"laten"
+}
+2026-10-26T04:13:12.070Z [DEBUG] [logger-pCNnmVuz.js:1990]: Evaluator checking cached flag: response.cached = true, provider.delay = 0
+2026-10-26T04:13:12.070Z [DEBUG] [logger-pCNnmVuz.js:1990]: Skipping delay because response is cached
+2026-10-26T04:13:12.071Z [DEBUG] [logger-pCNnmVuz.js:1996]: Evaluator response
+{
+  "responsePreview": "{\"raw\":\"{\\\"output\\\": \\\"OK What does NCCL stand for?\\\", \\\"model\\\": \\\"mock-llm\\\"}\",\"latencyMs\":19,\"cac"
+}
+2026-10-26T04:13:12.071Z [DEBUG] [logger-pCNnmVuz.js:1990]: Evaluator checking cached flag: response.cached = true, provider.delay = 0
+2026-10-26T04:13:12.071Z [DEBUG] [logger-pCNnmVuz.js:1990]: Skipping delay because response is cached
+2026-10-26T04:13:12.071Z [DEBUG] [logger-pCNnmVuz.js:1996]: Evaluator response
+{
+  "responsePreview": "{\"raw\":\"{\\\"output\\\": \\\"OK Explain gradient accumulation briefly.\\\", \\\"model\\\": \\\"mock-llm\\\"}\",\"laten"
+}
+2026-10-26T04:13:12.071Z [DEBUG] [logger-pCNnmVuz.js:1990]: Evaluator checking cached flag: response.cached = true, provider.delay = 0
+2026-10-26T04:13:12.071Z [DEBUG] [logger-pCNnmVuz.js:1990]: Skipping delay because response is cached
+2026-10-26T04:13:12.073Z [DEBUG] [logger-pCNnmVuz.js:1990]: Tracked response usage for http://127.0.0.1:18082/ (HttpProvider): total=0, cached=0
+2026-10-26T04:13:12.074Z [DEBUG] [logger-pCNnmVuz.js:1990]: Tracked response usage for http://127.0.0.1:18082/ (HttpProvider): total=0, cached=0
+2026-10-26T04:13:12.074Z [DEBUG] [logger-pCNnmVuz.js:1990]: Tracked response usage for http://127.0.0.1:18082/ (HttpProvider): total=0, cached=0
+2026-10-26T04:13:12.074Z [DEBUG] [logger-pCNnmVuz.js:1990]: Tracked response usage for http://127.0.0.1:18082/ (HttpProvider): total=0, cached=0
+2026-10-26T04:13:12.087Z [DEBUG] [logger-pCNnmVuz.js:1990]: Eval #1 complete (4 of 12)
+2026-10-26T04:13:12.088Z [DEBUG] [logger-pCNnmVuz.js:1990]: Eval #2 complete (4 of 12)
+2026-10-26T04:13:12.090Z [DEBUG] [logger-pCNnmVuz.js:1990]: Eval #3 complete (4 of 12)
+2026-10-26T04:13:12.092Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] isTracingEnabled check: metadata=false, yamlConfig=false, env=false, result=false
+2026-10-26T04:13:12.092Z [DEBUG] [logger-pCNnmVuz.js:1990]: Eval #4 complete (4 of 12)
+2026-10-26T04:13:12.093Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider type: http://127.0.0.1:18082/
+2026-10-26T04:13:12.095Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] isTracingEnabled check: metadata=false, yamlConfig=false, env=false, result=false
+2026-10-26T04:13:12.095Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] isTracingEnabled check: metadata=false, yamlConfig=false, env=false, result=false
+2026-10-26T04:13:12.095Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider type: http://127.0.0.1:18082/
+2026-10-26T04:13:12.096Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider type: http://127.0.0.1:18082/
+2026-10-26T04:13:12.097Z [DEBUG] [logger-pCNnmVuz.js:1990]: [HTTP Provider]: Transformed prompt: "Give a safe checkpoint naming convention.". Original prompt: "Give a safe checkpoint naming convention."
+2026-10-26T04:13:12.098Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Calling http://127.0.0.1:18082/ with config.
+{
+  "config": {
+    "url": "http://127.0.0.1:18082/",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "prompt": "Give a safe checkpoint naming convention."
+    },
+    "transformResponse": "json.output"
+  }
+}
+2026-10-26T04:13:12.098Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] isTracingEnabled check: metadata=false, yamlConfig=false, env=false, result=false
+2026-10-26T04:13:12.098Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider type: http://127.0.0.1:18082/
+2026-10-26T04:13:12.100Z [DEBUG] [logger-pCNnmVuz.js:1990]: [HTTP Provider]: Transformed prompt: "Name one reason to pin container images.". Original prompt: "Name one reason to pin container images."
+2026-10-26T04:13:12.100Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Calling http://127.0.0.1:18082/ with config.
+{
+  "config": {
+    "url": "http://127.0.0.1:18082/",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "prompt": "Name one reason to pin container images."
+    },
+    "transformResponse": "json.output"
+  }
+}
+2026-10-26T04:13:12.101Z [DEBUG] [logger-pCNnmVuz.js:1990]: [HTTP Provider]: Transformed prompt: "What is a Kubernetes NetworkPolicy for?". Original prompt: "What is a Kubernetes NetworkPolicy for?"
+2026-10-26T04:13:12.101Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Calling http://127.0.0.1:18082/ with config.
+{
+  "config": {
+    "url": "http://127.0.0.1:18082/",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "prompt": "What is a Kubernetes NetworkPolicy for?"
+    },
+    "transformResponse": "json.output"
+  }
+}
+2026-10-26T04:13:12.102Z [DEBUG] [logger-pCNnmVuz.js:1990]: [HTTP Provider]: Transformed prompt: "Describe a read-only root filesystem benefit.". Original prompt: "Describe a read-only root filesystem benefit."
+2026-10-26T04:13:12.102Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Calling http://127.0.0.1:18082/ with config.
+{
+  "config": {
+    "url": "http://127.0.0.1:18082/",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "prompt": "Describe a read-only root filesystem benefit."
+    },
+    "transformResponse": "json.output"
+  }
+}
+2026-10-26T04:13:12.103Z [DEBUG] [logger-pCNnmVuz.js:1990]: Returning cached response for http://127.0.0.1:18082/: {"data":"{\"output\": \"OK Give a safe checkpoint naming convention.\", \"model\": \"mock-llm\"}","status":200,"statusText":"OK","headers":{"content-length":"79","content-type":"application/json","date":"Mon, 26 Oct 2026 04:13:09 GMT","server":"trident-oss-bench-mock-llm/1.0 Python/3.12.15"},"latencyMs":4}
+2026-10-26T04:13:12.103Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Response (HTTP 200) received
+{
+  "length": 79,
+  "cached": true
+}
+2026-10-26T04:13:12.104Z [DEBUG] [logger-pCNnmVuz.js:1990]: Returning cached response for http://127.0.0.1:18082/: {"data":"{\"output\": \"OK Name one reason to pin container images.\", \"model\": \"mock-llm\"}","status":200,"statusText":"OK","headers":{"content-length":"78","content-type":"application/json","date":"Mon, 26 Oct 2026 04:13:09 GMT","server":"trident-oss-bench-mock-llm/1.0 Python/3.12.15"},"latencyMs":6}
+2026-10-26T04:13:12.105Z [DEBUG] [logger-pCNnmVuz.js:1990]: Returning cached response for http://127.0.0.1:18082/: {"data":"{\"output\": \"OK What is a Kubernetes NetworkPolicy for?\", \"model\": \"mock-llm\"}","status":200,"statusText":"OK","headers":{"content-length":"77","content-type":"application/json","date":"Mon, 26 Oct 2026 04:13:09 GMT","server":"trident-oss-bench-mock-llm/1.0 Python/3.12.15"},"latencyMs":9}
+2026-10-26T04:13:12.105Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Response (HTTP 200) received
+{
+  "length": 78,
+  "cached": true
+}
+2026-10-26T04:13:12.105Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Response (HTTP 200) received
+{
+  "length": 77,
+  "cached": true
+}
+2026-10-26T04:13:12.105Z [DEBUG] [logger-pCNnmVuz.js:1990]: Returning cached response for http://127.0.0.1:18082/: {"data":"{\"output\": \"OK Describe a read-only root filesystem benefit.\", \"model\": \"mock-llm\"}","status":200,"statusText":"OK","headers":{"content-length":"83","content-type":"application/json","date":"Mon, 26 Oct 2026 04:13:09 GMT","server":"trident-oss-bench-mock-llm/1.0 Python/3.12.15"},"latencyMs":12}
+2026-10-26T04:13:12.106Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Response (HTTP 200) received
+{
+  "length": 83,
+  "cached": true
+}
+2026-10-26T04:13:12.107Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response properties: raw, latencyMs, cached, metadata, output, tokenUsage
+2026-10-26T04:13:12.107Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response cached property explicitly: true
+2026-10-26T04:13:12.107Z [DEBUG] [logger-pCNnmVuz.js:1996]: Evaluator response
+{
+  "responsePreview": "{\"raw\":\"{\\\"output\\\": \\\"OK Give a safe checkpoint naming convention.\\\", \\\"model\\\": \\\"mock-llm\\\"}\",\"la"
+}
+2026-10-26T04:13:12.107Z [DEBUG] [logger-pCNnmVuz.js:1990]: Evaluator checking cached flag: response.cached = true, provider.delay = 0
+2026-10-26T04:13:12.107Z [DEBUG] [logger-pCNnmVuz.js:1990]: Skipping delay because response is cached
+2026-10-26T04:13:12.108Z [DEBUG] [logger-pCNnmVuz.js:1990]: Tracked response usage for http://127.0.0.1:18082/ (HttpProvider): total=0, cached=0
+2026-10-26T04:13:12.108Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response properties: raw, latencyMs, cached, metadata, output, tokenUsage
+2026-10-26T04:13:12.108Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response cached property explicitly: true
+2026-10-26T04:13:12.108Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response properties: raw, latencyMs, cached, metadata, output, tokenUsage
+2026-10-26T04:13:12.109Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response cached property explicitly: true
+2026-10-26T04:13:12.109Z [DEBUG] [logger-pCNnmVuz.js:1996]: Evaluator response
+{
+  "responsePreview": "{\"raw\":\"{\\\"output\\\": \\\"OK Name one reason to pin container images.\\\", \\\"model\\\": \\\"mock-llm\\\"}\",\"lat"
+}
+2026-10-26T04:13:12.109Z [DEBUG] [logger-pCNnmVuz.js:1990]: Evaluator checking cached flag: response.cached = true, provider.delay = 0
+2026-10-26T04:13:12.109Z [DEBUG] [logger-pCNnmVuz.js:1990]: Skipping delay because response is cached
+2026-10-26T04:13:12.109Z [DEBUG] [logger-pCNnmVuz.js:1996]: Evaluator response
+{
+  "responsePreview": "{\"raw\":\"{\\\"output\\\": \\\"OK What is a Kubernetes NetworkPolicy for?\\\", \\\"model\\\": \\\"mock-llm\\\"}\",\"late"
+}
+2026-10-26T04:13:12.109Z [DEBUG] [logger-pCNnmVuz.js:1990]: Evaluator checking cached flag: response.cached = true, provider.delay = 0
+2026-10-26T04:13:12.109Z [DEBUG] [logger-pCNnmVuz.js:1990]: Skipping delay because response is cached
+2026-10-26T04:13:12.109Z [DEBUG] [logger-pCNnmVuz.js:1990]: Tracked response usage for http://127.0.0.1:18082/ (HttpProvider): total=0, cached=0
+2026-10-26T04:13:12.110Z [DEBUG] [logger-pCNnmVuz.js:1990]: Tracked response usage for http://127.0.0.1:18082/ (HttpProvider): total=0, cached=0
+2026-10-26T04:13:12.110Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response properties: raw, latencyMs, cached, metadata, output, tokenUsage
+2026-10-26T04:13:12.110Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response cached property explicitly: true
+2026-10-26T04:13:12.111Z [DEBUG] [logger-pCNnmVuz.js:1996]: Evaluator response
+{
+  "responsePreview": "{\"raw\":\"{\\\"output\\\": \\\"OK Describe a read-only root filesystem benefit.\\\", \\\"model\\\": \\\"mock-llm\\\"}\""
+}
+2026-10-26T04:13:12.111Z [DEBUG] [logger-pCNnmVuz.js:1990]: Evaluator checking cached flag: response.cached = true, provider.delay = 0
+2026-10-26T04:13:12.111Z [DEBUG] [logger-pCNnmVuz.js:1990]: Skipping delay because response is cached
+2026-10-26T04:13:12.111Z [DEBUG] [logger-pCNnmVuz.js:1990]: Tracked response usage for http://127.0.0.1:18082/ (HttpProvider): total=0, cached=0
+2026-10-26T04:13:12.118Z [DEBUG] [logger-pCNnmVuz.js:1990]: Eval #5 complete (8 of 12)
+2026-10-26T04:13:12.120Z [DEBUG] [logger-pCNnmVuz.js:1990]: Eval #6 complete (8 of 12)
+2026-10-26T04:13:12.122Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] isTracingEnabled check: metadata=false, yamlConfig=false, env=false, result=false
+2026-10-26T04:13:12.122Z [DEBUG] [logger-pCNnmVuz.js:1990]: Eval #7 complete (8 of 12)
+2026-10-26T04:13:12.122Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider type: http://127.0.0.1:18082/
+2026-10-26T04:13:12.124Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] isTracingEnabled check: metadata=false, yamlConfig=false, env=false, result=false
+2026-10-26T04:13:12.125Z [DEBUG] [logger-pCNnmVuz.js:1990]: Eval #8 complete (8 of 12)
+2026-10-26T04:13:12.125Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider type: http://127.0.0.1:18082/
+2026-10-26T04:13:12.126Z [DEBUG] [logger-pCNnmVuz.js:1990]: [HTTP Provider]: Transformed prompt: "Why rotate object-store credentials?". Original prompt: "Why rotate object-store credentials?"
+2026-10-26T04:13:12.126Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Calling http://127.0.0.1:18082/ with config.
+{
+  "config": {
+    "url": "http://127.0.0.1:18082/",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "prompt": "Why rotate object-store credentials?"
+    },
+    "transformResponse": "json.output"
+  }
+}
+2026-10-26T04:13:12.127Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] isTracingEnabled check: metadata=false, yamlConfig=false, env=false, result=false
+2026-10-26T04:13:12.128Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider type: http://127.0.0.1:18082/
+2026-10-26T04:13:12.129Z [DEBUG] [logger-pCNnmVuz.js:1990]: [HTTP Provider]: Transformed prompt: "What is the purpose of a seccomp profile?". Original prompt: "What is the purpose of a seccomp profile?"
+2026-10-26T04:13:12.129Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Calling http://127.0.0.1:18082/ with config.
+{
+  "config": {
+    "url": "http://127.0.0.1:18082/",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "prompt": "What is the purpose of a seccomp profile?"
+    },
+    "transformResponse": "json.output"
+  }
+}
+2026-10-26T04:13:12.130Z [DEBUG] [logger-pCNnmVuz.js:1990]: [EvaluatorTracing] isTracingEnabled check: metadata=false, yamlConfig=false, env=false, result=false
+2026-10-26T04:13:12.130Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider type: http://127.0.0.1:18082/
+2026-10-26T04:13:12.131Z [DEBUG] [logger-pCNnmVuz.js:1990]: [HTTP Provider]: Transformed prompt: "How can you limit Ray dashboard exposure?". Original prompt: "How can you limit Ray dashboard exposure?"
+2026-10-26T04:13:12.132Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Calling http://127.0.0.1:18082/ with config.
+{
+  "config": {
+    "url": "http://127.0.0.1:18082/",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "prompt": "How can you limit Ray dashboard exposure?"
+    },
+    "transformResponse": "json.output"
+  }
+}
+2026-10-26T04:13:12.132Z [DEBUG] [logger-pCNnmVuz.js:1990]: [HTTP Provider]: Transformed prompt: "Suggest a least-privilege ServiceAccount rule.". Original prompt: "Suggest a least-privilege ServiceAccount rule."
+2026-10-26T04:13:12.133Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Calling http://127.0.0.1:18082/ with config.
+{
+  "config": {
+    "url": "http://127.0.0.1:18082/",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "prompt": "Suggest a least-privilege ServiceAccount rule."
+    },
+    "transformResponse": "json.output"
+  }
+}
+2026-10-26T04:13:12.134Z [DEBUG] [logger-pCNnmVuz.js:1990]: Returning cached response for http://127.0.0.1:18082/: {"data":"{\"output\": \"OK Why rotate object-store credentials?\", \"model\": \"mock-llm\"}","status":200,"statusText":"OK","headers":{"content-length":"74","content-type":"application/json","date":"Mon, 26 Oct 2026 04:13:09 GMT","server":"trident-oss-bench-mock-llm/1.0 Python/3.12.15"},"latencyMs":5}
+2026-10-26T04:13:12.134Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Response (HTTP 200) received
+{
+  "length": 74,
+  "cached": true
+}
+2026-10-26T04:13:12.134Z [DEBUG] [logger-pCNnmVuz.js:1990]: Returning cached response for http://127.0.0.1:18082/: {"data":"{\"output\": \"OK What is the purpose of a seccomp profile?\", \"model\": \"mock-llm\"}","status":200,"statusText":"OK","headers":{"content-length":"79","content-type":"application/json","date":"Mon, 26 Oct 2026 04:13:09 GMT","server":"trident-oss-bench-mock-llm/1.0 Python/3.12.15"},"latencyMs":7}
+2026-10-26T04:13:12.135Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Response (HTTP 200) received
+{
+  "length": 79,
+  "cached": true
+}
+2026-10-26T04:13:12.135Z [DEBUG] [logger-pCNnmVuz.js:1990]: Returning cached response for http://127.0.0.1:18082/: {"data":"{\"output\": \"OK How can you limit Ray dashboard exposure?\", \"model\": \"mock-llm\"}","status":200,"statusText":"OK","headers":{"content-length":"79","content-type":"application/json","date":"Mon, 26 Oct 2026 04:13:09 GMT","server":"trident-oss-bench-mock-llm/1.0 Python/3.12.15"},"latencyMs":9}
+2026-10-26T04:13:12.136Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Response (HTTP 200) received
+{
+  "length": 79,
+  "cached": true
+}
+2026-10-26T04:13:12.137Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response properties: raw, latencyMs, cached, metadata, output, tokenUsage
+2026-10-26T04:13:12.137Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response cached property explicitly: true
+2026-10-26T04:13:12.137Z [DEBUG] [logger-pCNnmVuz.js:1990]: Returning cached response for http://127.0.0.1:18082/: {"data":"{\"output\": \"OK Suggest a least-privilege ServiceAccount rule.\", \"model\": \"mock-llm\"}","status":200,"statusText":"OK","headers":{"content-length":"84","content-type":"application/json","date":"Mon, 26 Oct 2026 04:13:09 GMT","server":"trident-oss-bench-mock-llm/1.0 Python/3.12.15"},"latencyMs":9}
+2026-10-26T04:13:12.137Z [DEBUG] [logger-pCNnmVuz.js:1996]: Evaluator response
+{
+  "responsePreview": "{\"raw\":\"{\\\"output\\\": \\\"OK Why rotate object-store credentials?\\\", \\\"model\\\": \\\"mock-llm\\\"}\",\"latency"
+}
+2026-10-26T04:13:12.137Z [DEBUG] [logger-pCNnmVuz.js:1990]: Evaluator checking cached flag: response.cached = true, provider.delay = 0
+2026-10-26T04:13:12.137Z [DEBUG] [logger-pCNnmVuz.js:1990]: Skipping delay because response is cached
+2026-10-26T04:13:12.137Z [DEBUG] [logger-pCNnmVuz.js:1996]: [HTTP Provider]: Response (HTTP 200) received
+{
+  "length": 84,
+  "cached": true
+}
+2026-10-26T04:13:12.137Z [DEBUG] [logger-pCNnmVuz.js:1990]: Tracked response usage for http://127.0.0.1:18082/ (HttpProvider): total=0, cached=0
+2026-10-26T04:13:12.138Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response properties: raw, latencyMs, cached, metadata, output, tokenUsage
+2026-10-26T04:13:12.138Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response cached property explicitly: true
+2026-10-26T04:13:12.139Z [DEBUG] [logger-pCNnmVuz.js:1996]: Evaluator response
+{
+  "responsePreview": "{\"raw\":\"{\\\"output\\\": \\\"OK What is the purpose of a seccomp profile?\\\", \\\"model\\\": \\\"mock-llm\\\"}\",\"la"
+}
+2026-10-26T04:13:12.139Z [DEBUG] [logger-pCNnmVuz.js:1990]: Evaluator checking cached flag: response.cached = true, provider.delay = 0
+2026-10-26T04:13:12.139Z [DEBUG] [logger-pCNnmVuz.js:1990]: Skipping delay because response is cached
+2026-10-26T04:13:12.139Z [DEBUG] [logger-pCNnmVuz.js:1990]: Tracked response usage for http://127.0.0.1:18082/ (HttpProvider): total=0, cached=0
+2026-10-26T04:13:12.139Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response properties: raw, latencyMs, cached, metadata, output, tokenUsage
+2026-10-26T04:13:12.139Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response cached property explicitly: true
+2026-10-26T04:13:12.139Z [DEBUG] [logger-pCNnmVuz.js:1996]: Evaluator response
+{
+  "responsePreview": "{\"raw\":\"{\\\"output\\\": \\\"OK How can you limit Ray dashboard exposure?\\\", \\\"model\\\": \\\"mock-llm\\\"}\",\"la"
+}
+2026-10-26T04:13:12.139Z [DEBUG] [logger-pCNnmVuz.js:1990]: Evaluator checking cached flag: response.cached = true, provider.delay = 0
+2026-10-26T04:13:12.140Z [DEBUG] [logger-pCNnmVuz.js:1990]: Skipping delay because response is cached
+2026-10-26T04:13:12.140Z [DEBUG] [logger-pCNnmVuz.js:1990]: Tracked response usage for http://127.0.0.1:18082/ (HttpProvider): total=0, cached=0
+2026-10-26T04:13:12.141Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response properties: raw, latencyMs, cached, metadata, output, tokenUsage
+2026-10-26T04:13:12.141Z [DEBUG] [logger-pCNnmVuz.js:1990]: Provider response cached property explicitly: true
+2026-10-26T04:13:12.141Z [DEBUG] [logger-pCNnmVuz.js:1996]: Evaluator response
+{
+  "responsePreview": "{\"raw\":\"{\\\"output\\\": \\\"OK Suggest a least-privilege ServiceAccount rule.\\\", \\\"model\\\": \\\"mock-llm\\\"}"
+}
+2026-10-26T04:13:12.141Z [DEBUG] [logger-pCNnmVuz.js:1990]: Evaluator checking cached flag: response.cached = true, provider.delay = 0
+2026-10-26T04:13:12.141Z [DEBUG] [logger-pCNnmVuz.js:1990]: Skipping delay because response is cached
+2026-10-26T04:13:12.141Z [DEBUG] [logger-pCNnmVuz.js:1990]: Tracked response usage for http://127.0.0.1:18082/ (HttpProvider): total=0, cached=0
+2026-10-26T04:13:12.148Z [DEBUG] [logger-pCNnmVuz.js:1990]: Eval #9 complete (12 of 12)
+2026-10-26T04:13:12.150Z [DEBUG] [logger-pCNnmVuz.js:1990]: Eval #10 complete (12 of 12)
+2026-10-26T04:13:12.152Z [DEBUG] [logger-pCNnmVuz.js:1990]: Eval #11 complete (12 of 12)
+2026-10-26T04:13:12.152Z [DEBUG] [logger-pCNnmVuz.js:1990]: Eval #12 complete (12 of 12)
+2026-10-26T04:13:12.157Z [DEBUG] [logger-pCNnmVuz.js:1996]: [Scheduler] Final metrics for http://127.0.0.1:18082/
+{
+  "totalRequests": 12,
+  "completedRequests": 12,
+  "failedRequests": 0,
+  "rateLimitHits": 0,
+  "retriedRequests": 0,
+  "avgLatencyMs": 12,
+  "p50LatencyMs": 10,
+  "p99LatencyMs": 18
+}
+2026-10-26T04:13:12.158Z [DEBUG] [logger-pCNnmVuz.js:1990]: Wants to share: false
+2026-10-26T04:13:12.158Z [DEBUG] [logger-pCNnmVuz.js:1990]: Can share eval: false
+2026-10-26T04:13:12.159Z [DEBUG] [logger-pCNnmVuz.js:1990]: [TraceStore] Creating new TraceStore instance
+2026-10-26T04:13:12.159Z [DEBUG] [logger-pCNnmVuz.js:1990]: [TraceStore] Fetching traces for evaluation eval-ENz-2026-10-26T04:13:11
+2026-10-26T04:13:12.159Z [DEBUG] [logger-pCNnmVuz.js:1990]: [TraceStore] Initializing database connection
+2026-10-26T04:13:12.162Z [DEBUG] [logger-pCNnmVuz.js:1990]: [TraceStore] Found 0 traces for evaluation eval-ENz-2026-10-26T04:13:11
+2026-10-26T04:13:12.162Z [DEBUG] [logger-pCNnmVuz.js:1990]: [TraceStore] Returning 0 traces with spans
+2026-10-26T04:13:12.179Z [INFO]: 
+[90m┌────────────────────────────────────────────────────────────[39m[90m┬────────────────────────────────────────────────────────────┐[39m
+[90m│[39m[1m[34m prompt                                                     [39m[22m[90m│[39m[1m[34m [echo-mock] {{prompt}}                                     [39m[22m[90m│[39m
+[90m├────────────────────────────────────────────────────────────[39m[90m┼────────────────────────────────────────────────────────────┤[39m
+[90m│[39m Summarize the training run in one sentence.                [90m│[39m [PASS] OK Summarize the training run in one sentence.      [90m│[39m
+[90m├────────────────────────────────────────────────────────────[39m[90m┼────────────────────────────────────────────────────────────┤[39m
+[90m│[39m List two GPU metrics worth monitoring.                     [90m│[39m [PASS] OK List two GPU metrics worth monitoring.           [90m│[39m
+[90m├────────────────────────────────────────────────────────────[39m[90m┼────────────────────────────────────────────────────────────┤[39m
+[90m│[39m What does NCCL stand for?                                  [90m│[39m [PASS] OK What does NCCL stand for?                        [90m│[39m
+[90m├────────────────────────────────────────────────────────────[39m[90m┼────────────────────────────────────────────────────────────┤[39m
+[90m│[39m Explain gradient accumulation briefly.                     [90m│[39m [PASS] OK Explain gradient accumulation briefly.           [90m│[39m
+[90m├────────────────────────────────────────────────────────────[39m[90m┼────────────────────────────────────────────────────────────┤[39m
+[90m│[39m Give a safe checkpoint naming convention.                  [90m│[39m [PASS] OK Give a safe checkpoint naming convention.        [90m│[39m
+[90m├────────────────────────────────────────────────────────────[39m[90m┼────────────────────────────────────────────────────────────┤[39m
+[90m│[39m Name one reason to pin container images.                   [90m│[39m [PASS] OK Name one reason to pin container images.         [90m│[39m
+[90m├────────────────────────────────────────────────────────────[39m[90m┼────────────────────────────────────────────────────────────┤[39m
+[90m│[39m What is a Kubernetes NetworkPolicy for?                    [90m│[39m [PASS] OK What is a Kubernetes NetworkPolicy for?          [90m│[39m
+[90m├────────────────────────────────────────────────────────────[39m[90m┼────────────────────────────────────────────────────────────┤[39m
+[90m│[39m Describe a read-only root filesystem benefit.              [90m│[39m [PASS] OK Describe a read-only root filesystem benefit.    [90m│[39m
+[90m├────────────────────────────────────────────────────────────[39m[90m┼────────────────────────────────────────────────────────────┤[39m
+[90m│[39m Why rotate object-store credentials?                       [90m│[39m [PASS] OK Why rotate object-store credentials?             [90m│[39m
+[90m├────────────────────────────────────────────────────────────[39m[90m┼────────────────────────────────────────────────────────────┤[39m
+[90m│[39m What is the purpose of a seccomp profile?                  [90m│[39m [PASS] OK What is the purpose of a seccomp profile?        [90m│[39m
+[90m├────────────────────────────────────────────────────────────[39m[90m┼────────────────────────────────────────────────────────────┤[39m
+[90m│[39m How can you limit Ray dashboard exposure?                  [90m│[39m [PASS] OK How can you limit Ray dashboard exposure?        [90m│[39m
+[90m├────────────────────────────────────────────────────────────[39m[90m┼────────────────────────────────────────────────────────────┤[39m
+[90m│[39m Suggest a least-privilege ServiceAccount rule.             [90m│[39m [PASS] OK Suggest a least-privilege ServiceAccount rule.   [90m│[39m
+[90m└────────────────────────────────────────────────────────────[39m[90m┴────────────────────────────────────────────────────────────┘[39m
+2026-10-26T04:13:12.185Z [INFO]: ✓ Eval complete (ID: eval-ENz-2026-10-26T04:13:11)
+2026-10-26T04:13:12.185Z [INFO]: 
+2026-10-26T04:13:12.185Z [INFO]: » View results: promptfoo view
+2026-10-26T04:13:12.185Z [INFO]: » Share with your team: https://promptfoo.app
+2026-10-26T04:13:12.185Z [INFO]: » Feedback: https://promptfoo.dev/feedback
+2026-10-26T04:13:12.186Z [INFO]: 
+2026-10-26T04:13:12.186Z [INFO]: 
+2026-10-26T04:13:12.186Z [INFO]: Results:
+2026-10-26T04:13:12.186Z [INFO]:   ✓ 12 passed (100%)
+2026-10-26T04:13:12.186Z [INFO]:   0 failed (0%)
+2026-10-26T04:13:12.186Z [INFO]:   0 errors (0%)
+2026-10-26T04:13:12.186Z [INFO]:   12 cache hits (100%)
+2026-10-26T04:13:12.186Z [INFO]: Duration: 0s (concurrency: 4)
+2026-10-26T04:13:12.186Z [INFO]: 
+2026-10-26T04:13:12.187Z [DEBUG] [logger-pCNnmVuz.js:1990]: Shareable URL: null
+2026-10-26T04:13:12.193Z [DEBUG] [logger-pCNnmVuz.js:1990]: [TraceStore] Fetching traces for evaluation eval-ENz-2026-10-26T04:13:11
+2026-10-26T04:13:12.194Z [DEBUG] [logger-pCNnmVuz.js:1990]: [TraceStore] Found 0 traces for evaluation eval-ENz-2026-10-26T04:13:11
+2026-10-26T04:13:12.194Z [DEBUG] [logger-pCNnmVuz.js:1990]: [TraceStore] Returning 0 traces with spans
+2026-10-26T04:13:12.196Z [INFO]: Writing output to reports\samples\oss-bench\raw\promptfoo-results.json
+2026-10-26T04:13:12.198Z [DEBUG] [logger-pCNnmVuz.js:1990]: Shutting down gracefully...
+2026-10-26T04:13:12.255Z [DEBUG] [logger-pCNnmVuz.js:1996]: Successfully checkpointed WAL file before closing
+{
+  "busy": 0,
+  "log": 0,
+  "checkpointed": 0
+}
+2026-10-26T04:13:12.256Z [DEBUG] [logger-pCNnmVuz.js:1990]: Database connection closed successfully
+2026-10-26T04:13:12.260Z [DEBUG] [logger-pCNnmVuz.js:1990]: Closing logger file transports

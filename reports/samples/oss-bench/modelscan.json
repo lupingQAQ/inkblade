@@ -1,0 +1,65 @@
+{
+  "tool": "modelscan",
+  "version": "0.8.8",
+  "category": "model-inference",
+  "target": "fixtures/models (14 files vs manifest ground truth)",
+  "runs": 3,
+  "seconds": {
+    "values": [
+      0.265,
+      0.279,
+      0.292
+    ],
+    "median": 0.279,
+    "min": 0.265,
+    "max": 0.292
+  },
+  "peak_rss_kb": {
+    "values": [
+      38856,
+      37512,
+      38748
+    ],
+    "median": 38748,
+    "min": 37512,
+    "max": 38856
+  },
+  "output_bytes": 2688,
+  "detection": {
+    "fixtures": 14,
+    "malicious": 8,
+    "benign": 6,
+    "true_positives": 8,
+    "tp_files": [
+      "evil_b64_eval.pkl",
+      "evil_eval.pkl",
+      "evil_exec.pkl",
+      "evil_import.pkl",
+      "evil_os_system.pkl",
+      "evil_socket.pkl",
+      "evil_subprocess.pkl",
+      "evil_torch.pt"
+    ],
+    "false_negatives": 0,
+    "fn_files": [],
+    "false_positives": 0,
+    "fp_files": [],
+    "true_negatives": 6,
+    "precision": 1.0,
+    "recall": 1.0
+  },
+  "scanned_files": 12,
+  "issues_by_severity": {
+    "LOW": 0,
+    "MEDIUM": 0,
+    "HIGH": 0,
+    "CRITICAL": 8
+  },
+  "return_codes": [
+    2,
+    2,
+    2
+  ],
+  "notes": "json report; flags = file appears in issues[] with any severity; scanned_files counts inner pickles (torch zip counts as one)",
+  "environment": "host python 3.12 (oss-bench-venv), Windows 11"
+}

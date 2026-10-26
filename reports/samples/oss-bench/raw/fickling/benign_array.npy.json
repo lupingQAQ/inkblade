@@ -1,0 +1,9 @@
+{
+    "severity": "LIKELY_UNSAFE",
+    "analysis": "The file has invalid opcode(s). It is either corrupted or attempting to bypass the pickle security analysis\nThe pickle file has malformed opcode sequences (IndexError: Opcode StackGlobal(info=<pickletools.OpcodeInfo object at 0x0000019103928820>, argument=None, data=b'\\x93', position=0) attempted to pop from an empty stack); it is either corrupted or attempting to bypass the pickle security analysis\nThe pickle file has malformed opcode sequences (IndexError: Opcode StackGlobal(info=<pickletools.OpcodeInfo object at 0x0000019103928820>, argument=None, data=b'\\x93', position=0) attempted to pop from an empty stack); it is either corrupted or attempting to bypass the pickle security analysis\nThe pickle file has malformed opcode sequences (IndexError: Opcode StackGlobal(info=<pickletools.OpcodeInfo object at 0x0000019103928820>, argument=None, data=b'\\x93', position=0) attempted to pop from an empty stack); it is either corrupted or attempting to bypass the pickle security analysis\nThe pickle file has malformed opcode sequences (IndexError: Opcode StackGlobal(info=<pickletools.OpcodeInfo object at 0x0000019103928820>, argument=None, data=b'\\x93', position=0) attempted to pop from an empty stack); it is either corrupted or attempting to bypass the pickle security analysis",
+    "detailed_results": {}
+}{
+    "severity": "LIKELY_UNSAFE",
+    "analysis": "The file has invalid opcode(s). It is either corrupted or attempting to bypass the pickle security analysis",
+    "detailed_results": {}
+}

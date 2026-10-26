@@ -1,0 +1,43 @@
+{
+  "tool": "toxiproxy",
+  "version": "2.13.0",
+  "category": "network-fabric",
+  "target": "proxy 127.0.0.1:18083 -> mock LLM :18082; toxics: latency 200 ms + timeout 0 (downstream)",
+  "runs": 3,
+  "seconds": {
+    "values": [
+      3.156,
+      3.11,
+      3.134
+    ],
+    "median": 3.134,
+    "min": 3.11,
+    "max": 3.156
+  },
+  "peak_rss_kb": {
+    "values": [
+      15436,
+      15464,
+      15512
+    ],
+    "median": 15464,
+    "min": 15436,
+    "max": 15512
+  },
+  "output_bytes": 210,
+  "injection_effect": {
+    "baseline_rtt_ms_median": 2.1,
+    "with_latency_tox_ms_median": 202.8,
+    "configured_latency_ms": 200,
+    "observed_added_latency_ms": 200.7,
+    "timeout_tox_dropped_connection": true,
+    "drop_error": "RemoteDisconnected"
+  },
+  "return_codes": [
+    0,
+    0,
+    0
+  ],
+  "notes": "effect measured on the client via the proxied /healthz endpoint; server process RSS sampled at 25 ms",
+  "environment": "host binaries toxiproxy-server-windows-amd64.exe, Windows 11"
+}

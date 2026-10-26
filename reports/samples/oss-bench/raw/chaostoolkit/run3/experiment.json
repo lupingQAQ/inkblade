@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "title": "trident-oss-bench local process chaos",
+  "description": "steady-state HTTP 200 on the victim, kill the victim process, expect the steady-state probe to fail afterwards",
+  "tags": [
+    "trident-oss-bench"
+  ],
+  "steady-state-hypothesis": {
+    "title": "victim endpoint keeps answering",
+    "probes": [
+      {
+        "type": "probe",
+        "name": "victim-answers-200",
+        "provider": {
+          "type": "http",
+          "url": "http://127.0.0.1:18102/",
+          "timeout": 3
+        },
+        "tolerance": 200
+      }
+    ]
+  },
+  "method": [
+    {
+      "type": "action",
+      "name": "kill-victim-process",
+      "provider": {
+        "type": "process",
+        "path": "taskkill",
+        "arguments": "/PID 23384 /F",
+        "timeout": 10
+      }
+    },
+    {
+      "type": "probe",
+      "name": "victim-still-alive",
+      "provider": {
+        "type": "http",
+        "url": "http://127.0.0.1:18102/",
+        "timeout": 3
+      },
+      "pauses": {
+        "after": 1
+      }
+    }
+  ]
+}

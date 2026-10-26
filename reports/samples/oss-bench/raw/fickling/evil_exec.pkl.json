@@ -1,0 +1,11 @@
+{
+    "severity": "OVERTLY_MALICIOUS",
+    "analysis": "Call to `exec(...)` is almost certainly evidence of a malicious pickle file\nCall to `exec(...)` is almost certainly evidence of a malicious pickle file\n`from builtins import exec` is suspicious and indicative of an overtly malicious pickle file\nVariable `_var0` is assigned value `exec(...)` but unused afterward; this is suspicious and indicative of a malicious pickle file",
+    "detailed_results": {
+        "AnalysisResult": {
+            "OvertlyBadEval": "exec(...)",
+            "UnsafeImports": "from builtins import exec",
+            "UnusedVariables": "_var0: exec(...)"
+        }
+    }
+}

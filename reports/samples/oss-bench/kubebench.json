@@ -1,0 +1,57 @@
+{
+  "tool": "kube-bench",
+  "version": "0.16.0",
+  "category": "cluster-scanning",
+  "target": "live k3s v1.36.5+k3s1 node (QEMU TCG Alpine guest), docker container, KUBECONFIG=/etc/rancher/k3s/k3s.yaml",
+  "runs": 3,
+  "seconds": {
+    "values": [
+      55,
+      59,
+      58
+    ],
+    "median": 58,
+    "resolution": "1 s (busybox date +%s, measured inside guest)"
+  },
+  "peak_rss_kb": {
+    "note": "guest container; not sampled (docker run --rm, TCG) -- image size 227 MB recorded instead"
+  },
+  "output_bytes": 71280,
+  "detection": {
+    "totals": {
+      "total_pass": 18,
+      "total_fail": 3,
+      "total_warn": 33,
+      "total_info": 5
+    },
+    "benchmarks_run": [
+      "k3s-cis-1.9"
+    ],
+    "controls": 2,
+    "sections": [
+      {
+        "id": "4",
+        "text": "Worker Node Security Configuration",
+        "pass": 16,
+        "fail": 1,
+        "warn": 2,
+        "info": 5
+      },
+      {
+        "id": "5",
+        "text": "Kubernetes Policies",
+        "pass": 2,
+        "fail": 2,
+        "warn": 31,
+        "info": 0
+      }
+    ]
+  },
+  "return_codes": [
+    0,
+    0,
+    0
+  ],
+  "notes": "CIS profile auto-detected through the k3s kubeconfig; guest timings carry QEMU TCG amplification",
+  "environment": "guest: Alpine 3.24 / 6 vCPU TCG / docker 29.9.2; image aquasec/kube-bench:v0.16.0 (227 MB)"
+}

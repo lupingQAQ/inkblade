@@ -1,0 +1,48 @@
+{
+  "tool": "chaostoolkit",
+  "version": "1.21.4",
+  "category": "chaos",
+  "target": "local http.server victim process; action taskkill /PID <victim> /F",
+  "runs": 3,
+  "seconds": {
+    "values": [
+      5.627,
+      5.629,
+      5.564
+    ],
+    "median": 5.627,
+    "min": 5.564,
+    "max": 5.629
+  },
+  "peak_rss_kb": {
+    "values": [
+      64428,
+      64644,
+      64596
+    ],
+    "median": 64596,
+    "min": 64428,
+    "max": 64644
+  },
+  "output_bytes": 54339,
+  "chaos_effect": {
+    "deviated": [
+      true,
+      true,
+      true
+    ],
+    "victim_killed": [
+      true,
+      true,
+      true
+    ],
+    "all_runs_detected_deviation": true
+  },
+  "return_codes": [
+    1,
+    1,
+    1
+  ],
+  "notes": "chaos exits non-zero when the steady state is broken (expected); journal.json is the evidence",
+  "environment": "host python 3.12 (oss-bench-venv), Windows 11; process provider uses Windows taskkill"
+}

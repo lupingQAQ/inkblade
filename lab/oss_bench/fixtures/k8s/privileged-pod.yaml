@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: trainer-privileged
+  namespace: ml
+spec:
+  hostNetwork: true
+  hostPID: true
+  hostIPC: true
+  automountServiceAccountToken: true
+  containers:
+    - name: trainer
+      image: pytorch/pytorch:latest
+      securityContext:
+        privileged: true
+        runAsUser: 0
+        allowPrivilegeEscalation: true
+      volumeMounts:
+        - name: host-root
+          mountPath: /host
+      resources: {}
+  volumes:
+    - name: host-root
+      hostPath:
+        path: /

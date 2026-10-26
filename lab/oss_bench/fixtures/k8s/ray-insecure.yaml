@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ray-head
+  namespace: ml
+spec:
+  selector:
+    matchLabels:
+      app: ray-head
+  template:
+    metadata:
+      labels:
+        app: ray-head
+    spec:
+      containers:
+        - name: ray
+          image: rayproject/ray:latest
+          command: ["ray", "start", "--head", "--host=0.0.0.0", "--dashboard-host=0.0.0.0", "--block"]
+          securityContext:
+            privileged: true
+          ports:
+            - containerPort: 8265
+            - containerPort: 6379
+            - containerPort: 10001

@@ -1,0 +1,10 @@
+{
+    "severity": "LIKELY_OVERTLY_MALICIOUS",
+    "analysis": "`from socket import create_connection` is suspicious and indicative of an overtly malicious pickle file\nVariable `_var0` is assigned value `create_connection(...)` but unused afterward; this is suspicious and indicative of a malicious pickle file",
+    "detailed_results": {
+        "AnalysisResult": {
+            "UnsafeImports": "from socket import create_connection",
+            "UnusedVariables": "_var0: create_connection(...)"
+        }
+    }
+}

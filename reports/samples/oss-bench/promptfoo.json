@@ -1,0 +1,40 @@
+{
+  "tool": "promptfoo",
+  "version": "0.125.1",
+  "category": "model-inference",
+  "target": "12 eval cases -> local echo provider (http://127.0.0.1:18082, no external model)",
+  "runs": 3,
+  "seconds": {
+    "values": [
+      2.372,
+      2.161,
+      2.326
+    ],
+    "median": 2.326,
+    "min": 2.161,
+    "max": 2.372
+  },
+  "peak_rss_kb": {
+    "values": [
+      276708,
+      277056,
+      277068
+    ],
+    "median": 277056,
+    "min": 276708,
+    "max": 277068
+  },
+  "output_bytes": 80473,
+  "detection": {
+    "cases": 12,
+    "assertions_passed": 12,
+    "pass_rate": 1.0
+  },
+  "return_codes": [
+    0,
+    0,
+    0
+  ],
+  "notes": "one warmup run excluded from timing (node/promptfoo cold start ~48 s first run)",
+  "environment": "host node 22, npm-installed promptfoo, Windows 11"
+}

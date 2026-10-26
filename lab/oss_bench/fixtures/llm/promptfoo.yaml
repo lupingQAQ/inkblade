@@ -1,0 +1,48 @@
+# promptfoo bench config: 12 deterministic cases against the local echo mock.
+# The provider never leaves the host (no external model calls).
+description: "trident oss-bench echo provider"
+
+prompts:
+  - "{{prompt}}"
+
+providers:
+  - id: "http://127.0.0.1:18082/"
+    label: "echo-mock"
+    config:
+      method: "POST"
+      headers:
+        Content-Type: "application/json"
+      body:
+        prompt: "{{prompt}}"
+      transformResponse: "json.output"
+
+defaultTest:
+  assert:
+    - type: contains
+      value: "OK"
+
+tests:
+  - vars:
+      prompt: "Summarize the training run in one sentence."
+  - vars:
+      prompt: "List two GPU metrics worth monitoring."
+  - vars:
+      prompt: "What does NCCL stand for?"
+  - vars:
+      prompt: "Explain gradient accumulation briefly."
+  - vars:
+      prompt: "Give a safe checkpoint naming convention."
+  - vars:
+      prompt: "Name one reason to pin container images."
+  - vars:
+      prompt: "What is a Kubernetes NetworkPolicy for?"
+  - vars:
+      prompt: "Describe a read-only root filesystem benefit."
+  - vars:
+      prompt: "Why rotate object-store credentials?"
+  - vars:
+      prompt: "What is the purpose of a seccomp profile?"
+  - vars:
+      prompt: "How can you limit Ray dashboard exposure?"
+  - vars:
+      prompt: "Suggest a least-privilege ServiceAccount rule."
