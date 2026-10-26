@@ -1,0 +1,22 @@
+{
+  "key": "cache-salt-policy-audit",
+  "name": {
+    "zh": "缓存 salt 隔离策略审计",
+    "en": "Cache salt isolation policy audit"
+  },
+  "series": "网络架构",
+  "description": "配置面读取缓存策略（cache_salt_policy/approx scope/KV 池残留与命名空间/路由指标粒度），并以跨租户差分复用确认策略未执行：vulnerable 配置面 salt 关闭且无 salt 复用命中（cached_tokens>0），fixed 配置加固且跨租户恒未命中。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "缓存面服务基址（必填）",
+    "prompt_prefix": "差分探测用的 prefix 文本（缺省按 run marker 生成）",
+    "prefix_tokens": "prefix token 数（缺省 2048）",
+    "cache_salt": "租户 A 预热使用的 cache_salt（缺省 salt-tenant-a）",
+    "admin_key": "fixed 姿态读取 /config 的管理密钥（缺省 cache-admin-key）"
+  },
+  "produces": "cache-salt-policy-audit.json + /config 策略证据 + 跨租户 cached_tokens 差分",
+  "knowledge": "docs/CACHE-SECURITY.md 第 2 节：策略面（vLLM cache_salt/键 scope）",
+  "combo_signature": "cache-plane-unisolated"
+}

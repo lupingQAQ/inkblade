@@ -1,0 +1,20 @@
+{
+  "key": "router-cache-metrics-leak",
+  "name": {
+    "zh": "路由器缓存指标泄露",
+    "en": "Router cache metrics leak"
+  },
+  "series": "网络架构",
+  "description": "EPP/路由器（vLLM router、SGRouter 类）把 KV 利用率/前缀命中率/独立前缀数/前缀样本按租户粒度无鉴权暴露：任意租户可读他租户缓存行为（请求量、命中率、前缀样本），构成缓存状态侧信道，与时序侧信道叠加可放大成员推断；fixed 无身份 401、租户头仅本租户视图。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "缓存面服务基址（必填）",
+    "tenant": "探测租户（缺省 tenant-a）",
+    "victim_tenant": "受害租户（缺省 tenant-b）"
+  },
+  "produces": "router-cache-metrics-leak.json + per_tenant 可见租户清单/受害租户指标证据",
+  "knowledge": "docs/CACHE-SECURITY.md 第 6 节：路由指标面（EPP KV 利用率/命中率暴露）",
+  "combo_signature": "cache-sidechannel-differential"
+}

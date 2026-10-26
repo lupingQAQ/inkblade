@@ -1,0 +1,21 @@
+{
+  "key": "cache-eviction-residue",
+  "name": {
+    "zh": "缓存逐出残留读",
+    "en": "Cache eviction residue read"
+  },
+  "series": "窃取与数据泄露",
+  "description": "LRU 逐出策略只解除索引不擦除数据：以唯一前缀洪泛触发逐出（/router/metrics 逐出计数增长为证），再读被逐出受害前缀的残留层——vulnerable 残留保留且跨租户可读（含 benign 标记与租户归属），fixed 逐出即 zeroize（404）。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "缓存面服务基址（必填）",
+    "flood_count": "洪泛唯一前缀数（缺省 160，需大于池容量）",
+    "victim_prefix": "受害租户被逐出前缀文本（缺省靶场残留种子）",
+    "marker_needle": "残留预览中的 benign 标记串（缺省 TRIDENT-BENIGN-RESIDUE-VICTIM）"
+  },
+  "produces": "cache-eviction-residue.json + 逐出计数差分 + 残留租户/标记读回证据",
+  "knowledge": "docs/CACHE-SECURITY.md 第 5 节：远程池逐出与残留（分层 KV 生命周期）",
+  "combo_signature": "cache-pool-unisolated"
+}

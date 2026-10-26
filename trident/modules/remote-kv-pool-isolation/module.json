@@ -1,0 +1,23 @@
+{
+  "key": "remote-kv-pool-isolation",
+  "name": {
+    "zh": "远程 KV 池命名空间绕过",
+    "en": "Remote KV pool namespace bypass"
+  },
+  "series": "横向利用",
+  "description": "Mooncake/LMCache 风格远程 KV 块存储若无租户命名空间校验，任意租户可按 block_id 直读他租户 KV 块（正对照=本租户块 200）；fixed 姿态块归属租户命名空间，越权 403。PD 分离场景下该面同时是 KV 完整性污染的前置。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "target": "缓存面服务基址（必填）",
+    "victim_block": "受害租户块 id（缺省 tenant-b/ctx/seed-001）",
+    "control_block": "本租户对照块 id（缺省 tenant-a/ctx/control-001）",
+    "marker_needle": "块值中的 benign 标记串（缺省 TRIDENT-BENIGN-POOL-VICTIM）",
+    "tenant": "探测租户（缺省 tenant-a）",
+    "victim_tenant": "受害租户（缺省 tenant-b）"
+  },
+  "produces": "remote-kv-pool-isolation.json + 块归属租户/benign 标记读回证据",
+  "knowledge": "docs/CACHE-SECURITY.md 第 5 节：远程 KV 池（Mooncake/LMCache 命名空间）",
+  "combo_signature": "cache-pool-unisolated"
+}

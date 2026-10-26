@@ -1,0 +1,94 @@
+{
+  "generated_at": "2026-10-26T05:33:42Z",
+  "mode": "vulnerable",
+  "host": "127.0.0.1",
+  "checks": [
+    {
+      "id": "approx-cache-false-hit-readback",
+      "title": "近似缓存误命中：tenant-a 读回 tenant-b 响应与 benign marker",
+      "status": "PASS",
+      "evidence": {
+        "http_status": 200,
+        "similarity": 0.8824,
+        "threshold": 0.85,
+        "requester_tenant": "tenant-a",
+        "matched_tenant": "tenant-b",
+        "marker": "TRIDENT-BENIGN-APPROX-VICTIM",
+        "marker_present": true,
+        "response_excerpt": "tenant-b confidential guidance: 42.7M USD, growth 18 percent [TRIDENT-BENIGN-APPROX-VICTIM]",
+        "route": "/approx/lookup"
+      },
+      "detail": "",
+      "elapsed_ms": 87.7
+    },
+    {
+      "id": "cache-timing-membership-delta",
+      "title": "缓存时序侧信道：N=60≥50，TTFT 命中/未命中两档显著分离（Welch p<0.05）",
+      "status": "PASS",
+      "evidence": {
+        "n_total": 60,
+        "n_member": 30,
+        "n_control": 30,
+        "mean_member_ttft_ms": 27.9,
+        "mean_control_ttft_ms": 222.233,
+        "delta_ms": 194.333,
+        "welch_t": -44.1001,
+        "df": 29.81,
+        "p_value": 1.0481709153641327e-28,
+        "alpha": 0.05,
+        "significant": true,
+        "member_ttft_range_ms": [
+          22.0,
+          31.0
+        ],
+        "control_ttft_range_ms": [
+          186.0,
+          268.0
+        ],
+        "route": "/v1/chat/completions"
+      },
+      "detail": "",
+      "elapsed_ms": 139.0
+    },
+    {
+      "id": "cache-eviction-residue-readback",
+      "title": "逐出残留：LRU 逐出后 tenant-a 读回 tenant-b 被逐出前缀（marker 命中）",
+      "status": "PASS",
+      "evidence": {
+        "evictions_before": 0,
+        "evictions_after": 65,
+        "evictions_delta": 65,
+        "residue_status": 200,
+        "residue_tenant": "tenant-b",
+        "marker": "TRIDENT-BENIGN-RESIDUE-VICTIM",
+        "marker_present": true,
+        "prefix_preview": "tenant-b residue corpus marker TRIDENT-BENIGN-RESIDUE-VICTIM quarterly close data pack appendix",
+        "route": "/cache/residue"
+      },
+      "detail": "",
+      "elapsed_ms": 277.9
+    },
+    {
+      "id": "remote-kv-pool-namespace-bypass",
+      "title": "远程 KV 池命名空间绕过：tenant-a 直接读回 tenant-b 的 KV 块",
+      "status": "PASS",
+      "evidence": {
+        "http_status": 200,
+        "block_id": "tenant-b/ctx/seed-001",
+        "block_tenant": "tenant-b",
+        "requester_tenant": "tenant-a",
+        "marker": "TRIDENT-BENIGN-POOL-VICTIM",
+        "marker_present": true,
+        "value_excerpt": "{\"benign\": true, \"marker\": \"TRIDENT-BENIGN-POOL-VICTIM\", \"tenant\": \"tenant-b\"}",
+        "route": "/kvpool/blocks/{block}"
+      },
+      "detail": "",
+      "elapsed_ms": 61.3
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0
+  }
+}

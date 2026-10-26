@@ -255,6 +255,40 @@ def _synth_events(probe: dict, outcome: dict) -> list[dict]:
             "action": "join", "authenticated": False,
             "rank": (probe.get("body") or {}).get("rank", ""),
         })
+    elif hook == "cache-policy-read":
+        policy = payload.get("cache_salt_policy") or {}
+        events.append({
+            "kind": "sigma",
+            "logsource": {"product": "inference-cache", "service": "engine-config"},
+            "event": "cache_policy_read",
+            "cache_salt_enabled": bool(policy.get("enabled")),
+            "key_scope": str(policy.get("key_scope") or "global"),
+        })
+    elif hook == "cache-approx-false-hit":
+        events.append({
+            "kind": "sigma",
+            "logsource": {"product": "inference-cache", "service": "approx-cache"},
+            "event": "cache_approx_false_hit", "cross_tenant": True,
+            "requester_tenant": payload.get("requester_tenant", ""),
+            "matched_tenant": str((payload.get("matched") or {}).get("tenant") or ""),
+        })
+    elif hook == "cache-probing-burst":
+        probe_count = int(probe.get("probe_count") or 60)
+        events.append({
+            "kind": "sigma",
+            "logsource": {"category": "llm-gateway", "service": "inference"},
+            "action": "chat_completion", "distinct_prefix_probe_count": probe_count,
+        })
+        events.append({
+            "kind": "falco", "event_type": "cache_probe",
+            "proc": "vllm-engine", "probe_count": probe_count,
+        })
+    elif hook == "cache-router-metrics":
+        events.append({
+            "kind": "sigma",
+            "logsource": {"product": "epp-router", "service": "metrics"},
+            "action": "metrics_read", "per_tenant": True, "authenticated": False,
+        })
     return events
 
 
@@ -289,6 +323,17 @@ def _is_fabric_probe(probe: dict) -> bool:
 
 def _needs_fabric(probes_catalog: dict) -> bool:
     return any(_is_fabric_probe(probe)
+               for plan in probes_catalog.values()
+               for probe in plan.get("replay", []))
+
+
+def _is_cache_probe(probe: dict) -> bool:
+    """多租户缓存仿真探针：显式 sim=cache（/config、/router/metrics 等与 mock 消歧）。"""
+    return probe.get("sim") == "cache"
+
+
+def _needs_cache(probes_catalog: dict) -> bool:
+    return any(_is_cache_probe(probe)
                for plan in probes_catalog.values()
                for probe in plan.get("replay", []))
 
@@ -328,6 +373,14 @@ def validate(pack_dir: Path | str, mock_base: str | None = None,
         ai_server = start_ai_gateway(mode="vulnerable")
         ai_base = ai_server.url("/")
 
+    cache_server = None
+    cache_base = None
+    if _needs_cache(probes_catalog):
+        from lab.cache_sim import start_all as start_cache
+
+        cache_server = start_cache(mode="vulnerable")
+        cache_base = cache_server.url("/")
+
     fabric_server = None
     fabric_base = None
     if _needs_fabric(probes_catalog):
@@ -351,6 +404,8 @@ def validate(pack_dir: Path | str, mock_base: str | None = None,
                 base = fabric_base or mock_base
             elif _is_gpu_cloud_probe(probe):
                 base = aux_base or mock_base
+            elif _is_cache_probe(probe):
+                base = cache_base or mock_base
             else:
                 base = mock_base
             outcome = _http_request(base, probe)
@@ -412,6 +467,8 @@ def validate(pack_dir: Path | str, mock_base: str | None = None,
         ai_server.shutdown()
     if fabric_server is not None:
         fabric_server.shutdown()
+    if cache_server is not None:
+        cache_server.shutdown()
 
     total_cells = sum(len(row["rules"]) for row in chain_rows.values())
     blocked_cells = sum(1 for row in chain_rows.values() for c in row["rules"] if c["status"] == _BLOCKED)
