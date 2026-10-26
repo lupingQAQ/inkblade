@@ -117,6 +117,57 @@ def _audit_findings(events: list[dict], baseline_subjects) -> list[dict]:
     return out
 
 
+# 调优前检测器集合（同夹具复跑的「before」口径）：不含 sa-token / portforward 两个补漏检测器。
+LEGACY_AUDIT_DETECTORS = (
+    "rbac-clusteradmin-binding", "privileged-pod-create", "pods-exec-session",
+    "ray-job-runtime-pod", "secret-abnormal-read", "weight-pvc-abnormal-write",
+)
+
+
+def _legacy_audit_findings(events: list[dict]) -> list[dict]:
+    """旧检测器集合（补漏前）+ 旧默认主体基线：用于同夹具 before 复跑。"""
+    return [f for f in _audit_findings(events, auditlog.DEFAULT_BASELINE_SUBJECTS)
+            if f["detector"] in LEGACY_AUDIT_DETECTORS]
+
+
+def _before_rerun(fixture: dict) -> dict:
+    """调优前复跑（同一夹具、同一真值）：无实体基线抑制 + 旧检测器集合。
+
+    与 ``BEFORE`` 的历史快照区分：这里的数字由当前代码实时重算，保证
+    「before → after」不是手填常量；历史快照仍保留用于追溯。
+    """
+    recon = []
+    for cluster in fixture["clusters"]:
+        recon.extend(_recon_findings(cluster))
+    by_scenario = {
+        "platform-baseline-noise": [f for f in recon
+                                    if f["step_key"] == "escape-primitives"
+                                    and f.get("context") == "east-prod"],
+        "rbac-intent-noise": [f for f in recon
+                              if f["step_key"] in ("rbac-mapping", "network-policy-coverage")],
+        "audit-flood-noise": _legacy_audit_findings(fixture["audit_events"]),
+    }
+    scenarios = []
+    for sid, findings in by_scenario.items():
+        metrics = evaluate_labels(findings, fixture["ground_truth"], scenario=sid)
+        scenarios.append({"id": sid, **metrics})
+    totals = {"tp": sum(s["tp"] for s in scenarios),
+              "fp": sum(s["fp"] for s in scenarios),
+              "fn": sum(s["fn"] for s in scenarios),
+              "findings_total": sum(s["findings_total"] for s in scenarios),
+              "risk_items": sum(s["risk_items"] for s in scenarios)}
+    overall = {**totals,
+               "fp_rate": round(totals["fp"] / totals["findings_total"], 4)
+                          if totals["findings_total"] else 0.0,
+               "fn_rate": round(totals["fn"] / totals["risk_items"], 4)
+                          if totals["risk_items"] else 0.0}
+    return {
+        "definition": "no entity-baseline suppression + legacy detector set; recomputed live",
+        "scenarios": scenarios,
+        "overall": overall,
+    }
+
+
 def _pods_ctx(clusters: list[dict]) -> dict:
     """快照 Pod → (service_account, image) 映射，供工作负载三元组抑制。"""
     pods: dict[str, dict] = {}
@@ -335,8 +386,8 @@ def run_suite(*, write: bool = True) -> dict:
                         {"subject": e["subject"], "pattern": e["pattern"],
                          "occurrences": e["occurrences"]} for e in learned],
                     "note": ("仅用前 340 条历史学习（时间切分、不看标签）：CI/监控/调度主体"
-                             "被习得；扫描器 403 拒绝尝试不可学习 → 学习-only 仍有 FP，"
-                             "必须与审批清单合并使用"),
+                             "被习得；拒绝尝试（403）由检测器统一口径默认不入报 → 学习-only "
+                             "也达到 0 FP，但产物仍须 lead 审批合并后才生效"),
                 },
             }
         scenarios.append(row)
@@ -372,6 +423,7 @@ def run_suite(*, write: bool = True) -> dict:
         "scenarios": scenarios,
         "overall": overall,
         "overall_tuning": {"before": BEFORE["overall"], "after": overall},
+        "before_rerun": _before_rerun(fixture),
         "defenses": _defense_state(fixture),
         "real_cluster": _real_cluster_lane(),
         "gaps": [
@@ -419,28 +471,50 @@ def render_md(results: dict) -> str:
     lines.append(f"| **合计** | {o['findings_total']} | {o['tp']} | {o['fp']} | {o['fn']} | "
                  f"**{o['fp_rate']:.2%}** | **{o['fn_rate']:.2%}** |")
     lines += ["", "## 3. 调优前后（before → after）", "",
+              "### 3.1 同夹具实时复跑（推荐口径）", "",
               "| 场景 | 发现 | TP | FP | FN | FP 率 | FN 率 |",
               "|---|---:|---:|---:|---:|---:|---:|"]
+    before = {s["id"]: s for s in results["before_rerun"]["scenarios"]}
     for s in results["scenarios"]:
-        t = s["tuning"]
-        b, a = t["before"], t["after"]
+        b = before[s["id"]]
         lines.append(
             f"| {s['id']} 前 | {b['findings_total']} | {b['tp']} | {b['fp']} | {b['fn']} | "
             f"{b['fp_rate']:.2%} | {b['fn_rate']:.2%} |")
         lines.append(
-            f"| {s['id']} 后 | {a['findings_total']} | {a['tp']} | {a['fp']} | {a['fn']} | "
-            f"{a['fp_rate']:.2%} | {a['fn_rate']:.2%} |")
-    ot = results["overall_tuning"]
-    b, a = ot["before"], ot["after"]
+            f"| {s['id']} 后 | {s['findings_total']} | {s['tp']} | {s['fp']} | {s['fn']} | "
+            f"{s['fp_rate']:.2%} | {s['fn_rate']:.2%} |")
+    b = results["before_rerun"]["overall"]
+    a = results["overall"]
     lines.append(
-        f"| **合计 前** | {b['findings_total']} | {b['tp']} | {b['fp']} | {b['fn']} | "
+        f"| **合计 前（实时）** | {b['findings_total']} | {b['tp']} | {b['fp']} | {b['fn']} | "
         f"**{b['fp_rate']:.2%}** | **{b['fn_rate']:.2%}** |")
     lines.append(
         f"| **合计 后** | {a['findings_total']} | {a['tp']} | {a['fp']} | {a['fn']} | "
         f"**{a['fp_rate']:.2%}** | **{a['fn_rate']:.2%}** |")
+    lines += ["", "### 3.2 历史快照（手填常量，仅追溯）", "",
+              "| 场景 | 发现 | TP | FP | FN | FP 率 | FN 率 |",
+              "|---|---:|---:|---:|---:|---:|---:|"]
+    for s in results["scenarios"]:
+        t = s["tuning"]
+        b, a2 = t["before"], t["after"]
+        lines.append(
+            f"| {s['id']} 前 | {b['findings_total']} | {b['tp']} | {b['fp']} | {b['fn']} | "
+            f"{b['fp_rate']:.2%} | {b['fn_rate']:.2%} |")
+        lines.append(
+            f"| {s['id']} 后 | {a2['findings_total']} | {a2['tp']} | {a2['fp']} | {a2['fn']} | "
+            f"{a2['fp_rate']:.2%} | {a2['fn_rate']:.2%} |")
+    ot = results["overall_tuning"]
+    b, a2 = ot["before"], ot["after"]
+    lines.append(
+        f"| **合计 前（历史）** | {b['findings_total']} | {b['tp']} | {b['fp']} | {b['fn']} | "
+        f"**{b['fp_rate']:.2%}** | **{b['fn_rate']:.2%}** |")
+    lines.append(
+        f"| **合计 后** | {a2['findings_total']} | {a2['tp']} | {a2['fp']} | {a2['fn']} | "
+        f"**{a2['fp_rate']:.2%}** | **{a2['fn_rate']:.2%}** |")
     lines += ["",
-              "> before = 2026-10-26 调优前实测（无基线抑制、无 token/portforward 检测器），",
-              "> after = `core/baseline.py` 实体基线 + 学习模式 + 新检测器后的同一夹具重跑。",
+              "> 前（实时）= 同一夹具、同一 ground-truth，关闭实体基线抑制并回退到补漏前检测器集合",
+              "> （`before_rerun`）——由当前代码实时重算，不是手填常量。",
+              "> 后 = `core/baseline.py` 实体基线 + 学习模式 + serviceaccounts/token、pods/portforward 检测器。",
               ""]
     lines += ["## 4. 逐场景说明", ""]
     for s in results["scenarios"]:
@@ -458,7 +532,7 @@ def render_md(results: dict) -> str:
             lr = t.get("learned_only") or {}
             dd = t["default_baseline_rerun"]
             lines.append(f"- 默认主体基线复跑（新检测器生效）：TP {dd['tp']} / FP {dd['fp']} / "
-                         f"FN {dd['fn']}——FP 仍来自 CI exec + 扫描器 403 洪水。")
+                         f"FN {dd['fn']}——FP 仍来自 CI exec 洪水（扫描器 403 按统一口径不入报）。")
             if lr:
                 entries = "；".join(f"{e['subject']}（{e['pattern']}×{e['occurrences']}）"
                                    for e in lr["learned_entries"]) or "无"

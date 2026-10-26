@@ -146,5 +146,51 @@ class TestLlmAvailable(unittest.TestCase):
                 os.environ["TRIDENT_LLM_BASE_URL"] = saved
 
 
+class TestPreauthorizedApproval(unittest.TestCase):
+    """L3：lead 预授权 token 已验签后，explorer 仍做白名单/写权限的防御性复核。"""
+
+    def setUp(self):
+        self.tmp = TemporaryDirectory()
+        root = Path(self.tmp.name)
+        self.store = EvidenceStore(root, workspace="local-lab")
+        AssetInventory(self.store).ingest(SEEDS, source="seed")
+        init_roe(self.store, {"level": "利用验证", "namespaces": ["ml"],
+                              "cidrs": ["10.0.0.0/8"]})
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def _grant(self, allowlist, allow_writes=False):
+        class Grant:
+            id = "grant-unit"
+            token_hint = "abcdef123456"
+
+            def __init__(self):
+                self.allowlist = list(allowlist)
+                self.allow_writes = bool(allow_writes)
+
+        return Grant()
+
+    def test_preauthorized_approval_records_mode_and_audit(self):
+        ex = Explorer(self.store, modules_dir=MODULES_DIR)
+        p = ex.propose(_session("tester"))
+        modules = [a["module"] for a in p["actions"]]
+        approved = ex.approve_preauthorized(p["id"], grant=self._grant(modules,
+                                                                      allow_writes=True))
+        self.assertEqual(approved["status"], "approved")
+        self.assertEqual(approved["approval"]["mode"], "preauth")
+        self.assertEqual(approved["approval"]["approved_by"], "preauth:grant-unit")
+        audit = (self.store.ws_dir / "audit.jsonl").read_text(encoding="utf-8")
+        self.assertIn("explorer.approve", audit)
+        self.assertIn("preauth:grant-unit", audit)
+
+    def test_preauthorized_denies_action_outside_allowlist(self):
+        ex = Explorer(self.store, modules_dir=MODULES_DIR)
+        p = ex.propose(_session("tester"))
+        with self.assertRaises(ApprovalDenied):
+            ex.approve_preauthorized(p["id"], grant=self._grant([]))
+        self.assertEqual(ex.list_proposals()[0]["status"], "pending_approval")
+
+
 if __name__ == "__main__":
     unittest.main()

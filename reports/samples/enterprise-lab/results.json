@@ -1,6 +1,6 @@
 {
   "schema": "trident-enterprise-lab/2",
-  "generated_at": "2026-10-26T05:23:01Z",
+  "generated_at": "2026-10-26T05:48:26Z",
   "tool": "trident",
   "source": "fixture",
   "fixture": "lab/enterprise-fixtures",
@@ -180,22 +180,22 @@
           "fn_rate": 0.0
         },
         "default_baseline_rerun": {
-          "findings_total": 185,
+          "findings_total": 125,
           "tp": 5,
-          "fp": 180,
+          "fp": 120,
           "fn": 0,
           "risk_items": 5,
           "benign_items": 0,
           "benign_hits": 0,
-          "fp_rate": 0.973,
+          "fp_rate": 0.96,
           "fn_rate": 0.0
         },
         "learned_only": {
-          "findings_total": 65,
+          "findings_total": 5,
           "tp": 5,
-          "fp": 60,
+          "fp": 0,
           "fn": 0,
-          "fp_rate": 0.9231,
+          "fp_rate": 0.0,
           "fn_rate": 0.0,
           "learned_entries": [
             {
@@ -214,7 +214,7 @@
               "occurrences": 60
             }
           ],
-          "note": "仅用前 340 条历史学习（时间切分、不看标签）：CI/监控/调度主体被习得；扫描器 403 拒绝尝试不可学习 → 学习-only 仍有 FP，必须与审批清单合并使用"
+          "note": "仅用前 340 条历史学习（时间切分、不看标签）：CI/监控/调度主体被习得；拒绝尝试（403）由检测器统一口径默认不入报 → 学习-only 也达到 0 FP，但产物仍须 lead 审批合并后才生效"
         }
       }
     }
@@ -245,6 +245,56 @@
       "risk_items": 14,
       "fp_rate": 0.125,
       "fn_rate": 0.0714
+    }
+  },
+  "before_rerun": {
+    "definition": "no entity-baseline suppression + legacy detector set; recomputed live",
+    "scenarios": [
+      {
+        "id": "platform-baseline-noise",
+        "findings_total": 18,
+        "tp": 2,
+        "fp": 16,
+        "fn": 0,
+        "risk_items": 2,
+        "benign_items": 7,
+        "benign_hits": 13,
+        "fp_rate": 0.8889,
+        "fn_rate": 0.0
+      },
+      {
+        "id": "rbac-intent-noise",
+        "findings_total": 20,
+        "tp": 7,
+        "fp": 13,
+        "fn": 1,
+        "risk_items": 7,
+        "benign_items": 6,
+        "benign_hits": 9,
+        "fp_rate": 0.65,
+        "fn_rate": 0.1429
+      },
+      {
+        "id": "audit-flood-noise",
+        "findings_total": 123,
+        "tp": 3,
+        "fp": 120,
+        "fn": 2,
+        "risk_items": 5,
+        "benign_items": 0,
+        "benign_hits": 0,
+        "fp_rate": 0.9756,
+        "fn_rate": 0.4
+      }
+    ],
+    "overall": {
+      "tp": 12,
+      "fp": 149,
+      "fn": 3,
+      "findings_total": 161,
+      "risk_items": 14,
+      "fp_rate": 0.9255,
+      "fn_rate": 0.2143
     }
   },
   "defenses": {

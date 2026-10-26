@@ -1,0 +1,212 @@
+{
+  "schema": "trident-swarm-eval/1",
+  "generated_at": "2026-10-26T05:50:24Z",
+  "source": "simulated-local-multiprocess",
+  "task_set": {
+    "total": 15,
+    "roles": {
+      "recon": 5,
+      "exploit": 4,
+      "verify": 4,
+      "report": 2
+    },
+    "role_delay_ms": {
+      "recon": 60,
+      "exploit": 90,
+      "verify": 70,
+      "report": 40
+    },
+    "approval_gate_ms": 40,
+    "injected_failures": {
+      "permanent": [
+        "exploit-03"
+      ],
+      "transient": [
+        "verify-02"
+      ]
+    },
+    "max_attempts": 2
+  },
+  "configs": {
+    "1w": {
+      "workers": 1,
+      "distribution": {
+        "any": 1
+      },
+      "reps": 3,
+      "total_tasks": 15,
+      "success": 14,
+      "failed": 1,
+      "success_rate": 0.9333,
+      "retries": 2,
+      "approvals": 15,
+      "approval_ms_total": 604,
+      "approval_wall_ms": 603,
+      "wall_ms_median": 1887,
+      "wall_ms_min": 1881,
+      "wall_ms_max": 1906,
+      "wall_ms_samples": [
+        1906,
+        1887,
+        1881
+      ],
+      "peak_concurrency": 1,
+      "pids": 1,
+      "by_role": {
+        "recon": {
+          "total": 5,
+          "success": 5,
+          "failed": 0,
+          "retries": 0,
+          "pids": [
+            14836
+          ]
+        },
+        "exploit": {
+          "total": 4,
+          "success": 3,
+          "failed": 1,
+          "retries": 1,
+          "pids": [
+            14836
+          ]
+        },
+        "verify": {
+          "total": 4,
+          "success": 4,
+          "failed": 0,
+          "retries": 1,
+          "pids": [
+            14836
+          ]
+        },
+        "report": {
+          "total": 2,
+          "success": 2,
+          "failed": 0,
+          "retries": 0,
+          "pids": [
+            14836
+          ]
+        }
+      },
+      "reproducible_task_ids": [
+        "recon-00",
+        "recon-01",
+        "recon-02",
+        "recon-03",
+        "recon-04",
+        "exploit-00",
+        "exploit-01",
+        "exploit-02",
+        "exploit-03",
+        "verify-00",
+        "verify-01",
+        "verify-02",
+        "verify-03",
+        "report-00",
+        "report-01"
+      ]
+    },
+    "4w": {
+      "workers": 4,
+      "distribution": {
+        "recon": 1,
+        "exploit": 1,
+        "verify": 1,
+        "report": 1
+      },
+      "reps": 3,
+      "total_tasks": 15,
+      "success": 14,
+      "failed": 1,
+      "success_rate": 0.9333,
+      "retries": 2,
+      "approvals": 15,
+      "approval_ms_total": 600,
+      "approval_wall_ms": 399,
+      "wall_ms_median": 657,
+      "wall_ms_min": 655,
+      "wall_ms_max": 684,
+      "wall_ms_samples": [
+        655,
+        684,
+        657
+      ],
+      "peak_concurrency": 4,
+      "pids": 4,
+      "by_role": {
+        "recon": {
+          "total": 5,
+          "success": 5,
+          "failed": 0,
+          "retries": 0,
+          "pids": [
+            20048
+          ]
+        },
+        "exploit": {
+          "total": 4,
+          "success": 3,
+          "failed": 1,
+          "retries": 1,
+          "pids": [
+            20632
+          ]
+        },
+        "verify": {
+          "total": 4,
+          "success": 4,
+          "failed": 0,
+          "retries": 1,
+          "pids": [
+            13664
+          ]
+        },
+        "report": {
+          "total": 2,
+          "success": 2,
+          "failed": 0,
+          "retries": 0,
+          "pids": [
+            12720
+          ]
+        }
+      },
+      "reproducible_task_ids": [
+        "recon-00",
+        "recon-01",
+        "recon-02",
+        "recon-03",
+        "recon-04",
+        "exploit-00",
+        "exploit-01",
+        "exploit-02",
+        "exploit-03",
+        "verify-00",
+        "verify-01",
+        "verify-02",
+        "verify-03",
+        "report-00",
+        "report-01"
+      ]
+    }
+  },
+  "comparison": {
+    "speedup_wall": 2.87,
+    "approval_wall_speedup": 1.51,
+    "success_rate_1w": 0.9333,
+    "success_rate_4w": 0.9333,
+    "approvals_1w": 15,
+    "approvals_4w": 15,
+    "retries_1w": 2,
+    "retries_4w": 2
+  },
+  "notes": [
+    "simulate 执行器按角色 sleep，不是真实模块；数字只证明本机多进程队列的吞吐/审批并发",
+    "先跑 warm batch 启动进程，测量 3 个 batch 取中位数（排除 Windows spawn 启动成本）",
+    "1 个永久失败 + 1 个瞬时失败重试：成功率两边一致（14/15），并发不改变正确性",
+    "审批墙钟是各任务审批区间的并集；审批次数不变（15 次预授权），并发只压缩墙钟"
+  ],
+  "reproduce": "python lab/swarm_eval.py"
+}

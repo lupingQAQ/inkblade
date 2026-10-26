@@ -15,8 +15,8 @@
 |---|---|
 | 快照 | 2 个集群（east-prod / west-prod），14 个命名空间，混合平台/训练/推理/租户/CI 命名空间；GPU 节点 6 个、GPU 48 卡（fixture 容量）；20+ Pod；PVC/Secret 元数据；RBAC 通配符/系统绑定/租户绑定。 |
 | 防御 | Kyverno 8 条策略（Enforce 3 / Audit 4 / Missing 1）；Falco 14 条规则（Loaded 8 / Missing 6）；NetworkPolicy 14 个命名空间（默认拒绝 6 / 未覆盖 8）。 |
-| 审计 | 345 条事件：340 条良性（CI `pods/exec` ×120、扫描器 403 读 Secret ×60、监控读 Secret ×100、平台调度器挂权重 PVC 建 Pod ×60）+ 5 条风险（cluster-admin 绑定、tenant-b exec、权重 PVC patch、SA token 铸造、pods/portforward）。 |
-| 检测器 | 真实模块：`escape-primitives`、`rbac-mapping`、`network-policy-coverage`、`exposure-mapping`、`observability-exposure`；审计：`core/auditlog.py` 六检测器。 |
+| 审计 | 345 条事件：340 条良性（CI `pods/exec` ×120、扫描器 403 读 Secret ×60、监控读 Secret ×100、平台调度器挂权重 PVC 建 Pod ×60）+ 5 条风险（cluster-admin 绑定、tenant-b exec、权重 PVC patch、SA token 铸造、pods/portforward）。403 拒绝尝试按统一口径默认不入报；101 Switching Protocols 的 exec 会话视为成功会话。 |
+| 检测器 | 真实模块：`escape-primitives`、`rbac-mapping`、`network-policy-coverage`、`exposure-mapping`、`observability-exposure`；审计：`core/auditlog.py` 八检测器（含 serviceaccounts/token、pods/portforward 两个补漏检测器）。 |
 | 标注 | `ground-truth.json` 固化 benign/risk；实现不临时改标签。 |
 | 口径 | FP 率 = FP / (TP + FP)；FN 率 = FN / (TP + FN)；只统计 critical/high/medium/low，info 不计。 |
 
@@ -27,49 +27,68 @@
 2. **RBAC/NetworkPolicy 常规运维噪声**：`system:controller` 通配符、平台 operator
    wildcard、CI `pods/exec`、系统命名空间未加默认拒绝；
 3. **审计事件洪水**：340 条良性事件（CI exec、扫描器 403、监控读 Secret、平台调度器
-   挂 PVC）与 5 条风险事件混合，其中 2 条为当前检测器未覆盖。
+   挂 PVC）与 5 条风险事件混合；调优前 2 条风险未被检测器覆盖（SA token、portforward），
+   本轮已补，403 拒绝尝试按统一口径默认不入报。
 
 ## 2. 结果（fixture 车道）
 
-### 2.1 三场景 FP/FN
+### 2.1 同夹具 before → after（实时复跑）
 
-| 场景 | 发现数 | TP | FP | FN | FP 率 | FN 率 |
+> before = 关闭实体基线抑制 + 回退到补漏前检测器集合（`before_rerun`，当前代码实时重算，
+> 不是手填常量）；after = `core/baseline.py` 实体基线 + 学习模式 +
+> `serviceaccounts/token` / `pods/portforward` 检测器。
+
+| 场景 | 发现 | TP | FP | FN | FP 率 | FN 率 |
 |---|---:|---:|---:|---:|---:|---:|
-| `platform-baseline-noise` | 17 | 1 | 16 | 1 | 94.12% | 50.00% |
-| `rbac-intent-noise` | 20 | 7 | 13 | 1 | 65.00% | 14.29% |
-| `audit-flood-noise`（调优后） | 3 | 3 | 0 | 2 | 0.00% | 40.00% |
-| **合计（按各场景调优后）** | 40 | 11 | 29 | 4 | **72.50%** | **28.57%** |
+| `platform-baseline-noise` before | 18 | 2 | 16 | 0 | 88.89% | 0.00% |
+| `platform-baseline-noise` after | 3 | 2 | 1 | 0 | 33.33% | 0.00% |
+| `rbac-intent-noise` before | 20 | 7 | 13 | 1 | 65.00% | 14.29% |
+| `rbac-intent-noise` after | 8 | 7 | 1 | 1 | 12.50% | 14.29% |
+| `audit-flood-noise` before | 123 | 3 | 120 | 2 | 97.56% | 40.00% |
+| `audit-flood-noise` after | 5 | 5 | 0 | 0 | 0.00% | 0.00% |
+| **合计 before（实时）** | 161 | 12 | 149 | 3 | **92.55%** | **21.43%** |
+| **合计 after** | 16 | 14 | 2 | 1 | **12.50%** | **7.14%** |
 
-> 合计不是「产品准确率」，而是这组故意偏噪声的 fixture 上的结果；场景 1/2 没有做
-> 客户例外清单调优，因此 FP 高。**不粉饰为低误报**。
+目标 **FP ≤ 20% / FN ≤ 10%：达成**（合计口径）。残余如实保留、不静默：
+
+- 残余 FP 2 条：`ml-training/ray-head-0` hostNetwork（真实风险形态但无标注）、
+  `tenant-c` 读 Secret（真实能力但不在标注集）；合计 12.50%。
+- 残余 FN 1 条：mutable image tag（检测器已备，夹具无该形态证据，不造证据）。
+- 场景 1 单场景 FP 33.33%：18 条里只剩 1 条无标注 FP，样本小、比例失真；合计口径达标。
+
+历史快照（上一版报告手填常量，保留追溯）：40 发现 / TP 11 / FP 29 / FN 4 →
+FP **72.50%** / FN **28.57%**。
 
 ### 2.2 审计洪水调优（before → after）
 
-| 指标 | 默认基线 | 调优基线（+CI runner +安全扫描器） | 变化 |
+| 指标 | 旧检测器 + 默认基线 | 补漏后默认基线 | 调优基线（实体默认清单） |
 |---|---:|---:|---:|
-| 发现数 | 183 | 3 | -180 |
-| TP | 3 | 3 | 0 |
-| FP | 180 | 0 | **-100%** |
-| FN | 2 | 2 | 0 |
-| FP 率 | 98.36% | 0.00% | -98.36pp |
-| FN 率 | 40.00% | 40.00% | 0 |
+| 发现数 | 123 | 125 | 5 |
+| TP | 3 | 5 | 5 |
+| FP | 120 | 120 | 0 |
+| FN | 2 | 0 | 0 |
+| FP 率 | 97.56% | 96.00% | 0.00% |
+| FN 率 | 40.00% | 0.00% | 0.00% |
 
-调优只解决「主体基线」这一类误报；**不解决漏报**。2 条未覆盖风险（SA token 铸造、
-pods/portforward）在调优后仍然漏报，必须补检测器或准入，不能靠调基线「消灭」。
+- 120 FP 全部来自 CI `pods/exec`（默认基线缺 CI 主体）；补漏检测器使 SA token 铸造与
+  pods/portforward 从 FN 变 TP。
+- 拒绝口径本轮统一收口：非 2xx 默认不入报（403 扫描器尝试不再计 FP），
+  exec/attach/portforward 的 **101 Switching Protocols 视为成功会话**（不再误当拒绝）。
+- 学习模式（仅前 340 条历史、不看标签、仅 2xx）习得 CI/监控/调度三个主体，
+  学习-only 同样 0 FP / 0 FN；产物仍须 lead 审批 merge 才生效，且高危形态永不学习。
 
 ### 2.3 逐场景说明
 
-- **平台基线**：`escape-primitives` 把 7 类平台 DaemonSet 的合法 privileged/hostPath/
-  hostNetwork 报成 16 条 medium+（TP 只有 tenant-a 的 model-copy-job 1 条）。
-  这证明「没有客户例外清单时，平台噪声会淹没真实租户风险」；例外清单需按
-  `image digest + namespace + serviceAccount` 三元组审批，不能按标题永久静默。
-- **RBAC/网络**：`system:controller`/`platform-operator` 通配符、CI pods/exec、
-  kube-system/monitoring/security 无默认拒绝共 13 条 FP；真实风险 7 条（tenant-a
-  cluster-admin、tenant-a-deployer、tenant-a 读 Secret、platform-scheduler 读 Secret、
-  tenant-b/tenant-c 无隔离）中检测到 7 条，FN 1 条为 mutable image tag（当前模块不覆盖）。
-- **审计洪水**：默认基线下 CI exec + 扫描器 403 造成 180 条 FP；调优后 0 FP。
-  TP 3 条（cluster-admin 绑定、tenant-b exec、权重 PVC patch）；FN 2 条（SA token
-  铸造、pods/portforward）。
+- **平台基线**：before 18 条（16 FP）；after 3 条 = TP 2（tenant-a model-copy-job 特权挂载、
+  Falco 未加载规则缺口）+ 1 条无标注 FP（ray-head hostNetwork）。7 类平台 DaemonSet
+  噪声由 `(namespace, serviceAccount, image 前缀)` 三元组抑制 15 条，provenance 可审计。
+- **RBAC/网络**：before 20 条（13 FP）；after 8 条 = TP 7（tenant-a cluster-admin、
+  tenant-a-deployer 扩散、tenant-a 读 Secret、platform-scheduler 读 Secret、
+  tenant-b/tenant-c 无隔离）+ 1 条无标注 FP（tenant-c 读 Secret）；FN 1 条为
+  mutable image tag（当前模块不覆盖，如实计入）。
+- **审计洪水**：before 123 条（120 FP）；after 5 条全 TP、0 FP、0 FN。
+  CI exec / 监控读 Secret / 调度器挂 PVC 由主体基线抑制（留痕 120 条）；403 与
+  SA token / portforward 按统一拒绝口径与补漏检测器处理。
 
 ## 3. 防御生效状态（fixture 声明，不是客户实测）
 
@@ -103,10 +122,14 @@ pods/portforward）在调优后仍然漏报，必须补检测器或准入，不�
 
 1. **fixture ≠ 客户集群**：K8s/CNI/CRD/Kyverno/Falco 版本、遥测字段、审计采样率均不同。
 2. **事件量级**：345 条 ≠ 客户日均百万级；需在 Pilot 用客户审计流抽样/回放。
-3. **漏报面**：SA token 铸造、pods/portforward、mutable image tag 当前未覆盖，已如实计 FN。
+3. **漏报面**：本轮已补 serviceaccounts/token 与 pods/portforward 检测器；剩余 FN 为
+   mutable image tag（夹具无该形态证据），已如实计入，不以造证据「消灭」。
 4. **例外清单**：平台 DaemonSet 例外需客户审批与版本化，不能硬编码在规则里。
 5. **真实规则生效**：Kyverno/Falco 的 Enforce/Loaded 状态必须在客户运行时读取，
    fixture 声明不算证据。
+6. **调优轮次**：本目标只用了 1 轮（实体基线 + 学习 + 补漏 + 拒绝口径收口）；
+   场景 1 单场景 FP 仍 33.33%（18 条中 1 条无标注），未用第二轮硬压到 0——
+   那会让「无标注真实形态」被吞掉。
 
 ## 6. 复现
 

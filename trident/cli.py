@@ -416,17 +416,61 @@ def _main(argv=None) -> int:
     disc.add_argument("--source", default="cli")
     disc.add_argument("--graph", action="store_true", help="输出资产图（namespace→service）")
 
-    expl = sub.add_parser("explore", help="审批制自主探索器：propose|list|approve|reject|execute")
+    expl = sub.add_parser("explore", help="审批制自主探索器：propose|list|approve|reject|execute|autonomy")
     expl.add_argument("--workspace", default="local-lab")
-    expl.add_argument("action", choices=["propose", "list", "approve", "reject", "execute"])
+    expl.add_argument("action", choices=["propose", "list", "approve", "reject", "execute",
+                                         "autonomy"])
     expl.add_argument("--id", default=None, help="提议 id（approve/reject/execute）")
     expl.add_argument("--use-llm", default=None, help="true/false（缺省：有 env 则用 LLM，失败降级 rules）")
+    expl.add_argument("--llm", action="store_true",
+                      help="L3：强制使用 core/llmpool 真实端点（无端点拒绝）")
+    expl.add_argument("--autonomy", choices=["L3"], default=None,
+                      help="L3 = lead 预授权自主循环（需 --preauth-token）")
+    expl.add_argument("--preauth-token", default="", help="lead 预授权 token（autonomy grant 输出）")
+    expl.add_argument("--max-steps", type=int, default=None, help="L3 最大步数（不得超过 grant）")
     expl.add_argument("--max-actions", type=int, default=5)
     expl.add_argument("--reason", default="")
     expl.add_argument("--workers", type=int, default=1,
                       help="已批准提议的并发执行数（1-8，默认 1；每动作独立 run）")
     expl.add_argument("--actor", default="cli")
     expl.add_argument("--role", choices=list(ROLES), default="lead")
+
+    sup = sub.add_parser("supervisor", help="分层 worker 队列：run|status（可挂 L3 护栏）")
+    sup.add_argument("--workspace", default="local-lab")
+    sup.add_argument("action", choices=["run", "status"])
+    sup.add_argument("--workers", type=int, default=2, help="并发 worker 数（1-8）")
+    sup.add_argument("--autonomy", choices=["L3"], default=None)
+    sup.add_argument("--llm", action="store_true", help="L3：强制真实 LLM 端点")
+    sup.add_argument("--preauth-token", default="")
+    sup.add_argument("--actor", default="cli")
+    sup.add_argument("--role", choices=list(ROLES), default="lead")
+
+    swm = sub.add_parser("swarm", help="角色化多进程 swarm：roles|run（recon/exploit/verify/report）")
+    swm.add_argument("action", choices=["roles", "run"])
+    swm.add_argument("--tasks", default=None, help="run：任务 JSON 列表文件")
+    swm.add_argument("--workers", type=int, default=4, help="worker 数（1-16）")
+    swm.add_argument("--executor", choices=["simulate", "runner"], default="simulate")
+    swm.add_argument("--workspace", default="local-lab")
+    swm.add_argument("--actor", default="lead")
+    swm.add_argument("--role", choices=list(ROLES), default="lead")
+
+    aut = sub.add_parser("autonomy", help="L3 预授权/状态/撤销/回放（lead 预授权 + 全审计）")
+    aut.add_argument("action", choices=["levels", "grant", "status", "revoke", "replay"])
+    aut.add_argument("--workspace", default="local-lab")
+    aut.add_argument("--allowlist", default="", help="逗号分隔模块键（白名单）")
+    aut.add_argument("--max-actions", type=int, default=5)
+    aut.add_argument("--max-steps", type=int, default=3)
+    aut.add_argument("--budget-tokens", type=int, default=20000)
+    aut.add_argument("--budget-latency-ms", type=int, default=120000)
+    aut.add_argument("--budget-approvals", type=int, default=6)
+    aut.add_argument("--budget-interventions", type=int, default=2)
+    aut.add_argument("--ttl-seconds", type=int, default=1800)
+    aut.add_argument("--allow-writes", action="store_true")
+    aut.add_argument("--note", default="")
+    aut.add_argument("--trace", default=None, help="replay 指定 trace 路径（缺省工作区 trace）")
+    aut.add_argument("--reason", default="")
+    aut.add_argument("--actor", default="cli")
+    aut.add_argument("--role", choices=list(ROLES), default="lead")
 
     sch = sub.add_parser("schedule", help="周期重测：add|list|remove|run-due（cron/interval → 链子集 → drift）")
     sch.add_argument("--workspace", default="local-lab")
@@ -982,6 +1026,8 @@ def _main(argv=None) -> int:
         return 0
 
     if args.cmd == "explore":
+        from .core.autonomy import (AutonomyGuard, AutonomyRunner, ExplorerPlanner,
+                                    SupervisorExecutor)
         from .core.explorer import ApprovalDenied, Explorer
         from .core.users import Session
 
@@ -989,8 +1035,21 @@ def _main(argv=None) -> int:
         session = Session(None, args.actor, args.role, [args.workspace], "cli-local")
         ex = Explorer(store, modules_dir=home / "modules")
         try:
-            if args.action == "propose":
-                use_llm = None if args.use_llm is None else args.use_llm == "true"
+            if args.autonomy:
+                if args.action != "autonomy":
+                    raise ValueError("--autonomy 须与 action=autonomy 一起使用")
+                guard = AutonomyGuard.preflight(
+                    store, token=args.preauth_token, llm_required=args.llm)
+                runner = AutonomyRunner(
+                    guard,
+                    ExplorerPlanner(ex, session, llm=args.llm, max_actions=args.max_actions),
+                    SupervisorExecutor(store, session, workers=args.workers,
+                                       modules_dir=home / "modules"),
+                    session=session, llm_requested=args.llm, max_steps=args.max_steps)
+                data = runner.run()
+            elif args.action == "propose":
+                use_llm = True if args.llm else (
+                    None if args.use_llm is None else args.use_llm == "true")
                 data = ex.propose(session, use_llm=use_llm, max_actions=args.max_actions)
             elif args.action == "list":
                 data = {"proposals": ex.list_proposals()}
@@ -1008,6 +1067,117 @@ def _main(argv=None) -> int:
             return 2
         except ValueError as exc:
             print(f"trident explore: {exc}", file=sys.stderr)
+            return 2
+        print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
+        return 0
+
+    if args.cmd == "supervisor":
+        from .core.supervisor import Supervisor
+        from .core.users import Session
+
+        store = _store(home, args.workspace)
+        session = Session(None, args.actor, args.role, [args.workspace], "cli-local")
+        try:
+            if args.action == "status":
+                sup = Supervisor(store, session, workers=args.workers,
+                                 modules_dir=home / "modules")
+                tasks = sup.tasks()
+                data = {"tasks": tasks,
+                        "summary": {"total": len(tasks),
+                                    "pending": sum(1 for t in tasks if t["status"] == "pending"),
+                                    "success": sum(1 for t in tasks if t["status"] == "success"),
+                                    "failed": sum(1 for t in tasks if t["status"] == "failed")}}
+            elif args.autonomy:
+                from .core.autonomy import AutonomyGuard, run_supervisor_guarded
+
+                guard = AutonomyGuard.preflight(store, token=args.preauth_token,
+                                                llm_required=args.llm)
+                data = run_supervisor_guarded(store, session, guard, workers=args.workers,
+                                              modules_dir=home / "modules")
+            else:
+                sup = Supervisor(store, session, workers=args.workers,
+                                 modules_dir=home / "modules")
+                data = sup.run()
+        except (PermissionError, ValueError) as exc:
+            print(f"trident supervisor: {exc}", file=sys.stderr)
+            return 2
+        print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
+        return 0
+
+    if args.cmd == "swarm":
+        from .core.swarm import ROLE_CAPS, Swarm
+        from .core.users import Session
+
+        if args.action == "roles":
+            print(json.dumps({"roles": ROLE_CAPS,
+                              "workers_range": [1, 16],
+                              "note": "每角色上限 ≥2；4 worker = 每角色 1 个"}, ensure_ascii=False,
+                             indent=2))
+            return 0
+        try:
+            if not args.tasks:
+                raise ValueError("--tasks 必填（JSON 列表）")
+            tasks = json.loads(Path(args.tasks).read_text(encoding="utf-8"))
+            if not isinstance(tasks, list):
+                raise ValueError("tasks 须为 JSON 列表")
+            session = Session(None, args.actor, args.role, [args.workspace], "cli-local")
+            executor = {"kind": "simulate"}
+            if args.executor == "runner":
+                executor = {"kind": "runner", "home": str(home), "workspace": args.workspace,
+                            "modules_dir": str(home / "modules"), "actor": args.actor,
+                            "session_role": args.role}
+            swarm = Swarm(workers=args.workers, executor=executor)
+            try:
+                data = swarm.run(tasks)
+            finally:
+                swarm.close()
+        except (OSError, ValueError) as exc:
+            print(f"trident swarm: {exc}", file=sys.stderr)
+            return 2
+        print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
+        return 0
+
+    if args.cmd == "autonomy":
+        from .core.autonomy import (AUTONOMY_LEVELS, AutonomyGrant, AutonomyGuard,
+                                    replay_trace)
+        from .core.users import Session
+
+        store = _store(home, args.workspace)
+        session = Session(None, args.actor, args.role, [args.workspace], "cli-local")
+        if args.action == "levels":
+            print(json.dumps({"levels": AUTONOMY_LEVELS,
+                              "guardrails": ["preauth-token", "allowlist", "budget-hard-cap",
+                                             "anomaly-stop", "full-audit", "replayable-trace"]},
+                             ensure_ascii=False, indent=2))
+            return 0
+        try:
+            if args.action == "grant":
+                modules = [m.strip() for m in (args.allowlist or "").split(",") if m.strip()]
+                grant, token = AutonomyGrant.create(
+                    store, session, allowlist=modules, max_actions=args.max_actions,
+                    max_steps=args.max_steps,
+                    budget={"tokens": args.budget_tokens,
+                            "latency_ms": args.budget_latency_ms,
+                            "approvals": args.budget_approvals,
+                            "interventions": args.budget_interventions},
+                    allow_writes=args.allow_writes, ttl_seconds=args.ttl_seconds,
+                    note=args.note)
+                data = {"grant": grant.public_doc(), "token": token,
+                        "note": "token 明文只显示一次；落盘仅存 sha256 + HMAC"}
+            elif args.action == "status":
+                from .core.autonomy import AutonomyRefused
+
+                try:
+                    grant = AutonomyGrant.load(store)
+                    data = {"active": True, "grant": grant.public_doc()}
+                except AutonomyRefused as exc:
+                    data = {"active": False, "reason": str(exc)}
+            elif args.action == "revoke":
+                data = AutonomyGrant.revoke(store, session, reason=args.reason)
+            else:
+                data = replay_trace(store, path=args.trace)
+        except (PermissionError, ValueError) as exc:
+            print(f"trident autonomy: {exc}", file=sys.stderr)
             return 2
         print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
         return 0

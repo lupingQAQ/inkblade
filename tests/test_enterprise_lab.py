@@ -56,6 +56,33 @@ class TestEnterpriseLab(unittest.TestCase):
         self.assertGreater(self.results["overall"]["fp"], 0, "不允许粉饰为 0 误报")
         self.assertGreater(self.results["overall"]["fn"], 0, "至少保留 1 个未覆盖风险（诚实漏报）")
 
+    def test_fp_fn_targets_met_without_hiding_residuals(self):
+        """调优目标：FP ≤ 20% / FN ≤ 10%；同时保留真实残余（不粉饰为 0）。"""
+        overall = self.results["overall"]
+        self.assertLessEqual(overall["fp_rate"], 0.20,
+                             f"FP {overall['fp_rate']:.2%} 未达 ≤20% 目标")
+        self.assertLessEqual(overall["fn_rate"], 0.10,
+                             f"FN {overall['fn_rate']:.2%} 未达 ≤10% 目标")
+        self.assertGreater(overall["fp"], 0, "残余 FP 必须如实保留（无标注≠无风险）")
+        self.assertGreater(overall["fn"], 0, "残余 FN 必须如实保留（mutable image tag）")
+
+    def test_before_rerun_on_same_fixture_is_worse(self):
+        """同一夹具的「调优前」复跑：无基线抑制 + 旧检测器集合，必须显著差于 after。"""
+        before = self.results["before_rerun"]
+        after = self.results["overall"]
+        self.assertEqual(before["overall"]["risk_items"], after["risk_items"])
+        self.assertGreater(before["overall"]["fp_rate"], after["fp_rate"])
+        self.assertGreaterEqual(before["overall"]["fn_rate"], after["fn_rate"])
+        self.assertEqual(before["overall"]["fn"], 3,
+                         "旧检测器集合应漏 serviceaccounts/token、pods/portforward、mutable image")
+        # 三场景 before 都必须可复现列入（审计洪水=120 FP 的经典形态）
+        ids = [s["id"] for s in before["scenarios"]]
+        self.assertEqual(ids, ["platform-baseline-noise", "rbac-intent-noise",
+                               "audit-flood-noise"])
+        audit_before = next(s for s in before["scenarios"] if s["id"] == "audit-flood-noise")
+        self.assertEqual(audit_before["fp"], 120)
+        self.assertEqual(audit_before["fn"], 2)
+
     def test_defense_state_effective_rates(self):
         defenses = self.results["defenses"]
         kyverno = defenses["kyverno"]

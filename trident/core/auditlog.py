@@ -109,10 +109,16 @@ def _event_time(event: dict) -> str:
 
 
 def _succeeded(event: dict) -> bool:
+    """2xx 视为完成；exec/attach/portforward 的 101 Switching Protocols 是成功会话。"""
     code = (event.get("responseStatus") or {}).get("code")
     if code is None:
         return True  # 合成事件无响应码按已完成处理
-    return 200 <= int(code) < 300
+    code = int(code)
+    if 200 <= code < 300:
+        return True
+    ref = event.get("objectRef") or {}
+    return code == 101 and str(ref.get("subresource") or "").lower() in (
+        "exec", "attach", "portforward")
 
 
 def _verb(event: dict) -> str:
@@ -399,18 +405,28 @@ _DETECTORS = (
 
 def analyze_events(events: list[dict], baseline_subjects=DEFAULT_BASELINE_SUBJECTS,
                    include_denied: bool = False) -> list[dict]:
-    """事件流 → findings（who-did-what 追溯）。默认仅已完成动作；拒绝尝试可选拨出。"""
+    """事件流 → findings（who-did-what 追溯）。默认仅已完成动作；拒绝尝试可选拨出。
+
+    拒绝口径统一在此收口（不依赖各检测器是否记得写「已拒绝」标题）：
+    - ``include_denied=False``：非 2xx 事件一律不入报；
+    - ``include_denied=True``：以 low 入报并标注「（已拒绝尝试）」。
+    """
     baseline = set(baseline_subjects or DEFAULT_BASELINE_SUBJECTS)
     findings: list[dict] = []
     for event in events:
         if not isinstance(event, dict):
             continue
+        denied = not _succeeded(event)
+        if denied and not include_denied:
+            continue
         for detector in _DETECTORS:
             hit = detector(event, baseline)
             if hit is None:
                 continue
-            if "已拒绝" in hit["title"] and not include_denied:
-                break
+            if denied:
+                hit["sev"] = "low"
+                if "已拒绝" not in hit["title"]:
+                    hit["title"] += "（已拒绝尝试）"
             findings.append(hit)
             break  # 单事件单检测器（最严重面优先）
     return findings

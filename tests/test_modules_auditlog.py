@@ -132,13 +132,34 @@ class AuditLogEngineTest(unittest.TestCase):
         self.assertEqual(analyze_events(self.benign), [])
 
     def test_denied_attempts_hidden_by_default(self):
-        """默认只报已完成（2xx）动作；403 拒绝尝试仅在 include_denied=True 时以 low 报。"""
+        """默认只报已完成（2xx/101 升级会话）动作；403 拒绝尝试仅在 include_denied=True 时以 low 报。"""
         default = analyze_events(self.attack)
         self.assertEqual([f for f in default if "已拒绝" in f["title"]], [])
+        self.assertIn("pods-exec-session", {f["detector"] for f in default},
+                      "101 Switching Protocols 的 exec 会话是成功会话，不得当拒绝丢掉")
         with_denied = analyze_events(self.attack, include_denied=True)
         denied = [f for f in with_denied if "已拒绝" in f["title"]]
         self.assertEqual(len(denied), 1)
         self.assertEqual(denied[0]["sev"], "low")
+
+    def test_denied_secret_read_and_exec_follow_same_contract(self):
+        """所有检测器统一口径：拒绝尝试默认不报；include_denied 时 low 并标注「已拒绝」。"""
+        events = [
+            {"verb": "get", "user": {"username": "system:serviceaccount:tenant-x:x"},
+             "objectRef": {"resource": "secrets", "namespace": "tenant-x", "name": "s"},
+             "responseStatus": {"code": 403}, "auditID": "denied-secret"},
+            {"verb": "create", "user": {"username": "system:serviceaccount:tenant-x:x"},
+             "objectRef": {"resource": "pods", "subresource": "exec",
+                           "namespace": "tenant-x", "name": "p"},
+             "responseStatus": {"code": 403}, "auditID": "denied-exec"},
+        ]
+        self.assertEqual(analyze_events(events), [])
+        denied = analyze_events(events, include_denied=True)
+        self.assertEqual({f["detector"] for f in denied},
+                         {"secret-abnormal-read", "pods-exec-session"})
+        for f in denied:
+            self.assertEqual(f["sev"], "low")
+            self.assertIn("已拒绝", f["title"])
 
     def test_parse_robustness_and_stats(self):
         """空行/注释/坏 JSON 行跳过不崩溃；analyze 返回统计（valid/skipped 分列）。"""

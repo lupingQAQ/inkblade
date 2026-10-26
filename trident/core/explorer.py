@@ -324,6 +324,35 @@ class Explorer:
         self._save_queue(queue)
         return p
 
+    def approve_preauthorized(self, proposal_id: str, *, grant) -> dict:
+        """L3 预授权批准：token 已由 AutonomyGuard 验签；这里做白名单/写权限防御性复核。
+
+        审计主体记为 ``preauth:<grant id>``，与人工 approve 明确区分；状态机不变。
+        """
+        p, queue, i = self._get(proposal_id)
+        if p["status"] != "pending_approval":
+            raise ExplorerError(f"提议 {proposal_id} 状态 {p['status']}，不可批准")
+        allowlist = set(getattr(grant, "allowlist", []) or [])
+        allow_writes = bool(getattr(grant, "allow_writes", False))
+        for action in p.get("actions") or []:
+            if action.get("module") not in allowlist:
+                raise ApprovalDenied(
+                    f"动作 {action.get('module')} 不在预授权白名单（L3 拒绝）")
+            if action.get("writes") and not allow_writes:
+                raise ApprovalDenied(
+                    f"动作 {action.get('module')} 为写动作但预授权未允许写（L3 拒绝）")
+        p["status"] = "approved"
+        p["approval"] = {"required": True, "approver_role": "lead", "status": "approved",
+                         "approved_by": f"preauth:{grant.id}", "mode": "preauth",
+                         "token_hint": getattr(grant, "token_hint", ""),
+                         "approved_at": time.time()}
+        queue[i] = p
+        self._save_queue(queue)
+        jsonio.append_audit(self.store, f"preauth:{grant.id}", "explorer.approve", proposal_id,
+                            {"mode": "preauth", "actions": len(p.get("actions") or []),
+                             "allowlist": sorted(allowlist)}, "ok")
+        return p
+
     def reject(self, session, proposal_id: str, reason: str = "") -> dict:
         if not session.can("approve"):
             raise ApprovalDenied(f"{session.name}({session.role}) 无 approve 权限")
