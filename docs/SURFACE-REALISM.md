@@ -8,12 +8,12 @@ Generated from `trident/profiles/*.json`, `trident/profiles/surface-map.json` an
 
 | Profile | Platform | Default modules | production-testable | conditional | no-surface | Production coverage | Operable coverage | Default-exploitable PoCs |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
-| `airgapped` | Air-gapped self-managed Kubernetes: local registry, SPIRE id | 249 | 191 | 46 | 12 | **76.71%** | 95.18% | 1 |
-| `bare-k8s-gpu` | Self-managed Kubernetes with GPU worker nodes, direct vLLM s | 249 | 182 | 33 | 34 | **73.09%** | 86.35% | 1 |
-| `gpu-pooling` | Kubernetes GPU pooling with HAMi/cGPU sharing, SGLang PD dis | 249 | 161 | 43 | 45 | **64.66%** | 81.93% | 2 |
-| `managed-ack-tke` | Managed ACK/TKE control plane: no direct etcd or node BMC ac | 249 | 183 | 33 | 33 | **73.49%** | 86.75% | 0 |
-| `ray-vllm` | KubeRay control plane with vLLM/SGLang inference, LWS multi- | 249 | 185 | 33 | 31 | **74.3%** | 87.55% | 2 |
-| `slurm-hpc` | Bare-metal Slurm HPC cluster: no Kubernetes API, BMC/IB swit | 249 | 44 | 62 | 143 | **17.67%** | 42.57% | 0 |
+| `airgapped` | Air-gapped self-managed Kubernetes: local registry, SPIRE id | 264 | 194 | 46 | 24 | **73.48%** | 90.91% | 1 |
+| `bare-k8s-gpu` | Self-managed Kubernetes with GPU worker nodes, direct vLLM s | 264 | 185 | 33 | 46 | **70.08%** | 82.58% | 1 |
+| `gpu-pooling` | Kubernetes GPU pooling with HAMi/cGPU sharing, SGLang PD dis | 264 | 164 | 43 | 57 | **62.12%** | 78.41% | 2 |
+| `managed-ack-tke` | Managed ACK/TKE control plane: no direct etcd or node BMC ac | 264 | 186 | 33 | 45 | **70.45%** | 82.95% | 0 |
+| `ray-vllm` | KubeRay control plane with vLLM/SGLang inference, LWS multi- | 264 | 188 | 33 | 43 | **71.21%** | 83.71% | 2 |
+| `slurm-hpc` | Bare-metal Slurm HPC cluster: no Kubernetes API, BMC/IB swit | 264 | 68 | 72 | 124 | **25.76%** | 53.03% | 0 |
 
 Production coverage = `default_production_testable / default_enabled`. Quarantined modules (`default_enabled=false`) are excluded from the denominator.
 
@@ -21,8 +21,12 @@ Production coverage = `default_production_testable / default_enabled`. Quarantin
 
 | Module | Required surfaces | No-surface in all profiles | Reason |
 |---|---|---|---|
+| `agent-native-control-plane` | config-file:agent/runtime.json; http-endpoint:/agents | yes | 主流六画像无 Agent 原生运行时/MaaS 控制面；客户部署后显式启用。 |
+| `agent-skill-registry-supply-chain` | config-file:agent/skills/registry.json; http-endpoint:/skills/registry | yes | 主流六画像未声明 agent skill 注册表；客户实际部署 agent 平台并导出注册表后显式启用。 |
 | `cxl-memory-security` | config-file:cxl/inventory.json | yes | C 级前瞻项：六个主流画像均无 CXL 面；仅客户实际部署 CXL 时显式启用，默认关闭，不计入芯片渗透能力。 |
 | `federated-learning-audit` | http-endpoint:/fl; k8s-object:Deployment/nvflare; k8s-object:Deployment/flower | yes | Component not present in the six mainstream deployment profiles; kept for customers that actually deploy it. |
+| `hypervisor-audit-integrity` | config-file:audit/hypervisor-audit.json; runtime-agent:audit-collector | yes | 主流六画像无 hypervisor 审计采集器面；保留给实际部署 HyperAudit/云平台审计的客户，显式 --probe 或采集到 audit/hypervisor-audit.json 后启用。 |
+| `mcp-control-plane-governance` | config-file:mcp/servers.json; http-endpoint:/mcp/tools | yes | 主流六画像无 MCP 注册表/控制面；客户部署 MCP gateway 后显式启用。 |
 | `model-watermark-backdoor-audit` | http-endpoint:/watermark; model-file:watermark | yes | Component not present in the six mainstream deployment profiles; kept for customers that actually deploy it. |
 | `nvlink-imex-isolation` | config-file:nvswitch/imex.json | no | C 级前瞻项：NVLink/IMEX 仅 GB200/NVL 多节点客户需要；默认关闭，不计入芯片渗透能力。 |
 | `post-quantum-tls-audit` | http-endpoint:/tls | yes | Component not present in the six mainstream deployment profiles; kept for customers that actually deploy it. |
@@ -37,7 +41,7 @@ Production coverage = `default_production_testable / default_enabled`. Quarantin
 | `post-quantum-tls-posture` | http-endpoint:/tls | No surface in all six profiles; kept enabled by a parallel workstream pending its owner's quarantine decision. It is still `no-surface` and cannot run when the surface gate is enabled. |
 | `wasm-workload-surface` | k8s-object:RuntimeClass/wasm; runtime-agent:wasmtime | No surface in all six profiles; kept enabled by a parallel workstream pending its owner's quarantine decision. It is still `no-surface` and cannot run when the surface gate is enabled. |
 
-Global no-surface rows: **8**; explicitly quarantined: **7**.
+Global no-surface rows: **12**; explicitly quarantined: **11**.
 
 
 These modules remain callable explicitly (`trident run --module ... --probe` or with a real `--collect` / `--profile`). They are excluded from the default chain and from the default coverage denominator, so a green default report no longer implies coverage of an undeployed component. Other `no-surface` rows owned by parallel workstreams remain enabled until their owner applies the same quarantine; their verdict is still `no-surface` and they cannot execute when the surface gate is on.
@@ -52,6 +56,9 @@ Legend: **production-testable** = execute against this profile without extra con
 | `admission-gatekeeper-semantics` | k8s-object:ValidatingWebhookConfiguration; http-endpoint:/validate | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `admission-kyverno-semantics` | k8s-object:ValidatingWebhookConfiguration; http-endpoint:/validate | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `admission-webhook-write` | k8s-object:ValidatingWebhookConfiguration; http-endpoint:/validate | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
+| `agent-native-control-plane` | config-file:agent/runtime.json; http-endpoint:/agents | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
+| `agent-skill-registry-supply-chain` | config-file:agent/skills/registry.json; http-endpoint:/skills/registry | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
+| `ai-infra-baseline` | http-endpoint:/v1/models; config-file:ai-infra/inventory.json | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `aigateway-auth-bypass` | http-endpoint:/v1/models; config-file:litellm | conditional | production-testable | conditional | production-testable | production-testable | conditional |
 | `aigateway-cache-cross-tenant` | http-endpoint:/v1/models; config-file:litellm; http-endpoint:/v1/chat/completions; k8s-object:Pod | conditional | production-testable | conditional | production-testable | production-testable | conditional |
 | `aigateway-fingerprint` | http-endpoint:/v1/models; config-file:litellm | conditional | production-testable | conditional | production-testable | production-testable | conditional |
@@ -69,10 +76,10 @@ Legend: **production-testable** = execute against this profile without extra con
 | `attack-path-ranking` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `auth-gap-detection` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `bmc-ipmi-exposure` | bmc:bmc/redfish | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
-| `cache-eviction-residue` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
-| `cache-poison-persistence` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
-| `cache-salt-policy-audit` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
-| `cache-timing-sidechannel` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
+| `cache-eviction-residue` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
+| `cache-poison-persistence` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
+| `cache-salt-policy-audit` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
+| `cache-timing-sidechannel` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
 | `cdk-persistence-detect` | k8s-object:APIService; http-endpoint:/healthz; k8s-object:ValidatingWebhookConfiguration; http-endpoint:/validate | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `cdk-techniques` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `cert-manager-webhook-tls` | k8s-object:ValidatingWebhookConfiguration; http-endpoint:/validate | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
@@ -116,11 +123,11 @@ Legend: **production-testable** = execute against this profile without extra con
 | `defense-bypass-tetragon` | runtime-agent:runtime-agent; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
 | `defense-bypass-veinmind` | runtime-agent:runtime-agent; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
 | `defense-bypass-waf-inference` | runtime-agent:runtime-agent; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
-| `dify-code-node-escape` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | no-surface |
-| `dify-control-plane-failopen` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | no-surface |
-| `dify-local-sandbox-unauth-rce` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | no-surface |
-| `dify-snapshot-cross-tenant-theft` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | no-surface |
-| `dify-stub-token-forgery` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | no-surface |
+| `dify-code-node-escape` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | conditional |
+| `dify-control-plane-failopen` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | conditional |
+| `dify-local-sandbox-unauth-rce` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | conditional |
+| `dify-snapshot-cross-tenant-theft` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | conditional |
+| `dify-stub-token-forgery` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | conditional |
 | `djev-open-proxy` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `dns-service-discovery` | k8s-object:RayCluster; http-endpoint:/dashboard | no-surface | no-surface | no-surface | no-surface | production-testable | no-surface |
 | `dpu-ipu-offload` | http-endpoint:/dpu; bmc:bmc/dpu; k8s-object:Node; config-file:iommu | conditional | production-testable | conditional | conditional | conditional | conditional |
@@ -129,7 +136,7 @@ Legend: **production-testable** = execute against this profile without extra con
 | `ebpf-runtime-coverage-gap` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `escape-primitives` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `etcd-direct-access` | k8s-object:Pod; http-endpoint::2379 | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
-| `experiment-tracker-exposure` | http-endpoint:/api; model-file:model | production-testable | conditional | conditional | production-testable | production-testable | conditional |
+| `experiment-tracker-exposure` | http-endpoint:/api; model-file:model | production-testable | conditional | conditional | production-testable | production-testable | production-testable |
 | `exposure-mapping` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `fabric-telemetry-exposure` | switch:switch/fabric | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `fabric-topology-isolation` | switch:switch/fabric | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
@@ -156,12 +163,14 @@ Legend: **production-testable** = execute against this profile without extra con
 | `hami-scheduler-auth-gap` | k8s-object:DaemonSet/hami-device-plugin; http-endpoint:/metrics; k8s-object:Pod; config-file:scheduler | conditional | conditional | production-testable | conditional | conditional | conditional |
 | `hardware-supply-chain` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `hybrid-cloud-egress-pivot` | http-endpoint:metadata; k8s-object:Pod | conditional | conditional | conditional | production-testable | conditional | no-surface |
+| `hypervisor-audit-integrity` | config-file:audit/hypervisor-audit.json; runtime-agent:audit-collector | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
 | `ib-sm-partition-audit` | switch:switch/fabric | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `ib-subnet-manager-hijack` | switch:switch/fabric | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `identity-federation-trust-matrix` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `image-pull-secret-theft` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `impersonate-abuse` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
-| `inference-gateway-pd` | k8s-object:LeaderWorkerSet; http-endpoint:/healthz; http-endpoint:/v1/chat/completions; k8s-object:Pod | conditional | conditional | conditional | conditional | production-testable | no-surface |
+| `inference-gateway-pd` | k8s-object:LeaderWorkerSet; http-endpoint:/healthz; http-endpoint:/v1/chat/completions; k8s-object:Pod | conditional | conditional | conditional | conditional | production-testable | conditional |
+| `inference-tenant-isolation-baseline` | http-endpoint:/v1/models; http-endpoint:/v1/chat/completions; config-file:inference/tenant-policy.json | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `iommu-smmu-config` | config-file:iommu/kernel-cmdline.txt | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
 | `ipmi-cipher-zero-bypass` | bmc:bmc/redfish | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
 | `kdigger-admission` | k8s-object:ValidatingWebhookConfiguration; http-endpoint:/validate; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
@@ -184,24 +193,25 @@ Legend: **production-testable** = execute against this profile without extra con
 | `kubetrail-persistence` | k8s-object:ValidatingWebhookConfiguration; http-endpoint:/validate; k8s-object:Pod; config-file:audit | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `kubetrail-token-audit` | k8s-object:Pod; config-file:audit | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `kubiscan-risky` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
-| `kv-cache-integrity-poison` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
-| `kv-oom-bomb` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
+| `kv-cache-integrity-poison` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
+| `kv-oom-bomb` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
 | `litellm-config-update-rce` | http-endpoint:/v1/models; config-file:litellm | conditional | production-testable | conditional | production-testable | production-testable | conditional |
 | `litellm-default-key-exfil` | http-endpoint:/v1/models; config-file:litellm | conditional | production-testable | conditional | production-testable | production-testable | conditional |
 | `llamafactory-checkpoint-rce` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
-| `long-context-memory-amplification` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
+| `long-context-memory-amplification` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
 | `long-context-training-collective-surface` | config-file:train; model-file:checkpoint; k8s-object:Pod; runtime-agent:nccl | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
 | `long-context-window-exhaustion` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `lora-adapter-injection` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `lws-leader-endpoint-audit` | k8s-object:LeaderWorkerSet; http-endpoint:/healthz | conditional | conditional | conditional | conditional | production-testable | no-surface |
 | `lws-secrets-lateral` | k8s-object:LeaderWorkerSet; http-endpoint:/healthz | conditional | conditional | conditional | conditional | production-testable | no-surface |
+| `mcp-control-plane-governance` | config-file:mcp/servers.json; http-endpoint:/mcp/tools | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
 | `megatron-checkpoint-rce` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `megatron-deepspeed-config-surface` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `metadata-egress` | http-endpoint:metadata; k8s-object:Pod | conditional | conditional | conditional | production-testable | conditional | no-surface |
 | `mig-profile-mismatch` | k8s-object:Node; runtime-agent:nvidia-device-plugin | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
-| `mlflow-model-rce` | http-endpoint:/api; model-file:model | production-testable | conditional | conditional | production-testable | production-testable | conditional |
-| `mlflow-trace-write` | http-endpoint:/api; model-file:model | production-testable | conditional | conditional | production-testable | production-testable | conditional |
-| `model-registry-exposure` | http-endpoint:/api; model-file:model | production-testable | conditional | conditional | production-testable | production-testable | conditional |
+| `mlflow-model-rce` | http-endpoint:/api; model-file:model | production-testable | conditional | conditional | production-testable | production-testable | production-testable |
+| `mlflow-trace-write` | http-endpoint:/api; model-file:model | production-testable | conditional | conditional | production-testable | production-testable | production-testable |
+| `model-registry-exposure` | http-endpoint:/api; model-file:model | production-testable | conditional | conditional | production-testable | production-testable | production-testable |
 | `model-watermark-backdoor-audit` | http-endpoint:/watermark; model-file:watermark | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
 | `model-watermark-backdoor-detect` | http-endpoint:/watermark; model-file:model | conditional | conditional | conditional | conditional | conditional | conditional |
 | `mps-context-shared` | k8s-object:Node; runtime-agent:nvidia-device-plugin | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
@@ -209,6 +219,7 @@ Legend: **production-testable** = execute against this profile without extra con
 | `multi-cloud-imds-credentials` | http-endpoint:metadata; k8s-object:Pod | conditional | conditional | conditional | production-testable | conditional | no-surface |
 | `multi-cluster-federation` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `multus-sriov-rdma-bypass` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
+| `munge-auth-audit` | config-file:slurm/munge.conf; config-file:slurm/munge.key.meta; runtime-agent:runtime-agent/munge | no-surface | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `nccl-collective-join` | config-file:train; model-file:checkpoint; k8s-object:Pod; runtime-agent:nccl | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
 | `nccl-port-exhaustion` | k8s-object:Pod; runtime-agent:nccl | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
 | `nccl-straggler-injection` | http-endpoint:/dpu; bmc:bmc/dpu; k8s-object:Pod; runtime-agent:nccl | conditional | production-testable | conditional | conditional | conditional | conditional |
@@ -218,9 +229,10 @@ Legend: **production-testable** = execute against this profile without extra con
 | `nvswitch-nvlink-topology` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `observability-exposure` | http-endpoint:/api; model-file:model; http-endpoint:/metrics; k8s-object:Pod | production-testable | conditional | conditional | production-testable | production-testable | conditional |
 | `oidc-issuer-confusion` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
-| `open-webui-code-execute-rce` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | no-surface |
-| `open-webui-file-overwrite` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | no-surface |
-| `open-webui-indirect-injection-exec` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | no-surface |
+| `open-webui-code-execute-rce` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | conditional |
+| `open-webui-file-overwrite` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | conditional |
+| `open-webui-indirect-injection-exec` | http-endpoint:/api; config-file:app | conditional | no-surface | no-surface | conditional | conditional | conditional |
+| `operator-cross-namespace-reference` | k8s-object:CustomResourceDefinition/*; k8s-object:ClusterRole/* | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `outbound-ssrf` | http-endpoint:metadata; k8s-object:Pod | conditional | conditional | conditional | production-testable | conditional | no-surface |
 | `overprivileged-sa-escalation` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `pcie-iommu-audit` | k8s-object:Node; config-file:iommu | production-testable | production-testable | conditional | conditional | conditional | conditional |
@@ -228,8 +240,8 @@ Legend: **production-testable** = execute against this profile without extra con
 | `peirates-primitives` | k8s-object:Node; http-endpoint:/healthz; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `post-quantum-tls-audit` | http-endpoint:/tls | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
 | `post-quantum-tls-posture` | http-endpoint:/tls | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
-| `prefill-decode-kv-channel-unauth` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
-| `prefix-cache-cross-tenant-leak` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
+| `prefill-decode-kv-channel-unauth` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
+| `prefix-cache-cross-tenant-leak` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
 | `pretrain-job-escape` | k8s-object:RayCluster; http-endpoint:/dashboard; config-file:train; model-file:checkpoint; k8s-object:Pod | conditional | conditional | conditional | conditional | production-testable | conditional |
 | `privileged-gpu-pod-escape` | k8s-object:Node; runtime-agent:nvidia-device-plugin; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `privileged-workloads` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
@@ -243,7 +255,7 @@ Legend: **production-testable** = execute against this profile without extra con
 | `rbac-escalate-verb` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `rbac-mapping` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `redfish-default-credentials` | bmc:bmc/redfish | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
-| `remote-kv-pool-isolation` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
+| `remote-kv-pool-isolation` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
 | `reverse-rbac-lookup` | k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `reward-hacking-detect` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `reward-model-abuse` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
@@ -267,13 +279,24 @@ Legend: **production-testable** = execute against this profile without extra con
 | `sharp-collective-config` | switch:switch/fabric; k8s-object:Pod; runtime-agent:nccl | production-testable | conditional | conditional | conditional | conditional | conditional |
 | `sharp-in-network-poison` | switch:switch/fabric | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `sharp-session-trust-audit` | switch:switch/fabric | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
-| `similarity-cache-false-hit` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
+| `similarity-cache-false-hit` | http-endpoint:/v1/chat/completions; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
 | `skyrl-dev-pickle-rce` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `skyrl-tinker-hijack` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `slime-weight-pull-poison` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
+| `slurm-accountingdbd-audit` | config-file:slurm/slurmdbd.conf; runtime-agent:runtime-agent/slurmdbd | no-surface | no-surface | no-surface | no-surface | no-surface | production-testable |
+| `slurm-cgroup-constraint-audit` | config-file:slurm/cgroup.conf; runtime-agent:runtime-agent/cgroup | no-surface | no-surface | no-surface | no-surface | no-surface | production-testable |
+| `slurm-gres-gpu-isolation` | config-file:slurm/gres.json; config-file:slurm/cgroup.conf | no-surface | no-surface | no-surface | no-surface | no-surface | production-testable |
+| `slurm-jwt-auth-audit` | config-file:slurm/jwt.json; config-file:slurm/slurm.conf | no-surface | no-surface | no-surface | no-surface | no-surface | production-testable |
+| `slurm-node-partition-policy` | config-file:slurm/nodes.json; config-file:slurm/partitions.json; config-file:slurm/qos.json | no-surface | no-surface | no-surface | no-surface | no-surface | production-testable |
+| `slurm-prolog-epilog-audit` | config-file:slurm/prolog-epilog.json; config-file:slurm/slurm.conf | no-surface | no-surface | no-surface | no-surface | no-surface | production-testable |
+| `slurm-shared-storage-audit` | config-file:storage/lustre/mounts.json; config-file:storage/gpfs/mounts.json | no-surface | no-surface | no-surface | no-surface | no-surface | production-testable |
+| `slurmctld-config-audit` | config-file:slurm/slurm.conf; runtime-agent:runtime-agent/slurmctld | no-surface | no-surface | no-surface | no-surface | no-surface | production-testable |
+| `slurmd-config-audit` | config-file:slurm/slurm.conf; runtime-agent:runtime-agent/slurmd | no-surface | no-surface | no-surface | no-surface | no-surface | production-testable |
+| `slurmrestd-exposure` | config-file:slurm/slurmrestd.env; http-endpoint:/slurm/v0.0.40/jobs | no-surface | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `sonic-config-plane-write` | switch:switch/sonic | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `sonic-fabric-config-audit` | switch:switch/sonic; switch:switch/fabric | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `sonic-rsyslog-injection` | switch:switch/sonic | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
+| `spank-plugin-integrity` | config-file:slurm/plugstack.conf; runtime-agent:runtime-agent/spank | no-surface | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `spdm-pcie-doe` | config-file:spdm/device-export.json | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
 | `spiffe-spire-audit` | k8s-object:Deployment/spire-server; runtime-agent:spire-agent; config-file:spire | production-testable | no-surface | no-surface | no-surface | no-surface | no-surface |
 | `spiffe-spire-surface` | k8s-object:Deployment/spire-server; runtime-agent:spire-agent; config-file:spire | production-testable | no-surface | no-surface | no-surface | no-surface | no-surface |
@@ -290,18 +313,18 @@ Legend: **production-testable** = execute against this profile without extra con
 | `tpm-measured-boot` | bmc:tpm; config-file:attest | production-testable | production-testable | no-surface | no-surface | no-surface | production-testable |
 | `training-data-leak` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `training-silent-corruption` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
-| `trl-serve-dev-mode` | http-endpoint:/v1/models; config-file:vllm; config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
-| `trust-remote-code-supply-chain` | http-endpoint:/v1/models; config-file:vllm | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
+| `trl-serve-dev-mode` | http-endpoint:/v1/models; config-file:vllm; config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
+| `trust-remote-code-supply-chain` | http-endpoint:/v1/models; config-file:vllm | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `unlimited-query-distillation` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `vector-db-exposure` | http-endpoint:/collections | no-surface | no-surface | no-surface | no-surface | production-testable | no-surface |
 | `verl-checkpoint-pickle` | config-file:train; model-file:checkpoint | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `verl-hdfs-command-injection` | k8s-object:RayCluster; http-endpoint:/dashboard; config-file:train; model-file:checkpoint | conditional | conditional | conditional | conditional | production-testable | conditional |
 | `vllm-operator-rbac-escalation` | http-endpoint:/v1/models; config-file:vllm; k8s-object:Pod | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
-| `vllm-pickle-pipe-rce` | config-file:vllm; model-file:model | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
-| `vllm-plugin-auth-bypass` | http-endpoint:/v1/models; config-file:vllm | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
+| `vllm-pickle-pipe-rce` | config-file:vllm; model-file:model | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
+| `vllm-plugin-auth-bypass` | http-endpoint:/v1/models; config-file:vllm | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `vllm-sglang-patch-matrix` | http-endpoint:/v1/models; config-file:vllm; config-file:sglang | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
-| `vllm-surface-fuzz` | http-endpoint:/v1/models; config-file:vllm | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
-| `vllm-timing-oracle` | http-endpoint:/v1/models; config-file:vllm | production-testable | production-testable | production-testable | production-testable | production-testable | conditional |
+| `vllm-surface-fuzz` | http-endpoint:/v1/models; config-file:vllm | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
+| `vllm-timing-oracle` | http-endpoint:/v1/models; config-file:vllm | production-testable | production-testable | production-testable | production-testable | production-testable | production-testable |
 | `wasm-runtime-audit` | k8s-object:RuntimeClass/wasm; runtime-agent:wasmtime | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
 | `wasm-workload-surface` | k8s-object:RuntimeClass/wasm; runtime-agent:wasmtime | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
 
@@ -350,4 +373,4 @@ A2 (BMC/DPU/IPMI out-of-band takeover) is covered by existing `bmc-ipmi-exposure
 
 C-tier rows remain callable only with an explicit `--probe` / customer profile; their presence in this matrix is not a claim of production chip coverage.
 
-Snapshot: 256 modules, 6 profiles, 7 quarantined modules, 8 globally no-surface.
+Snapshot: 275 modules, 6 profiles, 11 quarantined modules, 12 globally no-surface.

@@ -109,6 +109,14 @@ def _meta_block(store, run, lang: str) -> dict[str, str]:
     ok = store.verify_manifest(run.name)
     zh_status = "通过" if ok else "未通过"
     en_status = "verified" if ok else "FAILED"
+    # 报告时间取 run 创建时间，保证同一 run 多次渲染逐字节一致；run 缺失时回退当前时间。
+    try:
+        rows = run.query("SELECT created_at FROM runs WHERE name=?", (run.name,))
+        created_at = float(rows[0][0]) if rows and rows[0][0] is not None else None
+    except Exception:  # noqa: BLE001 -- 旧 run/测试桩无 runs 表时保持可用
+        created_at = None
+    generated_at = (time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(created_at))
+                    if created_at is not None else time.strftime("%Y-%m-%d %H:%M:%S"))
     return {
         "meta_run": _pick(lang, "运行 Run", "Run"),
         "meta_workspace": _pick(lang, "工作区 Workspace", "Workspace"),
@@ -116,7 +124,7 @@ def _meta_block(store, run, lang: str) -> dict[str, str]:
         "meta_lang": _pick(lang, "语言 Lang", "Lang"),
         "run_name": run.name,
         "workspace": store.workspace,
-        "generated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "generated_at": generated_at,
         "lang_label": {"bi": "中英对照 / Bilingual (CN/EN)", "zh": "中文 Chinese", "en": "English"}[lang],
         "tamper_decl": _pick(
             lang,

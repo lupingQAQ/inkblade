@@ -1,0 +1,11 @@
+{
+  "Prolog": "/etc/slurm/prolog.sh",
+  "Epilog": "/etc/slurm/epilog.sh",
+  "PrologSlurmctld": "",
+  "EpilogSlurmctld": "",
+  "PrologFlags": "Alloc",
+  "scripts": {
+    "/etc/slurm/prolog.sh": {"mode": "0777", "owner": "alice", "signed": false, "root_exec": true},
+    "/etc/slurm/epilog.sh": {"mode": "0666", "owner": "alice", "signed": false, "root_exec": true}
+  }
+}

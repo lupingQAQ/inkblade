@@ -1,0 +1,13 @@
+{
+  "Prolog": "/etc/slurm/prolog.sh",
+  "Epilog": "/etc/slurm/epilog.sh",
+  "PrologSlurmctld": "/etc/slurm/ctld-prolog.sh",
+  "EpilogSlurmctld": "/etc/slurm/ctld-epilog.sh",
+  "PrologFlags": "Alloc,Contain",
+  "scripts": {
+    "/etc/slurm/prolog.sh": {"mode": "0755", "owner": "root", "signed": true, "root_exec": true},
+    "/etc/slurm/epilog.sh": {"mode": "0755", "owner": "root", "signed": true, "root_exec": true},
+    "/etc/slurm/ctld-prolog.sh": {"mode": "0755", "owner": "root", "signed": true, "root_exec": true},
+    "/etc/slurm/ctld-epilog.sh": {"mode": "0755", "owner": "root", "signed": true, "root_exec": true}
+  }
+}

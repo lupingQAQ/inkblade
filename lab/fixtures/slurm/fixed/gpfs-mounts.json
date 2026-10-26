@@ -1,0 +1,7 @@
+{
+  "mounts": [
+    {"path": "/gpfs", "fstype": "gpfs", "options": ["rw", "nosuid", "nodev"],
+     "uid_mapping": "sssd", "acl": "enforce", "exports": ["10.20.0.0/16"],
+     "quota": true, "world_writable_dirs": []}
+  ]
+}

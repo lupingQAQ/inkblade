@@ -1,0 +1,10 @@
+{
+  "qos": [
+    {"name": "gpu-normal", "grp_tres": "cpu=1024,gres/gpu=64",
+     "max_tres_per_user": "cpu=128,gres/gpu=8", "max_jobs_per_user": "32",
+     "flags": ["DenyOnLimit"], "priority": 100},
+    {"name": "cpu-normal", "grp_tres": "cpu=512,mem=2048G",
+     "max_tres_per_user": "cpu=64,mem=256G", "max_jobs_per_user": "16",
+     "flags": ["DenyOnLimit"], "priority": 50}
+  ]
+}

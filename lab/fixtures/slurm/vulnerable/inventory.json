@@ -1,0 +1,21 @@
+{
+  "schema": "trident-slurm-inventory-v1",
+  "generated_at": "2026-10-26T00:00:00Z",
+  "fixture": true,
+  "files": {
+    "slurm.conf": {"mode": "0644", "owner": "root", "signed": false},
+    "cgroup.conf": {"mode": "0644", "owner": "root", "signed": false},
+    "plugstack.conf": {"mode": "0666", "owner": "root", "signed": false},
+    "/home/alice/plugins/libspank_custom.so": {"mode": "0666", "owner": "alice", "signed": false, "sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
+    "/opt/slurm/plugins/libspank_audit.so": {"mode": "0755", "owner": "root", "signed": false, "sha256": "2222222222222222222222222222222222222222222222222222222222222222"},
+    "munge.key.meta": {"mode": "0644", "owner": "root", "signed": false},
+    "slurmdbd.conf": {"mode": "0644", "owner": "root", "signed": false},
+    "slurmrestd.env": {"mode": "0644", "owner": "root", "signed": false},
+    "jwt.json": {"mode": "0644", "owner": "root", "signed": false},
+    "prolog-epilog.json": {"mode": "0644", "owner": "root", "signed": false},
+    "/var/spool/slurmctld": {"mode": "0777", "owner": "root", "signed": false},
+    "/var/spool/slurmd": {"mode": "0777", "owner": "root", "signed": false},
+    "/etc/slurm/prolog.sh": {"mode": "0777", "owner": "alice", "signed": false},
+    "/etc/slurm/epilog.sh": {"mode": "0666", "owner": "alice", "signed": false}
+  }
+}

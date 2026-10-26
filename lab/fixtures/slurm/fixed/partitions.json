@@ -1,0 +1,10 @@
+{
+  "partitions": [
+    {"name": "gpu", "default": "NO", "allow_groups": "ml-trainers", "allow_accounts": "research",
+     "max_nodes": "64", "max_time": "7-00:00:00", "over_subscribe": "NO",
+     "qos": "gpu-normal", "preempt_mode": "SUSPEND", "nodes": "gpu-[01-64]"},
+    {"name": "cpu", "default": "YES", "allow_groups": "ml-trainers,ops",
+     "allow_accounts": "research,ops", "max_nodes": "16", "max_time": "1-00:00:00",
+     "over_subscribe": "NO", "qos": "cpu-normal", "preempt_mode": "OFF", "nodes": "cpu-[01-32]"}
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "scale": {
+    "schema": "trident-audit-scale/1",
+    "requested": 1000000,
+    "inserted": 1000000,
+    "duplicates": 0,
+    "rows": 1000000,
+    "denied": 58824,
+    "by_verb": {
+      "create": 166667,
+      "delete": 166667,
+      "exec": 166666,
+      "get": 166666,
+      "list": 166667,
+      "update": 166667
+    },
+    "elapsed_seconds": 98.541,
+    "events_per_second": 10148.1,
+    "db_bytes": 191655936,
+    "peak_traced_bytes": 1713433,
+    "dedupe": true,
+    "note": "µ£¼µ£║σÉêµêÉΣ║ïΣ╗╢∩╝¢Σ╕ìΣ╗úΦí¿σ«óµê╖τöƒΣ║ºΣ║ïΣ╗╢µ╡ü/SLAπÇé"
+  },
+  "projection": {
+    "events_per_second": 10148.1,
+    "projected_daily_capacity": 876795840,
+    "meets_one_million_per_day": true,
+    "headroom_factor": 876.8,
+    "note": "τ║┐µÇºσñûµÄ¿Σ╗àτö¿Σ║Äσ«╣ΘçÅΦºäσêÆ∩╝îΘ£Çσ«óµê╖σ│░σÇ╝/Θò┐τ¿│σ«₧µ╡ïσñìµá╕πÇé"
+  }
+}

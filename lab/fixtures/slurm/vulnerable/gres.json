@@ -1,0 +1,10 @@
+{
+  "GresTypes": "gpu",
+  "AutoDetect": "nvml",
+  "ConstrainDevices": "no",
+  "gres": [
+    {"name": "gpu", "type": "nvidia", "count": 8, "mig": false,
+     "binding": "none", "device_cgroup_allow": ["*:*"]}
+  ],
+  "device_allow": ["a *:* rwm"]
+}

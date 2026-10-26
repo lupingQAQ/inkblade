@@ -98,6 +98,8 @@ from trident.rules.validate import validate  # noqa: E402
 MODULES_DIR = REPO_ROOT / "trident" / "modules"
 CHAINS_DIR = REPO_ROOT / "trident" / "chains"
 THEFT_FIXTURES = REPO_ROOT / "lab" / "fixtures" / "theft"
+RESIDUAL_FIXTURES = REPO_ROOT / "lab" / "fixtures" / "residual2026"
+SLURM_FIXTURES = REPO_ROOT / "lab" / "fixtures" / "slurm"
 TARGET_CHAIN = "flat-network-admin-plane-weight-poison"
 FAKE_TOKEN = "hf_FAKEtokenDoNotUseSampleABCD1234wxyz"
 
@@ -1770,6 +1772,167 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
             checks.run("trainstack-template-injection-detect",
                        "模板注入实效：system 槽被注入 run marker 指令并检出（原样渲染）+ 回滚精确复原",
                        trainstack_template_injection)
+
+            def _latest_summary(module_key: str) -> dict[str, Any]:
+                rows = run.query(
+                    "SELECT result_summary FROM steps WHERE run=? AND step_key=? ORDER BY id DESC LIMIT 1",
+                    (run.name, module_key),
+                )
+                return json.loads(rows[0][0]) if rows else {}
+
+            def _run_fixture(module_key: str, fixture: Path, *, probe: bool = False) -> list[dict]:
+                before = len(run.findings)
+                params: dict[str, Any] = {"snapshot": str(fixture)}
+                if probe:
+                    params["probe"] = True
+                run_module(store, tester, module_key, params, modules_dir=MODULES_DIR, run=run,
+                           surface_ctx={"probe": probe, "enforce": True} if probe else None)
+                return run.findings[before:]
+
+            def residual_hypervisor_race() -> dict[str, Any]:
+                new = _run_fixture("hypervisor-audit-integrity",
+                                   RESIDUAL_FIXTURES / "vulnerable.json", probe=True)
+                high = [f for f in new if f["severity"] in ("critical", "high")]
+                summary = _latest_summary("hypervisor-audit-integrity")
+                if len(high) < 3 or not summary.get("guest_writable_log"):
+                    raise AssertionError(f"hypervisor 审计篡改面未检出：{len(high)}")
+                fixed = _run_fixture("hypervisor-audit-integrity",
+                                     RESIDUAL_FIXTURES / "fixed.json", probe=True)
+                fixed_high = [f for f in fixed if f["severity"] in ("critical", "high")]
+                if fixed_high:
+                    raise AssertionError("fixed hypervisor 审计仍有 high/critical")
+                return {"vulnerable_high": len(high),
+                        "collector_location": summary.get("collector_location"),
+                        "guest_writable_log": summary.get("guest_writable_log"),
+                        "race_window_ms": summary.get("race_window_ms"),
+                        "fixed_high": len(fixed_high), "detected": True}
+
+            checks.run("residual-hypervisor-audit-race",
+                       "R01 实效：guest 内采集器 + 可写日志 + 竞态窗口 → high；fixed 0 high",
+                       residual_hypervisor_race)
+
+            def residual_skill_poison() -> dict[str, Any]:
+                new = _run_fixture("agent-skill-registry-supply-chain",
+                                   RESIDUAL_FIXTURES / "vulnerable.json", probe=True)
+                critical = [f for f in new if f["severity"] == "critical"]
+                summary = _latest_summary("agent-skill-registry-supply-chain")
+                if not critical or summary.get("signature_required"):
+                    raise AssertionError("skill 注册表恶意安装脚本未检出 critical")
+                fixed = _run_fixture("agent-skill-registry-supply-chain",
+                                     RESIDUAL_FIXTURES / "fixed.json", probe=True)
+                fixed_high = [f for f in fixed if f["severity"] in ("critical", "high")]
+                if fixed_high:
+                    raise AssertionError("fixed skill 注册表仍有 high/critical")
+                return {"vulnerable_critical": len(critical),
+                        "skills": summary.get("skills"),
+                        "signature_required": summary.get("signature_required"),
+                        "fixed_high": len(fixed_high), "detected": True}
+
+            checks.run("residual-agent-skill-poison",
+                       "R02 实效：未签名 skill + curl|sh 安装 → critical；fixed 0 high",
+                       residual_skill_poison)
+
+            def residual_operator_cross_ns() -> dict[str, Any]:
+                new = _run_fixture("operator-cross-namespace-reference",
+                                   RESIDUAL_FIXTURES / "vulnerable.json")
+                high = [f for f in new if f["severity"] in ("critical", "high")]
+                summary = _latest_summary("operator-cross-namespace-reference")
+                if len(high) < 3 or int(summary.get("cross_namespace_refs") or 0) < 1:
+                    raise AssertionError(f"Operator 跨 ns 引用未检出：{len(high)}")
+                fixed = _run_fixture("operator-cross-namespace-reference",
+                                     RESIDUAL_FIXTURES / "fixed.json")
+                fixed_high = [f for f in fixed if f["severity"] in ("critical", "high")]
+                if fixed_high:
+                    raise AssertionError("fixed Operator 引用图仍有 high/critical")
+                return {"vulnerable_high": len(high),
+                        "cross_namespace_refs": summary.get("cross_namespace_refs"),
+                        "operators": summary.get("operators"),
+                        "fixed_high": len(fixed_high), "detected": True}
+
+            checks.run("residual-operator-cross-namespace",
+                       "R03 实效：Operator 全 ns watch + CR 跨 ns 引用 Secret → high；fixed 0 high",
+                       residual_operator_cross_ns)
+
+            def residual_mcp_governance() -> dict[str, Any]:
+                new = _run_fixture("mcp-control-plane-governance",
+                                   RESIDUAL_FIXTURES / "vulnerable.json", probe=True)
+                critical = [f for f in new if f["severity"] == "critical"]
+                summary = _latest_summary("mcp-control-plane-governance")
+                if not critical or int(summary.get("critical") or 0) < 1:
+                    raise AssertionError("MCP 无认证 + 全网监听未检出 critical")
+                fixed = _run_fixture("mcp-control-plane-governance",
+                                     RESIDUAL_FIXTURES / "fixed.json", probe=True)
+                fixed_high = [f for f in fixed if f["severity"] in ("critical", "high")]
+                if fixed_high:
+                    raise AssertionError("fixed MCP 仍有 high/critical")
+                return {"vulnerable_critical": len(critical),
+                        "servers": summary.get("servers"),
+                        "signed_registry": summary.get("signed_registry"),
+                        "fixed_high": len(fixed_high), "detected": True}
+
+            checks.run("residual-mcp-control-plane",
+                       "R04 实效：MCP 无认证/0.0.0.0/通配工具 → critical；fixed 0 high",
+                       residual_mcp_governance)
+
+            def slurm_jwt_weak_key() -> dict[str, Any]:
+                before = len(run.findings)
+                run_module(store, tester, "slurm-jwt-auth-audit",
+                           {"snapshot": str(SLURM_FIXTURES / "vulnerable")},
+                           modules_dir=MODULES_DIR, run=run,
+                           surface_ctx={"profile": "slurm-hpc", "enforce": True})
+                new = run.findings[before:]
+                high = [f for f in new if f["severity"] in ("critical", "high")]
+                summary = _latest_summary("slurm-jwt-auth-audit")
+                if len(high) < 4 or int(summary.get("weak_hs_keys") or 0) < 1:
+                    raise AssertionError(f"Slurm JWT 弱密钥未检出：{len(high)}")
+                before = len(run.findings)
+                run_module(store, tester, "slurm-jwt-auth-audit",
+                           {"snapshot": str(SLURM_FIXTURES / "fixed")},
+                           modules_dir=MODULES_DIR, run=run,
+                           surface_ctx={"profile": "slurm-hpc", "enforce": True})
+                fixed_high = [f for f in run.findings[before:]
+                              if f["severity"] in ("critical", "high")]
+                if fixed_high:
+                    raise AssertionError("fixed Slurm JWT 仍有 high/critical")
+                return {"vulnerable_high": len(high),
+                        "weak_hs_keys": summary.get("weak_hs_keys"),
+                        "key_file_mode": summary.get("key_file_mode"),
+                        "max_token_lifetime_seconds": summary.get("max_token_lifetime_seconds"),
+                        "fixed_high": len(fixed_high), "detected": True}
+
+            checks.run("slurm-jwt-weak-key",
+                       "Slurm JWT 实效：短 HS256 + 0644 key + 无轮换/过期 → high；fixed 0 high",
+                       slurm_jwt_weak_key)
+
+            def slurm_cgroup_device_escape() -> dict[str, Any]:
+                before = len(run.findings)
+                run_module(store, tester, "slurm-cgroup-constraint-audit",
+                           {"snapshot": str(SLURM_FIXTURES / "vulnerable")},
+                           modules_dir=MODULES_DIR, run=run,
+                           surface_ctx={"profile": "slurm-hpc", "enforce": True})
+                new = run.findings[before:]
+                high = [f for f in new if f["severity"] in ("critical", "high")]
+                summary = _latest_summary("slurm-cgroup-constraint-audit")
+                if len(high) < 4 or summary.get("constrain_devices"):
+                    raise AssertionError(f"Slurm cgroup 设备越界未检出：{len(high)}")
+                before = len(run.findings)
+                run_module(store, tester, "slurm-cgroup-constraint-audit",
+                           {"snapshot": str(SLURM_FIXTURES / "fixed")},
+                           modules_dir=MODULES_DIR, run=run,
+                           surface_ctx={"profile": "slurm-hpc", "enforce": True})
+                fixed_high = [f for f in run.findings[before:]
+                              if f["severity"] in ("critical", "high")]
+                if fixed_high:
+                    raise AssertionError("fixed cgroup 仍有 high/critical")
+                return {"vulnerable_high": len(high),
+                        "constrain_cores": summary.get("constrain_cores"),
+                        "constrain_ram": summary.get("constrain_ram"),
+                        "constrain_devices": summary.get("constrain_devices"),
+                        "fixed_high": len(fixed_high), "detected": True}
+
+            checks.run("slurm-cgroup-device-escape",
+                       "Slurm cgroup 实效：核心/内存/设备约束全关 → high；fixed 0 high",
+                       slurm_cgroup_device_escape)
 
             run_cve_checks(checks, store=store, tester=tester, run=run,
                            lab_root=lab_root, cve_server=cve_sim)

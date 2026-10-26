@@ -1,0 +1,25 @@
+{
+  "key": "mcp-control-plane-governance",
+  "name": {
+    "zh": "MCP 控制面与工具权限治理检查",
+    "en": "MCP control-plane and tool permission governance check"
+  },
+  "series": "权限链",
+  "description": "检查 MCP server 注册表：无认证/0.0.0.0、工具 scopes 通配、写工具无审批、无 allowlist、未签名/清单哈希变化（rug pull）、exec/write 工具无沙箱。对应 IEEE S&P 2026 Parasites in the Toolchain（I21）与 DEF CON 34 19,000 MCP servers（I37）。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "MCP 注册表/工具清单 JSON（registry/servers/tools）"
+  },
+  "produces": "mcp-control-plane-governance.json + MCP 控制面 findings",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md R04 / I21,I37",
+  "necessity": "MCP 把工具执行权交给模型；默认无认证、全 scope 写工具与可变工具描述让提示注入直接升级为集群操作/凭据读取，必须在控制面统一治理。",
+  "combo_signature": "mcp-tool-permission-abuse",
+  "surfaces": [
+    {"type": "config-file", "selector": "mcp/servers.json"},
+    {"type": "http-endpoint", "selector": "/mcp/tools"}
+  ],
+  "default_enabled": false,
+  "default_disabled_reason": "主流六画像无 MCP 注册表/控制面；客户部署 MCP gateway 后显式启用。"
+}

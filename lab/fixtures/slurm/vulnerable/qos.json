@@ -1,0 +1,7 @@
+{
+  "qos": [
+    {"name": "normal", "grp_tres": "cpu=UNLIMITED,gres/gpu=UNLIMITED",
+     "max_tres_per_user": "UNLIMITED", "max_jobs_per_user": "UNLIMITED",
+     "flags": [], "priority": 0}
+  ]
+}

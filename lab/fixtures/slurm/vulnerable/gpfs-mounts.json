@@ -1,0 +1,7 @@
+{
+  "mounts": [
+    {"path": "/gpfs", "fstype": "gpfs", "options": ["rw", "noatime"],
+     "uid_mapping": "none", "acl": "allow", "exports": ["*"], "quota": false,
+     "world_writable_dirs": ["/gpfs/shared", "/gpfs/checkpoints"]}
+  ]
+}

@@ -25,6 +25,7 @@
     {"type": "k8s-object", "selector": "APIService/v1beta1.metrics.k8s.io"},
     {"type": "k8s-object", "selector": "ValidatingWebhookConfiguration/trident"},
     {"type": "k8s-object", "selector": "MutatingWebhookConfiguration/trident"},
+    {"type": "k8s-object", "selector": "CustomResourceDefinition/widgets.example.com"},
     {"type": "k8s-object", "selector": "RuntimeClass/runc"},
     {"type": "k8s-object", "selector": "Ingress/vllm"},
     {"type": "k8s-object", "selector": "Job/train"},

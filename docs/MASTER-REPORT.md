@@ -1,9 +1,25 @@
 # Trident 总报告：把 ML 集群渗透测试做成可复述、可复核、可复跑的事
 
-> 版本：2026-10-25　读者：没做过 K8s 安全、但需要判断这套东西是否可信的人
+> 版本：2026-10-26（终版）　读者：没做过 K8s 安全、但需要判断这套东西是否可信的人
 > 读法：第一至三章讲“是什么、为什么、怎么走”；第四至六章讲“改了什么、数字如何、和谁比”；第七至十章讲“哪里没做到、错在哪、词怎么解释、证据在哪”。
 > 状态标记：`[已测]` 有可复现实验或测试；`[模拟]` 只在仿真器、夹具或本机回环上验证；`[未测]` 没有可复现数据，不写成已支持。
 > 全文字数约 1.8 万汉字（含表格与代码共 5.3 万字符）。所有数字给出来源文件；没有来源的数字不写。
+> **证据日期：2026-10-26（终版）**。本轮计数与仓库当前实际同步，复跑命令见 §10.7。
+
+> **终版计数（证据日期：2026-10-26）**
+>
+> | 项 | 当前实际 | 来源 |
+> |---|---:|---|
+> | 模块 | **275**（默认启用 264 / 隔离 11） | `trident/modules/*/module.json`、`docs/SURFACE-REALISM.md` |
+> | 单元测试 | **Ran 1933 · OK**（2 skipped；公开树 1 项为并行 scratch 在途红） | `python -m unittest discover -s tests`（§10.7） |
+> | 可利用性核验 | **32 verified / 98 static-only / 22 unsupported**（共 152） | `trident/core/exploit-registry.json` |
+> | 画像覆盖（production，6 画像） | 73.48% / 70.08% / 62.12% / 70.45% / 71.21% / **25.76%**（Slurm 域级 88.2%） | `docs/SURFACE-REALISM.md`、`docs/SLURM-HPC-COVERAGE.md` |
+> | 默认 PoC | **2**（六画像默认可利用 1/1/2/0/2/0） | `exploit-registry.json` + `SURFACE-REALISM.md` |
+> | 无面模块 | **12**（11 个已隔离；1 个待 owner 决定） | `docs/SURFACE-REALISM.md` §2 |
+> | 未达成项 | **11 条**（见 §7.7） | 本文 §7、`docs/SOTA-2026-10.md` |
+>
+> 口径：模块/画像/无面为静态统计；测试为本轮全量 `unittest discover` 实测；verified 只认
+> `exploit-registry.json` 的 `verified`，static-only/unsupported 不计入可利用清单。
 
 ---
 
@@ -209,7 +225,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 ### 3.12 一次端到端运行是什么样
 
-`trident/e2e-check.py` 在本机 mock 靶场上跑完整闭环：18 个代表模块、25 条链的 dry-run、权重投毒链的真实执行、三层证据、双语报告、规则包、紫队矩阵、四角色隔离。结果是 **15/15 PASS**，证据在 `reports/samples/e2e/e2e-check.json`。真实集群另有一条验证：QEMU 里的单节点 k3s，6 个侦察模块跑真实 kubectl，得到 16 条 findings；NetworkPolicy 默认拒绝普通 Pod，但 `hostNetwork` Pod 可达，判定 `bypass-confirmed`。这两条证据的边界不同：前者证明“流程能闭环”，后者证明“真 API/真数据面能跑”，都不是“万卡生产环境”。
+`trident/e2e-check.py` 在本机 mock 靶场上跑完整闭环：18 个代表模块、29 条链的 dry-run、权重投毒链的真实执行、三层证据、双语报告、规则包、紫队矩阵、四角色隔离。结果是 **15/15 PASS**，证据在 `reports/samples/e2e/e2e-check.json`。真实集群另有一条验证：QEMU 里的单节点 k3s，6 个侦察模块跑真实 kubectl，得到 16 条 findings；NetworkPolicy 默认拒绝普通 Pod，但 `hostNetwork` Pod 可达，判定 `bypass-confirmed`。这两条证据的边界不同：前者证明“流程能闭环”，后者证明“真 API/真数据面能跑”，都不是“万卡生产环境”。
 
 **证据索引（本章）**：[运行手册](RUNBOOK.md) · [端到端验收](../reports/samples/e2e/e2e-check.json) · [真实集群验证](REAL-CLUSTER-VERIFICATION.md) · [效果验证](EFFECT-VERIFICATION.md) · [授权代码](../trident/core/roe.py) · [执行器](../trident/core/runner.py) · [证据库](../trident/core/evidence.py) · [报告渲染](../trident/reports/render.py) · [规则生成](../trident/rules/generate.py)
 
@@ -476,7 +492,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 ### 5.5 怎么读这些数字
 
-第一，`+1,545%` 的吞吐差距不是“产品快 15 倍”。ARTEX 测的是 `/api/agents`，Trident 测的是 `/api/v1/graph`；ARTEX 跑在 QEMU TCG，Trident 跑在宿主。第二，`-99.2%` 的同靶场时延不是“产品快 128 倍”。它包含 TCG 放大、ARTEX 的 planner debounce、worker 轮询和 3 秒状态轮询。第三，`-83.5%` 的内存不是“同等功能下省 6 倍”。ARTEX 的值是长跑实例（含 PG 缓存），新起栈是 75.2 MiB；Trident 是单进程。第四，`-99.7%` 的磁盘不是同口径。ARTEX 是镜像，Trident 是代码树；证据库会随 run 增长。第五，`17/17` 是 `docs/EFFECT-VERIFICATION.md` 当前落盘的口径；`DEV-LOG.md` 另记 fabric 三项并入后 20/20，两处尚未合并，本文不把 20/20 当已落盘结论。
+第一，`+1,545%` 的吞吐差距不是“产品快 15 倍”。ARTEX 测的是 `/api/agents`，Trident 测的是 `/api/v1/graph`；ARTEX 跑在 QEMU TCG，Trident 跑在宿主。第二，`-99.2%` 的同靶场时延不是“产品快 128 倍”。它包含 TCG 放大、ARTEX 的 planner debounce、worker 轮询和 3 秒状态轮询。第三，`-83.5%` 的内存不是“同等功能下省 6 倍”。ARTEX 的值是长跑实例（含 PG 缓存），新起栈是 75.2 MiB；Trident 是单进程。第四，`-99.7%` 的磁盘不是同口径。ARTEX 是镜像，Trident 是代码树；证据库会随 run 增长。第五，`47/47` 是 `docs/EFFECT-VERIFICATION.md` 与 `reports/samples/effects/effects.json` 当前落盘的口径（含 chip 4 项）；此前 17/17、20/20 的旧口径已合并，不再引用。
 
 **证据索引（本章）**：[腾讯微评测](SECTION3-METRICS.md) · [Agent 评测](AGENT-EVAL-RESULTS.md) · [性能对比](PERFORMANCE-COMPARISON.md) · [ARTEX 同靶场](ARTEX-BENCH-RESULT.md) · [规模压测](SCALE-RESULTS.md) · [效果验证](EFFECT-VERIFICATION.md) · [真实集群](REAL-CLUSTER-VERIFICATION.md)
 
@@ -578,7 +594,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 **终态**：真实：未达成。模拟：已做。未达成：10K+ GPU 裸机、真实 NCCL/RDMA/SHARP 数据面、真实故障域。
 
-**已做验证**：`docs/SCALE-RESULTS.md` 用合成 100/1,000/5,000/10,000 个 K8s 对象跑 11 个侦察模块、可达性图和规则生成：10,000 对象总耗时 1.645s，侦察 40.4ms，峰值 RSS 54MB，findings 10,891；三处 O(n²) 改索引后，同输入 330.8ms→46.5ms（×7.11），findings 逐条一致。真 k3s 只到 204 个对象：采集 6.4s，11 模块 199.7ms，145 findings。`docs/FABRIC-ATTACK-SURFACE.md` 用 `lab/fabric_dos_sim.py` 做 11 个 fabric 面的控制面/数据面语义仿真（SHARP 会话、IB SM、PFC、NCCL 端口、checkpoint IO、IMDS、KV OOM、梯度、gang、Xid、rail）；`DEV-LOG.md` 记 fabric 三项并入 verify-effects 后 20/20，但 `docs/EFFECT-VERIFICATION.md` 当前落盘仍是 17 项，两处未合并。`docs/FABRIC-SIM-RESULTS.md` 已落盘：1,024/10,000 节点 rail/多平面离散事件仿真（1,024 mixed：PFC 76,801,033、ECN 74、跨 rail 37、worst/median 9.04/2.06ms；10,000 mixed：PFC 102,401,629、ECN 133、跨 rail 64、worst/median 8.95/1.38ms），并调用真实 `fabric-topology-isolation` / `roce-pfc-storm` / `nccl-straggler-injection` 模块裁决（PFC/straggler 均 high）。**这些是仿真，不是真实交换机计数器。**
+**已做验证**：`docs/SCALE-RESULTS.md` 用合成 100/1,000/5,000/10,000 个 K8s 对象跑 11 个侦察模块、可达性图和规则生成：10,000 对象总耗时 1.645s，侦察 40.4ms，峰值 RSS 54MB，findings 10,891；三处 O(n²) 改索引后，同输入 330.8ms→46.5ms（×7.11），findings 逐条一致。真 k3s 只到 204 个对象：采集 6.4s，11 模块 199.7ms，145 findings。`docs/FABRIC-ATTACK-SURFACE.md` 用 `lab/fabric_dos_sim.py` 做 11 个 fabric 面的控制面/数据面语义仿真（SHARP 会话、IB SM、PFC、NCCL 端口、checkpoint IO、IMDS、KV OOM、梯度、gang、Xid、rail）；`docs/EFFECT-VERIFICATION.md` 与 `reports/samples/effects/effects.json` 当前落盘 **47/47 PASS**（含 chip 4 项），旧 17/20 口径已合并。`docs/FABRIC-SIM-RESULTS.md` 已落盘：1,024/10,000 节点 rail/多平面离散事件仿真（1,024 mixed：PFC 76,801,033、ECN 74、跨 rail 37、worst/median 9.04/2.06ms；10,000 mixed：PFC 102,401,629、ECN 133、跨 rail 64、worst/median 8.95/1.38ms），并调用真实 `fabric-topology-isolation` / `roce-pfc-storm` / `nccl-straggler-injection` 模块裁决（PFC/straggler 均 high）。**这些是仿真，不是真实交换机计数器。**
 
 **能证明什么**：分析算法在对象规模上近似线性；10k 对象的分析不是瓶颈；fabric 控制面的“语义同构”可以被计数器验证；规则生成在 10,891 findings 下仍是 94ms。
 
@@ -651,6 +667,24 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | 六云 | **模拟验证** | AWS/Azure/GCP emulator 适配器；阿里/腾讯契约 24/24 两态 | 真实账号/IAM/STS/日志 | 字段形状、差分、拒绝点 | 真实云配置与求值 |
 | cosign | **模拟验证**（验证侧真实，签名侧未达成） | 公共 keyless 样本验证、Rekor 写入/回读、本地 fixture | 本仓库产物的公共 Fulcio 签发、OIDC、SCT/CRL | 验证链能处理真实 keyless/Rekor | 我们的签名身份、生产 CI |
 | SaaS | **模拟验证** | 8 租户 × 8 并发、多进程 worker、原子配额/审批 | 跨副本队列/HA/租户加密 | 单机隔离/配额/审批可测 | 分布式调度与商业 SLA |
+
+### 7.7 未达成清单（终版，证据日期 2026-10-26）
+
+以下 11 条是**当前仍未达成**项，写死在终版里；未达成不等于失败，但不允许被“模拟通过”覆盖。
+
+| # | 未达成项 | 当前状态 | 验收标准（达成后再改口径） |
+|---|---|---|---|
+| 1 | 真实 10K+ GPU / 裸机性能 | 1,024–10,000 节点离散事件仿真；无真实 NIC/交换机/光模块/故障率 | ≥1,024 GPU 真集群跑链 + 12,288 复刻 MegaScale + 原始计数器 |
+| 2 | 硬件 TEE 实测 | 公共 PKI 真实验证；无 TDX/SEV-SNP/H100-CC 实机 quote/report | 实机采集 + nonce/measurement/TCB/debug 负例 + 「证明→密钥释放」 |
+| 3 | 真实六云 | 契约仿真 + AWS/Azure/GCP mock；无账号/IAM/STS/日志 | 每云最小集群 + 只读侦察 + 网络策略矩阵 |
+| 4 | 自有 Fulcio keyless 签发 | 第三方公共样本验证通过；本仓库产物无 OIDC 身份 | CI OIDC 向公共 Fulcio 签发并写 Rekor + 轮换/吊销 |
+| 5 | 跨副本分布式 SaaS | 单机 8 租户压测；无跨副本队列/租约/HA/租户 KMS | Postgres/队列 + 按租户加密 + 100 并发链故障恢复 |
+| 6 | 模型注册中心 / 权重仓库直连 | 只读本地清单/权重 | HF/OCI 拉取 + 在线验签 + 断网/篡改/吊销负例 |
+| 7 | SIEM/SOAR 真实投递 | 只有 SARIF/OCSF/VEX 产物 | Splunk HEC/Elastic/Sentinel 投递 + 幂等/回压/审计 |
+| 8 | 漏洞挖掘披露闭环 | 候选停在 `pending-manual-review` | 人工确认 + 负责任披露流程 + 状态回写 |
+| 9 | 无面模块治理 | 12 个六画像全无面；11 个已隔离，1 个待 owner 决定 | 1 个模块隔离或补面；面闸门默认开启 |
+| 10 | 画像覆盖缺口 | `slurm-hpc` 25.76%（Slurm 17 域覆盖 88.2%），其余 62.12%–73.48% | 六画像 production coverage ≥90% |
+| 11 | 可利用性核验缺口 | 152 条中 32 verified / 98 static-only / 22 unsupported | 真实 GPU/内核/硬件环境升级 static-only/unsupported |
 
 **证据索引（本章）**：[SOTA 与追赶路径](SOTA-2026-10.md) · [规模压测](SCALE-RESULTS.md) · [Fabric 攻击面](FABRIC-ATTACK-SURFACE.md) · [TEE 验证](TEE-VERIFICATION.md) · [六云矩阵](SIX-CLOUD-MATRIX.md) · [性能对比](PERFORMANCE-COMPARISON.md) · [供应链代码](../trident/supplychain.py) · [TEE 代码](../trident/tee/) · [六云仿真](../lab/cloud_six_sim.py)
 
@@ -857,7 +891,9 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 | 文档 | 内容 |
 |---|---|
-| [EFFECT-VERIFICATION.md](EFFECT-VERIFICATION.md) | 本机真实进程/HTTP 效果验证，当前落盘 17/17 PASS |
+| [EFFECT-VERIFICATION.md](EFFECT-VERIFICATION.md) | 本机真实进程/HTTP 效果验证，当前落盘 47/47 PASS |
+| [EXPLOIT-VERIFICATION.md](EXPLOIT-VERIFICATION.md) | 152 条可利用性核验：32 verified / 98 static-only / 22 unsupported |
+| [SURFACE-REALISM.md](SURFACE-REALISM.md) | 256 模块 × 6 画像：production 覆盖、默认 PoC、无面/隔离清单 |
 | [REAL-CLUSTER-VERIFICATION.md](REAL-CLUSTER-VERIFICATION.md) | QEMU k3s 真集群：6 模块、16 findings、hostNetwork 绕过 |
 | [SCALE-RESULTS.md](SCALE-RESULTS.md) | 合成 100–10,000 对象曲线 + 真 k3s 204 对象点 |
 | [TEE-VERIFICATION.md](TEE-VERIFICATION.md) | TDX/SEV-SNP/NVIDIA CC 的本地密码学校验与边界 |
@@ -925,7 +961,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | [lab/tencent-compare/run_eval.py](../lab/tencent-compare/run_eval.py) | OFF/ON 微评测生成器 |
 | [lab/agent-eval/run_eval.py](../lab/agent-eval/run_eval.py) | deterministic vs supervisor 评测 |
 | [trident/e2e-check.py](../trident/e2e-check.py) | 端到端验收 15/15 |
-| [trident/verify-effects.py](../trident/verify-effects.py) | 效果验证 17 项 |
+| [trident/verify-effects.py](../trident/verify-effects.py) | 效果验证 47 项 |
 | [tests/test_docs_master.py](../tests/test_docs_master.py) | 本报告的结构与底线断言 |
 
 ### 10.7 复现命令
@@ -957,15 +993,17 @@ powershell -ExecutionPolicy Bypass -File lab/qemu-k3s/run-real-cluster-check.ps1
 python -m unittest tests.test_docs_master -v
 ```
 
-### 10.8 进行中与未落盘
+### 10.8 终版落盘状态
 
-以下文档由并行任务生成，撰写完成时尚未落盘。本报告只在对应章节标注路径，不引用其中的数字；等落盘后再回填。若它们在提交前出现，本报告会以落盘版本为准更新。
+终版（2026-10-26）不再保留“进行中”文档；此前三项并行文档均已落盘并回填数字：
 
-| 文档 | 对应章节 | 当前处理 |
+| 文档 | 对应章节 | 当前状态 |
 |---|---|---|
-| [FABRIC-SIM-RESULTS.md](FABRIC-SIM-RESULTS.md) | 7.1 万卡/fabric | 进行中；只引用 `FABRIC-ATTACK-SURFACE.md` 与 `DEV-LOG.md` |
-| [SAAS-LOAD-RESULTS.md](SAAS-LOAD-RESULTS.md) | 7.5 SaaS 负载 | 进行中；只引用 `PERFORMANCE-COMPARISON.md` |
-| [CLOUD-FREE-TIER-RUNBOOK.md](CLOUD-FREE-TIER-RUNBOOK.md) | 7.3 六云免费额度 | 进行中；只引用 `SIX-CLOUD-MATRIX.md` |
+| [FABRIC-SIM-RESULTS.md](FABRIC-SIM-RESULTS.md) | 7.1 万卡/fabric | 已落盘；1,024/10,000 节点仿真 + 真实模块裁决 |
+| [SAAS-LOAD-RESULTS.md](SAAS-LOAD-RESULTS.md) | 7.5 SaaS 负载 | 已落盘；8 租户 × 8 并发、原子配额/审批 |
+| [CLOUD-FREE-TIER-RUNBOOK.md](CLOUD-FREE-TIER-RUNBOOK.md) | 7.3 六云免费额度 | 已落盘；AWS/Azure/GCP mock + 阿里/腾讯试用边界 |
+
+仍未达成项见 §7.7；未落盘不等于可引用，后续新增证据必须先落盘再改本表。
 
 ### 10.9 一句话总结
 

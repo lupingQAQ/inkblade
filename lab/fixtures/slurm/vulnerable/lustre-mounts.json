@@ -1,0 +1,10 @@
+{
+  "mounts": [
+    {"path": "/scratch", "fstype": "lustre", "options": ["rw", "noatime"],
+     "root_squash": false, "exports": ["0.0.0.0/0"], "client_quota": false,
+     "lnet_encryption": false, "flock": false, "uid_mapping": "none"},
+    {"path": "/home", "fstype": "nfs", "options": ["rw", "noatime"],
+     "root_squash": false, "exports": ["*"], "client_quota": false,
+     "lnet_encryption": false, "flock": true, "uid_mapping": "none"}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "keys": [
+    {"kty": "oct", "kid": "prod-hs256", "alg": "HS256", "k": "c2hvcnQtc2VjcmV0"}
+  ],
+  "key_file": "/etc/slurm/jwt.key",
+  "key_file_mode": "0644",
+  "key_age_days": 900,
+  "rotation": "none",
+  "issuer": "slurm",
+  "audience": "",
+  "max_token_lifetime_seconds": 0,
+  "exposed_paths": ["/home/alice/.slurm/jwt.key", "/srv/images/base.img"],
+  "verify_audience": false
+}

@@ -37,6 +37,8 @@ FOCUS = {
 NO_SURFACE = {
     "wasm-runtime-audit", "post-quantum-tls-audit", "federated-learning-audit",
     "model-watermark-backdoor-audit", "cxl-memory-security",
+    "hypervisor-audit-integrity", "agent-skill-registry-supply-chain",
+    "mcp-control-plane-governance", "agent-native-control-plane",
 }
 # C-tier research-only modules: implemented and surface-gated, but excluded
 # from the default chain/coverage denominator until a customer opts in.

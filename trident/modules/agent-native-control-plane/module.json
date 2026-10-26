@@ -1,0 +1,25 @@
+{
+  "key": "agent-native-control-plane",
+  "name": {
+    "zh": "Agent 原生控制面（MaaS/Agent 运行时）检查",
+    "en": "Agent-native control plane (MaaS/agent runtime) check"
+  },
+  "series": "混合云",
+  "description": "检查 Agent 运行时与 MaaS 控制面：agent 身份、工具出网 allowlist、记忆存储隔离、写操作审批、沙箱、并发上限、租户级 API key 与审计。对应云栖 2026 Agentic Cloud/MaaS（I60）。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "snapshot": "Agent 运行时/MaaS 导出 JSON（runtime/maas/agents）"
+  },
+  "produces": "agent-native-control-plane.json + Agent 控制面 findings",
+  "knowledge": "docs/CONFERENCE-2026-GAPS.md R07 / I60（云栖大会 2026）",
+  "necessity": "Agent 原生平台把模型、工具、记忆与凭据放在同一控制面；无身份/无审批/共享记忆会让单个被注入的 agent 读取全部租户上下文并调用生产工具，既有 K8s/网关模块不覆盖。",
+  "combo_signature": "agent-native-control-plane-abuse",
+  "surfaces": [
+    {"type": "config-file", "selector": "agent/runtime.json"},
+    {"type": "http-endpoint", "selector": "/agents"}
+  ],
+  "default_enabled": false,
+  "default_disabled_reason": "主流六画像无 Agent 原生运行时/MaaS 控制面；客户部署后显式启用。"
+}

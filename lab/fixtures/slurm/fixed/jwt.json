@@ -1,0 +1,15 @@
+{
+  "keys": [
+    {"kty": "RSA", "kid": "prod-rs256", "alg": "RS256",
+     "n": "synthetic-modulus-not-a-real-key", "e": "AQAB"}
+  ],
+  "key_file": "/etc/slurm/jwt/jwt.key",
+  "key_file_mode": "0600",
+  "key_age_days": 20,
+  "rotation": "90d",
+  "issuer": "slurm",
+  "audience": "slurmrestd",
+  "max_token_lifetime_seconds": 3600,
+  "exposed_paths": [],
+  "verify_audience": true
+}

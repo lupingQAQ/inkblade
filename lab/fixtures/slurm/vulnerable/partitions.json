@@ -1,0 +1,10 @@
+{
+  "partitions": [
+    {"name": "gpu", "default": "YES", "allow_groups": "ALL", "allow_accounts": "ALL",
+     "max_nodes": "UNLIMITED", "max_time": "INFINITE", "over_subscribe": "FORCE",
+     "qos": "normal", "preempt_mode": "OFF", "nodes": "gpu-[01-64]"},
+    {"name": "cpu", "default": "NO", "allow_groups": "ALL", "allow_accounts": "ALL",
+     "max_nodes": "UNLIMITED", "max_time": "INFINITE", "over_subscribe": "NO",
+     "qos": "normal", "preempt_mode": "OFF", "nodes": "cpu-[01-32]"}
+  ]
+}

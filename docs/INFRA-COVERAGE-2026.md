@@ -65,6 +65,22 @@
 - 若 `*-audit` 家族撤销：本表 16 个模块即为唯一实现；
 - 在合并完成前，任何覆盖率数字都以本表 16 个模块的测试为准，不把 `*-audit` 家族计入 227。
 
+## 4.2 R01–R07 残余缺口落地（2026-10-26）
+
+| ID | 模块键 | 分级 | 默认 | 采集面 | 效果 |
+|---|---|---|---|---|---|
+| R01 | `hypervisor-audit-integrity` | 只读侦察 | off（无面） | `audit/hypervisor-audit.json` + `audit-collector` | `residual-hypervisor-audit-race` |
+| R02 | `agent-skill-registry-supply-chain` | 只读侦察 | off（无面） | `agent/skills/registry.json` | `residual-agent-skill-poison` |
+| R03 | `operator-cross-namespace-reference` | 只读侦察 | on | CRD/Operator/RBAC/CR 引用图 | `residual-operator-cross-namespace` |
+| R04 | `mcp-control-plane-governance` | 主动探测 | off（无面） | `mcp/servers.json` + `/mcp/tools` | `residual-mcp-control-plane` |
+| R05 | `ai-infra-baseline` | 只读侦察 | on | `ai-infra/inventory.json` + `/v1/models` | 专项测试 + 企业本地补验 |
+| R06 | `inference-tenant-isolation-baseline` | 只读侦察 | on | `inference/tenant-policy.json` + 推理端点 | 专项测试 |
+| R07 | `agent-native-control-plane` | 只读侦察 | off（无面） | `agent/runtime.json` + `/agents` | 专项测试 |
+
+四个无面模块按「无面 default_enabled=false」隔离，客户部署对应采集面后显式启用；
+逐条来源、必要性与边界见 `docs/RESIDUAL-GAPS-2026.md`。本轮 R 专项测试
+`tests/test_modules_residual2026.py`，并新增 4 项效果验证（至少 3 项达标）。
+
 ## 5. 来源索引（与逐条议题对应）
 
 - USENIX Security 2026 technical sessions: https://www.usenix.org/conference/usenixsecurity26/technical-sessions

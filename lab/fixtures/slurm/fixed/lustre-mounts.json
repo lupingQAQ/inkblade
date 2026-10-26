@@ -1,0 +1,10 @@
+{
+  "mounts": [
+    {"path": "/scratch", "fstype": "lustre", "options": ["rw", "nosuid", "nodev", "noexec"],
+     "root_squash": true, "exports": ["10.20.0.0/16"], "client_quota": true,
+     "lnet_encryption": true, "flock": true, "uid_mapping": "sssd"},
+    {"path": "/home", "fstype": "nfs", "options": ["rw", "nosuid", "nodev"],
+     "root_squash": true, "exports": ["10.20.0.0/16"], "client_quota": true,
+     "lnet_encryption": true, "flock": true, "uid_mapping": "sssd"}
+  ]
+}

@@ -107,7 +107,7 @@
 
 - 议题条目：**65**（I01–I65；官方议程/论文页可核验；upcoming 的 KubeCon NA 单独标注）
 - 覆盖列引用：`新增:` **41** 处、`已覆盖:` **5** 条、`部分:` **21** 条（同一行可同时含“新增+部分”，故不相加为 65）
-- 未覆盖清单：**G01–G16** 16 条（全部已落地模块）+ **R01–R07** 7 条残余缺口
+- 未覆盖清单：**G01–G16** 16 条（全部已落地模块）+ **R01–R07** 7 条残余缺口（2026-10-26 已落地 7 个模块：R01/R02/R04/R07 因主流画像无面默认关闭，R03/R05/R06 默认启用；详见 `docs/RESIDUAL-GAPS-2026.md`）
 - 会议覆盖：USENIX Security、IEEE S&P、NDSS、CCS、Black Hat USA、DEF CON、KubeCon EU/NA、OWASP、RSA、KCon、云栖、CanSecWest、POC 均有条目；Black Hat Europe/SDC/TSec/字节/OffensiveCon 仅记录状态，不编造标题。
 
 ## 4. 未覆盖清单与模块映射
@@ -130,13 +130,13 @@
 | G14 | 只有 vector-db-exposure，无 RAG 注入/检索隔离审计 | I05,I26 | rag-vector-injection | 主动探测 | 未签名外部文档、共享 embedding ns、tenant filter、清洗/上限 |
 | G15 | 无联邦学习聚合面审计 | I18 | federated-learning-surface | 只读侦察 | 更新未签名、secure aggregation、DP、拜占庭过滤、范数异常 |
 | G16 | 无 SLSA/in-toto/Sigstore 来源证明审计 | I35,I49,I53,I54 | data-provenance-audit | 主动探测 | 签名无效、builder、materials、SBOM、SLSA、Rekor、drift |
-| R01 | hypervisor 侧可信审计/日志竞态 | I01 | 未落地（需 hypervisor 采集器） | — | — |
-| R02 | agent skill/MCP 注册表供应链（安装前静态+动态） | I08,I35,I54 | 未落地（需注册表数据源） | — | — |
-| R03 | Kubernetes Operator 跨 namespace 引用图 | I11 | 未落地（需 CRD 引用图采集） | — | — |
-| R04 | MCP 控制面/工具权限统一治理 | I21,I37 | 未落地（需 MCP 配置采集） | — | — |
-| R05 | AI 基础设施统一基线（Ray/Notebook/推理运行时） | I55 | 部分由既有模块覆盖，未统一 | — | — |
-| R06 | 多租户推理统一隔离基线（缓存/权重/计时/资源） | I58 | 部分由缓存/GPU 模块覆盖 | — | — |
-| R07 | Agent 原生控制面（MaaS/Agent 运行时） | I60 | 未落地 | — | — |
+| R01 | hypervisor 侧可信审计/日志竞态 | I01 | `hypervisor-audit-integrity` | 只读侦察（默认关闭，无面） | guest 内采集、日志 guest 可写、非 append-only、无 hypervisor 审计流/证明、竞态窗口 |
+| R02 | agent skill/MCP 注册表供应链（安装前静态+动态） | I08,I35,I54 | `agent-skill-registry-supply-chain` | 只读侦察（默认关闭，无面） | 未签名、未知发布者、fs/net/exec 通配、隐藏指令、`curl\|sh`、哈希 rug-pull |
+| R03 | Kubernetes Operator 跨 namespace 引用图 | I11 | `operator-cross-namespace-reference` | 只读侦察 | Operator 全 ns watch + 高权限、CR 跨 ns 引用 Secret、secrets 通配 RBAC、webhook 跳过校验 |
+| R04 | MCP 控制面/工具权限统一治理 | I21,I37 | `mcp-control-plane-governance` | 主动探测（默认关闭，无面） | 无认证 + 0.0.0.0、无 TLS、scope 通配、写工具无审批、无 allowlist、清单哈希变化 |
+| R05 | AI 基础设施统一基线（Ray/Notebook/推理运行时） | I55 | `ai-infra-baseline` | 只读侦察 | 未认证全网、无 TLS、admin API、已知受影响版本、任意出网、IMDS 可达 |
+| R06 | 多租户推理统一隔离基线（缓存/权重/计时/资源） | I58 | `inference-tenant-isolation-baseline` | 只读侦察 | cache salt、prefix cache、权重/KV 命名空间、计时旁路、GPU 残留、租户配额/日志 |
+| R07 | Agent 原生控制面（MaaS/Agent 运行时） | I60 | `agent-native-control-plane` | 只读侦察（默认关闭，无面） | agent 身份、工具出网 allowlist、共享记忆、写审批、沙箱、MaaS 租户 key/轮换/审计 |
 
 ## 5. 新增模块汇总（16）
 
@@ -158,6 +158,22 @@
 | rag-vector-injection | 窃取与数据泄露 | 主动探测 | false | G14 |
 | federated-learning-surface | 情报 | 只读侦察 | false | G15 |
 | data-provenance-audit | 情报 | 主动探测 | false | G16 |
+
+### 5.1 残余缺口 R01–R07 落地模块（7）
+
+| 模块键 | 系列 | 分级 | writes | 默认 | 对应缺口 | 效果 ID |
+|---|---|---|---|---|---|---|
+| hypervisor-audit-integrity | 侦察 | 只读侦察 | false | off（无面） | R01 | `residual-hypervisor-audit-race` |
+| agent-skill-registry-supply-chain | 情报 | 只读侦察 | false | off（无面） | R02 | `residual-agent-skill-poison` |
+| operator-cross-namespace-reference | 权限链 | 只读侦察 | false | on | R03 | `residual-operator-cross-namespace` |
+| mcp-control-plane-governance | 权限链 | 主动探测 | false | off（无面） | R04 | `residual-mcp-control-plane` |
+| ai-infra-baseline | 侦察 | 只读侦察 | false | on | R05 | 专项测试 + 企业本地补验 |
+| inference-tenant-isolation-baseline | 情报 | 只读侦察 | false | on | R06 | 专项测试 |
+| agent-native-control-plane | 混合云 | 只读侦察 | false | off（无面） | R07 | 专项测试 |
+
+默认关闭不等于未实现：四个无面模块保留完整检查与 fixture，客户实际部署对应
+采集面后用 `--probe` 或导出文件启用；`default_enabled=false` 保证默认链不会把
+未部署组件算入覆盖率。逐条来源/必要性/限制见 `docs/RESIDUAL-GAPS-2026.md`。
 
 ## 6. 限制与不编造声明
 

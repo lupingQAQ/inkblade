@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-25T17:01:53Z",
-  "scope": "本机真实进程 + 真实 HTTP（127.0.0.1 回环 mock 靶场：mock_targets / longctx_sim / gpu_cloud_sim / ai_gateway_sim / fabric_dos_sim / hardware_sim）+ fake-kubectl 提权闭环（lab/privesc_sim.py）效果级验证；非 live K8s 集群 / 真实 GPU 驱动 / 真实 BMC / 真实交换机 / 真实云账号。KIND/ARTEX 需启用虚拟化后按 lab/kind 与 lab/bench 脚本执行；真集群提权见 docs/PRIVESC-VERIFICATION.md。",
+  "generated_at": "2026-10-26T09:05:47Z",
+  "scope": "本机真实进程 + 真实 HTTP（127.0.0.1 回环 mock 靶场：mock_targets / longctx_sim / gpu_cloud_sim / ai_gateway_sim / fabric_dos_sim / hardware_sim / chipsec_sim）+ fake-kubectl 提权闭环（lab/privesc_sim.py）效果级验证；非 live K8s 集群 / 真实 GPU 驱动 / 真实 BMC / 真实交换机 / 真实云账号 / 硅片实验室。KIND/ARTEX 需启用虚拟化后按 lab/kind 与 lab/bench 脚本执行；真集群提权见 docs/PRIVESC-VERIFICATION.md。",
   "limitations": [
     "靶场为 lab/mock_targets.py + lab/longctx_sim.py + lab/gpu_cloud_sim.py + lab/ai_gateway_sim.py + lab/fabric_dos_sim.py + lab/hardware_sim.py 单进程仿真（仅 127.0.0.1），非真实 K8s API/容器运行时/GPU 推理/云账号。",
     "sglang/areal/slime 的写面以 mock server 侧真实文件落盘为证据，不是远端生产文件系统。",
@@ -9,13 +9,15 @@
     "AI 网关仿真为内存态（key/别名/缓存/配额/日志），上游 provider key 一律 MOCK 前缀；不连接真实模型厂商。",
     "fabric 破坏面仿真以内存计数器/状态位表达 SHARP 篡改、PFC 暂停帧、端口耗尽、I/O 洪与驱动复位等效果，不触碰真实交换机/IB SM/NCCL 进程/GPU 驱动；破坏效果均以计数器与状态变化度量（不真破坏）。",
     "硬件/交换机面为 lab/hardware_sim.py 的只读 mock（Redfish/SONiC/NVSwitch/DPU/telemetry）与 lab/hardware-fixtures 的合成 fixture；无真实 GPU/BMC/交换机验证，固件签名仅 HMAC fixture，不等于厂商 PKI/生产供应链。",
+    "芯片/加速器面为 lab/chipsec_sim.py 双态 mock 与自签 JWT/X.509 fixture；无真实 H100/H200/GB200、真实 NRAS 生产 JWT、真实 CXL/IMEX/SPDM 设备；不做硅片实验室/物理故障注入/Rowhammer/微架构侧信道实操。",
     "KIND hostNetwork 绕过 NetworkPolicy 实证需启用 WSL2/虚拟化后执行 lab/kind/run-proof.sh。",
     "ARTEX（AGPL）仅作外部黑盒对标，本仓库不复用其代码；对标需虚拟化环境执行 lab/bench/artex-bench.sh。",
     "提权 4 项（escalate/bind/SA token/webhook）使用 lab/privesc_sim.py 的 fake-kubectl 内存态闭环；QEMU k3s 真集群 4 条路径证据见 reports/samples/privesc/real-paths.json 与 docs/PRIVESC-VERIFICATION.md。",
-    "训练栈仿真是 lab/trainstack_sim.py（真实 HTTP + 真实文件落盘）：不加载 Megatron/DeepSpeed 权重、不执行 LLaMA-Factory/ms-swift/TRL 训练、不连接真实 MLflow/W&B/TensorBoard 或 etcd。"
+    "训练栈仿真是 lab/trainstack_sim.py（真实 HTTP + 真实文件落盘）：不加载 Megatron/DeepSpeed 权重、不执行 LLaMA-Factory/ms-swift/TRL 训练、不连接真实 MLflow/W&B/TensorBoard 或 etcd。",
+    "研究级深度六项（depth-*）为 lab/depth_sim.py 双态 HTTP、配置快照与准入/信任语义引擎：不连接 live K8s、真实 GPU 驱动、真实交换机/IB SM/SHARP 或真实云账号；vLLM 240 用例只读探针不投递真实 pickle、不下载权重。"
   ],
-  "run": "effects-20261026-010148",
-  "chain_run": "effects-chain-20261026-010148",
+  "run": "effects-20261026-170531",
+  "chain_run": "effects-chain-20261026-170531",
   "privesc_fake_closure": {
     "total": 4,
     "passed": 4,
@@ -32,12 +34,12 @@
         "route": "/pause",
         "state_file": "sglang/admin-state.json",
         "state_sha256_before": "5b377a070bfa3e011a6994667613cd33be1f9abed8c0a75e0547230dd4089318",
-        "state_sha256_after": "8d12e037a1cc2a9af137a2f674a5cb7f94ba9c166e77170e9db570158f32db36",
+        "state_sha256_after": "be465ea63024243f2cc56bead086739d82c8d95a93923b08ce98ad5d0f1c1ca2",
         "state_applied": true,
-        "state_response_sha256": "0043115e411eef9de837db39199733c7033c7b53406f5af7f560599a2d920b3f"
+        "state_response_sha256": "a87ff9d4adea46b33c9c3a28e5f84927c3fc4b0ba78b0fe20e234a55d2530bb4"
       },
       "detail": "",
-      "elapsed_ms": 124.7
+      "elapsed_ms": 176.1
     },
     {
       "id": "weight-poison-write",
@@ -45,15 +47,15 @@
       "status": "PASS",
       "evidence": {
         "http_status": 200,
-        "file": "slime/checkpoints_victim-TRIDENT-effects-20261026-010148/model.safetensors",
+        "file": "slime/checkpoints_victim-TRIDENT-effects-20261026-170531/model.safetensors",
         "sha256_before": "8127ad31f844aa2495a3e251f38263b6540cb39325c54f775db29604f6eb41e0",
-        "sha256_after": "6100a7aedeee552777184ec53c1675bc5271f6a9abb2b42a099281dffb6fb394",
-        "marker": "TRIDENT-effects-20261026-010148",
+        "sha256_after": "139098a60af8f28d3230ec3ea0a27d4a6e501e10a971daf424badde3daf46534",
+        "marker": "TRIDENT-effects-20261026-170531",
         "marker_present": true,
-        "server_weights_sha256": "6100a7aedeee552777184ec53c1675bc5271f6a9abb2b42a099281dffb6fb394"
+        "server_weights_sha256": "139098a60af8f28d3230ec3ea0a27d4a6e501e10a971daf424badde3daf46534"
       },
       "detail": "",
-      "elapsed_ms": 95.3
+      "elapsed_ms": 165.2
     },
     {
       "id": "backup-rollback",
@@ -67,7 +69,7 @@
         "backup_receipt_sha256": "8127ad31f844aa2495a3e251f38263b6540cb39325c54f775db29604f6eb41e0"
       },
       "detail": "",
-      "elapsed_ms": 9.0
+      "elapsed_ms": 8.0
     },
     {
       "id": "rce-marker",
@@ -79,14 +81,14 @@
           "create_engine": 200,
           "call": 200
         },
-        "marker_file": "areal/call/engine-48c4d3cb4e6a455fb178fc03ecb8ac3c-CALL.marker",
+        "marker_file": "areal/call/engine-0845a128e1ab4c50947de01a94df6f9c-CALL.marker",
         "env_marker_file": "areal/env/ENV-SET.marker",
-        "marker": "TRIDENT-effects-20261026-010148",
+        "marker": "TRIDENT-effects-20261026-170531",
         "marker_present": true,
-        "engine_id": "engine-48c4d3cb4e6a455fb178fc03ecb8ac3c"
+        "engine_id": "engine-0845a128e1ab4c50947de01a94df6f9c"
       },
       "detail": "",
-      "elapsed_ms": 133.2
+      "elapsed_ms": 195.4
     },
     {
       "id": "gpu-tenant-residue-marker",
@@ -101,19 +103,19 @@
         "victim_tenant": "tenant-b",
         "device": "gpu-a-1",
         "victim_device": "gpu-b-0",
-        "marker": "TRIDENT-BENIGN-RESIDUE-TRIDENT-effects-20261026-010148",
-        "marker_sha256": "4547dd7caf9273032b277aaaf1332069b4700a775bd5f551bb2236df5313d9b0",
-        "expected_marker_sha256": "4547dd7caf9273032b277aaaf1332069b4700a775bd5f551bb2236df5313d9b0",
-        "readback_file_sha256": "4396cc85237a4e53e1bf8c3acc5397c2408b753412781b95abb6b1ac825c13bc",
-        "residue_file_sha256": "4396cc85237a4e53e1bf8c3acc5397c2408b753412781b95abb6b1ac825c13bc",
-        "actual_file_sha256": "4396cc85237a4e53e1bf8c3acc5397c2408b753412781b95abb6b1ac825c13bc",
-        "residue_file": "gpu/residue/gpu-a-1/alloc-3394238307.json",
+        "marker": "TRIDENT-BENIGN-RESIDUE-TRIDENT-effects-20261026-170531",
+        "marker_sha256": "2d6783a9219ac01e16d91320eff4080837b68549f22d67b3c449aa620689d004",
+        "expected_marker_sha256": "2d6783a9219ac01e16d91320eff4080837b68549f22d67b3c449aa620689d004",
+        "readback_file_sha256": "c86c89f4788dfcf0c091b36ac7f8e67e83a3167fdf7a972eaa79903673c9497b",
+        "residue_file_sha256": "c86c89f4788dfcf0c091b36ac7f8e67e83a3167fdf7a972eaa79903673c9497b",
+        "actual_file_sha256": "c86c89f4788dfcf0c091b36ac7f8e67e83a3167fdf7a972eaa79903673c9497b",
+        "residue_file": "gpu/residue/gpu-a-1/alloc-65c0e3df06.json",
         "readback_after_release": true,
         "victim_marker_sha256": "20e59e65ff218abffa5bd1af1ddd62e9f4571ff762b408c8e26dd171235b0fad",
         "victim_readable": true
       },
       "detail": "",
-      "elapsed_ms": 141.7
+      "elapsed_ms": 212.0
     },
     {
       "id": "cloud-assume-role-cross-account",
@@ -136,7 +138,7 @@
         "full_credential_absent": true
       },
       "detail": "",
-      "elapsed_ms": 120.5
+      "elapsed_ms": 158.2
     },
     {
       "id": "cloud-bucket-public-listing",
@@ -159,7 +161,7 @@
         "policy_principal": "*"
       },
       "detail": "",
-      "elapsed_ms": 120.8
+      "elapsed_ms": 171.5
     },
     {
       "id": "longctx-window-overflow",
@@ -180,7 +182,7 @@
         "route": "/v1/chat/completions"
       },
       "detail": "",
-      "elapsed_ms": 4.2
+      "elapsed_ms": 4.7
     },
     {
       "id": "longctx-prefix-reuse",
@@ -197,7 +199,7 @@
         "route": "/v1/chat/completions"
       },
       "detail": "",
-      "elapsed_ms": 2.6
+      "elapsed_ms": 2.4
     },
     {
       "id": "longctx-kv-channel-write",
@@ -206,15 +208,15 @@
       "evidence": {
         "write_status": 200,
         "readback_status": 200,
-        "block_id": "kv-block-effects-20261026-010148",
+        "block_id": "kv-block-effects-20261026-170531",
         "readback_found": true,
         "readback_marker_present": true,
-        "write_sha256": "4db86c9d3af6e4403e11e5a77f893882acab826a84e7b5960ffd1dbda6ed86d2",
-        "readback_sha256": "4db86c9d3af6e4403e11e5a77f893882acab826a84e7b5960ffd1dbda6ed86d2",
+        "write_sha256": "87bd3e7d6e8ecd1faa2b5713f14228b0ca4fda9237ae54380a3c3b505bc187fc",
+        "readback_sha256": "87bd3e7d6e8ecd1faa2b5713f14228b0ca4fda9237ae54380a3c3b505bc187fc",
         "bytes": 136
       },
       "detail": "",
-      "elapsed_ms": 116.2
+      "elapsed_ms": 163.1
     },
     {
       "id": "longctx-checkpoint-rollback",
@@ -224,7 +226,7 @@
         "http_status": 200,
         "shard_file": "checkpoints/trident-effects-shard.safetensors",
         "sha256_before": "8922fec3b98bc9b255761d7208df88911a8c790c3709026dc4a8cc448cda6645",
-        "sha256_after": "b6ea7c38328f5d7b28bfb680470cc5714f84e0c355042bdf18c2e16c47d313c0",
+        "sha256_after": "d71b6bbda39004d432845a9de496172b36a69ebe5bceb2ef88f77cb51737c4cb",
         "sha256_after_rollback": "8922fec3b98bc9b255761d7208df88911a8c790c3709026dc4a8cc448cda6645",
         "rollback_rows": 1,
         "exact_restore": true,
@@ -232,7 +234,7 @@
         "write_status": 200
       },
       "detail": "",
-      "elapsed_ms": 129.0
+      "elapsed_ms": 186.1
     },
     {
       "id": "gateway-default-master-key-exfil",
@@ -255,7 +257,7 @@
         "report_redacted_sample": "MOCK****9f3c"
       },
       "detail": "",
-      "elapsed_ms": 241.4
+      "elapsed_ms": 334.6
     },
     {
       "id": "gateway-forwarded-user-impersonation",
@@ -278,7 +280,7 @@
         "finding_count": 3
       },
       "detail": "",
-      "elapsed_ms": 149.4
+      "elapsed_ms": 185.4
     },
     {
       "id": "gateway-semantic-cache-cross-tenant",
@@ -297,7 +299,7 @@
         "finding_count": 1
       },
       "detail": "",
-      "elapsed_ms": 134.6
+      "elapsed_ms": 181.5
     },
     {
       "id": "fabric-sharp-reduce-tamper",
@@ -315,7 +317,7 @@
         "route": "/sharp/sessions,/sharp/reduce"
       },
       "detail": "",
-      "elapsed_ms": 142.2
+      "elapsed_ms": 215.8
     },
     {
       "id": "fabric-pfc-storm-counter",
@@ -331,7 +333,7 @@
         "route": "/roce/pfc"
       },
       "detail": "",
-      "elapsed_ms": 145.0
+      "elapsed_ms": 212.7
     },
     {
       "id": "fabric-straggler-step-slowdown",
@@ -346,7 +348,7 @@
         "route": "/nccl/rank,/train/step"
       },
       "detail": "",
-      "elapsed_ms": 141.5
+      "elapsed_ms": 223.5
     },
     {
       "id": "hardware-bmc-default-credential",
@@ -366,7 +368,7 @@
         "route": "/redfish/v1/Systems/1"
       },
       "detail": "",
-      "elapsed_ms": 174.4
+      "elapsed_ms": 207.7
     },
     {
       "id": "hardware-firmware-manifest-tamper",
@@ -386,7 +388,127 @@
         "route": "firmware manifest + blob sha256"
       },
       "detail": "",
-      "elapsed_ms": 187.8
+      "elapsed_ms": 199.1
+    },
+    {
+      "id": "chip-cc-attestation-tamper",
+      "title": "GPU CC 证明篡改实效：有效 JWT 通过、改 payload 后验签失败（NRAS JWKS）",
+      "status": "PASS",
+      "evidence": {
+        "valid_high": 0,
+        "valid_signature_valid": true,
+        "tampered_high": 3,
+        "signature_valid": false,
+        "claims_valid": false,
+        "nonce": "a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90",
+        "jwks_source": "inline",
+        "detected": true,
+        "route": "/chip/gpu-cc + NRAS fixture JWKS"
+      },
+      "detail": "",
+      "elapsed_ms": 409.0
+    },
+    {
+      "id": "chip-iommu-passthrough",
+      "title": "IOMMU 直通实效：vulnerable iommu=pt + 多设备 identity 组 → high；fixed 无 high",
+      "status": "PASS",
+      "evidence": {
+        "passthrough": true,
+        "iommu_enabled": true,
+        "risky_groups": 1,
+        "kernel_cmdline": "intel_iommu=on iommu=pt iommu.passthrough=1",
+        "fixed_high": 0,
+        "detected": true,
+        "route": "/chip/iommu vulnerable/fixed"
+      },
+      "detail": "",
+      "elapsed_ms": 407.8
+    },
+    {
+      "id": "chip-pcr-baseline-offset",
+      "title": "PCR 基线偏移实效：PCR 0/4 与 golden 不一致 → high；fixed 0 偏移",
+      "status": "PASS",
+      "evidence": {
+        "pcr_mismatches": 2,
+        "mismatched_pcrs": [
+          "0",
+          "4"
+        ],
+        "uki_signature_valid": false,
+        "fixed_mismatches": 0,
+        "fixed_high": 0,
+        "detected": true,
+        "route": "/chip/boot vulnerable/fixed"
+      },
+      "detail": "",
+      "elapsed_ms": 530.0
+    },
+    {
+      "id": "chip-gpu-memory-residue",
+      "title": "显存残留实效：benign marker 释放后读回 + sha256 一致 → high；fixed 404",
+      "status": "PASS",
+      "evidence": {
+        "readback_status": 200,
+        "marker_sha256": "6a2a729b0f2383d29564437edc3a5c11c09bed4cf0e3dabb52b7093c9722c0d9",
+        "marker_sha256_match": true,
+        "readable_after_release": true,
+        "zeroized": false,
+        "fixed_readback_status": 404,
+        "fixed_high": 0,
+        "detected": true,
+        "route": "/chip/gpu/allocate → release → residue"
+      },
+      "detail": "",
+      "elapsed_ms": 480.6
+    },
+    {
+      "id": "infra2026-coco-attestation-mismatch",
+      "title": "CoCo 证明实效：SEV-SNP 测量值与预期不一致且 debug 开启，finding 为 high",
+      "status": "PASS",
+      "evidence": {
+        "http_status": 200,
+        "tee": "sev-snp",
+        "measurement": "sha256:1111000000000000000000000000000000000000000000000000000000000000",
+        "expected_measurement": "sha256:2222000000000000000000000000000000000000000000000000000000000000",
+        "debug": true,
+        "policy_enforced": false,
+        "detected": true,
+        "route": "/coco/attestation,/coco/policy"
+      },
+      "detail": "",
+      "elapsed_ms": 267.2
+    },
+    {
+      "id": "infra2026-spire-wildcard-identity",
+      "title": "SPIRE 实效：通配 SPIFFE ID + 无选择器 + admin 无 ACL，finding 为 high",
+      "status": "PASS",
+      "evidence": {
+        "http_status": 200,
+        "trust_domain": "example.org",
+        "entries": 3,
+        "wildcard_entries": 2,
+        "admin_acl": false,
+        "detected": true,
+        "route": "/spire/entries"
+      },
+      "detail": "",
+      "elapsed_ms": 250.3
+    },
+    {
+      "id": "infra2026-pq-tls-weak-posture",
+      "title": "后量子 TLS 实效：TLS1.2 + RSA 密钥交换 + 无 hybrid group，finding 为 high",
+      "status": "PASS",
+      "evidence": {
+        "http_status": 200,
+        "min_version": "TLS1.2",
+        "key_exchange": "rsa",
+        "hybrid_group": "",
+        "hndl_exposed": true,
+        "detected": true,
+        "route": "/tls/posture"
+      },
+      "detail": "",
+      "elapsed_ms": 218.9
     },
     {
       "id": "data-leak-redaction",
@@ -401,24 +523,24 @@
         "report_redacted_sample": "****wxyz"
       },
       "detail": "",
-      "elapsed_ms": 293.1
+      "elapsed_ms": 431.5
     },
     {
       "id": "rules-detection",
       "title": "检测规则实效：规则引擎对本次靶场重放 ≥1 条命中",
       "status": "PASS",
       "evidence": {
-        "rules_evaluated": 89,
-        "rules_detected": 64,
+        "rules_evaluated": 98,
+        "rules_detected": 73,
         "rules_blocked": 21,
         "rules_missed": 0,
-        "hits": 85,
+        "hits": 94,
         "sample_hit": "flat-network-admin-plane-weight-poison · alert-combo-signature · 拦截",
         "matrix_ok": true,
         "coverage_file": "rules-coverage-matrix.json"
       },
       "detail": "",
-      "elapsed_ms": 304.9
+      "elapsed_ms": 430.4
     },
     {
       "id": "chain-e2e",
@@ -437,7 +559,7 @@
         },
         "backup_receipts": 1,
         "weights_sha256_before": "3b3c43cbb5b6a9223cc39aea3d4f86a9ffe5bc3c25bb9162d9363dd950d012cb",
-        "weights_sha256_after": "6af7abcc98e622dd97993eadfa4d688a0bb34d3757bea0b54ea219aa528efc0d",
+        "weights_sha256_after": "130b76be088c2ed17659968e76e0ba7611d03f1509c2c84bccc08d5b2744c3ac",
         "marker_present": true,
         "layers": {
           "context": true,
@@ -445,10 +567,10 @@
           "archives": 2,
           "manifest": true
         },
-        "run": "effects-chain-20261026-010148"
+        "run": "effects-chain-20261026-170531"
       },
       "detail": "",
-      "elapsed_ms": 292.9
+      "elapsed_ms": 426.9
     },
     {
       "id": "trainstack-optimizer-state-marker",
@@ -461,17 +583,17 @@
         },
         "shard_file": "ckpt/optimizer/ckpt-optim-effects.pt",
         "sha256_before": "8804d39c121c3316936add5d8d85dc80796a7059e20eb52002ee79ad5be02a8b",
-        "sha256_after": "fb9354fd7e938c5f1e241be46356f99a8e68b90fec8168da03ac1e0b8a5c234e",
+        "sha256_after": "930dd0691ffb6b0ad9c95cea5180ef25ce27f7c9948c0568ba5f4664209f7606",
         "sha256_after_rollback": "8804d39c121c3316936add5d8d85dc80796a7059e20eb52002ee79ad5be02a8b",
-        "readback_sha256": "fb9354fd7e938c5f1e241be46356f99a8e68b90fec8168da03ac1e0b8a5c234e",
-        "marker": "TRIDENT-effects-20261026-010148",
+        "readback_sha256": "930dd0691ffb6b0ad9c95cea5180ef25ce27f7c9948c0568ba5f4664209f7606",
+        "marker": "TRIDENT-effects-20261026-170531",
         "marker_present": true,
         "optimizer_state": true,
         "rollback_rows": 1,
         "exact_restore": true
       },
       "detail": "",
-      "elapsed_ms": 225.5
+      "elapsed_ms": 279.7
     },
     {
       "id": "trainstack-data-tamper-detect",
@@ -482,7 +604,7 @@
         "shard_file": "data/shard-0001.jsonl",
         "appended": 3,
         "expected_sha256": "8521aa8852f1c7ee2820779014dcc7858687acf5a9391f3d964eee116d838052",
-        "actual_sha256": "74ce41e708905e923b7bfe8d156a753ce57232e1afa7ebb2d8f7633c632ec50f",
+        "actual_sha256": "a43903116484770c2bfb2cd5485afd3374120a1c3adc5d8b9b3b35a444602afd",
         "tamper_detected": true,
         "duplicate_ids": 1,
         "unknown_ids": 1,
@@ -491,7 +613,7 @@
         "exact_restore": true
       },
       "detail": "",
-      "elapsed_ms": 179.7
+      "elapsed_ms": 384.4
     },
     {
       "id": "trainstack-template-injection-detect",
@@ -501,19 +623,106 @@
         "http_status": 200,
         "template_file": "tokenizer/template.jinja",
         "sha256_before": "261786c1a0f44d3a24640c75cfa471aa18ddb2aadaaaf202bb904d4af29db4a8",
-        "sha256_after": "c4e9efcff57efc7faab6f974049e78700291f01180c273672c03790a0f105fd1",
+        "sha256_after": "288ee8ad6453d5eaf2a824bfee374ffc33043e797f2a87549438406155122775",
         "template_modified": true,
         "injected_directive": true,
         "sanitized": false,
-        "system_block_sha256": "39d6e8d07b4c9354de56c289a8ecf7ccd95aa4860dc2f007768a2b423462b1ec",
-        "marker": "TRIDENT-effects-20261026-010148",
+        "system_block_sha256": "d2cf31bc19345be3ad3eea0110fa7d37d1ddcd3c887f897e62b36b4b932a669b",
+        "marker": "TRIDENT-effects-20261026-170531",
         "marker_in_system_block": true,
         "sha256_after_rollback": "261786c1a0f44d3a24640c75cfa471aa18ddb2aadaaaf202bb904d4af29db4a8",
         "rollback_rows": 1,
         "exact_restore": true
       },
       "detail": "",
-      "elapsed_ms": 171.1
+      "elapsed_ms": 267.2
+    },
+    {
+      "id": "residual-hypervisor-audit-race",
+      "title": "R01 实效：guest 内采集器 + 可写日志 + 竞态窗口 → high；fixed 0 high",
+      "status": "PASS",
+      "evidence": {
+        "vulnerable_high": 6,
+        "collector_location": "guest",
+        "guest_writable_log": true,
+        "race_window_ms": 1200,
+        "fixed_high": 0,
+        "detected": true
+      },
+      "detail": "",
+      "elapsed_ms": 535.5
+    },
+    {
+      "id": "residual-agent-skill-poison",
+      "title": "R02 实效：未签名 skill + curl|sh 安装 → critical；fixed 0 high",
+      "status": "PASS",
+      "evidence": {
+        "vulnerable_critical": 1,
+        "skills": 2,
+        "signature_required": false,
+        "fixed_high": 0,
+        "detected": true
+      },
+      "detail": "",
+      "elapsed_ms": 486.6
+    },
+    {
+      "id": "residual-operator-cross-namespace",
+      "title": "R03 实效：Operator 全 ns watch + CR 跨 ns 引用 Secret → high；fixed 0 high",
+      "status": "PASS",
+      "evidence": {
+        "vulnerable_high": 5,
+        "cross_namespace_refs": 2,
+        "operators": 1,
+        "fixed_high": 0,
+        "detected": true
+      },
+      "detail": "",
+      "elapsed_ms": 478.3
+    },
+    {
+      "id": "residual-mcp-control-plane",
+      "title": "R04 实效：MCP 无认证/0.0.0.0/通配工具 → critical；fixed 0 high",
+      "status": "PASS",
+      "evidence": {
+        "vulnerable_critical": 1,
+        "servers": 1,
+        "signed_registry": false,
+        "fixed_high": 0,
+        "detected": true
+      },
+      "detail": "",
+      "elapsed_ms": 515.3
+    },
+    {
+      "id": "slurm-jwt-weak-key",
+      "title": "Slurm JWT 实效：短 HS256 + 0644 key + 无轮换/过期 → high；fixed 0 high",
+      "status": "PASS",
+      "evidence": {
+        "vulnerable_high": 5,
+        "weak_hs_keys": 1,
+        "key_file_mode": "0644",
+        "max_token_lifetime_seconds": 0,
+        "fixed_high": 0,
+        "detected": true
+      },
+      "detail": "",
+      "elapsed_ms": 527.5
+    },
+    {
+      "id": "slurm-cgroup-device-escape",
+      "title": "Slurm cgroup 实效：核心/内存/设备约束全关 → high；fixed 0 high",
+      "status": "PASS",
+      "evidence": {
+        "vulnerable_high": 6,
+        "constrain_cores": false,
+        "constrain_ram": false,
+        "constrain_devices": false,
+        "fixed_high": 0,
+        "detected": true
+      },
+      "detail": "",
+      "elapsed_ms": 532.5
     },
     {
       "id": "ray-job-rce-marker",
@@ -521,11 +730,11 @@
       "status": "PASS",
       "evidence": {
         "submit_status": 200,
-        "job_id": "raysubmit-27f0a6de8b5c4b2bbd40c8c525926326",
-        "marker": "TRIDENT-effects-20261026-010148",
+        "job_id": "raysubmit-143eba50259e44c4ac5770756ef40a67",
+        "marker": "TRIDENT-effects-20261026-170531",
         "marker_present": true,
         "marker_path": "<abs-path>",
-        "marker_sha256": "e1baabcd7fd4ef67283fefa67cb6af8a962a71212a15cc8fa9377263439b8eda",
+        "marker_sha256": "3a068d2c2beb925a5c1925e620e817e4f8adf5a8858e674c45512d6bd89c501e",
         "cleanup_deleted": 1,
         "cleanup_removed": true,
         "cve": "CVE-2023-48022",
@@ -537,7 +746,7 @@
         "artifact": null
       },
       "detail": "",
-      "elapsed_ms": 179.9
+      "elapsed_ms": 259.7
     },
     {
       "id": "gateway-default-key-exfil",
@@ -558,7 +767,7 @@
         ]
       },
       "detail": "",
-      "elapsed_ms": 161.4
+      "elapsed_ms": 267.8
     },
     {
       "id": "ipmi-cipher-zero-bypass",
@@ -569,14 +778,14 @@
         "cipher": 0,
         "privilege": "admin",
         "username": "admin",
-        "session": "ipmi-e20a1e82db",
+        "session": "ipmi-0378382fd2",
         "session_established": true,
         "finding_cves": [
           "CVE-2013-4786"
         ]
       },
       "detail": "",
-      "elapsed_ms": 171.0
+      "elapsed_ms": 266.5
     },
     {
       "id": "redfish-default-credentials",
@@ -595,7 +804,7 @@
         ]
       },
       "detail": "",
-      "elapsed_ms": 181.7
+      "elapsed_ms": 268.2
     },
     {
       "id": "runc-surface-detection",
@@ -613,7 +822,159 @@
         "fixture": "host-surface.json"
       },
       "detail": "",
-      "elapsed_ms": 189.8
+      "elapsed_ms": 300.4
+    },
+    {
+      "id": "depth-vllm-fuzz",
+      "title": "vLLM 五接口面 240 用例差分：vulnerable vs fixed 真实 HTTP",
+      "status": "PASS",
+      "evidence": {
+        "cases": 240,
+        "vulnerable_bypasses": 144,
+        "fixed_bypasses": 0,
+        "control_status": 401,
+        "surfaces_hit": [
+          "admin",
+          "dev-mode",
+          "plugin",
+          "serialization",
+          "weights"
+        ],
+        "fixed_control_status": 401,
+        "vulnerable_results_sha256": "1c68f5b8301a8ef2002d4ba32220a7ec5b476698f477c29458491cc600562eaf",
+        "fixed_results_sha256": "eae1ccd2a5e764bec5965743ef574994cc3667f0062d88d97b0c2dd43eb5aa1e",
+        "matrix_entries": 40,
+        "fixed_pairs": 32
+      },
+      "detail": "",
+      "elapsed_ms": 1249.0
+    },
+    {
+      "id": "depth-admission-semantics",
+      "title": "Kyverno/Gatekeeper 20 语义用例：vulnerable 准入 vs 加固拒绝",
+      "status": "PASS",
+      "evidence": {
+        "cases": 20,
+        "vulnerable_admitted": 20,
+        "hardened_admitted": 0,
+        "findings": 20,
+        "mechanisms": [
+          "audit-mode",
+          "crd-conversion",
+          "dryrun",
+          "ephemeral-container",
+          "exemption",
+          "init-container",
+          "mutation-order",
+          "parameter-wildcard",
+          "precondition",
+          "scope",
+          "subresource"
+        ],
+        "results_sha256": "cef2cf8d75f3aa5bb7a4b4a780219f11ba97fcc62a6d19f09955f4929b5caae6"
+      },
+      "detail": "",
+      "elapsed_ms": 6.9
+    },
+    {
+      "id": "depth-ebpf-blindspot",
+      "title": "Falco/Tetragon 14 事件覆盖：默认 missed vs 加固全覆盖",
+      "status": "PASS",
+      "evidence": {
+        "cases": 14,
+        "missed": 14,
+        "hardened_missed": 0,
+        "coverage_gaps": 6,
+        "categories": {
+          "short-lived": 2,
+          "syscall-filter": 5,
+          "post-escape": 3,
+          "host-network": 2,
+          "child-process": 1,
+          "container-identity": 1
+        },
+        "results_sha256": "0f0b530d3a587923ef6499f72f39bf76b86fc00c01e6ae08610fb52e8905b957"
+      },
+      "detail": "",
+      "elapsed_ms": 1.2
+    },
+    {
+      "id": "depth-gpu-operator-config",
+      "title": "GPU Operator 20 检查：privileged/MIG/DCGM/DRA 差分",
+      "status": "PASS",
+      "evidence": {
+        "checks": 20,
+        "findings": 19,
+        "critical": 5,
+        "high": 13,
+        "hardened_findings": 0,
+        "domains": [
+          "dcgm",
+          "device-plugin",
+          "dra",
+          "driver",
+          "mig",
+          "workload"
+        ],
+        "snapshot_sha256": "f20dc58ffb66760d98ee77460c8cfa72a0537c200faec4918ede1a21d609a61d"
+      },
+      "detail": "",
+      "elapsed_ms": 1.6
+    },
+    {
+      "id": "depth-sonic-fabric-link",
+      "title": "SONiC/IB/SHARP 28 检查 + fabric_sim PFC 场景联动",
+      "status": "PASS",
+      "evidence": {
+        "checks": 28,
+        "failed": 28,
+        "hardened_failed": 0,
+        "domains": [
+          "ib",
+          "sharp",
+          "sonic"
+        ],
+        "scenarios": [
+          "pfc-storm",
+          "ecn",
+          "rail-mismatch"
+        ],
+        "detectors": [
+          "fabric.pfc-pause-storm"
+        ],
+        "baseline": [
+          "fabric.baseline-clean"
+        ],
+        "nodes": 1024,
+        "snapshot_sha256": "d169da6b68ceefc45147640c01ebef02e57eb250c088f740177ed949ea9decae"
+      },
+      "detail": "",
+      "elapsed_ms": 33.8
+    },
+    {
+      "id": "depth-identity-federation",
+      "title": "IRSA/RRSA/PodIdentity/GCP/Azure 21 信任用例差分",
+      "status": "PASS",
+      "evidence": {
+        "cases": 21,
+        "allowed": 21,
+        "hardened_allowed": 0,
+        "legit_allowed": 21,
+        "findings": 21,
+        "categories": [
+          "audience-wildcard",
+          "empty-set",
+          "external-id-optional",
+          "missing-condition",
+          "oidc-confusion",
+          "source-account-missing",
+          "subject-wildcard",
+          "wildcard-principal"
+        ],
+        "results_sha256": "b2257d302192db6258eb8917f81844400ea00d4ed82c3b494db1675952206716"
+      },
+      "detail": "",
+      "elapsed_ms": 8.3
     },
     {
       "id": "privesc-escalate",
@@ -692,8 +1053,8 @@
     }
   ],
   "summary": {
-    "total": 34,
-    "passed": 34,
+    "total": 53,
+    "passed": 53,
     "failed": 0,
     "ok": true
   },

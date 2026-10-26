@@ -1,0 +1,6 @@
+{
+  "nodes": [
+    {"name": "gpu-07", "state": "IDLE", "reason": "", "partition": "gpu", "gres": "gpu:nvidia:8", "alloc_tres": ""},
+    {"name": "cpu-03", "state": "IDLE", "reason": "", "partition": "cpu", "gres": "", "alloc_tres": ""}
+  ]
+}

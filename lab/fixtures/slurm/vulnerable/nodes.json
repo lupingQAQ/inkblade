@@ -1,0 +1,7 @@
+{
+  "nodes": [
+    {"name": "gpu-07", "state": "DRAIN", "reason": "kernel panic 2026-09-01", "partition": "gpu", "gres": "gpu:nvidia:8", "resume_after": "2026-09-02T00:00:00Z", "alloc_tres": "cpu=128,mem=1024G,gres/gpu=8"},
+    {"name": "gpu-09", "state": "DOWN", "reason": "", "partition": "gpu", "gres": "gpu:nvidia:8", "resume_after": "", "alloc_tres": ""},
+    {"name": "cpu-03", "state": "IDLE", "reason": "", "partition": "cpu", "gres": "", "resume_after": "", "alloc_tres": ""}
+  ]
+}

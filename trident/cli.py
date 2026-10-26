@@ -356,9 +356,9 @@ def _main(argv=None) -> int:
     pilot.add_argument("--kubectl", default="kubectl", help="kubectl 路径（只读 get）")
     pilot.add_argument("--timeout", type=int, default=30, help="单条 kubectl 超时秒")
 
-    ent = sub.add_parser("enterprise", help="企业集成：适配器/审批/报告签核/保留策略")
+    ent = sub.add_parser("enterprise", help="企业集成：适配器/审批/报告签核/保留策略/本地补验")
     ent.add_argument("action", choices=["adapters", "deliver", "sign-report", "retention",
-                                        "signoff", "approval-list"])
+                                        "signoff", "approval-list", "local-checks"])
     ent.add_argument("--workspace", default="local-lab")
     ent.add_argument("--run", default=None)
     ent.add_argument("--kind", choices=["splunk", "elastic", "webhook", "jira", "servicenow"],
@@ -767,6 +767,15 @@ def _main(argv=None) -> int:
             if args.action == "approval-list":
                 _print_json({"approvals": ApprovalChain(_store(home, args.workspace)).list()})
                 return 0
+            if args.action == "local-checks":
+                from .enterprise.localcheck import run_local_checks
+
+                target = Path(args.dir or "reports/samples/enterprise-local")
+                doc = run_local_checks(target)
+                _print_json({"summary": doc["summary"], "out": str(target),
+                             "checks": [{"id": c["id"], "status": c["status"]}
+                                        for c in doc["checks"]]})
+                return 0 if doc["summary"]["ok"] else 1
             if args.action == "retention":
                 if not args.dir:
                     print("trident enterprise: --dir 必填", file=sys.stderr)

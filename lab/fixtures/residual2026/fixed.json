@@ -1,0 +1,146 @@
+{
+  "schema": "trident-residual2026-snapshot-v1",
+  "fixture": true,
+  "hypervisor_audit": {
+    "collector": {
+      "location": "hypervisor",
+      "integrity_verified": true,
+      "signature": "sig:collector-v2",
+      "ring_buffer": true,
+      "started_before_guest": true
+    },
+    "log_path": {
+      "write_from_guest": false,
+      "append_only": true,
+      "immutable_storage": true,
+      "remote_forward": true,
+      "mtls": true
+    },
+    "hypervisor": {
+      "api": "libvirt",
+      "audit_stream": true,
+      "attestation": true,
+      "host_agent": true
+    },
+    "race_window_ms": 0
+  },
+  "skill_registry": {
+    "registry": {
+      "signature_required": true,
+      "publisher_allowlist": ["internal"],
+      "install_hooks": false,
+      "review_required": true
+    },
+    "skills": [
+      {
+        "name": "log-summarizer",
+        "publisher": "internal",
+        "version": "0.3.1",
+        "sha256": "aa11",
+        "signature": "sig:aa11",
+        "previous_sha256": "aa11",
+        "permissions": {"fs": ["/var/log"], "net": [], "exec": false},
+        "hidden_instructions": false,
+        "install_script": "",
+        "pinned": true
+      }
+    ]
+  },
+  "operator_references": {
+    "crds": [
+      {"name": "widgets.example.com", "scope": "Namespaced"}
+    ],
+    "operators": [
+      {
+        "name": "widget-operator",
+        "namespace": "op-system",
+        "watch_namespaces": ["team-a"],
+        "cluster_role": "",
+        "service_account": "widget-operator",
+        "references": [
+          {"from": "team-a/widget", "to": "team-a/secret/db-credentials", "kind": "Secret"}
+        ]
+      }
+    ],
+    "rbac": [
+      {"subject": "system:serviceaccount:op-system:widget-operator",
+       "verbs": ["get"], "resources": ["secrets"], "namespaces": ["team-a"]}
+    ],
+    "conversion_webhooks": [
+      {"name": "widgets.example.com", "namespace": "op-system",
+       "ca_bundle": "sha256:fixture-ca", "insecure_skip_verify": false}
+    ]
+  },
+  "mcp_control_plane": {
+    "registry": {"signature_required": true, "publisher_allowlist": ["internal"]},
+    "servers": [
+      {
+        "name": "ops-mcp",
+        "transport": "stdio",
+        "bind": "127.0.0.1",
+        "port": 0,
+        "auth": "jwt",
+        "tls": true,
+        "sandbox": true,
+        "signed": true,
+        "allowlist": ["read-logs"],
+        "tools": [
+          {"name": "read-logs", "scopes": ["logs:read"], "writes": false, "approval": true,
+           "description_hash": "stable"}
+        ],
+        "previous_manifest_sha256": "dd44",
+        "manifest_sha256": "dd44"
+      }
+    ]
+  },
+  "ai_infra": {
+    "egress": {"internet": false, "metadata": false, "allowed_hosts": ["hf-mirror.internal"]},
+    "services": [
+      {"name": "ray-head", "type": "ray", "bind": "127.0.0.1", "port": 8265,
+       "auth": true, "dashboard": false, "tls": true, "version": "2.56.0",
+       "admin_api": false},
+      {"name": "jupyter", "type": "notebook", "bind": "127.0.0.1", "port": 8888,
+       "auth": true, "token": "required", "tls": true, "version": "4.1.1", "admin_api": false},
+      {"name": "vllm", "type": "inference", "bind": "127.0.0.1", "port": 8000,
+       "auth": true, "api_key": "required", "tls": true, "version": "0.9.0", "admin_api": false}
+    ],
+    "known_vulnerable": [
+      {"service": "ray", "versions": ["2.55.0", "2.54.0"]},
+      {"service": "vllm", "versions": ["0.8.4"]}
+    ]
+  },
+  "inference_tenancy": {
+    "tenants": ["team-a", "team-b"],
+    "cache_salt": true,
+    "prefix_cache_shared": false,
+    "weight_namespace": "per-tenant",
+    "kv_namespace": "per-tenant",
+    "timing_oracle": false,
+    "gpu_residue_after_release": false,
+    "quota_per_tenant": true,
+    "log_tenant_id": true,
+    "tokenizer_shared": false
+  },
+  "agent_control_plane": {
+    "runtime": {
+      "name": "agent-runtime",
+      "agent_identity": true,
+      "tool_egress": ["read-logs", "ticket:create"],
+      "memory_store": "per-agent",
+      "approval_gate": true,
+      "sandbox": true,
+      "max_agents": 32,
+      "audit": true
+    },
+    "maas": {
+      "tenant_scoped_keys": true,
+      "api_key_rotation": true,
+      "audit": true,
+      "bind": "127.0.0.1",
+      "tls": true
+    },
+    "agents": [
+      {"name": "coder", "tools": ["read-logs"], "secrets": [], "memory": "per-agent"}
+    ]
+  }
+}

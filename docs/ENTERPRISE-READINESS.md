@@ -105,7 +105,7 @@
 
 ## 3. 企业就绪清单（60 项，三态）
 
-> 绿 27 · 黄 12 · 红 21（共 60 项）。绿色只表示「本地有可复现证据」，不表示
+> 绿 36 · 黄 3 · 红 21（共 60 项）。绿色只表示「本地有可复现证据」，不表示
 > 客户环境已通过；红色项不允许在投标/验收材料中写成「已支持」。
 
 | ID | 检查项 | 类别 | 状态 | 证据 / 缺口 |
@@ -115,9 +115,9 @@
 | ER-03 | 多节点调度/驱逐/PDB 验证 | 真实环境差异 | 🔴 红 | 仅单节点 k3s；需客户多节点集群 |
 | ER-04 | Calico/Cilium 真数据面策略语义 | 真实环境差异 | 🔴 红 | `lab/kind` 脚本存在但宿主虚拟化不可用；需客户 CNI |
 | ER-05 | 六大云托管 K8s 真环境 | 真实环境差异 | 🔴 红 | `docs/SIX-CLOUD-MATRIX.md` 为契约仿真；需客户账号 |
-| ER-06 | GPU Operator/device plugin/DRA 兼容 | 真实环境差异 | 🟡 黄 | fixture 覆盖 GPU 容量/标签；无真实 device plugin |
+| ER-06 | GPU Operator/device plugin/DRA 兼容 | 真实环境差异 | 🟡 黄 | `trident/enterprise/gpu_contract.py` 本地校验 device plugin v1beta1/DRA schema/版本矩阵；无真实 GPU/device plugin，需客户节点 |
 | ER-07 | hostNetwork 绕过 NetworkPolicy 真数据面 | 真实环境差异 | 🟢 绿 | `netpol-proof.json`：普通 Pod blocked / hostNetwork connected |
-| ER-08 | 私有 registry/代理/镜像差异 | 真实环境差异 | 🟡 黄 | 本地代理路径已记录；客户 registry 未联调 |
+| ER-08 | 私有 registry/代理/镜像差异 | 真实环境差异 | 🟢 绿 | `trident/enterprise/registry.py`：Bearer challenge/token、manifest digest、tag-only 策略、代理绝对 URI、allowlist；本地 registry mock 实测 |
 | ER-09 | 内核/eBPF/Falco driver 兼容矩阵 | 真实环境差异 | 🔴 红 | 仅 fixture 生效状态；需客户节点内核 |
 | ER-10 | 客户网络分段/堡垒机/跳板路径 | 真实环境差异 | 🔴 红 | 本机 127.0.0.1/QEMU hostfwd；无客户网络 |
 | ER-11 | 100/1k/5k/10k 资产仿真 | 规模 | 🟢 绿 | `docs/SCALE-RESULTS.md`；算法/时延曲线 |
@@ -125,7 +125,7 @@
 | ER-13 | 单节点 2 GB k3s 真集群 | 规模 | 🟢 绿 | QEMU TCG `-m 2048`；非生产规模 |
 | ER-14 | 单机 8 租户并发/配额/隔离 | 规模 | 🟢 绿 | `docs/SAAS-LOAD-RESULTS.md`；17.26 runs/s，隔离违规 0 |
 | ER-15 | 万卡 GPU 真集群 | 规模 | 🔴 红 | 仅 10k 节点离散事件仿真；需 ≥1,024 GPU 实测 |
-| ER-16 | 日均百万审计事件流 | 规模 | 🟡 黄 | `lab/enterprise_lab.py` 345 条；可本地放大但不能替代客户流 |
+| ER-16 | 日均百万审计事件流 | 规模 | 🟢 绿 | `trident/enterprise/scale.py`：100 万合成事件 98.5s、10,148/s、线性容量 8.77 亿/日；非客户流 |
 | ER-17 | 多副本控制面/HA/故障转移 | 规模 | 🔴 红 | 单机 SQLite/单 HTTP；无跨副本队列/租约 |
 | ER-18 | 大规模并发扫描窗口/限流 | 规模 | 🔴 红 | 仅单机压力；需客户窗口与限流策略 |
 | ER-19 | 10k findings 报告渲染 | 规模 | 🟢 绿 | `reports/samples/scale/`；渲染耗时/大小 |
@@ -135,21 +135,21 @@
 | ER-23 | 工作区紧急停止 kill switch | 数据敏感与变更窗口 | 🟢 绿 | `tests/test_cli_ops.py` abort；执行前拒绝 |
 | ER-24 | 载荷统一脱敏 | 数据敏感与变更窗口 | 🟢 绿 | `jsonio.redact`；connector/adapters 复用 |
 | ER-25 | 客户数据分级/标注样本导入 | 数据敏感与变更窗口 | 🟡 黄 | Pilot 支持 snapshot/ground-truth 格式；无 DLP/分类器 |
-| ER-26 | 变更窗口/冻结期系统对接 | 数据敏感与变更窗口 | 🟡 黄 | `calendar.py` + Pilot 推荐窗口；未接客户 CAB |
-| ER-27 | 证据保留/删除策略 | 数据敏感与变更窗口 | 🟡 黄 | `retention_plan` 仅 dry-run；无自动删除/法务审批流 |
+| ER-26 | 变更窗口/冻结期系统对接 | 数据敏感与变更窗口 | 🟢 绿 | `governance.ChangeCalendar`：冻结期重叠拒绝 + ICS 导出 + 审计；客户 CAB 仍需人工签核 |
+| ER-27 | 证据保留/删除策略 | 数据敏感与变更窗口 | 🟢 绿 | `retention.apply_retention`：dry-run/legal hold/双角色审批/越界拒绝/审计 JSONL；客户法务审批仍在外部 |
 | ER-28 | 客户 KMS/HSM/信封加密 | 数据敏感与变更窗口 | 🔴 红 | 本机文件权限；需客户密钥托管 |
 | ER-29 | 训练数据/权重接触审批 | 数据敏感与变更窗口 | 🔴 红 | 无数据 owner 流程；需客户审批 |
 | ER-30 | 跨境/数据驻留合规 | 数据敏感与变更窗口 | 🔴 红 | 无 region/驻留控制；需客户法务 |
 | ER-31 | 审计 Secret/PVC 主体基线 | 误报漏报与调优 | 🟢 绿 | `core/auditlog.py`；benign 样本零报 |
 | ER-32 | 三场景 fixture FP/FN 实测 | 误报漏报与调优 | 🟢 绿 | `docs/ENTERPRISE-LAB-RESULTS.md`；FP/FN 逐场景 |
 | ER-33 | 审计主体基线调优（CI/扫描器） | 误报漏报与调优 | 🟢 绿 | 实验室 FP 180→120（-33.3%）；需客户批准 |
-| ER-34 | 云厂商 DaemonSet 例外清单 | 误报漏报与调优 | 🟡 黄 | 文档建议按 image digest+ns+SA；未实现策略引擎 |
+| ER-34 | 云厂商 DaemonSet 例外清单 | 误报漏报与调优 | 🟢 绿 | `governance.ExceptionPolicy`：digest 钉住 + 精确 ns/SA + 审批 + 到期；客户 DaemonSet 清单仍待导入 |
 | ER-35 | 客户标注真值/盲测 | 误报漏报与调优 | 🟡 黄 | Pilot 计划要求 ≥20 条；客户样本未提供 |
 | ER-36 | 客户环境误报率 ≤20% | 误报漏报与调优 | 🔴 红 | fixture 总体 FP 率 72.5%；必须客户调优 |
 | ER-37 | 客户环境漏报率 ≤10% | 误报漏报与调优 | 🔴 红 | 当前 fixture FN 28.6%；含未覆盖检测面 |
 | ER-38 | Falco/Kyverno 真实生效验证 | 误报漏报与调优 | 🔴 红 | fixture 状态 37.5%/57.1%；需客户运行时 |
-| ER-39 | SIEM 告警闭环/去重 | 误报漏报与调优 | 🟡 黄 | 直投契约有；无 SOAR 回写/去重闭环 |
-| ER-40 | 规则升级后的回归 | 误报漏报与调优 | 🟡 黄 | 紫队矩阵存在；无客户规则版本回归 |
+| ER-39 | SIEM 告警闭环/去重 | 误报漏报与调优 | 🟢 绿 | `delivery.Deduplicator/DeliveryQueue`：指纹去重、重试、死信 JSONL、重放；SOAR 回写需客户联调 |
+| ER-40 | 规则升级后的回归 | 误报漏报与调优 | 🟢 绿 | `governance.compare_rule_packs`：链覆盖降级/规则删除即回归；客户规则版本与样本仍需导入 |
 | ER-41 | OIDC 登录适配（本地 mock） | 系统集成 | 🟢 绿 | `tests/test_enterprise_integrations.py`；claims/nonce/过期 |
 | ER-42 | LDAP 登录适配（本地 mock） | 系统集成 | 🟢 绿 | mock 目录 + 组映射 + 注入拒绝 |
 | ER-43 | 生产 OIDC RS256/JWKS | 系统集成 | 🔴 红 | 当前仅 mock HS256；需客户 IdP |
@@ -159,17 +159,42 @@
 | ER-47 | Webhook HMAC 契约 | 系统集成 | 🟢 绿 | 签名/时间戳/重放窗口校验 |
 | ER-48 | Jira/ServiceNow stub 契约 | 系统集成 | 🟢 绿 | 字段/优先级/关联 fingerprint；本地 HTTP |
 | ER-49 | 真实 Jira/ServiceNow 工作流 | 系统集成 | 🔴 红 | 未联调客户项目字段/审批流 |
-| ER-50 | SIEM 网络/证书/代理/白名单 | 系统集成 | 🟡 黄 | 契约层有；客户网络未验证 |
+| ER-50 | SIEM 网络/证书/代理/白名单 | 系统集成 | 🟢 绿 | `delivery.EgressPolicy`：host allowlist、非回环强制 TLS、CA bundle/代理；客户证书与网络策略仍待联调 |
 | ER-51 | 双签审批链（lead→安全负责人） | 合规与运营 | 🟢 绿 | `approval.py` 哈希链/顺序/重复签署拒绝 |
 | ER-52 | 报告哈希+时间戳（本机） | 合规与运营 | 🟢 绿 | `sign_report`/`verify_report`；篡改检出 |
 | ER-53 | 报告签核 6 项清单 | 合规与运营 | 🟢 绿 | `create_signoff`；缺少任一项即拒绝 |
 | ER-54 | 保留策略 dry-run | 合规与运营 | 🟢 绿 | `retention_plan`；legal hold 不 purge |
 | ER-55 | RFC3161 TSA/HSM 时间戳 | 合规与运营 | 🔴 红 | 本机时钟；需客户 TSA/HSM |
 | ER-56 | 客户 IdP 组映射/离职回收 | 合规与运营 | 🔴 红 | mock 组映射；无 SCIM/离职同步 |
-| ER-57 | 等保/ISO 审计证据包 | 合规与运营 | 🟡 黄 | 合规模板 + 证据索引；需客户模板/评审 |
+| ER-57 | 等保/ISO 审计证据包 | 合规与运营 | 🟢 绿 | `evidence_pack.build_pack/verify_pack`：manifest/控制项索引/zip 哈希；客户模板与评审仍在外部 |
 | ER-58 | HA/升级/备份 runbook | 合规与运营 | 🟢 绿 | `docs/OPERATIONS.md`；本机演练项 |
 | ER-59 | 许可证/交付边界 | 合规与运营 | 🟢 绿 | Apache-2.0 + NOTICE；`docs/DELIVERY.md` |
 | ER-60 | 客户验收/责任矩阵/保险 | 合规与运营 | 🔴 红 | 需合同/法务/客户签核 |
+
+## 3.1 黄项本地补验（2026-10-26）
+
+本轮把 9 项「有代码/契约但缺本地执行证据」的黄项补到绿：ER-08、ER-16、ER-26、
+ER-27、ER-34、ER-39、ER-40、ER-50、ER-57。统一执行器：
+
+```bash
+python -m trident.enterprise.localcheck --out reports/samples/enterprise-local
+```
+
+| 原黄项 | 补验内容 | 证据 |
+|---|---|---|
+| `ER-08`（registry） | registry Bearer challenge → token → manifest digest；tag-only 策略；代理绝对 URI；host allowlist | `trident/enterprise/registry.py`；`local-checks.json` 的 `er-08-*` |
+| `ER-16`（scale） | 20 万事件写入/读回；另跑 100 万事件 98.5s / 10,148 事件每秒 / 线性 8.77 亿每日 | `trident/enterprise/scale.py`；`audit-scale-1m.json` |
+| `ER-26`（calendar） | 冻结窗口重叠拒绝、ICS 导出、持久化 | `governance.ChangeCalendar`；`er-26-change-freeze` |
+| `ER-27`（retention） | dry-run/legal hold/双角色/越界拒绝/审计 JSONL | `retention.apply_retention`；`er-27-retention-execution` |
+| `ER-34`（exception） | digest + 精确 ns/SA + 审批人 + 到期；通配/过期拒绝 | `governance.ExceptionPolicy`；`er-34-vendor-exception-policy` |
+| `ER-39`（dedupe） | 指纹去重、重试、死信 JSONL、重放 | `delivery.Deduplicator/DeliveryQueue`；`er-39-siem-dedupe-dlq` |
+| `ER-40`（regression） | 规则包升级：覆盖降级/规则删除即回归 | `governance.compare_rule_packs`；`er-40-rule-regression` |
+| `ER-50`（egress） | allowlist、非回环强制 TLS、CA/代理 | `delivery.EgressPolicy`；`er-50-siem-egress-policy` |
+| `ER-57`（evidence） | manifest + 等保/ISO 控制项索引 + zip 哈希校验/篡改检出 | `evidence_pack.build_pack/verify_pack`；`er-57-evidence-pack` |
+
+仍保持黄项 **3 项**：ER-06（无真实 GPU/device plugin/DRA 注册，仅本地 schema/版本
+矩阵）、ER-25（无客户数据分级/DLP 样本）、ER-35（无客户标注真值/盲测样本）。
+红项 **21 项**不变。完整边界见 `docs/ENTERPRISE-LOCAL-VERIFICATION.md`。
 
 ## 4. 使用方式
 
