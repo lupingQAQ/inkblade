@@ -1,0 +1,105 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "slime-weight-pull-poison",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "slime 权重拉取投毒",
+      "en": "slime Weight Pull Poisoning"
+    },
+    "series": "横向利用",
+    "min_level": "利用验证",
+    "writes": true,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe1",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/pull_weights",
+      "headers": {},
+      "save": "probe1",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "title",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/design.md 第 1–5 节：SGLang+slime 权重拉取补丁跨租户权重写",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "slime /pull_weights 未鉴权：请求可控路径跨租户权重写",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/design.md 第 1–5 节：SGLang+slime 权重拉取补丁跨租户权重写",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "slime-weight-pull-poison-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "write-surface demo; requires backup receipt"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  },
+  "modes": {
+    "probe_only": true,
+    "backup_write": true,
+    "requires_backup": true
+  }
+}

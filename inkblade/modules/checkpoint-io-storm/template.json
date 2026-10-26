@@ -1,0 +1,96 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "checkpoint-io-storm",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "checkpoint I/O 风暴（限速缺失）",
+      "en": "Checkpoint I/O storm via missing rate limit"
+    },
+    "series": "网络架构",
+    "min_level": "主动探测",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe1",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/checkpoint/io",
+      "headers": {},
+      "save": "probe1",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "checkpoint I/O 面无限速（少量请求即 fabric 级 I/O 洪峰）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.5；语料 meta-prometheus（多层 checkpoint/delta checkppoint 依赖共享存储）/ storage-protocol-csi",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "info",
+      "title": "I/O 限速/鉴权生效或计数未达阈值（风暴未成立）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.5；语料 meta-prometheus（多层 checkpoint/delta checkppoint 依赖共享存储）/ storage-protocol-csi",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "checkpoint-io-storm-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

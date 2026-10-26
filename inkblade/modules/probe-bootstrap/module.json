@@ -1,0 +1,21 @@
+{
+  "key": "probe-bootstrap",
+  "name": {
+    "zh": "探针投放（首次立足）",
+    "en": "Probe bootstrap (first foothold)"
+  },
+  "series": "侦察",
+  "description": "唯一允许在 host 执行的模块：把静态 Rust 探针二进制投放到目标 Pod 并校验版本。不投放 Python、不执行模块逻辑；其余全部模块为 template 探针执行。登记于 inkblade/probe-bootstrap.json。",
+  "min_level": "只读侦察",
+  "writes": false,
+  "requires": [],
+  "execution": "bootstrap",
+  "params_schema": {
+    "probe_binary": "host 侧 Rust 探针二进制路径（缺省读 inkblade/probe-bootstrap.json 的 source）",
+    "remote_path": "Pod 内落地路径（缺省 /tmp/inkblade-probe）",
+    "expected_sha256": "可选：校验二进制 sha256"
+  },
+  "produces": "probe-install.json（远端路径/sha256/字节数）+ 探针协议版本",
+  "knowledge": "docs/ARCHITECTURE-PROBE.md",
+  "combo_signature": "probe-bootstrap"
+}

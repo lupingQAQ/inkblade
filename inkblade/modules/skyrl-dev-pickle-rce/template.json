@@ -1,0 +1,95 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "skyrl-dev-pickle-rce",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "SkyRL 开发模式反序列化",
+      "en": "SkyRL Dev-mode Pickle RCE"
+    },
+    "series": "横向利用",
+    "min_level": "利用验证",
+    "writes": true,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "title",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/design.md 第 1–5 节：SkyRL dev-mode 反序列化",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "SkyRL dev-mode /fetch_weights 同构面：未鉴权拉取攻击者可控权重源（pickle 执行链）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/design.md 第 1–5 节：SkyRL dev-mode 反序列化",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "skyrl-dev-pickle-rce-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "write-surface demo; requires backup receipt"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  },
+  "modes": {
+    "probe_only": true,
+    "backup_write": true,
+    "requires_backup": true
+  }
+}

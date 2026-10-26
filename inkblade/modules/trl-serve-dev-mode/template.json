@@ -1,0 +1,86 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "trl-serve-dev-mode",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "TRL 服务开发模式",
+      "en": "TRL Serve Dev Mode"
+    },
+    "series": "横向利用",
+    "min_level": "利用验证",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.surface.ok == true",
+      "sev": "medium",
+      "title": "title",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/design.md 第 1–5 节：TRL vllm-serve dev 模式暴露",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.surface.ok == true",
+      "sev": "medium",
+      "title": "trl vllm-serve dev 模式：无 key 推理服务面暴露（0.0.0.0 同构）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/design.md 第 1–5 节：TRL vllm-serve dev 模式暴露",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "trl-serve-dev-mode-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

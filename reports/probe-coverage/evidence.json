@@ -1,0 +1,2866 @@
+{
+  "schema": "inkblade-probe-coverage-evidence-v1",
+  "entries": {
+    "admission-crd-subresource-gap": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "7d6dd6bb01589c78d1c21e05f61b4f7c98aa114f0d7bcc0d6a5fb366f964f316",
+      "at": "2026-10-26T21:53:35Z"
+    },
+    "admission-gatekeeper-semantics": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "cc86b339d8f867312dc614eef97d7836400bfbc79e2183d3840f2c0bbed672dd",
+      "at": "2026-10-26T21:53:36Z"
+    },
+    "admission-kyverno-semantics": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "5568cc408b14a687ced479fedbb88d56aaee7a2a4b0e49b6f53039023d4e15f6",
+      "at": "2026-10-26T21:53:37Z"
+    },
+    "admission-webhook-write": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "60d76da570e1df861b39e509f64f91bde1c96313a0f180f789407824b051c36b",
+      "at": "2026-10-26T21:53:39Z"
+    },
+    "agent-native-control-plane": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "c2cbd75cfc81cd2d3722270681b656c8d411b0f1d31e4116d02146d58efe1619",
+      "at": "2026-10-26T21:53:40Z"
+    },
+    "agent-skill-registry-supply-chain": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "948803f5a650333ecb8f217bb2b9dcacb38595992e4285e18e2c224869dde48d",
+      "at": "2026-10-26T21:53:42Z"
+    },
+    "ai-infra-baseline": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "877555748e91332d5a96df6e4092e0a5b85ede56d1780cfcb77c8eea0496ce4c",
+      "at": "2026-10-26T21:53:42Z"
+    },
+    "aigateway-auth-bypass": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 4,
+      "evidence": "a39d84ad71f9fc4cfe15a090bb316842b58b250e39959e2187b99bcd5d02dcb5",
+      "at": "2026-10-26T21:53:44Z"
+    },
+    "aigateway-cache-cross-tenant": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "c0e142a1c41009cc357b92b4640712989ecea633c3670774571f4dbd6916f9ff",
+      "at": "2026-10-26T21:53:45Z"
+    },
+    "aigateway-fingerprint": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 0,
+      "steps": 5,
+      "evidence": "c2d598ca0e33c2b7b079f73650eb5e1f5e03332d956628e46a9a26c44a5a2503",
+      "at": "2026-10-26T21:53:46Z"
+    },
+    "aigateway-guardrail-bypass": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "de40a4a7a262bfb86569c636f05d6247e39c01119207561dbf132c4a26ffbefb",
+      "at": "2026-10-26T21:53:47Z"
+    },
+    "aigateway-log-pii-leak": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "feed6afa9afeede0f8dd2debd6d010dd2053215ae2374d47ee9c8f08087c67bf",
+      "at": "2026-10-26T21:53:49Z"
+    },
+    "aigateway-quota-bypass": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 0,
+      "steps": 3,
+      "evidence": "1cc9108b6b6b7385bc3d42e15126ebb1f588c00d01eb8fef12a688ef5469eebf",
+      "at": "2026-10-26T21:53:50Z"
+    },
+    "aigateway-route-hijack": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 0,
+      "steps": 3,
+      "evidence": "eafc403f2efea23dcf37b0b481aa674111ab27e403f8219859dfd05922d50f66",
+      "at": "2026-10-26T21:53:51Z"
+    },
+    "aigateway-upstream-key-exfil": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "d44517bb8756b52a84f04e5420e79de13c349fbd1a08a3723fc14e1bea4e9b90",
+      "at": "2026-10-26T21:53:53Z"
+    },
+    "ambient-mesh-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "eacdd7992ca3ed62a5cb0c91d401fda895bdb311fbc3d0977ae6a6d2efd453a0",
+      "at": "2026-10-26T21:53:54Z"
+    },
+    "api-server-flood-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "683a6c53180359b9eeba64e0632924325356b99b3a760926a6489513fedd859e",
+      "at": "2026-10-26T21:53:55Z"
+    },
+    "apiservice-hijack": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "5dd07f1008b6ddd59085b75a9d3ab4a3129c5c628752c5625b2f98cf838a4f57",
+      "at": "2026-10-26T21:53:57Z"
+    },
+    "areal-awex-nccl-injection": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "b85affb02483ca3d001fc471523a1130792754e5c6d2645e1aa2b636336e1ddb",
+      "at": "2026-10-26T21:53:58Z"
+    },
+    "areal-load-pickle": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "c35e92a5cb68b925bea78d4f58e7f292b9329ea0f9c49761feb1dd35ceef103b",
+      "at": "2026-10-26T21:54:00Z"
+    },
+    "areal-setenv-engine-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 4,
+      "evidence": "ef6b0dc96fe33c0a558595f1bf10938ae2805856b788a74a21c3584b1d09e491",
+      "at": "2026-10-26T21:54:01Z"
+    },
+    "attack-path-ranking": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "6abe2c2d219636bdd575b6b876ef274c20fd38af64415e1ce1fbfd33a68d41b1",
+      "at": "2026-10-26T21:54:02Z"
+    },
+    "auth-gap-detection": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "aae1cc378200bc340806a910707fdb95deeecb8c7ddda01b8a3f6c935ac3b1c5",
+      "at": "2026-10-26T21:54:03Z"
+    },
+    "bmc-ipmi-exposure": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "79067c29bebfcb24a8e945c5ac2cad95829eb1d0c6f938f7beaa80ad58b9fd5a",
+      "at": "2026-10-26T21:54:04Z"
+    },
+    "cache-eviction-residue": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 0,
+      "steps": 3,
+      "evidence": "0430bd8c27a4cbc37f80f81a6675e0f8c77320191a04cfc8fb3575ce746b5806",
+      "at": "2026-10-26T21:54:05Z"
+    },
+    "cache-poison-persistence": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "56c9dc1165b6cfb19379790c3010185c846560940a7dfe4307af28f873a0f60c",
+      "at": "2026-10-26T21:54:07Z"
+    },
+    "cache-salt-policy-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 0,
+      "steps": 3,
+      "evidence": "3004bffd98bc477467bd2ba5a1fd2d4782ace470dc3fd0e1318df9bfa72bca7b",
+      "at": "2026-10-26T21:54:08Z"
+    },
+    "cache-timing-sidechannel": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "4945fe120fb8e494ee942bf1cea470422772edf1f9aa752c221d999091a12dfb",
+      "at": "2026-10-26T21:54:10Z"
+    },
+    "cdk-persistence-detect": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "a0350edf61546f45a741bed3adb17807ceae26a586e91853b57a922f471d2042",
+      "at": "2026-10-26T21:54:11Z"
+    },
+    "cdk-techniques": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "31c88c1590459b49493b0b9f3c056a397e00bf466fa529e57dc3491b4d07fd28",
+      "at": "2026-10-26T21:54:12Z"
+    },
+    "cert-manager-webhook-tls": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "d2df9efbf131d4d296d990c5d844f9bc99a81f47a3650d15033d8ceacc888a19",
+      "at": "2026-10-26T21:54:13Z"
+    },
+    "cgpu-isolation-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "f5ac897397bfe90363935e82fd67a8ae0418f6c20be47a5fa3aeeed7553d6c8c",
+      "at": "2026-10-26T21:54:14Z"
+    },
+    "checkpoint-io-storm": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "4a0bf09c86b19120059c27ddf500b14a48ae85abf7dd387636427cbb240a489d",
+      "at": "2026-10-26T21:54:16Z"
+    },
+    "checkpoint-optimizer-state-poison": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "a0e361e1291eb5736a149e95d3dda9a08a7a678041a17704efb3961f8b544e14",
+      "at": "2026-10-26T21:54:17Z"
+    },
+    "checkpoint-shard-poison": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "075a1b08ae8dce6973ecacff601eb2bb93f2bd5c34dbc248ea78585c97007216",
+      "at": "2026-10-26T21:54:18Z"
+    },
+    "cis-benchmark-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "9f2160e19ab6355a25cf32aafa17566ff22b660d89d78b2fb7c52879eef49fa7",
+      "at": "2026-10-26T21:54:20Z"
+    },
+    "cloud-bucket-cross-tenant": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 0,
+      "steps": 3,
+      "evidence": "88b46fe81c09ecb35758647cd808092576115b19e4a24402fb29f8eeddefb617",
+      "at": "2026-10-26T21:54:22Z"
+    },
+    "cloud-integration-fingerprint": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "f5057107cf9261d9e425b6715decb23ee4ffc740ca998e632cfa0fb52404d08d",
+      "at": "2026-10-26T21:54:22Z"
+    },
+    "cloud-irsa-trust-wildcard": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 0,
+      "steps": 3,
+      "evidence": "529bd97d7593eda1c7199ca513393f1caf8a23338ff87737c82a5326793379ac",
+      "at": "2026-10-26T21:54:23Z"
+    },
+    "cloud-role-overprivilege": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 5,
+      "findings_negative": 5,
+      "steps": 1,
+      "evidence": "096a9f7a44295a86e89eeb1db3b54fdf46515551f1b6f5677d2543268bcca780",
+      "at": "2026-10-26T21:54:24Z"
+    },
+    "cloud-sg-imds-exposure": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "9ae1da988aabf8e660a6ea3f5750803b10ddea1617f8cd466a742b1deb852f38",
+      "at": "2026-10-26T21:54:26Z"
+    },
+    "cloud-snapshot-share": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 0,
+      "steps": 3,
+      "evidence": "9ad444d8e78a9bb108070d58994a68d190274b4a93a0f831c9f66edd770fbb77",
+      "at": "2026-10-26T21:54:27Z"
+    },
+    "cloud-token-harvest": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "78ff57853c91d0446f00ff861451a87da13945429c417d769e9da2396ac60c3c",
+      "at": "2026-10-26T21:54:28Z"
+    },
+    "cni-aware-reachability-graph": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "cde3fb14ed36d61d4759836f79fbab44328aa9aa481ec50fa2c6ee1029881f49",
+      "at": "2026-10-26T21:54:29Z"
+    },
+    "cni-plugin-exec": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "bc17d1eb0f0a0cb5db3f5a73bed9e7f69b1a389dec380628c5a681df39c8f454",
+      "at": "2026-10-26T21:54:30Z"
+    },
+    "cni-stack-capability": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 5,
+      "findings_negative": 5,
+      "steps": 1,
+      "evidence": "ffcd27b9b2a8d85f1cc9443183ffd5bdd7f8159f390f969a24127f8941182c20",
+      "at": "2026-10-26T21:54:31Z"
+    },
+    "collective-communication-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "a1446ef5636b4d02ae9dff1c47f8c55e6a47e52aa630ab3793ade1f1c452c72e",
+      "at": "2026-10-26T21:54:32Z"
+    },
+    "combo-signature-static": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "a08ee658d51acacbb00c67fef367a7b5888b13254a70941b5f232fc4ef9a496f",
+      "at": "2026-10-26T21:54:33Z"
+    },
+    "confidential-containers-attestation": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "85ba9a4349c96ac6308c58ac688a458ef0c76ae78c09a5be3421b08068a41a9c",
+      "at": "2026-10-26T21:54:34Z"
+    },
+    "confidential-containers-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "dbbeee2b7f9ac8626d9ace5089341f65e8f5b6d61fcaea9fcf0e9d119b79746e",
+      "at": "2026-10-26T21:54:35Z"
+    },
+    "containerd-shim-escape-detect": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "b3a120f3056f9fff27b3bfc2c7a69d802cf504ed66474efd612199317040b49c",
+      "at": "2026-10-26T21:54:37Z"
+    },
+    "context-limit-bypass": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "408344325e05a1daf5d972b59a8e3cbc46bf7783b3cc14054926f90c27a328a8",
+      "at": "2026-10-26T21:54:38Z"
+    },
+    "crd-conversion-webhook": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "1166b9c214d77b345403d0f40152e440e17cb12708a98e64e9fd381ae56df1f4",
+      "at": "2026-10-26T21:54:39Z"
+    },
+    "csi-node-plugin-escape": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "f56a95cafef7cac56a48a11b31c7f64d6b420c07ed6064b5f3d3edd1a12cfeaa",
+      "at": "2026-10-26T21:54:40Z"
+    },
+    "csr-approve": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "168e822467eb505d4fae2e13b3c9235dfc9ec3661fb5cecf4f1a5255e2b6dadb",
+      "at": "2026-10-26T21:54:41Z"
+    },
+    "cumulus-nvue-injection": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "750aa1d32a0745378a24456c38988c77828b961a33c184602bf8e6e8fda2421a",
+      "at": "2026-10-26T21:54:43Z"
+    },
+    "cxl-memory-security": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "e6f54769065507a0364f109ae133a55f1a266074e2902338743d76c3937094d5",
+      "at": "2026-10-26T21:54:44Z"
+    },
+    "data-pipeline-poison": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "edc8247fe6ebef0263d646a733a4c6449da094b2481924b6a867edbbaf40a4fb",
+      "at": "2026-10-26T21:54:45Z"
+    },
+    "data-provenance-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "b6ce47ab934b3873452895266c46b61a832abb0e85a1f38d2982e704fc1abc5f",
+      "at": "2026-10-26T21:54:46Z"
+    },
+    "deepspeed-checkpoint-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "4c453cc6afcde606d4133ce8aea0c4e1f91c23ebae8b788cacb6579253aeb92e",
+      "at": "2026-10-26T21:54:47Z"
+    },
+    "defense-bypass-admission": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "6c37db59a1a3db95fa0af0ad0f306a9eda2e59ae80fee105ad4f45fbed82ae1f",
+      "at": "2026-10-26T21:54:48Z"
+    },
+    "defense-bypass-agentsmith": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "9cb6957fc760fd7f576412b02b3db2770c75e34c8dbda2881b6f0d401b0e3678",
+      "at": "2026-10-26T21:54:49Z"
+    },
+    "defense-bypass-elkeid": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "7b7baebb03a54a2696d71120420aeeee95b28152e9f3486c7ccac337834c92f4",
+      "at": "2026-10-26T21:54:50Z"
+    },
+    "defense-bypass-falco": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "90e4fbd95a1d2e51e43849a8c12d57cf2f7cd55babffb404e325b65c74f67ed3",
+      "at": "2026-10-26T21:54:51Z"
+    },
+    "defense-bypass-hostagent": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "54adf98441b9cb3663e64e096fba99a47d0af1a858d9bdbb1abe1fa344d96b6b",
+      "at": "2026-10-26T21:54:52Z"
+    },
+    "defense-bypass-imagescan": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "64e653353d39ae0bb35dbd60db8bc391275021b105be62007e28ea5f6166a3c4",
+      "at": "2026-10-26T21:54:53Z"
+    },
+    "defense-bypass-kubearmor": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "db0fe0fbb00359b87f130c5d75db419e6f227606253a356fca5f47d3e91516b8",
+      "at": "2026-10-26T21:54:55Z"
+    },
+    "defense-bypass-netobserv": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "2097fb1b39735ae62612fa9d8628237df5ae899945a7f5ef301bb5b233eda5b7",
+      "at": "2026-10-26T21:54:56Z"
+    },
+    "defense-bypass-tetragon": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "61a0e8d79aa13525da1d512055050e652e916b8c2b0ba51abf0892948780d749",
+      "at": "2026-10-26T21:54:57Z"
+    },
+    "defense-bypass-veinmind": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "86d2102757712ce4de03b0815bb80738c07ab2a47a5deefb557e301c2250774a",
+      "at": "2026-10-26T21:54:58Z"
+    },
+    "defense-bypass-waf-inference": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "6571bb3d80653146a07f4997f7061658ccc950991365914ce22d610ff4aca07c",
+      "at": "2026-10-26T21:54:59Z"
+    },
+    "dify-code-node-escape": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "bca43564e40ceb4263fbff684964c9aaf4446ff4b5b9633abd2b0fd3fc0d9a7f",
+      "at": "2026-10-26T21:55:01Z"
+    },
+    "dify-control-plane-failopen": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "66ddd13144ff6991c2382ab2507d2fa41ed99d3ae1e954143d6bda1ef3ef105c",
+      "at": "2026-10-26T21:55:02Z"
+    },
+    "dify-local-sandbox-unauth-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "530fab2dccacdd11a0ec8b402a36b793e0ea829177819cd2430b3f4a4e815b7d",
+      "at": "2026-10-26T21:55:04Z"
+    },
+    "dify-snapshot-cross-tenant-theft": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "8e4f8f86bdb7de6d8695259f234e331b06b2d75c8809afd4469087a5eff069d0",
+      "at": "2026-10-26T21:55:05Z"
+    },
+    "dify-stub-token-forgery": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "b3f10c968ecd8ca86ad697a44b5ba3e6b7f821110ef157889493858020d1eacf",
+      "at": "2026-10-26T21:55:06Z"
+    },
+    "djev-open-proxy": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "4d69658203eff70878ddda15244c0a95748c24dcc1e5ebb8826d8198fdabde80",
+      "at": "2026-10-26T21:55:08Z"
+    },
+    "dns-service-discovery": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "988f12d57bf26ec79050435a85d7bf5daedb7663223c0b6fba6ba381f681b134",
+      "at": "2026-10-26T21:55:09Z"
+    },
+    "dpu-ipu-offload": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "4b317c89b2602a8f965dacdc34fdb48ae4e74dc904b9aa576c33fd2795bbd67e",
+      "at": "2026-10-26T21:55:10Z"
+    },
+    "dpu-smartnic-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "84a580f2cdc16f3351bf4b46908f1f9cebcea0574ef55680152555ec2d2649b2",
+      "at": "2026-10-26T21:55:12Z"
+    },
+    "driver-reset-trigger": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "ecbd992f6e8d51bb1ff307036d5b9e24765fd5fb4d2c00eac24707829cba28e2",
+      "at": "2026-10-26T21:55:13Z"
+    },
+    "ebpf-runtime-coverage-gap": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "b1d7ddba78cca7c707dc94f7687613243cf23c8afb53904d6fb9f22395d2eb89",
+      "at": "2026-10-26T21:55:14Z"
+    },
+    "escape-primitives": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "35c51ef38fc608a7b6809fbf4cd081266aad121ed47beb795715af158908a67e",
+      "at": "2026-10-26T21:55:15Z"
+    },
+    "etcd-direct-access": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "b38011b3f9c61257a2593fdb51b061ac6ffb97dc76ca03b6d5a17b3037b3d5d5",
+      "at": "2026-10-26T21:55:16Z"
+    },
+    "experiment-tracker-exposure": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "801fb1cfbde15097a659a4bfa5e06d093031fd95910351fe3d6872b5a0c140d8",
+      "at": "2026-10-26T21:55:18Z"
+    },
+    "exposure-mapping": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "8430d529ca4f4fcba1fbaddb54559ac3172759e91fecb7629ade501550172e06",
+      "at": "2026-10-26T21:55:19Z"
+    },
+    "fabric-telemetry-exposure": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "cfcd6e6e57a9475dc5f95089d9785b11075e637118293c2db068da630493e781",
+      "at": "2026-10-26T21:55:20Z"
+    },
+    "fabric-topology-isolation": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "125eb09c2a8a2608190a95de3ba4a21728cbf4aa8d16e7e929e249e1652f928c",
+      "at": "2026-10-26T21:55:20Z"
+    },
+    "federated-learning-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "2034b1c054d9a2b5118f01e8e3d5b6c2bc115e3a8f2905eeb6a9f79de13be8e8",
+      "at": "2026-10-26T21:55:21Z"
+    },
+    "federated-learning-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "b3e63f59ede0fa26caf5fe231e7e57c0cac270c1c6c5852a6369b0ec95c08de3",
+      "at": "2026-10-26T21:55:22Z"
+    },
+    "firmware-signature-inventory": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "f25e7d6d7979d9c5383775d4bcd108a4d489d70b237b779d2bd7b863e13bf03a",
+      "at": "2026-10-26T21:55:24Z"
+    },
+    "framework-port-matching": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "cba70c6bf009c2ba7a523fe37b81cafce2e50587b0a97b030f5239245e92e49d",
+      "at": "2026-10-26T21:55:25Z"
+    },
+    "gang-scheduler-abuse": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "6944348ee312e412e95310c9607ea689dc266ab7713b4983b5006ff525273dce",
+      "at": "2026-10-26T21:55:26Z"
+    },
+    "gateway-api-ambient-mesh": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "03a6ff154fd36388ce458b128f8bd5a97c018096caec5925e405126f96c81fee",
+      "at": "2026-10-26T21:55:27Z"
+    },
+    "gitops-secret-read": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "b1daa488a91d25bd2753c3cf190c65aab5ce08dd677b692b1e7be488046be011",
+      "at": "2026-10-26T21:55:29Z"
+    },
+    "gitops-supply-chain": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "cebb88f6edefbc107c5ce8a327c9b3a0049394d8453c9fbaf5afec16b27c814b",
+      "at": "2026-10-26T21:55:30Z"
+    },
+    "gpu-cc-attestation-chain": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "66e0dd2da8be50edb3e42b388df605323b28a6a944f49dfde235c092358b6689",
+      "at": "2026-10-26T21:55:31Z"
+    },
+    "gpu-device-cross-namespace": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "b08be7bc92000feb9b7ececddbe7459bc1485d9aa5f18a7ea5bc6f245335534b",
+      "at": "2026-10-26T21:55:32Z"
+    },
+    "gpu-dra-mig-policy": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "9b2b26c285cbca19c45874568a09067333dcc528f51b542fcaa37d4f0a4b723b",
+      "at": "2026-10-26T21:55:33Z"
+    },
+    "gpu-driver-firmware-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "9cbfd383f28e2e91f98792ab6a0f1c7033cd7aafc04a0666df9455a77f7f3b9c",
+      "at": "2026-10-26T21:55:35Z"
+    },
+    "gpu-memory-residue-isolation": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 2,
+      "evidence": "5441f776561ecc5f6cd12399ea81e8a1b7cee4e80421b3b5bd9a378dd4b8f133",
+      "at": "2026-10-26T21:55:36Z"
+    },
+    "gpu-metrics-tenant-leak": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "e341356717294b0dbf17a906805dd7bf5f651eaa9489ebf4e56cdc01fbc9ebae",
+      "at": "2026-10-26T21:55:37Z"
+    },
+    "gpu-network-operator-posture": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "0f6fc7df35293e6ba8b722b6146cd126adb26fe090f1e1aea40565a6c961394f",
+      "at": "2026-10-26T21:55:39Z"
+    },
+    "gpu-operator-config-depth": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "d8faf153870c062e71840b1a0d6d99a02fe2cc3d890e60591b504c5d87e33769",
+      "at": "2026-10-26T21:55:40Z"
+    },
+    "gpu-operator-driver-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "30c13896d7b838784d3315f1641aebccd131895eeef9ea50af152373435eeb96",
+      "at": "2026-10-26T21:55:41Z"
+    },
+    "gpu-operator-driver-escape": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "16c3af7664ed6d3f53650f5532167c13b1cd75c07b943cf4fb9c92eda1fc3cd7",
+      "at": "2026-10-26T21:55:43Z"
+    },
+    "gpu-pool-scheduler-unauth": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 0,
+      "steps": 4,
+      "evidence": "9627540b8d7b21e1ff214d80351d67ce27436ffb095e7b69c90df2890dbab185",
+      "at": "2026-10-26T21:55:44Z"
+    },
+    "gpu-tenant-residue": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "f372b8d0bdfa511b68e93efd6a034c51516956811d5e6e5a111ba262e38b3328",
+      "at": "2026-10-26T21:55:45Z"
+    },
+    "hami-scheduler-auth-gap": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "a221e21cc4b703ab8e2911f5027c85216841460c692b1ac2346841315c0f7fd7",
+      "at": "2026-10-26T21:55:47Z"
+    },
+    "hardware-supply-chain": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "8ae3de533c5c5daaf60cac56de0788283df23225339643112894b352b98dd08d",
+      "at": "2026-10-26T21:55:49Z"
+    },
+    "hybrid-cloud-egress-pivot": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "53cc9c9d879216f7f3bfc58200c56bd3d26783dd001a6e666276f1bb839b1ba9",
+      "at": "2026-10-26T21:55:50Z"
+    },
+    "hypervisor-audit-integrity": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "00bb0466be3279f386a114372ecce2169c416ff1709b07606db2e6a3391f54dd",
+      "at": "2026-10-26T21:55:51Z"
+    },
+    "ib-sm-partition-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 5,
+      "findings_negative": 5,
+      "steps": 1,
+      "evidence": "4e44ee6fb1064dc784612e75f130f7f3a37839a9b350aaffdc7751ff9c745df9",
+      "at": "2026-10-26T21:55:51Z"
+    },
+    "ib-subnet-manager-hijack": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "3cbc702578b55c03b3e1eeb5b308ef7b9a5c483cc828fec7e615db896539bb6a",
+      "at": "2026-10-26T21:55:53Z"
+    },
+    "identity-federation-trust-matrix": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "e9ca7e3fdf1ad5f035c620949586ca8df0b7254b30234385ed2bbfdc7ba14f62",
+      "at": "2026-10-26T21:55:55Z"
+    },
+    "image-pull-secret-theft": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "349e04d56267e31ca11104db17796b5901f1f12fbd148b223451a6c1c040b9bb",
+      "at": "2026-10-26T21:55:56Z"
+    },
+    "impersonate-abuse": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "90e2a1e7fc97a8eb6dbc6d3407fb315e0cfa1ac93e04b7345887595401d8dfd0",
+      "at": "2026-10-26T21:55:57Z"
+    },
+    "inference-gateway-pd": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "b565dda07d5362f0702e53f3f0e8419e0d108d3eda8fa6e6833455af42e48b7a",
+      "at": "2026-10-26T21:55:59Z"
+    },
+    "inference-tenant-isolation-baseline": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "36eb229bf4095419e9b85d0f7226cb61288985c06f3debb1cf733910181199ee",
+      "at": "2026-10-26T21:56:00Z"
+    },
+    "iommu-smmu-config": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "ad0c8c44767f82c1a9da3927100e28d62b99b1bd6f249b6908caf6a2cc845b95",
+      "at": "2026-10-26T21:56:00Z"
+    },
+    "ipmi-cipher-zero-bypass": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "71af0c2e54224472de3bdd798a1f7e9c38270d04e00b427251020ae2925821c6",
+      "at": "2026-10-26T21:56:02Z"
+    },
+    "kdigger-admission": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "7da2311322415bece1c2839f5a40383e56dcf1d8df2014faa242054a17d4dffd",
+      "at": "2026-10-26T21:56:04Z"
+    },
+    "kdigger-buckets": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "8150dc5372d8b473d54b9fce86e9646c0457650c3fbdce27b4030758bbbd784a",
+      "at": "2026-10-26T21:56:05Z"
+    },
+    "kernel-lpe-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "d832f47822c9edae37f48eb5d62327264d48e39b57a85b6bcdb537585dc70539",
+      "at": "2026-10-26T21:56:06Z"
+    },
+    "kube-audit-trail-analysis": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "1a28025a3e632111998322573611954c91db892f30925aa9c6e3b727c0392089",
+      "at": "2026-10-26T21:56:07Z"
+    },
+    "kube-bench-cis": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "0fb64b0cdc7ae653e27bf30ba7423255c2aae26474ff198f184742da6dd085e6",
+      "at": "2026-10-26T21:56:08Z"
+    },
+    "kubehound-edges": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "47e795dacbd10051c0d9010d8f1e30b06a79ff0e37248c27f93c5fceb057804c",
+      "at": "2026-10-26T21:56:09Z"
+    },
+    "kubehound-token-edges": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 5,
+      "findings_negative": 5,
+      "steps": 1,
+      "evidence": "8eda5e372a1439beab7eb3c46350bd0784a22e1a31f956ec4c0ef8d0ca13ed42",
+      "at": "2026-10-26T21:56:10Z"
+    },
+    "kubehunter-checks": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "9abae18a205330a9ed968f132d7d6b53aef15569a82aa8ce04cf914f11798313",
+      "at": "2026-10-26T21:56:11Z"
+    },
+    "kubelet-10250-exec": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "9d5485e711d3bae4616cf027239813d810bd68ff40d5ed3a6ca7f351db370dcd",
+      "at": "2026-10-26T21:56:12Z"
+    },
+    "kubelet-api-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "083df0f3640f0dc3593c965234e0e39fb9ed8059d7232a05b7c91a9cde6f277b",
+      "at": "2026-10-26T21:56:13Z"
+    },
+    "kubelet-gitrepo-exec-detect": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "3ab77c43aad0b5063c71b01eb9b1cfe2ce80bb5b9959016dac95cbf761caeccf",
+      "at": "2026-10-26T21:56:15Z"
+    },
+    "kubelet-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "31a4b92279568c25ea74f7563852030a821b929c60602f9870b6f55008902bb1",
+      "at": "2026-10-26T21:56:16Z"
+    },
+    "kuberay-operator-escalation": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "b8db7586096f6563f1cc9ddccf9d4f7b63a99f82e289c8458c348e60c18f75da",
+      "at": "2026-10-26T21:56:17Z"
+    },
+    "kubernetes-cve-catalog": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "aa75cba7c50cbb6e3ad74867c3037306839ca874b8d900fdce0d1fed635edff4",
+      "at": "2026-10-26T21:56:18Z"
+    },
+    "kubetrail-collector": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "52e3c71cec5a088cdf01cafb761a8ed2bc550fcb24252fa95a3020f30b444318",
+      "at": "2026-10-26T21:56:19Z"
+    },
+    "kubetrail-lpe": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "a6fdeb947aa7d15dbb2675c932276b7a1798eb26d7dcf23ab50603dfd4ea0f09",
+      "at": "2026-10-26T21:56:20Z"
+    },
+    "kubetrail-manifest-secrets": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "84ee220adc425cd7fb89518a97fd9470f0230b4ecc5333256e5b7fab0e8b9f8d",
+      "at": "2026-10-26T21:56:21Z"
+    },
+    "kubetrail-persistence": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "a15c2cd2a0838a2cd6126010ade3ebc07316d5f5bc523b9a050ac89d65b2e53d",
+      "at": "2026-10-26T21:56:22Z"
+    },
+    "kubetrail-token-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "60c342be158f603118b635ae695d6d6f7155cf574b75a151e96a114ee7e82275",
+      "at": "2026-10-26T21:56:23Z"
+    },
+    "kubiscan-risky": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "468dc62ef17d6a36f07366c4e78fc969c117264c5a65f8779bc0c9b72096a8eb",
+      "at": "2026-10-26T21:56:24Z"
+    },
+    "kv-cache-integrity-poison": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "0bc4f531abc6764bc715c723f7662fc2af5f1aa7abee768256d3b92461d1ec5d",
+      "at": "2026-10-26T21:56:25Z"
+    },
+    "kv-oom-bomb": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "c45551b51644105d694eac26604fb2ffb9694b858104b7b9ea8a180334d331ba",
+      "at": "2026-10-26T21:56:27Z"
+    },
+    "litellm-config-update-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "145b03268662c17a243e75dd6573d383fd5a06a6eeeca647c26b7923ef19a339",
+      "at": "2026-10-26T21:56:28Z"
+    },
+    "litellm-default-key-exfil": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "5d9a789eb55177bce1241a3386fe52f2aaa063d278d83d430b935c515df2672a",
+      "at": "2026-10-26T21:56:29Z"
+    },
+    "llamafactory-checkpoint-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "001c1fa409f8ad45cc70ece5ce8e15af47fc9f8f177b17e8292637fe4349109e",
+      "at": "2026-10-26T21:56:30Z"
+    },
+    "llm2jev-file-read": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 3,
+      "evidence": "cc860dc9de4a5c72ea13d653279095be6a09ff5f520b7d1cc7233953cca1ca71",
+      "at": "2026-10-26T21:56:32Z"
+    },
+    "long-context-memory-amplification": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "3f964da23e890b96f260a40bd2d39d4d9f95d57a62b3441cd6dd8a9cefb1e2e2",
+      "at": "2026-10-26T21:56:33Z"
+    },
+    "long-context-training-collective-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "56fd7c4e45f33e823a305285800bf591f314df53805e9eda39915d0cd041e217",
+      "at": "2026-10-26T21:56:35Z"
+    },
+    "long-context-window-exhaustion": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "caff551aaddc8b0539b65b755842ccef926f10253d578e936dfbd0f7da6e526f",
+      "at": "2026-10-26T21:56:36Z"
+    },
+    "lora-adapter-injection": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "42251334508bdecca7e780ae5b10d37008962349fc411090a78f5805034c087a",
+      "at": "2026-10-26T21:56:38Z"
+    },
+    "lws-leader-endpoint-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "6f6835096210149af7a68190d6b8d396039f25909490a213382946d46856b2ea",
+      "at": "2026-10-26T21:56:40Z"
+    },
+    "lws-secrets-lateral": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "3000f43e32a72e9ed1520df6fe0b0f2f2d285b39b7ea5cf2a066c0d21b28a36e",
+      "at": "2026-10-26T21:56:41Z"
+    },
+    "mcp-control-plane-governance": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "dfa9022ca7e7ea06895faa1452319c80a68cd1791b0858c450895c936bbb34e3",
+      "at": "2026-10-26T21:56:42Z"
+    },
+    "megatron-checkpoint-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "e7d7c4c7d587c4c9b4ff7f9a9459ec76ac8359d96e655c72f59dc84a81380a9c",
+      "at": "2026-10-26T21:56:44Z"
+    },
+    "megatron-deepspeed-config-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "673f0d2fdff7a0cfc370bc4d7f20476682e4da1bad4e511eefb09589f4d7859b",
+      "at": "2026-10-26T21:56:45Z"
+    },
+    "metadata-egress": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "b9e0b566e4b63d1e505c4114d906dfe169d2ea0ff41ee82c63c4b8ef86c458fc",
+      "at": "2026-10-26T21:56:46Z"
+    },
+    "mig-profile-mismatch": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "787119043b854c3659a0c4e4a943a8f451ef2975be1f978cb2b8143c35e43dce",
+      "at": "2026-10-26T21:56:47Z"
+    },
+    "mlflow-model-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "455f27b65baa4ad53c9d219aae2d5deada7f0f8233b93c229663d613c8e49b96",
+      "at": "2026-10-26T21:56:49Z"
+    },
+    "mlflow-trace-write": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "05deb88b5a52c2b9bfe15191d9dae0d54e8851b4b38cca0086ad0404f8960aaf",
+      "at": "2026-10-26T21:56:50Z"
+    },
+    "model-registry-exposure": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "cf2dbc783aebdbc8e834c7db4b23c3cf167f094e626322b73f6f51bbedc03467",
+      "at": "2026-10-26T21:56:51Z"
+    },
+    "model-watermark-backdoor-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "2290a20d994f27670b5709a2471b7d0b8a07cb5abd7ee7f214f6ca01fd0ed3bc",
+      "at": "2026-10-26T21:56:52Z"
+    },
+    "model-watermark-backdoor-detect": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "ae35ef3ea7a78aad3528985ef34f5374e46c4863956c934bc12eff83da5dcfff",
+      "at": "2026-10-26T21:56:54Z"
+    },
+    "mps-context-shared": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "56c609a1de14c6406a0cb5f2cbffa032ae1d476841fd550785b44961efa74fda",
+      "at": "2026-10-26T21:56:55Z"
+    },
+    "msswift-dataset-pickle-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "29bf271f3f806af0e3056e13958034e8a1190f65bb1a0686c240fd97079f5f15",
+      "at": "2026-10-26T21:56:56Z"
+    },
+    "msswift-eval-escape": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "5048ee7fee0b20bbee751d791ff3fdab89f8e077f5a667ab263ffffa4346efcd",
+      "at": "2026-10-26T21:56:57Z"
+    },
+    "msswift-media-local-read": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 4,
+      "evidence": "386c0549144a667a570c6a309738311183c63321c75e81cb1d60756838159554",
+      "at": "2026-10-26T21:56:58Z"
+    },
+    "msswift-trust-remote-code": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "0737c7a2456f1f2ac32c884fbc647834dd69e99da2f5267c2030d378d6e0de95",
+      "at": "2026-10-26T21:56:59Z"
+    },
+    "multi-cloud-imds-credentials": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 5,
+      "findings_negative": 5,
+      "steps": 1,
+      "evidence": "55f7bd159e6829db90278c4f5e31471e94b35fe81e41fe80aa9928f457d95969",
+      "at": "2026-10-26T21:57:01Z"
+    },
+    "multi-cluster-federation": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "26ea921a44ee507eee9bb1aecab54d8f33d4a9d6d16e0f9ace9dd2b1f6d20711",
+      "at": "2026-10-26T21:57:03Z"
+    },
+    "multus-sriov-rdma-bypass": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "f1290d00a7f1c1709744dfa9f3592251b91ed596522a274ad237afafed2d8dac",
+      "at": "2026-10-26T21:57:04Z"
+    },
+    "munge-auth-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "44adbba8cb6bf704346ac0c7daac57c11d9f2e6095f4714172c54a787b52b5b9",
+      "at": "2026-10-26T21:57:06Z"
+    },
+    "nccl-collective-join": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "b402aeec8b783f4c36472e0d5b6a3294dda8bd8e2b98f9c1789d3d0eb794673c",
+      "at": "2026-10-26T21:57:07Z"
+    },
+    "nccl-port-exhaustion": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "3af4352580d689b4547a87af58203db70de71f118e64f11edd2fef37529572be",
+      "at": "2026-10-26T21:57:08Z"
+    },
+    "nccl-straggler-injection": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "1cae655949e79509a47deceb79e00bb68e7597d9f965c81efa4ed8c31659204b",
+      "at": "2026-10-26T21:57:10Z"
+    },
+    "network-policy-coverage": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "342f11bcd871e7370a256398428907551c0b43cd491b37e4604582d763a60ec2",
+      "at": "2026-10-26T21:57:11Z"
+    },
+    "nvidia-toolkit-escape-detect": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "da84ab726183c5a2d07b94ad15ad9e4578fb11c27bf62f132d7cd8851786ea95",
+      "at": "2026-10-26T21:57:12Z"
+    },
+    "nvlink-imex-isolation": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "1030a651db664eec2bc13aa672e16046f5a95204da291399c8f4472741905659",
+      "at": "2026-10-26T21:57:13Z"
+    },
+    "nvswitch-nvlink-topology": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 5,
+      "findings_negative": 5,
+      "steps": 1,
+      "evidence": "99d89d434641d1d515c08ae4ca80ef6bd65e12faf4001dc79ffa15056effc601",
+      "at": "2026-10-26T21:57:14Z"
+    },
+    "observability-exposure": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "ef7d977b5fa0ddb12c0be4446a0e09425b45906d447f49b722fac794527fe60d",
+      "at": "2026-10-26T21:57:15Z"
+    },
+    "oidc-issuer-confusion": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "554e290e049d9370ea298a52894c88d637761661928d86230b4fb634de6e1006",
+      "at": "2026-10-26T21:57:16Z"
+    },
+    "onejev-ssrf": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 3,
+      "evidence": "f2ed3f8259bb1116dc6c798c0e5c0c997e8648bf017c1b48818cf565997c3bf6",
+      "at": "2026-10-26T21:57:17Z"
+    },
+    "open-webui-code-execute-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "4cb9e4c987b58d75a768d51aae283c9e98685627684d4e3f9a3f683502df2af4",
+      "at": "2026-10-26T21:57:18Z"
+    },
+    "open-webui-file-overwrite": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "a3e2e41525dea284ab568655e4cdc31b5571f52bc959833a1e613264f1cdbd0f",
+      "at": "2026-10-26T21:57:19Z"
+    },
+    "open-webui-indirect-injection-exec": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "7499effc9519ecbb44d131874481e1fb16744b7e69b3455fde0e268b0b1cbd4f",
+      "at": "2026-10-26T21:57:20Z"
+    },
+    "openjev-clef-release-module": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "f68752ff648c1fb2f4283304b414765e10c0010dc10d6b26ec3bec5fd86b38c0",
+      "at": "2026-10-26T21:57:22Z"
+    },
+    "openrlhf-serve-rm": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 0,
+      "steps": 3,
+      "evidence": "32b82f6ee139b806deb56a574e5dd010707d4f02fc4db6a20ae4167d5b3f3f40",
+      "at": "2026-10-26T21:57:23Z"
+    },
+    "openrlhf-vllm-env-force": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "1d0e5514d7763562bf5cd81df884f20b78557a7ddcba6fe9edcaca09314f4ed7",
+      "at": "2026-10-26T21:57:25Z"
+    },
+    "operator-cross-namespace-reference": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "80ad218ce7b90c0caca0c53c83d4d445dc82c6c5e7e3216c2ffb8184e9ee561b",
+      "at": "2026-10-26T21:57:26Z"
+    },
+    "outbound-ssrf": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "608ea823af09189adb730eff2ae6ce8ccda766efe643af6b0852654fd37741ff",
+      "at": "2026-10-26T21:57:28Z"
+    },
+    "overprivileged-sa-escalation": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "a6d2b2171b0afec2933cb4e204fe3eca025c7ff1192194e9bd1da4203b704354",
+      "at": "2026-10-26T21:57:29Z"
+    },
+    "pcie-iommu-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "cde369ddd67f794e10ab99d532f75971496e4401febaf9b846089f7d955de5c9",
+      "at": "2026-10-26T21:57:30Z"
+    },
+    "pcie-iommu-dma": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "e04cb54ad048b81a6c1582265ab9a12c2449e674d9c2b91bc90e9ae1dacdb7f4",
+      "at": "2026-10-26T21:57:31Z"
+    },
+    "peirates-primitives": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "58cb71da1264d4a999e93f0eb31bcd6258f1a59e403e2210ddd2e67725790ba6",
+      "at": "2026-10-26T21:57:32Z"
+    },
+    "post-quantum-tls-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "4819bf0ddd767136d91eff94176b089790a42379e8ccc52fde74710799d8380e",
+      "at": "2026-10-26T21:57:34Z"
+    },
+    "post-quantum-tls-posture": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "2d5a358cac176860c4dadcb8fcc53822089ab918dfbc88e43ad564047dcd15ba",
+      "at": "2026-10-26T21:57:35Z"
+    },
+    "prefill-decode-kv-channel-unauth": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "85e8f6397b348c49b886fc7b199905acb832d2b2ffe401eb39717eb798150dcc",
+      "at": "2026-10-26T21:57:36Z"
+    },
+    "prefix-cache-cross-tenant-leak": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "43fae350c1c9a90ea543a46c5e0930b90252e7a9f9ed57d6ad733aa2837caf83",
+      "at": "2026-10-26T21:57:37Z"
+    },
+    "pretrain-job-escape": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "05d796472b272c5c297d999e396935f6a7b2d919425666c204d9b2c6c3f316c6",
+      "at": "2026-10-26T21:57:39Z"
+    },
+    "privileged-gpu-pod-escape": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "4eacdc4ac5527dfb6c27ac15bd14269a1b4ee80850abbe770cd6b5cddf93f27b",
+      "at": "2026-10-26T21:57:40Z"
+    },
+    "privileged-workloads": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 5,
+      "findings_negative": 5,
+      "steps": 1,
+      "evidence": "b9f53c283c832caeb55d728c35f3872fd8237bc16ca9eda11630f3e94deaa1de",
+      "at": "2026-10-26T21:57:41Z"
+    },
+    "python-dangerous-sinks": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "15831eae3d4155ae7b4c0a5c37e4fa606ba034132ad36858a7ac0f5c45561d10",
+      "at": "2026-10-26T21:57:42Z"
+    },
+    "rag-vector-injection": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "b1b95dfd38c288a9011b33d1e7aba20c91aa0dcf8498a6cc995ccb7a9e0ddf7a",
+      "at": "2026-10-26T21:57:43Z"
+    },
+    "rail-mismatch-forcing": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "b96486cd1b5927c6d67590a3268eb1c5f5415766e187335f5e7503e0a6605e00",
+      "at": "2026-10-26T21:57:45Z"
+    },
+    "ray-control-plane": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "307a900efd58062051781b3e5d65326583b6cf8f6c2b52befecd2a511f733cc2",
+      "at": "2026-10-26T21:57:46Z"
+    },
+    "ray-dashboard-job": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "a644e6479679d22cfb9b022e8cd1c4f3e01dda3ccc256c377bce43ff3b88f966",
+      "at": "2026-10-26T21:57:47Z"
+    },
+    "ray-job-marker-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "9a8b2a29ea399bdd231c98a0c90d54147b8b12437df481aa4d9566cb61d2d0cc",
+      "at": "2026-10-26T21:57:48Z"
+    },
+    "rbac-bind-verb": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "e708e174ebc10572ce695b687d5ee0c81be9f2c15fb9d9fe6b24cafb3767c34f",
+      "at": "2026-10-26T21:57:50Z"
+    },
+    "rbac-escalate-verb": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "344a6df03a6ab653ce01838898deb424f2e11604980638685199324bfe38b77c",
+      "at": "2026-10-26T21:57:50Z"
+    },
+    "rbac-mapping": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "7c0ac54345125d466099e9571bcb5d9a600e6ed425a7795bd682fc759f2eb9e0",
+      "at": "2026-10-26T21:57:51Z"
+    },
+    "redfish-default-credentials": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "703b5a16683a2c38eb0608c286853ade21d487e11f8f56e184dc9f98304ed2f8",
+      "at": "2026-10-26T21:57:53Z"
+    },
+    "remote-kv-pool-isolation": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "01c9de87f3f96bbbb07a402477aa2cb3772fc38c596867e91a58d17c9eda4fb3",
+      "at": "2026-10-26T21:57:54Z"
+    },
+    "reverse-rbac-lookup": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "bb1717bc2a8c734fe7f213f06b15fd84c2689ac977b6763fec864e5044c818d1",
+      "at": "2026-10-26T21:57:56Z"
+    },
+    "reward-hacking-detect": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "0498c56fd2855eaee94948e33546b1a88f99b66487631f0001d5b73dde0e3592",
+      "at": "2026-10-26T21:57:57Z"
+    },
+    "reward-model-abuse": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "8ad4624dc362c40e35bd8e63c7f840f12fe86e61491936626c927abbd7ec8d6a",
+      "at": "2026-10-26T21:57:59Z"
+    },
+    "rl-rollout-buffer-poison": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "4ab07bf14c622134c01380973b795d161877c72f6b58f68cac85ed30e60ed7b0",
+      "at": "2026-10-26T21:58:00Z"
+    },
+    "roce-pfc-storm": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "d0ea1877f4e79b7474cc1389980db7ab402ad7ff8860a10520bb91860f1e005f",
+      "at": "2026-10-26T21:58:01Z"
+    },
+    "router-cache-metrics-leak": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "7169a80e7927c056ea9119a8b02b50b05aa2f89f0ae01795c183c6f8b08cca4b",
+      "at": "2026-10-26T21:58:02Z"
+    },
+    "runc-escape-detect": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "b6055b3de514210f9932cc28cc5f9ef149bc86040cb593bf465c46aea2f0c7ea",
+      "at": "2026-10-26T21:58:03Z"
+    },
+    "runtime-socket-escape": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "0440adfd99d3b6cad1c2709724b9f65d8fddd8f8529bd397596ac31235d5f0b1",
+      "at": "2026-10-26T21:58:05Z"
+    },
+    "sa-token-request": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "7338663b0c6c4e020f14f4258effcfb4014fc7a99b9a1b13bd530a21d88afa2a",
+      "at": "2026-10-26T21:58:06Z"
+    },
+    "sandbox-runtime-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "563dc67ef5ecda9780635bb82215ed4bd680d39889940dae64274deef844df4d",
+      "at": "2026-10-26T21:58:08Z"
+    },
+    "scheduler-network-semantics": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 5,
+      "findings_negative": 5,
+      "steps": 1,
+      "evidence": "ebbabf91e3bc22e403ae7db3744ade3b8d45dad540293dcb19d639c84df45ab3",
+      "at": "2026-10-26T21:58:09Z"
+    },
+    "secret-scanner": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "b87605774f92fcf43d6e29f0290d3a2b571f0d5096ecee5114092d91ece2461d",
+      "at": "2026-10-26T21:58:10Z"
+    },
+    "secure-boot-chain": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "3acde165a15e1b332108af10a21d2c5dc3df0425e5e06bcda23ed46329bad1c0",
+      "at": "2026-10-26T21:58:12Z"
+    },
+    "sft-framework-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "df4b56998dc93dd971ee13f4785c18a56c954d94edad3cc516658f8383071928",
+      "at": "2026-10-26T21:58:13Z"
+    },
+    "sglang-admin-failopen": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 5,
+      "evidence": "09e6349cb72cc4fb847de7b348e6e8cf0cd24d9afb383264a8c57dc2e342b9de",
+      "at": "2026-10-26T21:58:14Z"
+    },
+    "sglang-omni-profiler-write": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 0,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "7a8c732a58e14ceeba4ab8ef44bd385ce073565027cfdb6fe45c08a2eeab30f0",
+      "at": "2026-10-26T21:58:15Z"
+    },
+    "sglang-route-poison": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "e453076aca50cfb46c0907313146b9017ba98265f84f26ab35f58521573d9b98",
+      "at": "2026-10-26T21:58:17Z"
+    },
+    "sglang-weight-exfil": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "c67a9aaa20453ff01f95e14e73c885e7e880f6e68c921c61d8d5ed5aad2115d6",
+      "at": "2026-10-26T21:58:18Z"
+    },
+    "sglang-zmq-pickle-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "256b68c99b6d37dfb11bc820bc766eb275b4aaaefdc175a899e58b3f7f09c47f",
+      "at": "2026-10-26T21:58:20Z"
+    },
+    "shared-volume-weight-copy": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "e90f84adc7d6ac6b86227c0d2d34440d3bdc88926fa933b988a0108de3d13ba2",
+      "at": "2026-10-26T21:58:21Z"
+    },
+    "sharp-collective-config": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 5,
+      "findings_negative": 5,
+      "steps": 1,
+      "evidence": "eef0231728e8709d0aa24e07a509ad314141021e1e4a5ce51170a7e9e8071e3c",
+      "at": "2026-10-26T21:58:23Z"
+    },
+    "sharp-in-network-poison": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 5,
+      "findings_negative": 5,
+      "steps": 1,
+      "evidence": "a49d1ee28f415bdd90145e2d8aa6ad631c9619fff5a368428c7869207fc3cce9",
+      "at": "2026-10-26T21:58:24Z"
+    },
+    "sharp-session-trust-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "53ef2df47872084829cbd56b7bb2ebac841217baaa1bb3703eeabc79a44be53b",
+      "at": "2026-10-26T21:58:26Z"
+    },
+    "siliconlab-credential-exfil": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "974de4c7b6e6d2c7d8521486202b74c89a7632773a2f5f6e3173798b47b1158a",
+      "at": "2026-10-26T21:58:27Z"
+    },
+    "similarity-cache-false-hit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "216afd0af57294a036dbcf7d99bbe080c9b1b6b4f135cfd921a0b3dfef7a74cd",
+      "at": "2026-10-26T21:58:29Z"
+    },
+    "skyrl-dev-pickle-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "d7c876aa97bd204839fab5be50b6d0999b72fca450de6021e89ffb96da862b53",
+      "at": "2026-10-26T21:58:30Z"
+    },
+    "skyrl-fetch-weights-traversal": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "4d5b00def79072bfecff83c61e99962fe0aee37fd233adcd1251cc2f5fdecbc4",
+      "at": "2026-10-26T21:58:31Z"
+    },
+    "skyrl-tinker-hijack": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "a766174e5982632dcfd199e58b2b61fa2ece1cfff87741347fe941462f0e3bcf",
+      "at": "2026-10-26T21:58:33Z"
+    },
+    "slime-weight-pull-poison": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "fd8c4dd654f06fe91359312eeaff75c49412b0778ff391ee241a9092de3f07b0",
+      "at": "2026-10-26T21:58:34Z"
+    },
+    "slurm-accountingdbd-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "8c0b6b9a5ec5c0bbda8e353d443e088601db76c88ee93b3ad89d77c00372d1ed",
+      "at": "2026-10-26T21:58:36Z"
+    },
+    "slurm-cgroup-constraint-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "0656938e425531755ecef6aac7c9ea08047159b812a1afe4064d307f4729213c",
+      "at": "2026-10-26T21:58:37Z"
+    },
+    "slurm-gres-gpu-isolation": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "0c04e90f026a466661371b81ac6c28d7c5bebab0ba00516e4b16c1c0b4b533f2",
+      "at": "2026-10-26T21:58:39Z"
+    },
+    "slurm-jwt-auth-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "c32cbec57d71cddb1a9433da4d6fa8f035d8a196606cc41a423f8be377fe863b",
+      "at": "2026-10-26T21:58:40Z"
+    },
+    "slurm-node-partition-policy": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "c7e36f1ddc9c43ad5480e41a0a8492be2b85a9a2833144ce2abe565059aab647",
+      "at": "2026-10-26T21:58:41Z"
+    },
+    "slurm-prolog-epilog-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "0ae8636630c0fcd5a1899ff5e00d41021867137855ae42dc820d0b1a1096edc7",
+      "at": "2026-10-26T21:58:43Z"
+    },
+    "slurm-shared-storage-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "3f4afa2ba87a31ca932b2f2038492361f3254c9f2f4fe7688042734ccf7bcadb",
+      "at": "2026-10-26T21:58:44Z"
+    },
+    "slurmctld-config-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "1e548d244b7aa9b702af14da197e760af49ba281472cd8d08c28ed4713806322",
+      "at": "2026-10-26T21:58:46Z"
+    },
+    "slurmd-config-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "146fa9d6f21b047e01c4b268f93c75edf04110c70b8e612ddc9b83a395502f94",
+      "at": "2026-10-26T21:58:47Z"
+    },
+    "slurmrestd-exposure": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 2,
+      "evidence": "c576e54bc331216aab376106d6418f05e2721e91d03e98f5bd41fdd011084b5e",
+      "at": "2026-10-26T21:58:48Z"
+    },
+    "sonic-config-plane-write": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "5d49e405737db62281dcaf27709f134e1cdc3e2acf848214e21da829cc805a49",
+      "at": "2026-10-26T21:58:49Z"
+    },
+    "sonic-fabric-config-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "75b0a97fdc309793a31baa4c568d82603aeb55ec5823ba3f68b3027f5f3a5a57",
+      "at": "2026-10-26T21:58:51Z"
+    },
+    "sonic-rsyslog-injection": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "6a57bad84640af42a243830e33b3276912e7f5d1b97b0acdeb29583659decbc6",
+      "at": "2026-10-26T21:58:52Z"
+    },
+    "spank-plugin-integrity": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 5,
+      "findings_negative": 5,
+      "steps": 1,
+      "evidence": "c63d0bd871f3a7e175872ed105d7ee2fb3ea97d70f4bacb995d0fdb0317956bb",
+      "at": "2026-10-26T21:58:53Z"
+    },
+    "spdm-pcie-doe": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "7b7779192c52e7dbcc2a8676b1330d5743f9bd3655b76c9b6cbe33f8d48b703c",
+      "at": "2026-10-26T21:58:54Z"
+    },
+    "spiffe-spire-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "72e990f21ae43e77ea6b9a080b2fc80bab49e975c617ab652692122198a0d1bc",
+      "at": "2026-10-26T21:58:56Z"
+    },
+    "spiffe-spire-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "59b022b466cd78a274666e214943297114e412a2848da61a85e35280e66d60ef",
+      "at": "2026-10-26T21:58:57Z"
+    },
+    "ssrf-imds-credential": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "45cc501fd7f86decd77c4b5c5f01bd59748e9b7a920cd3a4d29cce53b7592ff6",
+      "at": "2026-10-26T21:58:59Z"
+    },
+    "storage-protocol-csi": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 5,
+      "findings_negative": 5,
+      "steps": 1,
+      "evidence": "1c48dffd9fc9bfecd21e187ecd4e70582c3bac3691c882188b477f39cd1e2322",
+      "at": "2026-10-26T21:59:00Z"
+    },
+    "storage-sharing": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "ba03484b9dbcf0415392774551021b2f24d2194b7da4e355aee46220f0506d80",
+      "at": "2026-10-26T21:59:02Z"
+    },
+    "supply-chain-credential-theft": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "767ae61945461bc66bc5a0a1be75c44e9cf0797883d0714605730d7640a1b06a",
+      "at": "2026-10-26T21:59:03Z"
+    },
+    "supply-chain-pinning": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "772a47c421e048e94972ac8aa58dec34f187cc32a1dca2181eb80fd1b5a314cd",
+      "at": "2026-10-26T21:59:05Z"
+    },
+    "switch-os-config-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "9b0018ab92f1441722cbc5d62990ddf83375c4628c92e6b1a01c88f15fac213c",
+      "at": "2026-10-26T21:59:06Z"
+    },
+    "tokenizer-template-injection": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "088831e6ea0b01d9bfc750e980340d6a75dd8960560a4e354cd404182097e8e7",
+      "at": "2026-10-26T21:59:08Z"
+    },
+    "torch-weights-bypass-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "b1de3f5a86d99e583783a74cdbf5dae6b293a11ce93c01e5cf0c44a0f621511d",
+      "at": "2026-10-26T21:59:09Z"
+    },
+    "torchrun-elastic-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "0d90646228aa9c0b18ff9e72ae763cb34392907153b8cdcc26fb7e398c10e5e5",
+      "at": "2026-10-26T21:59:11Z"
+    },
+    "tpm-attestation-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "09f021db2695a6362c2d1b8d6b599992ba65a9fc0f7393f47398b3a52e1521e4",
+      "at": "2026-10-26T21:59:12Z"
+    },
+    "tpm-measured-boot": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "b7e4c70010517b942afc3d8ae8ce680b25d0c384af49b0e373265bf41c611a91",
+      "at": "2026-10-26T21:59:13Z"
+    },
+    "training-data-leak": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 6,
+      "findings_negative": 6,
+      "steps": 1,
+      "evidence": "e8b02c1862b560b388dcdf72b5d3e9daea191fe1a0f18e5f0cb6513c9720661b",
+      "at": "2026-10-26T21:59:15Z"
+    },
+    "training-silent-corruption": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 4,
+      "findings_negative": 4,
+      "steps": 1,
+      "evidence": "801ef6d9b3ca0e262c06882428cd1cc0747c0e62199d4899135df19f12189f8c",
+      "at": "2026-10-26T21:59:16Z"
+    },
+    "trl-serve-dev-mode": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "2139ba16b129f54bba43fed96daa8690cecd871e717ac1be22946346055af3de",
+      "at": "2026-10-26T21:59:18Z"
+    },
+    "trust-remote-code-supply-chain": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "5f4ad9610aaad1390102e653fd10e080af508c1cfe11969269b62f96ab550759",
+      "at": "2026-10-26T21:59:19Z"
+    },
+    "unlimited-query-distillation": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "b44aa8357c43705b899eb8dbf5cfa6848924412f8bd67273b0fd528621d6b1c7",
+      "at": "2026-10-26T21:59:21Z"
+    },
+    "vector-db-exposure": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 0,
+      "steps": 3,
+      "evidence": "bb93c645c6ab64b50628a26bb1d107dbd6e9184a7246d1dd59932fb527a25bcd",
+      "at": "2026-10-26T21:59:22Z"
+    },
+    "verl-checkpoint-pickle": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "958c6ebeb9c99c1c3db23cc6c7e3418ca0a664b8d931a48a0462a86d3ebef4ec",
+      "at": "2026-10-26T21:59:24Z"
+    },
+    "verl-hdfs-command-injection": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "61fa59506c7917be8ec4f832b4bd891c926643de7c2673b6b929977125696411",
+      "at": "2026-10-26T21:59:25Z"
+    },
+    "verl-prime-code-exec": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "bd50ab55418695c616ad7cc2a0a631956da8021148740616b516d5dae6893c55",
+      "at": "2026-10-26T21:59:27Z"
+    },
+    "vllm-operator-rbac-escalation": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "4a1b7e101b5c9d016909202bdf28f06cbbda24c551fd26f65751deeeff941b9b",
+      "at": "2026-10-26T21:59:28Z"
+    },
+    "vllm-pickle-pipe-rce": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "1d605d11fb5a0fafed40b3aee5c95a746ae34cbd69479f0ab12455462695bff3",
+      "at": "2026-10-26T21:59:30Z"
+    },
+    "vllm-plugin-auth-bypass": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 3,
+      "evidence": "4e5614c3408629fb2fc4a0511d3424cfdf0079ae630b7289ed27da11b6867abd",
+      "at": "2026-10-26T21:59:31Z"
+    },
+    "vllm-sglang-patch-matrix": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "c4292a2491cc5bf7c373fcadffc1cff933b9e7cb699b30be81024e2dffb6dc43",
+      "at": "2026-10-26T21:59:33Z"
+    },
+    "vllm-surface-fuzz": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 1,
+      "evidence": "986979737c37c5dd3f21f67eb1edff96606262aae53d4bd55adacf50e550a8b2",
+      "at": "2026-10-26T21:59:34Z"
+    },
+    "vllm-timing-oracle": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 1,
+      "findings_negative": 1,
+      "steps": 2,
+      "evidence": "d80c24fd8577b81c4a4014eca7aafc2bfa7b1260001000604b903dd3a2ea2719",
+      "at": "2026-10-26T21:59:36Z"
+    },
+    "wasm-runtime-audit": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 2,
+      "findings_negative": 2,
+      "steps": 1,
+      "evidence": "c6ccc613bef8ae7ee71b25dfaed68b7376b81d940115a213297ed2bee81ffb85",
+      "at": "2026-10-26T21:59:37Z"
+    },
+    "wasm-workload-surface": {
+      "tested": true,
+      "mode": "both",
+      "runtime": "reference",
+      "findings_positive": 3,
+      "findings_negative": 3,
+      "steps": 1,
+      "evidence": "786df2d37fdb2fb3eedda17b04dc74510023dc00528aaa454f615b72c5cbad4b",
+      "at": "2026-10-26T21:59:39Z"
+    }
+  },
+  "updated_at": "2026-10-26T21:59:39Z"
+}

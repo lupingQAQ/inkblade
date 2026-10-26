@@ -1,0 +1,129 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "cxl-memory-security",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "CXL 内存安全（research-only，有面才启用）",
+      "en": "CXL memory security (research-only, surface-gated)"
+    },
+    "series": "侦察",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [
+      "{'type': 'config-file', 'selector': 'cxl/inventory.json'}"
+    ],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "CXL 链路未启用 IDE",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "C 级 research-only：CXL 2.0 IDE、CXL 3.0 TSP、CXL 3.2 安全增强；无面则 no-surface + default_enabled=false",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "CXL TSP 未启用",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "C 级 research-only：CXL 2.0 IDE、CXL 3.0 TSP、CXL 3.2 安全增强；无面则 no-surface + default_enabled=false",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "CXL TSP 未锁定",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "C 级 research-only：CXL 2.0 IDE、CXL 3.0 TSP、CXL 3.2 安全增强；无面则 no-surface + default_enabled=false",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "CXL 解码区域跨租户共享",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "C 级 research-only：CXL 2.0 IDE、CXL 3.0 TSP、CXL 3.2 安全增强；无面则 no-surface + default_enabled=false",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "CXL 邮箱/CCI 未鉴权",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "C 级 research-only：CXL 2.0 IDE、CXL 3.0 TSP、CXL 3.2 安全增强；无面则 no-surface + default_enabled=false",
+      "fix": ""
+    },
+    {
+      "id": "f6",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "CXL 设备固件未签名",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "C 级 research-only：CXL 2.0 IDE、CXL 3.0 TSP、CXL 3.2 安全增强；无面则 no-surface + default_enabled=false",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "cxl-memory-security-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

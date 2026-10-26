@@ -1,0 +1,119 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "training-data-leak",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "训练数据泄露",
+      "en": "Training Data Leak"
+    },
+    "series": "窃取与数据泄露",
+    "min_level": "主动探测",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {},
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "host",
+      "op": "fs",
+      "action": "stat",
+      "path": "/",
+      "save": "host",
+      "allow_failure": true
+    }
+  ],
+  "checks": [
+    {
+      "id": "host-readable",
+      "when": "steps.host.exists == true",
+      "message": "probe filesystem is not readable"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "true",
+      "sev": "high",
+      "title": "title",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 6 节 + 训练数据面扩展：日志 PII / 轨迹残留 / 缓存残留",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "true",
+      "sev": "high",
+      "title": "共享数据集卷未授权读：{len(cats[",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 6 节 + 训练数据面扩展：日志 PII / 轨迹残留 / 缓存残留",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "true",
+      "sev": "medium",
+      "title": "数据缓存残留：{len(cats[",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 6 节 + 训练数据面扩展：日志 PII / 轨迹残留 / 缓存残留",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "true",
+      "sev": "high",
+      "title": "训练日志含 PII/prompt 残留：{len(cats[",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 6 节 + 训练数据面扩展：日志 PII / 轨迹残留 / 缓存残留",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "true",
+      "sev": "high",
+      "title": "RL 轨迹跨租户残留：{len(cats[",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 6 节 + 训练数据面扩展：日志 PII / 轨迹残留 / 缓存残留",
+      "fix": ""
+    },
+    {
+      "id": "f6",
+      "when": "true",
+      "sev": "high",
+      "title": "训练/数据面凭据残留：{len(cats[",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 6 节 + 训练数据面扩展：日志 PII / 轨迹残留 / 缓存残留",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "training-data-leak-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

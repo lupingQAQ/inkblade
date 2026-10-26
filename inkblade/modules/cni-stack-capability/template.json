@@ -1,0 +1,117 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "cni-stack-capability",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "CNI 栈与策略能力矩阵",
+      "en": "CNI Stack and Policy Capability Matrix"
+    },
+    "series": "网络架构",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "hostNetwork/hostPort 旁路 CNI 与 NetworkPolicy",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 CNI 与 Overlay 层；组合签名 vpc-cni-dual-controlplane-mismatch",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "info",
+      "title": "Multus/hostDevice 旁路清单",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 CNI 与 Overlay 层；组合签名 vpc-cni-dual-controlplane-mismatch",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "VPC-native CNI 安全组缺口（双控制面错配）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 CNI 与 Overlay 层；组合签名 vpc-cni-dual-controlplane-mismatch",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "VPC-native CNI 双控制面（安全组未见显式缺口）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 CNI 与 Overlay 层；组合签名 vpc-cni-dual-controlplane-mismatch",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "steps.snapshot.exists == true",
+      "sev": "info",
+      "title": "CNI 能力矩阵（per-CNI 策略语义）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 CNI 与 Overlay 层；组合签名 vpc-cni-dual-controlplane-mismatch",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "cni-stack-capability-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

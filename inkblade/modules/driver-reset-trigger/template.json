@@ -1,0 +1,125 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "driver-reset-trigger",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "Xid/驱动复位触发（GPU 健康面可写）",
+      "en": "GPU driver reset trigger via writable health surface"
+    },
+    "series": "横向利用",
+    "min_level": "利用验证",
+    "writes": true,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe1",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/gpu/health",
+      "headers": {},
+      "save": "probe1",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "GPU 健康面可写注入 Xid 触发驱动复位（rack 级训练中断原语）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.10；语料 meta-prometheus（NVL72 9× 故障域、中断归因）/ nvidia-gb200-nvl72",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "info",
+      "title": "Xid 注入被拒绝或未触发复位（复位未成立）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.10；语料 meta-prometheus（NVL72 9× 故障域、中断归因）/ nvidia-gb200-nvl72",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "info",
+      "title": "GPU 健康读回（probe-only，不触碰写面）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.10；语料 meta-prometheus（NVL72 9× 故障域、中断归因）/ nvidia-gb200-nvl72",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "info",
+      "title": "GPU 健康端点不可达（探测不成立）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.10；语料 meta-prometheus（NVL72 9× 故障域、中断归因）/ nvidia-gb200-nvl72",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "driver-reset-trigger-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "write-surface demo; requires backup receipt"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  },
+  "modes": {
+    "probe_only": true,
+    "backup_write": true,
+    "requires_backup": true
+  }
+}

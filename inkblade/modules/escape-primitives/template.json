@@ -1,0 +1,127 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "escape-primitives",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "逃逸原语检查",
+      "en": "Escape primitives check"
+    },
+    "series": "侦察",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "critical",
+      "title": "{pid}：宿主容器运行时 socket 挂载（{hp}）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 11 节：特权 GPU Pod 宿主逃逸与运行时 socket 逃逸原语组合",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "critical",
+      "title": "{pid}：宿主根文件系统挂载（/）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 11 节：特权 GPU Pod 宿主逃逸与运行时 socket 逃逸原语组合",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "{pid}：宿主敏感目录挂载（{hp}）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 11 节：特权 GPU Pod 宿主逃逸与运行时 socket 逃逸原语组合",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "pid}：特权 × GPU 框架镜像（{container.get(",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 11 节：特权 GPU Pod 宿主逃逸与运行时 socket 逃逸原语组合",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "{pid}：危险 capabilities {caps}",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 11 节：特权 GPU Pod 宿主逃逸与运行时 socket 逃逸原语组合",
+      "fix": ""
+    },
+    {
+      "id": "f6",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "{pid}：{label}（{flag}=true）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 11 节：特权 GPU Pod 宿主逃逸与运行时 socket 逃逸原语组合",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "escape-primitives-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

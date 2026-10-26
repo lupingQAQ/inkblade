@@ -1,0 +1,131 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "slurm-node-partition-policy",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "Slurm 节点 drain/分区/QOS 配额审计",
+      "en": "Slurm node drain, partition and QOS quota policy audit"
+    },
+    "series": "侦察",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [
+      "{'type': 'config-file', 'selector': 'slurm/nodes.json'}",
+      "{'type': 'config-file', 'selector': 'slurm/partitions.json'}",
+      "{'type': 'config-file', 'selector': 'slurm/qos.json'}"
+    ],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "存在 DRAIN/DOWN 节点仍留在可调度分区",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD sinfo(1)/scontrol(1)/QOS 文档；docs/SLURM-HPC-COVERAGE.md 节点与分区面",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "分区允许全用户/全账户访问",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD sinfo(1)/scontrol(1)/QOS 文档；docs/SLURM-HPC-COVERAGE.md 节点与分区面",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "分区存在无限节点/无限时长或强制超分",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD sinfo(1)/scontrol(1)/QOS 文档；docs/SLURM-HPC-COVERAGE.md 节点与分区面",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "默认分区对所有用户开放",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD sinfo(1)/scontrol(1)/QOS 文档；docs/SLURM-HPC-COVERAGE.md 节点与分区面",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "QOS 未设置任何 TRES/作业上限",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD sinfo(1)/scontrol(1)/QOS 文档；docs/SLURM-HPC-COVERAGE.md 节点与分区面",
+      "fix": ""
+    },
+    {
+      "id": "f6",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "QOS 未启用 DenyOnLimit（超限行为不确定）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD sinfo(1)/scontrol(1)/QOS 文档；docs/SLURM-HPC-COVERAGE.md 节点与分区面",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "slurm-node-partition-policy-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

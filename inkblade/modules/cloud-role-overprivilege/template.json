@@ -1,0 +1,116 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "cloud-role-overprivilege",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "云角色过权",
+      "en": "Cloud Role Overprivilege"
+    },
+    "series": "混合云",
+    "min_level": "主动探测",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "title",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线 6.3 云侧权重桶链 + 5.6 云与混合边界层",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "云角色凭据面可达（{provider}）：节点角色可被假定",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线 6.3 云侧权重桶链 + 5.6 云与混合边界层",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "云角色过权：权重/checkpoint 桶写权限",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线 6.3 云侧权重桶链 + 5.6 云与混合边界层",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.surface.ok == true",
+      "sev": "medium",
+      "title": "云角色过权：KMS 密钥权限面",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线 6.3 云侧权重桶链 + 5.6 云与混合边界层",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "steps.surface.ok == true",
+      "sev": "medium",
+      "title": "云角色过权：跨账户角色假定",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线 6.3 云侧权重桶链 + 5.6 云与混合边界层",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "cloud-role-overprivilege-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

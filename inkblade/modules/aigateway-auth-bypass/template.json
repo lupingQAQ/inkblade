@@ -1,0 +1,116 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "aigateway-auth-bypass",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "AI 网关鉴权绕过（默认凭据 / 伪造身份头）",
+      "en": "AI Gateway Auth Bypass (default credential / forged identity header)"
+    },
+    "series": "横向利用",
+    "min_level": "利用验证",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe1",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/v1/chat/completions",
+      "headers": {},
+      "save": "probe1",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe2",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/key/info",
+      "headers": {},
+      "save": "probe2",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe3",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/logs",
+      "headers": {},
+      "save": "probe3",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "伪造 X-Forwarded-User 越权：/key/info 返回全局 key 清单",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/AI-GATEWAY.md 第 2 节：默认凭据与信任代理头错配",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "伪造 X-Forwarded-User 越权：/logs 返回全租户明文日志",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/AI-GATEWAY.md 第 2 节：默认凭据与信任代理头错配",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "aigateway-auth-bypass-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

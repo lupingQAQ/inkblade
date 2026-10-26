@@ -1,0 +1,96 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "gpu-operator-driver-audit",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "GPU Operator version audit",
+      "en": "GPU Operator version audit"
+    },
+    "series": "权限链",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [
+      "CVE-2025-23266"
+    ],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    },
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    },
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "observed",
+      "when": "steps.surface.ok == true",
+      "sev": "info",
+      "title": "GPU Operator version audit：部署面已观测",
+      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
+      "evidence": "steps"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "gpu-operator-driver-audit-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

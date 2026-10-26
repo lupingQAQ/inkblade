@@ -1,0 +1,115 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "nccl-straggler-injection",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "NCCL 慢 rank 注入（straggler 拖垮步时）",
+      "en": "NCCL straggler rank injection slowing training steps"
+    },
+    "series": "横向利用",
+    "min_level": "利用验证",
+    "writes": true,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "慢 rank 注入使训练步时劣化 {ratio:.1f}×（goodput 静默下降）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.4（NCCL bootstrap/rank 面）；语料 bytedance-megascale（straggler 治理）/ meta-prometheus（goodput/MTBI）",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.surface.ok == true",
+      "sev": "info",
+      "title": "慢 rank 注入被拒绝或步时未显著劣化",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.4（NCCL bootstrap/rank 面）；语料 bytedance-megascale（straggler 治理）/ meta-prometheus（goodput/MTBI）",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.surface.ok == true",
+      "sev": "info",
+      "title": "训练步时基线（probe-only，不触碰 rank 写面）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.4（NCCL bootstrap/rank 面）；语料 bytedance-megascale（straggler 治理）/ meta-prometheus（goodput/MTBI）",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.surface.ok == true",
+      "sev": "info",
+      "title": "训练步计时端点不可达（探测不成立）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.4（NCCL bootstrap/rank 面）；语料 bytedance-megascale（straggler 治理）/ meta-prometheus（goodput/MTBI）",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "nccl-straggler-injection-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "write-surface demo; requires backup receipt"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  },
+  "modes": {
+    "probe_only": true,
+    "backup_write": true,
+    "requires_backup": true
+  }
+}

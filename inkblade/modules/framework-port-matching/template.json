@@ -1,0 +1,77 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "framework-port-matching",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "框架漏洞端口匹配",
+      "en": "Framework port matching"
+    },
+    "series": "侦察",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "name_hints",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 1 节已复现漏洞（SGLang 30000 管理面、Ray 8265、SkyRL Tinker 8000、OpenRLHF serve_rm 5000 等）",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "framework-port-matching-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

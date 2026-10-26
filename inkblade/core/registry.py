@@ -64,6 +64,7 @@ class ModuleMeta:
     research_only: bool = False
     default_disabled_reason: str = ""
     necessity: str = ""
+    execution: str = "template"
     path: Path | None = None
 
 
@@ -86,8 +87,16 @@ def load_modules(modules_dir: Path | str) -> dict[str, ModuleMeta]:
             raise ValueError(f"{d.name}: 未知系列 {raw['series']}")
         if raw["min_level"] not in LEVELS:
             raise ValueError(f"{d.name}: 未知级别 {raw['min_level']}")
-        if not (d / "run.py").exists():
-            raise ValueError(f"{d.name}: 缺 run.py")
+        execution = str(raw.get("execution") or "template")
+        if execution not in ("template", "bootstrap"):
+            raise ValueError(f"{d.name}: 未知执行载体 {execution}")
+        if execution == "template":
+            if not (d / "template.json").exists():
+                raise ValueError(f"{d.name}: 缺 template.json（模块必须声明式模板化）")
+            # run.py is ignored during the migration window; the release gate
+            # (tools/template-lint.py --strict) fails while any remain.
+        elif not (d / "bootstrap.py").exists():
+            raise ValueError(f"{d.name}: bootstrap 模块缺 bootstrap.py")
         mods[raw["key"]] = ModuleMeta(
             key=raw["key"], name=raw["name"], series=raw["series"],
             description=raw["description"], min_level=raw["min_level"],
@@ -102,6 +111,7 @@ def load_modules(modules_dir: Path | str) -> dict[str, ModuleMeta]:
             research_only=bool(raw.get("research_only", False)),
             default_disabled_reason=str(raw.get("default_disabled_reason") or ""),
             necessity=str(raw.get("necessity") or ""),
+            execution=execution,
             path=d,
         )
     for m in mods.values():

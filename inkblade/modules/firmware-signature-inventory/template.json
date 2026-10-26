@@ -1,0 +1,129 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "firmware-signature-inventory",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "固件签名清单（厂商 X.509 链 + 分离签名）",
+      "en": "Firmware signature inventory (vendor X.509 chain + detached signatures)"
+    },
+    "series": "侦察",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [
+      "{'type': 'config-file', 'selector': 'firmware/vendor-inventory.json'}"
+    ],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "manifest": {
+      "from": "params.manifest",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.manifest}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "固件组件供应商与清单不一致",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "B 级保障性审计：NIST SP 800-193、厂商 X.509 PKI、Intel/AMD 微码 revision guidance；与 hardware-supply-chain 的 HMAC fixture 明确区分",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "微码组件缺少厂商安全基线",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "B 级保障性审计：NIST SP 800-193、厂商 X.509 PKI、Intel/AMD 微码 revision guidance；与 hardware-supply-chain 的 HMAC fixture 明确区分",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "CPU 微码版本低于安全基线",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "B 级保障性审计：NIST SP 800-193、厂商 X.509 PKI、Intel/AMD 微码 revision guidance；与 hardware-supply-chain 的 HMAC fixture 明确区分",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "固件哈希不匹配",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "B 级保障性审计：NIST SP 800-193、厂商 X.509 PKI、Intel/AMD 微码 revision guidance；与 hardware-supply-chain 的 HMAC fixture 明确区分",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "固件签名无效",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "B 级保障性审计：NIST SP 800-193、厂商 X.509 PKI、Intel/AMD 微码 revision guidance；与 hardware-supply-chain 的 HMAC fixture 明确区分",
+      "fix": ""
+    },
+    {
+      "id": "f6",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "固件签名证书链无效/过期",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "B 级保障性审计：NIST SP 800-193、厂商 X.509 PKI、Intel/AMD 微码 revision guidance；与 hardware-supply-chain 的 HMAC fixture 明确区分",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "firmware-signature-inventory-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

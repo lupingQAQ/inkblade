@@ -1,0 +1,125 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "cache-poison-persistence",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "毒化块逐出存续",
+      "en": "Poisoned block eviction persistence"
+    },
+    "series": "横向利用",
+    "min_level": "利用验证",
+    "writes": true,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe1",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/kvpool/blocks",
+      "headers": {},
+      "save": "probe1",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "毒化 KV 块逐出策略绕过：pinned 生效且逐出压力下持久存续",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/CACHE-SECURITY.md 第 7 节：投毒与存续（逐出策略面）",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "info",
+      "title": "毒化块未持久存续（pinning 被拒或洪泛后被逐出），存续不成立",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/CACHE-SECURITY.md 第 7 节：投毒与存续（逐出策略面）",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "远程 KV 池读面未隔离（毒化存续前置条件成立，写面未触碰）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/CACHE-SECURITY.md 第 7 节：投毒与存续（逐出策略面）",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "info",
+      "title": "远程 KV 池读面按租户隔离（读探针被拒）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/CACHE-SECURITY.md 第 7 节：投毒与存续（逐出策略面）",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "cache-poison-persistence-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "write-surface demo; requires backup receipt"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  },
+  "modes": {
+    "probe_only": true,
+    "backup_write": true,
+    "requires_backup": true
+  }
+}

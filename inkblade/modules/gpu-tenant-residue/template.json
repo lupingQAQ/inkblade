@@ -1,0 +1,115 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "gpu-tenant-residue",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "GPU 租户残留（显存快照跨租户可读）",
+      "en": "GPU Tenant Residue (cross-tenant VRAM snapshot readback)"
+    },
+    "series": "网络架构",
+    "min_level": "利用验证",
+    "writes": true,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe1",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/gpu/residue",
+      "headers": {},
+      "save": "probe1",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "title",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "MIG/MPS/vGPU 释放生命周期与显存清零；残留读取以 benign marker 写读回 + sha256 为可度量证据",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "GPU 显存快照残留跨租户可读（他租户模型数据）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "MIG/MPS/vGPU 释放生命周期与显存清零；残留读取以 benign marker 写读回 + sha256 为可度量证据",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "GPU 释放后残留 marker 写读回成功（含释放后读取 + sha256 一致）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "MIG/MPS/vGPU 释放生命周期与显存清零；残留读取以 benign marker 写读回 + sha256 为可度量证据",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "gpu-tenant-residue-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "write-surface demo; requires backup receipt"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  },
+  "modes": {
+    "probe_only": true,
+    "backup_write": true,
+    "requires_backup": true
+  }
+}

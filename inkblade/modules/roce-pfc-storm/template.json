@@ -1,0 +1,125 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "roce-pfc-storm",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "RoCE PFC 暂停风暴（配置面可写）",
+      "en": "RoCE PFC pause storm via writable config plane"
+    },
+    "series": "网络架构",
+    "min_level": "利用验证",
+    "writes": true,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe1",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/roce/pfc",
+      "headers": {},
+      "save": "probe1",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "PFC 配置面可写引发暂停风暴（Δ暂停帧 ≥ {STORM_THRESHOLD}）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.3（PFC/ECN 面）；语料 meta-roce-fabric / bytedance-megascale（PFC 治理）/ ultra-ethernet-spec-2026（CSIG 拥塞语义）",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "info",
+      "title": "PFC 风暴档被拒绝或计数未达阈值（风暴未成立）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.3（PFC/ECN 面）；语料 meta-roce-fabric / bytedance-megascale（PFC 治理）/ ultra-ethernet-spec-2026（CSIG 拥塞语义）",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "info",
+      "title": "PFC/ECN 配置与计数读回（probe-only，不触碰写面）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.3（PFC/ECN 面）；语料 meta-roce-fabric / bytedance-megascale（PFC 治理）/ ultra-ethernet-spec-2026（CSIG 拥塞语义）",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "info",
+      "title": "PFC 配置面不可读（探测不成立）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.3（PFC/ECN 面）；语料 meta-roce-fabric / bytedance-megascale（PFC 治理）/ ultra-ethernet-spec-2026（CSIG 拥塞语义）",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "roce-pfc-storm-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "write-surface demo; requires backup receipt"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  },
+  "modes": {
+    "probe_only": true,
+    "backup_write": true,
+    "requires_backup": true
+  }
+}

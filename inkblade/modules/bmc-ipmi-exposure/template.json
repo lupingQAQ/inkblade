@@ -1,0 +1,126 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "bmc-ipmi-exposure",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "BMC/IPMI 暴露面（Redfish 只读 + 默认凭据面）",
+      "en": "BMC/IPMI exposure (Redfish read-only + default credential surface)"
+    },
+    "series": "侦察",
+    "min_level": "主动探测",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "BMC 默认凭据可登录 Redfish",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；Redfish Service Root/Manager/NetworkProtocol/Accounts/Systems 语义",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.surface.ok == true",
+      "sev": "medium",
+      "title": "BMC 管理详情匿名可读",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；Redfish Service Root/Manager/NetworkProtocol/Accounts/Systems 语义",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.surface.ok == true",
+      "sev": "medium",
+      "title": "IPMI over LAN 启用",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；Redfish Service Root/Manager/NetworkProtocol/Accounts/Systems 语义",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.surface.ok == true",
+      "sev": "medium",
+      "title": "BMC SSH 密码认证启用",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；Redfish Service Root/Manager/NetworkProtocol/Accounts/Systems 语义",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "steps.surface.ok == true",
+      "sev": "medium",
+      "title": "BMC 默认凭据账号仍启用",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；Redfish Service Root/Manager/NetworkProtocol/Accounts/Systems 语义",
+      "fix": ""
+    },
+    {
+      "id": "f6",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "Redfish 更新服务匿名可写/明文传输",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；Redfish Service Root/Manager/NetworkProtocol/Accounts/Systems 语义",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "bmc-ipmi-exposure-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

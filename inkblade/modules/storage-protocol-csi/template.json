@@ -1,0 +1,117 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "storage-protocol-csi",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "存储协议与 CSI 面",
+      "en": "Storage Protocol and CSI Surface"
+    },
+    "series": "网络架构",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "NFSv4 AUTH_SYS：uid 可伪造的跨租户读写面",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 存储数据面层；组合签名 shared-pvc-hf-cache-supply-chain",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "info",
+      "title": "共享存储协议在位：{proto}",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 存储数据面层；组合签名 shared-pvc-hf-cache-supply-chain",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "CSI node plugin 特权 + 宿主挂载",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 存储数据面层；组合签名 shared-pvc-hf-cache-supply-chain",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "RWX 共享卷：跨租户写面（权重/数据集/checkpoint）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 存储数据面层；组合签名 shared-pvc-hf-cache-supply-chain",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "steps.snapshot.exists == true",
+      "sev": "info",
+      "title": "未发现存储协议/CSI 线索",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 存储数据面层；组合签名 shared-pvc-hf-cache-supply-chain",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "storage-protocol-csi-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

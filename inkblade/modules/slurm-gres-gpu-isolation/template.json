@@ -1,0 +1,130 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "slurm-gres-gpu-isolation",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "Slurm GRES/GPU 设备隔离审计",
+      "en": "Slurm GRES/GPU device isolation audit"
+    },
+    "series": "权限链",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [
+      "{'type': 'config-file', 'selector': 'slurm/gres.json'}",
+      "{'type': 'config-file', 'selector': 'slurm/cgroup.conf'}"
+    ],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "未声明 GPU GRES 类型",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD GRES / gres.conf(5) / ConstrainDevices；docs/SLURM-HPC-COVERAGE.md GRES 面",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "GRES 未约束设备（ConstrainDevices=no）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD GRES / gres.conf(5) / ConstrainDevices；docs/SLURM-HPC-COVERAGE.md GRES 面",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "GRES AutoDetect 未启用",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD GRES / gres.conf(5) / ConstrainDevices；docs/SLURM-HPC-COVERAGE.md GRES 面",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "GRES {g.get(",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD GRES / gres.conf(5) / ConstrainDevices；docs/SLURM-HPC-COVERAGE.md GRES 面",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "多租户共享 GPU 但未启用 MIG 隔离",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD GRES / gres.conf(5) / ConstrainDevices；docs/SLURM-HPC-COVERAGE.md GRES 面",
+      "fix": ""
+    },
+    {
+      "id": "f6",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "GRES 设备 cgroup allowlist 放行所有设备",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD GRES / gres.conf(5) / ConstrainDevices；docs/SLURM-HPC-COVERAGE.md GRES 面",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "slurm-gres-gpu-isolation-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

@@ -1,4 +1,9 @@
-"""编排引擎：授权闸门 + 备份闸门 + 模块执行 + 审计 + 三层落证。"""
+"""编排引擎：授权闸门 + 备份闸门 + 模板探针执行 + 审计 + 三层落证。
+
+模块只有一种执行载体：``template.json`` 由 Rust 探针在目标 Pod 内原生执行。
+唯一允许 host 执行的是 ``probe-bootstrap``（仅首次立足，负责投放 Rust 探针二进制），
+且在 ``inkblade/probe-bootstrap.json`` 中显式登记。没有 adapter/host 回退路径。
+"""
 
 from __future__ import annotations
 
@@ -14,6 +19,10 @@ from .registry import ModuleMeta, load_modules
 from .roe import ExecutionLocked, assert_execution_allowed, scope_violation
 from .surface import SurfaceContext, gate as surface_gate
 
+# 模板执行错误（探针返回 error / 证据校验失败）统一走模块失败语义
+from ..tpl.execute import TemplateExecutionError, execute_template
+from ..tpl.probe import ProbeUnavailable, is_bootstrap
+
 
 class BackupGateRefused(Exception):
     def __init__(self, message: str):
@@ -25,8 +34,13 @@ class ModuleFailure(Exception):
     pass
 
 
-def _load_run_py(meta: ModuleMeta):
-    spec = importlib.util.spec_from_file_location(f"inkblade_mod_{meta.key.replace('-', '_')}", meta.path / "run.py")
+def _load_bootstrap(meta: ModuleMeta):
+    """Load the sole host-executed entry point (probe drop only)."""
+    if not is_bootstrap(meta.key):
+        raise ModuleFailure(f"{meta.key}: bootstrap 未在 probe-bootstrap.json 登记")
+    path = meta.path / "bootstrap.py"
+    spec = importlib.util.spec_from_file_location(
+        f"inkblade_bootstrap_{meta.key.replace('-', '_')}", path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -40,6 +54,7 @@ def run_module(
     modules_dir: Path | str,
     run=None,
     surface_ctx: SurfaceContext | dict | None = None,
+    probe=None,
 ) -> dict[str, Any]:
     mods = load_modules(modules_dir)
     if module_key not in mods:
@@ -109,8 +124,9 @@ def run_module(
             "artifacts": [],
         }
 
-    # 备份闸门：写类模块必须先拿到快照回执
-    if meta.writes:
+    # 备份闸门：写类模块在 backup-write 模式下必须先拿到快照回执
+    write_mode = str(params.get("mode") or "") == "backup-write"
+    if meta.writes and write_mode:
         receipt = bm.snapshot(module_key, params.get("backup_targets", []))
         if receipt is None:
             run.log_action(session.name, "execute", module_key, params, "refused-no-backup",
@@ -126,10 +142,21 @@ def run_module(
     run.log_action(session.name, "execute", module_key, params, "started",
                    rollback_to=module_key if meta.writes else None, is_zeroday=is_zd)
     try:
-        mod = _load_run_py(meta)
-        ctx = {"store": store, "run": run, "marker": marker, "backup": bm,
-               "actor": session.name, "meta": meta.__dict__, "surface": sctx}
-        result = mod.run(ctx, params) or {}
+        if meta.execution == "bootstrap":
+            mod = _load_bootstrap(meta)
+            ctx = {"store": store, "run": run, "marker": marker, "backup": bm,
+                   "actor": session.name, "meta": meta.__dict__, "surface": sctx,
+                   "session": session}
+            result = mod.run(ctx, params) or {}
+        else:
+            result = execute_template(store, session, meta, params, probe=probe,
+                                      marker=marker, run=run)
+    except (TemplateExecutionError, ProbeUnavailable) as exc:
+        run.log_action(session.name, "execute", module_key, params, f"failed:{exc}",
+                       is_zeroday=is_zd)
+        if meta.writes and write_mode:
+            bm.rollback(module_key)
+        raise
     except Exception as exc:  # 模块失败：审计 + 不留写残留（由回滚保障）
         run.log_action(session.name, "execute", module_key, params, f"failed:{exc}",
                        is_zeroday=is_zd)
@@ -137,10 +164,20 @@ def run_module(
             bm.rollback(module_key)
         raise
 
+    if result.get("skipped"):
+        run.log_action(session.name, "execute", module_key, params, "skipped-no-input",
+                       is_zeroday=is_zd)
+        return {"run": run.name, "step": module_key, "status": "skipped",
+                "skipped": True, "summary": result.get("summary", ""),
+                "surface": gate, "findings": [], "artifacts": [],
+                "probe": result.get("probe")}
+
     step = run.add_step(
         module_key,
         prompt_or_cmd=str(params),
-        env={"actor": session.name, "workspace": store.workspace, "module": module_key},
+        env={"actor": session.name, "workspace": store.workspace, "module": module_key,
+             "execution": meta.execution,
+             "probe_runtime": (result.get("probe") or {}).get("runtime", "")},
         result_summary=str(result.get("summary", "")),
         artifacts=[Path(p) for p in result.get("artifacts", [])],
     )
@@ -152,7 +189,7 @@ def run_module(
         run.add_finding(module_key, sev=f.get("sev", "info"), title=f.get("title", ""),
                         detail=f.get("detail", ""), evidence_path=step["archive"],
                         is_zeroday=bool(f.get("is_zeroday", False)))
-    # 流量录制：模块 traces/*.json 全量入 traffic 表（core/traffic.py，幂等）
+    # 流量录制：探针结果中的 http step 全量入 traffic 表（幂等）
     try:
         from .traffic import ingest_run
 

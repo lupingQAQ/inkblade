@@ -1,0 +1,158 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "gpu-memory-residue-isolation",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "GPU 显存残留隔离（MIG/MPS 释放后对抗）",
+      "en": "GPU memory residue isolation (MIG/MPS post-release adversarial)"
+    },
+    "series": "网络架构",
+    "min_level": "利用验证",
+    "writes": true,
+    "requires": [],
+    "surfaces": [
+      "{'type': 'k8s-object', 'selector': 'Node/gpu-0'}",
+      "{'type': 'config-file', 'selector': 'gpu/sharing.json'}"
+    ],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    },
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    },
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "MIG/MPS 释放后显存残留可读",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "A 级真实攻击路径：MIG 硬件分区 vs MPS 共享上下文；NVIDIA MIG 释放生命周期与 VRAM 清零；benign marker 是唯一写入内容",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "跨租户显存残留可读",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "A 级真实攻击路径：MIG 硬件分区 vs MPS 共享上下文；NVIDIA MIG 释放生命周期与 VRAM 清零；benign marker 是唯一写入内容",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "MPS 共享上下文跨租户",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "A 级真实攻击路径：MIG 硬件分区 vs MPS 共享上下文；NVIDIA MIG 释放生命周期与 VRAM 清零；benign marker 是唯一写入内容",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.surface.ok == true",
+      "sev": "medium",
+      "title": "释放未清零显存",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "A 级真实攻击路径：MIG 硬件分区 vs MPS 共享上下文；NVIDIA MIG 释放生命周期与 VRAM 清零；benign marker 是唯一写入内容",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "steps.surface.ok == true",
+      "sev": "medium",
+      "title": "未配置释放即清零",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "A 级真实攻击路径：MIG 硬件分区 vs MPS 共享上下文；NVIDIA MIG 释放生命周期与 VRAM 清零；benign marker 是唯一写入内容",
+      "fix": ""
+    },
+    {
+      "id": "f6",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "MPS 无租户内存隔离",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "A 级真实攻击路径：MIG 硬件分区 vs MPS 共享上下文；NVIDIA MIG 释放生命周期与 VRAM 清零；benign marker 是唯一写入内容",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "gpu-memory-residue-isolation-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "write-surface demo; requires backup receipt"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  },
+  "modes": {
+    "probe_only": true,
+    "backup_write": true,
+    "requires_backup": true
+  }
+}

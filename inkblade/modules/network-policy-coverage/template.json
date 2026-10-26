@@ -1,0 +1,87 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "network-policy-coverage",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "网络策略覆盖分析",
+      "en": "Network policy coverage"
+    },
+    "series": "侦察",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "命名空间 {ns} 的 {len(pods)} 个 Pod 未被任何入站 NetworkPolicy 选择（覆盖缺口）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 侦察表与 5.6 设计约束 1（不得把「有 NetworkPolicy」等同于「隔离有效」）",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "命名空间 {ns} 缺默认拒绝入站策略（有选择策略但无 deny-all）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 侦察表与 5.6 设计约束 1（不得把「有 NetworkPolicy」等同于「隔离有效」）",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "network-policy-coverage-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

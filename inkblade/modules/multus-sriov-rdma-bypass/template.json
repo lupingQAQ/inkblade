@@ -1,0 +1,97 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "multus-sriov-rdma-bypass",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "多网卡与 RDMA 旁路",
+      "en": "Multi-NIC and RDMA Bypass"
+    },
+    "series": "网络架构",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "NetworkPolicy 不覆盖路径清单（Multus/SR-IOV/RDMA 旁路）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 CNI 与 Overlay 层；组合签名 multus-sriov-rdma-bypass",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "info",
+      "title": "旁路基座在位：SR-IOV/RDMA device plugin 与 ib-kubernetes",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 CNI 与 Overlay 层；组合签名 multus-sriov-rdma-bypass",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.snapshot.exists == true",
+      "sev": "info",
+      "title": "未发现 Multus 附件路径",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 CNI 与 Overlay 层；组合签名 multus-sriov-rdma-bypass",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "multus-sriov-rdma-bypass-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

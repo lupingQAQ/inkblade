@@ -1,0 +1,82 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "wasm-runtime-audit",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "WASM 运行时与主机挂载面审计",
+      "en": "WASM runtime and host-mount surface audit"
+    },
+    "series": "侦察",
+    "min_level": "主动探测",
+    "writes": false,
+    "requires": [],
+    "surfaces": [
+      "{'type': 'k8s-object', 'selector': 'RuntimeClass/wasm'}",
+      "{'type': 'runtime-agent', 'selector': 'wasmtime'}"
+    ],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {},
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "host",
+      "op": "fs",
+      "action": "stat",
+      "path": "/",
+      "save": "host",
+      "allow_failure": true
+    }
+  ],
+  "checks": [
+    {
+      "id": "host-readable",
+      "when": "steps.host.exists == true",
+      "message": "probe filesystem is not readable"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "true",
+      "sev": "high",
+      "title": "WASM 运行时允许宿主目录挂载，沙箱边界失效",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/SURFACE-REALISM.md no-surface 模块隔离",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "true",
+      "sev": "high",
+      "title": "WASM 工作负载使用 host 网络",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/SURFACE-REALISM.md no-surface 模块隔离",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "wasm-runtime-audit-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

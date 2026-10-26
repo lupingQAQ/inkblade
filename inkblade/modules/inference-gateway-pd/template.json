@@ -1,0 +1,127 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "inference-gateway-pd",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "推理网关与预填充-解码分离",
+      "en": "Inference Gateway and Prefill-Decode Split"
+    },
+    "series": "网络架构",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "EPP failureMode=FailOpen：网关故障域放大",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 服务与网关层 + 12.1 Gateway API Inference Extension；组合签名 inferencepool-failopen-gateway / pd-split-nixl-rdma-kv-channel / sglang-lws-pd-split",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "info",
+      "title": "EPP failureMode 非 FailOpen",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 服务与网关层 + 12.1 Gateway API Inference Extension；组合签名 inferencepool-failopen-gateway / pd-split-nixl-rdma-kv-channel / sglang-lws-pd-split",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "预填充-解码分离信任边界",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 服务与网关层 + 12.1 Gateway API Inference Extension；组合签名 inferencepool-failopen-gateway / pd-split-nixl-rdma-kv-channel / sglang-lws-pd-split",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "KV-cache 路由信息面",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 服务与网关层 + 12.1 Gateway API Inference Extension；组合签名 inferencepool-failopen-gateway / pd-split-nixl-rdma-kv-channel / sglang-lws-pd-split",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "推理网关管理端口暴露",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 服务与网关层 + 12.1 Gateway API Inference Extension；组合签名 inferencepool-failopen-gateway / pd-split-nixl-rdma-kv-channel / sglang-lws-pd-split",
+      "fix": ""
+    },
+    {
+      "id": "f6",
+      "when": "steps.snapshot.exists == true",
+      "sev": "info",
+      "title": "HTTPRoute → InferencePool 映射",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "spec 5.2 网络架构模块 + 5.6 服务与网关层 + 12.1 Gateway API Inference Extension；组合签名 inferencepool-failopen-gateway / pd-split-nixl-rdma-kv-channel / sglang-lws-pd-split",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "inference-gateway-pd-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

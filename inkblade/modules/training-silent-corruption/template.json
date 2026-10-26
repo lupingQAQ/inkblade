@@ -1,0 +1,115 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "training-silent-corruption",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "训练静默损坏（Byzantine 梯度/损失篡改面）",
+      "en": "Training silent corruption via Byzantine gradient surface"
+    },
+    "series": "横向利用",
+    "min_level": "利用验证",
+    "writes": true,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "Byzantine 梯度使 loss 静默发散 {ratio:.1f}×（训练无效且无告警）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.8；语料 nvidia-sharp-in-network（梯度在网聚合=单点篡改面）/ areal-awex-nccl-injection 模块族",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.surface.ok == true",
+      "sev": "info",
+      "title": "梯度篡改被拒绝或 loss 未显著发散（损坏未成立）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.8；语料 nvidia-sharp-in-network（梯度在网聚合=单点篡改面）/ areal-awex-nccl-injection 模块族",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.surface.ok == true",
+      "sev": "info",
+      "title": "loss 轨迹基线（probe-only，不触碰梯度写面）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.8；语料 nvidia-sharp-in-network（梯度在网聚合=单点篡改面）/ areal-awex-nccl-injection 模块族",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.surface.ok == true",
+      "sev": "info",
+      "title": "loss 轨迹端点不可达（探测不成立）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/FABRIC-ATTACK-SURFACE.md §2.8；语料 nvidia-sharp-in-network（梯度在网聚合=单点篡改面）/ areal-awex-nccl-injection 模块族",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "training-silent-corruption-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "write-surface demo; requires backup receipt"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  },
+  "modes": {
+    "probe_only": true,
+    "backup_write": true,
+    "requires_backup": true
+  }
+}

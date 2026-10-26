@@ -1,0 +1,93 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "spiffe-spire-audit",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "SPIFFE/SPIRE 身份面审计",
+      "en": "SPIFFE/SPIRE identity surface audit"
+    },
+    "series": "侦察",
+    "min_level": "主动探测",
+    "writes": false,
+    "requires": [],
+    "surfaces": [
+      "{'type': 'k8s-object', 'selector': 'Deployment/spire-server'}",
+      "{'type': 'runtime-agent', 'selector': 'spire-agent'}",
+      "{'type': 'config-file', 'selector': 'spire'}"
+    ],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {},
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "host",
+      "op": "fs",
+      "action": "stat",
+      "path": "/",
+      "save": "host",
+      "allow_failure": true
+    }
+  ],
+  "checks": [
+    {
+      "id": "host-readable",
+      "when": "steps.host.exists == true",
+      "message": "probe filesystem is not readable"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "true",
+      "sev": "high",
+      "title": "SPIRE 注册 API 未授权可达",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/SURFACE-REALISM.md SPIFFE/SPIRE 面",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "true",
+      "sev": "medium",
+      "title": "SPIRE Server 使用 hostNetwork，身份控制面直接暴露在节点网络",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/SURFACE-REALISM.md SPIFFE/SPIRE 面",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "true",
+      "sev": "medium",
+      "title": "SPIRE 使用示例/默认 trust domain",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "docs/SURFACE-REALISM.md SPIFFE/SPIRE 面",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "spiffe-spire-audit-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

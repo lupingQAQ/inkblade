@@ -1,0 +1,129 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "iommu-smmu-config",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "IOMMU/SMMU 直通与 DMA 隔离",
+      "en": "IOMMU/SMMU passthrough and DMA isolation"
+    },
+    "series": "侦察",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [
+      "{'type': 'config-file', 'selector': 'iommu/kernel-cmdline.txt'}"
+    ],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "IOMMU 未启用（DMA 直通风险）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "A 级真实攻击路径：Intel VT-d/AMD-Vi/Arm SMMUv3 直通可导致节点 DMA 越权；Linux iommu=pt/iommu.passthrough=1 语义",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "IOMMU 全局直通模式",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "A 级真实攻击路径：Intel VT-d/AMD-Vi/Arm SMMUv3 直通可导致节点 DMA 越权；Linux iommu=pt/iommu.passthrough=1 语义",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "ARM SMMU 未启用",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "A 级真实攻击路径：Intel VT-d/AMD-Vi/Arm SMMUv3 直通可导致节点 DMA 越权；Linux iommu=pt/iommu.passthrough=1 语义",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "IOMMU 组直通给多设备/不可信设备",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "A 级真实攻击路径：Intel VT-d/AMD-Vi/Arm SMMUv3 直通可导致节点 DMA 越权；Linux iommu=pt/iommu.passthrough=1 语义",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "ACS 未启用（IOMMU 组无法隔离）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "A 级真实攻击路径：Intel VT-d/AMD-Vi/Arm SMMUv3 直通可导致节点 DMA 越权；Linux iommu=pt/iommu.passthrough=1 语义",
+      "fix": ""
+    },
+    {
+      "id": "f6",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "ATS 无 IOMMU 保护",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "A 级真实攻击路径：Intel VT-d/AMD-Vi/Arm SMMUv3 直通可导致节点 DMA 越权；Linux iommu=pt/iommu.passthrough=1 语义",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "iommu-smmu-config-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

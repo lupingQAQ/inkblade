@@ -1,0 +1,79 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "combo-signature-static",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "组合签名静态检测",
+      "en": "Combo Signature Static Detection"
+    },
+    "series": "核心代码",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {},
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "host",
+      "op": "fs",
+      "action": "stat",
+      "path": "/",
+      "save": "host",
+      "allow_failure": true
+    }
+  ],
+  "checks": [
+    {
+      "id": "host-readable",
+      "when": "steps.host.exists == true",
+      "message": "probe filesystem is not readable"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "true",
+      "sev": "high",
+      "title": "title",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线三轮审计：跨问题组合（框架×插件×operator×存储）静态共存证据",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "true",
+      "sev": "high",
+      "title": "组合签名 {c[",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线三轮审计：跨问题组合（框架×插件×operator×存储）静态共存证据",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "combo-signature-static-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "gpu-pool-scheduler-unauth",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "GPU 池调度 admin 无鉴权（跨租户分配/迁移）",
+      "en": "GPU Pool Scheduler Unauthenticated Admin (cross-tenant allocate/migrate)"
+    },
+    "series": "网络架构",
+    "min_level": "利用验证",
+    "writes": true,
+    "requires": [],
+    "surfaces": [],
+    "cves": [
+      "HAMI-ADV-2026-01"
+    ],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe1",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/gpu/pools",
+      "headers": {},
+      "save": "probe1",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe2",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/gpu/allocate",
+      "headers": {},
+      "save": "probe2",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe3",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/gpu/release",
+      "headers": {},
+      "save": "probe3",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "medium",
+      "title": "title",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "GPU 组卡/池化隔离模型（HAMi 分数卡、OrionX vGPU、cGPU 时间片、MIG/MPS）与池调度面鉴权边界",
+      "fix": "",
+      "cves": [
+        "HAMI-ADV-2026-01"
+      ],
+      "version_matrix": {
+        "product": "gpu",
+        "source": "steps.snapshot.json.version",
+        "vulnerable": [
+          "<*"
+        ],
+        "note": "version matrix declared by module metadata; refine during migration"
+      }
+    },
+    {
+      "id": "f2",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "medium",
+      "title": "GPU 池清单无鉴权跨租户可见（设备/租户/MIG 档位）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "GPU 组卡/池化隔离模型（HAMi 分数卡、OrionX vGPU、cGPU 时间片、MIG/MPS）与池调度面鉴权边界",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "medium",
+      "title": "GPU 释放后残留保留（可继续读取显存快照）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "GPU 组卡/池化隔离模型（HAMi 分数卡、OrionX vGPU、cGPU 时间片、MIG/MPS）与池调度面鉴权边界",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "gpu-pool-scheduler-unauth-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "write-surface demo; requires backup receipt"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  },
+  "modes": {
+    "probe_only": true,
+    "backup_write": true,
+    "requires_backup": true
+  }
+}

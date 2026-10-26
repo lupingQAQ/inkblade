@@ -1,0 +1,119 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "kuberay-operator-escalation",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "KubeRay Operator 提权",
+      "en": "KubeRay Operator Escalation"
+    },
+    "series": "权限链",
+    "min_level": "利用验证",
+    "writes": true,
+    "requires": [],
+    "surfaces": [],
+    "cves": [
+      "KUBERAY-ADV-2026-01"
+    ],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "fixture": {
+      "from": "params.fixture",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.fixture}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "title",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 11 节：KubeRay Operator 准 cluster-admin 权限（Ray 自定义资源全 CRUD + Pod 创建）",
+      "fix": "",
+      "cves": [
+        "KUBERAY-ADV-2026-01"
+      ],
+      "version_matrix": {
+        "product": "kuberay",
+        "source": "steps.snapshot.json.version",
+        "vulnerable": [
+          "<*"
+        ],
+        "note": "version matrix declared by module metadata; refine during migration"
+      }
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "ClusterRole「{name}」为准 cluster-admin（{name} → 特权 Pod）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 11 节：KubeRay Operator 准 cluster-admin 权限（Ray 自定义资源全 CRUD + Pod 创建）",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "特权 RayCluster 创建演示已执行（backup-write + 可回滚）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线第 11 节：KubeRay Operator 准 cluster-admin 权限（Ray 自定义资源全 CRUD + Pod 创建）",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "kuberay-operator-escalation-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "write-surface demo; requires backup receipt"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  },
+  "modes": {
+    "probe_only": true,
+    "backup_write": true,
+    "requires_backup": true
+  }
+}

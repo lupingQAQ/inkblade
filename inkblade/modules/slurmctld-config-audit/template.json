@@ -1,0 +1,130 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "slurmctld-config-audit",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "slurmctld 控制面配置审计",
+      "en": "slurmctld control-plane configuration audit"
+    },
+    "series": "侦察",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [
+      "{'type': 'config-file', 'selector': 'slurm/slurm.conf'}",
+      "{'type': 'runtime-agent', 'selector': 'runtime-agent/slurmctld'}"
+    ],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "slurmctld 未启用 Munge 认证",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD slurm.conf(5) / slurmctld(8) 官方手册；docs/SLURM-HPC-COVERAGE.md 控制面配置面",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "slurmctld 通信未使用 MUNGE/TLS 加密",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD slurm.conf(5) / slurmctld(8) 官方手册；docs/SLURM-HPC-COVERAGE.md 控制面配置面",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "SlurmUser 为 root 或未设置",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD slurm.conf(5) / slurmctld(8) 官方手册；docs/SLURM-HPC-COVERAGE.md 控制面配置面",
+      "fix": ""
+    },
+    {
+      "id": "f4",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "允许 root 提交作业",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD slurm.conf(5) / slurmctld(8) 官方手册；docs/SLURM-HPC-COVERAGE.md 控制面配置面",
+      "fix": ""
+    },
+    {
+      "id": "f5",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "TaskPlugin 未启用 task/cgroup",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD slurm.conf(5) / slurmctld(8) 官方手册；docs/SLURM-HPC-COVERAGE.md 控制面配置面",
+      "fix": ""
+    },
+    {
+      "id": "f6",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "ProctrackType 未使用 cgroup",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "SchedMD slurm.conf(5) / slurmctld(8) 官方手册；docs/SLURM-HPC-COVERAGE.md 控制面配置面",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "slurmctld-config-audit-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

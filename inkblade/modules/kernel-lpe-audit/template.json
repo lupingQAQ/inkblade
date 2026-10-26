@@ -1,0 +1,75 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "kernel-lpe-audit",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "内核 LPE 检测库（版本区间 + 前置面）",
+      "en": "Kernel LPE audit (version ranges + preconditions)"
+    },
+    "series": "侦察",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "observed",
+      "when": "steps.snapshot.exists == true",
+      "sev": "info",
+      "title": "内核 LPE 检测库（版本区间 + 前置面）：部署面已观测",
+      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
+      "evidence": "steps"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "kernel-lpe-audit-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

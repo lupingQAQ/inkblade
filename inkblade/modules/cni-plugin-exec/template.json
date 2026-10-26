@@ -1,0 +1,75 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "cni-plugin-exec",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "CNI 插件执行面",
+      "en": "CNI plugin execution"
+    },
+    "series": "权限链",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "fixture": {
+      "from": "params.fixture",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.fixture}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "observed",
+      "when": "steps.snapshot.exists == true",
+      "sev": "info",
+      "title": "CNI 插件执行面：部署面已观测",
+      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
+      "evidence": "steps"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "cni-plugin-exec-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

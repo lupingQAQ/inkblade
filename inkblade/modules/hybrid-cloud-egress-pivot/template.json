@@ -1,0 +1,86 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "hybrid-cloud-egress-pivot",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "混合云出网与回旋",
+      "en": "Hybrid Cloud Egress Pivot"
+    },
+    "series": "混合云",
+    "min_level": "主动探测",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "title",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线 5.6 云与混合边界层 + 6.3 VPC-CNI 双控制面链",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.surface.ok == true",
+      "sev": "high",
+      "title": "混合云出网回旋：私网→云元数据面未加固（pivot 边 {len(edges)} 条）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线 5.6 云与混合边界层 + 6.3 VPC-CNI 双控制面链",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "hybrid-cloud-egress-pivot-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

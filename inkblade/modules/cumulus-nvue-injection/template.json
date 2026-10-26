@@ -1,0 +1,106 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "cumulus-nvue-injection",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "Cumulus NVUE injection",
+      "en": "Cumulus NVUE injection"
+    },
+    "series": "网络架构",
+    "min_level": "全影响演示",
+    "writes": true,
+    "requires": [],
+    "surfaces": [],
+    "cves": [
+      "CVE-2025-33180",
+      "CVE-2026-24184"
+    ],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    },
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    },
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "observed",
+      "when": "steps.surface.ok == true",
+      "sev": "info",
+      "title": "Cumulus NVUE injection：部署面已观测",
+      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
+      "evidence": "steps"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "cumulus-nvue-injection-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    },
+    "attack": {
+      "marker": "{{ctx.marker}}",
+      "note": "write-surface demo; requires backup receipt"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  },
+  "modes": {
+    "probe_only": true,
+    "backup_write": true,
+    "requires_backup": true
+  }
+}

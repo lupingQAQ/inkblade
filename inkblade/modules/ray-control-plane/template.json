@@ -1,0 +1,97 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "ray-control-plane",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "Ray 控制面侦察",
+      "en": "Ray control plane recon"
+    },
+    "series": "侦察",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "snapshot": {
+      "from": "params.snapshot",
+      "required": true,
+      "description": "Collected snapshot / fixture path"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "snapshot",
+      "op": "fs",
+      "action": "read",
+      "path": "{{input.snapshot}}",
+      "json": true,
+      "save": "snapshot",
+      "allow_failure": false
+    }
+  ],
+  "checks": [
+    {
+      "id": "snapshot-readable",
+      "when": "steps.snapshot.ok == true",
+      "fatal": true,
+      "message": "snapshot is not readable JSON"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.snapshot.exists == true",
+      "sev": "medium",
+      "title": "Ray autoscaler/operator 权限观察点：ServiceAccount {sa}",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线 11.2：8265 无鉴权 Job → head root → 特权 Pod；官方 ray-cluster.verl.yaml 自警告任意代码执行",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.snapshot.exists == true",
+      "sev": "info",
+      "title": "RayJob 清单：{len(rayjobs)} 条（{names}）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线 11.2：8265 无鉴权 Job → head root → 特权 Pod；官方 ray-cluster.verl.yaml 自警告任意代码执行",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.snapshot.exists == true",
+      "sev": "high",
+      "title": "疑似 Ray dashboard 端口暴露：{svc.get(",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.snapshot.path}}",
+      "mapping": "设计基线 11.2：8265 无鉴权 Job → head root → 特权 Pod；官方 ray-cluster.verl.yaml 自警告任意代码执行",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "ray-control-plane-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

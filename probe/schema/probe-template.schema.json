@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inkblade.dev/schema/probe-template-v1.json",
+  "title": "InkBlade declarative probe template",
+  "description": "A probe template is the only executable form of a module. It is interpreted natively by the Rust probe (inkblade-probe run-template). No Python, shell interpreter or module code is ever dropped into the target Pod.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "key", "version", "meta", "steps"],
+  "properties": {
+    "schema": {"const": "inkblade-probe-template-v1"},
+    "key": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "series", "min_level", "writes"],
+      "properties": {
+        "name": {"type": "object", "required": ["zh", "en"],
+          "properties": {"zh": {"type": "string"}, "en": {"type": "string"}}},
+        "series": {"enum": ["侦察", "横向利用", "权限链", "窃取与数据泄露", "核心代码", "网络架构", "混合云", "情报"]},
+        "min_level": {"enum": ["只读侦察", "主动探测", "利用验证", "全影响演示"]},
+        "writes": {"type": "boolean"},
+        "requires": {"type": "array", "items": {"type": "string"}},
+        "surfaces": {"type": "array", "items": {"type": "string"}},
+        "cves": {"type": "array", "items": {"type": "string"}},
+        "fidelity": {"enum": ["equivalent", "reduced"], "default": "equivalent",
+          "description": "equivalent = the template reproduces every check of the pre-migration module; reduced = a documented subset, listed in docs/PROBE-COVERAGE.md."}
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "from": {"type": "string", "description": "Expression, e.g. params.snapshot or params.target."},
+          "required": {"type": "boolean", "default": false},
+          "default": {},
+          "description": {"type": "string"}
+        }
+      }
+    },
+    "defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {"type": "string"},
+        "timeout_ms": {"type": "integer", "minimum": 1, "maximum": 300000, "default": 8000},
+        "max_bytes": {"type": "integer", "minimum": 1024, "maximum": 33554432, "default": 1048576},
+        "tls_verify": {"type": "boolean", "default": false},
+        "cleanup": {"type": "boolean", "default": true}
+      }
+    },
+    "vars": {"type": "object", "additionalProperties": {"type": "string"}},
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/step"}
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "when"],
+        "properties": {
+          "id": {"type": "string"},
+          "when": {"type": "string"},
+          "message": {"type": "string"},
+          "fatal": {"type": "boolean", "default": false},
+          "severity": {"enum": ["info", "low", "medium", "high", "critical"], "default": "info"}
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "sev", "title"],
+        "properties": {
+          "id": {"type": "string"},
+          "when": {"type": "string", "default": "true"},
+          "for_each": {"type": "string", "description": "Expression yielding an array; the finding is emitted once per element."},
+          "as": {"type": "string", "default": "it"},
+          "sev": {"enum": ["info", "low", "medium", "high", "critical"]},
+          "title": {"type": "string"},
+          "detail": {"type": "string"},
+          "evidence": {"type": "string"},
+          "mapping": {"type": "string"},
+          "fix": {"type": "string"},
+          "cves": {"type": "array", "items": {"type": "string"}},
+          "version_matrix": {"$ref": "#/$defs/version_matrix"},
+          "max_emit": {"type": "integer", "minimum": 1, "maximum": 10000, "default": 100}
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "from"],
+        "properties": {
+          "name": {"type": "string"},
+          "from": {"type": "string", "description": "Expression yielding JSON/text/bytes."},
+          "kind": {"enum": ["json", "text", "binary", "trace"], "default": "json"}
+        }
+      }
+    },
+    "payloads": {
+      "type": "object",
+      "additionalProperties": {"type": "object"},
+      "description": "Named payload variants (benign / attack / boundary). Selected by params.payload_variant, default benign first."
+    },
+    "modes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "probe_only": {"type": "boolean", "default": true},
+        "backup_write": {"type": "boolean", "default": false},
+        "requires_backup": {"type": "boolean", "default": false}
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "timeout_ms": {"type": "integer", "minimum": 1, "maximum": 600000, "default": 60000},
+        "max_http_requests": {"type": "integer", "minimum": 1, "maximum": 10000, "default": 256},
+        "max_output_bytes": {"type": "integer", "minimum": 1024, "maximum": 67108864, "default": 4194304}
+      }
+    }
+  },
+  "$defs": {
+    "template_string": {
+      "type": "string",
+      "description": "Interpolated with {{ expr }}; literals are left untouched when they contain no {{."
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "op"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+        "op": {"enum": ["http", "tcp", "exec", "fs", "k8s", "socks", "spawn"]},
+        "when": {"type": "string", "default": "true"},
+        "save": {"type": "string"},
+        "write": {"type": "boolean", "default": false},
+        "allow_failure": {"type": "boolean", "default": false},
+        "timeout_ms": {"type": "integer", "minimum": 1, "maximum": 300000},
+        "method": {"type": "string", "description": "http only: GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS"},
+        "url": {"$ref": "#/$defs/template_string"},
+        "headers": {"type": "object", "additionalProperties": {"type": "string"}},
+        "body": {"description": "http: JSON value or string; string bodies are interpolated."},
+        "expect": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status": {"type": "array", "items": {"type": "integer"}},
+            "body_contains": {"type": "string"},
+            "header_contains": {"type": "object", "additionalProperties": {"type": "string"}}
+          }
+        },
+        "tls_verify": {"type": "boolean"},
+        "host": {"$ref": "#/$defs/template_string"},
+        "port": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "send": {"type": "string"},
+        "send_b64": {"type": "string"},
+        "expect_prefix": {"type": "string"},
+        "read_bytes": {"type": "integer", "minimum": 1, "maximum": 1048576, "default": 65536},
+        "argv": {"type": "array", "items": {"type": "string"}},
+        "stdin": {"type": "string"},
+        "env": {"type": "object", "additionalProperties": {"type": "string"}},
+        "action": {"enum": ["read", "list", "stat", "write", "hash"]},
+        "path": {"$ref": "#/$defs/template_string"},
+        "content": {"type": "string"},
+        "glob": {"type": "string"},
+        "json": {"type": "boolean", "default": false},
+        "verb": {"enum": ["get", "list", "create", "patch", "delete", "apply"]},
+        "api_version": {"type": "string"},
+        "resource": {"type": "string"},
+        "namespace": {"type": "string"},
+        "name": {"type": "string"},
+        "label_selector": {"type": "string"},
+        "detach": {"type": "boolean", "default": false},
+        "socket_path": {"$ref": "#/$defs/template_string"},
+        "request": {"type": "string"}
+      }
+    },
+    "version_matrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["product", "source"],
+      "properties": {
+        "product": {"type": "string"},
+        "source": {"type": "string", "description": "Expression yielding the observed version."},
+        "vulnerable": {"type": "array", "items": {"type": "string"}},
+        "fixed": {"type": "array", "items": {"type": "string"}},
+        "note": {"type": "string"}
+      }
+    }
+  }
+}

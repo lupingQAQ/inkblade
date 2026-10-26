@@ -1,0 +1,30 @@
+{
+  "schema": "inkblade-probe-bootstrap-v1",
+  "description": "The only host-executed path in InkBlade. Bootstrap actions drop the static Rust probe into a target Pod on first foothold; they never upload or execute Python, and every other module is a declarative template executed by the probe.",
+  "protocol": "inkblade-probe/1",
+  "artifacts": [
+    {
+      "name": "inkblade-probe",
+      "source": "probe/target/release/inkblade-probe",
+      "remote_path": "/tmp/inkblade-probe",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "sha256": "",
+      "build": "cd probe && cargo build --release --locked",
+      "notes": "Static (musl recommended) Rust binary; sha256 is pinned by the release gate when present."
+    }
+  ],
+  "modules": [
+    {
+      "key": "probe-bootstrap",
+      "execution": "bootstrap",
+      "purpose": "First foothold only: upload + chmod the Rust probe binary. No module logic runs on the host.",
+      "allowed_host_actions": ["upload_binary", "chmod", "probe_version_check"]
+    }
+  ],
+  "forbidden": [
+    "python3 in target Pod",
+    "shell-interpreted module bodies",
+    "host execution of module logic",
+    "adapter/host fallback when a probe is missing"
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "vector-db-exposure",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "向量库跨租户暴露",
+      "en": "Vector DB Cross-Tenant Exposure"
+    },
+    "series": "侦察",
+    "min_level": "只读侦察",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe1",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/vector/collections",
+      "headers": {},
+      "save": "probe1",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe2",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/vector/query",
+      "headers": {},
+      "save": "probe2",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "向量库跨租户暴露：{len(other_tenant)} 个他租户 collection / 命中 {len(matches)} 条文档",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "docs/AI-GATEWAY.md 第 11 节：向量库与 embedding 面",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "vector-db-exposure-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "schema": "inkblade-probe-template-v1",
+  "key": "cloud-irsa-trust-wildcard",
+  "version": "1.0.0",
+  "meta": {
+    "name": {
+      "zh": "云身份联邦 trust policy 通配（跨账户 AssumeRole）",
+      "en": "Cloud Identity Trust Policy Wildcard (cross-account AssumeRole)"
+    },
+    "series": "混合云",
+    "min_level": "利用验证",
+    "writes": false,
+    "requires": [],
+    "surfaces": [],
+    "cves": [],
+    "fidelity": "reduced"
+  },
+  "inputs": {
+    "target": {
+      "from": "params.target",
+      "required": true,
+      "description": "Target base URL"
+    }
+  },
+  "defaults": {
+    "timeout_ms": 8000,
+    "tls_verify": false
+  },
+  "steps": [
+    {
+      "id": "surface",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/healthz",
+      "save": "surface",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe1",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/cloud/identity",
+      "headers": {},
+      "save": "probe1",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    },
+    {
+      "id": "probe2",
+      "op": "http",
+      "method": "GET",
+      "url": "{{input.target}}/cloud/identity/assume-role",
+      "headers": {},
+      "save": "probe2",
+      "allow_failure": true,
+      "timeout_ms": 8000
+    }
+  ],
+  "checks": [
+    {
+      "id": "surface-reachable",
+      "when": "steps.surface.status != null",
+      "message": "target did not answer the surface probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "title",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "EKS IRSA / 阿里 RRSA / GKE Workload Identity / Azure Workload Identity 的 trust policy 与 OIDC subject 约束",
+      "fix": ""
+    },
+    {
+      "id": "f2",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "IRSA/RRSA trust policy 通配 Principal（跨账户可 AssumeRole）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "EKS IRSA / 阿里 RRSA / GKE Workload Identity / Azure Workload Identity 的 trust policy 与 OIDC subject 约束",
+      "fix": ""
+    },
+    {
+      "id": "f3",
+      "when": "steps.probe1.status == 200 or steps.probe1.status == 201",
+      "sev": "high",
+      "title": "通配 trust policy 跨账户 AssumeRole 成功（权重桶读角色被外部账户假定）",
+      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "evidence": "{{steps.probe1.status}}",
+      "mapping": "EKS IRSA / 阿里 RRSA / GKE Workload Identity / Azure Workload Identity 的 trust policy 与 OIDC subject 约束",
+      "fix": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "cloud-irsa-trust-wildcard-probe.json",
+      "from": "steps",
+      "kind": "json"
+    }
+  ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN",
+      "note": "no exploit payload"
+    }
+  },
+  "limits": {
+    "timeout_ms": 60000,
+    "max_http_requests": 64
+  }
+}
