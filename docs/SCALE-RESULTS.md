@@ -1,4 +1,4 @@
-# Trident 规模压测结果（合成快照 + 真 k3s 200 对象点）
+# InkBlade 规模压测结果（合成快照 + 真 k3s 200 对象点）
 
 > 生成日期：2026-10-25　执行机：Windows 11 / Python 3.12.15 / 单进程 CPU 计时
 > 复现：`python lab/bench/scale-bench.py run --scales 100,1000,5000,10000 --out-md lab/bench/out/scale-bench.md`

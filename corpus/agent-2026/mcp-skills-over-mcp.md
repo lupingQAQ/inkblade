@@ -19,6 +19,6 @@
 - 生态分工：Agent Skills 定内容格式，MCP 定传输/发现，Registry 定分发。
 
 ## 对我们的启示
-- 我们的能力单元是**硬编码 Python 模块**（`trident/core/registry.py:34` 读 `module.json`），新增手法必须发版；这与「技能库」不是一回事（见 G05）。
+- 我们的能力单元是**硬编码 Python 模块**（`inkblade/core/registry.py:34` 读 `module.json`），新增手法必须发版；这与「技能库」不是一回事（见 G05）。
 - 可行的最小路径：把高价值手法写成 `SKILL.md`（步骤/前置/证据要求/回滚点），用 MCP Resources 暴露给外部 agent，同时保留模块作为**唯一可执行实现**——技能负责「怎么想/怎么验」，模块负责「怎么执行」。
 - 安全：技能是可执行的供应链对象（ASI04）。必须签名 + 来源 + 版本锁定；`allowed-tools` 字段只能收紧不能扩权。

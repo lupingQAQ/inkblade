@@ -17,7 +17,7 @@ import unittest
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 
-from trident.core.auditlog import (
+from inkblade.core.auditlog import (
     DEFAULT_BASELINE_SUBJECTS,
     adapt_kubetrail,
     analyze,
@@ -26,11 +26,11 @@ from trident.core.auditlog import (
     load_events,
     parse_jsonl,
 )
-from trident.core.registry import load_modules
-from trident.rules.generate import load_catalog
+from inkblade.core.registry import load_modules
+from inkblade.rules.generate import load_catalog
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES_DIR = ROOT / "trident" / "modules"
+MODULES_DIR = ROOT / "inkblade" / "modules"
 FIX_DIR = ROOT / "lab" / "fixtures" / "auditlog"
 MODULE_KEY = "kube-audit-trail-analysis"  # 注册表禁数字键（k8s→kube），与命名规范一致
 
@@ -211,7 +211,7 @@ class KubeTrailAdapterTest(unittest.TestCase):
 class AuditTrailModuleTest(unittest.TestCase):
     """kube-audit-trail-analysis 模块：注册契约 + run() 三件套 + 双输入源。"""
 
-    CTX = {"marker": "TRIDENT-auditlog-test", "meta": {"key": MODULE_KEY}}
+    CTX = {"marker": "INKBLADE-auditlog-test", "meta": {"key": MODULE_KEY}}
 
     def test_registry_contract(self):
         mods = load_modules(MODULES_DIR)
@@ -260,7 +260,7 @@ class RulesIntegrationTest(unittest.TestCase):
 
     def test_sa_token_and_portforward_detectors_never_baselined(self):
         """FN 补齐：token 铸造 / portforward 命中；主体白名单和学习模式都压不掉。"""
-        from trident.core import baseline as B
+        from inkblade.core import baseline as B
 
         events = [
             {"kind": "Event", "auditID": "g-1", "verb": "create",

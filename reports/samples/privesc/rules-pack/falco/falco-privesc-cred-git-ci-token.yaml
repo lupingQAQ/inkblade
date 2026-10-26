@@ -1,12 +1,12 @@
-# trident.io/vector: cred-git-ci-token
+# inkblade.io/vector: cred-git-ci-token
 # detection-point: Falco：容器/CI 读取 git 凭据文件
-- rule: Trident Privesc cred-git-ci-token
+- rule: InkBlade Privesc cred-git-ci-token
   desc: Git/CI 凭据窃取到 GitOps
   condition: "evt.type in (open,openat,connect,execve) and path ~ \"\\.git-credentials$\""
-  output: "Trident privilege-escalation primitive (vector=cred-git-ci-token module=gitops-secret-read proc=%proc.name)"
+  output: "InkBlade privilege-escalation primitive (vector=cred-git-ci-token module=gitops-secret-read proc=%proc.name)"
   priority: WARNING
   tags:
-    - trident
+    - inkblade
     - privesc
     - credential
     - cred-git-ci-token

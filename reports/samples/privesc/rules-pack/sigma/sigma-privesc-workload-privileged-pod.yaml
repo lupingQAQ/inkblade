@@ -7,12 +7,12 @@ references:
   - "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
   - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
   - "Peirates Kubernetes 提权 https://github.com/inguardians/peirates"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: workload-privileged-pod
-    trident.io/module: privileged-workloads
+    inkblade.io/vector: workload-privileged-pod
+    inkblade.io/module: privileged-workloads
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -30,17 +30,17 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.workload
+  - inkblade
+  - inkblade.vector.workload
   - attack.t1610
   - attack.t1611
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: workload-privileged-pod
-  trident-module: privileged-workloads
-  trident-detection-point: "K8s audit：create pod 且 privileged=true；Falco 亦覆盖 privileged 容器启动"
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: workload-privileged-pod
+  inkblade-module: privileged-workloads
+  inkblade-detection-point: "K8s audit：create pod 且 privileged=true；Falco 亦覆盖 privileged 容器启动"
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

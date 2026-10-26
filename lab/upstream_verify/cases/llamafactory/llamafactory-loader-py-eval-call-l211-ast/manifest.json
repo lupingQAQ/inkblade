@@ -36,7 +36,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-llamafactory-loader-py-eval-call-l211-ast",
+ "marker_text": "INKBLADE-UV-llamafactory-loader-py-eval-call-l211-ast",
  "notes": "False positive: the matched text is model.eval(), not Python eval().",
  "static_evidence_level": "source-line",
  "static_analysis": "False positive: the matched text is model.eval(), not Python eval().",
@@ -52,7 +52,7 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "llamafactory",
  "static_blocker": {
   "category": "pattern-false-positive",

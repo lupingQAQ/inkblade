@@ -10,9 +10,9 @@
 |---|---|---|
 | 真实 K8s 集群 | 单节点 k3s `v1.36.5+k3s1`，node `k3s` **Ready**，containerd `2.3.4-k3s1.36` | `reports/samples/real-cluster/cluster-info.json`、`kubectl-nodes.txt` |
 | Windows → 真 API | `kubectl --kubeconfig out/k3s.yaml get nodes` 成功（QEMU hostfwd `127.0.0.1:6445 → :6443`） | 同上 |
-| 真 snapshot 跑 Trident 侦察 | 6/6 模块成功，**16 条 findings**（critical 11 / high 3 / medium 2） | `recon-findings.json`、`snapshot.json` |
+| 真 snapshot 跑 InkBlade 侦察 | 6/6 模块成功，**16 条 findings**（critical 11 / high 3 / medium 2） | `recon-findings.json`、`snapshot.json` |
 | 真 Service 网络 | `mock_targets.py` 以 Pod 部署 + NodePort 30080；Windows 直连 HTTP 200（19 ms） | `service-probe.json` |
-| Trident 模块打真 Service | `/plugins/list=200`、对照面 `/v1/models=401`、`/plugins/invoke=200` | `service-probe.json`（trace） |
+| InkBlade 模块打真 Service | `/plugins/list=200`、对照面 `/v1/models=401`、`/plugins/invoke=200` | `service-probe.json`（trace） |
 | NetworkPolicy vs hostNetwork | 普通 Pod 被 default-deny 拒绝（connection refused），hostNetwork Pod 可达 → **bypass-confirmed** | `netpol-proof.json` |
 | 规模声明 | **非生产规模**：单节点、2 GB 内存、无 HA、TCG 纯仿真 | 第 5 节 |
 
@@ -72,7 +72,7 @@ k3s    Ready    control-plane   9m8s  v1.36.5+k3s1   10.0.2.15     <none>       
 `cluster-info.json` 记录了 `kubectl version -o json`、`/readyz` 原文、node capacity/conditions、
 kube-system Pod 状态与每次 kubectl 调用的 rc/耗时/输出。
 
-### 3.2 真 snapshot → Trident 侦察模块
+### 3.2 真 snapshot → InkBlade 侦察模块
 
 `collect_snapshot.py` 逐资源执行 `kubectl get <res> -o json`（无 fixture 合并），产出
 `snapshot.json`（133 KB，`source: live-kubectl`）：
@@ -92,10 +92,10 @@ kube-system Pod 状态与每次 kubectl 调用的 rc/耗时/输出。
 `exposure-mapping`、`network-policy-coverage`、`rbac-mapping`、`framework-port-matching`、
 `escape-primitives`、`observability-exposure`。结果 **6/6 ok，16 条 findings**，例如：
 
-- `exposure-mapping` medium —— `trident-proof/mock-target` NodePort 暴露（8000）；
+- `exposure-mapping` medium —— `inkblade-proof/mock-target` NodePort 暴露（8000）；
 - `network-policy-coverage` high —— `kube-system` 的 2 个 Pod 未被任何入站策略选择；
 - `rbac-mapping` critical —— `cluster-admin` / `system:kube-controller-manager` 等通配符 ClusterRole；
-- `escape-primitives` medium —— `trident-proof/proof-hostnet` hostNetwork=true 共享宿主网络命名空间。
+- `escape-primitives` medium —— `inkblade-proof/proof-hostnet` hostNetwork=true 共享宿主网络命名空间。
 
 ### 3.3 mock_targets 部署为 Pod + 真 Service 网络
 
@@ -104,7 +104,7 @@ kube-system Pod 状态与每次 kubectl 调用的 rc/耗时/输出。
 Service 为 `NodePort 8000:30080`，QEMU 预映射 `127.0.0.1:30080 → :30080`。
 
 - Windows 侧 HTTP 探测：`HTTP 200`，连续三次 0.03 / 0.02 / 0.01 s，返回 25 条路由；
-- Trident 模块 `vllm-plugin-auth-bypass`（writes=false，真实 HTTP）target=`http://127.0.0.1:30080`：
+- InkBlade 模块 `vllm-plugin-auth-bypass`（writes=false，真实 HTTP）target=`http://127.0.0.1:30080`：
   - `GET /plugins/list` → **200**（无 api-key）
   - `GET /v1/models`（对照面）→ **401**
   - `POST /plugins/invoke` → **200**
@@ -112,7 +112,7 @@ Service 为 `NodePort 8000:30080`，QEMU 预映射 `127.0.0.1:30080 → :30080`�
 
 ### 3.4 hostNetwork 绕过 NetworkPolicy（真数据面）
 
-`manifests/10-default-deny.yaml` 在 `trident-proof` 建立 `podSelector:{}`、`Ingress+Egress` 全拒策略；
+`manifests/10-default-deny.yaml` 在 `inkblade-proof` 建立 `podSelector:{}`、`Ingress+Egress` 全拒策略；
 k3s 内置 network policy controller（kube-router v2.6.3-k3s1）已启动并下发规则。
 
 | 源 Pod | 目标 | 结果 | wget 输出 |
@@ -134,7 +134,7 @@ k3s 内置 network policy controller（kube-router v2.6.3-k3s1）已启动并下
 | `reports/samples/real-cluster/snapshot.json` | 真实 `kubectl get -o json` 归一化快照（pods/services/netpol/rbac/nodes） |
 | `reports/samples/real-cluster/recon-findings.json` | 6 模块运行记录 + 16 findings + 每步摘要/归档路径 |
 | `reports/samples/real-cluster/service-deploy.json` | ConfigMap/Deployment/Service 应用与 rollout 记录 |
-| `reports/samples/real-cluster/service-probe.json` | Windows HTTP + Trident 模块 trace（200/401/200） |
+| `reports/samples/real-cluster/service-probe.json` | Windows HTTP + InkBlade 模块 trace（200/401/200） |
 | `reports/samples/real-cluster/netpol-proof.json` | 4 条 wget 探测、策略 YAML、verdict |
 | `reports/samples/real-cluster/verification-summary.json` | 全流程汇总 + TCG 声明 |
 | `reports/samples/real-cluster/kubectl-nodes.txt` | 人读版 nodes/pods/svc/netpol |
@@ -181,7 +181,7 @@ EvidenceStore 原始运行目录（gitignored）：`lab/qemu-k3s/out/evidence-ho
    误判“仍在等登录”。→ `vm_console.py` 在匹配缓冲区剥离 ANSI（原始日志保留）。
 5. **HTTP 404**：`setup-alpine.sh` 不在 HTTP 根目录（`http/`），guest 取不到。→ 编排脚本把
    `setup-alpine.sh`/`install-k3s.sh` 复制进 `http/` 再启动服务。
-6. **setup-alpine 仍有交互问题**：root 密码（`trident`，弱口令提示后仍接受）、`Setup a user? [no]`、
+6. **setup-alpine 仍有交互问题**：root 密码（`inkblade`，弱口令提示后仍接受）、`Setup a user? [no]`、
    擦盘确认 `(y/n)`。→ `resume_provision.py` 按提示符应答，可断线续跑。
 7. **guest 无法访问 Docker Hub**：`registry-1.docker.io` 被解析到 `31.13.73.9`（DNS 污染），
    拉取 pause 镜像 `i/o timeout`，所有 Pod 卡在 ContainerCreating。→ 宿主可直连 Docker Hub；

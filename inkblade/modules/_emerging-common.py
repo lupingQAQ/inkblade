@@ -14,12 +14,12 @@ from pathlib import Path
 from typing import Any
 
 try:  # normal package import
-    from trident.core.surface import SurfaceContext, detect, load_collection
+    from inkblade.core.surface import SurfaceContext, detect, load_collection
 except ImportError:  # pragma: no cover - direct script loading
     import importlib.util
 
     _spec = importlib.util.spec_from_file_location(
-        "_trident_surface", Path(__file__).resolve().parent.parent / "core" / "surface.py")
+        "_inkblade_surface", Path(__file__).resolve().parent.parent / "core" / "surface.py")
     _surface = importlib.util.module_from_spec(_spec)
     _spec.loader.exec_module(_surface)
     SurfaceContext, detect, load_collection = (

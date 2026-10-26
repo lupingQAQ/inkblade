@@ -42,8 +42,8 @@ def _detect(doc: dict) -> list[dict[str, Any]]:
 
 def _secrets_target_manifest(marker: str) -> str:
     return (
-        "# TRIDENT 凭据面读取演示（真实集群为 kubectl get secret -A 的目标清单）\n"
-        f"trident-marker: {marker}\n"
+        "# INKBLADE 凭据面读取演示（真实集群为 kubectl get secret -A 的目标清单）\n"
+        f"inkblade-marker: {marker}\n"
         "targets:\n"
         "  - namespace: train\n"
         "    secret: registry-pull-secret\n"

@@ -84,7 +84,7 @@ class AgentEvalTest(unittest.TestCase):
         self.assertTrue(json_path.is_file())
         self.assertTrue(doc_path.is_file())
         data = json.loads(json_path.read_text(encoding="utf-8"))
-        self.assertEqual(data["schema"], "trident-agent-eval-v1")
+        self.assertEqual(data["schema"], "inkblade-agent-eval-v1")
         self.assertEqual(data["task_count"], len(self.tasks))
         self.assertEqual(set(data["modes"]), {"deterministic", "supervisor-worker"})
         doc = doc_path.read_text(encoding="utf-8")

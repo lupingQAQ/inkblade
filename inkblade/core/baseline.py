@@ -208,7 +208,7 @@ class EntityBaseline:
     # ---------- 序列化 ----------
     def to_doc(self) -> dict:
         return {
-            "schema": "trident-entity-baseline/1",
+            "schema": "inkblade-entity-baseline/1",
             "ci_service_accounts": list(self.ci_service_accounts),
             "scanner_subjects": list(self.scanner_subjects),
             "controller_subjects": list(self.controller_subjects),

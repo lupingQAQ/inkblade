@@ -50,13 +50,13 @@
 参照物：`.slim/clonedeps/repos/RuoJi6__ARTEX`（v0.3.23，AGPL-3.0，只读黑盒对标）+ QEMU k3s 实测（`docs/ARTEX-BENCH-RESULT.md`）。
 判定口径：**已对齐 / 待补 / 刻意不做（含理由）**。
 
-| ARTEX 能力 | Trident 现状 | 判定 | 说明与理由 |
+| ARTEX 能力 | InkBlade 现状 | 判定 | 说明与理由 |
 |---|---|---|---|
-| agent 探索循环（自动多步渗透决策） | `trident/agent_planner.py` 证据驱动推荐排序 + lead 审批 pending；执行固定人工触发；测试锁定零 actions 写行 | **部分对齐 + 刻意不做（自主执行）** | 「规划≠执行」是 SOTA Ruling #2：自主闭环与可审计性（每步人类可复核、证据链可回放）冲突。我们补「更聪明的排序」，不补「自动扣扳机」。 |
-| 资产图 | `trident/core/graph.py` + `reachability.py` + WebUI 攻击链图/工作流 DAG（离线 SPA 六视图） | **已对齐** | 且多一层：verdict 严重度着色 + 证据穿透（runs→steps→SHA256）。 |
-| 人机审批（intercept 拦截审批） | ROE consent 哈希固化 + 级别闸门 + 四角色动作矩阵 + MCP 只读零写工具 + 写类备份闸门 91/回滚 | **已对齐（更强）** | ARTEX 审批是产品功能；Trident 把审批做成治理层（consent/角色/备份三闸门 + 审计日志），可独立复核。 |
+| agent 探索循环（自动多步渗透决策） | `inkblade/agent_planner.py` 证据驱动推荐排序 + lead 审批 pending；执行固定人工触发；测试锁定零 actions 写行 | **部分对齐 + 刻意不做（自主执行）** | 「规划≠执行」是 SOTA Ruling #2：自主闭环与可审计性（每步人类可复核、证据链可回放）冲突。我们补「更聪明的排序」，不补「自动扣扳机」。 |
+| 资产图 | `inkblade/core/graph.py` + `reachability.py` + WebUI 攻击链图/工作流 DAG（离线 SPA 六视图） | **已对齐** | 且多一层：verdict 严重度着色 + 证据穿透（runs→steps→SHA256）。 |
+| 人机审批（intercept 拦截审批） | ROE consent 哈希固化 + 级别闸门 + 四角色动作矩阵 + MCP 只读零写工具 + 写类备份闸门 91/回滚 | **已对齐（更强）** | ARTEX 审批是产品功能；InkBlade 把审批做成治理层（consent/角色/备份三闸门 + 审计日志），可独立复核。 |
 | 流量录制（攻击流量留档回放） | 三层证据含 http-trace artifact；`rules/validate.py` 对 mock 靶场重放探针 | **待补（非阻塞）** | 缺全流量 pcap 级录制与回放器。现有 trace 足够规则验证闭环；pcap 录制列实验室增强项。 |
-| 多模型池（llmpool worker 池） | 无运行时 LLM 依赖（planner 为离线规则排序；模块全部确定性） | **刻意不做** | 单机零依赖是资源优势的来源（实测对照：Trident 49MB/64ms 每轮 vs ARTEX 栈 169.8MiB、37.85s 可登录）。引入 LLM 池 = 引入非确定性步骤，破坏「每步证据可复现」的取证基线。LLM 辅助留给外部（MCP 消费我们的只读接口）。 |
+| 多模型池（llmpool worker 池） | 无运行时 LLM 依赖（planner 为离线规则排序；模块全部确定性） | **刻意不做** | 单机零依赖是资源优势的来源（实测对照：InkBlade 49MB/64ms 每轮 vs ARTEX 栈 169.8MiB、37.85s 可登录）。引入 LLM 池 = 引入非确定性步骤，破坏「每步证据可复现」的取证基线。LLM 辅助留给外部（MCP 消费我们的只读接口）。 |
 | 通知调度（任务通知/异步调度） | CLI 同步执行 + run 审计日志；无通知通道/调度窗口 | **待补（低优）** | 多租户 SaaS/分布式调度本就是 SOTA 未达成项（诚实列示）；通知（IM/webhook）是轻量补齐项。 |
 
 ## 3. 对 KubeTrail 差距反思
@@ -67,17 +67,17 @@
 
 **本次补齐**（commit `feat: kubetrail reflection and k8s audit trail analysis`）：
 
-- `trident/core/auditlog.py`：解析 audit.k8s.io/v1 JSON Lines（容错：注释/坏行跳过）；六类检测器——
+- `inkblade/core/auditlog.py`：解析 audit.k8s.io/v1 JSON Lines（容错：注释/坏行跳过）；六类检测器——
   ①RoleBinding→cluster-admin 创建 ②特权/宿主面 Pod 创建 ③Ray 8265 作业提交的审计面投影（head SA 落 `rayjob-*` runtime Pod）④非基线主体 Secret 读 ⑤pods/exec 会话 ⑥权重 PVC 异常写（claim 级 patch + 非 baseline 主体挂载建 Pod）；
   输出 finding 携带**主体/动词/资源/时间/映射链名/建议规则键**；默认仅报已完成（2xx）动作，`include_denied=True` 时 403 尝试以 low 报（紫队验证准入拦截证据用）。
-- `trident/modules/kube-audit-trail-analysis/`（侦察系列，只读，键名 k8s→**kube**：注册表命名规范禁数字键）：模块薄封装，支持 `auditlog` + `kubetrail_export` 双输入。
+- `inkblade/modules/kube-audit-trail-analysis/`（侦察系列，只读，键名 k8s→**kube**：注册表命名规范禁数字键）：模块薄封装，支持 `auditlog` + `kubetrail_export` 双输入。
 - `lab/fixtures/auditlog/`：`attack-trail.jsonl`（上述六类 + 良性噪声 + 403 拒绝尝试）/ `benign-trail.jsonl`（10 条加固基线正常运维 → **零误报断言**）/ `kubetrail-export.json`（KubeTrail dbus.json Document 形态）。
 - **KubeTrail 导出适配器**：KubeTrail 有导出格式（`dbus.json` Document：schemaVersion/run/target/facts/findings）→ `detect_kubetrail_export()` 识别 + `adapt_kubetrail()` 适配（severity 保序，rbac/escape/lpe 三类别映射链与规则键；lpe 如实给空规则键 + 节点层治理建议）。
 - **规则引擎联动闭环**：新增 Sigma×2——`sigma-pods-exec-lateral`（pods/exec，此前无规则）与 `sigma-weight-pvc-abnormal-write`（权重 PVC claim 写，此前只有 Falco 运行时面）；两规则的链重放计划（probes.json）各补审计 fixture，紫队矩阵维持零漏过。
 
 ### 3.2 其余差距逐项
 
-| # | KubeTrail 能力 | Trident 现状 | 判定 | 理由 |
+| # | KubeTrail 能力 | InkBlade 现状 | 判定 | 理由 |
 |---|---|---|---|---|
 | 1 | K8s API 审计轨迹分析 | 本次从无到有（§3.1） | **已对齐（本次）** | 标准审计 JSON Lines + KubeTrail 导出双输入；六检测器 × 真实形态 fixture；与 Sigma/Falco/Kyverno 规则键联动。 |
 | 2 | 容器内原生采集（in-pod agent：/proc /sys cgroup socket LPE 本地扫） | `escape-primitives`/`privileged-workloads`/`runtime-socket-escape` 等为 **apiserver 视角快照分析**；无 pod 内本地执行采集器 | **待补（实验室）** | 可在 QEMU k3s 靶场 + mock Pod 落点补一个只读 in-pod collector（safe 模式等价物）；Windows 宿主边界内先以 fixture 驱动。 |
@@ -103,10 +103,10 @@
 
 | 产物 | 位置 |
 |---|---|
-| 分析引擎 | `trident/core/auditlog.py`（解析/六检测器/KubeTrail 适配器/统计） |
-| 模块 | `trident/modules/kube-audit-trail-analysis/`（侦察/只读/writes=false） |
+| 分析引擎 | `inkblade/core/auditlog.py`（解析/六检测器/KubeTrail 适配器/统计） |
+| 模块 | `inkblade/modules/kube-audit-trail-analysis/`（侦察/只读/writes=false） |
 | 样本 | `lab/fixtures/auditlog/{attack-trail,benign-trail}.jsonl` + `kubetrail-export.json` |
-| 规则联动 | `trident/rules/templates/sigma.json`（+2 规则）+ `templates/probes.json`（+2 审计 fixture） |
+| 规则联动 | `inkblade/rules/templates/sigma.json`（+2 规则）+ `templates/probes.json`（+2 审计 fixture） |
 | 测试 | `tests/test_modules_auditlog.py`（21 项：六检测器命中/字段完整/良性零误报/拒绝尝试口径/适配器/注册契约/规则目录与重放 fixture） |
 | SOTA | `docs/SOTA-2026-10.md` 新增「审计轨迹分析」行（已达成），KubeTrail/MKAT 对比入参照列 |
 | 合规 | `NOTICE` 附录记录两仓库（Apache-2.0，只读克隆零复用）与 KubeTrail README/MIT 不一致说明 |

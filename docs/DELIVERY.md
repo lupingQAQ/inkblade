@@ -1,6 +1,6 @@
-# Trident 交付包结构（DELIVERY）
+# InkBlade（墨刃零）交付包结构（DELIVERY）
 
-> 版本 v0.1.0（2026-10-25）· 双语报告与规则包样张由 `python trident/e2e-check.py` 一键再生（15 项验收全 PASS）。
+> 版本 v0.2.0（2026-10-27）· 双语报告与规则包样张由 `python inkblade/e2e-check.py` 一键再生（15 项验收全 PASS）。
 
 ## 1. 样张根：`reports/samples/`
 
@@ -13,7 +13,7 @@
 | `rules-pack/` | **defense bundle** | 见 §2 |
 | `effects/effects.json` / `.md` | **实效验证报告** | 7 项本机真实 HTTP 效果验证（管理面/权重投毒/回滚/RCE/数据泄露/规则命中/端到端链）+ 证据摘要；边界声明「非 live K8s」 |
 | `effects/rules-coverage-matrix.json` / `.md` | 本次实效验证的紫队覆盖率矩阵 | 规则引擎对本次靶场重放的命中/拦截/漏过明细 |
-| `static-export/index.html` | 六视图离线兜底 | `window.TRIDENT_DATA` 内嵌 run 全量数据（steps/findings/graph/manifest），file:// 免服务打开 |
+| `static-export/index.html` | 六视图离线兜底 | `window.INKBLADE_DATA` 内嵌 run 全量数据（steps/findings/graph/manifest），file:// 免服务打开 |
 | `kill-chain/` | **真实 k3s 最高权限 PROOF 样张** | 7 阶段夺权链（入口→SA token→cluster-admin→特权 Pod→节点 root→集群级证明→清理）；`proof.json` + 双语 `report.md` + `proof.png` + kubectl transcript；清理校验 `residue=[]`，节点 `/root` marker 已删除 |
 
 ## 2. defense bundle：`reports/samples/rules-pack/`

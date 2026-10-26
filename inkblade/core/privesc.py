@@ -1,6 +1,6 @@
 """全量提权矩阵与提权图（Privesc Matrix & Path Graph）。
 
-数据源：``trident/core/data/privesc-matrix.json``（47 条向量，5 类）。
+数据源：``inkblade/core/data/privesc-matrix.json``（47 条向量，5 类）。
 图模型：
 - 节点：principal / capability / target；另可挂载证据与资产节点
 - 边：一条向量可展开为多条原语边（原语 + 前置 + 证据 + 检测键 + 权重）
@@ -834,10 +834,10 @@ def render_matrix_md(matrix: dict | None = None) -> str:
     graph = PrivescGraph(m)
     canonical = graph.shortest("cap:pod-create", to="cluster-admin")
     lines = [
-        "# Trident 全量提权矩阵（Privesc Matrix）",
+        "# InkBlade 全量提权矩阵（Privesc Matrix）",
         "",
-        "> 本文件由 `trident privesc matrix --out docs/PRIVESC-MATRIX.md` 确定性生成；"
-        "请改 `trident/core/data/privesc-matrix.json` 后重生成，勿手改。",
+        "> 本文件由 `inkblade privesc matrix --out docs/PRIVESC-MATRIX.md` 确定性生成；"
+        "请改 `inkblade/core/data/privesc-matrix.json` 后重生成，勿手改。",
         "",
         "## 提权面",
         "",
@@ -845,7 +845,7 @@ def render_matrix_md(matrix: dict | None = None) -> str:
         f"工作负载 {s['categories'].get('workload', 0)} / 凭据 {s['categories'].get('credential', 0)} / "
         f"节点 {s['categories'].get('node', 0)} / 平台组件 {s['categories'].get('platform', 0)}）",
         f"- 提权图：**{s['nodes']}** 个节点 / **{s['edges']}** 条原语边；目标 {', '.join(s['targets'])}",
-        f"- 检测覆盖：每向量 ≥1 条 Sigma/Falco 规则（共 {s['rules']} 条，紫队重放见 `trident privesc detections`）",
+        f"- 检测覆盖：每向量 ≥1 条 Sigma/Falco 规则（共 {s['rules']} 条，紫队重放见 `inkblade privesc detections`）",
         f"- 来源：K8s 官方文档、MITRE ATT&CK、KubeHound/kube-hunter/Peirates/CDK、云厂商与平台组件文档"
         f"（共 {s['sources']} 条引用）",
         "",
@@ -903,8 +903,8 @@ def render_matrix_md(matrix: dict | None = None) -> str:
     lines += [
         "## 紫队检测覆盖",
         "",
-        "运行 `trident privesc detections --out reports/rules-pack` 可导出每向量的 Sigma/Falco 规则、"
-        "Kyverno 准入策略与 `coverage.json`；`trident rules generate` 会把提权规则包追加到主规则包。",
+        "运行 `inkblade privesc detections --out reports/rules-pack` 可导出每向量的 Sigma/Falco 规则、"
+        "Kyverno 准入策略与 `coverage.json`；`inkblade rules generate` 会把提权规则包追加到主规则包。",
         "",
     ]
     return "\n".join(lines)

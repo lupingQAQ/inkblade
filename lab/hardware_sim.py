@@ -40,7 +40,7 @@ DEFAULT_BMC_ACCOUNTS = (
     (DEFAULT_BMC_USER, DEFAULT_BMC_PASSWORD),
     ("admin", "admin"),
 )
-ADMIN_USER = "trident-admin"
+ADMIN_USER = "inkblade-admin"
 ADMIN_PASSWORD = "fixed-admin-token"
 DPU_DEFAULT_USER = "mock-dpu-admin"
 DPU_DEFAULT_PASSWORD = "mock-dpu-default-pass"
@@ -362,7 +362,7 @@ def _stats(ctx: _RequestContext):
 
 def _routes(ctx: _RequestContext):
     return 200, {
-        "service": "trident-hardware-lab",
+        "service": "inkblade-hardware-lab",
         "mode": ctx.mode,
         "host": HOST,
         "route_count": len(ROUTE_TABLE),
@@ -452,7 +452,7 @@ class _HardwareHTTPServer(ThreadingHTTPServer):
 
 class _HardwareHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "TridentHardwareSim/0.1.0"
+    server_version = "InkBladeHardwareSim/0.1.0"
 
     def log_message(self, fmt, *args):  # 静默访问日志
         return
@@ -562,7 +562,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE) -> Server:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident 硬件/交换机只读仿真（仅 127.0.0.1）")
+    parser = argparse.ArgumentParser(description="InkBlade 硬件/交换机只读仿真（仅 127.0.0.1）")
     parser.add_argument("--port", type=int, default=0, help="监听端口（0=自动分配）")
     parser.add_argument("--mode", choices=list(MODES), default=DEFAULT_MODE,
                         help="vulnerable=fail-open 姿态，fixed=加固姿态")

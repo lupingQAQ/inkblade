@@ -10,7 +10,7 @@
 - 采集失败不伪造字段：对应字段留空，``coverage`` 标 false，判定器会输出 unknown
   与补采命令。
 
-清单 schema（``trident-inventory-v1``）是判定器的输入契约，核心字段：
+清单 schema（``inkblade-inventory-v1``）是判定器的输入契约，核心字段：
 ``cluster`` / ``nodes`` / ``pods`` / ``daemonsets`` / ``components`` / ``cni`` /
 ``gpu`` / ``ray`` / ``kuberay`` / ``lws`` / ``gateway`` / ``ingress`` / ``storage`` /
 ``cloud`` / ``serviceaccounts`` / ``rbac`` / ``feature_gates`` / ``apiserver`` /
@@ -28,7 +28,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Callable, Iterable
 
-SCHEMA = "trident-inventory-v1"
+SCHEMA = "inkblade-inventory-v1"
 
 _READ_VERBS = {"get", "auth"}
 _CNI_NAMES = ("calico", "cilium", "flannel", "antrea", "canal", "multus",

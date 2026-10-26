@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Generate ``trident/profiles/surface-map.json`` from module metadata.
+"""Generate ``inkblade/profiles/surface-map.json`` from module metadata.
 
 Run after adding a module: ``python tools/gen-surface-map.py``.
 Explicit ``surfaces`` / ``required_surfaces`` in a module.json always wins;
@@ -16,10 +16,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from trident.core.surface import derive_surfaces  # noqa: E402
+from inkblade.core.surface import derive_surfaces  # noqa: E402
 
-MODULES = ROOT / "trident" / "modules"
-OUT = ROOT / "trident" / "profiles" / "surface-map.json"
+MODULES = ROOT / "inkblade" / "modules"
+OUT = ROOT / "inkblade" / "profiles" / "surface-map.json"
 
 # Selectors where the generic keyword heuristic is too coarse.  These are
 # reviewed declarations, not guesses.
@@ -76,7 +76,7 @@ def main() -> int:
             raw["key"]) or derive_surfaces(
             raw["key"], raw.get("description", ""), raw.get("series", ""))
     doc = {
-        "schema": "trident-surface-map-v1",
+        "schema": "inkblade-surface-map-v1",
         "description": "Declared deployment surfaces per module. Explicit module.json surfaces win; this map covers legacy modules.",
         "modules": modules,
     }

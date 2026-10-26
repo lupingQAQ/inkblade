@@ -1,5 +1,5 @@
 {
-  "routes_file": "reports/samples/perf/grid/routes-trident.json",
+  "routes_file": "reports/samples/perf/grid/routes-inkblade.json",
   "route_count": 0,
   "base": null,
   "n": 10,

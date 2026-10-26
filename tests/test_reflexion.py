@@ -12,10 +12,10 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import mock
 
-from trident.core import reflexion
-from trident.core.evidence import EvidenceStore
-from trident.core.skills import SkillLibrary
-from trident.core.users import Session
+from inkblade.core import reflexion
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.skills import SkillLibrary
+from inkblade.core.users import Session
 
 
 class ReflectionTest(unittest.TestCase):
@@ -49,7 +49,7 @@ class ReflectionTest(unittest.TestCase):
         self.assertEqual(rep["metrics"]["steps"], 1)
 
     def test_zero_execution_guarantee(self):
-        with mock.patch("trident.core.runner.run_module", side_effect=AssertionError("must not run")) as spy:
+        with mock.patch("inkblade.core.runner.run_module", side_effect=AssertionError("must not run")) as spy:
             rep = reflexion.reflect(self.run)
             reflexion.render_md(rep)
         spy.assert_not_called()

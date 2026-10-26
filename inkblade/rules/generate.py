@@ -1,13 +1,13 @@
 """规则转化引擎（架构第七层）：链目录 + 演练发现 → K8s 防护规则 + SOC 检测规则 + 映射矩阵。
 
 产物（<out_dir>/，YAML 一律经 core/yamlish.dump 输出，可直接 kubectl apply / 导入 SIEM）：
-- kyverno/  ClusterPolicy × 准入规则（默认 monitor：validationFailureAction=Audit + trident.io 注解）
+- kyverno/  ClusterPolicy × 准入规则（默认 monitor：validationFailureAction=Audit + inkblade.io 注解）
 - gatekeeper/  ConstraintTemplate + Constraint（同语义，enforcementAction=dryrun）
 - network/  NetworkPolicy 默认拒绝分区模板 per-CNI 三变体（native / Calico GlobalNetworkPolicy /
    Cilium CiliumNetworkPolicy）+ VPC-native 安全组补充 + RDMA/SR-IOV 不覆盖声明 + IB Partition 建议
-- sigma/  K8s 审计/Ray 检测规则（custom.trident-mode=monitor + 调参建议）
+- sigma/  K8s 审计/Ray 检测规则（custom.inkblade-mode=monitor + 调参建议）
 - falco/  运行时规则（monitor 标签 + 调参建议）
-- suricata/  网络签名（.rules DSL，metadata trident.mode=monitor）
+- suricata/  网络签名（.rules DSL，metadata inkblade.mode=monitor）
 - rbac-convergence.yaml  三 operator 集群级角色 → namespace 最小化改写参考清单
 - mapping.json  规则↔链/模块映射矩阵（每规则 blocks_chains[]）+ 零日行为化签名登记（规则文本不含利用细节）
 
@@ -32,9 +32,9 @@ from .cve_rules import sigma_specs as cve_sigma_specs
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 CNI_VARIANTS = ("native", "calico", "cilium", "vpc-native")
 MONITOR = "monitor"
-TRIDENT_ANNOTATION = "trident.io/mode"
-TRIDENT_TUNING_ANNOTATION = "trident.io/tuning"
-TRIDENT_BLOCKS_ANNOTATION = "trident.io/blocks-chains"
+INKBLADE_ANNOTATION = "inkblade.io/mode"
+INKBLADE_TUNING_ANNOTATION = "inkblade.io/tuning"
+INKBLADE_BLOCKS_ANNOTATION = "inkblade.io/blocks-chains"
 
 # 准入/隔离类引擎：验证时以「策略文件在包内且齐备」判定拦截态
 ENFORCEMENT_ENGINES = ("kyverno", "gatekeeper", "netpol", "vpc-sg")
@@ -186,11 +186,11 @@ def _kyverno_policy(spec: dict, blocks: list[str]) -> dict:
         "apiVersion": "kyverno.io/v1",
         "kind": "ClusterPolicy",
         "metadata": {
-            "name": f"trident-{spec['id']}",
+            "name": f"inkblade-{spec['id']}",
             "annotations": {
-                TRIDENT_ANNOTATION: MONITOR,
-                TRIDENT_TUNING_ANNOTATION: spec["tuning"]["zh"],
-                TRIDENT_BLOCKS_ANNOTATION: ",".join(blocks),
+                INKBLADE_ANNOTATION: MONITOR,
+                INKBLADE_TUNING_ANNOTATION: spec["tuning"]["zh"],
+                INKBLADE_BLOCKS_ANNOTATION: ",".join(blocks),
             },
         },
         "spec": {
@@ -264,11 +264,11 @@ violation[{"msg": msg}] {
 }
 
 _KINDS_BY_RULE = {
-    "deny-privileged-pod": (["Pod"], "TridentDenyPrivilegedPod"),
-    "deny-sensitive-hostpath": (["Pod"], "TridentDenySensitiveHostpath"),
-    "deny-automount-serviceaccount-token": (["Pod"], "TridentDenyAutomountSAToken"),
-    "alert-rolebinding-creation": (["RoleBinding", "ClusterRoleBinding"], "TridentAlertRoleBindingCreation"),
-    "alert-combo-signature": (["Deployment", "apps/Deployment"], "TridentAlertComboSignature"),
+    "deny-privileged-pod": (["Pod"], "InkBladeDenyPrivilegedPod"),
+    "deny-sensitive-hostpath": (["Pod"], "InkBladeDenySensitiveHostpath"),
+    "deny-automount-serviceaccount-token": (["Pod"], "InkBladeDenyAutomountSAToken"),
+    "alert-rolebinding-creation": (["RoleBinding", "ClusterRoleBinding"], "InkBladeAlertRoleBindingCreation"),
+    "alert-combo-signature": (["Deployment", "apps/Deployment"], "InkBladeAlertComboSignature"),
 }
 
 
@@ -290,11 +290,11 @@ def _gatekeeper_docs(spec: dict, blocks: list[str]) -> tuple[dict, dict]:
         "apiVersion": "constraints.gatekeeper.sh/v1beta1",
         "kind": kind,
         "metadata": {
-            "name": f"trident-{spec['id']}",
+            "name": f"inkblade-{spec['id']}",
             "annotations": {
-                TRIDENT_ANNOTATION: MONITOR,
-                TRIDENT_TUNING_ANNOTATION: spec["tuning"]["zh"],
-                TRIDENT_BLOCKS_ANNOTATION: ",".join(blocks),
+                INKBLADE_ANNOTATION: MONITOR,
+                INKBLADE_TUNING_ANNOTATION: spec["tuning"]["zh"],
+                INKBLADE_BLOCKS_ANNOTATION: ",".join(blocks),
             },
         },
         "spec": {
@@ -320,9 +320,9 @@ def _netpol_docs(cfg: dict) -> dict[str, list[dict]]:
         native.append({
             "apiVersion": "networking.k8s.io/v1",
             "kind": "NetworkPolicy",
-            "metadata": {"name": "trident-default-deny", "namespace": ns,
-                         "annotations": {TRIDENT_ANNOTATION: MONITOR,
-                                         "trident.io/note": "默认拒绝（入站+出站）；试点后再全量铺开"}},
+            "metadata": {"name": "inkblade-default-deny", "namespace": ns,
+                         "annotations": {INKBLADE_ANNOTATION: MONITOR,
+                                         "inkblade.io/note": "默认拒绝（入站+出站）；试点后再全量铺开"}},
             "spec": {"podSelector": {}, "policyTypes": ["Ingress", "Egress"]},
         })
         ingress_from = [
@@ -337,8 +337,8 @@ def _netpol_docs(cfg: dict) -> dict[str, list[dict]]:
         allow = {
             "apiVersion": "networking.k8s.io/v1",
             "kind": "NetworkPolicy",
-            "metadata": {"name": "trident-partition-allow", "namespace": ns,
-                         "annotations": {TRIDENT_ANNOTATION: MONITOR}},
+            "metadata": {"name": "inkblade-partition-allow", "namespace": ns,
+                         "annotations": {INKBLADE_ANNOTATION: MONITOR}},
             "spec": {
                 "podSelector": {"matchLabels": {f"{zone['name']}.{zone['label']}/member": "true"}},
                 "policyTypes": ["Ingress", "Egress"],
@@ -356,9 +356,9 @@ def _netpol_docs(cfg: dict) -> dict[str, list[dict]]:
         {
             "apiVersion": "projectcalico.org/v3",
             "kind": "GlobalNetworkPolicy",
-            "metadata": {"name": "trident-default-deny",
-                         "annotations": {TRIDENT_ANNOTATION: MONITOR,
-                                         "trident.io/note": "顺序低于放行策略；RDMA/SR-IOV 面不覆盖，见 rdma-sriov-uncovered.md"}},
+            "metadata": {"name": "inkblade-default-deny",
+                         "annotations": {INKBLADE_ANNOTATION: MONITOR,
+                                         "inkblade.io/note": "顺序低于放行策略；RDMA/SR-IOV 面不覆盖，见 rdma-sriov-uncovered.md"}},
             "spec": {"selector": "all()", "order": 1000,
                      "types": ["Ingress", "Egress"],
                      "ingress": [{"action": "Deny"}], "egress": [{"action": "Deny"}]},
@@ -370,8 +370,8 @@ def _netpol_docs(cfg: dict) -> dict[str, list[dict]]:
         calico.append({
             "apiVersion": "projectcalico.org/v3",
             "kind": "GlobalNetworkPolicy",
-            "metadata": {"name": f"trident-allow-{zone['name']}",
-                         "annotations": {TRIDENT_ANNOTATION: MONITOR}},
+            "metadata": {"name": f"inkblade-allow-{zone['name']}",
+                         "annotations": {INKBLADE_ANNOTATION: MONITOR}},
             "spec": {
                 "order": 900,
                 "selector": f"{zone['name']}.{zone['label']}/member == 'true'",
@@ -395,8 +395,8 @@ def _netpol_docs(cfg: dict) -> dict[str, list[dict]]:
         cilium.append({
             "apiVersion": "cilium.io/v2",
             "kind": "CiliumNetworkPolicy",
-            "metadata": {"name": "trident-default-deny", "namespace": ns,
-                         "annotations": {TRIDENT_ANNOTATION: MONITOR}},
+            "metadata": {"name": "inkblade-default-deny", "namespace": ns,
+                         "annotations": {INKBLADE_ANNOTATION: MONITOR}},
             "spec": {"endpointSelector": {}, "ingress": [], "egress": []},
         })
         from_rules = [
@@ -406,8 +406,8 @@ def _netpol_docs(cfg: dict) -> dict[str, list[dict]]:
         cilium.append({
             "apiVersion": "cilium.io/v2",
             "kind": "CiliumNetworkPolicy",
-            "metadata": {"name": "trident-partition-allow", "namespace": ns,
-                         "annotations": {TRIDENT_ANNOTATION: MONITOR}},
+            "metadata": {"name": "inkblade-partition-allow", "namespace": ns,
+                         "annotations": {INKBLADE_ANNOTATION: MONITOR}},
             "spec": {
                 "endpointSelector": {"matchLabels": {f"{zone['name']}.{zone['label']}/member": "true"}},
                 "ingress": from_rules and [{"fromEndpoints": [fr["fromEndpoints"][0] for fr in from_rules if "fromEndpoints" in fr],
@@ -428,17 +428,17 @@ def _vpc_supplement(cfg: dict, blocks: list[str]) -> dict:
     return {
         "apiVersion": "vpcresources.k8s.aws/v1beta1",
         "kind": "SecurityGroupPolicy",
-        "metadata": {"name": "trident-training-partition-sg",
-                     "annotations": {TRIDENT_ANNOTATION: MONITOR,
-                                     TRIDENT_BLOCKS_ANNOTATION: ",".join(blocks),
-                                     "trident.io/note": "VPC-native 双控制面：SG 与 NetworkPolicy 语义不一致，必须双侧核对"}},
+        "metadata": {"name": "inkblade-training-partition-sg",
+                     "annotations": {INKBLADE_ANNOTATION: MONITOR,
+                                     INKBLADE_BLOCKS_ANNOTATION: ",".join(blocks),
+                                     "inkblade.io/note": "VPC-native 双控制面：SG 与 NetworkPolicy 语义不一致，必须双侧核对"}},
         "spec": {
-            "podSelector": {"matchLabels": {"trident-io-zone": "ml-training"}},
+            "podSelector": {"matchLabels": {"inkblade-io-zone": "ml-training"}},
             "securityGroups": {"groupIds": ["sg-TRAINING_PARTITION_PLACEHOLDER"]},
         },
         "variants": {
             "eks-securitygroup-for-pods": "vpcresources.k8s.aws/v1beta1 SecurityGroupPolicy（本文件）",
-            "aliyun-ack-terway": "Terway Pod 级安全组（trident.io/sg 注解方式，按 Terway 文档套用）",
+            "aliyun-ack-terway": "Terway Pod 级安全组（inkblade.io/sg 注解方式，按 Terway 文档套用）",
             "tencent-tke-vpc-cni": "TKE VPC-CNI Pod 级安全组绑定（按 TKE 控制台/API 套用）",
             "azure-aks": "AKS Azure CNI + NSG（NSG 无 Pod 级语义，用 policy + NSG 双侧收敛）",
         },
@@ -449,7 +449,7 @@ def _vpc_supplement(cfg: dict, blocks: list[str]) -> dict:
 def _ib_partition_advice(cfg: dict, blocks: list[str]) -> dict:
     return {
         "document": "ib-partition-advice",
-        "annotations": {TRIDENT_ANNOTATION: MONITOR, TRIDENT_BLOCKS_ANNOTATION: ",".join(blocks)},
+        "annotations": {INKBLADE_ANNOTATION: MONITOR, INKBLADE_BLOCKS_ANNOTATION: ",".join(blocks)},
         "scope": "集合通信 fabric（IB / RoCE / GPUDirect RDMA / SR-IOV VF / IMEX ComputeDomain）",
         "explicit_declaration": cfg["rdma_statement"],
         "recommended_controls": [
@@ -492,7 +492,7 @@ English declaration: {cfg["rdma_statement"]["en"]}
 
 def _suricata_rules_text(specs: list[dict]) -> str:
     lines = [
-        "# Trident Suricata signatures (monitor mode) - deploy with HOME_NET/ML_NET vars",
+        "# InkBlade Suricata signatures (monitor mode) - deploy with HOME_NET/ML_NET vars",
         "# vars: ML_NET = ML 分区网段（training/inference/ray-system）；BASTION_NET = 管理网段",
         "",
     ]
@@ -502,47 +502,47 @@ def _suricata_rules_text(specs: list[dict]) -> str:
         if spec["id"] == "suricata-admin-endpoint-uri":
             for i, uri in enumerate(spec["uris"]):
                 lines.append(
-                    f'alert http any any -> $ML_NET any (msg:"TRIDENT admin endpoint URI {uri}"; '
+                    f'alert http any any -> $ML_NET any (msg:"INKBLADE admin endpoint URI {uri}"; '
                     f'flow:established,to_server; http.method; content:"POST"; http.uri; content:"{uri}"; '
-                    f'sid:{sid + i}; rev:1; metadata:trident.mode=monitor, trident.rule={spec["id"]};)'
+                    f'sid:{sid + i}; rev:1; metadata:inkblade.mode=monitor, inkblade.rule={spec["id"]};)'
                 )
         elif spec["id"] == "suricata-imds-egress":
             lines.append(
-                f'alert ip $ML_NET any -> {spec["dest_ip"]} any (msg:"TRIDENT IMDS egress from ML partition"; '
-                f'flow:to_server; sid:{sid}; rev:1; metadata:trident.mode=monitor, trident.rule={spec["id"]};)'
+                f'alert ip $ML_NET any -> {spec["dest_ip"]} any (msg:"INKBLADE IMDS egress from ML partition"; '
+                f'flow:to_server; sid:{sid}; rev:1; metadata:inkblade.mode=monitor, inkblade.rule={spec["id"]};)'
             )
             for i, path in enumerate(spec["paths"]):
                 lines.append(
-                    f'alert http $ML_NET any -> any any (msg:"TRIDENT metadata URI {path}"; '
+                    f'alert http $ML_NET any -> any any (msg:"INKBLADE metadata URI {path}"; '
                     f'flow:established,to_server; http.uri; content:"{path}"; '
-                    f'sid:{sid + 1 + i}; rev:1; metadata:trident.mode=monitor, trident.rule={spec["id"]};)'
+                    f'sid:{sid + 1 + i}; rev:1; metadata:inkblade.mode=monitor, inkblade.rule={spec["id"]};)'
                 )
         elif spec["id"] == "suricata-nccl-kv-ports":
             ports = ", ".join(str(p) for p in spec["ports"])
             lines.append(
-                f'alert tcp any any -> $ML_NET [{ports}] (msg:"TRIDENT collective/KV transfer port access from outside partition"; '
-                f'flow:to_server; flags:S; sid:{sid}; rev:1; metadata:trident.mode=monitor, trident.rule={spec["id"]};)'
+                f'alert tcp any any -> $ML_NET [{ports}] (msg:"INKBLADE collective/KV transfer port access from outside partition"; '
+                f'flow:to_server; flags:S; sid:{sid}; rev:1; metadata:inkblade.mode=monitor, inkblade.rule={spec["id"]};)'
             )
         elif spec["id"] == "suricata-gpu-cloud-tenant-uri":
             for i, uri in enumerate(spec["uris"]):
                 lines.append(
-                    f'alert http any any -> $ML_NET any (msg:"TRIDENT GPU pool / cloud tenant endpoint {uri}"; '
+                    f'alert http any any -> $ML_NET any (msg:"INKBLADE GPU pool / cloud tenant endpoint {uri}"; '
                     f'flow:established,to_server; http.uri; content:"{uri}"; '
-                    f'sid:{sid + i}; rev:1; metadata:trident.mode=monitor, trident.rule={spec["id"]};)'
+                    f'sid:{sid + i}; rev:1; metadata:inkblade.mode=monitor, inkblade.rule={spec["id"]};)'
                 )
         elif spec["id"] == "suricata-ai-gateway-admin-uri":
             for i, uri in enumerate(spec["uris"]):
                 lines.append(
-                    f'alert http any any -> $ML_NET any (msg:"TRIDENT AI gateway admin URI {uri} from non-admin source"; '
+                    f'alert http any any -> $ML_NET any (msg:"INKBLADE AI gateway admin URI {uri} from non-admin source"; '
                     f'flow:established,to_server; http.uri; content:"{uri}"; '
-                    f'sid:{sid + i}; rev:1; metadata:trident.mode=monitor, trident.rule={spec["id"]};)'
+                    f'sid:{sid + i}; rev:1; metadata:inkblade.mode=monitor, inkblade.rule={spec["id"]};)'
                 )
         elif spec.get("uris"):
             for i, uri in enumerate(spec["uris"]):
                 lines.append(
-                    f'alert http any any -> $ML_NET any (msg:"TRIDENT long-context/KV endpoint {uri} from outside partition"; '
+                    f'alert http any any -> $ML_NET any (msg:"INKBLADE long-context/KV endpoint {uri} from outside partition"; '
                     f'flow:established,to_server; http.uri; content:"{uri}"; '
-                    f'sid:{sid + i}; rev:1; metadata:trident.mode=monitor, trident.rule={spec["id"]};)'
+                    f'sid:{sid + i}; rev:1; metadata:inkblade.mode=monitor, inkblade.rule={spec["id"]};)'
                 )
         lines.append("")
     return "\n".join(lines)
@@ -561,7 +561,7 @@ def generate_all(chains_dir: Path | str, findings: list | None = None,
     if cni not in CNI_VARIANTS:
         raise ValueError(f"cni 必须是 {CNI_VARIANTS} 之一，收到 {cni!r}")
     if out_dir is None:
-        out_dir = tempfile.mkdtemp(prefix="trident-rulepack-")
+        out_dir = tempfile.mkdtemp(prefix="inkblade-rulepack-")
     root = Path(out_dir)
     root.mkdir(parents=True, exist_ok=True)
 
@@ -687,21 +687,21 @@ def generate_all(chains_dir: Path | str, findings: list | None = None,
     for spec in catalog["sigma"]:
         doc = {
             "title": spec["title"],
-            "id": _deterministic_uuid(f"trident-sigma-{spec['id']}"),
+            "id": _deterministic_uuid(f"inkblade-sigma-{spec['id']}"),
             "status": "stable",
             "description": spec["description"],
-            "references": ["trident-rules-mapping: " + spec["id"]],
-            "author": "Trident rules engine",
+            "references": ["inkblade-rules-mapping: " + spec["id"]],
+            "author": "InkBlade rules engine",
             "date": "2026/10/25",
             "logsource": spec["logsource"],
             "detection": spec["detection"],
             "falsepositives": spec["falsepositives"],
             "level": spec["level"],
-            "tags": spec["tags"] + ["trident-mode-monitor"],
+            "tags": spec["tags"] + ["inkblade-mode-monitor"],
             "custom": {
-                "trident-mode": MONITOR,
-                "trident-tuning": spec["tuning"]["zh"],
-                "trident-blocks-chains": ",".join(blocks_of(spec["blocks_modules"])),
+                "inkblade-mode": MONITOR,
+                "inkblade-tuning": spec["tuning"]["zh"],
+                "inkblade-blocks-chains": ",".join(blocks_of(spec["blocks_modules"])),
             },
         }
         rel = write(f"sigma/{spec['id']}.yaml", yaml_dump(doc))
@@ -713,22 +713,22 @@ def generate_all(chains_dir: Path | str, findings: list | None = None,
     for spec in cve_sigma_specs(cve_catalog.load()):
         doc = {
             "title": spec["title"],
-            "id": _deterministic_uuid(f"trident-sigma-{spec['id']}"),
+            "id": _deterministic_uuid(f"inkblade-sigma-{spec['id']}"),
             "status": "experimental",
             "description": spec["description"],
-            "references": ["trident-cve-catalog: " + spec["cves"][0]],
-            "author": "Trident cve arsenal",
+            "references": ["inkblade-cve-catalog: " + spec["cves"][0]],
+            "author": "InkBlade cve arsenal",
             "date": "2026/10/26",
             "logsource": spec["logsource"],
             "detection": spec["detection"],
             "falsepositives": spec["falsepositives"],
             "level": spec["level"],
-            "tags": spec["tags"] + ["trident-mode-monitor"],
+            "tags": spec["tags"] + ["inkblade-mode-monitor"],
             "custom": {
-                "trident-mode": MONITOR,
-                "trident-tuning": spec["tuning"]["zh"],
-                "trident-cve": spec["cves"][0],
-                "trident-blocks-chains": ",".join(blocks_of(spec["blocks_modules"])),
+                "inkblade-mode": MONITOR,
+                "inkblade-tuning": spec["tuning"]["zh"],
+                "inkblade-cve": spec["cves"][0],
+                "inkblade-blocks-chains": ",".join(blocks_of(spec["blocks_modules"])),
             },
         }
         rel = write(f"sigma/{spec['id']}.yaml", yaml_dump(doc))
@@ -748,14 +748,14 @@ def generate_all(chains_dir: Path | str, findings: list | None = None,
             "priority": spec["priority"],
             "tags": spec["tags"] + ["mode-monitor"],
         })
-    falco_file = write("falco/trident-rules.yaml", yaml_dump(falco_rule_dicts))
+    falco_file = write("falco/inkblade-rules.yaml", yaml_dump(falco_rule_dicts))
     for spec in catalog["falco"]:
         register(spec["id"], ["falco"], {"zh": spec["rule"], "en": spec["rule"]}, [falco_file],
                  spec["tuning"], spec["blocks_modules"], match=spec["match"],
                  log_source=spec.get("logsource", "Falco syscall/trace events"))
 
     suricata_text = _suricata_rules_text(catalog["suricata"])
-    suricata_file = write("suricata/trident.rules", suricata_text)
+    suricata_file = write("suricata/inkblade.rules", suricata_text)
     for spec in catalog["suricata"]:
         register(spec["id"], ["suricata"], {"zh": spec["title"], "en": spec["title"]}, [suricata_file],
                  spec["tuning"], spec["blocks_modules"], match=spec["match"],
@@ -774,25 +774,25 @@ def generate_all(chains_dir: Path | str, findings: list | None = None,
                 "priority": spec["priority"],
                 "tags": spec["tags"],
             })
-            rel = write("falco/trident-rules.yaml", yaml_dump(falco_rule_dicts))
+            rel = write("falco/inkblade-rules.yaml", yaml_dump(falco_rule_dicts))
         else:
             doc = {
                 "title": spec["title"],
-                "id": _deterministic_uuid(f"trident-sigma-{spec['id']}"),
+                "id": _deterministic_uuid(f"inkblade-sigma-{spec['id']}"),
                 "status": "stable",
                 "description": spec["description"],
-                "references": ["trident-rules-mapping: " + spec["id"]],
-                "author": "Trident rules engine",
+                "references": ["inkblade-rules-mapping: " + spec["id"]],
+                "author": "InkBlade rules engine",
                 "date": "2026/10/25",
                 "logsource": spec["logsource"],
                 "detection": spec["detection"],
                 "falsepositives": spec["falsepositives"],
                 "level": spec["level"],
-                "tags": spec["tags"] + ["trident-mode-monitor"],
+                "tags": spec["tags"] + ["inkblade-mode-monitor"],
                 "custom": {
-                    "trident-mode": MONITOR,
-                    "trident-tuning": spec["tuning"]["zh"],
-                    "trident-blocks-chains": ",".join(blocks),
+                    "inkblade-mode": MONITOR,
+                    "inkblade-tuning": spec["tuning"]["zh"],
+                    "inkblade-blocks-chains": ",".join(blocks),
                 },
             }
             rel = write(f"sigma/{spec['id']}.yaml", yaml_dump(doc))
@@ -822,7 +822,7 @@ def generate_all(chains_dir: Path | str, findings: list | None = None,
     # 5) RBAC 收敛参考清单（三 operator 集群级角色 → namespace 最小化改写样本）
     rbac_doc = {
         "document": "rbac-convergence-reference",
-        "annotations": {TRIDENT_ANNOTATION: MONITOR},
+        "annotations": {INKBLADE_ANNOTATION: MONITOR},
         "samples": [
             {
                 "target": "vllm-operator / production-stack operator",
@@ -840,7 +840,7 @@ def generate_all(chains_dir: Path | str, findings: list | None = None,
                 "to": "命名空间 secrets（仅 labelselector 命中的工作负载 secret）+ 取消节点 patch；webhook 关闭 automount 继承",
             },
         ],
-        "verify": "收敛后以 trident 权限链模块复测（can-i 矩阵 + RoleBinding 创建探针）",
+        "verify": "收敛后以 inkblade 权限链模块复测（can-i 矩阵 + RoleBinding 创建探针）",
     }
     write("rbac-convergence.yaml", yaml_dump(rbac_doc))
 
@@ -854,7 +854,7 @@ def generate_all(chains_dir: Path | str, findings: list | None = None,
         raise RuleCoverageError(f"以下攻击链无任何规则覆盖: {sorted(uncovered)}")
 
     mapping = {
-        "generator": "trident.rules.generate",
+        "generator": "inkblade.rules.generate",
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "cni_active": cni,
         "cni_variants": list(CNI_VARIANTS),
@@ -875,7 +875,7 @@ def generate_all(chains_dir: Path | str, findings: list | None = None,
             "statement": netcfg["rdma_statement"],
         },
         "purple_validation": {
-            "entry": "trident.rules.validate",
+            "entry": "inkblade.rules.validate",
             "artifacts": ["coverage-matrix.json", "coverage-matrix.md"],
             "note": "对 lab mock vulnerable 靶场重放各链第一步探针 + 日志 fixture，用内置简化匹配器断言规则命中",
         },

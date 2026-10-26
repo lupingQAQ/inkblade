@@ -8,12 +8,12 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core import cve_catalog
-from trident.core.registry import load_modules
-from trident.rules.generate import generate_all
+from inkblade.core import cve_catalog
+from inkblade.core.registry import load_modules
+from inkblade.rules.generate import generate_all
 
 REPO = Path(__file__).resolve().parents[1]
-CHAINS = REPO / "trident" / "chains"
+CHAINS = REPO / "inkblade" / "chains"
 DOCS = REPO / "docs" / "CVE-CATALOG.md"
 
 REQUIRED_FIELDS = {
@@ -34,10 +34,10 @@ class CatalogStructureTest(unittest.TestCase):
     def setUpClass(cls):
         cls.data = cve_catalog.load()
         cls.entries = cls.data["entries"]
-        cls.mods = load_modules(REPO / "trident" / "modules")
+        cls.mods = load_modules(REPO / "inkblade" / "modules")
 
     def test_schema_and_minimum_cve_count(self):
-        self.assertEqual(self.data["schema"], "trident-cve-catalog-v1")
+        self.assertEqual(self.data["schema"], "inkblade-cve-catalog-v1")
         self.assertTrue(self.data["verified_at"])
         cves = [e for e in self.entries if e.get("cve")]
         self.assertGreaterEqual(len(cves), 30, "CVE 条目不足 30")
@@ -117,7 +117,7 @@ class CatalogArtifactsTest(unittest.TestCase):
             self.assertFalse(missing, f"缺检测规则: {sorted(missing)}")
 
     def test_report_cve_section_present(self):
-        tmpl = (REPO / "trident" / "reports" / "templates" / "pentest-cn-en.tmpl").read_text(encoding="utf-8")
+        tmpl = (REPO / "inkblade" / "reports" / "templates" / "pentest-cn-en.tmpl").read_text(encoding="utf-8")
         self.assertIn("$cve_table", tmpl)
 
 

@@ -4,8 +4,8 @@
 import unittest
 from pathlib import Path
 
-from trident.core import version_matrix as vm
-from trident.core.registry import load_modules
+from inkblade.core import version_matrix as vm
+from inkblade.core.registry import load_modules
 
 REPO = Path(__file__).resolve().parents[1]
 
@@ -24,7 +24,7 @@ LATERAL_BASELINE = {
 class TestMatrixStructure(unittest.TestCase):
     def test_load_and_schema(self):
         data = vm.load()
-        self.assertEqual(data["schema"], "trident-version-matrix-v1")
+        self.assertEqual(data["schema"], "inkblade-version-matrix-v1")
         self.assertGreaterEqual(len(data["entries"]), 40)
 
     def test_every_lateral_module_covered(self):
@@ -32,7 +32,7 @@ class TestMatrixStructure(unittest.TestCase):
 
         锁定：矩阵条目全部真实存在 + 经典横向（19）与绕过（11 defense-bypass）+ aigateway 全覆盖。
         """
-        mods = load_modules(REPO / "trident" / "modules")
+        mods = load_modules(REPO / "inkblade" / "modules")
         lateral = {k for k, m in mods.items() if m.series == "横向利用"}
         # 矩阵条目必须在注册表内（防拼写/幻觉模块）
         ghosts = vm.covered_modules() - set(mods)

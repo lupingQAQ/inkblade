@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "llamafactory-checkpoint-py-torch-load-unsafe-l136-ast",
  "source": "mining",
  "component": "llamafactory",
@@ -25,7 +25,7 @@
   "package": null,
   "wheel_sha256": null,
   "artifact": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/v1/core/utils/checkpoint.py",
-  "artifact_sha256": "2802a32774cb6dacad64edee4309b225234cecd71edd9c5bd21bdc4f1d2f4cff",
+  "artifact_sha256": "f8457a0e52a66b3aae563d3167deb8230e99f741b4bbfd3ded46362251f40258",
   "advisory": "reports/samples/mining-trainstack/mining-report.json",
   "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
  },
@@ -33,13 +33,13 @@
  "command": "[lfa] lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l136-ast/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 1.836,
- "started_at": "2026-10-26T04:23:56+00:00",
+ "duration_s": 5.622,
+ "started_at": "2026-10-26T19:52:08+00:00",
  "marker": {
-  "text": "TRIDENT-UV-llamafactory-checkpoint-py-torch-load-unsafe-l136-ast",
+  "text": "INKBLADE-UV-llamafactory-checkpoint-py-torch-load-unsafe-l136-ast",
   "before": "ABSENT",
   "after_has_marker": true,
-  "after_sha256": "d2d6f29f4365324b709c4627a95eca117250fba67c4c53627b1ae267df5151f7"
+  "after_sha256": "1ed58b532281584b3b66507750d0381f58500e28ebd6d55bab8fecd73cb91794"
  },
  "request_response": [
   {
@@ -53,28 +53,28 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l136-ast/evidence/ckpt/rng_state/rank_0.pt",
-   "sha256": "583956f90eecd53e9e6bb9053131bcb91d64f00cccc2389ce9a2cf69b3622c4c",
-   "size": 272
+   "sha256": "da206dd21973e729b2c39420405194f9f5bc1391bcd9fb06475a68f33ae74404",
+   "size": 273
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l136-ast/evidence/log.txt",
-   "sha256": "52b5ec885d732e02ecdf42bce092860deb74e7bfcc6553bd92f05711427266e0",
-   "size": 404
+   "sha256": "a81cd106cd4aca09f20a784a78813631934cda72a5b506d217fb6a08627ada6b",
+   "size": 405
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l136-ast/evidence/marker.txt",
-   "sha256": "d2d6f29f4365324b709c4627a95eca117250fba67c4c53627b1ae267df5151f7",
-   "size": 64
+   "sha256": "1ed58b532281584b3b66507750d0381f58500e28ebd6d55bab8fecd73cb91794",
+   "size": 65
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l136-ast/evidence/run.json",
-   "sha256": "d56d6e831333fffaa47188829f1e0b91dfd06679689be7c89b78cddb358be226",
-   "size": 1516
+   "sha256": "ad2dc3406deaead2229cf4fc23f52f41d0743461e900765e45fc876364cdbfa4",
+   "size": 1518
   }
  ],
  "poc_sha256": "41d06c403711e9f481ec6e497a650d7b44d9966b4519bbd2c5f772641b8ebb92",
- "manifest_sha256": "6eb3a48bc444e0c838605385135d8bfac91f62471ad99ac738b9a3bd10d85181",
- "stdout": "{\"status\": \"verified\", \"marker\": \"TRIDENT-UV-llamafactory-checkpoint-py-torch-load-unsafe-l136-ast\", \"evidence\": \"lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l136-ast/evidence\"}\n",
+ "manifest_sha256": "324d0ada90808bcd70caa3c6bcde9f31b26aa43334a93db859ab362862dcbf3e",
+ "stdout": "{\"status\": \"verified\", \"marker\": \"INKBLADE-UV-llamafactory-checkpoint-py-torch-load-unsafe-l136-ast\", \"evidence\": \"lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l136-ast/evidence\"}\n",
  "stderr": "",
  "notes": "LLaMA-Factory v1 resume path restores RNG state with an explicit torch.load(weights_only=False) on <ckpt>/rng_state/rank_<n>.pt. Whoever can write the checkpoint directory (shared NFS, compromised peer rank, supply-chain mirror) gets pickle code execution the next time a victim resumes training. Reproduced at function level against the pinned upstream module from the real installed llamafactory 0.9.5 wheel; the sink itself is the real upstream torch.load call with weights_only=False on torch 2.14."
 }

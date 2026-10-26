@@ -1,5 +1,5 @@
 {
-  "generator": "trident.rules.generate",
+  "generator": "inkblade.rules.generate",
   "generated_at": "<dynamic>",
   "cni_active": "native",
   "cni_variants": [
@@ -851,7 +851,7 @@
           ],
           "subject_sa": {
             "not_in": [
-              "system:serviceaccount:kube-system:trident-break-glass"
+              "system:serviceaccount:kube-system:inkblade-break-glass"
             ]
           }
         },
@@ -4106,11 +4106,11 @@
         "falco"
       ],
       "title": {
-        "zh": "TRIDENT Admin plane unauthorized access",
-        "en": "TRIDENT Admin plane unauthorized access"
+        "zh": "INKBLADE Admin plane unauthorized access",
+        "en": "INKBLADE Admin plane unauthorized access"
       },
       "files": [
-        "falco/trident-rules.yaml"
+        "falco/inkblade-rules.yaml"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4158,11 +4158,11 @@
         "falco"
       ],
       "title": {
-        "zh": "TRIDENT Pickle deserialization in serving/training process",
-        "en": "TRIDENT Pickle deserialization in serving/training process"
+        "zh": "INKBLADE Pickle deserialization in serving/training process",
+        "en": "INKBLADE Pickle deserialization in serving/training process"
       },
       "files": [
-        "falco/trident-rules.yaml"
+        "falco/inkblade-rules.yaml"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4202,11 +4202,11 @@
         "falco"
       ],
       "title": {
-        "zh": "TRIDENT Weight file write by non-training process",
-        "en": "TRIDENT Weight file write by non-training process"
+        "zh": "INKBLADE Weight file write by non-training process",
+        "en": "INKBLADE Weight file write by non-training process"
       },
       "files": [
-        "falco/trident-rules.yaml"
+        "falco/inkblade-rules.yaml"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4246,11 +4246,11 @@
         "falco"
       ],
       "title": {
-        "zh": "TRIDENT Collective communication join by external rank",
-        "en": "TRIDENT Collective communication join by external rank"
+        "zh": "INKBLADE Collective communication join by external rank",
+        "en": "INKBLADE Collective communication join by external rank"
       },
       "files": [
-        "falco/trident-rules.yaml"
+        "falco/inkblade-rules.yaml"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4287,11 +4287,11 @@
         "falco"
       ],
       "title": {
-        "zh": "TRIDENT GPU device mounted across namespaces",
-        "en": "TRIDENT GPU device mounted across namespaces"
+        "zh": "INKBLADE GPU device mounted across namespaces",
+        "en": "INKBLADE GPU device mounted across namespaces"
       },
       "files": [
-        "falco/trident-rules.yaml"
+        "falco/inkblade-rules.yaml"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4330,11 +4330,11 @@
         "falco"
       ],
       "title": {
-        "zh": "TRIDENT Unconventional MIG reconfiguration",
-        "en": "TRIDENT Unconventional MIG reconfiguration"
+        "zh": "INKBLADE Unconventional MIG reconfiguration",
+        "en": "INKBLADE Unconventional MIG reconfiguration"
       },
       "files": [
-        "falco/trident-rules.yaml"
+        "falco/inkblade-rules.yaml"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4369,11 +4369,11 @@
         "falco"
       ],
       "title": {
-        "zh": "TRIDENT AI gateway process reads upstream provider credentials",
-        "en": "TRIDENT AI gateway process reads upstream provider credentials"
+        "zh": "INKBLADE AI gateway process reads upstream provider credentials",
+        "en": "INKBLADE AI gateway process reads upstream provider credentials"
       },
       "files": [
-        "falco/trident-rules.yaml"
+        "falco/inkblade-rules.yaml"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4413,11 +4413,11 @@
         "falco"
       ],
       "title": {
-        "zh": "TRIDENT In-network collective reduce poisoned by external member",
-        "en": "TRIDENT In-network collective reduce poisoned by external member"
+        "zh": "INKBLADE In-network collective reduce poisoned by external member",
+        "en": "INKBLADE In-network collective reduce poisoned by external member"
       },
       "files": [
-        "falco/trident-rules.yaml"
+        "falco/inkblade-rules.yaml"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4451,11 +4451,11 @@
         "falco"
       ],
       "title": {
-        "zh": "TRIDENT Fabric control-plane config mutated by unauthorized subject",
-        "en": "TRIDENT Fabric control-plane config mutated by unauthorized subject"
+        "zh": "INKBLADE Fabric control-plane config mutated by unauthorized subject",
+        "en": "INKBLADE Fabric control-plane config mutated by unauthorized subject"
       },
       "files": [
-        "falco/trident-rules.yaml"
+        "falco/inkblade-rules.yaml"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4495,16 +4495,16 @@
         "falco"
       ],
       "title": {
-        "zh": "TRIDENT Node root proof marker write from privileged container",
-        "en": "TRIDENT Node root proof marker write from privileged container"
+        "zh": "INKBLADE Node root proof marker write from privileged container",
+        "en": "INKBLADE Node root proof marker write from privileged container"
       },
       "files": [
-        "falco/trident-rules.yaml"
+        "falco/inkblade-rules.yaml"
       ],
       "mode": "monitor",
       "tuning": {
-        "zh": "???????? TRIDENT-PROOF???????????? /root?/etc?/var/lib/kubelet ???????????????????????? critical",
-        "en": "Keep TRIDENT-PROOF as the assessment marker; in production include all host-path writes under /root, /etc, /var/lib/kubelet; any privileged container host-path write is critical"
+        "zh": "???????? INKBLADE-PROOF???????????? /root?/etc?/var/lib/kubelet ???????????????????????? critical",
+        "en": "Keep INKBLADE-PROOF as the assessment marker; in production include all host-path writes under /root, /etc, /var/lib/kubelet; any privileged container host-path write is critical"
       },
       "log_source": "Falco syscall/trace events",
       "blocks_modules": [
@@ -4521,7 +4521,7 @@
         ],
         "all": {
           "path": {
-            "re": "TRIDENT-PROOF-"
+            "re": "INKBLADE-PROOF-"
           },
           "privileged": true
         }
@@ -4539,7 +4539,7 @@
         "en": "ML 管理端点 URI 签名（无鉴权管理面访问特征）"
       },
       "files": [
-        "suricata/trident.rules"
+        "suricata/inkblade.rules"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4581,7 +4581,7 @@
         "en": "云元数据出网探测（IMDS 凭据面）"
       },
       "files": [
-        "suricata/trident.rules"
+        "suricata/inkblade.rules"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4629,7 +4629,7 @@
         "en": "集合通信 / KV 传输端口异常流量（NCCL TCPStore、NIXL/Mooncake）"
       },
       "files": [
-        "suricata/trident.rules"
+        "suricata/inkblade.rules"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4675,7 +4675,7 @@
         "en": "长上下文 / PD KV 端点异常访问（prefix cache 复用与 KV 通道写入）"
       },
       "files": [
-        "suricata/trident.rules"
+        "suricata/inkblade.rules"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4719,7 +4719,7 @@
         "en": "GPU 池调度/云租户异常调用（无鉴权分配、跨账户 AssumeRole）"
       },
       "files": [
-        "suricata/trident.rules"
+        "suricata/inkblade.rules"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4759,7 +4759,7 @@
         "en": "AI 网关管理端点访问（key 签发 / 配置 / 控制台）"
       },
       "files": [
-        "suricata/trident.rules"
+        "suricata/inkblade.rules"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4797,7 +4797,7 @@
         "en": "fabric 控制面 URI 异常访问（SHARP/IB SM/PFC/NCCL/调度/健康）"
       },
       "files": [
-        "suricata/trident.rules"
+        "suricata/inkblade.rules"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4845,7 +4845,7 @@
         "en": "缓存面端点 URI 签名（KV 池/近似缓存/残留/路由指标）"
       },
       "files": [
-        "suricata/trident.rules"
+        "suricata/inkblade.rules"
       ],
       "mode": "monitor",
       "tuning": {
@@ -4884,11 +4884,11 @@
         "falco"
       ],
       "title": {
-        "zh": "TRIDENT Agent sandbox host unexpected parent execution",
-        "en": "TRIDENT Agent sandbox host unexpected parent execution"
+        "zh": "INKBLADE Agent sandbox host unexpected parent execution",
+        "en": "INKBLADE Agent sandbox host unexpected parent execution"
       },
       "files": [
-        "falco/trident-rules.yaml"
+        "falco/inkblade-rules.yaml"
       ],
       "mode": "monitor",
       "tuning": {
@@ -5489,7 +5489,7 @@
       "id": "zeroday-agent-sandbox-unexpected-parent-exec",
       "engine": "falco",
       "files": [
-        "falco/trident-rules.yaml"
+        "falco/inkblade-rules.yaml"
       ],
       "related_modules": [
         "dify-local-sandbox-unauth-rce"
@@ -5522,7 +5522,7 @@
     }
   },
   "purple_validation": {
-    "entry": "trident.rules.validate",
+    "entry": "inkblade.rules.validate",
     "artifacts": [
       "coverage-matrix.json",
       "coverage-matrix.md"

@@ -490,7 +490,7 @@ class _InfraHTTPServer(ThreadingHTTPServer):
 
 
 class _InfraHandler(BaseHTTPRequestHandler):
-    server_version = "TridentInfra2026/1.0"
+    server_version = "InkBladeInfra2026/1.0"
 
     def log_message(self, fmt, *args):  # noqa: A003 - 静默，避免测试噪声
         return
@@ -592,7 +592,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE) -> Server:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident 2026 infra 只读仿真（仅 127.0.0.1）")
+    parser = argparse.ArgumentParser(description="InkBlade 2026 infra 只读仿真（仅 127.0.0.1）")
     parser.add_argument("--port", type=int, default=0, help="监听端口（0=自动分配）")
     parser.add_argument("--mode", choices=list(MODES), default=DEFAULT_MODE)
     args = parser.parse_args(argv)

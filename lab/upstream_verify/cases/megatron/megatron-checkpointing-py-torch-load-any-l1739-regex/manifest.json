@@ -39,7 +39,7 @@
  "module": "megatron-checkpoint-rce",
  "python": "torch",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-megatron-checkpointing-py-torch-load-any-l1739-regex",
+ "marker_text": "INKBLADE-UV-megatron-checkpointing-py-torch-load-any-l1739-regex",
  "notes": "torch.load(checkpoint_name, map_location='cpu') with no weights_only pin inside the Megatron-LM checkpoint loader: a poisoned checkpoint directory executes pickle code on resume. Reproduced against the verbatim pinned checkpointing.py; megatron.* siblings stubbed because megatron-core 0.19.x hard-imports triton, torch is real 2.5.1+cpu where weights_only still defaults to False.",
  "static_evidence_level": "source-line",
  "static_analysis": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced.",
@@ -55,6 +55,6 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "megatron"
 }

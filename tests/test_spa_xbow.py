@@ -6,12 +6,12 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.discovery import AssetInventory
-from trident.core.evidence import EvidenceStore
-from trident.webui.export_static import export_static, load_run_data
+from inkblade.core.discovery import AssetInventory
+from inkblade.core.evidence import EvidenceStore
+from inkblade.webui.export_static import export_static, load_run_data
 
 ROOT = Path(__file__).resolve().parent.parent
-STATIC = ROOT / "trident" / "webui" / "static"
+STATIC = ROOT / "inkblade" / "webui" / "static"
 NEW_VIEWS = ("assets", "drift", "approvals", "schedules")
 
 
@@ -63,7 +63,7 @@ class TestStaticExportEmbeds(unittest.TestCase):
             self.assertEqual(data["drift"]["counts"]["new"], 1)
             out = export_static(run.dir, root / "out")
             html = Path(out).read_text(encoding="utf-8")
-            self.assertIn("window.TRIDENT_DATA", html)
+            self.assertIn("window.INKBLADE_DATA", html)
 
     def test_old_run_export_unchanged(self):
         with TemporaryDirectory() as td:

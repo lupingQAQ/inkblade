@@ -32,7 +32,7 @@
       "module": "slime-weight-pull-poison",
       "params": {
         "mode": "backup-write",
-        "marker": "TRIDENT-${run.name}"
+        "marker": "INKBLADE-${run.name}"
       },
       "depends_on": [
         "admin-failopen-probe"

@@ -16,7 +16,7 @@
    "path": "/api/v1/utils/code/execute",
    "auth": "none",
    "body": {
-    "code": "print('TRIDENT-BENIGN')"
+    "code": "print('INKBLADE-BENIGN')"
    }
   }
  ],

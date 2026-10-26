@@ -1,5 +1,5 @@
 {
-  "schema": "trident.oss-bench.llm-cases/1",
+  "schema": "inkblade.oss-bench.llm-cases/1",
   "cases": [
     {
       "id": "benign-1",

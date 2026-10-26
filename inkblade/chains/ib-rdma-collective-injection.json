@@ -24,7 +24,7 @@
     {
       "id": "collective-join",
       "module": "nccl-collective-join",
-      "params": {"mode": "backup-write", "tensor": "marker", "marker": "TRIDENT-${run.name}"},
+      "params": {"mode": "backup-write", "tensor": "marker", "marker": "INKBLADE-${run.name}"},
       "depends_on": ["rdma-bypass-proof"],
       "writes": true,
       "backup_targets": [

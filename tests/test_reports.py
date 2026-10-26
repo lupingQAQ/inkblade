@@ -5,9 +5,9 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.reports import cvss
-from trident.reports.render import render_pentest, render_remediation
+from inkblade.core.evidence import EvidenceStore
+from inkblade.reports import cvss
+from inkblade.reports.render import render_pentest, render_remediation
 
 # CVSS 3.1 官方示例向量（FIRST example-vectors / 规范附录）→ 精确基础分
 CVSS_CASES = [
@@ -202,7 +202,7 @@ class TestRenderRemediation(unittest.TestCase):
 
     def test_baseline_json_structure(self):
         data = json.loads(
-            (Path(__file__).parent.parent / "trident" / "reports" / "baseline.json").read_text(encoding="utf-8")
+            (Path(__file__).parent.parent / "inkblade" / "reports" / "baseline.json").read_text(encoding="utf-8")
         )
         prios = {p["key"] for p in data["priorities"]}
         self.assertEqual(prios, {"immediate", "short", "mid"})

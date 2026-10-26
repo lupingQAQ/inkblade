@@ -14,17 +14,17 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.backup import BackupManager
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import init_roe
+from inkblade.core.backup import BackupManager
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import init_roe
 
 REPO = Path(__file__).resolve().parents[1]
 PY = sys.executable
-CHAINS = REPO / "trident" / "chains"
+CHAINS = REPO / "inkblade" / "chains"
 
 
 def _cli(home: Path, *args: str, timeout: int = 120):
-    return subprocess.run([PY, "-m", "trident", "--home", str(home), *args],
+    return subprocess.run([PY, "-m", "inkblade", "--home", str(home), *args],
                           cwd=str(REPO), capture_output=True, timeout=timeout,
                           env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
 

@@ -1,7 +1,7 @@
 """client — 仅标准库的计时 HTTP 客户端（延迟扫掠/并发扫掠共用）。
 
 - request_once(): 单请求 → (status, ms, bytes, body, err)；流式端点读首块后即关（SSE 只计首响应）。
-- login(): Trident POST /api/login {name,password}→{token,role}；
+- login(): InkBlade POST /api/login {name,password}→{token,role}；
   ARTEX  POST /api/auth/login {username,password}→{token}。返回 Bearer 头字典。
 """
 from __future__ import annotations
@@ -59,8 +59,8 @@ def request_once(url: str, *, method: str = "GET", body: dict | None = None,
 
 def login(base_url: str, kind: str, name: str, password: str,
           timeout_s: float = 10.0) -> tuple[str | None, dict]:
-    """登录拿 Bearer。kind='trident'（/api/login）或 'artex'（/api/auth/login）。"""
-    if kind == "trident":
+    """登录拿 Bearer。kind='inkblade'（/api/login）或 'artex'（/api/auth/login）。"""
+    if kind == "inkblade":
         path, payload = "/api/login", {"name": name, "password": password}
     else:
         path, payload = "/api/auth/login", {"username": name, "password": password}

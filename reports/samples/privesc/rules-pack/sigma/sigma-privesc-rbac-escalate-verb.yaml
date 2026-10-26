@@ -7,12 +7,12 @@ references:
   - "Kubernetes RBAC 文档 https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
   - "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
   - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: rbac-escalate-verb
-    trident.io/module: rbac-escalate-verb
+    inkblade.io/vector: rbac-escalate-verb
+    inkblade.io/module: rbac-escalate-verb
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -32,16 +32,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.rbac
+  - inkblade
+  - inkblade.vector.rbac
   - attack.t1098
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: rbac-escalate-verb
-  trident-module: rbac-escalate-verb
-  trident-detection-point: "K8s audit：update/patch clusterroles/roles 且新 rules.verbs 含 *"
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: rbac-escalate-verb
+  inkblade-module: rbac-escalate-verb
+  inkblade-detection-point: "K8s audit：update/patch clusterroles/roles 且新 rules.verbs 含 *"
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

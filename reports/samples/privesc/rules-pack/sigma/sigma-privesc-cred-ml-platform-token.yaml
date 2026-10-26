@@ -8,12 +8,12 @@ references:
   - "Weights & Biases 服务账号/密钥 https://docs.wandb.ai/guides/technical-faq"
   - "MLflow 认证/安全 https://mlflow.org/docs/latest/auth/index.html"
   - "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: cred-ml-platform-token
-    trident.io/module: supply-chain-credential-theft
+    inkblade.io/vector: cred-ml-platform-token
+    inkblade.io/module: supply-chain-credential-theft
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -32,17 +32,17 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.credential
+  - inkblade
+  - inkblade.vector.credential
   - attack.t1552
   - attack.t1195
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: cred-ml-platform-token
-  trident-module: supply-chain-credential-theft
-  trident-detection-point: K8s audit：读取标注 ml-platform-token 的 Secret；平台侧审计 token 写入
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: cred-ml-platform-token
+  inkblade-module: supply-chain-credential-theft
+  inkblade-detection-point: K8s audit：读取标注 ml-platform-token 的 Secret；平台侧审计 token 写入
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

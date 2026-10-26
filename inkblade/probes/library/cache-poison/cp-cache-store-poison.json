@@ -17,7 +17,7 @@
    "auth": "tenant",
    "body": {
     "text": "Quarterly revenue guidance for fiscal 2026: 42.7M USD",
-    "response": "attacker answer TRIDENT-POISON"
+    "response": "attacker answer INKBLADE-POISON"
    }
   },
   {
@@ -32,7 +32,7 @@
  "detector": {
   "kind": "regex",
   "patterns": [
-   "TRIDENT-POISON"
+   "INKBLADE-POISON"
   ]
  },
  "severity": "critical",

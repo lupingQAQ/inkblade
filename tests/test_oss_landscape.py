@@ -56,7 +56,7 @@ class TestLandscapeJson(unittest.TestCase):
         cls.data = load_json()
 
     def test_schema_and_generated_date(self) -> None:
-        self.assertEqual(self.data["schema"], "trident.oss-ml-cluster-tools/1")
+        self.assertEqual(self.data["schema"], "inkblade.oss-ml-cluster-tools/1")
         self.assertTrue(re.fullmatch(r"\d{4}-\d{2}-\d{2}", self.data["generated"]))
 
     def test_categories_cover_five_groups_plus_reference(self) -> None:
@@ -95,13 +95,13 @@ class TestLandscapeJson(unittest.TestCase):
         dims = [d["key"] for d in self.data["dimensions"]]
         for t in self.data["tools"]:
             for field in ("id", "name", "category", "upstream", "license",
-                          "activity", "local_runnable", "dims", "trident_overlap", "source"):
+                          "activity", "local_runnable", "dims", "inkblade_overlap", "source"):
                 self.assertIn(field, t, f"{t.get('id')} missing {field}")
             self.assertTrue(t["upstream"].startswith("http"), f"{t['id']} upstream must be a URL")
             self.assertTrue(t["license"].strip())
             self.assertIn(t["local_runnable"]["status"], {"yes", "limited", "no"})
             self.assertTrue(t["local_runnable"]["note"].strip())
-            self.assertTrue(t["trident_overlap"].strip())
+            self.assertTrue(t["inkblade_overlap"].strip())
             self.assertTrue(t["source"].strip(), f"{t['id']} must record its verification source")
             # dims: exactly the dimension keys, only known markers
             self.assertEqual(set(t["dims"]), set(dims))
@@ -198,7 +198,7 @@ class TestLandscapeDocConsistency(unittest.TestCase):
         # every backlog row maps to a module/function key
         for line in backlog.splitlines():
             if line.startswith("| OSS-"):
-                self.assertRegex(line, r"trident[/\\][\w/.:-]+")
+                self.assertRegex(line, r"inkblade[/\\][\w/.:-]+")
 
     def test_clone_registry_notes(self) -> None:
         self.assertIn("8 个浅克隆", self.md)
@@ -246,7 +246,7 @@ class TestBenchArtifacts(unittest.TestCase):
         cls.bench_md = BENCH_MD.read_text(encoding="utf-8")
 
     def test_summary_schema(self) -> None:
-        self.assertEqual(self.summary["schema"], "trident.oss-bench/1")
+        self.assertEqual(self.summary["schema"], "inkblade.oss-bench/1")
         self.assertIn("generated_at", self.summary)
         self.assertIn("host", self.summary)
         self.assertGreaterEqual(len(self.summary["results"]), 10)

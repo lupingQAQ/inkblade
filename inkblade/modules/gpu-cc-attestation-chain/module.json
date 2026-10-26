@@ -5,7 +5,7 @@
     "en": "GPU confidential-computing attestation chain (NRAS JWKS + nonce + claims)"
   },
   "series": "侦察",
-  "description": "只读核验 NVIDIA NRAS 风格 attestation JWT：JWKS 结构、RS256/ES384/ES256 验签、exp/nbf/iat/iss/aud/eat_nonce/dbgstat/secboot/overall-att-result/版本下限，支持 detached EAT token 列表与 expected_claims 固定。复用 trident/tee 在线校验器；不把 fixture 自签样本冒充 NRAS 生产证明。",
+  "description": "只读核验 NVIDIA NRAS 风格 attestation JWT：JWKS 结构、RS256/ES384/ES256 验签、exp/nbf/iat/iss/aud/eat_nonce/dbgstat/secboot/overall-att-result/版本下限，支持 detached EAT token 列表与 expected_claims 固定。复用 inkblade/tee 在线校验器；不把 fixture 自签样本冒充 NRAS 生产证明。",
   "min_level": "只读侦察",
   "writes": false,
   "requires": [],
@@ -21,7 +21,7 @@
   ],
   "params_schema": {
     "evidence": "{\"token\"/\"tokens\"/\"overall\": NRAS JWT, \"jwks\": dict/path/\"cache\"/\"live\", \"expected_nonce\": hex, \"expected_claims\": {...}} 或 JSON 路径",
-    "jwks": "可选 JWKS dict/路径/cache/live；缺省读 trident/tee/online_cache",
+    "jwks": "可选 JWKS dict/路径/cache/live；缺省读 inkblade/tee/online_cache",
     "expected_nonce": "证明请求的 32 字节随机数（hex/字符串）",
     "issuer": "默认 https://nras.attestation.nvidia.com",
     "audience": "默认 nras",

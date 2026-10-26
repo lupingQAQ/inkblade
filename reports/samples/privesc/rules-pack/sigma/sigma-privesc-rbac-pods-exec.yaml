@@ -7,12 +7,12 @@ references:
   - "Kubernetes RBAC 文档 https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
   - "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
   - "Peirates Kubernetes 提权 https://github.com/inguardians/peirates"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: rbac-pods-exec
-    trident.io/module: overprivileged-sa-escalation
+    inkblade.io/vector: rbac-pods-exec
+    inkblade.io/module: overprivileged-sa-escalation
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -29,17 +29,17 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.rbac
+  - inkblade
+  - inkblade.vector.rbac
   - attack.t1610
   - attack.t1611
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: rbac-pods-exec
-  trident-module: overprivileged-sa-escalation
-  trident-detection-point: K8s audit：create pods/exec
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: rbac-pods-exec
+  inkblade-module: overprivileged-sa-escalation
+  inkblade-detection-point: K8s audit：create pods/exec
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

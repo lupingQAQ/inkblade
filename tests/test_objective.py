@@ -16,9 +16,9 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.abort import request_abort
-from trident.core.evidence import EvidenceStore
-from trident.core.objective import (
+from inkblade.core.abort import request_abort
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.objective import (
     CHAIN_ID,
     FakeKubectlBackend,
     GateRefused,
@@ -27,11 +27,11 @@ from trident.core.objective import (
     render_report,
     run_objective,
 )
-from trident.core.roe import init_roe
-from trident.core.users import Session
+from inkblade.core.roe import init_roe
+from inkblade.core.users import Session
 
 REPO = Path(__file__).resolve().parents[1]
-CHAINS = REPO / "trident" / "chains"
+CHAINS = REPO / "inkblade" / "chains"
 
 
 def _session(role: str = "lead") -> Session:
@@ -51,7 +51,7 @@ class ObjectiveBase(unittest.TestCase):
         self.store = EvidenceStore(self.home, workspace="local-lab")
         init_roe(self.store, {
             "level": "全影响演示",
-            "namespaces": ["trident-killchain"],
+            "namespaces": ["inkblade-killchain"],
             "cidrs": ["127.0.0.1/32", "10.0.0.0/8"],
             "window": "2026-01-01 – 2026-12-31",
         })
@@ -91,7 +91,7 @@ class TestObjectiveDefinition(ObjectiveBase):
             self.assertIn("read-only", gate["status"])
 
     def test_chain_catalog_still_valid(self):
-        from trident.core.chains import load_chains
+        from inkblade.core.chains import load_chains
 
         chains = load_chains(CHAINS)
         self.assertIn(CHAIN_ID, chains)
@@ -102,16 +102,16 @@ class TestGates(ObjectiveBase):
     def test_missing_consent_refused(self):
         store = EvidenceStore(self.home, workspace="no-consent")
         with self.assertRaises(GateRefused) as ctx:
-            check_gates(store, self.session, self.chain, "trident-killchain")
+            check_gates(store, self.session, self.chain, "inkblade-killchain")
         self.assertEqual(ctx.exception.exit_code, 91)
         self.assertIn("授权", str(ctx.exception))
 
     def test_level_below_full_impact_refused(self):
         store = EvidenceStore(self.home, workspace="low-level")
-        init_roe(store, {"level": "利用验证", "namespaces": ["trident-killchain"],
+        init_roe(store, {"level": "利用验证", "namespaces": ["inkblade-killchain"],
                          "cidrs": ["127.0.0.1/32"]})
         with self.assertRaises(GateRefused) as ctx:
-            check_gates(store, self.session, self.chain, "trident-killchain")
+            check_gates(store, self.session, self.chain, "inkblade-killchain")
         self.assertIn("全影响演示", str(ctx.exception))
 
     def test_namespace_out_of_scope_refused(self):
@@ -121,9 +121,9 @@ class TestGates(ObjectiveBase):
 
     def test_auto_approve_only_for_lead_full_impact(self):
         with self.assertRaises(GateRefused):
-            check_gates(self.store, _session("tester"), self.chain, "trident-killchain",
+            check_gates(self.store, _session("tester"), self.chain, "inkblade-killchain",
                         auto_approve=True)
-        gates = check_gates(self.store, self.session, self.chain, "trident-killchain",
+        gates = check_gates(self.store, self.session, self.chain, "inkblade-killchain",
                             auto_approve=True)
         self.assertTrue(gates["auto_approve_allowed"])
         self.assertTrue(all(g["status"] == "pass" for g in gates["gates"]))
@@ -134,13 +134,13 @@ class TestGates(ObjectiveBase):
             if stage["index"] == 3:
                 stage["backup_targets"] = []
         with self.assertRaises(GateRefused) as ctx:
-            check_gates(self.store, self.session, chain, "trident-killchain")
+            check_gates(self.store, self.session, chain, "inkblade-killchain")
         self.assertIn("备份", str(ctx.exception))
 
     def test_emergency_stop_refused(self):
         request_abort(self.store, "lead-user", "test stop")
         with self.assertRaises(GateRefused) as ctx:
-            check_gates(self.store, self.session, self.chain, "trident-killchain")
+            check_gates(self.store, self.session, self.chain, "inkblade-killchain")
         self.assertIn("紧急停止", str(ctx.exception))
 
 
@@ -152,7 +152,7 @@ class TestExecution(ObjectiveBase):
         started = time.time()
         result = run_objective(
             self.store, self.session, self.chain, backend,
-            proof_marker="unit-full", namespace="trident-killchain",
+            proof_marker="unit-full", namespace="inkblade-killchain",
             auto_approve=True, out_dir=out,
         )
         self.assertTrue(result["ok"], json.dumps(result, ensure_ascii=False)[:2000])
@@ -187,12 +187,12 @@ class TestExecution(ObjectiveBase):
         self.assertTrue((run.dir / "objective-proof.json").is_file())
         self.assertGreaterEqual(len(run.findings), 5)
         # idempotent cleanup: no test ns, no pwn objects, no node file
-        self.assertNotIn("trident-proof-unit-full", backend.state["namespaces"])
-        self.assertFalse(any("trident-pwn" in k for k in backend.state["clusterrolebindings"]))
-        self.assertFalse(any("trident-pwn" in k for k in backend.state["rolebindings"]))
+        self.assertNotIn("inkblade-proof-unit-full", backend.state["namespaces"])
+        self.assertFalse(any("inkblade-pwn" in k for k in backend.state["clusterrolebindings"]))
+        self.assertFalse(any("inkblade-pwn" in k for k in backend.state["rolebindings"]))
         self.assertEqual(backend.node_files, {})
         # entry service was pre-existing and must not be deleted
-        self.assertIn("trident-proof/mock-target", backend.state["services"])
+        self.assertIn("inkblade-proof/mock-target", backend.state["services"])
         self.assertLess(time.time() - started, 20)
 
     def test_partial_run_forces_cleanup(self):
@@ -271,7 +271,7 @@ class TestObjectiveCli(unittest.TestCase):
         self.home = Path(self.tmp.name)
         store = EvidenceStore(self.home, workspace="local-lab")
         init_roe(store, {"level": "全影响演示",
-                         "namespaces": ["trident-killchain"],
+                         "namespaces": ["inkblade-killchain"],
                          "cidrs": ["127.0.0.1/32"]})
 
     def tearDown(self):
@@ -280,7 +280,7 @@ class TestObjectiveCli(unittest.TestCase):
     def _run(self, *args: str):
         import subprocess
         import sys
-        return subprocess.run([sys.executable, "-m", "trident", "--home", str(self.home), *args],
+        return subprocess.run([sys.executable, "-m", "inkblade", "--home", str(self.home), *args],
                               cwd=str(REPO), capture_output=True, timeout=120)
 
     def test_cli_dry_run_then_fake_run(self):

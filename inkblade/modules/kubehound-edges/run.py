@@ -133,7 +133,7 @@ def analyze(snapshot: dict, params: dict) -> list[dict]:
     for node in section(snapshot, "nodes"):
         runc = str(node.get("runc", ""))
         try:
-            from trident.kubetrail.lpe import version_lt
+            from inkblade.kubetrail.lpe import version_lt
         except Exception:  # 独立加载（无包上下文）时跳过精确版本判定
             version_lt = None
         if runc and version_lt is not None and version_lt(runc, "1.1.12"):

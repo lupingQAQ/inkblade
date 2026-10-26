@@ -7,12 +7,12 @@ references:
   - "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
   - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
   - "CDK 容器逃逸工具集 https://github.com/cdk-team/CDK"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: workload-dangerous-caps
-    trident.io/module: privileged-workloads
+    inkblade.io/vector: workload-dangerous-caps
+    inkblade.io/module: privileged-workloads
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -33,16 +33,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.workload
+  - inkblade
+  - inkblade.vector.workload
   - attack.t1611
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: workload-dangerous-caps
-  trident-module: privileged-workloads
-  trident-detection-point: K8s audit：create pod 且 capabilities 含 SYS_ADMIN/SYS_PTRACE/SYS_MODULE
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: workload-dangerous-caps
+  inkblade-module: privileged-workloads
+  inkblade-detection-point: K8s audit：create pod 且 capabilities 含 SYS_ADMIN/SYS_PTRACE/SYS_MODULE
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

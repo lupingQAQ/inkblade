@@ -6,12 +6,12 @@ description: 向运行中 Pod 注入 ephemeral container，复用目标 Pod 的 
 references:
   - "Kubernetes Ephemeral Containers https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/"
   - "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: workload-ephemeral-container
-    trident.io/module: privileged-workloads
+    inkblade.io/vector: workload-ephemeral-container
+    inkblade.io/module: privileged-workloads
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -30,17 +30,17 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.workload
+  - inkblade
+  - inkblade.vector.workload
   - attack.t1610
   - attack.t1611
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: workload-ephemeral-container
-  trident-module: privileged-workloads
-  trident-detection-point: K8s audit：update pods/ephemeralcontainers
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: workload-ephemeral-container
+  inkblade-module: privileged-workloads
+  inkblade-detection-point: K8s audit：update pods/ephemeralcontainers
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

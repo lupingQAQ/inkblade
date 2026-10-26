@@ -9,15 +9,15 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core import poc
-from trident.core.backup import BackupManager
-from trident.core.evidence import EvidenceStore
-from trident.core.registry import load_modules
-from trident.core.roe import init_roe
-from trident.core.runner import run_module
-from trident.core.users import Session
+from inkblade.core import poc
+from inkblade.core.backup import BackupManager
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.registry import load_modules
+from inkblade.core.roe import init_roe
+from inkblade.core.runner import run_module
+from inkblade.core.users import Session
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 
 
 def _session(role="tester"):
@@ -41,7 +41,7 @@ class TestVerificationBlock(unittest.TestCase):
     def test_build_verification_shape(self):
         v = poc.build_verification("some-write-module", {"target": "http://x"},
                                    {"summary": "done", "artifacts": ["/tmp/a.json"]})
-        self.assertEqual(v["schema"], "trident-poc-verification-v1")
+        self.assertEqual(v["schema"], "inkblade-poc-verification-v1")
         self.assertEqual(len(v["steps"]), 4)
         self.assertIn("result_sha256", v["expected_evidence"])
         self.assertIn("rollback", v["expected_evidence"])

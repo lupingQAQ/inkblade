@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""`trident pilot` 试点模式契约测试。
+"""`inkblade pilot` 试点模式契约测试。
 
 覆盖：
 - kubeconfig 多文件/多 context/多 cluster 合并与冲突记录（stdlib YAML 解析路径）；
@@ -20,10 +20,10 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import init_roe
-from trident.core.users import Session
-from trident.pilot import (
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import init_roe
+from inkblade.core.users import Session
+from inkblade.pilot import (
     PilotGateRefused,
     build_plan,
     build_profile,
@@ -303,7 +303,7 @@ class TestRunPilot(unittest.TestCase):
             "    print(json.dumps({'items':[]}))\n",
             encoding="utf-8",
         )
-        from trident.pilot import KubectlCollector
+        from inkblade.pilot import KubectlCollector
 
         collector = KubectlCollector([PY, str(script)])
         snap = collector.collect(self.kube_a, "east-prod")
@@ -318,7 +318,7 @@ class TestRunPilot(unittest.TestCase):
                 self.assertNotIn(forbidden, call["argv"])
 
     def test_cli_read_only_and_write_gate(self):
-        cmd = [PY, "-m", "trident", "--home", str(self.root / "home"), "pilot",
+        cmd = [PY, "-m", "inkblade", "--home", str(self.root / "home"), "pilot",
                "--kubeconfig", str(self.kube_a), "--kubeconfig", str(self.kube_b),
                "--snapshot", str(FIXTURES / "clusters" / "east-prod.json"),
                "--snapshot", str(FIXTURES / "clusters" / "west-prod.json"),

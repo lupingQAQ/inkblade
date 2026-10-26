@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "llamafactory-loader-py-missing-revision-l186-regex",
  "source": "mining",
  "component": "llamafactory",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-missing-revision-l186-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.142,
- "started_at": "2026-10-26T09:23:27+00:00",
+ "duration_s": 0.291,
+ "started_at": "2026-10-26T19:52:34+00:00",
  "marker": {
-  "text": "TRIDENT-UV-llamafactory-loader-py-missing-revision-l186-regex",
+  "text": "INKBLADE-UV-llamafactory-loader-py-missing-revision-l186-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-missing-revision-l186-regex/evidence/log.txt",
-   "sha256": "744e32f033a1f6c844b66a58c9f72ea9ae0cd0e6f7c6d3c1ed3859142fd2c764",
+   "sha256": "95d35344b49438abe86405aefe4d97fc20f0b69fdc530c7792b23a9fafec0a0f",
    "size": 276
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-missing-revision-l186-regex/evidence/static-check.json",
-   "sha256": "588b965bce90aee9b31de45cea2783bfbcb514d2dea53c8a034f709775860383",
-   "size": 1182
+   "sha256": "87b291f83c4a3b5d04ddc8e0e879391b47c479b0ae454460c049cacc7bbc9938",
+   "size": 1183
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "d61120112b62cc4418addfffccf9abd5b2068149c1b872ab34169be6852d46f9",
+ "manifest_sha256": "f102e910fc7cf172e44c9fa5031d06bba2aa5708f341bb0c3ecf0b302b72a10f",
  "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-loader-py-missing-revision-l186-regex\"}\n",
  "stderr": "",
  "notes": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."

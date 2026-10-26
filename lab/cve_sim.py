@@ -74,7 +74,7 @@ class _Ctx:
     def marker_file(self, *parts: str, marker: str, extra: dict | None = None) -> dict:
         path = self.root.joinpath(*parts)
         path.parent.mkdir(parents=True, exist_ok=True)
-        payload = {"service": "trident-cve-sim", "mode": self.mode, "marker": marker,
+        payload = {"service": "inkblade-cve-sim", "mode": self.mode, "marker": marker,
                    "created_at": _now(), **(extra or {})}
         text = json.dumps(payload, ensure_ascii=False, indent=2)
         path.write_text(text, encoding="utf-8")
@@ -86,8 +86,8 @@ class _Ctx:
 # ---------------------------------------------------------------------------
 
 def _ray_submit(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
-    entrypoint = str(ctx.body.get("entrypoint") or "python -c print('trident')")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
+    entrypoint = str(ctx.body.get("entrypoint") or "python -c print('inkblade')")
     job_id = "raysubmit-" + uuid.uuid4().hex
     info = ctx.marker_file("ray", "jobs", f"{job_id}.marker", marker=marker,
                            extra={"job_id": job_id, "entrypoint": entrypoint})
@@ -105,7 +105,7 @@ def _ray_dashboard(ctx: _Ctx):
 
 
 def _sglang_zmq(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     payload = str(ctx.body.get("payload_b64") or "")
     rid = uuid.uuid4().hex[:12]
     info = ctx.marker_file("sglang", "zmq", f"{rid}.marker", marker=marker,
@@ -114,7 +114,7 @@ def _sglang_zmq(ctx: _Ctx):
 
 
 def _sglang_route(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     rank_ip = str(ctx.body.get("rank_ip") or "127.0.0.1")
     rank_port = int(ctx.body.get("rank_port") or 29400)
     info = ctx.marker_file("sglang", "route-poison.marker", marker=marker,
@@ -135,14 +135,14 @@ def _sglang_info(ctx: _Ctx):
 
 
 def _sglang_weights(ctx: _Ctx):
-    marker = str(ctx.query.get("marker", ["TRIDENT-BENIGN"])[0])
+    marker = str(ctx.query.get("marker", ["INKBLADE-BENIGN"])[0])
     return 200, {"ok": True, "tensors": 3, "dtype": "bfloat16",
                  "blob_b64": base64.b64encode((marker + "\n").encode()).decode(),
                  "marker": marker, "exfiltrated": True}
 
 
 def _vllm_mooncake(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     rid = uuid.uuid4().hex[:12]
     info = ctx.marker_file("vllm", "mooncake", f"{rid}.marker", marker=marker,
                            extra={"socket": "0.0.0.0:29500", "pickle": True})
@@ -185,7 +185,7 @@ def _litellm_config_update(ctx: _Ctx):
         return 403, {"error": "proxy_admin_required", "service": "litellm", "role": "internal_user"}
     if not key:
         return 401, {"error": "unauthorized", "service": "litellm"}
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     rid = uuid.uuid4().hex[:12]
     info = ctx.marker_file("litellm", "config", f"{rid}.marker", marker=marker,
                            extra={"handler": "attacker-passthrough", "role": "internal_user"})
@@ -258,7 +258,7 @@ def _sonic_get(ctx: _Ctx):
 
 
 def _sonic_write(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     cfg = ctx.body.get("config") or {"hostname": "attacker-leaf"}
     rid = uuid.uuid4().hex[:12]
     info = ctx.marker_file("sonic", "config", f"{rid}.marker", marker=marker, extra={"config": cfg})
@@ -269,7 +269,7 @@ def _sonic_write(ctx: _Ctx):
 
 
 def _sonic_rsyslog(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     value = str(ctx.body.get("welf_firewall_name") or "")
     if ctx.mode == "fixed":
         return 400, {"error": "unsafe_rsyslog_value_rejected", "service": "sonic"}
@@ -287,7 +287,7 @@ def _cumulus_get(ctx: _Ctx):
 
 
 def _cumulus_write(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     command = str(ctx.body.get("command") or "nv config show")
     rid = uuid.uuid4().hex[:12]
     info = ctx.marker_file("cumulus", "nvue", f"{rid}.marker", marker=marker,
@@ -301,7 +301,7 @@ def _dify_features(ctx: _Ctx):
 
 
 def _dify_code(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     code = str(ctx.body.get("code") or "return 1")
     rid = uuid.uuid4().hex[:12]
     info = ctx.marker_file("dify", "code-node", f"{rid}.marker", marker=marker,
@@ -310,7 +310,7 @@ def _dify_code(ctx: _Ctx):
 
 
 def _openwebui_batch(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     file_id = _safe(ctx.body.get("file_id") or "file-1")
     content = str(ctx.body.get("content") or marker)
     path = ctx.root / "openwebui" / "files" / f"{file_id}.marker"
@@ -322,7 +322,7 @@ def _openwebui_batch(ctx: _Ctx):
 
 
 def _mlflow_trace(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     trace_id = str(ctx.body.get("trace_id") or "tr-1")
     if ctx.mode == "fixed" and (".." in trace_id or trace_id.startswith("/")):
         return 400, {"error": "path_traversal_rejected", "service": "mlflow"}
@@ -335,7 +335,7 @@ def _mlflow_trace(ctx: _Ctx):
 
 
 def _mlflow_model(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     source = str(ctx.body.get("source") or "http://attacker.invalid/model")
     rid = uuid.uuid4().hex[:12]
     info = ctx.marker_file("mlflow", "models", f"{rid}.marker", marker=marker,
@@ -344,7 +344,7 @@ def _mlflow_model(ctx: _Ctx):
 
 
 def _megatron_load(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     path = str(ctx.body.get("path") or "checkpoints/iter_1000")
     rid = uuid.uuid4().hex[:12]
     info = ctx.marker_file("megatron", "checkpoints", f"{rid}.marker", marker=marker,
@@ -353,7 +353,7 @@ def _megatron_load(ctx: _Ctx):
 
 
 def _deepspeed_load(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     path = str(ctx.body.get("path") or "ds_config.json")
     rid = uuid.uuid4().hex[:12]
     info = ctx.marker_file("deepspeed", "checkpoints", f"{rid}.marker", marker=marker,
@@ -362,7 +362,7 @@ def _deepspeed_load(ctx: _Ctx):
 
 
 def _torch_load(ctx: _Ctx):
-    marker = str(ctx.body.get("marker") or "TRIDENT-BENIGN")
+    marker = str(ctx.body.get("marker") or "INKBLADE-BENIGN")
     path = str(ctx.body.get("path") or "model.pt")
     rid = uuid.uuid4().hex[:12]
     info = ctx.marker_file("torch", "loads", f"{rid}.marker", marker=marker,
@@ -491,7 +491,7 @@ class _Server(ThreadingHTTPServer):
 
 class _Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "TridentCveSim/1.0"
+    server_version = "InkBladeCveSim/1.0"
 
     def log_message(self, fmt, *args):
         return
@@ -536,7 +536,7 @@ class _Handler(BaseHTTPRequestHandler):
         split = urlsplit(self.path)
         norm = split.path.rstrip("/") or "/"
         if norm == "/__routes__":
-            self._send(200, {"service": "trident-cve-sim", "mode": self.server.mode,
+            self._send(200, {"service": "inkblade-cve-sim", "mode": self.server.mode,
                              "routes": [{k: v for k, v in e.items() if k != "behavior"}
                                         for e in ROUTE_TABLE]})
             return
@@ -602,7 +602,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE, root: Path | str | None =
     if mode not in MODES:
         raise ValueError(f"mode 必须是 {MODES} 之一，收到 {mode!r}")
     if root is None:
-        root_path = Path(tempfile.mkdtemp(prefix="trident-cve-sim-"))
+        root_path = Path(tempfile.mkdtemp(prefix="inkblade-cve-sim-"))
         owns = True
     else:
         root_path = Path(root)
@@ -619,7 +619,7 @@ def main(argv=None) -> int:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
-    parser = argparse.ArgumentParser(description="Trident CVE 武器化 mock 靶场（仅 127.0.0.1）")
+    parser = argparse.ArgumentParser(description="InkBlade CVE 武器化 mock 靶场（仅 127.0.0.1）")
     parser.add_argument("--port", type=int, default=0)
     parser.add_argument("--mode", choices=list(MODES), default=DEFAULT_MODE)
     parser.add_argument("--root", default=None)

@@ -11,11 +11,11 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.registry import LEVELS, SERIES, load_modules
+from inkblade.core.registry import LEVELS, SERIES, load_modules
 
 REPO = Path(__file__).resolve().parents[1]
-SCRIPT = REPO / "trident" / "verify-effects.py"
-MODULES_DIR = REPO / "trident" / "modules"
+SCRIPT = REPO / "inkblade" / "verify-effects.py"
+MODULES_DIR = REPO / "inkblade" / "modules"
 INFRA_IDS = {
     "infra2026-coco-attestation-mismatch",
     "infra2026-spire-wildcard-identity",
@@ -48,7 +48,7 @@ def _sanitized_modules(root: Path) -> Path:
 
 def load_verify():
     import importlib.util
-    spec = importlib.util.spec_from_file_location("trident_verify_effects_infra", SCRIPT)
+    spec = importlib.util.spec_from_file_location("inkblade_verify_effects_infra", SCRIPT)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod

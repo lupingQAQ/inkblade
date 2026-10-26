@@ -58,7 +58,7 @@ class ApprovalChain:
                 raise ApprovalError(f"审批文件损坏：{self.path}")
             if isinstance(doc, dict) and isinstance(doc.get("approvals"), list):
                 return doc
-        return {"schema": "trident-approval-chain/1", "approvals": []}
+        return {"schema": "inkblade-approval-chain/1", "approvals": []}
 
     def _save(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)

@@ -3,8 +3,8 @@
 
 设计原则：
 - **真实端点优先**：`fetch_*` 走 HTTPS；响应（含签名链）可缓存到
-  `trident/tee/online_cache/`，离线时对同一份官方样本复验并标注 `source=cache`。
-- 密码学校验全部本地完成（标准库 + `trident.tee`），不依赖厂商 SDK。
+  `inkblade/tee/online_cache/`，离线时对同一份官方样本复验并标注 `source=cache`。
+- 密码学校验全部本地完成（标准库 + `inkblade.tee`），不依赖厂商 SDK。
 - 不把「HTTP 200」当作「可信」：Intel TCB JSON 的 ECDSA 签名、AMD ASK/ARK/VCEK/CRL
   的 RSA-PSS 签名、NVIDIA JWT 的 RS256 都必须验过，并做有效期/吊销/降级策略判断。
 
@@ -68,7 +68,7 @@ class OnlineError(ValueError):
 
 
 def _http_get(url: str, headers: dict | None = None, timeout: float = 30) -> tuple[int, dict, bytes]:
-    req = urllib.request.Request(url, headers=headers or {"User-Agent": "trident-tee-online/2026"})
+    req = urllib.request.Request(url, headers=headers or {"User-Agent": "inkblade-tee-online/2026"})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             return resp.status, dict(resp.headers), resp.read()
@@ -531,7 +531,7 @@ def verify_all_cached(*, now: datetime | None = None,
                       intel_now: datetime | None = None) -> dict:
     """对缓存的三家官方样本做离线复验（用于报告/CI，不联网）。"""
     now = now or datetime.now(timezone.utc)
-    out: dict[str, Any] = {"schema": "trident-tee-online-verdict/2026-10",
+    out: dict[str, Any] = {"schema": "inkblade-tee-online-verdict/2026-10",
                            "checked_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
                            "source": "online_cache (official samples fetched 2026-10-25)"}
     intel = cached_intel_tcb()

@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-ast",
  "target": "transformers",
  "repo": "huggingface/transformers",

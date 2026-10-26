@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "trl-data-utils-py-apply-chat-template-dynamic-l269-regex",
  "source": "mining",
  "component": "trl",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l269-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.139,
- "started_at": "2026-10-26T09:23:43+00:00",
+ "duration_s": 0.415,
+ "started_at": "2026-10-26T19:58:06+00:00",
  "marker": {
-  "text": "TRIDENT-UV-trl-data-utils-py-apply-chat-template-dynamic-l269-regex",
+  "text": "INKBLADE-UV-trl-data-utils-py-apply-chat-template-dynamic-l269-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l269-regex/evidence/log.txt",
-   "sha256": "aad8864c3757733fb6a2415e9d9e1de40bce514333a1ef1d0d9a391a68e4517f",
+   "sha256": "0fdba71d4fd20b22b6ec142c0406f1ba38c679b256a2b7975129f3c70c2968ca",
    "size": 279
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l269-regex/evidence/static-check.json",
-   "sha256": "a40c522164acd5b776102e2e721d74f08b88f7e8eb40cfff758e9188bcfe3bf4",
-   "size": 1147
+   "sha256": "cd27ab8a898347c8534e31c02dd2232755a810137c27944a77271dcad284b21a",
+   "size": 1148
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "8abd0be333b8cb4e30775769eb36d0b95d90bec73d66fea9c09842cc9e846320",
+ "manifest_sha256": "2df442eaa7259e520a4d100c6f114f8f857e00235f40c97c6e083ffe4c9db99f",
  "stdout": "{\"status\": \"static-only\", \"case\": \"trl-data-utils-py-apply-chat-template-dynamic-l269-regex\"}\n",
  "stderr": "",
  "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."

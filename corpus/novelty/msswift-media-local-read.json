@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-10-26T11:20:23+00:00",
   "offline": false,
-  "schema": "trident-novelty-results-v1",
+  "schema": "inkblade-novelty-results-v1",
   "verdicts": {
     "msswift-media-local-read": {
       "cache_dir": "<repo>\\corpus\\novelty\\cache",
@@ -147,7 +147,7 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     }
   }

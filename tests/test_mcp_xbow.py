@@ -6,15 +6,15 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.discovery import AssetInventory
-from trident.core.evidence import EvidenceStore
-from trident.core.explorer import Explorer
-from trident.core.roe import init_roe
-from trident.core.scheduler import Scheduler
-from trident.core.users import Session
-from trident.mcp_server import TOOLS, McpContext, dispatch
+from inkblade.core.discovery import AssetInventory
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.explorer import Explorer
+from inkblade.core.roe import init_roe
+from inkblade.core.scheduler import Scheduler
+from inkblade.core.users import Session
+from inkblade.mcp_server import TOOLS, McpContext, dispatch
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 SEEDS = {"services": [{"name": "sglang-admin", "namespace": "ml", "addr": "127.0.0.1",
                        "port": 30000, "labels": {"app": "sglang"}}]}
 

@@ -8,10 +8,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core import traffic as traffic_mod
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import init_roe
-from trident.core.users import Session
+from inkblade.core import traffic as traffic_mod
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import init_roe
+from inkblade.core.users import Session
 
 
 def _session(role="tester"):

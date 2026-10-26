@@ -1,5 +1,5 @@
 {
-  "schema": "trident-inventory-v1",
+  "schema": "inkblade-inventory-v1",
   "collected_at": "2026-10-25T17:03:14Z",
   "source": {
     "mode": "live-kubectl",
@@ -90,7 +90,7 @@
     "kube-node-lease",
     "kube-public",
     "kube-system",
-    "trident-proof"
+    "inkblade-proof"
   ],
   "pods": [
     {
@@ -341,14 +341,14 @@
       "source": "kubectl get pods --all-namespaces -o json"
     },
     {
-      "namespace": "trident-proof",
+      "namespace": "inkblade-proof",
       "name": "mock-target-66c765d55-2z9n4",
       "phase": "Running",
       "node": "k3s",
       "labels": {
         "app": "mock-target",
         "pod-template-hash": "66c765d55",
-        "trident.dev/proof": "real-cluster"
+        "inkblade.dev/proof": "real-cluster"
       },
       "annotations": {},
       "service_account": "default",
@@ -438,16 +438,16 @@
       "source": "kubectl get pods --all-namespaces -o json"
     },
     {
-      "namespace": "trident-proof",
+      "namespace": "inkblade-proof",
       "name": "proof-hostnet",
       "phase": "Failed",
       "node": "k3s",
       "labels": {
         "app": "proof-hostnet",
-        "trident.dev/proof": "real-cluster"
+        "inkblade.dev/proof": "real-cluster"
       },
       "annotations": {
-        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"proof-hostnet\",\"trident.dev/proof\":\"real-cluster\"},\"name\":\"proof-hostnet\",\"namespace\":\"trident-proof\"},\"spec\":{\"containers\":[{\"command\":[\"sleep\",\"infinity\"],\"image\":\"alpine:3.21\",\"name\":\"probe\",\"resources\":{\"limits\":{\"cpu\":\"100m\",\"memory\":\"64Mi\"}}}],\"dnsPolicy\":\"ClusterFirstWithHostNet\",\"hostNetwork\":true,\"restartPolicy\":\"Never\"}}\n"
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"proof-hostnet\",\"inkblade.dev/proof\":\"real-cluster\"},\"name\":\"proof-hostnet\",\"namespace\":\"inkblade-proof\"},\"spec\":{\"containers\":[{\"command\":[\"sleep\",\"infinity\"],\"image\":\"alpine:3.21\",\"name\":\"probe\",\"resources\":{\"limits\":{\"cpu\":\"100m\",\"memory\":\"64Mi\"}}}],\"dnsPolicy\":\"ClusterFirstWithHostNet\",\"hostNetwork\":true,\"restartPolicy\":\"Never\"}}\n"
       },
       "service_account": "default",
       "automount_sa_token": null,
@@ -512,16 +512,16 @@
       "source": "kubectl get pods --all-namespaces -o json"
     },
     {
-      "namespace": "trident-proof",
+      "namespace": "inkblade-proof",
       "name": "proof-normal",
       "phase": "Failed",
       "node": "k3s",
       "labels": {
         "app": "proof-normal",
-        "trident.dev/proof": "real-cluster"
+        "inkblade.dev/proof": "real-cluster"
       },
       "annotations": {
-        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"proof-normal\",\"trident.dev/proof\":\"real-cluster\"},\"name\":\"proof-normal\",\"namespace\":\"trident-proof\"},\"spec\":{\"containers\":[{\"command\":[\"sleep\",\"infinity\"],\"image\":\"alpine:3.21\",\"name\":\"probe\",\"resources\":{\"limits\":{\"cpu\":\"100m\",\"memory\":\"64Mi\"}}}],\"restartPolicy\":\"Never\"}}\n"
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"proof-normal\",\"inkblade.dev/proof\":\"real-cluster\"},\"name\":\"proof-normal\",\"namespace\":\"inkblade-proof\"},\"spec\":{\"containers\":[{\"command\":[\"sleep\",\"infinity\"],\"image\":\"alpine:3.21\",\"name\":\"probe\",\"resources\":{\"limits\":{\"cpu\":\"100m\",\"memory\":\"64Mi\"}}}],\"restartPolicy\":\"Never\"}}\n"
       },
       "service_account": "default",
       "automount_sa_token": null,
@@ -616,7 +616,7 @@
     },
     {
       "kind": null,
-      "namespace": "trident-proof",
+      "namespace": "inkblade-proof",
       "name": "mock-target-66c765d55-2z9n4",
       "container": "mock",
       "image": "python:3.12-alpine",
@@ -629,7 +629,7 @@
     },
     {
       "kind": null,
-      "namespace": "trident-proof",
+      "namespace": "inkblade-proof",
       "name": "proof-hostnet",
       "container": "probe",
       "image": "alpine:3.21",
@@ -642,7 +642,7 @@
     },
     {
       "kind": null,
-      "namespace": "trident-proof",
+      "namespace": "inkblade-proof",
       "name": "proof-normal",
       "container": "probe",
       "image": "alpine:3.21",
@@ -969,7 +969,7 @@
       "source": "kubectl get serviceaccounts -A -o json"
     },
     {
-      "namespace": "trident-proof",
+      "namespace": "inkblade-proof",
       "name": "default",
       "annotations": {},
       "automount_service_account_token": null,

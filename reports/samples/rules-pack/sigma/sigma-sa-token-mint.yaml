@@ -1,10 +1,10 @@
 title: ServiceAccount Token 铸造（TokenRequest）
-id: 7ccb36f3-0aef-8ed2-dca8-826e7b7990f9
+id: 935ef054-fc90-d4a7-95af-2f5b5922a204
 status: stable
 description: "K8s audit: create serviceaccounts/token (TokenRequest) minting a bearer credential for a service account. 检测 SA token 铸造——为 SA 生成可带外使用的长期凭据（权限面外泄；配合绑定即横向闭环）。永不基线化：任何主体铸造都留痕。"
 references:
-  - "trident-rules-mapping: sigma-sa-token-mint"
-author: Trident rules engine
+  - "inkblade-rules-mapping: sigma-sa-token-mint"
+author: InkBlade rules engine
 date: 2026/10/25
 logsource:
   product: kubernetes
@@ -24,9 +24,9 @@ level: high
 tags:
   - attack.credential_access
   - attack.t1550.001
-  - trident
-  - trident-mode-monitor
+  - inkblade
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-tuning: TokenRequest 收敛到控制器主体并在准入限制 audiences/expirationSeconds；租户命名空间的自助铸造直接 critical；与随后同主体的绑定创建做序列关联（铸造→绑定→横向）
-  trident-blocks-chains: "cluster-takeover-objective,ray-dashboard-cluster-takeover"
+  inkblade-mode: monitor
+  inkblade-tuning: TokenRequest 收敛到控制器主体并在准入限制 audiences/expirationSeconds；租户命名空间的自助铸造直接 critical；与随后同主体的绑定创建做序列关联（铸造→绑定→横向）
+  inkblade-blocks-chains: "cluster-takeover-objective,ray-dashboard-cluster-takeover"

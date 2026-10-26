@@ -21,15 +21,15 @@ from lab.ai_gateway_sim import (
     VICTIM_CACHE_PROMPT,
     start_all,
 )
-from trident.core.chains import dry_run, execute, load_chains
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import init_roe
-from trident.core.runner import BackupGateRefused, run_module
-from trident.core.users import UserStore
+from inkblade.core.chains import dry_run, execute, load_chains
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import init_roe
+from inkblade.core.runner import BackupGateRefused, run_module
+from inkblade.core.users import UserStore
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
-CHAINS_DIR = REPO / "trident" / "chains"
+MODULES_DIR = REPO / "inkblade" / "modules"
+CHAINS_DIR = REPO / "inkblade" / "chains"
 
 MODULE_KEYS = [
     "aigateway-fingerprint",
@@ -111,7 +111,7 @@ class RegistryContractTest(unittest.TestCase):
             shutil.copy(MODULES_DIR / "_aigateway-common.py", dest / "_aigateway-common.py")
             for key in MODULE_KEYS:
                 shutil.copytree(MODULES_DIR / key, dest / key)
-            mods = __import__("trident.core.registry", fromlist=["load_modules"]).load_modules(dest)
+            mods = __import__("inkblade.core.registry", fromlist=["load_modules"]).load_modules(dest)
         self.assertEqual(len(mods), 10)
         for key in MODULE_KEYS:
             meta = mods[key]

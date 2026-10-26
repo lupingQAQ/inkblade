@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "LWS-ADV-2026-01",
  "source": "cve",
  "component": "lws",
@@ -29,10 +29,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/lws/LWS-ADV-2026-01/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.146,
- "started_at": "2026-10-26T09:23:28+00:00",
+ "duration_s": 0.259,
+ "started_at": "2026-10-26T19:52:38+00:00",
  "marker": {
-  "text": "TRIDENT-UV-LWS-ADV-2026-01",
+  "text": "INKBLADE-UV-LWS-ADV-2026-01",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -43,7 +43,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/lws/LWS-ADV-2026-01/evidence/log.txt",
-   "sha256": "be2833d7f61ae675977b027960b910238e494f80070c27f22efd966a24992afb",
+   "sha256": "6ba5de6bb7df15efae720490c610488a6a102aa07fc80d7c64c5389973833848",
    "size": 197
   },
   {
@@ -53,12 +53,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/lws/LWS-ADV-2026-01/evidence/static-check.json",
-   "sha256": "1db4c2a9add0181cb4e3191e50fcf178200ffc5721cf0e9711962001d6dcc941",
-   "size": 806
+   "sha256": "c3998573dbf1942678ea26c1ecfdb666f0be2f456a02b81f3dc63e92f2256582",
+   "size": 807
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "3ffe6b72d1324e07afa8c1672fa9083da6121a60143f0ec458463ee19c0d6de0",
+ "manifest_sha256": "eee883b8b40ed385ef85b0e9638fdedc1fcfc932bc5bf29ef26be4b2cb20b089",
  "stdout": "{\"status\": \"static-only\", \"case\": \"LWS-ADV-2026-01\"}\n",
  "stderr": "",
  "notes": "LWS leader/worker address trust is a topology/CRD issue; static-only."

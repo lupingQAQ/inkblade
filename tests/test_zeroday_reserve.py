@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from trident.core import reserve as R
+from inkblade.core import reserve as R
 
 
 def entry(eid, *, source="audit-history", status="verified", dynamic=True, verdict=None,

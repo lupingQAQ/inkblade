@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 
-from trident.lpe.catalog import CATALOG, KERNEL_RULES, USERSPACE_RULES, by_category, by_component
+from inkblade.lpe.catalog import CATALOG, KERNEL_RULES, USERSPACE_RULES, by_category, by_component
 
 DANGEROUS_CAPS = {"SYS_ADMIN", "SYS_MODULE", "SYS_PTRACE", "SYS_CHROOT", "NET_ADMIN",
                   "DAC_READ_SEARCH", "BPF", "PERFMON", "SYS_RAWIO"}

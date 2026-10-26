@@ -13,7 +13,7 @@ _REPO = Path(__file__).resolve().parents[3]
 if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
-from trident.modules._gpu_cloud_common import (  # noqa: E402
+from inkblade.modules._gpu_cloud_common import (  # noqa: E402
     Trace, base_url, benign_marker, detail, ok, read_headers, resolve_mode, resp, write_headers,
 )
 
@@ -63,7 +63,7 @@ def run(ctx: dict, params: dict) -> dict:
             "mig_profile": str(params.get("mig_profile") or "1g.10gb"),
             "mps": True,
             "marker": marker,
-            "process": f"trident-{tenant}",
+            "process": f"inkblade-{tenant}",
         }, headers=write_headers(params))
         alloc_payload = resp(allocation)
         if ok(allocation):

@@ -3,7 +3,7 @@
 
 import unittest
 
-from trident.core.payloads import (
+from inkblade.core.payloads import (
     PayloadError, http_variants, materialize, param_variants, variants,
 )
 

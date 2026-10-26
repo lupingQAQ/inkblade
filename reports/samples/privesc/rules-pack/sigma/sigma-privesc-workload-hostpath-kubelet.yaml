@@ -7,12 +7,12 @@ references:
   - "Kubernetes kubelet 认证/授权 https://kubernetes.io/docs/reference/access-authn-authz/kubelet-authn-authz/"
   - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
   - "CDK 容器逃逸工具集 https://github.com/cdk-team/CDK"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: workload-hostpath-kubelet
-    trident.io/module: privileged-workloads
+    inkblade.io/vector: workload-hostpath-kubelet
+    inkblade.io/module: privileged-workloads
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -30,16 +30,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.workload
+  - inkblade
+  - inkblade.vector.workload
   - attack.t1611
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: workload-hostpath-kubelet
-  trident-module: privileged-workloads
-  trident-detection-point: K8s audit：create pod 且 hostPath 指向 kubelet/kubernetes 目录
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: workload-hostpath-kubelet
+  inkblade-module: privileged-workloads
+  inkblade-detection-point: K8s audit：create pod 且 hostPath 指向 kubelet/kubernetes 目录
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore, SCHEMA_TABLES
+from inkblade.core.evidence import EvidenceStore, SCHEMA_TABLES
 
 
 class TestEvidence(unittest.TestCase):
@@ -20,7 +20,7 @@ class TestEvidence(unittest.TestCase):
     def test_three_layers_written(self):
         run = self.store.create_run("run-alpha")
         art = self.root / "artifact.txt"
-        art.write_text("hello-trident", encoding="utf-8")
+        art.write_text("hello-inkblade", encoding="utf-8")
         ref = run.add_step(
             "probe-one",
             prompt_or_cmd="curl http://127.0.0.1:30000/health",
@@ -91,7 +91,7 @@ class TestEvidence(unittest.TestCase):
         self.assertIn("summary", text)
 
     def test_forced_gzip_without_zstd(self):
-        os.environ["TRIDENT_FORCE_NO_ZSTD"] = "1"
+        os.environ["INKBLADE_FORCE_NO_ZSTD"] = "1"
         try:
             run = self.store.create_run("run-eps")
             run.add_step("z", "cmd", {}, "ok")
@@ -99,7 +99,7 @@ class TestEvidence(unittest.TestCase):
                 (self.root / "evidence" / "local-lab" / "run-eps" / "steps" / "z.tar.gz").exists()
             )
         finally:
-            del os.environ["TRIDENT_FORCE_NO_ZSTD"]
+            del os.environ["INKBLADE_FORCE_NO_ZSTD"]
 
     def test_schema_tables_exist(self):
         run = self.store.create_run("run-zeta")

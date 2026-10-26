@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "llamafactory-template-py-apply-chat-template-dynamic-l591-regex",
  "source": "mining",
  "component": "llamafactory",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-template-py-apply-chat-template-dynamic-l591-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.149,
- "started_at": "2026-10-26T09:23:28+00:00",
+ "duration_s": 0.309,
+ "started_at": "2026-10-26T19:52:37+00:00",
  "marker": {
-  "text": "TRIDENT-UV-llamafactory-template-py-apply-chat-template-dynamic-l591-regex",
+  "text": "INKBLADE-UV-llamafactory-template-py-apply-chat-template-dynamic-l591-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-template-py-apply-chat-template-dynamic-l591-regex/evidence/log.txt",
-   "sha256": "0a62bf04c33bdcdd0888d1c2bfe7d46b5778a1f5955f01297954243de489defd",
+   "sha256": "95e4f7dd0ff6d5ab2a71e7528c44bb2f7e6fa662b56752f973e150180b959e4a",
    "size": 302
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-template-py-apply-chat-template-dynamic-l591-regex/evidence/static-check.json",
-   "sha256": "1d616e8a7bb35b06bcf864358d1bdc2a6cf0fa78293a6ebe0eb6c83c46258c20",
-   "size": 1296
+   "sha256": "b04498134117f5a501411c2d4af641c7db25df8ba3124fa48215b3e7c514a8be",
+   "size": 1297
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "1e0ecdeb1b0fe7b6eb51b5175c2770c754b8dcfa22ee45518d0b5260ac71209f",
+ "manifest_sha256": "d520f4e1ab3057d48c1915a50fdcbc3376ffbc51539844561b9c3ad2d2a4c8c9",
  "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-template-py-apply-chat-template-dynamic-l591-regex\"}\n",
  "stderr": "",
  "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."

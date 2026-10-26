@@ -9,10 +9,10 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: proof-normal
-  namespace: trident-proof
+  namespace: inkblade-proof
   labels:
     app: proof-normal
-    trident.dev/proof: real-cluster
+    inkblade.dev/proof: real-cluster
 spec:
   restartPolicy: Never
   containers:
@@ -28,10 +28,10 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: proof-hostnet
-  namespace: trident-proof
+  namespace: inkblade-proof
   labels:
     app: proof-hostnet
-    trident.dev/proof: real-cluster
+    inkblade.dev/proof: real-cluster
 spec:
   hostNetwork: true
   dnsPolicy: ClusterFirstWithHostNet

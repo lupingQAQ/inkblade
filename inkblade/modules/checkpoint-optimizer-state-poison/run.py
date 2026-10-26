@@ -47,7 +47,7 @@ def run(ctx: dict, params: dict) -> dict:
         payload = str(params.get("payload") or (
             '{"marker": "' + marker + '", "benign": true, "optimizer_state": true, '
             '"step": 4242, "exp_avg": [0.0, 0.0], "exp_avg_sq": [0.0, 0.0], '
-            '"source": "trident-lab"}\n'))
+            '"source": "inkblade-lab"}\n'))
         write = t.call("POST", f"{target}/ckpt/optimizer",
                        {"shard_id": shard_id, "payload": payload},
                        _COMMON.headers_for(params))

@@ -4,16 +4,16 @@
 输入：
 - 标准 K8s audit log JSON Lines（audit.k8s.io/v1 Event：verb/user/objectRef/requestObject/responseStatus/stageTimestamp）
 - KubeTrail（github.com/ekkoo-z/KubeTrail）`dbus.json` 导出 Document（schemaVersion+facts+findings 形态，
-  经 detect_kubetrail_export 识别 → adapt_kubetrail 适配为 Trident findings）
+  经 detect_kubetrail_export 识别 → adapt_kubetrail 适配为 InkBlade findings）
 
 输出 finding 字段（除 sev/title/detail/evidence/mapping/fix 外）：
 - subject 主体（user.username）
 - verb    动词
 - resource 资源（resource[/subresource] namespace/name）
 - time    事件时间（stageTimestamp，缺省 requestReceivedTimestamp）
-- chains  映射攻击链名（与 trident/chains/*.json 对齐）
+- chains  映射攻击链名（与 inkblade/chains/*.json 对齐）
 - modules 关联模块键
-- rule_keys 建议规则键（Sigma/Falco/Kyverno，与 trident/rules/templates 对齐）
+- rule_keys 建议规则键（Sigma/Falco/Kyverno，与 inkblade/rules/templates 对齐）
 - detector 检测器标识
 
 误报口径（benign 零报）：
@@ -461,7 +461,7 @@ def detect_kubetrail_export(doc) -> bool:
 
 
 def adapt_kubetrail(doc: dict) -> list[dict]:
-    """KubeTrail findings → Trident findings（severity 保序；类别映射链/规则键；主体取 target pod）。"""
+    """KubeTrail findings → InkBlade findings（severity 保序；类别映射链/规则键；主体取 target pod）。"""
     if not detect_kubetrail_export(doc):
         raise ValueError("不是 KubeTrail 导出 Document（缺 schemaVersion/facts/run）")
     target = doc.get("target") or {}
@@ -477,7 +477,7 @@ def adapt_kubetrail(doc: dict) -> list[dict]:
         if sev not in ("critical", "high", "medium", "low", "info"):
             sev = "info"
         rule_keys = list(mapped["rule_keys"])
-        fix = "按 KubeTrail 建议复核；Trident 权限链/逃逸模块复测收敛"
+        fix = "按 KubeTrail 建议复核；InkBlade 权限链/逃逸模块复测收敛"
         if not rule_keys:
             fix = "主机内核 LPE 面：K8s 准入/审计规则不覆盖，建议节点层（内核补丁/seccomp/BPF 监控）治理"
         out.append({

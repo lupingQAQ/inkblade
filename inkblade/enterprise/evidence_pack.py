@@ -12,7 +12,7 @@ import time
 import zipfile
 from pathlib import Path
 
-SCHEMA = "trident-evidence-pack/1"
+SCHEMA = "inkblade-evidence-pack/1"
 
 # 等保 2.0（GB/T 22239-2019）三级安全计算环境 + ISO/IEC 27001:2022 附录 A。
 CONTROLS = {
@@ -110,7 +110,7 @@ def build_pack(paths: list[str | Path], out_zip: str | Path, *, root: str | Path
     for control in controls:
         index.append(f"| {control['id']} | {control['title']} | {len(control['evidence'])} | "
                      + (", ".join(control["evidence"][:5]) or "—") + " |")
-    index += ["", "本索引由 Trident 生成；证据哈希见 manifest.json。"]
+    index += ["", "本索引由 InkBlade 生成；证据哈希见 manifest.json。"]
     out.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.writestr("manifest.json", json.dumps(manifest, ensure_ascii=False, indent=2))

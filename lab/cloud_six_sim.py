@@ -50,7 +50,7 @@ PROFILES: dict[str, dict] = {
         "snapshot_api": "ec2:DescribeSnapshots / ec2:ModifySnapshotAttribute",
         "network_api": "ec2:DescribeSecurityGroups / DescribeInstanceMetadataDefaults",
         "sa_annotation": "eks.amazonaws.com/role-arn",
-        "oidc": "oidc.eks.cn-north-1.amazonaws.com.cn/id/TRIDENTFIXTURE",
+        "oidc": "oidc.eks.cn-north-1.amazonaws.com.cn/id/INKBLADEFIXTURE",
         "trust_vuln": {"Version": "2012-10-17", "Statement": [{
             "Effect": "Allow", "Principal": {"Federated": "*"}, "Action": "sts:AssumeRoleWithWebIdentity",
             "Condition": {"StringLike": {"*:sub": "*", "*:aud": "*"}}}]},
@@ -60,10 +60,10 @@ PROFILES: dict[str, dict] = {
             "Condition": {"StringEquals": {"*:sub": "system:serviceaccount:ml:trainer", "*:aud": "sts.amazonaws.com"}}}]},
         "bucket_vuln": {"Version": "2012-10-17", "Statement": [{
             "Effect": "Allow", "Principal": "*", "Action": ["s3:GetObject", "s3:ListBucket"],
-            "Resource": ["arn:aws:s3:::trident-ml-weights", "arn:aws:s3:::trident-ml-weights/*"]}]},
+            "Resource": ["arn:aws:s3:::inkblade-ml-weights", "arn:aws:s3:::inkblade-ml-weights/*"]}]},
         "bucket_fixed": {"Version": "2012-10-17", "Statement": [{
             "Effect": "Allow", "Principal": {"AWS": "arn:aws:iam::111111111111:root"},
-            "Action": ["s3:GetObject"], "Resource": "arn:aws:s3:::trident-ml-weights/*",
+            "Action": ["s3:GetObject"], "Resource": "arn:aws:s3:::inkblade-ml-weights/*",
             "Condition": {"Bool": {"aws:SecureTransport": "true"}}}]},
         "snapshot_perm": "createVolumePermission",
         "sg_vuln": {"GroupName": "ml-training", "IpPermissions": [{
@@ -82,10 +82,10 @@ PROFILES: dict[str, dict] = {
         "snapshot_api": "Microsoft.Compute/disks/beginGetAccess (SAS) + diskAccesses",
         "network_api": "Microsoft.Network/networkSecurityGroups/securityRules",
         "sa_annotation": "azure.workload.identity/use",
-        "oidc": "https://oidc.prod-aks.azure.com/TRIDENTFIXTURE/",
+        "oidc": "https://oidc.prod-aks.azure.com/INKBLADEFIXTURE/",
         "trust_vuln": {"name": "fic-ml", "properties": {"issuer": "*", "subject": "*", "audiences": ["*"]}},
         "trust_fixed": {"name": "fic-ml", "properties": {
-            "issuer": "https://oidc.prod-aks.azure.com/TRIDENTFIXTURE/",
+            "issuer": "https://oidc.prod-aks.azure.com/INKBLADEFIXTURE/",
             "subject": "system:serviceaccount:ml:trainer", "audiences": ["api://AzureADTokenExchange"]}},
         "bucket_vuln": {"container": "ml-weights", "properties": {"publicAccess": "Blob",
                                                                   "allowBlobPublicAccess": True}},
@@ -108,15 +108,15 @@ PROFILES: dict[str, dict] = {
         "snapshot_api": "ecs:DescribeSnapshots / ModifySnapshotAttribute(IsPublic)",
         "network_api": "ecs:DescribeSecurityGroups / AuthorizeSecurityGroup",
         "sa_annotation": "ack.alibabacloud.com/role-arn",
-        "oidc": "ack-oidc-cn-hangzhou-TRIDENTFIXTURE",
+        "oidc": "ack-oidc-cn-hangzhou-INKBLADEFIXTURE",
         "trust_vuln": {"Version": "1", "Statement": [{"Effect": "Allow", "Action": "sts:AssumeRole",
                                                        "Principal": {"RAM": ["*"]}}]},
         "trust_fixed": {"Version": "1", "Statement": [{"Effect": "Allow", "Action": "sts:AssumeRole",
                                                         "Principal": {"RAM": ["acs:ram::1234567890:role/ack-trainer"]},
                                                         "Condition": {"StringEquals": {"oidc:sub": "system:serviceaccount:ml:trainer"}}}]},
-        "bucket_vuln": {"bucket": "trident-ml-weights", "AccessControlPolicy": {
+        "bucket_vuln": {"bucket": "inkblade-ml-weights", "AccessControlPolicy": {
             "AccessControlList": {"Grant": "public-read"}}},
-        "bucket_fixed": {"bucket": "trident-ml-weights", "AccessControlPolicy": {
+        "bucket_fixed": {"bucket": "inkblade-ml-weights", "AccessControlPolicy": {
             "AccessControlList": {"Grant": "private"}}},
         "snapshot_perm": "IsPublic",
         "sg_vuln": {"SecurityGroupId": "sg-ml", "Permissions": [{
@@ -131,14 +131,14 @@ PROFILES: dict[str, dict] = {
         "snapshot_api": "cbs:DescribeSnapshots / ModifySnapshotAttribute(SharePermission)",
         "network_api": "vpc:DescribeSecurityGroupPolicies / CreateSecurityGroupPolicies",
         "sa_annotation": "tke.cloud.tencent.com/role-arn",
-        "oidc": "tke-oidc-gz-TRIDENTFIXTURE",
+        "oidc": "tke-oidc-gz-INKBLADEFIXTURE",
         "trust_vuln": {"version": "2.0", "statement": [{"effect": "allow", "action": "name/cam:AssumeRole",
                                                          "principal": {"qcs": ["*"]}}]},
         "trust_fixed": {"version": "2.0", "statement": [{"effect": "allow", "action": "name/cam:AssumeRole",
                                                           "principal": {"qcs": ["qcs::cam::uin/100000000001:roleName/tke-trainer"]},
                                                           "condition": {"string_equal": {"oidc:sub": "system:serviceaccount:ml:trainer"}}}]},
-        "bucket_vuln": {"bucket": "trident-ml-weights-1250000000", "ACL": "public-read-write"},
-        "bucket_fixed": {"bucket": "trident-ml-weights-1250000000", "ACL": "private"},
+        "bucket_vuln": {"bucket": "inkblade-ml-weights-1250000000", "ACL": "public-read-write"},
+        "bucket_fixed": {"bucket": "inkblade-ml-weights-1250000000", "ACL": "private"},
         "snapshot_perm": "SharePermission",
         "sg_vuln": {"SecurityGroupId": "sg-ml", "SecurityGroupPolicySet": {"Ingress": [{
             "Protocol": "TCP", "Port": "22", "CidrBlock": "0.0.0.0/0", "Action": "ACCEPT"}]}},
@@ -157,9 +157,9 @@ PROFILES: dict[str, dict] = {
                                       "members": ["principal://iam.googleapis.com/*"]}]},
         "trust_fixed": {"bindings": [{"role": "roles/iam.workloadIdentityUser",
                                        "members": ["serviceAccount:proj-a.svc.id.goog[ml/trainer]"]}]},
-        "bucket_vuln": {"bucket": "trident-ml-weights", "iamPolicy": {
+        "bucket_vuln": {"bucket": "inkblade-ml-weights", "iamPolicy": {
             "bindings": [{"role": "roles/storage.objectViewer", "members": ["allUsers"]}]}},
-        "bucket_fixed": {"bucket": "trident-ml-weights", "iamPolicy": {
+        "bucket_fixed": {"bucket": "inkblade-ml-weights", "iamPolicy": {
             "bindings": [{"role": "roles/storage.objectViewer",
                           "members": ["serviceAccount:trainer@proj-a.iam.gserviceaccount.com"]}]}},
         "snapshot_perm": "iamPolicy(allAuthenticatedUsers)",
@@ -175,7 +175,7 @@ PROFILES: dict[str, dict] = {
         "snapshot_api": "evs:CreateSnapshot / UpdateSnapshot (share)",
         "network_api": "vpc:CreateSecurityGroupRule (remote_ip_prefix)",
         "sa_annotation": "everest.io/agency-name",
-        "oidc": "cce-cn-north-4-TRIDENTFIXTURE",
+        "oidc": "cce-cn-north-4-INKBLADEFIXTURE",
         "trust_vuln": {"agency": "cce-trainer", "trust_domain": "*", "policy": {"Version": "1.1",
                                                                                  "Statement": [{"Effect": "Allow",
                                                                                                 "Action": ["*"],
@@ -183,10 +183,10 @@ PROFILES: dict[str, dict] = {
         "trust_fixed": {"agency": "cce-trainer", "trust_domain": "op_svc_cce",
                         "policy": {"Version": "1.1", "Statement": [{
                             "Effect": "Allow", "Action": ["obs:object:GetObject"],
-                            "Resource": ["obs:*:*:object:trident-ml-weights/*"]}]}},
-        "bucket_vuln": {"bucket": "trident-ml-weights", "Acl": {"Owner": "tenant-a",
+                            "Resource": ["obs:*:*:object:inkblade-ml-weights/*"]}]}},
+        "bucket_vuln": {"bucket": "inkblade-ml-weights", "Acl": {"Owner": "tenant-a",
                                                                  "Grant": "public-read"}},
-        "bucket_fixed": {"bucket": "trident-ml-weights", "Acl": {"Owner": "tenant-a",
+        "bucket_fixed": {"bucket": "inkblade-ml-weights", "Acl": {"Owner": "tenant-a",
                                                                  "Grant": "private"}},
         "snapshot_perm": "share",
         "sg_vuln": {"security_group_id": "sg-ml", "rules": [{
@@ -259,11 +259,11 @@ def _assume_role(ctx: _Ctx):
                          "api": p["identity_api"]}
         return 200, {"cloud": ctx.cloud, "assumed": True, "principal": principal,
                      "account": ACCOUNTS[principal].get(ctx.cloud), "ttl_seconds": 900,
-                     "credentials": "TRIDENT-MOCK-SESSION", "api": p["identity_api"]}
+                     "credentials": "INKBLADE-MOCK-SESSION", "api": p["identity_api"]}
     return 200, {
         "cloud": ctx.cloud, "assumed": True, "principal": tenant, "account": account,
         "target_account": ctx.body.get("account") or "333333333333",
-        "cross_account": True, "credentials": "TRIDENT-MOCK-SESSION", "ttl_seconds": 3600,
+        "cross_account": True, "credentials": "INKBLADE-MOCK-SESSION", "ttl_seconds": 3600,
         "api": p["identity_api"], "trust": p["trust_vuln"],
     }
 
@@ -279,7 +279,7 @@ def _bucket_policy(ctx: _Ctx):
 
 def _bucket_list(ctx: _Ctx):
     p = ctx.profile()
-    bucket = (ctx.query.get("bucket") or ["trident-ml-weights"])[0]
+    bucket = (ctx.query.get("bucket") or ["inkblade-ml-weights"])[0]
     if ctx.mode == "fixed" and not ctx.principal():
         return 401, {"error": "unauthorized", "api": p["bucket_api"]}
     if ctx.mode == "vulnerable":
@@ -413,7 +413,7 @@ class _Server(ThreadingHTTPServer):
 
 class _Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "TridentSixCloudLab/0.1.0"
+    server_version = "InkBladeSixCloudLab/0.1.0"
 
     def log_message(self, fmt, *args):
         return
@@ -511,7 +511,7 @@ SCENARIOS = (
                 "body": {"account": "333333333333"}, "expect": (200, 403)})},
     {"id": "bucket-public", "title": "公共桶策略 → 匿名/跨租户列目录",
      "steps": ({"method": "GET", "path": "/api/{cloud}/bucket/policy", "expect": (200, 200)},
-               {"method": "GET", "path": "/api/{cloud}/bucket/list?bucket=trident-ml-weights",
+               {"method": "GET", "path": "/api/{cloud}/bucket/list?bucket=inkblade-ml-weights",
                 "anonymous": True, "expect": (200, 401)})},
     {"id": "snapshot-share", "title": "快照跨账户共享 → 他租户可挂载",
      "steps": ({"method": "GET", "path": "/api/{cloud}/snapshot", "expect": (200, 200)},
@@ -591,7 +591,7 @@ def _evidence(cloud: str, path: str, payload: dict) -> str:
 
 
 def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(description="Trident 六云契约级仿真靶场（仅 127.0.0.1）")
+    parser = argparse.ArgumentParser(description="InkBlade 六云契约级仿真靶场（仅 127.0.0.1）")
     parser.add_argument("--port", type=int, default=0)
     parser.add_argument("--mode", choices=list(MODES), default=DEFAULT_MODE)
     parser.add_argument("--matrix", default=None, help="跑 4 场景×6 云并输出 JSON 到该路径")

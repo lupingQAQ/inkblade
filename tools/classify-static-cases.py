@@ -59,10 +59,88 @@ GROUPS = {
 }
 
 
+# Per-case re-check notes (2026-10-27).  These keep the blocker evidence
+# concrete after the QEMU/Go re-verification pass: three host-toolchain cases
+# were promoted to verified, and the remaining stack/toolchain cases record
+# exactly what is missing instead of a generic sentence.
+OVERRIDES = {
+    "CVE-2025-3466": ("requires-full-stack",
+        "Re-checked 2026-10-27: the QEMU k3s guest runs Docker 29.9.2, but the Dify "
+        "deployment (api/worker/db/redis plus the dify-sandbox Node runtime) is not "
+        "provisioned. The escape relies on the sandbox's parseInt override inside a live "
+        "code node; no function-level path reproduces it without the sandbox service."),
+    "CVE-2025-56520": ("requires-full-stack",
+        "Re-checked 2026-10-27: same Dify code-node sandbox dependency as CVE-2025-3466. "
+        "Docker is available in the VM, but the Dify API/DB/sandbox stack is not; the "
+        "advisory's parseInt escape cannot be driven at function level."),
+    "CVE-2025-63387": ("requires-full-stack",
+        "Re-checked 2026-10-27: same Dify code-node sandbox dependency; needs a live "
+        "dify-sandbox Node runtime and a Dify code node. The lab VM has neither the "
+        "service nor the database, so no dynamic verdict is claimed."),
+    "CVE-2026-35029": ("requires-full-stack",
+        "Re-checked 2026-10-27: /config/update is only reachable with a DB-backed "
+        "virtual key (Prisma/Postgres user row) on a running litellm 1.82.0 proxy. The "
+        "VM has no Postgres/proxy stack for that release; the handler's missing admin "
+        "check remains a static-source finding."),
+    "CVE-2026-47102": ("requires-full-stack",
+        "Re-checked 2026-10-27: same litellm DB-backed virtual-key prerequisite as "
+        "CVE-2026-35029; without Postgres and an authenticated non-admin key the "
+        "vulnerable handler cannot be reached. Static-source verdict retained."),
+    "CVE-2025-23354": ("requires-full-stack",
+        "Re-checked 2026-10-27: advisory-only (ensemble_classifier script injection). "
+        "Neither NVD nor the GHSA text identifies a file:line/function sink in "
+        "core_v0.19.2, and reproduction needs a full Megatron training/checkpoint "
+        "configuration. Advisory anchor retained; no exploit execution claimed."),
+    "CVE-2025-33247": ("requires-full-stack",
+        "Re-checked 2026-10-27: same advisory-only ensemble_classifier claim. No "
+        "resolved sink line exists to execute in the CPU-only lab; a Megatron training "
+        "stack is required. Static advisory anchor retained."),
+    "CVE-2025-64496": ("requires-full-stack",
+        "Re-checked 2026-10-27: Open WebUI file-overwrite needs the full server "
+        "(FastAPI + built frontend + DB) and an authenticated session. The VM does not "
+        "host the stack; the source path remains static-only."),
+    "CVE-2026-28786": ("requires-full-stack",
+        "Re-checked 2026-10-27: same Open WebUI full-stack prerequisite (server, DB, "
+        "authenticated user). Not reproduced in the lab VM; static-only retained."),
+    "CVE-2026-28788": ("requires-full-stack",
+        "Re-checked 2026-10-27: same Open WebUI full-stack prerequisite; without the "
+        "server and a session the overwrite path has no dynamic entry point."),
+    "CVE-2026-15978": ("requires-full-stack",
+        "Re-checked 2026-10-27: already public (CVE-2026-15978 / VU#281278). Dynamic "
+        "validation needs a GPU-backed SGLang model server; the CPU-only lab cannot "
+        "load the model. Kept static and out of the reserve."),
+    "CVE-2025-59425": ("requires-full-stack",
+        "Re-checked 2026-10-27: the timing oracle needs a live GPU model server plus a "
+        "network-level timing measurement. An in-process comparison cannot establish "
+        "the claim, so the advisory anchor stays static."),
+    "cephcsi-cephcsi-go-bind-all-l255-regex": ("host-toolchain-missing",
+        "Re-checked 2026-10-27: Go 1.27.3 builds inside the VM, but ceph-csi's "
+        "cephfs/rbd packages require librbd/libceph and a Ceph cluster. The binary "
+        "cannot be built or started there; BindAddress 0.0.0.0:255 remains a "
+        "source-line exposure only."),
+    "dradriver-process-go-exec-command-l94-regex": ("host-toolchain-missing",
+        "Re-checked 2026-10-27: the daemon builds (vendored), but its only exec sink "
+        "is a fixed nvidia-imex argv built at main.go:301. There is no "
+        "attacker-controlled command line, so a dynamic demo would not support the "
+        "original claim; kept as a config-trust note, not an exploit."),
+    "gpuoperator-main-go-exec-command-l669-regex": ("host-toolchain-missing",
+        "Re-checked 2026-10-27: GPU Operator needs a live cluster with NVIDIA GPU "
+        "nodes, driver CRDs and the operator stack. The exec at main.go:669 runs "
+        "operator-controlled tooling, not tenant input; no CPU-only dynamic path."),
+    "sonicrestapi-default-go-exec-command-l1881-regex": ("host-toolchain-missing",
+        "Re-checked 2026-10-27: the SONiC REST server links swsscommon/Redis "
+        "CONFIG_DB (C/C++ libraries) and expects a SONiC image; it cannot be built in "
+        "Alpine. The source line remains static."),
+}
+
+
 def classify(manifest: dict) -> tuple[str, str]:
     cid = manifest["id"]
     component = str(manifest.get("component") or "")
     rule = str((manifest.get("mining") or {}).get("rule") or "")
+
+    if cid in OVERRIDES:
+        return OVERRIDES[cid]
 
     if cid == "CVE-2026-32981":
         return ("claim-refuted",

@@ -133,9 +133,9 @@ class EvidenceShape(unittest.TestCase):
         self.assertTrue(probe["windows_http"]["ok"], "Windows could not reach the NodePort")
         attempts = probe["windows_http"]["attempts"]
         self.assertTrue(any(a.get("status") == 200 for a in attempts))
-        module = probe["trident_module"]
+        module = probe["inkblade_module"]
         entries = module["trace"]["entries"]
-        self.assertTrue(entries, "Trident module recorded no HTTP trace")
+        self.assertTrue(entries, "InkBlade module recorded no HTTP trace")
         listing = [e for e in entries if e["url"].endswith("/plugins/list")]
         control = [e for e in entries if e["url"].endswith("/v1/models")]
         self.assertEqual(listing[0]["status"], 200, "mock target did not serve /plugins/list")

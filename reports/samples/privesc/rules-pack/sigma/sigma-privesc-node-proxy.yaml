@@ -7,12 +7,12 @@ references:
   - "Kubernetes kubelet 认证/授权 https://kubernetes.io/docs/reference/access-authn-authz/kubelet-authn-authz/"
   - "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
   - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: node-proxy
-    trident.io/module: kubelet-api-surface
+    inkblade.io/vector: node-proxy
+    inkblade.io/module: kubelet-api-surface
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -31,16 +31,16 @@ falsepositives:
 level: critical
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.node
+  - inkblade
+  - inkblade.vector.node
   - attack.t1610
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: node-proxy
-  trident-module: kubelet-api-surface
-  trident-detection-point: K8s audit：get nodes/proxy
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: node-proxy
+  inkblade-module: kubelet-api-surface
+  inkblade-detection-point: K8s audit：get nodes/proxy
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

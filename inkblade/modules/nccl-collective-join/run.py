@@ -98,7 +98,7 @@ def run(ctx: dict, params: dict) -> dict:
                 "artifacts": [str(artifact)], "findings": []}
     if not target and not snap.get("bootstrap_url"):
         return {"summary": "no-target", "artifacts": [], "findings": []}
-    marker = str(ctx.get("marker") or "TRIDENT")
+    marker = str(ctx.get("marker") or "INKBLADE")
     bootstrap = str(snap.get("bootstrap_url") or f"{target}/call")
     world = snap.get("world_size")
     tensor = marker if mode == "backup-write" else "probe-tensor"

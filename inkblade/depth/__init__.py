@@ -3,7 +3,7 @@
 
 Each submodule is deliberately independent of live infrastructure: it consumes
 a snapshot/fixture, applies a small semantic engine, and returns evidence that
-can be replayed in unit tests and in ``trident verify-effects``.
+can be replayed in unit tests and in ``inkblade verify-effects``.
 """
 
 from __future__ import annotations

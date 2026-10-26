@@ -1,14 +1,14 @@
 # 长上下文与大规模训练专项（LONG-CONTEXT）
 
-本文件是 Trident 在**长上下文推理（128K–1M）**与**大规模训练（千卡–万卡）**两个面上的威胁模型、
+本文件是 InkBlade 在**长上下文推理（128K–1M）**与**大规模训练（千卡–万卡）**两个面上的威胁模型、
 模块↔链映射与检测口径说明。配套代码：
 
 - 仿真靶场：`lab/longctx_sim.py`（OpenAI 兼容，仅 127.0.0.1，真实 HTTP）
-- 模块：`trident/modules/` 下 8 个专项模块（`long-context-*` / `prefix-cache-*` / `kv-cache-*` /
+- 模块：`inkblade/modules/` 下 8 个专项模块（`long-context-*` / `prefix-cache-*` / `kv-cache-*` /
   `prefill-decode-*` / `checkpoint-shard-*` / `context-limit-*`）
-- 攻击链：`trident/chains/long-context-cache-leak.json`、`trident/chains/pd-kv-poison.json`
+- 攻击链：`inkblade/chains/long-context-cache-leak.json`、`inkblade/chains/pd-kv-poison.json`
 - 规则：`suricata-longctx-kv-endpoints`（长上下文/KV/分片/指标端点异常访问）
-- 实效验证：`trident/verify-effects.py` 中 `longctx-*` 四项（见 `docs/EFFECT-VERIFICATION.md`）
+- 实效验证：`inkblade/verify-effects.py` 中 `longctx-*` 四项（见 `docs/EFFECT-VERIFICATION.md`）
 
 **边界声明**：本文与仿真器描述的是**控制面/数据面语义同构的实验室仿真实效**，
 不是真实 GPU 推理或真实万卡集群实测；真实拓扑结论必须来自客户集群的只读快照与网络事实采集。
@@ -128,14 +128,14 @@
 | `kv-cache-integrity-poison` | 横向利用 / 利用验证 | **是** | KV 写入 200 + 独立读回 value/sha256 一致 | `pd-kv-poison` |
 | `checkpoint-shard-poison` | 横向利用 / 利用验证 | **是** | 分片写入 200 + 读回 sha256 一致 + 回滚复原 | — |
 
-链定义（`trident/chains/`）：
+链定义（`inkblade/chains/`）：
 
 - `long-context-cache-leak`：`window-pressure`（超窗）→ `cache-reuse`（跨租户 prefix 复用）。
 - `pd-kv-poison`：`kv-channel-probe`（未鉴权读握手）→ `kv-block-poison`（写类，备份闸门 + http 快照）。
 
 两条链均接入规则引擎：`suricata-longctx-kv-endpoints` 以
 `/v1/chat/completions|/kv/transfer|/checkpoint/shards|/metrics` URI 签名覆盖，
-紫队矩阵（`trident rules validate`）保持零漏过。
+紫队矩阵（`inkblade rules validate`）保持零漏过。
 
 ---
 
@@ -174,7 +174,7 @@
 
 ## 6. 实效验证（4 项，全 PASS）
 
-`python -m trident.verify-effects --out reports/samples/effects/` 中：
+`python -m inkblade.verify-effects --out reports/samples/effects/` 中：
 
 | 检查项 | 证据 |
 |---|---|

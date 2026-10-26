@@ -1,10 +1,10 @@
-# Trident 设计基线 / Design Baseline
+# InkBlade（墨刃零）设计基线 / Design Baseline
 
-本文档是模块 `knowledge` 字段的中性引用基线，汇总 Trident 的漏洞研究分类与授权边界。它不包含任何未披露利用细节、真实凭据或内部工作区路径。
+本文档是模块 `knowledge` 字段的中性引用基线，汇总 InkBlade 的漏洞研究分类与授权边界。它不包含任何未披露利用细节、真实凭据或内部工作区路径。
 
 ## 1. 总览与授权边界
 
-Trident 仅用于**获得书面授权**的安全测试。所有模块按 `min_level`（只读侦察 / 主动探测 / 利用验证 / 全影响演示）分级；写类模块必须提供 `backup_targets` 并通过备份闸门。默认靶场为 `lab/mock_targets.py`（仅 `127.0.0.1`）。
+InkBlade 仅用于**获得书面授权**的安全测试。所有模块按 `min_level`（只读侦察 / 主动探测 / 利用验证 / 全影响演示）分级；写类模块必须提供 `backup_targets` 并通过备份闸门。默认靶场为 `lab/mock_targets.py`（仅 `127.0.0.1`）。
 
 ## 2. 推理引擎管理面
 
@@ -52,7 +52,7 @@ Falco / Tetragon / KubeArmor / Elkeid / AgentSmith / NetObserv / veinmind / 准�
 
 ## 13. 零日级模块（已公开）
 
-当前 6 个 `dify-*` / `open-webui-*` 模块为**已公开**的零日级漏洞模块（`private: false`），正常打包、展示与报告细节。`trident/core/zeroday.py` 保留为默认关闭的可选加密扩展，仅对显式 `private: true` 的未来模块生效；报告可用 `redact_zeroday=True` 可选脱敏。
+当前 6 个 `dify-*` / `open-webui-*` 模块为**已公开**的零日级漏洞模块（`private: false`），正常打包、展示与报告细节。`inkblade/core/zeroday.py` 保留为默认关闭的可选加密扩展，仅对显式 `private: true` 的未来模块生效；报告可用 `redact_zeroday=True` 可选脱敏。
 
 ## 14. 研究伦理与披露
 

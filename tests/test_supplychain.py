@@ -15,32 +15,32 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident import supplychain
+from inkblade import supplychain
 
 REPO = Path(__file__).resolve().parents[1]
 PY = sys.executable
-SECRET = "TRIDENT-FIXTURE-ONLY-model-key-2026-10"
+SECRET = "INKBLADE-FIXTURE-ONLY-model-key-2026-10"
 
 
 def _sha(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def _model(tmp: Path, name: str = "trident-test-model") -> dict:
+def _model(tmp: Path, name: str = "inkblade-test-model") -> dict:
     weights = tmp / "model.safetensors"
-    weights.write_bytes(b"TRIDENT-FIXTURE-WEIGHTS-v1")
+    weights.write_bytes(b"INKBLADE-FIXTURE-WEIGHTS-v1")
     return {
         "name": name,
         "version": "2026.10",
         "path": "model.safetensors",
-        "source": "https://example.invalid/trident/models/deepseek-v3",
+        "source": "https://example.invalid/inkblade/models/deepseek-v3",
         "license": "Apache-2.0",
         "format": "safetensors",
         "task": "text-generation",
         "dataset": [{
-            "name": "trident-fixture-dataset",
+            "name": "inkblade-fixture-dataset",
             "version": "2026.10",
-            "source": "https://example.invalid/trident/datasets/fixture",
+            "source": "https://example.invalid/inkblade/datasets/fixture",
             "license": "CC-BY-4.0",
         }],
     }
@@ -52,11 +52,11 @@ def _bundle(tmp: Path) -> dict:
         "mediaType": "application/vnd.dev.cosign.simplesigning.v1+json",
         "artifact": {"name": "model.safetensors", "sha256": _sha(weights.read_bytes())},
         "source": {
-            "repository": "https://example.invalid/trident/models/deepseek-v3",
+            "repository": "https://example.invalid/inkblade/models/deepseek-v3",
             "revision": "a" * 40,
             "ref": "refs/tags/v2026.10",
         },
-        "builder": {"id": "trident-fixture-builder"},
+        "builder": {"id": "inkblade-fixture-builder"},
         "certificate": {"issuer": "https://fixture.invalid/oidc", "subject": "model@fixture.invalid"},
         "transparency": {"logIndex": 42, "logId": "fixture-rekor", "integratedTime": 1790000000},
     }
@@ -70,7 +70,7 @@ def _trust_root() -> dict:
                 "alg": "HMAC-SHA256",
                 "fixture_secret": SECRET,
                 "issuer": "https://fixture.invalid/oidc",
-                "allowed_repositories": ["https://example.invalid/trident/models/deepseek-v3"],
+                "allowed_repositories": ["https://example.invalid/inkblade/models/deepseek-v3"],
             }
         },
         "require_transparency_log": True,
@@ -92,29 +92,29 @@ class TestSbom(unittest.TestCase):
         self.assertEqual(sbom["specVersion"], "1.5")
         self.assertTrue(sbom["serialNumber"].startswith("urn:uuid:"))
         self.assertEqual(sbom["version"], 1)
-        self.assertEqual(sbom["metadata"]["tools"][0]["name"], "trident")
+        self.assertEqual(sbom["metadata"]["tools"][0]["name"], "inkblade")
         self.assertIn("component", sbom["metadata"])
 
         comp = next(c for c in sbom["components"]
                     if c["type"] == "machine-learning-model" and c["name"] == model["name"])
         self.assertEqual(comp["version"], "2026.10")
         self.assertEqual(comp["hashes"][0]["alg"], "SHA-256")
-        self.assertEqual(comp["hashes"][0]["content"], _sha(b"TRIDENT-FIXTURE-WEIGHTS-v1"))
+        self.assertEqual(comp["hashes"][0]["content"], _sha(b"INKBLADE-FIXTURE-WEIGHTS-v1"))
         self.assertEqual(comp["licenses"][0]["license"]["id"], "Apache-2.0")
         self.assertEqual(comp["externalReferences"][0]["url"], model["source"])
         self.assertEqual(comp["modelCard"]["modelParameters"]["task"], "text-generation")
-        dataset_refs = [p["value"] for p in comp["properties"] if p["name"] == "trident:dataset"]
+        dataset_refs = [p["value"] for p in comp["properties"] if p["name"] == "inkblade:dataset"]
         self.assertEqual(len(dataset_refs), 1)
 
         ds = next(c for c in sbom["components"] if c["type"] == "data")
-        self.assertEqual(ds["name"], "trident-fixture-dataset")
+        self.assertEqual(ds["name"], "inkblade-fixture-dataset")
         self.assertEqual(ds["licenses"][0]["license"]["id"], "CC-BY-4.0")
-        self.assertIn("trident:dataset", json.dumps(comp["properties"]))
+        self.assertIn("inkblade:dataset", json.dumps(comp["properties"]))
 
     def test_explicit_hash_supported(self):
         model = _model(self.root)
         model.pop("path")
-        model["sha256"] = _sha(b"TRIDENT-FIXTURE-WEIGHTS-v1")
+        model["sha256"] = _sha(b"INKBLADE-FIXTURE-WEIGHTS-v1")
         sbom = supplychain.build_sbom([model], root=self.root)
         comp = next(c for c in sbom["components"] if c["type"] == "machine-learning-model")
         self.assertEqual(comp["hashes"][0]["content"], model["sha256"])
@@ -153,7 +153,7 @@ class TestVerifyModel(unittest.TestCase):
         self.tmp = TemporaryDirectory()
         self.root = Path(self.tmp.name)
         self.weights = self.root / "model.safetensors"
-        self.weights.write_bytes(b"TRIDENT-FIXTURE-WEIGHTS-v1")
+        self.weights.write_bytes(b"INKBLADE-FIXTURE-WEIGHTS-v1")
         self.bundle = _bundle(self.root)
         self.trust = _trust_root()
 
@@ -210,7 +210,7 @@ class TestVerifyModel(unittest.TestCase):
         self.assertIn("transparency-log", verdict["errors"])
 
     def test_shipped_provenance_example(self):
-        data = REPO / "trident" / "data" / "supplychain"
+        data = REPO / "inkblade" / "data" / "supplychain"
         verdict = supplychain.verify_model(
             data / "artifact.example.bin",
             data / "provenance.example.json",
@@ -221,7 +221,7 @@ class TestVerifyModel(unittest.TestCase):
     def test_expected_source_mismatch(self):
         verdict = supplychain.verify_model(
             self.weights, self.bundle, self.trust,
-            expected_source="https://example.invalid/trident/models/other")
+            expected_source="https://example.invalid/inkblade/models/other")
         self.assertFalse(verdict["ok"])
         self.assertIn("source-repository", verdict["errors"])
 
@@ -322,7 +322,7 @@ class TestSupplyChainCli(unittest.TestCase):
         self.tmp = TemporaryDirectory()
         self.root = Path(self.tmp.name)
         self.weights = self.root / "model.safetensors"
-        self.weights.write_bytes(b"TRIDENT-FIXTURE-WEIGHTS-v1")
+        self.weights.write_bytes(b"INKBLADE-FIXTURE-WEIGHTS-v1")
         self.models_file = self.root / "models.json"
         self.models_file.write_text(json.dumps([_model(self.root)], ensure_ascii=False),
                                     encoding="utf-8")
@@ -338,7 +338,7 @@ class TestSupplyChainCli(unittest.TestCase):
     def _run(self, *args):
         env = dict(os.environ)
         env["PYTHONIOENCODING"] = "utf-8"
-        return subprocess.run([PY, "-m", "trident", *args], cwd=str(REPO),
+        return subprocess.run([PY, "-m", "inkblade", *args], cwd=str(REPO),
                               capture_output=True, timeout=60, env=env)
 
     def test_cli_sbom(self):

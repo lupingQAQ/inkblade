@@ -1,5 +1,5 @@
 {
-  "schema": "trident-cve-catalog-v1",
+  "schema": "inkblade-cve-catalog-v1",
   "verified_at": "2026-10-26",
   "method_note": "测试夹具：结构化 conditions 只为验证判定器文法，版本/修复版本取自真实公告；不是生产目录。",
   "entries": [

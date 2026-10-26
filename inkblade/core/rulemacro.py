@@ -112,7 +112,7 @@ class RuleBuilder:
         exp = self.expand(expr)
         return {"rule": rule, "desc": desc or rule, "condition": exp["condition"],
                 "output": output or f"{rule} (%proc.name %container.id)",
-                "priority": priority, "tags": list(tags or ["trident", "ml-cluster"]),
+                "priority": priority, "tags": list(tags or ["inkblade", "ml-cluster"]),
                 "meta": {"lists": exp["lists"], "macros": exp["macros"]}}
 
 

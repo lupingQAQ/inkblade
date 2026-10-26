@@ -7,7 +7,7 @@
 ## 1. 统一执行器与结果
 
 ```bash
-python -m trident.enterprise.localcheck --out reports/samples/enterprise-local
+python -m inkblade.enterprise.localcheck --out reports/samples/enterprise-local
 ```
 
 - 结果：**11/11 PASS**（2026-10-26T09:03:08Z）
@@ -32,7 +32,7 @@ python -m trident.enterprise.localcheck --out reports/samples/enterprise-local
 
 ## 2. ER-16 百万事件实测
 
-`trident/enterprise/scale.py` 合成 100 万条审计事件（无真实数据），SQLite WAL +
+`inkblade/enterprise/scale.py` 合成 100 万条审计事件（无真实数据），SQLite WAL +
 每批 5,000 写入 + `UNIQUE(raw_sha256)` 去重：
 
 | 指标 | 值 |

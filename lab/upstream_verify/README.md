@@ -42,7 +42,7 @@ python tools/verify-exploits.py
 python -m unittest tests.test_exploit_verification
 ```
 
-`trident/core/exploit-registry.json` is the machine-readable source of truth;
+`inkblade/core/exploit-registry.json` is the machine-readable source of truth;
 `docs/EXPLOIT-VERIFICATION.md` is the human report. CVE catalog, version matrix
 and CVE module findings carry the same verdict.
 

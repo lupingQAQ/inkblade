@@ -6,14 +6,14 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core import (admission, agentbench, connectors, credcheck, dedupe, inpod,
+from inkblade.core import (admission, agentbench, connectors, credcheck, dedupe, inpod,
                           lineage, llmredteam, narrative, pathcalc, pcap, policygen,
                           retest, sankey)
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import ExecutionLocked, init_roe
-from trident.core.users import Session
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import ExecutionLocked, init_roe
+from inkblade.core.users import Session
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 
 
 def _session(role="lead"):
@@ -80,7 +80,7 @@ class TestConnectors(Base):
         siem = connectors.build_payload(self.run.findings[0], target="siem", run="r1")
         self.assertEqual(siem["payload"]["event"]["kind"], "alert")
         hook = connectors.build_payload(self.run.findings[0], target="webhook", run="r1")
-        self.assertEqual(hook["payload"]["event"], "trident.finding")
+        self.assertEqual(hook["payload"]["event"], "inkblade.finding")
         with self.assertRaises(connectors.ConnectorError):
             connectors.build_payload(self.run.findings[0], target="bogus")
         with self.assertRaises(connectors.ConnectorError):

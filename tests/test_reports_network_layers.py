@@ -10,8 +10,8 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.reports.render import render_pentest
+from inkblade.core.evidence import EvidenceStore
+from inkblade.reports.render import render_pentest
 
 
 class TestNetworkThreatModelSection(unittest.TestCase):

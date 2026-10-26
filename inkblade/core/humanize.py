@@ -1,7 +1,7 @@
 """高频错误的「人话」文案：发生了什么 / 为什么 / 怎么修。
 
 设计约束（与 docs/HOW-TO-DESIGN-COMMERCIAL-AGENT.md 第九节一致）：
-- CLI 默认不把 Python 堆栈甩给陌生用户；堆栈只在 ``TRIDENT_DEBUG=1`` 时出现；
+- CLI 默认不把 Python 堆栈甩给陌生用户；堆栈只在 ``INKBLADE_DEBUG=1`` 时出现；
 - 每个错误有稳定错误码（E1xx 环境/系统 / E2xx 授权 / E3xx 备份与回滚 /
   E4xx 存储与对象 / E5xx 混沌编排 / E6xx API 客户端 / E7xx 试点与 kubeconfig /
   E8xx 计划任务 / E9xx 未知）；
@@ -33,7 +33,7 @@ class HumanError:
 
     def lines(self) -> list[str]:
         return [
-            f"[TRIDENT-{self.code}] {self.title}",
+            f"[INKBLADE-{self.code}] {self.title}",
             f"发生了什么：{self.happened}",
             f"为什么：{self.why}",
             f"怎么修：{self.fix}",
@@ -79,17 +79,17 @@ def _is_port_in_use(exc: BaseException) -> bool:
 
 
 # --------------------------------------------------------------------------- E5xx 混沌
-# 混沌错误族自带稳定错误码（exc.trident_code），这里只负责渲染成人话。
+# 混沌错误族自带稳定错误码（exc.inkblade_code），这里只负责渲染成人话。
 
 _CHAOS_CODE_TITLES = {
-    "E501": ("混沌实验被中止", "中止条件命中或外部中止信号（trident chaos abort）触发。"),
+    "E501": ("混沌实验被中止", "中止条件命中或外部中止信号（inkblade chaos abort）触发。"),
     "E502": ("稳态未满足，已拒绝注入", "实验开始前的稳态假设探测未全部成立。"),
     "E503": ("回滚后稳态未恢复", "自动回滚已执行，但稳态复测仍未通过。"),
 }
 
 
 def _chaos_error(exc: BaseException) -> HumanError | None:
-    code = getattr(exc, "trident_code", None)
+    code = getattr(exc, "inkblade_code", None)
     if code not in _CHAOS_CODE_TITLES:
         return None
     title, why = _CHAOS_CODE_TITLES[code]
@@ -98,10 +98,10 @@ def _chaos_error(exc: BaseException) -> HumanError | None:
         title,
         _text(exc) or title,
         why + "混沌编排只作用于本地仿真靶场，不影响真实集群。",
-        "先 trident chaos list 查看实验稳态要求；重跑：trident chaos run <实验id>；"
+        "先 inkblade chaos list 查看实验稳态要求；重跑：inkblade chaos run <实验id>；"
         "持续失败时把 chaos-runs/latest.json 与报错一起提交。"
         if code == "E502" else
-        "重试：trident chaos run <实验id>（回滚动作会先执行）；"
+        "重试：inkblade chaos run <实验id>（回滚动作会先执行）；"
         "查看报告：chaos-runs/latest.json 的 phases.rollback 字段。",
     )
 
@@ -190,7 +190,7 @@ def _materialize(spec: BaseException | dict) -> BaseException:
     else:
         attrs: dict = {}
         if kind in ("ChaosAbortSignalled", "ChaosSteadyStateError", "ChaosRollbackError"):
-            attrs["trident_code"] = {"ChaosAbortSignalled": "E501",
+            attrs["inkblade_code"] = {"ChaosAbortSignalled": "E501",
                                      "ChaosSteadyStateError": "E502",
                                      "ChaosRollbackError": "E503"}[kind]
         exc = type(kind, (Exception,), attrs)(msg)
@@ -292,7 +292,7 @@ def explain_exception(
             "kubeconfig / 试点输入不可用",
             f"试点模式输入校验失败：{msg}。",
             "kubeconfig 不是合法 YAML/JSON、缺 clusters/contexts/users 键，或合并后没有 context。",
-            "先跑导入向导校验：python -m trident onboard-cluster --dry-run；"
+            "先跑导入向导校验：python -m inkblade onboard-cluster --dry-run；"
             "离线场景改用 --snapshot（kubectl get 导出的 JSON）；"
             "多文件合并冲突项见输出的 inventory.conflicts。",
         )
@@ -304,7 +304,7 @@ def explain_exception(
             "demo 无法安全开始",
             msg,
             "demo 默认只写 ./demo；输出目录已有非 demo 文件时拒绝覆盖，避免碰用户真实数据。",
-            "换目录：python -m trident demo --out demo-2；"
+            "换目录：python -m inkblade demo --out demo-2；"
             "或确认目录可清空后手动删除其中的旧文件再重跑。",
         )
 
@@ -314,8 +314,8 @@ def explain_exception(
             "quickstart 未完成",
             msg,
             "向导在签署前被取消或输入不可用；此时不会留下半签授权（consent 仍为空/旧值）。",
-            "在终端重跑 python -m trident quickstart；"
-            "非交互场景加 --yes 使用默认值，或先跑 python -m trident demo。",
+            "在终端重跑 python -m inkblade quickstart；"
+            "非交互场景加 --yes 使用默认值，或先跑 python -m inkblade demo。",
         )
 
     # ---- E1xx 环境 / 安装 -------------------------------------------------
@@ -324,8 +324,8 @@ def explain_exception(
             "E103",
             f"端口 {port} 已被占用",
             f"启动本地服务时无法绑定 127.0.0.1:{port}（{msg or 'address already in use'}）。",
-            "该端口已有其他程序在监听；Trident 不会抢占或杀掉别人的进程。",
-            f"换一个端口：python -m trident ui --port {int(port) + 1 if str(port).isdigit() else 8766}；"
+            "该端口已有其他程序在监听；InkBlade 不会抢占或杀掉别人的进程。",
+            f"换一个端口：python -m inkblade ui --port {int(port) + 1 if str(port).isdigit() else 8766}；"
             "或先停止占用该端口的程序（Windows: netstat -ano | findstr :8765）。",
         )
 
@@ -338,10 +338,10 @@ def explain_exception(
                 "E104",
                 "找不到 bash",
                 f"需要 bash 的步骤无法启动（{msg}）。",
-                "Trident 核心、doctor、demo 和 mock 靶场都是纯 Python，不依赖 bash；"
+                "InkBlade 核心、doctor、demo 和 mock 靶场都是纯 Python，不依赖 bash；"
                 "只有 KIND / WSL / 部分 lab 脚本需要它。",
                 "Windows 请安装 Git Bash 或 WSL2，并把 bash 加入 PATH；"
-                "只想看 demo 可直接运行 python -m trident demo（无需 bash）。",
+                "只想看 demo 可直接运行 python -m inkblade demo（无需 bash）。",
             )
         if "kubeconfig" in low or "kubeconfig" in name.lower() or _ctx(context, "kubeconfig"):
             kc = _ctx(context, "kubeconfig", name or "~/.kube/config")
@@ -351,7 +351,7 @@ def explain_exception(
                 f"无法读取真实集群凭据：{msg or kc}。",
                 "真实集群模式需要 kubeconfig；demo 模式使用本地 mock，不需要集群凭据。",
                 "设置 KUBECONFIG 环境变量或把 kubeconfig 放到 ~/.kube/config；"
-                "然后运行 python -m trident doctor --mode cluster --kubeconfig <路径>。",
+                "然后运行 python -m inkblade doctor --mode cluster --kubeconfig <路径>。",
             )
         if "workspace" in low or "工作区" in msg or "run not found" in low:
             return HumanError(
@@ -359,7 +359,7 @@ def explain_exception(
                 "工作区或 run 不存在",
                 f"找不到请求的工作区/运行记录（{msg}）。",
                 "工作区目录只在 demo/quickstart/首次执行后创建；拼错 --home/--workspace/--run 也会命中这里。",
-                "先运行 python -m trident demo 建一个 demo 工作区；"
+                "先运行 python -m inkblade demo 建一个 demo 工作区；"
                 f"或用 --home/--workspace 指向已存在的工作区（当前 workspace={workspace}）。",
             )
         return HumanError(
@@ -368,7 +368,7 @@ def explain_exception(
             f"找不到运行所需文件：{msg}。",
             "路径拼写、工作目录或安装包数据文件不完整。",
             "在仓库根目录重试；若已安装为 wheel，先 python -m pip install -e . 恢复数据文件；"
-            "再运行 python -m trident doctor。",
+            "再运行 python -m inkblade doctor。",
         )
 
     # ---- E103 / E102：依赖与端口（部分平台抛 OSError 而非 FileNotFound）----
@@ -385,14 +385,14 @@ def explain_exception(
                 f"高级功能无法导入 {name}（{msg}）。",
                 f"{name} 是可选增强：缺失时核心扫描、demo、报告仍可运行，只会降级（压缩/证书/采样）。",
                 f"需要该能力时：python -m pip install {name}；否则忽略本提示，"
-                "或运行 python -m trident doctor 查看降级说明。",
+                "或运行 python -m inkblade doctor 查看降级说明。",
             )
         return HumanError(
             "E102",
             "Python 依赖缺失",
             f"导入模块失败：{msg}。",
-            "当前 Python 环境不完整，或没有在仓库根目录安装 Trident。",
-            "python -m pip install -e .；再运行 python -m trident doctor 确认。",
+            "当前 Python 环境不完整，或没有在仓库根目录安装 InkBlade。",
+            "python -m pip install -e .；再运行 python -m inkblade doctor 确认。",
         )
 
     # ---- E1xx 系统/网络（连接/超时/SSL/磁盘/配置/解释器版本） --------------
@@ -402,8 +402,8 @@ def explain_exception(
             "请求超时",
             f"等待目标响应超时：{msg or 'timed out'}。",
             "目标服务响应慢或不可达（mock 靶场未启动 / kubectl 卡住 / 上游限流）。",
-            "先确认目标进程存活：python -m trident doctor；"
-            "调大 --timeout（如 trident pilot --timeout 120）后重试；"
+            "先确认目标进程存活：python -m inkblade doctor；"
+            "调大 --timeout（如 inkblade pilot --timeout 120）后重试；"
             "持续超时请检查代理设置（NO_PROXY=127.0.0.1）。",
         )
 
@@ -413,7 +413,7 @@ def explain_exception(
             "目标不可达（连接被拒绝/重置）",
             f"无法连接目标服务：{msg or 'connection refused'}。",
             "目标端口没有进程监听（服务未启动或已退出），或被防火墙/代理拦截。",
-            "mock 模式先运行 python -m trident demo（自动起本地靶场）；"
+            "mock 模式先运行 python -m inkblade demo（自动起本地靶场）；"
             "已有靶场请检查 --target 端口；Windows 代理用户设置 NO_PROXY=127.0.0.1。",
         )
 
@@ -444,8 +444,8 @@ def explain_exception(
             f"JSON/YAML 配置无法解析：{msg}。",
             "文件不是合法 JSON/YAML（多余逗号、Tab 缩进、引号不闭合），或文件被截断。",
             "用编辑器打开报错行号检查语法；"
-            "kubeconfig 校验可先跑 python -m trident onboard-cluster --dry-run；"
-            "链/模块定义请对照 trident/chains/*.json 的格式。",
+            "kubeconfig 校验可先跑 python -m inkblade onboard-cluster --dry-run；"
+            "链/模块定义请对照 inkblade/chains/*.json 的格式。",
         )
 
     if _is_old_python(exc):
@@ -453,7 +453,7 @@ def explain_exception(
             "E106",
             "Python 版本过低",
             f"当前解释器不满足版本要求：{msg}。",
-            "Trident 需要 Python ≥ 3.10（match 语法与 dataclass 特性）；3.8/3.9 无法运行。",
+            "InkBlade 需要 Python ≥ 3.10（match 语法与 dataclass 特性）；3.8/3.9 无法运行。",
             "安装 Python 3.10+ 后重建环境：python -m pip install -e .；"
             "或使用 uv/pyenv 切换版本：uv python install 3.12。",
         )
@@ -466,8 +466,8 @@ def explain_exception(
                 "授权级别不足",
                 f"模块要求更高的授权级别：{msg}。",
                 "只读侦察级授权不能执行主动探测/利用验证/全影响演示模块；这是防止误改的硬闸门。",
-                "用 python -m trident quickstart 重新签署更高级别授权（真实集群建议先只读）；"
-                "或改用 trident module list 中「读」且级别更低的模块。",
+                "用 python -m inkblade quickstart 重新签署更高级别授权（真实集群建议先只读）；"
+                "或改用 inkblade module list 中「读」且级别更低的模块。",
             )
         if "不在授权范围" in msg or ("范围" in msg and "授权" in msg):
             return HumanError(
@@ -475,7 +475,7 @@ def explain_exception(
                 "目标不在授权范围内",
                 f"执行被范围闸门拒绝：{msg}。",
                 "consent 只覆盖声明的 namespace / CIDR；params 里的 host/target_ns 必须落在其中。",
-                "把目标 namespace/CIDR 加入授权后重签：python -m trident quickstart；"
+                "把目标 namespace/CIDR 加入授权后重签：python -m inkblade quickstart；"
                 f"当前工作区：{workspace}。",
             )
         if "时间窗" in msg:
@@ -484,17 +484,17 @@ def explain_exception(
                 "授权时间窗已过期或未开始",
                 f"当前时间不在 consent 声明的时间窗内：{msg}。",
                 "授权按时间窗失效，过期后所有执行路径都会拒绝（防止旧授权被复用）。",
-                "用 python -m trident quickstart 重新签署（默认给 7 天窗口）；"
+                "用 python -m inkblade quickstart 重新签署（默认给 7 天窗口）；"
                 "或联系授权人延期。",
             )
         return HumanError(
             "E201",
             "工作区尚未完成授权",
             f"执行被授权闸门拒绝：{msg or 'consent 未签署'}。",
-            "Trident 只对已签署书面授权的资产执行；demo/quickstart 之前没有 consent.json。",
-            "最快：python -m trident demo（自动签 demo 范围授权）。"
-            f"真实集群：python -m trident quickstart --workspace-dir <目录>；"
-            f"查看状态：python -m trident roe --workspace {workspace}。",
+            "InkBlade 只对已签署书面授权的资产执行；demo/quickstart 之前没有 consent.json。",
+            "最快：python -m inkblade demo（自动签 demo 范围授权）。"
+            f"真实集群：python -m inkblade quickstart --workspace-dir <目录>；"
+            f"查看状态：python -m inkblade roe --workspace {workspace}。",
         )
 
     if isinstance(exc, PermissionError) or "access is denied" in low or "拒绝访问" in msg:
@@ -502,9 +502,9 @@ def explain_exception(
             "E205",
             "当前角色或系统权限不足",
             f"操作被权限校验拒绝：{msg}。",
-            "Trident 角色矩阵（admin/lead/tester/auditor）或操作系统文件 ACL 不允许该动作。",
+            "InkBlade 角色矩阵（admin/lead/tester/auditor）或操作系统文件 ACL 不允许该动作。",
             "用有 execute 权限的 lead/tester 账号（--role tester --actor <名字>）；"
-            "文件写权限问题请换 --home 到可写目录，或运行 python -m trident doctor 定位。",
+            "文件写权限问题请换 --home 到可写目录，或运行 python -m inkblade doctor 定位。",
         )
 
     # ---- E3xx 备份闸门 ----------------------------------------------------
@@ -528,7 +528,7 @@ def explain_exception(
                 "找不到该 run",
                 f"报告/回滚引用的 run 不存在：{key}。",
                 "run 名称来自 evidence/<workspace>/<run>/；临时 demo 目录被清理后旧名称也会失效。",
-                "先运行 python -m trident demo 生成 run；"
+                "先运行 python -m inkblade demo 生成 run；"
                 "或检查 --home/--workspace/--run 是否与实际证据目录一致。",
             )
         return HumanError(
@@ -536,8 +536,8 @@ def explain_exception(
             "模块或链不存在",
             f"找不到请求的对象：{key}。",
             "模块/链键拼写错误，或 --modules-dir/--chains-dir 指向了空目录。",
-            "python -m trident module list --modules-dir trident/modules 查看模块键；"
-            "链定义在 trident/chains/*.json。",
+            "python -m inkblade module list --modules-dir inkblade/modules 查看模块键；"
+            "链定义在 inkblade/chains/*.json。",
         )
 
     if isinstance(exc, FileNotFoundError) and ("workspace" in low or "工作区" in msg):
@@ -546,7 +546,7 @@ def explain_exception(
             "工作区不存在",
             f"找不到工作区：{msg}。",
             "工作区尚未创建，或 --workspace 名称与 evidence/ 下的目录不一致。",
-            "先运行 python -m trident demo（创建 demo 工作区），"
+            "先运行 python -m inkblade demo（创建 demo 工作区），"
             "或用 --workspace 指定已存在的工作区。",
         )
 
@@ -556,9 +556,9 @@ def explain_exception(
             "E208",
             "未知角色",
             f"角色名不在角色矩阵中：{msg}。",
-            "Trident 角色只有 admin/lead/tester/auditor 四种（能力位不同）；写错名字会在此处兜住。",
+            "InkBlade 角色只有 admin/lead/tester/auditor 四种（能力位不同）；写错名字会在此处兜住。",
             "改用 --role admin|lead|tester|auditor；"
-            "查看能力位：python -m trident user add --help。",
+            "查看能力位：python -m inkblade user add --help。",
         )
 
     if "consent" in low and ("字段" in msg or "缺失" in msg):
@@ -567,7 +567,7 @@ def explain_exception(
             "授权书字段不完整",
             f"签署 consent 时缺少必填字段：{msg}。",
             "quickstart/API 签授权都要 level/范围/时间窗齐备；缺字段不会写入半份授权。",
-            "交互式补签：python -m trident quickstart；"
+            "交互式补签：python -m inkblade quickstart；"
             "API 调 /api/v1/consent/sign 时补齐 fields（level 必填）。",
         )
 
@@ -590,7 +590,7 @@ def explain_exception(
             f"SQLite 证据库无法读取：{msg}。",
             "evidence.db 被截断/非 SQLite 格式（拷贝中断、磁盘满、0 字节覆盖）。",
             "从归档层恢复：run 目录的 tar+SHA256 归档是最终事实源；"
-            "或换新 run 重跑（python -m trident demo 验证环境正常）。",
+            "或换新 run 重跑（python -m inkblade demo 验证环境正常）。",
         )
 
     # ---- E6xx API 客户端 ---------------------------------------------------
@@ -602,7 +602,7 @@ def explain_exception(
             f"API 调用被拒（401）：{msg}。",
             "Bearer token 缺失/过期，或用户名密码错误；本地服务重启后旧 token 全部失效。",
             "重新登录拿 token：POST /api/login；"
-            "MCP/脚本场景设置 TRIDENT_TOKEN；demo 工作区默认账号见 demo 输出。",
+            "MCP/脚本场景设置 INKBLADE_TOKEN；demo 工作区默认账号见 demo 输出。",
         )
     if api_status == 403 or "越权" in msg:
         return HumanError(
@@ -611,7 +611,7 @@ def explain_exception(
             f"API 调用被拒（403）：{msg}。",
             "会话只授权了部分工作区；访问未授权 workspace 会被拒（多租户隔离）。",
             "用 users.json 中授权的工作区名重试；"
-            "需要扩权由 admin 重建用户：python -m trident user add --role <角色>。",
+            "需要扩权由 admin 重建用户：python -m inkblade user add --role <角色>。",
         )
     if api_status == 423 or ("consent 未签署" in msg and api_status):
         return HumanError(
@@ -619,7 +619,7 @@ def explain_exception(
             "API 授权锁（423）",
             f"执行类 API 被授权闸门锁定：{msg}。",
             "该工作区 consent 未签署时，所有执行/写路径一律 423（与 CLI 同一把锁）。",
-            "先签署授权：python -m trident quickstart 或 POST /api/v1/consent/sign；"
+            "先签署授权：python -m inkblade quickstart 或 POST /api/v1/consent/sign；"
             "只读浏览不受此锁影响。",
         )
 
@@ -630,7 +630,7 @@ def explain_exception(
             "kubeconfig / 试点输入不可用",
             f"试点模式输入校验失败：{msg}。",
             "kubeconfig 不是合法 YAML/JSON、缺 clusters/contexts/users 键，或合并后没有 context。",
-            "先跑导入向导校验：python -m trident onboard-cluster --dry-run；"
+            "先跑导入向导校验：python -m inkblade onboard-cluster --dry-run；"
             "离线场景改用 --snapshot（kubectl get 导出的 JSON）；"
             "多文件合并冲突项见输出的 inventory.conflicts。",
         )
@@ -642,7 +642,7 @@ def explain_exception(
             f"创建计划任务被拒：{msg}。",
             "cron 只接受 5 字段白名单表达式；interval 需为正整数秒；同名计划不可重复。",
             "合法示例：--cron '0 3 * * *'（每日 03:00）或 --interval 86400；"
-            "查看现有计划：python -m trident schedule list。",
+            "查看现有计划：python -m inkblade schedule list。",
         )
 
     return HumanError(
@@ -650,7 +650,7 @@ def explain_exception(
         "未预期的错误",
         f"{type(exc).__name__}: {msg or '（无消息）'}",
         "这是未归类的异常，通常意味着上游数据/环境与预期不符。",
-        "设置 TRIDENT_DEBUG=1 重跑以查看堆栈；同时运行 python -m trident doctor，"
+        "设置 INKBLADE_DEBUG=1 重跑以查看堆栈；同时运行 python -m inkblade doctor，"
         "把这两段输出一起提交。",
     )
 

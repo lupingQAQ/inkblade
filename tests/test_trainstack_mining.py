@@ -16,11 +16,11 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident import mining
-from trident.core.registry import load_modules
+from inkblade import mining
+from inkblade.core.registry import load_modules
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
+MODULES_DIR = REPO / "inkblade" / "modules"
 ARTIFACT = REPO / "reports" / "samples" / "mining-trainstack"
 FIXTURE = REPO / "lab" / "mining-fixture"
 
@@ -115,7 +115,7 @@ class TestRepoArtifacts(unittest.TestCase):
         report = ARTIFACT / "mining-report.json"
         self.assertTrue(report.is_file(), "缺 reports/samples/mining-trainstack/mining-report.json")
         doc = json.loads(report.read_text(encoding="utf-8"))
-        self.assertEqual(doc["schema"], "trident-mining-report-v1")
+        self.assertEqual(doc["schema"], "inkblade-mining-report-v1")
         self.assertGreaterEqual(doc["candidates_total"], 5)
         self.assertEqual(set(doc["targets"]), set(EXPECTED_TAGS))
         self.assertTrue(all(c["status"] == "pending-manual-review"

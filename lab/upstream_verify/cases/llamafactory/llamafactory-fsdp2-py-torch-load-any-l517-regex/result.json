@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "llamafactory-fsdp2-py-torch-load-any-l517-regex",
  "source": "mining",
  "component": "llamafactory",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-fsdp2-py-torch-load-any-l517-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.143,
- "started_at": "2026-10-26T09:23:25+00:00",
+ "duration_s": 0.407,
+ "started_at": "2026-10-26T19:52:31+00:00",
  "marker": {
-  "text": "TRIDENT-UV-llamafactory-fsdp2-py-torch-load-any-l517-regex",
+  "text": "INKBLADE-UV-llamafactory-fsdp2-py-torch-load-any-l517-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-fsdp2-py-torch-load-any-l517-regex/evidence/log.txt",
-   "sha256": "f33af9adf9a7136ed65196cac8e4cf27bea8fafcf83193e355b42864101c7f36",
+   "sha256": "7570c2cbc4797e34b7f78320afc97e63a33cd8f4291e69eb5bd495ddd5ee9d7f",
    "size": 270
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-fsdp2-py-torch-load-any-l517-regex/evidence/static-check.json",
-   "sha256": "ec50206ce55edc33bdb23555a988ba87ed5ce1ec2fc5100e7a4def3cecd3f1f5",
-   "size": 1968
+   "sha256": "6f779a949b128463adb39dacc85232598c674188ced4d742e5de04a0bfb401a1",
+   "size": 1969
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "c64bad4ef481f7bb8ca3e3652a092064eff461a31b86b28333e1ffe224b745aa",
+ "manifest_sha256": "c3f6630aaeec8bfe1717fb9502f0a23ab1d1e08c2fb7f973a654a718cfb559b3",
  "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-fsdp2-py-torch-load-any-l517-regex\"}\n",
  "stderr": "",
  "notes": "FSDP2 plugin loads full-checkpoint state with torch.load(ckpt_file, map_location='cpu') and no weights_only pin. On torch>=2.6 the weights_only default is True, so the unpickling surface is closed on current stacks; on torch<2.6 the same line is a checkpoint-dir pickle RCE. Recorded as a version-paired trust boundary, not a dynamically reproduced sink on this host (torch 2.14.1/2.5.1 split)."

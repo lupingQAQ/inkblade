@@ -1,10 +1,10 @@
 {
-  "schema": "trident-firmware-manifest/v1",
+  "schema": "inkblade-firmware-manifest/v1",
   "generated_at": "2026-10-26T00:00:00Z",
   "vendor": "MockVendor",
   "signing": {
     "alg": "hmac-sha256-fixture",
-    "key_id": "trident-hardware-fixture-2026"
+    "key_id": "inkblade-hardware-fixture-2026"
   },
   "components": [
     {
@@ -40,5 +40,5 @@
       "signed_by": "MockVendor"
     }
   ],
-  "signature": "37591c92184a662ff43a06785706d6b6444eddde05743d379574a49f1757cd17"
+  "signature": "1fcebba5f613402f986ba14fe0b60624a7c4cf013d213c94789b3ed103a9ce40"
 }

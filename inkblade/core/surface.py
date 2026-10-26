@@ -3,7 +3,7 @@
 
 A module is only executable when the deployment surfaces it needs actually
 exist.  Every module declares ``required_surfaces`` (in ``module.json`` or the
-legacy ``trident/profiles/surface-map.json``); a detector resolves each
+legacy ``inkblade/profiles/surface-map.json``); a detector resolves each
 requirement to ``present`` / ``absent`` / ``unknown`` with evidence.
 
 Design rules
@@ -42,8 +42,8 @@ SURFACE_TYPES = (
 STATUSES = ("present", "absent", "unknown")
 VERDICTS = ("production-testable", "conditional", "no-surface")
 
-_TRIDENT = Path(__file__).resolve().parents[1]
-PROFILES_DIR = _TRIDENT / "profiles"
+_INKBLADE = Path(__file__).resolve().parents[1]
+PROFILES_DIR = _INKBLADE / "profiles"
 DEFAULT_PROFILE = "bare-k8s-gpu"
 
 _ALIASES = {
@@ -263,7 +263,7 @@ def profile_collection(profile: dict | str, *, mode: str = "profile") -> dict:
     """Turn a profile declaration into a collection-shaped inventory."""
     prof = load_profile(profile) if not isinstance(profile, dict) else profile
     out = {
-        "schema": "trident-collection-v1",
+        "schema": "inkblade-collection-v1",
         "mode": mode,
         "fixture": mode == "fixture",
         "profile": prof["name"],
@@ -314,7 +314,7 @@ def load_collection(path: str | Path) -> dict:
         if candidate.is_file():
             doc = json.loads(candidate.read_text(encoding="utf-8"))
         else:
-            doc = {"schema": "trident-collection-v1", "mode": "live", "fixture": False}
+            doc = {"schema": "inkblade-collection-v1", "mode": "live", "fixture": False}
             for name in ("k8s", "http", "files", "hardware", "runtime"):
                 section = p / f"{name}.json"
                 if section.is_file():
@@ -604,7 +604,7 @@ def matrix(profile: str | Path, modules: dict | None = None, *, collection=None,
     from .registry import load_modules
 
     prof = load_profile(profile)
-    mods = modules if modules is not None else load_modules(_TRIDENT / "modules")
+    mods = modules if modules is not None else load_modules(_INKBLADE / "modules")
     ctx = SurfaceContext.build(profile=prof, collection=collection, probe=probe)
     rows: list[dict] = []
     for key in sorted(mods):
@@ -639,7 +639,7 @@ def matrix(profile: str | Path, modules: dict | None = None, *, collection=None,
     coverage = (covered / denom * 100.0) if denom else 0.0
     operable = (operable_n / denom * 100.0) if denom else 0.0
     return {
-        "schema": "trident-surface-matrix-v1",
+        "schema": "inkblade-surface-matrix-v1",
         "profile": prof["name"],
         "description": prof.get("description", ""),
         "mode": ctx.mode,
@@ -745,7 +745,7 @@ def gate(meta, ctx: SurfaceContext) -> dict:
     if unknown:
         return {
             "status": "skipped-surface-unknown",
-            "reason": "surface state is unknown; rerun `trident collect` or pass --probe: "
+            "reason": "surface state is unknown; rerun `inkblade collect` or pass --probe: "
                       + ", ".join(f"{r.requirement.type}:{r.requirement.selector}" for r in unknown),
             "results": [r.as_dict() for r in results],
             "context": ctx.as_dict(),

@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "trl-data-utils-py-missing-revision-l352-regex",
  "source": "mining",
  "component": "trl",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/trl/trl-data-utils-py-missing-revision-l352-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.144,
- "started_at": "2026-10-26T09:23:44+00:00",
+ "duration_s": 0.291,
+ "started_at": "2026-10-26T19:58:09+00:00",
  "marker": {
-  "text": "TRIDENT-UV-trl-data-utils-py-missing-revision-l352-regex",
+  "text": "INKBLADE-UV-trl-data-utils-py-missing-revision-l352-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-missing-revision-l352-regex/evidence/log.txt",
-   "sha256": "0c835c1519e77679d483e7273a533964e9c5da1ebed23d81640725bf81972841",
+   "sha256": "2f3fd657d36d69baf52081d2558acc6ed86126126e1f27928769a5cf047d82c6",
    "size": 257
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-missing-revision-l352-regex/evidence/static-check.json",
-   "sha256": "b9b6959b35e9f11aab94208b7c389660fda674a6c21f042e287cfcc0b459ef67",
-   "size": 1181
+   "sha256": "f7b09e86ed72178eac25edb35fdbe8b6c80b0ca36a4c340668c470a3e36fc983",
+   "size": 1182
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "3de6df222574d1d9cfa1cee46b915d9407f255f3c3b517cb0021e0630241617e",
+ "manifest_sha256": "8894c35a13943a8c621fd31b8209dde0d5439e6aae9ed3e3a2d8714f1465ea6e",
  "stdout": "{\"status\": \"static-only\", \"case\": \"trl-data-utils-py-missing-revision-l352-regex\"}\n",
  "stderr": "",
  "notes": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."

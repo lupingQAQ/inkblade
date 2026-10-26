@@ -5,5 +5,5 @@ to_base64_line=266
 media_sha256=d308c0138e1e89d0aa7e5afd9eaeea9ad0ce16e661c6e94e3c2582214b998513
 protocol_sha256=168abd3beb6c75079716d837241b61efffd191a4911a1669633d5528372ad5af
 SWIFT_MEDIA_ALLOWED_DIRS unset -> SafeMediaPath.check returns path unchanged
-to_base64(canary) -> base64 decodes to 'TRIDENT-ZD-msswift-media-local-read'
+to_base64(canary) -> base64 decodes to 'INKBLADE-ZD-msswift-media-local-read'
 SWIFT_MEDIA_ALLOWED_DIRS=<repo>\lab\zeroday_reserve\cases\msswift-media-local-read\evidence\allowed-empty -> ValueError: Refusing to read the media file '<path>': it is outside the directories listed in the `SWIFT_MEDIA_ALLOWED_DIRS` environment variable.

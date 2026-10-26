@@ -53,7 +53,7 @@ class ChangeCalendar:
     def _save(self) -> None:
         if self.path:
             self.path.parent.mkdir(parents=True, exist_ok=True)
-            self.path.write_text(json.dumps({"schema": "trident-change-calendar/1",
+            self.path.write_text(json.dumps({"schema": "inkblade-change-calendar/1",
                                              "freezes": self._items},
                                             ensure_ascii=False, indent=2) + "\n",
                                  encoding="utf-8")
@@ -113,10 +113,10 @@ class ChangeCalendar:
                 if float(i["end"]) >= now]
 
     def ics(self) -> str:
-        lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Trident//ChangeCalendar//EN"]
+        lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//InkBlade//ChangeCalendar//EN"]
         for item in self._items:
             lines += ["BEGIN:VEVENT",
-                      f"UID:{item['name']}@trident",
+                      f"UID:{item['name']}@inkblade",
                       f"DTSTART:{datetime.fromtimestamp(float(item['start']), tz=timezone.utc).strftime('%Y%m%dT%H%M%SZ')}",
                       f"DTEND:{datetime.fromtimestamp(float(item['end']), tz=timezone.utc).strftime('%Y%m%dT%H%M%SZ')}",
                       f"SUMMARY:{item['name']}",
@@ -200,7 +200,7 @@ def compare_rule_packs(baseline: dict, candidate: dict) -> dict:
             regressions.append({"type": "rule-removed", "rule": rule_id,
                                 "chains": (old_rules.get(rule_id) or {}).get("chains", [])})
     return {
-        "schema": "trident-rule-regression/1",
+        "schema": "inkblade-rule-regression/1",
         "baseline_rules": len(old_rules),
         "candidate_rules": len(new_rules),
         "chains": len(old_cov),

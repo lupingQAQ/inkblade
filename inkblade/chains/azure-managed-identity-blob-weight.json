@@ -23,7 +23,7 @@
     {
       "id": "role-bucket-proof",
       "module": "cloud-role-overprivilege",
-      "params": {"provider": "azure", "bucket_kind": "blob", "mode": "backup-write", "marker": "TRIDENT-${run.name}"},
+      "params": {"provider": "azure", "bucket_kind": "blob", "mode": "backup-write", "marker": "INKBLADE-${run.name}"},
       "depends_on": ["imds-credential-proof"],
       "writes": true,
       "backup_targets": [

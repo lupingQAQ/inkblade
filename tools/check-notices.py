@@ -3,8 +3,8 @@
 
 检查项：
 1. LICENSE 含 Apache License 2.0 全文标识；
-2. NOTICE 含 KubeTrail 署名、上游 URL、Apache-2.0 与 trident/kubetrail 路径；
-3. ``trident/kubetrail/*.py`` 每个文件含 KubeTrail + Apache-2.0 归属头；
+2. NOTICE 含 KubeTrail 署名、上游 URL、Apache-2.0 与 inkblade/kubetrail 路径；
+3. ``inkblade/kubetrail/*.py`` 每个文件含 KubeTrail + Apache-2.0 归属头；
 4. ``docs/KUBETRAIL-PORT.md`` 存在且含移植能力清单与许可声明。
 
 用法::
@@ -23,7 +23,7 @@ REQUIRED_NOTICE = (
     "KubeTrail",
     "https://github.com/ekkoo-z/KubeTrail",
     "Apache",
-    "trident/kubetrail",
+    "inkblade/kubetrail",
 )
 REQUIRED_PORT_DOC = ("KubeTrail", "Apache-2.0", "collector", "token", "LPE", "persistence")
 
@@ -47,13 +47,13 @@ def check(root: Path) -> list[str]:
             if token not in text:
                 errors.append(f"NOTICE 缺 {token!r} 署名/说明")
 
-    port_dir = root / "trident" / "kubetrail"
+    port_dir = root / "inkblade" / "kubetrail"
     if not port_dir.is_dir():
-        errors.append("缺 trident/kubetrail/ 目录")
+        errors.append("缺 inkblade/kubetrail/ 目录")
     else:
         files = sorted(port_dir.glob("*.py"))
         if not files:
-            errors.append("trident/kubetrail/ 无 Python 文件")
+            errors.append("inkblade/kubetrail/ 无 Python 文件")
         for path in files:
             head = "\n".join(path.read_text(encoding="utf-8", errors="replace").splitlines()[:16])
             if "KubeTrail" not in head or "Apache-2.0" not in head:
@@ -71,7 +71,7 @@ def check(root: Path) -> list[str]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident license/attribution checker")
+    parser = argparse.ArgumentParser(description="InkBlade license/attribution checker")
     parser.add_argument("--root", default=".", help="仓库根（默认当前目录）")
     args = parser.parse_args(argv)
     root = Path(args.root).resolve()

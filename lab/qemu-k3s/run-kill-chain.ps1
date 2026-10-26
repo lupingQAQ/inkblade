@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Run the Trident cluster-takeover objective against the QEMU/TCG k3s lab.
+    Run the InkBlade cluster-takeover objective against the QEMU/TCG k3s lab.
 
 .DESCRIPTION
     Applies the intentionally vulnerable operator fixture, runs all seven

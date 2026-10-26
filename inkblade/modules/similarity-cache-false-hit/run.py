@@ -40,7 +40,7 @@ def run(ctx: dict, params: dict) -> dict:
     victim_tenant = _COMMON.victim_tenant_of(params)
     probe_text = str(params.get("victim_probe_text") or DEFAULT_VICTIM_PROBE)
     control_text = str(params.get("control_probe_text") or DEFAULT_CONTROL_PROBE)
-    marker_needle = str(params.get("marker_needle") or "TRIDENT-BENIGN-APPROX-VICTIM")
+    marker_needle = str(params.get("marker_needle") or "INKBLADE-BENIGN-APPROX-VICTIM")
 
     t = _COMMON.Trace(ctx, KEY)
     config = t.call("GET", f"{target}/config", headers=_COMMON.headers_for(params))

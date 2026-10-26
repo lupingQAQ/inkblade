@@ -111,7 +111,7 @@ def scan_tree(
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident public tree hygiene scanner")
+    parser = argparse.ArgumentParser(description="InkBlade public tree hygiene scanner")
     parser.add_argument("--root", default=".", help="仓库根（默认当前目录）")
     args = parser.parse_args(argv)
     root = Path(args.root).resolve()

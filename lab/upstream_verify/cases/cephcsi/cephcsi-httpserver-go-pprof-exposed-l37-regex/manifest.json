@@ -38,7 +38,7 @@
  "module": "storage-protocol-csi",
  "python": "reproenv",
  "advisory": "reports/samples/mining-infra/mining-report.json",
- "marker_text": "TRIDENT-UV-cephcsi-httpserver-go-pprof-exposed-l37-regex",
+ "marker_text": "INKBLADE-UV-cephcsi-httpserver-go-pprof-exposed-l37-regex",
  "notes": "Unauthenticated pprof + prometheus metrics ride the same default-mux listener the CSI binary serves; default bind is 0.0.0.0. Dynamic function-level reproduction with the verbatim pinned registration and server functions; impact = cpu/heap profiling (secret extraction surface) reachable without credentials.",
  "static_evidence_level": "source-line",
  "static_analysis": "Unauthenticated pprof + prometheus metrics ride the same default-mux listener the CSI binary serves; default bind is 0.0.0.0. Dynamic function-level reproduction with the verbatim pinned registration and server functions; impact = cpu/heap profiling (secret extraction surface) reachable without credentials.",
@@ -53,6 +53,6 @@
   "original_status": "pending-manual-review",
   "promoted": true
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "cephcsi"
 }

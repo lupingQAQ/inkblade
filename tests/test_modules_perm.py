@@ -5,15 +5,15 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.backup import BackupManager
-from trident.core.evidence import EvidenceStore
-from trident.core.registry import load_modules
-from trident.core.roe import ExecutionLocked, init_roe
-from trident.core.runner import BackupGateRefused, run_module
-from trident.core.users import UserStore
+from inkblade.core.backup import BackupManager
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.registry import load_modules
+from inkblade.core.roe import ExecutionLocked, init_roe
+from inkblade.core.runner import BackupGateRefused, run_module
+from inkblade.core.users import UserStore
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
+MODULES_DIR = REPO / "inkblade" / "modules"
 FIXTURES = REPO / "lab" / "fixtures" / "perm"
 
 PERM_KEYS = [
@@ -108,7 +108,7 @@ class TestPermModules(unittest.TestCase):
                 })
                 self.assertNotEqual(demo.read_text(encoding="utf-8"), "original",
                                     f"{key} 演示分支未写入")
-                self.assertIn("TRIDENT-", demo.read_text(encoding="utf-8"))
+                self.assertIn("INKBLADE-", demo.read_text(encoding="utf-8"))
                 bm = BackupManager(self.store, self.store.open_run(result["run"]))
                 bm.rollback(f"{key}-demo")
                 self.assertEqual(demo.read_text(encoding="utf-8"), "original",

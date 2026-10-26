@@ -1,6 +1,6 @@
 """tests/test_modules_lateral.py — 横向利用模块族（19 模块）表驱动自测。
 
-契约：trident/core/runner.py（run(ctx, params) -> {summary, artifacts, findings}；writes=true 的
+契约：inkblade/core/runner.py（run(ctx, params) -> {summary, artifacts, findings}；writes=true 的
 写动作仅可在 backup-write 模式且 params.backup_targets 提供时执行）；靶场：lab/mock_targets.py。
 
 Ruling（实验室同构承载：单端口 25 路由对 19 模块的映射，module.json description 同步记载）：
@@ -25,14 +25,14 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from lab.mock_targets import start_all
-from trident.core.backup import BackupManager
-from trident.core.evidence import EvidenceStore
-from trident.core.registry import load_modules
-from trident.core.roe import init_roe
-from trident.core.runner import BackupGateRefused, run_module
-from trident.core.users import UserStore
+from inkblade.core.backup import BackupManager
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.registry import load_modules
+from inkblade.core.roe import init_roe
+from inkblade.core.runner import BackupGateRefused, run_module
+from inkblade.core.users import UserStore
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 
 # 表驱动：key / 自测模式 / 是否需要 backup_targets / module.json writes / 是否需要 collective_snapshot
 LATERAL_CASES = [
@@ -63,13 +63,13 @@ PROBE_ZERO_KEYS = {
     "verl-hdfs-command-injection", "ray-dashboard-job", "lora-adapter-injection",
 }
 
-MOCK_SECRETS = ("MOCKAKIATRIDENTLAB", "MOCKSECRETTRIDENTLAB", "MOCKSESSIONTRIDENTLAB")
+MOCK_SECRETS = ("MOCKAKIAINKBLADELAB", "MOCKSECRETINKBLADELAB", "MOCKSESSIONINKBLADELAB")
 
 
 def load_run(key: str):
     """按 runner 同款方式加载模块 run.py。"""
     spec = importlib.util.spec_from_file_location(
-        f"trident_selftest_{key.replace('-', '_')}", MODULES_DIR / key / "run.py")
+        f"inkblade_selftest_{key.replace('-', '_')}", MODULES_DIR / key / "run.py")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -78,7 +78,7 @@ def load_run(key: str):
 def make_ctx(key: str, tmp_root: Path) -> dict:
     store = EvidenceStore(tmp_root, workspace="local-lab")
     run = store.create_run(f"selftest-{key}")
-    return {"store": store, "run": run, "marker": "TRIDENT-selftest",
+    return {"store": store, "run": run, "marker": "INKBLADE-selftest",
             "backup": BackupManager(store, run), "actor": "tester",
             "meta": {"key": key, "writes": True}}
 
@@ -211,7 +211,7 @@ class MaskingTest(unittest.TestCase):
         self.assertIn("MOCK****", text)
         for secret in MOCK_SECRETS:
             self.assertNotIn(secret, text, "凭据全文不得出现在输出")
-        self.assertIn("MOCKAKIATRIDENTLAB", json.dumps(doc), "trace 证据层保留原始响应")
+        self.assertIn("MOCKAKIAINKBLADELAB", json.dumps(doc), "trace 证据层保留原始响应")
 
 
 class NcclSnapshotTest(unittest.TestCase):

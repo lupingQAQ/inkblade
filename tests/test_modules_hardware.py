@@ -16,14 +16,14 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from lab.hardware_sim import start_all
-from trident.core.evidence import EvidenceStore
-from trident.core.registry import load_modules
-from trident.core.roe import init_roe
-from trident.core.runner import run_module
-from trident.core.users import UserStore
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.registry import load_modules
+from inkblade.core.roe import init_roe
+from inkblade.core.runner import run_module
+from inkblade.core.users import UserStore
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
+MODULES_DIR = REPO / "inkblade" / "modules"
 FIX = REPO / "lab" / "hardware-fixtures"
 
 NEW_MODULES = {
@@ -268,7 +268,7 @@ class FixtureDrivenModuleTest(HardwareModuleTestBase):
         target = self.root / "firmware-tampered"
         shutil.copytree(FIX / "firmware", target)
         blob = target / "blobs" / "nvswitch-fw-1.8.2.bin"
-        blob.write_bytes(blob.read_bytes() + b"\nTRIDENT-TAMPER\n")
+        blob.write_bytes(blob.read_bytes() + b"\nINKBLADE-TAMPER\n")
         result, findings, _ = self._run("hardware-supply-chain", {
             "manifest": str(target / "manifest.json"),
             "key_file": str(FIX / "firmware" / "fixture-signing-key.txt"),

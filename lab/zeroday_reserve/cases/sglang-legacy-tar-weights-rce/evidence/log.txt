@@ -6,4 +6,4 @@ tar_magic=b'stor'
 step1: torch.load(weights_only=True) -> RuntimeError('legacy .tar format')
 step2: upstream fallback torch.load(weights_only=False) -> storages pickle executed
 post_sink_error=TypeError: 'NoneType' object cannot be interpreted as an integer
-marker=TRIDENT-ZD-sglang-legacy-tar-weights-rce
+marker=INKBLADE-ZD-sglang-legacy-tar-weights-rce

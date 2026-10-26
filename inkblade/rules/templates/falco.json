@@ -1,12 +1,12 @@
 [
   {
     "id": "falco-admin-plane-unauth-access",
-    "rule": "TRIDENT Admin plane unauthorized access",
+    "rule": "INKBLADE Admin plane unauthorized access",
     "desc": "到 ML 管理面端口（Ray 8265 / 推理管理 30000 / 训练控制 9000）的非白名单来源连接。English: non-allowlisted source connecting to ML admin-plane ports.",
     "condition": "(evt.type=connect and fd.l4proto=tcp) and (fd.sport in (8265, 30000, 9000)) and not fd.cip in (admin_allowlist)",
     "output": "admin-plane connection src=%fd.cip sport=%fd.sport proc=%proc.name container=%container.name",
     "priority": "WARNING",
-    "tags": ["trident", "network", "monitor"],
+    "tags": ["inkblade", "network", "monitor"],
     "blocks_modules": ["sglang-admin-failopen", "slime-weight-pull-poison", "ray-dashboard-job"],
     "tuning": {
       "zh": "admin_allowlist 宏先填 bastion/调度器网段；对 8265/30000/9000 之外的自部署管理端口按端口清单追加；无 driver 部署下依赖网络事件源（auditd/ebpf 二选一）",
@@ -20,12 +20,12 @@
   },
   {
     "id": "falco-pickle-deserialize-call",
-    "rule": "TRIDENT Pickle deserialization in serving/training process",
+    "rule": "INKBLADE Pickle deserialization in serving/training process",
     "desc": "服务/训练进程外的 pickle/torch.load/recv_pyobj 反序列化调用（检查点与权重通道）。English: pickle/torch.load/recv_pyobj deserialization outside the trainer baseline.",
     "condition": "evt.type in (syscall.primative, retval) and proc.name in (python, python3, raylet, sglang-server) and evt.arg.data startswith b'pickle' or lib in (pickle, torch.load, recv_pyobj)",
     "output": "deserialize call proc=%proc.name lib=%lib channel=%channel obj=%obj.source",
     "priority": "CRITICAL",
-    "tags": ["trident", "process", "monitor"],
+    "tags": ["inkblade", "process", "monitor"],
     "blocks_modules": ["verl-checkpoint-pickle", "areal-load-pickle", "trust-remote-code-supply-chain"],
     "tuning": {
       "zh": "以训练基线进程清单（torchrun/trainer）收敛 proc 白名单；通道字段区分 checkpoint-socket / weights-load / shared-volume；weights_only=True 迁移完成后可升 ERROR",
@@ -39,12 +39,12 @@
   },
   {
     "id": "falco-weight-file-abnormal-write",
-    "rule": "TRIDENT Weight file write by non-training process",
+    "rule": "INKBLADE Weight file write by non-training process",
     "desc": "非训练进程对权重/检查点/HF 缓存路径的写打开（权重投毒与偷换一体面）。English: write-open on weight/checkpoint/HF-cache paths by a non-training process.",
     "condition": "(evt.type in (open, openat, openat2) and evt.is_open_write=true) and fd.name icontains (checkpoints, weights, hf-cache, models) and not proc.name in (trainer, torchrun, accelerate)",
     "output": "weight-path write proc=%proc.name path=%fd.name container=%container.name",
     "priority": "CRITICAL",
-    "tags": ["trident", "filesystem", "monitor"],
+    "tags": ["inkblade", "filesystem", "monitor"],
     "blocks_modules": ["slime-weight-pull-poison", "shared-volume-weight-copy"],
     "tuning": {
       "zh": "路径关键字按客户挂载点校准（/checkpoints、/models、hf_cache、safetensors）；训练进程名单按调度器主体固化；RWX 共享卷路径建议整体纳入",
@@ -58,12 +58,12 @@
   },
   {
     "id": "falco-nccl-abnormal-join",
-    "rule": "TRIDENT Collective communication join by external rank",
+    "rule": "INKBLADE Collective communication join by external rank",
     "desc": "集合通信（NCCL bootstrap / TCPStore / KV 传输）出现外部 rank 入组或跨域加入。English: external rank joining collective communication (NCCL bootstrap / TCPStore / KV transfer).",
     "condition": "evt.type in (connect, accept) and evt.arg.channel in (collective, kv-cache-transfer, rdma-fabric) and not k8s.ns.label in (training-allowlist) and evt.arg.external_rank=true",
     "output": "collective join channel=%evt.arg.channel rank_src=%fd.cip port=%fd.sport ns=%k8s.ns.name",
     "priority": "CRITICAL",
-    "tags": ["trident", "network", "monitor"],
+    "tags": ["inkblade", "network", "monitor"],
     "blocks_modules": ["nccl-collective-join", "multus-sriov-rdma-bypass", "inference-gateway-pd"],
     "tuning": {
       "zh": "training-allowlist 按调度器生成的训练命名空间标签维护；channel 枚举对齐实际集合通信栈（NCCL/DeepEP/NIXL/Mooncake）；RDMA 面事件依赖 eBPF/SM 导出（IB 面无 NetworkPolicy，见 ib-partition-advice.yaml）",
@@ -77,12 +77,12 @@
   },
   {
     "id": "falco-gpu-device-cross-namespace",
-    "rule": "TRIDENT GPU device mounted across namespaces",
+    "rule": "INKBLADE GPU device mounted across namespaces",
     "desc": "同一 /dev/nvidia* 设备被不同 namespace 的进程同时打开（device plugin/MIG 独占失效）。English: same GPU device opened by processes in different namespaces.",
     "condition": "evt.type in (mount, open, openat) and fd.name startswith /dev/nvidia and not k8s.ns.name in (gpu-exclusive-allowlist)",
     "output": "GPU device cross-ns open device=%fd.name proc=%proc.name ns=%k8s.ns.name pod=%k8s.pod.name",
     "priority": "WARNING",
-    "tags": ["trident", "gpu", "monitor"],
+    "tags": ["inkblade", "gpu", "monitor"],
     "blocks_modules": ["gpu-device-cross-namespace", "gpu-pool-scheduler-unauth", "gpu-tenant-residue"],
     "tuning": {
       "zh": "gpu-exclusive-allowlist 先放 GPU operator/驱动 DaemonSet 命名空间；跨 namespace 判定以 k8s.ns.name 为准（同一 Pod 多容器不触发）；MIG 场景按 /dev/nvidia-caps 细分",
@@ -96,12 +96,12 @@
   },
   {
     "id": "falco-mig-abnormal-reconfig",
-    "rule": "TRIDENT Unconventional MIG reconfiguration",
+    "rule": "INKBLADE Unconventional MIG reconfiguration",
     "desc": "nvidia-smi/nvml 在已分配设备上执行 MIG 重配或非常规档位切换（隔离边界被改写）。English: nvidia-smi/nvml MIG reconfiguration or unusual profile switch on an allocated device.",
     "condition": "evt.type=exec and proc.name=nvidia-smi and evt.arg.mig_reconfig=true",
     "output": "MIG reconfig proc=%proc.name device=%evt.arg.device profile=%evt.arg.profile user=%user.name",
     "priority": "WARNING",
-    "tags": ["trident", "gpu", "monitor"],
+    "tags": ["inkblade", "gpu", "monitor"],
     "blocks_modules": ["mig-profile-mismatch", "gpu-pool-scheduler-unauth"],
     "tuning": {
       "zh": "维护窗口内的计划重配按工单白名单；已分配设备上的 MIG 变更一律告警；结合 /gpu/mig/profiles 的 active/requested 差值确认隔离降级",
@@ -115,12 +115,12 @@
   },
   {
     "id": "falco-gateway-upstream-config-read",
-    "rule": "TRIDENT AI gateway process reads upstream provider credentials",
+    "rule": "INKBLADE AI gateway process reads upstream provider credentials",
     "desc": "AI 网关进程（litellm/higress/envoy）读取上游 provider 凭据配置（/config、/etc/litellm、provider-secrets 挂载），或非网关主体读取同一路径。English: gateway or foreign process reading upstream provider credential config.",
     "condition": "evt.type in (open, openat, openat2) and evt.is_open_read=true and fd.name contains (/config, /etc/litellm, provider-secrets) and proc.name in (litellm, higress, envoy) and not proc.name in (gateway-startup-allowlist)",
     "output": "gateway config read proc=%proc.name file=%fd.name container=%container.name",
     "priority": "WARNING",
-    "tags": ["trident", "filesystem", "credential", "monitor"],
+    "tags": ["inkblade", "filesystem", "credential", "monitor"],
     "blocks_modules": ["aigateway-upstream-key-exfil", "aigateway-fingerprint"],
     "tuning": {
       "zh": "网关自身启动期读取配置为正常基线（按启动窗口抑制）；运行期再次读取 /config 或 provider-secrets 挂载应告警；非网关进程读取同一路径建议升级 CRITICAL，并与 Sigma 的 admin API 无鉴权调用联动",
@@ -135,12 +135,12 @@
   },
   {
     "id": "falco-fabric-collective-poison",
-    "rule": "TRIDENT In-network collective reduce poisoned by external member",
+    "rule": "INKBLADE In-network collective reduce poisoned by external member",
     "desc": "在网聚合 reduce 结果被外部成员篡改（all-reduce 静默损坏面）。English: in-network collective reduce result tampered by an external session member.",
     "condition": "evt.type in (connect, accept) and evt.arg.channel in (sharp-aggregation, in-network-collective) and evt.arg.tampered=true and not k8s.ns.label in (training-allowlist)",
     "output": "collective poison channel=%evt.arg.channel rank_src=%fd.cip result_delta=%evt.arg.delta ns=%k8s.ns.name",
     "priority": "CRITICAL",
-    "tags": ["trident", "network", "collective", "monitor"],
+    "tags": ["inkblade", "network", "collective", "monitor"],
     "blocks_modules": ["sharp-in-network-poison", "training-silent-corruption"],
     "tuning": {
       "zh": "需要 fabric 控制器/交换机导出 reduce 会话事件（含 tampered 标记与结果差分）；与 sigma-fabric-sharp-unauth-join 联动区分「入组尝试」与「结果已被篡改」；命中即 critical",
@@ -154,12 +154,12 @@
   },
   {
     "id": "falco-fabric-control-plane-mutation",
-    "rule": "TRIDENT Fabric control-plane config mutated by unauthorized subject",
+    "rule": "INKBLADE Fabric control-plane config mutated by unauthorized subject",
     "desc": "fabric 控制面配置（IB Partition 成员 / PFC 档位 / rail 绑定 / GPU 健康 Xid）被未授权主体改写。English: unauthorized mutation of fabric control-plane config (IB partition / PFC / rail binding / GPU health).",
     "condition": "evt.type in (open, openat, openat2) and evt.is_open_write=true and evt.arg.component in (pfc, partition, rail, xid) and not proc.name in (fabric-operator-allowlist)",
     "output": "fabric config write component=%evt.arg.component proc=%proc.name src=%fd.cip container=%container.name",
     "priority": "CRITICAL",
-    "tags": ["trident", "network", "filesystem", "monitor"],
+    "tags": ["inkblade", "network", "filesystem", "monitor"],
     "blocks_modules": ["ib-subnet-manager-hijack", "roce-pfc-storm", "rail-mismatch-forcing", "driver-reset-trigger"],
     "tuning": {
       "zh": "component 枚举对齐客户 fabric 控制器（SM/PFC Agent/拓扑服务/GPU 健康服务）；写主体白名单=网络 operator 与驱动 DaemonSet；storm 档与 Xid 复位族直接 critical",
@@ -173,13 +173,13 @@
   },
   {
     "id": "falco-node-root-marker-write",
-    "rule": "TRIDENT Node root proof marker write from privileged container",
-    "desc": "??????? /root ?? TRIDENT-PROOF ????? root ?????English: privileged container writes a TRIDENT-PROOF marker into host /root.",
-    "condition": "(evt.type in (open, openat, openat2) and evt.is_open_write=true) and fd.name contains TRIDENT-PROOF and container.privileged=true",
+    "rule": "INKBLADE Node root proof marker write from privileged container",
+    "desc": "??????? /root ?? INKBLADE-PROOF ????? root ?????English: privileged container writes a INKBLADE-PROOF marker into host /root.",
+    "condition": "(evt.type in (open, openat, openat2) and evt.is_open_write=true) and fd.name contains INKBLADE-PROOF and container.privileged=true",
     "output": "node-root marker write path=%fd.name proc=%proc.name container=%container.name",
     "priority": "CRITICAL",
     "tags": [
-      "trident",
+      "inkblade",
       "filesystem",
       "privilege",
       "monitor"
@@ -188,8 +188,8 @@
       "cluster-node-marker"
     ],
     "tuning": {
-      "zh": "???????? TRIDENT-PROOF???????????? /root?/etc?/var/lib/kubelet ???????????????????????? critical",
-      "en": "Keep TRIDENT-PROOF as the assessment marker; in production include all host-path writes under /root, /etc, /var/lib/kubelet; any privileged container host-path write is critical"
+      "zh": "???????? INKBLADE-PROOF???????????? /root?/etc?/var/lib/kubelet ???????????????????????? critical",
+      "en": "Keep INKBLADE-PROOF as the assessment marker; in production include all host-path writes under /root, /etc, /var/lib/kubelet; any privileged container host-path write is critical"
     },
     "match": {
       "engine": "falco",
@@ -198,7 +198,7 @@
       ],
       "all": {
         "path": {
-          "re": "TRIDENT-PROOF-"
+          "re": "INKBLADE-PROOF-"
         },
         "privileged": true
       }

@@ -38,7 +38,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-infra/mining-report.json",
- "marker_text": "TRIDENT-UV-NCCL-NCCLPLUGIN-HW",
+ "marker_text": "INKBLADE-UV-NCCL-NCCLPLUGIN-HW",
  "notes": "NCCL v2.32.3-1: pure C/CUDA; plugin .so loading (NCCL_IB_HCA / NCCL_PLUGIN) needs the hardware path. Marked unsupported; attack-surface conclusions live in the fabric modules (nccl-collective-join, ib-subnet-manager-hijack).",
  "static_evidence_level": "advisory",
  "static_analysis": "NCCL v2.32.3-1: pure C/CUDA; plugin .so loading (NCCL_IB_HCA / NCCL_PLUGIN) needs the hardware path. Marked unsupported; attack-surface conclusions live in the fabric modules (nccl-collective-join, ib-subnet-manager-hijack).",
@@ -65,6 +65,6 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "nccl"
 }

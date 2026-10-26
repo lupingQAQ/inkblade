@@ -1,5 +1,5 @@
 {
-  "schema": "trident-cloud-free-semantics/2026-10",
+  "schema": "inkblade-cloud-free-semantics/2026-10",
   "mode": "python-mock-endpoints (Docker/LocalStack absent on this host)",
   "clouds": {
     "aws": {

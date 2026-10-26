@@ -20,7 +20,7 @@ agent/tools.go, agent/toolcatalog.go, server/engine.go, server/goals.go):
     or a plain stop message (work in flight);
   * the worker answers a fixed probe plan against the mock target —
     GET /__routes__, POST /pause, POST /pull_weights (the same surface the
-    Trident chain flat-network-admin-plane-weight-poison exercises), then
+    InkBlade chain flat-network-admin-plane-weight-poison exercises), then
     ``report_finding`` quoting the real tool outputs as evidence, then a
     plain-text summary. The HTTP runner adapts curl -> wget -> python3 when
     a tool result shows the binary is missing.
@@ -66,7 +66,7 @@ PROBES = [
     ("GET", "/__routes__", None, "route manifest discovery"),
     ("POST", "/pause", {}, "unauthenticated admin action (fail-open)"),
     ("POST", "/pull_weights",
-     {"source_dir": "trident-bench/src", "local_checkpoint_dir": "checkpoints_bench"},
+     {"source_dir": "inkblade-bench/src", "local_checkpoint_dir": "checkpoints_bench"},
      "unauthenticated weight pull / poison write"),
 ]
 

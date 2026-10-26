@@ -10,7 +10,7 @@
   "writes": false,
   "requires": [],
   "params_schema": {
-    "collect": "trident collect 输出目录",
+    "collect": "inkblade collect 输出目录",
     "profile": "部署画像名"
   },
   "produces": "federated-learning-audit.json + FL 控制面 findings",

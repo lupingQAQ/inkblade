@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "deepspeed-stage3-py-torch-load-any-l3770-regex",
  "target": "deepspeed",
  "repo": "deepspeedai/DeepSpeed",

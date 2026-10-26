@@ -1,12 +1,12 @@
-# trident.io/vector: workload-static-pod-write
+# inkblade.io/vector: workload-static-pod-write
 # detection-point: Falco：写入 kubelet 静态 Pod 目录
-- rule: Trident Privesc workload-static-pod-write
+- rule: InkBlade Privesc workload-static-pod-write
   desc: 静态 Pod 清单写入
   condition: "evt.type in (open,openat,connect,execve) and path ~ \"^/etc/kubernetes/manifests/\""
-  output: "Trident privilege-escalation primitive (vector=workload-static-pod-write module=runtime-socket-escape proc=%proc.name)"
+  output: "InkBlade privilege-escalation primitive (vector=workload-static-pod-write module=runtime-socket-escape proc=%proc.name)"
   priority: WARNING
   tags:
-    - trident
+    - inkblade
     - privesc
     - workload
     - workload-static-pod-write

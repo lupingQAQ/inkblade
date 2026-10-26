@@ -1,6 +1,6 @@
-# Trident 运营手册（HA / 升级 / 备份 / 多租户 / 交付边界）
+# InkBlade（墨刃零）运营手册（HA / 升级 / 备份 / 多租户 / 交付边界）
 
-> 适用版本：v0.1.0（2026-10-26）。本手册区分「本地已验证」与「生产必须具备但本仓库
+> 适用版本：v0.2.0（2026-10-26）。本手册区分「本地已验证」与「生产必须具备但本仓库
 > 未实现」；不得把 runbook 的存在写成「已演练/已上线」。
 >
 > 结论先行：当前交付形态是**单机试点/实验室**；HA、跨副本队列、客户 KMS、分布式
@@ -64,7 +64,7 @@
 
 1. 停新任务入口（保留只读查询）；等待运行中 run 完成或超时。
 2. 部署新版本到 canary 副本；跑只读 smoke：
-   `trident roe`、`trident pilot --snapshot ...`、`trident export`。
+   `inkblade roe`、`inkblade pilot --snapshot ...`、`inkblade export`。
 3. 校验证据读写：新 run 的 `manifest.sha256` 与 `verify_manifest`；旧 run 可读。
 4. 逐步放量；观察错误率、队列积压、证据写入延迟、SIEM 投递失败。
 5. 完成后解除冻结，记录升级窗口与版本。
@@ -96,7 +96,7 @@
 $stamp = Get-Date -Format yyyyMMdd-HHmmss
 Compress-Archive -Path evidence,users.json -DestinationPath "backup-$stamp.zip"
 # 校验：解压后逐 run 跑 verify_manifest
-python -c "from trident.core.evidence import EvidenceStore; ..."
+python -c "from inkblade.core.evidence import EvidenceStore; ..."
 ```
 
 > 生产必须用客户批准的加密备份（KMS/HSM），备份介质与密钥分离；禁止把
@@ -167,14 +167,14 @@ K8s/GPU 负载与网络。
 - **无担保**：按 Apache-2.0「AS IS」提供；不承诺适销性/特定用途/不侵权。
 - **交付物**：源码、测试、文档、样张；不含客户凭据、真实 IdP/SIEM/ITSM 账号、
   商业 SLA、保险、合规认证。
-- **数据处理**：客户数据由客户负责分类/授权；Trident 只处理授权范围内的证据；
+- **数据处理**：客户数据由客户负责分类/授权；InkBlade 只处理授权范围内的证据；
   跨境/驻留/保留期限按客户合同。
 - **禁止用途**：未授权渗透、破坏性拒绝服务、绕过客户安全控制、隐瞒发现。
 - **出口/制裁**：客户自行确认使用地法律与出口管制；本仓库不提供法律意见。
 - **责任矩阵（建议）**：客户安全负责人（授权/验收）、平台 owner（集群/窗口）、
-  数据 owner（数据/模型）、Trident 交付方（工具/支持）、法务（合同/合规）。
+  数据 owner（数据/模型）、InkBlade 交付方（工具/支持）、法务（合同/合规）。
 - **双签角色映射**：审批链要求 `lead` → `security-owner`；客户 IdP 的
-  `trident-security-owners` 组映射平台 `admin`，签署时以审批角色 `security-owner`
+  `inkblade-security-owners` 组映射平台 `admin`，签署时以审批角色 `security-owner`
   记录（不能把平台 `admin` 直接当第二签，避免角色混淆）。
 
 ## 8. 运营检查清单（每次 Pilot/Production 窗口）

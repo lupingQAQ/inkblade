@@ -8,15 +8,15 @@ from datetime import datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import init_roe
-from trident.core.scheduler import (
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import init_roe
+from inkblade.core.scheduler import (
     ScheduleError, Scheduler, diff_findings, next_fire, parse_cron,
 )
-from trident.core.users import Session
+from inkblade.core.users import Session
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
-CHAINS_DIR = Path(__file__).resolve().parents[1] / "trident" / "chains"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
+CHAINS_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "chains"
 
 
 def _session(role="lead"):

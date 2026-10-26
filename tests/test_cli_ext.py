@@ -8,15 +8,15 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import init_roe
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import init_roe
 
 PY = sys.executable
 REPO = Path(__file__).resolve().parents[1]
 
 
 def _run(home: Path, *args):
-    return subprocess.run([PY, "-m", "trident", "--home", str(home), *args],
+    return subprocess.run([PY, "-m", "inkblade", "--home", str(home), *args],
                           capture_output=True, timeout=40, cwd=str(REPO))
 
 

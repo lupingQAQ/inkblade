@@ -9,12 +9,12 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from trident.core.evidence import EvidenceStore
-from trident.core.explorer import ApprovalDenied, Explorer, ExplorerError
-from trident.core.roe import ExecutionLocked, init_roe
-from trident.core.users import Session
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.explorer import ApprovalDenied, Explorer, ExplorerError
+from inkblade.core.roe import ExecutionLocked, init_roe
+from inkblade.core.users import Session
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 
 
 def _session(role="lead"):
@@ -75,7 +75,7 @@ class TestConcurrency(unittest.TestCase):
             time.sleep(0.2)
             return {"run": f"fake-{n}", "step": module}
 
-        with patch("trident.core.runner.run_module", fake):
+        with patch("inkblade.core.runner.run_module", fake):
             t0 = time.time()
             out = self.ex.execute(_session("tester"), "p1", workers=2)
             elapsed = time.time() - t0
@@ -105,7 +105,7 @@ class TestConcurrency(unittest.TestCase):
 
     def test_alias(self):
         self.ex.approve(_session("lead"), "p1")
-        with patch("trident.core.runner.run_module",
+        with patch("inkblade.core.runner.run_module",
                    lambda *a, **k: {"run": "r", "step": "s"}):
             out = self.ex.execute_parallel(_session("tester"), "p1", workers=2)
         self.assertEqual(out["workers"], 2)

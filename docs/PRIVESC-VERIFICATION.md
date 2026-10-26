@@ -1,4 +1,4 @@
-# Trident 提权验证（真集群 + fake-kubectl）
+# InkBlade 提权验证（真集群 + fake-kubectl）
 
 > 本文件由 `lab/privesc_verify.py` 生成；真集群部分为 QEMU TCG + Alpine + k3s。
 

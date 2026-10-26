@@ -19,7 +19,7 @@ import re
 from collections import Counter
 from pathlib import Path
 
-from trident.kubetrail.redact3 import entropy, mask
+from inkblade.kubetrail.redact3 import entropy, mask
 
 SEVS = ("critical", "high", "medium", "low", "info")
 _SEV_RANK = {s: i for i, s in enumerate(SEVS)}
@@ -198,14 +198,14 @@ def env_pairs(pod: dict) -> list[tuple[str, str]]:
 
 
 # ---------------------------------------------------------------- 脱敏/熵
-# mask/entropy 统一来自 trident.kubetrail.redact3（三态脱敏单一实现）
+# mask/entropy 统一来自 inkblade.kubetrail.redact3（三态脱敏单一实现）
 
-SECRET_PATTERNS = ()  # 规则单一来源：trident.kubetrail.manifestscan.SECRET_RULES
+SECRET_PATTERNS = ()  # 规则单一来源：inkblade.kubetrail.manifestscan.SECRET_RULES
 
 
 def scan_secrets(text: str) -> list[dict]:
     """对文本做规则 + 熵扫描（委托 KubeTrail manifestscan，保持单一规则源）。"""
-    from trident.kubetrail.manifestscan import scan_text
+    from inkblade.kubetrail.manifestscan import scan_text
 
     return [{"kind": hit["kind"], "match": hit["redact"],
              "entropy": hit["metadata"]["entropy"]} for hit in scan_text(text or "")]

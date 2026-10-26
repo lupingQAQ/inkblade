@@ -14,7 +14,7 @@ section = _C.section
 
 
 def analyze(snapshot: dict, params: dict) -> list[dict]:
-    from trident.kubetrail.manifestscan import scan_configmaps, scan_manifests
+    from inkblade.kubetrail.manifestscan import scan_configmaps, scan_manifests
 
     out: list[dict] = []
     report = scan_manifests(section(snapshot, "manifests"))

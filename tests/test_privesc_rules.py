@@ -7,8 +7,8 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.privesc import load_matrix
-from trident.rules.privesc import (
+from inkblade.core.privesc import load_matrix
+from inkblade.rules.privesc import (
     ADMISSION_RULE_IDS,
     ADMISSION_VECTORS,
     purple_replay,
@@ -41,7 +41,7 @@ class TestPrivescRules(unittest.TestCase):
             if doc["engine"] == "sigma":
                 self.assertIn("kind: SigmaRule", doc["text"])
                 self.assertIn("metadata:", doc["text"])
-            self.assertIn("trident.io/vector:", doc["text"])
+            self.assertIn("inkblade.io/vector:", doc["text"])
 
     def test_admission_policies_cover_high_risk_vectors(self):
         self.assertGreaterEqual(len(ADMISSION_RULE_IDS), 4)

@@ -20,15 +20,15 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from lab.chipsec_sim import start_all
-from trident.core.evidence import EvidenceStore
-from trident.core.registry import load_modules
-from trident.core.roe import init_roe
-from trident.core.runner import BackupGateRefused, run_module
-from trident.core.users import UserStore
-from trident.tee.fixtures import nvidia_fixture
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.registry import load_modules
+from inkblade.core.roe import init_roe
+from inkblade.core.runner import BackupGateRefused, run_module
+from inkblade.core.users import UserStore
+from inkblade.tee.fixtures import nvidia_fixture
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
+MODULES_DIR = REPO / "inkblade" / "modules"
 
 NEW_MODULES = {
     "gpu-cc-attestation-chain": {"series": "侦察", "min_level": "只读侦察", "writes": False},

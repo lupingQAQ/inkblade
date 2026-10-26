@@ -22,6 +22,6 @@
 - 可 Fork = 可并行探索；pause/resume = 长任务不烧钱。
 
 ## 对我们的启示
-- 我们没有任何执行隔离：`runner._load_run_py` 直接 `exec_module`（`trident/core/runner.py:27-31`），模块能触碰宿主文件/网络（G08）。一旦接入 LLM 生成代码或第三方技能，这是最高危缺口。
+- 我们没有任何执行隔离：`runner._load_run_py` 直接 `exec_module`（`inkblade/core/runner.py:27-31`），模块能触碰宿主文件/网络（G08）。一旦接入 LLM 生成代码或第三方技能，这是最高危缺口。
 - 迁移不必一步到 Firecracker：先做「子进程 + 只读根 + 独立 netns/egress allowlist + 一次性工作目录」，接口按 sandbox 抽象（create/exec/upload/download/pause/kill），后续可换 E2B/Firecracker。
 - 「fork 运行中沙箱」对渗透很有价值：同一目标状态下并行试多条利用路径，且互不污染。

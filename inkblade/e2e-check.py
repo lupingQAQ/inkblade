@@ -1,12 +1,12 @@
-"""trident/e2e-check.py — 端到端验收脚本（全部本机，可重复执行）。
+"""inkblade/e2e-check.py — 端到端验收脚本（全部本机，可重复执行）。
 
 用法::
 
-    python trident/e2e-check.py [--samples DIR]     # 默认 reports/samples/
+    python inkblade/e2e-check.py [--samples DIR]     # 默认 reports/samples/
     python - <<'PY'                                  # 编程调用
     from pathlib import Path
     import importlib.util
-    spec = importlib.util.spec_from_file_location("e2e", "trident/e2e-check.py")
+    spec = importlib.util.spec_from_file_location("e2e", "inkblade/e2e-check.py")
     ...
 
 流程（集成既有组件，一次临时工作区内闭环）：
@@ -44,22 +44,22 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from lab.mock_targets import start_all  # noqa: E402
-from trident.core.backup import BackupManager  # noqa: E402
-from trident.core.chains import dry_run, execute, load_chains  # noqa: E402
-from trident.core.evidence import EvidenceStore  # noqa: E402
-from trident.core.registry import load_modules  # noqa: E402
-from trident.core.roe import ExecutionLocked, init_roe  # noqa: E402
-from trident.core.runner import BackupGateRefused, run_module  # noqa: E402
-from trident.core.users import UserStore  # noqa: E402
-from trident.core.zeroday import filter_modules  # noqa: E402
-from trident.reports.render import render_pentest, render_remediation  # noqa: E402
-from trident.rules.generate import generate_all  # noqa: E402
-from trident.rules.validate import validate  # noqa: E402
-from trident.webui.export_static import export_static  # noqa: E402
-from trident.webui.server import make_server  # noqa: E402
+from inkblade.core.backup import BackupManager  # noqa: E402
+from inkblade.core.chains import dry_run, execute, load_chains  # noqa: E402
+from inkblade.core.evidence import EvidenceStore  # noqa: E402
+from inkblade.core.registry import load_modules  # noqa: E402
+from inkblade.core.roe import ExecutionLocked, init_roe  # noqa: E402
+from inkblade.core.runner import BackupGateRefused, run_module  # noqa: E402
+from inkblade.core.users import UserStore  # noqa: E402
+from inkblade.core.zeroday import filter_modules  # noqa: E402
+from inkblade.reports.render import render_pentest, render_remediation  # noqa: E402
+from inkblade.rules.generate import generate_all  # noqa: E402
+from inkblade.rules.validate import validate  # noqa: E402
+from inkblade.webui.export_static import export_static  # noqa: E402
+from inkblade.webui.server import make_server  # noqa: E402
 
-MODULES_DIR = REPO_ROOT / "trident" / "modules"
-CHAINS_DIR = REPO_ROOT / "trident" / "chains"
+MODULES_DIR = REPO_ROOT / "inkblade" / "modules"
+CHAINS_DIR = REPO_ROOT / "inkblade" / "chains"
 FIX = REPO_ROOT / "lab" / "fixtures"
 DEFENSE_FIX = REPO_ROOT / "lab" / "defense-deploy" / "fixtures"
 SAMPLE_REPO = REPO_ROOT / "lab" / "sample-vuln-repo"
@@ -188,7 +188,7 @@ def run_e2e(samples_dir: Path | str | None = None,
     """执行完整端到端验收；返回结果 dict（含逐项检查与样张清单）。
 
     ``run_name`` 固定后（如 ``e2e-acceptance``），样张两次生成的差异仅剩动态字段
-    （时间戳/端口/耗时），由 ``trident.sampledet`` 归一化后可断言 diff=空。
+    （时间戳/端口/耗时），由 ``inkblade.sampledet`` 归一化后可断言 diff=空。
     """
     samples = Path(samples_dir) if samples_dir else DEFAULT_SAMPLES
     samples.mkdir(parents=True, exist_ok=True)
@@ -205,7 +205,7 @@ def run_e2e(samples_dir: Path | str | None = None,
 
     lab = start_all(mode="vulnerable")
     try:
-        with TemporaryDirectory(prefix="trident-e2e-") as td:
+        with TemporaryDirectory(prefix="inkblade-e2e-") as td:
             root = Path(td)
             store = EvidenceStore(root, workspace="local-lab")
             users = UserStore(root / "users.json")
@@ -259,7 +259,7 @@ def run_e2e(samples_dir: Path | str | None = None,
                     "start": (datetime.now() - timedelta(hours=1)).strftime("%Y-%m-%d %H:%M"),
                     "end": (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d %H:%M"),
                 },
-                "client": "Trident 验收实验室（本机 mock）",
+                "client": "InkBlade 验收实验室（本机 mock）",
             })
 
             # ③ 备份闸门：写类无 backup_targets → 退出码 91（设计基线 18.2）----------
@@ -304,7 +304,7 @@ def run_e2e(samples_dir: Path | str | None = None,
                     "mode": "backup-write", "demo_target": str(demo),
                     "backup_targets": [{"kind": "file", "path": str(demo)}],
                 }, modules_dir=MODULES_DIR, run=run)
-                assert "TRIDENT-" in demo.read_text(encoding="utf-8"), "演示分支未写入 marker"
+                assert "INKBLADE-" in demo.read_text(encoding="utf-8"), "演示分支未写入 marker"
                 BackupManager(store, run).rollback("privileged-gpu-pod-escape-demo")
                 assert demo.read_text(encoding="utf-8") == "original", "回滚后未还原原内容"
                 _note(it, " / ".join(f"{f}×{len(k)}" for f, k in sorted(families_run.items())) + "；写类演示已回滚还原")
@@ -458,10 +458,10 @@ def run_e2e(samples_dir: Path | str | None = None,
 
             # ⑫ 六视图离线兜底（设计基线 18.6）---------------------------------------
             with book.check("export-static-offline",
-                            "export_static 免服务产物：index.html 内嵌 TRIDENT_DATA（file:// 可开六视图）") as it:
+                            "export_static 免服务产物：index.html 内嵌 INKBLADE_DATA（file:// 可开六视图）") as it:
                 html_path = export_static(run.dir, samples / "static-export")
                 html = html_path.read_text(encoding="utf-8")
-                assert "window.TRIDENT_DATA" in html, "静态导出未注入数据"
+                assert "window.INKBLADE_DATA" in html, "静态导出未注入数据"
                 assert run.name in html, "静态导出缺 run 数据"
                 assert (html_path.parent / "app.js").is_file(), "静态导出缺资产"
                 sample_files.append("static-export/**")
@@ -544,7 +544,7 @@ def _write_checklist(samples: Path, result: dict[str, Any]) -> None:
     (e2e_dir / "e2e-check.json").write_text(
         json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     lines = [
-        "# Trident 端到端验收清单（e2e-check）",
+        "# InkBlade 端到端验收清单（e2e-check）",
         "",
         f"- 运行 Run：`{result['run']}`",
         f"- 生成时间：{result['generated_at']}",
@@ -582,7 +582,7 @@ def main(argv: list[str] | None = None) -> int:
         fixed = args[args.index("--run-name") + 1]
     result = run_e2e(samples, run_name=fixed)
     if "--normalize" in args:
-        from trident.sampledet import normalize_tree
+        from inkblade.sampledet import normalize_tree
 
         changed = normalize_tree(
             samples,

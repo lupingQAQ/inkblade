@@ -143,7 +143,7 @@ def coverage_summary(findings: list[dict]) -> dict:
         }
     fallback = _COMP["fallback"]
     return {
-        "schema": "trident-compliance-coverage/2026-10",
+        "schema": "inkblade-compliance-coverage/2026-10",
         "findings": len(rows),
         "frameworks": per,
         "fallback": fallback,

@@ -1,5 +1,5 @@
 {
-  "schema": "trident-slurm-inventory-v1",
+  "schema": "inkblade-slurm-inventory-v1",
   "generated_at": "2026-10-26T00:00:00Z",
   "fixture": true,
   "files": {

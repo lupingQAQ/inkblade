@@ -14,7 +14,7 @@ section = _C.section
 
 
 def analyze(snapshot: dict, params: dict) -> list[dict]:
-    from trident.kubetrail.token_audit import audit_tokens, findings
+    from inkblade.kubetrail.token_audit import audit_tokens, findings
 
     tokens = section(snapshot, "tokens")
     report = audit_tokens(tokens)
@@ -28,7 +28,7 @@ def analyze(snapshot: dict, params: dict) -> list[dict]:
 
 
 def extra(snapshot: dict, findings: list[dict]) -> dict:
-    from trident.kubetrail.token_audit import audit_tokens
+    from inkblade.kubetrail.token_audit import audit_tokens
 
     report = audit_tokens(section(snapshot, "tokens"))
     return {"tokens": report["summary"]["total"], "legacy": report["summary"]["legacy"],

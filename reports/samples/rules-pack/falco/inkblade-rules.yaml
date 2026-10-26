@@ -1,113 +1,113 @@
-- rule: TRIDENT Admin plane unauthorized access
+- rule: INKBLADE Admin plane unauthorized access
   desc: "到 ML 管理面端口（Ray 8265 / 推理管理 30000 / 训练控制 9000）的非白名单来源连接。English: non-allowlisted source connecting to ML admin-plane ports."
   condition: "(evt.type=connect and fd.l4proto=tcp) and (fd.sport in (8265, 30000, 9000)) and not fd.cip in (admin_allowlist)"
   output: "admin-plane connection src=%fd.cip sport=%fd.sport proc=%proc.name container=%container.name"
   priority: WARNING
   tags:
-    - trident
+    - inkblade
     - network
     - monitor
     - mode-monitor
-- rule: TRIDENT Pickle deserialization in serving/training process
+- rule: INKBLADE Pickle deserialization in serving/training process
   desc: "服务/训练进程外的 pickle/torch.load/recv_pyobj 反序列化调用（检查点与权重通道）。English: pickle/torch.load/recv_pyobj deserialization outside the trainer baseline."
   condition: "evt.type in (syscall.primative, retval) and proc.name in (python, python3, raylet, sglang-server) and evt.arg.data startswith b'pickle' or lib in (pickle, torch.load, recv_pyobj)"
   output: "deserialize call proc=%proc.name lib=%lib channel=%channel obj=%obj.source"
   priority: CRITICAL
   tags:
-    - trident
+    - inkblade
     - process
     - monitor
     - mode-monitor
-- rule: TRIDENT Weight file write by non-training process
+- rule: INKBLADE Weight file write by non-training process
   desc: "非训练进程对权重/检查点/HF 缓存路径的写打开（权重投毒与偷换一体面）。English: write-open on weight/checkpoint/HF-cache paths by a non-training process."
   condition: "(evt.type in (open, openat, openat2) and evt.is_open_write=true) and fd.name icontains (checkpoints, weights, hf-cache, models) and not proc.name in (trainer, torchrun, accelerate)"
   output: "weight-path write proc=%proc.name path=%fd.name container=%container.name"
   priority: CRITICAL
   tags:
-    - trident
+    - inkblade
     - filesystem
     - monitor
     - mode-monitor
-- rule: TRIDENT Collective communication join by external rank
+- rule: INKBLADE Collective communication join by external rank
   desc: "集合通信（NCCL bootstrap / TCPStore / KV 传输）出现外部 rank 入组或跨域加入。English: external rank joining collective communication (NCCL bootstrap / TCPStore / KV transfer)."
   condition: "evt.type in (connect, accept) and evt.arg.channel in (collective, kv-cache-transfer, rdma-fabric) and not k8s.ns.label in (training-allowlist) and evt.arg.external_rank=true"
   output: "collective join channel=%evt.arg.channel rank_src=%fd.cip port=%fd.sport ns=%k8s.ns.name"
   priority: CRITICAL
   tags:
-    - trident
+    - inkblade
     - network
     - monitor
     - mode-monitor
-- rule: TRIDENT GPU device mounted across namespaces
+- rule: INKBLADE GPU device mounted across namespaces
   desc: "同一 /dev/nvidia* 设备被不同 namespace 的进程同时打开（device plugin/MIG 独占失效）。English: same GPU device opened by processes in different namespaces."
   condition: "evt.type in (mount, open, openat) and fd.name startswith /dev/nvidia and not k8s.ns.name in (gpu-exclusive-allowlist)"
   output: "GPU device cross-ns open device=%fd.name proc=%proc.name ns=%k8s.ns.name pod=%k8s.pod.name"
   priority: WARNING
   tags:
-    - trident
+    - inkblade
     - gpu
     - monitor
     - mode-monitor
-- rule: TRIDENT Unconventional MIG reconfiguration
+- rule: INKBLADE Unconventional MIG reconfiguration
   desc: "nvidia-smi/nvml 在已分配设备上执行 MIG 重配或非常规档位切换（隔离边界被改写）。English: nvidia-smi/nvml MIG reconfiguration or unusual profile switch on an allocated device."
   condition: "evt.type=exec and proc.name=nvidia-smi and evt.arg.mig_reconfig=true"
   output: "MIG reconfig proc=%proc.name device=%evt.arg.device profile=%evt.arg.profile user=%user.name"
   priority: WARNING
   tags:
-    - trident
+    - inkblade
     - gpu
     - monitor
     - mode-monitor
-- rule: TRIDENT AI gateway process reads upstream provider credentials
+- rule: INKBLADE AI gateway process reads upstream provider credentials
   desc: "AI 网关进程（litellm/higress/envoy）读取上游 provider 凭据配置（/config、/etc/litellm、provider-secrets 挂载），或非网关主体读取同一路径。English: gateway or foreign process reading upstream provider credential config."
   condition: "evt.type in (open, openat, openat2) and evt.is_open_read=true and fd.name contains (/config, /etc/litellm, provider-secrets) and proc.name in (litellm, higress, envoy) and not proc.name in (gateway-startup-allowlist)"
   output: "gateway config read proc=%proc.name file=%fd.name container=%container.name"
   priority: WARNING
   tags:
-    - trident
+    - inkblade
     - filesystem
     - credential
     - monitor
     - mode-monitor
-- rule: TRIDENT In-network collective reduce poisoned by external member
+- rule: INKBLADE In-network collective reduce poisoned by external member
   desc: "在网聚合 reduce 结果被外部成员篡改（all-reduce 静默损坏面）。English: in-network collective reduce result tampered by an external session member."
   condition: "evt.type in (connect, accept) and evt.arg.channel in (sharp-aggregation, in-network-collective) and evt.arg.tampered=true and not k8s.ns.label in (training-allowlist)"
   output: "collective poison channel=%evt.arg.channel rank_src=%fd.cip result_delta=%evt.arg.delta ns=%k8s.ns.name"
   priority: CRITICAL
   tags:
-    - trident
+    - inkblade
     - network
     - collective
     - monitor
     - mode-monitor
-- rule: TRIDENT Fabric control-plane config mutated by unauthorized subject
+- rule: INKBLADE Fabric control-plane config mutated by unauthorized subject
   desc: "fabric 控制面配置（IB Partition 成员 / PFC 档位 / rail 绑定 / GPU 健康 Xid）被未授权主体改写。English: unauthorized mutation of fabric control-plane config (IB partition / PFC / rail binding / GPU health)."
   condition: "evt.type in (open, openat, openat2) and evt.is_open_write=true and evt.arg.component in (pfc, partition, rail, xid) and not proc.name in (fabric-operator-allowlist)"
   output: "fabric config write component=%evt.arg.component proc=%proc.name src=%fd.cip container=%container.name"
   priority: CRITICAL
   tags:
-    - trident
+    - inkblade
     - network
     - filesystem
     - monitor
     - mode-monitor
-- rule: TRIDENT Node root proof marker write from privileged container
-  desc: "??????? /root ?? TRIDENT-PROOF ????? root ?????English: privileged container writes a TRIDENT-PROOF marker into host /root."
-  condition: "(evt.type in (open, openat, openat2) and evt.is_open_write=true) and fd.name contains TRIDENT-PROOF and container.privileged=true"
+- rule: INKBLADE Node root proof marker write from privileged container
+  desc: "??????? /root ?? INKBLADE-PROOF ????? root ?????English: privileged container writes a INKBLADE-PROOF marker into host /root."
+  condition: "(evt.type in (open, openat, openat2) and evt.is_open_write=true) and fd.name contains INKBLADE-PROOF and container.privileged=true"
   output: "node-root marker write path=%fd.name proc=%proc.name container=%container.name"
   priority: CRITICAL
   tags:
-    - trident
+    - inkblade
     - filesystem
     - privilege
     - monitor
     - mode-monitor
-- rule: TRIDENT Agent sandbox host unexpected parent execution
+- rule: INKBLADE Agent sandbox host unexpected parent execution
   desc: "Agent 平台沙箱宿主上，进程执行的父进程不在沙箱监管基线内（行为化异常执行面）。English: execution on an agent-platform sandbox host whose parent process is outside the sandbox supervisor baseline."
-  condition: "spawned_process and k8s.ns.label[trident-io-zone]=ml-agent and not proc.aname in (sandbox-supervisor, containerd-shim, systemd)"
+  condition: "spawned_process and k8s.ns.label[inkblade-io-zone]=ml-agent and not proc.aname in (sandbox-supervisor, containerd-shim, systemd)"
   output: "sandbox unexpected parent exec proc=%proc.name parent=%proc.aname cmdline=%proc.cmdline ns=%k8s.ns.name"
   priority: CRITICAL
   tags:
-    - trident
+    - inkblade
     - zeroday-behavioral
     - monitor

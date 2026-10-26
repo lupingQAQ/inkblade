@@ -6,10 +6,10 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.depth import ebpf
+from inkblade.depth import ebpf
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ROOT / "trident" / "modules"
+MODULES = ROOT / "inkblade" / "modules"
 
 
 class _Run:
@@ -49,7 +49,7 @@ class TestEbpfCoverage(unittest.TestCase):
 
     def test_module(self):
         with TemporaryDirectory() as td:
-            ctx = {"run": _Run(Path(td)), "marker": "TRIDENT-DEPTH"}
+            ctx = {"run": _Run(Path(td)), "marker": "INKBLADE-DEPTH"}
             result = load_module("ebpf-runtime-coverage-gap").run(ctx, {})
             self.assertGreaterEqual(len(result["findings"]), 5)
             detail = json.loads(result["findings"][0]["detail"])

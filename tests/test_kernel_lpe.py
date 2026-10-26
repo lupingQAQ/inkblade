@@ -1,4 +1,4 @@
-"""tests/test_kernel_lpe.py — 内核 LPE 检测库（trident/lpe，仅检测不利用）。
+"""tests/test_kernel_lpe.py — 内核 LPE 检测库（inkblade/lpe，仅检测不利用）。
 
 覆盖：
 - 目录契约：≥40 条，每条含受影响区间/检测前置/来源/修复版本/严重度；
@@ -12,13 +12,13 @@ import json
 import unittest
 from pathlib import Path
 
-from trident.core.registry import load_modules
-from trident.kubetrail.lpe import RULES as KUBETRAIL_RULES
-from trident.lpe.catalog import CATALOG
-from trident.lpe.engine import assess, version_in_range
+from inkblade.core.registry import load_modules
+from inkblade.kubetrail.lpe import RULES as KUBETRAIL_RULES
+from inkblade.lpe.catalog import CATALOG
+from inkblade.lpe.engine import assess, version_in_range
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ROOT / "trident" / "modules"
+MODULES = ROOT / "inkblade" / "modules"
 FIXTURE = ROOT / "lab" / "fixtures" / "lpe" / "kernels.json"
 PARITY_DOC = ROOT / "docs" / "LPE-PARITY.md"
 

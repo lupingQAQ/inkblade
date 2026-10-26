@@ -7,12 +7,12 @@ references:
   - "Argo CD 安全文档 https://argo-cd.readthedocs.io/en/stable/operator-manual/security/"
   - "Flux 安全文档 https://fluxcd.io/flux/security/"
   - "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: platform-argocd-flux
-    trident.io/module: gitops-secret-read
+    inkblade.io/vector: platform-argocd-flux
+    inkblade.io/module: gitops-secret-read
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -32,16 +32,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.platform
+  - inkblade
+  - inkblade.vector.platform
   - attack.t1098
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: platform-argocd-flux
-  trident-module: gitops-secret-read
-  trident-detection-point: K8s audit：ArgoCD Application/Flux Kustomization 变更
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: platform-argocd-flux
+  inkblade-module: gitops-secret-read
+  inkblade-detection-point: K8s audit：ArgoCD Application/Flux Kustomization 变更
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

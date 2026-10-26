@@ -6,9 +6,9 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.notify import NotifyError, NotifyManager
-from trident.core.users import Session
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.notify import NotifyError, NotifyManager
+from inkblade.core.users import Session
 
 
 def _session(role="lead"):

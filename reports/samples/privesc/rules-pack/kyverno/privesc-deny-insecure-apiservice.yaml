@@ -1,11 +1,11 @@
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: trident-privesc-deny-insecure-apiservice
+  name: inkblade-privesc-deny-insecure-apiservice
   annotations:
-    trident.io/mode: monitor
-    trident.io/vector: rbac-apiservice-hijack
-    trident.io/tuning: 先 Audit 观察基线；确认无合法例外后切 Enforce
+    inkblade.io/mode: monitor
+    inkblade.io/vector: rbac-apiservice-hijack
+    inkblade.io/tuning: 先 Audit 观察基线；确认无合法例外后切 Enforce
 spec:
   validationFailureAction: Audit
   background: true

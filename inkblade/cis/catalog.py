@@ -5,7 +5,7 @@
 设计口径：
 - ``tier`` 区分来源：``cis-1.8`` / ``cis-1.9`` / ``cis-host`` / ``cis-k3s``；
 - ``kind`` 是判定方式（flag / pair / file / owner / evidence / plugin / kubelet / manual），
-  判定逻辑在 :mod:`trident.cis.engine`，本文件只存"事实与期望"，不执行任何写操作；
+  判定逻辑在 :mod:`inkblade.cis.engine`，本文件只存"事实与期望"，不执行任何写操作；
 - ``scored`` 与 kube-bench profile 对齐（130 项中 63 项计分、40 项 Manual）；
 - 缺失证据一律 ``manual``，不臆造 pass/fail。
 

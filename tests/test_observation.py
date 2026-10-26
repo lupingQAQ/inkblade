@@ -12,8 +12,8 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core import observation as ob
-from trident.core.evidence import EvidenceStore
+from inkblade.core import observation as ob
+from inkblade.core.evidence import EvidenceStore
 
 
 def _action(module="sglang-admin-failopen", **kw):

@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "NCCL-NCCLPLUGIN-HW",
  "source": "mining",
  "component": "nccl",
@@ -31,10 +31,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/nccl/NCCL-NCCLPLUGIN-HW/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.096,
- "started_at": "2026-10-26T05:25:41+00:00",
+ "duration_s": 0.36,
+ "started_at": "2026-10-26T19:55:19+00:00",
  "marker": {
-  "text": "TRIDENT-UV-NCCL-NCCLPLUGIN-HW",
+  "text": "INKBLADE-UV-NCCL-NCCLPLUGIN-HW",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -45,8 +45,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/nccl/NCCL-NCCLPLUGIN-HW/evidence/log.txt",
-   "sha256": "01448a067ef359dd9664bfa1f584330e29a4289fed18273c09667a94da579fa6",
-   "size": 411
+   "sha256": "ba3426d6fec045fa6b47a8ed942f1a06178d2593a82a73afd7062b333dd66d36",
+   "size": 410
   },
   {
    "path": "lab/upstream_verify/cases/nccl/NCCL-NCCLPLUGIN-HW/evidence/marker.txt",
@@ -55,12 +55,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/nccl/NCCL-NCCLPLUGIN-HW/evidence/unsupported.json",
-   "sha256": "a453ec6b90d67ba72b646a730892cd0a332db4f35e10a917cc20fd38829a18cc",
-   "size": 1111
+   "sha256": "afc5e1916f11620ffc6735258867a23af403234d1c0dc256c65bde359f1c9f65",
+   "size": 1112
   }
  ],
  "poc_sha256": "8c43ff144a23e6e961076b0c4ab32cfe5e637403206fce521050ffb6dc8361c7",
- "manifest_sha256": "b481a4fa3e2bc783a711beebf76cd98d8e78f20511658d2aefa3f530f5811d71",
+ "manifest_sha256": "531d8519cc4c99a192cd61a8f6033ff59b2e5964f0c5e082a0360b0f2b4839f4",
  "stdout": "{\"status\": \"unsupported\", \"case\": \"NCCL-NCCLPLUGIN-HW\", \"reason\": \"NCCL is a Linux/CUDA collective library: IB/RoCE/NVLink fabric, kernel modules and a GPU device are required; no .py/.go surface exists to scan and the library cannot load on this Windows host.\"}\n",
  "stderr": "",
  "notes": "NCCL v2.32.3-1: pure C/CUDA; plugin .so loading (NCCL_IB_HCA / NCCL_PLUGIN) needs the hardware path. Marked unsupported; attack-surface conclusions live in the fabric modules (nccl-collective-join, ib-subnet-manager-hijack)."

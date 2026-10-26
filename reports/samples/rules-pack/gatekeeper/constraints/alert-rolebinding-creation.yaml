@@ -1,11 +1,11 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
-kind: TridentAlertRoleBindingCreation
+kind: InkBladeAlertRoleBindingCreation
 metadata:
-  name: trident-alert-rolebinding-creation
+  name: inkblade-alert-rolebinding-creation
   annotations:
-    trident.io/mode: monitor
-    trident.io/tuning: monitor 阶段统计合法 CI/CD 与 operator 的绑定创建频率，形成白名单主体；Enforce 后仅豁免 argocd/gitops 同步主体；同步收紧三大 operator 的集群级 roles/rolebindings CRUD（见 RBAC 收敛清单）
-    trident.io/blocks-chains: "cluster-takeover-objective,ray-dashboard-cluster-takeover"
+    inkblade.io/mode: monitor
+    inkblade.io/tuning: monitor 阶段统计合法 CI/CD 与 operator 的绑定创建频率，形成白名单主体；Enforce 后仅豁免 argocd/gitops 同步主体；同步收紧三大 operator 的集群级 roles/rolebindings CRUD（见 RBAC 收敛清单）
+    inkblade.io/blocks-chains: "cluster-takeover-objective,ray-dashboard-cluster-takeover"
 spec:
   enforcementAction: dryrun
   match:

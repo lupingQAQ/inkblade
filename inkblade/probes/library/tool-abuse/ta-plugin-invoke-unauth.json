@@ -21,7 +21,7 @@
    "body": {
     "plugin": "jev",
     "args": {
-     "probe": "TRIDENT-BENIGN"
+     "probe": "INKBLADE-BENIGN"
     }
    }
   }

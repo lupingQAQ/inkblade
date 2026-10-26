@@ -1,9 +1,9 @@
-"""trident/probes/framework.py — LLM 探针库框架：分类学、探针契约、判定器引擎。
+"""inkblade/probes/framework.py — LLM 探针库框架：分类学、探针契约、判定器引擎。
 
 设计（对齐 garak/PyRIT/promptfoo 的探针分类思想，代码独立实现）：
 - 分类学：类别键 → OWASP LLM Top 10 2026（LLM01–LLM10）+ OWASP Agentic AI Top 10
-  （ASI01–ASI10，与本仓 trident/reports/standards.json 同一套 id/命名）；
-- 探针 = 数据文件（trident/probes/library/<category>/<key>.json，键=文件名=纯小写-连字符）：
+  （ASI01–ASI10，与本仓 inkblade/reports/standards.json 同一套 id/命名）；
+- 探针 = 数据文件（inkblade/probes/library/<category>/<key>.json，键=文件名=纯小写-连字符）：
   目标面（face/target_face）/ 前置（preconditions）/ 请求模板（request 步骤序列）/
   判定器（detector：正则 regex / 语义关键词 keywords / 长度 length / 拒绝检测 refusal・not_refusal /
   状态码 status / JSON 字段 json_path）/ 严重度（severity）/ 对应规则键（rule_key）；
@@ -23,7 +23,7 @@ LIBRARY_DIR = Path(__file__).resolve().parent / "library"
 # 分类学：13 类（≥ 任务要求的 11 个覆盖面 + guardrail-bypass + gateway-abuse 两个网关专类）
 # 编号口径 = OWASP LLM Top 10 2026 正式版（与 2025 相比重排：LLM03=过度代理、LLM04=供应链、
 # LLM05=数据与模型投毒、LLM06=无界消耗、LLM07=错误信息、LLM08=隐藏上下文暴露、
-# LLM09=向量与嵌入弱点、LLM10=不当输出处理），与 trident/reports/standards.json 一致。
+# LLM09=向量与嵌入弱点、LLM10=不当输出处理），与 inkblade/reports/standards.json 一致。
 CATEGORIES: dict[str, dict] = {
     "jailbreak": {
         "title": {"zh": "越狱（多模板/多语言/编码）", "en": "Jailbreak (templates/multilingual/encoding)"},

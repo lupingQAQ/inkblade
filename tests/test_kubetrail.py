@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.kubetrail import collector, lpe, manifestscan, persistence, redact3, token_audit
+from inkblade.kubetrail import collector, lpe, manifestscan, persistence, redact3, token_audit
 
 
 class Redact3Test(unittest.TestCase):

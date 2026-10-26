@@ -6,7 +6,7 @@
 >
 > 1. **Slurm 专属域覆盖**（本文件第 1 节，17 个域）：基线 **3/17 = 17.6%**，
 >    本轮后 **15/17 = 88.2%**（目标 ≥40% 达成）。
-> 2. **模块级画像覆盖**（`trident surfaces --profile slurm-hpc` 的
+> 2. **模块级画像覆盖**（`inkblade surfaces --profile slurm-hpc` 的
 >    `coverage_pct`）：基线 **17.67%**，本轮后约 **25.8%**。该分母是全部 264 个
 >    默认模块，其中大量模块的必需面是 `k8s-object:Pod/Node`，在“无 Kubernetes API”
 >    的 Slurm 画像中**必须**保持 no-surface；把它抬到 40% 只能靠伪造 K8s 面。
@@ -59,7 +59,7 @@
 
 ## 3. 画像扩展（只加真实存在的 Slurm/AI-HPC 面）
 
-`trident/profiles/slurm-hpc.json` 新增的声明都与该画像的组件一致：
+`inkblade/profiles/slurm-hpc.json` 新增的声明都与该画像的组件一致：
 
 - Slurm 控制/认证/插件/cgroup/记账/GRES/生命周期配置与 `runtime-agent/*`；
 - slurmrestd 的三个 v0.0.40 端点、`/openapi.json`；
@@ -87,7 +87,7 @@
 
 ## 5. 实效与测试
 
-`trident/verify-effects.py` 新增：
+`inkblade/verify-effects.py` 新增：
 
 - `slurm-jwt-weak-key`：短 HS256 + 0644 key + 无轮换/过期 → high；fixed 0 high；
 - `slurm-cgroup-device-escape`：Cores/RAM/Devices 全关 → ≥4 high；fixed 0 high。

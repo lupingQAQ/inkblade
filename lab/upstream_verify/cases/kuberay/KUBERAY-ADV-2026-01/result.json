@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "KUBERAY-ADV-2026-01",
  "source": "cve",
  "component": "kuberay",
@@ -29,10 +29,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.146,
- "started_at": "2026-10-26T09:23:24+00:00",
+ "duration_s": 0.27,
+ "started_at": "2026-10-26T19:48:40+00:00",
  "marker": {
-  "text": "TRIDENT-UV-KUBERAY-ADV-2026-01",
+  "text": "INKBLADE-UV-KUBERAY-ADV-2026-01",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -43,8 +43,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/evidence/log.txt",
-   "sha256": "1e324c64e6a62761cdfa6f8b463e8501937064e311ad2dad7091bae26fac6254",
-   "size": 209
+   "sha256": "6480b40e8ac549b16cc4c940afde8392d5ccbad5f45fbadda801ba3993ac2f0e",
+   "size": 208
   },
   {
    "path": "lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/evidence/marker.txt",
@@ -53,12 +53,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/evidence/static-check.json",
-   "sha256": "029890957286a12820392d1bc493b7f9f6b84827430f7868ddc43598a83420e3",
-   "size": 874
+   "sha256": "b124a847dc3b8ddf75581f6a25325182f024d2b77750aa286c9c99177f181800",
+   "size": 875
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "a59d4e7596856ee5f1f119ed12adbc8621fda01ef30dde05a3bf4f4545478aa3",
+ "manifest_sha256": "29c41208c891fc700836eb337430a323d2512c994cf0a75bc00c7ea79d2bfec6",
  "stdout": "{\"status\": \"static-only\", \"case\": \"KUBERAY-ADV-2026-01\"}\n",
  "stderr": "",
  "notes": "KubeRay-managed Ray exposure is a deployment pattern, not a single upstream sink; static-only."

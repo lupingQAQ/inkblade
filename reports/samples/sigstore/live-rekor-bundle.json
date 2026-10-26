@@ -56,7 +56,7 @@
     },
     "signature": "MEUCIC65lXPA7K+j2uA1QS5wTSYCYL6xiZopb878wi18lgF4AiEAk+PecDUg3TarE+Ygm8tj+HabVOFPadtn+Iz9hubertA="
   },
-  "trident": {
+  "inkblade": {
     "mode": "rekor-import",
     "rekor_uuid": "108e9186e8c5677a1abbc42c871c2e7464e9c684908a504a3b83ec41758730a5f7bdf8fea556424f",
     "rekor_url": "https://rekor.sigstore.dev",

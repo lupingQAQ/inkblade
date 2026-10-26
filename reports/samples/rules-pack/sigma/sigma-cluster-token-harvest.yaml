@@ -1,10 +1,10 @@
 title: "ServiceAccount TokenRequest ????"
-id: c23629e6-7547-15a4-835c-edbd091d1fe5
+id: b2c9f102-c5d4-9643-2427-caa70331a627
 status: stable
 description: "K8s audit: service account token request/create by a workload-class subject (credential acquisition for RBAC escalation). ???????????? TokenRequest???????"
 references:
-  - "trident-rules-mapping: sigma-cluster-token-harvest"
-author: Trident rules engine
+  - "inkblade-rules-mapping: sigma-cluster-token-harvest"
+author: InkBlade rules engine
 date: 2026/10/25
 logsource:
   product: kubernetes
@@ -28,9 +28,9 @@ level: high
 tags:
   - attack.credential_access
   - attack.t1552
-  - trident
-  - trident-mode-monitor
+  - inkblade
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-tuning: "???? TokenRequest ???serviceaccounts/token???? CI/? operator ???????? high?token ??????????? jti/??/???"
-  trident-blocks-chains: cluster-takeover-objective
+  inkblade-mode: monitor
+  inkblade-tuning: "???? TokenRequest ???serviceaccounts/token???? CI/? operator ???????? high?token ??????????? jti/??/???"
+  inkblade-blocks-chains: cluster-takeover-objective

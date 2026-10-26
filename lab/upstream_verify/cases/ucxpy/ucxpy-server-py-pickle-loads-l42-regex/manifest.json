@@ -36,7 +36,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-infra/mining-report.json",
- "marker_text": "TRIDENT-UV-ucxpy-server-py-pickle-loads-l42-regex",
+ "marker_text": "INKBLADE-UV-ucxpy-server-py-pickle-loads-l42-regex",
  "notes": "ucx-py debug-tests server deserialises a client-supplied cloudpickle payload (cloudpickle.loads(func)) with no authentication: any peer reaching the debug endpoint gets arbitrary code execution by design of the debug tool. Debug tooling is not the production wheel path, and the server needs CUDA/UCX/distributed stacks that this Windows host cannot run, so the case is static-only with the trust boundary recorded.",
  "static_evidence_level": "source-line",
  "static_analysis": "ucx-py debug-tests server deserialises a client-supplied cloudpickle payload (cloudpickle.loads(func)) with no authentication: any peer reaching the debug endpoint gets arbitrary code execution by design of the debug tool. Debug tooling is not the production wheel path, and the server needs CUDA/UCX/distributed stacks that this Windows host cannot run, so the case is static-only with the trust boundary recorded.",
@@ -51,7 +51,7 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "ucxpy",
  "static_blocker": {
   "category": "pattern-false-positive",

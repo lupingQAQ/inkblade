@@ -23,5 +23,5 @@
 
 ## 对我们的启示
 - 与我们的模块契约（`module.json`：key/name/series/description/min_level/writes/requires）相比，技能契约多了**程序性知识与资源**，少了执行绑定——正好互补。
-- 建议的 Trident 技能包：`skills/<name>/SKILL.md` + `scripts/`（只调用 `trident` CLI 的只读/受控命令）+ `references/`（产品指纹、判据、误报案例）。执行仍走模块与四闸门。
+- 建议的 InkBlade 技能包：`skills/<name>/SKILL.md` + `scripts/`（只调用 `inkblade` CLI 的只读/受控命令）+ `references/`（产品指纹、判据、误报案例）。执行仍走模块与四闸门。
 - 技能库要能被评测：每个技能带「触发条件/成功判据/反例」，进 CI 跑 `skills-ref validate` + 我们的 golden tasks。

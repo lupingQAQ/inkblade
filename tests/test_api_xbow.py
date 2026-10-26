@@ -8,12 +8,12 @@ import urllib.request
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.discovery import AssetInventory
-from trident.core.evidence import EvidenceStore
-from trident.core.users import UserStore
-from trident.webui.server import make_server
+from inkblade.core.discovery import AssetInventory
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.users import UserStore
+from inkblade.webui.server import make_server
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 SEEDS = {"services": [{"name": "sglang-admin", "namespace": "ml", "addr": "127.0.0.1", "port": 30000,
                        "labels": {"app": "sglang"}}]}
 

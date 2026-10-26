@@ -21,7 +21,7 @@
                "file_modes": {"/etc/passwd": "644"}},
       "k3s": {"secrets_encryption": true, ...},
       "policies": {"audit_policy": "minimal", "encryption": {"provider_configured": true}},
-      "ml": {...}   # 由 trident.cis.ml 读取
+      "ml": {...}   # 由 inkblade.cis.ml 读取
     }
 
 判定口径：
@@ -35,7 +35,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from trident.cis.catalog import CATALOG, CATALOG as _CATALOG, severity_of
+from inkblade.cis.catalog import CATALOG, CATALOG as _CATALOG, severity_of
 
 _COMPONENT_ALIASES = {
     "apiserver": ("apiserver", "api-server", "kube-apiserver"),

@@ -10,6 +10,6 @@
     "snapshot": "可选，admission cases JSON（{cases:[...]}）；省略使用内置 10 个 Kyverno 用例"
   },
   "produces": "admission-semantics-matrix（逐用例可回放 trace + 加固对照）",
-  "knowledge": "docs/DEPTH-REVIEW.md §2；trident/depth/admission.py",
+  "knowledge": "docs/DEPTH-REVIEW.md §2；inkblade/depth/admission.py",
   "combo_signature": "kyverno-semantic-bypass"
 }

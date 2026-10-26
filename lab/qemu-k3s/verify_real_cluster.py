@@ -1,12 +1,12 @@
-﻿"""Real-cluster verification for Trident (k3s on QEMU/TCG).
+﻿"""Real-cluster verification for InkBlade (k3s on QEMU/TCG).
 
 Runs against the live cluster reachable with the supplied kubeconfig and writes
 machine-readable evidence to reports/samples/real-cluster/:
 
   cluster-info.json      kubectl version, nodes, API latency samples
   snapshot.json          recon input built from `kubectl get -o json`
-  recon-findings.json    Trident recon modules run on that snapshot
-  service-probe.json     Trident module (real HTTP) against the NodePort Service
+  recon-findings.json    InkBlade recon modules run on that snapshot
+  service-probe.json     InkBlade module (real HTTP) against the NodePort Service
   netpol-proof.json      default-deny vs hostNetwork bypass, with curl/wget output
 
 The script never silently "passes": every check records rc/stdout/stderr, and
@@ -39,7 +39,7 @@ MODULES = [
     "escape-primitives",
     "observability-exposure",
 ]
-NAMESPACE = "trident-proof"
+NAMESPACE = "inkblade-proof"
 NODE_PORT = 30080
 
 
@@ -173,18 +173,18 @@ def window_probe() -> dict:
 
 
 def run_recon(snapshot: dict, evidence_root: Path, tag: str) -> dict:
-    from trident.core.evidence import EvidenceStore
-    from trident.core.roe import LEVELS, init_roe
-    from trident.core.runner import run_module
-    from trident.core.users import UserStore
+    from inkblade.core.evidence import EvidenceStore
+    from inkblade.core.roe import LEVELS, init_roe
+    from inkblade.core.runner import run_module
+    from inkblade.core.users import UserStore
 
     store = EvidenceStore(evidence_root, workspace="local-lab")
     init_roe(store, fields={
         "level": LEVELS[-1],
         "namespaces": [NAMESPACE, "kube-system", "default"],
         "cidrs": ["127.0.0.0/8", "10.0.0.0/8"],
-        "window": f"trident qemu tcg lab {tag}",
-        "client": "Trident maintainers (self-owned lab cluster)",
+        "window": f"inkblade qemu tcg lab {tag}",
+        "client": "InkBlade maintainers (self-owned lab cluster)",
     })
     users = UserStore(evidence_root / "users.json")
     users.create_user("real-cluster", "x", "tester", ["*"])
@@ -195,7 +195,7 @@ def run_recon(snapshot: dict, evidence_root: Path, tag: str) -> dict:
     for key in MODULES:
         try:
             run_module(store, session, key, {"snapshot": snapshot},
-                       modules_dir=REPO / "trident" / "modules", run=run)
+                       modules_dir=REPO / "inkblade" / "modules", run=run)
             modules.append({"key": key, "ok": True})
         except Exception as exc:
             modules.append({"key": key, "ok": False, "error": f"{type(exc).__name__}: {exc}"})
@@ -251,17 +251,17 @@ def netpol_proof(k: K, cluster_ip: str, pod_ip: str) -> dict:
 
 
 def service_probe_module(tag: str, evidence_root: Path) -> dict:
-    """Run a Trident HTTP module from Windows against the real NodePort Service."""
-    from trident.core.evidence import EvidenceStore
-    from trident.core.roe import LEVELS, init_roe
-    from trident.core.runner import run_module
-    from trident.core.users import UserStore
+    """Run a InkBlade HTTP module from Windows against the real NodePort Service."""
+    from inkblade.core.evidence import EvidenceStore
+    from inkblade.core.roe import LEVELS, init_roe
+    from inkblade.core.runner import run_module
+    from inkblade.core.users import UserStore
 
     store = EvidenceStore(evidence_root, workspace="local-lab")
     init_roe(store, fields={
         "level": LEVELS[-1], "namespaces": [NAMESPACE],
         "cidrs": ["127.0.0.0/8"], "window": f"qemu tcg {tag}",
-        "client": "Trident maintainers (self-owned lab cluster)",
+        "client": "InkBlade maintainers (self-owned lab cluster)",
     })
     users = UserStore(evidence_root / "users.json")
     try:
@@ -272,7 +272,7 @@ def service_probe_module(tag: str, evidence_root: Path) -> dict:
     run = store.create_run(f"real-cluster-http-{tag}")
     target = f"http://127.0.0.1:{NODE_PORT}"
     run_module(store, session, "vllm-plugin-auth-bypass", {"target": target, "mode": "probe-only"},
-               modules_dir=REPO / "trident" / "modules", run=run)
+               modules_dir=REPO / "inkblade" / "modules", run=run)
     trace = _trace_from_run(run)
     steps = run.query("SELECT step_key, result_summary FROM steps WHERE run=?", (run.name,))
     summary = next((r[1] for r in steps if r[0] == "vllm-plugin-auth-bypass"), "")
@@ -330,7 +330,7 @@ def main(argv=None) -> int:
         win = window_probe()
         probe = service_probe_module(tag, evidence_root)
         (outdir / "service-probe.json").write_text(
-            json.dumps({"windows_http": win, "trident_module": probe}, indent=1, ensure_ascii=False),
+            json.dumps({"windows_http": win, "inkblade_module": probe}, indent=1, ensure_ascii=False),
             encoding="utf-8")
         summary["steps"]["service_probe"] = {"windows_ok": win["ok"],
                                              "module_summary": probe["summary"][:300]}

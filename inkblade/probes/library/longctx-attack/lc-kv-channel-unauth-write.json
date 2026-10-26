@@ -17,8 +17,8 @@
    "auth": "none",
    "body": {
     "op": "write",
-    "block_id": "trident-probe-kv",
-    "value": "TRIDENT-BENIGN-KV-PROBE"
+    "block_id": "inkblade-probe-kv",
+    "value": "INKBLADE-BENIGN-KV-PROBE"
    }
   }
  ],

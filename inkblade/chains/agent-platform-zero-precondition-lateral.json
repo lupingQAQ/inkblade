@@ -15,7 +15,7 @@
     {
       "id": "sandbox-entry",
       "module": "dify-local-sandbox-unauth-rce",
-      "params": {"mode": "backup-write", "cmd": "enumerate-tenants", "marker": "TRIDENT-${run.name}"},
+      "params": {"mode": "backup-write", "cmd": "enumerate-tenants", "marker": "INKBLADE-${run.name}"},
       "writes": true,
       "backup_targets": [
         {"kind": "http", "url": "http://sandbox-host/sandbox/tenants", "state": {}}

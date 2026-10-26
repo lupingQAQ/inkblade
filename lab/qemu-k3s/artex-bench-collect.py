@@ -5,7 +5,7 @@ Inputs
   --raw        raw dump from the guest (artex-bench-raw.txt)
   --mock-log   JSONL log of lab/qemu-k3s/artex-mock-llm.py (host side)
   --out DIR    where artex-bench.json / artex-bench.md are written
-  --trident    lab/bench/out/bench-smoke.json (optional, for the side-by-side table)
+  --inkblade    lab/bench/out/bench-smoke.json (optional, for the side-by-side table)
   --meta KEY=VAL  extra environment facts (repeatable), stored verbatim
 
 Design rule: every number in the output must come from one of the inputs. Missing
@@ -126,7 +126,7 @@ def read_mock_log(path: Path) -> dict:
     }
 
 
-def read_trident(path: Path) -> dict | None:
+def read_inkblade(path: Path) -> dict | None:
     if not path or not path.exists():
         return None
     try:
@@ -139,7 +139,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--raw", required=True)
     ap.add_argument("--mock-log", default="")
-    ap.add_argument("--trident", default="lab/bench/out/bench-smoke.json")
+    ap.add_argument("--inkblade", default="lab/bench/out/bench-smoke.json")
     ap.add_argument("--out", required=True)
     ap.add_argument("--meta", action="append", default=[])
     ap.add_argument("--limitation", action="append", default=[])
@@ -224,8 +224,8 @@ def main() -> int:
     json_path = out_dir / "artex-bench.json"
     json_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    trident = read_trident(Path(args.trident)) if args.trident else None
-    md = render_md(result, trident)
+    inkblade = read_inkblade(Path(args.inkblade)) if args.inkblade else None
+    md = render_md(result, inkblade)
     (out_dir / "artex-bench.md").write_text(md, encoding="utf-8")
     print(json.dumps({"json": str(json_path), "cold_start_ms": result["cold_start"]["artex_health_ms"],
                       "rss_max_mib": stats["total_mib"]["max"],
@@ -233,7 +233,7 @@ def main() -> int:
     return 0
 
 
-def render_md(r: dict, trident: dict | None) -> str:
+def render_md(r: dict, inkblade: dict | None) -> str:
     def g(*keys, default="—"):
         node = r
         for key in keys:
@@ -288,18 +288,18 @@ def render_md(r: dict, trident: dict | None) -> str:
         "- same-target outcome (v2 scripted-planner mock): see same-target.md — the task",
         "  reaches `done`, the worker hits the mock target for real and a finding is filed.",
         "",
-        "## Side by side with Trident",
+        "## Side by side with InkBlade",
         "",
-        "| metric | ARTEX (VM) | Trident (host, lab/bench) |",
+        "| metric | ARTEX (VM) | InkBlade (host, lab/bench) |",
         "|---|---|---|",
     ]
-    trident_rss = f"{(trident.get('max_rss_kb') or 0) / 1024:.1f} MiB (1 process)" if trident else "n/a"
-    lines.append(f"| idle RSS | {res.get('max')} MiB (2 containers) | {trident_rss} |")
-    if trident:
+    inkblade_rss = f"{(inkblade.get('max_rss_kb') or 0) / 1024:.1f} MiB (1 process)" if inkblade else "n/a"
+    lines.append(f"| idle RSS | {res.get('max')} MiB (2 containers) | {inkblade_rss} |")
+    if inkblade:
         lines.append(f"| task submit → terminal state | {g('task_run', 'total_ms')} ms "
                      f"(status={g('task_run', 'final_status')}; scripted-planner mock LLM; "
                      "same-target details in same-target.md) | "
-                     f"{(trident.get('elapsed_ms') or 0):.0f} ms over {trident.get('iterations', '?')} "
+                     f"{(inkblade.get('elapsed_ms') or 0):.0f} ms over {inkblade.get('iterations', '?')} "
                      "chain rounds (real HTTP to the same mock target) |")
     lines += ["", "## Limitations", ""]
     for lim in r["limitations"]:

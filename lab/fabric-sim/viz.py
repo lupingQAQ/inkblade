@@ -22,7 +22,7 @@ def render_svg(t: Telemetry, findings: list[dict] | None = None) -> str:
     rows = []
     y = 118
     rows.append(f'<text x="24" y="34" font-size="20" font-family="monospace">'
-                f'Trident fabric sim — {escape(t.scenario)} (nodes={t.topology["nodes"]}, '
+                f'InkBlade fabric sim — {escape(t.scenario)} (nodes={t.topology["nodes"]}, '
                 f'ranks={len(t.ranks)}) — SIMULATED</text>')
     rows.append(f'<text x="24" y="60" font-size="13" font-family="monospace">'
                 f'PFC={t.pfc_pause_frames} ECN={t.ecn_marks} drops={t.drops} '
@@ -71,7 +71,7 @@ def render_svg(t: Telemetry, findings: list[dict] | None = None) -> str:
                     f'{escape(f["title"])}</text>')
         fy += 16
     return ('<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" '
-            'viewBox="0 0 %d %d" role="img" aria-label="Trident fabric simulation">'
+            'viewBox="0 0 %d %d" role="img" aria-label="InkBlade fabric simulation">'
             '<rect width="100%%" height="100%%" fill="#f8fafc"/>%s</svg>'
             % (width, height, width, height, "".join(rows)))
 
@@ -82,11 +82,11 @@ def render_html(t: Telemetry, findings: list[dict], svg: str | None = None) -> s
         f"<tr><td>{escape(f['sev'])}</td><td>{escape(f['rule'])}</td>"
         f"<td>{escape(f['title'])}</td></tr>" for f in findings)
     return ("<!doctype html><html lang='zh'><meta charset='utf-8'>"
-            "<title>Trident fabric simulation</title>"
+            "<title>InkBlade fabric simulation</title>"
             "<style>body{font-family:monospace;margin:20px;background:#f8fafc}"
             "table{border-collapse:collapse;margin-top:16px}td,th{border:1px solid #cbd5e1;"
             "padding:4px 8px;text-align:left}th{background:#e2e8f0}</style>"
-            "<h1>Trident fabric simulation</h1>"
+            "<h1>InkBlade fabric simulation</h1>"
             "<p><b>模拟，非真实硬件</b> — discrete-event model, not 10K GPU measurement.</p>"
             f"{svg}<table><tr><th>sev</th><th>rule</th><th>finding</th></tr>{rows}</table>"
             "</html>")

@@ -17,7 +17,7 @@
     {
       "id": "kv-channel-probe",
       "module": "inference-gateway-pd",
-      "params": {"probe": "kv-channel", "marker": "TRIDENT-${run.name}", "snapshot": "lab/fixtures/network"}
+      "params": {"probe": "kv-channel", "marker": "INKBLADE-${run.name}", "snapshot": "lab/fixtures/network"}
     }
   ],
   "evidence": ["http-trace"],

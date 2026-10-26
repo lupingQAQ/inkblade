@@ -1,31 +1,31 @@
 {
-  "tee": "sev-snp",
-  "version": 1,
-  "nonce": "fixture-nonce-2026-10",
-  "model_sha256": "5b9c7e1b20f0b6cf507885381162b6c0dbb8368aa3ce34cd5a37f4f139bba925",
-  "report_data": "5d5c6c555bf407a0844a01fb5cafde30c47b3ed9457d9677de1f41e224774999",
-  "generated_at": 1790000000,
-  "quote": {
-    "measurement": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
-    "report_id": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-    "policy": 196608,
-    "tcb": {
-      "status": "UpToDate",
-      "bootloader": 3,
-      "tee": 0,
-      "snp": 8,
-      "microcode": 115
-    },
-    "debug": false
+ "tee": "sev-snp",
+ "version": 1,
+ "nonce": "fixture-nonce-2026-10",
+ "model_sha256": "5b9c7e1b20f0b6cf507885381162b6c0dbb8368aa3ce34cd5a37f4f139bba925",
+ "report_data": "5d5c6c555bf407a0844a01fb5cafde30c47b3ed9457d9677de1f41e224774999",
+ "generated_at": 1790000000,
+ "quote": {
+  "measurement": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
+  "report_id": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "policy": 196608,
+  "tcb": {
+   "status": "UpToDate",
+   "bootloader": 3,
+   "tee": 0,
+   "snp": 8,
+   "microcode": 115
   },
-  "claims": {
-    "attester": "sev-snp-fixture",
-    "gpu_cc": false,
-    "debug": false
-  },
-  "signature": {
-    "keyid": "fixture-snp-root",
-    "alg": "HMAC-SHA256",
-    "value": "27f5f10a41e5fc736b97c6f758e4e23310f20e1c700b98bfd5d2abe506797f5c"
-  }
+  "debug": false
+ },
+ "claims": {
+  "attester": "sev-snp-fixture",
+  "gpu_cc": false,
+  "debug": false
+ },
+ "signature": {
+  "keyid": "fixture-snp-root",
+  "alg": "HMAC-SHA256",
+  "value": "af209127b392b6ec03e919b3918a9c132a957bce20da688f8cc330a8b3e0ea32"
+ }
 }

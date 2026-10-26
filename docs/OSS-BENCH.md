@@ -1,6 +1,6 @@
 # 开源工具性能实测（OSS-BENCH）
 
-> 生成：2026-10-26 · 数据：[reports/samples/oss-bench/summary.json](../reports/samples/oss-bench/summary.json)（schema `trident.oss-bench/1`）·
+> 生成：2026-10-26 · 数据：[reports/samples/oss-bench/summary.json](../reports/samples/oss-bench/summary.json)（schema `inkblade.oss-bench/1`）·
 > 原始证据：`reports/samples/oss-bench/raw/` · 工具全景：[OSS-ML-CLUSTER-TOOLS.md](OSS-ML-CLUSTER-TOOLS.md)
 
 ## 1. 方法
@@ -8,7 +8,7 @@
 - **同 fixture / 同目标**：模型扫描器共用同一批 14 个文件（8 恶意 / 6 良性，`lab/oss_bench/fixtures/models/manifest.json` 为判定基准，逐文件 sha256 锚定）；K8s 扫描器共用 `fixtures/k8s`（10 文件、6 类种子发现）与 QEMU TCG k3s v1.36.5+k3s1 真集群；LLM 评测共用本地 echo mock（12 用例，零外部 API）。
 - **每项跑 3 轮取中位数**（kube-bench 在 TCG guest 内 3 轮，秒级分辨率）；峰值 RSS 以 psutil 25ms 采样进程树；`raw/` 保存各工具原始输出（JSON/日志/journal）。
 - **检出统计口径**：恶意文件被标警=TP、漏报=FN、良性被标警=FP；解析不了的文件按工具语义归类（fickling rc=2 视为不支持，其中恶意件计入 FN、良性件剔除防止虚高 TN）。
-- 复现：在与本仓同根的隔离 venv（含 kube-hunter/fickling/modelscan/picklescan/chaostoolkit）里执行 `python lab/oss_bench/run_bench.py --out reports/samples/oss-bench --runs 3`；trivy/toxiproxy/promptfoo/node 通过环境变量 `TRIDENT_TRIVY` / `TRIDENT_TOXIPROXY` / `TRIDENT_NODE` / `TRIDENT_PROMPTFOO_MAIN`（或 PATH）指向官方 release 二进制/入口（不在仓内内置任何绝对路径）。
+- 复现：在与本仓同根的隔离 venv（含 kube-hunter/fickling/modelscan/picklescan/chaostoolkit）里执行 `python lab/oss_bench/run_bench.py --out reports/samples/oss-bench --runs 3`；trivy/toxiproxy/promptfoo/node 通过环境变量 `INKBLADE_TRIVY` / `INKBLADE_TOXIPROXY` / `INKBLADE_NODE` / `INKBLADE_PROMPTFOO_MAIN`（或 PATH）指向官方 release 二进制/入口（不在仓内内置任何绝对路径）。
 
 **环境**：Windows 11 宿主（python 3.12，QEMU TCG 6 vCPU Alpine 3.24 guest 承载 k3s）。TCG guest 计时带模拟放大，跨类对比只看同环境数字。
 
@@ -37,7 +37,7 @@
 - **kube-hunter**：对匿名读 API 之外的接口（mock 只开两个端口）能给出 8 findings；注意其上游已声明**不再积极开发**（推荐迁移 Trivy）。
 - **promptfoo**：echo provider 12/12；一次冷启 ≈48 s（node 模块加载），热启 2.99s——CI 场景需预热。
 - **toxiproxy**：200ms 下行延迟注入实测 +200.7ms（误差 0.7ms）；timeout toxic 直接断连——损伤注入面完整可用，是网络损伤 backlog（OSS-S1）的现成执行件。
-- **Chaos Toolkit**：steady-state-hypothesis+tolerance 200+process provider（taskkill）三件套在 Windows 本地进程面可用；稳态破坏被正确判定为 deviated 且 journal.json 落证——证据结构与 Trident 三层证据同型（OSS-S2 导出对接点）。
+- **Chaos Toolkit**：steady-state-hypothesis+tolerance 200+process provider（taskkill）三件套在 Windows 本地进程面可用；稳态破坏被正确判定为 deviated 且 journal.json 落证——证据结构与 InkBlade 三层证据同型（OSS-S2 导出对接点）。
 
 ## 4. 未实测项与原因（与全景表 `local_runnable` 一一对应）
 
@@ -53,6 +53,6 @@
 | tc/netem | Windows 宿主不可用（WSL2 不可用）；需在目标 Linux netns 内执行 |
 | torch distributed / Ray / DeepSpeed 测试套件 | 需多进程/GPU/集群口径（官方套件本身可 pip 装但完整跑法需专用环境） |
 
-## 5. 与 Trident 的同量级参照
+## 5. 与 InkBlade 的同量级参照
 
-同靶场（QEMU TCG k3s + mock）下：Trident 11 个侦察模块跑真实 kubectl 快照 **199.7ms / 145 findings / RSS 34–54MB**（docs/SCALE-RESULTS.md k3s 实测点）；trivy-k8s 快照路径 4.79s / 247 misconfig / RSS 238MB——不同检查哲学（Trident=ML 面专项检查，Trivy=通用 misconfig 规则集），数字不可直接优劣化，仅作资源量级参照。ARTEX 同靶场 13510ms vs Trident 105.6ms 见 docs/ARTEX-BENCH-RESULT.md。
+同靶场（QEMU TCG k3s + mock）下：InkBlade 11 个侦察模块跑真实 kubectl 快照 **199.7ms / 145 findings / RSS 34–54MB**（docs/SCALE-RESULTS.md k3s 实测点）；trivy-k8s 快照路径 4.79s / 247 misconfig / RSS 238MB——不同检查哲学（InkBlade=ML 面专项检查，Trivy=通用 misconfig 规则集），数字不可直接优劣化，仅作资源量级参照。ARTEX 同靶场 13510ms vs InkBlade 105.6ms 见 docs/ARTEX-BENCH-RESULT.md。

@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "trl-sft-trainer-py-missing-revision-l310-regex",
  "source": "mining",
  "component": "trl",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/trl/trl-sft-trainer-py-missing-revision-l310-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.137,
- "started_at": "2026-10-26T09:23:45+00:00",
+ "duration_s": 0.38,
+ "started_at": "2026-10-26T19:58:11+00:00",
  "marker": {
-  "text": "TRIDENT-UV-trl-sft-trainer-py-missing-revision-l310-regex",
+  "text": "INKBLADE-UV-trl-sft-trainer-py-missing-revision-l310-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,8 +47,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-missing-revision-l310-regex/evidence/log.txt",
-   "sha256": "611e89f84a51aabc75d19158f8e2873c35ab664abd6601e406fa75d6bdbf3a3b",
-   "size": 259
+   "sha256": "4be4021fe7896314d504a7325e511e93a81b582f68abe7b6c4fee6cf7866d59a",
+   "size": 258
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-missing-revision-l310-regex/evidence/marker.txt",
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-missing-revision-l310-regex/evidence/static-check.json",
-   "sha256": "b6e75c78afd150ec81a208ac9e5590e0b5ee6ee23415f2b271e4b2d01fa2ceb1",
-   "size": 1187
+   "sha256": "b51cd3cea2809744b4702ec25551721fec69371f23705c62dcfd7a03d0181285",
+   "size": 1188
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "01171b8fd6c1f8112fb46ded31e55d388b424de690ff108e8b094b53ed965baa",
+ "manifest_sha256": "35bf3324827142045ea78de4ba804e636b388a090da56d20d1a53d022a852fc0",
  "stdout": "{\"status\": \"static-only\", \"case\": \"trl-sft-trainer-py-missing-revision-l310-regex\"}\n",
  "stderr": "",
  "notes": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."

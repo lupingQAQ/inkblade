@@ -1,4 +1,4 @@
-"""trident/probes — LLM 探针库（garak/PyRIT/promptfoo 对标 + 独有长上下文/KV/缓存/网关面）。
+"""inkblade/probes — LLM 探针库（garak/PyRIT/promptfoo 对标 + 独有长上下文/KV/缓存/网关面）。
 
 公共入口：
 - load_probes()               探针库（≥80 探针 / 13 类，键=文件名=纯小写）

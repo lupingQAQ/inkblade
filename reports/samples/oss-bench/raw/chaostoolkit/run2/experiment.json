@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "title": "trident-oss-bench local process chaos",
+  "title": "inkblade-oss-bench local process chaos",
   "description": "steady-state HTTP 200 on the victim, kill the victim process, expect the steady-state probe to fail afterwards",
   "tags": [
-    "trident-oss-bench"
+    "inkblade-oss-bench"
   ],
   "steady-state-hypothesis": {
     "title": "victim endpoint keeps answering",

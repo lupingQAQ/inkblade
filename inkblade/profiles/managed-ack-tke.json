@@ -1,5 +1,5 @@
 {
-  "schema": "trident-profile-v1",
+  "schema": "inkblade-profile-v1",
   "name": "managed-ack-tke",
   "description": "Managed ACK/TKE control plane: no direct etcd or node BMC access, cloud metadata reachable, Istio ambient mesh and confidential-container runtime class enabled.",
   "platform": "managed-kubernetes",

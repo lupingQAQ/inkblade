@@ -1,5 +1,5 @@
 {
-  "cluster": "kind-trident",
+  "cluster": "kind-inkblade",
   "daemonsets": [
     "kube-system/cilium",
     "kube-system/kube-proxy"

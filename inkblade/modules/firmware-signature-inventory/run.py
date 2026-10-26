@@ -46,10 +46,10 @@ _SPEC = importlib.util.spec_from_file_location("_chip_common", _PARENT / "_chip-
 _C = importlib.util.module_from_spec(_SPEC)
 _SPEC.loader.exec_module(_C)
 
-from trident.tee._asn1 import DerError  # noqa: E402
-from trident.tee.keys import (ALG_ECDSA_SHA256, ALG_ECDSA_SHA384, ALG_RSA_SHA256,  # noqa: E402
+from inkblade.tee._asn1 import DerError  # noqa: E402
+from inkblade.tee.keys import (ALG_ECDSA_SHA256, ALG_ECDSA_SHA384, ALG_RSA_SHA256,  # noqa: E402
                               PublicKey)
-from trident.tee.x509 import (load_certificates_pem, parse_certificate,  # noqa: E402
+from inkblade.tee.x509 import (load_certificates_pem, parse_certificate,  # noqa: E402
                               verify_chain)
 
 KEY = "firmware-signature-inventory"

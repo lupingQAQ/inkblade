@@ -37,7 +37,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-infra/mining-report.json",
- "marker_text": "TRIDENT-UV-OPENBMC-BMCWEB-REDfish-HW",
+ "marker_text": "INKBLADE-UV-OPENBMC-BMCWEB-REDfish-HW",
  "notes": "OpenBMC/BTI/Redfish: bmcweb (C++), phosphor daemons and the IPMI BT interface are firmware/hardware paths; explicitly unsupported on this host. Existing BMC-surface conclusions live in the bmc-ipmi-exposure and redfish-default-credentials modules; the three SONiC vendor CVEs remain unsupported for the same class of reason.",
  "static_evidence_level": "advisory",
  "static_analysis": "OpenBMC/BTI/Redfish: bmcweb (C++), phosphor daemons and the IPMI BT interface are firmware/hardware paths; explicitly unsupported on this host. Existing BMC-surface conclusions live in the bmc-ipmi-exposure and redfish-default-credentials modules; the three SONiC vendor CVEs remain unsupported for the same class of reason.",
@@ -62,6 +62,6 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "bmc"
 }

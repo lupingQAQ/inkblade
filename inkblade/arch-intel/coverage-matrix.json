@@ -1,5 +1,5 @@
 {
-  "schema": "trident-arch-intel-coverage-matrix",
+  "schema": "inkblade-arch-intel-coverage-matrix",
   "generated_on": "2026-10-25",
   "spec": "万卡语料推倒重收（2026-10-25 任务口径）：≥10k GPU 实践 + 官方技术博客优先 + 中外并收；硬门槛见 thresholds",
   "thresholds": {
@@ -37,7 +37,7 @@
   "sources": [
     {
       "id": "alibaba-hpn",
-      "file": "trident/arch-intel/corpus/paper/alibaba-hpn.md",
+      "file": "inkblade/arch-intel/corpus/paper/alibaba-hpn.md",
       "class": "paper",
       "source_type": "paper",
       "organization": "Alibaba",
@@ -62,7 +62,7 @@
     },
     {
       "id": "meta-roce-fabric",
-      "file": "trident/arch-intel/corpus/paper/meta-roce-fabric.md",
+      "file": "inkblade/arch-intel/corpus/paper/meta-roce-fabric.md",
       "class": "paper",
       "source_type": "paper",
       "organization": "Meta",
@@ -86,7 +86,7 @@
     },
     {
       "id": "bytedance-megascale",
-      "file": "trident/arch-intel/corpus/paper/bytedance-megascale.md",
+      "file": "inkblade/arch-intel/corpus/paper/bytedance-megascale.md",
       "class": "paper",
       "source_type": "paper",
       "organization": "ByteDance",
@@ -111,7 +111,7 @@
     },
     {
       "id": "deepseek-prefill-decode",
-      "file": "trident/arch-intel/corpus/paper/deepseek-prefill-decode.md",
+      "file": "inkblade/arch-intel/corpus/paper/deepseek-prefill-decode.md",
       "class": "paper",
       "source_type": "tech-report",
       "organization": "DeepSeek",
@@ -133,7 +133,7 @@
     },
     {
       "id": "mooncake-kv-transfer",
-      "file": "trident/arch-intel/corpus/paper/mooncake-kv-transfer.md",
+      "file": "inkblade/arch-intel/corpus/paper/mooncake-kv-transfer.md",
       "class": "paper",
       "source_type": "paper",
       "organization": "Moonshot AI",
@@ -156,7 +156,7 @@
     },
     {
       "id": "microsoft-singularity",
-      "file": "trident/arch-intel/corpus/paper/microsoft-singularity.md",
+      "file": "inkblade/arch-intel/corpus/paper/microsoft-singularity.md",
       "class": "paper",
       "source_type": "paper",
       "organization": "Microsoft",
@@ -179,7 +179,7 @@
     },
     {
       "id": "nvidia-gb200-nvl72",
-      "file": "trident/arch-intel/corpus/official-en/nvidia-gb200-nvl72.md",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-gb200-nvl72.md",
       "class": "official-en",
       "source_type": "vendor-docs",
       "organization": "NVIDIA",
@@ -200,7 +200,7 @@
     },
     {
       "id": "google-tpu-oci",
-      "file": "trident/arch-intel/corpus/paper/google-tpu-oci.md",
+      "file": "inkblade/arch-intel/corpus/paper/google-tpu-oci.md",
       "class": "paper",
       "source_type": "paper",
       "organization": "Google",
@@ -224,7 +224,7 @@
     },
     {
       "id": "xai-colossus",
-      "file": "trident/arch-intel/corpus/official-en/xai-colossus.md",
+      "file": "inkblade/arch-intel/corpus/official-en/xai-colossus.md",
       "class": "official-en",
       "source_type": "newsroom",
       "organization": "xAI",
@@ -246,7 +246,7 @@
     },
     {
       "id": "aws-eks-efa-dra",
-      "file": "trident/arch-intel/corpus/official-en/aws-eks-efa-dra.md",
+      "file": "inkblade/arch-intel/corpus/official-en/aws-eks-efa-dra.md",
       "class": "official-en",
       "source_type": "vendor-docs",
       "organization": "AWS",
@@ -270,7 +270,7 @@
     },
     {
       "id": "aws-eks-auto-mode-accelerated",
-      "file": "trident/arch-intel/corpus/official-en/aws-eks-auto-mode-accelerated.md",
+      "file": "inkblade/arch-intel/corpus/official-en/aws-eks-auto-mode-accelerated.md",
       "class": "official-en",
       "source_type": "vendor-docs",
       "organization": "AWS",
@@ -291,7 +291,7 @@
     },
     {
       "id": "azure-aks-gpu",
-      "file": "trident/arch-intel/corpus/official-en/azure-aks-gpu.md",
+      "file": "inkblade/arch-intel/corpus/official-en/azure-aks-gpu.md",
       "class": "official-en",
       "source_type": "vendor-docs",
       "organization": "Azure",
@@ -314,7 +314,7 @@
     },
     {
       "id": "azure-nd-h100-infiniband",
-      "file": "trident/arch-intel/corpus/official-en/azure-nd-h100-infiniband.md",
+      "file": "inkblade/arch-intel/corpus/official-en/azure-nd-h100-infiniband.md",
       "class": "official-en",
       "source_type": "vendor-docs",
       "organization": "Azure",
@@ -337,7 +337,7 @@
     },
     {
       "id": "aliyun-terway",
-      "file": "trident/arch-intel/corpus/official-cn/aliyun-terway.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/aliyun-terway.md",
       "class": "official-cn",
       "source_type": "vendor-docs",
       "organization": "Alibaba Cloud",
@@ -361,7 +361,7 @@
     },
     {
       "id": "aliyun-ack-erdma",
-      "file": "trident/arch-intel/corpus/official-cn/aliyun-ack-erdma.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/aliyun-ack-erdma.md",
       "class": "official-cn",
       "source_type": "vendor-docs",
       "organization": "Alibaba Cloud",
@@ -384,7 +384,7 @@
     },
     {
       "id": "tencent-tke-gpu-manager",
-      "file": "trident/arch-intel/corpus/official-cn/tencent-tke-gpu-manager.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/tencent-tke-gpu-manager.md",
       "class": "official-cn",
       "source_type": "vendor-docs",
       "organization": "Tencent",
@@ -407,7 +407,7 @@
     },
     {
       "id": "tencent-tkestack",
-      "file": "trident/arch-intel/corpus/official-cn/tencent-tkestack.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/tencent-tkestack.md",
       "class": "official-cn",
       "source_type": "vendor-docs",
       "organization": "Tencent",
@@ -430,7 +430,7 @@
     },
     {
       "id": "gcp-ai-on-gke",
-      "file": "trident/arch-intel/corpus/official-en/gcp-ai-on-gke.md",
+      "file": "inkblade/arch-intel/corpus/official-en/gcp-ai-on-gke.md",
       "class": "official-en",
       "source_type": "official-repo",
       "organization": "Google Cloud",
@@ -453,7 +453,7 @@
     },
     {
       "id": "gcp-tpu-pytorch-xla",
-      "file": "trident/arch-intel/corpus/official-en/gcp-tpu-pytorch-xla.md",
+      "file": "inkblade/arch-intel/corpus/official-en/gcp-tpu-pytorch-xla.md",
       "class": "official-en",
       "source_type": "official-repo",
       "organization": "Google Cloud",
@@ -474,7 +474,7 @@
     },
     {
       "id": "huawei-cce-turbo",
-      "file": "trident/arch-intel/corpus/official-cn/huawei-cce-turbo.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/huawei-cce-turbo.md",
       "class": "official-cn",
       "source_type": "vendor-docs",
       "organization": "Huawei Cloud",
@@ -495,7 +495,7 @@
     },
     {
       "id": "huawei-ascend-device-plugin",
-      "file": "trident/arch-intel/corpus/official-cn/huawei-ascend-device-plugin.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/huawei-ascend-device-plugin.md",
       "class": "official-cn",
       "source_type": "official-repo",
       "organization": "Huawei",
@@ -518,7 +518,7 @@
     },
     {
       "id": "alibaba-cen-tr",
-      "file": "trident/arch-intel/corpus/official-cn/alibaba-cen-tr.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/alibaba-cen-tr.md",
       "class": "official-cn",
       "source_type": "vendor-docs",
       "organization": "Alibaba Cloud",
@@ -541,7 +541,7 @@
     },
     {
       "id": "azure-expressroute",
-      "file": "trident/arch-intel/corpus/official-en/azure-expressroute.md",
+      "file": "inkblade/arch-intel/corpus/official-en/azure-expressroute.md",
       "class": "official-en",
       "source_type": "vendor-docs",
       "organization": "Microsoft Azure",
@@ -564,7 +564,7 @@
     },
     {
       "id": "alibaba-private-link",
-      "file": "trident/arch-intel/corpus/official-cn/alibaba-private-link.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/alibaba-private-link.md",
       "class": "official-cn",
       "source_type": "vendor-docs",
       "organization": "Alibaba Cloud",
@@ -587,7 +587,7 @@
     },
     {
       "id": "kubernetes-cni-spec",
-      "file": "trident/arch-intel/corpus/official-en/kubernetes-cni-spec.md",
+      "file": "inkblade/arch-intel/corpus/official-en/kubernetes-cni-spec.md",
       "class": "official-en",
       "source_type": "official-repo",
       "organization": "CNCF/CNI",
@@ -610,7 +610,7 @@
     },
     {
       "id": "cni-policy-calico-cilium",
-      "file": "trident/arch-intel/corpus/official-en/cni-policy-calico-cilium.md",
+      "file": "inkblade/arch-intel/corpus/official-en/cni-policy-calico-cilium.md",
       "class": "official-en",
       "source_type": "vendor-docs",
       "organization": "Tigera/Isovalent",
@@ -634,7 +634,7 @@
     },
     {
       "id": "multus-sriov-operator",
-      "file": "trident/arch-intel/corpus/official-en/multus-sriov-operator.md",
+      "file": "inkblade/arch-intel/corpus/official-en/multus-sriov-operator.md",
       "class": "official-en",
       "source_type": "official-repo",
       "organization": "NPWG",
@@ -658,7 +658,7 @@
     },
     {
       "id": "nvidia-network-operator",
-      "file": "trident/arch-intel/corpus/official-en/nvidia-network-operator.md",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-network-operator.md",
       "class": "official-en",
       "source_type": "official-repo",
       "organization": "NVIDIA",
@@ -681,7 +681,7 @@
     },
     {
       "id": "kubernetes-dra",
-      "file": "trident/arch-intel/corpus/official-en/kubernetes-dra.md",
+      "file": "inkblade/arch-intel/corpus/official-en/kubernetes-dra.md",
       "class": "official-en",
       "source_type": "official-repo",
       "organization": "Kubernetes",
@@ -705,7 +705,7 @@
     },
     {
       "id": "nvidia-compute-domain-imex",
-      "file": "trident/arch-intel/corpus/official-en/nvidia-compute-domain-imex.md",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-compute-domain-imex.md",
       "class": "official-en",
       "source_type": "official-repo",
       "organization": "NVIDIA",
@@ -728,7 +728,7 @@
     },
     {
       "id": "gateway-api-inference-extension",
-      "file": "trident/arch-intel/corpus/official-en/gateway-api-inference-extension.md",
+      "file": "inkblade/arch-intel/corpus/official-en/gateway-api-inference-extension.md",
       "class": "official-en",
       "source_type": "official-repo",
       "organization": "Kubernetes",
@@ -751,7 +751,7 @@
     },
     {
       "id": "llm-d-nixl",
-      "file": "trident/arch-intel/corpus/official-en/llm-d-nixl.md",
+      "file": "inkblade/arch-intel/corpus/official-en/llm-d-nixl.md",
       "class": "official-en",
       "source_type": "official-repo",
       "organization": "llm-d 社区",
@@ -775,7 +775,7 @@
     },
     {
       "id": "nccl-transports",
-      "file": "trident/arch-intel/corpus/official-en/nccl-transports.md",
+      "file": "inkblade/arch-intel/corpus/official-en/nccl-transports.md",
       "class": "official-en",
       "source_type": "vendor-docs",
       "organization": "NVIDIA",
@@ -797,7 +797,7 @@
     },
     {
       "id": "ib-partition-rdma",
-      "file": "trident/arch-intel/corpus/official-en/ib-partition-rdma.md",
+      "file": "inkblade/arch-intel/corpus/official-en/ib-partition-rdma.md",
       "class": "official-en",
       "source_type": "vendor-docs",
       "organization": "NVIDIA/Mellanox",
@@ -820,7 +820,7 @@
     },
     {
       "id": "storage-protocol-csi",
-      "file": "trident/arch-intel/corpus/official-en/storage-protocol-csi.md",
+      "file": "inkblade/arch-intel/corpus/official-en/storage-protocol-csi.md",
       "class": "official-en",
       "source_type": "official-repo",
       "organization": "Kubernetes/NFS",
@@ -844,7 +844,7 @@
     },
     {
       "id": "ultra-ethernet-spec-2026",
-      "file": "trident/arch-intel/corpus/official-en/ultra-ethernet-spec-2026.md",
+      "file": "inkblade/arch-intel/corpus/official-en/ultra-ethernet-spec-2026.md",
       "category": "network-specialized",
       "organization": "Ultra Ethernet Consortium",
       "system": "UE Specification 1.0→1.1",
@@ -876,7 +876,7 @@
     },
     {
       "id": "ultra-ethernet-member-arista",
-      "file": "trident/arch-intel/corpus/official-en/ultra-ethernet-member-arista.md",
+      "file": "inkblade/arch-intel/corpus/official-en/ultra-ethernet-member-arista.md",
       "category": "network-specialized",
       "organization": "Arista Networks",
       "system": "Demystifying Ultra Ethernet（成员白皮书）",
@@ -907,7 +907,7 @@
     },
     {
       "id": "nvidia-sharp-in-network",
-      "file": "trident/arch-intel/corpus/official-en/nvidia-sharp-in-network.md",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-sharp-in-network.md",
       "category": "network-specialized",
       "organization": "NVIDIA",
       "system": "SHARP v1–v4 在网计算",
@@ -938,7 +938,7 @@
     },
     {
       "id": "nvidia-quantum-x800",
-      "file": "trident/arch-intel/corpus/official-en/nvidia-quantum-x800.md",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-quantum-x800.md",
       "category": "network-specialized",
       "organization": "NVIDIA",
       "system": "Quantum-X800 InfiniBand 平台",
@@ -970,7 +970,7 @@
     },
     {
       "id": "nvidia-spectrum-x-adaptive",
-      "file": "trident/arch-intel/corpus/official-en/nvidia-spectrum-x-adaptive.md",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-spectrum-x-adaptive.md",
       "category": "network-specialized",
       "organization": "NVIDIA",
       "system": "Spectrum-X 以太网平台（自适应路由）",
@@ -1004,7 +1004,7 @@
     },
     {
       "id": "nvidia-spectrum-x-multiplane-paper",
-      "file": "trident/arch-intel/corpus/paper/nvidia-spectrum-x-multiplane-paper.md",
+      "file": "inkblade/arch-intel/corpus/paper/nvidia-spectrum-x-multiplane-paper.md",
       "category": "network-specialized",
       "organization": "NVIDIA/Technion",
       "system": "Spectrum-X Multiplane 论文（arXiv 2605.21187）",
@@ -1037,7 +1037,7 @@
     },
     {
       "id": "nvidia-nvlink-fusion",
-      "file": "trident/arch-intel/corpus/official-en/nvidia-nvlink-fusion.md",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-nvlink-fusion.md",
       "category": "network-specialized",
       "organization": "NVIDIA",
       "system": "NVLink Fusion / NVLink 6（GB300→VR200 NVL72）",
@@ -1067,7 +1067,7 @@
     },
     {
       "id": "sonic-whitebox-security",
-      "file": "trident/arch-intel/corpus/paper/sonic-whitebox-security.md",
+      "file": "inkblade/arch-intel/corpus/paper/sonic-whitebox-security.md",
       "category": "network-specialized",
       "organization": "Dell（Enterprise SONiC）/ 白盒 NOS 生态",
       "system": "SONiC/白盒交换机 OS 安全公告",
@@ -1098,7 +1098,7 @@
     },
     {
       "id": "meta-prometheus",
-      "file": "trident/arch-intel/corpus/official-en/meta-prometheus.md",
+      "file": "inkblade/arch-intel/corpus/official-en/meta-prometheus.md",
       "category": "self-built-networking",
       "organization": "Meta",
       "system": "Prometheus 吉瓦级超集群（2026-10 工程实录）",
@@ -1131,7 +1131,7 @@
     },
     {
       "id": "xai-colossus-two",
-      "file": "trident/arch-intel/corpus/paper/xai-colossus-two.md",
+      "file": "inkblade/arch-intel/corpus/paper/xai-colossus-two.md",
       "category": "self-built-networking",
       "organization": "xAI（SpaceXAI）",
       "system": "Colossus 2（Memphis 二代吉瓦集群）",
@@ -1162,7 +1162,7 @@
     },
     {
       "id": "google-tpu-ironwood-ocs",
-      "file": "trident/arch-intel/corpus/paper/google-tpu-ironwood-ocs.md",
+      "file": "inkblade/arch-intel/corpus/paper/google-tpu-ironwood-ocs.md",
       "category": "self-built-networking",
       "organization": "Google",
       "system": "TPU v7 Ironwood（9216 片 superpod + OCS）",
@@ -1193,7 +1193,7 @@
     },
     {
       "id": "bytedance-megascale-infer",
-      "file": "trident/arch-intel/corpus/paper/bytedance-megascale-infer.md",
+      "file": "inkblade/arch-intel/corpus/paper/bytedance-megascale-infer.md",
       "category": "self-built-networking",
       "organization": "ByteDance Seed & 北大",
       "system": "MegaScale-Infer（SIGCOMM 2025，MoE 推理规模化）",
@@ -1221,7 +1221,7 @@
     },
     {
       "id": "aws-trainium-ultraserver",
-      "file": "trident/arch-intel/corpus/official-en/aws-trainium-ultraserver.md",
+      "file": "inkblade/arch-intel/corpus/official-en/aws-trainium-ultraserver.md",
       "category": "cloud-provider",
       "organization": "AWS",
       "system": "EC2 Trn2 / Trn2 UltraServer / UltraClusters",
@@ -1252,7 +1252,7 @@
     },
     {
       "id": "aliyun-lingjun",
-      "file": "trident/arch-intel/corpus/official-cn/aliyun-lingjun.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/aliyun-lingjun.md",
       "class": "official-cn",
       "source_type": "vendor-docs",
       "organization": "Alibaba Cloud",
@@ -1277,7 +1277,7 @@
     },
     {
       "id": "tencent-xingmai-2",
-      "file": "trident/arch-intel/corpus/official-cn/tencent-xingmai-2.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/tencent-xingmai-2.md",
       "class": "official-cn",
       "source_type": "engineering-blog",
       "organization": "Tencent",
@@ -1303,7 +1303,7 @@
     },
     {
       "id": "tencent-tccl-docs",
-      "file": "trident/arch-intel/corpus/official-cn/tencent-tccl-docs.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/tencent-tccl-docs.md",
       "class": "official-cn",
       "source_type": "vendor-docs",
       "organization": "Tencent Cloud",
@@ -1327,7 +1327,7 @@
     },
     {
       "id": "huawei-ascend-cloud",
-      "file": "trident/arch-intel/corpus/official-cn/huawei-ascend-cloud.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/huawei-ascend-cloud.md",
       "class": "official-cn",
       "source_type": "vendor-docs",
       "organization": "Huawei Cloud",
@@ -1350,7 +1350,7 @@
     },
     {
       "id": "huawei-ascend-10k-stability",
-      "file": "trident/arch-intel/corpus/official-cn/huawei-ascend-10k-stability.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/huawei-ascend-10k-stability.md",
       "class": "official-cn",
       "source_type": "newsroom",
       "organization": "Huawei Cloud",
@@ -1373,7 +1373,7 @@
     },
     {
       "id": "baidu-kunlun-10k",
-      "file": "trident/arch-intel/corpus/official-cn/baidu-kunlun-10k.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/baidu-kunlun-10k.md",
       "class": "official-cn",
       "source_type": "newsroom",
       "organization": "Baidu Cloud",
@@ -1396,7 +1396,7 @@
     },
     {
       "id": "kunlunxin-supernode",
-      "file": "trident/arch-intel/corpus/official-cn/kunlunxin-supernode.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/kunlunxin-supernode.md",
       "class": "official-cn",
       "source_type": "newsroom",
       "organization": "Kunlunxin",
@@ -1417,7 +1417,7 @@
     },
     {
       "id": "china-telecom-10k",
-      "file": "trident/arch-intel/corpus/official-cn/china-telecom-10k.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/china-telecom-10k.md",
       "class": "official-cn",
       "source_type": "newsroom",
       "organization": "China Telecom",
@@ -1440,7 +1440,7 @@
     },
     {
       "id": "sasac-telecom-10k",
-      "file": "trident/arch-intel/corpus/official-cn/sasac-telecom-10k.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/sasac-telecom-10k.md",
       "class": "official-cn",
       "source_type": "newsroom",
       "organization": "国务院国资委(发布)/中国电信",
@@ -1461,7 +1461,7 @@
     },
     {
       "id": "meituan-longcat-2",
-      "file": "trident/arch-intel/corpus/official-cn/meituan-longcat-2.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/meituan-longcat-2.md",
       "class": "official-cn",
       "source_type": "engineering-blog",
       "organization": "Meituan",
@@ -1484,7 +1484,7 @@
     },
     {
       "id": "jdcloud-jiushu",
-      "file": "trident/arch-intel/corpus/official-cn/jdcloud-jiushu.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/jdcloud-jiushu.md",
       "class": "official-cn",
       "source_type": "engineering-blog",
       "organization": "JD Cloud",
@@ -1507,7 +1507,7 @@
     },
     {
       "id": "jd-mthreads-10w",
-      "file": "trident/arch-intel/corpus/official-cn/jd-mthreads-10w.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/jd-mthreads-10w.md",
       "class": "official-cn",
       "source_type": "newsroom",
       "organization": "JD Cloud × Moore Threads",
@@ -1528,7 +1528,7 @@
     },
     {
       "id": "volcengine-hpc-rdma",
-      "file": "trident/arch-intel/corpus/official-cn/volcengine-hpc-rdma.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/volcengine-hpc-rdma.md",
       "class": "official-cn",
       "source_type": "vendor-docs",
       "organization": "Volcengine",
@@ -1552,7 +1552,7 @@
     },
     {
       "id": "deepseek-api-docs",
-      "file": "trident/arch-intel/corpus/official-cn/deepseek-api-docs.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/deepseek-api-docs.md",
       "class": "official-cn",
       "source_type": "vendor-docs",
       "organization": "DeepSeek",
@@ -1574,7 +1574,7 @@
     },
     {
       "id": "minimax-m1",
-      "file": "trident/arch-intel/corpus/official-cn/minimax-m1.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/minimax-m1.md",
       "class": "official-cn",
       "source_type": "newsroom",
       "organization": "MiniMax",
@@ -1596,7 +1596,7 @@
     },
     {
       "id": "people-daily-42-wanka",
-      "file": "trident/arch-intel/corpus/official-cn/people-daily-42-wanka.md",
+      "file": "inkblade/arch-intel/corpus/official-cn/people-daily-42-wanka.md",
       "class": "official-cn",
       "source_type": "newsroom",
       "organization": "人民日报",
@@ -1617,7 +1617,7 @@
     },
     {
       "id": "meta-genai-infra",
-      "file": "trident/arch-intel/corpus/official-en/meta-genai-infra.md",
+      "file": "inkblade/arch-intel/corpus/official-en/meta-genai-infra.md",
       "class": "official-en",
       "source_type": "engineering-blog",
       "organization": "Meta Engineering",
@@ -1640,7 +1640,7 @@
     },
     {
       "id": "meta-roce-blog",
-      "file": "trident/arch-intel/corpus/official-en/meta-roce-blog.md",
+      "file": "inkblade/arch-intel/corpus/official-en/meta-roce-blog.md",
       "class": "official-en",
       "source_type": "engineering-blog",
       "organization": "Meta Engineering",
@@ -1664,7 +1664,7 @@
     },
     {
       "id": "meta-infra-evolution",
-      "file": "trident/arch-intel/corpus/official-en/meta-infra-evolution.md",
+      "file": "inkblade/arch-intel/corpus/official-en/meta-infra-evolution.md",
       "class": "official-en",
       "source_type": "engineering-blog",
       "organization": "Meta Engineering",
@@ -1687,7 +1687,7 @@
     },
     {
       "id": "msft-fairwater-superfactory",
-      "file": "trident/arch-intel/corpus/official-en/msft-fairwater-superfactory.md",
+      "file": "inkblade/arch-intel/corpus/official-en/msft-fairwater-superfactory.md",
       "class": "official-en",
       "source_type": "engineering-blog",
       "organization": "Microsoft Azure",
@@ -1710,7 +1710,7 @@
     },
     {
       "id": "msft-fairwater-wisconsin",
-      "file": "trident/arch-intel/corpus/official-en/msft-fairwater-wisconsin.md",
+      "file": "inkblade/arch-intel/corpus/official-en/msft-fairwater-wisconsin.md",
       "class": "official-en",
       "source_type": "engineering-blog",
       "organization": "Microsoft Azure",
@@ -1731,7 +1731,7 @@
     },
     {
       "id": "msft-openai-sc-2020",
-      "file": "trident/arch-intel/corpus/official-en/msft-openai-sc-2020.md",
+      "file": "inkblade/arch-intel/corpus/official-en/msft-openai-sc-2020.md",
       "class": "official-en",
       "source_type": "newsroom",
       "organization": "Microsoft",
@@ -1752,7 +1752,7 @@
     },
     {
       "id": "openai-nvidia-10gw",
-      "file": "trident/arch-intel/corpus/official-en/openai-nvidia-10gw.md",
+      "file": "inkblade/arch-intel/corpus/official-en/openai-nvidia-10gw.md",
       "class": "official-en",
       "source_type": "newsroom",
       "organization": "OpenAI × NVIDIA",
@@ -1773,7 +1773,7 @@
     },
     {
       "id": "google-ironwood",
-      "file": "trident/arch-intel/corpus/official-en/google-ironwood.md",
+      "file": "inkblade/arch-intel/corpus/official-en/google-ironwood.md",
       "class": "official-en",
       "source_type": "engineering-blog",
       "organization": "Google",
@@ -1794,7 +1794,7 @@
     },
     {
       "id": "google-next26-80k",
-      "file": "trident/arch-intel/corpus/official-en/google-next26-80k.md",
+      "file": "inkblade/arch-intel/corpus/official-en/google-next26-80k.md",
       "class": "official-en",
       "source_type": "engineering-blog",
       "organization": "Google Cloud",
@@ -1815,7 +1815,7 @@
     },
     {
       "id": "aws-project-rainier",
-      "file": "trident/arch-intel/corpus/official-en/aws-project-rainier.md",
+      "file": "inkblade/arch-intel/corpus/official-en/aws-project-rainier.md",
       "class": "official-en",
       "source_type": "newsroom",
       "organization": "AWS × Anthropic",
@@ -1837,7 +1837,7 @@
     },
     {
       "id": "nvidia-spectrum-x",
-      "file": "trident/arch-intel/corpus/official-en/nvidia-spectrum-x.md",
+      "file": "inkblade/arch-intel/corpus/official-en/nvidia-spectrum-x.md",
       "class": "official-en",
       "source_type": "vendor-docs",
       "organization": "NVIDIA",
@@ -1862,7 +1862,7 @@
     },
     {
       "id": "uec-spec",
-      "file": "trident/arch-intel/corpus/official-en/uec-spec.md",
+      "file": "inkblade/arch-intel/corpus/official-en/uec-spec.md",
       "class": "official-en",
       "source_type": "official-repo",
       "organization": "Ultra Ethernet Consortium",
@@ -1887,7 +1887,7 @@
     },
     {
       "id": "sonic-foundation",
-      "file": "trident/arch-intel/corpus/official-en/sonic-foundation.md",
+      "file": "inkblade/arch-intel/corpus/official-en/sonic-foundation.md",
       "class": "official-en",
       "source_type": "official-repo",
       "organization": "SONiC Foundation/Linux Foundation",
@@ -1911,7 +1911,7 @@
     },
     {
       "id": "oracle-zettascale",
-      "file": "trident/arch-intel/corpus/official-en/oracle-zettascale.md",
+      "file": "inkblade/arch-intel/corpus/official-en/oracle-zettascale.md",
       "class": "official-en",
       "source_type": "newsroom",
       "organization": "Oracle",
@@ -1933,7 +1933,7 @@
     },
     {
       "id": "llama3-herd",
-      "file": "trident/arch-intel/corpus/paper/llama3-herd.md",
+      "file": "inkblade/arch-intel/corpus/paper/llama3-herd.md",
       "class": "paper",
       "source_type": "paper",
       "organization": "Meta AI",
@@ -1957,7 +1957,7 @@
     },
     {
       "id": "jupiter-evolving",
-      "file": "trident/arch-intel/corpus/paper/jupiter-evolving.md",
+      "file": "inkblade/arch-intel/corpus/paper/jupiter-evolving.md",
       "class": "paper",
       "source_type": "paper",
       "organization": "Google",

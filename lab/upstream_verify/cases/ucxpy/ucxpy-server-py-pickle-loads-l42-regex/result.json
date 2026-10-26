@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "ucxpy-server-py-pickle-loads-l42-regex",
  "source": "mining",
  "component": "ucxpy",
@@ -32,10 +32,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/ucxpy/ucxpy-server-py-pickle-loads-l42-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.139,
- "started_at": "2026-10-26T09:23:46+00:00",
+ "duration_s": 0.387,
+ "started_at": "2026-10-26T19:58:14+00:00",
  "marker": {
-  "text": "TRIDENT-UV-ucxpy-server-py-pickle-loads-l42-regex",
+  "text": "INKBLADE-UV-ucxpy-server-py-pickle-loads-l42-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -46,7 +46,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/ucxpy/ucxpy-server-py-pickle-loads-l42-regex/evidence/log.txt",
-   "sha256": "e0cb8992372067821bd75ceac5fc383adff223644faee6683d38438ebab66140",
+   "sha256": "e47eaafd662cf1c2e9a279577b028e2f9ee5cd73b1a5431a2290930bdd7fcc10",
    "size": 245
   },
   {
@@ -56,12 +56,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/ucxpy/ucxpy-server-py-pickle-loads-l42-regex/evidence/static-check.json",
-   "sha256": "410d8faf4d261cd779e34c0dde4806b7fc1ef0ade4a5d00af1f0694bf01722b9",
-   "size": 1418
+   "sha256": "577a21390ab32c46f36be23e1e14540a7f4060772e52b8bbd05cc564c4edba01",
+   "size": 1419
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "0e7668ceec8f4ec14549c0768bedcf4d74ff0c1cad10de46f6bcdcd4b6fc2dd7",
+ "manifest_sha256": "f7361d93d45a0062ad5db22d6cc0a5e588a9482be63c4450ad77b99d08be81eb",
  "stdout": "{\"status\": \"static-only\", \"case\": \"ucxpy-server-py-pickle-loads-l42-regex\"}\n",
  "stderr": "",
  "notes": "ucx-py debug-tests server deserialises a client-supplied cloudpickle payload (cloudpickle.loads(func)) with no authentication: any peer reaching the debug endpoint gets arbitrary code execution by design of the debug tool. Debug tooling is not the production wheel path, and the server needs CUDA/UCX/distributed stacks that this Windows host cannot run, so the case is static-only with the trust boundary recorded."

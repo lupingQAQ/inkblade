@@ -37,7 +37,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-infra/mining-report.json",
- "marker_text": "TRIDENT-UV-UCX-UCT-HW",
+ "marker_text": "INKBLADE-UV-UCX-UCT-HW",
  "notes": "UCX v1.22.0: C transport library. The ucx-py binding was mined separately (see ucxpy cases); the core library is hardware-bound and marked unsupported.",
  "static_evidence_level": "advisory",
  "static_analysis": "UCX v1.22.0: C transport library. The ucx-py binding was mined separately (see ucxpy cases); the core library is hardware-bound and marked unsupported.",
@@ -62,6 +62,6 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "ucx"
 }

@@ -38,7 +38,7 @@
  "module": "msswift-dataset-pickle-rce",
  "python": "reproenv",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-msswift-indexed-dataset-py-pickle-loads-l112-regex",
+ "marker_text": "INKBLADE-UV-msswift-indexed-dataset-py-pickle-loads-l112-regex",
  "notes": "ms-swift packing cache loader IndexedDataset.__init__ opens data.idx with pickle.load(f). The cache dir (PACKING_CACHE or the swift cache) is attacker-writable in the shared-storage threat model; whoever plants data.idx gets pickle code execution the next time a training run opens the packed dataset. Reproduced at function level against the verbatim pinned v4.6.0 upstream file (package tree stubbed; os/pickle/real BinReader are the upstream code).",
  "static_evidence_level": "source-line",
  "static_analysis": "",
@@ -53,6 +53,6 @@
   "original_status": "pending-manual-review",
   "promoted": true
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "msswift"
 }

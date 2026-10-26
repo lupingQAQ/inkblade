@@ -10,7 +10,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 SLURM_DOC = REPO / "docs" / "SLURM-HPC-COVERAGE.md"
-SLURM_PROFILE = REPO / "trident" / "profiles" / "slurm-hpc.json"
+SLURM_PROFILE = REPO / "inkblade" / "profiles" / "slurm-hpc.json"
 CONF = REPO / "docs" / "CONFERENCE-2026-GAPS.md"
 RESIDUAL = REPO / "docs" / "RESIDUAL-GAPS-2026.md"
 
@@ -42,7 +42,7 @@ class SlurmDocTest(unittest.TestCase):
             self.assertIn(needle, self.text, needle)
         for key in SLURM_MODULES:
             self.assertIn(key, self.text, key)
-            self.assertIn(key, {p.name for p in (REPO / "trident" / "modules").iterdir()})
+            self.assertIn(key, {p.name for p in (REPO / "inkblade" / "modules").iterdir()})
 
     def test_coverage_math_and_honest_metric_split(self):
         self.assertIn("3/17 = 17.6", self.text)

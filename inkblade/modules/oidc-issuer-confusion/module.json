@@ -10,6 +10,6 @@
     "snapshot": "可选，identity cases JSON；省略使用内置用例"
   },
   "produces": "oidc-confusion-matrix（issuer/audience/subject 三类）",
-  "knowledge": "docs/DEPTH-REVIEW.md §6；trident/depth/identity.py",
+  "knowledge": "docs/DEPTH-REVIEW.md §6；inkblade/depth/identity.py",
   "combo_signature": "oidc-confusion"
 }

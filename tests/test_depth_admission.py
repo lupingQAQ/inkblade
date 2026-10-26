@@ -6,10 +6,10 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.depth import admission
+from inkblade.depth import admission
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ROOT / "trident" / "modules"
+MODULES = ROOT / "inkblade" / "modules"
 
 
 class _Run:
@@ -63,7 +63,7 @@ class TestAdmissionSemantics(unittest.TestCase):
 
     def test_kyverno_module(self):
         with TemporaryDirectory() as td:
-            ctx = {"run": _Run(Path(td)), "marker": "TRIDENT-DEPTH"}
+            ctx = {"run": _Run(Path(td)), "marker": "INKBLADE-DEPTH"}
             result = load_module("admission-kyverno-semantics").run(ctx, {})
             self.assertGreaterEqual(len(result["findings"]), 5)
             detail = json.loads(result["findings"][0]["detail"])
@@ -72,7 +72,7 @@ class TestAdmissionSemantics(unittest.TestCase):
 
     def test_gatekeeper_module(self):
         with TemporaryDirectory() as td:
-            ctx = {"run": _Run(Path(td)), "marker": "TRIDENT-DEPTH"}
+            ctx = {"run": _Run(Path(td)), "marker": "INKBLADE-DEPTH"}
             result = load_module("admission-gatekeeper-semantics").run(ctx, {})
             self.assertGreaterEqual(len(result["findings"]), 4)
             detail = json.loads(result["findings"][0]["detail"])
@@ -80,7 +80,7 @@ class TestAdmissionSemantics(unittest.TestCase):
 
     def test_crd_subresource_module(self):
         with TemporaryDirectory() as td:
-            ctx = {"run": _Run(Path(td)), "marker": "TRIDENT-DEPTH"}
+            ctx = {"run": _Run(Path(td)), "marker": "INKBLADE-DEPTH"}
             result = load_module("admission-crd-subresource-gap").run(ctx, {})
             self.assertGreaterEqual(len(result["findings"]), 3)
             detail = json.loads(result["findings"][0]["detail"])

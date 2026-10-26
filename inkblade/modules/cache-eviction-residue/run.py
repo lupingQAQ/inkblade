@@ -23,7 +23,7 @@ KEY = "cache-eviction-residue"
 WRITES = False
 DEFAULT_FLOOD = 160
 DEFAULT_VICTIM_PREFIX = (
-    "tenant-b residue corpus marker TRIDENT-BENIGN-RESIDUE-VICTIM "
+    "tenant-b residue corpus marker INKBLADE-BENIGN-RESIDUE-VICTIM "
     "quarterly close data pack appendix"
 )
 
@@ -36,7 +36,7 @@ def run(ctx: dict, params: dict) -> dict:
     tenant = _COMMON.tenant_of(params)
     flood = max(1, _COMMON.int_of(params.get("flood_count"), DEFAULT_FLOOD))
     victim_prefix = str(params.get("victim_prefix") or DEFAULT_VICTIM_PREFIX)
-    marker_needle = str(params.get("marker_needle") or "TRIDENT-BENIGN-RESIDUE-VICTIM")
+    marker_needle = str(params.get("marker_needle") or "INKBLADE-BENIGN-RESIDUE-VICTIM")
 
     t = _COMMON.Trace(ctx, KEY)
     headers = _COMMON.headers_for(params)

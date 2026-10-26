@@ -10,7 +10,7 @@ SGLang server 文档（api key / metrics / 多租隔离）、K8s Pod Security St
 """
 from __future__ import annotations
 
-from trident.cis.engine import _dig, _text, compare, severity_of
+from inkblade.cis.engine import _dig, _text, compare, severity_of
 
 _GPU = "gpu-operator"
 _VLLM = "vllm"

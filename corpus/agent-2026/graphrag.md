@@ -18,6 +18,6 @@
 - 适合「跨文档/跨 run 的全局态势」，不适合低延迟单点检索。
 
 ## 对我们的启示
-- 我们的证据是**天然图**：资产→服务→产品→版本→finding→链→MITRE；已有 `graph_nodes/graph_edges` 表（`trident/core/evidence.py:40-41`）与 `compliance.py` 的映射。
+- 我们的证据是**天然图**：资产→服务→产品→版本→finding→链→MITRE；已有 `graph_nodes/graph_edges` 表（`inkblade/core/evidence.py:40-41`）与 `compliance.py` 的映射。
 - 但图只用于展示/映射，没有作为**检索与推理记忆**（G04）；可把 GraphRAG 的「社区摘要」用于生成「攻击面态势摘要」，供 planner 作为上下文。
 - 与 CM-16（探索血缘图）同源：先把 goal→intent→fact→finding 的边补齐，再谈社区摘要，否则图是空的。

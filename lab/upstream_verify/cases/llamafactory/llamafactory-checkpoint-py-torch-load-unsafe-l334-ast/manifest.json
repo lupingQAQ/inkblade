@@ -38,7 +38,7 @@
  "module": "llamafactory-checkpoint-rce",
  "python": "lfa",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
+ "marker_text": "INKBLADE-UV-llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
  "notes": "TrainingCheckpointCoordinator.resume restores the dataloader state via torch.load(weights_only=False) on <ckpt>/dataloader/rank_<n>.pt. Same trust boundary as the rng_state sink: checkpoint write access equals pickle code execution on resume. Reproduced through the real upstream resume() flow (metadata.json + dataloader state only; the model path is absent so the surrounding code is inert) with the pinned installed package.",
  "static_evidence_level": "source-line",
  "static_analysis": "",
@@ -53,6 +53,6 @@
   "original_status": "pending-manual-review",
   "promoted": true
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "llamafactory"
 }

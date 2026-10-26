@@ -2,9 +2,9 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.users import UserStore
-from trident.core.evidence import EvidenceStore
-from trident.core.zeroday import (
+from inkblade.core.users import UserStore
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.zeroday import (
     ZerodayLocked,
     ZerodayStore,
     assert_allowed,
@@ -24,7 +24,7 @@ class TestZeroday(unittest.TestCase):
         users.create_user("tester", "x", "tester", ["client-b"])
         self.lead = users.verify("lead", "x")
         self.tester = users.verify("tester", "x")
-        from trident.core.roe import init_roe
+        from inkblade.core.roe import init_roe
 
         init_roe(self.store, fields={"level": "利用验证", "namespaces": ["agent"], "cidrs": ["127.0.0.0/8"]})
 

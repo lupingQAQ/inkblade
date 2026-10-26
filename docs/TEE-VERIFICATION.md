@@ -1,6 +1,6 @@
 # TEE 证明验证：本地密码学校验 vs 硬件实测
 
-> 生成日期：2026-10-25　代码：`trident/tee/`　测试：`tests/test_tee.py`（43 项）
+> 生成日期：2026-10-25　代码：`inkblade/tee/`　测试：`tests/test_tee.py`（43 项）
 > 一句话边界：**本仓库现在做的是「格式 + 签名 + 证书链 + 策略」的本地密码学校验，样本是自签 fixture；
 > 不是「在真实 TDX/SEV-SNP/H100-CC 机器上采集并验证厂商证明」。**
 
@@ -8,14 +8,14 @@
 
 | 对象 | 模块 | 结构 | 验签算法 | 证书链 |
 |---|---|---|---|---|
-| Intel TDX Quote v3/v4 | `trident/tee/tdx.py` | 48B header + 584B TD report + v4: 16B `tee_tcb_svn2` + 48B `mr_servicetd` + signature data（AK、QE report、PEM 链） | ECDSA P-256/P-384（SHA-256/384），签名为 `r‖s` | AK → Intermediate → Root（pinned） |
-| AMD SEV-SNP report v2/v3 | `trident/tee/sev_snp.py` | 1184B 定点布局，签名覆盖前 672B | ECDSA P-384 + SHA-384 | VCEK → ASK → ARK（pinned） |
-| NVIDIA CC / NRAS JWT | `trident/tee/nvidia_cc.py` | JWS compact（header.payload.signature） | RS256（RSA-2048 PKCS#1 v1.5 + SHA-256） | JWKS（kid 匹配） |
+| Intel TDX Quote v3/v4 | `inkblade/tee/tdx.py` | 48B header + 584B TD report + v4: 16B `tee_tcb_svn2` + 48B `mr_servicetd` + signature data（AK、QE report、PEM 链） | ECDSA P-256/P-384（SHA-256/384），签名为 `r‖s` | AK → Intermediate → Root（pinned） |
+| AMD SEV-SNP report v2/v3 | `inkblade/tee/sev_snp.py` | 1184B 定点布局，签名覆盖前 672B | ECDSA P-384 + SHA-384 | VCEK → ASK → ARK（pinned） |
+| NVIDIA CC / NRAS JWT | `inkblade/tee/nvidia_cc.py` | JWS compact（header.payload.signature） | RS256（RSA-2048 PKCS#1 v1.5 + SHA-256） | JWKS（kid 匹配） |
 
 密码学底座（无第三方依赖，纯标准库）：
-`trident/tee/_asn1.py`（DER 严格解析/编码）、`trident/tee/keys.py`（P-256/P-384 曲线运算、RSA
-PKCS#1 v1.5、PEM/JWK）、`trident/tee/x509.py`（X.509 v3 解析/构造、链校验、basicConstraints）、
-`trident/tee/fixtures.py`（自签 fixture 生成）。
+`inkblade/tee/_asn1.py`（DER 严格解析/编码）、`inkblade/tee/keys.py`（P-256/P-384 曲线运算、RSA
+PKCS#1 v1.5、PEM/JWK）、`inkblade/tee/x509.py`（X.509 v3 解析/构造、链校验、basicConstraints）、
+`inkblade/tee/fixtures.py`（自签 fixture 生成）。
 
 ## 2. 验证了什么（可执行断言）
 
@@ -82,9 +82,9 @@ JWK 往返、X.509 三层链/缺中间证书/叶子冒充 CA、DER 拒绝 BER �
 | 端到端「证明→密钥释放」 | 需要 KBS/密钥管理服务（如 Trustee） | 只证明「证明本身可验」，不证明密钥分发链路 |
 | GPU attestation 报告里的 measurements 语义 | NRAS claims 的 `measres` 只是字符串，本实现不重建 measurement 白名单 | 不能判断 VBIOS/驱动是否为目标版本 |
 
-**fixture 的来源与可信度**：`trident/tee/fixtures.py` 使用**硬编码的固定私钥**（P-256×3、P-384×3、
+**fixture 的来源与可信度**：`inkblade/tee/fixtures.py` 使用**硬编码的固定私钥**（P-256×3、P-384×3、
 RSA-2048×1），公开在源码里，任何人可伪造该 fixture 的任意「合法」证明。这是刻意的：
-fixture 只用于测试解析与验签逻辑，不应被当作证据。证书主体一律是 `Trident Fixture …`，
+fixture 只用于测试解析与验签逻辑，不应被当作证据。证书主体一律是 `InkBlade Fixture …`，
 NRAS `kid` 是 `nras-fixture-2026`，`tests/test_tee.py::FixtureBoundaryTest` 把它锁成可执行断言。
 
 ## 4. 与 SOTA 矩阵的关系

@@ -31,10 +31,10 @@ _REPO = Path(__file__).resolve().parents[1]
 if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
-from trident.tee.fixtures import nvidia_fixture  # noqa: E402
-from trident.tee.keys import (ALG_ECDSA_SHA256, CURVES, PrivateKey,  # noqa: E402
+from inkblade.tee.fixtures import nvidia_fixture  # noqa: E402
+from inkblade.tee.keys import (ALG_ECDSA_SHA256, CURVES, PrivateKey,  # noqa: E402
                               b64url_decode, b64url_encode, pem_wrap)
-from trident.tee.x509 import build_certificate  # noqa: E402
+from inkblade.tee.x509 import build_certificate  # noqa: E402
 
 HOST = "127.0.0.1"
 MODES = ("vulnerable", "fixed")
@@ -70,41 +70,41 @@ def _b64(data: bytes) -> str:
 
 
 def _build_pki():
-    root_key = _ec_key("P-384", "trident-chip-spdm-root")
-    leaf_key = _ec_key("P-384", "trident-chip-spdm-leaf")
+    root_key = _ec_key("P-384", "inkblade-chip-spdm-root")
+    leaf_key = _ec_key("P-384", "inkblade-chip-spdm-leaf")
     now = datetime.now(timezone.utc)
     root = build_certificate(
-        subject="Trident Chip Fixture SPDM Root CA",
-        issuer="Trident Chip Fixture SPDM Root CA",
+        subject="InkBlade Chip Fixture SPDM Root CA",
+        issuer="InkBlade Chip Fixture SPDM Root CA",
         public_key=root_key.public_key(), signer=root_key.sign, serial=0x5101,
         not_before=now - timedelta(days=30), not_after=now + timedelta(days=3650),
         is_ca=True)
     valid_leaf = build_certificate(
-        subject="Trident Chip Fixture SPDM Device",
-        issuer="Trident Chip Fixture SPDM Root CA",
+        subject="InkBlade Chip Fixture SPDM Device",
+        issuer="InkBlade Chip Fixture SPDM Root CA",
         public_key=leaf_key.public_key(), signer=root_key.sign, serial=0x5102,
         not_before=now - timedelta(days=10), not_after=now + timedelta(days=365))
     expired_leaf = build_certificate(
-        subject="Trident Chip Fixture SPDM Device (expired)",
-        issuer="Trident Chip Fixture SPDM Root CA",
+        subject="InkBlade Chip Fixture SPDM Device (expired)",
+        issuer="InkBlade Chip Fixture SPDM Root CA",
         public_key=leaf_key.public_key(), signer=root_key.sign, serial=0x5103,
         not_before=now - timedelta(days=60), not_after=now - timedelta(days=1))
     return root, leaf_key, valid_leaf, expired_leaf
 
 
 def _fw_pki():
-    root_key = _ec_key("P-256", "trident-chip-fw-root")
-    signer_key = _ec_key("P-256", "trident-chip-fw-signer")
+    root_key = _ec_key("P-256", "inkblade-chip-fw-root")
+    signer_key = _ec_key("P-256", "inkblade-chip-fw-signer")
     now = datetime.now(timezone.utc)
     root = build_certificate(
-        subject="Trident Chip Fixture Firmware Root CA",
-        issuer="Trident Chip Fixture Firmware Root CA",
+        subject="InkBlade Chip Fixture Firmware Root CA",
+        issuer="InkBlade Chip Fixture Firmware Root CA",
         public_key=root_key.public_key(), signer=root_key.sign, serial=0x6101,
         not_before=now - timedelta(days=30), not_after=now + timedelta(days=3650),
         is_ca=True)
     signer = build_certificate(
-        subject="Trident Chip Fixture Firmware Signer",
-        issuer="Trident Chip Fixture Firmware Root CA",
+        subject="InkBlade Chip Fixture Firmware Signer",
+        issuer="InkBlade Chip Fixture Firmware Root CA",
         public_key=signer_key.public_key(), signer=root_key.sign, serial=0x6102,
         not_before=now - timedelta(days=10), not_after=now + timedelta(days=730))
     return root, signer_key, signer
@@ -127,8 +127,8 @@ class _ChipState:
         self.valid_token = fx.token
         self.tampered_token = self._tamper(fx.token)
         self.measurement_record = b"SPDM-MEASUREMENT-RECORD:gpu-fw:1.2.3"
-        self.uki_content = b"TRIDENT-UKI-FIXTURE-v1"
-        self.uki_key = _ec_key("P-256", "trident-chip-uki")
+        self.uki_content = b"INKBLADE-UKI-FIXTURE-v1"
+        self.uki_key = _ec_key("P-256", "inkblade-chip-uki")
         self.uki_sig = self.uki_key.sign(ALG_ECDSA_SHA256, self.uki_content, raw=True)
         self.pcrs = {
             "0": _sha256(b"uefi-fw-1.2.3"),
@@ -163,7 +163,7 @@ class _ChipState:
             allocation_id = f"alloc-{self.mode}-{self._seq}"
             self.allocations[allocation_id] = {
                 "tenant": tenant, "device": device, "marker": marker,
-                "released": False, "zeroized": False, "process": "trident-chip-lab",
+                "released": False, "zeroized": False, "process": "inkblade-chip-lab",
             }
             return {"allocation_id": allocation_id, "tenant": tenant, "device": device}
 
@@ -200,7 +200,7 @@ class _ChipState:
                     "file_sha256": _sha256(("residue:" + marker).encode("utf-8")),
                     "readable_after_release": True,
                     "zeroized": False,
-                    "residue_file": f"/var/lib/trident/residue/{allocation_id}.bin",
+                    "residue_file": f"/var/lib/inkblade/residue/{allocation_id}.bin",
                 }]
             }
 
@@ -359,15 +359,15 @@ def _residue_export(ctx):
                  "device": "gpu-b-0", "mig_instance": "1g.5gb",
                  "mps_client": "mps-b", "released": True, "zeroized": False,
                  "readable_after_release": True,
-                 "marker_sha256": _sha256(b"TRIDENT-BENIGN-RESIDUE-VICTIM"),
-                 "residue_sha256": _sha256(b"TRIDENT-BENIGN-RESIDUE-VICTIM"),
+                 "marker_sha256": _sha256(b"INKBLADE-BENIGN-RESIDUE-VICTIM"),
+                 "residue_sha256": _sha256(b"INKBLADE-BENIGN-RESIDUE-VICTIM"),
                  "process": "vllm-tenant-b", "mps_shared_context": True},
                 {"allocation_id": "res-own-a", "tenant": "tenant-a",
                  "device": "gpu-a-1", "mig_instance": "1g.5gb",
                  "mps_client": "mps-a", "released": True, "zeroized": False,
                  "readable_after_release": True,
-                 "marker_sha256": _sha256(b"TRIDENT-BENIGN-OWN"),
-                 "residue_sha256": _sha256(b"TRIDENT-BENIGN-OWN"),
+                 "marker_sha256": _sha256(b"INKBLADE-BENIGN-OWN"),
+                 "residue_sha256": _sha256(b"INKBLADE-BENIGN-OWN"),
                  "process": "vllm-tenant-a", "mps_shared_context": False},
             ],
         }
@@ -475,7 +475,7 @@ def _stats(ctx):
 
 def _routes(ctx):
     return 200, {
-        "service": "trident-chipsec-lab",
+        "service": "inkblade-chipsec-lab",
         "mode": ctx.mode,
         "host": HOST,
         "route_count": len(ROUTE_TABLE),
@@ -539,7 +539,7 @@ class _ChipHTTPServer(ThreadingHTTPServer):
 
 class _ChipHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "TridentChipsecSim/0.1.0"
+    server_version = "InkBladeChipsecSim/0.1.0"
 
     def log_message(self, fmt, *args):
         return
@@ -666,7 +666,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE) -> Server:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident 芯片/加速器姿态双态仿真（仅 127.0.0.1）")
+    parser = argparse.ArgumentParser(description="InkBlade 芯片/加速器姿态双态仿真（仅 127.0.0.1）")
     parser.add_argument("--port", type=int, default=0)
     parser.add_argument("--mode", choices=list(MODES), default=DEFAULT_MODE)
     args = parser.parse_args(argv)

@@ -1,8 +1,8 @@
 {
-  "schema": "trident-tencent-compare-v1",
+  "schema": "inkblade-tencent-compare-v1",
   "generated_at": "2026-10-25T22:50:44",
   "head_commit": "c921595",
-  "switch": "TRIDENT_AGENT_POLICY=on|off（OFF 复现 HEAD 语义）",
+  "switch": "INKBLADE_AGENT_POLICY=on|off（OFF 复现 HEAD 语义）",
   "scope": "策略级确定性微评测：动作成本为标定估算，不调用外部 LLM/真实目标",
   "tasks": 8,
   "modes": {

@@ -10,6 +10,6 @@
     "snapshot": "可选，admission cases JSON；省略使用内置用例"
   },
   "produces": "admission-coverage-gap（机制级 findings）",
-  "knowledge": "docs/DEPTH-REVIEW.md §2；trident/depth/admission.py",
+  "knowledge": "docs/DEPTH-REVIEW.md §2；inkblade/depth/admission.py",
   "combo_signature": "admission-coverage-gap"
 }

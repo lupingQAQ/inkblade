@@ -1,7 +1,7 @@
 """横向模块共用：payload 变体探测（core/payloads 驱动，版本矩阵变体数据源）。
 
 用法（HTTP 横向模块 run.py）：
-    from trident.modules._lateral_common import VariantProber
+    from inkblade.modules._lateral_common import VariantProber
     vp = VariantProber(trace, MODULE_KEY)
     hits = vp.probe(method="GET", path="/plugins/list", base_url=target)
     # hits: [{variant, kind, method, url, status}] —— 变体命中差异写 finding detail
@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 
-from trident.core.payloads import http_variants
+from inkblade.core.payloads import http_variants
 
 
 class VariantProber:

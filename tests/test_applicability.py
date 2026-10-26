@@ -8,10 +8,10 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.assess.inventory import load_inventory, normalize_inventory
-from trident.core import applicability as a
-from trident.core.evidence import EvidenceStore
-from trident.reports.render import render_pentest
+from inkblade.assess.inventory import load_inventory, normalize_inventory
+from inkblade.core import applicability as a
+from inkblade.core.evidence import EvidenceStore
+from inkblade.reports.render import render_pentest
 
 REPO = Path(__file__).resolve().parents[1]
 FIX = REPO / "tests" / "fixtures" / "assess"
@@ -24,7 +24,7 @@ def _inv() -> dict:
 
 
 def _catalog(entries: list[dict]) -> dict:
-    return {"schema": "trident-cve-catalog-v1", "entries": entries}
+    return {"schema": "inkblade-cve-catalog-v1", "entries": entries}
 
 
 class TestVersionRanges(unittest.TestCase):
@@ -321,7 +321,7 @@ class TestChainGating(unittest.TestCase):
             encoding="utf-8")
 
     def test_dry_run_marks_blocked_and_unknown(self):
-        from trident.core.chains import dry_run
+        from inkblade.core.chains import dry_run
 
         assessment = a.assess_cves(_inv(), catalog_path=CATALOG)
         chain = {
@@ -349,10 +349,10 @@ class TestChainGating(unittest.TestCase):
         self.assertIn("ray-job-marker-rce", plan["applicability"]["unknown_steps"])
 
     def test_execute_skips_blocked_step_before_runner(self):
-        from trident.core.chains import execute
-        from trident.core.evidence import EvidenceStore
-        from trident.core.roe import init_roe
-        from trident.core.users import Session
+        from inkblade.core.chains import execute
+        from inkblade.core.evidence import EvidenceStore
+        from inkblade.core.roe import init_roe
+        from inkblade.core.users import Session
 
         assessment = a.assess_cves(_inv(), catalog_path=CATALOG)
         chain = {

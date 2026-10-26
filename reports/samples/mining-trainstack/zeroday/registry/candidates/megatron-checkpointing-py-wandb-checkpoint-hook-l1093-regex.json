@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex",
  "target": "megatron",
  "repo": "NVIDIA/Megatron-LM",

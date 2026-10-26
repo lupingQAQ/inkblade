@@ -1,5 +1,5 @@
 {
-  "schema": "trident-surface-map-v1",
+  "schema": "inkblade-surface-map-v1",
   "description": "Declared deployment surfaces per module. Explicit module.json surfaces win; this map covers legacy modules.",
   "modules": {
     "admission-crd-subresource-gap": [

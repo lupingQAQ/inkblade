@@ -1,4 +1,4 @@
-"""trident/probes/matrix.py — 「LLM 探针矩阵」产物与报告节渲染。
+"""inkblade/probes/matrix.py — 「LLM 探针矩阵」产物与报告节渲染。
 
 - render_matrix_section(matrix, lang)：报告节（双语，嵌入渗透测试报告「LLM 探针矩阵」）；
 - render_matrix_doc(matrix)：独立 MD 文档（顶部加标题与对比口径来源）；
@@ -111,9 +111,9 @@ def section_for_run(run_dir: Path | str, lang: str = "bi") -> str:
     if not path.is_file():
         return _pick(
             lang,
-            "**本 run 未执行 LLM 探针矩阵**（未运行 `python trident/probes/run.py`）。"
+            "**本 run 未执行 LLM 探针矩阵**（未运行 `python inkblade/probes/run.py`）。"
             "本节不臆造探针命中结论。",
-            "**No LLM probe matrix executed for this run** (`python trident/probes/run.py` "
+            "**No LLM probe matrix executed for this run** (`python inkblade/probes/run.py` "
             "was not run). No probe-hit claims are invented here.",
         )
     matrix = json.loads(path.read_text(encoding="utf-8"))

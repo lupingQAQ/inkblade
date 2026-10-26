@@ -329,7 +329,7 @@ def _nccl_bootstrap(ctx: _RequestContext):
     if ctx.mode == "fixed" and not (ctx.admin or ctx.job):
         return 401, {"error": "unauthorized", "service": "nccl-bootstrap",
                      "hint": "fixed 模式 rendezvous 需要作业令牌；且按作业限端口"}
-    job = str(ctx.body.get("job") or "trident-probe")
+    job = str(ctx.body.get("job") or "inkblade-probe")
     ranks = _int_of(ctx.body.get("ranks"), 1)
     honest = bool(ctx.body.get("honest"))
     state = ctx.state
@@ -717,7 +717,7 @@ def _metrics(ctx: _RequestContext):
 
 def _routes_manifest(ctx: _RequestContext):
     return 200, {
-        "service": "trident-fabric-lab",
+        "service": "inkblade-fabric-lab",
         "mode": ctx.mode,
         "host": HOST,
         "admin_token_hint": f"fixed 模式管理密钥 = Authorization: Bearer {ADMIN_TOKEN}",
@@ -883,7 +883,7 @@ class _FabricHTTPServer(ThreadingHTTPServer):
 
 class _FabricHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "TridentFabricSim/0.1.0"
+    server_version = "InkBladeFabricSim/0.1.0"
 
     def log_message(self, fmt, *args):  # 静默访问日志
         return
@@ -1002,7 +1002,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE) -> Server:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident 万卡 fabric 破坏面仿真（仅 127.0.0.1）")
+    parser = argparse.ArgumentParser(description="InkBlade 万卡 fabric 破坏面仿真（仅 127.0.0.1）")
     parser.add_argument("--port", type=int, default=0, help="监听端口（0=自动分配）")
     parser.add_argument("--mode", choices=list(MODES), default=DEFAULT_MODE,
                         help="vulnerable=fail-open 姿态，fixed=加固姿态")

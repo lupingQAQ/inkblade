@@ -6,7 +6,7 @@ spec:
   crd:
     spec:
       names:
-        kind: TridentAlertRoleBindingCreation
+        kind: InkBladeAlertRoleBindingCreation
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: "violation[{\"msg\": msg}] {\n  input.review.object.roleRef.name == \"cluster-admin\"\n  msg := \"binding to cluster-admin denied; other binding creations are audit-alerted in monitor mode\"\n}"

@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "dradriver-process-go-exec-command-l94-regex",
  "source": "mining",
  "component": "dradriver",
@@ -32,10 +32,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/dradriver/dradriver-process-go-exec-command-l94-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.151,
- "started_at": "2026-10-26T09:23:23+00:00",
+ "duration_s": 0.327,
+ "started_at": "2026-10-26T19:47:17+00:00",
  "marker": {
-  "text": "TRIDENT-UV-dradriver-process-go-exec-command-l94-regex",
+  "text": "INKBLADE-UV-dradriver-process-go-exec-command-l94-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -46,7 +46,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/dradriver/dradriver-process-go-exec-command-l94-regex/evidence/log.txt",
-   "sha256": "b1052032818d905841c9bf76d1365cac721fa2f99c0919202fc122231f8d2ddc",
+   "sha256": "0ab542084bcda92bc8415dc6d86ef12ec1b73ba4ccbd69808eb5f174ccd04ad7",
    "size": 259
   },
   {
@@ -56,12 +56,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/dradriver/dradriver-process-go-exec-command-l94-regex/evidence/static-check.json",
-   "sha256": "7ae50b4b5b7de749f787dd222c8afebe47e0c25d408f0e462793189f3c3e795e",
-   "size": 1377
+   "sha256": "542933506d63a890f9ea7d17208657259138fb5660521dc1c62d9921d37c58ec",
+   "size": 1378
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "e910d0db8a1af8c93239dc8788615e4b88a6eb57a630cf707ea1f211872da7bd",
+ "manifest_sha256": "1ee7c4077e8abf16938f1124d9c45b6638b16715b17beefb71db256fd5333cd8",
  "stdout": "{\"status\": \"static-only\", \"case\": \"dradriver-process-go-exec-command-l94-regex\"}\n",
  "stderr": "",
  "notes": "The compute-domain daemon executes m.cmd from its config (ConfigMap-sourced). The sink is real but the input is admin-controlled config, not tenant PVC data; recorded as a config-trust boundary for DRA deployments, plus the kubeletplugin.yaml privileged/hostPath posture (elevated-pod-spec hits)."

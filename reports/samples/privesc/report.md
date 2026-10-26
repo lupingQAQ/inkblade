@@ -1,4 +1,4 @@
-# Trident 提权报告（示例：RBAC 四条路径）
+# InkBlade 提权报告（示例：RBAC 四条路径）
 
 ## 提权面
 
@@ -48,7 +48,7 @@ flowchart LR
 
 ---
 
-# Trident Objective 报告
+# InkBlade Objective 报告
 
 - Objective：`cluster-takeover` — ML 集群接管
 - 起始主体：`system:serviceaccount:privesc-lab:token-sa`；目标：`cluster-admin`

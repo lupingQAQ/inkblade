@@ -37,7 +37,7 @@ class TestFeatureMatrix(unittest.TestCase):
             rows = _rows(self.m[tool])
             self.assertGreaterEqual(len(rows), self.m["matrix_rows"][tool], tool)
             for row in rows:
-                status = row.get("trident_status", row.get("status"))
+                status = row.get("inkblade_status", row.get("status"))
                 self.assertIn(str(status), valid, f"{tool} bad status: {row}")
                 self.assertTrue(row.get("anchor") or row.get("id"), f"{tool} row missing anchor: {row}")
 

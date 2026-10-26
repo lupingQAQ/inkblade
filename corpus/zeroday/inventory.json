@@ -1,5 +1,5 @@
 {
- "schema": "trident-zeroday-inventory-v1",
+ "schema": "inkblade-zeroday-inventory-v1",
  "generated_at": "2026-10-26T12:17:30+00:00",
  "generated_by": "tools/build-zeroday-inventory.py",
  "sources": {
@@ -7,7 +7,7 @@
   "omni": "projects/jev-omni-2026-10/AUDIT-REPORT.md + projects/repro-2026-10",
   "agent": "projects/agent-2026-10/results/0DAY-REGISTRY.md",
   "latest": "projects/repro-2026-10/LATEST-VERIFICATION.md",
-  "mining": "trident/core/exploit-registry.json (source=mining)",
+  "mining": "inkblade/core/exploit-registry.json (source=mining)",
   "legacy": "reports/samples/mining/zeroday/registry/candidates/*.json",
   "new": "tools/build-zeroday-inventory.py curated new-discovery cases"
  },

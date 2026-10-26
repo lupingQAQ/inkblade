@@ -23,7 +23,7 @@ for path in sorted(OUT.glob("*.json")):
         per_tool[data["tool"]] = data
 
 summary = {
-    "schema": "trident.oss-bench/1",
+    "schema": "inkblade.oss-bench/1",
     "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
     "host": {
         "platform": platform.platform(),

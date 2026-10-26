@@ -13,7 +13,7 @@
 只有 verification.status=verified 的源计入门槛；verified-partial 等
 非 verified 状态显式记录不可达/快照原因（见 verification.summary）。
 
-用法：python trident/arch-intel/check.py [coverage-matrix.json]
+用法：python inkblade/arch-intel/check.py [coverage-matrix.json]
 """
 
 from __future__ import annotations

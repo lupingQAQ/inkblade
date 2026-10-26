@@ -1,6 +1,6 @@
 # 硬件与交换机面覆盖（HARDWARE / SWITCH COVERAGE）
 
-本文件说明 Trident 在 **GPU 驱动/固件、BMC/Redfish、NVSwitch/NVLink、DPU、交换机 OS、
+本文件说明 InkBlade 在 **GPU 驱动/固件、BMC/Redfish、NVSwitch/NVLink、DPU、交换机 OS、
 IB SM/Partition、SHARP、fabric 遥测、固件供应链** 九个面上的只读审计能力、证据等级与
 生产使用边界。
 
@@ -88,7 +88,7 @@ POST/PUT/PATCH/DELETE 一律 405。它模拟两个平面 × 两种姿态：
 
 ### 3.2 实效验证（硬件 +2，芯片 +4）
 
-`trident/verify-effects.py` 新增硬件两项与芯片四项（本文件相关六项；全套 47 项）：
+`inkblade/verify-effects.py` 新增硬件两项与芯片四项（本文件相关六项；全套 47 项）：
 
 1. `hardware-bmc-default-credential`：对 `lab/hardware_sim.py` vulnerable 态执行
    `bmc-ipmi-exposure`，断言默认凭据登录 HTTP 200、IPMI over LAN 开启、finding 为 high；
@@ -164,7 +164,7 @@ python lab/hardware_sim.py --mode fixed
 python -m unittest tests.test_hardware_sim tests.test_modules_hardware tests.test_hardware_docs -v
 
 # 实效验证（含 hardware-* 两项）
-python -m trident.verify-effects --out reports/samples/effects/ --no-docs
+python -m inkblade.verify-effects --out reports/samples/effects/ --no-docs
 ```
 
 ## 7. 相关文档

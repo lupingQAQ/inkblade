@@ -3,11 +3,11 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.backup import BackupManager
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import init_roe
-from trident.core.runner import BackupGateRefused, run_module
-from trident.core.users import UserStore
+from inkblade.core.backup import BackupManager
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import init_roe
+from inkblade.core.runner import BackupGateRefused, run_module
+from inkblade.core.users import UserStore
 
 
 def _fixture_module(root: Path, key: str, writes: bool, fail: bool = False):
@@ -24,7 +24,7 @@ def _fixture_module(root: Path, key: str, writes: bool, fail: bool = False):
     else:
         body += (
             "    p = pathlib.Path(params['target'])\n"
-            "    p.write_text('TRIDENT-' + ctx['marker'], encoding='utf-8')\n"
+            "    p.write_text('INKBLADE-' + ctx['marker'], encoding='utf-8')\n"
             "    return {'summary': 'wrote marker', 'artifacts': [str(p)],"
             " 'findings': [{'sev': 'high', 'title': 'marker written', 'detail': 'x'}]}\n"
         )
@@ -69,7 +69,7 @@ class TestRunner(unittest.TestCase):
             },
             modules_dir=self.root / "modules",
         )
-        self.assertIn("TRIDENT-", target.read_text(encoding="utf-8"))
+        self.assertIn("INKBLADE-", target.read_text(encoding="utf-8"))
         bm = BackupManager(self.store, self.store.open_run(result["run"]))
         bm.rollback("weight-pull-demo")
         self.assertEqual(target.read_text(encoding="utf-8"), "original")

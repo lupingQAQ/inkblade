@@ -21,13 +21,13 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core import autonomy as A
-from trident.core.evidence import EvidenceStore
-from trident.core.journal import Journal
-from trident.core.llmpool import LLMPool
-from trident.core.roe import init_roe
-from trident.core.supervisor import Supervisor
-from trident.core.users import Session
+from inkblade.core import autonomy as A
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.journal import Journal
+from inkblade.core.llmpool import LLMPool
+from inkblade.core.roe import init_roe
+from inkblade.core.supervisor import Supervisor
+from inkblade.core.users import Session
 
 FULL = "全影响演示"
 
@@ -160,7 +160,7 @@ class TestPreflight(AutonomyTestBase):
         put = json.loads(grant.path.read_text(encoding="utf-8"))
         put["expires_at"] = time.time() - 1
         # 过期也要验签：直接改字段会被 HMAC 拒绝（这里先构造合法签名再测时钟过期）
-        from trident.core import roe
+        from inkblade.core import roe
         put.pop("hmac", None)
         put["hmac"] = roe.signature({k: v for k, v in put.items() if k != "hmac"},
                                     roe.workspace_key(self.store))
@@ -172,13 +172,13 @@ class TestPreflight(AutonomyTestBase):
     def test_llm_required_refused_without_endpoint(self):
         self.sign_roe()
         grant, token = self.make_grant()
-        saved = os.environ.pop("TRIDENT_LLM_BASE_URL", None)
+        saved = os.environ.pop("INKBLADE_LLM_BASE_URL", None)
         try:
             with self.assertRaises(A.AutonomyRefused) as ctx:
                 A.AutonomyGuard.preflight(self.store, token=token, llm_required=True)
         finally:
             if saved is not None:
-                os.environ["TRIDENT_LLM_BASE_URL"] = saved
+                os.environ["INKBLADE_LLM_BASE_URL"] = saved
         self.assertIn("端点", str(ctx.exception))
         self.enable_llm_pool()
         guard = A.AutonomyGuard.preflight(self.store, token=token, llm_required=True)
@@ -363,7 +363,7 @@ class TestAutonomyCli(unittest.TestCase):
         self.td.cleanup()
 
     def _run(self, argv):
-        from trident import cli
+        from inkblade import cli
         out, err = io.StringIO(), io.StringIO()
         with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
             code = cli.main(["--home", str(self.home), *argv])
@@ -396,10 +396,10 @@ class TestAutonomyCli(unittest.TestCase):
         self.assertNotIn(doc["token"], out)
 
     def test_supervisor_cli_l3_gates_queued_task(self):
-        from trident.core import autonomy as A
-        from trident.core.journal import Journal
-        from trident.core.supervisor import Supervisor
-        from trident.core.users import Session
+        from inkblade.core import autonomy as A
+        from inkblade.core.journal import Journal
+        from inkblade.core.supervisor import Supervisor
+        from inkblade.core.users import Session
 
         store = EvidenceStore(self.home, workspace="local-lab")
         init_roe(store, fields={"level": FULL, "namespaces": ["tenant-a"],

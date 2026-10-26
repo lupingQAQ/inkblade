@@ -2,13 +2,13 @@
 # =============================================================================
 # lab/kind/run-proof.sh — KIND 实证：hostNetwork Pod 绕过 NetworkPolicy（可实跑）
 #
-# 依据：Trident 设计 设计基线 5.6「主机网络层：hostNetwork/hostDevice 绕过 CNI 与
+# 依据：InkBlade 设计 设计基线 5.6「主机网络层：hostNetwork/hostDevice 绕过 CNI 与
 #       NetworkPolicy」；验收标准 12「hostNetwork 绕过 NetworkPolicy 实证」。
 #
 # 对照实验设计（自包含可重复）：
 #   1. kind 建群（disableDefaultCNI）并安装 Calico —— kindnet 不执行 NetworkPolicy
 #      （kubernetes-sigs/kind#3705），不装策略 CNI 则实证无效；
-#   2. namespace trident-proof 应用全量 default-deny（Ingress+Egress）；
+#   2. namespace inkblade-proof 应用全量 default-deny（Ingress+Egress）；
 #   3. 部署 target（nginx）+ 普通 Pod 探测 → 预期被拒（策略生效对照组）；
 #   4. hostNetwork Pod（hostnetwork-bypass.yaml）探测同目标 → 预期连通（旁路成立）；
 #   5. 结果矩阵写入 lab/kind/PROOF-hostnetwork-bypass.md（环境/命令/结果/判定方式）。
@@ -29,8 +29,8 @@
 # =============================================================================
 set -euo pipefail
 
-CLUSTER_NAME="${CLUSTER_NAME:-trident-proof}"
-NAMESPACE="${NAMESPACE:-trident-proof}"
+CLUSTER_NAME="${CLUSTER_NAME:-inkblade-proof}"
+NAMESPACE="${NAMESPACE:-inkblade-proof}"
 KIND_NODE_IMAGE="${KIND_NODE_IMAGE:-}"       # 缺省用 kind 内置节点镜像
 KIND_POD_CIDR="${KIND_POD_CIDR:-10.244.0.0/16}"
 CALICO_MANIFEST="${CALICO_MANIFEST:-https://raw.githubusercontent.com/projectcalico/calico/v3.28.2/manifests/calico.yaml}"
@@ -183,7 +183,7 @@ deploy_fixtures() {
   kubectl -n "$NAMESPACE" wait --for=condition=Ready pod/proof-target --timeout="${WAIT_TIMEOUT_S}s" >/dev/null
   kubectl -n "$NAMESPACE" expose pod proof-target --port=80 --name=proof-target >/dev/null
   kubectl -n "$NAMESPACE" run proof-normal --image="$PROBE_IMAGE" --restart=Never \
-    --labels=app=proof-normal,trident.dev/proof=hostnetwork-bypass --command -- sleep infinity >/dev/null
+    --labels=app=proof-normal,inkblade.dev/proof=hostnetwork-bypass --command -- sleep infinity >/dev/null
   kubectl apply -f "$SCRIPT_DIR/hostnetwork-bypass.yaml" >/dev/null
   kubectl -n "$NAMESPACE" wait --for=condition=Ready pod/proof-normal --timeout="${WAIT_TIMEOUT_S}s" >/dev/null
   kubectl -n "$NAMESPACE" wait --for=condition=Ready pod/proof-hostnet --timeout="${WAIT_TIMEOUT_S}s" >/dev/null

@@ -1,4 +1,4 @@
-# Trident 提权真集群验证（QEMU k3s）
+# InkBlade 提权真集群验证（QEMU k3s）
 
 - 生成：2026-10-25T16:47:39Z
 - 环境：QEMU TCG + Alpine + k3s (single control-plane)；kubectl v1.36.5；server v1.36.5+k3s1

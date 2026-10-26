@@ -7,15 +7,15 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.backup import BackupManager
-from trident.core.evidence import EvidenceStore
-from trident.core.registry import load_modules
-from trident.core.roe import ExecutionLocked, init_roe
-from trident.core.runner import BackupGateRefused, run_module
-from trident.core.users import UserStore
+from inkblade.core.backup import BackupManager
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.registry import load_modules
+from inkblade.core.roe import ExecutionLocked, init_roe
+from inkblade.core.runner import BackupGateRefused, run_module
+from inkblade.core.users import UserStore
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
+MODULES_DIR = REPO / "inkblade" / "modules"
 FIXTURES = REPO / "lab" / "fixtures" / "privesc"
 
 CASES = {
@@ -119,7 +119,7 @@ class TestPrivescModules(unittest.TestCase):
                                     modules_dir=MODULES_DIR)
                 written = target.read_text(encoding="utf-8")
                 self.assertNotEqual(written, "original")
-                self.assertIn("TRIDENT-", written)
+                self.assertIn("INKBLADE-", written)
                 bm = BackupManager(self.store, self.store.open_run(result["run"]))
                 rollback = bm.rollback(f"{key}-demo")
                 self.assertGreaterEqual(rollback["restored"], 1)

@@ -29,7 +29,7 @@ class MatrixError(ValueError):
 def load(path: Path | str | None = None) -> dict:
     p = Path(path) if path else MATRIX_PATH
     data = json.loads(p.read_text(encoding="utf-8"))
-    if data.get("schema") != "trident-version-matrix-v1":
+    if data.get("schema") != "inkblade-version-matrix-v1":
         raise MatrixError(f"{p}: 未知 schema {data.get('schema')!r}")
     entries = data.get("entries") or []
     if not entries:

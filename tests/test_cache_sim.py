@@ -159,7 +159,7 @@ class ApproxCacheTest(_Base):
         self.assertTrue(payload["hit"], payload)
         self.assertGreaterEqual(payload["best_similarity"], payload["threshold"])
         self.assertEqual(payload["matched"]["tenant"], "tenant-b")
-        self.assertIn("TRIDENT-BENIGN-APPROX-VICTIM", payload["matched"]["response"])
+        self.assertIn("INKBLADE-BENIGN-APPROX-VICTIM", payload["matched"]["response"])
 
     def test_below_threshold_misses(self):
         probe = "completely unrelated topic about kubernetes network policy tuning"
@@ -214,7 +214,7 @@ class KvPoolTest(_Base):
         self.assertEqual(status, 200)
         self.assertTrue(payload["found"])
         self.assertEqual(payload["tenant"], "tenant-b")
-        self.assertIn("TRIDENT-BENIGN-POOL-VICTIM", str(payload["value"]))
+        self.assertIn("INKBLADE-BENIGN-POOL-VICTIM", str(payload["value"]))
 
     def test_own_control_block_readable(self):
         status, payload = http(
@@ -226,7 +226,7 @@ class KvPoolTest(_Base):
     def test_pinned_block_survives_eviction_pressure(self):
         status, written = http(self.server.url("/kvpool/blocks"), "POST", {
             "block_id": "poison-pinned-test", "namespace": "global",
-            "value": "TRIDENT-BENIGN-POISON pinned persistence probe",
+            "value": "INKBLADE-BENIGN-POISON pinned persistence probe",
             "eviction_policy": "pinned",
         }, {"X-Tenant": "tenant-a"})
         self.assertEqual(status, 200)
@@ -262,7 +262,7 @@ class FixedKvPoolTest(_Base):
     def test_pinning_denied_for_tenant_and_block_evicted(self):
         status, written = http(self.server.url("/kvpool/blocks"), "POST", {
             "block_id": "poison-fixed-test", "namespace": "tenant-a",
-            "value": "TRIDENT-BENIGN-POISON fixed probe",
+            "value": "INKBLADE-BENIGN-POISON fixed probe",
             "eviction_policy": "pinned",
         }, {"X-Tenant": "tenant-a"})
         self.assertEqual(status, 200)
@@ -277,7 +277,7 @@ class FixedKvPoolTest(_Base):
     def test_cross_tenant_namespace_write_denied(self):
         status, payload = http(self.server.url("/kvpool/blocks"), "POST", {
             "block_id": "poison-cross-ns", "namespace": "tenant-b",
-            "value": "TRIDENT-BENIGN-POISON cross namespace probe",
+            "value": "INKBLADE-BENIGN-POISON cross namespace probe",
         }, {"X-Tenant": "tenant-a"})
         self.assertEqual(status, 403)
         self.assertEqual(payload["error"], "cross_tenant_kv_write_denied")
@@ -299,7 +299,7 @@ class EvictionResidueTest(_Base):
         self.assertEqual(status, 200)
         self.assertTrue(payload["found"])
         self.assertEqual(payload["tenant"], "tenant-b")
-        self.assertIn("TRIDENT-BENIGN-RESIDUE-VICTIM", payload["prefix_preview"])
+        self.assertIn("INKBLADE-BENIGN-RESIDUE-VICTIM", payload["prefix_preview"])
 
 
 class FixedEvictionResidueTest(_Base):

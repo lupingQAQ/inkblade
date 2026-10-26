@@ -20,6 +20,6 @@
 - 技能库可迁移到新环境，是能力的持久载体。
 
 ## 对我们的启示
-- 我们的「技能」目前等于模块（`registry.load_modules`，`trident/core/registry.py:34`），新增要发版、不可组合、不记录成功条件（G05）。
+- 我们的「技能」目前等于模块（`registry.load_modules`，`inkblade/core/registry.py:34`），新增要发版、不可组合、不记录成功条件（G05）。
 - 可落地：每次成功链产出「技能草稿」（步骤/前置/证据/回滚/失败案例），经评测与人工批准后进入技能库；下次由 planner 检索复用。
 - 关键差异：渗透技能必须带**授权与副作用元数据**（min_level/writes/backup_targets），不能像游戏技能一样无条件复用。

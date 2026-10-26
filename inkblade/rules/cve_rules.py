@@ -5,7 +5,7 @@
 - HTTP 管理面 → webserver 日志的 URI 选择器；
 - 容器/运行时/训练栈 → process_creation 命令行选择器；
 - K8s 控制面 → kube-apiserver 审计字段选择器；
-- 所有规则带 ``custom.trident-cve`` 与 ATT&CK 标签，monitor 模式，不含利用细节。
+- 所有规则带 ``custom.inkblade-cve`` 与 ATT&CK 标签，monitor 模式，不含利用细节。
 """
 
 from __future__ import annotations

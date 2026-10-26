@@ -136,7 +136,7 @@
 
 1. **真实 HTTP 差分**：同一请求在 vulnerable 200、fixed 401/403/404/409；
 2. **可度量证据**：marker sha256、文件 sha256、`state_sha256`、对象清单、profile 差分；
-3. **benign marker**：残留写入一律 `TRIDENT-BENIGN-` 前缀，不含真实模型数据；
+3. **benign marker**：残留写入一律 `INKBLADE-BENIGN-` 前缀，不含真实模型数据；
 4. **写类备份闸门**：`writes=true` 模块必须提供 `backup_targets`，否则 runner 以
    `BackupGateRefused`（退出码 91）拒绝执行；
 5. **凭据脱敏**：AssumeRole 凭据仅以 `MOCK****` + 尾 4 位进入 findings，全文只留在
@@ -146,7 +146,7 @@
 
 ```bash
 python -m unittest tests.test_gpu_cloud_sim tests.test_modules_gpu_cloud tests.test_chains_gpu_cloud -v
-python -m trident.verify-effects --out reports/samples/effects/
+python -m inkblade.verify-effects --out reports/samples/effects/
 python -m unittest tests.test_verify_effects -v
 ```
 

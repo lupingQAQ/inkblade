@@ -40,7 +40,7 @@ def run(ctx: dict, params: dict) -> dict:
     if mode == "backup-write":
         payload = str(params.get("payload") or (
             '{"marker": "' + marker + '", "poisoned": true, "benign": true, '
-            '"source": "trident-lab", "shard": "' + shard_id + '"}'
+            '"source": "inkblade-lab", "shard": "' + shard_id + '"}'
         ) + "\n")
         write = t.call("POST", f"{target}/checkpoint/shards", {
             "shard_id": shard_id,

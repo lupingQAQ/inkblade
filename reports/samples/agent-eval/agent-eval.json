@@ -1,5 +1,5 @@
 {
- "schema": "trident-agent-eval-v1",
+ "schema": "inkblade-agent-eval-v1",
  "generated_at": "2026-10-25T14:30:12Z",
  "tasks_file": "lab/agent-eval/tasks.json",
  "task_count": 15,

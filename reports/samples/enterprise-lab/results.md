@@ -93,7 +93,7 @@
 - 残余 FN：mutable image tag（本夹具无该形态证据，检测器已备、不造证据）；客户环境需以真实快照重测
 - 残余 FP 逐条列出（各场景 tuning.after）：多为真实风险形态但无标注，不静默吞掉
 - 真实集群车道无标注，不计算 FP/FN
-- 调优路径 1（已落地）：CI/扫描器/控制器/系统绑定/平台命名空间/工作负载三元组实体基线（`trident/core/baseline.py`，抑制留痕可审计，客户环境需重审批）。
+- 调优路径 1（已落地）：CI/扫描器/控制器/系统绑定/平台命名空间/工作负载三元组实体基线（`inkblade/core/baseline.py`，抑制留痕可审计，客户环境需重审批）。
 - 调优路径 2（已落地）：学习模式从历史事件流/run 生成 allowlist 候选（仅 2xx、高危形态永不学习、lead 审批后合并）。
 - 调优路径 3（已落地）：补齐 serviceaccounts/token 与 pods/portforward 检测器 + Sigma×2（永不基线化）；mutable image tag 检测器已备（本夹具无证据，如实留 FN）。
 - 抑制规则（时间窗/标签/注释）：`core/baseline.py::SuppressionRule`，客户维护窗与例外清单用，规则必须带 reason/created_by。

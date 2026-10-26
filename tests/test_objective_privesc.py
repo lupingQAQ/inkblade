@@ -5,14 +5,14 @@ from __future__ import annotations
 import unittest
 from pathlib import Path
 
-from trident.core.objective import (
+from inkblade.core.objective import (
     OBJECTIVES,
     NoPathError,
     execute_objective,
     plan_objective,
     render_objective_report,
 )
-from trident.core.privesc import load_matrix, load_snapshot
+from inkblade.core.privesc import load_matrix, load_snapshot
 
 REPO = Path(__file__).resolve().parents[1]
 FIXTURES = REPO / "lab" / "fixtures" / "privesc"

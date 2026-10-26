@@ -1,7 +1,7 @@
 # ARTEX Clean-room 功能对齐（ARTEX-PARITY）
 
 > **方法（clean-room）**：仅依据公开功能描述（`docs/FEATURE-BY-FEATURE-ARTEX.md`、
-> `docs/COMPETITIVE-MATRIX.md`、公开协议/标准）与 Trident 自身架构约束独立实现。
+> `docs/COMPETITIVE-MATRIX.md`、公开协议/标准）与 InkBlade 自身架构约束独立实现。
 > **未读取、未复制、未改编、未逐行翻译** ARTEX（Autumn-27/ARTEX、RuoJi6/ARTEX）
 > 的 AGPL-3.0 源码；接口、数据模型、闸门与测试均为本项目独立设计。
 > 生成日期：2026-10-25。
@@ -24,14 +24,14 @@
 
 | # | 功能 | 实现（clean-room） | API / CLI | 测试 | 默认状态 |
 |---|---|---|---|---|---|
-| 1 | LLM 多模型池：端点/模型/权重/健康检查/失败切换/配额/调用留档 | [`trident/core/llmpool.py`](../trident/core/llmpool.py) | `GET /api/v1/llm/pool|records|models`、`GET /api/v1/tokens/*`；`trident llm-pool` | [`tests/test_llmpool.py`](../tests/test_llmpool.py) | **关闭**；`complete` 抛 `PoolDisabled` |
-| 2 | 通知渠道 + 事件规则 + 投递重试 | [`trident/core/notify.py`](../trident/core/notify.py) | `/api/v1/notify/*`；`trident notify` | [`tests/test_notify.py`](../tests/test_notify.py) | **关闭**；投递 `suppressed`（可审计未发送） |
-| 3 | 任务模板：链子集 + 参数预设 + dry-run 计划 + 从 run 反推 | [`trident/core/templates.py`](../trident/core/templates.py) | `/api/v1/templates*`；`trident template` | [`tests/test_templates.py`](../tests/test_templates.py) | 只读计划；不执行 |
-| 4 | 计划任务日历：一次性窗口 + 暂停/恢复 + 日历视图 | [`trident/core/calendar.py`](../trident/core/calendar.py) | `/api/v1/calendar*`；`trident calendar` | [`tests/test_calendar.py`](../tests/test_calendar.py) | 不后台自动执行；`run-due` 须 ROE + execute |
-| 5 | run 内侧问：tester 提问 → lead 回复，全程审计 | [`trident/core/threads.py`](../trident/core/threads.py) | `/api/v1/threads*`、`/api/v1/side-questions/{id}/*`；`trident threads` | [`tests/test_threads.py`](../tests/test_threads.py) | 只问答；**不触发执行** |
-| 6 | 资产/攻击图快照 + 跨 run 差异（cold graph） | [`trident/core/graphsnap.py`](../trident/core/graphsnap.py) | `/api/v1/graph/*`；`trident graph` | [`tests/test_graphsnap.py`](../tests/test_graphsnap.py) | 只读重算；写盘仅快照目录 |
-| 7 | 跨 run 上下文继承（只读黑板） | [`trident/core/blackboard.py`](../trident/core/blackboard.py) | `/api/v1/blackboard*`；`trident blackboard` | [`tests/test_blackboard.py`](../tests/test_blackboard.py) | 只读注入 `proposal.context.blackboard` |
-| 8 | 已批准提议 bounded 并发执行（1–8，默认 1） | [`trident/core/explorer.py`](../trident/core/explorer.py) `execute(workers=)` | `POST /api/v1/explorer/execute {workers}`；`trident explore execute --workers` | [`tests/test_concurrency.py`](../tests/test_concurrency.py) | 默认 1；每动作独立 run/evidence.db |
+| 1 | LLM 多模型池：端点/模型/权重/健康检查/失败切换/配额/调用留档 | [`inkblade/core/llmpool.py`](../inkblade/core/llmpool.py) | `GET /api/v1/llm/pool|records|models`、`GET /api/v1/tokens/*`；`inkblade llm-pool` | [`tests/test_llmpool.py`](../tests/test_llmpool.py) | **关闭**；`complete` 抛 `PoolDisabled` |
+| 2 | 通知渠道 + 事件规则 + 投递重试 | [`inkblade/core/notify.py`](../inkblade/core/notify.py) | `/api/v1/notify/*`；`inkblade notify` | [`tests/test_notify.py`](../tests/test_notify.py) | **关闭**；投递 `suppressed`（可审计未发送） |
+| 3 | 任务模板：链子集 + 参数预设 + dry-run 计划 + 从 run 反推 | [`inkblade/core/templates.py`](../inkblade/core/templates.py) | `/api/v1/templates*`；`inkblade template` | [`tests/test_templates.py`](../tests/test_templates.py) | 只读计划；不执行 |
+| 4 | 计划任务日历：一次性窗口 + 暂停/恢复 + 日历视图 | [`inkblade/core/calendar.py`](../inkblade/core/calendar.py) | `/api/v1/calendar*`；`inkblade calendar` | [`tests/test_calendar.py`](../tests/test_calendar.py) | 不后台自动执行；`run-due` 须 ROE + execute |
+| 5 | run 内侧问：tester 提问 → lead 回复，全程审计 | [`inkblade/core/threads.py`](../inkblade/core/threads.py) | `/api/v1/threads*`、`/api/v1/side-questions/{id}/*`；`inkblade threads` | [`tests/test_threads.py`](../tests/test_threads.py) | 只问答；**不触发执行** |
+| 6 | 资产/攻击图快照 + 跨 run 差异（cold graph） | [`inkblade/core/graphsnap.py`](../inkblade/core/graphsnap.py) | `/api/v1/graph/*`；`inkblade graph` | [`tests/test_graphsnap.py`](../tests/test_graphsnap.py) | 只读重算；写盘仅快照目录 |
+| 7 | 跨 run 上下文继承（只读黑板） | [`inkblade/core/blackboard.py`](../inkblade/core/blackboard.py) | `/api/v1/blackboard*`；`inkblade blackboard` | [`tests/test_blackboard.py`](../tests/test_blackboard.py) | 只读注入 `proposal.context.blackboard` |
+| 8 | 已批准提议 bounded 并发执行（1–8，默认 1） | [`inkblade/core/explorer.py`](../inkblade/core/explorer.py) `execute(workers=)` | `POST /api/v1/explorer/execute {workers}`；`inkblade explore execute --workers` | [`tests/test_concurrency.py`](../tests/test_concurrency.py) | 默认 1；每动作独立 run/evidence.db |
 
 ### 1.1 安全闸门（与既有执行路径同源）
 
@@ -60,7 +60,7 @@
 
 | 类别 | 数量 | 理由（摘要） |
 |---|---:|---|
-| 对话式主 agent / agents / conversations / chat / visibility | 43 | Trident 无自主对话循环；自主性止步于 lead 审批的提议队列，侧问由 `threads.py` 承担 |
+| 对话式主 agent / agents / conversations / chat / visibility | 43 | InkBlade 无自主对话循环；自主性止步于 lead 审批的提议队列，侧问由 `threads.py` 承担 |
 | PG 任务实体 / 分类 / 归档 / Web 工作区 / goal-scope-constraint | 30 | run + 三层证据库为一等对象；不引入可变任务实体与 Web 文件编辑器 |
 | Next.js 页面 | 7 | CLI/REST/MCP/静态 SPA 形态；页面不是功能闸门 |
 | companies 多租户 | 6 | 工作区 + 四角色隔离；多租户 SaaS 属 L 项 CM-31 |
@@ -95,25 +95,25 @@ S 13 + M 17 = **30 项全部 done**；L 3 项不在本轮 S/M 范围。
 |---|---|---|---|---|
 | CM-01 | run 级凭据/线索/敏感数据 registry（证据绑定） | `core/intel.py` | `test_backlog_s.TestIntel` | done |
 | CM-02 | 跨 run 过程全文检索 + 证据锚 | `core/search.py` | `test_backlog_s.TestSearch` | done |
-| CM-03 | 决策/意图留档（规划器理由/选择） | `core/decisions.py`；`trident plan --record` | `test_backlog_s.TestDecisions` | done |
+| CM-03 | 决策/意图留档（规划器理由/选择） | `core/decisions.py`；`inkblade plan --record` | `test_backlog_s.TestDecisions` | done |
 | CM-04 | 定时调度 + 测试窗口（ROE 内） | `core/scheduler.py` + `core/calendar.py` | `test_scheduler`、`test_calendar` | done |
 | CM-05 | legacy SA token 逐 token SSRR/SSAR 审计 | `core/tokenaudit.py` | `test_backlog_s.TestTokenAudit` | done |
 | CM-06 | 敏感证据 raw/redact/metadata 三态引用 | `core/intel.py` | `test_backlog_s.TestIntel` | done |
 | CM-07 | VID 式漏洞 KB 条目（中英双语） | `core/kb.py` | `test_backlog_s.TestKB` | done |
-| CM-08 | kubelet 10250 面扫描模块 | `trident/modules/kubelet-surface/` | `test_backlog_s.TestKubeletModule` | done |
+| CM-08 | kubelet 10250 面扫描模块 | `inkblade/modules/kubelet-surface/` | `test_backlog_s.TestKubeletModule` | done |
 | CM-09 | Falco 宏/列表复用规则模型 | `core/rulemacro.py` | `test_backlog_s.TestRuleMacro` | done |
 | CM-10 | 规则/告警多路分发（stdout/file/syslog/program/http） | `core/dispatch.py` + `core/notify.py` | `test_backlog_s.TestDispatch`、`test_notify` | done |
-| CM-11 | CI/CD exit code 契约 + 机器摘要 | `core/cigate.py`；`trident ci-gate` | `test_backlog_s.TestCiGate` | done |
+| CM-11 | CI/CD exit code 契约 + 机器摘要 | `core/cigate.py`；`inkblade ci-gate` | `test_backlog_s.TestCiGate` | done |
 | CM-12 | 声明式评估配置（YAML/JSON 矩阵 + 基线） | `core/evalconfig.py` | `test_backlog_s.TestEvalConfig` | done |
-| CM-13 | Trivy/Syft/grype → findings；ScopesSentry 资产同步 | `core/importers.py`；`trident import-scan` | `test_backlog_s.TestImporters` | done |
+| CM-13 | Trivy/Syft/grype → findings；ScopesSentry 资产同步 | `core/importers.py`；`inkblade import-scan` | `test_backlog_s.TestImporters` | done |
 | CM-14 | finding 级确定性复测 + 结论留档 | `core/retest.py` | `test_backlog_m.TestRetest` | done |
 | CM-15 | 工单/SIEM 直投连接器 | `core/connectors.py` | `test_backlog_m.TestConnectors` | done |
 | CM-16 | 探索血缘图 goal→intent→fact→finding | `core/lineage.py` | `test_backlog_m.TestLineage` | done |
 | CM-17 | 同根因归并 + 统一报告 | `core/dedupe.py` | `test_backlog_m.TestDedupe` | done |
 | CM-18 | pcap 级录制/回放（离线；live MITM 见边界） | `core/pcap.py` | `test_backlog_m.TestPcap` | done（限定） |
 | CM-19 | Sankey 攻击路径 + 修复优先级 | `core/sankey.py` | `test_backlog_m.TestSankeyPathCalc` | done |
-| CM-20 | CTEM 五阶段报告叙事 | `core/narrative.py`；`trident report-ctem` | `test_backlog_m.TestNarrative` | done |
-| CM-21 | 泄露凭据有效性验证（fixture 驱动） | `core/credcheck.py`；`trident credcheck` | `test_backlog_m.TestCredCheck` | done |
+| CM-20 | CTEM 五阶段报告叙事 | `core/narrative.py`；`inkblade report-ctem` | `test_backlog_m.TestNarrative` | done |
+| CM-21 | 泄露凭据有效性验证（fixture 驱动） | `core/credcheck.py`；`inkblade credcheck` | `test_backlog_m.TestCredCheck` | done |
 | CM-22 | in-pod 只读采集器（safe 模式等价） | `core/inpod.py` | `test_backlog_m.TestInPod` | done |
 | CM-23 | 攻击路径最短/关键节点/割点 + 图查询 | `core/pathcalc.py` | `test_backlog_m.TestSankeyPathCalc` | done |
 | CM-24 | admission dry-run/fuzz 探测 | `core/admission.py` | `test_backlog_m.TestAdmission` | done |

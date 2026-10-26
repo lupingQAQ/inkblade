@@ -25,18 +25,18 @@
  "marker": {
   "after_has_marker": true,
   "after_sha256": "a84b05e22eae0ae0cef21a5d3eb5c8450a6c9299b15c5e04489b2c95d0f31622",
-  "text": "TRIDENT-ZD-msswift-media-local-read"
+  "text": "INKBLADE-ZD-msswift-media-local-read"
  },
  "method": "dynamic-function",
  "notes": "Function-level reproduction of the real 4.6.0 guard + inlining path; the FastAPI server/model are not started because the host has no GPU. The default-unsafe branch and the explicit allowlist branch are both the upstream code.",
  "payload": {
-  "marker": "TRIDENT-ZD-msswift-media-local-read",
+  "marker": "INKBLADE-ZD-msswift-media-local-read",
   "marker_path": "lab/zeroday_reserve/cases/msswift-media-local-read/evidence/marker.txt",
   "marker_sha256": "a84b05e22eae0ae0cef21a5d3eb5c8450a6c9299b15c5e04489b2c95d0f31622",
   "request_response": [
    {
     "request": "to_base64('/path/victim-secret.txt') with guard unset",
-    "result": "base64 returned and decoded to 'TRIDENT-ZD-msswift-media-local-read'"
+    "result": "base64 returned and decoded to 'INKBLADE-ZD-msswift-media-local-read'"
    },
    {
     "request": "same call with SWIFT_MEDIA_ALLOWED_DIRS=<empty dir>",
@@ -69,12 +69,12 @@
   "snippet": "SafeMediaPath.check(mm_data)",
   "source": "lab/zeroday_reserve/upstream/ms-swift-4.6.0/swift/infer_engine/protocol.py"
  },
- "schema": "trident-zeroday-result-v1",
+ "schema": "inkblade-zeroday-result-v1",
  "source_sha256": "168abd3beb6c75079716d837241b61efffd191a4911a1669633d5528372ad5af",
  "started_at": "2026-10-26T12:07:41+00:00",
  "status": "verified",
  "stderr": "",
- "stdout": "{\"marker\": \"TRIDENT-ZD-msswift-media-local-read\", \"marker_path\": \"lab/zeroday_reserve/cases/msswift-media-local-read/evidence/marker.txt\", \"marker_sha256\": \"a84b05e22eae0ae0cef21a5d3eb5c8450a6c9299b15c5e04489b2c95d0f31622\", \"request_response\": [{\"request\": \"to_base64('/path/victim-secret.txt') with guard unset\", \"result\": \"base64 returned and decoded to 'TRIDENT-ZD-msswift-media-local-read'\"}, {\"request\": \"same call with SWIFT_MEDIA_ALLOWED_DIRS=<empty dir>\", \"result\": \"ValueError: Refusing to read the media file '<path>': it is outside the directories listed in the `SWIFT_MEDIA_ALLOWED_DIRS` environment variable.\"}], \"state_after\": \"marker contains the canary text read through the upstream function\", \"state_before\": \"marker=ABSENT\", \"status\": \"verified\", \"transport\": {\"allowlisted_control\": \"ValueError: Refusing to read the media file '<path>': it is outside the directories listed in the `SWIFT_MEDIA_ALLOWED_DIRS` environment variable.\", \"default\": \"SWIFT_MEDIA_ALLOWED_DIRS unset -> allow all local paths\", \"media_source\": \"lab/zeroday_reserve/upstream/ms-swift-4.6.0/swift/utils/media_utils.py\", \"protocol_source\": \"lab/zeroday_reserve/upstream/ms-swift-4.6.0/swift/infer_engine/protocol.py\", \"sink\": \"SafeMediaPath.check -> builtins.open(mm_data,'rb') -> base64\", \"source_sha256\": {\"media\": \"d308c0138e1e89d0aa7e5afd9eaeea9ad0ce16e661c6e94e3c2582214b998513\", \"protocol\": \"168abd3beb6c75079716d837241b61efffd191a4911a1669633d5528372ad5af\"}, \"type\": \"verbatim upstream class/function (AST source segments)\", \"upstream\": \"ms-swift v4.6.0\"}}\n",
+ "stdout": "{\"marker\": \"INKBLADE-ZD-msswift-media-local-read\", \"marker_path\": \"lab/zeroday_reserve/cases/msswift-media-local-read/evidence/marker.txt\", \"marker_sha256\": \"a84b05e22eae0ae0cef21a5d3eb5c8450a6c9299b15c5e04489b2c95d0f31622\", \"request_response\": [{\"request\": \"to_base64('/path/victim-secret.txt') with guard unset\", \"result\": \"base64 returned and decoded to 'INKBLADE-ZD-msswift-media-local-read'\"}, {\"request\": \"same call with SWIFT_MEDIA_ALLOWED_DIRS=<empty dir>\", \"result\": \"ValueError: Refusing to read the media file '<path>': it is outside the directories listed in the `SWIFT_MEDIA_ALLOWED_DIRS` environment variable.\"}], \"state_after\": \"marker contains the canary text read through the upstream function\", \"state_before\": \"marker=ABSENT\", \"status\": \"verified\", \"transport\": {\"allowlisted_control\": \"ValueError: Refusing to read the media file '<path>': it is outside the directories listed in the `SWIFT_MEDIA_ALLOWED_DIRS` environment variable.\", \"default\": \"SWIFT_MEDIA_ALLOWED_DIRS unset -> allow all local paths\", \"media_source\": \"lab/zeroday_reserve/upstream/ms-swift-4.6.0/swift/utils/media_utils.py\", \"protocol_source\": \"lab/zeroday_reserve/upstream/ms-swift-4.6.0/swift/infer_engine/protocol.py\", \"sink\": \"SafeMediaPath.check -> builtins.open(mm_data,'rb') -> base64\", \"source_sha256\": {\"media\": \"d308c0138e1e89d0aa7e5afd9eaeea9ad0ce16e661c6e94e3c2582214b998513\", \"protocol\": \"168abd3beb6c75079716d837241b61efffd191a4911a1669633d5528372ad5af\"}, \"type\": \"verbatim upstream class/function (AST source segments)\", \"upstream\": \"ms-swift v4.6.0\"}}\n",
  "timed_out": false,
  "title": "ms-swift 4.6.0 deploy media path reads arbitrary host files by default",
  "verified": true,

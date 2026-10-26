@@ -45,15 +45,15 @@ LEAST_PRIV_SNAPSHOT = {
     ],
 }
 
-CLOUD_SECRETS = ("MOCKAKIATRIDENTLAB", "MOCKSECRETTRIDENTLAB", "MOCKSESSIONTRIDENTLAB",
-                 "MOCKLTAITRIDENTLAB", "MOCKSTSTRIDENTLAB", "MOCKAKIDTRIDENTLAB",
+CLOUD_SECRETS = ("MOCKAKIAINKBLADELAB", "MOCKSECRETINKBLADELAB", "MOCKSESSIONINKBLADELAB",
+                 "MOCKLTAIINKBLADELAB", "MOCKSTSINKBLADELAB", "MOCKAKIDINKBLADELAB",
                  "MOCK-AZURE-IDENTITY-TOKEN")
 
 
 class HybridCatalogTest(unittest.TestCase):
     def test_catalog_registered_and_contract(self):
-        from trident.core.registry import load_modules
-        mods = load_modules(Path(__file__).resolve().parents[1] / "trident" / "modules")
+        from inkblade.core.registry import load_modules
+        mods = load_modules(Path(__file__).resolve().parents[1] / "inkblade" / "modules")
         for case in HYBRID_CASES:
             key = case["key"]
             self.assertIn(key, mods, f"缺少模块 {key}")

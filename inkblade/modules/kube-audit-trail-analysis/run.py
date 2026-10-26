@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """kube-audit-trail-analysis — K8s 审计轨迹分析（who-did-what 追溯，只读侦察）。
 
-薄封装 trident/core/auditlog.py 引擎：
+薄封装 inkblade/core/auditlog.py 引擎：
 - params.auditlog：JSON Lines 文件路径或事件列表
 - params.kubetrail_export：KubeTrail dbus.json 导出（路径或 dict）
 - params.baseline_subjects / include_denied：白名单与拒绝尝试口径
@@ -15,7 +15,7 @@ _REPO = Path(__file__).resolve().parents[3]
 if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
-from trident.core.auditlog import (  # noqa: E402
+from inkblade.core.auditlog import (  # noqa: E402
     DEFAULT_BASELINE_SUBJECTS,
     analyze,
 )

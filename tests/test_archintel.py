@@ -18,11 +18,11 @@ import json
 import unittest
 from pathlib import Path
 
-ARCH_INTEL = Path(__file__).resolve().parent.parent / "trident" / "arch-intel"
+ARCH_INTEL = Path(__file__).resolve().parent.parent / "inkblade" / "arch-intel"
 
 # arch-intel 目录名含连字符，按路径加载模块
 _spec = importlib.util.spec_from_file_location(
-    "trident_arch_intel_check", ARCH_INTEL / "check.py"
+    "inkblade_arch_intel_check", ARCH_INTEL / "check.py"
 )
 _mod = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_mod)
@@ -36,7 +36,7 @@ def make_source(sid, cls="official-en", org="org", status="verified",
                 wanka=False, elements=(), added=False):
     return {
         "id": sid,
-        "file": f"trident/arch-intel/corpus/{cls}/{sid}.md",
+        "file": f"inkblade/arch-intel/corpus/{cls}/{sid}.md",
         "class": cls,
         "organization": org,
         "system": sid,

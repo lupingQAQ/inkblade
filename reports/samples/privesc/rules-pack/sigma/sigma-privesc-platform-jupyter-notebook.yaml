@@ -6,12 +6,12 @@ description: 在 notebook 内执行 Python/shell，读取 SA token、访问集�
 references:
   - "JupyterHub 安全文档 https://jupyterhub.readthedocs.io/en/stable/reference/security.html"
   - "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: platform-jupyter-notebook
-    trident.io/module: framework-port-matching
+    inkblade.io/vector: platform-jupyter-notebook
+    inkblade.io/module: framework-port-matching
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -30,16 +30,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.platform
+  - inkblade
+  - inkblade.vector.platform
   - attack.t1610
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: platform-jupyter-notebook
-  trident-module: framework-port-matching
-  trident-detection-point: K8s audit：Jupyter SA 发起 pods/exec
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: platform-jupyter-notebook
+  inkblade-module: framework-port-matching
+  inkblade-detection-point: K8s audit：Jupyter SA 发起 pods/exec
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

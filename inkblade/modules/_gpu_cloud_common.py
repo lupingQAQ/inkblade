@@ -1,6 +1,6 @@
 """GPU 池化 / 云跨租户模块共用的 HTTP trace、模式闸门与脱敏工具。
 
-模块 run.py 通过 ``from trident.modules._gpu_cloud_common import ...`` 复用；
+模块 run.py 通过 ``from inkblade.modules._gpu_cloud_common import ...`` 复用；
 本文件不是模块（无 module.json），注册表扫描时被忽略。
 """
 from __future__ import annotations
@@ -57,7 +57,7 @@ def write_headers(params: dict) -> dict:
 
 
 def benign_marker(ctx: dict, prefix: str = "GPU") -> str:
-    return f"TRIDENT-BENIGN-{prefix}-{ctx.get('marker') or 'PROBE'}"
+    return f"INKBLADE-BENIGN-{prefix}-{ctx.get('marker') or 'PROBE'}"
 
 
 class Trace:

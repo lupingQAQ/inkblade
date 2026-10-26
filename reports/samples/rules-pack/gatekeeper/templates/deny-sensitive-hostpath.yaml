@@ -6,7 +6,7 @@ spec:
   crd:
     spec:
       names:
-        kind: TridentDenySensitiveHostpath
+        kind: InkBladeDenySensitiveHostpath
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: "violation[{\"msg\": msg}] {\n  v := input.review.object.spec.volumes[_]\n  startswith(v.hostPath.path, \"/var/run/docker.sock\")\n  msg := \"sensitive hostPath denied: runtime socket\"\n}\nviolation[{\"msg\": msg}] {\n  v := input.review.object.spec.volumes[_]\n  startswith(v.hostPath.path, \"/var/run/containerd\")\n  msg := \"sensitive hostPath denied: containerd socket\"\n}\nviolation[{\"msg\": msg}] {\n  v := input.review.object.spec.volumes[_]\n  v.hostPath.path == \"/\"\n  msg := \"sensitive hostPath denied: host root\"\n}"

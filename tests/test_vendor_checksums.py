@@ -11,9 +11,9 @@ import unittest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-VENDOR = REPO / "trident" / "webui" / "static" / "vendor"
+VENDOR = REPO / "inkblade" / "webui" / "static" / "vendor"
 SUMS = VENDOR / "SHA256SUMS"
-STATIC = REPO / "trident" / "webui" / "static"
+STATIC = REPO / "inkblade" / "webui" / "static"
 
 
 def _manifest() -> dict[str, str]:

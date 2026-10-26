@@ -1,4 +1,4 @@
-# Trident 提权实验室 RBAC 夹具（QEMU k3s / 任何授权集群）
+# InkBlade 提权实验室 RBAC 夹具（QEMU k3s / 任何授权集群）
 # 目的：真实验证 escalate / bind / impersonate / SA TokenRequest 四条到 cluster-admin 的路径。
 # 仅用于隔离实验室；apply 后由 lab/privesc_verify.py 采集 before/after 证据并默认清理。
 apiVersion: v1
@@ -6,7 +6,7 @@ kind: Namespace
 metadata:
   name: privesc-lab
   labels:
-    trident.io/lab: privesc
+    inkblade.io/lab: privesc
 ---
 apiVersion: v1
 kind: ServiceAccount

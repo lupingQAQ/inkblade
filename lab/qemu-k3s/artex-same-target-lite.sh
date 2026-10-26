@@ -29,7 +29,7 @@ for id in $IDS; do
 done
 
 GOAL="Probe the authorized lab target $TARGET without credentials: fetch its route manifest, exercise unauthenticated admin action and weight pull, and record confirmed endpoints as findings."
-DESC="ARTEX same-target bench scan of the Trident mock lab at $TARGET (authorized lab)."
+DESC="ARTEX same-target bench scan of the InkBlade mock lab at $TARGET (authorized lab)."
 
 T0=$(now_ms)
 code=$(curl -s -o /tmp/task.json -w '%{http_code}' -m 60 -X POST -H 'Content-Type: application/json' -H "$AUTH" \

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""`trident pilot` 试点模式：客户 kubeconfig → 只读清点 → 环境画像 + 风险热图 +
+"""`inkblade pilot` 试点模式：客户 kubeconfig → 只读清点 → 环境画像 + 风险热图 +
 分阶段测试计划（窗口/回滚预案）+ pilot-report 与审批清单。
 
 安全边界（硬约束）：
 - 默认只读；采集中只允许 ``kubectl get``（verification 面另由模块/链执行）。
 - pilot 自身**不执行任何写操作**；``--allow-write`` 只解锁「P2 受控写验证计划」，
   且必须同时通过三闸门：ROE/consent（含范围与窗口）、级别/角色、备份/回滚预案。
-- 写动作的实际执行仍走既有 ``trident run`` / ``trident execute``（runner 的
+- 写动作的实际执行仍走既有 ``inkblade run`` / ``inkblade execute``（runner 的
   BackupGate + 逐步回滚），pilot 不提供绕过通道。
 - 所有结论标注来源（fixture / live-kubectl）与「非生产规模」边界。
 """
@@ -22,9 +22,9 @@ import time
 from pathlib import Path
 from typing import Any, Iterable
 
-SCHEMA = "trident-pilot/1"
-PROFILE_SCHEMA = "trident-pilot-profile/1"
-PLAN_SCHEMA = "trident-pilot-plan/1"
+SCHEMA = "inkblade-pilot/1"
+PROFILE_SCHEMA = "inkblade-pilot-profile/1"
+PLAN_SCHEMA = "inkblade-pilot-plan/1"
 READ_ONLY_VERBS = ("get", "list", "watch")
 
 
@@ -362,7 +362,7 @@ def merge_kubeconfigs(paths: Iterable[str | Path], *, stdlib_only: bool = False)
     if duplicate_context_names:
         warnings.append("重复 context 名：" + ", ".join(sorted(set(duplicate_context_names))))
     return {
-        "schema": "trident-kubeconfig-inventory/1",
+        "schema": "inkblade-kubeconfig-inventory/1",
         "source_files": [p.name for p in paths],
         "context_count": len(contexts),
         "cluster_count": len(clusters),
@@ -992,7 +992,7 @@ def render_markdown(result: dict) -> str:
     plan = result["plan"]
     inv = result["inventory"]
     lines = [
-        "# Trident Pilot Report（试点只读报告）",
+        "# InkBlade Pilot Report（试点只读报告）",
         "",
         f"> 生成时间：`{result['generated_at']}` · 模式：**{'只读' if result['read_only'] else '未知'}** · "
         f"写验证：**{'已授权（计划）' if plan['write_authorized'] else '未授权'}**",
@@ -1071,7 +1071,7 @@ def render_markdown(result: dict) -> str:
     if inv.get("warnings"):
         lines += ["## 9. 警告", ""] + [f"- {w}" for w in inv["warnings"]] + [""]
     lines += ["---", "",
-              "本报告由 `trident pilot` 生成；默认只读。若需写验证，必须客户显式 `--allow-write` "
+              "本报告由 `inkblade pilot` 生成；默认只读。若需写验证，必须客户显式 `--allow-write` "
               "并完成 lead→安全负责人双签与备份回执；禁止把本报告当作生产 SLA、合规认证或全量覆盖证明。", ""]
     return "\n".join(lines)
 
@@ -1091,7 +1091,7 @@ def write_outputs(result: dict, out_dir: str | Path) -> dict:
     _write_atomic(out / "pilot-report.json", json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     _write_atomic(out / "pilot-report.md", report_md)
     approvals = {
-        "schema": "trident-pilot-approvals/1",
+        "schema": "inkblade-pilot-approvals/1",
         "generated_at": result["generated_at"],
         "workspace": result.get("workspace", ""),
         "read_only": True,
@@ -1112,7 +1112,7 @@ def write_outputs(result: dict, out_dir: str | Path) -> dict:
     manifest_sha = hashlib.sha256("\n".join(lines).encode("utf-8")).hexdigest()
     _write_atomic(out / "manifest.sha256", "\n".join(lines) + "\n")
     signature = {
-        "schema": "trident-pilot-signature/1",
+        "schema": "inkblade-pilot-signature/1",
         "generated_at": result["generated_at"],
         "manifest_sha256": manifest_sha,
         "report_sha256": hashlib.sha256((out / "pilot-report.md").read_bytes()).hexdigest(),
@@ -1131,7 +1131,7 @@ def _inventory_from_bundle(bundle: list[dict]) -> dict:
         contexts.append({"name": b["context"], "cluster": b["context"],
                          "user": "", "namespace": "", "server": "", "auth": "unknown",
                          "source": b.get("source", "fixture"), "current": False})
-    return {"schema": "trident-kubeconfig-inventory/1", "source_files": [],
+    return {"schema": "inkblade-kubeconfig-inventory/1", "source_files": [],
             "context_count": len(contexts), "cluster_count": len(contexts),
             "user_count": 0, "contexts": contexts,
             "clusters": [{"name": c["name"], "server": "", "source": c["source"],
@@ -1193,7 +1193,7 @@ def run_pilot(
     result = {
         "schema": SCHEMA,
         "generated_at": _now(),
-        "tool": "trident",
+        "tool": "inkblade",
         "workspace": workspace,
         "actor": actor,
         "role": role,

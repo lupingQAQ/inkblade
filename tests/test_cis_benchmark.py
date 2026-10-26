@@ -15,13 +15,13 @@ import json
 import unittest
 from pathlib import Path
 
-from trident.core.registry import load_modules
-from trident.cis.catalog import CATALOG, OFFICIAL_IDS, kube_bench_counts
-from trident.cis.engine import assess, findings, parse_args, file_mode_ok
-from trident.cis.ml import ML_CHECKS, assess_ml
+from inkblade.core.registry import load_modules
+from inkblade.cis.catalog import CATALOG, OFFICIAL_IDS, kube_bench_counts
+from inkblade.cis.engine import assess, findings, parse_args, file_mode_ok
+from inkblade.cis.ml import ML_CHECKS, assess_ml
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ROOT / "trident" / "modules"
+MODULES = ROOT / "inkblade" / "modules"
 FIXTURES = ROOT / "lab" / "fixtures" / "cis"
 VULN = FIXTURES / "vulnerable-cluster.json"
 GOOD = FIXTURES / "compliant-cluster.json"

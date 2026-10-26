@@ -1,5 +1,5 @@
 {
- "generator": "trident.probes.run",
+ "generator": "inkblade.probes.run",
  "generated_at": "2026-10-26T05:42:31Z",
  "faces": [
   "gateway",

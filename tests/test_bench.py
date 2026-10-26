@@ -1,7 +1,7 @@
 """bench 冒烟与 KIND hostNetwork 旁路实证交付物测试。
 
 - bench smoke（lab/bench/bench.py）：对 lab mock 靶场跑最小链探测计时；
-  优先走 trident/core/chains.load_chains 选只读链，模块未就绪则 urllib 五路由兜底（记录 Ruling）。
+  优先走 inkblade/core/chains.load_chains 选只读链，模块未就绪则 urllib 五路由兜底（记录 Ruling）。
 - KIND 实证交付物（lab/kind/）：hostnetwork-bypass.yaml / default-deny-netpol.yaml / run-proof.sh。
 """
 

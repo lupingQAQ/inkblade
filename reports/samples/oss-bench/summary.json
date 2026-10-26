@@ -1,5 +1,5 @@
 {
-  "schema": "trident.oss-bench/1",
+  "schema": "inkblade.oss-bench/1",
   "generated_at": "2026-10-26T12:43:01+0800",
   "host": {
     "platform": "Windows-11-10.0.26300-SP0",

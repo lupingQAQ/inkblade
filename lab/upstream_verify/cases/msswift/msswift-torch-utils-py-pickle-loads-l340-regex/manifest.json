@@ -38,7 +38,7 @@
  "module": "msswift-dataset-pickle-rce",
  "python": "reproenv",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-msswift-torch-utils-py-pickle-loads-l340-regex",
+ "marker_text": "INKBLADE-UV-msswift-torch-utils-py-pickle-loads-l340-regex",
  "notes": "swift.utils.torch_utils.Serializer.from_tensor unpickles a byte prefix of a torch tensor (int64 length header + pickle stream). This helper is used to pass objects between ranks/nodes in the megatron trainer path, so a peer who can inject the tensor bytes gets pickle code execution. Reproduced at function level against the verbatim pinned v4.6.0 upstream module with the real installed torch/numpy.",
  "static_evidence_level": "source-line",
  "static_analysis": "",
@@ -53,6 +53,6 @@
   "original_status": "pending-manual-review",
   "promoted": true
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "msswift"
 }

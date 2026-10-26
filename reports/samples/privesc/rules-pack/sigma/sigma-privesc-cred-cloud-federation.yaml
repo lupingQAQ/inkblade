@@ -9,12 +9,12 @@ references:
   - "GKE Workload Identity https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity"
   - "TKE CAM 角色 https://cloud.tencent.com/document/product/457/48710"
   - "ACK RRSA https://help.aliyun.com/zh/ack/ack-managed-and-ack-dedicated/user-guide/use-rrsa-to-authorize-pods-to-access-different-cloud-services"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: cred-cloud-federation
-    trident.io/module: cloud-irsa-trust-wildcard
+    inkblade.io/vector: cred-cloud-federation
+    inkblade.io/module: cloud-irsa-trust-wildcard
 date: 2026/10/26
 logsource:
   product: aws
@@ -29,17 +29,17 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.credential
+  - inkblade
+  - inkblade.vector.credential
   - attack.t1078
   - attack.t1552
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: cred-cloud-federation
-  trident-module: cloud-irsa-trust-wildcard
-  trident-detection-point: CloudTrail：跨账户 AssumeRole 且 trust policy 含通配
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: cred-cloud-federation
+  inkblade-module: cloud-irsa-trust-wildcard
+  inkblade-detection-point: CloudTrail：跨账户 AssumeRole 且 trust policy 含通配
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

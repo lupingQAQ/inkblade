@@ -2,7 +2,7 @@
 """Build the vLLM/SGLang research patch-difference matrix.
 
 Source snapshot: corpus/depth/vllm_ghsa_snapshot.json (selected GitHub Security
-Advisories, fetched 2026-10-26).  Vendor CVEs from trident/core/cve-catalog.json
+Advisories, fetched 2026-10-26).  Vendor CVEs from inkblade/core/cve-catalog.json
 are appended explicitly so every row has a source URL and a testable range.
 
 This script is intentionally deterministic: rerunning it must produce byte
@@ -112,7 +112,7 @@ CATALOG_ROWS = [
 
 LAB_ROWS = [
     {
-        "id": "TRIDENT-VLLM-PLUGIN",
+        "id": "INKBLADE-VLLM-PLUGIN",
         "component": "vllm",
         "cve": None,
         "ghsa": None,
@@ -127,7 +127,7 @@ LAB_ROWS = [
         "source": "https://docs.vllm.ai/en/latest/",
     },
     {
-        "id": "TRIDENT-VLLM-DEV",
+        "id": "INKBLADE-VLLM-DEV",
         "component": "vllm",
         "cve": None,
         "ghsa": None,
@@ -203,7 +203,7 @@ for cve, affected, title, surface, patch, detection in SGLANG_ROWS:
 # deterministic order: component, surface, id
 rows.sort(key=lambda r: (r["component"], r["surface"], r["id"]))
 doc = {
-    "schema": "trident-vllm-patch-matrix-v1",
+    "schema": "inkblade-vllm-patch-matrix-v1",
     "verified_at": "2026-10-26",
     "method": "GitHub Security Advisories API 快照 + CVE.org 目录条目；版本区间与修复版本逐行保留原始字符串，"
               "未给出的修复版本以 fixed_note 标注，不臆造。",

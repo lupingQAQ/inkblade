@@ -1,5 +1,5 @@
 {
-  "schema": "trident-profile-v1",
+  "schema": "inkblade-profile-v1",
   "name": "_k8s-core",
   "complete": true,
   "description": "Common Kubernetes API objects present in every self-managed or managed cluster profile.",
@@ -23,8 +23,8 @@
     {"type": "k8s-object", "selector": "StorageClass/fast"},
     {"type": "k8s-object", "selector": "CSIDriver/ceph.csi"},
     {"type": "k8s-object", "selector": "APIService/v1beta1.metrics.k8s.io"},
-    {"type": "k8s-object", "selector": "ValidatingWebhookConfiguration/trident"},
-    {"type": "k8s-object", "selector": "MutatingWebhookConfiguration/trident"},
+    {"type": "k8s-object", "selector": "ValidatingWebhookConfiguration/inkblade"},
+    {"type": "k8s-object", "selector": "MutatingWebhookConfiguration/inkblade"},
     {"type": "k8s-object", "selector": "CustomResourceDefinition/widgets.example.com"},
     {"type": "k8s-object", "selector": "RuntimeClass/runc"},
     {"type": "k8s-object", "selector": "Ingress/vllm"},

@@ -1,6 +1,6 @@
 {
- "tool": "trident",
- "source": "trident/webui/server.py (path literals in do_GET/do_POST)",
+ "tool": "inkblade",
+ "source": "inkblade/webui/server.py (path literals in do_GET/do_POST)",
  "extracted_at": "<dynamic>",
  "endpoint_count": 32,
  "by_class": {

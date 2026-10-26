@@ -46,15 +46,16 @@ sys.path.insert(0, str(PROJECT))
 
 from lab.oss_bench.mock_k8s import MockCluster  # noqa: E402
 from lab.oss_bench.mock_llm import MockLLM  # noqa: E402
+from inkblade.core.env import getenv  # noqa: E402
 
 # Tool locations come from the environment so no internal absolute path is
 # baked into the repo.  The bench venv python defaults to the interpreter this
 # runner itself executes under (that is the supported setup).
-VENV_PY = Path(os.environ.get("TRIDENT_OSSBENCH_PY") or sys.executable)
-TRIVY = os.environ.get("TRIDENT_TRIVY", "trivy")
-TOXIPROXY_SERVER = os.environ.get("TRIDENT_TOXIPROXY", "toxiproxy-server")
-NODE = os.environ.get("TRIDENT_NODE", "node")
-PROMPTFOO_MAIN = os.environ.get("TRIDENT_PROMPTFOO_MAIN", "")
+VENV_PY = Path(getenv("OSSBENCH_PY") or sys.executable)
+TRIVY = getenv("TRIVY", "trivy")
+TOXIPROXY_SERVER = getenv("TOXIPROXY", "toxiproxy-server")
+NODE = getenv("NODE", "node")
+PROMPTFOO_MAIN = getenv("PROMPTFOO_MAIN", "")
 SSH_KEY = PROJECT / "lab" / "qemu-k3s" / "http" / "id_ed25519"
 SSH_KNOWN_HOSTS = PROJECT / "lab" / "qemu-k3s" / "out" / "known_hosts"
 K3S_KUBECONFIG = PROJECT / "lab" / "qemu-k3s" / "out" / "k3s.yaml"
@@ -572,12 +573,12 @@ def bench_promptfoo(out: Path, runs: int) -> dict:
         os.environ,
         PROMPTFOO_DISABLE_TELEMETRY="1", PROMPTFOO_DISABLE_UPDATE="1",
         # keep promptfoo's runtime db/logs out of the evidence tree
-        PROMPTFOO_CONFIG_DIR=os.environ.get("TRIDENT_PF_CONFIG_DIR")
-        or str(Path(os.environ.get("TEMP", "/tmp")) / "trident-pf-config"),
+        PROMPTFOO_CONFIG_DIR=getenv("PF_CONFIG_DIR")
+        or str(Path(os.environ.get("TEMP", "/tmp")) / "inkblade-pf-config"),
     )
     if not PROMPTFOO_MAIN:
         raise RuntimeError(
-            "promptfoo bench needs TRIDENT_PROMPTFOO_MAIN=<path to "
+            "promptfoo bench needs INKBLADE_PROMPTFOO_MAIN=<path to "
             "node_modules/promptfoo/dist/src/entrypoint.js>")
     # warmup (node module cache) -- not measured
     with MockLLM():
@@ -749,10 +750,10 @@ def bench_chaostoolkit(out: Path, runs: int) -> dict:
         workdir.mkdir(parents=True, exist_ok=True)
         experiment = {
             "version": "1.0.0",
-            "title": "trident-oss-bench local process chaos",
+            "title": "inkblade-oss-bench local process chaos",
             "description": "steady-state HTTP 200 on the victim, kill the victim process, "
                            "expect the steady-state probe to fail afterwards",
-            "tags": ["trident-oss-bench"],
+            "tags": ["inkblade-oss-bench"],
             "steady-state-hypothesis": {
                 "title": "victim endpoint keeps answering",
                 "probes": [{
@@ -944,7 +945,7 @@ def main() -> int:
             existing = {}
     merged = {**{r.get("tool", k): r for k, r in existing.items()}, **{r["tool"]: r for r in results.values()}}
     summary = {
-        "schema": "trident.oss-bench/1",
+        "schema": "inkblade.oss-bench/1",
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         "host": {
             "platform": platform.platform(),

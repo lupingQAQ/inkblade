@@ -16,7 +16,7 @@
     "backup_targets": "backup target list for the runner backup gate"
   },
   "produces": "containerd-shim",
-  "knowledge": "docs/CVE-CATALOG.md + trident/core/cve-catalog.json",
+  "knowledge": "docs/CVE-CATALOG.md + inkblade/core/cve-catalog.json",
   "combo_signature": "containerd-shim",
   "verified": false,
   "verification_status": "unsupported",

@@ -372,7 +372,7 @@ class Service:
 # ---------------------------------------------------------------- worker
 
 def _worker_main(root: str, db_path: str, queue, index: int) -> None:
-    from trident.core.evidence import EvidenceStore
+    from inkblade.core.evidence import EvidenceStore
 
     while True:
         job = queue.get()
@@ -514,7 +514,7 @@ class _Handler(BaseHTTPRequestHandler):
 
 def main(argv=None) -> int:
     import argparse
-    ap = argparse.ArgumentParser(description="Trident SaaS control-plane lab")
+    ap = argparse.ArgumentParser(description="InkBlade SaaS control-plane lab")
     ap.add_argument("--root", default=str(Path(__file__).resolve().parent / "out"))
     ap.add_argument("--tenants", type=int, default=8)
     ap.add_argument("--workers", type=int, default=4)

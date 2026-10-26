@@ -198,7 +198,7 @@
     "end": "2026-10-25T12:52:33Z"
   },
   "limitations": [
-    "QEMU TCG software emulation: absolute numbers are not comparable to bare-metal; only the ARTEX-vs-Trident ratio on the same host is meaningful.",
+    "QEMU TCG software emulation: absolute numbers are not comparable to bare-metal; only the ARTEX-vs-InkBlade ratio on the same host is meaningful.",
     "The LLM is a deterministic OpenAI-compatible mock on the host; it exercises the real HTTP/agent loop but not model quality or token cost.",
     "Idle RSS is sampled 60-90 s after start via docker stats (2 s cadence), not an instantaneous peak.",
     "k3s (single-node control plane) is running in the same guest during the whole bench and consumes CPU/RAM.",

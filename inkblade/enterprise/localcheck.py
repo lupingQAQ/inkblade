@@ -155,7 +155,7 @@ def run_local_checks(out_dir: str | Path) -> dict:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     checks: list[dict] = []
-    tmp_root = Path(tempfile.mkdtemp(prefix="trident-ent-"))
+    tmp_root = Path(tempfile.mkdtemp(prefix="inkblade-ent-"))
     registry = _Registry()
     proxy = _Proxy()
     try:
@@ -397,7 +397,7 @@ def run_local_checks(out_dir: str | Path) -> dict:
 
     passed = sum(1 for c in checks if c["status"] == "PASS")
     result = {
-        "schema": "trident-enterprise-local-checks/1",
+        "schema": "inkblade-enterprise-local-checks/1",
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "summary": {"total": len(checks), "passed": passed, "failed": len(checks) - passed,
                     "ok": passed == len(checks)},
@@ -439,7 +439,7 @@ def render_md(result: dict) -> str:
                      f"{item['elapsed_ms']} ms | {ev[:220].replace('|', '\\|')} |")
         if item.get("error"):
             lines.append(f"| ↳ error | {item['error'].replace('|', '\\|')} | | |")
-    lines += ["", "复跑：`python -m trident.enterprise.localcheck` 或 `trident enterprise local-checks`。"]
+    lines += ["", "复跑：`python -m inkblade.enterprise.localcheck` 或 `inkblade enterprise local-checks`。"]
     return "\n".join(lines) + "\n"
 
 

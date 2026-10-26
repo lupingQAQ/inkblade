@@ -57,7 +57,7 @@ class _SimLoader:
         path = repo_root() / rel
         if not path.is_file():
             raise FileNotFoundError(f"找不到仿真靶场源码：{path}（需在完整仓库内运行）")
-        spec = importlib.util.spec_from_file_location("trident_chaos_" + path.stem, path)
+        spec = importlib.util.spec_from_file_location("inkblade_chaos_" + path.stem, path)
         if spec is None or spec.loader is None:
             raise ImportError(f"无法加载仿真靶场：{path}")
         mod = importlib.util.module_from_spec(spec)
@@ -181,7 +181,7 @@ class FaultProfile:
 
 class _ProxyHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "TridentFaultProxy/1.0"
+    server_version = "InkBladeFaultProxy/1.0"
     proxy: "FaultProxy" = None  # type: ignore[assignment]
 
     def log_message(self, *args):  # 静默
@@ -192,7 +192,7 @@ class _ProxyHandler(BaseHTTPRequestHandler):
             body = self.proxy._read_body(self) if self.command == "POST" else {}
             if body:
                 self.proxy.profile.apply(body)
-            self._reply(200, {"service": "trident-fault-proxy",
+            self._reply(200, {"service": "inkblade-fault-proxy",
                               "profile": self.proxy.profile.snapshot()})
             return True
         return False

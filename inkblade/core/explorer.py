@@ -4,8 +4,8 @@
 双模式：
 - ``rules``（默认，零外部依赖可用）：资产产品映射（discovery + version_matrix）∪
   链前置三态判定（chains.evaluate_preconditions）→ 确定性候选排序；
-- ``llm``（可选）：OpenAI 兼容端点（env TRIDENT_LLM_BASE_URL/TRIDENT_LLM_API_KEY/
-  TRIDENT_LLM_MODEL）对候选集做排序/择由；任何失败（无 env/网络/解析/越界）一律
+- ``llm``（可选）：OpenAI 兼容端点（env INKBLADE_LLM_BASE_URL/INKBLADE_LLM_API_KEY/
+  INKBLADE_LLM_MODEL）对候选集做排序/择由；任何失败（无 env/网络/解析/越界）一律
   降级 rules 并在 proposal.mode 记录降级原因——无 LLM 时规则模式完全可用。
 
 硬边界（与 agent_planner 同源，测试锁定）：
@@ -18,7 +18,6 @@
 from __future__ import annotations
 
 import json
-import os
 import time
 import urllib.error
 import urllib.request
@@ -31,6 +30,7 @@ from .blackboard import Blackboard
 from .chains import dry_run as chain_dry_run
 from .chains import evaluate_preconditions, load_chains
 from .discovery import AssetInventory
+from .env import getenv
 from .llmpool import pool_available, rank_candidates
 from .registry import load_modules
 from .roe import LEVELS, roe_status
@@ -40,14 +40,14 @@ QUEUE_RELPATH = "explorer/queue.json"
 MAX_ACTIONS_DEFAULT = 5
 MAX_WORKERS = 8
 _LLM_TIMEOUT = 20
-POLICY_ENV = "TRIDENT_AGENT_POLICY"
+POLICY_ENV = "INKBLADE_AGENT_POLICY"
 
 
 def policy_enabled(explicit: bool | None = None) -> bool:
-    """第三节改进开关：默认 ON；``TRIDENT_AGENT_POLICY=off`` 精确复现 HEAD。"""
+    """第三节改进开关：默认 ON；``INKBLADE_AGENT_POLICY=off`` 精确复现 HEAD。"""
     if explicit is not None:
         return bool(explicit)
-    return os.environ.get(POLICY_ENV, "on").strip().lower() not in (
+    return getenv(POLICY_ENV, "on").strip().lower() not in (
         "off", "0", "false", "no")
 
 
@@ -78,14 +78,14 @@ def _latest_findings(store) -> tuple[str | None, list[dict]]:
 
 # ---------------------------------------------------------------- LLM（可选）
 def llm_available() -> bool:
-    return bool(os.environ.get("TRIDENT_LLM_BASE_URL"))
+    return bool(getenv("LLM_BASE_URL"))
 
 
 def _llm_rank(candidates: list[dict], context: dict) -> list[str]:
     """OpenAI 兼容排序；返回模块键序列。任何异常向上抛（由 propose 降级）。"""
-    base = os.environ["TRIDENT_LLM_BASE_URL"].rstrip("/")
-    key = os.environ.get("TRIDENT_LLM_API_KEY", "")
-    model = os.environ.get("TRIDENT_LLM_MODEL", "gpt-4o-mini")
+    base = (getenv("LLM_BASE_URL") or "").rstrip("/")
+    key = getenv("LLM_API_KEY", "")
+    model = getenv("LLM_MODEL", "gpt-4o-mini")
     prompt = json.dumps({
         "role": "You are an authorized pentest planner. Rank the NEXT module sequence "
                 "(max 5) for an ML-cluster pentest from candidates only. "
@@ -176,7 +176,7 @@ class Explorer:
                 policy: bool | None = None) -> dict:
         """生成下一步序列提议（pending_approval）。绝不执行。
 
-        ``policy=False``（或 env ``TRIDENT_AGENT_POLICY=off``）精确复现 HEAD
+        ``policy=False``（或 env ``INKBLADE_AGENT_POLICY=off``）精确复现 HEAD
         的字段与行为，用于 lab/tencent-compare 的前后对照。
         """
         candidates, context = self._candidates(max_actions=max_actions)
@@ -268,7 +268,7 @@ class Explorer:
         estimate = cost.plan_cost(actions)
         block = {
             "policy": {
-                "engine": "trident.agent_policy",
+                "engine": "inkblade.agent_policy",
                 "level": decided["level"],
                 "label": decided["label"],
                 "approval_mode": decided["approval_mode"],
@@ -407,7 +407,7 @@ class Explorer:
         else:
             results = [None] * len(p["actions"])  # type: ignore[list-item]
             with ThreadPoolExecutor(max_workers=workers,
-                                    thread_name_prefix="trident-agent") as pool:
+                                    thread_name_prefix="inkblade-agent") as pool:
                 futures = {pool.submit(_run_one, action): idx
                            for idx, action in enumerate(p["actions"])}
                 for fut in as_completed(futures):

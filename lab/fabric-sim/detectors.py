@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""与 trident fabric 模块同阈值的判定器（PFC/ECN/rail/straggler/链路故障）。"""
+"""与 inkblade fabric 模块同阈值的判定器（PFC/ECN/rail/straggler/链路故障）。"""
 from __future__ import annotations
 
 try:
@@ -7,10 +7,10 @@ try:
 except ImportError:
     from sim import Telemetry
 
-PFC_STORM_THRESHOLD = 50000       # trident/modules/roce-pfc-storm/run.py
+PFC_STORM_THRESHOLD = 50000       # inkblade/modules/roce-pfc-storm/run.py
 PFC_PAUSE_WARN = 1000
 ECN_RATIO_WARN = 0.05
-STRAGGLER_RATIO = 2.0             # trident/modules/nccl-straggler-injection/run.py
+STRAGGLER_RATIO = 2.0             # inkblade/modules/nccl-straggler-injection/run.py
 STRAGGLER_ABS_MS = 5000
 RAIL_MISMATCH_WARN = 0
 
@@ -76,7 +76,7 @@ def verdict(t: Telemetry, findings: list[dict] | None = None) -> dict:
     findings = findings if findings is not None else detect(t)
     sev = [f["sev"] for f in findings]
     return {
-        "schema": "trident-fabric-verdict/2026-10",
+        "schema": "inkblade-fabric-verdict/2026-10",
         "scenario": t.scenario,
         "ok": "high" not in sev,
         "high": sev.count("high"), "medium": sev.count("medium"),

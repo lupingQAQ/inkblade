@@ -1,5 +1,5 @@
 {
-  "schema": "trident.oss-bench.fixtures/1",
+  "schema": "inkblade.oss-bench.fixtures/1",
   "total": 14,
   "malicious": 8,
   "benign": 6,
@@ -73,8 +73,8 @@
       "malicious": true,
       "kind": "pickle",
       "note": "builtins.exec via REDUCE",
-      "bytes": 72,
-      "sha256": "bf24d636fe2db60152d9b49708334aca21687f97e37bdab123bd84f447a2449a"
+      "bytes": 73,
+      "sha256": "be5970e85a91369f619827d0e53f9dd089396ae4b981a678b9fe3bfde2044970"
     },
     {
       "file": "evil_import.pkl",
@@ -89,8 +89,8 @@
       "malicious": true,
       "kind": "pickle",
       "note": "os.system via REDUCE",
-      "bytes": 64,
-      "sha256": "126260b56f3a2b779f8ac353f32649ed70f668bf80b92d596c40a554d9afe30b"
+      "bytes": 65,
+      "sha256": "b329294df3e36655ec83d3ed531d44b5e464654ae3077ef840bb8580b313eace"
     },
     {
       "file": "evil_socket.pkl",
@@ -105,16 +105,16 @@
       "malicious": true,
       "kind": "pickle",
       "note": "subprocess.run via REDUCE",
-      "bytes": 86,
-      "sha256": "5f58bdaffbc015a20b11401957b814d09a67be2f2552632b63cf0aa3483bcf5a"
+      "bytes": 87,
+      "sha256": "bc1d3183e4d141ceadcc767cb466b0b8f19e99bdfded3e81b8f97dd8aad78eca"
     },
     {
       "file": "evil_torch.pt",
       "malicious": true,
       "kind": "torch",
       "note": "torch zip with malicious archive/data.pkl",
-      "bytes": 1067,
-      "sha256": "54750e8eeff9608e92c24043b499436492e50a902d216efe79427a4b5d4f2eb2"
+      "bytes": 1068,
+      "sha256": "ecef2e7ae3ae61f07683f9b85073080d8aade0bb07714ac0ace45b756370ee9a"
     }
   ]
 }

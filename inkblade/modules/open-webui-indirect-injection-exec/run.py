@@ -47,7 +47,7 @@ def run(ctx: dict, params: dict) -> dict:
     base = str(params.get("base_url", "")).rstrip("/")
     if not base:
         raise ValueError("缺少 params.base_url（mock 靶场地址，仅限授权范围）")
-    marker = str(params.get("marker") or ctx.get("marker") or "TRIDENT-zeroday")
+    marker = str(params.get("marker") or ctx.get("marker") or "INKBLADE-zeroday")
 
     manifest, miss = _fingerprint(base)
     if miss is not None:
@@ -57,7 +57,7 @@ def run(ctx: dict, params: dict) -> dict:
     # 仅导入标准库 os 并回显 marker，无任何破坏性或外传动作。
     code = (
         f"import importlib\n"
-        f"print(importlib.import_module('os').getcwd())  # TRIDENT indirect-injection benign marker: {marker}"
+        f"print(importlib.import_module('os').getcwd())  # INKBLADE indirect-injection benign marker: {marker}"
     )
     status, payload = _request("POST", base + TARGET_PATH, body={"code": code})
     findings: list[dict] = []

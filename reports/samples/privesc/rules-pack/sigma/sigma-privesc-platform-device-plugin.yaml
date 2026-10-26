@@ -7,12 +7,12 @@ references:
   - "Kubernetes Device Plugin https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/"
   - "NVIDIA GPU Operator 文档 https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/"
   - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: platform-device-plugin
-    trident.io/module: gpu-device-cross-namespace
+    inkblade.io/vector: platform-device-plugin
+    inkblade.io/module: gpu-device-cross-namespace
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -31,16 +31,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.platform
+  - inkblade
+  - inkblade.vector.platform
   - attack.t1611
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: platform-device-plugin
-  trident-module: gpu-device-cross-namespace
-  trident-detection-point: K8s audit：device plugin DaemonSet hostPath 变更
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: platform-device-plugin
+  inkblade-module: gpu-device-cross-namespace
+  inkblade-detection-point: K8s audit：device plugin DaemonSet hostPath 变更
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

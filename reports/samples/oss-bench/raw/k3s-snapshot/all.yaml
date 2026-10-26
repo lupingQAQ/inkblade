@@ -428,9 +428,9 @@ metadata:
   labels:
     app: mock-target
     pod-template-hash: 66c765d55
-    trident.dev/proof: real-cluster
+    inkblade.dev/proof: real-cluster
   name: mock-target-66c765d55-2z9n4
-  namespace: trident-proof
+  namespace: inkblade-proof
   ownerReferences:
   - apiVersion: apps/v1
     blockOwnerDeletion: true
@@ -639,16 +639,16 @@ apiVersion: v1
 kind: Pod
 metadata:
   annotations:
-    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"app":"proof-hostnet","trident.dev/proof":"real-cluster"},"name":"proof-hostnet","namespace":"trident-proof"},"spec":{"containers":[{"command":["sleep","infinity"],"image":"alpine:3.21","name":"probe","resources":{"limits":{"cpu":"100m","memory":"64Mi"}}}],"dnsPolicy":"ClusterFirstWithHostNet","hostNetwork":true,"restartPolicy":"Never"}}
+    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"app":"proof-hostnet","inkblade.dev/proof":"real-cluster"},"name":"proof-hostnet","namespace":"inkblade-proof"},"spec":{"containers":[{"command":["sleep","infinity"],"image":"alpine:3.21","name":"probe","resources":{"limits":{"cpu":"100m","memory":"64Mi"}}}],"dnsPolicy":"ClusterFirstWithHostNet","hostNetwork":true,"restartPolicy":"Never"}}
 
       '
   creationTimestamp: '2026-10-24T19:42:18Z'
   generation: 1
   labels:
     app: proof-hostnet
-    trident.dev/proof: real-cluster
+    inkblade.dev/proof: real-cluster
   name: proof-hostnet
-  namespace: trident-proof
+  namespace: inkblade-proof
   resourceVersion: '4088'
   uid: f58ede73-b199-4dfd-a139-4ac23cdf4be7
 spec:
@@ -816,16 +816,16 @@ apiVersion: v1
 kind: Pod
 metadata:
   annotations:
-    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"app":"proof-normal","trident.dev/proof":"real-cluster"},"name":"proof-normal","namespace":"trident-proof"},"spec":{"containers":[{"command":["sleep","infinity"],"image":"alpine:3.21","name":"probe","resources":{"limits":{"cpu":"100m","memory":"64Mi"}}}],"restartPolicy":"Never"}}
+    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"app":"proof-normal","inkblade.dev/proof":"real-cluster"},"name":"proof-normal","namespace":"inkblade-proof"},"spec":{"containers":[{"command":["sleep","infinity"],"image":"alpine:3.21","name":"probe","resources":{"limits":{"cpu":"100m","memory":"64Mi"}}}],"restartPolicy":"Never"}}
 
       '
   creationTimestamp: '2026-10-24T19:42:18Z'
   generation: 1
   labels:
     app: proof-normal
-    trident.dev/proof: real-cluster
+    inkblade.dev/proof: real-cluster
   name: proof-normal
-  namespace: trident-proof
+  namespace: inkblade-proof
   resourceVersion: '4086'
   uid: 957c0177-4258-4c98-9ac3-389d68bfd76f
 spec:
@@ -1250,7 +1250,7 @@ kind: Deployment
 metadata:
   annotations:
     deployment.kubernetes.io/revision: '1'
-    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"mock-target","trident.dev/proof":"real-cluster"},"name":"mock-target","namespace":"trident-proof"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"mock-target"}},"template":{"metadata":{"labels":{"app":"mock-target","trident.dev/proof":"real-cluster"}},"spec":{"containers":[{"command":["python","-c","import
+    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"mock-target","inkblade.dev/proof":"real-cluster"},"name":"mock-target","namespace":"inkblade-proof"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"mock-target"}},"template":{"metadata":{"labels":{"app":"mock-target","inkblade.dev/proof":"real-cluster"}},"spec":{"containers":[{"command":["python","-c","import
       sys\nsys.path.insert(0, \"/app\")\nimport mock_targets as m\nm.HOST = \"0.0.0.0\"   #
       Service reachability; module default is 127.0.0.1\nm.main([\"--port\", \"8000\",
       \"--mode\", \"vulnerable\"])\n"],"image":"python:3.12-alpine","name":"mock","ports":[{"containerPort":8000,"name":"http"}],"readinessProbe":{"httpGet":{"path":"/__routes__","port":8000},"initialDelaySeconds":5,"periodSeconds":5},"resources":{"limits":{"cpu":"500m","memory":"256Mi"}},"volumeMounts":[{"mountPath":"/app","name":"src","readOnly":true}]}],"volumes":[{"configMap":{"name":"mock-targets-src"},"name":"src"}]}}}}
@@ -1260,9 +1260,9 @@ metadata:
   generation: 1
   labels:
     app: mock-target
-    trident.dev/proof: real-cluster
+    inkblade.dev/proof: real-cluster
   name: mock-target
-  namespace: trident-proof
+  namespace: inkblade-proof
   resourceVersion: '4161'
   uid: 56376c35-918b-4695-916f-526d8a0fe551
 spec:
@@ -1281,7 +1281,7 @@ spec:
     metadata:
       labels:
         app: mock-target
-        trident.dev/proof: real-cluster
+        inkblade.dev/proof: real-cluster
     spec:
       containers:
       - command:
@@ -1612,9 +1612,9 @@ metadata:
   labels:
     app: mock-target
     pod-template-hash: 66c765d55
-    trident.dev/proof: real-cluster
+    inkblade.dev/proof: real-cluster
   name: mock-target-66c765d55
-  namespace: trident-proof
+  namespace: inkblade-proof
   ownerReferences:
   - apiVersion: apps/v1
     blockOwnerDeletion: true
@@ -1635,7 +1635,7 @@ spec:
       labels:
         app: mock-target
         pod-template-hash: 66c765d55
-        trident.dev/proof: real-cluster
+        inkblade.dev/proof: real-cluster
     spec:
       containers:
       - command:
@@ -1782,15 +1782,15 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"mock-target","trident.dev/proof":"real-cluster"},"name":"mock-target","namespace":"trident-proof"},"spec":{"ports":[{"name":"http","nodePort":30080,"port":8000,"targetPort":8000}],"selector":{"app":"mock-target"},"type":"NodePort"}}
+    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"mock-target","inkblade.dev/proof":"real-cluster"},"name":"mock-target","namespace":"inkblade-proof"},"spec":{"ports":[{"name":"http","nodePort":30080,"port":8000,"targetPort":8000}],"selector":{"app":"mock-target"},"type":"NodePort"}}
 
       '
   creationTimestamp: '2026-10-24T19:37:09Z'
   labels:
     app: mock-target
-    trident.dev/proof: real-cluster
+    inkblade.dev/proof: real-cluster
   name: mock-target
-  namespace: trident-proof
+  namespace: inkblade-proof
   resourceVersion: '439'
   uid: 96716d70-522c-4bb8-b4fe-1ca14588ef56
 spec:
@@ -1881,9 +1881,9 @@ metadata:
   labels:
     app: mock-target
     endpoints.kubernetes.io/managed-by: endpoint-controller
-    trident.dev/proof: real-cluster
+    inkblade.dev/proof: real-cluster
   name: mock-target
-  namespace: trident-proof
+  namespace: inkblade-proof
   resourceVersion: '4158'
   uid: fd24773a-483a-47da-85ab-951e607377f6
 subsets:
@@ -1893,7 +1893,7 @@ subsets:
     targetRef:
       kind: Pod
       name: mock-target-66c765d55-2z9n4
-      namespace: trident-proof
+      namespace: inkblade-proof
       uid: 683a426e-df80-40d0-b521-b5e98888261b
   ports:
   - name: http
@@ -2232,14 +2232,14 @@ metadata:
       of Kubernetes clusters.
   creationTimestamp: '2026-10-24T19:37:08Z'
   name: kube-root-ca.crt
-  namespace: trident-proof
+  namespace: inkblade-proof
   resourceVersion: '430'
   uid: fef6aa18-60f1-450a-856d-d769f56d8882
 
 ---
 apiVersion: v1
 data:
-  mock_targets.py: "\"\"\"lab/mock_targets.py \u2014 Trident \u5B9E\u9A8C\u5BA4 mock\
+  mock_targets.py: "\"\"\"lab/mock_targets.py \u2014 InkBlade \u5B9E\u9A8C\u5BA4 mock\
     \ \u9776\u573A\uFF08\u5355\u6587\u4EF6\u591A\u8DEF\u7531 HTTP \u4EFF\u771F\u670D\
     \u52A1\uFF09\u3002\n\n\u4EC5\u76D1\u542C 127.0.0.1\uFF0C\u4EC5\u6807\u51C6\u5E93\
     \uFF08http.server + threading\uFF09\u3002\u4E24\u79CD\u59FF\u6001\uFF1A\n- vulnerable\uFF1A\
@@ -2346,7 +2346,7 @@ data:
     \        ),\n        encoding=\"utf-8\",\n    )\n    # \u6743\u91CD\u6587\u4EF6\
     \u526F\u672C\u771F\u5B9E\u5199\u5165\uFF08benign marker \u4FBF\u4E8E effect \u9A8C\
     \u8BC1 sha256 \u524D\u540E\u53D8\u5316\uFF09\u3002\n    weights = sandbox / \"\
-    model.safetensors\"\n    weights.write_text(\n        \"TRIDENT-MOCK-WEIGHTS\\\
+    model.safetensors\"\n    weights.write_text(\n        \"INKBLADE-MOCK-WEIGHTS\\\
     n\"\n        + json.dumps(\n            {\n                \"format\": \"mock-safetensors\"\
     ,\n                \"benign_marker\": source_dir,\n                \"poisoned\"\
     : True,\n                \"service\": \"slime\",\n                \"route\": \"\
@@ -2448,9 +2448,9 @@ data:
     \ /mock-imds/aws/latest/api/token\uFF0C\u518D\u5E26 x-aws-ec2-metadata-token \u5934\
     \",\n            }\n    role = (ctx.params.get(\"role\") or [\"role\"])[0]\n \
     \   return 200, {\n        \"Code\": \"Success\",\n        \"LastUpdated\": _utcnow_iso(),\n\
-    \        \"Type\": \"AWS-HMAC\",\n        \"AccessKeyId\": \"MOCKAKIATRIDENTLAB\"\
-    ,\n        \"SecretAccessKey\": \"MOCKSECRETTRIDENTLAB\",\n        \"Token\":\
-    \ \"MOCKSESSIONTRIDENTLAB\",\n        \"Expiration\": \"2030-01-01T00:00:00Z\"\
+    \        \"Type\": \"AWS-HMAC\",\n        \"AccessKeyId\": \"MOCKAKIAINKBLADELAB\"\
+    ,\n        \"SecretAccessKey\": \"MOCKSECRETINKBLADELAB\",\n        \"Token\":\
+    \ \"MOCKSESSIONINKBLADELAB\",\n        \"Expiration\": \"2030-01-01T00:00:00Z\"\
     ,\n        \"role\": role,\n        \"mock\": True,\n    }\n\n\ndef _imds_azure_instance(ctx:\
     \ _RequestContext):\n    api_version = (ctx.query.get(\"api-version\") or [\"\"\
     ])[0]\n    metadata_header = (ctx.headers.get(\"Metadata\") or \"\").strip().lower()\n\
@@ -2468,15 +2468,15 @@ data:
     , \"service\": \"imds-aliyun\", \"hint\": \"fixed \u6A21\u5F0F\u5173\u95ED RAM\
     \ \u5143\u6570\u636E\u9762\"}\n    return 200, {\n        \"service\": \"imds-aliyun\"\
     ,\n        \"ram_role_name\": \"mock-ram-role\",\n        \"access_key_id\": \"\
-    MOCKLTAITRIDENTLAB\",\n        \"access_key_secret\": \"MOCKSECRETTRIDENTLAB\"\
-    ,\n        \"security_token\": \"MOCKSTSTRIDENTLAB\",\n        \"path\": ctx.path,\n\
+    MOCKLTAIINKBLADELAB\",\n        \"access_key_secret\": \"MOCKSECRETINKBLADELAB\"\
+    ,\n        \"security_token\": \"MOCKSTSINKBLADELAB\",\n        \"path\": ctx.path,\n\
     \        \"mock\": True,\n    }\n\n\ndef _imds_tencent_cam(ctx: _RequestContext):\n\
     \    if ctx.mode == \"fixed\":\n        return 404, {\"error\": \"not found\"\
     , \"service\": \"imds-tencent\", \"hint\": \"fixed \u6A21\u5F0F\u5173\u95ED CAM\
     \ \u5143\u6570\u636E\u9762\"}\n    return 200, {\n        \"service\": \"imds-tencent\"\
     ,\n        \"cam_role_name\": \"mock-cam-role\",\n        \"tmp_secret_id\": \"\
-    MOCKAKIDTRIDENTLAB\",\n        \"tmp_secret_key\": \"MOCKSECRETTRIDENTLAB\",\n\
-    \        \"token\": \"MOCKSTSTRIDENTLAB\",\n        \"path\": ctx.path,\n    \
+    MOCKAKIDINKBLADELAB\",\n        \"tmp_secret_key\": \"MOCKSECRETINKBLADELAB\",\n\
+    \        \"token\": \"MOCKSTSINKBLADELAB\",\n        \"path\": ctx.path,\n    \
     \    \"mock\": True,\n    }\n\n\ndef _imds_gcp(ctx: _RequestContext):\n    if\
     \ (ctx.headers.get(\"Metadata-Flavor\") or \"\").strip() != \"Google\":\n    \
     \    return 403, {\"error\": \"forbidden\", \"service\": \"imds-gcp\", \"hint\"\
@@ -2485,7 +2485,7 @@ data:
     \        \"project\": {\"projectId\": \"mock-project\"},\n        \"instance\"\
     : {\"name\": \"mock-instance\", \"zone\": \"mock-zone\"},\n        \"mock\": True,\n\
     \    }\n\n\ndef _routes_manifest(ctx: _RequestContext):\n    return 200, {\n \
-    \       \"service\": \"trident-mock-lab\",\n        \"mode\": ctx.mode,\n    \
+    \       \"service\": \"inkblade-mock-lab\",\n        \"mode\": ctx.mode,\n    \
     \    \"host\": HOST,\n        \"admin_token_hint\": f\"fixed \u6A21\u5F0F\u7BA1\
     \u7406\u5BC6\u94A5 = Authorization: Bearer {ADMIN_TOKEN}\",\n        \"service_selector_header\"\
     : SERVICE_SELECTOR_HEADER,\n        \"route_count\": len(ROUTE_TABLE),\n     \
@@ -2643,7 +2643,7 @@ data:
     \       self.lab_state = {\n            \"areal_env\": {},\n            \"areal_engines\"\
     : {},\n            \"ray_jobs\": {},\n            \"aws_tokens\": set(),\n   \
     \     }\n\n\nclass _LabHandler(BaseHTTPRequestHandler):\n    protocol_version\
-    \ = \"HTTP/1.1\"\n    server_version = \"TridentMockLab/0.1.0\"\n\n    def log_message(self,\
+    \ = \"HTTP/1.1\"\n    server_version = \"InkBladeMockLab/0.1.0\"\n\n    def log_message(self,\
     \ fmt, *args):  # \u9759\u9ED8\u9ED8\u8BA4\u8BBF\u95EE\u65E5\u5FD7\uFF08\u6D4B\
     \u8BD5\u8F93\u51FA\u5E72\u51C0\uFF09\n        return\n\n    # -- \u57FA\u7840\u8BBE\
     \u65BD -----------------------------------------------------------\n\n    def\
@@ -2715,14 +2715,14 @@ data:
     \u7701\u4E34\u65F6\u76EE\u5F55\uFF08shutdown \u6E05\u7406\uFF09\uFF0C\u53EF\u6CE8\
     \u5165\u3002\n    \"\"\"\n    if mode not in MODES:\n        raise ValueError(f\"\
     mode \u5FC5\u987B\u662F {MODES} \u4E4B\u4E00\uFF0C\u6536\u5230\uFF1A{mode!r}\"\
-    )\n    if root is None:\n        root_path = Path(tempfile.mkdtemp(prefix=\"trident-mock-lab-\"\
+    )\n    if root is None:\n        root_path = Path(tempfile.mkdtemp(prefix=\"inkblade-mock-lab-\"\
     ))\n        owns_root = True\n    else:\n        root_path = Path(root)\n    \
     \    root_path.mkdir(parents=True, exist_ok=True)\n        owns_root = False\n\
     \    httpd = _LabHTTPServer((HOST, int(port)), mode, root_path)\n    thread =\
     \ threading.Thread(target=httpd.serve_forever, kwargs={\"poll_interval\": 0.05},\
     \ daemon=True)\n    thread.start()\n    return Server(httpd, thread, mode, root_path,\
     \ owns_root)\n\n\ndef main(argv: list[str] | None = None) -> int:\n    parser\
-    \ = argparse.ArgumentParser(description=\"Trident \u5B9E\u9A8C\u5BA4 mock \u9776\
+    \ = argparse.ArgumentParser(description=\"InkBlade \u5B9E\u9A8C\u5BA4 mock \u9776\
     \u573A\uFF08\u4EC5\u76D1\u542C 127.0.0.1\uFF09\")\n    parser.add_argument(\"\
     --port\", type=int, default=0, help=\"\u76D1\u542C\u7AEF\u53E3\uFF080=\u81EA\u52A8\
     \u5206\u914D\uFF09\")\n    parser.add_argument(\"--mode\", choices=list(MODES),\
@@ -2741,7 +2741,7 @@ kind: ConfigMap
 metadata:
   annotations:
     kubectl.kubernetes.io/last-applied-configuration: "{\"apiVersion\":\"v1\",\"data\"\
-      :{\"mock_targets.py\":\"\\\"\\\"\\\"lab/mock_targets.py \u2014 Trident \u5B9E\
+      :{\"mock_targets.py\":\"\\\"\\\"\\\"lab/mock_targets.py \u2014 InkBlade \u5B9E\
       \u9A8C\u5BA4 mock \u9776\u573A\uFF08\u5355\u6587\u4EF6\u591A\u8DEF\u7531 HTTP\
       \ \u4EFF\u771F\u670D\u52A1\uFF09\u3002\\n\\n\u4EC5\u76D1\u542C 127.0.0.1\uFF0C\
       \u4EC5\u6807\u51C6\u5E93\uFF08http.server + threading\uFF09\u3002\u4E24\u79CD\
@@ -2855,7 +2855,7 @@ metadata:
       \    ),\\n        encoding=\\\"utf-8\\\",\\n    )\\n    # \u6743\u91CD\u6587\
       \u4EF6\u526F\u672C\u771F\u5B9E\u5199\u5165\uFF08benign marker \u4FBF\u4E8E effect\
       \ \u9A8C\u8BC1 sha256 \u524D\u540E\u53D8\u5316\uFF09\u3002\\n    weights = sandbox\
-      \ / \\\"model.safetensors\\\"\\n    weights.write_text(\\n        \\\"TRIDENT-MOCK-WEIGHTS\\\
+      \ / \\\"model.safetensors\\\"\\n    weights.write_text(\\n        \\\"INKBLADE-MOCK-WEIGHTS\\\
       \\n\\\"\\n        + json.dumps(\\n            {\\n                \\\"format\\\
       \": \\\"mock-safetensors\\\",\\n                \\\"benign_marker\\\": source_dir,\\\
       n                \\\"poisoned\\\": True,\\n                \\\"service\\\":\
@@ -2978,9 +2978,9 @@ metadata:
       \ \u5934\\\",\\n            }\\n    role = (ctx.params.get(\\\"role\\\") or\
       \ [\\\"role\\\"])[0]\\n    return 200, {\\n        \\\"Code\\\": \\\"Success\\\
       \",\\n        \\\"LastUpdated\\\": _utcnow_iso(),\\n        \\\"Type\\\": \\\
-      \"AWS-HMAC\\\",\\n        \\\"AccessKeyId\\\": \\\"MOCKAKIATRIDENTLAB\\\",\\\
-      n        \\\"SecretAccessKey\\\": \\\"MOCKSECRETTRIDENTLAB\\\",\\n        \\\
-      \"Token\\\": \\\"MOCKSESSIONTRIDENTLAB\\\",\\n        \\\"Expiration\\\": \\\
+      \"AWS-HMAC\\\",\\n        \\\"AccessKeyId\\\": \\\"MOCKAKIAINKBLADELAB\\\",\\\
+      n        \\\"SecretAccessKey\\\": \\\"MOCKSECRETINKBLADELAB\\\",\\n        \\\
+      \"Token\\\": \\\"MOCKSESSIONINKBLADELAB\\\",\\n        \\\"Expiration\\\": \\\
       \"2030-01-01T00:00:00Z\\\",\\n        \\\"role\\\": role,\\n        \\\"mock\\\
       \": True,\\n    }\\n\\n\\ndef _imds_azure_instance(ctx: _RequestContext):\\\
       n    api_version = (ctx.query.get(\\\"api-version\\\") or [\\\"\\\"])[0]\\n\
@@ -3001,17 +3001,17 @@ metadata:
       , \\\"service\\\": \\\"imds-aliyun\\\", \\\"hint\\\": \\\"fixed \u6A21\u5F0F\
       \u5173\u95ED RAM \u5143\u6570\u636E\u9762\\\"}\\n    return 200, {\\n      \
       \  \\\"service\\\": \\\"imds-aliyun\\\",\\n        \\\"ram_role_name\\\": \\\
-      \"mock-ram-role\\\",\\n        \\\"access_key_id\\\": \\\"MOCKLTAITRIDENTLAB\\\
-      \",\\n        \\\"access_key_secret\\\": \\\"MOCKSECRETTRIDENTLAB\\\",\\n  \
-      \      \\\"security_token\\\": \\\"MOCKSTSTRIDENTLAB\\\",\\n        \\\"path\\\
+      \"mock-ram-role\\\",\\n        \\\"access_key_id\\\": \\\"MOCKLTAIINKBLADELAB\\\
+      \",\\n        \\\"access_key_secret\\\": \\\"MOCKSECRETINKBLADELAB\\\",\\n  \
+      \      \\\"security_token\\\": \\\"MOCKSTSINKBLADELAB\\\",\\n        \\\"path\\\
       \": ctx.path,\\n        \\\"mock\\\": True,\\n    }\\n\\n\\ndef _imds_tencent_cam(ctx:\
       \ _RequestContext):\\n    if ctx.mode == \\\"fixed\\\":\\n        return 404,\
       \ {\\\"error\\\": \\\"not found\\\", \\\"service\\\": \\\"imds-tencent\\\",\
       \ \\\"hint\\\": \\\"fixed \u6A21\u5F0F\u5173\u95ED CAM \u5143\u6570\u636E\u9762\
       \\\"}\\n    return 200, {\\n        \\\"service\\\": \\\"imds-tencent\\\",\\\
       n        \\\"cam_role_name\\\": \\\"mock-cam-role\\\",\\n        \\\"tmp_secret_id\\\
-      \": \\\"MOCKAKIDTRIDENTLAB\\\",\\n        \\\"tmp_secret_key\\\": \\\"MOCKSECRETTRIDENTLAB\\\
-      \",\\n        \\\"token\\\": \\\"MOCKSTSTRIDENTLAB\\\",\\n        \\\"path\\\
+      \": \\\"MOCKAKIDINKBLADELAB\\\",\\n        \\\"tmp_secret_key\\\": \\\"MOCKSECRETINKBLADELAB\\\
+      \",\\n        \\\"token\\\": \\\"MOCKSTSINKBLADELAB\\\",\\n        \\\"path\\\
       \": ctx.path,\\n        \\\"mock\\\": True,\\n    }\\n\\n\\ndef _imds_gcp(ctx:\
       \ _RequestContext):\\n    if (ctx.headers.get(\\\"Metadata-Flavor\\\") or \\\
       \"\\\").strip() != \\\"Google\\\":\\n        return 403, {\\\"error\\\": \\\"\
@@ -3021,7 +3021,7 @@ metadata:
       ,\\n        \\\"project\\\": {\\\"projectId\\\": \\\"mock-project\\\"},\\n \
       \       \\\"instance\\\": {\\\"name\\\": \\\"mock-instance\\\", \\\"zone\\\"\
       : \\\"mock-zone\\\"},\\n        \\\"mock\\\": True,\\n    }\\n\\n\\ndef _routes_manifest(ctx:\
-      \ _RequestContext):\\n    return 200, {\\n        \\\"service\\\": \\\"trident-mock-lab\\\
+      \ _RequestContext):\\n    return 200, {\\n        \\\"service\\\": \\\"inkblade-mock-lab\\\
       \",\\n        \\\"mode\\\": ctx.mode,\\n        \\\"host\\\": HOST,\\n     \
       \   \\\"admin_token_hint\\\": f\\\"fixed \u6A21\u5F0F\u7BA1\u7406\u5BC6\u94A5\
       \ = Authorization: Bearer {ADMIN_TOKEN}\\\",\\n        \\\"service_selector_header\\\
@@ -3206,7 +3206,7 @@ metadata:
       \ = {\\n            \\\"areal_env\\\": {},\\n            \\\"areal_engines\\\
       \": {},\\n            \\\"ray_jobs\\\": {},\\n            \\\"aws_tokens\\\"\
       : set(),\\n        }\\n\\n\\nclass _LabHandler(BaseHTTPRequestHandler):\\n \
-      \   protocol_version = \\\"HTTP/1.1\\\"\\n    server_version = \\\"TridentMockLab/0.1.0\\\
+      \   protocol_version = \\\"HTTP/1.1\\\"\\n    server_version = \\\"InkBladeMockLab/0.1.0\\\
       \"\\n\\n    def log_message(self, fmt, *args):  # \u9759\u9ED8\u9ED8\u8BA4\u8BBF\
       \u95EE\u65E5\u5FD7\uFF08\u6D4B\u8BD5\u8F93\u51FA\u5E72\u51C0\uFF09\\n      \
       \  return\\n\\n    # -- \u57FA\u7840\u8BBE\u65BD -----------------------------------------------------------\\\
@@ -3285,14 +3285,14 @@ metadata:
       \u7406\uFF09\uFF0C\u53EF\u6CE8\u5165\u3002\\n    \\\"\\\"\\\"\\n    if mode\
       \ not in MODES:\\n        raise ValueError(f\\\"mode \u5FC5\u987B\u662F {MODES}\
       \ \u4E4B\u4E00\uFF0C\u6536\u5230\uFF1A{mode!r}\\\")\\n    if root is None:\\\
-      n        root_path = Path(tempfile.mkdtemp(prefix=\\\"trident-mock-lab-\\\"\
+      n        root_path = Path(tempfile.mkdtemp(prefix=\\\"inkblade-mock-lab-\\\"\
       ))\\n        owns_root = True\\n    else:\\n        root_path = Path(root)\\\
       n        root_path.mkdir(parents=True, exist_ok=True)\\n        owns_root =\
       \ False\\n    httpd = _LabHTTPServer((HOST, int(port)), mode, root_path)\\n\
       \    thread = threading.Thread(target=httpd.serve_forever, kwargs={\\\"poll_interval\\\
       \": 0.05}, daemon=True)\\n    thread.start()\\n    return Server(httpd, thread,\
       \ mode, root_path, owns_root)\\n\\n\\ndef main(argv: list[str] | None = None)\
-      \ -\\u003e int:\\n    parser = argparse.ArgumentParser(description=\\\"Trident\
+      \ -\\u003e int:\\n    parser = argparse.ArgumentParser(description=\\\"InkBlade\
       \ \u5B9E\u9A8C\u5BA4 mock \u9776\u573A\uFF08\u4EC5\u76D1\u542C 127.0.0.1\uFF09\
       \\\")\\n    parser.add_argument(\\\"--port\\\", type=int, default=0, help=\\\
       \"\u76D1\u542C\u7AEF\u53E3\uFF080=\u81EA\u52A8\u5206\u914D\uFF09\\\")\\n   \
@@ -3309,11 +3309,11 @@ metadata:
       \"\u6B63\u5728\u5173\u95ED mock \u9776\u573A\u2026\\\")\\n    finally:\\n  \
       \      server.shutdown()\\n    return 0\\n\\n\\nif __name__ == \\\"__main__\\\
       \":\\n    raise SystemExit(main())\\n\"},\"kind\":\"ConfigMap\",\"metadata\"\
-      :{\"annotations\":{},\"name\":\"mock-targets-src\",\"namespace\":\"trident-proof\"\
+      :{\"annotations\":{},\"name\":\"mock-targets-src\",\"namespace\":\"inkblade-proof\"\
       }}\n"
   creationTimestamp: '2026-10-24T19:37:08Z'
   name: mock-targets-src
-  namespace: trident-proof
+  namespace: inkblade-proof
   resourceVersion: '431'
   uid: 38a33061-043f-4c5f-8127-4473b1a14a17
 
@@ -3769,7 +3769,7 @@ kind: ServiceAccount
 metadata:
   creationTimestamp: '2026-10-24T19:37:08Z'
   name: default
-  namespace: trident-proof
+  namespace: inkblade-proof
   resourceVersion: '429'
   uid: c86aa870-4580-4c83-85da-cd7b7cd05682
 
@@ -10066,15 +10066,15 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   annotations:
-    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.k8s.io/v1","kind":"NetworkPolicy","metadata":{"annotations":{},"labels":{"trident.dev/proof":"real-cluster"},"name":"default-deny-all","namespace":"trident-proof"},"spec":{"podSelector":{},"policyTypes":["Ingress","Egress"]}}
+    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.k8s.io/v1","kind":"NetworkPolicy","metadata":{"annotations":{},"labels":{"inkblade.dev/proof":"real-cluster"},"name":"default-deny-all","namespace":"inkblade-proof"},"spec":{"podSelector":{},"policyTypes":["Ingress","Egress"]}}
 
       '
   creationTimestamp: '2026-10-24T19:42:17Z'
   generation: 1
   labels:
-    trident.dev/proof: real-cluster
+    inkblade.dev/proof: real-cluster
   name: default-deny-all
-  namespace: trident-proof
+  namespace: inkblade-proof
   resourceVersion: '694'
   uid: 06458d47-9370-465d-9d1e-483850d5031a
 spec:
@@ -10152,14 +10152,14 @@ apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
-    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","kind":"Namespace","metadata":{"annotations":{},"labels":{"trident.dev/proof":"real-cluster"},"name":"trident-proof"}}
+    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","kind":"Namespace","metadata":{"annotations":{},"labels":{"inkblade.dev/proof":"real-cluster"},"name":"inkblade-proof"}}
 
       '
   creationTimestamp: '2026-10-24T19:37:08Z'
   labels:
-    kubernetes.io/metadata.name: trident-proof
-    trident.dev/proof: real-cluster
-  name: trident-proof
+    kubernetes.io/metadata.name: inkblade-proof
+    inkblade.dev/proof: real-cluster
+  name: inkblade-proof
   resourceVersion: '693'
   uid: 9b968f64-5efd-44df-ba29-9352cf03c462
 spec:

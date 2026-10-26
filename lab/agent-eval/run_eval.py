@@ -43,7 +43,7 @@ class EvalError(ValueError):
 def load_tasks(path: Path | str | None = None) -> list[dict]:
     p = Path(path) if path else TASKS_PATH
     data = json.loads(p.read_text(encoding="utf-8"))
-    if data.get("schema") != "trident-agent-eval-tasks-v1":
+    if data.get("schema") != "inkblade-agent-eval-tasks-v1":
         raise EvalError(f"未知任务集 schema: {data.get('schema')!r}")
     tasks = list(data.get("tasks") or [])
     if len(tasks) < 12:
@@ -66,8 +66,8 @@ def load_tasks(path: Path | str | None = None) -> list[dict]:
 
 
 def _prepare_workspace(tmp: Path):
-    from trident.core.evidence import EvidenceStore
-    from trident.core.users import Session
+    from inkblade.core.evidence import EvidenceStore
+    from inkblade.core.users import Session
 
     store = EvidenceStore(tmp, workspace="local-lab")
     store.pin_roe({
@@ -92,10 +92,10 @@ def _module_params(task: dict, module: str, sims: dict) -> dict:
 
 
 def _execute(store, session, module: str, params: dict) -> dict:
-    from trident.core.runner import run_module
+    from inkblade.core.runner import run_module
 
     started = time.monotonic()
-    res = run_module(store, session, module, params, ROOT / "trident" / "modules")
+    res = run_module(store, session, module, params, ROOT / "inkblade" / "modules")
     run = store.open_run(res["run"])
     titles = [f["title"] for f in run.findings]
     return {
@@ -108,14 +108,14 @@ def _execute(store, session, module: str, params: dict) -> dict:
 
 
 def _chain_plan(task: dict) -> dict:
-    from trident.core.chains import dry_run, evaluate_preconditions, load_chains
+    from inkblade.core.chains import dry_run, evaluate_preconditions, load_chains
 
-    chains = load_chains(ROOT / "trident" / "chains")
+    chains = load_chains(ROOT / "inkblade" / "chains")
     chain = chains.get(task["chain"])
     if chain is None:
         raise EvalError(f"未知链 {task['chain']}")
     verdict, missing = evaluate_preconditions(chain, [])
-    plan = dry_run(chain, [], ROOT / "trident" / "modules")
+    plan = dry_run(chain, [], ROOT / "inkblade" / "modules")
     return {"chain": chain["id"], "verdict": verdict, "missing": missing,
             "steps": [step["module"] for step in plan["steps"]], "planned": len(plan["steps"])}
 
@@ -137,7 +137,7 @@ def _judge(task: dict, titles: list[str], findings: int, chain: dict | None) -> 
 
 
 def run_deterministic(tasks: list[dict], sims: dict) -> dict:
-    from trident.core.supervisor import estimate_tokens
+    from inkblade.core.supervisor import estimate_tokens
 
     started = time.time()
     records: list[dict] = []
@@ -178,8 +178,8 @@ def run_deterministic(tasks: list[dict], sims: dict) -> dict:
 
 
 def run_supervisor(tasks: list[dict], sims: dict) -> dict:
-    from trident.core.journal import Journal
-    from trident.core.supervisor import Supervisor, estimate_tokens
+    from inkblade.core.journal import Journal
+    from inkblade.core.supervisor import Supervisor, estimate_tokens
 
     started = time.time()
     records: list[dict] = []
@@ -320,7 +320,7 @@ def evaluate(tasks: list[dict] | None = None, *, write: bool = True) -> dict:
         "approval_delta": supervisor["summary"]["approvals"] - deterministic["summary"]["approvals"],
     }
     report = {
-        "schema": "trident-agent-eval-v1",
+        "schema": "inkblade-agent-eval-v1",
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "tasks_file": str(TASKS_PATH.relative_to(ROOT)).replace("\\", "/"),
         "task_count": len(tasks),
@@ -417,7 +417,7 @@ def write_outputs(report: dict) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident agent architecture evaluation")
+    parser = argparse.ArgumentParser(description="InkBlade agent architecture evaluation")
     parser.add_argument("--tasks", default=None, help="任务集 JSON（默认 lab/agent-eval/tasks.json）")
     parser.add_argument("--out", default=None, help="结果 JSON（默认 reports/samples/agent-eval/）")
     parser.add_argument("--no-write", action="store_true", help="只打印，不落盘")

@@ -44,7 +44,7 @@
   {
    "module": "exposure-mapping",
    "sev": "medium",
-   "title": "NodePort 服务暴露：trident-proof/mock-target（端口 8000）",
+   "title": "NodePort 服务暴露：inkblade-proof/mock-target（端口 8000）",
    "detail": "NodePort 在全部节点对外开放（含宿主网络边界），绕过 Ingress 层治理。",
    "evidence_path": "steps/exposure-mapping.tar.gz",
    "is_zeroday": false
@@ -164,7 +164,7 @@
   {
    "module": "escape-primitives",
    "sev": "medium",
-   "title": "trident-proof/proof-hostnet：宿主网络命名空间共享（hostNetwork=true）",
+   "title": "inkblade-proof/proof-hostnet：宿主网络命名空间共享（hostNetwork=true）",
    "detail": "hostNetwork 绕过 CNI/NetworkPolicy 并直连宿主服务。",
    "evidence_path": "steps/escape-primitives.tar.gz",
    "is_zeroday": false

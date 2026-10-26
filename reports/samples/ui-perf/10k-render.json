@@ -1,5 +1,5 @@
 {
-  "schema": "trident-ui-perf/1",
+  "schema": "inkblade-ui-perf/1",
   "generated_at": "2026-10-26T13:55:46+08:00",
   "browser": "chrome.exe",
   "export": "lab/bench/out/ui-10k/export",

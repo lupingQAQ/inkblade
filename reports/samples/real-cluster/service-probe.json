@@ -5,22 +5,22 @@
    {
     "status": 200,
     "seconds": 0.03,
-    "body_head": "{\"service\": \"trident-mock-lab\", \"mode\": \"vulnerable\", \"host\": \"0.0.0.0\", \"admin_token_hint\": \"fixed 模式管理密钥 = Authorization: Bearer test-admin-key\", \"service_selector_header\": \"x-mock-service\", \"route_count\": 25, \"routes\": [{\"service\": \"sglang\", \"title\": \"SGLang 管理面磁盘权重更新\", \"method\": \"POST\", \"path\": "
+    "body_head": "{\"service\": \"inkblade-mock-lab\", \"mode\": \"vulnerable\", \"host\": \"0.0.0.0\", \"admin_token_hint\": \"fixed 模式管理密钥 = Authorization: Bearer test-admin-key\", \"service_selector_header\": \"x-mock-service\", \"route_count\": 25, \"routes\": [{\"service\": \"sglang\", \"title\": \"SGLang 管理面磁盘权重更新\", \"method\": \"POST\", \"path\": "
    },
    {
     "status": 200,
     "seconds": 0.02,
-    "body_head": "{\"service\": \"trident-mock-lab\", \"mode\": \"vulnerable\", \"host\": \"0.0.0.0\", \"admin_token_hint\": \"fixed 模式管理密钥 = Authorization: Bearer test-admin-key\", \"service_selector_header\": \"x-mock-service\", \"route_count\": 25, \"routes\": [{\"service\": \"sglang\", \"title\": \"SGLang 管理面磁盘权重更新\", \"method\": \"POST\", \"path\": "
+    "body_head": "{\"service\": \"inkblade-mock-lab\", \"mode\": \"vulnerable\", \"host\": \"0.0.0.0\", \"admin_token_hint\": \"fixed 模式管理密钥 = Authorization: Bearer test-admin-key\", \"service_selector_header\": \"x-mock-service\", \"route_count\": 25, \"routes\": [{\"service\": \"sglang\", \"title\": \"SGLang 管理面磁盘权重更新\", \"method\": \"POST\", \"path\": "
    },
    {
     "status": 200,
     "seconds": 0.01,
-    "body_head": "{\"service\": \"trident-mock-lab\", \"mode\": \"vulnerable\", \"host\": \"0.0.0.0\", \"admin_token_hint\": \"fixed 模式管理密钥 = Authorization: Bearer test-admin-key\", \"service_selector_header\": \"x-mock-service\", \"route_count\": 25, \"routes\": [{\"service\": \"sglang\", \"title\": \"SGLang 管理面磁盘权重更新\", \"method\": \"POST\", \"path\": "
+    "body_head": "{\"service\": \"inkblade-mock-lab\", \"mode\": \"vulnerable\", \"host\": \"0.0.0.0\", \"admin_token_hint\": \"fixed 模式管理密钥 = Authorization: Bearer test-admin-key\", \"service_selector_header\": \"x-mock-service\", \"route_count\": 25, \"routes\": [{\"service\": \"sglang\", \"title\": \"SGLang 管理面磁盘权重更新\", \"method\": \"POST\", \"path\": "
    }
   ],
   "ok": true
  },
- "trident_module": {
+ "inkblade_module": {
   "target": "http://127.0.0.1:30080",
   "summary": "plugins/list=200 对照面/v1/models=401 invoke=200 mode=probe-only",
   "trace": {
@@ -69,8 +69,8 @@
      "body": {
       "plugin": "mock-plugin",
       "args": {
-       "probe": "TRIDENT-real-cluster-http-20261025-034151",
-       "marker": "TRIDENT-real-cluster-http-20261025-034151"
+       "probe": "INKBLADE-real-cluster-http-20261025-034151",
+       "marker": "INKBLADE-real-cluster-http-20261025-034151"
       }
      },
      "headers": {},
@@ -82,8 +82,8 @@
       "invoked": true,
       "result": {
        "echo": {
-        "probe": "TRIDENT-real-cluster-http-20261025-034151",
-        "marker": "TRIDENT-real-cluster-http-20261025-034151"
+        "probe": "INKBLADE-real-cluster-http-20261025-034151",
+        "marker": "INKBLADE-real-cluster-http-20261025-034151"
        }
       }
      }

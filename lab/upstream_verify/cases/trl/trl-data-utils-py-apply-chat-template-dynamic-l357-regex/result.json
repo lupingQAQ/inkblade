@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "trl-data-utils-py-apply-chat-template-dynamic-l357-regex",
  "source": "mining",
  "component": "trl",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l357-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.165,
- "started_at": "2026-10-26T09:23:44+00:00",
+ "duration_s": 0.302,
+ "started_at": "2026-10-26T19:58:08+00:00",
  "marker": {
-  "text": "TRIDENT-UV-trl-data-utils-py-apply-chat-template-dynamic-l357-regex",
+  "text": "INKBLADE-UV-trl-data-utils-py-apply-chat-template-dynamic-l357-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l357-regex/evidence/log.txt",
-   "sha256": "a0ac72432561099707330433ee3355c01553629b95a2bcf337bca1980dfa42b8",
+   "sha256": "0d0937e24ef5ca2d7f488e4665d0d7ccb992023577ecbf4450bc609eed037aee",
    "size": 279
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l357-regex/evidence/static-check.json",
-   "sha256": "2768cb68c81e570f0acb3c630571d9ad3e384ec63645b17af6420591720004cf",
-   "size": 1045
+   "sha256": "bfdd57207455e9564d0ca43c16ca75dceb3cad9df51f090eaa24a5d6cc79bcbb",
+   "size": 1046
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "783162c89bef24b8c2a1a83545faa1c65edf19a1072a3d2814e4095cc26fc811",
+ "manifest_sha256": "482b7a67f2995d632135b89ab32a07aae66bdd8d864337d4c30341a45bc644ee",
  "stdout": "{\"status\": \"static-only\", \"case\": \"trl-data-utils-py-apply-chat-template-dynamic-l357-regex\"}\n",
  "stderr": "",
  "notes": "Documentation/example line, no runtime sink."

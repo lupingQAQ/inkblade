@@ -1,29 +1,29 @@
 {
-  "mediaType": "application/vnd.dev.cosign.simplesigning.v1+json",
-  "artifact": {
-    "name": "artifact.example.bin",
-    "sha256": "70ba99ecd85d7d4cbe7f77fcca34c48dea5662279517844d500a74d1a816fafd"
-  },
-  "source": {
-    "repository": "https://example.invalid/trident/models/fixture-example",
-    "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-    "ref": "refs/tags/v2026.10"
-  },
-  "builder": {
-    "id": "trident-fixture-builder"
-  },
-  "certificate": {
-    "issuer": "https://fixture.invalid/oidc",
-    "subject": "model@fixture.invalid"
-  },
-  "transparency": {
-    "logIndex": 42,
-    "logId": "fixture-rekor",
-    "integratedTime": 1790000000
-  },
-  "signature": {
-    "keyid": "fixture-model-key-1",
-    "alg": "HMAC-SHA256",
-    "value": "85f489645a9fe58cfbcba628839bef15d95541b118b39109036f60f9d8fd6595"
-  }
+ "mediaType": "application/vnd.dev.cosign.simplesigning.v1+json",
+ "artifact": {
+  "name": "artifact.example.bin",
+  "sha256": "cf7ec43f9028fea2c219918b032e3e5bfbb833806da31569794eec905ec23661"
+ },
+ "source": {
+  "repository": "https://example.invalid/inkblade/models/fixture-example",
+  "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "ref": "refs/tags/v2026.10"
+ },
+ "builder": {
+  "id": "inkblade-fixture-builder"
+ },
+ "certificate": {
+  "issuer": "https://fixture.invalid/oidc",
+  "subject": "model@fixture.invalid"
+ },
+ "transparency": {
+  "logIndex": 42,
+  "logId": "fixture-rekor",
+  "integratedTime": 1790000000
+ },
+ "signature": {
+  "keyid": "fixture-model-key-1",
+  "alg": "HMAC-SHA256",
+  "value": "f07ef4bcf40e60550e4db9838f1a7e6b32b6a23cac1df187338442fc4965fbb0"
+ }
 }

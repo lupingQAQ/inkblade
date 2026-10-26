@@ -8,7 +8,7 @@
    "ARTEX 时延含 QEMU TCG 放大（纯软件仿真），绝对值不代表裸机；同宿主同窗口对比才有意义。",
    "ARTEX 的 LLM 为脚本化计划器 mock：协议真实（真实 tool_calls/工具执行/落库），决策是确定脚本，不代表模型质量。",
    "token 估算 = ARTEX 请求体字符数/4（mock 非真实分词器）。",
-   "Trident 为 Windows 本机进程，直接访问 127.0.0.1:18080（与 ARTEX 经 10.0.2.2:18080 同一靶场实例）。"
+   "InkBlade 为 Windows 本机进程，直接访问 127.0.0.1:18080（与 ARTEX 经 10.0.2.2:18080 同一靶场实例）。"
   ]
  },
  "artex": {
@@ -225,7 +225,7 @@
    }
   ]
  },
- "trident": {
+ "inkblade": {
   "chain": "flat-network-admin-plane-weight-poison",
   "target": "http://127.0.0.1:18080/",
   "started_epoch_ms": 1792932755522,
@@ -299,52 +299,52 @@
   {
    "metric": "total_ms",
    "artex": 13510,
-   "trident": 105.6,
-   "note": "ARTEX=任务提交→终态（含 3s 轮询粒度）；Trident=链 execute 墙钟"
+   "inkblade": 105.6,
+   "note": "ARTEX=任务提交→终态（含 3s 轮询粒度）；InkBlade=链 execute 墙钟"
   },
   {
    "metric": "requests",
    "artex": 3,
-   "trident": 5,
+   "inkblade": 5,
    "note": "靶场 /__stats__ 计数（同靶场同面）"
   },
   {
    "metric": "tokens",
    "artex": "in~84160/out~986",
-   "trident": "0",
-   "note": "mock 按请求体 chars/4 估算；Trident 全链确定性、零 LLM token"
+   "inkblade": "0",
+   "note": "mock 按请求体 chars/4 估算；InkBlade 全链确定性、零 LLM token"
   },
   {
    "metric": "llm_calls",
    "artex": 12,
-   "trident": 0,
+   "inkblade": 0,
    "note": "按 agent {\"goals\": 2, \"planner\": 4, \"worker\": 5, \"other\": 1}"
   },
   {
    "metric": "findings",
    "artex": 1,
-   "trident": 2,
-   "note": "ARTEX=report_finding 落库；Trident=链步骤成功数（各有证据语义）"
+   "inkblade": 2,
+   "note": "ARTEX=report_finding 落库；InkBlade=链步骤成功数（各有证据语义）"
   },
   {
    "metric": "rss_mib",
    "artex": 84.4,
-   "trident": 50.4,
-   "note": "ARTEX=任务窗口 docker stats 峰值（artex+pg 两容器）；Trident=执行进程工作集峰值"
+   "inkblade": 50.4,
+   "note": "ARTEX=任务窗口 docker stats 峰值（artex+pg 两容器）；InkBlade=执行进程工作集峰值"
   },
   {
    "metric": "cold_start_ms",
    "artex": 35710,
-   "trident": null,
-   "note": "ARTEX 栈冷启动（PG+容器+迁移）；Trident 进程内启动亚秒"
+   "inkblade": null,
+   "note": "ARTEX 栈冷启动（PG+容器+迁移）；InkBlade 进程内启动亚秒"
   }
  ],
  "provenance": {
   "mock_llm_log": "lab\\qemu-k3s\\out\\mock-llm.jsonl",
   "artex_raw": "lab\\qemu-k3s\\out\\artex-same-target-raw.txt",
   "target_stats": "lab\\qemu-k3s\\out\\mock-target-stats-artex.json",
-  "trident_out": "lab\\qemu-k3s\\out\\trident-chain.json",
-  "artex_tasks_json": "{\"active\":\"1\",\"tasks\":[{\"distinct_findings\":{\"total\":1,\"reports\":1,\"critical\":0,\"high\":1,\"medium\":0,\"low\":0,\"unassessed\":0},\"id\":\"1\",\"exploration_id\":1,\"name\":\"\",\"remark\":\"\",\"pinned\":false,\"description\":\"ARTEX same-target bench scan of the Trident mock lab at http://10.0.2.2:18080 (authorized lab).\",\"goal\":\"Probe the authorized lab target http://10.0.2.2:18080 without credentials: fetch its route manifest, exercise unauthenticated admin action and weight pull, and record confirmed endpoints as findings.\",\"status\":\"done\",\"created_at\":\"2026-10-25T12:52:12Z\",\"created_unix\":1792932732,\"completed_at\":\"2026-10-25T12:52:20Z\",\"completed_unix\":1792932740,\"last_activity_unix\":1792932741,\"paused\":false,\"queued\":false,\"tokens\":{\"input_tokens\":0,\"output_tokens\":0,\"cache_read_tokens\":0,\"cache_write_tokens\":0},\"goals_total\":1,\"goals_met\":1,\"in_flight\":0,\"findings\":{\"critical\":0,\"high\":1,\"medium\":0,\"low\":0},\"llm_profile_ids\":[],\"llm_failover_state\":\"default\",\"source_task_ids\":[],\"company_ids\":null,\"coverage_enabled\":true}]}",
+  "inkblade_out": "lab\\qemu-k3s\\out\\inkblade-chain.json",
+  "artex_tasks_json": "{\"active\":\"1\",\"tasks\":[{\"distinct_findings\":{\"total\":1,\"reports\":1,\"critical\":0,\"high\":1,\"medium\":0,\"low\":0,\"unassessed\":0},\"id\":\"1\",\"exploration_id\":1,\"name\":\"\",\"remark\":\"\",\"pinned\":false,\"description\":\"ARTEX same-target bench scan of the InkBlade mock lab at http://10.0.2.2:18080 (authorized lab).\",\"goal\":\"Probe the authorized lab target http://10.0.2.2:18080 without credentials: fetch its route manifest, exercise unauthenticated admin action and weight pull, and record confirmed endpoints as findings.\",\"status\":\"done\",\"created_at\":\"2026-10-25T12:52:12Z\",\"created_unix\":1792932732,\"completed_at\":\"2026-10-25T12:52:20Z\",\"completed_unix\":1792932740,\"last_activity_unix\":1792932741,\"paused\":false,\"queued\":false,\"tokens\":{\"input_tokens\":0,\"output_tokens\":0,\"cache_read_tokens\":0,\"cache_write_tokens\":0},\"goals_total\":1,\"goals_met\":1,\"in_flight\":0,\"findings\":{\"critical\":0,\"high\":1,\"medium\":0,\"low\":0},\"llm_profile_ids\":[],\"llm_failover_state\":\"default\",\"source_task_ids\":[],\"company_ids\":null,\"coverage_enabled\":true}]}",
   "collected_at": "2026-10-25T20:59:36"
  }
 }

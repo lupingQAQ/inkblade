@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "trl-data-utils-py-apply-chat-template-dynamic-l213-regex",
  "source": "mining",
  "component": "trl",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l213-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.14,
- "started_at": "2026-10-26T09:23:43+00:00",
+ "duration_s": 0.317,
+ "started_at": "2026-10-26T19:58:04+00:00",
  "marker": {
-  "text": "TRIDENT-UV-trl-data-utils-py-apply-chat-template-dynamic-l213-regex",
+  "text": "INKBLADE-UV-trl-data-utils-py-apply-chat-template-dynamic-l213-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,8 +47,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l213-regex/evidence/log.txt",
-   "sha256": "457d28dd032a6f61b6bb87cadc1b1a758e33ddbff03cd86846b43e6fdcb25592",
-   "size": 278
+   "sha256": "a9d54d5e015e5ea455661d1440548442f19d906475d545e926c7ec15ba506a1a",
+   "size": 279
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l213-regex/evidence/marker.txt",
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-data-utils-py-apply-chat-template-dynamic-l213-regex/evidence/static-check.json",
-   "sha256": "0ae30a4347266dd38dbd942213a97ea58cb8739d8d1bd87744d3163b26135d5c",
-   "size": 1147
+   "sha256": "44ed02c77076b23d6c9ce172c4755df0dd7a4aabf01fc7316ea047e4580e0a13",
+   "size": 1148
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "42259644cf63535cef0510d25cef48cfbe2700d4ee6f3b6791b98607939b5998",
+ "manifest_sha256": "877b3d5fe6250500d5920477ecabebd0f85fb45adb75706a319ae1dae40ad4b9",
  "stdout": "{\"status\": \"static-only\", \"case\": \"trl-data-utils-py-apply-chat-template-dynamic-l213-regex\"}\n",
  "stderr": "",
  "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."

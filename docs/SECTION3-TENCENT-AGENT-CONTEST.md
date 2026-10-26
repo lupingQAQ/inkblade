@@ -51,7 +51,7 @@
 | P7 | [CHYing-agent](https://github.com/yhy0/CHYing-agent) | yhy · 第一届第 9 / 第二届主赛场第 60、零界第 1 | MIT | README 快照 | — |
 | P8 | [xbow-competition](https://github.com/m-sec-org/xbow-competition) | ai 小分队 · 第一届第 7 | 未声明 | README 快照 | — |
 
-> 许可提示：P2/P5 为 AGPL-3.0，P3/P6/P8 未声明许可证。Trident 只做**行为与架构**
+> 许可提示：P2/P5 为 AGPL-3.0，P3/P6/P8 未声明许可证。InkBlade 只做**行为与架构**
 > 层面的公开研究，不复制代码、不引入依赖；产品实现全部 clean-room。
 
 ---
@@ -182,9 +182,9 @@ explore(action) → plan(action, checkpoint) → execute_step(action) → done(r
 ## 4. 维度矩阵
 
 图例：● 明确具备并产品化；◐ 部分具备/依赖外部；○ 基本没有；? 公开材料不足。
-「Trident HEAD」= 本节改动前的 `c921595` 行为。
+「InkBlade HEAD」= 本节改动前的 `c921595` 行为。
 
-| 维度 | P1 BreachWeave | P2 Cairn | P3 aide | P4 CyberStrike | P5 LuaN1ao | P6 tinyctfer | P7 CHYing | P8 xbow | Trident HEAD |
+| 维度 | P1 BreachWeave | P2 Cairn | P3 aide | P4 CyberStrike | P5 LuaN1ao | P6 tinyctfer | P7 CHYing | P8 xbow | InkBlade HEAD |
 |---|---|---|---|---|---|---|---|---|---|
 | 任务分解 | ● Manager 分配 + Solver 并行 | ◐ 图上的 Intent 运行时生成 | ● explore→plan→execute（12 步） | ● Plan-Execute/Supervisor/工作流 | ● 任务图 + 依赖准入 | ○ 单题单循环 | ◐ Orchestrator 分派 | ◐ daemon 串行 | ◐ 候选排序 + max 5，无阶段 |
 | 自主度分级 | ◐ 角色分工，非显式档位 | ● 无角色=最大自主，但有 hint/终止 | ● HITL / autoapprove 两档 | ● 审批模式 + 工具白名单 | ● Supervisor 决定继续/checkpoint/停止 | ○ | ◐ 人工/自动混合 | ◐ 无人值守开关 | ○ 只有「批/不批」 |
@@ -220,7 +220,7 @@ explore(action) → plan(action, checkpoint) → execute_step(action) → done(r
   放行；只读侦察与不可逆写共享同一档权限，靠 `roe.level` 兜底。
 - **对标**：P3 的 HITL/autoapprove 两档、P5 的 Supervisor「继续/checkpoint/停止」、
   P4 的审批模式 + 工具白名单。
-- **改进（已落地）**：`trident/core/agent_policy.py` 定义 L0 观察 / L1 建议 /
+- **改进（已落地）**：`inkblade/core/agent_policy.py` 定义 L0 观察 / L1 建议 /
   L2 监督执行 / L3 只读自治；混合动作取最弱链路，不可逆写强制 L1 逐动作确认；
   提议只记录等级与审批次数，不改变「批准后才执行」的硬边界。
 - **验收**：`tests/test_agent_policy.py`、`tests/test_explorer_policy.py`。
@@ -242,7 +242,7 @@ explore(action) → plan(action, checkpoint) → execute_step(action) → done(r
 - **现状**：`max_actions=5` 是唯一上限；没有 token/时延估算，也没有超支降级。
 - **对标**：P5 的单任务轮次 + 全局时间预算；P7 的按题成本核算（700 元打完两届）；
   P1 的工具调用上限。
-- **改进（已落地）**：`trident/core/cost.py` 提供 `Budget` / `plan_cost` /
+- **改进（已落地）**：`inkblade/core/cost.py` 提供 `Budget` / `plan_cost` /
   `degrade` / `CostTracker`；提议阶段按 4 字符/token 估算，超支先丢 optional、
   再砍写动作、最后砍尾部，至少保留 1 个动作并标记 `over_budget`。
 - **验收**：`tests/test_cost.py`；`budget-crunch` 任务 token 4440 → 963。
@@ -262,7 +262,7 @@ explore(action) → plan(action, checkpoint) → execute_step(action) → done(r
   evidence 指针不统一；下一次提议无法复用。
 - **对标**：P5 的 Evidence→Hypothesis→Vulnerability→Exploit 因果图（无证据不能
   升级为结论）；P1 的 Memory/Idea 分仓；P2 的 Fact/Intent。
-- **改进（已落地）**：`trident/core/observation.py` 固化
+- **改进（已落地）**：`inkblade/core/observation.py` 固化
   `action / result / evidence[] / next[] / claim`；`ok` 无证据直接拒绝，失败降级
   `hypothesis`；下一步候选从目录生成并剔除已成功、死胡同。
 - **验收**：`tests/test_observation.py`；Web 只读视图 `/api/v1/agent/observations`。
@@ -315,7 +315,7 @@ explore(action) → plan(action, checkpoint) → execute_step(action) → done(r
   专家无法把自己的判断录成可复用资产。
 - **对标**：P3 的 `ctf-ops` skill + pattern；P4 的角色 + 工具策略 + 知识库；
   P7 把零界策略写成 8 个 Skill。
-- **改进方案（下一轮）**：新增 `trident/playbooks/*.yaml`：`preconditions /
+- **改进方案（下一轮）**：新增 `inkblade/playbooks/*.yaml`：`preconditions /
   evidence_schema / steps[] / approval_gates[] / cost_budget / success_criteria`，
   由 `agent_policy` 直接消费；先在 K8s 三条链上试点。
 - **验收**：新增 playbook 不改 Python 即可被 explorer 选中；每个 playbook 有
@@ -411,12 +411,12 @@ optional，再砍写，最后保留最小集并上报）。P7 用 700 元打完�
 
 | 文件 | 作用 | 关键约束 |
 |---|---|---|
-| `trident/core/agent_policy.py` | L0-L3 分级、阶段分解、重试/回退分类 | 纯函数；混合取最弱；只用于提议 |
-| `trident/core/observation.py` | 结构化观察 + 证据指针 + 下一步候选 + 压缩 | confirmed 必须有证据；JSONL 只追加 |
-| `trident/core/cost.py` | token/时延/审批/干预预算 + 超支降级 | 确定性；至少保留 1 个动作 |
-| `trident/core/explorer.py` | 提议路径接入（`policy=True/False`） | 不执行、不建 run；OFF 精确复现 HEAD |
-| `trident/agent_planner.py` | 链计划候选附加自主度/成本（`policy=True/False`） | plan-only；不落 actions/run |
-| `trident/webui/api_section3.py` | 只读视图 `/api/v1/agent/*` | 仅 GET；不改既有路由语义 |
+| `inkblade/core/agent_policy.py` | L0-L3 分级、阶段分解、重试/回退分类 | 纯函数；混合取最弱；只用于提议 |
+| `inkblade/core/observation.py` | 结构化观察 + 证据指针 + 下一步候选 + 压缩 | confirmed 必须有证据；JSONL 只追加 |
+| `inkblade/core/cost.py` | token/时延/审批/干预预算 + 超支降级 | 确定性；至少保留 1 个动作 |
+| `inkblade/core/explorer.py` | 提议路径接入（`policy=True/False`） | 不执行、不建 run；OFF 精确复现 HEAD |
+| `inkblade/agent_planner.py` | 链计划候选附加自主度/成本（`policy=True/False`） | plan-only；不落 actions/run |
+| `inkblade/webui/api_section3.py` | 只读视图 `/api/v1/agent/*` | 仅 GET；不改既有路由语义 |
 | `lab/tencent-compare/` | 8 任务 OFF/ON 微评测 | 确定性；不调用外部 LLM |
 | `tests/test_*.py` | 策略/观察/成本/接线/视图/评测 | 全部 stdlib unittest |
 

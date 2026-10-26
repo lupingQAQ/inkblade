@@ -50,7 +50,7 @@ AUTH = ("anon", "low", "wrong", "admin")
 def load_matrix(path: Path | str | None = None) -> dict:
     p = Path(path) if path else MATRIX
     data = json.loads(p.read_text(encoding="utf-8"))
-    if data.get("schema") != "trident-vllm-patch-matrix-v1":
+    if data.get("schema") != "inkblade-vllm-patch-matrix-v1":
         raise ValueError(f"unexpected matrix schema: {data.get('schema')!r}")
     seen: set[str] = set()
     for entry in data["entries"]:
@@ -191,7 +191,7 @@ def fuzz_cases() -> list[dict]:
             for transform in TRANSFORMS:
                 path, method, extra = _apply_transform(spec, transform)
                 case_headers = {**headers, **extra}
-                body = {"probe": "TRIDENT-DEPTH"} if method == "POST" else None
+                body = {"probe": "INKBLADE-DEPTH"} if method == "POST" else None
                 cases.append({
                     "id": f"vllm-{surface}-{auth}-{transform}",
                     "surface": surface,

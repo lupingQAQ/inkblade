@@ -16,7 +16,7 @@ _REPO = Path(__file__).resolve().parents[3]
 if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
-from trident.modules._gpu_cloud_common import (  # noqa: E402
+from inkblade.modules._gpu_cloud_common import (  # noqa: E402
     Trace, base_url, detail, mask, ok, read_headers, resolve_mode, resp,
 )
 
@@ -59,7 +59,7 @@ def run(ctx: dict, params: dict) -> dict:
     assume = t.call("POST", f"{base}/cloud/identity/assume-role", {
         "role": role,
         "source_account": source_account,
-        "session_name": f"trident-{params.get('tenant') or 'tenant-a'}",
+        "session_name": f"inkblade-{params.get('tenant') or 'tenant-a'}",
     })
     assumed = resp(assume)
     if ok(assume) and assumed.get("assumed"):

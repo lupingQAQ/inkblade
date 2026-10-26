@@ -81,7 +81,7 @@ class Telemetry:
 
     def to_dict(self) -> dict:
         return {
-            "schema": "trident-fabric-sim/2026-10",
+            "schema": "inkblade-fabric-sim/2026-10",
             "source": "discrete-event simulation",
             "hardware": False,
             "disclaimer": "模拟，非真实硬件；不能替代 10K GPU 实测",

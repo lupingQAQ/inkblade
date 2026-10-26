@@ -132,13 +132,13 @@ def apply_retention(plan: dict, *, root: str | Path, execute: bool = False,
 
     if execute:
         audit.parent.mkdir(parents=True, exist_ok=True)
-        record = {"schema": "trident-retention-execution/1", "at": ts,
+        record = {"schema": "inkblade-retention-execution/1", "at": ts,
                   "root": str(root_path), "legal_hold": hold,
                   "approvals": sorted(approved), "counts": counts, "actions": actions}
         with audit.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(record, ensure_ascii=False) + "\n")
     return {
-        "schema": "trident-retention-execution/1",
+        "schema": "inkblade-retention-execution/1",
         "execute": bool(execute),
         "legal_hold": hold,
         "approvals": sorted(approved),

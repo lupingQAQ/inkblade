@@ -1,8 +1,8 @@
 # Surface realism — 真实部署面与模块可测性
 
-Generated from `trident/profiles/*.json`, `trident/profiles/surface-map.json` and each module's `surfaces` declaration. Re-run: `python tools/render-surface-docs.py`.
+Generated from `inkblade/profiles/*.json`, `inkblade/profiles/surface-map.json` and each module's `surfaces` declaration. Re-run: `python tools/render-surface-docs.py`.
 
-> **Rule.** A module is `production-testable` only when every required surface is present in the profile/collection; `conditional` when some required surface is missing or unverified; `no-surface` when no required surface exists. `unknown` at runtime requires an explicit `--probe`. The matrix below uses **profile declarations** (synthetic deployment facts), not a live cluster; `trident surfaces --collect <dir>` recomputes it against real collection output.
+> **Rule.** A module is `production-testable` only when every required surface is present in the profile/collection; `conditional` when some required surface is missing or unverified; `no-surface` when no required surface exists. `unknown` at runtime requires an explicit `--probe`. The matrix below uses **profile declarations** (synthetic deployment facts), not a live cluster; `inkblade surfaces --collect <dir>` recomputes it against real collection output.
 
 ## 1. Profile coverage
 
@@ -44,7 +44,7 @@ Production coverage = `default_production_testable / default_enabled`. Quarantin
 Global no-surface rows: **12**; explicitly quarantined: **11**.
 
 
-These modules remain callable explicitly (`trident run --module ... --probe` or with a real `--collect` / `--profile`). They are excluded from the default chain and from the default coverage denominator, so a green default report no longer implies coverage of an undeployed component. Other `no-surface` rows owned by parallel workstreams remain enabled until their owner applies the same quarantine; their verdict is still `no-surface` and they cannot execute when the surface gate is on.
+These modules remain callable explicitly (`inkblade run --module ... --probe` or with a real `--collect` / `--profile`). They are excluded from the default chain and from the default coverage denominator, so a green default report no longer implies coverage of an undeployed component. Other `no-surface` rows owned by parallel workstreams remain enabled until their owner applies the same quarantine; their verdict is still `no-surface` and they cannot execute when the surface gate is on.
 
 ## 3. Module × profile verdict matrix
 
@@ -346,12 +346,12 @@ Global registry counts: `default-exposed`=2, `function-level`=28, `hardware-only
 ## 5. Collect and verify
 
 ```powershell
-trident collect --profile ray-vllm --kubeconfig .kube/config --target http://127.0.0.1:8000/v1/models --files .\export --hardware .\hw-export
-trident surfaces --profile ray-vllm --collect collection
-trident run --module sglang-route-poison --profile ray-vllm --collect collection
+inkblade collect --profile ray-vllm --kubeconfig .kube/config --target http://127.0.0.1:8000/v1/models --files .\export --hardware .\hw-export
+inkblade surfaces --profile ray-vllm --collect collection
+inkblade run --module sglang-route-poison --profile ray-vllm --collect collection
 ```
 
-Fixture mode is explicit: `trident collect --fixture --profile ray-vllm`.
+Fixture mode is explicit: `inkblade collect --fixture --profile ray-vllm`.
 Every fixture collection and report section is stamped **FIXTURE DATA — not a production verdict**; fixture mode never counts toward a customer production report.
 
 ## 6. Accelerator chip posture (A/B/C boundary)

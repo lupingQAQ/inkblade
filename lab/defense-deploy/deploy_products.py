@@ -94,7 +94,7 @@ def main() -> None:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     lines = [
-        f"# TRIDENT lab deploy plan: {args.product}",
+        f"# INKBLADE lab deploy plan: {args.product}",
         "# 本文件仅为命令文本；必须人工审阅后于授权 KIND 实验室执行",
         "",
         *DEPLOY_CMDS[args.product],

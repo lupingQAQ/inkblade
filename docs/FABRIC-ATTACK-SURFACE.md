@@ -1,15 +1,15 @@
 # 万卡集群破坏性漏洞面（FABRIC ATTACK SURFACE）
 
-本文件是 Trident 在**万卡（10K–1M GPU）训练/推理 fabric 控制面与数据面**上的威胁模型、
+本文件是 InkBlade 在**万卡（10K–1M GPU）训练/推理 fabric 控制面与数据面**上的威胁模型、
 模块↔链映射与检测口径说明。配套代码：
 
 - 仿真靶场：`lab/fabric_dos_sim.py`（仅 127.0.0.1，真实 HTTP，vulnerable/fixed 两态）
-- 模块：`trident/modules/` 下 12 个专项模块（SHARP/IB/PFC/NCCL/IO/API/KV/梯度/gang/Xid/rail）
-- 攻击链：`trident/chains/fabric-silent-corruption-chain.json`、`trident/chains/fabric-exhaustion-chain.json`
+- 模块：`inkblade/modules/` 下 12 个专项模块（SHARP/IB/PFC/NCCL/IO/API/KV/梯度/gang/Xid/rail）
+- 攻击链：`inkblade/chains/fabric-silent-corruption-chain.json`、`inkblade/chains/fabric-exhaustion-chain.json`
 - 规则：`sigma-fabric-sharp-unauth-join`、`sigma-fabric-exhaustion-quota-miss`、
   `falco-fabric-collective-poison`、`falco-fabric-control-plane-mutation`、
   `suricata-fabric-control-uri`（紫队重放计划 `probes.json` sim=fabric）
-- 实效验证：`trident/verify-effects.py` 中 `fabric-*` 三项（见 `docs/EFFECT-VERIFICATION.md`）
+- 实效验证：`inkblade/verify-effects.py` 中 `fabric-*` 三项（见 `docs/EFFECT-VERIFICATION.md`）
 
 **边界声明**：本仿真与模块描述的是**控制面/数据面语义同构的实验室仿真实效**，
 破坏效果全部以计数器/状态变化度量（不真破坏交换机、IB SM、NCCL 进程或 GPU 驱动）；
@@ -167,7 +167,7 @@
 
 ## 5. 实效验证（3 项，全 PASS）
 
-`python -m trident.verify-effects --out reports/samples/effects/` 中：
+`python -m inkblade.verify-effects --out reports/samples/effects/` 中：
 
 | 检查项 | 证据 |
 |---|---|

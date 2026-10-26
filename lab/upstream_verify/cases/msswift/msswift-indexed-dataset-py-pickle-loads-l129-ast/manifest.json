@@ -38,7 +38,7 @@
  "module": "msswift-dataset-pickle-rce",
  "python": "reproenv",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-msswift-indexed-dataset-py-pickle-loads-l129-ast",
+ "marker_text": "INKBLADE-UV-msswift-indexed-dataset-py-pickle-loads-l129-ast",
  "notes": "IndexedDataset.__getitem__ deserialises every record with pickle.loads(buffer) straight from the packed data-*.bin shards. Whoever can write the shard files (shared dataset cache, poisoned packing pipeline) executes code on the first __getitem__ during training. Reproduced at function level: upstream __init__ builds the index, upstream __getitem__ unpickles the attacker slice and the marker is written before any downstream use.",
  "static_evidence_level": "source-line",
  "static_analysis": "",
@@ -53,6 +53,6 @@
   "original_status": "pending-manual-review",
   "promoted": true
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "msswift"
 }

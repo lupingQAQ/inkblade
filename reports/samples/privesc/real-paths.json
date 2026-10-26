@@ -1,5 +1,5 @@
 {
-  "schema": "trident-privesc-real-paths-v1",
+  "schema": "inkblade-privesc-real-paths-v1",
   "generated_at": "2026-10-25T16:47:39Z",
   "environment": {
     "kubectl": "v1.36.5",
@@ -86,7 +86,7 @@
     "delete_stderr": ""
   },
   "fake_closure": {
-    "schema": "trident-privesc-fake-kubectl-v1",
+    "schema": "inkblade-privesc-fake-kubectl-v1",
     "backend": "fake-kubectl (in-memory, deterministic)",
     "checks": [
       {
@@ -152,7 +152,7 @@
           "host_root_mounted": true,
           "escape_primitive": true,
           "mutated_by": [
-            "trident-injector"
+            "inkblade-injector"
           ]
         }
       }
@@ -185,7 +185,7 @@
       {
         "verb": "create",
         "resource": "mutatingwebhookconfiguration",
-        "name": "trident-injector",
+        "name": "inkblade-injector",
         "by": "system:serviceaccount:lab:webhook-sa"
       }
     ],
@@ -207,7 +207,7 @@
         "webhook-writer-binding"
       ],
       "webhooks": [
-        "trident-injector"
+        "inkblade-injector"
       ],
       "tokens_issued": 1,
       "pods": [

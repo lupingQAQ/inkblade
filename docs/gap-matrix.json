@@ -7,11 +7,11 @@
     "partial": "部分覆盖（missing 字段说明缺什么）",
     "missing": "未覆盖"
   },
-  "trident_baseline": {
+  "inkblade_baseline": {
     "modules": 117,
-    "module_keys_source": "trident/modules/ 目录（2026-10-25 快照）",
-    "payload_variants_source": "trident/core/data/version-matrix.json（46 条目 × 98 变体行，gen-27 已落盘）",
-    "variant_prober": "trident/modules/_lateral-common.py::VariantProber + trident/core/payloads.py::http_variants"
+    "module_keys_source": "inkblade/modules/ 目录（2026-10-25 快照）",
+    "payload_variants_source": "inkblade/core/data/version-matrix.json（46 条目 × 98 变体行，gen-27 已落盘）",
+    "variant_prober": "inkblade/modules/_lateral-common.py::VariantProber + inkblade/core/payloads.py::http_variants"
   },
   "tools": {
     "XBow": {
@@ -59,7 +59,7 @@
         {"name": "LLM 网关依赖面（自有 mock 可替换）", "source": "agent/provider.go", "status": "we-have", "maps_to": "aigateway 族 10 模块（更深的网关攻击面）", "action": "我们超出（网关语义攻击面）"}
       ],
       "payloads": [
-        {"name": "工具注入式探测（GET /__routes__→POST /pause→/pull_weights 链）", "source": "docs/ARTEX-BENCH-RESULT.md 同靶场实测（worker 固定探测序列）", "status": "we-have", "maps_to": "trident/chains/flat-network-admin-plane-weight-poison（同面）", "action": "已对齐并有对比数据"},
+        {"name": "工具注入式探测（GET /__routes__→POST /pause→/pull_weights 链）", "source": "docs/ARTEX-BENCH-RESULT.md 同靶场实测（worker 固定探测序列）", "status": "we-have", "maps_to": "inkblade/chains/flat-network-admin-plane-weight-poison（同面）", "action": "已对齐并有对比数据"},
         {"name": "add_intent/prove_goal 报告口径 payload", "source": "agent/goals.go schema", "status": "partial", "missing": "无对应意图工厂概念（我们不驱动自主意图）", "action": "不入 backlog"}
       ]
     },
@@ -114,13 +114,13 @@
       "declared_count": {"name": "scan 类别数 / collectors 数 / LPE CVE 数", "value": "19 scan 类别 / 18 collector 文件 / 16 LPE CVE", "source": "internal/command/command.go case 枚举 / internal/collectors/ / README.en.md LPE 表"},
       "features": [
         {"name": "safe/full 双模式（full 含主动探测 dry-run/syscall）", "source": "README.en.md Key Features", "status": "we-have", "maps_to": "min_level 分级（只读侦察/主动探测/利用验证）+ writes 闸门", "action": "已对齐"},
-        {"name": "敏感证据 raw/redact/metadata 三态", "source": "README.en.md Sensitive data egress protection", "status": "we-have", "missing": "", "action": "已对齐（CM-06）", "maps_to": "trident/kubetrail/redact3.py（raw/redact/metadata 引用式）"},
+        {"name": "敏感证据 raw/redact/metadata 三态", "source": "README.en.md Sensitive data egress protection", "status": "we-have", "missing": "", "action": "已对齐（CM-06）", "maps_to": "inkblade/kubetrail/redact3.py（raw/redact/metadata 引用式）"},
         {"name": "rbac-mode focused/full（SSRR/SSAR 全矩阵+通配符展开）", "source": "README.en.md Server Options", "status": "we-have", "missing": "", "action": "已对齐（CM-05）", "maps_to": "kubetrail-token-audit（逐 token JWT/有效期/权限）"},
         {"name": "in-pod 原生采集（免 kubectl，in-cluster SA）", "source": "README.en.md", "status": "we-have", "missing": "", "action": "已对齐（CM-22）", "maps_to": "kubetrail-collector（13 bucket，root 只读副本/inpod view）"},
         {"name": "AI 动态攻击编排（Claude/Codex + EXP Forge + C2 MCP）", "source": "README.en.md AI dynamic attack orchestration", "status": "partial", "missing": "agent_planner 推荐+审批已有；EXP Forge/C2 不做", "action": "维持 Ruling（自主执行/C2 刻意不做）"},
         {"name": "桌面后渗透工作台（kubeconfig/端口转发/文件访问）", "source": "README.en.md Local post-exploitation workbench", "status": "missing", "missing": "刻意不做（可审计交付 vs 交互后渗透台，REFLECTION §2）", "action": "不入 backlog"},
         {"name": "持久化模板快速生成（SA/RBAC/CSR/sidecar/pull secret/CronJob）", "source": "README.en.md Fast persistence workflows", "status": "missing", "missing": "持久化模板面（演示类）不设", "action": "不入 backlog（授权演练边界）"},
-        {"name": "dbus.json 导出 + 交互分析", "source": "core/auditlog.py::adapt_kubetrail（适配器已接）", "status": "we-have", "maps_to": "trident/core/auditlog.py 适配", "action": "已对齐"}
+        {"name": "dbus.json 导出 + 交互分析", "source": "core/auditlog.py::adapt_kubetrail（适配器已接）", "status": "we-have", "maps_to": "inkblade/core/auditlog.py 适配", "action": "已对齐"}
       ],
       "surfaces": [
         {"name": "容器本地态势（/proc /sys cgroup socket 挂载）", "source": "internal/collectors/{proc,filesystem,runtime_local,node_local}.go", "status": "we-have", "missing": "", "action": "已对齐（CM-22）", "maps_to": "kubetrail-collector（/proc /sys cgroup socket 挂载）"},
@@ -182,7 +182,7 @@
       "declared_count": {"name": "主菜单命令数", "value": "37 条文档化命令（manifest.tsv 与菜单源码由自动 Go 测试对齐）", "source": "docs/commands/README.md"},
       "features": [
         {"name": "交互式攻击操作台（sa-context 切换/namespace 切换）", "source": "docs/commands/README.md", "status": "missing", "missing": "刻意不做（可审计交付定位，COMPETITIVE-MATRIX §4 Peirates 行：无补齐项）", "action": "不入 backlog"},
-        {"name": "一次性模块模式（peirates -m '<command>' 非交互）", "source": "docs/commands/README.md", "status": "we-have", "maps_to": "trident CLI 单命令 run 模式", "action": "已对齐"},
+        {"name": "一次性模块模式（peirates -m '<command>' 非交互）", "source": "docs/commands/README.md", "status": "we-have", "maps_to": "inkblade CLI 单命令 run 模式", "action": "已对齐"},
         {"name": "多上下文批量尝试（kubectl-try-all-until-success）", "source": "docs/commands/README.md", "status": "partial", "missing": "多凭据上下文轮试面", "action": "并入 CM-21（凭据验证）"}
       ],
       "surfaces": [
@@ -202,7 +202,7 @@
       "verification": {"mode": "official-docs", "verified_pages": 1, "page_list": ["https://raw.githubusercontent.com/quarkslab/kdigger/main/README.md"], "completeness": "list-level-exhaustive（bucket 全清单）"},
       "declared_count": {"name": "bucket 插件数", "value": "20（README 声明 around twenty plugins，ls 表逐一对应）", "source": "README.md Buckets 表"},
       "features": [
-        {"name": "插件式 bucket 架构（可扩展 template）", "source": "README.md How is this tool built", "status": "we-have", "maps_to": "trident/modules/ 注册表架构（117 模块）", "action": "已对齐"},
+        {"name": "插件式 bucket 架构（可扩展 template）", "source": "README.md How is this tool built", "status": "we-have", "maps_to": "inkblade/modules/ 注册表架构（117 模块）", "action": "已对齐"},
         {"name": "json/human 双输出", "source": "README.md Usage", "status": "we-have", "maps_to": "findings TSV/JSON + 双语报告", "action": "已对齐"},
         {"name": "副作用开关（--side-effects 默认关）", "source": "README.md dig flags", "status": "we-have", "maps_to": "min_level + writes 分级", "action": "已对齐"}
       ],

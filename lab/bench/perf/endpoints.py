@@ -1,7 +1,7 @@
 """endpoints — 逐端点延迟全扫掠（维度①：端点全集 × 延迟，N>=10 全分布，读写分类）。
 
 设计：
-- 端点清单来自 routes.py 的静态提取（ARTEX server/*.go / Trident webui/server.py），
+- 端点清单来自 routes.py 的静态提取（ARTEX server/*.go / InkBlade webui/server.py），
   不许只测 health/submit —— 全部端点逐一测。
 - 每端点 N>=10 次顺序采样，报 min/median/p95/p99/max/mean/variance/stdev（stats.full_dist）。
 - 读端点直接测；写端点带最小合法载荷 + 可脚本化清理（choreography 表）；
@@ -54,13 +54,13 @@ ARTEX_DENY = {
 }
 
 
-# ================================================================ Trident
+# ================================================================ InkBlade
 
-def prepare_trident_root(root: Path) -> dict:
+def prepare_inkblade_root(root: Path) -> dict:
     """构造基准根：用户/已签 ROE 的工作区/带 findings+traffic 的证据 run/modules/rules-pack。"""
-    from trident.core.evidence import EvidenceStore
-    from trident.core.roe import init_roe
-    from trident.core.users import UserStore
+    from inkblade.core.evidence import EvidenceStore
+    from inkblade.core.roe import init_roe
+    from inkblade.core.users import UserStore
 
     root.mkdir(parents=True, exist_ok=True)
     users = UserStore(root / "users.json")
@@ -86,7 +86,7 @@ def prepare_trident_root(root: Path) -> dict:
          "req_body": "{}", "resp_bytes": 32},
     ])
     run.finalize_run()
-    mods_src = REPO_ROOT / "trident" / "modules"
+    mods_src = REPO_ROOT / "inkblade" / "modules"
     mods_dst = root / "modules"
     if not mods_dst.exists():
         mods_dst.mkdir()
@@ -99,11 +99,11 @@ def prepare_trident_root(root: Path) -> dict:
     return {"users": users, "workspace": "bench", "run": run.name, "findings": 20}
 
 
-def start_trident_server(root: Path, port: int, py_exe: str | None = None) -> subprocess.Popen:
-    """子进程起 trident ui（隔离 GIL，保证并发扫掠时延迟不被客户端进程扭曲）。"""
+def start_inkblade_server(root: Path, port: int, py_exe: str | None = None) -> subprocess.Popen:
+    """子进程起 inkblade ui（隔离 GIL，保证并发扫掠时延迟不被客户端进程扭曲）。"""
     py = py_exe or sys.executable
     proc = subprocess.Popen(
-        [py, "-m", "trident", "--home", str(root), "ui", "--port", str(port)],
+        [py, "-m", "inkblade", "--home", str(root), "ui", "--port", str(port)],
         cwd=str(REPO_ROOT), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     deadline = time.time() + 30
     while time.time() < deadline:
@@ -113,10 +113,10 @@ def start_trident_server(root: Path, port: int, py_exe: str | None = None) -> su
             return proc
         time.sleep(0.3)
     proc.kill()
-    raise RuntimeError("trident ui 未在 30s 内就绪")
+    raise RuntimeError("inkblade ui 未在 30s 内就绪")
 
 
-def trident_payloads(base: str, token: str) -> dict[tuple[str, str], dict]:
+def inkblade_payloads(base: str, token: str) -> dict[tuple[str, str], dict]:
     """(method, path) → {body, headers, choreography}。headers 默认带 Bearer。"""
     H = {"Authorization": f"Bearer {token}"}
     ex_params = {"base_url": "http://127.0.0.1:18080/", "target": "http://127.0.0.1:18080/"}
@@ -173,29 +173,29 @@ def trident_payloads(base: str, token: str) -> dict[tuple[str, str], dict]:
     }
 
 
-def sweep_trident(base: str, root: Path | None = None, port: int = 18790,
+def sweep_inkblade(base: str, root: Path | None = None, port: int = 18790,
                   n_reps: int = N_REPS, env: str = "host") -> dict:
     """起服务 → 全 25 端点 × N=10 → 全分布 JSON。root=None 时自建临时基准根。"""
     tmp = None
     if root is None:
-        tmp = tempfile.mkdtemp(prefix="trident-perf-root-")
+        tmp = tempfile.mkdtemp(prefix="inkblade-perf-root-")
         root = Path(tmp)
-    prepare_trident_root(root)
-    proc = start_trident_server(root, port)
+    prepare_inkblade_root(root)
+    proc = start_inkblade_server(root, port)
     base = base or f"http://127.0.0.1:{port}"
     try:
-        token, _ = login(base, "trident", "perf-lead", "perf")
-        routes = json.loads((GRID / "routes-trident.json").read_text(encoding="utf-8"))
+        token, _ = login(base, "inkblade", "perf-lead", "perf")
+        routes = json.loads((GRID / "routes-inkblade.json").read_text(encoding="utf-8"))
         results = []
         for ep in routes["endpoints"]:
             key = (ep["method"], ep["path"])
-            spec = trident_payloads(base, token).get(key)
+            spec = inkblade_payloads(base, token).get(key)
             if spec is None:
                 results.append({**ep, "dist": None, "note": "no payload spec (unreachable)"})
                 continue
             results.append(_measure_endpoint(base, key, ep, spec, n_reps))
-        payload = _wrap("trident", env, base, results,
-                        "Trident 端点全集来自 webui/server.py 静态提取；"
+        payload = _wrap("inkblade", env, base, results,
+                        "InkBlade 端点全集来自 webui/server.py 静态提取；"
                         "写端点带最小合法载荷，创建类带清理钩子；explorer 编排=先 propose 拿真实 id")
         return payload
     finally:
@@ -350,7 +350,7 @@ def _cleanup_artex(base: str, H: dict, fixture_task_id: str) -> dict:
 
 def _measure_endpoint(base: str, key: tuple[str, str], ep: dict, spec: dict,
                       n_reps: int, *, path_override: str | None = None) -> dict:
-    """单端点 N 次采样 → 全分布。fresh_login/alt_bodies/pre 编排仅 Trident 用。"""
+    """单端点 N 次采样 → 全分布。fresh_login/alt_bodies/pre 编排仅 InkBlade 用。"""
     method, path = key
     url = base + (path_override or path)
     if spec.get("query"):
@@ -367,7 +367,7 @@ def _measure_endpoint(base: str, key: tuple[str, str], ep: dict, spec: dict,
         if spec.get("pre"):
             pre_note, send_body = _run_pre(base, spec["pre"], headers, body)
         if spec.get("fresh_login"):
-            tok, _ = login(base, "trident", "perf-lead", "perf") if "trident" in url else \
+            tok, _ = login(base, "inkblade", "perf-lead", "perf") if "inkblade" in url else \
                 (None, None)
             if tok:
                 headers = {"Authorization": f"Bearer {tok}"}
@@ -395,7 +395,7 @@ def _measure_endpoint(base: str, key: tuple[str, str], ep: dict, spec: dict,
 
 
 def _run_pre(base: str, pre: str, headers: dict, body: dict) -> tuple[str, dict]:
-    """Trident explorer 编排：propose（±approve）拿真实 proposal id 注入 body。"""
+    """InkBlade explorer 编排：propose（±approve）拿真实 proposal id 注入 body。"""
     b = dict(body or {})
     note = pre
     pr = request_once(base + "/api/v1/explorer/propose", method="POST",
@@ -445,15 +445,15 @@ def main(argv: list[str] | None = None) -> int:
         except Exception:
             pass
     ap = argparse.ArgumentParser(description="端点全扫掠（延迟，N>=10 全分布）")
-    ap.add_argument("--tool", required=True, choices=["trident", "artex"])
+    ap.add_argument("--tool", required=True, choices=["inkblade", "artex"])
     ap.add_argument("--env", default="host", help="host|guest")
-    ap.add_argument("--base", default=None, help="被测基址（缺省 trident 自起子进程/artex 18787）")
+    ap.add_argument("--base", default=None, help="被测基址（缺省 inkblade 自起子进程/artex 18787）")
     ap.add_argument("--n", type=int, default=N_REPS)
     ap.add_argument("--grid", default=str(GRID))
     ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
-    if args.tool == "trident":
-        payload = sweep_trident(args.base or "", n_reps=args.n, env=args.env)
+    if args.tool == "inkblade":
+        payload = sweep_inkblade(args.base or "", n_reps=args.n, env=args.env)
     else:
         payload = sweep_artex(args.base or "http://127.0.0.1:18787", env=args.env,
                               n_reps=args.n, grid=Path(args.grid))

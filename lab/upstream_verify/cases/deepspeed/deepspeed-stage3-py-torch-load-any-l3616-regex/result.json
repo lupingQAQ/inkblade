@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "deepspeed-stage3-py-torch-load-any-l3616-regex",
  "source": "mining",
  "component": "deepspeed",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3616-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.199,
- "started_at": "2026-10-26T09:23:22+00:00",
+ "duration_s": 0.24,
+ "started_at": "2026-10-26T19:46:25+00:00",
  "marker": {
-  "text": "TRIDENT-UV-deepspeed-stage3-py-torch-load-any-l3616-regex",
+  "text": "INKBLADE-UV-deepspeed-stage3-py-torch-load-any-l3616-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,8 +47,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3616-regex/evidence/log.txt",
-   "sha256": "37894bc9fd5eb06d4820fb9e6214549f3503090a92d0bfe42aad38190ed56ef1",
-   "size": 265
+   "sha256": "ce5c33c7506cb004e511365729ac17cb89300231323bdc49f591300156797071",
+   "size": 264
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3616-regex/evidence/marker.txt",
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3616-regex/evidence/static-check.json",
-   "sha256": "d75dd159102355f3a2753cf714e8f001b114e5608f9ee332b678f695c9699f35",
-   "size": 1339
+   "sha256": "aa2f3232e0847e7b411c2d556c412f0f26227e106fccd8a68d922c1b3bfc88a5",
+   "size": 1340
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "13c0cd9941b44374daeac4ebad8efd2b2b904ad9eb182f01e34910339d9136f5",
+ "manifest_sha256": "6458d2009c8e58690ef4ecca63fc47f45bbcee53b4f4675c50aabbf6a9b37e2c",
  "stdout": "{\"status\": \"static-only\", \"case\": \"deepspeed-stage3-py-torch-load-any-l3616-regex\"}\n",
  "stderr": "",
  "notes": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced."

@@ -16,15 +16,15 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from lab.gpu_cloud_sim import ADMIN_TOKEN, TENANT_TOKENS, start_all
-from trident.core.backup import BackupManager
-from trident.core.evidence import EvidenceStore
-from trident.core.registry import load_modules
-from trident.core.roe import init_roe
-from trident.core.runner import BackupGateRefused, run_module
-from trident.core.users import UserStore
+from inkblade.core.backup import BackupManager
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.registry import load_modules
+from inkblade.core.roe import init_roe
+from inkblade.core.runner import BackupGateRefused, run_module
+from inkblade.core.users import UserStore
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
+MODULES_DIR = REPO / "inkblade" / "modules"
 
 MODULE_CASES = [
     {"key": "gpu-pool-scheduler-unauth", "series": "网络架构", "min_level": "利用验证", "writes": True, "mode": "backup-write"},
@@ -44,7 +44,7 @@ def load_run(key: str):
     import importlib.util
 
     spec = importlib.util.spec_from_file_location(
-        f"trident_gpu_cloud_{key.replace('-', '_')}", MODULES_DIR / key / "run.py")
+        f"inkblade_gpu_cloud_{key.replace('-', '_')}", MODULES_DIR / key / "run.py")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -53,7 +53,7 @@ def load_run(key: str):
 def make_ctx(key: str, tmp_root: Path) -> dict:
     store = EvidenceStore(tmp_root, workspace="gpu-cloud-lab")
     run = store.create_run(f"selftest-{key}")
-    return {"store": store, "run": run, "marker": "TRIDENT-selftest",
+    return {"store": store, "run": run, "marker": "INKBLADE-selftest",
             "backup": BackupManager(store, run), "actor": "tester",
             "meta": {"key": key, "writes": True}}
 
@@ -137,7 +137,7 @@ class VulnerableDetectionTest(unittest.TestCase):
         self.assertEqual(readback["marker_sha256"], expected)
         self.assertEqual(readback["readback_file_sha256"], readback["residue_file_sha256"])
         self.assertEqual(readback["victim_tenant"], "tenant-b")
-        self.assertIn("TRIDENT-BENIGN-", readback["marker"])
+        self.assertIn("INKBLADE-BENIGN-", readback["marker"])
 
     def test_cross_account_assume_role_success_and_masking(self):
         with TemporaryDirectory() as tmp:

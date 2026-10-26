@@ -11,7 +11,7 @@
 
 ## A1. HTTP 路由（server/*.go，含循环注册展开）（278 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `GET /api/auth/status` | server/server.go:692 | s.authStatus | we-have（core/users.py + webui/server.py /api/login） | - | JWT/会话登录等价 |
 | `POST /api/auth/init` | server/server.go:693 | s.authInit | partial（core/users.py） | S | 首启初始化向导缺独立端点（users.py 已有种子角色） |
@@ -298,7 +298,7 @@
 
 ## A2. 数据库表（db/schema.sql）（59 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `companies` | db/schema.sql:27 | 表 companies | partial（core/discovery.py AssetInventory） | M | 资产/公司实体持久化缺（发现结果入 evidence） |
 | `assets` | db/schema.sql:40 | 表 assets | partial（core/discovery.py AssetInventory） | M | 资产/公司实体持久化缺（发现结果入 evidence） |
@@ -362,7 +362,7 @@
 
 ## A3. Agent 组件（agent/*.go）（32 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `assembly.go` | agent/assembly.go:1 | 组件文件（types: DeferredInfo, guardedTool） | partial（core/chains.py + core/evidence.py） | S | 工具装配/捕获留档差异 |
 | `cancelcause.go` | agent/cancelcause.go:1 | 组件文件（types: AbortCause） | partial（core/runner.py abort/timeout） | S | 任务钟/终止原因留档细节缺 |
@@ -399,7 +399,7 @@
 
 ## A4. Web 页面（web/src/app/**/page.tsx）（29 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `/(auth)/login` | web/src/app/(auth)/login/page.tsx | Next.js 页面 | N/A | - | 外部落地页/类别外 |
 | `/(auth)/setup` | web/src/app/(auth)/setup/page.tsx | Next.js 页面 | N/A | - | 外部落地页/类别外 |
@@ -433,7 +433,7 @@
 
 ## A5. Web 组件（components + (main)/_components）（107 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `components/agent-editor.tsx` | web/src/components/agent-editor.tsx | UI 组件 | N/A | - | 未归类组件 |
 | `components/approval-execution-focus.tsx` | web/src/components/approval-execution-focus.tsx | UI 组件 | N/A | - | 未归类组件 |
@@ -545,7 +545,7 @@
 
 ## A6. 配置键（config.example.json）（7 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `database.host` | config.example.json | 配置键 = '127.0.0.1' | missing | - | PG 依赖（单机零依赖 evidence store，部署形态刻意差异） |
 | `database.port` | config.example.json | 配置键 = 5433 | missing | - | PG 依赖（单机零依赖 evidence store，部署形态刻意差异） |
@@ -557,7 +557,7 @@
 
 ## A7. 内置 skills（skills/）（3 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `api-recon` | skills/api-recon/ | 内置 skill 目录 | partial（modules/recon 族（exposure-mapping 等）） | - | API 面侦察细分模块 |
 | `playwright-cli` | skills/playwright-cli/ | 内置 skill 目录 | missing | M | 浏览器自动化 skill（Web UI 攻击面） |

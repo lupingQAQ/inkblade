@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "UCX-UCT-HW",
  "source": "mining",
  "component": "ucx",
@@ -31,10 +31,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/ucx/UCX-UCT-HW/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.095,
- "started_at": "2026-10-26T05:23:42+00:00",
+ "duration_s": 0.331,
+ "started_at": "2026-10-26T19:58:13+00:00",
  "marker": {
-  "text": "TRIDENT-UV-UCX-UCT-HW",
+  "text": "INKBLADE-UV-UCX-UCT-HW",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -45,7 +45,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/ucx/UCX-UCT-HW/evidence/log.txt",
-   "sha256": "25ddad2ad5448537f5d25033034c5ab4177d46601e173e86fd3206a9c6c800b5",
+   "sha256": "d5b86aef08a218393a6f976b54a483fd4e1bad13bc120ff6e06a7ee62ebc77d2",
    "size": 378
   },
   {
@@ -55,12 +55,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/ucx/UCX-UCT-HW/evidence/unsupported.json",
-   "sha256": "898721ea43c8b7f8c9dc06762ff60552b53fef4e07ca9633b508bf1b85deb2d4",
-   "size": 948
+   "sha256": "94ef3b3d0cf7916741e4c67a9c39eb77804b7f01c15fb552ceca67a009624229",
+   "size": 949
   }
  ],
  "poc_sha256": "8c43ff144a23e6e961076b0c4ab32cfe5e637403206fce521050ffb6dc8361c7",
- "manifest_sha256": "b26c291c19024928717331ae13538070df50f51ad180f61d8e314409d29673f8",
+ "manifest_sha256": "a1ee56be6deae1f511d59c363226ed7b1dc6107041a2aff66abd9a07dc496e56",
  "stdout": "{\"status\": \"unsupported\", \"case\": \"UCX-UCT-HW\", \"reason\": \"UCX is a Linux C library: UCT transports need IB/ROCm/SM/shm devices; ucx-py (the Python binding) needs the libucp shared object which cannot build or load on this Windows host.\"}\n",
  "stderr": "",
  "notes": "UCX v1.22.0: C transport library. The ucx-py binding was mined separately (see ucxpy cases); the core library is hardware-bound and marked unsupported."

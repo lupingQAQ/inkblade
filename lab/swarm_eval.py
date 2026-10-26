@@ -22,7 +22,7 @@ REPO = Path(__file__).resolve().parents[1]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from trident.core.swarm import Swarm  # noqa: E402
+from inkblade.core.swarm import Swarm  # noqa: E402
 
 OUT_DIR = REPO / "reports" / "samples" / "swarm-eval"
 DOC = REPO / "docs" / "SWARM-EVAL.md"
@@ -129,7 +129,7 @@ def run_eval(*, reps: int = 3, write: bool = True) -> dict:
     approval_speedup = round(one["approval_wall_ms"] / four["approval_wall_ms"], 2) \
         if four["approval_wall_ms"] else 0.0
     results = {
-        "schema": "trident-swarm-eval/1",
+        "schema": "inkblade-swarm-eval/1",
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "source": "simulated-local-multiprocess",
         "task_set": {
@@ -301,8 +301,8 @@ def render_doc(results: dict) -> str:
         "```bash",
         results["reproduce"],
         "python -m unittest tests.test_swarm -v",
-        "python -m trident swarm roles",
-        "python -m trident swarm run --tasks tasks.json --workers 4 --executor simulate",
+        "python -m inkblade swarm roles",
+        "python -m inkblade swarm run --tasks tasks.json --workers 4 --executor simulate",
         "```",
         "",
     ]

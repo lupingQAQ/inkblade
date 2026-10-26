@@ -1,6 +1,6 @@
 {
-  "generator": "trident.rules.privesc",
-  "matrix_schema": "trident-privesc-matrix-v1",
+  "generator": "inkblade.rules.privesc",
+  "matrix_schema": "inkblade-privesc-matrix-v1",
   "summary": {
     "vectors": 47,
     "rules": 47,

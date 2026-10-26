@@ -3,11 +3,11 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.agentops import run_approved_plan
-from trident.core.evidence import EvidenceStore
-from trident.core.skills import SkillLibrary
-from trident.core.supervisor import ApprovalRequired
-from trident.core.users import Session
+from inkblade.core.agentops import run_approved_plan
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.skills import SkillLibrary
+from inkblade.core.supervisor import ApprovalRequired
+from inkblade.core.users import Session
 
 
 class AgentOpsTest(unittest.TestCase):

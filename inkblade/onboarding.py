@@ -2,10 +2,10 @@
 
 三条命令覆盖陌生用户的前 5 分钟：
 
-- ``trident doctor``：环境自检，PASS/WARN/FAIL + 可复制修复命令；
-- ``trident demo``：一条命令跑完「建 demo 工作区 → 建 lead/tester → 签 demo 授权
+- ``inkblade doctor``：环境自检，PASS/WARN/FAIL + 可复制修复命令；
+- ``inkblade demo``：一条命令跑完「建 demo 工作区 → 建 lead/tester → 签 demo 授权
   → 起 mock 靶场 → 2 模块 + 1 链 → 双语报告 + 规则包」，默认只写 ``./demo``；
-- ``trident quickstart``：5 问向导（目标/范围/级别/用户/签授权），失败可重入。
+- ``inkblade quickstart``：5 问向导（目标/范围/级别/用户/签授权），失败可重入。
 
 设计边界：demo 只监听 127.0.0.1、只用 mock/fixture、不读真实 kubeconfig、不写
 ``./demo`` 以外的用户数据；所有授权仍走 ``EvidenceStore.pin_roe`` 的真实签名路径。
@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Any, Callable, Iterable
 
 DEMO_WORKSPACE = "demo-lab"
-DEMO_MARKER = ".trident-demo"
+DEMO_MARKER = ".inkblade-demo"
 DEMO_CHAIN = "flat-network-admin-plane-weight-poison"
 DEMO_LEVEL = "全影响演示"
 LEVELS = ["只读侦察", "主动探测", "利用验证", "全影响演示"]
@@ -89,7 +89,7 @@ def _load_mock_module(repo: Path):
             "找不到 lab/mock_targets.py：demo 需要仓库内的本地 mock 靶场。"
             "请在完整仓库根目录运行，或重新克隆仓库。"
         )
-    spec = importlib.util.spec_from_file_location("trident_lab_mock_targets", path)
+    spec = importlib.util.spec_from_file_location("inkblade_lab_mock_targets", path)
     if spec is None or spec.loader is None:
         raise DemoRefused(f"无法加载 mock 靶场：{path}")
     mod = importlib.util.module_from_spec(spec)
@@ -148,7 +148,7 @@ def _looks_like_kubeconfig(path: Path) -> tuple[bool, str]:
 
 
 def _repo_dirs(repo: Path) -> tuple[Path, Path]:
-    return repo / "trident" / "modules", repo / "trident" / "chains"
+    return repo / "inkblade" / "modules", repo / "inkblade" / "chains"
 
 
 # --------------------------------------------------------------------------- doctor
@@ -182,29 +182,29 @@ def doctor(
     else:
         items.append(_item(
             "python", "FAIL", f"Python {ver} 过低",
-            "Trident 需要 Python 3.10+。",
-            "安装 Python 3.10+ 并用新解释器重跑：python -m trident doctor",
+            "InkBlade 需要 Python 3.10+。",
+            "安装 Python 3.10+ 并用新解释器重跑：python -m inkblade doctor",
         ))
 
     # 2) 入口 / 包
     try:
-        spec = importlib.util.find_spec("trident")
+        spec = importlib.util.find_spec("inkblade")
         pkg = getattr(spec, "origin", "") if spec else ""
-        entry = shutil.which("trident")
+        entry = shutil.which("inkblade")
         if entry:
-            items.append(_item("entry", "PASS", "trident 命令可用", entry))
+            items.append(_item("entry", "PASS", "inkblade 命令可用", entry))
         else:
             items.append(_item(
-                "entry", "WARN", "未检测到 trident 命令入口",
-                "仍可用 python -m trident 运行。",
-                "可选：python -m pip install -e . 后直接使用 trident 命令。",
+                "entry", "WARN", "未检测到 inkblade 命令入口",
+                "仍可用 python -m inkblade 运行。",
+                "可选：python -m pip install -e . 后直接使用 inkblade 命令。",
             ))
     except Exception as exc:  # noqa: BLE001
-        items.append(_item("entry", "FAIL", "无法导入 trident", str(exc),
+        items.append(_item("entry", "FAIL", "无法导入 inkblade", str(exc),
                            "在仓库根目录重跑；或 python -m pip install -e ."))
 
     # 3) 写权限 + 磁盘
-    probe = base / f".trident-doctor-{os.getpid()}-{secrets.token_hex(3)}"
+    probe = base / f".inkblade-doctor-{os.getpid()}-{secrets.token_hex(3)}"
     try:
         base.mkdir(parents=True, exist_ok=True)
         probe.write_text("ok", encoding="utf-8")
@@ -213,7 +213,7 @@ def doctor(
     except OSError as exc:
         items.append(_item(
             "write", "FAIL", "工作目录不可写", f"{base}: {exc}",
-            "换到可写目录：cd %TEMP% 或在命令里加 --home %TEMP%\\trident-workspace；"
+            "换到可写目录：cd %TEMP% 或在命令里加 --home %TEMP%\\inkblade-workspace；"
             "Windows 请检查文件属性/杀软只读保护。",
         ))
     try:
@@ -236,7 +236,7 @@ def doctor(
             items.append(_item(
                 "port", "FAIL", f"端口 {port} 已被占用",
                 "Web UI 无法绑定 127.0.0.1:%d。" % int(port),
-                f"换端口：python -m trident ui --port {int(port) + 1}；"
+                f"换端口：python -m inkblade ui --port {int(port) + 1}；"
                 f"或停止占用进程（Windows: netstat -ano | findstr :{int(port)}）。",
             ))
 
@@ -273,9 +273,9 @@ def doctor(
         if not mock_ok:
             miss.append("lab/mock_targets.py")
         if not modules_dir.is_dir():
-            miss.append("trident/modules")
+            miss.append("inkblade/modules")
         if not chains_dir.is_dir():
-            miss.append("trident/chains")
+            miss.append("inkblade/chains")
         items.append(_item(
             "mock", "FAIL", "demo 所需的本地数据缺失",
             "缺少：" + "、".join(miss),
@@ -293,7 +293,7 @@ def doctor(
             items.append(_item(
                 "kubeconfig", "FAIL" if mode == "cluster" else "WARN",
                 "kubeconfig 不可用", kc_reason,
-                "换一个 kubeconfig 或运行 python -m trident quickstart 选择 demo 模式。",
+                "换一个 kubeconfig 或运行 python -m inkblade quickstart 选择 demo 模式。",
             ))
     else:
         status = "FAIL" if mode == "cluster" else "WARN"
@@ -301,7 +301,7 @@ def doctor(
             "kubeconfig", status, "未检测到 kubeconfig",
             "真实集群模式需要凭据；demo 模式不需要。",
             "设置 KUBECONFIG、放到 ~/.kube/config，或 quickstart 里填写路径；"
-            "只想体验：python -m trident demo。",
+            "只想体验：python -m inkblade demo。",
         ))
 
     # 8) bash / kubectl（仅部分 lab 脚本需要）
@@ -312,7 +312,7 @@ def doctor(
         "PASS" if bash else "WARN",
         "bash 可用" if bash else "未找到 bash（demo 不需要）",
         bash or "KIND/WSL/部分 lab 脚本需要 bash；核心 Python 流程不需要。",
-        "" if bash else "Windows 安装 Git Bash 或 WSL2 并加入 PATH；或只跑 python -m trident demo。",
+        "" if bash else "Windows 安装 Git Bash 或 WSL2 并加入 PATH；或只跑 python -m inkblade demo。",
     ))
     items.append(_item(
         "kubectl",
@@ -337,16 +337,16 @@ def doctor(
                 items.append(_item(
                     "consent", "FAIL", f"工作区 {workspace} 授权异常（{status}）",
                     "consent.json 存在但验签失败或已损坏。",
-                    "重新签署：python -m trident quickstart --workspace-dir " + str(home_path),
+                    "重新签署：python -m inkblade quickstart --workspace-dir " + str(home_path),
                 ))
         except Exception as exc:  # noqa: BLE001
             items.append(_item("consent", "WARN", "无法读取授权状态", str(exc),
-                               "可运行 python -m trident quickstart 重建工作区。"))
+                               "可运行 python -m inkblade quickstart 重建工作区。"))
     else:
         items.append(_item(
             "consent", "WARN", f"工作区 {workspace} 尚未签授权",
             "demo 会自动签 demo 范围授权；真实集群请用 quickstart。",
-            "python -m trident demo（demo 范围）；或 python -m trident quickstart（真实/自定义范围）。",
+            "python -m inkblade demo（demo 范围）；或 python -m inkblade quickstart（真实/自定义范围）。",
         ))
 
     # 10) 时钟（授权时间窗依赖）
@@ -362,12 +362,12 @@ def doctor(
     if fails:
         conclusion = (
             f"结论：有 {len(fails)} 项阻塞（FAIL），先按上面的「修复」处理；"
-            "修完重跑 python -m trident doctor。"
+            "修完重跑 python -m inkblade doctor。"
         )
     else:
         chosen = "真集群" if (mode == "cluster" and kc_ok) else "本地 mock"
         conclusion = (
-            f"结论：环境可用（{chosen}）。推荐下一步：python -m trident demo"
+            f"结论：环境可用（{chosen}）。推荐下一步：python -m inkblade demo"
             "（本地 mock，约 10 秒出报告）。"
         )
 
@@ -379,7 +379,7 @@ def doctor(
         ))
         return 0 if not fails else 1
 
-    print("Trident doctor — 环境自检")
+    print("InkBlade doctor — 环境自检")
     print("=" * 56)
     for it in items:
         print(f"[{it['status']}] {it['title']}")
@@ -412,12 +412,12 @@ def _prepare_demo_dir(out: Path) -> Path:
     marker = out / DEMO_MARKER
     if out.exists() and any(out.iterdir()) and not marker.exists():
         raise DemoRefused(
-            f"输出目录 {out} 非空且不是 Trident demo 目录。"
+            f"输出目录 {out} 非空且不是 InkBlade demo 目录。"
             "为避免覆盖你的文件，请换 --out <新目录>，或手动清空后重试。"
         )
     out.mkdir(parents=True, exist_ok=True)
     marker.write_text(
-        json.dumps({"tool": "trident demo", "created_at": datetime.now().isoformat(timespec="seconds")},
+        json.dumps({"tool": "inkblade demo", "created_at": datetime.now().isoformat(timespec="seconds")},
                    ensure_ascii=False),
         encoding="utf-8",
     )
@@ -438,7 +438,7 @@ def run_demo(
     t0 = time.monotonic()
     explicit_out = Path(out).expanduser()
     if temp:
-        root = Path(tempfile.mkdtemp(prefix="trident-demo-"))
+        root = Path(tempfile.mkdtemp(prefix="inkblade-demo-"))
     else:
         root = explicit_out
     _prepare_demo_dir(root)
@@ -458,7 +458,7 @@ def run_demo(
     modules_dir, chains_dir = _repo_dirs(repo)
     if not modules_dir.is_dir() or not chains_dir.is_dir():
         raise DemoRefused(
-            "demo 需要 trident/modules 与 trident/chains（源码仓库数据文件），"
+            "demo 需要 inkblade/modules 与 inkblade/chains（源码仓库数据文件），"
             "当前安装形态缺少它们；请在完整仓库根目录运行。"
         )
 
@@ -481,7 +481,7 @@ def run_demo(
             "namespaces": ["train", "infer", "default", "ray-system", "ml-agent"],
             "cidrs": ["127.0.0.0/8"],
             "window": _now_window(days=7),
-            "client": "Trident Demo（synthetic mock；lab-only）",
+            "client": "InkBlade Demo（synthetic mock；lab-only）",
             "demo": True,
         }
         init_roe(store, fields=fields)
@@ -514,7 +514,7 @@ def run_demo(
         # 1 条链：平网 → 管理面 → 权重投毒（写步骤带 HTTP 备份回执）
         chains = load_chains(chains_dir)
         if DEMO_CHAIN not in chains:
-            raise DemoRefused(f"找不到 demo 链 {DEMO_CHAIN}（trident/chains 不完整）")
+            raise DemoRefused(f"找不到 demo 链 {DEMO_CHAIN}（inkblade/chains 不完整）")
         chain = copy.deepcopy(chains[DEMO_CHAIN])
         for st in chain.get("steps", []):
             st.setdefault("params", {})["target"] = lab.url("")
@@ -578,8 +578,8 @@ def run_demo(
             "mock_url": lab.url("/"),
             "next_steps": [
                 "打开报告：%s" % (paths["reports"] / "pentest-bi.md").resolve(),
-                "启动控制台：python -m trident --home %s ui --port 8765" % paths["workspace"].resolve(),
-                "接真实集群：python -m trident quickstart",
+                "启动控制台：python -m inkblade --home %s ui --port 8765" % paths["workspace"].resolve(),
+                "接真实集群：python -m inkblade quickstart",
             ],
         }
         (paths["reports"] / "summary.json").write_text(
@@ -613,7 +613,7 @@ def run_demo(
 
 
 def _print_demo_summary(s: dict[str, Any], *, no_ui: bool) -> None:
-    print("Trident demo 完成")
+    print("InkBlade demo 完成")
     print("=" * 64)
     print(f"耗时：{s['elapsed_seconds']} 秒（目标 ≤60 秒）")
     print(f"工作区：{s['workspace']}（{s['workspace_name']}）")
@@ -692,7 +692,7 @@ def _prompt_kubeconfig(inputs: Callable[[str], str], default: str) -> Path:
 
 
 def run_quickstart(
-    workspace_dir: str | Path = "trident-workspace",
+    workspace_dir: str | Path = "inkblade-workspace",
     *,
     inputs: Callable[[str], str] | None = None,
     yes: bool = False,
@@ -723,7 +723,7 @@ def run_quickstart(
     ws_cfg = read_workspace_config(store)
     existing_target = (ws_cfg.get("target") or {}) if isinstance(ws_cfg, dict) else {}
 
-    print("Trident quickstart — 5 问签授权（可随时 Ctrl+C；失败可重跑）")
+    print("InkBlade quickstart — 5 问签授权（可随时 Ctrl+C；失败可重跑）")
     print("=" * 64)
 
     # Q1 目标
@@ -747,7 +747,7 @@ def run_quickstart(
             if kc_path is None:
                 raise QuickstartAbort(
                     "选择了真实集群但未找到 kubeconfig；请加 --kubeconfig <路径>，"
-                    "或先运行 python -m trident demo 体验本地模式。"
+                    "或先运行 python -m inkblade demo 体验本地模式。"
                 )
             ok, reason = _looks_like_kubeconfig(kc_path) if kc_path.is_file() else (False, f"文件不存在：{kc_path}")
             if not ok:
@@ -805,7 +805,7 @@ def run_quickstart(
     if lead == "tester":
         raise QuickstartAbort("lead 用户名不能与内置 tester 冲突；请换一个名字。")
     if password is None:
-        generated = "Trident-" + secrets.token_urlsafe(6)
+        generated = "InkBlade-" + secrets.token_urlsafe(6)
         if yes:
             password = generated
         else:
@@ -819,7 +819,7 @@ def run_quickstart(
         "namespaces": ns_list,
         "cidrs": cidr_list,
         "window": _now_window(days=7),
-        "client": "Trident quickstart（%s）" % ("real-cluster" if target == "cluster" else "demo"),
+        "client": "InkBlade quickstart（%s）" % ("real-cluster" if target == "cluster" else "demo"),
     }
     print("第 5/5 问：确认授权")
     print(json.dumps(fields, ensure_ascii=False, indent=2))
@@ -832,7 +832,7 @@ def run_quickstart(
         answer = _prompt(ask, "确认并签署？[Y/n]: ", "y").lower()
         confirmed = answer in ("y", "yes", "是")
     if not confirmed:
-        raise QuickstartAbort("已取消签署；未写入授权。可重跑 python -m trident quickstart。")
+        raise QuickstartAbort("已取消签署；未写入授权。可重跑 python -m inkblade quickstart。")
 
     same = bool(existing_fields) and existing_fields.get("level") == level and \
         existing_fields.get("namespaces") == ns_list and existing_fields.get("cidrs") == cidr_list
@@ -883,12 +883,12 @@ def run_quickstart(
         print("")
         print("下一步：")
         if target == "cluster":
-            print(f"  1. 自检：python -m trident doctor --mode cluster --kubeconfig \"{kc_path}\"")
-            print(f"  2. 只读 dry-run：python -m trident --home \"{ws_root}\" "
+            print(f"  1. 自检：python -m inkblade doctor --mode cluster --kubeconfig \"{kc_path}\"")
+            print(f"  2. 只读 dry-run：python -m inkblade --home \"{ws_root}\" "
                   f"execute --workspace {QUICKSTART_WORKSPACE} --chain {DEMO_CHAIN} --dry-run")
             print("  3. 确认计划后去掉 --dry-run；写类步骤仍需 backup_targets。")
         else:
-            print("  1. 看完整演示：python -m trident demo")
-            print(f"  2. 启动控制台：python -m trident --home \"{ws_root}\" ui --port 8765")
-            print("  3. 接真实集群：python -m trident quickstart（选 2，填 kubeconfig）")
+            print("  1. 看完整演示：python -m inkblade demo")
+            print(f"  2. 启动控制台：python -m inkblade --home \"{ws_root}\" ui --port 8765")
+            print("  3. 接真实集群：python -m inkblade quickstart（选 2，填 kubeconfig）")
     return 0

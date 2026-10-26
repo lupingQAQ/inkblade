@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Trident 控制台 · 十视图</title>
+<title>InkBlade 控制台 · 十视图</title>
 <link rel="stylesheet" href="vendor/reactflow.style.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
-  <div class="brand">Trident<small data-i18n="brand.sub">ML 集群渗透测试控制台 · 十视图</small></div>
+  <div class="brand">InkBlade<small data-i18n="brand.sub">ML 集群渗透测试控制台 · 十视图</small></div>
   <span class="pill" id="mode-pill">本地模式 · 全离线</span>
   <span class="pill" id="session-pill" hidden></span>
   <form id="login-form" hidden>
@@ -25,10 +25,10 @@
 
 <section id="demo-guide" class="demo-guide" aria-label="首次使用引导">
   <div class="demo-guide-copy">
-    <strong data-i18n="guide.title">第一次用 Trident？2 条命令看结果</strong>
+    <strong data-i18n="guide.title">第一次用 InkBlade？2 条命令看结果</strong>
     <span data-i18n="guide.body">本地 mock 靶场，不碰真实集群；约 10–20 秒生成发现、双语报告与规则包。</span>
     <div class="demo-guide-cmds">
-      <code>python -m trident doctor</code><span>→</span><code>python -m trident demo</code>
+      <code>python -m inkblade doctor</code><span>→</span><code>python -m inkblade demo</code>
     </div>
     <div class="demo-guide-flow">
       <span><b>1</b> <span data-i18n="guide.step1">环境自检</span> <code>doctor</code></span>
@@ -37,7 +37,7 @@
     </div>
   </div>
   <div class="demo-guide-actions">
-    <span class="hint"><span data-i18n="guide.cluster">真实集群：</span><code>python -m trident onboard-cluster --dry-run</code></span>
+    <span class="hint"><span data-i18n="guide.cluster">真实集群：</span><code>python -m inkblade onboard-cluster --dry-run</code></span>
     <span class="hint" data-i18n="guide.kubeconfig">自动发现 KUBECONFIG / ~/.kube/config；先 dry-run 不碰集群。</span>
     <button type="button" id="demo-guide-close" data-i18n="guide.dismiss">知道了</button>
   </div>
@@ -167,12 +167,12 @@
   </section>
 </main>
 
-<footer><span data-i18n="footer.line">Trident · 资产全部本地内嵌（无 CDN）· 证据三层：上下文摘要 / 数据库 / 归档（tar+SHA256）</span></footer>
+<footer><span data-i18n="footer.line">InkBlade · 资产全部本地内嵌（无 CDN）· 证据三层：上下文摘要 / 数据库 / 归档（tar+SHA256）</span></footer>
 
 <script src="vendor/react.production.min.js"></script>
 <script src="vendor/react-dom.production.min.js"></script>
 <script src="vendor/reactflow.umd.min.js"></script>
-<!-- TRIDENT_DATA -->
+<!-- INKBLADE_DATA -->
 <script src="app.js"></script>
 </body>
 </html>

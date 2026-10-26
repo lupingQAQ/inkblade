@@ -13,7 +13,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.sandbox import Sandbox, SandboxError, run_untrusted
+from inkblade.core.sandbox import Sandbox, SandboxError, run_untrusted
 
 
 class SandboxExecuteTest(unittest.TestCase):

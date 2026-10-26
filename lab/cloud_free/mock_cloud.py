@@ -26,8 +26,8 @@ from .signing import (aws_canonical_request, aws_signature, azure_signature)
 
 DEFAULT_ACCOUNT = "devstoreaccount1"
 DEFAULT_AZURE_KEY = "dHJpZGVudC1henVyZS1rZXk="
-DEFAULT_AWS_ACCESS = "trident"
-DEFAULT_AWS_SECRET = "trident-secret"
+DEFAULT_AWS_ACCESS = "inkblade"
+DEFAULT_AWS_SECRET = "inkblade-secret"
 
 
 @dataclass
@@ -146,7 +146,7 @@ class _Handler(BaseHTTPRequestHandler):
     # ---------- errors ----------
     def _aws_error(self, status: int, code: str, message: str) -> None:
         body = (f'<?xml version="1.0" encoding="UTF-8"?><Error><Code>{escape(code)}</Code>'
-                f'<Message>{escape(message)}</Message><RequestId>trident-mock</RequestId></Error>')
+                f'<Message>{escape(message)}</Message><RequestId>inkblade-mock</RequestId></Error>')
         self._send(status, body.encode(), {"Content-Type": "application/xml"})
 
     def _azure_error(self, status: int, code: str, message: str) -> None:
@@ -385,7 +385,7 @@ class MockCloudServer:
 
 def main(argv=None) -> int:
     import argparse
-    ap = argparse.ArgumentParser(description="Trident free-cloud mock endpoints")
+    ap = argparse.ArgumentParser(description="InkBlade free-cloud mock endpoints")
     ap.add_argument("--port", type=int, default=0)
     args = ap.parse_args(argv)
     server = MockCloudServer(port=args.port).start()

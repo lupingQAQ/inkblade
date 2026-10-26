@@ -5,7 +5,7 @@
 - 产物：sigma/*.yaml、falco/*.yaml、kyverno/*.yaml、coverage.json/md、README.md。
 
 规则口径：Sigma 的 `detection.selection` 使用 K8s audit 字段路径（objectRef.resource 等）；
-`custom.trident-replay` 记录内置匹配器的扁平规格，便于在无 SIEM 环境复现命中。
+`custom.inkblade-replay` 记录内置匹配器的扁平规格，便于在无 SIEM 环境复现命中。
 Falco 规则为行为化签名（socket/路径/端口/进程），monitor 标签；不包含真实利用 payload。
 """
 
@@ -53,32 +53,32 @@ def _uuid(seed: str) -> str:
 
 def _sigma_text(v: dict) -> str:
     d = v["detect"]
-    tags = ["attack.privilege_escalation", "trident", f"trident.vector.{v['category']}"]
+    tags = ["attack.privilege_escalation", "inkblade", f"inkblade.vector.{v['category']}"]
     tags += [f"attack.{m.lower()}" for m in v.get("mitre", [])]
     doc = {
         "kind": "SigmaRule",
         "title": v["title"]["zh"],
-        "id": _uuid(f"trident-sigma-privesc-{v['id']}"),
+        "id": _uuid(f"inkblade-sigma-privesc-{v['id']}"),
         "status": "stable",
         "description": v["primitive"],
         "references": [s["ref"] for s in v.get("sources", [])],
-        "author": "Trident privesc matrix",
+        "author": "InkBlade privesc matrix",
         "metadata": {
-            "author": "Trident privesc matrix",
-            "annotations": {"trident.io/vector": v["id"], "trident.io/module": v["module"]},
+            "author": "InkBlade privesc matrix",
+            "annotations": {"inkblade.io/vector": v["id"], "inkblade.io/module": v["module"]},
         },
         "date": "2026/10/26",
         "logsource": d.get("logsource") or {"product": "kubernetes", "service": "audit"},
         "detection": {"selection": d["selection"], "condition": "selection"},
         "falsepositives": ["授权的运维/CI 变更（按主体白名单收敛）"],
         "level": LEVEL.get(v["category"], "high"),
-        "tags": tags + ["trident-mode-monitor"],
+        "tags": tags + ["inkblade-mode-monitor"],
         "custom": {
-            "trident-mode": "monitor",
-            "trident-vector": v["id"],
-            "trident-module": v["module"],
-            "trident-detection-point": d["point"],
-            "trident-replay": {"match": {"engine": "sigma", "logsource": d.get("logsource"),
+            "inkblade-mode": "monitor",
+            "inkblade-vector": v["id"],
+            "inkblade-module": v["module"],
+            "inkblade-detection-point": d["point"],
+            "inkblade-replay": {"match": {"engine": "sigma", "logsource": d.get("logsource"),
                                           "selection": d["selection"]},
                                "event": d["event"]},
         },
@@ -100,15 +100,15 @@ def _falco_text(v: dict) -> str:
     d = v["detect"]
     filters = " and ".join(_falco_cond(k, val) for k, val in d.get("filter", {}).items())
     rule = {
-        "rule": f"Trident Privesc {v['id']}",
+        "rule": f"InkBlade Privesc {v['id']}",
         "desc": v["title"]["zh"],
         "condition": "evt.type in (open,openat,connect,execve) and " + filters,
-        "output": "Trident privilege-escalation primitive "
+        "output": "InkBlade privilege-escalation primitive "
                   f"(vector={v['id']} module={v['module']} proc=%proc.name)",
         "priority": "CRITICAL" if v["category"] == "node" else "WARNING",
-        "tags": ["trident", "privesc", v["category"], v["id"]],
+        "tags": ["inkblade", "privesc", v["category"], v["id"]],
     }
-    return "# trident.io/vector: " + v["id"] + "\n# detection-point: " + d["point"] + "\n" + yaml_dump([rule])
+    return "# inkblade.io/vector: " + v["id"] + "\n# detection-point: " + d["point"] + "\n" + yaml_dump([rule])
 
 
 def _admission_doc(vec_id: str, rule_id: str) -> dict:
@@ -172,11 +172,11 @@ def _admission_doc(vec_id: str, rule_id: str) -> dict:
         "apiVersion": "kyverno.io/v1",
         "kind": "ClusterPolicy",
         "metadata": {
-            "name": f"trident-{rule_id}",
+            "name": f"inkblade-{rule_id}",
             "annotations": {
-                "trident.io/mode": "monitor",
-                "trident.io/vector": vec_id,
-                "trident.io/tuning": "先 Audit 观察基线；确认无合法例外后切 Enforce",
+                "inkblade.io/mode": "monitor",
+                "inkblade.io/vector": vec_id,
+                "inkblade.io/tuning": "先 Audit 观察基线；确认无合法例外后切 Enforce",
             },
         },
         "spec": {"validationFailureAction": "Audit", "background": True, "rules": [rule]},
@@ -245,7 +245,7 @@ def purple_replay(matrix: dict | None = None, strict: bool = True) -> dict:
 
 def _coverage_md(m: dict, result: dict) -> str:
     lines = [
-        "# Trident 提权检测覆盖（Purple Replay）",
+        "# InkBlade 提权检测覆盖（Purple Replay）",
         "",
         f"- 向量：{result['vectors']}；命中：{result['hit']}；漏过：{len(result['missed'])}",
         f"- 判定：{'PASS' if result['ok'] else 'FAIL'}",
@@ -279,7 +279,7 @@ def write_rule_pack(matrix: dict | None = None, out_dir: Path | str = ".") -> di
     for doc in pack["admission"]:
         write(f"kyverno/{doc['rule_id']}.yaml", doc["text"])
     coverage = {
-        "generator": "trident.rules.privesc",
+        "generator": "inkblade.rules.privesc",
         "matrix_schema": m.get("schema", ""),
         "summary": {"vectors": result["vectors"], "rules": result["rules"],
                     "hit": result["hit"], "missed": len(result["missed"]), "ok": result["ok"]},
@@ -289,17 +289,17 @@ def write_rule_pack(matrix: dict | None = None, out_dir: Path | str = ".") -> di
     write("coverage.json", json.dumps(coverage, ensure_ascii=False, indent=2))
     write("coverage.md", _coverage_md(m, result))
     readme = [
-        "# Trident 提权检测规则包",
+        "# InkBlade 提权检测规则包",
         "",
-        "由 `trident privesc detections` 生成。每个提权向量至少 1 条 Sigma/Falco 规则；",
+        "由 `inkblade privesc detections` 生成。每个提权向量至少 1 条 Sigma/Falco 规则；",
         "另有 6 条 Kyverno ClusterPolicy（Audit 模式）。",
         "",
         f"- 向量 {result['vectors']}；规则 {result['rules']}；紫队命中 {result['hit']}/{result['vectors']}",
         "- Sigma：K8s audit 字段路径；Falco：行为化签名（monitor 标签）",
         "- 先以 monitor/Audit 观察基线，再按主体白名单切 Enforce/Block",
         "",
-        "复现：`trident privesc detections --out reports/rules-pack`；"
-        "`trident rules validate --pack reports/rules-pack` 会附带 `privesc` 覆盖结果。",
+        "复现：`inkblade privesc detections --out reports/rules-pack`；"
+        "`inkblade rules validate --pack reports/rules-pack` 会附带 `privesc` 覆盖结果。",
         "",
     ]
     write("README.md", "\n".join(readme))

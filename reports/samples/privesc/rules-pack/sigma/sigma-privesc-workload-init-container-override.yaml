@@ -7,12 +7,12 @@ references:
   - "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
   - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
   - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: workload-init-container-override
-    trident.io/module: privileged-workloads
+    inkblade.io/vector: workload-init-container-override
+    inkblade.io/module: privileged-workloads
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -30,17 +30,17 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.workload
+  - inkblade
+  - inkblade.vector.workload
   - attack.t1610
   - attack.t1611
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: workload-init-container-override
-  trident-module: privileged-workloads
-  trident-detection-point: K8s audit：create pod 且 initContainers 含 privileged/hostPath
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: workload-init-container-override
+  inkblade-module: privileged-workloads
+  inkblade-detection-point: K8s audit：create pod 且 initContainers 含 privileged/hostPath
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

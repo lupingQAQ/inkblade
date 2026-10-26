@@ -1,6 +1,6 @@
-# Trident bench 对比 — 冒烟初值与 ARTEX 对比方法
+# InkBlade bench 对比 — 冒烟初值与 ARTEX 对比方法
 
-- 任务依据：Trident 设计 设计基线第 11 节（对标 ARTEX）/ 第 13 节（实验室 bench）
+- 任务依据：InkBlade 设计 设计基线第 11 节（对标 ARTEX）/ 第 13 节（实验室 bench）
 - 首次记录：2026-10-24（Windows 宿主实跑）；ARTEX 侧数据待 WSL 实验室补测（见下）
 
 ## Windows 冒烟初值（smoke）
@@ -40,7 +40,7 @@ python lab/bench/bench.py smoke --iterations 5
 
 ## Ruling（链路径与兜底的切换记录）
 
-bench 优先走链路径（`trident/core/chains.load_chains` 选只读链 + `chains.execute` 计时），
+bench 优先走链路径（`inkblade/core/chains.load_chains` 选只读链 + `chains.execute` 计时），
 步骤执行失败（如模块要求 fixture 参数）即视为「对 HTTP 靶场未就绪」自动降级 urllib
 五路由兜底，并在结果 JSON/MD 记录 Ruling 原文。两条 Ruling 均已实测发生：
 
@@ -63,8 +63,8 @@ bench 优先走链路径（`trident/core/chains.load_chains` 选只读链 + `cha
 数据进交付附录「选型对比」，避免主观断言。
 
 1. **共同靶场**：`python lab/mock_targets.py --port 18080 --mode vulnerable`
-   （Trident 与 ARTEX 容器均访问同一 `MOCK_URL`，同一五路由集）。
-2. **Trident 侧**：`python lab/bench/bench.py smoke --iterations 5`
+   （InkBlade 与 ARTEX 容器均访问同一 `MOCK_URL`，同一五路由集）。
+2. **InkBlade 侧**：`python lab/bench/bench.py smoke --iterations 5`
    （上表即初值；全链 sweep 目标 < 3 分钟、0 token，见 设计基线 11.1）。
 3. **ARTEX 侧**：`bash lab/bench/artex-bench.sh`（本目录，交付脚本 + 说明，本任务未执行）：
    - 用 ARTEX 自带 `docker-compose.bench.yml` 起栈（Go server + PostgreSQL + Next.js）；
@@ -73,7 +73,7 @@ bench 优先走链路径（`trident/core/chains.load_chains` 选只读链 + `cha
    - 端到端任务计时：经其 Web UI/API 提交指向 `MOCK_URL` 的同靶场探索任务（LLM 驱动，
      黑盒计时；未配置 API 时标记 `task_phase=manual` 人工回填）。
 4. **对比表列**：冷启动 / 常驻内存 / 同靶场全链时长 / token 成本（ARTEX 全程 LLM 往返
-   vs Trident 0 token）/ 进程与依赖数（多容器 vs 单 Python 进程）。
+   vs InkBlade 0 token）/ 进程与依赖数（多容器 vs 单 Python 进程）。
 5. **公平性**：同机同硬件、同靶场同轮数、ARTEX 原样运行不改造；各自记录环境与时间戳。
 
 ## 实验室边界（显式声明）
@@ -85,5 +85,5 @@ bench 优先走链路径（`trident/core/chains.load_chains` 选只读链 + `cha
     连通对照 → 写 `lab/kind/PROOF-hostnetwork-bypass.md`；注意 kindnet 不执行
     NetworkPolicy，必须装策略 CNI，否则实证无效）；
   - `lab/bench/artex-bench.sh` — ARTEX 同靶场计时（见上）。
-- Windows 侧冒烟已实跑（本文初值）；Trident 目标空闲 RSS < 150 MB，当前 49 MB 满足
+- Windows 侧冒烟已实跑（本文初值）；InkBlade 目标空闲 RSS < 150 MB，当前 49 MB 满足
   （单进程、无 Node/PG 运行时）。

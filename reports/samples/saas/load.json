@@ -1,5 +1,5 @@
 {
-  "schema": "trident-saas-load/2026-10",
+  "schema": "inkblade-saas-load/2026-10",
   "mode": "local simulation (single host, SQLite, simulated module work)",
   "disclaimer": "本地模拟，非商业 SLA；不是分布式集群/跨 region 测试",
   "config": {

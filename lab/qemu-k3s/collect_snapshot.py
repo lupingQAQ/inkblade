@@ -1,4 +1,4 @@
-"""Collect a real Trident recon snapshot from a live Kubernetes API.
+"""Collect a real InkBlade recon snapshot from a live Kubernetes API.
 
 The recon modules consume a normalized dict (``params.snapshot``) with keys such
 as ``pods``/``services``/``networkpolicies``/``clusterroles``. This script builds
@@ -168,7 +168,7 @@ def normalize_nodes(doc: dict) -> list[dict]:
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="build a Trident recon snapshot from a live cluster")
+    ap = argparse.ArgumentParser(description="build a InkBlade recon snapshot from a live cluster")
     ap.add_argument("--kubectl", default="kubectl")
     ap.add_argument("--kubeconfig", default="")
     ap.add_argument("--namespace", default="", help="limit namespaced objects to one namespace (default: all)")

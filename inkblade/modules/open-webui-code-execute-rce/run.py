@@ -47,13 +47,13 @@ def run(ctx: dict, params: dict) -> dict:
     base = str(params.get("base_url", "")).rstrip("/")
     if not base:
         raise ValueError("缺少 params.base_url（mock 靶场地址，仅限授权范围）")
-    marker = str(params.get("marker") or ctx.get("marker") or "TRIDENT-zeroday")
+    marker = str(params.get("marker") or ctx.get("marker") or "INKBLADE-zeroday")
 
     manifest, miss = _fingerprint(base)
     if miss is not None:
         return {"summary": miss, "findings": [], "artifacts": []}
 
-    code = f"print('TRIDENT benign marker: {marker}')"
+    code = f"print('INKBLADE benign marker: {marker}')"
     status, payload = _request("POST", base + TARGET_PATH, body={"code": code})
     findings: list[dict] = []
     if status == 200 and isinstance(payload, dict) and payload.get("ok"):

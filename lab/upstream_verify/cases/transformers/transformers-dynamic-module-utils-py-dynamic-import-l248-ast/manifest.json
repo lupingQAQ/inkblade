@@ -39,7 +39,7 @@
  "module": "trust-remote-code-supply-chain",
  "python": "reproenv",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-transformers-dynamic-module-utils-py-dynamic-import-l248-ast",
+ "marker_text": "INKBLADE-UV-transformers-dynamic-module-utils-py-dynamic-import-l248-ast",
  "notes": "transformers trust_remote_code executes attacker-controlled Python from a model directory: AutoConfig.from_pretrained(<untrusted dir>, trust_remote_code=True) copies the custom code into the HF modules cache and executes it (get_class_in_module exec_module), after check_imports() importlib.import_module()'s every top-level module the attacker file lists (line 248). Training/serving stacks that propagate trust_remote_code from config (LLaMA-Factory, ms-swift, TRL loaders) turn 'load a model from a directory/hub' into code execution. Reproduced with the real installed transformers 4.57.1 wheel: the malicious configuration module writes the proof marker during the import performed by the pinned upstream path.",
  "static_evidence_level": "source-line",
  "static_analysis": "",
@@ -54,6 +54,6 @@
   "original_status": "pending-manual-review",
   "promoted": true
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "transformers"
 }

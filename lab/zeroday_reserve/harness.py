@@ -140,7 +140,7 @@ def run_case(case_dir: Path, *, timeout: int = 300) -> dict:
         if source_path.is_file():
             source_sha = sha256_file(source_path)
     result = {
-        "schema": "trident-zeroday-result-v1",
+        "schema": "inkblade-zeroday-result-v1",
         "id": manifest["id"],
         "component": manifest.get("component"),
         "title": manifest.get("title"),

@@ -60,22 +60,22 @@ def build_payload(finding: dict, *, target: str, run: str = "",
     if target == "jira":
         return {"target": "jira", "payload": {
             "fields": {
-                "summary": f"[Trident][{sev}] {title}"[:250],
+                "summary": f"[InkBlade][{sev}] {title}"[:250],
                 "description": body,
                 "issuetype": {"name": "Bug"},
                 "priority": {"name": SEV_TO_PRIORITY.get(sev, "Medium")},
-                "labels": ["trident", sev, module or "unknown"],
+                "labels": ["inkblade", sev, module or "unknown"],
             }}, "meta": common}
     if target == "siem":
         return {"target": "siem", "payload": {
             "event": {"kind": "alert", "category": ["vulnerability"],
                       "severity": sev, "action": "penetration-test-finding",
                       "reason": title, "original": body[:4000]},
-            "rule": {"name": f"trident/{module}", "id": fp},
-            "trident": common,
+            "rule": {"name": f"inkblade/{module}", "id": fp},
+            "inkblade": common,
         }, "meta": common}
     return {"target": "webhook", "payload": {
-        "event": "trident.finding", "version": 1, **common, "text": body},
+        "event": "inkblade.finding", "version": 1, **common, "text": body},
         "meta": common}
 
 

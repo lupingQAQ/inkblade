@@ -13,7 +13,7 @@ finding, run_surface = _C.finding, _C.run_surface
 
 
 def analyze(snapshot: dict, params: dict) -> list[dict]:
-    from trident.kubetrail.collector import collect
+    from inkblade.kubetrail.collector import collect
 
     view = snapshot.get("inpod") or snapshot
     report = collect(view, root=params.get("root"))
@@ -26,7 +26,7 @@ def analyze(snapshot: dict, params: dict) -> list[dict]:
 
 
 def extra(snapshot: dict, findings: list[dict]) -> dict:
-    from trident.kubetrail.collector import COLLECTORS
+    from inkblade.kubetrail.collector import COLLECTORS
 
     return {"collectors": len(COLLECTORS), "exposures": len(findings),
             "critical": sum(1 for f in findings if f.get("sev") == "critical"),

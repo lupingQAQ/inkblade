@@ -69,7 +69,7 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
    每沙箱 microVM + nftables egress allowlist。共识是：**沙箱（隔离）+ 审批（意图）+ 身份（权限）
    三层，缺一不可**。
 
-### 1.3 给 Trident 的选择判据
+### 1.3 给 InkBlade 的选择判据
 
 | 任务特征 | 应选 | 不应选 |
 |---|---|---|
@@ -105,12 +105,12 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 
 | ID | 落伍点 | 现状与证据 | 当时的取舍 | 代价 | 2026 对照 |
 |---|---|---|---|---|---|
-| **G01** | 确定性 DAG + 审批，无动态重规划 | `trident/core/chains.py:419-487` 按依赖拓扑执行（进程内 ThreadPool）；`trident/agent_planner.py:87-166` 只读推荐；`trident/core/explorer.py:159-200` 只提议不执行；`tests/test_explorer.py:48-78` 锁定 pending/审批 | 可复核、可回滚、审批闸门不可绕过 | 只能跑预定义链；新攻击面要发版加链；中间结果不能改变下一步；无法做「发现异常→改道验证」 | Plan-Execute / ReAct / LATS 都允许基于观察重规划 |
-| **G02** | 单进程 explorer，无 supervisor-worker | `trident/core/explorer.py:249-280` 顺序 for 循环逐个 `run_module`；`trident/core/runner.py:34-105` 单进程执行；`trident/core/chains.py:460` 的线程池只在单进程内并行；`tests/test_explorer.py:100-113` | 单机部署简单、证据库单写者、审计线性 | 多目标/多路径只能串行；单点崩溃全停；无法按角色分工；与 XBOW「数千 agent 并行」差一个数量级架构 | Anthropic orchestrator-worker（90.2% 提升）、D-CIPHER Planner+异构 Executor |
-| **G03** | 无 durable journal（有证据库，无恢复点） | `trident/core/evidence.py:24-43` 只有 runs/steps/actions/findings 等表，无 journal/checkpoint 表；`trident/core/runner.py:56-80` 失败直接抛，链只能整条重跑；核心代码 grep 无 `resume/checkpoint/thread_id`（除业务模块名） | 证据=事实，执行=一次性；避免「恢复出不一致状态」 | 进程崩溃/审批中断后无法续跑；长任务不可行；无法 time-travel 复盘；重跑会重复副作用（写类步骤尤其危险） | LangGraph super-step+pending writes；Temporal event history；MCP Tasks durable handle；CrewAI checkpoint |
-| **G10** | 无事件驱动/任务队列（cron 轮询） | `trident/core/scheduler.py:2-8` 明写 cron/interval；`trident/core/scheduler.py:62-79` 只做时间解析；`explorer.execute` 在请求线程内联执行；`evidence.py` 无 task/queue 表 | 零依赖、单机可跑、无 broker 运维 | 无多租户隔离/限流/优先级/租约；无法接 MCP Tasks 的异步语义；无法把「审批等待」变成可恢复任务 | Temporal Task Queue（poll/优先级/公平）；MCP Tasks；CrewAI Flows |
+| **G01** | 确定性 DAG + 审批，无动态重规划 | `inkblade/core/chains.py:419-487` 按依赖拓扑执行（进程内 ThreadPool）；`inkblade/agent_planner.py:87-166` 只读推荐；`inkblade/core/explorer.py:159-200` 只提议不执行；`tests/test_explorer.py:48-78` 锁定 pending/审批 | 可复核、可回滚、审批闸门不可绕过 | 只能跑预定义链；新攻击面要发版加链；中间结果不能改变下一步；无法做「发现异常→改道验证」 | Plan-Execute / ReAct / LATS 都允许基于观察重规划 |
+| **G02** | 单进程 explorer，无 supervisor-worker | `inkblade/core/explorer.py:249-280` 顺序 for 循环逐个 `run_module`；`inkblade/core/runner.py:34-105` 单进程执行；`inkblade/core/chains.py:460` 的线程池只在单进程内并行；`tests/test_explorer.py:100-113` | 单机部署简单、证据库单写者、审计线性 | 多目标/多路径只能串行；单点崩溃全停；无法按角色分工；与 XBOW「数千 agent 并行」差一个数量级架构 | Anthropic orchestrator-worker（90.2% 提升）、D-CIPHER Planner+异构 Executor |
+| **G03** | 无 durable journal（有证据库，无恢复点） | `inkblade/core/evidence.py:24-43` 只有 runs/steps/actions/findings 等表，无 journal/checkpoint 表；`inkblade/core/runner.py:56-80` 失败直接抛，链只能整条重跑；核心代码 grep 无 `resume/checkpoint/thread_id`（除业务模块名） | 证据=事实，执行=一次性；避免「恢复出不一致状态」 | 进程崩溃/审批中断后无法续跑；长任务不可行；无法 time-travel 复盘；重跑会重复副作用（写类步骤尤其危险） | LangGraph super-step+pending writes；Temporal event history；MCP Tasks durable handle；CrewAI checkpoint |
+| **G10** | 无事件驱动/任务队列（cron 轮询） | `inkblade/core/scheduler.py:2-8` 明写 cron/interval；`inkblade/core/scheduler.py:62-79` 只做时间解析；`explorer.execute` 在请求线程内联执行；`evidence.py` 无 task/queue 表 | 零依赖、单机可跑、无 broker 运维 | 无多租户隔离/限流/优先级/租约；无法接 MCP Tasks 的异步语义；无法把「审批等待」变成可恢复任务 | Temporal Task Queue（poll/优先级/公平）；MCP Tasks；CrewAI Flows |
 
-**最贵的代价是 G03。** 我们的写类模块有备份闸门（`trident/core/runner.py:62-67`，退出码 91），但没有「这一步
+**最贵的代价是 G03。** 我们的写类模块有备份闸门（`inkblade/core/runner.py:62-67`，退出码 91），但没有「这一步
 已经执行到哪」的记录：崩溃后重跑，可能重复写、重复备份、甚至覆盖上一次的回滚点。证据库记录的是
 **发生过什么**，不是**下一步该做什么**——这两者必须分开存。
 
@@ -118,11 +118,11 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 
 | ID | 落伍点 | 现状与证据 | 当时的取舍 | 代价 | 2026 对照 |
 |---|---|---|---|---|---|
-| **G04** | 无分层内存（working/episodic/semantic） | `trident/core/explorer.py:35` 队列落 `explorer/queue.json`；`trident/core/explorer.py:108-116` 全量读写队列；`trident/agent_planner.py:94-166` 每次从 findings 重算；跨 run 检索仍是 backlog（`docs/COMPETITIVE-MATRIX.md:260` CM-02） | 无状态=可复现；避免记忆污染 | 每次从零推理；重复发现/重复提议；长任务上下文丢失；经验不累积；token 重复付费 | Letta memory blocks+MemFS+dreaming；LangGraph Store；Anthropic 计划持久化+产物外置 |
-| **G05** | 无技能库（模块 ≠ 技能） | `trident/core/registry.py:34-46` 只认 `module.json` 契约；`trident/core/runner.py:27-31` 直接加载 `run.py`；仓库无 `SKILL.md`；新增手法必须发版 | 模块=唯一可执行实现，避免「提示词即能力」的不可验证 | 成功手法无法沉淀复用；无法渐进披露；无法跨项目分发；与 ARTEX 的 3 个 skills、Agent Skills 生态脱节 | Agent Skills 规范；Voyager 可执行技能库；Skills over MCP（SEP-2640 Final） |
-| **G06** | 无自反思（结果不回灌决策） | `trident/core/explorer.py:263-278` 记录了 `results`，但 `propose()`（`trident/core/explorer.py:159-200`）从不读取历史 results；`trident/core/scheduler.py:1-8` 的 drift 只比较 findings 集合 | 拒绝「模型自我评价」的主观性；避免反思污染证据 | 失败不学习；同一提议可反复出现；无法形成「下次避免」；人审负担不下降 | Reflexion（91% HumanEval）；Anthropic「让 agent 改进自己」使任务时间降 40% |
-| **G11** | 无 token/成本预算 | `trident/core/explorer.py:36` 只有 `MAX_ACTIONS_DEFAULT=5`（动作数上限）；`trident/core/explorer.py:70-94` 单次 LLM 调用不解析 usage；证据库无 cost/token 字段 | 单次调用、成本可忽略；不想引入计费复杂度 | 多 agent/长上下文会 15× token 失控；无法按租户配额；无法做「便宜模型 triage、贵模型深挖」 | Anthropic：多 agent 15× token；token 解释 80% 性能方差；CAI 以 156× 降本为卖点 |
-| **G12** | 无决策轨迹（trace） | `trident/core/evidence.py:208-214` actions 只记 execute/refused 等结果；`agent_planner` 的 reasons 只出现在返回值，不落库；`docs/COMPETITIVE-MATRIX.md:261` CM-03 仍是 backlog | 证据=可复核事实，不想存「模型想法」 | 无法回答「为什么选这条链」；调试靠猜；不满足 XBOW「full log of every decision」；事故复盘缺关键上下文 | OpenAI tracing；Temporal event history；A2A artifacts；Anthropic 全链路 tracing |
+| **G04** | 无分层内存（working/episodic/semantic） | `inkblade/core/explorer.py:35` 队列落 `explorer/queue.json`；`inkblade/core/explorer.py:108-116` 全量读写队列；`inkblade/agent_planner.py:94-166` 每次从 findings 重算；跨 run 检索仍是 backlog（`docs/COMPETITIVE-MATRIX.md:260` CM-02） | 无状态=可复现；避免记忆污染 | 每次从零推理；重复发现/重复提议；长任务上下文丢失；经验不累积；token 重复付费 | Letta memory blocks+MemFS+dreaming；LangGraph Store；Anthropic 计划持久化+产物外置 |
+| **G05** | 无技能库（模块 ≠ 技能） | `inkblade/core/registry.py:34-46` 只认 `module.json` 契约；`inkblade/core/runner.py:27-31` 直接加载 `run.py`；仓库无 `SKILL.md`；新增手法必须发版 | 模块=唯一可执行实现，避免「提示词即能力」的不可验证 | 成功手法无法沉淀复用；无法渐进披露；无法跨项目分发；与 ARTEX 的 3 个 skills、Agent Skills 生态脱节 | Agent Skills 规范；Voyager 可执行技能库；Skills over MCP（SEP-2640 Final） |
+| **G06** | 无自反思（结果不回灌决策） | `inkblade/core/explorer.py:263-278` 记录了 `results`，但 `propose()`（`inkblade/core/explorer.py:159-200`）从不读取历史 results；`inkblade/core/scheduler.py:1-8` 的 drift 只比较 findings 集合 | 拒绝「模型自我评价」的主观性；避免反思污染证据 | 失败不学习；同一提议可反复出现；无法形成「下次避免」；人审负担不下降 | Reflexion（91% HumanEval）；Anthropic「让 agent 改进自己」使任务时间降 40% |
+| **G11** | 无 token/成本预算 | `inkblade/core/explorer.py:36` 只有 `MAX_ACTIONS_DEFAULT=5`（动作数上限）；`inkblade/core/explorer.py:70-94` 单次 LLM 调用不解析 usage；证据库无 cost/token 字段 | 单次调用、成本可忽略；不想引入计费复杂度 | 多 agent/长上下文会 15× token 失控；无法按租户配额；无法做「便宜模型 triage、贵模型深挖」 | Anthropic：多 agent 15× token；token 解释 80% 性能方差；CAI 以 156× 降本为卖点 |
+| **G12** | 无决策轨迹（trace） | `inkblade/core/evidence.py:208-214` actions 只记 execute/refused 等结果；`agent_planner` 的 reasons 只出现在返回值，不落库；`docs/COMPETITIVE-MATRIX.md:261` CM-03 仍是 backlog | 证据=可复核事实，不想存「模型想法」 | 无法回答「为什么选这条链」；调试靠猜；不满足 XBOW「full log of every decision」；事故复盘缺关键上下文 | OpenAI tracing；Temporal event history；A2A artifacts；Anthropic 全链路 tracing |
 
 **最贵的代价是 G04。** 渗透是**经验密集型**工作：同一产品版本的指纹、误报模式、有效载荷组合，
 本应跨 run 复用。我们现在每次都从 `findings` 重算，等于把专家记忆清零；而 `version-matrix.json`
@@ -132,8 +132,8 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 
 | ID | 落伍点 | 现状与证据 | 当时的取舍 | 代价 | 2026 对照 |
 |---|---|---|---|---|---|
-| **G07** | 无 A2A（只有 MCP 只读工具） | `trident/mcp_server.py:54-147` 共 10 个工具；`:523` 实现 `server/discover`；`tests/test_mcp.py:117-129` 断言无 execute/write/delete/approve；无 A2A 端点/agent card | 只读工具最安全；不做「agent 平台」 | 无法被客户 SOC/其他 agent 平台当作对等体调用；侦察/计划/验证不能拆成可替换服务；跨组织协作只能靠人 | A2A（Linux Foundation，TSC 含 AWS/Google/MS/SAP/ServiceNow）；MCP 工具联邦 |
-| **G08** | 无沙箱隔离（宿主进程内执行模块） | `trident/core/runner.py:27-31` `spec_from_file_location` + `exec_module`；`trident/core/runner.py:73-75` 把 store/run/backup 直接注入模块；全仓库无 subprocess/容器/microVM 执行路径（除 lab 仿真） | 单机零依赖；模块是「自己人写的」，信任边界在代码评审 | 模块/技能可读写宿主文件与网络；LLM 生成代码无法安全执行；供应链技能一进来就是 RCE 面（ASI04/ASI05） | E2B 每沙箱 Firecracker microVM + nftables；OpenAI hosted shell `network_policy=disabled/allowlist`；CrewAI 明确弃用内置执行转 E2B |
+| **G07** | 无 A2A（只有 MCP 只读工具） | `inkblade/mcp_server.py:54-147` 共 10 个工具；`:523` 实现 `server/discover`；`tests/test_mcp.py:117-129` 断言无 execute/write/delete/approve；无 A2A 端点/agent card | 只读工具最安全；不做「agent 平台」 | 无法被客户 SOC/其他 agent 平台当作对等体调用；侦察/计划/验证不能拆成可替换服务；跨组织协作只能靠人 | A2A（Linux Foundation，TSC 含 AWS/Google/MS/SAP/ServiceNow）；MCP 工具联邦 |
+| **G08** | 无沙箱隔离（宿主进程内执行模块） | `inkblade/core/runner.py:27-31` `spec_from_file_location` + `exec_module`；`inkblade/core/runner.py:73-75` 把 store/run/backup 直接注入模块；全仓库无 subprocess/容器/microVM 执行路径（除 lab 仿真） | 单机零依赖；模块是「自己人写的」，信任边界在代码评审 | 模块/技能可读写宿主文件与网络；LLM 生成代码无法安全执行；供应链技能一进来就是 RCE 面（ASI04/ASI05） | E2B 每沙箱 Firecracker microVM + nftables；OpenAI hosted shell `network_policy=disabled/allowlist`；CrewAI 明确弃用内置执行转 E2B |
 | **G09** | 无 agent 评测（只有模块/链单测） | 测试是模块单测 + e2e（`tests/test_explorer.py`、`tests/test_mcp.py` 等）；无 AgentDojo/CyberGym/AutoPenBench 类 harness；`docs/COMPETITIVE-MATRIX.md:288` CM-30、`docs/GAP-FEATURES.md:94` 均登记为缺口 | 交付物是证据，不是分数；不想为刷榜优化 | 无法量化「换模型/加记忆/加技能」是否变强；升级无基线；对外无法证明能力；回归只覆盖代码不覆盖决策 | AgentDojo（97 任务/629 用例）、CyberGym（1,507 漏洞/188 项目）、AutoPenBench（33 任务）、AgentBench（8 环境） |
 
 **最贵的代价是 G08。** 这不是「未来风险」：只要接入一个第三方 MCP 工具或一份外部技能，宿主进程
@@ -296,7 +296,7 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 
 ### 5.1 事实基线
 
-- **Trident**：本仓库代码与 `docs/ARCHITECTURE.md`、`docs/SOTA-2026-10.md`。
+- **InkBlade**：本仓库代码与 `docs/ARCHITECTURE.md`、`docs/SOTA-2026-10.md`。
 - **ARTEX**：`docs/FEATURE-BY-FEATURE-ARTEX.md`（源码枚举，基线 2026-10-25：278 路由 / 59 表 /
   32 agent 组件 / 3 skills）与 `docs/GAP-FEATURES.md` 的逐项判定；克隆源码
   `.slim/clonedeps/repos/RuoJi6__ARTEX`。
@@ -305,7 +305,7 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 
 ### 5.2 架构对照
 
-| 维度 | Trident | ARTEX（源码枚举事实） | XBOW（公开宣称） |
+| 维度 | InkBlade | ARTEX（源码枚举事实） | XBOW（公开宣称） |
 |---|---|---|---|
 | 形态 | Python 单机 CLI + 本地 WebUI + REST/MCP | Go + Next.js + PostgreSQL，docker-compose 部署 | 商业 SaaS |
 | 执行模型 | 确定性链（依赖拓扑 + 进程内线程池），四闸门 | 多 agent 协作：goals/planner/worker/reporter | 数千 agent 并行，链式组合漏洞 |
@@ -346,7 +346,7 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 | # | 能力 | 依据 |
 |---|---|---|
 | 1 | 三层证据 + manifest sha256 | `evidence.py`、`reports/render.py`；XBOW 的「完整案卷」我们形态不同但同等可复核 |
-| 2 | 四闸门（ROE/级别/备份/审计） | `trident/core/roe.py`、`trident/core/runner.py:47-67`；退出码 91 语义 |
+| 2 | 四闸门（ROE/级别/备份/审计） | `inkblade/core/roe.py`、`inkblade/core/runner.py:47-67`；退出码 91 语义 |
 | 3 | 审批不可绕过性 | `tests/test_mcp.py:117-129`、`tests/test_explorer.py:69-90` 锁定只读/审批 |
 | 4 | 合规映射 | ASI01–ASI10、ATLAS、NIST、ISO 42001、EU AI Act、TC260（`reports/standards.json`） |
 | 5 | 版本矩阵/弹药溯源 | 42 条逐条来源 + 变体物化；竞品多为闭源弹药 |

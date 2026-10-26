@@ -10,6 +10,6 @@
     "snapshot": "可选，operator 配置 JSON 或路径；省略使用内置 vulnerable fixture"
   },
   "produces": "mig-dra-posture（MIG/DRA 域 findings）",
-  "knowledge": "docs/DEPTH-REVIEW.md §4；trident/depth/gpu.py",
+  "knowledge": "docs/DEPTH-REVIEW.md §4；inkblade/depth/gpu.py",
   "combo_signature": "gpu-mig-dra-depth"
 }

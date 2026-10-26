@@ -10,12 +10,12 @@
 
 | 文件 | 作用 |
 |---|---|
-| `trident/sigstore_keyless.py` | keyless 签名/验证：Fulcio v2 `/api/v2/signingCert`、Rekor v1 `/api/v1/log/entries`、Sigstore bundle v0.3、Fulcio 链/SAN/OIDC issuer、SET JCS、RFC6962 inclusion、checkpoint note、在线重取 |
-| `trident/data/sigstore/fulcio_trust_bundle.json` | 2026-10-25 拉取的 Fulcio 公共根/中间证书（2 张，1 个自签根） |
-| `trident/data/sigstore/rekor_log.json` | 2026-10-25 拉取的 Rekor 日志头（treeID/treeSize/inactiveShards） |
-| `trident/data/sigstore/rekor_public_key.pem` | Rekor 公共日志公钥（ECDSA P-256） |
+| `inkblade/sigstore_keyless.py` | keyless 签名/验证：Fulcio v2 `/api/v2/signingCert`、Rekor v1 `/api/v1/log/entries`、Sigstore bundle v0.3、Fulcio 链/SAN/OIDC issuer、SET JCS、RFC6962 inclusion、checkpoint note、在线重取 |
+| `inkblade/data/sigstore/fulcio_trust_bundle.json` | 2026-10-25 拉取的 Fulcio 公共根/中间证书（2 张，1 个自签根） |
+| `inkblade/data/sigstore/rekor_log.json` | 2026-10-25 拉取的 Rekor 日志头（treeID/treeSize/inactiveShards） |
+| `inkblade/data/sigstore/rekor_public_key.pem` | Rekor 公共日志公钥（ECDSA P-256） |
 | `tests/test_sigstore_keyless.py` | 19 项（1 项在线重取默认 skip）：fixture 合法/篡改/吊销/过期/身份/issuer/日志键/CLI + 真实样本离线验证 |
-| CLI | `trident sign-keyless` / `trident verify-keyless` |
+| CLI | `inkblade sign-keyless` / `inkblade verify-keyless` |
 
 验证覆盖：
 
@@ -83,15 +83,15 @@
 无 OIDC 或无网络时：
 
 ```bash
-python -m trident sign-keyless --artifact weights.bin --out bundle.json --offline-fixture
-python -m trident verify-keyless --artifact weights.bin --bundle bundle.json \
-  --identity fixture@trident.local --issuer https://fixture.trident.local
+python -m inkblade sign-keyless --artifact weights.bin --out bundle.json --offline-fixture
+python -m inkblade verify-keyless --artifact weights.bin --bundle bundle.json \
+  --identity fixture@inkblade.local --issuer https://fixture.inkblade.local
 ```
 
 - 本地 Fulcio 兼容 CA：固定测试根/中间密钥（公开在代码中），签发带 SAN + OIDC issuer
   扩展的 10 分钟叶证书。
 - 本地 Rekor fixture：单叶 Merkle 树（treeSize=1），SET/checkpoint 用固定日志密钥签名。
-- bundle 内自带 `trident.trust_bundle` 与 `trident.rekor_public_key`，离线可复现；
+- bundle 内自带 `inkblade.trust_bundle` 与 `inkblade.rekor_public_key`，离线可复现；
   **这些不是生产信任锚**。
 
 样本：`reports/samples/sigstore/fixture-keyless-bundle.json`（artifact/verdict 同目录）。
@@ -100,7 +100,7 @@ python -m trident verify-keyless --artifact weights.bin --bundle bundle.json \
 
 ```bash
 python -m unittest tests.test_sigstore_keyless -v   # 19 tests, 1 skip
-TRIDENT_ONLINE=1 python -m unittest tests.test_sigstore_keyless.TestRealSigstoreSamples.test_real_keyless_bundle_online -v
+INKBLADE_ONLINE=1 python -m unittest tests.test_sigstore_keyless.TestRealSigstoreSamples.test_real_keyless_bundle_online -v
 ```
 
 测试面：合法签名/验证；artifact/签名/body/root/checkpoint/log key 篡改；错误身份/issuer；

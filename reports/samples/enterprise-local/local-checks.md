@@ -14,8 +14,8 @@
 | `er-40-rule-regression` 规则升级回归：覆盖降级/规则删除即拒绝 | PASS | 0.1 ms | {"good_ok": true, "bad_rejected": true} |
 | `er-39-siem-dedupe-dlq` SIEM 闭环：去重/重试/死信 JSONL | PASS | 2.4 ms | {"first": {"sent": 1, "duplicates": 0, "failed": 0, "attempts": 2, "dead_letters": 0}, "second": {"sent": 0, "duplicates": 1, "failed": 0, "attempts": 0, "dead_letters": 0}, "dead": {"sent": 0, "duplicates": 0, "failed": |
 | `er-50-siem-egress-policy` SIEM 出网：allowlist + 非回环强制 TLS + CA/代理 | PASS | 0.1 ms | {"loopback": {"ok": true, "scheme": "http", "host": "127.0.0.1", "port": 8088, "loopback": true, "tls_required": false, "ca_bundle": false}, "http_rejected": true, "host_rejected": true} |
-| `er-57-evidence-pack` 等保/ISO 证据包：manifest + 控制项索引 + 哈希校验 | PASS | 22.4 ms | {"built": {"schema": "trident-evidence-pack/1", "path": "<local-path>", "files": 3, "controls": 7, "covered": 3, "framework": "djbh", "manifest_sha256": "1f6d4d44e69374e465f1883c8b52dc6239a583ec9786be5667afac3da320d99b"} |
-| `er-16-audit-stream-scale` 审计事件流：20 万合成事件写入/读回/容量外推 | PASS | 15440.8 ms | {"scale": {"schema": "trident-audit-scale/1", "requested": 200000, "inserted": 200000, "duplicates": 0, "rows": 200000, "denied": 11765, "by_verb": {"create": 33334, "delete": 33333, "exec": 33333, "get": 33333, "list":  |
+| `er-57-evidence-pack` 等保/ISO 证据包：manifest + 控制项索引 + 哈希校验 | PASS | 22.4 ms | {"built": {"schema": "inkblade-evidence-pack/1", "path": "<local-path>", "files": 3, "controls": 7, "covered": 3, "framework": "djbh", "manifest_sha256": "1f6d4d44e69374e465f1883c8b52dc6239a583ec9786be5667afac3da320d99b"} |
+| `er-16-audit-stream-scale` 审计事件流：20 万合成事件写入/读回/容量外推 | PASS | 15440.8 ms | {"scale": {"schema": "inkblade-audit-scale/1", "requested": 200000, "inserted": 200000, "duplicates": 0, "rows": 200000, "denied": 11765, "by_verb": {"create": 33334, "delete": 33333, "exec": 33333, "get": 33333, "list":  |
 | `er-06-gpu-contract` GPU Operator/device plugin/DRA 契约（本地 schema/版本矩阵） | PASS | 0.3 ms | {"device_plugin_findings": 4, "dra_findings": 4, "matrix": {"ok": true, "findings": [], "gpu_operator": "25.3.0", "driver": "580.65.06", "cuda": "12.4", "container_runtime": "containerd", "note": "本地版本规则；真实兼容需 GPU 节点 + d |
 
-复跑：`python -m trident.enterprise.localcheck` 或 `trident enterprise local-checks`。
+复跑：`python -m inkblade.enterprise.localcheck` 或 `inkblade enterprise local-checks`。

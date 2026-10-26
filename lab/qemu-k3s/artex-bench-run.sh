@@ -137,10 +137,10 @@ done
 # --- 5. one scan task against the shared mock target --------------------------
 # same-target bench: the goal names the exact probe surface (route manifest,
 # unauth admin action, weight pull) so the scripted-planner mock and the
-# Trident chain flat-network-admin-plane-weight-poison exercise the same faces.
+# InkBlade chain flat-network-admin-plane-weight-poison exercise the same faces.
 now_epoch_ms() { date +%s%3N 2>/dev/null | awk '{ if (length($0) <= 10) printf "%d000", $0; else print $0 }'; }
 GOAL="Probe the authorized lab target $MOCK_TARGET without credentials: fetch its route manifest, exercise unauthenticated admin action and weight pull, and record confirmed endpoints as findings."
-DESC="ARTEX same-target bench scan of the Trident mock lab at $MOCK_TARGET (authorized lab)."
+DESC="ARTEX same-target bench scan of the InkBlade mock lab at $MOCK_TARGET (authorized lab)."
 TASK_BODY=$(printf '{"description":"%s","goal":"%s"}' "$DESC" "$GOAL")
 T2=$(now_ms)
 task_code=$(curl -s -o /tmp/task.json -w '%{http_code}' -m 60 -X POST \

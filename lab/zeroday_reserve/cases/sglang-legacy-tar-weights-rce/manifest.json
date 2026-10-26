@@ -34,6 +34,6 @@
  "cleanup": "temp dir under evidence/ is rewritten per run",
  "status": "verified",
  "method": "dynamic-function",
- "marker_text": "TRIDENT-ZD-sglang-legacy-tar-weights-rce",
+ "marker_text": "INKBLADE-ZD-sglang-legacy-tar-weights-rce",
  "notes": "Function-level reproduction of the verbatim upstream `_load_pt_file`; the rest of SGLang is not imported because the host has no GPU. The sink and fallback branch are the real 0.5.22 code."
 }

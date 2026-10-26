@@ -6,12 +6,12 @@ description: 在 Pod 中挂载目标 SA 的 projected token（受众/有效期�
 references:
   - "Kubernetes Secret 文档 https://kubernetes.io/docs/concepts/configuration/secret/"
   - "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: cred-projected-token
-    trident.io/module: sa-token-request
+    inkblade.io/vector: cred-projected-token
+    inkblade.io/module: sa-token-request
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -29,16 +29,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.credential
+  - inkblade
+  - inkblade.vector.credential
   - attack.t1552
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: cred-projected-token
-  trident-module: sa-token-request
-  trident-detection-point: K8s audit：create pod 且 volume 使用 projected serviceAccountToken
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: cred-projected-token
+  inkblade-module: sa-token-request
+  inkblade-detection-point: K8s audit：create pod 且 volume 使用 projected serviceAccountToken
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

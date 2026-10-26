@@ -11,19 +11,19 @@ import zipfile
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.enterprise.delivery import (Deduplicator, DeliveryPolicyError,
+from inkblade.enterprise.delivery import (Deduplicator, DeliveryPolicyError,
                                          DeliveryQueue, EgressPolicy,
                                          event_fingerprint)
-from trident.enterprise.evidence_pack import build_pack, verify_pack
-from trident.enterprise.governance import (ChangeCalendar, ExceptionPolicy,
+from inkblade.enterprise.evidence_pack import build_pack, verify_pack
+from inkblade.enterprise.governance import (ChangeCalendar, ExceptionPolicy,
                                            GovernanceError, assert_no_regression)
-from trident.enterprise.gpu_contract import (compatibility_matrix,
+from inkblade.enterprise.gpu_contract import (compatibility_matrix,
                                              validate_device_plugin, validate_dra)
-from trident.enterprise.localcheck import run_local_checks
-from trident.enterprise.registry import (RegistryError, parse_reference,
+from inkblade.enterprise.localcheck import run_local_checks
+from inkblade.enterprise.registry import (RegistryError, parse_reference,
                                          reference_policy)
-from trident.enterprise.retention import RetentionError, apply_retention
-from trident.enterprise.scale import daily_million_projection, run_scale
+from inkblade.enterprise.retention import RetentionError, apply_retention
+from inkblade.enterprise.scale import daily_million_projection, run_scale
 
 REPO = Path(__file__).resolve().parents[1]
 DOC = REPO / "docs" / "ENTERPRISE-READINESS.md"

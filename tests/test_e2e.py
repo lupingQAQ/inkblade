@@ -1,4 +1,4 @@
-"""tests/test_e2e.py — 端到端验收测试：调 trident/e2e-check.py::main() 断言全 PASS 与样张落盘。
+"""tests/test_e2e.py — 端到端验收测试：调 inkblade/e2e-check.py::main() 断言全 PASS 与样张落盘。
 
 对应计划任务「端到端验收 + RUNBOOK + 样张」与 设计基线第 18 节验收标准中可本机闭环的条目：
 授权锁（runner+API）/ 备份闸 91 / 零日级模块（已公开，无需闸门）/ 三层证据+manifest / 链 dry-run+execute /
@@ -13,7 +13,7 @@ import unittest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-E2E_SCRIPT = REPO / "trident" / "e2e-check.py"
+E2E_SCRIPT = REPO / "inkblade" / "e2e-check.py"
 SAMPLES = REPO / "reports" / "samples"
 
 # 必须出现的验收检查项（对应 spec 18 节可本机闭环条目）
@@ -53,7 +53,7 @@ REQUIRED_SAMPLES = [
 
 
 def load_e2e():
-    spec = importlib.util.spec_from_file_location("trident_e2e_check", E2E_SCRIPT)
+    spec = importlib.util.spec_from_file_location("inkblade_e2e_check", E2E_SCRIPT)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod

@@ -1,4 +1,4 @@
-# Trident 紫队验证覆盖率矩阵（defense validation）
+# InkBlade 紫队验证覆盖率矩阵（defense validation）
 
 - 时间：<timestamp>；靶场：http://127.0.0.1:<port>/（mode=vulnerable，仅 127.0.0.1）
 - 摘要：链 28 条，覆盖 28，漏过 0；规则评估 98 项（拦截 21 / 检测 73 / 漏过 0）

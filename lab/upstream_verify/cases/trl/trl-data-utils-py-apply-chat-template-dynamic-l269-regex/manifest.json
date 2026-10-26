@@ -36,7 +36,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-trl-data-utils-py-apply-chat-template-dynamic-l269-regex",
+ "marker_text": "INKBLADE-UV-trl-data-utils-py-apply-chat-template-dynamic-l269-regex",
  "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink.",
  "static_evidence_level": "source-line",
  "static_analysis": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink.",
@@ -52,7 +52,7 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "trl",
  "static_blocker": {
   "category": "dependency-default-blocks",

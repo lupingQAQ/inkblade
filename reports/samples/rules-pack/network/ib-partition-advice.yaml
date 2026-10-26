@@ -1,7 +1,7 @@
 document: ib-partition-advice
 annotations:
-  trident.io/mode: monitor
-  trident.io/blocks-chains: "ib-rdma-collective-injection,imex-computedomain-gpu-memory-crossing,nccl-gradient-injection,prefill-decode-kv-inference-manipulation"
+  inkblade.io/mode: monitor
+  inkblade.io/blocks-chains: "ib-rdma-collective-injection,imex-computedomain-gpu-memory-crossing,nccl-gradient-injection,prefill-decode-kv-inference-manipulation"
 scope: 集合通信 fabric（IB / RoCE / GPUDirect RDMA / SR-IOV VF / IMEX ComputeDomain）
 explicit_declaration:
   zh: 显式声明：RDMA / SR-IOV VF / IB / macvlan 与 hostNetwork/hostDevice 路径不经 CNI 转发，任何 NetworkPolicy（原生 / Calico / Cilium）与 VPC 安全组均不覆盖该面；集合通信隔离必须依赖 IB Partition（PKey）/ Subnet Manager 隔离与 rail/plane 分区，另见 network/ib-partition-advice.yaml 与 network/rdma-sriov-uncovered.md。

@@ -13,7 +13,7 @@
     "target": "缓存面服务基址（必填）",
     "victim_probe_text": "高相似受害探测文本（缺省内置单 token 变异样例）",
     "control_probe_text": "本租户正对照文本（缺省内置对照样例）",
-    "marker_needle": "受害响应中的 benign 标记串（缺省 TRIDENT-BENIGN-APPROX-VICTIM）",
+    "marker_needle": "受害响应中的 benign 标记串（缺省 INKBLADE-BENIGN-APPROX-VICTIM）",
     "tenant": "探测租户（缺省 tenant-a）",
     "victim_tenant": "受害租户（缺省 tenant-b）"
   },

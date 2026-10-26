@@ -18,10 +18,10 @@
   * 路由指标：无身份 401，租户头仅本租户视图，admin 密钥全局视图；
   * /config 需要管理密钥（返回加固后策略）。
 
-预置 benign 种子（全部 TRIDENT-BENIGN- 前缀，无真实数据）：
+预置 benign 种子（全部 INKBLADE-BENIGN- 前缀，无真实数据）：
 - 租户 tenant-b 的 30 条成员前缀（时序侧信道成员推断字典靶）；
-- 租户 tenant-b 的残留靶前缀（含 TRIDENT-BENIGN-RESIDUE-VICTIM）；
-- KV 池 tenant-b/ctx/seed-001（含 TRIDENT-BENIGN-POOL-VICTIM）与 tenant-a 对照块；
+- 租户 tenant-b 的残留靶前缀（含 INKBLADE-BENIGN-RESIDUE-VICTIM）；
+- KV 池 tenant-b/ctx/seed-001（含 INKBLADE-BENIGN-POOL-VICTIM）与 tenant-a 对照块；
 - 近似缓存 tenant-b 受害条目 + tenant-a 对照条目。
 
 TTFT 口径：命中 = 22–31ms、未命中 = 185–274ms（由 sha256 摘要推导的确定性抖动，
@@ -65,23 +65,23 @@ VICTIM_APPROX_TEXT = (
 )
 VICTIM_APPROX_RESPONSE = (
     "tenant-b confidential guidance: 42.7M USD, growth 18 percent "
-    "[TRIDENT-BENIGN-APPROX-VICTIM]"
+    "[INKBLADE-BENIGN-APPROX-VICTIM]"
 )
 CONTROL_APPROX_TEXT = (
     "tenant-a infrastructure capacity plan for fiscal 2026 total gpu "
     "nodes equals 512 units"
 )
 CONTROL_APPROX_RESPONSE = (
-    "tenant-a plan: 512 gpu nodes [TRIDENT-BENIGN-APPROX-CONTROL]"
+    "tenant-a plan: 512 gpu nodes [INKBLADE-BENIGN-APPROX-CONTROL]"
 )
 VICTIM_RESIDUE_PREFIX = (
-    "tenant-b residue corpus marker TRIDENT-BENIGN-RESIDUE-VICTIM "
+    "tenant-b residue corpus marker INKBLADE-BENIGN-RESIDUE-VICTIM "
     "quarterly close data pack appendix"
 )
 VICTIM_POOL_BLOCK_ID = "tenant-b/ctx/seed-001"
 CONTROL_POOL_BLOCK_ID = "tenant-a/ctx/control-001"
-VICTIM_POOL_MARKER = "TRIDENT-BENIGN-POOL-VICTIM"
-TIMING_MARKER = "TRIDENT-BENIGN-TIMING"
+VICTIM_POOL_MARKER = "INKBLADE-BENIGN-POOL-VICTIM"
+TIMING_MARKER = "INKBLADE-BENIGN-TIMING"
 
 
 def member_prefix(index: int) -> str:
@@ -509,7 +509,7 @@ def _cache_residue(ctx: _RequestContext):
 
 def _routes_manifest(ctx: _RequestContext):
     return 200, {
-        "service": "trident-cache-lab",
+        "service": "inkblade-cache-lab",
         "mode": ctx.mode,
         "host": HOST,
         "admin_token_hint": f"fixed 模式管理密钥 = Authorization: Bearer {ADMIN_TOKEN}",
@@ -648,7 +648,7 @@ class _CacheState:
             "requests": MEMBER_SEED_COUNT + 1, "hits": 0, "cached_tokens_total": 0}
         for block_id, tenant, marker in (
             (VICTIM_POOL_BLOCK_ID, VICTIM_TENANT, VICTIM_POOL_MARKER),
-            (CONTROL_POOL_BLOCK_ID, REQUESTER_TENANT, "TRIDENT-BENIGN-POOL-CONTROL"),
+            (CONTROL_POOL_BLOCK_ID, REQUESTER_TENANT, "INKBLADE-BENIGN-POOL-CONTROL"),
         ):
             value = json.dumps({"marker": marker, "tenant": tenant, "benign": True},
                                ensure_ascii=False, sort_keys=True)
@@ -679,7 +679,7 @@ class _CacheHTTPServer(ThreadingHTTPServer):
 
 class _CacheHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "TridentCacheSim/0.1.0"
+    server_version = "InkBladeCacheSim/0.1.0"
 
     def log_message(self, fmt, *args):  # 静默访问日志
         return
@@ -806,7 +806,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE,
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident 多租户缓存安全仿真（仅 127.0.0.1）")
+    parser = argparse.ArgumentParser(description="InkBlade 多租户缓存安全仿真（仅 127.0.0.1）")
     parser.add_argument("--port", type=int, default=0, help="监听端口（0=自动分配）")
     parser.add_argument("--mode", choices=list(MODES), default=DEFAULT_MODE,
                         help="vulnerable=fail-open 姿态，fixed=加固姿态")

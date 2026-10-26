@@ -14,10 +14,10 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.journal import Journal
-from trident.core.supervisor import ApprovalRequired, Supervisor, SupervisorError
-from trident.core.users import Session
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.journal import Journal
+from inkblade.core.supervisor import ApprovalRequired, Supervisor, SupervisorError
+from inkblade.core.users import Session
 
 
 def approved(module, **params):

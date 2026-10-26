@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Novelty gate for the Trident 0day reserve.
+"""Novelty gate for the InkBlade 0day reserve.
 
 The checker answers one question per inventory entry: is the claimed
 vulnerability already public?  It queries the authoritative disclosure
@@ -45,7 +45,7 @@ DEFAULT_CACHE = ROOT / "corpus" / "novelty" / "cache"
 DEFAULT_TTL_DAYS = 7
 PROVIDERS = ("osv", "nvd", "github_advisories", "github_commits", "github_code", "vendor")
 VERDICTS = ("confirmed-unpublished", "already-public", "inconclusive")
-USER_AGENT = "trident-novelty-check/1.0 (+authorized security audit)"
+USER_AGENT = "inkblade-novelty-check/1.0 (+authorized security audit)"
 NVD_INTERVAL_S = 6.5
 GITHUB_SEARCH_INTERVAL_S = 6.5
 MAX_BODY = 2 * 1024 * 1024
@@ -288,6 +288,34 @@ def _match(provider: str, matches: list[dict], detail: str = "", **extra) -> dic
     return out
 
 
+def _pypi_identity(http: Http, pkg: str) -> dict:
+    """Return the PyPI identity of ``pkg`` so a name collision cannot be mistaken
+    for the audited upstream tree.
+
+    ``slime`` is a real PyPI name owned by an unrelated statistics package, so
+    querying OSV with the bare name would silently answer for the wrong project.
+    A package that only ever published ``0.0.0`` is treated as a placeholder
+    (no usable release history).
+    """
+    resp = http.get("osv", f"https://pypi.org/pypi/{pkg}/json")
+    status = resp.get("status")
+    code = resp.get("http_status")
+    if status != "ok":
+        if code == 404:
+            return {"exists": False, "reason": "package is not published on PyPI",
+                    "evidence": f"https://pypi.org/project/{pkg}/"}
+        return {"exists": None, "reason": resp.get("error") or f"HTTP {code}",
+                "evidence": f"https://pypi.org/pypi/{pkg}/json"}
+    body = resp.get("body") or {}
+    info = body.get("info") or {}
+    releases = body.get("releases") or {}
+    version = str(info.get("version") or "")
+    placeholder = version == "0.0.0" and set(releases) <= {"0.0.0"}
+    return {"exists": True, "version": version, "placeholder": placeholder,
+            "summary": _safe_text(info.get("summary") or ""),
+            "evidence": info.get("package_url") or f"https://pypi.org/project/{pkg}/"}
+
+
 def check_osv(entry: dict, cfg: dict, http: Http) -> dict:
     provider = "osv"
     pkg = cfg.get("osv_package")
@@ -296,12 +324,32 @@ def check_osv(entry: dict, cfg: dict, http: Http) -> dict:
     if not pkg:
         return _not_applicable(provider, "no package mapping in inventory")
     query: dict[str, Any] = {"package": {"name": pkg, "ecosystem": ecosystem}}
+    identity: dict | None = None
+    mode = "pin"
     if version:
         query["version"] = version
     elif cfg.get("osv_commit"):
         query["commit"] = cfg["osv_commit"]
     else:
-        return _not_applicable(provider, "no version/commit pin; OSV cannot answer for a floating package")
+        # No pin in the inventory.  Query OSV at package level (all versions)
+        # instead of giving up, but only after proving the PyPI name really is
+        # the audited project; a placeholder/absent name is a justified
+        # not-applicable answer rather than a silent "clean".
+        identity = _pypi_identity(http, pkg)
+        if identity.get("exists") is False:
+            return _not_applicable(
+                provider,
+                f"no version/commit pin and PyPI has no package named {pkg!r}; "
+                "OSV cannot answer for an unpublished upstream tree",
+                justified=True, package_identity=identity)
+        if identity.get("placeholder"):
+            return _not_applicable(
+                provider,
+                f"no version/commit pin and PyPI {pkg!r} is an unrelated placeholder "
+                f"release ({identity.get('version')}: {identity.get('summary') or 'no summary'}); "
+                "OSV cannot answer for the unpublished upstream tree",
+                justified=True, package_identity=identity)
+        mode = "package-level"
     resp = http.post(provider, "https://api.osv.dev/v1/query", query)
     if resp.get("status") != "ok":
         return _error(provider, resp.get("error") or f"HTTP {resp.get('http_status')}", **{"raw": resp})
@@ -325,11 +373,15 @@ def check_osv(entry: dict, cfg: dict, http: Http) -> dict:
             matches.append(record)
         else:
             related.append(record)
+    queried = (f"{pkg}@{version or cfg.get('osv_commit')}" if mode == "pin"
+               else f"{pkg} (package-level, all versions)")
+    extra = {"queried": queried, "query_mode": mode}
+    if identity is not None:
+        extra["package_identity"] = identity
     if matches:
-        return _match(provider, matches, f"{len(matches)} matching OSV record(s)", related=related[:10],
-                      queried=f"{pkg}@{version or cfg.get('osv_commit')}")
-    return _clean(provider, f"OSV returned {len(vulns)} advisory(ies) for the pin, none matched the sink",
-                  related=related[:10], queried=f"{pkg}@{version or cfg.get('osv_commit')}")
+        return _match(provider, matches, f"{len(matches)} matching OSV record(s)", related=related[:10], **extra)
+    return _clean(provider, f"OSV returned {len(vulns)} advisory(ies) for the query, none matched the sink",
+                  related=related[:10], **extra)
 
 
 def check_nvd(entry: dict, cfg: dict, http: Http) -> dict:
@@ -425,6 +477,26 @@ def check_github_advisories(entry: dict, cfg: dict, http: Http) -> dict:
                   related=related[:10])
 
 
+def _canonical_repo(http: Http, repo: str, provider: str) -> dict:
+    """Resolve a renamed GitHub repository to its searchable canonical name.
+
+    GitHub search returns HTTP 422 for a ``repo:`` qualifier that still uses
+    the pre-rename name (the REST ``/repos/<old>`` endpoint redirects, search
+    does not).  ``inclusionAI/AReaL`` -> ``areal-project/AReaL``,
+    ``hiyouga/LLaMA-Factory`` -> ``hiyouga/LlamaFactory`` and
+    ``volcengine/verl`` -> ``verl-project/verl`` are the three renames that
+    made nine commit searches inconclusive.
+    """
+    resp = http.get(provider, f"https://api.github.com/repos/{repo}",
+                    headers={"Accept": "application/vnd.github+json"},
+                    throttle=("github_search", GITHUB_SEARCH_INTERVAL_S))
+    if resp.get("status") != "ok":
+        return {"repo": repo, "resolved": False, "error": resp.get("error") or f"HTTP {resp.get('http_status')}"}
+    body = resp.get("body") or {}
+    full = str(body.get("full_name") or repo)
+    return {"repo": full, "resolved": full.lower() != repo.lower(), "archived": body.get("archived")}
+
+
 def check_github_commits(entry: dict, cfg: dict, http: Http) -> dict:
     provider = "github_commits"
     terms = _terms(entry, cfg)
@@ -434,20 +506,46 @@ def check_github_commits(entry: dict, cfg: dict, http: Http) -> dict:
         return _not_applicable(provider, "no function/file strong term configured")
     # Keep queries short and specific; GitHub commit search is rate limited.
     term = max(strong, key=len)
-    q = f'"{term}"'
-    if repo:
-        q += f" repo:{repo}"
-    resp = http.get(provider, "https://api.github.com/search/commits",
-                    params={"q": q, "per_page": 20},
-                    headers={"Accept": "application/vnd.github+json"},
-                    throttle=("github_search", GITHUB_SEARCH_INTERVAL_S))
+
+    def search(target_repo: str | None) -> dict:
+        q = f'"{term}"'
+        if target_repo:
+            q += f" repo:{target_repo}"
+        resp = http.get(provider, "https://api.github.com/search/commits",
+                        params={"q": q, "per_page": 20},
+                        headers={"Accept": "application/vnd.github+json"},
+                        throttle=("github_search", GITHUB_SEARCH_INTERVAL_S))
+        return {"resp": resp, "query": q}
+
+    first = search(repo)
+    resp = first["resp"]
+    q = first["query"]
+    canonical: dict | None = None
+    if resp.get("status") != "ok" and resp.get("http_status") == 422 and repo:
+        # Retry once against the canonical name after a repository rename.
+        canonical = _canonical_repo(http, repo, provider)
+        if canonical.get("resolved"):
+            second = search(canonical["repo"])
+            resp, q = second["resp"], second["query"]
     if resp.get("status") != "ok":
-        return _error(provider, resp.get("error") or f"HTTP {resp.get('http_status')}", **{"raw": resp})
+        extra = {"raw": resp}
+        if canonical is not None:
+            extra["repo_resolution"] = canonical
+        return _error(provider, resp.get("error") or f"HTTP {resp.get('http_status')}", **extra)
     body = resp.get("body") or {}
     items = body.get("items") or []
-    security_re = re.compile(
-        r"cve-\d{4}-\d+|ghsa-|security|vulnerab|sanitiz|bypass|rce|pickle|deserial|"
-        r"traversal|ssrf|injection|exploit|privilege|unauth", re.I)
+    # A commit only counts as a disclosure when it carries an advisory id or an
+    # explicit security-fix action next to a sink keyword.  Matching loose
+    # words anywhere in the message body produced false positives such as a
+    # pure rename and a lint pass that contained "--privileged" in a repro
+    # command.
+    id_re = re.compile(r"(cve-\d{4}-\d+|ghsa-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}|vu#\d+)", re.I)
+    fix_re = re.compile(r"\b(fix(es|ed)?|harden(s|ed)?|mitigat\w*|patch(es|ed)?|"
+                        r"resolve[sd]?|address(es|ed)?|prevent(s|ed)?)\b", re.I)
+    sink_re = re.compile(r"(\brce\b|code execution|pickle|deseriali[sz]\w*|injection|"
+                         r"path traversal|directory traversal|\bssrf\b|\bxss\b|"
+                         r"auth(?:entication|orization)? bypass|privilege escalation|"
+                         r"vulnerab\w*|exploit|arbitrary (?:file|code|command))", re.I)
     matches: list[dict] = []
     related: list[dict] = []
     for item in items:
@@ -456,14 +554,24 @@ def check_github_commits(entry: dict, cfg: dict, http: Http) -> dict:
         record = {"id": (item.get("sha") or "")[:40], "url": item.get("html_url"),
                   "summary": _safe_text(message.splitlines()[0][:300]) if message else "",
                   "repo": (item.get("repository") or {}).get("full_name")}
-        if security_re.search(message):
+        ids = sorted({m.group(0).upper() for m in id_re.finditer(message)})
+        subject = message.splitlines()[0] if message else ""
+        signals = sorted({m.group(0).lower() for m in fix_re.finditer(subject)}) + \
+                  sorted({m.group(0).lower() for m in sink_re.finditer(subject)})
+        if ids or (fix_re.search(subject) and sink_re.search(subject)):
+            if ids:
+                record["matched_ids"] = ids
+            record["matched_terms"] = signals[:8]
             matches.append(record)
         else:
             related.append(record)
+    extra = {"query": q}
+    if canonical is not None:
+        extra["repo_resolution"] = canonical
     if matches:
         return _match(provider, matches[:20], f"{len(matches)} security-relevant commit(s) mention {term}",
-                      query=q, related=related[:10])
-    return _clean(provider, f"no security-relevant commit matched {term}", query=q, related=related[:10])
+                      related=related[:10], **extra)
+    return _clean(provider, f"no security-relevant commit matched {term}", related=related[:10], **extra)
 
 
 def _grep_app(term: str, http: Http, upstream_repo: str | None) -> dict:
@@ -613,7 +721,7 @@ def check_entry(entry: dict, *, cache_dir: Path | str = DEFAULT_CACHE, offline: 
         match = {"id": known[0], "ids": known,
                  "url": known[0] if str(known[0]).startswith("http") else None}
         return {
-            "schema": "trident-novelty-result-v1",
+            "schema": "inkblade-novelty-result-v1",
             "id": entry.get("id"),
             "verdict": "already-public",
             "reason": "source audit already cites public reference(s): " + ", ".join(map(str, known)),
@@ -647,11 +755,16 @@ def check_entry(entry: dict, *, cache_dir: Path | str = DEFAULT_CACHE, offline: 
             results[provider] = _error(provider, "unknown provider")
 
     matches = [r for r in results.values() if r.get("status") == "match"]
-    # A missing OSV/GHSA/commit/code query is not evidence of novelty.  Only
-    # an explicit "vendor has no advisory page" is an acceptable non-answer.
+    # A missing OSV/GHSA/commit/code query is not evidence of novelty.  Only a
+    # vendor with no advisory page, or a provider that *proved* it cannot
+    # answer (e.g. the package is not published under that name), is an
+    # acceptable non-answer; both are recorded in the result.
     bad = [r for r in results.values()
            if r.get("status") in ("error", "skipped")
-           or (r.get("status") == "not-applicable" and r.get("provider") != "vendor")]
+           or (r.get("status") == "not-applicable"
+               and r.get("provider") != "vendor" and not r.get("justified"))]
+    waived = [r for r in results.values()
+              if r.get("status") == "not-applicable" and r.get("justified")]
     if matches:
         verdict = "already-public"
         reason = "public disclosure match: " + ", ".join(
@@ -666,8 +779,11 @@ def check_entry(entry: dict, *, cache_dir: Path | str = DEFAULT_CACHE, offline: 
     else:
         verdict = "confirmed-unpublished"
         reason = "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match"
+        if waived:
+            reason += "; justified non-answer: " + "; ".join(
+                f"{w['provider']}: {w.get('detail')}" for w in waived)
     return {
-        "schema": "trident-novelty-result-v1",
+        "schema": "inkblade-novelty-result-v1",
         "id": entry.get("id"),
         "verdict": verdict,
         "reason": reason,
@@ -718,12 +834,12 @@ def main(argv: list[str] | None = None) -> int:
         results.append(result)
         print(f"{entry.get('id')}: {result['verdict']} - {result['reason']}", file=sys.stderr, flush=True)
         if args.out:
-            payload = {"schema": "trident-novelty-results-v1", "generated_at": now(),
+            payload = {"schema": "inkblade-novelty-results-v1", "generated_at": now(),
                        "offline": args.offline, "verdicts": {r["id"]: r for r in results}}
             out = Path(args.out)
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
-    payload = {"schema": "trident-novelty-results-v1", "generated_at": now(),
+    payload = {"schema": "inkblade-novelty-results-v1", "generated_at": now(),
                "offline": args.offline, "verdicts": {r["id"]: r for r in results}}
     if args.out:
         out = Path(args.out)

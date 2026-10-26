@@ -1,4 +1,4 @@
-"""实效验证测试：调 trident/verify-effects.py::run_verification 断言 20 项全 PASS。
+"""实效验证测试：调 inkblade/verify-effects.py::run_verification 断言 20 项全 PASS。
 
 覆盖（本机真实进程 + 127.0.0.1 真实 HTTP）：
 a) 管理面未授权利用（200 + 服务端状态文件变更）
@@ -30,7 +30,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 REPO = Path(__file__).resolve().parents[1]
-SCRIPT = REPO / "trident" / "verify-effects.py"
+SCRIPT = REPO / "inkblade" / "verify-effects.py"
 FAKE_TOKEN = "hf_FAKEtokenDoNotUseSampleABCD1234wxyz"
 
 EXPECTED_IDS = {
@@ -80,7 +80,7 @@ EXPECTED_IDS = {
 
 
 def load_verify():
-    spec = importlib.util.spec_from_file_location("trident_verify_effects", SCRIPT)
+    spec = importlib.util.spec_from_file_location("inkblade_verify_effects", SCRIPT)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -125,7 +125,7 @@ class TestVerifyEffects(unittest.TestCase):
         self.assertEqual(ev["http_status"], 200)
         self.assertNotEqual(ev["sha256_before"], ev["sha256_after"])
         self.assertTrue(ev["marker_present"])
-        self.assertIn("TRIDENT-", ev["marker"])
+        self.assertIn("INKBLADE-", ev["marker"])
 
     def test_rollback_restores_exact_bytes(self):
         ev = self.by_id["backup-rollback"]["evidence"]
@@ -137,7 +137,7 @@ class TestVerifyEffects(unittest.TestCase):
         ev = self.by_id["rce-marker"]["evidence"]
         self.assertEqual(ev["http_statuses"], {"set_env": 200, "create_engine": 200, "call": 200})
         self.assertTrue(ev["marker_present"])
-        self.assertIn("TRIDENT-", ev["marker"])
+        self.assertIn("INKBLADE-", ev["marker"])
 
     def test_data_leak_only_tail4_in_report(self):
         ev = self.by_id["data-leak-redaction"]["evidence"]
@@ -201,7 +201,7 @@ class TestVerifyEffects(unittest.TestCase):
         self.assertEqual(ev["readback_status"], 200)
         self.assertEqual(ev["victim_read_status"], 200)
         self.assertTrue(ev["readback_after_release"])
-        self.assertTrue(ev["marker"].startswith("TRIDENT-BENIGN-"))
+        self.assertTrue(ev["marker"].startswith("INKBLADE-BENIGN-"))
         self.assertEqual(ev["marker_sha256"], ev["expected_marker_sha256"])
         self.assertEqual(ev["readback_file_sha256"], ev["residue_file_sha256"])
         self.assertEqual(ev["readback_file_sha256"], ev["actual_file_sha256"])
@@ -290,7 +290,7 @@ class TestVerifyEffects(unittest.TestCase):
         ev = self.by_id["ray-job-rce-marker"]["evidence"]
         self.assertEqual(ev["submit_status"], 200)
         self.assertTrue(ev["marker_present"])
-        self.assertIn("TRIDENT-", ev["marker"])
+        self.assertIn("INKBLADE-", ev["marker"])
         self.assertTrue(ev["cleanup_deleted"])
         self.assertEqual(ev["cve"], "CVE-2023-48022")
 
@@ -327,7 +327,7 @@ class TestVerifyEffects(unittest.TestCase):
         ev = self.by_id["trainstack-optimizer-state-marker"]["evidence"]
         self.assertEqual(ev["http_statuses"], {"write": 200, "read": 200})
         self.assertTrue(ev["marker_present"])
-        self.assertIn("TRIDENT-", ev["marker"])
+        self.assertIn("INKBLADE-", ev["marker"])
         self.assertTrue(ev["optimizer_state"])
         self.assertNotEqual(ev["sha256_before"], ev["sha256_after"])
         self.assertEqual(ev["readback_sha256"], ev["sha256_after"])

@@ -1,12 +1,12 @@
-# trident.io/vector: cred-sa-token-automount
+# inkblade.io/vector: cred-sa-token-automount
 # detection-point: Falco：容器读取 automount SA token
-- rule: Trident Privesc cred-sa-token-automount
+- rule: InkBlade Privesc cred-sa-token-automount
   desc: 自动挂载 SA token 读取
   condition: "evt.type in (open,openat,connect,execve) and path=\"/var/run/secrets/kubernetes.io/serviceaccount/token\""
-  output: "Trident privilege-escalation primitive (vector=cred-sa-token-automount module=secret-scanner proc=%proc.name)"
+  output: "InkBlade privilege-escalation primitive (vector=cred-sa-token-automount module=secret-scanner proc=%proc.name)"
   priority: WARNING
   tags:
-    - trident
+    - inkblade
     - privesc
     - credential
     - cred-sa-token-automount

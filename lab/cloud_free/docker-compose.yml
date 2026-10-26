@@ -3,7 +3,7 @@
 services:
   localstack:
     image: localstack/localstack:3.8
-    container_name: trident-localstack
+    container_name: inkblade-localstack
     ports:
       - "4566:4566"
     environment:
@@ -18,7 +18,7 @@ services:
 
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite:3.33.0
-    container_name: trident-azurite
+    container_name: inkblade-azurite
     command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000 --location /data --debug /data/debug.log
     ports:
       - "10000:10000"
@@ -32,7 +32,7 @@ services:
 
   fake-gcs-server:
     image: fsouza/fake-gcs-server:1.49
-    container_name: trident-fake-gcs
+    container_name: inkblade-fake-gcs
     command: -scheme http -host 0.0.0.0 -port 4443 -backend memory
     ports:
       - "4443:4443"

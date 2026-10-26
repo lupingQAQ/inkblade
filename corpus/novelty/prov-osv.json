@@ -1,936 +1,1033 @@
 {
-  "generated_at": "2026-10-26T11:29:56+00:00",
+  "generated_at": "2026-10-26T17:24:29+00:00",
   "offline": false,
-  "schema": "trident-novelty-results-v1",
+  "schema": "inkblade-novelty-results-v1",
   "verdicts": {
     "areal-awex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:53+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "areal-awex",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "areal@448de5235341482465362e8b831097685d8e305d",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "areal-dataservice-pickle": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:51+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "areal-dataservice-pickle",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "areal@448de5235341482465362e8b831097685d8e305d",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "areal-unauth-engine-control": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:51+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "areal-unauth-engine-control",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "areal@448de5235341482465362e8b831097685d8e305d",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "areal-v2-worker": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:53+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "areal-v2-worker",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "areal@448de5235341482465362e8b831097685d8e305d",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "cephcsi-httpserver-go-pprof-exposed-l37-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "cephcsi-httpserver-go-pprof-exposed-l37-regex",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "cephcsi@3.18.1",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "deepspeed-autoep-unsafe-load": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "deepspeed-autoep-unsafe-load",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "deepspeed@0.19.8",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "deepspeed-stage3-py-torch-load-any-l3660-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "deepspeed-stage3-py-torch-load-any-l3660-regex",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "deepspeed@0.19.8",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "deepspeed-stage3-py-torch-load-any-l3770-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "deepspeed-stage3-py-torch-load-any-l3770-regex",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "deepspeed@0.19.8",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "deepspeed-stage3-py-torch-load-unsafe-l3660-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-ast",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "deepspeed@0.19.8",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "deepspeed-stage3-py-torch-load-unsafe-l3660-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-regex",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "deepspeed@0.19.8",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "deepspeed-stage3-py-torch-load-unsafe-l3770-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "deepspeed-stage3-py-torch-load-unsafe-l3770-ast",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "deepspeed@0.19.8",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "dify-agent-auth-failopen": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "dify-agent-auth-failopen",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "dify@1.17.1",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "dify-home-snapshot-cross-tenant": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "dify-home-snapshot-cross-tenant",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "dify@1.17.1",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "dify-shellctl-unauth-rce": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "dify-shellctl-unauth-rce",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "dify@1.17.1",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "dify-stub-jwe-default-key": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "dify-stub-jwe-default-key",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "dify@1.17.1",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "djev-open-proxy": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:50+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:27+00:00",
       "id": "djev-open-proxy",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "djev@e5841cf41e9211608e698492658685c36e24e77a",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "llamafactory-checkpoint-py-torch-load-unsafe-l136-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "llamafactory-checkpoint-py-torch-load-unsafe-l136-ast",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "llamafactory@0.9.5",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "llamafactory-checkpoint-py-torch-load-unsafe-l136-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "llamafactory-checkpoint-py-torch-load-unsafe-l136-regex",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "llamafactory@0.9.5",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "llamafactory@0.9.5",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "llamafactory@0.9.5",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "llamafactory-ssrf-redirect": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:54+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "llamafactory-ssrf-redirect",
       "offline": false,
       "providers": {
-        "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-          "matches": [],
-          "provider": "osv",
-          "queried": "llamafactory@0.9.5",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2025-61784",
+              "ids": [
+                "CVE-2025-61784",
+                "CVE-2026-85673"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2025-61784, CVE-2026-85673",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "llamafactory-webui-rce": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:52+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "llamafactory-webui-rce",
       "offline": false,
       "providers": {
-        "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-          "matches": [],
-          "provider": "osv",
-          "queried": "llamafactory@0.9.5",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-58116",
+              "ids": [
+                "CVE-2026-58116"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2026-58116",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "llm2jev-image-file": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:54+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "llm2jev-image-file",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "llm2jev@f2bdad648e7a34bfce64401fb0f7c44bc13209ae",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "megatron-checkpointing-py-torch-load-any-l1739-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:29+00:00",
       "id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "no version/commit pin; OSV cannot answer for a floating package",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
+          "package_identity": {
+            "evidence": "https://pypi.org/project/megatron-core/",
+            "exists": true,
+            "placeholder": false,
+            "summary": "Megatron Core - a library for efficient and scalable training of transformer based models",
+            "version": "0.19.2"
+          },
           "provider": "osv",
-          "status": "not-applicable"
+          "queried": "megatron-core (package-level, all versions)",
+          "query_mode": "package-level",
+          "related": [],
+          "status": "ok"
         }
       },
-      "reason": "provider(s) unavailable/skipped: osv: no version/commit pin; OSV cannot answer for a floating package",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "inconclusive"
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
     },
     "msswift-eval-escape": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:53+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "msswift-eval-escape",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "ms-swift@4.5.3",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-indexed-dataset-py-pickle-loads-l112-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:29+00:00",
       "id": "msswift-indexed-dataset-py-pickle-loads-l112-ast",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "ms-swift@4.6.0",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-indexed-dataset-py-pickle-loads-l112-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:29+00:00",
       "id": "msswift-indexed-dataset-py-pickle-loads-l112-regex",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "ms-swift@4.6.0",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-indexed-dataset-py-pickle-loads-l129-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:29+00:00",
       "id": "msswift-indexed-dataset-py-pickle-loads-l129-ast",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "ms-swift@4.6.0",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-indexed-dataset-py-pickle-loads-l129-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:29+00:00",
       "id": "msswift-indexed-dataset-py-pickle-loads-l129-regex",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "ms-swift@4.6.0",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-media-local-read": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "msswift-media-local-read",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "ms-swift@4.6.0",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-torch-utils-py-pickle-loads-l340-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:29+00:00",
       "id": "msswift-torch-utils-py-pickle-loads-l340-ast",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "ms-swift@4.6.0",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-torch-utils-py-pickle-loads-l340-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:29+00:00",
       "id": "msswift-torch-utils-py-pickle-loads-l340-regex",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "ms-swift@4.6.0",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-trust-remote-code": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:52+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "msswift-trust-remote-code",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "ms-swift@4.5.3",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "onejev-media-ssrf": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:53+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "onejev-media-ssrf",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "onejev@6122519058af23504a33d944f0e63b2d868c8a4b",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "openjev-clef-release-module": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:53+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "openjev-clef-release-module",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "openjev@b4339c640f5331ef75098637d1be2c787715ee88",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "openrlhf-serve-rm": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:52+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "openrlhf-serve-rm",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "openrlhf@0.11.2",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "openrlhf-vllm-insecure": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:53+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "openrlhf-vllm-insecure",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "openrlhf@0.11.2",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "openwebui-code-execute": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "openwebui-code-execute",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "open-webui@0.12.3",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "openwebui-code-interpreter-bypass": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "openwebui-code-interpreter-bypass",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "open-webui@0.12.3",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "ray-dashboard-unauth": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:54+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "ray-dashboard-unauth",
       "offline": false,
       "providers": {
-        "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-          "matches": [],
-          "provider": "osv",
-          "queried": "ray@2.59.0",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2023-48022",
+              "ids": [
+                "CVE-2023-48022",
+                "CVE-2023-48023"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2023-48022, CVE-2023-48023",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "sglang-admin-optional-failopen": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:50+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:27+00:00",
       "id": "sglang-admin-optional-failopen",
       "offline": false,
       "providers": {
-        "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-          "matches": [],
-          "provider": "osv",
-          "queried": "sglang@0.5.21",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-15978",
+              "ids": [
+                "CVE-2026-15978",
+                "VU#281278",
+                "GHSA-2wvm-gjg7-5jfm",
+                "GHSA-h6rf-77vv-9mvj"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2026-15978, VU#281278, GHSA-2wvm-gjg7-5jfm, GHSA-h6rf-77vv-9mvj",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "sglang-legacy-tar-weights-rce": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "sglang-legacy-tar-weights-rce",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "sglang@0.5.22",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "sglang-omni-admin-failopen": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:50+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "sglang-omni-admin-failopen",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "sglang-omni@204ba29a5303c25ca74238cc7f1e1356b494dd24",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "siliconlab-credential-exfil": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:54+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "siliconlab-credential-exfil",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "openjev-siliconlabai@a08e969c37b2e4a37f95b3426f983bd94303590c",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "skyrl-fetch-weights": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:53+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "skyrl-fetch-weights",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "skyrl@a1e34dbf21003f66bd7921487fd47db6c154aba2",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "skyrl-tinker-api": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:51+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "skyrl-tinker-api",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "skyrl@a1e34dbf21003f66bd7921487fd47db6c154aba2",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "skyrl-vllm-devmode": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:51+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "skyrl-vllm-devmode",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "skyrl@a1e34dbf21003f66bd7921487fd47db6c154aba2",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "slime-pull-weights": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:50+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "slime-pull-weights",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "no version/commit pin; OSV cannot answer for a floating package",
+          "detail": "no version/commit pin and PyPI 'slime' is an unrelated placeholder release (0.0.0: Simple linear mixed effects modelwith priors and constraints.); OSV cannot answer for the unpublished upstream tree",
+          "justified": true,
           "matches": [],
+          "package_identity": {
+            "evidence": "https://pypi.org/project/slime/",
+            "exists": true,
+            "placeholder": true,
+            "summary": "Simple linear mixed effects modelwith priors and constraints.",
+            "version": "0.0.0"
+          },
           "provider": "osv",
           "status": "not-applicable"
         }
       },
-      "reason": "provider(s) unavailable/skipped: osv: no version/commit pin; OSV cannot answer for a floating package",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "inconclusive"
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match; justified non-answer: osv: no version/commit pin and PyPI 'slime' is an unrelated placeholder release (0.0.0: Simple linear mixed effects modelwith priors and constraints.); OSV cannot answer for the unpublished upstream tree",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
     },
     "slime-torch-load": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:53+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "slime-torch-load",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "no version/commit pin; OSV cannot answer for a floating package",
+          "detail": "no version/commit pin and PyPI 'slime' is an unrelated placeholder release (0.0.0: Simple linear mixed effects modelwith priors and constraints.); OSV cannot answer for the unpublished upstream tree",
+          "justified": true,
           "matches": [],
+          "package_identity": {
+            "evidence": "https://pypi.org/project/slime/",
+            "exists": true,
+            "placeholder": true,
+            "summary": "Simple linear mixed effects modelwith priors and constraints.",
+            "version": "0.0.0"
+          },
           "provider": "osv",
           "status": "not-applicable"
         }
       },
-      "reason": "provider(s) unavailable/skipped: osv: no version/commit pin; OSV cannot answer for a floating package",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "inconclusive"
+      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match; justified non-answer: osv: no version/commit pin and PyPI 'slime' is an unrelated placeholder release (0.0.0: Simple linear mixed effects modelwith priors and constraints.); OSV cannot answer for the unpublished upstream tree",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "confirmed-unpublished"
     },
     "transformers-dynamic-module-utils-py-dynamic-import-l248-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:56+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:29+00:00",
       "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-ast",
       "offline": false,
       "providers": {
@@ -964,6 +1061,7 @@
           ],
           "provider": "osv",
           "queried": "transformers@4.57.1",
+          "query_mode": "pin",
           "related": [
             {
               "aliases": [
@@ -1058,12 +1156,12 @@
         }
       },
       "reason": "public disclosure match: osv=GHSA-x9r9-c232-4q39",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "already-public"
     },
     "transformers-dynamic-module-utils-py-dynamic-import-l248-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:56+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:29+00:00",
       "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-regex",
       "offline": false,
       "providers": {
@@ -1097,6 +1195,7 @@
           ],
           "provider": "osv",
           "queried": "transformers@4.57.1",
+          "query_mode": "pin",
           "related": [
             {
               "aliases": [
@@ -1191,115 +1290,126 @@
         }
       },
       "reason": "public disclosure match: osv=GHSA-x9r9-c232-4q39",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "already-public"
     },
     "trl-vllm-serve-devmode": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:51+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "trl-vllm-serve-devmode",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "trl@1.15.0",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "verl-checkpoint-pickle": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:53+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "verl-checkpoint-pickle",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "verl@76e837e0bfcb18b380a66c0ba56ef9f0ac840f09",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "verl-hdfs-command-injection": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:54+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "verl-hdfs-command-injection",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "verl@76e837e0bfcb18b380a66c0ba56ef9f0ac840f09",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "verl-prime-code-exec": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:53+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "verl-prime-code-exec",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "verl@76e837e0bfcb18b380a66c0ba56ef9f0ac840f09",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "verl-prime-math-eval": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:53+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "verl-prime-math-eval",
       "offline": false,
       "providers": {
-        "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-          "matches": [],
-          "provider": "osv",
-          "queried": "verl@76e837e0bfcb18b380a66c0ba56ef9f0ac840f09",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-6878",
+              "ids": [
+                "CVE-2026-6878"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2026-6878",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "vllm-jev-plugin-auth-bypass": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:50+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:27+00:00",
       "id": "vllm-jev-plugin-auth-bypass",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 1 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 1 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "vllm@0.31.0",
+          "query_mode": "pin",
           "related": [
             {
               "aliases": [
@@ -1314,64 +1424,81 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "vllm-omni-media-ssrf": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:53+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "vllm-omni-media-ssrf",
       "offline": false,
       "providers": {
-        "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-          "matches": [],
-          "provider": "osv",
-          "queried": "vllm-omni@b463516ff4cfe6d3c3e46aaad07f58e6ce63ac40",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-24779",
+              "ids": [
+                "CVE-2026-24779",
+                "CVE-2026-73560",
+                "CVE-2026-34753"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2026-24779, CVE-2026-73560, CVE-2026-34753",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "vllm-omni-trust-remote-code": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:54+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "vllm-omni-trust-remote-code",
       "offline": false,
       "providers": {
-        "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
-          "matches": [],
-          "provider": "osv",
-          "queried": "vllm-omni@b463516ff4cfe6d3c3e46aaad07f58e6ce63ac40",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-27893",
+              "ids": [
+                "CVE-2026-27893",
+                "CVE-2026-22807",
+                "CVE-2026-90553"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2026-27893, CVE-2026-22807, CVE-2026-90553",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "vllm-rl-dev-auth-bypass": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:29:55+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:24:28+00:00",
       "id": "vllm-rl-dev-auth-bypass",
       "offline": false,
       "providers": {
         "osv": {
-          "detail": "OSV returned 0 advisory(ies) for the pin, none matched the sink",
+          "detail": "OSV returned 0 advisory(ies) for the query, none matched the sink",
           "matches": [],
           "provider": "osv",
           "queried": "vllm@0.32.0",
+          "query_mode": "pin",
           "related": [],
           "status": "ok"
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     }
   }

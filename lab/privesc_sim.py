@@ -114,7 +114,7 @@ class FakeKubeAPI:
             raise FakeKubeError(f"ServiceAccount 不存在: {service_account}")
         if not self.can_i(subject, "create", "serviceaccounts/token", service_account):
             raise FakeKubeError(f"{subject} 无 create serviceaccounts/token/{service_account}")
-        raw = f"{subject}|{service_account}|trident-fake"
+        raw = f"{subject}|{service_account}|inkblade-fake"
         token = "fake-token-" + hashlib.sha256(raw.encode()).hexdigest()[:24]
         self.tokens[token] = f"system:serviceaccount:lab:{service_account}"
         self.actions.append({"verb": "create", "resource": "serviceaccounts/token",
@@ -128,7 +128,7 @@ class FakeKubeAPI:
         return self.can_i(subject, "*", "*")
 
     # ---------------------------------------------------------------- 准入
-    def write_webhook(self, subject: str, name: str = "trident-injector") -> dict:
+    def write_webhook(self, subject: str, name: str = "inkblade-injector") -> dict:
         if not self.can_i(subject, "create", "mutatingwebhookconfigurations"):
             raise FakeKubeError(f"{subject} 无 create mutatingwebhookconfigurations")
         wh = {
@@ -236,7 +236,7 @@ def run_fake_closure() -> dict:
 
     passed = sum(1 for c in checks if c["status"] == "PASS")
     return {
-        "schema": "trident-privesc-fake-kubectl-v1",
+        "schema": "inkblade-privesc-fake-kubectl-v1",
         "backend": "fake-kubectl (in-memory, deterministic)",
         "checks": checks,
         "summary": {"total": len(checks), "passed": passed,

@@ -24,7 +24,7 @@
       "module": "ray-dashboard-job",
       "params": {
         "mode": "probe-only",
-        "marker": "TRIDENT-${run.name}"
+        "marker": "INKBLADE-${run.name}"
       }
     },
     {
@@ -32,7 +32,7 @@
       "module": "overprivileged-sa-escalation",
       "params": {
         "mode": "backup-write",
-        "marker": "TRIDENT-${run.name}"
+        "marker": "INKBLADE-${run.name}"
       },
       "depends_on": [
         "ray-job-submit"
@@ -42,7 +42,7 @@
         {
           "kind": "kube",
           "resource": "rolebinding",
-          "name": "trident-demo-binding",
+          "name": "inkblade-demo-binding",
           "manifest": ""
         }
       ]

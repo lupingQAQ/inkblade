@@ -1,5 +1,5 @@
 {
- "schema": "trident-vllm-patch-matrix-v1",
+ "schema": "inkblade-vllm-patch-matrix-v1",
  "verified_at": "2026-10-26",
  "method": "GitHub Security Advisories API 快照 + CVE.org 目录条目；版本区间与修复版本逐行保留原始字符串，未给出的修复版本以 fixed_note 标注，不臆造。",
  "surfaces": [
@@ -201,7 +201,7 @@
    "source": "https://github.com/vllm-project/vllm/security/advisories/GHSA-h3rc-6mm3-gc2m"
   },
   {
-   "id": "TRIDENT-VLLM-DEV",
+   "id": "INKBLADE-VLLM-DEV",
    "component": "vllm",
    "cve": null,
    "ghsa": null,
@@ -216,7 +216,7 @@
    "source": "https://docs.vllm.ai/en/latest/"
   },
   {
-   "id": "TRIDENT-VLLM-PLUGIN",
+   "id": "INKBLADE-VLLM-PLUGIN",
    "component": "vllm",
    "cve": null,
    "ghsa": null,

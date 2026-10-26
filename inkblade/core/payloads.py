@@ -5,7 +5,7 @@
 - 每个横向/绕过模块 ≥2 探针变体（version-matrix.json variants）；
 - 本模块把 base 请求（method/path/body/headers）或 base 参数 params 物化为
   逐变体具体形态（路径/大小写/点段/百分号编码/方法/空鉴权头/参数别名）；
-- 变体请求一律携带良性语义（沿用 TRIDENT-BENIGN marker 规约），仅用于
+- 变体请求一律携带良性语义（沿用 INKBLADE-BENIGN marker 规约），仅用于
   指纹稳健性与绕过面探测，不引入新的写面。
 
 transform 文法（白名单，未知 op 抛 PayloadError）：

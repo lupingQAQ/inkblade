@@ -8,8 +8,8 @@ REPO = Path(__file__).resolve().parents[3]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from trident.depth import gpu as _g  # noqa: E402
-from trident.depth.common import finding, write_artifact  # noqa: E402
+from inkblade.depth import gpu as _g  # noqa: E402
+from inkblade.depth.common import finding, write_artifact  # noqa: E402
 
 KEY = "gpu-operator-config-depth"
 WRITES = False

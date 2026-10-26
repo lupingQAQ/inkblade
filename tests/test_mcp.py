@@ -9,13 +9,13 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.agent_planner import plan_workspace, render_plan_md
-from trident.core.chains import load_chains
-from trident.core.evidence import EvidenceStore
+from inkblade.agent_planner import plan_workspace, render_plan_md
+from inkblade.core.chains import load_chains
+from inkblade.core.evidence import EvidenceStore
 
 REPO = Path(__file__).resolve().parents[1]
 PY = sys.executable
-CHAIN_COUNT = len(load_chains(REPO / "trident" / "chains"))
+CHAIN_COUNT = len(load_chains(REPO / "inkblade" / "chains"))
 VALID_TOOLS = {
     "list_runs", "get_findings", "get_chain_plan", "get_evidence_manifest", "validate_rules",
     # XBow 对标同步暴露（全部只读）：资产/审批队列/计划/流量/漂移
@@ -51,7 +51,7 @@ class _Mcp:
         env = dict(os.environ)
         env["PYTHONIOENCODING"] = "utf-8"
         self.proc = subprocess.Popen(
-            [PY, "-m", "trident", "--home", str(home), "mcp", "--workspace", workspace, *extra],
+            [PY, "-m", "inkblade", "--home", str(home), "mcp", "--workspace", workspace, *extra],
             cwd=str(REPO), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             text=True, encoding="utf-8", bufsize=1, env=env,
         )
@@ -140,7 +140,7 @@ class TestMcpServer(unittest.TestCase):
         self.assertIn("2026-07-28", result["supportedVersions"])
         self.assertIn("2025-06-18", result["supportedVersions"])
         self.assertIn("tools", result["capabilities"])
-        self.assertEqual(result["_meta"]["io.modelcontextprotocol/serverInfo"]["name"], "trident-mcp")
+        self.assertEqual(result["_meta"]["io.modelcontextprotocol/serverInfo"]["name"], "inkblade-mcp")
 
         listed = c.send("tools/list", {"_meta": {
             "io.modelcontextprotocol/protocolVersion": "2026-07-28"}})
@@ -306,13 +306,13 @@ class TestPlanner(unittest.TestCase):
         env = dict(os.environ)
         env["PYTHONIOENCODING"] = "utf-8"
         r = subprocess.run(
-            [PY, "-m", "trident", "--home", str(self.root), "plan", "--workspace", "local-lab",
+            [PY, "-m", "inkblade", "--home", str(self.root), "plan", "--workspace", "local-lab",
              "--run", "run-mcp", "--format", "json"],
             cwd=str(REPO), capture_output=True, timeout=60, env=env,
         )
         self.assertEqual(r.returncode, 0, r.stderr.decode("utf-8", "replace"))
         data = json.loads(r.stdout.decode("utf-8"))
-        self.assertEqual(data["schema"], "trident-agent-plan-v1")
+        self.assertEqual(data["schema"], "inkblade-agent-plan-v1")
         self.assertEqual(data["approval"]["approver_role"], "lead")
         self.assertEqual(len(data["candidates"]), CHAIN_COUNT)
 

@@ -21,11 +21,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from trident import onboarding  # noqa: E402
-from trident.cli import main  # noqa: E402
-from trident.core.humanize import explain_exception  # noqa: E402
-from trident.core.roe import ExecutionLocked  # noqa: E402
-from trident.core.runner import BackupGateRefused  # noqa: E402
+from inkblade import onboarding  # noqa: E402
+from inkblade.cli import main  # noqa: E402
+from inkblade.core.humanize import explain_exception  # noqa: E402
+from inkblade.core.roe import ExecutionLocked  # noqa: E402
+from inkblade.core.runner import BackupGateRefused  # noqa: E402
 
 
 def _free_port() -> int:
@@ -44,7 +44,7 @@ def _run_cli(*argv: str) -> tuple[int, str, str]:
 class TestDemo(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.tmp = tempfile.TemporaryDirectory(prefix="trident-onboarding-demo-")
+        cls.tmp = tempfile.TemporaryDirectory(prefix="inkblade-onboarding-demo-")
         cls.out = Path(cls.tmp.name) / "demo"
         cls.t0 = time.monotonic()
         out, err = io.StringIO(), io.StringIO()
@@ -63,7 +63,7 @@ class TestDemo(unittest.TestCase):
         # 任务要求 ≤60s；CI/慢盘用 120s 宽松断言，同时记录实测值
         self.assertLessEqual(self.seconds, 120.0, f"demo 实测 {self.seconds:.1f}s")
         self.assertLessEqual(self.summary["elapsed_seconds"], 120.0)
-        self.assertIn("Trident demo 完成", self.stdout)
+        self.assertIn("InkBlade demo 完成", self.stdout)
 
     def test_demo_artifacts_present(self):
         self.assertTrue((self.out / onboarding.DEMO_MARKER).is_file())
@@ -91,7 +91,7 @@ class TestDemo(unittest.TestCase):
         self.assertIn("渗透测试", report)
         self.assertIn("sha256", report)
         self.assertGreater(self.summary["rules"]["rules"], 0)
-        self.assertIn("window.TRIDENT_DATA", (self.out / "webui" / "index.html").read_text(encoding="utf-8"))
+        self.assertIn("window.INKBLADE_DATA", (self.out / "webui" / "index.html").read_text(encoding="utf-8"))
 
     def test_demo_no_ui_skips_static_export(self):
         out_dir = Path(self.tmp.name) / "demo-no-ui"
@@ -113,20 +113,20 @@ class TestDemo(unittest.TestCase):
 
 class TestDoctor(unittest.TestCase):
     def test_doctor_smoke_exit_zero_and_human_conclusion(self):
-        with tempfile.TemporaryDirectory(prefix="trident-doctor-") as td:
+        with tempfile.TemporaryDirectory(prefix="inkblade-doctor-") as td:
             code, out, err = _run_cli("--home", td, "doctor", "--mode", "mock",
                                       "--port", str(_free_port()))
         self.assertEqual(code, 0, err)
         self.assertIn("[PASS] Python", out)
         self.assertIn("结论：", out)
-        self.assertIn("python -m trident demo", out)
+        self.assertIn("python -m inkblade demo", out)
 
     def test_doctor_port_in_use_is_fail_with_fix(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind(("127.0.0.1", 0))
             s.listen(1)
             port = int(s.getsockname()[1])
-            with tempfile.TemporaryDirectory(prefix="trident-doctor-") as td:
+            with tempfile.TemporaryDirectory(prefix="inkblade-doctor-") as td:
                 code, out, _ = _run_cli("--home", td, "doctor", "--mode", "mock", "--port", str(port))
         self.assertEqual(code, 1)
         self.assertIn("[FAIL]", out)
@@ -134,7 +134,7 @@ class TestDoctor(unittest.TestCase):
         self.assertIn("--port", out)
 
     def test_doctor_cluster_mode_without_kubeconfig_fails(self):
-        with tempfile.TemporaryDirectory(prefix="trident-doctor-") as td:
+        with tempfile.TemporaryDirectory(prefix="inkblade-doctor-") as td:
             env = os.environ.pop("KUBECONFIG", None)
             try:
                 code, out, _ = _run_cli("--home", td, "doctor", "--mode", "cluster",
@@ -148,7 +148,7 @@ class TestDoctor(unittest.TestCase):
 
 class TestQuickstart(unittest.TestCase):
     def test_quickstart_yes_demo_creates_consent_and_users(self):
-        with tempfile.TemporaryDirectory(prefix="trident-qs-") as td:
+        with tempfile.TemporaryDirectory(prefix="inkblade-qs-") as td:
             code, out, err = _run_cli("quickstart", "--workspace-dir", td, "--yes", "--json")
             ws = Path(td)
             consent = json.loads((ws / "evidence" / onboarding.QUICKSTART_WORKSPACE / "consent.json")
@@ -165,7 +165,7 @@ class TestQuickstart(unittest.TestCase):
         self.assertEqual(cfg["target"]["mode"], "demo")
 
     def test_quickstart_cluster_kubeconfig_and_level(self):
-        with tempfile.TemporaryDirectory(prefix="trident-qs-") as td:
+        with tempfile.TemporaryDirectory(prefix="inkblade-qs-") as td:
             kc = Path(td) / "kubeconfig.yaml"
             kc.write_text("apiVersion: v1\nkind: Config\nclusters:\n- cluster:\n    server: https://127.0.0.1:6443\n  name: lab\n",
                           encoding="utf-8")
@@ -189,7 +189,7 @@ class TestQuickstart(unittest.TestCase):
 
     def test_quickstart_interactive_reprompts_bad_cidr(self):
         inputs = iter(["1", "train", "not-a-cidr", "127.0.0.0/8", "1", "carol", "pw", "y"])
-        with tempfile.TemporaryDirectory(prefix="trident-qs-") as td:
+        with tempfile.TemporaryDirectory(prefix="inkblade-qs-") as td:
             out, err = io.StringIO(), io.StringIO()
             with redirect_stdout(out), redirect_stderr(err):
                 code = onboarding.run_quickstart(td, inputs=lambda _p: next(inputs))
@@ -200,7 +200,7 @@ class TestQuickstart(unittest.TestCase):
         self.assertIn("CIDR 不合法", out.getvalue())
 
     def test_quickstart_reentrant_keeps_valid_consent(self):
-        with tempfile.TemporaryDirectory(prefix="trident-qs-") as td:
+        with tempfile.TemporaryDirectory(prefix="inkblade-qs-") as td:
             with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
                 self.assertEqual(onboarding.run_quickstart(td, yes=True), 0)
             first = (Path(td) / "evidence" / onboarding.QUICKSTART_WORKSPACE / "consent.json").read_text(encoding="utf-8")
@@ -245,15 +245,15 @@ class TestDocsAndEntrypoints(unittest.TestCase):
         text = (ROOT / "README.md").read_text(encoding="utf-8")
         head = text.split("## 能力", 1)[0]
         self.assertIn("5 分钟上手", head)
-        self.assertIn("python -m trident doctor", head)
-        self.assertIn("python -m trident demo", head)
-        self.assertIn("python -m trident quickstart", head)
+        self.assertIn("python -m inkblade doctor", head)
+        self.assertIn("python -m inkblade demo", head)
+        self.assertIn("python -m inkblade quickstart", head)
 
     def test_ui_first_screen_demo_card(self):
-        html = (ROOT / "trident" / "webui" / "static" / "index.html").read_text(encoding="utf-8")
+        html = (ROOT / "inkblade" / "webui" / "static" / "index.html").read_text(encoding="utf-8")
         self.assertIn('id="demo-guide"', html)
-        self.assertIn("python -m trident doctor", html)
-        self.assertIn("python -m trident demo", html)
+        self.assertIn("python -m inkblade doctor", html)
+        self.assertIn("python -m inkblade demo", html)
 
     def test_onboarding_evaluation_doc_present(self):
         text = (ROOT / "docs" / "ONBOARDING-EVALUATION.md").read_text(encoding="utf-8")

@@ -4,7 +4,7 @@
   `mux.HandleFunc("METHOD /path", handler)`（Go 1.22 pattern 路由，含 registerSideRoutes
   分散在各文件中的注册）。tools/extract_features.py 在本工作区不存在（已核验），
   故从 Go 源自提；产物带 repo commit 证据。
-- Trident：扫描 trident/webui/server.py 的 `u.path == "..."` / `path == "..."`
+- InkBlade：扫描 inkblade/webui/server.py 的 `u.path == "..."` / `path == "..."`
   / `path in (...)` 字面量 + do_GET/do_POST 上下文推断方法。
 
 读写分类：GET/HEAD=read，POST/PUT/PATCH/DELETE=write（按 HTTP 方法标准口径）。
@@ -24,7 +24,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 ARTEX_SRC = REPO_ROOT.parent.parent / ".slim" / "clonedeps" / "repos" / "RuoJi6__ARTEX"
-TRIDENT_SERVER = REPO_ROOT / "trident" / "webui" / "server.py"
+INKBLADE_SERVER = REPO_ROOT / "inkblade" / "webui" / "server.py"
 
 GO_ROUTE = re.compile(
     r'\.\s*HandleFunc\(\s*"(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s+(/[^"]*)"')
@@ -76,14 +76,14 @@ def extract_artex() -> list[dict]:
     return sorted(out.values(), key=lambda r: (r["path"], r["method"]))
 
 
-_TRIDENT_EQ_RE = re.compile(r'(?:u\.path|path)\s*==\s*[\(/]?"(/[^"\)]*)"')
-_TRIDENT_IN_RE = re.compile(r'(?:u\.path|path)\s+in\s*\(([^)]*)\)', re.DOTALL)
+_INKBLADE_EQ_RE = re.compile(r'(?:u\.path|path)\s*==\s*[\(/]?"(/[^"\)]*)"')
+_INKBLADE_IN_RE = re.compile(r'(?:u\.path|path)\s+in\s*\(([^)]*)\)', re.DOTALL)
 _STR_IN_TUPLE = re.compile(r'"(/[^"]*)"')
 
 
-def extract_trident() -> list[dict]:
+def extract_inkblade() -> list[dict]:
     """server.py 端点字面量 + do_POST..do_GET 段界推断方法（含 _api_v1_post/_get）。"""
-    text = TRIDENT_SERVER.read_text(encoding="utf-8")
+    text = INKBLADE_SERVER.read_text(encoding="utf-8")
     # 段界：do_POST 起到 do_GET 前（含其间的 _api_v1_post）为 POST 区；do_GET 起为 GET 区
     get_lo = text.index("def do_GET")
     post_lo = text.index("def do_POST")
@@ -107,9 +107,9 @@ def extract_trident() -> list[dict]:
             "streaming": False,
         }
 
-    for m in _TRIDENT_EQ_RE.finditer(text):
+    for m in _INKBLADE_EQ_RE.finditer(text):
         add(m.group(1), m.start())
-    for m in _TRIDENT_IN_RE.finditer(text):
+    for m in _INKBLADE_IN_RE.finditer(text):
         for s in _STR_IN_TUPLE.finditer(m.group(1)):
             add(s.group(1), m.start())
     return sorted(seen.values(), key=lambda r: (r["path"], r["method"]))
@@ -126,7 +126,7 @@ def artex_commit() -> str:
 
 def build_routes(out_dir: Path) -> dict:
     artex = extract_artex()
-    trident = extract_trident()
+    inkblade = extract_inkblade()
     out_dir.mkdir(parents=True, exist_ok=True)
     payload_artex = {
         "tool": "artex",
@@ -140,22 +140,22 @@ def build_routes(out_dir: Path) -> dict:
         },
         "endpoints": artex,
     }
-    payload_trident = {
-        "tool": "trident",
-        "source": "trident/webui/server.py (path literals in do_GET/do_POST)",
+    payload_inkblade = {
+        "tool": "inkblade",
+        "source": "inkblade/webui/server.py (path literals in do_GET/do_POST)",
         "extracted_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "endpoint_count": len(trident),
+        "endpoint_count": len(inkblade),
         "by_class": {
-            "read": sum(1 for r in trident if r["class"] == "read"),
-            "write": sum(1 for r in trident if r["class"] == "write"),
+            "read": sum(1 for r in inkblade if r["class"] == "read"),
+            "write": sum(1 for r in inkblade if r["class"] == "write"),
         },
-        "endpoints": trident,
+        "endpoints": inkblade,
     }
     (out_dir / "routes-artex.json").write_text(
         json.dumps(payload_artex, ensure_ascii=False, indent=1), encoding="utf-8")
-    (out_dir / "routes-trident.json").write_text(
-        json.dumps(payload_trident, ensure_ascii=False, indent=1), encoding="utf-8")
-    return {"artex": payload_artex, "trident": payload_trident}
+    (out_dir / "routes-inkblade.json").write_text(
+        json.dumps(payload_inkblade, ensure_ascii=False, indent=1), encoding="utf-8")
+    return {"artex": payload_artex, "inkblade": payload_inkblade}
 
 
 def main(argv: list[str] | None = None) -> int:

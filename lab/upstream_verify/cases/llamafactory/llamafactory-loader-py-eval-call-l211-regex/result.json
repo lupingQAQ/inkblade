@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "llamafactory-loader-py-eval-call-l211-regex",
  "source": "mining",
  "component": "llamafactory",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.174,
- "started_at": "2026-10-26T09:23:26+00:00",
+ "duration_s": 0.314,
+ "started_at": "2026-10-26T19:52:33+00:00",
  "marker": {
-  "text": "TRIDENT-UV-llamafactory-loader-py-eval-call-l211-regex",
+  "text": "INKBLADE-UV-llamafactory-loader-py-eval-call-l211-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-regex/evidence/log.txt",
-   "sha256": "bc3dcd147c789fa3bc02e7b139dd835c8323ed6cc6e0334454e67138bd2f6f06",
+   "sha256": "479003665c6071d31e0688c5a0864e460c2cda590a94bbac3736283005262ada",
    "size": 262
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-regex/evidence/static-check.json",
-   "sha256": "7637a481f28d6286802ea28caa9834729fd3c41af761b442813775f29000e016",
-   "size": 1038
+   "sha256": "e4aab340678757d8c933ae7c658b4c6ca8aec41fb0d953e63c0776bdbe2d6851",
+   "size": 1039
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "cf05e493360397afb4cab386044128343d1f80707d1d701967a35f6950a896b4",
+ "manifest_sha256": "065d25daa8155ac3ffb203a4b6a1f0bfd5975abc6a082d85a0adc8be7746f9de",
  "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-loader-py-eval-call-l211-regex\"}\n",
  "stderr": "",
  "notes": "False positive: the matched text is model.eval(), not Python eval()."

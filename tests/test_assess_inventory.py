@@ -11,7 +11,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 
-from trident.assess.inventory import (
+from inkblade.assess.inventory import (
     InventoryError,
     KubectlReader,
     collect_inventory,
@@ -22,7 +22,7 @@ from trident.assess.inventory import (
     load_probes,
     merge_probes,
 )
-from trident.core import applicability as a
+from inkblade.core import applicability as a
 
 REPO = Path(__file__).resolve().parents[1]
 PY = sys.executable
@@ -212,7 +212,7 @@ class TestSnapshotMode(unittest.TestCase):
             "probes": {"imds_reachable": True},
         }
         inv = inventory_from_snapshot(raw, "snap.json")
-        self.assertEqual(inv["schema"], "trident-inventory-v1")
+        self.assertEqual(inv["schema"], "inkblade-inventory-v1")
         self.assertEqual(inv["source"]["mode"], "snapshot")
         self.assertIn("snap.json", inv["source"]["label"])
         self.assertEqual(inv["cluster"]["version"], "v1.28.3")
@@ -232,7 +232,7 @@ class TestSnapshotMode(unittest.TestCase):
 
     def test_load_schema_inventory(self):
         inv = load_inventory(FIX / "inventory-four-states.json")
-        self.assertEqual(inv["schema"], "trident-inventory-v1")
+        self.assertEqual(inv["schema"], "inkblade-inventory-v1")
         self.assertEqual(inv["path"], str(FIX / "inventory-four-states.json"))
         summary = inventory_summary(inv)
         self.assertEqual(summary["counts"]["nodes"], 1)
@@ -262,7 +262,7 @@ class TestSnapshotMode(unittest.TestCase):
 
 class TestCliAssess(unittest.TestCase):
     def _cli(self, home: Path, *args: str):
-        return subprocess.run([PY, "-m", "trident", "--home", str(home), *args],
+        return subprocess.run([PY, "-m", "inkblade", "--home", str(home), *args],
                               cwd=str(REPO), capture_output=True, timeout=120,
                               env={**__import__("os").environ,
                                    "PYTHONIOENCODING": "utf-8"})
@@ -275,7 +275,7 @@ class TestCliAssess(unittest.TestCase):
                           "--out", str(home / "inventory.json"))
             self.assertEqual(r.returncode, 0, r.stderr.decode("utf-8", "replace"))
             body = json.loads(r.stdout.decode("utf-8", "replace"))
-            self.assertEqual(body["schema"], "trident-inventory-v1")
+            self.assertEqual(body["schema"], "inkblade-inventory-v1")
             r = self._cli(home, "assess", "cves",
                           "--inventory", str(home / "inventory.json"),
                           "--catalog", str(FIX / "catalog-four-states.json"),

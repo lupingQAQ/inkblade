@@ -62,7 +62,7 @@ R03/R05/R06 分别在 Kubernetes Operator、AI 基础设施和推理画像中有
   （https://sp2026.ieee-security.org/program.html）；DEF CON 34 Cloud Village，
   The Hidden Cost of Agentic Connectivity: 19,000 MCP Servers（https://www.cloud-village.org/dc34）。
 - **为什么是残余**：`aigateway-*` 只看模型网关鉴权/路由/配额，不解析 MCP server 注册表
-  与逐工具 scopes；`trident/probes` 只做提示注入测试。
+  与逐工具 scopes；`inkblade/probes` 只做提示注入测试。
 - **实现**：server 认证/绑定/TLS、工具 scope 通配、写工具审批、工具 allowlist、server
   签名、manifest 哈希 rug-pull、exec/write 沙箱。
 - **不覆盖**：不主动调用客户 MCP server 的工具（避免真实副作用）；`/mcp/tools` 只作为
@@ -102,7 +102,7 @@ R03/R05/R06 分别在 Kubernetes Operator、AI 基础设施和推理画像中有
 
 ## 3. 实效验证（至少 3 项）
 
-`trident/verify-effects.py` 新增 4 项 R 专项（每个 vulnerable → high/critical，fixed → 0 high）：
+`inkblade/verify-effects.py` 新增 4 项 R 专项（每个 vulnerable → high/critical，fixed → 0 high）：
 
 | 效果 ID | 模块 | 断言 |
 |---|---|---|

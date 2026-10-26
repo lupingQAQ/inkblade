@@ -167,7 +167,7 @@
           },
           {
             "method": "GET",
-            "path": "/api/aws/bucket/list?bucket=trident-ml-weights",
+            "path": "/api/aws/bucket/list?bucket=inkblade-ml-weights",
             "status": 200,
             "expect": 200,
             "match": true,
@@ -192,7 +192,7 @@
           },
           {
             "method": "GET",
-            "path": "/api/azure/bucket/list?bucket=trident-ml-weights",
+            "path": "/api/azure/bucket/list?bucket=inkblade-ml-weights",
             "status": 200,
             "expect": 200,
             "match": true,
@@ -217,7 +217,7 @@
           },
           {
             "method": "GET",
-            "path": "/api/aliyun/bucket/list?bucket=trident-ml-weights",
+            "path": "/api/aliyun/bucket/list?bucket=inkblade-ml-weights",
             "status": 200,
             "expect": 200,
             "match": true,
@@ -242,7 +242,7 @@
           },
           {
             "method": "GET",
-            "path": "/api/tencent/bucket/list?bucket=trident-ml-weights",
+            "path": "/api/tencent/bucket/list?bucket=inkblade-ml-weights",
             "status": 200,
             "expect": 200,
             "match": true,
@@ -267,7 +267,7 @@
           },
           {
             "method": "GET",
-            "path": "/api/gcp/bucket/list?bucket=trident-ml-weights",
+            "path": "/api/gcp/bucket/list?bucket=inkblade-ml-weights",
             "status": 200,
             "expect": 200,
             "match": true,
@@ -292,7 +292,7 @@
           },
           {
             "method": "GET",
-            "path": "/api/huawei/bucket/list?bucket=trident-ml-weights",
+            "path": "/api/huawei/bucket/list?bucket=inkblade-ml-weights",
             "status": 200,
             "expect": 200,
             "match": true,
@@ -775,7 +775,7 @@
           },
           {
             "method": "GET",
-            "path": "/api/aws/bucket/list?bucket=trident-ml-weights",
+            "path": "/api/aws/bucket/list?bucket=inkblade-ml-weights",
             "status": 401,
             "expect": 401,
             "match": true,
@@ -800,7 +800,7 @@
           },
           {
             "method": "GET",
-            "path": "/api/azure/bucket/list?bucket=trident-ml-weights",
+            "path": "/api/azure/bucket/list?bucket=inkblade-ml-weights",
             "status": 401,
             "expect": 401,
             "match": true,
@@ -825,7 +825,7 @@
           },
           {
             "method": "GET",
-            "path": "/api/aliyun/bucket/list?bucket=trident-ml-weights",
+            "path": "/api/aliyun/bucket/list?bucket=inkblade-ml-weights",
             "status": 401,
             "expect": 401,
             "match": true,
@@ -850,7 +850,7 @@
           },
           {
             "method": "GET",
-            "path": "/api/tencent/bucket/list?bucket=trident-ml-weights",
+            "path": "/api/tencent/bucket/list?bucket=inkblade-ml-weights",
             "status": 401,
             "expect": 401,
             "match": true,
@@ -875,7 +875,7 @@
           },
           {
             "method": "GET",
-            "path": "/api/gcp/bucket/list?bucket=trident-ml-weights",
+            "path": "/api/gcp/bucket/list?bucket=inkblade-ml-weights",
             "status": 401,
             "expect": 401,
             "match": true,
@@ -900,7 +900,7 @@
           },
           {
             "method": "GET",
-            "path": "/api/huawei/bucket/list?bucket=trident-ml-weights",
+            "path": "/api/huawei/bucket/list?bucket=inkblade-ml-weights",
             "status": 401,
             "expect": 401,
             "match": true,

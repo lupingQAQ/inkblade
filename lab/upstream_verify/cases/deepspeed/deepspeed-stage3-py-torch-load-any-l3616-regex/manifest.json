@@ -36,7 +36,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-deepspeed-stage3-py-torch-load-any-l3616-regex",
+ "marker_text": "INKBLADE-UV-deepspeed-stage3-py-torch-load-any-l3616-regex",
  "notes": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced.",
  "static_evidence_level": "source-line",
  "static_analysis": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced.",
@@ -52,7 +52,7 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "deepspeed",
  "static_blocker": {
   "category": "pattern-false-positive",

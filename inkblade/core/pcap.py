@@ -82,9 +82,9 @@ def _http_request(entry: dict) -> bytes:
     host = parts.hostname or "target.local"
     if parts.port:
         host = f"{host}:{parts.port}"
-    headers = {"Host": host, "User-Agent": "Trident-PCAP/1",
+    headers = {"Host": host, "User-Agent": "InkBlade-PCAP/1",
                "Connection": "close",
-               "X-Trident-Original-URL": url}
+               "X-InkBlade-Original-URL": url}
     body = entry.get("req_body")
     if body not in (None, "", "null"):
         headers["Content-Type"] = "application/json"
@@ -228,7 +228,7 @@ def read_pcap(path: Path | str) -> list[dict]:
         except ValueError:
             continue
         host = headers.get("Host", "")
-        original = headers.get("X-Trident-Original-URL", "")
+        original = headers.get("X-InkBlade-Original-URL", "")
         if original.startswith(("http://", "https://")):
             url = original
         else:

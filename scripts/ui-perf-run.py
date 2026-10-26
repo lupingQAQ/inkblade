@@ -3,7 +3,7 @@
 前置：先跑 ``python scripts/ui-perf-bench.py --findings 10000`` 生成静态导出。
 
 测量口径（与 docs/UI-PERF.md 一致）：
-- 同一份 index.html，仅切换 ``window.__TRIDENT_FORCE_LEGACY``：
+- 同一份 index.html，仅切换 ``window.__INKBLADE_FORCE_LEGACY``：
   - paged：默认 200 行/页（产品路径）；
   - legacy：一次性建 10,000 行 DOM（优化前路径）。
 - 指标：report 视图同步渲染耗时（performance.now 前后差）、tbody 行数、
@@ -43,7 +43,7 @@ window.addEventListener('load', function () {
   var t0 = performance.now();
   document.querySelector('nav#views button[data-view="report"]').click();
   var t1 = performance.now();
-  var meta = window.__TRIDENT_REPORT_META || {};
+  var meta = window.__INKBLADE_REPORT_META || {};
   var out = {
     mode: "%(mode)s",
     clickMs: Math.round((t1 - t0) * 100) / 100,
@@ -81,7 +81,7 @@ def prepare(src: Path, dst: Path, mode: str) -> Path:
     if mode == "legacy":
         html = html.replace(
             '<script src="app.js"></script>',
-            '<script>window.__TRIDENT_FORCE_LEGACY = true;</script>\n<script src="app.js"></script>',
+            '<script>window.__INKBLADE_FORCE_LEGACY = true;</script>\n<script src="app.js"></script>',
         )
     html = html.replace("</body>", BENCH_JS % {"mode": mode} + "\n</body>")
     html_path.write_text(html, encoding="utf-8")
@@ -138,7 +138,7 @@ def main(argv: list[str] | None = None) -> int:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     results: dict[str, list[dict]] = {"paged": [], "legacy": []}
-    profile_root = Path(tempfile.mkdtemp(prefix="trident-ui-bench-"))
+    profile_root = Path(tempfile.mkdtemp(prefix="inkblade-ui-bench-"))
     try:
         variants = {}
         for mode in ("paged", "legacy"):
@@ -164,7 +164,7 @@ def main(argv: list[str] | None = None) -> int:
             "raw": rows,
         }
     doc = {
-        "schema": "trident-ui-perf/1",
+        "schema": "inkblade-ui-perf/1",
         "generated_at": __import__("datetime").datetime.now().astimezone().isoformat(timespec="seconds"),
         "browser": Path(chrome).name,
         "export": (Path(export).resolve().relative_to(REPO).as_posix()

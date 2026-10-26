@@ -15,7 +15,7 @@
  "marker": {
   "after_has_marker": true,
   "after_sha256": "fc48730fb4fd399933b3dcc0e863ebfb180fdd38591feb6f3afaefedcd8209b2",
-  "text": "TRIDENT-ZD-vllm-rl-dev-auth-bypass"
+  "text": "INKBLADE-ZD-vllm-rl-dev-auth-bypass"
  },
  "method": "dynamic-http",
  "notes": "Dynamic HTTP-level reproduction against the real vLLM router and middleware; the engine client is a stub because the host has no GPU. The auth decision is the real vLLM code path.",
@@ -27,7 +27,7 @@
    "update_weights",
    "pause_generation(mode=abort,clear_cache=True)"
   ],
-  "marker": "TRIDENT-ZD-vllm-rl-dev-auth-bypass",
+  "marker": "INKBLADE-ZD-vllm-rl-dev-auth-bypass",
   "marker_path": "lab/zeroday_reserve/cases/vllm-rl-dev-auth-bypass/evidence/marker.txt",
   "marker_sha256": "fc48730fb4fd399933b3dcc0e863ebfb180fdd38591feb6f3afaefedcd8209b2",
   "request_response": [
@@ -92,12 +92,12 @@
   "snippet": "@router.post(\"/pause\")",
   "source": "lab/zeroday_reserve/upstream/vllm-0.32.0/vllm/entrypoints/rl/online/api_router.py"
  },
- "schema": "trident-zeroday-result-v1",
+ "schema": "inkblade-zeroday-result-v1",
  "source_sha256": "3a894fa5e46a0651dff6c610b7f7504f52c55f02120bc1be8051a0d0bbfbf207",
  "started_at": "2026-10-26T12:07:45+00:00",
  "status": "verified",
  "stderr": "<workspace>\\env\\reproenv-d\\Lib\\site-packages\\fastapi\\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n",
- "stdout": "{\"engine_calls\": [\"pause_generation(mode=abort,clear_cache=True)\", \"collective_rpc(reset_weights)\", \"get_weight_version\", \"update_weights\", \"pause_generation(mode=abort,clear_cache=True)\"], \"marker\": \"TRIDENT-ZD-vllm-rl-dev-auth-bypass\", \"marker_path\": \"lab/zeroday_reserve/cases/vllm-rl-dev-auth-bypass/evidence/marker.txt\", \"marker_sha256\": \"fc48730fb4fd399933b3dcc0e863ebfb180fdd38591feb6f3afaefedcd8209b2\", \"request_response\": [{\"request\": \"GET /v1/ping no token\", \"status\": 401}, {\"request\": \"GET /v1/ping bearer\", \"status\": 200}, {\"request\": \"POST /pause no token\", \"status\": 200}, {\"request\": \"POST /weight_checker reset no token\", \"status\": 200}, {\"request\": \"GET /weight_info no token\", \"status\": 200}, {\"request\": \"POST /update_weights no token\", \"status\": 200}, {\"request\": \"POST /pause wrong token\", \"status\": 200}], \"state_after\": \"marker contains proof text from /pause and /weight_checker\", \"state_before\": \"marker=ABSENT\", \"status\": \"verified\", \"transport\": {\"commit\": \"5df63a7203cdb9328d824a27b682e77c7b9928be\", \"guarded_prefix\": [\"/v1\", \"/v2\", \"/inference\", \"/cohere\"], \"middleware\": \"lab/zeroday_reserve/upstream/vllm-0.32.0/vllm/entrypoints/serve/middleware/authenticate.py\", \"mount\": \"app.include_router(rl_router) with no prefix\", \"router\": \"lab/zeroday_reserve/upstream/vllm-0.32.0/vllm/entrypoints/rl/online/api_router.py\", \"source_sha256\": {\"factories\": \"4b6a386f1a288f694cd6987248c2b2006376bbc9c7ef1d899b281714134bb539\", \"middleware\": \"ceb576aa3c053a5bcf145cfbe3f81def0f7213480c4aa1531fc4c00e32955225\", \"router\": \"3a894fa5e46a0651dff6c610b7f7504f52c55f02120bc1be8051a0d0bbfbf207\"}, \"type\": \"FastAPI/Starlette ASGI TestClient\", \"upstream\": \"vLLM v0.32.0\"}}\n",
+ "stdout": "{\"engine_calls\": [\"pause_generation(mode=abort,clear_cache=True)\", \"collective_rpc(reset_weights)\", \"get_weight_version\", \"update_weights\", \"pause_generation(mode=abort,clear_cache=True)\"], \"marker\": \"INKBLADE-ZD-vllm-rl-dev-auth-bypass\", \"marker_path\": \"lab/zeroday_reserve/cases/vllm-rl-dev-auth-bypass/evidence/marker.txt\", \"marker_sha256\": \"fc48730fb4fd399933b3dcc0e863ebfb180fdd38591feb6f3afaefedcd8209b2\", \"request_response\": [{\"request\": \"GET /v1/ping no token\", \"status\": 401}, {\"request\": \"GET /v1/ping bearer\", \"status\": 200}, {\"request\": \"POST /pause no token\", \"status\": 200}, {\"request\": \"POST /weight_checker reset no token\", \"status\": 200}, {\"request\": \"GET /weight_info no token\", \"status\": 200}, {\"request\": \"POST /update_weights no token\", \"status\": 200}, {\"request\": \"POST /pause wrong token\", \"status\": 200}], \"state_after\": \"marker contains proof text from /pause and /weight_checker\", \"state_before\": \"marker=ABSENT\", \"status\": \"verified\", \"transport\": {\"commit\": \"5df63a7203cdb9328d824a27b682e77c7b9928be\", \"guarded_prefix\": [\"/v1\", \"/v2\", \"/inference\", \"/cohere\"], \"middleware\": \"lab/zeroday_reserve/upstream/vllm-0.32.0/vllm/entrypoints/serve/middleware/authenticate.py\", \"mount\": \"app.include_router(rl_router) with no prefix\", \"router\": \"lab/zeroday_reserve/upstream/vllm-0.32.0/vllm/entrypoints/rl/online/api_router.py\", \"source_sha256\": {\"factories\": \"4b6a386f1a288f694cd6987248c2b2006376bbc9c7ef1d899b281714134bb539\", \"middleware\": \"ceb576aa3c053a5bcf145cfbe3f81def0f7213480c4aa1531fc4c00e32955225\", \"router\": \"3a894fa5e46a0651dff6c610b7f7504f52c55f02120bc1be8051a0d0bbfbf207\"}, \"type\": \"FastAPI/Starlette ASGI TestClient\", \"upstream\": \"vLLM v0.32.0\"}}\n",
  "timed_out": false,
  "title": "vLLM 0.32.0 RL control router mounted at / bypasses --api-key",
  "verified": true,

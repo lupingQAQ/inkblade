@@ -4,7 +4,7 @@
 - 同一输入两次生成报告/规则包/静态导出 → **归一化后逐字节一致**（diff=空）；
 - 归档层确定性：gzip mtime=0 + tar 归零 mtime/uid/gid → 同输入 archive sha256 相同；
 - 归一化器能剥离 ISO 时间戳、带时间戳 run 名、端口、耗时字段与本机绝对路径；
-- ``lab/bench/out`` 为可再生输出（.gitignore），动态字段清单可从 trident.sampledet 取。
+- ``lab/bench/out`` 为可再生输出（.gitignore），动态字段清单可从 inkblade.sampledet 取。
 """
 
 import importlib.util
@@ -13,14 +13,14 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.reports.render import render_pentest, render_remediation
-from trident.rules.generate import generate_all
-from trident.sampledet import DYNAMIC_FIELDS, diff_trees, normalize_text, normalize_tree
-from trident.webui.export_static import export_static
+from inkblade.core.evidence import EvidenceStore
+from inkblade.reports.render import render_pentest, render_remediation
+from inkblade.rules.generate import generate_all
+from inkblade.sampledet import DYNAMIC_FIELDS, diff_trees, normalize_text, normalize_tree
+from inkblade.webui.export_static import export_static
 
 REPO = Path(__file__).resolve().parents[1]
-CHAINS = REPO / "trident" / "chains"
+CHAINS = REPO / "inkblade" / "chains"
 
 
 def _seed(store: EvidenceStore, run_name: str = "e2e-acceptance"):
@@ -92,7 +92,7 @@ class TestSampleDeterminism(unittest.TestCase):
             self.assertEqual(diffs, [], f"两次生成归一化后仍存在差异: {diffs[:10]}")
 
     def test_normalizer_strips_dynamic_fields_but_keeps_stable_ones(self):
-        drive_path = "C" + ":" + "\\Users\\x\\Temp\\trident\\a.json"  # 动态拼接避免公开树误报
+        drive_path = "C" + ":" + "\\Users\\x\\Temp\\inkblade\\a.json"  # 动态拼接避免公开树误报
         raw = (
             "Run: e2e-acceptance-20261025-222231\n"
             "生成时间: 2026-10-25 22:22:31\n"
@@ -113,7 +113,7 @@ class TestSampleDeterminism(unittest.TestCase):
         self.assertIn("steps/s1.tar.gz", out)
 
     def test_markdown_elapsed_column_normalized(self):
-        from trident.sampledet import normalize_markdown
+        from inkblade.sampledet import normalize_markdown
 
         md = "| 检查项 | 耗时(ms) |\n|---|---|\n| a | 12.3 |\n| b | 0.5 |\n"
         out = normalize_markdown(md)
@@ -129,7 +129,7 @@ class TestSampleDeterminism(unittest.TestCase):
 
     def test_e2e_check_supports_fixed_run_name(self):
         spec = importlib.util.spec_from_file_location(
-            "trident_e2e_check", REPO / "trident" / "e2e-check.py")
+            "inkblade_e2e_check", REPO / "inkblade" / "e2e-check.py")
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
         self.assertTrue(hasattr(mod, "resolve_run_name"))

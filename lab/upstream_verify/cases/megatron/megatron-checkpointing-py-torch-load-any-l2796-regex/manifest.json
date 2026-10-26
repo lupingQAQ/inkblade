@@ -36,7 +36,7 @@
  "module": null,
  "python": "torch",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-megatron-checkpointing-py-torch-load-any-l2796-regex",
+ "marker_text": "INKBLADE-UV-megatron-checkpointing-py-torch-load-any-l2796-regex",
  "notes": "torch.load at checkpointing.py:2796 is a real unpinned sink, but its only caller load_biencoder_checkpoint passes args.use_distributed_optimizer positionally into get_checkpoint_name(release=...) and also passes release=False, so the call raises TypeError on every invocation. The sink is dead code in core_v0.19.2; not exploitable through any upstream entry point.",
  "static_evidence_level": "source-line",
  "static_analysis": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced.",
@@ -52,6 +52,6 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "megatron"
 }

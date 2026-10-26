@@ -2,9 +2,9 @@ import re
 import unittest
 from pathlib import Path
 
-from trident.core.combo import ComboHit, load
+from inkblade.core.combo import ComboHit, load
 
-DATA = Path(__file__).resolve().parent.parent / "trident" / "core" / "data" / "combo-matrix.json"
+DATA = Path(__file__).resolve().parent.parent / "inkblade" / "core" / "data" / "combo-matrix.json"
 KEY_RE = re.compile(r"^[a-z][a-z-]*$")
 
 

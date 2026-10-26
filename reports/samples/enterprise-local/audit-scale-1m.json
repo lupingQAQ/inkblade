@@ -1,6 +1,6 @@
 {
   "scale": {
-    "schema": "trident-audit-scale/1",
+    "schema": "inkblade-audit-scale/1",
     "requested": 1000000,
     "inserted": 1000000,
     "duplicates": 0,

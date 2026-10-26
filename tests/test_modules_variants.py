@@ -9,10 +9,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.backup import BackupManager
-from trident.core.evidence import EvidenceStore
+from inkblade.core.backup import BackupManager
+from inkblade.core.evidence import EvidenceStore
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 
 
 class _VariantHandler(BaseHTTPRequestHandler):
@@ -60,7 +60,7 @@ def _load(key: str):
 def _ctx(key: str, tmp: Path):
     store = EvidenceStore(tmp, workspace="local-lab")
     run = store.create_run(f"variant-{key}")
-    return {"store": store, "run": run, "marker": "TRIDENT-variant",
+    return {"store": store, "run": run, "marker": "INKBLADE-variant",
             "backup": BackupManager(store, run), "actor": "tester",
             "meta": {"key": key, "writes": False}}
 

@@ -261,7 +261,7 @@ def render_objective_report(result: dict) -> str:
     alternates = selection.get("alternates") or []
     principal = plan.get("principal", "")
     lines = [
-        "# Trident Objective 报告",
+        "# InkBlade Objective 报告",
         "",
         f"- Objective：`{plan.get('objective', '?')}` — {plan.get('title', {}).get('zh', '')}",
         f"- 起始主体：`{principal}`；目标：`{plan.get('target', '?')}`",

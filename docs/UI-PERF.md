@@ -38,7 +38,7 @@
 
 ## 3. 优化后（产品路径）
 
-变更（`trident/webui/static/app.js`）：
+变更（`inkblade/webui/static/app.js`）：
 
 1. **分页渲染**：`REPORT_PAGE_SIZE = 200`，默认只构建前 200 行；`显示更多
    (+200)` 递增，不改变数据本身；
@@ -48,9 +48,9 @@
    保证总数/分 severity 数字准确；
 4. **可见进度**：`已渲染 200 / 10000 条（分页渲染，避免一次性构建 10000 个
    DOM 行）`，用户知道还有多少；
-5. **legacy 基准开关**：`?perf=legacy`（或 `window.__TRIDENT_FORCE_LEGACY`）
+5. **legacy 基准开关**：`?perf=legacy`（或 `window.__INKBLADE_FORCE_LEGACY`）
    保留旧的全量路径，仅用于前后对比和回归，不进入普通用户默认路径；
-6. **渲染元数据**：`window.__TRIDENT_REPORT_META = {total, renderedRows,
+6. **渲染元数据**：`window.__INKBLADE_REPORT_META = {total, renderedRows,
    pageSize, legacy, renderMs}`，自动化基准/测试可读，不含发现内容。
 
 优化后：
@@ -79,7 +79,7 @@ python scripts/ui-perf-run.py --runs 3
 ```
 
 脚本会把 `index.html` 复制到 `lab/bench/out/ui-bench/{paged,legacy}`，只在副本
-注入测量脚本；legacy 副本在 `app.js` 之前设置 `window.__TRIDENT_FORCE_LEGACY`。
+注入测量脚本；legacy 副本在 `app.js` 之前设置 `window.__INKBLADE_FORCE_LEGACY`。
 每次运行使用独立 `--user-data-dir`，避免缓存/扩展干扰。
 
 ## 5. 局限（不要过度解读）
@@ -102,6 +102,6 @@ python scripts/ui-perf-run.py --runs 3
 `tests/test_ux_productization.py::TestUIProductization` 断言：
 
 - `REPORT_PAGE_SIZE` / `reportVisible` / `perf=legacy` / 显示更多 /
-  `__TRIDENT_REPORT_META` 存在；
+  `__INKBLADE_REPORT_META` 存在；
 - 表格只遍历 `visibleFindings`（slice），不再直接 `fs.forEach` 建 10k 行；
 - 静态导出/离线资产测试仍全绿（`tests/test_spa.py`）。

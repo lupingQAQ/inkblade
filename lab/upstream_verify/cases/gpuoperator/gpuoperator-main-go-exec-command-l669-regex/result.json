@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "gpuoperator-main-go-exec-command-l669-regex",
  "source": "mining",
  "component": "gpuoperator",
@@ -32,10 +32,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/gpuoperator/gpuoperator-main-go-exec-command-l669-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.189,
- "started_at": "2026-10-26T09:23:23+00:00",
+ "duration_s": 0.329,
+ "started_at": "2026-10-26T19:47:17+00:00",
  "marker": {
-  "text": "TRIDENT-UV-gpuoperator-main-go-exec-command-l669-regex",
+  "text": "INKBLADE-UV-gpuoperator-main-go-exec-command-l669-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -46,7 +46,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-main-go-exec-command-l669-regex/evidence/log.txt",
-   "sha256": "2f0e2538208d3fa8363acc34a0a95496b82e8e44682c05a8fce5cbbaa08ab4fc",
+   "sha256": "439bb9df1b4294b5d099bd7278255c01ab7e8e10d470f25237992b8bd6f4ec1f",
    "size": 261
   },
   {
@@ -56,12 +56,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-main-go-exec-command-l669-regex/evidence/static-check.json",
-   "sha256": "186f9584b89ced24e59df6eb4880585c35504754f36885e4d5444e5c71bff058",
-   "size": 1474
+   "sha256": "63a8988fbba2cc3a971e5efbe134e66ac9e98e956b5f5b5b6c74f1e3a111dbc9",
+   "size": 1475
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "6bcdd6795ae5dfffa8a86989e1e18fa3fedcf0c661f90f214c9446a9ce49fcac",
+ "manifest_sha256": "8c34b1737dbb5e0f8c6d67f27ce8155ee6a16a4f5a0be0edc54c5490c9aa4008",
  "stdout": "{\"status\": \"static-only\", \"case\": \"gpuoperator-main-go-exec-command-l669-regex\"}\n",
  "stderr": "",
  "notes": "NVIDIA GPU Operator validator pods run privileged with hostPath mounts (see 0500_daemonset posture case) and execute shell/nvidia-smi via runCommand. Callers are fixed in-tree (shell/nvidiaSMIPath), so the exec sink is not tenant-reachable by itself; the finding is the privileged execution surface of validator/driver DaemonSets, which pairs with the elevated-pod-spec hits in manifests/state-driver/0500_daemonset.yaml."

@@ -36,7 +36,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-trl-sft-py-trust-remote-code-propagated-l78-regex",
+ "marker_text": "INKBLADE-UV-trl-sft-py-trust-remote-code-propagated-l78-regex",
  "notes": "Explicit trust_remote_code opt-in; requires a malicious model repository and user consent. Not a vulnerability by itself.",
  "static_evidence_level": "source-line",
  "static_analysis": "Explicit trust_remote_code opt-in; requires a malicious model repository and user consent. Not a vulnerability by itself.",
@@ -52,7 +52,7 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "trl",
  "static_blocker": {
   "category": "hygiene-not-exploitable",

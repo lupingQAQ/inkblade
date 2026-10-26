@@ -12,8 +12,8 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import (
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import (
     ExecutionLocked,
     assert_execution_allowed,
     init_roe,
@@ -173,7 +173,7 @@ class TestConsentWindow(unittest.TestCase):
         self.assertTrue(window_status({})[0])
         self.assertTrue(window_status({"window": ""})[0])
         self.assertTrue(window_status({"window": "effects-verification 20261025"})[0])
-        self.assertTrue(window_status({"window": "trident qemu tcg lab run-7"})[0])
+        self.assertTrue(window_status({"window": "inkblade qemu tcg lab run-7"})[0])
 
     def test_datetime_window_boundaries_respected(self):
         now = datetime.now()

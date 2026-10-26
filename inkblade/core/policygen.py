@@ -17,7 +17,7 @@ from typing import Any
 from .yamlish import dump as yaml_dump
 
 
-def tetragon_policy(name: str = "trident-shell-exec", *,
+def tetragon_policy(name: str = "inkblade-shell-exec", *,
                     binary_values: list[str] | None = None, namespace: str = "",
                     action: str = "Post") -> dict:
     if action not in ("Post", "Signal", "Override", "NoOp"):
@@ -36,7 +36,7 @@ def tetragon_policy(name: str = "trident-shell-exec", *,
     return doc
 
 
-def kubearmor_policy(name: str = "trident-deny-shell", *, namespace: str = "default",
+def kubearmor_policy(name: str = "inkblade-deny-shell", *, namespace: str = "default",
                      match_labels: dict | None = None, file_paths: list[str] | None = None,
                      network_protocols: list[str] | None = None,
                      capabilities: list[str] | None = None,
@@ -59,7 +59,7 @@ def kubearmor_policy(name: str = "trident-deny-shell", *, namespace: str = "defa
             "metadata": {"name": name, "namespace": namespace}, "spec": spec}
 
 
-def kyverno_policy(name: str = "trident-pod-hardening", *,
+def kyverno_policy(name: str = "inkblade-pod-hardening", *,
                    cel_expressions: list[str] | None = None,
                    image_references: list[str] | None = None,
                    attestor_subject: str = "https://kubernetes.io/namespaces/*/serviceaccounts/*",
@@ -122,9 +122,9 @@ def generate_all(findings: list[dict] | None = None, *,
     names = sorted({str(f.get("step_key") or "").replace("-", "")[:24] for f in findings
                     if f.get("step_key")})
     suffix = ("-" + names[0]) if names else ""
-    tetragon = tetragon_policy(f"trident-shell-exec{suffix}"[:63], namespace=namespace)
-    kubearmor = kubearmor_policy(f"trident-deny-shell{suffix}"[:63], namespace=namespace)
-    kyverno = kyverno_policy(f"trident-pod-hardening{suffix}"[:63])
+    tetragon = tetragon_policy(f"inkblade-shell-exec{suffix}"[:63], namespace=namespace)
+    kubearmor = kubearmor_policy(f"inkblade-deny-shell{suffix}"[:63], namespace=namespace)
+    kyverno = kyverno_policy(f"inkblade-pod-hardening{suffix}"[:63])
     coverage = background_coverage(
         [{"kind": "Pod", "name": "ml-training-0", "namespace": namespace,
           "labels": {"app": "ml-workload"}},

@@ -11,10 +11,10 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from trident.core import cve_catalog  # noqa: E402
+from inkblade.core import cve_catalog  # noqa: E402
 
-MATRIX = ROOT / "trident" / "core" / "data" / "version-matrix.json"
-MODULES = ROOT / "trident" / "modules"
+MATRIX = ROOT / "inkblade" / "core" / "data" / "version-matrix.json"
+MODULES = ROOT / "inkblade" / "modules"
 
 PRODUCTS = {
     "nvidia": {"name": "NVIDIA Container Toolkit / GPU Operator", "repo": "NVIDIA/container-toolkit",
@@ -233,7 +233,7 @@ def main() -> int:
             "variants": [{"id": vid, "kind": "probe", "request": req, "transform": tr}
                          for vid, req, tr in variants],
             "sources": [c["source"] + "（2026-10-26 核验）" for c in cat] or ["https://github.com/Project-HAMi/HAMi（2026-10-26 核验）"],
-            "audit_refs": ["docs/CVE-CATALOG.md", f"trident/modules/{module}/run.py"],
+            "audit_refs": ["docs/CVE-CATALOG.md", f"inkblade/modules/{module}/run.py"],
         }
         data["entries"].append(entry)
         added += 1

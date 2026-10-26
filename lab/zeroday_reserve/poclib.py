@@ -12,7 +12,7 @@ from pathlib import Path
 CASE_DIR = Path(os.environ.get("ZERODAY_CASE_DIR", Path(__file__).resolve().parent)).resolve()
 EVIDENCE_DIR = Path(os.environ.get("ZERODAY_EVIDENCE_DIR", CASE_DIR / "evidence")).resolve()
 MARKER_FILE = Path(os.environ.get("ZERODAY_MARKER_FILE", EVIDENCE_DIR / "marker.txt")).resolve()
-MARKER_TEXT = os.environ.get("ZERODAY_MARKER_TEXT", "TRIDENT-ZERODAY-PROOF")
+MARKER_TEXT = os.environ.get("ZERODAY_MARKER_TEXT", "INKBLADE-ZERODAY-PROOF")
 LAB_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = LAB_ROOT.parents[1]
 UPSTREAM = LAB_ROOT / "upstream"

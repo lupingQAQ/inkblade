@@ -7,14 +7,14 @@
    anchor 必须在实验室样本树（lab/sample-vuln-repo）上命中——规则失准即拒绝产出候选；
 2. **最新版本差异复核**（extract_latest + diff_baseline）：对 ``lab/mining-fixture/<t>/``
    下按最新 release tag 抓取的上游源文件跑 codescan 双通道提取，与已提交基线
-   （trident/data/mining-baseline.json；训练栈为 trident/data/trainstack-mining-baseline.json）
+   （inkblade/data/mining-baseline.json；训练栈为 inkblade/data/trainstack-mining-baseline.json）
    逐 (target, file, line, rule, channel) 差异；
 3. **登记册**（register_candidates）：差异候选写入 ``<out>/zeroday/registry/candidates/``
    ``status=pending-manual-review``，**绝不自动入库**（不进模块注册表、不进零日加密库）。
 
 训练栈扩展：``run_trainstack_pipeline`` 对 Megatron-LM / DeepSpeed / LLaMA-Factory /
 ms-swift / TRL 五目标复用同一三环闭环，基线独立
-（``trident/data/trainstack-mining-baseline.json``），不污染推理栈基线。
+（``inkblade/data/trainstack-mining-baseline.json``），不污染推理栈基线。
 
 诚实边界（tests 锁定）：候选 ≠ 漏洞；fixtures 为上游公开源码快照（Apache-2.0），
 hit=规则命中而非可利用性结论；人工确认前不得生成模块。
@@ -77,7 +77,7 @@ INFRA_TARGETS = {
 
 ALL_TARGETS = {**TARGETS, **TRAINSTACK_TARGETS, **INFRA_TARGETS}
 
-CANDIDATE_SCHEMA = "trident-mining-candidate-v1"
+CANDIDATE_SCHEMA = "inkblade-mining-candidate-v1"
 
 
 class MiningError(ValueError):
@@ -186,7 +186,7 @@ def run_pipeline(out_dir: Path | str, *, targets: list[str] | None = None,
                  baseline_path: Path | str | None = None) -> dict[str, Any]:
     """三环闭环入口：返回报告并落 ``<out_dir>/mining-report.json``。
 
-    基线语义：本轮命中集在产出候选后写回基线（trident/data/mining-baseline.json），
+    基线语义：本轮命中集在产出候选后写回基线（inkblade/data/mining-baseline.json），
     下一轮只对「新增命中」产出候选；首轮（基线无该 target）全部命中入候选
     （报告注明 first-round）。
     """
@@ -214,7 +214,7 @@ def run_pipeline(out_dir: Path | str, *, targets: list[str] | None = None,
     bpath = Path(baseline_path) if baseline_path else BASELINE_PATH
     bpath.write_text(json.dumps(baseline_doc, ensure_ascii=False, indent=1), encoding="utf-8")
     report = {
-        "schema": "trident-mining-report-v1", "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "schema": "inkblade-mining-report-v1", "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "validation": validation, "targets": per_target,
         "candidates_total": len(all_candidates),
         "candidates": all_candidates,
@@ -231,7 +231,7 @@ def run_trainstack_pipeline(out_dir: Path | str, **kwargs) -> dict[str, Any]:
     """训练栈五目标（Megatron/DeepSpeed/LLaMA-Factory/ms-swift/TRL）一轮挖掘。
 
     与主流水线共用三环闭环与 ``pending-manual-review`` 登记语义；基线独立
-    （``trident/data/trainstack-mining-baseline.json``），不污染推理栈基线。
+    （``inkblade/data/trainstack-mining-baseline.json``），不污染推理栈基线。
     """
     kwargs.setdefault("targets", list(TRAINSTACK_TARGETS))
     kwargs.setdefault("baseline_path", TRAINSTACK_BASELINE_PATH)
@@ -242,7 +242,7 @@ def run_infra_pipeline(out_dir: Path | str, **kwargs) -> dict[str, Any]:
     """基础设施组件一轮挖掘（GPU Operator/DRA/JuiceFS/Ceph CSI/Kueue/Volcano/LWS/SONiC/UCX-Py）。
 
     与主流水线共用三环闭环与 ``pending-manual-review`` 登记语义；基线独立
-    （``trident/data/infra-mining-baseline.json``）。Go 源走 regex 通道
+    （``inkblade/data/infra-mining-baseline.json``）。Go 源走 regex 通道
     （exec-command-go / go-bind-all / pprof-exposed-go / elevated-pod-spec）；
     NCCL/UCX/OpenBMC（纯 C/CUDA/C++，硬件依赖）不参与代码扫描，以 unsupported
     案例显式登记。

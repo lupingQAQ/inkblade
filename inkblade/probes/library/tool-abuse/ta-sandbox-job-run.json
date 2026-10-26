@@ -16,7 +16,7 @@
    "path": "/v1/jobs/run",
    "auth": "none",
    "body": {
-    "script": "echo TRIDENT-BENIGN"
+    "script": "echo INKBLADE-BENIGN"
    }
   }
  ],

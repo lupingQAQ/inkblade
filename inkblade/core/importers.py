@@ -2,7 +2,7 @@
 """外部扫描器输入适配器（CM-13）：Trivy / Syft / grype JSON → findings 归一入证据链。
 
 - ``detect`` 按结构特征识别（不依赖文件名）；
-- ``normalize`` 统一为 Trident finding（sev/title/detail/evidence），severity 映射
+- ``normalize`` 统一为 InkBlade finding（sev/title/detail/evidence），severity 映射
   CRITICAL/HIGH/MEDIUM/LOW/UNKNOWN → critical/high/medium/low/info；
 - ``ingest`` 把归一结果写入 run：先落 ``imports/<tool>-<sha8>.json``，再经
   ``run.add_step`` 归档（第三层证据），最后 ``run.add_finding``（evidence_path 指向归档）；

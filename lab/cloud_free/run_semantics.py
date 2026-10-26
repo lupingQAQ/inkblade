@@ -28,10 +28,10 @@ def _etag_kind(etag: str) -> str:
 def _run(adapter, bucket: str) -> dict:
     steps: list[dict] = []
     adapter.ensure_bucket(bucket)
-    obj = adapter.put_object(bucket, "weights/model.bin", b"trident-cloud-free", {"owner": "tenant-a"})
+    obj = adapter.put_object(bucket, "weights/model.bin", b"inkblade-cloud-free", {"owner": "tenant-a"})
     steps.append({"op": "put", "ok": True, "etag_kind": _etag_kind(obj.etag)})
     got = adapter.get_object(bucket, "weights/model.bin")
-    steps.append({"op": "get", "ok": got == b"trident-cloud-free", "bytes": len(got)})
+    steps.append({"op": "get", "ok": got == b"inkblade-cloud-free", "bytes": len(got)})
     head = adapter.head_object(bucket, "weights/model.bin")
     steps.append({"op": "head", "ok": head.metadata.get("owner") == "tenant-a",
                   "metadata_keys": sorted(head.metadata)})
@@ -53,12 +53,12 @@ def run(out: Path | str | None = None) -> dict:
     server = MockCloudServer().start()
     try:
         result = {
-            "schema": "trident-cloud-free-semantics/2026-10",
+            "schema": "inkblade-cloud-free-semantics/2026-10",
             "mode": "python-mock-endpoints (Docker/LocalStack absent on this host)",
             "clouds": {
-                "aws": _run(AwsS3Adapter(server.url + "/s3"), "trident-aws"),
-                "azure": _run(AzureBlobAdapter(server.url + "/azure"), "trident-azure"),
-                "gcp": _run(GcpStorageAdapter(server.url + "/gcs"), "trident-gcp"),
+                "aws": _run(AwsS3Adapter(server.url + "/s3"), "inkblade-aws"),
+                "azure": _run(AzureBlobAdapter(server.url + "/azure"), "inkblade-azure"),
+                "gcp": _run(GcpStorageAdapter(server.url + "/gcs"), "inkblade-gcp"),
             },
             "note": "语义/签名/错误码可复现；不是真实云账号或官方 emulator",
         }

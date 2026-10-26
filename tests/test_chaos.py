@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""混沌编排（trident/chaos）测试：目录完整性 + 稳态-注入-中止-回滚-恢复闭环。"""
+"""混沌编排（inkblade/chaos）测试：目录完整性 + 稳态-注入-中止-回滚-恢复闭环。"""
 
 from __future__ import annotations
 
@@ -13,14 +13,14 @@ REPO = Path(__file__).resolve().parents[1]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from trident.chaos import (  # noqa: E402
+from inkblade.chaos import (  # noqa: E402
     EXPERIMENTS,
     ChaosOrchestrator,
     abort_active_run,
     experiment_by_id,
     list_experiments,
 )
-from trident.chaos.orchestrator import active_abort_file, clear_abort  # noqa: E402
+from inkblade.chaos.orchestrator import active_abort_file, clear_abort  # noqa: E402
 
 
 REQUIRED_EXPERIMENTS = {
@@ -214,13 +214,13 @@ class OrchestrationModeTest(unittest.TestCase):
             latest = Path(tmp) / "chaos-runs" / "latest.json"
             self.assertTrue(latest.is_file())
             doc = json.loads(latest.read_text(encoding="utf-8"))
-        self.assertEqual(doc["schema"], "trident-chaos-run/1")
+        self.assertEqual(doc["schema"], "inkblade-chaos-run/1")
         self.assertIn("boundary", doc)
 
 
 class ChaosCliTest(unittest.TestCase):
     def _main(self, *argv):
-        from trident.cli import main
+        from inkblade.cli import main
 
         return main(list(argv))
 

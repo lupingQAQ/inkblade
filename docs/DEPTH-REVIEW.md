@@ -45,7 +45,7 @@
 ### 证据
 
 - 数据：`corpus/depth/vllm_ghsa_snapshot.json`（28 条快照）、`corpus/depth/vllm_patch_matrix.json`（40 行）
-- 代码：`trident/depth/vllm.py`、`lab/depth_sim.py`
+- 代码：`inkblade/depth/vllm.py`、`lab/depth_sim.py`
 - 效果：`depth-vllm-fuzz`：cases=240，vulnerable_bypasses=144，fixed_bypasses=0，surfaces_hit=admin/dev-mode/plugin/serialization/weights
 - 结果哈希：vulnerable `1c68f5b8…`，fixed `eae1ccd2…`（完整值见 effects.json）
 - 测试：`tests/test_depth_vllm.py`（8 项）
@@ -89,7 +89,7 @@
 
 ### 证据
 
-- 代码：`trident/depth/admission.py`
+- 代码：`inkblade/depth/admission.py`
 - 效果：`depth-admission-semantics`：cases=20，vulnerable_admitted=20，hardened_admitted=0，findings=20
 - 结果哈希：`cef2cf8d…`
 - 测试：`tests/test_depth_admission.py`（7 项）
@@ -125,7 +125,7 @@
 
 ### 证据
 
-- 代码：`trident/depth/ebpf.py`
+- 代码：`inkblade/depth/ebpf.py`
 - 效果：`depth-ebpf-blindspot`：cases=14，missed=14，hardened_missed=0，coverage_gaps=6
 - 结果哈希：`0f0b530d…`
 - 测试：`tests/test_depth_ebpf.py`（4 项）
@@ -162,7 +162,7 @@
 
 ### 证据
 
-- 代码：`trident/depth/gpu.py`
+- 代码：`inkblade/depth/gpu.py`
 - 效果：`depth-gpu-operator-config`：checks=20，findings=19，critical=5，high=13，hardened_findings=0
 - 快照哈希：`f20dc58f…`
 - 测试：`tests/test_depth_gpu.py`（5 项）
@@ -198,7 +198,7 @@
 
 ### 证据
 
-- 代码：`trident/depth/fabric.py`、`lab/fabric_sim/*`
+- 代码：`inkblade/depth/fabric.py`、`lab/fabric_sim/*`
 - 效果：`depth-sonic-fabric-link`：checks=28，failed=28，hardened_failed=0，detectors=[fabric.pfc-pause-storm]，baseline=[fabric.baseline-clean]
 - 快照哈希：`d169da6b…`
 - 测试：`tests/test_depth_fabric.py`（5 项）
@@ -236,7 +236,7 @@
 
 ### 证据
 
-- 代码：`trident/depth/identity.py`
+- 代码：`inkblade/depth/identity.py`
 - 效果：`depth-identity-federation`：cases=21，allowed=21，hardened_allowed=0，legit_allowed=21，findings=21
 - 结果哈希：`b2257d30…`
 - 测试：`tests/test_depth_identity.py`（5 项）
@@ -288,7 +288,7 @@
 ```bash
 python -m unittest tests.test_depth_vllm tests.test_depth_admission tests.test_depth_ebpf \
   tests.test_depth_gpu tests.test_depth_fabric tests.test_depth_identity tests.test_depth_docs
-python -m trident.verify-effects --out reports/samples/effects/ --no-docs
+python -m inkblade.verify-effects --out reports/samples/effects/ --no-docs
 python scripts/build-depth-corpus.py
 ```
 

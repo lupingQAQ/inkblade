@@ -19,7 +19,7 @@ bearer, master_key, tenant_key = _COMMON.bearer, _COMMON.master_key, _COMMON.ten
 ok, resp, status = _COMMON.ok, _COMMON.resp, _COMMON.status
 spoof_user, target = _COMMON.spoof_user, _COMMON.target
 
-PROBE_BODY = {"model": "gpt-4o", "messages": [{"role": "user", "content": "trident-auth-probe"}]}
+PROBE_BODY = {"model": "gpt-4o", "messages": [{"role": "user", "content": "inkblade-auth-probe"}]}
 
 
 def run(ctx: dict, params: dict) -> dict:

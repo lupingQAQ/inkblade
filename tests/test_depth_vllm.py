@@ -7,10 +7,10 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from lab.depth_sim import start_all
-from trident.depth import vllm
+from inkblade.depth import vllm
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ROOT / "trident" / "modules"
+MODULES = ROOT / "inkblade" / "modules"
 
 
 class _Run:
@@ -87,21 +87,21 @@ class TestSurfaceFuzz(unittest.TestCase):
 
     def test_module_findings_and_fixed(self):
         with TemporaryDirectory() as td:
-            ctx = {"run": _Run(Path(td)), "marker": "TRIDENT-DEPTH"}
+            ctx = {"run": _Run(Path(td)), "marker": "INKBLADE-DEPTH"}
             vuln = load_module("vllm-surface-fuzz").run(
                 ctx, {"target": self.vuln.url(""), "mode": "probe-only"})
             self.assertGreaterEqual(len(vuln["findings"]), 4)
             detail = json.loads(vuln["findings"][0]["detail"])
             self.assertGreaterEqual(detail["cases"], 200)
             self.assertIn("interface", detail)
-            ctx2 = {"run": _Run(Path(td) / "fixed"), "marker": "TRIDENT-DEPTH"}
+            ctx2 = {"run": _Run(Path(td) / "fixed"), "marker": "INKBLADE-DEPTH"}
             fixed = load_module("vllm-surface-fuzz").run(
                 ctx2, {"target": self.fixed.url(""), "mode": "probe-only"})
             self.assertEqual(fixed["findings"], [])
 
     def test_patch_module(self):
         with TemporaryDirectory() as td:
-            ctx = {"run": _Run(Path(td)), "marker": "TRIDENT-DEPTH"}
+            ctx = {"run": _Run(Path(td)), "marker": "INKBLADE-DEPTH"}
             result = load_module("vllm-sglang-patch-matrix").run(
                 ctx, {"versions": {"vllm": "0.8.4", "sglang": "0.5.10"}})
             self.assertGreaterEqual(len(result["findings"]), 2)

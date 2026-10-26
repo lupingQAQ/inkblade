@@ -1,10 +1,10 @@
 title: 路由器缓存指标按租户无鉴权读取
-id: 48191e19-5953-b085-ba4c-5717cbf4c0d0
+id: 4d2389f5-e1cf-90f2-698f-61230fad6024
 status: stable
 description: "EPP/路由器缓存指标（KV 利用率/前缀命中率/独立前缀数）被非管理身份按租户粒度读取，泄露他租户缓存行为。English: per-tenant cache metrics read without admin authentication on the EPP router."
 references:
-  - "trident-rules-mapping: sigma-router-cache-metrics-leak"
-author: Trident rules engine
+  - "inkblade-rules-mapping: sigma-router-cache-metrics-leak"
+author: InkBlade rules engine
 date: 2026/10/25
 logsource:
   product: epp-router
@@ -24,9 +24,9 @@ level: medium
 tags:
   - attack.discovery
   - attack.t1213
-  - trident
-  - trident-mode-monitor
+  - inkblade
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-tuning: 指标面收敛为管理鉴权 + 仅本租户视图；监控采集走专用账号并按 1 分钟节流；对 per_tenant 明细查询单独告警（聚合视图不告）
-  trident-blocks-chains: cache-sidechannel-chain
+  inkblade-mode: monitor
+  inkblade-tuning: 指标面收敛为管理鉴权 + 仅本租户视图；监控采集走专用账号并按 1 分钟节流；对 per_tenant 明细查询单独告警（聚合视图不告）
+  inkblade-blocks-chains: cache-sidechannel-chain

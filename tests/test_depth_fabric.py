@@ -9,10 +9,10 @@ from tempfile import TemporaryDirectory
 from lab.fabric_sim.detectors import detect
 from lab.fabric_sim.sim import simulate
 from lab.fabric_sim.topology import Topology
-from trident.depth import fabric
+from inkblade.depth import fabric
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ROOT / "trident" / "modules"
+MODULES = ROOT / "inkblade" / "modules"
 
 
 class _Run:
@@ -59,7 +59,7 @@ class TestFabricConfigDepth(unittest.TestCase):
 
     def test_sonic_module(self):
         with TemporaryDirectory() as td:
-            ctx = {"run": _Run(Path(td)), "marker": "TRIDENT-DEPTH"}
+            ctx = {"run": _Run(Path(td)), "marker": "INKBLADE-DEPTH"}
             result = load_module("sonic-fabric-config-audit").run(ctx, {"snapshot": self.snap})
             self.assertGreaterEqual(len(result["findings"]), 8)
             detail = json.loads(result["findings"][0]["detail"])
@@ -68,7 +68,7 @@ class TestFabricConfigDepth(unittest.TestCase):
 
     def test_sharp_module(self):
         with TemporaryDirectory() as td:
-            ctx = {"run": _Run(Path(td)), "marker": "TRIDENT-DEPTH"}
+            ctx = {"run": _Run(Path(td)), "marker": "INKBLADE-DEPTH"}
             result = load_module("sharp-session-trust-audit").run(ctx, {"snapshot": self.snap})
             self.assertGreaterEqual(len(result["findings"]), 3)
             detail = json.loads(result["findings"][0]["detail"])

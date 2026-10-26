@@ -8,31 +8,31 @@
 
 ## 0. 三方定位（一句话）
 
-| 产品 | 形态 | 核心循环 | 与 Trident 的关系 |
+| 产品 | 形态 | 核心循环 | 与 InkBlade 的关系 |
 |---|---|---|---|
 | **XBow** | 商业 SaaS 自主渗透 agent | 扫描→自主利用→验证→报告，VAPT 自动化 | 能力面对标（本文）；形态不追（见 §3 不补项） |
 | **ARTEX** | 开源多 agent 自主渗透系统（AGPL） | LLM 规划→工具执行→人工审批 | 同靶场黑盒基准（37.85s 冷启动/169.8MiB 空闲 RSS，见 `docs/ARTEX-BENCH-RESULT.md`） |
-| **KubeTrail / MKAT** | 容器内红队采集器 / EKS 审计工具箱 | 点时快照采集→启发式 findings | 采集器与 Trident「链式验证执行器」互补；auditlog 分析见姊妹篇 |
+| **KubeTrail / MKAT** | 容器内红队采集器 / EKS 审计工具箱 | 点时快照采集→启发式 findings | 采集器与 InkBlade「链式验证执行器」互补；auditlog 分析见姊妹篇 |
 
-**Trident 的差异化核心（一句话）：确定性执行内核 + 全链审批闸门——自主性只作用于
+**InkBlade 的差异化核心（一句话）：确定性执行内核 + 全链审批闸门——自主性只作用于
 「提议」，不作用于「执行」。** XBow/ARTEX 把 LLM 放在执行回路的内环（模型决定下一步并
-直接执行）；Trident 把 LLM（可选）与规则引擎放在提议环，执行环永远是确定性模块 +
+直接执行）；InkBlade 把 LLM（可选）与规则引擎放在提议环，执行环永远是确定性模块 +
 授权（ROE）+ 备份 + 审计四闸门。渗透测试的交付物是**可复核的证据**而非攻击成功率，
 任何「模型决定了但人无法复现」的步骤都是证据链断裂——这是我们不把自主性放进执行环的
 根本理由，也是获客面（合规/审计）的差异化。
 
 ## 1. XBow 能力面逐项对标（已对齐）
 
-| # | XBow 公开宣称能力 | Trident 实现（2026-10-25） | 状态 | 证据 |
+| # | XBow 公开宣称能力 | InkBlade 实现（2026-10-25） | 状态 | 证据 |
 |---|---|---|---|---|
-| 1 | 自动资产发现与攻击面枚举 | `trident/core/discovery.py`：种子（ns/服务清单/kubeconfig 快照）→ 增量资产库（`assets.db` 新表 `assets`：added/updated/removed 软删除 + 产品推断）；模块经 `resolve_targets/bind_params` 消费资产而非散装 params | **已对齐** | `tests/test_discovery.py` 12 用例 |
-| 2 | 自主探索（agent 决定下一步） | `trident/core/explorer.py`：LLM 可选（OpenAI 兼容 env `TRIDENT_LLM_*`，失败一律降级）+ 规则兜底（资产产品 ∪ 链前置三态 → 确定性排序）；**逐动作 dry-run 预览 → lead 批准 → 人触发执行** | **已对齐（审批制形态）** | `tests/test_explorer.py` 9 用例；`tests/test_api_xbow.py` explorer 生命周期 |
-| 3 | 持续化重测（回归/漂移） | `trident/core/scheduler.py`：cron（5 字段白名单解析）/interval 计划 → 到期跑链子集 → 与上次 findings 逐键差异（new/fixed/unchanged）→ `drift.json` 报告 | **已对齐** | `tests/test_scheduler.py` 12 用例 |
-| 4 | 流量录制与重放 | `trident/core/traffic.py` + `evidence.py` 新表 `traffic`：模块 HTTP 全量录制（请求/响应/sha256）幂等入库；`replay` dry=断言计划 / live=真实重放+status 断言+审计 | **已对齐** | `tests/test_traffic.py` 8 用例 |
-| 5 | 验证级 PoC（每个发现可复验） | `trident/core/poc.py`：写类 finding 自动附「验证步骤+预期证据」（steps/expected_evidence/result_sha256/回滚一致性）；`reverify` 重放比对；工作区级 `poc.auto_reverify` 开关 | **已对齐** | `tests/test_poc.py` 8 用例（runner 钩子实测） |
+| 1 | 自动资产发现与攻击面枚举 | `inkblade/core/discovery.py`：种子（ns/服务清单/kubeconfig 快照）→ 增量资产库（`assets.db` 新表 `assets`：added/updated/removed 软删除 + 产品推断）；模块经 `resolve_targets/bind_params` 消费资产而非散装 params | **已对齐** | `tests/test_discovery.py` 12 用例 |
+| 2 | 自主探索（agent 决定下一步） | `inkblade/core/explorer.py`：LLM 可选（OpenAI 兼容 env `INKBLADE_LLM_*`，失败一律降级）+ 规则兜底（资产产品 ∪ 链前置三态 → 确定性排序）；**逐动作 dry-run 预览 → lead 批准 → 人触发执行** | **已对齐（审批制形态）** | `tests/test_explorer.py` 9 用例；`tests/test_api_xbow.py` explorer 生命周期 |
+| 3 | 持续化重测（回归/漂移） | `inkblade/core/scheduler.py`：cron（5 字段白名单解析）/interval 计划 → 到期跑链子集 → 与上次 findings 逐键差异（new/fixed/unchanged）→ `drift.json` 报告 | **已对齐** | `tests/test_scheduler.py` 12 用例 |
+| 4 | 流量录制与重放 | `inkblade/core/traffic.py` + `evidence.py` 新表 `traffic`：模块 HTTP 全量录制（请求/响应/sha256）幂等入库；`replay` dry=断言计划 / live=真实重放+status 断言+审计 | **已对齐** | `tests/test_traffic.py` 8 用例 |
+| 5 | 验证级 PoC（每个发现可复验） | `inkblade/core/poc.py`：写类 finding 自动附「验证步骤+预期证据」（steps/expected_evidence/result_sha256/回滚一致性）；`reverify` 重放比对；工作区级 `poc.auto_reverify` 开关 | **已对齐** | `tests/test_poc.py` 8 用例（runner 钩子实测） |
 | 6 | API-first（全量 REST + 生态集成） | `/api/v1/*`：assets/discover、explorer propose/approve/reject/execute、scheduler add/remove/run-due、traffic/replay、consent/sign、zeroday/enable、rules、poc/reverify；MCP 同步暴露 5 个新只读工具（get_assets/get_explorer_queue/get_schedules/get_traffic/get_drift，共 10 工具） | **已对齐** | `tests/test_api_xbow.py` 16 用例；`tests/test_mcp_xbow.py` 8 用例 |
 | 7 | 可视化（资产图/差异/审批/计划） | SPA 六视图 → **十视图**：⑦资产图（namespace→service 层级+产品着色+缺失灰显）⑧差异视图（新增/已修复/未变）⑨审批队列（提议/模式/写面/状态）⑩计划任务（cron/到期/上次 run）；沿用现有渲染栈，静态导出内嵌新数据 | **已对齐** | `tests/test_spa_xbow.py` 5 用例 |
-| 8 | 弹药库（指纹→版本→变体） | `trident/core/data/version-matrix.json`（42 条横向利用条目：指纹/受影响区间/已修复版本/≥2 变体/来源）+ `core/version_matrix.py`（区间判定白名单文法）+ `core/payloads.py`（参数化变体物化：路径/大小写/点段/百分号编码/方法/头） | **已对齐（本仓库口径）** | `tests/test_version_matrix.py` 14 用例 + `tests/test_payloads.py` 16 用例 |
+| 8 | 弹药库（指纹→版本→变体） | `inkblade/core/data/version-matrix.json`（42 条横向利用条目：指纹/受影响区间/已修复版本/≥2 变体/来源）+ `core/version_matrix.py`（区间判定白名单文法）+ `core/payloads.py`（参数化变体物化：路径/大小写/点段/百分号编码/方法/头） | **已对齐（本仓库口径）** | `tests/test_version_matrix.py` 14 用例 + `tests/test_payloads.py` 16 用例 |
 
 ### 1.1 版本矩阵与挖掘流水线的诚实性口径
 
@@ -41,7 +41,7 @@
   vLLM/SGLang/Ray/KubeRay/HAMi/LiteLLM/Dify/open-webui/AReaL/verl/TRL/slime）。
 - **不臆造修复版本**：未见证官方修复的条目 `fixed=null` 且 `fixed_note` 必填
   （如 SGLang 管理路由 fail-open 至 v0.5.22 仍无鉴权修复记录——这本身就是武器情报）。
-- **候选 ≠ 漏洞**：挖掘流水线（`trident/mining.py`）对 vLLM/SGLang/KubeRay/HAMi/LiteLLM
+- **候选 ≠ 漏洞**：挖掘流水线（`inkblade/mining.py`）对 vLLM/SGLang/KubeRay/HAMi/LiteLLM
   各跑一轮「模板验证（14 sink 规则全部锚定样本树）→ 最新 tag 差异复核（lab/mining-fixture/
   上游源码快照 vs 已提交基线）→ 登记册候选」；候选 `status=pending-manual-review` 写入
   `zeroday/registry/candidates/`，**绝不自动入库**（测试断言候选 id 不进模块注册表）。
@@ -52,10 +52,10 @@
 
 | # | 缺口 | 为什么现在不算对齐 | 追赶路径 |
 |---|---|---|---|
-| 1 | LLM 自主环的实战战绩 | XBow 的卖点是 Pwn2Own 级自主利用战绩；Trident 的 LLM 路径仅排序择由（且默认 rules），无自主多步循环 | 在 explorer 上叠加「执行结果→再提议」闭环（仍逐动作审批）；积累授权客户战例后发布对比报告 |
+| 1 | LLM 自主环的实战战绩 | XBow 的卖点是 Pwn2Own 级自主利用战绩；InkBlade 的 LLM 路径仅排序择由（且默认 rules），无自主多步循环 | 在 explorer 上叠加「执行结果→再提议」闭环（仍逐动作审批）；积累授权客户战例后发布对比报告 |
 | 2 | 真实目标连续重测数据 | scheduler/drift 全链有测试，但无跨周/跨版本真实租户漂移数据 | 固定 mock+真 k3s 双环境各挂一个 cron 计划跑 4 周，发布 drift 曲线 |
 | 3 | SaaS 多租户形态 | REST/MCP 已 API-first，但单机进程内执行（无队列/配额/租户加密隔离） | 任务队列+worker 池+按租户加密证据库（SOTA 矩阵已有该项，口径不变） |
-| 4 | 版本矩阵的自动化保鲜 | 矩阵 verified_at=2026-10-25 为快照；latest_tag 靠人工 webfetch | `trident mine --refresh-tags`（GitHub API 拉 latest release）+ CI 周任务比对 |
+| 4 | 版本矩阵的自动化保鲜 | 矩阵 verified_at=2026-10-25 为快照；latest_tag 靠人工 webfetch | `inkblade mine --refresh-tags`（GitHub API 拉 latest release）+ CI 周任务比对 |
 
 ## 3. 不补 + 理由（差异化声明）
 

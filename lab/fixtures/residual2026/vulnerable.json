@@ -1,5 +1,5 @@
 {
-  "schema": "trident-residual2026-snapshot-v1",
+  "schema": "inkblade-residual2026-snapshot-v1",
   "fixture": true,
   "hypervisor_audit": {
     "collector": {

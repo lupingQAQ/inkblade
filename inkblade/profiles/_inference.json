@@ -1,5 +1,5 @@
 {
-  "schema": "trident-profile-v1",
+  "schema": "inkblade-profile-v1",
   "name": "_inference",
   "complete": true,
   "description": "Common LLM inference service surfaces (OpenAI-compatible vLLM/SGLang and cache/router telemetry).",

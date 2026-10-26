@@ -10,8 +10,8 @@ import importlib.util
 import json
 from pathlib import Path
 
-from trident.lpe.catalog import CATALOG
-from trident.lpe.engine import assess
+from inkblade.lpe.catalog import CATALOG
+from inkblade.lpe.engine import assess
 
 _PARENT = Path(__file__).resolve().parent.parent
 _SPEC = importlib.util.spec_from_file_location("_surface_common", _PARENT / "_surface-common.py")
@@ -34,7 +34,7 @@ def _findings(report: dict) -> list[dict]:
                  f"node={node_name} kernel={node['kernel']} {comp}={hit.get('installed', node['kernel'])} "
                  f"fixed_in={hit['fixed_in']}；检测逻辑：{hit['logic']}"),
                 evidence=hit["evidence"],
-                mapping_text="内核 LPE 检测库（trident/lpe，仅判定不利用）",
+                mapping_text="内核 LPE 检测库（inkblade/lpe，仅判定不利用）",
                 fix=("升级内核/运行时到 fixed_in；seccomp + 最小能力 + userns 隔离作为补偿控制"),
                 cve=hit["cve"], confidence="detection-only", fixed_in=hit["fixed_in"],
                 node=node_name, component=comp, logic=hit["logic"],

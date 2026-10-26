@@ -1,10 +1,10 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: trident-default-deny
+  name: inkblade-default-deny
   namespace: ray-system
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   endpointSelector: {}
   ingress: []
@@ -14,14 +14,14 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: trident-partition-allow
+  name: inkblade-partition-allow
   namespace: ray-system
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   endpointSelector:
     matchLabels:
-      ray-system.trident-io-zone/member: true
+      ray-system.inkblade-io-zone/member: true
   ingress:
     - fromEndpoints:
         - matchLabels:
@@ -60,10 +60,10 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: trident-default-deny
+  name: inkblade-default-deny
   namespace: ml-training
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   endpointSelector: {}
   ingress: []
@@ -73,14 +73,14 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: trident-partition-allow
+  name: inkblade-partition-allow
   namespace: ml-training
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   endpointSelector:
     matchLabels:
-      ml-training.trident-io-zone/member: true
+      ml-training.inkblade-io-zone/member: true
   ingress:
     - fromEndpoints:
         - matchLabels:
@@ -125,10 +125,10 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: trident-default-deny
+  name: inkblade-default-deny
   namespace: ml-inference
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   endpointSelector: {}
   ingress: []
@@ -138,14 +138,14 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: trident-partition-allow
+  name: inkblade-partition-allow
   namespace: ml-inference
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   endpointSelector:
     matchLabels:
-      ml-inference.trident-io-zone/member: true
+      ml-inference.inkblade-io-zone/member: true
   ingress:
     - fromEndpoints:
         - matchLabels:
@@ -181,10 +181,10 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: trident-default-deny
+  name: inkblade-default-deny
   namespace: monitoring
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   endpointSelector: {}
   ingress: []
@@ -194,14 +194,14 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: trident-partition-allow
+  name: inkblade-partition-allow
   namespace: monitoring
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   endpointSelector:
     matchLabels:
-      monitoring.trident-io-zone/member: true
+      monitoring.inkblade-io-zone/member: true
   ingress:
     - fromEndpoints: []
       fromCIDR:
@@ -236,10 +236,10 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: trident-default-deny
+  name: inkblade-default-deny
   namespace: ml-agent
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   endpointSelector: {}
   ingress: []
@@ -249,14 +249,14 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: trident-partition-allow
+  name: inkblade-partition-allow
   namespace: ml-agent
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   endpointSelector:
     matchLabels:
-      ml-agent.trident-io-zone/member: true
+      ml-agent.inkblade-io-zone/member: true
   ingress:
     - fromEndpoints: []
       fromCIDR:

@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "LITELLM-DEFAULT-KEY",
  "source": "cve",
  "component": "litellm",
@@ -29,10 +29,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/litellm/LITELLM-DEFAULT-KEY/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.146,
- "started_at": "2026-10-26T09:23:25+00:00",
+ "duration_s": 0.227,
+ "started_at": "2026-10-26T19:52:02+00:00",
  "marker": {
-  "text": "TRIDENT-UV-LITELLM-DEFAULT-KEY",
+  "text": "INKBLADE-UV-LITELLM-DEFAULT-KEY",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -43,7 +43,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/litellm/LITELLM-DEFAULT-KEY/evidence/log.txt",
-   "sha256": "6dfaa95628f29aafd2932dc2a634986ebb8e65d9f57ebc98064c6f83775528e8",
+   "sha256": "fbd7fe8e782ee2a6e31e1e2b321e7615ee74f691304704fdb603acc7e091c081",
    "size": 209
   },
   {
@@ -53,12 +53,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/litellm/LITELLM-DEFAULT-KEY/evidence/static-check.json",
-   "sha256": "7818421da050a80d278c74143de47996f2931f9772cb3115db27bb3eee0b65d5",
-   "size": 870
+   "sha256": "f78d49d6437984a358ee3a3c0c407f3be00d84e5a0a62fa243b34d93f620fac5",
+   "size": 871
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "1eb8a3cfdc4a25576f33239ba2978935a80543379859e1e8847209205a398d4f",
+ "manifest_sha256": "a17356ea664bd09c79d8980ca71e4d5a6dee361f86e7df1d68044a589e0230da",
  "stdout": "{\"status\": \"static-only\", \"case\": \"LITELLM-DEFAULT-KEY\"}\n",
  "stderr": "",
  "notes": "Default/master-key misconfiguration is deployment-dependent; no upstream version boundary, static-only."

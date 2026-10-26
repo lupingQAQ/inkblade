@@ -8,7 +8,7 @@
   "requires": [],
   "params_schema": {
     "auditlog": "K8s audit log JSON Lines 文件路径（或事件 dict 列表），样本见 lab/fixtures/auditlog/",
-    "kubetrail_export": "可选：KubeTrail dbus.json 导出文件路径（或 Document dict），适配为 Trident findings",
+    "kubetrail_export": "可选：KubeTrail dbus.json 导出文件路径（或 Document dict），适配为 InkBlade findings",
     "baseline_subjects": "可选：基线主体白名单列表（默认与 Sigma not_in 白名单同源）",
     "include_denied": "可选：默认 False；True 时 403 已拒绝尝试以 low 报出（紫队验证准入拦截证据）"
   },

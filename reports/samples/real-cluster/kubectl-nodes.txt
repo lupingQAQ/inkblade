@@ -3,12 +3,12 @@ k3s    Ready    control-plane   9m8s   v1.36.5+k3s1   10.0.2.15     <none>      
 NAMESPACE       NAME                                      READY   STATUS    RESTARTS   AGE     IP           NODE   NOMINATED NODE   READINESS GATES
 kube-system     coredns-7cfb7bc9c7-pq74m                  1/1     Running   0          5m43s   10.42.0.12   k3s    <none>           <none>
 kube-system     local-path-provisioner-77b9867795-7scjs   1/1     Running   0          5m43s   10.42.0.14   k3s    <none>           <none>
-trident-proof   mock-target-66c765d55-2z9n4               1/1     Running   0          5m43s   10.42.0.13   k3s    <none>           <none>
-trident-proof   proof-hostnet                             1/1     Running   0          2m23s   10.0.2.15    k3s    <none>           <none>
-trident-proof   proof-normal                              1/1     Running   0          2m23s   10.42.0.15   k3s    <none>           <none>
+inkblade-proof   mock-target-66c765d55-2z9n4               1/1     Running   0          5m43s   10.42.0.13   k3s    <none>           <none>
+inkblade-proof   proof-hostnet                             1/1     Running   0          2m23s   10.0.2.15    k3s    <none>           <none>
+inkblade-proof   proof-normal                              1/1     Running   0          2m23s   10.42.0.15   k3s    <none>           <none>
 NAMESPACE       NAME          TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)                  AGE
 default         kubernetes    ClusterIP   10.43.0.1     <none>        443/TCP                  9m12s
 kube-system     kube-dns      ClusterIP   10.43.0.10    <none>        53/UDP,53/TCP,9153/TCP   9m3s
-trident-proof   mock-target   NodePort    10.43.41.60   <none>        8000:30080/TCP           7m32s
+inkblade-proof   mock-target   NodePort    10.43.41.60   <none>        8000:30080/TCP           7m32s
 NAMESPACE       NAME               POD-SELECTOR   AGE
-trident-proof   default-deny-all   <none>         2m24s
+inkblade-proof   default-deny-all   <none>         2m24s

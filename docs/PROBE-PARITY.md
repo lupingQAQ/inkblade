@@ -2,11 +2,11 @@
 
 > 目标：补齐并超越 garak/PyRIT 的 LLM 探针覆盖。本文给出探针数与类别的对照、本库独有面与明确未覆盖项。
 > 计数口径：garak/PyRIT/promptfoo 取自本仓 `.slim/clonedeps/repos/` 浅克隆实测（`class …(*Probe*)` /
-> `class …(*Converter*)` 正则 + 插件文件计数），官方文档链接附后；Trident 口径 =
-> `trident/probes/library/` 数据文件（87 个探针 / 13 类）。
+> `class …(*Converter*)` 正则 + 插件文件计数），官方文档链接附后；InkBlade 口径 =
+> `inkblade/probes/library/` 数据文件（87 个探针 / 13 类）。
 > 核验日期：2026-10-26（克隆版本：garak d6a8be1 / PyRIT 246b659 / promptfoo b4c2404）。
 > 复现命令：`python -c "import pathlib,re; ..."` 对上述克隆计数；计数含抽象基类时另行标注。
-> 许可合规：三家均为 Apache-2.0/MIT，此处仅参考其公开分类思想；Trident 探针库为独立实现（数据文件 + 独立判定器引擎）。
+> 许可合规：三家均为 Apache-2.0/MIT，此处仅参考其公开分类思想；InkBlade 探针库为独立实现（数据文件 + 独立判定器引擎）。
 
 ## 1. 总量对照
 
@@ -15,17 +15,17 @@
 | garak | `garak/probes/*.py` 探针模块 / `class …(*Probe*)` | 41 模块 / **149** 类（含 3 个 `base.py` 中间基类；剔除后 **146**） | 按模块文件分类（dan/encoding/promptinject/leakreplay/sysprompt_extraction/latentinjection/atkgen/suffix/visual_jailbreak/ansiescape/smuggling/audio/fileformats/…） |
 | PyRIT | `pyrit/**` Converter 类 + jailbreak 模板数据集 | **114** Converter 类（含 2 个抽象基类；剔除后 **112**）+ **94** 越狱模板 | Converter（变体改写）× Orchestrator（多轮编排）× 数据集组合式，无固定探针清单 |
 | promptfoo | `src/redteam/plugins/*.ts` + `strategies/*.ts` | **54** 插件 + **32** 策略（均剔除 base/index） | 插件（攻击意图）× 策略（jailbreak:basic/iterative/prefix-split/crescendo 等改写） |
-| **Trident** | `trident/probes/library/**/*.json` | **87** 探针 / **13** 类 | 数据文件探针（键=文件名）× 判定器引擎 × 两态差分运行器 × 13 条 sigma 联动规则 |
+| **InkBlade** | `inkblade/probes/library/**/*.json` | **87** 探针 / **13** 类 | 数据文件探针（键=文件名）× 判定器引擎 × 两态差分运行器 × 13 条 sigma 联动规则 |
 
-结论：按可执行的攻击探针计，Trident（87）达到 garak 剔除 `base.py` 中间基类后的 146 的 60%、
+结论：按可执行的攻击探针计，InkBlade（87）达到 garak 剔除 `base.py` 中间基类后的 146 的 60%、
 原始类计数（149）的 58%，超过 promptfoo 单维插件数（54），
 达到 PyRIT 剔除 2 个抽象基类后的 112 的 78%；
-组织方式上 Trident 独有「每个探针 = 数据文件 + 判定器 + 严重度 + 规则键 + 两态预期（expect vulnerable/fixed）」，
+组织方式上 InkBlade 独有「每个探针 = 数据文件 + 判定器 + 严重度 + 规则键 + 两态预期（expect vulnerable/fixed）」，
 使探针命中可被自动化差分复核（87/87 confirmed：74 攻击差分 + 13 防误报对照）。
 
 ## 2. 逐类对照（13 类）
 
-| Trident 类别（探针数） | OWASP LLM 2026 / ASI | garak 对应 | PyRIT 对应 | promptfoo 对应 |
+| InkBlade 类别（探针数） | OWASP LLM 2026 / ASI | garak 对应 | PyRIT 对应 | promptfoo 对应 |
 |---|---|---|---|---|
 | jailbreak（12） | LLM01 / ASI01 | probes.dan、probes.suffix、probes.atkgen、probes.glitch | PromptJailbreakConverter + 94 模板 + many-shot 数据集 | jailbreak 插件 ×32 策略、pliny |
 | prompt-injection（10） | LLM01 / ASI01/06 | probes.promptinject、probes.latentinjection、probes.encoding | AttackManipulationType 变体 + indirect 注入编排 | indirectPromptInjection、hijacking |
@@ -43,7 +43,7 @@
 
 **2026 分类学覆盖**：OWASP LLM01–LLM10 与 ASI01–ASI10 **全部 20 个 id 均有类别映射**（10/10 + 10/10）。
 编号按 [OWASP GenAI LLM Top 10 2026](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/)
-正式版（2026-08-03 发布）重排，并与本仓 `trident/reports/standards.json` 的 2025 crosswalk 对齐：
+正式版（2026-08-03 发布）重排，并与本仓 `inkblade/reports/standards.json` 的 2025 crosswalk 对齐：
 
 | 2026 编号 | 2026 名称 | 2025 旧编号 | 本库映射类别 |
 |---|---|---|---|
@@ -98,5 +98,5 @@
   本仓克隆 `microsoft__PyRIT@246b659`（`pyrit/` 实测 114 Converter 类，含 2 个抽象基类；94 jailbreak 模板）
 - promptfoo red team 插件与策略（官方文档）：<https://www.promptfoo.dev/docs/red-team/>；
   本仓克隆 `promptfoo__promptfoo@b4c2404`（54 插件 + 32 策略，剔除 index/base 计数）
-- 本库：`trident/probes/`（framework.py 分类学 + run.py 两态差分运行器 + library/ 87 探针），
+- 本库：`inkblade/probes/`（framework.py 分类学 + run.py 两态差分运行器 + library/ 87 探针），
   矩阵样张 `reports/samples/llm-probes/`，测试 `tests/test_llm_probes.py`（34 用例）

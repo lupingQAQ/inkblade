@@ -22,7 +22,7 @@
     {
       "id": "bootstrap-port-exhaust",
       "module": "nccl-port-exhaustion",
-      "params": {"job": "trident-exhaust", "max_allocs": 30}
+      "params": {"job": "inkblade-exhaust", "max_allocs": 30}
     },
     {
       "id": "gang-queue-clog",

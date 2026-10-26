@@ -32,7 +32,7 @@ def run(ctx: dict, params: dict) -> dict:
     victim_tenant = _COMMON.victim_tenant_of(params)
     victim_block = str(params.get("victim_block") or DEFAULT_VICTIM_BLOCK)
     control_block = str(params.get("control_block") or DEFAULT_CONTROL_BLOCK)
-    marker_needle = str(params.get("marker_needle") or "TRIDENT-BENIGN-POOL-VICTIM")
+    marker_needle = str(params.get("marker_needle") or "INKBLADE-BENIGN-POOL-VICTIM")
 
     t = _COMMON.Trace(ctx, KEY)
     headers = _COMMON.headers_for(params)

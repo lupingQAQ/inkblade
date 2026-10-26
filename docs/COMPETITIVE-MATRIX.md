@@ -1,4 +1,4 @@
-# Trident 竞品对比矩阵（COMPETITIVE-MATRIX 2026-10）
+# InkBlade 竞品对比矩阵（COMPETITIVE-MATRIX 2026-10）
 
 > 基线日期 **2026-10-25**。数据来源 = 各工具**官方** README / 官网 / 官方文档（webfetch 逐源核验，
 > 登记见 §1）与本地只读克隆（`.slim/clonedeps/repos/`，登记于 `.slim/clonedeps/clonedeps.json`，
@@ -15,7 +15,7 @@
 > | — | 类别外（防御产品的攻击维度、攻击产品的防御维度等） |
 > | ? | 官方文档未提及（未核实，不视为支持） |
 >
-> 结构校验：`trident/arch-intel/competitive.py`（`python trident/arch-intel/competitive.py` 退出码即结果），
+> 结构校验：`inkblade/arch-intel/competitive.py`（`python inkblade/arch-intel/competitive.py` 退出码即结果），
 > 测试 `tests/test_competitive_matrix.py`（fixture 注入核心逻辑 + 本文档断言）。
 
 ## 1. 工具全集与来源登记（23 工具 × 5 类）
@@ -50,12 +50,12 @@
 agentdojo@ethz-spylab），登记见 `.slim/clonedeps/clonedeps.json`；ARTEX / KubeTrail / DataDog MKAT
 为既有克隆一并登记。
 
-## 2. 能力维度定义（18 维）与 Trident 基线
+## 2. 能力维度定义（18 维）与 InkBlade 基线
 
-Trident 列取自 [`docs/SOTA-2026-10.md`](SOTA-2026-10.md) 的诚实口径（真实验证/模拟验证/仍未达成），
+InkBlade 列取自 [`docs/SOTA-2026-10.md`](SOTA-2026-10.md) 的诚实口径（真实验证/模拟验证/仍未达成），
 不因竞品对比而上调。
 
-| 键 | 维度 | 说明 | Trident 现状锚点（SOTA-2026-10.md） |
+| 键 | 维度 | 说明 | InkBlade 现状锚点（SOTA-2026-10.md） |
 |---|---|---|---|
 | D1 | 资产发现 | 目标面/攻击面盘点（资产图、服务发现、暴露面） | 已达成：recon 族 100+ 模块（exposure-mapping/dns-service-discovery 等） |
 | D2 | 自主规划 | 多步自主决策规划（无人推动的探索闭环） | 部分：agent_planner 推荐+lead 审批，执行固定人工触发（Ruling「规划≠执行」） |
@@ -76,14 +76,14 @@ Trident 列取自 [`docs/SOTA-2026-10.md`](SOTA-2026-10.md) 的诚实口径（�
 | D17 | API-first | 程序化集成面（REST/SDK/MCP） | 部分：MCP 只读 5 工具；HTTP API 面 WebUI 内部使用，无对外契约 |
 | D18 | 持续化 | 常驻/定时/连续测试与调度 | 未达成：单机 CLI 单次 run，无调度器/通知 |
 
-## 3. 矩阵（维度 × 工具，按类分表；Trident 为基准列）
+## 3. 矩阵（维度 × 工具，按类分表；InkBlade 为基准列）
 
 > 通用说明：策略/检测引擎（Kyverno/Gatekeeper/Falco/Tetragon/KubeArmor）理论上可配置用于任意面，
 > 但官方文档未声明 ML/权重/fabric 专长的一律按 ○/— 处理，不以「可配置」推断域专长。
 
 ### 3.1 自主渗透类（XBow / ARTEX / NodeZero / Pentera）
 
-| 维度 | Trident | XBow | ARTEX | NodeZero | Pentera |
+| 维度 | InkBlade | XBow | ARTEX | NodeZero | Pentera |
 |---|---|---|---|---|---|
 | D1 资产发现 | ✓ | ? | ✓ | ◐ | ✓ |
 | D2 自主规划 | ◐ | ✓ | ✓ | ✓ | ✓ |
@@ -110,7 +110,7 @@ kill-chain 与泄露凭据验证。
 
 ### 3.2 K8s 攻防类（KubeTrail / KubeHound / kube-hunter / Peirates / kdigger / CDK / KubeletCTL）
 
-| 维度 | Trident | KubeTrail | KubeHound | kube-hunter | Peirates | kdigger | CDK | KubeletCTL |
+| 维度 | InkBlade | KubeTrail | KubeHound | kube-hunter | Peirates | kdigger | CDK | KubeletCTL |
 |---|---|---|---|---|---|---|---|---|
 | D1 资产发现 | ✓ | ✓ | ◐ | ✓ | ? | ✓ | ✓ | ✓ |
 | D2 自主规划 | ◐ | ◐ | — | ◐ | ○ | ○ | ◐ | ○ |
@@ -138,7 +138,7 @@ KubeTrail D5 ◐ = 仅有 GPU/资源滥用复核模板（resource-hijack-dos-rev
 
 ### 3.3 运行时/准入类（Falco / Tetragon / KubeArmor / Kyverno / Gatekeeper）
 
-| 维度 | Trident | Falco | Tetragon | KubeArmor | Kyverno | Gatekeeper |
+| 维度 | InkBlade | Falco | Tetragon | KubeArmor | Kyverno | Gatekeeper |
 |---|---|---|---|---|---|---|
 | D1 资产发现 | ✓ | — | — | — | — | — |
 | D2 自主规划 | ◐ | — | — | — | — | — |
@@ -166,7 +166,7 @@ D11 ◐ = 行为化/策略化检测可覆盖未知行为，但非漏洞发现；
 
 ### 3.4 AI/LLM 安全类（garak / PyRIT / promptfoo / AgentDojo）
 
-| 维度 | Trident | garak | PyRIT | promptfoo | AgentDojo |
+| 维度 | InkBlade | garak | PyRIT | promptfoo | AgentDojo |
 |---|---|---|---|---|---|
 | D1 资产发现 | ✓ | — | — | — | — |
 | D2 自主规划 | ◐ | ◐ | ✓ | ◐ | ◐ |
@@ -187,14 +187,14 @@ D11 ◐ = 行为化/策略化检测可覆盖未知行为，但非漏洞发现；
 | D17 API-first | ◐ | ◐ | ✓ | ✓ | ✓ |
 | D18 持续化 | ○ | ○ | ○ | ◐ | ○ |
 
-注：本类为**模型行为面**红队（提示注入/越狱/数据泄露/内容危害），与 Trident 的**基础设施面**
+注：本类为**模型行为面**红队（提示注入/越狱/数据泄露/内容危害），与 InkBlade 的**基础设施面**
 （K8s/权重/网络/网关）正交；D9 ◐ = 任意 REST 目标可打网关端点但无网关语义（无 LiteLLM/Higress
 路由/密钥/缓存知识）；AgentDojo D15 ✓ = 官方定位即攻击×防御基准评测（attack/defense 参数化基准）；
 PyRIT D2/D3 ✓ = 官方明证开箱即用多轮攻击策略（Crescendo/TAP/Skeleton Key）。
 
 ### 3.5 其他类（Trivy / Syft / kube-bench）
 
-| 维度 | Trident | Trivy | Syft | kube-bench |
+| 维度 | InkBlade | Trivy | Syft | kube-bench |
 |---|---|---|---|---|
 | D1 资产发现 | ✓ | ◐ | ◐ | — |
 | D2 自主规划 | ◐ | ○ | ○ | ○ |
@@ -233,7 +233,7 @@ kube-bench D13 ✓ = 输出即 CIS Benchmark 条目级合规报告（按定义�
 | kube-hunter | K8s 攻防 | 补齐：⑱VID 式漏洞知识库条目页（finding→可引用 KB 键，→ docs/kb + reports 锚，CM-07）。竞争态势：官方声明停更，承接方为 Trivy（记录于 §6） |
 | Peirates | K8s 攻防 | 无补齐项：交互式攻击操作台与「可审计交付」定位冲突（同 REFLECTION 对桌面后渗透台的定位取舍）；SA token/Secrets 采集面已由 rbac-mapping/审计轨迹分析覆盖 |
 | kdigger | K8s 攻防 | 补齐：⑲admission dry-run/fuzz 探测（gen fuzz-pod 式模板 → server dry-run 反推准入边界）（→ rules/validate.py + modules，CM-24）。~20 bucket 采集面已对齐（recon 族） |
-| CDK | K8s 攻防 | 已对齐：evaluate→run 推荐衔接 = agent_planner 推荐排序；零依赖单二进制属部署形态差异（Trident 控制台不在目标容器内执行），不设 backlog |
+| CDK | K8s 攻防 | 已对齐：evaluate→run 推荐衔接 = agent_planner 推荐排序；零依赖单二进制属部署形态差异（InkBlade 控制台不在目标容器内执行），不设 backlog |
 | KubeletCTL | K8s 攻防 | 补齐：⑳kubelet 10250 面扫描（CIDR 扫描开放 kubelet/runningpods/RCE 面/token 收割）（→ modules/recon kubelet-api-surface，CM-08） |
 | Falco | 运行时/准入 | 补齐：㉑规则宏/列表复用编写模型（macro/list 组合降噪）（→ rules/generate.py 模板机制，CM-09）；㉒输出多路分发（stdout/file/syslog/program/http）（→ export.py 通道，CM-10）。Falco 本身是我们的规则目标 + defense-bypass-falco 的靶产品 |
 | Tetragon | 运行时/准入 | 补齐：㉓TracingPolicy 规则目标（findings→Tetragon 传感器/执行策略，含内核态阻断语义的紫队矩阵拦截态）（→ rules/generate.py 新目标 + validate.py，CM-25）；defense-bypass-tetragon 已有靶面 |
@@ -241,10 +241,10 @@ kube-bench D13 ✓ = 输出即 CIS Benchmark 条目级合规报告（按定义�
 | Kyverno | 运行时/准入 | 补齐：㉕CEL 表达式校验规则 + verifyImages 镜像签名验证规则生成（→ rules/generate.py Kyverno 目标增强，CM-27）；㉖存量资源 background 合规扫描（policy audit 对存量）（→ rules/validate.py，CM-28）。Kyverno YAML 目标已有（21 规则含 ClusterPolicy×5） |
 | Gatekeeper | 运行时/准入 | 补齐：存量 audit 重扫并入 CM-28（ConstraintTemplate/Constraint 对偶输出已有）；无新增独立项 |
 | garak | AI/LLM 安全 | 补齐：㉗LLM 行为面探针族（注入/越狱/泄露/毒性探针库，模型行为域）（→ modules 新 llm-probe 族或 bypass 族扩展，CM-32）；探针→检测器配对模型并入紫队矩阵方法论 |
-| PyRIT | AI/LLM 安全 | 补齐：㉘多轮攻击策略链模板（Crescendo/TAP 式逐步升级链）（→ trident/chains/*.json 模型行为链，CM-29）；评分器框架（finding 判定 scoring）并入 CM-29；CoPyRIT 人在环 = MCP + lead 审批已对齐 |
+| PyRIT | AI/LLM 安全 | 补齐：㉘多轮攻击策略链模板（Crescendo/TAP 式逐步升级链）（→ inkblade/chains/*.json 模型行为链，CM-29）；评分器框架（finding 判定 scoring）并入 CM-29；CoPyRIT 人在环 = MCP + lead 审批已对齐 |
 | promptfoo | AI/LLM 安全 | 补齐：㉙CI/CD 集成与 exit code 契约（阈值判定退出码）（→ cli.py，CM-11）；㉚声明式评估配置（yaml 驱动评估矩阵 + 对比视图）（→ lab 配置层，CM-12）。Web 对比视图已对齐（SPA 六视图） |
 | AgentDojo | AI/LLM 安全 | 补齐：㉛agent 工具面注入基准场景（工具环境内间接注入→执行的套件化基准）（→ lab/mocks + 基准评分，CM-30） |
-| Trivy | 其他 | 补齐：㉜外部扫描器输入适配器（import Trivy JSON→findings 归一，镜像 CVE/KBOM 面纳入证据链）（→ trident/import_scan.py 新功能键，CM-13） |
+| Trivy | 其他 | 补齐：㉜外部扫描器输入适配器（import Trivy JSON→findings 归一，镜像 CVE/KBOM 面纳入证据链）（→ inkblade/import_scan.py 新功能键，CM-13） |
 | Syft | 其他 | 补齐：SBOM 格式转换/多输出并入 CM-13 适配器（CycloneDX ML-BOM 已有，差异在格式转换矩阵）；in-toto 签名 attest 已有供应链等价（cosign 风格 bundle）。无独立新增项 |
 | kube-bench | 其他 | 补齐：㉝CIS K8s Benchmark 检查模块 + 合规框架条目（→ modules 新 cis-benchmark 族 + reports/standards.json CIS 条目，CM-33） |
 
@@ -259,12 +259,12 @@ kube-bench D13 ✓ = 输出即 CIS Benchmark 条目级合规报告（按定义�
 |---|---|---|---|---|---|---|
 | CM-01 | 任务情报登记：run 级凭据/线索/敏感数据集中 registry（带来源证据绑定） | D12 证据链 | S | - | ARTEX | done — `core/intel.py` / `tests/test_backlog_s.py` |
 | CM-02 | 跨 run 过程检索 API：对 steps/artifacts 全文检索并回链证据锚 | D12 证据链 | S | - | ARTEX | done — `core/search.py` / `tests/test_backlog_s.py` |
-| CM-03 | 决策/意图留档 artifact：规划器推荐理由与战术选择全量入证据库 | D12 证据链 | S | gen-27（XBow 派生） | XBow | done — `core/decisions.py` / `trident plan --record` / `tests/test_backlog_s.py` |
+| CM-03 | 决策/意图留档 artifact：规划器推荐理由与战术选择全量入证据库 | D12 证据链 | S | gen-27（XBow 派生） | XBow | done — `core/decisions.py` / `inkblade plan --record` / `tests/test_backlog_s.py` |
 | CM-04 | 定时调度连续测试：cron 式调度器 + 测试窗口（ROE 约束内） | D18 持续化 | S | - | NodeZero/XBow | done — `core/scheduler.py` + `core/calendar.py` / `tests/test_scheduler.py` + `tests/test_calendar.py` |
 | CM-05 | legacy SA token 逐 token SSRR/SSAR 权限审计 | D4 权限链逃逸 | S | - | KubeTrail | done — `core/tokenaudit.py` / `tests/test_backlog_s.py` |
 | CM-06 | 敏感证据 metadata-by-reference 三态（raw/redact/metadata 引用式存储） | D12 证据链 | S | - | KubeTrail | done — `core/intel.py`（raw/redact/metadata） / `tests/test_backlog_s.py` |
 | CM-07 | VID 式漏洞知识库条目页（finding→可引用 KB 键，含中文条目） | D13 双语合规报告 | S | - | kube-hunter | done — `core/kb.py` / `tests/test_backlog_s.py` |
-| CM-08 | kubelet 10250 面扫描模块（CIDR 扫描开放 kubelet/runningpods/token 收割面） | D1 资产发现 | S | - | KubeletCTL | done — `trident/modules/kubelet-surface/` / `tests/test_backlog_s.py` |
+| CM-08 | kubelet 10250 面扫描模块（CIDR 扫描开放 kubelet/runningpods/token 收割面） | D1 资产发现 | S | - | KubeletCTL | done — `inkblade/modules/kubelet-surface/` / `tests/test_backlog_s.py` |
 | CM-09 | Falco 宏/列表复用规则编写模型（macro/list 组合降噪） | D14 规则转化 | S | - | Falco | done — `core/rulemacro.py` / `tests/test_backlog_s.py` |
 | CM-10 | 规则/告警输出多路分发通道（stdout/file/syslog/program/http[s]） | D17 API-first | S | - | Falco/falcosidekick | done — `core/dispatch.py` + `core/notify.py` / `tests/test_backlog_s.py` + `tests/test_notify.py` |
 | CM-11 | CI/CD 集成 exit code 契约（阈值判定退出码 + 机器可读摘要） | D18 持续化 | S | - | promptfoo | done — `core/cigate.py` / `tests/test_backlog_s.py` |
@@ -309,5 +309,5 @@ kube-bench D13 ✓ = 输出即 CIS Benchmark 条目级合规报告（按定义�
    MIT，main@089ed468 已克隆）。能力面双源核验一致（本地 README + PyPI 0.1.35 官方页），矩阵判定不变。
 6. **XBow/NodeZero/Pentera 为商业产品**：能力以官网公开声明为限，无二进制实测；「?」= 官网未声明，
    不等于不具备。商业产品的 K8s/ML 面未声明处一律保守标注。
-7. 本矩阵为**文档级对标**，不把阅读等同于实测；Trident 列以 SOTA-2026-10.md 诚实口径为锚，
+7. 本矩阵为**文档级对标**，不把阅读等同于实测；InkBlade 列以 SOTA-2026-10.md 诚实口径为锚，
    逐项证据锚见 §2。

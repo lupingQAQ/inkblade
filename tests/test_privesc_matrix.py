@@ -7,15 +7,15 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.privesc import (
+from inkblade.core.privesc import (
     CATEGORY_REQUIRED,
     REQUIRED_VECTOR_FIELDS,
     load_matrix,
     render_matrix_md,
     validate_matrix,
 )
-from trident.core.registry import load_modules
-from trident.rules.privesc import (
+from inkblade.core.registry import load_modules
+from inkblade.rules.privesc import (
     PrivescCoverageError,
     purple_replay,
     render_rule_pack,
@@ -23,7 +23,7 @@ from trident.rules.privesc import (
 )
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
+MODULES_DIR = REPO / "inkblade" / "modules"
 DOC = REPO / "docs" / "PRIVESC-MATRIX.md"
 
 

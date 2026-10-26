@@ -1,11 +1,11 @@
 # mining-fixture — 挖掘流水线上游源码快照（最新 release tag）
 
-用途：`trident/mining.py`（漏洞挖掘流水线闭环）对「最新版本差异复核」环的输入。
+用途：`inkblade/mining.py`（漏洞挖掘流水线闭环）对「最新版本差异复核」环的输入。
 每目录 = 一个上游仓库在最新 release tag 的代表性源文件（raw.githubusercontent.com / jsDelivr
 GitHub 镜像快照，逐文件 HTTP 200），供 `codescan` 双通道（regex；.py 走 ast）提取 sink 命中
-并与 `core/data/sink-rules.json` 差异（基线：`trident/data/mining-baseline.json`）。
+并与 `core/data/sink-rules.json` 差异（基线：`inkblade/data/mining-baseline.json`）。
 
-## 推理栈（2026-10-25 抓取，基线 `trident/data/mining-baseline.json`）
+## 推理栈（2026-10-25 抓取，基线 `inkblade/data/mining-baseline.json`）
 
 | 目标 | 仓库 | tag | 文件 | 抓取方式 |
 |---|---|---|---|---|
@@ -15,7 +15,7 @@ GitHub 镜像快照，逐文件 HTTP 200），供 `codescan` 双通道（regex�
 | hami | Project-HAMi/HAMi | v2.10.0 | main.go（scheduler 入口：/filter /bind /webhook 路由 + pprof 旗标） | 同上 |
 | litellm | BerriAI/litellm | v1.106.4 | proxy_server.py（proxy 管理面） | 同上 |
 
-## 训练栈（2026-10-26 抓取，基线 `trident/data/trainstack-mining-baseline.json`）
+## 训练栈（2026-10-26 抓取，基线 `inkblade/data/trainstack-mining-baseline.json`）
 
 tag 以 GitHub `releases/latest`（2026-10-26 核验）为准；文件经 raw.githubusercontent.com /
 `cdn.jsdelivr.net/gh/<repo>@<tag>/<path>` 取回（字节一致）。

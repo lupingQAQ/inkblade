@@ -7,12 +7,12 @@ references:
   - "CSI 规范 https://github.com/container-storage-interface/spec"
   - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
   - "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: platform-csi-node-plugin
-    trident.io/module: csi-node-plugin-escape
+    inkblade.io/vector: platform-csi-node-plugin
+    inkblade.io/module: csi-node-plugin-escape
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -31,16 +31,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.platform
+  - inkblade
+  - inkblade.vector.platform
   - attack.t1611
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: platform-csi-node-plugin
-  trident-module: csi-node-plugin-escape
-  trident-detection-point: K8s audit：CSI node DaemonSet 特权/宿主挂载变更
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: platform-csi-node-plugin
+  inkblade-module: csi-node-plugin-escape
+  inkblade-detection-point: K8s audit：CSI node DaemonSet 特权/宿主挂载变更
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

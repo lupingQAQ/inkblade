@@ -36,15 +36,15 @@ def main() -> None:
     (evil_repo / "config.json").write_text(
         json.dumps(
             {
-                "model_type": "tridentevil",
-                "auto_map": {"AutoConfig": "configuration_tridentevil.TridentEvilConfig"},
+                "model_type": "inkbladeevil",
+                "auto_map": {"AutoConfig": "configuration_inkbladeevil.InkBladeEvilConfig"},
             }
         ),
         encoding="utf-8",
     )
     # the module body executes during the upstream import; its import list is fed to
     # check_imports() -> importlib.import_module() at dynamic_module_utils.py:248
-    (evil_repo / "configuration_tridentevil.py").write_text(
+    (evil_repo / "configuration_inkbladeevil.py").write_text(
         "import os\n"
         "import pathlib\n"
         "from transformers import PretrainedConfig\n"
@@ -54,8 +54,8 @@ def main() -> None:
         "if _M.exists() or True:\n"
         "    _M.write_text(_T, encoding='utf-8')\n"
         "\n"
-        "class TridentEvilConfig(PretrainedConfig):\n"
-        "    model_type = 'tridentevil'\n"
+        "class InkBladeEvilConfig(PretrainedConfig):\n"
+        "    model_type = 'inkbladeevil'\n"
         "    def __init__(self, **kwargs):\n"
         "        super().__init__(**kwargs)\n",
         encoding="utf-8",

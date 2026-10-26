@@ -10,7 +10,7 @@ _REPO = Path(__file__).resolve().parents[3]
 if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
-from trident.core.codescan import load_rules, scan_path  # noqa: E402
+from inkblade.core.codescan import load_rules, scan_path  # noqa: E402
 
 _DEFAULT_ROOT = _REPO / "lab" / "sample-vuln-repo"
 

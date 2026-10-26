@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "megatron-checkpointing-py-wandb-checkpoint-hook-l2725-regex",
  "source": "mining",
  "component": "megatron",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/megatron/megatron-checkpointing-py-wandb-checkpoint-hook-l2725-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.143,
- "started_at": "2026-10-26T09:23:29+00:00",
+ "duration_s": 0.265,
+ "started_at": "2026-10-26T19:53:23+00:00",
  "marker": {
-  "text": "TRIDENT-UV-megatron-checkpointing-py-wandb-checkpoint-hook-l2725-regex",
+  "text": "INKBLADE-UV-megatron-checkpointing-py-wandb-checkpoint-hook-l2725-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-wandb-checkpoint-hook-l2725-regex/evidence/log.txt",
-   "sha256": "5dfb984f80e52834729ad99c5c52b8e0439c0359dca245ffcf01a691fc686e3a",
+   "sha256": "4ae3e3c9860010240e70963b898d22f394ea3ca360a86bda0ebacf302290d610",
    "size": 290
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-wandb-checkpoint-hook-l2725-regex/evidence/static-check.json",
-   "sha256": "635d704353e244a9708cba991555291fe39b678f7f1906232125d3b9d7b3d9bb",
-   "size": 1202
+   "sha256": "74c2dcf24e31f88968df8ccead8cc11751fab1eaa543ca9a87ddd6357e45653b",
+   "size": 1203
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "d81cd472b14e45ce1716d2f0db6940aaa094b0e591efbf42879a5dbae9d1792b",
+ "manifest_sha256": "74165e1140448312b5624417f762f8bbba8ab1b3e9d2eaeb4591b45f8cd2e465",
  "stdout": "{\"status\": \"static-only\", \"case\": \"megatron-checkpointing-py-wandb-checkpoint-hook-l2725-regex\"}\n",
  "stderr": "",
  "notes": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."

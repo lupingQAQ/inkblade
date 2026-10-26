@@ -1,5 +1,5 @@
 {
-  "schema": "trident-tee-policy/2026-10",
+  "schema": "inkblade-tee-policy/2026-10",
   "description": "Fixture-only TDX/SEV-SNP/NVIDIA CC policy for local tests; not a production trust policy.",
   "allowed_tees": [
     "tdx",
@@ -34,8 +34,8 @@
   "require_debug_disabled": true,
   "require_gpu_cc_mode": "on",
   "trusted_keys": {
-    "fixture-tdx-root": "TRIDENT-FIXTURE-ONLY-tdx-root-2026-10",
-    "fixture-snp-root": "TRIDENT-FIXTURE-ONLY-snp-root-2026-10",
-    "fixture-nvidia-root": "TRIDENT-FIXTURE-ONLY-nvidia-root-2026-10"
+    "fixture-tdx-root": "INKBLADE-FIXTURE-ONLY-tdx-root-2026-10",
+    "fixture-snp-root": "INKBLADE-FIXTURE-ONLY-snp-root-2026-10",
+    "fixture-nvidia-root": "INKBLADE-FIXTURE-ONLY-nvidia-root-2026-10"
   }
 }

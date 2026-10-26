@@ -8,14 +8,14 @@ import urllib.request
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.discovery import AssetInventory
-from trident.core.evidence import EvidenceStore
-from trident.core.explorer import Explorer
-from trident.core.roe import init_roe
-from trident.core.users import Session, UserStore
-from trident.webui.server import make_server
+from inkblade.core.discovery import AssetInventory
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.explorer import Explorer
+from inkblade.core.roe import init_roe
+from inkblade.core.users import Session, UserStore
+from inkblade.webui.server import make_server
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 
 
 def _req(method, url, token=None, body=None):

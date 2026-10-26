@@ -1,4 +1,4 @@
-"""trident/probes/run.py — LLM 探针两态差分运行器。
+"""inkblade/probes/run.py — LLM 探针两态差分运行器。
 
 对 lab 三张仿真靶场的 LLM 面（全部仅监听 127.0.0.1、仅标准库）：
 - gateway：lab/ai_gateway_sim（/v1/chat/completions guardrail 差分、/cache/*、/logs、
@@ -14,7 +14,7 @@ unexpected（仅 fixed 命中的反向差分）。
 产物：matrix JSON（run_matrix 返回值同构）+ MD（matrix.render_matrix_section）。
 判定证据只记录状态码与命中标记，不归档完整响应体（MOCK 凭据仅存实验室 trace 层）。
 
-命令行：python trident/probes/run.py [--out DIR] [--faces gateway,longctx,relay]
+命令行：python inkblade/probes/run.py [--out DIR] [--faces gateway,longctx,relay]
          [--categories cat1,cat2] [--probe key]
 """
 from __future__ import annotations
@@ -32,7 +32,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from lab import ai_gateway_sim, longctx_sim, mock_targets  # noqa: E402
-from trident.probes.framework import CATEGORIES, load_probes, verdict_of  # noqa: E402
+from inkblade.probes.framework import CATEGORIES, load_probes, verdict_of  # noqa: E402
 
 TIMEOUT = 5
 FACES_DEFAULT = ("gateway", "longctx", "relay")
@@ -100,7 +100,7 @@ def execute_probe(probe: dict, base: str) -> dict:
     for step in probe["request"]:
         auth_headers = profile.get(str(step.get("auth", default_auth)), {})
         entries.append(_request(base, step, auth_headers))
-    from trident.probes.framework import evaluate_detector  # 局部导入避免循环
+    from inkblade.probes.framework import evaluate_detector  # 局部导入避免循环
     hit = evaluate_detector(probe["detector"], entries)
     return {
         "hit": hit,
@@ -207,7 +207,7 @@ def run_matrix(faces=FACES_DEFAULT, probes: dict[str, dict] | None = None,
         if any(r["category"] == cat for r in results.values())
     }
     return {
-        "generator": "trident.probes.run",
+        "generator": "inkblade.probes.run",
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "faces": faces_needed,
         "summary": _summarize(results),
@@ -219,7 +219,7 @@ def run_matrix(faces=FACES_DEFAULT, probes: dict[str, dict] | None = None,
 # ---------------------------------------------------------------- 命令行
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident LLM 探针两态差分运行器")
+    parser = argparse.ArgumentParser(description="InkBlade LLM 探针两态差分运行器")
     parser.add_argument("--out", default=None, help="产物目录（缺省 reports/samples/llm-probes）")
     parser.add_argument("--faces", default=",".join(FACES_DEFAULT),
                         help="逗号分隔 face 子集：gateway,longctx,relay")
@@ -237,7 +237,7 @@ def main(argv: list[str] | None = None) -> int:
     faces = tuple(f for f in args.faces.split(",") if f) or FACES_DEFAULT
 
     matrix = run_matrix(faces=faces, probes=probes, categories=cats)
-    from trident.probes.matrix import MATRIX_FILENAME, render_matrix_doc
+    from inkblade.probes.matrix import MATRIX_FILENAME, render_matrix_doc
 
     out_dir = Path(args.out) if args.out else REPO_ROOT / "reports" / "samples" / "llm-probes"
     out_dir.mkdir(parents=True, exist_ok=True)

@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "llamafactory-loader-py-missing-revision-l104-regex",
  "source": "mining",
  "component": "llamafactory",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-missing-revision-l104-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.17,
- "started_at": "2026-10-26T09:23:27+00:00",
+ "duration_s": 0.275,
+ "started_at": "2026-10-26T19:52:33+00:00",
  "marker": {
-  "text": "TRIDENT-UV-llamafactory-loader-py-missing-revision-l104-regex",
+  "text": "INKBLADE-UV-llamafactory-loader-py-missing-revision-l104-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,8 +47,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-missing-revision-l104-regex/evidence/log.txt",
-   "sha256": "8d084b9587a554494dd81c3b173cc1422a06f4e0c0d7bb59b733f65c40668d8c",
-   "size": 275
+   "sha256": "c44c40699bbd0d6b60d8edd65cb7124eaa4e242b7eb8ad6284dcc9abb13b37ad",
+   "size": 276
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-missing-revision-l104-regex/evidence/marker.txt",
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-missing-revision-l104-regex/evidence/static-check.json",
-   "sha256": "988f08ec25142dea31b9892907ebc2a90b49d0061923d09803f2811cdc9744b1",
-   "size": 1138
+   "sha256": "2fab103f76839e4446715c34edfd21970fd1939f0e5d4d2590d50c3772b498f0",
+   "size": 1139
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "eda1f7d13e1d585943a674ec09ea8b90a8bc8a298dced17f754a76d2f3491ac3",
+ "manifest_sha256": "f7fb7e0c2b3d3a7d38dde819e49367630818746d72f0927262e72146c608de2d",
  "stdout": "{\"status\": \"static-only\", \"case\": \"llamafactory-loader-py-missing-revision-l104-regex\"}\n",
  "stderr": "",
  "notes": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."

@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "dradriver-kubeletplugin-yaml-elevated-pod-spec-l406-regex",
  "target": "dradriver",
  "repo": "NVIDIA/k8s-dra-driver",

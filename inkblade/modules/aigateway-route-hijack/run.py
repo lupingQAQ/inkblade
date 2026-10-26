@@ -50,7 +50,7 @@ def run(ctx: dict, params: dict) -> dict:
         after_alias = (_aliases(route_after).get(alias) or {})
         applied = str(after_alias.get("backend") or "")
         chat = t.call("POST", f"{base}/v1/chat/completions",
-                      {"model": alias, "messages": [{"role": "user", "content": "trident-route-probe"}]},
+                      {"model": alias, "messages": [{"role": "user", "content": "inkblade-route-probe"}]},
                       bearer(tenant_key(params)))
         routed_backend = str(resp(chat).get("backend") or "")
         chat_status = status(chat)

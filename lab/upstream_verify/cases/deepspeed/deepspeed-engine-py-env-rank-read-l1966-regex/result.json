@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "deepspeed-engine-py-env-rank-read-l1966-regex",
  "source": "mining",
  "component": "deepspeed",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-engine-py-env-rank-read-l1966-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.15,
- "started_at": "2026-10-26T09:23:21+00:00",
+ "duration_s": 0.306,
+ "started_at": "2026-10-26T19:46:23+00:00",
  "marker": {
-  "text": "TRIDENT-UV-deepspeed-engine-py-env-rank-read-l1966-regex",
+  "text": "INKBLADE-UV-deepspeed-engine-py-env-rank-read-l1966-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,8 +47,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-engine-py-env-rank-read-l1966-regex/evidence/log.txt",
-   "sha256": "a2ec318e9714309eab8698e4690aaa3b54dd066e9884f537eb4290fbac93b761",
-   "size": 262
+   "sha256": "79d73cfc4cd728ef19224a4f03ba5eaa6e6f2f8317885aa9bf12c8af5cbffd0a",
+   "size": 263
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-engine-py-env-rank-read-l1966-regex/evidence/marker.txt",
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-engine-py-env-rank-read-l1966-regex/evidence/static-check.json",
-   "sha256": "d039333caca5a2f46a7973d05b0412b1e0c04126ed206eb5503841d96ce046a6",
-   "size": 1122
+   "sha256": "a03d76d00f0875f2f1b856cab97a73fb2c9dcfe3ec8afaf1d0666d115d252148",
+   "size": 1123
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "eb22703ecb4f00c250cb7c4fe2030018f2a395217c93f8dd45a720dbeeccc27e",
+ "manifest_sha256": "83ae55b00eab4454a15319902d54bba89eef3ad0aa1c7f06050dd3c8b7b07df9",
  "stdout": "{\"status\": \"static-only\", \"case\": \"deepspeed-engine-py-env-rank-read-l1966-regex\"}\n",
  "stderr": "",
  "notes": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."

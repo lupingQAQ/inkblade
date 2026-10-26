@@ -1,12 +1,12 @@
-# trident.io/vector: platform-mlflow-tracking
+# inkblade.io/vector: platform-mlflow-tracking
 # detection-point: Falco：写入 MLflow artifact/模型目录
-- rule: Trident Privesc platform-mlflow-tracking
+- rule: InkBlade Privesc platform-mlflow-tracking
   desc: MLflow tracking 管理员/artifact 投毒
   condition: "evt.type in (open,openat,connect,execve) and path ~ \"^/mlflow/artifacts/\""
-  output: "Trident privilege-escalation primitive (vector=platform-mlflow-tracking module=training-data-leak proc=%proc.name)"
+  output: "InkBlade privilege-escalation primitive (vector=platform-mlflow-tracking module=training-data-leak proc=%proc.name)"
   priority: WARNING
   tags:
-    - trident
+    - inkblade
     - privesc
     - platform
     - platform-mlflow-tracking

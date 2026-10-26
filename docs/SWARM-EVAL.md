@@ -57,6 +57,6 @@
 ```bash
 python lab/swarm_eval.py
 python -m unittest tests.test_swarm -v
-python -m trident swarm roles
-python -m trident swarm run --tasks tasks.json --workers 4 --executor simulate
+python -m inkblade swarm roles
+python -m inkblade swarm run --tasks tasks.json --workers 4 --executor simulate
 ```

@@ -4,7 +4,7 @@
 解析与校验四类表（按表头识别，不依赖章节编号，便于 fixture 注入测试）：
 - 登记表（工具全集）：表头含「工具」「来源」「核验」；每行必须有来源（http(s) URL 或本地克隆
   .slim/clonedeps 路径）与核验日期（YYYY-MM-DD）。不得编造能力 → 矩阵单元只允许五个判定标记。
-- 矩阵表（维度×工具，按类分表）：表头首列为「维度」且含「Trident」基准列；单元标记 ∈ MARKS。
+- 矩阵表（维度×工具，按类分表）：表头首列为「维度」且含「InkBlade」基准列；单元标记 ∈ MARKS。
   所有矩阵表的工具列并集必须等于登记表工具全集（每个竞品都有自己的列）。
 - 启示表（每工具一行）：表头含「工具」与「对我们启示」；行集必须与登记表工具全集一致。
 - Backlog 表（补齐项，只登记不实施）：表头含「ID」「工作量」「重叠」；ID 前缀 CM- 且唯一、
@@ -17,7 +17,7 @@ MARKS 口径（官方文档为准，不臆断）：
 - —  类别外（防御产品的攻击维度、攻击产品的防御维度等）
 - ?  官方文档未提及（未核实，不视为支持）
 
-用法：python trident/arch-intel/competitive.py [docs/COMPETITIVE-MATRIX.md]
+用法：python inkblade/arch-intel/competitive.py [docs/COMPETITIVE-MATRIX.md]
 """
 
 from __future__ import annotations
@@ -88,7 +88,7 @@ def parse_matrix(text: str) -> list[dict]:
     out: list[dict] = []
     for table in _tables(text):
         head = _header(table)
-        if head and head[0] == "维度" and "Trident" in head:
+        if head and head[0] == "维度" and "InkBlade" in head:
             cols = head[1:]
             dims: list[str] = []
             cells: dict[str, dict[str, str]] = {}
@@ -151,13 +151,13 @@ def verify(text: str, *, min_tools: int = 23, min_dims: int = 18) -> dict:
         if not DATE_RE.search(r.get("核验日期", "")):
             errors.append(f"[{r.get('工具', '?')}] 核验日期缺失或格式错误: {r.get('核验日期', '')!r}")
 
-    # 2) 矩阵：维度覆盖 / 标记合法 / Trident 基准列 / 工具列并集
+    # 2) 矩阵：维度覆盖 / 标记合法 / InkBlade 基准列 / 工具列并集
     all_dims: list[str] = []
     matrix_tools: set[str] = set()
     per_table_dims: list[set[str]] = []
     for i, m in enumerate(matrix, 1):
-        if "Trident" not in m["columns"]:
-            errors.append(f"矩阵表 {i} 缺少 Trident 基准列")
+        if "InkBlade" not in m["columns"]:
+            errors.append(f"矩阵表 {i} 缺少 InkBlade 基准列")
         per_table_dims.append(set(m["dimensions"]))
         all_dims.extend(m["dimensions"])
         for dim, row_cells in m["cells"].items():
@@ -166,7 +166,7 @@ def verify(text: str, *, min_tools: int = 23, min_dims: int = 18) -> dict:
             for col, mark in row_cells.items():
                 if mark not in MARKS:
                     errors.append(f"矩阵表 {i} [{dim}/{col}] 非法判定标记: {mark!r}")
-        matrix_tools.update(c for c in m["columns"] if c != "Trident")
+        matrix_tools.update(c for c in m["columns"] if c != "InkBlade")
     dim_set = set(all_dims)
     if len(dim_set) < min_dims:
         errors.append(f"矩阵维度数 {len(dim_set)} < 最低要求 {min_dims}")

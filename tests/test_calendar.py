@@ -5,12 +5,12 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.calendar import Calendar, CalendarError
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import ExecutionLocked, init_roe
-from trident.core.users import Session
+from inkblade.core.calendar import Calendar, CalendarError
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import ExecutionLocked, init_roe
+from inkblade.core.users import Session
 
-CHAINS_DIR = Path(__file__).resolve().parents[1] / "trident" / "chains"
+CHAINS_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "chains"
 
 
 def _session(role="lead"):

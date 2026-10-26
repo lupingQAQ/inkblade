@@ -26,7 +26,7 @@ class ModuleFailure(Exception):
 
 
 def _load_run_py(meta: ModuleMeta):
-    spec = importlib.util.spec_from_file_location(f"trident_mod_{meta.key.replace('-', '_')}", meta.path / "run.py")
+    spec = importlib.util.spec_from_file_location(f"inkblade_mod_{meta.key.replace('-', '_')}", meta.path / "run.py")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -58,7 +58,7 @@ def run_module(
     if run is None:
         run = store.create_run(f"run-{time.strftime('%Y%m%d-%H%M%S')}-{uuid.uuid4().hex[:6]}")
 
-    marker = f"TRIDENT-{run.name}"
+    marker = f"INKBLADE-{run.name}"
     bm = BackupManager(store, run)
     is_zd = bool(meta.private)  # 私有（零日级）模块的每条审计行都打标
 

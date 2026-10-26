@@ -21,11 +21,11 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_GROUP_ROLES = (
-    ("trident-admins", "admin"),
-    ("trident-security-owners", "admin"),
-    ("trident-leads", "lead"),
-    ("trident-testers", "tester"),
-    ("trident-auditors", "auditor"),
+    ("inkblade-admins", "admin"),
+    ("inkblade-security-owners", "admin"),
+    ("inkblade-leads", "lead"),
+    ("inkblade-testers", "tester"),
+    ("inkblade-auditors", "auditor"),
 )
 MOCK_BOUNDARY = "本地 mock；不得作为生产身份源/信任链证明"
 
@@ -61,7 +61,7 @@ def session_from_identity(identity: dict, *, store=None, workspaces=("*",),
     """把 OIDC/LDAP 身份转成平台 Session（供 API/WebUI 登录接线）。
 
     注意：审批链的 ``security-owner`` 是**审批角色**，不是平台四角色之一；
-    ``trident-admins``/``trident-security-owners`` 组映射到平台 ``admin``，
+    ``inkblade-admins``/``inkblade-security-owners`` 组映射到平台 ``admin``，
     调用审批 CLI 时需显式使用 `--as-role security-owner`（见 docs/OPERATIONS.md）。
     """
     from ..core.users import Session

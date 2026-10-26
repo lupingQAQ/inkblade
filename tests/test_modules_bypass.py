@@ -12,10 +12,10 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core import defenseprobe as dp
+from inkblade.core import defenseprobe as dp
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
+MODULES_DIR = REPO / "inkblade" / "modules"
 LAB_FIXTURES = REPO / "lab" / "defense-deploy" / "fixtures"
 
 MODULE_KEYS = [
@@ -39,7 +39,7 @@ DEGRADED_PRODUCTS = {"elkeid", "agentsmith", "falco", "tetragon", "hostagent"}
 def _generic_cluster(extra: dict | None = None) -> dict:
     """不含任何目标产品的普通集群底噪（防误报）。"""
     snap = {
-        "cluster": "kind-trident",
+        "cluster": "kind-inkblade",
         "daemonsets": ["kube-system/kube-proxy", "kube-system/coredns"],
         "deployments": ["kube-system/coredns", "train/vllm-server"],
         "pods": ["train/vllm-server-0", "train/ray-worker-1"],
@@ -60,7 +60,7 @@ def _generic_cluster(extra: dict | None = None) -> dict:
 SNAPSHOTS = {
     "elkeid": {
         "deployed": {
-            "cluster": "kind-trident",
+            "cluster": "kind-inkblade",
             "daemonsets": ["kube-system/elkeid-agent", "kube-system/elkeid-manager"],
             "deployments": ["elkeid-system/elkeid-server", "elkeid-system/elkeid-web"],
             "images": ["elkeid/elkeid-agent:1.9.7"],
@@ -81,7 +81,7 @@ SNAPSHOTS = {
     },
     "veinmind": {
         "deployed": {
-            "pods": ["trident-scan/veinmind-tools-abc12"],
+            "pods": ["inkblade-scan/veinmind-tools-abc12"],
             "images": [
                 "chaitin/veinmind-tools:v2.0",
                 "veinmind/veinmind-backdoor:v1",
@@ -237,10 +237,10 @@ def _techniques(product: str) -> set[str]:
 
 class TestRegistryContract(unittest.TestCase):
     def test_eleven_modules_load(self):
-        from trident.core.registry import load_modules
+        from inkblade.core.registry import load_modules
 
         mods = load_modules(MODULES_DIR)
-        # trident/modules 为共享目录（并行任务会落其他系列）→ 断言本族 11 个全部注册且契约正确
+        # inkblade/modules 为共享目录（并行任务会落其他系列）→ 断言本族 11 个全部注册且契约正确
         self.assertTrue(set(MODULE_KEYS) <= set(mods))
         for key in MODULE_KEYS:
             meta = mods[key]
@@ -418,7 +418,7 @@ class TestBenignSafety(unittest.TestCase):
             }
             with self.assertRaises(dp.ProbeContainmentError):
                 dp.materialize_probes([evil], root)
-            evil2 = dict(evil, write_target="/etc/trident-escape.marker")
+            evil2 = dict(evil, write_target="/etc/inkblade-escape.marker")
             with self.assertRaises(dp.ProbeContainmentError):
                 dp.materialize_probes([evil2], root)
 
@@ -443,10 +443,10 @@ class TestBenignSafety(unittest.TestCase):
 
 class TestRunnerIntegration(unittest.TestCase):
     def test_elkeid_full_run_records_findings(self):
-        from trident.core.evidence import EvidenceStore
-        from trident.core.roe import init_roe
-        from trident.core.runner import run_module
-        from trident.core.users import UserStore
+        from inkblade.core.evidence import EvidenceStore
+        from inkblade.core.roe import init_roe
+        from inkblade.core.runner import run_module
+        from inkblade.core.users import UserStore
 
         with TemporaryDirectory() as tmp:
             root = Path(tmp)

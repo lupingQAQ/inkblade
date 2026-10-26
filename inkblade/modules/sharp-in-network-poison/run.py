@@ -35,7 +35,7 @@ def run(ctx: dict, params: dict) -> dict:
                     "session_id": session_id, "marker": marker}
 
     join = t.call("POST", f"{target}/sharp/sessions", {
-        "op": "join", "session_id": session_id, "rank": f"trident-{marker[:24]}",
+        "op": "join", "session_id": session_id, "rank": f"inkblade-{marker[:24]}",
     }, headers)
     join_resp = _COMMON.resp(join)
     detail.update({

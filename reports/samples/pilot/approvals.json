@@ -1,5 +1,5 @@
 {
-  "schema": "trident-pilot-approvals/1",
+  "schema": "inkblade-pilot-approvals/1",
   "generated_at": "2026-10-25T16:27:21Z",
   "workspace": "pilot",
   "read_only": true,

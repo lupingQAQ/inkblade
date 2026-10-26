@@ -21,6 +21,6 @@
 - 扩展治理：核心稳定，能力靠 extension/binding 演进。
 
 ## 对我们的启示
-- 我们只有 MCP 只读工具（`trident/mcp_server.py:54`，10 个工具），没有 A2A：无法把「Trident 侦察 agent」作为可被客户 SOC/其他平台调用的对等体（G07）。
+- 我们只有 MCP 只读工具（`inkblade/mcp_server.py:54`，10 个工具），没有 A2A：无法把「InkBlade 侦察 agent」作为可被客户 SOC/其他平台调用的对等体（G07）。
 - 最合理的 A2A 暴露面：`recon`（只读资产/发现）、`plan`（只读计划）、`verify`（证据校验）三个 agent 能力；执行与审批留在本地，不通过 A2A 暴露写能力。
 - 与 MCP 组合：A2A 传任务，MCP 供工具；这正好对应我们「提议在外、执行在内」的分层。

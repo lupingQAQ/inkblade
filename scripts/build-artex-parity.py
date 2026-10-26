@@ -22,24 +22,24 @@ FEATURE_DOC = ROOT / "docs" / "FEATURE-BY-FEATURE-ARTEX.md"
 OUT = ROOT / "docs" / "artex-parity-rows.json"
 
 DONE = {
-    "notify": ("trident/core/notify.py", "tests/test_notify.py"),
-    "llmpool": ("trident/core/llmpool.py", "tests/test_llmpool.py"),
-    "threads": ("trident/core/threads.py", "tests/test_threads.py"),
-    "intel": ("trident/core/intel.py", "tests/test_backlog_s.py"),
-    "dedupe": ("trident/core/dedupe.py", "tests/test_backlog_m.py"),
-    "scheduler": ("trident/core/scheduler.py + trident/core/calendar.py",
+    "notify": ("inkblade/core/notify.py", "tests/test_notify.py"),
+    "llmpool": ("inkblade/core/llmpool.py", "tests/test_llmpool.py"),
+    "threads": ("inkblade/core/threads.py", "tests/test_threads.py"),
+    "intel": ("inkblade/core/intel.py", "tests/test_backlog_s.py"),
+    "dedupe": ("inkblade/core/dedupe.py", "tests/test_backlog_m.py"),
+    "scheduler": ("inkblade/core/scheduler.py + inkblade/core/calendar.py",
                   "tests/test_scheduler.py + tests/test_calendar.py"),
-    "importers": ("trident/core/importers.py", "tests/test_backlog_s.py"),
-    "templates": ("trident/core/templates.py", "tests/test_templates.py"),
-    "graphsnap": ("trident/core/graphsnap.py", "tests/test_graphsnap.py"),
-    "search": ("trident/core/search.py", "tests/test_backlog_s.py"),
-    "cigate": ("trident/core/cigate.py", "tests/test_backlog_s.py"),
-    "credcheck": ("trident/core/credcheck.py", "tests/test_backlog_m.py"),
-    "connectors": ("trident/core/connectors.py", "tests/test_backlog_m.py"),
-    "lineage": ("trident/core/lineage.py", "tests/test_backlog_m.py"),
+    "importers": ("inkblade/core/importers.py", "tests/test_backlog_s.py"),
+    "templates": ("inkblade/core/templates.py", "tests/test_templates.py"),
+    "graphsnap": ("inkblade/core/graphsnap.py", "tests/test_graphsnap.py"),
+    "search": ("inkblade/core/search.py", "tests/test_backlog_s.py"),
+    "cigate": ("inkblade/core/cigate.py", "tests/test_backlog_s.py"),
+    "credcheck": ("inkblade/core/credcheck.py", "tests/test_backlog_m.py"),
+    "connectors": ("inkblade/core/connectors.py", "tests/test_backlog_m.py"),
+    "lineage": ("inkblade/core/lineage.py", "tests/test_backlog_m.py"),
 }
 
-REASON_UI = "架构不适用：Trident 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面"
+REASON_UI = "架构不适用：InkBlade 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面"
 REASON_TASKS = ("架构不适用：run + 三层证据库是一等对象，不引入 PostgreSQL 任务实体/"
                 "分类/归档/Web 工作区编辑器；等价能力见 evidence/run 目录与 CLI")
 REASON_MULTI = "架构不适用：工作区 + 四角色隔离；多租户 SaaS 属 L 项 CM-31，不在 S/M 范围"

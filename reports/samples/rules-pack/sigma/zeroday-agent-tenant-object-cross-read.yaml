@@ -1,10 +1,10 @@
 title: Agent 平台租户对象跨租户读取
-id: 941af51e-634b-9c8b-a1be-b708d6457945
+id: 9808db67-4040-c701-d909-3d0b6a2d1189
 status: stable
 description: "Agent 平台审计面：单会话主体在短时间内读取不属于自身租户的绑定/快照类对象。English: a single session principal reading tenant-scoped objects across tenant boundaries in a short window."
 references:
-  - "trident-rules-mapping: zeroday-agent-tenant-object-cross-read"
-author: Trident rules engine
+  - "inkblade-rules-mapping: zeroday-agent-tenant-object-cross-read"
+author: InkBlade rules engine
 date: 2026/10/25
 logsource:
   category: agent-platform
@@ -22,10 +22,10 @@ falsepositives:
 level: critical
 tags:
   - attack.credential_access
-  - trident
+  - inkblade
   - zeroday-behavioral
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-tuning: 阈值（5 分钟 3 次）按平台吞吐校准；对 object_class 扩展到快照/数据集导出类对象；运维迁移窗口以主体白名单收敛
-  trident-blocks-chains: agent-platform-cross-tenant-data-chain
+  inkblade-mode: monitor
+  inkblade-tuning: 阈值（5 分钟 3 次）按平台吞吐校准；对 object_class 扩展到快照/数据集导出类对象；运维迁移窗口以主体白名单收敛
+  inkblade-blocks-chains: agent-platform-cross-tenant-data-chain

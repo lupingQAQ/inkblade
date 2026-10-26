@@ -37,7 +37,7 @@ def run_scale(count: int = 100_000, *, db_path: str | Path | None = None,
     count = max(1, int(count))
     tmp = None
     if db_path is None:
-        tmp = tempfile.TemporaryDirectory(prefix="trident-scale-")
+        tmp = tempfile.TemporaryDirectory(prefix="inkblade-scale-")
         db_path = Path(tmp.name) / "audit.db"
     path = Path(db_path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -91,7 +91,7 @@ def run_scale(count: int = 100_000, *, db_path: str | Path | None = None,
         if tmp is not None:
             tmp.cleanup()
     return {
-        "schema": "trident-audit-scale/1",
+        "schema": "inkblade-audit-scale/1",
         "requested": count,
         "inserted": inserted,
         "duplicates": duplicates,

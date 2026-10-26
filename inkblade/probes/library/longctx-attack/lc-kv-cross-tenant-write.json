@@ -17,8 +17,8 @@
    "auth": "none",
    "body": {
     "op": "write",
-    "block_id": "trident-probe-kvx",
-    "value": "TRIDENT-BENIGN-KV-X",
+    "block_id": "inkblade-probe-kvx",
+    "value": "INKBLADE-BENIGN-KV-X",
     "source_tenant": "tenant-a",
     "dest_tenant": "tenant-b"
    }

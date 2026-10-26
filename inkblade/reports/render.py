@@ -133,8 +133,8 @@ def _meta_block(store, run, lang: str) -> dict[str, str]:
         ),
         "footer_decl": _pick(
             lang,
-            "Trident 双语报告引擎 · 证据三层（上下文摘要 / SQLite / tar+SHA256） · PTES / NIST SP 800-115 / GB/T 22239-2019 / GB/T 20984 / CVSS 3.1 · 合规：OWASP LLM/Agentic · MITRE ATLAS · NIST AI RMF · ISO/IEC 42001 · EU AI Act GPAI · TC260",
-            "Trident bilingual report engine - three-layer evidence (context digest / SQLite / tar+SHA256) - PTES / NIST SP 800-115 / GB/T 22239-2019 / GB/T 20984 / CVSS 3.1 - compliance: OWASP LLM/Agentic, MITRE ATLAS, NIST AI RMF, ISO/IEC 42001, EU AI Act GPAI, TC260",
+            "InkBlade（墨刃零）双语报告引擎 · 证据三层（上下文摘要 / SQLite / tar+SHA256） · PTES / NIST SP 800-115 / GB/T 22239-2019 / GB/T 20984 / CVSS 3.1 · 合规：OWASP LLM/Agentic · MITRE ATLAS · NIST AI RMF · ISO/IEC 42001 · EU AI Act GPAI · TC260",
+            "InkBlade bilingual report engine - three-layer evidence (context digest / SQLite / tar+SHA256) - PTES / NIST SP 800-115 / GB/T 22239-2019 / GB/T 20984 / CVSS 3.1 - compliance: OWASP LLM/Agentic, MITRE ATLAS, NIST AI RMF, ISO/IEC 42001, EU AI Act GPAI, TC260",
         ),
     }
 
@@ -326,9 +326,9 @@ def _objective_section(run, lang: str) -> str:
     if not path.is_file():
         return _pick(
             lang,
-            "**本 run 未包含 objective 夺权证明**（未执行 `trident objective cluster-takeover`）。"
+            "**本 run 未包含 objective 夺权证明**（未执行 `inkblade objective cluster-takeover`）。"
             "本节不臆造集群级权限结论。",
-            "**No objective takeover proof in this run** (`trident objective cluster-takeover` "
+            "**No objective takeover proof in this run** (`inkblade objective cluster-takeover` "
             "was not executed). This section makes no cluster-level privilege claim.",
         )
     proof = json.loads(path.read_text(encoding="utf-8"))
@@ -751,8 +751,8 @@ def render_remediation(
     mapping["title_retest"] = _pick(lang, "复测计划 Retest Plan", "Retest Plan")
     mapping["body_retest"] = _pick(
         lang,
-        "修复完成后按同参数重放对应攻击链（先 dry-run 预览写面），并运行 `trident rules validate` 做紫队验证输出覆盖率矩阵；零日级发现细节默认展示，如启用可选脱敏开关则按合同分级开放细节后在授权窗口内复测。",
-        "After fixes, replay the same chains with identical parameters (dry-run first to preview writes) and run `trident rules validate` for purple-team coverage; zero-day-class details are shown by default, and when the optional redaction switch is enabled, retest inside the authorized window once details are released per contract tier.",
+        "修复完成后按同参数重放对应攻击链（先 dry-run 预览写面），并运行 `inkblade rules validate` 做紫队验证输出覆盖率矩阵；零日级发现细节默认展示，如启用可选脱敏开关则按合同分级开放细节后在授权窗口内复测。",
+        "After fixes, replay the same chains with identical parameters (dry-run first to preview writes) and run `inkblade rules validate` for purple-team coverage; zero-day-class details are shown by default, and when the optional redaction switch is enabled, retest inside the authorized window once details are released per contract tier.",
     )
     mapping["retest_steps"] = "\n".join([
         _pick(lang, "1. 立即项修复后 72 小时内完成验证（管理面隔离 + RBAC 收敛 + 凭据轮换）。", "1. Verify immediate items within 72 hours of fix (management-plane isolation + RBAC scope-down + credential rotation)."),

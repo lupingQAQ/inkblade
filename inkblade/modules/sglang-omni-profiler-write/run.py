@@ -91,19 +91,19 @@ def run(ctx: dict, params: dict) -> dict:
     mode, note = _resolve_mode(params)
     if not target:
         return {"summary": "no-target", "artifacts": [], "findings": []}
-    marker = str(ctx.get("marker") or "TRIDENT")
+    marker = str(ctx.get("marker") or "INKBLADE")
     t = Trace(ctx)
     gate = t.call("POST", f"{target}/pause", {})
     write = None
     if mode == "backup-write" and _ok(gate):
         write = t.call("POST", f"{target}/update_weights_from_disk", {
-            "path": f"/tmp/trident-profiler/{marker}/events.trace",
+            "path": f"/tmp/inkblade-profiler/{marker}/events.trace",
             "relative_path": f"profiler/{marker}",
         })
     findings = []
     if _ok(gate) and _ok(write):
         detail = {"gate_route": "/pause(fail-open)", "write_route": "/update_weights_from_disk",
-                  "path": f"/tmp/trident-profiler/{marker}/events.trace",
+                  "path": f"/tmp/inkblade-profiler/{marker}/events.trace",
                   "note": "管理面放行 + profiler 事件目录任意写（同构：攻击者可控路径的服务端写）"}
         findings.append({"sev": "high", "title": "sglang-omni：管理面 fail-open + profiler 事件目录任意写原语",
                          "detail": json.dumps(detail, ensure_ascii=False)})

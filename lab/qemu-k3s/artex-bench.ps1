@@ -8,7 +8,7 @@
       1. boot the lab VM with the higher spec used for the bench (-MemoryMB 6144 -Smp 6)
       2. start the host-side mock LLM (OpenAI-compatible, deterministic answers)
       3. make sure the shared mock target is reachable from the guest at 10.0.2.2:30080
-         (the k3s NodePort used by the earlier Trident real-cluster run), else fall back
+         (the k3s NodePort used by the earlier InkBlade real-cluster run), else fall back
          to lab/mock_targets.py on 10.0.2.2:18080
       4. copy lab/qemu-k3s/artex-bench-{setup,run}.sh into the guest and run them
       5. pull the raw measurement file back and turn it into
@@ -178,7 +178,7 @@ $meta = @(
     "bench_wall_clock_s=$benchSeconds"
 )
 $limitations = @(
-    'QEMU TCG software emulation: absolute numbers are not comparable to bare-metal; only the ARTEX-vs-Trident ratio on the same host is meaningful.',
+    'QEMU TCG software emulation: absolute numbers are not comparable to bare-metal; only the ARTEX-vs-InkBlade ratio on the same host is meaningful.',
     'The LLM is a deterministic OpenAI-compatible mock on the host; it exercises the real HTTP/agent loop but not model quality or token cost.',
     'Idle RSS is sampled 60-90 s after start via docker stats (2 s cadence), not an instantaneous peak.',
     'k3s (single-node control plane) is running in the same guest during the whole bench and consumes CPU/RAM.',
@@ -190,11 +190,11 @@ $limArgs = @()
 foreach ($l in $limitations) { $limArgs += @('--limitation', $l) }
 
 & $Python (Join-Path $Root 'artex-bench-collect.py') --raw $RawLocal --mock-log $MockLog `
-    --out $Samples --trident (Join-Path $Lab 'bench\out\bench-smoke.json') @metaArgs @limArgs
+    --out $Samples --inkblade (Join-Path $Lab 'bench\out\bench-smoke.json') @metaArgs @limArgs
 if ($LASTEXITCODE -ne 0) { throw 'collector failed' }
 Write-Host "[artex-bench] wrote $Samples\artex-bench.json / .md" -ForegroundColor Green
 
-# --- 6. same-target phase: snapshot ARTEX hits, run Trident chain, collect ----
+# --- 6. same-target phase: snapshot ARTEX hits, run InkBlade chain, collect ----
 $TargetStats = Join-Path $Out 'mock-target-stats-artex.json'
 try {
     $snap = Invoke-RestMethod -Uri 'http://127.0.0.1:18080/__stats__' | ConvertTo-Json -Depth 6
@@ -202,14 +202,14 @@ try {
 } catch { throw "cannot read target stats: $_" }
 Write-Host "[artex-bench] ARTEX target hits saved -> $TargetStats"
 
-$TridentOut = Join-Path $Out 'trident-chain.json'
-& $Python (Join-Path $Root 'same-target-trident.py') --target 'http://127.0.0.1:18080' --out $TridentOut
-if ($LASTEXITCODE -ne 0) { Write-Warning 'Trident same-target chain reported failure (continuing to collect)' }
+$InkBladeOut = Join-Path $Out 'inkblade-chain.json'
+& $Python (Join-Path $Root 'same-target-inkblade.py') --target 'http://127.0.0.1:18080' --out $InkBladeOut
+if ($LASTEXITCODE -ne 0) { Write-Warning 'InkBlade same-target chain reported failure (continuing to collect)' }
 
 $SameTargetRaw = Join-Path $Out 'artex-same-target-raw.txt'
 Copy-Item $RawLocal $SameTargetRaw -Force   # the full-run raw IS the same-target raw
 & $Python (Join-Path $Root 'same-target-collect.py') --mock-log $MockLog --raw $SameTargetRaw `
-    --target-stats $TargetStats --trident $TridentOut `
+    --target-stats $TargetStats --inkblade $InkBladeOut `
     --out (Join-Path $Samples 'same-target.json') --target $Target
 if ($LASTEXITCODE -ne 0) { throw 'same-target collector failed' }
 Write-Host "[artex-bench] wrote $Samples\same-target.json / .md" -ForegroundColor Green

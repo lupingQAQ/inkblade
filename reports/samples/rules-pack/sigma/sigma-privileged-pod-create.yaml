@@ -1,10 +1,10 @@
 title: 特权 Pod 创建
-id: 7d602328-1cf3-402f-efd3-a8a72c25adc0
+id: ccbca951-bbd2-43ed-5c04-33c69d7b8bed
 status: stable
 description: "K8s audit: pod created with privileged securityContext or hostPath/hostPID/hostIPC. 审计检测特权/宿主面 Pod 创建（GPU operator 逃逸面、SA 提权落地）。"
 references:
-  - "trident-rules-mapping: sigma-privileged-pod-create"
-author: Trident rules engine
+  - "inkblade-rules-mapping: sigma-privileged-pod-create"
+author: InkBlade rules engine
 date: 2026/10/25
 logsource:
   product: kubernetes
@@ -22,9 +22,9 @@ level: high
 tags:
   - attack.privilege_escalation
   - attack.t1611
-  - trident
-  - trident-mode-monitor
+  - inkblade
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-tuning: "以例外通道命名空间（GPU operator 专用）过滤基线 DaemonSet；非例外 ns 的特权创建保持 high；可按 requestObject.hostPath.* 前缀细分严重级"
-  trident-blocks-chains: "gpu-network-operator-host-escape,imex-computedomain-gpu-memory-crossing"
+  inkblade-mode: monitor
+  inkblade-tuning: "以例外通道命名空间（GPU operator 专用）过滤基线 DaemonSet；非例外 ns 的特权创建保持 high；可按 requestObject.hostPath.* 前缀细分严重级"
+  inkblade-blocks-chains: "gpu-network-operator-host-escape,imex-computedomain-gpu-memory-crossing"

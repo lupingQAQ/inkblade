@@ -1,5 +1,5 @@
 {
-  "schema": "trident-enterprise-local-checks/1",
+  "schema": "inkblade-enterprise-local-checks/1",
   "generated_at": "2026-10-26T09:06:56Z",
   "summary": {
     "total": 11,
@@ -195,7 +195,7 @@
       "error": "",
       "evidence": {
         "built": {
-          "schema": "trident-evidence-pack/1",
+          "schema": "inkblade-evidence-pack/1",
           "path": "<local-path>",
           "files": 3,
           "controls": 7,
@@ -221,7 +221,7 @@
       "error": "",
       "evidence": {
         "scale": {
-          "schema": "trident-audit-scale/1",
+          "schema": "inkblade-audit-scale/1",
           "requested": 200000,
           "inserted": 200000,
           "duplicates": 0,

@@ -1,26 +1,27 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "kueue-server-go-pprof-exposed-l30-regex",
  "source": "mining",
  "component": "kueue",
  "title": "kueue kueueviz: pprof-exposed-go + default-disabled auth @ backend/config/server.go:30",
- "status": "static-only",
- "declared_status": "static-only",
- "method": "static-source",
- "verified": false,
- "module": null,
+ "status": "verified",
+ "declared_status": "verified",
+ "method": "dynamic-http",
+ "verified": true,
+ "module": "observability-exposure",
  "version": "v0.20.3",
  "version_ref": {
   "kind": "git",
   "repo": "kubernetes-sigs/kueue",
-  "tag": "v0.20.3"
+  "tag": "v0.20.3",
+  "commit": "66ff21115867ef4a80ced2a662d3665d86cb0d78"
  },
  "version_hash": {
   "kind": "git",
   "version": "v0.20.3",
   "repo": "kubernetes-sigs/kueue",
   "tag": "v0.20.3",
-  "commit": null,
+  "commit": "66ff21115867ef4a80ced2a662d3665d86cb0d78",
   "package": null,
   "wheel_sha256": null,
   "artifact": "lab/upstream_verify/upstream/kubernetes-sigs/kueue/v0.20.3/cmd/kueueviz/backend/config/server.go",
@@ -32,27 +33,67 @@
  "command": "[reproenv] lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.141,
- "started_at": "2026-10-26T09:23:24+00:00",
+ "duration_s": 141.737,
+ "started_at": "2026-10-26T19:51:02+00:00",
  "marker": {
-  "text": "TRIDENT-UV-kueue-server-go-pprof-exposed-l30-regex",
+  "text": "INKBLADE-UV-kueue-server-go-pprof-exposed-l30-regex",
   "before": "ABSENT",
-  "after_has_marker": false,
-  "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
+  "after_has_marker": true,
+  "after_sha256": "e80997103dd488a9c25c3737d78ab70821a828395b97926922c2852ab070c347"
  },
  "request_response": [],
  "state_before": "ABSENT",
- "state_after": "ABSENT",
+ "state_after": "INKBLADE-UV-kueue-server-go-pprof-exposed-l30-regex",
  "evidence": [
   {
+   "path": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/http/auth-status.json",
+   "sha256": "477264dee1e9bef4eea4c18730e6da8119fb9fbbe4c375a02979185a6ca06681",
+   "size": 25
+  },
+  {
+   "path": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/http/kueueviz.log",
+   "sha256": "da3496d1ada9b3039ce99008fd37c599b5c459031ed842ec62c5ad5fdcc564e1",
+   "size": 3147
+  },
+  {
+   "path": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/http/listeners.txt",
+   "sha256": "3f74ef6ab40b4fa6d975f04586261155fade303fe70de8a136b38c3950868802",
+   "size": 190
+  },
+  {
+   "path": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/http/nonloopback.txt",
+   "sha256": "fdb8e94bbf7706f3bfa838aa03417e5ebf031c990b8e5b00fe309a8a9b37b140",
+   "size": 27
+  },
+  {
+   "path": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/http/pod-unauth.status",
+   "sha256": "74234df06346be5b8fcd66762a3d7b105d9946191845a22fc531097e7e68565c",
+   "size": 5
+  },
+  {
+   "path": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/http/pod-unauth.yaml",
+   "sha256": "67fc55c49f29b48013a1024d05ea66be76903f7f6cf749c0a5b5ef6940f99f1e",
+   "size": 6051
+  },
+  {
+   "path": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/http/pprof-localhost.txt",
+   "sha256": "2090c02d12290751d84351d5340158b2799115c762007ee248b4c2611ac1e69e",
+   "size": 121
+  },
+  {
    "path": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/log.txt",
-   "sha256": "6a022c8b054995280f40fa51acf682793ffd2f6c68c63c19815141a91ab4b65f",
-   "size": 247
+   "sha256": "01aa387ce072dd22dab7e356a946ef9370526ed1a0b222bb269bc882cf9d2952",
+   "size": 356
   },
   {
    "path": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/marker.txt",
-   "sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56",
-   "size": 6
+   "sha256": "e80997103dd488a9c25c3737d78ab70821a828395b97926922c2852ab070c347",
+   "size": 51
+  },
+  {
+   "path": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/run.json",
+   "sha256": "18383e16870d2e6406f748ce0c4fc060bcac9006efecdbabcde37cd28935027f",
+   "size": 1806
   },
   {
    "path": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/static-check.json",
@@ -60,9 +101,9 @@
    "size": 1539
   }
  ],
- "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "618ec62f919534013f5aa873cc8c4187e98e89d7a46030db7d4f55481bfb85d0",
- "stdout": "{\"status\": \"static-only\", \"case\": \"kueue-server-go-pprof-exposed-l30-regex\"}\n",
+ "poc_sha256": "126dbc4f5dd04952e4fdf3b38821b1505c56454a24b5fa90aa51765a140b1fd3",
+ "manifest_sha256": "ab76c3a2ce0ef693c54c32a37706aeceeec6b60720652694068ad2b8c03f3fe0",
+ "stdout": "{\"status\": \"verified\", \"marker\": \"INKBLADE-UV-kueue-server-go-pprof-exposed-l30-regex\", \"evidence\": \"lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence\"}\n",
  "stderr": "",
- "notes": "Kueue kueueviz backend: KUEUEVIZ_AUTH_MODE defaults to 'Disabled' (server.go:49) and main.go:112 only mounts the TokenReview authenticator middleware when the mode equals TokenReview, so a default deployment serves cluster queue/workload routes (and websocket data) without authentication; config/server.go also imports net/http/pprof with a localhost:6060 listener in dev mode. Not run end-to-end: the backend requires a live kubeconfig/apiserver; recorded as a verified-by-source default-auth posture."
+ "notes": "Promoted 2026-10-27 after the QEMU k3s re-verification pass. Built from the pinned v0.20.3 commit 66ff21115867ef4a80ced2a662d3665d86cb0d78 inside the Alpine guest (Go 1.27.3); started the real kueueviz backend with default configuration (KUEUEVIZ_AUTH_MODE unset -> Disabled); an unauthenticated GET /api/pod/canary?namespace=kueueviz-lab&output=yaml returned 200 with the canary env value, the listener was bound to 0.0.0.0:18080 and answered on eth0; the pprof listener is loopback-only (127.0.0.1:6060)."
 }

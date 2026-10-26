@@ -6,15 +6,15 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from trident.core import llmpool
-from trident.core.discovery import AssetInventory
-from trident.core.evidence import EvidenceStore
-from trident.core.explorer import Explorer
-from trident.core.llmpool import (LLMPool, NoHealthyEndpoint, PoolDisabled)
-from trident.core.roe import init_roe
-from trident.core.users import Session
+from inkblade.core import llmpool
+from inkblade.core.discovery import AssetInventory
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.explorer import Explorer
+from inkblade.core.llmpool import (LLMPool, NoHealthyEndpoint, PoolDisabled)
+from inkblade.core.roe import init_roe
+from inkblade.core.users import Session
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 
 
 def _session(role="lead"):
@@ -141,7 +141,7 @@ class TestExplorerPoolIntegration(unittest.TestCase):
 
     def test_propose_uses_pool_when_enabled(self):
         ex = Explorer(self.store, modules_dir=MODULES_DIR)
-        with patch("trident.core.explorer.rank_candidates",
+        with patch("inkblade.core.explorer.rank_candidates",
                    return_value=["sglang-admin-failopen"]):
             p = ex.propose(_session("tester"), use_llm=True)
         self.assertEqual(p["mode"], "llm")
@@ -149,7 +149,7 @@ class TestExplorerPoolIntegration(unittest.TestCase):
 
     def test_pool_failure_falls_back_to_rules(self):
         ex = Explorer(self.store, modules_dir=MODULES_DIR)
-        with patch("trident.core.explorer.rank_candidates", side_effect=OSError("no route")):
+        with patch("inkblade.core.explorer.rank_candidates", side_effect=OSError("no route")):
             p = ex.propose(_session("tester"), use_llm=True)
         self.assertEqual(p["mode"], "rules")
         self.assertIn("LLM 降级", p.get("llm_note", ""))

@@ -1,5 +1,5 @@
 {
-  "schema": "trident-cloud-contract/2026-10",
+  "schema": "inkblade-cloud-contract/2026-10",
   "mode": "contract simulation (lab/cloud_six_sim.py), not a real account",
   "vulnerable": {
     "scenarios": 8,

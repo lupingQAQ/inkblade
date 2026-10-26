@@ -95,7 +95,7 @@ ms-swift / TRL）、RL（rollout 缓冲 / 奖励信号）三条栈，共 10 个�
 
 - 登记册：`reports/samples/mining-trainstack/zeroday/registry/candidates/*.json`（70 条）；
 - 报告：`reports/samples/mining-trainstack/mining-report.json`；
-- 独立基线：`trident/data/trainstack-mining-baseline.json`（不污染推理栈基线）；
+- 独立基线：`inkblade/data/trainstack-mining-baseline.json`（不污染推理栈基线）；
 - 每条候选均为 `status=pending-manual-review`，note 明示"规则命中≠漏洞；须人工复核可达性与
   可利用性后方可建模块；不自动入库"。
 - 复核优先级建议：`torch-load-unsafe`（DeepSpeed stage3 optimizer state，`weights_only=False`
@@ -109,18 +109,18 @@ ms-swift / TRL）、RL（rollout 缓冲 / 奖励信号）三条栈，共 10 个�
 
 ```bash
 python -m unittest tests.test_trainstack_sim tests.test_trainstack_modules tests.test_trainstack_mining -v
-python -m trident.verify-effects --out reports/samples/effects/       # 含 3 项训练栈实效
-python -m trident mine --trainstack --out reports/samples/mining-trainstack
+python -m inkblade.verify-effects --out reports/samples/effects/       # 含 3 项训练栈实效
+python -m inkblade mine --trainstack --out reports/samples/mining-trainstack
 ```
 
 | 产物 | 路径 |
 |---|---|
 | 靶场 | `lab/trainstack_sim.py`（29 路由，双态） |
-| 模块 | `trident/modules/{megatron-deepspeed-config-surface,torchrun-elastic-surface,checkpoint-optimizer-state-poison,data-pipeline-poison,tokenizer-template-injection,experiment-tracker-exposure,sft-framework-surface,rl-rollout-buffer-poison,reward-hacking-detect,pretrain-job-escape}/` |
-| 共享库 | `trident/modules/_trainstack-common.py` |
-| 静态规则 | `trident/core/data/sink-rules.json`（新增 9 条 + 2 组合签名；样本锚 `lab/sample-vuln-repo/trainstack.py`、`job.yaml`） |
+| 模块 | `inkblade/modules/{megatron-deepspeed-config-surface,torchrun-elastic-surface,checkpoint-optimizer-state-poison,data-pipeline-poison,tokenizer-template-injection,experiment-tracker-exposure,sft-framework-surface,rl-rollout-buffer-poison,reward-hacking-detect,pretrain-job-escape}/` |
+| 共享库 | `inkblade/modules/_trainstack-common.py` |
+| 静态规则 | `inkblade/core/data/sink-rules.json`（新增 9 条 + 2 组合签名；样本锚 `lab/sample-vuln-repo/trainstack.py`、`job.yaml`） |
 | 上游快照 | `lab/mining-fixture/{megatron,deepspeed,llamafactory,msswift,trl}/` |
-| 实效验证 | `trident/verify-effects.py` 的 `trainstack-*` 三项；报告 `docs/EFFECT-VERIFICATION.md` |
+| 实效验证 | `inkblade/verify-effects.py` 的 `trainstack-*` 三项；报告 `docs/EFFECT-VERIFICATION.md` |
 | 覆盖文档 | 本文件 |
 
 ## 7. 未覆盖与后续

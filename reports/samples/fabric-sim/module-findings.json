@@ -1,6 +1,6 @@
 {
-  "schema": "trident-fabric-module-adjudication/2026-10",
-  "source": "simulation telemetry -> real trident modules (probe/backup-write against lab HTTP endpoint)",
+  "schema": "inkblade-fabric-module-adjudication/2026-10",
+  "source": "simulation telemetry -> real inkblade modules (probe/backup-write against lab HTTP endpoint)",
   "nodes": 1024,
   "scenario": "mixed",
   "modules": {
@@ -89,14 +89,14 @@
       {
         "sev": "high",
         "title": "PFC 配置面可写引发暂停风暴（Δ暂停帧 ≥ 50000）",
-        "detail": "{\"route\": \"/roce/pfc\", \"mode\": \"backup-write\", \"rounds\": 3, \"marker\": \"TRIDENT\", \"read_status\": 200, \"pfc_pause_frames_before\": 76801033, \"storm_active_before\": false, \"storm_statuses\": [200, 200, 200], \"pfc_pause_frames_after\": 76876033, \"pfc_pause_frames_delta\": 75000, \"ecn_marks\": 7574, \"storm_active\": true, \"interfaces\": [\"rail-0\", \"rail-1\"]}"
+        "detail": "{\"route\": \"/roce/pfc\", \"mode\": \"backup-write\", \"rounds\": 3, \"marker\": \"INKBLADE\", \"read_status\": 200, \"pfc_pause_frames_before\": 76801033, \"storm_active_before\": false, \"storm_statuses\": [200, 200, 200], \"pfc_pause_frames_after\": 76876033, \"pfc_pause_frames_delta\": 75000, \"ecn_marks\": 7574, \"storm_active\": true, \"interfaces\": [\"rail-0\", \"rail-1\"]}"
       }
     ],
     "nccl-straggler-injection": [
       {
         "sev": "high",
         "title": "慢 rank 注入使训练步时劣化 2428.2×（goodput 静默下降）",
-        "detail": "{\"route\": \"/nccl/rank,/train/step\", \"mode\": \"backup-write\", \"rank\": \"rank-7\", \"straggler_ms\": 5000, \"marker\": \"TRIDENT\", \"baseline_status\": 200, \"baseline_step_ms\": 2.06, \"inject_status\": 200, \"slowdown_status\": 200, \"slowed_step_ms\": 5002.06, \"step_time_ratio\": 2428.184, \"worst_straggler_ms\": 5000}"
+        "detail": "{\"route\": \"/nccl/rank,/train/step\", \"mode\": \"backup-write\", \"rank\": \"rank-7\", \"straggler_ms\": 5000, \"marker\": \"INKBLADE\", \"baseline_status\": 200, \"baseline_step_ms\": 2.06, \"inject_status\": 200, \"slowdown_status\": 200, \"slowed_step_ms\": 5002.06, \"step_time_ratio\": 2428.184, \"worst_straggler_ms\": 5000}"
       }
     ]
   },

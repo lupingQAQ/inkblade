@@ -10,6 +10,6 @@
     "snapshot": "可选，fabric 配置 JSON 或路径；省略使用内置 vulnerable fixture"
   },
   "produces": "sharp-trust-posture（会话面 findings + sim 场景）",
-  "knowledge": "docs/DEPTH-REVIEW.md §5；trident/depth/fabric.py",
+  "knowledge": "docs/DEPTH-REVIEW.md §5；inkblade/depth/fabric.py",
   "combo_signature": "sharp-session-trust"
 }

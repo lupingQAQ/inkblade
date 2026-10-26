@@ -13,7 +13,7 @@
     "target": "缓存面服务基址（必填）",
     "flood_count": "洪泛唯一前缀数（缺省 160，需大于池容量）",
     "victim_prefix": "受害租户被逐出前缀文本（缺省靶场残留种子）",
-    "marker_needle": "残留预览中的 benign 标记串（缺省 TRIDENT-BENIGN-RESIDUE-VICTIM）"
+    "marker_needle": "残留预览中的 benign 标记串（缺省 INKBLADE-BENIGN-RESIDUE-VICTIM）"
   },
   "produces": "cache-eviction-residue.json + 逐出计数差分 + 残留租户/标记读回证据",
   "knowledge": "docs/CACHE-SECURITY.md 第 5 节：远程池逐出与残留（分层 KV 生命周期）",

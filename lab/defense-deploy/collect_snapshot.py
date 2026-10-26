@@ -48,7 +48,7 @@ def main() -> None:
     ap.add_argument("--dump-dir", required=True, help="人工导出的文本清单目录")
     ap.add_argument("--out", required=True, help="输出快照 JSON 路径")
     args = ap.parse_args()
-    snap: dict = {"cluster": "kind-trident-collected"}
+    snap: dict = {"cluster": "kind-inkblade-collected"}
     for p in sorted(Path(args.dump_dir).glob("*.txt")):
         for line in p.read_text(encoding="utf-8", errors="replace").splitlines():
             fold_line(line, snap)

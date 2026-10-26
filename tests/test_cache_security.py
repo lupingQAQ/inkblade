@@ -15,12 +15,12 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from lab.cache_effects import run_effects
-from trident.core.chains import load_chains
-from trident.rules.generate import generate_all
-from trident.rules.validate import validate
+from inkblade.core.chains import load_chains
+from inkblade.rules.generate import generate_all
+from inkblade.rules.validate import validate
 
 REPO = Path(__file__).resolve().parents[1]
-CHAINS_DIR = REPO / "trident" / "chains"
+CHAINS_DIR = REPO / "inkblade" / "chains"
 DOC = REPO / "docs" / "CACHE-SECURITY.md"
 EFFECTS = REPO / "reports" / "samples" / "cache-security" / "effects.json"
 

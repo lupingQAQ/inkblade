@@ -88,7 +88,7 @@ def _tls_info(url: str, timeout: float, verify: bool) -> dict:
 def probe_one(url: str, timeout: float = 8.0, verify_tls: bool = True,
               headers: dict[str, str] | None = None) -> dict:
     req = urllib.request.Request(url, method="GET", headers=headers or {
-        "User-Agent": "trident-collect/1.0 (authorized read-only probe)",
+        "User-Agent": "inkblade-collect/1.0 (authorized read-only probe)",
         "Accept": "*/*",
     })
     status = 0
@@ -166,7 +166,7 @@ def collect(targets, timeout: float = 8.0, verify_tls: bool = True,
     if not urls:
         status = "unavailable"
     return {
-        "schema": "trident-http-collection-v1",
+        "schema": "inkblade-http-collection-v1",
         "status": status,
         "targets": urls,
         "endpoints": endpoints,

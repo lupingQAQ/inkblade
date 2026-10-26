@@ -35,7 +35,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-infra/mining-report.json",
- "marker_text": "TRIDENT-UV-dradriver-process-go-exec-command-l94-regex",
+ "marker_text": "INKBLADE-UV-dradriver-process-go-exec-command-l94-regex",
  "notes": "The compute-domain daemon executes m.cmd from its config (ConfigMap-sourced). The sink is real but the input is admin-controlled config, not tenant PVC data; recorded as a config-trust boundary for DRA deployments, plus the kubeletplugin.yaml privileged/hostPath posture (elevated-pod-spec hits).",
  "static_evidence_level": "source-line",
  "static_analysis": "The compute-domain daemon executes m.cmd from its config (ConfigMap-sourced). The sink is real but the input is admin-controlled config, not tenant PVC data; recorded as a config-trust boundary for DRA deployments, plus the kubeletplugin.yaml privileged/hostPath posture (elevated-pod-spec hits).",
@@ -50,10 +50,10 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "dradriver",
  "static_blocker": {
   "category": "host-toolchain-missing",
-  "reason": "Go toolchain and container runtime are absent on this Windows host; the pinned service/binary cannot be built or started, so the sink cannot be driven dynamically. Source-line root cause and pin remain recorded."
+  "reason": "Re-checked 2026-10-27: the daemon builds (vendored), but its only exec sink is a fixed nvidia-imex argv built at main.go:301. There is no attacker-controlled command line, so a dynamic demo would not support the original claim; kept as a config-trust note, not an exploit."
  }
 }

@@ -48,7 +48,7 @@ def _demo(ctx: dict, params: dict) -> list[dict[str, Any]]:
     if receipt is None:
         raise RuntimeError("backup-write 演示缺少快照回执")
     payload = (
-        f"TRIDENT runtime-socket proof {ctx['marker']}\n"
+        f"INKBLADE runtime-socket proof {ctx['marker']}\n"
         "经 containerd.sock 挂载点的可写性/可达性验证证明（对应宿主面特权容器创建能力）\n"
     )
     target.write_text(payload, encoding="utf-8")

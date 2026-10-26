@@ -1,12 +1,12 @@
-# trident.io/vector: node-etcd-direct
+# inkblade.io/vector: node-etcd-direct
 # detection-point: Falco/eBPF：非控制面进程连接 etcd 2379
-- rule: Trident Privesc node-etcd-direct
+- rule: InkBlade Privesc node-etcd-direct
   desc: etcd 2379 直连读取全部 Secret
   condition: "evt.type in (open,openat,connect,execve) and dest_port=2379"
-  output: "Trident privilege-escalation primitive (vector=node-etcd-direct module=etcd-direct-access proc=%proc.name)"
+  output: "InkBlade privilege-escalation primitive (vector=node-etcd-direct module=etcd-direct-access proc=%proc.name)"
   priority: CRITICAL
   tags:
-    - trident
+    - inkblade
     - privesc
     - node
     - node-etcd-direct

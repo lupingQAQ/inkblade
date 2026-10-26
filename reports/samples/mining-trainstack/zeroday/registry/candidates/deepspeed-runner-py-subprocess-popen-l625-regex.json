@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "deepspeed-runner-py-subprocess-popen-l625-regex",
  "target": "deepspeed",
  "repo": "deepspeedai/DeepSpeed",

@@ -1,10 +1,10 @@
 title: PII 索取与日志明文暴露
-id: 1dfda763-21d9-cd64-7f9c-1d22e610a02a
+id: 80362b03-734f-2ee5-3842-5f8ca6e057e0
 status: stable
-description: "PII solicitation and plaintext log exposure. 对话内 SSN/卡号索取、网关日志未授权拉取（邮箱/电话/卡号/Bearer 凭据）；来源=LLM 探针矩阵 pii-leak 类。 检测规则与 trident/probes 探针库 pii-leak 类一一联动（每类 ≥1 规则）。"
+description: "PII solicitation and plaintext log exposure. 对话内 SSN/卡号索取、网关日志未授权拉取（邮箱/电话/卡号/Bearer 凭据）；来源=LLM 探针矩阵 pii-leak 类。 检测规则与 inkblade/probes 探针库 pii-leak 类一一联动（每类 ≥1 规则）。"
 references:
-  - "trident-rules-mapping: sigma-llm-probe-pii-leak"
-author: Trident rules engine
+  - "inkblade-rules-mapping: sigma-llm-probe-pii-leak"
+author: InkBlade rules engine
 date: 2026/10/25
 logsource:
   product: litellm
@@ -22,10 +22,10 @@ falsepositives:
 level: critical
 tags:
   - attack.t1530
-  - trident
+  - inkblade
   - llm-probe
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-tuning: 以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针
-  trident-blocks-chains: ""
+  inkblade-mode: monitor
+  inkblade-tuning: 以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针
+  inkblade-blocks-chains: ""

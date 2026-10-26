@@ -1,4 +1,4 @@
-﻿"""same-target-trident.py — run the Trident chain on the SAME mock target ARTEX scanned.
+﻿"""same-target-inkblade.py — run the InkBlade chain on the SAME mock target ARTEX scanned.
 
 Timed counterpart of the ARTEX same-target bench (docs/ARTEX-BENCH-RESULT.md):
 the chain `flat-network-admin-plane-weight-poison` (sglang-admin-failopen →
@@ -9,8 +9,8 @@ evidence store's steps table and per-request evidence from the target's
 
 Everything is stdlib; run from the repo root:
 
-    python lab/qemu-k3s/same-target-trident.py \
-        --target http://127.0.0.1:18080 --out lab/qemu-k3s/out/trident-chain.json
+    python lab/qemu-k3s/same-target-inkblade.py \
+        --target http://127.0.0.1:18080 --out lab/qemu-k3s/out/inkblade-chain.json
 """
 from __future__ import annotations
 
@@ -29,13 +29,13 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from trident.core.chains import dry_run, execute, load_chains  # noqa: E402
-from trident.core.evidence import EvidenceStore  # noqa: E402
-from trident.core.roe import init_roe  # noqa: E402
-from trident.core.users import UserStore  # noqa: E402
+from inkblade.core.chains import dry_run, execute, load_chains  # noqa: E402
+from inkblade.core.evidence import EvidenceStore  # noqa: E402
+from inkblade.core.roe import init_roe  # noqa: E402
+from inkblade.core.users import UserStore  # noqa: E402
 
-MODULES_DIR = REPO_ROOT / "trident" / "modules"
-CHAINS_DIR = REPO_ROOT / "trident" / "chains"
+MODULES_DIR = REPO_ROOT / "inkblade" / "modules"
+CHAINS_DIR = REPO_ROOT / "inkblade" / "chains"
 CHAIN_ID = "flat-network-admin-plane-weight-poison"
 
 
@@ -46,14 +46,14 @@ def _stats(target: str) -> dict:
 
 
 def _stable_modules_dir() -> Path:
-    """Copy of trident/modules with only complete modules (module.json + run.py).
+    """Copy of inkblade/modules with only complete modules (module.json + run.py).
 
     Parallel sessions may be mid-flight adding a module directory to
-    trident/modules; load_modules() hard-fails on any incomplete module, so the
+    inkblade/modules; load_modules() hard-fails on any incomplete module, so the
     bench runs against a filtered snapshot instead of mutating shared state.
     """
     src = MODULES_DIR
-    dst = Path(tempfile.mkdtemp(prefix="trident-modules-stable-"))
+    dst = Path(tempfile.mkdtemp(prefix="inkblade-modules-stable-"))
     for d in sorted(p for p in src.iterdir() if p.is_dir()):
         if (d / "module.json").exists() and (d / "run.py").exists():
             shutil.copytree(d, dst / d.name)
@@ -74,7 +74,7 @@ def _rss_sampler():
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--target", default="http://127.0.0.1:18080")
-    ap.add_argument("--out", default=str(Path(__file__).resolve().parent / "out" / "trident-chain.json"))
+    ap.add_argument("--out", default=str(Path(__file__).resolve().parent / "out" / "inkblade-chain.json"))
     args = ap.parse_args()
     target = args.target.rstrip("/")
     base = target + "/"
@@ -86,7 +86,7 @@ def main() -> int:
     sampler = _rss_sampler()
 
     result: dict = {"chain": CHAIN_ID, "target": base, "started_epoch_ms": start_epoch_ms}
-    with TemporaryDirectory(prefix="trident-same-target-") as td:
+    with TemporaryDirectory(prefix="inkblade-same-target-") as td:
         root = Path(td)
         store = EvidenceStore(root, workspace="local-lab")
         users = UserStore(root / "users.json")
@@ -98,7 +98,7 @@ def main() -> int:
             "namespaces": ["train", "infer", "ray-system", "default", "ml-agent"],
             "cidrs": ["127.0.0.0/8"],
             "window": "2026-10-25 00:00 – 23:59（same-target bench）",
-            "client": "Trident same-target bench（本机 mock，与 ARTEX 同靶场）",
+            "client": "InkBlade same-target bench（本机 mock，与 ARTEX 同靶场）",
         })
 
         chains = load_chains(CHAINS_DIR)
@@ -155,7 +155,7 @@ def main() -> int:
     summary = json.dumps({k: v for k, v in result.items() if k != "target_hits"},
                          ensure_ascii=False, indent=1)
     print(summary.encode("ascii", "replace").decode("ascii"))
-    print(f"[same-target-trident] wrote {out}")
+    print(f"[same-target-inkblade] wrote {out}")
     return 0 if result.get("ok") else 1
 
 

@@ -3,17 +3,17 @@
 覆盖三层：
 1. 密码学底座：P-256/P-384 ECDSA、RSA-2048 PKCS#1 v1.5、X.509 链、DER 严格性；
 2. 三类证明对象：合法样本通过 + 篡改任一字段/签名失败 + 过期/claims 不符失败；
-3. 边界：fixture 是自签样本（`trident/tee/fixtures.py`），测试只证明「解析与验签逻辑」，
+3. 边界：fixture 是自签样本（`inkblade/tee/fixtures.py`），测试只证明「解析与验签逻辑」，
    不证明硬件真实性——文档边界由 docs/TEE-VERIFICATION.md 锁定。
 """
 import unittest
 from datetime import datetime, timedelta, timezone
 
-from trident.tee import fixtures, nvidia_cc, sev_snp, tdx
-from trident.tee._asn1 import DerError, read_tlv
-from trident.tee.keys import (ALG_ECDSA_SHA256, ALG_ECDSA_SHA384, ALG_RSA_SHA256, CURVES,
+from inkblade.tee import fixtures, nvidia_cc, sev_snp, tdx
+from inkblade.tee._asn1 import DerError, read_tlv
+from inkblade.tee.keys import (ALG_ECDSA_SHA256, ALG_ECDSA_SHA384, ALG_RSA_SHA256, CURVES,
                               PrivateKey, PublicKey, der_sig_to_rs, rs_to_der_sig)
-from trident.tee.x509 import build_certificate, verify_chain
+from inkblade.tee.x509 import build_certificate, verify_chain
 
 NOW = fixtures.FIXTURE_NOW
 
@@ -21,7 +21,7 @@ NOW = fixtures.FIXTURE_NOW
 class CryptoPrimitiveTest(unittest.TestCase):
     def test_ecdsa_p256(self):
         key = PrivateKey(kind="ec", curve="P-256", d=0x1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF)
-        msg = b"trident-tee-p256"
+        msg = b"inkblade-tee-p256"
         sig = key.sign(ALG_ECDSA_SHA256, msg)
         self.assertTrue(key.public_key().verify(ALG_ECDSA_SHA256, msg, sig))
         self.assertFalse(key.public_key().verify(ALG_ECDSA_SHA256, msg + b"!", sig))
@@ -30,7 +30,7 @@ class CryptoPrimitiveTest(unittest.TestCase):
 
     def test_ecdsa_p384(self):
         key = PrivateKey(kind="ec", curve="P-384", d=2 ** 200 + 12345)
-        msg = b"trident-tee-p384"
+        msg = b"inkblade-tee-p384"
         raw = key.sign(ALG_ECDSA_SHA384, msg, raw=True)
         self.assertEqual(len(raw), 96)
         self.assertTrue(key.public_key().verify(ALG_ECDSA_SHA384, msg, raw))
@@ -39,7 +39,7 @@ class CryptoPrimitiveTest(unittest.TestCase):
     def test_rsa_pkcs1_and_jwk(self):
         pki = fixtures.fixture_pki()
         key = pki.nras_key
-        msg = b"trident-tee-rs256"
+        msg = b"inkblade-tee-rs256"
         sig = key.sign(ALG_RSA_SHA256, msg)
         self.assertEqual(len(sig), (key.n.bit_length() + 7) // 8)
         self.assertTrue(key.public_key().verify(ALG_RSA_SHA256, msg, sig))
@@ -148,8 +148,8 @@ class TdxQuoteTest(unittest.TestCase):
 
     def test_wrong_root_fails_chain(self):
         other_key = PrivateKey(kind="ec", curve="P-256", d=0xBEEF)
-        other_root = build_certificate(subject="Trident Fixture TDX Root CA",
-                                       issuer="Trident Fixture TDX Root CA",
+        other_root = build_certificate(subject="InkBlade Fixture TDX Root CA",
+                                       issuer="InkBlade Fixture TDX Root CA",
                                        public_key=other_key.public_key(), signer=other_key.sign,
                                        serial=0x9001, not_before=NOW - timedelta(days=1),
                                        not_after=NOW + timedelta(days=10), is_ca=True)
@@ -160,10 +160,10 @@ class TdxQuoteTest(unittest.TestCase):
     def test_ak_cert_public_key_mismatch(self):
         """把链里的 AK 换成另一把公钥（同 issuer）→ AK 与 quote 内公钥不一致。"""
         pki = self.pki
-        inter_key = fixtures._key("P-256", "trident-fixture-tdx-intermediate")
+        inter_key = fixtures._key("P-256", "inkblade-fixture-tdx-intermediate")
         other_ak = PrivateKey(kind="ec", curve="P-256", d=0xCAFE)
-        fake_ak = build_certificate(subject="Trident Fixture TDX AK",
-                                    issuer="Trident Fixture TDX Intermediate",
+        fake_ak = build_certificate(subject="InkBlade Fixture TDX AK",
+                                    issuer="InkBlade Fixture TDX Intermediate",
                                     public_key=other_ak.public_key(), signer=inter_key.sign,
                                     serial=0x9999, not_before=NOW - timedelta(days=1),
                                     not_after=NOW + timedelta(days=10))
@@ -174,9 +174,9 @@ class TdxQuoteTest(unittest.TestCase):
     def test_expired_ak_certificate(self):
         pki = self.pki
         ak_pub = self.quote.attestation_key
-        inter_key = fixtures._key("P-256", "trident-fixture-tdx-intermediate")
-        expired = build_certificate(subject="Trident Fixture TDX AK",
-                                    issuer="Trident Fixture TDX Intermediate",
+        inter_key = fixtures._key("P-256", "inkblade-fixture-tdx-intermediate")
+        expired = build_certificate(subject="InkBlade Fixture TDX AK",
+                                    issuer="InkBlade Fixture TDX Intermediate",
                                     public_key=ak_pub, signer=inter_key.sign, serial=0x9998,
                                     not_before=NOW - timedelta(days=30),
                                     not_after=NOW - timedelta(days=1))
@@ -259,7 +259,7 @@ class SnpReportTest(unittest.TestCase):
 
     def test_wrong_root(self):
         other = PrivateKey(kind="ec", curve="P-384", d=0xDEADBEEF)
-        root = build_certificate(subject="Trident Fixture AMD ARK", issuer="Trident Fixture AMD ARK",
+        root = build_certificate(subject="InkBlade Fixture AMD ARK", issuer="InkBlade Fixture AMD ARK",
                                  public_key=other.public_key(), signer=other.sign, serial=0x8001,
                                  not_before=NOW - timedelta(days=1), not_after=NOW + timedelta(days=10),
                                  is_ca=True)
@@ -399,7 +399,7 @@ class FixtureBoundaryTest(unittest.TestCase):
     def test_fixture_pki_is_not_vendor_pki(self):
         pki = fixtures.fixture_pki()
         for cert in (pki.tdx_root, pki.amd_root):
-            self.assertTrue(cert.subject_cn.startswith("Trident Fixture"),
+            self.assertTrue(cert.subject_cn.startswith("InkBlade Fixture"),
                             f"fixture 证书必须是显式自签命名：{cert.subject_cn}")
         # 证书只有 CN 一个 RDN（无 O/OU/C 厂商字段），且 JWKS kid 带 fixture 标记
         self.assertEqual(pki.nras_kid, "nras-fixture-2026")
@@ -408,7 +408,7 @@ class FixtureBoundaryTest(unittest.TestCase):
     def test_quote_carries_embedded_chain(self):
         fx = fixtures.tdx_fixture()
         self.assertEqual(len(fx.quote.cert_chain), 2)
-        self.assertEqual(fx.quote.cert_chain[0].subject_cn, "Trident Fixture TDX AK")
+        self.assertEqual(fx.quote.cert_chain[0].subject_cn, "InkBlade Fixture TDX AK")
 
 
 if __name__ == "__main__":

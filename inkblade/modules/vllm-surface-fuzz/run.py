@@ -15,8 +15,8 @@ REPO = Path(__file__).resolve().parents[3]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from trident.depth import vllm as _v  # noqa: E402
-from trident.depth.common import finding, summary_json, write_artifact  # noqa: E402
+from inkblade.depth import vllm as _v  # noqa: E402
+from inkblade.depth.common import finding, summary_json, write_artifact  # noqa: E402
 
 KEY = "vllm-surface-fuzz"
 WRITES = False

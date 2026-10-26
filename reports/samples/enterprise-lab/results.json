@@ -1,7 +1,7 @@
 {
-  "schema": "trident-enterprise-lab/2",
+  "schema": "inkblade-enterprise-lab/2",
   "generated_at": "2026-10-26T05:48:26Z",
-  "tool": "trident",
+  "tool": "inkblade",
   "source": "fixture",
   "fixture": "lab/enterprise-fixtures",
   "metric_definition": {
@@ -16,7 +16,7 @@
     "labels": "ground-truth.json 固化（本版本把已补检测器的 __not_detected__ 占位锚点落位为证据锚，risk/benign 判定不变）"
   },
   "baseline": {
-    "module": "trident/core/baseline.py",
+    "module": "inkblade/core/baseline.py",
     "classes": [
       "CI 服务账号",
       "安全扫描器",

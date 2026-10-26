@@ -58,7 +58,7 @@ def sign_report(report: str | Path, *, signer: str, key: str | bytes,
     ts = time.time() if timestamp is None else float(timestamp)
     sha = _sha256_file(path)
     sidecar = {
-        "schema": "trident-report-signature/1",
+        "schema": "inkblade-report-signature/1",
         "path": path.name,
         "sha256": sha,
         "size": path.stat().st_size,
@@ -122,7 +122,7 @@ def create_signoff(report: str | Path, *, signers: Iterable[dict], checklist: di
     ts = time.time() if timestamp is None else float(timestamp)
     sha = _sha256_file(path)
     sheet = {
-        "schema": "trident-report-signoff/1",
+        "schema": "inkblade-report-signoff/1",
         "signoff_id": "so-" + sha[:12],
         "report": path.name,
         "sha256": sha,
@@ -170,7 +170,7 @@ def retention_plan(files: Iterable[str | Path], *, now: float | None = None,
                         "age_days": round(age_days, 1),
                         "size": path.stat().st_size})
     return {
-        "schema": "trident-retention-plan/1",
+        "schema": "inkblade-retention-plan/1",
         "generated_at": _iso(ts),
         "retain_days": int(retain_days),
         "archive_days": int(archive_days),

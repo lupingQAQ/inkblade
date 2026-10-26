@@ -17,15 +17,15 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from lab.cache_sim import start_all
-from trident.core.backup import BackupManager
-from trident.core.evidence import EvidenceStore
-from trident.core.registry import load_modules
-from trident.core.roe import init_roe
-from trident.core.runner import BackupGateRefused, run_module
-from trident.core.users import UserStore
+from inkblade.core.backup import BackupManager
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.registry import load_modules
+from inkblade.core.roe import init_roe
+from inkblade.core.runner import BackupGateRefused, run_module
+from inkblade.core.users import UserStore
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
+MODULES_DIR = REPO / "inkblade" / "modules"
 
 MODULE_CASES = [
     {"key": "cache-salt-policy-audit", "series": "网络架构",
@@ -54,7 +54,7 @@ HIGH_MODULES = [
 
 def load_run(key: str):
     spec = importlib.util.spec_from_file_location(
-        f"trident_cache_{key.replace('-', '_')}", MODULES_DIR / key / "run.py")
+        f"inkblade_cache_{key.replace('-', '_')}", MODULES_DIR / key / "run.py")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -63,7 +63,7 @@ def load_run(key: str):
 def make_ctx(key: str, tmp_root: Path) -> dict:
     store = EvidenceStore(tmp_root, workspace="cache-lab")
     run = store.create_run(f"selftest-{key}")
-    return {"store": store, "run": run, "marker": "TRIDENT-cache-selftest",
+    return {"store": store, "run": run, "marker": "INKBLADE-cache-selftest",
             "backup": BackupManager(store, run), "actor": "tester",
             "meta": {"key": key, "writes": True}}
 
@@ -138,7 +138,7 @@ class VulnerableDetectionTest(unittest.TestCase):
         self.assertTrue(detail["cross_tenant_hit"])
         self.assertEqual(detail["entry_tenant"], "tenant-b")
         self.assertTrue(detail["victim_marker_present"])
-        self.assertIn("TRIDENT-BENIGN-APPROX-VICTIM", detail["response_excerpt"])
+        self.assertIn("INKBLADE-BENIGN-APPROX-VICTIM", detail["response_excerpt"])
 
     def test_timing_delta_significant_n_ge_50(self):
         with TemporaryDirectory() as tmp, start_all(mode="vulnerable") as lab:

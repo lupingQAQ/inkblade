@@ -1,5 +1,5 @@
 {
-  "schema": "trident-swarm-eval/1",
+  "schema": "inkblade-swarm-eval/1",
   "generated_at": "2026-10-26T05:50:24Z",
   "source": "simulated-local-multiprocess",
   "task_set": {

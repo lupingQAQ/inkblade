@@ -21,14 +21,14 @@
       "module": "privileged-gpu-pod-escape",
       "params": {
         "mode": "marker-write",
-        "marker": "TRIDENT-${run.name}"
+        "marker": "INKBLADE-${run.name}"
       },
       "writes": true,
       "backup_targets": [
         {
           "kind": "kube",
           "resource": "pod",
-          "name": "trident-escape-proof",
+          "name": "inkblade-escape-proof",
           "manifest": ""
         }
       ]
@@ -38,7 +38,7 @@
       "module": "runtime-socket-escape",
       "params": {
         "mode": "marker-write",
-        "marker": "TRIDENT-${run.name}"
+        "marker": "INKBLADE-${run.name}"
       },
       "depends_on": [
         "privileged-gpu-escape"

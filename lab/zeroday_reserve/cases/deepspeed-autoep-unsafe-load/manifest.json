@@ -34,6 +34,6 @@
  "cleanup": "temp checkpoint/output dirs under evidence/ are rewritten per run",
  "status": "verified",
  "method": "dynamic-function",
- "marker_text": "TRIDENT-ZD-deepspeed-autoep-unsafe-load",
+ "marker_text": "INKBLADE-ZD-deepspeed-autoep-unsafe-load",
  "notes": "Imports the real v0.19.8 autoep_universal module (vendored source tree, empty package __init__ only) and uses the real installed torch 2.14 CPU build. No CUDA is required for this conversion path."
 }

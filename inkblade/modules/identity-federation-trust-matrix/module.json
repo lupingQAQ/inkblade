@@ -10,6 +10,6 @@
     "snapshot": "可选，identity cases JSON；省略使用内置 20 用例"
   },
   "produces": "identity-federation-matrix（逐用例 allow/deny + 原因）",
-  "knowledge": "docs/DEPTH-REVIEW.md §6；trident/depth/identity.py",
+  "knowledge": "docs/DEPTH-REVIEW.md §6；inkblade/depth/identity.py",
   "combo_signature": "identity-federation-trust"
 }

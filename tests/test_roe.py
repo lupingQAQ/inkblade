@@ -2,8 +2,8 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import (
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import (
     ExecutionLocked,
     assert_execution_allowed,
     allowed,

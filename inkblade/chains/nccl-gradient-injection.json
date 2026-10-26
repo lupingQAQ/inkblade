@@ -17,7 +17,7 @@
     {
       "id": "collective-join",
       "module": "nccl-collective-join",
-      "params": {"mode": "backup-write", "tensor": "marker", "marker": "TRIDENT-${run.name}"},
+      "params": {"mode": "backup-write", "tensor": "marker", "marker": "INKBLADE-${run.name}"},
       "writes": true,
       "backup_targets": [
         {"kind": "http", "url": "http://target:29500/rendezvous", "state": {}}

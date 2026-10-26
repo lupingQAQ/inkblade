@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "dradriver-process-go-exec-command-go-l94-regex",
  "target": "dradriver",
  "repo": "NVIDIA/k8s-dra-driver",

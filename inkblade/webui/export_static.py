@@ -2,12 +2,12 @@
 
 用法（等价命令行入口由 cli 提供）::
 
-    from trident.webui.export_static import export_static
+    from inkblade.webui.export_static import export_static
     html_path = export_static(run_dir, out_dir)
 
 - ``run_dir``：一次运行的目录（含 evidence.db），即 ``<workspace>/evidence/<run>`` 下的 run 目录
 - ``out_dir``：输出目录（自动创建）；静态资产（app.js/style.css/vendor）随行拷贝，
-  ``window.TRIDENT_DATA`` 注入 index.html，浏览器直接打开（file://）即可浏览六视图，无需服务。
+  ``window.INKBLADE_DATA`` 注入 index.html，浏览器直接打开（file://）即可浏览六视图，无需服务。
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any
 
 _STATIC = Path(__file__).parent / "static"
-_MARKER = "<!-- TRIDENT_DATA -->"
+_MARKER = "<!-- INKBLADE_DATA -->"
 
 
 def _rows(conn: sqlite3.Connection, sql: str, args: tuple = ()) -> list[dict[str, Any]]:
@@ -142,9 +142,9 @@ def export_static(run_dir: Path | str, out: Path | str, redact_zeroday: bool = F
     html = (_STATIC / "index.html").read_text(encoding="utf-8")
     payload = json.dumps(data, ensure_ascii=False, default=str)
     payload = payload.replace("<", "\\u003c")  # 防 </script> 逃逸
-    inject = "<script>window.TRIDENT_DATA = " + payload + ";</script>"
+    inject = "<script>window.INKBLADE_DATA = " + payload + ";</script>"
     if _MARKER not in html:
-        raise ValueError("index.html 缺少注入点标记 TRIDENT_DATA")
+        raise ValueError("index.html 缺少注入点标记 INKBLADE_DATA")
     html = html.replace(_MARKER, inject)
 
     target = out / "index.html"
@@ -152,10 +152,10 @@ def export_static(run_dir: Path | str, out: Path | str, redact_zeroday: bool = F
     return target
 
 
-if __name__ == "__main__":  # 手动：python -m trident.webui.export_static <run_dir> <out>
+if __name__ == "__main__":  # 手动：python -m inkblade.webui.export_static <run_dir> <out>
     import sys
 
     if len(sys.argv) != 3:
-        print("usage: python -m trident.webui.export_static <run_dir> <out_dir>")
+        print("usage: python -m inkblade.webui.export_static <run_dir> <out_dir>")
         raise SystemExit(2)
     print(export_static(sys.argv[1], sys.argv[2]))

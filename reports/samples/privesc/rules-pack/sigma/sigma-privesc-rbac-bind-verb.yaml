@@ -7,12 +7,12 @@ references:
   - "Kubernetes RBAC 文档 https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
   - "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
   - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: rbac-bind-verb
-    trident.io/module: rbac-bind-verb
+    inkblade.io/vector: rbac-bind-verb
+    inkblade.io/module: rbac-bind-verb
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -32,16 +32,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.rbac
+  - inkblade
+  - inkblade.vector.rbac
   - attack.t1098
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: rbac-bind-verb
-  trident-module: rbac-bind-verb
-  trident-detection-point: "K8s audit：创建/更新 roleRef=cluster-admin 的绑定"
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: rbac-bind-verb
+  inkblade-module: rbac-bind-verb
+  inkblade-detection-point: "K8s audit：创建/更新 roleRef=cluster-admin 的绑定"
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

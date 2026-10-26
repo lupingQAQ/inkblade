@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "msswift-torch-utils-py-subprocess-popen-l249-regex",
  "target": "msswift",
  "repo": "modelscope/ms-swift",

@@ -37,7 +37,7 @@ def _stages(turns: int) -> list[tuple[str, str]]:
 
 
 def make_plan(goal: str, *, turns: int = 4, strategy: str = "crescendo",
-              canary: str = "TRIDENT_CANARY_OK") -> dict:
+              canary: str = "INKBLADE_CANARY_OK") -> dict:
     if strategy not in STRATEGIES:
         raise ValueError(f"未知策略 {strategy!r}")
     if not (1 <= int(turns) <= 12):

@@ -37,8 +37,8 @@ def _limits():
     except Exception:
         return info
     info["backend"] = "rlimit"
-    mb = int(os.environ.get("TRIDENT_SANDBOX_MEM_MB", "0") or 0)
-    cpu = int(os.environ.get("TRIDENT_SANDBOX_CPU", "0") or 0)
+    mb = int(os.environ.get("INKBLADE_SANDBOX_MEM_MB", "0") or 0)
+    cpu = int(os.environ.get("INKBLADE_SANDBOX_CPU", "0") or 0)
     if mb > 0:
         resource.setrlimit(resource.RLIMIT_AS, (mb * 1024 * 1024, mb * 1024 * 1024))
         info["memory"] = True
@@ -61,7 +61,7 @@ def _block_network():
     return NetworkDisabled
 
 info = _limits()
-network = os.environ.get("TRIDENT_SANDBOX_NETWORK", "blocked")
+network = os.environ.get("INKBLADE_SANDBOX_NETWORK", "blocked")
 if network == "blocked":
     _block_network()
 
@@ -126,9 +126,9 @@ class Sandbox:
         network = "allowed" if allow_network else "blocked"
         env = dict(os.environ)
         env.update({
-            "TRIDENT_SANDBOX_NETWORK": network,
-            "TRIDENT_SANDBOX_MEM_MB": str(self.memory_mb),
-            "TRIDENT_SANDBOX_CPU": str(max(1, int(self.timeout) + 1)),
+            "INKBLADE_SANDBOX_NETWORK": network,
+            "INKBLADE_SANDBOX_MEM_MB": str(self.memory_mb),
+            "INKBLADE_SANDBOX_CPU": str(max(1, int(self.timeout) + 1)),
         })
         started = time.monotonic()
         timed_out = False

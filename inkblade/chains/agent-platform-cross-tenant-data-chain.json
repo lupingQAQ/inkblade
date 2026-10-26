@@ -22,7 +22,7 @@
     {
       "id": "snapshot-theft",
       "module": "dify-snapshot-cross-tenant-theft",
-      "params": {"mode": "backup-write", "marker": "TRIDENT-${run.name}"},
+      "params": {"mode": "backup-write", "marker": "INKBLADE-${run.name}"},
       "depends_on": ["share-map"],
       "writes": true,
       "backup_targets": [

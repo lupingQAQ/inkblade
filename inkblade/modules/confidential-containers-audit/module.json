@@ -10,7 +10,7 @@
   "writes": false,
   "requires": [],
   "params_schema": {
-    "collect": "trident collect 输出目录（真实采集优先）",
+    "collect": "inkblade collect 输出目录（真实采集优先）",
     "profile": "部署画像名（bare-k8s-gpu/managed-ack-tke/airgapped/...）"
   },
   "produces": "confidential-containers-audit.json + 运行时/证明面 findings",

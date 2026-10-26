@@ -6,7 +6,7 @@ OCTET STRING、UTF8String、UTCTime、GeneralizedTime、NULL 与显式上下文�
 设计约束：
 - 解析一侧严格校验长度（防越界/截断），不做 BER 的变长长度形式（拒收 0x80 不定长）。
 - 编码一侧只产出 DER（最短长度编码、正数 INTEGER 前置 0x00）。
-- 本模块与 trident/tee 的其余部分一样只做**本地密码学校验**，不联网、不读硬件。
+- 本模块与 inkblade/tee 的其余部分一样只做**本地密码学校验**，不联网、不读硬件。
 """
 from __future__ import annotations
 

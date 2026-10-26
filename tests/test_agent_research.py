@@ -22,7 +22,7 @@ DOC_SECTIONS = ("谱系", "为什么落伍", "还没用上的设计点", "升级
 BLUEPRINT_TERMS = ("Supervisor", "Worker", "任务队列", "Journal", "三层记忆",
                    "技能库", "Reflexion", "A2A", "MCP", "沙箱", "评测")
 
-# `trident/core/explorer.py:159-200` → (path, start, end)
+# `inkblade/core/explorer.py:159-200` → (path, start, end)
 EVIDENCE_RE = re.compile(r"`([A-Za-z0-9_./-]+\.(?:py|md|json)):(\d+)(?:-(\d+))?`")
 
 

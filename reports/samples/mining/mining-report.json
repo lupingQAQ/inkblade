@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-report-v1",
+ "schema": "inkblade-mining-report-v1",
  "generated_at": "2026-10-26T12:44:14",
  "validation": {
   "ok": true,
@@ -89,7 +89,7 @@
  "candidates_total": 24,
  "candidates": [
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "hami-main-go-pprof-exposed-go-l155-regex",
    "target": "hami",
    "repo": "Project-HAMi/HAMi",
@@ -104,7 +104,7 @@
    "registered_at": "2026-10-25T21:15:33"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "hami-main-go-pprof-exposed-go-l24-regex",
    "target": "hami",
    "repo": "Project-HAMi/HAMi",
@@ -119,7 +119,7 @@
    "registered_at": "2026-10-25T21:15:33"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "hami-main-go-pprof-exposed-go-l95-regex",
    "target": "hami",
    "repo": "Project-HAMi/HAMi",
@@ -134,7 +134,7 @@
    "registered_at": "2026-10-25T21:15:33"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "litellm-proxy-server-py-auth-fail-open-l16397-regex",
    "target": "litellm",
    "repo": "BerriAI/litellm",
@@ -149,7 +149,7 @@
    "registered_at": "2026-10-25T21:15:34"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "litellm-proxy-server-py-auth-fail-open-l16509-regex",
    "target": "litellm",
    "repo": "BerriAI/litellm",
@@ -164,7 +164,7 @@
    "registered_at": "2026-10-25T21:15:34"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "litellm-proxy-server-py-auth-fail-open-l16602-regex",
    "target": "litellm",
    "repo": "BerriAI/litellm",
@@ -179,7 +179,7 @@
    "registered_at": "2026-10-25T21:15:34"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "litellm-proxy-server-py-dynamic-import-l1408-ast",
    "target": "litellm",
    "repo": "BerriAI/litellm",
@@ -194,7 +194,7 @@
    "registered_at": "2026-10-25T21:15:34"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "litellm-proxy-server-py-dynamic-import-l1408-regex",
    "target": "litellm",
    "repo": "BerriAI/litellm",
@@ -209,7 +209,7 @@
    "registered_at": "2026-10-25T21:15:34"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "litellm-proxy-server-py-subprocess-popen-l4461-regex",
    "target": "litellm",
    "repo": "BerriAI/litellm",
@@ -224,7 +224,7 @@
    "registered_at": "2026-10-26T12:43:25"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "sglang-http-server-py-auth-fail-open-l248-regex",
    "target": "sglang",
    "repo": "sgl-project/sglang",
@@ -239,7 +239,7 @@
    "registered_at": "2026-10-25T21:15:33"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-ast",
    "target": "transformers",
    "repo": "huggingface/transformers",
@@ -254,7 +254,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-regex",
    "target": "transformers",
    "repo": "huggingface/transformers",
@@ -269,7 +269,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-trust-remote-code-l698-regex",
    "target": "transformers",
    "repo": "huggingface/transformers",
@@ -284,7 +284,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-trust-remote-code-l759-regex",
    "target": "transformers",
    "repo": "huggingface/transformers",
@@ -299,7 +299,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-trust-remote-code-l763-regex",
    "target": "transformers",
    "repo": "huggingface/transformers",
@@ -314,7 +314,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-trust-remote-code-l771-regex",
    "target": "transformers",
    "repo": "huggingface/transformers",
@@ -329,7 +329,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-trust-remote-code-l784-regex",
    "target": "transformers",
    "repo": "huggingface/transformers",
@@ -344,7 +344,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-trust-remote-code-propagated-l698-regex",
    "target": "transformers",
    "repo": "huggingface/transformers",
@@ -359,7 +359,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-trust-remote-code-propagated-l750-regex",
    "target": "transformers",
    "repo": "huggingface/transformers",
@@ -374,7 +374,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-trust-remote-code-propagated-l759-regex",
    "target": "transformers",
    "repo": "huggingface/transformers",
@@ -389,7 +389,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-trust-remote-code-propagated-l763-regex",
    "target": "transformers",
    "repo": "huggingface/transformers",
@@ -404,7 +404,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-trust-remote-code-propagated-l765-regex",
    "target": "transformers",
    "repo": "huggingface/transformers",
@@ -419,7 +419,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-trust-remote-code-propagated-l771-regex",
    "target": "transformers",
    "repo": "huggingface/transformers",
@@ -434,7 +434,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "transformers-dynamic-module-utils-py-trust-remote-code-propagated-l784-regex",
    "target": "transformers",
    "repo": "huggingface/transformers",

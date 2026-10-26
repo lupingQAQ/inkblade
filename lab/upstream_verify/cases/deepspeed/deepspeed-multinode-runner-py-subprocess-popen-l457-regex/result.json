@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "deepspeed-multinode-runner-py-subprocess-popen-l457-regex",
  "source": "mining",
  "component": "deepspeed",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-multinode-runner-py-subprocess-popen-l457-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.163,
- "started_at": "2026-10-26T09:23:21+00:00",
+ "duration_s": 0.334,
+ "started_at": "2026-10-26T19:46:23+00:00",
  "marker": {
-  "text": "TRIDENT-UV-deepspeed-multinode-runner-py-subprocess-popen-l457-regex",
+  "text": "INKBLADE-UV-deepspeed-multinode-runner-py-subprocess-popen-l457-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-multinode-runner-py-subprocess-popen-l457-regex/evidence/log.txt",
-   "sha256": "36db480f844e32a633c665f809594649936da47907d59c0e24a2d08ce28de589",
+   "sha256": "92ddb6ca6449da5456d56622d97ffd5fb6b81b61b455d817932b1fbcfe479ca1",
    "size": 287
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-multinode-runner-py-subprocess-popen-l457-regex/evidence/static-check.json",
-   "sha256": "8e7481f3c45cd923a1f21c52196dd66812ff1fba125c2e2bab7904a4330ebcb7",
-   "size": 1163
+   "sha256": "414fbe2f4e18564147c85f30fe41e28084740d62ee2914deb53a1e5acef49c00",
+   "size": 1164
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "1bafca4a162c0cbf0d0a517f822c5c2a46af9469269c228f6f5b20df10acc888",
+ "manifest_sha256": "cddf853aa036f4b1836ce506f65befb07dd9f244fc939c7e7c362724f48917da",
  "stdout": "{\"status\": \"static-only\", \"case\": \"deepspeed-multinode-runner-py-subprocess-popen-l457-regex\"}\n",
  "stderr": "",
  "notes": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."

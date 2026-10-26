@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-ast",
  "source": "mining",
  "component": "transformers",
@@ -25,7 +25,7 @@
   "package": "transformers",
   "wheel_sha256": "b10d05da8fa67dc41644dbbf9bc45a44cb86ae33da6f9295f5fbf5b7890bd267",
   "artifact": "lab/upstream_verify/upstream/huggingface/transformers/4.57.1/transformers/dynamic_module_utils.py",
-  "artifact_sha256": "4cd52ca9c7e1fa224d7d70115b9d22ea2a3ffd8f43cc4ea9028dbc876a07260d",
+  "artifact_sha256": "3f15a042d6f95488a0dbf6740cc46d475b85f1371b1c54136b448d0bacf46372",
   "advisory": "reports/samples/mining-trainstack/mining-report.json",
   "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
  },
@@ -33,13 +33,13 @@
  "command": "[reproenv] lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-ast/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 5.935,
- "started_at": "2026-10-26T05:03:20+00:00",
+ "duration_s": 13.911,
+ "started_at": "2026-10-26T19:57:43+00:00",
  "marker": {
-  "text": "TRIDENT-UV-transformers-dynamic-module-utils-py-dynamic-import-l248-ast",
+  "text": "INKBLADE-UV-transformers-dynamic-module-utils-py-dynamic-import-l248-ast",
   "before": "ABSENT",
   "after_has_marker": true,
-  "after_sha256": "de9905438e1f1b3b062c0c1ee2734a6e3fcaaa9926a717b34f1aca7282942275"
+  "after_sha256": "85cca7a2c90c632d179949d029f8efbf10064aa510e03a87b5ea7d5f7b16710a"
  },
  "request_response": [
   {
@@ -53,8 +53,13 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-ast/evidence/evil-model/config.json",
-   "sha256": "64f7ebec6e66c36fbade38df483d2efc07bfbfa9d17b95dd66239ead843fbdf1",
-   "size": 104
+   "sha256": "42dd75cfcc3dd0bfa018842da8d0fd368469388eedd7200bfff713d919463b0d",
+   "size": 107
+  },
+  {
+   "path": "lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-ast/evidence/evil-model/configuration_inkbladeevil.py",
+   "sha256": "978f3520681b7f349bc001f5c18fda2e0c88fb3d95a63edbec6c3648ead713bb",
+   "size": 519
   },
   {
    "path": "lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-ast/evidence/evil-model/configuration_tridentevil.py",
@@ -63,23 +68,23 @@
   },
   {
    "path": "lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-ast/evidence/log.txt",
-   "sha256": "250cfcf0098baa191cb36c0486ac7bce47759b38c0c12940eafae26372dad80f",
-   "size": 430
+   "sha256": "fb8d5c1c1665daa77f8eaa98d6f4ebf4384b454c57ed7e6a27b052de43c6419a",
+   "size": 432
   },
   {
    "path": "lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-ast/evidence/marker.txt",
-   "sha256": "de9905438e1f1b3b062c0c1ee2734a6e3fcaaa9926a717b34f1aca7282942275",
-   "size": 71
+   "sha256": "85cca7a2c90c632d179949d029f8efbf10064aa510e03a87b5ea7d5f7b16710a",
+   "size": 72
   },
   {
    "path": "lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-ast/evidence/run.json",
-   "sha256": "95a86edb4da1801c4838f00fc556c244f88115e7548f1529b8c4b069fac756cf",
-   "size": 1658
+   "sha256": "90d03895952b2993e784eee1ce36c49c798e48351d02f056bff284c58296d92f",
+   "size": 1662
   }
  ],
- "poc_sha256": "90caa960a98144bdae90b05213b970acd189f36fecef61359a9b70d03d0cc372",
- "manifest_sha256": "b00e9e09c8f96f7c1e0549bfad8649003c846a6ea9433e890a846ab3461ed72b",
- "stdout": "{\"status\": \"verified\", \"marker\": \"TRIDENT-UV-transformers-dynamic-module-utils-py-dynamic-import-l248-ast\", \"evidence\": \"lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-ast/evidence\"}\n",
+ "poc_sha256": "08253e9dc6aa36d690fe460e6f89e96a918852647fc4ca75b98f45d3cfbb84df",
+ "manifest_sha256": "10c3746c57a884acaf1de43b21f839fbbd52ef2e2022084ba15a965c9cad6ef2",
+ "stdout": "{\"status\": \"verified\", \"marker\": \"INKBLADE-UV-transformers-dynamic-module-utils-py-dynamic-import-l248-ast\", \"evidence\": \"lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-ast/evidence\"}\n",
  "stderr": "",
  "notes": "transformers trust_remote_code executes attacker-controlled Python from a model directory: AutoConfig.from_pretrained(<untrusted dir>, trust_remote_code=True) copies the custom code into the HF modules cache and executes it (get_class_in_module exec_module), after check_imports() importlib.import_module()'s every top-level module the attacker file lists (line 248). Training/serving stacks that propagate trust_remote_code from config (LLaMA-Factory, ms-swift, TRL loaders) turn 'load a model from a directory/hub' into code execution. Reproduced with the real installed transformers 4.57.1 wheel: the malicious configuration module writes the proof marker during the import performed by the pinned upstream path."
 }

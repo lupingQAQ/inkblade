@@ -25,45 +25,45 @@
     {"id": "stage-3-rbac-escalation", "module": "cluster-rbac-escalation",
      "params": {"stage": 3, "mode": "cluster-admin-binding"}, "writes": true,
      "backup_targets": [
-       {"kind": "kube", "resource": "rolebinding", "name": "trident-pwn-rb-<proof-marker>", "namespace": "trident-killchain"},
-       {"kind": "kube", "resource": "clusterrolebinding", "name": "trident-pwn-crb-<proof-marker>", "namespace": ""}
+       {"kind": "kube", "resource": "rolebinding", "name": "inkblade-pwn-rb-<proof-marker>", "namespace": "inkblade-killchain"},
+       {"kind": "kube", "resource": "clusterrolebinding", "name": "inkblade-pwn-crb-<proof-marker>", "namespace": ""}
      ], "depends_on": ["stage-2-credential"]},
     {"id": "stage-4-privileged-pod", "module": "cluster-privileged-pod",
      "params": {"stage": 4, "mode": "privileged-hostpath-pod"}, "writes": true,
      "backup_targets": [
-       {"kind": "kube", "resource": "pod", "name": "trident-pwn-pod-<proof-marker>", "namespace": "trident-killchain"}
+       {"kind": "kube", "resource": "pod", "name": "inkblade-pwn-pod-<proof-marker>", "namespace": "inkblade-killchain"}
      ], "depends_on": ["stage-3-rbac-escalation"]},
     {"id": "stage-5-node-marker", "module": "cluster-node-marker",
      "params": {"stage": 5, "mode": "host-root-write"}, "writes": true,
      "backup_targets": [
-       {"kind": "node-file", "path": "/root/TRIDENT-PROOF-<proof-marker>", "via": "trident-pwn-pod-<proof-marker>"}
+       {"kind": "node-file", "path": "/root/INKBLADE-PROOF-<proof-marker>", "via": "inkblade-pwn-pod-<proof-marker>"}
      ], "depends_on": ["stage-4-privileged-pod"]},
     {"id": "stage-6-cluster-proof", "module": "cluster-proof",
      "params": {"stage": 6, "mode": "secret-enumeration-and-test-objects"}, "writes": true,
      "backup_targets": [
-       {"kind": "kube", "resource": "namespace", "name": "trident-proof-<proof-marker>", "namespace": ""},
-       {"kind": "kube", "resource": "configmap", "name": "trident-proof", "namespace": "trident-proof-<proof-marker>"}
+       {"kind": "kube", "resource": "namespace", "name": "inkblade-proof-<proof-marker>", "namespace": ""},
+       {"kind": "kube", "resource": "configmap", "name": "inkblade-proof", "namespace": "inkblade-proof-<proof-marker>"}
      ], "depends_on": ["stage-5-node-marker"]},
     {"id": "stage-7-cleanup", "module": "cluster-cleanup",
      "params": {"stage": 7, "mode": "delete-and-verify"}, "writes": true,
      "backup_targets": [
-       {"kind": "kube", "resource": "clusterrolebinding", "name": "trident-pwn-crb-<proof-marker>", "namespace": ""},
-       {"kind": "kube", "resource": "rolebinding", "name": "trident-pwn-rb-<proof-marker>", "namespace": "trident-killchain"},
-       {"kind": "kube", "resource": "pod", "name": "trident-pwn-pod-<proof-marker>", "namespace": "trident-killchain"},
-       {"kind": "node-file", "path": "/root/TRIDENT-PROOF-<proof-marker>", "via": "trident-pwn-pod-<proof-marker>"}
+       {"kind": "kube", "resource": "clusterrolebinding", "name": "inkblade-pwn-crb-<proof-marker>", "namespace": ""},
+       {"kind": "kube", "resource": "rolebinding", "name": "inkblade-pwn-rb-<proof-marker>", "namespace": "inkblade-killchain"},
+       {"kind": "kube", "resource": "pod", "name": "inkblade-pwn-pod-<proof-marker>", "namespace": "inkblade-killchain"},
+       {"kind": "node-file", "path": "/root/INKBLADE-PROOF-<proof-marker>", "via": "inkblade-pwn-pod-<proof-marker>"}
      ], "depends_on": ["stage-6-cluster-proof"]}
   ],
   "objective": {
     "version": 1,
     "chain": "cluster-takeover-objective",
     "highest_privilege": "cluster-admin + node root",
-    "proof_marker_prefix": "TRIDENT-PROOF",
-    "namespace_default": "trident-killchain",
+    "proof_marker_prefix": "INKBLADE-PROOF",
+    "namespace_default": "inkblade-killchain",
     "fixture": {
-      "namespace": "trident-killchain",
-      "serviceaccount": "trident-operator",
-      "clusterrole": "trident-operator-broad",
-      "clusterrolebinding": "trident-operator-broad",
+      "namespace": "inkblade-killchain",
+      "serviceaccount": "inkblade-operator",
+      "clusterrole": "inkblade-operator-broad",
+      "clusterrolebinding": "inkblade-operator-broad",
       "note": "实验室夹具：over-broad ClusterRole + 可创建 RoleBinding；真实评估中该夹具代表既有 operator 权限姿态"
     },
     "hardware_gates": [
@@ -104,8 +104,8 @@
         "writes": true,
         "preconditions": ["token 有效且 whoami 为 operator SA", "token 具备 create rolebindings 与 create clusterrolebindings", "目标 namespace 已存在"],
         "backup_targets": [
-          {"kind": "kube", "resource": "rolebinding", "name": "trident-pwn-rb-<proof-marker>", "namespace": "trident-killchain"},
-          {"kind": "kube", "resource": "clusterrolebinding", "name": "trident-pwn-crb-<proof-marker>", "namespace": ""}
+          {"kind": "kube", "resource": "rolebinding", "name": "inkblade-pwn-rb-<proof-marker>", "namespace": "inkblade-killchain"},
+          {"kind": "kube", "resource": "clusterrolebinding", "name": "inkblade-pwn-crb-<proof-marker>", "namespace": ""}
         ],
         "success_evidence": ["两个绑定的对象 JSON（roleRef.name=cluster-admin）", "token 作用域 kubectl auth can-i '*' '*' --all-namespaces = yes", "cluster-admin 绑定创建前后的 can-i 对比"],
         "fallback": "ClusterRoleBinding 被 RBAC 防提权拒绝：降级为 namespace RoleBinding 并标记未达集群级，不伪造 PROOF",
@@ -119,7 +119,7 @@
         "writes": true,
         "preconditions": ["cluster-admin can-i 已验证", "目标 namespace 存在", "Pod 可调度到 Ready 节点"],
         "backup_targets": [
-          {"kind": "kube", "resource": "pod", "name": "trident-pwn-pod-<proof-marker>", "namespace": "trident-killchain"}
+          {"kind": "kube", "resource": "pod", "name": "inkblade-pwn-pod-<proof-marker>", "namespace": "inkblade-killchain"}
         ],
         "success_evidence": ["Pod 对象 JSON：privileged=true / hostPID=true / hostPath=/", "Pod phase=Running", "准入策略对照（deny-privileged-pod 默认 monitor）"],
         "fallback": "Pod 被准入拒绝或镜像不可拉取：保留 RBAC 证据并以准入证据降级，不宣称节点 root",
@@ -133,7 +133,7 @@
         "writes": true,
         "preconditions": ["特权 Pod Running", "hostPath=/ 已挂载到 /host", "Pod 内 uid=0"],
         "backup_targets": [
-          {"kind": "node-file", "path": "/root/TRIDENT-PROOF-<proof-marker>", "via": "trident-pwn-pod-<proof-marker>"}
+          {"kind": "node-file", "path": "/root/INKBLADE-PROOF-<proof-marker>", "via": "inkblade-pwn-pod-<proof-marker>"}
         ],
         "success_evidence": ["id 输出 uid=0(root)", "cat /host/etc/hostname 的节点名", "节点 marker 内容 + sha256 + 回读一致", "marker 路径位于节点 /root（非容器可写层）"],
         "fallback": "写入失败：删除 Pod 并以 Pod 逃逸原语证据降级；不伪造节点 root 结论",
@@ -147,8 +147,8 @@
         "writes": true,
         "preconditions": ["cluster-admin token 有效", "节点 marker 仍可回读", "可创建 namespace（cluster-scope create）"],
         "backup_targets": [
-          {"kind": "kube", "resource": "namespace", "name": "trident-proof-<proof-marker>", "namespace": ""},
-          {"kind": "kube", "resource": "configmap", "name": "trident-proof", "namespace": "trident-proof-<proof-marker>"}
+          {"kind": "kube", "resource": "namespace", "name": "inkblade-proof-<proof-marker>", "namespace": ""},
+          {"kind": "kube", "resource": "configmap", "name": "inkblade-proof", "namespace": "inkblade-proof-<proof-marker>"}
         ],
         "success_evidence": ["集群 secret 名称清单（不读取 value）", "测试 namespace 创建成功", "测试 ConfigMap 创建 + 回读一致", "节点 proof 文件 sha256 复核"],
         "fallback": "namespace 创建失败：以 secret 列举 + 节点 marker 作为集群级证据，并标记测试对象缺失",
@@ -162,10 +162,10 @@
         "writes": true,
         "preconditions": ["阶段 1–6 已记录创建对象清单", "备份回执可读", "清理 Pod 仍可用于删除节点文件"],
         "backup_targets": [
-          {"kind": "kube", "resource": "clusterrolebinding", "name": "trident-pwn-crb-<proof-marker>", "namespace": ""},
-          {"kind": "kube", "resource": "rolebinding", "name": "trident-pwn-rb-<proof-marker>", "namespace": "trident-killchain"},
-          {"kind": "kube", "resource": "pod", "name": "trident-pwn-pod-<proof-marker>", "namespace": "trident-killchain"},
-          {"kind": "node-file", "path": "/root/TRIDENT-PROOF-<proof-marker>", "via": "trident-pwn-pod-<proof-marker>"}
+          {"kind": "kube", "resource": "clusterrolebinding", "name": "inkblade-pwn-crb-<proof-marker>", "namespace": ""},
+          {"kind": "kube", "resource": "rolebinding", "name": "inkblade-pwn-rb-<proof-marker>", "namespace": "inkblade-killchain"},
+          {"kind": "kube", "resource": "pod", "name": "inkblade-pwn-pod-<proof-marker>", "namespace": "inkblade-killchain"},
+          {"kind": "node-file", "path": "/root/INKBLADE-PROOF-<proof-marker>", "via": "inkblade-pwn-pod-<proof-marker>"}
         ],
         "success_evidence": ["namespace/rolebinding/clusterrolebinding/pod NotFound", "节点 marker test ! -f 通过", "namespace 与 secret 名称集合与基线一致", "清理回执 JSON + 残留清单为空"],
         "fallback": "清理失败：立即停止、输出残留清单与非零退出码；不宣称已清理",

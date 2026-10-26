@@ -41,7 +41,7 @@ def run(ctx: dict, params: dict) -> dict:
     })
 
     if mode == "backup-write":
-        member = f"guid-trident-{marker[:24]}"
+        member = f"guid-inkblade-{marker[:24]}"
         before = _COMMON.metrics(t, target)
         write = t.call("POST", f"{target}/ib/sm/partition", {
             "pkey": pkey, "add_members": [member],

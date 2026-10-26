@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "HAMI-ADV-2026-01",
  "source": "cve",
  "component": "hami",
@@ -29,10 +29,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/hami/HAMI-ADV-2026-01/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.075,
- "started_at": "2026-10-25T18:06:43+00:00",
+ "duration_s": 0.396,
+ "started_at": "2026-10-26T19:47:18+00:00",
  "marker": {
-  "text": "TRIDENT-UV-HAMI-ADV-2026-01",
+  "text": "INKBLADE-UV-HAMI-ADV-2026-01",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -43,7 +43,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/hami/HAMI-ADV-2026-01/evidence/log.txt",
-   "sha256": "440e2fcc4f56cf2056141c1e470b1a7577e165b6d03ff8510ec43a32a75e1da6",
+   "sha256": "ed4933cb09698e94fe4a7804a7b0f2884748c46e398198fcbb967543f0cab512",
    "size": 295
   },
   {
@@ -53,12 +53,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/hami/HAMI-ADV-2026-01/evidence/unsupported.json",
-   "sha256": "c22aaaff268e0c48e46e7953825f815e85c75917cd4c9ae2916f72e83e20d7e8",
-   "size": 814
+   "sha256": "066c4d4bc707bd3453c4cb4f280e0b2fd8d5a6ed54c7d7dc0c4693c8396801dc",
+   "size": 815
   }
  ],
  "poc_sha256": "8c43ff144a23e6e961076b0c4ab32cfe5e637403206fce521050ffb6dc8361c7",
- "manifest_sha256": "259111e8db9f6f28febc8fade4b1ec4914fde7aa00f1a29bbd5e4dfac42147da",
+ "manifest_sha256": "54c41bd41a0fd31d961fa33344d89cf3160216b4cddfb1a3da063683b34cebe1",
  "stdout": "{\"status\": \"unsupported\", \"case\": \"HAMI-ADV-2026-01\", \"reason\": \"HAMi scheduler/device-plugin auth gap requires a Kubernetes GPU cluster with HAMi\"}\n",
  "stderr": "",
  "notes": "Hardware/OS-dependent path; not exercised on this host. Not counted as verified."

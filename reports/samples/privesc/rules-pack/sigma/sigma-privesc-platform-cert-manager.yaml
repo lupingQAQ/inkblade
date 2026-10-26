@@ -7,12 +7,12 @@ references:
   - "Kubernetes CSR API https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/"
   - "cert-manager 文档 https://cert-manager.io/docs/"
   - "MITRE ATT&CK T1098 Account Manipulation https://attack.mitre.org/techniques/T1098/"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: platform-cert-manager
-    trident.io/module: csr-approve
+    inkblade.io/vector: platform-cert-manager
+    inkblade.io/module: csr-approve
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -31,16 +31,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.platform
+  - inkblade
+  - inkblade.vector.platform
   - attack.t1098
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: platform-cert-manager
-  trident-module: csr-approve
-  trident-detection-point: K8s audit：CSR approval 子资源更新
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: platform-cert-manager
+  inkblade-module: csr-approve
+  inkblade-detection-point: K8s audit：CSR approval 子资源更新
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

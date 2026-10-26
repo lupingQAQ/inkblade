@@ -43,7 +43,7 @@
     }
   ],
   "static_pods": [
-    {"path": "/etc/kubernetes/manifests/trident-proof.yaml", "writable": true,
+    {"path": "/etc/kubernetes/manifests/inkblade-proof.yaml", "writable": true,
      "spec": {"hostNetwork": true, "containers": [{"image": "busybox", "securityContext": {"privileged": true}}]}}
   ],
   "runtime_sockets": [

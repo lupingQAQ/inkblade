@@ -101,12 +101,12 @@ def welch_ttest(xs: list[float], ys: list[float]) -> dict:
 
 
 def _default_member_prefixes(count: int) -> list[str]:
-    return [f"tenant-b member context {i:02d} TRIDENT-BENIGN-TIMING "
+    return [f"tenant-b member context {i:02d} INKBLADE-BENIGN-TIMING "
             f"corpus analytics monthly summary {i:02d}" for i in range(count)]
 
 
 def _default_control_prefixes(count: int) -> list[str]:
-    return [f"trident-control-corpus {i:02d} unrelated analytics topic "
+    return [f"inkblade-control-corpus {i:02d} unrelated analytics topic "
             f"reference data pack" for i in range(count)]
 
 

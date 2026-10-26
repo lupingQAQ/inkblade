@@ -1,5 +1,5 @@
 {
-  "note": "Trident 核心代码检测首批 sink 规则（regex+ast 双通道）。anchor=实验室样本树上的 file:line 案例锚；hint=建议的动态验证模块机器键（静态→动态闭环）。",
+  "note": "InkBlade 核心代码检测首批 sink 规则（regex+ast 双通道）。anchor=实验室样本树上的 file:line 案例锚；hint=建议的动态验证模块机器键（静态→动态闭环）。",
   "rules": [
     {
       "id": "eval-call",

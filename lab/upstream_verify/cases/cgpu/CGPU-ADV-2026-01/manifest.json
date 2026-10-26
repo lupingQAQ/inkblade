@@ -32,7 +32,7 @@
  "module": "cgpu-isolation-audit",
  "python": null,
  "advisory": "https://www.alibabacloud.com/help/en/ack/ack-managed-and-ack-dedicated/user-guide/use-cgpu-to-share-gpus",
- "marker_text": "TRIDENT-UV-CGPU-ADV-2026-01",
+ "marker_text": "INKBLADE-UV-CGPU-ADV-2026-01",
  "notes": "Hardware/OS-dependent path; not exercised on this host. Not counted as verified.",
  "static_evidence_level": "advisory",
  "static_analysis": "",
@@ -50,6 +50,6 @@
    "no vendor BMC/NOS"
   ]
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "cgpu"
 }

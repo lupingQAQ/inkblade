@@ -1,5 +1,5 @@
 {
-  "schema": "trident-depth-detection-rules-v1",
+  "schema": "inkblade-depth-detection-rules-v1",
   "verified_at": "2026-10-26",
   "note": "研究级深度六类的检测规则索引；sigma/falco 为事件语义，kyverno/gatekeeper 为阻断策略语义。规则文本是行为特征，不含可直接复用的利用载荷。",
   "rules": [

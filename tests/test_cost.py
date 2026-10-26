@@ -3,7 +3,7 @@
 
 import unittest
 
-from trident.core import cost
+from inkblade.core import cost
 
 
 def _act(module, tokens, latency, *, writes=False, optional=False):

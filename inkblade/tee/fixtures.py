@@ -77,30 +77,30 @@ def fixture_pki(now: datetime = FIXTURE_NOW) -> FixturePki:
     global _PKI_CACHE
     if _PKI_CACHE is not None:
         return _PKI_CACHE
-    root_key = _key("P-256", "trident-fixture-tdx-root")
-    inter_key = _key("P-256", "trident-fixture-tdx-intermediate")
-    ak_key = _key("P-256", "trident-fixture-tdx-ak")
-    amd_root_key = _key("P-384", "trident-fixture-amd-root")
-    ask_key = _key("P-384", "trident-fixture-amd-ask")
-    vcek_key = _key("P-384", "trident-fixture-amd-vcek")
+    root_key = _key("P-256", "inkblade-fixture-tdx-root")
+    inter_key = _key("P-256", "inkblade-fixture-tdx-intermediate")
+    ak_key = _key("P-256", "inkblade-fixture-tdx-ak")
+    amd_root_key = _key("P-384", "inkblade-fixture-amd-root")
+    ask_key = _key("P-384", "inkblade-fixture-amd-ask")
+    vcek_key = _key("P-384", "inkblade-fixture-amd-vcek")
 
     long_ago, far = now - timedelta(days=30), now + timedelta(days=3650)
-    tdx_root = build_certificate(subject="Trident Fixture TDX Root CA", issuer="Trident Fixture TDX Root CA",
+    tdx_root = build_certificate(subject="InkBlade Fixture TDX Root CA", issuer="InkBlade Fixture TDX Root CA",
                                  public_key=root_key.public_key(), signer=root_key.sign, serial=0x1001,
                                  not_before=long_ago, not_after=far, is_ca=True)
-    tdx_inter = build_certificate(subject="Trident Fixture TDX Intermediate", issuer="Trident Fixture TDX Root CA",
+    tdx_inter = build_certificate(subject="InkBlade Fixture TDX Intermediate", issuer="InkBlade Fixture TDX Root CA",
                                   public_key=inter_key.public_key(), signer=root_key.sign, serial=0x1002,
                                   not_before=long_ago, not_after=far, is_ca=True)
-    tdx_ak = build_certificate(subject="Trident Fixture TDX AK", issuer="Trident Fixture TDX Intermediate",
+    tdx_ak = build_certificate(subject="InkBlade Fixture TDX AK", issuer="InkBlade Fixture TDX Intermediate",
                                public_key=ak_key.public_key(), signer=inter_key.sign, serial=0x1003,
                                not_before=long_ago, not_after=now + timedelta(days=365))
-    amd_root = build_certificate(subject="Trident Fixture AMD ARK", issuer="Trident Fixture AMD ARK",
+    amd_root = build_certificate(subject="InkBlade Fixture AMD ARK", issuer="InkBlade Fixture AMD ARK",
                                  public_key=amd_root_key.public_key(), signer=amd_root_key.sign, serial=0x2001,
                                  not_before=long_ago, not_after=far, is_ca=True)
-    amd_ask = build_certificate(subject="Trident Fixture AMD ASK", issuer="Trident Fixture AMD ARK",
+    amd_ask = build_certificate(subject="InkBlade Fixture AMD ASK", issuer="InkBlade Fixture AMD ARK",
                                 public_key=ask_key.public_key(), signer=amd_root_key.sign, serial=0x2002,
                                 not_before=long_ago, not_after=far, is_ca=True)
-    vcek = build_certificate(subject="Trident Fixture AMD VCEK", issuer="Trident Fixture AMD ASK",
+    vcek = build_certificate(subject="InkBlade Fixture AMD VCEK", issuer="InkBlade Fixture AMD ASK",
                              public_key=vcek_key.public_key(), signer=ask_key.sign, serial=0x2003,
                              not_before=long_ago, not_after=now + timedelta(days=365))
     nras_key = PrivateKey(kind="rsa", n=RSA_N, e=RSA_E, d=RSA_D)
@@ -110,11 +110,11 @@ def fixture_pki(now: datetime = FIXTURE_NOW) -> FixturePki:
 
 
 def _ak_key() -> PrivateKey:
-    return _key("P-256", "trident-fixture-tdx-ak")
+    return _key("P-256", "inkblade-fixture-tdx-ak")
 
 
 def _vcek_key() -> PrivateKey:
-    return _key("P-384", "trident-fixture-amd-vcek")
+    return _key("P-384", "inkblade-fixture-amd-vcek")
 
 
 def _fill(buf: bytearray, offset: int, data: bytes) -> None:
@@ -262,7 +262,7 @@ def nvidia_fixture(*, nonce: str = "fixture-nonce-0001", exp_offset: int = 3600,
     claims = {
         "iss": issuer,
         "aud": audience,
-        "sub": "trident-fixture-gpu-0",
+        "sub": "inkblade-fixture-gpu-0",
         "iat": int(now.timestamp()),
         "nbf": int(now.timestamp()),
         "exp": int(now.timestamp()) + exp_offset,

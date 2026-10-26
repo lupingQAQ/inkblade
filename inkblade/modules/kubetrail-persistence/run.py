@@ -13,7 +13,7 @@ finding, run_surface = _C.finding, _C.run_surface
 
 
 def analyze(snapshot: dict, params: dict) -> list[dict]:
-    from trident.kubetrail.persistence import detect
+    from inkblade.kubetrail.persistence import detect
 
     report = detect(snapshot)
     return [finding(
@@ -24,7 +24,7 @@ def analyze(snapshot: dict, params: dict) -> list[dict]:
 
 
 def extra(snapshot: dict, findings: list[dict]) -> dict:
-    from trident.kubetrail.persistence import detect
+    from inkblade.kubetrail.persistence import detect
 
     report = detect(snapshot)
     return {"indicators": report["indicators"], "findings": len(findings),

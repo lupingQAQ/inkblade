@@ -28,12 +28,12 @@ def run(ctx: dict, params: dict) -> dict:
     if not target:
         return _COMMON.no_target()
     marker = _COMMON.marker_of(ctx, params)
-    prefix = str(params.get("prompt_prefix") or f"TRIDENT-PREFIX-{marker}")
+    prefix = str(params.get("prompt_prefix") or f"INKBLADE-PREFIX-{marker}")
     prefix_tokens = _COMMON.int_of(params.get("prefix_tokens"), 4096) or 4096
     salt = str(params.get("cache_salt") or "salt-tenant-a")
     body_base = {
         "model": "longctx-mock",
-        "messages": [{"role": "user", "content": "trident prefix cache probe"}],
+        "messages": [{"role": "user", "content": "inkblade prefix cache probe"}],
         "context_window": "128k",
         "prompt_prefix": prefix,
         "prefix_tokens": prefix_tokens,

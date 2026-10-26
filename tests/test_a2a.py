@@ -14,7 +14,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.a2a import (
+from inkblade.core.a2a import (
     AGENT_CARD_SCHEMA,
     A2AError,
     A2AForbidden,
@@ -22,9 +22,9 @@ from trident.core.a2a import (
     MCPClient,
     agent_card,
 )
-from trident.core.evidence import EvidenceStore
-from trident.core.skills import SkillLibrary
-from trident.core.users import Session
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.skills import SkillLibrary
+from inkblade.core.users import Session
 
 
 class A2AServerTest(unittest.TestCase):

@@ -32,7 +32,7 @@
  "module": "hami-scheduler-auth-gap",
  "python": null,
  "advisory": "https://github.com/Project-HAMi/HAMi",
- "marker_text": "TRIDENT-UV-HAMI-ADV-2026-01",
+ "marker_text": "INKBLADE-UV-HAMI-ADV-2026-01",
  "notes": "Hardware/OS-dependent path; not exercised on this host. Not counted as verified.",
  "static_evidence_level": "advisory",
  "static_analysis": "",
@@ -50,6 +50,6 @@
    "no vendor BMC/NOS"
   ]
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "hami"
 }

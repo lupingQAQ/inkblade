@@ -7,13 +7,13 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import mock
 
-from trident.core.discovery import AssetInventory
-from trident.core.evidence import EvidenceStore
-from trident.core.explorer import Explorer
-from trident.core.roe import init_roe
-from trident.core.users import Session
+from inkblade.core.discovery import AssetInventory
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.explorer import Explorer
+from inkblade.core.roe import init_roe
+from inkblade.core.users import Session
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 SEEDS = {"services": [
     {"name": "sglang-admin", "namespace": "ml", "addr": "10.96.0.11", "port": 30000,
      "labels": {"app": "sglang"}},
@@ -70,12 +70,12 @@ class TestExplorerPolicyWiring(unittest.TestCase):
         self.assertEqual(p["approval"]["required"], True)
 
     def test_env_switch_off(self):
-        with mock.patch.dict(os.environ, {"TRIDENT_AGENT_POLICY": "off"}):
+        with mock.patch.dict(os.environ, {"INKBLADE_AGENT_POLICY": "off"}):
             p = self.ex.propose(_session())
         self.assertNotIn("policy", p)
 
     def test_explicit_override_beats_env(self):
-        with mock.patch.dict(os.environ, {"TRIDENT_AGENT_POLICY": "off"}):
+        with mock.patch.dict(os.environ, {"INKBLADE_AGENT_POLICY": "off"}):
             p = self.ex.propose(_session(), policy=True)
         self.assertIn("policy", p)
 

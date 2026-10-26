@@ -73,7 +73,7 @@
     },
     "signature": "MEUCIQDseIlxrHWk6GaLmisDcYw0pF7xARoEsTfSDMDKOShY6QIgK18xDem1UxrhBsHG1Jqln32Dejm3blIXDfxGO4lR/To="
   },
-  "trident": {
+  "inkblade": {
     "mode": "rekor-import",
     "rekor_uuid": "108e9186e8c5677a8b1d3e62d82340146c10e82557e4590631fd942c698ed9a9f8015d018d82b62c",
     "rekor_url": "https://rekor.sigstore.dev",

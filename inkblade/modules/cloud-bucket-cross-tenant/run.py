@@ -14,7 +14,7 @@ _REPO = Path(__file__).resolve().parents[3]
 if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
-from trident.modules._gpu_cloud_common import (  # noqa: E402
+from inkblade.modules._gpu_cloud_common import (  # noqa: E402
     Trace, base_url, detail, ok, read_headers, resolve_mode, resp,
 )
 

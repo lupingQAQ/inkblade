@@ -7,15 +7,15 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core import (cigate, decisions, dispatch, evalconfig, importers, intel, kb,
+from inkblade.core import (cigate, decisions, dispatch, evalconfig, importers, intel, kb,
                           rulemacro, search, tokenaudit)
-from trident.core.discovery import AssetInventory
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import ExecutionLocked, init_roe
-from trident.core.runner import run_module
-from trident.core.users import Session
+from inkblade.core.discovery import AssetInventory
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import ExecutionLocked, init_roe
+from inkblade.core.runner import run_module
+from inkblade.core.users import Session
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 
 
 def _session(role="lead"):
@@ -177,11 +177,11 @@ class TestTokenAudit(unittest.TestCase):
 class TestKB(unittest.TestCase):
     def test_cite_bilingual_and_fallback(self):
         hit = kb.cite({"step_key": "sglang-admin-failopen", "title": "admin unauth"})
-        self.assertEqual(hit["key"], "TRIDENT-KB-003")
+        self.assertEqual(hit["key"], "INKBLADE-KB-003")
         self.assertTrue(hit["title"]["zh"] and hit["title"]["en"])
         miss = kb.cite({"step_key": "mystery", "title": "unmapped behavior"})
-        self.assertEqual(miss["key"], "TRIDENT-KB-000")
-        self.assertIn("Unclassified", kb.render_md("TRIDENT-KB-000"))
+        self.assertEqual(miss["key"], "INKBLADE-KB-000")
+        self.assertIn("Unclassified", kb.render_md("INKBLADE-KB-000"))
         self.assertEqual(kb.stats()["bilingual"], True)
 
 
@@ -196,7 +196,7 @@ class TestKubeletModule(Base):
         self.assertEqual(len(titles), 3)
         self.assertTrue(any("匿名鉴权" in t for t in titles))
         self.assertTrue(any("token" in t for t in titles))
-        meta = next(m for m in __import__("trident.core.registry", fromlist=["load_modules"])
+        meta = next(m for m in __import__("inkblade.core.registry", fromlist=["load_modules"])
                     .load_modules(MODULES_DIR).values() if m.key == "kubelet-surface")
         self.assertFalse(meta.writes)
 
@@ -214,8 +214,8 @@ class TestRuleMacro(unittest.TestCase):
         self.assertIn("execve", exp["condition"])
         self.assertIn("shell_binaries", exp["lists"])
         self.assertEqual(exp["depth"], 2)
-        falco = b.to_falco(rule="Trident Shell", expr="${macro:spawn_shell}")
-        self.assertEqual(falco["rule"], "Trident Shell")
+        falco = b.to_falco(rule="InkBlade Shell", expr="${macro:spawn_shell}")
+        self.assertEqual(falco["rule"], "InkBlade Shell")
         self.assertIn("condition", falco)
 
     def test_cycle_unknown_and_validate(self):

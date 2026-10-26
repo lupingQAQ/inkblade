@@ -1,5 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
-"""生成 trident/core/cve-catalog.json 与 docs/CVE-CATALOG.md（单一数据源）。
+"""生成 inkblade/core/cve-catalog.json 与 docs/CVE-CATALOG.md（单一数据源）。
 
 来源逐条记录 primary URL 与 CVE.org 核验锚；2026-10-26 webfetch 复核。
 修改后执行：python tools/build_cve_catalog.py
@@ -15,9 +15,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from trident.core.cve_catalog import load, render_markdown  # noqa: E402
+from inkblade.core.cve_catalog import load, render_markdown  # noqa: E402
 
-OUT = ROOT / "trident" / "core" / "cve-catalog.json"
+OUT = ROOT / "inkblade" / "core" / "cve-catalog.json"
 DOC = ROOT / "docs" / "CVE-CATALOG.md"
 VERIFIED_AT = "2026-10-26"
 CVE_API = "https://cveawg.mitre.org/api/cve/"
@@ -368,7 +368,7 @@ ENTRIES = [
 ]
 
 DATA = {
-    "schema": "trident-cve-catalog-v1",
+    "schema": "inkblade-cve-catalog-v1",
     "verified_at": VERIFIED_AT,
     "method_note": (
         "逐条以 CVE.org（cveawg.mitre.org）记录为结构锚，并交叉核对 NVD/GitHub Security Advisory/"

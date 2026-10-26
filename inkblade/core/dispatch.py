@@ -6,7 +6,7 @@
 - ``file``：默认只计划；``allow_write=True`` 才追加 JSONL，且默认限制在工作区内；
 - ``syslog``：默认只计划；``allow_network=True`` 才发 UDP；
 - ``http(s)``：默认只计划；``allow_network=True`` 才 POST；
-- ``program``：默认拒绝；须 ``allow_program=True`` 且环境 ``TRIDENT_ALLOW_PROGRAM_SINK=1``，
+- ``program``：默认拒绝；须 ``allow_program=True`` 且环境 ``INKBLADE_ALLOW_PROGRAM_SINK=1``，
   程序路径默认限制在工作区内，``shell=False``、stdin 传事件 JSON、5s 超时。
 
 本模块可被 notify（IM 推送）与规则生成器复用；不读取/执行规则内容本身。
@@ -15,7 +15,6 @@
 from __future__ import annotations
 
 import json
-import os
 import socket
 import subprocess
 import time
@@ -25,6 +24,7 @@ from pathlib import Path
 from typing import Any
 
 from . import jsonio
+from .env import getenv
 
 SINKS = ("stdout", "file", "syslog", "program", "http", "https")
 
@@ -93,7 +93,7 @@ def dispatch(store, event: str, payload: dict, sinks: list[dict], *,
             elif kind == "syslog":
                 host = str(sink.get("host") or "127.0.0.1")
                 port = int(sink.get("port") or 514)
-                msg = f"<134>trident {event} {json.dumps(payload, ensure_ascii=False)[:2000]}"
+                msg = f"<134>inkblade {event} {json.dumps(payload, ensure_ascii=False)[:2000]}"
                 if not allow_network:
                     results.append({**start, "ok": True, "planned": True,
                                     "host": host, "port": port, "bytes": len(msg)})
@@ -118,9 +118,9 @@ def dispatch(store, event: str, payload: dict, sinks: list[dict], *,
                     results.append({**start, "ok": False, "planned": True,
                                     "error": "program sink 需 allow_program=True"})
                     continue
-                if os.environ.get("TRIDENT_ALLOW_PROGRAM_SINK") != "1":
+                if getenv("ALLOW_PROGRAM_SINK") != "1":
                     results.append({**start, "ok": False, "planned": True,
-                                    "error": "program sink 未启用（TRIDENT_ALLOW_PROGRAM_SINK!=1）"})
+                                    "error": "program sink 未启用（INKBLADE_ALLOW_PROGRAM_SINK!=1）"})
                     continue
                 program = Path(str(sink.get("path") or ""))
                 if not program.is_file():

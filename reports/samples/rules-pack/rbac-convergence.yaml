@@ -1,6 +1,6 @@
 document: rbac-convergence-reference
 annotations:
-  trident.io/mode: monitor
+  inkblade.io/mode: monitor
 samples:
   - target: vllm-operator / production-stack operator
     from: cluster 级 roles/rolebindings 全 CRUD（集群接管面）
@@ -11,4 +11,4 @@ samples:
   - target: lws-operator (LeaderWorkerSet)
     from: 集群级 secrets 读写 + 节点 patch
     to: 命名空间 secrets（仅 labelselector 命中的工作负载 secret）+ 取消节点 patch；webhook 关闭 automount 继承
-verify: 收敛后以 trident 权限链模块复测（can-i 矩阵 + RoleBinding 创建探针）
+verify: 收敛后以 inkblade 权限链模块复测（can-i 矩阵 + RoleBinding 创建探针）

@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "trl-sft-trainer-py-load-dataset-any-l527-regex",
  "source": "mining",
  "component": "trl",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/trl/trl-sft-trainer-py-load-dataset-any-l527-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.142,
- "started_at": "2026-10-26T09:23:45+00:00",
+ "duration_s": 0.303,
+ "started_at": "2026-10-26T19:58:10+00:00",
  "marker": {
-  "text": "TRIDENT-UV-trl-sft-trainer-py-load-dataset-any-l527-regex",
+  "text": "INKBLADE-UV-trl-sft-trainer-py-load-dataset-any-l527-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-load-dataset-any-l527-regex/evidence/log.txt",
-   "sha256": "bea93de2ab0fb4ec1b4df98d6d7fbba58c59df7227854f1ad2c0df74e1fb373f",
+   "sha256": "15dc833d952d0253962a063e288b3681561622417619297ebfb69d25cbbd24d8",
    "size": 259
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-load-dataset-any-l527-regex/evidence/static-check.json",
-   "sha256": "0e815d322e7e0bbe72a2538202c9a69199bd859456ac3f4ada6229da4ffe163e",
-   "size": 1198
+   "sha256": "629627d91f3bd0488ad75e37302c3a8fca6e6897b4b73e37c9da68eeeb70e8ab",
+   "size": 1199
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "131d71ca68a44f1f2e9c8507d0c25ad12190b1e7e70fb00e40b8485ef98d3614",
+ "manifest_sha256": "f04228cec8e2db7b88b9cefa0831f2facfa49072f9252a95fa6275c7afad3507",
  "stdout": "{\"status\": \"static-only\", \"case\": \"trl-sft-trainer-py-load-dataset-any-l527-regex\"}\n",
  "stderr": "",
  "notes": "Dataset loading is intended functionality; remote dataset trust is a documented boundary."

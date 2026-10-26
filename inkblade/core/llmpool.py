@@ -20,7 +20,6 @@
 from __future__ import annotations
 
 import json
-import os
 import threading
 import time
 import urllib.error
@@ -30,6 +29,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from . import jsonio
+from .env import getenv, lookup
 
 POOL_RELPATH = "llm_pool.json"
 RECORDS_RELPATH = "llm_pool_records.jsonl"
@@ -109,7 +109,7 @@ class LLMPool:
     @property
     def enabled(self) -> bool:
         doc = self._load()
-        env = os.environ.get("TRIDENT_LLM_POOL", "")
+        env = getenv("LLM_POOL", "")
         return bool(doc.get("enabled")) or env == "1"
 
     def _endpoint(self, doc: dict, ep_id: str) -> dict:
@@ -184,7 +184,7 @@ class LLMPool:
     # ------------------------------------------------------------ 选择/健康/配额
     def _api_key(self, ep: dict) -> str:
         if ep.get("api_key_env"):
-            return os.environ.get(str(ep["api_key_env"]), "")
+            return lookup(str(ep["api_key_env"]), "")
         return ep.get("api_key") or ""
 
     def _health(self, doc: dict, ep_id: str) -> dict:
@@ -454,7 +454,7 @@ class LLMPool:
         out["api_key_set"] = bool(ep.get("api_key") or ep.get("api_key_env"))
         if ep.get("api_key_env"):
             out["api_key_env"] = ep["api_key_env"]
-            out["api_key_env_set"] = bool(os.environ.get(str(ep["api_key_env"])))
+            out["api_key_env_set"] = bool(lookup(str(ep["api_key_env"])))
         return out
 
     def status(self) -> dict:

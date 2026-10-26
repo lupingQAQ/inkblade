@@ -1,5 +1,5 @@
 {
-  "schema": "trident-fabric-sim/2026-10",
+  "schema": "inkblade-fabric-sim/2026-10",
   "source": "discrete-event simulation",
   "hardware": false,
   "disclaimer": "模拟，非真实硬件；不能替代 10K GPU 实测",
@@ -2510,7 +2510,7 @@
     "logical topology aggregated; not real switch config"
   ],
   "verdict": {
-    "schema": "trident-fabric-verdict/2026-10",
+    "schema": "inkblade-fabric-verdict/2026-10",
     "scenario": "baseline",
     "ok": true,
     "high": 0,

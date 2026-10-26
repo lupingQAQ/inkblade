@@ -24,7 +24,7 @@ def run(ctx: dict, params: dict) -> dict:
     if not target:
         return _COMMON.no_target()
     marker = _COMMON.marker_of(ctx, params)
-    job = str(params.get("job") or "trident-probe")
+    job = str(params.get("job") or "inkblade-probe")
     max_allocs = max(1, min(60, _COMMON.int_of(params.get("max_allocs"), 30)))
     headers = _COMMON.headers_for(params)
     t = _COMMON.Trace(ctx, KEY)

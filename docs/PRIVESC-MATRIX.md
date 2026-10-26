@@ -1,12 +1,12 @@
-# Trident 全量提权矩阵（Privesc Matrix）
+# InkBlade 全量提权矩阵（Privesc Matrix）
 
-> 本文件由 `trident privesc matrix --out docs/PRIVESC-MATRIX.md` 确定性生成；请改 `trident/core/data/privesc-matrix.json` 后重生成，勿手改。
+> 本文件由 `inkblade privesc matrix --out docs/PRIVESC-MATRIX.md` 确定性生成；请改 `inkblade/core/data/privesc-matrix.json` 后重生成，勿手改。
 
 ## 提权面
 
 - 提权向量：**47** 条（RBAC 10 / 工作负载 9 / 凭据 9 / 节点 7 / 平台组件 12）
 - 提权图：**66** 个节点 / **79** 条原语边；目标 target:cloud-admin, target:cluster-admin, target:node-root
-- 检测覆盖：每向量 ≥1 条 Sigma/Falco 规则（共 47 条，紫队重放见 `trident privesc detections`）
+- 检测覆盖：每向量 ≥1 条 Sigma/Falco 规则（共 47 条，紫队重放见 `inkblade privesc detections`）
 - 来源：K8s 官方文档、MITRE ATT&CK、KubeHound/kube-hunter/Peirates/CDK、云厂商与平台组件文档（共 134 条引用）
 
 ### 提权路径图（规范示例）
@@ -673,4 +673,4 @@ objective 在阶段③（提权）前自动调用 `paths(from, to='cluster-admin
 
 ## 紫队检测覆盖
 
-运行 `trident privesc detections --out reports/rules-pack` 可导出每向量的 Sigma/Falco 规则、Kyverno 准入策略与 `coverage.json`；`trident rules generate` 会把提权规则包追加到主规则包。
+运行 `inkblade privesc detections --out reports/rules-pack` 可导出每向量的 Sigma/Falco 规则、Kyverno 准入策略与 `coverage.json`；`inkblade rules generate` 会把提权规则包追加到主规则包。

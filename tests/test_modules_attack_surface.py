@@ -4,10 +4,10 @@ import json
 import unittest
 from pathlib import Path
 
-from trident.core.registry import load_modules
+from inkblade.core.registry import load_modules
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ROOT / "trident" / "modules"
+MODULES = ROOT / "inkblade" / "modules"
 FIXTURE = ROOT / "lab" / "fixtures" / "attack-surface" / "cluster-surface.json"
 
 MODULE_KEYS = (

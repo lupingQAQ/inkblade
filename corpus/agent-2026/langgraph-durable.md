@@ -23,6 +23,6 @@
 - 状态与证据分离：checkpoint 存执行状态，业务证据仍应独立落库。
 
 ## 对我们的启示
-- 我们的 `evidence.db` 有 `actions/findings/steps`（`trident/core/evidence.py:24-43`），但没有「下一步是什么」的恢复点；`runner.run_module` 失败直接抛（`runner.py:76-80`），链只能整条重跑（G03）。
+- 我们的 `evidence.db` 有 `actions/findings/steps`（`inkblade/core/evidence.py:24-43`），但没有「下一步是什么」的恢复点；`runner.run_module` 失败直接抛（`runner.py:76-80`），链只能整条重跑（G03）。
 - 最小改造：在 `chains.execute` 的每个步骤前后写 `journal(thread_id, step_id, status, input_hash, output_ref)`，恢复时跳过 `success`、重试 `failed`、把 `started` 标成 `unknown` 并要求人工确认。
 - 不要用 `MemorySaver` 式内存态做审批：我们的审批队列必须 durable（对齐 MCP Tasks 的「返回前已持久化」）。

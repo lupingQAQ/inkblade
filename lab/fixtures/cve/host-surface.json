@@ -1,5 +1,5 @@
 {
-  "schema": "trident-cve-host-surface-v1",
+  "schema": "inkblade-cve-host-surface-v1",
   "note": "CVE 只读探测 fixture：真实集群/硬件清单的脱敏快照；不发起网络请求。",
   "cluster": {"version": "v1.28.11", "provider": "mock-lab"},
   "nodes": [

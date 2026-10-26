@@ -35,7 +35,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-infra/mining-report.json",
- "marker_text": "TRIDENT-UV-gpuoperator-main-go-exec-command-l669-regex",
+ "marker_text": "INKBLADE-UV-gpuoperator-main-go-exec-command-l669-regex",
  "notes": "NVIDIA GPU Operator validator pods run privileged with hostPath mounts (see 0500_daemonset posture case) and execute shell/nvidia-smi via runCommand. Callers are fixed in-tree (shell/nvidiaSMIPath), so the exec sink is not tenant-reachable by itself; the finding is the privileged execution surface of validator/driver DaemonSets, which pairs with the elevated-pod-spec hits in manifests/state-driver/0500_daemonset.yaml.",
  "static_evidence_level": "source-line",
  "static_analysis": "NVIDIA GPU Operator validator pods run privileged with hostPath mounts (see 0500_daemonset posture case) and execute shell/nvidia-smi via runCommand. Callers are fixed in-tree (shell/nvidiaSMIPath), so the exec sink is not tenant-reachable by itself; the finding is the privileged execution surface of validator/driver DaemonSets, which pairs with the elevated-pod-spec hits in manifests/state-driver/0500_daemonset.yaml.",
@@ -50,10 +50,10 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "gpuoperator",
  "static_blocker": {
   "category": "host-toolchain-missing",
-  "reason": "Go toolchain and container runtime are absent on this Windows host; the pinned service/binary cannot be built or started, so the sink cannot be driven dynamically. Source-line root cause and pin remain recorded."
+  "reason": "Re-checked 2026-10-27: GPU Operator needs a live cluster with NVIDIA GPU nodes, driver CRDs and the operator stack. The exec at main.go:669 runs operator-controlled tooling, not tenant input; no CPU-only dynamic path."
  }
 }

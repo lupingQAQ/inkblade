@@ -26,15 +26,15 @@ from lab.trainstack_sim import (
     start_all,
     template_path,
 )
-from trident.core.backup import BackupManager
-from trident.core.evidence import EvidenceStore
-from trident.core.registry import load_modules
-from trident.core.roe import init_roe
-from trident.core.runner import BackupGateRefused, run_module
-from trident.core.users import UserStore
+from inkblade.core.backup import BackupManager
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.registry import load_modules
+from inkblade.core.roe import init_roe
+from inkblade.core.runner import BackupGateRefused, run_module
+from inkblade.core.users import UserStore
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
+MODULES_DIR = REPO / "inkblade" / "modules"
 
 MODULE_SPECS = {
     "megatron-deepspeed-config-surface": {"series": "侦察", "min_level": "主动探测",
@@ -186,7 +186,7 @@ class VulnerableDetectionTest(_Base):
         path = optimizer_state_path(self.server.root, shard)
         before = hashlib.sha256(path.read_bytes()).hexdigest()
         _, findings, run = self._run("checkpoint-optimizer-state-poison", {
-            "mode": "backup-write", "shard_id": shard, "marker": "TRIDENT-OPT"})
+            "mode": "backup-write", "shard_id": shard, "marker": "INKBLADE-OPT"})
         detail = _detail([f for f in findings if f["severity"] == "high"][0])
         self.assertEqual(detail["write_status"], 200)
         self.assertEqual(detail["readback_status"], 200)
@@ -194,7 +194,7 @@ class VulnerableDetectionTest(_Base):
         self.assertTrue(detail["optimizer_state"])
         self.assertTrue(detail["changed_from_prior"])
         self.assertNotEqual(detail["readback_sha256"], before)
-        self.assertIn("TRIDENT-OPT", path.read_text(encoding="utf-8"))
+        self.assertIn("INKBLADE-OPT", path.read_text(encoding="utf-8"))
         receipt = BackupManager(self.store, run).rollback("checkpoint-optimizer-state-poison")
         self.assertGreaterEqual(receipt["restored"], 1)
         self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), before)
@@ -212,7 +212,7 @@ class VulnerableDetectionTest(_Base):
 
     def test_tokenizer_template_injection(self):
         _, findings, _ = self._run("tokenizer-template-injection",
-                                   {"mode": "backup-write", "marker": "TRIDENT-TPL"})
+                                   {"mode": "backup-write", "marker": "INKBLADE-TPL"})
         detail = _detail([f for f in findings if f["severity"] == "high"][0])
         self.assertEqual(detail["write_status"], 200)
         self.assertTrue(detail["template_modified"])
@@ -234,7 +234,7 @@ class VulnerableDetectionTest(_Base):
 
     def test_sft_framework_surface(self):
         _, findings, _ = self._run("sft-framework-surface",
-                                   {"mode": "backup-write", "marker": "TRIDENT-SFT"})
+                                   {"mode": "backup-write", "marker": "INKBLADE-SFT"})
         detail = _detail([f for f in findings if f["severity"] == "high"][0])
         self.assertEqual(detail["status_status"], 200)
         self.assertEqual(detail["bind"], "0.0.0.0:7860")
@@ -250,7 +250,7 @@ class VulnerableDetectionTest(_Base):
     def test_rollout_buffer_cross_tenant(self):
         _, findings, _ = self._run("rl-rollout-buffer-poison",
                                    {"mode": "backup-write", "tenant": "tenant-a",
-                                    "victim_tenant": "tenant-b", "marker": "TRIDENT-RL"})
+                                    "victim_tenant": "tenant-b", "marker": "INKBLADE-RL"})
         detail = _detail([f for f in findings if f["severity"] == "high"][0])
         self.assertEqual(detail["victim_write_status"], 200)
         self.assertTrue(detail["cross_tenant"])
@@ -272,7 +272,7 @@ class VulnerableDetectionTest(_Base):
 
     def test_pretrain_job_escape(self):
         _, findings, _ = self._run("pretrain-job-escape",
-                                   {"mode": "backup-write", "marker": "TRIDENT-JOB"})
+                                   {"mode": "backup-write", "marker": "INKBLADE-JOB"})
         detail = _detail([f for f in findings if f["severity"] == "high"][0])
         self.assertEqual(detail["cluster_status"], 200)
         self.assertEqual(detail["shared_service_account"], "trainer-admin")

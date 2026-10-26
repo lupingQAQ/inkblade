@@ -85,7 +85,7 @@ def _available(snapshot: dict) -> dict[str, str]:
 
 
 def analyze(snapshot: dict, params: dict) -> list[dict]:
-    from trident.kubetrail.manifestscan import scan_configmaps
+    from inkblade.kubetrail.manifestscan import scan_configmaps
 
     available = _available(snapshot)
     out: list[dict] = []

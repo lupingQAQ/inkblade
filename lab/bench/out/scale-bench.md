@@ -1,4 +1,4 @@
-# Trident 规模压测结果（合成快照）
+# InkBlade 规模压测结果（合成快照）
 
 > 生成时间：2026-10-25T00:43:36Z　平台：Windows-11-10.0.26300-SP0　Python：3.12.15
 > 数据来源：`lab/bench/scale-bench.py`（每 scale 独立子进程）；原始 JSON：`lab/bench/out/scale-bench.json`。

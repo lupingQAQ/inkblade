@@ -8,9 +8,9 @@
 
 - **benign-only**：全部探针为技术类别级 marker（写入被监控路径类别的良性文件、
   改名工具执行 echo、分层镜像 benign 样本、编码变体 benign 请求），
-  **不含任何真实恶意载荷/rootkit**；marker 一律 `TRIDENT-BENIGN:` 前缀。
+  **不含任何真实恶意载荷/rootkit**；marker 一律 `INKBLADE-BENIGN:` 前缀。
 - **遏制**：探针物化只允许写 `--scratch` 目录，引擎
-  `trident/core/defenseprobe.py::materialize_probes` 以 `ProbeContainmentError`
+  `inkblade/core/defenseprobe.py::materialize_probes` 以 `ProbeContainmentError`
   强制（绝对路径/盘符/`..` 一律拒绝）。
 - 本目录脚本**只生成文本与 JSON**：部署命令由人工审阅后在授权实验室执行；
   重放清单 `replay-<product>.txt` 由人工逐条执行。

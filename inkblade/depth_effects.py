@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Six cross-domain research effects, replayable from ``trident verify-effects``.
+"""Six cross-domain research effects, replayable from ``inkblade verify-effects``.
 
 Each check has a real differential: vulnerable state vs hardened state, or a
 live local HTTP vulnerable server vs a fixed server.  No live K8s/GPU/switch
@@ -22,7 +22,7 @@ from lab.depth_sim import start_all as start_depth_sim  # noqa: E402
 from lab.fabric_sim.detectors import detect as fabric_detect  # noqa: E402
 from lab.fabric_sim.sim import simulate as fabric_simulate  # noqa: E402
 from lab.fabric_sim.topology import Topology  # noqa: E402
-from trident.depth import admission, ebpf, fabric, gpu, identity, vllm  # noqa: E402
+from inkblade.depth import admission, ebpf, fabric, gpu, identity, vllm  # noqa: E402
 
 
 def _vllm_fuzz() -> dict[str, Any]:
@@ -191,7 +191,7 @@ def run_all() -> list[dict[str, Any]]:
 
 
 def run_depth_checks(checks, **_: Any) -> None:
-    """Hook for trident/verify-effects.py::_Checks."""
+    """Hook for inkblade/verify-effects.py::_Checks."""
     for cid, title, fn in CHECKS:
         checks.run(cid, title, fn)
 

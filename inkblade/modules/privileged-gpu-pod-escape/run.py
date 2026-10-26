@@ -61,7 +61,7 @@ def _demo(ctx: dict, params: dict) -> list[dict[str, Any]]:
     if receipt is None:
         raise RuntimeError("backup-write 演示缺少快照回执")
     payload = (
-        f"TRIDENT host-escape proof {ctx['marker']}\n"
+        f"INKBLADE host-escape proof {ctx['marker']}\n"
         "宿主挂载点写入证明：经由 hostPath:/ + privileged 容器对宿主根的可写性验证\n"
     )
     target.write_text(payload, encoding="utf-8")

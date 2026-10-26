@@ -12,15 +12,15 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from trident.tee import online
-from trident.tee.fixtures import nvidia_fixture
-from trident.tee.keys import (ALG_ECDSA_SHA256, ALG_ECDSA_SHA384, CURVES, PrivateKey,
+from inkblade.tee import online
+from inkblade.tee.fixtures import nvidia_fixture
+from inkblade.tee.keys import (ALG_ECDSA_SHA256, ALG_ECDSA_SHA384, CURVES, PrivateKey,
                               b64url_encode)
-from trident.tee.x509 import build_certificate, parse_certificate
+from inkblade.tee.x509 import build_certificate, parse_certificate
 
 NOW = datetime(2026, 10, 25, 16, 0, 0, tzinfo=timezone.utc)
 REPO = Path(__file__).resolve().parents[1]
-CACHE = REPO / "trident" / "tee" / "online_cache"
+CACHE = REPO / "inkblade" / "tee" / "online_cache"
 
 
 def _fixture_intel(status: str = "Revoked") -> online.IntelTcbInfo:
@@ -29,12 +29,12 @@ def _fixture_intel(status: str = "Revoked") -> online.IntelTcbInfo:
                           d=int.from_bytes(b"intel-fixture-root", "big") % CURVES["P-256"].n)
     signer_key = PrivateKey(kind="ec", curve="P-256",
                             d=int.from_bytes(b"intel-fixture-signer", "big") % CURVES["P-256"].n)
-    root = build_certificate(subject="Trident Fixture Intel Root", issuer="Trident Fixture Intel Root",
+    root = build_certificate(subject="InkBlade Fixture Intel Root", issuer="InkBlade Fixture Intel Root",
                              public_key=root_key.public_key(), signer=root_key.sign,
                              serial=1, not_before=NOW - timedelta(days=1),
                              not_after=NOW + timedelta(days=365), is_ca=True)
-    signer = build_certificate(subject="Trident Fixture Intel TCB Signing",
-                               issuer="Trident Fixture Intel Root",
+    signer = build_certificate(subject="InkBlade Fixture Intel TCB Signing",
+                               issuer="InkBlade Fixture Intel Root",
                                public_key=signer_key.public_key(), signer=root_key.sign,
                                serial=2, not_before=NOW - timedelta(days=1),
                                not_after=NOW + timedelta(days=365), is_ca=False)
@@ -252,7 +252,7 @@ class TestNvidiaNRAS(unittest.TestCase):
 
     def test_real_jwks_can_parse_ec_keys(self):
         jwks = online.cached_nvidia_jwks()
-        from trident.tee.keys import PublicKey
+        from inkblade.tee.keys import PublicKey
         ec = [k for k in jwks["keys"] if k.get("kty") == "EC"]
         self.assertTrue(ec)
         pub = PublicKey.from_jwk(ec[0])

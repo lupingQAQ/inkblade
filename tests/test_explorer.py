@@ -5,13 +5,13 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.discovery import AssetInventory
-from trident.core.evidence import EvidenceStore
-from trident.core.explorer import ApprovalDenied, Explorer, ExplorerError
-from trident.core.roe import ExecutionLocked, init_roe
-from trident.core.users import Session
+from inkblade.core.discovery import AssetInventory
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.explorer import ApprovalDenied, Explorer, ExplorerError
+from inkblade.core.roe import ExecutionLocked, init_roe
+from inkblade.core.users import Session
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 
 
 def _session(role="lead"):
@@ -119,31 +119,31 @@ class TestExplorerLifecycle(unittest.TestCase):
         import os
 
         self._sign_roe()
-        old = os.environ.get("TRIDENT_LLM_BASE_URL")
-        os.environ["TRIDENT_LLM_BASE_URL"] = "http://127.0.0.1:1/v1"  # 不可达
+        old = os.environ.get("INKBLADE_LLM_BASE_URL")
+        os.environ["INKBLADE_LLM_BASE_URL"] = "http://127.0.0.1:1/v1"  # 不可达
         try:
             p = self._explorer().propose(_session(), use_llm=True)
             self.assertEqual(p["mode"], "rules")
             self.assertIn("LLM 降级", p.get("llm_note", ""))
         finally:
             if old is None:
-                os.environ.pop("TRIDENT_LLM_BASE_URL", None)
+                os.environ.pop("INKBLADE_LLM_BASE_URL", None)
             else:
-                os.environ["TRIDENT_LLM_BASE_URL"] = old
+                os.environ["INKBLADE_LLM_BASE_URL"] = old
 
 
 class TestLlmAvailable(unittest.TestCase):
     def test_default_false_without_env(self):
         import os
 
-        saved = os.environ.pop("TRIDENT_LLM_BASE_URL", None)
+        saved = os.environ.pop("INKBLADE_LLM_BASE_URL", None)
         try:
-            from trident.core.explorer import llm_available
+            from inkblade.core.explorer import llm_available
 
             self.assertFalse(llm_available())
         finally:
             if saved:
-                os.environ["TRIDENT_LLM_BASE_URL"] = saved
+                os.environ["INKBLADE_LLM_BASE_URL"] = saved
 
 
 class TestPreauthorizedApproval(unittest.TestCase):

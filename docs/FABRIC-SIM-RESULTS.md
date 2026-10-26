@@ -13,7 +13,7 @@
 | 流 | `sim.py`：ring all-reduce 风格的 rank→rank 流，按 chunk 串行推进 | 不是 NCCL 协议栈逐包仿真 |
 | 队列 | 每条 link FIFO，`free_time` 服务模型；积压触发 PFC/ECN/drop | 无 ASIC 共享缓冲、无 PFC watchdog、无 HOL 细节 |
 | 注入 | PFC storm、ECN 低阈值、rail 错配、straggler（host link 5–8% 容量）、spine 故障重路由 | 攻击面为参数注入，不是真实配置面写入 |
-| 判定 | `detectors.py` 与 `trident/modules/roce-pfc-storm`（≥50,000 帧）、`nccl-straggler-injection`（≥2×）、fabric-topology-isolation（rail/HCA、IB Partition）同阈值 | 真实模块另跑 HTTP/快照裁决（§3） |
+| 判定 | `detectors.py` 与 `inkblade/modules/roce-pfc-storm`（≥50,000 帧）、`nccl-straggler-injection`（≥2×）、fabric-topology-isolation（rail/HCA、IB Partition）同阈值 | 真实模块另跑 HTTP/快照裁决（§3） |
 | 可视化 | `viz.py`：确定性 SVG（链路 top-N、rank 完成时间、rail×leaf 热力）+ 无 JS HTML | 无时间戳/绝对路径 |
 
 拓扑规模（实际输出）：

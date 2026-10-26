@@ -6,12 +6,12 @@ description: 向 driver 容器注入命令或替换驱动镜像；driver 容器�
 references:
   - "NVIDIA GPU Operator 文档 https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/"
   - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: platform-gpu-operator-driver
-    trident.io/module: gpu-operator-driver-escape
+    inkblade.io/vector: platform-gpu-operator-driver
+    inkblade.io/module: gpu-operator-driver-escape
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -30,16 +30,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.platform
+  - inkblade
+  - inkblade.vector.platform
   - attack.t1611
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: platform-gpu-operator-driver
-  trident-module: gpu-operator-driver-escape
-  trident-detection-point: K8s audit：更新 daemonset 且模板 privileged
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: platform-gpu-operator-driver
+  inkblade-module: gpu-operator-driver-escape
+  inkblade-detection-point: K8s audit：更新 daemonset 且模板 privileged
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

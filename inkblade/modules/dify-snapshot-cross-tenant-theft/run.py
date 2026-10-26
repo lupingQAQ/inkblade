@@ -48,7 +48,7 @@ def run(ctx: dict, params: dict) -> dict:
     base = str(params.get("base_url", "")).rstrip("/")
     if not base:
         raise ValueError("缺少 params.base_url（mock 靶场地址，仅限授权范围）")
-    marker = str(params.get("marker") or ctx.get("marker") or "TRIDENT-zeroday")
+    marker = str(params.get("marker") or ctx.get("marker") or "INKBLADE-zeroday")
 
     manifest, miss = _fingerprint(base)
     if miss is not None:
@@ -56,7 +56,7 @@ def run(ctx: dict, params: dict) -> dict:
 
     # 良性探针：脚本仅表达「快照物化」语义（marker 归因），不含任何真实窃取载荷
     script = (
-        f"trident probe: snapshot materialize --lease-root <common-ancestor> "
+        f"inkblade probe: snapshot materialize --lease-root <common-ancestor> "
         f"--from victim-binding --into {marker}-binding  # benign marker, no data exfil"
     )
     status, payload = _request("POST", base + TARGET_PATH, body={"script": script})

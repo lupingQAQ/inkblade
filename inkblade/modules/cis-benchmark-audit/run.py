@@ -10,9 +10,9 @@ import importlib.util
 import json
 from pathlib import Path
 
-from trident.cis.catalog import CATALOG
-from trident.cis.engine import assess, findings as cis_findings
-from trident.cis.ml import assess_ml, findings as ml_findings
+from inkblade.cis.catalog import CATALOG
+from inkblade.cis.engine import assess, findings as cis_findings
+from inkblade.cis.ml import assess_ml, findings as ml_findings
 
 _PARENT = Path(__file__).resolve().parent.parent
 _SPEC = importlib.util.spec_from_file_location("_surface_common", _PARENT / "_surface-common.py")

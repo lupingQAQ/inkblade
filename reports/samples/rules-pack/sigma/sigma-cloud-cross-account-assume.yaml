@@ -1,10 +1,10 @@
 title: 跨账户 AssumeRole（trust policy 通配）
-id: be857ebb-35f1-07f8-0991-21900d63bc4b
+id: 86bdf6d0-9a29-b094-2209-9615218f6b73
 status: stable
 description: "CloudTrail STS: AssumeRole from a foreign account against a role whose trust policy has a wildcard principal. 云身份联邦通配信任导致跨账户角色假定。"
 references:
-  - "trident-rules-mapping: sigma-cloud-cross-account-assume"
-author: Trident rules engine
+  - "inkblade-rules-mapping: sigma-cloud-cross-account-assume"
+author: InkBlade rules engine
 date: 2026/10/25
 logsource:
   product: aws
@@ -21,9 +21,9 @@ level: critical
 tags:
   - attack.credential_access
   - attack.t1552.005
-  - trident
-  - trident-mode-monitor
+  - inkblade
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-tuning: "以组织级 sourceAccount/roleArn 白名单收敛合法跨账户链路；对 Principal='*' 且无 sts:ExternalId/Condition 的角色直接 critical；联动 CloudTrail AssumeRole + S3 ListBucket 事件"
-  trident-blocks-chains: cloud-cross-tenant-role-assume
+  inkblade-mode: monitor
+  inkblade-tuning: "以组织级 sourceAccount/roleArn 白名单收敛合法跨账户链路；对 Principal='*' 且无 sts:ExternalId/Condition 的角色直接 critical；联动 CloudTrail AssumeRole + S3 ListBucket 事件"
+  inkblade-blocks-chains: cloud-cross-tenant-role-assume

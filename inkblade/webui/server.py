@@ -308,7 +308,7 @@ class _Handler(BaseHTTPRequestHandler):
 
             return self._json(200, build_openapi())
         if u.path == "/":
-            html = (_STATIC / "index.html").read_text(encoding="utf-8") if (_STATIC / "index.html").exists() else "<html><body>Trident</body></html>"
+            html = (_STATIC / "index.html").read_text(encoding="utf-8") if (_STATIC / "index.html").exists() else "<html><body>InkBlade</body></html>"
             payload = html.encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")

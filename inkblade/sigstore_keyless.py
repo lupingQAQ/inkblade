@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Sigstore keyless（cosign 风格）：Fulcio 证书 + Rekor 透明日志 + OIDC 身份。
 
-本模块只依赖标准库，复用 `trident.tee.keys/x509/_asn1` 的 EC/RSA 与 DER 实现。
+本模块只依赖标准库，复用 `inkblade.tee.keys/x509/_asn1` 的 EC/RSA 与 DER 实现。
 
 两种运行模式（**结果必须如实标注**）：
 
@@ -350,19 +350,19 @@ class FixtureAuthority:
 
 
 def build_fixture_authority(*, now: datetime | None = None,
-                            seed: str = "trident-sigstore-fixture-2026-10") -> FixtureAuthority:
+                            seed: str = "inkblade-sigstore-fixture-2026-10") -> FixtureAuthority:
     now = now or datetime.now(timezone.utc)
     root_key = _det_private("P-256", seed + ":root")
     int_key = _det_private("P-256", seed + ":intermediate")
     log_key = _det_private("P-256", seed + ":rekor")
     root = build_certificate(
-        subject="Trident Fixture Fulcio Root", issuer="Trident Fixture Fulcio Root",
+        subject="InkBlade Fixture Fulcio Root", issuer="InkBlade Fixture Fulcio Root",
         public_key=root_key.public_key(), signer=root_key.sign, serial=1,
         not_before=now - timedelta(days=1), not_after=now + timedelta(days=365),
         is_ca=True)
     intermediate = build_certificate(
-        subject="Trident Fixture Fulcio Intermediate",
-        issuer="Trident Fixture Fulcio Root",
+        subject="InkBlade Fixture Fulcio Intermediate",
+        issuer="InkBlade Fixture Fulcio Root",
         public_key=int_key.public_key(), signer=root_key.sign, serial=2,
         not_before=now - timedelta(days=1), not_after=now + timedelta(days=365),
         is_ca=True)
@@ -450,10 +450,10 @@ def _make_bundle(artifact: bytes, signature: bytes, cert_chain: list[Certificate
                               "digest": _b64(hashlib.sha256(artifact).digest())},
             "signature": _b64(signature),
         },
-        "trident": {"mode": mode},
+        "inkblade": {"mode": mode},
     }
     if extra:
-        bundle["trident"].update(extra)
+        bundle["inkblade"].update(extra)
     return bundle
 
 
@@ -518,11 +518,11 @@ def bundle_from_rekor_entry(entry: dict, *, artifact: bytes | None = None,
                               "digest": _b64(bytes.fromhex(digest)) if digest else ""},
             "signature": _b64(signature),
         },
-        "trident": {"mode": "rekor-import", "rekor_uuid": uuid,
+        "inkblade": {"mode": "rekor-import", "rekor_uuid": uuid,
                     "rekor_url": rekor_url},
     }
     if artifact is not None:
-        bundle["trident"]["artifact_sha256"] = sha256_hex(artifact)
+        bundle["inkblade"]["artifact_sha256"] = sha256_hex(artifact)
     return bundle
 
 
@@ -531,8 +531,8 @@ def bundle_from_rekor_entry(entry: dict, *, artifact: bytes | None = None,
 def keyless_sign(artifact: bytes, *, identity_token: str | None = None,
                  fulcio_url: str = DEFAULT_FULCIO_URL,
                  rekor_url: str = DEFAULT_REKOR_URL,
-                 identity: str = "fixture@trident.local",
-                 issuer: str = "https://fixture.trident.local",
+                 identity: str = "fixture@inkblade.local",
+                 issuer: str = "https://fixture.inkblade.local",
                  private_key: PrivateKey | None = None,
                  authority: FixtureAuthority | None = None,
                  upload: bool = True, live_rekor_key_entry: bool = False,
@@ -584,7 +584,7 @@ def keyless_sign(artifact: bytes, *, identity_token: str | None = None,
             # Rekor body 只带 leaf 证书；把 Fulcio 返回的完整链一并放入 bundle
             bundle["verificationMaterial"]["x509CertificateChain"] = {
                 "certificates": [{"rawBytes": _b64(c.der)} for c in certs]}
-            bundle["trident"].update({**extras, "mode": "live",
+            bundle["inkblade"].update({**extras, "mode": "live",
                                       "rekor_uuid": up["uuid"],
                                       "rekor_url": rekor_url,
                                       "fulcio_url": fulcio_url})
@@ -609,7 +609,7 @@ def keyless_sign(artifact: bytes, *, identity_token: str | None = None,
     if live_rekor_key_entry:
         up = upload_rekor_hashedrekord(artifact, key, rekor_url=rekor_url,
                                        http=http, timeout=timeout)
-        bundle["trident"]["rekor_live_key_entry"] = {
+        bundle["inkblade"]["rekor_live_key_entry"] = {
             "uuid": up["uuid"], "logIndex": up["entry"]["logIndex"],
             "integratedTime": up["entry"]["integratedTime"],
             "url": f"{rekor_url.rstrip('/')}/api/v1/log/entries/{up['uuid']}",
@@ -781,7 +781,7 @@ def keyless_verify(artifact: bytes | None, bundle: dict,
     check("artifact-digest", digest_ok or (artifact is None and bool(digest_b64)),
           f"artifact={artifact_sha[:16] or 'not-provided'}…")
 
-    bundle_meta = bundle.get("trident") or {}
+    bundle_meta = bundle.get("inkblade") or {}
     certs: list[Certificate] = []
     leaf: Certificate | None = None
     x509_chain = material.get("x509CertificateChain") or {}
@@ -936,7 +936,7 @@ def keyless_verify(artifact: bytes | None, bundle: dict,
         check("tlog", True, "调用方要求跳过透明日志")
 
     return {
-        "schema": "trident-sigstore-keyless-verdict/2026-10",
+        "schema": "inkblade-sigstore-keyless-verdict/2026-10",
         "ok": all(c["ok"] for c in checks),
         "checks": checks,
         "errors": [c["name"] for c in checks if not c["ok"]],
@@ -944,5 +944,5 @@ def keyless_verify(artifact: bytes | None, bundle: dict,
         "identity": cert_identity(leaf) if leaf is not None else {},
         "log": {"logIndex": (tlog_entries[0].get("logIndex") if tlog_entries else None),
                 "integratedTime": (tlog_entries[0].get("integratedTime") if tlog_entries else None)},
-        "mode": (bundle.get("trident") or {}).get("mode", "unknown"),
+        "mode": (bundle.get("inkblade") or {}).get("mode", "unknown"),
     }

@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "cephcsi-cephcsi-go-bind-all-l255-regex",
  "source": "mining",
  "component": "cephcsi",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/cephcsi/cephcsi-cephcsi-go-bind-all-l255-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.157,
- "started_at": "2026-10-26T09:23:20+00:00",
+ "duration_s": 0.436,
+ "started_at": "2026-10-26T19:45:37+00:00",
  "marker": {
-  "text": "TRIDENT-UV-cephcsi-cephcsi-go-bind-all-l255-regex",
+  "text": "INKBLADE-UV-cephcsi-cephcsi-go-bind-all-l255-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/cephcsi/cephcsi-cephcsi-go-bind-all-l255-regex/evidence/log.txt",
-   "sha256": "d18959459672d49f5561426b494617116345c7be89c93307849a80a217a63b33",
+   "sha256": "7542fb47b4fd7a2daacce783ec00aaa50b40786730bbc6c41030f4a9a10ba34d",
    "size": 247
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/cephcsi/cephcsi-cephcsi-go-bind-all-l255-regex/evidence/static-check.json",
-   "sha256": "381fa0e768affec3b5dc318fa7a31b243418e6564f2041cea85ab9e310485a74",
-   "size": 1269
+   "sha256": "722ad0091d6ba66a683eb0d6620ea4ea4064c52bea229b8532c6f8c65b13baea",
+   "size": 1270
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "45b76e9f0424233b1b098f69f479e107d9e11d6d87edac2199aada4502906b18",
+ "manifest_sha256": "397c5681d6447ebfb7172c09a48a000cda4676ba1e1b6b9d481145e703689ae5",
  "stdout": "{\"status\": \"static-only\", \"case\": \"cephcsi-cephcsi-go-bind-all-l255-regex\"}\n",
  "stderr": "",
  "notes": "cephcsi defaults MetricsIP to 0.0.0.0; the same default-mux listener serves the unauthenticated pprof endpoints verified dynamically in cephcsi-httpserver-go-pprof-exposed-l37-regex. This entry pins the bind-all default at cmd/cephcsi.go:255."

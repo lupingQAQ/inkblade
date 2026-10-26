@@ -340,7 +340,7 @@
    "size": "missing",
    "gap": "LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-037"
   },
   {
@@ -403,7 +403,7 @@
    "size": "missing",
    "gap": "同根因案例归并/评审工作流 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-044"
   },
   {
@@ -412,7 +412,7 @@
    "size": "missing",
    "gap": "同根因案例归并/评审工作流 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-045"
   },
   {
@@ -421,7 +421,7 @@
    "size": "missing",
    "gap": "同根因案例归并/评审工作流 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-046"
   },
   {
@@ -430,7 +430,7 @@
    "size": "missing",
    "gap": "同根因案例归并/评审工作流 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-047"
   },
   {
@@ -439,7 +439,7 @@
    "size": "missing",
    "gap": "同根因案例归并/评审工作流 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-048"
   },
   {
@@ -448,7 +448,7 @@
    "size": "missing",
    "gap": "同根因案例归并/评审工作流 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-049"
   },
   {
@@ -457,7 +457,7 @@
    "size": "missing",
    "gap": "案例归并建议/裁决 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-050"
   },
   {
@@ -466,7 +466,7 @@
    "size": "missing",
    "gap": "案例归并建议/裁决 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-051"
   },
   {
@@ -475,7 +475,7 @@
    "size": "missing",
    "gap": "案例评审 run [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-052"
   },
   {
@@ -484,7 +484,7 @@
    "size": "missing",
    "gap": "案例评审 run [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-053"
   },
   {
@@ -511,7 +511,7 @@
    "size": "missing",
    "gap": "token 用量统计（0-token 原则，刻意不做）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-056"
   },
   {
@@ -520,7 +520,7 @@
    "size": "missing",
    "gap": "token 用量统计（0-token 原则，刻意不做）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-057"
   },
   {
@@ -529,7 +529,7 @@
    "size": "missing",
    "gap": "token 用量统计（0-token 原则，刻意不做）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-058"
   },
   {
@@ -538,7 +538,7 @@
    "size": "missing",
    "gap": "token 用量统计（0-token 原则，刻意不做）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-059"
   },
   {
@@ -547,7 +547,7 @@
    "size": "missing",
    "gap": "LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-060"
   },
   {
@@ -556,7 +556,7 @@
    "size": "missing",
    "gap": "LLM 调用留档（0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-061"
   },
   {
@@ -565,7 +565,7 @@
    "size": "missing",
    "gap": "LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-062"
   },
   {
@@ -574,7 +574,7 @@
    "size": "missing",
    "gap": "LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-063"
   },
   {
@@ -583,7 +583,7 @@
    "size": "missing",
    "gap": "LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-064"
   },
   {
@@ -592,7 +592,7 @@
    "size": "missing",
    "gap": "任务情报登记（凭据/线索集中 registry） [CM-01]",
    "status": "done",
-   "evidence": "trident/core/intel.py; tests/test_backlog_s.py",
+   "evidence": "inkblade/core/intel.py; tests/test_backlog_s.py",
    "id": "ARTEX-MISS-065"
   },
   {
@@ -601,7 +601,7 @@
    "size": "missing",
    "gap": "IM 推送渠道/投递/重试（输出多路分发同族） [CM-10]",
    "status": "done",
-   "evidence": "trident/core/notify.py; tests/test_notify.py",
+   "evidence": "inkblade/core/notify.py; tests/test_notify.py",
    "id": "ARTEX-MISS-066"
   },
   {
@@ -610,7 +610,7 @@
    "size": "missing",
    "gap": "IM 推送渠道/投递/重试（输出多路分发同族） [CM-10]",
    "status": "done",
-   "evidence": "trident/core/notify.py; tests/test_notify.py",
+   "evidence": "inkblade/core/notify.py; tests/test_notify.py",
    "id": "ARTEX-MISS-067"
   },
   {
@@ -619,7 +619,7 @@
    "size": "missing",
    "gap": "IM 推送渠道/投递/重试（输出多路分发同族） [CM-10]",
    "status": "done",
-   "evidence": "trident/core/notify.py; tests/test_notify.py",
+   "evidence": "inkblade/core/notify.py; tests/test_notify.py",
    "id": "ARTEX-MISS-068"
   },
   {
@@ -628,7 +628,7 @@
    "size": "missing",
    "gap": "IM 推送渠道/投递/重试（输出多路分发同族） [CM-10]",
    "status": "done",
-   "evidence": "trident/core/notify.py; tests/test_notify.py",
+   "evidence": "inkblade/core/notify.py; tests/test_notify.py",
    "id": "ARTEX-MISS-069"
   },
   {
@@ -637,7 +637,7 @@
    "size": "missing",
    "gap": "IM 推送渠道/投递/重试（输出多路分发同族） [CM-10]",
    "status": "done",
-   "evidence": "trident/core/notify.py; tests/test_notify.py",
+   "evidence": "inkblade/core/notify.py; tests/test_notify.py",
    "id": "ARTEX-MISS-070"
   },
   {
@@ -646,7 +646,7 @@
    "size": "missing",
    "gap": "IM 推送渠道/投递/重试（输出多路分发同族） [CM-10]",
    "status": "done",
-   "evidence": "trident/core/notify.py; tests/test_notify.py",
+   "evidence": "inkblade/core/notify.py; tests/test_notify.py",
    "id": "ARTEX-MISS-071"
   },
   {
@@ -655,7 +655,7 @@
    "size": "missing",
    "gap": "IM 推送渠道/投递/重试（输出多路分发同族） [CM-10]",
    "status": "done",
-   "evidence": "trident/core/notify.py; tests/test_notify.py",
+   "evidence": "inkblade/core/notify.py; tests/test_notify.py",
    "id": "ARTEX-MISS-072"
   },
   {
@@ -664,7 +664,7 @@
    "size": "missing",
    "gap": "IM 推送渠道/投递/重试（输出多路分发同族） [CM-10]",
    "status": "done",
-   "evidence": "trident/core/notify.py; tests/test_notify.py",
+   "evidence": "inkblade/core/notify.py; tests/test_notify.py",
    "id": "ARTEX-MISS-073"
   },
   {
@@ -925,7 +925,7 @@
    "size": "missing",
    "gap": "事件/间隔触发器（调度器族） [CM-04]",
    "status": "done",
-   "evidence": "trident/core/scheduler.py + trident/core/calendar.py; tests/test_scheduler.py + tests/test_calendar.py",
+   "evidence": "inkblade/core/scheduler.py + inkblade/core/calendar.py; tests/test_scheduler.py + tests/test_calendar.py",
    "id": "ARTEX-MISS-102"
   },
   {
@@ -934,7 +934,7 @@
    "size": "missing",
    "gap": "事件/间隔触发器（调度器族） [CM-04]",
    "status": "done",
-   "evidence": "trident/core/scheduler.py + trident/core/calendar.py; tests/test_scheduler.py + tests/test_calendar.py",
+   "evidence": "inkblade/core/scheduler.py + inkblade/core/calendar.py; tests/test_scheduler.py + tests/test_calendar.py",
    "id": "ARTEX-MISS-103"
   },
   {
@@ -997,7 +997,7 @@
    "size": "missing",
    "gap": "ScopeSentry 资产同步（外部输入适配器族） [CM-13]",
    "status": "done",
-   "evidence": "trident/core/importers.py; tests/test_backlog_s.py",
+   "evidence": "inkblade/core/importers.py; tests/test_backlog_s.py",
    "id": "ARTEX-MISS-110"
   },
   {
@@ -1006,7 +1006,7 @@
    "size": "missing",
    "gap": "ScopeSentry 资产同步（外部输入适配器族） [CM-13]",
    "status": "done",
-   "evidence": "trident/core/importers.py; tests/test_backlog_s.py",
+   "evidence": "inkblade/core/importers.py; tests/test_backlog_s.py",
    "id": "ARTEX-MISS-111"
   },
   {
@@ -1015,7 +1015,7 @@
    "size": "missing",
    "gap": "ScopeSentry 资产同步（外部输入适配器族） [CM-13]",
    "status": "done",
-   "evidence": "trident/core/importers.py; tests/test_backlog_s.py",
+   "evidence": "inkblade/core/importers.py; tests/test_backlog_s.py",
    "id": "ARTEX-MISS-112"
   },
   {
@@ -1024,7 +1024,7 @@
    "size": "missing",
    "gap": "ScopeSentry 资产同步（外部输入适配器族） [CM-13]",
    "status": "done",
-   "evidence": "trident/core/importers.py; tests/test_backlog_s.py",
+   "evidence": "inkblade/core/importers.py; tests/test_backlog_s.py",
    "id": "ARTEX-MISS-113"
   },
   {
@@ -1033,7 +1033,7 @@
    "size": "missing",
    "gap": "ScopeSentry 资产同步（外部输入适配器族） [CM-13]",
    "status": "done",
-   "evidence": "trident/core/importers.py; tests/test_backlog_s.py",
+   "evidence": "inkblade/core/importers.py; tests/test_backlog_s.py",
    "id": "ARTEX-MISS-114"
   },
   {
@@ -1078,7 +1078,7 @@
    "size": "missing",
    "gap": "LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-119"
   },
   {
@@ -1087,7 +1087,7 @@
    "size": "missing",
    "gap": "LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-120"
   },
   {
@@ -1096,7 +1096,7 @@
    "size": "missing",
    "gap": "未归类路由：待人工归类（完备性要求下不得长期存在）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-121"
   },
   {
@@ -1105,7 +1105,7 @@
    "size": "missing",
    "gap": "LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-122"
   },
   {
@@ -1114,7 +1114,7 @@
    "size": "missing",
    "gap": "LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-123"
   },
   {
@@ -1123,7 +1123,7 @@
    "size": "missing",
    "gap": "LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-124"
   },
   {
@@ -1132,7 +1132,7 @@
    "size": "missing",
    "gap": "LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-125"
   },
   {
@@ -1141,7 +1141,7 @@
    "size": "missing",
    "gap": "LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-126"
   },
   {
@@ -1150,7 +1150,7 @@
    "size": "missing",
    "gap": "LLM 多 profile/池/轮询/重试：刻意不做（REFLECTION-ARTEX-KUBETRAIL §2，0-token 原则）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-127"
   },
   {
@@ -1186,7 +1186,7 @@
    "size": "missing",
    "gap": "agent 侧问/澄清队列（人在环单向审批已对齐，反向提问缺）",
    "status": "done",
-   "evidence": "trident/core/threads.py; tests/test_threads.py",
+   "evidence": "inkblade/core/threads.py; tests/test_threads.py",
    "id": "ARTEX-MISS-131"
   },
   {
@@ -1195,7 +1195,7 @@
    "size": "missing",
    "gap": "agent 侧问/澄清队列（人在环单向审批已对齐，反向提问缺）",
    "status": "done",
-   "evidence": "trident/core/threads.py; tests/test_threads.py",
+   "evidence": "inkblade/core/threads.py; tests/test_threads.py",
    "id": "ARTEX-MISS-132"
   },
   {
@@ -1204,7 +1204,7 @@
    "size": "missing",
    "gap": "多模型池（刻意不做，REFLECTION §2）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-133"
   },
   {
@@ -1213,7 +1213,7 @@
    "size": "missing",
    "gap": "多模型池（刻意不做，REFLECTION §2）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-134"
   },
   {
@@ -1222,7 +1222,7 @@
    "size": "missing",
    "gap": "多模型池（刻意不做，REFLECTION §2）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-135"
   },
   {
@@ -1303,7 +1303,7 @@
    "size": "missing",
    "gap": "侧问会话/请求",
    "status": "done",
-   "evidence": "trident/core/threads.py; tests/test_threads.py",
+   "evidence": "inkblade/core/threads.py; tests/test_threads.py",
    "id": "ARTEX-MISS-144"
   },
   {
@@ -1312,7 +1312,7 @@
    "size": "missing",
    "gap": "侧问会话/请求",
    "status": "done",
-   "evidence": "trident/core/threads.py; tests/test_threads.py",
+   "evidence": "inkblade/core/threads.py; tests/test_threads.py",
    "id": "ARTEX-MISS-145"
   },
   {
@@ -1321,7 +1321,7 @@
    "size": "missing",
    "gap": "通知渠道/事件/投递表 [CM-10]",
    "status": "done",
-   "evidence": "trident/core/notify.py; tests/test_notify.py",
+   "evidence": "inkblade/core/notify.py; tests/test_notify.py",
    "id": "ARTEX-MISS-146"
   },
   {
@@ -1330,7 +1330,7 @@
    "size": "missing",
    "gap": "通知渠道/事件/投递表 [CM-10]",
    "status": "done",
-   "evidence": "trident/core/notify.py; tests/test_notify.py",
+   "evidence": "inkblade/core/notify.py; tests/test_notify.py",
    "id": "ARTEX-MISS-147"
   },
   {
@@ -1339,7 +1339,7 @@
    "size": "missing",
    "gap": "通知渠道/事件/投递表 [CM-10]",
    "status": "done",
-   "evidence": "trident/core/notify.py; tests/test_notify.py",
+   "evidence": "inkblade/core/notify.py; tests/test_notify.py",
    "id": "ARTEX-MISS-148"
   },
   {
@@ -1348,7 +1348,7 @@
    "size": "missing",
    "gap": "案例归并族表 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-149"
   },
   {
@@ -1357,7 +1357,7 @@
    "size": "missing",
    "gap": "案例归并族表 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-150"
   },
   {
@@ -1366,7 +1366,7 @@
    "size": "missing",
    "gap": "案例归并族表 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-151"
   },
   {
@@ -1375,7 +1375,7 @@
    "size": "missing",
    "gap": "案例归并族表 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-152"
   },
   {
@@ -1384,7 +1384,7 @@
    "size": "missing",
    "gap": "案例归并族表 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-153"
   },
   {
@@ -1393,7 +1393,7 @@
    "size": "missing",
    "gap": "案例归并族表 [CM-17]",
    "status": "done",
-   "evidence": "trident/core/dedupe.py; tests/test_backlog_m.py",
+   "evidence": "inkblade/core/dedupe.py; tests/test_backlog_m.py",
    "id": "ARTEX-MISS-154"
   },
   {
@@ -1402,7 +1402,7 @@
    "size": "missing",
    "gap": "任务情报表 [CM-01]",
    "status": "done",
-   "evidence": "trident/core/intel.py; tests/test_backlog_s.py",
+   "evidence": "inkblade/core/intel.py; tests/test_backlog_s.py",
    "id": "ARTEX-MISS-155"
   },
   {
@@ -1420,7 +1420,7 @@
    "size": "missing",
    "gap": "情报/凭据登记 [CM-01]",
    "status": "done",
-   "evidence": "trident/core/intel.py; tests/test_backlog_s.py",
+   "evidence": "inkblade/core/intel.py; tests/test_backlog_s.py",
    "id": "ARTEX-MISS-157"
   },
   {
@@ -1429,7 +1429,7 @@
    "size": "missing",
    "gap": "情报/凭据登记 [CM-01]",
    "status": "done",
-   "evidence": "trident/core/intel.py; tests/test_backlog_s.py",
+   "evidence": "inkblade/core/intel.py; tests/test_backlog_s.py",
    "id": "ARTEX-MISS-158"
   },
   {
@@ -1447,7 +1447,7 @@
    "size": "missing",
    "gap": "多模型 provider/限流（刻意不做）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-160"
   },
   {
@@ -1456,7 +1456,7 @@
    "size": "missing",
    "gap": "多模型 provider/限流（刻意不做）",
    "status": "done",
-   "evidence": "trident/core/llmpool.py; tests/test_llmpool.py",
+   "evidence": "inkblade/core/llmpool.py; tests/test_llmpool.py",
    "id": "ARTEX-MISS-161"
   },
   {
@@ -1465,7 +1465,7 @@
    "size": "missing",
    "gap": "侧问",
    "status": "done",
-   "evidence": "trident/core/threads.py; tests/test_threads.py",
+   "evidence": "inkblade/core/threads.py; tests/test_threads.py",
    "id": "ARTEX-MISS-162"
   },
   {
@@ -1483,7 +1483,7 @@
    "size": "missing",
    "gap": "对话页（刻意不做）",
    "status": "not-applicable",
-   "reason": "架构不适用：Trident 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
+   "reason": "架构不适用：InkBlade 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
    "id": "ARTEX-MISS-164"
   },
   {
@@ -1492,7 +1492,7 @@
    "size": "missing",
    "gap": "案例归并页 [CM-17]",
    "status": "not-applicable",
-   "reason": "架构不适用：Trident 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
+   "reason": "架构不适用：InkBlade 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
    "id": "ARTEX-MISS-165"
   },
   {
@@ -1501,7 +1501,7 @@
    "size": "missing",
    "gap": "LLM 调用记录（0-token）",
    "status": "not-applicable",
-   "reason": "架构不适用：Trident 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
+   "reason": "架构不适用：InkBlade 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
    "id": "ARTEX-MISS-166"
   },
   {
@@ -1510,7 +1510,7 @@
    "size": "missing",
    "gap": "ScopeSentry 同步页 [CM-13]",
    "status": "done",
-   "evidence": "trident/core/importers.py; tests/test_backlog_s.py",
+   "evidence": "inkblade/core/importers.py; tests/test_backlog_s.py",
    "id": "ARTEX-MISS-167"
   },
   {
@@ -1519,7 +1519,7 @@
    "size": "missing",
    "gap": "工作区文件管理页",
    "status": "not-applicable",
-   "reason": "架构不适用：Trident 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
+   "reason": "架构不适用：InkBlade 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
    "id": "ARTEX-MISS-168"
   },
   {
@@ -1528,7 +1528,7 @@
    "size": "missing",
    "gap": "多 agent 管理页（刻意不做）",
    "status": "not-applicable",
-   "reason": "架构不适用：Trident 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
+   "reason": "架构不适用：InkBlade 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
    "id": "ARTEX-MISS-169"
   },
   {
@@ -1537,7 +1537,7 @@
    "size": "missing",
    "gap": "多 agent 管理页（刻意不做）",
    "status": "not-applicable",
-   "reason": "架构不适用：Trident 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
+   "reason": "架构不适用：InkBlade 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
    "id": "ARTEX-MISS-170"
   },
   {
@@ -1546,7 +1546,7 @@
    "size": "missing",
    "gap": "LLM 配置页（刻意不做）",
    "status": "not-applicable",
-   "reason": "架构不适用：Trident 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
+   "reason": "架构不适用：InkBlade 为 CLI/REST/MCP/静态 SPA 形态，不实现 Next.js 服务端页面",
    "id": "ARTEX-MISS-171"
   },
   {
@@ -1555,7 +1555,7 @@
    "size": "missing",
    "gap": "通知渠道页 [CM-10]",
    "status": "done",
-   "evidence": "trident/core/notify.py; tests/test_notify.py",
+   "evidence": "inkblade/core/notify.py; tests/test_notify.py",
    "id": "ARTEX-MISS-172"
   },
   {
@@ -1627,7 +1627,7 @@
    "size": "missing",
    "gap": "ScopeSentry 对接 skill [CM-13]",
    "status": "done",
-   "evidence": "trident/core/importers.py; tests/test_backlog_s.py",
+   "evidence": "inkblade/core/importers.py; tests/test_backlog_s.py",
    "id": "ARTEX-MISS-180"
   }
  ]

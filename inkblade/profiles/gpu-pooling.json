@@ -1,5 +1,5 @@
 {
-  "schema": "trident-profile-v1",
+  "schema": "inkblade-profile-v1",
   "name": "gpu-pooling",
   "description": "Kubernetes GPU pooling with HAMi/cGPU sharing, SGLang PD disaggregation and per-tenant GPU memory partitions; no BMC, no cloud metadata.",
   "platform": "kubernetes",

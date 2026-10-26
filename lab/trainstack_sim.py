@@ -244,15 +244,15 @@ class _State:
             if not target.is_file():
                 target.write_text(
                     json.dumps({"shard": shard_id, "step": 100, "exp_avg_norm": 0.42,
-                                "seed": "trident-mock"}, ensure_ascii=False) + "\n",
+                                "seed": "inkblade-mock"}, ensure_ascii=False) + "\n",
                     encoding="utf-8")
 
-        self.manifest = {"schema": "trident-trainstack-data-v1", "shards": [
+        self.manifest = {"schema": "inkblade-trainstack-data-v1", "shards": [
             _seed_shard(root, "shard-0001", [
-                {"id": "s-0001", "text": "TRIDENT-SAMPLE-ALPHA"},
-                {"id": "s-0002", "text": "TRIDENT-SAMPLE-BRAVO"},
-                {"id": "s-0003", "text": "TRIDENT-SAMPLE-CHARLIE"},
-                {"id": "s-0004", "text": "TRIDENT-SAMPLE-DELTA"},
+                {"id": "s-0001", "text": "INKBLADE-SAMPLE-ALPHA"},
+                {"id": "s-0002", "text": "INKBLADE-SAMPLE-BRAVO"},
+                {"id": "s-0003", "text": "INKBLADE-SAMPLE-CHARLIE"},
+                {"id": "s-0004", "text": "INKBLADE-SAMPLE-DELTA"},
             ]),
         ], "sampler": {"seed": 7, "strategy": "epoch-rotate"}}
         _write_json(data_manifest_path(root), self.manifest)
@@ -851,7 +851,7 @@ def _jobs_read(ctx: _RequestContext):
 
 def _routes_manifest(ctx: _RequestContext):
     return 200, {
-        "service": "trident-trainstack-lab", "mode": ctx.mode, "host": HOST,
+        "service": "inkblade-trainstack-lab", "mode": ctx.mode, "host": HOST,
         "admin_token_hint": f"fixed 模式管理密钥 = Authorization: Bearer {ADMIN_TOKEN}",
         "tenant_header": TENANT_HEADER, "route_count": len(ROUTE_TABLE),
         "routes": [{k: v for k, v in entry.items() if k != "behavior"}
@@ -1052,7 +1052,7 @@ class _TrainstackHTTPServer(ThreadingHTTPServer):
 
 class _TrainstackHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "TridentTrainstackSim/0.1.0"
+    server_version = "InkBladeTrainstackSim/0.1.0"
 
     def log_message(self, fmt, *args):
         return
@@ -1167,7 +1167,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE,
     if mode not in MODES:
         raise ValueError(f"mode 必须是 {MODES} 之一，收到：{mode!r}")
     if root is None:
-        root_path = Path(tempfile.mkdtemp(prefix="trident-trainstack-"))
+        root_path = Path(tempfile.mkdtemp(prefix="inkblade-trainstack-"))
         owns_root = True
     else:
         root_path = Path(root)
@@ -1181,7 +1181,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE,
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident 训练栈仿真（仅 127.0.0.1）")
+    parser = argparse.ArgumentParser(description="InkBlade 训练栈仿真（仅 127.0.0.1）")
     parser.add_argument("--port", type=int, default=0, help="监听端口（0=自动分配）")
     parser.add_argument("--mode", choices=list(MODES), default=DEFAULT_MODE,
                         help="vulnerable=fail-open 姿态，fixed=加固姿态")

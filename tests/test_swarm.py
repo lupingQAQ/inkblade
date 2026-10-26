@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import unittest
 
-from trident.core.swarm import (ROLE_CAPS, ApprovalRequired, Swarm, SwarmError)
+from inkblade.core.swarm import (ROLE_CAPS, ApprovalRequired, Swarm, SwarmError)
 
 
 def task(tid: str, role: str, delay_ms: int = 40, **extra) -> dict:
@@ -130,7 +130,7 @@ class TestSwarmCli(unittest.TestCase):
         import contextlib
         import io
 
-        from trident import cli
+        from inkblade import cli
 
         out = io.StringIO()
         with contextlib.redirect_stdout(out):

@@ -19,8 +19,8 @@ import urllib.parse
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-SAFE_MARKER_PREFIX = "TRIDENT-BENIGN"
-SCRATCH_DIR = "trident-benign-scratch"
+SAFE_MARKER_PREFIX = "INKBLADE-BENIGN"
+SCRATCH_DIR = "inkblade-benign-scratch"
 MODULE_PREFIX = "defense-bypass-"
 STATES = ("deployed", "degraded", "absent")
 
@@ -463,7 +463,7 @@ def _request_template(marker: str, category: str) -> dict:
     elif category == "oversized-benign-variant":
         tpl["body_hint"] = marker + "-" + "b" * 2048
     elif category == "dns-query-benign":
-        tpl = {"query": "trident-benign.marker.invalid", "marker_plain": marker}
+        tpl = {"query": "inkblade-benign.marker.invalid", "marker_plain": marker}
     else:
         tpl["body_hint"] = marker
     return tpl
@@ -492,7 +492,7 @@ def benign_probe(product_key: str, technique: dict) -> dict:
     elif cat == "encoded-command-variant":
         probe["exec_template"] = f"bash -c 'echo {marker}'"
     elif cat in _IMAGE_CATS:
-        probe["sample_name"] = f"trident-benign/{technique['id']}:lab"
+        probe["sample_name"] = f"inkblade-benign/{technique['id']}:lab"
         probe["write_target"] = f"{SCRATCH_DIR}/{technique['id']}-dockerfile"
     elif cat in _REQUEST_CATS:
         probe["request_template"] = _request_template(marker, cat)
@@ -541,8 +541,8 @@ def audit_benign(probes: list[dict]) -> list[str]:
         if et is not None and ("echo" not in et or SAFE_MARKER_PREFIX not in et):
             problems.append(f"{tid}: exec 模板仅允许 echo benign marker")
         sn = p.get("sample_name")
-        if sn is not None and not sn.startswith("trident-benign/"):
-            problems.append(f"{tid}: 样本名必须 trident-benign/ 前缀")
+        if sn is not None and not sn.startswith("inkblade-benign/"):
+            problems.append(f"{tid}: 样本名必须 inkblade-benign/ 前缀")
     return problems
 
 

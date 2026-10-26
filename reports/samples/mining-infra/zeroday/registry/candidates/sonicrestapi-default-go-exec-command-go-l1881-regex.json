@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "sonicrestapi-default-go-exec-command-go-l1881-regex",
  "target": "sonicrestapi",
  "repo": "sonic-net/sonic-restapi",

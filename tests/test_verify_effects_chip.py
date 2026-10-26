@@ -14,11 +14,11 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.registry import LEVELS, SERIES, load_modules
+from inkblade.core.registry import LEVELS, SERIES, load_modules
 
 REPO = Path(__file__).resolve().parents[1]
-SCRIPT = REPO / "trident" / "verify-effects.py"
-MODULES_DIR = REPO / "trident" / "modules"
+SCRIPT = REPO / "inkblade" / "verify-effects.py"
+MODULES_DIR = REPO / "inkblade" / "modules"
 CHIP_IDS = {
     "chip-cc-attestation-tamper",
     "chip-iommu-passthrough",
@@ -51,7 +51,7 @@ def _sanitized_modules(root: Path) -> Path:
 
 def load_verify():
     import importlib.util
-    spec = importlib.util.spec_from_file_location("trident_verify_effects_chip", SCRIPT)
+    spec = importlib.util.spec_from_file_location("inkblade_verify_effects_chip", SCRIPT)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod

@@ -103,7 +103,7 @@ def _canary(ctx: dict, params: dict, filename: str, payload: str) -> Path:
                                      [{"kind": "file", "path": str(target)}])
     if receipt is None:
         raise RuntimeError("backup-write 演示缺少快照回执")
-    target.write_text(f"# TRIDENT demo {ctx['marker']} {filename}\n{payload}\n", encoding="utf-8")
+    target.write_text(f"# INKBLADE demo {ctx['marker']} {filename}\n{payload}\n", encoding="utf-8")
     return target
 
 
@@ -463,7 +463,7 @@ def demo_escalate(ctx: dict, params: dict) -> list[dict]:
     payload = (
         "apiVersion: rbac.authorization.k8s.io/v1\n"
         "kind: ClusterRole\n"
-        "metadata: {name: trident-escalated-demo}\n"
+        "metadata: {name: inkblade-escalated-demo}\n"
         "rules: [{apiGroups: ['*'], resources: ['*'], verbs: ['*']}]\n"
     )
     target = _canary(ctx, params, "escalate", payload)
@@ -476,7 +476,7 @@ def demo_bind(ctx: dict, params: dict) -> list[dict]:
     payload = (
         "apiVersion: rbac.authorization.k8s.io/v1\n"
         "kind: ClusterRoleBinding\n"
-        "metadata: {name: trident-bind-demo}\n"
+        "metadata: {name: inkblade-bind-demo}\n"
         "roleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: cluster-admin}\n"
         "subjects: [{kind: ServiceAccount, name: demo-sa, namespace: privesc-lab}]\n"
     )
@@ -490,14 +490,14 @@ def demo_webhook(ctx: dict, params: dict) -> list[dict]:
     payload = (
         "apiVersion: admissionregistration.k8s.io/v1\n"
         "kind: MutatingWebhookConfiguration\n"
-        "metadata: {name: trident-webhook-demo}\n"
+        "metadata: {name: inkblade-webhook-demo}\n"
         "webhooks:\n"
-        "  - name: inject.trident.local\n"
+        "  - name: inject.inkblade.local\n"
         "    admissionReviewVersions: [v1]\n"
         "    sideEffects: None\n"
         "    failurePolicy: Ignore\n"
         "    rules: [{apiGroups: [''], apiVersions: [v1], operations: [CREATE], resources: [pods]}]\n"
-        "    clientConfig: {url: 'https://trident-webhook.privesc-lab.svc:443/mutate'}\n"
+        "    clientConfig: {url: 'https://inkblade-webhook.privesc-lab.svc:443/mutate'}\n"
     )
     target = _canary(ctx, params, "webhook", payload)
     return [finding("high", "准入 Webhook 写入演示已落盘（可回滚）",

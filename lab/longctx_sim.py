@@ -394,7 +394,7 @@ def _checkpoint_read(ctx: _RequestContext):
 
 def _routes_manifest(ctx: _RequestContext):
     return 200, {
-        "service": "trident-longctx-lab",
+        "service": "inkblade-longctx-lab",
         "mode": ctx.mode,
         "host": HOST,
         "admin_token_hint": f"fixed 模式管理密钥 = Authorization: Bearer {ADMIN_TOKEN}",
@@ -521,7 +521,7 @@ class _LongctxState:
         seed = checkpoint_shard_path(root, SEED_SHARD)
         seed.parent.mkdir(parents=True, exist_ok=True)
         if not seed.is_file():
-            seed.write_bytes(b"TRIDENT-MOCK-CHECKPOINT-SEED\nshard=00000\n")
+            seed.write_bytes(b"INKBLADE-MOCK-CHECKPOINT-SEED\nshard=00000\n")
 
 
 class _LongctxHTTPServer(ThreadingHTTPServer):
@@ -537,7 +537,7 @@ class _LongctxHTTPServer(ThreadingHTTPServer):
 
 class _LongctxHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "TridentLongctxSim/0.1.0"
+    server_version = "InkBladeLongctxSim/0.1.0"
 
     def log_message(self, fmt, *args):  # 静默访问日志
         return
@@ -658,7 +658,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE,
     if mode not in MODES:
         raise ValueError(f"mode 必须是 {MODES} 之一，收到：{mode!r}")
     if root is None:
-        root_path = Path(tempfile.mkdtemp(prefix="trident-longctx-"))
+        root_path = Path(tempfile.mkdtemp(prefix="inkblade-longctx-"))
         owns_root = True
     else:
         root_path = Path(root)
@@ -672,7 +672,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE,
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident 长上下文推理仿真（仅 127.0.0.1）")
+    parser = argparse.ArgumentParser(description="InkBlade 长上下文推理仿真（仅 127.0.0.1）")
     parser.add_argument("--port", type=int, default=0, help="监听端口（0=自动分配）")
     parser.add_argument("--mode", choices=list(MODES), default=DEFAULT_MODE,
                         help="vulnerable=fail-open 姿态，fixed=加固姿态")

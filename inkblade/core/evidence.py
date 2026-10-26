@@ -6,13 +6,14 @@ import gzip
 import hashlib
 import io
 import json
-import os
 import sqlite3
 import tarfile
 import time
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
+
+from .env import getenv
 
 SCHEMA_TABLES = [
     "runs", "steps", "prompts", "env", "findings", "evidence",
@@ -62,7 +63,7 @@ def _digest(text: str) -> str:
 
 
 def _zstd_available() -> bool:
-    if os.environ.get("TRIDENT_FORCE_NO_ZSTD") == "1":
+    if getenv("FORCE_NO_ZSTD") == "1":
         return False
     try:
         import zstandard  # noqa: F401

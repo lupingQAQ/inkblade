@@ -91,10 +91,10 @@ def run(ctx: dict, params: dict) -> dict:
     mode, note = _resolve_mode(params)
     if not target:
         return {"summary": "no-target", "artifacts": [], "findings": []}
-    marker = str(ctx.get("marker") or "TRIDENT")
+    marker = str(ctx.get("marker") or "INKBLADE")
     t = Trace(ctx)
     write = t.call("POST", f"{target}/set_env",
-                   {"key": "TRIDENT_AWEX_WRITE", "value": f"/tmp/awex/{marker}"})
+                   {"key": "INKBLADE_AWEX_WRITE", "value": f"/tmp/awex/{marker}"})
     join = None
     if _ok(write):
         join = t.call("POST", f"{target}/call",

@@ -26,7 +26,7 @@ VPC、GPU Operator、网络策略、计费与配额行为。
 1. 设预算告警（AWS Budgets / Azure Cost Management / GCP Budgets）+ 50%/80%/100% 三档。
 2. 只用 **单 AZ、单节点、无 GPU、无 NAT Gateway、无公网 LoadBalancer** 的最小拓扑；
    需要出网时用节点公网 IP + 安全组白名单，不用 NAT。
-3. 所有资源打 `owner=trident-lab`、`ttl=YYYY-MM-DD` 标签；用 TTL 脚本/定时删除。
+3. 所有资源打 `owner=inkblade-lab`、`ttl=YYYY-MM-DD` 标签；用 TTL 脚本/定时删除。
 4. 开完立即记录：集群名、region、实例 ID、磁盘 ID、公网 IP、创建时间。
 5. 收尾检查：控制面、节点、磁盘、快照、负载均衡、公网 IP、日志桶逐项删除；
    `aws ec2 describe-instances` / `az resource list -g` / `gcloud compute instances list`
@@ -48,7 +48,7 @@ VPC、GPU Operator、网络策略、计费与配额行为。
 ```bash
 # 未在本机执行；需 AWS CLI v2 + eksctl + 已配置凭据
 export AWS_REGION=us-east-1
-export CLUSTER=trident-free-lab
+export CLUSTER=inkblade-free-lab
 eksctl create cluster \
   --name "$CLUSTER" --region "$AWS_REGION" \
   --version 1.33 --without-nodegroup
@@ -74,7 +74,7 @@ eksctl delete cluster --name "$CLUSTER" --region "$AWS_REGION" --wait
 aws ec2 run-instances \
   --image-id resolve:ssm:/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64 \
   --instance-type t3.micro --count 1 \
-  --tag-specifications 'ResourceType=instance,Tags=[{Key=owner,Value=trident-lab},{Key=ttl,Value=2026-10-26}]' \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=owner,Value=inkblade-lab},{Key=ttl,Value=2026-10-26}]' \
   --user-data '#!/bin/bash
 curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable traefik" sh -
 '
@@ -94,13 +94,13 @@ aws ec2 terminate-instances --instance-ids <INSTANCE_ID>
 
 ```bash
 # 未在本机执行；az login 后
-RG=trident-free-rg
+RG=inkblade-free-rg
 az group create -n "$RG" -l eastus
-az aks create -g "$RG" -n trident-free-aks \
+az aks create -g "$RG" -n inkblade-free-aks \
   --tier free --node-count 1 --node-vm-size Standard_B2s \
   --node-osdisk-size 32 --generate-ssh-keys --network-plugin azure \
   --enable-managed-identity
-az aks get-credentials -g "$RG" -n trident-free-aks --overwrite-existing
+az aks get-credentials -g "$RG" -n inkblade-free-aks --overwrite-existing
 kubectl get nodes -o wide
 # 收尾（删整个资源组，含 MC_* 节点资源组）
 az group delete -n "$RG" --yes --no-wait
@@ -121,15 +121,15 @@ az group show -n "$RG" 2>/dev/null || echo "deleted"
 # 未在本机执行；gcloud auth login 后
 gcloud config set project <PROJECT_ID>
 gcloud config set compute/zone us-central1-a
-gcloud container clusters create trident-free-gke \
+gcloud container clusters create inkblade-free-gke \
   --zone us-central1-a --num-nodes 1 --machine-type e2-small \
   --disk-size 30 --no-enable-autoscaling --enable-network-policy \
-  --labels owner=trident-lab,ttl=2026-10-26
-gcloud container clusters get-credentials trident-free-gke --zone us-central1-a
+  --labels owner=inkblade-lab,ttl=2026-10-26
+gcloud container clusters get-credentials inkblade-free-gke --zone us-central1-a
 kubectl get nodes -o wide
 # 收尾
-gcloud container clusters delete trident-free-gke --zone us-central1-a --quiet
-gcloud compute disks list --filter="labels.owner=trident-lab"
+gcloud container clusters delete inkblade-free-gke --zone us-central1-a --quiet
+gcloud compute disks list --filter="labels.owner=inkblade-lab"
 ```
 
 ## 5. 阿里云 ACK / 腾讯云 TKE
@@ -152,7 +152,7 @@ gcloud compute disks list --filter="labels.owner=trident-lab"
 在最小集群上只跑本仓库的**只读侦察**与 NetworkPolicy 语义验证：
 
 ```bash
-python -m trident run --module k8s-cluster-recon --params '{"snapshot":"..."}' ...
+python -m inkblade run --module k8s-cluster-recon --params '{"snapshot":"..."}' ...
 # 或按 docs/RUNBOOK.md 的 lab 快照模式；不要在生产集群执行写类模块
 ```
 

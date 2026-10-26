@@ -134,7 +134,7 @@ class GpuAllocationResidueTest(unittest.TestCase):
     def test_cross_tenant_allocate_previous_tenant_and_residue_readback(self):
         with TemporaryDirectory() as tmp:
             root = Path(tmp)
-            marker = "TRIDENT-BENIGN-VRAM-PROBE-ALPHA"
+            marker = "INKBLADE-BENIGN-VRAM-PROBE-ALPHA"
             with start_all(mode="vulnerable", root=root) as server:
                 status, allocated = request("POST", server.url("/gpu/allocate"), {
                     "tenant": "tenant-a", "device": "gpu-b-0",
@@ -171,7 +171,7 @@ class GpuAllocationResidueTest(unittest.TestCase):
                 self.assertEqual(status, 403, denied)
                 status, allocated = request("POST", server.url("/gpu/allocate"), {
                     "tenant": "tenant-a", "device": "gpu-a-1",
-                    "namespace": "ns-a-infer", "marker": "TRIDENT-BENIGN-FIXED",
+                    "namespace": "ns-a-infer", "marker": "INKBLADE-BENIGN-FIXED",
                 }, ADMIN_A)
                 self.assertEqual(status, 200, allocated)
                 alloc_id = allocated["allocation_id"]

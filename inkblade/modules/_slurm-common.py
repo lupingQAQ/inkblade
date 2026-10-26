@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """_slurm-common — Slurm/HPC 配置面模块族共享库（仅标准库，只读）。
 
-数据源统一为 ``trident collect files`` 形态的导出目录或一个 JSON 快照：
+数据源统一为 ``inkblade collect files`` 形态的导出目录或一个 JSON 快照：
 
 - ``{"files": {"slurm.conf": "<text>", ...}, "inventory": {...}}``
 - 目录：递归读取文本文件为 ``files``，可选 ``inventory.json`` 描述属主/权限/签名。

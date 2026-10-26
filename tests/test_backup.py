@@ -3,8 +3,8 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.backup import BackupManager
-from trident.core.evidence import EvidenceStore
+from inkblade.core.backup import BackupManager
+from inkblade.core.evidence import EvidenceStore
 
 
 class TestBackupSnapshotThreeStates(unittest.TestCase):

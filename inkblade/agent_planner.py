@@ -16,7 +16,7 @@ from typing import Any
 from .core.chains import dry_run, evaluate_preconditions, load_chains
 from .core.evidence import EvidenceStore
 
-SCHEMA = "trident-agent-plan-v1"
+SCHEMA = "inkblade-agent-plan-v1"
 
 
 def _runs(store: EvidenceStore) -> list[str]:
@@ -122,7 +122,7 @@ def plan_workspace(
 ) -> dict:
     """生成推荐计划；只读，不落任何 actions/run。
 
-    ``policy=False``（或 env ``TRIDENT_AGENT_POLICY=off``）精确复现 HEAD 的
+    ``policy=False``（或 env ``INKBLADE_AGENT_POLICY=off``）精确复现 HEAD 的
     计划字段；ON 为每个候选附加自主度/审批次数与成本估算（仍不执行）。
     ``inventory`` 提供时，候选链在规划前先做 CVE 适用性评估（blocked/unknown
     步骤不会进入可执行面），计划里带 applicability 依据。
@@ -218,7 +218,7 @@ def plan_workspace(
             "note_zh": "本命令只输出计划（plan-only）。",
             "note_en": "This command only emits a plan (plan-only).",
         },
-        **( {"agent_policy": {"engine": "trident.agent_policy", "enabled": True,
+        **( {"agent_policy": {"engine": "inkblade.agent_policy", "enabled": True,
                               "hard_boundary": "plan-only；审批后由人触发"}}
            if policy_on else {} ),
         "candidates": candidates,
@@ -228,7 +228,7 @@ def plan_workspace(
 def render_plan_md(plan: dict) -> str:
     """人类可读计划（Markdown，中英对照）。"""
     lines = [
-        "# Trident 仅规划 Agent Plan（只读 / plan-only）",
+        "# InkBlade 仅规划 Agent Plan（只读 / plan-only）",
         "",
         f"- 工作区 Workspace: **{plan.get('workspace')}**",
         f"- 证据 Run: **{plan.get('run') or '（无）'}**",

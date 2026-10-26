@@ -79,7 +79,7 @@
     {
       "name": "aggregated-role",
       "aggregationRule": {
-        "clusterRoleSelectors": [{"matchLabels": {"rbac.trident.io/aggregate-to-admin": "true"}}]
+        "clusterRoleSelectors": [{"matchLabels": {"rbac.inkblade.io/aggregate-to-admin": "true"}}]
       },
       "rules": []
     }

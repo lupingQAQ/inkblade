@@ -91,7 +91,7 @@ def run(ctx: dict, params: dict) -> dict:
     mode, note = _resolve_mode(params)
     if not target:
         return {"summary": "no-target", "artifacts": [], "findings": []}
-    marker = str(ctx.get("marker") or "TRIDENT")
+    marker = str(ctx.get("marker") or "INKBLADE")
     t = Trace(ctx)
     listing = t.call("GET", f"{target}/api/jobs/")
     findings = []

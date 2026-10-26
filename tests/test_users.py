@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.users import UserStore
+from inkblade.core.users import UserStore
 
 
 class TestUsers(unittest.TestCase):

@@ -1,4 +1,4 @@
-"""OpenAPI 3.1 文档：Trident 本地 HTTP API（服务模式）的机器可读契约。
+"""OpenAPI 3.1 文档：InkBlade 本地 HTTP API（服务模式）的机器可读契约。
 
 只读端点清单与 server.py / api_ext.py 的实际路由保持一致；写端点标注所需能力位。
 文档本身公开可取（不含凭据），业务端点一律 Bearer 认证 + 工作区隔离。
@@ -122,7 +122,7 @@ def build_openapi() -> dict[str, Any]:
     return {
         "openapi": "3.1.0",
         "info": {
-            "title": "Trident ML-cluster pentest platform API",
+            "title": "InkBlade ML-cluster pentest platform API",
             "version": "1.0.0",
             "description": "本地 Web API（标准库 http.server）。业务端点须 Bearer 登录并受工作区隔离；"
                            "执行类端点在工作区授权（consent）未完成时返回 423；"

@@ -204,15 +204,15 @@ class SameTargetResultTest(unittest.TestCase):
         self.assertGreaterEqual(artex["tokens_in_est"], 0)
         self.assertGreaterEqual(artex["tokens_out_est"], 0)
 
-    def test_trident_side_same_chain_same_target(self):
-        trident = self.data["trident"]
-        self.assertEqual(trident["chain"], "flat-network-admin-plane-weight-poison")
-        self.assertTrue(trident["ok"], f"Trident 链执行失败: {trident.get('steps')}")
-        self.assertTrue(trident["step_timings"])
-        for st in trident["step_timings"]:
+    def test_inkblade_side_same_chain_same_target(self):
+        inkblade = self.data["inkblade"]
+        self.assertEqual(inkblade["chain"], "flat-network-admin-plane-weight-poison")
+        self.assertTrue(inkblade["ok"], f"InkBlade 链执行失败: {inkblade.get('steps')}")
+        self.assertTrue(inkblade["step_timings"])
+        for st in inkblade["step_timings"]:
             self.assertIsNotNone(st["ms"])
-        self.assertGreaterEqual(trident["target_hit_count"], 1)
-        self.assertGreater(trident["execute_ms"], 0)
+        self.assertGreaterEqual(inkblade["target_hit_count"], 1)
+        self.assertGreater(inkblade["execute_ms"], 0)
 
     def test_comparison_table_covers_both_sides(self):
         table = self.data["comparison"]
@@ -221,13 +221,13 @@ class SameTargetResultTest(unittest.TestCase):
         for row in table:
             self.assertIn(row["metric"], allowed)
             self.assertIn("artex", row)
-            self.assertIn("trident", row)
+            self.assertIn("inkblade", row)
         metrics = {row["metric"] for row in table}
         self.assertLessEqual({"total_ms", "requests", "tokens"}, metrics)
 
     def test_raw_provenance_attached(self):
         prov = self.data["provenance"]
-        for key in ("mock_llm_log", "artex_raw", "trident_out", "target_stats",
+        for key in ("mock_llm_log", "artex_raw", "inkblade_out", "target_stats",
                     "artex_tasks_json", "collected_at"):
             self.assertIn(key, prov)
 

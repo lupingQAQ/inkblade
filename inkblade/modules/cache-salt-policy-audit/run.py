@@ -28,7 +28,7 @@ def run(ctx: dict, params: dict) -> dict:
     if not target:
         return _COMMON.no_target()
     marker = _COMMON.marker_of(ctx, params)
-    prefix = str(params.get("prompt_prefix") or f"TRIDENT-CACHE-SALT-{marker}")
+    prefix = str(params.get("prompt_prefix") or f"INKBLADE-CACHE-SALT-{marker}")
     prefix_tokens = _COMMON.int_of(params.get("prefix_tokens"), 2048) or 2048
     salt = str(params.get("cache_salt") or "salt-tenant-a")
 

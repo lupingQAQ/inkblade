@@ -643,7 +643,7 @@ NEW = [
 
 
 def load_mining() -> list[dict]:
-    registry = json.loads((ROOT / "trident" / "core" / "exploit-registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "inkblade" / "core" / "exploit-registry.json").read_text(encoding="utf-8"))
     cases = {
         json.loads(p.read_text(encoding="utf-8")).get("id"): p
         for p in (ROOT / "lab" / "upstream_verify" / "cases").glob("*/*/manifest.json")
@@ -903,7 +903,7 @@ def main() -> None:
         if p and not (Path(p).is_absolute() or (ROOT / p).exists() or (WORKSPACE / p).exists()):
             missing.append((e["id"], p))
     inventory = {
-        "schema": "trident-zeroday-inventory-v1",
+        "schema": "inkblade-zeroday-inventory-v1",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "generated_by": "tools/build-zeroday-inventory.py",
         "sources": {
@@ -911,7 +911,7 @@ def main() -> None:
             "omni": "projects/jev-omni-2026-10/AUDIT-REPORT.md + projects/repro-2026-10",
             "agent": "projects/agent-2026-10/results/0DAY-REGISTRY.md",
             "latest": "projects/repro-2026-10/LATEST-VERIFICATION.md",
-            "mining": "trident/core/exploit-registry.json (source=mining)",
+            "mining": "inkblade/core/exploit-registry.json (source=mining)",
             "legacy": "reports/samples/mining/zeroday/registry/candidates/*.json",
             "new": "tools/build-zeroday-inventory.py curated new-discovery cases",
         },

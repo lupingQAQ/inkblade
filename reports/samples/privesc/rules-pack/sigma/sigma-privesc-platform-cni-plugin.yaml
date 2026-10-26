@@ -7,12 +7,12 @@ references:
   - "CNI 规范 https://www.cni.dev/docs/spec/"
   - "MITRE ATT&CK T1611 Escape to Host https://attack.mitre.org/techniques/T1611/"
   - "Kubernetes Pod 安全标准 https://kubernetes.io/docs/concepts/security/pod-security-standards/"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: platform-cni-plugin
-    trident.io/module: cni-plugin-exec
+    inkblade.io/vector: platform-cni-plugin
+    inkblade.io/module: cni-plugin-exec
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -31,16 +31,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.platform
+  - inkblade
+  - inkblade.vector.platform
   - attack.t1611
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: platform-cni-plugin
-  trident-module: cni-plugin-exec
-  trident-detection-point: K8s audit：CNI DaemonSet hostPath /opt/cni/bin 变更
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: platform-cni-plugin
+  inkblade-module: cni-plugin-exec
+  inkblade-detection-point: K8s audit：CNI DaemonSet hostPath /opt/cni/bin 变更
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

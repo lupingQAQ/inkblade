@@ -44,7 +44,7 @@ def run(ctx: dict, params: dict) -> dict:
 
     if mode == "backup-write":
         payload = str(params.get("payload") or (
-            '{"marker": "' + marker + '", "benign": true, "integrity": "trident-lab-poison", '
+            '{"marker": "' + marker + '", "benign": true, "integrity": "inkblade-lab-poison", '
             '"layer": 3, "service": "pd-kv-channel"}'
         ))
         write = t.call("POST", f"{target}/kv/transfer", {

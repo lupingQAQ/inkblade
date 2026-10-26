@@ -21,8 +21,8 @@ from vm_console import Console  # noqa: E402
 
 RULES = [
     (re.compile(r"Setup a user\?|lower-case loginname", re.I), "\r"),
-    (re.compile(r"New password:\s*$"), "trident\r"),
-    (re.compile(r"Retype password:\s*$"), "trident\r"),
+    (re.compile(r"New password:\s*$"), "inkblade\r"),
+    (re.compile(r"Retype password:\s*$"), "inkblade\r"),
     (re.compile(r"Allow root ssh login|root ssh login", re.I), "yes\r"),
     (re.compile(r"\[y/N\]|\[Y/n\]|\(y/n\)|Erase the above disk|continue\?", re.I), "y\r"),
     (re.compile(r"mirror number|Enter mirror", re.I), "\r"),

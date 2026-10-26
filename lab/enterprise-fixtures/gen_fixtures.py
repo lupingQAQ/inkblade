@@ -18,7 +18,7 @@ REPO = Path(__file__).resolve().parents[2]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from trident.core.yamlish import dump  # noqa: E402
+from inkblade.core.yamlish import dump  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 CLUSTERS = HERE / "clusters"
@@ -474,7 +474,7 @@ def manifests():
     ]}
     namespaces = {"apiVersion": "v1", "kind": "List", "items": [
         {"apiVersion": "v1", "kind": "Namespace",
-         "metadata": {"name": ns, "labels": {"trident.example/purpose": purpose}}}
+         "metadata": {"name": ns, "labels": {"inkblade.example/purpose": purpose}}}
         for ns, purpose in (("kube-system", "platform"), ("security", "platform"),
                             ("monitoring", "platform"), ("ml-training", "training"),
                             ("ml-inference", "inference"), ("tenant-a", "tenant"),

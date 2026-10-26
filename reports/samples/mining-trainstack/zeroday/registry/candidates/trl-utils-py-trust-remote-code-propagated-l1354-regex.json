@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "trl-utils-py-trust-remote-code-propagated-l1354-regex",
  "target": "trl",
  "repo": "huggingface/trl",

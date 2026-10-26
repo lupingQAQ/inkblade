@@ -1,4 +1,4 @@
-# Trident 提权检测覆盖（Purple Replay）
+# InkBlade 提权检测覆盖（Purple Replay）
 
 - 向量：47；命中：47；漏过：0
 - 判定：PASS

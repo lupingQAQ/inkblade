@@ -91,13 +91,13 @@ def run(ctx: dict, params: dict) -> dict:
     mode, note = _resolve_mode(params)
     if not target:
         return {"summary": "no-target", "artifacts": [], "findings": []}
-    marker = str(ctx.get("marker") or "TRIDENT")
+    marker = str(ctx.get("marker") or "INKBLADE")
     t = Trace(ctx)
-    env = t.call("POST", f"{target}/set_env", {"key": "TRIDENT_PROBE", "value": marker})
+    env = t.call("POST", f"{target}/set_env", {"key": "INKBLADE_PROBE", "value": marker})
     engine, call = None, None
     if _ok(env):
         engine = t.call("POST", f"{target}/create_engine",
-                        {"module": "trident_probe_module", "cls": "ProbeClass"})
+                        {"module": "inkblade_probe_module", "cls": "ProbeClass"})
     if _ok(engine):
         call = t.call("POST", f"{target}/call",
                       {"engine_id": _resp(engine).get("engine_id", ""), "method": "echo",

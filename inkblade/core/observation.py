@@ -19,7 +19,7 @@ import math
 from pathlib import Path
 from typing import Any
 
-SCHEMA = "trident-observation-v1"
+SCHEMA = "inkblade-observation-v1"
 MAX_SUMMARY = 400
 EVIDENCE_KINDS = ("run", "step", "finding", "file", "audit", "plan", "artifact")
 STATUSES = ("ok", "failed", "skipped", "proposed")

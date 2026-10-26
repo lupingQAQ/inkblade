@@ -1,7 +1,7 @@
-/* Trident 六视图 SPA — 原生 JS + vendor UMD（React / ReactDOM / React Flow v11），无构建步骤。
+/* InkBlade 六视图 SPA — 原生 JS + vendor UMD（React / ReactDOM / React Flow v11），无构建步骤。
  *
  * 数据源：
- *  - 静态导出模式：window.TRIDENT_DATA（由 export_static.py 注入，免服务打开）
+ *  - 静态导出模式：window.INKBLADE_DATA（由 export_static.py 注入，免服务打开）
  *  - 服务模式：POST api/login（会话）、GET api/runs（运行列表）；步骤级数据无只读端点 → 空数据兜底提示
  *
  * 六视图：
@@ -57,11 +57,11 @@
 
   var STATE = {
     token: null, role: null, workspace: "local-lab",
-    runs: [], data: window.TRIDENT_DATA || null,
+    runs: [], data: window.INKBLADE_DATA || null,
     selectedStep: null, view: "dag", reportRemote: null, redactZeroday: false,
     lang: "zh",
   };
-  var STATIC_MODE = !!window.TRIDENT_DATA;
+  var STATIC_MODE = !!window.INKBLADE_DATA;
 
   /* ================= 双语（zh/en） =================
    * 静态文案走 index.html 的 data-i18n；动态视图走 t(key)。
@@ -75,7 +75,7 @@
       "login.user": "用户名", "login.pass": "密码", "login.ws": "工作区",
       "login.submit": "登录", "login.runs": "刷新运行", "login.abort": "紧急停止",
       "lang.switch": "切换语言 / Switch language",
-      "guide.title": "第一次用 Trident？2 条命令看结果",
+      "guide.title": "第一次用 InkBlade？2 条命令看结果",
       "guide.body": "本地 mock 靶场，不碰真实集群；约 10–20 秒生成发现、双语报告与规则包。",
       "guide.step1": "环境自检", "guide.step2": "本地看结果", "guide.step3": "真实集群（只读）",
       "guide.cluster": "真实集群：", "guide.kubeconfig": "自动发现 KUBECONFIG / ~/.kube/config；先 dry-run 不碰集群。",
@@ -104,7 +104,7 @@
       "approvals.hint": "LLM 可选（OpenAI 兼容 env）+ 规则兜底；逐动作 dry-run 预览（写面/备份闸门），lead 批准后才可执行。",
       "schedules.title": "计划任务（周期重测）",
       "schedules.hint": "cron/interval 计划 → 到期自动跑指定链子集 → drift 报告。",
-      "footer.line": "Trident · 资产全部本地内嵌（无 CDN）· 证据三层：上下文摘要 / 数据库 / 归档（tar+SHA256）",
+      "footer.line": "InkBlade · 资产全部本地内嵌（无 CDN）· 证据三层：上下文摘要 / 数据库 / 归档（tar+SHA256）",
       "common.copy": "复制", "common.copied": "已复制",
       "common.demo": "本地 demo", "common.cluster": "真实集群（只读）",
       "run.staticMeta": "运行 {run} · 状态 {status} · 步骤 {steps} · 发现 {findings}",
@@ -128,44 +128,44 @@
       "timeline.summary": "步骤 {steps} · 总耗时 {total} · 累计执行 {sum} · 峰值并行度 {par}",
       "empty.dag.title": "这个视图还没有步骤",
       "empty.dag.body": "DAG 来自一次 run 的 steps 表。先跑本地 demo 生成真实步骤与三层证据；已有 run 时请用静态导出打开。",
-      "empty.dag.action": "python -m trident demo",
-      "empty.dag.next": "真实集群只读清点：python -m trident onboard-cluster --dry-run",
+      "empty.dag.action": "python -m inkblade demo",
+      "empty.dag.next": "真实集群只读清点：python -m inkblade onboard-cluster --dry-run",
       "empty.chain.title": "还没有攻击链图",
       "empty.chain.body": "图数据来自 graph_nodes / graph_edges。demo 会写入可达性边；真实集群先用 pilot 只读清点建立基线。",
-      "empty.chain.action": "python -m trident demo",
-      "empty.chain.next": "接入真实集群：python -m trident onboard-cluster --dry-run",
+      "empty.chain.action": "python -m inkblade demo",
+      "empty.chain.next": "接入真实集群：python -m inkblade onboard-cluster --dry-run",
       "empty.timeline.title": "还没有执行时间线",
       "empty.timeline.body": "时间线需要带起止时间的 steps 记录。跑一次 demo 或从服务模式登录后查看运行列表。",
-      "empty.timeline.action": "python -m trident demo",
-      "empty.timeline.next": "服务模式：python -m trident ui --port 8765",
+      "empty.timeline.action": "python -m inkblade demo",
+      "empty.timeline.next": "服务模式：python -m inkblade ui --port 8765",
       "empty.evidence.title": "还没有证据可浏览",
       "empty.evidence.body": "三层证据（context.jsonl.gz / evidence.db / tar+SHA256 归档）由 run 产生；先跑 demo 再回到此页。",
-      "empty.evidence.action": "python -m trident demo",
-      "empty.evidence.next": "静态导出：python -m trident ui --export-static <run> <out>",
+      "empty.evidence.action": "python -m inkblade demo",
+      "empty.evidence.next": "静态导出：python -m inkblade ui --export-static <run> <out>",
       "empty.report.title": "还没有发现（findings）",
       "empty.report.body": "报告预览从 findings 表读取。demo 会生成 10 条发现与双语报告；真实集群请先签授权再执行只读模块。",
-      "empty.report.action": "python -m trident demo",
-      "empty.report.next": "授权与范围：python -m trident quickstart",
+      "empty.report.action": "python -m inkblade demo",
+      "empty.report.next": "授权与范围：python -m inkblade quickstart",
       "empty.rules.title": "规则目录为空",
       "empty.rules.body": "规则包由规则引擎生成；本地仓库应自带 Kyverno/PSS/Sigma/Falco/Suricata 规则目录。",
-      "empty.rules.action": "python -m trident rules generate --help",
-      "empty.rules.next": "规则校验：python -m trident rules validate <pack>",
+      "empty.rules.action": "python -m inkblade rules generate --help",
+      "empty.rules.next": "规则校验：python -m inkblade rules validate <pack>",
       "empty.assets.title": "资产库为空",
       "empty.assets.body": "资产图来自 assets 表（种子 → 增量发现）。demo 会写入命名空间/服务；真实集群用 discover 或 pilot。",
-      "empty.assets.action": "python -m trident demo",
-      "empty.assets.next": "资产发现：python -m trident discover --seeds <seeds.json>",
+      "empty.assets.action": "python -m inkblade demo",
+      "empty.assets.next": "资产发现：python -m inkblade discover --seeds <seeds.json>",
       "empty.drift.title": "还没有 drift 报告",
       "empty.drift.body": "drift 由周期重测生成：scheduler 到期跑链子集，与上次 findings 逐键比较。",
-      "empty.drift.action": "python -m trident schedule list",
-      "empty.drift.next": "立即跑到期计划：python -m trident schedule run-due",
+      "empty.drift.action": "python -m inkblade schedule list",
+      "empty.drift.next": "立即跑到期计划：python -m inkblade schedule run-due",
       "empty.approvals.title": "审批队列为空",
       "empty.approvals.body": "审批制自主探索的提议由 explorer propose 生成；lead 批准后才会执行。",
-      "empty.approvals.action": "python -m trident explore propose --help",
-      "empty.approvals.next": "查看队列：python -m trident explore list",
+      "empty.approvals.action": "python -m inkblade explore propose --help",
+      "empty.approvals.next": "查看队列：python -m inkblade explore list",
       "empty.schedules.title": "还没有计划任务",
       "empty.schedules.body": "周期重测用 cron/interval 计划驱动；先创建计划，再 run-due 生成 drift。",
-      "empty.schedules.action": "python -m trident schedule add --help",
-      "empty.schedules.next": "查看计划：python -m trident schedule list",
+      "empty.schedules.action": "python -m inkblade schedule add --help",
+      "empty.schedules.next": "查看计划：python -m inkblade schedule list",
       "assets.loading": "资产清单加载中…", "assets.loadFail": "资产清单加载失败（未发现或未登录）。",
       "assets.login": "登录后加载资产清单（api/v1/assets）。",
       "drift.empty": "无漂移数据（周期重测后由 scheduler 生成 drift.json）。",
@@ -184,7 +184,7 @@
       "login.user": "User", "login.pass": "Password", "login.ws": "Workspace",
       "login.submit": "Sign in", "login.runs": "Refresh runs", "login.abort": "Abort",
       "lang.switch": "Switch language / 切换语言",
-      "guide.title": "New to Trident? Two commands to first result",
+      "guide.title": "New to InkBlade? Two commands to first result",
       "guide.body": "Local mock lab, no real cluster touched; findings, bilingual report and rule pack in ~10–20s.",
       "guide.step1": "Environment check", "guide.step2": "Local result", "guide.step3": "Real cluster (read-only)",
       "guide.cluster": "Real cluster:", "guide.kubeconfig": "Auto-discovers KUBECONFIG / ~/.kube/config; dry-run touches nothing.",
@@ -213,7 +213,7 @@
       "approvals.hint": "LLM optional (OpenAI-compatible env) + rule fallback; dry-run preview per action, lead approval required.",
       "schedules.title": "Schedules (periodic retest)",
       "schedules.hint": "cron/interval schedule → run chain subset when due → drift report.",
-      "footer.line": "Trident · all assets embedded locally (no CDN) · three evidence layers: context summary / database / archive (tar+SHA256)",
+      "footer.line": "InkBlade · all assets embedded locally (no CDN) · three evidence layers: context summary / database / archive (tar+SHA256)",
       "common.copy": "Copy", "common.copied": "Copied",
       "common.demo": "Local demo", "common.cluster": "Real cluster (read-only)",
       "run.staticMeta": "Run {run} · status {status} · steps {steps} · findings {findings}",
@@ -237,44 +237,44 @@
       "timeline.summary": "Steps {steps} · span {total} · cumulative {sum} · peak parallelism {par}",
       "empty.dag.title": "No steps in this view yet",
       "empty.dag.body": "The DAG comes from a run's steps table. Run the local demo to generate steps and three-layer evidence, or open a static export.",
-      "empty.dag.action": "python -m trident demo",
-      "empty.dag.next": "Read-only real cluster: python -m trident onboard-cluster --dry-run",
+      "empty.dag.action": "python -m inkblade demo",
+      "empty.dag.next": "Read-only real cluster: python -m inkblade onboard-cluster --dry-run",
       "empty.chain.title": "No attack-chain graph yet",
       "empty.chain.body": "Graph data comes from graph_nodes / graph_edges. demo writes reachability edges; use pilot for a real-cluster baseline.",
-      "empty.chain.action": "python -m trident demo",
-      "empty.chain.next": "Connect a cluster: python -m trident onboard-cluster --dry-run",
+      "empty.chain.action": "python -m inkblade demo",
+      "empty.chain.next": "Connect a cluster: python -m inkblade onboard-cluster --dry-run",
       "empty.timeline.title": "No execution timeline yet",
       "empty.timeline.body": "The timeline needs steps with start/end times. Run demo or sign in to service mode and open a run.",
-      "empty.timeline.action": "python -m trident demo",
-      "empty.timeline.next": "Service mode: python -m trident ui --port 8765",
+      "empty.timeline.action": "python -m inkblade demo",
+      "empty.timeline.next": "Service mode: python -m inkblade ui --port 8765",
       "empty.evidence.title": "No evidence to browse yet",
       "empty.evidence.body": "Three evidence layers (context.jsonl.gz / evidence.db / tar+SHA256 archive) are produced by a run; run demo first.",
-      "empty.evidence.action": "python -m trident demo",
-      "empty.evidence.next": "Static export: python -m trident ui --export-static <run> <out>",
+      "empty.evidence.action": "python -m inkblade demo",
+      "empty.evidence.next": "Static export: python -m inkblade ui --export-static <run> <out>",
       "empty.report.title": "No findings yet",
       "empty.report.body": "Report preview reads the findings table. demo creates 10 findings plus a bilingual report; for a real cluster sign consent first.",
-      "empty.report.action": "python -m trident demo",
-      "empty.report.next": "Consent and scope: python -m trident quickstart",
+      "empty.report.action": "python -m inkblade demo",
+      "empty.report.next": "Consent and scope: python -m inkblade quickstart",
       "empty.rules.title": "Rule catalog is empty",
       "empty.rules.body": "Rule packs are generated by the rules engine; a local checkout ships Kyverno/PSS/Sigma/Falco/Suricata rules.",
-      "empty.rules.action": "python -m trident rules generate --help",
-      "empty.rules.next": "Validate: python -m trident rules validate <pack>",
+      "empty.rules.action": "python -m inkblade rules generate --help",
+      "empty.rules.next": "Validate: python -m inkblade rules validate <pack>",
       "empty.assets.title": "Asset inventory is empty",
       "empty.assets.body": "The asset graph comes from the assets table (seed → incremental discovery). demo writes namespaces/services; use discover or pilot for a real cluster.",
-      "empty.assets.action": "python -m trident demo",
-      "empty.assets.next": "Discover: python -m trident discover --seeds <seeds.json>",
+      "empty.assets.action": "python -m inkblade demo",
+      "empty.assets.next": "Discover: python -m inkblade discover --seeds <seeds.json>",
       "empty.drift.title": "No drift report yet",
       "empty.drift.body": "Drift is produced by periodic retests: scheduler runs chain subsets and diffs findings against the previous run.",
-      "empty.drift.action": "python -m trident schedule list",
-      "empty.drift.next": "Run due schedules: python -m trident schedule run-due",
+      "empty.drift.action": "python -m inkblade schedule list",
+      "empty.drift.next": "Run due schedules: python -m inkblade schedule run-due",
       "empty.approvals.title": "Approval queue is empty",
       "empty.approvals.body": "Approval-gated exploration proposals come from explorer propose; execution only starts after lead approval.",
-      "empty.approvals.action": "python -m trident explore propose --help",
-      "empty.approvals.next": "Inspect queue: python -m trident explore list",
+      "empty.approvals.action": "python -m inkblade explore propose --help",
+      "empty.approvals.next": "Inspect queue: python -m inkblade explore list",
       "empty.schedules.title": "No schedules yet",
       "empty.schedules.body": "Periodic retests are driven by cron/interval schedules; create one, then run-due to produce drift.",
-      "empty.schedules.action": "python -m trident schedule add --help",
-      "empty.schedules.next": "List schedules: python -m trident schedule list",
+      "empty.schedules.action": "python -m inkblade schedule add --help",
+      "empty.schedules.next": "List schedules: python -m inkblade schedule list",
       "assets.loading": "Loading asset inventory…", "assets.loadFail": "Failed to load assets (none found or not signed in).",
       "assets.login": "Sign in to load asset inventory (api/v1/assets).",
       "drift.empty": "No drift data (scheduler writes drift.json after a periodic retest).",
@@ -358,7 +358,7 @@
     box.appendChild(el("p", null, opts.body || t("empty." + view + ".body")));
     var actions = el("div", "empty-actions");
     actions.appendChild(cmdRow(t("empty." + view + ".action"), t("common.demo")));
-    actions.appendChild(cmdRow("python -m trident onboard-cluster --dry-run", t("common.cluster")));
+    actions.appendChild(cmdRow("python -m inkblade onboard-cluster --dry-run", t("common.cluster")));
     box.appendChild(actions);
     var next = opts.next || t("empty." + view + ".next");
     if (next) box.appendChild(el("div", "empty-next", next));
@@ -387,7 +387,7 @@
   function setLang(lang, persist) {
     STATE.lang = lang === "en" ? "en" : "zh";
     if (persist !== false) {
-      try { localStorage.setItem("trident-lang", STATE.lang); } catch (e) { /* file:// 隐私模式 */ }
+      try { localStorage.setItem("inkblade-lang", STATE.lang); } catch (e) { /* file:// 隐私模式 */ }
     }
     applyI18n();
     renderCurrent();
@@ -396,7 +396,7 @@
 
   function bindLang() {
     var saved = null;
-    try { saved = localStorage.getItem("trident-lang"); } catch (e) { /* ignore */ }
+    try { saved = localStorage.getItem("inkblade-lang"); } catch (e) { /* ignore */ }
     STATE.lang = saved === "en" ? "en" : "zh";
     var toggle = document.getElementById("lang-toggle");
     if (toggle) {
@@ -978,7 +978,7 @@
    * 对照（docs/UI-PERF.md 的基准口径），不影响普通用户路径。 */
   var REPORT_PAGE_SIZE = 200;
   var reportVisible = REPORT_PAGE_SIZE;
-  var LEGACY_PERF = !!window.__TRIDENT_FORCE_LEGACY ||
+  var LEGACY_PERF = !!window.__INKBLADE_FORCE_LEGACY ||
     /(?:^|[?&])perf=legacy(?:&|$)/.test(window.location.search);
 
   function renderReport() {
@@ -1103,7 +1103,7 @@
 
     // 基准与自动化测试可读的渲染元数据（不含发现内容）。
     var endedAt = (window.performance && performance.now) ? performance.now() : Date.now();
-    window.__TRIDENT_REPORT_META = {
+    window.__INKBLADE_REPORT_META = {
       total: total,
       renderedRows: (document.querySelectorAll("#report-body tbody tr") || []).length,
       pageSize: REPORT_PAGE_SIZE,
@@ -1449,12 +1449,12 @@
     if (!card) return;
     var close = document.getElementById("demo-guide-close");
     try {
-      if (localStorage.getItem("trident-demo-guide-dismissed") === "1") card.hidden = true;
+      if (localStorage.getItem("inkblade-demo-guide-dismissed") === "1") card.hidden = true;
     } catch (e) { /* file:// 或隐私模式下 localStorage 可能不可用 */ }
     if (close) {
       close.addEventListener("click", function () {
         card.hidden = true;
-        try { localStorage.setItem("trident-demo-guide-dismissed", "1"); } catch (e) {}
+        try { localStorage.setItem("inkblade-demo-guide-dismissed", "1"); } catch (e) {}
       });
     }
   }

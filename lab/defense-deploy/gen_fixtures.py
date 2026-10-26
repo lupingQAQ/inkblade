@@ -15,7 +15,7 @@ HERE = Path(__file__).resolve().parent
 FIXTURES = HERE / "fixtures"
 
 GENERIC = {
-    "cluster": "kind-trident",
+    "cluster": "kind-inkblade",
     "daemonsets": ["kube-system/kube-proxy", "kube-system/coredns"],
     "deployments": ["kube-system/coredns", "train/vllm-server"],
     "pods": ["train/vllm-server-0", "train/ray-worker-1"],
@@ -38,7 +38,7 @@ def generic(**extra):
 
 DEPLOYED = {
     "elkeid": {
-        "cluster": "kind-trident",
+        "cluster": "kind-inkblade",
         "daemonsets": ["kube-system/elkeid-agent", "kube-system/elkeid-manager"],
         "deployments": ["elkeid-system/elkeid-server", "elkeid-system/elkeid-web"],
         "images": ["elkeid/elkeid-agent:1.9.7"],
@@ -53,7 +53,7 @@ DEPLOYED = {
         "kernel_modules": ["smith"],
     },
     "veinmind": {
-        "pods": ["trident-scan/veinmind-tools-abc12"],
+        "pods": ["inkblade-scan/veinmind-tools-abc12"],
         "images": [
             "chaitin/veinmind-tools:v2.0",
             "veinmind/veinmind-backdoor:v1",

@@ -22,7 +22,7 @@ from typing import Any, Iterable
 from .core.humanize import explain_exception
 from .pilot import KubectlCollector, PilotError, load_snapshot_bundle, merge_kubeconfigs, run_pilot
 
-SCHEMA = "trident-cluster-onboarding/1"
+SCHEMA = "inkblade-cluster-onboarding/1"
 
 
 def _candidate_paths(explicit: Iterable[str | Path]) -> list[Path]:
@@ -92,10 +92,10 @@ def run_wizard(
     for path in snapshot_paths:
         if not path.is_file():
             _print_fix(FileNotFoundError(f"snapshot 不存在：{path}"),
-                       {"path": str(path), "action": "trident onboard-cluster"})
+                       {"path": str(path), "action": "inkblade onboard-cluster"})
             return 2
 
-    print("Trident 真实集群引导（只读）")
+    print("InkBlade 真实集群引导（只读）")
     print("=" * 56)
     print("边界：默认只跑 pilot 只读清点（kubectl get / 离线 snapshot），不改集群。")
     print(f"输出目录：{Path(out_dir)} · 工作区：{workspace} · 角色：{role}")
@@ -108,7 +108,7 @@ def run_wizard(
         try:
             bundle = load_snapshot_bundle(snapshot_paths)
         except (PilotError, OSError, ValueError) as exc:
-            _print_fix(exc, {"action": "trident onboard-cluster", "workspace": workspace})
+            _print_fix(exc, {"action": "inkblade onboard-cluster", "workspace": workspace})
             return 2
         contexts = [b.get("context") or Path(str(b.get("source", "snapshot"))).stem
                     for b in bundle]
@@ -116,7 +116,7 @@ def run_wizard(
             contexts = [c for c in contexts if c in requested]
             if not contexts:
                 _print_fix(PilotError(f"--context 过滤后为空：{requested}"),
-                           {"action": "trident onboard-cluster"})
+                           {"action": "inkblade onboard-cluster"})
                 return 2
         print(f"输入：{len(snapshot_paths)} 个离线 snapshot（免 kubectl，可复现）")
         for path, ctx in zip(snapshot_paths, contexts):
@@ -127,21 +127,21 @@ def run_wizard(
         if not kube_paths or (missing and kubeconfigs):
             target = str(missing[0] if missing else "~/.kube/config")
             _print_fix(FileNotFoundError(f"找不到可用的 kubeconfig：{target}"),
-                       {"kubeconfig": target, "action": "trident onboard-cluster",
+                       {"kubeconfig": target, "action": "inkblade onboard-cluster",
                         "workspace": workspace})
-            print("\n也可以零配置看本地 mock：python -m trident demo")
+            print("\n也可以零配置看本地 mock：python -m inkblade demo")
             return 2
         existing = [p for p in kube_paths if p.is_file()]
         if not existing:
             _print_fix(FileNotFoundError("未发现 kubeconfig（KUBECONFIG / ~/.kube/config 均为空）"),
-                       {"kubeconfig": "~/.kube/config", "action": "trident onboard-cluster"})
-            print("\n也可以零配置看本地 mock：python -m trident demo")
+                       {"kubeconfig": "~/.kube/config", "action": "inkblade onboard-cluster"})
+            print("\n也可以零配置看本地 mock：python -m inkblade demo")
             return 2
         try:
             inventory = merge_kubeconfigs(existing, stdlib_only=True)
             contexts = _select_contexts(inventory, requested, yes)
         except (PilotError, OSError, ValueError) as exc:
-            _print_fix(exc, {"action": "trident onboard-cluster", "workspace": workspace})
+            _print_fix(exc, {"action": "inkblade onboard-cluster", "workspace": workspace})
             return 2
         print(f"输入：{len(existing)} 个 kubeconfig（自动发现）")
         for path in existing:
@@ -157,12 +157,12 @@ def run_wizard(
         print("下一步（只读画像）：")
         if snapshot_paths:
             args = " ".join(f'--snapshot "{p}"' for p in snapshot_paths)
-            print(f'  python -m trident pilot {args} --out "{out_dir}" '
+            print(f'  python -m inkblade pilot {args} --out "{out_dir}" '
                   f'--workspace {workspace} --role {role}')
         else:
             args = " ".join(f'--kubeconfig "{p}"' for p in kube_paths if p.is_file())
             ctx_args = " ".join(f"--context {c}" for c in contexts)
-            print(f'  python -m trident pilot {args} {ctx_args} --out "{out_dir}" '
+            print(f'  python -m inkblade pilot {args} {ctx_args} --out "{out_dir}" '
                   f'--workspace {workspace} --role {role} --timeout {timeout}')
         print("  （pilot 默认只读；写计划需另行授权/备份/审批，三闸门缺一不可）")
         print(json.dumps({
@@ -191,7 +191,7 @@ def run_wizard(
             collector=collector,
         )
     except (PilotError, OSError, ValueError) as exc:
-        _print_fix(exc, {"action": "trident onboard-cluster", "workspace": workspace})
+        _print_fix(exc, {"action": "inkblade onboard-cluster", "workspace": workspace})
         return 2
 
     summary = result.get("summary", {})
@@ -206,6 +206,6 @@ def run_wizard(
     if outputs.get("manifest_sha256"):
         print(f"  manifest sha256：{outputs['manifest_sha256']}")
     print("\n下一步：")
-    print(f"  python -m trident report-ctem --workspace {workspace} --run <run>  # 需要先产生 run")
-    print("  python -m trident ui --port 8765  # 控制台查看发现与规则矩阵")
+    print(f"  python -m inkblade report-ctem --workspace {workspace} --run <run>  # 需要先产生 run")
+    print("  python -m inkblade ui --port 8765  # 控制台查看发现与规则矩阵")
     return 0

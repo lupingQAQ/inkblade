@@ -11,7 +11,7 @@
   "requires": [],
   "params_schema": {
     "target": "NCCL bootstrap/rendezvous 基址（必填）",
-    "job": "攻击者作业名（缺省 trident-probe）",
+    "job": "攻击者作业名（缺省 inkblade-probe）",
     "max_allocs": "分配请求上限（默认 30，防失控）",
     "job_token": "可选作业令牌（fixed 模式合法身份）"
   },

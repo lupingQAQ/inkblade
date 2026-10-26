@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "trl-sft-trainer-py-missing-revision-l310-regex",
  "target": "trl",
  "repo": "huggingface/trl",

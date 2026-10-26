@@ -6,11 +6,11 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.webui.export_static import export_static
+from inkblade.core.evidence import EvidenceStore
+from inkblade.webui.export_static import export_static
 
 ROOT = Path(__file__).resolve().parent.parent
-STATIC = ROOT / "trident" / "webui" / "static"
+STATIC = ROOT / "inkblade" / "webui" / "static"
 
 VIEW_IDS = ("dag", "chain", "timeline", "evidence", "report", "rules")
 
@@ -20,9 +20,9 @@ def _make_run(root: Path):
     store = EvidenceStore(root, workspace="local-lab")
     run = store.create_run("run-spa-demo")
     art = root / "artifact.txt"
-    art.write_text("trident-demo", encoding="utf-8")
+    art.write_text("inkblade-demo", encoding="utf-8")
     run.add_step(
-        "exposure-mapping", "trident recon exposure-mapping",
+        "exposure-mapping", "inkblade recon exposure-mapping",
         {"host": "lab", "user": "tester"}, "12 services exposed",
         artifacts=[art],
     )
@@ -123,7 +123,7 @@ class TestExportStatic(unittest.TestCase):
             html_path = export_static(run_dir, root / "export", redact_zeroday=True)
             html = html_path.read_text(encoding="utf-8")
             m = re.search(
-                r"window\.TRIDENT_DATA\s*=\s*(\{.*?\})\s*;?\s*</script>",
+                r"window\.INKBLADE_DATA\s*=\s*(\{.*?\})\s*;?\s*</script>",
                 html, re.S,
             )
             self.assertIsNotNone(m)
@@ -141,10 +141,10 @@ class TestExportStatic(unittest.TestCase):
             html_path = export_static(run_dir, root / "export")
             html = html_path.read_text(encoding="utf-8")
             m = re.search(
-                r"window\.TRIDENT_DATA\s*=\s*(\{.*?\})\s*;?\s*</script>",
+                r"window\.INKBLADE_DATA\s*=\s*(\{.*?\})\s*;?\s*</script>",
                 html, re.S,
             )
-            self.assertIsNotNone(m, "未找到 window.TRIDENT_DATA 注入")
+            self.assertIsNotNone(m, "未找到 window.INKBLADE_DATA 注入")
             data = json.loads(m.group(1))
             self.assertEqual(data["run"]["name"], "run-spa-demo")
             keys = [s["step_key"] for s in data["steps"]]

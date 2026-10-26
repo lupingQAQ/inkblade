@@ -90,7 +90,7 @@ ROLES: list[dict[str, Any]] = [
         "name_en": "Pentester",
         "goal": "查看模块清单并对攻击链做 dry-run 计划",
         "steps": [
-            {"name": "module-list", "argv": ["module", "list", "--modules-dir", "trident/modules"]},
+            {"name": "module-list", "argv": ["module", "list", "--modules-dir", "inkblade/modules"]},
             {"name": "chain-dry-run", "argv": [
                 "execute", "--chain", "flat-network-admin-plane-weight-poison",
                 "--workspace", "demo-lab", "--dry-run",
@@ -230,7 +230,7 @@ def summarize(steps: list[dict]) -> dict:
 
 def build_walkthrough(*, run_id: str | None = None, timeout: int = 180) -> dict:
     py = sys.executable
-    tmp_root = Path(tempfile.mkdtemp(prefix="trident-usability-"))
+    tmp_root = Path(tempfile.mkdtemp(prefix="inkblade-usability-"))
     homes = {
         "shared": tmp_root / "home",
         "pilot": tmp_root / "pilot-home",
@@ -247,7 +247,7 @@ def build_walkthrough(*, run_id: str | None = None, timeout: int = 180) -> dict:
         home = homes.get(role.get("home", "shared"), homes["shared"])
         role_rows: list[dict] = []
         for step in role["steps"]:
-            argv = [py, "-m", "trident", "--home", str(home)]
+            argv = [py, "-m", "inkblade", "--home", str(home)]
             for part in step["argv"]:
                 argv.append(str(part).format(tmp=tmp_root, run=resolved_run))
             result = _run(argv, REPO, timeout=timeout)
@@ -291,7 +291,7 @@ def build_walkthrough(*, run_id: str | None = None, timeout: int = 180) -> dict:
     overall["roles_success"] = sum(1 for r in role_summaries if r["failed"] == 0)
     overall["role_count"] = len(role_summaries)
     doc = {
-        "schema": "trident-usability-walkthrough/1",
+        "schema": "inkblade-usability-walkthrough/1",
         "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
         "method": "expert heuristic walkthrough（专家走查，非真实用户研究）",
         "disclaimer": DISCLAIMER,

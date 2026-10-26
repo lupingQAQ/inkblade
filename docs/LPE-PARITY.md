@@ -1,18 +1,18 @@
-# LPE Parity — Trident 内核提权检测库 vs KubeTrail
+# LPE Parity — InkBlade 内核提权检测库 vs KubeTrail
 
 - 核对日期：2026-10-26
-- 目录：`trident/lpe/catalog.py`（**52** 条：kernel 47 + userspace 5）
-- 引擎：`trident/lpe/engine.py`（stable 分支感知的版本区间 + 前置面门控）
+- 目录：`inkblade/lpe/catalog.py`（**52** 条：kernel 47 + userspace 5）
+- 引擎：`inkblade/lpe/engine.py`（stable 分支感知的版本区间 + 前置面门控）
 - 模块：`kernel-lpe-audit`（`--snapshot lab/fixtures/lpe/kernels.json`）
 - 测试：`tests/test_kernel_lpe.py`（21 项）
 - 边界：**detection-only**，只做版本/配置判定，不下载、不编译、不执行任何 PoC。
 
 ## 1. 与 KubeTrail 的对照
 
-KubeTrail README 的 LPE 表含 **16** 条 CVE；Trident 目录是其**严格超集**（16/16），
+KubeTrail README 的 LPE 表含 **16** 条 CVE；InkBlade 目录是其**严格超集**（16/16），
 并扩展到 **52** 条（+36）：
 
-| # | CVE | 组件/类别 | KubeTrail | Trident 修复版本（摘要） |
+| # | CVE | 组件/类别 | KubeTrail | InkBlade 修复版本（摘要） |
 |---:|---|---|:---:|---|
 | 1 | CVE-2022-0847 | Dirty Pipe / pipe | ✓ | 5.16.11 / 5.15.25 / 5.10.102（mainline 5.17） |
 | 2 | CVE-2016-5195 | Dirty COW / dirty_cow | ✓ | 4.8.3 / 4.7.9 / 4.4.26（mainline 4.9） |

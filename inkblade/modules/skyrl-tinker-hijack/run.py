@@ -91,8 +91,8 @@ def run(ctx: dict, params: dict) -> dict:
     mode, note = _resolve_mode(params)
     if not target:
         return {"summary": "no-target", "artifacts": [], "findings": []}
-    marker = str(ctx.get("marker") or "TRIDENT")
-    tag = marker if mode == "backup-write" else "trident-probe"
+    marker = str(ctx.get("marker") or "INKBLADE")
+    tag = marker if mode == "backup-write" else "inkblade-probe"
     t = Trace(ctx)
     create = t.call("POST", f"{target}/create_engine", {
         "module": f"skyrl_tinker_probe_{tag}", "cls": "ProbeModel",

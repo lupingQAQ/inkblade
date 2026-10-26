@@ -5,7 +5,7 @@
 
 - `tasks.json`：8 个任务，覆盖 TCH 第二届四赛区 + 证据审计 + 预算 + 不可逆写护栏；
 - `run_eval.py`：OFF 复现 HEAD(`c921595`) 语义；ON 走
-  `trident.core.agent_policy` / `observation` / `cost`；
+  `inkblade.core.agent_policy` / `observation` / `cost`；
 - 输出：`reports/samples/tencent-compare/tencent-compare.json` +
   `docs/SECTION3-METRICS.md`；
 - 测试：`tests/test_tencent_compare.py`（阈值、护栏、接线、确定性）。

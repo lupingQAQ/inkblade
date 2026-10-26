@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-report-v1",
+ "schema": "inkblade-mining-report-v1",
  "generated_at": "2026-10-26T12:43:08",
  "validation": {
   "ok": true,
@@ -158,7 +158,7 @@
  "candidates_total": 106,
  "candidates": [
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -173,7 +173,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l182-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -188,7 +188,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l219-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -203,7 +203,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l386-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -218,7 +218,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l464-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -233,7 +233,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l532-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -248,7 +248,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l593-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -263,7 +263,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l639-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -278,7 +278,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l643-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -293,7 +293,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l646-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -308,7 +308,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l649-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -323,7 +323,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l653-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -338,7 +338,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l656-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -353,7 +353,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l660-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -368,7 +368,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l664-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -383,7 +383,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l668-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -398,7 +398,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l676-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -413,7 +413,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l680-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -428,7 +428,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l684-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -443,7 +443,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l687-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -458,7 +458,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l691-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -473,7 +473,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l694-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -488,7 +488,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l698-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -503,7 +503,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l734-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -518,7 +518,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-main-go-exec-command-go-l669-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -533,7 +533,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-main-go-exec-command-go-l679-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -548,7 +548,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-main-go-exec-command-go-l820-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -563,7 +563,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "gpuoperator-metrics-go-exec-command-go-l251-regex",
    "target": "gpuoperator",
    "repo": "NVIDIA/gpu-operator",
@@ -578,7 +578,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-kubeletplugin-yaml-elevated-pod-spec-l59-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -593,7 +593,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-kubeletplugin-yaml-elevated-pod-spec-l357-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -608,7 +608,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-kubeletplugin-yaml-elevated-pod-spec-l360-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -623,7 +623,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-kubeletplugin-yaml-elevated-pod-spec-l363-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -638,7 +638,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-kubeletplugin-yaml-elevated-pod-spec-l366-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -653,7 +653,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-kubeletplugin-yaml-elevated-pod-spec-l378-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -668,7 +668,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-kubeletplugin-yaml-elevated-pod-spec-l383-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -683,7 +683,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-kubeletplugin-yaml-elevated-pod-spec-l392-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -698,7 +698,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-kubeletplugin-yaml-elevated-pod-spec-l398-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -713,7 +713,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-kubeletplugin-yaml-elevated-pod-spec-l402-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -728,7 +728,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-kubeletplugin-yaml-elevated-pod-spec-l406-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -743,7 +743,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-main-go-pprof-exposed-go-l24-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -758,7 +758,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-nvlib-go-exec-command-go-l879-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -773,7 +773,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-nvlib-go-exec-command-go-l899-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -788,7 +788,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-nvlib-go-exec-command-go-l1538-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -803,7 +803,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-process-go-exec-command-go-l94-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -818,7 +818,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "dradriver-vfio-device-go-exec-command-go-l487-regex",
    "target": "dradriver",
    "repo": "NVIDIA/k8s-dra-driver",
@@ -833,7 +833,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-controller-manager-go-go-bind-all-l71-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -848,7 +848,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-main-go-pprof-exposed-go-l23-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -863,7 +863,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-pod-manager-go-go-bind-all-l60-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -878,7 +878,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-process-mount-go-exec-command-go-l202-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -893,7 +893,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-resources-yaml-elevated-pod-spec-l452-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -908,7 +908,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-resources-yaml-elevated-pod-spec-l517-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -923,7 +923,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-resources-yaml-elevated-pod-spec-l521-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -938,7 +938,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-resources-yaml-elevated-pod-spec-l559-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -953,7 +953,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-resources-yaml-elevated-pod-spec-l653-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -968,7 +968,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-resources-yaml-elevated-pod-spec-l657-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -983,7 +983,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-resources-yaml-elevated-pod-spec-l661-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -998,7 +998,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-resources-yaml-elevated-pod-spec-l665-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -1013,7 +1013,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-resources-yaml-elevated-pod-spec-l668-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -1028,7 +1028,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-resources-yaml-elevated-pod-spec-l672-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -1043,7 +1043,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "juicefscsi-resources-yaml-elevated-pod-spec-l680-regex",
    "target": "juicefscsi",
    "repo": "juicedata/juicefs-csi-driver",
@@ -1058,7 +1058,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-cephcmds-go-exec-command-go-l60-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1073,7 +1073,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-cephcmds-go-exec-command-go-l89-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1088,7 +1088,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-cephcsi-go-bind-all-interfaces-l255-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1103,7 +1103,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-cephcsi-go-go-bind-all-l255-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1118,7 +1118,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-httpserver-go-pprof-exposed-go-l6-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1133,7 +1133,7 @@
    "registered_at": "2026-10-26T12:43:07"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-httpserver-go-pprof-exposed-go-l37-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1148,7 +1148,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-httpserver-go-pprof-exposed-go-l48-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1163,7 +1163,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l41-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1178,7 +1178,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l106-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1193,7 +1193,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l153-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1208,7 +1208,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l177-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1223,7 +1223,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l207-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1238,7 +1238,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l211-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1253,7 +1253,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l215-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1268,7 +1268,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l219-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1283,7 +1283,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l223-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1298,7 +1298,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l227-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1313,7 +1313,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l230-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1328,7 +1328,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l233-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1343,7 +1343,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l237-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1358,7 +1358,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-nodeplugin-daemonset-yaml-elevated-pod-spec-l241-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1373,7 +1373,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-volumemounter-go-exec-command-go-l66-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1388,7 +1388,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "cephcsi-volumemounter-go-exec-command-go-l68-regex",
    "target": "cephcsi",
    "repo": "ceph/ceph-csi",
@@ -1403,7 +1403,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "kueue-server-go-pprof-exposed-go-l30-regex",
    "target": "kueue",
    "repo": "kubernetes-sigs/kueue",
@@ -1418,7 +1418,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-agent-yaml-elevated-pod-spec-l47-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1433,7 +1433,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-agent-yaml-elevated-pod-spec-l53-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1448,7 +1448,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-agent-yaml-elevated-pod-spec-l57-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1463,7 +1463,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-agent-yaml-elevated-pod-spec-l61-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1478,7 +1478,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-agent-yaml-elevated-pod-spec-l65-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1493,7 +1493,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-agent-yaml-elevated-pod-spec-l69-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1508,7 +1508,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-agent-yaml-elevated-pod-spec-l73-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1523,7 +1523,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-agent-yaml-elevated-pod-spec-l77-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1538,7 +1538,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-agent-yaml-elevated-pod-spec-l81-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1553,7 +1553,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-agent-yaml-elevated-pod-spec-l85-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1568,7 +1568,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-agent-yaml-elevated-pod-spec-l89-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1583,7 +1583,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-server-go-pprof-exposed-go-l23-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1598,7 +1598,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-server-go-pprof-exposed-go-l162-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1613,7 +1613,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-server-go-pprof-exposed-go-l163-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1628,7 +1628,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-server-go-pprof-exposed-go-l164-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1643,7 +1643,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-server-go-pprof-exposed-go-l165-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1658,7 +1658,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "volcano-server-go-pprof-exposed-go-l166-regex",
    "target": "volcano",
    "repo": "volcano-sh/volcano",
@@ -1673,7 +1673,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "sonicrestapi-default-go-exec-command-go-l1881-regex",
    "target": "sonicrestapi",
    "repo": "sonic-net/sonic-restapi",
@@ -1688,7 +1688,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "ucxpy-client-py-subprocess-popen-l23-regex",
    "target": "ucxpy",
    "repo": "rapidsai/ucx-py",
@@ -1703,7 +1703,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "ucxpy-client-py-pickle-loads-l83-regex",
    "target": "ucxpy",
    "repo": "rapidsai/ucx-py",
@@ -1718,7 +1718,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "ucxpy-server-py-subprocess-popen-l16-regex",
    "target": "ucxpy",
    "repo": "rapidsai/ucx-py",
@@ -1733,7 +1733,7 @@
    "registered_at": "2026-10-26T12:43:08"
   },
   {
-   "schema": "trident-mining-candidate-v1",
+   "schema": "inkblade-mining-candidate-v1",
    "id": "ucxpy-server-py-pickle-loads-l42-regex",
    "target": "ucxpy",
    "repo": "rapidsai/ucx-py",

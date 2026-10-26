@@ -14,10 +14,10 @@ from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.registry import load_modules
+from inkblade.core.registry import load_modules
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES_DIR = ROOT / "trident" / "modules"
+MODULES_DIR = ROOT / "inkblade" / "modules"
 FIX_DIR = ROOT / "lab" / "fixtures" / "recon"
 
 RECON_KEYS = (
@@ -60,7 +60,7 @@ class ReconFixtureHitTest(unittest.TestCase):
 
     def run_mod(self, key, snapshot):
         result = load_run(key).run(
-            {"marker": "TRIDENT-recon-test", "meta": {"key": key}}, {"snapshot": snapshot}
+            {"marker": "INKBLADE-recon-test", "meta": {"key": key}}, {"snapshot": snapshot}
         )
         for field in ("summary", "findings", "artifacts"):
             self.assertIn(field, result, f"{key} 结果缺 {field}")

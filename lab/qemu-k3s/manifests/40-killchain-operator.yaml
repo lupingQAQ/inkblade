@@ -1,27 +1,27 @@
-# Trident kill-chain lab fixture: an intentionally over-broad operator SA.
+# InkBlade kill-chain lab fixture: an intentionally over-broad operator SA.
 # This is lab scaffolding, not a production manifest. The objective chain's
 # stage 7 removes it when run with --cleanup-fixture (the lab wrapper does).
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: trident-killchain
+  name: inkblade-killchain
   labels:
-    trident.io/lab: kill-chain
+    inkblade.io/lab: kill-chain
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: trident-operator
-  namespace: trident-killchain
+  name: inkblade-operator
+  namespace: inkblade-killchain
   labels:
-    trident.io/lab: kill-chain
+    inkblade.io/lab: kill-chain
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: trident-operator-broad
+  name: inkblade-operator-broad
   labels:
-    trident.io/lab: kill-chain
+    inkblade.io/lab: kill-chain
 rules:
   # Deliberately broad: the fixture represents an operator with RBAC write and
   # bind permissions. Creating a cluster-admin binding is the escalation step.
@@ -47,14 +47,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: trident-operator-broad
+  name: inkblade-operator-broad
   labels:
-    trident.io/lab: kill-chain
+    inkblade.io/lab: kill-chain
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: trident-operator-broad
+  name: inkblade-operator-broad
 subjects:
   - kind: ServiceAccount
-    name: trident-operator
-    namespace: trident-killchain
+    name: inkblade-operator
+    namespace: inkblade-killchain

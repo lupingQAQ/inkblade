@@ -1,6 +1,6 @@
 {
   "pods": [
-    "trident-scan/veinmind-tools-abc12"
+    "inkblade-scan/veinmind-tools-abc12"
   ],
   "images": [
     "chaitin/veinmind-tools:v2.0",

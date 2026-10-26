@@ -54,7 +54,7 @@ def _encrypt(key: bytes, plaintext: bytes) -> bytes:
         dk = hashlib.scrypt(key, salt=salt, n=2 ** 14, r=8, p=1, dklen=32)
         aes = AESGCM(dk)
         nonce = secrets.token_bytes(12)
-        body = aes.encrypt(nonce, plaintext, b"trident-zeroday")
+        body = aes.encrypt(nonce, plaintext, b"inkblade-zeroday")
         return b"TRZD-AESGCM" + salt + nonce + body
     salt = secrets.token_bytes(16)
     dk = hashlib.scrypt(key, salt=salt, n=2 ** 14, r=8, p=1, dklen=64)
@@ -71,7 +71,7 @@ def _decrypt(key: bytes, blob: bytes) -> bytes:
 
         salt, nonce, body = blob[11:27], blob[27:39], blob[39:]
         dk = hashlib.scrypt(key, salt=salt, n=2 ** 14, r=8, p=1, dklen=32)
-        return AESGCM(dk).decrypt(nonce, body, b"trident-zeroday")
+        return AESGCM(dk).decrypt(nonce, body, b"inkblade-zeroday")
     salt, nonce, tag, ct = blob[10:26], blob[26:42], blob[42:74], blob[74:]
     dk = hashlib.scrypt(key, salt=salt, n=2 ** 14, r=8, p=1, dklen=64)
     enc_key, mac_key = dk[:32], dk[32:]

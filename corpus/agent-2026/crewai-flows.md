@@ -21,6 +21,6 @@
 - 技能（程序性知识）与知识（事实检索）分离，避免把两者混进同一 RAG。
 
 ## 对我们的启示
-- 我们的 `scheduler.py` 是 cron 轮询（`trident/core/scheduler.py:62-79`），不是事件驱动；`explorer.execute` 同步串行（`explorer.py:249-280`），没有 checkpoint/fork（G10/G03）。
+- 我们的 `scheduler.py` 是 cron 轮询（`inkblade/core/scheduler.py:62-79`），不是事件驱动；`explorer.execute` 同步串行（`explorer.py:249-280`），没有 checkpoint/fork（G10/G03）。
 - 「技能 vs 知识」的分离值得照搬：我们的 `version-matrix.json` 是知识（指纹/版本/变体），`module.json` 是动作，缺的是中间层「程序性技能」。
 - 他们因安全弃用内置代码执行、转向 E2B，正好印证我们的 G08 判断：agent 框架不应自己造隔离。

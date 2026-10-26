@@ -49,7 +49,7 @@ def run(ctx: dict, params: dict) -> dict:
     base = str(params.get("base_url", "")).rstrip("/")
     if not base:
         raise ValueError("缺少 params.base_url（mock 靶场地址，仅限授权范围）")
-    marker = str(params.get("marker") or ctx.get("marker") or "TRIDENT-zeroday")
+    marker = str(params.get("marker") or ctx.get("marker") or "INKBLADE-zeroday")
 
     manifest, miss = _fingerprint(base)
     if miss is not None:

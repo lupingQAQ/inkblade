@@ -114,7 +114,7 @@ def counter_delta(before: dict, after: dict, path: tuple) -> int:
 
 
 def marker_of(ctx: dict, params: dict) -> str:
-    return str(params.get("marker") or ctx.get("marker") or "TRIDENT")
+    return str(params.get("marker") or ctx.get("marker") or "INKBLADE")
 
 
 def int_of(value, default: int = 0) -> int:

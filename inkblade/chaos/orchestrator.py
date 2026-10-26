@@ -6,7 +6,7 @@
 2. ``inject``    执行注入动作；
 3. ``measure``   SLO 影响度量（期间任一 measure probe 命中即记 degraded）；
 4. ``abort``     中止条件评估（任一命中 → aborted_by_condition）+ 外部中止信号
-   （``trident chaos abort`` 写入的标记文件 / 进程内 Event）；
+   （``inkblade chaos abort`` 写入的标记文件 / 进程内 Event）；
 5. ``rollback``  无论成败一律自动回滚；
 6. ``recovery``  稳态复测（默认复用 steady probes）：恢复 → recovered=true，
    未恢复 → outcome=rollback_failed（人工介入）。
@@ -153,7 +153,7 @@ class ChaosOrchestrator:
             progress: Any = None) -> dict:
         experiments = [experiment_by_id(i) for i in ids]
         report: dict[str, Any] = {
-            "schema": "trident-chaos-run/1",
+            "schema": "inkblade-chaos-run/1",
             "generated_at": _now_iso(),
             "mode": mode, "cycles": cycles, "every_s": every_s,
             "experiment_count": len(experiments),
@@ -243,7 +243,7 @@ def active_abort_file(home: str | Path) -> Path:
 
 
 def abort_active_run(home: str | Path, reason: str = "manual") -> dict:
-    """CLI `trident chaos abort`：写中止标记文件（运行中的编排器每阶段轮询）。"""
+    """CLI `inkblade chaos abort`：写中止标记文件（运行中的编排器每阶段轮询）。"""
     path = active_abort_file(home)
     path.parent.mkdir(parents=True, exist_ok=True)
     doc = {"requested_at": _now_iso(), "reason": reason, "pid_hint": "any"}

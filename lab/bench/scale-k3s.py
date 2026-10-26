@@ -3,7 +3,7 @@
 与合成压测（lab/bench/scale-bench.py）互补：
 - 合成快照回答「算法在 1k–10k 对象上的曲线」；
 - 本脚本回答「真实 API 采集 + 真实对象形态下，11 个侦察模块的跑批耗时」。
-对象全部落在 `scale-lab-*` 命名空间且带 `trident.io/scale-lab=true` 标签，采集后可一键清理。
+对象全部落在 `scale-lab-*` 命名空间且带 `inkblade.io/scale-lab=true` 标签，采集后可一键清理。
 
 流程：apply 对象清单（12 NS / 60 Pod / 60 Service / 36 NetPol / 12 SA / 12 Role / 12 RoleBinding）
 → kubectl get -o json 归一化成侦察快照（复用 lab/qemu-k3s/collect_snapshot.py 的 normalizer）
@@ -35,7 +35,7 @@ RECON_MODULES = (
     "observability-exposure", "privileged-workloads", "ray-control-plane",
     "rbac-mapping", "storage-sharing",
 )
-LABEL = "trident.io/scale-lab=true"
+LABEL = "inkblade.io/scale-lab=true"
 NS_COUNT = 12
 PODS = 60
 SERVICES = 60
@@ -58,8 +58,8 @@ kind: Namespace
 metadata:
   name: scale-lab-{n:02d}
   labels:
-    trident.io/scale-lab: "true"
-    trident-io-zone: {"ml-training" if n % 3 == 0 else "ml-inference"}
+    inkblade.io/scale-lab: "true"
+    inkblade-io-zone: {"ml-training" if n % 3 == 0 else "ml-inference"}
 """)
         docs.append(f"""apiVersion: v1
 kind: ServiceAccount
@@ -67,7 +67,7 @@ metadata:
   name: scale-sa
   namespace: scale-lab-{n:02d}
   labels:
-    trident.io/scale-lab: "true"
+    inkblade.io/scale-lab: "true"
 """)
         docs.append(f"""apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -75,7 +75,7 @@ metadata:
   name: scale-reader
   namespace: scale-lab-{n:02d}
   labels:
-    trident.io/scale-lab: "true"
+    inkblade.io/scale-lab: "true"
 rules:
 - apiGroups: [""]
   resources: ["pods", "services"]
@@ -87,7 +87,7 @@ metadata:
   name: scale-reader
   namespace: scale-lab-{n:02d}
   labels:
-    trident.io/scale-lab: "true"
+    inkblade.io/scale-lab: "true"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -113,7 +113,7 @@ metadata:
   name: {name}
   namespace: {ns}
   labels:
-    trident.io/scale-lab: "true"
+    inkblade.io/scale-lab: "true"
 spec:
 {spec}
 """)
@@ -125,7 +125,7 @@ metadata:
   name: scale-pod-{i:03d}
   namespace: {ns}
   labels:
-    trident.io/scale-lab: "true"
+    inkblade.io/scale-lab: "true"
     app: scale-app
 spec:
   serviceAccountName: scale-sa
@@ -149,7 +149,7 @@ metadata:
   name: scale-svc-{i:03d}
   namespace: {ns}
   labels:
-    trident.io/scale-lab: "true"
+    inkblade.io/scale-lab: "true"
 spec:
   type: {typ}
   selector:
@@ -255,7 +255,7 @@ def main(argv=None) -> int:
     total_findings = 0
     started = time.perf_counter()
     for key in RECON_MODULES:
-        module = _load(ROOT / "trident" / "modules" / key / "run.py", f"k3s_scale_{key.replace('-', '_')}")
+        module = _load(ROOT / "inkblade" / "modules" / key / "run.py", f"k3s_scale_{key.replace('-', '_')}")
         t0 = time.perf_counter()
         result = module.run({}, {"snapshot": snapshot})
         elapsed = (time.perf_counter() - t0) * 1000

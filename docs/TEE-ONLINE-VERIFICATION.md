@@ -4,13 +4,13 @@
 > 本地密码学验签）；**硬件 TEE 实测 = 仍未达成**（没有 TDX/SEV-SNP/H100-CC 实机
 > quote/report，也没有可验证的真实 NRAS attestation JWT）。
 >
-> 本次新增 `trident/tee/online.py`，并把本地 X.509/RSA 层扩展到 **RSA-PSS-SHA384**
+> 本次新增 `inkblade/tee/online.py`，并把本地 X.509/RSA 层扩展到 **RSA-PSS-SHA384**
 > （AMD ASK/ARK/CRL 实际算法）与 **EC P-384 JWK / ES384**（NVIDIA NRAS 真实 JWKS 形态）。
 
 ## 1. 端点与抓取结果
 
 抓取时间均为 **2026-10-25**（本机直连，无代理）；官方响应已缓存到
-`trident/tee/online_cache/`，离线测试对同一份字节复验。
+`inkblade/tee/online_cache/`，离线测试对同一份字节复验。
 
 | 厂商 | 端点 | 结果 |
 |---|---|---|
@@ -22,11 +22,11 @@
 
 缓存文件：
 
-- `trident/tee/online_cache/intel_tdx_tcb_90c06f000000.json`（+ `.headers.json`）
-- `trident/tee/online_cache/amd_milan_cert_chain.pem`
-- `trident/tee/online_cache/amd_milan_crl.der`
-- `trident/tee/online_cache/amd_milan_vcek.der`
-- `trident/tee/online_cache/nvidia_nras_jwks.json`
+- `inkblade/tee/online_cache/intel_tdx_tcb_90c06f000000.json`（+ `.headers.json`）
+- `inkblade/tee/online_cache/amd_milan_cert_chain.pem`
+- `inkblade/tee/online_cache/amd_milan_crl.der`
+- `inkblade/tee/online_cache/amd_milan_vcek.der`
+- `inkblade/tee/online_cache/nvidia_nras_jwks.json`
 
 ## 2. Intel PCS（TDX TCB Info）
 
@@ -49,7 +49,7 @@
 ## 3. AMD KDS（VCEK / ASK / ARK / CRL）
 
 - ASK/ARK 与 CRL 都是 **RSA-PSS-SHA384**（OID 1.2.840.113549.1.1.10，MGF1-SHA384，
-  salt=48）。本次在 `trident/tee/keys.py` 实现 PSS 验签（含 PSS 参数解析、MGF1、
+  salt=48）。本次在 `inkblade/tee/keys.py` 实现 PSS 验签（含 PSS 参数解析、MGF1、
   emBits 位裁剪），`x509.py` 保留 `sig_params` 并传参；ASK→ARK、VCEK→ASK、CRL→ARK
   三条链均真实通过。
 - VCEK 有效期 `2026-10-24 ~ 2033-10-24`；CRL `serial 0` 未吊销（VCEK 证书 serial 为 0）。
@@ -84,11 +84,11 @@
 
 ```bash
 # 离线复验三家官方缓存样本（默认不联网）
-python -c "from trident.tee.online import verify_all_cached; import json; print(json.dumps(verify_all_cached(), ensure_ascii=False, indent=2))"
+python -c "from inkblade.tee.online import verify_all_cached; import json; print(json.dumps(verify_all_cached(), ensure_ascii=False, indent=2))"
 
 # 重新抓取（联网）
 python - <<'PY'
-from trident.tee import online
+from inkblade.tee import online
 from pathlib import Path
 online.fetch_intel_tcb(cache_dir=online.CACHE)
 print(len(online.fetch_amd_cert_chain()), online.fetch_amd_vcek()[0].serial)

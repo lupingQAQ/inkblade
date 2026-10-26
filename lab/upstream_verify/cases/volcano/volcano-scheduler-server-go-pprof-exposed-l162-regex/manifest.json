@@ -6,7 +6,8 @@
  "version_ref": {
   "kind": "git",
   "repo": "volcano-sh/volcano",
-  "tag": "v1.16.0"
+  "tag": "v1.16.0",
+  "commit": "41f27d567fb5bdaf2cab01e1caaf48f7e266eefb"
  },
  "install": "pinned source vendored under lab/upstream_verify/upstream/",
  "root_cause": {
@@ -28,19 +29,19 @@
   "record a static-only verdict (no exploit execution)"
  ],
  "expected_evidence": [
-  "static-check.json with source hash and line match"
+  "http/pprof-disabled.txt (negative control, not 200)",
+  "http/pprof-enabled.txt + pprof-index.html + pprof-heap.txt status 200",
+  "http/listeners.txt showing :::18083, http/nonloopback.txt status 200",
+  "http/version.txt and binary sha256"
  ],
  "cleanup": "none (read-only)",
- "status": "static-only",
- "method": "static-source",
- "module": null,
+ "status": "verified",
+ "method": "dynamic-http",
+ "module": "observability-exposure",
  "python": "reproenv",
  "advisory": "reports/samples/mining-infra/mining-report.json",
- "marker_text": "TRIDENT-UV-volcano-scheduler-server-go-pprof-exposed-l162-regex",
- "notes": "Volcano scheduler mounts the complete /debug/pprof/* handler set on its debug mux when pprof scheduling options are enabled. Exposure is flag-gated, so it is a deployment posture (leak of heap/cpu profiles with scheduler state) rather than an always-on sink; the volcano agent DaemonSet (hostNetwork + hostPath elevated-pod-spec hits) is the paired posture finding.",
- "static_evidence_level": "source-line",
- "static_analysis": "Volcano scheduler mounts the complete /debug/pprof/* handler set on its debug mux when pprof scheduling options are enabled. Exposure is flag-gated, so it is a deployment posture (leak of heap/cpu profiles with scheduler state) rather than an always-on sink; the volcano agent DaemonSet (hostNetwork + hostPath elevated-pod-spec hits) is the paired posture finding.",
- "static_verdict": "not-dynamically-verified",
+ "marker_text": "INKBLADE-UV-volcano-scheduler-server-go-pprof-exposed-l162-regex",
+ "notes": "Promoted 2026-10-27. Ran the official v1.16.0 image binary (volcanosh/vc-scheduler@sha256:157578510d406c7390419dec97e81c5797969231022be39eb92e81feee0bbd71, extracted /vc-scheduler, --version 41f27d567fb5bdaf2cab01e1caaf48f7e266eefb) inside the QEMU k3s VM. Negative control without --enable-pprof: debug port closed. With --enable-pprof --listen-address=0.0.0.0:18083: /debug/pprof/ and /debug/pprof/heap returned 200 without authentication, listener on all interfaces and reachable via eth0. The scheduler serves the debug mux while leader election retries; CRDs were applied first.",
  "unsupported": {},
  "mining": {
   "rule": "pprof-exposed-go",
@@ -51,10 +52,6 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
- "component": "volcano",
- "static_blocker": {
-  "category": "host-toolchain-missing",
-  "reason": "Go toolchain and container runtime are absent on this Windows host; the pinned service/binary cannot be built or started, so the sink cannot be driven dynamically. Source-line root cause and pin remain recorded."
- }
+ "schema": "inkblade-upstream-case-v1",
+ "component": "volcano"
 }

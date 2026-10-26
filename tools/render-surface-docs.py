@@ -10,11 +10,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from trident.core.registry import load_modules  # noqa: E402
-from trident.core.surface import matrix, profile_names  # noqa: E402
+from inkblade.core.registry import load_modules  # noqa: E402
+from inkblade.core.surface import matrix, profile_names  # noqa: E402
 
 OUT = ROOT / "docs" / "SURFACE-REALISM.md"
-REGISTRY = ROOT / "trident" / "core" / "exploit-registry.json"
+REGISTRY = ROOT / "inkblade" / "core" / "exploit-registry.json"
 
 
 def _req(row: dict) -> str:
@@ -23,7 +23,7 @@ def _req(row: dict) -> str:
 
 
 def main() -> int:
-    mods = load_modules(ROOT / "trident" / "modules")
+    mods = load_modules(ROOT / "inkblade" / "modules")
     matrices = {name: matrix(name, modules=mods) for name in profile_names()}
     registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
     deployment = registry.get("deployment") or {}
@@ -42,7 +42,7 @@ def main() -> int:
     lines = [
         "# Surface realism — 真实部署面与模块可测性",
         "",
-        "Generated from `trident/profiles/*.json`, `trident/profiles/surface-map.json` "
+        "Generated from `inkblade/profiles/*.json`, `inkblade/profiles/surface-map.json` "
         "and each module's `surfaces` declaration. Re-run: "
         "`python tools/render-surface-docs.py`.",
         "",
@@ -51,7 +51,7 @@ def main() -> int:
         "missing or unverified; `no-surface` when no required surface exists. "
         "`unknown` at runtime requires an explicit `--probe`. The matrix below uses "
         "**profile declarations** (synthetic deployment facts), not a live cluster; "
-        "`trident surfaces --collect <dir>` recomputes it against real collection output.",
+        "`inkblade surfaces --collect <dir>` recomputes it against real collection output.",
         "",
         "## 1. Profile coverage",
         "",
@@ -111,7 +111,7 @@ def main() -> int:
 
     lines += [
         "",
-        "These modules remain callable explicitly (`trident run --module ... --probe` or with "
+        "These modules remain callable explicitly (`inkblade run --module ... --probe` or with "
         "a real `--collect` / `--profile`). They are excluded from the default chain and from "
         "the default coverage denominator, so a green default report no longer implies "
         "coverage of an undeployed component. Other `no-surface` rows owned by parallel "
@@ -159,13 +159,13 @@ def main() -> int:
         "## 5. Collect and verify",
         "",
         "```powershell",
-        "trident collect --profile ray-vllm --kubeconfig .kube/config "
+        "inkblade collect --profile ray-vllm --kubeconfig .kube/config "
         "--target http://127.0.0.1:8000/v1/models --files .\\export --hardware .\\hw-export",
-        "trident surfaces --profile ray-vllm --collect collection",
-        "trident run --module sglang-route-poison --profile ray-vllm --collect collection",
+        "inkblade surfaces --profile ray-vllm --collect collection",
+        "inkblade run --module sglang-route-poison --profile ray-vllm --collect collection",
         "```",
         "",
-        "Fixture mode is explicit: `trident collect --fixture --profile ray-vllm`.",
+        "Fixture mode is explicit: `inkblade collect --fixture --profile ray-vllm`.",
         "Every fixture collection and report section is stamped **FIXTURE DATA — not a "
         "production verdict**; fixture mode never counts toward a customer production report.",
         "",

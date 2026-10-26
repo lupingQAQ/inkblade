@@ -6,17 +6,17 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: trident-proof
+  name: inkblade-proof
   labels:
-    trident.dev/proof: real-cluster
+    inkblade.dev/proof: real-cluster
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: default-deny-all
-  namespace: trident-proof
+  namespace: inkblade-proof
   labels:
-    trident.dev/proof: real-cluster
+    inkblade.dev/proof: real-cluster
 spec:
   podSelector: {}
   policyTypes: ["Ingress", "Egress"]

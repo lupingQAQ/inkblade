@@ -17,10 +17,10 @@ from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 
 from lab.mock_targets import start_all
-from trident.core.registry import load_modules
+from inkblade.core.registry import load_modules
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES_DIR = ROOT / "trident" / "modules"
+MODULES_DIR = ROOT / "inkblade" / "modules"
 
 ZERODAY_KEYS = (
     "dify-control-plane-failopen",
@@ -87,7 +87,7 @@ class ZerodayTwoStateTest(unittest.TestCase):
         for key in ZERODAY_KEYS:
             with self.subTest(module=key):
                 result = load_run(key).run(
-                    {"marker": "TRIDENT-zd-test"}, {"base_url": self.vulnerable.url("/")}
+                    {"marker": "INKBLADE-zd-test"}, {"base_url": self.vulnerable.url("/")}
                 )
                 self.assertTrue(result["findings"], "vulnerable 态必须检出")
                 finding = result["findings"][0]
@@ -100,7 +100,7 @@ class ZerodayTwoStateTest(unittest.TestCase):
         for key in ZERODAY_KEYS:
             with self.subTest(module=key):
                 result = load_run(key).run(
-                    {"marker": "TRIDENT-zd-test"}, {"base_url": self.fixed.url("/")}
+                    {"marker": "INKBLADE-zd-test"}, {"base_url": self.fixed.url("/")}
                 )
                 self.assertEqual(result["findings"], [])
 
@@ -108,7 +108,7 @@ class ZerodayTwoStateTest(unittest.TestCase):
         """无 /__routes__（非实验室语义目标）：fingerprint 失败 → 零发现、不发动作。"""
         with bare_server() as url:
             result = load_run("dify-control-plane-failopen").run(
-                {"marker": "TRIDENT-zd-test"}, {"base_url": url}
+                {"marker": "INKBLADE-zd-test"}, {"base_url": url}
             )
         self.assertEqual(result["findings"], [])
         self.assertIn("fingerprint", result["summary"])
@@ -128,17 +128,17 @@ class ZerodayTwoStateTest(unittest.TestCase):
     def test_module_specific_evidence(self):
         # dify 控制面：证据锚定路由
         result = load_run("dify-control-plane-failopen").run(
-            {"marker": "TRIDENT-zd-test"}, {"base_url": self.vulnerable.url("/")}
+            {"marker": "INKBLADE-zd-test"}, {"base_url": self.vulnerable.url("/")}
         )
         self.assertIn("/api/v1/bindings", json.dumps(result["findings"], ensure_ascii=False))
         # open-webui 共享沙箱：证据含 mock stdout 标记
         result = load_run("open-webui-code-execute-rce").run(
-            {"marker": "TRIDENT-zd-test"}, {"base_url": self.vulnerable.url("/")}
+            {"marker": "INKBLADE-zd-test"}, {"base_url": self.vulnerable.url("/")}
         )
         self.assertIn("B-was-here", result["findings"][0]["evidence"])
         # dify 存根令牌伪造：语义锚定「伪造」
         result = load_run("dify-stub-token-forgery").run(
-            {"marker": "TRIDENT-zd-test"}, {"base_url": self.vulnerable.url("/")}
+            {"marker": "INKBLADE-zd-test"}, {"base_url": self.vulnerable.url("/")}
         )
         head = result["findings"][0]
         self.assertIn("伪造", head["title"] + head["detail"])

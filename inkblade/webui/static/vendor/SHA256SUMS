@@ -1,4 +1,4 @@
-# Trident SPA vendor bundle — SHA256 checksums (offline, no external refs)
+# InkBlade SPA vendor bundle — SHA256 checksums (offline, no external refs)
 # Sources (unpkg official builds, pinned):
 #   react.production.min.js         react@18.3.1/umd/react.production.min.js
 #   react-dom.production.min.js     react-dom@18.3.1/umd/react-dom.production.min.js

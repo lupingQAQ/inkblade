@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import unittest
 
-from trident.core import baseline as B
+from inkblade.core import baseline as B
 
 
 def pod_finding(ns: str, name: str, sa: str = "", image: str = "", sev: str = "high",
@@ -213,15 +213,15 @@ class TestSuppressionRules(unittest.TestCase):
 
     def test_label_and_annotation_rules(self):
         rules = [
-            B.SuppressionRule.label("approved-daemonsets", {"trident.example/baseline": "approved"},
+            B.SuppressionRule.label("approved-daemonsets", {"inkblade.example/baseline": "approved"},
                                     reason="例外清单", created_by="lead"),
-            B.SuppressionRule.annotation("ack-node-exporter", "trident.example/ack",
+            B.SuppressionRule.annotation("ack-node-exporter", "inkblade.example/ack",
                                          value="node-exporter/2026-10", reason="逐例外确认",
                                          created_by="lead"),
         ]
         engine = B.SuppressionEngine(rules)
-        ctx = {"labels": {"monitoring/node-exporter-h4n2p": {"trident.example/baseline": "approved"}},
-               "annotations": {"monitoring/prometheus-0": {"trident.example/ack":
+        ctx = {"labels": {"monitoring/node-exporter-h4n2p": {"inkblade.example/baseline": "approved"}},
+               "annotations": {"monitoring/prometheus-0": {"inkblade.example/ack":
                                                            "node-exporter/2026-10"}}}
         f1 = pod_finding("monitoring", "node-exporter-h4n2p")
         f2 = pod_finding("monitoring", "prometheus-0")

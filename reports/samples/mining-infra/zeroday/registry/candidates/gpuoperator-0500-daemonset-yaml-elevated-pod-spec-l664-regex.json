@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l664-regex",
  "target": "gpuoperator",
  "repo": "NVIDIA/gpu-operator",

@@ -20,7 +20,7 @@ LAB = ROOT / "lab" / "upstream_verify"
 CASES = LAB / "cases"
 POCS = LAB / "pocs"
 UP = LAB / "upstream"
-CATALOG = ROOT / "trident" / "core" / "cve-catalog.json"
+CATALOG = ROOT / "inkblade" / "core" / "cve-catalog.json"
 MINING = ROOT / "reports" / "samples" / "mining-trainstack" / "mining-report.json"
 
 PY_REPRO = "reproenv"
@@ -313,7 +313,7 @@ def write_case(case_id: str, component: str, manifest: dict, poc_text: str) -> N
         shutil.rmtree(case_dir)
     (case_dir / "evidence").mkdir(parents=True)
     manifest = dict(manifest)
-    manifest.setdefault("schema", "trident-upstream-case-v1")
+    manifest.setdefault("schema", "inkblade-upstream-case-v1")
     manifest["id"] = case_id
     manifest["component"] = component
     manifest["_case_dir"] = f"{component}/{safe}"
@@ -364,7 +364,7 @@ def base_manifest(case_id: str, source: str, title: str, *, version: str, versio
         "module": module,
         "python": python,
         "advisory": advisory,
-        "marker_text": marker_text or f"TRIDENT-UV-{case_id}",
+        "marker_text": marker_text or f"INKBLADE-UV-{case_id}",
         "notes": notes,
         "static_evidence_level": static_evidence_level,
         "static_analysis": static_analysis,

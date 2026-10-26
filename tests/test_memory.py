@@ -12,8 +12,8 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.memory import LAYERS, Memory, WorkingMemory
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.memory import LAYERS, Memory, WorkingMemory
 
 REPO = Path(__file__).resolve().parents[1]
 
@@ -49,7 +49,7 @@ class MemoryLayersTest(unittest.TestCase):
         run.add_step("exposure-mapping", "snapshot", {"actor": "tester"}, "暴露面 12 条")
         run.add_finding("exposure-mapping", "critical", "Ray Dashboard LoadBalancer 暴露", "auth=none")
         run.add_finding("escape-primitives", "high", "特权 Pod 宿主逃逸原语", "privileged=true")
-        self.memory = Memory(self.store, modules_dir=REPO / "trident" / "modules")
+        self.memory = Memory(self.store, modules_dir=REPO / "inkblade" / "modules")
 
     def tearDown(self):
         self.td.cleanup()

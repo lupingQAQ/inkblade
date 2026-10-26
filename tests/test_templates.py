@@ -5,12 +5,12 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.templates import TemplateError, TemplateStore
-from trident.core.users import Session
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.templates import TemplateError, TemplateStore
+from inkblade.core.users import Session
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
-CHAINS_DIR = Path(__file__).resolve().parents[1] / "trident" / "chains"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
+CHAINS_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "chains"
 
 
 def _session(role="lead"):

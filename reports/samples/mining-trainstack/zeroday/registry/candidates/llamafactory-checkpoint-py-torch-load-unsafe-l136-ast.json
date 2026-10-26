@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "llamafactory-checkpoint-py-torch-load-unsafe-l136-ast",
  "target": "llamafactory",
  "repo": "hiyouga/LlamaFactory",

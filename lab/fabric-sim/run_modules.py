@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""用真实 trident fabric 模块判定仿真 telemetry（probe/write 只打到 lab 端点）。"""
+"""用真实 inkblade fabric 模块判定仿真 telemetry（probe/write 只打到 lab 端点）。"""
 from __future__ import annotations
 
 import importlib.util
@@ -20,7 +20,7 @@ else:
     from .topology import Topology
 
 REPO = Path(__file__).resolve().parents[2]
-MODULES = REPO / "trident" / "modules"
+MODULES = REPO / "inkblade" / "modules"
 DEFAULT_OUT = REPO / "reports" / "samples" / "fabric-sim" / "module-findings.json"
 
 
@@ -62,8 +62,8 @@ def run(out: Path | str | None = None, *, nodes: int = 1024) -> dict:
                 "backup_targets": ["sim"], "rank": "rank-7",
                 "straggler_ms": 5000})["findings"]
     doc = {
-        "schema": "trident-fabric-module-adjudication/2026-10",
-        "source": "simulation telemetry -> real trident modules (probe/backup-write against lab HTTP endpoint)",
+        "schema": "inkblade-fabric-module-adjudication/2026-10",
+        "source": "simulation telemetry -> real inkblade modules (probe/backup-write against lab HTTP endpoint)",
         "nodes": nodes, "scenario": "mixed",
         "modules": findings,
         "counts": {name: len(items) for name, items in findings.items()},

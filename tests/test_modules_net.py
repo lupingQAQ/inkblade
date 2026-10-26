@@ -12,16 +12,16 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.combo import match as combo_match
-from trident.core.evidence import EvidenceStore
-from trident.core.reachability import MATRIX_DIMENSIONS
-from trident.core.registry import load_modules
-from trident.core.roe import init_roe
-from trident.core.runner import run_module
-from trident.core.users import UserStore
+from inkblade.core.combo import match as combo_match
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.reachability import MATRIX_DIMENSIONS
+from inkblade.core.registry import load_modules
+from inkblade.core.roe import init_roe
+from inkblade.core.runner import run_module
+from inkblade.core.users import UserStore
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
+MODULES_DIR = REPO / "inkblade" / "modules"
 FIXTURES = REPO / "lab" / "fixtures" / "network"
 
 NET_KEYS = [

@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "trl-data-utils-py-apply-chat-template-dynamic-l303-regex",
  "target": "trl",
  "repo": "huggingface/trl",

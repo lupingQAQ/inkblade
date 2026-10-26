@@ -30,9 +30,9 @@ def main() -> int:
     parser.add_argument("--ref", default="128dfd4", help="对比基线 git ref（默认=优化前最后一个提交）")
     args = parser.parse_args()
     failures = 0
-    with tempfile.TemporaryDirectory(prefix="trident-equiv-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="inkblade-equiv-") as tmp:
         for key in MODULES:
-            rel = f"trident/modules/{key}/run.py"
+            rel = f"inkblade/modules/{key}/run.py"
             old_dir = Path(tmp) / key
             old_dir.mkdir(parents=True)
             old_src = subprocess.run(["git", "show", f"{args.ref}:{rel}"], cwd=ROOT,
@@ -41,7 +41,7 @@ def main() -> int:
             old_path.write_bytes(old_src)
             # 旧模块按文件位置找 _recon-common：补一个指向真实 modules 目录的同级路径
             (old_dir.parent / "_recon-common.py").write_bytes(
-                (ROOT / "trident" / "modules" / "_recon-common.py").read_bytes())
+                (ROOT / "inkblade" / "modules" / "_recon-common.py").read_bytes())
             old_mod = load(old_path)
             new_mod = load(ROOT / rel)
             for snap_rel in SNAPSHOTS:

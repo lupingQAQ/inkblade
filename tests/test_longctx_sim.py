@@ -145,7 +145,7 @@ CASES = [
     },
     {
         "name": "PD KV 通道未鉴权写", "method": "POST", "path": "/kv/transfer",
-        "body": {"op": "write", "block_id": "kv-case", "value": "TRIDENT-BENIGN-KV",
+        "body": {"op": "write", "block_id": "kv-case", "value": "INKBLADE-BENIGN-KV",
                  "source_tenant": "tenant-a", "dest_tenant": "tenant-b", "layer": 3},
         "headers": TENANT_A,
         "vulnerable_status": 200, "fixed_status": 401,
@@ -153,7 +153,7 @@ CASES = [
     },
     {
         "name": "PD KV 跨租户写（管理密钥）", "method": "POST", "path": "/kv/transfer",
-        "body": {"op": "write", "block_id": "kv-cross", "value": "TRIDENT-BENIGN-CROSS",
+        "body": {"op": "write", "block_id": "kv-cross", "value": "INKBLADE-BENIGN-CROSS",
                  "source_tenant": "tenant-a", "dest_tenant": "tenant-b"},
         "headers": {**ADMIN, **TENANT_A},
         "vulnerable_status": 200, "fixed_status": 403,
@@ -165,13 +165,13 @@ CASES = [
     },
     {
         "name": "checkpoint 分片未鉴权写", "method": "POST", "path": "/checkpoint/shards",
-        "body": {"shard_id": "shard-00001", "payload": "TRIDENT-BENIGN-SHARD\n"},
+        "body": {"shard_id": "shard-00001", "payload": "INKBLADE-BENIGN-SHARD\n"},
         "headers": {},
         "vulnerable_status": 200, "fixed_status": 401,
     },
     {
         "name": "checkpoint 分片管理密钥写", "method": "POST", "path": "/checkpoint/shards",
-        "body": {"shard_id": "shard-00002", "payload": "TRIDENT-BENIGN-SHARD-ADMIN\n"},
+        "body": {"shard_id": "shard-00002", "payload": "INKBLADE-BENIGN-SHARD-ADMIN\n"},
         "headers": ADMIN,
         "vulnerable_status": 200, "fixed_status": 200,
     },
@@ -249,7 +249,7 @@ class PrefixCacheIsolationTest(unittest.TestCase):
 
     def test_cross_tenant_reuse_vulnerable(self):
         with start_all(mode="vulnerable") as server:
-            prefix = "TRIDENT-PREFIX-CROSS-TENANT-001"
+            prefix = "INKBLADE-PREFIX-CROSS-TENANT-001"
             prime_status, prime = request(
                 "POST", server.url("/v1/chat/completions"),
                 _chat_body(prompt_prefix=prefix, prefix_tokens=4096, prompt_tokens=4096,
@@ -266,7 +266,7 @@ class PrefixCacheIsolationTest(unittest.TestCase):
 
     def test_fixed_requires_cache_salt_and_isolates_tenants(self):
         with start_all(mode="fixed") as server:
-            prefix = "TRIDENT-PREFIX-CROSS-TENANT-002"
+            prefix = "INKBLADE-PREFIX-CROSS-TENANT-002"
             status, _ = request(
                 "POST", server.url("/v1/chat/completions"),
                 _chat_body(prompt_prefix=prefix, prefix_tokens=4096, prompt_tokens=4096,
@@ -330,7 +330,7 @@ class KvChannelReadbackTest(unittest.TestCase):
 
     def test_write_then_readback(self):
         with start_all(mode="vulnerable") as server:
-            value = "TRIDENT-BENIGN-KV-READBACK-001"
+            value = "INKBLADE-BENIGN-KV-READBACK-001"
             status, written = request(
                 "POST", server.url("/kv/transfer"),
                 {"op": "write", "block_id": "kv-readback", "value": value,
@@ -359,7 +359,7 @@ class CheckpointShardTest(unittest.TestCase):
         with TemporaryDirectory() as tmp:
             root = Path(tmp)
             with start_all(mode="vulnerable", root=root) as server:
-                payload = "TRIDENT-BENIGN-SHARD-READBACK\nshard=00009\n"
+                payload = "INKBLADE-BENIGN-SHARD-READBACK\nshard=00009\n"
                 status, written = request(
                     "POST", server.url("/checkpoint/shards"),
                     {"shard_id": "shard-00009", "payload": payload})
@@ -380,7 +380,7 @@ class CheckpointShardTest(unittest.TestCase):
             with start_all(mode="fixed", root=root) as server:
                 status, _ = request(
                     "POST", server.url("/checkpoint/shards"),
-                    {"shard_id": "shard-00010", "payload": "TRIDENT-BENIGN-SHARD-DENIED\n"})
+                    {"shard_id": "shard-00010", "payload": "INKBLADE-BENIGN-SHARD-DENIED\n"})
                 self.assertEqual(status, 401)
                 self.assertFalse(checkpoint_shard_path(server.root, "shard-00010").exists())
 

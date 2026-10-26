@@ -1,10 +1,10 @@
 title: guardrail 检查面绕过
-id: 8964a337-9277-c699-30c5-da4e8b6931c2
+id: 961534a7-a588-24ef-70b5-fa17dd256f5f
 status: stable
-description: "Guardrail inspection-surface bypass. 角色分层/多消息深埋/单长消息深位/混合语言绕过首条消息检查；来源=LLM 探针矩阵 guardrail-bypass 类。 检测规则与 trident/probes 探针库 guardrail-bypass 类一一联动（每类 ≥1 规则）。"
+description: "Guardrail inspection-surface bypass. 角色分层/多消息深埋/单长消息深位/混合语言绕过首条消息检查；来源=LLM 探针矩阵 guardrail-bypass 类。 检测规则与 inkblade/probes 探针库 guardrail-bypass 类一一联动（每类 ≥1 规则）。"
 references:
-  - "trident-rules-mapping: sigma-llm-probe-guardrail-bypass"
-author: Trident rules engine
+  - "inkblade-rules-mapping: sigma-llm-probe-guardrail-bypass"
+author: InkBlade rules engine
 date: 2026/10/25
 logsource:
   product: litellm
@@ -22,10 +22,10 @@ falsepositives:
 level: high
 tags:
   - attack.t1562
-  - trident
+  - inkblade
   - llm-probe
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-tuning: 以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针
-  trident-blocks-chains: ""
+  inkblade-mode: monitor
+  inkblade-tuning: 以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针
+  inkblade-blocks-chains: ""

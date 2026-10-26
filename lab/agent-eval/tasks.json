@@ -1,5 +1,5 @@
 {
-  "schema": "trident-agent-eval-tasks-v1",
+  "schema": "inkblade-agent-eval-tasks-v1",
   "generated": "2026-10-25",
   "note": "截图/仿真靶场全部本地（127.0.0.1），无外部网络依赖；mode=probe-only，写类模块不参与评测。",
   "tasks": [

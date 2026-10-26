@@ -52,7 +52,7 @@ def _sha256(path: Path) -> str:
 def collect(root: str | Path, max_files: int = MAX_FILES) -> dict:
     base = Path(root)
     if not base.exists():
-        return {"schema": "trident-files-collection-v1", "status": "unavailable",
+        return {"schema": "inkblade-files-collection-v1", "status": "unavailable",
                 "root": str(base), "files": [], "errors": [f"not found: {base}"]}
     files: list[dict] = []
     errors: list[str] = []
@@ -86,7 +86,7 @@ def collect(root: str | Path, max_files: int = MAX_FILES) -> dict:
         kinds[item["kind"]] = kinds.get(item["kind"], 0) + 1
     status = "ok" if files or base.exists() else "unavailable"
     return {
-        "schema": "trident-files-collection-v1",
+        "schema": "inkblade-files-collection-v1",
         "status": status,
         "root": str(base),
         "files": files,

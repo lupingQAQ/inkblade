@@ -1,5 +1,5 @@
 {
-  "schema": "trident-privesc-matrix-v1",
+  "schema": "inkblade-privesc-matrix-v1",
   "version": "2026.10",
   "target_default": "cluster-admin",
   "categories": {
@@ -1555,7 +1555,7 @@
         "event": {
           "kind": "falco",
           "event_type": "open_write",
-          "path": "/etc/kubernetes/manifests/trident.yaml",
+          "path": "/etc/kubernetes/manifests/inkblade.yaml",
           "proc": "sh",
           "container": true
         }

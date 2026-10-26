@@ -15,17 +15,17 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from lab.longctx_sim import checkpoint_shard_path, start_all
-from trident.core.backup import BackupManager
-from trident.core.chains import dry_run, evaluate_preconditions, load_chains
-from trident.core.evidence import EvidenceStore
-from trident.core.registry import load_modules
-from trident.core.roe import init_roe
-from trident.core.runner import BackupGateRefused, run_module
-from trident.core.users import UserStore
+from inkblade.core.backup import BackupManager
+from inkblade.core.chains import dry_run, evaluate_preconditions, load_chains
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.registry import load_modules
+from inkblade.core.roe import init_roe
+from inkblade.core.runner import BackupGateRefused, run_module
+from inkblade.core.users import UserStore
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
-CHAINS_DIR = REPO / "trident" / "chains"
+MODULES_DIR = REPO / "inkblade" / "modules"
+CHAINS_DIR = REPO / "inkblade" / "chains"
 
 NEW_MODULES = {
     "long-context-window-exhaustion": {"series": "网络架构", "min_level": "主动探测", "writes": False},
@@ -165,17 +165,17 @@ class VulnerableDetectionTest(LongctxModuleTestBase):
         self.assertTrue(detail["collective_ports"])
 
     def test_checkpoint_shard_poison_and_rollback(self):
-        shard_id = "trident-shard-test"
+        shard_id = "inkblade-shard-test"
         path = checkpoint_shard_path(self.vulnerable.root, shard_id)
         path.parent.mkdir(parents=True, exist_ok=True)
-        original = b"TRIDENT-CHECKPOINT-ORIGINAL\nshard=test\n"
+        original = b"INKBLADE-CHECKPOINT-ORIGINAL\nshard=test\n"
         path.write_bytes(original)
         before = hashlib.sha256(original).hexdigest()
         _, findings, run = self._run("checkpoint-shard-poison", {
             "target": self.vulnerable.url(""),
             "mode": "backup-write",
             "shard_id": shard_id,
-            "marker": "TRIDENT-MARKER-SHARD",
+            "marker": "INKBLADE-MARKER-SHARD",
             "backup_targets": [{"kind": "file", "path": str(path)}],
         })
         high = [f for f in findings if f["severity"] == "high"]
@@ -183,7 +183,7 @@ class VulnerableDetectionTest(LongctxModuleTestBase):
         after = hashlib.sha256(path.read_bytes()).hexdigest()
         self.assertNotEqual(after, before)
         content = path.read_text(encoding="utf-8", errors="replace")
-        self.assertIn("TRIDENT-MARKER-SHARD", content)
+        self.assertIn("INKBLADE-MARKER-SHARD", content)
         detail = _detail(high[0])
         self.assertEqual(detail["readback_sha256"], after)
         receipt = BackupManager(self.store, run).rollback("checkpoint-shard-poison")

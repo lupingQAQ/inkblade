@@ -17,12 +17,12 @@
     {
       "id": "verl-channel-probe",
       "module": "verl-checkpoint-pickle",
-      "params": {"mode": "probe-only", "marker": "TRIDENT-${run.name}"}
+      "params": {"mode": "probe-only", "marker": "INKBLADE-${run.name}"}
     },
     {
       "id": "areal-load-probe",
       "module": "areal-load-pickle",
-      "params": {"mode": "probe-only", "marker": "TRIDENT-${run.name}"}
+      "params": {"mode": "probe-only", "marker": "INKBLADE-${run.name}"}
     }
   ],
   "evidence": ["http-trace"],

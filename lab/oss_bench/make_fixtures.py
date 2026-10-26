@@ -31,7 +31,7 @@ LLM = FIXTURES / "llm"
 # ---------------------------------------------------------------------------
 class EvilSystem:
     def __reduce__(self):
-        return (os.system, ("echo trident-oss-bench-canary",))
+        return (os.system, ("echo inkblade-oss-bench-canary",))
 
 
 class EvilEval:
@@ -41,12 +41,12 @@ class EvilEval:
 
 class EvilExec:
     def __reduce__(self):
-        return (exec, ("print('trident-oss-bench-canary')",))
+        return (exec, ("print('inkblade-oss-bench-canary')",))
 
 
 class EvilSubprocess:
     def __reduce__(self):
-        return (subprocess.run, (["cmd", "/c", "echo", "trident-oss-bench-canary"],))
+        return (subprocess.run, (["cmd", "/c", "echo", "inkblade-oss-bench-canary"],))
 
 
 class EvilSocket:
@@ -150,7 +150,7 @@ def build_models() -> dict:
     (MODELS / "manifest.json").write_text(
         json.dumps(
             {
-                "schema": "trident.oss-bench.fixtures/1",
+                "schema": "inkblade.oss-bench.fixtures/1",
                 "total": len(manifest),
                 "malicious": sum(1 for m in manifest if m["malicious"]),
                 "benign": sum(1 for m in manifest if not m["malicious"]),
@@ -406,7 +406,7 @@ def build_llm() -> dict:
     (LLM / "cases.json").write_text(
         json.dumps(
             {
-                "schema": "trident.oss-bench.llm-cases/1",
+                "schema": "inkblade.oss-bench.llm-cases/1",
                 "cases": [{"id": i, "prompt": p} for i, p in cases],
             },
             indent=2,

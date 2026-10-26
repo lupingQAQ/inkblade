@@ -9,12 +9,12 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.objective import CHAIN_ID, load_objective
-from trident.rules.generate import generate_all
-from trident.rules.validate import rule_fires, validate
+from inkblade.core.objective import CHAIN_ID, load_objective
+from inkblade.rules.generate import generate_all
+from inkblade.rules.validate import rule_fires, validate
 
 REPO = Path(__file__).resolve().parents[1]
-CHAINS = REPO / "trident" / "chains"
+CHAINS = REPO / "inkblade" / "chains"
 SAMPLES = REPO / "reports" / "samples" / "kill-chain"
 DOC = REPO / "docs" / "KILL-CHAIN.md"
 LAB = REPO / "lab" / "qemu-k3s"
@@ -49,7 +49,7 @@ class KillChainDefinitionTest(unittest.TestCase):
             self.assertTrue(path.is_file(), f"missing lab artifact {rel}")
             self.assertGreater(path.stat().st_size, 200, f"{rel} looks like a stub")
         fixture = (LAB / "manifests" / "40-killchain-operator.yaml").read_text(encoding="utf-8")
-        self.assertIn("trident-operator", fixture)
+        self.assertIn("inkblade-operator", fixture)
         self.assertIn("rbac.authorization.k8s.io", fixture)
         self.assertIn("ClusterRoleBinding", fixture)
 
@@ -60,7 +60,7 @@ class KillChainRulesTest(unittest.TestCase):
             pack = generate_all(CHAINS, out_dir=tmp)
             root = Path(pack.out_dir)
             mapping = json.loads((root / "mapping.json").read_text(encoding="utf-8"))
-            probes = json.loads((REPO / "trident/rules/templates/probes.json").read_text(
+            probes = json.loads((REPO / "inkblade/rules/templates/probes.json").read_text(
                 encoding="utf-8"))["chains"][CHAIN_ID]
             fixtures = probes["fixtures"]
             self.assertGreaterEqual(len(fixtures), 7)

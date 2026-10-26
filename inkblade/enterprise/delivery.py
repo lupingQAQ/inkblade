@@ -49,7 +49,7 @@ class Deduplicator:
     def _save(self) -> None:
         if self.path:
             self.path.parent.mkdir(parents=True, exist_ok=True)
-            self.path.write_text(json.dumps({"schema": "trident-dedupe/1",
+            self.path.write_text(json.dumps({"schema": "inkblade-dedupe/1",
                                              "seen": self._seen},
                                             ensure_ascii=False, indent=2) + "\n",
                                  encoding="utf-8")

@@ -17,7 +17,7 @@
     {
       "id": "weight-copy-proof",
       "module": "shared-volume-weight-copy",
-      "params": {"mode": "backup-write", "marker": "TRIDENT-${run.name}"},
+      "params": {"mode": "backup-write", "marker": "INKBLADE-${run.name}"},
       "writes": true,
       "backup_targets": [
         {"kind": "file", "path": "/shared/hf-cache/weights.bin"}
@@ -26,7 +26,7 @@
     {
       "id": "remote-code-poison",
       "module": "trust-remote-code-supply-chain",
-      "params": {"mode": "backup-write", "marker": "TRIDENT-${run.name}"},
+      "params": {"mode": "backup-write", "marker": "INKBLADE-${run.name}"},
       "depends_on": ["weight-copy-proof"],
       "writes": true,
       "backup_targets": [

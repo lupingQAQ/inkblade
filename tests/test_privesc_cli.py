@@ -1,4 +1,4 @@
-"""CLI：trident privesc matrix|paths 与 trident objective plan 的机器可读输出。"""
+"""CLI：inkblade privesc matrix|paths 与 inkblade objective plan 的机器可读输出。"""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ PY = sys.executable
 
 
 def run_cli(*args: str) -> subprocess.CompletedProcess:
-    return subprocess.run([PY, "-m", "trident", *args], cwd=REPO,
+    return subprocess.run([PY, "-m", "inkblade", *args], cwd=REPO,
                           capture_output=True, timeout=60)
 
 
@@ -48,8 +48,8 @@ class TestPrivescCli(unittest.TestCase):
     def test_objective_plan_via_library(self):
         # objective CLI 由并行任务维护（kill-chain 7 阶段）；提权选路在 core.objective 中集成，
         # 这里直接验证库入口，避免与在途 CLI 参数冲突。
-        from trident.core.objective import plan_objective
-        from trident.core.privesc import load_snapshot
+        from inkblade.core.objective import plan_objective
+        from inkblade.core.privesc import load_snapshot
 
         plan = plan_objective("cluster-takeover", snapshot=load_snapshot(FIXTURE),
                               from_principal="system:serviceaccount:privesc-lab:esc-sa")

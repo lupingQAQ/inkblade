@@ -25,12 +25,12 @@
  "marker": {
   "after_has_marker": true,
   "after_sha256": "751d3c56247d92a0aa346c18f9a8a5e214f21e12fbeb89c35a6532d00d1cae39",
-  "text": "TRIDENT-ZD-deepspeed-autoep-unsafe-load"
+  "text": "INKBLADE-ZD-deepspeed-autoep-unsafe-load"
  },
  "method": "dynamic-function",
  "notes": "Imports the real v0.19.8 autoep_universal module (vendored source tree, empty package __init__ only) and uses the real installed torch 2.14 CPU build. No CUDA is required for this conversion path.",
  "payload": {
-  "marker": "TRIDENT-ZD-deepspeed-autoep-unsafe-load",
+  "marker": "INKBLADE-ZD-deepspeed-autoep-unsafe-load",
   "marker_path": "lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/evidence/marker.txt",
   "marker_sha256": "751d3c56247d92a0aa346c18f9a8a5e214f21e12fbeb89c35a6532d00d1cae39",
   "request_response": [
@@ -68,12 +68,12 @@
   "snippet": "sd = torch.load(ckpt_path, map_location='cpu', weights_only=False)",
   "source": "lab/zeroday_reserve/upstream/deepspeed-0.19.8/deepspeed/checkpoint/autoep_universal.py"
  },
- "schema": "trident-zeroday-result-v1",
+ "schema": "inkblade-zeroday-result-v1",
  "source_sha256": "bc8e0a4f4560a3610473fb2215598b481cb1149ab1275ec0ee13ac3159b97727",
  "started_at": "2026-10-26T12:07:41+00:00",
  "status": "verified",
  "stderr": "",
- "stdout": "{\"marker\": \"TRIDENT-ZD-deepspeed-autoep-unsafe-load\", \"marker_path\": \"lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/evidence/marker.txt\", \"marker_sha256\": \"751d3c56247d92a0aa346c18f9a8a5e214f21e12fbeb89c35a6532d00d1cae39\", \"request_response\": [{\"result\": \"torch.load executed malicious shard\", \"step\": \"consolidate_autoep_expert_files(checkpoint_dir)\"}, {\"result\": \"failed after proof: RuntimeError: Invalid magic number; corrupt file?\", \"step\": \"expected key validation\"}], \"state_after\": \"marker contains proof text\", \"state_before\": \"marker=ABSENT\", \"status\": \"verified\", \"transport\": {\"payload\": \"pickle __reduce__ -> poclib.mark\", \"post_sink_error\": \"RuntimeError: Invalid magic number; corrupt file?\", \"shard\": \"lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/evidence/work/ckpt/layer_0_expert_0_mp_rank_0_model_states.pt\", \"sink\": \"torch.load(..., weights_only=False)\", \"sink_line\": 459, \"source\": \"lab/zeroday_reserve/upstream/deepspeed-0.19.8/deepspeed/checkpoint/autoep_universal.py\", \"source_sha256\": \"bc8e0a4f4560a3610473fb2215598b481cb1149ab1275ec0ee13ac3159b97727\", \"torch_version\": \"2.14.1+cpu\", \"type\": \"real vendored upstream module + torch.load\", \"upstream\": \"DeepSpeed v0.19.8\"}}\n",
+ "stdout": "{\"marker\": \"INKBLADE-ZD-deepspeed-autoep-unsafe-load\", \"marker_path\": \"lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/evidence/marker.txt\", \"marker_sha256\": \"751d3c56247d92a0aa346c18f9a8a5e214f21e12fbeb89c35a6532d00d1cae39\", \"request_response\": [{\"result\": \"torch.load executed malicious shard\", \"step\": \"consolidate_autoep_expert_files(checkpoint_dir)\"}, {\"result\": \"failed after proof: RuntimeError: Invalid magic number; corrupt file?\", \"step\": \"expected key validation\"}], \"state_after\": \"marker contains proof text\", \"state_before\": \"marker=ABSENT\", \"status\": \"verified\", \"transport\": {\"payload\": \"pickle __reduce__ -> poclib.mark\", \"post_sink_error\": \"RuntimeError: Invalid magic number; corrupt file?\", \"shard\": \"lab/zeroday_reserve/cases/deepspeed-autoep-unsafe-load/evidence/work/ckpt/layer_0_expert_0_mp_rank_0_model_states.pt\", \"sink\": \"torch.load(..., weights_only=False)\", \"sink_line\": 459, \"source\": \"lab/zeroday_reserve/upstream/deepspeed-0.19.8/deepspeed/checkpoint/autoep_universal.py\", \"source_sha256\": \"bc8e0a4f4560a3610473fb2215598b481cb1149ab1275ec0ee13ac3159b97727\", \"torch_version\": \"2.14.1+cpu\", \"type\": \"real vendored upstream module + torch.load\", \"upstream\": \"DeepSpeed v0.19.8\"}}\n",
  "timed_out": false,
  "title": "DeepSpeed 0.19.8 AutoEP universal conversion loads expert shards with weights_only=False",
  "verified": true,

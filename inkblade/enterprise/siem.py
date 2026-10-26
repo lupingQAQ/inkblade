@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """SIEM / ITSM 直投适配器：Splunk HEC、Elastic _bulk、Webhook(HMAC)、Jira、ServiceNow。
 
-输入统一为 Trident OCSF 导出文档（``trident.export.build_ocsf``），输出为供应商
+输入统一为 InkBlade OCSF 导出文档（``inkblade.export.build_ocsf``），输出为供应商
 契约载荷。所有适配器默认不联网；``send`` 仅在显式调用时通过注入 transport 或 HTTP
 发出。错误只返回结果，不记录 token/Authorization。
 """
@@ -69,9 +69,9 @@ def _http_url(url: str) -> str:
 class SplunkHEC:
     kind = "splunk"
 
-    def __init__(self, url: str, token: str, *, index: str = "trident",
-                 source: str = "trident", sourcetype: str = "ocsf:detection_finding",
-                 host: str = "trident", timeout: int = 8, transport: Transport | None = None):
+    def __init__(self, url: str, token: str, *, index: str = "inkblade",
+                 source: str = "inkblade", sourcetype: str = "ocsf:detection_finding",
+                 host: str = "inkblade", timeout: int = 8, transport: Transport | None = None):
         if not token:
             raise DeliveryError("Splunk HEC token 必填")
         self.url = _http_url(url)
@@ -118,7 +118,7 @@ class SplunkHEC:
 class ElasticBulk:
     kind = "elastic"
 
-    def __init__(self, url: str, *, index: str = "trident-findings", api_key: str = "",
+    def __init__(self, url: str, *, index: str = "inkblade-findings", api_key: str = "",
                  timeout: int = 8, transport: Transport | None = None):
         self.url = _http_url(url)
         self.endpoint_url = self.url if self.url.endswith("/_bulk") else self.url + "/_bulk"
@@ -170,7 +170,7 @@ class WebhookSink:
     def build_payload(self, doc: dict | list) -> bytes:
         events = _events(doc)
         payload = {
-            "schema": "trident.webhook/1",
+            "schema": "inkblade.webhook/1",
             "sent_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(self._now())),
             "count": len(events),
             "events": [jsonio.redact(e) for e in events],
@@ -185,8 +185,8 @@ class WebhookSink:
         ts = str(int(self._now()))
         headers = {
             "Content-Type": "application/json",
-            "X-Trident-Timestamp": ts,
-            "X-Trident-Signature": self.signature(body),
+            "X-InkBlade-Timestamp": ts,
+            "X-InkBlade-Signature": self.signature(body),
         }
         if self._transport is not None:
             res = self._transport(self.url, body, headers)
@@ -220,7 +220,7 @@ SEV_TO_SNOW = {"critical": "1", "high": "2", "medium": "3", "low": "4", "info": 
 class JiraSink:
     kind = "jira"
 
-    def __init__(self, url: str, *, token: str = "", project: str = "TRIDENT",
+    def __init__(self, url: str, *, token: str = "", project: str = "INKBLADE",
                  timeout: int = 8, transport: Transport | None = None):
         self.url = _http_url(url)
         if not token:
@@ -241,11 +241,11 @@ class JiraSink:
                 f"Fingerprint: {fp}")
         return {"fields": {
             "project": {"key": self.project},
-            "summary": f"[Trident][{sev}] {finding.get('title') or module}"[:250],
+            "summary": f"[InkBlade][{sev}] {finding.get('title') or module}"[:250],
             "description": body,
             "issuetype": {"name": "Bug"},
             "priority": {"name": SEV_TO_PRIORITY.get(sev, "Medium")},
-            "labels": ["trident", sev, module, f"fp:{fp}"],
+            "labels": ["inkblade", sev, module, f"fp:{fp}"],
         }}
 
     def send(self, finding: dict, *, run: str = "", remediation: str = "") -> dict:
@@ -275,15 +275,15 @@ class ServiceNowSink:
         sev = str(finding.get("severity") or "info").lower()
         fp = _fingerprint(finding, run)
         return {
-            "short_description": f"[Trident][{sev}] {finding.get('title') or 'finding'}"[:160],
+            "short_description": f"[InkBlade][{sev}] {finding.get('title') or 'finding'}"[:160],
             "description": (f"Run: {run}\nModule: {finding.get('step_key') or '-'}\n"
                             f"Evidence: {finding.get('evidence_path') or '-'}\n\n"
                             f"{str(finding.get('detail') or '')[:3000]}"),
             "severity": SEV_TO_SNOW.get(sev, "5"),
             "category": "Security",
-            "u_source": "trident",
+            "u_source": "inkblade",
             "correlation_id": fp,
-            "u_trident_severity": sev,
+            "u_inkblade_severity": sev,
         }
 
     def send(self, finding: dict, *, run: str = "") -> dict:
@@ -300,16 +300,16 @@ def adapter_for(kind: str, config: dict, *, transport: Transport | None = None):
     """配置驱动构造；未知 kind 显式报错。"""
     kind = str(kind or "").lower()
     if kind == "splunk":
-        return SplunkHEC(config["url"], config["token"], index=config.get("index", "trident"),
+        return SplunkHEC(config["url"], config["token"], index=config.get("index", "inkblade"),
                          transport=transport)
     if kind == "elastic":
-        return ElasticBulk(config["url"], index=config.get("index", "trident-findings"),
+        return ElasticBulk(config["url"], index=config.get("index", "inkblade-findings"),
                            api_key=config.get("api_key", ""), transport=transport)
     if kind == "webhook":
         return WebhookSink(config["url"], secret=config["secret"], transport=transport)
     if kind == "jira":
         return JiraSink(config["url"], token=config["token"],
-                        project=config.get("project", "TRIDENT"), transport=transport)
+                        project=config.get("project", "INKBLADE"), transport=transport)
     if kind == "servicenow":
         return ServiceNowSink(config["url"], token=config["token"],
                               table=config.get("table", "incident"), transport=transport)

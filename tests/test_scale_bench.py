@@ -16,10 +16,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from lab.bench.bench import MemorySampler  # noqa: F401  # 复用同一 RSS 采样实现（导入即验证）
-from trident.core.reachability import infer
+from inkblade.core.reachability import infer
 
 SCALE_BENCH = ROOT / "lab" / "bench" / "scale-bench.py"
-MODULES_DIR = ROOT / "trident" / "modules"
+MODULES_DIR = ROOT / "inkblade" / "modules"
 RECON_MODULES = (
     "cloud-integration-fingerprint", "escape-primitives", "exposure-mapping",
     "framework-port-matching", "metadata-egress", "network-policy-coverage",
@@ -35,7 +35,7 @@ def _load_path(path: Path, name: str):
     return module
 
 
-_SCALE = _load_path(SCALE_BENCH, "trident_scale_bench")
+_SCALE = _load_path(SCALE_BENCH, "inkblade_scale_bench")
 
 
 def load_run(key: str):
@@ -90,7 +90,7 @@ class SnapshotGeneratorTest(unittest.TestCase):
             self.assertTrue(snap[key], f"{key} 为空，压测不成立")
 
     def test_recon_module_list_matches_registry_family(self):
-        from trident.core.registry import load_modules
+        from inkblade.core.registry import load_modules
 
         modules = load_modules(MODULES_DIR)
         for key in RECON_MODULES:
@@ -202,7 +202,7 @@ class ScaleEndToEndTest(unittest.TestCase):
         self.assertEqual(len(matrix), 5, "五维可达矩阵维度缺失")
 
     def test_rules_generate_from_scale_findings(self):
-        from trident.rules.generate import generate_all
+        from inkblade.rules.generate import generate_all
 
         findings = []
         for key in RECON_MODULES:
@@ -212,8 +212,8 @@ class ScaleEndToEndTest(unittest.TestCase):
                 findings.append(item)
         import tempfile
 
-        with tempfile.TemporaryDirectory(prefix="trident-scale-test-") as tmp:
-            pack = generate_all(ROOT / "trident" / "chains", findings=findings, out_dir=tmp)
+        with tempfile.TemporaryDirectory(prefix="inkblade-scale-test-") as tmp:
+            pack = generate_all(ROOT / "inkblade" / "chains", findings=findings, out_dir=tmp)
             self.assertGreater(pack.total_rules, 20)
             self.assertGreater(pack.covered_chain_count, 10)
             self.assertTrue((Path(tmp) / "mapping.json").exists())

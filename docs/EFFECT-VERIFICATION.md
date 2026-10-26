@@ -1,4 +1,4 @@
-# Trident 实效验证报告（Effect Verification）
+# InkBlade 实效验证报告（Effect Verification）
 
 - 生成时间：2026-10-26T09:05:47Z
 - 验证 Run：`effects-20261026-170531`；链 Run：`effects-chain-20261026-170531`
@@ -10,16 +10,16 @@
 | 项 | 验证内容 | 结果 | 证据摘要 |
 |---|---|---|---|
 | `admin-plane-failopen` | 未授权管理面利用：真实 HTTP 200 + 服务端状态文件变更 | PASS | {"http_status": 200, "route": "/pause", "state_file": "sglang/admin-state.json", "state_sha256_before": "5b377a070bfa3e011a6994667613cd33be1f9abed8c0a75e0547230dd4089318", "state_sha256_after": "be465ea63024243f2cc56bead086739d82c8d95a93923b08ce98ad5d0f1c1ca2", "state_applied": true, "state_response_sha256": "a87ff9d4adea46b33c9c3a28e5f84927c3fc4b0ba78b0fe20e234a55d2530bb4"} |
-| `weight-poison-write` | 权重投毒实效：文件副本 sha256 变化 + benign marker | PASS | {"http_status": 200, "file": "slime/checkpoints_victim-TRIDENT-effects-20261026-170531/model.safetensors", "sha256_before": "8127ad31f844aa2495a3e251f38263b6540cb39325c54f775db29604f6eb41e0", "sha256_after": "139098a60af8f28d3230ec3ea0a27d4a6e501e10a971daf424badde3daf46534", "marker": "TRIDENT-effects-20261026-170531", "marker_present": true, "server_weights_sha256": "139098a60af8f28d3230ec3ea0a27d4a6e501e10a971da… |
+| `weight-poison-write` | 权重投毒实效：文件副本 sha256 变化 + benign marker | PASS | {"http_status": 200, "file": "slime/checkpoints_victim-INKBLADE-effects-20261026-170531/model.safetensors", "sha256_before": "8127ad31f844aa2495a3e251f38263b6540cb39325c54f775db29604f6eb41e0", "sha256_after": "139098a60af8f28d3230ec3ea0a27d4a6e501e10a971daf424badde3daf46534", "marker": "INKBLADE-effects-20261026-170531", "marker_present": true, "server_weights_sha256": "139098a60af8f28d3230ec3ea0a27d4a6e501e10a971da… |
 | `backup-rollback` | 备份回滚实效：快照 → 投毒 → rollback 后 sha256 与原始完全一致 | PASS | {"rollback_rows": 1, "sha256_original": "8127ad31f844aa2495a3e251f38263b6540cb39325c54f775db29604f6eb41e0", "sha256_after_rollback": "8127ad31f844aa2495a3e251f38263b6540cb39325c54f775db29604f6eb41e0", "exact_restore": true, "backup_receipt_sha256": "8127ad31f844aa2495a3e251f38263b6540cb39325c54f775db29604f6eb41e0"} |
-| `rce-marker` | RCE 实效：AReaL 三步链触发 mock 侧真实 marker 文件（含 run 标记） | PASS | {"http_statuses": {"set_env": 200, "create_engine": 200, "call": 200}, "marker_file": "areal/call/engine-0845a128e1ab4c50947de01a94df6f9c-CALL.marker", "env_marker_file": "areal/env/ENV-SET.marker", "marker": "TRIDENT-effects-20261026-170531", "marker_present": true, "engine_id": "engine-0845a128e1ab4c50947de01a94df6f9c"} |
-| `gpu-tenant-residue-marker` | GPU 跨租户残留实效：benign marker 分配→释放→读回（含释放后）+ sha256 一致 | PASS | {"allocate_status": 200, "release_status": 200, "readback_status": 200, "victim_read_status": 200, "tenant": "tenant-a", "victim_tenant": "tenant-b", "device": "gpu-a-1", "victim_device": "gpu-b-0", "marker": "TRIDENT-BENIGN-RESIDUE-TRIDENT-effects-20261026-170531", "marker_sha256": "2d6783a9219ac01e16d91320eff4080837b68549f22d67b3c449aa620689d004", "expected_marker_sha256": "2d6783a9219ac01e16d91320eff4080837b685… |
+| `rce-marker` | RCE 实效：AReaL 三步链触发 mock 侧真实 marker 文件（含 run 标记） | PASS | {"http_statuses": {"set_env": 200, "create_engine": 200, "call": 200}, "marker_file": "areal/call/engine-0845a128e1ab4c50947de01a94df6f9c-CALL.marker", "env_marker_file": "areal/env/ENV-SET.marker", "marker": "INKBLADE-effects-20261026-170531", "marker_present": true, "engine_id": "engine-0845a128e1ab4c50947de01a94df6f9c"} |
+| `gpu-tenant-residue-marker` | GPU 跨租户残留实效：benign marker 分配→释放→读回（含释放后）+ sha256 一致 | PASS | {"allocate_status": 200, "release_status": 200, "readback_status": 200, "victim_read_status": 200, "tenant": "tenant-a", "victim_tenant": "tenant-b", "device": "gpu-a-1", "victim_device": "gpu-b-0", "marker": "INKBLADE-BENIGN-RESIDUE-INKBLADE-effects-20261026-170531", "marker_sha256": "2d6783a9219ac01e16d91320eff4080837b68549f22d67b3c449aa620689d004", "expected_marker_sha256": "2d6783a9219ac01e16d91320eff4080837b685… |
 | `cloud-assume-role-cross-account` | 云身份实效：通配 trust policy 跨账户 AssumeRole 成功（mock，凭据脱敏） | PASS | {"identity_status": 200, "assume_role_status": 200, "role_arn": "arn:aws:iam::222222222222:role/weight-reader", "source_account": "999999999999", "cross_account": true, "wildcard_principal": true, "trust_policy_principal": "*", "external_id_required": false, "masked_credentials": {"AccessKeyId": "MOCK****0001", "SecretAccessKey": "MOCK****0001", "SessionToken": "MOCK****0001"}, "full_credential_absent": true} |
 | `cloud-bucket-public-listing` | 云桶实效：公共桶策略 + 跨租户列目录成功（权重/检查点清单） | PASS | {"policy_status": 200, "list_status": 200, "bucket": "weights-b", "bucket_owner": "tenant-b", "requester": "tenant-a", "public": true, "cross_tenant": true, "object_count": 3, "objects": ["tenant-b/model.safetensors", "tenant-b/checkpoint-00001.safetensors", "tenant-b/tokenizer.json"], "policy_principal": "*"} |
 | `longctx-window-overflow` | 长上下文超窗实效：真实 HTTP 200 + prefill_tokens 超窗 + queue_depth 增长 | PASS | {"http_status": 200, "context_window_tokens": 131072, "prefill_tokens": 200000, "queue_depth_before": 0, "queue_depth_after": 1, "queue_depth_delta": 1, "prefill_pool": {"capacity": 4, "active": 1, "queued": 1}, "route": "/v1/chat/completions"} |
 | `longctx-prefix-reuse` | prefix cache 跨租户实效：无 cache_salt 复用他租户 prefix（cached_tokens>0） | PASS | {"prime_status": 200, "reuse_status": 200, "prime_tenant": "tenant-a", "reuse_tenant": "tenant-b", "cache_salt_present_on_reuse": false, "cached_tokens": 4096, "cross_tenant": true, "route": "/v1/chat/completions"} |
 | `longctx-kv-channel-write` | PD KV 通道实效：benign marker 真实写入并独立读回（sha256 一致） | PASS | {"write_status": 200, "readback_status": 200, "block_id": "kv-block-effects-20261026-170531", "readback_found": true, "readback_marker_present": true, "write_sha256": "87bd3e7d6e8ecd1faa2b5713f14228b0ca4fda9237ae54380a3c3b505bc187fc", "readback_sha256": "87bd3e7d6e8ecd1faa2b5713f14228b0ca4fda9237ae54380a3c3b505bc187fc", "bytes": 136} |
-| `longctx-checkpoint-rollback` | checkpoint 分片实效：投毒 sha256 变化 + rollback 后 sha256 与原始完全一致 | PASS | {"http_status": 200, "shard_file": "checkpoints/trident-effects-shard.safetensors", "sha256_before": "8922fec3b98bc9b255761d7208df88911a8c790c3709026dc4a8cc448cda6645", "sha256_after": "d71b6bbda39004d432845a9de496172b36a69ebe5bceb2ef88f77cb51737c4cb", "sha256_after_rollback": "8922fec3b98bc9b255761d7208df88911a8c790c3709026dc4a8cc448cda6645", "rollback_rows": 1, "exact_restore": true, "marker_present": true, "wri… |
+| `longctx-checkpoint-rollback` | checkpoint 分片实效：投毒 sha256 变化 + rollback 后 sha256 与原始完全一致 | PASS | {"http_status": 200, "shard_file": "checkpoints/inkblade-effects-shard.safetensors", "sha256_before": "8922fec3b98bc9b255761d7208df88911a8c790c3709026dc4a8cc448cda6645", "sha256_after": "d71b6bbda39004d432845a9de496172b36a69ebe5bceb2ef88f77cb51737c4cb", "sha256_after_rollback": "8922fec3b98bc9b255761d7208df88911a8c790c3709026dc4a8cc448cda6645", "rollback_rows": 1, "exact_restore": true, "marker_present": true, "wri… |
 | `gateway-default-master-key-exfil` | AI 网关默认 master key：/config 读到上游 MOCK key，报告仅尾4位 | PASS | {"http_status": 200, "route": "/config", "master_key_class": "default", "master_key_used": true, "upstream_key_count": 2, "upstream_providers": ["openai", "anthropic"], "upstream_key_tail4": "9f3c", "upstream_key_masked": "MOCK****9f3c", "full_key_in_finding": false, "report_full_key_absent": true, "report_redacted_sample": "MOCK****9f3c"} |
 | `gateway-forwarded-user-impersonation` | AI 网关伪造 X-Forwarded-User：admin 全局 key 视图 + 全租户日志 | PASS | {"impersonated_user": "admin", "key_info_status": 200, "scope": "global", "visible_tenants": ["tenant-a", "tenant-b"], "logs_status": 200, "logs_tenants": ["tenant-a", "tenant-b"], "log_entry_count": 3, "finding_count": 3} |
 | `gateway-semantic-cache-cross-tenant` | AI 网关语义缓存跨租户：tenant-a 命中 tenant-b 缓存条目（共享前缀键） | PASS | {"requester_status": 200, "victim_status": 200, "hit": true, "requester_tenant": "tenant-a", "entry_tenant": "tenant-b", "cache_key": "sc:b918ca5cbe91e61a88057d63", "victim_cache_key": "sc:b918ca5cbe91e61a88057d63", "shared_key": true, "cross_tenant": true, "finding_count": 1} |
@@ -47,7 +47,7 @@
 | `residual-mcp-control-plane` | R04 实效：MCP 无认证/0.0.0.0/通配工具 → critical；fixed 0 high | PASS | {"vulnerable_critical": 1, "servers": 1, "signed_registry": false, "fixed_high": 0, "detected": true} |
 | `slurm-jwt-weak-key` | Slurm JWT 实效：短 HS256 + 0644 key + 无轮换/过期 → high；fixed 0 high | PASS | {"vulnerable_high": 5, "weak_hs_keys": 1, "key_file_mode": "0644", "max_token_lifetime_seconds": 0, "fixed_high": 0, "detected": true} |
 | `slurm-cgroup-device-escape` | Slurm cgroup 实效：核心/内存/设备约束全关 → high；fixed 0 high | PASS | {"vulnerable_high": 6, "constrain_cores": false, "constrain_ram": false, "constrain_devices": false, "fixed_high": 0, "detected": true} |
-| `ray-job-rce-marker` | Ray 未授权 Job RCE：提交 entrypoint → 服务端 marker 落盘并读回 | PASS | {"submit_status": 200, "job_id": "raysubmit-143eba50259e44c4ac5770756ef40a67", "marker": "TRIDENT-effects-20261026-170531", "marker_present": true, "marker_path": "<abs-path>", "marker_sha256": "3a068d2c2beb925a5c1925e620e817e4f8adf5a8858e674c45512d6bd89c501e", "cleanup_deleted": 1, "cleanu… |
+| `ray-job-rce-marker` | Ray 未授权 Job RCE：提交 entrypoint → 服务端 marker 落盘并读回 | PASS | {"submit_status": 200, "job_id": "raysubmit-143eba50259e44c4ac5770756ef40a67", "marker": "INKBLADE-effects-20261026-170531", "marker_present": true, "marker_path": "<abs-path>", "marker_sha256": "3a068d2c2beb925a5c1925e620e817e4f8adf5a8858e674c45512d6bd89c501e", "cleanup_deleted": 1, "cleanu… |
 | `gateway-default-key-exfil` | AI 网关默认 key：sk-1234 → 上游 provider key 读取（仅尾 4 位入证据） | PASS | {"http_status": 200, "key_class": "default", "upstream_key_count": 2, "upstream_key_tail4": ["9f3c", "71ab"], "masked_only": true, "full_key_in_finding": false, "finding_cves": ["LITELLM-DEFAULT-KEY"]} |
 | `ipmi-cipher-zero-bypass` | IPMI cipher zero 认证绕过：mock BMC 建立 admin 会话（真实协议 UDP/623） | PASS | {"auth_status": 200, "cipher": 0, "privilege": "admin", "username": "admin", "session": "ipmi-0378382fd2", "session_established": true, "finding_cves": ["CVE-2013-4786"]} |
 | `redfish-default-credentials` | Redfish 默认凭据：admin/admin → BMC 管理员会话 + Systems 读取 | PASS | {"session_status": 201, "accepted_username": "admin", "token_issued": true, "systems_status": 200, "systems_name": "mock-node", "finding_cves": ["REDFISH-DEFAULT-CREDS", "CVE-2023-34329", "CVE-2017-12542"]} |
@@ -61,7 +61,7 @@
 | `privesc-escalate` | escalate 动词改写已绑定角色 → cluster-admin | PASS | {"subject": "system:serviceaccount:lab:esc-sa", "before_admin": false, "after_admin": true, "escalate_allowed": true, "role_rules": [{"apiGroups": ["*"], "verbs": ["*"], "resources": ["*"]}]} |
 | `privesc-bind` | bind cluster-admin + create CRB → cluster-admin | PASS | {"subject": "system:serviceaccount:lab:bind-sa", "before_admin": false, "after_admin": true, "binding_created": true, "role": "cluster-admin"} |
 | `privesc-sa-token` | create serviceaccounts/token → 高权 SA 身份 | PASS | {"subject": "system:serviceaccount:lab:token-sa", "target_sa": "privesc-admin", "before_admin": false, "token_issued": true, "token_sha256_8": "cfdbb755", "authenticated_subject": "system:serviceaccount:lab:privesc-admin", "after_admin": true} |
-| `privesc-webhook` | 写入准入 Webhook → Pod 注入 privileged/hostPath | PASS | {"subject": "system:serviceaccount:lab:webhook-sa", "before_can_create_pods": false, "webhook_written": true, "failure_policy": "Ignore", "pod_privileged": true, "host_root_mounted": true, "escape_primitive": true, "mutated_by": ["trident-injector"]} |
+| `privesc-webhook` | 写入准入 Webhook → Pod 注入 privileged/hostPath | PASS | {"subject": "system:serviceaccount:lab:webhook-sa", "before_can_create_pods": false, "webhook_written": true, "failure_policy": "Ignore", "pod_privileged": true, "host_root_mounted": true, "escape_primitive": true, "mutated_by": ["inkblade-injector"]} |
 
 ## 逐项证据
 
@@ -84,10 +84,10 @@
 ```json
 {
   "http_status": 200,
-  "file": "slime/checkpoints_victim-TRIDENT-effects-20261026-170531/model.safetensors",
+  "file": "slime/checkpoints_victim-INKBLADE-effects-20261026-170531/model.safetensors",
   "sha256_before": "8127ad31f844aa2495a3e251f38263b6540cb39325c54f775db29604f6eb41e0",
   "sha256_after": "139098a60af8f28d3230ec3ea0a27d4a6e501e10a971daf424badde3daf46534",
-  "marker": "TRIDENT-effects-20261026-170531",
+  "marker": "INKBLADE-effects-20261026-170531",
   "marker_present": true,
   "server_weights_sha256": "139098a60af8f28d3230ec3ea0a27d4a6e501e10a971daf424badde3daf46534"
 }
@@ -116,7 +116,7 @@
   },
   "marker_file": "areal/call/engine-0845a128e1ab4c50947de01a94df6f9c-CALL.marker",
   "env_marker_file": "areal/env/ENV-SET.marker",
-  "marker": "TRIDENT-effects-20261026-170531",
+  "marker": "INKBLADE-effects-20261026-170531",
   "marker_present": true,
   "engine_id": "engine-0845a128e1ab4c50947de01a94df6f9c"
 }
@@ -134,7 +134,7 @@
   "victim_tenant": "tenant-b",
   "device": "gpu-a-1",
   "victim_device": "gpu-b-0",
-  "marker": "TRIDENT-BENIGN-RESIDUE-TRIDENT-effects-20261026-170531",
+  "marker": "INKBLADE-BENIGN-RESIDUE-INKBLADE-effects-20261026-170531",
   "marker_sha256": "2d6783a9219ac01e16d91320eff4080837b68549f22d67b3c449aa620689d004",
   "expected_marker_sha256": "2d6783a9219ac01e16d91320eff4080837b68549f22d67b3c449aa620689d004",
   "readback_file_sha256": "c86c89f4788dfcf0c091b36ac7f8e67e83a3167fdf7a972eaa79903673c9497b",
@@ -243,7 +243,7 @@
 ```json
 {
   "http_status": 200,
-  "shard_file": "checkpoints/trident-effects-shard.safetensors",
+  "shard_file": "checkpoints/inkblade-effects-shard.safetensors",
   "sha256_before": "8922fec3b98bc9b255761d7208df88911a8c790c3709026dc4a8cc448cda6645",
   "sha256_after": "d71b6bbda39004d432845a9de496172b36a69ebe5bceb2ef88f77cb51737c4cb",
   "sha256_after_rollback": "8922fec3b98bc9b255761d7208df88911a8c790c3709026dc4a8cc448cda6645",
@@ -567,7 +567,7 @@
   "sha256_after": "930dd0691ffb6b0ad9c95cea5180ef25ce27f7c9948c0568ba5f4664209f7606",
   "sha256_after_rollback": "8804d39c121c3316936add5d8d85dc80796a7059e20eb52002ee79ad5be02a8b",
   "readback_sha256": "930dd0691ffb6b0ad9c95cea5180ef25ce27f7c9948c0568ba5f4664209f7606",
-  "marker": "TRIDENT-effects-20261026-170531",
+  "marker": "INKBLADE-effects-20261026-170531",
   "marker_present": true,
   "optimizer_state": true,
   "rollback_rows": 1,
@@ -605,7 +605,7 @@
   "injected_directive": true,
   "sanitized": false,
   "system_block_sha256": "d2cf31bc19345be3ad3eea0110fa7d37d1ddcd3c887f897e62b36b4b932a669b",
-  "marker": "TRIDENT-effects-20261026-170531",
+  "marker": "INKBLADE-effects-20261026-170531",
   "marker_in_system_block": true,
   "sha256_after_rollback": "261786c1a0f44d3a24640c75cfa471aa18ddb2aadaaaf202bb904d4af29db4a8",
   "rollback_rows": 1,
@@ -694,7 +694,7 @@
 {
   "submit_status": 200,
   "job_id": "raysubmit-143eba50259e44c4ac5770756ef40a67",
-  "marker": "TRIDENT-effects-20261026-170531",
+  "marker": "INKBLADE-effects-20261026-170531",
   "marker_present": true,
   "marker_path": "<abs-path>",
   "marker_sha256": "3a068d2c2beb925a5c1925e620e817e4f8adf5a8858e674c45512d6bd89c501e",
@@ -980,7 +980,7 @@
   "host_root_mounted": true,
   "escape_primitive": true,
   "mutated_by": [
-    "trident-injector"
+    "inkblade-injector"
   ]
 }
 ```
@@ -1008,6 +1008,6 @@
 ## 复现命令
 
 ```bash
-python -m trident.verify-effects --out reports/samples/effects/
+python -m inkblade.verify-effects --out reports/samples/effects/
 python -m unittest tests.test_verify_effects -v
 ```

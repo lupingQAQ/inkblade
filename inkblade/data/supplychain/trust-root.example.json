@@ -2,10 +2,10 @@
   "keys": {
     "fixture-model-key-1": {
       "alg": "HMAC-SHA256",
-      "fixture_secret": "TRIDENT-FIXTURE-ONLY-model-key-2026-10",
+      "fixture_secret": "INKBLADE-FIXTURE-ONLY-model-key-2026-10",
       "issuer": "https://fixture.invalid/oidc",
       "allowed_repositories": [
-        "https://example.invalid/trident/models/fixture-example"
+        "https://example.invalid/inkblade/models/fixture-example"
       ]
     }
   },

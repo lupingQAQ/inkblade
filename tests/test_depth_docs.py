@@ -5,8 +5,8 @@ import json
 import unittest
 from pathlib import Path
 
-from trident import depth_effects
-from trident.depth import admission, ebpf, fabric, gpu, identity, vllm
+from inkblade import depth_effects
+from inkblade.depth import admission, ebpf, fabric, gpu, identity, vllm
 
 ROOT = Path(__file__).resolve().parents[1]
 DOC = ROOT / "docs" / "DEPTH-REVIEW.md"

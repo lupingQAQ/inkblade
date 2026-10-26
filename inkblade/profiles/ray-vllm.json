@@ -1,5 +1,5 @@
 {
-  "schema": "trident-profile-v1",
+  "schema": "inkblade-profile-v1",
   "name": "ray-vllm",
   "description": "KubeRay control plane with vLLM/SGLang inference, LWS multi-node serving and an AI gateway; no BMC or cloud metadata surface.",
   "platform": "kubernetes",

@@ -96,7 +96,7 @@ def resp(entry: dict | None) -> dict:
 
 
 def marker_of(ctx: dict, params: dict) -> str:
-    return str(params.get("marker") or ctx.get("marker") or "TRIDENT")
+    return str(params.get("marker") or ctx.get("marker") or "INKBLADE")
 
 
 def sha256_text(text: str) -> str:

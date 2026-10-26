@@ -1,5 +1,5 @@
 {
-  "schema": "trident-sigstore-keyless-verdict/2026-10",
+  "schema": "inkblade-sigstore-keyless-verdict/2026-10",
   "ok": true,
   "checks": [
     {
@@ -25,7 +25,7 @@
     {
       "name": "certificate-chain",
       "ok": true,
-      "detail": "root=Trident Fixture Fulcio Root; at=2026-10-25T12:00:00Z; errors=[]"
+      "detail": "root=InkBlade Fixture Fulcio Root; at=2026-10-25T12:00:00Z; errors=[]"
     },
     {
       "name": "certificate-time",
@@ -35,12 +35,12 @@
     {
       "name": "identity",
       "ok": true,
-      "detail": "SAN=['fixture@trident.local'] expected=fixture@trident.local"
+      "detail": "SAN=['fixture@inkblade.local'] expected=fixture@inkblade.local"
     },
     {
       "name": "issuer",
       "ok": true,
-      "detail": "OIDC issuer=https://fixture.trident.local expected=https://fixture.trident.local"
+      "detail": "OIDC issuer=https://fixture.inkblade.local expected=https://fixture.inkblade.local"
     },
     {
       "name": "revocation",
@@ -85,14 +85,14 @@
   },
   "identity": {
     "subject_cn": "",
-    "issuer_cn": "Trident Fixture Fulcio Intermediate",
+    "issuer_cn": "InkBlade Fixture Fulcio Intermediate",
     "sans": [
       {
         "kind": "email",
-        "value": "fixture@trident.local"
+        "value": "fixture@inkblade.local"
       }
     ],
-    "oidc_issuer": "https://fixture.trident.local",
+    "oidc_issuer": "https://fixture.inkblade.local",
     "serial": 2336500271046374778,
     "not_before": "2026-10-25T11:55:00+00:00",
     "not_after": "2026-10-25T13:00:00+00:00"

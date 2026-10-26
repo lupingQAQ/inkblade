@@ -7,12 +7,12 @@ references:
   - "Kubernetes TokenRequest API https://kubernetes.io/docs/reference/kubernetes-api/authentication-resources/token-request-v1/"
   - "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
   - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: rbac-sa-token-request
-    trident.io/module: sa-token-request
+    inkblade.io/vector: rbac-sa-token-request
+    inkblade.io/module: sa-token-request
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -30,16 +30,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.rbac
+  - inkblade
+  - inkblade.vector.rbac
   - attack.t1552
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: rbac-sa-token-request
-  trident-module: sa-token-request
-  trident-detection-point: K8s audit：create serviceaccounts/token 子资源
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: rbac-sa-token-request
+  inkblade-module: sa-token-request
+  inkblade-detection-point: K8s audit：create serviceaccounts/token 子资源
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

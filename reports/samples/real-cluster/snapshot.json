@@ -209,12 +209,12 @@
    ]
   },
   {
-   "namespace": "trident-proof",
+   "namespace": "inkblade-proof",
    "name": "mock-target-66c765d55-2z9n4",
    "labels": {
     "app": "mock-target",
     "pod-template-hash": "66c765d55",
-    "trident.dev/proof": "real-cluster"
+    "inkblade.dev/proof": "real-cluster"
    },
    "nodeName": "k3s",
    "hostNetwork": false,
@@ -285,11 +285,11 @@
    ]
   },
   {
-   "namespace": "trident-proof",
+   "namespace": "inkblade-proof",
    "name": "proof-hostnet",
    "labels": {
     "app": "proof-hostnet",
-    "trident.dev/proof": "real-cluster"
+    "inkblade.dev/proof": "real-cluster"
    },
    "nodeName": "k3s",
    "hostNetwork": true,
@@ -343,11 +343,11 @@
    ]
   },
   {
-   "namespace": "trident-proof",
+   "namespace": "inkblade-proof",
    "name": "proof-normal",
    "labels": {
     "app": "proof-normal",
-    "trident.dev/proof": "real-cluster"
+    "inkblade.dev/proof": "real-cluster"
    },
    "nodeName": "k3s",
    "hostNetwork": false,
@@ -463,7 +463,7 @@
    ]
   },
   {
-   "namespace": "trident-proof",
+   "namespace": "inkblade-proof",
    "name": "mock-target",
    "type": "NodePort",
    "clusterIP": "10.43.41.60",
@@ -473,7 +473,7 @@
    },
    "labels": {
     "app": "mock-target",
-    "trident.dev/proof": "real-cluster"
+    "inkblade.dev/proof": "real-cluster"
    },
    "ports": [
     {
@@ -488,7 +488,7 @@
  ],
  "networkpolicies": [
   {
-   "namespace": "trident-proof",
+   "namespace": "inkblade-proof",
    "name": "default-deny-all",
    "podSelector": {},
    "policyTypes": [
@@ -7863,7 +7863,7 @@
    "secrets": []
   },
   {
-   "namespace": "trident-proof",
+   "namespace": "inkblade-proof",
    "name": "default",
    "secrets": []
   }

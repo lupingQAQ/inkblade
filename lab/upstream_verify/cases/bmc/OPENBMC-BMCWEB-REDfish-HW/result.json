@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "OPENBMC-BMCWEB-REDfish-HW",
  "source": "mining",
  "component": "bmc",
@@ -31,10 +31,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/bmc/OPENBMC-BMCWEB-REDfish-HW/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.159,
- "started_at": "2026-10-26T05:25:41+00:00",
+ "duration_s": 0.47,
+ "started_at": "2026-10-26T19:45:36+00:00",
  "marker": {
-  "text": "TRIDENT-UV-OPENBMC-BMCWEB-REDfish-HW",
+  "text": "INKBLADE-UV-OPENBMC-BMCWEB-REDfish-HW",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -45,8 +45,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/bmc/OPENBMC-BMCWEB-REDfish-HW/evidence/log.txt",
-   "sha256": "83c4db439e131510c903e4e09a7a03911bfea1b2d6bf53c130457784bc1db2d4",
-   "size": 442
+   "sha256": "240a2ebf7074669f8254cd8b2255cce35a723272b579990ff5a8e3b86fd4d49e",
+   "size": 441
   },
   {
    "path": "lab/upstream_verify/cases/bmc/OPENBMC-BMCWEB-REDfish-HW/evidence/marker.txt",
@@ -55,12 +55,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/bmc/OPENBMC-BMCWEB-REDfish-HW/evidence/unsupported.json",
-   "sha256": "6846399ab57d8069e203af15b1ad48c6f57bf4d41be318e676c8bafa5882167c",
-   "size": 1212
+   "sha256": "598cf99551c000cb3afe05a91a6988eb91f89361c91e9b4a76b62074d085c32c",
+   "size": 1213
   }
  ],
  "poc_sha256": "8c43ff144a23e6e961076b0c4ab32cfe5e637403206fce521050ffb6dc8361c7",
- "manifest_sha256": "7cef7eccae12a445f412536e584a768f7c3bc8cac4ae5d37e777b533e7bf8fd8",
+ "manifest_sha256": "9e1611d5f8b84be28130d4cabe6a2fbba0874fce143a823821783c16547dce6a",
  "stdout": "{\"status\": \"unsupported\", \"case\": \"OPENBMC-BMCWEB-REDfish-HW\", \"reason\": \"bmcweb is C++17 on OpenBMC systemd images and the Redfish/IPMI-BT planes ride BMC hardware (BMC SoC, IPMI BT block); no local runtime can host them. Redfish testing belongs to the BMC lab, not this Windows host.\"}\n",
  "stderr": "",
  "notes": "OpenBMC/BTI/Redfish: bmcweb (C++), phosphor daemons and the IPMI BT interface are firmware/hardware paths; explicitly unsupported on this host. Existing BMC-surface conclusions live in the bmc-ipmi-exposure and redfish-default-credentials modules; the three SONiC vendor CVEs remain unsupported for the same class of reason."

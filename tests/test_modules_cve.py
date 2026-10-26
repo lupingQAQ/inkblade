@@ -8,11 +8,11 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from lab.cve_sim import start_all
-from trident.core.registry import load_modules
+from inkblade.core.registry import load_modules
 from tests.test_lab_mocks import request
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ROOT / "trident" / "modules"
+MODULES = ROOT / "inkblade" / "modules"
 FIXTURE = ROOT / "lab" / "fixtures" / "cve" / "host-surface.json"
 
 WRITE_HTTP_MODULES = (
@@ -95,7 +95,7 @@ class CveModuleTest(unittest.TestCase):
     def run_mod(self, key: str, params: dict, sub: str = "a") -> dict:
         run = _Run(self.root / "runs" / key / sub)
         run.dir.mkdir(parents=True, exist_ok=True)
-        return load_run(key).run({"run": run, "marker": "TRIDENT-CVE-TEST", "backup": None}, params)
+        return load_run(key).run({"run": run, "marker": "INKBLADE-CVE-TEST", "backup": None}, params)
 
     def test_metadata_and_gates(self):
         for key, _ in WRITE_HTTP_MODULES + READONLY_HTTP_MODULES + SNAPSHOT_MODULES:
@@ -124,10 +124,10 @@ class CveModuleTest(unittest.TestCase):
                 self.assertTrue(detail.get("marker_path"), key)
                 marker = Path(detail["marker_path"])
                 self.assertTrue(marker.is_file(), f"{key} marker 未落盘")
-                self.assertIn("TRIDENT-CVE-TEST", marker.read_text(encoding="utf-8", errors="replace"), key)
+                self.assertIn("INKBLADE-CVE-TEST", marker.read_text(encoding="utf-8", errors="replace"), key)
                 self.assertEqual(detail.get("cleanup", {}).get("status"), "skipped", key)
                 cleanup = request("POST", self.vuln.url("/__cleanup__"),
-                                  {"marker": "TRIDENT-CVE-TEST"})
+                                  {"marker": "INKBLADE-CVE-TEST"})
                 self.assertEqual(cleanup[0], 200, key)
                 self.assertFalse(marker.exists(), f"{key} cleanup 未删除 marker")
 

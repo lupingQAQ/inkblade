@@ -1,6 +1,6 @@
 {
-  "schema": "trident-tencent-compare-tasks-v1",
-  "note": "策略级微评测：确定性动作成本 + 故障注入，不调用外部 LLM / 真实目标。动作成本按 Trident 模块输出规模标定（token 为上下文估算）。",
+  "schema": "inkblade-tencent-compare-tasks-v1",
+  "note": "策略级微评测：确定性动作成本 + 故障注入，不调用外部 LLM / 真实目标。动作成本按 InkBlade 模块输出规模标定（token 为上下文估算）。",
   "tasks": [
     {
       "id": "tenant-recon",

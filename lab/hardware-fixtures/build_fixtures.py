@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-FIXTURE_KEY = "trident-hardware-fixture-key-2026"
+FIXTURE_KEY = "inkblade-hardware-fixture-key-2026"
 GENERATED_AT = "2026-10-26T00:00:00Z"
 
 
@@ -317,17 +317,17 @@ def firmware_fixtures() -> None:
          "vendor": "MockVendor", "signed_by": "MockVendor"},
     ]
     manifest = {
-        "schema": "trident-firmware-manifest/v1",
+        "schema": "inkblade-firmware-manifest/v1",
         "generated_at": GENERATED_AT,
         "vendor": "MockVendor",
-        "signing": {"alg": "hmac-sha256-fixture", "key_id": "trident-hardware-fixture-2026"},
+        "signing": {"alg": "hmac-sha256-fixture", "key_id": "inkblade-hardware-fixture-2026"},
         "components": components,
     }
     manifest["signature"] = sign_manifest(manifest, FIXTURE_KEY)
     write_json("firmware/manifest.json", manifest)
     write_json("firmware/manifest.sig.json", {
         "alg": "hmac-sha256-fixture",
-        "key_id": "trident-hardware-fixture-2026",
+        "key_id": "inkblade-hardware-fixture-2026",
         "signature": manifest["signature"],
     })
     write_text("firmware/fixture-signing-key.txt", FIXTURE_KEY + "\n")

@@ -20,7 +20,7 @@ class LicenseCheckTest(unittest.TestCase):
         self.assertEqual(check_notices.main(["--root", str(ROOT)]), 0)
 
     def test_every_port_file_has_attribution(self):
-        files = sorted((ROOT / "trident" / "kubetrail").glob("*.py"))
+        files = sorted((ROOT / "inkblade" / "kubetrail").glob("*.py"))
         self.assertGreaterEqual(len(files), 6)
         for path in files:
             head = "\n".join(path.read_text(encoding="utf-8").splitlines()[:16])
@@ -42,7 +42,7 @@ class LicenseCheckTest(unittest.TestCase):
             (fake / "LICENSE").write_text("Apache License Version 2.0", encoding="utf-8")
             errors = check_notices.check(fake)
             self.assertTrue(any("NOTICE" in e for e in errors))
-            self.assertTrue(any("trident/kubetrail" in e for e in errors))
+            self.assertTrue(any("inkblade/kubetrail" in e for e in errors))
 
 
 if __name__ == "__main__":

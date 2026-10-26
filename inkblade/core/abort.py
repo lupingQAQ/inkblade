@@ -1,9 +1,9 @@
 """工作区级紧急停止（kill switch）：CLI/API/runner 共用一个落盘标志。
 
 语义：
-- ``trident abort`` 写 ``<ws>/abort.json`` ``{requested: true, actor, reason, ts}``；
+- ``inkblade abort`` 写 ``<ws>/abort.json`` ``{requested: true, actor, reason, ts}``；
 - 所有新的执行路径（runner/链/单模块）在读授权后立即检查，命中即 ExecutionLocked；
-- ``trident abort --clear`` 写 ``requested: false``（保留操作者与时间，审计可追溯）。
+- ``inkblade abort --clear`` 写 ``requested: false``（保留操作者与时间，审计可追溯）。
 """
 
 from __future__ import annotations
@@ -57,4 +57,4 @@ def assert_not_aborted(store) -> None:
         who = info.get("actor") or "unknown"
         when = info.get("ts")
         detail = f"由 {who} 请求" + (f" @ {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(when))}" if when else "")
-        raise ExecutionLocked(f"工作区已请求紧急停止（{detail}）：拒绝新执行，请先 `trident abort --clear`")
+        raise ExecutionLocked(f"工作区已请求紧急停止（{detail}）：拒绝新执行，请先 `inkblade abort --clear`")

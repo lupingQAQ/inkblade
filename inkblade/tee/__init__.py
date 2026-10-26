@@ -1,4 +1,4 @@
-"""trident.tee — 硬件 TEE 证明的**本地密码学**解析与验签（仅标准库）。
+"""inkblade.tee — 硬件 TEE 证明的**本地密码学**解析与验签（仅标准库）。
 
 三个对象：
 - `tdx`      Intel TDX Quote v3/v4：结构解析 + AK ECDSA 验签 + 证书链 + report_data/mr_td/TCB/DEBUG 策略；
@@ -11,7 +11,7 @@
 见 docs/TEE-VERIFICATION.md 与 docs/TEE-ONLINE-VERIFICATION.md 的对照。
 
 用法：
-    from trident.tee import tdx, sev_snp, nvidia_cc, fixtures
+    from inkblade.tee import tdx, sev_snp, nvidia_cc, fixtures
     q = tdx.parse_quote(raw)
     result = tdx.verify_quote(q, ak_chain=q.cert_chain, trust_root=root, expected_report_data=nonce)
 """

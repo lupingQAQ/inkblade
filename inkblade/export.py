@@ -18,6 +18,7 @@ import time
 from pathlib import Path
 from typing import Any
 
+from . import VERSION
 from .reports import compliance
 
 SARIF_VERSION = "2.1.0"
@@ -45,7 +46,7 @@ def finding_uid(finding: dict, meta: dict, ordinal: int = 0) -> str:
         str(meta.get("workspace", "")), str(meta.get("run", "")),
         str(finding.get("step_key", "")), str(finding.get("title", "")), str(ordinal),
     ])
-    return f"trident-{_sha16(seed)}"
+    return f"inkblade-{_sha16(seed)}"
 
 
 def _evidence_sha(finding: dict, meta: dict) -> str:
@@ -79,7 +80,7 @@ def build_sarif(findings: list[dict], meta: dict) -> dict:
         step = str(finding.get("step_key") or "general")
         if step in index:
             continue
-        rule_id = f"TRIDENT.{step}"
+        rule_id = f"INKBLADE.{step}"
         index[step] = len(rules)
         severity = str(finding.get("severity") or "info").lower()
         rules.append({
@@ -103,7 +104,7 @@ def build_sarif(findings: list[dict], meta: dict) -> dict:
         uri = str(finding.get("evidence_path") or f"steps/{step}.tar.gz").replace("\\", "/")
         evidence_sha = _evidence_sha(finding, meta)
         results.append({
-            "ruleId": f"TRIDENT.{step}",
+            "ruleId": f"INKBLADE.{step}",
             "ruleIndex": index[step],
             "level": _SARIF_LEVEL.get(severity, "note"),
             "message": {"text": f"{finding.get('title', '')}: {finding.get('detail', '')}"},
@@ -114,9 +115,9 @@ def build_sarif(findings: list[dict], meta: dict) -> dict:
                 },
                 "logicalLocations": [{"fullyQualifiedName": step, "kind": "module"}],
             }],
-            "partialFingerprints": {"tridentFindingHash/v1": _sha16(uid + uri)},
+            "partialFingerprints": {"inkbladeFindingHash/v1": _sha16(uid + uri)},
             "properties": {
-                "trident_uid": uid,
+                "inkblade_uid": uid,
                 "severity": severity,
                 "is_zeroday": bool(finding.get("is_zeroday")),
                 "evidence_path": uri,
@@ -130,11 +131,11 @@ def build_sarif(findings: list[dict], meta: dict) -> dict:
         "version": SARIF_VERSION,
         "runs": [{
             "tool": {"driver": {
-                "name": "Trident",
-                "version": str(meta.get("tool_version") or "0.1.0"),
+                "name": "InkBlade",
+                "version": str(meta.get("tool_version") or VERSION),
                 "rules": rules,
             }},
-            "automationDetails": {"id": f"trident/{meta.get('workspace', '')}/{meta.get('run', '')}"},
+            "automationDetails": {"id": f"inkblade/{meta.get('workspace', '')}/{meta.get('run', '')}"},
             "invocations": [{"executionSuccessful": True,
                              "endTimeUtc": _rfc3339(meta)}],
             "results": results,
@@ -169,9 +170,9 @@ def _ocsf_event(finding: dict, meta: dict, ordinal: int) -> dict:
         "metadata": {
             "version": OCSF_VERSION,
             "product": {
-                "vendor_name": "Trident",
-                "name": "Trident",
-                "version": str(meta.get("tool_version") or "0.1.0"),
+                "vendor_name": "InkBlade",
+                "name": "InkBlade",
+                "version": str(meta.get("tool_version") or VERSION),
             },
             "original_time": _rfc3339(meta),
             "profiles": ["security_control"],
@@ -183,7 +184,7 @@ def _ocsf_event(finding: dict, meta: dict, ordinal: int) -> dict:
             "created_time_ms": _epoch_ms(meta),
             "types": types,
             "analytic": {
-                "name": "trident.chain-module",
+                "name": "inkblade.chain-module",
                 "type_id": 1,
                 "type": "Rule",
                 "uid": str(finding.get("step_key") or ""),
@@ -208,7 +209,7 @@ def _ocsf_event(finding: dict, meta: dict, ordinal: int) -> dict:
 def build_ocsf(findings: list[dict], meta: dict) -> dict:
     events = [_ocsf_event(f, meta, i) for i, f in enumerate(findings or [])]
     return {
-        "schema": "trident-ocsf-export/2026-10",
+        "schema": "inkblade-ocsf-export/2026-10",
         "ocsf_version": OCSF_VERSION,
         "count": len(events),
         "generated_at": _rfc3339(meta),
@@ -227,7 +228,7 @@ def _vex_status(severity: str) -> str:
 def build_vex(findings: list[dict], meta: dict) -> dict:
     statements: list[dict] = []
     timestamp = _rfc3339(meta)
-    product = "pkg:generic/trident/{}/{}".format(
+    product = "pkg:generic/inkblade/{}/{}".format(
         meta.get("workspace", "workspace"), meta.get("run", "run"))
     seed = "|".join([
         str(meta.get("workspace", "")), str(meta.get("run", "")),
@@ -242,27 +243,27 @@ def build_vex(findings: list[dict], meta: dict) -> dict:
         step = str(finding.get("step_key") or "general")
         statements.append({
             "vulnerability": {
-                "name": cve or f"TRIDENT-{uid[8:].upper()}",
+                "name": cve or f"INKBLADE-{uid[8:].upper()}",
                 "aliases": [cve] if cve else [],
                 "description": title,
             },
             "products": [{
                 "@id": product,
-                "subcomponents": [{"@id": f"pkg:generic/trident-module/{step}"}],
+                "subcomponents": [{"@id": f"pkg:generic/inkblade-module/{step}"}],
             }],
             "status": _vex_status(severity),
             "status_notes": f"severity={severity}; evidence={finding.get('evidence_path') or 'n/a'}; "
-                            f"automatic VEX from Trident run {meta.get('run', '')}",
-            "action_statement": f"Apply remediation for {title or step} and retest with Trident.",
+                            f"automatic VEX from InkBlade run {meta.get('run', '')}",
+            "action_statement": f"Apply remediation for {title or step} and retest with InkBlade.",
             "timestamp": timestamp,
         })
     return {
         "@context": VEX_CONTEXT,
-        "@id": f"https://trident.local/vex/{_sha16(seed)}",
-        "author": "Trident <trident@localhost>",
+        "@id": f"https://inkblade.local/vex/{_sha16(seed)}",
+        "author": "InkBlade <inkblade@localhost>",
         "timestamp": timestamp,
         "version": 1,
-        "tooling": f"trident/{meta.get('tool_version') or '0.1.0'}",
+        "tooling": f"inkblade/{meta.get('tool_version') or VERSION}",
         "statements": statements,
     }
 
@@ -301,7 +302,7 @@ def export_run(store, run_name: str, fmt: str) -> dict:
         "workspace": store.workspace,
         "run": run_name,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "tool_version": "0.1.0",
+        "tool_version": VERSION,
         "evidence_sha": _manifest_sha_map(run),
     }
     return build(fmt, run.findings, meta)

@@ -15,11 +15,11 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from lab.mock_targets import start_all
-from trident.core.chains import load_chains
-from trident.rules.generate import generate_all
-from trident.rules.validate import validate
+from inkblade.core.chains import load_chains
+from inkblade.rules.generate import generate_all
+from inkblade.rules.validate import validate
 
-CHAINS_DIR = Path(__file__).resolve().parents[1] / "trident" / "chains"
+CHAINS_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "chains"
 
 # 零日规则文本禁止出现的利用细节特征串（产品名/根因术语/具体端点，小写比较）
 ZERODAY_DETAIL_TOKENS = [
@@ -76,7 +76,7 @@ class RuleGenerationTest(unittest.TestCase):
         for rule in mapping["rules"]:
             if rule.get("scope") in ("cve-catalog", "llm-probe"):
                 # CVE catalog rules cover all CVEs; llm-probe rules are SOC detections for
-                # probe traffic (trident/probes) keyed by OWASP category, not chain replays.
+                # probe traffic (inkblade/probes) keyed by OWASP category, not chain replays.
                 continue
             self.assertTrue(rule["blocks_chains"], f"规则 {rule['id']} 未映射任何链")
             for cid in rule["blocks_chains"]:
@@ -137,14 +137,14 @@ class RuleGenerationTest(unittest.TestCase):
             "falco-gateway-upstream-config-read",
             "suricata-ai-gateway-admin-uri",
         } <= rule_ids, rule_ids)
-        suricata = (self.pack_dir / "suricata" / "trident.rules").read_text(encoding="utf-8")
+        suricata = (self.pack_dir / "suricata" / "inkblade.rules").read_text(encoding="utf-8")
         for uri in ("/key/generate", "/config", "/admin/console"):
             self.assertIn(uri, suricata)
         sigma = "\n".join(
             p.read_text(encoding="utf-8") for p in sorted((self.pack_dir / "sigma").glob("*.yaml"))
         )
         self.assertIn("default_master", sigma)
-        falco = (self.pack_dir / "falco" / "trident-rules.yaml").read_text(encoding="utf-8")
+        falco = (self.pack_dir / "falco" / "inkblade-rules.yaml").read_text(encoding="utf-8")
         self.assertIn("upstream provider credentials", falco)
 
     def test_monitor_mode_and_tuning(self):
@@ -160,7 +160,7 @@ class RuleGenerationTest(unittest.TestCase):
         kyverno = "\n".join(
             p.read_text(encoding="utf-8") for p in sorted((self.pack_dir / "kyverno").glob("*.yaml"))
         )
-        self.assertIn("trident.io/mode", kyverno)
+        self.assertIn("inkblade.io/mode", kyverno)
         self.assertIn("Audit", kyverno)
         gatekeeper = "\n".join(
             p.read_text(encoding="utf-8") for p in sorted((self.pack_dir / "gatekeeper").glob("constraints/*.yaml"))
@@ -169,11 +169,11 @@ class RuleGenerationTest(unittest.TestCase):
         sigma = "\n".join(
             p.read_text(encoding="utf-8") for p in sorted((self.pack_dir / "sigma").glob("*.yaml"))
         )
-        self.assertIn("trident-mode", sigma)
-        falco = (self.pack_dir / "falco" / "trident-rules.yaml").read_text(encoding="utf-8")
+        self.assertIn("inkblade-mode", sigma)
+        falco = (self.pack_dir / "falco" / "inkblade-rules.yaml").read_text(encoding="utf-8")
         self.assertIn("monitor", falco)
-        suricata = (self.pack_dir / "suricata" / "trident.rules").read_text(encoding="utf-8")
-        self.assertIn("trident.mode=monitor", suricata)
+        suricata = (self.pack_dir / "suricata" / "inkblade.rules").read_text(encoding="utf-8")
+        self.assertIn("inkblade.mode=monitor", suricata)
         for uri in ("/pull_weights", "/set_env", "/create_engine", "/fetch_weights", "/awex"):
             self.assertIn(uri, suricata)
 

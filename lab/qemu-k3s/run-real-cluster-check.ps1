@@ -11,8 +11,8 @@
       2. k3s       : boot the disk, ssh in, run install-k3s.sh, wait for Ready
       3. kubeconfig: copy /etc/rancher/k3s/k3s.yaml to out\k3s.yaml and rewrite
                      the server URL to https://127.0.0.1:6445 (QEMU hostfwd)
-      4. verify    : kubectl evidence, live snapshot, Trident recon modules,
-                     mock_targets Pod behind a NodePort, Trident HTTP module from
+      4. verify    : kubectl evidence, live snapshot, InkBlade recon modules,
+                     mock_targets Pod behind a NodePort, InkBlade HTTP module from
                      Windows, hostNetwork vs NetworkPolicy proof
 
     Evidence lands in reports\samples\real-cluster\ and is summarized in

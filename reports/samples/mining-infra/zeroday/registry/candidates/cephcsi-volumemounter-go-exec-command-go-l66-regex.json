@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "cephcsi-volumemounter-go-exec-command-go-l66-regex",
  "target": "cephcsi",
  "repo": "ceph/ceph-csi",

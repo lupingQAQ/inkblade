@@ -15,7 +15,7 @@ _REPO = Path(__file__).resolve().parents[3]
 if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
-from trident.modules._gpu_cloud_common import (  # noqa: E402
+from inkblade.modules._gpu_cloud_common import (  # noqa: E402
     Trace, base_url, benign_marker, detail, ok, read_headers, resolve_mode, resp, sha256_text,
     write_headers,
 )
@@ -78,7 +78,7 @@ def run(ctx: dict, params: dict) -> dict:
             "device": own_device,
             "namespace": str(params.get("namespace") or f"ns-{tenant}-infer"),
             "marker": marker,
-            "process": f"trident-residue-{tenant}",
+            "process": f"inkblade-residue-{tenant}",
         }, headers=write_headers(params))
         alloc_payload = resp(allocation)
         if ok(allocation):

@@ -20,7 +20,7 @@ import poclib  # noqa: E402
 
 def main() -> None:
     manifest = json.loads((poclib.CASE_DIR / "manifest.json").read_text(encoding="utf-8"))
-    master = "sk-trident-upstream-verify"
+    master = "sk-inkblade-upstream-verify"
     os.environ["LITELLM_MASTER_KEY"] = master
     os.environ.setdefault("LITELLM_LOCAL_MODEL_COST_MAP", "True")
 

@@ -3,12 +3,12 @@
 
 输入（params.evidence 或 params.snapshot）：
 - token / overall / tokens[]：NRAS 风格 attestation JWT（单 token 或 detached EAT 集合）；
-- jwks：JWKS dict / 路径 / "cache" / "live"；缺省读取 trident/tee/online_cache；
+- jwks：JWKS dict / 路径 / "cache" / "live"；缺省读取 inkblade/tee/online_cache；
 - expected_nonce（或 nonce）：32 字节随机数的十六进制/字符串；
 - expected_claims：需要精确匹配的 claims（如 x-nvidia-gpu-name）；
 - issuer / audience / now / min_version。
 
-校验复用 ``trident.tee`` 的在线校验器：
+校验复用 ``inkblade.tee`` 的在线校验器：
 - JWKS 结构（kid/alg/kty）与 RS256/ES384/ES256 验签；
 - exp/nbf/iat/iss/aud/eat_nonce/dbgstat/secboot/x-nvidia-overall-att-result/x-nvidia-ver；
 - 可选 expected_claims 精确匹配。
@@ -34,7 +34,7 @@ _SPEC = importlib.util.spec_from_file_location("_chip_common", _PARENT / "_chip-
 _C = importlib.util.module_from_spec(_SPEC)
 _SPEC.loader.exec_module(_C)
 
-from trident.tee import nvidia_cc, online  # noqa: E402
+from inkblade.tee import nvidia_cc, online  # noqa: E402
 
 KEY = "gpu-cc-attestation-chain"
 NRAS_ISSUER = nvidia_cc.NRAS_ISSUER
@@ -205,7 +205,7 @@ def run(ctx: dict, params: dict) -> dict:
     if jwks_source == "cache":
         findings.append(_C.finding(
             "info", "NRAS JWKS 来自本地缓存",
-            {"detected": True, "cache": "trident/tee/online_cache"},
+            {"detected": True, "cache": "inkblade/tee/online_cache"},
             fix="定期刷新 NRAS JWKS；缓存过期时拒绝新证明",
         ))
 

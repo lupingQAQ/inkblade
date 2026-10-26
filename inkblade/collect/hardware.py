@@ -67,7 +67,7 @@ def _read_docs(directory: Path) -> tuple[list[dict], list[str]]:
 def collect(root: str | Path) -> dict:
     base = Path(root)
     if not base.exists():
-        return {"schema": "trident-hardware-collection-v1", "status": "unavailable",
+        return {"schema": "inkblade-hardware-collection-v1", "status": "unavailable",
                 "root": str(base), "bmc": [], "switches": [], "tpm": [],
                 "errors": [f"not found: {base}"]}
     bmc: list[dict] = []
@@ -101,7 +101,7 @@ def collect(root: str | Path) -> dict:
             errors.append(f"inventory.json: {type(exc).__name__}: {exc}")
     status = "ok" if (bmc or switches or tpm) else "unavailable"
     return {
-        "schema": "trident-hardware-collection-v1",
+        "schema": "inkblade-hardware-collection-v1",
         "status": status,
         "root": str(base),
         "bmc": bmc,

@@ -138,7 +138,7 @@ def collect(kubeconfig: str | None = None, context: str | None = None,
     ok = sum(1 for r in resources if r["status"] == "ok")
     status = "ok" if ok == len(resources) else ("unavailable" if ok == 0 else "partial")
     return {
-        "schema": "trident-k8s-collection-v1",
+        "schema": "inkblade-k8s-collection-v1",
         "status": status,
         "verb": "get",
         "allowed_verbs": sorted(ALLOWED_VERBS),

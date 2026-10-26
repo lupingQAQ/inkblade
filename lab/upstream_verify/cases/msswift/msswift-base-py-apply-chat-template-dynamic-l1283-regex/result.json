@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "msswift-base-py-apply-chat-template-dynamic-l1283-regex",
  "source": "mining",
  "component": "msswift",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/msswift/msswift-base-py-apply-chat-template-dynamic-l1283-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.146,
- "started_at": "2026-10-26T09:23:29+00:00",
+ "duration_s": 0.327,
+ "started_at": "2026-10-26T19:53:52+00:00",
  "marker": {
-  "text": "TRIDENT-UV-msswift-base-py-apply-chat-template-dynamic-l1283-regex",
+  "text": "INKBLADE-UV-msswift-base-py-apply-chat-template-dynamic-l1283-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/msswift/msswift-base-py-apply-chat-template-dynamic-l1283-regex/evidence/log.txt",
-   "sha256": "0115ad6cd831b8bdef5d8ea9610b029753f4427b4cc8e3564b7386f5f4f4947a",
+   "sha256": "89d224f347d37f91032e8ead6a2e92f1d79ef711ea4f0622da575419049d7625",
    "size": 281
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/msswift/msswift-base-py-apply-chat-template-dynamic-l1283-regex/evidence/static-check.json",
-   "sha256": "4f0c4d1d1abe46c6b27e7a715230590ab253187230da8cf475db4f42e70c2187",
-   "size": 1153
+   "sha256": "efe6034911ac7f90073a37bbfae207c32f17d36044491ce95b3f858d80b173f0",
+   "size": 1154
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "be0f0bebbc72ceb95695738cbb308e58a4ac457367c0a61f9a2c8e4223af9856",
+ "manifest_sha256": "61f781130b3d905b16311343970d6fc4644a2e9dd8bcdf4cb2a2e0b8cf105124",
  "stdout": "{\"status\": \"static-only\", \"case\": \"msswift-base-py-apply-chat-template-dynamic-l1283-regex\"}\n",
  "stderr": "",
  "notes": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."

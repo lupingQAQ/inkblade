@@ -35,7 +35,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-infra/mining-report.json",
- "marker_text": "TRIDENT-UV-gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex",
+ "marker_text": "INKBLADE-UV-gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex",
  "notes": "The NVIDIA driver DaemonSet combines hostNetwork: true, privileged containers and hostPath mounts of /, /dev, /sys, kernel modules and container runtime sockets - the canonical privileged-node posture. Any container escape or compromised image in this DaemonSet is instant node takeover; recorded as posture (static), paired with the validator exec surface case.",
  "static_evidence_level": "source-line",
  "static_analysis": "The NVIDIA driver DaemonSet combines hostNetwork: true, privileged containers and hostPath mounts of /, /dev, /sys, kernel modules and container runtime sockets - the canonical privileged-node posture. Any container escape or compromised image in this DaemonSet is instant node takeover; recorded as posture (static), paired with the validator exec surface case.",
@@ -50,7 +50,7 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "gpuoperator",
  "static_blocker": {
   "category": "requires-k8s",

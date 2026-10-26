@@ -17,7 +17,7 @@ DEFAULT_OUT = REPO / "reports" / "samples" / "cloud-free" / "aliyun-tencent-cont
 def run(out: Path | str | None = None) -> dict:
     path = Path(out) if out else DEFAULT_OUT
     result: dict = {
-        "schema": "trident-cloud-contract/2026-10",
+        "schema": "inkblade-cloud-contract/2026-10",
         "mode": "contract simulation (lab/cloud_six_sim.py), not a real account",
     }
     for mode in ("vulnerable", "fixed"):

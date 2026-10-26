@@ -1,5 +1,5 @@
 # lab/kind/hostnetwork-bypass.yaml — hostNetwork 探测 Pod（NetworkPolicy 旁路实证）
-# 依据：Trident 设计 设计基线 5.6 主机网络层——hostNetwork/hostDevice 绕过 CNI 与
+# 依据：InkBlade 设计 设计基线 5.6 主机网络层——hostNetwork/hostDevice 绕过 CNI 与
 #       NetworkPolicy；验收标准 12「hostNetwork 绕过 NetworkPolicy 实证」。
 #
 # 场景：default-deny-netpol.yaml 已在本命名空间全量拒绝（Ingress+Egress）。
@@ -11,10 +11,10 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: proof-hostnet
-  namespace: trident-proof
+  namespace: inkblade-proof
   labels:
     app: proof-hostnet
-    trident.dev/proof: hostnetwork-bypass
+    inkblade.dev/proof: hostnetwork-bypass
 spec:
   hostNetwork: true                  # 旁路原语：共享宿主网络命名空间
   dnsPolicy: ClusterFirstWithHostNet  # hostNetwork 下的正确 DNS 姿态

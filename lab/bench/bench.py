@@ -1,11 +1,11 @@
-"""lab/bench/bench.py — Trident bench 冒烟（设计基线第 11 节对标 ARTEX / 第 13 节实验室）。
+"""lab/bench/bench.py — InkBlade bench 冒烟（设计基线第 11 节对标 ARTEX / 第 13 节实验室）。
 
 smoke 模式：对 lab mock 靶场（lab/mock_targets.py start_all，vulnerable 姿态）跑一条
 最小链探测计时 + 内存采样 + 请求数统计。
 
 路径选择（记录 Ruling）：
-1. 链路径（优先）：trident/core/chains.load_chains 选一条「只读链」——全部步骤引用的
-   模块已在 trident/modules 就绪（writes=false、非私有），用 chains.execute 计时；
+1. 链路径（优先）：inkblade/core/chains.load_chains 选一条「只读链」——全部步骤引用的
+   模块已在 inkblade/modules 就绪（writes=false、非私有），用 chains.execute 计时；
 2. 兜底路径：链模块未就绪（当前侦察/横向利用模块族尚未落地）时，urllib 直探
    5 条只读路由（ROUTE_TABLE writes=false，覆盖侦察发现/观测面/插件面/中继面/管理面）。
 
@@ -36,8 +36,8 @@ if str(REPO_ROOT) not in sys.path:
 
 from lab.mock_targets import start_all  # noqa: E402
 
-CHAINS_DIR = REPO_ROOT / "trident" / "chains"
-MODULES_DIR = REPO_ROOT / "trident" / "modules"
+CHAINS_DIR = REPO_ROOT / "inkblade" / "chains"
+MODULES_DIR = REPO_ROOT / "inkblade" / "modules"
 DEFAULT_OUT_DIR = Path(__file__).resolve().parent / "out"
 
 # 兜底五路由：全部取自 lab/mock_targets.ROUTE_TABLE 且 writes=false（对靶场零写入），
@@ -168,7 +168,7 @@ def select_readonly_chain(chains_dir: Path | str = CHAINS_DIR,
     chains_dir = Path(chains_dir)
     modules_dir = Path(modules_dir)
     try:
-        from trident.core.chains import load_chains
+        from inkblade.core.chains import load_chains
 
         chains = load_chains(chains_dir)
     except Exception as exc:  # 链目录未就绪/校验失败都不应阻断 bench
@@ -179,7 +179,7 @@ def select_readonly_chain(chains_dir: Path | str = CHAINS_DIR,
     registry_note = ""
     mods: dict = {}
     try:
-        from trident.core.registry import load_modules
+        from inkblade.core.registry import load_modules
 
         mods = load_modules(modules_dir)
     except Exception as exc:
@@ -218,21 +218,21 @@ def _run_chain_probe(server, chain: dict, iterations: int) -> tuple[float, int]:
     """链路径计时：搭最小基建（证据库/用户/ROE 主动探测级）后执行 chains.execute。"""
     from tempfile import TemporaryDirectory
 
-    from trident.core.chains import execute
-    from trident.core.evidence import EvidenceStore
-    from trident.core.roe import init_roe
-    from trident.core.users import UserStore
+    from inkblade.core.chains import execute
+    from inkblade.core.evidence import EvidenceStore
+    from inkblade.core.roe import init_roe
+    from inkblade.core.users import UserStore
 
     base = server.url("/")
     steps_done = 0
-    with TemporaryDirectory(prefix="trident-bench-") as tmp:
+    with TemporaryDirectory(prefix="inkblade-bench-") as tmp:
         root = Path(tmp)
         store = EvidenceStore(root, workspace="local-lab")
         users = UserStore(root / "users.json")
         users.create_user("bench", "x", "tester", ["local-lab"])
         session = users.verify("bench", "x")
         init_roe(store, fields={"level": "主动探测",
-                                "namespaces": ["trident-lab"], "cidrs": ["127.0.0.0/8"]})
+                                "namespaces": ["inkblade-lab"], "cidrs": ["127.0.0.0/8"]})
         t0 = time.perf_counter()
         for i in range(iterations):
             snapshot = json.loads(json.dumps(chain))  # 深拷贝后注入靶场地址
@@ -331,7 +331,7 @@ def run_smoke(iterations: int = 5, mode: str = "vulnerable",
             elapsed_ms, requests_done, routes_out = _run_fallback_probe(server, iterations)
     sampler.stop()
     return {
-        "bench": "trident-smoke",
+        "bench": "inkblade-smoke",
         "mode": used_mode,
         "chain": chain_id,
         "ruling": ruling,
@@ -356,7 +356,7 @@ def run_smoke(iterations: int = 5, mode: str = "vulnerable",
 
 def _render_md(r: dict) -> str:
     lines = [
-        "# Trident bench 冒烟结果（smoke）",
+        "# InkBlade bench 冒烟结果（smoke）",
         "",
         f"- 模式: **{r['mode']}**" + (f"（链 `{r['chain']}`）" if r["chain"] else "（urllib 五路由兜底）"),
         f"- Ruling: {r['ruling']}",
@@ -392,7 +392,7 @@ def main(argv: list[str] | None = None) -> int:
         sys.stderr.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
-    parser = argparse.ArgumentParser(prog="bench.py", description="Trident bench（对标 ARTEX，仅标准库）")
+    parser = argparse.ArgumentParser(prog="bench.py", description="InkBlade bench（对标 ARTEX，仅标准库）")
     sub = parser.add_subparsers(dest="cmd", required=True)
     p_smoke = sub.add_parser("smoke", help="mock 靶场最小链冒烟计时（链优先，urllib 兜底并记录 Ruling）")
     p_smoke.add_argument("--iterations", type=int, default=5, help="探测轮数（默认 5）")

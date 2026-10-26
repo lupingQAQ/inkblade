@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "sonicrestapi-default-go-exec-command-l1881-regex",
  "source": "mining",
  "component": "sonicrestapi",
@@ -32,10 +32,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/sonicrestapi/sonicrestapi-default-go-exec-command-l1881-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.157,
- "started_at": "2026-10-26T09:23:42+00:00",
+ "duration_s": 0.318,
+ "started_at": "2026-10-26T19:57:29+00:00",
  "marker": {
-  "text": "TRIDENT-UV-sonicrestapi-default-go-exec-command-l1881-regex",
+  "text": "INKBLADE-UV-sonicrestapi-default-go-exec-command-l1881-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -46,7 +46,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/sonicrestapi/sonicrestapi-default-go-exec-command-l1881-regex/evidence/log.txt",
-   "sha256": "5926730564d0ec718aeba0637e07ec40b7c73d3a1f2fcfc8049fe28bcc53e4f1",
+   "sha256": "fb79be2d9231aebfe2a7e849dee7ef377d30cef04bab264516408a2a4e17712a",
    "size": 272
   },
   {
@@ -56,12 +56,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/sonicrestapi/sonicrestapi-default-go-exec-command-l1881-regex/evidence/static-check.json",
-   "sha256": "66ac45500e6cb670eb6f52423a807d41ee1ada095855c093aff4a32e70b49609",
-   "size": 1547
+   "sha256": "e3305cf8f35588fda5e4516c73513ea92c9c82e070a9339a22510b5ee8827802",
+   "size": 1548
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "c6e23e5a90ac03ad7d86e8c2ee797c7665b4430d95da44dcb745e3be4a677d45",
+ "manifest_sha256": "eec92b6ecf7b9f917168b8ad0e5117080dcec78ddbd74d6b7085109da04245ad",
  "stdout": "{\"status\": \"static-only\", \"case\": \"sonicrestapi-default-go-exec-command-l1881-regex\"}\n",
  "stderr": "",
  "notes": "SONiC REST PingPost builds the ping argv from request JSON (ip_address, count '-c ' concatenation, vnet_id). argv-list exec means no shell metacharacters, but option injection into ping and unauthenticated-by-default REST auth mode (community change to default 'user' is recent) make this a live probe/injection surface. Not run dynamically: the go-server-server package links swsscommon (C), which cannot build on this Windows host."

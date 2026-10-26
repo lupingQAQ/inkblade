@@ -5,9 +5,9 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.threads import ThreadDenied, ThreadError, Threads
-from trident.core.users import Session
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.threads import ThreadDenied, ThreadError, Threads
+from inkblade.core.users import Session
 
 
 def _session(role="lead"):

@@ -1,4 +1,4 @@
-TRIDENT - HIGHEST-PRIVILEGE PROOF (real k3s / QEMU TCG)
+INKBLADE - HIGHEST-PRIVILEGE PROOF (real k3s / QEMU TCG)
 ======================================================================================
 marker        : real-20261026-10
 run           : objective-cluster-takeover-objective-20261026-011707-real-20261026-10
@@ -6,31 +6,31 @@ backend       : kubectl  real_cluster=True
 host node     : k3s   kernel 6.18.58-0-virt   k3s v1.36.5+k3s1
 
 [stage 1] entry: exposed NodePort/Service -> HTTP 200
-[stage 2] credential: TokenRequest -> system:serviceaccount:trident-killchain:trident-operator
+[stage 2] credential: TokenRequest -> system:serviceaccount:inkblade-killchain:inkblade-operator
 [stage 3] RBAC: RoleBinding + ClusterRoleBinding -> cluster-admin
           kubectl auth can-i '*' '*' --all-namespaces -> yes
-          binding: trident-pwn-crb-real-20261026-10
+          binding: inkblade-pwn-crb-real-20261026-10
 [stage 4] privileged pod: privileged=true hostPID=true hostPath=/ -> Running
 [stage 5] node root: uid=0(root) -> /root marker write + sha256 read-back
           id  : uid=0(root) gid=0(root) groups=0(root)
-          path: /root/TRIDENT-PROOF-real-20261026-10
+          path: /root/INKBLADE-PROOF-real-20261026-10
           sha256: 29bc79c339ac9bd5abced0cf94ba160b471ce7bdd9534548872990534527a211   verified=True
 [stage 6] cluster proof:
           secrets listed: 2 -> kube-system/k3s-serving, kube-system/k3s.node-password.k3s
-          test namespace: trident-proof-real-20261026-10 created=True
-          test ConfigMap: trident-proof-real-20261026-10/trident-proof read_back=True
+          test namespace: inkblade-proof-real-20261026-10 created=True
+          test ConfigMap: inkblade-proof-real-20261026-10/inkblade-proof read_back=True
 
 [stage 7] cleanup:
           verified=True  residue=[]  fixture_cleanup=True
           PASS  node marker  (absent)
-          PASS  namespace trident-proof-real-20261026-10 absent  (absent)
-          PASS  clusterrolebinding trident-pwn-crb-real-20261026-10 absent  (absent)
-          PASS  rolebinding trident-pwn-rb-real-20261026-10 absent  (absent)
-          PASS  pod trident-pwn-pod-real-20261026-10 absent  (absent)
-          PASS  fixture-clusterrolebinding trident-operator-broad absent  (absent)
-          PASS  fixture-clusterrole trident-operator-broad absent  (absent)
-          PASS  fixture-namespace trident-killchain absent  (absent)
-          PASS  namespace set equals baseline  ({'expected': ['default', 'kube-node-lease', 'kube-public', 'kube-system', 'trident-proof'], 'actual': ['default', 'kube-node-lease', 'kube-public', 'kube-system', 'trident-proof']})
+          PASS  namespace inkblade-proof-real-20261026-10 absent  (absent)
+          PASS  clusterrolebinding inkblade-pwn-crb-real-20261026-10 absent  (absent)
+          PASS  rolebinding inkblade-pwn-rb-real-20261026-10 absent  (absent)
+          PASS  pod inkblade-pwn-pod-real-20261026-10 absent  (absent)
+          PASS  fixture-clusterrolebinding inkblade-operator-broad absent  (absent)
+          PASS  fixture-clusterrole inkblade-operator-broad absent  (absent)
+          PASS  fixture-namespace inkblade-killchain absent  (absent)
+          PASS  namespace set equals baseline  ({'expected': ['default', 'kube-node-lease', 'kube-public', 'kube-system', 'inkblade-proof'], 'actual': ['default', 'kube-node-lease', 'kube-public', 'kube-system', 'inkblade-proof']})
           PASS  secret name set equals baseline  ({'expected_count': 2, 'actual_count': 2, 'delta': []})
           PASS  no objective clusterrolebinding  ([])
 

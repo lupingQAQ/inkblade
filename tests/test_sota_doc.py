@@ -122,7 +122,7 @@ class TestSotaDoc(unittest.TestCase):
                 r"([a-z0-9-]+)\.md", row["reference"]))
         self.assertGreaterEqual(len(cited), 8, cited)
         for cid in cited:
-            base = REPO / "trident" / "arch-intel" / "corpus"
+            base = REPO / "inkblade" / "arch-intel" / "corpus"
             self.assertTrue(
                 any((base / cls / f"{cid}.md").is_file()
                     for cls in ("official-cn", "official-en", "paper")),

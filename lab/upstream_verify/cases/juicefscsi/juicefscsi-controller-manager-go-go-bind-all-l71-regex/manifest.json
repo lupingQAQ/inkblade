@@ -28,19 +28,20 @@
   "record a static-only verdict (no exploit execution)"
  ],
  "expected_evidence": [
-  "static-check.json with source hash and line match"
+  "http/metrics.txt status=200 and metrics body",
+  "http/listeners.txt showing :::8084 and 127.0.0.1:6060",
+  "http/nonloopback.txt status=200 via eth0",
+  "http/jfs.log with Serving metrics server bindAddress=0.0.0.0:8084 secure=false",
+  "http/version.json and binary sha256"
  ],
  "cleanup": "none (read-only)",
- "status": "static-only",
- "method": "static-source",
- "module": null,
+ "status": "verified",
+ "method": "dynamic-http",
+ "module": "observability-exposure",
  "python": "reproenv",
  "advisory": "reports/samples/mining-infra/mining-report.json",
- "marker_text": "TRIDENT-UV-juicefscsi-controller-manager-go-go-bind-all-l71-regex",
- "notes": "JuiceFSCSI controller (and pod manager, 0.0.0.0:8082) bind their controller-runtime metrics listeners on all interfaces with no authentication; cmd/main.go additionally blank-imports net/http/pprof (default-mux registration). Cluster-internal posture exposure: queue depths, volume names and pprof surface.",
- "static_evidence_level": "source-line",
- "static_analysis": "JuiceFSCSI controller (and pod manager, 0.0.0.0:8082) bind their controller-runtime metrics listeners on all interfaces with no authentication; cmd/main.go additionally blank-imports net/http/pprof (default-mux registration). Cluster-internal posture exposure: queue depths, volume names and pprof surface.",
- "static_verdict": "not-dynamically-verified",
+ "marker_text": "INKBLADE-UV-juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+ "notes": "Promoted 2026-10-27. Ran the official v0.33.1 image binary (juicedata/juicefs-csi-driver@sha256:103ac60b6b9c6de2d2a2ced95afc2b8c092b3a2004670bbfaed1e8e2c8047ceb, extracted /usr/local/bin/juicefs-csi-driver, --version gitCommit ab62a2106b6993f260b9f4c82f5dba51463e6748) inside the QEMU k3s VM. The controller started in controller mode with in-cluster credentials and a minimal juicefs-csi-node DaemonSet; controller-runtime logged bindAddress=0.0.0.0:8084 secure=false and /metrics returned 200 with no Authorization header, both on loopback and via eth0. pprof stayed on 127.0.0.1:6060.",
  "unsupported": {},
  "mining": {
   "rule": "go-bind-all",
@@ -51,10 +52,6 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
- "component": "juicefscsi",
- "static_blocker": {
-  "category": "host-toolchain-missing",
-  "reason": "Go toolchain and container runtime are absent on this Windows host; the pinned service/binary cannot be built or started, so the sink cannot be driven dynamically. Source-line root cause and pin remain recorded."
- }
+ "schema": "inkblade-upstream-case-v1",
+ "component": "juicefscsi"
 }

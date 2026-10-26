@@ -1,6 +1,6 @@
 # 2026 infra 覆盖总表（与既有模块去重后）
 
-- 基线快照：本轮开始时 `trident/modules/` 既有 **211** 个模块；本轮新增 **16** 个。按本表口径为 **227** 个；工作树中并行任务的模块另计，不并入本表（见第 4 节）。
+- 基线快照：本轮开始时 `inkblade/modules/` 既有 **211** 个模块；本轮新增 **16** 个。按本表口径为 **227** 个；工作树中并行任务的模块另计，不并入本表（见第 4 节）。
 - 新增模块全部 `writes=false`：9 个「主动探测」只做 GET，7 个「只读侦察」读快照/清单；无写类模块，不触发备份闸门。
 - 议题证据与逐条覆盖矩阵见 `docs/CONFERENCE-2026-GAPS.md`（65 条议题、16 条落地缺口、7 条残余缺口）。
 - 去重原则：**不重复已有能力**。既有模块能判定的，不新建；新模块只补“既有模块没有的采集面/证据面”。
@@ -9,7 +9,7 @@
 
 | ID | 模块键 | 系列 | 分级 | writes | 新增采集面 | 与既有模块的边界（去重） | 证据来源 |
 |---|---|---|---|---|---|---|---|
-| M01 | confidential-containers-attestation | 核心代码 | 主动探测 | false | CoCo/Kata/SEV-SNP 证明报告 + 准入策略 + initdata | 既有 `cgpu-isolation-audit` 只看 GPU CC 租户隔离；`trident/tee` 是离线 quote/PKI 验证库，不采集 CoCo 控制面 | USENIX Sec 2026 I09；NDSS 2026 I14/I19；KubeCon EU I40；KubeCon NA I48 |
+| M01 | confidential-containers-attestation | 核心代码 | 主动探测 | false | CoCo/Kata/SEV-SNP 证明报告 + 准入策略 + initdata | 既有 `cgpu-isolation-audit` 只看 GPU CC 租户隔离；`inkblade/tee` 是离线 quote/PKI 验证库，不采集 CoCo 控制面 | USENIX Sec 2026 I09；NDSS 2026 I14/I19；KubeCon EU I40；KubeCon NA I48 |
 | M02 | sandbox-runtime-surface | 权限链 | 只读侦察 | false | RuntimeClass/Pod 安全上下文/gVisor/Firecracker 覆盖矩阵 | 既有 `escape-primitives`/`runc-escape-detect` 检测逃逸原语与已知 CVE，不做运行时基线清点 | USENIX Sec 2026 I02/I10；NDSS 2026 I12/I13；BHUSA I32/I36；KubeCon I45/I59/I63 |
 | M03 | spiffe-spire-surface | 权限链 | 主动探测 | false | SPIFFE ID/selector/TTL/admin ACL/绑定地址 | 既有 `sa-token-request`/`impersonate-abuse` 是 K8s SA token 与 RBAC，不覆盖 SPIFFE SVID | DEF CON 34 I38；KubeCon EU I41 |
 | M04 | cert-manager-webhook-tls | 网络架构 | 主动探测 | false | webhook 证书到期/SAN/CA bundle/轮换/skipVerify | 既有 `admission-webhook-write` 是写类变更面，`crd-conversion-webhook` 是转换 webhook 缺陷；不判 TLS 生命周期 | NDSS 2026 I20；KubeCon EU I46 |
@@ -24,7 +24,7 @@
 | M13 | model-watermark-backdoor-detect | 情报 | 主动探测 | false | 水印/验证端点/trigger scan/来源签名 | 既有 `model-registry-exposure`/`trust-remote-code-supply-chain` 看暴露与加载 RCE，不判水印/后门 | USENIX Sec I06/I07；IEEE S&P I27 |
 | M14 | rag-vector-injection | 窃取与数据泄露 | 主动探测 | false | 注入文档/租户过滤/embedding namespace/清洗 | 既有 `vector-db-exposure` 看未授权访问；不判检索投毒与跨租户检索 | USENIX Sec I05；IEEE S&P I26 |
 | M15 | federated-learning-surface | 情报 | 只读侦察 | false | 更新签名/安全聚合/DP/拜占庭过滤/范数 | 既有 `training-data-leak` 是集中式训练数据泄漏；不覆盖联邦聚合 | NDSS 2026 I18 |
-| M16 | data-provenance-audit | 情报 | 主动探测 | false | SLSA/in-toto/Sigstore/SBOM/Rekor/drift | 既有 `supply-chain-pinning` 看 pinning/凭据；`trident/sigstore_keyless` 是签名验证库，不采集制品证明链 | BHUSA I35；KubeCon NA I49/I53；OWASP I54 |
+| M16 | data-provenance-audit | 情报 | 主动探测 | false | SLSA/in-toto/Sigstore/SBOM/Rekor/drift | 既有 `supply-chain-pinning` 看 pinning/凭据；`inkblade/sigstore_keyless` 是签名验证库，不采集制品证明链 | BHUSA I35；KubeCon NA I49/I53；OWASP I54 |
 
 ## 2. 覆盖分布
 
@@ -42,7 +42,7 @@
 ## 3. 实效与测试
 
 - 实验室：`lab/infra2026_sim.py`，双态 `vulnerable/fixed`，17 个只读面；至少 6 个新面（CoCo 证明、SPIRE、webhook TLS、ambient mesh、WASM、PQ TLS）均有两态差异。
-- 实效 +3（`trident/verify-effects.py`）：
+- 实效 +3（`inkblade/verify-effects.py`）：
   - `infra2026-coco-attestation-mismatch`：测量值与预期不一致 + debug + 策略未强制；
   - `infra2026-spire-wildcard-identity`：通配 SPIFFE ID + 空 selector + admin 无 ACL；
   - `infra2026-pq-tls-weak-posture`：TLS1.2 + RSA KEX + 无 hybrid group + HNDL。
@@ -59,7 +59,7 @@
 
 ## 4.1 与并行在途模块的边界
 
-工作树中存在另一组并行任务落地的 `*-audit` 模块（`confidential-containers-audit`、`spiffe-spire-audit`、`post-quantum-tls-audit`、`wasm-runtime-audit`、`ambient-mesh-audit`、`model-watermark-backdoor-audit` 等），采集模型偏 `trident collect`/`profile`。本表**不重复计数**，合并口径如下：
+工作树中存在另一组并行任务落地的 `*-audit` 模块（`confidential-containers-audit`、`spiffe-spire-audit`、`post-quantum-tls-audit`、`wasm-runtime-audit`、`ambient-mesh-audit`、`model-watermark-backdoor-audit` 等），采集模型偏 `inkblade collect`/`profile`。本表**不重复计数**，合并口径如下：
 
 - 若 `*-audit` 家族最终保留：以它的 collector 作为数据源，本表模块保留“HTTP 双态证据 + 实效项”，二者通过 `target`/`snapshot` 适配，不并行报同一 finding；
 - 若 `*-audit` 家族撤销：本表 16 个模块即为唯一实现；

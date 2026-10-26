@@ -3,7 +3,7 @@
 
 只注册 GET，不新增任何写路由；不触碰 server.py 既有 /api/v1/* 语义。
 数据源：
-- 自主度与分解策略：``trident.core.agent_policy``（静态目录）；
+- 自主度与分解策略：``inkblade.core.agent_policy``（静态目录）；
 - 观察：``evidence/<ws>/agent/observations.jsonl``（建议队列的只读镜像）；
 - 成本：最近一次提议的 ``cost`` 块 + 默认预算。
 """

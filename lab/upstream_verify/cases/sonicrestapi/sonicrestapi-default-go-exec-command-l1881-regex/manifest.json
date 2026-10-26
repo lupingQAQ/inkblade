@@ -35,7 +35,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-infra/mining-report.json",
- "marker_text": "TRIDENT-UV-sonicrestapi-default-go-exec-command-l1881-regex",
+ "marker_text": "INKBLADE-UV-sonicrestapi-default-go-exec-command-l1881-regex",
  "notes": "SONiC REST PingPost builds the ping argv from request JSON (ip_address, count '-c ' concatenation, vnet_id). argv-list exec means no shell metacharacters, but option injection into ping and unauthenticated-by-default REST auth mode (community change to default 'user' is recent) make this a live probe/injection surface. Not run dynamically: the go-server-server package links swsscommon (C), which cannot build on this Windows host.",
  "static_evidence_level": "source-line",
  "static_analysis": "SONiC REST PingPost builds the ping argv from request JSON (ip_address, count '-c ' concatenation, vnet_id). argv-list exec means no shell metacharacters, but option injection into ping and unauthenticated-by-default REST auth mode (community change to default 'user' is recent) make this a live probe/injection surface. Not run dynamically: the go-server-server package links swsscommon (C), which cannot build on this Windows host.",
@@ -50,10 +50,10 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "sonicrestapi",
  "static_blocker": {
   "category": "host-toolchain-missing",
-  "reason": "Go toolchain and container runtime are absent on this Windows host; the pinned service/binary cannot be built or started, so the sink cannot be driven dynamically. Source-line root cause and pin remain recorded."
+  "reason": "Re-checked 2026-10-27: the SONiC REST server links swsscommon/Redis CONFIG_DB (C/C++ libraries) and expects a SONiC image; it cannot be built in Alpine. The source line remains static."
  }
 }

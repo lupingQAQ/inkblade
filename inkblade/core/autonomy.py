@@ -19,13 +19,13 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
-import os
 import secrets
 import time
 from pathlib import Path
 from typing import Any, Callable, Iterable
 
 from . import cost, jsonio, roe
+from .env import getenv
 
 GRANT_RELPATH = "autonomy/grant.json"
 TRACE_RELPATH = "autonomy/trace.jsonl"
@@ -89,7 +89,7 @@ def plan_digest(actions: Iterable[dict]) -> str:
 
 def llm_available(store) -> bool:
     """L3 的 LLM 端点判定：core/llmpool 已启用且有端点，或显式 env 端点。"""
-    if os.environ.get("TRIDENT_LLM_BASE_URL"):
+    if getenv("LLM_BASE_URL"):
         return True
     try:
         from .llmpool import pool_available
@@ -190,7 +190,7 @@ class AutonomyGrant:
         token = secrets.token_hex(16)
         now = _now()
         doc = {
-            "schema": "trident-autonomy-grant/1",
+            "schema": "inkblade-autonomy-grant/1",
             "id": f"grant-{time.strftime('%Y%m%d-%H%M%S', time.gmtime(now))}-{secrets.token_hex(3)}",
             "status": "active",
             "allowlist": modules,
@@ -219,7 +219,7 @@ class AutonomyGrant:
         path = jsonio.ws_path(store, GRANT_RELPATH)
         doc = jsonio.read_json(path, None)
         if not isinstance(doc, dict):
-            raise AutonomyRefused("缺少 lead 预授权 grant（先 trident autonomy grant）")
+            raise AutonomyRefused("缺少 lead 预授权 grant（先 inkblade autonomy grant）")
         body = {k: v for k, v in doc.items() if k != "hmac"}
         expect = roe.signature(body, roe.workspace_key(store))
         if not hmac.compare_digest(str(doc.get("hmac") or ""), expect):
@@ -297,7 +297,7 @@ class AutonomyGuard:
         if llm_required and not llm_available(store):
             raise AutonomyRefused(
                 "L3 --llm 需要真实 OpenAI 兼容端点（core/llmpool 已启用且有端点，"
-                "或 TRIDENT_LLM_BASE_URL）；无端点拒绝执行，不静默回退")
+                "或 INKBLADE_LLM_BASE_URL）；无端点拒绝执行，不静默回退")
         budget = cost.Budget(
             tokens=int(grant.budget.get("tokens", 20000)),
             latency_ms=int(grant.budget.get("latency_ms", 120000)),

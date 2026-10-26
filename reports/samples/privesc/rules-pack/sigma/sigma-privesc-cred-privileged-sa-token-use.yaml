@@ -7,12 +7,12 @@ references:
   - "Kubernetes Secret 文档 https://kubernetes.io/docs/concepts/configuration/secret/"
   - "MITRE ATT&CK T1552 Unsecured Credentials https://attack.mitre.org/techniques/T1552/"
   - "KubeHound RBAC 攻击图 https://github.com/DataDog/KubeHound"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: cred-privileged-sa-token-use
-    trident.io/module: sa-token-request
+    inkblade.io/vector: cred-privileged-sa-token-use
+    inkblade.io/module: sa-token-request
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -31,17 +31,17 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.credential
+  - inkblade
+  - inkblade.vector.credential
   - attack.t1552
   - attack.t1078
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: cred-privileged-sa-token-use
-  trident-module: sa-token-request
-  trident-detection-point: K8s audit：高权 SA 主体创建敏感绑定
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: cred-privileged-sa-token-use
+  inkblade-module: sa-token-request
+  inkblade-detection-point: K8s audit：高权 SA 主体创建敏感绑定
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

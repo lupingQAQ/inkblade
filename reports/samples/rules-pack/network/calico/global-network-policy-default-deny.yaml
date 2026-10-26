@@ -1,10 +1,10 @@
 apiVersion: projectcalico.org/v3
 kind: GlobalNetworkPolicy
 metadata:
-  name: trident-default-deny
+  name: inkblade-default-deny
   annotations:
-    trident.io/mode: monitor
-    trident.io/note: 顺序低于放行策略；RDMA/SR-IOV 面不覆盖，见 rdma-sriov-uncovered.md
+    inkblade.io/mode: monitor
+    inkblade.io/note: 顺序低于放行策略；RDMA/SR-IOV 面不覆盖，见 rdma-sriov-uncovered.md
 spec:
   selector: all()
   order: 1000
@@ -20,19 +20,19 @@ spec:
 apiVersion: projectcalico.org/v3
 kind: GlobalNetworkPolicy
 metadata:
-  name: trident-allow-ray-system
+  name: inkblade-allow-ray-system
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   order: 900
-  selector: "ray-system.trident-io-zone/member == 'true'"
+  selector: "ray-system.inkblade-io-zone/member == 'true'"
   types:
     - Ingress
     - Egress
   ingress:
     - action: Allow
       source:
-        selector: "ml-training.trident-io-zone/member == 'true'"
+        selector: "ml-training.inkblade-io-zone/member == 'true'"
         nets:
           - 192.168.10.0/24
       ports:
@@ -52,19 +52,19 @@ spec:
 apiVersion: projectcalico.org/v3
 kind: GlobalNetworkPolicy
 metadata:
-  name: trident-allow-ml-training
+  name: inkblade-allow-ml-training
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   order: 900
-  selector: "ml-training.trident-io-zone/member == 'true'"
+  selector: "ml-training.inkblade-io-zone/member == 'true'"
   types:
     - Ingress
     - Egress
   ingress:
     - action: Allow
       source:
-        selector: "ray-system.trident-io-zone/member == 'true' || ml-training.trident-io-zone/member == 'true'"
+        selector: "ray-system.inkblade-io-zone/member == 'true' || ml-training.inkblade-io-zone/member == 'true'"
         nets:
           - 192.168.10.0/24
       ports:
@@ -88,19 +88,19 @@ spec:
 apiVersion: projectcalico.org/v3
 kind: GlobalNetworkPolicy
 metadata:
-  name: trident-allow-ml-inference
+  name: inkblade-allow-ml-inference
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   order: 900
-  selector: "ml-inference.trident-io-zone/member == 'true'"
+  selector: "ml-inference.inkblade-io-zone/member == 'true'"
   types:
     - Ingress
     - Egress
   ingress:
     - action: Allow
       source:
-        selector: "monitoring.trident-io-zone/member == 'true'"
+        selector: "monitoring.inkblade-io-zone/member == 'true'"
         nets:
           - 192.168.10.0/24
       ports:
@@ -120,12 +120,12 @@ spec:
 apiVersion: projectcalico.org/v3
 kind: GlobalNetworkPolicy
 metadata:
-  name: trident-allow-monitoring
+  name: inkblade-allow-monitoring
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   order: 900
-  selector: "monitoring.trident-io-zone/member == 'true'"
+  selector: "monitoring.inkblade-io-zone/member == 'true'"
   types:
     - Ingress
     - Egress
@@ -150,12 +150,12 @@ spec:
 apiVersion: projectcalico.org/v3
 kind: GlobalNetworkPolicy
 metadata:
-  name: trident-allow-ml-agent
+  name: inkblade-allow-ml-agent
   annotations:
-    trident.io/mode: monitor
+    inkblade.io/mode: monitor
 spec:
   order: 900
-  selector: "ml-agent.trident-io-zone/member == 'true'"
+  selector: "ml-agent.inkblade-io-zone/member == 'true'"
   types:
     - Ingress
     - Egress

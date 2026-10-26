@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "CGPU-ADV-2026-01",
  "source": "cve",
  "component": "cgpu",
@@ -29,10 +29,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/cgpu/CGPU-ADV-2026-01/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.074,
- "started_at": "2026-10-25T18:06:39+00:00",
+ "duration_s": 0.245,
+ "started_at": "2026-10-26T19:45:55+00:00",
  "marker": {
-  "text": "TRIDENT-UV-CGPU-ADV-2026-01",
+  "text": "INKBLADE-UV-CGPU-ADV-2026-01",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -43,7 +43,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/cgpu/CGPU-ADV-2026-01/evidence/log.txt",
-   "sha256": "62d3aeb51e19684803eb0b60c7e143c04cb4f71097785c1faef2e5976245e694",
+   "sha256": "45c8da1487b5cfbb6fa294e25b63ce05fd0b3233967d20b381ff32b5258c51cc",
    "size": 274
   },
   {
@@ -53,12 +53,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/cgpu/CGPU-ADV-2026-01/evidence/unsupported.json",
-   "sha256": "11fd79982f2386c281dd6571d493b6d3712983c5b6f426d692ba55aa7193b59a",
-   "size": 840
+   "sha256": "664045a1fda3d407fc04927c7d6a2ebbc1a04da2e6f414967cca55847888c42f",
+   "size": 841
   }
  ],
  "poc_sha256": "8c43ff144a23e6e961076b0c4ab32cfe5e637403206fce521050ffb6dc8361c7",
- "manifest_sha256": "292dc31eba31c5aded8da82029a19ed5a005f453a0c15a79aacdfdfe0e791a1f",
+ "manifest_sha256": "a8dddc32aa337e77180d83d8ba908ba29a39dc3381ee336869ee32a6a78a1be1",
  "stdout": "{\"status\": \"unsupported\", \"case\": \"CGPU-ADV-2026-01\", \"reason\": \"cGPU isolation audit requires Alibaba Cloud cGPU runtime/GPU\"}\n",
  "stderr": "",
  "notes": "Hardware/OS-dependent path; not exercised on this host. Not counted as verified."

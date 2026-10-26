@@ -4,7 +4,7 @@
 Copyright the KubeTrail Authors（仓库 README footer 写 MIT，但 LICENSE 文件为权威
 Apache-2.0 文本，差异在此如实记录）。
 
-本仓库 **不包含、不复制、不链接 KubeTrail 的 Go 源码**；`trident/kubetrail/` 是对其
+本仓库 **不包含、不复制、不链接 KubeTrail 的 Go 源码**；`inkblade/kubetrail/` 是对其
 公开行为与文档的 **独立 Python 重写**（仅标准库，控制台侧只读分析）。Apache-2.0 的
 署名/NOTICE/许可副本义务由 `NOTICE`、本文件与每个源文件头共同满足，并由
 `tools/check-notices.py` 自动校验。
@@ -13,7 +13,7 @@ Apache-2.0 文本，差异在此如实记录）。
 
 | 上游能力 | 本仓库实现 | 说明 |
 |---|---|---|
-| in-pod collectors（18 collector/19 scan 类别） | `trident/kubetrail/collector.py` + 模块 `kubetrail-collector` | 13 个可快照判定 bucket（safe/full 标注）；支持容器根只读副本（`root`）与快照 `inpod` view；路径解析禁越界、单文件 ≤64KiB |
+| in-pod collectors（18 collector/19 scan 类别） | `inkblade/kubetrail/collector.py` + 模块 `kubetrail-collector` | 13 个可快照判定 bucket（safe/full 标注）；支持容器根只读副本（`root`）与快照 `inpod` view；路径解析禁越界、单文件 ≤64KiB |
 | legacy SA token 逐 token 审计（CM-05） | `token_audit.py` + 模块 `kubetrail-token-audit` | JWT **只解码不验签**；风险：legacy/bound、有效期、audience、通配符/高危权限、default SA；输出仅 sha256 前 16 + 长度 |
 | 敏感值 raw/redact/metadata 三态（CM-06） | `redact3.py` | raw 必须显式绑定受控目录（0600）；默认只产出 redact + metadata；引用式 `secret:<id>` |
 | manifest 云密钥扫描（CM-34） | `manifestscan.py` + 模块 `kubetrail-manifest-secrets` / `secret-scanner` | AWS/GCP/Azure/私钥/kubeconfig/dockerconfig/OpenAI/HF/Slack/GitHub + 高熵；命中值脱敏 |

@@ -6,12 +6,12 @@ description: 提交带 privileged pod template 或 hostPath 的 RayJob；Ray ope
 references:
   - "KubeRay 安全/配置 https://docs.ray.io/en/latest/cluster/kubernetes/"
   - "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: platform-ray-kuberay-autoscaler
-    trident.io/module: kuberay-operator-escalation
+    inkblade.io/vector: platform-ray-kuberay-autoscaler
+    inkblade.io/module: kuberay-operator-escalation
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -30,16 +30,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.platform
+  - inkblade
+  - inkblade.vector.platform
   - attack.t1610
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: platform-ray-kuberay-autoscaler
-  trident-module: kuberay-operator-escalation
-  trident-detection-point: K8s audit：创建 RayJob/RayCluster 且使用高权 SA
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: platform-ray-kuberay-autoscaler
+  inkblade-module: kuberay-operator-escalation
+  inkblade-detection-point: K8s audit：创建 RayJob/RayCluster 且使用高权 SA
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

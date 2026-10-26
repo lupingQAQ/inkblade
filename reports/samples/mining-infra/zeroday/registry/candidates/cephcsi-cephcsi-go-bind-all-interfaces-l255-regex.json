@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "cephcsi-cephcsi-go-bind-all-interfaces-l255-regex",
  "target": "cephcsi",
  "repo": "ceph/ceph-csi",

@@ -63,8 +63,8 @@ class _Base:
 
 
 class AwsS3Adapter(_Base):
-    def __init__(self, endpoint: str, access_key: str = "trident",
-                 secret_key: str = "trident-secret", region: str = "us-east-1",
+    def __init__(self, endpoint: str, access_key: str = "inkblade",
+                 secret_key: str = "inkblade-secret", region: str = "us-east-1",
                  timeout: float = 10):
         super().__init__(endpoint, timeout)
         self.access_key = access_key
@@ -272,7 +272,7 @@ class GcpStorageAdapter(_Base):
     def ensure_bucket(self, bucket: str) -> None:
         path = "/storage/v1/b"
         payload = json.dumps({"name": bucket}).encode()
-        status, _, body = self._request("POST", path, "project=trident", payload,
+        status, _, body = self._request("POST", path, "project=inkblade", payload,
                                         self._headers())
         if status not in (200, 409):
             raise self._error(status, body)

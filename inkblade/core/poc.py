@@ -17,7 +17,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-POC_SCHEMA = "trident-poc-verification-v1"
+POC_SCHEMA = "inkblade-poc-verification-v1"
 
 
 class PocError(ValueError):

@@ -1,5 +1,5 @@
 {
-  "schema": "trident-inventory-v1",
+  "schema": "inkblade-inventory-v1",
   "collected_at": "2026-10-26T00:00:00Z",
   "source": {
     "mode": "snapshot",

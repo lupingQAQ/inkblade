@@ -1,4 +1,4 @@
-"""lab/mock_targets.py — Trident 实验室 mock 靶场（单文件多路由 HTTP 仿真服务）。
+"""lab/mock_targets.py — InkBlade 实验室 mock 靶场（单文件多路由 HTTP 仿真服务）。
 
 仅监听 127.0.0.1，仅标准库（http.server + threading）。两种姿态：
 - vulnerable：与已复现漏洞面同构的 fail-open 姿态（无凭据即放行）；
@@ -167,7 +167,7 @@ def _slime_pull_weights(ctx: _RequestContext):
     # 权重文件副本真实写入（benign marker 便于 effect 验证 sha256 前后变化）。
     weights = sandbox / "model.safetensors"
     weights.write_text(
-        "TRIDENT-MOCK-WEIGHTS\n"
+        "INKBLADE-MOCK-WEIGHTS\n"
         + json.dumps(
             {
                 "format": "mock-safetensors",
@@ -371,9 +371,9 @@ def _imds_aws_credentials(ctx: _RequestContext):
         "Code": "Success",
         "LastUpdated": _utcnow_iso(),
         "Type": "AWS-HMAC",
-        "AccessKeyId": "MOCKAKIATRIDENTLAB",
-        "SecretAccessKey": "MOCKSECRETTRIDENTLAB",
-        "Token": "MOCKSESSIONTRIDENTLAB",
+        "AccessKeyId": "MOCKAKIAINKBLADELAB",
+        "SecretAccessKey": "MOCKSECRETINKBLADELAB",
+        "Token": "MOCKSESSIONINKBLADELAB",
         "Expiration": "2030-01-01T00:00:00Z",
         "role": role,
         "mock": True,
@@ -401,9 +401,9 @@ def _imds_aliyun_ram(ctx: _RequestContext):
     return 200, {
         "service": "imds-aliyun",
         "ram_role_name": "mock-ram-role",
-        "access_key_id": "MOCKLTAITRIDENTLAB",
-        "access_key_secret": "MOCKSECRETTRIDENTLAB",
-        "security_token": "MOCKSTSTRIDENTLAB",
+        "access_key_id": "MOCKLTAIINKBLADELAB",
+        "access_key_secret": "MOCKSECRETINKBLADELAB",
+        "security_token": "MOCKSTSINKBLADELAB",
         "path": ctx.path,
         "mock": True,
     }
@@ -415,9 +415,9 @@ def _imds_tencent_cam(ctx: _RequestContext):
     return 200, {
         "service": "imds-tencent",
         "cam_role_name": "mock-cam-role",
-        "tmp_secret_id": "MOCKAKIDTRIDENTLAB",
-        "tmp_secret_key": "MOCKSECRETTRIDENTLAB",
-        "token": "MOCKSTSTRIDENTLAB",
+        "tmp_secret_id": "MOCKAKIDINKBLADELAB",
+        "tmp_secret_key": "MOCKSECRETINKBLADELAB",
+        "token": "MOCKSTSINKBLADELAB",
         "path": ctx.path,
         "mock": True,
     }
@@ -436,7 +436,7 @@ def _imds_gcp(ctx: _RequestContext):
 
 def _routes_manifest(ctx: _RequestContext):
     return 200, {
-        "service": "trident-mock-lab",
+        "service": "inkblade-mock-lab",
         "mode": ctx.mode,
         "host": HOST,
         "admin_token_hint": f"fixed 模式管理密钥 = Authorization: Bearer {ADMIN_TOKEN}",
@@ -553,7 +553,7 @@ class _LabHTTPServer(ThreadingHTTPServer):
 
 class _LabHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "TridentMockLab/0.1.0"
+    server_version = "InkBladeMockLab/0.1.0"
 
     def log_message(self, fmt, *args):  # 静默默认访问日志（测试输出干净）
         return
@@ -729,7 +729,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE, root: Path | str | None =
     if mode not in MODES:
         raise ValueError(f"mode 必须是 {MODES} 之一，收到：{mode!r}")
     if root is None:
-        root_path = Path(tempfile.mkdtemp(prefix="trident-mock-lab-"))
+        root_path = Path(tempfile.mkdtemp(prefix="inkblade-mock-lab-"))
         owns_root = True
     else:
         root_path = Path(root)
@@ -743,7 +743,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE, root: Path | str | None =
 
 def main(argv: list[str] | None = None) -> int:
     _force_utf8_stdio()
-    parser = argparse.ArgumentParser(description="Trident 实验室 mock 靶场（仅监听 127.0.0.1）")
+    parser = argparse.ArgumentParser(description="InkBlade 实验室 mock 靶场（仅监听 127.0.0.1）")
     parser.add_argument("--port", type=int, default=0, help="监听端口（0=自动分配）")
     parser.add_argument("--mode", choices=list(MODES), default=DEFAULT_MODE, help="vulnerable=fail-open 姿态，fixed=加固姿态")
     parser.add_argument("--root", default=None, help="sandbox 根目录（缺省临时目录，退出时清理）")

@@ -24,7 +24,7 @@ REPO = Path(__file__).resolve().parents[1]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-STATIC = REPO / "trident" / "webui" / "static"
+STATIC = REPO / "inkblade" / "webui" / "static"
 APP_JS = STATIC / "app.js"
 INDEX = STATIC / "index.html"
 STYLE = STATIC / "style.css"
@@ -34,7 +34,7 @@ class TestHumanizeCatalog(unittest.TestCase):
     """>=30 类错误码，且每条都能给出「发生了什么/为什么/怎么修」。"""
 
     def test_catalog_has_at_least_30_distinct_codes(self):
-        from trident.core.humanize import catalog, catalog_codes
+        from inkblade.core.humanize import catalog, catalog_codes
 
         codes = catalog_codes()
         self.assertGreaterEqual(len(codes), 30, f"错误码仅 {len(codes)} 类：{codes}")
@@ -50,7 +50,7 @@ class TestHumanizeCatalog(unittest.TestCase):
                 self.assertIn(phrase, text, f"{err.code} 缺 {phrase}")
 
     def test_catalog_covers_install_auth_chaos_api_pilot(self):
-        from trident.core.humanize import catalog_codes
+        from inkblade.core.humanize import catalog_codes
 
         codes = set(catalog_codes())
         for prefix in ("E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8"):
@@ -58,11 +58,11 @@ class TestHumanizeCatalog(unittest.TestCase):
                             f"缺少 {prefix}xx 错误族")
 
     def test_unknown_exception_still_actionable(self):
-        from trident.core.humanize import explain_exception
+        from inkblade.core.humanize import explain_exception
 
         err = explain_exception(RuntimeError("surprise"))
         self.assertEqual(err.code, "E900")
-        self.assertIn("TRIDENT_DEBUG=1", err.fix)
+        self.assertIn("INKBLADE_DEBUG=1", err.fix)
 
 
 class TestUIProductization(unittest.TestCase):
@@ -71,7 +71,7 @@ class TestUIProductization(unittest.TestCase):
         js = APP_JS.read_text(encoding="utf-8")
         self.assertIn('id="lang-toggle"', html)
         self.assertIn("data-i18n", html)
-        for needle in ("I18N", "applyI18n", "setLang", "trident-lang"):
+        for needle in ("I18N", "applyI18n", "setLang", "inkblade-lang"):
             self.assertIn(needle, js, f"app.js 缺 {needle}")
 
     def test_all_ten_views_have_guided_empty_state(self):
@@ -82,15 +82,15 @@ class TestUIProductization(unittest.TestCase):
                      "assets", "drift", "approvals", "schedules"):
             self.assertIn(f'"{view}"', js)
         # 空态必须带下一步命令，而不是一句「暂无数据」
-        self.assertIn("python -m trident demo", js)
-        self.assertIn("python -m trident onboard-cluster", js)
+        self.assertIn("python -m inkblade demo", js)
+        self.assertIn("python -m inkblade onboard-cluster", js)
         css = STYLE.read_text(encoding="utf-8")
         self.assertIn(".empty-state", css)
 
     def test_report_uses_paged_rendering_with_legacy_benchmark_switch(self):
         js = APP_JS.read_text(encoding="utf-8")
         for needle in ("REPORT_PAGE_SIZE", "reportVisible", "perf=legacy",
-                       "显示更多", "renderedRows", "__TRIDENT_REPORT_META"):
+                       "显示更多", "renderedRows", "__INKBLADE_REPORT_META"):
             self.assertIn(needle, js, f"app.js 缺 {needle}")
         # 不能再用一次性全量 fs.forEach 直接建 DOM（分页后应仅渲染 slice）
         self.assertIn("visibleFindings", js)
@@ -103,7 +103,7 @@ class TestUIProductization(unittest.TestCase):
 
 class TestClusterWizard(unittest.TestCase):
     def _run(self, *argv):
-        from trident.cluster_wizard import run_wizard
+        from inkblade.cluster_wizard import run_wizard
 
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
@@ -118,7 +118,7 @@ class TestClusterWizard(unittest.TestCase):
         self.assertEqual(rc, 0, out)
         self.assertIn("dry-run", out.lower())
         self.assertIn("east-prod", out)
-        self.assertIn("trident pilot", out)
+        self.assertIn("inkblade pilot", out)
         self.assertIn("只读", out)
 
     def test_missing_kubeconfig_is_humanized_and_nonzero(self):

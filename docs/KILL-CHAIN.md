@@ -1,8 +1,8 @@
 # 内网入口 → 集群最高权限：夺权链与 PROOF
 
 > 状态：**真实 QEMU/TCG 单节点 k3s 全链跑通**（2026-10-26）。
-> 链定义：`trident/chains/cluster-takeover-objective.json`；编排器：`trident/core/objective_chain.py`
-> （通过 `trident/core/objective.py` 导出）；CLI：`trident objective cluster-takeover`。
+> 链定义：`inkblade/chains/cluster-takeover-objective.json`；编排器：`inkblade/core/objective_chain.py`
+> （通过 `inkblade/core/objective.py` 导出）；CLI：`inkblade objective cluster-takeover`。
 > 真实 run：`real-20261026-10`；PROOF：`sha256:1617a34f7061126bb94270f3745096c5f827962844fcdb187cf8261080ec2c94`。
 > 样张：`reports/samples/kill-chain/{proof.json,report.md,proof.png,transcript.jsonl}`。
 > 清理：`cleanup.verified=true`、`residue=[]`、`fixture_namespace_absent=true`；节点 `/root` marker 已删除并 SSH 复核。
@@ -12,11 +12,11 @@
 | 证明项 | 结果 | 证据 |
 |---|---|---|
 | 真实集群 | k3s `v1.36.5+k3s1`，node `k3s` Ready，QEMU TCG 单节点 | `proof.json` stage 1、`reports/samples/kill-chain/transcript.jsonl` |
-| 入口 | `trident-killchain/trident-entry-api` NodePort 30081 + 实验 port-forward，HTTP 200 | stage 1 evidence / transcript |
-| 凭据 | ServiceAccount `trident-operator` TokenRequest，whoami 为该 SA | stage 2 evidence（token 仅 sha256 前缀/尾 4 位） |
+| 入口 | `inkblade-killchain/inkblade-entry-api` NodePort 30081 + 实验 port-forward，HTTP 200 | stage 1 evidence / transcript |
+| 凭据 | ServiceAccount `inkblade-operator` TokenRequest，whoami 为该 SA | stage 2 evidence（token 仅 sha256 前缀/尾 4 位） |
 | RBAC 提权 | RoleBinding + ClusterRoleBinding → `cluster-admin`；`auth can-i '*' '*' --all-namespaces` = yes | stage 3 evidence |
 | 特权 Pod | `privileged=true`、`hostPID=true`、`hostPath=/` → Running | stage 4 evidence |
-| 节点 root | 容器内 `uid=0(root)`；向节点 `/root/TRIDENT-PROOF-real-20261026-10` 写入并 sha256 回读一致 | stage 5 evidence |
+| 节点 root | 容器内 `uid=0(root)`；向节点 `/root/INKBLADE-PROOF-real-20261026-10` 写入并 sha256 回读一致 | stage 5 evidence |
 | 集群级证明 | 列举 2 个 secret 名称；创建/回读测试 namespace + ConfigMap；复核节点 marker | stage 6 evidence |
 | 清理 | 测试 namespace/ConfigMap、pwn 绑定、特权 Pod、节点 marker、脆弱 operator 夹具全部删除；namespace/secret 集合与基线一致 | stage 7 cleanup checks |
 | 截图 | `reports/samples/kill-chain/proof.png`（终端 PROOF 捕获），sha256 `624bdeba0b463d4f535741ee5b794a8ec27b9c4061aea078a67464e724bd7a49` | `report.md` Screenshot 节 |
@@ -51,7 +51,7 @@
 
 ## 2. 编排器语义（三闸门 + 逐阶段）
 
-`trident objective cluster-takeover --workspace ... --proof-marker ... [--dry-run] [--max-stage N]`
+`inkblade objective cluster-takeover --workspace ... --proof-marker ... [--dry-run] [--max-stage N]`
 
 | 机制 | 实现 |
 |---|---|
@@ -74,9 +74,9 @@
 
 `lab/qemu-k3s/manifests/40-killchain-operator.yaml`：
 
-- Namespace `trident-killchain`；
-- ServiceAccount `trident-operator`；
-- ClusterRole `trident-operator-broad`：RBAC 组 `resources:["*"] verbs:["*"]`（含 bind/escalate），
+- Namespace `inkblade-killchain`；
+- ServiceAccount `inkblade-operator`；
+- ClusterRole `inkblade-operator-broad`：RBAC 组 `resources:["*"] verbs:["*"]`（含 bind/escalate），
   以及 secrets/pods/exec/namespaces/configmaps/nodes 的读写；
 - ClusterRoleBinding 把上述 ClusterRole 绑到该 SA。
 
@@ -97,10 +97,10 @@ python lab/qemu-k3s/kill_chain_lab.py `
 实测：7/7 阶段成功，75.8 s（TCG 下含 Pod 调度/命令执行）。关键输出：
 
 ```
-token whoami -> system:serviceaccount:trident-killchain:trident-operator
+token whoami -> system:serviceaccount:inkblade-killchain:inkblade-operator
 auth can-i '*' '*' --all-namespaces -> yes
 id -> uid=0(root) gid=0(root) groups=0(root)
-sha256sum /host/root/TRIDENT-PROOF-real-20261026-10
+sha256sum /host/root/INKBLADE-PROOF-real-20261026-10
   -> 29bc79c339ac9bd5abced0cf94ba160b471ce7bdd9534548872990534527a211
 secrets -> 2 (kube-system/k3s-serving, kube-system/k3s.node-password.k3s)
 ```
@@ -110,18 +110,18 @@ secrets -> 2 (kube-system/k3s-serving, kube-system/k3s.node-password.k3s)
 `stage-7-cleanup` 的 11 项检查全部 PASS：
 
 - 节点 marker `test ! -f` 通过；
-- 测试 namespace `trident-proof-real-20261026-10`、ConfigMap、pwn RoleBinding/ClusterRoleBinding、特权 Pod 均 NotFound；
+- 测试 namespace `inkblade-proof-real-20261026-10`、ConfigMap、pwn RoleBinding/ClusterRoleBinding、特权 Pod 均 NotFound；
 - 夹具 CRB/ClusterRole/Namespace 已删除；
-- namespace 集合与 baseline 一致（`default/kube-node-lease/kube-public/kube-system/trident-proof`）；
+- namespace 集合与 baseline 一致（`default/kube-node-lease/kube-public/kube-system/inkblade-proof`）；
 - secret 名称集合与 baseline 一致（2 个，delta=[]）；
 - 无 objective ClusterRoleBinding 残留。
 
-额外 SSH 复核：`ls /root/TRIDENT-PROOF-*` → `No such file or directory`。
+额外 SSH 复核：`ls /root/INKBLADE-PROOF-*` → `No such file or directory`。
 **已清理声明**：本次真实 run 未留下持久化 K8s 对象或节点文件；临时 token kubeconfig 已在 run 收尾删除。
 
 ## 4. 检测规则（每阶段）
 
-规则模板位于 `trident/rules/templates/{sigma,falco,admission}.json`，紫队重放计划位于
+规则模板位于 `inkblade/rules/templates/{sigma,falco,admission}.json`，紫队重放计划位于
 `probes.json`（`cluster-takeover-objective`，9 条审计/运行时事件 fixture）。
 
 | # | 规则 | 引擎 | 阶段 | 紫队结果 |
@@ -143,8 +143,8 @@ secrets -> 2 (kube-system/k3s-serving, kube-system/k3s.node-password.k3s)
 重放命令：
 
 ```powershell
-trident rules generate --chains-dir trident/chains --out reports/rules-pack
-trident rules validate --pack reports/rules-pack
+inkblade rules generate --chains-dir inkblade/chains --out reports/rules-pack
+inkblade rules validate --pack reports/rules-pack
 ```
 
 ## 5. 边界（如实声明）
@@ -171,8 +171,8 @@ trident rules validate --pack reports/rules-pack
 | `reports/samples/kill-chain/proof.png` | 终端 PROOF 截图（sha256 见报告） |
 | `reports/samples/kill-chain/transcript.jsonl` | kubectl 调用轨迹（token 已脱敏） |
 | `reports/samples/kill-chain/lab-wrapper.json` | 夹具 teardown 与 wrapper 侧无残留复核 |
-| `trident/chains/cluster-takeover-objective.json` | 七阶段链定义 |
-| `trident/core/objective_chain.py` | 编排器实现（三闸门/确认/超时/证据/PROOF） |
+| `inkblade/chains/cluster-takeover-objective.json` | 七阶段链定义 |
+| `inkblade/core/objective_chain.py` | 编排器实现（三闸门/确认/超时/证据/PROOF） |
 | `lab/qemu-k3s/manifests/40-killchain-operator.yaml` | 脆弱 operator 夹具 |
 | `lab/qemu-k3s/manifests/41-killchain-entry.yaml` | 未鉴权入口夹具 |
 | `lab/qemu-k3s/kill_chain_lab.py` | 真实集群实验 runner |

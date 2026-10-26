@@ -237,7 +237,7 @@ def run_live(kubectl: Path, kubeconfig: Path, manifest: Path, out: Path,
     passed = sum(1 for c in checks if c.get("status") == "PASS")
     fake = run_fake_closure()
     result = {
-        "schema": "trident-privesc-real-paths-v1",
+        "schema": "inkblade-privesc-real-paths-v1",
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "environment": {
             "kubectl": version.get("client", ""),
@@ -264,7 +264,7 @@ def run_live(kubectl: Path, kubeconfig: Path, manifest: Path, out: Path,
 
 def _render_md(result: dict) -> str:
     lines = [
-        "# Trident 提权真集群验证（QEMU k3s）",
+        "# InkBlade 提权真集群验证（QEMU k3s）",
         "",
         f"- 生成：{result['generated_at']}",
         f"- 环境：{result['environment']['cluster']}；kubectl {result['environment']['kubectl']}；"
@@ -298,7 +298,7 @@ def _render_md(result: dict) -> str:
 def _render_docs(result: dict) -> str:
     fake = result["fake_closure"]
     lines = [
-        "# Trident 提权验证（真集群 + fake-kubectl）",
+        "# InkBlade 提权验证（真集群 + fake-kubectl）",
         "",
         "> 本文件由 `lab/privesc_verify.py` 生成；真集群部分为 QEMU TCG + Alpine + k3s。",
         "",
@@ -371,7 +371,7 @@ def main(argv=None) -> int:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
-    ap = argparse.ArgumentParser(description="Trident QEMU k3s 提权真集群验证")
+    ap = argparse.ArgumentParser(description="InkBlade QEMU k3s 提权真集群验证")
     ap.add_argument("--kubectl", default=str(DEFAULT_KUBECTL))
     ap.add_argument("--kubeconfig", default=str(DEFAULT_KUBECONFIG))
     ap.add_argument("--manifest", default=str(DEFAULT_MANIFEST))

@@ -60,7 +60,7 @@ def _event_text(event: str, payload: dict) -> str:
     title = payload.get("title") or payload.get("summary") or payload.get("message") or ""
     sev = payload.get("severity", "info")
     run = payload.get("run", "")
-    return f"[Trident] {event} [{sev}] {title}" + (f" (run={run})" if run else "")
+    return f"[InkBlade] {event} [{sev}] {title}" + (f" (run={run})" if run else "")
 
 
 def _validate_channel(kind: str, config: dict) -> None:
@@ -90,9 +90,9 @@ def _default_transport(channel: dict, event: str, payload: dict) -> dict:
     if kind == "email":
         text = _event_text(event, payload)
         eml = (
-            f"From: {cfg.get('from', 'trident@localhost')}\r\n"
+            f"From: {cfg.get('from', 'inkblade@localhost')}\r\n"
             f"To: {cfg.get('to')}\r\n"
-            f"Subject: {cfg.get('subject_prefix', '[Trident]')} {event}\r\n"
+            f"Subject: {cfg.get('subject_prefix', '[InkBlade]')} {event}\r\n"
             f"Date: {time.strftime('%a, %d %b %Y %H:%M:%S +0000', time.gmtime())}\r\n"
             f"Content-Type: text/plain; charset=utf-8\r\n\r\n{text}\r\n"
         )
@@ -384,7 +384,7 @@ class NotifyManager:
             raise PermissionError(f"{session.name}({session.role}) 无 approve 权限")
         doc = self._load()
         channel = _find(doc["channels"], channel_id)
-        payload = {"title": f"test channel {channel_id}", "message": "Trident notify test",
+        payload = {"title": f"test channel {channel_id}", "message": "InkBlade notify test",
                    "workspace": getattr(self.store, "workspace", ""), "severity": "info"}
         suppressed = not doc.get("enabled") or not channel.get("enabled", True)
         d = {

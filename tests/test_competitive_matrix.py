@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """竞品对比矩阵测试：核心逻辑（fixture 注入）+ docs/COMPETITIVE-MATRIX.md 结构/来源/维度覆盖断言。
 
-核心校验逻辑在 trident/arch-intel/competitive.py（verify 接受任意文本 → fixture 注入测试）；
+核心校验逻辑在 inkblade/arch-intel/competitive.py（verify 接受任意文本 → fixture 注入测试）；
 真实文档断言：23 工具 / 18 维度 / 5 分类表 / 每工具一行启示 / 33 项 backlog（S/M/L）/
 gen-27 重叠标注 / SOTA-2026-10.md 挂链。工作区模式（存在 .slim/clonedeps/clonedeps.json）时
 附加克隆登记断言；独立发布模式自动跳过（不依赖仓外文件）。
@@ -20,8 +20,8 @@ SOTA = REPO / "docs" / "SOTA-2026-10.md"
 CLONEDEPS = REPO.parents[1] / ".slim" / "clonedeps" / "clonedeps.json"
 
 # arch-intel 目录名含连字符，按路径加载模块（与 tests/test_archintel.py 同法）
-ARCH_INTEL = REPO / "trident" / "arch-intel"
-_spec = importlib.util.spec_from_file_location("trident_arch_intel_competitive", ARCH_INTEL / "competitive.py")
+ARCH_INTEL = REPO / "inkblade" / "arch-intel"
+_spec = importlib.util.spec_from_file_location("inkblade_arch_intel_competitive", ARCH_INTEL / "competitive.py")
 ci = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(ci)
 
@@ -36,7 +36,7 @@ FIXTURE = """# fixture 竞品矩阵
 | ToolA | 自主渗透 | x | y | https://example.com/a | 2026-10-25 |
 | ToolB | K8s 攻防 | x | y | .slim/clonedeps/repos/ToolB | 2026-10-25 |
 
-| 维度 | Trident | ToolA | ToolB |
+| 维度 | InkBlade | ToolA | ToolB |
 |---|---|---|---|
 | D1 资产发现 | ✓ | ✓ | ◐ |
 | D2 自主规划 | ◐ | ? | ○ |
@@ -103,8 +103,8 @@ class TestCoreLogicFixture(unittest.TestCase):
         self.assertTrue(any("未出现在矩阵维度" in e for e in result["errors"]), result["errors"])
 
     def test_tool_without_matrix_column_rejected(self):
-        result = ci.verify(_mutate("| 维度 | Trident | ToolA | ToolB |\n|---|---|---|---|\n| D1 资产发现 | ✓ | ✓ | ◐ |",
-                                   "| 维度 | Trident | ToolA |\n|---|---|---|\n| D1 资产发现 | ✓ | ✓ |"), min_tools=2, min_dims=3)
+        result = ci.verify(_mutate("| 维度 | InkBlade | ToolA | ToolB |\n|---|---|---|---|\n| D1 资产发现 | ✓ | ✓ | ◐ |",
+                                   "| 维度 | InkBlade | ToolA |\n|---|---|---|\n| D1 资产发现 | ✓ | ✓ |"), min_tools=2, min_dims=3)
         self.assertFalse(result["ok"])
         self.assertTrue(any("无列" in e for e in result["errors"]), result["errors"])
 
@@ -199,7 +199,7 @@ class TestRealDoc(unittest.TestCase):
         sota = SOTA.read_text(encoding="utf-8")
         self.assertIn("COMPETITIVE-MATRIX.md", sota, "SOTA 文档应链接竞品矩阵")
         self.assertIn("竞品对比", sota)
-        # 矩阵文档回链 SOTA（Trident 列锚点）
+        # 矩阵文档回链 SOTA（InkBlade 列锚点）
         self.assertIn("SOTA-2026-10.md", self.text)
 
 

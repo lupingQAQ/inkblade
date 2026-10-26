@@ -37,15 +37,15 @@ def run(ctx: dict, params: dict) -> dict:
     t = _COMMON.Trace(ctx, KEY)
     base_body = {
         "model": "longctx-mock",
-        "messages": [{"role": "user", "content": "trident context limit probe"}],
+        "messages": [{"role": "user", "content": "inkblade context limit probe"}],
         "context_window": window,
         "prompt_tokens": 1024,
         "max_tokens": 32,
-        "cache_salt": f"trident-base-{marker}",
+        "cache_salt": f"inkblade-base-{marker}",
     }
     bypass_body = dict(base_body, prompt_tokens=_COMMON.int_of(
         params.get("prompt_tokens"), BYPASS_PROMPT_TOKENS) or BYPASS_PROMPT_TOKENS,
-        cache_salt=f"trident-bypass-{marker}")
+        cache_salt=f"inkblade-bypass-{marker}")
 
     metrics_before = t.call("GET", f"{target}/metrics", headers=_COMMON.headers_for(params))
     baseline = _chat(t, target, base_body, params, tenant)

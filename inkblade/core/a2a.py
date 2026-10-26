@@ -20,7 +20,7 @@ import subprocess
 import time
 from pathlib import Path
 
-AGENT_CARD_SCHEMA = "trident-a2a-agent-card-v1"
+AGENT_CARD_SCHEMA = "inkblade-a2a-agent-card-v1"
 TASKS_RELPATH = "a2a/tasks.json"
 READ_PREFIXES = ("get_", "list_", "read_", "search_", "describe_", "show_")
 
@@ -85,7 +85,7 @@ def agent_card(*, url: str = "http://127.0.0.1:0/a2a", skills=None) -> dict:
             pass
     return {
         "schema": AGENT_CARD_SCHEMA,
-        "name": "trident",
+        "name": "inkblade",
         "description": "Authorized ML-cluster pentest control plane (read-only delegation)",
         "version": "2026.10",
         "url": url,
@@ -298,7 +298,7 @@ class MCPClient:
         result = self._request("initialize", {
             "protocolVersion": "2026-07-28",
             "capabilities": {},
-            "clientInfo": {"name": "trident", "version": "2026.10"},
+            "clientInfo": {"name": "inkblade", "version": "2026.10"},
         })
         return result
 

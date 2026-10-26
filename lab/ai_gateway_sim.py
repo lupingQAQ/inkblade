@@ -623,7 +623,7 @@ def _vector_query(ctx: _RequestContext):
 
 def _routes_manifest(ctx: _RequestContext):
     return 200, {
-        "service": "trident-ai-gateway-lab", "mode": ctx.mode, "host": HOST,
+        "service": "inkblade-ai-gateway-lab", "mode": ctx.mode, "host": HOST,
         "credential_hints": {
             "master_key": MASTER_KEY,
             "rotated_admin_key": "fixed 模式管理面密钥（MOCK-rotated-admin-key-e5f6）",
@@ -744,7 +744,7 @@ class _GatewayHTTPServer(ThreadingHTTPServer):
 
 class _GatewayHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "TridentAIGatewayLab/0.1.0"
+    server_version = "InkBladeAIGatewayLab/0.1.0"
 
     def log_message(self, fmt, *args):  # 静默默认访问日志
         return
@@ -872,7 +872,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE) -> Server:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident AI 网关仿真靶场（仅监听 127.0.0.1）")
+    parser = argparse.ArgumentParser(description="InkBlade AI 网关仿真靶场（仅监听 127.0.0.1）")
     parser.add_argument("--port", type=int, default=0, help="监听端口（0=自动分配）")
     parser.add_argument("--mode", choices=list(MODES), default=DEFAULT_MODE,
                         help="vulnerable=fail-open 姿态，fixed=加固姿态")

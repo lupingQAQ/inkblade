@@ -33,7 +33,7 @@
      "method": "POST",
      "path": "/pull_weights",
      "body": {
-      "source_dir": "/models/trident-probe",
+      "source_dir": "/models/inkblade-probe",
       "local_checkpoint_dir": "/checkpoints/victim"
      },
      "dest_ip": "10.42.0.9",
@@ -51,7 +51,7 @@
      "method": "POST",
      "path": "/api/jobs/",
      "body": {
-      "entrypoint": "python trident_probe.py"
+      "entrypoint": "python inkblade_probe.py"
      },
      "dest_ip": "10.42.0.9",
      "dest_port": 8265,
@@ -69,7 +69,7 @@
      "verb": "create",
      "objectRef": {
       "resource": "rolebinding",
-      "name": "trident-demo-binding",
+      "name": "inkblade-demo-binding",
       "roleRef": {
        "name": "cluster-admin"
       }
@@ -366,7 +366,7 @@
      "verb": "create",
      "objectRef": {
       "resource": "pod",
-      "name": "trident-priv-escape"
+      "name": "inkblade-priv-escape"
      },
      "requestObject": {
       "privileged": true,
@@ -452,13 +452,13 @@
       "messages": [
        {
         "role": "user",
-        "content": "trident-longctx-probe"
+        "content": "inkblade-longctx-probe"
        }
       ],
       "context_window": "128k",
       "prompt_tokens": 4096,
       "max_tokens": 1,
-      "prompt_prefix": "TRIDENT-PREFIX-VALIDATE"
+      "prompt_prefix": "INKBLADE-PREFIX-VALIDATE"
      },
      "dest_ip": "10.42.0.9",
      "dest_port": 8000,
@@ -509,7 +509,7 @@
      "method": "POST",
      "path": "/v1/jobs/run",
      "body": {
-      "script": "echo trident-probe"
+      "script": "echo inkblade-probe"
      },
      "dest_ip": "10.42.0.9",
      "dest_port": 80,
@@ -549,7 +549,7 @@
      "method": "POST",
      "path": "/api/v1/bindings",
      "body": {
-      "name": "trident-validate"
+      "name": "inkblade-validate"
      },
      "dest_ip": "10.42.0.9",
      "dest_port": 80,
@@ -583,7 +583,7 @@
       "tenant": "tenant-a",
       "device": "gpu-b-0",
       "namespace": "ns-a-infer",
-      "marker": "TRIDENT-BENIGN-VALIDATE"
+      "marker": "INKBLADE-BENIGN-VALIDATE"
      },
      "dest_ip": "10.42.0.9",
      "dest_port": 8080,
@@ -723,7 +723,7 @@
       "messages": [
        {
         "role": "user",
-        "content": "trident-validate"
+        "content": "inkblade-validate"
        }
       ]
      },
@@ -767,7 +767,7 @@
      "method": "POST",
      "path": "/key/generate",
      "body": {
-      "key_alias": "trident-validate",
+      "key_alias": "inkblade-validate",
       "tenant": "tenant-b"
      },
      "dest_ip": "10.42.0.9",
@@ -789,7 +789,7 @@
      "body": {
       "op": "join",
       "session_id": "train-job-alpha",
-      "rank": "trident-validate"
+      "rank": "inkblade-validate"
      },
      "dest_ip": "10.42.0.9",
      "dest_port": 8000,
@@ -827,7 +827,7 @@
      "body": {
       "pkey": "0x8001",
       "add_members": [
-       "guid-trident-validate"
+       "guid-inkblade-validate"
       ]
      },
      "dest_ip": "10.42.0.9",
@@ -862,7 +862,7 @@
      "method": "POST",
      "path": "/nccl/bootstrap",
      "body": {
-      "job": "trident-validate",
+      "job": "inkblade-validate",
       "ranks": 2
      },
      "dest_ip": "10.42.0.9",
@@ -922,7 +922,7 @@
      },
      "action": "port_alloc",
      "quota_enforced": false,
-     "job": "trident-validate"
+     "job": "inkblade-validate"
     },
     {
      "kind": "falco",
@@ -946,7 +946,7 @@
      "objectRef": {
       "resource": "services"
      },
-     "subject_sa": "system:serviceaccount:trident-killchain:trident-operator",
+     "subject_sa": "system:serviceaccount:inkblade-killchain:inkblade-operator",
      "responseStatus": {
       "code": 200
      }
@@ -961,9 +961,9 @@
      "objectRef": {
       "resource": "serviceaccounts",
       "subresource": "token",
-      "name": "trident-operator"
+      "name": "inkblade-operator"
      },
-     "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+     "subject_sa": "system:serviceaccount:inkblade-killchain:inkblade-operator"
     },
     {
      "kind": "sigma",
@@ -974,12 +974,12 @@
      "verb": "create",
      "objectRef": {
       "resource": "clusterrolebindings",
-      "name": "trident-pwn-crb-demo",
+      "name": "inkblade-pwn-crb-demo",
       "roleRef": {
        "name": "cluster-admin"
       }
      },
-     "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+     "subject_sa": "system:serviceaccount:inkblade-killchain:inkblade-operator"
     },
     {
      "kind": "sigma",
@@ -990,18 +990,18 @@
      "verb": "create",
      "objectRef": {
       "resource": "pods",
-      "name": "trident-pwn-pod-demo"
+      "name": "inkblade-pwn-pod-demo"
      },
      "requestObject": {
       "privileged": true,
       "hostPID": true
      },
-     "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+     "subject_sa": "system:serviceaccount:inkblade-killchain:inkblade-operator"
     },
     {
      "kind": "falco",
      "event_type": "open_write",
-     "path": "/root/TRIDENT-PROOF-demo",
+     "path": "/root/INKBLADE-PROOF-demo",
      "proc": "sh",
      "privileged": true,
      "container": "proof"
@@ -1016,7 +1016,7 @@
      "objectRef": {
       "resource": "secrets"
      },
-     "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+     "subject_sa": "system:serviceaccount:inkblade-killchain:inkblade-operator"
     },
     {
      "kind": "sigma",
@@ -1027,9 +1027,9 @@
      "verb": "delete",
      "objectRef": {
       "resource": "clusterrolebindings",
-      "name": "trident-pwn-crb-demo"
+      "name": "inkblade-pwn-crb-demo"
      },
-     "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+     "subject_sa": "system:serviceaccount:inkblade-killchain:inkblade-operator"
     },
     {
      "kind": "sigma",
@@ -1040,12 +1040,12 @@
      "verb": "create",
      "objectRef": {
       "resource": "clusterrolebinding",
-      "name": "trident-pwn-crb-demo",
+      "name": "inkblade-pwn-crb-demo",
       "roleRef": {
        "name": "cluster-admin"
       }
      },
-     "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+     "subject_sa": "system:serviceaccount:inkblade-killchain:inkblade-operator"
     },
     {
      "kind": "sigma",
@@ -1057,9 +1057,9 @@
      "objectRef": {
       "resource": "pods",
       "subresource": "exec",
-      "name": "trident-pwn-pod-demo"
+      "name": "inkblade-pwn-pod-demo"
      },
-     "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+     "subject_sa": "system:serviceaccount:inkblade-killchain:inkblade-operator"
     },
     {
      "kind": "sigma",
@@ -1071,9 +1071,9 @@
      "objectRef": {
       "resource": "pods",
       "subresource": "portforward",
-      "name": "trident-proof-pod"
+      "name": "inkblade-proof-pod"
      },
-     "subject_sa": "system:serviceaccount:trident-killchain:trident-operator"
+     "subject_sa": "system:serviceaccount:inkblade-killchain:inkblade-operator"
     }
    ]
   },
@@ -1113,7 +1113,7 @@
      "method": "POST",
      "path": "/v1/chat/completions",
      "body": {
-      "prompt_prefix": "tenant-b member context 00 TRIDENT-BENIGN-TIMING corpus analytics monthly summary 00",
+      "prompt_prefix": "tenant-b member context 00 INKBLADE-BENIGN-TIMING corpus analytics monthly summary 00",
       "prefix_tokens": 2048,
       "max_tokens": 1
      },

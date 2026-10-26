@@ -6,7 +6,7 @@
 > 的 tool_calls 序列）后，ARTEX 任务完整走通 **目标拆解 → planner 派意图 → worker 真实
 > 探测靶场 → report_finding 落库 → prove_goal 收官**，任务终态 `done`（13.5 s），worker 对
 > 同一 mock 靶场发出 **3 个真实 HTTP 请求**（靶场计数器证据），ARTEX 侧产生 **1 条 high
-> finding**；同一靶场同攻击面跑 Trident 对应链 `flat-network-admin-plane-weight-poison`
+> finding**；同一靶场同攻击面跑 InkBlade 对应链 `flat-network-admin-plane-weight-poison`
 > 计时对比见 `reports/samples/artex-bench/same-target.json|md`。首轮（v1 mock）计划跑不通、
 > 任务停在 running 的旧结论已由本轮撤销（历史记录见第 6.2 节）。文中数字均可在
 > `reports/samples/artex-bench/artex-bench.json`、`same-target.json` 与
@@ -27,9 +27,9 @@
 | 靶场流量（ARTEX worker） | **3 个真实 HTTP 请求**：GET `/__routes__`、POST `/pause`、POST `/pull_weights`，全部 200 | 靶场 `/__stats__` 计数器（`same-target.json.target_hits`） |
 | ARTEX finding | **1 条 high**（`report_finding` 落库，`distinct_findings.total=1`） | `TASKS_JSON`、`findings_by_severity` |
 | token（按请求体估算） | 输入 ≈ **84 160** / 输出 ≈ **986**（请求体字符数/4；mock 非真实分词器） | `same-target.json.artex.tokens_*` |
-| Trident 同链同靶场 | `flat-network-admin-plane-weight-poison` execute **105.6 ms**（两步 1.9/1.6 ms，dry-run 23.1 ms），5 请求，0 token | `same-target.json.trident` |
+| InkBlade 同链同靶场 | `flat-network-admin-plane-weight-poison` execute **105.6 ms**（两步 1.9/1.6 ms，dry-run 23.1 ms），5 请求，0 token | `same-target.json.inkblade` |
 
-对照 Trident（同宿主，Windows 原生，`lab/bench`）：空闲 RSS 49.0 MiB/单进程、链路径
+对照 InkBlade（同宿主，Windows 原生，`lab/bench`）：空闲 RSS 49.0 MiB/单进程、链路径
 64 ms/轮、兜底五路由 9 ms/轮。**同靶场同面的逐步对比表在第 4 节。**
 
 ## 1. 环境
@@ -77,7 +77,7 @@
      并发空转（靶场被打 167 次），已修复并由
      `tests/test_artex_same_target.py` 的 dispatch-once/prove-once/turn-cap 用例锁定；
    - **worker（固定探测计划）**：`Bash`+`curl` 依次 GET `/__routes__` → POST `/pause` →
-     POST `/pull_weights`（与 Trident 链同两个攻击面），每条命令带 `-w '[HTTP %{http_code}]'`
+     POST `/pull_weights`（与 InkBlade 链同两个攻击面），每条命令带 `-w '[HTTP %{http_code}]'`
      标记；runner 依 tool 结果自适应降级 curl→wget→python3；第 4 轮 `report_finding`
      （evidence 引用前三轮真实输出、`intent_id` 从 system 提示的「意图 id: N」解析）；
      最后一轮纯文本收尾；
@@ -85,8 +85,8 @@
      → token 估算）到 `out/mock-llm.jsonl`。
 6. **采集**：guest `artex-bench-run.sh` 输出 `KEY=value` 原始转储（含任务窗口
    `docker stats` 采样与 `TASKS_JSON`）；`artex-bench-collect.py` 合成
-   `artex-bench.json|md`；靶场 `/__stats__` 快照（ARTEX 窗口）+ `same-target-trident.py`
-   （同靶场跑 Trident 链计时）+ `same-target-collect.py` 合成 `same-target.json|md`。
+   `artex-bench.json|md`；靶场 `/__stats__` 快照（ARTEX 窗口）+ `same-target-inkblade.py`
+   （同靶场跑 InkBlade 链计时）+ `same-target-collect.py` 合成 `same-target.json|md`。
 
 ARTEX 日志确认本轮任务生命周期（clean-slate 后任务 #1）：
 
@@ -162,27 +162,27 @@ ARTEX 日志确认本轮任务生命周期（clean-slate 后任务 #1）：
 | `report_finding` / `prove_goal` LLM 轮 | 1–2 ms/轮（脚本回复近零耗时） |
 | **合计（提交→done）** | **13 510 ms**（其中大头是 ARTEX 引擎编排：planner 唤醒 debounce、worker 领取轮询、3 s 状态轮询粒度，不是 LLM 或靶场耗时） |
 
-## 4. 与 Trident 对照（同靶场同攻击面）
+## 4. 与 InkBlade 对照（同靶场同攻击面）
 
-Trident 侧：`lab/qemu-k3s/same-target-trident.py` 在宿主对**同一** `lab/mock_targets.py`
+InkBlade 侧：`lab/qemu-k3s/same-target-inkblade.py` 在宿主对**同一** `lab/mock_targets.py`
 实例（127.0.0.1:18080，与 ARTEX 经 10.0.2.2:18080 访问的是同一个进程）执行同一条链
 `flat-network-admin-plane-weight-poison`（sglang-admin-failopen → slime-weight-pull-poison，
 授权锁+备份闸门+三层证据全开，与 e2e 验收同一执行路径）。逐步/总数见下，机读对照
 `same-target.json`（`comparison` 数组），人读 `same-target.md`：
 
-| 维度 | ARTEX（VM 内，脚本化计划器 mock） | Trident（宿主原生） | 说明 |
+| 维度 | ARTEX（VM 内，脚本化计划器 mock） | InkBlade（宿主原生） | 说明 |
 |---|---|---|---|
-| 任务/链总时延 | **13 510 ms**（提交→done） | **105.6 ms**（链 execute 墙钟；dry-run 另 23.1 ms） | ARTEX 含引擎编排与 3 s 轮询粒度；Trident 进程内同步执行 |
+| 任务/链总时延 | **13 510 ms**（提交→done） | **105.6 ms**（链 execute 墙钟；dry-run 另 23.1 ms） | ARTEX 含引擎编排与 3 s 轮询粒度；InkBlade 进程内同步执行 |
 | 逐步时延 | goal 拆解 214 ms；探测 168/159/2 159 ms | 两步各 **1.9 ms / 1.6 ms** | 语义对齐：两侧都打了 `/pause` 与 `/pull_weights` 同两个面 |
 | 靶场请求数 | **3**（routes/pause/pull_weights） | **5**（pause/resume/pull_weights GET 405 备份快照/pull_weights POST） | 靶场 `/__stats__` 计数器，同实例 |
-| LLM 调用 / token | **12 次**；in≈84 160 / out≈986（按请求体估算） | **0 次 / 0 token** | Trident 全链确定性执行 |
+| LLM 调用 / token | **12 次**；in≈84 160 / out≈986（按请求体估算） | **0 次 / 0 token** | InkBlade 全链确定性执行 |
 | finding/证据 | 1 条 high finding（ARTEX 图谱+DB） | 2 步全 success（三层证据+备份回执+manifest） | 证据语义不同，各按各自平台落库 |
 | 内存 | 任务窗口峰值 **84.4 MiB**（2 容器）+ 栈冷启动 35.7 s | **50.4 MiB**（1 进程）+ 亚秒启动 | ARTEX 另有 2.892 GB 镜像 / 4.6 GiB docker root |
 | 攻击速率 | 3 请求 / 13.5 s ≈ **0.22 req/s** | 5 请求 / 0.106 s ≈ **47 req/s**（链路径；兜底路径首轮记录 25 请求全 200、9 ms/轮） | **≈200×**，但含 TCG 与引擎编排放大，见口径说明 |
 
 **判读**：两侧差距的构成＝① QEMU TCG 纯软件仿真放大（所有 guest 内动作都慢一个量级）；
 ② ARTEX 的多 agent 编排固有节拍（planner 边沿唤醒 debounce、worker 领取轮询、状态轮询粒度）；
-③ LLM 往返（即便 mock 每轮 <10 ms，引擎仍按「轮」推进）。Trident 的优势仍是确定性、零 token、
+③ LLM 往返（即便 mock 每轮 <10 ms，引擎仍按「轮」推进）。InkBlade 的优势仍是确定性、零 token、
 单进程可嵌入；ARTEX 的优势是自然语言意图驱动的开放面探索（本实验不评估其模型质量——决策是
 写死的脚本，只验证协议与引擎真实执行）。**不应把 13 510/105.6 直接当作产品级倍率**。
 
@@ -203,7 +203,7 @@ powershell -ExecutionPolicy Bypass -File lab\qemu-k3s\artex-bench.ps1 -SkipStart
 产物：`reports/samples/artex-bench/artex-bench.json|md`（启动/资源/API/任务提交基准）与
 **`same-target.json|md`（同靶场对比，本轮新增）**；原始转储 `lab/qemu-k3s/out/`
 （`artex-same-target-raw.txt`、`mock-llm.jsonl`、`mock-target-stats-artex.json`、
-`trident-chain.json`、`artex-container.log`，均在 `.gitignore` 的 `out/` 下，不入库）。
+`inkblade-chain.json`、`artex-container.log`，均在 `.gitignore` 的 `out/` 下，不入库）。
 迭代/调试可用轻量驱动 `lab/qemu-k3s/artex-same-target-lite.sh`（不重起栈，删任务→建任务→轮询，
 配合 `--target-url` 指向的 mock 快速验证协议改动）。回归：`python -m unittest
 tests.test_artex_same_target tests.test_artex_bench_artifacts -v`
@@ -250,5 +250,5 @@ VM 重启后 k3s NodePort 转发失效（kube-proxy 规则未恢复），靶场�
   `tokens` 计数为 0）；未测多用户并发（单管理员）。
 - ARTEX 的 `[seed]` 守卫把 `10.0.2.2` 识别为「LLM 网关主机」拒绝建站点资产（LLM base 与靶场
   同 host 所致）——不影响本次流程（意图不绑资产、探测仍真实执行），如实记录。
-- mock v2 的 worker 探测计划是写死的（对应 Trident 链的两个攻击面），不代表真实模型的探索
+- mock v2 的 worker 探测计划是写死的（对应 InkBlade 链的两个攻击面），不代表真实模型的探索
   决策质量；本实验验证的是协议兼容与引擎真实执行。

@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-26T11:30:11+00:00",
+  "generated_at": "2026-10-26T17:31:13+00:00",
   "offline": false,
-  "schema": "trident-novelty-results-v1",
+  "schema": "inkblade-novelty-results-v1",
   "verdicts": {
     "areal-awex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "areal-awex",
       "offline": false,
       "providers": {
@@ -18,12 +18,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "areal-dataservice-pickle": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "areal-dataservice-pickle",
       "offline": false,
       "providers": {
@@ -36,12 +36,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "areal-unauth-engine-control": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "areal-unauth-engine-control",
       "offline": false,
       "providers": {
@@ -54,12 +54,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "areal-v2-worker": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "areal-v2-worker",
       "offline": false,
       "providers": {
@@ -72,12 +72,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "cephcsi-httpserver-go-pprof-exposed-l37-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:12+00:00",
       "id": "cephcsi-httpserver-go-pprof-exposed-l37-regex",
       "offline": false,
       "providers": {
@@ -90,12 +90,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "deepspeed-autoep-unsafe-load": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:06+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "deepspeed-autoep-unsafe-load",
       "offline": false,
       "providers": {
@@ -108,12 +108,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "deepspeed-stage3-py-torch-load-any-l3660-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:12+00:00",
       "id": "deepspeed-stage3-py-torch-load-any-l3660-regex",
       "offline": false,
       "providers": {
@@ -126,12 +126,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "deepspeed-stage3-py-torch-load-any-l3770-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "deepspeed-stage3-py-torch-load-any-l3770-regex",
       "offline": false,
       "providers": {
@@ -144,12 +144,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "deepspeed-stage3-py-torch-load-unsafe-l3660-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-ast",
       "offline": false,
       "providers": {
@@ -162,12 +162,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "deepspeed-stage3-py-torch-load-unsafe-l3660-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-regex",
       "offline": false,
       "providers": {
@@ -180,12 +180,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "deepspeed-stage3-py-torch-load-unsafe-l3770-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "deepspeed-stage3-py-torch-load-unsafe-l3770-ast",
       "offline": false,
       "providers": {
@@ -198,12 +198,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "dify-agent-auth-failopen": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "dify-agent-auth-failopen",
       "offline": false,
       "providers": {
@@ -216,12 +216,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "dify-home-snapshot-cross-tenant": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "dify-home-snapshot-cross-tenant",
       "offline": false,
       "providers": {
@@ -234,12 +234,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "dify-shellctl-unauth-rce": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "dify-shellctl-unauth-rce",
       "offline": false,
       "providers": {
@@ -252,12 +252,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "dify-stub-jwe-default-key": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "dify-stub-jwe-default-key",
       "offline": false,
       "providers": {
@@ -270,12 +270,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "djev-open-proxy": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:05+00:00",
       "id": "djev-open-proxy",
       "offline": false,
       "providers": {
@@ -288,12 +288,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "llamafactory-checkpoint-py-torch-load-unsafe-l136-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "llamafactory-checkpoint-py-torch-load-unsafe-l136-ast",
       "offline": false,
       "providers": {
@@ -306,12 +306,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "llamafactory-checkpoint-py-torch-load-unsafe-l136-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "llamafactory-checkpoint-py-torch-load-unsafe-l136-regex",
       "offline": false,
       "providers": {
@@ -324,12 +324,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
       "offline": false,
       "providers": {
@@ -342,12 +342,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex",
       "offline": false,
       "providers": {
@@ -360,48 +360,63 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "llamafactory-ssrf-redirect": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "llamafactory-ssrf-redirect",
       "offline": false,
       "providers": {
-        "github_advisories": {
-          "detail": "GitHub advisory database has no strong-term match for the package",
-          "matches": [],
-          "provider": "github_advisories",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2025-61784",
+              "ids": [
+                "CVE-2025-61784",
+                "CVE-2026-85673"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2025-61784, CVE-2026-85673",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "llamafactory-webui-rce": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "llamafactory-webui-rce",
       "offline": false,
       "providers": {
-        "github_advisories": {
-          "detail": "GitHub advisory database has no strong-term match for the package",
-          "matches": [],
-          "provider": "github_advisories",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-58116",
+              "ids": [
+                "CVE-2026-58116"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2026-58116",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "llm2jev-image-file": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "llm2jev-image-file",
       "offline": false,
       "providers": {
@@ -414,12 +429,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "megatron-checkpointing-py-torch-load-any-l1739-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
       "offline": false,
       "providers": {
@@ -432,12 +447,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-eval-escape": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "msswift-eval-escape",
       "offline": false,
       "providers": {
@@ -450,12 +465,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-indexed-dataset-py-pickle-loads-l112-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "msswift-indexed-dataset-py-pickle-loads-l112-ast",
       "offline": false,
       "providers": {
@@ -468,12 +483,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-indexed-dataset-py-pickle-loads-l112-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "msswift-indexed-dataset-py-pickle-loads-l112-regex",
       "offline": false,
       "providers": {
@@ -486,12 +501,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-indexed-dataset-py-pickle-loads-l129-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:10+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "msswift-indexed-dataset-py-pickle-loads-l129-ast",
       "offline": false,
       "providers": {
@@ -504,12 +519,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-indexed-dataset-py-pickle-loads-l129-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:11+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "msswift-indexed-dataset-py-pickle-loads-l129-regex",
       "offline": false,
       "providers": {
@@ -522,12 +537,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-media-local-read": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:06+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "msswift-media-local-read",
       "offline": false,
       "providers": {
@@ -540,12 +555,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-torch-utils-py-pickle-loads-l340-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:11+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "msswift-torch-utils-py-pickle-loads-l340-ast",
       "offline": false,
       "providers": {
@@ -558,12 +573,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-torch-utils-py-pickle-loads-l340-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:11+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "msswift-torch-utils-py-pickle-loads-l340-regex",
       "offline": false,
       "providers": {
@@ -576,12 +591,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "msswift-trust-remote-code": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "msswift-trust-remote-code",
       "offline": false,
       "providers": {
@@ -594,12 +609,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "onejev-media-ssrf": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "onejev-media-ssrf",
       "offline": false,
       "providers": {
@@ -612,12 +627,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "openjev-clef-release-module": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "openjev-clef-release-module",
       "offline": false,
       "providers": {
@@ -630,12 +645,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "openrlhf-serve-rm": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "openrlhf-serve-rm",
       "offline": false,
       "providers": {
@@ -648,12 +663,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "openrlhf-vllm-insecure": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "openrlhf-vllm-insecure",
       "offline": false,
       "providers": {
@@ -666,12 +681,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "openwebui-code-execute": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "openwebui-code-execute",
       "offline": false,
       "providers": {
@@ -684,12 +699,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "openwebui-code-interpreter-bypass": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "openwebui-code-interpreter-bypass",
       "offline": false,
       "providers": {
@@ -702,48 +717,66 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "ray-dashboard-unauth": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "ray-dashboard-unauth",
       "offline": false,
       "providers": {
-        "github_advisories": {
-          "detail": "GitHub advisory database has no strong-term match for the package",
-          "matches": [],
-          "provider": "github_advisories",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2023-48022",
+              "ids": [
+                "CVE-2023-48022",
+                "CVE-2023-48023"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2023-48022, CVE-2023-48023",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "sglang-admin-optional-failopen": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:05+00:00",
       "id": "sglang-admin-optional-failopen",
       "offline": false,
       "providers": {
-        "github_advisories": {
-          "detail": "GitHub advisory database has no strong-term match for the package",
-          "matches": [],
-          "provider": "github_advisories",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-15978",
+              "ids": [
+                "CVE-2026-15978",
+                "VU#281278",
+                "GHSA-2wvm-gjg7-5jfm",
+                "GHSA-h6rf-77vv-9mvj"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2026-15978, VU#281278, GHSA-2wvm-gjg7-5jfm, GHSA-h6rf-77vv-9mvj",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "sglang-legacy-tar-weights-rce": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "sglang-legacy-tar-weights-rce",
       "offline": false,
       "providers": {
@@ -756,12 +789,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "sglang-omni-admin-failopen": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:05+00:00",
       "id": "sglang-omni-admin-failopen",
       "offline": false,
       "providers": {
@@ -774,12 +807,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "siliconlab-credential-exfil": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "siliconlab-credential-exfil",
       "offline": false,
       "providers": {
@@ -792,12 +825,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "skyrl-fetch-weights": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "skyrl-fetch-weights",
       "offline": false,
       "providers": {
@@ -810,12 +843,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "skyrl-tinker-api": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "skyrl-tinker-api",
       "offline": false,
       "providers": {
@@ -828,12 +861,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "skyrl-vllm-devmode": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "skyrl-vllm-devmode",
       "offline": false,
       "providers": {
@@ -846,12 +879,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "slime-pull-weights": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:05+00:00",
       "id": "slime-pull-weights",
       "offline": false,
       "providers": {
@@ -864,12 +897,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "slime-torch-load": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "slime-torch-load",
       "offline": false,
       "providers": {
@@ -882,12 +915,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "transformers-dynamic-module-utils-py-dynamic-import-l248-ast": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:11+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-ast",
       "offline": false,
       "providers": {
@@ -900,12 +933,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "transformers-dynamic-module-utils-py-dynamic-import-l248-regex": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:11+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:13+00:00",
       "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-regex",
       "offline": false,
       "providers": {
@@ -918,12 +951,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "trl-vllm-serve-devmode": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "trl-vllm-serve-devmode",
       "offline": false,
       "providers": {
@@ -936,12 +969,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "verl-checkpoint-pickle": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "verl-checkpoint-pickle",
       "offline": false,
       "providers": {
@@ -954,12 +987,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "verl-hdfs-command-injection": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "verl-hdfs-command-injection",
       "offline": false,
       "providers": {
@@ -972,12 +1005,12 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "verl-prime-code-exec": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "verl-prime-code-exec",
       "offline": false,
       "providers": {
@@ -990,30 +1023,37 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "verl-prime-math-eval": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "verl-prime-math-eval",
       "offline": false,
       "providers": {
-        "github_advisories": {
-          "detail": "GitHub advisory database has no strong-term match for the package",
-          "matches": [],
-          "provider": "github_advisories",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-6878",
+              "ids": [
+                "CVE-2026-6878"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2026-6878",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "vllm-jev-plugin-auth-bypass": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:04+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:05+00:00",
       "id": "vllm-jev-plugin-auth-bypass",
       "offline": false,
       "providers": {
@@ -1087,48 +1127,66 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     },
     "vllm-omni-media-ssrf": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:06+00:00",
       "id": "vllm-omni-media-ssrf",
       "offline": false,
       "providers": {
-        "github_advisories": {
-          "detail": "GitHub advisory database has no strong-term match for the package",
-          "matches": [],
-          "provider": "github_advisories",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-24779",
+              "ids": [
+                "CVE-2026-24779",
+                "CVE-2026-73560",
+                "CVE-2026-34753"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2026-24779, CVE-2026-73560, CVE-2026-34753",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "vllm-omni-trust-remote-code": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "vllm-omni-trust-remote-code",
       "offline": false,
       "providers": {
-        "github_advisories": {
-          "detail": "GitHub advisory database has no strong-term match for the package",
-          "matches": [],
-          "provider": "github_advisories",
-          "related": [],
-          "status": "ok"
+        "registry": {
+          "detail": "known_public field from the source audit/finding registry",
+          "matches": [
+            {
+              "id": "CVE-2026-27893",
+              "ids": [
+                "CVE-2026-27893",
+                "CVE-2026-22807",
+                "CVE-2026-90553"
+              ],
+              "url": null
+            }
+          ],
+          "provider": "registry",
+          "status": "match"
         }
       },
-      "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
-      "verdict": "confirmed-unpublished"
+      "reason": "source audit already cites public reference(s): CVE-2026-27893, CVE-2026-22807, CVE-2026-90553",
+      "schema": "inkblade-novelty-result-v1",
+      "verdict": "already-public"
     },
     "vllm-rl-dev-auth-bypass": {
-      "cache_dir": "<repo>\\corpus\\novelty\\cache",
-      "checked_at": "2026-10-26T11:30:05+00:00",
+      "cache_dir": "corpus/novelty/cache",
+      "checked_at": "2026-10-26T17:31:07+00:00",
       "id": "vllm-rl-dev-auth-bypass",
       "offline": false,
       "providers": {
@@ -1202,7 +1260,7 @@
         }
       },
       "reason": "all required providers answered clean; no CVE/GHSA/security commit/vendor advisory/exploit code match",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "confirmed-unpublished"
     }
   }

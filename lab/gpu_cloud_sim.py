@@ -24,7 +24,7 @@ GPU 池化：
 - GET  /cloud/security-group       安全组 + IMDS 选项（vulnerable：0.0.0.0/0 + IMDSv1）
 
 写盘边界：一切落盘仅限 Server.root（默认临时目录并在 shutdown 清理；start_all(root=...) 可注入）。
-残留/共享对象一律 benign marker（TRIDENT-BENIGN 前缀），不含真实模型数据。
+残留/共享对象一律 benign marker（INKBLADE-BENIGN 前缀），不含真实模型数据。
 
 命令行：python lab/gpu_cloud_sim.py [--port N] [--mode vulnerable|fixed] [--root DIR]
 """
@@ -55,7 +55,7 @@ TENANT_TOKENS = {
 TENANT_ACCOUNTS = {"tenant-a": "111111111111", "tenant-b": "222222222222"}
 TENANTS = tuple(sorted(TENANT_TOKENS))
 MIG_PROFILES = ("1g.10gb", "2g.20gb", "3g.40gb", "7g.80gb")
-BENIGN = "TRIDENT-BENIGN"
+BENIGN = "INKBLADE-BENIGN"
 DEFAULT_MARKER = f"{BENIGN}-VRAM-SNAPSHOT"
 
 
@@ -632,7 +632,7 @@ def _cloud_assume_role(ctx: _RequestContext):
         if cross_account:
             return 403, {"error": "forbidden", "service": "cloud-identity",
                          "hint": "trust policy 仅允许同账户主体 AssumeRole"}
-        if role["trust"].get("Statement", [{}])[0].get("Condition") and external_id != "trident-lab":
+        if role["trust"].get("Statement", [{}])[0].get("Condition") and external_id != "inkblade-lab":
             return 403, {"error": "forbidden", "service": "cloud-identity",
                          "hint": "缺少或错误 sts:ExternalId"}
     return 200, {
@@ -644,7 +644,7 @@ def _cloud_assume_role(ctx: _RequestContext):
         "role": role["role"],
         "source_account": source,
         "cross_account": cross_account,
-        "session_name": str(ctx.body.get("session_name") or "trident-probe"),
+        "session_name": str(ctx.body.get("session_name") or "inkblade-probe"),
         "duration_seconds": 3600,
         "credentials": {
             "AccessKeyId": "MOCKAKIACROSSTENANT0001",
@@ -673,7 +673,7 @@ def _cloud_bucket_policy(ctx: _RequestContext):
         "Version": "2012-10-17",
         "Statement": [
             {
-                "Sid": "TridentMock",
+                "Sid": "InkBladeMock",
                 "Effect": "Allow",
                 "Principal": "*" if public else {"AWS": f"arn:aws:iam::{bucket['account']}:root"},
                 "Action": ["s3:GetObject", "s3:ListBucket"] if public else ["s3:GetObject"],
@@ -866,7 +866,7 @@ def _cloud_security_group(ctx: _RequestContext):
 
 def _routes_manifest(ctx: _RequestContext):
     return 200, {
-        "service": "trident-gpu-cloud-lab",
+        "service": "inkblade-gpu-cloud-lab",
         "mode": ctx.mode,
         "host": HOST,
         "route_count": len(ROUTE_TABLE),
@@ -960,7 +960,7 @@ def _seed_state(mode: str, root: Path) -> dict:
             "Effect": "Allow",
             "Principal": {"AWS": "arn:aws:iam::222222222222:root"},
             "Action": "sts:AssumeRole",
-            "Condition": {"StringEquals": {"sts:ExternalId": "trident-lab"}},
+            "Condition": {"StringEquals": {"sts:ExternalId": "inkblade-lab"}},
         }],
     }
     roles = {
@@ -1141,7 +1141,7 @@ class _LabHTTPServer(ThreadingHTTPServer):
 
 class _LabHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "TridentGpuCloudLab/0.1.0"
+    server_version = "InkBladeGpuCloudLab/0.1.0"
 
     def log_message(self, fmt, *args):
         return
@@ -1259,7 +1259,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE, root: Path | str | None =
     if mode not in MODES:
         raise ValueError(f"mode 必须是 {MODES} 之一，收到：{mode!r}")
     if root is None:
-        root_path = Path(tempfile.mkdtemp(prefix="trident-gpu-cloud-lab-"))
+        root_path = Path(tempfile.mkdtemp(prefix="inkblade-gpu-cloud-lab-"))
         owns_root = True
     else:
         root_path = Path(root)
@@ -1272,7 +1272,7 @@ def start_all(port: int = 0, mode: str = DEFAULT_MODE, root: Path | str | None =
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident GPU 池化/云租户仿真靶场（仅监听 127.0.0.1）")
+    parser = argparse.ArgumentParser(description="InkBlade GPU 池化/云租户仿真靶场（仅监听 127.0.0.1）")
     parser.add_argument("--port", type=int, default=0, help="监听端口（0=自动分配）")
     parser.add_argument("--mode", choices=list(MODES), default=DEFAULT_MODE,
                         help="vulnerable=fail-open 姿态，fixed=加固姿态")

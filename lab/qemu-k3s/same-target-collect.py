@@ -1,10 +1,10 @@
-"""same-target-collect.py — merge ARTEX + Trident same-target bench evidence.
+"""same-target-collect.py — merge ARTEX + InkBlade same-target bench evidence.
 
 Inputs (all produced by the same-target pipeline):
   --mock-log      lab/qemu-k3s/out/mock-llm.jsonl        (scripted-mock request log)
   --raw           lab/qemu-k3s/out/artex-same-target-raw.txt (guest KEY=value dump)
   --target-stats  lab/qemu-k3s/out/mock-target-stats-artex.json (target /__stats__ snapshot)
-  --trident       lab/qemu-k3s/out/trident-chain.json    (same-target-trident.py output)
+  --inkblade       lab/qemu-k3s/out/inkblade-chain.json    (same-target-inkblade.py output)
   --out           reports/samples/artex-bench/same-target.json (md written next to it)
 
 Output: machine-readable same-target.json + human same-target.md with the
@@ -192,13 +192,13 @@ def _fmt(v, suffix: str = "") -> str:
 
 
 def _render_md(doc: dict) -> str:
-    a, t = doc["artex"], doc["trident"]
+    a, t = doc["artex"], doc["inkblade"]
     lines: list[str] = []
-    lines.append("# ARTEX vs Trident — 同靶场同面扫描对比（same-target）\n")
+    lines.append("# ARTEX vs InkBlade — 同靶场同面扫描对比（same-target）\n")
     lines.append(f"> 采集时间 {doc['meta']['collected_at']}；靶场 {doc['meta']['target']}"
                  f"（lab/mock_targets.py，vulnerable）。ARTEX v0.3.23（QEMU TCG k3s VM 内，"
                  f"官方镜像、零改动），LLM 为脚本化计划器 mock（按其真实协议返回确定的 "
-                 f"tool_calls 序列）；Trident 同链 {t.get('chain')} 直接在本机执行。\n")
+                 f"tool_calls 序列）；InkBlade 同链 {t.get('chain')} 直接在本机执行。\n")
 
     lines.append("## 1. 验收要点\n")
     hits = a.get("target_hits") or []
@@ -209,7 +209,7 @@ def _render_md(doc: dict) -> str:
                  f"（路径：{', '.join(paths) if paths else '—'}）")
     lines.append(f"- ARTEX 侧 finding：**{a.get('findings_total')} 条**"
                  f"（按级别 {json.dumps(a.get('findings_by_severity') or {}, ensure_ascii=False)}）")
-    lines.append(f"- Trident 链执行：{'成功' if t.get('ok') else '失败'}"
+    lines.append(f"- InkBlade 链执行：{'成功' if t.get('ok') else '失败'}"
                  f"（{', '.join(f'{s['step']}={s['status']}' for s in (t.get('step_timings') or []))}）\n")
 
     lines.append("## 2. 每步时延\n")
@@ -219,7 +219,7 @@ def _render_md(doc: dict) -> str:
     for st in a.get("steps", []):
         lines.append(f"| {st['step']} | {_fmt(st.get('ms'))} |")
     lines.append(f"| **合计（任务提交→终态）** | **{_fmt(a.get('task_total_ms'))}** |\n")
-    lines.append("### Trident（链步骤，证据库 started_at/finished_at）\n")
+    lines.append("### InkBlade（链步骤，证据库 started_at/finished_at）\n")
     lines.append("| 步骤 | 时延 ms |")
     lines.append("|---|---|")
     for st in (t.get("step_timings") or []):
@@ -228,10 +228,10 @@ def _render_md(doc: dict) -> str:
     lines.append(f"| **execute 合计** | **{_fmt(t.get('execute_ms'))}** |\n")
 
     lines.append("## 3. 总对比表\n")
-    lines.append("| 指标 | ARTEX | Trident | 说明 |")
+    lines.append("| 指标 | ARTEX | InkBlade | 说明 |")
     lines.append("|---|---|---|---|")
     for row in doc["comparison"]:
-        lines.append(f"| {row['metric']} | {row['artex']} | {row['trident']} | {row.get('note', '')} |")
+        lines.append(f"| {row['metric']} | {row['artex']} | {row['inkblade']} | {row.get('note', '')} |")
     lines.append("")
 
     lines.append("## 4. 口径与限制\n")
@@ -246,7 +246,7 @@ def main() -> int:
     ap.add_argument("--mock-log", required=True)
     ap.add_argument("--raw", required=True)
     ap.add_argument("--target-stats", required=True)
-    ap.add_argument("--trident", required=True)
+    ap.add_argument("--inkblade", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--target", default="http://10.0.2.2:18080")
     ap.add_argument("--note", action="append", default=[])
@@ -254,38 +254,38 @@ def main() -> int:
 
     raw = _parse_raw(Path(args.raw))
     artex = _collect_artex(Path(args.mock_log), raw, Path(args.target_stats))
-    trident = json.loads(Path(args.trident).read_text(encoding="utf-8"))
+    inkblade = json.loads(Path(args.inkblade).read_text(encoding="utf-8"))
 
-    trident_hits = trident.get("target_hit_count")
+    inkblade_hits = inkblade.get("target_hit_count")
     comparison = [
         {"metric": "total_ms",
          "artex": artex.get("task_total_ms"),
-         "trident": trident.get("execute_ms"),
-         "note": "ARTEX=任务提交→终态（含 3s 轮询粒度）；Trident=链 execute 墙钟"},
+         "inkblade": inkblade.get("execute_ms"),
+         "note": "ARTEX=任务提交→终态（含 3s 轮询粒度）；InkBlade=链 execute 墙钟"},
         {"metric": "requests",
          "artex": artex.get("target_hit_count"),
-         "trident": trident_hits,
+         "inkblade": inkblade_hits,
          "note": "靶场 /__stats__ 计数（同靶场同面）"},
         {"metric": "tokens",
          "artex": f"in~{artex.get('tokens_in_est')}/out~{artex.get('tokens_out_est')}",
-         "trident": "0",
-         "note": "mock 按请求体 chars/4 估算；Trident 全链确定性、零 LLM token"},
+         "inkblade": "0",
+         "note": "mock 按请求体 chars/4 估算；InkBlade 全链确定性、零 LLM token"},
         {"metric": "llm_calls",
          "artex": artex.get("llm_calls"),
-         "trident": 0,
+         "inkblade": 0,
          "note": f"按 agent {json.dumps(artex.get('llm_calls_by_agent') or {}, ensure_ascii=False)}"},
         {"metric": "findings",
          "artex": artex.get("findings_total"),
-         "trident": len([s for s in (trident.get("step_timings") or []) if s.get("status") == "success"]),
-         "note": "ARTEX=report_finding 落库；Trident=链步骤成功数（各有证据语义）"},
+         "inkblade": len([s for s in (inkblade.get("step_timings") or []) if s.get("status") == "success"]),
+         "note": "ARTEX=report_finding 落库；InkBlade=链步骤成功数（各有证据语义）"},
         {"metric": "rss_mib",
          "artex": round(artex.get("rss_mib_during_task") or 0, 1) or None,
-         "trident": round((trident.get("max_rss_kb") or 0) / 1024, 1) or None,
-         "note": "ARTEX=任务窗口 docker stats 峰值（artex+pg 两容器）；Trident=执行进程工作集峰值"},
+         "inkblade": round((inkblade.get("max_rss_kb") or 0) / 1024, 1) or None,
+         "note": "ARTEX=任务窗口 docker stats 峰值（artex+pg 两容器）；InkBlade=执行进程工作集峰值"},
         {"metric": "cold_start_ms",
          "artex": artex.get("cold_start_health_ms"),
-         "trident": None,
-         "note": "ARTEX 栈冷启动（PG+容器+迁移）；Trident 进程内启动亚秒"},
+         "inkblade": None,
+         "note": "ARTEX 栈冷启动（PG+容器+迁移）；InkBlade 进程内启动亚秒"},
     ]
 
     doc = {
@@ -298,17 +298,17 @@ def main() -> int:
                 "ARTEX 时延含 QEMU TCG 放大（纯软件仿真），绝对值不代表裸机；同宿主同窗口对比才有意义。",
                 "ARTEX 的 LLM 为脚本化计划器 mock：协议真实（真实 tool_calls/工具执行/落库），决策是确定脚本，不代表模型质量。",
                 "token 估算 = ARTEX 请求体字符数/4（mock 非真实分词器）。",
-                "Trident 为 Windows 本机进程，直接访问 127.0.0.1:18080（与 ARTEX 经 10.0.2.2:18080 同一靶场实例）。",
+                "InkBlade 为 Windows 本机进程，直接访问 127.0.0.1:18080（与 ARTEX 经 10.0.2.2:18080 同一靶场实例）。",
             ],
         },
         "artex": artex,
-        "trident": trident,
+        "inkblade": inkblade,
         "comparison": comparison,
         "provenance": {
             "mock_llm_log": str(Path(args.mock_log)),
             "artex_raw": str(Path(args.raw)),
             "target_stats": str(Path(args.target_stats)),
-            "trident_out": str(Path(args.trident)),
+            "inkblade_out": str(Path(args.inkblade)),
             "artex_tasks_json": (raw.get("TASKS_JSON") or "")[:4000],
             "collected_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
         },

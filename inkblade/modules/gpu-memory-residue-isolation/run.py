@@ -32,7 +32,7 @@ _SPEC = importlib.util.spec_from_file_location("_chip_common", _PARENT / "_chip-
 _C = importlib.util.module_from_spec(_SPEC)
 _SPEC.loader.exec_module(_C)
 
-from trident.modules._gpu_cloud_common import (  # noqa: E402
+from inkblade.modules._gpu_cloud_common import (  # noqa: E402
     Trace, base_url, benign_marker, ok, read_headers, resolve_mode, resp,
     sha256_text, write_headers,
 )
@@ -148,7 +148,7 @@ def _active(ctx: dict, params: dict, note: str) -> tuple[list[dict], dict]:
     allocation = t.call("POST", f"{base}/gpu/allocate", {
         "tenant": tenant, "device": device,
         "namespace": str(params.get("namespace") or f"ns-{tenant}-infer"),
-        "marker": marker, "process": f"trident-residue-{tenant}",
+        "marker": marker, "process": f"inkblade-residue-{tenant}",
     }, headers=write_headers(params))
     alloc_payload = resp(allocation)
     allocation_id = str(alloc_payload.get("allocation_id") or "")

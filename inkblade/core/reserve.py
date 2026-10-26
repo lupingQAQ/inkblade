@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Trident 0day reserve: state machine, registry and human report.
+"""InkBlade 0day reserve: state machine, registry and human report.
 
 The reserve is deliberately strict:
 
@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[2]
 WORKSPACE = ROOT.parents[1]
 DEFAULT_INVENTORY = ROOT / "corpus" / "zeroday" / "inventory.json"
 DEFAULT_NOVELTY = ROOT / "corpus" / "novelty" / "results.json"
-DEFAULT_REGISTRY = ROOT / "trident" / "core" / "zeroday-registry.json"
+DEFAULT_REGISTRY = ROOT / "inkblade" / "core" / "zeroday-registry.json"
 DEFAULT_DOC = ROOT / "docs" / "0DAY-RESERVE.md"
 
 STATES = ("candidate", "verified-exploitable", "novelty-checked", "disclosed", "public")
@@ -294,7 +294,7 @@ def build_registry(inventory: dict, novelty: dict | None = None, *, root: Path =
         if text:
             item["reachability"].append({"id": e.get("id"), "text": text})
     return {
-        "schema": "trident-zeroday-registry-v1",
+        "schema": "inkblade-zeroday-registry-v1",
         "generated_at": now(),
         "reserve_rule": "verified (dynamic) + confirmed-unpublished; already-public/inconclusive never count",
         "inventory": inventory.get("schema"),
@@ -377,9 +377,9 @@ def _table(entries: list[dict], *, include_reachability: bool = False) -> list[s
 def render_markdown(registry: dict) -> str:
     s = registry["summary"]
     lines: list[str] = []
-    lines.append("# Trident 0day Reserve")
+    lines.append("# InkBlade 0day Reserve")
     lines.append("")
-    lines.append(f"Generated: `{registry['generated_at']}` ｜ registry: `trident/core/zeroday-registry.json` ｜ "
+    lines.append(f"Generated: `{registry['generated_at']}` ｜ registry: `inkblade/core/zeroday-registry.json` ｜ "
                  f"inventory: `corpus/zeroday/inventory.json`")
     lines.append("")
     lines.append("> **计数规则（硬门禁）**：只有 **动态复现成功 (`verification=verified, dynamic=true`)** 且 "
@@ -412,7 +412,11 @@ def render_markdown(registry: dict) -> str:
     if s.get("excluded_non_0day"):
         lines.append(f"- **不计入储备（verified+confirmed 但非 0day 性质）**：{', '.join(s['excluded_non_0day'])}")
     lines.append(f"- **already-public 降级 = {s['public']}**：{", ".join(s['already_public_ids']) or '（空）'}")
-    lines.append(f"- **inconclusive = {s['inconclusive']}**：网络/速率/缺少包映射，未计入储备")
+    if s["inconclusive"]:
+        lines.append(f"- **inconclusive = {s['inconclusive']}**：网络/速率/缺少包映射，未计入储备；"
+                     f"{', '.join(s.get('inconclusive_ids') or [])}")
+    else:
+        lines.append("- **inconclusive = 0**：全部闭环（OSV 包级查询 + 仓库改名解析 + 受控 N/A 理由）")
     lines.append("")
     lines.append("## 2. 0day Reserve（仅 verified + confirmed-unpublished）")
     lines.append("")
@@ -493,6 +497,10 @@ def render_markdown(registry: dict) -> str:
                  "并在 registry 中标注 `mode=evidence-reused`；能重跑的条目另有 `mode=rerun`。")
     lines.append("- 查新：`tools/novelty-check.py` 查询 OSV、NVD、GitHub Advisory、GitHub commit/code 搜索与厂商 "
                  "security/advisory 页面；每次请求原始结果缓存于 `corpus/novelty/cache/`。")
+    lines.append("- 查新补强（2026-10-27）：GitHub 搜索对仓库改名返回 422，工具先解析 canonical repo 再重试；"
+                 "无版本/commit 钉的条目改查 OSV 包级（全版本）并在 PyPI 身份不符/占位包时记录 *受控 N/A*；"
+                 "commit 只在含 CVE/GHSA ID 或 subject 同时出现修复动词与 sink 关键词时计为公开，避免把 "
+                 "rename/lint/docker `--privileged` 误判为披露。")
     lines.append("- 离线/限流：缓存缺失、401/403、超时、无包映射均标 `inconclusive`，**不默认未公开**。"
                  "GitHub 未认证 code search 返回 401，工具降级到 grep.app + 本地上游树扫描并在结果中记录 `via`。")
     lines.append("- 不自动外发：披露状态仅在本 registry 与 `docs/0DAY-DISCLOSURE.md` 中记录。")
@@ -519,7 +527,7 @@ def build(inventory_path: Path | str = DEFAULT_INVENTORY,
 def main(argv: list[str] | None = None) -> int:
     import argparse
 
-    parser = argparse.ArgumentParser(description="Build/validate the Trident 0day reserve")
+    parser = argparse.ArgumentParser(description="Build/validate the InkBlade 0day reserve")
     parser.add_argument("--inventory", default=str(DEFAULT_INVENTORY))
     parser.add_argument("--novelty", default=str(DEFAULT_NOVELTY))
     parser.add_argument("--registry", default=str(DEFAULT_REGISTRY))

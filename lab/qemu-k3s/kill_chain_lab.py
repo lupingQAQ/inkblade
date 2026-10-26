@@ -1,6 +1,6 @@
 """Real-cluster kill-chain lab: intranet entry → cluster-admin → node root.
 
-Runs the Trident objective chain against the live QEMU/TCG k3s VM and records
+Runs the InkBlade objective chain against the live QEMU/TCG k3s VM and records
 ``reports/samples/kill-chain/{proof.json,report.md,proof.html,...}``.
 
     python lab/qemu-k3s/kill_chain_lab.py \
@@ -32,18 +32,18 @@ REPO = Path(__file__).resolve().parents[2]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from trident.core.evidence import EvidenceStore  # noqa: E402
-from trident.core.objective import (  # noqa: E402
+from inkblade.core.evidence import EvidenceStore  # noqa: E402
+from inkblade.core.objective import (  # noqa: E402
     FakeKubectlBackend, KubectlBackend, load_objective, render_report,
     run_objective, write_report,
 )
-from trident.core.roe import init_roe  # noqa: E402
-from trident.core.users import Session  # noqa: E402
+from inkblade.core.roe import init_roe  # noqa: E402
+from inkblade.core.users import Session  # noqa: E402
 
 LAB = Path(__file__).resolve().parent
 FIXTURE = LAB / "manifests" / "40-killchain-operator.yaml"
 ENTRY = LAB / "manifests" / "41-killchain-entry.yaml"
-NAMESPACE = "trident-killchain"
+NAMESPACE = "inkblade-killchain"
 
 
 def now() -> str:
@@ -103,7 +103,7 @@ def deploy_fixture(kubectl_bin: str, kubeconfig: str | None) -> dict:
             # in the lab, but allow a short TCG allowance).
             out["entry_rollout"] = kubectl(
                 kubectl_bin, kubeconfig, "-n", NAMESPACE, "rollout", "status",
-                "deploy/trident-entry-api", "--timeout=180s", timeout=210)
+                "deploy/inkblade-entry-api", "--timeout=180s", timeout=210)
     return out
 
 
@@ -133,7 +133,7 @@ def start_port_forward(kubectl_bin: str, kubeconfig: str | None,
     # Forward to a Ready pod, not the Service: a terminating old ReplicaSet pod
     # can otherwise receive the forward and refuse the connection.
     pods = kubectl(kubectl_bin, kubeconfig, "-n", NAMESPACE, "get", "pods",
-                   "-l", "app=trident-entry-api", "-o", "json")
+                   "-l", "app=inkblade-entry-api", "-o", "json")
     pod_name = ""
     if pods["rc"] == 0:
         try:
@@ -147,7 +147,7 @@ def start_port_forward(kubectl_bin: str, kubeconfig: str | None,
                     break
         except (ValueError, KeyError):
             pod_name = ""
-    target = f"pod/{pod_name}" if pod_name else "svc/trident-entry-api"
+    target = f"pod/{pod_name}" if pod_name else "svc/inkblade-entry-api"
     cmd = [kubectl_bin]
     if kubeconfig:
         cmd += ["--kubeconfig", kubeconfig]
@@ -291,7 +291,7 @@ def write_proof_html(proof: dict, out: Path) -> Path:
         for c in (cleanup.get("checks") or [])
     )
     html = f"""<!doctype html>
-<html><head><meta charset="utf-8"><title>Trident PROOF {proof.get('marker')}</title>
+<html><head><meta charset="utf-8"><title>InkBlade PROOF {proof.get('marker')}</title>
 <style>
  body {{ background:#0b1020; color:#d7e2f4; font:14px/1.45 Consolas,Menlo,monospace; margin:24px; }}
  h1 {{ font-size:20px; color:#7ee787; }} h2 {{ font-size:15px; color:#79c0ff; margin-top:22px; }}
@@ -303,7 +303,7 @@ def write_proof_html(proof: dict, out: Path) -> Path:
  .kv {{ display:grid; grid-template-columns:220px 1fr; gap:4px 12px; }}
  .k {{ color:#9fb3d1; }}
 </style></head><body>
-<h1>TRIDENT — Highest-Privilege PROOF</h1>
+<h1>INKBLADE — Highest-Privilege PROOF</h1>
 <div class="box">
 <div class="kv">
 <div class="k">marker</div><div>{proof.get('marker')}</div>
@@ -332,7 +332,7 @@ node /root marker were deleted and re-checked against baseline. No persistent ob
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="Trident real-cluster kill-chain lab")
+    ap = argparse.ArgumentParser(description="InkBlade real-cluster kill-chain lab")
     ap.add_argument("--kubectl", default=str(LAB / "kubectl.exe"))
     ap.add_argument("--kubeconfig", default=str(LAB / "out" / "k3s.yaml"))
     ap.add_argument("--backend", choices=["auto", "kubectl", "fake"], default="auto")
@@ -401,7 +401,7 @@ def main(argv=None) -> int:
                 pf_proc, pf_url = start_port_forward(args.kubectl, args.kubeconfig)
                 if pf_url:
                     entry_url = pf_url
-                    env["entry"] = f"{pf_url} (kubectl port-forward -> svc/trident-entry-api:8000)"
+                    env["entry"] = f"{pf_url} (kubectl port-forward -> svc/inkblade-entry-api:8000)"
                 else:
                     print("entry port-forward failed; falling back to NodePort probe",
                           file=sys.stderr)
@@ -419,10 +419,10 @@ def main(argv=None) -> int:
         "namespaces": [NAMESPACE],
         "cidrs": ["127.0.0.1/32", "10.0.0.0/8"],
         "window": "2026-01-01 – 2026-12-31",
-        "authorized_by": "Trident QEMU lab (self-owned cluster)",
+        "authorized_by": "InkBlade QEMU lab (self-owned cluster)",
     })
     session = Session(None, "lab-lead", "lead", [args.workspace], "lab-session")
-    chain = load_objective(REPO / "trident" / "chains")
+    chain = load_objective(REPO / "inkblade" / "chains")
     started = time.time()
     result = None
     try:

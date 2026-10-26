@@ -2,7 +2,7 @@
 
 - 检索/核验日期：**2026-10-25**（全部来源当日完成）
 - 检索工具：`websearch`（检索式见下）+ `webfetch`（官方页直读，原文摘录入库）
-- 语料与门槛：`trident/arch-intel/corpus/{official-cn,official-en,paper}/`（80 源）+ `trident/arch-intel/coverage-matrix.json`；门槛校验 `trident/arch-intel/check.py`（全绿）
+- 语料与门槛：`inkblade/arch-intel/corpus/{official-cn,official-en,paper}/`（80 源）+ `inkblade/arch-intel/coverage-matrix.json`；门槛校验 `inkblade/arch-intel/check.py`（全绿）
 - 任务口径：≥10k GPU/加速器实践（万卡证据源）＋ 官方技术博客优先 ＋ 中外并收
 
 ## 1. 中文官方源检索式（websearch，2026-10-25）

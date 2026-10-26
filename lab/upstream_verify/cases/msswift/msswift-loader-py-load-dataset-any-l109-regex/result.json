@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "msswift-loader-py-load-dataset-any-l109-regex",
  "source": "mining",
  "component": "msswift",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/msswift/msswift-loader-py-load-dataset-any-l109-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.134,
- "started_at": "2026-10-26T09:23:30+00:00",
+ "duration_s": 0.305,
+ "started_at": "2026-10-26T19:54:22+00:00",
  "marker": {
-  "text": "TRIDENT-UV-msswift-loader-py-load-dataset-any-l109-regex",
+  "text": "INKBLADE-UV-msswift-loader-py-load-dataset-any-l109-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/msswift/msswift-loader-py-load-dataset-any-l109-regex/evidence/log.txt",
-   "sha256": "b46f8a4f7c74c657ccb7e4292fb2767f0fac2313c75fd6e0513555989afeb516",
+   "sha256": "401962668657150814379b342a55c2f381ad6399170ee8b6b89ff85cf485e6bb",
    "size": 261
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/msswift/msswift-loader-py-load-dataset-any-l109-regex/evidence/static-check.json",
-   "sha256": "3fe2917c1686b112c009487e6f4e4721d1b97c456139918d9b9b1d2ad599d511",
-   "size": 1095
+   "sha256": "602e543dce7644439f3440df74fd39c17226e8686334dd5795bf4717903343ae",
+   "size": 1096
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "36a8330e077eec4f89427227ffbec0a1fd02ea35f939e0f6cd6ab1641f9909f1",
+ "manifest_sha256": "267e16c9a62da3e633912ba9655a7d98bc02328588ea4da53beae74ee7165fd9",
  "stdout": "{\"status\": \"static-only\", \"case\": \"msswift-loader-py-load-dataset-any-l109-regex\"}\n",
  "stderr": "",
  "notes": "Dataset loading is intended functionality; remote dataset trust is a documented boundary."

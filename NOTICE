@@ -1,5 +1,5 @@
-Trident — ML Training/Inference Cluster Penetration Testing Platform
-Copyright 2026 The Trident Authors
+InkBlade（墨刃零）— ML Training/Inference Cluster Penetration Testing Platform
+Copyright 2026 The InkBlade Authors
 
 This product is licensed under the Apache License, Version 2.0 (see LICENSE).
 
@@ -13,10 +13,10 @@ Third-party and interoperability notices
    independent open-source project licensed under the GNU Affero General
    Public License, version 3 (AGPL-3.0).
 
-   Trident does NOT include, copy, link, embed, or derive from ARTEX source
+   InkBlade does NOT include, copy, link, embed, or derive from ARTEX source
    code. No ARTEX code is distributed in this repository.
 
-   The ARTEX-parity features added under `trident/core/` — multi-model LLM
+   The ARTEX-parity features added under `inkblade/core/` — multi-model LLM
    pool (`llmpool.py`), notification channels/rules (`notify.py`), task
    templates (`templates.py`), one-shot calendar windows (`calendar.py`),
    in-run side questions (`threads.py`), graph snapshots/diffs
@@ -32,7 +32,7 @@ Third-party and interoperability notices
    `lab/bench/artex-bench.sh`, which is executed separately in a lab
    environment against an independently cloned ARTEX checkout. Because there
    is no code reuse or derivative work, the ARTEX AGPL license does not apply
-   to Trident or to this repository.
+   to InkBlade or to this repository.
 
    Any ARTEX source you clone remains governed by its own AGPL-3.0 terms.
    Parity evidence: `docs/ARTEX-PARITY.md` and `docs/artex-parity-rows.json`.
@@ -44,8 +44,8 @@ Third-party and interoperability notices
    "MIT License" but the LICENSE file is the authoritative Apache-2.0 text;
    this discrepancy is noted for honesty.
 
-   Trident includes an independent Python reimplementation of selected
-   KubeTrail capabilities under `trident/kubetrail/`:
+   InkBlade includes an independent Python reimplementation of selected
+   KubeTrail capabilities under `inkblade/kubetrail/`:
 
    - in-pod collectors (identity/environment/serviceaccount/proc/proc_sys_escape/
      filesystem/node_local/runtime_local/k8s_context/k8s_permissions/
@@ -60,7 +60,7 @@ Third-party and interoperability notices
    No Go source code from KubeTrail is copied, linked, or embedded; the port is
    a clean-room Python reimplementation of observable behavior and public
    documentation. Upstream copyright and Apache-2.0 attribution are retained
-   here, in `docs/KUBETRAIL-PORT.md`, and in each `trident/kubetrail/*.py`
+   here, in `docs/KUBETRAIL-PORT.md`, and in each `inkblade/kubetrail/*.py`
    header. `LICENSE` contains the full Apache-2.0 text; modified/derived files
    are marked. See `tools/check-notices.py` for the automated check.
 
@@ -80,7 +80,7 @@ Third-party and interoperability notices
    - ReactDOM 18.3.1 — Copyright (c) Meta Platforms, Inc. and affiliates — MIT
    - React Flow (@reactflow/core) 11.11.4 — Copyright (c) webkid GmbH — MIT
 
-   These files are located under `trident/webui/static/vendor/` and
+   These files are located under `inkblade/webui/static/vendor/` and
    `reports/samples/static-export/vendor/`. Their original license notices are
    retained in the minified headers where present.
 

@@ -3,13 +3,13 @@
 四项实效与 ``docs/CACHE-SECURITY.md`` 第 7 节一一对应：
 
 1. ``approx-cache-false-hit-readback``：tenant-a 用单 token 变异文本查询近似缓存，
-   命中 tenant-b 条目并读回 ``TRIDENT-BENIGN-APPROX-VICTIM`` marker；
+   命中 tenant-b 条目并读回 ``INKBLADE-BENIGN-APPROX-VICTIM`` marker；
 2. ``cache-timing-membership-delta``：30 条受害成员前缀 + 30 条未缓存对照前缀，
    N=60≥50，TTFT 两档分离（Welch t 检验 p<0.05 且 Δ≥30ms）；
 3. ``cache-eviction-residue-readback``：唯一前缀洪泛触发 LRU 逐出后，
-   tenant-a 从残留层读回 tenant-b 被逐出前缀与 ``TRIDENT-BENIGN-RESIDUE-VICTIM`` marker；
+   tenant-a 从残留层读回 tenant-b 被逐出前缀与 ``INKBLADE-BENIGN-RESIDUE-VICTIM`` marker；
 4. ``remote-kv-pool-namespace-bypass``：tenant-a 直接读回 tenant-b 的 KV 池块，
-   值含 ``TRIDENT-BENIGN-POOL-VICTIM`` marker（无租户命名空间校验）。
+   值含 ``INKBLADE-BENIGN-POOL-VICTIM`` marker（无租户命名空间校验）。
 
 命令行（生成报告 artifact）::
 
@@ -156,7 +156,7 @@ def run_effects(mode: str = "vulnerable") -> dict:
             if matched.get("tenant") != VICTIM:
                 raise AssertionError(f"命中条目不属于受害租户：{matched.get('tenant')}")
             response = str(matched.get("response") or "")
-            if "TRIDENT-BENIGN-APPROX-VICTIM" not in response:
+            if "INKBLADE-BENIGN-APPROX-VICTIM" not in response:
                 raise AssertionError("未读回受害租户 benign marker")
             return {
                 "http_status": lookup["status"],
@@ -164,7 +164,7 @@ def run_effects(mode: str = "vulnerable") -> dict:
                 "threshold": payload.get("threshold"),
                 "requester_tenant": TENANT,
                 "matched_tenant": matched.get("tenant"),
-                "marker": "TRIDENT-BENIGN-APPROX-VICTIM",
+                "marker": "INKBLADE-BENIGN-APPROX-VICTIM",
                 "marker_present": True,
                 "response_excerpt": response[:96],
                 "route": "/approx/lookup",
@@ -177,7 +177,7 @@ def run_effects(mode: str = "vulnerable") -> dict:
     def timing_membership() -> dict:
         with start_all(mode=mode) as lab:
             members = member_prefixes(30)
-            controls = [f"trident-control-corpus {i:02d} unrelated analytics topic "
+            controls = [f"inkblade-control-corpus {i:02d} unrelated analytics topic "
                         f"reference data pack" for i in range(30)]
             member_ttft, control_ttft = [], []
             for i in range(30):
@@ -245,7 +245,7 @@ def run_effects(mode: str = "vulnerable") -> dict:
             if payload.get("tenant") != VICTIM:
                 raise AssertionError(f"残留归属异常：{payload.get('tenant')}")
             preview = str(payload.get("prefix_preview") or "")
-            if "TRIDENT-BENIGN-RESIDUE-VICTIM" not in preview:
+            if "INKBLADE-BENIGN-RESIDUE-VICTIM" not in preview:
                 raise AssertionError("残留预览不含受害 marker")
             return {
                 "evictions_before": ev_before,
@@ -253,7 +253,7 @@ def run_effects(mode: str = "vulnerable") -> dict:
                 "evictions_delta": ev_after - ev_before,
                 "residue_status": residue["status"],
                 "residue_tenant": payload.get("tenant"),
-                "marker": "TRIDENT-BENIGN-RESIDUE-VICTIM",
+                "marker": "INKBLADE-BENIGN-RESIDUE-VICTIM",
                 "marker_present": True,
                 "prefix_preview": preview[:96],
                 "route": "/cache/residue",
@@ -273,14 +273,14 @@ def run_effects(mode: str = "vulnerable") -> dict:
             if payload.get("tenant") != VICTIM:
                 raise AssertionError(f"块归属异常：{payload.get('tenant')}")
             value = str(payload.get("value") or "")
-            if "TRIDENT-BENIGN-POOL-VICTIM" not in value:
+            if "INKBLADE-BENIGN-POOL-VICTIM" not in value:
                 raise AssertionError("KV 块值不含受害 marker")
             return {
                 "http_status": read["status"],
                 "block_id": VICTIM_POOL_BLOCK_ID,
                 "block_tenant": payload.get("tenant"),
                 "requester_tenant": TENANT,
-                "marker": "TRIDENT-BENIGN-POOL-VICTIM",
+                "marker": "INKBLADE-BENIGN-POOL-VICTIM",
                 "marker_present": True,
                 "value_excerpt": value[:96],
                 "route": "/kvpool/blocks/{block}",
@@ -327,7 +327,7 @@ def write_report(result: dict, out_dir: Path | str) -> Path:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Trident 多租户缓存安全实效验证")
+    parser = argparse.ArgumentParser(description="InkBlade 多租户缓存安全实效验证")
     parser.add_argument("--out", default="reports/samples/cache-security")
     parser.add_argument("--mode", choices=("vulnerable", "fixed"), default="vulnerable")
     args = parser.parse_args(argv)

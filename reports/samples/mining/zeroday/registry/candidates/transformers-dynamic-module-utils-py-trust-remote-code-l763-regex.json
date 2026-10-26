@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "transformers-dynamic-module-utils-py-trust-remote-code-l763-regex",
  "target": "transformers",
  "repo": "huggingface/transformers",

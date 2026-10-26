@@ -6,12 +6,12 @@ description: 提交恶意 LeaderWorkerSet 模板，借用 operator 的集群级 
 references:
   - "LeaderWorkerSet 文档 https://lws.sigs.k8s.io/docs/"
   - "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: platform-lws-operator
-    trident.io/module: lws-secrets-lateral
+    inkblade.io/vector: platform-lws-operator
+    inkblade.io/module: lws-secrets-lateral
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -29,17 +29,17 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.platform
+  - inkblade
+  - inkblade.vector.platform
   - attack.t1610
   - attack.t1552
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: platform-lws-operator
-  trident-module: lws-secrets-lateral
-  trident-detection-point: K8s audit：LeaderWorkerSet 创建/更新
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: platform-lws-operator
+  inkblade-module: lws-secrets-lateral
+  inkblade-detection-point: K8s audit：LeaderWorkerSet 创建/更新
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

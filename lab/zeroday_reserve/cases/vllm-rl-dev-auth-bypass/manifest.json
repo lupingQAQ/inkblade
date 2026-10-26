@@ -35,6 +35,6 @@
  "cleanup": "in-memory ASGI app; only evidence/ is written",
  "status": "verified",
  "method": "dynamic-http",
- "marker_text": "TRIDENT-ZD-vllm-rl-dev-auth-bypass",
+ "marker_text": "INKBLADE-ZD-vllm-rl-dev-auth-bypass",
  "notes": "Dynamic HTTP-level reproduction against the real vLLM router and middleware; the engine client is a stub because the host has no GPU. The auth decision is the real vLLM code path."
 }

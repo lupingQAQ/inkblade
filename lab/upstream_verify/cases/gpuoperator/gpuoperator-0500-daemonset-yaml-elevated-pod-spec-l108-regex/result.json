@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex",
  "source": "mining",
  "component": "gpuoperator",
@@ -32,10 +32,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/gpuoperator/gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.162,
- "started_at": "2026-10-26T09:23:23+00:00",
+ "duration_s": 0.33,
+ "started_at": "2026-10-26T19:47:17+00:00",
  "marker": {
-  "text": "TRIDENT-UV-gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex",
+  "text": "INKBLADE-UV-gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -46,8 +46,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex/evidence/log.txt",
-   "sha256": "156c9e1d37c411233ea68a95ce0457fb7afba0c8c82922a807148c6b4063e040",
-   "size": 295
+   "sha256": "b6ec2c267b049c3548a1911cc5fb1f673e8c8693f1a9d2a9264124592595ed8e",
+   "size": 294
   },
   {
    "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex/evidence/marker.txt",
@@ -56,12 +56,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/gpuoperator/gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex/evidence/static-check.json",
-   "sha256": "84923dcbc0df5dfb30e5bf2f8a840aee77d0d7f1b1045d25368a3cdc3b83a29a",
-   "size": 1416
+   "sha256": "8f1b7f5bcd373c5d531337e405135026c8dc2a2b3826f34356ded7d8e0ededaa",
+   "size": 1417
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "2e3265ec23af72fc23bb34bc897435a516a28c7e79b6275ea49488b9be929a32",
+ "manifest_sha256": "d85942ec4e7f6f594c4b659745c1e173fb93763946769f402a683d90457c4360",
  "stdout": "{\"status\": \"static-only\", \"case\": \"gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex\"}\n",
  "stderr": "",
  "notes": "The NVIDIA driver DaemonSet combines hostNetwork: true, privileged containers and hostPath mounts of /, /dev, /sys, kernel modules and container runtime sockets - the canonical privileged-node posture. Any container escape or compromised image in this DaemonSet is instant node takeover; recorded as posture (static), paired with the validator exec surface case."

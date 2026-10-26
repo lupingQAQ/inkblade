@@ -31,11 +31,11 @@ def run(ctx: dict, params: dict) -> dict:
     t = _COMMON.Trace(ctx, KEY)
     body = {
         "model": "longctx-mock",
-        "messages": [{"role": "user", "content": "trident long-context window probe"}],
+        "messages": [{"role": "user", "content": "inkblade long-context window probe"}],
         "context_window": window,
         "prompt_tokens": prompt_tokens,
         "max_tokens": _COMMON.int_of(params.get("max_tokens"), 32) or 32,
-        "cache_salt": f"trident-{marker}",
+        "cache_salt": f"inkblade-{marker}",
     }
     before = t.call("GET", f"{target}/metrics")
     chat = t.call("POST", f"{target}/v1/chat/completions", body, _COMMON.headers_for(params))

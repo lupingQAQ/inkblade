@@ -28,8 +28,8 @@ REPO = Path(__file__).resolve().parents[1]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from trident.core.evidence import EvidenceStore  # noqa: E402
-from trident.webui.export_static import export_static  # noqa: E402
+from inkblade.core.evidence import EvidenceStore  # noqa: E402
+from inkblade.webui.export_static import export_static  # noqa: E402
 
 SEVERITIES = ("critical", "high", "medium", "low", "info")
 
@@ -81,7 +81,7 @@ def build_fixture(root: Path, count: int = 10_000, run_name: str = "ui-10k") -> 
     html_bytes = html_path.stat().st_size
     db_bytes = db.stat().st_size
     return {
-        "schema": "trident-ui-perf-fixture/1",
+        "schema": "inkblade-ui-perf-fixture/1",
         "findings": count,
         "run_dir": _rel(run.dir),
         "index_html": _rel(html_path),

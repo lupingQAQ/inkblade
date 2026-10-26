@@ -84,5 +84,5 @@ fixed 下四个跨租户动作分别为 403/401/403/403，`cross_tenant_ok=False
 1. 每云 1 个最小集群（EKS/AKS/ACK/TKE/GKE/CCE）+ 1 个 GPU 节点，只读凭据；
 2. 用同一组只读探针（`GET identity/bucket policy/snapshot/SG`）替换本仿真器的 4 类调用；
 3. 记录 API 版本、返回字段差异、权限边界（哪些字段真实环境不返回）；
-4. 把差异回填 `trident/arch-intel/corpus/` 与本文第 3 节的判别字段表；
+4. 把差异回填 `inkblade/arch-intel/corpus/` 与本文第 3 节的判别字段表；
 5. 只在拿到真实返回后，才把 `docs/SOTA-2026-10.md` 的「六云商真实环境实测」从**未达成**改判。

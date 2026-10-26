@@ -1,7 +1,7 @@
 # sample-vuln-repo
 
-实验室样本树：为 Trident 核心代码检测模块族提供已知 sink 的静态目标（全部为编造代码，
-对应 `trident/core/data/sink-rules.json` 各规则案例锚）。禁止用于真实部署。
+实验室样本树：为 InkBlade 核心代码检测模块族提供已知 sink 的静态目标（全部为编造代码，
+对应 `inkblade/core/data/sink-rules.json` 各规则案例锚）。禁止用于真实部署。
 
 | 文件 | 内嵌 sink 类别 |
 |---|---|

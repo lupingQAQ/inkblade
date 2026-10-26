@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "msswift-torch-utils-py-pickle-loads-l340-regex",
  "source": "mining",
  "component": "msswift",
@@ -25,7 +25,7 @@
   "package": null,
   "wheel_sha256": null,
   "artifact": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/utils/torch_utils.py",
-  "artifact_sha256": "345011337478a017030c945e3ba147e9628cf634e01e854724d8db2afdde95a4",
+  "artifact_sha256": "6bbf26f0db495b28b5e6c9ddc460bb93011f5de61d82b5e1e1d8fdf061cdd2e9",
   "advisory": "reports/samples/mining-trainstack/mining-report.json",
   "advisory_sha256": "803c3de7fe543325e56784046d7d4ab7480b0abc7ce023612417a664921b7a28"
  },
@@ -33,13 +33,13 @@
  "command": "[reproenv] lab/upstream_verify/cases/msswift/msswift-torch-utils-py-pickle-loads-l340-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 5.657,
- "started_at": "2026-10-26T05:03:14+00:00",
+ "duration_s": 17.96,
+ "started_at": "2026-10-26T19:55:19+00:00",
  "marker": {
-  "text": "TRIDENT-UV-msswift-torch-utils-py-pickle-loads-l340-regex",
+  "text": "INKBLADE-UV-msswift-torch-utils-py-pickle-loads-l340-regex",
   "before": "ABSENT",
   "after_has_marker": true,
-  "after_sha256": "8624c6af678873a2c1e24b83589d25de5b4a7fd3def4cb54939a29c8fc62fd97"
+  "after_sha256": "743fcf2c9d4b94205c613f07973ccd4d26494ad1a3c6181fc0a14e9e7e6a4595"
  },
  "request_response": [
   {
@@ -53,23 +53,23 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/msswift/msswift-torch-utils-py-pickle-loads-l340-regex/evidence/log.txt",
-   "sha256": "2a30afc89d081982150e1c99771048b98c35ec99b3272bd3949edd8cafeae104",
-   "size": 378
+   "sha256": "ee71728a5bc7ef5e97d5b9063be2d8d356fb87a56c54d95cf672da0bdf114dca",
+   "size": 379
   },
   {
    "path": "lab/upstream_verify/cases/msswift/msswift-torch-utils-py-pickle-loads-l340-regex/evidence/marker.txt",
-   "sha256": "8624c6af678873a2c1e24b83589d25de5b4a7fd3def4cb54939a29c8fc62fd97",
-   "size": 57
+   "sha256": "743fcf2c9d4b94205c613f07973ccd4d26494ad1a3c6181fc0a14e9e7e6a4595",
+   "size": 58
   },
   {
    "path": "lab/upstream_verify/cases/msswift/msswift-torch-utils-py-pickle-loads-l340-regex/evidence/run.json",
-   "sha256": "7e55daa79d94ba9f235626918e351e1cbe01d8d6bc673605d8a651f9b1810fdf",
-   "size": 1478
+   "sha256": "e949ffd9a9d500d5930ab66217e895d4f6c0431e14510035bddb1c94c5f40734",
+   "size": 1480
   }
  ],
  "poc_sha256": "d397f72eb5d28be8c02938380f9a4c944ea9fe96369fb9e04e72b557b9cf2cbf",
- "manifest_sha256": "be9c8f9f429b6fd1890a03120d7556e6ed0484e923a16bc4fabc6338dafb0f31",
- "stdout": "{\"status\": \"verified\", \"marker\": \"TRIDENT-UV-msswift-torch-utils-py-pickle-loads-l340-regex\", \"evidence\": \"lab/upstream_verify/cases/msswift/msswift-torch-utils-py-pickle-loads-l340-regex/evidence\"}\n",
+ "manifest_sha256": "f792aa6e91825e7c6a7c4dab2629200e44e8c2ed87892407393f701ecba077a5",
+ "stdout": "{\"status\": \"verified\", \"marker\": \"INKBLADE-UV-msswift-torch-utils-py-pickle-loads-l340-regex\", \"evidence\": \"lab/upstream_verify/cases/msswift/msswift-torch-utils-py-pickle-loads-l340-regex/evidence\"}\n",
  "stderr": "",
  "notes": "swift.utils.torch_utils.Serializer.from_tensor unpickles a byte prefix of a torch tensor (int64 length header + pickle stream). This helper is used to pass objects between ranks/nodes in the megatron trainer path, so a peer who can inject the tensor bytes gets pickle code execution. Reproduced at function level against the verbatim pinned v4.6.0 upstream module with the real installed torch/numpy."
 }

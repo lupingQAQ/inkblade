@@ -2,9 +2,9 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.graph import Graph, LAYERS, METHODS
-from trident.core.reachability import MATRIX_DIMENSIONS, infer
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.graph import Graph, LAYERS, METHODS
+from inkblade.core.reachability import MATRIX_DIMENSIONS, infer
 
 
 class TestGraphModel(unittest.TestCase):

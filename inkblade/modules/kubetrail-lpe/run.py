@@ -31,7 +31,7 @@ def _view(snapshot: dict) -> dict:
 
 
 def analyze(snapshot: dict, params: dict) -> list[dict]:
-    from trident.kubetrail.lpe import assess, findings
+    from inkblade.kubetrail.lpe import assess, findings
 
     report = assess(_view(snapshot))
     return [finding(
@@ -42,7 +42,7 @@ def analyze(snapshot: dict, params: dict) -> list[dict]:
 
 
 def extra(snapshot: dict, findings: list[dict]) -> dict:
-    from trident.kubetrail.lpe import RULES
+    from inkblade.kubetrail.lpe import RULES
 
     cves = sorted({f.get("cve") for f in findings if f.get("cve")})
     return {"rules": len(RULES), "cves_at_risk": len(cves), "cves": cves,

@@ -59,7 +59,7 @@ def collect_all(
         return fixture_collection(profile)
 
     doc: dict = {
-        "schema": "trident-collection-v1",
+        "schema": "inkblade-collection-v1",
         "mode": "live",
         "fixture": False,
         "profile": getattr(profile, "get", lambda *_: "")("name") if isinstance(profile, dict) else (profile or ""),
@@ -81,7 +81,7 @@ def collect_all(
     for root in files_dirs or []:
         file_docs.append(files_collect.collect(root))
     if file_docs:
-        merged = {"schema": "trident-files-collection-v1", "status": "ok",
+        merged = {"schema": "inkblade-files-collection-v1", "status": "ok",
                   "roots": [d.get("root") for d in file_docs], "files": [],
                   "errors": []}
         for d in file_docs:
@@ -98,7 +98,7 @@ def collect_all(
     for root in hardware_dirs or []:
         hw_docs.append(hardware_collect.collect(root))
     if hw_docs:
-        merged = {"schema": "trident-hardware-collection-v1", "status": "ok",
+        merged = {"schema": "inkblade-hardware-collection-v1", "status": "ok",
                   "roots": [d.get("root") for d in hw_docs], "bmc": [], "switches": [],
                   "tpm": [], "errors": []}
         for d in hw_docs:

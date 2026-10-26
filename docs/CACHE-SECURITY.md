@@ -41,10 +41,10 @@
 | # | 缓存类型 | 威胁 | 模块 | 真实 HTTP 证据（vulnerable） | fixed 对照 |
 |---|---|---|---|---|---|
 | 1 | prefix cache | 隔离策略缺失：`cache_salt` 未启用、键 scope 全局 | `cache-salt-policy-audit` | `GET /config` 200 且 `cache_salt_policy.enabled=false/key_scope=global`；A 租户带 salt 预热后 B 租户同 prefix 无 salt 复用，`usage.cached_tokens=2048` | `/config` 401；跨租户探测恒 miss（`cached_tokens=0`，不以 403 泄露存在性） |
-| 2 | 近似/语义缓存 | 阈值内跨租户误命中，读回他租户响应 | `similarity-cache-false-hit` | `POST /approx/lookup` 200，`best_similarity=0.8824 ≥ 0.85`，`matched.tenant=tenant-b`，响应含 `TRIDENT-BENIGN-APPROX-VICTIM` | 仅本租户检索，`hit=false`、`matched=null` |
+| 2 | 近似/语义缓存 | 阈值内跨租户误命中，读回他租户响应 | `similarity-cache-false-hit` | `POST /approx/lookup` 200，`best_similarity=0.8824 ≥ 0.85`，`matched.tenant=tenant-b`，响应含 `INKBLADE-BENIGN-APPROX-VICTIM` | 仅本租户检索，`hit=false`、`matched=null` |
 | 3 | prefix cache | TTFT 时序侧信道 → 成员推断 / 前缀字典提取 | `cache-timing-sidechannel` | N=60（30 成员 + 30 对照），均值 27.9ms vs 222.2ms，Δ=194.3ms，Welch `p=1.05e-28`，字典提取率 >0.9 | 两类皆 miss，Δ≈4ms，`p≈0.55`，不显著 |
-| 4 | prefix cache + KV 池 | LRU 逐出后残留层跨租户可读 | `cache-eviction-residue` | 160 条唯一前缀洪泛 → `evictions_total +65`；`GET /cache/residue?prefix=…` 200，`tenant=tenant-b`，preview 含 `TRIDENT-BENIGN-RESIDUE-VICTIM` | 逐出即 zeroize，`/cache/residue` 404 |
-| 5 | 远程 KV 池 | 块命名空间绕过：任意租户读他租户块 | `remote-kv-pool-isolation` | `GET /kvpool/blocks/tenant-b%2Fctx%2Fseed-001` 200，`tenant=tenant-b`，值含 `TRIDENT-BENIGN-POOL-VICTIM`；本租户对照块 200 | 越权 403 `kv_pool_namespace_isolation`；本租户对照仍 200 |
+| 4 | prefix cache + KV 池 | LRU 逐出后残留层跨租户可读 | `cache-eviction-residue` | 160 条唯一前缀洪泛 → `evictions_total +65`；`GET /cache/residue?prefix=…` 200，`tenant=tenant-b`，preview 含 `INKBLADE-BENIGN-RESIDUE-VICTIM` | 逐出即 zeroize，`/cache/residue` 404 |
+| 5 | 远程 KV 池 | 块命名空间绕过：任意租户读他租户块 | `remote-kv-pool-isolation` | `GET /kvpool/blocks/tenant-b%2Fctx%2Fseed-001` 200，`tenant=tenant-b`，值含 `INKBLADE-BENIGN-POOL-VICTIM`；本租户对照块 200 | 越权 403 `kv_pool_namespace_isolation`；本租户对照仍 200 |
 | 6 | 路由器指标 | 按租户缓存指标无鉴权泄露（缓存状态侧信道） | `router-cache-metrics-leak` | `GET /router/metrics` 200，`per_tenant` 含 `tenant-b`（KV 利用率/命中率/独立前缀数/前缀样本） | 无身份 401；租户头仅本租户视图，`scope=own-tenant` |
 | 7 | 远程 KV 池 | 毒化块 `pinned` 存续（逐出策略绕过） | `cache-poison-persistence` | `backup-write`：写入带 run marker 的良性块并 `pinned=true`，160 条洪泛 `evictions +66` 后读回 200 且 sha256 一致 | `pinned` 被降级/拒绝（`pinning_denied=true`），洪泛后 404；probe-only 越权读 403 |
 
@@ -81,7 +81,7 @@
 ```text
 cache-salt-policy-audit（配置面 salt 关闭 + 跨租户 cached_tokens>0）
   └─> similarity-cache-false-hit（单 token 变异触发阈值内检索）
-        └─> 读回 tenant-b 缓存响应 + TRIDENT-BENIGN-APPROX-VICTIM
+        └─> 读回 tenant-b 缓存响应 + INKBLADE-BENIGN-APPROX-VICTIM
 ```
 
 前置条件：`findings('cache-salt-policy-audit').any(severity == 'high')`。
@@ -112,7 +112,7 @@ MITRE：T1592（Gather Victim Host Information）、T1213。
 | `falco-cache-probe-burst` | Falco | `cache-sidechannel-chain`（监视） | `evt.type=cache_probe` + `probe_count ≥ 50` |
 | `suricata-cache-plane-uri` | Suricata | 两条链 | `/kvpool/blocks`、`/approx/lookup`、`/cache/residue`、`/router/metrics` URI |
 
-紫队验证：`trident.rules.validate` 对两条链重放真实 HTTP 探针，合成 Sigma/Falco/Suricata 事件，
+紫队验证：`inkblade.rules.validate` 对两条链重放真实 HTTP 探针，合成 Sigma/Falco/Suricata 事件，
 两链均无“漏过”单元；规则包 `mapping.json` 的 `blocks_chains` 绑定到上述链。
 
 ---
@@ -138,10 +138,10 @@ python -m unittest tests.test_cache_sim tests.test_modules_cache tests.test_cach
 
 | # | 实效 | 关键数值 | 判定 |
 |---|---|---|---|
-| 1 | 近似缓存误命中读回他租户 marker | 相似度 0.8824 ≥ 阈值 0.85；`matched.tenant=tenant-b`；响应含 `TRIDENT-BENIGN-APPROX-VICTIM` | PASS |
+| 1 | 近似缓存误命中读回他租户 marker | 相似度 0.8824 ≥ 阈值 0.85；`matched.tenant=tenant-b`；响应含 `INKBLADE-BENIGN-APPROX-VICTIM` | PASS |
 | 2 | TTFT 差异显著（N≥50） | N=60；27.9ms vs 222.2ms；Δ=194.3ms；Welch `t=-44.10`、`df=29.81`、`p=1.05e-28`；两档区间 [22,31] / [186,268] 不重叠 | PASS |
-| 3 | 逐出残留跨租户可读 | 洪泛后 `evictions 0→65`；`/cache/residue` 200；`tenant=tenant-b`；preview 含 `TRIDENT-BENIGN-RESIDUE-VICTIM` | PASS |
-| 4 | 远程 KV 池命名空间绕过 | `tenant-b/ctx/seed-001` 200；`tenant=tenant-b`；值含 `TRIDENT-BENIGN-POOL-VICTIM` | PASS |
+| 3 | 逐出残留跨租户可读 | 洪泛后 `evictions 0→65`；`/cache/residue` 200；`tenant=tenant-b`；preview 含 `INKBLADE-BENIGN-RESIDUE-VICTIM` | PASS |
+| 4 | 远程 KV 池命名空间绕过 | `tenant-b/ctx/seed-001` 200；`tenant=tenant-b`；值含 `INKBLADE-BENIGN-POOL-VICTIM` | PASS |
 
 `fixed` 姿态对照：4 项均不成立（跨租户 `cached_tokens=0`、近似 miss、TTFT 无显著差分、
 残留 404、池读 403、pinning 被拒），由 `tests/test_cache_security.py::EffectDifferentialTest` 断言。
@@ -155,7 +155,7 @@ python -m unittest tests.test_cache_sim tests.test_modules_cache tests.test_cach
 - TTFT 是仿真计时，不是 GPU 实测；真实环境需按机型/负载重新标定 `min_effect_ms` 与 `alpha`。
 - 远程 KV 池接口按 Mooncake/LMCache 的“块存储 + 传输”抽象建模，不绑定其具体 RPC 协议；
   真实适配需替换 `remote-kv-pool-isolation` 的 URL/认证参数。
-- 指标/样本只使用 benign fixture（`TRIDENT-BENIGN-*`），不含真实业务数据或凭据。
+- 指标/样本只使用 benign fixture（`INKBLADE-BENIGN-*`），不含真实业务数据或凭据。
 - 写类验证仅在 `backup-write` + 备份回执下执行；生产使用需额外 ROE/范围闸门。
 
 ---

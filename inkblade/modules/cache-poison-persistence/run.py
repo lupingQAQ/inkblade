@@ -49,7 +49,7 @@ def run(ctx: dict, params: dict) -> dict:
     if mode == "backup-write":
         block_id = str(params.get("block_id") or f"poison-{marker}")
         payload_value = str(params.get("payload") or (
-            '{"marker": "' + marker + '", "benign": true, "class": "trident-lab-poison", '
+            '{"marker": "' + marker + '", "benign": true, "class": "inkblade-lab-poison", '
             '"surface": "remote-kv-pool", "policy": "pinned"}'
         ))
         write = t.call("POST", f"{target}/kvpool/blocks", {

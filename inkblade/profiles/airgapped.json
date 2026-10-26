@@ -1,5 +1,5 @@
 {
-  "schema": "trident-profile-v1",
+  "schema": "inkblade-profile-v1",
   "name": "airgapped",
   "description": "Air-gapped self-managed Kubernetes: local registry, SPIRE identity, confidential containers, BMC/switch management and no cloud metadata or internet egress.",
   "platform": "kubernetes",

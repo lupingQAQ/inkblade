@@ -10,8 +10,8 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.export import build_ocsf, build_sarif, build_vex, export_run
+from inkblade.core.evidence import EvidenceStore
+from inkblade.export import build_ocsf, build_sarif, build_vex, export_run
 
 REPO = Path(__file__).resolve().parents[1]
 PY = sys.executable
@@ -68,7 +68,7 @@ class TestSarif(unittest.TestCase):
     def test_driver_and_rules(self):
         run = self.doc["runs"][0]
         driver = run["tool"]["driver"]
-        self.assertEqual(driver["name"], "Trident")
+        self.assertEqual(driver["name"], "InkBlade")
         self.assertTrue(driver["version"])
         self.assertEqual(len(driver["rules"]), 3)
         ids = [r["id"] for r in driver["rules"]]
@@ -86,7 +86,7 @@ class TestSarif(unittest.TestCase):
             loc = result["locations"][0]["physicalLocation"]
             self.assertTrue(loc["artifactLocation"]["uri"])
             self.assertEqual(loc["region"]["startLine"], 1)
-            self.assertRegex(result["partialFingerprints"]["tridentFindingHash/v1"],
+            self.assertRegex(result["partialFingerprints"]["inkbladeFindingHash/v1"],
                              r"^[0-9a-f]{16}$")
 
     def test_severity_levels(self):
@@ -120,7 +120,7 @@ class TestOcsf(unittest.TestCase):
             self.assertEqual(ev["category_uid"], 2)
             self.assertEqual(ev["type_uid"], 200401)
             self.assertEqual(ev["activity_id"], 1)
-            self.assertEqual(ev["metadata"]["product"]["vendor_name"], "Trident")
+            self.assertEqual(ev["metadata"]["product"]["vendor_name"], "InkBlade")
             self.assertIn("version", ev["metadata"])
             self.assertIsInstance(ev["time"], int)
             self.assertTrue(ev["finding_info"]["uid"])
@@ -148,7 +148,7 @@ class TestVex(unittest.TestCase):
 
     def test_openvex_shape(self):
         self.assertIn("openvex.dev/ns", self.doc["@context"])
-        self.assertTrue(self.doc["@id"].startswith("https://trident.local/vex/"))
+        self.assertTrue(self.doc["@id"].startswith("https://inkblade.local/vex/"))
         self.assertTrue(self.doc["author"])
         self.assertEqual(self.doc["version"], 1)
         self.assertRegex(self.doc["timestamp"], r"^\d{4}-\d{2}-\d{2}T.*Z$")
@@ -190,7 +190,7 @@ class TestExportCli(unittest.TestCase):
     def _run(self, *args):
         env = dict(os.environ)
         env["PYTHONIOENCODING"] = "utf-8"
-        return subprocess.run([PY, "-m", "trident", *args], cwd=str(REPO),
+        return subprocess.run([PY, "-m", "inkblade", *args], cwd=str(REPO),
                               capture_output=True, timeout=60, env=env)
 
     def test_export_run_functions(self):

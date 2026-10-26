@@ -54,7 +54,7 @@ def main(argv: list[str] | None = None) -> int:
             continue
         data = json.loads(path.read_text(encoding="utf-8"))
         for eid, result in (data.get("verdicts") or {}).items():
-            item = merged.setdefault(eid, {"id": eid, "providers": {}, "schema": "trident-novelty-result-v1"})
+            item = merged.setdefault(eid, {"id": eid, "providers": {}, "schema": "inkblade-novelty-result-v1"})
             item["providers"].update(result.get("providers") or {})
             item["checked_at"] = result.get("checked_at") or now()
     for eid, item in merged.items():
@@ -73,7 +73,10 @@ def main(argv: list[str] | None = None) -> int:
         matches = [p for p in provs.values() if p.get("status") == "match"]
         bad = [p for p in provs.values()
                if p.get("status") in ("error", "skipped")
-               or (p.get("status") == "not-applicable" and p.get("provider") != "vendor")]
+               or (p.get("status") == "not-applicable" and p.get("provider") != "vendor"
+                   and not p.get("justified"))]
+        waived = [p for p in provs.values()
+                  if p.get("status") == "not-applicable" and p.get("justified")]
         if matches:
             item["verdict"] = "already-public"
             parts = []
@@ -89,8 +92,11 @@ def main(argv: list[str] | None = None) -> int:
             item["verdict"] = "confirmed-unpublished"
             item["reason"] = ("all required providers answered clean; no CVE/GHSA/security commit/"
                               "vendor advisory/exploit code match")
+            if waived:
+                item["reason"] += "; justified non-answer: " + "; ".join(
+                    f"{w.get('provider')}: {w.get('detail')}" for w in waived)
         item["matched"] = [m for p in matches for m in (p.get("matches") or [])]
-    payload = {"schema": "trident-novelty-results-v1", "generated_at": now(),
+    payload = {"schema": "inkblade-novelty-results-v1", "generated_at": now(),
                "verdicts": merged}
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)

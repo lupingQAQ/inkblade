@@ -10,6 +10,6 @@
     "snapshot": "可选事件 JSON（{cases:[...]}）；省略使用内置 14 用例"
   },
   "produces": "runtime-coverage-matrix（Falco/Tetragon 双引擎逐事件判定）",
-  "knowledge": "docs/DEPTH-REVIEW.md §3；trident/depth/ebpf.py",
+  "knowledge": "docs/DEPTH-REVIEW.md §3；inkblade/depth/ebpf.py",
   "combo_signature": "ebpf-runtime-blindspot"
 }

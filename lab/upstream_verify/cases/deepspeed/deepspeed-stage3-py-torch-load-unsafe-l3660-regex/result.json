@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-regex",
  "source": "mining",
  "component": "deepspeed",
@@ -33,13 +33,13 @@
  "command": "[reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 2.059,
- "started_at": "2026-10-26T03:20:40+00:00",
+ "duration_s": 9.4,
+ "started_at": "2026-10-26T19:47:07+00:00",
  "marker": {
-  "text": "TRIDENT-UV-deepspeed-stage3-py-torch-load-unsafe-l3660-regex",
+  "text": "INKBLADE-UV-deepspeed-stage3-py-torch-load-unsafe-l3660-regex",
   "before": "ABSENT",
   "after_has_marker": true,
-  "after_sha256": "66b856fb420c5f7d6096ed491d23b3b96b5e96ffba95537af79e31c918883593"
+  "after_sha256": "832db2e8ffa27da797b0b7f6a8645d25eed737b5f6341c0083919c068a9b5054"
  },
  "request_response": [
   {
@@ -53,23 +53,23 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-regex/evidence/ckpt/zero/optimizer_state.pt",
-   "sha256": "6d50df938dec55e5f2eb1f2f4caa9a560aa0a3fc198d4bc6ae3a0e6612c5decd",
-   "size": 281
+   "sha256": "b95b72cfd58ecdccb4e6f8f6b203e87c45b666a13f5e3ec75c56dafa7bf8c3f6",
+   "size": 282
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-regex/evidence/log.txt",
-   "sha256": "a1c754e5f3e7df4388604694f50bfe2aa509cad05c0e58049592e6735e33668b",
-   "size": 391
+   "sha256": "71a7fb14b299cc0d73f050a33bbfcc4cdca2a1e9f6a571ff52a1ff12cc1d8eb1",
+   "size": 390
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-regex/evidence/marker.txt",
-   "sha256": "66b856fb420c5f7d6096ed491d23b3b96b5e96ffba95537af79e31c918883593",
-   "size": 60
+   "sha256": "832db2e8ffa27da797b0b7f6a8645d25eed737b5f6341c0083919c068a9b5054",
+   "size": 61
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-regex/evidence/run.json",
-   "sha256": "891417315e89a96cc73bc9d863b36d0aeec3e66b75f6145fe7a5ef8df43f2c39",
-   "size": 1629
+   "sha256": "41895d0f9914f745d9f7bbebfca113d8de024994c75697cad4cfa6524174a81f",
+   "size": 1631
   },
   {
    "path": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-regex/evidence/static-check.json",
@@ -78,8 +78,8 @@
   }
  ],
  "poc_sha256": "6a2f3c3bd02bcc4cedb6fae80ad07573e723b4d61c20fca890807a3f8e6df710",
- "manifest_sha256": "56465325538905f97aeb80fee774e19b93d8b691c6557f13f0490001d443b4c7",
- "stdout": "{\"status\": \"verified\", \"marker\": \"TRIDENT-UV-deepspeed-stage3-py-torch-load-unsafe-l3660-regex\", \"evidence\": \"lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-regex/evidence\"}\n",
+ "manifest_sha256": "e28460945a70f7291093db6c2424d6c31db909e8ea6a5db1d01ea1d5650108dd",
+ "stdout": "{\"status\": \"verified\", \"marker\": \"INKBLADE-UV-deepspeed-stage3-py-torch-load-unsafe-l3660-regex\", \"evidence\": \"lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-regex/evidence\"}\n",
  "stderr": "",
  "notes": "Explicit torch.load(weights_only=False) inside the ZeRO-3 universal-checkpoint loader: any actor able to write the checkpoint directory gets pickle code execution when the victim resumes. Reproduced at function level against the verbatim pinned stage3.py; the DeepSpeed package tree is stubbed (no CUDA/MSVC on this Windows host) while torch is the real installed build."
 }

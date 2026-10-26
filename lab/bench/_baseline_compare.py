@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-MODULES_DIR = ROOT / "trident" / "modules"
+MODULES_DIR = ROOT / "inkblade" / "modules"
 OPTIMIZED = ("metadata-egress", "network-policy-coverage", "ray-control-plane")
 RECON_MODULES = (
     "cloud-integration-fingerprint", "escape-primitives", "exposure-mapping",
@@ -62,12 +62,12 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     report = {"scales": []}
-    with tempfile.TemporaryDirectory(prefix="trident-baseline-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="inkblade-baseline-") as tmp:
         tmp_dir = Path(tmp)
         (tmp_dir / "_recon-common.py").write_bytes((MODULES_DIR / "_recon-common.py").read_bytes())
         legacy_mods = {}
         for key in OPTIMIZED:
-            rel = f"trident/modules/{key}/run.py"
+            rel = f"inkblade/modules/{key}/run.py"
             src = subprocess.run(["git", "show", f"{args.ref}:{rel}"], cwd=ROOT,
                                  capture_output=True, check=True).stdout
             target = tmp_dir / key / "run.py"

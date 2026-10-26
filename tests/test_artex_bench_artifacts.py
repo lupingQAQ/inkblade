@@ -203,7 +203,7 @@ class ProseMatchesJsonTest(unittest.TestCase):
         # the cold start actually measured in this run must be quoted in the doc
         self.assertIn(f"{data['cold_start']['artex_health_ms']}", doc)
         self.assertIn(f"{data['resources']['total_mib']['max']:.1f}", doc)
-        for section in ("## 1. 环境", "## 2. 步骤", "## 3. 原始数据", "## 4. 与 Trident 对照",
+        for section in ("## 1. 环境", "## 2. 步骤", "## 3. 原始数据", "## 4. 与 InkBlade 对照",
                         "## 5. 复现", "## 6. 失败点"):
             self.assertIn(section, doc)
 

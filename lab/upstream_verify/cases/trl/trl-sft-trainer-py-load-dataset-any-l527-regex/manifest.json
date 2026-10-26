@@ -36,7 +36,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-trl-sft-trainer-py-load-dataset-any-l527-regex",
+ "marker_text": "INKBLADE-UV-trl-sft-trainer-py-load-dataset-any-l527-regex",
  "notes": "Dataset loading is intended functionality; remote dataset trust is a documented boundary.",
  "static_evidence_level": "source-line",
  "static_analysis": "Dataset loading is intended functionality; remote dataset trust is a documented boundary.",
@@ -52,7 +52,7 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "trl",
  "static_blocker": {
   "category": "pattern-false-positive",

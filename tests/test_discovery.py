@@ -5,8 +5,8 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.discovery import AssetInventory, DiscoveryError, discover, infer_product
-from trident.core.evidence import EvidenceStore
+from inkblade.core.discovery import AssetInventory, DiscoveryError, discover, infer_product
+from inkblade.core.evidence import EvidenceStore
 
 SEEDS_V1 = {
     "namespaces": ["ml-train"],

@@ -14,12 +14,12 @@ import json
 from pathlib import Path
 
 try:  # 常规：包在 sys.path 上
-    from trident.core.reachability import MATRIX_DIMENSIONS, infer
+    from inkblade.core.reachability import MATRIX_DIMENSIONS, infer
 except ImportError:  # 兜底：按本文件位置定位仓库根
     import sys
 
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-    from trident.core.reachability import MATRIX_DIMENSIONS, infer
+    from inkblade.core.reachability import MATRIX_DIMENSIONS, infer
 
 SOURCE_MODULES = (
     "fabric-topology-isolation",

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Sigstore keyless：fixture CA/Rekor、公共日志真实样本、篡改/吊销/身份与 CLI。
 
-网络相关断言默认离线；``TRIDENT_ONLINE=1`` 时才在线重取 Rekor 条目。
+网络相关断言默认离线；``INKBLADE_ONLINE=1`` 时才在线重取 Rekor 条目。
 真实公共样本：reports/samples/sigstore/real-keyless-*（cosign v3.1.4 checksums，
 Fulcio 公共 CA 签发，Rekor 公共日志收录）。
 """
@@ -18,14 +18,14 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from trident import sigstore_keyless as sk
-from trident.tee.keys import CURVES, PrivateKey, pem_wrap
+from inkblade import sigstore_keyless as sk
+from inkblade.tee.keys import CURVES, PrivateKey, pem_wrap
 
 REPO = Path(__file__).resolve().parents[1]
 SAMPLES = REPO / "reports" / "samples" / "sigstore"
 NOW = datetime(2026, 10, 25, 12, 0, 0, tzinfo=timezone.utc)
-IDENTITY = "fixture@trident.local"
-ISSUER = "https://fixture.trident.local"
+IDENTITY = "fixture@inkblade.local"
+ISSUER = "https://fixture.inkblade.local"
 
 
 def _key(seed: str = "unit-key") -> PrivateKey:
@@ -90,7 +90,7 @@ class TestFixtureKeyless(unittest.TestCase):
 
     def test_identity_regex(self):
         artifact, bundle = _bundle()
-        verdict = sk.keyless_verify(artifact, bundle, identity_regex=r".*@trident\.local", issuer=ISSUER)
+        verdict = sk.keyless_verify(artifact, bundle, identity_regex=r".*@inkblade\.local", issuer=ISSUER)
         self.assertTrue(verdict["ok"], verdict["errors"])
 
     def test_revoked_serial_fails(self):
@@ -198,8 +198,8 @@ class TestRealSigstoreSamples(unittest.TestCase):
         self.assertEqual(verdict["identity"]["oidc_issuer"], "https://accounts.google.com")
         self.assertTrue(all(c["ok"] for c in verdict["checks"] if c["name"].startswith("tlog")))
 
-    @unittest.skipUnless(os.environ.get("TRIDENT_ONLINE") == "1",
-                         "在线 Rekor 重取需 TRIDENT_ONLINE=1")
+    @unittest.skipUnless(os.environ.get("INKBLADE_ONLINE") == "1",
+                         "在线 Rekor 重取需 INKBLADE_ONLINE=1")
     def test_real_keyless_bundle_online(self):
         artifact = (SAMPLES / "real-keyless-cosign-checksums.txt").read_bytes()
         bundle = json.loads((SAMPLES / "real-keyless-bundle.json").read_text(encoding="utf-8"))
@@ -227,7 +227,7 @@ class TestRealSigstoreSamples(unittest.TestCase):
 
 class TestCLI(unittest.TestCase):
     def test_cli_sign_and_verify_roundtrip(self):
-        from trident.cli import main
+        from inkblade.cli import main
 
         with tempfile.TemporaryDirectory() as tmp:
             art = Path(tmp) / "artifact.bin"

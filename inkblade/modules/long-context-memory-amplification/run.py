@@ -33,11 +33,11 @@ def run(ctx: dict, params: dict) -> dict:
     before = t.call("GET", f"{target}/metrics", headers=_COMMON.headers_for(params))
     chat = t.call("POST", f"{target}/v1/chat/completions", {
         "model": "longctx-mock",
-        "messages": [{"role": "user", "content": "trident kv amplification probe"}],
+        "messages": [{"role": "user", "content": "inkblade kv amplification probe"}],
         "context_window": str(params.get("context_window") or "1m"),
         "prompt_tokens": prompt_tokens,
         "max_tokens": _COMMON.int_of(params.get("max_tokens"), 64) or 64,
-        "cache_salt": f"trident-{marker}",
+        "cache_salt": f"inkblade-{marker}",
     }, _COMMON.headers_for(params))
     after = t.call("GET", f"{target}/metrics")
 

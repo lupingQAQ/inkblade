@@ -13,7 +13,7 @@
     "target": "缓存面服务基址（必填）",
     "victim_block": "受害租户块 id（缺省 tenant-b/ctx/seed-001）",
     "control_block": "本租户对照块 id（缺省 tenant-a/ctx/control-001）",
-    "marker_needle": "块值中的 benign 标记串（缺省 TRIDENT-BENIGN-POOL-VICTIM）",
+    "marker_needle": "块值中的 benign 标记串（缺省 INKBLADE-BENIGN-POOL-VICTIM）",
     "tenant": "探测租户（缺省 tenant-a）",
     "victim_tenant": "受害租户（缺省 tenant-b）"
   },

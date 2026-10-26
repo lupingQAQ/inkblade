@@ -14,7 +14,7 @@ section, pods, env_pairs = _C.section, _C.pods, _C.env_pairs
 
 
 def analyze(snapshot: dict, params: dict) -> list[dict]:
-    from trident.kubetrail.manifestscan import scan_configmaps, scan_env, scan_manifests
+    from inkblade.kubetrail.manifestscan import scan_configmaps, scan_env, scan_manifests
 
     out: list[dict] = []
     manifests = section(snapshot, "manifests")

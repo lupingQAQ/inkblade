@@ -8,7 +8,7 @@
 
 ## K1. 采集器/检查器（collectors 注册表 + SA token 审计）（20 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `identity` | internal/collectors/types.go:165 | 采集器 mode=safe | partial（core/roe.py + core/discovery.py） | M | in-pod 身份视角缺（控制面侧等价） [CM-22] |
 | `environment` | internal/collectors/types.go:166 | 采集器 mode=safe | partial（modules/metadata-egress 等环境面） | M | in-pod 环境变量面缺 [CM-22] |
@@ -33,7 +33,7 @@
 
 ## K2. findings 引擎规则函数（internal/findings）（25 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `EvaluateEscape` | internal/findings/findings.go:33 | findings 引擎规则函数 | partial（modules/escape-primitives） | M | 逃逸规则族入口（部分原语已覆盖） |
 | `EvaluateRBAC` | internal/findings/findings.go:87 | findings 引擎规则函数 | we-have（modules/rbac-mapping + core/auditlog.py） | S | RBAC 规则族入口 |
@@ -63,7 +63,7 @@
 
 ## K3. findings 启发式标题（LPE/escape/RBAC 逐条）（58 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `%s in effective caps` | internal/findings/findings.go:141 | escape 启发式 finding 标题 | partial | S | 未归类启发式 |
 | `Seccomp disabled` | internal/findings/findings.go:161 | escape 启发式 finding 标题 | partial（modules/escape-primitives） | M | 逃逸原语逐路径细分缺（部分已覆盖） |
@@ -126,12 +126,12 @@
 
 ## K4. 敏感值三态（raw/redact/metadata）（0 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 
 ## K5. dbus.json 导出 schema（model.go）（10 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `kubetrail.server/v1` | internal/model/model.go:5 | dbus.json 导出 schema 常量 | we-have（core/auditlog.py adapt_kubetrail（dbus.json→findings 消费端）） | - | schema 契约已适配 |
 | `Document.schemaVersion` | internal/model/model.go:58 | dbus.json 字段（Document） | we-have（core/auditlog.py adapt_kubetrail） | - |  |
@@ -146,7 +146,7 @@
 
 ## K6. CLI 参数（kubetrail-server）（9 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `--mode` | internal/command/command.go:58 | collection mode: safe or full | we-have（core/runner.py dry-run/live 键） | - | safe/full 分级=ROE 预演/实测 |
 | `--output` | internal/command/command.go:60 | output file path, or - for stdout | we-have（export.py + core/evidence.py） | - |  |
@@ -155,21 +155,21 @@
 | `--pretty` | internal/command/command.go:64 | pretty-print output JSON | we-have（export.py + core/evidence.py） | - |  |
 | `--timeout` | internal/command/command.go:66 | overall collection timeout | we-have（core/runner.py 超时） | - |  |
 | `--sensitive` | internal/command/command.go:68 | sensitive value handling: raw, redact, or metadata | partial（core/redact.py） | S | 三态缺 metadata [CM-06] |
-| `--kubeconfig` | internal/command/command.go:72 | kubeconfig path for non-cluster testing | N/A | - | 目标内运行形态差异（Trident 控制台侧） |
+| `--kubeconfig` | internal/command/command.go:72 | kubeconfig path for non-cluster testing | N/A | - | 目标内运行形态差异（InkBlade 控制台侧） |
 | `--scan` | internal/command/command.go:78 | scan categories: all, lpe, escape, rbac (comma-separated) | we-have（core/runner.py 模块选择） | - | lpe/escape/rbac 分类=模块族选择 |
 
 ## K7. Wails 桌面绑定方法（apps/desktop/app.go）（83 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
-| `ListClusters` | apps/desktop/app.go:89 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（Trident 单控制台多 run 模型） |
-| `SaveCluster` | apps/desktop/app.go:96 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（Trident 单控制台多 run 模型） |
-| `DeleteCluster` | apps/desktop/app.go:113 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（Trident 单控制台多 run 模型） |
-| `TestConnection` | apps/desktop/app.go:121 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（Trident 单控制台多 run 模型） |
-| `ConnectCluster` | apps/desktop/app.go:131 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（Trident 单控制台多 run 模型） |
-| `DisconnectCluster` | apps/desktop/app.go:165 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（Trident 单控制台多 run 模型） |
-| `ListClusterExtensions` | apps/desktop/app.go:206 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（Trident 单控制台多 run 模型） |
-| `ClusterExtensionProxyPath` | apps/desktop/app.go:214 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（Trident 单控制台多 run 模型） |
+| `ListClusters` | apps/desktop/app.go:89 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（InkBlade 单控制台多 run 模型） |
+| `SaveCluster` | apps/desktop/app.go:96 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（InkBlade 单控制台多 run 模型） |
+| `DeleteCluster` | apps/desktop/app.go:113 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（InkBlade 单控制台多 run 模型） |
+| `TestConnection` | apps/desktop/app.go:121 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（InkBlade 单控制台多 run 模型） |
+| `ConnectCluster` | apps/desktop/app.go:131 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（InkBlade 单控制台多 run 模型） |
+| `DisconnectCluster` | apps/desktop/app.go:165 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（InkBlade 单控制台多 run 模型） |
+| `ListClusterExtensions` | apps/desktop/app.go:206 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（InkBlade 单控制台多 run 模型） |
+| `ClusterExtensionProxyPath` | apps/desktop/app.go:214 | Wails 绑定方法（Cluster Persistence） | partial（webui/server.py 多 run + core/discovery.py） | L | 多集群连接管理（InkBlade 单控制台多 run 模型） |
 | `OpenKubeconfigDialog` | apps/desktop/app.go:220 | Wails 绑定方法（Dialogs） | N/A | - | Wails 桌面对话框（形态差异） |
 | `PickSaveFile` | apps/desktop/app.go:237 | Wails 绑定方法（Dialogs） | N/A | - | Wails 桌面对话框（形态差异） |
 | `PickOpenFile` | apps/desktop/app.go:243 | Wails 绑定方法（Dialogs） | N/A | - | Wails 桌面对话框（形态差异） |
@@ -248,7 +248,7 @@
 
 ## K8. 权限维持模板（kube/persistence.go）（7 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `serviceaccount` | apps/desktop/kube/persistence.go:30 | 权限维持模板 ServiceAccount | missing | - | SA+CRB 植入（执行面刻意不做；检测=auditlog cluster-admin binding 检测器） |
 | `cronjob` | apps/desktop/kube/persistence.go:31 | 权限维持模板 CronJob | missing | - | 工作负载持久化植入（同上；检测=auditlog 异常 pod/CRB） |
@@ -260,7 +260,7 @@
 
 ## K9. agent MCP 工具（apps/agent）（8 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `kubetrail_load_result` | apps/agent/src/tools/kubetrail.ts:88 | agent MCP 工具 | we-have（core/auditlog.py adapt_kubetrail + mcp_server.py get_findings） | - |  |
 | `kubetrail_summary` | apps/agent/src/tools/kubetrail.ts:100 | agent MCP 工具 | we-have（core/auditlog.py adapt_kubetrail + mcp_server.py get_findings） | - |  |
@@ -273,7 +273,7 @@
 
 ## K10. agent 攻击面技能（.claude/skills + AGENTS.md 边界）（17 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `admission-policy-governance` | apps/agent/.claude/skills/admission-policy-governance/SKILL.md:1 | agent 攻击面技能（边界见 apps/agent/AGENTS.md） | partial（modules/defense-bypass-admission） | M | 准入治理面（dry-run 探测→CM-24） [CM-24] |
 | `cloud-metadata-analysis` | apps/agent/.claude/skills/cloud-metadata-analysis/SKILL.md:1 | agent 攻击面技能（边界见 apps/agent/AGENTS.md） | we-have（modules/metadata-egress + multi-cloud-imds-credentials + ssrf-imds-credential + cloud-sg-imds-exposure） | - |  |
@@ -295,7 +295,7 @@
 
 ## K11. EXP 模板（exp/catalog.ts，safe/full 分级）（26 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `cloud-metadata-verify` | apps/agent/src/exp/catalog.ts:23 | EXP 模板 mode=safe | we-have（modules/metadata-egress + multi-cloud-imds-credentials） | - |  |
 | `cloud-identity-verify` | apps/agent/src/exp/catalog.ts:38 | EXP 模板 mode=safe | we-have（modules/metadata-egress + multi-cloud-imds-credentials） | - |  |
@@ -326,7 +326,7 @@
 
 ## K12. 桌面视图（Vue views）（6 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `About` | apps/desktop/frontend/src/views/About.vue:1 | 桌面端 Vue 视图 | N/A | - | 桌面壳页面 |
 | `Analysis` | apps/desktop/frontend/src/views/Analysis.vue:1 | 桌面端 Vue 视图 | partial（webui SPA 六视图） | M | finding 分析/证据下钻缺 |
@@ -337,7 +337,7 @@
 
 ## K13. 桌面组件（Vue components）（17 项）
 
-| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |
+| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |
 |---|---|---|---|---|---|
 | `AgentPanel` | apps/desktop/frontend/src/components/AgentPanel.vue:1 | 桌面端 Vue 组件 | missing | - | 对话式 agent 面板（刻意不做；mcp_server/agent_planner 已有） |
 | `ClusterSidebar` | apps/desktop/frontend/src/components/ClusterSidebar.vue:1 | 桌面端 Vue 组件 | partial（webui SPA） | S | 扫描/连接 UI 部分对齐 |

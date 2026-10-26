@@ -15,7 +15,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 DEV_LOG = REPO / "docs" / "DEV-LOG.md"
 PROGRESS = REPO / "progress.md"
-SDD = REPO / ".superpowers" / "sdd" / "2026-10-25-trident-platform" / "progress.md"
+SDD = REPO / ".superpowers" / "sdd" / "2026-10-25-inkblade-platform" / "progress.md"
 
 
 class TestDevLog(unittest.TestCase):
@@ -26,7 +26,7 @@ class TestDevLog(unittest.TestCase):
     def test_file_and_sources_present(self):
         self.assertTrue(DEV_LOG.is_file())
         self.assertIn("progress.md", self.text)
-        self.assertIn(".superpowers/sdd/2026-10-25-trident-platform/progress.md", self.text)
+        self.assertIn(".superpowers/sdd/2026-10-25-inkblade-platform/progress.md", self.text)
         self.assertIn("## A. SDD 任务台账", self.text)
         self.assertIn("## B. 里程碑与验收记录", self.text)
         self.assertIn("## C. 2026-10-25 终审收尾批次", self.text)

@@ -59,7 +59,7 @@ def _pct(values: list[float], p: float) -> float:
 def run_load(*, tenants: int = 8, concurrency: int = 8, requests: int = 20,
              workers: int = 4, work_ms: int = 30, out: Path | str | None = None,
              port: int | None = None) -> dict:
-    root = Path(tempfile.mkdtemp(prefix="trident-saas-"))
+    root = Path(tempfile.mkdtemp(prefix="inkblade-saas-"))
     max_concurrent = max(1, concurrency // 2)
     svc = Service(root, tenants=tenants, workers=workers, work_ms=work_ms, port=port or 0)
     for i in range(tenants):
@@ -200,7 +200,7 @@ def run_load(*, tenants: int = 8, concurrency: int = 8, requests: int = 20,
         "approval_role_denied": stats["approval_role_denied"],
     }
     doc = {
-        "schema": "trident-saas-load/2026-10",
+        "schema": "inkblade-saas-load/2026-10",
         "mode": "local simulation (single host, SQLite, simulated module work)",
         "disclaimer": "本地模拟，非商业 SLA；不是分布式集群/跨 region 测试",
         "config": {"tenants": tenants, "concurrency_per_tenant": concurrency,

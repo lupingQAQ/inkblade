@@ -1,10 +1,10 @@
 title: 语义缓存跨租户投毒
 id: cb585b0d-d99d-07c0-286b-a0dc16d52d72
 status: stable
-description: "Semantic-cache cross-tenant poisoning. 共享前缀键跨租户命中、缓存条目覆写与前缀归一化碰撞劫持；来源=LLM 探针矩阵 cache-poison 类。 检测规则与 trident/probes 探针库 cache-poison 类一一联动（每类 ≥1 规则）。"
+description: "Semantic-cache cross-tenant poisoning. 共享前缀键跨租户命中、缓存条目覆写与前缀归一化碰撞劫持；来源=LLM 探针矩阵 cache-poison 类。 检测规则与 inkblade/probes 探针库 cache-poison 类一一联动（每类 ≥1 规则）。"
 references:
-  - "trident-rules-mapping: sigma-llm-probe-cache-poison"
-author: Trident rules engine
+  - "inkblade-rules-mapping: sigma-llm-probe-cache-poison"
+author: InkBlade rules engine
 date: 2026/10/25
 logsource:
   product: litellm
@@ -22,10 +22,10 @@ falsepositives:
 level: critical
 tags:
   - attack.t1550
-  - trident
+  - inkblade
   - llm-probe
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-tuning: 以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针
-  trident-blocks-chains: ""
+  inkblade-mode: monitor
+  inkblade-tuning: 以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针
+  inkblade-blocks-chains: ""

@@ -45,9 +45,9 @@ CASES = [
     {"name": "sglang 冻结权重", "service": "sglang", "method": "POST", "path": "/freeze", "body": {}, "vulnerable_status": 200, "fixed_status": 401},
     {"name": "sglang 恢复推理", "service": "sglang", "method": "POST", "path": "/resume", "body": {}, "vulnerable_status": 200, "fixed_status": 401},
     {"name": "slime 权重拉取", "service": "slime", "method": "POST", "path": "/pull_weights", "body": {"source_dir": "/models/poisoned", "local_checkpoint_dir": "/checkpoints/victim"}, "vulnerable_status": 200, "fixed_status": 401},
-    {"name": "areal 环境变量注入", "service": "areal", "method": "POST", "path": "/set_env", "body": {"key": "trident_probe", "value": "injected"}, "vulnerable_status": 200, "fixed_status": 401},
+    {"name": "areal 环境变量注入", "service": "areal", "method": "POST", "path": "/set_env", "body": {"key": "inkblade_probe", "value": "injected"}, "vulnerable_status": 200, "fixed_status": 401},
     {"name": "areal 引擎创建", "service": "areal", "method": "POST", "path": "/create_engine", "body": {"module": "mock_module", "cls": "MockClass"}, "vulnerable_status": 200, "fixed_status": 401},
-    {"name": "areal 白名单方法调用", "service": "areal", "method": "POST", "path": "/call", "body": {"engine_id": "engine-probe", "method": "echo", "args": {"probe": "trident"}}, "vulnerable_status": 200, "fixed_status": 401},
+    {"name": "areal 白名单方法调用", "service": "areal", "method": "POST", "path": "/call", "body": {"engine_id": "engine-probe", "method": "echo", "args": {"probe": "inkblade"}}, "vulnerable_status": 200, "fixed_status": 401},
     {"name": "ray 作业提交", "service": "ray", "method": "POST", "path": "/api/jobs/", "body": {"entrypoint": "python mock_entry.py"}, "vulnerable_status": 200, "fixed_status": 401},
     {"name": "ray 作业列表", "service": "ray", "method": "GET", "path": "/api/jobs/", "body": None, "vulnerable_status": 200, "fixed_status": 200},
     {"name": "vllm 插件清单", "service": "vllm", "method": "GET", "path": "/plugins/list", "body": None, "headers": {"X-Mock-Service": "vllm"}, "vulnerable_status": 200, "fixed_status": 401},
@@ -55,9 +55,9 @@ CASES = [
     {"name": "vllm 模型列表对照面", "service": "vllm", "method": "GET", "path": "/v1/models", "body": None, "headers": {"X-Mock-Service": "vllm"}, "vulnerable_status": 401, "fixed_status": 401},
     {"name": "djev 模型列表中继", "service": "djev", "method": "GET", "path": "/v1/models", "body": None, "vulnerable_status": 200, "fixed_status": 401},
     {"name": "djev 对话补全中继", "service": "djev", "method": "POST", "path": "/v1/chat/completions", "body": {"model": "mock-model", "messages": [{"role": "user", "content": "ping"}]}, "vulnerable_status": 200, "fixed_status": 401},
-    {"name": "dify-agent 绑定创建", "service": "dify-agent", "method": "POST", "path": "/api/v1/bindings", "body": {"name": "trident-probe"}, "vulnerable_status": 200, "fixed_status": 401},
-    {"name": "dify-agent 沙箱作业", "service": "dify-agent", "method": "POST", "path": "/v1/jobs/run", "body": {"script": "echo trident-probe"}, "vulnerable_status": 200, "fixed_status": 401},
-    {"name": "open-webui 共享沙箱执行", "service": "open-webui", "method": "POST", "path": "/api/v1/utils/code/execute", "body": {"code": "print('trident-probe')"}, "vulnerable_status": 200, "fixed_status": 403},
+    {"name": "dify-agent 绑定创建", "service": "dify-agent", "method": "POST", "path": "/api/v1/bindings", "body": {"name": "inkblade-probe"}, "vulnerable_status": 200, "fixed_status": 401},
+    {"name": "dify-agent 沙箱作业", "service": "dify-agent", "method": "POST", "path": "/v1/jobs/run", "body": {"script": "echo inkblade-probe"}, "vulnerable_status": 200, "fixed_status": 401},
+    {"name": "open-webui 共享沙箱执行", "service": "open-webui", "method": "POST", "path": "/api/v1/utils/code/execute", "body": {"code": "print('inkblade-probe')"}, "vulnerable_status": 200, "fixed_status": 403},
     {"name": "aws 元数据令牌签发", "service": "imds-aws", "method": "PUT", "path": "/mock-imds/aws/latest/api/token", "body": None, "vulnerable_status": 200, "fixed_status": 200},
     {"name": "aws 角色凭据直取", "service": "imds-aws", "method": "GET", "path": "/mock-imds/aws/latest/meta-data/iam/security-credentials/role", "body": None, "vulnerable_status": 200, "fixed_status": 401},
     {"name": "azure 实例元数据", "service": "imds-azure", "method": "GET", "path": "/mock-imds/azure/metadata/instance?api-version=2021-02-01", "body": None, "vulnerable_status": 200, "fixed_status": 400},
@@ -148,14 +148,14 @@ class SlimeWeightPullMarkerTest(unittest.TestCase):
 class ArealEnvEngineCallTest(unittest.TestCase):
     def test_env_engine_and_whitelisted_echo(self):
         with start_all(mode="vulnerable") as server:
-            status, _ = request("POST", server.url("/set_env"), {"key": "trident_probe", "value": "injected"})
+            status, _ = request("POST", server.url("/set_env"), {"key": "inkblade_probe", "value": "injected"})
             self.assertEqual(status, 200)
             status, created = request("POST", server.url("/create_engine"), {"module": "mock_module", "cls": "MockClass"})
             self.assertEqual(status, 200)
             engine_id = created["engine_id"]
-            status, called = request("POST", server.url("/call"), {"engine_id": engine_id, "method": "echo", "args": {"probe": "trident"}})
+            status, called = request("POST", server.url("/call"), {"engine_id": engine_id, "method": "echo", "args": {"probe": "inkblade"}})
             self.assertEqual(status, 200)
-            self.assertEqual(called["result"], {"probe": "trident"})
+            self.assertEqual(called["result"], {"probe": "inkblade"})
             status, _ = request("POST", server.url("/call"), {"engine_id": engine_id, "method": "system", "args": {"cmd": "id"}})
             self.assertEqual(status, 400)
 
@@ -182,16 +182,16 @@ class DifyAgentSandboxTest(unittest.TestCase):
         with TemporaryDirectory() as tmp:
             root = Path(tmp)
             with start_all(mode="vulnerable", root=root) as server:
-                status, _ = request("POST", server.url("/api/v1/bindings"), {"name": "trident-probe"})
+                status, _ = request("POST", server.url("/api/v1/bindings"), {"name": "inkblade-probe"})
                 self.assertEqual(status, 200)
-                marker = root / "dify-agent" / "bindings" / "trident-probe" / "BINDING.marker"
+                marker = root / "dify-agent" / "bindings" / "inkblade-probe" / "BINDING.marker"
                 self.assertTrue(marker.is_file())
-                status, ran = request("POST", server.url("/v1/jobs/run"), {"script": "echo trident-probe"})
+                status, ran = request("POST", server.url("/v1/jobs/run"), {"script": "echo inkblade-probe"})
                 self.assertEqual(status, 200)
                 self.assertTrue(ran["simulated"])
                 scripts = list(root.glob("dify-agent/shellctl/*.sh"))
                 self.assertEqual(len(scripts), 1)
-                self.assertIn("echo trident-probe", scripts[0].read_text(encoding="utf-8"))
+                self.assertIn("echo inkblade-probe", scripts[0].read_text(encoding="utf-8"))
 
 
 class OpenWebuiSharedSandboxTest(unittest.TestCase):
@@ -199,12 +199,12 @@ class OpenWebuiSharedSandboxTest(unittest.TestCase):
         with TemporaryDirectory() as tmp:
             root = Path(tmp)
             with start_all(mode="vulnerable", root=root) as server:
-                status, payload = request("POST", server.url("/api/v1/utils/code/execute"), {"code": "print('trident-probe')"})
+                status, payload = request("POST", server.url("/api/v1/utils/code/execute"), {"code": "print('inkblade-probe')"})
                 self.assertEqual(status, 200)
                 self.assertEqual(payload["stdout"], "B-was-here")
                 cells = list(root.glob("open-webui/shared/*.py"))
                 self.assertEqual(len(cells), 1)
-                self.assertIn("trident-probe", cells[0].read_text(encoding="utf-8"))
+                self.assertIn("inkblade-probe", cells[0].read_text(encoding="utf-8"))
 
     def test_fixed_mode_forbids_and_writes_nothing(self):
         with TemporaryDirectory() as tmp:

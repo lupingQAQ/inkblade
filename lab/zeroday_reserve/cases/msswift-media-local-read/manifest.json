@@ -35,6 +35,6 @@
  "cleanup": "canary files under evidence/ are rewritten per run",
  "status": "verified",
  "method": "dynamic-function",
- "marker_text": "TRIDENT-ZD-msswift-media-local-read",
+ "marker_text": "INKBLADE-ZD-msswift-media-local-read",
  "notes": "Function-level reproduction of the real 4.6.0 guard + inlining path; the FastAPI server/model are not started because the host has no GPU. The default-unsafe branch and the explicit allowlist branch are both the upstream code."
 }

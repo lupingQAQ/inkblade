@@ -1,6 +1,6 @@
 """紫队验证（defense validation）：规则包 × mock 靶场重放 → 覆盖率矩阵。
 
-流程（trident rules validate）：
+流程（inkblade rules validate）：
 1. 读规则包 mapping.json（规则 ↔ 链映射 + 简化匹配器规格 match）；
 2. 对 lab mock vulnerable 靶场重放各链第一步探针（含链内其余可 HTTP 重放步骤，urllib 仅标准库）；
 3. 由重放结果合成事件（Suricata 流 / Falco 连接与执行 / Sigma 审计），非 HTTP 面以日志 fixture 重放；
@@ -537,7 +537,7 @@ def _write_matrix(root: Path, matrix: dict) -> None:
         json.dumps(matrix, ensure_ascii=False, indent=2), encoding="utf-8")
 
     lines = [
-        "# Trident 紫队验证覆盖率矩阵（defense validation）",
+        "# InkBlade 紫队验证覆盖率矩阵（defense validation）",
         "",
         f"- 时间：{matrix['validated_at']}；靶场：{matrix['mock_base']}（mode={matrix['mock_mode']}，仅 127.0.0.1）",
         f"- 摘要：链 {matrix['summary']['chains']} 条，覆盖 {matrix['summary']['covered']}，漏过 {matrix['summary']['missed']}；"

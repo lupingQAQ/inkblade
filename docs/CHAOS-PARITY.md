@@ -1,9 +1,9 @@
 # 混沌/扰动编排对照：Chaos Mesh · LitmusChaos · Chaos Toolkit
 
-> 实现：`trident/chaos/`（catalog / orchestrator / runtime / errors）
-> CLI：`trident chaos list|run|abort`
+> 实现：`inkblade/chaos/`（catalog / orchestrator / runtime / errors）
+> CLI：`inkblade chaos list|run|abort`
 > 实测：`tests/test_chaos.py` 19 项全绿；延迟 / 断连 / PFC 风暴三实验实跑记录见
-> `reports/samples/chaos/three-live.json`（可由 `trident chaos run ... --json-out` 复现）。
+> `reports/samples/chaos/three-live.json`（可由 `inkblade chaos run ... --json-out` 复现）。
 
 ## 1. 边界（先说不做什么）
 
@@ -25,12 +25,12 @@
 
 每个实验都是一个可判定闭环，字段与 Chaos Toolkit 的 Method 对齐：
 
-| 阶段 | Trident | 对应 Chaos Toolkit | 对应 Chaos Mesh / Litmus |
+| 阶段 | InkBlade | 对应 Chaos Toolkit | 对应 Chaos Mesh / Litmus |
 |---|---|---|---|
 | 稳态假设 | `steady` probes 全部成立才允许注入 | `steady-state-hypothesis` | Litmus `probe`（steady-state） |
 | 注入 | `inject` Action（http/proxy/dns/admin-reset） | `method` 的 action | `NetworkChaos`/`PodChaos`/... CRD |
 | SLO 度量 | `measure` probes，记录 baseline/during | `method` 后续 probe | 无内建；靠 Prometheus/自定义 probe |
-| 中止 | `abort_when` + 外部 `trident chaos abort` | `controls`/自定义 | 无统一语义；靠 experiment 超时 |
+| 中止 | `abort_when` + 外部 `inkblade chaos abort` | `controls`/自定义 | 无统一语义；靠 experiment 超时 |
 | 自动回滚 | `rollback` 无论成败都执行 | `rollback` | Litmus `cleanup`/Chaos Mesh 删除 CR |
 | 恢复断言 | `recovery`（默认复用 steady） | 再次 `steady-state-hypothesis` | 无内建；需重跑 probe |
 | 报告 | `chaos-runs/latest.json` + 每实验 phases | journal | CR status/事件 |
@@ -75,7 +75,7 @@ bootstrap、GPU Xid、KV 驱逐、checkpoint 写冲突、master 失联。
 
 图例：● 原生支持；◐ 可近似/需自定义；○ 无内建。
 
-| 能力 | Chaos Mesh | LitmusChaos | Chaos Toolkit | Trident（本项目） |
+| 能力 | Chaos Mesh | LitmusChaos | Chaos Toolkit | InkBlade（本项目） |
 |---|---|---|---|---|
 | 实验描述 | K8s CRD（YAML） | ChaosEngine/CRD | JSON/YAML Method | Python dataclass 目录 + CLI |
 | 稳态假设 | 无内建（Prometheus 外部） | `probe`（steady-state） | ● `steady-state-hypothesis` | ● `steady` probes（HTTP/延迟/成功率/ML 指标） |
@@ -83,7 +83,7 @@ bootstrap、GPU Xid、KV 驱逐、checkpoint 写冲突、master 失联。
 | 自动回滚 | 删除 CR（声明式） | cleanup pod | ● rollback | ● 无论成败执行 + 恢复断言 |
 | 中止条件 | duration/deadline | 无统一 abort | controls/自定义 | ● `abort_when` + 跨进程 `chaos abort` |
 | 顺序/并行/定时 | 多 CR + 工作流（◐） | 多 engine（◐） | ● 多 method/脚本 | ● sequential/parallel/cycles+every |
-| CLI | `chaosctl`（部分） | `litmusctl` | `chaos` | ● `trident chaos list/run/abort` |
+| CLI | `chaosctl`（部分） | `litmusctl` | `chaos` | ● `inkblade chaos list/run/abort` |
 | 网络延迟/丢包/分区 | ● NetworkChaos | ● 网络实验 | ◐ 需插件/toxiproxy | ● FaultProxy（应用层） |
 | DNS 故障 | ● DNSChaos | ◐ 自定义 | ○ | ● DnsShim（客户端层） |
 | IO/内存/CPU 压力 | ● IOChaos/StressChaos | ● | ◐ 插件 | ● checkpoint 队列 / KV 内存 mock |
@@ -101,7 +101,7 @@ bootstrap、GPU Xid、KV 驱逐、checkpoint 写冲突、master 失联。
 
 ### 结论
 
-- **实验模型**：Trident 比三大工具更接近「可判定闭环」——稳态、SLO、中止、
+- **实验模型**：InkBlade 比三大工具更接近「可判定闭环」——稳态、SLO、中止、
   回滚、恢复五段齐全；Chaos Mesh/Litmus 强在真实注入后端与 K8s 编排，弱在
   统一的中止/恢复语义与 ML 指标。
 - **故障面**：通用网络/DNS/IO/压力/节点类与三大工具重叠；GPU/RDMA-PFC/
@@ -131,14 +131,14 @@ bootstrap、GPU Xid、KV 驱逐、checkpoint 写冲突、master 失联。
 
 ```powershell
 # 目录（18 个）
-python -m trident chaos list --json
+python -m inkblade chaos list --json
 
 # 任务要求的三条实跑：延迟 / 断连 / PFC
-python -m trident chaos run net-latency-step-degradation net-disconnect-workers fabric-pfc-storm `
+python -m inkblade chaos run net-latency-step-degradation net-disconnect-workers fabric-pfc-storm `
   --json-out reports/samples/chaos/three-live.json
 
 # 中止（另一终端）：写标记文件，编排器在当前阶段后回滚退出
-python -m trident chaos abort --reason "operator stop"
+python -m inkblade chaos abort --reason "operator stop"
 
 # 全目录回归（含并行/定时/外部中止）
 python -m unittest tests.test_chaos -v

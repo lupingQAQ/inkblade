@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Trident MCP 只读服务器（stdio JSON-RPC 2.0，MCP 2026-07-28 + 旧版兼容）。
+"""InkBlade MCP 只读服务器（stdio JSON-RPC 2.0，MCP 2026-07-28 + 旧版兼容）。
 
 暴露工具（全部只读，绝不触发 chains.execute / runner / 写动作）：
 - ``list_runs``            证据库 run 清单
@@ -18,7 +18,7 @@
 - 不注册任何写工具；未知名（含 execute / run_chain / delete_run）一律 -32602；
 - 只读取证：不创建 run、不写 actions / backups / rollbacks；stdout 仅输出协议帧。
 
-用法：``trident --home <ws> mcp --workspace local-lab``（stdio；日志只走 stderr）。
+用法：``inkblade --home <ws> mcp --workspace local-lab``（stdio；日志只走 stderr）。
 """
 
 from __future__ import annotations
@@ -35,8 +35,8 @@ from .core.users import UserStore
 
 PROTOCOL_VERSION = "2026-07-28"
 SUPPORTED_PROTOCOL_VERSIONS = ("2026-07-28", "2025-11-25", "2025-06-18")
-SERVER_NAME = "trident-mcp"
-SERVER_VERSION = "0.1.0"
+SERVER_NAME = "inkblade-mcp"
+SERVER_VERSION = "0.2.0"
 _VERSION_META = "io.modelcontextprotocol/protocolVersion"
 
 _READ_ONLY_NOTE_ZH = "只读接口：不暴露执行/写入工具；链执行必须由 lead 审批后由人触发。"

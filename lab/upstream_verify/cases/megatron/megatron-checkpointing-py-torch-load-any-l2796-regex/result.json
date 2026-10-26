@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "megatron-checkpointing-py-torch-load-any-l2796-regex",
  "source": "mining",
  "component": "megatron",
@@ -33,10 +33,10 @@
  "command": "[torch] lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l2796-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 2.937,
- "started_at": "2026-10-26T02:42:44+00:00",
+ "duration_s": 9.7,
+ "started_at": "2026-10-26T19:53:22+00:00",
  "marker": {
-  "text": "TRIDENT-UV-megatron-checkpointing-py-torch-load-any-l2796-regex",
+  "text": "INKBLADE-UV-megatron-checkpointing-py-torch-load-any-l2796-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -57,8 +57,8 @@
   },
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l2796-regex/evidence/log.txt",
-   "sha256": "6bf9541a049783ce5d25e0e0f05744fccd39ded8fa8e38eb71a302e236a85a05",
-   "size": 560
+   "sha256": "455a05a804b6e94a3ed7d15a0a4fd867ddb666014916e2d339978cca6e317a7d",
+   "size": 558
   },
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l2796-regex/evidence/marker.txt",
@@ -77,12 +77,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l2796-regex/evidence/unsupported.json",
-   "sha256": "6b8114d263bb7f691ab1f3a464ade119c16244a4cb8b5461224ddaec1c567c7c",
-   "size": 1274
+   "sha256": "26d42e4392258ec792d3cc1349c48fbb3224e01c85232545594bc073685987ad",
+   "size": 1275
   }
  ],
  "poc_sha256": "143714fd3507afb11b3a2cc7f8157840b20413e415f676ce36a48115119b521c",
- "manifest_sha256": "cf7a450a4337cc0129ae19650719fd8c96b948f5b2215c72e2de9b5f5fbed1bd",
+ "manifest_sha256": "f127e81dff24f358ba097fea9048b196249367321792d4869dc4789b1c8f476e",
  "stdout": "{\"status\": \"unsupported\", \"case\": \"megatron-checkpointing-py-torch-load-any-l2796-regex\", \"reason\": \"sink unreachable in core_v0.19.2: load_biencoder_checkpoint passes args.use_distributed_optimizer as the third positional argument of get_checkpoint_name (already bound to `release`) and also passes release=False, so every call raises TypeError before torch.load(line 2796)\"}\n",
  "stderr": "",
  "notes": "torch.load at checkpointing.py:2796 is a real unpinned sink, but its only caller load_biencoder_checkpoint passes args.use_distributed_optimizer positionally into get_checkpoint_name(release=...) and also passes release=False, so the call raises TypeError on every invocation. The sink is dead code in core_v0.19.2; not exploitable through any upstream entry point."

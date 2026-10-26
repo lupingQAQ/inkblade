@@ -34,16 +34,16 @@
 - same-target outcome (v2 scripted-planner mock): see same-target.md — the task
   reaches `done`, the worker hits the mock target for real and a finding is filed.
 
-## Side by side with Trident
+## Side by side with InkBlade
 
-| metric | ARTEX (VM) | Trident (host, lab/bench) |
+| metric | ARTEX (VM) | InkBlade (host, lab/bench) |
 |---|---|---|
 | idle RSS | 75.25 MiB (2 containers) | 49.0 MiB (1 process) |
 | task submit → terminal state | 13510 ms (status=done; scripted-planner mock LLM; same-target details in same-target.md) | 320 ms over 5 chain rounds (real HTTP to the same mock target) |
 
 ## Limitations
 
-- QEMU TCG software emulation: absolute numbers are not comparable to bare-metal; only the ARTEX-vs-Trident ratio on the same host is meaningful.
+- QEMU TCG software emulation: absolute numbers are not comparable to bare-metal; only the ARTEX-vs-InkBlade ratio on the same host is meaningful.
 - The LLM is a deterministic OpenAI-compatible mock on the host; it exercises the real HTTP/agent loop but not model quality or token cost.
 - Idle RSS is sampled 60-90 s after start via docker stats (2 s cadence), not an instantaneous peak.
 - k3s (single-node control plane) is running in the same guest during the whole bench and consumes CPU/RAM.

@@ -62,7 +62,7 @@ class EvalError(ValueError):
 def load_tasks(path: Path | str | None = None) -> list[dict]:
     p = Path(path) if path else TASKS_PATH
     data = json.loads(p.read_text(encoding="utf-8"))
-    if data.get("schema") != "trident-tencent-compare-tasks-v1":
+    if data.get("schema") != "inkblade-tencent-compare-tasks-v1":
         raise EvalError(f"任务集 schema 非法: {data.get('schema')!r}")
     tasks = list(data.get("tasks") or [])
     if len(tasks) < 6:
@@ -148,12 +148,12 @@ def run_head(tasks: list[dict]) -> dict:
 
 # ---------------------------------------------------------------- ON: 第三节改进
 def run_policy(tasks: list[dict]) -> dict:
-    from trident.core import agent_policy, cost, observation
+    from inkblade.core import agent_policy, cost, observation
 
     started = time.time()
     records = []
     with tempfile.TemporaryDirectory() as td:
-        from trident.core.evidence import EvidenceStore
+        from inkblade.core.evidence import EvidenceStore
 
         store = EvidenceStore(Path(td), workspace="tencent-compare")
         for task in tasks:
@@ -334,11 +334,11 @@ def compare(off: dict, on: dict) -> dict:
 
 def wiring_check() -> dict:
     """确认 Explorer 提议路径真的接上了策略层（只读，不执行）。"""
-    from trident.core.discovery import AssetInventory
-    from trident.core.evidence import EvidenceStore
-    from trident.core.explorer import Explorer
-    from trident.core.roe import init_roe
-    from trident.core.users import Session
+    from inkblade.core.discovery import AssetInventory
+    from inkblade.core.evidence import EvidenceStore
+    from inkblade.core.explorer import Explorer
+    from inkblade.core.roe import init_roe
+    from inkblade.core.users import Session
 
     try:
         with tempfile.TemporaryDirectory() as td:
@@ -348,7 +348,7 @@ def wiring_check() -> dict:
             AssetInventory(store).ingest({"services": [
                 {"name": "sglang-admin", "namespace": "ml", "addr": "10.96.0.11",
                  "port": 30000, "labels": {"app": "sglang"}}]}, source="seed")
-            proposal = Explorer(store, modules_dir=ROOT / "trident" / "modules").propose(
+            proposal = Explorer(store, modules_dir=ROOT / "inkblade" / "modules").propose(
                 Session(None, "lead", "lead", ["local-lab"], "eval"))
             return {"ok": "policy" in proposal and "observations" in proposal,
                     "keys": sorted(k for k in proposal if k in
@@ -368,10 +368,10 @@ def evaluate(tasks: list[dict] | None = None, *, write: bool = False) -> dict:
     on = run_policy(tasks)
     comparison = compare(off, on)
     report = {
-        "schema": "trident-tencent-compare-v1",
+        "schema": "inkblade-tencent-compare-v1",
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "head_commit": HEAD_COMMIT,
-        "switch": "TRIDENT_AGENT_POLICY=on|off（OFF 复现 HEAD 语义）",
+        "switch": "INKBLADE_AGENT_POLICY=on|off（OFF 复现 HEAD 语义）",
         "scope": "策略级确定性微评测：动作成本为标定估算，不调用外部 LLM/真实目标",
         "tasks": len(tasks),
         "modes": {"off": off, "on": on},

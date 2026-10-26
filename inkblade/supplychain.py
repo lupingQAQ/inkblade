@@ -24,8 +24,8 @@ import uuid
 from pathlib import Path
 from typing import Any, Iterable
 
-TOOL_NAME = "trident"
-TOOL_VERSION = "0.1.0"
+TOOL_NAME = "inkblade"
+TOOL_VERSION = "0.2.0"
 CYCLONEDX_SPEC = "1.5"
 SUPPORTED_TEES = ("tdx", "sev-snp", "nvidia-cc")
 _HMAC_ALG = "HMAC-SHA256"
@@ -159,18 +159,18 @@ def build_sbom(models: Iterable[dict], *, root: Path | str | None = None) -> dic
                 "version": ds_version,
                 "licenses": [_license_entry(ds.get("license") or "unknown")],
                 "properties": [
-                    {"name": "trident:dataset:role", "value": str(ds.get("role") or "training")},
+                    {"name": "inkblade:dataset:role", "value": str(ds.get("role") or "training")},
                 ],
             }
             if ds.get("source"):
                 comp["externalReferences"] = [{"type": "distribution", "url": str(ds["source"])}]
             components.append(comp)
         props = [
-            {"name": "trident:model:format", "value": str(model.get("format") or "unknown")},
-            {"name": "trident:weights:sha256", "value": digest},
+            {"name": "inkblade:model:format", "value": str(model.get("format") or "unknown")},
+            {"name": "inkblade:weights:sha256", "value": digest},
         ]
         for ref in dataset_refs:
-            props.append({"name": "trident:dataset", "value": ref})
+            props.append({"name": "inkblade:dataset", "value": ref})
         components.append({
             "type": "machine-learning-model",
             "bom-ref": bom_ref,
@@ -186,7 +186,7 @@ def build_sbom(models: Iterable[dict], *, root: Path | str | None = None) -> dic
             },
         })
     serial_seed = _json_dump({"models": model_refs, "components": components})
-    serial = uuid.uuid5(uuid.NAMESPACE_URL, "trident-sbom:" + serial_seed)
+    serial = uuid.uuid5(uuid.NAMESPACE_URL, "inkblade-sbom:" + serial_seed)
     return {
         "bomFormat": "CycloneDX",
         "specVersion": CYCLONEDX_SPEC,
@@ -194,11 +194,11 @@ def build_sbom(models: Iterable[dict], *, root: Path | str | None = None) -> dic
         "version": 1,
         "metadata": {
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "tools": [{"vendor": "Trident", "name": TOOL_NAME, "version": TOOL_VERSION}],
+            "tools": [{"vendor": "InkBlade", "name": TOOL_NAME, "version": TOOL_VERSION}],
             "component": {
                 "type": "application",
-                "bom-ref": "application:trident-ai-stack",
-                "name": "trident-ai-stack",
+                "bom-ref": "application:inkblade-ai-stack",
+                "name": "inkblade-ai-stack",
                 "version": "2026.10",
             },
         },
@@ -312,7 +312,7 @@ def verify_model(
           "Rekor 风格透明日志条目" if require_log else "策略未要求透明日志")
 
     return {
-        "schema": "trident-provenance-verdict/2026-10",
+        "schema": "inkblade-provenance-verdict/2026-10",
         "ok": all(c["ok"] for c in checks),
         "checks": checks,
         "errors": errors,
@@ -378,7 +378,7 @@ def verify_attestation(doc: dict | Path | str, policy: dict | Path | str) -> dic
         and isinstance(document.get("quote"), dict) and isinstance(document.get("claims"), dict)
     check("schema", schema_ok, f"tee={tee or 'missing'} required={list(required)}")
     if not schema_ok:
-        return {"schema": "trident-attestation-verdict/2026-10", "ok": False, "tee": tee,
+        return {"schema": "inkblade-attestation-verdict/2026-10", "ok": False, "tee": tee,
                 "checks": checks, "errors": errors}
 
     allowed_tees = [str(x) for x in (pol.get("allowed_tees") or SUPPORTED_TEES)]
@@ -441,7 +441,7 @@ def verify_attestation(doc: dict | Path | str, policy: dict | Path | str) -> dic
           f"keyid={keyid or 'missing'} trusted={keyid in trusted}")
 
     return {
-        "schema": "trident-attestation-verdict/2026-10",
+        "schema": "inkblade-attestation-verdict/2026-10",
         "ok": all(c["ok"] for c in checks),
         "tee": tee,
         "checks": checks,

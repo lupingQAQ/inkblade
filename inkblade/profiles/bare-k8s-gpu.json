@@ -1,5 +1,5 @@
 {
-  "schema": "trident-profile-v1",
+  "schema": "inkblade-profile-v1",
   "name": "bare-k8s-gpu",
   "description": "Self-managed Kubernetes with GPU worker nodes, direct vLLM serving, node BMC and no Ray/Slurm control plane.",
   "platform": "kubernetes",

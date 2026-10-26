@@ -1,10 +1,10 @@
-# CIS Parity — Trident CIS 基准库 vs kube-bench
+# CIS Parity — InkBlade CIS 基准库 vs kube-bench
 
 - 核对日期：2026-10-26
 - kube-bench 基线：`aquasecurity/kube-bench@e278a5915a98`（2026-10-05），`cfg/cis-1.8/*.yaml`
-- Trident 目录：`trident/cis/catalog.py`（`CATALOG` = 161 项）
-- 判定引擎：`trident/cis/engine.py`（只读 fixture；缺证据 → `manual`）
-- 超出项：`trident/cis/ml.py`（GPU Operator / vLLM / SGLang 部署基线 19 项，独立目录）
+- InkBlade 目录：`inkblade/cis/catalog.py`（`CATALOG` = 161 项）
+- 判定引擎：`inkblade/cis/engine.py`（只读 fixture；缺证据 → `manual`）
+- 超出项：`inkblade/cis/ml.py`（GPU Operator / vLLM / SGLang 部署基线 19 项，独立目录）
 - 测试：`tests/test_cis_benchmark.py`（27 项）
 
 ## 1. kube-bench cis-1.8 官方条目数
@@ -34,7 +34,7 @@
 > 注：CIS v1.8 的 5.6（Managed Services）不在 kube-bench 自管 profile 中；本库同样不纳入
 > 130 项口径，避免把托管服务条目混入自管集群评分。
 
-## 2. Trident 覆盖（130/130）
+## 2. InkBlade 覆盖（130/130）
 
 | 口径 | 项数 | 说明 |
 |---|---:|---|

@@ -10,11 +10,11 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.reports import compliance
-from trident.reports.render import render_pentest, render_remediation
+from inkblade.core.evidence import EvidenceStore
+from inkblade.reports import compliance
+from inkblade.reports.render import render_pentest, render_remediation
 
-STANDARDS_PATH = Path(__file__).resolve().parents[1] / "trident" / "reports" / "standards.json"
+STANDARDS_PATH = Path(__file__).resolve().parents[1] / "inkblade" / "reports" / "standards.json"
 
 FRAMEWORK_KEYS = {
     "owasp_llm", "owasp_agentic", "atlas", "nist_ai_rmf", "iso_42001", "eu_ai_act", "tc260",

@@ -3,13 +3,13 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "trident-pentest"
-version = "0.1.0"
-description = "Authorized penetration-testing platform for Kubernetes ML training/inference clusters"
+name = "inkblade"
+version = "0.2.0"
+description = "InkBlade (墨刃零) — authorized penetration-testing platform for Kubernetes ML training/inference clusters"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
-authors = [{ name = "The Trident Authors" }]
+authors = [{ name = "The InkBlade Authors" }]
 keywords = [
     "security",
     "penetration-testing",
@@ -37,7 +37,9 @@ classifiers = [
 dependencies = []
 
 [project.scripts]
-trident = "trident.cli:main"
+inkblade = "inkblade.cli:main"
+# Deprecated compatibility entry: kept for one release, prints a migration hint.
+trident = "inkblade.cli:legacy_main"
 
 [tool.setuptools]
 include-package-data = false
@@ -45,12 +47,12 @@ license-files = ["LICENSE", "NOTICE"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["trident*"]
+include = ["inkblade*"]
 exclude = ["tests*", "lab*", "scripts*", "reports*", "docs*"]
 namespaces = false
 
 [tool.setuptools.package-data]
-trident = [
+inkblade = [
     "*.py",
     "chains/*.json",
     "core/*.json",
@@ -68,6 +70,19 @@ trident = [
     "rules/templates/*.json",
     "reports/*.json",
     "reports/templates/*.tmpl",
+    "profiles/*.json",
+    "data/*.json",
+    "data/sigstore/*.json",
+    "data/sigstore/*.pem",
+    "probes/library/*/*.json",
+    "tee/online_cache/*.json",
+    "tee/online_cache/*.pem",
+    "tee/online_cache/*.der",
+    "tee/online_cache/*.txt",
+    "sdk/*.py",
+    "sdk/examples/*/*.py",
+    "sdk/examples/*/*.json",
+    "sdk/examples/*/*.md",
     "webui/static/*.html",
     "webui/static/*.js",
     "webui/static/*.css",

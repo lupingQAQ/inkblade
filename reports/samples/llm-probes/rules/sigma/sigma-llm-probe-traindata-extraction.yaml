@@ -1,10 +1,10 @@
 title: 训练数据成员抽取
 id: f0b372ba-cf4f-0007-2ef5-e0d52eaa076d
 status: stable
-description: "Training-data membership extraction. canary 重复、前缀补全、成员逐字抽取等训练记忆抽取模式；来源=LLM 探针矩阵 traindata-extraction 类。 检测规则与 trident/probes 探针库 traindata-extraction 类一一联动（每类 ≥1 规则）。"
+description: "Training-data membership extraction. canary 重复、前缀补全、成员逐字抽取等训练记忆抽取模式；来源=LLM 探针矩阵 traindata-extraction 类。 检测规则与 inkblade/probes 探针库 traindata-extraction 类一一联动（每类 ≥1 规则）。"
 references:
-  - "trident-rules-mapping: sigma-llm-probe-traindata-extraction"
-author: Trident rules engine
+  - "inkblade-rules-mapping: sigma-llm-probe-traindata-extraction"
+author: InkBlade rules engine
 date: 2026/10/25
 logsource:
   product: litellm
@@ -22,10 +22,10 @@ falsepositives:
 level: high
 tags:
   - attack.t1005
-  - trident
+  - inkblade
   - llm-probe
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-tuning: 以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针
-  trident-blocks-chains: ""
+  inkblade-mode: monitor
+  inkblade-tuning: 以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针
+  inkblade-blocks-chains: ""

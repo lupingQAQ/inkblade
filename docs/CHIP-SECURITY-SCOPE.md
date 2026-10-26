@@ -1,6 +1,6 @@
 # 芯片/加速器安全姿态范围（CHIP SECURITY SCOPE）
 
-本文件定义 Trident 在 **集群内可触达** 的芯片/加速器安全姿态审计范围、必要性分级、
+本文件定义 InkBlade 在 **集群内可触达** 的芯片/加速器安全姿态审计范围、必要性分级、
 部署画像映射与明确排除项。目标是回答一个窄问题：
 
 > 在不接触硅片实验室、不拆机、不开盖、不做故障注入的前提下，攻击者或审计者
@@ -41,7 +41,7 @@
 | **A1** | **IOMMU/SMMU 直通与 DMA 隔离** | **A 真攻击路径** | `iommu=off` / `iommu=pt` / 多设备 identity 组 / ACS 缺失 / ATS 无保护，可让不可信负载或设备 DMA 到宿主/他租户内存；这是“集群内可实际拿下节点/越权设备”的路径 | 节点 `/proc/cmdline`、`/sys/kernel/iommu_groups/*`、`lspci -vv` ACS/ATS 导出；无需物理接触 | `iommu-smmu-config`（只读解析）；证据：cmdline + group + ACS/ATS + SMMU 状态 |
 | **A2** | **BMC/DPU/IPMI 带外接管（补 Redfish/固件面）** | **A 真攻击路径** | BMC 默认凭据、匿名 Redfish、IPMI over LAN、DPU 未鉴权服务、Redfish UpdateService/固件清单匿名可读，均可绕过 K8s 直接控制节点/固件；已有模块已覆盖默认凭据与 DPU 服务，本任务补 Redfish 固件清单/更新服务面 | 带外管理网可达；Redfish GET（可选单次厂商默认凭据验证）；DPU 服务清单；固件清单/更新服务 | `bmc-ipmi-exposure`、`dpu-smartnic-surface`、`redfish-default-credentials`、`ipmi-cipher-zero-bypass`；本任务扩展 Redfish `UpdateService`/`FirmwareInventory` 只读面 |
 | **A3** | **GPU 显存残留 / MIG / MPS 跨租户残留与隔离绕过** | **A 真攻击路径** | MIG 释放未清零、MPS 共享上下文、跨租户 residue 可读，直接泄露他租户模型/激活/进程信息；已有模块覆盖跨租户读取，本任务补“分配→写 benign marker→释放→读回”对抗用例 | 池化/共享 GPU 的分配/释放生命周期导出；授权靶场可写 benign marker；备份回执 | `gpu-tenant-residue`（已有）、`gpu-memory-residue-isolation`（本任务，写类走备份闸门） |
-| **B1** | **GPU CC 证明链（NRAS JWKS + nonce + claims）** | **B 保障性审计** | CC 的 false trust 风险：不验签、不绑 nonce、不校验 `dbgstat/secboot/overall-att-result` 就把密钥/模型交给“自称 CC”的 GPU；合规场景必须做检测 | NRAS JWKS（公开）、attestation JWT（设备/证明服务导出）、请求 nonce；无需物理接触 | `gpu-cc-attestation-chain`（复用 `trident/tee` 在线校验器）；证据：JWKS/验签/claims/nonce |
+| **B1** | **GPU CC 证明链（NRAS JWKS + nonce + claims）** | **B 保障性审计** | CC 的 false trust 风险：不验签、不绑 nonce、不校验 `dbgstat/secboot/overall-att-result` 就把密钥/模型交给“自称 CC”的 GPU；合规场景必须做检测 | NRAS JWKS（公开）、attestation JWT（设备/证明服务导出）、请求 nonce；无需物理接触 | `gpu-cc-attestation-chain`（复用 `inkblade/tee` 在线校验器）；证据：JWKS/验签/claims/nonce |
 | **B2** | **固件签名 / 安全启动 / TPM / 微码吊销** | **B 保障性审计** | 固件/引导链持久化与供应链伪造：签名无效、证书过期、信任根未固定、PCR 偏移、dbx 缺失、微码低于厂商基线；检测为主，不刷新固件 | 固件清单 + 厂商根/证书链 + 分离签名；TPM eventlog/PCR/dbx 导出；CPU 微码 revision；无需物理接触 | `firmware-signature-inventory`、`secure-boot-chain`（本任务）；`hardware-supply-chain`（HMAC fixture，仅回归，不冒充厂商 PKI） |
 | **C1** | **SPDM / PCIe DOE 细项** | **C 前瞻/低必要性（research-only）** | 只有明确部署 CMA/SPDM 的设备（部分 GB200/NVL、TEE-IO 场景）才有面；证书/测量/DOE 细项对普通 K8s 客户不是可测攻击路径 | 设备 SPDM 导出（版本/证书链/MeasurementRecord/DOE 能力）；多数客户无此导出 | `spdm-pcie-doe`；**默认关闭**，仅 `--probe` 或客户面显式启用 |
 | **C2** | **NVLink/IMEX 域与分区配置审计** | **C 前瞻/低必要性（research-only）** | 只有 GB200/NVL 多节点 NVLink 客户才有 IMEX 域/分区面；普通 PCIe GPU 集群无此面 | IMEX `nodes_config.cfg`/域/通道导出；NVLink partition/Fabric Manager 导出 | `nvlink-imex-isolation`；**默认关闭**，仅按需启用 |
@@ -111,7 +111,7 @@
 是审计入口需要客户导出，而不是攻击一定成功。C 类即使有面也默认关闭，只有客户显式
 `--probe`/profile 才执行。
 
-### 3.1 模块 × 画像 verdict（由 `trident surfaces` 可复算）
+### 3.1 模块 × 画像 verdict（由 `inkblade surfaces` 可复算）
 
 | 模块 | 必要性 | 默认 | 主要面 | 典型 verdict |
 |---|---|---|---|---|
@@ -181,7 +181,7 @@ C 类是“前瞻配置审计”，只在客户确有面时启用。二者都不
 ```bash
 python -m unittest tests.test_chipsec_sim tests.test_chip_modules tests.test_chip_docs -v
 python -m unittest tests.test_verify_effects_chip -v
-python -m trident.verify-effects --out reports/samples/effects/ --no-docs
+python -m inkblade.verify-effects --out reports/samples/effects/ --no-docs
 ```
 
 ## 7. 公开来源（2026-10-26 核验）

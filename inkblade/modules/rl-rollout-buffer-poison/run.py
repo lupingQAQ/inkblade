@@ -48,12 +48,12 @@ def run(ctx: dict, params: dict) -> dict:
         own_id = f"traj-{marker}-own"
         own = t.call("POST", f"{target}/rl/rollout", {
             "tenant": tenant, "trajectory_id": own_id,
-            "samples": [{"prompt": "trident-lab", "response": "benign", "reward": 0.1}],
+            "samples": [{"prompt": "inkblade-lab", "response": "benign", "reward": 0.1}],
         }, _COMMON.headers_for(params))
         victim_id = f"traj-{marker}-victim"
         victim_write = t.call("POST", f"{target}/rl/rollout", {
             "tenant": victim, "trajectory_id": victim_id,
-            "samples": [{"prompt": "trident-lab", "response": marker, "reward": 1.0}],
+            "samples": [{"prompt": "inkblade-lab", "response": marker, "reward": 1.0}],
         }, _COMMON.headers_for(params))
         readback = t.call(
             "GET", f"{target}/rl/rollout?" + urlencode({"tenant": victim,

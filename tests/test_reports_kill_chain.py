@@ -7,14 +7,14 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.objective import FakeKubectlBackend, load_objective, run_objective
-from trident.core.roe import init_roe
-from trident.core.users import Session
-from trident.reports.render import render_pentest
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.objective import FakeKubectlBackend, load_objective, run_objective
+from inkblade.core.roe import init_roe
+from inkblade.core.users import Session
+from inkblade.reports.render import render_pentest
 
 REPO = Path(__file__).resolve().parents[1]
-CHAINS = REPO / "trident" / "chains"
+CHAINS = REPO / "inkblade" / "chains"
 
 
 class HighestPrivilegeReportTest(unittest.TestCase):
@@ -23,7 +23,7 @@ class HighestPrivilegeReportTest(unittest.TestCase):
         self.home = Path(self.tmp.name)
         self.store = EvidenceStore(self.home, workspace="local-lab")
         init_roe(self.store, {"level": "全影响演示",
-                              "namespaces": ["trident-killchain"],
+                              "namespaces": ["inkblade-killchain"],
                               "cidrs": ["127.0.0.1/32"]})
         self.session = Session(None, "lead-user", "lead", ["local-lab"], "t")
 

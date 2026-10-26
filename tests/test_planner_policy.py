@@ -5,8 +5,8 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.agent_planner import plan_workspace
-from trident.core.evidence import EvidenceStore
+from inkblade.agent_planner import plan_workspace
+from inkblade.core.evidence import EvidenceStore
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -20,8 +20,8 @@ class PlannerPolicyTest(unittest.TestCase):
         self.tmp.cleanup()
 
     def test_policy_on_annotates_candidates_without_executing(self):
-        doc = plan_workspace(self.store, chains_dir=ROOT / "trident" / "chains",
-                             modules_dir=ROOT / "trident" / "modules", policy=True)
+        doc = plan_workspace(self.store, chains_dir=ROOT / "inkblade" / "chains",
+                             modules_dir=ROOT / "inkblade" / "modules", policy=True)
         self.assertTrue(doc["read_only"])
         self.assertEqual(doc["writes"], {"actions": 0, "runs": 0, "backups": 0})
         self.assertTrue(doc["agent_policy"]["enabled"])
@@ -33,16 +33,16 @@ class PlannerPolicyTest(unittest.TestCase):
             self.assertFalse(cand["execution"]["performed"])
 
     def test_policy_off_matches_head_shape(self):
-        doc = plan_workspace(self.store, chains_dir=ROOT / "trident" / "chains",
-                             modules_dir=ROOT / "trident" / "modules", policy=False)
+        doc = plan_workspace(self.store, chains_dir=ROOT / "inkblade" / "chains",
+                             modules_dir=ROOT / "inkblade" / "modules", policy=False)
         self.assertNotIn("agent_policy", doc)
         for cand in doc["candidates"]:
             self.assertNotIn("policy", cand)
             self.assertNotIn("cost", cand)
 
     def test_irreversible_chain_requires_per_write_confirmation(self):
-        doc = plan_workspace(self.store, chains_dir=ROOT / "trident" / "chains",
-                             modules_dir=ROOT / "trident" / "modules", policy=True)
+        doc = plan_workspace(self.store, chains_dir=ROOT / "inkblade" / "chains",
+                             modules_dir=ROOT / "inkblade" / "modules", policy=True)
         gated = [c for c in doc["candidates"]
                  if c["policy"]["level"] == "L1" and c["writes"] > 0]
         self.assertTrue(gated, "expected at least one irreversible-write chain")

@@ -2,9 +2,9 @@
 import unittest
 from pathlib import Path
 
-from trident.core import version_matrix as vm
-from trident.core.payloads import PayloadError, param_variants
-from trident.core.registry import load_modules
+from inkblade.core import version_matrix as vm
+from inkblade.core.payloads import PayloadError, param_variants
+from inkblade.core.registry import load_modules
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -20,7 +20,7 @@ GAP_MODULES = (
 class PayloadGapVariantTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.mods = load_modules(ROOT / "trident" / "modules")
+        cls.mods = load_modules(ROOT / "inkblade" / "modules")
 
     def test_kubernetes_product_registered(self):
         self.assertIn("kubernetes", vm.products())

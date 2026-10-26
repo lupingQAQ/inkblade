@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Public CVE catalog: load / validate / version-range match / Markdown render.
 
-Data file: ``trident/core/cve-catalog.json``. Every entry carries a primary
+Data file: ``inkblade/core/cve-catalog.json``. Every entry carries a primary
 source URL and a CVE.org verification anchor. Honesty rules (locked by tests):
 a fixed version is recorded only when the advisory states one; otherwise
 ``fixed=null`` with a non-empty ``fixed_note``. A vendor's "won't fix" is not
@@ -16,7 +16,7 @@ from functools import lru_cache
 from pathlib import Path
 
 CATALOG_PATH = Path(__file__).resolve().parent / "cve-catalog.json"
-SCHEMA = "trident-cve-catalog-v1"
+SCHEMA = "inkblade-cve-catalog-v1"
 SEVERITIES = ("critical", "high", "medium", "low", "info")
 SOURCE_TYPES = ("nvd", "github-advisory", "vendor", "cve-record", "research")
 
@@ -156,7 +156,7 @@ def render_markdown(data: dict | None = None) -> str:
     mockable = [e for e in entries if e["mockable"]]
     hw = [e for e in entries if e["requires_hardware"]]
     lines = [
-        "# Public CVE Arsenal (Trident)",
+        "# Public CVE Arsenal (InkBlade)",
         "",
         f"- Verified: {data['verified_at']}",
         f"- Entries: **{len(entries)}** (CVE {len(cves)} + component advisories {len(entries) - len(cves)})",

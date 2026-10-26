@@ -38,7 +38,7 @@
  "module": "llamafactory-checkpoint-rce",
  "python": "lfa",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-llamafactory-checkpoint-py-torch-load-unsafe-l136-regex",
+ "marker_text": "INKBLADE-UV-llamafactory-checkpoint-py-torch-load-unsafe-l136-regex",
  "notes": "LLaMA-Factory v1 resume path restores RNG state with an explicit torch.load(weights_only=False) on <ckpt>/rng_state/rank_<n>.pt. Whoever can write the checkpoint directory (shared NFS, compromised peer rank, supply-chain mirror) gets pickle code execution the next time a victim resumes training. Reproduced at function level against the pinned upstream module from the real installed llamafactory 0.9.5 wheel; the sink itself is the real upstream torch.load call with weights_only=False on torch 2.14.",
  "static_evidence_level": "source-line",
  "static_analysis": "",
@@ -53,6 +53,6 @@
   "original_status": "pending-manual-review",
   "promoted": true
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "llamafactory"
 }

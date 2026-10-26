@@ -1,5 +1,5 @@
 {
-  "schema": "trident-profile-v1",
+  "schema": "inkblade-profile-v1",
   "name": "slurm-hpc",
   "description": "Bare-metal Slurm HPC cluster: no Kubernetes API, BMC/IB switch management, Munge/JWT auth, shared model files, vLLM/MLflow services and Slurm REST API.",
   "platform": "slurm",

@@ -10,6 +10,6 @@
     "snapshot": "可选，fabric 配置 JSON 或路径；省略使用内置 vulnerable fixture"
   },
   "produces": "fabric-config-posture（28 检查 + PFC/ECN/rail 仿真场景）",
-  "knowledge": "docs/DEPTH-REVIEW.md §5；trident/depth/fabric.py；lab/fabric_sim",
+  "knowledge": "docs/DEPTH-REVIEW.md §5；inkblade/depth/fabric.py；lab/fabric_sim",
   "combo_signature": "fabric-config-depth"
 }

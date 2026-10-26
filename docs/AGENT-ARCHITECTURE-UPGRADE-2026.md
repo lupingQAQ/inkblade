@@ -34,12 +34,12 @@
 ## 3. 组合用法（库 API）
 
 ```python
-from trident.core.evidence import EvidenceStore
-from trident.core.users import Session
-from trident.core.journal import Journal
-from trident.core.supervisor import Supervisor
-from trident.core.skills import SkillLibrary
-from trident.core import reflexion, memory
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.users import Session
+from inkblade.core.journal import Journal
+from inkblade.core.supervisor import Supervisor
+from inkblade.core.skills import SkillLibrary
+from inkblade.core import reflexion, memory
 
 store = EvidenceStore(".", workspace="local-lab")
 session = Session(None, "lead", "lead", ["local-lab"], "local")

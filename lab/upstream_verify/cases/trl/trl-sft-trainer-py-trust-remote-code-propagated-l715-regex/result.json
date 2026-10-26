@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "trl-sft-trainer-py-trust-remote-code-propagated-l715-regex",
  "source": "mining",
  "component": "trl",
@@ -33,10 +33,10 @@
  "command": "[reproenv] lab/upstream_verify/cases/trl/trl-sft-trainer-py-trust-remote-code-propagated-l715-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 0.152,
- "started_at": "2026-10-26T09:23:46+00:00",
+ "duration_s": 0.298,
+ "started_at": "2026-10-26T19:58:11+00:00",
  "marker": {
-  "text": "TRIDENT-UV-trl-sft-trainer-py-trust-remote-code-propagated-l715-regex",
+  "text": "INKBLADE-UV-trl-sft-trainer-py-trust-remote-code-propagated-l715-regex",
   "before": "ABSENT",
   "after_has_marker": false,
   "after_sha256": "08b6a0bc6906cd596f1458be5ac2911c478709b27e4f3c52e8edd0293e2f4c56"
@@ -47,7 +47,7 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-trust-remote-code-propagated-l715-regex/evidence/log.txt",
-   "sha256": "d8db059a834c7c16e2c455456336555fa99878b9121e77ec6e22315b7b03378a",
+   "sha256": "fee5c8c9f0e08feb6cb2764df15607d4cea55f2dc5cfe45d767b6644b3cc66f1",
    "size": 283
   },
   {
@@ -57,12 +57,12 @@
   },
   {
    "path": "lab/upstream_verify/cases/trl/trl-sft-trainer-py-trust-remote-code-propagated-l715-regex/evidence/static-check.json",
-   "sha256": "b1a0a60427721da9ea9106c5c45dcec9281868ee2ca60eaae6ddb6c7ea3b8ea4",
-   "size": 1334
+   "sha256": "a6beb7761511f4b3f2a7926d361128f851d5ca64d64bbe79b9412908fc982a8c",
+   "size": 1335
   }
  ],
  "poc_sha256": "a28ac0b3630d1852f02b1cf011dd8344b6ed4d0dc0546ef658dc94646f9111ef",
- "manifest_sha256": "0f1fa9f7fdc576d11b64a2583234c8d01d57994f99d595b6dddccc34a38169b3",
+ "manifest_sha256": "a8e32ee31233baede84f7bef279da17dde8c5452b84ac4a35c84ac21cd058308",
  "stdout": "{\"status\": \"static-only\", \"case\": \"trl-sft-trainer-py-trust-remote-code-propagated-l715-regex\"}\n",
  "stderr": "",
  "notes": "Explicit trust_remote_code opt-in; requires a malicious model repository and user consent. Not a vulnerability by itself."

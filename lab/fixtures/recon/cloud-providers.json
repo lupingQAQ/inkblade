@@ -8,7 +8,7 @@
     { "name": "tke-node-1", "providerID": "qcloud:///ap-guangzhou/ins-mock1111" }
   ],
   "serviceaccounts": [
-    { "name": "irsa-sa", "namespace": "infer", "annotations": { "eks.amazonaws.com/role-arn": "arn:aws:iam::123456789012:role/ml-trident-mock" } },
+    { "name": "irsa-sa", "namespace": "infer", "annotations": { "eks.amazonaws.com/role-arn": "arn:aws:iam::123456789012:role/ml-inkblade-mock" } },
     { "name": "wi-sa", "namespace": "train", "annotations": { "azure.workload.identity/use": "true" } },
     { "name": "gcp-wi-sa", "namespace": "train", "annotations": { "iam.gke.io/gcp-service-account": "trainer@mock-project.iam.gserviceaccount.com" } }
   ],

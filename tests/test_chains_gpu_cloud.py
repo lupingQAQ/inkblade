@@ -13,14 +13,14 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from lab.gpu_cloud_sim import start_all
-from trident.core.chains import dry_run, evaluate_preconditions, execute, load_chains
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import init_roe
-from trident.core.users import UserStore
+from inkblade.core.chains import dry_run, evaluate_preconditions, execute, load_chains
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import init_roe
+from inkblade.core.users import UserStore
 
 REPO = Path(__file__).resolve().parents[1]
-CHAINS_DIR = REPO / "trident" / "chains"
-MODULES_DIR = REPO / "trident" / "modules"
+CHAINS_DIR = REPO / "inkblade" / "chains"
+MODULES_DIR = REPO / "inkblade" / "modules"
 
 GPU_CHAIN = "gpu-tenant-residue-chain"
 CLOUD_CHAIN = "cloud-cross-tenant-role-assume"

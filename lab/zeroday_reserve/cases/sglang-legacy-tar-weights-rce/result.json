@@ -25,12 +25,12 @@
  "marker": {
   "after_has_marker": true,
   "after_sha256": "38f2042b4c516a1059c57086e45b7773539999177a85fddb7ff64b8980259cda",
-  "text": "TRIDENT-ZD-sglang-legacy-tar-weights-rce"
+  "text": "INKBLADE-ZD-sglang-legacy-tar-weights-rce"
  },
  "method": "dynamic-function",
  "notes": "Function-level reproduction of the verbatim upstream `_load_pt_file`; the rest of SGLang is not imported because the host has no GPU. The sink and fallback branch are the real 0.5.22 code.",
  "payload": {
-  "marker": "TRIDENT-ZD-sglang-legacy-tar-weights-rce",
+  "marker": "INKBLADE-ZD-sglang-legacy-tar-weights-rce",
   "marker_path": "lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/evidence/marker.txt",
   "marker_sha256": "38f2042b4c516a1059c57086e45b7773539999177a85fddb7ff64b8980259cda",
   "request_response": [
@@ -68,12 +68,12 @@
   "snippet": "return torch.load(bin_file, map_location=\"cpu\", weights_only=False)",
   "source": "lab/zeroday_reserve/upstream/sglang-0.5.22/python/sglang/srt/model_loader/weight_utils.py"
  },
- "schema": "trident-zeroday-result-v1",
+ "schema": "inkblade-zeroday-result-v1",
  "source_sha256": "a7757701b108c2c383d315ede8b37a2c18ab0f393529ff8c06bdd290a020da64",
  "started_at": "2026-10-26T12:07:44+00:00",
  "status": "verified",
  "stderr": "Loading pytorch_model-00001-of-00001.bin with weights_only=False (legacy tar format)\n",
- "stdout": "{\"marker\": \"TRIDENT-ZD-sglang-legacy-tar-weights-rce\", \"marker_path\": \"lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/evidence/marker.txt\", \"marker_sha256\": \"38f2042b4c516a1059c57086e45b7773539999177a85fddb7ff64b8980259cda\", \"request_response\": [{\"result\": \"RuntimeError: legacy .tar format\", \"step\": \"torch.load(weights_only=True)\"}, {\"result\": \"pickle executed, marker written\", \"step\": \"upstream fallback torch.load(weights_only=False)\"}], \"state_after\": \"marker contains proof text\", \"state_before\": \"marker=ABSENT\", \"status\": \"verified\", \"transport\": {\"function_line\": 1398, \"payload\": \"tar member 'storages' -> pickle __reduce__ -> poclib.mark\", \"post_sink_error\": \"TypeError: 'NoneType' object cannot be interpreted as an integer\", \"shard\": \"lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/evidence/work/pytorch_model-00001-of-00001.bin\", \"sink\": \"weights_only=False fallback after legacy .tar RuntimeError\", \"source\": \"lab/zeroday_reserve/upstream/sglang-0.5.22/python/sglang/srt/model_loader/weight_utils.py\", \"source_sha256\": \"a7757701b108c2c383d315ede8b37a2c18ab0f393529ff8c06bdd290a020da64\", \"torch_version\": \"2.14.1+cpu\", \"type\": \"verbatim upstream function (AST source segment) + torch.load\", \"upstream\": \"SGLang v0.5.22\"}}\n",
+ "stdout": "{\"marker\": \"INKBLADE-ZD-sglang-legacy-tar-weights-rce\", \"marker_path\": \"lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/evidence/marker.txt\", \"marker_sha256\": \"38f2042b4c516a1059c57086e45b7773539999177a85fddb7ff64b8980259cda\", \"request_response\": [{\"result\": \"RuntimeError: legacy .tar format\", \"step\": \"torch.load(weights_only=True)\"}, {\"result\": \"pickle executed, marker written\", \"step\": \"upstream fallback torch.load(weights_only=False)\"}], \"state_after\": \"marker contains proof text\", \"state_before\": \"marker=ABSENT\", \"status\": \"verified\", \"transport\": {\"function_line\": 1398, \"payload\": \"tar member 'storages' -> pickle __reduce__ -> poclib.mark\", \"post_sink_error\": \"TypeError: 'NoneType' object cannot be interpreted as an integer\", \"shard\": \"lab/zeroday_reserve/cases/sglang-legacy-tar-weights-rce/evidence/work/pytorch_model-00001-of-00001.bin\", \"sink\": \"weights_only=False fallback after legacy .tar RuntimeError\", \"source\": \"lab/zeroday_reserve/upstream/sglang-0.5.22/python/sglang/srt/model_loader/weight_utils.py\", \"source_sha256\": \"a7757701b108c2c383d315ede8b37a2c18ab0f393529ff8c06bdd290a020da64\", \"torch_version\": \"2.14.1+cpu\", \"type\": \"verbatim upstream function (AST source segment) + torch.load\", \"upstream\": \"SGLang v0.5.22\"}}\n",
  "timed_out": false,
  "title": "SGLang pt loader falls back to weights_only=False for legacy tar model shards",
  "verified": true,

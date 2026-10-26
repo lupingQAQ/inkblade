@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.registry import ModuleMeta, load_modules, order_dependencies
+from inkblade.core.registry import ModuleMeta, load_modules, order_dependencies
 
 
 def _mk(root: Path, key: str, requires=None, series="侦察", min_level="只读侦察"):

@@ -9,7 +9,7 @@
 
 import unittest
 
-from trident.core import agent_policy as ap
+from inkblade.core import agent_policy as ap
 
 
 READ = {"module": "sglang-admin-failopen", "writes": False, "params": {"use_assets": True}}

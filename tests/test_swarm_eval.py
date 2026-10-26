@@ -53,7 +53,7 @@ class TestSwarmEval(unittest.TestCase):
         for needle in ("1 worker", "4 worker", "成功率", "审批墙钟", "simulate", "复现"):
             self.assertIn(needle, text)
         doc = json.loads((OUT_DIR / "results.json").read_text(encoding="utf-8"))
-        self.assertEqual(doc["schema"], "trident-swarm-eval/1")
+        self.assertEqual(doc["schema"], "inkblade-swarm-eval/1")
         self.assertEqual(doc["task_set"]["total"], 15)
 
 

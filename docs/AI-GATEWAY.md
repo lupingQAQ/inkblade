@@ -1,15 +1,15 @@
 # AI 网关与配套基建专项（AI-GATEWAY）
 
-本文件是 Trident 在 **AI 网关（LiteLLM / Higress / Envoy AI Gateway 风格）** 及其配套基建
+本文件是 InkBlade 在 **AI 网关（LiteLLM / Higress / Envoy AI Gateway 风格）** 及其配套基建
 （模型注册表、语义缓存、向量库、请求日志、配额）上的威胁模型、模块↔链映射与检测口径。配套代码：
 
 - 仿真靶场：`lab/ai_gateway_sim.py`（真实 HTTP，仅 127.0.0.1，`vulnerable` / `fixed` 两态）
-- 模块：`trident/modules/` 下 10 个模块（`aigateway-*` / `model-registry-exposure` / `vector-db-exposure`）
-- 攻击链：`trident/chains/ai-gateway-key-exfil.json`
+- 模块：`inkblade/modules/` 下 10 个模块（`aigateway-*` / `model-registry-exposure` / `vector-db-exposure`）
+- 攻击链：`inkblade/chains/ai-gateway-key-exfil.json`
 - 规则：Sigma×2（管理 API 无鉴权 / 默认 master key 使用）、Falco（网关上游凭据配置读取）、
   Suricata（`/key/generate`、`/config`、`/admin/console` 访问特征）
-- 实效验证：`trident/verify-effects.py` 中 `gateway-*` 三项（见 `docs/EFFECT-VERIFICATION.md`）
-- 紫队验证：`trident/rules/validate.py` 按 `sim=ai-gateway` 自动拉起仿真器重放真实 HTTP
+- 实效验证：`inkblade/verify-effects.py` 中 `gateway-*` 三项（见 `docs/EFFECT-VERIFICATION.md`）
+- 紫队验证：`inkblade/rules/validate.py` 按 `sim=ai-gateway` 自动拉起仿真器重放真实 HTTP
 
 **边界声明**：本文与仿真器描述的是**控制面语义同构的实验室效果级验证**，不是真实模型厂商账号、
 真实 Envoy 数据面或生产密钥系统实测。真实结论必须来自客户网关的授权配置快照与真实审计日志。
@@ -194,7 +194,7 @@ python -m unittest tests.test_modules_aigateway -v
 python -m unittest tests.test_rules tests.test_chains -v
 
 # 实效验证（17 项，含 gateway-* 三项）
-python -m trident.verify-effects --out reports/samples/effects/
+python -m inkblade.verify-effects --out reports/samples/effects/
 
 # 全量回归
 python -m unittest discover -s tests

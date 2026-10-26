@@ -15,16 +15,16 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from lab.fabric_dos_sim import start_all
-from trident.core.chains import dry_run, evaluate_preconditions, load_chains
-from trident.core.evidence import EvidenceStore
-from trident.core.registry import load_modules
-from trident.core.roe import init_roe
-from trident.core.runner import BackupGateRefused, run_module
-from trident.core.users import UserStore
+from inkblade.core.chains import dry_run, evaluate_preconditions, load_chains
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.registry import load_modules
+from inkblade.core.roe import init_roe
+from inkblade.core.runner import BackupGateRefused, run_module
+from inkblade.core.users import UserStore
 
 REPO = Path(__file__).resolve().parents[1]
-MODULES_DIR = REPO / "trident" / "modules"
-CHAINS_DIR = REPO / "trident" / "chains"
+MODULES_DIR = REPO / "inkblade" / "modules"
+CHAINS_DIR = REPO / "inkblade" / "chains"
 
 NEW_MODULES = {
     "sharp-in-network-poison": {"series": "横向利用", "min_level": "利用验证", "writes": True},
@@ -169,7 +169,7 @@ class VulnerableDetectionTest(FabricModuleTestBase):
     def test_nccl_port_exhaustion(self):
         _, findings, _ = self._run("nccl-port-exhaustion", {
             "target": self.vulnerable.url(""),
-            "job": "trident-test",
+            "job": "inkblade-test",
             "max_allocs": 30,
         })
         high = self._high(findings)

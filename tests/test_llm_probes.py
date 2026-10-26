@@ -1,4 +1,4 @@
-"""tests/test_llm_probes.py — LLM 探针库（trident/probes）测试（TDD 先行）。
+"""tests/test_llm_probes.py — LLM 探针库（inkblade/probes）测试（TDD 先行）。
 
 覆盖：
 - 库契约：≥80 探针 / ≥13 类 / 纯小写键与文件名一一对应 / 判定器与请求模板结构合法；
@@ -20,8 +20,8 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.probes import (
+from inkblade.core.evidence import EvidenceStore
+from inkblade.probes import (
     CATEGORIES,
     DETECTOR_KINDS,
     FACES,
@@ -30,8 +30,8 @@ from trident.probes import (
     evaluate_detector,
     load_probes,
 )
-from trident.probes.run import run_matrix
-from trident.reports.render import render_pentest
+from inkblade.probes.run import run_matrix
+from inkblade.reports.render import render_pentest
 
 REPO = Path(__file__).resolve().parents[1]
 PARITY_DOC = REPO / "docs" / "PROBE-PARITY.md"
@@ -57,7 +57,7 @@ class TestLibraryContract(unittest.TestCase):
         self.assertGreaterEqual(len(self.probes), 80, f"探针数 {len(self.probes)} < 80")
 
     def test_keys_pure_lowercase_and_match_files(self):
-        library = REPO / "trident" / "probes" / "library"
+        library = REPO / "inkblade" / "probes" / "library"
         files = sorted(p.name for p in library.rglob("*.json"))
         self.assertEqual(len(files), len(self.probes), "库文件数与探针数不一致")
         for key, probe in self.probes.items():
@@ -167,7 +167,7 @@ class TestRuleLinkage(unittest.TestCase):
                 self.assertGreaterEqual(len(rules), 1, f"{cat} 无检测规则键")
 
     def test_rule_keys_exist_in_sigma_catalog(self):
-        from trident.rules.generate import load_catalog
+        from inkblade.rules.generate import load_catalog
 
         catalog = load_catalog()
         sigma_ids = {spec["id"] for spec in catalog["sigma"]}
@@ -179,14 +179,14 @@ class TestRuleLinkage(unittest.TestCase):
     def test_rules_generated_into_pack(self):
         import shutil
 
-        from trident.core.chains import load_chains
-        from trident.rules import generate_all
+        from inkblade.core.chains import load_chains
+        from inkblade.rules import generate_all
 
         # 受控链子集（并行任务可能向链目录投放无规则覆盖的在途新链，全局生成对其红——与本库无关）
         with TemporaryDirectory() as tmp:
             chains_tmp = Path(tmp) / "chains"
             chains_tmp.mkdir()
-            source = REPO / "trident" / "chains"
+            source = REPO / "inkblade" / "chains"
             wanted = [cid for cid in ("long-context-cache-leak", "ai-gateway-key-exfil")
                       if (source / f"{cid}.json").is_file()]
             self.assertGreaterEqual(len(wanted), 1)
@@ -341,7 +341,7 @@ class TestMatrixArtifacts(_MatrixBase):
         self.assertGreaterEqual(s["rules_linked"], 13)
 
     def test_matrix_markdown(self):
-        from trident.probes.matrix import render_matrix_doc, render_matrix_section
+        from inkblade.probes.matrix import render_matrix_doc, render_matrix_section
 
         doc = render_matrix_doc(self.matrix, "bi")
         self.assertIn("LLM 探针矩阵", doc)
@@ -353,7 +353,7 @@ class TestMatrixArtifacts(_MatrixBase):
         self.assertIn("garak", md.lower(), "矩阵节应引用对比口径来源")
 
     def test_matrix_markdown_table_columns_aligned(self):
-        from trident.probes.matrix import render_matrix_section
+        from inkblade.probes.matrix import render_matrix_section
 
         md = render_matrix_section(self.matrix, "bi")
         rows = [ln for ln in md.splitlines() if ln.startswith("|")]
@@ -362,12 +362,12 @@ class TestMatrixArtifacts(_MatrixBase):
         self.assertEqual(len(widths), 1, f"表格列数不一致（竖线数 {sorted(widths)}）")
 
     def test_report_section_with_artifact(self):
-        from trident.probes.matrix import MATRIX_FILENAME
+        from inkblade.probes.matrix import MATRIX_FILENAME
 
         with TemporaryDirectory() as tmp:
             store = EvidenceStore(Path(tmp), workspace="local-lab")
             run = store.create_run("run-probes")
-            run.add_step("probe-sweep", "trident probes run", {},
+            run.add_step("probe-sweep", "inkblade probes run", {},
                          "LLM 探针矩阵两态差分", artifacts=[])
             (Path(run.dir) / MATRIX_FILENAME).write_text(
                 json.dumps(self.matrix, ensure_ascii=False), encoding="utf-8")

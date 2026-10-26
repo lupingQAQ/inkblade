@@ -22,7 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-REGISTRY = ROOT / "trident" / "core" / "exploit-registry.json"
+REGISTRY = ROOT / "inkblade" / "core" / "exploit-registry.json"
 
 HARDWARE_COMPONENTS = {
     "bmc", "sonic", "sonicrestapi", "cumulus", "nvidia", "gpuoperator",
@@ -69,10 +69,10 @@ def main() -> int:
 
     # Per-profile count of default-exposed PoCs whose module is
     # production-testable in that deployment profile.
-    from trident.core.surface import matrix, profile_names
-    from trident.core.registry import load_modules
+    from inkblade.core.surface import matrix, profile_names
+    from inkblade.core.registry import load_modules
 
-    mods = load_modules(ROOT / "trident" / "modules")
+    mods = load_modules(ROOT / "inkblade" / "modules")
     by_module = {e.get("module"): e for e in entries
                  if e["deployment_requirement"] == "default-exposed"}
     by_profile: dict[str, dict] = {}
@@ -88,7 +88,7 @@ def main() -> int:
         }
 
     doc["deployment"] = {
-        "schema": "trident-deployment-requirement-v1",
+        "schema": "inkblade-deployment-requirement-v1",
         "field": "deployment_requirement",
         "allowed": ["default-exposed", "needs-config", "function-level", "hardware-only"],
         "counts": counts,

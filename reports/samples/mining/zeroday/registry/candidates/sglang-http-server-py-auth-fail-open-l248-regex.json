@@ -1,5 +1,5 @@
 {
- "schema": "trident-mining-candidate-v1",
+ "schema": "inkblade-mining-candidate-v1",
  "id": "sglang-http-server-py-auth-fail-open-l248-regex",
  "target": "sglang",
  "repo": "sgl-project/sglang",

@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident import mining
+from inkblade import mining
 
 REPO = Path(__file__).resolve().parents[1]
 
@@ -52,7 +52,7 @@ class TestExtract(unittest.TestCase):
         transformers（2026-10-26 push-2 扩展）以 reproenv-d 实装 wheel 4.57.1 为 pin，
         不进入版本矩阵 products。
         """
-        from trident.core.version_matrix import products
+        from inkblade.core.version_matrix import products
 
         mx = products()
         for t in ("vllm", "sglang", "kuberay", "hami", "litellm"):
@@ -87,7 +87,7 @@ class TestPipelineClosedLoop(unittest.TestCase):
         """仓库样张（首轮 9 候选）在库：reports/samples/mining/。"""
         report = REPO / "reports" / "samples" / "mining" / "mining-report.json"
         if not report.is_file():  # 允许后续轮次重生成，但文件必须存在
-            self.fail("缺 reports/samples/mining/mining-report.json（跑 trident mine 生成）")
+            self.fail("缺 reports/samples/mining/mining-report.json（跑 inkblade mine 生成）")
         doc = json.loads(report.read_text(encoding="utf-8"))
         self.assertGreaterEqual(doc["candidates_total"], 5)
         self.assertTrue(all(c["status"] == "pending-manual-review"
@@ -101,9 +101,9 @@ class TestPipelineClosedLoop(unittest.TestCase):
 
     def test_no_auto_registration(self):
         """候选绝不进模块注册表（不自动入库）。"""
-        from trident.core.registry import load_modules
+        from inkblade.core.registry import load_modules
 
-        mods = load_modules(REPO / "trident" / "modules")
+        mods = load_modules(REPO / "inkblade" / "modules")
         report = REPO / "reports" / "samples" / "mining" / "mining-report.json"
         doc = json.loads(report.read_text(encoding="utf-8"))
         for c in doc["candidates"]:

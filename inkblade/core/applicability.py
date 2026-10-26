@@ -19,7 +19,7 @@
 
 目录兼容
 --------
-``trident/core/cve-catalog.json`` 是本仓库的权威目录；本模块也接受
+``inkblade/core/cve-catalog.json`` 是本仓库的权威目录；本模块也接受
 ``cves`` / ``entries`` / ``items`` 等外层键、``affected`` 字符串或列表、
 ``version_range``、``affected_versions`` 等常见写法。缺少结构化 conditions 时，
 会把 ``exploit_conditions`` 自由文本按保守映射编译为可验证条件；不能映射的
@@ -29,14 +29,15 @@
 from __future__ import annotations
 
 import json
-import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Iterable
 
-SCHEMA = "trident-cve-assessment-v1"
-CATALOG_SCHEMA = "trident-cve-catalog-v1"
+from .env import getenv
+
+SCHEMA = "inkblade-cve-assessment-v1"
+CATALOG_SCHEMA = "inkblade-cve-catalog-v1"
 
 STATE_APPLICABLE = "applicable"
 STATE_BLOCKED = "blocked"
@@ -1003,8 +1004,8 @@ def _eval_named(name: str, ctx: ConditionContext, node: Any = None) -> Condition
             f"条件 {raw}",
             field_name="conditions",
             why=f"没有注册名为 {raw!r} 的条件评估器（不会默认视为满足；"
-                "可在 trident.core.applicability.register_condition 注册）",
-            command="在 trident.core.applicability.register_condition 注册评估器，"
+                "可在 inkblade.core.applicability.register_condition 注册）",
+            command="在 inkblade.core.applicability.register_condition 注册评估器，"
                     "或使用内置条件/结构化表达式",
             source="catalog.preconditions",
         )
@@ -1575,7 +1576,7 @@ def resolve_catalog_path(path: str | Path | None = None, home: str | Path | None
         if not p.is_file():
             raise ApplicabilityError(f"cve catalog 不存在：{p}")
         return p
-    env = os.environ.get("TRIDENT_CVE_CATALOG")
+    env = getenv("CVE_CATALOG")
     if env:
         p = Path(env)
         if p.is_file():
@@ -1677,9 +1678,9 @@ def _module_cve_map(modules_dir: Path) -> dict[str, set[str]]:
 def _enrich_links(catalog: dict) -> None:
     """从链的 cves/步骤模块、规则 blocks_modules、模块描述补齐链/规则键。"""
     root = Path(__file__).resolve().parents[2]
-    chains_dir = root / "trident" / "chains"
-    rules_dir = root / "trident" / "rules" / "templates"
-    modules_dir = root / "trident" / "modules"
+    chains_dir = root / "inkblade" / "chains"
+    rules_dir = root / "inkblade" / "rules" / "templates"
+    modules_dir = root / "inkblade" / "modules"
     chains_by_cve: dict[str, set[str]] = {}
     chains_by_module: dict[str, set[str]] = {}
     if chains_dir.is_dir():
@@ -2635,8 +2636,8 @@ def render_matrix(assessment: dict, lang: str = "bi") -> str:
     lines = head_lines
     if not cats.get("found"):
         lines.append(pick(
-            "**CVE 目录未落盘**：本节不生成任何推断结论；请先提供 `trident/core/cve-catalog.json`。",
-            "**CVE catalog not found**: no inference is made in this section. Provide `trident/core/cve-catalog.json` first.",
+            "**CVE 目录未落盘**：本节不生成任何推断结论；请先提供 `inkblade/core/cve-catalog.json`。",
+            "**CVE catalog not found**: no inference is made in this section. Provide `inkblade/core/cve-catalog.json` first.",
         ))
         return "\n".join(lines)
     if lang == "zh":

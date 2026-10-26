@@ -27,7 +27,7 @@
 | UI 空态 | 多数视图只有一行「暂无…」或直接空白；无下一步命令 | **10/10 视图**统一引导空态：标题 + 原因 + 可复制命令（`demo` / `onboard-cluster --dry-run`）+ 真实集群提示 | `app.js::EMPTY_STATES/emptyState`；`TestUIProductization` |
 | 双语 | 仅中文硬编码 | **中/英切换**（header `EN/中文`，localStorage 记忆，`data-i18n` 静态文案 + `t()` 动态视图；90+ 词条） | `index.html`、`app.js::I18N/applyI18n/setLang` |
 | 10k findings 渲染 | 一次性建 **10,000 行 / 90,040 个报告 DOM**；同步 **114.2 ms** | 默认 200 行/页；**6.7 ms**、1,840 个报告 DOM；显示更多 +200；`?perf=legacy` 保留旧路径 | `docs/UI-PERF.md` |
-| kubeconfig→pilot | CLI 有 `onboard-cluster` 但 `trident/cluster_wizard.py` **缺失**，执行即 ImportError | 自动发现（显式 > `KUBECONFIG` > `~/.kube/config` > `~/.kube/*.yaml`）→ 解析/合并/列 context → dry-run 打印下一步 → 只读 pilot；失败走 E101/E701 人话 | `trident/cluster_wizard.py`；`TestClusterWizard` |
+| kubeconfig→pilot | CLI 有 `onboard-cluster` 但 `inkblade/cluster_wizard.py` **缺失**，执行即 ImportError | 自动发现（显式 > `KUBECONFIG` > `~/.kube/config` > `~/.kube/*.yaml`）→ 解析/合并/列 context → dry-run 打印下一步 → 只读 pilot；失败走 E101/E701 人话 | `inkblade/cluster_wizard.py`；`TestClusterWizard` |
 | 5 角色走查 | 旧 onboarding 评估：7 条命令、3 次失败、2 次前台阻塞、首次有效结果未达成 | **10 步 / 0 失败 / 5 角色全绿**；总 9.740s；首条结果 3.758s；p50 338.0ms、p95 3758.4ms | `reports/samples/usability/walkthrough.json` |
 | 错误路径可见性 | API/资产/差异失败常只有静默空或裸 `e.message` | 空态/加载失败可操作提示；差异失败带 `drift.json`/静态导出指引 | `app.js` |
 
@@ -61,15 +61,15 @@
 | E6xx API | E601–E603 | 401/403/423 授权锁 |
 | E7xx 试点 | E701 | kubeconfig/试点输入不可用 |
 | E8xx 计划 | E801 | cron/interval 非法 |
-| E9xx 未知 | E900 | 兜底 + `TRIDENT_DEBUG=1` 才出堆栈 |
+| E9xx 未知 | E900 | 兜底 + `INKBLADE_DEBUG=1` 才出堆栈 |
 
 ## 3. UI 空态与引导（10/10 视图）
 
 统一组件 `emptyState(view)`：
 
 - 图标/编号（①–⑩）+ 标题（说清“为什么空”）+ 说明（数据来源）；
-- 两条**可复制**命令：`python -m trident demo`（本地结果）与
-  `python -m trident onboard-cluster --dry-run`（真实集群只读预演）；
+- 两条**可复制**命令：`python -m inkblade demo`（本地结果）与
+  `python -m inkblade onboard-cluster --dry-run`（真实集群只读预演）；
 - 每个视图有专属下一步：DAG/时间线/证据 → demo；报告 → quickstart 授权；
   资产 → discover；差异 → schedule run-due；审批 → explorer propose；计划 →
   schedule add。
@@ -80,7 +80,7 @@
 
 ## 4. 双语切换
 
-- Header 右上 `EN / 中文`；默认中文，选择写入 `localStorage["trident-lang"]`；
+- Header 右上 `EN / 中文`；默认中文，选择写入 `localStorage["inkblade-lang"]`；
 - `index.html` 的静态文案用 `data-i18n`，`app.js` 动态视图用 `t(key, vars)`；
 - 覆盖：导航十视图、状态五色、报告统计/表头/分页/脱敏、空态十套、资产/差异/
   审批/计划、登录/模式提示、页脚；
@@ -106,13 +106,13 @@
 
 ```powershell
 # 零参数：自动发现 KUBECONFIG / ~/.kube/config / ~/.kube/*.yaml
-python -m trident onboard-cluster --dry-run
+python -m inkblade onboard-cluster --dry-run
 
 # 指定文件 + 只看某个 context
-python -m trident onboard-cluster --kubeconfig ~/.kube/config --context prod --dry-run
+python -m inkblade onboard-cluster --kubeconfig ~/.kube/config --context prod --dry-run
 
 # 离线/客户先导：用 kubectl get 导出的 snapshot，不连集群
-python -m trident onboard-cluster --snapshot east-prod.json --out reports/pilot
+python -m inkblade onboard-cluster --snapshot east-prod.json --out reports/pilot
 ```
 
 流程：
@@ -123,7 +123,7 @@ python -m trident onboard-cluster --snapshot east-prod.json --out reports/pilot
    解析失败 → E701 人话（先 dry-run、换 snapshot、看 conflicts）。
 3. **选择 context**：`--context` 可重复；未给则默认全部（非交互不阻塞 stdin）；
    不存在的 context → 明确列出可用值。
-4. **dry-run**：打印将执行的 `trident pilot ...` 命令 + JSON 摘要，不调用
+4. **dry-run**：打印将执行的 `inkblade pilot ...` 命令 + JSON 摘要，不调用
    kubectl、不写文件。
 5. **执行**：只读 pilot（`allow_write=False`）→ 报告/审批清单/manifest；
    写计划不在此向导暴露，仍需三闸门。
@@ -203,7 +203,7 @@ python -m trident onboard-cluster --snapshot east-prod.json --out reports/pilot
 
 ```powershell
 # 错误码目录（应 34 类）
-python -c "from trident.core.humanize import catalog_codes; c=catalog_codes(); print(len(c), c)"
+python -c "from inkblade.core.humanize import catalog_codes; c=catalog_codes(); print(len(c), c)"
 
 # 5 角色专家走查 → JSON + SUS 模板
 python scripts/usability-walkthrough.py

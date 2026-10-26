@@ -1,5 +1,5 @@
 {
-  "schema": "trident-quarantine-v1",
+  "schema": "inkblade-quarantine-v1",
   "description": "Modules excluded from the default chain and default coverage denominator because the component is absent from the six mainstream profiles. Explicit runs remain possible with --profile/--collect/--probe. A module.json default_enabled=false always wins; this file covers modules owned by parallel workstreams.",
   "modules": {
     "federated-learning-audit": "Requires an NVFlare/Flower/FATE controller; absent from all six profiles.",

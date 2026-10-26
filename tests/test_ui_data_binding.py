@@ -13,13 +13,13 @@ import urllib.request
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.users import UserStore
-from trident.webui.export_static import export_static
-from trident.webui.server import make_server
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.users import UserStore
+from inkblade.webui.export_static import export_static
+from inkblade.webui.server import make_server
 
 REPO = Path(__file__).resolve().parents[1]
-APP_JS = REPO / "trident" / "webui" / "static" / "app.js"
+APP_JS = REPO / "inkblade" / "webui" / "static" / "app.js"
 
 
 def _req(method, url, token=None, body=None):
@@ -56,7 +56,7 @@ class TestUiDataBinding(unittest.TestCase):
         }
         (run.dir / "drift.json").write_text(json.dumps(drift, ensure_ascii=False), encoding="utf-8")
         # 工作区资产库（assets.db，供静态导出与资产视图）
-        from trident.core.discovery import AssetInventory
+        from inkblade.core.discovery import AssetInventory
 
         inv = AssetInventory(cls.store)
         inv.ingest({"namespaces": ["train"], "services": [
@@ -124,7 +124,7 @@ class TestUiDataBinding(unittest.TestCase):
         with TemporaryDirectory() as tmp:
             out = Path(tmp) / "export"
             html = export_static(self.store.ws_dir / self.run_name, out).read_text(encoding="utf-8")
-            start = html.index("window.TRIDENT_DATA = ") + len("window.TRIDENT_DATA = ")
+            start = html.index("window.INKBLADE_DATA = ") + len("window.INKBLADE_DATA = ")
             end = html.index(";</script>", start)
             data = json.loads(html[start:end])
             self.assertEqual(data["drift"]["counts"]["new"], 2)

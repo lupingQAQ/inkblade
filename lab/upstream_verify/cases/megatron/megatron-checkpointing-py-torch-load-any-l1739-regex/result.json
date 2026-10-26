@@ -1,5 +1,5 @@
 {
- "schema": "trident-upstream-result-v1",
+ "schema": "inkblade-upstream-result-v1",
  "id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
  "source": "mining",
  "component": "megatron",
@@ -33,13 +33,13 @@
  "command": "[torch] lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/poc.py",
  "exit_code": 0,
  "timed_out": false,
- "duration_s": 3.283,
- "started_at": "2026-10-26T02:42:12+00:00",
+ "duration_s": 12.798,
+ "started_at": "2026-10-26T19:53:13+00:00",
  "marker": {
-  "text": "TRIDENT-UV-megatron-checkpointing-py-torch-load-any-l1739-regex",
+  "text": "INKBLADE-UV-megatron-checkpointing-py-torch-load-any-l1739-regex",
   "before": "ABSENT",
   "after_has_marker": true,
-  "after_sha256": "135571bc85f53da66ccfa41dc98f4f01510f2862326b2bc661286dfcaadfbd81"
+  "after_sha256": "d0368ca218851a1ee5c3e0ed22170174420f635e56674a13a146d9fcc8a6e9f0"
  },
  "request_response": [
   {
@@ -53,8 +53,8 @@
  "evidence": [
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/checkpoint/iter_0000001/mp_rank_00/model_optim_rng.pt",
-   "sha256": "28fd61b881167acdbd3998cbbba6e029253458f98d4de21897869d3347603bb5",
-   "size": 282
+   "sha256": "9ed3c8a19ca56cdf7c4d0e45a6890e3b0fa3b2a3d9d3ae2ef1a34b9b30508bd2",
+   "size": 283
   },
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/checkpoint/latest_checkpointed_iteration.txt",
@@ -63,18 +63,18 @@
   },
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/log.txt",
-   "sha256": "14fb11f83005f48cdd18fc335bcfe15da27b13b71dfe44dc7d6eacbf41deddeb",
-   "size": 1508
+   "sha256": "0c6d111e1eecddcb730a3345d55f7aaf9a834e9e65275ae48556c336e20e76a6",
+   "size": 1510
   },
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/marker.txt",
-   "sha256": "135571bc85f53da66ccfa41dc98f4f01510f2862326b2bc661286dfcaadfbd81",
-   "size": 63
+   "sha256": "d0368ca218851a1ee5c3e0ed22170174420f635e56674a13a146d9fcc8a6e9f0",
+   "size": 64
   },
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/run.json",
-   "sha256": "7ae3117761ce96e51b5ceca1ebf344fdb374442c7eccd353fafa0e9fc732ef3b",
-   "size": 1671
+   "sha256": "3ecfd2ff2d468c652fbca94c2c6066b6bc0d77d234fa12579d432d9143fd6c3a",
+   "size": 1673
   },
   {
    "path": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/static-check.json",
@@ -83,8 +83,8 @@
   }
  ],
  "poc_sha256": "2aee550920b588411084b8240fd88863c71d277d576e19cd556edf68e51935fb",
- "manifest_sha256": "a3c04538f9be465ad2ce028d6800b499a4c76a27938187911f67dd845772f59e",
- "stdout": "could not load the checkpoint\nInvalid magic number; corrupt file?\n{\"status\": \"verified\", \"marker\": \"TRIDENT-UV-megatron-checkpointing-py-torch-load-any-l1739-regex\", \"evidence\": \"lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence\"}\n",
+ "manifest_sha256": "bc4035429ca905ebb0cce3ca86a67bde4216ec75bc621fb936586a87b309c756",
+ "stdout": "could not load the checkpoint\nInvalid magic number; corrupt file?\n{\"status\": \"verified\", \"marker\": \"INKBLADE-UV-megatron-checkpointing-py-torch-load-any-l1739-regex\", \"evidence\": \"lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence\"}\n",
  "stderr": "<repo>\\lab\\upstream_verify\\upstream\\NVIDIA\\Megatron-LM\\core_v0.19.2\\megatron\\training\\checkpointing.py:1739: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.\n  state_dict = torch.load(checkpoint_name, map_location='cpu')\n",
  "notes": "torch.load(checkpoint_name, map_location='cpu') with no weights_only pin inside the Megatron-LM checkpoint loader: a poisoned checkpoint directory executes pickle code on resume. Reproduced against the verbatim pinned checkpointing.py; megatron.* siblings stubbed because megatron-core 0.19.x hard-imports triton, torch is real 2.5.1+cpu where weights_only still defaults to False."
 }

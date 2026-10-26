@@ -16,8 +16,8 @@
    "path": "/checkpoint/shards",
    "auth": "none",
    "body": {
-    "shard_id": "trident-probe-shard",
-    "payload": "TRIDENT-BENIGN-SHARD"
+    "shard_id": "inkblade-probe-shard",
+    "payload": "INKBLADE-BENIGN-SHARD"
    }
   }
  ],

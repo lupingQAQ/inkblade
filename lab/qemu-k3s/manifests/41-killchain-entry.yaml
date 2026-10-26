@@ -5,21 +5,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: trident-entry-api
-  namespace: trident-killchain
+  name: inkblade-entry-api
+  namespace: inkblade-killchain
   labels:
-    app: trident-entry-api
-    trident.io/lab: kill-chain
+    app: inkblade-entry-api
+    inkblade.io/lab: kill-chain
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: trident-entry-api
+      app: inkblade-entry-api
   template:
     metadata:
       labels:
-        app: trident-entry-api
-        trident.io/lab: kill-chain
+        app: inkblade-entry-api
+        inkblade.io/lab: kill-chain
     spec:
       automountServiceAccountToken: false
       containers:
@@ -39,15 +39,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: trident-entry-api
-  namespace: trident-killchain
+  name: inkblade-entry-api
+  namespace: inkblade-killchain
   labels:
-    app: trident-entry-api
-    trident.io/lab: kill-chain
+    app: inkblade-entry-api
+    inkblade.io/lab: kill-chain
 spec:
   type: NodePort
   selector:
-    app: trident-entry-api
+    app: inkblade-entry-api
   ports:
     - port: 8000
       targetPort: 8000

@@ -36,7 +36,7 @@ DEFAULT_POLICIES = [
 
 def fuzz_pods() -> list[dict]:
     base = {"apiVersion": "v1", "kind": "Pod",
-            "metadata": {"name": "trident-fuzz", "namespace": "default"},
+            "metadata": {"name": "inkblade-fuzz", "namespace": "default"},
             "spec": {"containers": [{"name": "app", "image": "registry.local/app:1",
                                      "securityContext": {"runAsUser": 1000,
                                                          "runAsNonRoot": True,
@@ -47,7 +47,7 @@ def fuzz_pods() -> list[dict]:
         import copy
 
         pod = copy.deepcopy(base)
-        pod["metadata"]["name"] = f"trident-fuzz-{pid}"
+        pod["metadata"]["name"] = f"inkblade-fuzz-{pid}"
         patch(pod)
         pod["id"] = pid
         pod["expect"] = expect

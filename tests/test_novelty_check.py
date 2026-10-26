@@ -85,6 +85,16 @@ class TestNoveltyVerdicts(unittest.TestCase):
         })
         self.assertEqual(result["verdict"], "inconclusive")
 
+    def test_justified_not_applicable_is_confirmed_unpublished(self):
+        result = self._run({
+            "osv": novelty._not_applicable("osv", "package not published under that name",
+                                            justified=True),
+            "nvd": clean("nvd"), "ghsa": clean("github_advisories"),
+            "commits": clean("github_commits"), "code": clean("github_code"), "vendor": clean("vendor"),
+        })
+        self.assertEqual(result["verdict"], "confirmed-unpublished")
+        self.assertIn("justified non-answer", result["reason"])
+
     def test_inconclusive_offline_cache_miss(self):
         cache = novelty.Cache(Path(tempfile.mkdtemp()))
         http = novelty.Http(cache, offline=True)
@@ -160,6 +170,22 @@ class TestNoveltyProviders(unittest.TestCase):
         result = novelty.check_github_commits(entry, {"repo": "org/demo"}, self.FakeHttp(body))
         self.assertEqual(result["status"], "ok")
 
+    def test_github_commit_body_keywords_do_not_create_a_match(self):
+        # Regression: a rename patch and a lint patch whose *bodies* contained
+        # "--privileged"/"pickle" were reported as public disclosures.
+        entry = {"id": "x", "component": "demo", "root_cause": {"function": "danger", "file": "a.py"}}
+        body = {"items": [
+            {"sha": "a" * 40, "html_url": "https://github.test/1",
+             "commit": {"message": "[BREAKING][ckpt] refactor: rename trainer arg\n\n"
+                                   "docker run --privileged with pickle repro"}},
+            {"sha": "b" * 40, "html_url": "https://github.test/2",
+             "commit": {"message": "[Lint] fix: linting errors in all files\n\n"
+                                   "E501 line too long; pickle is not involved"}},
+        ]}
+        result = novelty.check_github_commits(entry, {"repo": "org/demo"}, self.FakeHttp(body))
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(len(result["related"]), 2)
+
     def test_osv_commit_query_used_without_version(self):
         captured = {}
 
@@ -172,6 +198,67 @@ class TestNoveltyProviders(unittest.TestCase):
         result = novelty.check_osv(entry, {"osv_package": "demo", "osv_commit": "a" * 40}, FakePost())
         self.assertEqual(result["status"], "ok")
         self.assertEqual(captured.get("commit"), "a" * 40)
+
+    def test_osv_no_pin_uses_package_level_query(self):
+        captured = {}
+
+        class FakeHttp:
+            def get(self, provider, url, **kwargs):
+                return {"status": "ok", "body": {"info": {"version": "0.19.2"},
+                                                 "releases": {"0.19.2": [{"filename": "x"}]}},
+                        "url": url}
+
+            def post(self, provider, url, payload, **kwargs):
+                captured.update(payload)
+                return {"status": "ok", "body": {"vulns": []}}
+
+        entry = {"id": "x", "component": "megatron",
+                 "root_cause": {"function": "unique_sink", "file": "a.py"}}
+        result = novelty.check_osv(entry, {"osv_package": "megatron-core"}, FakeHttp())
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(result["query_mode"], "package-level")
+        self.assertNotIn("version", captured)
+        self.assertNotIn("commit", captured)
+
+    def test_osv_placeholder_package_is_justified_not_applicable(self):
+        class FakeHttp:
+            def get(self, provider, url, **kwargs):
+                return {"status": "ok", "body": {"info": {"version": "0.0.0",
+                                                          "summary": "unrelated stats package"},
+                                                 "releases": {"0.0.0": [{"filename": "slime-0.0.0.tar.gz"}]}},
+                        "url": url}
+
+            def post(self, provider, url, payload, **kwargs):
+                raise AssertionError("must not query OSV for an unrelated placeholder")
+
+        entry = {"id": "x", "component": "slime",
+                 "root_cause": {"function": "unique_sink", "file": "a.py"}}
+        result = novelty.check_osv(entry, {"osv_package": "slime"}, FakeHttp())
+        self.assertEqual(result["status"], "not-applicable")
+        self.assertTrue(result["justified"])
+        self.assertIn("placeholder", result["detail"])
+
+    def test_github_commit_repo_rename_is_retried(self):
+        calls = []
+
+        class FakeHttp:
+            def get(self, provider, url, **kwargs):
+                calls.append((url, kwargs.get("params")))
+                if url.endswith("/search/commits"):
+                    params = kwargs.get("params") or {}
+                    if "inclusionAI" in str(params.get("q")):
+                        return {"status": "http-error", "http_status": 422,
+                                "body": {"message": "Validation Failed"}}
+                    return {"status": "ok", "body": {"items": []}}
+                return {"status": "ok", "body": {"full_name": "areal-project/AReaL"}}
+
+        entry = {"id": "x", "component": "areal",
+                 "root_cause": {"function": "master_addr", "file": "a.py"}}
+        result = novelty.check_github_commits(entry, {"repo": "inclusionAI/AReaL"}, FakeHttp())
+        self.assertEqual(result["status"], "ok")
+        self.assertTrue(result["repo_resolution"]["resolved"])
+        self.assertIn("repo:areal-project/AReaL", result["query"])
+        self.assertEqual(len([c for c in calls if c[0].endswith("/search/commits")]), 2)
 
     def test_grep_app_string_repo_shape(self):
         body = {"hits": {"hits": [

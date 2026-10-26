@@ -14,7 +14,7 @@ section = _C.section
 
 
 def analyze(snapshot: dict, params: dict) -> list[dict]:
-    from trident.kubetrail.persistence import detect
+    from inkblade.kubetrail.persistence import detect
 
     report = detect(snapshot)
     out = list(report["findings"])

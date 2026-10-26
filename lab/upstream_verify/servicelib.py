@@ -99,7 +99,7 @@ class RayHead:
         self.dashboard_port = dashboard_port or 8265
         self.dashboard_host = dashboard_host
         self.num_cpus = num_cpus
-        self.tmp = tempfile.mkdtemp(prefix="trident-ray-")
+        self.tmp = tempfile.mkdtemp(prefix="inkblade-ray-")
         self.ray_exe = Path(sys.executable).parent / "Scripts" / "ray.exe"
         self.start_log = ""
         self.base_url = ""

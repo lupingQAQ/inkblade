@@ -1,7 +1,7 @@
 {
-  "schema": "trident-pilot/1",
+  "schema": "inkblade-pilot/1",
   "generated_at": "2026-10-25T16:27:21Z",
-  "tool": "trident",
+  "tool": "inkblade",
   "workspace": "pilot",
   "actor": "pilot",
   "role": "auditor",
@@ -9,7 +9,7 @@
   "collector_mode": "fixture-read-only",
   "mutations": [],
   "inventory": {
-    "schema": "trident-kubeconfig-inventory/1",
+    "schema": "inkblade-kubeconfig-inventory/1",
     "source_files": [
       "east.yaml",
       "west.yaml"
@@ -69,7 +69,7 @@
     "warnings": []
   },
   "profile": {
-    "schema": "trident-pilot-profile/1",
+    "schema": "inkblade-pilot-profile/1",
     "generated_at": "2026-10-25T16:27:21Z",
     "clusters": [
       {
@@ -551,7 +551,7 @@
     "boundary": "只读清点；fixture/live-kubectl 来源分列；非生产规模，不等同容量/性能结论。"
   },
   "plan": {
-    "schema": "trident-pilot-plan/1",
+    "schema": "inkblade-pilot-plan/1",
     "generated_at": "2026-10-25T16:27:21Z",
     "read_only": true,
     "allow_write": false,

@@ -21,6 +21,6 @@
 - 反思是**离线/后台任务**，不占用主循环上下文。
 
 ## 对我们的启示
-- 我们只有「当前 run 的 findings」和 explorer 队列，没有跨 run 记忆（G04）；`agent_planner` 每次从证据库重算（`trident/agent_planner.py:94-166`），经验不累积。
+- 我们只有「当前 run 的 findings」和 explorer 队列，没有跨 run 记忆（G04）；`agent_planner` 每次从证据库重算（`inkblade/agent_planner.py:94-166`），经验不累积。
 - 可落地的三层：working（本轮上下文/工具结果摘要）→ episodic（每轮 run 的决策+结果+复盘，SQLite/JSONL）→ semantic（资产/发现/产品指纹图 + 技能索引）。
 - MemFS 的「git 版本化」很适合我们：记忆变更可 diff、可审计、可回滚，符合证据链文化；dreaming 可做成离线的「复盘作业」，产出需人工批准后才写入 semantic。

@@ -26,11 +26,11 @@
 
 | 证明项 / Proof item | 结果 / Result | 证据 / Evidence |
 |---|---|---|
-| RBAC | `cluster-admin` | RoleBinding `trident-pwn-rb-real-20261026-10`；ClusterRoleBinding `trident-pwn-crb-real-20261026-10`；can-i all={'all': True, 'create_namespace': True, 'get_all_secrets': True} |
-| 节点 root / Node root | verified=True | node=`k3s`；uid=`uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),11(floppy),20(dialout),26(tape),27(video)`；path=`/root/TRIDENT-PROOF-real-20261026-10`；sha256=`29bc79c339ac9bd5abced0cf94ba160b471ce7bdd9534548872990534527a211` |
+| RBAC | `cluster-admin` | RoleBinding `inkblade-pwn-rb-real-20261026-10`；ClusterRoleBinding `inkblade-pwn-crb-real-20261026-10`；can-i all={'all': True, 'create_namespace': True, 'get_all_secrets': True} |
+| 节点 root / Node root | verified=True | node=`k3s`；uid=`uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),11(floppy),20(dialout),26(tape),27(video)`；path=`/root/INKBLADE-PROOF-real-20261026-10`；sha256=`29bc79c339ac9bd5abced0cf94ba160b471ce7bdd9534548872990534527a211` |
 | 集群 secret 列举 / Cluster secret enumeration | count=2 | namespaces=['kube-system'] |
-| 测试 namespace / Test namespace | created=True | `trident-proof-real-20261026-10` |
-| 测试 ConfigMap / Test ConfigMap | read_back=True | `trident-proof-real-20261026-10/trident-proof` |
+| 测试 namespace / Test namespace | created=True | `inkblade-proof-real-20261026-10` |
+| 测试 ConfigMap / Test ConfigMap | read_back=True | `inkblade-proof-real-20261026-10/inkblade-proof` |
 
 ## 提权面 / Privesc surface
 
@@ -46,22 +46,22 @@
 
 | # | stage | verb | resource | namespace | name | result | sha256 |
 |---|---|---|---|---|---|---|---|
-| 1 | stage-3-rbac-escalation | create | rolebinding | trident-killchain | trident-pwn-rb-real-20261026-10 | {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"RoleBinding","metadata":{"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"kind\":\"RoleBinding\",\"metadata\":{\"annotations\":{},\"labels\":{\"trident.io/objective\":\"real-2026 | `d386e7574edcff4e` |
-| 2 | stage-3-rbac-escalation | create | clusterrolebinding |  | trident-pwn-crb-real-20261026-10 | {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"ClusterRoleBinding","metadata":{"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"kind\":\"ClusterRoleBinding\",\"metadata\":{\"annotations\":{},\"labels\":{\"trident.io/objective | `771a76e0d14406ea` |
-| 3 | stage-4-privileged-pod | create | pod | trident-killchain | trident-pwn-pod-real-20261026-10 | {"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"trident-proof\",\"trident.io/objective\":\"real-20261026-10\"},\"name\":\"trident-pwn-pod-real | `e9c4549f7712e234` |
-| 4 | stage-5-node-marker | exec | pods | trident-killchain | trident-pwn-pod-real-20261026-10 | {"op":"write-node-marker","path":"/root/TRIDENT-PROOF-real-20261026-10","sha256":"29bc79c339ac9bd5abced0cf94ba160b471ce7bdd9534548872990534527a211"} | `99feb7f5185fa314` |
-| 5 | stage-6-cluster-proof | create | namespace |  | trident-proof-real-20261026-10 | {"apiVersion":"v1","kind":"Namespace","metadata":{"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"annotations\":{},\"labels\":{\"trident.io/objective\":\"real-20261026-10\"},\"name\":\"trident-proof-real-20261026-10\"}} | `76fbea290841cc9b` |
-| 6 | stage-6-cluster-proof | create | configmap | trident-proof-real-20261026-10 | trident-proof | {"apiVersion":"v1","data":{"marker":"TRIDENT-PROOF-real-20261026-10","node":"k3s","objective":"cluster-takeover-objective","secret_count":"2"},"kind":"ConfigMap","metadata":{"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"v1\",\"data\":{\"marker\":\"TRIDENT-PROOF | `490e892b0069e877` |
-| 7 | stage-7-cleanup | exec | pods | trident-killchain | trident-pwn-pod-real-20261026-10 | {"op":"remove-node-marker","path":"/root/TRIDENT-PROOF-real-20261026-10"} | `a84716713ffd3c66` |
-| 8 | stage-7-cleanup | delete | configmap | trident-proof-real-20261026-10 | trident-proof | deleted | `1185f37d33b0f89e` |
-| 9 | stage-7-cleanup | delete | namespace |  | trident-proof-real-20261026-10 | deleted | `1185f37d33b0f89e` |
-| 10 | stage-7-cleanup | delete | clusterrolebinding |  | trident-pwn-crb-real-20261026-10 | deleted | `1185f37d33b0f89e` |
-| 11 | stage-7-cleanup | delete | rolebinding | trident-killchain | trident-pwn-rb-real-20261026-10 | deleted | `1185f37d33b0f89e` |
-| 12 | stage-7-cleanup | delete | pod | trident-killchain | trident-pwn-pod-real-20261026-10 | deleted | `1185f37d33b0f89e` |
-| 13 | stage-7-cleanup | delete | clusterrolebinding |  | trident-operator-broad | deleted | `1185f37d33b0f89e` |
-| 14 | stage-7-cleanup | delete | clusterrole |  | trident-operator-broad | deleted | `1185f37d33b0f89e` |
-| 15 | stage-7-cleanup | delete | serviceaccount | trident-killchain | trident-operator | deleted | `1185f37d33b0f89e` |
-| 16 | stage-7-cleanup | delete | namespace |  | trident-killchain | deleted | `1185f37d33b0f89e` |
+| 1 | stage-3-rbac-escalation | create | rolebinding | inkblade-killchain | inkblade-pwn-rb-real-20261026-10 | {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"RoleBinding","metadata":{"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"kind\":\"RoleBinding\",\"metadata\":{\"annotations\":{},\"labels\":{\"inkblade.io/objective\":\"real-2026 | `d386e7574edcff4e` |
+| 2 | stage-3-rbac-escalation | create | clusterrolebinding |  | inkblade-pwn-crb-real-20261026-10 | {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"ClusterRoleBinding","metadata":{"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"kind\":\"ClusterRoleBinding\",\"metadata\":{\"annotations\":{},\"labels\":{\"inkblade.io/objective | `771a76e0d14406ea` |
+| 3 | stage-4-privileged-pod | create | pod | inkblade-killchain | inkblade-pwn-pod-real-20261026-10 | {"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"inkblade-proof\",\"inkblade.io/objective\":\"real-20261026-10\"},\"name\":\"inkblade-pwn-pod-real | `e9c4549f7712e234` |
+| 4 | stage-5-node-marker | exec | pods | inkblade-killchain | inkblade-pwn-pod-real-20261026-10 | {"op":"write-node-marker","path":"/root/INKBLADE-PROOF-real-20261026-10","sha256":"29bc79c339ac9bd5abced0cf94ba160b471ce7bdd9534548872990534527a211"} | `99feb7f5185fa314` |
+| 5 | stage-6-cluster-proof | create | namespace |  | inkblade-proof-real-20261026-10 | {"apiVersion":"v1","kind":"Namespace","metadata":{"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"annotations\":{},\"labels\":{\"inkblade.io/objective\":\"real-20261026-10\"},\"name\":\"inkblade-proof-real-20261026-10\"}} | `76fbea290841cc9b` |
+| 6 | stage-6-cluster-proof | create | configmap | inkblade-proof-real-20261026-10 | inkblade-proof | {"apiVersion":"v1","data":{"marker":"INKBLADE-PROOF-real-20261026-10","node":"k3s","objective":"cluster-takeover-objective","secret_count":"2"},"kind":"ConfigMap","metadata":{"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"v1\",\"data\":{\"marker\":\"INKBLADE-PROOF | `490e892b0069e877` |
+| 7 | stage-7-cleanup | exec | pods | inkblade-killchain | inkblade-pwn-pod-real-20261026-10 | {"op":"remove-node-marker","path":"/root/INKBLADE-PROOF-real-20261026-10"} | `a84716713ffd3c66` |
+| 8 | stage-7-cleanup | delete | configmap | inkblade-proof-real-20261026-10 | inkblade-proof | deleted | `1185f37d33b0f89e` |
+| 9 | stage-7-cleanup | delete | namespace |  | inkblade-proof-real-20261026-10 | deleted | `1185f37d33b0f89e` |
+| 10 | stage-7-cleanup | delete | clusterrolebinding |  | inkblade-pwn-crb-real-20261026-10 | deleted | `1185f37d33b0f89e` |
+| 11 | stage-7-cleanup | delete | rolebinding | inkblade-killchain | inkblade-pwn-rb-real-20261026-10 | deleted | `1185f37d33b0f89e` |
+| 12 | stage-7-cleanup | delete | pod | inkblade-killchain | inkblade-pwn-pod-real-20261026-10 | deleted | `1185f37d33b0f89e` |
+| 13 | stage-7-cleanup | delete | clusterrolebinding |  | inkblade-operator-broad | deleted | `1185f37d33b0f89e` |
+| 14 | stage-7-cleanup | delete | clusterrole |  | inkblade-operator-broad | deleted | `1185f37d33b0f89e` |
+| 15 | stage-7-cleanup | delete | serviceaccount | inkblade-killchain | inkblade-operator | deleted | `1185f37d33b0f89e` |
+| 16 | stage-7-cleanup | delete | namespace |  | inkblade-killchain | deleted | `1185f37d33b0f89e` |
 
 ### 已清理声明 / Cleanup / Cleanup / 已清理声明
 
@@ -72,14 +72,14 @@
 | 检查项 / Check | 结果 / Result | 观测 / Observed |
 |---|---|---|
 | node marker | PASS | absent |
-| namespace trident-proof-real-20261026-10 absent | PASS | absent |
-| clusterrolebinding trident-pwn-crb-real-20261026-10 absent | PASS | absent |
-| rolebinding trident-pwn-rb-real-20261026-10 absent | PASS | absent |
-| pod trident-pwn-pod-real-20261026-10 absent | PASS | absent |
-| fixture-clusterrolebinding trident-operator-broad absent | PASS | absent |
-| fixture-clusterrole trident-operator-broad absent | PASS | absent |
-| fixture-namespace trident-killchain absent | PASS | absent |
-| namespace set equals baseline | PASS | {'expected': ['default', 'kube-node-lease', 'kube-public', 'kube-system', 'trident-proof'], 'actual': ['default', 'kube-node-lease', 'kube-public', 'kube-system', 'trident-proof']} |
+| namespace inkblade-proof-real-20261026-10 absent | PASS | absent |
+| clusterrolebinding inkblade-pwn-crb-real-20261026-10 absent | PASS | absent |
+| rolebinding inkblade-pwn-rb-real-20261026-10 absent | PASS | absent |
+| pod inkblade-pwn-pod-real-20261026-10 absent | PASS | absent |
+| fixture-clusterrolebinding inkblade-operator-broad absent | PASS | absent |
+| fixture-clusterrole inkblade-operator-broad absent | PASS | absent |
+| fixture-namespace inkblade-killchain absent | PASS | absent |
+| namespace set equals baseline | PASS | {'expected': ['default', 'kube-node-lease', 'kube-public', 'kube-system', 'inkblade-proof'], 'actual': ['default', 'kube-node-lease', 'kube-public', 'kube-system', 'inkblade-proof']} |
 | secret name set equals baseline | PASS | {'expected_count': 2, 'actual_count': 2, 'delta': []} |
 | no objective clusterrolebinding | PASS | [] |
 
@@ -113,4 +113,4 @@
 - `bmc-oob`: read-only-version-gate / max_action=只读 — 不触达 BMC/带外控制面；仅登记版本与暴露面证据
 
 ---
-*本报告由 Trident objective 编排器生成；证据锚为 proof.json 与三层证据库。* / *Generated by the Trident objective orchestrator; evidence anchors are proof.json and the three-layer evidence store.*
+*本报告由 InkBlade objective 编排器生成；证据锚为 proof.json 与三层证据库。* / *Generated by the InkBlade objective orchestrator; evidence anchors are proof.json and the three-layer evidence store.*

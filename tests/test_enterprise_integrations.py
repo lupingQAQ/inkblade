@@ -19,16 +19,16 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.enterprise.approval import ApprovalChain, ApprovalError
-from trident.enterprise.auth import AuthError, LDAPAdapter, MockLDAPDirectory, OIDCAdapter
-from trident.enterprise.report_signing import (
+from inkblade.enterprise.approval import ApprovalChain, ApprovalError
+from inkblade.enterprise.auth import AuthError, LDAPAdapter, MockLDAPDirectory, OIDCAdapter
+from inkblade.enterprise.report_signing import (
     SignoffError,
     create_signoff,
     retention_plan,
     sign_report,
     verify_report,
 )
-from trident.enterprise.siem import (
+from inkblade.enterprise.siem import (
     DeliveryError,
     ElasticBulk,
     JiraSink,
@@ -36,7 +36,7 @@ from trident.enterprise.siem import (
     SplunkHEC,
     WebhookSink,
 )
-from trident.export import build_ocsf
+from inkblade.export import build_ocsf
 
 FINDINGS = [
     {"step_key": "rbac-mapping", "severity": "critical", "title": "cluster-admin binding",
@@ -100,13 +100,13 @@ class _Capture:
 class TestOIDC(unittest.TestCase):
     def setUp(self):
         self.adapter = OIDCAdapter(
-            issuer="https://mock-idp.trident.local",
-            audience="trident-pilot",
+            issuer="https://mock-idp.inkblade.local",
+            audience="inkblade-pilot",
             secret=b"mock-oidc-secret-32-bytes-long!!",
         )
 
     def test_verify_and_group_role_mapping(self):
-        token = self.adapter.issue_mock_token("alice", ["trident-leads"],
+        token = self.adapter.issue_mock_token("alice", ["inkblade-leads"],
                                               ttl=300, nonce="n-1")
         ident = self.adapter.verify(token, nonce="n-1")
         self.assertEqual(ident["subject"], "alice")
@@ -115,12 +115,12 @@ class TestOIDC(unittest.TestCase):
         self.assertIn("mock", ident["boundary"])
 
     def test_rejects_bad_audience_nonce_expiry_and_tamper(self):
-        token = self.adapter.issue_mock_token("bob", ["trident-testers"], ttl=300)
+        token = self.adapter.issue_mock_token("bob", ["inkblade-testers"], ttl=300)
         with self.assertRaises(AuthError):
             self.adapter.verify(token, audience="other")
         with self.assertRaises(AuthError):
             self.adapter.verify(token, nonce="nope")
-        expired = self.adapter.issue_mock_token("bob", ["trident-testers"], ttl=-120)
+        expired = self.adapter.issue_mock_token("bob", ["inkblade-testers"], ttl=-120)
         with self.assertRaises(AuthError):
             self.adapter.verify(expired)
         header, payload, sig = token.split(".")
@@ -135,9 +135,9 @@ class TestOIDC(unittest.TestCase):
         self.assertTrue(ident["least_privilege"])
 
     def test_identity_to_platform_session(self):
-        from trident.enterprise.auth import session_from_identity
+        from inkblade.enterprise.auth import session_from_identity
 
-        token = self.adapter.issue_mock_token("alice", ["trident-leads"], ttl=300)
+        token = self.adapter.issue_mock_token("alice", ["inkblade-leads"], ttl=300)
         session = session_from_identity(self.adapter.verify(token), workspaces=["pilot"])
         self.assertEqual(session.role, "lead")
         self.assertTrue(session.can("approve"))
@@ -147,10 +147,10 @@ class TestOIDC(unittest.TestCase):
 class TestLDAP(unittest.TestCase):
     def setUp(self):
         self.directory = MockLDAPDirectory()
-        self.directory.add_user("uid=alice,ou=people,dc=trident,dc=local", "S3cret!",
-                                ["trident-leads"], display="Alice")
-        self.directory.add_user("uid=disabled,ou=people,dc=trident,dc=local", "S3cret!",
-                                ["trident-admins"], disabled=True)
+        self.directory.add_user("uid=alice,ou=people,dc=inkblade,dc=local", "S3cret!",
+                                ["inkblade-leads"], display="Alice")
+        self.directory.add_user("uid=disabled,ou=people,dc=inkblade,dc=local", "S3cret!",
+                                ["inkblade-admins"], disabled=True)
         self.adapter = LDAPAdapter(self.directory)
 
     def test_bind_and_group_mapping(self):
@@ -170,13 +170,13 @@ class TestLDAP(unittest.TestCase):
         with self.assertRaises(AuthError):
             self.adapter.authenticate("alice", "S3cret!\x00")
         with self.assertRaises(AuthError):
-            self.adapter.authenticate("uid=alice,ou=people,dc=trident,dc=local", "S3cret!")
+            self.adapter.authenticate("uid=alice,ou=people,dc=inkblade,dc=local", "S3cret!")
 
 
 class TestSIEMAdapters(unittest.TestCase):
     def test_splunk_hec_contract(self):
         with _Capture() as cap:
-            sink = SplunkHEC(cap.url, "Splunk-MOCK-TOKEN", index="trident")
+            sink = SplunkHEC(cap.url, "Splunk-MOCK-TOKEN", index="inkblade")
             res = sink.send(_ocsf())
         self.assertTrue(res["ok"])
         req = cap.requests[0]
@@ -186,13 +186,13 @@ class TestSIEMAdapters(unittest.TestCase):
         lines = [ln for ln in req["body"].decode().splitlines() if ln.strip()]
         self.assertEqual(len(lines), 2)
         first = json.loads(lines[0])
-        self.assertEqual(first["index"], "trident")
+        self.assertEqual(first["index"], "inkblade")
         self.assertEqual(first["event"]["class_uid"], 2004)
         self.assertEqual(res["sent"], 2)
 
     def test_elastic_bulk_contract(self):
         with _Capture(response={"errors": False, "items": [{}, {}]}) as cap:
-            sink = ElasticBulk(cap.url, index="trident-findings", api_key="MOCK-API-KEY")
+            sink = ElasticBulk(cap.url, index="inkblade-findings", api_key="MOCK-API-KEY")
             res = sink.send(_ocsf())
         self.assertTrue(res["ok"])
         req = cap.requests[0]
@@ -202,7 +202,7 @@ class TestSIEMAdapters(unittest.TestCase):
         lines = [ln for ln in req["body"].decode().splitlines() if ln.strip()]
         self.assertEqual(len(lines), 4)
         action = json.loads(lines[0])
-        self.assertEqual(action["index"]["_index"], "trident-findings")
+        self.assertEqual(action["index"]["_index"], "inkblade-findings")
         self.assertIn("finding_info", json.loads(lines[1]))
         self.assertEqual(res["sent"], 2)
 
@@ -214,27 +214,27 @@ class TestSIEMAdapters(unittest.TestCase):
         self.assertTrue(res["ok"])
         req = cap.requests[0]
         body = req["body"]
-        sig = req["headers"]["x-trident-signature"]
+        sig = req["headers"]["x-inkblade-signature"]
         expect = "sha256=" + hmac.new(secret, body, hashlib.sha256).hexdigest()
         self.assertEqual(sig, expect)
-        self.assertIn("x-trident-timestamp", req["headers"])
+        self.assertIn("x-inkblade-timestamp", req["headers"])
         doc = json.loads(body)
-        self.assertEqual(doc["schema"], "trident.webhook/1")
+        self.assertEqual(doc["schema"], "inkblade.webhook/1")
         self.assertEqual(doc["count"], 2)
-        self.assertTrue(sink.verify(body, sig, req["headers"]["x-trident-timestamp"]))
+        self.assertTrue(sink.verify(body, sig, req["headers"]["x-inkblade-timestamp"]))
 
     def test_jira_and_servicenow_payload_contract(self):
         finding = FINDINGS[0]
         jira = JiraSink("http://127.0.0.1:1", token="MOCK")
         payload = jira.build(finding, run="run-1")
         self.assertIn("fields", payload)
-        self.assertIn("[Trident][critical]", payload["fields"]["summary"])
+        self.assertIn("[InkBlade][critical]", payload["fields"]["summary"])
         self.assertEqual(payload["fields"]["priority"]["name"], "Highest")
         snow = ServiceNowSink("http://127.0.0.1:1", token="MOCK")
         inc = snow.build(finding, run="run-1")
         self.assertEqual(inc["severity"], "1")
         self.assertEqual(inc["correlation_id"], payload["fields"]["labels"][3][3:])
-        self.assertIn("Trident", inc["short_description"])
+        self.assertIn("InkBlade", inc["short_description"])
         with self.assertRaises(DeliveryError):
             SplunkHEC("http://127.0.0.1:1", "")
 

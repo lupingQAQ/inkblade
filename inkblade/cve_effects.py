@@ -2,7 +2,7 @@
 """verify-effects 的 CVE 实效检查（+5）：Ray marker、网关默认 key、IPMI、Redfish、runc 面。
 
 全部在本机 127.0.0.1 mock 靶场真实 HTTP 完成；写面通过 runner 备份闸门，
-marker 读回后显式清理。由 trident/verify-effects.py 调用，保持主脚本结构稳定。
+marker 读回后显式清理。由 inkblade/verify-effects.py 调用，保持主脚本结构稳定。
 """
 
 from __future__ import annotations
@@ -12,9 +12,9 @@ import urllib.request
 from pathlib import Path
 from typing import Any, Callable
 
-from trident.core.runner import run_module
+from inkblade.core.runner import run_module
 
-MODULES_DIR = Path(__file__).resolve().parents[1] / "trident" / "modules"
+MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 RUNC_FIXTURE = Path(__file__).resolve().parents[1] / "lab" / "fixtures" / "cve" / "host-surface.json"
 
 
@@ -53,7 +53,7 @@ def run_cve_checks(checks, *, store, tester, run, lab_root: Path, cve_server) ->
     base = cve_server.url("")
 
     def ray_job_rce_marker() -> dict[str, Any]:
-        marker = f"TRIDENT-{run.name}"
+        marker = f"INKBLADE-{run.name}"
         out = run_module(
             store, tester, "ray-job-marker-rce",
             {"target": base, "mode": "backup-write", "marker": marker,
@@ -70,7 +70,7 @@ def run_cve_checks(checks, *, store, tester, run, lab_root: Path, cve_server) ->
         if not marker_path.is_file():
             raise AssertionError("Ray marker 未落盘")
         content = marker_path.read_text(encoding="utf-8", errors="replace")
-        if "TRIDENT-" not in content or marker not in content:
+        if "INKBLADE-" not in content or marker not in content:
             raise AssertionError("Ray marker 内容不含 run 标记")
         deleted = _cleanup(base, marker)
         if marker_path.exists():

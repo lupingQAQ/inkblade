@@ -43,8 +43,8 @@ if str(REPO_ROOT) not in sys.path:
 
 from lab.bench.bench import MemorySampler  # noqa: E402
 
-MODULES_DIR = REPO_ROOT / "trident" / "modules"
-CHAINS_DIR = REPO_ROOT / "trident" / "chains"
+MODULES_DIR = REPO_ROOT / "inkblade" / "modules"
+CHAINS_DIR = REPO_ROOT / "inkblade" / "chains"
 OUT_DIR = Path(__file__).resolve().parent / "out"
 DEFAULT_SCALES = (100, 1000, 5000, 10000)
 
@@ -132,7 +132,7 @@ def build_snapshot(scale: int, seed: int = 20261025) -> dict:
     for i, ns in enumerate(namespaces):
         snap["namespaces"].append({
             "name": ns,
-            "labels": {"trident-io-zone": ("ml-training" if i % 3 == 0 else
+            "labels": {"inkblade-io-zone": ("ml-training" if i % 3 == 0 else
                                            "ml-inference" if i % 3 == 1 else "monitoring"),
                        "tenant": f"t{i % 7}"},
         })
@@ -302,11 +302,11 @@ _MODULE_CACHE: dict[str, object] = {}
 
 
 def load_module(name: str):
-    """按仓库布局装载 trident/modules/<name>/run.py（模块非包，用 file location 载入）。"""
+    """按仓库布局装载 inkblade/modules/<name>/run.py（模块非包，用 file location 载入）。"""
     if name in _MODULE_CACHE:
         return _MODULE_CACHE[name]
     path = MODULES_DIR / name / "run.py"
-    spec = importlib.util.spec_from_file_location(f"trident_scale_mod_{name.replace('-', '_')}", path)
+    spec = importlib.util.spec_from_file_location(f"inkblade_scale_mod_{name.replace('-', '_')}", path)
     if spec is None or spec.loader is None:
         raise ImportError(f"无法装载模块 {name}（{path}）")
     module = importlib.util.module_from_spec(spec)
@@ -359,7 +359,7 @@ def _run_recon_stage(snapshot: dict) -> tuple[list[dict], dict]:
 
 def _run_reachability_stage(snapshot: dict) -> tuple[dict, dict]:
     """每命名空间指纹 → core.reachability.infer → 合并图（多租户自然路径）。"""
-    from trident.core.reachability import infer
+    from inkblade.core.reachability import infer
 
     def build():
         pods_by_ns: dict[str, list[dict]] = {}
@@ -397,9 +397,9 @@ def _run_reachability_stage(snapshot: dict) -> tuple[dict, dict]:
 
 
 def _run_rules_stage(findings: list[dict]) -> tuple[dict, dict]:
-    from trident.rules.generate import generate_all
+    from inkblade.rules.generate import generate_all
 
-    out_dir = tempfile.mkdtemp(prefix="trident-scale-rules-")
+    out_dir = tempfile.mkdtemp(prefix="inkblade-scale-rules-")
     try:
         pack, metrics = _measure(lambda: generate_all(CHAINS_DIR, findings=findings, out_dir=out_dir))
         result = {"rules": pack.total_rules, "chains": pack.covered_chain_count,
@@ -463,7 +463,7 @@ def _fmt_ms(value: float) -> str:
 
 def render_markdown(results: list[dict], *, clusters: list[dict] | None = None) -> str:
     lines = [
-        "# Trident 规模压测结果（合成快照）",
+        "# InkBlade 规模压测结果（合成快照）",
         "",
         f"> 生成时间：{datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}　"
         f"平台：{results[0]['platform'] if results else 'n/a'}　Python：{results[0]['python'] if results else 'n/a'}",
@@ -575,7 +575,7 @@ def _force_utf8_stdout() -> None:
 
 def main(argv: list[str] | None = None) -> int:
     _force_utf8_stdout()
-    parser = argparse.ArgumentParser(description="Trident 合成规模压测（侦察/可达性/规则）")
+    parser = argparse.ArgumentParser(description="InkBlade 合成规模压测（侦察/可达性/规则）")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p_run = sub.add_parser("run", help="跑多个 scale 并汇总")

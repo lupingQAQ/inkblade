@@ -11,7 +11,7 @@ from pathlib import Path
 
 from lab.saas.load import _req, run_load
 from lab.saas.service import Service, _connect
-from trident.core.evidence import EvidenceStore
+from inkblade.core.evidence import EvidenceStore
 
 TOK = "tok-tenant-00"
 TOK1 = "tok-tenant-01"

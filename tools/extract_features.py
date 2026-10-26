@@ -5,7 +5,7 @@
 Every feature row is EXTRACTED from the cloned sources under
 ``.slim/clonedeps/repos/`` by the functions in this script — no enumeration
 from memory. Human work is limited to the CLASSIFICATION tables below
-(Trident status / anchor / action / backlog reference), which are keyed by
+(InkBlade status / anchor / action / backlog reference), which are keyed by
 the extracted feature ids.
 
 Re-runnable::
@@ -20,11 +20,11 @@ Outputs
 - docs/FEATURE-BY-FEATURE-KUBETRAIL.md  one row per extracted KubeTrail feature
 
 Row contract (one row = one feature):
-    id | 来源锚点 (file:line) | 工具行为 | Trident 状态
+    id | 来源锚点 (file:line) | 工具行为 | InkBlade 状态
     (we-have(anchor)|partial(缺什么)|missing|N/A) | 行动项 S/M/L/- | 备注
 
 Completeness proof: matrix rows are generated from the same extraction lists
-that produce ``source_counts``; any feature that cannot be mapped to a Trident
+that produce ``source_counts``; any feature that cannot be mapped to a InkBlade
 module is still emitted with status ``N/A`` (deliberate or unmapped), never
 dropped. ``tests/test_feature_matrix.py`` re-parses the markdown and asserts
 extraction counts == json counts == doc row counts.
@@ -386,7 +386,7 @@ def kt_components() -> list[dict[str, Any]]:
 # action: S | M | L | -(刻意不做/无需)
 # ---------------------------------------------------------------------------
 
-Cls = tuple[str, str, str, str, str]  # status, trident_anchor, action, note, backlog
+Cls = tuple[str, str, str, str, str]  # status, inkblade_anchor, action, note, backlog
 
 
 def _rule_based(keys: list[str], rules: list[tuple[re.Pattern, Cls]],
@@ -637,14 +637,14 @@ KT_CLI_RULES: list[tuple[re.Pattern, Cls]] = [
     (re.compile(r"--timeout"), (STATUS_WE_HAVE, "core/runner.py 超时", "-", "", "")),
     (re.compile(r"--sensitive"), (STATUS_PARTIAL, "core/redact.py", "S", "三态缺 metadata", "CM-06")),
     (re.compile(r"--rbac-mode"), (STATUS_PARTIAL, "modules/rbac-mapping", "S", "focused/full 模式键", "")),
-    (re.compile(r"--kubeconfig"), (STATUS_NA, "-", "-", "目标内运行形态差异（Trident 控制台侧）", "")),
+    (re.compile(r"--kubeconfig"), (STATUS_NA, "-", "-", "目标内运行形态差异（InkBlade 控制台侧）", "")),
     (re.compile(r"--max-items"), (STATUS_PARTIAL, "core/roe.py 速率约束", "S", "list 限流参数", "")),
     (re.compile(r"--credential-sweep"), (STATUS_PARTIAL, "modules/supply-chain-credential-theft", "M", "凭据清扫开关", "CM-22")),
     (re.compile(r"--scan"), (STATUS_WE_HAVE, "core/runner.py 模块选择", "-", "lpe/escape/rbac 分类=模块族选择", "")),
 ]
 
 KT_DESKTOP_RULES: list[tuple[re.Pattern, Cls]] = [
-    (re.compile(r"(ListClusters|SaveCluster|DeleteCluster|TestConnection|ConnectCluster|DisconnectCluster|ListClusterExtensions|ClusterExtensionProxyPath)"), (STATUS_PARTIAL, "webui/server.py 多 run + core/discovery.py", "L", "多集群连接管理（Trident 单控制台多 run 模型）", "")),
+    (re.compile(r"(ListClusters|SaveCluster|DeleteCluster|TestConnection|ConnectCluster|DisconnectCluster|ListClusterExtensions|ClusterExtensionProxyPath)"), (STATUS_PARTIAL, "webui/server.py 多 run + core/discovery.py", "L", "多集群连接管理（InkBlade 单控制台多 run 模型）", "")),
     (re.compile(r"(OpenKubeconfigDialog|PickSaveFile|PickOpenFile|PickDirectory|OpenExternalURL|OpenDirectoryPath)"), (STATUS_NA, "-", "-", "Wails 桌面对话框（形态差异）", "")),
     (re.compile(r"(ListNamespaces|ListPods|ListNodes|DescribePod)"), (STATUS_PARTIAL, "core/discovery.py + webui /api/v1/assets", "S", "ns/pod/node 浏览端点缺", "")),
     (re.compile(r"(StartTerminal|WriteTerminal|ResizeTerminal|StopTerminal|StartLogs|StopLogs)"), (STATUS_MISSING, "-", "-", "交互式 pod 终端/日志流（执行面，规划≠执行 Ruling；桌面后渗透台刻意不做）", "")),
@@ -741,7 +741,7 @@ def _classify(items: list[dict[str, Any]], rules: list[tuple[re.Pattern, Cls]],
             if rx.search(it["id"]):
                 status, anchor, action, note, backlog = cls
                 break
-        rows.append({**it, "trident_status": status, "trident_anchor": anchor,
+        rows.append({**it, "inkblade_status": status, "inkblade_anchor": anchor,
                      "action": action, "backlog": backlog, "note": note})
     return rows
 
@@ -875,7 +875,7 @@ def build() -> dict[str, Any]:
 def _status_counts(rows: list[dict[str, Any]]) -> dict[str, int]:
     out = {STATUS_WE_HAVE: 0, STATUS_PARTIAL: 0, STATUS_MISSING: 0, STATUS_NA: 0}
     for r in rows:
-        out[r["trident_status"]] = out.get(r["trident_status"], 0) + 1
+        out[r["inkblade_status"]] = out.get(r["inkblade_status"], 0) + 1
     return out
 
 
@@ -892,12 +892,12 @@ def _md_for(doc: dict[str, Any], heading: str, intro: str) -> str:
     for sec in doc["sections"]:
         lines.append(f"## {sec['id']}. {sec['title']}（{len(sec['rows'])} 项）")
         lines.append("")
-        lines.append("| 功能 | 来源锚点 | 工具行为 | Trident 状态 | 行动项 | 备注 |")
+        lines.append("| 功能 | 来源锚点 | 工具行为 | InkBlade 状态 | 行动项 | 备注 |")
         lines.append("|---|---|---|---|---|---|")
         for r in sec["rows"]:
-            status = STATUS_LABEL[r["trident_status"]]
-            if r["trident_anchor"] and r["trident_anchor"] != "-":
-                status += f"（{r['trident_anchor']}）"
+            status = STATUS_LABEL[r["inkblade_status"]]
+            if r["inkblade_anchor"] and r["inkblade_anchor"] != "-":
+                status += f"（{r['inkblade_anchor']}）"
             note = r["note"]
             if r["backlog"]:
                 note = (note + " " if note else "") + f"[{r['backlog']}]"

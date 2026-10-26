@@ -17,7 +17,7 @@ DOC = ROOT / "docs" / "HOW-TO-DESIGN-COMMERCIAL-AGENT.md"
 
 CHAPTERS = list("一二三四五六七八九十")
 LABELS = ("**概念。**", "**为什么。**", "**怎么做。**", "**反例与坑。**", "**可复用清单。**")
-CODE_REF = re.compile(r"(trident/[A-Za-z0-9_./-]+\.py)::([A-Za-z_][A-Za-z0-9_.]*)")
+CODE_REF = re.compile(r"(inkblade/[A-Za-z0-9_./-]+\.py)::([A-Za-z_][A-Za-z0-9_.]*)")
 
 
 class AgentPlaybookDocTest(unittest.TestCase):

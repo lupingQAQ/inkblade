@@ -1,6 +1,6 @@
 # L3 自主执行（lead 预授权 + 硬边界 + 可回放）
 
-> 适用：`trident explore autonomy --autonomy L3`、`trident supervisor run --autonomy L3`。
+> 适用：`inkblade explore autonomy --autonomy L3`、`inkblade supervisor run --autonomy L3`。
 > 定位：L3 是**预授权后的受控自主循环**，不是让模型自由决定攻击动作。
 > 每个动作仍是注册模块，仍逐条走 `core.runner` 的授权闸门、范围校验、备份闸门与三层落证。
 
@@ -25,14 +25,14 @@ L3 的「自动批准」由 token 前置授权 + 运行时硬边界共同构成�
    - `--preauth-token` 与 `token_sha256` 常量时间比对通过。
 4. 显式 `--llm` 时必须存在真实 OpenAI 兼容端点：
    `core/llmpool` 已启用且至少一个端点（`llm_pool.json`），或显式
-   `TRIDENT_LLM_BASE_URL`。**无端点拒绝执行，不静默降级**。
+   `INKBLADE_LLM_BASE_URL`。**无端点拒绝执行，不静默降级**。
 5. 白名单非空；`max_actions` / `max_steps` / 四项预算均为正。
 
 ## 3. 预授权流程
 
 ```bash
 # 1) lead 签发（token 明文只显示一次；落盘只存 sha256 + 工作区 HMAC）
-python -m trident autonomy grant \
+python -m inkblade autonomy grant \
   --workspace l3-lab \
   --allowlist rbac-mapping,network-policy-coverage,escape-primitives \
   --max-actions 4 --max-steps 3 \
@@ -41,13 +41,13 @@ python -m trident autonomy grant \
   --ttl-seconds 1800 --note "2026-10 演练窗口"
 
 # 2) L3 循环（RoE 必须是全影响演示）
-python -m trident explore autonomy --workspace l3-lab --autonomy L3 \
+python -m inkblade explore autonomy --workspace l3-lab --autonomy L3 \
   --llm --preauth-token "<grant 输出的 token>" --workers 2
 
 # 3) 查看 / 撤销 / 回放
-python -m trident autonomy status --workspace l3-lab
-python -m trident autonomy revoke --workspace l3-lab --reason "演练结束"
-python -m trident autonomy replay --workspace l3-lab
+python -m inkblade autonomy status --workspace l3-lab
+python -m inkblade autonomy revoke --workspace l3-lab --reason "演练结束"
+python -m inkblade autonomy replay --workspace l3-lab
 ```
 
 `grant` 只允许 lead/admin（`session.can("approve")`）；tester 直接 `PermissionError`。
@@ -79,7 +79,7 @@ python -m trident autonomy replay --workspace l3-lab
   `autonomy.llm.fallback` / `autonomy.supervisor.run` / `autonomy.revoke`。
 - `autonomy/trace.jsonl`：每步 `{step, proposal, mode, plan, plan_sha256, results, budget}`。
   `plan_sha256` 覆盖 `(seq, module, writes, params)` 的规范化 JSON。
-- `python -m trident autonomy replay` **只重放决策面，不执行模块、不写证据**；
+- `python -m inkblade autonomy replay` **只重放决策面，不执行模块、不写证据**；
   任一行 digest 不匹配即 `AutonomyRefused`（被篡改/版本漂移）。
 - 需要重新执行时只能用**新 grant**（新 token），旧 trace 作为对照证据保留。
 
@@ -97,7 +97,7 @@ ARTEX（Autumn-27 / RuoJi6 维护分支）是 LLM 多 agent 自主渗透系统�
 `llmpool` 多模型 worker 池 + `intercept` 人工审批拦截 + `guard`/`evidence`/`report`。
 本实现的 L3 与其**同题不同解**，差异是刻意的：
 
-| 维度 | ARTEX | Trident L3 |
+| 维度 | ARTEX | InkBlade L3 |
 |---|---|---|
 | 自主边界 | agent 可连续调用工具；人工拦截只是审批点 | 只执行**注册模块**；动作面天然受限，不能自由 shell |
 | 授权模型 | 运行中人工 approve / intercept | lead **一次性 token** 前置授权 + TTL + 可撤销 + 工作区 HMAC |

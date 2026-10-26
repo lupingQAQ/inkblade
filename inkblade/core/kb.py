@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """漏洞知识库条目（CM-07 等价）：finding → 可引用 KB 键，中英双语条目。
 
-- 内置条目覆盖 Trident 的 ML/K8s 攻击面（RBAC 逃逸、kubelet 10250、推理网关鉴权、
+- 内置条目覆盖 InkBlade 的 ML/K8s 攻击面（RBAC 逃逸、kubelet 10250、推理网关鉴权、
   GPU 租户残留、NCCL 集合通信、间接提示注入、权重供应链、证据链完整性）；
 - ``match(text)`` 关键词命中；``cite(finding)`` 返回稳定 KB 键 + 双语标题/修复建议/参考，
   未命中时返回通用条目（不返回 None，保证报告每条 finding 都有引用键）；
@@ -14,7 +14,7 @@ from __future__ import annotations
 from typing import Any
 
 KB: dict[str, dict] = {
-    "TRIDENT-KB-001": {
+    "INKBLADE-KB-001": {
         "title": {"zh": "K8s RBAC 权限链逃逸", "en": "Kubernetes RBAC privilege-chain escape"},
         "category": "权限链", "cwe": ["CWE-269"], "owasp": ["A01:2021"],
         "keywords": ["rbac", "rolebinding", "clusterrole", "escalate", "impersonate",
@@ -33,7 +33,7 @@ KB: dict[str, dict] = {
         },
         "refs": ["CWE-269", "MITRE ATLAS AML.T0051"],
     },
-    "TRIDENT-KB-002": {
+    "INKBLADE-KB-002": {
         "title": {"zh": "kubelet 10250 未授权面", "en": "Unauthenticated kubelet 10250 surface"},
         "category": "资产发现", "cwe": ["CWE-306"], "owasp": ["A07:2021"],
         "keywords": ["kubelet", "10250", "runningpods", "anonymous-auth", "read-only-port"],
@@ -51,7 +51,7 @@ KB: dict[str, dict] = {
         },
         "refs": ["CWE-306", "CIS Kubernetes Benchmark 4.2"],
     },
-    "TRIDENT-KB-003": {
+    "INKBLADE-KB-003": {
         "title": {"zh": "推理网关管理面鉴权失效", "en": "Inference gateway admin-plane auth bypass"},
         "category": "AI 网关", "cwe": ["CWE-287", "CWE-306"], "owasp": ["LLM01:2026"],
         "keywords": ["sglang", "vllm", "litellm", "higress", "gateway", "admin", "fail-open",
@@ -71,7 +71,7 @@ KB: dict[str, dict] = {
         },
         "refs": ["CWE-287", "OWASP LLM01:2026"],
     },
-    "TRIDENT-KB-004": {
+    "INKBLADE-KB-004": {
         "title": {"zh": "GPU/租户残留与跨租户复用", "en": "GPU tenant residue and cross-tenant reuse"},
         "category": "GPU 多租户", "cwe": ["CWE-212"], "owasp": ["A01:2021"],
         "keywords": ["gpu", "mig", "mps", "residue", "tenant", "vgpu", "hami", "device"],
@@ -87,7 +87,7 @@ KB: dict[str, dict] = {
         },
         "refs": ["CWE-212", "MITRE ATLAS AML.T0024"],
     },
-    "TRIDENT-KB-005": {
+    "INKBLADE-KB-005": {
         "title": {"zh": "NCCL/集合通信未授权加入", "en": "Unauthenticated NCCL collective join"},
         "category": "Fabric/集合通信", "cwe": ["CWE-306"], "owasp": ["A07:2021"],
         "keywords": ["nccl", "collective", "ib", "rdma", "roce", "sharp", "rendezvous"],
@@ -103,7 +103,7 @@ KB: dict[str, dict] = {
         },
         "refs": ["CWE-306", "MITRE ATLAS AML.T0043"],
     },
-    "TRIDENT-KB-006": {
+    "INKBLADE-KB-006": {
         "title": {"zh": "LLM 间接提示注入导致工具执行", "en": "Indirect prompt injection leading to tool execution"},
         "category": "AI/LLM", "cwe": ["CWE-1426"], "owasp": ["LLM01:2026"],
         "keywords": ["injection", "prompt", "open-webui", "agent", "tool", "indirect",
@@ -121,7 +121,7 @@ KB: dict[str, dict] = {
         },
         "refs": ["CWE-1426", "OWASP LLM01:2026"],
     },
-    "TRIDENT-KB-007": {
+    "INKBLADE-KB-007": {
         "title": {"zh": "模型权重供应链投毒", "en": "Model weight supply-chain poisoning"},
         "category": "供应链", "cwe": ["CWE-345"], "owasp": ["LLM03:2026"],
         "keywords": ["weight", "checkpoint", "pickle", "lora", "huggingface", "supply",
@@ -139,7 +139,7 @@ KB: dict[str, dict] = {
         },
         "refs": ["CWE-345", "OWASP LLM03:2026"],
     },
-    "TRIDENT-KB-008": {
+    "INKBLADE-KB-008": {
         "title": {"zh": "证据链完整性与审计缺口", "en": "Evidence-chain integrity and audit gaps"},
         "category": "证据链", "cwe": ["CWE-778"], "owasp": ["A09:2021"],
         "keywords": ["evidence", "manifest", "audit", "log", "tamper", "sha256", "trace"],
@@ -156,7 +156,7 @@ KB: dict[str, dict] = {
         },
         "refs": ["CWE-778", "OWASP A09:2021"],
     },
-    "TRIDENT-KB-000": {
+    "INKBLADE-KB-000": {
         "title": {"zh": "未归类的控制缺口", "en": "Unclassified control gap"},
         "category": "通用", "cwe": [], "owasp": [],
         "keywords": [],
@@ -188,7 +188,7 @@ def match(text: str, *, limit: int = 5) -> list[dict]:
     hay = str(text or "").lower()
     hits = []
     for key, e in KB.items():
-        if key == "TRIDENT-KB-000":
+        if key == "INKBLADE-KB-000":
             continue
         if any(str(k).lower() in hay for k in e.get("keywords", [])):
             hits.append(entry(key))
@@ -199,7 +199,7 @@ def cite(finding: dict) -> dict:
     """finding → 引用块（始终有键；未命中回退通用条目）。"""
     text = " ".join(str(finding.get(k, "")) for k in ("step_key", "title", "detail", "mapping"))
     hits = match(text, limit=1)
-    kb = hits[0] if hits else entry("TRIDENT-KB-000")
+    kb = hits[0] if hits else entry("INKBLADE-KB-000")
     return {"key": kb["key"], "title": kb["title"], "category": kb["category"],
             "summary": kb["summary"], "remediation": kb["remediation"],
             "refs": kb["refs"], "cwe": kb["cwe"], "owasp": kb["owasp"],

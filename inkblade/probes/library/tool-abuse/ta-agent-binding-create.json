@@ -16,7 +16,7 @@
    "path": "/api/v1/bindings",
    "auth": "none",
    "body": {
-    "name": "trident-probe-binding"
+    "name": "inkblade-probe-binding"
    }
   }
  ],

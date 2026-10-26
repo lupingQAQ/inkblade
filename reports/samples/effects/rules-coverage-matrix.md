@@ -1,6 +1,6 @@
-# Trident 紫队验证覆盖率矩阵（defense validation）
+# InkBlade 紫队验证覆盖率矩阵（defense validation）
 
-- 时间：2026-10-26T08:23:37Z；靶场：http://127.0.0.1:53900/（mode=vulnerable，仅 127.0.0.1）
+- 时间：2026-10-26T09:05:39Z；靶场：http://127.0.0.1:54459/（mode=vulnerable，仅 127.0.0.1）
 - 摘要：链 28 条，覆盖 28，漏过 0；规则评估 98 项（拦截 21 / 检测 73 / 漏过 0）
 - 判定口径：合成事件使用探测规格声明的业务端口（mock 基座端口随机分配）；匹配器：内置简化 sigma/falco/suricata 匹配器（selection/event_type/any_of 语义子集）
 

@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-10-26T11:20:54+00:00",
   "offline": false,
-  "schema": "trident-novelty-results-v1",
+  "schema": "inkblade-novelty-results-v1",
   "verdicts": {
     "sglang-legacy-tar-weights-rce": {
       "cache_dir": "<repo>\\corpus\\novelty\\cache",
@@ -172,7 +172,7 @@
         }
       },
       "reason": "public disclosure match: nvd=CVE-2026-15976, ?=None",
-      "schema": "trident-novelty-result-v1",
+      "schema": "inkblade-novelty-result-v1",
       "verdict": "already-public"
     }
   }

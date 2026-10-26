@@ -47,10 +47,10 @@
       "status": "PASS",
       "evidence": {
         "http_status": 200,
-        "file": "slime/checkpoints_victim-TRIDENT-effects-20261026-170531/model.safetensors",
+        "file": "slime/checkpoints_victim-INKBLADE-effects-20261026-170531/model.safetensors",
         "sha256_before": "8127ad31f844aa2495a3e251f38263b6540cb39325c54f775db29604f6eb41e0",
         "sha256_after": "139098a60af8f28d3230ec3ea0a27d4a6e501e10a971daf424badde3daf46534",
-        "marker": "TRIDENT-effects-20261026-170531",
+        "marker": "INKBLADE-effects-20261026-170531",
         "marker_present": true,
         "server_weights_sha256": "139098a60af8f28d3230ec3ea0a27d4a6e501e10a971daf424badde3daf46534"
       },
@@ -83,7 +83,7 @@
         },
         "marker_file": "areal/call/engine-0845a128e1ab4c50947de01a94df6f9c-CALL.marker",
         "env_marker_file": "areal/env/ENV-SET.marker",
-        "marker": "TRIDENT-effects-20261026-170531",
+        "marker": "INKBLADE-effects-20261026-170531",
         "marker_present": true,
         "engine_id": "engine-0845a128e1ab4c50947de01a94df6f9c"
       },
@@ -103,7 +103,7 @@
         "victim_tenant": "tenant-b",
         "device": "gpu-a-1",
         "victim_device": "gpu-b-0",
-        "marker": "TRIDENT-BENIGN-RESIDUE-TRIDENT-effects-20261026-170531",
+        "marker": "INKBLADE-BENIGN-RESIDUE-INKBLADE-effects-20261026-170531",
         "marker_sha256": "2d6783a9219ac01e16d91320eff4080837b68549f22d67b3c449aa620689d004",
         "expected_marker_sha256": "2d6783a9219ac01e16d91320eff4080837b68549f22d67b3c449aa620689d004",
         "readback_file_sha256": "c86c89f4788dfcf0c091b36ac7f8e67e83a3167fdf7a972eaa79903673c9497b",
@@ -224,7 +224,7 @@
       "status": "PASS",
       "evidence": {
         "http_status": 200,
-        "shard_file": "checkpoints/trident-effects-shard.safetensors",
+        "shard_file": "checkpoints/inkblade-effects-shard.safetensors",
         "sha256_before": "8922fec3b98bc9b255761d7208df88911a8c790c3709026dc4a8cc448cda6645",
         "sha256_after": "d71b6bbda39004d432845a9de496172b36a69ebe5bceb2ef88f77cb51737c4cb",
         "sha256_after_rollback": "8922fec3b98bc9b255761d7208df88911a8c790c3709026dc4a8cc448cda6645",
@@ -586,7 +586,7 @@
         "sha256_after": "930dd0691ffb6b0ad9c95cea5180ef25ce27f7c9948c0568ba5f4664209f7606",
         "sha256_after_rollback": "8804d39c121c3316936add5d8d85dc80796a7059e20eb52002ee79ad5be02a8b",
         "readback_sha256": "930dd0691ffb6b0ad9c95cea5180ef25ce27f7c9948c0568ba5f4664209f7606",
-        "marker": "TRIDENT-effects-20261026-170531",
+        "marker": "INKBLADE-effects-20261026-170531",
         "marker_present": true,
         "optimizer_state": true,
         "rollback_rows": 1,
@@ -628,7 +628,7 @@
         "injected_directive": true,
         "sanitized": false,
         "system_block_sha256": "d2cf31bc19345be3ad3eea0110fa7d37d1ddcd3c887f897e62b36b4b932a669b",
-        "marker": "TRIDENT-effects-20261026-170531",
+        "marker": "INKBLADE-effects-20261026-170531",
         "marker_in_system_block": true,
         "sha256_after_rollback": "261786c1a0f44d3a24640c75cfa471aa18ddb2aadaaaf202bb904d4af29db4a8",
         "rollback_rows": 1,
@@ -731,7 +731,7 @@
       "evidence": {
         "submit_status": 200,
         "job_id": "raysubmit-143eba50259e44c4ac5770756ef40a67",
-        "marker": "TRIDENT-effects-20261026-170531",
+        "marker": "INKBLADE-effects-20261026-170531",
         "marker_present": true,
         "marker_path": "<abs-path>",
         "marker_sha256": "3a068d2c2beb925a5c1925e620e817e4f8adf5a8858e674c45512d6bd89c501e",
@@ -1045,7 +1045,7 @@
         "host_root_mounted": true,
         "escape_primitive": true,
         "mutated_by": [
-          "trident-injector"
+          "inkblade-injector"
         ]
       },
       "detail": "",

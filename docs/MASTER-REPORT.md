@@ -1,18 +1,18 @@
-# Trident 总报告：把 ML 集群渗透测试做成可复述、可复核、可复跑的事
+# InkBlade（墨刃零）总报告：把 ML 集群渗透测试做成可复述、可复核、可复跑的事
 
-> 版本：2026-10-26（终版）　读者：没做过 K8s 安全、但需要判断这套东西是否可信的人
+> 版本：2026-10-27（终版）　读者：没做过 K8s 安全、但需要判断这套东西是否可信的人
 > 读法：第一至三章讲“是什么、为什么、怎么走”；第四至六章讲“改了什么、数字如何、和谁比”；第七至十章讲“哪里没做到、错在哪、词怎么解释、证据在哪”。
 > 状态标记：`[已测]` 有可复现实验或测试；`[模拟]` 只在仿真器、夹具或本机回环上验证；`[未测]` 没有可复现数据，不写成已支持。
 > 全文字数约 1.8 万汉字（含表格与代码共 5.3 万字符）。所有数字给出来源文件；没有来源的数字不写。
-> **证据日期：2026-10-26（终版）**。本轮计数与仓库当前实际同步，复跑命令见 §10.7。
+> **证据日期：2026-10-27（终版）**。本轮计数与仓库当前实际同步，复跑命令见 §10.7。
 
-> **终版计数（证据日期：2026-10-26）**
+> **终版计数（证据日期：2026-10-27）**
 >
 > | 项 | 当前实际 | 来源 |
 > |---|---:|---|
-> | 模块 | **275**（默认启用 264 / 隔离 11） | `trident/modules/*/module.json`、`docs/SURFACE-REALISM.md` |
-> | 单元测试 | **Ran 1933 · OK**（2 skipped；公开树 1 项为并行 scratch 在途红） | `python -m unittest discover -s tests`（§10.7） |
-> | 可利用性核验 | **32 verified / 98 static-only / 22 unsupported**（共 152） | `trident/core/exploit-registry.json` |
+> | 模块 | **275**（默认启用 264 / 隔离 11） | `inkblade/modules/*/module.json`、`docs/SURFACE-REALISM.md` |
+> | 单元测试 | **Ran 2003 · OK**（2 skipped；公开树 1 项为并行 scratch 在途红） | `python -m unittest discover -s tests`（§10.7） |
+> | 可利用性核验 | **37 verified / 93 static-only / 22 unsupported**（共 152） | `inkblade/core/exploit-registry.json` |
 > | 画像覆盖（production，6 画像） | 73.48% / 70.08% / 62.12% / 70.45% / 71.21% / **25.76%**（Slurm 域级 88.2%） | `docs/SURFACE-REALISM.md`、`docs/SLURM-HPC-COVERAGE.md` |
 > | 默认 PoC | **2**（六画像默认可利用 1/1/2/0/2/0） | `exploit-registry.json` + `SURFACE-REALISM.md` |
 > | 无面模块 | **12**（9 个已隔离 + 3 个待 owner；另 2 个隔离项仅部分画像无面） | `docs/SURFACE-REALISM.md` §2 |
@@ -20,8 +20,11 @@
 >
 > 口径：模块/画像/无面为静态统计；测试为本轮全量 `unittest discover` 实测；verified 只认
 > `exploit-registry.json` 的 `verified`，static-only/unsupported 不计入可利用清单。
-> 测试计数补充：1933 来自并行批次 `407d9af` 合并后的全量运行；本任务独立实测为 1891（101 红全部来自
-> 4 个并行未完成模块）与干净 overlay 1904（1 时间戳跨秒 flake，重跑通过），逐项归因见 `DEV-LOG.md` §D。
+> 测试计数补充：2003 为本轮（2026-10-27）全量 `unittest discover` 实测；此前 1933/1891/1904
+> 为并行批次与 overlay 历史记录，逐项归因见 `DEV-LOG.md` §D。
+>
+> **0.2.0 改名（2026-10-27）**：项目由 Trident 更名为 InkBlade（墨刃零）；本报告中的
+> 包路径、命令示例与规则命名空间已同步，改名记录见 [`CHANGELOG.md`](../CHANGELOG.md)。
 
 ---
 
@@ -99,7 +102,7 @@ K8s 调度 Pod；Pod 带着 RBAC 身份；Service 把 Pod 暴露成入口；Netw
 
 13:00，攻击者又去看推理侧。AI 网关的管理 API 没有鉴权，`/config` 直接返回上游 OpenAI 和 Anthropic 的 key。网关的语义缓存键只按 prompt 前缀算，不区分租户；A 租户的请求命中了 B 租户的缓存。13:20，攻击者用伪造的 `X-Forwarded-User: admin` 看到了全租户的日志。到这里，他既拿到了密钥，也拿到了数据，还不需要碰 GPU 驱动。
 
-这个故事的重点不是“攻击者多厉害”，而是：**每一步都踩在一个“本来就被信任”的组件上**。K8s 信任 Pod 的身份，Ray 信任 dashboard，节点信任 hostPath，云信任 trust policy，网关信任转发头。Trident 要做的，就是把这些“被信任的假设”逐条变成可验证的发现，并且在验证时留下证据、控制影响。
+这个故事的重点不是“攻击者多厉害”，而是：**每一步都踩在一个“本来就被信任”的组件上**。K8s 信任 Pod 的身份，Ray 信任 dashboard，节点信任 hostPath，云信任 trust policy，网关信任转发头。InkBlade 要做的，就是把这些“被信任的假设”逐条变成可验证的发现，并且在验证时留下证据、控制影响。
 
 ### 2.2 普通 K8s 扫描器为什么不够
 
@@ -113,21 +116,21 @@ K8s 调度 Pod；Pod 带着 RBAC 身份；Service 把 Pod 暴露成入口；Netw
 
 第三，**推理与网关面**。KV cache 跨租户、prefix cache 复用、prefill 队列打爆、网关 master key、语义缓存键、配额绕过。这些是“请求级”问题，不是“资源配置级”问题。
 
-第四，**证据与影响**。甲方要的不是“疑似有漏洞”，而是“我能在不改坏生产的前提下，证明这条链能走到哪、影响是什么、怎么回滚、怎么复测”。普通扫描器给的是清单，Trident 给的是案卷。
+第四，**证据与影响**。甲方要的不是“疑似有漏洞”，而是“我能在不改坏生产的前提下，证明这条链能走到哪、影响是什么、怎么回滚、怎么复测”。普通扫描器给的是清单，InkBlade 给的是案卷。
 
 ### 2.3 甲方为什么需要它
 
 **第一，ML 集群的安全预算很高，但验证手段很少。** 一张 GPU 卡很贵，一次训练中断很贵，一次权重污染更贵。甲方不能靠“红队手工试”来覆盖几十个团队、几百个命名空间。他们需要一个可重复、可授权、可回滚的测试流程。
 
-**第二，合规和审计需要“可复核的证据”。** 等保、ISO/IEC 42001、NIST AI RMF、EU AI Act、TC260 都要求“风险被识别、措施被验证、过程被记录”。一份只有截图的报告过不了审。Trident 的三层证据、manifest 哈希、审批记录和双语报告，就是为这个场景设计的。
+**第二，合规和审计需要“可复核的证据”。** 等保、ISO/IEC 42001、NIST AI RMF、EU AI Act、TC260 都要求“风险被识别、措施被验证、过程被记录”。一份只有截图的报告过不了审。InkBlade 的三层证据、manifest 哈希、审批记录和双语报告，就是为这个场景设计的。
 
-**第三，ML 团队和 Security 团队说的不是一种语言。** ML 团队关心“我的训练会不会停、我的模型会不会坏”；Security 团队关心“权限、网络、密钥”。Trident 的报告把同一条发现同时映射到 PTES、CVSS、MITRE ATLAS、OWASP LLM/Agentic 和等保条款，目的不是“堆框架”，而是让两个团队能在同一页上对话。
+**第三，ML 团队和 Security 团队说的不是一种语言。** ML 团队关心“我的训练会不会停、我的模型会不会坏”；Security 团队关心“权限、网络、密钥”。InkBlade 的报告把同一条发现同时映射到 PTES、CVSS、MITRE ATLAS、OWASP LLM/Agentic 和等保条款，目的不是“堆框架”，而是让两个团队能在同一页上对话。
 
-**第四，测试本身必须安全。** 写类动作要有备份，不可逆写要逐动作审批，未授权时 CLI 和 API 都要拒绝执行。甲方最怕的不是“没测出问题”，而是“测出问题的方式把生产搞坏了”。Trident 的四道闸门就是为此存在的。
+**第四，测试本身必须安全。** 写类动作要有备份，不可逆写要逐动作审批，未授权时 CLI 和 API 都要拒绝执行。甲方最怕的不是“没测出问题”，而是“测出问题的方式把生产搞坏了”。InkBlade 的四道闸门就是为此存在的。
 
 ### 2.4 边界：它不是“万能攻击平台”
 
-Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不自动武器化零日，不把无人审批的写操作放进生产。它的实验室靶场只监听 `127.0.0.1`。真实集群执行需要甲方提供 kubeconfig、网络可达性和授权材料。它擅长“ML 基础设施面的组合验证”，不擅长“通用 Web 漏洞挖掘、AD 域渗透、浏览器零日”。这些边界在第六章会逐项对照。
+InkBlade 只做**授权测试**。它不内置真实凭据，不提供 C2，不自动武器化零日，不把无人审批的写操作放进生产。它的实验室靶场只监听 `127.0.0.1`。真实集群执行需要甲方提供 kubeconfig、网络可达性和授权材料。它擅长“ML 基础设施面的组合验证”，不擅长“通用 Web 漏洞挖掘、AD 域渗透、浏览器零日”。这些边界在第六章会逐项对照。
 
 **证据索引（本章）**：[七层架构](ARCHITECTURE.md) · [攻击面与模块映射](GAP-ATTACK-SURFACE.md) · [效果验证](EFFECT-VERIFICATION.md) · [真实集群验证](REAL-CLUSTER-VERIFICATION.md) · [授权与运行手册](RUNBOOK.md)
 
@@ -143,7 +146,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **为什么这样做**：渗透测试的第一风险不是“打不进去”，而是“打错目标”。授权文件把“谁能测、测哪里、测到什么时候、能造成多大影响”变成可执行的条件，而不是口头承诺。
 
-**不这样做会怎样**：测试人员可能误伤生产；出了事故无法界定责任；甲方审计时拿不出“这次测试被批准过”的证据。代码在 `trident/core/roe.py`，测试在 `tests/test_roe.py`、`tests/test_consent_signature.py`、`tests/test_runner_scope_audit.py`。
+**不这样做会怎样**：测试人员可能误伤生产；出了事故无法界定责任；甲方审计时拿不出“这次测试被批准过”的证据。代码在 `inkblade/core/roe.py`，测试在 `tests/test_roe.py`、`tests/test_consent_signature.py`、`tests/test_runner_scope_audit.py`。
 
 ### 3.2 资产：先知道“有什么可测”
 
@@ -151,7 +154,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **为什么这样做**：ML 集群的资产是动态的。今天有一个 Ray Dashboard，明天可能被删；今天有一个权重桶，明天可能换了 owner。没有增量资产库，扫描就会“打空气”或“漏掉新东西”。
 
-**不这样做会怎样**：报告里的目标对不上现网；复测时不知道“上次那个 Service 还在不在”；多个模块各自解析目标，结果互相矛盾。代码在 `trident/core/discovery.py`，测试在 `tests/test_discovery.py`。
+**不这样做会怎样**：报告里的目标对不上现网；复测时不知道“上次那个 Service 还在不在”；多个模块各自解析目标，结果互相矛盾。代码在 `inkblade/core/discovery.py`，测试在 `tests/test_discovery.py`。
 
 ### 3.3 侦察：先看清楚，不急着动手
 
@@ -159,7 +162,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **为什么这样做**：侦察是“低成本、高信息”的阶段。先把“谁能访问什么、哪里没鉴权、哪里权限过大”摸清楚，后面的利用才有依据。只读也意味着可以反复跑，不会改变目标状态。
 
-**不这样做会怎样**：直接上利用脚本，噪音大、风险高、还容易把“配置错”误判成“可利用”。代码在 `trident/modules/` 与 `trident/core/registry.py`，真实集群的 6 个模块例子见 `docs/REAL-CLUSTER-VERIFICATION.md`。
+**不这样做会怎样**：直接上利用脚本，噪音大、风险高、还容易把“配置错”误判成“可利用”。代码在 `inkblade/modules/` 与 `inkblade/core/registry.py`，真实集群的 6 个模块例子见 `docs/REAL-CLUSTER-VERIFICATION.md`。
 
 ### 3.4 组合判定：把“单点”拼成“链”
 
@@ -167,7 +170,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **为什么这样做**：甲方真正怕的不是“有一个配置错”，而是“这个配置错能走到核心资产”。组合判定能降低误报，也能让修复优先级从“按严重度”变成“按可达性”。
 
-**不这样做会怎样**：报告变成“一百条中危”，修复团队不知道先修哪个；或者把“理论可达”当成“已验证”，导致过度承诺。代码在 `trident/core/combo.py`、`trident/core/reachability.py`、`trident/core/graph.py`，测试在 `tests/test_chains.py`、`tests/test_reports_network_layers.py`。
+**不这样做会怎样**：报告变成“一百条中危”，修复团队不知道先修哪个；或者把“理论可达”当成“已验证”，导致过度承诺。代码在 `inkblade/core/combo.py`、`inkblade/core/reachability.py`、`inkblade/core/graph.py`，测试在 `tests/test_chains.py`、`tests/test_reports_network_layers.py`。
 
 ### 3.5 链路计划：先出图纸，再施工
 
@@ -175,7 +178,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **为什么这样做**：ML 集群的利用步骤往往有严格顺序。先读 token，才能调 API；先确认备份，才能写权重。计划把“顺序、依赖、回滚”显式化，避免“做到一半发现前置不成立”。
 
-**不这样做会怎样**：写操作做到一半失败，无法回滚；并行步骤互相覆盖；报告里说不清“为什么选这条链”。代码在 `trident/core/chains.py`、`trident/agent_planner.py`，测试在 `tests/test_chains.py`、`tests/test_planner_policy.py`。
+**不这样做会怎样**：写操作做到一半失败，无法回滚；并行步骤互相覆盖；报告里说不清“为什么选这条链”。代码在 `inkblade/core/chains.py`、`inkblade/agent_planner.py`，测试在 `tests/test_chains.py`、`tests/test_planner_policy.py`。
 
 ### 3.6 审批：让人在“要造成影响”之前介入
 
@@ -183,7 +186,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **为什么这样做**：自动化越强，越需要“人类在环”。审批不是形式，而是把“意图”与“执行”分开：Agent 可以提议，但不能自己放行。OWASP Agentic Top 10 把“身份滥用、工具滥用、人机信任利用”单列，审批是其中一道最少成本的护栏。
 
-**不这样做会怎样**：一个错误的提议直接变成生产写操作；出了事无法追责；甲方不敢把工具放进真实环境。代码在 `trident/core/agent_policy.py`、`trident/core/explorer.py`，测试在 `tests/test_agent_policy.py`、`tests/test_explorer_policy.py`。
+**不这样做会怎样**：一个错误的提议直接变成生产写操作；出了事无法追责；甲方不敢把工具放进真实环境。代码在 `inkblade/core/agent_policy.py`、`inkblade/core/explorer.py`，测试在 `tests/test_agent_policy.py`、`tests/test_explorer_policy.py`。
 
 ### 3.7 执行：四道闸门，一个都不能少
 
@@ -191,7 +194,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **为什么这样做**：这四道闸门分别对应四类事故：测错目标、越权测试、写坏数据、无法追责。把它们放在执行器里，而不是放在“操作规范”里，才能保证不会被绕过。
 
-**不这样做会怎样**：一次“只是试试”的写操作可能覆盖生产权重；一次“忘记记录”的测试可能无法复现；一次“越权”的测试可能触发合同纠纷。代码在 `trident/core/runner.py`、`trident/core/backup.py`，测试在 `tests/test_runner_scope_audit.py`、`tests/test_backup.py`。
+**不这样做会怎样**：一次“只是试试”的写操作可能覆盖生产权重；一次“忘记记录”的测试可能无法复现；一次“越权”的测试可能触发合同纠纷。代码在 `inkblade/core/runner.py`、`inkblade/core/backup.py`，测试在 `tests/test_runner_scope_audit.py`、`tests/test_backup.py`。
 
 ### 3.8 证据：把“我说”变成“你看”
 
@@ -199,7 +202,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **为什么这样做**：证据要能“离线复核”。甲方拿到报告后，不依赖平台也能校验：这个文件是不是当时那个文件、这条发现对应哪次请求、哈希有没有变。确定性归档还让样张可以 diff，方便回归。
 
-**不这样做会怎样**：报告里的截图无法证明来源；同一次测试两次生成的文件不一致，无法判断“是环境变了还是代码变了”；manifest 被改了也发现不了。代码在 `trident/core/evidence.py`、`trident/sampledet.py`，测试在 `tests/test_evidence.py`、`tests/test_sample_determinism.py`。
+**不这样做会怎样**：报告里的截图无法证明来源；同一次测试两次生成的文件不一致，无法判断“是环境变了还是代码变了”；manifest 被改了也发现不了。代码在 `inkblade/core/evidence.py`、`inkblade/sampledet.py`，测试在 `tests/test_evidence.py`、`tests/test_sample_determinism.py`。
 
 ### 3.9 报告：让不同角色读到同一件事
 
@@ -207,7 +210,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **为什么这样做**：甲方内部至少有三种读者：做修复的工程师、做审计的合规、做决策的管理层。工程师要请求响应，合规要条款，管理层要风险和优先级。双语是为了跨团队、跨地区交付。
 
-**不这样做会怎样**：报告只有“高危 12 个”，修复团队不知道从哪下手；合规看不懂映射；海外团队拿不到英文版。代码在 `trident/reports/render.py`、`trident/reports/compliance.py`，测试在 `tests/test_reports.py`、`tests/test_compliance.py`。
+**不这样做会怎样**：报告只有“高危 12 个”，修复团队不知道从哪下手；合规看不懂映射；海外团队拿不到英文版。代码在 `inkblade/reports/render.py`、`inkblade/reports/compliance.py`，测试在 `tests/test_reports.py`、`tests/test_compliance.py`。
 
 ### 3.10 规则：把一次发现变成长期检测
 
@@ -215,7 +218,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **为什么这样做**：渗透测试的终点不是“报告”，而是“同类问题不再发生”。规则是把“这次怎么打进来的”固化成“下次怎么发现/阻断”。
 
-**不这样做会怎样**：修完这一次，下一次换个命名空间又来一遍；检测团队拿不到可落地的规则；报告和 SOC 之间断链。代码在 `trident/rules/generate.py`、`trident/rules/validate.py`，测试在 `tests/test_rules.py`。
+**不这样做会怎样**：修完这一次，下一次换个命名空间又来一遍；检测团队拿不到可落地的规则；报告和 SOC 之间断链。代码在 `inkblade/rules/generate.py`、`inkblade/rules/validate.py`，测试在 `tests/test_rules.py`。
 
 ### 3.11 复测：用同一把尺子量“修好了没有”
 
@@ -223,13 +226,13 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **为什么这样做**：甲方最常问的一句话是“你上次说的那个问题，修了吗？”没有复测，只能靠“配置看起来改了”来判断。复测把“修复”变成可验证的状态变化。
 
-**不这样做会怎样**：同一个问题反复出现在不同季度的报告里；修复团队做了功但无法证明；管理层看不到风险曲线的变化。代码在 `trident/core/retest.py`、`trident/core/scheduler.py`、`trident/core/poc.py`，测试在 `tests/test_scheduler.py`、`tests/test_poc.py`。
+**不这样做会怎样**：同一个问题反复出现在不同季度的报告里；修复团队做了功但无法证明；管理层看不到风险曲线的变化。代码在 `inkblade/core/retest.py`、`inkblade/core/scheduler.py`、`inkblade/core/poc.py`，测试在 `tests/test_scheduler.py`、`tests/test_poc.py`。
 
 ### 3.12 一次端到端运行是什么样
 
-`trident/e2e-check.py` 在本机 mock 靶场上跑完整闭环：18 个代表模块、29 条链的 dry-run、权重投毒链的真实执行、三层证据、双语报告、规则包、紫队矩阵、四角色隔离。结果是 **15/15 PASS**，证据在 `reports/samples/e2e/e2e-check.json`。真实集群另有一条验证：QEMU 里的单节点 k3s，6 个侦察模块跑真实 kubectl，得到 16 条 findings；NetworkPolicy 默认拒绝普通 Pod，但 `hostNetwork` Pod 可达，判定 `bypass-confirmed`。这两条证据的边界不同：前者证明“流程能闭环”，后者证明“真 API/真数据面能跑”，都不是“万卡生产环境”。
+`inkblade/e2e-check.py` 在本机 mock 靶场上跑完整闭环：18 个代表模块、29 条链的 dry-run、权重投毒链的真实执行、三层证据、双语报告、规则包、紫队矩阵、四角色隔离。结果是 **15/15 PASS**，证据在 `reports/samples/e2e/e2e-check.json`。真实集群另有一条验证：QEMU 里的单节点 k3s，6 个侦察模块跑真实 kubectl，得到 16 条 findings；NetworkPolicy 默认拒绝普通 Pod，但 `hostNetwork` Pod 可达，判定 `bypass-confirmed`。这两条证据的边界不同：前者证明“流程能闭环”，后者证明“真 API/真数据面能跑”，都不是“万卡生产环境”。
 
-**证据索引（本章）**：[运行手册](RUNBOOK.md) · [端到端验收](../reports/samples/e2e/e2e-check.json) · [真实集群验证](REAL-CLUSTER-VERIFICATION.md) · [效果验证](EFFECT-VERIFICATION.md) · [授权代码](../trident/core/roe.py) · [执行器](../trident/core/runner.py) · [证据库](../trident/core/evidence.py) · [报告渲染](../trident/reports/render.py) · [规则生成](../trident/rules/generate.py)
+**证据索引（本章）**：[运行手册](RUNBOOK.md) · [端到端验收](../reports/samples/e2e/e2e-check.json) · [真实集群验证](REAL-CLUSTER-VERIFICATION.md) · [效果验证](EFFECT-VERIFICATION.md) · [授权代码](../inkblade/core/roe.py) · [执行器](../inkblade/core/runner.py) · [证据库](../inkblade/core/evidence.py) · [报告渲染](../inkblade/reports/render.py) · [规则生成](../inkblade/rules/generate.py)
 
 ---
 
@@ -237,7 +240,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 ### 4.0 先给结论：改的是“运行时”，不是“放权”
 
-这一轮之前，Trident 的执行环是稳的：确定性链、四道闸门、三层证据。问题是**认知环是空的**：没有 durable journal，没有分层记忆，没有技能库，没有沙箱，没有评测。模型只能“提一次建议”，失败就靠人重来。等于把 2026 年主流的 agent 运行时（持久化、记忆、技能、沙箱、评测）连同“自主执行”一起砍掉了。
+这一轮之前，InkBlade 的执行环是稳的：确定性链、四道闸门、三层证据。问题是**认知环是空的**：没有 durable journal，没有分层记忆，没有技能库，没有沙箱，没有评测。模型只能“提一次建议”，失败就靠人重来。等于把 2026 年主流的 agent 运行时（持久化、记忆、技能、沙箱、评测）连同“自主执行”一起砍掉了。
 
 这一轮改动的核心判断是：**执行环继续确定性，认知环外挂 agent 运行时**。Agent 只影响“选哪个模块、传什么参数、下一步试什么”，不生成新的执行原语；所有执行仍走 `runner` 的四道闸门。下面分“方法论 / 代码逻辑 / 新增功能”三类讲。
 
@@ -257,18 +260,18 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 | 文件 | 关键类/函数 | 一句话原理 | 对旧路径的影响 |
 |---|---|---|---|
-| `trident/core/journal.py` | `Journal.append/verify/resume/replay` | append-only JSONL，每条带前一条哈希，形成链式 SHA256；`resume` 给出 completed/failed/incomplete | 新增；不改变执行语义，只记录“执行到哪” |
-| `trident/core/supervisor.py` | `Supervisor.submit/run` | 持久队列 + 1–8 worker + 失败重派；`submit` 校验每个动作已批准 | 新增；默认执行器仍是 `runner.run_module` |
-| `trident/core/memory.py` | `Memory.retrieve/compact`、`WorkingMemory` | working 有界；episodic 查 evidence DB；semantic 查资产/模块/技能图；按分数融合 | 新增；只读检索，不写证据 |
-| `trident/core/skills.py` | `SkillLibrary.extract/submit/approve/search` | 从成功 run 抽 playbook；draft→pending→approved；版本递增 | 新增；审批前不可检索 |
-| `trident/core/reflexion.py` | `reflect/propose_skill/render_md` | 读失败/降级动作，生成建议；零执行 | 新增；不 import runner |
-| `trident/core/a2a.py` | `A2AServer/agent_card/MCPClient` | agent card + task 状态机；只读技能白名单；MCP 只接受 `readOnlyHint=true` | 新增；写技能/写工具拒绝 |
-| `trident/core/sandbox.py` | `Sandbox.run_python/run_untrusted` | `python -I` 子进程；墙钟超时；默认禁网；POSIX rlimit；审计代码 sha256 | 新增；不替代内核级隔离 |
-| `trident/core/agent_policy.py` | `classify_action/decide/decompose/retry_plan` | L0–L3 分级；混合动作取最弱；瞬时错误有界重试，闸门错误立即停 | 提议路径可开关；OFF 复现旧语义 |
-| `trident/core/observation.py` | `build/action_key/dedupe/compress/is_dead_end` | 动作/结果/证据/下一步/claim 五段式；`ok` 必须有证据指针 | 新增；JSONL 只追加 |
-| `trident/core/cost.py` | `plan_cost/Budget/degrade/CostTracker` | token/时延/审批/干预四维预算；超支先丢 optional，再砍写，至少留 1 个 | 新增；确定性降级 |
-| `trident/core/agentops.py` | `run_approved_plan` | 门面：审批计划 → supervisor（journal）→ reflexion → 技能提案 | 新增；不绕闸门 |
-| `trident/webui/api_section3.py` | `/api/v1/agent/*` | 只读视图：等级、阶段、证据指针、下一步、预算 | 新增；仅 GET |
+| `inkblade/core/journal.py` | `Journal.append/verify/resume/replay` | append-only JSONL，每条带前一条哈希，形成链式 SHA256；`resume` 给出 completed/failed/incomplete | 新增；不改变执行语义，只记录“执行到哪” |
+| `inkblade/core/supervisor.py` | `Supervisor.submit/run` | 持久队列 + 1–8 worker + 失败重派；`submit` 校验每个动作已批准 | 新增；默认执行器仍是 `runner.run_module` |
+| `inkblade/core/memory.py` | `Memory.retrieve/compact`、`WorkingMemory` | working 有界；episodic 查 evidence DB；semantic 查资产/模块/技能图；按分数融合 | 新增；只读检索，不写证据 |
+| `inkblade/core/skills.py` | `SkillLibrary.extract/submit/approve/search` | 从成功 run 抽 playbook；draft→pending→approved；版本递增 | 新增；审批前不可检索 |
+| `inkblade/core/reflexion.py` | `reflect/propose_skill/render_md` | 读失败/降级动作，生成建议；零执行 | 新增；不 import runner |
+| `inkblade/core/a2a.py` | `A2AServer/agent_card/MCPClient` | agent card + task 状态机；只读技能白名单；MCP 只接受 `readOnlyHint=true` | 新增；写技能/写工具拒绝 |
+| `inkblade/core/sandbox.py` | `Sandbox.run_python/run_untrusted` | `python -I` 子进程；墙钟超时；默认禁网；POSIX rlimit；审计代码 sha256 | 新增；不替代内核级隔离 |
+| `inkblade/core/agent_policy.py` | `classify_action/decide/decompose/retry_plan` | L0–L3 分级；混合动作取最弱；瞬时错误有界重试，闸门错误立即停 | 提议路径可开关；OFF 复现旧语义 |
+| `inkblade/core/observation.py` | `build/action_key/dedupe/compress/is_dead_end` | 动作/结果/证据/下一步/claim 五段式；`ok` 必须有证据指针 | 新增；JSONL 只追加 |
+| `inkblade/core/cost.py` | `plan_cost/Budget/degrade/CostTracker` | token/时延/审批/干预四维预算；超支先丢 optional，再砍写，至少留 1 个 | 新增；确定性降级 |
+| `inkblade/core/agentops.py` | `run_approved_plan` | 门面：审批计划 → supervisor（journal）→ reflexion → 技能提案 | 新增；不绕闸门 |
+| `inkblade/webui/api_section3.py` | `/api/v1/agent/*` | 只读视图：等级、阶段、证据指针、下一步、预算 | 新增；仅 GET |
 | `lab/tencent-compare/` | `run_eval.py` | 8 任务 OFF/ON 微评测；OFF 复现旧语义 | 新增；确定性，不调用外部 LLM |
 | `lab/agent-eval/` | `run_eval.py` | 15 任务 deterministic vs supervisor-worker | 新增；故障注入显式标注 |
 
@@ -282,7 +285,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **动机**：旧 runner 失败就整链重跑。写类步骤重跑会重复备份、重复写，甚至覆盖上一次的回滚点。审批等待也不能跨进程存活。
 
-**关键实现**：`trident/core/journal.py::Journal`。每个 `step.started` / `step.finished` 追加一行 JSONL，带 `prev` 和 `hash`；`verify()` 逐行重算哈希链，能定位到具体行号；`resume()` 把步骤分成 completed / failed / incomplete；`checkpoint()` 标记可恢复边界。
+**关键实现**：`inkblade/core/journal.py::Journal`。每个 `step.started` / `step.finished` 追加一行 JSONL，带 `prev` 和 `hash`；`verify()` 逐行重算哈希链，能定位到具体行号；`resume()` 把步骤分成 completed / failed / incomplete；`checkpoint()` 标记可恢复边界。
 
 **影响指标**：崩溃恢复时重复执行的已完成步骤数；篡改定位能力。
 
@@ -294,7 +297,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **动机**：单进程串行 explorer 只能一个目标一个目标跑；一个瞬时故障就让整个任务失败；多目标场景没有并发。
 
-**关键实现**：`trident/core/supervisor.py::Supervisor`。持久队列 `supervisor/queue.json`；worker 数 1–8；`submit()` 校验 `approval.status == approved`；失败按 `max_attempts` 重派；每个事件写 journal；控制面重启后 running 复位为 pending。
+**关键实现**：`inkblade/core/supervisor.py::Supervisor`。持久队列 `supervisor/queue.json`；worker 数 1–8；`submit()` 校验 `approval.status == approved`；失败按 `max_attempts` 重派；每个事件写 journal；控制面重启后 running 复位为 pending。
 
 **影响指标**：15 任务成功率、总耗时、审批次数、重派次数。
 
@@ -306,7 +309,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **动机**：旧 explorer 每次从 findings 重算，跨 run 不记得“上次哪条路走不通”“这个产品的指纹是什么”。等于把专家记忆清零。
 
-**关键实现**：`trident/core/memory.py::Memory.retrieve/compact`。working 是本轮上下文，超容量时保留头尾并生成摘要；episodic 从 evidence DB 检索跨 run 的 findings/steps；semantic 从资产、模块、技能图谱检索；`retrieve` 按分数融合三层。
+**关键实现**：`inkblade/core/memory.py::Memory.retrieve/compact`。working 是本轮上下文，超容量时保留头尾并生成摘要；episodic 从 evidence DB 检索跨 run 的 findings/steps；semantic 从资产、模块、技能图谱检索；`retrieve` 按分数融合三层。
 
 **影响指标**：跨 run 检索命中；工作记忆上限；压缩后引用保留。
 
@@ -318,7 +321,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **动机**：旧系统只有模块，没有“怎么组合、先试什么、失败信号是什么”的程序性知识。新手法必须发版。
 
-**关键实现**：`trident/core/skills.py::SkillLibrary`。`extract()` 从成功 run 抽步骤、参数、写面、证据引用；`submit()` 进入 pending；`approve()` 只能 lead/admin；版本递增；`search()` 只返回 approved。
+**关键实现**：`inkblade/core/skills.py::SkillLibrary`。`extract()` 从成功 run 抽步骤、参数、写面、证据引用；`submit()` 进入 pending；`approve()` 只能 lead/admin；版本递增；`search()` 只返回 approved。
 
 **影响指标**：新手法上线路径；版本数；未审批检索；越权批准。
 
@@ -330,7 +333,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **动机**：旧 explorer 记录了结果，但 `propose()` 不读历史结果。失败不学习，同一提议反复出现，人审负担不降。
 
-**关键实现**：`trident/core/reflexion.py::reflect`。只读 evidence DB，把失败动作、备份闸门拒绝、零发现归纳成 failure/degraded；生成 `action + rationale + refs` 建议；`propose_skill()` 转成 pending 技能，仍需 lead 批准。测试用 monkeypatch 把 `runner.run_module` 换成炸弹，证明零执行。
+**关键实现**：`inkblade/core/reflexion.py::reflect`。只读 evidence DB，把失败动作、备份闸门拒绝、零发现归纳成 failure/degraded；生成 `action + rationale + refs` 建议；`propose_skill()` 转成 pending 技能，仍需 lead 批准。测试用 monkeypatch 把 `runner.run_module` 换成炸弹，证明零执行。
 
 **影响指标**：失败识别数；建议数；执行调用数；健康 run 误报。
 
@@ -342,7 +345,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **动机**：旧系统只有 MCP 只读工具，不能被客户 SOC 或其他 agent 平台当对等体调用；侦察/计划/验证不能拆成可替换服务。
 
-**关键实现**：`trident/core/a2a.py::A2AServer` 提供 agent card 和 task 状态机（submitted → working → completed / rejected / canceled）；内置技能白名单只读；`MCPClient` 只接受 `annotations.readOnlyHint=true` 或读前缀工具，写工具/未知工具拒绝。
+**关键实现**：`inkblade/core/a2a.py::A2AServer` 提供 agent card 和 task 状态机（submitted → working → completed / rejected / canceled）；内置技能白名单只读；`MCPClient` 只接受 `annotations.readOnlyHint=true` 或读前缀工具，写工具/未知工具拒绝。
 
 **影响指标**：只读任务完成；写技能拒绝率；MCP 写工具拒绝。
 
@@ -354,7 +357,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **动机**：旧 runner 用 `spec_from_file_location + exec_module` 在宿主进程执行模块。接入第三方技能或 LLM 生成代码后，这等于把宿主交给外部内容。
 
-**关键实现**：`trident/core/sandbox.py::Sandbox.run_python/run_untrusted`。`python -I` 子进程；墙钟超时；默认注入禁网（socket/urllib 抛 `NetworkDisabled`）；POSIX 下 rlimit 限制内存；每次执行记录代码 sha256、untrusted 标记、网络策略、结果、耗时。Windows 没有 rlimit，`limits.memory=false` 如实标注。
+**关键实现**：`inkblade/core/sandbox.py::Sandbox.run_python/run_untrusted`。`python -I` 子进程；墙钟超时；默认注入禁网（socket/urllib 抛 `NetworkDisabled`）；POSIX 下 rlimit 限制内存；每次执行记录代码 sha256、untrusted 标记、网络策略、结果、耗时。Windows 没有 rlimit，`limits.memory=false` 如实标注。
 
 **影响指标**：不可信代码是否进宿主；默认禁网；超时终止；审计覆盖率。
 
@@ -366,7 +369,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **动机**：旧审批只有“整包批/不批”。只读侦察和不可逆写共享同一档权限，人要么全信，要么全不信。
 
-**关键实现**：`trident/core/agent_policy.py::classify_action/decide/decompose/retry_plan`。L0 观察、L1 建议、L2 监督执行、L3 只读自治；混合动作取最弱链路；无备份写动作 L1、逐动作确认；`retry_plan` 把瞬时/永久/非法/预算错误分开。
+**关键实现**：`inkblade/core/agent_policy.py::classify_action/decide/decompose/retry_plan`。L0 观察、L1 建议、L2 监督执行、L3 只读自治；混合动作取最弱链路；无备份写动作 L1、逐动作确认；`retry_plan` 把瞬时/永久/非法/预算错误分开。
 
 **影响指标**：混合批次等级；审批次数；审阅项；人工干预；成功率。
 
@@ -378,7 +381,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **动机**：旧 `execute` 返回 `{module,status,result,run,step,audit}`，失败原因和证据指针混在 dict 里；下一次提议无法复用，人审也看不出“结论有没有证据”。
 
-**关键实现**：`trident/core/observation.py::build/action_key/dedupe/compress/is_dead_end`。五段式 `action / result / evidence[] / next[] / claim`；`ok` 无证据直接拒绝；失败降级 `hypothesis`；`action_key` 去重；同模块 2 次失败判死胡同；`compress` 按 confirmed 优先、步号倒序输出。
+**关键实现**：`inkblade/core/observation.py::build/action_key/dedupe/compress/is_dead_end`。五段式 `action / result / evidence[] / next[] / claim`；`ok` 无证据直接拒绝；失败降级 `hypothesis`；`action_key` 去重；同模块 2 次失败判死胡同；`compress` 按 confirmed 优先、步号倒序输出。
 
 **影响指标**：证据覆盖率；审阅项；重复动作；死胡同重试。
 
@@ -390,7 +393,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **动机**：旧 explorer 只有 `MAX_ACTIONS=5`，没有 token/时延估算，也没有超支降级。多 agent/长上下文会 15× token 失控。
 
-**关键实现**：`trident/core/cost.py::plan_cost/Budget/degrade/CostTracker`。四维预算：20,000 token、120,000ms、6 次审批、2 次干预；`plan_cost` 按动作估算；`degrade` 先丢 optional，再砍写动作，最后砍尾部，至少保留 1 个，并标记 `over_budget`。
+**关键实现**：`inkblade/core/cost.py::plan_cost/Budget/degrade/CostTracker`。四维预算：20,000 token、120,000ms、6 次审批、2 次干预；`plan_cost` 按动作估算；`degrade` 先丢 optional，再砍写动作，最后砍尾部，至少保留 1 个，并标记 `over_budget`。
 
 **影响指标**：token、时延、预算超支任务的动作数。
 
@@ -434,7 +437,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 第一，**没有把执行环交给模型**。`explorer.propose` 不建 run、不写 actions；`agent_planner` 只输出计划；`supervisor` 只执行已批准动作。第二，**没有做无人审批的写操作**。不可逆写仍然逐动作确认。第三，**没有做 C2、自动武器化、持久化后门**。这些与“可审计交付”的定位冲突。
 
-**证据索引（本章）**：[Agent 架构研究](AGENT-ARCHITECTURE-2026.md) · [升级实施说明](AGENT-ARCHITECTURE-UPGRADE-2026.md) · [评测结果](AGENT-EVAL-RESULTS.md) · [腾讯对标](SECTION3-TENCENT-AGENT-CONTEST.md) · [微评测指标](SECTION3-METRICS.md) · [journal](../trident/core/journal.py) · [supervisor](../trident/core/supervisor.py) · [memory](../trident/core/memory.py) · [skills](../trident/core/skills.py) · [reflexion](../trident/core/reflexion.py) · [a2a](../trident/core/a2a.py) · [sandbox](../trident/core/sandbox.py) · [agent_policy](../trident/core/agent_policy.py) · [observation](../trident/core/observation.py) · [cost](../trident/core/cost.py) · [agent 评测](../lab/agent-eval/run_eval.py) · [腾讯微评测](../lab/tencent-compare/run_eval.py)
+**证据索引（本章）**：[Agent 架构研究](AGENT-ARCHITECTURE-2026.md) · [升级实施说明](AGENT-ARCHITECTURE-UPGRADE-2026.md) · [评测结果](AGENT-EVAL-RESULTS.md) · [腾讯对标](SECTION3-TENCENT-AGENT-CONTEST.md) · [微评测指标](SECTION3-METRICS.md) · [journal](../inkblade/core/journal.py) · [supervisor](../inkblade/core/supervisor.py) · [memory](../inkblade/core/memory.py) · [skills](../inkblade/core/skills.py) · [reflexion](../inkblade/core/reflexion.py) · [a2a](../inkblade/core/a2a.py) · [sandbox](../inkblade/core/sandbox.py) · [agent_policy](../inkblade/core/agent_policy.py) · [observation](../inkblade/core/observation.py) · [cost](../inkblade/core/cost.py) · [agent 评测](../lab/agent-eval/run_eval.py) · [腾讯微评测](../lab/tencent-compare/run_eval.py)
 
 ---
 
@@ -442,7 +445,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 ### 5.1 先讲口径：这些数字不是同一种东西
 
-这张表混了三类数据：**策略级微评测**（8 个任务，确定性成本，不调用外部 LLM）、**Agent 架构评测**（15 个任务，deterministic vs supervisor-worker）、**同宿主性能对比**（ARTEX 在 QEMU TCG 里，Trident 在 Windows 宿主）。把它们放在一张表里，是为了回答“改动有没有用”，不是为了证明“产品比谁快”。跨行相减没有意义；每行的来源和口径都要看。
+这张表混了三类数据：**策略级微评测**（8 个任务，确定性成本，不调用外部 LLM）、**Agent 架构评测**（15 个任务，deterministic vs supervisor-worker）、**同宿主性能对比**（ARTEX 在 QEMU TCG 里，InkBlade 在 Windows 宿主）。把它们放在一张表里，是为了回答“改动有没有用”，不是为了证明“产品比谁快”。跨行相减没有意义；每行的来源和口径都要看。
 
 ### 5.2 主指标表
 
@@ -458,11 +461,11 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 | 审批次数（决策点，Agent 15 任务） | 1 | 32 | +3,100% | 从整批 1 次改为逐动作审批 | [AGENT-EVAL-RESULTS.md](AGENT-EVAL-RESULTS.md) |
 | 人工干预（腾讯 8 任务） | 4 | 0 | -100.0% | 死胡同识别、瞬时重试、预算自动降级 | [SECTION3-METRICS.md](SECTION3-METRICS.md) |
 | 证据覆盖（腾讯 8 任务） | 0.00 | 1.00 | 新增 | `ok` 必须有证据指针，否则降级 hypothesis | [SECTION3-METRICS.md](SECTION3-METRICS.md) |
-| API 中位延迟（只读端点网格） | 11.19 ms | 2.12 ms | -81.1% | Trident 单进程 + SQLite；ARTEX 含 PG 与 TCG | [PERFORMANCE-COMPARISON.md](PERFORMANCE-COMPARISON.md) |
+| API 中位延迟（只读端点网格） | 11.19 ms | 2.12 ms | -81.1% | InkBlade 单进程 + SQLite；ARTEX 含 PG 与 TCG | [PERFORMANCE-COMPARISON.md](PERFORMANCE-COMPARISON.md) |
 | 并发吞吐（16 并发） | 17.4 rps | 286.3 rps | +1,545% | backlog 5→256；ARTEX 端点与请求密度不同 | [PERFORMANCE-COMPARISON.md](PERFORMANCE-COMPARISON.md) |
-| 冷启动到可登录 | 37.85 s | 0.805 s | -97.9% | Trident 无外部数据库；ARTEX 含 PG 初始化与 TCG | [PERFORMANCE-COMPARISON.md](PERFORMANCE-COMPARISON.md) |
+| 冷启动到可登录 | 37.85 s | 0.805 s | -97.9% | InkBlade 无外部数据库；ARTEX 含 PG 初始化与 TCG | [PERFORMANCE-COMPARISON.md](PERFORMANCE-COMPARISON.md) |
 | 空闲内存 | 169.8 MiB | 28.1 MB | -83.5% | 单进程 vs Go 服务 + PostgreSQL；ARTEX 新起栈为 75.2 MiB | [PERFORMANCE-COMPARISON.md](PERFORMANCE-COMPARISON.md) |
-| 磁盘足迹 | 2.892 GB | 8.9 MB | -99.7% | 镜像是 ARTEX 两容器；8.9 MB 是 Trident 代码树，不含证据库 | [PERFORMANCE-COMPARISON.md](PERFORMANCE-COMPARISON.md) |
+| 磁盘足迹 | 2.892 GB | 8.9 MB | -99.7% | 镜像是 ARTEX 两容器；8.9 MB 是 InkBlade 代码树，不含证据库 | [PERFORMANCE-COMPARISON.md](PERFORMANCE-COMPARISON.md) |
 | 同靶场扫描时延 | 13,510 ms | 105.6 ms | -99.2% | 确定性链 vs 多 agent 编排；含 QEMU TCG 放大 | [ARTEX-BENCH-RESULT.md](ARTEX-BENCH-RESULT.md) |
 | 10k 对象分析总耗时 | 330.8 ms | 46.5 ms | -85.9% | 三处 O(n²) 改索引，findings 逐条一致 | [SCALE-RESULTS.md](SCALE-RESULTS.md) |
 | 10k 对象峰值 RSS | 34 MB | 54 MB | +58.8% | 快照本体与索引占用增加；不是泄漏 | [SCALE-RESULTS.md](SCALE-RESULTS.md) |
@@ -494,7 +497,7 @@ Trident 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 ### 5.5 怎么读这些数字
 
-第一，`+1,545%` 的吞吐差距不是“产品快 15 倍”。ARTEX 测的是 `/api/agents`，Trident 测的是 `/api/v1/graph`；ARTEX 跑在 QEMU TCG，Trident 跑在宿主。第二，`-99.2%` 的同靶场时延不是“产品快 128 倍”。它包含 TCG 放大、ARTEX 的 planner debounce、worker 轮询和 3 秒状态轮询。第三，`-83.5%` 的内存不是“同等功能下省 6 倍”。ARTEX 的值是长跑实例（含 PG 缓存），新起栈是 75.2 MiB；Trident 是单进程。第四，`-99.7%` 的磁盘不是同口径。ARTEX 是镜像，Trident 是代码树；证据库会随 run 增长。第五，`47/47` 是 `docs/EFFECT-VERIFICATION.md` 与 `reports/samples/effects/effects.json` 当前落盘的口径（含 chip 4 项）；此前 17/17、20/20 的旧口径已合并，不再引用。
+第一，`+1,545%` 的吞吐差距不是“产品快 15 倍”。ARTEX 测的是 `/api/agents`，InkBlade 测的是 `/api/v1/graph`；ARTEX 跑在 QEMU TCG，InkBlade 跑在宿主。第二，`-99.2%` 的同靶场时延不是“产品快 128 倍”。它包含 TCG 放大、ARTEX 的 planner debounce、worker 轮询和 3 秒状态轮询。第三，`-83.5%` 的内存不是“同等功能下省 6 倍”。ARTEX 的值是长跑实例（含 PG 缓存），新起栈是 75.2 MiB；InkBlade 是单进程。第四，`-99.7%` 的磁盘不是同口径。ARTEX 是镜像，InkBlade 是代码树；证据库会随 run 增长。第五，`47/47` 是 `docs/EFFECT-VERIFICATION.md` 与 `reports/samples/effects/effects.json` 当前落盘的口径（含 chip 4 项）；此前 17/17、20/20 的旧口径已合并，不再引用。
 
 **证据索引（本章）**：[腾讯微评测](SECTION3-METRICS.md) · [Agent 评测](AGENT-EVAL-RESULTS.md) · [性能对比](PERFORMANCE-COMPARISON.md) · [ARTEX 同靶场](ARTEX-BENCH-RESULT.md) · [规模压测](SCALE-RESULTS.md) · [效果验证](EFFECT-VERIFICATION.md) · [真实集群](REAL-CLUSTER-VERIFICATION.md)
 
@@ -528,7 +531,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 ### 6.5 性能差距
 
-已测维度：冷启动、空闲内存、全端点中位延迟、16 并发吞吐、同靶场扫描、磁盘。Trident 在“单机、确定性、零 token”上占优；ARTEX 在“自然语言意图驱动的开放面探索”上占优。不可比维度：ARTEX 的 32 个 0-2xx 端点有效载荷、30 分钟稳定性、UI 首屏、10 万行查询、KubeTrail 构建。未测就是未测，不外推。
+已测维度：冷启动、空闲内存、全端点中位延迟、16 并发吞吐、同靶场扫描、磁盘。InkBlade 在“单机、确定性、零 token”上占优；ARTEX 在“自然语言意图驱动的开放面探索”上占优。不可比维度：ARTEX 的 32 个 0-2xx 端点有效载荷、30 分钟稳定性、UI 首屏、10 万行查询、KubeTrail 构建。未测就是未测，不外推。
 
 ### 6.6 腾讯大赛 8 个项目：它们强在哪，我们补到哪
 
@@ -610,7 +613,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 **终态**：真实：未达成。模拟：已做。未达成：真实硬件 quote/report、厂商 PKI、端到端“证明→密钥释放”。
 
-**已做验证**：`docs/TEE-VERIFICATION.md` 记录了 `trident/tee/` 的实现：TDX Quote v3/v4 解析 + ECDSA P-256/P-384 验签 + AK→中间→根链；SEV-SNP report v2/v3 的 1184B 布局 + P-384 验签 + VCEK→ASK→ARK；NVIDIA NRAS JWT 的 RS256 + JWKS + claims。`tests/test_tee.py` 43 项，覆盖合法通过、篡改字段、篡改签名、过期、nonce 不符、DEBUG=1、TCB 降级、换根、换 JWKS、`alg=none`。所有 fixture 都是**自签**，私钥公开在源码里；证书主体是 `Trident Fixture`，`kid=nras-fixture-2026`。这是刻意的：fixture 只用于测试解析与验签逻辑，不能被当作证据。本轮新增 `trident/tee/online.py`：对 Intel PCS TDX TCB Info、AMD KDS ASK/ARK/VCEK/CRL、NVIDIA NRAS JWKS 的**官方公共样本**实网抓取并本地验签（Intel ECDSA、AMD RSA-PSS-SHA384、NVIDIA EC P-384/ES384），`tests/test_tee_online.py` 21 项；边界见 `docs/TEE-ONLINE-VERIFICATION.md`。
+**已做验证**：`docs/TEE-VERIFICATION.md` 记录了 `inkblade/tee/` 的实现：TDX Quote v3/v4 解析 + ECDSA P-256/P-384 验签 + AK→中间→根链；SEV-SNP report v2/v3 的 1184B 布局 + P-384 验签 + VCEK→ASK→ARK；NVIDIA NRAS JWT 的 RS256 + JWKS + claims。`tests/test_tee.py` 43 项，覆盖合法通过、篡改字段、篡改签名、过期、nonce 不符、DEBUG=1、TCB 降级、换根、换 JWKS、`alg=none`。所有 fixture 都是**自签**，私钥公开在源码里；证书主体是 `InkBlade Fixture`，`kid=nras-fixture-2026`。这是刻意的：fixture 只用于测试解析与验签逻辑，不能被当作证据。本轮新增 `inkblade/tee/online.py`：对 Intel PCS TDX TCB Info、AMD KDS ASK/ARK/VCEK/CRL、NVIDIA NRAS JWKS 的**官方公共样本**实网抓取并本地验签（Intel ECDSA、AMD RSA-PSS-SHA384、NVIDIA EC P-384/ES384），`tests/test_tee_online.py` 21 项；边界见 `docs/TEE-ONLINE-VERIFICATION.md`。
 
 **能证明什么**：解析器能处理真实格式的字段；签名/证书链/策略断言在篡改时会失败；不是“有 key 就过”。
 
@@ -638,7 +641,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 **终态**：真实：部分（验证侧真实，签名侧未达成）。模拟：已做。未达成：本仓库产物经公共 Fulcio keyless 签发、OIDC 身份、SCT/CRL/OCSP。
 
-**已做验证**：`docs/KEYLESS-VERIFICATION.md` 记录了 `trident/sigstore_keyless.py` 的实现：Fulcio v2 签发接口、Rekor v1 日志条目、Sigstore bundle v0.3、Fulcio 链/SAN/OIDC issuer、SET JCS 验签、RFC6962 inclusion proof、checkpoint note、在线重取。验证侧对 Sigstore 公共实例的真实产物做了端到端验证：sigstore/cosign v3.1.4 的 `cosign_checksums.txt`，SHA-256 `e70e59b3…f4c0`，Rekor `logIndex=3341269697`，Fulcio SAN `keyless@projectsigstore.iam.gserviceaccount.com`，issuer `https://accounts.google.com`，证书链、证书时间、身份、issuer、SET、inclusion、checkpoint、在线重取全部通过。另做了一次真实的公共 Rekor 写入/回读（key-based，`logIndex=3462554806`），`tlog-*` 全过，但 `keyless-certificate` 与 `certificate-chain` 明确失败——没有把它冒充 keyless。`tests/test_sigstore_keyless.py` 19 项（1 项在线重取默认 skip）。我们自己的产物仍走本地 Fulcio 兼容 CA fixture；因为当前环境没有 OIDC 身份，没有向公共 Fulcio 申请证书。`tests/test_supplychain.py` 仍覆盖 HMAC 三元组（artifact/source/builder）与篡改拒绝。
+**已做验证**：`docs/KEYLESS-VERIFICATION.md` 记录了 `inkblade/sigstore_keyless.py` 的实现：Fulcio v2 签发接口、Rekor v1 日志条目、Sigstore bundle v0.3、Fulcio 链/SAN/OIDC issuer、SET JCS 验签、RFC6962 inclusion proof、checkpoint note、在线重取。验证侧对 Sigstore 公共实例的真实产物做了端到端验证：sigstore/cosign v3.1.4 的 `cosign_checksums.txt`，SHA-256 `e70e59b3…f4c0`，Rekor `logIndex=3341269697`，Fulcio SAN `keyless@projectsigstore.iam.gserviceaccount.com`，issuer `https://accounts.google.com`，证书链、证书时间、身份、issuer、SET、inclusion、checkpoint、在线重取全部通过。另做了一次真实的公共 Rekor 写入/回读（key-based，`logIndex=3462554806`），`tlog-*` 全过，但 `keyless-certificate` 与 `certificate-chain` 明确失败——没有把它冒充 keyless。`tests/test_sigstore_keyless.py` 19 项（1 项在线重取默认 skip）。我们自己的产物仍走本地 Fulcio 兼容 CA fixture；因为当前环境没有 OIDC 身份，没有向公共 Fulcio 申请证书。`tests/test_supplychain.py` 仍覆盖 HMAC 三元组（artifact/source/builder）与篡改拒绝。
 
 **能证明什么**：验证器能正确处理公共 Fulcio 短生命周期证书、Rekor 透明日志、SET、inclusion、checkpoint 与在线一致性；第三方真实 keyless 样本能验过；公共 Rekor 写入/回读能验过；篡改、过期、错误身份/issuer、吊销 serial 会失败。
 
@@ -652,7 +655,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 **终态**：真实：未达成。模拟：部分。未达成：跨副本队列、租户配额、按租户加密、跨副本审批一致性。
 
-**已做验证**：单机有界并发已测：`trident/core/supervisor.py` 支持 1–8 worker；`docs/PERFORMANCE-COMPARISON.md` 记录 `/api/v1/graph` 在 16 并发下 286.3 rps（1/4/16/32 为 138.6/297.7/286.3/268.0），`ThreadingHTTPServer` backlog 从 5 提到 256 后，同端点从 29 rps 提到 286 rps；空闲 28.1MB，16 并发峰值 33.0MB。本轮新增 `lab/saas/`：ThreadingHTTP + 多进程 worker + SQLite WAL 原子配额/审批 + 每租户 `EvidenceStore`；8 租户 × 8 并发实测 422 done / 858 quota 429 / 隔离违规 0 / 重复审批 8 拒绝 / 17.26 runs/s（`docs/SAAS-LOAD-RESULTS.md`，`tests/test_saas.py` 14 项）。**单机本地模拟，不是跨副本分布式/商业 SLA。**
+**已做验证**：单机有界并发已测：`inkblade/core/supervisor.py` 支持 1–8 worker；`docs/PERFORMANCE-COMPARISON.md` 记录 `/api/v1/graph` 在 16 并发下 286.3 rps（1/4/16/32 为 138.6/297.7/286.3/268.0），`ThreadingHTTPServer` backlog 从 5 提到 256 后，同端点从 29 rps 提到 286 rps；空闲 28.1MB，16 并发峰值 33.0MB。本轮新增 `lab/saas/`：ThreadingHTTP + 多进程 worker + SQLite WAL 原子配额/审批 + 每租户 `EvidenceStore`；8 租户 × 8 并发实测 422 done / 858 quota 429 / 隔离违规 0 / 重复审批 8 拒绝 / 17.26 runs/s（`docs/SAAS-LOAD-RESULTS.md`，`tests/test_saas.py` 14 项）。**单机本地模拟，不是跨副本分布式/商业 SLA。**
 
 **能证明什么**：单机进程内有界并发可用；backlog 是真实瓶颈；证据库在单写者下是线性审计；资源占用可控。
 
@@ -683,12 +686,12 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | 5 | 跨副本分布式 SaaS | 单机 8 租户压测；无跨副本队列/租约/HA/租户 KMS | Postgres/队列 + 按租户加密 + 100 并发链故障恢复 |
 | 6 | 模型注册中心 / 权重仓库直连 | 只读本地清单/权重 | HF/OCI 拉取 + 在线验签 + 断网/篡改/吊销负例 |
 | 7 | SIEM/SOAR 真实投递 | 只有 SARIF/OCSF/VEX 产物 | Splunk HEC/Elastic/Sentinel 投递 + 幂等/回压/审计 |
-| 8 | 漏洞挖掘披露闭环 | 候选停在 `pending-manual-review` | 人工确认 + 负责任披露流程 + 状态回写 |
+| 8 | 漏洞挖掘披露闭环 | 已建 CVE 适格筛选、CVE 5.1 请求体、脱敏证据包、90 天发布计划（未外发） | 人工发送 + 厂商回执 + CVE 分配 + 公开 advisory |
 | 9 | 无面模块治理 | 12 个六画像全无面；9 个已隔离，3 个待 owner 决定 | 3 个模块隔离或补面；面闸门默认开启 |
 | 10 | 画像覆盖缺口 | `slurm-hpc` 25.76%（Slurm 17 域覆盖 88.2%），其余 62.12%–73.48% | 六画像 production coverage ≥90% |
-| 11 | 可利用性核验缺口 | 152 条中 32 verified / 98 static-only / 22 unsupported | 真实 GPU/内核/硬件环境升级 static-only/unsupported |
+| 11 | 可利用性核验缺口 | 152 条中 37 verified / 93 static-only / 22 unsupported | 真实 GPU/内核/硬件环境升级 static-only/unsupported |
 
-**证据索引（本章）**：[SOTA 与追赶路径](SOTA-2026-10.md) · [规模压测](SCALE-RESULTS.md) · [Fabric 攻击面](FABRIC-ATTACK-SURFACE.md) · [TEE 验证](TEE-VERIFICATION.md) · [六云矩阵](SIX-CLOUD-MATRIX.md) · [性能对比](PERFORMANCE-COMPARISON.md) · [供应链代码](../trident/supplychain.py) · [TEE 代码](../trident/tee/) · [六云仿真](../lab/cloud_six_sim.py)
+**证据索引（本章）**：[SOTA 与追赶路径](SOTA-2026-10.md) · [规模压测](SCALE-RESULTS.md) · [Fabric 攻击面](FABRIC-ATTACK-SURFACE.md) · [TEE 验证](TEE-VERIFICATION.md) · [六云矩阵](SIX-CLOUD-MATRIX.md) · [性能对比](PERFORMANCE-COMPARISON.md) · [供应链代码](../inkblade/supplychain.py) · [TEE 代码](../inkblade/tee/) · [六云仿真](../lab/cloud_six_sim.py)
 
 ---
 
@@ -722,7 +725,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 **错在哪**：第一轮 mock LLM 只会回固定文本，ARTEX 任务停在 `running`，worker 没启动，靶场 0 请求。一个“任务没跑完”的基准，只能证明“服务能启动”，不能证明“扫描能对比”。当时文档一度把它写成“同靶场对比”，这是过度解读。
 
-**如何纠正**：把 mock LLM 升级为 v2 脚本化计划器，按 ARTEX 协议返回 `set_goals → add_intent → Bash → report_finding → prove_goal`；任务 13,510ms 走完，靶场 3 个真实请求全 200，1 条 high finding；Trident 同链 105.6ms。`docs/ARTEX-BENCH-RESULT.md` 第 6.2 节保留首轮失败历史，`tests/test_artex_same_target.py` 锁定 dispatch-once / prove-once / turn-cap。
+**如何纠正**：把 mock LLM 升级为 v2 脚本化计划器，按 ARTEX 协议返回 `set_goals → add_intent → Bash → report_finding → prove_goal`；任务 13,510ms 走完，靶场 3 个真实请求全 200，1 条 high finding；InkBlade 同链 105.6ms。`docs/ARTEX-BENCH-RESULT.md` 第 6.2 节保留首轮失败历史，`tests/test_artex_same_target.py` 锁定 dispatch-once / prove-once / turn-cap。
 
 **教训**：benchmark 的第一条验收不是“数字好看”，而是“工作负载完整跑完”。启动、健康检查、任务提交，都只是前置条件。
 
@@ -732,7 +735,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 **错在哪**：这些模块的能力已经公开，`private:true` 不产生安全价值，反而让交付不可复现、让客户无法验证。把“公开模块”包装成“私有零日”，是分类错误，也是诚信问题。
 
-**如何纠正**：6 个模块全部 `private:false`，正常打包与展示；`trident/core/zeroday.py` 降为“默认关闭的可选加密扩展”，只供未来真正未披露的私有材料使用，不再是这 6 个模块的门槛。`README.md` 的“边界”段落明确写了这一点。
+**如何纠正**：6 个模块全部 `private:false`，正常打包与展示；`inkblade/core/zeroday.py` 降为“默认关闭的可选加密扩展”，只供未来真正未披露的私有材料使用，不再是这 6 个模块的门槛。`README.md` 的“边界”段落明确写了这一点。
 
 **教训**：分类要看证据，不要看命名。把公开东西说成私有，短期好看，长期毁信任。
 
@@ -780,7 +783,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 **当时怎么想**：每个任务写自己的文档，数字各自落盘；最后总有人会合并。
 
-**错在哪**：README 写“11/11 PASS”，`docs/EFFECT-VERIFICATION.md` 是 17/17；性能文档里 Trident 内存有 49–50MiB 的旧采样，也有 28.1MB 的新采样；ARTEX 内存有 169.8MiB 的长跑值，也有 75.2MiB 的新起栈值。读者不知道哪个是真的。
+**错在哪**：README 写“11/11 PASS”，`docs/EFFECT-VERIFICATION.md` 是 17/17；性能文档里 InkBlade 内存有 49–50MiB 的旧采样，也有 28.1MB 的新采样；ARTEX 内存有 169.8MiB 的长跑值，也有 75.2MiB 的新起栈值。读者不知道哪个是真的。
 
 **如何纠正**：以“当前落盘报告 + 原始 JSON”为单一来源；`8da8bd9` 把性能数字对齐到 committed live grid；本报告在第五章逐行标来源，并明确“17/17 与 20/20 未合并”。后续应该把生成文档纳入 CI，数字从 JSON 渲染，而不是手写。
 
@@ -855,7 +858,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | RSS | Resident Set Size，进程实际占用的物理内存。 |
 | SOTA | State of the Art，当前公开可见的最先进水平；本报告只把它当“参照”，不当“自称”。 |
 
-**证据索引（本章）**：[SOTA](SOTA-2026-10.md) · [架构](ARCHITECTURE.md) · [长上下文](LONG-CONTEXT.md) · [AI 网关](AI-GATEWAY.md) · [TEE](TEE-VERIFICATION.md) · [供应链代码](../trident/supplychain.py)
+**证据索引（本章）**：[SOTA](SOTA-2026-10.md) · [架构](ARCHITECTURE.md) · [长上下文](LONG-CONTEXT.md) · [AI 网关](AI-GATEWAY.md) · [TEE](TEE-VERIFICATION.md) · [供应链代码](../inkblade/supplychain.py)
 
 ---
 
@@ -894,7 +897,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | 文档 | 内容 |
 |---|---|
 | [EFFECT-VERIFICATION.md](EFFECT-VERIFICATION.md) | 本机真实进程/HTTP 效果验证，当前落盘 47/47 PASS |
-| [EXPLOIT-VERIFICATION.md](EXPLOIT-VERIFICATION.md) | 152 条可利用性核验：32 verified / 98 static-only / 22 unsupported |
+| [EXPLOIT-VERIFICATION.md](EXPLOIT-VERIFICATION.md) | 152 条可利用性核验：37 verified / 93 static-only / 22 unsupported |
 | [SURFACE-REALISM.md](SURFACE-REALISM.md) | 256 模块 × 6 画像：production 覆盖、默认 PoC、无面/隔离清单 |
 | [REAL-CLUSTER-VERIFICATION.md](REAL-CLUSTER-VERIFICATION.md) | QEMU k3s 真集群：6 模块、16 findings、hostNetwork 绕过 |
 | [SCALE-RESULTS.md](SCALE-RESULTS.md) | 合成 100–10,000 对象曲线 + 真 k3s 204 对象点 |
@@ -918,17 +921,17 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | [AGENT-EVAL-RESULTS.md](AGENT-EVAL-RESULTS.md) | 15 任务 deterministic vs supervisor-worker |
 | [SECTION3-TENCENT-AGENT-CONTEST.md](SECTION3-TENCENT-AGENT-CONTEST.md) | 腾讯 8 项目、14 条反思、改进清单 |
 | [SECTION3-METRICS.md](SECTION3-METRICS.md) | 8 任务 OFF/ON：成功率、时延、token、审批、干预、证据 |
-| [journal.py](../trident/core/journal.py) | append-only 日志、哈希链、resume/replay |
-| [supervisor.py](../trident/core/supervisor.py) | 持久队列、1–8 worker、重派、审批门 |
-| [memory.py](../trident/core/memory.py) | working/episodic/semantic 三层记忆 |
-| [skills.py](../trident/core/skills.py) | playbook 提取、版本、审批 |
-| [reflexion.py](../trident/core/reflexion.py) | 零执行反思 |
-| [a2a.py](../trident/core/a2a.py) | agent card、task 状态机、MCP 只读客户端 |
-| [sandbox.py](../trident/core/sandbox.py) | 子进程、超时、禁网、审计 |
-| [agent_policy.py](../trident/core/agent_policy.py) | L0–L3、阶段分解、重试分类 |
-| [observation.py](../trident/core/observation.py) | 五段式观察、证据指针、去重、压缩 |
-| [cost.py](../trident/core/cost.py) | 四维预算、超支降级 |
-| [agentops.py](../trident/core/agentops.py) | 审批计划到技能提案的门面 |
+| [journal.py](../inkblade/core/journal.py) | append-only 日志、哈希链、resume/replay |
+| [supervisor.py](../inkblade/core/supervisor.py) | 持久队列、1–8 worker、重派、审批门 |
+| [memory.py](../inkblade/core/memory.py) | working/episodic/semantic 三层记忆 |
+| [skills.py](../inkblade/core/skills.py) | playbook 提取、版本、审批 |
+| [reflexion.py](../inkblade/core/reflexion.py) | 零执行反思 |
+| [a2a.py](../inkblade/core/a2a.py) | agent card、task 状态机、MCP 只读客户端 |
+| [sandbox.py](../inkblade/core/sandbox.py) | 子进程、超时、禁网、审计 |
+| [agent_policy.py](../inkblade/core/agent_policy.py) | L0–L3、阶段分解、重试分类 |
+| [observation.py](../inkblade/core/observation.py) | 五段式观察、证据指针、去重、压缩 |
+| [cost.py](../inkblade/core/cost.py) | 四维预算、超支降级 |
+| [agentops.py](../inkblade/core/agentops.py) | 审批计划到技能提案的门面 |
 
 ### 10.5 竞品与矩阵
 
@@ -962,8 +965,8 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | [tests/test_agent_eval.py](../tests/test_agent_eval.py) | 15 任务评测结构与故障注入 |
 | [lab/tencent-compare/run_eval.py](../lab/tencent-compare/run_eval.py) | OFF/ON 微评测生成器 |
 | [lab/agent-eval/run_eval.py](../lab/agent-eval/run_eval.py) | deterministic vs supervisor 评测 |
-| [trident/e2e-check.py](../trident/e2e-check.py) | 端到端验收 15/15 |
-| [trident/verify-effects.py](../trident/verify-effects.py) | 效果验证 47 项 |
+| [inkblade/e2e-check.py](../inkblade/e2e-check.py) | 端到端验收 15/15 |
+| [inkblade/verify-effects.py](../inkblade/verify-effects.py) | 效果验证 47 项 |
 | [tests/test_docs_master.py](../tests/test_docs_master.py) | 本报告的结构与底线断言 |
 
 ### 10.7 复现命令
@@ -981,7 +984,7 @@ python lab/agent-eval/run_eval.py --write
 python -m unittest tests.test_agent_eval -v
 
 # 效果验证
-python -m trident.verify-effects --out reports/samples/effects/
+python -m inkblade.verify-effects --out reports/samples/effects/
 python -m unittest tests.test_verify_effects -v
 
 # 规模压测
@@ -1009,9 +1012,9 @@ python -m unittest tests.test_docs_master -v
 
 ### 10.9 一句话总结
 
-Trident 已经把“授权、侦察、组合、计划、审批、执行、证据、报告、规则、复测”串成一条可复跑的链；Agent 运行时补上了 journal、supervisor、memory、skills、reflexion、A2A、sandbox、policy、observation、cost；指标上，策略级任务 0.5→1.0、时延 -39%、token -26.7%、人工干预 4→0；竞品上，ML 面和证据面有差异化，规模、通用攻击面、payload 广度、平台化、真实战绩仍未超过。**能证明的写“已测”，只能仿真的写“模拟”，没有数据的写“未测”**——这句话比任何“最先进”都重要。
+InkBlade 已经把“授权、侦察、组合、计划、审批、执行、证据、报告、规则、复测”串成一条可复跑的链；Agent 运行时补上了 journal、supervisor、memory、skills、reflexion、A2A、sandbox、policy、observation、cost；指标上，策略级任务 0.5→1.0、时延 -39%、token -26.7%、人工干预 4→0；竞品上，ML 面和证据面有差异化，规模、通用攻击面、payload 广度、平台化、真实战绩仍未超过。**能证明的写“已测”，只能仿真的写“模拟”，没有数据的写“未测”**——这句话比任何“最先进”都重要。
 
 ---
 
-*本报告由 Trident 项目维护。数字以文中来源文件为准；发现不一致时，先改来源，再改本文。*
+*本报告由 InkBlade 项目维护。数字以文中来源文件为准；发现不一致时，先改来源，再改本文。*
 

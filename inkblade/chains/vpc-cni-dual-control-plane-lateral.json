@@ -17,7 +17,7 @@
     {
       "id": "egress-pivot-proof",
       "module": "hybrid-cloud-egress-pivot",
-      "params": {"probe": "security-group-bypass", "marker": "TRIDENT-${run.name}"}
+      "params": {"probe": "security-group-bypass", "marker": "INKBLADE-${run.name}"}
     }
   ],
   "evidence": ["http-trace", "reachability-note"],

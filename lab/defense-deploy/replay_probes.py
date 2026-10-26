@@ -2,7 +2,7 @@
 """良性探针重放准备器：物化 benign marker 到授权 scratch 目录并生成重放清单文本。
 
 安全边界（硬约束）：
-- 探针全部为技术类别级 benign marker（TRIDENT-BENIGN 前缀），不含恶意载荷；
+- 探针全部为技术类别级 benign marker（INKBLADE-BENIGN 前缀），不含恶意载荷；
 - 物化只能写 --scratch 目录（引擎 ProbeContainmentError 强制，越界即拒）；
 - 本脚本不执行任何重放动作，仅输出 replay.txt 供人工在授权实验室逐条执行。
 
@@ -16,7 +16,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 
-from trident.core import defenseprobe as dp  # noqa: E402
+from inkblade.core import defenseprobe as dp  # noqa: E402
 
 
 def main() -> None:
@@ -37,7 +37,7 @@ def main() -> None:
     files = dp.materialize_probes(probes, root)
 
     lines = [
-        f"# TRIDENT benign replay plan: {args.product}",
+        f"# INKBLADE benign replay plan: {args.product}",
         f"# marker 前缀 {dp.SAFE_MARKER_PREFIX}；全部为良性探针；人工于授权实验室执行",
         "",
     ]

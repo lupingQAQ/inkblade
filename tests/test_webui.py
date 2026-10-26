@@ -4,8 +4,8 @@ import urllib.request
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.users import UserStore
-from trident.webui.server import make_server
+from inkblade.core.users import UserStore
+from inkblade.webui.server import make_server
 
 
 def _req(method, url, token=None, body=None):

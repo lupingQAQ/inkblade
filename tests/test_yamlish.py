@@ -1,6 +1,6 @@
 import unittest
 
-from trident.core.yamlish import dump
+from inkblade.core.yamlish import dump
 
 
 class TestYamlish(unittest.TestCase):

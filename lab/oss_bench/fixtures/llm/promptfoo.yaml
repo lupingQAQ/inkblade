@@ -1,6 +1,6 @@
 # promptfoo bench config: 12 deterministic cases against the local echo mock.
 # The provider never leaves the host (no external model calls).
-description: "trident oss-bench echo provider"
+description: "inkblade oss-bench echo provider"
 
 prompts:
   - "{{prompt}}"

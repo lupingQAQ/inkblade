@@ -1,6 +1,6 @@
-# Contributing to Trident / 贡献指南
+# Contributing to InkBlade（墨刃零） / 贡献指南
 
-Thanks for contributing! Trident is an authorized-testing platform; please read
+Thanks for contributing! InkBlade is an authorized-testing platform; please read
 [`SECURITY.md`](SECURITY.md) and the authorization reminder before you start.
 
 ## Development setup / 开发环境
@@ -13,7 +13,7 @@ Thanks for contributing! Trident is an authorized-testing platform; please read
 
 ```bash
 git clone <your-fork-url>
-cd trident
+cd inkblade
 python -m unittest discover -s tests -v
 python scripts/check-public-tree.py
 ```
@@ -32,8 +32,8 @@ python scripts/check-public-tree.py
 python -m unittest discover -s tests -v       # full suite
 python -m unittest tests.test_verify_effects -v
 python scripts/check-public-tree.py           # must report 0 hits
-python trident/e2e-check.py                   # end-to-end acceptance samples
-python -m trident.verify-effects --out reports/samples/effects/
+python inkblade/e2e-check.py                   # end-to-end acceptance samples
+python -m inkblade.verify-effects --out reports/samples/effects/
 ```
 
 Tests must be deterministic and must not depend on external network access or
@@ -42,7 +42,7 @@ states.
 
 ## Module authoring / 模块作者规范
 
-Each module lives in `trident/modules/<key>/`:
+Each module lives in `inkblade/modules/<key>/`:
 
 ```
 module.json   # key/name/series/description/min_level/writes/requires/...

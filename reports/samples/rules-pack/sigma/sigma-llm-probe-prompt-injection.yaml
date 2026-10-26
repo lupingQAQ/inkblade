@@ -1,10 +1,10 @@
 title: 提示注入（直接/间接/工具描述）
-id: 5ee7846e-c831-8191-136f-e9535e6275c2
+id: b2871e84-27d2-6467-6050-b10978c6426c
 status: stable
-description: "Prompt injection (direct/indirect/tool-description). 直接指令覆盖、不可信内容间接注入、工具描述/schema 注入与伪造角色消息；来源=LLM 探针矩阵 prompt-injection 类。 检测规则与 trident/probes 探针库 prompt-injection 类一一联动（每类 ≥1 规则）。"
+description: "Prompt injection (direct/indirect/tool-description). 直接指令覆盖、不可信内容间接注入、工具描述/schema 注入与伪造角色消息；来源=LLM 探针矩阵 prompt-injection 类。 检测规则与 inkblade/probes 探针库 prompt-injection 类一一联动（每类 ≥1 规则）。"
 references:
-  - "trident-rules-mapping: sigma-llm-probe-prompt-injection"
-author: Trident rules engine
+  - "inkblade-rules-mapping: sigma-llm-probe-prompt-injection"
+author: InkBlade rules engine
 date: 2026/10/25
 logsource:
   product: litellm
@@ -22,10 +22,10 @@ falsepositives:
 level: critical
 tags:
   - attack.t1059
-  - trident
+  - inkblade
   - llm-probe
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-tuning: 以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针
-  trident-blocks-chains: ""
+  inkblade-mode: monitor
+  inkblade-tuning: 以网关 LLM 遥测流的 category 字段聚合告警（同会话多类命中即升级 critical）；授权红队演练窗口先加白，演练后恢复；建议同时记录 trace_id 以便回放定位探针
+  inkblade-blocks-chains: ""

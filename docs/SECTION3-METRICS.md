@@ -1,7 +1,7 @@
 # 第三节实测：腾讯 Agent 渗透大赛对标改进（OFF vs ON）
 
 - 生成时间：2026-10-25T22:50:44
-- 基线：git `c921595`（`TRIDENT_AGENT_POLICY=on|off（OFF 复现 HEAD 语义）`）
+- 基线：git `c921595`（`INKBLADE_AGENT_POLICY=on|off（OFF 复现 HEAD 语义）`）
 - 范围：策略级确定性微评测：动作成本为标定估算，不调用外部 LLM/真实目标
 - 任务数：8
 

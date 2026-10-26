@@ -1,11 +1,19 @@
 # 供应链 fixture 字节级哈希依赖原始字节，禁止 EOL 转换
-trident/data/supplychain/artifact.example.bin -text
+inkblade/data/supplychain/artifact.example.bin -text
 *.bin -text
 
 # vendor UMD 产物按字节原样入库（校验和 SHA256SUMS 需跨 checkout/archive 稳定）
-trident/webui/static/vendor/* -text
+inkblade/webui/static/vendor/* -text
 
 # Sigstore/TEE 样本与签名产物必须按字节保真（artifact SHA-256 / bundle / PEM / DER）
 reports/samples/sigstore/** -text
-trident/data/sigstore/** -text
-trident/tee/online_cache/** -text
+inkblade/data/sigstore/** -text
+inkblade/tee/online_cache/** -text
+
+# Release tooling: keep LF for scripts that run under bash/WSL and Linux CI.
+scripts/release/*.sh text eol=lf
+scripts/release/*.ps1 text eol=crlf
+Dockerfile text eol=lf
+Makefile text eol=lf
+.github/workflows/*.yml text eol=lf
+deploy/helm/** text eol=lf

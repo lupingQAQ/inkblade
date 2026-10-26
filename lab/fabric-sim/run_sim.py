@@ -43,7 +43,7 @@ def run(nodes: int, scenario: str, out: Path | str | None = None, *, seed: int =
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="Trident fabric discrete-event simulation")
+    ap = argparse.ArgumentParser(description="InkBlade fabric discrete-event simulation")
     ap.add_argument("--nodes", type=int, default=1024)
     ap.add_argument("--scenario", default="mixed",
                     choices=["baseline", "pfc-storm", "ecn", "rail-mismatch",

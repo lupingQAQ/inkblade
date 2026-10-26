@@ -7,12 +7,12 @@ references:
   - "Kueue 文档 https://kueue.sigs.k8s.io/docs/"
   - "Volcano 文档 https://volcano.sh/en/docs/"
   - "MITRE ATT&CK T1610 Deploy Container https://attack.mitre.org/techniques/T1610/"
-author: Trident privesc matrix
+author: InkBlade privesc matrix
 metadata:
-  author: Trident privesc matrix
+  author: InkBlade privesc matrix
   annotations:
-    trident.io/vector: platform-kueue-volcano
-    trident.io/module: gang-scheduler-abuse
+    inkblade.io/vector: platform-kueue-volcano
+    inkblade.io/module: gang-scheduler-abuse
 date: 2026/10/26
 logsource:
   product: kubernetes
@@ -31,16 +31,16 @@ falsepositives:
 level: high
 tags:
   - attack.privilege_escalation
-  - trident
-  - trident.vector.platform
+  - inkblade
+  - inkblade.vector.platform
   - attack.t1610
-  - trident-mode-monitor
+  - inkblade-mode-monitor
 custom:
-  trident-mode: monitor
-  trident-vector: platform-kueue-volcano
-  trident-module: gang-scheduler-abuse
-  trident-detection-point: K8s audit：队列/配额对象变更
-  trident-replay:
+  inkblade-mode: monitor
+  inkblade-vector: platform-kueue-volcano
+  inkblade-module: gang-scheduler-abuse
+  inkblade-detection-point: K8s audit：队列/配额对象变更
+  inkblade-replay:
     match:
       engine: sigma
       logsource:

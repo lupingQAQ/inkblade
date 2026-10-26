@@ -1,9 +1,9 @@
-"""trident/verify-effects.py — 实效验证：本机真实进程 + 真实 HTTP 逐项证明攻击效果。
+"""inkblade/verify-effects.py — 实效验证：本机真实进程 + 真实 HTTP 逐项证明攻击效果。
 
 用法::
 
-    python -m trident.verify-effects --out reports/samples/effects/
-    python trident/verify-effects.py --out reports/samples/effects/ --no-docs
+    python -m inkblade.verify-effects --out reports/samples/effects/
+    python inkblade/verify-effects.py --out reports/samples/effects/ --no-docs
 
 验证项（全部在本机 127.0.0.1 回环完成，结果可复现）：
 a) 未授权管理面利用：sglang-admin-failopen 真实 200 且服务端状态文件变更；
@@ -77,26 +77,26 @@ from lab.trainstack_sim import (  # noqa: E402
     start_all as start_trainstack,
     template_path as trainstack_template,
 )
-from trident.cve_effects import run_cve_checks  # noqa: E402
-from trident.depth_effects import run_depth_checks  # noqa: E402
+from inkblade.cve_effects import run_cve_checks  # noqa: E402
+from inkblade.depth_effects import run_depth_checks  # noqa: E402
 from lab.ai_gateway_sim import (  # noqa: E402
     MASTER_KEY as AI_GATEWAY_MASTER_KEY,
     TENANT_KEYS as AI_GATEWAY_TENANT_KEYS,
     UPSTREAMS as AI_GATEWAY_UPSTREAMS,
     start_all as start_ai_gateway,
 )
-from trident.core.backup import BackupManager  # noqa: E402
-from trident.core.chains import dry_run, execute, load_chains  # noqa: E402
-from trident.core.evidence import EvidenceStore  # noqa: E402
-from trident.core.roe import init_roe  # noqa: E402
-from trident.core.runner import run_module  # noqa: E402
-from trident.core.users import UserStore  # noqa: E402
-from trident.reports.render import render_pentest  # noqa: E402
-from trident.rules.generate import generate_all  # noqa: E402
-from trident.rules.validate import validate  # noqa: E402
+from inkblade.core.backup import BackupManager  # noqa: E402
+from inkblade.core.chains import dry_run, execute, load_chains  # noqa: E402
+from inkblade.core.evidence import EvidenceStore  # noqa: E402
+from inkblade.core.roe import init_roe  # noqa: E402
+from inkblade.core.runner import run_module  # noqa: E402
+from inkblade.core.users import UserStore  # noqa: E402
+from inkblade.reports.render import render_pentest  # noqa: E402
+from inkblade.rules.generate import generate_all  # noqa: E402
+from inkblade.rules.validate import validate  # noqa: E402
 
-MODULES_DIR = REPO_ROOT / "trident" / "modules"
-CHAINS_DIR = REPO_ROOT / "trident" / "chains"
+MODULES_DIR = REPO_ROOT / "inkblade" / "modules"
+CHAINS_DIR = REPO_ROOT / "inkblade" / "chains"
 THEFT_FIXTURES = REPO_ROOT / "lab" / "fixtures" / "theft"
 RESIDUAL_FIXTURES = REPO_ROOT / "lab" / "fixtures" / "residual2026"
 SLURM_FIXTURES = REPO_ROOT / "lab" / "fixtures" / "slurm"
@@ -248,7 +248,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
     state: dict[str, Any] = {}
     result: dict[str, Any] = {}
 
-    with TemporaryDirectory(prefix="trident-effects-") as tmp:
+    with TemporaryDirectory(prefix="inkblade-effects-") as tmp:
         root = Path(tmp)
         lab_root = root / "lab"
         # 并行在途链可能暂不可解析；效果验证只使用通过契约校验的链（生产 CLI 仍严格失败）
@@ -266,7 +266,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
             "namespaces": ["default", "train", "infer", "ray-system", "ml-agent"],
             "cidrs": ["127.0.0.0/8"],
             "window": f"effects-verification {stamp}",
-            "client": "Trident 本机 mock 靶场（授权实验室）",
+            "client": "InkBlade 本机 mock 靶场（授权实验室）",
         })
         run = store.create_run(f"effects-{stamp}")
         lab = start_all(mode="vulnerable", root=lab_root)
@@ -320,11 +320,11 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
             checks.run("admin-plane-failopen", "未授权管理面利用：真实 HTTP 200 + 服务端状态文件变更", admin_plane)
 
             def weight_poison() -> dict[str, Any]:
-                marker = f"TRIDENT-{run.name}"
+                marker = f"INKBLADE-{run.name}"
                 safe = _safe_name(f"/checkpoints/victim-{marker}", "checkpoint")
                 victim = lab_root / "slime" / safe / "model.safetensors"
                 victim.parent.mkdir(parents=True, exist_ok=True)
-                original = b"TRIDENT-MOCK-WEIGHTS-ORIGINAL\nseed=weights-copy\n"
+                original = b"INKBLADE-MOCK-WEIGHTS-ORIGINAL\nseed=weights-copy\n"
                 victim.write_bytes(original)
                 before_sha = _sha256_file(victim)
                 state.update({"victim": victim, "original": original, "sha_before": before_sha, "marker": marker})
@@ -395,7 +395,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
             checks.run("backup-rollback", "备份回滚实效：快照 → 投毒 → rollback 后 sha256 与原始完全一致", backup_rollback)
 
             def rce_marker() -> dict[str, Any]:
-                marker = f"TRIDENT-{run.name}"
+                marker = f"INKBLADE-{run.name}"
                 run_module(
                     store, tester, "areal-setenv-engine-rce",
                     {
@@ -457,7 +457,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                 if statuses != {"allocate": 200, "release": 200, "readback": 200, "victim": 200}:
                     raise AssertionError(f"GPU 残留链路状态异常：{statuses}")
                 marker = str((alloc.get("body") or {}).get("marker", ""))
-                if not marker.startswith("TRIDENT-BENIGN-"):
+                if not marker.startswith("INKBLADE-BENIGN-"):
                     raise AssertionError(f"未使用 benign marker：{marker!r}")
                 release_payload = release.get("response") or {}
                 readback_payload = readback.get("response") or {}
@@ -601,7 +601,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                     "POST",
                     {
                         "model": "longctx-mock",
-                        "messages": [{"role": "user", "content": "trident effects window probe"}],
+                        "messages": [{"role": "user", "content": "inkblade effects window probe"}],
                         "context_window": "128k",
                         "prompt_tokens": 200000,
                         "max_tokens": 32,
@@ -639,10 +639,10 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                        longctx_window_overflow)
 
             def longctx_prefix_reuse() -> dict[str, Any]:
-                prefix = f"TRIDENT-PREFIX-{run.name}"
+                prefix = f"INKBLADE-PREFIX-{run.name}"
                 body = {
                     "model": "longctx-mock",
-                    "messages": [{"role": "user", "content": "trident prefix cache probe"}],
+                    "messages": [{"role": "user", "content": "inkblade prefix cache probe"}],
                     "context_window": "128k",
                     "prompt_prefix": prefix,
                     "prefix_tokens": 4096,
@@ -704,7 +704,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                 if not payload.get("found"):
                     raise AssertionError("KV 块读回 not found")
                 value = str(payload.get("value") or "")
-                marker = f"TRIDENT-{run.name}"
+                marker = f"INKBLADE-{run.name}"
                 if marker not in value:
                     raise AssertionError("KV 读回内容不含 run marker")
                 read_sha = _sha256_bytes(value.encode("utf-8"))
@@ -726,13 +726,13 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                        longctx_kv_channel)
 
             def longctx_checkpoint_rollback() -> dict[str, Any]:
-                shard_id = "trident-effects-shard"
+                shard_id = "inkblade-effects-shard"
                 path = checkpoint_shard_path(longctx.root, shard_id)
                 path.parent.mkdir(parents=True, exist_ok=True)
-                original = b"TRIDENT-CHECKPOINT-ORIGINAL\nshard=effects\nepoch=1\n"
+                original = b"INKBLADE-CHECKPOINT-ORIGINAL\nshard=effects\nepoch=1\n"
                 path.write_bytes(original)
                 before_sha = _sha256_file(path)
-                marker = f"TRIDENT-{run.name}"
+                marker = f"INKBLADE-{run.name}"
                 run_module(
                     store, tester, "checkpoint-shard-poison",
                     {
@@ -1113,7 +1113,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                 shutil.copytree(source, target)
                 blob = target / "blobs" / "nvswitch-fw-1.8.2.bin"
                 before = _sha256_file(blob)
-                blob.write_bytes(blob.read_bytes() + b"\nTRIDENT-TAMPER\n")
+                blob.write_bytes(blob.read_bytes() + b"\nINKBLADE-TAMPER\n")
                 after = _sha256_file(blob)
                 if before == after:
                     raise AssertionError("固件 blob 篡改后 sha256 未变化")
@@ -1524,11 +1524,11 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
 
             def chain_e2e() -> dict[str, Any]:
                 chain = copy.deepcopy(load_chains(chains_dir)[TARGET_CHAIN])
-                chain_marker = f"TRIDENT-{chain_run.name}"
+                chain_marker = f"INKBLADE-{chain_run.name}"
                 safe = _safe_name(f"/checkpoints/victim-{chain_marker}", "checkpoint")
                 chain_victim = lab_root / "slime" / safe / "model.safetensors"
                 chain_victim.parent.mkdir(parents=True, exist_ok=True)
-                chain_victim.write_bytes(b"TRIDENT-CHAIN-WEIGHTS-ORIGINAL\n")
+                chain_victim.write_bytes(b"INKBLADE-CHAIN-WEIGHTS-ORIGINAL\n")
                 chain_before = _sha256_file(chain_victim)
                 for step in chain["steps"]:
                     step.setdefault("params", {})["target"] = lab.url("")
@@ -1593,7 +1593,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                 original = b'{"shard": "ckpt-optim-effects", "step": 1, "exp_avg_norm": 0.5}\n'
                 path.write_bytes(original)
                 before_sha = _sha256_file(path)
-                marker = f"TRIDENT-{run.name}"
+                marker = f"INKBLADE-{run.name}"
                 run_module(
                     store, tester, "checkpoint-optimizer-state-poison",
                     {
@@ -1714,7 +1714,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
                 path = trainstack_template(trainstack.root)
                 original = path.read_bytes()
                 before_sha = _sha256_file(path)
-                marker = f"TRIDENT-{run.name}"
+                marker = f"INKBLADE-{run.name}"
                 run_module(
                     store, tester, "tokenizer-template-injection",
                     {
@@ -1992,7 +1992,7 @@ def run_verification(out_dir: Path | str, write_docs: bool = True) -> dict[str, 
 
 def _md_table(result: dict[str, Any]) -> list[str]:
     lines = [
-        "# Trident 实效验证报告（Effect Verification）",
+        "# InkBlade 实效验证报告（Effect Verification）",
         "",
         f"- 生成时间：{result['generated_at']}",
         f"- 验证 Run：`{result['run']}`；链 Run：`{result['chain_run']}`",
@@ -2040,7 +2040,7 @@ def _md_table(result: dict[str, Any]) -> list[str]:
         "## 复现命令",
         "",
         "```bash",
-        "python -m trident.verify-effects --out reports/samples/effects/",
+        "python -m inkblade.verify-effects --out reports/samples/effects/",
         "python -m unittest tests.test_verify_effects -v",
         "```",
         "",
@@ -2064,7 +2064,7 @@ def main(argv: list[str] | None = None) -> int:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     except Exception:  # noqa: BLE001
         pass
-    parser = argparse.ArgumentParser(description="Trident 实效验证（本机真实 HTTP，仅 127.0.0.1）")
+    parser = argparse.ArgumentParser(description="InkBlade 实效验证（本机真实 HTTP，仅 127.0.0.1）")
     parser.add_argument("--out", default=str(REPO_ROOT / "reports" / "samples" / "effects"),
                         help="输出目录（effects.json + effects.md）")
     parser.add_argument("--no-docs", action="store_true", help="不写 docs/EFFECT-VERIFICATION.md")

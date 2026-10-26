@@ -5,10 +5,10 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.discovery import AssetInventory
-from trident.core.evidence import EvidenceStore
-from trident.core.graphsnap import GraphSnapError, GraphSnapshots, build
-from trident.core.users import Session
+from inkblade.core.discovery import AssetInventory
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.graphsnap import GraphSnapError, GraphSnapshots, build
+from inkblade.core.users import Session
 
 
 def _session(role="lead"):

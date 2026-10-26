@@ -36,7 +36,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-llamafactory-loader-py-missing-revision-l104-regex",
+ "marker_text": "INKBLADE-UV-llamafactory-loader-py-missing-revision-l104-regex",
  "notes": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive.",
  "static_evidence_level": "source-line",
  "static_analysis": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive.",
@@ -52,7 +52,7 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "llamafactory",
  "static_blocker": {
   "category": "hygiene-not-exploitable",

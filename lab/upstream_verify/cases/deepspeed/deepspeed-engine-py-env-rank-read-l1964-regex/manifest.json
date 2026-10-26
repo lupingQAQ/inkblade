@@ -36,7 +36,7 @@
  "module": null,
  "python": "reproenv",
  "advisory": "reports/samples/mining-trainstack/mining-report.json",
- "marker_text": "TRIDENT-UV-deepspeed-engine-py-env-rank-read-l1964-regex",
+ "marker_text": "INKBLADE-UV-deepspeed-engine-py-env-rank-read-l1964-regex",
  "notes": "Rule hit is a legitimate framework call; no untrusted-data sink is reached.",
  "static_evidence_level": "source-line",
  "static_analysis": "Rule hit is a legitimate framework call; no untrusted-data sink is reached.",
@@ -52,7 +52,7 @@
   "original_status": "pending-manual-review",
   "promoted": false
  },
- "schema": "trident-upstream-case-v1",
+ "schema": "inkblade-upstream-case-v1",
  "component": "deepspeed",
  "static_blocker": {
   "category": "hygiene-not-exploitable",

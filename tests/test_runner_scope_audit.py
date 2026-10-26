@@ -12,11 +12,11 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.evidence import EvidenceStore
-from trident.core.roe import ExecutionLocked, init_roe
-from trident.core.runner import BackupGateRefused, run_module
-from trident.core.users import UserStore
-from trident.core.zeroday import ZerodayLocked, enable, zeroday_enabled
+from inkblade.core.evidence import EvidenceStore
+from inkblade.core.roe import ExecutionLocked, init_roe
+from inkblade.core.runner import BackupGateRefused, run_module
+from inkblade.core.users import UserStore
+from inkblade.core.zeroday import ZerodayLocked, enable, zeroday_enabled
 
 
 def _fixture_module(root: Path, key: str, *, writes=False, fail=False, private=False,

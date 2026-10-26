@@ -12,7 +12,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from trident.core.journal import Journal, JournalError
+from inkblade.core.journal import Journal, JournalError
 
 
 class JournalAppendTest(unittest.TestCase):

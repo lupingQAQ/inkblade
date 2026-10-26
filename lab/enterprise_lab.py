@@ -32,12 +32,12 @@ REPO = Path(__file__).resolve().parents[1]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from trident.core import auditlog  # noqa: E402
-from trident.core import baseline as baseline_mod  # noqa: E402
-from trident.core.evidence import EvidenceStore  # noqa: E402
-from trident.core.roe import init_roe  # noqa: E402
-from trident.core.runner import run_module  # noqa: E402
-from trident.core.users import Session  # noqa: E402
+from inkblade.core import auditlog  # noqa: E402
+from inkblade.core import baseline as baseline_mod  # noqa: E402
+from inkblade.core.evidence import EvidenceStore  # noqa: E402
+from inkblade.core.roe import init_roe  # noqa: E402
+from inkblade.core.runner import run_module  # noqa: E402
+from inkblade.core.users import Session  # noqa: E402
 
 FIXTURE_DIR = REPO / "lab" / "enterprise-fixtures"
 REPLAY_DIR = REPO / "reports" / "samples" / "enterprise-lab"
@@ -199,7 +199,7 @@ def _learned_subjects(events: list[dict]) -> list[dict]:
 
 def _recon_findings(snapshot: dict) -> list[dict]:
     context = str(snapshot.get("context") or "")
-    with tempfile.TemporaryDirectory(prefix="trident-enterprise-lab-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="inkblade-enterprise-lab-") as tmp:
         store = EvidenceStore(Path(tmp), workspace="enterprise-lab")
         init_roe(store, fields={
             "level": "只读侦察",
@@ -212,7 +212,7 @@ def _recon_findings(snapshot: dict) -> list[dict]:
         for module in MODULES:
             try:
                 run_module(store, session, module, {"snapshot": snapshot},
-                           REPO / "trident" / "modules", run=run)
+                           REPO / "inkblade" / "modules", run=run)
             except Exception as exc:  # noqa: BLE001 - fixture 评测必须显式失败而非假绿
                 raise RuntimeError(f"fixture 模块执行失败 {module}: {exc}") from exc
         findings = [_normalize_finding(f) for f in run.findings]
@@ -402,9 +402,9 @@ def run_suite(*, write: bool = True) -> dict:
                "fn_rate": round(totals["fn"] / totals["risk_items"], 4)
                           if totals["risk_items"] else 0.0}
     results = {
-        "schema": "trident-enterprise-lab/2",
+        "schema": "inkblade-enterprise-lab/2",
         "generated_at": _now(),
-        "tool": "trident",
+        "tool": "inkblade",
         "source": "fixture",
         "fixture": str(FIXTURE_DIR.relative_to(REPO)).replace("\\", "/"),
         "metric_definition": {
@@ -414,7 +414,7 @@ def run_suite(*, write: bool = True) -> dict:
             "labels": "ground-truth.json 固化（本版本把已补检测器的 __not_detected__ 占位锚点落位为证据锚，risk/benign 判定不变）",
         },
         "baseline": {
-            "module": "trident/core/baseline.py",
+            "module": "inkblade/core/baseline.py",
             "classes": ["CI 服务账号", "安全扫描器", "平台控制器/调度器", "系统绑定",
                         "平台命名空间", "平台工作负载三元组(ns,SA,image)"],
             "learning": "时间切分：前 340 条历史事件 → 主体×动作形态频次(≥50)+仅 2xx；高危形态永不学习",
@@ -562,7 +562,7 @@ def render_md(results: dict) -> str:
     lines += [f"- {g}" for g in results["gaps"]]
     lines += [
         "- 调优路径 1（已落地）：CI/扫描器/控制器/系统绑定/平台命名空间/工作负载三元组实体基线"
-        "（`trident/core/baseline.py`，抑制留痕可审计，客户环境需重审批）。",
+        "（`inkblade/core/baseline.py`，抑制留痕可审计，客户环境需重审批）。",
         "- 调优路径 2（已落地）：学习模式从历史事件流/run 生成 allowlist 候选（仅 2xx、"
         "高危形态永不学习、lead 审批后合并）。",
         "- 调优路径 3（已落地）：补齐 serviceaccounts/token 与 pods/portforward 检测器 + "

@@ -7,7 +7,7 @@
     {
       "name": "ray-system",
       "namespace": "ray-system",
-      "label": "trident-io-zone",
+      "label": "inkblade-io-zone",
       "allow_ingress_from": ["ml-training", "admin-bastion"],
       "allow_egress_to": ["ml-training", "ml-inference", "monitoring"],
       "ports": [8265, 10001, 6379]
@@ -15,7 +15,7 @@
     {
       "name": "ml-training",
       "namespace": "ml-training",
-      "label": "trident-io-zone",
+      "label": "inkblade-io-zone",
       "allow_ingress_from": ["ray-system", "ml-training", "admin-bastion"],
       "allow_egress_to": ["ray-system", "ml-inference", "monitoring"],
       "ports": [29400, 29500, 29501, 29511, 45678]
@@ -23,7 +23,7 @@
     {
       "name": "ml-inference",
       "namespace": "ml-inference",
-      "label": "trident-io-zone",
+      "label": "inkblade-io-zone",
       "allow_ingress_from": ["monitoring", "admin-bastion"],
       "allow_egress_to": ["ray-system", "monitoring"],
       "ports": [30000, 9000, 8000]
@@ -31,7 +31,7 @@
     {
       "name": "monitoring",
       "namespace": "monitoring",
-      "label": "trident-io-zone",
+      "label": "inkblade-io-zone",
       "allow_ingress_from": ["admin-bastion"],
       "allow_egress_to": ["ray-system", "ml-training", "ml-inference"],
       "ports": [9090, 9092]
@@ -39,7 +39,7 @@
     {
       "name": "ml-agent",
       "namespace": "ml-agent",
-      "label": "trident-io-zone",
+      "label": "inkblade-io-zone",
       "allow_ingress_from": ["admin-bastion"],
       "allow_egress_to": [],
       "ports": [80, 8080]
