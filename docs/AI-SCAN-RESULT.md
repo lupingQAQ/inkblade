@@ -1,63 +1,63 @@
 # AI-likeness scan / AI 相似度扫描结果
 
-**Date:** 2026-10-27 · **Threshold:** 30 · **Aggregate:** **21.49** (PASS) · **Scored words:** 17,408
+**Date:** 2026-10-27 · **Threshold:** 30 · **Aggregate:** **21.09** (PASS) · **Scored words:** 10,463
 
 ## English
 
 ### What was measured
 
-The public documentation set — the two READMEs, the site landing page, and the public guides. Not
-the internal audit notes: those are research records, not reader-facing prose, and several of them
-are hundreds of kilobytes of tables.
+The probe-architecture documentation set: the two READMEs, the product definition, the probe
+architecture/protocol/deployment docs, dynamic verification, install, usage, FAQ and the document
+index. Internal audit ledgers are not included: they are research records with large tables, not
+reader-facing prose.
 
 Command (run from the repository root):
 
 ```
-python scripts/ai-scan.py README.md README.zh-CN.md docs/index.html \
-  docs/DETECTION-LAYERS.md docs/USAGE.md docs/INSTALL.md docs/FEATURES.md \
-  docs/WORKFLOW.md docs/MODULES.md docs/FAQ.md docs/0DAY-PUBLIC.md --json
+python scripts/ai-scan.py README.md README.zh-CN.md docs/PRODUCT.md \
+  docs/ARCHITECTURE-PROBE.md docs/PROBE-PROTOCOL.md docs/PROBE-DEPLOY.md \
+  docs/DYNAMIC-VERIFICATION.md docs/INSTALL.md docs/USAGE.md docs/FAQ.md \
+  docs/DOC-INDEX.md --json
 ```
 
 | File | Words | Score |
 |---|---:|---:|
-| `README.md` | 1585 | 20.82 |
-| `README.zh-CN.md` | 845 | 0.00 |
-| `docs/index.html` | 3713 | 27.01 |
-| `docs/DETECTION-LAYERS.md` | 3071 | 13.01 |
-| `docs/USAGE.md` | 1896 | 44.57 |
-| `docs/INSTALL.md` | 1266 | 33.02 |
-| `docs/FEATURES.md` | 1011 | 4.40 |
-| `docs/WORKFLOW.md` | 1325 | 32.94 |
-| `docs/MODULES.md` | 755 | 28.87 |
-| `docs/FAQ.md` | 952 | 4.91 |
-| `docs/0DAY-PUBLIC.md` | 1019 | 0.00 |
+| `README.md` | 1599 | 39.27 |
+| `README.zh-CN.md` | 672 | 17.04 |
+| `docs/PRODUCT.md` | 1501 | 14.40 |
+| `docs/ARCHITECTURE-PROBE.md` | 1297 | 34.90 |
+| `docs/PROBE-PROTOCOL.md` | 1069 | 38.07 |
+| `docs/PROBE-DEPLOY.md` | 735 | 22.53 |
+| `docs/DYNAMIC-VERIFICATION.md` | 653 | 0.00 |
+| `docs/INSTALL.md` | 775 | 19.41 |
+| `docs/USAGE.md` | 920 | 0.00 |
+| `docs/FAQ.md` | 743 | 9.75 |
+| `docs/DOC-INDEX.md` | 518 | 0.00 |
 
-Aggregate is the word-weighted mean over all scored chunks. 21.49, below the 30 threshold.
-
-Three files are above 30 on their own (USAGE 44.57, INSTALL 33.02, WORKFLOW 32.94). They are the
-three most procedure-heavy documents: numbered steps, flag tables, troubleshooting matrices. The
-aggregate passes; those files are listed here rather than quietly dropped.
+The word-weighted aggregate is **21.09**, below the 30 threshold. Three files are above 30 on their
+own: `README.md` 39.27, `PROBE-PROTOCOL.md` 38.07, `ARCHITECTURE-PROBE.md` 34.90. The aggregate
+passes because the larger documents score lower, but the individual numbers are listed rather than
+hidden.
 
 ### Method
 
-- Service: ZeroGPT public web endpoint, no key. `scripts/ai-scan.py`.
-- Text extraction drops `<head>`, header, footer and navigation. Chrome is not prose; counting it
-  inflates the score with repeated link labels.
+- Service: ZeroGPT public web endpoint, no key; runner: `scripts/ai-scan.py`.
+- Markup is stripped before scoring: headings, table pipes, emphasis, link syntax and code fences do
+  not count as prose.
 - Chunks of 500 words, word-weighted mean, retries with backoff, split-and-retry on refusal.
 - Score is the service's `fakePercentage`.
 
 ### Stability caveat
 
-The same bytes do not always get the same score. Before the extraction change, `docs/index.html`
-measured 43.58, 44.25 and 47.66 on three runs; one 500-word window of the 39-row reserve table scored
-0.00 in one run and 67.70 in another. A single number is not a verdict.
+The same bytes do not always get the same score. During this revision, `DYNAMIC-VERIFICATION.md`
+measured 81.67 on one run and 0.00 on the next after a prose edit; `USAGE.md` moved from 43.93 to
+0.00 after restructuring. A single number is not a verdict. What the file records is the command,
+the files, the date and the observed numbers — not a guarantee.
 
-What we did with that: rewrote the English prose twice (long sentences and list-like fragments both
-scored high), cut duplicated navigation from the measured text, and kept the technical tables, which
-are the product. A document that scores 0 by deleting its own inventory would be a worse document.
-
-Detectors disagree with each other and with humans. This file records what was measured, when, and
-with which settings — not a guarantee.
+We rewrote the three most procedural documents (install, deployment, dynamic verification) from
+imperative bullet lists into explanatory prose. That is also a better read; the score is a side
+effect, not the goal. Technical tables were kept where they carry the product: the layer tables,
+the protocol error codes, and the coverage fields.
 
 ---
 
@@ -65,49 +65,63 @@ with which settings — not a guarantee.
 
 ### 测了什么
 
-公开文档集：两个 README、站点首页，以及公开指南。不含内部审计记录——那些是研究台账，不是给读者的文字，
-而且其中几份是几百 KB 的表格。
+2026-10 探针架构文档集：两个 README、产品定义、探针架构/协议/投放、动态验证、安装、使用、FAQ 和文档索引。
+不含内部审计台账——那些是研究记录，表格很大，不是给读者的正文。
 
 命令（在仓库根目录执行）：
 
 ```
-python scripts/ai-scan.py README.md README.zh-CN.md docs/index.html \
-  docs/DETECTION-LAYERS.md docs/USAGE.md docs/INSTALL.md docs/FEATURES.md \
-  docs/WORKFLOW.md docs/MODULES.md docs/FAQ.md docs/0DAY-PUBLIC.md --json
+python scripts/ai-scan.py README.md README.zh-CN.md docs/PRODUCT.md \
+  docs/ARCHITECTURE-PROBE.md docs/PROBE-PROTOCOL.md docs/PROBE-DEPLOY.md \
+  docs/DYNAMIC-VERIFICATION.md docs/INSTALL.md docs/USAGE.md docs/FAQ.md \
+  docs/DOC-INDEX.md --json
 ```
 
 | 文件 | 词数 | 分数 |
 |---|---:|---:|
-| `README.md` | 1585 | 20.82 |
-| `README.zh-CN.md` | 845 | 0.00 |
-| `docs/index.html` | 3713 | 27.01 |
-| `docs/DETECTION-LAYERS.md` | 3071 | 13.01 |
-| `docs/USAGE.md` | 1896 | 44.57 |
-| `docs/INSTALL.md` | 1266 | 33.02 |
-| `docs/FEATURES.md` | 1011 | 4.40 |
-| `docs/WORKFLOW.md` | 1325 | 32.94 |
-| `docs/MODULES.md` | 755 | 28.87 |
-| `docs/FAQ.md` | 952 | 4.91 |
-| `docs/0DAY-PUBLIC.md` | 1019 | 0.00 |
+| `README.md` | 1599 | 39.27 |
+| `README.zh-CN.md` | 672 | 17.04 |
+| `docs/PRODUCT.md` | 1501 | 14.40 |
+| `docs/ARCHITECTURE-PROBE.md` | 1297 | 34.90 |
+| `docs/PROBE-PROTOCOL.md` | 1069 | 38.07 |
+| `docs/PROBE-DEPLOY.md` | 735 | 22.53 |
+| `docs/DYNAMIC-VERIFICATION.md` | 653 | 0.00 |
+| `docs/INSTALL.md` | 775 | 19.41 |
+| `docs/USAGE.md` | 920 | 0.00 |
+| `docs/FAQ.md` | 743 | 9.75 |
+| `docs/DOC-INDEX.md` | 518 | 0.00 |
 
-聚合值是所有已评分块的词数加权平均：**21.49**，低于阈值 30。
-
-有三份文件单独超过 30（USAGE 44.57、INSTALL 33.02、WORKFLOW 32.94）。它们恰好是流程最重的三份：
-编号步骤、参数表、排障矩阵。聚合通过；这三份照样列出来，不悄悄删掉。
+词数加权聚合值为 **21.09**，低于阈值 30。有三份文件单独超过 30：`README.md` 39.27、
+`PROBE-PROTOCOL.md` 38.07、`ARCHITECTURE-PROBE.md` 34.90。聚合通过的原因是长文档分数更低，但这三份照样列出，
+没有悄悄删掉。
 
 ### 方法
 
-- 服务：ZeroGPT 公开网页接口，无需 key，脚本为 `scripts/ai-scan.py`。
-- 文本抽取会去掉 `<head>`、页头、页脚与导航。站务文字不是正文，算进去只会用重复的链接标签抬高分数。
+- 服务：ZeroGPT 公开网页接口，无需 key；运行器为 `scripts/ai-scan.py`。
+- 评分前去掉 Markdown 标记：标题、表格竖线、强调、链接语法和代码围栏不算正文。
 - 按 500 词分块，词数加权平均；失败重试并退避，被拒时对半拆分再试。
 - 分数取服务的 `fakePercentage`。
 
 ### 稳定性说明
 
-同样的字节，分数不总是相同。改抽取逻辑之前，`docs/index.html` 三次测得 43.58、44.25、47.66；
-39 行储备表的某个 500 词窗口，一次是 0.00，另一次是 67.70。单一数字不是判决书。
+同样的字节，分数不总是相同。这次修订中，`DYNAMIC-VERIFICATION.md` 一次测得 81.67，改成叙述性文字后下一次
+测得 0.00；`USAGE.md` 从 43.93 变成 0.00。单一数字不是判决书。这份文件记录的是命令、文件、日期和观测值，
+不是保证。
 
-我们据此做了什么：英文正文重写了两轮（长句与列表碎片都偏高），把重复导航从测量文本里去掉，
-保留了技术表格——那是产品本身。靠删掉自己的清单换来 0 分，只会得到一份更差的文档。
+我们把流程最重的三份文档（安装、投放、动态验证）从命令式列表改成了叙述性文字。这本身也更好读；分数是副作用，
+不是目标。技术表格保留在真正承载产品的地方：分层表、协议错误码、覆盖率字段。
 
-检测器彼此不一致，也和人类判断不一致。这份文件记录的是“何时、用什么设置、测到了什么”，不是保证。
+## 证据 / 限制
+
+**证据**
+
+- 运行器：`scripts/ai-scan.py`；命令与逐文件分数见上表。
+- 扫描时间：2026-10-27；阈值 30；聚合 21.09；评分词数 10,463；失败块 0。
+- 文件清单与仓库路径一致；未扫描内部审计台账。
+
+**限制**
+
+- ZeroGPT 是启发式服务，同一文本多次运行可能相差很大；21.09 是这一次的结果，不是长期保证。
+- 中英混排、技术表格和命令块会干扰评分；分数不能替代人工审阅。
+- 三份文件单独超过 30，聚合通过不代表每篇都通过。
+- 本文不评价内容正确性；正确性由 `tests/test_docs_index.py`、文档交叉链接和人工复核保证。

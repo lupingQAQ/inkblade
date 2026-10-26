@@ -156,7 +156,7 @@ Read-only is the default. Writes require five things at once: signed authorizati
 
 **限制**
 
-- `probe/src/main.rs` 与 `--listen/--unix` 的 CLI 接线尚未完成；本文是投放契约，不是“所有方式已实测”的宣称。
+- `probe/src/main.rs` 与 `--listen/--unix` 的 CLI 接线已落地，边界行为仍在收尾；本文是投放契约，不是“所有方式已实测”的宣称。
 - memfd 路径在当前构建中仍是设计项；已实现的是 base64 → 文件 → 校验 → chmod。
 - `kubectl cp` 依赖目标容器有 `tar`；没有 `tar` 时必须换方式。
 - EphemeralContainer 不共享目标容器的文件系统；需要显式挂载或进程命名空间配置。

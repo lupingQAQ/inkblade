@@ -102,7 +102,7 @@ for lists). Missing values are `null`; never invent values.
 
 ```powershell
 $env:PYTHONPATH='.'
-$py = "D:\llm-audit-2026-10\env\reproenv-d\Scripts\python.exe"
+$py = "python"
 & $py tools/template-lint.py
 & $py tools/template-run.py --module <key> --fixture <path>
 & $py -m unittest tests.test_probe_<batch> -v

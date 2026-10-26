@@ -38,8 +38,8 @@ Python、不需要 shell、不下发模块代码。
 | 9. 跨组合层 | 两个或三个组件同时成立才有的问题；只在组合上报一次 | `vllm-plugin-auth-bypass` + `sglang-weight-exfil`、`imex-computedomain-gpu-memory-crossing`、`long-context-cache-leak` |
 | 10. 防护绕过层 | HIDS、运行时策略、准入、镜像扫描、主机代理、WAF、流量可视化是否看得见良性授权行为 | `defense-bypass-elkeid`、`defense-bypass-falco`、`defense-bypass-admission`、`defense-bypass-waf-inference` |
 
-逐层四列表（检测点、为何独有、模块/模板键、证据产出）：[`docs/DETECTION-LAYERS.md`](docs/DETECTION-LAYERS.md)
-与 [`docs/PRODUCT.md`](docs/PRODUCT.md)。
+逐层四列表（检测点、为何独有、模块/模板键、证据产出）见 [`docs/PRODUCT.md`](docs/PRODUCT.md)；
+前九层的完整版见 [`docs/DETECTION-LAYERS.md`](docs/DETECTION-LAYERS.md)。
 
 ## 防护绕过与检测对抗
 
@@ -75,6 +75,16 @@ Python、不需要 shell、不下发模块代码。
 - **规则可重放。** 准入、运行时、网络三类规则包，输出拦截/检出/漏过矩阵。
 - **无遥测。** 不要账号、不要云密钥、没有许可服务器。
 
+## 成熟度
+
+| 档位 | 范围 | 状态 |
+|---|---|---|
+| demo | mock 靶场与离线报告 | 探针架构不提供。mock 跑通只代表模板验证，不是客户结论。 |
+| 试点 | 授权只读：一个 namespace、一个 Pod、一个模板，再扩到按层扫描 | 推荐的第一次项目形态；证据与限制都写清楚。 |
+| 生产 | 完整链、企业集成、HA、on-call | 暂不建议。没有厂商 SLA，也没有认证。 |
+
+禁止宣称：不承诺零误报、不承诺全覆盖、不宣称“生产认证”、不宣称“不可检测”。任何数字都要带任务集、版本和日期。
+
 ## 快速开始
 
 产品路径是 `doctor → session → probe → exec/scan → report`。
@@ -105,7 +115,7 @@ python -m inkblade scan --session pilot-01 --profile ray-vllm --layers 1,3,5
 python -m inkblade report --session pilot-01 --lang bi
 ```
 
-没有 demo/trial 路径：session 需要授权目标和签署记录。2026-10 探针迁移进行中，`doctor` 会报告实际可用的命令面；
+没有 demo/trial 路径：session 需要授权目标和签署记录。2026-10 探针迁移进入收尾，`doctor` 会报告实际可用的命令面；
 当前完成度见 [`docs/DYNAMIC-VERIFICATION.md`](docs/DYNAMIC-VERIFICATION.md)。
 
 ## 命令表
@@ -146,18 +156,20 @@ python -m inkblade report --session pilot-01 --lang bi
 - 模板 schema：`probe/schema/probe-template.schema.json`；参考评估器：`inkblade/tpl/engine.py`（仅 mock/CI，
   默认拒绝运行）。
 - 防护绕过评估：`inkblade/core/defenseprobe.py` 与 11 个 `inkblade/modules/defense-bypass-*` 模块。
-- 当前计数：287 个模块目录、29 条链、11 个防护绕过模块。迁移状态：`template.json` 0 个、`run.py` 286 个；
-  注册表已强制模板。
+- 当前计数：287 个模块目录（286 个模板 + 1 个 bootstrap）、29 条链、11 个防护绕过模块。迁移窗口内仍有
+  286 个旧 `run.py`，发布前必须删除；注册表在过渡期忽略它们。
+- Rust 运行时动态验证仍为 0。覆盖率报告里的 286/286 两态结果使用 `runtime=reference`；它们能验证模板逻辑，
+  不能当作探针证据。
 
 **限制**
 
-- 2026-10 迁移进行中。探针 CLI 与 `session/probe/exec/scan` 命令面尚未完成；本 README 描述目标契约，并标注当前状态。
+- 2026-10 迁移进入收尾。探针 CLI 与 `session/probe/exec/scan` 命令面仍在完成中；本 README 描述目标契约，并标注当前状态。
 - 防护绕过模块仍使用 Python 参考评估，不计入 Rust 模板覆盖率。
 - 厂商盲区只对被测版本/配置成立；盲区不等于“该产品可被绕过”。
 - 良性 marker 证明“可见性”，不证明“恶意行为不可见”。产品不提供恶意载荷、持久化或规避执法。
 - 需要特权 Pod、hostNetwork、GPU 或节点访问的检测点，没有对应部署面时返回 `skipped` 或 `blocked`，永不写成 `verified`。
 
-## AI 生成内容披露
+## AI 辅助说明
 
 本 README 与部分文档由 AI 辅助起草，再由人工维护者编辑：跑了命令、对着代码与生成的报告核了数字，
 删掉了复现不了的说法。
@@ -165,4 +177,4 @@ python -m inkblade report --session pilot-01 --lang bi
 检测器彼此不一致，也和人类判断不一致，所以这里不声明“检测率”。读着像机器写的句子，多半最初就是那么来的；
 数字不对就是 bug。
 
-代码、manifest、规则包与证据产物来自软件本身；以上披露只针对文字。
+代码、manifest、规则包与证据产物来自软件本身；以上说明只针对文字。

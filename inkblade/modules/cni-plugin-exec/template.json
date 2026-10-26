@@ -13,18 +13,16 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
     "fixture": {
-      "from": "params.fixture",
-      "required": true,
-      "description": "Collected snapshot / fixture path"
+      "from": "coalesce(params.fixture, params.snapshot)",
+      "required": true
     }
   },
   "defaults": {
-    "timeout_ms": 8000,
-    "tls_verify": false
+    "timeout_ms": 8000
   },
   "steps": [
     {
@@ -33,8 +31,7 @@
       "action": "read",
       "path": "{{input.fixture}}",
       "json": true,
-      "save": "snapshot",
-      "allow_failure": false
+      "save": "snapshot"
     }
   ],
   "checks": [
@@ -45,31 +42,38 @@
       "message": "snapshot is not readable JSON"
     }
   ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN"
+    }
+  },
+  "limits": {
+    "timeout_ms": 30000,
+    "max_http_requests": 8
+  },
+  "computed": {
+    "cni": "filter(steps.snapshot.json.daemonsets, (contains(lower(it.name), 'calico') or contains(lower(it.name), 'cilium') or contains(lower(it.name), 'cni') or contains(str(it.hostPath), '/opt/cni/bin')) and (it.privileged == true or contains(str(it.hostPath), '/opt/cni/bin')))"
+  },
   "findings": [
     {
-      "id": "observed",
-      "when": "steps.snapshot.exists == true",
-      "sev": "info",
-      "title": "CNI 插件执行面：部署面已观测",
-      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
-      "evidence": "steps"
+      "id": "cni",
+      "for_each": "computed.cni",
+      "as": "ds",
+      "sev": "critical",
+      "title": "CNI 插件执行面：{{ds.name}}",
+      "detail": "privileged={{ds.privileged}} hostPath={{str(ds.hostPath)}}；CNI 以节点 root 运行，替换二进制/注入 hook 可在所有节点执行。",
+      "evidence": "daemonset={{ds.name}} sa={{ds.serviceAccount}}",
+      "mapping": "提权矩阵 platform-cni-plugin；CNI 规范",
+      "fix": "CNI 镜像签名+只读根；/opt/cni/bin 仅 kubelet 可写；daemonset 变更双人审批"
     }
   ],
   "artifacts": [
     {
-      "name": "cni-plugin-exec-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "cni-plugin-exec-detection.json",
+      "kind": "json",
+      "fields": {
+        "cni": "map(computed.cni, it.name)"
+      }
     }
-  ],
-  "payloads": {
-    "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
-    }
-  },
-  "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
-  }
+  ]
 }

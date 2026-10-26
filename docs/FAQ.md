@@ -42,7 +42,7 @@
 
 ### 287 个模块都迁移完了吗？
 
-没有。截至 2026-10-27，287 个模块目录中 `template.json` 为 0，迁移进行中。注册表已经强制模板，所以当前分支不能加载旧模块；这是架构切换的中间态。完成度看 `docs/DYNAMIC-VERIFICATION.md`，不看宣传页。
+模板迁移进入收尾，但还不能说“全部完成”。截至 2026-10-27，287 个模块目录中有 286 个 `template.json` 和 1 个 `probe-bootstrap`；迁移窗口内仍保留 286 个旧 `run.py`，发布前要删除。参考评估器已经跑完 286/286 两态，但证据是 `runtime=reference`；按 Rust 运行时标准，动态验证仍为 0。完成度看 `docs/DYNAMIC-VERIFICATION.md`，不看宣传页。
 
 ### 动态验证是什么？
 
@@ -126,7 +126,7 @@ Yes. It does not hide processes, connections, file writes, or kubelet audit. The
 
 ### Are 287 modules migrated?
 
-No. As of 2026-10-27 there are 287 module directories and zero `template.json`; the registry already requires templates. The migration is in progress. See `docs/DYNAMIC-VERIFICATION.md`.
+The template migration is in its final window, but it is not “all done”. As of 2026-10-27 there are 287 module directories: 286 `template.json` files and one `probe-bootstrap`. The migration window still contains 286 legacy `run.py` files that must be removed before release. The reference evaluator has two-state results for 286/286, but every entry is `runtime=reference`; Rust-runtime verification is still zero. See `docs/DYNAMIC-VERIFICATION.md`.
 
 ### What counts as verified?
 
@@ -156,7 +156,7 @@ Apache-2.0 permits commercial use and forks; keep `LICENSE` and `NOTICE`, and do
 
 **限制**
 
-- 迁移进行中；命令面与模块数量会变，以 `doctor` 和覆盖率表为准。
+- 迁移进入收尾；命令面与模块数量会变，以 `doctor` 和覆盖率表为准。
 - 探针只支持 Linux；控制端可以跨平台。
 - 防护产品盲区只对被测版本/配置成立，不外推。
 - 良性 marker 不能证明恶意行为不可见；产品不提供恶意载荷。

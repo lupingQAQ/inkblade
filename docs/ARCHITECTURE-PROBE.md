@@ -254,9 +254,9 @@ parent (probe-a, pod A)
 | k8s list/get/exec/copy | 已实现（exec/copy 依赖 kubectl） | `probe/src/k8s.rs` |
 | 子探针物化与启动 | 已实现 | `probe/src/spawn.rs` |
 | 快照采集 | 已实现 | `probe/src/collect.rs` |
-| 模板解释器（Rust） | 进行中 | `probe/src/` 持续补齐 |
-| 协议服务 / CLI 入口 | 进行中 | `probe/src/main.rs` |
-| 287 个模块模板化 | 进行中 | `inkblade/modules/*/template.json` |
+| 模板解释器（Rust） | 已落地 | `probe/src/template.rs` |
+| 协议服务 / CLI 入口 | 已落地，收尾中 | `probe/src/main.rs`、`probe/src/server.rs` |
+| 287 个模块模板化 | 收尾中 | 286 个 `template.json` + 1 个 bootstrap；迁移窗口内 286 个 `run.py` 待删除 |
 
 迁移中间态：注册表已经强制 `template.json`，但模块目录尚未全部迁移；当前分支不能加载旧模块。这是架构修订的过渡状态，不是发布状态。完成标准见 `docs/DYNAMIC-VERIFICATION.md`。
 
@@ -277,8 +277,8 @@ The Python controller owns consent, scope, template selection, budgets, evidence
 
 **限制**
 
-- `probe/src/main.rs` 与协议服务尚未完成；当前文档是架构契约，不是“全部已跑通”的宣称。
+- `probe/src/main.rs` 与协议服务已落地，CLI 边界行为仍在收尾；当前文档是架构契约，不是“全部已跑通”的宣称。
 - `k8s exec/copy` 需要目标镜像内有 `kubectl`；没有时只支持 API 读写，不提供流式 exec。
 - `socks` 不提供认证；对外绑定必须由控制端显式授权并限制网段。
-- 模板解释器与 Rust 引擎的行为一致性由 `docs/DYNAMIC-VERIFICATION.md` 的两态测试保证；在迁移完成前，参考评估器的结果不能当作 Rust 探针结果。
+- 模板解释器与 Rust 引擎的行为一致性由 `docs/DYNAMIC-VERIFICATION.md` 的两态测试保证；当前 286/286 证据是参考评估器（`runtime=reference`），不能当作 Rust 探针结果。
 - 探针不提供内核级隔离；它依赖 Pod 的 namespace、cgroup、SA 和宿主的既有隔离。目标 Pod 的权限就是探针的权限上限。

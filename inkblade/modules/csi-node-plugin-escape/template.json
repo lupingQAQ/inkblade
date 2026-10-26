@@ -13,18 +13,16 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
     "fixture": {
-      "from": "params.fixture",
-      "required": true,
-      "description": "Collected snapshot / fixture path"
+      "from": "coalesce(params.fixture, params.snapshot)",
+      "required": true
     }
   },
   "defaults": {
-    "timeout_ms": 8000,
-    "tls_verify": false
+    "timeout_ms": 8000
   },
   "steps": [
     {
@@ -33,8 +31,7 @@
       "action": "read",
       "path": "{{input.fixture}}",
       "json": true,
-      "save": "snapshot",
-      "allow_failure": false
+      "save": "snapshot"
     }
   ],
   "checks": [
@@ -45,31 +42,38 @@
       "message": "snapshot is not readable JSON"
     }
   ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN"
+    }
+  },
+  "limits": {
+    "timeout_ms": 30000,
+    "max_http_requests": 8
+  },
+  "computed": {
+    "csi": "filter(steps.snapshot.json.daemonsets, (contains(lower(it.name), 'csi') or contains(lower(str(it.image)), 'nfsplugin')) and (it.privileged == true or contains(str(it.hostPath), '/var/lib/kubelet') or contains(str(it.hostPath), '/dev')))"
+  },
   "findings": [
     {
-      "id": "observed",
-      "when": "steps.snapshot.exists == true",
-      "sev": "info",
-      "title": "CSI node plugin 逃逸：部署面已观测",
-      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
-      "evidence": "steps"
+      "id": "csi",
+      "for_each": "computed.csi",
+      "as": "ds",
+      "sev": "critical",
+      "title": "CSI node plugin 逃逸面：{{ds.name}}",
+      "detail": "privileged={{ds.privileged}} hostPath={{str(ds.hostPath)}}；插件可读写宿主 kubelet 目录/设备，篡改挂载流程或跨租户读取卷。",
+      "evidence": "daemonset={{ds.name}} sa={{ds.serviceAccount}}",
+      "mapping": "提权矩阵 platform-csi-node-plugin；CSI 规范",
+      "fix": "CSI 插件按最小 hostPath 收敛；启用卷隔离/加密；插件镜像签名与准入校验"
     }
   ],
   "artifacts": [
     {
-      "name": "csi-node-plugin-escape-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "csi-node-plugin-escape-detection.json",
+      "kind": "json",
+      "fields": {
+        "csi": "map(computed.csi, it.name)"
+      }
     }
-  ],
-  "payloads": {
-    "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
-    }
-  },
-  "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
-  }
+  ]
 }

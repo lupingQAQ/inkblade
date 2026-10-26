@@ -180,6 +180,15 @@ class LocalBackend:
                                 "dir": item.is_dir()})
             return {"ok": True, "exists": True, "path": str(root), "entries": entries,
                     "size": len(entries)}
+        if action == "write":
+            content = str(spec.get("content") or "")
+            path.parent.mkdir(parents=True, exist_ok=True)
+            tmp = path.with_suffix(path.suffix + ".tmp")
+            tmp.write_text(content, encoding="utf-8")
+            tmp.replace(path)
+            raw = content.encode("utf-8")
+            return {"ok": True, "exists": True, "path": str(path), "size": len(raw),
+                    "sha256": _sha256(raw), "text": content}
         if not path.exists():
             return {"ok": False, "exists": False, "path": str(path), "error": "not found"}
         if action == "stat":
@@ -190,15 +199,6 @@ class LocalBackend:
             raw = path.read_bytes()[:max_bytes]
             return {"ok": True, "exists": True, "path": str(path), "sha256": _sha256(raw),
                     "size": len(raw)}
-        if action == "write":
-            content = str(spec.get("content") or "")
-            path.parent.mkdir(parents=True, exist_ok=True)
-            tmp = path.with_suffix(path.suffix + ".tmp")
-            tmp.write_text(content, encoding="utf-8")
-            tmp.replace(path)
-            raw = content.encode("utf-8")
-            return {"ok": True, "exists": True, "path": str(path), "size": len(raw),
-                    "sha256": _sha256(raw), "text": content}
         raw = path.read_bytes()[:max_bytes]
         text = raw.decode("utf-8", "replace")
         payload = None

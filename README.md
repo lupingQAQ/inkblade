@@ -42,8 +42,8 @@ describes whether the defenders can see it.
 | 9. Cross-combination | Findings that only exist when two or three components meet; reported once, at the combination | `vllm-plugin-auth-bypass` + `sglang-weight-exfil`, `imex-computedomain-gpu-memory-crossing`, `long-context-cache-leak` |
 | 10. Defense bypass | Whether HIDS, runtime policy, admission, image scan, host agents, WAF and flow visibility see benign authorized activity | `defense-bypass-elkeid`, `defense-bypass-falco`, `defense-bypass-admission`, `defense-bypass-waf-inference` |
 
-Full four-column tables per layer: [`docs/DETECTION-LAYERS.md`](docs/DETECTION-LAYERS.md) and
-[`docs/PRODUCT.md`](docs/PRODUCT.md).
+Full four-column tables for layers 1–9: [`docs/DETECTION-LAYERS.md`](docs/DETECTION-LAYERS.md).
+Layer 10, including the eleven defense-bypass modules: [`docs/PRODUCT.md`](docs/PRODUCT.md).
 
 ## Defense bypass and detection coverage
 
@@ -87,6 +87,16 @@ product ships the rules and the replay matrix, not just a warning that a product
   matrices.
 - **No telemetry.** No account, no cloud key, no licence server.
 
+## Maturity / 成熟度
+
+| Tier | Scope | Status |
+|---|---|---|
+| demo | Mock range and offline reports | Not offered in the probe architecture. A mock run is template validation, not a customer result. |
+| 试点 / pilot | Authorized, read-only: one namespace, one Pod, one template, then layer scan | Recommended first engagement. Evidence and limits are explicit. |
+| 生产 / production | Full chains, enterprise integrations, HA, on-call | Not recommended yet. There is no vendor SLA or certification. |
+
+禁止宣称 / prohibited claims: no “zero false positives”, no “full coverage”, no “production-certified”, no “undetectable”. Every number needs a task set, a version and a date.
+
 ## Quick start
 
 The product path is `doctor → session → probe → exec/scan → report`.
@@ -118,8 +128,8 @@ python -m inkblade report --session pilot-01 --lang bi
 ```
 
 There is no demo or trial path: a session requires an authorized target and a signed consent record.
-The 2026-10 probe migration is in progress; `doctor` reports the command surface that is actually
-available. Current completion is tracked in [`docs/DYNAMIC-VERIFICATION.md`](docs/DYNAMIC-VERIFICATION.md).
+The 2026-10 probe migration is in its final window; `doctor` reports the command surface that is
+actually available. Current completion is tracked in [`docs/DYNAMIC-VERIFICATION.md`](docs/DYNAMIC-VERIFICATION.md).
 
 ## Command map
 
@@ -165,13 +175,17 @@ This README is the English entry point. The Chinese version is
   `inkblade/tpl/engine.py` (mock/CI only, refuses to run unless explicitly enabled).
 - Defense-bypass assessment: `inkblade/core/defenseprobe.py` and 11 `inkblade/modules/defense-bypass-*`
   modules.
-- Current counts: 287 module directories, 29 chains, 11 defense-bypass modules. Migration status:
-  0 `template.json`, 286 `run.py`; the registry already requires templates.
+- Current counts: 287 module directories (286 templates plus one bootstrap), 29 chains, 11
+  defense-bypass modules. Migration window: 286 legacy `run.py` files remain and must be removed
+  before release; the registry already ignores them.
+- Rust-runtime dynamic verification is still 0. The 286/286 two-state results in the coverage
+  report use `runtime=reference`; they are useful for template logic, not for probe evidence.
 
 **Limits**
 
-- The 2026-10 migration is in progress. The probe CLI and the `session/probe/exec/scan` surface are
-  not finished; this README describes the target contract and marks the current state.
+- The 2026-10 migration is in its final window. The probe CLI and the `session/probe/exec/scan`
+  surface are still being finished; this README describes the target contract and marks the current
+  state.
 - The defense-bypass modules still use the Python reference assessment; they are not yet counted as
   Rust template coverage.
 - Vendor blind spots are version- and configuration-specific. A blind spot is not a claim that the
@@ -181,7 +195,7 @@ This README is the English entry point. The Chinese version is
 - Some detection points need privileged Pods, hostNetwork, GPU devices or node access; without that
   surface the template returns `skipped` or `blocked`, never `verified`.
 
-## AI-generated content disclosure
+## AI assistance statement
 
 Parts of this README and the documentation were drafted with AI assistance, then edited by a human
 maintainer who ran the commands, checked the numbers against code and generated reports, and cut
@@ -190,5 +204,5 @@ claims that would not reproduce.
 Detectors disagree with each other and with people, so no detection rate is claimed. If a sentence
 reads like a machine wrote it, it probably started that way. Numbers that look wrong are bugs.
 
-Code, manifests, rule packs and evidence artefacts come from the software; this disclosure covers
+Code, manifests, rule packs and evidence artefacts come from the software; this statement covers
 prose.

@@ -12,6 +12,8 @@
 | [`docs/PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md) | 长度前缀 JSON 帧、认证、任务/结果、预算、文件分块、清理与错误码 |
 | [`docs/PROBE-DEPLOY.md`](PROBE-DEPLOY.md) | RCE/memfd、kubectl cp/exec、EphemeralContainer、共享卷、发布物与写闸门 |
 | [`docs/DYNAMIC-VERIFICATION.md`](DYNAMIC-VERIFICATION.md) | 每个模板的两态 mock 验证标准、证据格式、覆盖率字段与当前完成度 |
+| [`docs/PROBE-COVERAGE.md`](PROBE-COVERAGE.md) | 生成式模板覆盖率表：模块、执行载体、两态结果、证据哈希（注意 `runtime=reference`） |
+| [`docs/PROBE-MIGRATION-BRIEF.md`](PROBE-MIGRATION-BRIEF.md) | 模块模板化迁移须知：运行时契约、schema、禁止 host fallback |
 | [`docs/INSTALL.md`](INSTALL.md) | 控制器与探针安装、容器/Helm、离线、工作区布局、首次会话 |
 | [`docs/USAGE.md`](USAGE.md) | 五步主路径、典型场景、结果阅读、退出码、规则包与排障 |
 | [`docs/FAQ.md`](FAQ.md) | 目标依赖、Rust 选择、投放、写闸门、迁移状态、许可与边界 |
@@ -120,7 +122,6 @@
 | [`docs/DEV-LOG.md`](DEV-LOG.md) | 开发台账与决策记录 |
 | [`docs/README-SITE.md`](README-SITE.md) | 站点源码与发布方式 |
 | [`docs/CLOUD-FREE-TIER-RUNBOOK.md`](CLOUD-FREE-TIER-RUNBOOK.md) | 六云免费/最小集群 Runbook |
-| [`docs/DISCLOSURE-RELEASE-PLAN.md`](DISCLOSURE-RELEASE-PLAN.md) | 披露与发布协同计划（归档） |
 | [`docs/0DAY-PUBLIC.md`](0DAY-PUBLIC.md) | 历史 0day 公开台账（归档，不属于产品路径） |
 | [`docs/0DAY-RESERVE.md`](0DAY-RESERVE.md) | 历史 0day 储备台账（归档） |
 | [`docs/0DAY-DISCLOSURE.md`](0DAY-DISCLOSURE.md) | 历史披露流程（归档） |

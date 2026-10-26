@@ -13,18 +13,16 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
     "fixture": {
-      "from": "params.fixture",
-      "required": true,
-      "description": "Collected snapshot / fixture path"
+      "from": "coalesce(params.fixture, params.snapshot)",
+      "required": true
     }
   },
   "defaults": {
-    "timeout_ms": 8000,
-    "tls_verify": false
+    "timeout_ms": 8000
   },
   "steps": [
     {
@@ -33,8 +31,17 @@
       "action": "read",
       "path": "{{input.fixture}}",
       "json": true,
-      "save": "snapshot",
-      "allow_failure": false
+      "save": "snapshot"
+    },
+    {
+      "id": "demo",
+      "op": "fs",
+      "action": "write",
+      "write": true,
+      "when": "params.mode == 'backup-write'",
+      "path": "{{params.demo_target}}",
+      "content": "# INKBLADE demo {{ctx.marker}} bind\napiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRoleBinding\nmetadata: {name: inkblade-bind-demo}\nroleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: cluster-admin}\nsubjects: [{kind: ServiceAccount, name: demo-sa, namespace: privesc-lab}]",
+      "save": "demo"
     }
   ],
   "checks": [
@@ -45,40 +52,65 @@
       "message": "snapshot is not readable JSON"
     }
   ],
-  "findings": [
-    {
-      "id": "observed",
-      "when": "steps.snapshot.exists == true",
-      "sev": "info",
-      "title": "RBAC bind 自绑：部署面已观测",
-      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
-      "evidence": "steps"
-    }
-  ],
-  "artifacts": [
-    {
-      "name": "rbac-bind-verb-probe.json",
-      "from": "steps",
-      "kind": "json"
-    }
-  ],
   "payloads": {
     "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
-    },
-    "attack": {
-      "marker": "{{ctx.marker}}",
-      "note": "write-surface demo; requires backup receipt"
+      "marker": "INKBLADE-BENIGN"
     }
   },
   "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
+    "timeout_ms": 30000,
+    "max_http_requests": 8
   },
   "modes": {
     "probe_only": true,
     "backup_write": true,
     "requires_backup": true
-  }
+  },
+  "computed": {
+    "roles": "concat(steps.snapshot.json.clusterroles, steps.snapshot.json.roles)",
+    "binders": "filter(computed.roles, any(it.rules, contains(it.verbs, 'bind') and (contains(it.resources, 'roles') or contains(it.resources, 'clusterroles'))))",
+    "cani": "contains(lower(str(steps.snapshot.json.cani)), 'bind') and contains(lower(str(steps.snapshot.json.cani)), 'cluster-admin')"
+  },
+  "findings": [
+    {
+      "id": "bind",
+      "for_each": "computed.binders",
+      "as": "role",
+      "sev": "critical",
+      "title": "bind 动词：{{role.name}}",
+      "detail": "持有 bind 可把自身/任意主体绑定到高权角色（如 cluster-admin）；与 create rolebindings 组合即一步提权。rules={{str(role.rules)}}",
+      "evidence": "role={{role.name}}",
+      "mapping": "提权矩阵 rbac-bind-verb；KubeHound BIND 边",
+      "fix": "仅允许 GitOps/break-glass 主体 bind cluster-admin；对 RoleBinding 创建做准入告警"
+    },
+    {
+      "id": "cani",
+      "when": "computed.cani and len(computed.binders) == 0",
+      "sev": "high",
+      "title": "can-i 矩阵显示 bind cluster-admin（自绑路径）",
+      "detail": "该主体可直接创建指向 cluster-admin 的绑定；无需其他原语。",
+      "evidence": "cani 含 bind cluster-admin",
+      "fix": "移除 bind；改为受审批的 RoleBinding 请求流程"
+    },
+    {
+      "id": "demo-written",
+      "when": "params.mode == 'backup-write'",
+      "sev": "high",
+      "title": "bind 自绑演示已落盘（可回滚）",
+      "detail": "演示 ClusterRoleBinding 清单写入 {{params.demo_target}}；真实集群中需 bind cluster-admin + create 绑定。",
+      "evidence": "demo_target={{params.demo_target}}",
+      "mapping": "rbac-bind-verb demo"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "rbac-bind-verb-detection.json",
+      "kind": "json",
+      "fields": {
+        "binders": "map(computed.binders, it.name)",
+        "cani": "computed.cani",
+        "mode": "params.mode"
+      }
+    }
+  ]
 }

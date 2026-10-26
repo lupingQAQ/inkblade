@@ -270,7 +270,7 @@ Budgets are enforced at the probe: per-task wall clock, output size, HTTP reques
 
 **限制**
 
-- v1 是草案；`probe/src/main.rs` 尚未完成，`hello/auth/ready` 的接线以最终实现为准。
+- v1 是草案；`probe/src/main.rs` 与 `probe/src/server.rs` 已落地，`hello/auth/ready` 的边界行为以最终实现为准。
 - TCP/Unix 通道的 TLS 不在 v1 范围内；跨不可信网络必须由外部隧道保护。
 - `event` 不保证可靠交付；需要证据的事实必须走 `result`。
 - 文件分块只做完整性与顺序校验，不做加密；证据加密由控制端负责。

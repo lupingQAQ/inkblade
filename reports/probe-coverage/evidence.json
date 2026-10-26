@@ -33,13 +33,14 @@
     },
     "admission-webhook-write": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
-      "findings_positive": 1,
-      "findings_negative": 1,
-      "steps": 1,
-      "evidence": "60d76da570e1df861b39e509f64f91bde1c96313a0f180f789407824b051c36b",
-      "at": "2026-10-26T21:53:39Z"
+      "findings_positive": 2,
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "5843e9fe365cc3295011cdd339bd93626ffa177629fd52b9b92d1d9eca60f3d9",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "agent-native-control-plane": {
       "tested": true,
@@ -181,13 +182,14 @@
     },
     "apiservice-hijack": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
-      "findings_positive": 1,
-      "findings_negative": 1,
+      "findings_positive": 2,
+      "findings_negative": 0,
       "steps": 1,
-      "evidence": "5dd07f1008b6ddd59085b75a9d3ab4a3129c5c628752c5625b2f98cf838a4f57",
-      "at": "2026-10-26T21:53:57Z"
+      "evidence": "d0d5832c8027dbcfe9f21e6f4db1ed28acaf7c0252620910451e04a8dfeaf011",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "areal-awex-nccl-injection": {
       "tested": true,
@@ -455,13 +457,14 @@
     },
     "cni-plugin-exec": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
       "findings_positive": 1,
-      "findings_negative": 1,
+      "findings_negative": 0,
       "steps": 1,
-      "evidence": "bc17d1eb0f0a0cb5db3f5a73bed9e7f69b1a389dec380628c5a681df39c8f454",
-      "at": "2026-10-26T21:54:30Z"
+      "evidence": "b1a95b463d5d5243696174e2a515e710bac35d447791e8b054ae98568cb6d0d4",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "cni-stack-capability": {
       "tested": true,
@@ -535,33 +538,36 @@
     },
     "crd-conversion-webhook": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
       "findings_positive": 1,
-      "findings_negative": 1,
+      "findings_negative": 0,
       "steps": 1,
-      "evidence": "1166b9c214d77b345403d0f40152e440e17cb12708a98e64e9fd381ae56df1f4",
-      "at": "2026-10-26T21:54:39Z"
+      "evidence": "380738d511bafaae65f5ead99d78e5f00c384f1e7eb29efae8362731933f0591",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "csi-node-plugin-escape": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
       "findings_positive": 1,
-      "findings_negative": 1,
+      "findings_negative": 0,
       "steps": 1,
-      "evidence": "f56a95cafef7cac56a48a11b31c7f64d6b420c07ed6064b5f3d3edd1a12cfeaa",
-      "at": "2026-10-26T21:54:40Z"
+      "evidence": "64266870817d80277875f8e74f515f58997700ad5d574202ac0ffc34bd2d41a6",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "csr-approve": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
       "findings_positive": 1,
-      "findings_negative": 1,
+      "findings_negative": 0,
       "steps": 1,
-      "evidence": "168e822467eb505d4fae2e13b3c9235dfc9ec3661fb5cecf4f1a5255e2b6dadb",
-      "at": "2026-10-26T21:54:41Z"
+      "evidence": "2fa8c03e5a2dde6c7f4680716cd72b901206eed02f1b49d1fcdf6d3836052ed8",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "cumulus-nvue-injection": {
       "tested": true,
@@ -856,13 +862,14 @@
     },
     "etcd-direct-access": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
       "findings_positive": 1,
-      "findings_negative": 1,
+      "findings_negative": 0,
       "steps": 1,
-      "evidence": "b38011b3f9c61257a2593fdb51b061ac6ffb97dc76ca03b6d5a17b3037b3d5d5",
-      "at": "2026-10-26T21:55:16Z"
+      "evidence": "a50f7945f0f27e7241b4ba98738fc59698ff0019632b257149768540e5f2e81a",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "experiment-tracker-exposure": {
       "tested": true,
@@ -966,13 +973,14 @@
     },
     "gitops-secret-read": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
-      "findings_positive": 1,
-      "findings_negative": 1,
+      "findings_positive": 4,
+      "findings_negative": 0,
       "steps": 1,
-      "evidence": "b1daa488a91d25bd2753c3cf190c65aab5ce08dd677b692b1e7be488046be011",
-      "at": "2026-10-26T21:55:29Z"
+      "evidence": "6601e22cd65379b65ce3d60ff25f3b5b87dd94c8a2365ff4bca071e694519777",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "gitops-supply-chain": {
       "tested": true,
@@ -1076,13 +1084,14 @@
     },
     "gpu-operator-driver-escape": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
       "findings_positive": 1,
-      "findings_negative": 1,
+      "findings_negative": 0,
       "steps": 1,
-      "evidence": "16c3af7664ed6d3f53650f5532167c13b1cd75c07b943cf4fb9c92eda1fc3cd7",
-      "at": "2026-10-26T21:55:43Z"
+      "evidence": "c6e5680966883cd4a222eb22a08fa1042d6901c0452183d58350de2c7cdef0bf",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "gpu-pool-scheduler-unauth": {
       "tested": true,
@@ -1176,23 +1185,25 @@
     },
     "image-pull-secret-theft": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
-      "findings_positive": 1,
-      "findings_negative": 1,
+      "findings_positive": 2,
+      "findings_negative": 0,
       "steps": 1,
-      "evidence": "349e04d56267e31ca11104db17796b5901f1f12fbd148b223451a6c1c040b9bb",
-      "at": "2026-10-26T21:55:56Z"
+      "evidence": "1e4fd4b7ac6509f411de00751cc8dc7177c4cb387630c31d40f7c1d30cbbeec7",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "impersonate-abuse": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
       "findings_positive": 1,
-      "findings_negative": 1,
+      "findings_negative": 0,
       "steps": 1,
-      "evidence": "90e2a1e7fc97a8eb6dbc6d3407fb315e0cfa1ac93e04b7345887595401d8dfd0",
-      "at": "2026-10-26T21:55:57Z"
+      "evidence": "82abb208aeb8c8ddc22ddee94b2fe8fd95f60f9b0557767cce8b4020ba71751b",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "inference-gateway-pd": {
       "tested": true,
@@ -1316,13 +1327,14 @@
     },
     "kubelet-10250-exec": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
-      "findings_positive": 1,
-      "findings_negative": 1,
+      "findings_positive": 2,
+      "findings_negative": 0,
       "steps": 1,
-      "evidence": "9d5485e711d3bae4616cf027239813d810bd68ff40d5ed3a6ca7f351db370dcd",
-      "at": "2026-10-26T21:56:12Z"
+      "evidence": "776ce660cca13e6a8e220014c76bab2a5691d8ffb03fa15b8ca8c86fcde99004",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "kubelet-api-surface": {
       "tested": true,
@@ -2096,23 +2108,25 @@
     },
     "rbac-bind-verb": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
       "findings_positive": 1,
-      "findings_negative": 1,
-      "steps": 1,
-      "evidence": "e708e174ebc10572ce695b687d5ee0c81be9f2c15fb9d9fe6b24cafb3767c34f",
-      "at": "2026-10-26T21:57:50Z"
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "0aa0bad45e53080655769ee62783c98acbc05a11c4301e3db6643c1547eb19bd",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "rbac-escalate-verb": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
       "findings_positive": 1,
-      "findings_negative": 1,
-      "steps": 1,
-      "evidence": "344a6df03a6ab653ce01838898deb424f2e11604980638685199324bfe38b77c",
-      "at": "2026-10-26T21:57:50Z"
+      "findings_negative": 0,
+      "steps": 2,
+      "evidence": "5cf5897b7e0fb6d85494f2eb79fae99468e3204b9a5a626255989799d635eea4",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "rbac-mapping": {
       "tested": true,
@@ -2228,13 +2242,14 @@
     },
     "sa-token-request": {
       "tested": true,
-      "mode": "both",
+      "mode": "fixture-positive/negative",
       "runtime": "reference",
       "findings_positive": 1,
-      "findings_negative": 1,
+      "findings_negative": 0,
       "steps": 1,
-      "evidence": "7338663b0c6c4e020f14f4258effcfb4014fc7a99b9a1b13bd530a21d88afa2a",
-      "at": "2026-10-26T21:58:06Z"
+      "evidence": "46da4556abbe71e32116710ed8801605d95bb0167f6295bc97951d83d87c7e4c",
+      "at": "2026-10-26T22:15:16Z",
+      "note": "privesc fixture detection"
     },
     "sandbox-runtime-surface": {
       "tested": true,
@@ -2888,5 +2903,5 @@
       "at": "2026-10-26T21:59:39Z"
     }
   },
-  "updated_at": "2026-10-26T22:13:32Z"
+  "updated_at": "2026-10-26T22:15:16Z"
 }

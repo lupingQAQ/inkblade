@@ -13,18 +13,16 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
     "fixture": {
-      "from": "params.fixture",
-      "required": true,
-      "description": "Collected snapshot / fixture path"
+      "from": "coalesce(params.fixture, params.snapshot)",
+      "required": true
     }
   },
   "defaults": {
-    "timeout_ms": 8000,
-    "tls_verify": false
+    "timeout_ms": 8000
   },
   "steps": [
     {
@@ -33,8 +31,7 @@
       "action": "read",
       "path": "{{input.fixture}}",
       "json": true,
-      "save": "snapshot",
-      "allow_failure": false
+      "save": "snapshot"
     }
   ],
   "checks": [
@@ -45,31 +42,38 @@
       "message": "snapshot is not readable JSON"
     }
   ],
+  "payloads": {
+    "benign": {
+      "marker": "INKBLADE-BENIGN"
+    }
+  },
+  "limits": {
+    "timeout_ms": 30000,
+    "max_http_requests": 8
+  },
+  "computed": {
+    "risky": "filter(steps.snapshot.json.etcd, it.tls != true or it.clientCertAuth != true)"
+  },
   "findings": [
     {
-      "id": "observed",
-      "when": "steps.snapshot.exists == true",
-      "sev": "info",
-      "title": "etcd 直连访问：部署面已观测",
-      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
-      "evidence": "steps"
+      "id": "etcd",
+      "for_each": "computed.risky",
+      "as": "etcd",
+      "sev": "critical",
+      "title": "etcd 直连风险：{{etcd.name}}",
+      "detail": "endpoint={{etcd.endpoint}} tls={{etcd.tls}} clientCertAuth={{etcd.clientCertAuth}}；可读取全部 Secret/SA token 或写入 RBAC 对象。",
+      "evidence": "etcd={{etcd.name}} endpoint={{etcd.endpoint}}",
+      "mapping": "提权矩阵 node-etcd-direct；K8s etcd 运维",
+      "fix": "启用 etcd mTLS 与客户端证书；2379/2380 仅控制面网段可达"
     }
   ],
   "artifacts": [
     {
-      "name": "etcd-direct-access-probe.json",
-      "from": "steps",
-      "kind": "json"
+      "name": "etcd-direct-access-detection.json",
+      "kind": "json",
+      "fields": {
+        "risky": "map(computed.risky, it.name)"
+      }
     }
-  ],
-  "payloads": {
-    "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
-    }
-  },
-  "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
-  }
+  ]
 }

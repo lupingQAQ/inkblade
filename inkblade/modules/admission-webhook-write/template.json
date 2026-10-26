@@ -13,18 +13,16 @@
     "requires": [],
     "surfaces": [],
     "cves": [],
-    "fidelity": "reduced"
+    "fidelity": "equivalent"
   },
   "inputs": {
     "fixture": {
-      "from": "params.fixture",
-      "required": true,
-      "description": "Collected snapshot / fixture path"
+      "from": "coalesce(params.fixture, params.snapshot)",
+      "required": true
     }
   },
   "defaults": {
-    "timeout_ms": 8000,
-    "tls_verify": false
+    "timeout_ms": 8000
   },
   "steps": [
     {
@@ -33,8 +31,17 @@
       "action": "read",
       "path": "{{input.fixture}}",
       "json": true,
-      "save": "snapshot",
-      "allow_failure": false
+      "save": "snapshot"
+    },
+    {
+      "id": "demo",
+      "op": "fs",
+      "action": "write",
+      "write": true,
+      "when": "params.mode == 'backup-write'",
+      "path": "{{params.demo_target}}",
+      "content": "# INKBLADE demo {{ctx.marker}} webhook\napiVersion: admissionregistration.k8s.io/v1\nkind: MutatingWebhookConfiguration\nmetadata: {name: inkblade-webhook-demo}\nwebhooks: [{name: inject.inkblade.local, admissionReviewVersions: [v1], sideEffects: None, failurePolicy: Ignore}]",
+      "save": "demo"
     }
   ],
   "checks": [
@@ -45,40 +52,55 @@
       "message": "snapshot is not readable JSON"
     }
   ],
-  "findings": [
-    {
-      "id": "observed",
-      "when": "steps.snapshot.exists == true",
-      "sev": "info",
-      "title": "准入 Webhook 写入：部署面已观测",
-      "detail": "Template executed and the declared surface responded; no exploitable condition asserted.",
-      "evidence": "steps"
-    }
-  ],
-  "artifacts": [
-    {
-      "name": "admission-webhook-write-probe.json",
-      "from": "steps",
-      "kind": "json"
-    }
-  ],
   "payloads": {
     "benign": {
-      "marker": "INKBLADE-BENIGN",
-      "note": "no exploit payload"
-    },
-    "attack": {
-      "marker": "{{ctx.marker}}",
-      "note": "write-surface demo; requires backup receipt"
+      "marker": "INKBLADE-BENIGN"
     }
   },
   "limits": {
-    "timeout_ms": 60000,
-    "max_http_requests": 64
+    "timeout_ms": 30000,
+    "max_http_requests": 8
   },
   "modes": {
     "probe_only": true,
     "backup_write": true,
     "requires_backup": true
-  }
+  },
+  "computed": {
+    "webhooks": "concat(steps.snapshot.json.mutatingwebhookconfigurations, steps.snapshot.json.validatingwebhookconfigurations)",
+    "risky": "filter(computed.webhooks, it.failurePolicy == 'Ignore' or startswith(str(it.clientConfig.url), 'http://') or it.namespaceSelector == null)",
+    "apiservices": "filter(steps.snapshot.json.apiservices, it.insecureSkipTLSVerify == true or it.service == null)"
+  },
+  "findings": [
+    {
+      "id": "risky",
+      "for_each": "computed.risky",
+      "as": "wh",
+      "sev": "critical",
+      "title": "fail-open/不安全准入 Webhook：{{wh.name}}",
+      "detail": "failurePolicy={{wh.failurePolicy}} url={{wh.clientConfig.url}}；写入方可注入特权/窃取 AdmissionReview 中的 Secret。",
+      "evidence": "webhook={{wh.name}}",
+      "mapping": "提权矩阵 rbac-admission-webhook-write；K8s admission webhook",
+      "fix": "failurePolicy=Fail、禁止 http URL、限定 namespaceSelector；webhook 配置变更需双人审批"
+    },
+    {
+      "id": "demo-written",
+      "when": "params.mode == 'backup-write'",
+      "sev": "high",
+      "title": "准入 Webhook 写入演示已落盘（可回滚）",
+      "detail": "演示 MutatingWebhookConfiguration 写入 {{params.demo_target}}；fail-open + pod CREATE 覆盖可注入特权。",
+      "evidence": "demo_target={{params.demo_target}}",
+      "mapping": "admission-webhook-write demo"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "admission-webhook-write-detection.json",
+      "kind": "json",
+      "fields": {
+        "risky": "map(computed.risky, it.name)",
+        "mode": "params.mode"
+      }
+    }
+  ]
 }
