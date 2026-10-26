@@ -1,0 +1,43 @@
+{
+  "schema": "inkblade-defense-lab/v1",
+  "product": "netobserv",
+  "display": "网络可视化(Hubble/Calico flows)",
+  "module": "defense-bypass-netobserv",
+  "deployed": false,
+  "state": "n/a",
+  "product_version": "not deployed",
+  "environment": {
+    "cluster": "qemu-k3s",
+    "k3s": "v1.36.5+k3s1",
+    "kernel": "6.18.58-0-virt",
+    "runtime": "containerd://2.3.4-k3s1.36",
+    "node_ip": "10.0.2.15",
+    "vm": "QEMU TCG, 6 vCPU, 6144 MB",
+    "lsm": "lockdown,capability,landlock,yama",
+    "btf": "/sys/kernel/btf/vmlinux present",
+    "date_utc": "2026-10-26"
+  },
+  "deployment": {
+    "method": "not deployed",
+    "reason": "The k3s lab uses the default flannel CNI (/var/lib/rancher/k3s/agent/etc/cni/net.d/10-flannel.conflist); Cilium/Hubble is not installed. Installing Cilium would require restarting k3s with flannel disabled, outside the timebox and risky after the observed kine/sqlite crash. No flow logs are claimed.",
+    "blocking_fact": "CNI is flannel; no cilium/hubble/calico pods or flow collector"
+  },
+  "probes": [],
+  "detected": [],
+  "bypasses": [],
+  "not_tested": [
+    "pod-path-flow",
+    "hostnetwork-path",
+    "multi-nic-path",
+    "short-lived-flow"
+  ],
+  "evidence": [
+    "lab/defense-lab/evidence/cluster-snapshot.txt",
+    "lab/defense-lab/evidence/k3s-crash-summary.txt"
+  ],
+  "limitations": [
+    "The k3s lab uses the default flannel CNI (/var/lib/rancher/k3s/agent/etc/cni/net.d/10-flannel.conflist); Cilium/Hubble is not installed. Installing Cilium would require restarting k3s with flannel disabled, outside the timebox and risky after the observed kine/sqlite crash. No flow logs are claimed."
+  ],
+  "mock": false,
+  "benign_only": true
+}

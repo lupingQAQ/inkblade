@@ -1,0 +1,18 @@
+===== kubectl apply (multi-doc, expected: 3 denies / 2 admits) =====
+pod/kyverno-probe-compliant created
+pod/kyverno-probe-privileged-unscoped created
+Error from server: error when creating "20-kyverno-probes.yaml": admission webhook "vpol.validate.kyverno.svc-fail-finegrained-defense-lab-disallow-privileged" denied the request: Policy defense-lab-disallow-privileged failed: Privileged mode is disallowed in defense-lab.
+Error from server: error when creating "20-kyverno-probes.yaml": admission webhook "vpol.validate.kyverno.svc-fail-finegrained-defense-lab-disallow-hostpath" denied the request: Policy defense-lab-disallow-hostpath failed: hostPath volumes are disallowed in defense-lab.
+Error from server: error when creating "20-kyverno-probes.yaml": admission webhook "vpol.validate.kyverno.svc-fail-finegrained-defense-lab-require-automount-false" denied the request: Policy defense-lab-require-automount-false failed: automountServiceAccountToken must be explicitly false in defense-lab.
+rc=1
+===== pods in defense-lab =====
+NAME                      READY   STATUS              RESTARTS   AGE   IP       NODE   NOMINATED NODE   READINESS GATES
+kyverno-probe-compliant   0/1     ContainerCreating   0          14s   <none>   k3s    <none>           <none>
+===== pods in default (exempt-namespace control) =====
+kyverno-probe-privileged-unscoped   0/1     ContainerCreating   0          21s   <none>   k3s    <none>           <none>
+===== recent admission events =====
+LAST SEEN   TYPE     REASON      OBJECT                        MESSAGE
+26s         Normal   Scheduled   pod/kyverno-probe-compliant   Successfully assigned defense-lab/kyverno-probe-compliant to k3s
+7s          Normal   Pulled      pod/kyverno-probe-compliant   Container image "docker.io/library/alpine:3.21" already present on machine and can be accessed by the pod
+5s          Normal   Created     pod/kyverno-probe-compliant   Container created
+2s          Normal   Started     pod/kyverno-probe-compliant   Container started

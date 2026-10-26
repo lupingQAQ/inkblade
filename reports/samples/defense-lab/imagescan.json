@@ -1,0 +1,163 @@
+{
+  "schema": "inkblade-defense-lab/v1",
+  "product": "imagescan",
+  "display": "镜像扫描(Trivy/grype/veinmind)",
+  "module": "defense-bypass-imagescan",
+  "deployed": true,
+  "state": "deployed",
+  "product_version": "Trivy 0.76.1 (trivy-db 1.5 GB)",
+  "environment": {
+    "cluster": "qemu-k3s",
+    "k3s": "v1.36.5+k3s1",
+    "kernel": "6.18.58-0-virt",
+    "runtime": "containerd://2.3.4-k3s1.36",
+    "node_ip": "10.0.2.15",
+    "vm": "QEMU TCG, 6 vCPU, 6144 MB",
+    "lsm": "lockdown,capability,landlock,yama",
+    "btf": "/sys/kernel/btf/vmlinux present",
+    "date_utc": "2026-10-26"
+  },
+  "deployment": {
+    "method": "static release binary in VM; scan via Docker socket (--image-src docker)",
+    "workload": "CLI, no cluster workload",
+    "scanners": "vuln,secret",
+    "samples": [
+      "inkblade-benign/plain:lab (benign marker file)",
+      "inkblade-benign/secret:lab (AWS example key)",
+      "inkblade-benign/deep:lab (key written then deleted in a later layer)",
+      "inkblade-benign/compressed:lab (key inside tar.gz)",
+      "inkblade-benign/renamed:lab (busybox copied to not-a-rootkit, benign marker)",
+      "docker.io/library/alpine:3.10 (known-vulnerable control)"
+    ],
+    "ground_truth": "alpine:3.10 -> 1 CRITICAL CVE-2021-36159 (apk-tools); all benign samples -> 0 findings"
+  },
+  "probes": [
+    {
+      "technique": "plain-layer-sample",
+      "probe": "trivy image inkblade-benign/plain:lab",
+      "benign_marker": "INKBLADE-BENIGN:imagescan:plain-layer-sample",
+      "marker_landed": true,
+      "detected": false,
+      "blocked": false,
+      "bypass": true,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/trivy-scan.log",
+        "lab/defense-lab/evidence/trivy-plain.json",
+        "lab/defense-lab/evidence/trivy-secret.json",
+        "lab/defense-lab/evidence/trivy-deep.json",
+        "lab/defense-lab/evidence/trivy-compressed.json",
+        "lab/defense-lab/evidence/trivy-renamed.json",
+        "lab/defense-lab/evidence/trivy-alpine310.json"
+      ],
+      "note": "0 vulnerabilities / 0 secrets; Trivy has no signature for arbitrary benign marker content"
+    },
+    {
+      "technique": "renamed-benign-tool-layer",
+      "probe": "trivy image inkblade-benign/renamed:lab (busybox copied to /usr/local/bin/not-a-rootkit)",
+      "benign_marker": "INKBLADE-BENIGN:imagescan:renamed-benign-tool-layer",
+      "marker_landed": true,
+      "detected": false,
+      "blocked": false,
+      "bypass": true,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/trivy-scan.log",
+        "lab/defense-lab/evidence/trivy-plain.json",
+        "lab/defense-lab/evidence/trivy-secret.json",
+        "lab/defense-lab/evidence/trivy-deep.json",
+        "lab/defense-lab/evidence/trivy-compressed.json",
+        "lab/defense-lab/evidence/trivy-renamed.json",
+        "lab/defense-lab/evidence/trivy-alpine310.json"
+      ],
+      "note": "0 findings; rename is not detected because scanner is CVE/secret based, not binary-reputation based"
+    },
+    {
+      "technique": "deep-layer-benign",
+      "probe": "trivy image inkblade-benign/deep:lab (AWS example key written then rm'd in a later layer)",
+      "benign_marker": "INKBLADE-BENIGN:imagescan:deep-layer-benign",
+      "marker_landed": true,
+      "detected": false,
+      "blocked": false,
+      "bypass": true,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/trivy-scan.log",
+        "lab/defense-lab/evidence/trivy-plain.json",
+        "lab/defense-lab/evidence/trivy-secret.json",
+        "lab/defense-lab/evidence/trivy-deep.json",
+        "lab/defense-lab/evidence/trivy-compressed.json",
+        "lab/defense-lab/evidence/trivy-renamed.json",
+        "lab/defense-lab/evidence/trivy-alpine310.json"
+      ],
+      "note": "0 findings; final-filesystem scan does not report the removed layer content"
+    },
+    {
+      "technique": "compressed-benign-sample",
+      "probe": "trivy image inkblade-benign/compressed:lab (AWS example key inside /opt/inkblade-benign-archive.tgz)",
+      "benign_marker": "INKBLADE-BENIGN:imagescan:compressed-benign-sample",
+      "marker_landed": true,
+      "detected": false,
+      "blocked": false,
+      "bypass": true,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/trivy-scan.log",
+        "lab/defense-lab/evidence/trivy-plain.json",
+        "lab/defense-lab/evidence/trivy-secret.json",
+        "lab/defense-lab/evidence/trivy-deep.json",
+        "lab/defense-lab/evidence/trivy-compressed.json",
+        "lab/defense-lab/evidence/trivy-renamed.json",
+        "lab/defense-lab/evidence/trivy-alpine310.json"
+      ],
+      "note": "0 findings; secret scanner does not recurse into tar.gz here"
+    },
+    {
+      "technique": "whitelist-sample-name",
+      "probe": "not executed",
+      "benign_marker": "n/a",
+      "marker_landed": false,
+      "detected": false,
+      "blocked": false,
+      "bypass": false,
+      "control": true,
+      "evidence": [
+        "lab/defense-lab/evidence/trivy-scan.log",
+        "lab/defense-lab/evidence/trivy-plain.json",
+        "lab/defense-lab/evidence/trivy-secret.json",
+        "lab/defense-lab/evidence/trivy-deep.json",
+        "lab/defense-lab/evidence/trivy-compressed.json",
+        "lab/defense-lab/evidence/trivy-renamed.json",
+        "lab/defense-lab/evidence/trivy-alpine310.json"
+      ],
+      "note": "not tested in timebox"
+    }
+  ],
+  "detected": [],
+  "bypasses": [
+    "plain-layer-sample",
+    "renamed-benign-tool-layer",
+    "deep-layer-benign",
+    "compressed-benign-sample"
+  ],
+  "not_tested": [
+    "whitelist-sample-name"
+  ],
+  "evidence": [
+    "lab/defense-lab/evidence/trivy-scan.log",
+    "lab/defense-lab/evidence/trivy-plain.json",
+    "lab/defense-lab/evidence/trivy-secret.json",
+    "lab/defense-lab/evidence/trivy-deep.json",
+    "lab/defense-lab/evidence/trivy-compressed.json",
+    "lab/defense-lab/evidence/trivy-renamed.json",
+    "lab/defense-lab/evidence/trivy-alpine310.json"
+  ],
+  "limitations": [
+    "The four 'bypasses' mean Trivy does not flag arbitrary benign markers/renamed tools; it is a vulnerability and secret scanner, not a malware/content classifier.",
+    "AWS example keys (AKIA...EXAMPLE) are allowlisted by the secret scanner, so the secret sample also produced 0 findings.",
+    "Control scan alpine:3.10 found 1 CRITICAL CVE, proving the vuln pipeline was working.",
+    "grype and veinmind were not deployed; only Trivy represents the imagescan module."
+  ],
+  "mock": false,
+  "benign_only": true
+}

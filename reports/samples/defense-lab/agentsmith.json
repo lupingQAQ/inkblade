@@ -1,0 +1,43 @@
+{
+  "schema": "inkblade-defense-lab/v1",
+  "product": "agentsmith",
+  "display": "AgentSmith-HIDS",
+  "module": "defense-bypass-agentsmith",
+  "deployed": false,
+  "state": "n/a",
+  "product_version": "not deployed",
+  "environment": {
+    "cluster": "qemu-k3s",
+    "k3s": "v1.36.5+k3s1",
+    "kernel": "6.18.58-0-virt",
+    "runtime": "containerd://2.3.4-k3s1.36",
+    "node_ip": "10.0.2.15",
+    "vm": "QEMU TCG, 6 vCPU, 6144 MB",
+    "lsm": "lockdown,capability,landlock,yama",
+    "btf": "/sys/kernel/btf/vmlinux present",
+    "date_utc": "2026-10-26"
+  },
+  "deployment": {
+    "method": "not deployed",
+    "reason": "AgentSmith-HIDS needs its LKM smith.ko compiled against the running kernel and an agent process. The 6.18.58-0-virt Alpine kernel headers/build tree are not installed, and no prebuilt smith.ko for this kernel exists in the VM. Agent-only execution cannot produce verifiable file/exec detections. No mock was used.",
+    "blocking_fact": "no smith.ko and no /lib/modules/6.18.58-0-virt/build"
+  },
+  "probes": [],
+  "detected": [],
+  "bypasses": [],
+  "not_tested": [
+    "monitored-path-write",
+    "whitelist-path-write",
+    "tool-rename-exec",
+    "benign-dns-query"
+  ],
+  "evidence": [
+    "lab/defense-lab/evidence/cluster-snapshot.txt",
+    "lab/defense-lab/evidence/k3s-crash-summary.txt"
+  ],
+  "limitations": [
+    "AgentSmith-HIDS needs its LKM smith.ko compiled against the running kernel and an agent process. The 6.18.58-0-virt Alpine kernel headers/build tree are not installed, and no prebuilt smith.ko for this kernel exists in the VM. Agent-only execution cannot produce verifiable file/exec detections. No mock was used."
+  ],
+  "mock": false,
+  "benign_only": true
+}

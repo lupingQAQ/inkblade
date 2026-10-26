@@ -1,0 +1,16 @@
+--- Write below etc ---
+time="2026-10-26T22:34:43Z" level=fatal msg="execing command in container c929b88d296b5: command terminated with exit code 1"
+--- Read sensitive file untrusted ---
+397:- rule: Read sensitive file untrusted
+398-  desc: >
+399-    An attempt to read any sensitive file (e.g. files containing user/password/authentication
+400-    information). Exceptions are made for known trusted programs. Can be customized as needed.
+401-    In modern containerized cloud infrastructures, accessing traditional Linux sensitive files
+402-    might be less relevant, yet it remains valuable for baseline detections. While we provide additional
+403-    rules for SSH or cloud vendor-specific credentials, you can significantly enhance your security
+404-    program by crafting custom rules for critical application credentials unique to your environment.
+--- Write below binary dir ---
+time="2026-10-26T22:35:01Z" level=fatal msg="execing command in container c929b88d296b5: command terminated with exit code 1"
+--- enabled false count ---
+0
+time="2026-10-26T22:35:09Z" level=fatal msg="execing command in container c929b88d296b5: command terminated with exit code 1"

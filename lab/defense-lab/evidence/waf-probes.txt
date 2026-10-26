@@ -1,0 +1,18 @@
+=== versions ===
+nginx version: nginx/1.30.6
+# OWASP CRS ver.4.30.0
+=== probes ===
+plain-benign-request status=404 backend_delta=2
+encoded-request-variant status=403 backend_delta=0
+double-encoded-variant status=403 backend_delta=0
+unicode-request-variant status=403 backend_delta=0
+case-variant status=403 backend_delta=0
+sqli-literal status=403 backend_delta=0
+chunked-request-variant status=403 backend_delta=0
+oversized-benign-variant status=414 backend_delta=0
+=== backend log tail ===
+172.19.0.3 - - [26/Oct/2026 23:02:13] "GET /?q=INKBLADE-BENIGN HTTP/1.1" 200 -
+172.19.0.3 - - [26/Oct/2026 23:02:56] code 404, message File not found
+172.19.0.3 - - [26/Oct/2026 23:02:56] "GET /v1/completions?q=INKBLADE-BENIGN:waf-inference:plain-benign-request HTTP/1.1" 404 -
+=== waf audit log tail ===
+=== nginx error log tail (rule ids) ===

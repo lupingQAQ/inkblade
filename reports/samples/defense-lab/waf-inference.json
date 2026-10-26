@@ -1,0 +1,165 @@
+{
+  "schema": "inkblade-defense-lab/v1",
+  "product": "waf-inference",
+  "display": "WAF(ModSecurity/Coraza/雷池)",
+  "module": "defense-bypass-waf-inference",
+  "deployed": true,
+  "state": "deployed",
+  "product_version": "owasp/modsecurity-crs:nginx, nginx 1.30.6, OWASP CRS 4.30.0",
+  "environment": {
+    "cluster": "qemu-k3s",
+    "k3s": "v1.36.5+k3s1",
+    "kernel": "6.18.58-0-virt",
+    "runtime": "containerd://2.3.4-k3s1.36",
+    "node_ip": "10.0.2.15",
+    "vm": "QEMU TCG, 6 vCPU, 6144 MB",
+    "lsm": "lockdown,capability,landlock,yama",
+    "btf": "/sys/kernel/btf/vmlinux present",
+    "date_utc": "2026-10-26"
+  },
+  "deployment": {
+    "method": "docker run in QEMU VM; WAF in front of python:3.12-alpine http.server",
+    "workload": "container waf (healthy) + container waf-backend",
+    "image_digest": "sha256:7698c48a41a43138ae317feeec964d1515b861cc1d9e50617bc1cdfe9f314e1d",
+    "config": "MODSEC_RULE_ENGINE=on, BLOCKING_PARANOIA=1, inbound anomaly threshold 5",
+    "ground_truth": "plain marker request reached backend (404 from static server); every attack-shaped variant returned 403/414 with backend_delta=0"
+  },
+  "probes": [
+    {
+      "technique": "plain-benign-request",
+      "probe": "GET /v1/completions?q=INKBLADE-BENIGN:waf-inference:plain-benign-request",
+      "benign_marker": "INKBLADE-BENIGN:waf-inference:plain-benign-request",
+      "marker_landed": true,
+      "detected": false,
+      "blocked": false,
+      "bypass": true,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/waf-probes.txt"
+      ],
+      "product_signal": "status=404, backend_delta=2 (request reached python http.server)",
+      "note": "benign plain request is allowed by design; backend has no /v1 route so it returns 404"
+    },
+    {
+      "technique": "encoded-request-variant",
+      "probe": "GET ?q=%3Cscript%3EINKBLADE-BENIGN%3C%2Fscript%3E",
+      "benign_marker": "INKBLADE-BENIGN:waf-inference:encoded-request-variant",
+      "marker_landed": true,
+      "detected": true,
+      "blocked": true,
+      "bypass": false,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/waf-probes.txt"
+      ],
+      "product_signal": "status=403, backend_delta=0"
+    },
+    {
+      "technique": "chunked-request-variant",
+      "probe": "POST /v1/completions with Transfer-Encoding: chunked and <script> marker in body",
+      "benign_marker": "INKBLADE-BENIGN:waf-inference:chunked-request-variant",
+      "marker_landed": true,
+      "detected": true,
+      "blocked": true,
+      "bypass": false,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/waf-probes.txt"
+      ],
+      "product_signal": "status=403, backend_delta=0"
+    },
+    {
+      "technique": "unicode-request-variant",
+      "probe": "GET ?q=%EF%BC%9Cscript%EF%BC%9EINKBLADE-BENIGN",
+      "benign_marker": "INKBLADE-BENIGN:waf-inference:unicode-request-variant",
+      "marker_landed": true,
+      "detected": true,
+      "blocked": true,
+      "bypass": false,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/waf-probes.txt"
+      ],
+      "product_signal": "status=403, backend_delta=0"
+    },
+    {
+      "technique": "oversized-benign-variant",
+      "probe": "GET with 9000-byte q parameter",
+      "benign_marker": "INKBLADE-BENIGN:waf-inference:oversized-benign-variant",
+      "marker_landed": true,
+      "detected": true,
+      "blocked": true,
+      "bypass": false,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/waf-probes.txt"
+      ],
+      "product_signal": "status=414 (nginx request-line limit), backend_delta=0"
+    },
+    {
+      "technique": "extra:double-encoded",
+      "probe": "GET ?q=%253Cscript%253EINKBLADE-BENIGN",
+      "benign_marker": "INKBLADE-BENIGN:waf-inference:double-encoded",
+      "marker_landed": true,
+      "detected": true,
+      "blocked": true,
+      "bypass": false,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/waf-probes.txt"
+      ],
+      "product_signal": "status=403, backend_delta=0; no double-encoding bypass"
+    },
+    {
+      "technique": "extra:case-variant",
+      "probe": "GET ?q=%3CScRiPt%3EINKBLADE-BENIGN",
+      "benign_marker": "INKBLADE-BENIGN:waf-inference:case-variant",
+      "marker_landed": true,
+      "detected": true,
+      "blocked": true,
+      "bypass": false,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/waf-probes.txt"
+      ],
+      "product_signal": "status=403, backend_delta=0"
+    },
+    {
+      "technique": "extra:sqli-literal",
+      "probe": "GET ?q=INKBLADE-BENIGN%27%20UNION%20SELECT%20marker (static backend, no SQL)",
+      "benign_marker": "INKBLADE-BENIGN:waf-inference:sqli-literal",
+      "marker_landed": true,
+      "detected": true,
+      "blocked": true,
+      "bypass": false,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/waf-probes.txt"
+      ],
+      "product_signal": "status=403, backend_delta=0"
+    }
+  ],
+  "detected": [
+    "encoded-request-variant",
+    "chunked-request-variant",
+    "unicode-request-variant",
+    "oversized-benign-variant",
+    "extra:double-encoded",
+    "extra:case-variant",
+    "extra:sqli-literal"
+  ],
+  "bypasses": [
+    "plain-benign-request"
+  ],
+  "not_tested": [],
+  "evidence": [
+    "lab/defense-lab/evidence/waf-probes.txt"
+  ],
+  "limitations": [
+    "ModSecurity audit log was not enabled in this image configuration; 403 origin is established by the WAF container and backend_delta=0, not by rule-ID text.",
+    "Plain benign requests are supposed to pass; recording it as a bypass only means the WAF does not flag benign content.",
+    "Only CRS paranoia level 1 was tested; higher PL and response-body inspection were not."
+  ],
+  "mock": false,
+  "benign_only": true
+}

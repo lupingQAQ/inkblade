@@ -1,0 +1,107 @@
+# Kyverno 1.19 ValidatingPolicy (CEL) Enforce policies used by the real
+# defense lab (layer 10). Kyverno 1.19 no longer serves kyverno.io/v1
+# ClusterPolicy; the CEL-based policies.kyverno.io/v1 API is used instead.
+# Scope is limited to namespace defense-lab via matchConditions so the lab
+# cannot break kube-system / kyverno control-plane pods.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: defense-lab
+  labels:
+    defense-lab: "true"
+---
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: defense-lab-disallow-privileged
+  annotations:
+    policies.kyverno.io/title: Disallow privileged containers (lab)
+    policies.kyverno.io/severity: high
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - pods
+  matchConditions:
+    - name: defense-lab-only
+      expression: request.namespace == 'defense-lab'
+  variables:
+    - name: allContainers
+      expression: object.spec.containers + object.spec.?initContainers.orValue([]) + object.spec.?ephemeralContainers.orValue([])
+  validations:
+    - expression: variables.allContainers.all(container, container.?securityContext.?privileged.orValue(false) == false)
+      message: Privileged mode is disallowed in defense-lab.
+---
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: defense-lab-disallow-hostpath
+  annotations:
+    policies.kyverno.io/title: Disallow hostPath volumes (lab)
+    policies.kyverno.io/severity: high
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - pods
+  matchConditions:
+    - name: defense-lab-only
+      expression: request.namespace == 'defense-lab'
+  validations:
+    - expression: "!has(object.spec.volumes) || object.spec.volumes.all(v, !has(v.hostPath))"
+      message: hostPath volumes are disallowed in defense-lab.
+---
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: defense-lab-require-automount-false
+  annotations:
+    policies.kyverno.io/title: Require automountServiceAccountToken false (lab)
+    policies.kyverno.io/severity: medium
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - pods
+  matchConditions:
+    - name: defense-lab-only
+      expression: request.namespace == 'defense-lab'
+  validations:
+    - expression: "has(object.spec.automountServiceAccountToken) && object.spec.automountServiceAccountToken == false"
+      message: automountServiceAccountToken must be explicitly false in defense-lab.

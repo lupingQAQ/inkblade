@@ -1,0 +1,50 @@
+=== date ===
+Mon Oct 26 23:08:05 UTC 2026
+=== kernel ===
+Linux k3s 6.18.58-0-virt #1-Alpine SMP PREEMPT_DYNAMIC 2026-10-21 10:53:34 x86_64 Linux
+=== lsm ===
+lockdown,capability,landlock,yama=== btf ===
+-r--r--r--    1 root     root       4505805 Oct 26 21:49 /sys/kernel/btf/vmlinux
+=== k3s ===
+k3s version v1.36.5+k3s1 (3dd98cc5)
+go version go1.26.8
+=== nodes ===
+Error from server (ServiceUnavailable): the server is currently unable to handle the request (get nodes)
+=== kyverno pods ===
+Error from server (ServiceUnavailable): the server is currently unable to handle the request (get pods)
+=== kyverno policies ===
+Error from server (ServiceUnavailable): the server is currently unable to handle the request (get validatingpolicies.policies.kyverno.io)
+=== kyverno images ===
+Error from server (ServiceUnavailable): the server is currently unable to handle the request (get deployments.apps)
+=== falco ds ===
+Error from server (ServiceUnavailable): the server is currently unable to handle the request (get daemonsets.apps falco)
+=== falco image ===
+W1026 23:09:17.734259   19244 logging.go:55] [core] [Channel #1 SubChannel #2] grpc: addrConn.createTransport failed to connect to {Addr: "/run/k3s/containerd/containerd.sock", ServerName: "localhost", }. Err: connection error: desc = "transport: Error while dialing: dial unix /run/k3s/containerd/containerd.sock: connect: connection refused"
+time="2026-10-26T23:09:17Z" level=fatal msg="validate service connection: validate CRI v1 runtime API for endpoint \"unix:///run/k3s/containerd/containerd.sock\": rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial unix /run/k3s/containerd/containerd.sock: connect: connection refused\""
+=== falco version ===
+W1026 23:09:26.570902   19355 logging.go:55] [core] [Channel #1 SubChannel #2] grpc: addrConn.createTransport failed to connect to {Addr: "/run/k3s/containerd/containerd.sock", ServerName: "localhost", }. Err: connection error: desc = "transport: Error while dialing: dial unix /run/k3s/containerd/containerd.sock: connect: connection refused"
+time="2026-10-26T23:09:26Z" level=fatal msg="validate service connection: validate CRI v1 runtime API for endpoint \"unix:///run/k3s/containerd/containerd.sock\": rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial unix /run/k3s/containerd/containerd.sock: connect: connection refused\""
+=== docker images ===
+inkblade-benign/renamed:lab 13.5MB
+inkblade-benign/compressed:lab 12.1MB
+inkblade-benign/deep:lab 12.1MB
+inkblade-benign/secret:lab 12.1MB
+inkblade-benign/plain:lab 12.1MB
+python:3.12-alpine 74.7MB
+postgres:16-alpine 420MB
+alpine:3.21 12.2MB
+owasp/modsecurity-crs:nginx 315MB
+alpine:3.10 8.95MB
+=== waf containers ===
+waf-backend python:3.12-alpine Up 11 minutes
+waf owasp/modsecurity-crs:nginx Up 10 minutes (healthy)
+=== trivy version ===
+Version: 0.76.1
+=== trivy db ===
+-rw-r--r--    1 root     root        1.5G Oct 26 19:21 trivy-cache/db/trivy.db
+=== disk ===
+/dev/vda3                13.4G     11.2G      1.6G  87% /
+=== memory ===
+              total        used        free      shared  buff/cache   available
+Mem:           5934         887        1241         348        3807        4409
+10823:time="2026-10-26T22:46:00Z" level=fatal msg="Transaction commit failed: sql: transaction has already been committed or rolled back"

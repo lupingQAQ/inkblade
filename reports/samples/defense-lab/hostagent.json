@@ -1,0 +1,43 @@
+{
+  "schema": "inkblade-defense-lab/v1",
+  "product": "hostagent",
+  "display": "主机代理(Wazuh/Osquery)",
+  "module": "defense-bypass-hostagent",
+  "deployed": false,
+  "state": "n/a",
+  "product_version": "not deployed",
+  "environment": {
+    "cluster": "qemu-k3s",
+    "k3s": "v1.36.5+k3s1",
+    "kernel": "6.18.58-0-virt",
+    "runtime": "containerd://2.3.4-k3s1.36",
+    "node_ip": "10.0.2.15",
+    "vm": "QEMU TCG, 6 vCPU, 6144 MB",
+    "lsm": "lockdown,capability,landlock,yama",
+    "btf": "/sys/kernel/btf/vmlinux present",
+    "date_utc": "2026-10-26"
+  },
+  "deployment": {
+    "method": "not deployed",
+    "reason": "Wazuh manager/indexer/dashboard are too heavy for the 6 GiB TCG VM, and an agent without a manager cannot emit verifiable alerts. No osquery/wazuh agent was installed. No mock was used.",
+    "blocking_fact": "no wazuh-manager/osquery deployment; agent-only would not verify detection"
+  },
+  "probes": [],
+  "detected": [],
+  "bypasses": [],
+  "not_tested": [
+    "monitored-path-write",
+    "ruleset-coverage-gap",
+    "stopped-agent-window",
+    "tool-rename-exec"
+  ],
+  "evidence": [
+    "lab/defense-lab/evidence/cluster-snapshot.txt",
+    "lab/defense-lab/evidence/k3s-crash-summary.txt"
+  ],
+  "limitations": [
+    "Wazuh manager/indexer/dashboard are too heavy for the 6 GiB TCG VM, and an agent without a manager cannot emit verifiable alerts. No osquery/wazuh agent was installed. No mock was used."
+  ],
+  "mock": false,
+  "benign_only": true
+}

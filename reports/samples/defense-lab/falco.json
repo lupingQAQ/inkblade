@@ -1,0 +1,96 @@
+{
+  "schema": "inkblade-defense-lab/v1",
+  "product": "falco",
+  "display": "Falco",
+  "module": "defense-bypass-falco",
+  "deployed": true,
+  "state": "deployed",
+  "product_version": "Falco 0.45.1 (helm chart 9.2.1)",
+  "environment": {
+    "cluster": "qemu-k3s",
+    "k3s": "v1.36.5+k3s1",
+    "kernel": "6.18.58-0-virt",
+    "runtime": "containerd://2.3.4-k3s1.36",
+    "node_ip": "10.0.2.15",
+    "vm": "QEMU TCG, 6 vCPU, 6144 MB",
+    "lsm": "lockdown,capability,landlock,yama",
+    "btf": "/sys/kernel/btf/vmlinux present",
+    "date_utc": "2026-10-26"
+  },
+  "deployment": {
+    "method": "helm install falco falcosecurity/falco --set driver.kind=modern_ebpf --set falcoctl.artifact.install.enabled=false",
+    "namespace": "kube-system",
+    "workload": "DaemonSet/falco 1/1 Running",
+    "engine": "modern_ebpf (kernel BTF /sys/kernel/btf/vmlinux)",
+    "rules": "bundled /etc/falco/falco_rules.yaml, schema validation ok; falcoctl artifact install disabled",
+    "ground_truth": "container log: Opening 'syscall' source with modern BPF probe; Falco version 0.45.1"
+  },
+  "probes": [
+    {
+      "technique": "tool-rename-exec",
+      "probe": "cp /bin/echo /tmp/inkblade-echo && /tmp/inkblade-echo INKBLADE-BENIGN:falco:tool-rename-exec",
+      "benign_marker": "INKBLADE-BENIGN:falco:tool-rename-exec",
+      "marker_landed": true,
+      "detected": true,
+      "blocked": false,
+      "bypass": false,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/falco-alerts.txt"
+      ],
+      "product_signal": "Critical Executing binary not part of base image | proc_exe=/tmp/inkblade-echo container_name=falco-probe"
+    },
+    {
+      "technique": "monitored-path-write",
+      "probe": "echo marker > /tmp/inkblade-benign-monitored.marker and > /bin/inkblade-benign-marker",
+      "benign_marker": "INKBLADE-BENIGN:falco:monitored-path-write",
+      "marker_landed": true,
+      "detected": false,
+      "blocked": false,
+      "bypass": true,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/falco-alerts.txt",
+        "lab/defense-lab/evidence/falco-rules.txt"
+      ],
+      "note": "no alert for either write; bundled 0.45.1 stable rules contain no 'Write below etc' / 'Write below binary dir' rule"
+    },
+    {
+      "technique": "sensitive-path-access",
+      "probe": "echo marker > /etc/inkblade-benign-sensitive.marker and read it back",
+      "benign_marker": "INKBLADE-BENIGN:falco:sensitive-path-access",
+      "marker_landed": true,
+      "detected": false,
+      "blocked": false,
+      "bypass": true,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/falco-alerts.txt"
+      ],
+      "note": "read of the benign marker itself produced no alert; /etc/shadow read deliberately not executed (benign-only rule)"
+    }
+  ],
+  "detected": [
+    "tool-rename-exec"
+  ],
+  "bypasses": [
+    "monitored-path-write",
+    "sensitive-path-access"
+  ],
+  "not_tested": [
+    "ephemeral-container-marker",
+    "ruleset-gap-syntax"
+  ],
+  "evidence": [
+    "lab/defense-lab/evidence/falco-alerts.txt",
+    "lab/defense-lab/evidence/falco-rules.txt",
+    "lab/defense-lab/evidence/falco-probe-time.txt"
+  ],
+  "limitations": [
+    "Only the bundled stable ruleset is loaded; falcoctl artifact install was disabled, so incubating/sandbox rule packs are absent.",
+    "The monitored-path result is a ruleset coverage gap, not a failure of the modern eBPF engine (exec event was captured).",
+    "ephemeral containers and rule-loading syntax gaps were not exercised in the timebox."
+  ],
+  "mock": false,
+  "benign_only": true
+}

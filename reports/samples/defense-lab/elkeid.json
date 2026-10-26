@@ -1,0 +1,44 @@
+{
+  "schema": "inkblade-defense-lab/v1",
+  "product": "elkeid",
+  "display": "Elkeid HIDS",
+  "module": "defense-bypass-elkeid",
+  "deployed": false,
+  "state": "n/a",
+  "product_version": "not deployed",
+  "environment": {
+    "cluster": "qemu-k3s",
+    "k3s": "v1.36.5+k3s1",
+    "kernel": "6.18.58-0-virt",
+    "runtime": "containerd://2.3.4-k3s1.36",
+    "node_ip": "10.0.2.15",
+    "vm": "QEMU TCG, 6 vCPU, 6144 MB",
+    "lsm": "lockdown,capability,landlock,yama",
+    "btf": "/sys/kernel/btf/vmlinux present",
+    "date_utc": "2026-10-26"
+  },
+  "deployment": {
+    "method": "not deployed",
+    "reason": "Elkeid server/manager/hub stack was not deployed within the timebox and the kernel module cannot be built: /lib/modules/6.18.58-0-virt/build is absent (no matching Alpine virt kernel headers). An agent-only container would have no manager to receive events, so no detection could be verified. No mock was used.",
+    "blocking_fact": "kernel headers absent: /lib/modules/6.18.58-0-virt/build not found"
+  },
+  "probes": [],
+  "detected": [],
+  "bypasses": [],
+  "not_tested": [
+    "monitored-path-write",
+    "container-benign-write",
+    "whitelist-path-write",
+    "tool-rename-exec",
+    "encoded-command-variant"
+  ],
+  "evidence": [
+    "lab/defense-lab/evidence/cluster-snapshot.txt",
+    "lab/defense-lab/evidence/k3s-crash-summary.txt"
+  ],
+  "limitations": [
+    "Elkeid server/manager/hub stack was not deployed within the timebox and the kernel module cannot be built: /lib/modules/6.18.58-0-virt/build is absent (no matching Alpine virt kernel headers). An agent-only container would have no manager to receive events, so no detection could be verified. No mock was used."
+  ],
+  "mock": false,
+  "benign_only": true
+}

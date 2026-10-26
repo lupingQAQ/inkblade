@@ -1,0 +1,43 @@
+{
+  "schema": "inkblade-defense-lab/v1",
+  "product": "kubearmor",
+  "display": "KubeArmor",
+  "module": "defense-bypass-kubearmor",
+  "deployed": false,
+  "state": "n/a",
+  "product_version": "not deployed",
+  "environment": {
+    "cluster": "qemu-k3s",
+    "k3s": "v1.36.5+k3s1",
+    "kernel": "6.18.58-0-virt",
+    "runtime": "containerd://2.3.4-k3s1.36",
+    "node_ip": "10.0.2.15",
+    "vm": "QEMU TCG, 6 vCPU, 6144 MB",
+    "lsm": "lockdown,capability,landlock,yama",
+    "btf": "/sys/kernel/btf/vmlinux present",
+    "date_utc": "2026-10-26"
+  },
+  "deployment": {
+    "method": "not deployed",
+    "reason": "KubeArmor enforcement needs an LSM (BPF LSM or AppArmor). The kernel exposes neither: lsm = lockdown,capability,landlock,yama. Deploying it in monitor-only mode would not test blocking, so it was recorded N/A.",
+    "blocking_fact": "no bpf/apparmor in /sys/kernel/security/lsm"
+  },
+  "probes": [],
+  "detected": [],
+  "bypasses": [],
+  "not_tested": [
+    "posture-audit-path",
+    "uncovered-namespace",
+    "hostnetwork-path",
+    "default-allow-path"
+  ],
+  "evidence": [
+    "lab/defense-lab/evidence/cluster-snapshot.txt",
+    "lab/defense-lab/evidence/k3s-crash-summary.txt"
+  ],
+  "limitations": [
+    "KubeArmor enforcement needs an LSM (BPF LSM or AppArmor). The kernel exposes neither: lsm = lockdown,capability,landlock,yama. Deploying it in monitor-only mode would not test blocking, so it was recorded N/A."
+  ],
+  "mock": false,
+  "benign_only": true
+}

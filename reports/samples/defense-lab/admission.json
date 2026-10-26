@@ -1,0 +1,129 @@
+{
+  "schema": "inkblade-defense-lab/v1",
+  "product": "admission",
+  "display": "准入策略(Kyverno/Gatekeeper)",
+  "module": "defense-bypass-admission",
+  "deployed": true,
+  "state": "deployed",
+  "product_version": "Kyverno v1.19.2",
+  "environment": {
+    "cluster": "qemu-k3s",
+    "k3s": "v1.36.5+k3s1",
+    "kernel": "6.18.58-0-virt",
+    "runtime": "containerd://2.3.4-k3s1.36",
+    "node_ip": "10.0.2.15",
+    "vm": "QEMU TCG, 6 vCPU, 6144 MB",
+    "lsm": "lockdown,capability,landlock,yama",
+    "btf": "/sys/kernel/btf/vmlinux present",
+    "date_utc": "2026-10-26"
+  },
+  "deployment": {
+    "method": "kubectl apply --server-side -f install.yaml (official release v1.19.2)",
+    "namespace": "kyverno",
+    "workload": "Deployment/kyverno-admission-controller (1/1 Running); background/reports/cleanup scaled to 0 for QEMU TCG",
+    "policy_api": "policies.kyverno.io/v1 ValidatingPolicy (CEL). Kyverno 1.19 no longer serves kyverno.io/v1 ClusterPolicy.",
+    "policies": [
+      "defense-lab-disallow-privileged (Deny, request.namespace == 'defense-lab')",
+      "defense-lab-disallow-hostpath (Deny, no volume.hostPath)",
+      "defense-lab-require-automount-false (Deny, automountServiceAccountToken == false)"
+    ],
+    "webhook": "vpol.validate.kyverno.svc-fail-finegrained-<policy>",
+    "ground_truth": "kubectl apply exit rc=1; three admission errors name each policy; compliant pod created",
+    "lab_adjustment": "startupProbe failureThreshold raised to 90 (10s period) for TCG; no product code changed"
+  },
+  "probes": [
+    {
+      "technique": "enforced-path",
+      "probe": "Pod with securityContext.privileged=true in ns defense-lab",
+      "benign_marker": "INKBLADE-BENIGN:admission:enforced-path (pod would echo it)",
+      "marker_landed": false,
+      "detected": true,
+      "blocked": true,
+      "bypass": false,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/kyverno-probes.txt"
+      ],
+      "product_signal": "admission webhook \"vpol...defense-lab-disallow-privileged\" denied: Privileged mode is disallowed"
+    },
+    {
+      "technique": "enforced-path",
+      "probe": "Pod with hostPath volume /tmp in ns defense-lab",
+      "benign_marker": "INKBLADE-BENIGN:admission:enforced-path (pod would echo it)",
+      "marker_landed": false,
+      "detected": true,
+      "blocked": true,
+      "bypass": false,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/kyverno-probes.txt"
+      ],
+      "product_signal": "admission webhook \"vpol...defense-lab-disallow-hostpath\" denied: hostPath volumes are disallowed"
+    },
+    {
+      "technique": "enforced-path",
+      "probe": "Pod without automountServiceAccountToken:false in ns defense-lab",
+      "benign_marker": "INKBLADE-BENIGN:admission:enforced-path (pod would echo it)",
+      "marker_landed": false,
+      "detected": true,
+      "blocked": true,
+      "bypass": false,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/kyverno-probes.txt"
+      ],
+      "product_signal": "admission webhook \"vpol...defense-lab-require-automount-false\" denied"
+    },
+    {
+      "technique": "enforced-path",
+      "probe": "Compliant control: privileged=false, automount=false, no hostPath",
+      "benign_marker": "INKBLADE-BENIGN:admission:enforced-path",
+      "marker_landed": true,
+      "detected": false,
+      "blocked": false,
+      "bypass": false,
+      "control": true,
+      "evidence": [
+        "lab/defense-lab/evidence/kyverno-probes.txt"
+      ],
+      "note": "control proves the webhook does not deny everything; pod created and started"
+    },
+    {
+      "technique": "exempt-namespace-path",
+      "probe": "Identical privileged pod in namespace default (no defense-lab label)",
+      "benign_marker": "INKBLADE-BENIGN:admission:exempt-namespace-path",
+      "marker_landed": true,
+      "detected": false,
+      "blocked": false,
+      "bypass": true,
+      "control": false,
+      "evidence": [
+        "lab/defense-lab/evidence/kyverno-probes.txt"
+      ],
+      "product_signal": "pod/kyverno-probe-privileged-unscoped created (admitted)",
+      "note": "real bypass of the lab policy scope: matchConditions only cover defense-lab; no other policy covers default"
+    }
+  ],
+  "detected": [
+    "enforced-path"
+  ],
+  "bypasses": [
+    "exempt-namespace-path"
+  ],
+  "not_tested": [
+    "audit-mode-path",
+    "annotation-bypass",
+    "mutation-order-path"
+  ],
+  "evidence": [
+    "lab/defense-lab/evidence/kyverno-probes.txt"
+  ],
+  "limitations": [
+    "Policies are namespaced by matchConditions to defense-lab; the exempt-namespace result is a real bypass of that scope, not evidence that Kyverno cannot enforce globally.",
+    "Kyverno 1.19.2 removed kyverno.io/v1 ClusterPolicy; CEL ValidatingPolicy was used instead.",
+    "Only admission-controller was kept running; background/report/cleanup controllers were scaled to 0 under QEMU TCG.",
+    "Audit-mode, annotation and mutation-order bypass techniques were not executed (timebox)."
+  ],
+  "mock": false,
+  "benign_only": true
+}

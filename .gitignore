@@ -50,6 +50,9 @@ lab/upstream_verify/scratch/
 # --- 无法判定归属的在途文件暂存区（见 .wip/README.md，不删除内容） ---
 /.wip/
 
+# --- Rust probe build outputs (CI releases binaries; never commit target/) ---
+probe/target/
+
 # --- bench/perf 可再生输出（lab/bench/perf/ 源码仍入库） ---
 lab/bench/perf/out/\n
 # --- 0day reserve dynamic evidence is part of the proof ---
@@ -61,3 +64,11 @@ lab/bench/perf/out/\n
 
 # --- vendor HTML cache is large and reproducible; distilled matches stay in prov-vendor.json ---
 corpus/novelty/cache/vendor/
+
+# Rust probe build output (CI builds linux-musl in a separate job)
+probe/target/
+
+
+# Real defense lab raw evidence (small text/JSON only)
+!lab/defense-lab/evidence/
+!lab/defense-lab/evidence/**
