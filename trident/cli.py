@@ -123,6 +123,32 @@ def _main(argv=None) -> int:
     ml = msub.add_parser("list")
     ml.add_argument("--modules-dir", default=None)
 
+    srf = sub.add_parser("surfaces", help="真实部署面矩阵：每模块 required_surfaces × 部署画像")
+    srf.add_argument("--profile", required=True)
+    srf.add_argument("--collect", default=None, help="trident collect 输出目录")
+    srf.add_argument("--json", action="store_true")
+    srf.add_argument("--out", default=None, help="写 .json/.md（按扩展名）")
+    srf.add_argument("--fixture", action="store_true",
+                     help="使用画像合成 fixture 数据；输出显式标注 fixture")
+    srf.add_argument("--include-disabled", action="store_true",
+                     help="把 default_enabled=false 的模块计入覆盖率分母（默认只展示不计入）")
+
+    col = sub.add_parser("collect", help="只读采集链：k8s/http/files/hardware")
+    col.add_argument("--profile", default=None, help="部署画像（fixture 模式必填）")
+    col.add_argument("--out", default="collection")
+    col.add_argument("--kubeconfig", default=None)
+    col.add_argument("--context", default=None)
+    col.add_argument("--kubectl", default="kubectl")
+    col.add_argument("--skip-k8s", action="store_true")
+    col.add_argument("--target", action="append", default=[], help="HTTP 端点（可重复）")
+    col.add_argument("--files", action="append", default=[], help="配置/模型导出目录（可重复）")
+    col.add_argument("--hardware", action="append", default=[], help="BMC/交换机导出目录（可重复）")
+    col.add_argument("--timeout", type=int, default=45)
+    col.add_argument("--http-timeout", type=float, default=8.0)
+    col.add_argument("--insecure", action="store_true", help="跳过 TLS 校验（仅授权测试）")
+    col.add_argument("--fixture", action="store_true",
+                     help="显式 fixture 模式：从画像合成采集，报告标注 FIXTURE")
+
     sub.add_parser("roe", help="查看授权状态").add_argument("--workspace", default="local-lab")
 
     # ---- 执行/回滚/中止/报告/规则（终审 Minor#7）------------------------------
@@ -137,6 +163,10 @@ def _main(argv=None) -> int:
     runp.add_argument("--inventory", default=None,
                       help="环境清单；缺省自动发现 <home>/inventory.json")
     runp.add_argument("--catalog", default=None, help="CVE 目录路径")
+    runp.add_argument("--profile", default=None, help="部署画像（启用真实面闸门）")
+    runp.add_argument("--collect", default=None, help="采集链输出目录")
+    runp.add_argument("--probe", action="store_true", help="显式确认 unknown 面已部署")
+    runp.add_argument("--fixture", action="store_true", help="显式 fixture 数据（报告标注）")
 
     exq = sub.add_parser("execute", help="执行攻击链（--dry-run 只出计划；拒绝退出码 91）")
     exq.add_argument("--chain", required=True)
@@ -152,6 +182,10 @@ def _main(argv=None) -> int:
     exq.add_argument("--inventory", default=None,
                      help="环境清单 inventory.json；缺省自动发现 <home>/inventory.json")
     exq.add_argument("--catalog", default=None, help="CVE 目录路径（缺省 trident/core/cve-catalog.json）")
+    exq.add_argument("--profile", default=None, help="部署画像（启用真实面闸门）")
+    exq.add_argument("--collect", default=None, help="采集链输出目录")
+    exq.add_argument("--probe", action="store_true", help="显式确认 unknown 面已部署")
+    exq.add_argument("--fixture", action="store_true", help="显式 fixture 数据")
 
     obj = sub.add_parser("objective", help="目标链编排：三闸门/逐阶段确认/阶段超时/清理校验")
     objsub = obj.add_subparsers(dest="objective_cmd", required=True)
@@ -229,6 +263,9 @@ def _main(argv=None) -> int:
     rp.add_argument("--inventory", default=None,
                     help="漏洞适用性矩阵使用的环境清单；缺省自动发现")
     rp.add_argument("--catalog", default=None, help="CVE 目录路径")
+    rp.add_argument("--profile", default=None, help="附加模块真实面覆盖章节")
+    rp.add_argument("--collect", default=None, help="采集链输出目录")
+    rp.add_argument("--fixture", action="store_true", help="报告标注 FIXTURE 数据")
 
     rl = sub.add_parser("rules", help="规则包 generate|validate（紫队覆盖率矩阵）")
     rlsub = rl.add_subparsers(dest="rcmd", required=True)
@@ -809,7 +846,63 @@ def _main(argv=None) -> int:
         mods = load_modules(mods_dir)
         for key in sorted(mods):
             m = mods[key]
-            print(f"{key}\t{m.series}\t{m.min_level}\t{'写' if m.writes else '读'}")
+            state = "default" if m.default_enabled else "quarantined"
+            print(f"{key}\t{m.series}\t{m.min_level}\t{'写' if m.writes else '读'}"
+                  f"\t{state}\t{len(m.required_surfaces)}")
+        return 0
+
+    if args.cmd == "surfaces":
+        from .core.surface import SurfaceContext, matrix, render_matrix_md
+
+        try:
+            profile = args.profile
+            if args.fixture:
+                ctx = SurfaceContext.build(profile=profile, fixture=True,
+                                          enforce=True)
+                doc = matrix(profile, collection=ctx.collection, probe=False)
+                doc["fixture"] = True
+                doc["mode"] = "fixture"
+            else:
+                doc = matrix(profile, collection=args.collect,
+                             include_disabled=args.include_disabled)
+        except (OSError, ValueError) as exc:
+            print(f"trident surfaces: {exc}", file=sys.stderr)
+            return 2
+        text_md = render_matrix_md(doc)
+        if args.out:
+            out = Path(args.out)
+            out.parent.mkdir(parents=True, exist_ok=True)
+            if out.suffix.lower() == ".json":
+                out.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n",
+                               encoding="utf-8")
+            else:
+                out.write_text(text_md + "\n", encoding="utf-8")
+            print(f"surfaces: {out} (profile={doc['profile']}, "
+                  f"coverage={doc['summary']['coverage_pct']}%)")
+        elif args.json:
+            print(json.dumps(doc, ensure_ascii=False, indent=2))
+        else:
+            print(text_md)
+        return 0
+
+    if args.cmd == "collect":
+        from .collect import collect_all, summarize, write_collection
+
+        try:
+            if args.fixture and not args.profile:
+                raise ValueError("--fixture requires --profile")
+            doc = collect_all(
+                profile=args.profile, kubeconfig=args.kubeconfig, context=args.context,
+                kubectl=args.kubectl, collect_k8s=not args.skip_k8s,
+                targets=args.target, files_dirs=args.files, hardware_dirs=args.hardware,
+                timeout=args.timeout, http_timeout=args.http_timeout,
+                verify_tls=not args.insecure, fixture=args.fixture)
+            path = write_collection(doc, args.out)
+        except (OSError, ValueError) as exc:
+            print(f"trident collect: {exc}", file=sys.stderr)
+            return 2
+        print(json.dumps({"collection": str(path), **summarize(doc)},
+                         ensure_ascii=False, indent=2))
         return 0
 
     if args.cmd == "roe":
@@ -1735,8 +1828,20 @@ def _main(argv=None) -> int:
         except KeyError as exc:
             print(f"trident run: {exc}", file=sys.stderr)
             return 2
+        sctx = None
+        if args.profile or args.collect or args.probe or args.fixture:
+            from .core.surface import SurfaceContext
+
+            try:
+                sctx = SurfaceContext.build(profile=args.profile, collection=args.collect,
+                                            params=params, probe=args.probe,
+                                            fixture=args.fixture, enforce=True)
+            except (OSError, ValueError) as exc:
+                print(f"trident run: {exc}", file=sys.stderr)
+                return 2
         try:
-            result = run_module(store, session, args.module, params, mods_dir, run=run)
+            result = run_module(store, session, args.module, params, mods_dir, run=run,
+                                surface_ctx=sctx)
         except KeyError as exc:
             _human_error(exc, context={"workspace": args.workspace})
             return 2
@@ -1775,15 +1880,27 @@ def _main(argv=None) -> int:
         except (OSError, ValueError) as exc:
             print(f"trident execute: CVE 适用性评估失败：{exc}", file=sys.stderr)
             return 2
+        sctx = None
+        if args.profile or args.collect or args.probe or args.fixture:
+            from .core.surface import SurfaceContext
+
+            try:
+                sctx = SurfaceContext.build(profile=args.profile, collection=args.collect,
+                                            probe=args.probe, fixture=args.fixture,
+                                            enforce=True)
+            except (OSError, ValueError) as exc:
+                print(f"trident execute: {exc}", file=sys.stderr)
+                return 2
         if args.dry_run:
-            _print_json(dry_run(chain, findings, mods_dir, applicability=assessment))
+            _print_json(dry_run(chain, findings, mods_dir, applicability=assessment,
+                                surface_ctx=sctx))
             return 0
         store = _store(home, args.workspace)
         session = _session(args.workspace, args.actor, args.role)
         try:
             result = execute(chain, store, session, mods_dir, findings=findings,
                              workers=args.workers, strict=args.strict,
-                             applicability=assessment)
+                             applicability=assessment, surface_ctx=sctx)
         except (PreconditionError, ExecutionLocked, BackupGateRefused, ZerodayLocked,
                 PermissionError) as exc:
             _human_error(exc, context={"workspace": args.workspace, "action": "trident execute"})
@@ -1909,6 +2026,19 @@ def _main(argv=None) -> int:
         except KeyError as exc:
             _human_error(exc, context={"workspace": args.workspace})
             return 2
+        if args.profile or args.collect:
+            from .core.surface import SurfaceContext, report_section
+
+            try:
+                if args.fixture and not args.profile:
+                    raise ValueError("--fixture requires --profile")
+                sctx = SurfaceContext.build(profile=args.profile, collection=args.collect,
+                                            fixture=args.fixture, enforce=True)
+                text += "\n\n" + report_section(args.profile or sctx.profile_name,
+                                                collection=sctx.collection)
+            except (OSError, ValueError) as exc:
+                print(f"trident report: {exc}", file=sys.stderr)
+                return 2
         if args.out:
             out = Path(args.out)
             out.parent.mkdir(parents=True, exist_ok=True)

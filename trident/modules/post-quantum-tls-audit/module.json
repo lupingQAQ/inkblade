@@ -1,0 +1,23 @@
+{
+  "key": "post-quantum-tls-audit",
+  "name": {
+    "zh": "后量子 TLS 与密钥交换面审计",
+    "en": "Post-quantum TLS and key-exchange surface audit"
+  },
+  "series": "侦察",
+  "description": "检测 TLS 端点是否提供 X25519MLKEM768/X25519Kyber768 等混合后量子组与证书算法；仅经典 ECDHE 时记为降级风险。默认链不启用：主流 ML 画像未部署 PQ TLS 专用面。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "collect": "trident collect 输出目录",
+    "profile": "部署画像名"
+  },
+  "produces": "post-quantum-tls-audit.json + TLS 面 findings",
+  "knowledge": "docs/SURFACE-REALISM.md no-surface 模块隔离",
+  "combo_signature": "pq-tls-downgrade",
+  "surfaces": [
+    {"type": "http-endpoint", "selector": "/tls"}
+  ],
+  "default_enabled": false
+}

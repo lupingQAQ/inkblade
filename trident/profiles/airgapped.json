@@ -1,0 +1,41 @@
+{
+  "schema": "trident-profile-v1",
+  "name": "airgapped",
+  "description": "Air-gapped self-managed Kubernetes: local registry, SPIRE identity, confidential containers, BMC/switch management and no cloud metadata or internet egress.",
+  "platform": "kubernetes",
+  "complete": true,
+  "inherit": ["_k8s-core", "_inference"],
+  "components": {
+    "orchestrator": "kubernetes",
+    "scheduler": "kube-scheduler",
+    "gpu_sharing": "none",
+    "inference": ["vllm"],
+    "hardware": ["bmc", "switch", "gpu", "tpm"],
+    "cloud_metadata": "absent",
+    "identity": "spire",
+    "runtime": "kata-cc"
+  },
+  "surfaces": [
+    {"type": "k8s-object", "selector": "Deployment/spire-server"},
+    {"type": "k8s-object", "selector": "DaemonSet/spire-agent"},
+    {"type": "k8s-object", "selector": "RuntimeClass/kata-cc"},
+    {"type": "k8s-object", "selector": "Deployment/registry"},
+    {"type": "http-endpoint", "selector": "/v2/"},
+    {"type": "http-endpoint", "selector": "/api/registration-entries"},
+    {"type": "config-file", "selector": "spire/server.conf"},
+    {"type": "config-file", "selector": "spire/agent.conf"},
+    {"type": "config-file", "selector": "registry/config.yaml"},
+    {"type": "config-file", "selector": "kata/config.toml"},
+    {"type": "config-file", "selector": "iommu/kernel-cmdline.txt"},
+    {"type": "config-file", "selector": "attest/tpm.json"},
+    {"type": "bmc", "selector": "bmc/redfish"},
+    {"type": "bmc", "selector": "tpm/tpm2"},
+    {"type": "switch", "selector": "switch/sonic"},
+    {"type": "switch", "selector": "switch/cumulus"},
+    {"type": "switch", "selector": "switch/fabric"},
+    {"type": "runtime-agent", "selector": "runtime-agent/spire-agent"},
+    {"type": "runtime-agent", "selector": "runtime-agent/kata"},
+    {"type": "runtime-agent", "selector": "runtime-agent/registry"},
+    {"type": "runtime-agent", "selector": "runtime-agent/falco"}
+  ]
+}

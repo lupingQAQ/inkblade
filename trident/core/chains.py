@@ -390,7 +390,8 @@ def _assess_for_chain(chain: dict, inventory: dict | None,
 
 def dry_run(chain: dict, findings: list[dict], modules_dir: Path | str | None = None,
             *, inventory: dict | None = None, applicability: dict | None = None,
-            catalog_path: str | Path | None = None) -> dict:
+            catalog_path: str | Path | None = None,
+            surface_ctx=None) -> dict:
     """渲染完整执行计划：模块/参数/目标/依赖/备份动作/预计写面 + CVE 适用性依据。
 
     只对 ``applicable`` 的 CVE 开放对应模块；``blocked/unknown/not-applicable``
@@ -430,6 +431,18 @@ def dry_run(chain: dict, findings: list[dict], modules_dir: Path | str | None = 
                     f"CVE 适用性闸门：{gate.get('state')}；"
                     + "；".join(gate.get("basis") or [])[:500]
                 )
+        if surface_ctx is not None and meta is not None:
+            from .surface import gate as surface_gate
+
+            sgate = surface_gate(meta, surface_ctx)
+            entry["surface"] = sgate
+            if sgate["status"] != "run":
+                entry["status"] = "blocked"
+                entry["blocked_reason"] = sgate["reason"]
+        elif meta is not None and not meta.default_enabled:
+            entry["status"] = "blocked"
+            entry["blocked_reason"] = (
+                "default_enabled=false（真实面隔离模块）；需显式 --profile/--collect 或 --probe")
         if writes:
             entry["backup_targets"] = targets
             entry["backup_actions"] = [{"action": "snapshot", "target": t} for t in targets]
@@ -488,6 +501,7 @@ def execute(
     inventory: dict | None = None,
     applicability: dict | None = None,
     catalog_path: str | Path | None = None,
+    surface_ctx=None,
 ) -> dict:
     """执行链：无依赖步骤并行（ThreadPoolExecutor），依赖分支串行；依赖失败 → 下游跳过。
 
@@ -536,7 +550,12 @@ def execute(
             return
         try:
             res = run_module(store, session, st["module"], dict(st.get("params", {})),
-                             modules_dir, run=run)
+                             modules_dir, run=run, surface_ctx=surface_ctx)
+            if res.get("skipped"):
+                _record(sid, "skipped", reason=res.get("summary", ""),
+                        result=res,
+                        **({"applicability": gate} if gate is not None else {}))
+                return
             _record(sid, "success", result=res,
                     **({"applicability": gate} if gate is not None else {}))
         except Exception as exc:  # 单步失败不拖垮独立分支

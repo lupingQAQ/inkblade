@@ -1,0 +1,25 @@
+{
+  "key": "spiffe-spire-audit",
+  "name": {
+    "zh": "SPIFFE/SPIRE 身份面审计",
+    "en": "SPIFFE/SPIRE identity surface audit"
+  },
+  "series": "侦察",
+  "description": "检测 SPIRE Server/Agent、注册 API 与 trust domain 配置；未授权注册 API、默认 trust domain 或 hostPath socket 暴露记为风险。仅在 SPIFFE/SPIRE 实际部署时执行。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "collect": "trident collect 输出目录",
+    "profile": "部署画像名"
+  },
+  "produces": "spiffe-spire-audit.json + 身份面 findings",
+  "knowledge": "docs/SURFACE-REALISM.md SPIFFE/SPIRE 面",
+  "combo_signature": "spire-registration-api-open",
+  "surfaces": [
+    {"type": "k8s-object", "selector": "Deployment/spire-server"},
+    {"type": "runtime-agent", "selector": "spire-agent"},
+    {"type": "config-file", "selector": "spire"}
+  ],
+  "default_enabled": true
+}

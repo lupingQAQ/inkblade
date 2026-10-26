@@ -1,0 +1,34 @@
+{
+  "schema": "trident-profile-v1",
+  "name": "bare-k8s-gpu",
+  "description": "Self-managed Kubernetes with GPU worker nodes, direct vLLM serving, node BMC and no Ray/Slurm control plane.",
+  "platform": "kubernetes",
+  "complete": true,
+  "inherit": ["_k8s-core", "_inference"],
+  "components": {
+    "orchestrator": "kubernetes",
+    "scheduler": "kube-scheduler",
+    "gpu_sharing": "none",
+    "inference": ["vllm"],
+    "hardware": ["bmc", "gpu", "tpm"],
+    "cloud_metadata": "absent"
+  },
+  "surfaces": [
+    {"type": "k8s-object", "selector": "PyTorchJob/train"},
+    {"type": "k8s-object", "selector": "RuntimeClass/kata-cc"},
+    {"type": "runtime-agent", "selector": "runtime-agent/kata"},
+    {"type": "runtime-agent", "selector": "runtime-agent/falco"},
+    {"type": "runtime-agent", "selector": "runtime-agent/tetragon"},
+    {"type": "http-endpoint", "selector": "/dpu"},
+    {"type": "http-endpoint", "selector": "/key/info"},
+    {"type": "http-endpoint", "selector": "/config"},
+    {"type": "config-file", "selector": "litellm/config.yaml"},
+    {"type": "config-file", "selector": "registry/config.yaml"},
+    {"type": "config-file", "selector": "kata/config.toml"},
+    {"type": "config-file", "selector": "iommu/kernel-cmdline.txt"},
+    {"type": "config-file", "selector": "attest/tpm.json"},
+    {"type": "bmc", "selector": "bmc/redfish"},
+    {"type": "bmc", "selector": "bmc/dpu"},
+    {"type": "bmc", "selector": "tpm/tpm2"}
+  ]
+}

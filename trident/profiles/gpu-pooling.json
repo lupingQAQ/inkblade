@@ -1,0 +1,31 @@
+{
+  "schema": "trident-profile-v1",
+  "name": "gpu-pooling",
+  "description": "Kubernetes GPU pooling with HAMi/cGPU sharing, SGLang PD disaggregation and per-tenant GPU memory partitions; no BMC, no cloud metadata.",
+  "platform": "kubernetes",
+  "complete": true,
+  "inherit": ["_k8s-core", "_inference"],
+  "components": {
+    "orchestrator": "kubernetes",
+    "scheduler": "hami-scheduler",
+    "gpu_sharing": "hami-cgpu",
+    "inference": ["vllm", "sglang"],
+    "hardware": ["gpu"],
+    "cloud_metadata": "absent"
+  },
+  "surfaces": [
+    {"type": "k8s-object", "selector": "DaemonSet/hami-device-plugin"},
+    {"type": "k8s-object", "selector": "Deployment/hami-scheduler"},
+    {"type": "k8s-object", "selector": "ConfigMap/hami-scheduler"},
+    {"type": "http-endpoint", "selector": "/scheduler"},
+    {"type": "http-endpoint", "selector": "/route"},
+    {"type": "http-endpoint", "selector": "/register_dp_rank"},
+    {"type": "http-endpoint", "selector": "/query_dp_ranks"},
+    {"type": "config-file", "selector": "hami/config.yaml"},
+    {"type": "config-file", "selector": "sglang/config.yaml"},
+    {"type": "runtime-agent", "selector": "runtime-agent/hami-device-plugin"},
+    {"type": "runtime-agent", "selector": "runtime-agent/hami-scheduler"},
+    {"type": "runtime-agent", "selector": "runtime-agent/vllm"},
+    {"type": "runtime-agent", "selector": "runtime-agent/sglang"}
+  ]
+}

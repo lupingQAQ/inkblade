@@ -12,6 +12,7 @@ from .backup import BackupManager
 from .evidence import EvidenceStore
 from .registry import ModuleMeta, load_modules
 from .roe import ExecutionLocked, assert_execution_allowed, scope_violation
+from .surface import SurfaceContext, gate as surface_gate
 
 
 class BackupGateRefused(Exception):
@@ -38,6 +39,7 @@ def run_module(
     params: dict[str, Any],
     modules_dir: Path | str,
     run=None,
+    surface_ctx: SurfaceContext | dict | None = None,
 ) -> dict[str, Any]:
     mods = load_modules(modules_dir)
     if module_key not in mods:
@@ -77,6 +79,36 @@ def run_module(
                        "refused-out-of-scope", is_zeroday=is_zd)
         raise ExecutionLocked(violation)
 
+    # 真实面闸门：absent 不执行/不产 finding/不计覆盖；unknown 需显式 --probe。
+    # 直接调用（旧测试/库调用）对默认启用模块保持兼容；被隔离模块始终受闸门约束。
+    sctx = surface_ctx
+    if sctx is None:
+        if meta.default_enabled:
+            sctx = SurfaceContext.build(params=params, enforce=False)
+        else:
+            sctx = SurfaceContext.build(
+                params=params, probe=bool(params.get("probe") or params.get("allow_undeployed")),
+                enforce=True)
+    elif isinstance(sctx, dict):
+        sctx = SurfaceContext.build(
+            profile=sctx.get("profile"), collection=sctx.get("collection"),
+            params=params, probe=bool(sctx.get("probe")), fixture=bool(sctx.get("fixture")),
+            enforce=True)
+    gate = surface_gate(meta, sctx)
+    if gate["status"] != "run":
+        run.log_action(session.name, "execute", module_key, params, gate["status"],
+                       is_zeroday=is_zd)
+        return {
+            "run": run.name,
+            "step": module_key,
+            "status": gate["status"],
+            "skipped": True,
+            "summary": gate["reason"],
+            "surface": gate,
+            "findings": [],
+            "artifacts": [],
+        }
+
     # 备份闸门：写类模块必须先拿到快照回执
     if meta.writes:
         receipt = bm.snapshot(module_key, params.get("backup_targets", []))
@@ -85,12 +117,18 @@ def run_module(
                            is_zeroday=is_zd)
             raise BackupGateRefused("写类模块缺少备份回执（backup_targets 为空或不可用）")
 
+    # Modules consume the real collection first; the runner exposes it without
+    # overwriting an explicit module parameter.
+    if sctx.collection and "collection" not in params:
+        params["collection"] = sctx.collection
+    if sctx.profile_name and "profile" not in params:
+        params["profile"] = sctx.profile_name
     run.log_action(session.name, "execute", module_key, params, "started",
                    rollback_to=module_key if meta.writes else None, is_zeroday=is_zd)
     try:
         mod = _load_run_py(meta)
         ctx = {"store": store, "run": run, "marker": marker, "backup": bm,
-               "actor": session.name, "meta": meta.__dict__}
+               "actor": session.name, "meta": meta.__dict__, "surface": sctx}
         result = mod.run(ctx, params) or {}
     except Exception as exc:  # 模块失败：审计 + 不留写残留（由回滚保障）
         run.log_action(session.name, "execute", module_key, params, f"failed:{exc}",
@@ -123,4 +161,4 @@ def run_module(
         pass
     run.log_action(session.name, "execute", module_key, params, "success",
                    rollback_to=module_key if meta.writes else None, is_zeroday=is_zd)
-    return {"run": run.name, "step": module_key, **step}
+    return {"run": run.name, "step": module_key, "surface": gate, **step}

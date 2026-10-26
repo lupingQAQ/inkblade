@@ -14,5 +14,10 @@
   },
   "produces": "dpu-smartnic-surface.json + 服务/凭据/鉴权证据（不回显密码）",
   "knowledge": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；BlueField DPU DOCA/rshim/Redfish 服务语义",
-  "combo_signature": "dpu-unauth-service-surface"
+  "combo_signature": "dpu-unauth-service-surface",
+  "surfaces": [
+    {"type": "http-endpoint", "selector": "/dpu"},
+    {"type": "bmc", "selector": "bmc/dpu"}
+  ],
+  "default_enabled": true
 }

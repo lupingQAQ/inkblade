@@ -1,0 +1,25 @@
+{
+  "key": "confidential-containers-audit",
+  "name": {
+    "zh": "机密容器运行时与证明面审计",
+    "en": "Confidential-container runtime and attestation surface"
+  },
+  "series": "侦察",
+  "description": "检测 Kata/CC RuntimeClass、机密 Pod 注解与 TEE 证明配置；只在机密容器组件实际部署时执行，缺少证明或打开调试参数记为风险。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "collect": "trident collect 输出目录（真实采集优先）",
+    "profile": "部署画像名（bare-k8s-gpu/managed-ack-tke/airgapped/...）"
+  },
+  "produces": "confidential-containers-audit.json + 运行时/证明面 findings",
+  "knowledge": "docs/SURFACE-REALISM.md 机密容器与 TEE 面的生产可测性",
+  "combo_signature": "confidential-runtime-without-attestation",
+  "surfaces": [
+    {"type": "k8s-object", "selector": "RuntimeClass/kata-cc"},
+    {"type": "runtime-agent", "selector": "kata"},
+    {"type": "config-file", "selector": "kata"}
+  ],
+  "default_enabled": true
+}

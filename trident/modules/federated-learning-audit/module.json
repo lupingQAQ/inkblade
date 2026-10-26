@@ -1,0 +1,25 @@
+{
+  "key": "federated-learning-audit",
+  "name": {
+    "zh": "联邦学习控制面审计",
+    "en": "Federated-learning control-plane audit"
+  },
+  "series": "侦察",
+  "description": "检测 NVFlare/Flower 等联邦学习控制器、轮次 API 与参与方注册面；未授权轮次提交/模型下发记为风险。默认链不启用：主流 ML 推理/训练画像无联邦学习组件。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "collect": "trident collect 输出目录",
+    "profile": "部署画像名"
+  },
+  "produces": "federated-learning-audit.json + FL 控制面 findings",
+  "knowledge": "docs/SURFACE-REALISM.md no-surface 模块隔离",
+  "combo_signature": "fl-round-poisoning",
+  "surfaces": [
+    {"type": "http-endpoint", "selector": "/fl"},
+    {"type": "k8s-object", "selector": "Deployment/nvflare"},
+    {"type": "k8s-object", "selector": "Deployment/flower"}
+  ],
+  "default_enabled": false
+}

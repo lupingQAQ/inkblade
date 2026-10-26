@@ -1,0 +1,40 @@
+{
+  "schema": "trident-profile-v1",
+  "name": "slurm-hpc",
+  "description": "Bare-metal Slurm HPC cluster: no Kubernetes API, BMC/IB switch management, shared model files and Slurm REST API.",
+  "platform": "slurm",
+  "complete": true,
+  "components": {
+    "orchestrator": "slurm",
+    "scheduler": "slurmctld",
+    "gpu_sharing": "none",
+    "inference": ["vllm"],
+    "hardware": ["bmc", "switch", "gpu", "tpm"],
+    "cloud_metadata": "absent"
+  },
+  "surfaces": [
+    {"type": "config-file", "selector": "slurm/slurm.conf"},
+    {"type": "config-file", "selector": "slurm/cgroup.conf"},
+    {"type": "config-file", "selector": "train/config.yaml"},
+    {"type": "config-file", "selector": "iommu/kernel-cmdline.txt"},
+    {"type": "config-file", "selector": "attest/tpm.json"},
+    {"type": "config-file", "selector": "ib/partitions.conf"},
+    {"type": "config-file", "selector": "fabric/ibdiagnet.out"},
+    {"type": "http-endpoint", "selector": "/slurm/v0.0.40/jobs"},
+    {"type": "http-endpoint", "selector": "/metrics"},
+    {"type": "http-endpoint", "selector": "/v1/models"},
+    {"type": "http-endpoint", "selector": "/dpu"},
+    {"type": "bmc", "selector": "bmc/redfish"},
+    {"type": "bmc", "selector": "bmc/dpu"},
+    {"type": "bmc", "selector": "tpm/tpm2"},
+    {"type": "switch", "selector": "switch/ib"},
+    {"type": "switch", "selector": "switch/fabric"},
+    {"type": "switch", "selector": "switch/sonic"},
+    {"type": "runtime-agent", "selector": "runtime-agent/slurmd"},
+    {"type": "runtime-agent", "selector": "runtime-agent/pmix"},
+    {"type": "runtime-agent", "selector": "runtime-agent/nccl"},
+    {"type": "runtime-agent", "selector": "runtime-agent/dcgm-exporter"},
+    {"type": "model-file", "selector": "model/weights/model.safetensors"},
+    {"type": "model-file", "selector": "checkpoint/latest/model.safetensors"}
+  ]
+}

@@ -13,6 +13,37 @@ _KEY_RE = re.compile(r"^[a-z][a-z0-9-]*$")  # 纯小写单词/连字符；允许
 
 _REQUIRED = ("key", "name", "series", "description", "min_level", "writes", "requires")
 
+# Legacy modules declare their deployment surfaces in a central map so that
+# adding a module does not require a second schema migration.  A per-module
+# ``surfaces`` / ``required_surfaces`` field always wins.
+_PROFILES_DIR = Path(__file__).resolve().parents[1] / "profiles"
+_SURFACE_MAP_PATH = _PROFILES_DIR / "surface-map.json"
+_QUARANTINE_PATH = _PROFILES_DIR / "quarantine.json"
+_SURFACE_MAP: dict[str, list[dict]] | None = None
+_QUARANTINE: set[str] | None = None
+
+
+def _surface_map() -> dict[str, list[dict]]:
+    global _SURFACE_MAP
+    if _SURFACE_MAP is None:
+        try:
+            raw = json.loads(_SURFACE_MAP_PATH.read_text(encoding="utf-8"))
+            _SURFACE_MAP = {str(k): list(v) for k, v in (raw.get("modules") or {}).items()}
+        except (OSError, ValueError, AttributeError):
+            _SURFACE_MAP = {}
+    return _SURFACE_MAP
+
+
+def _quarantine() -> set[str]:
+    global _QUARANTINE
+    if _QUARANTINE is None:
+        try:
+            raw = json.loads(_QUARANTINE_PATH.read_text(encoding="utf-8"))
+            _QUARANTINE = {str(k) for k in (raw.get("modules") or {})}
+        except (OSError, ValueError, AttributeError):
+            _QUARANTINE = set()
+    return _QUARANTINE
+
 
 @dataclass
 class ModuleMeta:
@@ -28,6 +59,8 @@ class ModuleMeta:
     knowledge: str = ""
     combo_signature: str = ""
     private: bool = False
+    required_surfaces: list[dict] = field(default_factory=list)
+    default_enabled: bool = True
     path: Path | None = None
 
 
@@ -59,6 +92,10 @@ def load_modules(modules_dir: Path | str) -> dict[str, ModuleMeta]:
             params_schema=raw.get("params_schema", {}), produces=raw.get("produces", ""),
             knowledge=raw.get("knowledge", ""), combo_signature=raw.get("combo_signature", ""),
             private=bool(raw.get("private", False)),
+            required_surfaces=list(raw.get("surfaces") or raw.get("required_surfaces")
+                                   or _surface_map().get(raw["key"], [])),
+            default_enabled=bool(raw.get("default_enabled",
+                                         raw["key"] not in _quarantine())),
             path=d,
         )
     for m in mods.values():

@@ -1,0 +1,25 @@
+{
+  "key": "ambient-mesh-audit",
+  "name": {
+    "zh": "Ambient Mesh（ztunnel）面审计",
+    "en": "Ambient mesh (ztunnel) surface audit"
+  },
+  "series": "侦察",
+  "description": "检测 Istio ambient 的 ztunnel/istio-cni、HBONE 健康端点与 hostNetwork；ztunnel 主机网络、mesh 未覆盖命名空间或明文 HBONE 记为风险。仅在 ambient mesh 实际部署时执行。",
+  "min_level": "主动探测",
+  "writes": false,
+  "requires": [],
+  "params_schema": {
+    "collect": "trident collect 输出目录",
+    "profile": "部署画像名"
+  },
+  "produces": "ambient-mesh-audit.json + mesh 面 findings",
+  "knowledge": "docs/SURFACE-REALISM.md ambient mesh 面",
+  "combo_signature": "ztunnel-hostnetwork-mesh-bypass",
+  "surfaces": [
+    {"type": "k8s-object", "selector": "DaemonSet/ztunnel"},
+    {"type": "runtime-agent", "selector": "ztunnel"},
+    {"type": "http-endpoint", "selector": "/healthz/ready"}
+  ],
+  "default_enabled": true
+}
