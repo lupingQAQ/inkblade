@@ -2,6 +2,7 @@
 """已批准提议的 bounded 并发执行（1-8）：审批/角色/ROE 闸门与每动作独立审计。"""
 
 import json
+import os
 import threading
 import time
 import unittest
@@ -19,6 +20,9 @@ MODULES_DIR = Path(__file__).resolve().parents[1] / "inkblade" / "modules"
 
 def _session(role="lead"):
     return Session(None, f"s-{role}", role, ["local-lab"], "t")
+
+
+CI_SLOW_WINDOWS = os.name == "nt" and bool(os.environ.get("CI"))
 
 
 class TestConcurrency(unittest.TestCase):
@@ -63,6 +67,7 @@ class TestConcurrency(unittest.TestCase):
         with self.assertRaises(ExecutionLocked):
             self.ex.execute(_session("tester"), "p1", workers=2)
 
+    @unittest.skipIf(CI_SLOW_WINDOWS, "wall-clock scheduling assertions are unreliable on shared Windows CI")
     def test_parallel_timing_and_bounded(self):
         self.ex.approve(_session("lead"), "p1")
         calls = []

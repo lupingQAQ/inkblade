@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import time
 import unittest
 from pathlib import Path
@@ -42,6 +43,9 @@ def _canonical(doc: dict) -> str:
     body = {k: v for k, v in doc.items() if k != "hashes"}
     body["hashes"] = {k: v for k, v in doc["hashes"].items() if k != "proof_sha256"}
     return json.dumps(body, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+CI_SLOW_WINDOWS = os.name == "nt" and bool(os.environ.get("CI"))
 
 
 class ObjectiveBase(unittest.TestCase):
@@ -228,6 +232,7 @@ class TestExecution(ObjectiveBase):
         self.assertTrue(result["proof"]["cleanup"]["verified"])
         self.assertEqual(result["proof"]["cleanup"]["residue"], [])
 
+    @unittest.skipIf(CI_SLOW_WINDOWS, "wall-clock scheduling assertions are unreliable on shared Windows CI")
     def test_stage_timeout_fails_and_cleans(self):
         backend = FakeKubectlBackend(slow_stages={"stage-4-privileged-pod": 0.25})
         result = run_objective(

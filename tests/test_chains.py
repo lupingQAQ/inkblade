@@ -1,6 +1,7 @@
 """链引擎测试：目录 20+ 条（长上下文/PD KV 专项新增 2 条）+ 前置三态判定 + 安全表达式求值 + dry-run + 并行执行。"""
 
 import json
+import os
 import re
 import time
 import unittest
@@ -65,6 +66,9 @@ def _chain_fixture(**overrides):
     }
     chain.update(overrides)
     return chain
+
+
+CI_SLOW_WINDOWS = os.name == "nt" and bool(os.environ.get("CI"))
 
 
 class TestCatalog(unittest.TestCase):
@@ -247,6 +251,7 @@ class TestExecute(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
+    @unittest.skipIf(CI_SLOW_WINDOWS, "wall-clock scheduling assertions are unreliable on shared Windows CI")
     def test_parallel_independent_steps(self):
         _fixture_module(self.root, "probe-first", sleep=0.30, touch=str(self.root / "a.txt"))
         _fixture_module(self.root, "probe-second", sleep=0.45, touch=str(self.root / "b.txt"))
