@@ -209,8 +209,10 @@ def _render_md(doc: dict) -> str:
                  f"（路径：{', '.join(paths) if paths else '—'}）")
     lines.append(f"- ARTEX 侧 finding：**{a.get('findings_total')} 条**"
                  f"（按级别 {json.dumps(a.get('findings_by_severity') or {}, ensure_ascii=False)}）")
+    step_timings = ", ".join(
+        f"{s['step']}={s['status']}" for s in (t.get("step_timings") or []))
     lines.append(f"- InkBlade 链执行：{'成功' if t.get('ok') else '失败'}"
-                 f"（{', '.join(f'{s['step']}={s['status']}' for s in (t.get('step_timings') or []))}）\n")
+                 f"（{step_timings}）\n")
 
     lines.append("## 2. 每步时延\n")
     lines.append("### ARTEX（LLM 轮 + 工具执行）\n")
