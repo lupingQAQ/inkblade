@@ -78,3 +78,8 @@ Updated: 2026-10-27 (agent runtime, coverage closure, file audit, defense bypass
 - Ran 1998 tests, OK (skipped=13)
 - HEAD 4472f38; encrypted reverse channel TLS/WSS/HTTPS; gRPC/Redis ML proxy; loopback SOCKS5
 - Still pending: QUIC/WebTransport/MASQUE, ZMTP+CURVE, TCPStore/Gloo, NCCL/UCX profiles
+
+## Scope decision (2026-10-28)
+- User dropped the seven resource-bound items: 10K GPU cluster, hardware TEE, real six-cloud accounts, public Fulcio identity, cross-replica SaaS, ARTEX bare-metal comparison, enterprise on-site validation.
+- They are out of scope and not counted in completion; public docs do not mention them.
+- Journal append is now serialized across threads/processes (flake fix).
