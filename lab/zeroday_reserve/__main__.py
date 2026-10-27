@@ -1,1 +1,3 @@
-from .harness import main\n\nraise SystemExit(main())
+from .harness import main
+
+raise SystemExit(main())

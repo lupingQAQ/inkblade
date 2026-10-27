@@ -254,8 +254,9 @@ def _coverage_md(m: dict, result: dict) -> str:
         "|---|---|---|---|---|",
     ]
     for item in result["items"]:
+        detection_cell = item['detection_point'].replace("|", "\\|")
         lines.append(f"| `{item['vector']}` | `{item['rule']}` | {item['engine']} | "
-                     f"{'命中' if item['fired'] else '漏过'} | {item['detection_point'].replace('|', '\\|')} |")
+                     f"{'命中' if item['fired'] else '漏过'} | {detection_cell} |")
     lines.append("")
     return "\n".join(lines)
 

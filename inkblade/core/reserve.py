@@ -411,7 +411,8 @@ def render_markdown(registry: dict) -> str:
                  f"{', '.join(s.get('reserve_unique_ids') or []) or '（空）'}")
     if s.get("excluded_non_0day"):
         lines.append(f"- **不计入储备（verified+confirmed 但非 0day 性质）**：{', '.join(s['excluded_non_0day'])}")
-    lines.append(f"- **already-public 降级 = {s['public']}**：{", ".join(s['already_public_ids']) or '（空）'}")
+    public_ids = ", ".join(s['already_public_ids']) or "（空）"
+    lines.append(f"- **already-public 降级 = {s['public']}**：{public_ids}")
     if s["inconclusive"]:
         lines.append(f"- **inconclusive = {s['inconclusive']}**：网络/速率/缺少包映射，未计入储备；"
                      f"{', '.join(s.get('inconclusive_ids') or [])}")

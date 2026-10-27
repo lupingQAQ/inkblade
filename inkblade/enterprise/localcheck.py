@@ -435,10 +435,12 @@ def render_md(result: dict) -> str:
     ]
     for item in result["checks"]:
         ev = json.dumps(item.get("evidence") or {}, ensure_ascii=False)
+        evidence_cell = ev[:220].replace("|", "\\|")
         lines.append(f"| `{item['id']}` {item['title']} | {item['status']} | "
-                     f"{item['elapsed_ms']} ms | {ev[:220].replace('|', '\\|')} |")
+                     f"{item['elapsed_ms']} ms | {evidence_cell} |")
         if item.get("error"):
-            lines.append(f"| ↳ error | {item['error'].replace('|', '\\|')} | | |")
+            error_cell = item['error'].replace("|", "\\|")
+            lines.append(f"| ↳ error | {error_cell} | | |")
     lines += ["", "复跑：`python -m inkblade.enterprise.localcheck` 或 `inkblade enterprise local-checks`。"]
     return "\n".join(lines) + "\n"
 
