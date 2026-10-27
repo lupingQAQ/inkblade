@@ -123,7 +123,7 @@
 | ADD-27 | 角色化多进程 swarm（recon/exploit/verify/report） | progress 行 78；`docs/SWARM-EVAL.md` | done | `inkblade/core/swarm.py`；`tests/test_swarm.py`、`test_swarm_eval.py` | 数字来自 simulate 执行器，不冒充真实模块 SLA | agent |
 | ADD-28 | Agent 评测基座（15 任务 6 类，deterministic vs supervisor-worker） | `docs/AGENT-EVAL-RESULTS.md` | done | `lab/agent-eval/`；`reports/samples/agent-eval/agent-eval.json`；`tests/test_agent_eval.py` | 15 任务规模，非 AgentDojo/CyberGym 级 | agent |
 | ADD-29 | 腾讯 8 任务 OFF/ON 微评测（成功率/时延/token/干预/证据覆盖） | `docs/SECTION3-METRICS.md` | done | `lab/tencent-compare/`；`reports/samples/tencent-compare/`；`tests/test_tencent_compare.py` | 不调用外部 LLM，不能替代冻结模型真实靶场跑分 | agent |
-| ADD-30 | Rust 探针：单静态二进制，目标端零解释器 | `docs/ARCHITECTURE-PROBE.md`；README | done | `probe/src/*.rs`（21 文件已入库）；`probe/Cargo.toml`；`probe/dist/inkblade-probe-linux-{amd64,arm64}` + sha256；`docs/PROBE-BUILD.md`；`.github/workflows/probe-release.yml` | 本机 cargo 被 WDAC/SAC 拦截，二进制只能走 CI；`dist/` 不入 git；`exec`/`scan` 简写未实现 | probe |
+| ADD-30 | Rust 探针：单静态二进制，目标端零解释器（发布 `probe-v0.1.1`，源码 `1f0f57c`） | `docs/ARCHITECTURE-PROBE.md`；README；`docs/PROBE-BUILD.md` | done | `probe/src/*.rs`（21 文件已入库）；`probe/Cargo.toml`；tag `probe-v0.1.1`（CI run 40430384961，两次独立构建字节一致）：linux-amd64 `c8d2f118…` 2,066,112 B、linux-arm64 `6d480367…` 1,775,584 B；`.github/workflows/probe-release.yml` | 本机 cargo 被 WDAC/SAC 拦截，二进制只能走 CI；`dist/` 不入 git；`exec`/`scan` 简写未实现 | probe |
 | ADD-31 | 探针协议：长度前缀 JSON 帧、认证、任务/结果、预算、文件分块、清理、错误码 | `docs/PROBE-PROTOCOL.md` | done | `probe/src/protocol.rs`、`server.rs`；`inkblade/channel.py`；`tests/test_probe_channel.py`（11 项） | challenge-HMAC 而非 mTLS；依赖 `kubectl exec -i` 通道 | probe |
 | ADD-32 | 多探针父子树（probe_id/parent_id、per-child token、depth/fan-out、child-first cleanup） | README「Probe trees」；`docs/ARCHITECTURE-PROBE.md` | done | `inkblade/core/probes.py`（SQLite parent_id/children/cleanup）；`tests/test_session_probe_entry.py`（parent_child_tree、controller_spawn_and_cleanup_tree） | 未在真集群做多探针跨节点演练 | probe |
 | ADD-33 | 全量探针化：287 模块全部改为 JSON 模板 | progress 行 110/113/115/118；`docs/PROBE-COVERAGE.md` | partial | 286 `template.json`；`tests/test_probe_templates.py`；`docs/PROBE-COVERAGE.md` | Rust 运行态 286/286 已通；等价模板 48 / 降级 238（降级语义未补齐） | migration |
@@ -161,12 +161,17 @@
 | ADD-65 | 真实 10K+ GPU / 裸机性能实测 | `docs/SOTA-2026-10.md` 剩余硬缺口 1；`MASTER-REPORT` §7.1 | blocked-resource | 仿真侧：`lab/fabric-sim/`；`docs/SCALE-RESULTS.md` | 无 ≥1,024 GPU 集群、真实 NIC/交换机计数器 | docs |
 | ADD-66 | 硬件 TEE 实测（TDX / SEV-SNP / NVIDIA CC） | SOTA 剩余硬缺口 2；`MASTER-REPORT` §7.2 | blocked-resource | 解析器：`inkblade/tee/`；公共 PKI：`inkblade/tee/online.py`；`docs/TEE-ONLINE-VERIFICATION.md` | 无实机 quote/report 与「证明→密钥释放」 | docs |
 | ADD-67 | 六云商真实环境实测（EKS/AKS/ACK/TKE/GKE/CCE） | SOTA 剩余硬缺口 3；`docs/SIX-CLOUD-MATRIX.md` | blocked-resource | 契约仿真：`lab/cloud_six_sim.py`；三云 mock：`lab/cloud_free/` | 无账号、IAM 求值、真实日志与 GPU 节点 | docs |
-| ADD-68 | 防护产品真实部署态回放（Elkeid/Falco/Kyverno） | spec §18-17；`docs/DYNAMIC-VERIFICATION.md` §8 | partial | `docs/DEFENSE-LAB-RESULTS.md`；`lab/defense-lab/`；`reports/samples/`（QEMU k3s 真机，4 产品） | 已部署并回放 Kyverno 1.19.2 / Falco 0.45.1 / Trivy 0.76.1 / ModSecurity+CRS；其余 7 个因内核头缺失、无 BPF-LSM、CNI 为 flannel 明确 N/A | defense |
+| ADD-68 | 防护产品真实部署态回放（Elkeid/Falco/Kyverno） | spec §18-17；`docs/DYNAMIC-VERIFICATION.md` §8 | partial | `docs/DEFENSE-LAB-RESULTS.md`（QEMU k3s 真机 4 产品）；`docs/DEFENSE-BYPASS-PATH.md` + `reports/samples/defense-bypass-path/`（`ee42f1d` 执行路径：6 技术 5 bypass-confirmed / 1 detected / 0 失败）；`lab/defense-lab/` | 已部署并回放 Kyverno 1.19.2 / Falco 0.45.1 / Trivy 0.76.1 / ModSecurity+CRS；其余 7 个因内核头缺失、无 BPF-LSM、CNI 为 flannel 明确 N/A；绕过结论只覆盖该规则集与作用域 | defense |
 | ADD-69 | 自主 runtime 端到端（真实 LLM 驱动 plan→execute→report） | `docs/AUTONOMY.md`；SOTA「自主 agent 渗透闭环」 | blocked-resource | `core/{explorer,autonomy,supervisor}.py`；`lab/tencent-compare/`、`lab/agent-eval/` | CI 无外网/密钥，端到端演练需客户环境 | agent |
 | ADD-70 | 自有产物 cosign keyless 签发（公共 Fulcio + OIDC） | SOTA 剩余硬缺口 4；`docs/KEYLESS-VERIFICATION.md` | blocked-resource | `inkblade/sigstore_keyless.py`；公共样本验证 `reports/samples/sigstore/` | 无 OIDC 身份，未向公共 Fulcio 申请证书 | enterprise |
 | ADD-71 | 跨副本分布式 SaaS（队列/HA/租户 KMS） | SOTA 剩余硬缺口 5；`docs/SAAS-LOAD-RESULTS.md` | blocked-resource | 单机模拟：`lab/saas/`；`tests/test_saas.py` | 无 broker/跨副本租约/租户加密/100 并发故障恢复 | enterprise |
+| ADD-72 | 跨集群中继：多 kubeconfig/context 注册、复用既有 dial/SOCKS5 到达、kubectl/sa-token/exec 三种投放、cluster/parent_id 防环、每集群独立 RoE 与预算、失败按 transport 回退 | `3c84696`；`docs/AGENT-COVERAGE.md` §6 | partial | `inkblade/agent/relay.py`；`inkblade/agent/cli.py`（`agent relay add/list/status`）；`tests/test_agent_relay.py`（10 项） | 两集群为 fake kubectl + fake API + fake SOCKS5；真实 kubeconfig 客户端证书链、生产 SOCKS5、跨云网络策略与深层中继时延未验证 | agent |
+| ADD-73 | 覆盖闭包 4+1 判据：可达资产已检查、可利用权限边已尝试（成功带证据/失败带原因）、探针已注册且有基线、frontier 无未收敛意图，外加 objective 证据门控；未闭包不得返回 `success` | `3c84696`；`docs/COVERAGE-CLOSURE.md`；`docs/AGENT-COVERAGE.md` §3 | done | `inkblade/agent/coverage.py`；`tests/test_agent_coverage.py`（10 项）；`reports/samples/coverage-closure/coverage-proof.json`（4 可达资产/3 权限边/2 探针，`closed=true`、0 缺口） | 只证明「已声明的可达面已处理」，资产发现遗漏不在证明范围；样例为 mock 两集群，非生产集群结论 | agent |
+| ADD-74 | 文件与操作审计时间线：探针 `audit-exec`/`read-file`/`list-files` 采集、evidence.db `file_ops` 表、统一 `timeline.json`、WebUI 台账/证据浏览器联动、报告台账节与 SOC 审计键 | `687824e`；`docs/FILE-AUDIT.md` | done | `probe/src/auditops.rs`；`inkblade/core/{fileaudit,timeline}.py`；`tests/test_file_audit.py`（17 项）；`reports/samples/static-export/timeline.json` | fd 采样为进程存活窗口（5ms）+ argv 回退，不是 eBPF/ptrace 全量跟踪；非 Linux 主机仅 argv；`file_ops` 按 run 分库 | probe |
+| ADD-75 | 防护感知绕过执行路径：`collect` 返回 `security_posture` → `defense:<product>` 事实 → 产品到技术选型 → 攻击意图必须带 `bypass.technique_id`，无已实现原语即 `policy-refused` 且不执行 | `ee42f1d`；`docs/DEFENSE-BYPASS-PATH.md` | done | `inkblade/core/defense_policy.py`；`probe/src/{posture,bypass}.rs`；`lab/defense-bypass/`；`reports/samples/defense-bypass-path/`；`tests/test_defense_policy.py`（23 项）+`tests/test_defense_bypass_artifacts.py`（9 项） | QEMU k3s 真机 Kyverno 1.19.2+Falco 0.45.1：6 技术中 5 bypass-confirmed、1 detected（SA 选择被 API-contact 规则看见）、0 失败；imagescan/veinmind/WAF/netobserv 无原语记 `policy-refused`；Kyverno 为命名空间作用域绕过而非引擎绕过 | defense |
+| ADD-76 | 自动 agent 事件溯源运行时：append-only EventLog（hash chain/checkpoint/resume/replay）+ PlanGraph 证据门控 + frontier 调度（lease/retry/DLQ/四维预算）+ recon/exploit/verify/report 角色 worker，探针为唯一执行路径 | `5244259`；`docs/AGENT-AUTONOMY.md` | partial | `inkblade/agent/`（当前 24 文件 7594 行；`5244259` 首批 22 文件含 `workers/`）；`tests/test_agent_{runtime,graph,scheduler,supervisor,cli,protocols,memory_skills,eval_2026,runtime_docs}.py`（68 项） | 端到端只在 mock range 的 `runtime=reference` 上跑，本机无 cargo/kubectl；真实 k3s + 真实 LLM 的自主闭环见 ADD-69 | agent |
 
-小计：ADD 71 条。
+小计：ADD 76 条。
 
 ### 2.3 对比类需求（来源：COMPETITIVE-MATRIX / GAP-*.md / OSS / SECTION3 / feature-matrix）
 
@@ -196,20 +201,21 @@
 
 小计：CMP 21 条。
 
-**合计：32 + 71 + 21 = 124 条需求。**
+**合计：32 + 76 + 21 = 129 条需求。**
 
 ### 2.4 状态统计
 
 | 状态 | INIT | ADD | CMP | 合计 |
 |---|---:|---:|---:|---:|
-| done | 30 | 47 | 14 | **91** |
-| partial | 2 | 18 | 6 | **26** |
+| done | 30 | 50 | 14 | **94** |
+| partial | 2 | 20 | 6 | **28** |
 | not-done | 0 | 0 | 0 | **0** |
 | blocked-resource | 0 | 6 | 1 | **7** |
-| 合计 | 32 | 71 | 21 | **124** |
+| 合计 | 32 | 76 | 21 | **129** |
 
 > `not-done` 0 条：原第 1 条（Rust 运行时动态验证，ADD-35）已由 2026-10-27 原生重跑关闭——286 模板 × vulnerable/fixed 两态 × 每态 3 次一致，0 失败，证据含 probe 版本与二进制哈希。
 > `blocked-resource` 7 条：真实 GPU/fabric（ADD-65、CMP-21）、硬件 TEE（ADD-66）、真实六云（ADD-67）、真实 LLM 自主 runtime（ADD-69）、公共 Fulcio 身份（ADD-70）、跨副本 SaaS（ADD-71）。防护产品回放已由 QEMU k3s 真机推进为 partial（ADD-68），不再计入 blocked。
+> 2026-10-27 并入四个提交后新增 ADD-72～ADD-76：`3c84696`（跨集群中继 partial／覆盖闭包 done）、`687824e`（文件与操作审计时间线 done）、`ee42f1d`（防护感知绕过执行路径 done）、`5244259`（agent 事件溯源运行时 partial）。**done 94 / partial 28 / not-done 0 / blocked-resource 7，共 129 条；仍未完成项逐类见 §3.5。**
 
 ## 3. 未完成清单与依赖
 
@@ -227,9 +233,11 @@
 | 8 | **自有 Fulcio keyless 签发** | 第三方公共样本验证通过 | OIDC 身份 | enterprise | CI OIDC 签发 + Rekor + 轮换/吊销 |
 | 9 | **跨副本分布式 SaaS** | 单机 8 租户压测 | 队列/HA/租户 KMS | enterprise | 100 并发链 + 故障恢复 |
 | 10 | **披露闭环** | 30 包已生成未外发 | 厂商回执 / CVE 分配 | docs | 至少 1 条收到厂商回复或 CVE 号 |
+| 11 | **跨集群中继真实环境** | 两集群闭环跑在 fake kubectl + fake API + fake SOCKS5 上；真实 kubeconfig 客户端证书链、生产 SOCKS5、跨云策略未验证 | 两套真实集群 + 客户端证书 + SOCKS5 出口 | agent | `relay add/deploy/collect` 跨两集群留证，覆盖 proof 0 缺口；TLS 不可用须显式拒绝而非静默降级 |
 
 矩阵映射：S5 → ADD-33／ADD-36；Rust 编译与动态验证 → ADD-30／ADD-31／ADD-32／ADD-35（已关闭）；
-CLI 一致性 → ADD-30；防护实测 → ADD-68；自主 runtime → ADD-69；真实 10K GPU → ADD-65；硬件 TEE → ADD-66；
+CLI 一致性 → ADD-30；防护实测 → ADD-68／ADD-75；自主 runtime → ADD-69；agent 运行时 → ADD-76；
+覆盖闭包 → ADD-73；跨集群中继 → ADD-72；文件审计 → ADD-74；真实 10K GPU → ADD-65；硬件 TEE → ADD-66；
 六云 → ADD-67；Fulcio → ADD-70；跨副本 SaaS → ADD-71；披露闭环 → ADD-55；ARTEX 裸机 → CMP-21。
 
 ### 3.2 迁移收口记录（原「在途红测」，已关闭）
@@ -258,6 +266,48 @@ CLI 一致性 → ADD-30；防护实测 → ADD-68；自主 runtime → ADD-69�
 - 跳过项：13 条均为环境门槛（宿主机无 Rust 工具链时的 cargo 门控、可选外部件、平台差异），不是隐藏失败。
 - 回归对照：迁移在途快照为 **Ran 2128 / FAILED (failures=99, errors=513, skipped=4)**——那是在删除 286 个 `run.py` 与旧模块测试的同时跑出的「移动靶」，已在 §3.2 归因；本次为删除落盘后的稳定树。
 - 本轮文档改动引入的 2 条红测（`test_sota_doc` 的 25/10/4 硬编码）已随 SOTA 计数改为 26/10/3 同步修复，复跑为绿。
+
+### 3.5 仍未完成项（按类复算；共 35 条 = partial 28 + blocked-resource 7）
+
+#### 3.5.1 partial 28 条（逐类，不得计入 done）
+
+| 类别 | 条目 | 条数 | 缺口的性质 |
+|---|---|---:|---|
+| 模板等价（S5） | ADD-33 | 1 | 48 条等价、**238 条降级**；Rust 运行态已全过，但降级语义未补齐，也无逐条等价性说明 |
+| 真实硬件/设备未实测 | ADD-50、ADD-51、ADD-68 | 3 | 无真实 GPU/BMC/交换机/硅片；防护产品仍有 7 个因内核头/BPF-LSM/CNI 记 N/A |
+| 企业集成与准入 | ADD-12、ADD-14 | 2 | 60 项准入仍有 21 项红项；OIDC/LDAP/SIEM/ITSM 全为本地契约 |
+| Agent 组件为单进程/本地实现 | ADD-18、ADD-19、ADD-20、ADD-21、ADD-22、ADD-23、ADD-24、ADD-25、ADD-76 | 9 | 无 durable 跨进程队列/租约、无 microVM、无向量记忆、无技能分发签名；运行时端到端仅在 mock range |
+| 供应链自有身份/TEE | ADD-41 | 1 | 自有产物无公共 Fulcio 身份；硬件 TEE 无实机 quote |
+| 披露外发 | ADD-55 | 1 | 30 包已生成、0 已发送、0 CVE 申请 |
+| 基准与探针广度 | ADD-58、ADD-59、CMP-17 | 3 | CIS/LPE 专项单测随迁移删除；LLM 探针 87/146≈60% |
+| 跨集群中继真实环境 | ADD-72 | 1 | 两集群为 fake kubectl/API/SOCKS5；真实证书链与生产 SOCKS5 未验证 |
+| 对比类未收口 | INIT-27、INIT-32、CMP-02、CMP-06、CMP-07、CMP-15、CMP-16 | 7 | ARTEX 仅 QEMU TCG 同口径；e2e 验收 9/11 未成断言；kube-hunter 18 项、XBow/腾讯 G10/G13、CM-31 仍开 |
+
+合计：1+3+2+9+1+1+3+1+7 = **28**。
+
+#### 3.5.2 blocked-resource 7 条（缺外部资源，脚本/设计已就绪）
+
+| 条目 | 缺的外部资源 | 现有替代证据 |
+|---|---|---|
+| ADD-65 真实 10K+ GPU / 裸机 | ≥1,024 GPU 集群、真实 NIC/交换机计数器 | `lab/fabric-sim/` 离散事件仿真、`docs/SCALE-RESULTS.md` |
+| ADD-66 硬件 TEE 实测 | TDX / SEV-SNP / H100-CC 实机与证明→密钥释放 | `inkblade/tee/` 解析器、公共 PKI 验证 `docs/TEE-ONLINE-VERIFICATION.md` |
+| ADD-67 六云真实环境 | 六云账号、IAM 求值、真实日志与 GPU 节点 | `lab/cloud_six_sim.py`、`lab/cloud_free/` 三云 mock |
+| ADD-69 真实 LLM 自主闭环 | 真实 LLM 端点 + 客户授权环境 | `inkblade/agent/`（ADD-76）、`lab/agent-eval/`、`lab/tencent-compare/` |
+| ADD-70 自有 cosign keyless | OIDC 身份、公共 Fulcio/Rekor 签发 | 第三方公共样本验证 `reports/samples/sigstore/` |
+| ADD-71 跨副本分布式 SaaS | broker/HA/租户 KMS、100 并发故障恢复 | `lab/saas/` 单机 8 租户压测 |
+| CMP-21 ARTEX 裸机同口径 | 裸机/真实集群与 30 分钟稳定性窗口 | QEMU TCG 同靶场数据 `reports/samples/artex-bench/` |
+
+#### 3.5.3 负向对照与模板分档（不得写成「全部两态验证」）
+
+| 口径 | 数值 | 含义 |
+|---|---:|---|
+| 严格两态 verified（fixed 态 `status=ok`） | **35/286** | 满足 `DYNAMIC-VERIFICATION.md` §8 的严格定义 |
+| fixed 态无相同 finding | 49/286 | 含上组 35；另 14 条 fixed 有 finding 但非同一 finding |
+| 两态相同 finding（仅执行验证） | 237/286 | 两态共用 fixture 输入，不能作为负向对照 |
+| 未达严格 verified | **251/286** | 286 − 35；补 per-template mock 输入后才可升级 |
+| 模板等价 / 降级 | **48 / 238** | 238 条降级语义未补齐（S5，§3.1-1） |
+
+结论：可以说「286/286 在 Rust 运行时两态各跑 3 次一致、0 失败」；**不可以说**「286/286 负向对照已验证」或「238 条降级模板已等价」。
 
 ## 4. 文档口径修正记录（旧 → 新）
 
@@ -289,6 +339,9 @@ CLI 一致性 → ADD-30；防护实测 → ADD-68；自主 runtime → ADD-69�
 | `README.md` / `README.zh-CN.md` / `docs/FAQ.md` / `docs/PRODUCT.md` | run.py「HEAD 286、迁移在途」、动态验证「仍为 0」 | 工作树 0 / HEAD 0；286/286 原生两态 | 已改 |
 | `docs/DYNAMIC-VERIFICATION.md` | 参考评估器 286/286、rust 为 0 | 原生 286/286、`probe 0.1.1`、802s；负控边界 §6 | 已改 |
 | `docs/PROBE-COVERAGE.md` / `docs/PROBE-BUILD.md` | 旧二进制 `7348deb0…` / 源码 `bb58f9f` | `c8d2f118…` / `1f0f57c` / probe 0.1.1 / CI run 40430384961 | 已用 `tools/template-coverage.py --write` 重生成 |
+| `docs/PROGRESS.md` / `docs/MASTER-REPORT.md` / `docs/DOC-INDEX.md` | 需求 **124** 条（done 91 / partial 26 / blocked 7） | **129** 条（done 94 / partial 28 / blocked 7），并入 `3c84696`/`687824e`/`ee42f1d`/`5244259` | 已改 |
+| `docs/SOTA-2026-10.md` / `docs/MASTER-REPORT.md` | 层数表述分散（十层、七组件出现在不同节，易被误读为两套分层） | 统一写「检测十层（1–9 业务面 + 10 防护绕过）+ 控制端七组件」 | 已改 |
+| `docs/PROGRESS.md` | 反向对照「remaining 251」等旧句 | 35/286 严格 verified、49/286 无相同 finding、237/286 仅执行验证、238 降级模板（§3.5.3） | 已改 |
 
 ## 5. 实测回填（测试与关键命令）
 
@@ -299,6 +352,11 @@ CLI 一致性 → ADD-30；防护实测 → ADD-68；自主 runtime → ADD-69�
 | 模板两态（原生） | `python tools/native-verify.py --repeat 3` | 286/286 `runtime=rust`，0 失败，802s |
 | 模板两态（参考） | `python tools/template-run.py --range` | 286/286（仅本地回归，不计证据） |
 | 模板覆盖率 | `python tools/template-coverage.py` | 286/286 native（`c8d2f118…` / `1f0f57c`） |
+| 覆盖闭包判据 | `python -m unittest tests.test_agent_coverage` | 10 项 PASS（4+1 判据、证据/原因强制、proof 渲染） |
+| 跨集群中继 | `python -m unittest tests.test_agent_relay` | 10 项 PASS（fake kubectl/API/SOCKS5、防环、每集群预算、失败回退） |
+| 文件与操作审计 | `python -m unittest tests.test_file_audit` | 17 项 PASS（`audit-exec`/`read-file`/`list-files`、时间线、API、报告台账） |
+| 防护感知绕过 | `python -m unittest tests.test_defense_policy tests.test_defense_bypass_artifacts` | 32 项 PASS（23 + 9） |
+| agent 事件溯源运行时 | `python -m unittest tests.test_agent_runtime tests.test_agent_graph tests.test_agent_scheduler tests.test_agent_supervisor` | 41 项 PASS（6 + 15 + 6 + 14） |
 | 架构语料门槛 | `python inkblade/arch-intel/check.py` | ALL GATES ok |
 | 核验编排 | `python tools/verify-exploits.py` | green（37 verified） |
 
@@ -317,5 +375,7 @@ OK (skipped=13)
 
 - 计数来源：`inkblade/core/exploit-registry.json`、`inkblade/core/zeroday-registry.json`、`inkblade/core/data/{version-matrix,weapon-packs}.json`、`inkblade/arch-intel/coverage-matrix.json`、`reports/samples/rules-pack/{mapping,coverage-matrix}.json`、`reports/probe-coverage/evidence.json`、`reports/samples/effects/effects.json`。
 - 覆盖与画像：`docs/PROBE-COVERAGE.md`、`docs/SURFACE-REALISM.md`、`docs/DYNAMIC-VERIFICATION.md`。
+- Agent：`docs/AGENT-AUTONOMY.md`（事件溯源运行时）、`docs/AGENT-COVERAGE.md`（覆盖图/中继）、`docs/COVERAGE-CLOSURE.md` + `reports/samples/coverage-closure/coverage-proof.json`（两集群闭包证明）。
+- 防护与审计：`docs/DEFENSE-LAB-RESULTS.md`、`docs/DEFENSE-BYPASS-PATH.md` + `reports/samples/defense-bypass-path/`、`docs/FILE-AUDIT.md` + `reports/samples/static-export/timeline.json`。
 - 规格与计划：`docs/superpowers/specs/2026-10-24-trident-ml-cluster-pentest-design.md`、`docs/superpowers/plans/2026-10-25-trident-platform.md`（仓库外，工作区 `docs/`）。
 - 历史台账：`progress.md`、`docs/DEV-LOG.md`、`.superpowers/sdd/2026-10-25-inkblade-platform/progress.md`、`git log --oneline`。

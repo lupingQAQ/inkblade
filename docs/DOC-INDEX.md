@@ -25,7 +25,7 @@
 | [`docs/DETECTION-LAYERS.md`](DETECTION-LAYERS.md) | 前九层逐层四列表的完整版（检测点/为何独有/模块键/证据） |
 | [`docs/VULNERABILITY-LAYERS.md`](VULNERABILITY-LAYERS.md) | 十层漏洞逐层详解：IMEX/rail 七段、152 条附录、43 条重点、39 条零日储备 |
 | [`docs/DOC-INDEX.md`](DOC-INDEX.md) | 本索引 |
-| [`docs/REQUIREMENTS-MATRIX.md`](REQUIREMENTS-MATRIX.md) | **唯一需求事实源**：124 条需求、数字对账、未完成清单与依赖 |
+| [`docs/REQUIREMENTS-MATRIX.md`](REQUIREMENTS-MATRIX.md) | **唯一需求事实源**：129 条需求（done 94 / partial 28 / blocked-resource 7）、数字对账、未完成清单与依赖 |
 | [`docs/PROGRESS.md`](PROGRESS.md) | 当前快照：探针版本/哈希、原生两态计数、需求计数、测试与门禁 |
 | [`docs/DISCLOSURE-RELEASE-PLAN.md`](DISCLOSURE-RELEASE-PLAN.md) | CVE 就绪披露包：30 包结构、CVE 5.1 请求体、90 天时间线与外发边界 |
 

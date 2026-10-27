@@ -18,7 +18,11 @@
 > | 默认 PoC | **11**（六画像默认可利用 3/2/3/2/4/0） | `exploit-registry.json` + `SURFACE-REALISM.md` |
 > | 无面模块 | **19**（11 个已隔离 + 8 个待 owner） | `docs/SURFACE-REALISM.md` §2 |
 > | 语料 | **80 源**（cn 24 / en 42 / paper 14） | `inkblade/arch-intel/coverage-matrix.json` |
+> | 需求矩阵 | **129 条**：done **94** / partial **28** / not-done **0** / blocked-resource **7** | `REQUIREMENTS-MATRIX.md` §2.4、§3.5 |
 > | 未达成项 | **11 条**（见 §7.7） | 本文 §7、`docs/SOTA-2026-10.md` |
+>
+> **分层口径**：检测模型为**十层**（1–9 业务面 + 第 10 层防护绕过）；「七组件」只指控制端
+> （治理、编排、模块、证据、报告、可视化、规则），不是另一套产品分层，也不存在并行的「九层」版本。
 >
 > 口径：模块/画像/无面为静态统计；测试为全量 `unittest discover` 实测（迁移已收口，无在途红测）；
 > verified 只认 `exploit-registry.json` 的 `verified`；exposure-verified 与 static-only/unsupported 不计入可利用清单。
@@ -880,7 +884,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | 文档 | 内容 |
 |---|---|
 | [README](../README.md) | 项目入口、快速开始、能力与边界 |
-| [REQUIREMENTS-MATRIX.md](REQUIREMENTS-MATRIX.md) | **唯一需求事实源**：124 条需求、数字对账、未完成清单与依赖 |
+| [REQUIREMENTS-MATRIX.md](REQUIREMENTS-MATRIX.md) | **唯一需求事实源**：129 条需求（done 94 / partial 28 / blocked-resource 7）、数字对账、未完成清单与依赖 |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | 控制端七组件与职责边界（检测模型为十层，见 DETECTION-LAYERS） |
 | [SOTA-2026-10.md](SOTA-2026-10.md) | 39 项能力矩阵：26 真实验证 / 10 模拟验证 / 3 仍未达成（附证据路径） |
 | [design.md](design.md) | 设计基线与漏洞研究分类 |
@@ -914,6 +918,8 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | [TEE-VERIFICATION.md](TEE-VERIFICATION.md) | TDX/SEV-SNP/NVIDIA CC 的本地密码学校验与边界 |
 | [KEYLESS-VERIFICATION.md](KEYLESS-VERIFICATION.md) | Sigstore keyless 验证：公共 Fulcio/Rekor 真实验证 + 本地 fixture |
 | [SIX-CLOUD-MATRIX.md](SIX-CLOUD-MATRIX.md) | 六云契约级矩阵：24/24 两态 |
+| [DEFENSE-BYPASS-PATH.md](DEFENSE-BYPASS-PATH.md) | 防护感知绕过执行路径：QEMU k3s 真机 Kyverno+Falco，6 技术 5 bypass-confirmed / 1 detected / 0 失败，无原语产品 `policy-refused` |
+| [FILE-AUDIT.md](FILE-AUDIT.md) | 文件与操作审计：`audit-exec`/`read-file`/`list-files`、`file_ops`、`timeline.json`、报告台账与 SOC 审计键 |
 | [PERFORMANCE-COMPARISON.md](PERFORMANCE-COMPARISON.md) | 冷启动、内存、API、吞吐、磁盘、同靶场 |
 | [ARTEX-BENCH-RESULT.md](ARTEX-BENCH-RESULT.md) | ARTEX 同靶场 13,510ms vs 105.6ms 与边界 |
 | [reports/samples/effects/](../reports/samples/effects/) | 效果验证原始 JSON/MD |
@@ -929,6 +935,9 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | [AGENT-ARCHITECTURE-2026.md](AGENT-ARCHITECTURE-2026.md) | 2026 agent 谱系、12 个落伍点、16 个设计点、蓝图 |
 | [AGENT-ARCHITECTURE-UPGRADE-2026.md](AGENT-ARCHITECTURE-UPGRADE-2026.md) | 7 个核心模块、硬边界、组合用法 |
 | [AGENT-EVAL-RESULTS.md](AGENT-EVAL-RESULTS.md) | 15 任务 deterministic vs supervisor-worker |
+| [AGENT-AUTONOMY.md](AGENT-AUTONOMY.md) | 事件溯源运行时：EventLog/checkpoint/replay、PlanGraph 证据门控、调度器与四角色 worker、四维预算 |
+| [AGENT-COVERAGE.md](AGENT-COVERAGE.md) | 覆盖图、四条闭包判据 + objective 门控、停止条件、跨集群中继 |
+| [COVERAGE-CLOSURE.md](COVERAGE-CLOSURE.md) | 两集群闭包样例（4 资产 / 3 权限边 / 2 探针 / 0 缺口），由 `coverage-proof.json` 渲染 |
 | [SECTION3-TENCENT-AGENT-CONTEST.md](SECTION3-TENCENT-AGENT-CONTEST.md) | 腾讯 8 项目、14 条反思、改进清单 |
 | [SECTION3-METRICS.md](SECTION3-METRICS.md) | 8 任务 OFF/ON：成功率、时延、token、审批、干预、证据 |
 | [journal.py](../inkblade/core/journal.py) | append-only 日志、哈希链、resume/replay |
