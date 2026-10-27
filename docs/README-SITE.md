@@ -33,7 +33,7 @@ python scripts/check-docs-links.py
 
 ### Serving the site
 
-The repository is private and GitHub Pages is not enabled, so the site is served locally:
+The repository is public and the site is published from the `gh-pages` branch. For local preview or air-gapped use:
 
 ```bash
 python -m inkblade docs

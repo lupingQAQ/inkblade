@@ -483,8 +483,8 @@ section(
     "probe", "Rust probe", "Rust 探针",
     "Static Rust probe", "静态 Rust 探针",
     "One binary, 286 templates, no target-side interpreter", "一个二进制、286 个模板、目标侧无解释器",
-    en="""<p>The probe is a single static musl binary for linux/amd64 and linux/arm64. Templates are JSON data; there is no <code>run.py</code> and no Python, shell or curl in the target Pod.</p>
-""" + figures([("286", "templates"), ("0", "run.py"), ("2", "musl architectures"), ("12", "probe operations")]) + """
+    en="""<p>The probe is a single static musl binary for linux/amd64 and linux/arm64. Templates are JSON data; the target Pod needs no Python, shell, curl or other interpreter.</p>
+""" + figures([("286", "templates"), ("2", "musl architectures"), ("12", "probe operations")]) + """
 <h3>Probe operations</h3>
 """ + table(
         [("Operation", ""), ("What it does", "")],
@@ -505,8 +505,8 @@ section(
     ) + """
 <p class="note">Every operation is budgeted, scoped and recorded in the evidence store; the probe tree cleans up child-first.</p>
 <p class="note"><a href="ARCHITECTURE-PROBE.md">ARCHITECTURE-PROBE.md</a> · <a href="PROBE-PROTOCOL.md">PROBE-PROTOCOL.md</a> · <a href="PROBE-BUILD.md">PROBE-BUILD.md</a></p>""",
-    zh="""<p>探针是 linux/amd64 与 linux/arm64 各一个静态 musl 二进制。模板是 JSON 数据；没有 <code>run.py</code>，目标 Pod 也不需要 Python、shell 或 curl。</p>
-""" + figures([("286", "模板"), ("0", "run.py"), ("2", "musl 架构"), ("12", "探针操作")]) + """
+    zh="""<p>探针是 linux/amd64 与 linux/arm64 各一个静态 musl 二进制。模板是 JSON 数据；目标 Pod 不需要 Python、shell、curl 或其他解释器。</p>
+""" + figures([("286", "模板"), ("2", "musl 架构"), ("12", "探针操作")]) + """
 <h3>探针操作</h3>
 """ + table(
         [("操作", ""), ("做什么", "")],

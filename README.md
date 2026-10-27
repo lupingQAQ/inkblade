@@ -60,7 +60,7 @@ The 169 candidates are screened: 47 passed the novelty check, 46 are reserve-eli
 
 ### Rust probe
 
-A single static musl binary for linux/amd64 and linux/arm64 executes 286 templates. Templates are JSON data; there are 0 `run.py` files and no target-side interpreter.
+A single static musl binary for linux/amd64 and linux/arm64 executes 286 templates. Templates are JSON data; the target needs no interpreter.
 
 `collect` · `exec` · `audit-exec` · `read-file` · `list-files` · `upload` · `download` · `spawn` · `dial` · `socks` · `beacon` · `cleanup`
 

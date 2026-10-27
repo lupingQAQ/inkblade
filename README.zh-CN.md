@@ -60,7 +60,7 @@ InkBlade 把一个静态链接的 Rust 探针放进已授权的 Pod，用声明�
 
 ### Rust 探针
 
-linux/amd64 与 linux/arm64 各一个静态 musl 二进制，执行 286 个模板。模板是 JSON 数据；仓库内 0 个 `run.py`，目标侧不需要解释器。
+linux/amd64 与 linux/arm64 各一个静态 musl 二进制，执行 286 个模板。模板是 JSON 数据；目标侧不需要解释器。
 
 `collect` · `exec` · `audit-exec` · `read-file` · `list-files` · `upload` · `download` · `spawn` · `dial` · `socks` · `beacon` · `cleanup`
 
