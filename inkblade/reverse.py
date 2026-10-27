@@ -1063,7 +1063,11 @@ class ReverseListener:
                     pass
                 return
             previous = self._connections.get(probe_id)
-            replaced = previous is not None and previous is not probe
+            old_record = self._records.get(probe_id)
+            replaced = (
+                (previous is not None and previous is not probe)
+                or (old_record is not None and old_record.get("probe_id") == probe_id)
+            )
             record = {
                 "probe_id": probe_id,
                 "parent_id": probe.parent_id,
