@@ -71,7 +71,14 @@ class Objective:
     default_params: dict = field(default_factory=dict)
 
     # ------------------------------------------------------------ checks
-    def evaluate(self, graph: PlanGraph) -> dict:
+    def evaluate(self, graph: PlanGraph, *, coverage=None) -> dict:
+        """Evaluate the objective; optional coverage adds the closure gate.
+
+        ``coverage`` is a :class:`inkblade.agent.coverage.CoverageGraph`.  It is
+        passed without an objective to avoid recursion; a run can therefore
+        never be ``success`` while a reachable asset, exploitable permission
+        edge, probe baseline or planner frontier remains open.
+        """
         checks: list[dict] = []
         for req in self.required_facts:
             need = severity_rank(req.severity)
@@ -107,6 +114,16 @@ class Objective:
             checks.append({"id": "policy:read-only", "ok": not writes,
                            "detail": "read-only objective 不允许写动作",
                            "evidence": [i["id"] for i in writes]})
+        if coverage is not None:
+            closure = coverage.evaluate(graph=graph)
+            checks.append({
+                "id": "coverage:closure", "ok": bool(closure["closed"]),
+                "detail": f"{sum(1 for c in closure['criteria'] if c['ok'])}/"
+                          f"{len(closure['criteria'])} 条闭包判据通过；"
+                          f"{len(closure['gaps'])} 个缺口",
+                "gaps": closure["gaps"],
+                "criteria": closure["criteria"],
+            })
         return {
             "objective": self.key, "title": self.title,
             "success": all(c["ok"] for c in checks),
@@ -115,8 +132,8 @@ class Objective:
             "summary": graph.summary(),
         }
 
-    def success(self, graph: PlanGraph) -> bool:
-        return bool(self.evaluate(graph)["success"])
+    def success(self, graph: PlanGraph, *, coverage=None) -> bool:
+        return bool(self.evaluate(graph, coverage=coverage)["success"])
 
     # ------------------------------------------------------------ deterministic plan
     def _stage_requirements(self, graph: PlanGraph, stage: PlanStage) -> list[str] | None:

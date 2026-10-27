@@ -50,6 +50,10 @@ def register(subparsers) -> None:
                      help="manual 模式下显式批准写 intent（一次性）")
     run.add_argument("--propose-skill", action="store_true",
                      help="成功链提交 pending 技能（仍需 lead 批准）")
+    run.add_argument("--coverage", action="store_true",
+                     help="启用覆盖闭包引擎：优先未覆盖节点，未闭包不得宣称完成")
+    run.add_argument("--coverage-doc", default=None,
+                     help="闭包证明 Markdown 输出路径（可选）")
     run.add_argument("--run-id", default=None)
     run.add_argument("--json", action="store_true", default=True)
 
@@ -107,12 +111,53 @@ def register(subparsers) -> None:
     ev.add_argument("--workspace", default="agent-eval")
     ev.add_argument("--json", action="store_true", default=True)
 
+    relay = asub.add_parser("relay", help="跨集群中继：add|list|status")
+    rsub = relay.add_subparsers(dest="relay_cmd", required=True)
+    add = rsub.add_parser("add", help="注册一个目标集群（多 kubeconfig/context）")
+    add.add_argument("--cluster-id", required=True)
+    add.add_argument("--kubeconfig", default="")
+    add.add_argument("--context", default="")
+    add.add_argument("--api-server", default="")
+    add.add_argument("--namespace", default="default")
+    add.add_argument("--parent", default="", help="父 cluster_id（跨集群中继链）")
+    add.add_argument("--roe-level", default="只读侦察")
+    add.add_argument("--transport", default="kubectl",
+                     choices=["kubectl", "sa-token", "exec"])
+    add.add_argument("--fallback", default="",
+                     help="逗号分隔的失败回退传输列表")
+    add.add_argument("--proxy", action="append", default=[],
+                     help="socks5://host:port（可重复）")
+    add.add_argument("--budget-steps", type=int, default=0)
+    add.add_argument("--budget-actions", type=int, default=0)
+    add.add_argument("--force", action="store_true", help="更新已注册集群")
+    add.add_argument("--workspace", default="local-lab")
+    lst = rsub.add_parser("list", help="列出已注册集群")
+    lst.add_argument("--workspace", default="local-lab")
+    st = rsub.add_parser("status", help="中继/探针/缺口/预算状态")
+    st.add_argument("--cluster-id", default=None)
+    st.add_argument("--workspace", default="local-lab")
+
+    cov = asub.add_parser("coverage", help="覆盖闭包：status|proof")
+    csub = cov.add_subparsers(dest="coverage_cmd", required=True)
+    cs = csub.add_parser("status", help="读取 run 的覆盖闭包证明")
+    cs.add_argument("--run-id", default=None)
+    cs.add_argument("--workspace", default="local-lab")
+    cp = csub.add_parser("proof", help="导出 coverage-proof.json / Markdown")
+    cp.add_argument("--run-id", default=None)
+    cp.add_argument("--workspace", default="local-lab")
+    cp.add_argument("--out", default=None, help="JSON 输出路径（默认 run 目录）")
+    cp.add_argument("--markdown", default=None, help="Markdown 输出路径")
+
 
 def dispatch(args, home: Path) -> int:
     if args.agent_cmd == "probes":
         store = EvidenceStore(home, workspace=args.workspace)
         print(json.dumps(probe_status(store), ensure_ascii=False, indent=2))
         return 0
+    if args.agent_cmd == "relay":
+        return _relay_cmd(args, home)
+    if args.agent_cmd == "coverage":
+        return _coverage_cmd(args, home)
     if args.agent_cmd == "authorize":
         return _authorize(args, home)
     if args.agent_cmd == "status":
@@ -179,7 +224,14 @@ def dispatch(args, home: Path) -> int:
                 from ..tpl.backends import K8sShim
 
                 k8s = K8sShim(api=args.k8s_api, token=args.k8s_token or "")
-            sup = AgentSupervisor.create(
+            supervisor_cls = AgentSupervisor
+            coverage = None
+            if getattr(args, "coverage", False):
+                from .coverage import CoverageGraph, CoverageSupervisor
+
+                coverage = CoverageGraph(objective=args.objective)
+                supervisor_cls = CoverageSupervisor or AgentSupervisor
+            sup = supervisor_cls.create(
                 store, session, objective=args.objective, probe_id=args.probe,
                 llm=args.llm, budgets=budgets, mode=args.mode,
                 modules_dir=args.modules_dir, allow_destructive=args.allow_destructive,
@@ -188,8 +240,20 @@ def dispatch(args, home: Path) -> int:
                 probe_spec=probe_spec, k8s=k8s,
                 allow_reference=True if args.allow_reference else None,
                 propose_skills=args.propose_skill, run_id=args.run_id,
-                manual_approved=bool(getattr(args, "approve_writes", False)))
+                manual_approved=bool(getattr(args, "approve_writes", False)),
+                **({"coverage": coverage} if coverage is not None else {}))
             data = sup.run()
+            doc_path = getattr(args, "coverage_doc", None)
+            if coverage is not None and doc_path:
+                from .coverage import render_markdown
+
+                proof = data.get("coverage") or coverage.proof(
+                    graph=sup.graph, objective=getattr(sup, "_base_objective", None),
+                    budget=sup.scheduler.budget, run_id=sup.runtime.run_id,
+                    stop_reason=data.get("status", ""))
+                Path(doc_path).parent.mkdir(parents=True, exist_ok=True)
+                Path(doc_path).write_text(
+                    render_markdown(proof), encoding="utf-8")
         print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
         return 0
     except (BudgetExceeded, AgentRuntimeError) as exc:
@@ -198,6 +262,73 @@ def dispatch(args, home: Path) -> int:
     except Exception as exc:  # noqa: BLE001 - CLI boundary
         print(f"inkblade agent: {type(exc).__name__}: {exc}", file=sys.stderr)
         return 2
+
+
+def _relay_cmd(args, home: Path) -> int:
+    from .relay import RelayManager, relay_add, relay_list, relay_status
+    from .coverage import CoverageGraph
+
+    store = EvidenceStore(home, workspace=args.workspace)
+    if args.relay_cmd == "add":
+        fallback = [x for x in str(getattr(args, "fallback", "") or "").split(",")
+                    if x.strip()]
+        data = relay_add(
+            store, cluster_id=args.cluster_id, kubeconfig=args.kubeconfig,
+            context=args.context, api_server=args.api_server,
+            namespace=args.namespace, parent_id=args.parent,
+            roe_level=args.roe_level, transport=args.transport,
+            fallback=fallback or None, proxies=args.proxy,
+            budget_steps=args.budget_steps, budget_actions=args.budget_actions,
+            force=args.force, coverage=CoverageGraph())
+        print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
+        return 0
+    if args.relay_cmd == "list":
+        data = relay_list(store, coverage=CoverageGraph())
+    else:
+        data = relay_status(store, cluster_id=args.cluster_id,
+                            coverage=CoverageGraph())
+    print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
+    return 0
+
+
+def _coverage_cmd(args, home: Path) -> int:
+    from .coverage import CoverageGraph, render_markdown
+    from .runtime import AgentRuntime
+
+    store = EvidenceStore(home, workspace=args.workspace)
+    runtime = AgentRuntime.load(store, args.run_id)
+    path = Path(runtime.dir) / "coverage-proof.json"
+    if not path.is_file():
+        print(f"inkblade agent coverage: run {runtime.run_id} 没有 coverage-proof.json",
+              file=sys.stderr)
+        return 2
+    try:
+        proof = json.loads(path.read_text(encoding="utf-8"))
+    except ValueError as exc:
+        print(f"inkblade agent coverage: {exc}", file=sys.stderr)
+        return 2
+    if args.coverage_cmd == "proof":
+        out = Path(args.out) if args.out else path
+        CoverageGraph.from_proof(proof).write_proof(out, proof=proof)
+        if args.markdown:
+            md_path = Path(args.markdown)
+            md_path.parent.mkdir(parents=True, exist_ok=True)
+            md_path.write_text(render_markdown(proof), encoding="utf-8")
+        print(json.dumps({"path": str(out), "markdown": args.markdown or "",
+                          "closed": bool(proof.get("closed")),
+                          "stop_reason": proof.get("stop_reason"),
+                          "gaps": proof.get("gaps") or []},
+                         ensure_ascii=False, indent=2, default=str))
+        return 0
+    print(json.dumps({"run_id": runtime.run_id, "path": str(path),
+                      "closed": bool(proof.get("closed")),
+                      "success": bool(proof.get("success")),
+                      "stop_reason": proof.get("stop_reason"),
+                      "criteria": proof.get("criteria") or [],
+                      "coverage": proof.get("coverage") or {},
+                      "gaps": proof.get("gaps") or []},
+                     ensure_ascii=False, indent=2, default=str))
+    return 0
 
 
 def _authorize(args, home: Path) -> int:

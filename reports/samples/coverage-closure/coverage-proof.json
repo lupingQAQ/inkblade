@@ -1,0 +1,703 @@
+{
+  "schema": "inkblade-coverage-proof/1",
+  "generated_at": 1793096010.4425094,
+  "run_id": "coverage-demo-two-clusters",
+  "objective": "read-only-recon",
+  "closed": true,
+  "success": true,
+  "objective_success": true,
+  "stop_reason": "closed",
+  "criteria": [
+    {
+      "id": "coverage:assets",
+      "ok": true,
+      "detail": "4/4 个可达资产已有 probe/只读检查",
+      "gaps": []
+    },
+    {
+      "id": "coverage:permissions",
+      "ok": true,
+      "detail": "3/3 条可利用权限边已尝试",
+      "gaps": []
+    },
+    {
+      "id": "coverage:probes",
+      "ok": true,
+      "detail": "2/2 个探针已注册并完成基线 collect",
+      "gaps": []
+    },
+    {
+      "id": "coverage:frontier",
+      "ok": true,
+      "detail": "0 个未处理 frontier/未收敛意图",
+      "gaps": []
+    }
+  ],
+  "coverage": {
+    "assets": 4,
+    "reachable_assets": 4,
+    "checked_assets": 4,
+    "asset_coverage": 1.0,
+    "services": 2,
+    "identities": 2,
+    "permission_edges": 3,
+    "attempted_permission_edges": 3,
+    "permission_coverage": 1.0,
+    "probes": 2,
+    "registered_probes": 2,
+    "baselined_probes": 2,
+    "probe_coverage": 1.0,
+    "checks": 4,
+    "templates_checked": 2,
+    "templates": [
+      "api-version",
+      "exposure"
+    ],
+    "frontier": 0
+  },
+  "gaps": [],
+  "gap_counts": {},
+  "budget": {
+    "limits": {
+      "tokens": 20000,
+      "steps": 8,
+      "actions": 12,
+      "duration_ms": 0
+    },
+    "spent": {
+      "tokens": 0,
+      "steps": 0,
+      "actions": 0,
+      "duration_ms": 0
+    },
+    "started_at": 1793096010.441503,
+    "elapsed_ms": 1
+  },
+  "nodes": [
+    {
+      "id": "cluster:prod-a",
+      "kind": "asset",
+      "created_seq": 1,
+      "checks": [
+        {
+          "probe_id": "probe:prod-a/relay-a",
+          "module": "api-version",
+          "mode": "probe",
+          "ok": true,
+          "evidence": [
+            "e273c58217a12344f0c5d48b870d91bfdd12820772107f4acc075cb3ff89a7c1"
+          ],
+          "detail": "",
+          "template": "api-version",
+          "ts": 1793096010.4404695
+        }
+      ],
+      "templates": [
+        "api-version"
+      ],
+      "attrs": {},
+      "asset_kind": "api-server",
+      "cluster_id": "prod-a",
+      "name": "prod-a",
+      "namespace": "",
+      "address": "https://prod-a.example:6443",
+      "reachable": true,
+      "checked": true,
+      "check_count": 1,
+      "check_ok": true,
+      "baseline_ok": false
+    },
+    {
+      "id": "cluster:prod-b",
+      "kind": "asset",
+      "created_seq": 2,
+      "checks": [
+        {
+          "probe_id": "probe:prod-b/relay-b",
+          "module": "api-version",
+          "mode": "probe",
+          "ok": true,
+          "evidence": [
+            "268aeaa443285fa97c9ced183b0bc795cef342e2cfa6fdc35e40b1c353a3de8f"
+          ],
+          "detail": "",
+          "template": "api-version",
+          "ts": 1793096010.4404695
+        }
+      ],
+      "templates": [
+        "api-version"
+      ],
+      "attrs": {},
+      "asset_kind": "api-server",
+      "cluster_id": "prod-b",
+      "name": "prod-b",
+      "namespace": "",
+      "address": "https://prod-b.example:6443",
+      "reachable": true,
+      "checked": true,
+      "check_count": 1,
+      "check_ok": true,
+      "baseline_ok": false
+    },
+    {
+      "id": "svc:prod-a/registry",
+      "kind": "service",
+      "created_seq": 3,
+      "checks": [
+        {
+          "probe_id": "probe:prod-a/relay-a",
+          "module": "exposure",
+          "mode": "probe",
+          "ok": true,
+          "evidence": [
+            "b2d12fb2e0061be9b34634ff07db7a877585801e59923553fff6b13c8298daf6"
+          ],
+          "detail": "",
+          "template": "exposure",
+          "ts": 1793096010.4404695
+        }
+      ],
+      "templates": [
+        "exposure"
+      ],
+      "attrs": {},
+      "cluster_id": "prod-a",
+      "name": "model-registry",
+      "namespace": "ml",
+      "port": 443,
+      "protocol": "tcp",
+      "address": "registry.prod-a.svc:443",
+      "reachable": true,
+      "checked": true,
+      "check_count": 1,
+      "check_ok": true,
+      "baseline_ok": false
+    },
+    {
+      "id": "svc:prod-b/trainer",
+      "kind": "service",
+      "created_seq": 5,
+      "checks": [
+        {
+          "probe_id": "probe:prod-b/relay-b",
+          "module": "exposure",
+          "mode": "probe",
+          "ok": true,
+          "evidence": [
+            "e6f0186d98bde14090063b0d1156ca615f0431b8a494001940d9d150fd559c2b"
+          ],
+          "detail": "",
+          "template": "exposure",
+          "ts": 1793096010.4404695
+        }
+      ],
+      "templates": [
+        "exposure"
+      ],
+      "attrs": {},
+      "cluster_id": "prod-b",
+      "name": "trainer-api",
+      "namespace": "train",
+      "port": 8265,
+      "protocol": "tcp",
+      "address": "trainer.prod-b.svc:8265",
+      "reachable": true,
+      "checked": true,
+      "check_count": 1,
+      "check_ok": true,
+      "baseline_ok": false
+    },
+    {
+      "id": "sa:prod-a/ml-agent",
+      "kind": "identity",
+      "created_seq": 7,
+      "checks": [],
+      "templates": [],
+      "attrs": {},
+      "identity_kind": "serviceaccount",
+      "cluster_id": "prod-a",
+      "name": "ml-agent",
+      "namespace": "ml",
+      "checked": false,
+      "check_count": 0,
+      "check_ok": false,
+      "baseline_ok": false
+    },
+    {
+      "id": "sa:prod-b/trainer",
+      "kind": "identity",
+      "created_seq": 8,
+      "checks": [],
+      "templates": [],
+      "attrs": {},
+      "identity_kind": "serviceaccount",
+      "cluster_id": "prod-b",
+      "name": "trainer",
+      "namespace": "train",
+      "checked": false,
+      "check_count": 0,
+      "check_ok": false,
+      "baseline_ok": false
+    },
+    {
+      "id": "probe:prod-a/relay-a",
+      "kind": "probe",
+      "probe_id": "relay-a",
+      "cluster_id": "prod-a",
+      "parent_id": "",
+      "transport": "kubectl",
+      "registered": true,
+      "status": "ready",
+      "baseline": {
+        "ok": true,
+        "evidence": [
+          "1eaf6bc428d5a5178622eae4676c3e9219d8ab6ee6b6f9f1d403ba1a3fd31756"
+        ],
+        "detail": "GET /version -> 200 via socks5",
+        "command": "collect",
+        "latency_ms": 0,
+        "ts": 1793096010.4404695
+      },
+      "checks": [],
+      "templates": [],
+      "attrs": {},
+      "created_seq": 12,
+      "checked": false,
+      "check_count": 0,
+      "check_ok": false,
+      "baseline_ok": true
+    },
+    {
+      "id": "probe:prod-b/relay-b",
+      "kind": "probe",
+      "probe_id": "relay-b",
+      "cluster_id": "prod-b",
+      "parent_id": "probe:prod-a/relay-a",
+      "transport": "exec",
+      "registered": true,
+      "status": "ready",
+      "baseline": {
+        "ok": true,
+        "evidence": [
+          "b39b575bc468bbad81d465646ac1ed64e3cce3d0a96468cb26db69eccde1efa1"
+        ],
+        "detail": "GET /version -> 200 via socks5",
+        "command": "collect",
+        "latency_ms": 0,
+        "ts": 1793096010.4404695
+      },
+      "checks": [],
+      "templates": [],
+      "attrs": {},
+      "created_seq": 13,
+      "checked": false,
+      "check_count": 0,
+      "check_ok": false,
+      "baseline_ok": true
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "src": "cluster:prod-a",
+      "dst": "svc:prod-a/registry",
+      "relation": "exposes",
+      "exploitable": false,
+      "attempts": [],
+      "attrs": {},
+      "created_seq": 4,
+      "attempted": false,
+      "attempt_count": 0,
+      "last_outcome": ""
+    },
+    {
+      "id": "edge-2",
+      "src": "cluster:prod-b",
+      "dst": "svc:prod-b/trainer",
+      "relation": "exposes",
+      "exploitable": false,
+      "attempts": [],
+      "attrs": {},
+      "created_seq": 6,
+      "attempted": false,
+      "attempt_count": 0,
+      "last_outcome": ""
+    },
+    {
+      "id": "edge-3",
+      "src": "sa:prod-a/ml-agent",
+      "dst": "svc:prod-a/registry",
+      "relation": "can",
+      "exploitable": true,
+      "attempts": [
+        {
+          "outcome": "blocked",
+          "reason": "RBAC denies secrets in namespace ml",
+          "evidence": [],
+          "intent": "",
+          "detail": "",
+          "ts": 1793096010.4404695
+        }
+      ],
+      "attrs": {
+        "verb": "get",
+        "resource": "secrets",
+        "scope": "ml"
+      },
+      "created_seq": 9,
+      "attempted": true,
+      "attempt_count": 1,
+      "last_outcome": "blocked"
+    },
+    {
+      "id": "edge-4",
+      "src": "sa:prod-a/ml-agent",
+      "dst": "svc:prod-a/registry",
+      "relation": "can",
+      "exploitable": true,
+      "attempts": [
+        {
+          "outcome": "failed",
+          "reason": "403 Forbidden from apiserver",
+          "evidence": [],
+          "intent": "",
+          "detail": "",
+          "ts": 1793096010.441503
+        }
+      ],
+      "attrs": {
+        "verb": "list",
+        "resource": "configmaps",
+        "scope": "ml"
+      },
+      "created_seq": 10,
+      "attempted": true,
+      "attempt_count": 1,
+      "last_outcome": "failed"
+    },
+    {
+      "id": "edge-5",
+      "src": "sa:prod-b/trainer",
+      "dst": "svc:prod-b/trainer",
+      "relation": "can",
+      "exploitable": true,
+      "attempts": [
+        {
+          "outcome": "success",
+          "reason": "",
+          "evidence": [
+            "139baab06da2228363fe6e97180ae2fec79095a2dd1538a25e04c450e0e22804"
+          ],
+          "intent": "intent-relay-b",
+          "detail": "",
+          "ts": 1793096010.441503
+        }
+      ],
+      "attrs": {
+        "verb": "create",
+        "resource": "pods",
+        "scope": "train"
+      },
+      "created_seq": 11,
+      "attempted": true,
+      "attempt_count": 1,
+      "last_outcome": "success"
+    }
+  ],
+  "state": {
+    "schema": "inkblade-agent-coverage/1",
+    "objective": "read-only-recon",
+    "run_id": "coverage-demo-two-clusters",
+    "counter": {
+      "edge": 5
+    },
+    "created": 13,
+    "nodes": [
+      {
+        "id": "cluster:prod-a",
+        "kind": "asset",
+        "created_seq": 1,
+        "checks": [
+          {
+            "probe_id": "probe:prod-a/relay-a",
+            "module": "api-version",
+            "mode": "probe",
+            "ok": true,
+            "evidence": [
+              "e273c58217a12344f0c5d48b870d91bfdd12820772107f4acc075cb3ff89a7c1"
+            ],
+            "detail": "",
+            "template": "api-version",
+            "ts": 1793096010.4404695
+          }
+        ],
+        "templates": [
+          "api-version"
+        ],
+        "attrs": {},
+        "asset_kind": "api-server",
+        "cluster_id": "prod-a",
+        "name": "prod-a",
+        "namespace": "",
+        "address": "https://prod-a.example:6443",
+        "reachable": true
+      },
+      {
+        "id": "cluster:prod-b",
+        "kind": "asset",
+        "created_seq": 2,
+        "checks": [
+          {
+            "probe_id": "probe:prod-b/relay-b",
+            "module": "api-version",
+            "mode": "probe",
+            "ok": true,
+            "evidence": [
+              "268aeaa443285fa97c9ced183b0bc795cef342e2cfa6fdc35e40b1c353a3de8f"
+            ],
+            "detail": "",
+            "template": "api-version",
+            "ts": 1793096010.4404695
+          }
+        ],
+        "templates": [
+          "api-version"
+        ],
+        "attrs": {},
+        "asset_kind": "api-server",
+        "cluster_id": "prod-b",
+        "name": "prod-b",
+        "namespace": "",
+        "address": "https://prod-b.example:6443",
+        "reachable": true
+      },
+      {
+        "id": "svc:prod-a/registry",
+        "kind": "service",
+        "created_seq": 3,
+        "checks": [
+          {
+            "probe_id": "probe:prod-a/relay-a",
+            "module": "exposure",
+            "mode": "probe",
+            "ok": true,
+            "evidence": [
+              "b2d12fb2e0061be9b34634ff07db7a877585801e59923553fff6b13c8298daf6"
+            ],
+            "detail": "",
+            "template": "exposure",
+            "ts": 1793096010.4404695
+          }
+        ],
+        "templates": [
+          "exposure"
+        ],
+        "attrs": {},
+        "cluster_id": "prod-a",
+        "name": "model-registry",
+        "namespace": "ml",
+        "port": 443,
+        "protocol": "tcp",
+        "address": "registry.prod-a.svc:443",
+        "reachable": true
+      },
+      {
+        "id": "svc:prod-b/trainer",
+        "kind": "service",
+        "created_seq": 5,
+        "checks": [
+          {
+            "probe_id": "probe:prod-b/relay-b",
+            "module": "exposure",
+            "mode": "probe",
+            "ok": true,
+            "evidence": [
+              "e6f0186d98bde14090063b0d1156ca615f0431b8a494001940d9d150fd559c2b"
+            ],
+            "detail": "",
+            "template": "exposure",
+            "ts": 1793096010.4404695
+          }
+        ],
+        "templates": [
+          "exposure"
+        ],
+        "attrs": {},
+        "cluster_id": "prod-b",
+        "name": "trainer-api",
+        "namespace": "train",
+        "port": 8265,
+        "protocol": "tcp",
+        "address": "trainer.prod-b.svc:8265",
+        "reachable": true
+      },
+      {
+        "id": "sa:prod-a/ml-agent",
+        "kind": "identity",
+        "created_seq": 7,
+        "checks": [],
+        "templates": [],
+        "attrs": {},
+        "identity_kind": "serviceaccount",
+        "cluster_id": "prod-a",
+        "name": "ml-agent",
+        "namespace": "ml"
+      },
+      {
+        "id": "sa:prod-b/trainer",
+        "kind": "identity",
+        "created_seq": 8,
+        "checks": [],
+        "templates": [],
+        "attrs": {},
+        "identity_kind": "serviceaccount",
+        "cluster_id": "prod-b",
+        "name": "trainer",
+        "namespace": "train"
+      },
+      {
+        "id": "probe:prod-a/relay-a",
+        "kind": "probe",
+        "probe_id": "relay-a",
+        "cluster_id": "prod-a",
+        "parent_id": "",
+        "transport": "kubectl",
+        "registered": true,
+        "status": "ready",
+        "baseline": {
+          "ok": true,
+          "evidence": [
+            "1eaf6bc428d5a5178622eae4676c3e9219d8ab6ee6b6f9f1d403ba1a3fd31756"
+          ],
+          "detail": "GET /version -> 200 via socks5",
+          "command": "collect",
+          "latency_ms": 0,
+          "ts": 1793096010.4404695
+        },
+        "checks": [],
+        "templates": [],
+        "attrs": {},
+        "created_seq": 12
+      },
+      {
+        "id": "probe:prod-b/relay-b",
+        "kind": "probe",
+        "probe_id": "relay-b",
+        "cluster_id": "prod-b",
+        "parent_id": "probe:prod-a/relay-a",
+        "transport": "exec",
+        "registered": true,
+        "status": "ready",
+        "baseline": {
+          "ok": true,
+          "evidence": [
+            "b39b575bc468bbad81d465646ac1ed64e3cce3d0a96468cb26db69eccde1efa1"
+          ],
+          "detail": "GET /version -> 200 via socks5",
+          "command": "collect",
+          "latency_ms": 0,
+          "ts": 1793096010.4404695
+        },
+        "checks": [],
+        "templates": [],
+        "attrs": {},
+        "created_seq": 13
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge-1",
+        "src": "cluster:prod-a",
+        "dst": "svc:prod-a/registry",
+        "relation": "exposes",
+        "exploitable": false,
+        "attempts": [],
+        "attrs": {},
+        "created_seq": 4
+      },
+      {
+        "id": "edge-2",
+        "src": "cluster:prod-b",
+        "dst": "svc:prod-b/trainer",
+        "relation": "exposes",
+        "exploitable": false,
+        "attempts": [],
+        "attrs": {},
+        "created_seq": 6
+      },
+      {
+        "id": "edge-3",
+        "src": "sa:prod-a/ml-agent",
+        "dst": "svc:prod-a/registry",
+        "relation": "can",
+        "exploitable": true,
+        "attempts": [
+          {
+            "outcome": "blocked",
+            "reason": "RBAC denies secrets in namespace ml",
+            "evidence": [],
+            "intent": "",
+            "detail": "",
+            "ts": 1793096010.4404695
+          }
+        ],
+        "attrs": {
+          "verb": "get",
+          "resource": "secrets",
+          "scope": "ml"
+        },
+        "created_seq": 9
+      },
+      {
+        "id": "edge-4",
+        "src": "sa:prod-a/ml-agent",
+        "dst": "svc:prod-a/registry",
+        "relation": "can",
+        "exploitable": true,
+        "attempts": [
+          {
+            "outcome": "failed",
+            "reason": "403 Forbidden from apiserver",
+            "evidence": [],
+            "intent": "",
+            "detail": "",
+            "ts": 1793096010.441503
+          }
+        ],
+        "attrs": {
+          "verb": "list",
+          "resource": "configmaps",
+          "scope": "ml"
+        },
+        "created_seq": 10
+      },
+      {
+        "id": "edge-5",
+        "src": "sa:prod-b/trainer",
+        "dst": "svc:prod-b/trainer",
+        "relation": "can",
+        "exploitable": true,
+        "attempts": [
+          {
+            "outcome": "success",
+            "reason": "",
+            "evidence": [
+              "139baab06da2228363fe6e97180ae2fec79095a2dd1538a25e04c450e0e22804"
+            ],
+            "intent": "intent-relay-b",
+            "detail": "",
+            "ts": 1793096010.441503
+          }
+        ],
+        "attrs": {
+          "verb": "create",
+          "resource": "pods",
+          "scope": "train"
+        },
+        "created_seq": 11
+      }
+    ],
+    "frontier_items": []
+  }
+}

@@ -126,6 +126,8 @@
 | [`docs/AGENT-ARCHITECTURE-UPGRADE-2026.md`](AGENT-ARCHITECTURE-UPGRADE-2026.md) | Agent 架构升级实施说明 |
 | [`docs/AGENT-AUTONOMY.md`](AGENT-AUTONOMY.md) | 事件溯源图运行时、调度/worker/协议/评测与一次授权边界 |
 | [`docs/AGENT-EVAL-RESULTS.md`](AGENT-EVAL-RESULTS.md) | deterministic vs supervisor-worker 的评测结果 |
+| [`docs/AGENT-COVERAGE.md`](AGENT-COVERAGE.md) | 覆盖图/四条闭包判据/停止条件/跨集群中继/边界 |
+| [`docs/COVERAGE-CLOSURE.md`](COVERAGE-CLOSURE.md) | coverage-proof.json 渲染的两集群闭包样例 |
 | [`docs/AUTONOMY.md`](AUTONOMY.md) | L3 预授权、硬边界与可回放 |
 | [`docs/SWARM-EVAL.md`](SWARM-EVAL.md) | 1 个 vs 4 个角色化 worker 的评测 |
 | [`docs/MASTER-REPORT.md`](MASTER-REPORT.md) | 总报告：把 ML 集群渗透测试做成可复述、可复核、可复跑的事 |

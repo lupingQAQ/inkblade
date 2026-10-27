@@ -17,6 +17,11 @@ The package is an *external* runtime around the deterministic probe kernel:
 * :mod:`inkblade.agent.skills` — versioned skill library with approval and
   success statistics.
 * :mod:`inkblade.agent.eval` — CyberGym/AgentDojo-style evaluation harness.
+* :mod:`inkblade.agent.coverage` — coverage graph and machine-checked closure
+  proof (assets/services/identities/probes, four closure criteria).
+* :mod:`inkblade.agent.relay` — cross-cluster relay with multiple
+  kubeconfigs/contexts, SOCKS5/dial reachability, per-cluster RoE/budget and
+  loop prevention.
 
 No module code is imported or executed here.  Every target-side action is a
 declarative template sent through ``session.probe_task`` to the Rust probe.
@@ -25,5 +30,5 @@ from __future__ import annotations
 
 __all__ = [
     "runtime", "graph", "scheduler", "workers", "protocols", "memory",
-    "skills", "eval", "objectives", "planner", "supervisor",
+    "skills", "eval", "objectives", "planner", "supervisor", "coverage", "relay",
 ]
