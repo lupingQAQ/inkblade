@@ -73,7 +73,6 @@ class SiteFilesTest(unittest.TestCase):
             self.assertTrue(path.is_file(), f"missing: {path.relative_to(ROOT).as_posix()}")
         self.assertTrue((DOCS / ".nojekyll").is_file(), "docs/.nojekyll missing")
         for rel in (
-            ".github/workflows/pages.yml",
             "scripts/build-docs-site.py",
             "scripts/build-pages-site.py",
             "scripts/check-docs-links.py",
@@ -194,13 +193,9 @@ class GeneratedSiteTest(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
-    def test_pages_workflow_publishes_allowlist(self):
-        workflow = read(ROOT / ".github" / "workflows" / "pages.yml")
-        self.assertIn("upload-pages-artifact", workflow)
-        self.assertIn("deploy-pages", workflow)
-        self.assertIn("build-pages-site.py", workflow)
-        self.assertIn("_site", workflow)
-        self.assertNotIn("path: docs", workflow)
+    def test_pages_workflow_is_removed(self):
+        # The repository is private and Pages is intentionally disabled.
+        self.assertFalse((ROOT / ".github" / "workflows" / "pages.yml").exists())
 
 
 class DetectionLayersTest(unittest.TestCase):

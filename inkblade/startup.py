@@ -223,9 +223,14 @@ def _stop_pid(pid: int, timeout: float = 8.0) -> bool:
             return False
     else:
         try:
-            os.kill(int(pid), signal.SIGTERM)
-        except OSError:
-            return True
+            # The UI is started in its own session; kill the whole group so a
+            # forked child cannot keep the port/pid alive.
+            os.killpg(os.getpgid(int(pid)), signal.SIGTERM)
+        except (OSError, ProcessLookupError):
+            try:
+                os.kill(int(pid), signal.SIGTERM)
+            except OSError:
+                return True
     deadline = time.time() + float(timeout)
     while time.time() < deadline:
         if not _pid_alive(pid):
@@ -233,10 +238,17 @@ def _stop_pid(pid: int, timeout: float = 8.0) -> bool:
         time.sleep(0.2)
     if os.name != "nt":
         try:
-            os.kill(int(pid), signal.SIGKILL)
-        except OSError:
-            return True
-        time.sleep(0.2)
+            os.killpg(os.getpgid(int(pid)), signal.SIGKILL)
+        except (OSError, ProcessLookupError):
+            try:
+                os.kill(int(pid), signal.SIGKILL)
+            except OSError:
+                return True
+        deadline = time.time() + 5.0
+        while time.time() < deadline:
+            if not _pid_alive(pid):
+                return True
+            time.sleep(0.2)
     return not _pid_alive(pid)
 
 

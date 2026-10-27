@@ -34,10 +34,12 @@ classifiers = [
     "Topic :: Security",
     "Topic :: System :: Systems Administration",
 ]
-dependencies = []
+dependencies = ["cryptography>=42"]
 
 [project.optional-dependencies]
-mlproxy = ["h2>=4.1", "pyzmq>=25"]
+mlproxy = ["h2>=4.1", "pyzmq>=25", "cryptography>=42"]
+quic = ["aioquic>=1.0"]
+all = ["h2>=4.1", "pyzmq>=25", "cryptography>=42", "aioquic>=1.0"]
 
 [project.scripts]
 inkblade = "inkblade.cli:main"

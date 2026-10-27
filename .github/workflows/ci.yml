@@ -40,7 +40,7 @@ jobs:
       - name: Install (editable)
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          python -m pip install -e . requests
+          python -m pip install -e ".[all]" requests
 
       - name: Byte-compile package
         run: python scripts/release/compile-check.py
@@ -63,7 +63,7 @@ jobs:
       - name: Install (editable)
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          python -m pip install -e . requests
+          python -m pip install -e ".[all]" requests
       - name: Public tree hygiene (0 hits required)
         run: python scripts/check-public-tree.py --root .
       - name: Vendored asset checksums
