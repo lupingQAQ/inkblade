@@ -43,58 +43,69 @@ Layer 10 is a product capability, not an add-on. Eleven `defense-bypass-*` modul
 
 | # | Stage | What happens | Artifact |
 |---:|---|---|---|
-| 1 | Foothold | A session records the entry vector: `kubeconfig`, `external` or `foothold`, with target, namespace, Pod and credential fingerprint | session record, audit trail |
-| 2 | Rust probe | The static probe is delivered by `kubectl`, ServiceAccount token, shared volume, EphemeralContainer or an authorized RCE callback | probe identity, SHA-256 |
-| 3 | Channel | The controller speaks an HMAC-authenticated, length-prefixed JSON protocol over the probe's stdio; the channel can expose loopback SOCKS5 and port forwards | channel state, task log |
+| 1 | Foothold | A session records the entry you already hold: `foothold` (shell, ServiceAccount token or authorized RCE) or `external` (bounded reachability proof). `kubeconfig` is the optional batch bootstrap mode | session record, audit trail |
+| 2 | Rust probe | The static probe is delivered through the foothold — ServiceAccount token or RCE callback — or by the optional `kubectl` path; no kubeconfig is required for a foothold or external entry | probe identity, SHA-256 |
+| 3 | Channel | The controller listens and the probe connects back over the reverse channel; a stdio channel is available when a local command transport exists | channel state, task log |
 | 4 | Detection | Templates run inside the Pod across the ten layers; each result carries steps, checks, findings and artifacts | findings, evidence anchors |
 | 5 | Escape | Container and node boundaries are tested through the operator, driver, CSI, runtime and kernel surfaces in scope | escape path, proof |
 | 6 | Lateral | Service-to-service, control-plane, gateway and fabric reachability is mapped from the probe's network namespace | reachability graph, pivots |
-| 7 | Multi-probe | Child probes extend the tree to further Pods and namespaces; each child keeps its own token and stricter budget | probe tree, lineage |
+| 7 | Multi-probe | Child probes are delivered from the parent with `probe upload` + `probe spawn` and call back the controller; each child keeps its own token and stricter budget | probe tree, lineage |
 | 8 | Cross-cluster | `agent relay` connects clusters; `agent coverage` records which objective nodes were closed and which were not reachable | relay status, coverage proof |
 | 9 | Report / rules / visualization | Bilingual reports, SARIF/OCSF/VEX exports, replayable rule packs and the local console | report, rule packs, console |
 
 ## Quick start
 
-Run against an environment you are authorized to test.
+Start from the console, then attach the probe or foothold you already have. A kubeconfig is not a prerequisite.
+
+| Entry | Use when | Kubeconfig |
+|---|---|---|
+| `foothold` | Default: a least-privilege Pod (non-root, no hostPath/privileged, outbound TCP only) with a shell, SA token or authorized RCE | not needed |
+| `external` | The target is reachable and you can attach a bounded reachability proof | not needed |
+| `kubeconfig` | Optional first batch bootstrap of probes across Pods | optional |
 
 ```bash
-# 1. Install the controller
+# 1. Install and start the console
 python -m pip install -e .
-
-# 2. Open the onboarding wizard: workspace, authorization, kubeconfig
 python -m inkblade up
 
-# 3. Sign the authorization record: target, scope, level, time window
-python -m inkblade quickstart
+# 2. Sign in
+#    The console prints a one-time admin password and serves 127.0.0.1:8765.
 
-# 4. Import the kubeconfig and open an authorized session
+# 3. Attach an existing probe: the probe calls back to the controller
+python -m inkblade probe list
+python -m inkblade channel listen
+#    In the Pod: inkblade-probe reverse --host <controller> --port <port>
+
+# 4. First delivery from a least-privilege foothold (outbound TCP only)
 python -m inkblade session open \
-  --mode kubeconfig \
-  --workspace ./work \
-  --kubeconfig ~/.kube/config \
-  --namespace ml-team \
-  --pod infer-0
+  --mode foothold \
+  --target <target> \
+  --credential-source pod-shell \
+  --namespace <namespace> \
+  --pod <pod>
 
-# 5. Deliver the probe into the target Pod
 python -m inkblade probe deploy \
   --session <session-id> \
-  --via kubectl \
+  --via rce \
   --binary ./inkblade-probe-linux-amd64 \
-  --namespace ml-team \
-  --pod infer-0 \
+  --probe-token-file ./probe.token \
   --allow-write
 
-# 6. Run the agent against the probe
+# 5. Run the agent against the probe channel
 python -m inkblade agent run \
   --probe <probe-id> \
   --objective read-only-recon \
   --workspace ./work
 
-# 7. Render the report
+# 6. Render the report
 python -m inkblade report --run <run-id> --lang bi
 ```
 
-`inkblade up` creates the workspace, checks the authorization record and walks through kubeconfig import. `quickstart` writes the signed record that binds scope, level and window. `probe deploy` is a plan without `--allow-write`; with it, the probe is delivered and registered. `agent run` prints the `run_id` that `report` consumes.
+`inkblade up` creates the workspace, prints a one-time admin password and serves the console on loopback; sign in there. Sign the authorization record with `inkblade quickstart` — target, scope, level and window — or in the console before the first delivery.
+
+The default foothold is an ordinary, least-privilege Pod: non-root, no hostPath or privileged mode, no kubeconfig, outbound TCP only. The controller listens with `channel listen`; inside the Pod the probe connects back with `inkblade-probe reverse --host <controller> --port <port>`. When no probe exists yet, `session open --mode foothold` records the shell, SA token or authorized RCE you hold, and `probe deploy --via rce|sa-token` places the first probe through it. Child probes are delivered with `probe upload` and `probe spawn` from the parent and call back the same way. A stdio channel (`channel start --session <id>`) is available when a local command transport exists; it is not required for the default path.
+
+**Optional: first batch delivery with a kubeconfig.** If you hold an operator kubeconfig and want to bootstrap several Pods at once, `session open --mode kubeconfig --kubeconfig <path>` and `probe deploy --via kubectl` remain available as an advanced path. The probe-first flow above does not depend on it.
 
 ## Command map
 
@@ -104,7 +115,7 @@ python -m inkblade report --run <run-id> --lang bi
 | Authorization record | `inkblade quickstart`, `inkblade roe` |
 | Session | `inkblade session open` / `status` / `close` / `run` |
 | Probe delivery | `inkblade probe deploy` / `list` / `collect` / `exec` / `read-file` / `list-files` / `upload` / `download` / `spawn` / `cleanup` |
-| Channel | `inkblade channel start` / `status` / `stop` |
+| Channel | `inkblade channel listen` / `start` / `status` / `stop` |
 | One template | `inkblade session run --id <session> --module <key>` or `inkblade run --module <key>` |
 | Chain execution | `inkblade execute --chain <id> --dry-run` then `inkblade execute --chain <id>` |
 | Agent | `inkblade agent run` / `status` / `trace` / `resume` / `replay` / `stop` |

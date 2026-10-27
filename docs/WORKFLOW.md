@@ -12,27 +12,29 @@ The order is the product. Each stage leaves behind something the next stage can 
 
 | # | Stage | Command | Gate | Artifact |
 |---:|---|---|---|---|
-| 1 | Foothold | `session open --mode kubeconfig\|external\|foothold` | Signed consent, target, window | session record, audit trail |
-| 2 | Rust probe | `probe deploy` | `--allow-write` plus session level | probe identity, SHA-256 |
-| 3 | Channel | `channel start` | loopback bind policy | channel state, task log |
+| 1 | Foothold | `session open --mode foothold\|external` (optional `kubeconfig`) | Signed consent, target, window | session record, audit trail |
+| 2 | Rust probe | `probe deploy --via sa-token\|rce` (optional `kubectl`) | `--allow-write` plus session level | probe identity, SHA-256 |
+| 3 | Channel | `channel listen` (probe reverse), `channel start` for stdio | loopback bind policy | channel state, task log |
 | 4 | Detection | `session run --module`, `run --module`, `agent run` | scope, level, surface | findings, evidence anchors |
 | 5 | Escape | `execute --chain`, `exploit` | chain preconditions, backup gate | escape path, proof |
-| 6 | Lateral | `channel start --forward`, `probe spawn`, `agent run` | scope coverage | reachability graph, pivots |
+| 6 | Lateral | channel forwards, `probe upload` + `probe spawn`, `agent run` | scope coverage | reachability graph, pivots |
 | 7 | Multi-probe | `probe spawn`, `probe list` | parent token, depth and fan-out | probe tree, lineage |
 | 8 | Cross-cluster | `agent relay add`, `agent coverage status` | relay token, per-cluster consent | relay status, coverage proof |
 | 9 | Report / rules / console | `report`, `export`, `rules generate`, `ui` | `--redact` before release | report, rule packs, console |
 
 ### Stage 1 — foothold
 
-`session open` binds the engagement to one entry vector. `kubeconfig` starts from a cluster credential; `external` starts from a reachable service and requires a proof object before anything beyond read-only recon; `foothold` starts from a Pod shell or ServiceAccount token. The record stores the credential SHA-256 fingerprint, never the credential itself.
+`session open` binds the engagement to the entry you already hold. `foothold` starts from a Pod shell, a ServiceAccount token or an authorized RCE and needs no kubeconfig; `external` starts from a reachable service, requires a bounded proof object before anything beyond read-only recon, and places the probe through an authorized RCE or callback. `kubeconfig` is the optional batch bootstrap for several Pods. The record stores the credential SHA-256 fingerprint, never the credential itself.
 
 ### Stage 2 — Rust probe
 
-`probe deploy` delivers the static binary. Without `--allow-write` it prints the deployment plan. With it, the probe lands through `kubectl`, a ServiceAccount token, a shared volume, an EphemeralContainer or an authorized RCE callback, and registers its `probe_id`, architecture and hash.
+`probe deploy` delivers the static binary. Without `--allow-write` it prints the deployment plan. With it, the probe lands through the foothold — a ServiceAccount token or an authorized RCE — or through the optional `kubectl` path, and registers its `probe_id`, architecture and hash.
+
+When a probe already exists, skip stages 1 and 2: `probe list` finds it in the workspace, the controller listens with `channel listen`, and the probe connects back with `inkblade-probe reverse`.
 
 ### Stage 3 — channel
 
-The controller speaks the framed protocol over the probe's stdio. `channel start` exposes a loopback SOCKS5 listener and any `--forward LOCAL:HOST:PORT` pairs. `channel status` reports the listeners; `channel stop` closes them. The probe does not open a listening socket on the Pod network.
+The default channel is initiated by the probe: the controller listens with `channel listen` and the probe connects back from the Pod with `inkblade-probe reverse`. No Pod-side listening port is required, so the default least-privilege foothold needs outbound TCP only. When a local command transport exists, the stdio channel is available: `channel start` exposes loopback SOCKS5 and `--forward LOCAL:HOST:PORT` pairs, `channel status` reports state, and `channel stop` closes them. Child probes are delivered with `probe upload` + `probe spawn` and call back the same way.
 
 ### Stage 4 — detection
 
@@ -44,7 +46,7 @@ Detection is template execution. `session run --id <session> --module <key>` run
 
 ### Stage 6 — lateral
 
-Lateral movement uses the same probe. `channel start --forward` reaches internal services through the Pod network namespace; `probe spawn` starts a child probe on another Pod; `agent run` records each pivot as a graph edge with the evidence that proves it.
+Lateral movement uses the same probe. Channel forwards (reverse or stdio) reach internal services through the Pod network namespace; `probe upload` + `probe spawn` starts a child probe on another Pod and it calls back the controller; `agent run` records each pivot as a graph edge with the evidence that proves it.
 
 ### Stage 7 — multi-probe
 
@@ -76,27 +78,29 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 
 | # | 阶段 | 命令 | 闸门 | 产物 |
 |---:|---|---|---|---|
-| 1 | 立足 | `session open --mode kubeconfig\|external\|foothold` | 签署授权、目标、时间窗 | 会话记录、审计轨迹 |
-| 2 | Rust 探针 | `probe deploy` | `--allow-write` 与会话级别 | 探针身份、SHA-256 |
-| 3 | 通道 | `channel start` | 回环绑定策略 | 通道状态、任务日志 |
+| 1 | 立足 | `session open --mode foothold\|external`（可选 `kubeconfig`） | 签署授权、目标、时间窗 | 会话记录、审计轨迹 |
+| 2 | Rust 探针 | `probe deploy --via sa-token\|rce`（可选 `kubectl`） | `--allow-write` 与会话级别 | 探针身份、SHA-256 |
+| 3 | 通道 | `channel listen`（探针 reverse），`channel start` 用 stdio | 回环绑定策略 | 通道状态、任务日志 |
 | 4 | 检测 | `session run --module`、`run --module`、`agent run` | 范围、级别、部署面 | 发现、证据锚 |
 | 5 | 逃逸 | `execute --chain`、`exploit` | 链前置条件、备份闸门 | 逃逸路径、证明 |
-| 6 | 横向 | `channel start --forward`、`probe spawn`、`agent run` | 范围覆盖 | 可达图、跳板 |
+| 6 | 横向 | 通道转发、`probe upload` + `probe spawn`、`agent run` | 范围覆盖 | 可达图、跳板 |
 | 7 | 多探针 | `probe spawn`、`probe list` | 父 token、深度与扇出 | 探针树、血缘 |
 | 8 | 跨集群 | `agent relay add`、`agent coverage status` | 中继 token、逐集群授权 | 中继状态、覆盖证明 |
 | 9 | 报告 / 规则 / 控制台 | `report`、`export`、`rules generate`、`ui` | 外发前 `--redact` | 报告、规则包、控制台 |
 
 ### 第 1 步 — 立足
 
-`session open` 把项目绑定到一个入口方式。`kubeconfig` 从集群凭据开始；`external` 从可达服务开始，除只读侦察外的任何动作都必须先有证明对象；`foothold` 从 Pod shell 或 ServiceAccount token 开始。记录保存凭据的 SHA-256 指纹，不保存凭据本身。
+`session open` 把项目绑定到你已有的入口。`foothold` 从 Pod shell、ServiceAccount token 或授权 RCE 开始，不需要 kubeconfig；`external` 从可达服务开始，除只读侦察外的任何动作都必须先有有界证明对象，再经授权 RCE 或回调投放探针；`kubeconfig` 是可选的多 Pod 批量 bootstrap。记录保存凭据的 SHA-256 指纹，不保存凭据本身。
 
 ### 第 2 步 — Rust 探针
 
-`probe deploy` 投放静态二进制。不带 `--allow-write` 时只打印投放计划；带上后经 `kubectl`、ServiceAccount token、共享卷、EphemeralContainer 或授权 RCE 回调落地，并登记 `probe_id`、架构与哈希。
+`probe deploy` 投放静态二进制。不带 `--allow-write` 时只打印投放计划；带上后经立足点 —— ServiceAccount token 或授权 RCE —— 或可选的 `kubectl` 路径落地，并登记 `probe_id`、架构与哈希。
+
+已有探针时跳过第 1、2 步：`probe list` 发现在册探针，控制端 `channel listen`，Pod 内探针 `reverse` 主动回连。
 
 ### 第 3 步 — 通道
 
-控制端通过探针 stdio 使用帧协议。`channel start` 暴露回环 SOCKS5 监听和若干 `--forward LOCAL:HOST:PORT`；`channel status` 报告监听状态，`channel stop` 关闭。探针不在 Pod 网络上开监听端口。
+默认通道由探针发起：控制端 `channel listen`，Pod 内 `inkblade-probe reverse` 主动回连。Pod 不需要开监听端口，默认的最低权限立足点只要有出站 TCP。存在本地命令通道时，可使用 stdio 通道：`channel start` 暴露回环 SOCKS5 与 `--forward LOCAL:HOST:PORT`，`channel status` 报告状态，`channel stop` 关闭。子探针由父探针用 `probe upload` + `probe spawn` 投放，并以同样方式回连。
 
 ### 第 4 步 — 检测
 
@@ -108,7 +112,7 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 
 ### 第 6 步 — 横向
 
-横向复用同一颗探针。`channel start --forward` 经 Pod 网络命名空间访问内部服务；`probe spawn` 在另一个 Pod 上启动子探针；`agent run` 把每个跳板记录成一条图边，并附上证明它的证据。
+横向复用同一颗探针。通道转发（反向或 stdio）经 Pod 网络命名空间访问内部服务；`probe upload` + `probe spawn` 在另一个 Pod 上启动子探针并回连控制端；`agent run` 把每个跳板记录成一条图边，并附上证明它的证据。
 
 ### 第 7 步 — 多探针
 

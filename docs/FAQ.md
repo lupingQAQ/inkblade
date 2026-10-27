@@ -12,11 +12,18 @@
 
 ```bash
 python -m pip install -e .
-python -m inkblade up
-python -m inkblade quickstart
+python -m inkblade up --no-consent
 ```
 
-`up` 打开接入向导，创建工作区并引导导入 kubeconfig；`quickstart` 写出绑定目标、范围、级别与时间窗的授权记录。之后用 `session open` 打开会话，用 `probe deploy` 投放探针。
+`up` 创建工作区、打印一次性 admin 密码并在 `127.0.0.1:8765` 提供控制台；浏览器登录后签授权，或执行 `inkblade quickstart`。已有探针直接接入：控制端 `channel listen`，Pod 内探针 `reverse` 主动回连。首次投放用 `session open --mode foothold` 与 `probe deploy --via rce|sa-token`，不需要 kubeconfig。
+
+### 必须要有 kubeconfig 吗？
+
+不。默认立足点是普通、最低权限的 Pod：非 root、无 hostPath/privileged、无 kubeconfig，只有出站 TCP。`foothold` 与 `external` 入口都不需要 kubeconfig；`kubeconfig` 只是可选的首次批量 bootstrap，用于一次给多个 Pod 投放探针。
+
+### 探针怎么回连？
+
+控制端执行 `channel listen`；Pod 内的探针执行 `inkblade-probe reverse --host <controller> --port <port>` 主动建立出站连接。Pod 不需要开监听端口。子探针由父探针用 `probe upload` + `probe spawn` 投放，并以同样方式回连。存在本地命令通道时也可以使用 stdio 通道。
 
 ### 目标 Pod 里要装 Python 吗？
 
@@ -42,11 +49,11 @@ python -m inkblade quickstart
 
 ### 探针怎么进 Pod？
 
-四种方式：授权 RCE（base64 + memfd）、`kubectl`、ServiceAccount token、共享卷或 EphemeralContainer 清单。每种都有前置条件和痕迹；没有“静默投放”这种承诺。详见 [`PROBE-DEPLOY.md`](PROBE-DEPLOY.md)。
+默认是授权 RCE（base64 + memfd）：适合非 root、无 hostPath/privileged 的最低权限 Pod，只需要可写临时目录或 memfd 与出站 TCP。也可以用 ServiceAccount token、共享卷或 EphemeralContainer 清单；`kubectl` 只是可选的批量 bootstrap。每种方式都有前置条件和痕迹；没有“静默投放”这种承诺。详见 [`PROBE-DEPLOY.md`](PROBE-DEPLOY.md)。
 
 ### 通道能做什么？
 
-`channel start` 在本地回环上开 SOCKS5 与端口转发，让你访问 Pod 网络内的服务。通道只绑 `127.0.0.1`；探针不在 Pod 网络上开监听端口。`channel status` 查看监听，`channel stop` 关闭。
+默认是探针主动回连的反向通道：控制端 `channel listen`，Pod 内探针 `reverse` 建立出站连接，不需要 Pod 监听端口。存在本地命令通道时也可用 stdio 通道（`channel start`）：它在本地回环上开 SOCKS5 与端口转发，只绑 `127.0.0.1`。`channel status` 查看状态，`channel stop` 关闭。
 
 ### 探针权限有多大？
 

