@@ -92,6 +92,40 @@ def _print_json(data) -> None:
     print(json.dumps(data, ensure_ascii=False, indent=2, default=str))
 
 
+def _run_docs_site(docs_dir: Path, bind: str, port: int, open_browser: bool) -> int:
+    """本地静态文档站点：服务 docs/，默认只绑回环。"""
+    import functools
+    import threading
+    import webbrowser
+    from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+
+    if not docs_dir.is_dir():
+        print(f"inkblade docs: 文档目录不存在：{docs_dir}", file=sys.stderr)
+        return 2
+    if bind not in ("127.0.0.1", "localhost", "::1"):
+        print(f"警告: 文档站点绑定 {bind}，将对网络可达；仅在本机或隔离网络使用。",
+              file=sys.stderr)
+    handler = functools.partial(SimpleHTTPRequestHandler, directory=str(docs_dir))
+    try:
+        httpd = ThreadingHTTPServer((bind, int(port)), handler)
+    except OSError as exc:
+        print(f"inkblade docs: 无法绑定 {bind}:{port}：{exc}", file=sys.stderr)
+        return 2
+    httpd.daemon_threads = True
+    shown = "127.0.0.1" if bind in ("0.0.0.0", "::") else bind
+    url = f"http://{shown}:{httpd.server_address[1]}/"
+    print(f"InkBlade 文档站点: {url} （Ctrl+C 退出）")
+    if open_browser:
+        threading.Timer(0.5, lambda: webbrowser.open(url)).start()
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        httpd.server_close()
+    return 0
+
+
 def main(argv=None) -> int:
     """CLI 入口：未捕获异常统一转人话，堆栈仅在 INKBLADE_DEBUG=1 时暴露。"""
     try:
@@ -357,6 +391,13 @@ def _main(argv=None) -> int:
     uip.add_argument("--port", type=int, default=8765)
     uip.add_argument("--host", default="127.0.0.1",
                      help="绑定地址（默认 127.0.0.1；容器/反向代理后使用 0.0.0.0）")
+
+    dsp = sub.add_parser("docs", help="本地文档站点：服务 docs/ 并打开浏览器（127.0.0.1:8766）")
+    dsp.add_argument("--port", type=int, default=8766, help="监听端口（默认 8766）")
+    dsp.add_argument("--bind", default="127.0.0.1",
+                     help="绑定地址（默认 127.0.0.1；仅在本机或隔离网络使用）")
+    dsp.add_argument("--no-browser", action="store_true", help="不自动打开浏览器")
+    dsp.add_argument("--docs-dir", default=None, help="文档目录（默认仓库 docs/）")
 
     up = sub.add_parser("up", aliases=["start"],
                         help="一条命令启动：自检→工作区→admin→授权→本地 UI（127.0.0.1:8765）")
@@ -1075,6 +1116,11 @@ def _main(argv=None) -> int:
         except KeyboardInterrupt:
             httpd.shutdown()
         return 0
+
+    if args.cmd == "docs":
+        docs_dir = (Path(args.docs_dir).expanduser().resolve() if args.docs_dir
+                    else Path(__file__).resolve().parents[1] / "docs")
+        return _run_docs_site(docs_dir, args.bind, args.port, not args.no_browser)
 
     if args.cmd == "mcp":
         from .mcp_server import run_stdio

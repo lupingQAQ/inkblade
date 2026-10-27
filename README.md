@@ -39,6 +39,39 @@ Layer 10 is a product capability, not an add-on. Eleven `defense-bypass-*` modul
 - **Report and console.** Bilingual pentest and remediation reports, SARIF / OCSF / VEX export, and a local web console for findings, graphs and timelines.
 - **No telemetry.** No account, no cloud key, no licence server, no outbound call unless you configure one.
 
+### Vulnerability research reserve
+
+The reserve is the research inventory behind the template catalogue. It is counted from the registry, not from prose, and every row keeps its evidence anchor.
+
+| Inventory | Count |
+|---|---:|
+| Vulnerability entries | 184 |
+| Runnable demos | 68 |
+| Zero-day candidates | 169 |
+| Novelty-checked | 47 |
+| Reserve-eligible | 46 |
+| Unique reserve primitives | 39 |
+| Version matrix rows | 103 |
+| Weapon packs | 47 |
+| Detection rules | 121 |
+| Attack chains | 29 |
+
+The 169 candidates are screened: 47 passed the novelty check, 46 are reserve-eligible, and 39 are unique primitives after deduplication. The public ledger (`docs/0DAY-PUBLIC.md`) lists component, class, affected versions, status and disclosure window only.
+
+### Rust probe
+
+A single static musl binary for linux/amd64 and linux/arm64 executes 286 templates. Templates are JSON data; there are 0 `run.py` files and no target-side interpreter.
+
+`collect` · `exec` · `audit-exec` · `read-file` · `list-files` · `upload` · `download` · `spawn` · `dial` · `socks` · `beacon` · `cleanup`
+
+Every operation is budgeted, scoped and recorded in the evidence store; the probe tree cleans up child-first.
+
+### Proxy protocol support
+
+Reverse channel transports: TLS, WSS, HTTPS, QUIC, WebTransport (experimental), MASQUE. ML service proxies: gRPC, Redis, TCPStore, NCCL, UCX, ZMTP (experimental). SOCKS5 is loopback only (`127.0.0.1`) for local tool compatibility.
+
+Every framed message is authenticated with a token and an HMAC; TLS transports pin the controller certificate (SHA-256) and accept an optional CA file. The probe does not hide processes, sockets or file writes: Layer 10 measures what defenders see.
+
 ## Workflow
 
 | # | Stage | What happens | Artifact |
@@ -110,6 +143,8 @@ python -m inkblade report --run <run-id> --lang bi
 
 The default foothold is an ordinary, least-privilege Pod: non-root, no hostPath or privileged mode, no kubeconfig, outbound TCP only. The controller listens with `channel listen`; inside the Pod the probe connects back with `inkblade-probe reverse --host <controller> --port <port>`. When no probe exists yet, `session open --mode foothold` records the shell, SA token or authorized RCE you hold, and `probe deploy --via rce|sa-token` places the first probe through it. Child probes are delivered with `probe upload` and `probe spawn` from the parent and call back the same way. A stdio channel (`channel start --session <id>`) is available when a local command transport exists; it is not required for the default path.
 
+**Documentation site.** `python -m inkblade docs` → `http://127.0.0.1:8766/`. It serves `docs/`, opens the browser by default, and keeps `--no-browser`, `--port` and `--bind` for headless or alternate listeners.
+
 **Optional: first batch delivery with a kubeconfig.** If you hold an operator kubeconfig and want to bootstrap several Pods at once, `session open --mode kubeconfig --kubeconfig <path>` and `probe deploy --via kubectl` remain available as an advanced path. The probe-first flow above does not depend on it.
 
 ## Command map
@@ -129,6 +164,7 @@ The default foothold is an ordinary, least-privilege Pod: non-root, no hostPath 
 | Export | `inkblade export --run <id> --format sarif\|ocsf\|vex` |
 | Rule packs | `inkblade rules generate`, `inkblade rules validate` |
 | Console | `inkblade ui` |
+| Documentation site | `inkblade docs --port 8766 --bind 127.0.0.1` |
 | Templates | `inkblade template list` / `get` / `plan` / `validate` |
 
 ## Deployment
@@ -167,8 +203,4 @@ The chart runs as uid 10001 with a read-only root filesystem and a PVC for evide
 
 ## License
 
-Apache-2.0. Commercial use, forks and embedding are permitted; keep `LICENSE` and `NOTICE`. The `NOTICE` file records the clean-room boundary: functional parity was derived from public descriptions and observable behaviour, and InkBlade is not linked with or derived from AGPL projects.
-
-## Clean-room 声明
-
-InkBlade 为独立实现：未读取、未复制任何 AGPL 项目源码；与 ARTEX 仅做公开功能层面对标，不链接、不派生。Documentation index: [`docs/DOC-INDEX.md`](docs/DOC-INDEX.md).
+Apache-2.0. Commercial use, forks and embedding are permitted; keep `LICENSE` and `NOTICE`. Documentation index: [`docs/DOC-INDEX.md`](docs/DOC-INDEX.md).

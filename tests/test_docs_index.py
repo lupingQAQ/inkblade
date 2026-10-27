@@ -77,7 +77,10 @@ AI_SCAN = re.compile(r"ai-scan|ai 检测|ai 分数|ai score", re.IGNORECASE)
 MD_LINK = re.compile(r"!?\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+\"[^\"]*\")?\s*\)")
 FENCE = re.compile(r"```.*?```", re.S)
 INLINE = re.compile(r"`[^`]*`")
-EXTERNAL = re.compile(r"https?://", re.I)
+EXTERNAL = re.compile(
+    r"https?://(?!127\.0\.0\.1(?:[:/]|$)|localhost(?:[:/]|$)|\[::1\](?:[:/]|$))",
+    re.I,
+)
 DRIVE = re.compile(r"(?<![A-Za-z])[A-Za-z]:" + re.escape("\\"))
 LOCAL_TOKENS = ("211" + "69", "llm" + "-audit", "." + "slim", "/" + "mnt/")
 

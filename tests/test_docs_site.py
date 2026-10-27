@@ -10,9 +10,12 @@ the committed HTML.
 from __future__ import annotations
 
 import re
+import socket
 import subprocess
 import sys
+import time
 import unittest
+import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -172,6 +175,76 @@ class BilingualTest(unittest.TestCase):
 
 
 
+class LocalDocsCommandTest(unittest.TestCase):
+    """The private repository has no hosted Pages; docs are served locally."""
+
+    @staticmethod
+    def free_port() -> int:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.bind(("127.0.0.1", 0))
+            return int(sock.getsockname()[1])
+
+    def test_docs_command_help(self):
+        result = subprocess.run(
+            [sys.executable, "-m", "inkblade", "docs", "--help"],
+            cwd=str(ROOT),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=60,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        for flag in ("--port", "--bind", "--no-browser"):
+            self.assertIn(flag, result.stdout)
+
+    def test_docs_command_serves_landing_page(self):
+        port = self.free_port()
+        proc = subprocess.Popen(
+            [sys.executable, "-m", "inkblade", "docs",
+             "--bind", "127.0.0.1", "--port", str(port), "--no-browser"],
+            cwd=str(ROOT),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        base = f"http://127.0.0.1:{port}/"
+        try:
+            status = None
+            body = ""
+            deadline = time.time() + 30
+            while time.time() < deadline:
+                if proc.poll() is not None:
+                    break
+                try:
+                    with urllib.request.urlopen(base, timeout=1) as response:
+                        status = response.status
+                        body = response.read().decode("utf-8", "replace")
+                    break
+                except Exception:
+                    time.sleep(0.2)
+            self.assertEqual(status, 200, f"docs server did not answer: {proc.stderr.read() if proc.poll() is not None else 'timeout'}")
+            self.assertIn("InkBlade", body)
+            for ref in re.findall(r'(?:href|src)="([^"]+)"', body):
+                self.assertFalse(ref.startswith(("http://", "https://", "//")),
+                                 f"external CDN reference in served page: {ref}")
+            with urllib.request.urlopen(base + "en/", timeout=5) as response:
+                self.assertEqual(response.status, 200)
+                self.assertIn("InkBlade", response.read().decode("utf-8", "replace"))
+        finally:
+            proc.terminate()
+            try:
+                proc.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                proc.wait(timeout=5)
+            for stream in (proc.stdout, proc.stderr):
+                if stream is not None:
+                    stream.close()
+
+
 class GeneratedSiteTest(unittest.TestCase):
     def test_generator_output_is_current(self):
         result = subprocess.run(
@@ -196,6 +269,36 @@ class GeneratedSiteTest(unittest.TestCase):
     def test_pages_workflow_is_removed(self):
         # The repository is private and Pages is intentionally disabled.
         self.assertFalse((ROOT / ".github" / "workflows" / "pages.yml").exists())
+
+
+class CapabilitySectionsTest(unittest.TestCase):
+    def test_reserve_inventory_is_published(self):
+        index = read(DOCS / "index.html")
+        self.assertIn("Vulnerability research reserve", index)
+        self.assertIn("漏洞储备", index)
+        for value in ("184", "68", "169", "47", "46", "39", "103", "121", "29"):
+            self.assertIn(f'<td class="num">{value}</td>', index)
+
+    def test_probe_and_proxy_sections(self):
+        index = read(DOCS / "index.html")
+        self.assertIn("Static Rust probe", index)
+        self.assertIn("286", index)
+        self.assertIn("run.py", index)
+        for op in ("collect", "exec", "audit-exec", "read-file", "list-files",
+                   "upload", "download", "spawn", "dial", "socks", "beacon", "cleanup"):
+            self.assertIn(f"<code>{op}</code>", index)
+        self.assertIn("Proxy protocol support", index)
+        for proto in ("TLS", "WSS", "HTTPS", "QUIC", "WebTransport", "MASQUE",
+                      "gRPC", "Redis", "TCPStore", "NCCL", "UCX", "ZMTP", "SOCKS5"):
+            self.assertIn(proto, index)
+        self.assertIn("experimental", index)
+        self.assertIn("token and an HMAC", index)
+
+    def test_readme_documents_local_site(self):
+        readme = read(ROOT / "README.md")
+        self.assertIn("Documentation site", readme)
+        self.assertIn("python -m inkblade docs", readme)
+        self.assertIn("http://127.0.0.1:8766/", readme)
 
 
 class DetectionLayersTest(unittest.TestCase):

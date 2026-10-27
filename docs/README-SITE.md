@@ -31,41 +31,35 @@ python scripts/build-docs-site.py --check
 python scripts/check-docs-links.py
 ```
 
-### What gets published
+### Serving the site
 
-The publishing workflow stages an allowlist into `_site/` and uploads that. The published set is:
+The repository is private and GitHub Pages is not enabled, so the site is served locally:
+
+```bash
+python -m inkblade docs
+# http://127.0.0.1:8766/
+```
+
+`--no-browser` keeps it headless; `--port` and `--bind` change the listener. The command serves `docs/` as static files, so every relative link resolves exactly as it does from the folder.
+
+`scripts/build-pages-site.py` can still stage the public allowlist into `_site/` for an offline copy or an internal mirror. It is not a publishing workflow, and no hosted URL should be assumed:
 
 - `index.html`, `en/`, `zh/`, `assets/`, `.nojekyll`
 - the public guides: `USAGE`, `INSTALL`, `FEATURES`, `WORKFLOW`, `MODULES`, `FAQ`, `0DAY-PUBLIC`,
   `ARCHITECTURE`, `README-SITE`
 - nothing else
 
-Internal research and vendor-report material stays out of the artifact on purpose. Those
-directories are not part of the public documentation and should not be served from a public
-site, even when they happen to live under the same repository.
-
-### Why not point Pages at `docs/` directly
-
-You can — `Settings → Pages → Deploy from a branch → /docs` — and for a small tree it is fine.
-It also publishes every Markdown file in `docs/`, including design notes and lab records. The
-allowlist workflow exists so a public URL never becomes a shortcut to material that is waiting
-for a coordinated disclosure.
-
-If you prefer the branch setting, move or exclude the internal documents first, then set it.
-Don't do both at once and assume the workflow wins; check what the deployed URL actually serves.
+Internal research and vendor-report material stays out of the staged artifact on purpose. Those
+directories are not part of the public documentation.
 
 ### Local preview
 
-Open `docs/index.html` in a browser. Everything is relative and local: no fonts, no CDN, no
-analytics, no requests to any third party.
-
-For a closer approximation of the host (absolute paths, directory indexes):
-
 ```bash
-python -m http.server 8000 --directory docs
+python -m inkblade docs --no-browser
 ```
 
-Then open the local address it prints. Stop the server when you are done.
+or open `docs/index.html` directly in a browser. Everything is relative and local: no fonts, no CDN, no
+analytics, no requests to any third party.
 
 ### Rules the pages follow
 
@@ -103,36 +97,33 @@ python scripts/build-docs-site.py --check
 python scripts/check-docs-links.py
 ```
 
-### 发布哪些文件
+### 提供站点
 
-发布工作流把白名单拷进 `_site/` 再上传。发布集合是：
+仓库是私有的，GitHub Pages 未启用，因此站点在本地提供：
+
+```bash
+python -m inkblade docs
+# http://127.0.0.1:8766/
+```
+
+`--no-browser` 不打开浏览器；`--port` 与 `--bind` 换监听地址。命令把 `docs/` 当静态文件服务，相对链接与在目录里打开时一致。
+
+`scripts/build-pages-site.py` 仍可把公开白名单拷进 `_site/`，用于离线副本或内网镜像。它不是发布工作流，也不应假设存在托管 URL：
 
 - `index.html`、`en/`、`zh/`、`assets/`、`.nojekyll`
 - 公开指南：`USAGE`、`INSTALL`、`FEATURES`、`WORKFLOW`、`MODULES`、`FAQ`、`0DAY-PUBLIC`、
   `ARCHITECTURE`、`README-SITE`
 - 别的都不发
 
-内部研究与厂商汇报材料刻意不进产物。它们不属于公开文档，即使物理上放在同一个仓库里，也不该由公开站点提供。
-
-### 为什么不直接把 Pages 指到 `docs/`
-
-可以——`Settings → Pages → Deploy from a branch → /docs`——目录小的时候没问题。但它会把 `docs/` 下每一个
-Markdown 都发布出去，包括设计笔记与实验记录。白名单工作流存在的意义，是避免某个公开 URL 变成通往“等协调披露的材料”
-的捷径。
-
-如果你更想用分支设置：先把内部文档移走或排除，再设置。不要两边都开还假设工作流会赢——去看部署后的 URL 实际返回什么。
+内部研究与厂商汇报材料刻意不进产物。它们不属于公开文档。
 
 ### 本地预览
 
-用浏览器打开 `docs/index.html`。全部相对路径、全部本地：没有字体、没有 CDN、没有统计、没有任何第三方请求。
-
-想更接近托管环境（绝对路径、目录索引）：
-
 ```bash
-python -m http.server 8000 --directory docs
+python -m inkblade docs --no-browser
 ```
 
-打开它打印的本地地址，用完记得停掉。
+也可以直接用浏览器打开 `docs/index.html`。全部相对路径、全部本地：没有字体、没有 CDN、没有统计、没有任何第三方请求。
 
 ### 页面遵守的规则
 

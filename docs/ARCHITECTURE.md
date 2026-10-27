@@ -44,4 +44,4 @@ InkBlade 的控制端由七个组件组成，运行时仅依赖 Python 3.10+ 标
 
 - 默认 mock 靶场 `lab/mock_targets.py` 仅监听 `127.0.0.1`，所有写盘限于注入的 `root`。
 - 真实集群测试需要显式授权、kubeconfig 与网络可达性；平台不内置任何真实凭据。
-- KIND 与 ARTEX 黑盒对标属实验室可选项，需启用虚拟化后按 `lab/kind/run-proof.sh`、`lab/bench/artex-bench.sh` 执行。
+- KIND 实验室验证属可选项，需启用虚拟化后按 `lab/kind/run-proof.sh` 执行。

@@ -49,11 +49,8 @@ class TestFeatureMatrix(unittest.TestCase):
             self.assertEqual(len(rows), self.m["matrix_rows"][tool], tool)
 
     def test_docs_exist_and_are_substantial(self):
-        a = (ROOT / "docs" / "FEATURE-BY-FEATURE-ARTEX.md").read_text(encoding="utf-8")
         k = (ROOT / "docs" / "FEATURE-BY-FEATURE-KUBETRAIL.md").read_text(encoding="utf-8")
-        self.assertGreater(len(a), 20000)
         self.assertGreater(len(k), 15000)
-        self.assertIn("来源", a)
         self.assertIn("来源", k)
 
 

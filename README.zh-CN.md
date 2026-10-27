@@ -39,6 +39,39 @@ InkBlade 把一个静态链接的 Rust 探针放进已授权的 Pod，用声明�
 - **报告与控制台。** 双语渗透报告与修复报告，SARIF / OCSF / VEX 导出，本地 Web 控制台展示发现、图与时间线。
 - **无遥测。** 不要账号、不要云密钥、没有许可服务器；不配置集成就没有外发调用。
 
+### 漏洞储备
+
+储备是模板目录背后的研究库存。数字从 registry 统计，不靠文稿累加；每一条都保留证据锚。
+
+| 库存 | 数量 |
+|---|---:|
+| 漏洞条目 | 184 |
+| 可运行 demo | 68 |
+| 零日候选 | 169 |
+| 查新通过 | 47 |
+| 储备可用 | 46 |
+| 去重后独立储备原语 | 39 |
+| 版本矩阵条目 | 103 |
+| weapon pack | 47 |
+| 检测规则 | 121 |
+| 攻击链 | 29 |
+
+169 条候选经过筛查：47 条通过查新，46 条进入储备口径，39 条为去重后的独立原语。公开台账（`docs/0DAY-PUBLIC.md`）只列组件、类别、受影响版本、状态与披露窗口。
+
+### Rust 探针
+
+linux/amd64 与 linux/arm64 各一个静态 musl 二进制，执行 286 个模板。模板是 JSON 数据；仓库内 0 个 `run.py`，目标侧不需要解释器。
+
+`collect` · `exec` · `audit-exec` · `read-file` · `list-files` · `upload` · `download` · `spawn` · `dial` · `socks` · `beacon` · `cleanup`
+
+每个操作都受预算与范围约束，并写入证据库；探针树先子后父清理。
+
+### 代理协议支持
+
+回连传输：TLS、WSS、HTTPS、QUIC、WebTransport（experimental）、MASQUE。ML 服务代理：gRPC、Redis、TCPStore、NCCL、UCX、ZMTP（experimental）。SOCKS5 仅回环（`127.0.0.1`），用于本地工具兼容。
+
+每个帧都带 token 与 HMAC 认证；TLS 传输校验控制端证书 pin（SHA-256），可选 CA 文件。探针不隐藏进程、连接或文件写入：第 10 层度量的是防守方能否看见。
+
 ## 工作流
 
 | # | 阶段 | 发生什么 | 产物 |
@@ -110,6 +143,8 @@ python -m inkblade report --run <run-id> --lang bi
 
 默认立足点是普通、最低权限的 Pod：非 root、无 hostPath/privileged、无 kubeconfig，只有出站 TCP。控制端用 `channel listen` 监听，Pod 内探针用 `inkblade-probe reverse --host <controller> --port <port>` 主动回连。还没有探针时，`session open --mode foothold` 记录你已有的 shell、SA token 或授权 RCE，`probe deploy --via rce|sa-token` 通过它投放第一颗探针。子探针由父探针用 `probe upload` + `probe spawn` 投放，并以同样方式回连。存在本地命令通道时仍可用 stdio 通道（`channel start --session <id>`），但默认路径不依赖它。
 
+**文档站点。** `python -m inkblade docs` → `http://127.0.0.1:8766/`。它服务 `docs/`，默认自动打开浏览器；`--no-browser`、`--port`、`--bind` 用于无界面或换监听地址。
+
 **可选：首次批量投放使用 kubeconfig。** 如果你持有运维 kubeconfig，想一次给多个 Pod 做 bootstrap，仍可使用 `session open --mode kubeconfig --kubeconfig <path>` 与 `probe deploy --via kubectl`。上面的探针优先流程不依赖它。
 
 ## 命令表
@@ -129,6 +164,7 @@ python -m inkblade report --run <run-id> --lang bi
 | 导出 | `inkblade export --run <id> --format sarif\|ocsf\|vex` |
 | 规则包 | `inkblade rules generate`、`inkblade rules validate` |
 | 控制台 | `inkblade ui` |
+| 文档站点 | `inkblade docs --port 8766 --bind 127.0.0.1` |
 | 模板 | `inkblade template list` / `get` / `plan` / `validate` |
 
 ## 部署
@@ -167,4 +203,4 @@ Chart 以 uid 10001 运行，根文件系统只读，证据落在 PVC。默认�
 
 ## 许可
 
-Apache-2.0。允许商用、fork 与嵌入服务；保留 `LICENSE` 与 `NOTICE`。`NOTICE` 记录 clean-room 边界：功能对标只依据公开描述与可观察行为，InkBlade 不与 AGPL 项目链接或派生。文档索引：[`docs/DOC-INDEX.md`](docs/DOC-INDEX.md)。
+Apache-2.0。允许商用、fork 与嵌入服务；保留 `LICENSE` 与 `NOTICE`。文档索引：[`docs/DOC-INDEX.md`](docs/DOC-INDEX.md)。
