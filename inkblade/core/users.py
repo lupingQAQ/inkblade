@@ -66,6 +66,18 @@ class UserStore:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.path.write_text(json.dumps(self._users, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    def has(self, name: str) -> bool:
+        return name in self._users
+
+    def names(self) -> list[str]:
+        return sorted(self._users)
+
+    def role_of(self, name: str) -> str:
+        return str((self._users.get(name) or {}).get("role") or "")
+
+    def roles(self) -> dict[str, str]:
+        return {name: self.role_of(name) for name in self.names()}
+
     def create_user(self, name: str, password: str, role: str, workspaces: list[str]) -> None:
         if role not in ROLES:
             raise ValueError(f"未知角色: {role}")

@@ -63,6 +63,7 @@
     remoteEvidence: null, remoteManifestVerified: null, remoteReport: null,
     remoteAuditLoaded: false, remoteAuditLoading: false, remoteAuditRun: "",
     consent: null, workspaces: [], runLoading: false, runError: "", runGen: 0,
+    connectInit: false, connectUserToggled: false, connectOpen: false,
     lang: "zh",
   };
   var STATIC_MODE = !!window.INKBLADE_DATA;
@@ -84,31 +85,32 @@
       "topbar.workspace": "工作区",
       "lang.switch": "切换语言 / Switch language",
       "login.user": "用户名", "login.pass": "密码", "login.ws": "工作区",
-      "login.submit": "登录并连接", "login.runs": "刷新运行", "login.abort": "紧急停止",
-      "login.eyebrow": "LOCAL SESSION", "login.title": "进入控制台",
-      "login.body": "使用工作区凭据登录。凭据只用于本机会话，不上传、不写入页面存储。",
-      "login.note": "登录后可查看工作区、运行列表、最近发现与链状态。",
-      "onboard.eyebrow": "AUTHORIZED OPERATIONS",
-      "onboard.title": "连接你的真实集群",
-      "onboard.body": "先登录本机控制台，再导入 kubeconfig、签署授权、投放探针。所有执行都受 RoE 范围、级别与时间窗口约束。",
-      "onboard.point1.title": "授权先行", "onboard.point1.body": "没有签署记录，执行路径保持锁定。",
-      "onboard.point2.title": "证据可核验", "onboard.point2.body": "每个步骤带 SHA256 归档与 manifest。",
-      "onboard.point3.title": "本地优先", "onboard.point3.body": "无 CDN、无外部字体、无遥测上传。",
-      "onboard.stepsEyebrow": "CONNECT A REAL CLUSTER",
-      "onboard.stepsTitle": "三步接入真实集群",
-      "onboard.stepsBody": "控制台只负责会话与可视化；集群导入、授权签署与探针投放由 CLI 完成。以下步骤不会读取本机文件。",
-      "onboard.step1.title": "导入 kubeconfig",
-      "onboard.step1.body": "选择 kubeconfig 文件或填写路径，作为下一步 CLI 的输入提示。页面不会读取、解析或上传该文件。",
-      "onboard.step1.note": "仅前端提示：不会调用 FileReader，也不会发起文件读取请求。",
-      "onboard.step2.title": "签署授权",
-      "onboard.step2.body": "打开授权会话并签署 RoE：目标、命名空间、CIDR、级别与时间窗口。未签署时执行路径返回 423。",
-      "onboard.step2.action": "登录后查看授权状态",
-      "onboard.step2.note": "授权记录哈希固定在 workspace/consent.json，与每次 run 一同校验。",
-      "onboard.step3.title": "启动探针并开始",
-      "onboard.step3.body": "将静态 Rust 探针投放到授权 Pod，然后启动 Agent。运行结束后本页自动出现 DAG、时间线、证据与链状态。",
-      "onboard.step3.note": "无写操作时保持只读；写路径还需要 --allow-write、备份回执与授权级别同时满足。",
-      "onboard.chooseFile": "选择文件", "onboard.noFile": "未选择文件",
-      "onboard.path": "集群配置路径",
+      "login.submit": "登录", "login.abort": "紧急停止",
+      "login.subtitle": "授权范围内的 ML 集群渗透测试控制台",
+      "connect.kicker": "CONNECT",
+      "connect.title": "接入",
+      "connect.hasRuns": "已有运行 · 可折叠",
+      "connect.noRuns": "尚无运行 · 按探针优先接入",
+      "connect.recommended": "推荐",
+      "connect.assumption": "默认立足点：普通/最低权限 Pod（非 root、无 hostPath/privileged、无 kubeconfig，仅出站 TCP）。",
+      "connect.existing.title": "已有探针 / 立足点",
+      "connect.existing.body": "已有投放的探针、foothold shell 或低权限 Pod 可主动回连控制端；不需要 kubeconfig。",
+      "connect.existing.step1": "控制端监听",
+      "connect.existing.step2": "Pod 内探针回连",
+      "connect.existing.step3": "确认探针注册",
+      "connect.first.title": "首次投放",
+      "connect.first.body": "没有现成探针时，从 foothold 进入并投放；默认立足点为普通/最低权限 Pod，仅需出站 TCP。",
+      "connect.first.step1": "控制端监听",
+      "connect.first.step2": "建立 foothold 会话",
+      "connect.first.step3": "RCE 投放探针",
+      "connect.first.sa": "SA token 投放（备选）",
+      "connect.first.reverse": "Pod 内探针回连",
+      "connect.first.confirm": "确认探针注册",
+      "connect.advanced.summary": "kubeconfig 批量投放（可选）",
+      "connect.advanced.body": "仅当直接持有 kubeconfig 且需要批量投放时使用；不是接入前提。",
+      "connect.advanced.step1": "kubeconfig 会话",
+      "connect.advanced.step2": "批量投放",
+      "connect.advanced.step3": "确认探针注册",
       "dash.eyebrow": "WORKSPACE OVERVIEW", "dash.workspace": "工作区",
       "dash.runs": "运行列表", "dash.findings": "最近发现", "dash.chain": "链状态",
       "dash.loading": "正在读取工作区…", "dash.refresh": "刷新", "dash.run": "运行",
@@ -185,25 +187,25 @@
       "report.no": "否", "report.redactedTitle": "【脱敏】影响已验证（零日级，已公开；未展示细节）",
       "timeline.summary": "步骤 {steps} · 总耗时 {total} · 累计执行 {sum} · 峰值并行度 {par}",
       "empty.dag.title": "这个视图还没有步骤",
-      "empty.dag.body": "DAG 来自一次 run 的 steps 表。先完成真实集群接入并启动 Agent，步骤与三层证据会出现在这里。",
-      "empty.dag.action": "inkblade agent run --probe <probe-id> --objective read-only-recon",
-      "empty.dag.next": "接入真实集群：inkblade session open --mode kubeconfig --workspace ./work --kubeconfig ~/.kube/config",
+      "empty.dag.body": "DAG 来自一次 run 的 steps 表。已有探针/立足点直接回连控制端，或先投放探针并启动 Agent；步骤与三层证据会出现在这里。",
+      "empty.dag.action": "inkblade channel listen --host 0.0.0.0 --port 8443",
+      "empty.dag.next": "Pod 内探针回连：./inkblade-probe reverse --host <controller-host> --port 8443",
       "empty.chain.title": "还没有攻击链图",
-      "empty.chain.body": "图数据来自 graph_nodes / graph_edges。完成授权并运行探针后，可达性边会写入本次 run。",
-      "empty.chain.action": "inkblade probe deploy --session <session-id> --via kubectl --binary ./inkblade-probe-linux-amd64",
-      "empty.chain.next": "查看授权状态：inkblade session status --workspace ./work",
+      "empty.chain.body": "图数据来自 graph_nodes / graph_edges。完成探针回连并启动 Agent 后，可达性边会写入本次 run。",
+      "empty.chain.action": "inkblade channel listen --host 0.0.0.0 --port 8443",
+      "empty.chain.next": "已有探针：inkblade probe list --workspace ./work",
       "empty.timeline.title": "还没有执行时间线",
-      "empty.timeline.body": "时间线需要带起止时间的 steps 记录。登录并选择一次真实运行后自动加载。",
-      "empty.timeline.action": "inkblade agent run --probe <probe-id> --objective read-only-recon",
-      "empty.timeline.next": "服务模式：inkblade ui --port 8765",
+      "empty.timeline.body": "时间线需要带起止时间的 steps 记录。探针回连并启动 Agent 后自动加载。",
+      "empty.timeline.action": "inkblade channel listen --host 0.0.0.0 --port 8443",
+      "empty.timeline.next": "Pod 内探针回连：./inkblade-probe reverse --host <controller-host> --port 8443",
       "empty.evidence.title": "还没有证据可浏览",
-      "empty.evidence.body": "三层证据（context.jsonl.gz / evidence.db / tar+SHA256 归档）由 run 产生；完成一次运行后回到此页。",
-      "empty.evidence.action": "inkblade probe deploy --session <session-id> --via kubectl --binary ./inkblade-probe-linux-amd64",
-      "empty.evidence.next": "静态导出：inkblade ui --export-static <run> <out>",
+      "empty.evidence.body": "三层证据（context.jsonl.gz / evidence.db / tar+SHA256 归档）由 run 产生；完成探针回连与一次运行后回到此页。",
+      "empty.evidence.action": "inkblade channel listen --host 0.0.0.0 --port 8443",
+      "empty.evidence.next": "已有探针：inkblade probe list --workspace ./work",
       "empty.report.title": "还没有发现（findings）",
-      "empty.report.body": "报告预览从本次 run 的 findings 读取。真实集群请先签授权再执行只读模块。",
+      "empty.report.body": "报告预览从本次 run 的 findings 读取。",
       "empty.report.action": "inkblade report --run <run-id> --lang bi",
-      "empty.report.next": "授权与范围：inkblade quickstart",
+      "empty.report.next": "先接入探针：inkblade probe list --workspace ./work",
       "empty.rules.title": "规则目录为空",
       "empty.rules.body": "规则包由规则引擎生成；本地仓库应自带 Kyverno/PSS/Sigma/Falco/Suricata 规则目录。",
       "empty.rules.action": "python -m inkblade rules generate --help",
@@ -242,31 +244,32 @@
       "topbar.workspace": "Workspace",
       "lang.switch": "Switch language / 切换语言",
       "login.user": "User", "login.pass": "Password", "login.ws": "Workspace",
-      "login.submit": "Sign in and connect", "login.runs": "Refresh runs", "login.abort": "Abort",
-      "login.eyebrow": "LOCAL SESSION", "login.title": "Enter console",
-      "login.body": "Sign in with workspace credentials. Credentials are used for this local session only; they are never uploaded or stored in the page.",
-      "login.note": "After sign-in you will see the workspace, runs, recent findings and chain status.",
-      "onboard.eyebrow": "AUTHORIZED OPERATIONS",
-      "onboard.title": "Connect your real cluster",
-      "onboard.body": "Sign in to the local console, then import kubeconfig, sign authorization and deploy the probe. Every run is bounded by RoE scope, level and time window.",
-      "onboard.point1.title": "Authorization first", "onboard.point1.body": "Without a signed record, execution paths stay locked.",
-      "onboard.point2.title": "Verifiable evidence", "onboard.point2.body": "Every step carries a SHA256 archive and manifest.",
-      "onboard.point3.title": "Local first", "onboard.point3.body": "No CDN, no external fonts, no telemetry upload.",
-      "onboard.stepsEyebrow": "CONNECT A REAL CLUSTER",
-      "onboard.stepsTitle": "Three steps to a real cluster",
-      "onboard.stepsBody": "The console handles sessions and visualization; kubeconfig import, authorization and probe deployment are done by the CLI. These steps never read local files.",
-      "onboard.step1.title": "Import kubeconfig",
-      "onboard.step1.body": "Pick a kubeconfig file or enter a path as a hint for the CLI. The page never reads, parses or uploads the file.",
-      "onboard.step1.note": "Front-end hint only: no FileReader and no file-read request.",
-      "onboard.step2.title": "Sign authorization",
-      "onboard.step2.body": "Open an authorized session and sign the RoE: target, namespaces, CIDRs, level and time window. Unsigned execution returns 423.",
-      "onboard.step2.action": "View authorization status after sign-in",
-      "onboard.step2.note": "The record hash is pinned in workspace/consent.json and checked for every run.",
-      "onboard.step3.title": "Deploy the probe and start",
-      "onboard.step3.body": "Deploy the static Rust probe into the authorized Pod, then start the Agent. DAG, timeline, evidence and chain status appear here after the run.",
-      "onboard.step3.note": "Read-only stays the default; writes also require --allow-write, a backup receipt and the authorization level.",
-      "onboard.chooseFile": "Choose file", "onboard.noFile": "No file selected",
-      "onboard.path": "Cluster config path",
+      "login.submit": "Sign in", "login.abort": "Abort",
+      "login.subtitle": "Authorized operations console for ML clusters",
+      "connect.kicker": "CONNECT",
+      "connect.title": "Connect",
+      "connect.hasRuns": "Runs available · collapsible",
+      "connect.noRuns": "No runs yet · probe-first setup",
+      "connect.recommended": "Recommended",
+      "connect.assumption": "Default foothold: an ordinary, least-privilege Pod (non-root, no hostPath/privileged, no kubeconfig, outbound TCP only).",
+      "connect.existing.title": "Existing probe / foothold",
+      "connect.existing.body": "An already deployed probe, foothold shell or low-privilege Pod can reverse-connect to the controller; kubeconfig is not required.",
+      "connect.existing.step1": "Listen on the controller",
+      "connect.existing.step2": "Probe reverse-connect from the Pod",
+      "connect.existing.step3": "Confirm the probe is registered",
+      "connect.first.title": "First deployment",
+      "connect.first.body": "Without an existing probe, enter through a foothold and deploy; the default foothold is an ordinary, least-privilege Pod with outbound TCP only.",
+      "connect.first.step1": "Listen on the controller",
+      "connect.first.step2": "Create the foothold session",
+      "connect.first.step3": "Deploy via RCE",
+      "connect.first.sa": "Deploy via SA token (alternative)",
+      "connect.first.reverse": "Probe reverse-connect from the Pod",
+      "connect.first.confirm": "Confirm the probe is registered",
+      "connect.advanced.summary": "kubeconfig bulk deployment (optional)",
+      "connect.advanced.body": "Only when you already hold a kubeconfig and need bulk deployment; this is not a prerequisite.",
+      "connect.advanced.step1": "kubeconfig session",
+      "connect.advanced.step2": "Bulk deployment",
+      "connect.advanced.step3": "Confirm the probe is registered",
       "dash.eyebrow": "WORKSPACE OVERVIEW", "dash.workspace": "Workspace",
       "dash.runs": "Runs", "dash.findings": "Recent findings", "dash.chain": "Chain status",
       "dash.loading": "Reading workspace…", "dash.refresh": "Refresh", "dash.run": "Run",
@@ -343,25 +346,25 @@
       "ops.summary": "{total} events · file ops {file} · steps {step} · exploit markers {exploit}",
       "evidence.files": "File access (file_ops)",
       "empty.dag.title": "No steps in this view yet",
-      "empty.dag.body": "The DAG comes from a run's steps table. Complete real-cluster onboarding and start the Agent; steps and three-layer evidence will appear here.",
-      "empty.dag.action": "inkblade agent run --probe <probe-id> --objective read-only-recon",
-      "empty.dag.next": "Connect a real cluster: inkblade session open --mode kubeconfig --workspace ./work --kubeconfig ~/.kube/config",
+      "empty.dag.body": "The DAG comes from a run's steps table. Reverse-connect an existing probe or foothold, or deploy a probe and start the Agent; steps and evidence will appear here.",
+      "empty.dag.action": "inkblade channel listen --host 0.0.0.0 --port 8443",
+      "empty.dag.next": "Probe reverse-connect from the Pod: ./inkblade-probe reverse --host <controller-host> --port 8443",
       "empty.chain.title": "No attack-chain graph yet",
-      "empty.chain.body": "Graph data comes from graph_nodes / graph_edges. After authorization and a probe run, reachability edges are written to this run.",
-      "empty.chain.action": "inkblade probe deploy --session <session-id> --via kubectl --binary ./inkblade-probe-linux-amd64",
-      "empty.chain.next": "Check authorization: inkblade session status --workspace ./work",
+      "empty.chain.body": "Graph data comes from graph_nodes / graph_edges. After the probe reverse-connects and the Agent runs, reachability edges are written to this run.",
+      "empty.chain.action": "inkblade channel listen --host 0.0.0.0 --port 8443",
+      "empty.chain.next": "Existing probe: inkblade probe list --workspace ./work",
       "empty.timeline.title": "No execution timeline yet",
-      "empty.timeline.body": "The timeline needs steps with start/end times. Sign in and select a real run to load it automatically.",
-      "empty.timeline.action": "inkblade agent run --probe <probe-id> --objective read-only-recon",
-      "empty.timeline.next": "Service mode: inkblade ui --port 8765",
+      "empty.timeline.body": "The timeline needs steps with start/end times. It loads after the probe reverse-connects and the Agent starts.",
+      "empty.timeline.action": "inkblade channel listen --host 0.0.0.0 --port 8443",
+      "empty.timeline.next": "Probe reverse-connect from the Pod: ./inkblade-probe reverse --host <controller-host> --port 8443",
       "empty.evidence.title": "No evidence to browse yet",
-      "empty.evidence.body": "Three evidence layers (context.jsonl.gz / evidence.db / tar+SHA256 archive) are produced by a run; return after one run completes.",
-      "empty.evidence.action": "inkblade probe deploy --session <session-id> --via kubectl --binary ./inkblade-probe-linux-amd64",
-      "empty.evidence.next": "Static export: inkblade ui --export-static <run> <out>",
+      "empty.evidence.body": "Three evidence layers (context.jsonl.gz / evidence.db / tar+SHA256 archive) are produced by a run; return after the probe reverse-connects and one run completes.",
+      "empty.evidence.action": "inkblade channel listen --host 0.0.0.0 --port 8443",
+      "empty.evidence.next": "Existing probe: inkblade probe list --workspace ./work",
       "empty.report.title": "No findings yet",
-      "empty.report.body": "Report preview reads findings for this run. For a real cluster sign authorization before running read-only modules.",
+      "empty.report.body": "Report preview reads findings for this run.",
       "empty.report.action": "inkblade report --run <run-id> --lang bi",
-      "empty.report.next": "Consent and scope: inkblade quickstart",
+      "empty.report.next": "Connect a probe first: inkblade probe list --workspace ./work",
       "empty.rules.title": "Rule catalog is empty",
       "empty.rules.body": "Rule packs are generated by the rules engine; a local checkout ships Kyverno/PSS/Sigma/Falco/Suricata rules.",
       "empty.rules.action": "python -m inkblade rules generate --help",
@@ -803,27 +806,6 @@
     if (runSel) runSel.addEventListener("change", function () { selectRun(runSel.value); });
     var wsSel = document.getElementById("ws-select");
     if (wsSel) wsSel.addEventListener("change", function () { switchWorkspace(wsSel.value); });
-    var fileBtn = document.getElementById("btn-kube-file");
-    var fileInput = document.getElementById("kube-file");
-    if (fileBtn && fileInput) {
-      fileBtn.addEventListener("click", function () { fileInput.click(); });
-      fileInput.addEventListener("change", function () {
-        var name = (fileInput.files && fileInput.files[0] && fileInput.files[0].name) || "";
-        var label = document.getElementById("kube-file-name");
-        if (label) label.textContent = name || t("onboard.noFile");
-      });
-    }
-    var consentBtn = document.getElementById("btn-consent-status");
-    if (consentBtn) {
-      consentBtn.addEventListener("click", function () {
-        var target = STATE.token ? document.getElementById("dash-workspace") : document.getElementById("login-card");
-        if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
-        if (!STATE.token) {
-          var user = document.getElementById("in-user");
-          if (user) user.focus();
-        }
-      });
-    }
     bindCopyCommands();
     if (STATIC_MODE) {
       document.getElementById("mode-pill").textContent = t("mode.static");
@@ -1047,6 +1029,107 @@
     }
   }
 
+  /* ================= 接入面板（探针优先） ================= */
+
+  function connectPath(titleKey, bodyKey, rows, badgeKey) {
+    var card = el("section", "connect-path" + (badgeKey ? " primary" : ""));
+    var head = el("div", "connect-path-head");
+    if (badgeKey) head.appendChild(el("span", "path-badge", t(badgeKey)));
+    head.appendChild(el("h4", null, t(titleKey)));
+    card.appendChild(head);
+    card.appendChild(el("p", "connect-copy", t(bodyKey)));
+    rows.forEach(function (row) {
+      card.appendChild(cmdRow(row[0], t(row[1])));
+    });
+    return card;
+  }
+
+  function buildConnectPanel(hasRuns) {
+    var panel = document.createElement("details");
+    panel.id = "connect-panel";
+    panel.className = "connect-panel";
+    var summary = document.createElement("summary");
+    summary.className = "connect-summary";
+    var main = el("div", "connect-summary-main");
+    main.appendChild(el("span", "card-kicker", t("connect.kicker")));
+    main.appendChild(el("span", "connect-title", t("connect.title")));
+    main.appendChild(el("span", "connect-state",
+      hasRuns ? t("connect.hasRuns") : t("connect.noRuns")));
+    summary.appendChild(main);
+    summary.appendChild(el("span", "chev", "▾"));
+    panel.appendChild(summary);
+
+    var body = el("div", "connect-body");
+    body.appendChild(el("p", "connect-assumption", t("connect.assumption")));
+    var grid = el("div", "connect-grid");
+
+    grid.appendChild(connectPath("connect.existing.title", "connect.existing.body", [
+      ["inkblade channel listen --host 0.0.0.0 --port 8443", "connect.existing.step1"],
+      ["./inkblade-probe reverse --host <controller-host> --port 8443", "connect.existing.step2"],
+      ["inkblade probe list --workspace ./work", "connect.existing.step3"],
+    ], "connect.recommended"));
+
+    grid.appendChild(connectPath("connect.first.title", "connect.first.body", [
+      ["inkblade channel listen --host 0.0.0.0 --port 8443", "connect.first.step1"],
+      ["inkblade session open --mode foothold --target <target> --pod <pod>",
+        "connect.first.step2"],
+      ["inkblade probe deploy --session <id> --via rce --binary ./inkblade-probe-linux-amd64",
+        "connect.first.step3"],
+      ["inkblade probe deploy --session <id> --via sa-token --binary ./inkblade-probe-linux-amd64",
+        "connect.first.sa"],
+      ["./inkblade-probe reverse --host <controller-host> --port 8443",
+        "connect.first.reverse"],
+      ["inkblade probe list --workspace ./work", "connect.first.confirm"],
+    ]));
+
+    body.appendChild(grid);
+
+    var advanced = document.createElement("details");
+    advanced.className = "connect-advanced";
+    var advSummary = document.createElement("summary");
+    advSummary.textContent = t("connect.advanced.summary");
+    advanced.appendChild(advSummary);
+    advanced.appendChild(el("p", "connect-copy", t("connect.advanced.body")));
+    [
+      ["inkblade session open --mode kubeconfig --workspace ./work --kubeconfig ~/.kube/config",
+        "connect.advanced.step1"],
+      ["inkblade probe deploy --session <session-id> --via kubectl --binary ./inkblade-probe-linux-amd64",
+        "connect.advanced.step2"],
+      ["inkblade probe list --workspace ./work", "connect.advanced.step3"],
+    ].forEach(function (row) {
+      advanced.appendChild(cmdRow(row[0], t(row[1])));
+    });
+    body.appendChild(advanced);
+    panel.appendChild(body);
+    return panel;
+  }
+
+  function renderConnectPanel() {
+    var host = document.getElementById("post-auth-panel");
+    if (!host) return;
+    var hasRuns = STATE.runs.length > 0;
+    var previous = document.getElementById("connect-panel");
+    if (previous && STATE.connectUserToggled) {
+      STATE.connectOpen = previous.open;
+    }
+    clear(host);
+    var panel = buildConnectPanel(hasRuns);
+    host.appendChild(panel);
+    var desired;
+    if (!hasRuns) desired = true;
+    else if (!STATE.connectInit) desired = false;
+    else if (STATE.connectUserToggled) desired = !!STATE.connectOpen;
+    else desired = false;
+    STATE.connectInit = true;
+    panel.open = desired;
+    panel.addEventListener("toggle", function () {
+      if (panel.open !== desired) {
+        STATE.connectUserToggled = true;
+        STATE.connectOpen = panel.open;
+      }
+    });
+  }
+
   /* ================= 工作区总览 ================= */
 
   function renderDashboard() {
@@ -1073,6 +1156,7 @@
       }
     }
     syncRunSelect();
+    renderConnectPanel();
     renderDashWorkspace();
     renderDashRuns();
     renderDashFindings();

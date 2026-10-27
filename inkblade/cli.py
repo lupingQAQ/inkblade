@@ -125,7 +125,7 @@ def _main(argv=None) -> int:
     except Exception:
         pass
     ap = argparse.ArgumentParser(prog="inkblade", description="InkBlade ML-cluster pentest platform (authorized testing)")
-    ap.add_argument("--home", default=".", help="工作区根目录（含 evidence/ modules/ users.json）")
+    ap.add_argument("--home", default=None, help="工作区根目录（含 evidence/ modules/ users.json）")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     from .agent.cli import register as _register_agent
@@ -357,6 +357,31 @@ def _main(argv=None) -> int:
     uip.add_argument("--port", type=int, default=8765)
     uip.add_argument("--host", default="127.0.0.1",
                      help="绑定地址（默认 127.0.0.1；容器/反向代理后使用 0.0.0.0）")
+
+    up = sub.add_parser("up", aliases=["start"],
+                        help="一条命令启动：自检→工作区→admin→授权→本地 UI（127.0.0.1:8765）")
+    up.add_argument("--home", dest="up_home", metavar="HOME", default=None,
+                    help="工作区目录（默认 ./inkblade-workspace）")
+    up.add_argument("--port", type=int, default=8765, help="本地 UI 端口（默认 8765）")
+    up.add_argument("--host", default="127.0.0.1",
+                    help="绑定地址（默认 127.0.0.1；容器内需要 0.0.0.0）")
+    up_mode = up.add_mutually_exclusive_group()
+    up_mode.add_argument("--no-ui", action="store_true", help="只初始化工作区并打印启动命令")
+    up_mode.add_argument("--foreground", action="store_true",
+                         help="前台运行 UI（容器/systemd；Ctrl+C 停止，不写 pid 文件）")
+    up.add_argument("--no-browser", action="store_true", help="不自动打开浏览器")
+    up.add_argument("--no-consent", dest="no_consent", action="store_true",
+                    help="不自动签发本地 demo 授权（改用 inkblade quickstart）")
+    up.add_argument("--wait", type=float, default=20.0, help="等待 UI 就绪的秒数（默认 20）")
+    up.add_argument("--json", action="store_true", help="机器可读输出")
+
+    dn = sub.add_parser("down", help="停止本工作区的本地 UI（幂等）")
+    dn.add_argument("--home", dest="up_home", metavar="HOME", default=None, help="工作区目录（默认同上）")
+    dn.add_argument("--json", action="store_true", help="机器可读输出")
+
+    st = sub.add_parser("status", help="查看本地 UI 进程与工作区状态")
+    st.add_argument("--home", dest="up_home", metavar="HOME", default=None, help="工作区目录（默认同上）")
+    st.add_argument("--json", action="store_true", help="机器可读输出")
 
     doc = sub.add_parser("doctor", help="环境自检：Python/写权限/端口/可选依赖/mock 或真集群")
     doc.add_argument("--port", type=int, default=8765, help="检查 Web UI 端口（默认 8765）")
@@ -735,7 +760,33 @@ def _main(argv=None) -> int:
     obc.add_argument("--dry-run", action="store_true", help="只做发现/校验/选择，不跑 pilot")
 
     args = ap.parse_args(argv)
-    home = Path(args.home)
+    home = Path(args.home or ".")
+
+    # ---- 一条命令启动（up/start、down、status）-----------------------------
+    if args.cmd in ("up", "start"):
+        from . import startup
+
+        return startup.run_up(
+            args.up_home or args.home,
+            port=args.port,
+            host=args.host,
+            no_ui=args.no_ui,
+            no_browser=args.no_browser,
+            foreground=args.foreground,
+            sign_demo=not args.no_consent,
+            json_out=args.json,
+            wait=args.wait,
+        )
+
+    if args.cmd == "down":
+        from . import startup
+
+        return startup.run_down(args.up_home or args.home, json_out=args.json)
+
+    if args.cmd == "status":
+        from . import startup
+
+        return startup.run_status(args.up_home or args.home, json_out=args.json)
 
     # ---- 上手三条命令（doctor / demo / quickstart）--------------------------
     if args.cmd in ("session", "probe", "channel"):

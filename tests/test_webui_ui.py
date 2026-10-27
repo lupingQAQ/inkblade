@@ -87,15 +87,18 @@ class TestWebuiUI(unittest.TestCase):
         self.assertEqual(code, 200)
         self.assertIn("text/html", ctype)
         html = payload.decode("utf-8")
-        for marker in ('id="login-form"', 'id="views"', 'id="onboarding"',
-                       'id="onboarding-steps"', 'id="dashboard"',
-                       'data-view="dag"', 'data-view="schedules"',
-                       'inkblade session open', 'inkblade probe deploy',
-                       'inkblade agent run'):
+        for marker in ('id="login-form"', 'id="onboarding"', 'id="dashboard"',
+                       'id="views"', 'data-view="dag"', 'data-view="schedules"',
+                       'class="login-subtitle"'):
             self.assertIn(marker, html)
         for view in ("dag", "chain", "timeline", "evidence", "report",
                      "rules", "assets", "drift", "approvals", "schedules"):
             self.assertIn(f'id="view-{view}"', html)
+        # 登录页只保留品牌 + 登录卡 + 一行副标题
+        for removed in ('id="onboarding-steps"', 'id="kube-file"', 'id="kube-path"',
+                        'id="connect-panel"', '三步接入', 'CONNECT A REAL CLUSTER'):
+            self.assertNotIn(removed, html)
+        self.assertNotIn("kubeconfig", html.lower())
         self.assertNotIn("demo-guide", html)
         lowered = html.lower()
         for word in FORBIDDEN:
@@ -149,6 +152,23 @@ class TestWebuiUI(unittest.TestCase):
         keys = {s["step_key"] for s in steps["steps"]}
         self.assertEqual(keys, {"recon-phase", "exposure-check"})
         self.assertTrue(all(s.get("started_at") for s in steps["steps"]))
+
+    def test_probe_first_connect_panel_commands(self):
+        js = (STATIC / "app.js").read_text(encoding="utf-8")
+        for command in (
+            "inkblade channel listen --host 0.0.0.0 --port 8443",
+            "./inkblade-probe reverse --host <controller-host> --port 8443",
+            "inkblade probe list --workspace ./work",
+            "inkblade session open --mode foothold --target <target> --pod <pod>",
+            "inkblade probe deploy --session <id> --via rce --binary ./inkblade-probe-linux-amd64",
+            "inkblade probe deploy --session <id> --via sa-token --binary ./inkblade-probe-linux-amd64",
+            "inkblade session open --mode kubeconfig --workspace ./work --kubeconfig ~/.kube/config",
+        ):
+            self.assertIn(command, js)
+        for label in ("已有探针", "首次投放", "kubeconfig 批量投放", "connect-panel"):
+            self.assertIn(label, js)
+        self.assertIn("function cmdRow", js)
+        self.assertIn("copyText", js)
 
     def test_unknown_static_asset_is_404(self):
         code, _, _ = _req("GET", self.base + "/vendor/missing.js")

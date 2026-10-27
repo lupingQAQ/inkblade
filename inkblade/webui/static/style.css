@@ -253,17 +253,30 @@ ol, ul { margin: 0; padding: 0; list-style: none; }
   font-size: 12px;
 }
 
-/* ---------- 首屏：真实环境接入 ---------- */
+/* ---------- 登录首屏（紧凑） ---------- */
 
 .onboarding {
-  display: grid;
-  gap: 28px;
-  justify-items: center;
-  max-width: 980px;
-  margin: 0 auto;
-  padding: clamp(38px, 6vw, 76px) clamp(16px, 3vw, 32px) 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100svh - 62px);
+  padding: 28px 16px;
 }
-.onboarding-hero { max-width: 760px; text-align: center; }
+.login-shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: min(100%, 400px);
+}
+.login-subtitle {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
 .eyebrow {
   display: inline-block;
   margin-bottom: 12px;
@@ -273,115 +286,89 @@ ol, ul { margin: 0; padding: 0; list-style: none; }
   letter-spacing: .2em;
   text-transform: uppercase;
 }
-.onboarding-hero h1 {
-  font-size: clamp(30px, 4.4vw, 46px);
-  font-weight: 720;
-  letter-spacing: -.035em;
-}
-.hero-copy {
-  max-width: 680px;
-  margin: 14px auto 0;
-  color: var(--text-dim);
-  font-size: 14px;
-  line-height: 1.8;
-}
-.hero-points {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 24px;
-  text-align: left;
-}
-.hero-points li {
-  padding: 14px 15px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: rgba(17, 19, 24, .7);
-}
-.hero-points li > span {
-  display: block;
-  margin-bottom: 7px;
-  color: var(--accent);
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: .12em;
-}
-.hero-points b { display: block; font-size: 13px; }
-.hero-points em { display: block; margin-top: 4px; color: var(--text-dim); font-size: 11px; font-style: normal; line-height: 1.6; }
-
 .login-card {
-  width: min(100%, 430px);
-  padding: 24px;
+  width: 100%;
+  padding: 22px;
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 14px;
   background: linear-gradient(180deg, var(--panel-2), var(--panel));
   box-shadow: var(--shadow);
 }
-.login-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
-.login-head .eyebrow { margin-bottom: 6px; }
-.login-head h2 { font-size: 21px; }
-.status-dot {
-  width: 9px;
-  height: 9px;
-  margin-top: 18px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-soft), 0 0 18px rgba(89, 211, 200, .45);
-}
-.login-card > .hint { margin-bottom: 18px; line-height: 1.65; }
-.login-note { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--text-faint); font-size: 11px; line-height: 1.65; }
+.login-card .field { margin-bottom: 12px; }
+.login-card .field input { height: 40px; }
+.login-card .btn.primary { min-height: 42px; }
 
-.onboarding-steps {
-  max-width: var(--page);
-  margin: 0 auto;
-  padding: 16px clamp(16px, 3vw, 32px) 52px;
-}
-.section-head { max-width: 760px; margin-bottom: 20px; }
-.section-head h2 { font-size: clamp(22px, 2.6vw, 30px); }
-.section-head p { margin-top: 9px; color: var(--text-dim); font-size: 13px; line-height: 1.75; }
-.steps-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-.step-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 20px;
+/* ---------- 接入面板（登录后，探针优先） ---------- */
+
+.connect-panel {
+  margin-bottom: 14px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--panel);
-  overflow: hidden;
 }
-.step-card::after {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 1px;
-  background: linear-gradient(90deg, var(--accent), transparent 65%);
-  opacity: .5;
-}
-.step-no {
-  display: inline-flex;
+.connect-panel > summary,
+.connect-advanced > summary { list-style: none; cursor: pointer; }
+.connect-panel > summary::-webkit-details-marker,
+.connect-advanced > summary::-webkit-details-marker { display: none; }
+.connect-summary {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border: 1px solid rgba(89, 211, 200, .35);
-  border-radius: 9px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 700;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 18px;
 }
-.step-card h3 { font-size: 16px; }
-.step-card p { color: var(--text-dim); font-size: 12px; line-height: 1.7; }
-.step-card .btn.ghost { align-self: flex-start; }
-.file-picker { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.file-picker .hint { overflow-wrap: anywhere; }
+.connect-summary-main { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; min-width: 0; }
+.connect-title { font-size: 14px; font-weight: 700; }
+.connect-state { color: var(--text-faint); font-size: 11px; }
+.connect-summary .chev { color: var(--text-dim); font-size: 12px; transition: transform .16s ease; }
+.connect-panel[open] .connect-summary .chev { transform: rotate(180deg); }
+.connect-body { padding: 0 18px 18px; border-top: 1px solid var(--line); }
+.connect-assumption {
+  margin: 12px 0 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(224, 115, 61, .28);
+  border-radius: var(--radius-sm);
+  background: var(--warn-soft);
+  color: #f0b79b;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.connect-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; padding-top: 14px; }
+.connect-path {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-soft);
+}
+.connect-path.primary {
+  border-color: rgba(89, 211, 200, .34);
+  background: linear-gradient(160deg, rgba(89, 211, 200, .07), transparent 58%), var(--bg-soft);
+}
+.connect-path-head { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; flex-wrap: wrap; }
+.connect-path h4 { margin: 0; color: var(--text); font-size: 13px; }
+.connect-copy { margin: 0 0 10px; color: var(--text-dim); font-size: 11px; line-height: 1.65; }
+.path-badge {
+  padding: 1px 8px;
+  border: 1px solid rgba(89, 211, 200, .4);
+  border-radius: 999px;
+  color: var(--accent);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .05em;
+}
+.connect-path .cmd-row { margin-bottom: 6px; }
+.connect-path .cmd-row:last-child { margin-bottom: 0; }
+.connect-advanced { margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.connect-advanced > summary {
+  padding: 5px 0;
+  color: var(--text-dim);
+  font-size: 12px;
+  font-weight: 600;
+}
+.connect-advanced > summary:hover { color: var(--accent); }
+.connect-advanced .connect-copy { margin: 4px 0 8px; }
+.connect-advanced .cmd-row { margin-top: 6px; }
 
 .cmd-row {
   display: flex;
@@ -951,9 +938,10 @@ body.authed #onboarding-steps { display: none; }
   .topbar { align-items: flex-start; }
   .topbar-controls { width: 100%; justify-content: flex-start; }
   .workspace-chip { flex: 1 1 auto; }
-  .onboarding { padding-top: 32px; }
+  .onboarding { min-height: auto; padding: 28px 16px; }
   .hero-points { grid-template-columns: 1fr; }
   .steps-grid { grid-template-columns: 1fr; }
+  .connect-grid { grid-template-columns: 1fr; }
   .dash-grid { grid-template-columns: 1fr; }
   #dag-layout, #ev-layout { grid-template-columns: 1fr; }
   #dag-canvas { height: 420px; }
@@ -970,9 +958,16 @@ body.authed #onboarding-steps { display: none; }
   .workspace-chip { width: 100%; justify-content: space-between; }
   .workspace-chip select { max-width: none; flex: 1; }
   .pill { height: 26px; font-size: 10px; }
-  .onboarding { padding: 26px 12px 18px; gap: 20px; }
-  .hero-points { display: none; }
-  .login-card { padding: 19px 17px; border-radius: 14px; }
+  .onboarding { min-height: auto; padding: 22px 12px 26px; }
+  .login-shell { gap: 12px; }
+  .login-subtitle { font-size: 12px; }
+  .login-card { padding: 18px 16px; border-radius: 13px; }
+  .login-card .field { margin-bottom: 10px; }
+  .login-card .field input { height: 38px; }
+  .connect-summary { padding: 12px 14px; }
+  .connect-body { padding: 0 14px 14px; }
+  .connect-grid { gap: 10px; padding-top: 12px; }
+  .connect-path { padding: 12px; }
   .onboarding-steps { padding-left: 12px; padding-right: 12px; }
   .step-card { padding: 16px; }
   .dashboard { padding-top: 18px; }

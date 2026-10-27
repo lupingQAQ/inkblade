@@ -250,13 +250,20 @@ class TestDocsAndEntrypoints(unittest.TestCase):
         self.assertNotIn("inkblade demo", text)
         self.assertNotIn("mock", text.lower())
 
-    def test_ui_first_screen_real_onboarding(self):
+    def test_ui_compact_login_and_probe_first_panel(self):
         html = (ROOT / "inkblade" / "webui" / "static" / "index.html").read_text(encoding="utf-8")
+        js = (ROOT / "inkblade" / "webui" / "static" / "app.js").read_text(encoding="utf-8")
         self.assertIn('id="login-form"', html)
         self.assertIn('id="onboarding"', html)
-        self.assertIn("inkblade session open", html)
-        self.assertIn("inkblade probe deploy", html)
-        self.assertIn("inkblade agent run", html)
+        self.assertIn('class="login-subtitle"', html)
+        for removed in ("kubeconfig", "onboarding-steps", "三步", "connect-panel"):
+            self.assertNotIn(removed, html.lower())
+        for command in ("inkblade channel listen", "./inkblade-probe reverse",
+                        "inkblade probe list --workspace ./work",
+                        "inkblade session open --mode foothold"):
+            self.assertIn(command, js)
+        self.assertIn("已有探针", js)
+        self.assertIn("首次投放", js)
         for word in ("demo", "mock", "trial"):
             self.assertNotIn(word, html.lower())
 

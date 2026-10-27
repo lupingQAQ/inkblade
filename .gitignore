@@ -14,6 +14,8 @@ dist/
 /demo/
 /demo-trial/
 /inkblade-workspace/
+# up/down 运行时状态（pid 文件与 UI 日志，不入库）
+.inkblade/
 # æœ¬åœ° VM/QEMU å®žéªŒäº§ç‰©ï¼ˆå¯å†ç”Ÿæˆï¼Œä¸å…¥å…¬å¼€æ ‘ï¼‰
 
 # --- QEMU TCG k3s lab (large / binary / secret artifacts) ---

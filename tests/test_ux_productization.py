@@ -82,8 +82,8 @@ class TestUIProductization(unittest.TestCase):
                      "assets", "drift", "approvals", "schedules"):
             self.assertIn(f'"{view}"', js)
         # 空态必须带下一步命令，而不是一句「暂无数据」
-        self.assertIn("inkblade probe deploy", js)
-        self.assertIn("inkblade session open", js)
+        self.assertIn("inkblade channel listen", js)
+        self.assertIn("reverse --host <controller-host>", js)
         css = STYLE.read_text(encoding="utf-8")
         self.assertIn(".empty-state", css)
 
@@ -95,11 +95,15 @@ class TestUIProductization(unittest.TestCase):
         # 不能再用一次性全量 fs.forEach 直接建 DOM（分页后应仅渲染 slice）
         self.assertIn("visibleFindings", js)
 
-    def test_kubeconfig_to_pilot_guidance_visible(self):
+    def test_login_page_compact_and_connect_commands_post_auth(self):
         html = INDEX.read_text(encoding="utf-8")
-        self.assertIn("inkblade session open", html)
-        self.assertIn("inkblade probe deploy", html)
-        self.assertIn("kubeconfig", html)
+        js = APP_JS.read_text(encoding="utf-8")
+        for removed in ("kubeconfig", "onboarding-steps", "connect-panel", "三步"):
+            self.assertNotIn(removed, html.lower())
+        self.assertIn("id=\"login-form\"", html)
+        self.assertIn("inkblade channel listen", js)
+        self.assertIn("inkblade session open --mode foothold", js)
+        self.assertIn("kubeconfig 批量投放", js)
 
 
 class TestClusterWizard(unittest.TestCase):

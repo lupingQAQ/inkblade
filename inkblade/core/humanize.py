@@ -318,6 +318,20 @@ def explain_exception(
             "非交互场景加 --yes 使用默认值，或先跑 python -m inkblade demo。",
         )
 
+    # ---- 一条命令启动：up/down/status 自带人话异常 ------------------------
+    if type(exc).__name__ == "StartupError":
+        human = getattr(exc, "human", None)
+        if human is not None:
+            return human
+        return HumanError(
+            "E112",
+            "一条命令启动失败",
+            msg or "inkblade up 未能完成初始化。",
+            "启动流程在自检、工作区初始化或托管 UI 进程时失败。",
+            "查看 inkblade status；换目录/端口重试：inkblade up --home <目录> --port 8766；"
+            "完整自检见 inkblade doctor。",
+        )
+
     # ---- E1xx 环境 / 安装 -------------------------------------------------
     if _is_port_in_use(exc):
         return HumanError(
