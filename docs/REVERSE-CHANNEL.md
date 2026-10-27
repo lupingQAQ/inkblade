@@ -282,12 +282,12 @@ python -m unittest tests.test_probe_reverse -v
 |---|---|---|
 | P1 | gRPC over TLS（Triton 8001 / Ray 8265），bidi stream，token 在 metadata | 已实现，`--protocol grpc` |
 | P2 | Redis RESP over TLS（Ray GCS 6379），客户端 `AUTH <token>` | 已实现，`--protocol redis` |
-| P3 | ZMTP + CURVE（SGLang/vLLM） | technical-infeasible（见下） |
+| P3 | ZMTP + CURVE（SGLang/vLLM） | 已实现，`--protocol zmtp`；本地 CURVE 终止 + probe bridge，真实 SGLang/vLLM 未接 |
 | P4 | TCPStore/Gloo TLS relay（PyTorch 29500），HMAC preamble | 已实现，`--protocol tcpstore` |
 | P5 | MASQUE CONNECT-UDP（RoCE/UCX 辅助面） | 已实现，`channel listen --transport masque` + probe `udp`；不冒充 RDMA verbs |
 | P6 | NCCL/UCX TCP 控制流 profile（端口映射/保活/抖动） | 已实现，`--protocol nccl\|ucx`；不冒充 RDMA verbs |
 
-P1 需要可选依赖 `h2`（`pip install h2`）。P1/P2/P4/P6 的本地客户端侧是
+P1 需要可选依赖 `h2`（`pip install h2`）。P1/P2/P3/P4/P6 的本地客户端侧是
 TLS，控制器到探针的数据面走已认证加密的 reverse 传输（`tls`/`wss`/
 `https`/`quic`/`webtransport`）；目标侧是探针 `dial` 的 TCP 连接，不在本层
 终止目标 TLS。token 文件 `0600`，不写入状态或日志。P6 只统计 TCP 控制流
@@ -295,12 +295,16 @@ TLS，控制器到探针的数据面走已认证加密的 reverse 传输（`tls`
 MASQUE CONNECT-UDP 监听器，使用探针 `udp` op 中转 UDP 数据报；它同样
 不实现 IB/RoCE verbs，也不声称替代 RDMA 数据面。
 
-P3 technical-infeasible 原因：pyzmq 的 CURVE ROUTER 可以终止本地 CURVE，
-但 pyzmq socket 只能使用其内置 `tcp`/`ipc` 等 transport，不能绑定到
-`ProbeConnection.dial` 返回的自定义字节流；改成 ROUTER/DEALER 消息级桥接
-会终止并重新发起 ZMTP，需要目标端 CURVE 公钥/ZAP，且不再是原始 ZMTP 透传。
-手工实现 ZMTP 3.1 的 CURVE HELLO/WELCOME/INITIATE/READY 与
-`crypto_box` nonce/counter 状态机本次未完成、未验证，因此不注册假实现。
+P3 实现：本地 `zmq.ROUTER` 绑定 `127.0.0.1` 并启用 `curve_server`，token
+经 SHA-256 派生本地客户端 CURVE 密钥；默认用 ZAP 目录 allowlist 只允许该
+客户端公钥（`--allow-any-client` 可显式放宽）。本地 ROUTER 与 `zmq.DEALER`
+经 loopback TCP bridge 连接，bridge 再通过 `ProbeConnection.dial` 连目标并
+原样双向转发字节；DEALER 自己重新发起标准 ZMTP/CURVE 握手。目标若为 REP，
+REP 需要空分隔符，代理在 ROUTER/DEALER 之间做最小的 identity/空分隔符
+适配（FIFO），不是解密后重建业务 payload。`--target-public-key` 指定目标
+CURVE 公钥，`NULL` 表示目标无 CURVE。pyzmq 是 P3 的可选依赖
+（`pip install pyzmq`）。本次测试目标是 fake pyzmq CURVE REP，真实
+SGLang/vLLM 未接；不声称通用绕过。
 
 
 ## 9. Rust 构建与验证

@@ -37,7 +37,7 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-mlproxy = ["h2>=4.1"]
+mlproxy = ["h2>=4.1", "pyzmq>=25"]
 
 [project.scripts]
 inkblade = "inkblade.cli:main"

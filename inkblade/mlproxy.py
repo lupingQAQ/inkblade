@@ -1015,6 +1015,352 @@ class RedisTlsProxy:
         self._audit("redis.proxy.stopped", {"connections": self.connections})
 
 
+class ZmtpCurveProxy:
+    """P3: local ZMTP CURVE termination with a probe-backed TCP bridge.
+
+    The local ``ROUTER`` is a CURVE server; ``zmq.proxy`` forwards to a local
+    ``DEALER``.  The DEALER connects to a loopback TCP bridge, and that bridge
+    relays raw bytes through the probe's encrypted ``dial`` transport.  The
+    DEALER therefore performs a normal ZMTP/CURVE handshake with the target
+    rather than rebuilding messages.
+    """
+
+    protocol = "zmtp-curve"
+
+    def __init__(
+        self,
+        probe: ProbeConnection,
+        *,
+        target_host: str,
+        target_port: int,
+        token: str,
+        target_public_key: str | None = None,
+        bind_host: str = "127.0.0.1",
+        listen_port: int = 0,
+        allow_any_client: bool = False,
+        on_audit: Callable[[dict[str, Any]], None] | None = None,
+    ):
+        if bind_host not in ("127.0.0.1", "::1", "localhost"):
+            raise MlProxyError("ZMTP proxy may only bind loopback", code="public_bind")
+        if probe.transport == "tcp":
+            raise MlProxyError("plaintext probe transport is lab-only",
+                               code="plaintext_probe")
+        if not token:
+            raise MlProxyError("ZMTP proxy requires a token", code="missing_token")
+        try:
+            import zmq
+            import zmq.auth
+            from zmq.auth.thread import ThreadAuthenticator
+        except Exception as exc:  # pragma: no cover - optional dependency
+            raise MlProxyError(
+                "ZMTP proxy requires pyzmq with CURVE support (pip install pyzmq)",
+                code="missing_dependency",
+            ) from exc
+        self.zmq = zmq
+        if os.name == "nt":
+            import asyncio
+
+            try:
+                asyncio.set_event_loop_policy(
+                    asyncio.WindowsSelectorEventLoopPolicy()  # type: ignore[attr-defined]
+                )
+            except Exception:
+                pass
+        self.probe = probe
+        self.target_host = target_host
+        self.target_port = int(target_port)
+        self.token = token
+        self.bind_host = bind_host
+        self.listen_port = int(listen_port)
+        self.on_audit = on_audit
+        self.allow_any_client = bool(allow_any_client)
+        self.target_public_key = self._normalize_key(target_public_key)
+        self.client_secret, self.client_public = self._client_keys(token)
+        self.server_public, self.server_secret = zmq.curve_keypair()
+        self._context = zmq.Context()
+        self._auth = ThreadAuthenticator(self._context)
+        self._cert_dir = Path(tempfile.mkdtemp(prefix="inkblade-zmtp-"))
+        if self.allow_any_client:
+            self._auth.configure_curve(domain="*", location=zmq.auth.CURVE_ALLOW_ANY)
+        else:
+            (self._cert_dir / "client.key").write_bytes(
+                b"public-key = " + self.client_public + b"\n"
+            )
+            self._auth.configure_curve(domain="*", location=str(self._cert_dir))
+        self._auth.start()
+        time.sleep(0.3)
+        self._frontend = None
+        self._backend = None
+        self._proxy_thread: threading.Thread | None = None
+        self._ready = threading.Event()
+        self._control_endpoint: str | None = None
+        self._start_error: str | None = None
+        self._stop = threading.Event()
+        self.bridge = _ZmtpBridge(
+            probe, target_host, target_port, on_audit=on_audit
+        )
+        self.port = 0
+        self.connections = 0
+        self.auth_failures = 0
+        self.errors = 0
+        self.started_at = time.time()
+
+    @staticmethod
+    def _normalize_key(value: str | None) -> bytes | None:
+        if not value or str(value).strip().upper() in ("NULL", "NONE", "-"):
+            return None
+        raw = str(value).strip().encode("ascii")
+        if len(raw) != 40:
+            raise MlProxyError("CURVE public key must be 40 Z85 characters",
+                               code="invalid_curve_key")
+        return raw
+
+    @staticmethod
+    def _client_keys(token: str) -> tuple[bytes, bytes]:
+        import hashlib
+
+        from zmq.utils import z85
+
+        secret = z85.encode(hashlib.sha256(token.encode("utf-8")).digest())
+        public = ZmtpCurveProxy._curve_public(secret)
+        return secret, public
+
+    @staticmethod
+    def _curve_public(secret: bytes) -> bytes:
+        import zmq
+
+        return zmq.curve_public(secret)
+
+    def start(self) -> "ZmtpCurveProxy":
+        self.bridge.start()
+        self._proxy_thread = threading.Thread(
+            target=self._proxy_loop, name="zmtp-proxy", daemon=True
+        )
+        self._proxy_thread.start()
+        if not self._ready.wait(5.0):
+            raise MlProxyError("ZMTP proxy did not become ready",
+                               code="zmtp_start_failed")
+        if self._start_error:
+            raise MlProxyError(self._start_error, code="zmtp_start_failed")
+        self._audit("zmtp.started", {
+            "target": f"{self.target_host}:{self.target_port}",
+            "target_curve": bool(self.target_public_key),
+            "server_public": self.server_public.decode("ascii"),
+        })
+        return self
+
+    def _proxy_loop(self) -> None:
+        frontend = backend = None
+        pending: list[bytes] = []
+        try:
+            frontend = self._context.socket(self.zmq.ROUTER)
+            frontend.curve_server = True
+            frontend.curve_publickey = self.server_public
+            frontend.curve_secretkey = self.server_secret
+            endpoint = f"tcp://{self.bind_host}:{self.listen_port}"
+            if self.listen_port:
+                frontend.bind(endpoint)
+                self.port = self.listen_port
+            else:
+                self.port = frontend.bind_to_random_port(f"tcp://{self.bind_host}")
+            backend = self._context.socket(self.zmq.DEALER)
+            if self.target_public_key:
+                backend.curve_serverkey = self.target_public_key
+                backend.curve_publickey = self.client_public
+                backend.curve_secretkey = self.client_secret
+            backend.connect(f"tcp://127.0.0.1:{self.bridge.port}")
+            self._frontend = frontend
+            self._backend = backend
+            self._ready.set()
+            poller = self.zmq.Poller()
+            poller.register(frontend, self.zmq.POLLIN)
+            poller.register(backend, self.zmq.POLLIN)
+            while not self._stop.is_set():
+                events = dict(poller.poll(100))
+                if frontend in events:
+                    frames = frontend.recv_multipart()
+                    if frames:
+                        identity = frames[0]
+                        payload = list(frames[1:])
+                        if payload and payload[0] == b"":
+                            payload = payload[1:]
+                        pending.append(identity)
+                        backend.send_multipart([b""] + payload)
+                if backend in events:
+                    reply = backend.recv_multipart()
+                    if reply and reply[0] == b"":
+                        reply = reply[1:]
+                    if pending:
+                        identity = pending.pop(0)
+                        frontend.send_multipart([identity, b""] + list(reply))
+        except Exception as exc:  # noqa: BLE001 - reported to start()
+            self._start_error = str(exc)
+            self._ready.set()
+        finally:
+            for socket in (frontend, backend):
+                if socket is not None:
+                    try:
+                        socket.close(linger=0)
+                    except Exception:
+                        pass
+
+    def _audit(self, event: str, detail: dict[str, Any]) -> None:
+        if self.on_audit:
+            try:
+                self.on_audit({"ts": time.time(), "event": event, **detail})
+            except Exception:
+                pass
+
+    def status(self) -> dict[str, Any]:
+        return {
+            "protocol": "zmtp-curve",
+            "listen": f"{self.bind_host}:{self.port}",
+            "target": f"{self.target_host}:{self.target_port}",
+            "target_curve": bool(self.target_public_key),
+            "curve_server_public": self.server_public.decode("ascii"),
+            "client_public": self.client_public.decode("ascii"),
+            "allow_any_client": self.allow_any_client,
+            "probe_transport": self.probe.transport,
+            "bridge": f"127.0.0.1:{self.bridge.port}",
+            "connections": self.connections,
+            "auth_failures": self.auth_failures,
+            "errors": self.errors,
+            "running": not self._stop.is_set(),
+        }
+
+    def stop(self) -> None:
+        self._stop.set()
+        self.bridge.stop()
+        if self._control_endpoint and self._proxy_thread is not None \
+                and self._proxy_thread.is_alive():
+            try:
+                control = self._context.socket(self.zmq.PAIR)
+                control.connect(self._control_endpoint)
+                control.send(b"TERMINATE")
+                control.close(linger=0)
+            except Exception:
+                pass
+        if self._proxy_thread is not None:
+            self._proxy_thread.join(timeout=3)
+        try:
+            self._auth.stop()
+        except Exception:
+            pass
+        try:
+            self._context.term()
+        except Exception:
+            pass
+        self._audit("zmtp.stopped", {"port": self.port})
+
+
+class _ZmtpBridge:
+    """Loopback raw TCP bridge: local DEALER -> probe.dial(target)."""
+
+    def __init__(self, probe: ProbeConnection, target_host: str,
+                 target_port: int, *, on_audit=None):
+        self.probe = probe
+        self.target_host = target_host
+        self.target_port = int(target_port)
+        self.on_audit = on_audit
+        self._stop = threading.Event()
+        self._listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self._listener.bind(("127.0.0.1", 0))
+        self._listener.listen(16)
+        self._listener.settimeout(0.3)
+        self.port = int(self._listener.getsockname()[1])
+        self._thread: threading.Thread | None = None
+        self._clients: list[threading.Thread] = []
+        self.accepted = 0
+        self.dialed = 0
+        self.bytes_up = 0
+        self.bytes_down = 0
+
+    def start(self) -> "_ZmtpBridge":
+        self._thread = threading.Thread(
+            target=self._accept_loop, name="zmtp-bridge", daemon=True
+        )
+        self._thread.start()
+        return self
+
+    def _accept_loop(self) -> None:
+        while not self._stop.is_set():
+            try:
+                client, _ = self._listener.accept()
+            except socket.timeout:
+                continue
+            except OSError:
+                break
+            thread = threading.Thread(
+                target=self._handle, args=(client,), name="zmtp-bridge-client",
+                daemon=True,
+            )
+            self.accepted += 1
+            self._clients.append(thread)
+            thread.start()
+
+    def _handle(self, client: socket.socket) -> None:
+        try:
+            stream = self.probe.dial(
+                self.target_host, self.target_port, timeout_ms=10_000
+            )
+        except Exception:
+            client.close()
+            return
+        self.dialed += 1
+        done = threading.Event()
+
+        def upstream() -> None:
+            try:
+                while not self._stop.is_set():
+                    chunk = client.recv(65536)
+                    if not chunk:
+                        break
+                    stream.send(chunk)
+                    self.bytes_up += len(chunk)
+                stream.close_write()
+            except (OSError, ChannelError):
+                pass
+            finally:
+                done.set()
+
+        thread = threading.Thread(target=upstream, name="zmtp-bridge-up", daemon=True)
+        thread.start()
+        try:
+            while not self._stop.is_set():
+                try:
+                    chunk = stream.recv(timeout=1.0)
+                except ProbeTimeout:
+                    continue
+                if chunk is None:
+                    break
+                client.sendall(chunk)
+                self.bytes_down += len(chunk)
+        except (OSError, ChannelError):
+            pass
+        finally:
+            done.wait(timeout=2)
+            stream.close()
+            try:
+                client.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+            client.close()
+
+    def stop(self) -> None:
+        self._stop.set()
+        try:
+            self._listener.close()
+        except OSError:
+            pass
+        if self._thread is not None:
+            self._thread.join(timeout=1)
+        for thread in list(self._clients):
+            if thread is not threading.current_thread():
+                thread.join(timeout=0.5)
+
+
+
 class _GrpcTargetConnection:
     """One upstream HTTP/2 connection multiplexed over a probe dial stream."""
 

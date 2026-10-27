@@ -184,15 +184,23 @@ python -m inkblade channel proxy --protocol nccl \
   --target worker-0.ml-team --port 50000-51000 \
   --token-file ./proxy.token \
   --probe-command '<kubectl exec -i ... -- probe run --stdio ...>'
+
+# P3: ZMTP+CURVE（本地 ROUTER CURVE 终止，DEALER 经 probe bridge 重新握手目标）
+python -m inkblade channel proxy --protocol zmtp \
+  --target sglang-0.ml-team:5000 \
+  --target-public-key '<目标 CURVE 公钥，NULL 表示目标无 CURVE>' \
+  --token-file ./proxy.token \
+  --probe-command '<kubectl exec -i ... -- probe run --stdio ...>'
 ```
 
 `channel proxy` 默认只监听 `127.0.0.1`；`--tls-dir` 输出 CA、服务器证书和
 pin，客户端必须用 pin 校验。token 文件权限需为 `0600`，不写入状态或日志。
-P1/P2/P4/P6 已实现；P3（ZMTP+CURVE）为 technical-infeasible（见
-`REVERSE-CHANNEL.md`，未注册假实现），P5（MASQUE CONNECT-UDP）不在本任务
-范围。P6 只做 TCP 控制流加密 relay、端口映射、保活和抖动统计，不实现也不
-冒充 IB/RoCE/UCX/RDMA verbs。跨集群/远端代理必须使用 `tls`、`wss` 或
-`https` 的 reverse 探针，禁止明文 `tcp`。
+P1/P2/P3/P4/P6 已实现；P3 的 token 派生本地 CURVE 客户端密钥，本地
+ROUTER 用 CURVE server + ZAP allowlist 认证，DEALER 经 loopback TCP bridge
+和 probe 重新向目标发起标准 ZMTP/CURVE（不是消息级重建）。P5
+（MASQUE CONNECT-UDP）不在本任务范围。P6 只做 TCP 控制流加密 relay、端口
+映射、保活和抖动统计，不实现也不冒充 IB/RoCE/UCX/RDMA verbs。跨集群/远端
+代理必须使用 `tls`、`wss` 或 `https` 的 reverse 探针，禁止明文 `tcp`。
 
 ## 检测
 

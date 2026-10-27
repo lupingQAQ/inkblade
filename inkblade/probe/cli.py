@@ -392,6 +392,10 @@ def register(sub) -> None:
     mp.add_argument("--protocol", choices=["grpc", "redis", "tcpstore", "nccl", "ucx", "zmtp"], required=True)
     mp.add_argument("--target", required=True, help="HOST 或 HOST:PORT")
     mp.add_argument("--port", default=None, help="NCCL/UCX 目标端口或范围，如 50000-51000")
+    mp.add_argument("--target-public-key", default=None,
+                    help="ZMTP 目标 CURVE 公钥（Z85）；NULL 表示目标无 CURVE")
+    mp.add_argument("--allow-any-client", action="store_true",
+                    help="ZMTP 允许任意 CURVE 客户端公钥（默认只允许 token 派生公钥）")
     mp.add_argument("--max-ports", type=int, default=64)
     mp.add_argument("--local-base-port", type=int, default=0)
     mp.add_argument("--keepalive", type=float, default=15.0)
@@ -976,18 +980,11 @@ def _mlproxy_cmd(args, home: Path) -> int:
         NcclTlsProxy,
         RedisTlsProxy,
         TcpStoreTlsProxy,
+        ZmtpCurveProxy,
     )
 
     store = _store(home, args.workspace)
     sess = _load_session(store, args.session) if args.session else None
-    if args.protocol == "zmtp":
-        print(
-            "inkblade channel proxy: P3 ZMTP+CURVE is technical-infeasible in "
-            "this build (pyzmq cannot bind to a probe stream; manual ZMTP 3.1 "
-            "CURVE handshake not completed). No fake support is registered.",
-            file=sys.stderr,
-        )
-        return 2
     try:
         _level_ok(store, "主动探测")
     except ExecutionLocked as exc:
@@ -1002,7 +999,16 @@ def _mlproxy_cmd(args, home: Path) -> int:
             hosts=["127.0.0.1", "localhost"],
         )
         connection = _connect(args, sess)
-        if args.protocol in ("nccl", "ucx"):
+        if args.protocol == "zmtp":
+            host, port_text = args.target.rsplit(":", 1)
+            proxy = ZmtpCurveProxy(
+                connection, target_host=host, target_port=int(port_text),
+                token=proxy_token,
+                target_public_key=args.target_public_key,
+                allow_any_client=bool(args.allow_any_client),
+                listen_port=int(args.listen_port),
+            ).start()
+        elif args.protocol in ("nccl", "ucx"):
             if not args.port:
                 raise MlProxyError("NCCL/UCX requires --port RANGE",
                                    code="missing_port")
