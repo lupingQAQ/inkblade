@@ -79,7 +79,7 @@ class TestEnterpriseReadinessDoc(unittest.TestCase):
         for needle in ("HA", "升级", "备份", "回滚", "许可证", "交付边界", "多租户", "压测"):
             self.assertIn(needle, ops)
         readme = README.read_text(encoding="utf-8")
-        for needle in ("demo", "试点", "生产", "禁止宣称"):
+        for needle in ("inkblade up", "probe", "Authorization"):
             self.assertIn(needle, readme)
 
 

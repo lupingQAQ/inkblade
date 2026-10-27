@@ -83,7 +83,7 @@ class TestUIProductization(unittest.TestCase):
             self.assertIn(f'"{view}"', js)
         # 空态必须带下一步命令，而不是一句「暂无数据」
         self.assertIn("inkblade channel listen", js)
-        self.assertIn("reverse --host <controller-host>", js)
+        self.assertIn("reverse --transport tls", js)
         css = STYLE.read_text(encoding="utf-8")
         self.assertIn(".empty-state", css)
 

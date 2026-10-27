@@ -95,3 +95,12 @@ lab/defense-bypass/kubectl-linux-amd64
 lab/defense-bypass/e2e-run*.log
 lab/defense-bypass/collect-test.json
 lab/defense-bypass/_*.py
+
+# local UI preview / logs (not shipped)
+ui-login.png
+ui-preview.png
+ui*.err
+ui*.log
+final*.log
+local-preview/
+local-demo/

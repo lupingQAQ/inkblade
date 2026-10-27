@@ -167,4 +167,8 @@ The chart runs as uid 10001 with a read-only root filesystem and a PVC for evide
 
 ## License
 
-Apache-2.0. Commercial use, forks and embedding are permitted; keep `LICENSE` and `NOTICE`. The `NOTICE` file records the clean-room boundary: functional parity was derived from public descriptions and observable behaviour, and InkBlade is not linked with or derived from AGPL projects. Documentation index: [`docs/DOC-INDEX.md`](docs/DOC-INDEX.md).
+Apache-2.0. Commercial use, forks and embedding are permitted; keep `LICENSE` and `NOTICE`. The `NOTICE` file records the clean-room boundary: functional parity was derived from public descriptions and observable behaviour, and InkBlade is not linked with or derived from AGPL projects.
+
+## Clean-room 声明
+
+InkBlade 为独立实现：未读取、未复制任何 AGPL 项目源码；与 ARTEX 仅做公开功能层面对标，不链接、不派生。Documentation index: [`docs/DOC-INDEX.md`](docs/DOC-INDEX.md).
