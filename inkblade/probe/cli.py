@@ -217,8 +217,8 @@ def register(sub) -> None:
                     help="子探针回连地址（控制端可达地址）")
     pd.add_argument("--reverse-port", "--port", dest="reverse_port", type=int, default=None,
                     help="子探针回连端口（默认 9443）")
-    pd.add_argument("--transport", choices=["tls", "wss", "https"], default="tls",
-                    help="子探针加密传输（默认 tls）")
+    pd.add_argument("--transport", choices=["tls", "wss", "https", "quic"], default="tls",
+                    help="子探针加密传输（默认 tls；quic 使用 UDP）")
     pd.add_argument("--pin", default=None, help="控制端服务器证书 SHA-256 pin")
     pd.add_argument("--ca-file", default=None, help="控制端 CA 证书")
     pd.add_argument("--sni", default=None, help="SNI（默认回连地址）")
@@ -328,8 +328,16 @@ def register(sub) -> None:
     lr = csub.add_parser("listen", help="反向通道：监听并认证主动回连的探针（默认 0.0.0.0:9443）")
     lr.add_argument("--bind", default="0.0.0.0")
     lr.add_argument("--port", type=int, default=9443)
-    lr.add_argument("--transport", choices=["tls", "wss", "https"], default="tls",
-                    help="加密传输：tls（默认）/wss/https；无公开明文选项")
+    lr.add_argument("--transport",
+                    choices=["tls", "wss", "https", "quic", "webtransport", "masque"],
+                    default="tls",
+                    help="加密传输：tls（默认）/wss/https/quic/webtransport/masque；无公开明文选项")
+    lr.add_argument("--fallback", choices=["tls", "wss", "none"], default="",
+                    help="QUIC 家族 UDP 失败时的加密 TCP 回退（quic 默认 tls）")
+    lr.add_argument("--webtransport-path", default="/inkblade/wt",
+                    help="WebTransport CONNECT path")
+    lr.add_argument("--masque-path", default="/.well-known/masque/udp",
+                    help="MASQUE CONNECT-UDP path 前缀")
     lr.add_argument("--lab-plaintext", action="store_true", help=argparse.SUPPRESS)
     lr.add_argument("--tls-dir", default=None, help="CA/服务器证书目录（默认工作区 reverse/tls）")
     lr.add_argument("--tls-cert", default=None)
