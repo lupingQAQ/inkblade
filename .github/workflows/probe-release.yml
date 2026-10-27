@@ -201,5 +201,5 @@ jobs:
           PYTHONIOENCODING: utf-8
           INKBLADE_PROBE_BIN: ${{ github.workspace }}/probe/dist/inkblade-probe-linux-amd64
         run: |
-          python -m pip install -e .
-          python -m unittest tests.test_probe_rust_dynamic tests.test_probe_channel -v
+          python -m pip install -e . cryptography
+          python -m unittest tests.test_probe_rust_dynamic tests.test_probe_channel tests.test_probe_reverse tests.test_probe_reverse_rust -v

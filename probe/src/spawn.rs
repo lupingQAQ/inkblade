@@ -100,8 +100,82 @@ pub fn start(
     })
 }
 
-pub fn set_executable(path: &Path) -> Result<(), String> {
-    #[cfg(unix)]
+/// Start a child probe that dials the controller back instead of using stdio.
+///
+/// The parent keeps the `Child` handle for cleanup, but deliberately gives the
+/// child no pipes: the controller gets a second authenticated TCP session and
+/// routes commands to it directly.  `parent_id` is carried in the child hello
+/// frame so the controller can rebuild the tree.
+pub fn start_reverse(
+    path: &Path,
+    probe_id: &str,
+    parent_id: &str,
+    token_file: &Path,
+    opts: &Options,
+    host: &str,
+    port: u16,
+    connect_timeout_ms: u64,
+    transport: &str,
+    ca_file: Option<&str>,
+    pin: Option<&str>,
+    sni: Option<&str>,
+) -> Result<Child, String> {
+    let mut command = Command::new(path);
+    command
+        .arg("reverse")
+        .arg("--host")
+        .arg(host)
+        .arg("--port")
+        .arg(port.to_string())
+        .arg("--connect-timeout-ms")
+        .arg(connect_timeout_ms.to_string())
+        .arg("--probe-id")
+        .arg(probe_id)
+        .arg("--parent-id")
+        .arg(parent_id)
+        .arg("--token-file")
+        .arg(token_file)
+        .arg("--max-output")
+        .arg(opts.max_output_bytes().to_string())
+        .arg("--max-timeout-ms")
+        .arg(opts.max_timeout_ms.to_string())
+        .arg("--ws-path")
+        .arg(&opts.ws_path)
+        .arg("--poll-path")
+        .arg(&opts.poll_path)
+        .arg("--result-path")
+        .arg(&opts.result_path)
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null());
+    if transport == "lab-plaintext" {
+        command.arg("--lab-plaintext");
+    } else {
+        command.arg("--transport").arg(transport);
+        let ca = ca_file.ok_or_else(|| "reverse child requires ca_file".to_string())?;
+        let pin = pin.ok_or_else(|| "reverse child requires pin".to_string())?;
+        command.arg("--ca-file").arg(ca).arg("--pin").arg(pin);
+        if let Some(sni) = sni {
+            command.arg("--sni").arg(sni);
+        }
+    }
+    if !opts.user_agent.is_empty() {
+        command.arg("--user-agent").arg(&opts.user_agent);
+    }
+    if opts.read_only {
+        command.arg("--read-only");
+    } else {
+        command.arg("--allow-write");
+    }
+    for command_name in &opts.allow_cmds {
+        command.arg("--allow-cmd").arg(command_name);
+    }
+    command
+        .spawn()
+        .map_err(|error| format!("spawn reverse child: {error}"))
+}
+
+pub fn set_executable(path: &Path) -> Result<(), String> {    #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
         fs::set_permissions(path, fs::Permissions::from_mode(0o700))

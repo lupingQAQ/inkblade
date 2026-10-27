@@ -7,7 +7,7 @@ use std::process::Child;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use crate::audit::Audit;
 use crate::auth;
@@ -26,6 +26,31 @@ use crate::util;
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
+/// Protocol output is either stdout (stdio transport) or an accepted TCP
+/// socket (probe-initiated reverse transport).  Box the concrete writer so the
+/// rest of the server is transport-agnostic.
+struct SharedWriter {
+    inner: BufWriter<Box<dyn Write + Send>>,
+}
+
+impl SharedWriter {
+    fn new<W: Write + Send + 'static>(writer: W) -> Self {
+        Self {
+            inner: BufWriter::new(Box::new(writer)),
+        }
+    }
+}
+
+impl Write for SharedWriter {
+    fn write(&mut self, buffer: &[u8]) -> io::Result<usize> {
+        self.inner.write(buffer)
+    }
+
+    fn flush(&mut self) -> io::Result<()> {
+        self.inner.flush()
+    }
+}
+
 struct ChildLink {
     probe_id: String,
     stdin: Arc<Mutex<std::process::ChildStdin>>,
@@ -37,9 +62,14 @@ struct ChildLink {
 struct State {
     opts: Options,
     audit: Audit,
-    writer: Arc<Mutex<BufWriter<io::Stdout>>>,
+    writer: Arc<Mutex<SharedWriter>>,
     streams: Arc<Mutex<HashMap<u64, Arc<Mutex<TcpStream>>>>>,
     children: Arc<Mutex<HashMap<String, ChildLink>>>,
+    /// Children deployed with `spawn { reverse: ... }` dial the controller
+    /// themselves.  The parent keeps their process handles and ids so cleanup
+    /// and agent-visible parent/child trees remain correct.
+    reversed_children: Arc<Mutex<HashMap<String, (Child, std::path::PathBuf)>>>,
+    transport: String,
     next_stream: AtomicU64,
     started: Instant,
 }
@@ -80,33 +110,57 @@ impl State {
 }
 
 pub fn serve(opts: Options) -> Result<(), String> {
+    serve_with(opts, io::stdin(), io::stdout())
+}
+
+/// Run the framed protocol server over any reader/writer pair.
+///
+/// `serve` uses stdin/stdout (`kubectl exec -i`); `reverse` passes the two
+/// halves of a TcpStream that the probe dialled out to.  Everything after the
+/// handshake - collect/exec/upload/spawn/dial/socks/cleanup - is identical.
+pub fn serve_with<R: Read, W: Write + Send + 'static>(
+    opts: Options,
+    reader: R,
+    writer: W,
+) -> Result<(), String> {
+    serve_with_transport(opts, reader, writer, "stdio")
+}
+
+pub fn serve_with_transport<R: Read, W: Write + Send + 'static>(
+    opts: Options,
+    mut reader: R,
+    writer: W,
+    transport: &str,
+) -> Result<(), String> {
     let probe_id = opts.probe_id.clone();
     let audit = Audit::new(
         crate::audit::AuditSink::Stderr,
         opts.audit_path.clone(),
         &probe_id,
     );
+    let transport = transport.to_string();
     let state = Arc::new(State {
         opts,
         audit,
-        writer: Arc::new(Mutex::new(BufWriter::new(io::stdout()))),
+        writer: Arc::new(Mutex::new(SharedWriter::new(writer))),
         streams: Arc::new(Mutex::new(HashMap::new())),
         children: Arc::new(Mutex::new(HashMap::new())),
+        reversed_children: Arc::new(Mutex::new(HashMap::new())),
+        transport: transport.clone(),
         next_stream: AtomicU64::new(1),
         started: Instant::now(),
     });
-    handshake(&state)?;
+    handshake(&state, &mut reader)?;
     state.audit.event(
         "probe.ready",
         json::object(vec![
             ("probe_id", json::string(state.opts.probe_id.clone())),
             ("parent_id", state.opts.parent_id.clone().map(json::string).unwrap_or(Value::Null)),
+            ("transport", json::string(transport)),
         ]),
     );
-    let stdin = io::stdin();
-    let mut input = stdin.lock();
     loop {
-        let frame = match protocol::read_frame(&mut input) {
+        let frame = match protocol::read_frame(&mut reader) {
             Ok(Some(frame)) => frame,
             Ok(None) => break,
             Err(error) => {
@@ -122,7 +176,7 @@ pub fn serve(opts: Options) -> Result<(), String> {
     Ok(())
 }
 
-fn handshake(state: &State) -> Result<(), String> {
+fn handshake<R: Read>(state: &State, reader: &mut R) -> Result<(), String> {
     let challenge = auth::new_challenge();
     let server_nonce = auth::new_challenge();
     state.send(json::object(vec![
@@ -136,11 +190,10 @@ fn handshake(state: &State) -> Result<(), String> {
         ("nonce", json::string(server_nonce.clone())),
         ("auth", json::string("hmac-sha256")),
         ("read_only", json::bool_value(state.opts.read_only)),
+        ("transport", json::string(state.transport.clone())),
         ("window", json::number(state.opts.max_window as u64)),
     ]))?;
-    let stdin = io::stdin();
-    let mut input = stdin.lock();
-    let frame = protocol::read_frame(&mut input)?
+    let frame = protocol::read_frame(reader)?
         .ok_or_else(|| "client disconnected before auth".to_string())?;
     if frame.get("type").and_then(Value::as_str) != Some("auth") {
         return Err("expected auth frame".to_string());
@@ -162,7 +215,7 @@ fn handshake(state: &State) -> Result<(), String> {
     if !ok {
         state.audit.event(
             "probe.auth_failed",
-            json::object(vec![("remote", json::string("stdio"))]),
+            json::object(vec![("remote", json::string(state.transport.clone()))]),
         );
         state.send_raw(json::object(vec![
             ("v", json::number(1)),
@@ -185,6 +238,7 @@ fn handshake(state: &State) -> Result<(), String> {
         ("parent_id", state.opts.parent_id.clone().map(json::string).unwrap_or(Value::Null)),
         ("version", json::string(VERSION)),
         ("read_only", json::bool_value(state.opts.read_only)),
+        ("transport", json::string(state.transport.clone())),
         ("caps", Value::Arr(vec![
             json::string("collect"),
             json::string("exec"),
@@ -195,6 +249,7 @@ fn handshake(state: &State) -> Result<(), String> {
             json::string("upload"),
             json::string("download"),
             json::string("spawn"),
+            json::string("reverse"),
             json::string("task"),
             json::string("socks"),
             json::string("k8s"),
@@ -369,7 +424,10 @@ fn handle_frame(state: &Arc<State>, frame: Value) -> Result<(), String> {
             );
             state.response(&id, json::object(vec![
                 ("removed", Value::Arr(removed.into_iter().map(json::string).collect())),
-                ("children", json::number(state.children.lock().map(|c| c.len()).unwrap_or(0) as u64)),
+                ("children", json::number(
+                    state.children.lock().map(|c| c.len()).unwrap_or(0) as u64
+                        + state.reversed_children.lock().map(|c| c.len()).unwrap_or(0) as u64,
+                )),
             ]));
         }
         "socks" => {
@@ -401,7 +459,10 @@ fn beacon(state: &State) -> Value {
         ("ts", json::number(util::now())),
         ("uptime_ms", json::number(state.started.elapsed().as_millis() as u64)),
         ("streams", json::number(state.streams.lock().map(|s| s.len()).unwrap_or(0) as u64)),
-        ("children", json::number(state.children.lock().map(|c| c.len()).unwrap_or(0) as u64)),
+        ("children", json::number(
+            state.children.lock().map(|c| c.len()).unwrap_or(0) as u64
+                + state.reversed_children.lock().map(|c| c.len()).unwrap_or(0) as u64,
+        )),
         ("window", json::number(state.opts.max_window as u64)),
     ])
 }
@@ -475,7 +536,7 @@ impl State {
 }
 
 struct StateRef {
-    writer: Arc<Mutex<BufWriter<io::Stdout>>>,
+    writer: Arc<Mutex<SharedWriter>>,
     streams: Arc<Mutex<HashMap<u64, Arc<Mutex<TcpStream>>>>>,
     probe_id: String,
 }
@@ -517,7 +578,7 @@ fn stream_reader(state: Arc<StateRef>, stream_id: u64, mut reader: TcpStream) {
     }
 }
 
-fn write_shared(writer: &Arc<Mutex<BufWriter<io::Stdout>>>, value: &Value) -> Result<(), String> {
+fn write_shared(writer: &Arc<Mutex<SharedWriter>>, value: &Value) -> Result<(), String> {
     let mut writer = writer.lock().map_err(|_| "writer lock".to_string())?;
     protocol::write_frame(&mut *writer, value)
 }
@@ -678,19 +739,134 @@ fn spawn_request(state: &State, args: &Value) -> Result<Value, String> {
         .map(str::to_string)
         .unwrap_or_else(|| format!("child-{}", util::random_hex(4)));
     let parent_id = state.opts.probe_id.clone();
-    let binary_b64 = if let Some(path) = args.get("binary_path").and_then(Value::as_str) {
-        let bytes = std::fs::read(path).map_err(|error| format!("child binary read: {error}"))?;
-        base64::encode(&bytes)
-    } else {
-        args.get("binary_b64")
-            .and_then(Value::as_str)
-            .ok_or_else(|| "spawn requires binary_b64 or binary_path".to_string())?
-            .to_string()
-    };
     let target_path = args.get("path").and_then(Value::as_str);
     let expected = args.get("sha256").and_then(Value::as_str);
-    let binary = spawn::materialize(&binary_b64, target_path, expected, &state.opts)?;
+    let binary = if let Some(path) = args.get("binary_path").and_then(Value::as_str) {
+        // Reverse deployment uploads the child first (chunked + sha256), then
+        // asks for spawn with binary_path.  Use that file directly instead of
+        // materialising the whole binary a second time.
+        let path = std::path::PathBuf::from(path);
+        let metadata = std::fs::metadata(&path)
+            .map_err(|error| format!("child binary stat {}: {error}", path.display()))?;
+        if !metadata.is_file() {
+            return Err(format!("child binary {} is not a file", path.display()));
+        }
+        if let Some(expected) = expected {
+            let got = util::file_sha256(&path).unwrap_or_default();
+            if !expected.is_empty() && got != expected {
+                return Err(format!(
+                    "child binary sha256 mismatch: expected {expected}, got {got}"
+                ));
+            }
+        }
+        path
+    } else {
+        let binary_b64 = args
+            .get("binary_b64")
+            .and_then(Value::as_str)
+            .ok_or_else(|| "spawn requires binary_b64 or binary_path".to_string())?;
+        spawn::materialize(binary_b64, target_path, expected, &state.opts)?
+    };
     let token_file = spawn::write_token_file(&state.opts.token)?;
+    if let Some(reverse) = args.get("reverse") {
+        // Probe-initiated child: the child dials the controller itself.  The
+        // parent keeps the process handle and parent_id, but does not hold
+        // pipes; the controller commands the child on its own socket.
+        let host = reverse
+            .get("host")
+            .and_then(Value::as_str)
+            .filter(|value| !value.is_empty())
+            .ok_or_else(|| "spawn reverse requires host".to_string())?
+            .to_string();
+        let port = reverse
+            .get("port")
+            .and_then(Value::as_u64)
+            .filter(|value| *value > 0 && *value <= u16::MAX as u64)
+            .ok_or_else(|| "spawn reverse requires port".to_string())? as u16;
+        let connect_timeout_ms = reverse
+            .get("connect_timeout_ms")
+            .and_then(Value::as_u64)
+            .unwrap_or(state.opts.connect_timeout_ms);
+        let transport = reverse
+            .get("transport")
+            .and_then(Value::as_str)
+            .unwrap_or("tls");
+        let ca_file = reverse.get("ca_file").and_then(Value::as_str);
+        let pin = reverse.get("pin").and_then(Value::as_str);
+        let sni = reverse.get("sni").and_then(Value::as_str);
+        let child = spawn::start_reverse(
+            &binary,
+            &probe_id,
+            &parent_id,
+            &token_file,
+            &state.opts,
+            &host,
+            port,
+            connect_timeout_ms,
+            transport,
+            ca_file,
+            pin,
+            sni,
+        )?;
+        {
+            let mut map = state
+                .reversed_children
+                .lock()
+                .map_err(|_| "reverse children lock".to_string())?;
+            map.insert(probe_id.clone(), (child, token_file.clone()));
+        }
+        // Fail fast on DNS/refused/auth errors instead of reporting a child
+        // that never registered.
+        thread::sleep(Duration::from_millis(300));
+        let exited = {
+            let mut map = state
+                .reversed_children
+                .lock()
+                .map_err(|_| "reverse children lock".to_string())?;
+            match map.get_mut(&probe_id) {
+                Some((child, _)) => child
+                    .try_wait()
+                    .map_err(|error| format!("reverse child wait: {error}"))?,
+                None => None,
+            }
+        };
+        if let Some(status) = exited {
+            if let Ok(mut map) = state.reversed_children.lock() {
+                map.remove(&probe_id);
+            }
+            let _ = std::fs::remove_file(&token_file);
+            state.audit.event(
+                "probe.spawn_reverse_failed",
+                json::object(vec![
+                    ("probe_id", json::string(state.opts.probe_id.clone())),
+                    ("child_id", json::string(probe_id.clone())),
+                    ("status", json::string(status.to_string())),
+                ]),
+            );
+            return Err(format!(
+                "reverse child {probe_id} exited before connecting: {status}"
+            ));
+        }
+        state.audit.event(
+            "probe.spawn_reverse",
+            json::object(vec![
+                ("probe_id", json::string(state.opts.probe_id.clone())),
+                ("child_id", json::string(probe_id.clone())),
+                ("host", json::string(host.clone())),
+                ("port", json::number(port as u64)),
+                ("path", json::string(binary.to_string_lossy().to_string())),
+            ]),
+        );
+        return Ok(json::object(vec![
+            ("probe_id", json::string(probe_id)),
+            ("parent_id", json::string(parent_id)),
+            ("registered", json::bool_value(true)),
+            ("via", json::string("reverse")),
+            ("transport", json::string("reverse")),
+            ("path", json::string(binary.to_string_lossy().to_string())),
+            ("reverse", reverse.clone()),
+        ]));
+    }
     let mut process = spawn::start(&binary, &probe_id, &parent_id, &token_file, &state.opts)?;
     let challenge = protocol::read_frame(&mut process.stdout)?
         .ok_or_else(|| "child closed before challenge".to_string())?;
@@ -794,7 +970,20 @@ fn route_to_child(state: &State, target: &str, frame: &Value, id: &str) -> Resul
         Some(link) => link,
         None => {
             drop(children);
-            state.failure(id, "probe_not_found", &format!("probe {target} is not registered"));
+            let reversed = state
+                .reversed_children
+                .lock()
+                .map(|map| map.contains_key(target))
+                .unwrap_or(false);
+            if reversed {
+                state.failure(
+                    id,
+                    "reverse_channel",
+                    &format!("probe {target} is on a reverse channel; command it on the controller"),
+                );
+            } else {
+                state.failure(id, "probe_not_found", &format!("probe {target} is not registered"));
+            }
             return Ok(());
         }
     };
@@ -810,6 +999,13 @@ fn cleanup_children(state: &State) {
             let _ = std::fs::remove_file(&link.token_file);
             let _ = std::fs::remove_file(&link.binary);
             let _ = link.probe_id;
+        }
+    }
+    if let Ok(mut reversed) = state.reversed_children.lock() {
+        for (_, (mut child, token_file)) in reversed.drain() {
+            let _ = child.kill();
+            let _ = child.wait();
+            let _ = std::fs::remove_file(&token_file);
         }
     }
 }

