@@ -143,7 +143,7 @@ python -m inkblade report --run <run-id> --lang bi
 
 The default foothold is an ordinary, least-privilege Pod: non-root, no hostPath or privileged mode, no kubeconfig, outbound TCP only. The controller listens with `channel listen`; inside the Pod the probe connects back with `inkblade-probe reverse --host <controller> --port <port>`. When no probe exists yet, `session open --mode foothold` records the shell, SA token or authorized RCE you hold, and `probe deploy --via rce|sa-token` places the first probe through it. Child probes are delivered with `probe upload` and `probe spawn` from the parent and call back the same way. A stdio channel (`channel start --session <id>`) is available when a local command transport exists; it is not required for the default path.
 
-**Documentation site.** `python -m inkblade docs` → `http://127.0.0.1:8766/`. It serves `docs/`, opens the browser by default, and keeps `--no-browser`, `--port` and `--bind` for headless or alternate listeners.
+**Documentation site.** Public site: https://lupingqaq.github.io/inkblade/ — built from `docs/` and published from the `gh-pages` branch. For local or air-gapped use, `python -m inkblade docs` serves `http://127.0.0.1:8766/`; it opens the browser by default and keeps `--no-browser`, `--port` and `--bind`.
 
 **Optional: first batch delivery with a kubeconfig.** If you hold an operator kubeconfig and want to bootstrap several Pods at once, `session open --mode kubeconfig --kubeconfig <path>` and `probe deploy --via kubectl` remain available as an advanced path. The probe-first flow above does not depend on it.
 

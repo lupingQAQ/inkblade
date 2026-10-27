@@ -143,7 +143,7 @@ python -m inkblade report --run <run-id> --lang bi
 
 默认立足点是普通、最低权限的 Pod：非 root、无 hostPath/privileged、无 kubeconfig，只有出站 TCP。控制端用 `channel listen` 监听，Pod 内探针用 `inkblade-probe reverse --host <controller> --port <port>` 主动回连。还没有探针时，`session open --mode foothold` 记录你已有的 shell、SA token 或授权 RCE，`probe deploy --via rce|sa-token` 通过它投放第一颗探针。子探针由父探针用 `probe upload` + `probe spawn` 投放，并以同样方式回连。存在本地命令通道时仍可用 stdio 通道（`channel start --session <id>`），但默认路径不依赖它。
 
-**文档站点。** `python -m inkblade docs` → `http://127.0.0.1:8766/`。它服务 `docs/`，默认自动打开浏览器；`--no-browser`、`--port`、`--bind` 用于无界面或换监听地址。
+**文档站点。** 公网页面：https://lupingqaq.github.io/inkblade/ ，由 `docs/` 构建、从 `gh-pages` 分支发布。离线或本地预览：`python -m inkblade docs` → `http://127.0.0.1:8766/`，默认自动打开浏览器；`--no-browser`、`--port`、`--bind` 用于无界面或换监听地址。
 
 **可选：首次批量投放使用 kubeconfig。** 如果你持有运维 kubeconfig，想一次给多个 Pod 做 bootstrap，仍可使用 `session open --mode kubeconfig --kubeconfig <path>` 与 `probe deploy --via kubectl`。上面的探针优先流程不依赖它。
 
