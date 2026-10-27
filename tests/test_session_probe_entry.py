@@ -227,7 +227,9 @@ class TestProbeRegistry(unittest.TestCase):
         controller = ProbeController(self.store)
         try:
             controller.add("parent", parent, session_id="s")
-            spawned = controller.spawn("parent", b"\x7fELFfake", probe_id="child")
+            remote = str(Path(tempfile.gettempdir()) / "inkblade-probe-child-test")
+            spawned = controller.spawn("parent", b"\x7fELFfake", probe_id="child",
+                                       remote_path=remote)
             self.assertEqual(spawned["probe_id"], "child")
             tree = controller.registry.tree("parent")
             self.assertEqual([row["probe_id"] for row in tree], ["parent", "child"])

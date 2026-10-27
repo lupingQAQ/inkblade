@@ -1,6 +1,6 @@
 # 需求矩阵（唯一事实源）/ Requirements Matrix
 
-> 建立日期：2026-10-27。依据：仓库文件 + git 历史（139 commits），**不依赖对话记忆**。
+> 建立日期：2026-10-27。依据：仓库文件 + git 历史（`git rev-list --count HEAD`），**不依赖对话记忆**。
 > 本文件是全仓需求的唯一事实源；其他文档的计数与状态若与之冲突，以本文件第 1 节为准，并在第 4 节登记修正。
 >
 > 状态词（四态，互斥）：
@@ -14,7 +14,7 @@
 
 ## 0. 口径声明（先读这一段）
 
-1. **执行载体已换代**：模块 = `module.json` + `template.json`，由目标 Pod 内静态 Rust 探针执行；Python `run.py` 在 **HEAD 仍有 286 个**，在 **当前工作树已被删除（0 个，迁移在途）**。因此「Python 模块 = 成品」的旧口径作废；但「Rust 运行时已验证」也**不成立**（见第 3 节）。
+1. **执行载体已换代**：模块 = `module.json` + `template.json`，由目标 Pod 内静态 Rust 探针执行；Python `run.py` 在**工作树与 HEAD 都是 0 个**（删除已提交）。因此「Python 模块 = 成品」的旧口径作废；Rust 运行时两态证据见第 3 节（286/286 `runtime=rust`，每态 3 次一致）。
 2. **两套验证口径必须分开写**：`runtime=reference`（参考评估器两态）与 `runtime=rust`（真探针两态）。当前 Rust 侧 **286/286**（二进制 `c8d2f118…`，源码 `1f0f57c`，每态 3 次一致，0 失败）；参考评估器只保留作无 Linux 运行器时的本地回归。
 3. **层级只有一套**：检测模型为**十层**（1–9 业务面 + 10 防护绕过）。历史上的「七层控制端架构」只描述控制端组件，不再作为产品层数；「九层」为第 10 层加入前的旧称。
 4. **数字只从 JSON/目录/registry 取值**，不从散文取值。第 1 节每一行给出计算方式。
@@ -56,7 +56,7 @@
 | ID | 需求（原文摘要） | 来源锚点 | 状态 | 证据路径 | 缺口（一句话） | 责任线 |
 |---|---|---|---|---|---|---|
 | INIT-01 | 以 K8s 内网为作业面：授权后在集群内采集，而非仅外部扫描 | spec §1.1、§5.2；plan 侦察任务 | done | `inkblade/collect/{k8s,http,files,hardware}.py`；`inkblade/modules/probe-bootstrap/`；`session`/`probe`/`channel` CLI；`docs/SURFACE-REALISM.md` | 投放与通道已有命令面，但 Rust 二进制未入库，实机投放未验证 | probe |
-| INIT-02 | 侦察模块族 11 类（暴露面/网络策略/Ray/特权/RBAC/存储/观测/框架端口/元数据/逃逸/云指纹） | spec §5.2 侦察表；plan 侦察任务 | done | `inkblade/modules/`（侦察 68）；`tests/test_probe_templates.py`；`reports/probe-coverage/evidence.json` | 两态证据为 `runtime=reference` | probe |
+| INIT-02 | 侦察模块族 11 类（暴露面/网络策略/Ray/特权/RBAC/存储/观测/框架端口/元数据/逃逸/云指纹） | spec §5.2 侦察表；plan 侦察任务 | done | `inkblade/modules/`（侦察 68）；`tests/test_probe_templates.py`；`reports/probe-coverage/evidence.json` | 两态证据为 `runtime=rust`（负控边界见 PROBE-COVERAGE §6） | probe |
 | INIT-03 | 把已复现 RL/推理引擎漏洞（40+，含 file:line）产品化为横向利用模块 | spec §1.1-1、§5.2 横向表 | done | 横向 66 模块；`docs/EXPLOIT-VERIFICATION.md`；`inkblade/core/data/version-matrix.json` | 动态复现 37/152，其余为 static/unsupported | probe |
 | INIT-04 | 权限过大配置产品化为权限链模块（6 条原语） | spec §1.1-2、§5.2 权限链表 | done | 权限链 43 模块；`docs/PRIVESC-MATRIX.md`；`tests/test_privesc_matrix.py` | 47 向量中多数靠 fixture 判定，真实集群仅 4 项 | probe |
 | INIT-05 | 窃取与数据泄露模块（蒸馏/凭据/共享卷/训练数据） | spec §5.2 窃取表 | done | 窃取 19 模块；`inkblade/core/redact.py`；`docs/CACHE-SECURITY.md` | 抽样为 fixture 数据集，非客户真实数据面 | probe |
@@ -318,4 +318,4 @@ OK (skipped=13)
 - 计数来源：`inkblade/core/exploit-registry.json`、`inkblade/core/zeroday-registry.json`、`inkblade/core/data/{version-matrix,weapon-packs}.json`、`inkblade/arch-intel/coverage-matrix.json`、`reports/samples/rules-pack/{mapping,coverage-matrix}.json`、`reports/probe-coverage/evidence.json`、`reports/samples/effects/effects.json`。
 - 覆盖与画像：`docs/PROBE-COVERAGE.md`、`docs/SURFACE-REALISM.md`、`docs/DYNAMIC-VERIFICATION.md`。
 - 规格与计划：`docs/superpowers/specs/2026-10-24-trident-ml-cluster-pentest-design.md`、`docs/superpowers/plans/2026-10-25-trident-platform.md`（仓库外，工作区 `docs/`）。
-- 历史台账：`progress.md`、`docs/DEV-LOG.md`、`.superpowers/sdd/2026-10-25-inkblade-platform/progress.md`、`git log --oneline`（139 commits）。
+- 历史台账：`progress.md`、`docs/DEV-LOG.md`、`.superpowers/sdd/2026-10-25-inkblade-platform/progress.md`、`git log --oneline`。
