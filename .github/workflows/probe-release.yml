@@ -194,6 +194,8 @@ jobs:
         with:
           name: inkblade-probe-linux-amd64
           path: probe/dist
+      - name: Restore the executable bit (artifact zips drop the mode)
+        run: chmod 0755 probe/dist/inkblade-probe-linux-amd64
       - name: Run framed-channel tests against the real binary
         env:
           PYTHONIOENCODING: utf-8
