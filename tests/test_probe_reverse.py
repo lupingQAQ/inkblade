@@ -526,14 +526,20 @@ class TestMultiProbeAndHeartbeat(unittest.TestCase):
         try:
             first.start()
             first.ready.wait(timeout=10)
-            listener.wait_for_probe(timeout=5, probe_id="re")
+            first_record = listener.wait_for_probe(timeout=5, probe_id="re")
             first.stop()
             time.sleep(0.2)
             second = FakeReverseProbe("127.0.0.1", listener.port, TOKEN, "re")
             second.start()
             second.ready.wait(timeout=10)
-            listener.wait_for_probe(timeout=5, probe_id="re")
+            deadline = time.time() + 8
             rows = listener.records()
+            while time.time() < deadline:
+                rows = listener.records()
+                if rows and rows[0]["status"] == "online" \
+                        and rows[0]["connected_at"] > first_record["connected_at"]:
+                    break
+                time.sleep(0.1)
             self.assertEqual(len(rows), 1)
             self.assertEqual(rows[0]["probe_id"], "re")
             self.assertTrue(rows[0]["replaced"])
