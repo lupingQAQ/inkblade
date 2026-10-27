@@ -3,64 +3,177 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>InkBlade 控制台 · 十视图</title>
+<meta name="color-scheme" content="dark">
+<title>InkBlade 控制台 · 真实环境接入</title>
 <link rel="stylesheet" href="vendor/reactflow.style.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <div class="brand">InkBlade<small data-i18n="brand.sub">ML 集群渗透测试控制台 · 十视图</small></div>
-  <span class="pill" id="mode-pill">本地模式 · 全离线</span>
-  <span class="pill" id="session-pill" hidden></span>
-  <form id="login-form" hidden>
-    <input id="in-user" data-i18n-placeholder="login.user" placeholder="用户名" autocomplete="username">
-    <input id="in-pass" type="password" data-i18n-placeholder="login.pass" placeholder="密码" autocomplete="current-password">
-    <input id="in-ws" data-i18n-placeholder="login.ws" placeholder="工作区" value="local-lab">
-    <button type="submit" id="btn-login" data-i18n="login.submit">登录</button>
-    <button type="button" id="btn-runs" data-i18n="login.runs" hidden>刷新运行</button>
-    <button type="button" id="btn-abort" data-i18n="login.abort" hidden title="终止执行中的子进程并记录中断点">紧急停止</button>
-  </form>
-  <button type="button" id="lang-toggle" class="lang-toggle" aria-label="切换语言 / Switch language" title="切换语言 / Switch language">EN</button>
+<header class="topbar">
+  <div class="brand-lockup">
+    <span class="brand-glyph" aria-hidden="true">◈</span>
+    <div class="brand">InkBlade<small data-i18n="brand.sub">ML 集群渗透测试控制台 · 十视图</small></div>
+  </div>
+  <div class="topbar-controls">
+    <label class="workspace-chip" for="ws-select">
+      <span data-i18n="topbar.workspace">工作区</span>
+      <select id="ws-select" disabled><option value="">未连接</option></select>
+    </label>
+    <span class="pill" id="mode-pill">本地控制台</span>
+    <span class="pill ok" id="session-pill" hidden></span>
+    <button type="button" id="lang-toggle" class="lang-toggle" aria-label="切换语言 / Switch language" title="切换语言 / Switch language">EN</button>
+    <button type="button" id="btn-abort" class="btn danger" data-i18n="login.abort" title="终止执行中的子进程并记录中断点" hidden>紧急停止</button>
+  </div>
 </header>
 
-<section id="demo-guide" class="demo-guide" aria-label="首次使用引导">
-  <div class="demo-guide-copy">
-    <strong data-i18n="guide.title">第一次用 InkBlade？2 条命令看结果</strong>
-    <span data-i18n="guide.body">本地 mock 靶场，不碰真实集群；约 10–20 秒生成发现、双语报告与规则包。</span>
-    <div class="demo-guide-cmds">
-      <code>python -m inkblade doctor</code><span>→</span><code>python -m inkblade demo</code>
-    </div>
-    <div class="demo-guide-flow">
-      <span><b>1</b> <span data-i18n="guide.step1">环境自检</span> <code>doctor</code></span>
-      <span><b>2</b> <span data-i18n="guide.step2">本地看结果</span> <code>demo</code></span>
-      <span><b>3</b> <span data-i18n="guide.step3">真实集群（只读）</span> <code>onboard-cluster --dry-run</code></span>
-    </div>
+<section id="onboarding" class="onboarding" aria-label="真实环境接入">
+  <div class="onboarding-hero">
+    <span class="eyebrow" data-i18n="onboard.eyebrow">AUTHORIZED OPERATIONS</span>
+    <h1 data-i18n="onboard.title">连接你的真实集群</h1>
+    <p class="hero-copy" data-i18n="onboard.body">先登录本机控制台，再导入 kubeconfig、签署授权、投放探针。所有执行都受 RoE 范围、级别与时间窗口约束。</p>
+    <ul class="hero-points">
+      <li><span aria-hidden="true">01</span><b data-i18n="onboard.point1.title">授权先行</b><em data-i18n="onboard.point1.body">没有签署记录，执行路径保持锁定。</em></li>
+      <li><span aria-hidden="true">02</span><b data-i18n="onboard.point2.title">证据可核验</b><em data-i18n="onboard.point2.body">每个步骤带 SHA256 归档与 manifest。</em></li>
+      <li><span aria-hidden="true">03</span><b data-i18n="onboard.point3.title">本地优先</b><em data-i18n="onboard.point3.body">无 CDN、无外部字体、无遥测上传。</em></li>
+    </ul>
   </div>
-  <div class="demo-guide-actions">
-    <span class="hint"><span data-i18n="guide.cluster">真实集群：</span><code>python -m inkblade onboard-cluster --dry-run</code></span>
-    <span class="hint" data-i18n="guide.kubeconfig">自动发现 KUBECONFIG / ~/.kube/config；先 dry-run 不碰集群。</span>
-    <button type="button" id="demo-guide-close" data-i18n="guide.dismiss">知道了</button>
+
+  <div class="login-card" id="login-card">
+    <div class="login-head">
+      <div>
+        <span class="eyebrow" data-i18n="login.eyebrow">LOCAL SESSION</span>
+        <h2 data-i18n="login.title">进入控制台</h2>
+      </div>
+      <span class="status-dot" aria-hidden="true"></span>
+    </div>
+    <p class="hint" data-i18n="login.body">使用工作区凭据登录。凭据只用于本机会话，不上传、不写入页面存储。</p>
+    <form id="login-form">
+      <label class="field">
+        <span data-i18n="login.user">用户名</span>
+        <input id="in-user" data-i18n-placeholder="login.user" placeholder="用户名" autocomplete="username" required>
+      </label>
+      <label class="field">
+        <span data-i18n="login.pass">密码</span>
+        <input id="in-pass" type="password" data-i18n-placeholder="login.pass" placeholder="密码" autocomplete="current-password" required>
+      </label>
+      <label class="field">
+        <span data-i18n="login.ws">工作区</span>
+        <input id="in-ws" data-i18n-placeholder="login.ws" placeholder="工作区" value="local-lab" required>
+      </label>
+      <button type="submit" id="btn-login" class="btn primary" data-i18n="login.submit">登录并连接</button>
+      <div id="login-error" class="form-error" role="alert" hidden></div>
+    </form>
+    <p class="login-note" data-i18n="login.note">登录后可查看工作区、运行列表、最近发现与链状态。</p>
   </div>
 </section>
 
-<nav id="views">
-  <button data-view="dag" class="active"><span class="n">①</span><span data-i18n="nav.dag">工作流 DAG</span></button>
-  <button data-view="chain"><span class="n">②</span><span data-i18n="nav.chain">攻击链图</span></button>
-  <button data-view="timeline"><span class="n">③</span><span data-i18n="nav.timeline">执行时间线</span></button>
-  <button data-view="evidence"><span class="n">④</span><span data-i18n="nav.evidence">证据浏览器</span></button>
-  <button data-view="report"><span class="n">⑤</span><span data-i18n="nav.report">报告预览</span></button>
-  <button data-view="rules"><span class="n">⑥</span><span data-i18n="nav.rules">规则视图</span></button>
-  <button data-view="assets"><span class="n">⑦</span><span data-i18n="nav.assets">资产图</span></button>
-  <button data-view="drift"><span class="n">⑧</span><span data-i18n="nav.drift">差异视图</span></button>
-  <button data-view="approvals"><span class="n">⑨</span><span data-i18n="nav.approvals">审批队列</span></button>
-  <button data-view="schedules"><span class="n">⑩</span><span data-i18n="nav.schedules">计划任务</span></button>
+<section id="onboarding-steps" class="onboarding-steps" aria-label="三步接入真实集群">
+  <div class="section-head">
+    <span class="eyebrow" data-i18n="onboard.stepsEyebrow">CONNECT A REAL CLUSTER</span>
+    <h2 data-i18n="onboard.stepsTitle">三步接入真实集群</h2>
+    <p data-i18n="onboard.stepsBody">控制台只负责会话与可视化；集群导入、授权签署与探针投放由 CLI 完成。以下步骤不会读取本机文件。</p>
+  </div>
+  <ol class="steps-grid">
+    <li class="step-card">
+      <div class="step-no">01</div>
+      <h3 data-i18n="onboard.step1.title">导入 kubeconfig</h3>
+      <p data-i18n="onboard.step1.body">选择 kubeconfig 文件或填写路径，作为下一步 CLI 的输入提示。页面不会读取、解析或上传该文件。</p>
+      <div class="file-picker">
+        <input type="file" id="kube-file" accept=".yaml,.yml,.json,.conf,.kubeconfig" hidden>
+        <button type="button" id="btn-kube-file" class="btn ghost" data-i18n="onboard.chooseFile">选择文件</button>
+        <span id="kube-file-name" class="hint" data-i18n="onboard.noFile">未选择文件</span>
+      </div>
+      <label class="field compact">
+        <span data-i18n="onboard.path">集群配置路径</span>
+        <input id="kube-path" placeholder="~/.kube/config" autocomplete="off" spellcheck="false">
+      </label>
+      <p class="hint" data-i18n="onboard.step1.note">仅前端提示：不会调用 FileReader，也不会发起文件读取请求。</p>
+    </li>
+    <li class="step-card">
+      <div class="step-no">02</div>
+      <h3 data-i18n="onboard.step2.title">签署授权</h3>
+      <p data-i18n="onboard.step2.body">打开授权会话并签署 RoE：目标、命名空间、CIDR、级别与时间窗口。未签署时执行路径返回 423。</p>
+      <div class="cmd-row">
+        <code>inkblade session open --mode kubeconfig --workspace ./work --kubeconfig ~/.kube/config</code>
+        <button type="button" class="btn tiny copy-cmd" data-copy="inkblade session open --mode kubeconfig --workspace ./work --kubeconfig ~/.kube/config" data-i18n="common.copy">复制</button>
+      </div>
+      <button type="button" id="btn-consent-status" class="btn ghost" data-i18n="onboard.step2.action">登录后查看授权状态</button>
+      <p class="hint" data-i18n="onboard.step2.note">授权记录哈希固定在 workspace/consent.json，与每次 run 一同校验。</p>
+    </li>
+    <li class="step-card">
+      <div class="step-no">03</div>
+      <h3 data-i18n="onboard.step3.title">启动探针并开始</h3>
+      <p data-i18n="onboard.step3.body">将静态 Rust 探针投放到授权 Pod，然后启动 Agent。运行结束后本页自动出现 DAG、时间线、证据与链状态。</p>
+      <div class="cmd-row">
+        <code>inkblade probe deploy --session &lt;session-id&gt; --via kubectl --binary ./inkblade-probe-linux-amd64</code>
+        <button type="button" class="btn tiny copy-cmd" data-copy="inkblade probe deploy --session <session-id> --via kubectl --binary ./inkblade-probe-linux-amd64" data-i18n="common.copy">复制</button>
+      </div>
+      <div class="cmd-row">
+        <code>inkblade agent run --probe &lt;probe-id&gt; --objective read-only-recon --workspace ./work</code>
+        <button type="button" class="btn tiny copy-cmd" data-copy="inkblade agent run --probe <probe-id> --objective read-only-recon --workspace ./work" data-i18n="common.copy">复制</button>
+      </div>
+      <p class="hint" data-i18n="onboard.step3.note">无写操作时保持只读；写路径还需要 --allow-write、备份回执与授权级别同时满足。</p>
+    </li>
+  </ol>
+</section>
+
+<section id="dashboard" class="dashboard" aria-label="工作区总览" hidden>
+  <div class="dashboard-head">
+    <div>
+      <span class="eyebrow" data-i18n="dash.eyebrow">WORKSPACE OVERVIEW</span>
+      <h1 id="dash-title">local-lab</h1>
+      <p class="hint" id="dash-subtitle" data-i18n="dash.loading">正在读取工作区…</p>
+    </div>
+    <div class="dashboard-actions">
+      <label class="select-field">
+        <span data-i18n="dash.run">运行</span>
+        <select id="run-select" aria-label="选择运行"></select>
+      </label>
+      <button type="button" id="btn-refresh" class="btn ghost" data-i18n="dash.refresh">刷新</button>
+    </div>
+  </div>
+  <div class="dash-grid">
+    <article class="dash-card">
+      <div class="card-kicker">WORKSPACE</div>
+      <h3 data-i18n="dash.workspace">工作区</h3>
+      <div id="dash-workspace"></div>
+    </article>
+    <article class="dash-card">
+      <div class="card-kicker">RUNS</div>
+      <h3 data-i18n="dash.runs">运行列表</h3>
+      <div id="dash-runs" class="run-list"></div>
+    </article>
+    <article class="dash-card">
+      <div class="card-kicker">FINDINGS</div>
+      <h3 data-i18n="dash.findings">最近发现</h3>
+      <div id="dash-findings"></div>
+    </article>
+    <article class="dash-card">
+      <div class="card-kicker">ATTACK CHAIN</div>
+      <h3 data-i18n="dash.chain">链状态</h3>
+      <div id="dash-chain"></div>
+    </article>
+  </div>
+</section>
+
+<nav id="views" class="segmented" aria-label="视图导航">
+  <button data-view="dag" class="active"><span class="n">01</span><span data-i18n="nav.dag">工作流 DAG</span></button>
+  <button data-view="chain"><span class="n">02</span><span data-i18n="nav.chain">攻击链图</span></button>
+  <button data-view="timeline"><span class="n">03</span><span data-i18n="nav.timeline">执行时间线</span></button>
+  <button data-view="evidence"><span class="n">04</span><span data-i18n="nav.evidence">证据浏览器</span></button>
+  <button data-view="report"><span class="n">05</span><span data-i18n="nav.report">报告预览</span></button>
+  <button data-view="rules"><span class="n">06</span><span data-i18n="nav.rules">规则视图</span></button>
+  <button data-view="assets"><span class="n">07</span><span data-i18n="nav.assets">资产图</span></button>
+  <button data-view="drift"><span class="n">08</span><span data-i18n="nav.drift">差异视图</span></button>
+  <button data-view="approvals"><span class="n">09</span><span data-i18n="nav.approvals">审批队列</span></button>
+  <button data-view="schedules"><span class="n">10</span><span data-i18n="nav.schedules">计划任务</span></button>
 </nav>
 
 <main>
-  <!-- ① 工作流 DAG：节点=步骤，状态色 待执行/运行中/成功/降级/阻断；侧栏=步骤详情 -->
+  <!-- 01 工作流 DAG：节点=步骤，状态色 待执行/运行中/成功/降级/阻断；侧栏=步骤详情 -->
   <section id="view-dag" class="view active">
     <div id="dag-layout">
-      <div>
+      <div class="panel canvas-panel">
         <div id="dag-canvas"><div class="dag-empty">暂无步骤数据</div></div>
         <div class="legend">
           <span class="i-pending"><i></i><span data-i18n="status.pending">待执行</span></span>
@@ -77,7 +190,7 @@
     </div>
   </section>
 
-  <!-- ② 攻击链图：资产节点 + 利用边（严重度着色，按链分组） -->
+  <!-- 02 攻击链图：资产节点 + 利用边（严重度着色，按链分组） -->
   <section id="view-chain" class="view">
     <div class="panel">
       <div class="chain-controls">
@@ -89,7 +202,7 @@
     </div>
   </section>
 
-  <!-- ③ 执行时间线：Argo 风格瀑布（起止/耗时/并行度）+ 操作/文件访问台账 -->
+  <!-- 03 执行时间线：Argo 风格瀑布（起止/耗时/并行度）+ 操作/文件访问台账 -->
   <section id="view-timeline" class="view">
     <div class="panel">
       <h3 data-i18n="timeline.title">执行瀑布</h3>
@@ -103,7 +216,7 @@
     </div>
   </section>
 
-  <!-- ④ 证据浏览器：数据库层 → 上下文摘要层 → 归档层（SHA256）三层穿透 -->
+  <!-- 04 证据浏览器：数据库层 → 上下文摘要层 → 归档层（SHA256）三层穿透 -->
   <section id="view-evidence" class="view">
     <div id="ev-layout">
       <div class="panel">
@@ -121,12 +234,12 @@
     </div>
   </section>
 
-  <!-- ⑤ 报告预览：双语报告渲染 + 导出（占位 /api/report，静态模式内嵌渲染） -->
+  <!-- 05 报告预览：服务端 /api/v1/report 实时生成，静态模式内嵌渲染 -->
   <section id="view-report" class="view">
     <div id="report-body"></div>
   </section>
 
-  <!-- ⑥ 规则视图：规则↔攻击链映射矩阵 + 覆盖情况 + 紫队验证标记 -->
+  <!-- 06 规则视图：规则↔攻击链映射矩阵 + 覆盖情况 + 紫队验证标记 -->
   <section id="view-rules" class="view">
     <div class="panel">
       <h3 data-i18n="rules.title">规则 ↔ 攻击链映射矩阵</h3>
@@ -135,7 +248,7 @@
     </div>
   </section>
 
-  <!-- ⑦ 资产图：发现 → 增量资产清单（assets 表）namespace→service 层级 -->
+  <!-- 07 资产图：发现 → 增量资产清单（assets 表）namespace→service 层级 -->
   <section id="view-assets" class="view">
     <div class="panel">
       <h3 data-i18n="assets.title">资产图（增量资产清单）</h3>
@@ -144,7 +257,7 @@
     </div>
   </section>
 
-  <!-- ⑧ 差异视图：周期重测 drift（新增/已修复/未变） -->
+  <!-- 08 差异视图：周期重测 drift（新增/已修复/未变） -->
   <section id="view-drift" class="view">
     <div class="panel">
       <h3 data-i18n="drift.title">重测差异（drift）</h3>
@@ -153,7 +266,7 @@
     </div>
   </section>
 
-  <!-- ⑨ 审批队列：explorer 提议 → lead 批准 → 人触发执行 -->
+  <!-- 09 审批队列：explorer 提议 → lead 批准 → 人触发执行 -->
   <section id="view-approvals" class="view">
     <div class="panel">
       <h3 data-i18n="approvals.title">审批队列（审批制自主探索）</h3>
@@ -162,7 +275,7 @@
     </div>
   </section>
 
-  <!-- ⑩ 计划任务：cron 式周期重测 -->
+  <!-- 10 计划任务：cron 式周期重测 -->
   <section id="view-schedules" class="view">
     <div class="panel">
       <h3 data-i18n="schedules.title">计划任务（周期重测）</h3>

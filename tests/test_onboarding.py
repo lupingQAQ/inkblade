@@ -241,19 +241,24 @@ class TestHumanizedErrors(unittest.TestCase):
 
 
 class TestDocsAndEntrypoints(unittest.TestCase):
-    def test_readme_quickstart_three_commands(self):
+    def test_readme_quickstart_real_onboarding(self):
         text = (ROOT / "README.md").read_text(encoding="utf-8")
-        head = text.split("## 能力", 1)[0]
-        self.assertIn("5 分钟上手", head)
-        self.assertIn("python -m inkblade doctor", head)
-        self.assertIn("python -m inkblade demo", head)
-        self.assertIn("python -m inkblade quickstart", head)
+        self.assertIn("## Quick start", text)
+        for command in ("inkblade up", "quickstart", "session open", "probe deploy",
+                        "agent run", "report"):
+            self.assertIn(command, text)
+        self.assertNotIn("inkblade demo", text)
+        self.assertNotIn("mock", text.lower())
 
-    def test_ui_first_screen_demo_card(self):
+    def test_ui_first_screen_real_onboarding(self):
         html = (ROOT / "inkblade" / "webui" / "static" / "index.html").read_text(encoding="utf-8")
-        self.assertIn('id="demo-guide"', html)
-        self.assertIn("python -m inkblade doctor", html)
-        self.assertIn("python -m inkblade demo", html)
+        self.assertIn('id="login-form"', html)
+        self.assertIn('id="onboarding"', html)
+        self.assertIn("inkblade session open", html)
+        self.assertIn("inkblade probe deploy", html)
+        self.assertIn("inkblade agent run", html)
+        for word in ("demo", "mock", "trial"):
+            self.assertNotIn(word, html.lower())
 
     def test_onboarding_evaluation_doc_present(self):
         text = (ROOT / "docs" / "ONBOARDING-EVALUATION.md").read_text(encoding="utf-8")

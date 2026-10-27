@@ -82,8 +82,8 @@ class TestUIProductization(unittest.TestCase):
                      "assets", "drift", "approvals", "schedules"):
             self.assertIn(f'"{view}"', js)
         # 空态必须带下一步命令，而不是一句「暂无数据」
-        self.assertIn("python -m inkblade demo", js)
-        self.assertIn("python -m inkblade onboard-cluster", js)
+        self.assertIn("inkblade probe deploy", js)
+        self.assertIn("inkblade session open", js)
         css = STYLE.read_text(encoding="utf-8")
         self.assertIn(".empty-state", css)
 
@@ -97,7 +97,8 @@ class TestUIProductization(unittest.TestCase):
 
     def test_kubeconfig_to_pilot_guidance_visible(self):
         html = INDEX.read_text(encoding="utf-8")
-        self.assertIn("onboard-cluster --dry-run", html)
+        self.assertIn("inkblade session open", html)
+        self.assertIn("inkblade probe deploy", html)
         self.assertIn("kubeconfig", html)
 
 

@@ -16,7 +16,7 @@ import json
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 from ..core.evidence import EvidenceStore
 from ..core.roe import roe_status
@@ -48,6 +48,36 @@ class _Handler(BaseHTTPRequestHandler):
         if not length:
             return {}
         return json.loads(self.rfile.read(length).decode("utf-8"))
+
+    def _file(self, rel: str) -> bool:
+        """Serve a webui static asset with path traversal protection."""
+        try:
+            root = _STATIC.resolve()
+            target = (root / unquote(rel)).resolve()
+            target.relative_to(root)
+        except (ValueError, OSError):
+            return False
+        if not target.is_file():
+            return False
+        payload = target.read_bytes()
+        ext = target.suffix.lower()
+        ctype = {
+            ".html": "text/html; charset=utf-8",
+            ".js": "text/javascript; charset=utf-8",
+            ".css": "text/css; charset=utf-8",
+            ".json": "application/json; charset=utf-8",
+            ".svg": "image/svg+xml",
+            ".png": "image/png",
+            ".ico": "image/x-icon",
+            ".woff2": "font/woff2",
+        }.get(ext, "application/octet-stream")
+        self.send_response(200)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(payload)))
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.end_headers()
+        self.wfile.write(payload)
+        return True
 
     def _session(self):
         auth = self.headers.get("Authorization", "")
@@ -307,6 +337,15 @@ class _Handler(BaseHTTPRequestHandler):
             from .openapi import build_openapi
 
             return self._json(200, build_openapi())
+        if u.path in ("/app.js", "/style.css") or u.path.startswith("/vendor/"):
+            if self._file(u.path.lstrip("/")):
+                return
+            return self._json(404, {"error": "asset not found"})
+        if u.path == "/favicon.ico":
+            self.send_response(204)
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
         if u.path == "/":
             html = (_STATIC / "index.html").read_text(encoding="utf-8") if (_STATIC / "index.html").exists() else "<html><body>InkBlade</body></html>"
             payload = html.encode("utf-8")
