@@ -310,9 +310,15 @@ class TestCliAssess(unittest.TestCase):
                     "series": "横向利用", "description": "fixture",
                     "min_level": "只读侦察", "writes": False, "requires": [],
                 }, ensure_ascii=False), encoding="utf-8")
-                (d / "run.py").write_text(
-                    "def run(ctx, params):\n    return {'summary': 'ok'}\n",
-                    encoding="utf-8")
+                (d / "template.json").write_text(json.dumps({
+                    "schema": "inkblade-probe-template-v1", "key": key,
+                    "version": "1.0.0",
+                    "meta": {"name": {"zh": key, "en": key}, "series": "横向利用",
+                             "min_level": "只读侦察", "writes": False, "requires": []},
+                    "steps": [{"id": "noop", "op": "fs", "action": "stat",
+                               "path": "/", "save": "noop"}],
+                    "findings": [],
+                }, ensure_ascii=False), encoding="utf-8")
             chains = home / "chains"
             chains.mkdir()
             (chains / "cve-gate.json").write_text(json.dumps({

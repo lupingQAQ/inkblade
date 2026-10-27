@@ -30,15 +30,22 @@ def _fixture_module(root: Path, key: str, *, writes=False, fail=False, private=F
     if private:
         meta["private"] = True
     (d / "module.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
-    body = "import pathlib\n\ndef run(ctx, params):\n"
-    if fail:
-        body += "    raise RuntimeError('boom')\n"
-    else:
-        body += (
-            "    return {'summary': 'ok', 'artifacts': [],"
-            " 'findings': [{'sev': 'high', 'title': 'demo', 'detail': 'x'}]}\n"
-        )
-    (d / "run.py").write_text(body, encoding="utf-8")
+    steps = ([{"id": "boom", "op": "fs", "action": "read",
+               "path": str(root / "missing-boom.txt"), "save": "boom"}] if fail else
+             [{"id": "noop", "op": "fs", "action": "stat", "path": "/", "save": "noop"}])
+    template = {
+        "schema": "inkblade-probe-template-v1", "key": key, "version": "1.0.0",
+        "meta": {"name": meta["name"], "series": meta["series"],
+                 "min_level": min_level, "writes": writes, "requires": []},
+        "steps": steps,
+        "findings": ([{"id": "f", "sev": "high", "title": "demo", "detail": "x",
+                       "when": "true"}] if not fail else []),
+    }
+    if writes:
+        template["modes"] = {"probe_only": True, "backup_write": True,
+                             "requires_backup": True}
+    (d / "template.json").write_text(json.dumps(template, ensure_ascii=False),
+                                     encoding="utf-8")
 
 
 class TestRunnerScopeAndZerodayAudit(unittest.TestCase):

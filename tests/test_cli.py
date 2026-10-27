@@ -23,7 +23,15 @@ class TestCli(unittest.TestCase):
                 "series": "侦察", "description": "t", "min_level": "只读侦察",
                 "writes": False, "requires": [],
             }), encoding="utf-8")
-            (d / "run.py").write_text("def run(ctx, params):\n    return {'summary': 'ok'}\n", encoding="utf-8")
+            (d / "template.json").write_text(json.dumps({
+                "schema": "inkblade-probe-template-v1", "key": "sample-probe",
+                "version": "1.0.0",
+                "meta": {"name": {"zh": "sample", "en": "sample"}, "series": "侦察",
+                         "min_level": "只读侦察", "writes": False, "requires": []},
+                "steps": [{"id": "noop", "op": "fs", "action": "stat", "path": "/",
+                           "save": "noop"}],
+                "findings": [],
+            }, ensure_ascii=False), encoding="utf-8")
             r = subprocess.run(
                 [PY, "-m", "inkblade", "module", "list", "--modules-dir", str(Path(tmp) / "modules")],
                 capture_output=True, timeout=30,

@@ -28,6 +28,7 @@ DEFAULT_EXCLUDED_DIRS = frozenset({
     ".venv", "venv", "env", "node_modules", ".idea", ".vscode", ".wip",
     # 本地 VM/QEMU 实验产物（第三方 QEMU 文档含 Windows 示例路径，不属于本仓公开源码）
     "qemu-k3s",
+    "defense-lab",
     # 上游只读源码快照（Apache-2.0，零复用）：第三方代码可能含盘符样文本
     # （如 DeepSpeed 文档字符串中的单字母盘符示例），不属于本仓公开源码；
     # 快照来源与许可见该目录 README。

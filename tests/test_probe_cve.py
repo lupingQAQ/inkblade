@@ -73,7 +73,12 @@ class CveTemplates(unittest.TestCase):
             doc = json.loads(EVIDENCE.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             doc = {"schema": "inkblade-probe-coverage-evidence-v1", "entries": {}}
-        doc.setdefault("entries", {}).update(cls.evidence)
+        doc.setdefault("entries", {})
+        for key, entry in cls.evidence.items():
+            current = doc["entries"].get(key) or {}
+            if str(current.get("runtime") or "").startswith("rust"):
+                continue  # native probe evidence is authoritative
+            doc["entries"][key] = entry
         doc["updated_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         EVIDENCE.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n",
                             encoding="utf-8")

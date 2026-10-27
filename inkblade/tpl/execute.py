@@ -130,11 +130,13 @@ def execute_template(store, session, meta, params: dict[str, Any], *,
             "title": finding.get("title") or meta.key,
             "detail": finding.get("detail") or "",
         }
-        for key in ("evidence", "mapping", "fix", "cves", "version_matrix"):
+        for key in ("evidence", "mapping", "fix", "cves", "version_matrix", "is_zeroday"):
             if finding.get(key):
                 item[key] = finding[key]
         if finding.get("id"):
             item["template_finding"] = finding["id"]
+        if getattr(meta, "private", False):
+            item["is_zeroday"] = True
         findings.append(item)
 
     executed = [s for s in result.get("steps") or [] if not s.get("skipped")]

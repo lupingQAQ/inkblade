@@ -149,106 +149,117 @@ def compile_template(template: dict, params: dict | None = None,
     def gap(step_id: str, reason: str, detail: dict | None = None) -> None:
         gaps.append({"step": step_id, "reason": reason, **(detail or {})})
 
-    for step in template.get("steps") or []:
-        sid = str(step.get("id"))
-        op = str(step.get("op"))
-        if step.get("when") is not None:
-            try:
-                if not expr.truthy(step["when"], scope):
+    for original in template.get("steps") or []:
+        repeat = max(1, min(512, int(original.get("repeat") or 1)))
+        for iter_index in range(repeat):
+            step = dict(original)
+            step.pop("repeat", None)
+            step.pop("index_var", None)
+            if repeat > 1:
+                step["id"] = (str(original.get("id")) if iter_index == repeat - 1
+                              else f"{original.get('id')}-{iter_index}")
+            scope["i"] = iter_index
+            scope[str(original.get("index_var") or "i")] = iter_index
+            sid = str(step.get("id"))
+            op = str(step.get("op"))
+            if step.get("when") is not None:
+                try:
+                    if not expr.truthy(step["when"], scope):
+                        continue
+                except expr.ExprError as exc:
+                    warnings.append(f"{sid}: when expression error: {exc}")
                     continue
-            except expr.ExprError as exc:
-                warnings.append(f"{sid}: when expression error: {exc}")
+            if step.get("write") and mode != "backup-write":
                 continue
-        if step.get("write") and mode != "backup-write":
-            continue
-        problems: list[str] = []
-        native = {"id": sid, "op": op}
-        if op == "http":
-            native["method"] = str(step.get("method") or "GET").upper()
-            native["url"] = _rewrite_value(step.get("url") or "", scope, step_ids, problems)
-            if step.get("headers"):
-                native["headers"] = _rewrite_value(step["headers"], scope, step_ids, problems)
-            if step.get("body") is not None:
-                native["body"] = _rewrite_value(step["body"], scope, step_ids, problems)
-            expect = step.get("expect") or {}
-            if expect and not step.get("allow_failure"):
-                statuses = expect.get("status")
-                if isinstance(statuses, list) and statuses and \
-                        not expect.get("body_contains") and not expect.get("header_contains"):
-                    native["expect"] = {"status": statuses}
-                elif expect.get("body_contains") or expect.get("header_contains"):
-                    warnings.append(f"{sid}: body/header expectations folded by controller")
-        elif op == "tcp":
-            native["host"] = _rewrite_value(step.get("host") or "", scope, step_ids, problems)
-            native["port"] = int(step.get("port") or 0)
-            if step.get("send"):
-                payload = _rewrite_value(step["send"], scope, step_ids, problems)
-                native["send_b64"] = base64.b64encode(str(payload).encode("utf-8")).decode("ascii")
-            if step.get("send_b64"):
-                native["send_b64"] = step["send_b64"]
-            native["read_bytes"] = int(step.get("read_bytes") or 65536)
-        elif op == "exec":
-            native["argv"] = [_rewrite_value(x, scope, step_ids, problems)
-                              for x in step.get("argv") or []]
-            if step.get("stdin"):
-                warnings.append(f"{sid}: probe exec has no stdin; folded where possible")
-        elif op == "fs":
-            action = str(step.get("action"))
-            if action == "hash":
-                gap(sid, "fs action hash is not implemented by the probe", {"action": action})
+            problems: list[str] = []
+            native = {"id": sid, "op": op}
+            if op == "http":
+                native["method"] = str(step.get("method") or "GET").upper()
+                native["url"] = _rewrite_value(step.get("url") or "", scope, step_ids, problems)
+                if step.get("headers"):
+                    native["headers"] = _rewrite_value(step["headers"], scope, step_ids, problems)
+                if step.get("body") is not None:
+                    native["body"] = _rewrite_value(step["body"], scope, step_ids, problems)
+                expect = step.get("expect") or {}
+                if expect and not step.get("allow_failure"):
+                    statuses = expect.get("status")
+                    if isinstance(statuses, list) and statuses and \
+                            not expect.get("body_contains") and not expect.get("header_contains"):
+                        native["expect"] = {"status": statuses}
+                    elif expect.get("body_contains") or expect.get("header_contains"):
+                        warnings.append(f"{sid}: body/header expectations folded by controller")
+            elif op == "tcp":
+                native["host"] = _rewrite_value(step.get("host") or "", scope, step_ids, problems)
+                native["port"] = int(step.get("port") or 0)
+                if step.get("send"):
+                    payload = _rewrite_value(step["send"], scope, step_ids, problems)
+                    native["send_b64"] = base64.b64encode(str(payload).encode("utf-8")).decode("ascii")
+                if step.get("send_b64"):
+                    native["send_b64"] = step["send_b64"]
+                native["read_bytes"] = int(step.get("read_bytes") or 65536)
+            elif op == "exec":
+                native["argv"] = [_rewrite_value(x, scope, step_ids, problems)
+                                  for x in step.get("argv") or []]
+                if step.get("stdin"):
+                    warnings.append(f"{sid}: probe exec has no stdin; folded where possible")
+            elif op == "fs":
+                action = str(step.get("action"))
+                if action == "hash":
+                    gap(sid, "fs action hash is not implemented by the probe", {"action": action})
+                    continue
+                if action not in NATIVE_FS_ACTIONS:
+                    gap(sid, f"fs action {action} is not native", {"action": action})
+                    continue
+                native["action"] = action
+                if step.get("path"):
+                    native["path"] = _rewrite_value(step["path"], scope, step_ids, problems)
+                if step.get("glob"):
+                    native["glob"] = _rewrite_value(step["glob"], scope, step_ids, problems)
+                if action == "write" and step.get("content") is not None:
+                    native["data"] = _rewrite_value(step["content"], scope, step_ids, problems)
+            elif op == "k8s":
+                verb = str(step.get("verb") or "")
+                if verb not in ("get", "list"):
+                    gap(sid, f"k8s verb {verb} is not implemented by the probe",
+                        {"verb": verb, "resource": step.get("resource")})
+                    continue
+                native["action"] = verb
+                native["resource"] = _rewrite_value(step.get("resource") or "", scope, step_ids, problems)
+                if step.get("namespace") is not None:
+                    native["namespace"] = _rewrite_value(step["namespace"], scope, step_ids, problems)
+                if step.get("name"):
+                    native["name"] = _rewrite_value(step["name"], scope, step_ids, problems)
+                if step.get("api_version") not in (None, "", "v1"):
+                    gap(sid, "probe k8s only supports core/v1 paths",
+                        {"api_version": step.get("api_version")})
+                    continue
+                if step.get("label_selector"):
+                    warnings.append(f"{sid}: probe k8s list has no label selector yet")
+            elif op == "socks":
+                gap(sid, "probe socks op is a server, not a Unix-socket client",
+                    {"socket_path": step.get("socket_path")})
                 continue
-            if action not in NATIVE_FS_ACTIONS:
-                gap(sid, f"fs action {action} is not native", {"action": action})
+            elif op == "spawn":
+                native["argv"] = [_rewrite_value(x, scope, step_ids, problems)
+                                  for x in step.get("argv") or []]
+                if step.get("detach"):
+                    native["detach"] = True
+            else:
+                gap(sid, f"op {op} is not native", {"op": op})
                 continue
-            native["action"] = action
-            if step.get("path"):
-                native["path"] = _rewrite_value(step["path"], scope, step_ids, problems)
-            if step.get("glob"):
-                native["glob"] = _rewrite_value(step["glob"], scope, step_ids, problems)
-            if action == "write" and step.get("content") is not None:
-                native["data"] = _rewrite_value(step["content"], scope, step_ids, problems)
-        elif op == "k8s":
-            verb = str(step.get("verb") or "")
-            if verb not in ("get", "list"):
-                gap(sid, f"k8s verb {verb} is not implemented by the probe",
-                    {"verb": verb, "resource": step.get("resource")})
+            if int(step.get("timeout_ms") or 0) > 0:
+                native["timeout_ms"] = int(step["timeout_ms"])
+            if problems:
+                gap(sid, "; ".join(problems[:3]))
                 continue
-            native["action"] = verb
-            native["resource"] = _rewrite_value(step.get("resource") or "", scope, step_ids, problems)
-            if step.get("namespace") is not None:
-                native["namespace"] = _rewrite_value(step["namespace"], scope, step_ids, problems)
-            if step.get("name"):
-                native["name"] = _rewrite_value(step["name"], scope, step_ids, problems)
-            if step.get("api_version") not in (None, "", "v1"):
-                gap(sid, "probe k8s only supports core/v1 paths",
-                    {"api_version": step.get("api_version")})
-                continue
-            if step.get("label_selector"):
-                warnings.append(f"{sid}: probe k8s list has no label selector yet")
-        elif op == "socks":
-            gap(sid, "probe socks op is a server, not a Unix-socket client",
-                {"socket_path": step.get("socket_path")})
-            continue
-        elif op == "spawn":
-            native["argv"] = [_rewrite_value(x, scope, step_ids, problems)
-                              for x in step.get("argv") or []]
-            if step.get("detach"):
-                native["detach"] = True
-        else:
-            gap(sid, f"op {op} is not native", {"op": op})
-            continue
-        if int(step.get("timeout_ms") or 0) > 0:
-            native["timeout_ms"] = int(step["timeout_ms"])
-        if problems:
-            gap(sid, "; ".join(problems[:3]))
-            continue
-        native_steps.append(native)
-        step_map[sid] = sid
+            native_steps.append(native)
+            step_map[sid] = sid
 
     native_template = {
         "name": template.get("key"),
         "budget": {
-            "max_steps": int((template.get("limits") or {}).get("max_http_requests") or 64) + 8,
+            "max_steps": max(64, len(native_steps) + 8,
+                             int((template.get("limits") or {}).get("max_http_requests") or 64) + 8),
             "max_ms": int((template.get("limits") or {}).get("timeout_ms") or 60000),
             "max_bytes": int((template.get("defaults") or {}).get("max_bytes") or 1048576),
         },
@@ -342,6 +353,11 @@ def fold_result(compilation: Compilation, native_result: dict) -> dict:
                             skipped=bool(step.get("skipped")),
                             data=data)
         scope["steps"][sid] = engine._step_scope(result)  # noqa: SLF001 - shared fold
+    scope["computed"] = {}
+    for name, text in (compilation.template.get("computed") or {}).items():
+        value = expr.evaluate(str(text), scope)
+        scope["computed"][name] = value
+        scope["vars"][name] = value
     checks = []
     error = None
     for check in compilation.template.get("checks") or []:

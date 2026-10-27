@@ -18,17 +18,28 @@ def _fixture_module(root: Path, key: str, writes: bool, fail: bool = False):
         "description": "t", "min_level": "利用验证", "writes": writes, "requires": [],
     }
     (d / "module.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
-    body = "import pathlib\n\ndef run(ctx, params):\n"
     if fail:
-        body += "    raise RuntimeError('boom')\n"
+        steps = [{"id": "boom", "op": "fs", "action": "read",
+                  "path": str(root / "missing-boom.txt"), "save": "boom"}]
+        findings = []
     else:
-        body += (
-            "    p = pathlib.Path(params['target'])\n"
-            "    p.write_text('INKBLADE-' + ctx['marker'], encoding='utf-8')\n"
-            "    return {'summary': 'wrote marker', 'artifacts': [str(p)],"
-            " 'findings': [{'sev': 'high', 'title': 'marker written', 'detail': 'x'}]}\n"
-        )
-    (d / "run.py").write_text(body, encoding="utf-8")
+        steps = [{"id": "write", "op": "fs", "action": "write",
+                  "path": "{{params.target}}", "content": "INKBLADE-{{ctx.marker}}",
+                  "save": "write", "write": bool(writes)}]
+        findings = [{"id": "f", "sev": "high", "title": "marker written", "detail": "x",
+                     "when": "true"}]
+    template = {
+        "schema": "inkblade-probe-template-v1", "key": key, "version": "1.0.0",
+        "meta": {"name": meta["name"], "series": "横向利用", "min_level": "利用验证",
+                 "writes": writes, "requires": [], "surfaces": ["test-fixture"],
+                 "cves": [], "fidelity": "equivalent"},
+        "steps": steps, "findings": findings, "limits": {"timeout_ms": 5000},
+    }
+    if writes:
+        template["modes"] = {"probe_only": True, "backup_write": True,
+                             "requires_backup": True}
+    (d / "template.json").write_text(json.dumps(template, ensure_ascii=False, indent=1),
+                                     encoding="utf-8")
 
 
 class TestRunner(unittest.TestCase):

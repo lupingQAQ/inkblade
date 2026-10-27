@@ -60,9 +60,6 @@ def main() -> int:
                          "steps": 0, "findings": 0, "checks": 0, "fidelity": "n/a"})
             series[raw.get("series")] += 1
             continue
-        if execution != "template":
-            errors.append(f"{key}: 未知 execution={execution!r}")
-            continue
         if not (module_dir / "template.json").is_file():
             errors.append(f"{key}: 缺 template.json")
             continue

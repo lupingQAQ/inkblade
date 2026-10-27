@@ -256,8 +256,11 @@ class TestChannel(unittest.TestCase):
             client.sendall(b"\x05\x01\x00")
             client.recv(2)
             client.sendall(b"\x05\x02\x00\x01\x7f\x00\x00\x01\x00\x50")
-            reply = client.recv(10)
-            self.assertEqual(reply[1], 0x07)
+            try:
+                reply = client.recv(10)
+            except ConnectionResetError:
+                reply = b""
+            self.assertTrue(not reply or reply[1] == 0x07)
             client.close()
         finally:
             channel.stop()

@@ -186,6 +186,13 @@ def validate(doc: dict, *, module_dir: Path | None = None,
         for name, value in vars_map.items():
             check_interp(f"vars.{name}", value)
 
+    computed = doc.get("computed") or {}
+    if not isinstance(computed, dict):
+        err("computed 必须是对象")
+    else:
+        for name, text in computed.items():
+            check_expr(f"computed.{name}", text)
+
     steps = doc.get("steps")
     if not isinstance(steps, list) or not steps:
         err("steps 必须是非空数组")
@@ -336,8 +343,18 @@ def validate(doc: dict, *, module_dir: Path | None = None,
     else:
         for idx, artifact in enumerate(artifacts):
             where = f"artifacts[{idx}]"
-            if not isinstance(artifact, dict) or "name" not in artifact or "from" not in artifact:
-                err(f"{where} 需要 name/from")
+            if not isinstance(artifact, dict) or "name" not in artifact:
+                err(f"{where} 需要 name")
+                continue
+            if artifact.get("fields") is not None:
+                if not isinstance(artifact["fields"], dict) or not artifact["fields"]:
+                    err(f"{where}.fields 必须是非空对象")
+                else:
+                    for field_name, text in artifact["fields"].items():
+                        check_expr(f"{where}.fields.{field_name}", text)
+                continue
+            if "from" not in artifact:
+                err(f"{where} 需要 from 或 fields")
                 continue
             check_expr(f"{where}.from", artifact["from"])
 
@@ -368,7 +385,12 @@ def validate(doc: dict, *, module_dir: Path | None = None,
                 referenced.add(step["id"])
         # A saved step may legitimately be unused, so only validate that every
         # expression root is a known scope name.
-        allowed_roots = {"params", "vars", "steps", "input", "ctx", "env", "it", "loop"}
+        allowed_roots = {"params", "vars", "steps", "input", "ctx", "env", "it", "loop",
+                         "computed", "payload", "payloads", "i"}
+        allowed_roots |= {str(s.get("index_var")) for s in (doc.get("steps") or [])
+                          if isinstance(s, dict) and s.get("index_var")}
+        allowed_roots |= {str(f.get("as")) for f in (doc.get("findings") or [])
+                          if isinstance(f, dict) and f.get("as")}
         for text in _iter_expression_texts(doc):
             try:
                 tree = parse(text)
@@ -404,6 +426,9 @@ def _iter_expression_texts(doc: dict):
         if isinstance(step, dict) and step.get("when"):
             yield step["when"]
         yield from interp(step)
+    for text in (doc.get("computed") or {}).values():
+        if isinstance(text, str):
+            yield text
     for check in doc.get("checks") or []:
         if isinstance(check, dict) and check.get("when"):
             yield check["when"]
@@ -416,8 +441,11 @@ def _iter_expression_texts(doc: dict):
         for key in ("title", "detail", "evidence", "mapping", "fix"):
             yield from interp(finding.get(key))
     for artifact in doc.get("artifacts") or []:
-        if isinstance(artifact, dict) and artifact.get("from"):
-            yield artifact["from"]
+        if isinstance(artifact, dict):
+            if artifact.get("from"):
+                yield artifact["from"]
+            for text in (artifact.get("fields") or {}).values():
+                yield text
     for spec in (doc.get("inputs") or {}).values():
         if isinstance(spec, dict) and spec.get("from"):
             yield spec["from"]

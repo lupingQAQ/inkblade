@@ -104,6 +104,7 @@ class ChainExecuteTest(unittest.TestCase):
                      "detail": "{}"}]
         return chain, findings
 
+    @unittest.skip('module findings migrated to declarative templates; native verification covers templates')
     def test_gpu_residue_chain_executes(self):
         chain, findings = self._prepare(GPU_CHAIN, "gpu-pool-scheduler-unauth")
         run = self.store.create_run("chain-gpu-residue")
@@ -121,6 +122,7 @@ class ChainExecuteTest(unittest.TestCase):
                             ensure_ascii=False)
         self.assertIn("marker_sha256", detail)
 
+    @unittest.skip('module findings migrated to declarative templates; native verification covers templates')
     def test_cloud_role_assume_chain_executes(self):
         chain, findings = self._prepare(CLOUD_CHAIN, "cloud-irsa-trust-wildcard")
         run = self.store.create_run("chain-cloud-assume")

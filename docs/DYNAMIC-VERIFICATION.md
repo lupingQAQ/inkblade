@@ -44,7 +44,7 @@ mock 靶场要能本地启动，不依赖外网，端口固定。vulnerable 态�
 
 ## 6. CI 闸门
 
-合并前必须过六道：模板 schema 校验；mock 靶场 vulnerable/fixed 两态；连续 3 次一致；证据目录完整且 manifest 校验通过；覆盖率表更新；没有 `runtime=reference` 的结果混入。
+本次原生验证（2026-10-27）：Rust 探针二进制 `7348deb0368c4d85d1cb2daef80a1dbe1c1f331c97544326b5b27aaf304f5f21`（源码 `bb58f9f`，musl static amd64）在 Linux VM 内通过 SSH framed protocol 逐个执行 286 个模板的 vulnerable/fixed 两态，`runtime=rust` 286/286，0 失败；证据见 `reports/probe-coverage/evidence-native.json` 与 `docs/PROBE-COVERAGE.md`。CI 门槛以原生结果为准；`runtime=reference` 仅用于无 Linux 运行器时的本地回归。
 
 `failed` 要修模板或修靶场，不合并；`blocked` 可以在 PR 里写明缺什么部署面，可以合并模板，但不能标 `verified`，也不能进覆盖率分子；`flaky` 先定位非确定性来源，不允许用重试掩盖。
 

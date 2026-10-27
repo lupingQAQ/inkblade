@@ -25,12 +25,18 @@ _FIXTURE_MODULE_JSON = {
     "min_level": "利用验证", "writes": False, "requires": [],
     "params_schema": {"target": "目标基址"},
 }
-_FIXTURE_RUN_PY = (
-    "def run(ctx, params):\n"
-    "    if not params.get('target'):\n"
-    "        return {'summary': 'no-target', 'artifacts': [], 'findings': []}\n"
-    "    return {'summary': 'fixture-probe-unreachable', 'artifacts': [], 'findings': []}\n"
-)
+_FIXTURE_TEMPLATE = {
+    "schema": "inkblade-probe-template-v1", "key": "sglang-admin-failopen",
+    "version": "1.0.0",
+    "meta": {"name": _FIXTURE_MODULE_JSON["name"], "series": "横向利用",
+             "min_level": "主动探测", "writes": False, "requires": []},
+    "inputs": {"target": {"from": "params.target", "required": False}},
+    "steps": [{"id": "surface", "op": "http", "method": "GET",
+               "url": "{{input.target}}/healthz",
+               "save": "surface", "allow_failure": True,
+               "when": "input.target != null"}],
+    "findings": [],
+}
 
 
 def _make_fixture_modules(root: Path):
@@ -38,7 +44,8 @@ def _make_fixture_modules(root: Path):
     d.mkdir(parents=True, exist_ok=True)
     (d / "module.json").write_text(json.dumps(_FIXTURE_MODULE_JSON, ensure_ascii=False),
                                    encoding="utf-8")
-    (d / "run.py").write_text(_FIXTURE_RUN_PY, encoding="utf-8")
+    (d / "template.json").write_text(json.dumps(_FIXTURE_TEMPLATE, ensure_ascii=False),
+                                     encoding="utf-8")
 
 
 def _req(method, url, token=None, body=None):

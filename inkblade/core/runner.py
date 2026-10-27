@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import time
 import uuid
 from pathlib import Path
@@ -124,14 +125,21 @@ def run_module(
             "artifacts": [],
         }
 
-    # 备份闸门：写类模块在 backup-write 模式下必须先拿到快照回执
-    write_mode = str(params.get("mode") or "") == "backup-write"
-    if meta.writes and write_mode:
+    # 备份闸门：写类模块必须先拿到快照回执（与旧契约一致；probe-only 显式声明时
+    # 仍要求回执，因为写步骤是否执行由 mode 决定，闸门不因 mode 放宽）。
+    if meta.writes:
         receipt = bm.snapshot(module_key, params.get("backup_targets", []))
         if receipt is None:
             run.log_action(session.name, "execute", module_key, params, "refused-no-backup",
                            is_zeroday=is_zd)
             raise BackupGateRefused("写类模块缺少备份回执（backup_targets 为空或不可用）")
+        if not params.get("mode"):
+            params["mode"] = "backup-write"
+        # Demo receipts keep the rollback key used by the module contract
+        # (`<module>-demo`) so an operator can restore the demo target.
+        if params.get("demo_target"):
+            bm.snapshot(f"{module_key}-demo",
+                        [{"kind": "file", "path": str(params["demo_target"])}])
 
     # Modules consume the real collection first; the runner exposes it without
     # overwriting an explicit module parameter.
@@ -154,7 +162,7 @@ def run_module(
     except (TemplateExecutionError, ProbeUnavailable) as exc:
         run.log_action(session.name, "execute", module_key, params, f"failed:{exc}",
                        is_zeroday=is_zd)
-        if meta.writes and write_mode:
+        if meta.writes:
             bm.rollback(module_key)
         raise
     except Exception as exc:  # 模块失败：审计 + 不留写残留（由回滚保障）
@@ -177,7 +185,10 @@ def run_module(
         prompt_or_cmd=str(params),
         env={"actor": session.name, "workspace": store.workspace, "module": module_key,
              "execution": meta.execution,
-             "probe_runtime": (result.get("probe") or {}).get("runtime", "")},
+             "probe_runtime": (result.get("probe") or {}).get("runtime", ""),
+             "probe_result_sha256": __import__("hashlib").sha256(
+                 json.dumps(result.get("probe") or {}, ensure_ascii=False,
+                            sort_keys=True).encode("utf-8")).hexdigest()},
         result_summary=str(result.get("summary", "")),
         artifacts=[Path(p) for p in result.get("artifacts", [])],
     )
@@ -198,4 +209,8 @@ def run_module(
         pass
     run.log_action(session.name, "execute", module_key, params, "success",
                    rollback_to=module_key if meta.writes else None, is_zeroday=is_zd)
-    return {"run": run.name, "step": module_key, "surface": gate, **step}
+    return {"run": run.name, "step": module_key, "surface": gate, **step,
+            "status": "success", "summary": result.get("summary", ""),
+            "findings": result.get("findings", []),
+            "artifacts": result.get("artifacts", []),
+            "probe": result.get("probe")}

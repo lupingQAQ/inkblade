@@ -70,13 +70,16 @@ def _write_module(root: Path, key: str, surfaces: list[dict], *, default=True,
     }
     (directory / "module.json").write_text(json.dumps(meta, ensure_ascii=False),
                                            encoding="utf-8")
-    (directory / "run.py").write_text(
-        "from pathlib import Path\n"
-        "def run(ctx, params):\n"
-        f"    Path({str(sentinel)!r}).write_text('ran', encoding='utf-8')\n"
-        "    return {'summary': 'executed', 'artifacts': [], "
-        "'findings': [{'sev': 'info', 'title': 'executed', 'detail': 'x'}]}\n",
-        encoding="utf-8")
+    (directory / "template.json").write_text(json.dumps({
+        "schema": "inkblade-probe-template-v1", "key": key, "version": "1.0.0",
+        "meta": {"name": meta["name"], "series": meta["series"],
+                 "min_level": meta["min_level"], "writes": False, "requires": [],
+                 "surfaces": [str(s) for s in surfaces]},
+        "steps": [{"id": "run", "op": "fs", "action": "write",
+                   "path": str(sentinel), "content": "ran", "save": "run"}],
+        "findings": [{"id": "f", "sev": "info", "title": "executed", "detail": "x",
+                      "when": "true"}],
+    }, ensure_ascii=False), encoding="utf-8")
     return directory
 
 

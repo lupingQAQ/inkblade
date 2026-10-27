@@ -199,6 +199,33 @@ class LocalBackend:
             raw = path.read_bytes()[:max_bytes]
             return {"ok": True, "exists": True, "path": str(path), "sha256": _sha256(raw),
                     "size": len(raw)}
+        if path.is_dir():
+            # Snapshot directories are merged like the pre-migration collectors:
+            # every *.json is parsed and top-level keys are concatenated.
+            merged: dict = {}
+            errors = []
+            for item in sorted(path.glob("*.json"))[:500]:
+                try:
+                    data = json.loads(item.read_text(encoding="utf-8", errors="replace"))
+                except (OSError, ValueError) as exc:
+                    errors.append(f"{item.name}: {exc}")
+                    continue
+                if isinstance(data, dict):
+                    for key, value in data.items():
+                        if key in merged and isinstance(merged[key], list) and isinstance(value, list):
+                            merged[key] = merged[key] + value
+                        elif key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
+                            merged[key].update(value)
+                        else:
+                            merged[key] = value
+                elif isinstance(data, list):
+                    merged.setdefault("items", []).extend(data)
+            merged.setdefault("_sources", {})
+            merged["_sources"]["dir"] = str(path)
+            text = json.dumps(merged, ensure_ascii=False, sort_keys=True)
+            return {"ok": True, "exists": True, "path": str(path), "text": text,
+                    "json": merged, "size": len(text.encode("utf-8")),
+                    "sha256": _sha256(text.encode("utf-8")), "errors": errors[:20]}
         raw = path.read_bytes()[:max_bytes]
         text = raw.decode("utf-8", "replace")
         payload = None

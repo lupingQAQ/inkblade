@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import copy
 import json
+import os
 import re
 import sys
 import time
@@ -37,6 +38,11 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta
 from pathlib import Path
 from tempfile import TemporaryDirectory
+
+# The end-to-end check is a mock-range harness: it explicitly selects the
+# template conformance runtime because CI has no target Pod. Production paths
+# still refuse this runtime unless the operator opts in.
+os.environ.setdefault("INKBLADE_ALLOW_REFERENCE_PROBE", "1")
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[1]

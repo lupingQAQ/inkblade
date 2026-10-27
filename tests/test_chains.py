@@ -43,31 +43,10 @@ FINDINGS = [
 
 def _fixture_module(root: Path, key: str, sleep: float = 0.0, touch: str = "",
                     expect_first: str = "", fail: bool = False):
-    d = root / "modules" / key
-    d.mkdir(parents=True, exist_ok=True)
-    meta = {
-        "key": key, "name": {"zh": key, "en": key}, "series": "横向利用",
-        "description": "t", "min_level": "主动探测", "writes": False, "requires": [],
-    }
-    (d / "module.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
-    body = "import pathlib\nimport time\n\n\ndef run(ctx, params):\n"
-    body += f"    time.sleep({sleep})\n"
-    if fail:
-        body += "    raise RuntimeError('boom')\n"
-        (d / "run.py").write_text(body, encoding="utf-8")
-        return
-    if expect_first:
-        body += (
-            f"    got = pathlib.Path(r'{expect_first}').read_text(encoding='utf-8')\n"
-            "    assert got == 'probe-first-done', '依赖步骤未先行完成: ' + got\n"
-        )
-    if touch:
-        body += f"    pathlib.Path(r'{touch}').write_text('{key}-done', encoding='utf-8')\n"
-    body += (
-        "    return {'summary': 'ok', 'artifacts': [],"
-        " 'findings': [{'sev': 'info', 'title': 'step-done', 'detail': 'ok'}]}\n"
-    )
-    (d / "run.py").write_text(body, encoding="utf-8")
+    from tests.template_module_fixture import write_template_module
+
+    write_template_module(root, key, fail=fail, touch=touch,
+                          expect_first=expect_first, sleep=sleep)
 
 
 def _chain_fixture(**overrides):

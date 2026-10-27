@@ -35,12 +35,20 @@ def _module(root: Path, key: str, *, writes=False, fail=False, min_level="利用
     meta = {"key": key, "name": {"zh": key, "en": key}, "series": "横向利用",
             "description": "t", "min_level": min_level, "writes": writes, "requires": []}
     (d / "module.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
-    body = "def run(ctx, params):\n"
-    if fail:
-        body += "    raise RuntimeError('boom')\n"
-    else:
-        body += "    return {'summary': 'cli-ok', 'artifacts': [], 'findings': []}\n"
-    (d / "run.py").write_text(body, encoding="utf-8")
+    steps = ([{"id": "boom", "op": "fs", "action": "read",
+               "path": str(root / "missing-boom.txt"), "save": "boom"}] if fail else
+             [{"id": "noop", "op": "fs", "action": "stat", "path": "/", "save": "noop"}])
+    template = {
+        "schema": "inkblade-probe-template-v1", "key": key, "version": "1.0.0",
+        "meta": {"name": meta["name"], "series": meta["series"],
+                 "min_level": min_level, "writes": writes, "requires": []},
+        "steps": steps, "findings": [],
+    }
+    if writes:
+        template["modes"] = {"probe_only": True, "backup_write": True,
+                             "requires_backup": True}
+    (d / "template.json").write_text(json.dumps(template, ensure_ascii=False),
+                                     encoding="utf-8")
 
 
 class TestCliOps(unittest.TestCase):

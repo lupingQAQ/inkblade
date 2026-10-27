@@ -192,7 +192,7 @@ class TestSessionModes(unittest.TestCase):
                 self.store, sess, user, "demo", {"target": url},
                 self.root / "modules", controller=controller,
             )
-            self.assertEqual(result["status"], "ok")
+            self.assertEqual(result["status"], "success")
             self.assertEqual(result["findings"][0]["title"], "ok")
             self.assertIn("probe[rust]", result["summary"])
         finally:

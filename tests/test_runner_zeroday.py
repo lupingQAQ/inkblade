@@ -4,6 +4,7 @@
 - 零日级漏洞模块（已公开，6 个 dify-*/open-webui-*）不标记 private，
   未启用零日扩展时也可见、可直接执行（无需 enable）。
 """
+import json
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -40,7 +41,14 @@ class TestRunnerZerodayGate(unittest.TestCase):
                 '{"key":"dify-probe-secret","name":{"zh":"x","en":"x"},"series":"横向利用",'
                 '"description":"t","min_level":"只读侦察","writes":false,"requires":[],"private":true}',
                 encoding="utf-8")
-            (d / "run.py").write_text("def run(ctx, params):\n    return {'summary':'ok'}\n", encoding="utf-8")
+            (d / "template.json").write_text(json.dumps({
+                "schema": "inkblade-probe-template-v1", "key": "dify-probe-secret",
+                "version": "1.0.0",
+                "meta": {"name": {"zh": "x", "en": "x"}, "series": "横向利用",
+                         "min_level": "主动探测", "writes": False, "requires": []},
+                "steps": [{"id": "noop", "op": "fs", "action": "stat", "path": "/",
+                           "save": "noop"}], "findings": [],
+            }), encoding="utf-8")
             store = EvidenceStore(root, workspace="local-lab")
             init_roe(store, fields={"level": "全影响演示"})
             users = UserStore(root / "users.json")

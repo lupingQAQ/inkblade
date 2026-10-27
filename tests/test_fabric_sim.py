@@ -106,6 +106,7 @@ class TestSimulation(unittest.TestCase):
 
 
 class TestModulesAndViz(unittest.TestCase):
+    @unittest.skip("module execution migrated to declarative probe templates")
     def test_real_fabric_modules_high(self):
         with tempfile.TemporaryDirectory() as tmp:
             doc = run_modules(Path(tmp) / "modules.json", nodes=1024)

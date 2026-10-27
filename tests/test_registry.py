@@ -4,22 +4,12 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from inkblade.core.registry import ModuleMeta, load_modules, order_dependencies
+from tests.template_module_fixture import write_template_module
 
 
-def _mk(root: Path, key: str, requires=None, series="侦察", min_level="只读侦察"):
-    d = root / key
-    d.mkdir(parents=True, exist_ok=True)
-    meta = {
-        "key": key,
-        "name": {"zh": key, "en": key},
-        "series": series,
-        "description": "test module",
-        "min_level": min_level,
-        "writes": False,
-        "requires": requires or [],
-    }
-    (d / "module.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
-    (d / "run.py").write_text("def run(ctx, params):\n    return {'ok': True}\n", encoding="utf-8")
+def _mk(root: Path, key: str, requires=None, series="横向利用", min_level="只读侦察"):
+    write_template_module(root, key, series=series, min_level=min_level,
+                          requires=requires or [], flat=True)
 
 
 class TestRegistry(unittest.TestCase):
@@ -35,12 +25,10 @@ class TestRegistry(unittest.TestCase):
         mods = load_modules(self.root)
         self.assertIn("good-one", mods)
         self.assertIsInstance(mods["good-one"], ModuleMeta)
-        # 键含大写/下划线 → 拒绝（数字允许，如 kubelet-10250-exec）
         _mk(self.root, "key_007")
         with self.assertRaises(ValueError):
             load_modules(self.root)
         (self.root / "key_007" / "module.json").unlink()
-        # 缺字段
         d = self.root / "no-series"
         d.mkdir()
         (d / "module.json").write_text("{}", encoding="utf-8")

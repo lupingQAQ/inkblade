@@ -46,17 +46,19 @@
       "detail": "Declarative probe assertion (baseline migrated from the module rule).",
       "evidence": "{{steps.snapshot.path}}",
       "mapping": "零日级漏洞模块（已公开）：智能体平台控制面条目（已公开，细节随模块展示）",
-      "fix": ""
+      "fix": "",
+      "is_zeroday": true
     },
     {
       "id": "f2",
       "when": "true",
       "sev": "critical",
       "title": "Dify 控制面默认放行：未鉴权创建 binding 成功",
-      "detail": "Declarative probe assertion (baseline migrated from the module rule).",
+      "detail": "无 Authorization 凭据即可创建/销毁 binding；route=POST /openapi/v1/permission/binding，匿名主体可写控制面。",
       "evidence": "{{steps.snapshot.path}}",
       "mapping": "零日级漏洞模块（已公开）：智能体平台控制面条目（已公开，细节随模块展示）",
-      "fix": ""
+      "fix": "",
+      "is_zeroday": true
     }
   ],
   "artifacts": [

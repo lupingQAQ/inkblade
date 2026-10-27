@@ -93,8 +93,8 @@ def load_modules(modules_dir: Path | str) -> dict[str, ModuleMeta]:
         if execution == "template":
             if not (d / "template.json").exists():
                 raise ValueError(f"{d.name}: 缺 template.json（模块必须声明式模板化）")
-            # run.py is ignored during the migration window; the release gate
-            # (tools/template-lint.py --strict) fails while any remain.
+            if (d / "run.py").exists():
+                raise ValueError(f"{d.name}: 禁止 run.py（Python 模块执行路径已删除）")
         elif not (d / "bootstrap.py").exists():
             raise ValueError(f"{d.name}: bootstrap 模块缺 bootstrap.py")
         mods[raw["key"]] = ModuleMeta(

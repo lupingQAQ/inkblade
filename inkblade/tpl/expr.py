@@ -229,6 +229,17 @@ class _Parser:
             node = self.parse_or()
             self.expect("punct", ")")
             return node
+        if tok.kind == "punct" and tok.value == "[":
+            self.take()
+            items = []
+            if not self.accept("punct", "]"):
+                while True:
+                    items.append(self.parse_or())
+                    if self.accept("punct", ","):
+                        continue
+                    self.expect("punct", "]")
+                    break
+            return ("array", items)
         if tok.kind == "name":
             name = tok.value
             if name == "true":
@@ -306,6 +317,8 @@ class Evaluator:
         kind = node[0]
         if kind == "lit":
             return node[1]
+        if kind == "array":
+            return [self.eval(item, bindings) for item in node[1]]
         if kind == "var":
             name = node[1]
             if name in bindings:
@@ -374,11 +387,14 @@ class Evaluator:
 
     def _call(self, name: str, args: list, bindings: dict[str, Any]) -> Any:
         # `any`/`all`/`count_if` bind their element lazily.
-        if name in ("any", "all", "count_if", "first", "map"):
+        if name in ("any", "all", "count_if", "first", "map", "filter"):
             seq = self.eval(args[0], bindings)
             items = _flatten(seq) if isinstance(seq, (list, tuple)) else []
             if name == "map":
                 return [self.eval(args[1], {**bindings, "it": item}) for item in items]
+            if name == "filter":
+                return [item for item in items
+                        if _truthy(self.eval(args[1], {**bindings, "it": item}))]
             if len(args) > 1:
                 hits = [item for item in items if _truthy(self.eval(args[1], {**bindings, "it": item}))]
             else:
@@ -514,12 +530,24 @@ def _call_pure(name: str, values: list) -> Any:
         sep = _to_text(values[1]) if len(values) > 1 else ","
         seq = values[0] if values and isinstance(values[0], (list, tuple)) else []
         return sep.join(_to_text(item) for item in seq)
+    if name == "concat":
+        out = []
+        for value in values:
+            if isinstance(value, (list, tuple)):
+                out.extend(value)
+            elif value is not None:
+                out.append(value)
+        return out
     if name == "keys":
         return sorted(values[0].keys()) if values and isinstance(values[0], dict) else []
     if name == "values":
         return list(values[0].values()) if values and isinstance(values[0], dict) else []
     if name == "exists":
         return bool(values) and values[0] is not None
+    if name == "if":
+        if len(values) < 3:
+            return None
+        return values[1] if _truthy(values[0]) else values[2]
     if name in ("contains", "startswith", "endswith"):
         if len(values) < 2:
             return False

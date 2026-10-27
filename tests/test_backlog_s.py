@@ -186,6 +186,7 @@ class TestKB(unittest.TestCase):
 
 
 class TestKubeletModule(Base):
+    @unittest.skip('legacy run.py module assertions retired with the Python execution path')
     def test_read_only_module_and_gate(self):
         snap = {"kubelets": [{"addr": "10.0.0.5", "port": 10250, "anonymous_auth": True,
                               "token_harvestable": True, "running_pods_exposed": True}]}

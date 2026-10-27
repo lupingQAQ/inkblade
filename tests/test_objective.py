@@ -232,7 +232,7 @@ class TestExecution(ObjectiveBase):
         backend = FakeKubectlBackend(slow_stages={"stage-4-privileged-pod": 0.25})
         result = run_objective(
             self.store, self.session, self.chain, backend,
-            proof_marker="unit-timeout", auto_approve=True, stage_timeout=0.05,
+            proof_marker="unit-timeout", auto_approve=True, stage_timeout=0.15,
         )
         self.assertFalse(result["ok"])
         self.assertEqual(result["failed_stage"], "stage-4-privileged-pod")

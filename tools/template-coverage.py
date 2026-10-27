@@ -93,10 +93,15 @@ def build(rows: list[dict], evidence: dict) -> dict:
             "evidence": ev.get("evidence", ""),
             "evidence_at": ev.get("at", ""),
             "evidence_runtime": ev.get("runtime", ""),
+            "binary_sha256": ev.get("binary_sha256", ""),
+            "source_commit": ev.get("source_commit", ""),
+            "defense_matrix": ev.get("defense_matrix") or {},
             "evidence_note": ev.get("note", ""),
         })
     templates = [e for e in entries if e["execution"] == "template"]
     dynamic = [e for e in templates if e["dynamic_tested"]]
+    native = [e for e in templates if e["dynamic_tested"]
+              and str(e.get("evidence_runtime") or "").startswith("rust")]
     summary = {
         "schema": "inkblade-probe-coverage-v1",
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -104,6 +109,11 @@ def build(rows: list[dict], evidence: dict) -> dict:
         "templates": len(templates),
         "bootstrap": sum(1 for e in entries if e["execution"] == "bootstrap"),
         "dynamic_tested": len(dynamic),
+        "native_tested": len(native),
+        "native_binary_sha256": next((e.get("binary_sha256") for e in native
+                                      if e.get("binary_sha256")), ""),
+        "native_source_commit": next((e.get("source_commit") for e in native
+                                      if e.get("source_commit")), ""),
         "coverage_pct": round(100.0 * len(dynamic) / len(templates), 2) if templates else 0.0,
         "equivalent": sum(1 for e in templates if e["fidelity"] == "equivalent"),
         "reduced": sum(1 for e in templates if e["fidelity"] == "reduced"),
@@ -131,7 +141,8 @@ def render(result: dict) -> str:
         f"- Modules: **{s['modules']}** (templates **{s['templates']}**, "
         f"bootstrap **{s['bootstrap']}**)",
         f"- Dynamic template verification: **{s['dynamic_tested']}/{s['templates']} "
-        f"({s['coverage_pct']}%)**",
+        f"({s['coverage_pct']}%)** — Rust-native **{s['native_tested']}** "
+        f"(binary `{s['native_binary_sha256'][:12]}…`, source `{s['native_source_commit']}`)",
         f"- Fidelity: equivalent **{s['equivalent']}**, reduced **{s['reduced']}**",
         f"- Rust-native readiness (static compile): **{s['native_ready']}/{s['templates']}** "
         f"(gaps: {s['native_gaps']} op(s))",
@@ -147,33 +158,41 @@ def render(result: dict) -> str:
     for name, count in sorted(s["series"].items(), key=lambda kv: -kv[1]):
         lines.append(f"| {name} | {count} |")
     lines += ["", "## 3. Defense bypass (11) — detection / blindspot / hardening", "",
-              "| Module | Dynamic | Mode | Evidence |",
-              "|---|---|---|---|"]
+              "| Module | Dynamic | Mode | Detected | Blindspots | Hardening | Evidence |",
+              "|---|---|---|---:|---:|---:|---|"]
     by_key = {e["module"]: e for e in result["entries"]}
     for key in DEFENSE:
         e = by_key.get(key)
         if not e:
-            lines.append(f"| `{key}` | missing | — | — |")
+            lines.append(f"| `{key}` | missing | — | — | — | — | — |")
             continue
+        m = e.get("defense_matrix") or {}
         lines.append(f"| `{key}` | {'yes' if e['dynamic_tested'] else 'no'} | "
-                     f"{e['dynamic_mode'] or '—'} | `{(e['evidence'] or '')[:16]}` |")
+                     f"{e['dynamic_mode'] or '—'} | {m.get('detected', '—')} | "
+                     f"{m.get('blindspots', '—')} | {m.get('hardening', '—')} | "
+                     f"`{(e['evidence'] or '')[:16]}` |")
     lines += ["", "## 4. Full module table", "",
-              "| Module | Series | Execution | Steps | Checks | Findings | Fidelity | Native | Dynamic-tested | Evidence |",
-              "|---|---|---|---:|---:|---:|---|---|---|---|"]
+              "| Module | Series | Execution | Steps | Checks | Findings | Fidelity | Native | Runtime | Dynamic-tested | Evidence |",
+              "|---|---|---|---:|---:|---:|---|---|---|---|---|"]
     for e in result["entries"]:
         lines.append(
             f"| `{e['module']}` | {e['series']} | {e['execution']} | {e['steps']} | "
             f"{e['checks']} | {e['findings']} | {e['fidelity']} | "
             f"{'yes' if e.get('native_ready') else 'gap' if e['execution'] == 'template' else '—'} | "
+            f"{e.get('evidence_runtime') or '—'} | "
             f"{'yes' if e['dynamic_tested'] else 'no'} | "
             f"`{(e['evidence'] or '')[:16]}` |")
     lines += ["", "## 5. Contract", "",
               "- Every module is a declarative template (`template.json`), executed natively by "
-              "the Rust probe (`inkblade-probe run-template`).",
+              "the Rust probe (`inkblade-probe run-template`/`task`).",
               "- No Python, shell interpreter or module code is dropped into the target Pod.",
               "- `probe-bootstrap` is the only host-executed module and only drops the Rust binary.",
               "- Missing probe / missing target surface fails explicitly; there is no adapter or "
-              "host fallback.", ""]
+              "host fallback.",
+              "- Legacy per-family Python tests for `run.py` internals were retired with the "
+              "execution path; `tests/test_probe_*.py` replace them with two-state template "
+              "execution and evidence digests.",
+              ""]
     return "\n".join(lines)
 
 

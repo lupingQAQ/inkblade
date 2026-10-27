@@ -131,6 +131,12 @@ SOCKS5 / port forwards; see [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md).
 - Coverage: `tools/template-coverage.py` → `docs/PROBE-COVERAGE.md` +
   `reports/probe-coverage/coverage.json`; per-module evidence digests are in
   `reports/probe-coverage/evidence.json`.
+- Native run: `tools/native-verify.py` drives the static Linux probe over SSH
+  (QEMU TCG Alpine guest) through the framed protocol, two states per template.
+  Result: **286/286 `runtime=rust`, 0 failures**, binary sha256
+  `7348deb0368c4d85d1cb2daef80a1dbe1c1f331c97544326b5b27aaf304f5f21`, source
+  commit `bb58f9f`; raw evidence in
+  `reports/probe-coverage/evidence-native.json`.
 - Lint: `tools/template-lint.py --strict` (schema, metadata equality,
   expressions, no `run.py`).
 

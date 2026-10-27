@@ -52,6 +52,11 @@
       }
     },
     "vars": {"type": "object", "additionalProperties": {"type": "string"}},
+    "computed": {
+      "type": "object",
+      "additionalProperties": {"type": "string"},
+      "description": "Expressions evaluated after steps, exposed as vars.<name>; use for derived state shared by findings."
+    },
     "steps": {
       "type": "array",
       "minItems": 1,
@@ -90,6 +95,8 @@
           "mapping": {"type": "string"},
           "fix": {"type": "string"},
           "cves": {"type": "array", "items": {"type": "string"}},
+          "is_zeroday": {"type": "boolean", "default": false,
+            "description": "Marks a zero-day-level finding; requires the module to be visible per zeroday policy."},
           "version_matrix": {"$ref": "#/$defs/version_matrix"},
           "max_emit": {"type": "integer", "minimum": 1, "maximum": 10000, "default": 100}
         }
@@ -100,10 +107,12 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["name", "from"],
+        "required": ["name"],
         "properties": {
           "name": {"type": "string"},
           "from": {"type": "string", "description": "Expression yielding JSON/text/bytes."},
+          "fields": {"type": "object", "additionalProperties": {"type": "string"},
+            "description": "Build a JSON object from name→expression pairs (alternative to from)."},
           "kind": {"enum": ["json", "text", "binary", "trace"], "default": "json"}
         }
       }
@@ -149,6 +158,9 @@
         "write": {"type": "boolean", "default": false},
         "allow_failure": {"type": "boolean", "default": false},
         "timeout_ms": {"type": "integer", "minimum": 1, "maximum": 300000},
+        "repeat": {"type": "integer", "minimum": 1, "maximum": 512,
+          "description": "Execute the op N times; {{i}} (or index_var) is bound per iteration. Results are aggregated under steps.<id>.items."},
+        "index_var": {"type": "string", "minLength": 1, "maxLength": 32, "default": "i"},
         "method": {"type": "string", "description": "http only: GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS"},
         "url": {"$ref": "#/$defs/template_string"},
         "headers": {"type": "object", "additionalProperties": {"type": "string"}},

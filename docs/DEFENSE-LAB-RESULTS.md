@@ -170,8 +170,8 @@ ssh ... "sh /root/defense-lab/start-waf.sh && sh /root/defense-lab/run-waf-probe
 Verification:
 
 ```powershell
-D:\llm-audit-2026-10\env\reproenv-d\Scripts\python.exe -m unittest tests.test_defense_lab_artifacts -v
-D:\llm-audit-2026-10\env\reproenv-d\Scripts\python.exe lab/defense-lab/build_results.py
+python -m unittest tests.test_defense_lab_artifacts -v
+python lab/defense-lab/build_results.py
 ```
 
 ## Evidence index

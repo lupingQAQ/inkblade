@@ -35,6 +35,16 @@
       "json": true,
       "save": "snapshot",
       "allow_failure": false
+    },
+    {
+      "id": "demo",
+      "op": "fs",
+      "action": "write",
+      "write": true,
+      "when": "params.mode == 'backup-write'",
+      "path": "{{params.demo_target}}",
+      "content": "# INKBLADE demo {{ctx.marker}} privileged pod\napiVersion: v1\nkind: Pod\nmetadata: {name: inkblade-privileged-demo}\nspec: {hostNetwork: true, containers: [{name: c, image: busybox, securityContext: {privileged: true}}]}\n",
+      "save": "demo"
     }
   ],
   "checks": [
@@ -75,6 +85,15 @@
       "evidence": "{{steps.snapshot.path}}",
       "mapping": "设计基线第 11 节：四框架特权部署（hostPath/socket/caps/设备组合逃逸）",
       "fix": ""
+    },
+    {
+      "id": "demo-written",
+      "when": "params.mode == 'backup-write'",
+      "sev": "high",
+      "title": "特权 Pod 清单写入演示已落盘（可回滚）",
+      "detail": "演示清单写入 {{params.demo_target}}；真实集群中由 create pods 生效。",
+      "evidence": "demo_target={{params.demo_target}}",
+      "mapping": "privileged-gpu-pod-escape demo"
     }
   ],
   "artifacts": [

@@ -137,7 +137,30 @@ class Engine:
                     error = f"http request budget exceeded ({max_http})"
                     break
             try:
-                result = self._execute(step, scope, defaults)
+                repeat = max(1, min(512, int(step.get("repeat") or 1)))
+                if repeat == 1:
+                    result = self._execute(step, scope, defaults)
+                else:
+                    items = []
+                    oks = []
+                    last: StepResult | None = None
+                    for index in range(repeat):
+                        iter_scope = dict(scope)
+                        iter_scope["i"] = index
+                        iter_scope[str(step.get("index_var") or "i")] = index
+                        part = self._execute(step, iter_scope, defaults)
+                        items.append(part.data)
+                        oks.append(part.ok)
+                        last = part
+                        if not part.ok and not step.get("allow_failure"):
+                            break
+                    result = last or StepResult(id=sid, op=op, ok=False, error="empty repeat")
+                    result.data = {**(result.data or {}), "items": items,
+                                   "count": len(items)}
+                    result.ok = all(oks)
+                    if len(items) < repeat and not step.get("allow_failure"):
+                        result.ok = False
+                        result.error = result.error or f"repeat stopped after {len(items)}/{repeat}"
             except Exception as exc:  # noqa: BLE001 - op failure is evidence
                 result = StepResult(id=sid, op=op, ok=False,
                                     error=f"{type(exc).__name__}: {exc}")
@@ -147,6 +170,19 @@ class Engine:
             if not result.ok and not step.get("allow_failure"):
                 error = f"step {sid} failed: {result.error or result.status}"
                 break
+
+        # Computed values are evaluated after all steps and before checks, so a
+        # template can name a derived state once instead of repeating a long
+        # expression in every finding. They are exposed as vars.<name>.
+        scope["computed"] = {}
+        for name, text in (template.get("computed") or {}).items():
+            try:
+                value = expr.evaluate(str(text), scope)
+            except ExprError as exc:
+                error = error or f"computed {name}: {exc}"
+                value = None
+            scope["computed"][name] = value
+            scope["vars"][name] = value
 
         checks_out: list[dict] = []
         for check in template.get("checks") or []:
@@ -275,14 +311,22 @@ class Engine:
                                     "stderr": raw.get("stderr") or ""})
         if op == "fs":
             action = str(step.get("action"))
-            raw = self.backend.fs({
-                "action": action,
-                "path": render(step.get("path") or "") if step.get("path") else "",
-                "glob": render(step.get("glob") or "") if step.get("glob") else "",
-                "content": render(step.get("content") or "") if step.get("content") else "",
-                "json": bool(step.get("json")),
-                "max_bytes": max_bytes,
-            })
+            path_value = render(step.get("path") or "") if step.get("path") else ""
+            if isinstance(path_value, (dict, list)):
+                import hashlib
+                text = json.dumps(path_value, ensure_ascii=False, sort_keys=True)
+                raw = {"ok": True, "exists": True, "path": "<inline>", "text": text,
+                       "json": path_value, "size": len(text.encode("utf-8")),
+                       "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest()}
+            else:
+                raw = self.backend.fs({
+                    "action": action,
+                    "path": path_value,
+                    "glob": render(step.get("glob") or "") if step.get("glob") else "",
+                    "content": render(step.get("content") or "") if step.get("content") else "",
+                    "json": bool(step.get("json")),
+                    "max_bytes": max_bytes,
+                })
             ok = bool(raw.get("ok"))
             error = str(raw.get("error") or "")
             data = {"path": raw.get("path") or "", "exists": raw.get("exists"),
@@ -368,6 +412,8 @@ class Engine:
             }
             if spec.get("cves"):
                 finding["cves"] = list(spec["cves"])
+            if spec.get("is_zeroday"):
+                finding["is_zeroday"] = True
             if spec.get("version_matrix"):
                 vm = dict(spec["version_matrix"])
                 vm["observed"] = expr.evaluate(str(vm.get("source")), scope, bindings)
@@ -379,8 +425,12 @@ class Engine:
 
     def _artifact(self, spec: dict, scope: dict, defaults: dict) -> dict:
         kind = str(spec.get("kind") or "json")
-        value = expr.evaluate(str(spec.get("from")), scope) if \
-            str(spec.get("from")).find("{{") < 0 else expr.render(str(spec["from"]), scope)
+        if spec.get("fields") is not None:
+            value = {name: expr.evaluate(str(text), scope)
+                     for name, text in (spec.get("fields") or {}).items()}
+        else:
+            value = expr.evaluate(str(spec.get("from")), scope) if \
+                str(spec.get("from")).find("{{") < 0 else expr.render(str(spec["from"]), scope)
         name = str(spec.get("name"))
         if kind == "json":
             payload = json.dumps(value, ensure_ascii=False, sort_keys=True, indent=1).encode("utf-8")

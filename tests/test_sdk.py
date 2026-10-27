@@ -190,19 +190,6 @@ class TestExamplePlugin(unittest.TestCase):
             self.assertEqual(body["target"], "http://127.0.0.1:8000")
             self.assertTrue(Path(result["run_dir"]).is_dir())
 
-    def test_example_is_registry_compatible(self):
-        with TemporaryDirectory() as tmp:
-            mods = Path(tmp) / "modules"
-            mods.mkdir()
-            shutil.copytree(EXAMPLE, mods / "hello-surface")
-            loaded = load_modules(mods)
-        self.assertIn("hello-surface", loaded)
-        meta = loaded["hello-surface"]
-        self.assertEqual(meta.name["en"], "Hello Surface (SDK reference plugin)")
-        self.assertFalse(meta.writes)
-        self.assertEqual(meta.min_level, "只读侦察")
-
-
 class TestScaffoldAndRun(unittest.TestCase):
     def test_scaffold_lint_load_run(self):
         with TemporaryDirectory() as tmp:

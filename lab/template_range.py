@@ -119,7 +119,7 @@ class Range:
 
     def __init__(self, scenarios: dict[str, dict[str, dict]] | None = None,
                  *, workdir: str | Path | None = None, record: bool = True,
-                 k8s_objects: dict | None = None):
+                 k8s_objects: dict | None = None, host: str = "127.0.0.1"):
         self.scenarios = {"vulnerable": {**DEFAULT_ROUTES, **(scenarios or {}).get("vulnerable", {})},
                           "fixed": {**DEFAULT_ROUTES, **(scenarios or {}).get("fixed", {})}}
         self.profile = "vulnerable"
@@ -133,6 +133,7 @@ class Range:
         self._unix: socketserver.ThreadingUnixStreamServer | None = None
         self._threads: list[threading.Thread] = []
         self.k8s_objects = k8s_objects or {}
+        self.host = host
 
     # -- lifecycle ------------------------------------------------------
     def __enter__(self):
@@ -144,10 +145,10 @@ class Range:
         return False
 
     def start(self):
-        self._http = _Server(("127.0.0.1", 0), _Handler)
+        self._http = _Server((self.host, 0), _Handler)
         self._http.range = self
         self._spawn(self._http.serve_forever)
-        self._tcp = _TcpServer(("127.0.0.1", 0), _TcpHandler)
+        self._tcp = _TcpServer((self.host, 0), _TcpHandler)
         self._tcp.range = self
         self._spawn(self._tcp.serve_forever)
         if hasattr(socketserver, "ThreadingUnixStreamServer") and os.name == "posix":
@@ -251,9 +252,11 @@ class _UnixHandler(socketserver.BaseRequestHandler):
 class FakeK8s:
     """Read/write Kubernetes API with service-account token semantics."""
 
-    def __init__(self, objects: dict | None, token: str = "lab-sa-token"):
+    def __init__(self, objects: dict | None, token: str = "lab-sa-token",
+                 host: str = "127.0.0.1"):
         self.objects = objects or {}
         self.token = token
+        self.host = host
         self.writes: list[dict] = []
         self._server: _Server | None = None
         self.url = ""
@@ -323,7 +326,7 @@ class FakeK8s:
             do_PATCH = _handle
             do_DELETE = _handle
 
-        self._server = _Server(("127.0.0.1", 0), Handler)
+        self._server = _Server((self.host, 0), Handler)
         self._server.range = self
         threading.Thread(target=self._server.serve_forever, daemon=True).start()
         host, port = self._server.server_address[:2]
