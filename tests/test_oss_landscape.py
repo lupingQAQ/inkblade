@@ -215,6 +215,10 @@ class TestCloneRegistry(unittest.TestCase):
         path = (ROOT / ".slim" / "clonedeps" / "clonedeps.json")
         if not path.exists():
             path = CLONEDEPS.resolve()
+        if not path.exists():
+            raise unittest.SkipTest(
+                "clonedeps registry lives in the audit workspace (.slim/clonedeps), not in the "
+                "repository; clone-registry checks are skipped outside it")
         cls.registry = json.loads(path.read_text(encoding="utf-8"))
         cls.by_name = {r["name"]: r for r in cls.registry["repos"]}
 

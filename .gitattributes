@@ -17,3 +17,9 @@ Dockerfile text eol=lf
 Makefile text eol=lf
 .github/workflows/*.yml text eol=lf
 deploy/helm/** text eol=lf
+
+# Upstream-verification evidence and pinned sources are byte-verified by
+# tools/verify-exploits.py (sha256 over file bytes). Keep the exact committed
+# bytes so Windows and Linux checkouts hash identically.
+lab/upstream_verify/** -text
+
