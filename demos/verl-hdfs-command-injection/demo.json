@@ -1,0 +1,27 @@
+{
+  "auth": "需调用",
+  "cleanup": "`python demos/verl-hdfs-command-injection/poc.py --cleanup`；删除 `demos/.work/verl-hdfs-command-injection/`；mock 服务随脚本退出停止",
+  "component": "verl",
+  "effect": "命令执行 -> marker",
+  "entry": "CLI: HDFS path -> os.system",
+  "env": "mock 自带: `python demos/verl-hdfs-command-injection/poc.py`；上游 pin: `verl/utils/checkpoint/checkpoint_handler.py:136`",
+  "id": "verl-hdfs-command-injection",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-verl-hdfs-command-injection",
+  "network": "训练进程",
+  "params": "hdfs path",
+  "reason": "",
+  "sha256": "0e394a8141f48396508b5f0d03dafbe84817f23a1194beb8c2bf5530377969c8",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-verl-hdfs-command-injection\"\nSPEC = {'id': 'verl-hdfs-command-injection', 'kind': 'command', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "verl-hdfs-command-injection",
+    "kind": "command",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "verl HDFS path is interpolated into os.system (command injection)",
+  "upstream": "",
+  "version": "76e837e"
+}

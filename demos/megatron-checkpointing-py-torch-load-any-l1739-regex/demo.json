@@ -1,0 +1,27 @@
+{
+  "auth": "需本地文件写",
+  "cleanup": "`python demos/megatron-checkpointing-py-torch-load-any-l1739-regex/poc.py --cleanup`；删除 `demos/.work/megatron-checkpointing-py-torch-load-any-l1739-regex/`；mock 服务随脚本退出停止",
+  "component": "megatron",
+  "effect": "torch.load -> marker",
+  "entry": "文件: checkpointing.py:1341",
+  "env": "mock 自带: `python demos/megatron-checkpointing-py-torch-load-any-l1739-regex/poc.py`；上游 pin: `megatron/training/checkpointing.py:1739`",
+  "id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
+  "in_b": true,
+  "in_c": true,
+  "layer": 5,
+  "marker": "INKBLADE-BENIGN-megatron-checkpointing-py-torch-load-any-l1739-r",
+  "network": "PVC/宿主",
+  "params": "checkpoint path",
+  "reason": "",
+  "sha256": "fdce4fa53c77ca791ad17c0641f23e260f7e473fb08eb50ffb5ac528552faf05",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-megatron-checkpointing-py-torch-load-any-l1739-r\"\nSPEC = {'id': 'megatron-checkpointing-py-torch-load-any-l1739-regex', 'kind': 'pickle', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
+    "kind": "pickle",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "megatron: torch-load-any @ checkpointing.py:1739",
+  "upstream": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/result.json",
+  "version": "core_v0.19.2"
+}

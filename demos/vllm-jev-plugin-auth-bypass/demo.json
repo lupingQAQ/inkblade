@@ -1,0 +1,33 @@
+{
+  "auth": "无（/v1 需 key 对照）",
+  "cleanup": "`python demos/vllm-jev-plugin-auth-bypass/poc.py --cleanup`；删除 `demos/.work/vllm-jev-plugin-auth-bypass/`；mock 服务随脚本退出停止",
+  "component": "vllm-jev",
+  "effect": "200 + 插件响应 marker",
+  "entry": "POST /plugins/vllm-jev/choice (8000/tcp)",
+  "env": "mock 自带: `python demos/vllm-jev-plugin-auth-bypass/poc.py`；上游 pin: `vllm_jev/endpoint.py:530`",
+  "id": "vllm-jev-plugin-auth-bypass",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-vllm-jev-plugin-auth-bypass",
+  "network": "ClusterIP",
+  "params": "choice",
+  "reason": "",
+  "sha256": "5662ec3b0759aca43f6dea2174c5cbbc32645837eb8d3fd0bdae781fc296062e",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-vllm-jev-plugin-auth-bypass\"\nSPEC = {'id': 'vllm-jev-plugin-auth-bypass', 'kind': 'http', 'method': 'POST', 'route': '/plugins/vllm-jev/choice', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'vllm-jev-plugin-auth-bypass'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "vllm-jev-plugin-auth-bypass",
+    "kind": "http",
+    "method": "POST",
+    "payload": {
+      "id": "vllm-jev-plugin-auth-bypass",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/plugins/vllm-jev/choice"
+  },
+  "status": "runnable",
+  "title": "vLLM --api-key does not guard /plugins/vllm-jev/* (auth bypass)",
+  "upstream": "",
+  "version": "v0.31.0 + vllm-jev 57226d4"
+}

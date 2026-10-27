@@ -1,0 +1,27 @@
+{
+  "auth": "需本地文件写",
+  "cleanup": "`python demos/msswift-indexed-dataset-py-pickle-loads-l112-ast/poc.py --cleanup`；删除 `demos/.work/msswift-indexed-dataset-py-pickle-loads-l112-ast/`；mock 服务随脚本退出停止",
+  "component": "msswift",
+  "effect": "pickle.loads -> marker",
+  "entry": "文件: IndexedDataset data.idx",
+  "env": "mock 自带: `python demos/msswift-indexed-dataset-py-pickle-loads-l112-ast/poc.py`；上游 pin: `swift/dataset/indexed_dataset.py:112`",
+  "id": "msswift-indexed-dataset-py-pickle-loads-l112-ast",
+  "in_b": true,
+  "in_c": true,
+  "layer": 5,
+  "marker": "INKBLADE-BENIGN-msswift-indexed-dataset-py-pickle-loads-l112-ast",
+  "network": "PVC/宿主",
+  "params": "data.idx / pickle",
+  "reason": "",
+  "sha256": "55c4fd9922a233ce21b95e6e5bc63a8a475ea19ba469fcf47e3ef2738bf7ac05",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-msswift-indexed-dataset-py-pickle-loads-l112-ast\"\nSPEC = {'id': 'msswift-indexed-dataset-py-pickle-loads-l112-ast', 'kind': 'pickle', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "msswift-indexed-dataset-py-pickle-loads-l112-ast",
+    "kind": "pickle",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "msswift: pickle-loads @ swift/dataset/indexed_dataset.py:112",
+  "upstream": "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l112-ast/result.json",
+  "version": "v4.6.0"
+}

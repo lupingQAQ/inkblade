@@ -1,0 +1,33 @@
+{
+  "auth": "无",
+  "cleanup": "`python demos/juicefscsi-controller-manager-go-go-bind-all-l71-regex/poc.py --cleanup`；删除 `demos/.work/juicefscsi-controller-manager-go-go-bind-all-l71-regex/`；mock 服务随脚本退出停止",
+  "component": "juicefscsi",
+  "effect": "200 + profile marker",
+  "entry": "GET /debug/pprof/cmdline (9100/tcp)",
+  "env": "mock 自带: `python demos/juicefscsi-controller-manager-go-go-bind-all-l71-regex/poc.py`；上游 pin: `cmd/app/controller_manager.go:71`",
+  "id": "juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+  "in_b": true,
+  "in_c": true,
+  "layer": 10,
+  "marker": "INKBLADE-BENIGN-juicefscsi-controller-manager-go-go-bind-all-l71",
+  "network": "ClusterIP/宿主",
+  "params": "n/a",
+  "reason": "",
+  "sha256": "3e143f80a752ad8f4e5994d013b41a5929662e96a60437acfdd71aea5c910436",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-juicefscsi-controller-manager-go-go-bind-all-l71\"\nSPEC = {'id': 'juicefscsi-controller-manager-go-go-bind-all-l71-regex', 'kind': 'pprof', 'method': 'GET', 'route': '/debug/pprof/cmdline', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'juicefscsi-controller-manager-go-go-bind-all-l71-regex'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+    "kind": "pprof",
+    "method": "GET",
+    "payload": {
+      "id": "juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/debug/pprof/cmdline"
+  },
+  "status": "runnable",
+  "title": "juicefs-csi: go-bind-all @ cmd/app/controller_manager.go:71",
+  "upstream": "lab/upstream_verify/cases/juicefscsi/juicefscsi-controller-manager-go-go-bind-all-l71-regex/result.json",
+  "version": "v0.33.1"
+}

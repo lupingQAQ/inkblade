@@ -1,0 +1,27 @@
+{
+  "auth": "需本地文件写",
+  "cleanup": "`python demos/deepspeed-stage3-py-torch-load-unsafe-l3660-ast/poc.py --cleanup`；删除 `demos/.work/deepspeed-stage3-py-torch-load-unsafe-l3660-ast/`；mock 服务随脚本退出停止",
+  "component": "deepspeed",
+  "effect": "torch.load -> marker",
+  "entry": "文件: DeepSpeed checkpoint/stage3.py",
+  "env": "mock 自带: `python demos/deepspeed-stage3-py-torch-load-unsafe-l3660-ast/poc.py`；上游 pin: `deepspeed/runtime/zero/stage3.py:3660`",
+  "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-ast",
+  "in_b": true,
+  "in_c": true,
+  "layer": 5,
+  "marker": "INKBLADE-BENIGN-deepspeed-stage3-py-torch-load-unsafe-l3660-ast",
+  "network": "宿主/PVC",
+  "params": "checkpoint dir, torch.load payload",
+  "reason": "",
+  "sha256": "7a52c1aec39307d115f18e25c0e0a3019636d2a4f6f9418abbce3c06aaac5cde",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-deepspeed-stage3-py-torch-load-unsafe-l3660-ast\"\nSPEC = {'id': 'deepspeed-stage3-py-torch-load-unsafe-l3660-ast', 'kind': 'pickle', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "deepspeed-stage3-py-torch-load-unsafe-l3660-ast",
+    "kind": "pickle",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "deepspeed: torch-load-unsafe @ stage3.py:3660",
+  "upstream": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3660-ast/result.json",
+  "version": "v0.19.8"
+}

@@ -1,0 +1,33 @@
+{
+  "auth": "无",
+  "cleanup": "`python demos/volcano-scheduler-server-go-pprof-exposed-l162-regex/poc.py --cleanup`；删除 `demos/.work/volcano-scheduler-server-go-pprof-exposed-l162-regex/`；mock 服务随脚本退出停止",
+  "component": "volcano",
+  "effect": "200 + profile marker",
+  "entry": "GET /debug/pprof/cmdline (9100/tcp)",
+  "env": "mock 自带: `python demos/volcano-scheduler-server-go-pprof-exposed-l162-regex/poc.py`；上游 pin: `cmd/scheduler/app/server.go:162`",
+  "id": "volcano-scheduler-server-go-pprof-exposed-l162-regex",
+  "in_b": true,
+  "in_c": true,
+  "layer": 10,
+  "marker": "INKBLADE-BENIGN-volcano-scheduler-server-go-pprof-exposed-l162-r",
+  "network": "ClusterIP/宿主",
+  "params": "n/a",
+  "reason": "",
+  "sha256": "703d09f7fc808ea43fb3b6ea7a09270c64ea474252983cd89d51f886b24a39de",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-volcano-scheduler-server-go-pprof-exposed-l162-r\"\nSPEC = {'id': 'volcano-scheduler-server-go-pprof-exposed-l162-regex', 'kind': 'pprof', 'method': 'GET', 'route': '/debug/pprof/cmdline', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'volcano-scheduler-server-go-pprof-exposed-l162-regex'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "volcano-scheduler-server-go-pprof-exposed-l162-regex",
+    "kind": "pprof",
+    "method": "GET",
+    "payload": {
+      "id": "volcano-scheduler-server-go-pprof-exposed-l162-regex",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/debug/pprof/cmdline"
+  },
+  "status": "runnable",
+  "title": "volcano: pprof-exposed-go @ cmd/scheduler/app/server.go:162",
+  "upstream": "lab/upstream_verify/cases/volcano/volcano-scheduler-server-go-pprof-exposed-l162-regex/result.json",
+  "version": "v1.16.0"
+}

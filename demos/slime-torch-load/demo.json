@@ -1,0 +1,27 @@
+{
+  "auth": "需本地文件写",
+  "cleanup": "`python demos/slime-torch-load/poc.py --cleanup`；删除 `demos/.work/slime-torch-load/`；mock 服务随脚本退出停止",
+  "component": "slime",
+  "effect": "torch.load -> marker",
+  "entry": "文件: torch.load checkpoint",
+  "env": "mock 自带: `python demos/slime-torch-load/poc.py`；上游 pin: `n/a（advisory）`",
+  "id": "slime-torch-load",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-slime-torch-load",
+  "network": "PVC/宿主",
+  "params": "checkpoint dir",
+  "reason": "",
+  "sha256": "a826828d849b43fb92933f16494266ae4f48e0a33f57bb4e684391f7554d85ac",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-slime-torch-load\"\nSPEC = {'id': 'slime-torch-load', 'kind': 'pickle', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "slime-torch-load",
+    "kind": "pickle",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "slime debug/resume data torch.load(weights_only=False) in multiple sinks",
+  "upstream": "",
+  "version": "05e3b01"
+}

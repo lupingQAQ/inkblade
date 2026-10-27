@@ -1,0 +1,27 @@
+{
+  "auth": "无（服务可达）",
+  "cleanup": "`python demos/areal-dataservice-pickle/poc.py --cleanup`；删除 `demos/.work/areal-dataservice-pickle/`；mock 服务随脚本退出停止",
+  "component": "areal",
+  "effect": "pickle.loads -> marker",
+  "entry": "文件: data service payload",
+  "env": "mock 自带: `python demos/areal-dataservice-pickle/poc.py`；上游 pin: `areal/infra/data_service/worker/app.py:268`",
+  "id": "areal-dataservice-pickle",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-areal-dataservice-pickle",
+  "network": "Pod 内",
+  "params": "pickle payload",
+  "reason": "",
+  "sha256": "0977b15b262f6326f19465c00c7417af54381de9cfeaba3702c4c3afa340f028",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-areal-dataservice-pickle\"\nSPEC = {'id': 'areal-dataservice-pickle', 'kind': 'pickle', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "areal-dataservice-pickle",
+    "kind": "pickle",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "AReaL data-service worker /run accepts pickle.load without auth",
+  "upstream": "",
+  "version": "448de52"
+}

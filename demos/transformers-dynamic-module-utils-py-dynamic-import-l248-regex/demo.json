@@ -1,0 +1,27 @@
+{
+  "auth": "需模型仓库可控",
+  "cleanup": "`python demos/transformers-dynamic-module-utils-py-dynamic-import-l248-regex/poc.py --cleanup`；删除 `demos/.work/transformers-dynamic-module-utils-py-dynamic-import-l248-regex/`；mock 服务随脚本退出停止",
+  "component": "transformers",
+  "effect": "import-time marker",
+  "entry": "模型仓库: dynamic_module_utils.py:248",
+  "env": "mock 自带: `python demos/transformers-dynamic-module-utils-py-dynamic-import-l248-regex/poc.py`；上游 pin: `transformers/dynamic_module_utils.py:248`",
+  "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-regex",
+  "in_b": true,
+  "in_c": true,
+  "layer": 7,
+  "marker": "INKBLADE-BENIGN-transformers-dynamic-module-utils-py-dynamic-imp",
+  "network": "服务进程",
+  "params": "trust_remote_code",
+  "reason": "",
+  "sha256": "7e8c004d72fc08bb711ac64e03aaf35e8f04738af6058c22cb1e1d009ba275c2",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-transformers-dynamic-module-utils-py-dynamic-imp\"\nSPEC = {'id': 'transformers-dynamic-module-utils-py-dynamic-import-l248-regex', 'kind': 'import', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "transformers-dynamic-module-utils-py-dynamic-import-l248-regex",
+    "kind": "import",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "transformers: dynamic-import @ transformers/dynamic_module_utils.py:248",
+  "upstream": "lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-regex/result.json",
+  "version": "4.57.1"
+}

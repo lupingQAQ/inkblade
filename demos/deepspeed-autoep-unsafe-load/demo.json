@@ -1,0 +1,27 @@
+{
+  "auth": "需本地文件写",
+  "cleanup": "`python demos/deepspeed-autoep-unsafe-load/poc.py --cleanup`；删除 `demos/.work/deepspeed-autoep-unsafe-load/`；mock 服务随脚本退出停止",
+  "component": "deepspeed",
+  "effect": "torch.load -> marker",
+  "entry": "文件: DeepSpeed checkpoint/stage3.py",
+  "env": "mock 自带: `python demos/deepspeed-autoep-unsafe-load/poc.py`；上游 pin: `deepspeed/checkpoint/autoep_universal.py:459`",
+  "id": "deepspeed-autoep-unsafe-load",
+  "in_b": false,
+  "in_c": true,
+  "layer": 5,
+  "marker": "INKBLADE-BENIGN-deepspeed-autoep-unsafe-load",
+  "network": "宿主/PVC",
+  "params": "checkpoint dir, torch.load payload",
+  "reason": "",
+  "sha256": "634981f1cb747b3e12bc14609f245168a7aa2631cf16600c29fc1430a457cdd1",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-deepspeed-autoep-unsafe-load\"\nSPEC = {'id': 'deepspeed-autoep-unsafe-load', 'kind': 'pickle', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "deepspeed-autoep-unsafe-load",
+    "kind": "pickle",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "DeepSpeed 0.19.8 AutoEP universal conversion loads expert shards with weights_only=False",
+  "upstream": "",
+  "version": "v0.19.8"
+}

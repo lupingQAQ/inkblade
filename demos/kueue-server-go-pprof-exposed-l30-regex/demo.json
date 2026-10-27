@@ -1,0 +1,33 @@
+{
+  "auth": "无",
+  "cleanup": "`python demos/kueue-server-go-pprof-exposed-l30-regex/poc.py --cleanup`；删除 `demos/.work/kueue-server-go-pprof-exposed-l30-regex/`；mock 服务随脚本退出停止",
+  "component": "kueue",
+  "effect": "200 + profile marker",
+  "entry": "GET /debug/pprof/cmdline (9100/tcp)",
+  "env": "mock 自带: `python demos/kueue-server-go-pprof-exposed-l30-regex/poc.py`；上游 pin: `cmd/kueueviz/backend/config/server.go:30`",
+  "id": "kueue-server-go-pprof-exposed-l30-regex",
+  "in_b": true,
+  "in_c": true,
+  "layer": 10,
+  "marker": "INKBLADE-BENIGN-kueue-server-go-pprof-exposed-l30-regex",
+  "network": "ClusterIP/宿主",
+  "params": "n/a",
+  "reason": "",
+  "sha256": "08beb3c15897425c7d93aeb0e4aaf1d79663cfef4c293d3e9d8f2c7fdc660b8b",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-kueue-server-go-pprof-exposed-l30-regex\"\nSPEC = {'id': 'kueue-server-go-pprof-exposed-l30-regex', 'kind': 'pprof', 'method': 'GET', 'route': '/debug/pprof/cmdline', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'kueue-server-go-pprof-exposed-l30-regex'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "kueue-server-go-pprof-exposed-l30-regex",
+    "kind": "pprof",
+    "method": "GET",
+    "payload": {
+      "id": "kueue-server-go-pprof-exposed-l30-regex",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/debug/pprof/cmdline"
+  },
+  "status": "runnable",
+  "title": "kueue kueueviz: pprof-exposed-go + default-disabled auth @ backend/config/server.go:30",
+  "upstream": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/result.json",
+  "version": "v0.20.3"
+}

@@ -1,0 +1,15 @@
+# msswift-torch-utils-py-pickle-loads-l340-ast
+
+- 组件：msswift
+- 版本：v4.6.0
+- 风险：msswift: pickle-loads @ swift/utils/torch_utils.py:340
+- 入口：文件: IndexedDataset data.idx
+- 可控参数：data.idx / pickle
+- 认证前置：需本地文件写
+- 网络位置：PVC/宿主
+- 预期效果：pickle.loads -> marker
+- 标记：`INKBLADE-BENIGN-msswift-torch-utils-py-pickle-loads-l340-ast`
+- 默认目标：`127.0.0.1:0`（仅回环，端口 0 为随机）
+- 运行：`./run.sh --help`、`./run.sh`、`./run.sh --marker INKBLADE-BENIGN-DEMO`
+- 清理：`./run.sh --cleanup`；脚本默认在 `finally` 中清理 `demos/.work/<id>/`
+- 安全边界：本地 mock 原语；不访问公网、不使用真实凭据、不写持久化。

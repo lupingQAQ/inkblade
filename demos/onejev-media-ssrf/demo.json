@@ -1,0 +1,27 @@
+{
+  "auth": "无/需 key",
+  "cleanup": "`python demos/onejev-media-ssrf/poc.py --cleanup`；删除 `demos/.work/onejev-media-ssrf/`；mock 服务随脚本退出停止",
+  "component": "onejev",
+  "effect": "回环内部服务 marker",
+  "entry": "GET /media (8000/tcp)",
+  "env": "mock 自带: `python demos/onejev-media-ssrf/poc.py`；上游 pin: `qev/media.py:101`",
+  "id": "onejev-media-ssrf",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-onejev-media-ssrf",
+  "network": "ClusterIP",
+  "params": "url",
+  "reason": "",
+  "sha256": "e772788276c6d04244350fded06cd1976d9f09ce6603504e457076f47c996cbb",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-onejev-media-ssrf\"\nSPEC = {'id': 'onejev-media-ssrf', 'kind': 'ssrf', 'route': '/media'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "onejev-media-ssrf",
+    "kind": "ssrf",
+    "route": "/media"
+  },
+  "status": "runnable",
+  "title": "OneJev qev/media.py urlopen without policy -> SSRF",
+  "upstream": "",
+  "version": "6122519"
+}

@@ -86,4 +86,4 @@ lab/qemu-k3s/modloop-virt
 # exploit-registry.json evidence_hashes point at these files; CI verifies them
 !lab/upstream_verify/cases/*/*/evidence/
 !lab/upstream_verify/cases/*/*/evidence/**
-
+demos/.work/

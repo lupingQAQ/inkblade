@@ -1,0 +1,33 @@
+{
+  "auth": "无",
+  "cleanup": "`python demos/openrlhf-serve-rm/poc.py --cleanup`；删除 `demos/.work/openrlhf-serve-rm/`；mock 服务随脚本退出停止",
+  "component": "openrlhf",
+  "effect": "200 + 评分响应 marker",
+  "entry": "POST /v1/score (5000/tcp)",
+  "env": "mock 自带: `python demos/openrlhf-serve-rm/poc.py`；上游 pin: `n/a（advisory）`",
+  "id": "openrlhf-serve-rm",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-openrlhf-serve-rm",
+  "network": "ClusterIP",
+  "params": "messages",
+  "reason": "",
+  "sha256": "68bf7bf5bce11b991ac56b5759c7ebaf3857a380a7395b623253aec6c7594c8f",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-openrlhf-serve-rm\"\nSPEC = {'id': 'openrlhf-serve-rm', 'kind': 'http', 'method': 'POST', 'route': '/v1/score', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'openrlhf-serve-rm'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "openrlhf-serve-rm",
+    "kind": "http",
+    "method": "POST",
+    "payload": {
+      "id": "openrlhf-serve-rm",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/v1/score"
+  },
+  "status": "runnable",
+  "title": "OpenRLHF serve_rm binds 0.0.0.0:5000 without authentication",
+  "upstream": "",
+  "version": "0.11.2 / dc2a7ad"
+}

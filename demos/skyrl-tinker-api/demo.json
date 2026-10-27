@@ -1,0 +1,33 @@
+{
+  "auth": "无",
+  "cleanup": "`python demos/skyrl-tinker-api/poc.py --cleanup`；删除 `demos/.work/skyrl-tinker-api/`；mock 服务随脚本退出停止",
+  "component": "skyrl",
+  "effect": "200 + 训练控制 marker",
+  "entry": "POST /api/v1/train (8000/tcp)",
+  "env": "mock 自带: `python demos/skyrl-tinker-api/poc.py`；上游 pin: `n/a（advisory）`",
+  "id": "skyrl-tinker-api",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-skyrl-tinker-api",
+  "network": "ClusterIP",
+  "params": "model, config",
+  "reason": "",
+  "sha256": "1da114c14659dbb7aa15cf9658f0e34e5e98623c9e1134680c1fac43160165e0",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-skyrl-tinker-api\"\nSPEC = {'id': 'skyrl-tinker-api', 'kind': 'http', 'method': 'POST', 'route': '/api/v1/train', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'skyrl-tinker-api'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "skyrl-tinker-api",
+    "kind": "http",
+    "method": "POST",
+    "payload": {
+      "id": "skyrl-tinker-api",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/api/v1/train"
+  },
+  "status": "runnable",
+  "title": "SkyRL Tinker API binds 0.0.0.0:8000 and has no authentication on 8 endpoints",
+  "upstream": "",
+  "version": "a1e34db"
+}

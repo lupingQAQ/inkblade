@@ -1,0 +1,15 @@
+# llm2jev-image-file
+
+- 组件：llm2jev
+- 版本：f2bdad6
+- 风险：LLM2Jev image_url accepts file://, local paths and arbitrary http(s) -> local file read + SSRF
+- 入口：HTTP POST /v1/chat/completions (image path)
+- 可控参数：image
+- 认证前置：无
+- 网络位置：ClusterIP
+- 预期效果：本地文件 marker 读回
+- 标记：`INKBLADE-BENIGN-llm2jev-image-file`
+- 默认目标：`127.0.0.1:0`（仅回环，端口 0 为随机）
+- 运行：`./run.sh --help`、`./run.sh`、`./run.sh --marker INKBLADE-BENIGN-DEMO`
+- 清理：`./run.sh --cleanup`；脚本默认在 `finally` 中清理 `demos/.work/<id>/`
+- 安全边界：本地 mock 原语；不访问公网、不使用真实凭据、不写持久化。

@@ -1,0 +1,27 @@
+{
+  "auth": "需进程环境",
+  "cleanup": "`python demos/openrlhf-vllm-insecure/poc.py --cleanup`；删除 `demos/.work/openrlhf-vllm-insecure/`；mock 服务随脚本退出停止",
+  "component": "openrlhf",
+  "effect": "pickle -> marker",
+  "entry": "环境变量: VLLM_ALLOW_INSECURE_SERIALIZATION",
+  "env": "mock 自带: `python demos/openrlhf-vllm-insecure/poc.py`；上游 pin: `openrlhf/trainer/ray/vllm_engine.py:95`",
+  "id": "openrlhf-vllm-insecure",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-openrlhf-vllm-insecure",
+  "network": "训练进程",
+  "params": "env, payload",
+  "reason": "",
+  "sha256": "84ddfb00f00655b2242b124e9595add98280f3435ce5969050fe2a65c15d10c0",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-openrlhf-vllm-insecure\"\nSPEC = {'id': 'openrlhf-vllm-insecure', 'kind': 'pickle', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "openrlhf-vllm-insecure",
+    "kind": "pickle",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "OpenRLHF unconditionally sets VLLM_ALLOW_INSECURE_SERIALIZATION=1",
+  "upstream": "",
+  "version": "0.11.2 / dc2a7ad"
+}

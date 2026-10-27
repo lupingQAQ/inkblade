@@ -1,0 +1,27 @@
+{
+  "auth": "需登录",
+  "cleanup": "`python demos/openwebui-code-interpreter-bypass/poc.py --cleanup`；删除 `demos/.work/openwebui-code-interpreter-bypass/`；mock 服务随脚本退出停止",
+  "component": "open-webui",
+  "effect": "exec -> marker",
+  "entry": "HTTP POST /code/execute (8080/tcp)",
+  "env": "mock 自带: `python demos/openwebui-code-interpreter-bypass/poc.py`；上游 pin: `backend/open_webui/utils/middleware.py:6111`",
+  "id": "openwebui-code-interpreter-bypass",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-openwebui-code-interpreter-bypass",
+  "network": "ClusterIP",
+  "params": "code",
+  "reason": "",
+  "sha256": "e94b27a105e671afa94b463b31781b8eb1cfa4f836cfd7a3f16cfc440af3fcdd",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-openwebui-code-interpreter-bypass\"\nSPEC = {'id': 'openwebui-code-interpreter-bypass', 'kind': 'exec', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "openwebui-code-interpreter-bypass",
+    "kind": "exec",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "Open WebUI code_interpreter guard: BLOCKED_MODULES empty + __import__ patch only top-level __main__",
+  "upstream": "",
+  "version": "v0.12.3 / 91ea4e3"
+}

@@ -1,0 +1,33 @@
+{
+  "auth": "无（dev mode）",
+  "cleanup": "`python demos/trl-vllm-serve-devmode/poc.py --cleanup`；删除 `demos/.work/trl-vllm-serve-devmode/`；mock 服务随脚本退出停止",
+  "component": "trl",
+  "effect": "200 + 推理响应 marker",
+  "entry": "POST /v1/chat/completions (8000/tcp)",
+  "env": "mock 自带: `python demos/trl-vllm-serve-devmode/poc.py`；上游 pin: `trl/scripts/vllm_serve.py:103`",
+  "id": "trl-vllm-serve-devmode",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-trl-vllm-serve-devmode",
+  "network": "ClusterIP",
+  "params": "model, messages",
+  "reason": "",
+  "sha256": "44f1c8632f261fad60d13ca1bb931a0327812d147f1534667510374692f83cb7",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-trl-vllm-serve-devmode\"\nSPEC = {'id': 'trl-vllm-serve-devmode', 'kind': 'http', 'method': 'POST', 'route': '/v1/chat/completions', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'trl-vllm-serve-devmode'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "trl-vllm-serve-devmode",
+    "kind": "http",
+    "method": "POST",
+    "payload": {
+      "id": "trl-vllm-serve-devmode",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/v1/chat/completions"
+  },
+  "status": "runnable",
+  "title": "trl vllm-serve defaults to 0.0.0.0 + VLLM_SERVER_DEV_MODE=1 + no api-key",
+  "upstream": "",
+  "version": "1.15.0"
+}

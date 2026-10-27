@@ -1,0 +1,27 @@
+{
+  "auth": "需本地文件写",
+  "cleanup": "`python demos/llamafactory-checkpoint-py-torch-load-unsafe-l334-ast/poc.py --cleanup`；删除 `demos/.work/llamafactory-checkpoint-py-torch-load-unsafe-l334-ast/`；mock 服务随脚本退出停止",
+  "component": "llamafactory",
+  "effect": "torch.load -> marker",
+  "entry": "文件: checkpoint.py:136/334",
+  "env": "mock 自带: `python demos/llamafactory-checkpoint-py-torch-load-unsafe-l334-ast/poc.py`；上游 pin: `src/llamafactory/v1/core/utils/checkpoint.py:334`",
+  "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
+  "in_b": true,
+  "in_c": true,
+  "layer": 5,
+  "marker": "INKBLADE-BENIGN-llamafactory-checkpoint-py-torch-load-unsafe-l33",
+  "network": "PVC/宿主",
+  "params": "checkpoint dir, rng_state/dataloader",
+  "reason": "",
+  "sha256": "8b6ee4613cee68373fdb904c823154d326848cde5394318aace5cd448f71f0d3",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-llamafactory-checkpoint-py-torch-load-unsafe-l33\"\nSPEC = {'id': 'llamafactory-checkpoint-py-torch-load-unsafe-l334-ast', 'kind': 'pickle', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
+    "kind": "pickle",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "llamafactory: torch-load-unsafe @ v1/core/utils/checkpoint.py:334",
+  "upstream": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l334-ast/result.json",
+  "version": "v0.9.5"
+}

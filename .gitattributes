@@ -13,6 +13,7 @@ inkblade/tee/online_cache/** -text
 # Release tooling: keep LF for scripts that run under bash/WSL and Linux CI.
 scripts/release/*.sh text eol=lf
 scripts/release/*.ps1 text eol=crlf
+demos/**/*.sh text eol=lf
 Dockerfile text eol=lf
 Makefile text eol=lf
 .github/workflows/*.yml text eol=lf

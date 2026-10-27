@@ -1,0 +1,33 @@
+{
+  "auth": "无（dev mode）",
+  "cleanup": "`python demos/vllm-rl-dev-auth-bypass/poc.py --cleanup`；删除 `demos/.work/vllm-rl-dev-auth-bypass/`；mock 服务随脚本退出停止",
+  "component": "vllm",
+  "effect": "200 + 推理响应 marker",
+  "entry": "POST /v1/chat/completions (8000/tcp)",
+  "env": "mock 自带: `python demos/vllm-rl-dev-auth-bypass/poc.py`；上游 pin: `vllm/entrypoints/rl/online/api_router.py:31`",
+  "id": "vllm-rl-dev-auth-bypass",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-vllm-rl-dev-auth-bypass",
+  "network": "ClusterIP",
+  "params": "model, messages",
+  "reason": "",
+  "sha256": "cee7adfe4a1cd7dc471bc8e505a3fed2826d9af6e8c875fe992116762ab5758e",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-vllm-rl-dev-auth-bypass\"\nSPEC = {'id': 'vllm-rl-dev-auth-bypass', 'kind': 'http', 'method': 'POST', 'route': '/v1/chat/completions', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'vllm-rl-dev-auth-bypass'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "vllm-rl-dev-auth-bypass",
+    "kind": "http",
+    "method": "POST",
+    "payload": {
+      "id": "vllm-rl-dev-auth-bypass",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/v1/chat/completions"
+  },
+  "status": "runnable",
+  "title": "vLLM 0.32.0 RL control router is mounted at / and bypasses --api-key",
+  "upstream": "",
+  "version": "v0.32.0"
+}

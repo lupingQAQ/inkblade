@@ -17,10 +17,14 @@ verify that the checked-in document is byte-identical to a fresh build.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
 from pathlib import Path
+
+from vuln_dive_data import PRIMERS
+from vuln_layers import LAYER_TITLES, layer_for_entry
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE = ROOT.parents[1]
@@ -31,6 +35,7 @@ MASTER = WORKSPACE / ("VULNERABILITY" + "-MASTER.md")
 CASES = ROOT / "lab" / "upstream_verify" / "cases"
 MODULES = ROOT / "inkblade" / "modules"
 CHAINS = ROOT / "inkblade" / "chains"
+DEMOS = ROOT / "demos"
 
 STATUS_LABEL = {
     "verified": "verified",
@@ -696,6 +701,49 @@ def build_entry(entry, manifests, templates, modules, zero_map, master_rows) -> 
     }
 
 
+def build_reserve_entry(cid: str, zero: dict, templates: dict, modules: dict) -> dict:
+    e = next(x for x in zero["entries"] if x["id"] == cid)
+    rc = e.get("root_cause") or {}
+    fake_manifest = {"root_cause": rc, "preconditions": e.get("preconditions") or [],
+                     "evidence": e.get("evidence") or {}}
+    fake_entry = {"id": cid, "component": e.get("component") or "",
+                  "title": e.get("title") or "", "module": e.get("module") or "",
+                  "status": "reserve", "version": e.get("version") or "",
+                  "source": e.get("source") or ""}
+    rc_info = root_info(fake_entry, fake_manifest, e)
+    snippet, kind = build_snippet(rc_info)
+    harm, harm_note = harm_for(fake_entry, e, fake_manifest)
+    module, module_path = module_for(fake_entry, templates, modules)
+    pre = "；".join(clean(x, 140) for x in (e.get("preconditions") or [])) or "需目标部署面可达"
+    evidence = (e.get("evidence") or {}).get("path") if isinstance(e.get("evidence"), dict) else e.get("evidence")
+    return {
+        "id": cid,
+        "component": COMPONENT_ZH.get(e.get("component"), e.get("component") or "—"),
+        "component_raw": e.get("component") or "",
+        "version": clean(e.get("version") or "—", 100),
+        "title": clean(e.get("title") or "", 180),
+        "principle": clean(e.get("title") or "", 220),
+        "anchor": rc_info["anchor"],
+        "snippet": snippet,
+        "snippet_kind": kind,
+        "harm": harm,
+        "harm_note": harm_note,
+        "fix": fix_for(fake_entry, e, fake_manifest),
+        "pre": pre,
+        "module": module,
+        "module_path": module_path,
+        "status": "reserve",
+        "fidelity": "—",
+        "coverage": "reserve / —",
+        "evidence": clean(evidence or "—", 240).replace(chr(92), "/"),
+        "master_ref": "—",
+        "writes": templates.get(module, {}).get("writes", False) if module in templates else False,
+        "zero": e,
+        "manifest": fake_manifest,
+        "source": e.get("source") or "",
+    }
+
+
 def code_cell(row) -> str:
     parts = [f"`{row['anchor']}`"]
     for line in row["snippet"][:4]:
@@ -792,6 +840,159 @@ def coverage_for(ids, rows, templates) -> str:
 def render_citations(ids) -> str:
     return "**本节引用条目**：" + "、".join(f"`{cid}`" for cid in ids) + \
         "。根因、代码片段、危害与修复见附录 A 对应行；重点条目另见附录 B/C。"
+
+
+DEMO_META = {}
+
+
+def load_demo_manifest() -> dict:
+    path = DEMOS / "manifest.json"
+    if not path.is_file():
+        raise SystemExit("demos/manifest.json is missing; run tools/build-demos.py first")
+    data = json.loads(path.read_text(encoding="utf-8"))
+    out = {}
+    for entry in data.get("entries", []):
+        if entry.get("status") == "runnable":
+            poc = DEMOS / entry["id"] / "poc.py"
+            if not poc.is_file():
+                raise SystemExit(f"demo script missing: {poc}")
+            text = poc.read_text(encoding="utf-8")
+            match = re.search(r"# DEMO-SNIPPET-BEGIN\n(.*?)\n# DEMO-SNIPPET-END", text, re.S)
+            if not match:
+                raise SystemExit(f"demo snippet markers missing: {poc}")
+            entry["snippet"] = match.group(1).strip()
+            entry["sha256"] = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        out[entry["id"]] = entry
+    return out
+
+
+def group_entries_by_layer(rows) -> dict:
+    grouped = {n: [] for n in range(1, 11)}
+    for row in rows:
+        grouped[layer_for_entry({
+            "id": row["id"],
+            "component": row["component_raw"],
+            "module": row["module"] if row["module"] != "—" else "",
+        })].append(row)
+    for n in grouped:
+        grouped[n].sort(key=lambda r: (STATUS_ORDER.get(
+            {"verified": "verified", "exposure": "exposure", "static": "static",
+             "unsupported": "unsupported"}.get(r["status"], "static-only"), 9), r["id"]))
+    return grouped
+
+
+def render_primer(key: str) -> str:
+    item = PRIMERS[key]
+    n = item["layer"]
+    out = [f"### {n}.1 名词与架构前置：{item['title']}", "", item["intro"], "",
+           f"**类比**：{item['analogy']}", "",
+           "```text", item["diagram"].rstrip(), "```", "",
+           f"**术语速查（{len(item['terms'])} 条）**", "",
+           "| 术语 | 白话解释 |", "|---|---|"]
+    for term, desc in item["terms"]:
+        out.append(f"| {term} | {desc} |")
+    out += ["", "**前置知识 × 危害细化**", "",
+            "| 漏洞 | 前置知识（要懂什么） | 危害细化（训练/推理/合规） | 正文 |",
+            "|---|---|---|---|"]
+    for vuln, pre, harm, where in item["rows"]:
+        out.append(f"| {vuln} | {pre} | {harm} | {where} |")
+    out.append("")
+    return "\n".join(out)
+
+
+def demo_for(row) -> dict:
+    return DEMO_META.get(row["id"], {})
+
+
+def auth_class(text: str) -> str:
+    value = str(text or "")
+    if value.startswith("无"):
+        return "无"
+    if any(key in value for key in ("key", "admin", "master", "virtual")):
+        return "需 key"
+    if "SA" in value:
+        return "需 SA"
+    return "需本地"
+
+
+def render_entry_block(row, layer: int, idx: int) -> str:
+    demo = demo_for(row)
+    anchor = f"L{layer}-{idx:03d}"
+    out = [f"#### {anchor} · `{row['id']}` · {row['component']}", "",
+           "**打了哪里**", "",
+           "| 组件 | 版本区间 | 入口 | 根因 file:line | 可控参数/请求体字段 | 认证前置 | 网络位置 |",
+           "|---|---|---|---|---|---|---|"]
+    if demo.get("status") == "runnable":
+        entry = demo["entry"]
+        params = demo["params"]
+        auth = demo["auth"]
+        auth = auth if auth == "无" else f"{auth_class(auth)}（{auth}）"
+        network = demo["network"]
+        effect = demo["effect"]
+        env = demo["env"]
+        cleanup = demo["cleanup"]
+        attack_code = demo.get("snippet", "")
+    else:
+        na_reason = demo.get("reason") or row.get("pre") or f"{row['status']}：当前环境无动态可测面"
+        entry = f"配置面/CLI: `{row['anchor']}`"
+        params = "n/a（静态/配置面）"
+        auth = "无/需本地访问"
+        network = "配置面/宿主"
+        effect = f"N/A（{clean_text(na_reason, 180)}）"
+        env = f"{row['status']}：{clean_text(na_reason, 180)}"
+        cleanup = "无写入；不需要清理"
+        attack_code = ""
+    root = f"`{row['anchor']}`；{clean_text(row['principle'], 180)}"
+    out.append(f"| {row['component']} | {row['version']} | {table_text(entry, 180)} | "
+               f"{table_text(root, 300)} | {table_text(params, 180)} | {table_text(auth, 100)} | "
+               f"{table_text(network, 120)} |")
+    out += ["", "**根因片段**", ""]
+    if row.get("snippet"):
+        out += ["```text", f"{row['anchor']}", *row["snippet"], "```", ""]
+    else:
+        out += [f"N/A — 仅配置/审计锚点：`{row['anchor']}`", ""]
+    out += ["**攻击代码**", ""]
+    if attack_code:
+        out += ["```python", attack_code.rstrip(), "```", ""]
+    else:
+        out += [f"N/A — {clean_text(na_reason, 220)}", ""]
+    out += ["**攻击效果**", "", effect, ""]
+    if demo.get("status") == "runnable":
+        out += [f"预期输出样例：`200` + marker `{demo.get('marker', '')}`"
+                "（脚本会 assert status=200 且 marker 出现在响应中）。", ""]
+    out += ["**复现环境**", "", env, "",
+            "**清理**", "", cleanup, "",
+            "**危害**", "", f"{row['harm']}（{row['harm_note']}）", ""]
+    if demo.get("status") == "runnable":
+        out += [f"- **演示脚本**：`demos/{row['id']}/poc.py`（sha256 `{demo.get('sha256', '')}`）", ""]
+    else:
+        out += [f"- **演示脚本**：N/A — {clean_text(na_reason, 180)}", ""]
+    out += [f"- **检测/修复/证据**：`{row['module']}` / `{row['module_path']}`；{clean_text(row['fix'], 200)}；"
+            f"`{row['evidence']}`", ""]
+    return "\n".join(out)
+
+
+def render_layer_entries(rows, layer: int, start: int = 2) -> str:
+    if not rows:
+        return ""
+    out = [f"### {layer}.{start} 逐条攻击面与演示（{len(rows)} 条）", ""]
+    for idx, row in enumerate(rows, 1):
+        out.append(render_entry_block(row, layer, idx))
+    return "\n".join(out)
+
+
+def clean_text(text, limit=200) -> str:
+    value = clean_line(str(text or "")).replace("|", "/")
+    return value if len(value) <= limit else value[:limit - 1] + "…"
+
+
+def table_text(text, limit=260) -> str:
+    value = str(text or "").replace("\r", " ").replace("\n", " ").replace("\t", "    ")
+    value = value.replace("|", "¦")
+    value = re.sub(r"https?://\S+", "[链接已省略]", value)
+    value = re.sub(r"[A-Za-z]:\\[^\s]+", "[本地路径已省略]", value)
+    value = re.sub(r"\s+", " ", value).strip()
+    return value if len(value) <= limit else value[:limit - 1] + "…"
 
 
 def render_layer_table(rows) -> str:
@@ -891,8 +1092,11 @@ def render_rail_concept() -> str:
 
 
 def render_layer(n, title, what, categories, rep_rows, detection, fix, boundary,
-                 citations, templates, concept=None, framework_table=False, table=None):
+                 citations, templates, concept=None, framework_table=False, table=None,
+                 primer=None, entries=None):
     out = [f"## {n}. {title}", "", f"**层是什么**：{what}", ""]
+    if primer:
+        out += [render_primer(primer), ""]
     if concept:
         out += [concept, ""]
     out += ["**漏洞类别**", ""]
@@ -910,6 +1114,8 @@ def render_layer(n, title, what, categories, rep_rows, detection, fix, boundary,
             "**覆盖状态**", "", coverage_for(citations, ROWS, templates), "",
             "**诚实边界**", "", boundary, "",
             render_citations(citations), ""]
+    if entries:
+        out += [render_layer_entries(entries, n, start=2 if primer else 1), ""]
     return "\n".join(out)
 
 
@@ -926,21 +1132,23 @@ def render_intro(rows, templates, chains, zero) -> str:
 >
 > 本文回答三个问题：训练/推理集群的漏洞为什么不能只按 Kubernetes 分类；每一层的根因、代码锚点与危害是什么；InkBlade 到底验证到哪一步、哪些只是配置判定或仿真。
 >
-> 阅读顺序：先读十层正文，再按“本节引用条目”跳到附录 A；37 条 verified、6 条 exposure 与 {reserve} 条 reserve 在附录 B/C 有逐条详解；static 与 unsupported 在附录 D 标了原因。
+> 阅读顺序：先读十层正文；每层先看「名词与架构前置」，再看「逐条攻击面与演示」。37 条 verified、6 条 exposure 与 {reserve} 条 reserve 全部落在对应层正文；附录只保留索引，不承载代码。
 
 ## 0. 口径与读法
 
-- **层是什么**：每一层先给 2–3 句前置知识，解释这层为什么在 ML 集群里成立。
-- **漏洞类别**：只列类别，不把类别当发现；具体条目必须落到附录 A 的 ID。
-- **代表漏洞**：正文给 3–5 条可复核的代表，完整 152 条在附录 A。框架层按框架列 2–5 条，避免“一个大表看完还是不知道怎么打”。
+- **层是什么**：每一层先给 2–3 句前置知识，解释这层为什么在 ML 集群里成立；六层另加「名词与架构前置」。
+- **漏洞类别**：只列类别，不把类别当发现；具体条目必须落到层内 `L<层>-<序号>` 锚点。
+- **代表漏洞**：正文给 3–5 条可复核的代表，完整 152 条在每层「逐条攻击面与演示」。框架层按框架列 2–5 条，避免“一个大表看完还是不知道怎么打”。
+- **逐条六段**：每条固定给「打了哪里 → 攻击代码 → 攻击效果 → 复现环境 → 清理 → 危害」。`打了哪里` 表含组件、版本、入口、根因 file:line、可控参数、认证前置、网络位置。
+- **攻击代码**：3–20 行可执行片段，目标只允许 `127.0.0.1:<port>`；脚本在 `demos/<id>/`，文档代码块由生成器从 `poc.py` 抽取，二者一致。N/A 只用于硬件/纯配置/static，且必须写原因。
 - **检测方法**：写探针/模板/证据口径，不写请求构造。模板是数据，由 Pod 内 Rust 探针执行。
 - **覆盖状态**：`verified` 表示动态复现且证据可核；`exposure` 表示暴露面已核验但未做代码执行；`static` 表示静态根因成立、动态未复现；`unsupported` 表示当前环境没有可测面；`equivalent/reduced` 是模板保真度，前者与参考评估器等价，后者做了简化。
 - **危害口径**：`C/I/A` 是机密性/完整性/可用性，`H/M/L` 是高/中/低；另列训练有效性、租户隔离、合规三项。不要把 H 一律读成“必然发生”，它表示“成立时的上限”。
-- **不写什么**：不写可执行 payload、不写完整利用步骤、不写请求体、不写持久化。关键代码只保留 sink、路由、权限判断与加载点，目的是让防守方能定位和写规则。
+- **不写什么**：不写真实目标、公网地址、真实凭据、破坏性 payload、持久化或完整生产利用步骤。关键代码只保留 sink、路由、权限判断与加载点；演示代码只写 benign marker、127.0.0.1 回环与最小请求字段，目的是让防守方能定位、复现和写规则。
 
-**总账**：{total} 条 registry = {verified} verified + {exposure} exposure + {static} static + {unsupported} unsupported；模板 286（equivalent 48 / reduced 238）；零日储备 {reserve}（reserve-eligible 46，去重后 {reserve}）；攻击链 {len(chains)} 条。本文附录 A 逐条覆盖 {total} 条，附录 B 覆盖 {verified + exposure} 条，附录 C 覆盖 {reserve} 条，附录 D 给 {static + unsupported} 条 static/unsupported 的原因。
+**总账**：{total} 条 registry = {verified} verified + {exposure} exposure + {static} static + {unsupported} unsupported；模板 286（equivalent 48 / reduced 238）；零日储备 {reserve}（reserve-eligible 46，去重后 {reserve}）；攻击链 {len(chains)} 条。正文按十层逐条覆盖 {total} 条，附录 A 给索引，附录 B/C 给 43 条与 {reserve} 条的正文锚点，附录 D 给 109 条 static/unsupported 的原因。
 
-**一个必须先说的边界**：152 条 registry 不是“ML 集群全部漏洞”，而是“有代码锚点、能按版本/配置核验的子集”；286 个模板里还有大量检测点没有对应的 CVE 或复现记录。正文十层描述的是产品覆盖模型，附录 A 描述的是可对账的证据账本，两者不要混为一谈。
+**一个必须先说的边界**：152 条 registry 不是“ML 集群全部漏洞”，而是“有代码锚点、能按版本/配置核验的子集”；286 个模板里还有大量检测点没有对应的 CVE 或复现记录。正文十层描述的是产品覆盖模型，逐条条目描述的是可对账的证据账本，两者不要混为一谈。
 """
 
 
@@ -1005,10 +1213,18 @@ def render_glossary() -> str:
         ("Guardrail", "推理网关的内容护栏；只检查首条消息或只识别 user 角色时可被多消息绕过。"),
         ("HIDS / LSM", "主机入侵检测与 Linux 安全模块；driver 未加载或策略未覆盖命名空间时界面仍显示“已部署”。"),
     ]
+    seen = {term for term, _ in terms}
+    added = 0
+    for primer in PRIMERS.values():
+        for term, desc in primer["terms"]:
+            if term not in seen:
+                terms.append((term, desc))
+                seen.add(term)
+                added += 1
     out = ["## 术语表", "", "| 术语 | 一句话解释 |", "|---|---|"]
     for term, desc in terms:
         out.append(f"| {term} | {desc} |")
-    out += ["", f"共 {len(terms)} 条。术语只解释本文用到的含义，不替代厂商文档。", ""]
+    out += ["", f"共 {len(terms)} 条（含六块前置新增 {added} 条）。术语只解释本文用到的含义，不替代厂商文档。", ""]
     return "\n".join(out)
 
 
@@ -1170,6 +1386,94 @@ def render_reserve(zero, templates, modules) -> str:
     return "\n".join(out)
 
 
+def appendix_reason(row) -> str:
+    manifest = row["manifest"] or {}
+    reason = manifest.get("notes") or ""
+    if not reason:
+        unsupported = manifest.get("unsupported") or {}
+        reason = unsupported.get("reason") or row["pre"] or "静态根因成立，动态未复现"
+    return clean_text(reason, 220)
+
+
+def render_appendix_a_index(grouped, anchors) -> str:
+    out = ["## 附录 A：152 条总索引", "",
+           "只给 ID、组件、所属层、一句话与状态；原理、入口、攻击代码、效果、复现环境、清理与危害都在正文对应锚点。",
+           "", "| ID | 组件 | 层级 | 一句话 | 状态 |", "|---|---|---|---|---|"]
+    for n in range(1, 11):
+        for row in grouped[n]:
+            out.append(f"| `{row['id']}` | {row['component']} | {n} · {LAYER_TITLES[n].split('：')[0]} | "
+                       f"{clean_text(row['title'], 120)} | {row['status']} |")
+    out.append("")
+    return "\n".join(out)
+
+
+def render_appendix_b_index(grouped, anchors) -> str:
+    out = ["## 附录 B：37 verified + 6 exposure 索引", "",
+           "这 43 条全部在正文有六段结构与本地 demo；本附录只给索引、正文锚点与 demo 路径。",
+           "", "| # | ID | 组件 | 层级 | 正文锚点 | 状态 | 演示 |",
+           "|---|---|---|---|---|---|---|"]
+    idx = 0
+    for n in range(1, 11):
+        for row in grouped[n]:
+            if row["status"] not in ("verified", "exposure"):
+                continue
+            idx += 1
+            demo = DEMO_META.get(row["id"], {})
+            path = f"`demos/{row['id']}/poc.py`" if demo.get("status") == "runnable" else "N/A"
+            out.append(f"| {idx} | `{row['id']}` | {row['component']} | {n} | `{anchors[row['id']]}` | "
+                       f"{row['status']} | {path} |")
+    out.append("")
+    return "\n".join(out)
+
+
+def render_appendix_c_index(grouped, anchors, zero) -> str:
+    ids = list(zero["summary"]["reserve_unique_ids"])
+    zero_by_id = {e["id"]: e for e in zero["entries"]}
+    out = ["## 附录 C：零日储备 39 条索引", "",
+           "本附录只给索引、披露状态、正文锚点与 demo 路径；demo 只演示 mock 原语，不提供真实目标利用链。",
+           "", "| # | ID | 组件 | 层级 | 正文锚点 | 披露状态 | 演示 |",
+           "|---|---|---|---|---|---|---|"]
+    for idx, cid in enumerate(ids, 1):
+        row = next((grouped[n][i] for n in range(1, 11) for i in range(len(grouped[n]))
+                    if grouped[n][i]["id"] == cid), None)
+        component = row["component"] if row else (zero_by_id.get(cid) or {}).get("component", "—")
+        layer = next((n for n in range(1, 11) if any(r["id"] == cid for r in grouped[n])), "—")
+        disclosure = ((zero_by_id.get(cid) or {}).get("disclosure") or {}).get("status") or "unknown"
+        demo = DEMO_META.get(cid, {})
+        path = f"`demos/{cid}/poc.py`" if demo.get("status") == "runnable" else "N/A"
+        out.append(f"| {idx} | `{cid}` | {component} | {layer} | `{anchors.get(cid, '—')}` | {disclosure} | {path} |")
+    out.append("")
+    return "\n".join(out)
+
+
+def render_appendix_d_index(grouped) -> str:
+    out = ["## 附录 D：static 与 unsupported 原因索引", "",
+           "这些条目在正文对应层仍给六段结构，攻击代码统一为 N/A 并写原因；本附录只做原因索引。",
+           "", "| ID | 组件 | 层级 | 状态 | 原因 |", "|---|---|---|---|---|"]
+    count = 0
+    for n in range(1, 11):
+        for row in grouped[n]:
+            if row["status"] not in ("static", "unsupported"):
+                continue
+            count += 1
+            out.append(f"| `{row['id']}` | {row['component']} | {n} | {row['status']} | {appendix_reason(row)} |")
+    out += ["", f"共 {count} 条：87 static + 22 unsupported。static 不等于可利用，unsupported 不等于不存在。", ""]
+    return "\n".join(out)
+
+
+def render_demo_index() -> str:
+    out = ["## 附录 F：B/C 攻击演示索引", "",
+           "每个可运行 demo 都只监听 127.0.0.1、写 benign marker、默认 cleanup；N/A 条目写原因。代码块在正文，不在本附录。",
+           "", "| ID | 层级 | 演示 | 状态 | sha256 |", "|---|---|---|---|---|"]
+    for entry in sorted(DEMO_META.values(), key=lambda e: (e.get("layer", 99), e["id"])):
+        if entry["status"] == "runnable":
+            out.append(f"| `{entry['id']}` | {entry.get('layer', '—')} | `demos/{entry['id']}/poc.py` | runnable | `{entry.get('sha256', '')}` |")
+        else:
+            out.append(f"| `{entry['id']}` | {entry.get('layer', '—')} | — | N/A | — |")
+    out.append("")
+    return "\n".join(out)
+
+
 def render_static_reasons(rows) -> str:
     out = ["## 附录 D：static 与 unsupported 的原因", "",
            "这些条目没有进入附录 B：static 是静态根因成立但动态未复现，unsupported 是当前环境没有可测面。"
@@ -1229,29 +1533,47 @@ def build_document() -> str:
     chains = load_chains()
     master_rows = parse_master()
     zero_map = {e["id"]: e for e in zero["entries"]}
-    rows = build_rows(registry["entries"], manifests, templates, modules, zero_map, master_rows)
-    global ROWS
-    ROWS = rows
-    layers = layer_citations(rows)
+    registry_rows = build_rows(registry["entries"], manifests, templates, modules, zero_map, master_rows)
+    reserve_only = [cid for cid in zero["summary"]["reserve_unique_ids"]
+                    if cid not in {r["id"] for r in registry_rows}]
+    all_rows = registry_rows + [build_reserve_entry(cid, zero, templates, modules)
+                                for cid in reserve_only]
+    all_rows.sort(key=lambda r: (r["component"], STATUS_ORDER.get(
+        {"verified": "verified", "exposure": "exposure", "static": "static",
+         "unsupported": "unsupported", "reserve": "reserve"}.get(r["status"], "static"),
+        9), r["id"]))
+    global ROWS, DEMO_META
+    ROWS = registry_rows
+    DEMO_META = load_demo_manifest()
+    layers = layer_citations(registry_rows)
+    grouped = group_entries_by_layer(all_rows)
+    registry_grouped = group_entries_by_layer(registry_rows)
+    anchors = {row["id"]: f"L{n}-{idx:03d}"
+               for n in range(1, 11)
+               for idx, row in enumerate(grouped[n], 1)}
     texts = LAYER_TEXTS
-    out = [render_intro(rows, templates, chains, zero)]
+    primer_layers = {1: "longctx", 2: "gateway", 3: "chip",
+                     4: "network", 6: "gpu", 8: "cache"}
+    out = [render_intro(registry_rows, templates, chains, zero)]
     for n in range(1, 11):
         item = texts[n]
         out.append(render_layer(
             n, item["title"], item["what"], item["categories"], item["reps"],
             item["detection"], item["fix"], item["boundary"], layers[n], templates,
             concept=item.get("concept"), framework_table=item.get("framework_table", False),
-            table=item.get("table"),
+            table=item.get("table"), primer=primer_layers.get(n),
+            entries=grouped[n],
         ))
-    out.append(render_chains(rows))
+    out.append(render_chains(registry_rows))
     out.append(render_glossary())
     out.append(render_evidence())
-    out.append(render_stats(rows, templates, chains, zero))
-    out.append(render_appendix_table(rows))
-    out.append(render_details(rows, zero))
-    out.append(render_reserve(zero, templates, modules))
-    out.append(render_static_reasons(rows))
+    out.append(render_stats(registry_rows, templates, chains, zero))
+    out.append(render_appendix_a_index(registry_grouped, anchors))
+    out.append(render_appendix_b_index(registry_grouped, anchors))
+    out.append(render_appendix_c_index(grouped, anchors, zero))
+    out.append(render_appendix_d_index(registry_grouped))
     out.append(render_template_index(templates))
+    out.append(render_demo_index())
     text = "\n".join(out)
     text = re.sub(r"\n{4,}", "\n\n\n", text)
     return text.rstrip() + "\n"

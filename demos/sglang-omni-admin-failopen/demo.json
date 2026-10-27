@@ -1,0 +1,33 @@
+{
+  "auth": "无",
+  "cleanup": "`python demos/sglang-omni-admin-failopen/poc.py --cleanup`；删除 `demos/.work/sglang-omni-admin-failopen/`；mock 服务随脚本退出停止",
+  "component": "sglang-omni",
+  "effect": "200 + profiler 目录 marker",
+  "entry": "POST /api/v1/profile (30000/tcp)",
+  "env": "mock 自带: `python demos/sglang-omni-admin-failopen/poc.py`；上游 pin: `sglang_omni/http/admin_auth.py:28`",
+  "id": "sglang-omni-admin-failopen",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-sglang-omni-admin-failopen",
+  "network": "ClusterIP",
+  "params": "event_dir",
+  "reason": "",
+  "sha256": "cde4eff95f2a1218affb2ee518b2b7899ae7b0b2fd51bde66e2157a887bb30f6",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-sglang-omni-admin-failopen\"\nSPEC = {'id': 'sglang-omni-admin-failopen', 'kind': 'http', 'method': 'POST', 'route': '/api/v1/profile', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'sglang-omni-admin-failopen'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "sglang-omni-admin-failopen",
+    "kind": "http",
+    "method": "POST",
+    "payload": {
+      "id": "sglang-omni-admin-failopen",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/api/v1/profile"
+  },
+  "status": "runnable",
+  "title": "sglang-omni admin dependency is a no-op without SGLANG_OMNI_ADMIN_KEY; profiler event_dir is request-controlled",
+  "upstream": "",
+  "version": "HEAD 204ba29"
+}

@@ -1,0 +1,33 @@
+{
+  "auth": "无",
+  "cleanup": "`python demos/areal-awex/poc.py --cleanup`；删除 `demos/.work/areal-awex/`；mock 服务随脚本退出停止",
+  "component": "areal",
+  "effect": "200 + NCCL 入组 marker",
+  "entry": "POST /awex (9000/tcp)",
+  "env": "mock 自带: `python demos/areal-awex/poc.py`；上游 pin: `n/a（advisory）`",
+  "id": "areal-awex",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-areal-awex",
+  "network": "ClusterIP",
+  "params": "save path, NCCL world/rank",
+  "reason": "",
+  "sha256": "2d6ba566c5a75d47c1157e95e3b4d48bec31d5e3be94df6fe3cee15cf01dbadf",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-areal-awex\"\nSPEC = {'id': 'areal-awex', 'kind': 'http', 'method': 'POST', 'route': '/awex', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'areal-awex'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "areal-awex",
+    "kind": "http",
+    "method": "POST",
+    "payload": {
+      "id": "areal-awex",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/awex"
+  },
+  "status": "runnable",
+  "title": "AReaL SGLang /awex/* unauthenticated: arbitrary torch.save + join arbitrary NCCL group",
+  "upstream": "",
+  "version": "448de52"
+}

@@ -1,0 +1,27 @@
+{
+  "auth": "无（dev mode）",
+  "cleanup": "`python demos/skyrl-vllm-devmode/poc.py --cleanup`；删除 `demos/.work/skyrl-vllm-devmode/`；mock 服务随脚本退出停止",
+  "component": "skyrl",
+  "effect": "pickle.loads -> marker",
+  "entry": "HTTP POST /update_weights (dev mode)",
+  "env": "mock 自带: `python demos/skyrl-vllm-devmode/poc.py`；上游 pin: `skyrl_train/workers/vllm_server_actor.py:216`",
+  "id": "skyrl-vllm-devmode",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-skyrl-vllm-devmode",
+  "network": "ClusterIP",
+  "params": "payload",
+  "reason": "",
+  "sha256": "ac11ab8eb2058973f5f6d1d20040b74ad296abc6f621da6e420b4ffb472861ef",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-skyrl-vllm-devmode\"\nSPEC = {'id': 'skyrl-vllm-devmode', 'kind': 'pickle', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "skyrl-vllm-devmode",
+    "kind": "pickle",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "SkyRL forces vLLM 0.0.0.0 + dev-mode + insecure serialization + unauthenticated /fetch_weights",
+  "upstream": "",
+  "version": "a1e34db"
+}

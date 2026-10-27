@@ -1,0 +1,27 @@
+{
+  "auth": "无（worker 可达）",
+  "cleanup": "`python demos/areal-v2-worker/poc.py --cleanup`；删除 `demos/.work/areal-v2-worker/`；mock 服务随脚本退出停止",
+  "component": "areal",
+  "effect": "pickle.loads -> marker",
+  "entry": "文件: data worker payload",
+  "env": "mock 自带: `python demos/areal-v2-worker/poc.py`；上游 pin: `areal/v2/engine/fsdp_engine.py:1965`",
+  "id": "areal-v2-worker",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-areal-v2-worker",
+  "network": "Pod 内",
+  "params": "pickle payload",
+  "reason": "",
+  "sha256": "938ae4b534d7824a9a8afa6835827813f4266f819c05341c4ca9457944fc4caf",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-areal-v2-worker\"\nSPEC = {'id': 'areal-v2-worker', 'kind': 'pickle', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "areal-v2-worker",
+    "kind": "pickle",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "AReaL v2 worker /load -> torch.load(weights_only=False) without auth (+/save, /data, /awex)",
+  "upstream": "",
+  "version": "448de52"
+}

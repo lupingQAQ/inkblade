@@ -1,0 +1,27 @@
+{
+  "auth": "需本地文件写",
+  "cleanup": "`python demos/deepspeed-stage3-py-torch-load-any-l3660-regex/poc.py --cleanup`；删除 `demos/.work/deepspeed-stage3-py-torch-load-any-l3660-regex/`；mock 服务随脚本退出停止",
+  "component": "deepspeed",
+  "effect": "torch.load -> marker",
+  "entry": "文件: DeepSpeed checkpoint/stage3.py",
+  "env": "mock 自带: `python demos/deepspeed-stage3-py-torch-load-any-l3660-regex/poc.py`；上游 pin: `deepspeed/runtime/zero/stage3.py:3660`",
+  "id": "deepspeed-stage3-py-torch-load-any-l3660-regex",
+  "in_b": true,
+  "in_c": true,
+  "layer": 5,
+  "marker": "INKBLADE-BENIGN-deepspeed-stage3-py-torch-load-any-l3660-regex",
+  "network": "宿主/PVC",
+  "params": "checkpoint dir, torch.load payload",
+  "reason": "",
+  "sha256": "6e989087d9a49f6bba1cb49778c44c396f21f2801a52b0898972e4e66ec76963",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-deepspeed-stage3-py-torch-load-any-l3660-regex\"\nSPEC = {'id': 'deepspeed-stage3-py-torch-load-any-l3660-regex', 'kind': 'pickle', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "deepspeed-stage3-py-torch-load-any-l3660-regex",
+    "kind": "pickle",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "deepspeed: torch-load-any @ stage3.py:3660",
+  "upstream": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3660-regex/result.json",
+  "version": "v0.19.8"
+}

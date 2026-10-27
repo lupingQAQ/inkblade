@@ -1,0 +1,21 @@
+{
+  "auth": "n/a",
+  "cleanup": "无写入；无清理动作",
+  "component": "llamafactory",
+  "effect": "N/A",
+  "entry": "N/A — 纯配置暴露面（0.0.0.0 绑定）；按安全边界不在本机监听非回环地址，静态证据见 registry 与 lab/upstream_verify fixture。",
+  "env": "N/A",
+  "id": "llamafactory-app-py-go-bind-all-l130-regex",
+  "in_b": true,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-llamafactory-app-py-go-bind-all-l130-regex",
+  "network": "n/a",
+  "params": "n/a",
+  "reason": "纯配置暴露面（0.0.0.0 绑定）；按安全边界不在本机监听非回环地址，静态证据见 registry 与 lab/upstream_verify fixture。",
+  "sha256": "",
+  "snippet": "",
+  "status": "na",
+  "title": "llamafactory: go-bind-all @ app.py:130",
+  "version": "v0.9.5"
+}

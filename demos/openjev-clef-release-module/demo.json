@@ -1,0 +1,27 @@
+{
+  "auth": "需加载",
+  "cleanup": "`python demos/openjev-clef-release-module/poc.py --cleanup`；删除 `demos/.work/openjev-clef-release-module/`；mock 服务随脚本退出停止",
+  "component": "openjev",
+  "effect": "import-time marker",
+  "entry": "模型/插件: CLEF release module",
+  "env": "mock 自带: `python demos/openjev-clef-release-module/poc.py`；上游 pin: `openjev/clef_vllm.py:40`",
+  "id": "openjev-clef-release-module",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-openjev-clef-release-module",
+  "network": "服务进程",
+  "params": "module path",
+  "reason": "",
+  "sha256": "3601aa01e58a0f037c6a815b8cff3d627defb8e9c2e1ec3eec2edc5f4ff602cb",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-openjev-clef-release-module\"\nSPEC = {'id': 'openjev-clef-release-module', 'kind': 'import', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "openjev-clef-release-module",
+    "kind": "import",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "OpenJev Clef release_module() executes model-directory joint_schema_model.py; revision missing",
+  "upstream": "",
+  "version": "b4339c6"
+}

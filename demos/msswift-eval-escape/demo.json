@@ -1,0 +1,27 @@
+{
+  "auth": "需配置/请求",
+  "cleanup": "`python demos/msswift-eval-escape/poc.py --cleanup`；删除 `demos/.work/msswift-eval-escape/`；mock 服务随脚本退出停止",
+  "component": "msswift",
+  "effect": "eval 逃逸 -> marker",
+  "entry": "配置: device_groups eval",
+  "env": "mock 自带: `python demos/msswift-eval-escape/poc.py`；上游 pin: `swift/ray_utils/resource_manager.py:48`",
+  "id": "msswift-eval-escape",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-msswift-eval-escape",
+  "network": "服务进程",
+  "params": "device_groups",
+  "reason": "",
+  "sha256": "27f5a3b892d09aa087974ce4662063e0ec90b64264c786f1473cdcfd0557f820",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-msswift-eval-escape\"\nSPEC = {'id': 'msswift-eval-escape', 'kind': 'exec', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "msswift-eval-escape",
+    "kind": "exec",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "ms-swift --device_groups ranks restricted eval() escape; WebUI more_params reachable",
+  "upstream": "",
+  "version": "4.5.3 / fbc61cf"
+}

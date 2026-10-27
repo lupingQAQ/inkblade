@@ -1,0 +1,33 @@
+{
+  "auth": "无",
+  "cleanup": "`python demos/areal-unauth-engine-control/poc.py --cleanup`；删除 `demos/.work/areal-unauth-engine-control/`；mock 服务随脚本退出停止",
+  "component": "areal",
+  "effect": "200 + 环境变量写入 marker",
+  "entry": "POST /set_env (9000/tcp)",
+  "env": "mock 自带: `python demos/areal-unauth-engine-control/poc.py`；上游 pin: `areal/experimental/proxy_rollout_server.py:445`",
+  "id": "areal-unauth-engine-control",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-areal-unauth-engine-control",
+  "network": "ClusterIP",
+  "params": "env",
+  "reason": "",
+  "sha256": "afad46b694830e85dd3ea34fd039b30808d2aff6fbba6ba0dc1b9e9bcbd321ac",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-areal-unauth-engine-control\"\nSPEC = {'id': 'areal-unauth-engine-control', 'kind': 'http', 'method': 'POST', 'route': '/set_env', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'areal-unauth-engine-control'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "areal-unauth-engine-control",
+    "kind": "http",
+    "method": "POST",
+    "payload": {
+      "id": "areal-unauth-engine-control",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/set_env"
+  },
+  "status": "runnable",
+  "title": "AReaL proxy rollout control plane: unauthenticated /set_env + /create_engine + /call",
+  "upstream": "",
+  "version": "448de52"
+}

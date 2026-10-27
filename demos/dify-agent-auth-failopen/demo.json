@@ -1,0 +1,33 @@
+{
+  "auth": "无",
+  "cleanup": "`python demos/dify-agent-auth-failopen/poc.py --cleanup`；删除 `demos/.work/dify-agent-auth-failopen/`；mock 服务随脚本退出停止",
+  "component": "dify",
+  "effect": "200 + 控制面 marker",
+  "entry": "POST /agent-stub/v1/chat (8080/tcp)",
+  "env": "mock 自带: `python demos/dify-agent-auth-failopen/poc.py`；上游 pin: `dify-agent/src/dify_agent/server/auth.py:17`",
+  "id": "dify-agent-auth-failopen",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-dify-agent-auth-failopen",
+  "network": "ClusterIP",
+  "params": "token, messages",
+  "reason": "",
+  "sha256": "96358c86bff2dc00d8cdaa2f4af8ea6368e0c468a33d0a7d454d218ab312621e",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-dify-agent-auth-failopen\"\nSPEC = {'id': 'dify-agent-auth-failopen', 'kind': 'http', 'method': 'POST', 'route': '/agent-stub/v1/chat', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'dify-agent-auth-failopen'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "dify-agent-auth-failopen",
+    "kind": "http",
+    "method": "POST",
+    "payload": {
+      "id": "dify-agent-auth-failopen",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/agent-stub/v1/chat"
+  },
+  "status": "runnable",
+  "title": "dify-agent backend auth fail-open (token None -> allow all) + public dev token in compose",
+  "upstream": "",
+  "version": "v1.17.1 / bbfac7a"
+}

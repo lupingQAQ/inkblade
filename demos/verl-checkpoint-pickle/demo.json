@@ -1,0 +1,27 @@
+{
+  "auth": "无（通道可达）",
+  "cleanup": "`python demos/verl-checkpoint-pickle/poc.py --cleanup`；删除 `demos/.work/verl-checkpoint-pickle/`；mock 服务随脚本退出停止",
+  "component": "verl",
+  "effect": "pickle.loads -> marker",
+  "entry": "TCP/ZMQ: recv_pyobj",
+  "env": "mock 自带: `python demos/verl-checkpoint-pickle/poc.py`；上游 pin: `n/a（advisory）`",
+  "id": "verl-checkpoint-pickle",
+  "in_b": false,
+  "in_c": true,
+  "layer": 5,
+  "marker": "INKBLADE-BENIGN-verl-checkpoint-pickle",
+  "network": "Pod 内/ClusterIP",
+  "params": "pickle payload",
+  "reason": "",
+  "sha256": "01e421b8983787144b2851455ee52735b66c4f1d6059d79e7d3f97cbec698894",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-verl-checkpoint-pickle\"\nSPEC = {'id': 'verl-checkpoint-pickle', 'kind': 'pickle', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "verl-checkpoint-pickle",
+    "kind": "pickle",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "verl checkpoint engine recv_pyobj: pickle over TCP/ZMQ without auth",
+  "upstream": "",
+  "version": "76e837e"
+}

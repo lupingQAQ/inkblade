@@ -1,0 +1,33 @@
+{
+  "auth": "无",
+  "cleanup": "`python demos/cephcsi-httpserver-go-pprof-exposed-l37-regex/poc.py --cleanup`；删除 `demos/.work/cephcsi-httpserver-go-pprof-exposed-l37-regex/`；mock 服务随脚本退出停止",
+  "component": "cephcsi",
+  "effect": "200 + profile marker",
+  "entry": "GET /debug/pprof/cmdline (9100/tcp)",
+  "env": "mock 自带: `python demos/cephcsi-httpserver-go-pprof-exposed-l37-regex/poc.py`；上游 pin: `internal/util/httpserver.go:37`",
+  "id": "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+  "in_b": true,
+  "in_c": true,
+  "layer": 10,
+  "marker": "INKBLADE-BENIGN-cephcsi-httpserver-go-pprof-exposed-l37-regex",
+  "network": "ClusterIP/宿主",
+  "params": "n/a",
+  "reason": "",
+  "sha256": "e90d62c46f63ee37157d989c7ec0487aa325a138a33939718012a8379b6a6887",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-cephcsi-httpserver-go-pprof-exposed-l37-regex\"\nSPEC = {'id': 'cephcsi-httpserver-go-pprof-exposed-l37-regex', 'kind': 'pprof', 'method': 'GET', 'route': '/debug/pprof/cmdline', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'cephcsi-httpserver-go-pprof-exposed-l37-regex'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+    "kind": "pprof",
+    "method": "GET",
+    "payload": {
+      "id": "cephcsi-httpserver-go-pprof-exposed-l37-regex",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/debug/pprof/cmdline"
+  },
+  "status": "runnable",
+  "title": "ceph-csi: pprof-exposed-go @ internal/util/httpserver.go:37",
+  "upstream": "lab/upstream_verify/cases/cephcsi/cephcsi-httpserver-go-pprof-exposed-l37-regex/result.json",
+  "version": "v3.18.1"
+}

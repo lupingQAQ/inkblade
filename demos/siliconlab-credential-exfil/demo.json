@@ -1,0 +1,21 @@
+{
+  "auth": "n/a",
+  "cleanup": "无写入；无清理动作",
+  "component": "siliconlab",
+  "effect": "N/A",
+  "entry": "N/A — 纯凭据/云账号面；按安全边界不使用真实凭据。",
+  "env": "N/A",
+  "id": "siliconlab-credential-exfil",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-siliconlab-credential-exfil",
+  "network": "n/a",
+  "params": "n/a",
+  "reason": "纯凭据/云账号面；按安全边界不使用真实凭据。",
+  "sha256": "",
+  "snippet": "",
+  "status": "na",
+  "title": "OpenJev-SiliconLabAI request-controlled base_url/decider_url + server-side API key leakage",
+  "version": "a08e969"
+}

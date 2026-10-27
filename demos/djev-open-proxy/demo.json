@@ -1,0 +1,33 @@
+{
+  "auth": "无",
+  "cleanup": "`python demos/djev-open-proxy/poc.py --cleanup`；删除 `demos/.work/djev-open-proxy/`；mock 服务随脚本退出停止",
+  "component": "djev",
+  "effect": "200 + 上游响应 marker",
+  "entry": "POST /v1/chat/completions (8081/tcp)",
+  "env": "mock 自带: `python demos/djev-open-proxy/poc.py`；上游 pin: `djev/structured_server.py:1990`",
+  "id": "djev-open-proxy",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-djev-open-proxy",
+  "network": "ClusterIP",
+  "params": "model, messages",
+  "reason": "",
+  "sha256": "e071ee4ca1896a5b3559adc9c1def07c5e11a1087136e45c01ca2c7d3ae5733b",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-djev-open-proxy\"\nSPEC = {'id': 'djev-open-proxy', 'kind': 'http', 'method': 'POST', 'route': '/v1/chat/completions', 'payload': {'probe': 'INKBLADE-BENIGN', 'id': 'djev-open-proxy'}, 'expect_status': 200}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "expect_status": 200,
+    "id": "djev-open-proxy",
+    "kind": "http",
+    "method": "POST",
+    "payload": {
+      "id": "djev-open-proxy",
+      "probe": "INKBLADE-BENIGN"
+    },
+    "route": "/v1/chat/completions"
+  },
+  "status": "runnable",
+  "title": "djev default-open proxy: no key + /v1/* relay + GET bypass when key configured",
+  "upstream": "",
+  "version": "e5841cf"
+}

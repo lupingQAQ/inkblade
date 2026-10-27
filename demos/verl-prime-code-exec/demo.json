@@ -1,0 +1,27 @@
+{
+  "auth": "需训练 rollout",
+  "cleanup": "`python demos/verl-prime-code-exec/poc.py --cleanup`；删除 `demos/.work/verl-prime-code-exec/`；mock 服务随脚本退出停止",
+  "component": "verl",
+  "effect": "exec -> marker",
+  "entry": "训练: prime_code reward",
+  "env": "mock 自带: `python demos/verl-prime-code-exec/poc.py`；上游 pin: `verl/utils/reward_score/prime_code/testing_util.py:616`",
+  "id": "verl-prime-code-exec",
+  "in_b": false,
+  "in_c": true,
+  "layer": 2,
+  "marker": "INKBLADE-BENIGN-verl-prime-code-exec",
+  "network": "训练进程",
+  "params": "generated code",
+  "reason": "",
+  "sha256": "d9f7a00039a283bc116a7efd1b258ba8f67bee3e3504df0dccecd3fb1662690a",
+  "snippet": "import sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom _lib.demo import cli, run_demo\nMARKER = \"INKBLADE-BENIGN-verl-prime-code-exec\"\nSPEC = {'id': 'verl-prime-code-exec', 'kind': 'exec', 'payload': 'INKBLADE-BENIGN-DEMO'}\ndef demo(args):\n    # target=127.0.0.1:<port>; args.target 默认 127.0.0.1:0\n    result = run_demo(SPEC, target=args.target, marker=args.marker)\n    assert result[\"status\"] == 200\n    assert args.marker in result.get(\"body\", \"\") or result.get(\"marker\") == args.marker\n    print(result[\"status\"], result.get(\"body\", \"\")[:160])\n    return 0",
+  "spec": {
+    "id": "verl-prime-code-exec",
+    "kind": "exec",
+    "payload": "INKBLADE-BENIGN-DEMO"
+  },
+  "status": "runnable",
+  "title": "verl prime_code executes model-generated code with exec() and no sandbox",
+  "upstream": "",
+  "version": "76e837e"
+}
