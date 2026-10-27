@@ -181,17 +181,26 @@ inkblade channel exec --workspace local-lab --probe-id pod-a --op ping --json
 
 | 优先级 | 协议 | 状态 |
 |---|---|---|
-| P1 | gRPC over TLS（Triton 8001 / Ray 8265），bidi stream，token 在 metadata | 已实现，`channel proxy --protocol grpc` |
-| P2 | Redis RESP over TLS（Ray GCS 6379），客户端 `AUTH <token>` | 已实现，`channel proxy --protocol redis` |
-| P3 | ZMTP + CURVE（SGLang/vLLM） | 未实现 |
-| P4 | TCPStore/Gloo TLS relay（PyTorch 29500） | 未实现 |
-| P5 | MASQUE CONNECT-UDP（RoCE/UCX 辅助面） | 未实现（experimental） |
-| P6 | NCCL/UCX 端口 profile（只控制流） | 未实现 |
+| P1 | gRPC over TLS（Triton 8001 / Ray 8265），bidi stream，token 在 metadata | 已实现，`--protocol grpc` |
+| P2 | Redis RESP over TLS（Ray GCS 6379），客户端 `AUTH <token>` | 已实现，`--protocol redis` |
+| P3 | ZMTP + CURVE（SGLang/vLLM） | technical-infeasible（见下） |
+| P4 | TCPStore/Gloo TLS relay（PyTorch 29500），HMAC preamble | 已实现，`--protocol tcpstore` |
+| P5 | MASQUE CONNECT-UDP（RoCE/UCX 辅助面） | 不在本任务范围 |
+| P6 | NCCL/UCX TCP 控制流 profile（端口映射/保活/抖动） | 已实现，`--protocol nccl\|ucx`；不冒充 RDMA verbs |
 
-P1 需要可选依赖 h2（pip install h2）。P1/P2 的本地客户端侧是 TLS，控制器到探针的数据面走已认证加密的 reverse
-传输（`tls`/`wss`/`https`）；目标侧是探针 `dial` 的 TCP 连接，不在本层
-终止目标 TLS。token 文件 `0600`，不写入状态或日志。P3–P6 不以“已支持”
-展示；不承诺绕过任何安全设备。
+P1 需要可选依赖 `h2`（`pip install h2`）。P1/P2/P4/P6 的本地客户端侧是
+TLS，控制器到探针的数据面走已认证加密的 reverse 传输（`tls`/`wss`/
+`https`）；目标侧是探针 `dial` 的 TCP 连接，不在本层终止目标 TLS。token
+文件 `0600`，不写入状态或日志。P6 只统计 TCP 控制流端口、保活 RTT 与抖动，
+不实现 IB/RoCE/UCX/NCCL 数据面。
+
+P3 technical-infeasible 原因：pyzmq 的 CURVE ROUTER 可以终止本地 CURVE，
+但 pyzmq socket 只能使用其内置 `tcp`/`ipc` 等 transport，不能绑定到
+`ProbeConnection.dial` 返回的自定义字节流；改成 ROUTER/DEALER 消息级桥接
+会终止并重新发起 ZMTP，需要目标端 CURVE 公钥/ZAP，且不再是原始 ZMTP 透传。
+手工实现 ZMTP 3.1 的 CURVE HELLO/WELCOME/INITIATE/READY 与
+`crypto_box` nonce/counter 状态机本次未完成、未验证，因此不注册假实现。
+
 
 ## 9. Rust 构建与验证
 

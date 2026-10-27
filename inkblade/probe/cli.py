@@ -381,8 +381,12 @@ def register(sub) -> None:
     sv.add_argument("--config", required=True)
     sv.add_argument("--state", required=True)
     mp = csub.add_parser("proxy", help="ML 原生代理：gRPC/TLS 或 Redis RESP/TLS")
-    mp.add_argument("--protocol", choices=["grpc", "redis"], required=True)
-    mp.add_argument("--target", required=True, help="HOST:PORT（Triton 8001 / Ray 8265 / GCS 6379）")
+    mp.add_argument("--protocol", choices=["grpc", "redis", "tcpstore", "nccl", "ucx", "zmtp"], required=True)
+    mp.add_argument("--target", required=True, help="HOST 或 HOST:PORT")
+    mp.add_argument("--port", default=None, help="NCCL/UCX 目标端口或范围，如 50000-51000")
+    mp.add_argument("--max-ports", type=int, default=64)
+    mp.add_argument("--local-base-port", type=int, default=0)
+    mp.add_argument("--keepalive", type=float, default=15.0)
     mp.add_argument("--listen-port", type=int, default=0)
     mp.add_argument("--token-file", required=True, help="本地代理 token 文件（0600）")
     mp.add_argument("--tls-dir", default=None)
@@ -958,18 +962,30 @@ def _channel_cmd(args, home: Path) -> int:
 
 def _mlproxy_cmd(args, home: Path) -> int:
     from .. import reverse
-    from ..mlproxy import GrpcTlsProxy, MlProxyError, RedisTlsProxy
+    from ..mlproxy import (
+        GrpcTlsProxy,
+        MlProxyError,
+        NcclTlsProxy,
+        RedisTlsProxy,
+        TcpStoreTlsProxy,
+    )
 
     store = _store(home, args.workspace)
     sess = _load_session(store, args.session) if args.session else None
+    if args.protocol == "zmtp":
+        print(
+            "inkblade channel proxy: P3 ZMTP+CURVE is technical-infeasible in "
+            "this build (pyzmq cannot bind to a probe stream; manual ZMTP 3.1 "
+            "CURVE handshake not completed). No fake support is registered.",
+            file=sys.stderr,
+        )
+        return 2
     try:
         _level_ok(store, "主动探测")
     except ExecutionLocked as exc:
         print(f"inkblade channel proxy: {exc}", file=sys.stderr)
         return 91
     try:
-        host, port_text = args.target.rsplit(":", 1)
-        target_port = int(port_text)
         proxy_token = reverse._read_token(args.token_file)
         material = reverse.ensure_tls_material(
             args.tls_dir or str(
@@ -978,12 +994,38 @@ def _mlproxy_cmd(args, home: Path) -> int:
             hosts=["127.0.0.1", "localhost"],
         )
         connection = _connect(args, sess)
-        proxy_type = GrpcTlsProxy if args.protocol == "grpc" else RedisTlsProxy
-        proxy = proxy_type(
-            connection, target_host=host, target_port=target_port,
-            token=proxy_token, tls_material=material,
-            listen_port=int(args.listen_port),
-        ).start()
+        if args.protocol in ("nccl", "ucx"):
+            if not args.port:
+                raise MlProxyError("NCCL/UCX requires --port RANGE",
+                                   code="missing_port")
+            host = args.target.rsplit(":", 1)[0]
+            proxy = NcclTlsProxy(
+                connection, target_host=host, port_spec=args.port,
+                protocol=args.protocol, max_ports=int(args.max_ports),
+                local_base_port=int(args.local_base_port), token=proxy_token,
+                tls_material=material, keepalive_s=float(args.keepalive),
+            ).start()
+        else:
+            host, port_text = args.target.rsplit(":", 1)
+            target_port = int(port_text)
+            if args.protocol == "grpc":
+                proxy = GrpcTlsProxy(
+                    connection, target_host=host, target_port=target_port,
+                    token=proxy_token, tls_material=material,
+                    listen_port=int(args.listen_port),
+                ).start()
+            elif args.protocol == "redis":
+                proxy = RedisTlsProxy(
+                    connection, target_host=host, target_port=target_port,
+                    token=proxy_token, tls_material=material,
+                    listen_port=int(args.listen_port),
+                ).start()
+            else:
+                proxy = TcpStoreTlsProxy(
+                    connection, target_host=host, target_port=target_port,
+                    token=proxy_token, tls_material=material,
+                    keepalive_s=float(args.keepalive),
+                ).start()
     except (ChannelError, MlProxyError, OSError, ValueError) as exc:
         print(f"inkblade channel proxy: {exc}", file=sys.stderr)
         return 2

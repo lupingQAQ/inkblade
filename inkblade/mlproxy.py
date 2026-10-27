@@ -108,6 +108,370 @@ def _with_token(headers: list[tuple[str, str]], token: str) -> list[tuple[str, s
     return output
 
 
+def _recv_line(sock, limit: int = 512) -> str:
+    data = bytearray()
+    while len(data) < limit:
+        chunk = sock.recv(1)
+        if not chunk:
+            raise MlProxyError("connection closed during auth", code="disconnected")
+        if chunk == b"\n":
+            return data.decode("ascii", "replace").rstrip("\r")
+        data.extend(chunk)
+    raise MlProxyError("authentication line too long", code="protocol")
+
+
+def _forward_mac(token: str, nonce: str) -> str:
+    return hmac.new(
+        token.encode("utf-8"), nonce.encode("ascii"), hashlib.sha256
+    ).hexdigest()
+
+
+def parse_port_spec(spec: str, *, max_ports: int = 64) -> list[int]:
+    ports: list[int] = []
+    for part in str(spec or "").split(","):
+        part = part.strip()
+        if not part:
+            continue
+        if "-" in part:
+            start_text, end_text = part.split("-", 1)
+            start, end = int(start_text), int(end_text)
+            if start > end:
+                start, end = end, start
+            ports.extend(range(start, end + 1))
+        else:
+            ports.append(int(part))
+        if len(ports) >= max_ports:
+            break
+    ports = sorted({port for port in ports if 0 < port <= 65535})
+    if not ports:
+        raise MlProxyError("empty or invalid port specification",
+                           code="invalid_port")
+    return ports[:max_ports]
+
+
+class _TcpRelayProxy:
+    """Common TLS + HMAC-preamble relay used by P4/P6.
+
+    The local client leg is TLS.  The client reads `INKBLADE-AUTH <nonce>` and
+    returns HMAC-SHA256(token, nonce); only then does the proxy dial the target
+    through the encrypted probe transport.  Raw TCP clients cannot pass the
+    TLS handshake and are never relayed.
+    """
+
+    protocol = "tcp-relay-tls"
+
+    def __init__(
+        self,
+        probe: ProbeConnection,
+        *,
+        token: str,
+        bind_host: str = "127.0.0.1",
+        tls_material: dict[str, Any] | None = None,
+        tls_dir: str | Path | None = None,
+        keepalive_s: float = 15.0,
+        on_audit: Callable[[dict[str, Any]], None] | None = None,
+    ):
+        if bind_host not in ("127.0.0.1", "::1", "localhost"):
+            raise MlProxyError("TCP relay may only bind loopback", code="public_bind")
+        if probe.transport == "tcp":
+            raise MlProxyError("plaintext probe transport is lab-only",
+                               code="plaintext_probe")
+        if not token:
+            raise MlProxyError("TCP relay requires a token", code="missing_token")
+        self.probe = probe
+        self.token = token
+        self.bind_host = bind_host
+        self.keepalive_s = max(0.0, float(keepalive_s))
+        self.on_audit = on_audit
+        self._tls_material = tls_material or GrpcTlsProxy._generate_tls(tls_dir)
+        self._tls = GrpcTlsProxy._build_tls_context(self._tls_material)
+        self._listeners: list[socket.socket] = []
+        self._threads: list[threading.Thread] = []
+        self._clients: set[socket.socket] = set()
+        self._lock = threading.Lock()
+        self._stop = threading.Event()
+        self._keepalive_thread: threading.Thread | None = None
+        self._rtt_last = None
+        self._jitter = 0.0
+        self._keepalive_failures = 0
+        self._pings = 0
+        self.started_at = time.time()
+        self.connections = 0
+        self.auth_failures = 0
+        self.errors = 0
+        self.port_map: list[dict[str, Any]] = []
+
+    def _listen(self, port: int) -> socket.socket:
+        listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        listener.bind((self.bind_host, int(port)))
+        listener.listen(64)
+        listener.settimeout(0.3)
+        self._listeners.append(listener)
+        return listener
+
+    def _start_listener(self, local_port: int, target_host: str,
+                        target_port: int) -> int:
+        listener = self._listen(local_port)
+        actual = int(listener.getsockname()[1])
+        thread = threading.Thread(
+            target=self._accept_loop,
+            args=(listener, target_host, target_port),
+            name="tcp-relay-accept", daemon=True,
+        )
+        self._threads.append(thread)
+        thread.start()
+        self.port_map.append({
+            "local": actual, "target_host": target_host,
+            "target_port": int(target_port),
+        })
+        return actual
+
+    def _start_keepalive(self) -> None:
+        if not self.keepalive_s:
+            return
+        self._keepalive_thread = threading.Thread(
+            target=self._keepalive_loop, name="tcp-relay-keepalive", daemon=True
+        )
+        self._keepalive_thread.start()
+
+    def _keepalive_loop(self) -> None:
+        while not self._stop.is_set():
+            started = time.time()
+            try:
+                self.probe.ping(timeout=min(5.0, self.keepalive_s))
+                rtt = (time.time() - started) * 1000
+                if self._rtt_last is not None:
+                    self._jitter = (
+                        0.8 * self._jitter
+                        + 0.2 * abs(rtt - self._rtt_last)
+                    )
+                self._rtt_last = rtt
+                self._pings += 1
+            except Exception:
+                self._keepalive_failures += 1
+            self._stop.wait(self.keepalive_s)
+
+    def _accept_loop(self, listener: socket.socket, target_host: str,
+                     target_port: int) -> None:
+        while not self._stop.is_set():
+            try:
+                client, _ = listener.accept()
+            except socket.timeout:
+                continue
+            except OSError:
+                break
+            client.settimeout(15)
+            try:
+                client = self._tls.wrap_socket(client, server_side=True)
+            except (ssl.SSLError, OSError) as exc:
+                self.errors += 1
+                self._audit("tcp_relay.tls_failed", {
+                    "target": f"{target_host}:{target_port}",
+                    "error": str(exc),
+                })
+                try:
+                    client.close()
+                except OSError:
+                    pass
+                continue
+            with self._lock:
+                self._clients.add(client)
+                self.connections += 1
+            thread = threading.Thread(
+                target=self._handle_client,
+                args=(client, target_host, target_port),
+                name="tcp-relay-client", daemon=True,
+            )
+            self._threads.append(thread)
+            thread.start()
+
+    def _handle_client(self, client: ssl.SSLSocket, target_host: str,
+                       target_port: int) -> None:
+        try:
+            nonce = secrets_token_hex()
+            client.sendall(f"INKBLADE-AUTH {nonce}\n".encode("ascii"))
+            client.settimeout(5)
+            supplied = _recv_line(client)
+            client.settimeout(None)
+            if not hmac.compare_digest(supplied, _forward_mac(self.token, nonce)):
+                self.auth_failures += 1
+                client.sendall(b"INKBLADE-DENY auth-failed\n")
+                raise MlProxyError("TCP relay HMAC rejected", code="auth_failed")
+            client.sendall(b"INKBLADE-OK\n")
+            stream = self.probe.dial(target_host, target_port, timeout_ms=10_000)
+            self._audit("tcp_relay.connected", {
+                "target": f"{target_host}:{target_port}",
+            })
+            self._relay(client, stream)
+        except (OSError, ChannelError, MlProxyError):
+            pass
+        finally:
+            with self._lock:
+                self._clients.discard(client)
+            try:
+                client.close()
+            except OSError:
+                pass
+
+    def _relay(self, client: ssl.SSLSocket, stream: DialStream) -> None:
+        done = threading.Event()
+
+        def upstream() -> None:
+            try:
+                while not self._stop.is_set():
+                    chunk = client.recv(65536)
+                    if not chunk:
+                        break
+                    stream.send(chunk)
+                stream.close_write()
+            except (OSError, ChannelError):
+                pass
+            finally:
+                done.set()
+
+        thread = threading.Thread(target=upstream, name="tcp-relay-up", daemon=True)
+        thread.start()
+        try:
+            while not self._stop.is_set():
+                try:
+                    chunk = stream.recv(timeout=1.0)
+                except ProbeTimeout:
+                    continue
+                if chunk is None:
+                    break
+                client.sendall(chunk)
+        except (OSError, ChannelError):
+            pass
+        finally:
+            done.wait(timeout=2)
+            stream.close()
+            try:
+                client.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+
+    def _audit(self, event: str, detail: dict[str, Any]) -> None:
+        if self.on_audit:
+            try:
+                self.on_audit({"ts": time.time(), "event": event, **detail})
+            except Exception:
+                pass
+
+    def status(self) -> dict[str, Any]:
+        return {
+            "protocol": self.protocol,
+            "listen": f"{self.bind_host}:{self.port_map[0]['local']}"
+                      if self.port_map else None,
+            "ports": list(self.port_map),
+            "probe_id": self.probe.probe_id,
+            "probe_transport": self.probe.transport,
+            "tls": {"enabled": True, "ca_file": self._tls_material.get("ca_file"),
+                    "pin": self._tls_material.get("pin")},
+            "auth": {"preamble": "HMAC-SHA256(token,nonce)"},
+            "keepalive": {
+                "interval_s": self.keepalive_s,
+                "pings": self._pings,
+                "failures": self._keepalive_failures,
+                "rtt_ms_last": round(self._rtt_last, 2)
+                if self._rtt_last is not None else None,
+                "jitter_ms": round(self._jitter, 2),
+            },
+            "rdma_verbs": False,
+            "connections": self.connections,
+            "auth_failures": self.auth_failures,
+            "errors": self.errors,
+            "running": not self._stop.is_set(),
+        }
+
+    def stop(self) -> None:
+        self._stop.set()
+        for listener in self._listeners:
+            try:
+                listener.close()
+            except OSError:
+                pass
+        with self._lock:
+            clients = list(self._clients)
+            self._clients.clear()
+        for client in clients:
+            try:
+                client.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+            try:
+                client.close()
+            except OSError:
+                pass
+        for thread in list(self._threads):
+            if thread is not threading.current_thread():
+                thread.join(timeout=0.5)
+        if self._keepalive_thread is not None:
+            self._keepalive_thread.join(timeout=1.0)
+        self._audit("tcp_relay.stopped", {"protocol": self.protocol})
+
+
+def secrets_token_hex() -> str:
+    import secrets
+
+    return secrets.token_hex(16)
+
+
+class TcpStoreTlsProxy(_TcpRelayProxy):
+    """P4: TCPStore/Gloo TLS relay (PyTorch 29500 shape)."""
+
+    protocol = "tcpstore-tls"
+
+    def __init__(self, probe: ProbeConnection, *, target_host: str,
+                 target_port: int, **kwargs):
+        super().__init__(probe, **kwargs)
+        self.target_host = target_host
+        self.target_port = int(target_port)
+
+    def start(self) -> "TcpStoreTlsProxy":
+        self._start_listener(0, self.target_host, self.target_port)
+        self._start_keepalive()
+        self._audit("tcpstore.started", {
+            "target": f"{self.target_host}:{self.target_port}",
+            "port": self.port_map[0]["local"],
+        })
+        return self
+
+
+class NcclTlsProxy(_TcpRelayProxy):
+    """P6: NCCL/UCX TCP control-flow profile relay.
+
+    This is explicitly a TCP control-flow relay/profile.  It does not speak
+    RDMA verbs, IB, RoCE, UCX transport or NCCL protocol framing.
+    """
+
+    protocol = "nccl-tcp-tls"
+
+    def __init__(self, probe: ProbeConnection, *, target_host: str,
+                 port_spec: str, protocol: str = "nccl",
+                 max_ports: int = 64, local_base_port: int = 0, **kwargs):
+        super().__init__(probe, **kwargs)
+        self.target_host = target_host
+        self.port_spec = port_spec
+        self.profile = "ucx" if protocol == "ucx" else "nccl"
+        self.protocol = f"{self.profile}-tcp-tls"
+        self.target_ports = parse_port_spec(port_spec, max_ports=max_ports)
+        self.local_base_port = int(local_base_port)
+
+    def start(self) -> "NcclTlsProxy":
+        for index, target_port in enumerate(self.target_ports):
+            local = self.local_base_port + index if self.local_base_port else 0
+            self._start_listener(local, self.target_host, target_port)
+        self._start_keepalive()
+        self._audit(f"{self.profile}.started", {
+            "target": self.target_host,
+            "ports": self.target_ports,
+            "rdma_verbs": False,
+        })
+        return self
+
+
+
 class GrpcTlsProxy:
     """Loopback gRPC-over-TLS proxy backed by one authenticated probe."""
 

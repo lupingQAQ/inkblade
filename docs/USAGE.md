@@ -173,13 +173,26 @@ python -m inkblade channel proxy --protocol grpc \
 python -m inkblade channel proxy --protocol redis \
   --target ray-head.ml-team:6379 --token-file ./proxy.token \
   --probe-command '<kubectl exec -i ... -- probe run --stdio ...>'
+
+# P4: TCPStore/Gloo TLS relay（PyTorch 29500），HMAC preamble
+python -m inkblade channel proxy --protocol tcpstore \
+  --target ray-head.ml-team:29500 --token-file ./proxy.token \
+  --probe-command '<kubectl exec -i ... -- probe run --stdio ...>'
+
+# P6: NCCL/UCX TCP 控制流 profile（不冒充 RDMA verbs）
+python -m inkblade channel proxy --protocol nccl \
+  --target worker-0.ml-team --port 50000-51000 \
+  --token-file ./proxy.token \
+  --probe-command '<kubectl exec -i ... -- probe run --stdio ...>'
 ```
 
 `channel proxy` 默认只监听 `127.0.0.1`；`--tls-dir` 输出 CA、服务器证书和
 pin，客户端必须用 pin 校验。token 文件权限需为 `0600`，不写入状态或日志。
-P3（ZMTP+CURVE）、P4（TCPStore/Gloo）、P5（MASQUE CONNECT-UDP）、
-P6（NCCL/UCX 端口 profile）尚未实现，不会以“已支持”展示。跨集群/远端
-代理必须使用 `tls`、`wss` 或 `https` 的 reverse 探针，禁止明文 `tcp`。
+P1/P2/P4/P6 已实现；P3（ZMTP+CURVE）为 technical-infeasible（见
+`REVERSE-CHANNEL.md`，未注册假实现），P5（MASQUE CONNECT-UDP）不在本任务
+范围。P6 只做 TCP 控制流加密 relay、端口映射、保活和抖动统计，不实现也不
+冒充 IB/RoCE/UCX/RDMA verbs。跨集群/远端代理必须使用 `tls`、`wss` 或
+`https` 的 reverse 探针，禁止明文 `tcp`。
 
 ## 检测
 
