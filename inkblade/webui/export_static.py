@@ -89,6 +89,32 @@ def load_run_data(run_dir: Path | str, redact_zeroday: bool = False) -> dict[str
                     row[key] = []
         nodes = _rows(conn, "SELECT node_id, kind, layer, attrs FROM graph_nodes")
         edges = _rows(conn, "SELECT src, dst, verdict, method, chain FROM graph_edges")
+        # 老 run 或非 agent 执行可能只有 steps 而无 graph_nodes。此时按执行顺序
+        # 生成工作流 DAG，保证控制台仍可展示“做过什么、先后关系”，不伪造资产边。
+        if not nodes and steps:
+            prev_id = None
+            for s in steps:
+                node_id = f"step:{s['id']}"
+                attrs = {
+                    "label": s.get("step_key") or node_id,
+                    "status": s.get("status"),
+                    "summary": s.get("result_summary") or "",
+                }
+                nodes.append({
+                    "node_id": node_id,
+                    "kind": "step",
+                    "layer": "workflow",
+                    "attrs": json.dumps(attrs, ensure_ascii=False),
+                })
+                if prev_id is not None:
+                    edges.append({
+                        "src": prev_id,
+                        "dst": node_id,
+                        "verdict": "sequence",
+                        "method": "step-order",
+                        "chain": "",
+                    })
+                prev_id = node_id
     finally:
         conn.close()
 

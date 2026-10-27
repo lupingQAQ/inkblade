@@ -125,6 +125,26 @@ class TestReadOnlyApi(unittest.TestCase):
                          ("ns/train", "svc/sglang", "reachable", "CNI 语义推演"))
         self.assertEqual(body["by_layer"], {"工作负载层": 1, "命名空间层": 1})
 
+    def test_graph_falls_back_to_step_dag(self):
+        """无 graph_nodes 的 run（普通执行/老 run）也要能看到步骤 DAG。"""
+        run = self.store.create_run("api-run-steps-only")
+        run.add_step("recon", "collect", {"actor": "tester"}, "ok")
+        run.add_step("exploit", "exploit", {"actor": "tester"}, "ok")
+        run.finalize_run()
+        token = self._token()
+        code, body = _req("GET", self.base + "/api/v1/graph?run=api-run-steps-only",
+                          token=token)
+        self.assertEqual(code, 200, body)
+        self.assertEqual(body["node_count"], 2)
+        self.assertEqual(body["edge_count"], 1)
+        self.assertEqual([n["kind"] for n in body["nodes"]], ["step", "step"])
+        self.assertEqual([n["layer"] for n in body["nodes"]], ["workflow", "workflow"])
+        self.assertEqual(body["edges"][0]["method"], "step-order")
+        self.assertEqual((body["edges"][0]["src"], body["edges"][0]["dst"]),
+                         (body["nodes"][0]["node_id"], body["nodes"][1]["node_id"]))
+        attrs = json.loads(body["nodes"][0]["attrs"])
+        self.assertEqual(attrs["label"], "recon")
+
     def test_report_endpoint(self):
         token = self._token()
         code, body = _req("GET", self.base + "/api/v1/report?run=api-run&kind=pentest&lang=zh",
