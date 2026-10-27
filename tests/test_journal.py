@@ -8,6 +8,7 @@
 """
 
 import json
+import threading
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -47,6 +48,29 @@ class JournalAppendTest(unittest.TestCase):
         before = self.path.read_bytes()
         self.j.events()
         self.assertEqual(self.path.read_bytes(), before)
+
+    def test_concurrent_appends_keep_the_chain_valid(self):
+        """多个 supervisor 线程/实例同时追加时不得写出半行或重复 seq。"""
+        errors: list[BaseException] = []
+
+        def worker(index: int) -> None:
+            try:
+                journal = Journal(self.path, fsync=False)
+                for item in range(5):
+                    journal.append("step.started", step=f"w{index}-{item}")
+            except BaseException as exc:  # noqa: BLE001 - collect thread failure
+                errors.append(exc)
+
+        threads = [threading.Thread(target=worker, args=(i,)) for i in range(12)]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+        self.assertEqual(errors, [])
+        events = self.j.events()
+        self.assertEqual(len(events), 60)
+        self.assertEqual([e["seq"] for e in events], list(range(1, 61)))
+        self.assertTrue(self.j.verify()["ok"])
 
 
 class JournalResumeTest(unittest.TestCase):

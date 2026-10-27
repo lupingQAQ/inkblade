@@ -18,10 +18,66 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import threading
 import time
 from collections import Counter
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
+
+_APPEND_LOCKS: dict[str, threading.Lock] = {}
+_APPEND_LOCKS_GUARD = threading.Lock()
+
+
+def _append_lock(path: Path) -> threading.Lock:
+    key = str(path.resolve())
+    with _APPEND_LOCKS_GUARD:
+        return _APPEND_LOCKS.setdefault(key, threading.Lock())
+
+
+@contextmanager
+def _cross_process_lock(path: Path):
+    """Best-effort exclusive lock for concurrent journal appenders.
+
+    A process-local lock is enough for threads; the sidecar lock file also
+    serialises multiple controller processes on the same workspace.  The lock
+    is deliberately kept outside the journal file so truncation/rotation of
+    the journal never loses the mutex.
+    """
+    lock_path = path.with_name(path.name + ".lock")
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    handle = lock_path.open("a+b")
+    try:
+        if os.name == "nt":
+            import msvcrt
+            if lock_path.stat().st_size == 0:
+                handle.write(b"\0")
+                handle.flush()
+            while True:
+                try:
+                    handle.seek(0)
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
+                    break
+                except OSError:
+                    time.sleep(0.01)
+        else:
+            import fcntl
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            if os.name == "nt":
+                import msvcrt
+                handle.seek(0)
+                try:
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+                except OSError:
+                    pass
+            else:
+                import fcntl
+                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+    finally:
+        handle.close()
 
 JOURNAL_RELPATH = "_journal/journal.jsonl"
 FINISHED_OK = "step.finished"
@@ -63,18 +119,20 @@ class Journal:
             raise JournalError("payload 须为 dict 或 None")
         if not isinstance(step, str):
             raise JournalError("step 须为字符串")
-        events = self.events(strict=False)
-        seq = (events[-1]["seq"] + 1) if events else 1
-        prev = _hash_event_prev(events)
-        body = {"seq": seq, "ts": time.time(), "kind": kind, "step": step, "payload": payload or {}}
-        event = {**body, "prev": prev, "hash": _hash_event(prev, body)}
-        line = json.dumps(event, ensure_ascii=False, separators=(",", ":"), default=str)
-        with self.path.open("a", encoding="utf-8", newline="\n") as fh:
-            fh.write(line + "\n")
-            fh.flush()
-            if self._fsync:
-                os.fsync(fh.fileno())
-        return event
+        with _append_lock(self.path), _cross_process_lock(self.path):
+            events = self.events(strict=False)
+            seq = (events[-1]["seq"] + 1) if events else 1
+            prev = _hash_event_prev(events)
+            body = {"seq": seq, "ts": time.time(), "kind": kind, "step": step,
+                    "payload": payload or {}}
+            event = {**body, "prev": prev, "hash": _hash_event(prev, body)}
+            line = json.dumps(event, ensure_ascii=False, separators=(",", ":"), default=str)
+            with self.path.open("a", encoding="utf-8", newline="\n") as fh:
+                fh.write(line + "\n")
+                fh.flush()
+                if self._fsync:
+                    os.fsync(fh.fileno())
+            return event
 
     # ---------------------------------------------------------------- 读取
     def events(self, *, strict: bool = True) -> list[dict]:
