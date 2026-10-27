@@ -390,6 +390,7 @@ class FakeReverseProbe(threading.Thread):
         poll_path: str = "/v1/probe/poll",
         result_path: str = "/v1/probe/result",
         user_agent: str = "",
+        fallback_from: str = "",
     ):
         super().__init__(daemon=True)
         self.host = host
@@ -402,6 +403,7 @@ class FakeReverseProbe(threading.Thread):
         self.ca_file = ca_file
         self.pin = pin
         self.sni = sni or host
+        self.fallback_from = fallback_from
         self.context = context
         self.path = path
         self.poll_path = poll_path
@@ -410,7 +412,7 @@ class FakeReverseProbe(threading.Thread):
         self.caps = list(caps or [
             "collect", "exec", "dial", "beacon", "cleanup", "upload",
             "download", "spawn", "reverse", "task", "socks", "k8s",
-            "audit-exec", "read-file", "list-files",
+            "audit-exec", "read-file", "list-files", "udp",
         ])
         self.connect_timeout = float(connect_timeout)
         self.read_only_rootfs = read_only_rootfs
@@ -423,7 +425,9 @@ class FakeReverseProbe(threading.Thread):
         self.spawns: list[dict[str, Any]] = []
         self.requests: list[dict[str, Any]] = []
         self.streams: dict[int, socket.socket] = {}
+        self.udp_sockets: dict[int, socket.socket] = {}
         self._next_stream = 1
+        self._next_udp = 1
         self._stream_lock = threading.Lock()
         self._write_lock = threading.Lock()
         self._stop_event = threading.Event()
@@ -459,6 +463,10 @@ class FakeReverseProbe(threading.Thread):
             self.ready.set()
             self.finished.set()
             return
+        self._sock = stream
+        self._serve_stream(stream)
+
+    def _serve_stream(self, stream) -> None:
         self._sock = stream
         stream.settimeout(None)
         self._reader = stream.makefile("rb")
@@ -541,9 +549,16 @@ class FakeReverseProbe(threading.Thread):
         with self._stream_lock:
             streams = list(self.streams.values())
             self.streams.clear()
+            udp_sockets = list(self.udp_sockets.values())
+            self.udp_sockets.clear()
         for stream in streams:
             try:
                 stream.close()
+            except OSError:
+                pass
+        for sock in udp_sockets:
+            try:
+                sock.close()
             except OSError:
                 pass
 
@@ -564,6 +579,7 @@ class FakeReverseProbe(threading.Thread):
             "challenge": challenge, "nonce": secrets.token_hex(16),
             "auth": "hmac-sha256", "read_only": self.read_only,
             "transport": "reverse", "window": 4,
+            "fallback_from": self.fallback_from or None,
         })
         frame = read_frame(self._reader)
         if not frame or frame.get("type") != "auth":
@@ -695,6 +711,8 @@ class FakeReverseProbe(threading.Thread):
             return {"removed": removed, "children": len(self.spawns)}
         if op == "dial":
             return self._dial(args)
+        if op == "udp":
+            return self._udp(args)
         if op == "socks":
             return {"address": "127.0.0.1:0", "bind": "127.0.0.1"}
         if op == "k8s":
@@ -703,6 +721,53 @@ class FakeReverseProbe(threading.Thread):
             return {"ok": True, "task_id": request_id, "probe_id": self.probe_id,
                     "steps": [], "vars": {}}
         raise ValueError(f"unknown op {op}")
+
+    def _udp(self, args: dict[str, Any]) -> dict[str, Any]:
+        action = str(args.get("action") or "")
+        if action == "bind":
+            host = str(args.get("host") or "0.0.0.0")
+            port = int(args.get("port") or 0)
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sock.bind((host, port))
+            sock.settimeout(1.0)
+            with self._stream_lock:
+                socket_id = self._next_udp
+                self._next_udp += 1
+                self.udp_sockets[socket_id] = sock
+            return {"socket": socket_id, "port": sock.getsockname()[1],
+                    "address": f"{sock.getsockname()[0]}:{sock.getsockname()[1]}"}
+        socket_id = int(args.get("socket") or 0)
+        with self._stream_lock:
+            sock = self.udp_sockets.get(socket_id)
+        if sock is None:
+            raise ValueError(f"unknown udp socket {socket_id}")
+        if action == "send":
+            host = str(args.get("host") or "")
+            port = int(args.get("port") or 0)
+            data = base64.b64decode(args.get("data_b64") or "")
+            sent = sock.sendto(data, (host, port))
+            return {"sent": sent, "socket": socket_id}
+        if action == "recv":
+            timeout = int(args.get("timeout_ms") or 1000) / 1000
+            sock.settimeout(timeout)
+            try:
+                data, address = sock.recvfrom(65535)
+            except socket.timeout:
+                return {"timeout": True, "socket": socket_id}
+            return {
+                "socket": socket_id,
+                "data_b64": base64.b64encode(data).decode("ascii"),
+                "host": address[0], "port": address[1], "bytes": len(data),
+            }
+        if action == "close":
+            with self._stream_lock:
+                self.udp_sockets.pop(socket_id, None)
+            try:
+                sock.close()
+            except OSError:
+                pass
+            return {"socket": socket_id, "closed": True}
+        raise ValueError(f"unknown udp action {action}")
 
     def _exec(self, args: dict[str, Any]) -> dict[str, Any]:
         argv = [str(item) for item in args.get("argv") or []]

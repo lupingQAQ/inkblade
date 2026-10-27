@@ -23,6 +23,7 @@ mod k8s;
 mod net;
 mod posture;
 mod protocol;
+mod quic;
 mod server;
 mod sha256;
 mod spawn;
@@ -107,7 +108,7 @@ fn run() -> Result<i32, String> {
                 })
                 .filter(|value| *value != 0)
                 .ok_or_else(|| "reverse requires --port PORT".to_string())?;
-            let transport_name = if opts.transport == "lab-plaintext" {
+            let mut active_transport = if opts.transport == "lab-plaintext" {
                 if std::env::var("INKBLADE_ALLOW_PLAINTEXT_LAB").ok().as_deref() != Some("1") {
                     return Err(
                         "plaintext reverse requires INKBLADE_ALLOW_PLAINTEXT_LAB=1 "
@@ -116,7 +117,17 @@ fn run() -> Result<i32, String> {
                 }
                 "lab-plaintext".to_string()
             } else {
-                if !matches!(opts.transport.as_str(), "tls" | "wss" | "https") {
+                if !matches!(
+                    opts.transport.as_str(),
+                    "tls" | "wss" | "https" | "quic"
+                ) {
+                    if opts.transport == "webtransport" {
+                        return Err(
+                            "Rust probe WebTransport client is not implemented in this \
+                             build; use --transport quic or an aioquic client"
+                                .to_string(),
+                        );
+                    }
                     return Err(format!("unsupported --transport {}", opts.transport));
                 }
                 if opts.pin.is_none() {
@@ -127,20 +138,55 @@ fn run() -> Result<i32, String> {
                 }
                 opts.transport.clone()
             };
+            let mut fallback_transport = opts.fallback_transport.trim().to_lowercase();
+            if fallback_transport.is_empty() && active_transport == "quic" {
+                fallback_transport = "tls".to_string();
+            }
+            if fallback_transport == "none" {
+                fallback_transport.clear();
+            }
+            if !fallback_transport.is_empty()
+                && !matches!(fallback_transport.as_str(), "tls" | "wss")
+            {
+                return Err(format!(
+                    "unsupported --fallback {} (tls, wss or none)",
+                    opts.fallback_transport
+                ));
+            }
+            let mut fallback_from: Option<String> = None;
             let mut attempt: u32 = 0;
             loop {
                 let started = std::time::Instant::now();
-                let result = transport::connect(&opts, &host, port).and_then(|(reader, writer)| {
-                    server::serve_with_transport(
-                        opts.clone(),
-                        reader,
-                        writer,
-                        &transport_name,
-                    )
-                });
+                let mut attempt_opts = opts.clone();
+                attempt_opts.transport = active_transport.clone();
+                attempt_opts.fallback_from = fallback_from.clone();
+                let result = transport::connect(&attempt_opts, &host, port).and_then(
+                    |(reader, writer)| {
+                        server::serve_with_transport(
+                            attempt_opts.clone(),
+                            reader,
+                            writer,
+                            &active_transport,
+                        )
+                    },
+                );
                 match result {
                     Ok(()) => {}
                     Err(error) => {
+                        if error.contains("udp-blocked")
+                            && fallback_from.is_none()
+                            && !fallback_transport.is_empty()
+                            && active_transport != fallback_transport
+                        {
+                            eprintln!(
+                                "inkblade-probe: udp-blocked on {}; falling back to {}",
+                                active_transport, fallback_transport
+                            );
+                            fallback_from = Some(active_transport.clone());
+                            active_transport = fallback_transport.clone();
+                            attempt = 0;
+                            continue;
+                        }
                         if error.contains("authentication failed")
                             || error.contains("client disconnected before auth")
                         {
@@ -353,6 +399,9 @@ fn parse_options(args: Vec<String>) -> Result<(Options, Vec<String>), String> {
             "--transport" => {
                 opts.transport = next_value(&args, &mut index, "--transport")?;
             }
+            "--fallback" => {
+                opts.fallback_transport = next_value(&args, &mut index, "--fallback")?;
+            }
             "--lab-plaintext" => {
                 opts.transport = "lab-plaintext".to_string();
             }
@@ -472,8 +521,9 @@ fn usage() {
          \n\
          Usage:\n\
            inkblade-probe run --stdio --token-file PATH [--read-only|--allow-write]\n\
-           inkblade-probe reverse --transport tls|wss|https --host HOST --port PORT \n\
+           inkblade-probe reverse --transport tls|wss|https|quic --host HOST --port PORT \n\
              --ca-file CA.pem --pin SHA256 [--sni NAME] [--token-file PATH]\n\
+           inkblade-probe reverse --transport quic ... [--fallback tls|wss|none]\n\
            inkblade-probe reverse --host HOST --port PORT --lab-plaintext  (lab tests only)\n\
            inkblade-probe collect [--read-only]\n\
            inkblade-probe bypass --plan JSON [--allow-write]\n\

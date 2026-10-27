@@ -6,7 +6,18 @@ challenge-HMAC token handshake):
 
 * ``tls``   - raw framed protocol inside TLS (default);
 * ``wss``   - TLS + RFC 6455 WebSocket binary messages;
-* ``https`` - TLS + HTTP/1.1 long-poll (POST poll / POST result).
+* ``https`` - TLS + HTTP/1.1 long-poll (POST poll / POST result);
+* ``quic``  - QUIC/TLS 1.3 bidirectional stream carrying the same frames
+  (experimental UDP path; aioquic controller, quinn probe);
+* ``webtransport`` - HTTP/3 extended CONNECT + one WebTransport bidi stream
+  per probe (experimental; aioquic controller/client);
+* ``masque`` - RFC 9298 CONNECT-UDP + HTTP Datagrams, relayed to the probe's
+  ``udp`` op for RoCE/UCX auxiliary UDP (not RDMA verbs).
+
+``quic``/``webtransport``/``masque`` use UDP.  When UDP is blocked the probe
+reports ``udp-blocked`` and can fall back to encrypted ``tls``/``wss`` on the
+same TCP port; the controller marks ``fallback: true`` and
+``fallback_from: quic`` in the probe record.
 
 There is no public plaintext transport.  ``lab_plaintext`` exists only for
 in-process tests and requires ``INKBLADE_ALLOW_PLAINTEXT_LAB=1``; the CLI hides
@@ -52,6 +63,9 @@ STATE_SCHEMA = "inkblade-reverse-probes-v1"
 CONTROL_SCHEMA = "inkblade-reverse-control-v1"
 DEFAULT_REMOTE_DIRS = ("/tmp", "/dev/shm")
 TRANSPORTS = ("tls", "wss", "https")
+QUIC_TRANSPORTS = ("quic", "webtransport", "masque")
+ENCRYPTED_TRANSPORTS = TRANSPORTS + QUIC_TRANSPORTS
+FALLBACK_TRANSPORTS = ("tls", "wss")
 WS_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
 MAX_HTTP_BODY = 8 * 1024 * 1024
 MAX_WS_MESSAGE = 8 * 1024 * 1024
@@ -713,19 +727,35 @@ class ReverseListener:
         wss_path: str = "/ws",
         poll_path: str = "/v1/probe/poll",
         result_path: str = "/v1/probe/result",
+        webtransport_path: str = "/inkblade/wt",
+        masque_path: str = "/.well-known/masque/udp",
+        fallback_transport: str = "",
         user_agent: str = "",
         on_probe: Callable[[dict[str, Any]], None] | None = None,
         on_audit: Callable[[dict[str, Any]], None] | None = None,
     ):
         if not token:
             raise ReverseChannelError("empty probe token")
-        if transport not in TRANSPORTS and transport != "tcp":
+        if transport not in ENCRYPTED_TRANSPORTS and transport != "tcp":
             raise ReverseChannelError(f"unsupported transport {transport!r}")
         if transport == "tcp" and not lab_plaintext:
             raise ReverseChannelError(
                 "plaintext transport is lab-only; omit --transport tcp",
                 code="plaintext_forbidden",
             )
+        if fallback_transport not in ("", "none") + FALLBACK_TRANSPORTS:
+            raise ReverseChannelError(
+                f"unsupported fallback transport {fallback_transport!r}",
+                code="invalid_fallback",
+            )
+        if fallback_transport == "none":
+            fallback_transport = ""
+        if transport in QUIC_TRANSPORTS and not fallback_transport:
+            # QUIC family transports require UDP.  Encrypted TCP on the same
+            # port is the documented fallback and is on by default.
+            fallback_transport = "tls"
+        if transport not in QUIC_TRANSPORTS:
+            fallback_transport = ""
         self.token = token
         self.bind = bind
         self.port = int(port)
@@ -742,9 +772,17 @@ class ReverseListener:
         self.wss_path = wss_path or "/ws"
         self.poll_path = poll_path or "/v1/probe/poll"
         self.result_path = result_path or "/v1/probe/result"
+        self.webtransport_path = webtransport_path or "/inkblade/wt"
+        self.masque_path = masque_path or "/.well-known/masque/udp"
+        self.fallback_transport = fallback_transport
         self.user_agent = user_agent
         self._listener: socket.socket | None = None
+        self._fallback_listener: socket.socket | None = None
         self._accept_thread: threading.Thread | None = None
+        self._fallback_thread: threading.Thread | None = None
+        self._quic_server = None
+        self._quic_error = ""
+        self.fallback_port = 0
         self._maintenance_thread: threading.Thread | None = None
         self._stop = threading.Event()
         self._stopped = False
@@ -764,7 +802,7 @@ class ReverseListener:
         self._paths = reverse_paths(self.home, workspace) if self.home else None
         self._tls: dict[str, Any] | None = None
         self._tls_context: ssl.SSLContext | None = None
-        if self.transport in TRANSPORTS:
+        if self.transport in ENCRYPTED_TRANSPORTS:
             self._tls_context = self._prepare_tls(tls_material, tls_dir, tls_hosts)
 
     def _prepare_tls(self, material, tls_dir, hosts) -> ssl.SSLContext:
@@ -779,17 +817,16 @@ class ReverseListener:
 
     # ------------------------------------------------------------ lifecycle
     def start(self) -> "ReverseListener":
-        listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        listener.bind((self.bind, self.port))
-        listener.listen(128)
-        listener.settimeout(0.25)
-        self._listener = listener
-        self.port = int(listener.getsockname()[1])
-        self._accept_thread = threading.Thread(
-            target=self._accept_loop, name="reverse-accept", daemon=True
-        )
-        self._accept_thread.start()
+        if self.transport in QUIC_TRANSPORTS:
+            self._start_quic()
+        else:
+            listener = self._bind_tcp(self.port)
+            self._listener = listener
+            self.port = int(listener.getsockname()[1])
+            self._accept_thread = threading.Thread(
+                target=self._accept_loop, name="reverse-accept", daemon=True
+            )
+            self._accept_thread.start()
         if self.ping_interval or self.idle_timeout:
             self._maintenance_thread = threading.Thread(
                 target=self._maintenance_loop, name="reverse-maintenance", daemon=True
@@ -803,15 +840,86 @@ class ReverseListener:
 
     @property
     def address(self) -> str:
-        return f"{self.bind}:{self.port}"
+        suffix = "/udp" if self.transport in QUIC_TRANSPORTS else ""
+        return f"{self.bind}:{self.port}{suffix}"
 
     @property
     def stopped(self) -> bool:
         return self._stop.is_set()
 
+    def _bind_tcp(self, port: int) -> socket.socket:
+        listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        listener.bind((self.bind, int(port)))
+        listener.listen(128)
+        listener.settimeout(0.25)
+        return listener
+
+    def _start_quic(self) -> None:
+        from .quictransport import QuicTransportError, QuicTransportServer
+
+        assert self._tls is not None
+        server = QuicTransportServer(
+            self,
+            mode=self.transport,
+            bind=self.bind,
+            port=self.port,
+            tls_material=self._tls,
+            webtransport_path=self.webtransport_path,
+            masque_path=self.masque_path,
+            idle_timeout=max(30.0, float(self.idle_timeout or 60.0) * 2),
+        )
+        try:
+            server.start()
+            self._quic_server = server
+            self.port = server.port
+            self._audit("reverse.quic.listening", {
+                "mode": self.transport, "bind": self.bind, "port": self.port,
+            })
+        except QuicTransportError as exc:
+            self._quic_error = f"{exc.code}: {exc}"
+            self.errors.append(f"quic: {exc}")
+            if exc.code in ("udp-blocked", "quic_start_failed", "quic_start_timeout"):
+                server.udp_blocked = True
+            self._audit("reverse.quic.blocked", {
+                "mode": self.transport, "bind": self.bind,
+                "port": self.port, "error": str(exc),
+            })
+            if not self.fallback_transport:
+                raise
+        if self.fallback_transport:
+            try:
+                listener = self._bind_tcp(self.port)
+            except OSError as exc:
+                self.errors.append(f"fallback bind {self.bind}:{self.port}: {exc}")
+                self._audit("reverse.fallback.failed", {
+                    "transport": self.fallback_transport,
+                    "bind": self.bind, "port": self.port, "error": str(exc),
+                })
+                return
+            self._fallback_listener = listener
+            self.fallback_port = int(listener.getsockname()[1])
+            if not self._quic_server:
+                # UDP was blocked at the controller: the TCP listener is the
+                # only usable path, so keep the advertised port consistent.
+                self.port = self.fallback_port
+            self._fallback_thread = threading.Thread(
+                target=self._accept_loop_for,
+                args=(listener, self._handle_fallback_connection, "reverse-fallback"),
+                name="reverse-fallback", daemon=True,
+            )
+            self._fallback_thread.start()
+            self._audit("reverse.fallback.listening", {
+                "transport": self.fallback_transport,
+                "bind": self.bind, "port": self.fallback_port,
+            })
+
     def _accept_loop(self) -> None:
+        target = self._handle_tls if self.transport in TRANSPORTS else self._handle_plain
+        self._accept_loop_for(self._listener, target, f"reverse-{self.transport}")
+
+    def _accept_loop_for(self, listener, handler, name: str) -> None:
         while not self._stop.is_set():
-            listener = self._listener
             if listener is None:
                 break
             try:
@@ -821,14 +929,44 @@ class ReverseListener:
             except OSError:
                 break
             client.settimeout(None)
-            target = self._handle_tls if self.transport in TRANSPORTS else self._handle_plain
             thread = threading.Thread(
-                target=target, args=(client, address),
-                name=f"reverse-{self.transport}", daemon=True,
+                target=handler, args=(client, address), name=name, daemon=True
             )
             with self._lock:
                 self._threads.append(thread)
             thread.start()
+
+    def _handle_fallback_connection(self, client, address) -> None:
+        try:
+            assert self._tls_context is not None
+            stream = self._tls_context.wrap_socket(client, server_side=True)
+        except Exception as exc:
+            self.auth_failures += 1
+            self.errors.append(f"fallback tls handshake {address}: {exc}")
+            self._audit("reverse.fallback.tls_failed", {
+                "remote": str(address), "error": str(exc),
+            })
+            try:
+                client.close()
+            except OSError:
+                pass
+            return
+        transport = self.fallback_transport or "tls"
+        if transport == "wss":
+            try:
+                stream = _websocket_upgrade(stream, self.wss_path)
+            except Exception as exc:
+                self.auth_failures += 1
+                self.errors.append(f"fallback wss upgrade {address}: {exc}")
+                self._audit("reverse.fallback.wss_failed", {
+                    "remote": str(address), "error": str(exc),
+                })
+                try:
+                    stream.close()
+                except OSError:
+                    pass
+                return
+        self._handle_connection(stream, address, transport)
 
     def _handle_plain(self, client, address) -> None:
         self._handle_connection(client, address, "tcp")
@@ -917,6 +1055,8 @@ class ReverseListener:
                 "parent_id": probe.parent_id,
                 "remote": remote,
                 "transport": transport,
+                "fallback": bool(getattr(probe, "fallback_from", "")),
+                "fallback_from": getattr(probe, "fallback_from", ""),
                 "read_only": bool(probe.read_only),
                 "caps": list(probe.caps),
                 "version": probe.version,
@@ -941,7 +1081,13 @@ class ReverseListener:
             "probe_id": probe_id, "parent_id": probe.parent_id,
             "remote": remote, "transport": transport,
             "read_only": probe.read_only, "replaced": replaced,
+            "fallback_from": getattr(probe, "fallback_from", ""),
         })
+        if getattr(probe, "fallback_from", ""):
+            self._audit("reverse.fallback", {
+                "probe_id": probe_id, "from": probe.fallback_from,
+                "to": transport,
+            })
         if self.on_probe:
             try:
                 self.on_probe(dict(record))
@@ -1188,6 +1334,17 @@ class ReverseListener:
         self._stop.set()
         if self._control is not None:
             self._control.stop()
+        if self._quic_server is not None:
+            try:
+                self._quic_server.stop()
+            except Exception:
+                pass
+        for extra in (self._fallback_listener,):
+            if extra is not None:
+                try:
+                    extra.close()
+                except OSError:
+                    pass
         listener = self._listener
         self._listener = None
         if listener is not None:
@@ -1197,6 +1354,8 @@ class ReverseListener:
                 pass
         if self._accept_thread is not None:
             self._accept_thread.join(timeout=1.0)
+        if self._fallback_thread is not None:
+            self._fallback_thread.join(timeout=1.0)
         if self._maintenance_thread is not None:
             self._maintenance_thread.join(timeout=1.5)
         with self._condition:
@@ -1247,6 +1406,10 @@ class ReverseListener:
             "address": self.address,
             "transport": self.transport,
             "tls": tls_info,
+            "fallback_transport": self.fallback_transport or None,
+            "fallback_port": self.fallback_port or None,
+            "quic": self._quic_server.status() if self._quic_server else None,
+            "quic_error": self._quic_error or None,
             "workspace": self.workspace,
             "started_at": self.started_at,
             "running": not self._stop.is_set(),
@@ -1536,8 +1699,9 @@ def deploy_reverse_child(
     with EROFS the error is ``read_only_rootfs``.  The controller writes
     nothing to the host; the upload lands in the target container.
     """
-    if transport not in TRANSPORTS:
-        raise ReverseChannelError("child transport must be tls/wss/https",
+    if transport not in ENCRYPTED_TRANSPORTS:
+        raise ReverseChannelError("child transport must be tls/wss/https/quic/"
+                                  "webtransport/masque",
                                   code="invalid_transport")
     if not _SAFE_ID.match(child_id or ""):
         raise ReverseChannelError(
@@ -1690,7 +1854,7 @@ def cli_listen(args, home: Path) -> int:
             transport = "tcp"
         material = None
         tls_hosts = list(getattr(args, "tls_host", []) or [])
-        if transport in TRANSPORTS:
+        if transport in ENCRYPTED_TRANSPORTS:
             if getattr(args, "tls_cert", None) or getattr(args, "tls_key", None):
                 if not (args.tls_cert and args.tls_key and args.tls_ca):
                     raise ReverseChannelError(
@@ -1713,6 +1877,9 @@ def cli_listen(args, home: Path) -> int:
                 material = ensure_tls_material(
                     directory, hosts=hosts, days=int(args.tls_days)
                 )
+        fallback = str(getattr(args, "fallback", "") or "")
+        if not fallback and transport in QUIC_TRANSPORTS:
+            fallback = "tls"
         listener = ReverseListener(
             token,
             bind=args.bind,
@@ -1732,6 +1899,9 @@ def cli_listen(args, home: Path) -> int:
             wss_path=getattr(args, "wss_path", "/ws") or "/ws",
             poll_path=getattr(args, "poll_path", "/v1/probe/poll"),
             result_path=getattr(args, "result_path", "/v1/probe/result"),
+            webtransport_path=getattr(args, "webtransport_path", "/inkblade/wt"),
+            masque_path=getattr(args, "masque_path", "/.well-known/masque/udp"),
+            fallback_transport=fallback,
             user_agent=getattr(args, "user_agent", "") or "",
         )
         listener.start()
@@ -1750,6 +1920,18 @@ def cli_listen(args, home: Path) -> int:
         "wss_path": listener.wss_path if listener.transport == "wss" else None,
         "poll_path": listener.poll_path if listener.transport == "https" else None,
         "result_path": listener.result_path if listener.transport == "https" else None,
+        "fallback_transport": listener.fallback_transport or None,
+        "fallback_port": listener.fallback_port or None,
+        "quic": listener.status().get("quic"),
+        "quic_error": listener.status().get("quic_error"),
+        "webtransport_path": (
+            listener.webtransport_path
+            if listener.transport == "webtransport" else None
+        ),
+        "masque_path": (
+            listener.masque_path if listener.transport == "masque" else None
+        ),
+        "udp_blocked": str(listener.status().get("quic_error") or "").startswith("udp-blocked"),
     }
     if args.json and not args.once:
         _print_json(startup)
@@ -1761,6 +1943,11 @@ def cli_listen(args, home: Path) -> int:
         if startup.get("tls"):
             print(f"CA: {startup['tls']['ca_file']}")
             print(f"PIN: {startup['tls']['pin']}")
+        if listener.fallback_transport:
+            print(f"fallback: {listener.fallback_transport.upper()} on "
+                  f"{listener.bind}:{listener.fallback_port} (same port as UDP)")
+        if startup.get("quic_error"):
+            print(f"QUIC WARNING: {startup['quic_error']}")
         if listener._control:
             print(f"control 127.0.0.1:{listener._control.port} (token in "
                   f"{listener._paths['control'] if listener._paths else 'control.json'})")

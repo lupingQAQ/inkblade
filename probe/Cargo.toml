@@ -20,6 +20,10 @@ ureq = { version = "2.12", default-features = false, features = ["tls"] }
 rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
 rustls-pemfile = "2"
 webpki-roots = "1"
+# QUIC reverse transport.  quinn uses the same rustls version and the probe's
+# pinned verifier; tokio is only the async runtime for the UDP/QUIC socket.
+quinn = { version = "0.11", default-features = false, features = ["runtime-tokio", "rustls-ring"] }
+tokio = { version = "1", features = ["rt-multi-thread", "net", "time", "sync", "io-util"] }
 # memfd_create / fchmod for the fileless execution primitive.  The crate is
 # only used on Linux; the probe still builds on Windows for local tests.
 [target.'cfg(target_os = "linux")'.dependencies]

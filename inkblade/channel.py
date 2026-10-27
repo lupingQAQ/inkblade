@@ -190,6 +190,7 @@ class ProbeConnection:
         self.version = ""
         self.read_only = True
         self.caps: list[str] = []
+        self.fallback_from = ""
         self.audit_prefix = audit_prefix
         self.max_pending = max(1, int(max_pending))
         self.transport = "tcp" if sock is not None else "stdio"
@@ -291,6 +292,12 @@ class ProbeConnection:
         self.caps = [str(item) for item in ready.get("caps") or []]
         self.parent_id = ready.get("parent_id") or self.parent_id
         self.transport = str(ready.get("transport") or self.transport)
+        # A probe that reached the controller over TLS/WSS after a QUIC UDP
+        # failure includes this marker in its hello frame.  It is telemetry,
+        # never an authentication input.
+        self.fallback_from = str(
+            challenge.get("fallback_from") or ready.get("fallback_from") or ""
+        )
         self._ready.set()
         return self
 
@@ -317,11 +324,7 @@ class ProbeConnection:
             except OSError:
                 pass
             for stream in (self._sock_writer, self._sock_reader):
-                try:
-                    if stream:
-                        stream.close()
-                except OSError:
-                    pass
+                _close_quietly(stream)
             if self._reader and self._reader is not threading.current_thread():
                 self._reader.join(timeout=timeout)
         else:
@@ -700,6 +703,54 @@ class ProbeConnection:
         self._streams[stream_id] = stream
         return stream
 
+    # ------------------------------------------------------------ UDP relay
+    def udp_bind(
+        self, host: str = "0.0.0.0", port: int = 0, *,
+        timeout: float | None = None,
+    ) -> dict[str, Any]:
+        """Bind an ephemeral UDP socket inside the target pod.
+
+        This is a low-privilege operation (ports > 1024), used by the MASQUE
+        CONNECT-UDP relay.  It does not provide RDMA verbs.
+        """
+        result = self.request(
+            "udp", {"action": "bind", "host": host, "port": int(port)}, timeout=timeout
+        )
+        socket_id = int(result.get("socket") or 0)
+        if not socket_id:
+            raise ProbeError("probe did not return a udp socket id")
+        return result
+
+    def udp_send(
+        self, socket_id: int, host: str, port: int, data: bytes, *,
+        timeout: float | None = None,
+    ) -> dict[str, Any]:
+        return self.request(
+            "udp",
+            {
+                "action": "send", "socket": int(socket_id),
+                "host": str(host), "port": int(port),
+                "data_b64": base64.b64encode(data).decode("ascii"),
+            },
+            timeout=timeout,
+        )
+
+    def udp_recv(
+        self, socket_id: int, *, timeout_ms: int = 1000,
+        timeout: float | None = None,
+    ) -> dict[str, Any]:
+        return self.request(
+            "udp",
+            {"action": "recv", "socket": int(socket_id),
+             "timeout_ms": int(timeout_ms)},
+            timeout=timeout,
+        )
+
+    def udp_close(self, socket_id: int, *, timeout: float | None = None) -> dict[str, Any]:
+        return self.request(
+            "udp", {"action": "close", "socket": int(socket_id)}, timeout=timeout
+        )
+
 
 def kubectl_probe_command(
     kubectl: str = "kubectl",
@@ -973,6 +1024,28 @@ class ChannelServer:
             self.probe.close(cleanup=True)
         except Exception:
             pass
+
+
+def _close_quietly(stream, timeout: float = 0.5) -> None:
+    """Close a buffered file without letting a Windows socketpair block.
+
+    ``socket.shutdown`` wakes a reader blocked in ``read`` but closing the
+    corresponding ``BufferedReader`` can still wait on its internal lock on
+    Windows.  The socket is already closed by the caller; run the file close
+    on a helper thread and move on if the kernel is slow.
+    """
+    if stream is None:
+        return
+
+    def _close() -> None:
+        try:
+            stream.close()
+        except OSError:
+            pass
+
+    thread = threading.Thread(target=_close, name="probe-close", daemon=True)
+    thread.start()
+    thread.join(timeout=timeout)
 
 
 def _read_socket(sock: socket.socket, count: int) -> bytes:

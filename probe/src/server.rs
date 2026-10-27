@@ -2,7 +2,7 @@
 
 use std::collections::HashMap;
 use std::io::{self, BufWriter, Read, Write};
-use std::net::{Shutdown, TcpStream};
+use std::net::{Shutdown, TcpStream, UdpSocket};
 use std::process::Child;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
@@ -64,6 +64,7 @@ struct State {
     audit: Audit,
     writer: Arc<Mutex<SharedWriter>>,
     streams: Arc<Mutex<HashMap<u64, Arc<Mutex<TcpStream>>>>>,
+    udp_sockets: Arc<Mutex<HashMap<u64, Arc<UdpSocket>>>>,
     children: Arc<Mutex<HashMap<String, ChildLink>>>,
     /// Children deployed with `spawn { reverse: ... }` dial the controller
     /// themselves.  The parent keeps their process handles and ids so cleanup
@@ -71,6 +72,7 @@ struct State {
     reversed_children: Arc<Mutex<HashMap<String, (Child, std::path::PathBuf)>>>,
     transport: String,
     next_stream: AtomicU64,
+    next_udp: AtomicU64,
     started: Instant,
 }
 
@@ -144,10 +146,12 @@ pub fn serve_with_transport<R: Read, W: Write + Send + 'static>(
         audit,
         writer: Arc::new(Mutex::new(SharedWriter::new(writer))),
         streams: Arc::new(Mutex::new(HashMap::new())),
+        udp_sockets: Arc::new(Mutex::new(HashMap::new())),
         children: Arc::new(Mutex::new(HashMap::new())),
         reversed_children: Arc::new(Mutex::new(HashMap::new())),
         transport: transport.clone(),
         next_stream: AtomicU64::new(1),
+        next_udp: AtomicU64::new(1),
         started: Instant::now(),
     });
     handshake(&state, &mut reader)?;
@@ -191,6 +195,15 @@ fn handshake<R: Read>(state: &State, reader: &mut R) -> Result<(), String> {
         ("auth", json::string("hmac-sha256")),
         ("read_only", json::bool_value(state.opts.read_only)),
         ("transport", json::string(state.transport.clone())),
+        (
+            "fallback_from",
+            state
+                .opts
+                .fallback_from
+                .clone()
+                .map(json::string)
+                .unwrap_or(Value::Null),
+        ),
         ("window", json::number(state.opts.max_window as u64)),
     ]))?;
     let frame = protocol::read_frame(reader)?
@@ -256,6 +269,7 @@ fn handshake<R: Read>(state: &State, reader: &mut R) -> Result<(), String> {
             json::string("audit-exec"),
             json::string("read-file"),
             json::string("list-files"),
+            json::string("udp"),
         ])),
         ("window", json::number(state.opts.max_window as u64)),
         ("max_output", json::number(state.opts.max_output_bytes() as u64)),
@@ -390,6 +404,10 @@ fn handle_frame(state: &Arc<State>, frame: Value) -> Result<(), String> {
             Ok(value) => state.response(&id, value),
             Err(error) => state.failure(&id, "dial_failed", &error),
         },
+        "udp" => match udp_request(state, &args) {
+            Ok(value) => state.response(&id, value),
+            Err(error) => state.failure(&id, "udp_failed", &error),
+        },
         "task" => match task_request(state, &args, &id) {
             Ok(value) => state.response(&id, value),
             Err(error) => state.failure(&id, "task_failed", &error),
@@ -465,6 +483,127 @@ fn beacon(state: &State) -> Value {
         )),
         ("window", json::number(state.opts.max_window as u64)),
     ])
+}
+
+fn udp_request(state: &State, args: &Value) -> Result<Value, String> {
+    let action = args
+        .get("action")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "udp requires action (bind|send|recv|close)".to_string())?;
+    match action {
+        "bind" => {
+            let host = args.get("host").and_then(Value::as_str).unwrap_or("0.0.0.0");
+            let port = args.get("port").and_then(Value::as_u64).unwrap_or(0) as u16;
+            let socket = UdpSocket::bind((host, port))
+                .map_err(|error| format!("udp bind {host}:{port}: {error}"))?;
+            socket
+                .set_read_timeout(Some(Duration::from_millis(200)))
+                .map_err(|error| format!("udp timeout: {error}"))?;
+            let local = socket
+                .local_addr()
+                .map_err(|error| format!("udp local_addr: {error}"))?;
+            let socket_id = state.next_udp.fetch_add(1, Ordering::SeqCst);
+            state
+                .udp_sockets
+                .lock()
+                .map_err(|_| "udp lock".to_string())?
+                .insert(socket_id, Arc::new(socket));
+            state.audit.event(
+                "probe.udp_bind",
+                json::object(vec![
+                    ("probe_id", json::string(state.opts.probe_id.clone())),
+                    ("socket", json::number(socket_id)),
+                    ("address", json::string(local.to_string())),
+                ]),
+            );
+            Ok(json::object(vec![
+                ("socket", json::number(socket_id)),
+                ("address", json::string(local.to_string())),
+                ("host", json::string(local.ip().to_string())),
+                ("port", json::number(local.port() as u64)),
+            ]))
+        }
+        "send" => {
+            let socket_id = args.get("socket").and_then(Value::as_u64).unwrap_or(0);
+            let socket = state
+                .udp_sockets
+                .lock()
+                .map_err(|_| "udp lock".to_string())?
+                .get(&socket_id)
+                .cloned()
+                .ok_or_else(|| format!("unknown udp socket {socket_id}"))?;
+            let host = args
+                .get("host")
+                .and_then(Value::as_str)
+                .ok_or_else(|| "udp send requires host".to_string())?;
+            let port = args
+                .get("port")
+                .and_then(Value::as_u64)
+                .ok_or_else(|| "udp send requires port".to_string())? as u16;
+            let data = base64::decode(
+                args.get("data_b64").and_then(Value::as_str).unwrap_or(""),
+            )?;
+            let sent = socket
+                .send_to(&data, (host, port))
+                .map_err(|error| format!("udp send {host}:{port}: {error}"))?;
+            Ok(json::object(vec![
+                ("socket", json::number(socket_id)),
+                ("sent", json::number(sent as u64)),
+            ]))
+        }
+        "recv" => {
+            let socket_id = args.get("socket").and_then(Value::as_u64).unwrap_or(0);
+            let socket = state
+                .udp_sockets
+                .lock()
+                .map_err(|_| "udp lock".to_string())?
+                .get(&socket_id)
+                .cloned()
+                .ok_or_else(|| format!("unknown udp socket {socket_id}"))?;
+            let timeout = args
+                .get("timeout_ms")
+                .and_then(Value::as_u64)
+                .unwrap_or(1000)
+                .clamp(10, 30_000);
+            socket
+                .set_read_timeout(Some(Duration::from_millis(timeout)))
+                .map_err(|error| format!("udp timeout: {error}"))?;
+            let mut buffer = vec![0u8; 65535];
+            match socket.recv_from(&mut buffer) {
+                Ok((count, peer)) => Ok(json::object(vec![
+                    ("socket", json::number(socket_id)),
+                    ("data_b64", json::string(base64::encode(&buffer[..count]))),
+                    ("host", json::string(peer.ip().to_string())),
+                    ("port", json::number(peer.port() as u64)),
+                    ("bytes", json::number(count as u64)),
+                ])),
+                Err(error)
+                    if error.kind() == io::ErrorKind::WouldBlock
+                        || error.kind() == io::ErrorKind::TimedOut =>
+                {
+                    Ok(json::object(vec![
+                        ("socket", json::number(socket_id)),
+                        ("timeout", json::bool_value(true)),
+                    ]))
+                }
+                Err(error) => Err(format!("udp recv: {error}")),
+            }
+        }
+        "close" => {
+            let socket_id = args.get("socket").and_then(Value::as_u64).unwrap_or(0);
+            let removed = state
+                .udp_sockets
+                .lock()
+                .map_err(|_| "udp lock".to_string())?
+                .remove(&socket_id)
+                .is_some();
+            Ok(json::object(vec![
+                ("socket", json::number(socket_id)),
+                ("closed", json::bool_value(removed)),
+            ]))
+        }
+        other => Err(format!("unknown udp action {other}")),
+    }
 }
 
 fn exec_request(state: &State, args: &Value) -> Result<Value, String> {
@@ -1017,6 +1156,9 @@ fn cleanup_streams(state: &State) {
                 let _ = stream.shutdown(Shutdown::Both);
             }
         }
+    }
+    if let Ok(mut sockets) = state.udp_sockets.lock() {
+        sockets.clear();
     }
 }
 

@@ -92,6 +92,16 @@ impl ServerCertVerifier for PinnedVerifier {
 }
 
 fn tls_config(opts: &Options) -> Result<Arc<ClientConfig>, String> {
+    client_config_with_alpn(opts, Vec::new())
+}
+
+/// Build the rustls client configuration used by both the TCP/TLS transports
+/// and the QUIC transport.  QUIC requires a non-empty ALPN list; the TCP
+/// transports leave it empty (matching the original behaviour).
+pub(crate) fn client_config_with_alpn(
+    opts: &Options,
+    alpn_protocols: Vec<Vec<u8>>,
+) -> Result<Arc<ClientConfig>, String> {
     let pin_hex = opts
         .pin
         .as_deref()
@@ -127,10 +137,11 @@ fn tls_config(opts: &Options) -> Result<Arc<ClientConfig>, String> {
         inner,
         pin: expected,
     });
-    let config = ClientConfig::builder()
+    let mut config = ClientConfig::builder()
         .dangerous()
         .with_custom_certificate_verifier(verifier)
         .with_no_client_auth();
+    config.alpn_protocols = alpn_protocols;
     Ok(Arc::new(config))
 }
 
@@ -243,6 +254,12 @@ pub fn connect(
         }
         "wss" => wss_connect(opts, host, port),
         "https" => https_connect(opts, host, port),
+        "quic" => crate::quic::connect(opts, host, port),
+        "webtransport" => Err(
+            "Rust probe WebTransport client is not implemented in this build; \
+             use aioquic or the QUIC transport"
+                .to_string(),
+        ),
         "lab-plaintext" => {
             if std::env::var("INKBLADE_ALLOW_PLAINTEXT_LAB")
                 .ok()
