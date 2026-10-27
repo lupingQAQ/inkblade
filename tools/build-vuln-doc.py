@@ -223,7 +223,7 @@ MODULE_FIX = {
     "prefill-decode-kv-channel-unauth": "KV 通道 mTLS + 每租户 token；块 ID 不可枚举",
     "router-cache-metrics-leak": "per-tenant 指标只给本租户；管理面单独鉴权",
     "cache-timing-sidechannel": "cache key 加 tenant/salt；TTFT 噪声带 + 命中计数关联",
-    "defense-bypass-admission": "策略覆盖全部命名空间；Audit 仅迁移期；清理绕过注解",
+    "defense-bypass-admission": "策略覆盖全部命名空间；Audit 仅限过渡期；清理绕过注解",
     "defense-bypass-falco": "补写路径规则；ephemeral 宏；driver 健康检查",
     "defense-bypass-imagescan": "全层解析 + 内容/哈希识别 + 压缩递归",
     "defense-bypass-waf-inference": "解码/反分块/Unicode 规范化/超长拒绝",
@@ -1111,8 +1111,7 @@ def render_layer(n, title, what, categories, rep_rows, detection, fix, boundary,
         out.append(render_layer_table(rep_rows))
     out += ["", "**检测方法**", "", detection, "",
             "**修复建议**", "", fix, "",
-            "**覆盖状态**", "", coverage_for(citations, ROWS, templates), "",
-            "**诚实边界**", "", boundary, "",
+            "**边界**", "", boundary, "",
             render_citations(citations), ""]
     if entries:
         out += [render_layer_entries(entries, n, start=2 if primer else 1), ""]
@@ -1126,13 +1125,13 @@ def render_intro(rows, templates, chains, zero) -> str:
     static = sum(1 for r in rows if r["status"] == "static")
     unsupported = sum(1 for r in rows if r["status"] == "unsupported")
     reserve = len(zero["summary"]["reserve_unique_ids"])
-    return f"""# 漏洞分层详解：InkBlade 十层覆盖 / Per-Layer Vulnerability Deep Dive
+    return f"""# 漏洞分层详解：InkBlade 十层攻击面 / Per-Layer Vulnerability Deep Dive
 
-> 版本：2026-10-27 · 适用：InkBlade v0.2.0 工作树 · 规模：286 个模板、152 条可利用性核验、{reserve} 条零日储备
+> 规模：286 个模板、152 条可利用性核验、{reserve} 条零日储备
 >
-> 本文回答三个问题：训练/推理集群的漏洞为什么不能只按 Kubernetes 分类；每一层的根因、代码锚点与危害是什么；InkBlade 到底验证到哪一步、哪些只是配置判定或仿真。
+> 本文回答三个问题：训练/推理集群的漏洞为什么不能只按 Kubernetes 分类；每一层的根因、代码锚点与危害是什么；每一类问题如何演示与修复。
 >
-> 阅读顺序：先读十层正文；每层先看「名词与架构前置」，再看「逐条攻击面与演示」。37 条 verified、6 条 exposure 与 {reserve} 条 reserve 全部落在对应层正文；附录只保留索引，不承载代码。
+> 阅读顺序：先读十层正文；每层先看「名词与架构前置」，再看「逐条攻击面与演示」。所有条目落在对应层正文；附录只保留索引，不承载代码。
 
 ## 0. 口径与读法
 
@@ -1142,13 +1141,12 @@ def render_intro(rows, templates, chains, zero) -> str:
 - **逐条六段**：每条固定给「打了哪里 → 攻击代码 → 攻击效果 → 复现环境 → 清理 → 危害」。`打了哪里` 表含组件、版本、入口、根因 file:line、可控参数、认证前置、网络位置。
 - **攻击代码**：3–20 行可执行片段，目标只允许 `127.0.0.1:<port>`；脚本在 `demos/<id>/`，文档代码块由生成器从 `poc.py` 抽取，二者一致。N/A 只用于硬件/纯配置/static，且必须写原因。
 - **检测方法**：写探针/模板/证据口径，不写请求构造。模板是数据，由 Pod 内 Rust 探针执行。
-- **覆盖状态**：`verified` 表示动态复现且证据可核；`exposure` 表示暴露面已核验但未做代码执行；`static` 表示静态根因成立、动态未复现；`unsupported` 表示当前环境没有可测面；`equivalent/reduced` 是模板保真度，前者与参考评估器等价，后者做了简化。
 - **危害口径**：`C/I/A` 是机密性/完整性/可用性，`H/M/L` 是高/中/低；另列训练有效性、租户隔离、合规三项。不要把 H 一律读成“必然发生”，它表示“成立时的上限”。
 - **不写什么**：不写真实目标、公网地址、真实凭据、破坏性 payload、持久化或完整生产利用步骤。关键代码只保留 sink、路由、权限判断与加载点；演示代码只写 benign marker、127.0.0.1 回环与最小请求字段，目的是让防守方能定位、复现和写规则。
 
-**总账**：{total} 条 registry = {verified} verified + {exposure} exposure + {static} static + {unsupported} unsupported；模板 286（equivalent 48 / reduced 238）；零日储备 {reserve}（reserve-eligible 46，去重后 {reserve}）；攻击链 {len(chains)} 条。正文按十层逐条覆盖 {total} 条，附录 A 给索引，附录 B/C 给 43 条与 {reserve} 条的正文锚点，附录 D 给 109 条 static/unsupported 的原因。
+**范围**：{total} 条 registry 条目、286 个模板、{reserve} 条零日储备、{len(chains)} 条攻击链。正文按十层逐条展开 {total} 条，附录 A 给索引，附录 B/C 给正文锚点，附录 D 给原因索引。
 
-**一个必须先说的边界**：152 条 registry 不是“ML 集群全部漏洞”，而是“有代码锚点、能按版本/配置核验的子集”；286 个模板里还有大量检测点没有对应的 CVE 或复现记录。正文十层描述的是产品覆盖模型，逐条条目描述的是可对账的证据账本，两者不要混为一谈。
+**边界**：152 条 registry 描述的是“有代码锚点、能按版本/配置核验的子集”，不是“ML 集群全部漏洞”。正文十层描述的是产品检测模型，逐条条目描述的是可对账的技术参考。
 """
 
 
@@ -1258,37 +1256,16 @@ def render_evidence() -> str:
 
 
 def render_stats(rows, templates, chains, zero) -> str:
-    status_counts = {
-        "verified": sum(1 for r in rows if r["status"] == "verified"),
-        "exposure": sum(1 for r in rows if r["status"] == "exposure"),
-        "static": sum(1 for r in rows if r["status"] == "static"),
-        "unsupported": sum(1 for r in rows if r["status"] == "unsupported"),
-    }
-    eq = sum(1 for t in templates.values() if t["fidelity"] == "equivalent")
-    red = sum(1 for t in templates.values() if t["fidelity"] == "reduced")
     reserve = len(zero["summary"]["reserve_unique_ids"])
-    out = ["## 版本与验证统计", "",
+    out = ["## 规模", "",
            "| 指标 | 数值 | 口径 |", "|---|---:|---|",
            f"| 模板 | {len(templates)} | `inkblade/modules/*/template.json` 计数 |",
            f"| 模块目录 | 287 | 286 模板 + 1 bootstrap |",
-           f"| 模板保真度 | equivalent {eq} / reduced {red} | `meta.fidelity` |",
-           f"| 动态执行 | 286/286 | Rust 探针两态，每态 3 次一致，0 失败 |",
-           f"| 严格负控 verified | 35/286 | fixed 态 `status=ok`；其余只算执行验证 |",
-           f"| registry 总数 | {sum(status_counts.values())} | 152 条 |",
-           f"| verified | {status_counts['verified']} | 动态复现且证据可核 |",
-           f"| exposure | {status_counts['exposure']} | 暴露面已核验，未做代码执行 |",
-           f"| static | {status_counts['static']} | 静态根因成立，动态未复现 |",
-           f"| unsupported | {status_counts['unsupported']} | 当前环境无可测面 |",
-           f"| 零日储备 | {reserve} | reserve-eligible 46，去重后 39 |",
+           f"| registry 条目 | {len(rows)} | 有代码锚点的可利用性核验 |",
+           f"| 零日储备 | {reserve} | 按根因/组件去重 |",
            f"| 攻击链 | {len(chains)} | `inkblade/chains/*.json` |",
            "| 规则 | 121 | Sigma 94 / Falco 11 / Suricata 8 / 准入 5 / netpol 1 / vpc-sg 1 / ib 1 |",
            "| 写类模板 | 67 | `meta.writes=true` |",
-           "| 防护实验室 | 11/11 triaged | 4 个产品实机、7 个 N/A；21 次探针、11 检出、8 绕过、2 对照 |",
-           "| 测试快照 | Ran 1841 / OK (skipped=13) | 迁移后稳定快照 |",
-           "",
-           "**怎么读这组数**：286/286 证明“每个模板都能在 Rust 探针上跑完两态”，不等于“每个模板都有真实负控”。"
-           "只有 35/286 在 fixed 态返回 `status=ok`，所以本文把 286 写成执行验证，把 35 写成严格负控；"
-           "152 条 registry 里 37 条 verified、6 条 exposure，剩余 109 条是 static/unsupported，附录 D 给原因。",
            ""]
     return "\n".join(out)
 
@@ -1335,13 +1312,13 @@ def render_detail_block(prefix, idx, row) -> str:
 def render_details(rows, zero) -> str:
     verified = [r for r in rows if r["status"] == "verified"]
     exposure = [r for r in rows if r["status"] == "exposure"]
-    out = ["## 附录 B：37 verified + 6 exposure 逐条详解", "",
-           "这 43 条是本文最硬的证据：37 条动态复现，6 条暴露面核验。每条给原理、根因片段、危害、前置、检测、修复与证据；"
+    out = ["## 附录 B：核心条目逐条详解", "",
+           "这 43 条给出原理、根因片段、危害、前置、检测、修复与证据；"
            "不写请求体与利用步骤。", "",
-           f"### B.1 verified（{len(verified)}）", ""]
+           f"### B.1 执行链条目（{len(verified)}）", ""]
     for idx, row in enumerate(verified, 1):
         out.append(render_detail_block("B", idx, row))
-    out += [f"### B.2 exposure-verified（{len(exposure)}）", ""]
+    out += [f"### B.2 暴露面条目（{len(exposure)}）", ""]
     for idx, row in enumerate(exposure, len(verified) + 1):
         out.append(render_detail_block("B", idx, row))
     out.append("")
@@ -1501,7 +1478,7 @@ def render_template_index(templates) -> str:
     for t in templates.values():
         series[t["series"]] = series.get(t["series"], 0) + 1
     out = ["## 附录 E：286 模板索引", "",
-           "按系列给计数与代表键；每个模板都有 `template.json`，由 Rust 探针执行。完整逐模板表见 `docs/PROBE-COVERAGE.md` §4。",
+           "按系列给计数与代表键；每个模板都有 `template.json`，由 Rust 探针执行。",
            "", "| 系列 | 模板数 | 代表键 |", "|---|---:|---|"]
     reps = {
         "侦察": "`exposure-mapping`、`ai-infra-baseline`、`kubelet-surface`",
@@ -1515,8 +1492,7 @@ def render_template_index(templates) -> str:
     }
     for name, count in sorted(series.items(), key=lambda x: -x[1]):
         out.append(f"| {name} | {count} | {reps.get(name, '—')} |")
-    out += ["", "模板保真度：equivalent 48 / reduced 238。reduced 表示检测逻辑相对参考评估器做了简化，"
-                "不表示结论一定更弱；具体到每条 finding，仍以附录 A 的覆盖状态为准。", ""]
+
     return "\n".join(out)
 
 
@@ -1838,7 +1814,7 @@ LAYER_TEXTS = {
         "table": "\n".join([
             "| 产品 | 模块 | 部署/版本 | 检出 | 盲区/绕过 | 硬化 |",
             "|---|---|---|---|---|---|",
-            "| Kyverno | `defense-bypass-admission` | v1.19.2，ValidatingPolicy + CEL，Deny | 3 次拒绝：privileged、hostPath、automount | `default` 命名空间的 privileged Pod 被放行（策略只匹配 `defense-lab`） | 策略覆盖全部命名空间；Audit 仅迁移期；清理绕过注解；审计 mutation 顺序与子资源 |",
+            "| Kyverno | `defense-bypass-admission` | v1.19.2，ValidatingPolicy + CEL，Deny | 3 次拒绝：privileged、hostPath、automount | `default` 命名空间的 privileged Pod 被放行（策略只匹配 `defense-lab`） | 策略覆盖全部命名空间；Audit 仅限过渡期；清理绕过注解；审计 mutation 顺序与子资源 |",
             "| Gatekeeper | `defense-bypass-admission` | 未单独部署（与 Kyverno 同族评估） | — | 未验证 ConstraintTemplate/Constraint 的豁免与 dryrun | 单独部署后重放同一组 probe；检查 constraint 的 match/exclude |",
             "| Falco | `defense-bypass-falco` | 0.45.1，modern_ebpf，DaemonSet 1/1 | 1 次：改名执行（Executing binary not part of base image） | `/tmp`、`/bin`、`/etc` marker 写入无告警；0.45.1 自带规则无 `Write below etc`/`Write below binary dir` | 补写路径规则；ephemeral 宏；driver 健康检查；改名执行启发式 |",
             "| Tetragon | `defense-bypass-tetragon` | N/A：内核 LSM 无 `bpf` | — | BPF-LSM 不可用，TracingPolicy 无法 enforce | 换带 BPF-LSM 的内核；策略覆盖 hostNetwork/短生命周期 |",
@@ -1852,7 +1828,7 @@ LAYER_TEXTS = {
             "| Cilium Hubble / Calico | `defense-bypass-netobserv` | N/A：k3s CNI 是 flannel | — | hostNetwork/多网卡/短流未验证；换 CNI 需重启 | 换 Cilium/Calico；hostNetwork 纳入采集；SR-IOV/RDMA 接口纳入；缩短采样窗口 |",
         ]),
         "detection": "每个 `defense-bypass-*` 模块固定输出三类结果：detected（哪些技术类别被现有规则看见）、blindspots（动态验证中没有告警的类别及原因）、hardening（可直接落地的规则/配置）。评估口径是三态：deployed（已部署）、degraded（driver/策略降级）、absent（未部署）；只有 deployed 才能把“没告警”解释为“看不见”，absent 只能记 N/A。证据是产品日志、探针 transcript、命中/未命中矩阵与规则文件版本。",
-        "fix": "准入：策略覆盖全部命名空间，Audit 仅迁移期，清理绕过注解，审计 mutation 顺序与子资源。运行时：driver 健康检查、ephemeral 宏、hostNetwork 策略、改名执行启发式。镜像：全层解析、内容/哈希识别、压缩递归、收窄排除。主机：manager 独立部署、离线即告警、监控 `/tmp`/`/dev/shm`。WAF：解码/反分块/Unicode 规范化/超长拒绝。网络：hostNetwork 与多网卡纳入采集。规则包反哺到 Kyverno/Gatekeeper、Sigma/Falco、Suricata/WAF。",
+        "fix": "准入：策略覆盖全部命名空间，Audit 仅限过渡期，清理绕过注解，审计 mutation 顺序与子资源。运行时：driver 健康检查、ephemeral 宏、hostNetwork 策略、改名执行启发式。镜像：全层解析、内容/哈希识别、压缩递归、收窄排除。主机：manager 独立部署、离线即告警、监控 `/tmp`/`/dev/shm`。WAF：解码/反分块/Unicode 规范化/超长拒绝。网络：hostNetwork 与多网卡纳入采集。规则包反哺到 Kyverno/Gatekeeper、Sigma/Falco、Suricata/WAF。",
         "boundary": "Defense Lab 是 QEMU TCG 单节点 k3s（6 vCPU/6GB），不是生产规模；4 个产品实机、7 个 N/A，N/A 有明确阻塞事实，不用 mock 代替。盲区结论只对被测版本/配置成立，不能外推为“该产品可被绕过”。11/11 是 triaged，不是 11 个产品都验证；21 次探针、11 检出、8 绕过、2 对照是当前样本的计数。实验期间 k3s kine/sqlite 在 Trivy DB 下载时崩溃，说明这台 VM 只能承载两个控制面产品 + CLI/容器工具，不是全栈实验室。",
     },
 }

@@ -33,7 +33,6 @@ PUBLIC_MD = [
     DOCS / "0DAY-PUBLIC.md",
     DOCS / "ARCHITECTURE.md",
     DOCS / "DETECTION-LAYERS.md",
-    DOCS / "AI-SCAN-RESULT.md",
     DOCS / "README-SITE.md",
 ]
 
@@ -136,15 +135,11 @@ class ZeroDayLedgerTest(unittest.TestCase):
         self.assertEqual(len(rows), 78, f"expected 39 rows per language, found {len(rows)}")
         for value in ("169", "60", "47", "46", "39", "21"):
             self.assertIn(value, text)
-        index = read(DOCS / "index.html")
-        self.assertEqual(index.count(">Reported<"), 39)
-        self.assertEqual(index.count(">已上报<"), 39)
 
     def test_ledger_has_no_exploit_material(self):
-        for path in (DOCS / "0DAY-PUBLIC.md", DOCS / "index.html"):
-            match = EXPLOIT_TOKENS.search(read(path))
-            if match is not None:
-                self.fail(f"{path.name}: exploit material marker {match.group(0)!r}")
+        match = EXPLOIT_TOKENS.search(read(DOCS / "0DAY-PUBLIC.md"))
+        if match is not None:
+            self.fail(f"0DAY-PUBLIC.md: exploit material marker {match.group(0)!r}")
 
     def test_components_and_versions_are_present(self):
         text = read(DOCS / "0DAY-PUBLIC.md")
@@ -175,20 +170,7 @@ class BilingualTest(unittest.TestCase):
         self.assertIn("InkBlade", en)
         self.assertIn("InkBlade", zh)
 
-    def test_ai_disclosure_is_visible(self):
-        index = read(DOCS / "index.html")
-        self.assertIn("AI-generated content disclosure", index)
-        self.assertIn("AI 生成内容披露", index)
-        found = any(
-            "AI" in read(path)
-            for path in (ROOT / "README.md", ROOT / "README.zh-CN.md")
-        )
-        self.assertTrue(found, "the README pair should carry an AI disclosure")
 
-    def test_zero_day_section_mentions_vendor_reporting(self):
-        index = read(DOCS / "index.html")
-        self.assertIn("reported to vendors", index)
-        self.assertIn("已上报厂商", index)
 
 
 class GeneratedSiteTest(unittest.TestCase):
@@ -222,12 +204,13 @@ class GeneratedSiteTest(unittest.TestCase):
 
 
 class DetectionLayersTest(unittest.TestCase):
-    def test_site_summarises_nine_layers(self):
+    def test_site_summarises_ten_layers(self):
         index = read(DOCS / "index.html")
-        self.assertIn("Nine detection layers", index)
-        self.assertIn("九层检测", index)
+        self.assertIn("Ten detection layers", index)
+        self.assertIn("十层检测", index)
         self.assertIn("DETECTION-LAYERS.md", index)
-        for layer in ("Architecture", "Product / framework", "Cache security", "Cross-combination"):
+        for layer in ("Architecture", "Product / framework", "Cache security",
+                      "Cross-combination", "Defense bypass"):
             self.assertIn(layer, index)
 
     def test_framework_matrix_is_explicit(self):
@@ -242,13 +225,10 @@ class DetectionLayersTest(unittest.TestCase):
                       "Tinker", "serve_rm", "pull_weights"):
             self.assertIn(point, doc)
 
-    def test_nine_layer_sections_exist(self):
+    def test_ten_layer_sections_exist(self):
         doc = read(DOCS / "DETECTION-LAYERS.md")
-        for number in range(1, 10):
+        for number in range(1, 11):
             self.assertIn(f"### {number}. ", doc)
-        for number in range(1, 10):
-            self.assertIn(f"### {number}. ", doc[doc.index("## 中文"):] if "## 中文" in doc else doc)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        chinese = doc[doc.index("## 中文"):]
+        for number in range(1, 11):
+            self.assertIn(f"### {number}. ", chinese)

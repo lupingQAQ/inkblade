@@ -35,6 +35,9 @@ PUBLIC_FILES = [
     "README.md",
     "README.zh-CN.md",
     "docs/USAGE.md",
+    "docs/QUICKSTART.md",
+    "docs/PRODUCT.md",
+    "docs/DOC-INDEX.md",
     "docs/INSTALL.md",
     "docs/FEATURES.md",
     "docs/WORKFLOW.md",
@@ -43,7 +46,6 @@ PUBLIC_FILES = [
     "docs/0DAY-PUBLIC.md",
     "docs/ARCHITECTURE.md",
     "docs/DETECTION-LAYERS.md",
-    "docs/AI-SCAN-RESULT.md",
     "docs/README-SITE.md",
 ]
 

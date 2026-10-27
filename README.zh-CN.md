@@ -1,190 +1,154 @@
 # InkBlade（墨刃零）
 
-**面向训练与推理集群的探针式渗透测试产品**
+**面向训练与推理集群的探针式渗透测试产品。**
 
-`v0.2.0` · Apache-2.0 · 控制端 Python 3.10–3.13 · 目标端静态 Rust 探针（源码已入库，二进制由 CI 产出） · 默认只读
+InkBlade 把一个静态链接的 Rust 探针放进已授权的 Pod，用声明式模板覆盖 ML 基础设施的十层检测，并把证据整理成双语报告、可重放规则包和本地控制台。控制端留在集群之外；目标 Pod 不需要 Python、shell、curl，也不需要下发模块代码。
 
-> **构建状态（2026-10-27）**：当前是探针迁移窗口，不是 GA 版本。0.2.0 已有的命令面是
-> `session · probe · channel · module · run · execute · template · surfaces · collect · report · rules ·
-> exploit · objective · assess · doctor`；`exec` / `scan` 两个简写**未实现**，请用 `session run`、
-> `template` 与 `run`。Rust 探针源码已入库，amd64/arm64 二进制由 CI 产出，但 `runtime=rust` 证据仍为 0。本文件所有数字与
-> [`docs/REQUIREMENTS-MATRIX.md`](docs/REQUIREMENTS-MATRIX.md) 对账。
+> **仅限授权使用。** 只对你有书面授权的资产使用 InkBlade。consent 与 ROE 记录哈希钉存，范围、级别、时间窗由代码强制执行；写操作必须有备份回执。没有签署记录就不投放探针，也没有跳过闸门的开关。
 
-> **仅限授权使用。** 只对你有书面授权的资产使用 InkBlade。consent 与 ROE 哈希钉存，范围、级别、时间窗由代码
-> 强制执行，写操作必须有备份回执。没有签署记录就不投放探针，也没有跳过闸门的开关。
+## 核心能力
 
-## 为什么把探针放进 Pod
+### 十层检测
 
-集群扫描器能告诉你 namespace 是否特权、镜像有没有 CVE。它不能告诉你推理 Pod 实际看到了什么：SA token、挂载的
-权重、RDMA 网卡、GPU 设备节点、cgroup 限制，以及同一网络命名空间里能摸到的邻居。
+每一层都是一组可独立执行的模板。模板声明输入、步骤、检查项、发现和产物；探针执行模板并回传证据。
 
-InkBlade 把一个静态链接的 Rust 二进制放进目标 Pod。模板是 JSON 数据，探针是目标侧唯一的执行逻辑。目标里不需要
-Python、不需要 shell、不下发模块代码。
-
-```
-立足 → Rust 探针 → 帧通道 → Pod 内任务 → 子探针 → 证据
-```
-
-控制端是 Python，只负责授权、范围、模板选择、预算、证据归档、报告和规则生成；它不进入目标 Pod，不在目标里执行逻辑。
-
-## 十层检测
-
-前九层说明训练集群哪里和普通 K8s 不一样；第十层说明防守方是否真的看得见。
-
-| 层 | 看什么 | 代表模板键 |
+| 层 | 能做什么 | 代表模板 |
 |---|---|---|
-| 1. 架构层 | rail/多平面错配、PD 分离 KV 通道、IMEX 域、MoE/EP 集合通信、长上下文 KV 生命周期、多集群联邦 | `rail-mismatch-forcing`、`prefill-decode-kv-channel-unauth`、`nvlink-imex-isolation`、`nccl-collective-join` |
-| 2. 产品/框架层 | 插件路由、管理面 fail-open、dev 模式、RL 控制面、WebUI、checkpoint loader | `vllm-plugin-auth-bypass`、`sglang-admin-failopen`、`verl-prime-code-exec`、`msswift-trust-remote-code` |
-| 3. 组件/Operator 层 | Ray 与 LWS 控制面、GPU Operator、DRA、CSI、BMC/Redfish、DPU | `ray-dashboard-job`、`gpu-operator-driver-audit`、`gpu-dra-mig-policy`、`redfish-default-credentials` |
-| 4. 网络/fabric 层 | hostNetwork/SR-IOV/macvlan 策略旁路、CNI 双控制面、IB SM、RoCE PFC/ECN、SHARP、NCCL bootstrap | `multus-sriov-rdma-bypass`、`ib-sm-partition-audit`、`roce-pfc-storm`、`sharp-in-network-poison` |
-| 5. 数据/权重层 | checkpoint 与优化器分片、数据集管道、HF 缓存、权重桶、模型注册表 | `checkpoint-shard-poison`、`skyrl-fetch-weights-traversal`、`model-registry-exposure` |
-| 6. 租户/隔离层 | MIG/MPS 残留、GPU 池化调度、`cache_salt`、路由指标泄露 | `gpu-tenant-residue`、`hami-scheduler-auth-gap`、`cache-salt-policy-audit` |
-| 7. 供应链/身份层 | `trust_remote_code`、revision 固定、签名与证明、SBOM、IRSA 通配、IMDS | `trust-remote-code-supply-chain`、`gpu-cc-attestation-chain`、`cloud-irsa-trust-wildcard` |
-| 8. 缓存安全层 | 跨租户前缀缓存、语义缓存误命中、逐出残留、远程 KV 池、EPP 指标、TTFT 时序 | `prefix-cache-cross-tenant-leak`、`similarity-cache-false-hit`、`remote-kv-pool-isolation`、`cache-timing-sidechannel` |
-| 9. 跨组合层 | 两个或三个组件同时成立才有的问题；只在组合上报一次 | `vllm-plugin-auth-bypass` + `sglang-weight-exfil`、`imex-computedomain-gpu-memory-crossing`、`long-context-cache-leak` |
-| 10. 防护绕过层 | HIDS、运行时策略、准入、镜像扫描、主机代理、WAF、流量可视化是否看得见良性授权行为 | `defense-bypass-elkeid`、`defense-bypass-falco`、`defense-bypass-admission`、`defense-bypass-waf-inference` |
+| 1. 架构层 | 审计 rail 与多平面错配、PD 分离 KV 通道、IMEX/ComputeDomain 边界、MoE/EP 集合通信入组、长上下文 KV 生命周期、多集群联邦 | `rail-mismatch-forcing`、`prefill-decode-kv-channel-unauth`、`nvlink-imex-isolation`、`nccl-collective-join` |
+| 2. 产品 / 框架层 | 枚举 vLLM、SGLang、TRL、verl、AReaL、SkyRL、OpenRLHF、slime、LLaMA-Factory、ms-swift、Megatron-LM、DeepSpeed、transformers、推理网关与 Agent 平台的管理面；检查插件路由、dev 模式、反序列化 sink 与权重导出路径 | `vllm-plugin-auth-bypass`、`sglang-admin-failopen`、`verl-prime-code-exec`、`msswift-trust-remote-code` |
+| 3. 组件 / Operator 层 | 检查 Ray 与 LWS 控制面、GPU Operator 与驱动容器、DRA 设备策略、CSI 节点插件、BMC/Redfish 端点与 DPU offload | `ray-dashboard-job`、`gpu-operator-driver-audit`、`gpu-dra-mig-policy`、`redfish-default-credentials` |
+| 4. 网络 / fabric 层 | 验证 hostNetwork、SR-IOV、macvlan 上的策略旁路，CNI 双控制面，IB 子网管理器与分区，RoCE PFC/ECN，SHARP 在网聚合，NCCL bootstrap 与 DNS 发现 | `multus-sriov-rdma-bypass`、`ib-sm-partition-audit`、`roce-pfc-storm`、`sharp-in-network-poison` |
+| 5. 数据 / 权重层 | 检查 checkpoint 与优化器分片、数据集管道、Hugging Face 缓存、权重桶、模型注册表与 KV/前缀缓存条目 | `checkpoint-shard-poison`、`skyrl-fetch-weights-traversal`、`model-registry-exposure` |
+| 6. 租户 / 隔离层 | 度量 MIG 与 MPS 残留、GPU 池化调度器、`cache_salt` 策略与路由指标泄露 | `gpu-tenant-residue`、`hami-scheduler-auth-gap`、`cache-salt-policy-audit` |
+| 7. 供应链 / 身份层 | 核验 `trust_remote_code`、revision 固定、证明链、SBOM、IRSA 与工作负载身份、IMDS 可达性与凭据暴露 | `trust-remote-code-supply-chain`、`gpu-cc-attestation-chain`、`cloud-irsa-trust-wildcard` |
+| 8. 缓存安全层 | 测试跨租户前缀缓存、语义缓存误命中、逐出残留、远程 KV 池、EPP 指标与 TTFT 时序 | `prefix-cache-cross-tenant-leak`、`similarity-cache-false-hit`、`remote-kv-pool-isolation`、`cache-timing-sidechannel` |
+| 9. 跨组合层 | 只在两个或三个组件相遇时才成立的发现，只报一次，并把组件级记录并入组合 | `vllm-plugin-auth-bypass` + `sglang-weight-exfil`、`imex-computedomain-gpu-memory-crossing`、`long-context-cache-leak` |
+| 10. 防护绕过层 | 度量 HIDS、运行时 eBPF、准入控制、镜像扫描、主机代理、WAF 与流量可视化是否看得见良性授权行为；每类技术固定输出检测 / 盲区 / 硬化建议，并反哺规则包 | `defense-bypass-elkeid`、`defense-bypass-falco`、`defense-bypass-admission`、`defense-bypass-waf-inference` |
 
-逐层四列表（检测点、为何独有、模块/模板键、证据产出）见 [`docs/PRODUCT.md`](docs/PRODUCT.md)；
-前九层的完整版见 [`docs/DETECTION-LAYERS.md`](docs/DETECTION-LAYERS.md)。
+第 10 层是产品能力，不是附加演示。11 个 `defense-bypass-*` 模块覆盖 Elkeid、AgentSmith-HIDS、veinmind、Falco、Tetragon、KubeArmor、Kyverno/Gatekeeper、Trivy/grype、Wazuh/Osquery、ModSecurity/Coraza/雷池与 Cilium Hubble/Calico。它们只使用良性 marker，不做持久化、不关闭安全产品、不提供规避执法的话术。
 
-## 防护绕过与检测对抗
+### 平台能力
 
-这是产品功能，不是附加演示。11 个 `defense-bypass-*` 模块正在迁移为 Rust 探针模板，只使用良性 marker，
-并且对每个技术类别固定输出三类结果：**检测（detected）**、**盲区（blind spot）**、**硬化建议（hardening）**。
-不携带恶意载荷、不做持久化、不关闭安全产品、不提供规避执法的话术。
+- **一条执行路径。** 立足 → Rust 探针 → 帧通道 → Pod 内任务 → 子探针 → 证据。检测、逃逸和横向都走这条路径。
+- **目标侧零解释器。** 探针是静态二进制，模板是 JSON 数据。distroless 或 scratch 推理镜像与 Python 镜像跑同一套模板。
+- **探针树。** `probe_id` 与 `parent_id` 记录每颗探针的位置；子探针继承更严格的预算与白名单，深度与扇出有上限，清理先子后父。
+- **Agent 运行时。** 带预算的规划器执行目标图，记录每次观察与决策，可从持久 journal 恢复，也可零执行回放。
+- **跨集群中继。** 中继用同一套帧协议连接集群，让一次项目覆盖多个集群并留下覆盖证明。
+- **证据在边界产生。** 任务结果、步骤日志、产物、SHA-256 manifest、流量表、探针身份与清理回执。
+- **规则可重放。** 准入、运行时、网络三类规则包，输出拦截 / 检出 / 漏过矩阵。
+- **报告与控制台。** 双语渗透报告与修复报告，SARIF / OCSF / VEX 导出，本地 Web 控制台展示发现、图与时间线。
+- **无遥测。** 不要账号、不要云密钥、没有许可服务器；不配置集成就没有外发调用。
 
-| 产品族 | 模块 | 测什么 |
-|---|---|---|
-| Elkeid HIDS | `defense-bypass-elkeid` | agent/driver 指纹、白名单路径、工具改名、driver 未加载降级、规则盲区 |
-| AgentSmith-HIDS | `defense-bypass-agentsmith` | `smith.ko` 是否存在、规则覆盖缺口、改名执行、良性 DNS |
-| veinmind 容器扫描 | `defense-bypass-veinmind` | 分层镜像、改名工具、压缩样本、白名单样本名 |
-| Falco | `defense-bypass-falco` | 无 driver 降级、规则缺口、ephemeral 容器、改名执行 |
-| Tetragon / eBPF | `defense-bypass-tetragon` | 策略未挂载命名空间、短生命周期进程、hostNetwork |
-| KubeArmor | `defense-bypass-kubearmor` | namespace posture、默认放行、hostNetwork 覆盖 |
-| Kyverno / Gatekeeper | `defense-bypass-admission` | 豁免、Audit 模式、mutation 顺序、子资源 |
-| Trivy / grype 镜像扫描 | `defense-bypass-imagescan` | 深层覆盖、改名工具、压缩样本、白名单样本名 |
-| Wazuh / Osquery 主机代理 | `defense-bypass-hostagent` | agent 离线窗口、规则缺口、改名执行 |
-| ModSecurity / Coraza / 雷池 WAF | `defense-bypass-waf-inference` | 编码、分块、Unicode、超长请求变体 |
-| Cilium Hubble / Calico flows | `defense-bypass-netobserv` | hostNetwork、多网卡、短生命周期流 |
+## 工作流
 
-盲区直接反哺规则包：Kyverno/Gatekeeper 管准入，Sigma 管进程/文件/DNS，Falco/Tetragon 管运行时，Suricata/WAF 管
-网络与请求归一化。产品交付规则和重放矩阵，不只给一句“你被绕过了”。
-
-## 能力
-
-- **一条执行路径。** 立足、Rust 探针、帧通道、Pod 内模板执行、子探针、证据。不在这张图上的路径不受支持。
-- **目标侧零解释器。** 探针是静态二进制，模板是数据。distroless/scratch 推理镜像和 Python 镜像跑同一套模板。
-- **探针树。** `probe_id` / `parent_id`、每个子探针独立 token、更严格的继承、深度/扇出限制、先子后父清理。
-- **默认只读。** 写操作需要授权、`--allow-write`、`meta.writes`、`backup-write` 模式和备份回执。
-- **证据在边界产生。** 任务结果、步骤日志、artifacts、SHA-256 manifest、探针身份、清理回执。
-- **十层检测。** 287 个模块目录、286 个模板、29 条链、11 个防护绕过模块。
-- **规则可重放。** 准入、运行时、网络三类规则包，输出拦截/检出/漏过矩阵。
-- **无遥测。** 不要账号、不要云密钥、没有许可服务器。
-
-## 成熟度
-
-| 档位 | 范围 | 状态 |
-|---|---|---|
-| demo | mock 靶场与离线报告 | 探针架构不提供。mock 跑通只代表模板验证，不是客户结论。 |
-| 试点 | 授权只读：一个 namespace、一个 Pod、一个模板，再扩到按层扫描 | 推荐的第一次项目形态；证据与限制都写清楚。 |
-| 生产 | 完整链、企业集成、HA、on-call | 暂不建议。没有厂商 SLA，也没有认证。 |
-
-禁止宣称：不承诺零误报、不承诺全覆盖、不宣称“生产认证”、不宣称“不可检测”。任何数字都要带任务集、版本和日期。
+| # | 阶段 | 发生什么 | 产物 |
+|---:|---|---|---|
+| 1 | 立足 | 会话记录入口方式：`kubeconfig`、`external` 或 `foothold`，以及目标、命名空间、Pod 与凭据指纹 | 会话记录、审计轨迹 |
+| 2 | Rust 探针 | 静态探针经 `kubectl`、ServiceAccount token、共享卷、EphemeralContainer 或授权 RCE 回调投放 | 探针身份、SHA-256 |
+| 3 | 通道 | 控制端通过探针 stdio 使用 HMAC 认证、长度前缀的 JSON 协议；通道可在回环上开 SOCKS5 与端口转发 | 通道状态、任务日志 |
+| 4 | 检测 | 模板在 Pod 内按十层执行；每个结果带步骤、检查项、发现与产物 | 发现、证据锚 |
+| 5 | 逃逸 | 通过范围内的 Operator、驱动、CSI、运行时与内核面测试容器与节点边界 | 逃逸路径、证明 |
+| 6 | 横向 | 从探针所在网络命名空间测绘服务、控制面、网关与 fabric 可达性 | 可达图、跳板 |
+| 7 | 多探针 | 子探针把探针树扩展到更多 Pod 与命名空间；每个子探针有独立 token 和更严格的预算 | 探针树、血缘 |
+| 8 | 跨集群 | `agent relay` 连接多个集群；`agent coverage` 记录目标图里哪些节点已闭合、哪些不可达 | 中继状态、覆盖证明 |
+| 9 | 报告 / 规则 / 可视化 | 双语报告、SARIF/OCSF/VEX 导出、可重放规则包与本地控制台 | 报告、规则包、控制台 |
 
 ## 快速开始
 
-产品路径是 `doctor → session → probe → exec/scan → report`。0.2.0 已有 `session`、`probe`、`channel`；
-`exec` 与 `scan` 是未实现的简写，请用 `session run`、`template run` 或 `run`。
+在你有权测试的环境中运行。
 
 ```bash
+# 1. 安装控制端
 python -m pip install -e .
 
-# 1. 环境与探针二进制
-python -m inkblade doctor
+# 2. 打开接入向导：工作区、授权、kubeconfig
+python -m inkblade up
 
-# 2. 授权会话
+# 3. 签授权记录：目标、范围、级别、时间窗
+python -m inkblade quickstart
+
+# 4. 导入 kubeconfig 并打开授权会话
 python -m inkblade session open \
-  --name pilot-01 --workspace ./work \
+  --mode kubeconfig \
+  --workspace ./work \
   --kubeconfig ~/.kube/config \
-  --scope namespace:ml-team --level read-only
+  --namespace ml-team \
+  --pod infer-0
 
-# 3. 投放探针（默认干跑；写操作需 --allow-write）
+# 5. 把探针投放进目标 Pod
 python -m inkblade probe deploy \
-  --session pilot-01 --target ml-team/infer-0 \
-  --method kubectl-exec --binary ./inkblade-probe-linux-amd64
+  --session <session-id> \
+  --via kubectl \
+  --binary ./inkblade-probe-linux-amd64 \
+  --namespace ml-team \
+  --pod infer-0 \
+  --allow-write
 
-# 4. 经会话跑一个模板（exec/scan 简写未实现）
-python -m inkblade session run --session pilot-01 \
-  --template service-account-token-exposure
+# 6. 用 Agent 驱动探针
+python -m inkblade agent run \
+  --probe <probe-id> \
+  --objective read-only-recon \
+  --workspace ./work
 
-# 5. 报告
-python -m inkblade report --session pilot-01 --lang bi
+# 7. 出报告
+python -m inkblade report --run <run-id> --lang bi
 ```
 
-没有 demo/trial 路径：session 需要授权目标和签署记录。2026-10 探针迁移进入收尾，`doctor` 会报告实际可用的命令面；
-当前完成度见 [`docs/DYNAMIC-VERIFICATION.md`](docs/DYNAMIC-VERIFICATION.md)。
+`inkblade up` 创建工作区、检查授权记录并引导导入 kubeconfig；`quickstart` 写出绑定范围、级别与时间窗的签署记录；`probe deploy` 不带 `--allow-write` 时只出投放计划，带上后才真正投放并注册探针；`agent run` 打印 `report` 需要的 `run_id`。
 
 ## 命令表
 
 | 任务 | 命令 |
 |---|---|
-| 环境自检 | `inkblade doctor` |
-| 会话 | `inkblade session start|list|show|close` |
-| 探针投放 | `inkblade probe deploy|list|show|collect|spawn|tree|cleanup` |
-| 单模板 | `inkblade exec --template <key>` |
-| 按层扫描 | `inkblade scan --profile <name> --layers <n,n>` |
-| 只出计划 | `inkblade scan ... --dry-run` |
-| 报告 | `inkblade report --session <id> --lang bi` |
-| 导出 | `inkblade export --format sarif|ocsf|vex` |
-| 规则包 | `inkblade rules generate|validate` |
-| 模板检查 | `inkblade template lint|validate` |
+| 接入向导 | `inkblade up` |
+| 授权记录 | `inkblade quickstart`、`inkblade roe` |
+| 会话 | `inkblade session open` / `status` / `close` / `run` |
+| 探针投放 | `inkblade probe deploy` / `list` / `collect` / `exec` / `read-file` / `list-files` / `upload` / `download` / `spawn` / `cleanup` |
+| 通道 | `inkblade channel start` / `status` / `stop` |
+| 单模板 | `inkblade session run --id <session> --module <key>` 或 `inkblade run --module <key>` |
+| 链执行 | `inkblade execute --chain <id> --dry-run`，确认后 `inkblade execute --chain <id>` |
+| Agent | `inkblade agent run` / `status` / `trace` / `resume` / `replay` / `stop` |
+| 跨集群 | `inkblade agent relay add\|list\|status`、`inkblade agent coverage status\|proof` |
+| 报告 | `inkblade report --run <id> --lang bi --kind pentest\|remediation` |
+| 导出 | `inkblade export --run <id> --format sarif\|ocsf\|vex` |
+| 规则包 | `inkblade rules generate`、`inkblade rules validate` |
+| 控制台 | `inkblade ui` |
+| 模板 | `inkblade template list` / `get` / `plan` / `validate` |
 
-## 文档
+## 部署
 
-| 文档 | 用途 |
-|---|---|
-| [`docs/PRODUCT.md`](docs/PRODUCT.md) | 定位、适用对象、十层检测表、防护绕过的三类输出 |
-| [`docs/ARCHITECTURE-PROBE.md`](docs/ARCHITECTURE-PROBE.md) | 唯一执行路径、探针树、运行时能力、控制端边界 |
-| [`docs/PROBE-PROTOCOL.md`](docs/PROBE-PROTOCOL.md) | 帧格式、认证、任务/结果、预算、文件分块、清理、错误码 |
-| [`docs/PROBE-DEPLOY.md`](docs/PROBE-DEPLOY.md) | RCE/memfd、kubectl、EphemeralContainer、共享卷、发布二进制、写闸门 |
-| [`docs/DYNAMIC-VERIFICATION.md`](docs/DYNAMIC-VERIFICATION.md) | 两态 mock 验证标准、证据格式、覆盖率字段、当前状态 |
-| [`docs/INSTALL.md`](docs/INSTALL.md) | 控制器与探针安装、离线、工作区布局 |
-| [`docs/USAGE.md`](docs/USAGE.md) | 五步流程、场景、结果阅读、退出码 |
-| [`docs/FAQ.md`](docs/FAQ.md) | 边界、迁移状态、写操作、检测、许可 |
-| [`docs/DOC-INDEX.md`](docs/DOC-INDEX.md) | 完整文档索引 |
-| [`docs/HOW-TO-DESIGN-COMMERCIAL-AGENT.md`](docs/HOW-TO-DESIGN-COMMERCIAL-AGENT.md) | 工程手册，含探针架构修订章 |
+**Wheel**
 
-覆盖率明细与 Rust 运行时差距：[`docs/PROBE-COVERAGE.md`](docs/PROBE-COVERAGE.md)、[`docs/DYNAMIC-VERIFICATION.md`](docs/DYNAMIC-VERIFICATION.md)。
+```bash
+python -m pip wheel . --no-deps -w dist/
+python -m pip install --no-index --find-links dist/ inkblade
+```
 
-## 证据 / 限制
+**Docker**
 
-**证据**
+```bash
+docker build -t inkblade:0.2.0 .
+docker run --rm -v inkblade-data:/data inkblade:0.2.0 up
+```
 
-- 探针运行时：`probe/src/{http,net,exec,fsops,k8s,spawn,collect,protocol}.rs`。
-- 模板 schema：`probe/schema/probe-template.schema.json`；参考评估器：`inkblade/tpl/engine.py`（仅 mock/CI，
-  默认拒绝运行）。
-- 防护绕过评估：`inkblade/core/defenseprobe.py` 与 11 个 `inkblade/modules/defense-bypass-*` 模块。
-- 当前计数：287 个模块目录（286 个模板 + 1 个 bootstrap）、29 条链、11 个防护绕过模块。旧 `run.py`
-  已从工作树与 HEAD 全部删除（迁移提交落盘），注册表只接受模板。
-- Rust 运行时动态验证：286/286 模板在静态 musl 探针上跑完 vulnerable/fixed 两态（sha256 `c8d2f118…`，
-  源码 `1f0f57c`，每态连续 3 次一致，0 失败）。证据见 `reports/probe-coverage/evidence.json` 与
-  `docs/PROBE-COVERAGE.md`；二进制由 CI 构建（`docs/PROBE-BUILD.md`），不入 git（`probe/dist/`）。
-  fixed 态负控只对输入来自 mock 靶场的模板成立，边界见 PROBE-COVERAGE §6。
+**Helm**
 
-**限制**
+```bash
+helm install inkblade deploy/helm/inkblade \
+  --namespace inkblade --create-namespace
+```
 
-- 2026-10 迁移已完成：探针 CLI 的 `session/probe/channel` 与模板运行时可用；`exec`/`scan` 简写仍未提供。
-- 防护绕过模块已随 286 模板一起在 Rust 探针上跑两态，不再使用 Python 参考评估作为覆盖率证据。
-- 厂商盲区只对被测版本/配置成立；盲区不等于“该产品可被绕过”。
-- 良性 marker 证明“可见性”，不证明“恶意行为不可见”。产品不提供恶意载荷、持久化或规避执法。
-- 需要特权 Pod、hostNetwork、GPU 或节点访问的检测点，没有对应部署面时返回 `skipped` 或 `blocked`，永不写成 `verified`。
+Chart 以 uid 10001 运行，根文件系统只读，证据落在 PVC。默认只授予读动词；写动词要同时打开 `readOnly=false` 与 `rbac.allowWrite=true`，并且工作区里有签署记录。卸载不删除 PVC，证据要比 release 活得久。
 
-## AI 辅助说明
+## 安全与授权
 
-本 README 与部分文档由 AI 辅助起草，再由人工维护者编辑：跑了命令、对着代码与生成的报告核了数字，
-删掉了复现不了的说法。
+- **先有 RoE。** `quickstart` 写出 consent 记录：目标、范围、级别、时间窗与应急联系人。记录做哈希，哈希跟着每一次 run 走；过期或越界的 run 以退出码 91 拒绝。
+- **默认只读。** 采集、HTTP/TCP 探测、读文件、只读命令与只读模板不需要额外开关。写操作要过五道闸门：会话级别、`--allow-write`、`meta.writes`、`backup-write` 模式与备份回执。
+- **备份与回滚。** 写模块先快照、再执行、两者都记录。`inkblade rollback --run <id> --step <n>` 恢复单步并打印回执；恢复不了的步骤作为发现报出。
+- **审计与证据。** 每次探针动作、文件读取、exec 调用与任务结果都写入证据库，并带 SHA-256 manifest。报告把每条发现锚定到 task、step、artifact、probe 或 manifest 哈希。
+- **急停。** `inkblade abort` 置位工作区停止开关，解除前所有 run 拒绝执行。
+- **无遥测。** 不启用集成时控制端不发起外发调用；没有账号体系、许可服务器或使用数据上传。
 
-检测器彼此不一致，也和人类判断不一致，所以这里不声明“检测率”。读着像机器写的句子，多半最初就是那么来的；
-数字不对就是 bug。
+## 许可
 
-代码、manifest、规则包与证据产物来自软件本身；以上说明只针对文字。
+Apache-2.0。允许商用、fork 与嵌入服务；保留 `LICENSE` 与 `NOTICE`。`NOTICE` 记录 clean-room 边界：功能对标只依据公开描述与可观察行为，InkBlade 不与 AGPL 项目链接或派生。文档索引：[`docs/DOC-INDEX.md`](docs/DOC-INDEX.md)。

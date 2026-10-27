@@ -1,235 +1,133 @@
-# Workflow / 流程
+# Workflow / 工作流
 
 [English](#english) · [中文](#中文)
 
-The order is the product. Each stage leaves behind something the next stage can check, and
-any stage can refuse. This page is the long version of the eleven-step list on the site.
+The order is the product. Each stage leaves behind something the next stage can check, and any stage can refuse. The workflow starts at a foothold, runs every action through the probe, extends the probe tree, and ends with a report, rule packs and a console view.
 
 ---
 
 ## English
 
-### The eleven stages
+### The nine stages
 
 | # | Stage | Command | Gate | Artifact |
 |---:|---|---|---|---|
-| 1 | Authorization | `quickstart`, `roe` | Signed consent record, hash pinned | `consent/` |
-| 2 | Assets | `discover`, `import-scan`, `collect` | Read-only sources only | `assets.json`, collection snapshot |
-| 3 | Reconnaissance | `run --module`, `surfaces` | Level 1–2 only | findings, surface matrix |
-| 4 | Combination | `module list`, `assess explain` | No execution | ranked combinations |
-| 5 | Chain planning | `execute --chain <id> --dry-run` | Preconditions evaluated | plan, write surface |
-| 6 | Approval | `explore approve`, `autonomy`, `calendar` | Human decision or bounded pre-auth | approval record |
-| 7 | Execution | `execute`, `exploit --real` | Consent + level + backup | action log, backups |
-| 8 | Evidence | automatic | Manifest verified per step | `context.jsonl.gz`, `evidence.db`, `steps/` |
-| 9 | Report | `report`, `export` | `--redact` before disclosure | bilingual reports, SARIF/OCSF/VEX |
-| 10 | Rules | `rules generate`, `rules validate` | Replay must run | rule packs, coverage matrix |
-| 11 | Retest | `schedule run-due`, `ci-gate` | Baseline exists | drift report, exit code |
+| 1 | Foothold | `session open --mode kubeconfig\|external\|foothold` | Signed consent, target, window | session record, audit trail |
+| 2 | Rust probe | `probe deploy` | `--allow-write` plus session level | probe identity, SHA-256 |
+| 3 | Channel | `channel start` | loopback bind policy | channel state, task log |
+| 4 | Detection | `session run --module`, `run --module`, `agent run` | scope, level, surface | findings, evidence anchors |
+| 5 | Escape | `execute --chain`, `exploit` | chain preconditions, backup gate | escape path, proof |
+| 6 | Lateral | `channel start --forward`, `probe spawn`, `agent run` | scope coverage | reachability graph, pivots |
+| 7 | Multi-probe | `probe spawn`, `probe list` | parent token, depth and fan-out | probe tree, lineage |
+| 8 | Cross-cluster | `agent relay add`, `agent coverage status` | relay token, per-cluster consent | relay status, coverage proof |
+| 9 | Report / rules / console | `report`, `export`, `rules generate`, `ui` | `--redact` before release | report, rule packs, console |
 
-### Stage 1 — authorization
+### Stage 1 — foothold
 
-Two commands, one purpose. `user add` creates the people; `quickstart` writes the record that
-binds scope, level, window and emergency contact. The record is hashed, and the hash travels
-with every run. If someone later asks “under what authority was this executed”, the answer is
-one file, not a meeting.
+`session open` binds the engagement to one entry vector. `kubeconfig` starts from a cluster credential; `external` starts from a reachable service and requires a proof object before anything beyond read-only recon; `foothold` starts from a Pod shell or ServiceAccount token. The record stores the credential SHA-256 fingerprint, never the credential itself.
 
-Common mistake: signing a record that lists a namespace that does not exist yet. The gate does
-not care. It will happily let you test a name, and you will get empty findings. Check the
-target list first.
+### Stage 2 — Rust probe
 
-### Stage 2 — assets
+`probe deploy` delivers the static binary. Without `--allow-write` it prints the deployment plan. With it, the probe lands through `kubectl`, a ServiceAccount token, a shared volume, an EphemeralContainer or an authorized RCE callback, and registers its `probe_id`, architecture and hash.
 
-Seeds in, asset table out. `discover` expands namespaces and services; `import-scan` folds
-Trivy, Syft or grype results into the same findings model; `collect` takes a read-only snapshot
-of the cluster, HTTP endpoints, files and hardware inventory.
+### Stage 3 — channel
 
-Asset quality decides everything downstream. A missing namespace produces a clean report with
-a hole in it, which is worse than a noisy report with a caveat.
+The controller speaks the framed protocol over the probe's stdio. `channel start` exposes a loopback SOCKS5 listener and any `--forward LOCAL:HOST:PORT` pairs. `channel status` reports the listeners; `channel stop` closes them. The probe does not open a listening socket on the Pod network.
 
-### Stage 3 — reconnaissance
+### Stage 4 — detection
 
-Level 1 and 2 modules only. 191 of the 286 modules sit at these levels: read-only enumeration
-and active probing, no state change. Run `surfaces` with the collection directory and you get
-the honest answer about what is testable here, including the modules that are not.
+Detection is template execution. `session run --id <session> --module <key>` runs one template through the probe; `run --module <key>` runs it through the controller; `agent run` plans and executes a set of them against the objective graph. Every result carries steps, checks, findings, artifacts and a runtime marker.
 
-### Stage 4 — combination
+### Stage 5 — escape
 
-Single findings are rarely the interesting part. Manifests carry combination signatures; two
-low-severity findings that compose into cluster takeover are surfaced together, with their
-preconditions written out. Nothing executes at this stage.
+`execute --chain <id> --dry-run` resolves the chain graph and prints every write. Confirmed chains run with `execute --chain <id>`. A write step needs the backup gate: a receipt is created before the step and referenced afterwards. `exploit <id>` is the one-shot entry for a prepared exploit package; `--real` enables the RoE, backup and surface gates.
 
-### Stage 5 — planning
+### Stage 6 — lateral
 
-`--dry-run` prints the resolved graph. Read the write surface. If a chain would touch
-something you did not expect — a shared PVC, an admission webhook, a controller namespace —
-stop and fix the scope rather than trusting the approval from last week.
+Lateral movement uses the same probe. `channel start --forward` reaches internal services through the Pod network namespace; `probe spawn` starts a child probe on another Pod; `agent run` records each pivot as a graph edge with the evidence that proves it.
 
-Preconditions are evaluated by a small expression language, not `eval`. A step whose
-precondition is unknown is skipped, not attempted.
+### Stage 7 — multi-probe
 
-### Stage 6 — approval
+Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's read-only state, command allow-list and budget, and can only be stricter. Depth is capped, fan-out is capped, and cleanup is child-first so no orphan keeps a token alive.
 
-Three ways to say yes: a one-off approval with a name attached, a bounded pre-authorisation
-with an explicit level and expiry, or a calendar window that opens during a maintenance slot.
-All three leave a record. There is no “approve everything” switch, and `autonomy` cannot
-exceed the level in the consent record.
+### Stage 8 — cross-cluster
 
-### Stage 7 — execution
+`agent relay add` registers a relay to another cluster; `agent coverage status` shows which objective nodes are closed, which are reachable but unproven, and which have no path. `agent coverage proof` writes the closure proof that ships with the report.
 
-The backup gate is blunt: a write module without a backup target exits 91. With a target, the
-runner snapshots first, executes second, and records both. If a step fails mid-chain, the
-remaining steps do not run unless their dependencies are satisfied.
+### Stage 9 — report, rules and console
 
-`rollback --run <id> --step <n>` restores one step and prints a receipt. A failed restore
-exits 3 and marks the run; that mark shows up in the report, which is where you want it.
+`report --run <id> --lang bi` renders the pentest narrative and the remediation checklist from the same evidence. `export --format sarif|ocsf|vex` produces machine-readable output. `rules generate` writes admission, runtime and network packs; `rules validate` replays them and prints the blocked / detected / missed matrix. `inkblade ui` serves the local console with findings, probe trees, graphs and timelines.
 
-### Stage 8 — evidence
-
-Three layers, every step. The context journal tells you what the tester saw. The SQLite
-database answers queries: which findings, which actions, which backups, which rollbacks. The
-tar archive plus manifest lets a third party verify one step without the rest of the run.
-
-Hashes are computed over the archive, and the report anchors point at them. A finding that
-cannot be replayed is downgraded during review — by us, before a client sees it.
-
-### Stage 9 — reporting
-
-Two reports, one evidence base. The pentest report follows the PTES structure and carries the
-ML-specific chapters; the remediation report is a checklist for the platform team. `--lang bi`
-produces both languages in one file. `--redact` strips zero-day detail before a report leaves
-the engagement.
-
-`export` is for machines: SARIF 2.1.0 for code scanning dashboards, OCSF for SIEM ingestion,
-OpenVEX for “not affected” statements.
-
-### Stage 10 — rules
-
-Each chain maps to at least one rule. `rules generate --cni cilium` writes admission, network,
-detection and convergence packs. `rules validate` replays them against mocks and produces a
-matrix per chain: blocked, detected, missed.
-
-The missed column is the useful one. A policy that everyone assumes works, and that the replay
-says does not, is exactly the finding a purple team is paid to produce.
-
-### Stage 11 — retest
-
-`schedule add` takes a cron expression or an interval and a chain subset. `schedule run-due`
-runs whatever is due and diffs the result against the baseline: new findings, resolved
-findings, drift in configuration.
-
-For pipelines, `ci-gate --fail-on high --new-only` exits non-zero on new high findings and
-ignores the accepted backlog. That distinction is the difference between a gate people keep
-and a gate people disable on a Friday.
-
-### Failure modes worth knowing
+### Gate behaviour
 
 | Situation | What happens | What to do |
 |---|---|---|
-| Consent record expired mid-engagement | Every run exits 91 | Re-sign with a new window; old evidence stays valid |
-| Chain precondition false | Step skipped, chain continues where possible | Run the prerequisite module first |
-| Backup target fills up | Write step refuses | Free space or point at a new target; do not skip |
-| Surface unknown | Module skipped unless `--probe` | Confirm with the platform owner, then probe |
-| Rollback fails | Exit 3, run marked | Treat the unrestored step as a finding and report it |
+| Consent record expired | Every run exits 91 | Re-sign with a new window; old evidence stays valid |
+| Out-of-scope target | Run refused before execution | Fix the scope or drop the target |
+| Chain precondition false | Step skipped, the rest continues where possible | Run the prerequisite module first |
+| Write step without backup target | Step refused, exit 91 | Provide a backup target; do not skip the gate |
+| Rollback cannot restore a step | Exit 3, run marked | Treat the unrestored step as a finding and report it |
 
 ---
 
 ## 中文
 
-### 十一个阶段
+### 九个阶段
 
 | # | 阶段 | 命令 | 闸门 | 产物 |
 |---:|---|---|---|---|
-| 1 | 授权 | `quickstart`、`roe` | 签署记录，哈希钉存 | `consent/` |
-| 2 | 资产 | `discover`、`import-scan`、`collect` | 只接受只读来源 | `assets.json`、采集快照 |
-| 3 | 侦察 | `run --module`、`surfaces` | 仅 1–2 级 | 发现、部署面矩阵 |
-| 4 | 组合 | `module list`、`assess explain` | 不执行 | 组合排序 |
-| 5 | 链编排 | `execute --chain <id> --dry-run` | 前置条件求值 | 计划、写面 |
-| 6 | 审批 | `explore approve`、`autonomy`、`calendar` | 人工决定或有界预授权 | 审批记录 |
-| 7 | 执行 | `execute`、`exploit --real` | 授权 + 级别 + 备份 | 动作日志、备份 |
-| 8 | 证据 | 自动 | 每步校验 manifest | `context.jsonl.gz`、`evidence.db`、`steps/` |
-| 9 | 报告 | `report`、`export` | 外发前 `--redact` | 双语报告、SARIF/OCSF/VEX |
-| 10 | 规则 | `rules generate`、`rules validate` | 必须完成重放 | 规则包、覆盖矩阵 |
-| 11 | 复测 | `schedule run-due`、`ci-gate` | 存在基线 | 漂移报告、退出码 |
+| 1 | 立足 | `session open --mode kubeconfig\|external\|foothold` | 签署授权、目标、时间窗 | 会话记录、审计轨迹 |
+| 2 | Rust 探针 | `probe deploy` | `--allow-write` 与会话级别 | 探针身份、SHA-256 |
+| 3 | 通道 | `channel start` | 回环绑定策略 | 通道状态、任务日志 |
+| 4 | 检测 | `session run --module`、`run --module`、`agent run` | 范围、级别、部署面 | 发现、证据锚 |
+| 5 | 逃逸 | `execute --chain`、`exploit` | 链前置条件、备份闸门 | 逃逸路径、证明 |
+| 6 | 横向 | `channel start --forward`、`probe spawn`、`agent run` | 范围覆盖 | 可达图、跳板 |
+| 7 | 多探针 | `probe spawn`、`probe list` | 父 token、深度与扇出 | 探针树、血缘 |
+| 8 | 跨集群 | `agent relay add`、`agent coverage status` | 中继 token、逐集群授权 | 中继状态、覆盖证明 |
+| 9 | 报告 / 规则 / 控制台 | `report`、`export`、`rules generate`、`ui` | 外发前 `--redact` | 报告、规则包、控制台 |
 
-### 第 1 步 — 授权
+### 第 1 步 — 立足
 
-两条命令，一个目的。`user add` 建人，`quickstart` 写记录：范围、级别、时间窗、应急联系人。记录会算哈希，
-哈希跟着每一次 run 走。日后有人问“凭什么是你们做的”，答案是一个文件，不是一场会。
+`session open` 把项目绑定到一个入口方式。`kubeconfig` 从集群凭据开始；`external` 从可达服务开始，除只读侦察外的任何动作都必须先有证明对象；`foothold` 从 Pod shell 或 ServiceAccount token 开始。记录保存凭据的 SHA-256 指纹，不保存凭据本身。
 
-常见错误：记录里写了一个还不存在的命名空间。闸门不管这个。它会老老实实让你测一个名字，然后给你一堆空发现。
-先核对目标清单。
+### 第 2 步 — Rust 探针
 
-### 第 2 步 — 资产
+`probe deploy` 投放静态二进制。不带 `--allow-write` 时只打印投放计划；带上后经 `kubectl`、ServiceAccount token、共享卷、EphemeralContainer 或授权 RCE 回调落地，并登记 `probe_id`、架构与哈希。
 
-种子进去，资产表出来。`discover` 展开命名空间与服务；`import-scan` 把 Trivy、Syft、grype 的结果折进同一套
-发现模型；`collect` 对集群、HTTP 端点、文件与硬件清单做只读快照。
+### 第 3 步 — 通道
 
-资产质量决定后面一切。漏掉一个命名空间，会得到一份干净但带洞的报告——比一份有噪音但写明前提的报告更糟。
+控制端通过探针 stdio 使用帧协议。`channel start` 暴露回环 SOCKS5 监听和若干 `--forward LOCAL:HOST:PORT`；`channel status` 报告监听状态，`channel stop` 关闭。探针不在 Pod 网络上开监听端口。
 
-### 第 3 步 — 侦察
+### 第 4 步 — 检测
 
-只跑 1、2 级模块。286 个模块里有 191 个处在这两级：只读枚举和主动探测，不改状态。把采集目录交给 `surfaces`，
-你会得到“这里到底能测什么”的诚实答案，包括那些不能测的。
+检测就是执行模板。`session run --id <session> --module <key>` 经探针跑一个模板；`run --module <key>` 经控制器跑；`agent run` 针对目标图规划并执行一组模板。每个结果都带步骤、检查项、发现、产物与运行时标记。
 
-### 第 4 步 — 组合
+### 第 5 步 — 逃逸
 
-单条发现很少是有意思的部分。manifest 里带组合签名；两条单独看都不严重、叠起来能接管集群的发现，会被摆在一起，
-前置条件写清楚。这个阶段不执行任何东西。
+`execute --chain <id> --dry-run` 解析链图并打印每一处写入。确认后用 `execute --chain <id>` 执行。写步骤要过备份闸门：执行前生成回执，执行后引用回执。`exploit <id>` 是预置利用包的一键入口；`--real` 打开 RoE、备份与部署面闸门。
 
-### 第 5 步 — 编排
+### 第 6 步 — 横向
 
-`--dry-run` 打印解析后的链图。读写面。如果某条链会碰你没预料到的东西——共享 PVC、准入 webhook、控制器命名空间——
-停下来修范围，而不是相信上周的审批。
+横向复用同一颗探针。`channel start --forward` 经 Pod 网络命名空间访问内部服务；`probe spawn` 在另一个 Pod 上启动子探针；`agent run` 把每个跳板记录成一条图边，并附上证明它的证据。
 
-前置条件用一个小的表达式求值器判断，不用 `eval`。前置未知的步骤会被跳过，不会被尝试。
+### 第 7 步 — 多探针
 
-### 第 6 步 — 审批
+每颗探针都有 `probe_id` 与 `parent_id`。子探针继承父探针的只读状态、命令白名单和预算，且只能更严格。深度有上限，扇出有上限，清理先子后父，避免留下仍持有 token 的孤儿。
 
-三种“同意”：署名的一次性批准；带级别与有效期的有界预授权；维护窗口内自动开启的日历窗口。三种都留记录。
-没有“全部批准”开关，`autonomy` 也不能超过授权记录里的级别。
+### 第 8 步 — 跨集群
 
-### 第 7 步 — 执行
+`agent relay add` 注册到另一个集群的中继；`agent coverage status` 显示目标节点里哪些已闭合、哪些可达但未证明、哪些没有路径；`agent coverage proof` 写出随报告交付的闭合证明。
 
-备份闸门很直白：写类模块没有备份目标就退出 91。有目标时，先快照、再执行、两者都记录。链中途失败时，
-依赖不满足的后续步骤不会运行。
+### 第 9 步 — 报告、规则与控制台
 
-`rollback --run <id> --step <n>` 恢复单步并打印回执。恢复失败退出 3 并把这次 run 标记出来；这个标记会进报告，
-这正是它该在的地方。
+`report --run <id> --lang bi` 用同一套证据渲染渗透叙事与修复清单；`export --format sarif|ocsf|vex` 产出机器可读结果；`rules generate` 写准入、运行时、网络三类规则包，`rules validate` 重放并输出拦截 / 检出 / 漏过矩阵；`inkblade ui` 提供本地控制台，展示发现、探针树、图与时间线。
 
-### 第 8 步 — 证据
-
-每一步三层。上下文日志告诉你测试者当时看到了什么；SQLite 库回答查询：哪些发现、哪些动作、哪些备份、哪些回滚；
-tar 归档加 manifest 让第三方只验一步，不必拿到整次 run。
-
-哈希算在归档上，报告锚点指向它。审阅时无法重放的发现会被降级——在我们手里降，不是在客户面前。
-
-### 第 9 步 — 报告
-
-两份报告，一套证据。渗透报告按 PTES 结构写，带 ML 专章；修复报告是给平台组的清单。`--lang bi` 一次出双语。
-`--redact` 在报告离开项目前剥掉零日级细节。
-
-`export` 给机器看：SARIF 2.1.0 进代码扫描面板，OCSF 进 SIEM，OpenVEX 用来声明“不受影响”。
-
-### 第 10 步 — 规则
-
-每条链至少对应一条规则。`rules generate --cni cilium` 生成准入、网络、检测、收敛四类规则包。
-`rules validate` 对着 mock 重放，逐链产出矩阵：拦截、检出、漏过。
-
-“漏过”那一列最有用。一条所有人都以为有效、重放却说无效的策略，正是紫队该交出来的发现。
-
-### 第 11 步 — 复测
-
-`schedule add` 接受 cron 表达式或固定间隔，加一个链子集。`schedule run-due` 跑到期的任务，与基线做差异：
-新增发现、已修复发现、配置漂移。
-
-流水线用 `ci-gate --fail-on high --new-only`：新增高危才非零退出，已接受的存量不管。这个区别决定了门禁是被保留，
-还是周五被人关掉。
-
-### 值得记住的失败模式
+### 闸门行为
 
 | 情况 | 会发生什么 | 怎么办 |
 |---|---|---|
-| 授权中途过期 | 所有 run 退出 91 | 用新窗口重签；旧证据仍然有效 |
+| 授权记录过期 | 所有 run 退出 91 | 用新窗口重签；旧证据仍然有效 |
+| 目标越界 | 执行前拒绝 | 修范围或去掉目标 |
 | 链前置条件为假 | 跳过该步，能继续的继续 | 先跑前置模块 |
-| 备份目标写满 | 写步骤拒绝 | 腾空间或换目标；不要跳过 |
-| 部署面未知 | 模块跳过，除非 `--probe` | 先与平台负责人确认，再探测 |
-| 回滚失败 | 退出 3，run 被标记 | 把恢复不了的那一步当发现报出去 |
+| 写步骤没有备份目标 | 拒绝该步，退出 91 | 提供备份目标；不要跳过闸门 |
+| 回滚无法恢复某步 | 退出 3，run 被标记 | 把恢复不了的那一步当发现报出 |

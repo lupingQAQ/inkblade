@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>InkBlade（墨刃零）— 训练与推理集群渗透测试平台</title>
-<meta name="description" content="InkBlade 是面向 Kubernetes 与 ML 训练/推理集群的授权渗透测试平台：授权闸门、三层证据、双语报告，零运行时依赖。">
+<meta name="description" content="InkBlade 是面向 ML 训练与推理集群的授权渗透测试产品：静态 Rust 探针进入目标 Pod，覆盖十层检测，产出双语报告、可重放规则与本地控制台。">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="index,follow">
 <meta name="generator" content="scripts/build-docs-site.py">
@@ -37,7 +37,7 @@ pre{background:#060708;border:1px solid #262b34;padding:15px 16px;overflow:auto;
 <header class="topbar">
   <div class="wrap topbar-in">
     <a class="brand" href="../"><span class="tick">//</span><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false" style="vertical-align:-2px"><path d="M3 1.6c4 .6 6.6 3.2 6.6 6.4 0 2.6-1.6 4.6-4.4 5.6 3.4-.6 5.8-3 5.8-6.3 0-2.6-1.6-4.6-4.4-5.6 2.9 1 4.6 3.2 4.6 5.9 0 3.6-2.6 6.2-6.2 6.7Z" fill="#59d3c8"/><path d="M2.4 14.6 12.6 3" stroke="#d7dbe0" stroke-width="1" stroke-linecap="round"/></svg><span>InkBlade</span><span class="cn" lang="zh-Hans">墨刃零</span></a>
-    <nav class="top-links" aria-label="Quick links"><a class="dl" href="../INSTALL.md">下载</a><a href="../USAGE.md#quick-reference">快速参考</a><a href="../ARCHITECTURE.md">架构</a></nav>
+    <nav class="top-links" aria-label="Quick links"><a class="dl" href="../INSTALL.md">安装</a><a href="../USAGE.md">使用</a><a href="../ARCHITECTURE.md">架构</a></nav>
     <div class="lang" aria-label="Language"><a href="../en/index.html" hreflang="en" lang="en">EN</a><a href="../zh/index.html" hreflang="zh-Hans" aria-current="page">中文</a></div>
   </div>
 </header>
@@ -49,139 +49,123 @@ pre{background:#060708;border:1px solid #262b34;padding:15px 16px;overflow:auto;
       <p class="kicker">训练与推理基础设施</p>
       <h1>InkBlade<span class="stroke">墨刃零</span></h1>
       <p class="positioning">训练与推理集群渗透测试平台</p>
-      <p class="docstate">开发文档 <i>/</i> v0.2.0</p>
-      <nav class="quick" aria-label="Quick links"><a class="primary" href="../INSTALL.md">下载</a><a href="../USAGE.md#quick-reference">快速参考</a><a href="../ARCHITECTURE.md">架构</a></nav>
-      <p class="lead-note note" style="margin-top:18px;max-width:44ch">授权闸门、每步三层证据、双语报告。只依赖 Python 标准库——集群里不需要装任何东西。</p>
+      <p class="docstate">产品文档 <i>/</i> 2026-10</p>
+      <nav class="quick" aria-label="Quick links"><a class="primary" href="../INSTALL.md">安装</a><a href="../USAGE.md">使用</a><a href="../ARCHITECTURE.md">架构</a></nav>
+      <p class="lead-note note" style="margin-top:18px;max-width:44ch">把静态 Rust 探针放进已授权的 Pod，覆盖十层检测，产出双语报告、可重放规则与本地控制台。控制端不向集群下发代码。</p>
     </div>
     <aside class="spec">
       <h2>build sheet</h2>
-      <dl><dt>版本</dt><dd>0.2.0</dd><dt>许可证</dt><dd>Apache-2.0</dd><dt>运行时</dt><dd>Python 3.10 – 3.13</dd><dt>依赖</dt><dd>无</dd><dt>模块</dt><dd>286（默认 275）</dd><dt>链</dt><dd>29</dd><dt>默认姿态</dt><dd>只读</dd><dt>遥测</dt><dd>无</dd></dl>
+      <dl><dt>许可证</dt><dd>Apache-2.0</dd><dt>控制端</dt><dd>Python 3.10 – 3.13</dd><dt>目标端</dt><dd>静态 Rust 探针</dd><dt>模板</dt><dd>286</dd><dt>链</dt><dd>29</dd><dt>默认姿态</dt><dd>只读</dd><dt>遥测</dt><dd>无</dd></dl>
       <div class="rule"></div>
-      <p>pre-1.0。接口可能在次版本间变化；合规试点请钉死版本。</p>
+      <p>仅限授权测试。范围、级别与时间窗来自签署记录。</p>
     </aside>
   </div>
 </div></div></section>
 <div class="wrap shell">
-<nav class="rail" aria-label="Contents"><div class="lang-block" data-lang="zh"><p>目录</p><ol><li><a href="#find-a-module">找模块</a></li><li><a href="#install">安装与运行</a></li><li><a href="#safe">安全测试集群</a></li><li><a href="#workflow">完整流程</a></li><li><a href="#reserve">0day 储备</a></li><li><a href="#research">语料与研究</a></li><li><a href="#limits">边界</a></li><li><a href="#support">支持与许可</a></li><li><a href="#ai-disclosure">AI 披露</a></li></ol><p class="railnote">构建时从 docs/ 生成。</p></div></nav>
+<nav class="rail" aria-label="Contents"><div class="lang-block" data-lang="zh"><p>目录</p><ol><li><a href="#capabilities">核心能力</a></li><li><a href="#architecture">架构</a></li><li><a href="#workflow">工作流</a></li><li><a href="#quickstart">快速开始</a></li><li><a href="#commands">命令</a></li><li><a href="#deploy">部署</a></li><li><a href="#security">安全与授权</a></li><li><a href="#faq">常见问题</a></li><li><a href="#license">许可</a></li></ol><p class="railnote">构建时从 docs/ 生成。</p></div></nav>
 <div class="content">
-<nav class="jump" aria-label="Contents"><div class="lang-block" data-lang="zh" style="display:contents"><a href="#find-a-module">找模块</a><a href="#install">安装与运行</a><a href="#safe">安全测试集群</a><a href="#workflow">完整流程</a><a href="#reserve">0day 储备</a><a href="#research">语料与研究</a><a href="#limits">边界</a><a href="#support">支持与许可</a><a href="#ai-disclosure">AI 披露</a></div></nav>
-<section class="sec" id="find-a-module"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">01</span><h2>找模块</h2><p class="sub">浏览 286 个模块、29 条链</p></div><p>模块按攻击面分组，不按产品名。九层覆盖 ML 基础设施与普通 Kubernetes 的差异：fabric、权重、KV 缓存、租户；再加上只有框架、Operator、网络插件凑在一起才出现的组合。</p>
-<div class="figures"><div class="figure"><b>9</b><span>检测层</span></div><div class="figure"><b>16</b><span>框架</span></div><div class="figure"><b>286</b><span>模块</span></div><div class="figure"><b>29</b><span>条链</span></div></div>
-<h3>九层检测</h3>
-<div class="tbl"><table><thead><tr><th>层</th><th>看什么</th><th>代表模块键</th></tr></thead><tbody><tr><td><span class="mono-n">1</span>架构层</td><td>rail 与多平面错配、PD 分离 KV 通道、IMEX 域、MoE/EP 集合通信、长上下文 KV 生命周期、联邦</td><td><code>rail-mismatch-forcing、prefill-decode-kv-channel-unauth、nvlink-imex-isolation</code></td></tr><tr><td><span class="mono-n">2</span>产品 / 框架层</td><td>16 个栈有处理器：插件路由、管理面 fail-open、dev 模式、RL 控制面、WebUI、checkpoint loader</td><td><code>vllm-plugin-auth-bypass、sglang-admin-failopen、verl-prime-code-exec</code></td></tr><tr><td><span class="mono-n">3</span>组件 / Operator 层</td><td>Ray 与 LWS 控制面、GPU Operator、DRA、CSI、BMC/Redfish、DPU</td><td><code>ray-dashboard-job、gpu-operator-driver-audit、gpu-dra-mig-policy</code></td></tr><tr><td><span class="mono-n">4</span>网络 / fabric 层</td><td>hostNetwork/SR-IOV/macvlan 策略旁路、CNI 双控制面、IB SM、RoCE PFC/ECN、SHARP、NCCL bootstrap</td><td><code>multus-sriov-rdma-bypass、ib-sm-partition-audit、sharp-in-network-poison</code></td></tr><tr><td><span class="mono-n">5</span>数据 / 权重层</td><td>checkpoint 与优化器分片、数据集管道、HF 缓存、权重桶、模型注册表</td><td><code>checkpoint-shard-poison、skyrl-fetch-weights-traversal、model-registry-exposure</code></td></tr><tr><td><span class="mono-n">6</span>租户 / 隔离层</td><td>MIG 与 MPS 残留、GPU 池化调度、cache_salt、路由指标泄露</td><td><code>gpu-tenant-residue、hami-scheduler-auth-gap、cache-salt-policy-audit</code></td></tr><tr><td><span class="mono-n">7</span>供应链 / 身份层</td><td>trust_remote_code、revision 固定、签名与证明、SBOM、IRSA 通配、IMDS</td><td><code>trust-remote-code-supply-chain、gpu-cc-attestation-chain、cloud-irsa-trust-wildcard</code></td></tr><tr><td><span class="mono-n">8</span>缓存安全层</td><td>跨租户前缀缓存、语义缓存误命中、逐出残留、远程 KV 池、PD 通道、EPP 指标、TTFT 时序</td><td><code>prefix-cache-cross-tenant-leak、remote-kv-pool-isolation、cache-timing-sidechannel</code></td></tr><tr><td><span class="mono-n">9</span>跨组合层</td><td>14 条已声明签名；只有两三个组件相遇才成立</td><td><code>sglang-weight-exfil、imex-computedomain-gpu-memory-crossing、long-context-cache-leak</code></td></tr></tbody></table></div>
-<p class="note">逐层四列表——检测点、为何独有、模块键与链、证据产出：<a href="../DETECTION-LAYERS.md">DETECTION-LAYERS.md</a>。</p>
-<p class="note">第十层是防护绕过与检测覆盖（HIDS、Falco、准入、WAF），随探针路径跟踪：<a href="../PROBE-COVERAGE.md">PROBE-COVERAGE.md</a>。</p>
-<h3>框架覆盖</h3>
-<div class="tbl"><table><thead><tr><th>框架</th><th>检查</th><th>模块键</th></tr></thead><tbody><tr><td><code>vLLM</code></td><td>插件路由绕过、RL 路由、dev 端点、前缀时序</td><td><span class="dim">vllm-plugin-auth-bypass · vllm-timing-oracle</span></td></tr><tr><td><code>SGLang</code></td><td>管理面 fail-open、profiler 写入、ZMQ pickle、权重导出</td><td><span class="dim">sglang-admin-failopen · sglang-weight-exfil</span></td></tr><tr><td><code>TRL</code></td><td>vllm-serve 在 0.0.0.0 上开 dev</td><td><span class="dim">trl-serve-dev-mode</span></td></tr><tr><td><code>verl</code></td><td>prime_math eval、prime_code exec、checkpoint recv_pyobj、HDFS 注入</td><td><span class="dim">verl-prime-code-exec · verl-hdfs-command-injection</span></td></tr><tr><td><code>AReaL</code></td><td>set_env 到 create_engine 到 call、不安全 /load、/awex NCCL 入组</td><td><span class="dim">areal-setenv-engine-rce · areal-awex-nccl-injection</span></td></tr><tr><td><code>SkyRL</code></td><td>dev 权重、fetch 穿越、Tinker 控制面</td><td><span class="dim">skyrl-dev-pickle-rce · skyrl-tinker-hijack</span></td></tr><tr><td><code>OpenRLHF</code></td><td>无鉴权打分、强制不安全序列化</td><td><span class="dim">openrlhf-serve-rm · openrlhf-vllm-env-force</span></td></tr><tr><td><code>slime</code></td><td>跨租户权重拉取、debug/resume 加载</td><td><span class="dim">slime-weight-pull-poison</span></td></tr><tr><td><code>LLaMA-Factory</code></td><td>checkpoint 加载、WebUI 暴露</td><td><span class="dim">llamafactory-checkpoint-rce</span></td></tr><tr><td><code>ms-swift</code></td><td>trust_remote_code、eval 逃逸、数据集 pickle、media 读取</td><td><span class="dim">msswift-trust-remote-code · msswift-eval-escape</span></td></tr><tr><td><code>Megatron-LM</code></td><td>checkpointing 加载、优化器分片信任</td><td><span class="dim">megatron-checkpoint-rce</span></td></tr><tr><td><code>DeepSpeed</code></td><td>stage3 加载 sink、AutoEP 转换</td><td><span class="dim">deepspeed-checkpoint-rce</span></td></tr><tr><td><code>transformers</code></td><td>动态模块导入、revision 漂移</td><td><span class="dim">trust-remote-code-supply-chain</span></td></tr><tr><td><code>djev / vllm-jev</code></td><td>开放中继、插件路由绕过</td><td><span class="dim">djev-open-proxy · vllm-plugin-auth-bypass</span></td></tr><tr><td><code>Agent platforms</code></td><td>沙箱逃逸、fail-open 鉴权、默认 JWE 密钥、跨租户快照</td><td><span class="dim">dify-local-sandbox-unauth-rce · open-webui-code-execute-rce</span></td></tr><tr><td><code>Gateways</code></td><td>默认密钥、配置 RCE、上游密钥、缓存隔离</td><td><span class="dim">litellm-default-key-exfil · aigateway-upstream-key-exfil</span></td></tr></tbody></table></div>
-<h3>模块族</h3>
-<div class="tbl"><table><thead><tr><th class="">模块族</th><th class="num">数量</th><th class="">覆盖的部署面</th></tr></thead><tbody><tr><td>侦察<br><span class="dim">Reconnaissance</span></td><td class="num">67</td><td>Control plane, schedulers, gateways, storage, identity — enumeration only.</td></tr><tr><td>横向利用<br><span class="dim">Lateral movement</span></td><td class="num">66</td><td>Service-to-service pivots, gateway abuse, worker takeover, token reuse.</td></tr><tr><td>网络架构<br><span class="dim">Network architecture</span></td><td class="num">52</td><td>CNI semantics, policy coverage, service mesh, multi-NIC and fabric reach.</td></tr><tr><td>权限链<br><span class="dim">Privilege chains</span></td><td class="num">43</td><td>RBAC escalation, admission gaps, service-account trust, operator permissions.</td></tr><tr><td>核心代码<br><span class="dim">Core code paths</span></td><td class="num">22</td><td>Deserialisation, template injection, eval sinks, checkpoint loaders.</td></tr><tr><td>窃取与数据泄露<br><span class="dim">Exfiltration</span></td><td class="num">19</td><td>Dataset, checkpoint and credential exposure across tenant boundaries.</td></tr><tr><td>混合云<br><span class="dim">Hybrid cloud</span></td><td class="num">11</td><td>Instance metadata reachability, workload identity, cloud storage trust edges.</td></tr><tr><td>情报<br><span class="dim">Intelligence</span></td><td class="num">6</td><td>Version and advisory correlation that turns inventory into applicability.</td></tr></tbody></table></div>
-<h3>链与级别</h3>
-<div class="tbl"><table><thead><tr><th class="">链族</th><th class="num">条数</th></tr></thead><tbody><tr><td>网络利用链<br><span class="dim">Network exploitation</span></td><td class="num">12</td></tr><tr><td>经典攻击链<br><span class="dim">Classic kill chain</span></td><td class="num">9</td></tr><tr><td>云侧权重桶链<br><span class="dim">Cloud weight buckets</span></td><td class="num">5</td></tr><tr><td>零日链<br><span class="dim">Zero-day chains</span></td><td class="num">2</td></tr><tr><td>AI 网关链<br><span class="dim">AI gateway chains</span></td><td class="num">1</td></tr></tbody></table></div>
-<div class="tbl"><table><thead><tr><th class="">技术级别</th><th class="num">数量</th></tr></thead><tbody><tr><td>只读侦察<br><span class="dim">Read-only recon</span></td><td class="num">119</td></tr><tr><td>主动探测<br><span class="dim">Active probing</span></td><td class="num">72</td></tr><tr><td>利用验证<br><span class="dim">Exploit verification</span></td><td class="num">80</td></tr><tr><td>全影响演示<br><span class="dim">Full-impact demo</span></td><td class="num">15</td></tr></tbody></table></div>
-<div class="cut">
-  <p>模块在七层里排第三：上面是授权，下面是证据。每层拒绝什么：<a href="../ARCHITECTURE.md">ARCHITECTURE.md</a>。</p>
-  <p><a href="../MODULES.md">模块目录</a> · <a href="../FEATURES.md">特性清单</a> · <a href="../DETECTION-LAYERS.md">检测分层</a></p>
-</div>
-</div></section>
-<section class="sec" id="install"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">02</span><h2>安装与运行</h2><p class="sub">先看要求，再跑四条命令</p></div><p>不要集群、不要 kubeconfig、不要 API key。mock 靶场只绑回环，写入落在输出目录。</p>
-<h3>要求</h3>
+<nav class="jump" aria-label="Contents"><div class="lang-block" data-lang="zh" style="display:contents"><a href="#capabilities">核心能力</a><a href="#architecture">架构</a><a href="#workflow">工作流</a><a href="#quickstart">快速开始</a><a href="#commands">命令</a><a href="#deploy">部署</a><a href="#security">安全与授权</a><a href="#faq">常见问题</a><a href="#license">许可</a></div></nav>
+<section class="sec" id="capabilities"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">01</span><h2>十层检测</h2><p class="sub">探针逐层看什么</p></div><p>每一层都是一组可独立执行的模板。模板声明输入、步骤、检查项、发现和产物；探针执行模板并回传证据。</p>
+<div class="figures"><div class="figure"><b>10</b><span>检测层</span></div><div class="figure"><b>286</b><span>模板</span></div><div class="figure"><b>29</b><span>条链</span></div><div class="figure"><b>11</b><span>防护绕过模块</span></div></div>
+<h3>十层检测</h3>
+<div class="tbl"><table><thead><tr><th class="">层</th><th class="">能做什么</th><th class="">代表模板</th></tr></thead><tbody><tr><td><span class="mono-n">1</span>架构层</td><td>审计 rail 与多平面错配、PD 分离 KV 通道、IMEX 域、MoE/EP 集合通信、长上下文 KV 生命周期与联邦。</td><td><code>rail-mismatch-forcing, prefill-decode-kv-channel-unauth, nvlink-imex-isolation</code></td></tr><tr><td><span class="mono-n">2</span>产品 / 框架层</td><td>枚举 vLLM、SGLang、TRL、verl、AReaL、SkyRL、OpenRLHF、slime、LLaMA-Factory、ms-swift、Megatron-LM、DeepSpeed、transformers、网关与 Agent 平台的管理面与控制面。</td><td><code>vllm-plugin-auth-bypass, sglang-admin-failopen, verl-prime-code-exec</code></td></tr><tr><td><span class="mono-n">3</span>组件 / Operator 层</td><td>检查 Ray 与 LWS 控制面、GPU Operator 与驱动容器、DRA 策略、CSI 节点插件、BMC/Redfish 与 DPU offload。</td><td><code>ray-dashboard-job, gpu-operator-driver-audit, gpu-dra-mig-policy</code></td></tr><tr><td><span class="mono-n">4</span>网络 / fabric 层</td><td>验证 hostNetwork、SR-IOV、macvlan 上的策略旁路，CNI 双控制面、IB 子网管理器、RoCE PFC/ECN、SHARP、NCCL bootstrap 与 DNS。</td><td><code>multus-sriov-rdma-bypass, ib-sm-partition-audit, sharp-in-network-poison</code></td></tr><tr><td><span class="mono-n">5</span>数据 / 权重层</td><td>检查 checkpoint 与优化器分片、数据集管道、HF 缓存、权重桶、模型注册表与 KV/前缀缓存。</td><td><code>checkpoint-shard-poison, skyrl-fetch-weights-traversal, model-registry-exposure</code></td></tr><tr><td><span class="mono-n">6</span>租户 / 隔离层</td><td>度量 MIG 与 MPS 残留、GPU 池化调度器、cache_salt 策略与路由指标泄露。</td><td><code>gpu-tenant-residue, hami-scheduler-auth-gap, cache-salt-policy-audit</code></td></tr><tr><td><span class="mono-n">7</span>供应链 / 身份层</td><td>核验 trust_remote_code、revision 固定、证明链、SBOM、IRSA/工作负载身份、IMDS 与凭据暴露。</td><td><code>trust-remote-code-supply-chain, gpu-cc-attestation-chain, cloud-irsa-trust-wildcard</code></td></tr><tr><td><span class="mono-n">8</span>缓存安全层</td><td>测试跨租户前缀缓存、语义缓存误命中、逐出残留、远程 KV 池、EPP 指标与 TTFT 时序。</td><td><code>prefix-cache-cross-tenant-leak, remote-kv-pool-isolation, cache-timing-sidechannel</code></td></tr><tr><td><span class="mono-n">9</span>跨组合层</td><td>只在两个或三个组件相遇时才成立的发现，只报一次，并把组件级记录并入组合。</td><td><code>sglang-weight-exfil, imex-computedomain-gpu-memory-crossing, long-context-cache-leak</code></td></tr><tr><td><span class="mono-n">10</span>防护绕过层</td><td>度量 HIDS、运行时 eBPF、准入、镜像扫描、主机代理、WAF 与流量可视化是否看得见良性授权行为。</td><td><code>defense-bypass-elkeid, defense-bypass-falco, defense-bypass-admission</code></td></tr></tbody></table></div>
+<p class="note">逐层检测点与证据产出：<a href="../DETECTION-LAYERS.md">DETECTION-LAYERS.md</a> · <a href="../PRODUCT.md">PRODUCT.md</a></p>
+<h3>平台能力</h3>
 <ul>
-  <li><strong>Python 3.10 – 3.13</strong> 在 <code>PATH</code> 里。不用编译器、不强制虚拟环境、不装第三方包。</li>
-  <li><strong>200 MB 磁盘</strong>：demo 工作区、报告、控制台。</li>
-  <li><strong>可选：</strong>Docker 24+、Helm 3、之后的 kubeconfig。</li>
+  <li><b>一条执行路径。</b> 立足、Rust 探针、帧通道、Pod 内任务、子探针、证据。</li>
+  <li><b>目标侧零解释器。</b> 静态二进制在 distroless、scratch 与 Python 镜像上跑同一套模板。</li>
+  <li><b>探针树。</b> probe_id 与 parent_id、独立子 token、更严格的继承、有界的深度与扇出、先子后父清理。</li>
+  <li><b>Agent 运行时。</b> 带预算的目标图，含决策轨迹、journal 恢复与零执行回放。</li>
+  <li><b>跨集群中继。</b> 集群间用同一套帧协议，并留下覆盖证明。</li>
+  <li><b>证据在边界产生。</b> 任务结果、步骤日志、产物、SHA-256 manifest、流量表与清理回执。</li>
+  <li><b>规则可重放。</b> 准入、运行时、网络三类规则包，输出拦截 / 检出 / 漏过矩阵。</li>
+  <li><b>报告与控制台。</b> 双语渗透与修复报告、SARIF / OCSF / VEX 导出、本地控制台。</li>
+  <li><b>无遥测。</b> 不要账号、云密钥或许可服务器；不配置就没有外发调用。</li>
+</ul></div></section>
+<section class="sec" id="architecture"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">02</span><h2>一条执行路径</h2><p class="sub">三个平面，一棵探针树</p></div><p>控制端不在目标侧执行任何逻辑。它负责授权、渲染模板、执行预算和归档证据。探针是 Pod 内唯一运行的代码。</p>
+<div class="term">
+  <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">执行路径</span></div>
+<pre><code>立足 ──▶ Rust 探针 ──▶ 帧通道 ──▶ Pod 内任务
+                                   │
+                                   ├─▶ 子探针 ──▶ 子探针
+                                   └─▶ 证据 ──▶ 报告 / 规则 / 控制台</code></pre>
+</div>
+<h3>三个平面</h3>
+<ul>
+  <li><b>模板面。</b> template.json 声明输入、载荷、步骤、computed 状态、检查项、发现与产物。</li>
+  <li><b>探针面。</b> 静态 Rust 二进制使用 HMAC 认证的帧协议，执行 http、tcp、exec、fs、k8s、socks 与 spawn。</li>
+  <li><b>控制面。</b> Python 执行授权、范围、级别、备份与审计闸门，并把探针证据折成发现。</li>
 </ul>
-<h3>四条命令</h3>
+<h3>探针树</h3>
+<p>每颗探针都有 probe_id 与 parent_id。子探针继承父探针的只读状态、命令白名单与预算，且只能更严格。清理先子后父，避免留下仍持有 token 的孤儿。</p>
+<p class="note"><a href="../ARCHITECTURE.md">ARCHITECTURE.md</a> · <a href="../ARCHITECTURE-PROBE.md">ARCHITECTURE-PROBE.md</a> · <a href="../PROBE-PROTOCOL.md">PROBE-PROTOCOL.md</a></p></div></section>
+<section class="sec" id="workflow"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">03</span><h2>从立足到报告</h2><p class="sub">九个阶段，每步都留下下一步能校验的东西</p></div><p>顺序就是产品。任何阶段都可以拒绝；拒绝就地停下。</p>
+<ul class="flow"><li><span class="n">1</span><span class="t">立足</span><span class="d">session open 记录入口方式、目标、命名空间、Pod 与凭据指纹。<br><span class="note">→ 会话记录</span></span></li><li><span class="n">2</span><span class="t">Rust 探针</span><span class="d">probe deploy 投放静态二进制并登记身份与哈希。<br><span class="note">→ 探针身份</span></span></li><li><span class="n">3</span><span class="t">通道</span><span class="d">channel start 承载帧协议，提供回环 SOCKS5 与端口转发。<br><span class="note">→ 通道状态</span></span></li><li><span class="n">4</span><span class="t">检测</span><span class="d">session run、run 与 agent run 按十层执行模板。<br><span class="note">→ 发现、证据</span></span></li><li><span class="n">5</span><span class="t">逃逸</span><span class="d">execute 解析链；写步骤先过备份闸门。<br><span class="note">→ 逃逸路径</span></span></li><li><span class="n">6</span><span class="t">横向</span><span class="d">通道转发、子探针与 agent 图边测绘内部可达性。<br><span class="note">→ 可达图</span></span></li><li><span class="n">7</span><span class="t">多探针</span><span class="d">probe spawn 扩展探针树；子探针继承更严格的预算与白名单。<br><span class="note">→ 探针树</span></span></li><li><span class="n">8</span><span class="t">跨集群</span><span class="d">agent relay 连接集群；agent coverage 写出闭合证明。<br><span class="note">→ 中继状态、覆盖证明</span></span></li><li><span class="n">9</span><span class="t">报告 / 规则 / 控制台</span><span class="d">report、export、rules generate 与 ui 收束项目。<br><span class="note">→ 报告、规则包、控制台</span></span></li></ul>
+<h3>闸门行为</h3>
+<div class="tbl"><table><thead><tr><th class="">闸门</th><th class="">拒绝条件</th><th class="num">信号</th></tr></thead><tbody><tr><td>授权</td><td>没记录、窗口过期、资产越界。</td><td class="num">exit 91</td></tr><tr><td>级别</td><td>模板级别高于记录。</td><td class="num">exit 91</td></tr><tr><td>备份</td><td>写步骤没有备份目标。</td><td class="num">exit 91</td></tr><tr><td>范围</td><td>目标或命名空间不在会话内。</td><td class="num">拒绝</td></tr><tr><td>回滚</td><td>有步骤无法恢复。</td><td class="num">exit 3</td></tr></tbody></table></div>
+<p class="note"><a href="../WORKFLOW.md">逐阶段参考</a></p></div></section>
+<section class="sec" id="quickstart"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">04</span><h2>真实环境，五步接入</h2><p class="sub">安装、授权、投放、运行、报告</p></div><p>在你有权测试的集群上运行。</p>
 <ol class="steps">
-  <li><b>python -m pip install -e .</b><span>装入口。也可以直接 <code>python -m inkblade ...</code>。</span></li>
-  <li><b>python -m inkblade doctor</b><span>Python、写权限、端口、依赖、集群可达。不到一秒。</span></li>
-  <li><b>python -m inkblade demo</b><span>工作区、授权、mock、2 模块、1 链、报告。4–5 秒。</span></li>
-  <li><b>python -m inkblade trial</b><span>同样流程，输出更短，附下一步。</span></li>
+  <li><b>python -m pip install -e .</b><span>安装控制端。Python 3.10 – 3.13，不需要编译器。</span></li>
+  <li><b>python -m inkblade up</b><span>接入向导：工作区、授权、kubeconfig。</span></li>
+  <li><b>python -m inkblade quickstart</b><span>签记录：目标、范围、级别、时间窗。</span></li>
+  <li><b>python -m inkblade session open --mode kubeconfig ...</b><span>绑定目标并打开会话。</span></li>
+  <li><b>python -m inkblade probe deploy --via kubectl ... --allow-write</b><span>投放静态探针并登记。</span></li>
 </ol>
 <div class="term">
-  <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">终端 · 离线 demo</span></div>
-<pre><code><span class="p">$</span> python -m inkblade doctor
-<span class="p">$</span> python -m inkblade demo
-<span class="p">$</span> python -m inkblade trial</code></pre>
+  <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">终端 · 授权集群</span></div>
+<pre><code><span class="p">$</span> python -m inkblade up
+<span class="p">$</span> python -m inkblade quickstart
+<span class="p">$</span> python -m inkblade session open --mode kubeconfig --workspace ./work     --kubeconfig ~/.kube/config --namespace ml-team --pod infer-0
+<span class="p">$</span> python -m inkblade probe deploy --session &lt;session-id&gt; --via kubectl     --binary ./inkblade-probe-linux-amd64 --namespace ml-team --pod infer-0 --allow-write
+<span class="p">$</span> python -m inkblade agent run --probe &lt;probe-id&gt; --objective read-only-recon --workspace ./work
+<span class="p">$</span> python -m inkblade report --run &lt;run-id&gt; --lang bi</code></pre>
 </div>
-<h3>其他入口</h3>
+<p class="note">agent run 打印 report 需要的 run_id。写操作要签署记录与 --allow-write；不带时 probe deploy 只出计划。</p>
+<p class="note"><a href="../INSTALL.md">安装</a> · <a href="../QUICKSTART.md">快速开始</a> · <a href="../USAGE.md">使用</a></p></div></section>
+<section class="sec" id="commands"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">05</span><h2>命令表</h2><p class="sub">实际输入的命令面</p></div><p>除经会话或探针访问集群的命令外，下列命令都可离线运行。</p>
+<div class="tbl"><table><thead><tr><th class="">任务</th><th class="">命令</th></tr></thead><tbody><tr><td>接入向导</td><td><code>inkblade up</code></td></tr><tr><td>授权记录</td><td><code>inkblade quickstart · inkblade roe</code></td></tr><tr><td>会话</td><td><code>inkblade session open|status|close|run</code></td></tr><tr><td>探针</td><td><code>inkblade probe deploy|list|collect|exec|read-file|list-files|upload|download|spawn|cleanup</code></td></tr><tr><td>通道</td><td><code>inkblade channel start|status|stop</code></td></tr><tr><td>单模板</td><td><code>inkblade session run --id <session> --module <key> · inkblade run --module <key></code></td></tr><tr><td>链</td><td><code>inkblade execute --chain <id> [--dry-run]</code></td></tr><tr><td>Agent</td><td><code>inkblade agent run|status|trace|resume|replay|stop</code></td></tr><tr><td>跨集群</td><td><code>inkblade agent relay add|list|status · inkblade agent coverage status|proof</code></td></tr><tr><td>报告</td><td><code>inkblade report --run <id> --lang bi</code></td></tr><tr><td>导出</td><td><code>inkblade export --run <id> --format sarif|ocsf|vex</code></td></tr><tr><td>规则</td><td><code>inkblade rules generate · inkblade rules validate</code></td></tr><tr><td>控制台</td><td><code>inkblade ui</code></td></tr><tr><td>模板</td><td><code>inkblade template list|get|plan|validate</code></td></tr></tbody></table></div>
+<p class="note"><a href="../USAGE.md">完整使用手册</a></p></div></section>
+<section class="sec" id="deploy"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">06</span><h2>Wheel、容器、Helm</h2><p class="sub">一个控制端，三种交付方式</p></div><p>控制端是一个无第三方依赖的 Python 包；探针是独立的静态二进制。</p>
+<div class="term">
+  <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">wheel</span></div>
+<pre><code>python -m pip wheel . --no-deps -w dist/
+python -m pip install --no-index --find-links dist/ inkblade</code></pre>
+</div>
 <div class="term">
   <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">容器</span></div>
 <pre><code>docker build -t inkblade:0.2.0 .
-docker run --rm -v inkblade-data:/data inkblade:0.2.0 trial</code></pre>
+docker run --rm -v inkblade-data:/data inkblade:0.2.0 up</code></pre>
 </div>
 <div class="term">
   <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">helm · 默认只读</span></div>
-<pre><code>helm install inkblade deploy/helm/inkblade --namespace inkblade --create-namespace</code></pre>
+<pre><code>helm install inkblade deploy/helm/inkblade   --namespace inkblade --create-namespace</code></pre>
 </div>
-<p class="note">uid 10001、根只读、只有 <code>/data</code> 可写。Chart 只给 <code>get/list/watch</code>。要写需两个开关加签署记录，否则 HTTP 423。</p>
-<p class="note"><a href="../INSTALL.md">安装页</a> · <a href="../USAGE.md#quick-reference">快速参考</a></p>
-</div></section>
-<section class="sec" id="safe"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">03</span><h2>安全地测试集群</h2><p class="sub">先试点，默认只读，写前必备份</p></div><p>闸门按顺序来。每一道都能停住 run。第一轮只读。</p>
+<p class="note">uid 10001、根只读、证据落在 PVC。默认只给读动词；写操作要 readOnly=false、rbac.allowWrite=true 与签署记录。卸载保留 PVC。</p>
+<p class="note"><a href="../INSTALL.md">安装指南</a> · <a href="../PROBE-DEPLOY.md">探针投放</a></p></div></section>
+<section class="sec" id="security"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">07</span><h2>安全与授权</h2><p class="sub">授权是使用前提，不是功能开关</p></div><p>没有签署记录，InkBlade 拒绝运行。每个阶段都有自己的闸门。</p>
 <ol class="steps">
-  <li><b>inkblade pilot</b><span>只读清点：命名空间、工作负载、GPU、网关、存储。画像、热图、审批清单。</span></li>
-  <li><b>inkblade roe / quickstart</b><span>范围、级别、窗口，签字。没记录不跑。</span></li>
-  <li><b>只读模块</b><span>286 里的 191 个。只枚举、只确认，不改状态。</span></li>
-  <li><b>execute --dry-run</b><span>链图、前置、每一处写入。什么都不执行。</span></li>
-  <li><b>审批并备份</b><span>写类模块两样都要。缺一个退出 91。</span></li>
-  <li><b>inkblade rollback</b><span>逐步回退，报告哪些回不来。恢复失败是发现。</span></li>
+  <li><b>RoE 记录</b><span>目标、范围、级别、时间窗与应急联系人；哈希钉存，跟着每次 run 走。</span></li>
+  <li><b>默认只读</b><span>采集、探测、读文件与只读模板不需要额外开关。</span></li>
+  <li><b>五道写闸门</b><span>会话级别、--allow-write、meta.writes、backup-write 模式、备份回执。</span></li>
+  <li><b>备份与回滚</b><span>写前快照，两者都记录，逐步恢复。</span></li>
+  <li><b>审计与证据</b><span>每次探针动作与文件访问进入证据库，带 SHA-256 manifest。</span></li>
+  <li><b>急停</b><span>inkblade abort 停工作区；agent stop 停单个 run。</span></li>
 </ol>
-<div class="tbl"><table><thead><tr><th class="">闸门</th><th class="">拒绝条件</th><th class="num">信号</th></tr></thead><tbody><tr><td>授权</td><td>没记录、窗口过期、资产越界。</td><td class="num">exit 91 / HTTP 423</td></tr><tr><td>级别</td><td>模块级别高于记录。</td><td class="num">exit 91</td></tr><tr><td>备份</td><td>写类模块没有可写目标。</td><td class="num">exit 91</td></tr><tr><td>部署面</td><td>缺面且未 <code>--probe</code>。</td><td class="num">跳过并记录</td></tr><tr><td>回滚</td><td>有步骤无法恢复。</td><td class="num">exit 3</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th class="">控制</th><th class="">保证什么</th></tr></thead><tbody><tr><td>授权哈希</td><td>一次 run 的授权是一个文件，不是一场会。</td></tr><tr><td>范围与级别</td><td>越界或超级别的动作在执行前拒绝。</td></tr><tr><td>备份回执</td><td>没有可恢复快照就没有写操作。</td></tr><tr><td>证据 manifest</td><td>每条发现都能落到 task、step、artifact、probe 或 manifest 哈希。</td></tr><tr><td>无遥测</td><td>不启用集成，任何数据都不离开工作区。</td></tr></tbody></table></div>
 <div class="cut warn">
-  <p><strong>demo 只在回环。</strong>写入留在工作区。真实集群要签署记录和 kubeconfig。</p>
-  <p>急停 <code>inkblade abort</code>，解除用 <code>--clear</code>。</p>
-</div>
-</div></section>
-<section class="sec" id="workflow"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">04</span><h2>完整流程</h2><p class="sub">十一步，从签字到复测</p></div><p>十一步。每步都留下下一步能校验的东西。</p>
-<div class="figures"><div class="figure"><b>11</b><span>个阶段</span></div><div class="figure"><b>3</b><span>层证据 / 步</span></div><div class="figure"><b>2</b><span>种报告语言</span></div><div class="figure"><b>0</b><span>无记录的越权动作</span></div></div>
-<ul class="flow">
-<li><span class="n">01</span><span class="t">授权</span><span class="d">Signed consent with scope, window, level and emergency contact. The hash rides along in every run.<br><span class="note">→ consent record + hash</span></span></li><li><span class="n">02</span><span class="t">资产</span><span class="d">Seeds grow into an incremental asset table; imported scanner results are normalised into the same inventory.<br><span class="note">→ assets table, collection snapshot</span></span></li><li><span class="n">03</span><span class="t">侦察</span><span class="d">Read-only modules look at what is really deployed. The surface matrix says what is testable here.<br><span class="note">→ findings, surface matrix</span></span></li><li><span class="n">04</span><span class="t">组合</span><span class="d">Declared combination signatures pull out findings that only matter together, preconditions attached.<br><span class="note">→ ranked combinations</span></span></li><li><span class="n">05</span><span class="t">链编排</span><span class="d">Chains are ordered graphs. Dry-run resolves the topology and prints every write before it happens.<br><span class="note">→ plan, write surface</span></span></li><li><span class="n">06</span><span class="t">审批</span><span class="d">High-impact steps wait for a human, or for a bounded pre-authorisation with an explicit level.<br><span class="note">→ approval record, window</span></span></li><li><span class="n">07</span><span class="t">执行</span><span class="d">Only the approved scope runs. Write modules pass the backup gate first; refusals exit 91.<br><span class="note">→ action log, backups</span></span></li><li><span class="n">08</span><span class="t">证据</span><span class="d">Context journal, SQLite audit tables, one archive per step with a SHA-256 manifest.<br><span class="note">→ context.jsonl.gz, evidence.db, steps/</span></span></li><li><span class="n">09</span><span class="t">报告</span><span class="d">Pentest narrative and remediation checklist from the same evidence, in Chinese and English.<br><span class="note">→ reports, SARIF, OCSF, VEX</span></span></li><li><span class="n">10</span><span class="t">规则</span><span class="d">Each chain becomes admission, network, detection and convergence rules, then gets replayed.<br><span class="note">→ rule packs, replay matrix</span></span></li><li><span class="n">11</span><span class="t">复测</span><span class="d">Scheduled re-runs are diffed against the baseline. Drift is a finding; silence is not a pass.<br><span class="note">→ drift report, pipeline verdict</span></span></li>
-</ul>
-<p class="note">多数工具从第五步开始。这里要先有记录、清单、部署面矩阵和计划。拒绝就地停下。</p>
-<p><a href="../WORKFLOW.md">逐阶段参考</a></p>
-</div></section>
-<section class="sec" id="reserve"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">05</span><h2>0day 储备</h2><p class="sub">39 条独立原语 · 21 个组件 · 已上报厂商</p></div>
-<p>计数规则只有一条，没有例外：动态复现成功、且查新结论为“确认未公开”的条目才能进入储备。事后发现已公开的，降级并留痕。同一条不重复计数。</p>
-<div class="figures"><div class="figure"><b>169</b><span>库存条目</span></div><div class="figure"><b>60</b><span>动态验证</span></div><div class="figure"><b>47</b><span>确认未公开</span></div><div class="figure"><b>39</b><span>独立原语</span></div><div class="figure"><b>21</b><span>组件</span></div><div class="figure"><b>0</b><span>存疑</span></div></div>
-<p>下面是完整储备，一条独立原语一行：组件、类别、受影响版本、状态、披露窗口。这是有意的安排。防守方应该能自己对着版本号判断，而不必来问我们要简报——也不必从我们这里拿到利用代码。</p>
-<div class="tbl"><table><thead><tr><th class="">组件</th><th class="">漏洞类别</th><th class="">受影响版本</th><th class="num">状态</th><th class="num">披露时间线</th></tr></thead><tbody><tr><td><code>vllm-jev</code></td><td>认证绕过</td><td>v0.31.0 · 57226d4</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>djev</code></td><td>认证绕过、开放中继</td><td>e5841cf</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>slime</code></td><td>路径穿越</td><td>05e3b01 · SGLang 0.5.15.post1</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>sglang-omni</code></td><td>鉴权失效（fail-open）</td><td>204ba29</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>skyrl</code></td><td>不安全反序列化</td><td>a1e34db</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>skyrl</code></td><td>缺少鉴权</td><td>a1e34db</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>trl</code></td><td>缺少鉴权</td><td>1.15.0</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>areal</code></td><td>未授权代码执行</td><td>448de52</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>areal</code></td><td>反序列化</td><td>448de52</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>openrlhf</code></td><td>缺少鉴权</td><td>0.11.2 · dc2a7ad</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>msswift</code></td><td>不安全模型加载</td><td>4.5.3 · fbc61cf</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>verl</code></td><td>代码执行（eval/exec）</td><td>76e837e</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>verl</code></td><td>TCP 反序列化</td><td>76e837e</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>skyrl</code></td><td>路径穿越</td><td>a1e34db</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>openrlhf</code></td><td>不安全序列化</td><td>0.11.2 · dc2a7ad</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>areal</code></td><td>不安全反序列化</td><td>448de52</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>slime</code></td><td>不安全反序列化</td><td>05e3b01</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>openjev</code></td><td>发布钩子代码执行</td><td>b4339c6</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>msswift</code></td><td>沙箱逃逸</td><td>4.5.3 · fbc61cf</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>areal</code></td><td>未授权控制面</td><td>448de52</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>onejev</code></td><td>服务端请求伪造</td><td>6122519</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>llm2jev</code></td><td>本地文件读取</td><td>f2bdad6</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>siliconlab</code></td><td>凭据泄露</td><td>a08e969</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>verl</code></td><td>命令注入</td><td>76e837e</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>dify</code></td><td>未授权 RCE</td><td>v1.17.1</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>dify</code></td><td>鉴权失效（fail-open）</td><td>v1.17.1 · bbfac7a</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>dify</code></td><td>硬编码密钥</td><td>v1.17.1</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>dify</code></td><td>跨租户访问</td><td>v1.17.1</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>open-webui</code></td><td>沙箱逃逸</td><td>v0.12.3 · 91ea4e3</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>vllm</code></td><td>认证绕过</td><td>v0.32.0</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>deepspeed</code></td><td>不安全反序列化</td><td>v0.19.8</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>msswift</code></td><td>本地文件读取</td><td>v4.6.0</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>deepspeed</code></td><td>不安全反序列化</td><td>v0.19.8</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>deepspeed</code></td><td>不安全反序列化</td><td>v0.19.8</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>llamafactory</code></td><td>不安全反序列化</td><td>v0.9.5</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>megatron</code></td><td>不安全反序列化</td><td>core_v0.19.2</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>msswift</code></td><td>反序列化</td><td>v4.6.0</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>msswift</code></td><td>反序列化</td><td>v4.6.0</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr><tr><td><code>msswift</code></td><td>反序列化</td><td>v4.6.0</td><td class="num">已上报</td><td class="num">2026-10-27 → 2027-01-25（90 天）</td></tr></tbody></table></div>
-<div class="cut warn">
-  <p><strong>已按协调披露流程通知厂商。</strong>通知按下面的政策执行；利用细节、可执行代码和请求内容在修复窗口结束前保持非公开，之后随 advisory 一并发布。</p>
-  <p>政策：厂商优先，90 天窗口，厂商不回应再转国家级 CERT。已准备 30 份 CVE 就绪包与 6 份加固建议。表中的日期是目标值，不是承诺——厂商书面申请延期，会给。</p>
-</div>
-<p><a href="../0DAY-PUBLIC.md">台账、计数规则与逐条说明</a></p>
-</div></section>
-<section class="sec" id="research"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">06</span><h2>与语料一起做研究</h2><p class="sub">80 个源、38 行能力矩阵、可复现的校验</p></div><p>结论要能追溯。语料库 <strong>80 个源</strong>：中英文厂商文档加论文。覆盖矩阵约束数量与构成。</p>
-<div class="figures"><div class="figure"><b>80</b><span>语料源</span></div><div class="figure"><b>38</b><span>能力行</span></div><div class="figure"><b>25</b><span>真实验证</span></div><div class="figure"><b>10</b><span>模拟验证</span></div><div class="figure"><b>3</b><span>仍未达成</span></div></div>
-<div class="tbl"><table><thead><tr><th class="">材料</th><th class="">回答什么</th></tr></thead><tbody><tr><td><a href="../RESEARCH-COVERAGE.md">语料覆盖</a></td><td>哪些厂商与论文支撑判断，缺口在哪。</td></tr><tr><td>能力矩阵</td><td>真实验证、模拟验证、仍未达成。38 行。</td></tr><tr><td><a href="../COMPETITIVE-MATRIX.md">竞品矩阵</a></td><td>同类工具做到什么。</td></tr><tr><td><a href="../OSS-BENCH.md">开源基准</a></td><td>现成扫描器在同一实验环境能走多远。</td></tr><tr><td><a href="../EFFECT-VERIFICATION.md">效果验证</a></td><td>真实效果，还是只暴露了端点？</td></tr></tbody></table></div>
-<p>25 项在真实软件上验证，10 项只在模拟里，3 项仍未达成。最后一列写明阻塞原因。</p>
-<p class="note">对比是 clean-room 的：公开描述与协议常识。没有读 AGPL 源码。声明在 <code>NOTICE</code>。</p>
-</div></section>
-<section class="sec" id="limits"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">07</span><h2>边界与责任</h2><p class="sub">它不是什么，以及授权为什么不可协商</p></div><div class="split">
-  <div><h3>覆盖不齐</h3><p>Kubernetes 60–71%，Slurm 25%。缺的模块按画像列。</p></div>
-  <div><h3>验证是部分的</h3><p>152 条里 37 条动态验证，6 条暴露面验证，其余是假设。</p></div>
-  <div><h3>储备行是线索</h3><p>一个 commit、一种配置。补丁级别决定暴露。</p></div>
-  <div><h3>自治有边界</h3><p>有规划器和探索器，默认提议并等待。</p></div>
-  <div><h3>无遥测</h3><p>不开启就没有外发调用。没有授权服务器。</p></div>
-  <div><h3>pre-1.0</h3><p>接口会动。合规试点请钉版本。</p></div>
-</div>
-<div class="cut warn">
-  <p><strong>仅限授权使用。</strong>没有书面授权就不做。对不归你所有的系统动手，在多数司法辖区属于违法。软件会拒绝。</p>
-  <p>InkBlade 自身的问题：私密报告，90 天目标。公开 issue 别贴利用细节。</p>
-</div>
-<p class="note">缺什么能力，缺口台账写明。<a href="../FAQ.md">常见问题</a></p>
-</div></section>
-<section class="sec" id="support"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">08</span><h2>支持与许可</h2><p class="sub">Apache-2.0、安全政策，以及一个空的赞助位</p></div>
-<div class="tbl"><table><thead><tr><th class="">项目</th><th class="">说明</th></tr></thead><tbody><tr><td>许可证</td><td><strong>Apache-2.0</strong>。可以商用、fork、嵌进服务；保留声明即可。</td></tr><tr><td>Clean-room</td><td><code>NOTICE</code> 记录了哪些对标特性只依据公开功能描述实现。</td></tr><tr><td>安全</td><td>支持 0.2.x，走私密报告，协调披露 90 天，不接受公开贴利用细节的 issue。</td></tr><tr><td>贡献</td><td>欢迎 issue 与 PR。模块提交需要 manifest、dry-run 路径和测试。</td></tr><tr><td>版本</td><td>pre-1.0：同时维护一条次版本线，上一条线提供 90 天安全修复。</td></tr><tr><td>赞助</td><td>位置保留。暂无公开的资助账号，有了会写在仓库里。</td></tr></tbody></table></div>
-<p class="note">仓库政策在源码树里：<code>SECURITY.md</code>、<code>CONTRIBUTING.md</code>、<code>CODE_OF_CONDUCT.md</code>、<code>docs/VERSIONING.md</code>。本站由 <code>docs/</code> 生成；内部审计材料不随站点发布。</p>
-</div></section>
-<section class="sec" id="ai-disclosure"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">09</span><h2>AI 生成内容披露</h2><p class="sub">这些页面是怎么写出来的</p></div><p>本站与 README 的部分段落由 AI 辅助起草。人工维护者跑了命令、对着代码与报告核了数字，删掉了复现不了的说法。</p>
-<p>检测器彼此不一致，也和人类判断不一致。这里不引用检测率。读着像机器写的句子，多半最初就是那么写的。数字不对就是 bug。</p>
-<p class="note">代码、manifest、规则包与证据来自软件本身。以上只针对文字。</p>
-</div></section>
+  <p><strong>仅限授权使用。</strong>没有书面授权就不做。对不归你所有的系统动手，在多数司法辖区属于违法。没有签署记录，软件会拒绝。</p>
+  <p>安全问题走 <code>SECURITY.md</code> 的私密渠道；公开 issue 不要贴利用细节。</p>
+</div></div></section>
+<section class="sec" id="faq"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">08</span><h2>常见问题</h2><p class="sub">接入、探针、检测、授权、交付</p></div><h3>目标 Pod 要装 Python 吗？</h3><p>不要。探针是静态 Rust 二进制，模板是 JSON。目标只需要 Linux 内核、可写临时目录或 memfd_create，探针进程继承 Pod 的命名空间与 ServiceAccount。</p><h3>探针怎么进 Pod？</h3><p>kubectl、ServiceAccount token、共享卷、EphemeralContainer 清单或授权 RCE 回调。每种方式都有前置条件，也会留下痕迹。</p><h3>探针是不是后门？</h3><p>不是。它不持久化、不改启动项、不改镜像、不回连固定 C2。它只在授权会话内运行，执行已注册模板，默认只读，写操作过闸门，退出时清理。</p><h3>会被 HIDS/EDR 发现吗？</h3><p>会。探针不隐藏进程、连接或文件写入。第 10 层度量防守方是否看得见良性 marker，不提供规避能力。</p><h3>写操作怎么保证安全？</h3><p>五道闸门：授权覆盖目标/级别/时间窗、--allow-write、meta.writes 与写步骤、backup-write 模式、备份回执。写后回读哈希，失败回滚。</p><h3>能离线吗？</h3><p>能。控制端不需要外网，探针不需要包索引，模板与规则包随发布物带入。</p><h3>有遥测吗？</h3><p>没有。没有账号体系、许可服务器或遥测。可选集成默认关闭。</p><h3>能商用或 fork 吗？</h3><p>Apache-2.0 允许商用与 fork。保留 LICENSE 与 NOTICE，不要用 InkBlade 商标命名 fork。</p>
+<p class="note">更多：<a href="../FAQ.md">FAQ.md</a></p></div></section>
+<section class="sec" id="license"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">09</span><h2>许可</h2><p class="sub">Apache-2.0、clean-room 边界、仓库政策</p></div><p>Apache-2.0。允许商用、fork 与嵌入服务；保留声明。</p>
+<div class="tbl"><table><thead><tr><th class="">项目</th><th class="">说明</th></tr></thead><tbody><tr><td>许可证</td><td><strong>Apache-2.0</strong>。保留 <code>LICENSE</code> 与 <code>NOTICE</code>。</td></tr><tr><td>Clean-room</td><td>功能对标只依据公开描述与可观察行为；不与 AGPL 项目链接或派生。</td></tr><tr><td>商标</td><td>fork 不要使用 InkBlade 名称。</td></tr><tr><td>政策</td><td><code>SECURITY.md</code>、<code>CONTRIBUTING.md</code>、<code>CODE_OF_CONDUCT.md</code>。</td></tr></tbody></table></div>
+<p class="note">文档索引：<a href="../DOC-INDEX.md">DOC-INDEX.md</a></p></div></section>
 </div>
 </div>
 </main>
-<footer class="foot"><div class="wrap"><div class="lang-block" data-lang="zh"><div class="foot-grid"><div><p>InkBlade 文档，从仓库内容生成。纯 HTML 加两个本地资源；不从任何地方加载字体、脚本或样式。</p><p class="note">© <span data-year>2026</span> The InkBlade Authors</p></div><div><h4>指南</h4><ul><li><a href="../USAGE.md">使用</a></li><li><a href="../FEATURES.md">特性</a></li><li><a href="../WORKFLOW.md">流程</a></li><li><a href="../INSTALL.md">安装</a></li></ul></div><div><h4>参考</h4><ul><li><a href="../MODULES.md">模块目录</a></li><li><a href="../0DAY-PUBLIC.md">0day 台账</a></li><li><a href="../FAQ.md">常见问题</a></li><li><a href="../ARCHITECTURE.md">架构</a></li></ul></div><div><h4>项目</h4><ul><li><a href="#find-a-module">找模块</a></li><li><a href="#limits">边界</a></li><li><a href="#support">支持与许可</a></li></ul></div></div><div class="foot-bar"><span>InkBlade 0.2.0</span><span>Apache-2.0</span><span>仅限授权测试</span><span>文档由 AI 辅助撰写，经人工校对</span></div></div></div></footer>
+<footer class="foot"><div class="wrap"><div class="lang-block" data-lang="zh"><div class="foot-grid"><div><p>InkBlade 产品文档。纯 HTML 加两个本地资源；不从任何地方加载字体、脚本或样式。</p><p class="note">© <span data-year>2026</span> The InkBlade Authors</p></div><div><h4>指南</h4><ul><li><a href="../USAGE.md">使用</a></li><li><a href="../FEATURES.md">特性</a></li><li><a href="../WORKFLOW.md">流程</a></li><li><a href="../INSTALL.md">安装</a></li></ul></div><div><h4>参考</h4><ul><li><a href="../PRODUCT.md">产品定义</a></li><li><a href="../DETECTION-LAYERS.md">检测分层</a></li><li><a href="../FAQ.md">常见问题</a></li><li><a href="../DOC-INDEX.md">文档索引</a></li></ul></div><div><h4>项目</h4><ul><li><a href="#capabilities">核心能力</a></li><li><a href="#security">安全与授权</a></li><li><a href="#license">许可</a></li></ul></div></div><div class="foot-bar"><span>InkBlade</span><span>Apache-2.0</span><span>仅限授权测试</span><span>无遥测</span></div></div></div></footer>
 <script src="../assets/app.js" defer></script>
 </body>
 </html>

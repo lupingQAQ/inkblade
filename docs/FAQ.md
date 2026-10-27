@@ -1,72 +1,30 @@
 # FAQ / 常见问题
 
-> 2026-10 探针架构口径。问题按“能不能跑、怎么跑、证据是什么、边界在哪”排序。
+问题按“怎么接入、怎么跑、证据是什么、边界在哪”排序。
 
-## 中文
+## 接入与安装
 
-### 没有集群能试吗？
+### 需要什么环境？
 
-不能做完整的渗透结果。`doctor`、模板 schema 校验、mock 靶场可以在本地跑；但 `session` 需要授权目标，`probe` 需要目标 Pod，`report` 需要真实证据。产品不提供 demo/trial 路径，也不把 mock 结果包装成“客户环境结论”。
+控制端是 Python 3.10–3.13，跑在工作站或跳板机上；目标端是 Linux amd64/arm64 的静态 Rust 探针。目标 Pod 不需要 Python、pip、Bash、curl 或 kubectl。完整的接入步骤见 [`INSTALL.md`](INSTALL.md)。
+
+### 第一次怎么开始？
+
+```bash
+python -m pip install -e .
+python -m inkblade up
+python -m inkblade quickstart
+```
+
+`up` 打开接入向导，创建工作区并引导导入 kubeconfig；`quickstart` 写出绑定目标、范围、级别与时间窗的授权记录。之后用 `session open` 打开会话，用 `probe deploy` 投放探针。
 
 ### 目标 Pod 里要装 Python 吗？
 
-不要。探针是静态链接的 Rust 二进制；模板是 JSON。目标不需要 Python、pip、Bash、curl。只有 `k8s exec/copy` 这条可选路径需要目标镜像里有 `kubectl`；没有就退回 API 读写或换投放方式。
+不要。探针是静态链接的 Rust 二进制；模板是 JSON。目标不需要 Python、pip、Bash、curl。只有 `kubectl`/`sa-token` 投放路径需要 `kubectl` 和目标 RBAC；没有就换 `manifest`、共享卷或授权 RCE。
 
 ### 为什么用 Rust，不用 Go？
 
-三个原因：静态二进制体积更小、没有运行时；模板解释器和 HTTP/TLS/JSON 可以在一个进程内收口；内存安全和错误处理更适合“在别人 Pod 里跑一次性逻辑”。Go 也能做，但会把 `net/http`、TLS 根证书、cgo 等依赖带进来，发布物更大，行为更容易受构建环境影响。
-
-### 探针是不是后门？
-
-不是。探针不持久化、不写启动项、不改镜像、不驻留、不回连固定 C2。它只在授权 session 内运行，任务来自已注册模板，退出时清理。它和“后门”的区别不是名字，而是：授权、模板白名单、只读默认、写闸门、清理回执、证据可审计。
-
-### 探针怎么进 Pod？
-
-四种方式：授权 RCE（base64 + memfd）、`kubectl cp/exec`、EphemeralContainer、共享卷。每种都有前置条件和痕迹；没有“静默投放”这种承诺。详见 `docs/PROBE-DEPLOY.md`。
-
-### 会不会被 HIDS/EDR 发现？
-
-会。探针不试图隐藏进程、网络连接、文件写入或 kubelet 审计。第 10 层的 11 个 `defense-bypass-*` 模块不是“绕过演示”，而是用良性 marker 测防守方能不能看见这类行为，并输出检测/盲区/硬化建议。
-
-### 第 10 层是不是在教人绕过防护？
-
-不是。它不携带恶意载荷、不做持久化、不关闭安全产品、不提供规避执法的话术。它做的是：在授权环境里发一个带 `INKBLADE-BENIGN` 前缀的 marker，看 Elkeid/Falco/Tetragon/Kyverno/WAF 是否记录；没记录就是盲区，盲区转成规则和配置建议。防守方拿到的价值大于攻击方。
-
-### 为什么有 11 个 defense-bypass 模块？
-
-因为训练集群的防守面不是单一产品：HIDS、运行时 eBPF、准入、镜像扫描、主机代理、WAF、网络可视化各管一段。只测一个产品，会漏掉“部署了但降级”“规则没覆盖”“采样窗口太短”这些真实盲区。11 个模块对应 11 类产品/控制面，每个都输出三类结果。
-
-### 模板和模块是什么关系？
-
-模块是产品目录里的条目，模板是它的执行体。模板键 = 模块键，例如 `defense-bypass-falco`。模块清单写元数据、级别、是否写、所需部署面；模板写 steps/checks/findings/artifacts。注册表拒绝模板模块带 `run.py`。
-
-### 287 个模块都迁移完了吗？
-
-模板迁移已完成。截至 2026-10-27，287 个模块目录中有 286 个 `template.json` 和 1 个 `probe-bootstrap`；286 个旧 `run.py` 已从工作树与 HEAD 删除。Rust 静态探针（`c8d2f118…`，源码 `1f0f57c`）已在 VM 内跑完 286/286 模板的 vulnerable/fixed 两态，每态连续 3 次一致、0 失败；fixed 态负控的边界（部分模板两态共用 fixture 输入）如实写在 `docs/PROBE-COVERAGE.md` §6。完成度看 `docs/DYNAMIC-VERIFICATION.md`，不看宣传页。
-
-### 动态验证是什么？
-
-每个模板必须在 mock 靶场跑两态：vulnerable 态应产生预期 finding，fixed 态不应产生同一 finding；连续 3 次一致；离线；有证据目录和 manifest。只跑一态、只做静态检查、用参考评估器代替 Rust 探针，都不算。
-
-### 为什么报告里会有 `blocked`？
-
-因为有些模板需要特权 Pod、hostNetwork、GPU、节点访问或真实厂商产品；mock 靶场不具备这些条件。`blocked` 是诚实状态，不是通过。报告会写缺什么部署面；客户环境具备时可以补跑。
-
-### 写操作怎么保证安全？
-
-五道闸门：session 授权覆盖目标/级别/时间窗；探针 `--allow-write`；模板 `meta.writes=true` 且步骤 `write: true`；`mode=backup-write`；备份回执存在。缺一条就 `skipped` 或 `E_DENIED`。写后回读哈希，失败回滚。
-
-### 只读模式能做什么？
-
-采集快照、HTTP/TCP 探测、读文件、执行只读命令、跑只读模板、看 K8s 资源。不能写文件、不能删文件、不能执行非白名单命令、不能 spawn 子探针、不能做 K8s 写动词。
-
-### 探针权限有多大？
-
-等于目标 Pod 的权限，加上探针进程的 capability。它不能超过 Pod 的 SA、namespace、cgroup、挂载。需要节点权限的检测点，必须由具备节点权限的探针或控制端完成；没有就 `blocked`。
-
-### 多探针怎么管？
-
-父子树：每个探针有 `probe_id` / `parent_id`；子探针继承更严格的只读/白名单/预算；最大深度 3、每父最多 8 个子探针；清理先子后父；父探针退出后子探针在 TTL 内退出。
+三个原因：静态二进制体积更小、没有运行时；模板解释器和 HTTP/TLS/JSON 可以在一个进程内收口；内存安全和错误处理更适合“在别人 Pod 里跑一次性逻辑”。Go 也能做，但会把 `net/http`、TLS 根证书、cgo 等依赖带进来，发布物更大。
 
 ### 支持 Windows/macOS 吗？
 
@@ -74,92 +32,96 @@
 
 ### 能离线吗？
 
-能。控制端不需要外网；探针不需要包索引；模板和规则包随发布物带入。离线安装要带控制器 wheel、Python 解释器、两个架构的探针、模板和规则包；`doctor --offline` 会把网络检查标 `SKIP`，不标 `PASS`。
+能。控制端不需要外网；探针不需要包索引；模板和规则包随发布物带入。离线安装要带控制器 wheel、Python 解释器、两个架构的探针、模板和规则包。
 
-### 有账号、许可服务器、遥测吗？
+## 探针与通道
 
-没有账号体系（本地 `users.json` 除外）、没有许可服务器、没有遥测。可选集成默认关闭。
+### 探针是不是后门？
 
-### 能商用/ fork 吗？
+不是。探针不持久化、不写启动项、不改镜像、不驻留、不回连固定 C2。它只在授权 session 内运行，任务来自已注册模板，退出时清理。区别不在名字，而在：授权、模板白名单、只读默认、写闸门、清理回执、证据可审计。
 
-Apache-2.0 允许商用与 fork；保留 `LICENSE` / `NOTICE`，不要用 InkBlade 商标命名 fork。
+### 探针怎么进 Pod？
+
+四种方式：授权 RCE（base64 + memfd）、`kubectl`、ServiceAccount token、共享卷或 EphemeralContainer 清单。每种都有前置条件和痕迹；没有“静默投放”这种承诺。详见 [`PROBE-DEPLOY.md`](PROBE-DEPLOY.md)。
+
+### 通道能做什么？
+
+`channel start` 在本地回环上开 SOCKS5 与端口转发，让你访问 Pod 网络内的服务。通道只绑 `127.0.0.1`；探针不在 Pod 网络上开监听端口。`channel status` 查看监听，`channel stop` 关闭。
+
+### 探针权限有多大？
+
+等于目标 Pod 的权限，加上探针进程的 capability。它不能超过 Pod 的 SA、namespace、cgroup、挂载。需要节点权限的检测点，必须由具备节点权限的探针或控制端完成。
+
+### 多探针怎么管？
+
+父子树：每个探针有 `probe_id` / `parent_id`；子探针继承更严格的只读状态、命令白名单和预算；深度与扇出有上限；清理先子后父。
+
+### 会不会被 HIDS/EDR 发现？
+
+会。探针不试图隐藏进程、网络连接、文件写入或 kubelet 审计。第 10 层的 11 个 `defense-bypass-*` 模块用良性 marker 测防守方能不能看见这类行为，并输出检测 / 盲区 / 硬化建议。
+
+## 检测与结果
+
+### 模板和模块是什么关系？
+
+模块是产品目录里的条目，模板是它的执行体。模板键 = 模块键，例如 `defense-bypass-falco`。模块清单写元数据、级别、是否写、所需部署面；模板写 steps/checks/findings/artifacts。注册表拒绝模板模块带 `run.py`。
 
 ### 怎么加模板？
 
-在 `inkblade/modules/<key>/` 放 `module.json` + `template.json`；用 `inkblade template lint` 校验；在 mock 靶场跑两态；补证据；更新覆盖率表。不要加 `run.py`，不要把逻辑写成脚本。
+在 `inkblade/modules/<key>/` 放 `module.json` + `template.json`；用 `inkblade template validate` 校验；在授权目标上跑一次只读验证；补证据。不要加 `run.py`，不要把逻辑写成脚本。
 
 ### 误报怎么处理？
 
-先看证据锚和 checks；再看目标版本/配置是否与模板假设一致；最后看动态验证是否覆盖该版本。模板可以在 `fixed` 态回归，但不能靠“把规则改松”降误报。报告里保留限制节和 `blocked` 项。
+先看证据锚和 checks；再看目标版本/配置是否与模板假设一致。模板可以在 fixed 态回归，但不能靠“把规则改松”降误报。报告里保留授权边界与不可达部署面说明。
+
+### 读结果先看什么？
+
+先看 `status`，再看 `findings` 的 severity 与 evidence，最后看 `checks` 是否支持这条发现。`status=ok` 表示模板跑完、没有 finding，不代表目标安全；`status=skipped` 表示输入缺失、部署面不存在或写步骤被只读跳过。
 
 ### 和通用扫描器/主机 Agent 的区别？
 
 通用扫描器看配置和镜像；主机 Agent 看主机行为；InkBlade 在目标 Pod 内跑一次性 Rust 探针，检测 ML 组件、租户隔离、缓存、fabric、供应链和防护产品盲区。它不是 EDR，也不是 C2。
 
----
+## 授权与写操作
 
-## English
+### 写操作怎么保证安全？
 
-### Do I need a cluster?
+五道闸门：session 授权覆盖目标/级别/时间窗；探针 `--allow-write`；模板 `meta.writes=true` 且步骤声明写；`mode=backup-write`；备份回执存在。缺一条就 `skipped` 或 `E_DENIED`。写后回读哈希，失败回滚。
 
-For a real engagement, yes: a session needs an authorized target and a signed consent record. `doctor`, template schema checks, and the mock range run locally, but mock output is not a customer finding. There is no demo or trial path.
+### 只读模式能做什么？
 
-### Does the target need Python?
+采集快照、HTTP/TCP 探测、读文件、执行白名单内的只读命令、跑只读模板、看 K8s 资源。不能写文件、不能删文件、不能执行非白名单命令、不能做 K8s 写动词。
 
-No. The probe is a static Rust binary; templates are JSON. The only optional dependency is `kubectl` inside the image for the `k8s exec/copy` path.
+### 授权记录过期了怎么办？
 
-### Why Rust?
+所有 run 以退出码 91 拒绝。用新时间窗重签；旧证据仍然有效。
 
-Small static binary, no runtime, one process for the template engine plus HTTP/TLS/JSON, and memory safety for one-shot code in someone else's Pod. Go would work, but brings a larger runtime and build-environment sensitivity.
+### 急停在哪？
 
-### Is the probe a backdoor?
+`inkblade abort` 置位工作区停止开关，解除用 `inkblade abort --clear`。运行中的 agent 还可以用 `inkblade agent stop --run-id <id>` 停止。
 
-No. It does not persist, modify startup, patch images, or call a fixed C2. It runs only inside an authorized session, executes registered templates, defaults to read-only, gates writes, cleans up, and produces auditable evidence.
+## 平台与交付
 
-### How does it get in?
+### 跨集群怎么工作？
 
-Authorized RCE with base64 and memfd, `kubectl cp`/`exec`, an EphemeralContainer, or a shared volume. Each path has prerequisites and traces. There is no silent deployment claim.
+`agent relay add` 注册集群间中继，`agent coverage status` 查看目标图闭合情况，`agent coverage proof` 写出覆盖证明。每个集群仍然需要自己的授权记录。
 
-### Will HIDS/EDR see it?
+### 报告有哪些格式？
 
-Yes. It does not hide processes, connections, file writes, or kubelet audit. The 11 defense-bypass modules measure whether defenders see benign markers; they do not provide malware or evasion.
+`report` 输出 PTES 结构渗透报告与修复清单，支持 `--lang bi|zh|en` 和 `--redact`；`export` 输出 SARIF、OCSF、VEX。
 
-### Are 287 modules migrated?
+### 有账号、许可服务器、遥测吗？
 
-The template migration is complete. As of 2026-10-27 there are 287 module directories: 286 `template.json` files and one `probe-bootstrap`; the 286 legacy `run.py` files are gone from both the working tree and `HEAD`. The static Rust probe (`c8d2f118…`, source `1f0f57c`) ran all 286 templates in both the vulnerable and fixed states inside a Linux VM, three identical runs per state, 0 failures; the boundaries of the fixed-state negative control (some templates share fixture inputs across both states) are stated in `docs/PROBE-COVERAGE.md` §6. See `docs/DYNAMIC-VERIFICATION.md`.
+没有账号体系（本地 `users.json` 除外）、没有许可服务器、没有遥测。可选集成默认关闭。
 
-### What counts as verified?
+### 能商用/fork 吗？
 
-Two states against a local mock target, three consistent runs, offline, with a complete evidence directory and manifest. A single state, static review, or reference-evaluator run does not count.
+Apache-2.0 允许商用与 fork；保留 `LICENSE` / `NOTICE`，不要用 InkBlade 商标命名 fork。
 
-### How are writes controlled?
+### 第 10 层是不是在教人绕过防护？
 
-Five gates: signed authorization, `--allow-write`, `meta.writes` plus `write: true`, `backup-write` mode, and a backup receipt. Missing one yields `skipped` or `E_DENIED`.
+不是。它不携带恶意载荷、不做持久化、不关闭安全产品、不提供规避执法的话术。它做的是：在授权环境里发一个带 `INKBLADE-BENIGN` 前缀的 marker，看 Elkeid/Falco/Tetragon/Kyverno/WAF 是否记录；没记录就是盲区，盲区转成规则和配置建议。
 
-### Can it run air-gapped?
+### 为什么有 11 个 defense-bypass 模块？
 
-Yes. Carry the controller wheel, Python, both probe binaries, templates, and rule packs. `doctor --offline` marks network checks as skipped, not passed.
-
-### Can I use it commercially?
-
-Apache-2.0 permits commercial use and forks; keep `LICENSE` and `NOTICE`, and do not use the InkBlade trademark for a fork.
-
-十层检测点与 11 个防护绕过模块的逐项输出见 [`docs/PRODUCT.md`](PRODUCT.md)。
-
-## 证据 / 限制
-
-**证据**
-
-- 探针能力与限制：`probe/src/`（http/tcp/exec/fs/k8s/net/spawn/collect）。
-- 只读与写闸门：`probe/src/config.rs`、`probe/src/exec.rs`、`probe/src/fsops.rs`。
-- 11 个 defense-bypass 模块：`inkblade/modules/defense-bypass-*`、`inkblade/core/defenseprobe.py`。
-- 动态验证标准：`docs/DYNAMIC-VERIFICATION.md`。
-- 投放方式：`docs/PROBE-DEPLOY.md`。
-
-**限制**
-
-- 迁移进入收尾；命令面与模块数量会变，以 `doctor` 和覆盖率表为准。
-- 探针只支持 Linux；控制端可以跨平台。
-- 防护产品盲区只对被测版本/配置成立，不外推。
-- 良性 marker 不能证明恶意行为不可见；产品不提供恶意载荷。
-- 需要特权/GPU/节点访问的检测点在普通环境会 `blocked`，不是通过。
+因为训练集群的防守面不是单一产品：HIDS、运行时 eBPF、准入、镜像扫描、主机代理、WAF、网络可视化各管一段。11 个模块对应 11 类产品/控制面，每个都输出检测、盲区、硬化建议三类结果。

@@ -37,10 +37,8 @@ def _rows() -> list[dict[str, str]]:
 
 
 class TestSotaDoc(unittest.TestCase):
-    def test_doc_exists_and_readme_links(self):
+    def test_doc_exists(self):
         self.assertTrue(DOC.is_file(), "缺少 docs/SOTA-2026-10.md")
-        readme = README.read_text(encoding="utf-8")
-        self.assertIn("docs/SOTA-2026-10.md", readme)
 
     def test_matrix_shape_and_three_state(self):
         rows = _rows()

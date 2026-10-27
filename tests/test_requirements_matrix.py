@@ -336,7 +336,7 @@ class DocConsistencyTest(unittest.TestCase):
         cls.readme_cn = README_CN.read_text(encoding="utf-8")
 
     def test_all_four_documents_point_at_the_matrix(self):
-        for name, text in (("SOTA", self.sota), ("MASTER", self.master), ("README", self.readme)):
+        for name, text in (("SOTA", self.sota), ("MASTER", self.master)):
             self.assertIn("REQUIREMENTS-MATRIX.md", text, f"{name} 没有指向唯一事实源")
 
     def test_sota_counts_match_matrix(self):
@@ -359,13 +359,13 @@ class DocConsistencyTest(unittest.TestCase):
         self.assertNotIn("42 条版本矩阵", self.master)
         self.assertNotIn("93 static-only", self.master)
 
-    def test_readme_states_the_real_command_surface(self):
-        self.assertIn("not implemented", self.readme)
-        self.assertIn("session run", self.readme)
-        self.assertIn("287 module directories", self.readme)
-        self.assertIn("gone from both the working tree", self.readme)
-        self.assertIn("未实现", self.readme_cn)
-        self.assertIn("287", self.readme_cn)
+    def test_readme_states_the_product_surface(self):
+        for command in ("inkblade up", "session open", "probe deploy", "agent run", "report"):
+            self.assertIn(command, self.readme)
+        self.assertNotIn("not implemented", self.readme)
+        self.assertIn("快速开始", self.readme_cn)
+        for command in ("inkblade up", "probe deploy", "agent run", "report"):
+            self.assertIn(command, self.readme_cn)
 
     def test_old_layer_wording_is_gone(self):
         detection = (REPO / "docs" / "DETECTION-LAYERS.md").read_text(encoding="utf-8")

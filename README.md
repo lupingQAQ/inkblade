@@ -1,249 +1,154 @@
 # InkBlade
 
-**Probe-centric penetration testing for training and inference clusters**
+**Probe-centric penetration testing for training and inference clusters.**
 
-`v0.2.0` · Apache-2.0 · Python 3.10–3.13 controller · static Rust probe (source in git, binaries via CI) · read-only by default
+InkBlade places a static Rust probe inside an authorized Pod, runs declarative detection templates across ten layers of ML infrastructure, and turns the evidence into a bilingual report, replayable rule packs and a live console. The controller stays outside the cluster; the target Pod needs no Python, shell, curl or module code.
 
-> **Build status (2026-10-27).** This is the probe-migration window, not a GA release. The controller
-> command surface that ships today is `session · probe · channel · module · run · execute · template ·
-> surfaces · collect · report · rules · exploit · objective · assess · doctor`. The `exec` / `scan`
-> shorthands below are **not implemented**; use `session run`, `template` and `run` instead. The Rust
-> probe source is tracked and CI publishes amd64/arm64 builds, but `runtime=rust` evidence is still
-> zero. Every number in this README is reconciled in
-> [`docs/REQUIREMENTS-MATRIX.md`](docs/REQUIREMENTS-MATRIX.md).
+> **Authorized use only.** Point InkBlade at assets you have written authorization for. Consent and ROE records are hash-pinned; scope, level and time window are enforced in code. A write needs a backup receipt. No signed record, no probe — and no flag skips the gate.
 
-> **Authorized use only.** Point InkBlade at assets you have written authorization for. Consent and
-> ROE records are hash-pinned. Scope, level and time window are enforced in code. Writes need a
-> backup receipt. No signed record, no probe — and no flag skips it.
+## Core capabilities
 
-## Why a Pod-side probe
+### Ten detection layers
 
-A cluster scanner can tell you that a namespace is privileged or an image has a CVE. It cannot tell
-you what the inference Pod actually sees: its service-account token, mounted weights, RDMA
-interfaces, GPU device nodes, cgroup limits, or the neighbours reachable from its network namespace.
+Each layer is a set of templates you can run on its own. A template declares its inputs, steps, checks, findings and artifacts; the probe executes it and returns evidence.
 
-InkBlade puts a single static Rust binary inside the target Pod. Templates are JSON data. The probe
-is the only target-side execution logic. No Python, shell, or module code is shipped into the target.
-
-```
-foothold → Rust probe → framed channel → in-pod tasks → child probes → evidence
-```
-
-The Python controller owns authorization, scope, template selection, budgets, evidence storage,
-reporting and rule generation. It never executes target-side logic.
-
-## Ten layers
-
-The first nine describe where ML infrastructure differs from ordinary Kubernetes. The tenth
-describes whether the defenders can see it.
-
-| Layer | What we look for | Representative template keys |
+| Layer | What you can do | Representative templates |
 |---|---|---|
-| 1. Architecture | Rail/multi-plane mismatch, PD-split KV channels, IMEX domains, MoE/EP collectives, long-context KV lifetime, federation | `rail-mismatch-forcing`, `prefill-decode-kv-channel-unauth`, `nvlink-imex-isolation`, `nccl-collective-join` |
-| 2. Product / framework | Plugin routes, admin fail-open, dev modes, RL control planes, WebUI, checkpoint loaders | `vllm-plugin-auth-bypass`, `sglang-admin-failopen`, `verl-prime-code-exec`, `msswift-trust-remote-code` |
-| 3. Component / operator | Ray and LWS control, GPU Operator, DRA, CSI, BMC/Redfish, DPU | `ray-dashboard-job`, `gpu-operator-driver-audit`, `gpu-dra-mig-policy`, `redfish-default-credentials` |
-| 4. Network / fabric | Policy bypass on hostNetwork/SR-IOV/macvlan, dual CNI, IB SM, RoCE PFC/ECN, SHARP, NCCL bootstrap | `multus-sriov-rdma-bypass`, `ib-sm-partition-audit`, `roce-pfc-storm`, `sharp-in-network-poison` |
-| 5. Data / weights | Checkpoint and optimizer shards, dataset pipelines, HF cache, weight buckets, model registry | `checkpoint-shard-poison`, `skyrl-fetch-weights-traversal`, `model-registry-exposure` |
-| 6. Tenant / isolation | MIG and MPS residue, GPU pooling schedulers, `cache_salt`, routing metric leakage | `gpu-tenant-residue`, `hami-scheduler-auth-gap`, `cache-salt-policy-audit` |
-| 7. Supply chain / identity | `trust_remote_code`, revision pinning, signatures/attestation, SBOM, IRSA wildcards, IMDS | `trust-remote-code-supply-chain`, `gpu-cc-attestation-chain`, `cloud-irsa-trust-wildcard` |
-| 8. Cache security | Cross-tenant prefix cache, semantic false hits, eviction residue, remote KV pools, EPP metrics, TTFT timing | `prefix-cache-cross-tenant-leak`, `similarity-cache-false-hit`, `remote-kv-pool-isolation`, `cache-timing-sidechannel` |
-| 9. Cross-combination | Findings that only exist when two or three components meet; reported once, at the combination | `vllm-plugin-auth-bypass` + `sglang-weight-exfil`, `imex-computedomain-gpu-memory-crossing`, `long-context-cache-leak` |
-| 10. Defense bypass | Whether HIDS, runtime policy, admission, image scan, host agents, WAF and flow visibility see benign authorized activity | `defense-bypass-elkeid`, `defense-bypass-falco`, `defense-bypass-admission`, `defense-bypass-waf-inference` |
+| 1. Architecture | Audit rail and multi-plane alignment, PD-split KV channels, IMEX/ComputeDomain boundaries, MoE/EP collective membership, long-context KV lifetime, multi-cluster federation | `rail-mismatch-forcing`, `prefill-decode-kv-channel-unauth`, `nvlink-imex-isolation`, `nccl-collective-join` |
+| 2. Product / framework | Enumerate admin and control surfaces of vLLM, SGLang, TRL, verl, AReaL, SkyRL, OpenRLHF, slime, LLaMA-Factory, ms-swift, Megatron-LM, DeepSpeed, transformers, inference gateways and agent platforms; check plugin routes, dev modes, deserialization sinks and weight export paths | `vllm-plugin-auth-bypass`, `sglang-admin-failopen`, `verl-prime-code-exec`, `msswift-trust-remote-code` |
+| 3. Component / operator | Inspect Ray and LWS control planes, GPU Operator and driver containers, DRA device policy, CSI node plugins, BMC/Redfish endpoints and DPU offload | `ray-dashboard-job`, `gpu-operator-driver-audit`, `gpu-dra-mig-policy`, `redfish-default-credentials` |
+| 4. Network / fabric | Test policy bypass on hostNetwork, SR-IOV and macvlan, dual CNI control planes, IB subnet manager and partitions, RoCE PFC/ECN, SHARP aggregation, NCCL bootstrap and DNS discovery | `multus-sriov-rdma-bypass`, `ib-sm-partition-audit`, `roce-pfc-storm`, `sharp-in-network-poison` |
+| 5. Data / weights | Check checkpoint and optimizer shards, dataset pipelines, Hugging Face cache, weight buckets, model registries and KV/prefix cache entries | `checkpoint-shard-poison`, `skyrl-fetch-weights-traversal`, `model-registry-exposure` |
+| 6. Tenant / isolation | Measure MIG and MPS residue, GPU pooling schedulers, `cache_salt` policy and routing metric leakage | `gpu-tenant-residue`, `hami-scheduler-auth-gap`, `cache-salt-policy-audit` |
+| 7. Supply chain / identity | Verify `trust_remote_code`, revision pinning, attestation chains, SBOM, IRSA and workload identity, IMDS reachability and credential exposure | `trust-remote-code-supply-chain`, `gpu-cc-attestation-chain`, `cloud-irsa-trust-wildcard` |
+| 8. Cache security | Test cross-tenant prefix cache, semantic false hits, eviction residue, remote KV pools, EPP metrics and TTFT timing | `prefix-cache-cross-tenant-leak`, `similarity-cache-false-hit`, `remote-kv-pool-isolation`, `cache-timing-sidechannel` |
+| 9. Cross-combination | Report findings that only exist when two or three components meet, once at the combination, with the component notes folded in | `vllm-plugin-auth-bypass` + `sglang-weight-exfil`, `imex-computedomain-gpu-memory-crossing`, `long-context-cache-leak` |
+| 10. Defense bypass | Measure whether HIDS, runtime eBPF, admission control, image scanning, host agents, WAF and flow telemetry see benign authorized activity; every technique returns detected / blind spot / hardening and feeds a rule pack | `defense-bypass-elkeid`, `defense-bypass-falco`, `defense-bypass-admission`, `defense-bypass-waf-inference` |
 
-Full four-column tables for layers 1–9: [`docs/DETECTION-LAYERS.md`](docs/DETECTION-LAYERS.md).
-Layer 10, including the eleven defense-bypass modules: [`docs/PRODUCT.md`](docs/PRODUCT.md).
+Layer 10 is a product capability, not an add-on. Eleven `defense-bypass-*` modules cover Elkeid, AgentSmith-HIDS, veinmind, Falco, Tetragon, KubeArmor, Kyverno/Gatekeeper, Trivy/grype, Wazuh/Osquery, ModSecurity/Coraza/SafeLine and Cilium Hubble/Calico. They use benign markers, do not persist, do not disable security products and do not ship evasion instructions.
 
-## Defense bypass and detection coverage
+### Platform capabilities
 
-This is a product capability, not an add-on. Eleven `defense-bypass-*` modules are being
-migrated to run through the Rust probe; each uses benign markers only and returns three kinds of
-output for every technique: **detected**, **blind spot**, and **hardening advice**. They do not carry
-malware, persist, disable security products, or provide evasion instructions.
+- **One execution path.** Foothold → Rust probe → framed channel → in-pod task → child probe → evidence. Detection, escape and lateral movement all run through that path.
+- **Zero target-side interpreter.** The probe is a static binary; templates are JSON data. A distroless or scratch inference image runs the same templates as a Python image.
+- **Probe trees.** `probe_id` and `parent_id` give every probe a place in the tree; children inherit a stricter budget and allow-list, depth and fan-out are bounded, cleanup is child-first.
+- **Agent runtime.** A budgeted planner executes the objective graph, records every observation and decision, and can resume from a durable journal or replay without executing.
+- **Cross-cluster relay.** Relays carry the same framed protocol between clusters so one engagement can cover several clusters and record a coverage proof.
+- **Evidence at the boundary.** Per-task results, step logs, artifacts, SHA-256 manifests, traffic tables, probe identity and cleanup receipts.
+- **Rules you can replay.** Admission, runtime and network packs with blocked / detected / missed matrices.
+- **Report and console.** Bilingual pentest and remediation reports, SARIF / OCSF / VEX export, and a local web console for findings, graphs and timelines.
+- **No telemetry.** No account, no cloud key, no licence server, no outbound call unless you configure one.
 
-| Product family | Module | What is measured |
-|---|---|---|
-| Elkeid HIDS | `defense-bypass-elkeid` | agent/driver fingerprint, whitelisted paths, renamed tools, driver-not-loaded degradation, rule blind spots |
-| AgentSmith-HIDS | `defense-bypass-agentsmith` | `smith.ko` presence, rule coverage gaps, renamed exec, benign DNS |
-| veinmind container scan | `defense-bypass-veinmind` | layered images, renamed tools, compressed samples, whitelist names |
-| Falco | `defense-bypass-falco` | no-driver degradation, rule gaps, ephemeral containers, renamed exec |
-| Tetragon / eBPF | `defense-bypass-tetragon` | policy not mounted in a namespace, short-lived processes, hostNetwork |
-| KubeArmor | `defense-bypass-kubearmor` | namespace posture, default-allow, hostNetwork coverage |
-| Kyverno / Gatekeeper | `defense-bypass-admission` | exemptions, Audit mode, mutation order, subresources |
-| Trivy / grype image scan | `defense-bypass-imagescan` | deep layers, renamed tools, compressed samples, whitelist names |
-| Wazuh / Osquery host agents | `defense-bypass-hostagent` | agent offline window, rule gaps, renamed exec |
-| ModSecurity / Coraza / SafeLine WAF | `defense-bypass-waf-inference` | encoding, chunked, Unicode and oversized request variants |
-| Cilium Hubble / Calico flows | `defense-bypass-netobserv` | hostNetwork, multi-NIC, short-lived flows |
+## Workflow
 
-Blind spots feed rule packs directly: Kyverno/Gatekeeper for admission, Sigma for process/file/DNS
-telemetry, Falco/Tetragon for runtime, Suricata/WAF for network and request normalization. The
-product ships the rules and the replay matrix, not just a warning that a product was bypassed.
-
-## What you get
-
-- **One execution path.** Foothold, Rust probe, framed channel, in-pod template execution, child
-  probes, evidence. Paths outside this diagram are not supported.
-- **Zero target-side interpreter.** The probe is static; templates are data. A distroless or
-  scratch-based inference image runs the same templates as a Python image.
-- **Probe trees.** `probe_id` / `parent_id`, per-child tokens, stricter inheritance, depth/fan-out
-  limits, child-first cleanup.
-- **Read-only by default.** Writes need authorization, `--allow-write`, `meta.writes`,
-  `backup-write` mode and a backup receipt.
-- **Evidence at the boundary.** Per-task results, step logs, artifacts, SHA-256 manifests, probe
-  identity, cleanup receipts.
-- **Ten detection layers.** 287 module directories, 286 templates, 29 chains, 11 defense-bypass modules.
-- **Rules you can replay.** Admission, runtime and network packs with blocked/detected/missed
-  matrices.
-- **No telemetry.** No account, no cloud key, no licence server.
-
-## Maturity / 成熟度
-
-| Tier | Scope | Status |
-|---|---|---|
-| demo | Mock range and offline reports | Not offered in the probe architecture. A mock run is template validation, not a customer result. |
-| 试点 / pilot | Authorized, read-only: one namespace, one Pod, one template, then layer scan | Recommended first engagement. Evidence and limits are explicit. |
-| 生产 / production | Full chains, enterprise integrations, HA, on-call | Not recommended yet. There is no vendor SLA or certification. |
-
-禁止宣称 / prohibited claims: no “zero false positives”, no “full coverage”, no “production-certified”, no “undetectable”. Every number needs a task set, a version and a date.
+| # | Stage | What happens | Artifact |
+|---:|---|---|---|
+| 1 | Foothold | A session records the entry vector: `kubeconfig`, `external` or `foothold`, with target, namespace, Pod and credential fingerprint | session record, audit trail |
+| 2 | Rust probe | The static probe is delivered by `kubectl`, ServiceAccount token, shared volume, EphemeralContainer or an authorized RCE callback | probe identity, SHA-256 |
+| 3 | Channel | The controller speaks an HMAC-authenticated, length-prefixed JSON protocol over the probe's stdio; the channel can expose loopback SOCKS5 and port forwards | channel state, task log |
+| 4 | Detection | Templates run inside the Pod across the ten layers; each result carries steps, checks, findings and artifacts | findings, evidence anchors |
+| 5 | Escape | Container and node boundaries are tested through the operator, driver, CSI, runtime and kernel surfaces in scope | escape path, proof |
+| 6 | Lateral | Service-to-service, control-plane, gateway and fabric reachability is mapped from the probe's network namespace | reachability graph, pivots |
+| 7 | Multi-probe | Child probes extend the tree to further Pods and namespaces; each child keeps its own token and stricter budget | probe tree, lineage |
+| 8 | Cross-cluster | `agent relay` connects clusters; `agent coverage` records which objective nodes were closed and which were not reachable | relay status, coverage proof |
+| 9 | Report / rules / visualization | Bilingual reports, SARIF/OCSF/VEX exports, replayable rule packs and the local console | report, rule packs, console |
 
 ## Quick start
 
-The product path is `doctor → session → probe → exec/scan → report`. `session`, `probe` and `channel`
-exist in 0.2.0; `exec` and `scan` are shorthands that are **not implemented** — use `session run`,
-`template run` or `run` for the same work.
+Run against an environment you are authorized to test.
 
 ```bash
+# 1. Install the controller
 python -m pip install -e .
 
-# 1. Environment and probe binary
-python -m inkblade doctor
+# 2. Open the onboarding wizard: workspace, authorization, kubeconfig
+python -m inkblade up
 
-# 2. Authorized session
+# 3. Sign the authorization record: target, scope, level, time window
+python -m inkblade quickstart
+
+# 4. Import the kubeconfig and open an authorized session
 python -m inkblade session open \
-  --name pilot-01 --workspace ./work \
+  --mode kubeconfig \
+  --workspace ./work \
   --kubeconfig ~/.kube/config \
-  --scope namespace:ml-team --level read-only
+  --namespace ml-team \
+  --pod infer-0
 
-# 3. Deploy the probe (dry-run by default; writes need --allow-write)
+# 5. Deliver the probe into the target Pod
 python -m inkblade probe deploy \
-  --session pilot-01 --target ml-team/infer-0 \
-  --method kubectl-exec --binary ./inkblade-probe-linux-amd64
+  --session <session-id> \
+  --via kubectl \
+  --binary ./inkblade-probe-linux-amd64 \
+  --namespace ml-team \
+  --pod infer-0 \
+  --allow-write
 
-# 4. Run one template through the session (exec/scan shorthands are not implemented)
-python -m inkblade session run --session pilot-01 \
-  --template service-account-token-exposure
+# 6. Run the agent against the probe
+python -m inkblade agent run \
+  --probe <probe-id> \
+  --objective read-only-recon \
+  --workspace ./work
 
-# 5. Report
-python -m inkblade report --session pilot-01 --lang bi
+# 7. Render the report
+python -m inkblade report --run <run-id> --lang bi
 ```
 
-There is no demo or trial path: a session requires an authorized target and a signed consent record.
-The 2026-10 probe migration is in its final window; `doctor` reports the command surface that is
-actually available. Current completion is tracked in [`docs/DYNAMIC-VERIFICATION.md`](docs/DYNAMIC-VERIFICATION.md)
-and [`docs/REQUIREMENTS-MATRIX.md`](docs/REQUIREMENTS-MATRIX.md).
-
-## 5 分钟上手 / Five-minute onboarding
-
-Three commands cover the first run; all three work offline and never touch a real cluster.
-
-```bash
-python -m inkblade doctor       # environment, probe binary, optional deps, mock or real cluster
-python -m inkblade demo         # mock range -> signed consent -> 2 modules + 1 chain -> report + rules
-python -m inkblade quickstart   # 5 questions: target, scope, level, users, consent
-```
-
-`doctor` prints a plain-language fix line for every failed check. `demo` writes a workspace under
-`./demo` with bilingual report and rule pack. `quickstart` is re-entrant: answer the five questions,
-sign consent, then run `inkblade execute --dry-run` before anything else.
+`inkblade up` creates the workspace, checks the authorization record and walks through kubeconfig import. `quickstart` writes the signed record that binds scope, level and window. `probe deploy` is a plan without `--allow-write`; with it, the probe is delivered and registered. `agent run` prints the `run_id` that `report` consumes.
 
 ## Command map
 
 | Task | Command |
 |---|---|
-| Environment check | `inkblade doctor` |
+| Onboarding | `inkblade up` |
+| Authorization record | `inkblade quickstart`, `inkblade roe` |
 | Session | `inkblade session open` / `status` / `close` / `run` |
-| Probe deployment | `inkblade probe list` / `deploy` / `collect` / `exec` / `upload` / `download` / `spawn` / `cleanup` / `run` |
-| Probe channel | `inkblade channel` (framed transport diagnostics) |
-| One template | `inkblade template run --module <key>` or `inkblade run --module <key>` |
-| Layer scan | **not implemented** (`scan` shorthand missing; run the layer's modules explicitly) |
-| Dry run | `inkblade execute ... --dry-run` |
-| Report | `inkblade report --session <id> --lang bi` |
-| Export | `inkblade export --format sarif|ocsf|vex` |
-| Rule packs | `inkblade rules generate` / `validate` |
-| Template check | `inkblade template lint` / `validate` |
+| Probe delivery | `inkblade probe deploy` / `list` / `collect` / `exec` / `read-file` / `list-files` / `upload` / `download` / `spawn` / `cleanup` |
+| Channel | `inkblade channel start` / `status` / `stop` |
+| One template | `inkblade session run --id <session> --module <key>` or `inkblade run --module <key>` |
+| Chain execution | `inkblade execute --chain <id> --dry-run` then `inkblade execute --chain <id>` |
+| Agent | `inkblade agent run` / `status` / `trace` / `resume` / `replay` / `stop` |
+| Cross-cluster | `inkblade agent relay add\|list\|status`, `inkblade agent coverage status\|proof` |
+| Report | `inkblade report --run <id> --lang bi --kind pentest\|remediation` |
+| Export | `inkblade export --run <id> --format sarif\|ocsf\|vex` |
+| Rule packs | `inkblade rules generate`, `inkblade rules validate` |
+| Console | `inkblade ui` |
+| Templates | `inkblade template list` / `get` / `plan` / `validate` |
 
-## Documentation
+## Deployment
 
-| Document | Purpose |
-|---|---|
-| [`docs/PRODUCT.md`](docs/PRODUCT.md) | Positioning, audiences, ten-layer detection tables, defense-bypass outputs |
-| [`docs/ARCHITECTURE-PROBE.md`](docs/ARCHITECTURE-PROBE.md) | The single execution path, probe tree, runtime operations, controller boundary |
-| [`docs/PROBE-PROTOCOL.md`](docs/PROBE-PROTOCOL.md) | Framing, auth, tasks/results, budgets, file chunks, cleanup, error codes |
-| [`docs/PROBE-DEPLOY.md`](docs/PROBE-DEPLOY.md) | RCE/memfd, kubectl, EphemeralContainer, shared volumes, release binaries, write gates |
-| [`docs/DYNAMIC-VERIFICATION.md`](docs/DYNAMIC-VERIFICATION.md) | Two-state mock verification standard, evidence format, coverage fields, current status |
-| [`docs/INSTALL.md`](docs/INSTALL.md) | Controller and probe installation, air-gapped, workspace layout |
-| [`docs/USAGE.md`](docs/USAGE.md) | Five-step workflow, scenarios, output reading, exit codes |
-| [`docs/FAQ.md`](docs/FAQ.md) | Boundaries, migration status, writes, detection, licensing |
-| [`docs/DOC-INDEX.md`](docs/DOC-INDEX.md) | Complete documentation index |
-| [`docs/REQUIREMENTS-MATRIX.md`](docs/REQUIREMENTS-MATRIX.md) | Single source of truth: 124 requirements, number reconciliation, open gaps |
-| [`docs/SOTA-2026-10.md`](docs/SOTA-2026-10.md) | Capability matrix: 25 verified / 10 simulated / 4 not achieved, with evidence paths |
-| [`docs/MODULES.md`](docs/MODULES.md) | Module catalogue, series, levels and keys |
-| [`docs/HOW-TO-DESIGN-COMMERCIAL-AGENT.md`](docs/HOW-TO-DESIGN-COMMERCIAL-AGENT.md) | Engineering handbook, including the probe-centric revision |
+**Wheel**
 
-## English / 中文
+```bash
+python -m pip wheel . --no-deps -w dist/
+python -m pip install --no-index --find-links dist/ inkblade
+```
 
-This README is the English entry point. The Chinese version is
-[`README.zh-CN.md`](README.zh-CN.md); both describe the same architecture and the same limits.
+**Docker**
 
-Coverage details and the current Rust-runtime gap: [`docs/PROBE-COVERAGE.md`](docs/PROBE-COVERAGE.md) and [`docs/DYNAMIC-VERIFICATION.md`](docs/DYNAMIC-VERIFICATION.md).
+```bash
+docker build -t inkblade:0.2.0 .
+docker run --rm -v inkblade-data:/data inkblade:0.2.0 up
+```
 
-## 证据 / 限制
+**Helm**
 
-**Evidence**
+```bash
+helm install inkblade deploy/helm/inkblade \
+  --namespace inkblade --create-namespace
+```
 
-- Probe runtime: `probe/src/{http,net,exec,fsops,k8s,spawn,collect,protocol}.rs`.
-- Template schema: `probe/schema/probe-template.schema.json`; reference evaluator:
-  `inkblade/tpl/engine.py` (mock/CI only, refuses to run unless explicitly enabled).
-- Defense-bypass assessment: `inkblade/core/defenseprobe.py` and 11 `inkblade/modules/defense-bypass-*`
-  modules.
-- Current counts: 287 module directories (286 templates plus one bootstrap), 29 chains, 11
-  defense-bypass modules. The 286 legacy `run.py` files are gone from both the working tree and
-  `HEAD` (deleted in the migration commit); the registry only accepts templates.
-- Rust-runtime dynamic verification: 286/286 templates ran in both states on the static musl probe
-  (sha256 `c8d2f118…`, source `1f0f57c`, three identical runs per state, 0 failures). Evidence is in
-  `reports/probe-coverage/evidence.json` and `docs/PROBE-COVERAGE.md`; binaries are built in CI
-  (`docs/PROBE-BUILD.md`) and kept out of git (`probe/dist/`). The fixed-state negative control is
-  only conclusive for templates whose inputs come from the mock target — see PROBE-COVERAGE §6.
+The chart runs as uid 10001 with a read-only root filesystem and a PVC for evidence. Read verbs are granted by default; write verbs require both `readOnly=false` and `rbac.allowWrite=true`, plus a signed record in the workspace. Uninstalling keeps the PVC so evidence outlives the release.
 
-**Limits**
+## Security and authorization
 
-- The 2026-10 migration is complete: the probe CLI (`session`/`probe`/`channel`) and the template
-  runtime are usable; the `exec`/`scan` shorthands are still not provided.
-- The defense-bypass modules ran two-state on the Rust probe together with the other 286 templates;
-  the Python reference assessment is no longer the coverage evidence.
-- Vendor blind spots are version- and configuration-specific. A blind spot is not a claim that the
-  product can be bypassed in general.
-- Benign markers prove visibility, not invisibility of malicious behaviour. The product does not
-  ship malware, persistence, or evasion instructions.
-- Some detection points need privileged Pods, hostNetwork, GPU devices or node access; without that
-  surface the template returns `skipped` or `blocked`, never `verified`.
+- **RoE first.** `quickstart` writes a consent record with target, scope, level, time window and emergency contact. The record is hashed and the hash travels with every run; an expired or out-of-scope run is refused with exit code 91.
+- **Read-only by default.** Collection, HTTP/TCP probes, file reads, read-only commands and read-only templates work without extra flags. Writes need all five gates: session level, `--allow-write`, `meta.writes`, `backup-write` mode and a backup receipt.
+- **Backup and rollback.** A write module snapshots first, executes second and records both. `inkblade rollback --run <id> --step <n>` restores one step and prints a receipt; an unrestorable step is reported as a finding.
+- **Audit and evidence.** Every probe action, file read, exec call and task result is written to the evidence store with a SHA-256 manifest. Reports anchor every finding to a task, step, artifact, probe or manifest hash.
+- **Kill switch.** `inkblade abort` sets a workspace-level stop; runs refuse until it is cleared.
+- **No telemetry.** The controller makes no outbound call unless you enable an integration. There is no account system, licence server or usage upload.
 
-## AI assistance statement
+## License
 
-Parts of this README and the documentation were drafted with AI assistance, then edited by a human
-maintainer who ran the commands, checked the numbers against code and generated reports, and cut
-claims that would not reproduce.
-
-Detectors disagree with each other and with people, so no detection rate is claimed. If a sentence
-reads like a machine wrote it, it probably started that way. Numbers that look wrong are bugs.
-
-Code, manifests, rule packs and evidence artefacts come from the software; this statement covers
-prose.
-
-## Clean-room 声明 / Clean-room statement
-
-InkBlade is a clean-room implementation: no ARTEX (AGPL-3.0) source file was
-read, copied, linked or derived ("未读取、未复制"). Public documentation and
-observable behaviour were used as functional references only; the module and
-template code is original.
-See [`NOTICE`](NOTICE) for the full clean-room functional parity statement and
-the AGPL boundary. 禁止链接/派生：不得把 InkBlade 代码与 AGPL 项目链接或派生。
+Apache-2.0. Commercial use, forks and embedding are permitted; keep `LICENSE` and `NOTICE`. The `NOTICE` file records the clean-room boundary: functional parity was derived from public descriptions and observable behaviour, and InkBlade is not linked with or derived from AGPL projects. Documentation index: [`docs/DOC-INDEX.md`](docs/DOC-INDEX.md).

@@ -1,192 +1,214 @@
 # Usage / 使用手册
 
-> 路径：`doctor → session → probe → exec/scan → report`。
+> 路径：接入 → 授权 → 会话 → 探针 → 检测 → 横向 → 报告。
 > 目标侧执行体：Rust 探针。模板是数据；控制端 Python 不进入目标 Pod。
 
-### Quick reference
+## 快速参考
 
-`doctor` 检查环境，`session start` 建授权会话，`probe deploy` 投放探针，`exec` 跑单模板或 `scan` 按层扫描，`report` 出双语报告。每一步的输出都是下一步的输入；没有 demo/trial 捷径。
+`inkblade up` 打开接入向导；`quickstart` 签授权记录；`session open` 绑定目标；`probe deploy` 投放探针；`session run`、`run`、`execute` 与 `agent run` 执行检测；`report` 出双语报告。每一步的输出都是下一步的输入。
 
-## 先理解五个对象
+## 先理解六个对象
 
-一次测试由五样东西串起来。`session` 是授权容器，记录目标、范围、级别、时间窗和证据目录；`probe` 是目标 Pod 里的 Rust 执行体，有 `probe_id` 和 `parent_id`；`template` 是声明式检测程序，含 steps、checks、findings、artifacts；`task` 是一次模板执行；`evidence` 是结果、日志和 manifest。它们的关系不复杂：一个 session 可以有多棵探针树，一个探针可以跑多个模板，一个模板可以产生多条 finding，每条 finding 必须指向一个 task + step。
+一次测试由六样东西串起来：
 
-## 五步主路径
+- `session`：授权容器，记录入口方式、目标、命名空间、Pod、凭据指纹和证据目录。
+- `probe`：目标 Pod 里的 Rust 执行体，有 `probe_id` 和 `parent_id`。
+- `template`：声明式检测程序，含 steps、checks、findings、artifacts。
+- `task`：一次模板执行。
+- `run`：一次项目运行的证据根；`agent` 与 `execute` 都写入 run。
+- `evidence`：结果、日志、产物与 manifest。
 
-### doctor
+一个 session 可以有多棵探针树，一个探针可以跑多个模板，一个模板可以产生多条 finding，每条 finding 必须指向一个 task + step。
+
+## 接入与授权
 
 ```bash
-python -m inkblade doctor
+python -m pip install -e .
+python -m inkblade up
+python -m inkblade quickstart
 ```
 
-先看 `FAIL`。没有跳过开关，也不要试图用环境变量绕过；那些检查通常对应上一次踩过的坑。再看探针二进制：控制端可以不是 Linux，但目标必须是 Linux，架构要匹配。没有 kubeconfig 时，`doctor` 仍然能跑本地检查，但你不能产出“渗透结果”，只能做模板校验。
+`up` 创建工作区、检查授权记录并引导导入 kubeconfig。`quickstart` 用五个问题写出记录：目标、范围、级别、用户、签署。记录是哈希钉存的；`inkblade roe` 随时查看当前授权状态。
 
-### session
+级别共四档：`read-only`、`active-probe`、`exploit-verify`、`full-impact`。模板的 `min_level` 高于会话级别时会被拒绝，不会“先跑跑看”。时间窗过期即拒绝。
+
+## 会话
 
 ```bash
-python -m inkblade session start \
-  --name pilot-01 \
+python -m inkblade session open \
+  --mode kubeconfig \
   --workspace ./work \
   --kubeconfig ~/.kube/config \
-  --scope namespace:ml-team \
-  --level read-only \
-  --window 2026-10-27T09:00/2026-10-27T18:00
+  --namespace ml-team \
+  --pod infer-0
+
+python -m inkblade session status
+python -m inkblade session status --id <session-id>
+python -m inkblade session close --id <session-id>
 ```
 
-`--scope` 可以写 namespace、Pod 选择器或 CIDR，越界即拒绝。`--level` 是 `read-only`、`active-probe`、`exploit-verify`、`full-impact` 四档；模板的 `min_level` 高于它时会被拒绝，不会“先跑跑看”。`--window` 是授权时间窗，过期即拒绝。session 目录保存 consent 校验结果、范围、用户和证据根。
+`--mode` 有三种：
 
-查看和关闭：
+- `kubeconfig`：从集群凭据开始，适合有 pods/exec 的授权测试。
+- `external`：从可达服务开始，必须先提交只读检查生成的证明对象（`--proof`），确认可达与脆弱版本/路由后才允许进一步动作。
+- `foothold`：从 Pod shell 或 ServiceAccount token 开始，适合已有立足点的演练。
 
-```bash
-python -m inkblade session list
-python -m inkblade session show pilot-01
-python -m inkblade session close pilot-01
-```
+`--credential-source` 与 `--token-file` 用于记录凭据来源和读取 token；会话只保存 SHA-256 指纹，不保存凭据本身。
 
-### probe
+## 探针
 
 ```bash
 python -m inkblade probe deploy \
-  --session pilot-01 \
-  --target ml-team/infer-0 \
-  --container inference \
-  --method kubectl-exec \
+  --session <session-id> \
+  --via kubectl \
   --binary ./inkblade-probe-linux-amd64 \
-  --read-only
+  --namespace ml-team \
+  --pod infer-0 \
+  --allow-write
+
+python -m inkblade probe list --session <session-id>
+python -m inkblade probe collect --session <session-id> --probe-id <probe-id>
+python -m inkblade probe cleanup --session <session-id> --probe-id <probe-id>
 ```
 
-四个 `--method` 对应四种现实：`rce` 用于有授权代码执行入口但没有 kubectl；`kubectl-exec` 用于有 pods/exec 且容器可写；`ephemeral` 用于不能重启业务容器；`volume` 用于批量 Pod 或没有 exec 权限。每个方法的前置条件和痕迹不同，详见 `PROBE-DEPLOY.md`。部署后先 `probe list` 和 `probe show`，确认目标、容器、只读状态、父子关系都对，再 `probe collect` 拉快照。
+`--via` 有四种：
+
+- `kubectl`：有 pods/exec 权限时投放并执行。
+- `sa-token`：用 ServiceAccount token 调 API 创建 Pod 或复制二进制。
+- `manifest`：生成 Pod、Job 或 EphemeralContainer 清单，`--apply` 时才提交。
+- `rce`：已有授权代码执行入口时，用 base64 + memfd 投放。
+
+不带 `--allow-write` 时 `probe deploy` 只输出计划。投放后先 `probe list` 和 `probe collect`，确认目标、容器、只读状态、父子关系与快照一致，再跑检测。
+
+常用动作：
 
 ```bash
-python -m inkblade probe list --session pilot-01
-python -m inkblade probe show p-7f3a1c9e --session pilot-01
-python -m inkblade probe collect p-7f3a1c9e --session pilot-01
-python -m inkblade probe cleanup p-7f3a1c9e --session pilot-01
+python -m inkblade probe exec --session <session-id> --probe-id <probe-id> -- id
+python -m inkblade probe read-file --session <session-id> --probe-id <probe-id> /etc/hosts
+python -m inkblade probe list-files --session <session-id> --probe-id <probe-id> /var/run/secrets
+python -m inkblade probe upload --session <session-id> --probe-id <probe-id> ./local.bin /tmp/local.bin
+python -m inkblade probe download --session <session-id> --probe-id <probe-id> /tmp/out.bin ./out.bin
 ```
 
-`probe show` 会显示投放方式、只读状态、任务数、最后心跳和清理状态。快照里的 SA、挂载、网络接口、GPU 设备，是后面判断“这个模板适不适用”的依据。
+## 通道
 
-### exec / scan
+```bash
+python -m inkblade channel start --session <session-id> --socks-port 1080
+python -m inkblade channel start --session <session-id> \
+  --forward 8080:infer-0.ml-team:8000
+python -m inkblade channel status
+python -m inkblade channel stop
+```
+
+通道用探针 stdio 承载帧协议，SOCKS5 与端口转发只绑 `127.0.0.1`。它适合在本地浏览器或 CLI 里访问 Pod 网络内的服务，不改变目标侧监听面。
+
+## 检测
 
 单模板：
 
 ```bash
-python -m inkblade exec \
-  --session pilot-01 \
-  --probe p-7f3a1c9e \
-  --template service-account-token-exposure \
-  --params '{"path":"/var/run/secrets/kubernetes.io/serviceaccount"}'
-```
-
-按层扫描：
-
-```bash
-python -m inkblade scan --session pilot-01 --profile ray-vllm --layers 1,2,5,6,8
-```
-
-按系列：
-
-```bash
-python -m inkblade scan --session pilot-01 --series 侦察,横向利用 --read-only
-```
-
-只看计划：
-
-```bash
-python -m inkblade scan --session pilot-01 --profile ray-vllm --dry-run
-```
-
-`--dry-run` 输出模板键、层、级别、是否写、所需部署面、预计任务数和预算；不投放、不执行、不写证据。它适合在审批前给客户看“我们准备跑什么”，但它不验证目标可达性。
-
-`--params` 是 JSON，也可以 `@params.json` 从文件读。模板的 `inputs` 会从 `params` 解析；必填缺失返回 `skipped`。`--mode probe-only|backup-write` 默认 `probe-only`；写模板必须 `backup-write` 且有备份回执。`--timeout-ms`、`--max-output` 可以覆盖默认预算，但不能超过探针上限。
-
-### report
-
-```bash
-python -m inkblade report --session pilot-01 --lang bi --format md
-python -m inkblade report --session pilot-01 --lang zh --format html
-python -m inkblade export --session pilot-01 --format sarif
-python -m inkblade export --session pilot-01 --format ocsf
-```
-
-报告里应该有范围与授权、探针树、按层发现、组合链、盲区和修复建议。探针树要能看到投放方式、父子关系、清理状态；发现要带证据锚；盲区要列出未覆盖模板、blocked 部署面和动态验证失败项。没有证据的 finding 不生成。
-
-## 典型场景
-
-### 只读基线
-
-第一次会话建议只做只读基线：一个 namespace、一个 Pod、一个模板，确认通道和证据，再扩到 1、3、5、7 层。产出是部署面、RBAC、镜像/模型来源、缓存配置和防护产品部署态。没有写操作，报告也更容易复核。
-
-```bash
-python -m inkblade session start --name baseline --workspace ./work \
-  --kubeconfig ~/.kube/config --scope namespace:ml-team --level read-only
-python -m inkblade probe deploy --session baseline --target ml-team/infer-0 \
-  --method kubectl-exec --binary ./inkblade-probe-linux-amd64 --read-only
-python -m inkblade scan --session baseline --profile ray-vllm --layers 1,3,5,7
-python -m inkblade report --session baseline --lang bi
-```
-
-### 单模板复核
-
-一条 finding 站不站得住，用单模板复核最快：
-
-```bash
-python -m inkblade exec --session baseline --probe p-7f3a1c9e \
-  --template prefix-cache-cross-tenant-leak \
+python -m inkblade session run --id <session-id> --module service-account-token-exposure
+python -m inkblade run --module prefix-cache-cross-tenant-leak \
   --params '{"target":"infer-0.ml-team:8000","tenant":"a","other":"b"}'
 ```
 
-看 `data.findings`、`data.checks`、`data.steps`。如果 `status=skipped`，看是缺输入还是部署面不存在；不要把它当“安全”。如果 `runtime=reference`，这条结果不能进报告结论。
-
-### 多探针与内部横向
+链执行：
 
 ```bash
-python -m inkblade probe spawn --session baseline --parent p-7f3a1c9e \
-  --target ml-team/infer-0 --probe-id p-child-1
-python -m inkblade probe spawn --session baseline --parent p-7f3a1c9e \
-  --target ml-team/infer-1 --method k8s-copy --binary ./inkblade-probe-linux-amd64
-python -m inkblade probe tree --session baseline
-python -m inkblade probe socks --session baseline --probe p-7f3a1c9e \
-  --bind 127.0.0.1:1080 --allow-cidr 10.0.0.0/24
+python -m inkblade execute --chain <chain-id> --dry-run
+python -m inkblade execute --chain <chain-id>
 ```
 
-子探针继承父探针的只读、白名单和预算，只能更严格。跨 namespace 需要 session 范围覆盖，否则拒绝。`socks` 默认只绑回环；对外绑定要显式 `--allow-cidr`。清理用 `probe cleanup --scope subtree`，先子后父。
-
-### 防护绕过评估
+Agent：
 
 ```bash
-python -m inkblade scan --session baseline --series 情报 --layers 10
+python -m inkblade agent run \
+  --probe <probe-id> \
+  --objective read-only-recon \
+  --workspace ./work \
+  --budget-steps 40 \
+  --budget-actions 20
 ```
 
-或者单产品：
+`agent run` 打印 `run_id`。运行中可查状态与决策：
 
 ```bash
-python -m inkblade exec --session baseline --probe p-7f3a1c9e \
-  --template defense-bypass-falco \
-  --params '{"state":"deployed","fixture":"falco-deployed"}'
+python -m inkblade agent status --run-id <run-id>
+python -m inkblade agent trace --run-id <run-id>
+python -m inkblade agent stop --run-id <run-id>
 ```
 
-输出三类：`detected`、`blindspots`、`hardening`。它是良性 marker 验证，不是“绕过演示”；盲区结论只对被测版本和配置成立。不要把它当恶意规避能力，也不要把“没告警”直接写成“可绕过”。
+`agent resume` 从持久 journal 恢复；`agent replay` 零执行回放事件、图和预算。
 
-### 写验证
+`--params` 是 JSON，也可以 `@params.json` 从文件读。模板的 `inputs` 从 `params` 解析；必填缺失返回 `skipped`。写模板必须 `backup-write` 模式且有备份回执。
 
-只有确实需要验证写面时才做：
+## 多探针与横向
 
 ```bash
-python -m inkblade exec --session baseline --probe p-7f3a1c9e \
-  --template checkpoint-shard-poison \
-  --mode backup-write \
-  --backup-id b-2026-10-27-001 \
-  --params '{"path":"/workspace/ckpt","mode":"backup-write"}'
+python -m inkblade probe spawn <probe-binary> \
+  --session <session-id> \
+  --parent-id <parent-probe-id> \
+  --target-namespace ml-team \
+  --target-pod infer-1 \
+  --via k8s-exec
+
+python -m inkblade probe list --session <session-id> --json
+python -m inkblade probe cleanup --session <session-id> --probe-id <parent-probe-id>
 ```
 
-五道闸门：session 级别至少 `exploit-verify`；探针 `--allow-write`；模板 `meta.writes=true`；`--mode backup-write`；备份回执存在。缺任何一条，写步骤 `skipped` 或 `E_DENIED`。写后回读哈希，失败回滚。
+子探针继承父探针的只读、白名单和预算，只能更严格。跨 namespace 需要 session 范围覆盖，否则拒绝。清理先子后父；`probe cleanup` 默认递归。
+
+## 跨集群
+
+```bash
+python -m inkblade agent relay add --name cluster-b --endpoint <endpoint>
+python -m inkblade agent relay list
+python -m inkblade agent relay status
+python -m inkblade agent coverage status --run-id <run-id>
+python -m inkblade agent coverage proof --run-id <run-id>
+```
+
+中继承载同一套帧协议；每个集群仍然需要自己的授权记录。`coverage proof` 写出目标图的闭合情况，随报告一起交付。
+
+## 报告与导出
+
+```bash
+python -m inkblade report --run <run-id> --lang bi --kind pentest
+python -m inkblade report --run <run-id> --lang zh --kind remediation --format md
+python -m inkblade export --run <run-id> --format sarif
+python -m inkblade export --run <run-id> --format ocsf
+python -m inkblade export --run <run-id> --format vex
+```
+
+报告包含范围与授权、探针树、按层发现、组合链、盲区、修复建议与覆盖证明。探针树要能看到投放方式、父子关系、清理状态；发现要带证据锚；盲区要写清缺少什么部署面。没有证据的 finding 不生成。
+
+## 规则包
+
+```bash
+python -m inkblade rules generate --out ./rules
+python -m inkblade rules validate --findings <findings.json>
+```
+
+规则包来源要对应盲区：Kyverno/Gatekeeper 管准入豁免、Audit、mutation 与子资源；Sigma 管进程、文件、DNS、改名执行；Falco/Tetragon 管 syscall、容器逃逸、敏感路径；Suricata/WAF 管编码、分块、Unicode、超长请求。`rules validate` 输出拦截 / 检出 / 漏过矩阵。
+
+## 控制台
+
+```bash
+python -m inkblade ui --port 8765
+```
+
+控制台默认绑 `127.0.0.1`，展示工作区里的会话、探针树、发现、图与时间线。容器或反向代理后才用 `--host 0.0.0.0`。
 
 ## 读结果
 
-一个结果至少有 `status`、`steps`、`checks`、`findings`、`artifacts` 和 `runtime`。`status=ok` 表示模板跑完、没有 finding，不代表目标安全，可能只是没命中；`status=findings` 表示有发现，先看 severity 和 evidence，再看 checks 是否支持；`status=skipped` 表示输入缺失、部署面不存在或写步骤被只读跳过；`status=error` 看 `error.code`、`error.step`。`runtime=reference` 是参考评估器结果，不是 Rust 探针，不能进报告结论。
+一个结果至少有 `status`、`steps`、`checks`、`findings`、`artifacts`。
 
-证据锚有五种：`task:<id>`、`step:<id>`、`artifact:<name>`、`probe:<id>`、`manifest:<sha256>`。报告里每条 finding 至少带一个证据锚；没有证据的 finding 不生成。
+- `status=ok`：模板跑完、没有 finding；不代表目标安全，可能只是没命中。
+- `status=findings`：有发现，先看 severity 与 evidence，再看 checks 是否支持。
+- `status=skipped`：输入缺失、部署面不存在或写步骤被只读跳过。
+- `status=error`：看 `error.code` 与 `error.step`。
+
+证据锚有五种：`task:<id>`、`step:<id>`、`artifact:<name>`、`probe:<id>`、`manifest:<sha256>`。报告里每条 finding 至少带一个证据锚。
 
 ## 退出码
 
@@ -203,42 +225,19 @@ python -m inkblade exec --session baseline --probe p-7f3a1c9e \
 
 CI 里建议把 4、5、6、91 当硬失败；0 和 3 由策略决定。
 
-## 报告与规则包
-
-```bash
-python -m inkblade rules generate --session baseline --pack admission
-python -m inkblade rules generate --session baseline --pack runtime
-python -m inkblade rules generate --session baseline --pack network
-python -m inkblade rules validate --session baseline
-```
-
-规则包来源要对应盲区：Kyverno/Gatekeeper 管准入豁免/Audit/mutation/子资源；Sigma 管进程、文件、DNS、改名执行；Falco/Tetragon 管 syscall、容器逃逸、敏感路径；Suricata/WAF 管编码、分块、Unicode、超长请求。`rules validate` 输出拦截/检出/漏过矩阵；漏过项要回到模板和靶场，不是改规则文案。
-
 ## 排障
 
-`E_AUTH` 先查 token 文件权限、是否为空、父子 token 是否混用。`E_FRAME` 多半是 stdin/stdout 被 shell banner 或 TTY 污染。`E_TIMEOUT` 查目标可达性、模板总超时、探针 CPU 限制。`E_DENIED` 查只读模式、命令白名单、模板是否声明 write。`E_K8S` 查 SA token、RBAC、API server 地址、镜像里有没有 kubectl。`E_DEPLOY` 查架构、可写路径、noexec、memfd。`E_HASH` 查传输截断、块顺序、SHA256SUMS 版本。`skipped` 查输入缺失、部署面不存在、只读跳过写。看到 `runtime=reference`，把它从结论里剔除。
+- `E_AUTH`：查 token 文件权限、是否为空、父子 token 是否混用。
+- `E_FRAME`：多半是 stdin/stdout 被 shell banner 或 TTY 污染。
+- `E_TIMEOUT`：查目标可达性、模板总超时、探针 CPU 配额。
+- `E_DENIED`：查只读模式、命令白名单、模板是否声明 write。
+- `E_K8S`：查 SA token、RBAC、API server 地址、镜像里有没有 kubectl。
+- `E_DEPLOY`：查架构、可写路径、noexec、memfd。
+- `E_HASH`：查传输截断、块顺序、SHA256SUMS 版本。
+- `skipped`：查输入缺失、部署面不存在、只读跳过写。
 
 ## English summary
 
-Start with `doctor`, create a session with scope and time window, deploy a probe through one of four methods, run one template with `exec` or a layer set with `scan`, then render a report. `--dry-run` shows the plan without execution. Read `status`, `runtime`, `findings`, `checks`, and the evidence anchor; `runtime=reference` never counts as probe evidence.
+Start with `inkblade up`, sign the authorization record with `quickstart`, open a session with an explicit entry mode, deliver the static probe, then run one template with `session run`, a chain with `execute`, or an objective graph with `agent run`. `report` renders the bilingual pentest and remediation output; `export` produces SARIF, OCSF and VEX; `rules generate` and `rules validate` close the loop with replayable packs. Probe trees are explicit, writes pass five gates, and every finding resolves to an evidence anchor.
 
-Probe trees are explicit: child probes inherit stricter limits, cross-namespace spawn needs scope coverage, and cleanup is child-first. Writes need authorization, `--allow-write`, `meta.writes`, `backup-write` mode, and a backup receipt.
-
-协议帧与投放前置条件见 [`docs/PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md)、[`docs/PROBE-DEPLOY.md`](PROBE-DEPLOY.md)。
-
-## 证据 / 限制
-
-**证据**
-
-- CLI 参数与闸门：`inkblade/cli.py`、`inkblade/core/roe.py`、`inkblade/core/runner.py`。
-- 证据锚与 manifest：`inkblade/core/evidence.py`。
-- 模板执行语义：`inkblade/tpl/engine.py`、`probe/schema/probe-template.schema.json`。
-- 规则包：`inkblade/rules/generate.py`、`inkblade/rules/validate.py`。
-
-**限制**
-
-- 2026-10 迁移进行中，`session/probe/exec/scan` 的最终参数以 CLI 为准；旧命令仍可能存在，但不在本文主路径。
-- `scan --layers` 只选择已注册模板；未迁移模板不会出现在结果里。
-- `--dry-run` 不验证目标可达性，只验证计划与预算。
-- `runtime=reference` 结果不能进报告结论；它只用于 mock/CI 对照。
-- 报告可以给出修复建议，但不能替代人工复核；误报和漏报都存在，限制节必须保留。
+Protocol frames and deployment prerequisites: [`PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md), [`PROBE-DEPLOY.md`](PROBE-DEPLOY.md), [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md).
