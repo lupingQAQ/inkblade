@@ -87,3 +87,9 @@ Updated: 2026-10-27 (agent runtime, coverage closure, file audit, defense bypass
 ## Full regression after QUIC/MASQUE + journal fix (2026-10-28)
 - Ran 2024 tests, OK (skipped=13)
 - Includes QUIC/WebTransport/MASQUE, ML proxy gRPC/Redis/TCPStore/NCCL/UCX, journal concurrency fix.
+
+## Final regression (2026-10-28)
+- Ran 2029 tests, OK (skipped=13)
+- QUIC/WebTransport/MASQUE + gRPC/Redis/TCPStore/NCCL/UCX/ZMTP proxies landed; ZMTP and WebTransport marked experimental.
+- Seven resource-bound items dropped by user decision and excluded from scope.
+- Final commit before private push.
