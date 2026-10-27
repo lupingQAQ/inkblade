@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/hami/HAMI-ADV-2026-01/poc.py
+[exit=0 duration=0.396s timeout=False]
+--- stdout ---
+{"status": "unsupported", "case": "HAMI-ADV-2026-01", "reason": "HAMi scheduler/device-plugin auth gap requires a Kubernetes GPU cluster with HAMi"}
+
+--- stderr ---
+

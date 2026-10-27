@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/msswift/msswift-torch-utils-py-pickle-loads-l340-ast/poc.py
+[exit=0 duration=37.014s timeout=False]
+--- stdout ---
+{"status": "verified", "marker": "INKBLADE-UV-msswift-torch-utils-py-pickle-loads-l340-ast", "evidence": "lab/upstream_verify/cases/msswift/msswift-torch-utils-py-pickle-loads-l340-ast/evidence"}
+
+--- stderr ---
+

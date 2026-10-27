@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/trl/trl-utils-py-trust-remote-code-propagated-l1354-regex/poc.py
+[exit=0 duration=0.338s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "trl-utils-py-trust-remote-code-propagated-l1354-regex"}
+
+--- stderr ---
+

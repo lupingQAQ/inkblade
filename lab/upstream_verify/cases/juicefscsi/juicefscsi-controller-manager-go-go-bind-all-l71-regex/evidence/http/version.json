@@ -1,0 +1,9 @@
+{
+  "driverVersion": "v0.33.1-dirty",
+  "gitCommit": "ab62a2106b6993f260b9f4c82f5dba51463e6748",
+  "buildDate": "2026-10-16T06:45:02Z",
+  "goVersion": "go1.25.14",
+  "compiler": "gc",
+  "platform": "linux/amd64",
+  "disableGraceUpgrade": false
+}

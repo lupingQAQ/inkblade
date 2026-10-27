@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/sonic/GHSA-h26v-922j-28cg/poc.py
+[exit=0 duration=0.304s timeout=False]
+--- stdout ---
+{"status": "unsupported", "case": "GHSA-h26v-922j-28cg", "reason": "SONiC rsyslog injection requires a SONiC build/switch"}
+
+--- stderr ---
+

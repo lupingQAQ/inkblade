@@ -1,0 +1,7 @@
+$ [lfa] lab/upstream_verify/cases/llamafactory/llamafactory-app-py-go-bind-all-l130-regex/poc.py
+[exit=0 duration=25.352s timeout=False]
+--- stdout ---
+{"status": "exposure-verified", "marker": "INKBLADE-UV-llamafactory-app-py-go-bind-all-l130-regex", "evidence": "lab/upstream_verify/cases/llamafactory/llamafactory-app-py-go-bind-all-l130-regex/evidence"}
+
+--- stderr ---
+

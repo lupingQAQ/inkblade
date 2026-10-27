@@ -1,0 +1,53 @@
+{
+ "transport": {
+  "type": "function-level Go probe (verbatim EnableProfiling/StartMetricsServer) + real HTTP",
+  "entrypoint": "github.com/ceph/ceph-csi/internal/util.EnableProfiling + StartMetricsServer",
+  "source": "lab/upstream_verify/upstream/ceph/ceph-csi/v3.18.1/internal/util/httpserver.go",
+  "source_sha256": "ca258baef88fcdcb7a1fa5532dd5046d187f59033712eff5626d9309685cdd68",
+  "sink_line": 37,
+  "sink": "http.Handle(name, handler)",
+  "verbatim_extractions": {
+   "validate": "lines 17-21 sha256=1d755d1079b55de488e73fa92e1a51042b422ce6ae27b39edeb7c7487cb33f1f",
+   "start": "lines 24-33 sha256=d7e01f4baced3577ebf5eb81153ff43628fc27c51d910d4c09f3c6a84682286c",
+   "addpath": "lines 35-38 sha256=a7dcd7124c3e7b85bc630f36016ace5c9740c8d7e3bb2949de9b9ac26ff47ddf",
+   "enable": "lines 41-53 sha256=e25e342315f5d06ac05f9fe98bca62526177de2c24b0d69a52983185b0a294d8",
+   "config": "lines 99-174 sha256=fba744c66ab18edfc4e4d5363edd4a4914b378ab514283fe1c3d09e6cd39db84"
+  },
+  "http_results": {
+   "/debug/pprof/cmdline": 200,
+   "/debug/pprof/heap?debug=1": 200,
+   "/metrics": 200,
+   "/debug/pprof/": 200
+  },
+  "unauth_endpoints_served": [
+   "/debug/pprof/cmdline",
+   "/debug/pprof/heap?debug=1",
+   "/metrics",
+   "/debug/pprof/"
+  ],
+  "default_bind_note": "cmd/cephcsi.go:255 sets conf.MetricsIP = \"0.0.0.0\" (all interfaces) in production pods",
+  "probe_exit_code": 0,
+  "go_version": "go version go1.27.3 windows/amd64"
+ },
+ "request_response": [
+  {
+   "dir": "GET http://127.0.0.1:57271/debug/pprof/cmdline (no credentials)",
+   "payload": "-",
+   "result": "HTTP 200"
+  },
+  {
+   "dir": "GET http://127.0.0.1:57271/metrics (no credentials)",
+   "payload": "-",
+   "result": "HTTP 200"
+  }
+ ],
+ "state_before": "marker=ABSENT",
+ "state_after": "marker contains proof text; pprof served unauthenticated on the metrics listener",
+ "schema": "inkblade-upstream-run-v1",
+ "status": "verified",
+ "finished_at": "2026-10-26T19:45:55+00:00",
+ "marker_text": "INKBLADE-UV-cephcsi-httpserver-go-pprof-exposed-l37-regex",
+ "marker_file": "lab/upstream_verify/cases/cephcsi/cephcsi-httpserver-go-pprof-exposed-l37-regex/evidence/marker.txt",
+ "marker_sha256": "e02cf117774eedbdd9c735c79845650015b2f95b874001ed9262aeb2997cf510",
+ "exit_code": 0
+}

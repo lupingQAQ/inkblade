@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3616-regex/poc.py
+[exit=0 duration=0.24s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "deepspeed-stage3-py-torch-load-any-l3616-regex"}
+
+--- stderr ---
+

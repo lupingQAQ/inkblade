@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/msswift/msswift-torch-utils-py-pickle-loads-l340-regex/poc.py
+[exit=0 duration=17.96s timeout=False]
+--- stdout ---
+{"status": "verified", "marker": "INKBLADE-UV-msswift-torch-utils-py-pickle-loads-l340-regex", "evidence": "lab/upstream_verify/cases/msswift/msswift-torch-utils-py-pickle-loads-l340-regex/evidence"}
+
+--- stderr ---
+

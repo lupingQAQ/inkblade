@@ -1,0 +1,20 @@
+{
+ "schema": "inkblade-upstream-unsupported-v1",
+ "status": "unsupported",
+ "finished_at": "2026-10-26T19:53:22+00:00",
+ "case_id": "megatron-checkpointing-py-torch-load-any-l2796-regex",
+ "reason": "sink unreachable in core_v0.19.2: load_biencoder_checkpoint passes args.use_distributed_optimizer as the third positional argument of get_checkpoint_name (already bound to `release`) and also passes release=False, so every call raises TypeError before torch.load(line 2796)",
+ "evidence": {
+  "entrypoint": "megatron.training.checkpointing.load_biencoder_checkpoint",
+  "source": "lab/upstream_verify/upstream/NVIDIA/Megatron-LM/core_v0.19.2/megatron/training/checkpointing.py",
+  "source_sha256": "b4b4fcc725d543dd382a838dc72679c9de4dca8502ee274d8864c46ab55bba49",
+  "get_checkpoint_name_signature": "(checkpoints_path, iteration, release=False, pipeline_parallel=None, tensor_rank=None, pipeline_rank=None, expert_parallel=None, expert_rank=None, return_base_dir=False, basename='model_optim_rng.pt')",
+  "observed_error": "TypeError: '_Any' object does not support the context manager protocol",
+  "sink_reached": false,
+  "marker_after": "ABSENT",
+  "stubbed_modules": [
+   "megatron",
+   "megatron.training.checkpointing (real upstream file)"
+  ]
+ }
+}

@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/cephcsi/cephcsi-cephcsi-go-bind-all-l255-regex/poc.py
+[exit=0 duration=0.436s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "cephcsi-cephcsi-go-bind-all-l255-regex"}
+
+--- stderr ---
+

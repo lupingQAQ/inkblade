@@ -1,0 +1,9 @@
+{
+ "schema": "trident-upstream-run-v1",
+ "status": "failed",
+ "finished_at": "2026-10-26T02:42:20+00:00",
+ "error": "marker was not written by the upstream torch.load sink",
+ "traceback": "NoneType: None\n",
+ "evidence_dir": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l2796-regex/evidence",
+ "sink_error": "TypeError: get_checkpoint_name() got multiple values for argument 'release'"
+}

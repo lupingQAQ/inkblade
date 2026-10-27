@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/trl/trl-sft-py-load-dataset-any-l96-regex/poc.py
+[exit=0 duration=0.275s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "trl-sft-py-load-dataset-any-l96-regex"}
+
+--- stderr ---
+

@@ -1,0 +1,27 @@
+{
+ "schema": "trident-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-25T18:07:02+00:00",
+ "case_id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
+  "root_cause": {
+   "file": "megatron/training/checkpointing.py",
+   "line": 1739,
+   "function": "",
+   "snippet": "state_dict = torch.load(checkpoint_name, map_location='cpu')",
+   "note": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "duplicate-static-only",
+  "source": "lab/upstream_verify/upstream/NVIDIA/Megatron-LM/core_v0.19.2/megatron/training/checkpointing.py",
+  "source_sha256": "b4b4fcc725d543dd382a838dc72679c9de4dca8502ee274d8864c46ab55bba49",
+  "source_size": 119316,
+  "line": 1739,
+  "actual_line": "state_dict = torch.load(checkpoint_name, map_location='cpu')",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced."
+ }
+}

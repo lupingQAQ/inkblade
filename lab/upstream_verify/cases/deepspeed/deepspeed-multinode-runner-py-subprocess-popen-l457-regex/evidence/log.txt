@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-multinode-runner-py-subprocess-popen-l457-regex/poc.py
+[exit=0 duration=0.334s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "deepspeed-multinode-runner-py-subprocess-popen-l457-regex"}
+
+--- stderr ---
+

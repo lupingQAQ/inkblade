@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-trust-remote-code-propagated-l170-regex/poc.py
+[exit=0 duration=0.34s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "llamafactory-loader-py-trust-remote-code-propagated-l170-regex"}
+
+--- stderr ---
+

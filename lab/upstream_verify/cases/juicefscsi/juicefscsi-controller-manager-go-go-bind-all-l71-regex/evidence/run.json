@@ -1,0 +1,38 @@
+{
+ "case": "juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+ "method": "dynamic-http",
+ "component": "juicefscsi",
+ "version": "v0.33.1",
+ "binary_provenance": "juicedata/juicefs-csi-driver@sha256:103ac60b6b9c6de2d2a2ced95afc2b8c092b3a2004670bbfaed1e8e2c8047ceb",
+ "http": [
+  {
+   "url": "http://127.0.0.1:8084/metrics",
+   "status": 200,
+   "authorization": null
+  },
+  {
+   "url": "http://10.0.2.15:8084/metrics",
+   "status": 200,
+   "non_loopback": true
+  },
+  {
+   "url": "http://127.0.0.1:6060/debug/pprof/",
+   "status": 200,
+   "loopback_only": true
+  }
+ ],
+ "listeners": [
+  "tcp        0      0 127.0.0.1:6060          0.0.0.0:*               LISTEN      6955/juicefs-csi-dr",
+  "tcp        0      0 :::8084                 :::*                    LISTEN      6955/juicefs-csi-dr"
+ ],
+ "version_output": "{\n  \"driverVersion\": \"v0.33.1-dirty\",\n  \"gitCommit\": \"ab62a2106b6993f260b9f4c82f5dba51463e6748\",\n  \"buildDate\": \"2026-10-16T06:45:02Z\",\n  \"goVersion\": \"go1.25.14\",\n  \"compiler\": \"gc\",\n  \"platform\": \"linux/amd64\",\n  \"disableGraceUpgrade\": false\n}\n",
+ "binary_sha256": "aaaacc79bcc7c8d023185caaba354abc51cb166fac3c1e33372b348bb438cd84",
+ "impact": "The controller-runtime metrics listener is created with BindAddress 0.0.0.0:8084 and secure=false, so any workload in the cluster network can scrape volume/queue metrics without authentication; pprof is loopback-only.",
+ "schema": "inkblade-upstream-run-v1",
+ "status": "verified",
+ "finished_at": "2026-10-26T19:48:39+00:00",
+ "marker_text": "INKBLADE-UV-juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+ "marker_file": "lab/upstream_verify/cases/juicefscsi/juicefscsi-controller-manager-go-go-bind-all-l71-regex/evidence/marker.txt",
+ "marker_sha256": "badf56eb7c7f6bff25c85670499fe1388447815d995ca46f083872bfb5666a65",
+ "exit_code": 0
+}

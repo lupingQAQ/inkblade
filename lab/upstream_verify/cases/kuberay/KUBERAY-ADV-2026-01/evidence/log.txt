@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/kuberay/KUBERAY-ADV-2026-01/poc.py
+[exit=0 duration=0.27s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "KUBERAY-ADV-2026-01"}
+
+--- stderr ---
+

@@ -1,0 +1,26 @@
+{
+ "schema": "inkblade-upstream-exposure-v1",
+ "impact": "exposure",
+ "case": "llamafactory-app-py-bind-all-interfaces-l130-regex",
+ "mode": "api",
+ "bind": "0.0.0.0",
+ "listener": "TCP    0.0.0.0:53311          0.0.0.0:0              LISTENING       24696\nTCP    127.0.0.1:53311        127.0.0.1:65051        CLOSING         24696\nTCP    127.0.0.1:65029        127.0.0.1:53311        TIME_WAIT       0\nTCP    127.0.0.1:65051        127.0.0.1:53311        TIME_WAIT       0\nTCP    192.168.3.33:53311     192.168.3.33:65048     TIME_WAIT       0",
+ "unauthenticated": true,
+ "http": {
+  "url": "http://192.168.3.33:53311/v1/models",
+  "status": 200,
+  "bytes": 106,
+  "authorization": null
+ },
+ "local": {
+  "url": "http://127.0.0.1:53311/v1/models",
+  "status": 200
+ },
+ "source": {
+  "file": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/api/app.py",
+  "line": 130,
+  "snippet": "api_host = os.getenv(\"API_HOST\", \"0.0.0.0\")",
+  "sha256": "99369f350ca92c3efd87625505fc17bd185b6eafbd6c28b9551126a28197f6a3"
+ },
+ "claim": "vendor default binds all interfaces and serves the route without authentication; no RCE primitive is claimed"
+}

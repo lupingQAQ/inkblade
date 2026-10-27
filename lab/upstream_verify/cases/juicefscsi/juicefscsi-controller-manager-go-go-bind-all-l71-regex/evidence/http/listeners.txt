@@ -1,0 +1,2 @@
+tcp        0      0 127.0.0.1:6060          0.0.0.0:*               LISTEN      6955/juicefs-csi-dr
+tcp        0      0 :::8084                 :::*                    LISTEN      6955/juicefs-csi-dr

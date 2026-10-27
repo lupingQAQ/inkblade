@@ -1,0 +1,53 @@
+{
+ "case": "kueue-server-go-pprof-exposed-l30-regex",
+ "method": "dynamic-http",
+ "component": "kueue",
+ "version": "v0.20.3",
+ "flow": "unauthenticated GET /api/pod/<name> through kueueviz default auth mode",
+ "pprof": {
+  "status": "200",
+  "listener": [
+   "tcp        0      0 127.0.0.1:6060          0.0.0.0:*               LISTEN      8046/kueueviz"
+  ],
+  "remote": false
+ },
+ "http": [
+  {
+   "url": "http://127.0.0.1:18080/healthz",
+   "status": 200
+  },
+  {
+   "url": "http://127.0.0.1:18080/auth/status",
+   "status": 200,
+   "authMode": "Disabled"
+  },
+  {
+   "url": "http://127.0.0.1:18080/api/pod/canary?namespace=kueueviz-lab&output=yaml",
+   "status": 200,
+   "authorization": null,
+   "marker_observed": true
+  },
+  {
+   "url": "http://10.0.2.15:18080/healthz",
+   "status": 200,
+   "non_loopback": true
+  }
+ ],
+ "bind": {
+  "api": [
+   "tcp        0      0 :::18080                :::*                    LISTEN      8046/kueueviz"
+  ],
+  "pprof": [
+   "tcp        0      0 127.0.0.1:6060          0.0.0.0:*               LISTEN      8046/kueueviz"
+  ]
+ },
+ "binary_sha256": "de0a725fff9c4573b57c8723c71c1eb232a2da3ab3791490c8314d501446546b",
+ "impact": "Any network client that reaches kueueviz reads cluster Pod specs (env, service account, images) without a token because KUEUEVIZ_AUTH_MODE defaults to Disabled and the authorizer is nil.",
+ "schema": "inkblade-upstream-run-v1",
+ "status": "verified",
+ "finished_at": "2026-10-26T19:51:02+00:00",
+ "marker_text": "INKBLADE-UV-kueue-server-go-pprof-exposed-l30-regex",
+ "marker_file": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence/marker.txt",
+ "marker_sha256": "e80997103dd488a9c25c3737d78ab70821a828395b97926922c2852ab070c347",
+ "exit_code": 0
+}

@@ -1,0 +1,35 @@
+{
+ "transport": {
+  "type": "function+torch.load",
+  "entrypoint": "deepspeed.runtime.zero.stage3.DeepSpeedZeroOptimizer_Stage3.load_hp_checkpoint_state",
+  "source": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/runtime/zero/stage3.py",
+  "source_sha256": "4ff3fdb4cbabaddfeaa866e43785b49a69cdfe35db4e0ceda6f1b432b6fbf9d7",
+  "sink_line": 3770,
+  "sink": "ckpt_dict = torch.load(os.path.join(folder, f\"{key}.pt\"), weights_only=False)",
+  "torch_version": "2.14.1+cpu",
+  "checkpoint_file": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3770-ast/evidence/ckpt/zero/exp_avg.pt",
+  "payload": "pickle __reduce__ -> _materialize(marker)",
+  "post_sink_error": "OverflowError: int too big to convert",
+  "result_type": "NoneType",
+  "stubbed_modules": [
+   "deepspeed",
+   "uv_deepspeed_stage3 (real upstream file)"
+  ]
+ },
+ "request_response": [
+  {
+   "dir": "untrusted checkpoint dir -> torch.load(weights_only=False)",
+   "payload": "pickle reduce",
+   "result": "marker written before any state validation"
+  }
+ ],
+ "state_before": "marker=ABSENT",
+ "state_after": "marker contains proof text",
+ "schema": "inkblade-upstream-run-v1",
+ "status": "verified",
+ "finished_at": "2026-10-26T19:47:15+00:00",
+ "marker_text": "INKBLADE-UV-deepspeed-stage3-py-torch-load-unsafe-l3770-ast",
+ "marker_file": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3770-ast/evidence/marker.txt",
+ "marker_sha256": "22ef366be17038177ee89035d715da156b5ab037ce58b0b9647bdb0d25a769b3",
+ "exit_code": 0
+}

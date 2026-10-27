@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:58:10+00:00",
+ "case_id": "trl-sft-trainer-py-load-dataset-any-l527-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "trl-sft-trainer-py-load-dataset-any-l527-regex",
+  "root_cause": {
+   "file": "trl/trainer/sft_trainer.py",
+   "line": 527,
+   "function": "",
+   "snippet": ">>> dataset = load_dataset(\"roneneldan/TinyStories\", split=\"train[:1%]\")",
+   "note": "Dataset loading is intended functionality; remote dataset trust is a documented boundary."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "risk-not-vuln",
+  "source": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/trainer/sft_trainer.py",
+  "source_sha256": "a93001470796c6502a4cf8886a13abbd8280e653357b5a95eb1abd53c6868205",
+  "source_size": 99288,
+  "line": 527,
+  "actual_line": ">>> dataset = load_dataset(\"roneneldan/TinyStories\", split=\"train[:1%]\")",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Dataset loading is intended functionality; remote dataset trust is a documented boundary."
+ }
+}

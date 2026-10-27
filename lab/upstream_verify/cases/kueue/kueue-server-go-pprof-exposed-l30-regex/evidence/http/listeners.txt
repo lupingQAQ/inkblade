@@ -1,0 +1,2 @@
+tcp        0      0 127.0.0.1:6060          0.0.0.0:*               LISTEN      8046/kueueviz
+tcp        0      0 :::18080                :::*                    LISTEN      8046/kueueviz

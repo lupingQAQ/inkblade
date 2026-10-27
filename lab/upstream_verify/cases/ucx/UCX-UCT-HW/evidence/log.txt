@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/ucx/UCX-UCT-HW/poc.py
+[exit=0 duration=0.331s timeout=False]
+--- stdout ---
+{"status": "unsupported", "case": "UCX-UCT-HW", "reason": "UCX is a Linux C library: UCT transports need IB/ROCm/SM/shm devices; ucx-py (the Python binding) needs the libucp shared object which cannot build or load on this Windows host."}
+
+--- stderr ---
+

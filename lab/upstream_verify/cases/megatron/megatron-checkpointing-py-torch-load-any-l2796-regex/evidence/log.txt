@@ -1,0 +1,7 @@
+$ [torch] lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l2796-regex/poc.py
+[exit=0 duration=9.7s timeout=False]
+--- stdout ---
+{"status": "unsupported", "case": "megatron-checkpointing-py-torch-load-any-l2796-regex", "reason": "sink unreachable in core_v0.19.2: load_biencoder_checkpoint passes args.use_distributed_optimizer as the third positional argument of get_checkpoint_name (already bound to `release`) and also passes release=False, so every call raises TypeError before torch.load(line 2796)"}
+
+--- stderr ---
+

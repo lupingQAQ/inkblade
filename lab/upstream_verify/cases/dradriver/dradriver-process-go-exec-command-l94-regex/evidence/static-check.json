@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:47:17+00:00",
+ "case_id": "dradriver-process-go-exec-command-l94-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "dradriver-process-go-exec-command-l94-regex",
+  "root_cause": {
+   "file": "cmd/compute-domain-daemon/process.go",
+   "line": 94,
+   "function": "processManager",
+   "snippet": "cmd := exec.Command(m.cmd[0], m.cmd[1:]...)",
+   "note": "Compute-domain daemon restarts a configured command line from the DRA device plugin config."
+  },
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "verdict": "not-dynamically-verified",
+  "source": "lab/upstream_verify/upstream/NVIDIA/k8s-dra-driver/v0.5.1/cmd/compute-domain-daemon/process.go",
+  "source_sha256": "2e09a83a05881684ffa16a1b208a5766d02aefc65ba4a1178b80f08def3be913",
+  "source_size": 6427,
+  "line": 94,
+  "actual_line": "cmd := exec.Command(m.cmd[0], m.cmd[1:]...)",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "The compute-domain daemon executes m.cmd from its config (ConfigMap-sourced). The sink is real but the input is admin-controlled config, not tenant PVC data; recorded as a config-trust boundary for DRA deployments, plus the kubeletplugin.yaml privileged/hostPath posture (elevated-pod-spec hits)."
+ }
+}

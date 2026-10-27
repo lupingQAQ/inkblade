@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/trl/trl-utils-py-missing-revision-l1366-regex/poc.py
+[exit=0 duration=0.316s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "trl-utils-py-missing-revision-l1366-regex"}
+
+--- stderr ---
+

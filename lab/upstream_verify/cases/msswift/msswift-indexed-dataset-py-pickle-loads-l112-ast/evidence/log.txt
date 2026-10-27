@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l112-ast/poc.py
+[exit=0 duration=7.218s timeout=False]
+--- stdout ---
+{"status": "verified", "marker": "INKBLADE-UV-msswift-indexed-dataset-py-pickle-loads-l112-ast", "evidence": "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l112-ast/evidence"}
+
+--- stderr ---
+

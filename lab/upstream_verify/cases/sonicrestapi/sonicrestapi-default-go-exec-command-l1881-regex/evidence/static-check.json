@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:57:29+00:00",
+ "case_id": "sonicrestapi-default-go-exec-command-l1881-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "sonicrestapi-default-go-exec-command-l1881-regex",
+  "root_cause": {
+   "file": "go-server-server/go/default.go",
+   "line": 1881,
+   "function": "ConfigPingPost",
+   "snippet": "out, err = exec.Command(PING_COMMAND_STR, args...).Output()",
+   "note": "Ping POST handler joins attacker JSON (ip_address, count, vnet_id) into the ping argv."
+  },
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "verdict": "not-dynamically-verified",
+  "source": "lab/upstream_verify/upstream/sonic-net/sonic-restapi/a45b9bc/go-server-server/go/default.go",
+  "source_sha256": "e41aac6a82538d720aa32ab27c4388e31e97b79f2790f1015b5deefa1b4eebf4",
+  "source_size": 69343,
+  "line": 1881,
+  "actual_line": "out, err = exec.Command(PING_COMMAND_STR, args...).Output()",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "SONiC REST PingPost builds the ping argv from request JSON (ip_address, count '-c ' concatenation, vnet_id). argv-list exec means no shell metacharacters, but option injection into ping and unauthenticated-by-default REST auth mode (community change to default 'user' is recent) make this a live probe/injection surface. Not run dynamically: the go-server-server package links swsscommon (C), which cannot build on this Windows host."
+ }
+}

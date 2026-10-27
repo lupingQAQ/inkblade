@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/megatron/megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex/poc.py
+[exit=0 duration=0.259s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex"}
+
+--- stderr ---
+

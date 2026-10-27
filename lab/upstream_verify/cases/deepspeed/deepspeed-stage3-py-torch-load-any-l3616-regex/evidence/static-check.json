@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:46:25+00:00",
+ "case_id": "deepspeed-stage3-py-torch-load-any-l3616-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "deepspeed-stage3-py-torch-load-any-l3616-regex",
+  "root_cause": {
+   "file": "deepspeed/runtime/zero/stage3.py",
+   "line": 3616,
+   "function": "",
+   "snippet": "checkpoint = torch.load(\"saved.pth\")",
+   "note": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "duplicate-static-only",
+  "source": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/runtime/zero/stage3.py",
+  "source_sha256": "4ff3fdb4cbabaddfeaa866e43785b49a69cdfe35db4e0ceda6f1b432b6fbf9d7",
+  "source_size": 211580,
+  "line": 3616,
+  "actual_line": "checkpoint = torch.load(\"saved.pth\")",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Unsafe torch.load without weights_only; duplicate of CVE-2026-65110 at a newer tag. 0.19.2 import needs triton/GPU on this host, so the candidate itself is not dynamically reproduced."
+ }
+}

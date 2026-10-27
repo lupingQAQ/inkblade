@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3770-regex/poc.py
+[exit=0 duration=5.268s timeout=False]
+--- stdout ---
+{"status": "verified", "marker": "INKBLADE-UV-deepspeed-stage3-py-torch-load-any-l3770-regex", "evidence": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3770-regex/evidence"}
+
+--- stderr ---
+

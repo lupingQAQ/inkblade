@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/dradriver/dradriver-process-go-exec-command-l94-regex/poc.py
+[exit=0 duration=0.327s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "dradriver-process-go-exec-command-l94-regex"}
+
+--- stderr ---
+

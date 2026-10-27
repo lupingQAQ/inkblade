@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-eval-call-l211-ast/poc.py
+[exit=0 duration=0.327s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "llamafactory-loader-py-eval-call-l211-ast"}
+
+--- stderr ---
+

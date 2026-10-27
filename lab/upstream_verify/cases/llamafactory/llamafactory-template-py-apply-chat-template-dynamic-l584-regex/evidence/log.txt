@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-template-py-apply-chat-template-dynamic-l584-regex/poc.py
+[exit=0 duration=0.385s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "llamafactory-template-py-apply-chat-template-dynamic-l584-regex"}
+
+--- stderr ---
+

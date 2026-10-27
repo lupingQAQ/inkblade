@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/msswift/msswift-base-py-apply-chat-template-dynamic-l1283-regex/poc.py
+[exit=0 duration=0.327s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "msswift-base-py-apply-chat-template-dynamic-l1283-regex"}
+
+--- stderr ---
+

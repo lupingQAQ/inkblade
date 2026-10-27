@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:46:24+00:00",
+ "case_id": "deepspeed-runner-py-subprocess-popen-l504-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "deepspeed-runner-py-subprocess-popen-l504-regex",
+  "root_cause": {
+   "file": "deepspeed/launcher/runner.py",
+   "line": 504,
+   "function": "",
+   "snippet": "result = subprocess.check_output(hostname_cmd)",
+   "note": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "false-positive",
+  "source": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/launcher/runner.py",
+  "source_sha256": "956d554ea5c9b142ab4bae47c8317cce11f7b23748e09849b7876072c66cf9a0",
+  "source_size": 26486,
+  "line": 504,
+  "actual_line": "result = subprocess.check_output(hostname_cmd)",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."
+ }
+}

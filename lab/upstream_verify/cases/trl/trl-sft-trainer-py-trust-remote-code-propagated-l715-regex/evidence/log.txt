@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/trl/trl-sft-trainer-py-trust-remote-code-propagated-l715-regex/poc.py
+[exit=0 duration=0.298s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "trl-sft-trainer-py-trust-remote-code-propagated-l715-regex"}
+
+--- stderr ---
+

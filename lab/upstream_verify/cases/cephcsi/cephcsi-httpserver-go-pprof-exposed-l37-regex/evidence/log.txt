@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/cephcsi/cephcsi-httpserver-go-pprof-exposed-l37-regex/poc.py
+[exit=0 duration=18.074s timeout=False]
+--- stdout ---
+{"status": "verified", "marker": "INKBLADE-UV-cephcsi-httpserver-go-pprof-exposed-l37-regex", "evidence": "lab/upstream_verify/cases/cephcsi/cephcsi-httpserver-go-pprof-exposed-l37-regex/evidence"}
+
+--- stderr ---
+

@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-unsupported-v1",
+ "status": "unsupported",
+ "finished_at": "2026-10-26T19:58:13+00:00",
+ "case_id": "UCX-UCT-HW",
+ "reason": "UCX is a Linux C library: UCT transports need IB/ROCm/SM/shm devices; ucx-py (the Python binding) needs the libucp shared object which cannot build or load on this Windows host.",
+ "evidence": {
+  "requires": [
+   "Linux runtime",
+   "IB/RoCE or CUDA/ROCm device"
+  ],
+  "blocked_by": [
+   "no Linux runtime",
+   "no fabric/GPU hardware"
+  ],
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "root_cause": {
+   "file": "n/a (vendor firmware / Linux runtime / hardware fabric)",
+   "line": 0,
+   "function": "",
+   "snippet": "",
+   "source": null,
+   "source_sha256": null,
+   "note": "UCX v1.22.0: C transport library. The ucx-py binding was mined separately (see ucxpy cases); the core library is hardware-bound and marked unsupported."
+  }
+ }
+}

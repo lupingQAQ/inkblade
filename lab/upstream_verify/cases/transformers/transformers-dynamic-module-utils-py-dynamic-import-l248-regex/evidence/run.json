@@ -1,0 +1,30 @@
+{
+ "transport": {
+  "type": "function+AutoConfig.from_pretrained(trust_remote_code=True)",
+  "entrypoint": "transformers.dynamic_module_utils.get_class_from_dynamic_module",
+  "check_imports_import": "transformers.dynamic_module_utils.check_imports:248 importlib.import_module(imp)",
+  "transformers_version": "4.57.1",
+  "source": "lab/upstream_verify/upstream/huggingface/transformers/4.57.1/transformers/dynamic_module_utils.py",
+  "source_sha256": "3f15a042d6f95488a0dbf6740cc46d475b85f1371b1c54136b448d0bacf46372",
+  "sink_line": 248,
+  "sink": "importlib.import_module(imp)",
+  "executed_module": "transformers_modules.evil_hyphen_model.configuration_inkbladeevil.InkBladeEvilConfig",
+  "untrusted_dir": "lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-regex/evidence/evil-model"
+ },
+ "request_response": [
+  {
+   "dir": "untrusted model dir (config.json auto_map + configuration_*.py) -> trust_remote_code=True",
+   "payload": "python module executed at import (marker write)",
+   "result": "upstream dynamic-import path executed the attacker module"
+  }
+ ],
+ "state_before": "marker=ABSENT",
+ "state_after": "marker contains proof text",
+ "schema": "inkblade-upstream-run-v1",
+ "status": "verified",
+ "finished_at": "2026-10-26T19:58:02+00:00",
+ "marker_text": "INKBLADE-UV-transformers-dynamic-module-utils-py-dynamic-import-l248-regex",
+ "marker_file": "lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-regex/evidence/marker.txt",
+ "marker_sha256": "cbc3d190dbd34c687a48297932ff2afdc08a4c80973c6a12a6af3a6858946368",
+ "exit_code": 0
+}

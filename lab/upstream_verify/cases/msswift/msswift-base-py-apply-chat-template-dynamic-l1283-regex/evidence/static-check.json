@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:53:52+00:00",
+ "case_id": "msswift-base-py-apply-chat-template-dynamic-l1283-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "msswift-base-py-apply-chat-template-dynamic-l1283-regex",
+  "root_cause": {
+   "file": "swift/template/base.py",
+   "line": 1283,
+   "function": "",
+   "snippet": "text = self.tokenizer.apply_chat_template(",
+   "note": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "false-positive",
+  "source": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/template/base.py",
+  "source_sha256": "a2d14012e37058ad392c1f242e220fd69bb654f29887baffb04aa552f3dfbc16",
+  "source_size": 117407,
+  "line": 1283,
+  "actual_line": "text = self.tokenizer.apply_chat_template(",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+ }
+}

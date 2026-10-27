@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/nccl/NCCL-NCCLPLUGIN-HW/poc.py
+[exit=0 duration=0.36s timeout=False]
+--- stdout ---
+{"status": "unsupported", "case": "NCCL-NCCLPLUGIN-HW", "reason": "NCCL is a Linux/CUDA collective library: IB/RoCE/NVLink fabric, kernel modules and a GPU device are required; no .py/.go surface exists to scan and the library cannot load on this Windows host."}
+
+--- stderr ---
+

@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/gpuoperator/gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex/poc.py
+[exit=0 duration=0.33s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "gpuoperator-0500-daemonset-yaml-elevated-pod-spec-l108-regex"}
+
+--- stderr ---
+

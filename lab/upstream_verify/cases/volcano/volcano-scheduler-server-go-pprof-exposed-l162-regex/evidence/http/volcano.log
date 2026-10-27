@@ -1,0 +1,3 @@
+I1026 20:01:01.364377   15918 maxprocs.go:48] maxprocs: Leaving GOMAXPROCS=6: CPU quota undefined
+I1026 20:01:01.672533   15918 cache.go:593] Creating default queue and root queue
+I1026 20:01:02.116420   15918 leaderelection.go:258] "Attempting to acquire leader lease..." lock="volcano-system/volcano"

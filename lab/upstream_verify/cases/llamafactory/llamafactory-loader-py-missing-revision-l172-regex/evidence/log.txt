@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/llamafactory/llamafactory-loader-py-missing-revision-l172-regex/poc.py
+[exit=0 duration=0.301s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "llamafactory-loader-py-missing-revision-l172-regex"}
+
+--- stderr ---
+

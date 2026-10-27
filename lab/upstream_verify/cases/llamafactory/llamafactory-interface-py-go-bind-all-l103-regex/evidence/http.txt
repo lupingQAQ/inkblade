@@ -1,0 +1,3 @@
+GET http://192.168.3.33:57846/ -> 200 bytes=4096
+GET http://127.0.0.1:57846/ -> 200 bytes=4096
+Authorization header: none

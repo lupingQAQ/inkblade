@@ -1,0 +1,50 @@
+status=200
+# HELP certwatcher_read_certificate_errors_total Total number of certificate read errors
+# TYPE certwatcher_read_certificate_errors_total counter
+certwatcher_read_certificate_errors_total 0
+# HELP certwatcher_read_certificate_total Total number of certificate reads
+# TYPE certwatcher_read_certificate_total counter
+certwatcher_read_certificate_total 0
+# HELP controller_runtime_active_workers Number of currently used workers per controller
+# TYPE controller_runtime_active_workers gauge
+controller_runtime_active_workers{controller="job"} 0
+controller_runtime_active_workers{controller="mount"} 0
+# HELP controller_runtime_max_concurrent_reconciles Maximum number of concurrent reconciles per controller
+# TYPE controller_runtime_max_concurrent_reconciles gauge
+controller_runtime_max_concurrent_reconciles{controller="job"} 1
+controller_runtime_max_concurrent_reconciles{controller="mount"} 1
+# HELP controller_runtime_reconcile_errors_total Total number of reconciliation errors per controller
+# TYPE controller_runtime_reconcile_errors_total counter
+controller_runtime_reconcile_errors_total{controller="job"} 0
+controller_runtime_reconcile_errors_total{controller="mount"} 0
+# HELP controller_runtime_reconcile_panics_total Total number of reconciliation panics per controller
+# TYPE controller_runtime_reconcile_panics_total counter
+controller_runtime_reconcile_panics_total{controller="job"} 0
+controller_runtime_reconcile_panics_total{controller="mount"} 0
+# HELP controller_runtime_reconcile_total Total number of reconciliations per controller
+# TYPE controller_runtime_reconcile_total counter
+controller_runtime_reconcile_total{controller="job",result="error"} 0
+controller_runtime_reconcile_total{controller="job",result="requeue"} 0
+controller_runtime_reconcile_total{controller="job",result="requeue_after"} 0
+controller_runtime_reconcile_total{controller="job",result="success"} 0
+controller_runtime_reconcile_total{controller="mount",result="error"} 0
+controller_runtime_reconcile_total{controller="mount",result="requeue"} 0
+controller_runtime_reconcile_total{controller="mount",result="requeue_after"} 0
+controller_runtime_reconcile_total{controller="mount",result="success"} 0
+# HELP controller_runtime_terminal_reconcile_errors_total Total number of terminal reconciliation errors per controller
+# TYPE controller_runtime_terminal_reconcile_errors_total counter
+controller_runtime_terminal_reconcile_errors_total{controller="job"} 0
+controller_runtime_terminal_reconcile_errors_total{controller="mount"} 0
+# HELP controller_runtime_webhook_panics_total Total number of webhook panics
+# TYPE controller_runtime_webhook_panics_total counter
+controller_runtime_webhook_panics_total 0
+# HELP go_cgo_go_to_c_calls_calls_total Count of calls made from Go to C by the current process.
+# TYPE go_cgo_go_to_c_calls_calls_total counter
+go_cgo_go_to_c_calls_calls_total 0
+# HELP go_cpu_classes_gc_mark_assist_cpu_seconds_total Estimated total CPU time goroutines spent performing GC tasks to assist the GC and prevent it from falling behind the application. This metric is an overestimate, and not directly comparable to system CPU time measurements. Compare only with other /cpu/classes metrics.
+# TYPE go_cpu_classes_gc_mark_assist_cpu_seconds_total counter
+go_cpu_classes_gc_mark_assist_cpu_seconds_total 0.045541989
+# HELP go_cpu_classes_gc_mark_dedicated_cpu_seconds_total Estimated total CPU time spent performing GC tasks on processors (as defined by GOMAXPROCS) dedicated to those tasks. This metric is an overestimate, and not directly comparable to system CPU time measurements. Compare only with other /cpu/classes metrics.
+# TYPE go_cpu_classes_gc_mark_dedicated_cpu_seconds_total counter
+go_cpu_classes_gc_mark_dedicated_cpu_seconds_total 0.415050441
+# HELP go_cpu_classes_gc_mark_idle_cpu_seconds_total Estimated total CPU time spent performing GC tasks on spare CPU resources that the Go scheduler could not otherwise find a use for. This should be subtracted from the total 

@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:52:31+00:00",
+ "case_id": "llamafactory-interface-py-bind-all-interfaces-l103-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "llamafactory-interface-py-bind-all-interfaces-l103-regex",
+  "root_cause": {
+   "file": "src/llamafactory/webui/interface.py",
+   "line": 103,
+   "function": "",
+   "snippet": "server_name = os.getenv(\"GRADIO_SERVER_NAME\", \"[::]\" if gradio_ipv6 else \"0.0.0.0\")",
+   "note": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "risk-not-vuln",
+  "source": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/webui/interface.py",
+  "source_sha256": "2a7cb77e442137d92d361eed95d430e362b57a006acb49750d8049b5f740b5d8",
+  "source_size": 4104,
+  "line": 103,
+  "actual_line": "server_name = os.getenv(\"GRADIO_SERVER_NAME\", \"[::]\" if gradio_ipv6 else \"0.0.0.0\")",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution."
+ }
+}

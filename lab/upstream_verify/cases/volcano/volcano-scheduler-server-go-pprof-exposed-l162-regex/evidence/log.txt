@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/volcano/volcano-scheduler-server-go-pprof-exposed-l162-regex/poc.py
+[exit=0 duration=178.108s timeout=False]
+--- stdout ---
+{"status": "verified", "marker": "INKBLADE-UV-volcano-scheduler-server-go-pprof-exposed-l162-regex", "evidence": "lab/upstream_verify/cases/volcano/volcano-scheduler-server-go-pprof-exposed-l162-regex/evidence"}
+
+--- stderr ---
+

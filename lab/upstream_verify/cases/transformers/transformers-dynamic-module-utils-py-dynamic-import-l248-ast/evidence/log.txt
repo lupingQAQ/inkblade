@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-ast/poc.py
+[exit=0 duration=13.911s timeout=False]
+--- stdout ---
+{"status": "verified", "marker": "INKBLADE-UV-transformers-dynamic-module-utils-py-dynamic-import-l248-ast", "evidence": "lab/upstream_verify/cases/transformers/transformers-dynamic-module-utils-py-dynamic-import-l248-ast/evidence"}
+
+--- stderr ---
+

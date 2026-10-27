@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:46:23+00:00",
+ "case_id": "deepspeed-engine-py-eval-call-l2889-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "deepspeed-engine-py-eval-call-l2889-regex",
+  "root_cause": {
+   "file": "deepspeed/runtime/engine.py",
+   "line": 2889,
+   "function": "",
+   "snippet": "def eval(self):",
+   "note": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "false-positive",
+  "source": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/runtime/engine.py",
+  "source_sha256": "e35eaa313874d2b3bd5bc9169dad35405819df2dfb1e7abdffa0c2f03db36c75",
+  "source_size": 308219,
+  "line": 2889,
+  "actual_line": "def eval(self):",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."
+ }
+}

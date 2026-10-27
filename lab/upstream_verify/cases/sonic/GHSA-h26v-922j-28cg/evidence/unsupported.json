@@ -1,0 +1,28 @@
+{
+ "schema": "inkblade-upstream-unsupported-v1",
+ "status": "unsupported",
+ "finished_at": "2026-10-26T19:57:29+00:00",
+ "case_id": "GHSA-h26v-922j-28cg",
+ "reason": "SONiC rsyslog injection requires a SONiC build/switch",
+ "evidence": {
+  "requires": [
+   "SONiC",
+   "master 修复前构建（具体 tag 未标注）"
+  ],
+  "blocked_by": [
+   "Windows host",
+   "no GPU",
+   "no Linux container runtime",
+   "no vendor BMC/NOS"
+  ],
+  "advisory": "https://github.com/sonic-net/sonic-buildimage/security/advisories/GHSA-h26v-922j-28cg",
+  "root_cause": {
+   "file": "n/a (vendor firmware / Linux runtime)",
+   "line": 0,
+   "function": "",
+   "snippet": "",
+   "source": null,
+   "note": "换行/特殊字符注入 rsyslog 指令 → root 上下文配置执行（可写文件/执行命令）"
+  }
+ }
+}

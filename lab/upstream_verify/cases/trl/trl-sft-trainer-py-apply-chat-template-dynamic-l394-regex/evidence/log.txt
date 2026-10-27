@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/trl/trl-sft-trainer-py-apply-chat-template-dynamic-l394-regex/poc.py
+[exit=0 duration=0.301s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "trl-sft-trainer-py-apply-chat-template-dynamic-l394-regex"}
+
+--- stderr ---
+

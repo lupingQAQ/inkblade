@@ -1,0 +1,4 @@
+GET /debug/pprof/cmdline -> 200 len=155
+GET /debug/pprof/heap?debug=1 -> 200 len=-1
+GET /metrics -> 200 len=-1
+GET /debug/pprof/ -> 200 len=-1

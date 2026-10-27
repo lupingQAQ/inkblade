@@ -1,0 +1,2 @@
+Go Version: go1.26.2
+Go OS/Arch: linux/amd64

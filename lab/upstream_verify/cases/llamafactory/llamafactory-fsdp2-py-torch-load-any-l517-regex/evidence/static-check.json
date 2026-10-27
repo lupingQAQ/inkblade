@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:52:31+00:00",
+ "case_id": "llamafactory-fsdp2-py-torch-load-any-l517-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "llamafactory-fsdp2-py-torch-load-any-l517-regex",
+  "root_cause": {
+   "file": "src/llamafactory/v1/plugins/trainer_plugins/distributed/fsdp2.py",
+   "line": 517,
+   "function": "load_checkpoint",
+   "snippet": "state_dict = torch.load(ckpt_file, map_location=\"cpu\")",
+   "note": "FSDP2 plugin loads full-checkpoint state with torch.load(ckpt_file, map_location='cpu') and no weights_only pin. On torch>=2.6 the weights_only default is True, so the unpickling surface is closed on current stacks; on torch<2.6 the same line is a checkpoint-dir pickle RCE. Recorded as a version-paired trust boundary, not a dynamically reproduced sink on this host (torch 2.14.1/2.5.1 split)."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "torch-version-paired trust boundary; weights_only default True on torch>=2.6 blocks the unpickling on current stacks",
+  "source": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/v1/plugins/trainer_plugins/distributed/fsdp2.py",
+  "source_sha256": "8360ab323161eacabefde47e86b9269bd2fb42ca14f5b51676f02d34cc9d8887",
+  "source_size": 29179,
+  "line": 517,
+  "actual_line": "state_dict = torch.load(ckpt_file, map_location=\"cpu\")",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "FSDP2 plugin loads full-checkpoint state with torch.load(ckpt_file, map_location='cpu') and no weights_only pin. On torch>=2.6 the weights_only default is True, so the unpickling surface is closed on current stacks; on torch<2.6 the same line is a checkpoint-dir pickle RCE. Recorded as a version-paired trust boundary, not a dynamically reproduced sink on this host (torch 2.14.1/2.5.1 split)."
+ }
+}

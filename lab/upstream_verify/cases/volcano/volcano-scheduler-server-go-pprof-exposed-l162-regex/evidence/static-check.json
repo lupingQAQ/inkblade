@@ -1,0 +1,27 @@
+{
+ "schema": "trident-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T09:23:47+00:00",
+ "case_id": "volcano-scheduler-server-go-pprof-exposed-l162-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "volcano-scheduler-server-go-pprof-exposed-l162-regex",
+  "root_cause": {
+   "file": "cmd/scheduler/app/server.go",
+   "line": 162,
+   "function": "serve",
+   "snippet": "mux.HandleFunc(\"/debug/pprof/\", pprof.Index)",
+   "note": "Scheduler debug mux mounts full pprof handler set."
+  },
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "verdict": "not-dynamically-verified",
+  "source": "lab/upstream_verify/upstream/volcano-sh/volcano/v1.16.0/cmd/scheduler/app/server.go",
+  "source_sha256": "6a2ba4ab9dd1c94a239539a90837b9ff2c9c32a44d32ece38a4313f3ef956287",
+  "source_size": 5805,
+  "line": 162,
+  "actual_line": "mux.HandleFunc(\"/debug/pprof/\", pprof.Index)",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Volcano scheduler mounts the complete /debug/pprof/* handler set on its debug mux when pprof scheduling options are enabled. Exposure is flag-gated, so it is a deployment posture (leak of heap/cpu profiles with scheduler state) rather than an always-on sink; the volcano agent DaemonSet (hostNetwork + hostPath elevated-pod-spec hits) is the paired posture finding."
+ }
+}

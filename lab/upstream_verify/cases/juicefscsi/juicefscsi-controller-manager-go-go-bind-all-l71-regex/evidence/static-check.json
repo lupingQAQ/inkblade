@@ -1,0 +1,27 @@
+{
+ "schema": "trident-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T09:23:23+00:00",
+ "case_id": "juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "juicefscsi-controller-manager-go-go-bind-all-l71-regex",
+  "root_cause": {
+   "file": "cmd/app/controller_manager.go",
+   "line": 71,
+   "function": "newManager",
+   "snippet": "BindAddress: \"0.0.0.0:8084\",",
+   "note": "Controller metrics listener binds all interfaces."
+  },
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "verdict": "not-dynamically-verified",
+  "source": "lab/upstream_verify/upstream/juicedata/juicefs-csi-driver/v0.33.1/cmd/app/controller_manager.go",
+  "source_sha256": "b933e2796904d47ef28c5e55f4a306b8d66830024dde6acf84ca8409d405ac7a",
+  "source_size": 4472,
+  "line": 71,
+  "actual_line": "BindAddress: \"0.0.0.0:8084\",",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "JuiceFSCSI controller (and pod manager, 0.0.0.0:8082) bind their controller-runtime metrics listeners on all interfaces with no authentication; cmd/main.go additionally blank-imports net/http/pprof (default-mux registration). Cluster-internal posture exposure: queue depths, volume names and pprof surface."
+ }
+}

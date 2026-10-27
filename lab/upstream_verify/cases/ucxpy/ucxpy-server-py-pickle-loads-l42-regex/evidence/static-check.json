@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:58:14+00:00",
+ "case_id": "ucxpy-server-py-pickle-loads-l42-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "ucxpy-server-py-pickle-loads-l42-regex",
+  "root_cause": {
+   "file": "debug-tests/server.py",
+   "line": 42,
+   "function": "write(ep)",
+   "snippet": "cuda_obj_generator = cloudpickle.loads(func)",
+   "note": "Debug server unpickles client-supplied cloudpickle payloads."
+  },
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "verdict": "not-dynamically-verified",
+  "source": "lab/upstream_verify/upstream/rapidsai/ucx-py/v0.45.00/debug-tests/server.py",
+  "source_sha256": "afdd0f2aaa81e90509c49b94c85a8fa599752182ec36611df27447434b090f5c",
+  "source_size": 2106,
+  "line": 42,
+  "actual_line": "cuda_obj_generator = cloudpickle.loads(func)",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "ucx-py debug-tests server deserialises a client-supplied cloudpickle payload (cloudpickle.loads(func)) with no authentication: any peer reaching the debug endpoint gets arbitrary code execution by design of the debug tool. Debug tooling is not the production wheel path, and the server needs CUDA/UCX/distributed stacks that this Windows host cannot run, so the case is static-only with the trust boundary recorded."
+ }
+}

@@ -1,0 +1,41 @@
+{
+ "case": "volcano-scheduler-server-go-pprof-exposed-l162-regex",
+ "method": "dynamic-http",
+ "component": "volcano",
+ "version": "v1.16.0",
+ "binary_provenance": "volcanosh/vc-scheduler@sha256:157578510d406c7390419dec97e81c5797969231022be39eb92e81feee0bbd71",
+ "http": [
+  {
+   "url": "http://127.0.0.1:18083/debug/pprof/",
+   "pprof_flag": false,
+   "status": "000"
+  },
+  {
+   "url": "http://127.0.0.1:18083/debug/pprof/",
+   "pprof_flag": true,
+   "status": 200
+  },
+  {
+   "url": "http://127.0.0.1:18083/debug/pprof/heap?debug=1",
+   "status": 200
+  },
+  {
+   "url": "http://10.0.2.15:18083/debug/pprof/",
+   "status": 200,
+   "non_loopback": true
+  }
+ ],
+ "listeners": [
+  "tcp        0      0 :::18083                :::*                    LISTEN      15918/volcano-sched"
+ ],
+ "version_output": "Go Version: go1.26.2\nGo OS/Arch: linux/amd64\n",
+ "binary_sha256": "8a846b96d4ad99cc401536621083089b09600d9e8e81343df8e27c4631121d52",
+ "impact": "With --enable-pprof the scheduler mounts cmdline/profile/symbol/trace/heap on its debug HTTP server without authentication; profiles expose scheduler state, queue names and process memory.",
+ "schema": "inkblade-upstream-run-v1",
+ "status": "verified",
+ "finished_at": "2026-10-26T20:01:38+00:00",
+ "marker_text": "INKBLADE-UV-volcano-scheduler-server-go-pprof-exposed-l162-regex",
+ "marker_file": "lab/upstream_verify/cases/volcano/volcano-scheduler-server-go-pprof-exposed-l162-regex/evidence/marker.txt",
+ "marker_sha256": "af07b5649836e011a4748cd788ddd62951e5e5f4106c020a5595ff69f5ef10a8",
+ "exit_code": 0
+}

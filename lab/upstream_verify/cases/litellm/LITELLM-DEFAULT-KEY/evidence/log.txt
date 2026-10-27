@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/litellm/LITELLM-DEFAULT-KEY/poc.py
+[exit=0 duration=0.227s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "LITELLM-DEFAULT-KEY"}
+
+--- stderr ---
+

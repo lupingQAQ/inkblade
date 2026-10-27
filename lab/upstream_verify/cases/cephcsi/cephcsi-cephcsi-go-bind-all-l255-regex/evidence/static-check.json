@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:45:37+00:00",
+ "case_id": "cephcsi-cephcsi-go-bind-all-l255-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "cephcsi-cephcsi-go-bind-all-l255-regex",
+  "root_cause": {
+   "file": "cmd/cephcsi.go",
+   "line": 255,
+   "function": "parseCliFlags/default MetricsIP",
+   "snippet": "conf.MetricsIP = \"0.0.0.0\"",
+   "note": "Metrics listener defaults to all interfaces; pairs with the verified unauth pprof case on the same listener."
+  },
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "verdict": "not-dynamically-verified",
+  "source": "lab/upstream_verify/upstream/ceph/ceph-csi/v3.18.1/cmd/cephcsi.go",
+  "source_sha256": "a75f0383daeb875c0d227eaa7853ef6da9817a00d1b3ad3037814b78ff1ef683",
+  "source_size": 12366,
+  "line": 255,
+  "actual_line": "conf.MetricsIP = \"0.0.0.0\"",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "cephcsi defaults MetricsIP to 0.0.0.0; the same default-mux listener serves the unauthenticated pprof endpoints verified dynamically in cephcsi-httpserver-go-pprof-exposed-l37-regex. This entry pins the bind-all default at cmd/cephcsi.go:255."
+ }
+}

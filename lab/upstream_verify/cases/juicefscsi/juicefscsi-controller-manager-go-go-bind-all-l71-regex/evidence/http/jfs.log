@@ -1,0 +1,12 @@
+I1026 19:47:58.512691    6955 main.go:151] "Run CSI controller" logger="main"
+I1026 19:47:58.883371    6955 controller.go:128] "Get CSI pod successfully" logger="main" pod="juicefs-csi-node-29w9d"
+I1026 19:47:59.374740    6955 driver.go:55] "get version info" logger="driver" driver="csi.juicefs.com" verison="v0.33.1-dirty" commit="ab62a2106b6993f260b9f4c82f5dba51463e6748" date="2026-10-16T06:45:02Z"
+I1026 19:47:59.388109    6955 server.go:208] "Starting metrics server" logger="controller-runtime.metrics"
+I1026 19:47:59.394524    6955 server.go:247] "Serving metrics server" logger="controller-runtime.metrics" bindAddress="0.0.0.0:8084" secure=false
+I1026 19:47:59.395937    6955 controller.go:198] "Starting EventSource" controller="mount" source="kind source: *v1.Pod"
+I1026 19:47:59.398873    6955 controller.go:198] "Starting EventSource" controller="job" source="kind source: *v1.Job"
+I1026 19:47:59.421127    6955 driver.go:120] "Listening for connection on address" logger="driver" address="/tmp/csi.sock"
+I1026 19:47:59.508990    6955 controller.go:233] "Starting Controller" controller="job"
+I1026 19:47:59.509694    6955 controller.go:242] "Starting workers" controller="job" worker count=1
+I1026 19:47:59.509816    6955 controller.go:233] "Starting Controller" controller="mount"
+I1026 19:47:59.510274    6955 controller.go:242] "Starting workers" controller="mount" worker count=1

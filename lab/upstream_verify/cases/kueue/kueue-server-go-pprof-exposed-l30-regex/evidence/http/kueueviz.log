@@ -1,0 +1,30 @@
+2026/10/26 19:50:35 INFO Starting pprof server on localhost:6060
+2026/10/26 19:50:35 INFO Using kubeconfig path=/etc/rancher/k3s/k3s.yaml
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+2026/10/26 19:50:36 INFO KUEUEVIZ_ALLOWED_ORIGINS not set, using default development origins
+2026/10/26 19:50:36 INFO Running in development mode
+[GIN-debug] GET    /healthz                  --> kueueviz/handlers.InitializeUnauthenticatedRoutes.func1 (4 handlers)
+[GIN-debug] GET    /auth/status              --> kueueviz/handlers.InitializeUnauthenticatedRoutes.func2 (4 handlers)
+[GIN-debug] GET    /ws/namespaces            --> kueueviz/handlers.(*Handlers).NamespacesWebSocketHandler.func1 (4 handlers)
+[GIN-debug] GET    /ws/workloads             --> kueueviz/handlers.(*Handlers).WorkloadsWebSocketHandler.func1 (5 handlers)
+[GIN-debug] GET    /ws/workloads/dashboard   --> kueueviz/handlers.(*Handlers).WorkloadsDashboardWebSocketHandler.func1 (5 handlers)
+[GIN-debug] GET    /ws/workload/:namespace/:workload_name --> kueueviz/handlers.(*Handlers).WorkloadDetailsWebSocketHandler.func1 (5 handlers)
+[GIN-debug] GET    /ws/workload/:namespace/:workload_name/events --> kueueviz/handlers.(*Handlers).WorkloadEventsWebSocketHandler.func1 (5 handlers)
+[GIN-debug] GET    /ws/local-queues          --> kueueviz/handlers.(*Handlers).LocalQueuesWebSocketHandler.func1 (5 handlers)
+[GIN-debug] GET    /ws/local-queue/:namespace/:queue_name --> kueueviz/handlers.(*Handlers).LocalQueueDetailsWebSocketHandler.func1 (5 handlers)
+[GIN-debug] GET    /ws/local-queue/:namespace/:queue_name/workloads --> kueueviz/handlers.(*Handlers).LocalQueueWorkloadsWebSocketHandler.func1 (5 handlers)
+[GIN-debug] GET    /ws/cluster-queues        --> kueueviz/handlers.(*Handlers).GenericWebSocketHandler.func1 (5 handlers)
+[GIN-debug] GET    /ws/cluster-queue/:cluster_queue_name --> kueueviz/handlers.(*Handlers).ClusterQueueDetailsWebSocketHandler.func1 (5 handlers)
+[GIN-debug] GET    /ws/cohorts               --> kueueviz/handlers.(*Handlers).CohortsWebSocketHandler.func1 (5 handlers)
+[GIN-debug] GET    /ws/cohort/:cohort_name   --> kueueviz/handlers.(*Handlers).CohortDetailsWebSocketHandler.func1 (5 handlers)
+[GIN-debug] GET    /ws/resource-flavors      --> kueueviz/handlers.(*Handlers).GenericWebSocketHandler.func1 (5 handlers)
+[GIN-debug] GET    /ws/resource-flavor/:flavor_name --> kueueviz/handlers.(*Handlers).ResourceFlavorDetailsWebSocketHandler.func1 (5 handlers)
+[GIN-debug] GET    /api/:resourceType/:name  --> kueueviz/handlers.GetResource.func1 (5 handlers)
+2026/10/26 19:50:36 INFO Starting server address=:18080
+[GIN] 2026/10/26 - 19:50:39 | 200 |   1.66ms |       127.0.0.1 | GET      "/healthz"
+[GIN] 2026/10/26 - 19:50:40 | 200 |   3.69ms |       127.0.0.1 | GET      "/auth/status"
+[GIN] 2026/10/26 - 19:50:41 | 200 | 173.58ms |       127.0.0.1 | GET      "/api/pod/canary?namespace=kueueviz-lab&output=yaml"
+[GIN] 2026/10/26 - 19:50:44 | 200 | 853.429µs |       10.0.2.15 | GET      "/healthz"

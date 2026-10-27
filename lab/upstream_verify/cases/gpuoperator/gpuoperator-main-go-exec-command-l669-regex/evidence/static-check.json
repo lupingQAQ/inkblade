@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:47:17+00:00",
+ "case_id": "gpuoperator-main-go-exec-command-l669-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "gpuoperator-main-go-exec-command-l669-regex",
+  "root_cause": {
+   "file": "cmd/nvidia-validator/main.go",
+   "line": 669,
+   "function": "runCommand",
+   "snippet": "cmd := exec.Command(command, args...)",
+   "note": "Validator runCommand helper executes fixed in-tree commands inside privileged validator pods."
+  },
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "verdict": "not-dynamically-verified",
+  "source": "lab/upstream_verify/upstream/NVIDIA/gpu-operator/v26.7.2/cmd/nvidia-validator/main.go",
+  "source_sha256": "62e35808d5773b15cbd92161827a43080d331c0d547eceae69def8ab13c98e3e",
+  "source_size": 64744,
+  "line": 669,
+  "actual_line": "cmd := exec.Command(command, args...)",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "NVIDIA GPU Operator validator pods run privileged with hostPath mounts (see 0500_daemonset posture case) and execute shell/nvidia-smi via runCommand. Callers are fixed in-tree (shell/nvidiaSMIPath), so the exec sink is not tenant-reachable by itself; the finding is the privileged execution surface of validator/driver DaemonSets, which pairs with the elevated-pod-spec hits in manifests/state-driver/0500_daemonset.yaml."
+ }
+}

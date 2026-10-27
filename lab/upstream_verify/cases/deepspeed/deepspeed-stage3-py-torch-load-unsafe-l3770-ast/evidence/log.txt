@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3770-ast/poc.py
+[exit=0 duration=8.042s timeout=False]
+--- stdout ---
+{"status": "verified", "marker": "INKBLADE-UV-deepspeed-stage3-py-torch-load-unsafe-l3770-ast", "evidence": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-unsafe-l3770-ast/evidence"}
+
+--- stderr ---
+

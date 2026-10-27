@@ -1,0 +1,7 @@
+$ [lfa] lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l136-ast/poc.py
+[exit=0 duration=5.622s timeout=False]
+--- stdout ---
+{"status": "verified", "marker": "INKBLADE-UV-llamafactory-checkpoint-py-torch-load-unsafe-l136-ast", "evidence": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l136-ast/evidence"}
+
+--- stderr ---
+

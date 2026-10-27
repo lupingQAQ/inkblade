@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/ucxpy/ucxpy-server-py-pickle-loads-l42-regex/poc.py
+[exit=0 duration=0.387s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "ucxpy-server-py-pickle-loads-l42-regex"}
+
+--- stderr ---
+

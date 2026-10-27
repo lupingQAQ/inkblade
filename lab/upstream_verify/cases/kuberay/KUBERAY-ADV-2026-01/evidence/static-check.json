@@ -1,0 +1,22 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:48:40+00:00",
+ "case_id": "KUBERAY-ADV-2026-01",
+ "source_level": "advisory",
+ "evidence": {
+  "case_id": "KUBERAY-ADV-2026-01",
+  "root_cause": {
+   "file": "advisory:https://docs.ray.io/en/latest/ray-security/token-auth.html",
+   "line": 0,
+   "function": "",
+   "snippet": "",
+   "note": "KubeRay-managed Ray exposure is a deployment pattern, not a single upstream sink; static-only."
+  },
+  "advisory": "https://docs.ray.io/en/latest/ray-security/token-auth.html",
+  "verdict": "not-dynamically-verified",
+  "source_line_verified": false,
+  "advisory_sha256": "6f0aa11f549acfbf46bfc19d82b0cec64fa41ccf0a59ea2f80b5fa7eeb8b73da",
+  "analysis": "KubeRay-managed Ray exposure is a deployment pattern, not a single upstream sink; static-only."
+ }
+}

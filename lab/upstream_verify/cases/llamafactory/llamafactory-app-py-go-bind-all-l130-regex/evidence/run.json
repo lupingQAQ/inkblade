@@ -1,0 +1,38 @@
+{
+ "exposure": {
+  "schema": "inkblade-upstream-exposure-v1",
+  "impact": "exposure",
+  "case": "llamafactory-app-py-go-bind-all-l130-regex",
+  "mode": "api",
+  "bind": "0.0.0.0",
+  "listener": "TCP    0.0.0.0:56912          0.0.0.0:0              LISTENING       7848\nTCP    127.0.0.1:56621        127.0.0.1:56912        TIME_WAIT       0\nTCP    127.0.0.1:56623        127.0.0.1:56912        TIME_WAIT       0\nTCP    192.168.3.33:56622     192.168.3.33:56912     TIME_WAIT       0",
+  "unauthenticated": true,
+  "http": {
+   "url": "http://192.168.3.33:56912/v1/models",
+   "status": 200,
+   "bytes": 106,
+   "authorization": null
+  },
+  "local": {
+   "url": "http://127.0.0.1:56912/v1/models",
+   "status": 200
+  },
+  "source": {
+   "file": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/api/app.py",
+   "line": 130,
+   "snippet": "api_host = os.getenv(\"API_HOST\", \"0.0.0.0\")",
+   "sha256": "99369f350ca92c3efd87625505fc17bd185b6eafbd6c28b9551126a28197f6a3"
+  },
+  "claim": "vendor default binds all interfaces and serves the route without authentication; no RCE primitive is claimed"
+ },
+ "marker": "INKBLADE-UV-llamafactory-app-py-go-bind-all-l130-regex",
+ "schema": "inkblade-upstream-run-v1",
+ "status": "exposure-verified",
+ "exposure_verified": true,
+ "impact": "exposure",
+ "finished_at": "2026-10-26T20:05:37+00:00",
+ "marker_text": "INKBLADE-UV-llamafactory-app-py-go-bind-all-l130-regex",
+ "marker_file": "lab/upstream_verify/cases/llamafactory/llamafactory-app-py-go-bind-all-l130-regex/evidence/marker.txt",
+ "marker_sha256": "b911c2c6d8e8b9f1106c0e00211a0fc38083fecf41a62910a92709080bf1ab07",
+ "exit_code": 0
+}

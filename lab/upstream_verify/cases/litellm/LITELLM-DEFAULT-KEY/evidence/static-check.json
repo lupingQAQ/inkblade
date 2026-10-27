@@ -1,0 +1,22 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:52:02+00:00",
+ "case_id": "LITELLM-DEFAULT-KEY",
+ "source_level": "advisory",
+ "evidence": {
+  "case_id": "LITELLM-DEFAULT-KEY",
+  "root_cause": {
+   "file": "advisory:https://docs.litellm.ai/docs/proxy/virtual_keys",
+   "line": 0,
+   "function": "",
+   "snippet": "",
+   "note": "Default/master-key misconfiguration is deployment-dependent; no upstream version boundary, static-only."
+  },
+  "advisory": "https://docs.litellm.ai/docs/proxy/virtual_keys",
+  "verdict": "not-dynamically-verified",
+  "source_line_verified": false,
+  "advisory_sha256": "135f0dce83d99612b04b421006b377de2fd05a3f544986bdb7a0875f4004da49",
+  "analysis": "Default/master-key misconfiguration is deployment-dependent; no upstream version boundary, static-only."
+ }
+}

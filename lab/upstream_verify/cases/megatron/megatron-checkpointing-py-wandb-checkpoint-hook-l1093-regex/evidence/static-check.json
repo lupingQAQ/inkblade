@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:53:23+00:00",
+ "case_id": "megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "megatron-checkpointing-py-wandb-checkpoint-hook-l1093-regex",
+  "root_cause": {
+   "file": "megatron/training/checkpointing.py",
+   "line": 1093,
+   "function": "",
+   "snippet": "wandb_utils.on_save_checkpoint_success(",
+   "note": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "false-positive",
+  "source": "lab/upstream_verify/upstream/NVIDIA/Megatron-LM/core_v0.19.2/megatron/training/checkpointing.py",
+  "source_sha256": "b4b4fcc725d543dd382a838dc72679c9de4dca8502ee274d8864c46ab55bba49",
+  "source_size": 119316,
+  "line": 1093,
+  "actual_line": "wandb_utils.on_save_checkpoint_success(",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Rule hit is a legitimate framework call; no untrusted-data sink is reached."
+ }
+}

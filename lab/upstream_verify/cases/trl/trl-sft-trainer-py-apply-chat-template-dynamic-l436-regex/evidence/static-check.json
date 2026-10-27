@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:58:10+00:00",
+ "case_id": "trl-sft-trainer-py-apply-chat-template-dynamic-l436-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "trl-sft-trainer-py-apply-chat-template-dynamic-l436-regex",
+  "root_cause": {
+   "file": "trl/trainer/sft_trainer.py",
+   "line": 436,
+   "function": "",
+   "snippet": "examples = [apply_chat_template(example, self.processor) for example in examples]",
+   "note": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "false-positive",
+  "source": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/trainer/sft_trainer.py",
+  "source_sha256": "a93001470796c6502a4cf8886a13abbd8280e653357b5a95eb1abd53c6868205",
+  "source_size": 99288,
+  "line": 436,
+  "actual_line": "examples = [apply_chat_template(example, self.processor) for example in examples]",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+ }
+}

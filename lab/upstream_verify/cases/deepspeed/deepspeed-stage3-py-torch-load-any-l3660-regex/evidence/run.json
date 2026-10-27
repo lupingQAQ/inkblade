@@ -1,0 +1,35 @@
+{
+ "transport": {
+  "type": "function+torch.load",
+  "entrypoint": "deepspeed.runtime.zero.stage3.DeepSpeedZeroOptimizer_Stage3.load_hp_checkpoint_state_from_checkpoint_dir_stage3",
+  "source": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/runtime/zero/stage3.py",
+  "source_sha256": "4ff3fdb4cbabaddfeaa866e43785b49a69cdfe35db4e0ceda6f1b432b6fbf9d7",
+  "sink_line": 3660,
+  "sink": "optim_sd = torch.load(optim_state_path, weights_only=False)",
+  "torch_version": "2.14.1+cpu",
+  "checkpoint_file": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3660-regex/evidence/ckpt/zero/optimizer_state.pt",
+  "payload": "pickle __reduce__ -> _materialize(marker)",
+  "post_sink_error": "RuntimeError: Invalid magic number; corrupt file?",
+  "result_type": "NoneType",
+  "stubbed_modules": [
+   "deepspeed",
+   "uv_deepspeed_stage3 (real upstream file)"
+  ]
+ },
+ "request_response": [
+  {
+   "dir": "untrusted checkpoint dir -> torch.load(weights_only=False)",
+   "payload": "pickle reduce",
+   "result": "marker written before any state validation"
+  }
+ ],
+ "state_before": "marker=ABSENT",
+ "state_after": "marker contains proof text",
+ "schema": "inkblade-upstream-run-v1",
+ "status": "verified",
+ "finished_at": "2026-10-26T19:46:46+00:00",
+ "marker_text": "INKBLADE-UV-deepspeed-stage3-py-torch-load-any-l3660-regex",
+ "marker_file": "lab/upstream_verify/cases/deepspeed/deepspeed-stage3-py-torch-load-any-l3660-regex/evidence/marker.txt",
+ "marker_sha256": "7915ffb15d1a4ed5141ce6614824686173ed0eb0b984b042e2a00c202e7ee073",
+ "exit_code": 0
+}

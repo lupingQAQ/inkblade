@@ -1,0 +1,31 @@
+{
+ "transport": {
+  "type": "function+resume()+torch.load(weights_only=False)",
+  "entrypoint": "llamafactory.v1.core.utils.checkpoint.TrainingCheckpointCoordinator.resume",
+  "llamafactory_version": "0.9.5",
+  "torch_version": "2.14.1+cpu",
+  "source": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/v1/core/utils/checkpoint.py",
+  "source_sha256": "f8457a0e52a66b3aae563d3167deb8230e99f741b4bbfd3ded46362251f40258",
+  "sink_line": 334,
+  "sink": "torch.load(..., weights_only=False)",
+  "checkpoint_file": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l334-ast/evidence/ckpt/dataloader/rank_0.pt",
+  "payload": "pickle __reduce__ -> _materialize(marker)",
+  "post_sink_error": "RuntimeError: Invalid magic number; corrupt file?"
+ },
+ "request_response": [
+  {
+   "dir": "untrusted checkpoint dir -> coordinator.resume -> torch.load(weights_only=False)",
+   "payload": "pickle reduce",
+   "result": "marker written inside the upstream sink"
+  }
+ ],
+ "state_before": "marker=ABSENT",
+ "state_after": "marker contains proof text",
+ "schema": "inkblade-upstream-run-v1",
+ "status": "verified",
+ "finished_at": "2026-10-26T19:52:20+00:00",
+ "marker_text": "INKBLADE-UV-llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
+ "marker_file": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l334-ast/evidence/marker.txt",
+ "marker_sha256": "f6575d16b807980958228b40e06fa98ff42b9db22235dd406e58284ea84a261c",
+ "exit_code": 0
+}

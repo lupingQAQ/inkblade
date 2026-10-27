@@ -1,0 +1,9 @@
+$ [lfa] lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l334-ast/poc.py
+[exit=0 duration=7.417s timeout=False]
+--- stdout ---
+[INFO|2026-10-27 03:52:20] llamafactory.v1.accelerator.interface:107 >> DistributedInterface initialized: DistributedInterface(strategy=DistributedStrategy(mp_replicate_size=1, mp_shard_size=1, dp_size=1, cp_size=1)), is_distributed=False, current_device=cpu, rank=0, world_size=1, model_device_mesh=None, data_device_mesh=None.
+[WARNING|2026-10-27 03:52:20] llamafactory.v1.core.utils.checkpoint:112 >> No model weights found in <repo>\lab\upstream_verify\cases\llamafactory\llamafactory-checkpoint-py-torch-load-unsafe-l334-ast\evidence\ckpt\model, skipping model state restore.
+{"status": "verified", "marker": "INKBLADE-UV-llamafactory-checkpoint-py-torch-load-unsafe-l334-ast", "evidence": "lab/upstream_verify/cases/llamafactory/llamafactory-checkpoint-py-torch-load-unsafe-l334-ast/evidence"}
+
+--- stderr ---
+

@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/cgpu/CGPU-ADV-2026-01/poc.py
+[exit=0 duration=0.245s timeout=False]
+--- stdout ---
+{"status": "unsupported", "case": "CGPU-ADV-2026-01", "reason": "cGPU isolation audit requires Alibaba Cloud cGPU runtime/GPU"}
+
+--- stderr ---
+

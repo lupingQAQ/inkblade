@@ -1,0 +1,35 @@
+{
+ "transport": {
+  "type": "function+torch.load",
+  "entrypoint": "megatron.training.checkpointing._load_base_checkpoint",
+  "source": "lab/upstream_verify/upstream/NVIDIA/Megatron-LM/core_v0.19.2/megatron/training/checkpointing.py",
+  "source_sha256": "b4b4fcc725d543dd382a838dc72679c9de4dca8502ee274d8864c46ab55bba49",
+  "sink": "torch.load(checkpoint_name, map_location='cpu')  # weights_only unpinned",
+  "torch_version": "2.5.1+cpu",
+  "checkpoint_file": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/checkpoint/iter_0000001/mp_rank_00/model_optim_rng.pt",
+  "payload": "pickle __reduce__ -> _materialize(marker)",
+  "post_sink_error": "SystemExit(None)",
+  "result_type": "NoneType",
+  "version_pair_note": "torch 2.5.1 keeps weights_only=False by default; torch>=2.6 blocks this pickle",
+  "stubbed_modules": [
+   "megatron",
+   "megatron.training.checkpointing (real upstream file)"
+  ]
+ },
+ "request_response": [
+  {
+   "dir": "untrusted checkpoint dir -> torch.load(weights_only=False)",
+   "payload": "pickle reduce",
+   "result": "marker written inside torch.load"
+  }
+ ],
+ "state_before": "marker=ABSENT",
+ "state_after": "marker contains proof text",
+ "schema": "inkblade-upstream-run-v1",
+ "status": "verified",
+ "finished_at": "2026-10-26T19:53:11+00:00",
+ "marker_text": "INKBLADE-UV-megatron-checkpointing-py-torch-load-any-l1739-regex",
+ "marker_file": "lab/upstream_verify/cases/megatron/megatron-checkpointing-py-torch-load-any-l1739-regex/evidence/marker.txt",
+ "marker_sha256": "d0368ca218851a1ee5c3e0ed22170174420f635e56674a13a146d9fcc8a6e9f0",
+ "exit_code": 0
+}

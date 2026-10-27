@@ -1,0 +1,28 @@
+{
+ "schema": "inkblade-upstream-unsupported-v1",
+ "status": "unsupported",
+ "finished_at": "2026-10-26T19:45:55+00:00",
+ "case_id": "CGPU-ADV-2026-01",
+ "reason": "cGPU isolation audit requires Alibaba Cloud cGPU runtime/GPU",
+ "evidence": {
+  "requires": [
+   "Alibaba cGPU",
+   "cGPU 各版本（隔离依赖驱动/运行时策略）"
+  ],
+  "blocked_by": [
+   "Windows host",
+   "no GPU",
+   "no Linux container runtime",
+   "no vendor BMC/NOS"
+  ],
+  "advisory": "https://www.alibabacloud.com/help/en/ack/ack-managed-and-ack-dedicated/user-guide/use-cgpu-to-share-gpus",
+  "root_cause": {
+   "file": "n/a (vendor firmware / Linux runtime)",
+   "line": 0,
+   "function": "",
+   "snippet": "",
+   "source": null,
+   "note": "绕过显存/算力配额或读取残留显存（策略面，无公开 CVE）"
+  }
+ }
+}

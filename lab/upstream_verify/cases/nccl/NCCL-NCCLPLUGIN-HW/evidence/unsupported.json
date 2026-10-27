@@ -1,0 +1,29 @@
+{
+ "schema": "inkblade-upstream-unsupported-v1",
+ "status": "unsupported",
+ "finished_at": "2026-10-26T19:55:19+00:00",
+ "case_id": "NCCL-NCCLPLUGIN-HW",
+ "reason": "NCCL is a Linux/CUDA collective library: IB/RoCE/NVLink fabric, kernel modules and a GPU device are required; no .py/.go surface exists to scan and the library cannot load on this Windows host.",
+ "evidence": {
+  "requires": [
+   "Linux runtime",
+   "NVIDIA GPU device",
+   "IB/RoCE or NVLink fabric"
+  ],
+  "blocked_by": [
+   "no Linux runtime (WSL virtualization disabled)",
+   "no GPU",
+   "fabric hardware absent"
+  ],
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "root_cause": {
+   "file": "n/a (vendor firmware / Linux runtime / hardware fabric)",
+   "line": 0,
+   "function": "",
+   "snippet": "",
+   "source": null,
+   "source_sha256": null,
+   "note": "NCCL v2.32.3-1: pure C/CUDA; plugin .so loading (NCCL_IB_HCA / NCCL_PLUGIN) needs the hardware path. Marked unsupported; attack-surface conclusions live in the fabric modules (nccl-collective-join, ib-subnet-manager-hijack)."
+  }
+ }
+}

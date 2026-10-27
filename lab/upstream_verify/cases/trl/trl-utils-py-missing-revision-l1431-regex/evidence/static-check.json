@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:58:12+00:00",
+ "case_id": "trl-utils-py-missing-revision-l1431-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "trl-utils-py-missing-revision-l1431-regex",
+  "root_cause": {
+   "file": "trl/trainer/utils.py",
+   "line": 1431,
+   "function": "",
+   "snippet": ">>> model = AutoPeftModelForCausalLM.from_pretrained(\"path/to/model\")",
+   "note": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "supply-chain-gap",
+  "source": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/trainer/utils.py",
+  "source_sha256": "a3c44bd9e7f332f3087ef1943e89ea6f4ee99c0480ff64f13d586c72a51578b1",
+  "source_size": 79637,
+  "line": 1431,
+  "actual_line": ">>> model = AutoPeftModelForCausalLM.from_pretrained(\"path/to/model\")",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."
+ }
+}

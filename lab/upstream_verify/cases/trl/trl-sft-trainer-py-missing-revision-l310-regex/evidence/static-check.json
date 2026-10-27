@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:58:11+00:00",
+ "case_id": "trl-sft-trainer-py-missing-revision-l310-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "trl-sft-trainer-py-missing-revision-l310-regex",
+  "root_cause": {
+   "file": "trl/trainer/sft_trainer.py",
+   "line": 310,
+   "function": "",
+   "snippet": ">>> processor = AutoProcessor.from_pretrained(\"Qwen/Qwen2.5-VL-7B-Instruct\")",
+   "note": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "supply-chain-gap",
+  "source": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/trainer/sft_trainer.py",
+  "source_sha256": "a93001470796c6502a4cf8886a13abbd8280e653357b5a95eb1abd53c6868205",
+  "source_size": 99288,
+  "line": 310,
+  "actual_line": ">>> processor = AutoProcessor.from_pretrained(\"Qwen/Qwen2.5-VL-7B-Instruct\")",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:52:02+00:00",
+ "case_id": "llamafactory-app-py-bind-all-interfaces-l130-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "llamafactory-app-py-bind-all-interfaces-l130-regex",
+  "root_cause": {
+   "file": "src/llamafactory/api/app.py",
+   "line": 130,
+   "function": "",
+   "snippet": "api_host = os.getenv(\"API_HOST\", \"0.0.0.0\")",
+   "note": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "risk-not-vuln",
+  "source": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/api/app.py",
+  "source_sha256": "99369f350ca92c3efd87625505fc17bd185b6eafbd6c28b9551126a28197f6a3",
+  "source_size": 4452,
+  "line": 130,
+  "actual_line": "api_host = os.getenv(\"API_HOST\", \"0.0.0.0\")",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Default 0.0.0.0/[::] bind is an exposure/configuration risk, not code execution."
+ }
+}

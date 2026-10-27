@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/poc.py
+[exit=0 duration=141.737s timeout=False]
+--- stdout ---
+{"status": "verified", "marker": "INKBLADE-UV-kueue-server-go-pprof-exposed-l30-regex", "evidence": "lab/upstream_verify/cases/kueue/kueue-server-go-pprof-exposed-l30-regex/evidence"}
+
+--- stderr ---
+

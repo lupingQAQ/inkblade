@@ -1,0 +1,35 @@
+{
+ "transport": {
+  "type": "function+IndexedDataset[i]+pickle.loads(shard slice)",
+  "entrypoint": "swift.dataset.indexed_dataset.IndexedDataset.__getitem__",
+  "source": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/dataset/indexed_dataset.py",
+  "source_sha256": "051c96328c5e1a30c100737d64f0592c22e3f5c87a9cae3f460307fe691317c0",
+  "sink_line": 129,
+  "sink": "return pickle.loads(buffer)",
+  "cache_dir": "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l129-regex/evidence/packing-cache/tmp/shard-poison",
+  "payload": "pickle __reduce__ -> _materialize(marker)",
+  "record": "record",
+  "post_sink_error": null,
+  "stubbed_modules": [
+   "modelscope",
+   "swift",
+   "uv_swift_indexed_dataset (real upstream file)"
+  ]
+ },
+ "request_response": [
+  {
+   "dir": "attacker-written packing shard -> BinReader.read_buffer -> pickle.loads",
+   "payload": "pickle reduce",
+   "result": "marker written inside the upstream sink"
+  }
+ ],
+ "state_before": "marker=ABSENT",
+ "state_after": "marker contains proof text",
+ "schema": "inkblade-upstream-run-v1",
+ "status": "verified",
+ "finished_at": "2026-10-26T19:54:21+00:00",
+ "marker_text": "INKBLADE-UV-msswift-indexed-dataset-py-pickle-loads-l129-regex",
+ "marker_file": "lab/upstream_verify/cases/msswift/msswift-indexed-dataset-py-pickle-loads-l129-regex/evidence/marker.txt",
+ "marker_sha256": "337435d29eaaccb05140e4d4677ebb72db2c1210426c27b6024a733afe0c4fe5",
+ "exit_code": 0
+}

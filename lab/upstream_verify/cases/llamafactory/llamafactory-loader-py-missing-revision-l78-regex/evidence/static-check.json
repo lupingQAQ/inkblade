@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:52:35+00:00",
+ "case_id": "llamafactory-loader-py-missing-revision-l78-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "llamafactory-loader-py-missing-revision-l78-regex",
+  "root_cause": {
+   "file": "src/llamafactory/model/loader.py",
+   "line": 78,
+   "function": "",
+   "snippet": "tokenizer = AutoTokenizer.from_pretrained(",
+   "note": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "supply-chain-gap",
+  "source": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/model/loader.py",
+  "source_sha256": "873c4924c899574ee903000eefbbdfbeafad92087a8fe8dd96f94c34bf6bb1bb",
+  "source_size": 9594,
+  "line": 78,
+  "actual_line": "tokenizer = AutoTokenizer.from_pretrained(",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Missing revision pin is a supply-chain hygiene gap; no direct exploit primitive."
+ }
+}

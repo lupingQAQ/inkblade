@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:58:09+00:00",
+ "case_id": "trl-sft-py-load-dataset-any-l96-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "trl-sft-py-load-dataset-any-l96-regex",
+  "root_cause": {
+   "file": "trl/scripts/sft.py",
+   "line": 96,
+   "function": "",
+   "snippet": "dataset = load_dataset(",
+   "note": "Dataset loading is intended functionality; remote dataset trust is a documented boundary."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "risk-not-vuln",
+  "source": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/scripts/sft.py",
+  "source_sha256": "310f4eb5f750a8f2f1ca9ef86235455a6d1d262d1c4cf6c8261ad95090a209dc",
+  "source_size": 5003,
+  "line": 96,
+  "actual_line": "dataset = load_dataset(",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Dataset loading is intended functionality; remote dataset trust is a documented boundary."
+ }
+}

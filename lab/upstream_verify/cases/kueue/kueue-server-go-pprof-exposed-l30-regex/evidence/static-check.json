@@ -1,0 +1,27 @@
+{
+ "schema": "trident-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T09:23:24+00:00",
+ "case_id": "kueue-server-go-pprof-exposed-l30-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "kueue-server-go-pprof-exposed-l30-regex",
+  "root_cause": {
+   "file": "cmd/kueueviz/backend/config/server.go",
+   "line": 30,
+   "function": "(pprof import / SetupPprof)",
+   "snippet": "_ \"net/http/pprof\"",
+   "note": "kueueviz backend imports net/http/pprof and defaults KUEUEVIZ_AUTH_MODE to Disabled."
+  },
+  "advisory": "reports/samples/mining-infra/mining-report.json",
+  "verdict": "not-dynamically-verified",
+  "source": "lab/upstream_verify/upstream/kubernetes-sigs/kueue/v0.20.3/cmd/kueueviz/backend/config/server.go",
+  "source_sha256": "345dd8e23b3a8d1f6844e0110f8c7216aeefd690210a4049fefedcf94d2a80ce",
+  "source_size": 3926,
+  "line": 30,
+  "actual_line": "_ \"net/http/pprof\"",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Kueue kueueviz backend: KUEUEVIZ_AUTH_MODE defaults to 'Disabled' (server.go:49) and main.go:112 only mounts the TokenReview authenticator middleware when the mode equals TokenReview, so a default deployment serves cluster queue/workload routes (and websocket data) without authentication; config/server.go also imports net/http/pprof with a localhost:6060 listener in dev mode. Not run end-to-end: the backend requires a live kubeconfig/apiserver; recorded as a verified-by-source default-auth posture."
+ }
+}

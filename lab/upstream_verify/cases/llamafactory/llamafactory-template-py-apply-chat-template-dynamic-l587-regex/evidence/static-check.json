@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:52:37+00:00",
+ "case_id": "llamafactory-template-py-apply-chat-template-dynamic-l587-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "llamafactory-template-py-apply-chat-template-dynamic-l587-regex",
+  "root_cause": {
+   "file": "src/llamafactory/data/template.py",
+   "line": 587,
+   "function": "",
+   "snippet": "user_slot_empty_system = tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)",
+   "note": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "false-positive",
+  "source": "lab/upstream_verify/upstream/hiyouga/LlamaFactory/v0.9.5/src/llamafactory/data/template.py",
+  "source_sha256": "68f289bb28c434e7d26cb36bd4351ea4636f9e102bf374d9a84f642565d9f84e",
+  "source_size": 100792,
+  "line": 587,
+  "actual_line": "user_slot_empty_system = tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+ }
+}

@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/juicefscsi/juicefscsi-controller-manager-go-go-bind-all-l71-regex/poc.py
+[exit=0 duration=81.463s timeout=False]
+--- stdout ---
+{"status": "verified", "marker": "INKBLADE-UV-juicefscsi-controller-manager-go-go-bind-all-l71-regex", "evidence": "lab/upstream_verify/cases/juicefscsi/juicefscsi-controller-manager-go-go-bind-all-l71-regex/evidence"}
+
+--- stderr ---
+

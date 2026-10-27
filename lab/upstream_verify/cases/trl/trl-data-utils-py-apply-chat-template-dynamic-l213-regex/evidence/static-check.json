@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:58:04+00:00",
+ "case_id": "trl-data-utils-py-apply-chat-template-dynamic-l213-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "trl-data-utils-py-apply-chat-template-dynamic-l213-regex",
+  "root_cause": {
+   "file": "trl/data_utils.py",
+   "line": 213,
+   "function": "",
+   "snippet": "prompt = processing_class.apply_chat_template(",
+   "note": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "false-positive",
+  "source": "lab/upstream_verify/upstream/huggingface/trl/v1.16.0/trl/data_utils.py",
+  "source_sha256": "24e80d9427de17026cc74e25a7b11612746d57d213317b82132ff1bc7ae9468b",
+  "source_size": 42889,
+  "line": 213,
+  "actual_line": "prompt = processing_class.apply_chat_template(",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Chat-template rendering is data transformation inside the tokenizer; no code-execution sink."
+ }
+}

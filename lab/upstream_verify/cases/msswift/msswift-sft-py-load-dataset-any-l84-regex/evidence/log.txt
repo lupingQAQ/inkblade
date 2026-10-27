@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/msswift/msswift-sft-py-load-dataset-any-l84-regex/poc.py
+[exit=0 duration=0.208s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "msswift-sft-py-load-dataset-any-l84-regex"}
+
+--- stderr ---
+

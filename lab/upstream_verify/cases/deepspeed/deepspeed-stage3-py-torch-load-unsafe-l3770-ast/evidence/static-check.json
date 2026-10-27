@@ -1,0 +1,27 @@
+{
+ "schema": "trident-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-25T18:06:42+00:00",
+ "case_id": "deepspeed-stage3-py-torch-load-unsafe-l3770-ast",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "deepspeed-stage3-py-torch-load-unsafe-l3770-ast",
+  "root_cause": {
+   "file": "deepspeed/runtime/zero/stage3.py",
+   "line": 3770,
+   "function": "",
+   "snippet": "ckpt_dict = torch.load(os.path.join(folder, f\"{key}.pt\"), weights_only=False)",
+   "note": "Explicit weights_only=False is reachable only with an untrusted checkpoint; candidate is a trust-boundary warning, not a new sink. Static-only."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "risk-not-vuln",
+  "source": "lab/upstream_verify/upstream/deepspeedai/DeepSpeed/v0.19.8/deepspeed/runtime/zero/stage3.py",
+  "source_sha256": "4ff3fdb4cbabaddfeaa866e43785b49a69cdfe35db4e0ceda6f1b432b6fbf9d7",
+  "source_size": 211580,
+  "line": 3770,
+  "actual_line": "ckpt_dict = torch.load(os.path.join(folder, f\"{key}.pt\"), weights_only=False)",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Explicit weights_only=False is reachable only with an untrusted checkpoint; candidate is a trust-boundary warning, not a new sink. Static-only."
+ }
+}

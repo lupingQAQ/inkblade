@@ -1,0 +1,36 @@
+{
+ "transport": {
+  "type": "function+Serializer.from_tensor+pickle.loads(tensor bytes)",
+  "entrypoint": "swift.utils.torch_utils.Serializer.from_tensor",
+  "source": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/utils/torch_utils.py",
+  "source_sha256": "6bbf26f0db495b28b5e6c9ddc460bb93011f5de61d82b5e1e1d8fdf061cdd2e9",
+  "sink_line": 340,
+  "sink": "return pickle.loads(res[:buffer_size])",
+  "wire_format": "int64 length header + pickle stream (uint8 tensor)",
+  "payload": "pickle __reduce__ -> _materialize(marker)",
+  "deserialized": "{'carried': 'object'}",
+  "torch_version": "2.14.1+cpu",
+  "post_sink_error": null,
+  "stubbed_modules": [
+   "modelscope",
+   "swift",
+   "swift.utils.torch_utils (real upstream file)"
+  ]
+ },
+ "request_response": [
+  {
+   "dir": "injected rank/node tensor -> Serializer.from_tensor -> pickle.loads",
+   "payload": "pickle reduce",
+   "result": "marker written inside the upstream sink"
+  }
+ ],
+ "state_before": "marker=ABSENT",
+ "state_after": "marker contains proof text",
+ "schema": "inkblade-upstream-run-v1",
+ "status": "verified",
+ "finished_at": "2026-10-26T19:55:17+00:00",
+ "marker_text": "INKBLADE-UV-msswift-torch-utils-py-pickle-loads-l340-regex",
+ "marker_file": "lab/upstream_verify/cases/msswift/msswift-torch-utils-py-pickle-loads-l340-regex/evidence/marker.txt",
+ "marker_sha256": "743fcf2c9d4b94205c613f07973ccd4d26494ad1a3c6181fc0a14e9e7e6a4595",
+ "exit_code": 0
+}

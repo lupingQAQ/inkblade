@@ -1,0 +1,27 @@
+{
+ "schema": "inkblade-upstream-static-check-v1",
+ "status": "static-only",
+ "finished_at": "2026-10-26T19:54:23+00:00",
+ "case_id": "msswift-loader-py-load-dataset-any-l341-regex",
+ "source_level": "source-line",
+ "evidence": {
+  "case_id": "msswift-loader-py-load-dataset-any-l341-regex",
+  "root_cause": {
+   "file": "swift/dataset/loader.py",
+   "line": 341,
+   "function": "",
+   "snippet": ">>> train_ds, _ = load_dataset(",
+   "note": "Dataset loading is intended functionality; remote dataset trust is a documented boundary."
+  },
+  "advisory": "reports/samples/mining-trainstack/mining-report.json",
+  "verdict": "risk-not-vuln",
+  "source": "lab/upstream_verify/upstream/modelscope/ms-swift/v4.6.0/swift/dataset/loader.py",
+  "source_sha256": "20f83a4e3c4cdb736e29a0848767b0f525a3280ab11ce2ff2b91955093fb1157",
+  "source_size": 20375,
+  "line": 341,
+  "actual_line": ">>> train_ds, _ = load_dataset(",
+  "line_matches": true,
+  "source_line_verified": true,
+  "analysis": "Dataset loading is intended functionality; remote dataset trust is a documented boundary."
+ }
+}

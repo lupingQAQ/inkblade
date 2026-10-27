@@ -1,0 +1,7 @@
+$ [reproenv] lab/upstream_verify/cases/deepspeed/deepspeed-engine-py-eval-call-l2889-regex/poc.py
+[exit=0 duration=0.269s timeout=False]
+--- stdout ---
+{"status": "static-only", "case": "deepspeed-engine-py-eval-call-l2889-regex"}
+
+--- stderr ---
+
