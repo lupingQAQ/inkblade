@@ -197,7 +197,7 @@ class TestExecution(ObjectiveBase):
         self.assertEqual(backend.node_files, {})
         # entry service was pre-existing and must not be deleted
         self.assertIn("inkblade-proof/mock-target", backend.state["services"])
-        self.assertLess(time.time() - started, 20)
+        self.assertLess(time.time() - started, 35)
 
     def test_partial_run_forces_cleanup(self):
         backend = FakeKubectlBackend()

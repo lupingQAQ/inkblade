@@ -181,9 +181,16 @@ def _pid_alive(pid: int) -> bool:
         return str(int(pid)) in (out.stdout or "")
     try:
         os.kill(int(pid), 0)
-        return True
     except OSError:
         return False
+    try:
+        # A zombie has released its sockets but still answers kill(pid, 0).
+        fields = Path(f"/proc/{int(pid)}/stat").read_text(encoding="utf-8").split()
+        if len(fields) > 2 and fields[2] == "Z":
+            return False
+    except OSError:
+        pass
+    return True
 
 
 def _pid_image(pid: int) -> str:
@@ -860,6 +867,11 @@ def run_down(home: str | Path | None = None, *, json_out: bool = False) -> int:
             return 1
 
         stopped = _stop_pid(pid)
+        if not stopped and current.get("port") and not _http_ok(
+                current.get("host") or DEFAULT_HOST, int(current["port"])):
+            # Process table can briefly show a zombie after SIGKILL; if the
+            # console port is already closed, the UI is stopped for our purpose.
+            stopped = True
         _clear_state(path)
         if not stopped:
             raise StartupError(_human(
