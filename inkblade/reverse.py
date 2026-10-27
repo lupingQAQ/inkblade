@@ -218,6 +218,13 @@ def ensure_tls_material(
         .not_valid_after(not_after)
         .add_extension(x509.BasicConstraints(ca=True, path_length=0), critical=True)
         .add_extension(
+            x509.SubjectKeyIdentifier.from_public_key(ca_key.public_key()), critical=False
+        )
+        .add_extension(
+            x509.AuthorityKeyIdentifier.from_issuer_public_key(ca_key.public_key()),
+            critical=False,
+        )
+        .add_extension(
             x509.KeyUsage(
                 digital_signature=True, content_commitment=False,
                 key_encipherment=False, data_encipherment=False,
@@ -257,6 +264,13 @@ def ensure_tls_material(
         .not_valid_before(not_before)
         .not_valid_after(not_after)
         .add_extension(x509.SubjectAlternativeName(san), critical=False)
+        .add_extension(
+            x509.SubjectKeyIdentifier.from_public_key(server_key.public_key()), critical=False
+        )
+        .add_extension(
+            x509.AuthorityKeyIdentifier.from_issuer_public_key(ca_key.public_key()),
+            critical=False,
+        )
         .add_extension(x509.BasicConstraints(ca=False, path_length=None), critical=True)
         .add_extension(
             x509.KeyUsage(
