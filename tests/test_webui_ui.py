@@ -156,8 +156,8 @@ class TestWebuiUI(unittest.TestCase):
     def test_probe_first_connect_panel_commands(self):
         js = (STATIC / "app.js").read_text(encoding="utf-8")
         for command in (
-            "inkblade channel listen --host 0.0.0.0 --port 8443",
-            "./inkblade-probe reverse --host <controller-host> --port 8443",
+            "inkblade channel listen --bind 0.0.0.0 --port 9443 --transport tls --token-file ./probe.token",
+            "./inkblade-probe reverse --transport tls --host <controller> --port 9443 --ca-file ca.pem --pin <sha256>",
             "inkblade probe list --workspace ./work",
             "inkblade session open --mode foothold --target <target> --pod <pod>",
             "inkblade probe deploy --session <id> --via rce --binary ./inkblade-probe-linux-amd64",

