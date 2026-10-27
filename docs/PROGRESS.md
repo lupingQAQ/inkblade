@@ -67,3 +67,8 @@ Updated: 2026-10-27 (agent runtime, coverage closure, file audit, defense bypass
 - 28 `partial` requirements — see matrix §3.5.1; do not report them as done.
 - Fixed-state negative control needs per-template mock inputs before the remaining 251 templates can
   be called fully two-state verified.
+
+## Final regression (2026-10-27)
+- Ran 1936 tests, OK (skipped=13)
+- HEAD 80afe6c; 286 templates; probe v0.1.1; 5/6 bypass-confirmed
+- Remaining: 26 partial, 7 blocked-resource, 238 reduced templates, negative-control 35/286
