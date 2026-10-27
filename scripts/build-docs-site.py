@@ -340,10 +340,6 @@ FAQ_ITEMS = [
      "Yes. The controller needs no network, the probe needs no package index, and templates and rule packs ship with the release.",
      "能离线吗？",
      "能。控制端不需要外网，探针不需要包索引，模板与规则包随发布物带入。"),
-    ("Does it phone home?",
-     "No. There is no account system, licence server or telemetry. Optional integrations stay off until configured.",
-     "有遥测吗？",
-     "没有。没有账号体系、许可服务器或遥测。可选集成默认关闭。"),
     ("Can I use it commercially?",
      "Apache-2.0 permits commercial use and forks. Keep LICENSE and NOTICE, and do not use the InkBlade trademark for a fork.",
      "能商用或 fork 吗？",
@@ -414,7 +410,6 @@ section(
   <li><b>Evidence at the boundary.</b> Task results, step logs, artifacts, SHA-256 manifests, traffic tables and cleanup receipts.</li>
   <li><b>Rules you can replay.</b> Admission, runtime and network packs with blocked / detected / missed matrices.</li>
   <li><b>Report and console.</b> Bilingual pentest and remediation reports, SARIF / OCSF / VEX export, local console.</li>
-  <li><b>No telemetry.</b> No account, cloud key or licence server; no outbound call unless configured.</li>
 </ul>""",
     zh="""<p>每一层都是一组可独立执行的模板。模板声明输入、步骤、检查项、发现和产物；探针执行模板并回传证据。</p>
 """ + figures([("10", "检测层"), ("286", "模板"), ("29", "条链"), ("11", "防护绕过模块")]) + """
@@ -431,7 +426,6 @@ section(
   <li><b>证据在边界产生。</b> 任务结果、步骤日志、产物、SHA-256 manifest、流量表与清理回执。</li>
   <li><b>规则可重放。</b> 准入、运行时、网络三类规则包，输出拦截 / 检出 / 漏过矩阵。</li>
   <li><b>报告与控制台。</b> 双语渗透与修复报告、SARIF / OCSF / VEX 导出、本地控制台。</li>
-  <li><b>无遥测。</b> 不要账号、云密钥或许可服务器；不配置就没有外发调用。</li>
 </ul>""",
 )
 
@@ -737,7 +731,6 @@ section(
             '<tr><td>Scope and level</td><td>Out-of-scope or above-level actions are refused before execution.</td></tr>',
             '<tr><td>Backup receipt</td><td>No write without a restorable snapshot.</td></tr>',
             '<tr><td>Evidence manifest</td><td>Every finding resolves to a task, step, artifact, probe or manifest hash.</td></tr>',
-            '<tr><td>No telemetry</td><td>Nothing leaves the workspace unless you enable an integration.</td></tr>',
         ],
     ) + """
 <div class="cut warn">
@@ -760,7 +753,6 @@ section(
             '<tr><td>范围与级别</td><td>越界或超级别的动作在执行前拒绝。</td></tr>',
             '<tr><td>备份回执</td><td>没有可恢复快照就没有写操作。</td></tr>',
             '<tr><td>证据 manifest</td><td>每条发现都能落到 task、step、artifact、probe 或 manifest 哈希。</td></tr>',
-            '<tr><td>无遥测</td><td>不启用集成，任何数据都不离开工作区。</td></tr>',
         ],
     ) + """
 <div class="cut warn">
@@ -946,7 +938,7 @@ HERO = {
         "spec": [
             ("license", "Apache-2.0"), ("controller", "Python 3.10 – 3.13"),
             ("target", "static Rust probe"), ("modules", "286"), ("chains", "29"),
-            ("posture", "read-only by default"), ("telemetry", "none"),
+            ("posture", "read-only by default"),
         ],
         "spec_note": "Authorized testing only. Scope, level and time window come from the signed record.",
     },
@@ -959,7 +951,6 @@ HERO = {
         "spec": [
             ("许可证", "Apache-2.0"), ("控制端", "Python 3.10 – 3.13"),
             ("目标端", "静态 Rust 探针"), ("模板", "286"), ("链", "29"),
-            ("默认姿态", "只读"), ("遥测", "无"),
         ],
         "spec_note": "仅限授权测试。范围、级别与时间窗来自签署记录。",
     },
@@ -973,7 +964,7 @@ FOOT = {
             ("Reference", [("Product", "PRODUCT.md"), ("Detection layers", "DETECTION-LAYERS.md"), ("FAQ", "FAQ.md"), ("Doc index", "DOC-INDEX.md")]),
             ("Project", [("Capabilities", "#capabilities"), ("Security", "#security"), ("License", "#license")]),
         ],
-        "bar": ["InkBlade", "Apache-2.0", "Authorized testing only", "No telemetry"],
+        "bar": ["InkBlade", "Apache-2.0", "Authorized testing only"],
     },
     "zh": {
         "blurb": "InkBlade 产品文档。纯 HTML 加两个本地资源；不从任何地方加载字体、脚本或样式。",
@@ -982,7 +973,7 @@ FOOT = {
             ("参考", [("产品定义", "PRODUCT.md"), ("检测分层", "DETECTION-LAYERS.md"), ("常见问题", "FAQ.md"), ("文档索引", "DOC-INDEX.md")]),
             ("项目", [("核心能力", "#capabilities"), ("安全与授权", "#security"), ("许可", "#license")]),
         ],
-        "bar": ["InkBlade", "Apache-2.0", "仅限授权测试", "无遥测"],
+        "bar": ["InkBlade", "Apache-2.0", "仅限授权测试"],
     },
 }
 

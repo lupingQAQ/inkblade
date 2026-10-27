@@ -113,10 +113,6 @@ python -m inkblade up --no-consent
 
 `report` 输出 PTES 结构渗透报告与修复清单，支持 `--lang bi|zh|en` 和 `--redact`；`export` 输出 SARIF、OCSF、VEX。
 
-### 有账号、许可服务器、遥测吗？
-
-没有账号体系（本地 `users.json` 除外）、没有许可服务器、没有遥测。可选集成默认关闭。
-
 ### 能商用/fork 吗？
 
 Apache-2.0 允许商用与 fork；保留 `LICENSE` / `NOTICE`，不要用 InkBlade 商标命名 fork。

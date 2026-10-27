@@ -23,7 +23,7 @@ InkBlade 把一个静态链接的 Rust 探针放进已授权的 Pod，用声明�
 | 7. 供应链 / 身份层 | 核验 `trust_remote_code`、revision 固定、证明链、SBOM、IRSA 与工作负载身份、IMDS 可达性与凭据暴露 | `trust-remote-code-supply-chain`、`gpu-cc-attestation-chain`、`cloud-irsa-trust-wildcard` |
 | 8. 缓存安全层 | 测试跨租户前缀缓存、语义缓存误命中、逐出残留、远程 KV 池、EPP 指标与 TTFT 时序 | `prefix-cache-cross-tenant-leak`、`similarity-cache-false-hit`、`remote-kv-pool-isolation`、`cache-timing-sidechannel` |
 | 9. 跨组合层 | 只在两个或三个组件相遇时才成立的发现，只报一次，并把组件级记录并入组合 | `vllm-plugin-auth-bypass` + `sglang-weight-exfil`、`imex-computedomain-gpu-memory-crossing`、`long-context-cache-leak` |
-| 10. 防护绕过层 | 度量 HIDS、运行时 eBPF、准入控制、镜像扫描、主机代理、WAF 与流量可视化是否看得见良性授权行为；每类技术固定输出检测 / 盲区 / 硬化建议，并反哺规则包 | `defense-bypass-elkeid`、`defense-bypass-falco`、`defense-bypass-admission`、`defense-bypass-waf-inference` |
+| 10. 防护绕过层 | 测试哪些绕过变体能躲过 HIDS、运行时 eBPF、准入控制、镜像扫描、主机代理、WAF 与流量可视化，哪些会被检测；每类技术输出 bypassed / detected / 盲区与硬化建议，并反哺规则包 | `defense-bypass-elkeid`、`defense-bypass-falco`、`defense-bypass-admission`、`defense-bypass-waf-inference` |
 
 第 10 层是产品能力，不是附加演示。11 个 `defense-bypass-*` 模块覆盖 Elkeid、AgentSmith-HIDS、veinmind、Falco、Tetragon、KubeArmor、Kyverno/Gatekeeper、Trivy/grype、Wazuh/Osquery、ModSecurity/Coraza/雷池与 Cilium Hubble/Calico。它们使用良性 marker，并把观测结果沉淀为规则包。
 
@@ -37,7 +37,6 @@ InkBlade 把一个静态链接的 Rust 探针放进已授权的 Pod，用声明�
 - **证据在边界产生。** 任务结果、步骤日志、产物、SHA-256 manifest、流量表、探针身份与清理回执。
 - **规则可重放。** 准入、运行时、网络三类规则包，输出拦截 / 检出 / 漏过矩阵。
 - **报告与控制台。** 双语渗透报告与修复报告，SARIF / OCSF / VEX 导出，本地 Web 控制台展示发现、图与时间线。
-- **无遥测。** 不要账号、不要云密钥、没有许可服务器；不配置集成就没有外发调用。
 
 ### 漏洞研究
 
@@ -184,7 +183,6 @@ Chart 以 uid 10001 运行，根文件系统只读，证据落在 PVC。默认�
 - **备份与回滚。** 写模块先快照、再执行、两者都记录。`inkblade rollback --run <id> --step <n>` 恢复单步并打印回执；恢复不了的步骤作为发现报出。
 - **审计与证据。** 每次探针动作、文件读取、exec 调用与任务结果都写入证据库，并带 SHA-256 manifest。报告把每条发现锚定到 task、step、artifact、probe 或 manifest 哈希。
 - **急停。** `inkblade abort` 置位工作区停止开关，解除前所有 run 拒绝执行。
-- **无遥测。** 不启用集成时控制端不发起外发调用；没有账号体系、许可服务器或使用数据上传。
 
 ## 许可
 

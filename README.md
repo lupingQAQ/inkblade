@@ -23,7 +23,7 @@ Each layer is a set of templates you can run on its own. A template declares its
 | 7. Supply chain / identity | Verify `trust_remote_code`, revision pinning, attestation chains, SBOM, IRSA and workload identity, IMDS reachability and credential exposure | `trust-remote-code-supply-chain`, `gpu-cc-attestation-chain`, `cloud-irsa-trust-wildcard` |
 | 8. Cache security | Test cross-tenant prefix cache, semantic false hits, eviction residue, remote KV pools, EPP metrics and TTFT timing | `prefix-cache-cross-tenant-leak`, `similarity-cache-false-hit`, `remote-kv-pool-isolation`, `cache-timing-sidechannel` |
 | 9. Cross-combination | Report findings that only exist when two or three components meet, once at the combination, with the component notes folded in | `vllm-plugin-auth-bypass` + `sglang-weight-exfil`, `imex-computedomain-gpu-memory-crossing`, `long-context-cache-leak` |
-| 10. Defense bypass | Measure whether HIDS, runtime eBPF, admission control, image scanning, host agents, WAF and flow telemetry see benign authorized activity; every technique returns detected / blind spot / hardening and feeds a rule pack | `defense-bypass-elkeid`, `defense-bypass-falco`, `defense-bypass-admission`, `defense-bypass-waf-inference` |
+| 10. Defense bypass | Test which bypass variants evade HIDS, runtime eBPF, admission control, image scanning, host agents, WAF and flow telemetry, and which are detected; every technique returns bypassed / detected / blind spot plus hardening and feeds a rule pack | `defense-bypass-elkeid`, `defense-bypass-falco`, `defense-bypass-admission`, `defense-bypass-waf-inference` |
 
 Layer 10 is a product capability, not an add-on. Eleven `defense-bypass-*` modules cover Elkeid, AgentSmith-HIDS, veinmind, Falco, Tetragon, KubeArmor, Kyverno/Gatekeeper, Trivy/grype, Wazuh/Osquery, ModSecurity/Coraza/SafeLine and Cilium Hubble/Calico. They use benign markers and feed observed results into a rule pack.
 
@@ -37,7 +37,6 @@ Layer 10 is a product capability, not an add-on. Eleven `defense-bypass-*` modul
 - **Evidence at the boundary.** Per-task results, step logs, artifacts, SHA-256 manifests, traffic tables, probe identity and cleanup receipts.
 - **Rules you can replay.** Admission, runtime and network packs with blocked / detected / missed matrices.
 - **Report and console.** Bilingual pentest and remediation reports, SARIF / OCSF / VEX export, and a local web console for findings, graphs and timelines.
-- **No telemetry.** No account, no cloud key, no licence server, no outbound call unless you configure one.
 
 ### Vulnerability research
 
@@ -184,7 +183,6 @@ The chart runs as uid 10001 with a read-only root filesystem and a PVC for evide
 - **Backup and rollback.** A write module snapshots first, executes second and records both. `inkblade rollback --run <id> --step <n>` restores one step and prints a receipt; an unrestorable step is reported as a finding.
 - **Audit and evidence.** Every probe action, file read, exec call and task result is written to the evidence store with a SHA-256 manifest. Reports anchor every finding to a task, step, artifact, probe or manifest hash.
 - **Kill switch.** `inkblade abort` sets a workspace-level stop; runs refuse until it is cleared.
-- **No telemetry.** The controller makes no outbound call unless you enable an integration. There is no account system, licence server or usage upload.
 
 ## License
 
