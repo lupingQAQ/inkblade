@@ -59,6 +59,7 @@
 | [`docs/REAL-CLUSTER-VERIFICATION.md`](REAL-CLUSTER-VERIFICATION.md) | 真实 k3s 集群上的探测与证据记录 |
 | [`docs/ENTERPRISE-LAB-RESULTS.md`](ENTERPRISE-LAB-RESULTS.md) | 企业真实感实验室的结果与偏差 |
 | [`docs/DEFENSE-LAB-RESULTS.md`](DEFENSE-LAB-RESULTS.md) | 第 10 层防护绕过在 QEMU k3s 真机的部署与回放结果（4 产品 + 7 个 N/A 原因） |
+| [`docs/DEFENSE-BYPASS-PATH.md`](DEFENSE-BYPASS-PATH.md) | 防护感知事实→绕过策略→执行路径真机验证（Kyverno/Falco） |
 | [`docs/ENTERPRISE-LOCAL-VERIFICATION.md`](ENTERPRISE-LOCAL-VERIFICATION.md) | 企业黄项的本地补验记录 |
 | [`docs/ENTERPRISE-READINESS.md`](ENTERPRISE-READINESS.md) | 企业就绪差距、准入门与 50+ 检查项 |
 | [`docs/KILL-CHAIN.md`](KILL-CHAIN.md) | 内网入口到集群最高权限的夺权链与证明 |

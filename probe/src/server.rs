@@ -188,6 +188,7 @@ fn handshake(state: &State) -> Result<(), String> {
         ("caps", Value::Arr(vec![
             json::string("collect"),
             json::string("exec"),
+            json::string("bypass"),
             json::string("dial"),
             json::string("beacon"),
             json::string("cleanup"),
@@ -262,6 +263,13 @@ fn handle_frame(state: &Arc<State>, frame: Value) -> Result<(), String> {
         "exec" => match exec_request(state, &args) {
             Ok(value) => state.response(&id, value),
             Err(error) => state.failure(&id, "exec_failed", &error),
+        },
+        "bypass" => match crate::bypass::run(&args, &state.opts) {
+            Ok(value) => {
+                state.audit.event("probe.bypass", value.clone());
+                state.response(&id, value)
+            }
+            Err(error) => state.failure(&id, "bypass_failed", &error),
         },
         "dial" => match dial_request(state, &args) {
             Ok(value) => state.response(&id, value),

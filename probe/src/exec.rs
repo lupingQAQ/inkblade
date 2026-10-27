@@ -70,18 +70,48 @@ pub fn validate(argv: &[String], opts: &Options) -> Result<(), String> {
 
 pub fn run(argv: &[String], opts: &Options, timeout_ms: u64) -> Result<Value, String> {
     validate(argv, opts)?;
+    run_program(&argv[0], &argv[1..], opts, timeout_ms, false, None)
+}
+
+/// Execute a program without the read-only allow-list.  Only the bypass engine
+/// calls this: the caller has already selected a technique and is responsible
+/// for the benign payload boundary (no credential theft, no destructive write).
+///
+/// `clean_env` drops the entire inherited environment and re-adds only a
+/// minimal PATH/HOME/TMPDIR.  `cwd` lets the caller avoid HIDS-monitored paths.
+pub fn run_program(
+    program: &str,
+    args: &[String],
+    opts: &Options,
+    timeout_ms: u64,
+    clean_env: bool,
+    cwd: Option<&str>,
+) -> Result<Value, String> {
     let started = Instant::now();
-    let mut command = Command::new(&argv[0]);
+    let mut command = Command::new(program);
     command
-        .args(&argv[1..])
-        .env_remove("INKBLADE_PROBE_TOKEN")
-        .env_remove("INKBLADE_PROBE_TOKEN_FILE")
+        .args(args)
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped());
+    if clean_env {
+        command.env_clear();
+        command
+            .env("PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin")
+            .env("HOME", "/tmp")
+            .env("TMPDIR", "/tmp")
+            .env("LANG", "C");
+    } else {
+        command
+            .env_remove("INKBLADE_PROBE_TOKEN")
+            .env_remove("INKBLADE_PROBE_TOKEN_FILE");
+    }
+    if let Some(dir) = cwd {
+        command.current_dir(dir);
+    }
     let mut child = command
         .spawn()
-        .map_err(|error| format!("spawn {}: {error}", argv[0]))?;
+        .map_err(|error| format!("spawn {program}: {error}"))?;
     let stdout = child.stdout.take();
     let stderr = child.stderr.take();
     let cap = opts.max_output_bytes();
@@ -120,7 +150,7 @@ pub fn run(argv: &[String], opts: &Options, timeout_ms: u64) -> Result<Value, St
             }
             Err(error) => {
                 let _ = child.kill();
-                return Err(format!("wait {}: {error}", argv[0]));
+                return Err(format!("wait {program}: {error}"));
             }
         }
     }
@@ -143,7 +173,14 @@ pub fn run(argv: &[String], opts: &Options, timeout_ms: u64) -> Result<Value, St
         ("truncated", json::bool_value(stdout_truncated || stderr_truncated)),
         ("timed_out", json::bool_value(timed_out)),
         ("duration_ms", json::number(started.elapsed().as_millis() as u64)),
-        ("argv", Value::Arr(argv.iter().map(|v| json::string(v.clone())).collect())),
+        ("argv", Value::Arr(
+            std::iter::once(program.to_string())
+                .chain(args.iter().cloned())
+                .map(json::string)
+                .collect(),
+        )),
+        ("clean_env", json::bool_value(clean_env)),
+        ("cwd", cwd.map(json::string).unwrap_or(Value::Null)),
     ]))
 }
 

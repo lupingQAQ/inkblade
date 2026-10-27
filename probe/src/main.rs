@@ -11,6 +11,7 @@
 mod audit;
 mod auth;
 mod base64;
+mod bypass;
 mod collect;
 mod config;
 mod exec;
@@ -19,6 +20,7 @@ mod http;
 mod json;
 mod k8s;
 mod net;
+mod posture;
 mod protocol;
 mod server;
 mod sha256;
@@ -80,6 +82,18 @@ fn run() -> Result<i32, String> {
             audit.event("probe.collect", json::object(vec![("mode", json::string("standalone"))]));
             println!("{}", snapshot.to_json());
             Ok(0)
+        }
+        "bypass" => {
+            let plan = bypass::plan_from_options(&opts, &positional)?;
+            let audit = Audit::new(opts.audit_sink, opts.audit_path.clone(), &opts.probe_id);
+            let result = bypass::run(&plan, &opts)?;
+            audit.event("probe.bypass", result.clone());
+            println!("{}", result.to_json());
+            Ok(if result.get("ok").and_then(Value::as_bool).unwrap_or(false) {
+                0
+            } else {
+                1
+            })
         }
         "exec" => {
             if positional.is_empty() {
@@ -214,6 +228,34 @@ fn parse_options(args: Vec<String>) -> Result<(Options, Vec<String>), String> {
             "--templates-dir" => {
                 opts.templates_dir = Some(PathBuf::from(next_value(&args, &mut index, "--templates-dir")?));
             }
+            "--plan" => {
+                opts.bypass_plan = Some(next_value(&args, &mut index, "--plan")?);
+            }
+            "--technique" => {
+                opts.bypass_techniques.push(next_value(&args, &mut index, "--technique")?);
+            }
+            "--script" => {
+                opts.bypass_script = Some(next_value(&args, &mut index, "--script")?);
+            }
+            "--script-b64" => {
+                opts.bypass_script_b64 = Some(next_value(&args, &mut index, "--script-b64")?);
+            }
+            "--workdir" => {
+                opts.bypass_workdir = Some(next_value(&args, &mut index, "--workdir")?);
+            }
+            "--monitored-path" => {
+                opts.bypass_monitored.push(next_value(&args, &mut index, "--monitored-path")?);
+            }
+            "--target-namespace" => {
+                opts.bypass_target_namespace =
+                    Some(next_value(&args, &mut index, "--target-namespace")?);
+            }
+            "--target-pod" => {
+                opts.bypass_target_pod = Some(next_value(&args, &mut index, "--target-pod")?);
+            }
+            "--container" => {
+                opts.bypass_container = Some(next_value(&args, &mut index, "--container")?);
+            }
             "--host" => {
                 positional.push(next_value(&args, &mut index, "--host")?);
             }
@@ -260,6 +302,8 @@ fn usage() {
          Usage:\n\
            inkblade-probe run --stdio --token-file PATH [--read-only|--allow-write]\n\
            inkblade-probe collect [--read-only]\n\
+           inkblade-probe bypass --plan JSON [--allow-write]\n\
+           inkblade-probe bypass --technique ID --script-b64 B64 [--workdir DIR]\n\
            inkblade-probe exec -- <argv...> [--allow-write] [--allow-cmd CMD]\n\
            inkblade-probe dial --host HOST --port PORT\n\
            inkblade-probe beacon\n\

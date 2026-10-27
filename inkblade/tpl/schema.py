@@ -22,7 +22,7 @@ SCHEMA_ID = "inkblade-probe-template-v1"
 SERIES = ("侦察", "横向利用", "权限链", "窃取与数据泄露", "核心代码", "网络架构", "混合云", "情报")
 LEVELS = ("只读侦察", "主动探测", "利用验证", "全影响演示")
 SEVERITIES = ("info", "low", "medium", "high", "critical")
-OPS = ("http", "tcp", "exec", "fs", "k8s", "socks", "spawn")
+OPS = ("http", "tcp", "exec", "bypass", "fs", "k8s", "socks", "spawn")
 K8S_VERBS = ("get", "list", "create", "patch", "delete", "apply")
 FS_ACTIONS = ("read", "list", "stat", "write", "hash")
 _META_KEYS = ("key", "name", "series", "min_level", "writes", "requires")
@@ -252,6 +252,22 @@ def validate(doc: dict, *, module_dir: Path | None = None,
                 err(f"{where}: exec 需要 argv 字符串数组")
             if len(argv) == 1 and " " in str(argv[0]):
                 err(f"{where}: exec argv 必须是分离参数（禁止 shell 字符串）")
+        elif op == "bypass":
+            techniques = step.get("techniques")
+            if techniques is None and step.get("technique") is not None:
+                techniques = [step.get("technique")]
+            if not isinstance(techniques, list) or not techniques \
+                    or not all(isinstance(x, str) and x for x in techniques):
+                err(f"{where}: bypass requires technique/techniques")
+            if not step.get("script") and not step.get("script_b64") \
+                    and not step.get("commands") and not step.get("binary"):
+                # Inspection-only plans (namespace-scope-evasion,
+                # sa-permission-selection) legitimately have no payload.
+                inspection = {"namespace-scope-evasion", "sa-permission-selection",
+                              "path-evasion"}
+                if not (isinstance(techniques, list)
+                        and all(t in inspection for t in techniques)):
+                    err(f"{where}: bypass execution requires script/script_b64/commands")
         elif op == "fs":
             if step.get("action") not in FS_ACTIONS:
                 err(f"{where}: fs action 非法")
@@ -275,7 +291,7 @@ def validate(doc: dict, *, module_dir: Path | None = None,
             argv = step.get("argv")
             if not isinstance(argv, list) or not argv:
                 err(f"{where}: spawn 需要 argv")
-        if op in ("exec", "spawn", "socks", "fs", "k8s") and not step.get("save") \
+        if op in ("exec", "bypass", "spawn", "socks", "fs", "k8s") and not step.get("save") \
                 and not step.get("write") and (step.get("op") != "fs" or step.get("action") != "write"):
             err(f"{where}: {op} 需要 save 以便断言/证据")
 

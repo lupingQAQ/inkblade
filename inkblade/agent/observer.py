@@ -13,6 +13,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
+from ..core import defense_policy
 from ..tpl.probe import ProbeFailed, ProbeUnavailable
 from .graph import PlanGraph, severity_rank
 
@@ -204,6 +205,15 @@ def normalize_run(run, intent: dict, *, step_rowid: int | None = None,
                 "step": module, "target": target,
             },
         })
+    # A collect step carries the raw security posture.  The observer turns it
+    # into `defense:<product>` facts so the scheduler can require a bypass
+    # variant before any exploit/privesc intent is claimed.
+    params = intent.get("params") or {}
+    posture = params.get("security_posture") or params.get("posture")
+    if isinstance(posture, dict) and posture:
+        refs = [e["sha256"] for e in evidence]
+        facts.extend(defense_policy.defense_facts(
+            posture, refs, source_intent=str(intent.get("id") or "")))
     if not facts:
         facts.append({
             "claim": f"{module}: probe completed without a finding",

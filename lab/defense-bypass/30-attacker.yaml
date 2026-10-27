@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memfd-attacker
+  namespace: trident-bypass
+  labels:
+    app: memfd-attacker
+spec:
+  serviceAccountName: bypass-exec
+  hostPID: true
+  containers:
+    - name: attacker
+      image: alpine:3.21
+      imagePullPolicy: IfNotPresent
+      command: ["/bin/sh", "-c", "sleep 7200"]
+      securityContext:
+        allowPrivilegeEscalation: false
+        runAsNonRoot: false
+        runAsUser: 0
+      volumeMounts:
+        - name: probe
+          mountPath: /opt/inkblade
+          readOnly: true
+      resources:
+        requests: {cpu: 10m, memory: 32Mi}
+        limits: {cpu: 200m, memory: 192Mi}
+  volumes:
+    - name: probe
+      hostPath:
+        path: /opt/inkblade

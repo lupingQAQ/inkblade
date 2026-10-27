@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-bypass-control-privileged
+  namespace: defense-lab
+  labels:
+    app: kyverno-bypass-control-privileged
+spec:
+  automountServiceAccountToken: false
+  containers:
+    - name: escape
+      image: alpine:3.21
+      imagePullPolicy: IfNotPresent
+      command: ["/bin/sh", "-c", "sleep 60"]
+      securityContext:
+        privileged: true

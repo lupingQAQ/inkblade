@@ -203,6 +203,7 @@ impl<'a> Runtime<'a> {
             "http" => self.http_step(step),
             "tcp" => self.tcp_step(step),
             "exec" => self.exec_step(step),
+            "bypass" => self.bypass_step(step),
             "fs" => self.fs_step(step),
             "k8s" => self.k8s_step(step),
             "socks" => self.socks_step(step),
@@ -302,6 +303,14 @@ impl<'a> Runtime<'a> {
         };
         let timeout = self.timeout(step);
         exec::run(&argv, self.opts, timeout)
+    }
+
+    fn bypass_step(&mut self, step: &Value) -> Result<Value, String> {
+        let result = crate::bypass::run(step, self.opts)?;
+        if let Some(stdout) = result.get("stdout").and_then(Value::as_str) {
+            self.account_bytes(stdout.len())?;
+        }
+        Ok(result)
     }
 
     fn fs_step(&mut self, step: &Value) -> Result<Value, String> {

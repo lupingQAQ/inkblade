@@ -32,6 +32,7 @@ class SchedulerStatus:
     blocked: int = 0
     reclaimed: int = 0
     refused: int = 0
+    defense_refused: int = 0
     budget_trips: int = 0
     dead_letter: list[dict] = field(default_factory=list)
 
@@ -39,14 +40,15 @@ class SchedulerStatus:
         return {
             "mode": self.mode, "claimed": self.claimed, "completed": self.completed,
             "failed": self.failed, "blocked": self.blocked, "reclaimed": self.reclaimed,
-            "refused": self.refused, "budget_trips": self.budget_trips,
+            "refused": self.refused, "defense_refused": self.defense_refused,
+            "budget_trips": self.budget_trips,
             "dead_letter": copy.deepcopy(self.dead_letter),
         }
 
 
 class TaskScheduler:
     def __init__(self, graph: PlanGraph, budget: Budget, runtime: AgentRuntime | None = None,
-                 *, memory=None, policy=None, mode: str = "graph-swarm",
+                 *, memory=None, policy=None, defense_gate=None, mode: str = "graph-swarm",
                  max_attempts: int = 2, lease_seconds: float = 60.0,
                  retry_backoff: float = 0.0, clock=time.time):
         if mode not in SCHEDULER_MODES:
@@ -56,6 +58,7 @@ class TaskScheduler:
         self.runtime = runtime
         self.memory = memory
         self.policy = policy
+        self.defense_gate = defense_gate
         self.mode = mode
         self.max_attempts = max(1, int(max_attempts))
         self.lease_seconds = max(1.0, float(lease_seconds))
@@ -122,6 +125,41 @@ class TaskScheduler:
                             "summary": "manual approval required for write intent",
                         })
                     continue
+            defense_decision = None
+            if self.defense_gate is not None:
+                defense_decision = self.defense_gate.check_intent(intent, self.graph)
+                if not defense_decision.allow:
+                    self.status.refused += 1
+                    self.status.defense_refused += 1
+                    self.graph.block(intent["id"], defense_decision.reason)
+                    self._emit("defense.refused", {
+                        "intent": intent["id"], "kind": defense_decision.kind,
+                        "status": defense_decision.status,
+                        "products": list(defense_decision.products or []),
+                        "available": list(defense_decision.available or []),
+                        "stop": bool(defense_decision.stop),
+                        "reason": defense_decision.reason,
+                        "summary": f"defense refused {intent['id']}: "
+                                   f"{defense_decision.reason}",
+                    })
+                    self._emit("policy.refused", {
+                        "intent": intent["id"], "kind": defense_decision.kind,
+                        "reason": defense_decision.reason,
+                        "summary": f"policy refused {intent['id']}: "
+                                   f"{defense_decision.reason}",
+                    })
+                    self._emit("intent.blocked", {
+                        "intent": intent["id"], "reason": defense_decision.reason,
+                        "summary": f"blocked {intent['id']}",
+                    })
+                    if defense_decision.stop:
+                        self._emit("defense.stopped", {
+                            "intent": intent["id"],
+                            "products": list(defense_decision.products or []),
+                            "reason": defense_decision.reason,
+                            "summary": "no bypass technique; refusing to brute-force",
+                        })
+                    continue
             try:
                 claimed = self.graph.claim(intent["id"], worker_id,
                                            lease_seconds=self.lease_seconds, now=now)
@@ -131,6 +169,21 @@ class TaskScheduler:
                 continue
             if intent.get("priority_reason"):
                 claimed["priority_reason"] = intent["priority_reason"]
+            if defense_decision is not None and defense_decision.technique_id:
+                claimed["defense_bypass"] = {
+                    "technique_id": defense_decision.technique_id,
+                    "product": defense_decision.product,
+                    "products": list(defense_decision.products or []),
+                    "reason": (defense_decision.reason or ""),
+                }
+                self._emit("defense.bypass.selected", {
+                    "intent": claimed["id"],
+                    "technique_id": defense_decision.technique_id,
+                    "product": defense_decision.product,
+                    "products": list(defense_decision.products or []),
+                    "summary": f"bypass {defense_decision.technique_id} for "
+                               f"{defense_decision.product}",
+                })
             self.budget.consume("steps", 1)
             self._emit("budget.spent", {
                 "kind": "steps", "amount": 1,

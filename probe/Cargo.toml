@@ -20,6 +20,10 @@ ureq = { version = "2.12", default-features = false, features = ["tls"] }
 rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
 rustls-pemfile = "2"
 webpki-roots = "1"
+# memfd_create / fchmod for the fileless execution primitive.  The crate is
+# only used on Linux; the probe still builds on Windows for local tests.
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = "0.2"
 
 [workspace]
 
@@ -29,3 +33,11 @@ lto = true
 codegen-units = 1
 panic = "abort"
 strip = true
+
+# Fast build for the QEMU TCG lab (the full LTO release build takes ~1 h under
+# emulation).  The resulting binary is larger but functionally identical.
+[profile.lab]
+inherits = "release"
+opt-level = 1
+lto = false
+codegen-units = 16

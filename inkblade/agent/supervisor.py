@@ -129,6 +129,10 @@ class AgentSupervisor:
                       manual_approved=manual_approved, modules_dir=modules_dir,
                       objective=obj)
         scheduler.policy = guard
+        if scheduler.defense_gate is None:
+            from ..core.defense_policy import DefenseGate
+
+            scheduler.defense_gate = DefenseGate()
         memory = AgentMemory(store)
         scheduler.memory = memory
         memory.working.add(f"objective={objective}; mode={mode}; "
@@ -196,6 +200,10 @@ class AgentSupervisor:
                       modules_dir=modules_dir or meta.get("modules_dir") or
                       Path(store.root) / "modules", objective=obj)
         scheduler.policy = guard
+        if scheduler.defense_gate is None:
+            from ..core.defense_policy import DefenseGate
+
+            scheduler.defense_gate = DefenseGate()
         memory = AgentMemory(store)
         scheduler.memory = memory
         if planner is None:

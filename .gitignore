@@ -87,3 +87,9 @@ lab/qemu-k3s/modloop-virt
 !lab/upstream_verify/cases/*/*/evidence/
 !lab/upstream_verify/cases/*/*/evidence/**
 demos/.work/
+
+# defense-bypass lab (downloaded binaries / local run logs)
+lab/defense-bypass/kubectl-linux-amd64
+lab/defense-bypass/e2e-run*.log
+lab/defense-bypass/collect-test.json
+lab/defense-bypass/_*.py

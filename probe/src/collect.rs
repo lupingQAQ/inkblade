@@ -46,6 +46,7 @@ pub fn snapshot(opts: &Options) -> Value {
             ])
         })
         .collect::<Vec<_>>();
+    let security_posture = crate::posture::snapshot(&mut files_read);
     json::object(vec![
         ("probe_id", json::string(opts.probe_id.clone())),
         ("parent_id", opts.parent_id.clone().map(json::string).unwrap_or(Value::Null)),
@@ -76,6 +77,7 @@ pub fn snapshot(opts: &Options) -> Value {
             ]),
         ),
         ("devices", Value::Arr(devices)),
+        ("security_posture", security_posture),
         ("files_read", Value::Arr(files_read.into_iter().map(json::string).collect())),
         ("limits", json::object(vec![
             ("max_output", json::number(opts.max_output_bytes() as u64)),

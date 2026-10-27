@@ -1,0 +1,1891 @@
+{
+  "probe_id": "probe-posture-recon-27202-d8efb70e",
+  "parent_id": null,
+  "ts": 1793095455.482527,
+  "read_only": true,
+  "host": {
+    "hostname": "posture-recon",
+    "pid": 27202,
+    "uid": "0",
+    "gid": "0",
+    "caps": [
+      "CAP_CHOWN",
+      "CAP_DAC_OVERRIDE",
+      "CAP_DAC_READ_SEARCH",
+      "CAP_FOWNER",
+      "CAP_FSETID",
+      "CAP_KILL",
+      "CAP_SETGID",
+      "CAP_SETUID",
+      "CAP_SETPCAP",
+      "CAP_LINUX_IMMUTABLE",
+      "CAP_NET_BIND_SERVICE",
+      "CAP_NET_BROADCAST",
+      "CAP_NET_ADMIN",
+      "CAP_NET_RAW",
+      "CAP_IPC_LOCK",
+      "CAP_IPC_OWNER",
+      "CAP_SYS_MODULE",
+      "CAP_SYS_RAWIO",
+      "CAP_SYS_CHROOT",
+      "CAP_SYS_PTRACE",
+      "CAP_SYS_PACCT",
+      "CAP_SYS_ADMIN",
+      "CAP_SYS_BOOT",
+      "CAP_SYS_NICE",
+      "CAP_SYS_RESOURCE",
+      "CAP_SYS_TIME",
+      "CAP_SYS_TTY_CONFIG",
+      "CAP_MKNOD",
+      "CAP_LEASE",
+      "CAP_AUDIT_WRITE",
+      "CAP_AUDIT_CONTROL",
+      "CAP_SETFCAP"
+    ]
+  },
+  "env": [
+    {
+      "key": "PATH",
+      "value": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    },
+    {
+      "key": "HOSTNAME",
+      "value": "posture-recon"
+    },
+    {
+      "key": "KUBERNETES_SERVICE_PORT",
+      "value": "443"
+    },
+    {
+      "key": "KUBERNETES_SERVICE_PORT_HTTPS",
+      "value": "443"
+    },
+    {
+      "key": "KUBERNETES_PORT",
+      "value": "tcp://10.43.0.1:443"
+    },
+    {
+      "key": "KUBERNETES_PORT_443_TCP",
+      "value": "tcp://10.43.0.1:443"
+    },
+    {
+      "key": "KUBERNETES_PORT_443_TCP_PROTO",
+      "value": "tcp"
+    },
+    {
+      "key": "KUBERNETES_PORT_443_TCP_PORT",
+      "value": "443"
+    },
+    {
+      "key": "KUBERNETES_PORT_443_TCP_ADDR",
+      "value": "10.43.0.1"
+    },
+    {
+      "key": "KUBERNETES_SERVICE_HOST",
+      "value": "10.43.0.1"
+    },
+    {
+      "key": "HOME",
+      "value": "/root"
+    }
+  ],
+  "mounts": [
+    {
+      "device": "overlay",
+      "mount": "/",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/35/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/438/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/438/work,uuid=on"
+    },
+    {
+      "device": "proc",
+      "mount": "/proc",
+      "fstype": "proc",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "tmpfs",
+      "mount": "/dev",
+      "fstype": "tmpfs",
+      "options": "rw,nosuid,size=65536k,mode=755,inode64"
+    },
+    {
+      "device": "devpts",
+      "mount": "/dev/pts",
+      "fstype": "devpts",
+      "options": "rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=666"
+    },
+    {
+      "device": "mqueue",
+      "mount": "/dev/mqueue",
+      "fstype": "mqueue",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "sysfs",
+      "mount": "/sys",
+      "fstype": "sysfs",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "cgroup",
+      "mount": "/sys/fs/cgroup",
+      "fstype": "cgroup2",
+      "options": "rw,nosuid,nodev,noexec,relatime,nsdelegate"
+    },
+    {
+      "device": "/dev/vda3",
+      "mount": "/host",
+      "fstype": "ext4",
+      "options": "ro,relatime"
+    },
+    {
+      "device": "sysfs",
+      "mount": "/host/sys",
+      "fstype": "sysfs",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "securityfs",
+      "mount": "/host/sys/kernel/security",
+      "fstype": "securityfs",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "debugfs",
+      "mount": "/host/sys/kernel/debug",
+      "fstype": "debugfs",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "tracefs",
+      "mount": "/host/sys/kernel/tracing",
+      "fstype": "tracefs",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "none",
+      "mount": "/host/sys/fs/pstore",
+      "fstype": "pstore",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "bpf",
+      "mount": "/host/sys/fs/bpf",
+      "fstype": "bpf",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "cgroup2",
+      "mount": "/host/sys/fs/cgroup",
+      "fstype": "cgroup2",
+      "options": "rw,nosuid,nodev,noexec,relatime,nsdelegate"
+    },
+    {
+      "device": "devtmpfs",
+      "mount": "/host/dev",
+      "fstype": "devtmpfs",
+      "options": "rw,nosuid,noexec,relatime,size=10240k,nr_inodes=500642,mode=755,inode64"
+    },
+    {
+      "device": "devpts",
+      "mount": "/host/dev/pts",
+      "fstype": "devpts",
+      "options": "rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000"
+    },
+    {
+      "device": "shm",
+      "mount": "/host/dev/shm",
+      "fstype": "tmpfs",
+      "options": "rw,nosuid,nodev,noexec,relatime,inode64"
+    },
+    {
+      "device": "mqueue",
+      "mount": "/host/dev/mqueue",
+      "fstype": "mqueue",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "proc",
+      "mount": "/host/proc",
+      "fstype": "proc",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "tmpfs",
+      "mount": "/host/run",
+      "fstype": "tmpfs",
+      "options": "rw,nosuid,nodev,size=803784k,nr_inodes=819200,mode=755,inode64"
+    },
+    {
+      "device": "nsfs",
+      "mount": "/host/run/netns/cni-34285644-4549-0894-e4f0-e10ef80827dc",
+      "fstype": "nsfs",
+      "options": "rw"
+    },
+    {
+      "device": "nsfs",
+      "mount": "/host/run/netns/cni-e229a25a-c123-829b-0de1-fa6918c30ac5",
+      "fstype": "nsfs",
+      "options": "rw"
+    },
+    {
+      "device": "shm",
+      "mount": "/host/run/k3s/containerd/io.containerd.grpc.v1.cri/sandboxes/e496c2ede7cc51860ef27fd3aed7d161754b8797a7611f16bc30c50587f10a75/shm",
+      "fstype": "tmpfs",
+      "options": "rw,nosuid,nodev,noexec,relatime,size=65536k,inode64"
+    },
+    {
+      "device": "shm",
+      "mount": "/host/run/k3s/containerd/io.containerd.grpc.v1.cri/sandboxes/72d9cab23dcb003092ef1a14d8422240c0bedf9dd8c64913cfcc2a6aee6eb65f/shm",
+      "fstype": "tmpfs",
+      "options": "rw,nosuid,nodev,noexec,relatime,size=65536k,inode64"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/e496c2ede7cc51860ef27fd3aed7d161754b8797a7611f16bc30c50587f10a75/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/1/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/336/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/336/work,uuid=on"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/72d9cab23dcb003092ef1a14d8422240c0bedf9dd8c64913cfcc2a6aee6eb65f/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/1/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/337/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/337/work,uuid=on"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/7c5cfc6452c5ae0b5e8e9a4a84716be1069bb0f5d66d50fc682b0c5fe7a59d54/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/11/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/8/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/342/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/342/work,uuid=on"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/78cf99b06ddd2b14634658c2bec4fc61eb6be14702317b5c23142bee8b7cb3a2/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/30/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/29/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/28/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/27/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/25/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/23/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/22/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/21/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/19/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/16/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/14/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/12/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/9/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/361/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/361/work,uuid=on"
+    },
+    {
+      "device": "nsfs",
+      "mount": "/host/run/netns/cni-015f6205-1b90-dd53-0652-db83b7e3f728",
+      "fstype": "nsfs",
+      "options": "rw"
+    },
+    {
+      "device": "shm",
+      "mount": "/host/run/k3s/containerd/io.containerd.grpc.v1.cri/sandboxes/2888a5966b9672631951de10f259b634403e1e63a80fb4b5516d315d7dcaf623/shm",
+      "fstype": "tmpfs",
+      "options": "rw,nosuid,nodev,noexec,relatime,size=65536k,inode64"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/2888a5966b9672631951de10f259b634403e1e63a80fb4b5516d315d7dcaf623/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/1/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/380/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/380/work,uuid=on"
+    },
+    {
+      "device": "nsfs",
+      "mount": "/host/run/netns/cni-d5bc5ef1-622b-ea21-72eb-d28c99f3d426",
+      "fstype": "nsfs",
+      "options": "rw"
+    },
+    {
+      "device": "shm",
+      "mount": "/host/run/k3s/containerd/io.containerd.grpc.v1.cri/sandboxes/ffc9bedcf954edf9329d3623ba7d5730056cb96002edf8e8afe9765aae92de11/shm",
+      "fstype": "tmpfs",
+      "options": "rw,nosuid,nodev,noexec,relatime,size=65536k,inode64"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/ffc9bedcf954edf9329d3623ba7d5730056cb96002edf8e8afe9765aae92de11/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/1/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/383/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/383/work,uuid=on"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/10d4b075a657469b04068c2b22f09cd2edff826789d9d6ef13e4596346513049/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/401/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/386/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/385/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/382/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/402/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/402/work,uuid=on"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/fbc0ffdc2a9936a044e51eabd61e55f42d85e24f2980bb60cecdd63893a7cdbc/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/404/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/403/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/400/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/399/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/398/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/397/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/396/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/395/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/394/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/393/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/392/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/391/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/390/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/387/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/405/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/405/work,uuid=on"
+    },
+    {
+      "device": "nsfs",
+      "mount": "/host/run/netns/cni-547458ee-9b25-4292-e98d-aea10f5daf1d",
+      "fstype": "nsfs",
+      "options": "rw"
+    },
+    {
+      "device": "shm",
+      "mount": "/host/run/k3s/containerd/io.containerd.grpc.v1.cri/sandboxes/da918c6bca7a4d5dd67e308d32265b627c1ce9b8ec610fc24fe13b2afa6fb21c/shm",
+      "fstype": "tmpfs",
+      "options": "rw,nosuid,nodev,noexec,relatime,size=65536k,inode64"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/da918c6bca7a4d5dd67e308d32265b627c1ce9b8ec610fc24fe13b2afa6fb21c/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/1/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/409/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/409/work,uuid=on"
+    },
+    {
+      "device": "nsfs",
+      "mount": "/host/run/netns/cni-2a93355d-2224-f7ae-31af-111e70b1f92d",
+      "fstype": "nsfs",
+      "options": "rw"
+    },
+    {
+      "device": "shm",
+      "mount": "/host/run/k3s/containerd/io.containerd.grpc.v1.cri/sandboxes/04d498042e3c2bd90b9a181e474096ea7f11afdb653820723f0df76e01cc1d48/shm",
+      "fstype": "tmpfs",
+      "options": "rw,nosuid,nodev,noexec,relatime,size=65536k,inode64"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/d739588af0e5500b8a8ec650388fa5f5b03715499e97a579ce287472985a4ba3/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/407/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/388/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/384/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/434/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/434/work,uuid=on"
+    },
+    {
+      "device": "nsfs",
+      "mount": "/host/run/netns/cni-b40cc55c-4083-b936-30d6-cbec6cbab22c",
+      "fstype": "nsfs",
+      "options": "rw"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/04d498042e3c2bd90b9a181e474096ea7f11afdb653820723f0df76e01cc1d48/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/1/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/435/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/435/work,uuid=on"
+    },
+    {
+      "device": "shm",
+      "mount": "/host/run/k3s/containerd/io.containerd.grpc.v1.cri/sandboxes/70182500151fb76d1408708c0ee5bb5da7951cc183db8a71c3112f4e4dccf2f8/shm",
+      "fstype": "tmpfs",
+      "options": "rw,nosuid,nodev,noexec,relatime,size=65536k,inode64"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/70182500151fb76d1408708c0ee5bb5da7951cc183db8a71c3112f4e4dccf2f8/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/1/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/436/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/436/work,uuid=on"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/dfb1f9deb78296176cde5d5e6956e193f525d65e2a1beb2b45ca93a28c196ee0/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/35/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/438/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/438/work,uuid=on"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/dfb1f9deb78296176cde5d5e6956e193f525d65e2a1beb2b45ca93a28c196ee0/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/35/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/438/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/438/work,uuid=on"
+    },
+    {
+      "device": "proc",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/dfb1f9deb78296176cde5d5e6956e193f525d65e2a1beb2b45ca93a28c196ee0/rootfs/proc",
+      "fstype": "proc",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "tmpfs",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/dfb1f9deb78296176cde5d5e6956e193f525d65e2a1beb2b45ca93a28c196ee0/rootfs/dev",
+      "fstype": "tmpfs",
+      "options": "rw,nosuid,size=65536k,mode=755,inode64"
+    },
+    {
+      "device": "devpts",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/dfb1f9deb78296176cde5d5e6956e193f525d65e2a1beb2b45ca93a28c196ee0/rootfs/dev/pts",
+      "fstype": "devpts",
+      "options": "rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=666"
+    },
+    {
+      "device": "mqueue",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/dfb1f9deb78296176cde5d5e6956e193f525d65e2a1beb2b45ca93a28c196ee0/rootfs/dev/mqueue",
+      "fstype": "mqueue",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "sysfs",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/dfb1f9deb78296176cde5d5e6956e193f525d65e2a1beb2b45ca93a28c196ee0/rootfs/sys",
+      "fstype": "sysfs",
+      "options": "rw,nosuid,nodev,noexec,relatime"
+    },
+    {
+      "device": "cgroup",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/dfb1f9deb78296176cde5d5e6956e193f525d65e2a1beb2b45ca93a28c196ee0/rootfs/sys/fs/cgroup",
+      "fstype": "cgroup2",
+      "options": "rw,nosuid,nodev,noexec,relatime,nsdelegate"
+    },
+    {
+      "device": "overlay",
+      "mount": "/host/run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io/2c06f1215a8b7f9e81625e274515c66fd173d0d3f2c5a78ff9aeb6fbab157821/rootfs",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/35/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/437/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/437/work,uuid=on"
+    },
+    {
+      "device": "/dev/vda1",
+      "mount": "/host/boot",
+      "fstype": "ext4",
+      "options": "rw,relatime"
+    },
+    {
+      "device": "tmpfs",
+      "mount": "/host/tmp",
+      "fstype": "tmpfs",
+      "options": "rw,nosuid,nodev,relatime,inode64"
+    },
+    {
+      "device": "/dev/vda3",
+      "mount": "/host/var/lib/docker",
+      "fstype": "ext4",
+      "options": "rw,relatime"
+    },
+    {
+      "device": "/dev/vda3",
+      "mount": "/host/var/lib/kubelet",
+      "fstype": "ext4",
+      "options": "rw,relatime"
+    },
+    {
+      "device": "tmpfs",
+      "mount": "/host/var/lib/kubelet/pods/3772f2e8-4500-4177-9872-82478dfd8114/volumes/kubernetes.io~projected/kube-api-access-s9tvp",
+      "fstype": "tmpfs",
+      "options": "rw,relatime,size=174080k,inode64,noswap"
+    },
+    {
+      "device": "tmpfs",
+      "mount": "/host/var/lib/kubelet/pods/d551fd53-dadc-4826-aa6e-ffdf4a40d501/volumes/kubernetes.io~projected/kube-api-access-g4rsg",
+      "fstype": "tmpfs",
+      "options": "rw,relatime,size=3053036k,inode64,noswap"
+    },
+    {
+      "device": "tmpfs",
+      "mount": "/host/var/lib/kubelet/pods/9b8bbeca-34dc-4b91-bf82-d31db7421992/volumes/kubernetes.io~projected/kube-api-access-v99zx",
+      "fstype": "tmpfs",
+      "options": "rw,relatime,size=262144k,inode64,noswap"
+    },
+    {
+      "device": "tmpfs",
+      "mount": "/host/var/lib/kubelet/pods/323e0955-bba0-478b-a975-f00417c8f1b1/volumes/kubernetes.io~projected/kube-api-access-x4wf2",
+      "fstype": "tmpfs",
+      "options": "rw,relatime,size=1048576k,inode64,noswap"
+    },
+    {
+      "device": "/dev/vda3",
+      "mount": "/host/var/lib/kubelet/pods/323e0955-bba0-478b-a975-f00417c8f1b1/volume-subpaths/falco-yaml/falco/11",
+      "fstype": "ext4",
+      "options": "rw,relatime"
+    },
+    {
+      "device": "tmpfs",
+      "mount": "/host/var/lib/kubelet/pods/d498d7a2-5a94-4432-8d63-b209c8eb03ea/volumes/kubernetes.io~projected/apicall-token",
+      "fstype": "tmpfs",
+      "options": "rw,relatime,size=393216k,inode64,noswap"
+    },
+    {
+      "device": "tmpfs",
+      "mount": "/host/var/lib/kubelet/pods/d498d7a2-5a94-4432-8d63-b209c8eb03ea/volumes/kubernetes.io~projected/kube-api-access-lmf5x",
+      "fstype": "tmpfs",
+      "options": "rw,relatime,size=393216k,inode64,noswap"
+    },
+    {
+      "device": "tmpfs",
+      "mount": "/host/var/lib/kubelet/pods/7dd4dc8e-eb5e-4b03-b320-fe9ee2c2c063/volumes/kubernetes.io~projected/kube-api-access-hzwjq",
+      "fstype": "tmpfs",
+      "options": "rw,relatime,size=196608k,inode64,noswap"
+    },
+    {
+      "device": "/dev/vda3",
+      "mount": "/opt/inkblade",
+      "fstype": "ext4",
+      "options": "ro,relatime"
+    },
+    {
+      "device": "/dev/vda3",
+      "mount": "/etc/hosts",
+      "fstype": "ext4",
+      "options": "rw,relatime"
+    },
+    {
+      "device": "/dev/vda3",
+      "mount": "/dev/termination-log",
+      "fstype": "ext4",
+      "options": "rw,relatime"
+    },
+    {
+      "device": "/dev/vda3",
+      "mount": "/etc/hostname",
+      "fstype": "ext4",
+      "options": "rw,relatime"
+    },
+    {
+      "device": "/dev/vda3",
+      "mount": "/etc/resolv.conf",
+      "fstype": "ext4",
+      "options": "rw,relatime"
+    },
+    {
+      "device": "shm",
+      "mount": "/dev/shm",
+      "fstype": "tmpfs",
+      "options": "rw,relatime,size=65536k,inode64"
+    },
+    {
+      "device": "tmpfs",
+      "mount": "/run/secrets/kubernetes.io/serviceaccount",
+      "fstype": "tmpfs",
+      "options": "ro,relatime,size=196608k,inode64,noswap"
+    }
+  ],
+  "cgroup": [
+    "0::/kubepods/burstable/pod7dd4dc8e-eb5e-4b03-b320-fe9ee2c2c063/dfb1f9deb78296176cde5d5e6956e193f525d65e2a1beb2b45ca93a28c196ee0"
+  ],
+  "service_account": {
+    "token_present": true,
+    "token_sha256": "393868775b931526b12409813fdf0585e6a0fdce967fa3d1ed467ea04bd252b5",
+    "namespace": "trident-bypass",
+    "ca_present": true,
+    "claims": {
+      "aud": [
+        "https://kubernetes.default.svc.cluster.local",
+        "k3s"
+      ],
+      "exp": 1824631339,
+      "iat": 1793095339,
+      "iss": "https://kubernetes.default.svc.cluster.local",
+      "jti": "04a5ebd1-9df0-4f2b-a1de-f06233b0b046",
+      "kubernetes.io": {
+        "namespace": "trident-bypass",
+        "node": {
+          "name": "k3s",
+          "uid": "a42c0e6e-1e1d-4213-92d4-9eeaef2f4f6d"
+        },
+        "pod": {
+          "name": "posture-recon",
+          "uid": "7dd4dc8e-eb5e-4b03-b320-fe9ee2c2c063"
+        },
+        "serviceaccount": {
+          "name": "defense-recon",
+          "uid": "31f264a0-5c94-422e-b187-6f91e2d4914d"
+        },
+        "warnafter": 1793098946
+      },
+      "nbf": 1793095339,
+      "sub": "system:serviceaccount:trident-bypass:defense-recon"
+    },
+    "rbac_hints": [
+      "token_mounted",
+      "namespace_mounted",
+      "ca_mounted"
+    ],
+    "paths": [
+      "/var/run/secrets/kubernetes.io/serviceaccount/token"
+    ]
+  },
+  "network": {
+    "interfaces": [
+      {
+        "name": "eth0",
+        "mac": "9a:87:72:e4:82:5c",
+        "state": "up"
+      },
+      {
+        "name": "lo",
+        "mac": "00:00:00:00:00:00",
+        "state": "unknown"
+      }
+    ],
+    "routes": [
+      "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       ",
+      "eth0\t00000000\t01002A0A\t0003\t0\t0\t0\t00000000\t0\t0\t0                                                                               ",
+      "eth0\t00002A0A\t00000000\t0001\t0\t0\t0\t00FFFFFF\t0\t0\t0                                                                               ",
+      "eth0\t00002A0A\t01002A0A\t0003\t0\t0\t0\t0000FFFF\t0\t0\t0                                                                               "
+    ],
+    "arp": [
+      "IP address       HW type     Flags       HW address            Mask     Device"
+    ],
+    "hosts": [
+      "# Kubernetes-managed hosts file.",
+      "127.0.0.1\tlocalhost",
+      "::1\tlocalhost ip6-localhost ip6-loopback",
+      "fe00::0\tip6-localnet",
+      "fe00::0\tip6-mcastprefix",
+      "fe00::1\tip6-allnodes",
+      "fe00::2\tip6-allrouters",
+      "10.42.0.162\tposture-recon"
+    ],
+    "resolv_conf": [
+      "search trident-bypass.svc.cluster.local svc.cluster.local cluster.local",
+      "nameserver 10.43.0.10",
+      "options ndots:5"
+    ]
+  },
+  "devices": [
+    {
+      "name": "stderr",
+      "dir": false,
+      "size": 15
+    },
+    {
+      "name": "stdout",
+      "dir": false,
+      "size": 15
+    },
+    {
+      "name": "stdin",
+      "dir": false,
+      "size": 15
+    },
+    {
+      "name": "fd",
+      "dir": false,
+      "size": 13
+    },
+    {
+      "name": "ptmx",
+      "dir": false,
+      "size": 8
+    },
+    {
+      "name": "zero",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vda3",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vda2",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vda1",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vda",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsu6",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsu5",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsu4",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsu3",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsu2",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsu1",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsu",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsa6",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsa5",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsa4",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsa3",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsa2",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsa1",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcsa",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcs6",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcs5",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcs4",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcs3",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcs2",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcs1",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "vcs",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "urandom",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "ttyS3",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "ttyS2",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "ttyS1",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "ttyS0",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty9",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty8",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty7",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty63",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty62",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty61",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty60",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty6",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty59",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty58",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty57",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty56",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty55",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty54",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty53",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty52",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty51",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty50",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty5",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty49",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty48",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty47",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty46",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty45",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty44",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty43",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty42",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty41",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty40",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty4",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty39",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty38",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty37",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty36",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty35",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty34",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty33",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty32",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty31",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty30",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty3",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty29",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty28",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty27",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty26",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty25",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty24",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty23",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty22",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty21",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty20",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty2",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty19",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty18",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty17",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty16",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty15",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty14",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty13",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty12",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty11",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty10",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty1",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty0",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "tty",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "sr0",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "rtc0",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "random",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "psaux",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "port",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "null",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "misc",
+      "dir": true,
+      "size": 60
+    },
+    {
+      "name": "mem",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "loop7",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "loop6",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "loop5",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "loop4",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "loop3",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "loop2",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "loop1",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "loop0",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "loop-control",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "loop",
+      "dir": true,
+      "size": 200
+    },
+    {
+      "name": "kvm",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "kmsg",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "iommu",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "input",
+      "dir": true,
+      "size": 120
+    },
+    {
+      "name": "hwrng",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "full",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "fd0",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "fb0",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "dri",
+      "dir": true,
+      "size": 60
+    },
+    {
+      "name": "cpu_dma_latency",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "bsg",
+      "dir": true,
+      "size": 60
+    },
+    {
+      "name": "shm",
+      "dir": true,
+      "size": 40
+    },
+    {
+      "name": "termination-log",
+      "dir": false,
+      "size": 0
+    },
+    {
+      "name": "mqueue",
+      "dir": true,
+      "size": 40
+    },
+    {
+      "name": "pts",
+      "dir": true,
+      "size": 0
+    }
+  ],
+  "security_posture": {
+    "schema": "inkblade-security-posture/1",
+    "collected": true,
+    "namespace": "trident-bypass",
+    "service_account": {
+      "present": true,
+      "subject": "system:serviceaccount:trident-bypass:defense-recon",
+      "claims": {
+        "aud": [
+          "https://kubernetes.default.svc.cluster.local",
+          "k3s"
+        ],
+        "exp": 1824631339,
+        "iat": 1793095339,
+        "iss": "https://kubernetes.default.svc.cluster.local",
+        "jti": "04a5ebd1-9df0-4f2b-a1de-f06233b0b046",
+        "kubernetes.io": {
+          "namespace": "trident-bypass",
+          "node": {
+            "name": "k3s",
+            "uid": "a42c0e6e-1e1d-4213-92d4-9eeaef2f4f6d"
+          },
+          "pod": {
+            "name": "posture-recon",
+            "uid": "7dd4dc8e-eb5e-4b03-b320-fe9ee2c2c063"
+          },
+          "serviceaccount": {
+            "name": "defense-recon",
+            "uid": "31f264a0-5c94-422e-b187-6f91e2d4914d"
+          },
+          "warnafter": 1793098946
+        },
+        "nbf": 1793095339,
+        "sub": "system:serviceaccount:trident-bypass:defense-recon"
+      }
+    },
+    "processes": [
+      {
+        "pid": 15639,
+        "comm": "falco",
+        "cmdline": "/usr/bin/falco",
+        "matched": [
+          "falco"
+        ]
+      },
+      {
+        "pid": 26400,
+        "comm": "kyverno",
+        "cmdline": "/ko-app/kyverno --caSecretName=kyverno-svc.kyverno.svc.kyverno-tls-ca --tlsSecretName=kyverno-svc.kyverno.svc.kyverno-tls-pair --tlsKeyAlgorithm=RSA --backgroundServiceAccountName=system:serviceaccount:kyverno:kyverno-background-controller --reportsServiceAccountName=system:serviceaccount:kyverno:kyverno-reports-controller --servicePort=443 --webhookServerPort=9443 --resyncPeriod=15m --crdWatcher=false --disableMetrics=false --otelConfig=prometheus --metricsPort=8000 --admissionReports=true --maxAdmissionRe",
+        "matched": [
+          "kyverno"
+        ]
+      }
+    ],
+    "kernel_modules": [
+      "xt_physdev",
+      "nft_log",
+      "nft_limit",
+      "xt_NFLOG",
+      "nfnetlink_log",
+      "xt_limit",
+      "ip_set_hash_ip",
+      "xt_multiport",
+      "veth",
+      "nf_conntrack_netlink",
+      "xt_nat",
+      "xt_nfacct",
+      "ipt_REJECT",
+      "nf_reject_ipv4",
+      "xt_tcpudp",
+      "xt_mark",
+      "vxlan",
+      "ip6_udp_tunnel",
+      "udp_tunnel",
+      "xt_comment",
+      "nfnetlink_acct",
+      "xt_conntrack",
+      "xt_MASQUERADE",
+      "xfrm_user",
+      "xfrm_algo",
+      "xt_set",
+      "ip_set",
+      "nft_chain_nat",
+      "nf_nat",
+      "nf_conntrack",
+      "nf_defrag_ipv6",
+      "nf_defrag_ipv4",
+      "xt_addrtype",
+      "nft_compat",
+      "x_tables",
+      "nf_tables",
+      "nfnetlink",
+      "overlay",
+      "br_netfilter",
+      "bridge",
+      "stp",
+      "llc",
+      "af_packet",
+      "mousedev",
+      "psmouse",
+      "i2c_piix4",
+      "i2c_smbus",
+      "bochs",
+      "drm_client_lib",
+      "drm_shmem_helper",
+      "syscopyarea",
+      "sysfillrect",
+      "sysimgblt",
+      "fb_sys_fops",
+      "drm_kms_helper",
+      "drm",
+      "drm_panel_orientation_quirks",
+      "fb",
+      "i2c_core",
+      "evdev",
+      "kvm_amd",
+      "kvm",
+      "irqbypass",
+      "ghash_clmulni_intel",
+      "aesni_intel",
+      "gf128mul",
+      "qemu_fw_cfg",
+      "floppy",
+      "button",
+      "virtio_net",
+      "net_failover",
+      "failover",
+      "virtio_blk",
+      "virtio_rng",
+      "rng_core",
+      "sr_mod",
+      "cdrom",
+      "ata_generic",
+      "loop",
+      "ext4",
+      "crc16",
+      "mbcache",
+      "jbd2",
+      "usb_storage",
+      "usbcore",
+      "usb_common",
+      "sd_mod"
+    ],
+    "agent_dirs": [
+      {
+        "path": "/etc/falco",
+        "product": "falco",
+        "present": false
+      },
+      {
+        "path": "/var/run/falco",
+        "product": "falco",
+        "present": false
+      },
+      {
+        "path": "/usr/share/falco",
+        "product": "falco",
+        "present": false
+      },
+      {
+        "path": "/etc/kyverno",
+        "product": "admission",
+        "present": false
+      },
+      {
+        "path": "/opt/kyverno",
+        "product": "admission",
+        "present": false
+      },
+      {
+        "path": "/opt/elkeid",
+        "product": "elkeid",
+        "present": false
+      },
+      {
+        "path": "/etc/elkeid",
+        "product": "elkeid",
+        "present": false
+      },
+      {
+        "path": "/var/run/elkeid",
+        "product": "elkeid",
+        "present": false
+      },
+      {
+        "path": "/opt/kubearmor",
+        "product": "kubearmor",
+        "present": false
+      },
+      {
+        "path": "/etc/kubearmor",
+        "product": "kubearmor",
+        "present": false
+      },
+      {
+        "path": "/opt/tetragon",
+        "product": "tetragon",
+        "present": false
+      },
+      {
+        "path": "/var/run/tetragon",
+        "product": "tetragon",
+        "present": false
+      },
+      {
+        "path": "/var/ossec",
+        "product": "hostagent",
+        "present": false
+      },
+      {
+        "path": "/etc/osquery",
+        "product": "hostagent",
+        "present": false
+      },
+      {
+        "path": "/var/osquery",
+        "product": "hostagent",
+        "present": false
+      },
+      {
+        "path": "/root/.cache/trivy",
+        "product": "imagescan",
+        "present": false
+      },
+      {
+        "path": "/var/lib/trivy",
+        "product": "imagescan",
+        "present": false
+      },
+      {
+        "path": "/etc/modsecurity",
+        "product": "waf-inference",
+        "present": false
+      },
+      {
+        "path": "/etc/coraza",
+        "product": "waf-inference",
+        "present": false
+      }
+    ],
+    "admission": {
+      "available": true,
+      "kyverno": {
+        "available": true,
+        "api": "policies.kyverno.io/v1 + kyverno.io/v1",
+        "count": 3,
+        "items": [
+          {
+            "name": "defense-lab-disallow-hostpath",
+            "scope": "[{\"expression\":\"request.namespace == 'defense-lab'\",\"name\":\"defense-lab-only\"}] {\"resourceRules\":[{\"apiGroups\":[\"\"],\"apiVersions\":[\"v1\"],\"operations\":[\"CREATE\",\"UPDATE\"],\"resources\":[\"pods\"]}]} ",
+            "scope_truncated": false
+          },
+          {
+            "name": "defense-lab-disallow-privileged",
+            "scope": "[{\"expression\":\"request.namespace == 'defense-lab'\",\"name\":\"defense-lab-only\"}] {\"resourceRules\":[{\"apiGroups\":[\"\"],\"apiVersions\":[\"v1\"],\"operations\":[\"CREATE\",\"UPDATE\"],\"resources\":[\"pods\"]}]} ",
+            "scope_truncated": false
+          },
+          {
+            "name": "defense-lab-require-automount-false",
+            "scope": "[{\"expression\":\"request.namespace == 'defense-lab'\",\"name\":\"defense-lab-only\"}] {\"resourceRules\":[{\"apiGroups\":[\"\"],\"apiVersions\":[\"v1\"],\"operations\":[\"CREATE\",\"UPDATE\"],\"resources\":[\"pods\"]}]} ",
+            "scope_truncated": false
+          }
+        ],
+        "errors": {
+          "modern": null,
+          "legacy": null
+        }
+      },
+      "gatekeeper": {
+        "available": true,
+        "api": "constraints.gatekeeper.sh",
+        "count": 0,
+        "items": []
+      }
+    },
+    "scope": {
+      "namespace": "trident-bypass",
+      "labels": {
+        "kubernetes.io/metadata.name": "trident-bypass"
+      },
+      "policies_in_scope": [],
+      "error": null
+    },
+    "pods": {
+      "available": true,
+      "items": [
+        {
+          "name": "falco-probe",
+          "namespace": "default",
+          "phase": "Succeeded",
+          "images": [
+            "docker.io/library/alpine:3.21"
+          ]
+        },
+        {
+          "name": "kyverno-probe-privileged-unscoped",
+          "namespace": "default",
+          "phase": "Succeeded",
+          "images": [
+            "docker.io/library/alpine:3.21"
+          ]
+        },
+        {
+          "name": "kyverno-probe-compliant",
+          "namespace": "defense-lab",
+          "phase": "Succeeded",
+          "images": [
+            "docker.io/library/alpine:3.21"
+          ]
+        },
+        {
+          "name": "coredns-7cfb7bc9c7-pq74m",
+          "namespace": "kube-system",
+          "phase": "Running",
+          "images": [
+            "rancher/mirrored-coredns-coredns:1.14.7"
+          ]
+        },
+        {
+          "name": "falco-q5xjv",
+          "namespace": "kube-system",
+          "phase": "Running",
+          "images": [
+            "docker.io/falcosecurity/falco:0.45.1"
+          ]
+        },
+        {
+          "name": "local-path-provisioner-77b9867795-7scjs",
+          "namespace": "kube-system",
+          "phase": "Running",
+          "images": [
+            "rancher/local-path-provisioner:v0.0.37"
+          ]
+        },
+        {
+          "name": "kyverno-admission-controller-69f6769c79-jnbsk",
+          "namespace": "kyverno",
+          "phase": "Running",
+          "images": [
+            "reg.kyverno.io/kyverno/kyverno:v1.19.2"
+          ]
+        },
+        {
+          "name": "memfd-attacker",
+          "namespace": "trident-bypass",
+          "phase": "Running",
+          "images": [
+            "alpine:3.21"
+          ]
+        },
+        {
+          "name": "posture-recon",
+          "namespace": "trident-bypass",
+          "phase": "Running",
+          "images": [
+            "alpine:3.21"
+          ]
+        },
+        {
+          "name": "mock-target-66c765d55-hmzvr",
+          "namespace": "trident-proof",
+          "phase": "Running",
+          "images": [
+            "python:3.12-alpine"
+          ]
+        },
+        {
+          "name": "lateral-target",
+          "namespace": "trident-target",
+          "phase": "Running",
+          "images": [
+            "alpine:3.21"
+          ]
+        }
+      ]
+    },
+    "rulesets": [
+      {
+        "product": "falco",
+        "path": "/proc/15639/root/etc/falco/falco_rules.yaml",
+        "sha256": "30a1a60263ab97650c851011468da03b17fc0096a7cfa3b6686eba5de73b865b",
+        "rule_count": 25,
+        "rules": [
+          "Directory traversal monitored file read",
+          "Read sensitive file trusted after startup",
+          "Read sensitive file untrusted",
+          "Run shell untrusted",
+          "System user interactive",
+          "Terminal shell in container",
+          "Contact K8S API Server From Container",
+          "Netcat Remote Code Execution in Container",
+          "Search Private Keys or Passwords",
+          "Clear Log Activities",
+          "Remove Bulk Data from Disk",
+          "Create Symlink Over Sensitive Files",
+          "Create Hardlink Over Sensitive Files",
+          "Packet socket created in container",
+          "Redirect STDOUT/STDIN to Network Connection in Container",
+          "Linux Kernel Module Injection Detected",
+          "Debugfs Launched in Privileged Container",
+          "Detect release_agent File Container Escapes",
+          "PTRACE attached to process",
+          "PTRACE anti-debug attempt",
+          "Find AWS Credentials",
+          "Execution from /dev/shm",
+          "Drop and execute new binary in container",
+          "Disallowed SSH Connection Non Standard Port",
+          "Fileless execution via memfd_create"
+        ],
+        "interesting_rules": [
+          "terminal-shell",
+          "k8s-api-contact",
+          "drop-execute"
+        ],
+        "parse": "rule: prefix lines"
+      }
+    ],
+    "runtime_sensor": {
+      "falco": {
+        "running": true,
+        "pid": 15639,
+        "comm": "falco",
+        "btf": true,
+        "kernel_module": false,
+        "driver": "modern_ebpf_inferred",
+        "rulesets": 1
+      },
+      "kyverno": {
+        "pods": [
+          {
+            "name": "kyverno-admission-controller-69f6769c79-jnbsk",
+            "namespace": "kyverno",
+            "phase": "Running",
+            "images": [
+              "reg.kyverno.io/kyverno/kyverno:v1.19.2"
+            ]
+          }
+        ]
+      },
+      "btf": true,
+      "modern_ebpf_possible": true
+    },
+    "products": [
+      {
+        "product": "falco",
+        "display": "Falco",
+        "evidence": [
+          "process:falco",
+          "image:docker.io/falcosecurity/falco:0.45.1",
+          "ruleset:/proc/15639/root/etc/falco/falco_rules.yaml"
+        ],
+        "processes": [
+          {
+            "pid": 15639,
+            "comm": "falco",
+            "cmdline": "/usr/bin/falco",
+            "matched": [
+              "falco"
+            ]
+          }
+        ],
+        "kernel_modules": [],
+        "agent_dirs": [],
+        "version": "docker.io/falcosecurity/falco:0.45.1",
+        "rulesets": [
+          {
+            "product": "falco",
+            "path": "/proc/15639/root/etc/falco/falco_rules.yaml",
+            "sha256": "30a1a60263ab97650c851011468da03b17fc0096a7cfa3b6686eba5de73b865b",
+            "rule_count": 25,
+            "rules": [
+              "Directory traversal monitored file read",
+              "Read sensitive file trusted after startup",
+              "Read sensitive file untrusted",
+              "Run shell untrusted",
+              "System user interactive",
+              "Terminal shell in container",
+              "Contact K8S API Server From Container",
+              "Netcat Remote Code Execution in Container",
+              "Search Private Keys or Passwords",
+              "Clear Log Activities",
+              "Remove Bulk Data from Disk",
+              "Create Symlink Over Sensitive Files",
+              "Create Hardlink Over Sensitive Files",
+              "Packet socket created in container",
+              "Redirect STDOUT/STDIN to Network Connection in Container",
+              "Linux Kernel Module Injection Detected",
+              "Debugfs Launched in Privileged Container",
+              "Detect release_agent File Container Escapes",
+              "PTRACE attached to process",
+              "PTRACE anti-debug attempt",
+              "Find AWS Credentials",
+              "Execution from /dev/shm",
+              "Drop and execute new binary in container",
+              "Disallowed SSH Connection Non Standard Port",
+              "Fileless execution via memfd_create"
+            ],
+            "interesting_rules": [
+              "terminal-shell",
+              "k8s-api-contact",
+              "drop-execute"
+            ],
+            "parse": "rule: prefix lines"
+          }
+        ],
+        "sensor": {
+          "running": true,
+          "pid": 15639,
+          "comm": "falco",
+          "btf": true,
+          "kernel_module": false,
+          "driver": "modern_ebpf_inferred",
+          "rulesets": 1
+        }
+      },
+      {
+        "product": "kyverno",
+        "display": "kyverno",
+        "evidence": [
+          "process:kyverno",
+          "image:reg.kyverno.io/kyverno/kyverno:v1.19.2"
+        ],
+        "processes": [
+          {
+            "pid": 26400,
+            "comm": "kyverno",
+            "cmdline": "/ko-app/kyverno --caSecretName=kyverno-svc.kyverno.svc.kyverno-tls-ca --tlsSecretName=kyverno-svc.kyverno.svc.kyverno-tls-pair --tlsKeyAlgorithm=RSA --backgroundServiceAccountName=system:serviceaccount:kyverno:kyverno-background-controller --reportsServiceAccountName=system:serviceaccount:kyverno:kyverno-reports-controller --servicePort=443 --webhookServerPort=9443 --resyncPeriod=15m --crdWatcher=false --disableMetrics=false --otelConfig=prometheus --metricsPort=8000 --admissionReports=true --maxAdmissionRe",
+            "matched": [
+              "kyverno"
+            ]
+          }
+        ],
+        "kernel_modules": [],
+        "agent_dirs": [],
+        "version": "reg.kyverno.io/kyverno/kyverno:v1.19.2",
+        "rulesets": [],
+        "sensor": null
+      },
+      {
+        "product": "admission",
+        "display": "Approval policy (Kyverno/Gatekeeper)",
+        "evidence": [
+          "admission:kyverno:3",
+          "admission:gatekeeper:0"
+        ],
+        "processes": [],
+        "kernel_modules": [],
+        "agent_dirs": [],
+        "version": null,
+        "rulesets": [],
+        "sensor": {
+          "pods": [
+            {
+              "name": "kyverno-admission-controller-69f6769c79-jnbsk",
+              "namespace": "kyverno",
+              "phase": "Running",
+              "images": [
+                "reg.kyverno.io/kyverno/kyverno:v1.19.2"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "no_exec": true,
+    "no_write": true
+  },
+  "files_read": [
+    "/proc/mounts",
+    "/proc/self/cgroup",
+    "/sys/class/net/eth0/address",
+    "/sys/class/net/lo/address",
+    "/proc/net/route",
+    "/proc/net/arp",
+    "/etc/hosts",
+    "/etc/resolv.conf",
+    "/var/run/secrets/kubernetes.io/serviceaccount/token",
+    "/proc/15639/comm",
+    "/proc/26400/comm",
+    "/proc/modules",
+    "GET /api/v1/pods",
+    "GET /apis/policies.kyverno.io/v1/validatingpolicies",
+    "GET /apis/kyverno.io/v1/clusterpolicies",
+    "GET /apis/constraints.gatekeeper.sh/v1beta1/constraints",
+    "GET /api/v1/namespaces/trident-bypass",
+    "/proc/15639/root/etc/falco/falco_rules.yaml",
+    "/var/run/secrets/kubernetes.io/serviceaccount/token"
+  ],
+  "limits": {
+    "max_output": 8388608,
+    "max_timeout_ms": 30000
+  }
+}

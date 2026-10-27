@@ -1,0 +1,7 @@
+rc=1
+Error from server: error when creating "STDIN": admission webhook "vpol.validate.kyverno.svc-fail-finegrained-defense-lab-disallow-hostpath" denied the request: Policy defense-lab-disallow-hostpath failed: hostPath volumes are disallowed in defense-lab.
+
+
+=== privileged-only control (no hostPath) ===
+rc=1
+Error from server: error when creating "/root/control-privileged.yaml": admission webhook "vpol.validate.kyverno.svc-fail-finegrained-defense-lab-disallow-privileged" denied the request: Policy defense-lab-disallow-privileged failed: Privileged mode is disallowed in defense-lab.

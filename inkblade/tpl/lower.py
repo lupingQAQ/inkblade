@@ -22,7 +22,7 @@ from typing import Any
 from . import expr
 
 # Native operations in probe/src/template.rs (as of inkblade-probe 0.1.0).
-NATIVE_OPS = {"http", "tcp", "exec", "fs", "spawn"}
+NATIVE_OPS = {"http", "tcp", "exec", "bypass", "fs", "spawn"}
 NATIVE_K8S_ACTIONS = {"list", "get"}
 NATIVE_FS_ACTIONS = {"read", "list", "stat", "write", "mkdir", "remove", "chmod"}
 NATIVE_SOCKS_ACTIONS = {"serve"}
@@ -202,6 +202,19 @@ def compile_template(template: dict, params: dict | None = None,
                                   for x in step.get("argv") or []]
                 if step.get("stdin"):
                     warnings.append(f"{sid}: probe exec has no stdin; folded where possible")
+            elif op == "bypass":
+                # The probe interprets the same plan object the policy engine
+                # emits.  Scripts are literal: no interpolation, so a template
+                # can never splice host secrets into the memfd payload.
+                techniques = step.get("techniques")
+                if techniques is None and step.get("technique") is not None:
+                    techniques = [step.get("technique")]
+                native["techniques"] = list(techniques or [])
+                for key in ("script", "script_b64", "workdir", "clean_env",
+                            "target", "monitored_paths", "commands", "binaries",
+                            "argv", "timeout_ms"):
+                    if step.get(key) is not None:
+                        native[key] = step[key]
             elif op == "fs":
                 action = str(step.get("action"))
                 if action == "hash":

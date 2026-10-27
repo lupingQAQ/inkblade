@@ -18,6 +18,17 @@ pub struct Options {
     pub templates_dir: Option<PathBuf>,
     pub max_window: usize,
     pub keep_binary: bool,
+    // Bypass plan inputs (see `inkblade-probe bypass --help`).  Kept here so
+    // the same plan works for the CLI and for `run --stdio` task dispatch.
+    pub bypass_plan: Option<String>,
+    pub bypass_techniques: Vec<String>,
+    pub bypass_script: Option<String>,
+    pub bypass_script_b64: Option<String>,
+    pub bypass_workdir: Option<String>,
+    pub bypass_monitored: Vec<String>,
+    pub bypass_target_namespace: Option<String>,
+    pub bypass_target_pod: Option<String>,
+    pub bypass_container: Option<String>,
 }
 
 impl Options {
@@ -51,6 +62,15 @@ impl Default for Options {
             templates_dir: None,
             max_window: 4,
             keep_binary: false,
+            bypass_plan: None,
+            bypass_techniques: Vec::new(),
+            bypass_script: None,
+            bypass_script_b64: None,
+            bypass_workdir: None,
+            bypass_monitored: Vec::new(),
+            bypass_target_namespace: None,
+            bypass_target_pod: None,
+            bypass_container: None,
         }
     }
 }
