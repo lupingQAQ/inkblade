@@ -9,6 +9,7 @@
 //!   inkblade-probe cleanup --path /tmp/.inkblade-probe-child-a1b2
 
 mod audit;
+mod auditops;
 mod auth;
 mod base64;
 mod bypass;
@@ -104,6 +105,43 @@ fn run() -> Result<i32, String> {
             audit.event("probe.exec", result.clone());
             println!("{}", result.to_json());
             Ok(result.get("exit_code").and_then(Value::as_i64).unwrap_or(0) as i32)
+        }
+        "audit-exec" => {
+            if positional.is_empty() {
+                return Err("audit-exec requires argv after --".to_string());
+            }
+            let audit = Audit::new(opts.audit_sink, opts.audit_path.clone(), &opts.probe_id);
+            let args = json::object(vec![
+                ("argv", Value::Arr(positional.iter().cloned().map(json::string).collect())),
+                ("timeout_ms", json::number(opts.timeout_ms(None))),
+            ]);
+            let result = auditops::audit_exec(&args, &opts)?;
+            audit.event("probe.audit_exec", result.clone());
+            println!("{}", result.to_json());
+            let code = result
+                .get("audit")
+                .and_then(|value| value.get("exit_code"))
+                .and_then(Value::as_i64)
+                .unwrap_or(0);
+            Ok(code as i32)
+        }
+        "read-file" => {
+            let path = positional
+                .first()
+                .cloned()
+                .ok_or_else(|| "read-file requires --path".to_string())?;
+            let result = auditops::read_file(&path, opts.max_output_bytes())?;
+            println!("{}", result.to_json());
+            Ok(0)
+        }
+        "list-files" => {
+            let path = positional
+                .first()
+                .cloned()
+                .ok_or_else(|| "list-files requires --path".to_string())?;
+            let result = auditops::list_files(&path, "")?;
+            println!("{}", result.to_json());
+            Ok(0)
         }
         "dial" => {
             let host = positional
@@ -305,6 +343,9 @@ fn usage() {
            inkblade-probe bypass --plan JSON [--allow-write]\n\
            inkblade-probe bypass --technique ID --script-b64 B64 [--workdir DIR]\n\
            inkblade-probe exec -- <argv...> [--allow-write] [--allow-cmd CMD]\n\
+           inkblade-probe audit-exec -- <argv...> [--allow-write]\n\
+           inkblade-probe read-file --path PATH\n\
+           inkblade-probe list-files --path DIR\n\
            inkblade-probe dial --host HOST --port PORT\n\
            inkblade-probe beacon\n\
            inkblade-probe cleanup --path PATH...\n\

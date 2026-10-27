@@ -458,6 +458,41 @@ class ProbeConnection:
             args["max_output"] = int(max_output)
         return self.request("exec", args, timeout=timeout)
 
+    def audit_exec(
+        self,
+        argv: Sequence[str],
+        *,
+        cwd: str | None = None,
+        timeout_ms: int | None = None,
+        technique: str = "",
+        timeout: float | None = None,
+    ) -> dict[str, Any]:
+        """Audited exec: the probe records argv/cwd/env digest and samples fds.
+
+        Returns ``{"exec": {...}, "audit": {pid, cwd, opened_files, ...}}``.
+        """
+        args: dict[str, Any] = {"argv": list(argv), "technique": str(technique or "")}
+        if cwd:
+            args["cwd"] = str(cwd)
+        if timeout_ms is not None:
+            args["timeout_ms"] = int(timeout_ms)
+        result = self.request("audit-exec", args, timeout=timeout)
+        if "exec" in result or "audit" in result:
+            return result
+        return {"exec": result, "audit": result}
+
+    def read_file(self, path: str, *, max_bytes: int = 1024 * 1024,
+                  timeout: float | None = None) -> dict[str, Any]:
+        return self.request("read-file", {"path": str(path), "max_bytes": int(max_bytes)},
+                            timeout=timeout)
+
+    def list_files(self, path: str, *, pattern: str = "",
+                   timeout: float | None = None) -> dict[str, Any]:
+        args: dict[str, Any] = {"path": str(path)}
+        if pattern:
+            args["pattern"] = str(pattern)
+        return self.request("list-files", args, timeout=timeout)
+
     def run_task(
         self,
         template: dict[str, Any] | str,

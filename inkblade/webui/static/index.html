@@ -89,12 +89,17 @@
     </div>
   </section>
 
-  <!-- ③ 执行时间线：Argo 风格瀑布（起止/耗时/并行度） -->
+  <!-- ③ 执行时间线：Argo 风格瀑布（起止/耗时/并行度）+ 操作/文件访问台账 -->
   <section id="view-timeline" class="view">
     <div class="panel">
       <h3 data-i18n="timeline.title">执行瀑布</h3>
       <div class="hint" id="tl-summary"></div>
       <div id="timeline-body"></div>
+    </div>
+    <div class="panel">
+      <h3 data-i18n="ops.title">操作与文件访问台账</h3>
+      <div class="hint" data-i18n="ops.hint">逐条列出探针执行的命令（argv/cwd/exit/耗时/stdout 摘要）与读取/写入的文件；点击行跳到证据浏览器对应步骤。</div>
+      <div id="ops-ledger"></div>
     </div>
   </section>
 

@@ -11,7 +11,6 @@ use std::time::Instant;
 use crate::audit::Audit;
 use crate::base64;
 use crate::config::Options;
-use crate::exec;
 use crate::fsops;
 use crate::http::{self, HttpRequest};
 use crate::json::{self, Value};
@@ -302,9 +301,26 @@ impl<'a> Runtime<'a> {
             return Err("exec requires argv or command".to_string());
         };
         let timeout = self.timeout(step);
-        exec::run(&argv, self.opts, timeout)
+        // 每次 exec 都走审计包装：argv/cwd/env 摘要 + /proc/<pid>/fd 采样。
+        // 结果形状保持向后兼容（exit_code/stdout/stderr/...），额外附 `audit`。
+        let args = json::object(vec![
+            (
+                "argv",
+                Value::Arr(argv.iter().cloned().map(json::string).collect()),
+            ),
+            ("timeout_ms", json::number(timeout)),
+        ]);
+        let payload = crate::auditops::audit_exec(&args, self.opts)?;
+        let mut value = payload.get("exec").cloned().unwrap_or(Value::Null);
+        if let (Value::Obj(items), Some(audit)) = (&mut value, payload.get("audit")) {
+            items.push(("audit".to_string(), audit.clone()));
+        }
+        Ok(value)
     }
 
+    /// A bypass step is the same declarative object the Python policy engine
+    /// emits: technique(s), script, workdir, target scope.  Only the selected
+    /// primitive runs; no additional payload is synthesised here.
     fn bypass_step(&mut self, step: &Value) -> Result<Value, String> {
         let result = crate::bypass::run(step, self.opts)?;
         if let Some(stdout) = result.get("stdout").and_then(Value::as_str) {

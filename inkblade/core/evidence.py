@@ -19,7 +19,7 @@ SCHEMA_TABLES = [
     "runs", "steps", "prompts", "env", "findings", "evidence",
     "actions", "backups", "rollbacks", "roe", "combos",
     "graph_nodes", "graph_edges", "traffic",
-    "decisions", "lineage", "retests",
+    "decisions", "lineage", "retests", "file_ops",
 ]
 
 _SCHEMA = """
@@ -51,6 +51,14 @@ CREATE TABLE IF NOT EXISTS lineage(id INTEGER PRIMARY KEY, run TEXT, src TEXT, d
     relation TEXT, attrs TEXT, created_at REAL);
 CREATE TABLE IF NOT EXISTS retests(id INTEGER PRIMARY KEY, run TEXT, finding TEXT, module TEXT,
     conclusion TEXT, detail TEXT, evidence_path TEXT, actor TEXT, created_at REAL);
+CREATE TABLE IF NOT EXISTS file_ops(id INTEGER PRIMARY KEY, run TEXT, step_id INTEGER,
+    step_key TEXT, task_id TEXT, ts REAL, phase TEXT, op TEXT, technique TEXT,
+    probe_id TEXT, cluster TEXT, namespace TEXT, pid INTEGER DEFAULT 0, argv TEXT, cwd TEXT,
+    env_digest TEXT, opened_files TEXT, path TEXT, mode TEXT, size_bytes INTEGER DEFAULT 0,
+    sha256 TEXT, exit_code INTEGER, stdout_hash TEXT, duration_ms INTEGER, result TEXT,
+    detail TEXT);
+CREATE INDEX IF NOT EXISTS idx_file_ops_run ON file_ops(run, ts);
+CREATE INDEX IF NOT EXISTS idx_file_ops_step ON file_ops(run, step_id);
 """
 
 
@@ -149,6 +157,14 @@ class Run:
                 (self.name, step_key, started, time.time(), result_summary, archive_rel, "success"),
             )
             step_id = cur.lastrowid
+            # 先于 step 落库的 file_ops（模板执行期间）在此回填 step_id。
+            try:
+                conn.execute(
+                    "UPDATE file_ops SET step_id=? WHERE run=? AND step_key=? AND step_id IS NULL",
+                    (step_id, self.name, step_key),
+                )
+            except sqlite3.OperationalError:
+                pass  # 老库尚未建表
             conn.execute(
                 "INSERT INTO prompts(step_id, kind, content, digest) VALUES(?,?,?,?)",
                 (step_id, "cmd", prompt_or_cmd, _digest(prompt_or_cmd)),
@@ -196,6 +212,11 @@ class Run:
         self._flush_context()
         with self._tx() as conn:
             conn.execute("UPDATE runs SET status='finalized' WHERE name=?", (self.name,))
+        # 统一时间线（steps/actions/file_ops/利用标记）；失败不阻断收尾。
+        try:
+            self.write_timeline()
+        except Exception:
+            pass
 
     # ---------- 发现 ----------
     def add_finding(
@@ -301,6 +322,30 @@ class Run:
         keys = ["module", "seq", "method", "url", "req_headers", "req_body",
                 "status", "resp_body", "error", "sha256", "ts"]
         return [dict(zip(keys, r)) for r in rows]
+
+    # ---------- 操作/文件访问审计（file_ops 表） ----------
+    def record_file_op(self, **fields: Any) -> int:
+        """登记一条命令/文件访问审计事件，返回 ``file_ops`` 行号。
+
+        字段见 ``core/fileaudit.py``：step_id/step_key/probe_id/cluster/namespace/
+        pid/argv/cwd/env/opened_files/path/mode/size_bytes/sha256/exit_code/
+        stdout(_hash)/duration_ms/technique。
+        """
+        from .fileaudit import record
+
+        return record(self, **fields)
+
+    @property
+    def file_ops(self) -> list[dict[str, Any]]:
+        from .fileaudit import file_ops
+
+        return file_ops(self)
+
+    def write_timeline(self) -> Path:
+        """汇总 steps/actions/file_ops/利用标记 → run 目录 ``timeline.json``。"""
+        from .timeline import write_timeline
+
+        return write_timeline(self)
 
 
 class EvidenceStore:

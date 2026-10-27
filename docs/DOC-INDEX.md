@@ -13,6 +13,7 @@
 | [`docs/ARCHITECTURE-PROBE.md`](ARCHITECTURE-PROBE.md) | 唯一执行路径：立足→Rust 探针→通道→内部横向；父子树与零 Python 边界 |
 | [`docs/PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md) | 长度前缀 JSON 帧、认证、任务/结果、预算、文件分块、清理与错误码 |
 | [`docs/PROBE-CHANNEL.md`](PROBE-CHANNEL.md) | 入口会话与 `kubectl exec -i` 通道：投放、SOCKS/端口转发、权限边界 |
+| [`docs/FILE-AUDIT.md`](FILE-AUDIT.md) | 操作与文件访问审计：`audit-exec`/`read-file`/`list-files`、`file_ops` 表、统一 `timeline.json`、UI/报告联动与 SOC 审计键 |
 | [`docs/PROBE-DEPLOY.md`](PROBE-DEPLOY.md) | RCE/memfd、kubectl cp/exec、EphemeralContainer、共享卷、发布物与写闸门 |
 | [`docs/DYNAMIC-VERIFICATION.md`](DYNAMIC-VERIFICATION.md) | 每个模板的两态 mock 验证标准、证据格式、覆盖率字段与当前完成度 |
 | [`docs/PROBE-COVERAGE.md`](PROBE-COVERAGE.md) | 生成式模板覆盖率表：模块、执行载体、两态结果、证据哈希（`runtime=rust`，286/286；负控边界见 §6） |

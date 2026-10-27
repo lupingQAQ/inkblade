@@ -231,7 +231,8 @@ def register(sub) -> None:
     pd.add_argument("--probe-command", default=None)
     pd.add_argument("--kubectl", default="kubectl")
 
-    for command in ("collect", "exec", "upload", "download", "spawn", "cleanup", "run"):
+    for command in ("collect", "exec", "audit-exec", "read-file", "list-files",
+                    "upload", "download", "spawn", "cleanup", "run"):
         pc = psub.add_parser(command, help=f"probe {command}（经 stdio 通道）")
         pc.add_argument("--session", default=None)
         pc.add_argument("--workspace", default="local-lab")
@@ -252,6 +253,20 @@ def register(sub) -> None:
         pc.add_argument("--json", action="store_true")
         if command == "exec":
             pc.add_argument("argv", nargs=argparse.REMAINDER)
+        if command == "audit-exec":
+            pc.add_argument("argv", nargs=argparse.REMAINDER)
+            pc.add_argument("--cwd", default="")
+            pc.add_argument("--technique", default="")
+        if command == "read-file":
+            pc.add_argument("path")
+            pc.add_argument("--max-bytes", type=int, default=1024 * 1024)
+            pc.add_argument("--step", default="")
+        if command == "list-files":
+            pc.add_argument("path")
+            pc.add_argument("--pattern", default="")
+            pc.add_argument("--step", default="")
+        if command == "exec":
+            pc.add_argument("--step", default="")
         if command == "upload":
             pc.add_argument("local")
             pc.add_argument("remote")
@@ -403,6 +418,34 @@ def _modules_dir(home: Path) -> Path:
     return Path(__file__).resolve().parents[1] / "modules"
 
 
+def _record_probe_audit(store: EvidenceStore, sess, *, op: str, payload: dict,
+                        argv: list[str] | None = None, step: str = "",
+                        path: str = "", connection=None) -> None:
+    """把 probe exec/read-file/list-files 结果写入 evidence.db ``file_ops``。"""
+    run_name = str(getattr(sess, "run", "") or "")
+    if not run_name:
+        return
+    try:
+        run = store.open_run(run_name)
+    except KeyError:
+        return
+    from ..core.fileaudit import FileOpRecorder
+
+    recorder = FileOpRecorder(
+        run, step_key=step, probe_id=str(getattr(connection, "probe_id", "")),
+        namespace=str(getattr(sess, "namespace", "") or ""),
+    )
+    if op == "exec":
+        recorder.exec(payload, argv or [])
+    elif op == "read":
+        recorder.file_read(path, sha256=str(payload.get("sha256") or ""),
+                           size_bytes=int(payload.get("size") or 0),
+                           result="ok" if payload.get("exists", True) else "missing")
+    elif op == "list":
+        recorder.file_list(path, payload.get("entries") or [],
+                           result="ok" if payload.get("exists", True) else "missing")
+
+
 def _probe_cmd(args, home: Path) -> int:
     action = args.probe_cmd
     store = _store(home, args.workspace)
@@ -433,7 +476,41 @@ def _probe_cmd(args, home: Path) -> int:
             argv = list(args.argv or [])
             if argv and argv[0] == "--":
                 argv = argv[1:]
-            result = connection.exec(argv, timeout_ms=int(args.timeout * 1000))
+            if "audit-exec" in (connection.caps or []):
+                payload = connection.audit_exec(argv, timeout_ms=int(args.timeout * 1000))
+                result = payload.get("exec") or payload
+                result["audit"] = payload.get("audit") or {}
+                _record_probe_audit(store, sess, op="exec", payload=result, argv=argv,
+                                    step=getattr(args, "step", "") or "", connection=connection)
+            else:
+                result = connection.exec(argv, timeout_ms=int(args.timeout * 1000))
+                _record_probe_audit(store, sess, op="exec", payload=result, argv=argv,
+                                    step=getattr(args, "step", "") or "",
+                                    connection=connection)
+        elif action == "audit-exec":
+            argv = list(args.argv or [])
+            if argv and argv[0] == "--":
+                argv = argv[1:]
+            if "audit-exec" not in (connection.caps or []):
+                print("probe does not advertise audit-exec", file=sys.stderr)
+                return 2
+            payload = connection.audit_exec(
+                argv, cwd=getattr(args, "cwd", "") or "",
+                timeout_ms=int(args.timeout * 1000),
+                technique=getattr(args, "technique", "") or "",
+            )
+            result = payload.get("exec") or payload
+            result["audit"] = payload.get("audit") or {}
+            _record_probe_audit(store, sess, op="exec", payload=result, argv=argv,
+                                step=getattr(args, "step", "") or "", connection=connection)
+        elif action == "read-file":
+            result = connection.read_file(args.path, max_bytes=int(args.max_bytes))
+            _record_probe_audit(store, sess, op="read", payload=result, path=args.path,
+                                step=getattr(args, "step", "") or "", connection=connection)
+        elif action == "list-files":
+            result = connection.list_files(args.path, pattern=args.pattern)
+            _record_probe_audit(store, sess, op="list", payload=result, path=args.path,
+                                step=getattr(args, "step", "") or "", connection=connection)
         elif action == "upload":
             _ensure_allow_write(args, store)
             local = Path(args.local).read_bytes()

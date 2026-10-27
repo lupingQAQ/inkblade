@@ -69,6 +69,24 @@ def load_run_data(run_dir: Path | str, redact_zeroday: bool = False) -> dict[str
                     f["title"] = "【脱敏】影响已验证（零日级，未展示细节）"
                     f["detail"] = ""
         combos = _rows(conn, "SELECT signature, detail FROM combos WHERE run=?", (name,))
+        try:
+            file_ops = _rows(
+                conn,
+                "SELECT id, run, step_id, step_key, task_id, ts, phase, op, technique,"
+                " probe_id, cluster, namespace, pid, argv, cwd, env_digest, opened_files,"
+                " path, mode, size_bytes, sha256, exit_code, stdout_hash, duration_ms,"
+                " result, detail FROM file_ops WHERE run=? ORDER BY ts, id",
+                (name,),
+            )
+        except sqlite3.Error:
+            file_ops = []  # 老 run 没有 file_ops 表
+        for row in file_ops:
+            for key in ("argv", "opened_files"):
+                raw = row.get(key)
+                try:
+                    row[key] = json.loads(raw) if raw else []
+                except (TypeError, ValueError):
+                    row[key] = []
         nodes = _rows(conn, "SELECT node_id, kind, layer, attrs FROM graph_nodes")
         edges = _rows(conn, "SELECT src, dst, verdict, method, chain FROM graph_edges")
     finally:
@@ -84,7 +102,14 @@ def load_run_data(run_dir: Path | str, redact_zeroday: bool = False) -> dict[str
         "combos": combos,
         "nodes": nodes,
         "edges": edges,
+        "file_ops": file_ops,
         "manifest": manifest,
+    }
+    # 统一时间线：优先用收尾时落盘的 timeline.json，缺失则按 DB 现建（老 run）。
+    from ..core.timeline import load_timeline
+
+    data["timeline"] = load_timeline(run_dir, build_if_missing=True) or {
+        "schema": "inkblade-timeline-v1", "run": name, "events": [], "counts": {},
     }
     # 十视图补充数据（文件存在才内嵌；老 run 导出不受影响）：
     # drift.json（⑧差异视图）与工作区级 assets.db / explorer 队列 / schedules
@@ -138,6 +163,10 @@ def export_static(run_dir: Path | str, out: Path | str, redact_zeroday: bool = F
     if out.exists():
         shutil.rmtree(out)
     shutil.copytree(_STATIC, out)
+    # 时间线原始产物随行（机器可读；index.html 内已内嵌同一份数据）
+    timeline_src = Path(run_dir) / "timeline.json"
+    if timeline_src.is_file():
+        shutil.copy2(timeline_src, out / "timeline.json")
 
     html = (_STATIC / "index.html").read_text(encoding="utf-8")
     payload = json.dumps(data, ensure_ascii=False, default=str)

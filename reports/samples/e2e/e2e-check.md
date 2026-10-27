@@ -16,7 +16,7 @@
 | chain-execute-weight-poison | 完整链执行（平网→管理面→权重投毒）：全部步骤成功 + 备份回执在库 | PASS | 步骤 admin-failopen-probe:success、weight-pull-poison:success | <elapsed> |
 | evidence-three-layers-manifest | 三层证据齐备（上下文摘要/SQLite/归档 tar+SHA256）且 manifest 校验通过、篡改可检出 | PASS | 19 步骤 / 19 归档 / 篡改检出✓ | <elapsed> |
 | zeroday-public-no-gate | 零日级漏洞模块（已公开）无需零日闸门：默认可见、可直接执行，发现带 is_zeroday 审计标记 | PASS | 公开✓ / private=false✓ / 无需 enable✓ / is_zeroday 落库 4 条 | <elapsed> |
-| report-bilingual-public-details | 双语渗透+修复报告渲染：PTES/专节/标准映射/CVSS/证据锚齐备；已公开零日级细节默认展示，可选脱敏开关生效 | PASS | 渗透 74809 字符 / 修复 71762 字符；默认展示✓ / 可选脱敏 71352 字符✓ | <elapsed> |
+| report-bilingual-public-details | 双语渗透+修复报告渲染：PTES/专节/标准映射/CVSS/证据锚齐备；已公开零日级细节默认展示，可选脱敏开关生效 | PASS | 渗透 76674 字符 / 修复 71762 字符；默认展示✓ / 可选脱敏 73217 字符✓ | <elapsed> |
 | rules-pack-coverage | 规则包 generate_all：每链 ≥1 规则，三 CNI 变体 + Sigma/Falco/Suricata 产物齐备 | PASS | 121 规则 / 29 链全覆盖 / 三变体+四引擎✓ | <elapsed> |
 | purple-coverage-matrix | 紫队验证：mock 靶场重放 + 简化匹配器 → 覆盖率矩阵零漏过 | PASS | 28 链 / 0 漏过 / 态集合 ['拦截', '拦截+检测', '检测'] | <elapsed> |
 | export-static-offline | export_static 免服务产物：index.html 内嵌 INKBLADE_DATA（file:// 可开六视图） | PASS | static-export\index.html | <elapsed> |

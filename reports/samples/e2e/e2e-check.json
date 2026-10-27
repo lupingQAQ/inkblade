@@ -69,7 +69,7 @@
       "id": "report-bilingual-public-details",
       "title": "双语渗透+修复报告渲染：PTES/专节/标准映射/CVSS/证据锚齐备；已公开零日级细节默认展示，可选脱敏开关生效",
       "status": "PASS",
-      "detail": "渗透 74809 字符 / 修复 71762 字符；默认展示✓ / 可选脱敏 71352 字符✓",
+      "detail": "渗透 76674 字符 / 修复 71762 字符；默认展示✓ / 可选脱敏 73217 字符✓",
       "elapsed_ms": "<dynamic>"
     },
     {

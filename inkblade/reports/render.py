@@ -240,6 +240,125 @@ def _steps_table(run, lang: str) -> str:
     return "\n".join(lines)
 
 
+def _file_audit_section(run, lang: str) -> str:
+    """「操作与文件访问台账」：按 step 汇总命令与文件读写，附 SOC 审计键。"""
+    from ..core.fileaudit import SOC_AUDIT_KEYS, file_ops, redact_argv
+
+    try:
+        rows = file_ops(run)
+    except Exception:  # noqa: BLE001 - 老库缺表时如实置空
+        rows = []
+
+    intro = _pick(
+        lang,
+        "本表由探针侧审计事件生成：每条 `exec` 记录 argv/cwd/exit/stdout 摘要与 "
+        "`/proc/<pid>/fd` 采样得到的已打开文件；`read`/`write`/`list` 为显式文件操作。"
+        "凭据形态的 argv 值只保留尾 4 位（`****abcd`），环境变量只落排序后 SHA256 摘要，"
+        "不落明文。",
+        "This ledger is generated from probe-side audit events: each `exec` row carries "
+        "argv/cwd/exit/stdout digest plus files sampled from `/proc/<pid>/fd`; "
+        "`read`/`write`/`list` are explicit file operations. Credential-shaped argv values "
+        "keep only the last 4 characters (`****abcd`); environment variables are stored as "
+        "a sorted SHA256 digest, never in clear text.",
+    )
+    lines = [intro, ""]
+    if not rows:
+        lines.append(_pick(
+            lang,
+            "**本 run 未记录文件/操作审计事件**（`file_ops` 为空）：没有探针 `audit-exec` / "
+            "`read-file` / `list-files` 记录，本节不臆造文件访问。",
+            "**No file/operation audit events recorded for this run** (`file_ops` empty): no "
+            "probe `audit-exec` / `read-file` / `list-files` events exist, so this section "
+            "does not invent file access.",
+        ))
+        lines.append("")
+    else:
+        grouped: dict[str, list[dict]] = {}
+        for row in rows:
+            grouped.setdefault(str(row.get("step_key") or _pick(lang, "(未关联 step)", "(no step)")),
+                               []).append(row)
+        lines.append(_pick(
+            lang,
+            "| step | 命令（脱敏） | cwd | exit | 耗时(ms) | 读取文件 | 写入文件 | 证据哈希 |",
+            "| Step | Command (redacted) | cwd | exit | Duration (ms) | Files read | Files written | Evidence hash |",
+        ))
+        lines.append("|---|---|---|---:|---:|---|---|---|")
+        for step_key in sorted(grouped):
+            events = grouped[step_key]
+            execs = [e for e in events if e.get("op") == "exec"]
+            commands = []
+            for event in execs:
+                argv = event.get("argv") or []
+                command = " ".join(redact_argv([str(item) for item in argv])) or "—"
+                exit_code = event.get("exit_code")
+                duration = event.get("duration_ms")
+                suffix = f" (exit={exit_code if exit_code is not None else '—'}, " \
+                         f"{duration if duration is not None else '—'}ms)"
+                commands.append(f"`{command}`{suffix}")
+            files_read: list[str] = []
+            files_written: list[str] = []
+            for event in events:
+                op = str(event.get("op") or "")
+                if op == "read" and event.get("path"):
+                    files_read.append(str(event["path"]))
+                elif op == "write" and event.get("path"):
+                    files_written.append(str(event["path"]))
+                elif op == "list" and event.get("path"):
+                    files_read.append(f"{event['path']}/ (list)")
+                for entry in event.get("opened_files") or []:
+                    path = str(entry.get("path") or "")
+                    if not path:
+                        continue
+                    mode = str(entry.get("mode") or "read")
+                    if mode in ("write", "rw"):
+                        files_written.append(path)
+                    else:
+                        files_read.append(path)
+            hashes = []
+            for event in events:
+                digest = str(event.get("stdout_hash") or event.get("sha256") or "")
+                if digest:
+                    hashes.append(digest[:16])
+            cwds = sorted({str(e.get("cwd") or "") for e in execs if e.get("cwd")})
+            exits = sorted({str(e.get("exit_code")) for e in execs
+                            if e.get("exit_code") is not None})
+            durations = [e.get("duration_ms") for e in execs if e.get("duration_ms") is not None]
+            lines.append(
+                "| " + " | ".join([
+                    _cell(step_key),
+                    "<br>".join(_cell(c) for c in commands) or (_pick(lang, "（无命令）", "(no command)")),
+                    _cell(", ".join(cwds) or "—"),
+                    _cell(", ".join(exits) or "—"),
+                    _cell(", ".join(str(d) for d in durations) or "—"),
+                    _cell("<br>".join(files_read) or "—"),
+                    _cell("<br>".join(files_written) or "—"),
+                    _cell("<br>".join(hashes[:4]) or "—"),
+                ]) + " |"
+            )
+        lines.append("")
+        lines.append(_pick(
+            lang,
+            f"共 {len(rows)} 条审计事件，{len(grouped)} 个 step；文件路径仅限目标容器内，"
+            "宿主逃逸路径（`/proc/*/root`、`/host`、容器运行时 socket、`/var/lib/kubelet`）"
+            "在控制器与探针两侧均被拒绝。",
+            f"{len(rows)} audit events across {len(grouped)} step(s); paths are limited to the "
+            "target container. Host-escape paths (`/proc/*/root`, `/host`, container-runtime "
+            "sockets, `/var/lib/kubelet`) are refused on both controller and probe sides.",
+        ))
+        lines.append("")
+
+    lines.append(_pick(lang, "#### SOC 审计键（auditd / Falco / OpenTelemetry）",
+                       "#### SOC audit keys (auditd / Falco / OpenTelemetry)"))
+    lines.append("")
+    lines.append(_pick(lang, "| 面 | 审计键 | 规则/选择器 | 关键字段 |",
+                       "| Surface | Audit key | Rule / selector | Key fields |"))
+    lines.append("|---|---|---|---|")
+    for item in SOC_AUDIT_KEYS:
+        lines.append(f"| {_cell(item['surface'])} | `{_cell(item['key'])}` | "
+                     f"{_cell(item['rule'])} | {_cell(item['fields'])} |")
+    return "\n".join(lines)
+
+
 def _network_layer_section(run, lang: str) -> str:
     """网络分层节的数据驱动部分：消费 graph_nodes/graph_edges（层级 + 判定方式）。
 
@@ -583,6 +702,9 @@ def render_pentest(
     )
     mapping["applicability_table"] = render_matrix(assessment, lang)
     mapping["steps_table"] = _steps_table(run, lang)
+    mapping["title_file_audit"] = _pick(
+        lang, "操作与文件访问台账", "Operation and File-Access Ledger")
+    mapping["file_audit_body"] = _file_audit_section(run, lang)
     mapping["title_highest_privilege"] = _pick(
         lang, "最高权限证明", "Highest-Privilege Proof")
     mapping["body_highest_privilege"] = _objective_section(run, lang)

@@ -341,6 +341,28 @@ class ProbeController:
                 args[key] = kwargs[key]
         return self._request(probe_id, "exec", args, kind="exec")
 
+    def audit_exec(self, probe_id: str, argv: list[str], *, cwd: str = "",
+                   timeout_ms: int | None = None, technique: str = "") -> dict[str, Any]:
+        """探针侧审计执行：命令 + /proc/<pid>/fd 采样（file_ops 的输入）。"""
+        args: dict[str, Any] = {"argv": list(argv), "technique": str(technique or "")}
+        if cwd:
+            args["cwd"] = str(cwd)
+        if timeout_ms is not None:
+            args["timeout_ms"] = int(timeout_ms)
+        return self._request(probe_id, "audit-exec", args, kind="audit-exec")
+
+    def read_file(self, probe_id: str, path: str, *, max_bytes: int = 1024 * 1024
+                  ) -> dict[str, Any]:
+        return self._request(probe_id, "read-file",
+                             {"path": str(path), "max_bytes": int(max_bytes)},
+                             kind="read-file")
+
+    def list_files(self, probe_id: str, path: str, *, pattern: str = "") -> dict[str, Any]:
+        args: dict[str, Any] = {"path": str(path)}
+        if pattern:
+            args["pattern"] = str(pattern)
+        return self._request(probe_id, "list-files", args, kind="list-files")
+
     def upload(self, probe_id: str, path: str, data: bytes, *, mode: int = 0o600) -> dict[str, Any]:
         endpoint = self.endpoint(probe_id)
         return endpoint.transport.upload(path, data, mode=mode)
@@ -377,8 +399,11 @@ class ProbeController:
     def client(self, probe_id: str):
         """Return the minimal ``task`` client expected by ``tpl.probe.RustProbe``."""
         controller = self
+        probe_key = str(probe_id)
 
         class _Client:
+            probe_id = probe_key
+
             def task(self, template, params=None, task_id=None):
                 return controller.run_template(
                     probe_id, template, params or {}, timeout=None

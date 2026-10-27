@@ -372,7 +372,8 @@ class _Handler(BaseHTTPRequestHandler):
                              "fixed": doc.get("fixed") or [],
                              "drift": doc})
             return True
-        if path not in ("/api/v1/steps", "/api/v1/evidence", "/api/v1/graph", "/api/v1/report"):
+        if path not in ("/api/v1/steps", "/api/v1/evidence", "/api/v1/graph",
+                        "/api/v1/report", "/api/v1/timeline", "/api/v1/file-ops"):
             return False
         run = (q.get("run") or [""])[0]
         if not run:
@@ -416,6 +417,22 @@ class _Handler(BaseHTTPRequestHandler):
             self._json(200, {"workspace": ws, "run": run, "nodes": nodes, "edges": edges,
                              "node_count": len(nodes), "edge_count": len(edges),
                              "by_layer": by_layer})
+            return True
+        if path == "/api/v1/timeline":
+            from ..core.timeline import load_timeline
+
+            doc = load_timeline(run_dir, build_if_missing=True) or {}
+            events = doc.get("events") or []
+            self._json(200, {"workspace": ws, "run": run, "schema": doc.get("schema", ""),
+                             "counts": doc.get("counts") or {}, "count": len(events),
+                             "events": events})
+            return True
+        if path == "/api/v1/file-ops":
+            step = (q.get("step") or [""])[0]
+            rows = [row for row in data.get("file_ops", [])
+                    if not step or row.get("step_key") == step]
+            self._json(200, {"workspace": ws, "run": run, "file_ops": rows,
+                             "count": len(rows)})
             return True
         # report
         kind = (q.get("kind") or ["pentest"])[0]

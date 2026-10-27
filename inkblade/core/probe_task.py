@@ -72,6 +72,33 @@ def exec_task(argv: list[str], *, timeout_ms: int = 8000) -> dict[str, Any]:
             "steps": [{"id": "exec", "op": "exec", "argv": argv, "timeout_ms": int(timeout_ms)}]}
 
 
+def audit_exec_task(argv: list[str], *, cwd: str = "", timeout_ms: int = 8000,
+                    technique: str = "") -> dict[str, Any]:
+    """审计执行任务（探针侧 audit-exec：argv/cwd/env 摘要 + fd 采样）。"""
+    if not argv or any(not isinstance(item, str) for item in argv):
+        raise ProbeTaskError("audit-exec argv must be a non-empty string list")
+    step: dict[str, Any] = {"id": "audit-exec", "op": "audit-exec",
+                            "argv": list(argv), "timeout_ms": int(timeout_ms)}
+    if cwd:
+        step["cwd"] = str(cwd)
+    if technique:
+        step["technique"] = str(technique)
+    return {"name": "controller.audit-exec", "steps": [step]}
+
+
+def read_file_task(path: str, *, max_bytes: int = 1024 * 1024) -> dict[str, Any]:
+    return {"name": "controller.read-file",
+            "steps": [{"id": "read-file", "op": "read-file", "path": str(path),
+                       "max_bytes": int(max_bytes)}]}
+
+
+def list_files_task(path: str, *, pattern: str = "") -> dict[str, Any]:
+    step: dict[str, Any] = {"id": "list-files", "op": "list-files", "path": str(path)}
+    if pattern:
+        step["pattern"] = str(pattern)
+    return {"name": "controller.list-files", "steps": [step]}
+
+
 def upload_task(path: str, data: bytes, *, mode: int = 0o600,
                 chunk_size: int = 48 * 1024) -> list[dict[str, Any]]:
     chunks = []
@@ -120,6 +147,17 @@ def translate_action(action: str, payload: dict[str, Any] | None = None) -> dict
     if action in ("exec", "command"):
         return exec_task(list(payload.get("argv") or []),
                          timeout_ms=int(payload.get("timeout_ms") or 8000))
+    if action in ("audit-exec", "audit_exec", "exec-audit"):
+        return audit_exec_task(list(payload.get("argv") or []),
+                               cwd=str(payload.get("cwd") or ""),
+                               timeout_ms=int(payload.get("timeout_ms") or 8000),
+                               technique=str(payload.get("technique") or ""))
+    if action in ("read-file", "read_file", "cat"):
+        return read_file_task(str(payload.get("path") or ""),
+                              max_bytes=int(payload.get("max_bytes") or 1024 * 1024))
+    if action in ("list-files", "list_files", "ls"):
+        return list_files_task(str(payload.get("path") or ""),
+                               pattern=str(payload.get("pattern") or ""))
     if action in ("python", "py", "shell", "sh", "bash"):
         raise UnsupportedTask(
             f"action {action!r} requires an interpreter; the target only accepts native templates"
@@ -170,6 +208,23 @@ class ProbeTaskDispatcher:
             elif task.kind == "exec":
                 result = self.controller.run_template(
                     probe_id, task.payload, task.payload.get("params") or {}
+                )
+            elif task.kind == "audit-exec":
+                result = self.controller.audit_exec(
+                    probe_id, list(task.payload.get("argv") or []),
+                    cwd=str(task.payload.get("cwd") or ""),
+                    timeout_ms=int(task.payload.get("timeout_ms") or 8000),
+                    technique=str(task.payload.get("technique") or ""),
+                )
+            elif task.kind == "read-file":
+                result = self.controller.read_file(
+                    probe_id, str(task.payload.get("path") or ""),
+                    max_bytes=int(task.payload.get("max_bytes") or 1024 * 1024),
+                )
+            elif task.kind == "list-files":
+                result = self.controller.list_files(
+                    probe_id, str(task.payload.get("path") or ""),
+                    pattern=str(task.payload.get("pattern") or ""),
                 )
             elif task.kind == "upload":
                 result = {"chunks": []}

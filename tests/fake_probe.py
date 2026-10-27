@@ -13,6 +13,7 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import socket
 import struct
 import subprocess
@@ -81,7 +82,8 @@ def auth(token: str) -> None:
         "v": 1, "type": "ready", "probe_id": PROBE_ID, "parent_id": PARENT_ID,
         "version": "0.1.0", "read_only": os.environ.get("FAKE_READ_ONLY", "1") == "1",
         "caps": ["collect", "exec", "dial", "beacon", "cleanup", "upload",
-                 "download", "spawn", "task", "socks", "k8s"],
+                 "download", "spawn", "task", "socks", "k8s",
+                 "audit-exec", "read-file", "list-files"],
         "window": 4, "max_output": 1024 * 1024,
     })
 
@@ -249,6 +251,162 @@ def _fs_step(step: dict[str, Any]) -> dict[str, Any]:
     return {"error": f"unsupported fs action {action}"}
 
 
+# --------------------------------------------------------------------------
+# file/operation audit doubles (op: audit-exec / read-file / list-files)
+# --------------------------------------------------------------------------
+HOST_ESCAPE_PREFIXES = (
+    "/host", "/hostfs", "/mnt/host", "/var/lib/kubelet", "/var/lib/docker",
+    "/var/run/docker.sock", "/run/docker.sock", "/run/containerd",
+    "/var/run/containerd", "/sys/kernel/debug", "/dev/mem", "/dev/kmem",
+    "/dev/kmsg", "/proc/sysrq-trigger", "/proc/kcore",
+)
+_PROC_ROOT_RE = re.compile(r"^/proc/(?:\d+|self|thread-self)/root(?:/|$)")
+
+
+def _unsafe_path(path: str) -> str:
+    raw = str(path or "").strip().replace("\\", "/")
+    if not raw:
+        return "empty path"
+    if _PROC_ROOT_RE.match(raw):
+        return "host escape via /proc/<pid>/root"
+    for prefix in HOST_ESCAPE_PREFIXES:
+        if raw == prefix or raw.startswith(prefix + "/"):
+            return f"host path is out of scope: {prefix}"
+    if ".." in [p for p in raw.split("/") if p]:
+        return "path traversal is not allowed"
+    return ""
+
+
+def _env_digest(env: dict[str, str]) -> str:
+    payload = json.dumps({str(k): str(v) for k, v in sorted(env.items())},
+                         sort_keys=True)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _read_file(args: dict[str, Any]) -> dict[str, Any]:
+    path = str(args.get("path") or "")
+    reason = _unsafe_path(path)
+    if reason:
+        raise ValueError(f"refusing {path}: {reason}")
+    max_bytes = min(max(int(args.get("max_bytes") or 1024 * 1024), 1), 16 * 1024 * 1024)
+    raw = Path(path).read_bytes()
+    chunk = raw[:max_bytes]
+    return {
+        "path": path, "exists": True, "size": len(raw), "bytes": len(chunk),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "data_b64": base64.b64encode(chunk).decode("ascii"),
+        "text": chunk.decode("utf-8", "replace"),
+        "eof": len(chunk) >= len(raw),
+    }
+
+
+def _list_files(args: dict[str, Any]) -> dict[str, Any]:
+    path = str(args.get("path") or "")
+    reason = _unsafe_path(path)
+    if reason:
+        raise ValueError(f"refusing {path}: {reason}")
+    pattern = str(args.get("pattern") or "")
+    entries = []
+    root = Path(path)
+    for item in sorted(root.iterdir(), key=lambda p: p.name):
+        if pattern and pattern.strip("*") not in item.name:
+            continue
+        entry = {"name": item.name, "path": str(item), "dir": item.is_dir(),
+                 "size": item.stat().st_size if item.is_file() else 0}
+        entries.append(entry)
+        if len(entries) >= 4096:
+            break
+    return {"path": path, "exists": True, "count": len(entries), "entries": entries}
+
+
+def _builtin_audit_exec(argv: list[str], cwd: str) -> dict[str, Any] | None:
+    """便携仿真 cat/echo（Windows CI 没有 cat），保证断言跨平台一致。"""
+    program = argv[0].rsplit("/", 1)[-1].rsplit("\\", 1)[-1]
+    base = Path(cwd) if cwd else None
+    if program == "cat":
+        stdout = b""
+        opened = []
+        for target in argv[1:]:
+            if target.startswith("-"):
+                continue
+            reason = _unsafe_path(target)
+            if reason:
+                raise ValueError(f"refusing {target}: {reason}")
+            path = Path(target)
+            if base is not None and not path.is_absolute():
+                path = base / path
+            raw = path.read_bytes()
+            stdout += raw
+            opened.append({"path": str(path), "mode": "read", "fd": 3 + len(opened),
+                           "size_bytes": len(raw),
+                           "sha256": hashlib.sha256(raw).hexdigest()})
+        return {"exit_code": 0, "stdout": stdout, "stderr": b"", "opened_files": opened,
+                "sampler": "fake-probe-argv"}
+    if program == "echo":
+        text = " ".join(argv[1:])
+        return {"exit_code": 0, "stdout": (text + "\n").encode("utf-8"), "stderr": b"",
+                "opened_files": [], "sampler": "fake-probe-argv"}
+    return None
+
+
+def _audit_exec(args: dict[str, Any]) -> dict[str, Any]:
+    argv = [str(item) for item in args.get("argv") or []]
+    if not argv:
+        raise ValueError("audit-exec requires argv")
+    cwd = str(args.get("cwd") or "")
+    technique = str(args.get("technique") or "")
+    timeout = min(max(int(args.get("timeout_ms") or 8000), 50), 120000) / 1000
+    for item in argv:
+        if item.startswith("/") or item.startswith("./") or item.startswith("../"):
+            reason = _unsafe_path(item)
+            if reason:
+                raise ValueError(f"refusing {item}: {reason}")
+    started = time.time()
+    pid = os.getpid()
+    env = {k: v for k, v in os.environ.items()
+           if k not in ("INKBLADE_PROBE_TOKEN", "INKBLADE_PROBE_TOKEN_FILE")}
+    builtin = _builtin_audit_exec(argv, cwd)
+    if builtin is not None:
+        stdout = builtin["stdout"]
+        stderr = builtin["stderr"]
+        exit_code = builtin["exit_code"]
+        opened = builtin["opened_files"]
+        sampler = builtin["sampler"]
+        timed_out = False
+    else:
+        timed_out = False
+        try:
+            proc = subprocess.run(argv, capture_output=True, timeout=timeout, env=env,
+                                  cwd=cwd or None)
+            stdout, stderr = proc.stdout, proc.stderr
+            exit_code, pid = proc.returncode, proc.pid
+        except subprocess.TimeoutExpired as exc:
+            stdout = exc.stdout if isinstance(exc.stdout, bytes) else b""
+            stderr = b"timeout"
+            exit_code = -1
+            timed_out = True
+        opened, sampler = [], "fake-probe-argv"
+    duration_ms = int((time.time() - started) * 1000)
+    stdout_text = stdout.decode("utf-8", "replace")
+    payload = {
+        "exit_code": exit_code, "rc": exit_code,
+        "stdout": stdout_text,
+        "stderr": stderr.decode("utf-8", "replace"),
+        "timed_out": timed_out, "duration_ms": duration_ms,
+        "argv": argv, "cwd": cwd, "pid": pid,
+        "clean_env": False,
+    }
+    audit = {
+        "pid": pid, "argv": argv, "cwd": cwd, "technique": technique,
+        "env_digest": _env_digest(env),
+        "opened_files": opened,
+        "stdout_hash": hashlib.sha256(stdout).hexdigest(),
+        "duration_ms": duration_ms, "exit_code": exit_code,
+        "sampler": sampler,
+    }
+    return {"exec": payload, "audit": audit}
+
+
 def execute_template(template: dict[str, Any], params: dict[str, Any], task_id: str) -> dict[str, Any]:
     results = []
     variables: dict[str, Any] = dict(params)
@@ -264,8 +422,10 @@ def execute_template(template: dict[str, Any], params: dict[str, Any], task_id: 
             elif op == "tcp":
                 value = _tcp_step(step)
             elif op == "exec":
-                value = _exec({"argv": step.get("argv") or [],
-                               "timeout_ms": step.get("timeout_ms") or 8000})
+                payload = _audit_exec({"argv": step.get("argv") or [],
+                                       "timeout_ms": step.get("timeout_ms") or 8000})
+                value = dict(payload["exec"])
+                value["audit"] = payload["audit"]
             elif op == "fs":
                 value = _fs_step(step)
             elif op == "assert":
@@ -306,6 +466,12 @@ def handle_request(frame: dict[str, Any]) -> None:
             data = _collect()
         elif op == "exec":
             data = _exec(args)
+        elif op == "audit-exec":
+            data = _audit_exec(args)
+        elif op == "read-file":
+            data = _read_file(args)
+        elif op == "list-files":
+            data = _list_files(args)
         elif op == "dial":
             data = _dial(args)
         elif op == "task":

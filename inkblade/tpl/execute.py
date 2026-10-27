@@ -93,6 +93,32 @@ def _write_trace(run, module_key: str, result: dict) -> None:
         encoding="utf-8")
 
 
+def _record_file_ops(run, module_key: str, backend, result: dict[str, Any]) -> None:
+    """把模板里 exec 步的探针审计写入 ``file_ops``（step_id 由 add_step 回填）。
+
+    探针侧已拒绝宿主路径；这里再校验一次，异常不阻断模块执行（审计失败不应
+    把已完成的动作变成执行失败），但会保留在探针 stderr 审计行里。
+    """
+    if run is None:
+        return
+    from ..core.fileaudit import FileOpRecorder
+
+    probe_id = str(getattr(getattr(backend, "client", None), "probe_id", "") or "")
+    recorder = FileOpRecorder(run, step_key=module_key, probe_id=probe_id)
+    for step in result.get("steps") or []:
+        if str(step.get("op") or "") != "exec":
+            continue
+        audit = step.get("audit")
+        if not isinstance(audit, dict) or not audit:
+            continue
+        recorder.technique = str(audit.get("technique") or "")
+        payload = {**step, "opened_files": audit.get("opened_files") or []}
+        try:
+            recorder.exec(payload, audit.get("argv") or step.get("argv") or [])
+        except Exception:  # noqa: BLE001 - 审计不阻断执行
+            continue
+
+
 def execute_template(store, session, meta, params: dict[str, Any], *,
                      probe: ProbeTransport | None = None,
                      marker: str | None = None,
@@ -113,6 +139,7 @@ def execute_template(store, session, meta, params: dict[str, Any], *,
     }
     result = backend.run(template, params, context)
     result.setdefault("key", meta.key)
+    _record_file_ops(run, meta.key, backend, result)
 
     if result.get("status") == "error":
         summary = f"探针执行失败：{result.get('error') or 'unknown'}"

@@ -59,6 +59,8 @@
     token: null, role: null, workspace: "local-lab",
     runs: [], data: window.INKBLADE_DATA || null,
     selectedStep: null, view: "dag", reportRemote: null, redactZeroday: false,
+    remoteTimeline: null, remoteFileOps: null,
+    remoteAuditLoaded: false, remoteAuditLoading: false,
     lang: "zh",
   };
   var STATIC_MODE = !!window.INKBLADE_DATA;
@@ -91,6 +93,17 @@
       "chain.filter": "链过滤", "chain.all": "全部链",
       "chain.legend": "边色：红=可达利用 / 橙=高危路径 / 黄虚线=降级 / 灰虚线=阻断·不可达",
       "timeline.title": "执行瀑布",
+      "ops.title": "操作与文件访问台账",
+      "ops.hint": "逐条列出探针执行的命令（argv/cwd/exit/耗时/stdout 摘要）与读取/写入的文件；点击行跳到证据浏览器对应步骤。",
+      "ops.empty": "本 run 未记录文件/操作审计事件（file_ops 为空）。",
+      "ops.col.time": "时间", "ops.col.subject": "主体", "ops.col.action": "动作",
+      "ops.col.target": "目标", "ops.col.files": "文件", "ops.col.result": "结果",
+      "ops.col.hash": "证据哈希",
+      "ops.badge.read": "读", "ops.badge.write": "写", "ops.badge.rw": "读写",
+      "ops.badge.list": "列目录", "ops.badge.exploit": "利用",
+      "ops.jump": "查看证据",
+      "ops.summary": "共 {total} 条事件 · 命令/文件 {file} · 步骤 {step} · 利用标记 {exploit}",
+      "evidence.files": "文件访问（file_ops）",
       "evidence.steps": "运行步骤", "evidence.threeLayers": "三层证据",
       "evidence.pickHint": "选择左侧步骤查看 prompt/命令、环境、归档哈希与上下文摘要指针。",
       "evidence.manifest": "归档清单 manifest.sha256",
@@ -235,6 +248,17 @@
       "report.zerodayYes": "Yes (zero-day, public)", "report.zerodayRedacted": "Yes (redacted)",
       "report.no": "No", "report.redactedTitle": "[Redacted] impact verified (zero-day, public; details hidden)",
       "timeline.summary": "Steps {steps} · span {total} · cumulative {sum} · peak parallelism {par}",
+      "ops.title": "Operation and file-access ledger",
+      "ops.hint": "Per-event commands (argv/cwd/exit/duration/stdout digest) plus files read or written; click a row to jump to the matching step in the evidence browser.",
+      "ops.empty": "No file/operation audit events recorded for this run (file_ops empty).",
+      "ops.col.time": "Time", "ops.col.subject": "Subject", "ops.col.action": "Action",
+      "ops.col.target": "Target", "ops.col.files": "Files", "ops.col.result": "Result",
+      "ops.col.hash": "Evidence hash",
+      "ops.badge.read": "read", "ops.badge.write": "write", "ops.badge.rw": "rw",
+      "ops.badge.list": "list", "ops.badge.exploit": "exploit",
+      "ops.jump": "Open evidence",
+      "ops.summary": "{total} events · file ops {file} · steps {step} · exploit markers {exploit}",
+      "evidence.files": "File access (file_ops)",
       "empty.dag.title": "No steps in this view yet",
       "empty.dag.body": "The DAG comes from a run's steps table. Run the local demo to generate steps and three-layer evidence, or open a static export.",
       "empty.dag.action": "python -m inkblade demo",
@@ -305,6 +329,106 @@
   function nodes() { return (STATE.data && STATE.data.nodes) || []; }
   function edges() { return (STATE.data && STATE.data.edges) || []; }
   function stepStatus(s) { return s && STATUS_ZH[s.status] ? s.status : "pending"; }
+
+  /* ================= 操作/文件访问台账数据 ================= */
+
+  function timelineDoc() { return (STATE.data && STATE.data.timeline) || STATE.remoteTimeline; }
+  function timelineEvents() { return (timelineDoc() && timelineDoc().events) || []; }
+  function fileOpsRows() {
+    return (STATE.data && STATE.data.file_ops) || STATE.remoteFileOps || [];
+  }
+  function loadRemoteAudit() {
+    if (STATIC_MODE || !STATE.token || STATE.remoteAuditLoaded || STATE.remoteAuditLoading) return;
+    var run = STATE.selectedRun || (STATE.runs && STATE.runs[0]) || "";
+    if (!run) return;
+    STATE.remoteAuditLoading = true;
+    var qs = "?workspace=" + encodeURIComponent(STATE.workspace) + "&run=" + encodeURIComponent(run);
+    api("api/v1/timeline" + qs)
+      .then(function (body) {
+        STATE.remoteTimeline = { events: body.events || [], counts: body.counts || {} };
+        return api("api/v1/file-ops" + qs);
+      })
+      .then(function (body) {
+        STATE.remoteFileOps = body.file_ops || [];
+        STATE.remoteAuditLoaded = true;
+        STATE.remoteAuditLoading = false;
+        renderOpsLedger();
+        if (STATE.view === "evidence") renderEvidence();
+      })
+      .catch(function () { STATE.remoteAuditLoading = false; });
+  }
+  function opsForStep(key) {
+    if (!key) return [];
+    return fileOpsRows().filter(function (row) { return row.step_key === key; });
+  }
+  function fmtTs(ts) {
+    if (!ts) return "—";
+    var d = new Date(ts * 1000);
+    var p = function (x) { return (x < 10 ? "0" : "") + x; };
+    return p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
+  }
+  function fileBadges(files) {
+    var box = el("div", "ops-files");
+    (files || []).forEach(function (f) {
+      var mode = f.mode || "read";
+      var badge = el("span", "ops-file mode-" + mode);
+      badge.appendChild(el("b", null, t("ops.badge." + (mode === "write" ? "write" : (mode === "rw" ? "rw" : "read")))));
+      badge.appendChild(document.createTextNode(" " + (f.path || "")));
+      if (f.size_bytes) badge.appendChild(el("i", null, " " + f.size_bytes + "B"));
+      if (f.sha256) badge.title = f.sha256;
+      box.appendChild(badge);
+    });
+    if (!(files || []).length) box.appendChild(el("span", "hint", "—"));
+    return box;
+  }
+
+  function renderOpsLedger() {
+    var host = document.getElementById("ops-ledger");
+    if (!host) return;
+    clear(host);
+    var events = timelineEvents();
+    if (!events.length) {
+      host.appendChild(el("div", "hint", t("ops.empty")));
+      return;
+    }
+    var table = el("table", "ops-table");
+    var head = el("tr");
+    ["time", "subject", "action", "target", "files", "result", "hash"].forEach(function (key) {
+      head.appendChild(el("th", null, t("ops.col." + key)));
+    });
+    table.appendChild(head);
+    events.forEach(function (ev) {
+      var row = el("tr", "ops-row kind-" + (ev.kind || "action"));
+      row.setAttribute("data-step", ev.step_key || "");
+      row.setAttribute("data-kind", ev.kind || "");
+      row.appendChild(el("td", "ops-ts", fmtTs(ev.ts)));
+      row.appendChild(el("td", "ops-subject", ev.subject || "—"));
+      row.appendChild(el("td", "ops-action",
+        (ev.kind === "exploit" ? t("ops.badge.exploit") + " · " : "") + (ev.action || "—")));
+      row.appendChild(el("td", "ops-target", ev.target || "—"));
+      var filesCell = el("td");
+      filesCell.appendChild(fileBadges(ev.files));
+      row.appendChild(filesCell);
+      row.appendChild(el("td", "ops-result", ev.result || "—"));
+      row.appendChild(el("td", "ops-hash", (ev.evidence_sha256 || "").slice(0, 16) || "—"));
+      if (ev.step_key) {
+        row.title = t("ops.jump") + ": " + ev.step_key;
+        row.addEventListener("click", function () {
+          STATE.selectedStep = ev.step_key;
+          showView("evidence");
+        });
+      }
+      table.appendChild(row);
+    });
+    host.appendChild(table);
+    var counts = {};
+    events.forEach(function (ev) { counts[ev.kind || "action"] = (counts[ev.kind || "action"] || 0) + 1; });
+    host.appendChild(el("div", "hint", t("ops.summary", {
+      total: events.length, file: counts.file_op || 0, step: counts.step || 0,
+      exploit: counts.exploit || 0,
+    })));
+  }
+
 
   /* ================= 引导空态（十个视图统一） ================= */
 
@@ -816,10 +940,12 @@
 
   function renderTimeline() {
     var body = document.getElementById("timeline-body");
+    loadRemoteAudit();
     clear(body);
     var list = steps();
     if (!list.length) {
       body.appendChild(emptyState("timeline", { icon: "③" }));
+      renderOpsLedger();
       return;
     }
     var rows = list.map(function (s) {
@@ -878,6 +1004,7 @@
       steps: rows.length, total: fmtDur((t1 - t0) * 1000),
       sum: fmtDur(sum * 1000), par: maxPar,
     })));
+    renderOpsLedger();
   }
 
   /* ================= ④ 证据浏览器 ================= */
@@ -886,6 +1013,7 @@
     var list = document.getElementById("ev-steps");
     var detail = document.getElementById("ev-detail");
     var manifest = document.getElementById("ev-manifest");
+    loadRemoteAudit();
     clear(list); clear(detail);
     var st = steps();
     if (!st.length) {
@@ -953,6 +1081,27 @@
       envDiv.appendChild(r);
     });
     kv("环境", envDiv);
+    var opsDiv = el("div", "ops-detail");
+    var ops = opsForStep(stepKey);
+    if (!ops.length) opsDiv.appendChild(el("span", "hint", t("ops.empty")));
+    ops.forEach(function (row) {
+      var line = el("div", "ops-detail-row");
+      line.appendChild(el("span", "badge ops-op", row.op || "exec"));
+      line.appendChild(el("code", null, (row.argv || []).join(" ") || row.path || "—"));
+      if (row.cwd) line.appendChild(el("span", "hint", " cwd=" + row.cwd));
+      if (row.exit_code !== undefined && row.exit_code !== null) {
+        line.appendChild(el("span", "hint", " exit=" + row.exit_code));
+      }
+      if (row.duration_ms) line.appendChild(el("span", "hint", " " + row.duration_ms + "ms"));
+      (row.opened_files || []).forEach(function (f) {
+        var badge = el("span", "ops-file mode-" + (f.mode || "read"),
+          (f.mode || "read") + " " + (f.path || ""));
+        if (f.sha256) badge.title = f.sha256;
+        line.appendChild(badge);
+      });
+      opsDiv.appendChild(line);
+    });
+    kv(t("evidence.files"), opsDiv);
     kv("结果摘要", el("span", null, s.result_summary || "（无）"));
     var archDiv = el("div");
     archDiv.appendChild(el("code", null, s.archive || "—"));

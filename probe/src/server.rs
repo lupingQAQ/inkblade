@@ -198,6 +198,9 @@ fn handshake(state: &State) -> Result<(), String> {
             json::string("task"),
             json::string("socks"),
             json::string("k8s"),
+            json::string("audit-exec"),
+            json::string("read-file"),
+            json::string("list-files"),
         ])),
         ("window", json::number(state.opts.max_window as u64)),
         ("max_output", json::number(state.opts.max_output_bytes() as u64)),
@@ -264,6 +267,63 @@ fn handle_frame(state: &Arc<State>, frame: Value) -> Result<(), String> {
             Ok(value) => state.response(&id, value),
             Err(error) => state.failure(&id, "exec_failed", &error),
         },
+        "audit-exec" => match crate::auditops::audit_exec(&args, &state.opts) {
+            Ok(value) => {
+                state.audit.event(
+                    "probe.audit_exec",
+                    json::object(vec![
+                        ("probe_id", json::string(state.opts.probe_id.clone())),
+                        ("audit", value.get("audit").cloned().unwrap_or(Value::Null)),
+                    ]),
+                );
+                state.response(&id, value)
+            }
+            Err(error) => state.failure(&id, "audit_exec_failed", &error),
+        },
+        "read-file" => {
+            let path = args
+                .get("path")
+                .and_then(Value::as_str)
+                .ok_or_else(|| "read-file requires path".to_string());
+            match path.and_then(|path| {
+                crate::auditops::read_file(path, args.get("max_bytes").and_then(Value::as_u64).unwrap_or(1024 * 1024) as usize)
+            }) {
+                Ok(value) => {
+                    state.audit.event(
+                        "probe.read_file",
+                        json::object(vec![
+                            ("probe_id", json::string(state.opts.probe_id.clone())),
+                            ("path", json::string(args.get("path").and_then(Value::as_str).unwrap_or(""))),
+                            ("sha256", value.get("sha256").cloned().unwrap_or(Value::Null)),
+                            ("bytes", value.get("bytes").cloned().unwrap_or(Value::Null)),
+                        ]),
+                    );
+                    state.response(&id, value)
+                }
+                Err(error) => state.failure(&id, "read_file_failed", &error),
+            }
+        }
+        "list-files" => {
+            let pattern = args.get("pattern").and_then(Value::as_str).unwrap_or("");
+            let path = args
+                .get("path")
+                .and_then(Value::as_str)
+                .ok_or_else(|| "list-files requires path".to_string());
+            match path.and_then(|path| crate::auditops::list_files(path, pattern)) {
+                Ok(value) => {
+                    state.audit.event(
+                        "probe.list_files",
+                        json::object(vec![
+                            ("probe_id", json::string(state.opts.probe_id.clone())),
+                            ("path", json::string(args.get("path").and_then(Value::as_str).unwrap_or(""))),
+                            ("count", value.get("count").cloned().unwrap_or(Value::Null)),
+                        ]),
+                    );
+                    state.response(&id, value)
+                }
+                Err(error) => state.failure(&id, "list_files_failed", &error),
+            }
+        }
         "bypass" => match crate::bypass::run(&args, &state.opts) {
             Ok(value) => {
                 state.audit.event("probe.bypass", value.clone());

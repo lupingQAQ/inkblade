@@ -1,0 +1,5181 @@
+{
+ "schema": "inkblade-timeline-v1",
+ "run": "e2e-acceptance",
+ "generated_at": "<dynamic>",
+ "counts": {
+  "action": 43,
+  "step": 21,
+  "exploit": 72
+ },
+ "events": [
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "exposure-mapping",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "bad9cb18b7ecbe3898716e143a14965738ed04b2d64bcf486f0630fa7fd621a1",
+   "step_key": "exposure-mapping",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#1",
+   "detail": {
+    "params": {
+     "snapshot": {
+      "cluster": {
+       "name": "ml-lab",
+       "provider": "unknown"
+      },
+      "namespaces": [
+       "default",
+       "infer",
+       "train",
+       "ray-system",
+       "monitoring",
+       "ops"
+      ],
+      "services": [
+       {
+        "name": "sglang-admin",
+        "namespace": "infer",
+        "type": "ClusterIP",
+        "selector": {
+         "app": "sglang"
+        },
+        "ports": [
+         {
+          "name": "http",
+          "port": 30000,
+          "targetPort": 30000
+         }
+        ]
+       },
+       {
+        "name": "ray-dashboard",
+        "namespace": "ray-system",
+        "type": "LoadBalancer",
+        "ports": [
+         {
+          "name": "dashboard",
+          "port": 8265,
+          "targetPort": 8265
+         }
+        ],
+        "externalIPs": [
+         "203.0.113.10"
+        ]
+       },
+       {
+        "name": "vllm-plugins",
+        "namespace": "infer",
+        "type": "NodePort",
+        "ports": [
+         {
+          "name": "http",
+          "port": 8000,
+          "targetPort": 8000,
+          "nodePort": 31000
+         }
+        ]
+       },
+       {
+        "name": "openrlhf-reward",
+        "namespace": "train",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "rm",
+          "port": 5000,
+          "targetPort": 5000
+         }
+        ]
+       },
+       {
+        "name": "grafana",
+        "namespace": "monitoring",
+        "type": "LoadBalancer",
+        "ports": [
+         {
+          "name": "http",
+          "port": 3000
+         }
+        ]
+       },
+       {
+        "name": "prometheus",
+        "namespace": "monitoring",
+        "type": "NodePort",
+        "ports": [
+         {
+          "name": "http",
+          "port": 9090,
+          "nodePort": 32090
+         }
+        ]
+       },
+       {
+        "name": "dcgm-exporter",
+        "namespace": "monitoring",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "metrics",
+          "port": 9400
+         }
+        ]
+       },
+       {
+        "name": "mlflow",
+        "namespace": "ops",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "http",
+          "port": 5000
+         }
+        ]
+       },
+       {
+        "name": "jupyter",
+        "namespace": "ops",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "http",
+          "port": 8888
+         }
+        ]
+       },
+       {
+        "name": "tensorboard",
+        "namespace": "train",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "http",
+          "port": 6006
+         }
+        ]
+       }
+      ],
+      "ingresses": [
+       {
+        "name": "mlflow-ingress",
+        "namespace": "ops",
+        "host": "ml.ml-lab.internal",
+        "service": "mlflow",
+        "port": 5000
+       },
+       {
+        "name": "jupyter-ingress",
+        "namespace": "ops",
+        "host": "nb.ml-lab.internal",
+        "service": "jupyter",
+        "port": 8888
+       }
+      ],
+      "httproutes": [
+       {
+        "name": "llm-gateway",
+        "namespace": "infer",
+        "hostname": "llm.ml-lab.internal",
+        "service": "llm-router",
+        "port": 8000,
+        "inferencePool": {
+         "name": "llm-pool",
+         "failureMode": "FailOpen"
+        }
+       }
+      ],
+      "networkpolicies": [
+       {
+        "name": "default-deny",
+        "namespace": "train",
+        "podSelector": {},
+        "policyTypes": [
+         "Ingress",
+         "Egress"
+        ],
+        "ingress": [],
+        "egress": []
+       },
+       {
+        "name": "allow-dns",
+        "namespace": "train",
+        "podSelector": {},
+        "policyTypes": [
+         "Egress"
+        ],
+        "egress": [
+         {
+          "to": [
+           {
+            "namespaceSelector": {
+             "matchLabels": {
+              "kubernetes.io/metadata.name": "kube-system"
+             }
+            }
+           }
+          ],
+          "ports": [
+           {
+            "port": 53,
+            "protocol": "UDP"
+           }
+          ]
+         }
+        ]
+       }
+      ],
+      "pods": [
+       {
+        "name": "sglang-server-0",
+        "namespace": "infer",
+        "serviceAccount": "sglang-sa",
+        "automountServiceAccountToken": true,
+        "labels": {
+         "app": "sglang"
+        },
+        "containers": [
+         {
+          "name": "server",
+          "image": "lmsys/sglang:v0.5.21",
+          "securityContext": {
+           "privileged": true
+          },
+          "ports": [
+           {
+            "containerPort": 30000
+           }
+          ],
+          "env": [
+           {
+            "name": "ADMIN_OPTIONAL",
+            "value": "1"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "name": "ray-head-0",
+        "namespace": "ray-system",
+        "serviceAccount": "ray-head",
+        "hostNetwork": true,
+        "hostIPC": true,
+        "labels": {
+         "app": "ray"
+        },
+        "containers": [
+         {
+          "name": "ray",
+          "image": "rayproject/ray:2.9.3",
+          "ports": [
+           {
+            "containerPort": 8265
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "name": "gpu-trainer-0",
+        "namespace": "train",
+        "serviceAccount": "train-sa",
+        "hostPID": true,
+        "volumes": [
+         {
+          "name": "docker-sock",
+          "hostPath": {
+           "path": "/var/run/docker.sock"
+          }
+         },
+         {
+          "name": "hf-cache",
+          "hostPath": {
+           "path": "/mnt/hf-cache"
+          }
+         }
+        ],
+        "containers": [
+         {
+          "name": "trainer",
+          "image": "registry.ml-lab/train:latest",
+          "securityContext": {
+           "capabilities": {
+            "add": [
+             "SYS_ADMIN",
+             "SYS_PTRACE"
+            ]
+           },
+           "seccompProfile": "Unconfined"
+          },
+          "env": [
+           {
+            "name": "AWS_ACCESS_KEY_ID",
+            "value": "MOCKAKIAINKBLADELAB"
+           },
+           {
+            "name": "AWS_SECRET_ACCESS_KEY",
+            "value": "MOCKSECRETINKBLADELAB"
+           },
+           {
+            "name": "HF_TOKEN",
+            "value": "mock-hf-token"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "name": "kuberay-operator-0",
+        "namespace": "ray-system",
+        "serviceAccount": "ray-operator",
+        "containers": [
+         {
+          "name": "manager",
+          "image": "kuberay/operator:v1.1.1"
+         }
+        ]
+       },
+       {
+        "name": "clean-app-0",
+        "namespace": "default",
+        "serviceAccount": "default",
+        "containers": [
+         {
+          "name": "web",
+          "image": "nginx:1.27"
+         }
+        ]
+       }
+      ],
+      "rayclusters": [
+       {
+        "name": "rl-train",
+        "namespace": "ray-system",
+        "headService": "ray-dashboard",
+        "dashboardPort": 8265,
+        "auth": "none",
+        "autoscalerSA": "ray-operator"
+       }
+      ],
+      "rayjobs": [
+       {
+        "name": "verl-ppo",
+        "namespace": "ray-system",
+        "entrypoint": "python train_ppo.py"
+       }
+      ],
+      "serviceaccounts": [
+       {
+        "name": "sglang-sa",
+        "namespace": "infer"
+       },
+       {
+        "name": "ray-head",
+        "namespace": "ray-system"
+       },
+       {
+        "name": "train-sa",
+        "namespace": "train"
+       },
+       {
+        "name": "ray-operator",
+        "namespace": "ray-system"
+       }
+      ],
+      "cani": [
+       {
+        "subject": "system:serviceaccount:train:train-sa",
+        "allowed": [
+         "create pods",
+         "create pods/exec",
+         "get secrets",
+         "list secrets"
+        ]
+       },
+       {
+        "subject": "system:serviceaccount:ray-system:ray-operator",
+        "allowed": [
+         "*"
+        ]
+       }
+      ],
+      "clusterroles": [
+       {
+        "name": "ray-operator-role",
+        "rules": [
+         {
+          "apiGroups": [
+           "*"
+          ],
+          "resources": [
+           "*"
+          ],
+          "verbs": [
+           "*"
+          ]
+         }
+        ]
+       },
+       {
+        "name": "vllm-operator-role",
+        "rules": [
+         {
+          "apiGroups": [
+           "rbac.authorization.k8s.io"
+          ],
+          "resources": [
+           "roles",
+           "rolebindings",
+           "clusterroles",
+           "clusterrolebindings"
+          ],
+          "verbs": [
+           "create",
+           "update",
+           "patch",
+           "delete"
+          ]
+         }
+        ]
+       }
+      ],
+      "clusterrolebindings": [
+       {
+        "name": "ray-operator-binding",
+        "role": "ray-operator-role",
+        "subjects": [
+         {
+          "kind": "ServiceAccount",
+          "name": "ray-operator",
+          "namespace": "ray-system"
+         }
+        ]
+       },
+       {
+        "name": "ops-admin-binding",
+        "role": "cluster-admin",
+        "subjects": [
+         {
+          "kind": "User",
+          "name": "ops-admin"
+         }
+        ]
+       }
+      ],
+      "secrets": [
+       {
+        "name": "hf-token",
+        "namespace": "train"
+       },
+       {
+        "name": "aws-creds",
+        "namespace": "train"
+       },
+       {
+        "name": "regcred",
+        "namespace": "ops"
+       }
+      ],
+      "pvcs": [
+       {
+        "name": "shared-weights",
+        "namespace": "train",
+        "accessModes": [
+         "ReadWriteMany"
+        ],
+        "storageClass": "nfs-shared"
+       },
+       {
+        "name": "datasets",
+        "namespace": "train",
+        "accessModes": [
+         "ReadWriteMany"
+        ],
+        "storageClass": "juicefs-shared"
+       }
+      ],
+      "storageclasses": [
+       {
+        "name": "nfs-shared",
+        "provisioner": "nfs.csi.k8s.io"
+       },
+       {
+        "name": "juicefs-shared",
+        "provisioner": "csi.juicefs.com"
+       },
+       {
+        "name": "alicloud-ssd",
+        "provisioner": "diskplugin.csi.alibabacloud.com"
+       }
+      ],
+      "pvs": [
+       {
+        "name": "pv-weights",
+        "accessModes": [
+         "ReadWriteMany"
+        ],
+        "nfs": {
+         "server": "nfs.ml-lab.internal",
+         "path": "/exports/weights"
+        }
+       }
+      ],
+      "nodes": [
+       {
+        "name": "gpu-node-1",
+        "providerID": "cn-beijing.i-mock00001",
+        "labels": {
+         "alibabacloud.com/nodepool-id": "ml-gpu-pool"
+        }
+       },
+       {
+        "name": "gpu-node-2",
+        "providerID": "cn-beijing.i-mock00002"
+       }
+      ],
+      "interconnects": [
+       {
+        "kind": "cen",
+        "name": "cen-ml-vpcs",
+        "peer": "vpc-ml-bj"
+       }
+      ]
+     }
+    },
+    "is_zeroday": false
+   },
+   "seq": 0
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "exposure-mapping",
+   "action": "step.run",
+   "target": "exposure-mapping",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "bad9cb18b7ecbe3898716e143a14965738ed04b2d64bcf486f0630fa7fd621a1",
+   "step_key": "exposure-mapping",
+   "step_id": 1,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/exposure-mapping.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] exposure-mapping: 1 step(s), 6 finding(s), 1 artifact(s)"
+   },
+   "seq": 1
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "exposure-mapping",
+   "action": "finding.high",
+   "target": "LoadBalancer 服务暴露：{ns}/{name}（端口 {ports}）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "bad9cb18b7ecbe3898716e143a14965738ed04b2d64bcf486f0630fa7fd621a1",
+   "step_key": "exposure-mapping",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/exposure-mapping.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 2
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "exposure-mapping",
+   "action": "finding.medium",
+   "target": "NodePort 服务暴露：{ns}/{name}（端口 {ports}）",
+   "files": [],
+   "result": "medium",
+   "evidence_sha256": "bad9cb18b7ecbe3898716e143a14965738ed04b2d64bcf486f0630fa7fd621a1",
+   "step_key": "exposure-mapping",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/exposure-mapping.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 3
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "exposure-mapping",
+   "action": "finding.high",
+   "target": "externalIPs 直接暴露：{ns}/{name}（{ext}）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "bad9cb18b7ecbe3898716e143a14965738ed04b2d64bcf486f0630fa7fd621a1",
+   "step_key": "exposure-mapping",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/exposure-mapping.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 4
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "exposure-mapping",
+   "action": "finding.low",
+   "target": "Ingress 暴露：{ing.get(",
+   "files": [],
+   "result": "low",
+   "evidence_sha256": "bad9cb18b7ecbe3898716e143a14965738ed04b2d64bcf486f0630fa7fd621a1",
+   "step_key": "exposure-mapping",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/exposure-mapping.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 5
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "exposure-mapping",
+   "action": "finding.medium",
+   "target": "Gateway API HTTPRoute 暴露：{route.get(",
+   "files": [],
+   "result": "medium",
+   "evidence_sha256": "bad9cb18b7ecbe3898716e143a14965738ed04b2d64bcf486f0630fa7fd621a1",
+   "step_key": "exposure-mapping",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/exposure-mapping.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 6
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "exposure-mapping",
+   "action": "finding.medium",
+   "target": "InferencePool failureMode=FailOpen：{pool.get(",
+   "files": [],
+   "result": "medium",
+   "evidence_sha256": "bad9cb18b7ecbe3898716e143a14965738ed04b2d64bcf486f0630fa7fd621a1",
+   "step_key": "exposure-mapping",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/exposure-mapping.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 7
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "exposure-mapping",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "bad9cb18b7ecbe3898716e143a14965738ed04b2d64bcf486f0630fa7fd621a1",
+   "step_key": "exposure-mapping",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#2",
+   "detail": {
+    "params": {
+     "snapshot": {
+      "cluster": {
+       "name": "ml-lab",
+       "provider": "unknown"
+      },
+      "namespaces": [
+       "default",
+       "infer",
+       "train",
+       "ray-system",
+       "monitoring",
+       "ops"
+      ],
+      "services": [
+       {
+        "name": "sglang-admin",
+        "namespace": "infer",
+        "type": "ClusterIP",
+        "selector": {
+         "app": "sglang"
+        },
+        "ports": [
+         {
+          "name": "http",
+          "port": 30000,
+          "targetPort": 30000
+         }
+        ]
+       },
+       {
+        "name": "ray-dashboard",
+        "namespace": "ray-system",
+        "type": "LoadBalancer",
+        "ports": [
+         {
+          "name": "dashboard",
+          "port": 8265,
+          "targetPort": 8265
+         }
+        ],
+        "externalIPs": [
+         "203.0.113.10"
+        ]
+       },
+       {
+        "name": "vllm-plugins",
+        "namespace": "infer",
+        "type": "NodePort",
+        "ports": [
+         {
+          "name": "http",
+          "port": 8000,
+          "targetPort": 8000,
+          "nodePort": 31000
+         }
+        ]
+       },
+       {
+        "name": "openrlhf-reward",
+        "namespace": "train",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "rm",
+          "port": 5000,
+          "targetPort": 5000
+         }
+        ]
+       },
+       {
+        "name": "grafana",
+        "namespace": "monitoring",
+        "type": "LoadBalancer",
+        "ports": [
+         {
+          "name": "http",
+          "port": 3000
+         }
+        ]
+       },
+       {
+        "name": "prometheus",
+        "namespace": "monitoring",
+        "type": "NodePort",
+        "ports": [
+         {
+          "name": "http",
+          "port": 9090,
+          "nodePort": 32090
+         }
+        ]
+       },
+       {
+        "name": "dcgm-exporter",
+        "namespace": "monitoring",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "metrics",
+          "port": 9400
+         }
+        ]
+       },
+       {
+        "name": "mlflow",
+        "namespace": "ops",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "http",
+          "port": 5000
+         }
+        ]
+       },
+       {
+        "name": "jupyter",
+        "namespace": "ops",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "http",
+          "port": 8888
+         }
+        ]
+       },
+       {
+        "name": "tensorboard",
+        "namespace": "train",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "http",
+          "port": 6006
+         }
+        ]
+       }
+      ],
+      "ingresses": [
+       {
+        "name": "mlflow-ingress",
+        "namespace": "ops",
+        "host": "ml.ml-lab.internal",
+        "service": "mlflow",
+        "port": 5000
+       },
+       {
+        "name": "jupyter-ingress",
+        "namespace": "ops",
+        "host": "nb.ml-lab.internal",
+        "service": "jupyter",
+        "port": 8888
+       }
+      ],
+      "httproutes": [
+       {
+        "name": "llm-gateway",
+        "namespace": "infer",
+        "hostname": "llm.ml-lab.internal",
+        "service": "llm-router",
+        "port": 8000,
+        "inferencePool": {
+         "name": "llm-pool",
+         "failureMode": "FailOpen"
+        }
+       }
+      ],
+      "networkpolicies": [
+       {
+        "name": "default-deny",
+        "namespace": "train",
+        "podSelector": {},
+        "policyTypes": [
+         "Ingress",
+         "Egress"
+        ],
+        "ingress": [],
+        "egress": []
+       },
+       {
+        "name": "allow-dns",
+        "namespace": "train",
+        "podSelector": {},
+        "policyTypes": [
+         "Egress"
+        ],
+        "egress": [
+         {
+          "to": [
+           {
+            "namespaceSelector": {
+             "matchLabels": {
+              "kubernetes.io/metadata.name": "kube-system"
+             }
+            }
+           }
+          ],
+          "ports": [
+           {
+            "port": 53,
+            "protocol": "UDP"
+           }
+          ]
+         }
+        ]
+       }
+      ],
+      "pods": [
+       {
+        "name": "sglang-server-0",
+        "namespace": "infer",
+        "serviceAccount": "sglang-sa",
+        "automountServiceAccountToken": true,
+        "labels": {
+         "app": "sglang"
+        },
+        "containers": [
+         {
+          "name": "server",
+          "image": "lmsys/sglang:v0.5.21",
+          "securityContext": {
+           "privileged": true
+          },
+          "ports": [
+           {
+            "containerPort": 30000
+           }
+          ],
+          "env": [
+           {
+            "name": "ADMIN_OPTIONAL",
+            "value": "1"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "name": "ray-head-0",
+        "namespace": "ray-system",
+        "serviceAccount": "ray-head",
+        "hostNetwork": true,
+        "hostIPC": true,
+        "labels": {
+         "app": "ray"
+        },
+        "containers": [
+         {
+          "name": "ray",
+          "image": "rayproject/ray:2.9.3",
+          "ports": [
+           {
+            "containerPort": 8265
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "name": "gpu-trainer-0",
+        "namespace": "train",
+        "serviceAccount": "train-sa",
+        "hostPID": true,
+        "volumes": [
+         {
+          "name": "docker-sock",
+          "hostPath": {
+           "path": "/var/run/docker.sock"
+          }
+         },
+         {
+          "name": "hf-cache",
+          "hostPath": {
+           "path": "/mnt/hf-cache"
+          }
+         }
+        ],
+        "containers": [
+         {
+          "name": "trainer",
+          "image": "registry.ml-lab/train:latest",
+          "securityContext": {
+           "capabilities": {
+            "add": [
+             "SYS_ADMIN",
+             "SYS_PTRACE"
+            ]
+           },
+           "seccompProfile": "Unconfined"
+          },
+          "env": [
+           {
+            "name": "AWS_ACCESS_KEY_ID",
+            "value": "MOCKAKIAINKBLADELAB"
+           },
+           {
+            "name": "AWS_SECRET_ACCESS_KEY",
+            "value": "MOCKSECRETINKBLADELAB"
+           },
+           {
+            "name": "HF_TOKEN",
+            "value": "mock-hf-token"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "name": "kuberay-operator-0",
+        "namespace": "ray-system",
+        "serviceAccount": "ray-operator",
+        "containers": [
+         {
+          "name": "manager",
+          "image": "kuberay/operator:v1.1.1"
+         }
+        ]
+       },
+       {
+        "name": "clean-app-0",
+        "namespace": "default",
+        "serviceAccount": "default",
+        "containers": [
+         {
+          "name": "web",
+          "image": "nginx:1.27"
+         }
+        ]
+       }
+      ],
+      "rayclusters": [
+       {
+        "name": "rl-train",
+        "namespace": "ray-system",
+        "headService": "ray-dashboard",
+        "dashboardPort": 8265,
+        "auth": "none",
+        "autoscalerSA": "ray-operator"
+       }
+      ],
+      "rayjobs": [
+       {
+        "name": "verl-ppo",
+        "namespace": "ray-system",
+        "entrypoint": "python train_ppo.py"
+       }
+      ],
+      "serviceaccounts": [
+       {
+        "name": "sglang-sa",
+        "namespace": "infer"
+       },
+       {
+        "name": "ray-head",
+        "namespace": "ray-system"
+       },
+       {
+        "name": "train-sa",
+        "namespace": "train"
+       },
+       {
+        "name": "ray-operator",
+        "namespace": "ray-system"
+       }
+      ],
+      "cani": [
+       {
+        "subject": "system:serviceaccount:train:train-sa",
+        "allowed": [
+         "create pods",
+         "create pods/exec",
+         "get secrets",
+         "list secrets"
+        ]
+       },
+       {
+        "subject": "system:serviceaccount:ray-system:ray-operator",
+        "allowed": [
+         "*"
+        ]
+       }
+      ],
+      "clusterroles": [
+       {
+        "name": "ray-operator-role",
+        "rules": [
+         {
+          "apiGroups": [
+           "*"
+          ],
+          "resources": [
+           "*"
+          ],
+          "verbs": [
+           "*"
+          ]
+         }
+        ]
+       },
+       {
+        "name": "vllm-operator-role",
+        "rules": [
+         {
+          "apiGroups": [
+           "rbac.authorization.k8s.io"
+          ],
+          "resources": [
+           "roles",
+           "rolebindings",
+           "clusterroles",
+           "clusterrolebindings"
+          ],
+          "verbs": [
+           "create",
+           "update",
+           "patch",
+           "delete"
+          ]
+         }
+        ]
+       }
+      ],
+      "clusterrolebindings": [
+       {
+        "name": "ray-operator-binding",
+        "role": "ray-operator-role",
+        "subjects": [
+         {
+          "kind": "ServiceAccount",
+          "name": "ray-operator",
+          "namespace": "ray-system"
+         }
+        ]
+       },
+       {
+        "name": "ops-admin-binding",
+        "role": "cluster-admin",
+        "subjects": [
+         {
+          "kind": "User",
+          "name": "ops-admin"
+         }
+        ]
+       }
+      ],
+      "secrets": [
+       {
+        "name": "hf-token",
+        "namespace": "train"
+       },
+       {
+        "name": "aws-creds",
+        "namespace": "train"
+       },
+       {
+        "name": "regcred",
+        "namespace": "ops"
+       }
+      ],
+      "pvcs": [
+       {
+        "name": "shared-weights",
+        "namespace": "train",
+        "accessModes": [
+         "ReadWriteMany"
+        ],
+        "storageClass": "nfs-shared"
+       },
+       {
+        "name": "datasets",
+        "namespace": "train",
+        "accessModes": [
+         "ReadWriteMany"
+        ],
+        "storageClass": "juicefs-shared"
+       }
+      ],
+      "storageclasses": [
+       {
+        "name": "nfs-shared",
+        "provisioner": "nfs.csi.k8s.io"
+       },
+       {
+        "name": "juicefs-shared",
+        "provisioner": "csi.juicefs.com"
+       },
+       {
+        "name": "alicloud-ssd",
+        "provisioner": "diskplugin.csi.alibabacloud.com"
+       }
+      ],
+      "pvs": [
+       {
+        "name": "pv-weights",
+        "accessModes": [
+         "ReadWriteMany"
+        ],
+        "nfs": {
+         "server": "nfs.ml-lab.internal",
+         "path": "/exports/weights"
+        }
+       }
+      ],
+      "nodes": [
+       {
+        "name": "gpu-node-1",
+        "providerID": "cn-beijing.i-mock00001",
+        "labels": {
+         "alibabacloud.com/nodepool-id": "ml-gpu-pool"
+        }
+       },
+       {
+        "name": "gpu-node-2",
+        "providerID": "cn-beijing.i-mock00002"
+       }
+      ],
+      "interconnects": [
+       {
+        "kind": "cen",
+        "name": "cen-ml-vpcs",
+        "peer": "vpc-ml-bj"
+       }
+      ]
+     }
+    },
+    "is_zeroday": false
+   },
+   "seq": 8
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "framework-port-matching",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "21c39198401fd73adf4e8805b8a7ddcafa1cd3e22370ef1fbec2ed5d55467e76",
+   "step_key": "framework-port-matching",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#3",
+   "detail": {
+    "params": {
+     "snapshot": {
+      "cluster": {
+       "name": "ml-lab",
+       "provider": "unknown"
+      },
+      "namespaces": [
+       "default",
+       "infer",
+       "train",
+       "ray-system",
+       "monitoring",
+       "ops"
+      ],
+      "services": [
+       {
+        "name": "sglang-admin",
+        "namespace": "infer",
+        "type": "ClusterIP",
+        "selector": {
+         "app": "sglang"
+        },
+        "ports": [
+         {
+          "name": "http",
+          "port": 30000,
+          "targetPort": 30000
+         }
+        ]
+       },
+       {
+        "name": "ray-dashboard",
+        "namespace": "ray-system",
+        "type": "LoadBalancer",
+        "ports": [
+         {
+          "name": "dashboard",
+          "port": 8265,
+          "targetPort": 8265
+         }
+        ],
+        "externalIPs": [
+         "203.0.113.10"
+        ]
+       },
+       {
+        "name": "vllm-plugins",
+        "namespace": "infer",
+        "type": "NodePort",
+        "ports": [
+         {
+          "name": "http",
+          "port": 8000,
+          "targetPort": 8000,
+          "nodePort": 31000
+         }
+        ]
+       },
+       {
+        "name": "openrlhf-reward",
+        "namespace": "train",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "rm",
+          "port": 5000,
+          "targetPort": 5000
+         }
+        ]
+       },
+       {
+        "name": "grafana",
+        "namespace": "monitoring",
+        "type": "LoadBalancer",
+        "ports": [
+         {
+          "name": "http",
+          "port": 3000
+         }
+        ]
+       },
+       {
+        "name": "prometheus",
+        "namespace": "monitoring",
+        "type": "NodePort",
+        "ports": [
+         {
+          "name": "http",
+          "port": 9090,
+          "nodePort": 32090
+         }
+        ]
+       },
+       {
+        "name": "dcgm-exporter",
+        "namespace": "monitoring",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "metrics",
+          "port": 9400
+         }
+        ]
+       },
+       {
+        "name": "mlflow",
+        "namespace": "ops",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "http",
+          "port": 5000
+         }
+        ]
+       },
+       {
+        "name": "jupyter",
+        "namespace": "ops",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "http",
+          "port": 8888
+         }
+        ]
+       },
+       {
+        "name": "tensorboard",
+        "namespace": "train",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "http",
+          "port": 6006
+         }
+        ]
+       }
+      ],
+      "ingresses": [
+       {
+        "name": "mlflow-ingress",
+        "namespace": "ops",
+        "host": "ml.ml-lab.internal",
+        "service": "mlflow",
+        "port": 5000
+       },
+       {
+        "name": "jupyter-ingress",
+        "namespace": "ops",
+        "host": "nb.ml-lab.internal",
+        "service": "jupyter",
+        "port": 8888
+       }
+      ],
+      "httproutes": [
+       {
+        "name": "llm-gateway",
+        "namespace": "infer",
+        "hostname": "llm.ml-lab.internal",
+        "service": "llm-router",
+        "port": 8000,
+        "inferencePool": {
+         "name": "llm-pool",
+         "failureMode": "FailOpen"
+        }
+       }
+      ],
+      "networkpolicies": [
+       {
+        "name": "default-deny",
+        "namespace": "train",
+        "podSelector": {},
+        "policyTypes": [
+         "Ingress",
+         "Egress"
+        ],
+        "ingress": [],
+        "egress": []
+       },
+       {
+        "name": "allow-dns",
+        "namespace": "train",
+        "podSelector": {},
+        "policyTypes": [
+         "Egress"
+        ],
+        "egress": [
+         {
+          "to": [
+           {
+            "namespaceSelector": {
+             "matchLabels": {
+              "kubernetes.io/metadata.name": "kube-system"
+             }
+            }
+           }
+          ],
+          "ports": [
+           {
+            "port": 53,
+            "protocol": "UDP"
+           }
+          ]
+         }
+        ]
+       }
+      ],
+      "pods": [
+       {
+        "name": "sglang-server-0",
+        "namespace": "infer",
+        "serviceAccount": "sglang-sa",
+        "automountServiceAccountToken": true,
+        "labels": {
+         "app": "sglang"
+        },
+        "containers": [
+         {
+          "name": "server",
+          "image": "lmsys/sglang:v0.5.21",
+          "securityContext": {
+           "privileged": true
+          },
+          "ports": [
+           {
+            "containerPort": 30000
+           }
+          ],
+          "env": [
+           {
+            "name": "ADMIN_OPTIONAL",
+            "value": "1"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "name": "ray-head-0",
+        "namespace": "ray-system",
+        "serviceAccount": "ray-head",
+        "hostNetwork": true,
+        "hostIPC": true,
+        "labels": {
+         "app": "ray"
+        },
+        "containers": [
+         {
+          "name": "ray",
+          "image": "rayproject/ray:2.9.3",
+          "ports": [
+           {
+            "containerPort": 8265
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "name": "gpu-trainer-0",
+        "namespace": "train",
+        "serviceAccount": "train-sa",
+        "hostPID": true,
+        "volumes": [
+         {
+          "name": "docker-sock",
+          "hostPath": {
+           "path": "/var/run/docker.sock"
+          }
+         },
+         {
+          "name": "hf-cache",
+          "hostPath": {
+           "path": "/mnt/hf-cache"
+          }
+         }
+        ],
+        "containers": [
+         {
+          "name": "trainer",
+          "image": "registry.ml-lab/train:latest",
+          "securityContext": {
+           "capabilities": {
+            "add": [
+             "SYS_ADMIN",
+             "SYS_PTRACE"
+            ]
+           },
+           "seccompProfile": "Unconfined"
+          },
+          "env": [
+           {
+            "name": "AWS_ACCESS_KEY_ID",
+            "value": "MOCKAKIAINKBLADELAB"
+           },
+           {
+            "name": "AWS_SECRET_ACCESS_KEY",
+            "value": "MOCKSECRETINKBLADELAB"
+           },
+           {
+            "name": "HF_TOKEN",
+            "value": "mock-hf-token"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "name": "kuberay-operator-0",
+        "namespace": "ray-system",
+        "serviceAccount": "ray-operator",
+        "containers": [
+         {
+          "name": "manager",
+          "image": "kuberay/operator:v1.1.1"
+         }
+        ]
+       },
+       {
+        "name": "clean-app-0",
+        "namespace": "default",
+        "serviceAccount": "default",
+        "containers": [
+         {
+          "name": "web",
+          "image": "nginx:1.27"
+         }
+        ]
+       }
+      ],
+      "rayclusters": [
+       {
+        "name": "rl-train",
+        "namespace": "ray-system",
+        "headService": "ray-dashboard",
+        "dashboardPort": 8265,
+        "auth": "none",
+        "autoscalerSA": "ray-operator"
+       }
+      ],
+      "rayjobs": [
+       {
+        "name": "verl-ppo",
+        "namespace": "ray-system",
+        "entrypoint": "python train_ppo.py"
+       }
+      ],
+      "serviceaccounts": [
+       {
+        "name": "sglang-sa",
+        "namespace": "infer"
+       },
+       {
+        "name": "ray-head",
+        "namespace": "ray-system"
+       },
+       {
+        "name": "train-sa",
+        "namespace": "train"
+       },
+       {
+        "name": "ray-operator",
+        "namespace": "ray-system"
+       }
+      ],
+      "cani": [
+       {
+        "subject": "system:serviceaccount:train:train-sa",
+        "allowed": [
+         "create pods",
+         "create pods/exec",
+         "get secrets",
+         "list secrets"
+        ]
+       },
+       {
+        "subject": "system:serviceaccount:ray-system:ray-operator",
+        "allowed": [
+         "*"
+        ]
+       }
+      ],
+      "clusterroles": [
+       {
+        "name": "ray-operator-role",
+        "rules": [
+         {
+          "apiGroups": [
+           "*"
+          ],
+          "resources": [
+           "*"
+          ],
+          "verbs": [
+           "*"
+          ]
+         }
+        ]
+       },
+       {
+        "name": "vllm-operator-role",
+        "rules": [
+         {
+          "apiGroups": [
+           "rbac.authorization.k8s.io"
+          ],
+          "resources": [
+           "roles",
+           "rolebindings",
+           "clusterroles",
+           "clusterrolebindings"
+          ],
+          "verbs": [
+           "create",
+           "update",
+           "patch",
+           "delete"
+          ]
+         }
+        ]
+       }
+      ],
+      "clusterrolebindings": [
+       {
+        "name": "ray-operator-binding",
+        "role": "ray-operator-role",
+        "subjects": [
+         {
+          "kind": "ServiceAccount",
+          "name": "ray-operator",
+          "namespace": "ray-system"
+         }
+        ]
+       },
+       {
+        "name": "ops-admin-binding",
+        "role": "cluster-admin",
+        "subjects": [
+         {
+          "kind": "User",
+          "name": "ops-admin"
+         }
+        ]
+       }
+      ],
+      "secrets": [
+       {
+        "name": "hf-token",
+        "namespace": "train"
+       },
+       {
+        "name": "aws-creds",
+        "namespace": "train"
+       },
+       {
+        "name": "regcred",
+        "namespace": "ops"
+       }
+      ],
+      "pvcs": [
+       {
+        "name": "shared-weights",
+        "namespace": "train",
+        "accessModes": [
+         "ReadWriteMany"
+        ],
+        "storageClass": "nfs-shared"
+       },
+       {
+        "name": "datasets",
+        "namespace": "train",
+        "accessModes": [
+         "ReadWriteMany"
+        ],
+        "storageClass": "juicefs-shared"
+       }
+      ],
+      "storageclasses": [
+       {
+        "name": "nfs-shared",
+        "provisioner": "nfs.csi.k8s.io"
+       },
+       {
+        "name": "juicefs-shared",
+        "provisioner": "csi.juicefs.com"
+       },
+       {
+        "name": "alicloud-ssd",
+        "provisioner": "diskplugin.csi.alibabacloud.com"
+       }
+      ],
+      "pvs": [
+       {
+        "name": "pv-weights",
+        "accessModes": [
+         "ReadWriteMany"
+        ],
+        "nfs": {
+         "server": "nfs.ml-lab.internal",
+         "path": "/exports/weights"
+        }
+       }
+      ],
+      "nodes": [
+       {
+        "name": "gpu-node-1",
+        "providerID": "cn-beijing.i-mock00001",
+        "labels": {
+         "alibabacloud.com/nodepool-id": "ml-gpu-pool"
+        }
+       },
+       {
+        "name": "gpu-node-2",
+        "providerID": "cn-beijing.i-mock00002"
+       }
+      ],
+      "interconnects": [
+       {
+        "kind": "cen",
+        "name": "cen-ml-vpcs",
+        "peer": "vpc-ml-bj"
+       }
+      ]
+     }
+    },
+    "is_zeroday": false
+   },
+   "seq": 9
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "framework-port-matching",
+   "action": "step.run",
+   "target": "framework-port-matching",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "21c39198401fd73adf4e8805b8a7ddcafa1cd3e22370ef1fbec2ed5d55467e76",
+   "step_key": "framework-port-matching",
+   "step_id": 2,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/framework-port-matching.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] framework-port-matching: 1 step(s), 1 finding(s), 1 artifact(s)"
+   },
+   "seq": 10
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "framework-port-matching",
+   "action": "finding.high",
+   "target": "name_hints",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "21c39198401fd73adf4e8805b8a7ddcafa1cd3e22370ef1fbec2ed5d55467e76",
+   "step_key": "framework-port-matching",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/framework-port-matching.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 11
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "framework-port-matching",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "21c39198401fd73adf4e8805b8a7ddcafa1cd3e22370ef1fbec2ed5d55467e76",
+   "step_key": "framework-port-matching",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#4",
+   "detail": {
+    "params": {
+     "snapshot": {
+      "cluster": {
+       "name": "ml-lab",
+       "provider": "unknown"
+      },
+      "namespaces": [
+       "default",
+       "infer",
+       "train",
+       "ray-system",
+       "monitoring",
+       "ops"
+      ],
+      "services": [
+       {
+        "name": "sglang-admin",
+        "namespace": "infer",
+        "type": "ClusterIP",
+        "selector": {
+         "app": "sglang"
+        },
+        "ports": [
+         {
+          "name": "http",
+          "port": 30000,
+          "targetPort": 30000
+         }
+        ]
+       },
+       {
+        "name": "ray-dashboard",
+        "namespace": "ray-system",
+        "type": "LoadBalancer",
+        "ports": [
+         {
+          "name": "dashboard",
+          "port": 8265,
+          "targetPort": 8265
+         }
+        ],
+        "externalIPs": [
+         "203.0.113.10"
+        ]
+       },
+       {
+        "name": "vllm-plugins",
+        "namespace": "infer",
+        "type": "NodePort",
+        "ports": [
+         {
+          "name": "http",
+          "port": 8000,
+          "targetPort": 8000,
+          "nodePort": 31000
+         }
+        ]
+       },
+       {
+        "name": "openrlhf-reward",
+        "namespace": "train",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "rm",
+          "port": 5000,
+          "targetPort": 5000
+         }
+        ]
+       },
+       {
+        "name": "grafana",
+        "namespace": "monitoring",
+        "type": "LoadBalancer",
+        "ports": [
+         {
+          "name": "http",
+          "port": 3000
+         }
+        ]
+       },
+       {
+        "name": "prometheus",
+        "namespace": "monitoring",
+        "type": "NodePort",
+        "ports": [
+         {
+          "name": "http",
+          "port": 9090,
+          "nodePort": 32090
+         }
+        ]
+       },
+       {
+        "name": "dcgm-exporter",
+        "namespace": "monitoring",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "metrics",
+          "port": 9400
+         }
+        ]
+       },
+       {
+        "name": "mlflow",
+        "namespace": "ops",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "http",
+          "port": 5000
+         }
+        ]
+       },
+       {
+        "name": "jupyter",
+        "namespace": "ops",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "http",
+          "port": 8888
+         }
+        ]
+       },
+       {
+        "name": "tensorboard",
+        "namespace": "train",
+        "type": "ClusterIP",
+        "ports": [
+         {
+          "name": "http",
+          "port": 6006
+         }
+        ]
+       }
+      ],
+      "ingresses": [
+       {
+        "name": "mlflow-ingress",
+        "namespace": "ops",
+        "host": "ml.ml-lab.internal",
+        "service": "mlflow",
+        "port": 5000
+       },
+       {
+        "name": "jupyter-ingress",
+        "namespace": "ops",
+        "host": "nb.ml-lab.internal",
+        "service": "jupyter",
+        "port": 8888
+       }
+      ],
+      "httproutes": [
+       {
+        "name": "llm-gateway",
+        "namespace": "infer",
+        "hostname": "llm.ml-lab.internal",
+        "service": "llm-router",
+        "port": 8000,
+        "inferencePool": {
+         "name": "llm-pool",
+         "failureMode": "FailOpen"
+        }
+       }
+      ],
+      "networkpolicies": [
+       {
+        "name": "default-deny",
+        "namespace": "train",
+        "podSelector": {},
+        "policyTypes": [
+         "Ingress",
+         "Egress"
+        ],
+        "ingress": [],
+        "egress": []
+       },
+       {
+        "name": "allow-dns",
+        "namespace": "train",
+        "podSelector": {},
+        "policyTypes": [
+         "Egress"
+        ],
+        "egress": [
+         {
+          "to": [
+           {
+            "namespaceSelector": {
+             "matchLabels": {
+              "kubernetes.io/metadata.name": "kube-system"
+             }
+            }
+           }
+          ],
+          "ports": [
+           {
+            "port": 53,
+            "protocol": "UDP"
+           }
+          ]
+         }
+        ]
+       }
+      ],
+      "pods": [
+       {
+        "name": "sglang-server-0",
+        "namespace": "infer",
+        "serviceAccount": "sglang-sa",
+        "automountServiceAccountToken": true,
+        "labels": {
+         "app": "sglang"
+        },
+        "containers": [
+         {
+          "name": "server",
+          "image": "lmsys/sglang:v0.5.21",
+          "securityContext": {
+           "privileged": true
+          },
+          "ports": [
+           {
+            "containerPort": 30000
+           }
+          ],
+          "env": [
+           {
+            "name": "ADMIN_OPTIONAL",
+            "value": "1"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "name": "ray-head-0",
+        "namespace": "ray-system",
+        "serviceAccount": "ray-head",
+        "hostNetwork": true,
+        "hostIPC": true,
+        "labels": {
+         "app": "ray"
+        },
+        "containers": [
+         {
+          "name": "ray",
+          "image": "rayproject/ray:2.9.3",
+          "ports": [
+           {
+            "containerPort": 8265
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "name": "gpu-trainer-0",
+        "namespace": "train",
+        "serviceAccount": "train-sa",
+        "hostPID": true,
+        "volumes": [
+         {
+          "name": "docker-sock",
+          "hostPath": {
+           "path": "/var/run/docker.sock"
+          }
+         },
+         {
+          "name": "hf-cache",
+          "hostPath": {
+           "path": "/mnt/hf-cache"
+          }
+         }
+        ],
+        "containers": [
+         {
+          "name": "trainer",
+          "image": "registry.ml-lab/train:latest",
+          "securityContext": {
+           "capabilities": {
+            "add": [
+             "SYS_ADMIN",
+             "SYS_PTRACE"
+            ]
+           },
+           "seccompProfile": "Unconfined"
+          },
+          "env": [
+           {
+            "name": "AWS_ACCESS_KEY_ID",
+            "value": "MOCKAKIAINKBLADELAB"
+           },
+           {
+            "name": "AWS_SECRET_ACCESS_KEY",
+            "value": "MOCKSECRETINKBLADELAB"
+           },
+           {
+            "name": "HF_TOKEN",
+            "value": "mock-hf-token"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "name": "kuberay-operator-0",
+        "namespace": "ray-system",
+        "serviceAccount": "ray-operator",
+        "containers": [
+         {
+          "name": "manager",
+          "image": "kuberay/operator:v1.1.1"
+         }
+        ]
+       },
+       {
+        "name": "clean-app-0",
+        "namespace": "default",
+        "serviceAccount": "default",
+        "containers": [
+         {
+          "name": "web",
+          "image": "nginx:1.27"
+         }
+        ]
+       }
+      ],
+      "rayclusters": [
+       {
+        "name": "rl-train",
+        "namespace": "ray-system",
+        "headService": "ray-dashboard",
+        "dashboardPort": 8265,
+        "auth": "none",
+        "autoscalerSA": "ray-operator"
+       }
+      ],
+      "rayjobs": [
+       {
+        "name": "verl-ppo",
+        "namespace": "ray-system",
+        "entrypoint": "python train_ppo.py"
+       }
+      ],
+      "serviceaccounts": [
+       {
+        "name": "sglang-sa",
+        "namespace": "infer"
+       },
+       {
+        "name": "ray-head",
+        "namespace": "ray-system"
+       },
+       {
+        "name": "train-sa",
+        "namespace": "train"
+       },
+       {
+        "name": "ray-operator",
+        "namespace": "ray-system"
+       }
+      ],
+      "cani": [
+       {
+        "subject": "system:serviceaccount:train:train-sa",
+        "allowed": [
+         "create pods",
+         "create pods/exec",
+         "get secrets",
+         "list secrets"
+        ]
+       },
+       {
+        "subject": "system:serviceaccount:ray-system:ray-operator",
+        "allowed": [
+         "*"
+        ]
+       }
+      ],
+      "clusterroles": [
+       {
+        "name": "ray-operator-role",
+        "rules": [
+         {
+          "apiGroups": [
+           "*"
+          ],
+          "resources": [
+           "*"
+          ],
+          "verbs": [
+           "*"
+          ]
+         }
+        ]
+       },
+       {
+        "name": "vllm-operator-role",
+        "rules": [
+         {
+          "apiGroups": [
+           "rbac.authorization.k8s.io"
+          ],
+          "resources": [
+           "roles",
+           "rolebindings",
+           "clusterroles",
+           "clusterrolebindings"
+          ],
+          "verbs": [
+           "create",
+           "update",
+           "patch",
+           "delete"
+          ]
+         }
+        ]
+       }
+      ],
+      "clusterrolebindings": [
+       {
+        "name": "ray-operator-binding",
+        "role": "ray-operator-role",
+        "subjects": [
+         {
+          "kind": "ServiceAccount",
+          "name": "ray-operator",
+          "namespace": "ray-system"
+         }
+        ]
+       },
+       {
+        "name": "ops-admin-binding",
+        "role": "cluster-admin",
+        "subjects": [
+         {
+          "kind": "User",
+          "name": "ops-admin"
+         }
+        ]
+       }
+      ],
+      "secrets": [
+       {
+        "name": "hf-token",
+        "namespace": "train"
+       },
+       {
+        "name": "aws-creds",
+        "namespace": "train"
+       },
+       {
+        "name": "regcred",
+        "namespace": "ops"
+       }
+      ],
+      "pvcs": [
+       {
+        "name": "shared-weights",
+        "namespace": "train",
+        "accessModes": [
+         "ReadWriteMany"
+        ],
+        "storageClass": "nfs-shared"
+       },
+       {
+        "name": "datasets",
+        "namespace": "train",
+        "accessModes": [
+         "ReadWriteMany"
+        ],
+        "storageClass": "juicefs-shared"
+       }
+      ],
+      "storageclasses": [
+       {
+        "name": "nfs-shared",
+        "provisioner": "nfs.csi.k8s.io"
+       },
+       {
+        "name": "juicefs-shared",
+        "provisioner": "csi.juicefs.com"
+       },
+       {
+        "name": "alicloud-ssd",
+        "provisioner": "diskplugin.csi.alibabacloud.com"
+       }
+      ],
+      "pvs": [
+       {
+        "name": "pv-weights",
+        "accessModes": [
+         "ReadWriteMany"
+        ],
+        "nfs": {
+         "server": "nfs.ml-lab.internal",
+         "path": "/exports/weights"
+        }
+       }
+      ],
+      "nodes": [
+       {
+        "name": "gpu-node-1",
+        "providerID": "cn-beijing.i-mock00001",
+        "labels": {
+         "alibabacloud.com/nodepool-id": "ml-gpu-pool"
+        }
+       },
+       {
+        "name": "gpu-node-2",
+        "providerID": "cn-beijing.i-mock00002"
+       }
+      ],
+      "interconnects": [
+       {
+        "kind": "cen",
+        "name": "cen-ml-vpcs",
+        "peer": "vpc-ml-bj"
+       }
+      ]
+     }
+    },
+    "is_zeroday": false
+   },
+   "seq": 12
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "cni-stack-capability",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "6dc44b4a813e7385de0ecc4b92567ca8ddbd5d99d8c05be485c054be0cb6c28c",
+   "step_key": "cni-stack-capability",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#5",
+   "detail": {
+    "params": {
+     "snapshot": "<abs-path>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 13
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "cni-stack-capability",
+   "action": "step.run",
+   "target": "cni-stack-capability",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "6dc44b4a813e7385de0ecc4b92567ca8ddbd5d99d8c05be485c054be0cb6c28c",
+   "step_key": "cni-stack-capability",
+   "step_id": 3,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/cni-stack-capability.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] cni-stack-capability: 1 step(s), 5 finding(s), 1 artifact(s)"
+   },
+   "seq": 14
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "cni-stack-capability",
+   "action": "finding.medium",
+   "target": "hostNetwork/hostPort 旁路 CNI 与 NetworkPolicy",
+   "files": [],
+   "result": "medium",
+   "evidence_sha256": "6dc44b4a813e7385de0ecc4b92567ca8ddbd5d99d8c05be485c054be0cb6c28c",
+   "step_key": "cni-stack-capability",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/cni-stack-capability.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 15
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "cni-stack-capability",
+   "action": "finding.info",
+   "target": "Multus/hostDevice 旁路清单",
+   "files": [],
+   "result": "info",
+   "evidence_sha256": "6dc44b4a813e7385de0ecc4b92567ca8ddbd5d99d8c05be485c054be0cb6c28c",
+   "step_key": "cni-stack-capability",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/cni-stack-capability.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 16
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "cni-stack-capability",
+   "action": "finding.high",
+   "target": "VPC-native CNI 安全组缺口（双控制面错配）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "6dc44b4a813e7385de0ecc4b92567ca8ddbd5d99d8c05be485c054be0cb6c28c",
+   "step_key": "cni-stack-capability",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/cni-stack-capability.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 17
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "cni-stack-capability",
+   "action": "finding.medium",
+   "target": "VPC-native CNI 双控制面（安全组未见显式缺口）",
+   "files": [],
+   "result": "medium",
+   "evidence_sha256": "6dc44b4a813e7385de0ecc4b92567ca8ddbd5d99d8c05be485c054be0cb6c28c",
+   "step_key": "cni-stack-capability",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/cni-stack-capability.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 18
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "cni-stack-capability",
+   "action": "finding.info",
+   "target": "CNI 能力矩阵（per-CNI 策略语义）",
+   "files": [],
+   "result": "info",
+   "evidence_sha256": "6dc44b4a813e7385de0ecc4b92567ca8ddbd5d99d8c05be485c054be0cb6c28c",
+   "step_key": "cni-stack-capability",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/cni-stack-capability.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 19
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "cni-stack-capability",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "6dc44b4a813e7385de0ecc4b92567ca8ddbd5d99d8c05be485c054be0cb6c28c",
+   "step_key": "cni-stack-capability",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#6",
+   "detail": {
+    "params": {
+     "snapshot": "<abs-path>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 20
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "multus-sriov-rdma-bypass",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "b4e487e1445e0c907d683a3b849605c2fbff46abee376dddc44a08ee551fe571",
+   "step_key": "multus-sriov-rdma-bypass",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#7",
+   "detail": {
+    "params": {
+     "snapshot": "<abs-path>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 21
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "multus-sriov-rdma-bypass",
+   "action": "step.run",
+   "target": "multus-sriov-rdma-bypass",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "b4e487e1445e0c907d683a3b849605c2fbff46abee376dddc44a08ee551fe571",
+   "step_key": "multus-sriov-rdma-bypass",
+   "step_id": 4,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/multus-sriov-rdma-bypass.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] multus-sriov-rdma-bypass: 1 step(s), 3 finding(s), 1 artifact(s)"
+   },
+   "seq": 22
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "multus-sriov-rdma-bypass",
+   "action": "finding.high",
+   "target": "NetworkPolicy 不覆盖路径清单（Multus/SR-IOV/RDMA 旁路）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "b4e487e1445e0c907d683a3b849605c2fbff46abee376dddc44a08ee551fe571",
+   "step_key": "multus-sriov-rdma-bypass",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/multus-sriov-rdma-bypass.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 23
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "multus-sriov-rdma-bypass",
+   "action": "finding.info",
+   "target": "旁路基座在位：SR-IOV/RDMA device plugin 与 ib-kubernetes",
+   "files": [],
+   "result": "info",
+   "evidence_sha256": "b4e487e1445e0c907d683a3b849605c2fbff46abee376dddc44a08ee551fe571",
+   "step_key": "multus-sriov-rdma-bypass",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/multus-sriov-rdma-bypass.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 24
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "multus-sriov-rdma-bypass",
+   "action": "finding.info",
+   "target": "未发现 Multus 附件路径",
+   "files": [],
+   "result": "info",
+   "evidence_sha256": "b4e487e1445e0c907d683a3b849605c2fbff46abee376dddc44a08ee551fe571",
+   "step_key": "multus-sriov-rdma-bypass",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/multus-sriov-rdma-bypass.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 25
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "multus-sriov-rdma-bypass",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "b4e487e1445e0c907d683a3b849605c2fbff46abee376dddc44a08ee551fe571",
+   "step_key": "multus-sriov-rdma-bypass",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#8",
+   "detail": {
+    "params": {
+     "snapshot": "<abs-path>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 26
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "vllm-operator-rbac-escalation",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "b84a538bd28b3944d2fddf4cb552d4f11b1c3032cd23e79092095c2bbc6a3194",
+   "step_key": "vllm-operator-rbac-escalation",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#9",
+   "detail": {
+    "params": {
+     "fixture": "<abs-path>",
+     "backup_targets": [
+      {
+       "kind": "file",
+       "path": "<abs-path>"
+      }
+     ],
+     "mode": "backup-write"
+    },
+    "is_zeroday": false
+   },
+   "seq": 27
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "vllm-operator-rbac-escalation",
+   "action": "step.run",
+   "target": "vllm-operator-rbac-escalation",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "b84a538bd28b3944d2fddf4cb552d4f11b1c3032cd23e79092095c2bbc6a3194",
+   "step_key": "vllm-operator-rbac-escalation",
+   "step_id": 5,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/vllm-operator-rbac-escalation.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] vllm-operator-rbac-escalation: 1 step(s), 3 finding(s), 1 artifact(s)"
+   },
+   "seq": 28
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "vllm-operator-rbac-escalation",
+   "action": "finding.high",
+   "target": "title",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "b84a538bd28b3944d2fddf4cb552d4f11b1c3032cd23e79092095c2bbc6a3194",
+   "step_key": "vllm-operator-rbac-escalation",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/vllm-operator-rbac-escalation.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "{\"detail\": \"Declarative probe assertion (baseline migrated from the module rule).\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"vllm-operator-rbac-escalation\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 vllm-operator-rbac-escalation（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] vllm-operator-rbac-escalation: 1 step(s), 3 finding(s), 1 artifact(s)\", \"artifacts\": [\"vllm-operator-rbac-escalation-probe.json\"], \"result_sha256\": \"b71573eb84333362ed6bf15307b4f6f0879fe4fa173e5682484aa2d26430db95\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"fixture\": \"<abs-path>", \"mode\": \"backup-write\"}}}"
+   },
+   "seq": 29
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "vllm-operator-rbac-escalation",
+   "action": "finding.high",
+   "target": "ClusterRole「{name}」具备集群级 RBAC 对象写权（提权原语）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "b84a538bd28b3944d2fddf4cb552d4f11b1c3032cd23e79092095c2bbc6a3194",
+   "step_key": "vllm-operator-rbac-escalation",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/vllm-operator-rbac-escalation.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "{\"detail\": \"Declarative probe assertion (baseline migrated from the module rule).\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"vllm-operator-rbac-escalation\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 vllm-operator-rbac-escalation（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] vllm-operator-rbac-escalation: 1 step(s), 3 finding(s), 1 artifact(s)\", \"artifacts\": [\"vllm-operator-rbac-escalation-probe.json\"], \"result_sha256\": \"b71573eb84333362ed6bf15307b4f6f0879fe4fa173e5682484aa2d26430db95\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"fixture\": \"<abs-path>", \"mode\": \"backup-write\"}}}"
+   },
+   "seq": 30
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "vllm-operator-rbac-escalation",
+   "action": "finding.high",
+   "target": "RoleBinding 创建演示已执行（backup-write + 可回滚）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "b84a538bd28b3944d2fddf4cb552d4f11b1c3032cd23e79092095c2bbc6a3194",
+   "step_key": "vllm-operator-rbac-escalation",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/vllm-operator-rbac-escalation.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "{\"detail\": \"Declarative probe assertion (baseline migrated from the module rule).\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"vllm-operator-rbac-escalation\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 vllm-operator-rbac-escalation（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] vllm-operator-rbac-escalation: 1 step(s), 3 finding(s), 1 artifact(s)\", \"artifacts\": [\"vllm-operator-rbac-escalation-probe.json\"], \"result_sha256\": \"b71573eb84333362ed6bf15307b4f6f0879fe4fa173e5682484aa2d26430db95\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"fixture\": \"<abs-path>", \"mode\": \"backup-write\"}}}"
+   },
+   "seq": 31
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "vllm-operator-rbac-escalation",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "b84a538bd28b3944d2fddf4cb552d4f11b1c3032cd23e79092095c2bbc6a3194",
+   "step_key": "vllm-operator-rbac-escalation",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#10",
+   "detail": {
+    "params": {
+     "fixture": "<abs-path>",
+     "backup_targets": [
+      {
+       "kind": "file",
+       "path": "<abs-path>"
+      }
+     ],
+     "mode": "backup-write"
+    },
+    "is_zeroday": false
+   },
+   "seq": 32
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "overprivileged-sa-escalation",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "a832cad718ed926cbd29be66d7acbcccc7376cc859afad237f6d165fb0650b78",
+   "step_key": "overprivileged-sa-escalation",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#11",
+   "detail": {
+    "params": {
+     "fixture": "<abs-path>",
+     "backup_targets": [
+      {
+       "kind": "file",
+       "path": "<abs-path>"
+      }
+     ],
+     "mode": "backup-write"
+    },
+    "is_zeroday": false
+   },
+   "seq": 33
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "overprivileged-sa-escalation",
+   "action": "step.run",
+   "target": "overprivileged-sa-escalation",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "a832cad718ed926cbd29be66d7acbcccc7376cc859afad237f6d165fb0650b78",
+   "step_key": "overprivileged-sa-escalation",
+   "step_id": 6,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/overprivileged-sa-escalation.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] overprivileged-sa-escalation: 1 step(s), 4 finding(s), 1 artifact(s)"
+   },
+   "seq": 34
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "overprivileged-sa-escalation",
+   "action": "finding.high",
+   "target": "title",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "a832cad718ed926cbd29be66d7acbcccc7376cc859afad237f6d165fb0650b78",
+   "step_key": "overprivileged-sa-escalation",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/overprivileged-sa-escalation.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "{\"detail\": \"Declarative probe assertion (baseline migrated from the module rule).\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"overprivileged-sa-escalation\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 overprivileged-sa-escalation（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] overprivileged-sa-escalation: 1 step(s), 4 finding(s), 1 artifact(s)\", \"artifacts\": [\"overprivileged-sa-escalation-probe.json\"], \"result_sha256\": \"5108c1dcdfa78ec7f189fbc8312108acc8c2a752571c0559e606fdfc0a3fcbef\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"fixture\": \"<abs-path>", \"mode\": \"backup-write\"}}}"
+   },
+   "seq": 35
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "overprivileged-sa-escalation",
+   "action": "finding.high",
+   "target": "ServiceAccount「{subject}」可创建 Pod 与 exec（提权到节点原语齐备）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "a832cad718ed926cbd29be66d7acbcccc7376cc859afad237f6d165fb0650b78",
+   "step_key": "overprivileged-sa-escalation",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/overprivileged-sa-escalation.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "{\"detail\": \"Declarative probe assertion (baseline migrated from the module rule).\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"overprivileged-sa-escalation\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 overprivileged-sa-escalation（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] overprivileged-sa-escalation: 1 step(s), 4 finding(s), 1 artifact(s)\", \"artifacts\": [\"overprivileged-sa-escalation-probe.json\"], \"result_sha256\": \"5108c1dcdfa78ec7f189fbc8312108acc8c2a752571c0559e606fdfc0a3fcbef\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"fixture\": \"<abs-path>", \"mode\": \"backup-write\"}}}"
+   },
+   "seq": 36
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "overprivileged-sa-escalation",
+   "action": "finding.medium",
+   "target": "ServiceAccount「{subject}」存在越权授权项",
+   "files": [],
+   "result": "medium",
+   "evidence_sha256": "a832cad718ed926cbd29be66d7acbcccc7376cc859afad237f6d165fb0650b78",
+   "step_key": "overprivileged-sa-escalation",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/overprivileged-sa-escalation.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "{\"detail\": \"Declarative probe assertion (baseline migrated from the module rule).\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"overprivileged-sa-escalation\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 overprivileged-sa-escalation（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] overprivileged-sa-escalation: 1 step(s), 4 finding(s), 1 artifact(s)\", \"artifacts\": [\"overprivileged-sa-escalation-probe.json\"], \"result_sha256\": \"5108c1dcdfa78ec7f189fbc8312108acc8c2a752571c0559e606fdfc0a3fcbef\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"fixture\": \"<abs-path>", \"mode\": \"backup-write\"}}}"
+   },
+   "seq": 37
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "overprivileged-sa-escalation",
+   "action": "finding.high",
+   "target": "特权 Pod 创建演示已执行（backup-write + 可回滚）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "a832cad718ed926cbd29be66d7acbcccc7376cc859afad237f6d165fb0650b78",
+   "step_key": "overprivileged-sa-escalation",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/overprivileged-sa-escalation.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "{\"detail\": \"Declarative probe assertion (baseline migrated from the module rule).\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"overprivileged-sa-escalation\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 overprivileged-sa-escalation（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] overprivileged-sa-escalation: 1 step(s), 4 finding(s), 1 artifact(s)\", \"artifacts\": [\"overprivileged-sa-escalation-probe.json\"], \"result_sha256\": \"5108c1dcdfa78ec7f189fbc8312108acc8c2a752571c0559e606fdfc0a3fcbef\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"fixture\": \"<abs-path>", \"mode\": \"backup-write\"}}}"
+   },
+   "seq": 38
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "overprivileged-sa-escalation",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "a832cad718ed926cbd29be66d7acbcccc7376cc859afad237f6d165fb0650b78",
+   "step_key": "overprivileged-sa-escalation",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#12",
+   "detail": {
+    "params": {
+     "fixture": "<abs-path>",
+     "backup_targets": [
+      {
+       "kind": "file",
+       "path": "<abs-path>"
+      }
+     ],
+     "mode": "backup-write"
+    },
+    "is_zeroday": false
+   },
+   "seq": 39
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "djev-open-proxy",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "4f86541fb4e0a447fa97dc0c9019cdccbfb20754b5cf6261a0e9b9b16a30c2f4",
+   "step_key": "djev-open-proxy",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#13",
+   "detail": {
+    "params": {
+     "target": "http://127.0.0.1:<port>/",
+     "mode": "probe-only"
+    },
+    "is_zeroday": false
+   },
+   "seq": 40
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "djev-open-proxy",
+   "action": "step.run",
+   "target": "djev-open-proxy",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "4f86541fb4e0a447fa97dc0c9019cdccbfb20754b5cf6261a0e9b9b16a30c2f4",
+   "step_key": "djev-open-proxy",
+   "step_id": 7,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/djev-open-proxy.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] djev-open-proxy: 1 step(s), 2 finding(s), 1 artifact(s)"
+   },
+   "seq": 41
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "djev-open-proxy",
+   "action": "finding.high",
+   "target": "title",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "4f86541fb4e0a447fa97dc0c9019cdccbfb20754b5cf6261a0e9b9b16a30c2f4",
+   "step_key": "djev-open-proxy",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/djev-open-proxy.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 42
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "djev-open-proxy",
+   "action": "finding.high",
+   "target": "djev 开放代理：/v1 全量中继无鉴权",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "4f86541fb4e0a447fa97dc0c9019cdccbfb20754b5cf6261a0e9b9b16a30c2f4",
+   "step_key": "djev-open-proxy",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/djev-open-proxy.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 43
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "djev-open-proxy",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "4f86541fb4e0a447fa97dc0c9019cdccbfb20754b5cf6261a0e9b9b16a30c2f4",
+   "step_key": "djev-open-proxy",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#14",
+   "detail": {
+    "params": {
+     "target": "http://127.0.0.1:<port>/",
+     "mode": "probe-only"
+    },
+    "is_zeroday": false
+   },
+   "seq": 44
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "vllm-plugin-auth-bypass",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "7c34f050543bac8d25410d4b08e9d69efd5375471384d732a863718db96da041",
+   "step_key": "vllm-plugin-auth-bypass",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#15",
+   "detail": {
+    "params": {
+     "target": "http://127.0.0.1:<port>/",
+     "mode": "probe-only"
+    },
+    "is_zeroday": false
+   },
+   "seq": 45
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "vllm-plugin-auth-bypass",
+   "action": "step.run",
+   "target": "vllm-plugin-auth-bypass",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "7c34f050543bac8d25410d4b08e9d69efd5375471384d732a863718db96da041",
+   "step_key": "vllm-plugin-auth-bypass",
+   "step_id": 8,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/vllm-plugin-auth-bypass.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] vllm-plugin-auth-bypass: 3 step(s), 2 finding(s), 1 artifact(s)"
+   },
+   "seq": 46
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "vllm-plugin-auth-bypass",
+   "action": "finding.high",
+   "target": "title",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "7c34f050543bac8d25410d4b08e9d69efd5375471384d732a863718db96da041",
+   "step_key": "vllm-plugin-auth-bypass",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/vllm-plugin-auth-bypass.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 47
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "vllm-plugin-auth-bypass",
+   "action": "finding.high",
+   "target": "vLLM 插件路由绕过 api-key",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "7c34f050543bac8d25410d4b08e9d69efd5375471384d732a863718db96da041",
+   "step_key": "vllm-plugin-auth-bypass",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/vllm-plugin-auth-bypass.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 48
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "vllm-plugin-auth-bypass",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "7c34f050543bac8d25410d4b08e9d69efd5375471384d732a863718db96da041",
+   "step_key": "vllm-plugin-auth-bypass",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#16",
+   "detail": {
+    "params": {
+     "target": "http://127.0.0.1:<port>/",
+     "mode": "probe-only"
+    },
+    "is_zeroday": false
+   },
+   "seq": 49
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "multi-cloud-imds-credentials",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "b704c69fee8f4c891077ceac06332943b029e0685502687adaccb8e8d7a6ee49",
+   "step_key": "multi-cloud-imds-credentials",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#17",
+   "detail": {
+    "params": {
+     "target": "http://127.0.0.1:<port>/",
+     "mode": "probe-only"
+    },
+    "is_zeroday": false
+   },
+   "seq": 50
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "multi-cloud-imds-credentials",
+   "action": "step.run",
+   "target": "multi-cloud-imds-credentials",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "b704c69fee8f4c891077ceac06332943b029e0685502687adaccb8e8d7a6ee49",
+   "step_key": "multi-cloud-imds-credentials",
+   "step_id": 9,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/multi-cloud-imds-credentials.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] multi-cloud-imds-credentials: 1 step(s), 5 finding(s), 1 artifact(s)"
+   },
+   "seq": 51
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "multi-cloud-imds-credentials",
+   "action": "finding.high",
+   "target": "title",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "b704c69fee8f4c891077ceac06332943b029e0685502687adaccb8e8d7a6ee49",
+   "step_key": "multi-cloud-imds-credentials",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/multi-cloud-imds-credentials.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 52
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "multi-cloud-imds-credentials",
+   "action": "finding.high",
+   "target": "AWS IMDSv1 放行：角色凭据未鉴权可得（脱敏存证）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "b704c69fee8f4c891077ceac06332943b029e0685502687adaccb8e8d7a6ee49",
+   "step_key": "multi-cloud-imds-credentials",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/multi-cloud-imds-credentials.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 53
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "multi-cloud-imds-credentials",
+   "action": "finding.high",
+   "target": "Azure IMDS fail-open：Managed Identity 令牌未鉴权可得（脱敏存证）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "b704c69fee8f4c891077ceac06332943b029e0685502687adaccb8e8d7a6ee49",
+   "step_key": "multi-cloud-imds-credentials",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/multi-cloud-imds-credentials.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 54
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "multi-cloud-imds-credentials",
+   "action": "finding.high",
+   "target": "阿里云 ECS 元数据：RAM 角色凭据未鉴权可得（脱敏存证）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "b704c69fee8f4c891077ceac06332943b029e0685502687adaccb8e8d7a6ee49",
+   "step_key": "multi-cloud-imds-credentials",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/multi-cloud-imds-credentials.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 55
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "multi-cloud-imds-credentials",
+   "action": "finding.high",
+   "target": "腾讯云 CVM 元数据：CAM 角色凭据未鉴权可得（脱敏存证）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "b704c69fee8f4c891077ceac06332943b029e0685502687adaccb8e8d7a6ee49",
+   "step_key": "multi-cloud-imds-credentials",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/multi-cloud-imds-credentials.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 56
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "multi-cloud-imds-credentials",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "b704c69fee8f4c891077ceac06332943b029e0685502687adaccb8e8d7a6ee49",
+   "step_key": "multi-cloud-imds-credentials",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#18",
+   "detail": {
+    "params": {
+     "target": "http://127.0.0.1:<port>/",
+     "mode": "probe-only"
+    },
+    "is_zeroday": false
+   },
+   "seq": 57
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "cloud-role-overprivilege",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "75028865714733c166fd523645b1c86d590bbc274721333feafbac702f437327",
+   "step_key": "cloud-role-overprivilege",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#19",
+   "detail": {
+    "params": {
+     "target": "http://127.0.0.1:<port>/",
+     "mode": "probe-only",
+     "role_snapshot": {
+      "provider": "aws",
+      "role_name": "mock-node-role",
+      "permissions": [
+       {
+        "action": "s3:PutObject",
+        "resource": "arn:aws:s3:::train-checkpoints/weights/*"
+       },
+       {
+        "action": "s3:DeleteObject",
+        "resource": "arn:aws:s3:::train-checkpoints/*"
+       },
+       {
+        "action": "kms:Decrypt",
+        "resource": "*"
+       },
+       {
+        "action": "sts:AssumeRole",
+        "resource": "arn:aws:iam::999999999999:role/other-account"
+       }
+      ]
+     }
+    },
+    "is_zeroday": false
+   },
+   "seq": 58
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "cloud-role-overprivilege",
+   "action": "step.run",
+   "target": "cloud-role-overprivilege",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "75028865714733c166fd523645b1c86d590bbc274721333feafbac702f437327",
+   "step_key": "cloud-role-overprivilege",
+   "step_id": 10,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/cloud-role-overprivilege.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] cloud-role-overprivilege: 1 step(s), 5 finding(s), 1 artifact(s)"
+   },
+   "seq": 59
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "cloud-role-overprivilege",
+   "action": "finding.high",
+   "target": "title",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "75028865714733c166fd523645b1c86d590bbc274721333feafbac702f437327",
+   "step_key": "cloud-role-overprivilege",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/cloud-role-overprivilege.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 60
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "cloud-role-overprivilege",
+   "action": "finding.high",
+   "target": "云角色凭据面可达（{provider}）：节点角色可被假定",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "75028865714733c166fd523645b1c86d590bbc274721333feafbac702f437327",
+   "step_key": "cloud-role-overprivilege",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/cloud-role-overprivilege.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 61
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "cloud-role-overprivilege",
+   "action": "finding.high",
+   "target": "云角色过权：权重/checkpoint 桶写权限",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "75028865714733c166fd523645b1c86d590bbc274721333feafbac702f437327",
+   "step_key": "cloud-role-overprivilege",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/cloud-role-overprivilege.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 62
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "cloud-role-overprivilege",
+   "action": "finding.medium",
+   "target": "云角色过权：KMS 密钥权限面",
+   "files": [],
+   "result": "medium",
+   "evidence_sha256": "75028865714733c166fd523645b1c86d590bbc274721333feafbac702f437327",
+   "step_key": "cloud-role-overprivilege",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/cloud-role-overprivilege.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 63
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "cloud-role-overprivilege",
+   "action": "finding.medium",
+   "target": "云角色过权：跨账户角色假定",
+   "files": [],
+   "result": "medium",
+   "evidence_sha256": "75028865714733c166fd523645b1c86d590bbc274721333feafbac702f437327",
+   "step_key": "cloud-role-overprivilege",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/cloud-role-overprivilege.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 64
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "cloud-role-overprivilege",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "75028865714733c166fd523645b1c86d590bbc274721333feafbac702f437327",
+   "step_key": "cloud-role-overprivilege",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#20",
+   "detail": {
+    "params": {
+     "target": "http://127.0.0.1:<port>/",
+     "mode": "probe-only",
+     "role_snapshot": {
+      "provider": "aws",
+      "role_name": "mock-node-role",
+      "permissions": [
+       {
+        "action": "s3:PutObject",
+        "resource": "arn:aws:s3:::train-checkpoints/weights/*"
+       },
+       {
+        "action": "s3:DeleteObject",
+        "resource": "arn:aws:s3:::train-checkpoints/*"
+       },
+       {
+        "action": "kms:Decrypt",
+        "resource": "*"
+       },
+       {
+        "action": "sts:AssumeRole",
+        "resource": "arn:aws:iam::999999999999:role/other-account"
+       }
+      ]
+     }
+    },
+    "is_zeroday": false
+   },
+   "seq": 65
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "shared-volume-weight-copy",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "d39988ef042b6d2816c3a80735fa49dd2eba0ac13216e009721cea6e6d099bad",
+   "step_key": "shared-volume-weight-copy",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#21",
+   "detail": {
+    "params": {
+     "volume_root": "<abs-path>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 66
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "shared-volume-weight-copy",
+   "action": "step.run",
+   "target": "shared-volume-weight-copy",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "d39988ef042b6d2816c3a80735fa49dd2eba0ac13216e009721cea6e6d099bad",
+   "step_key": "shared-volume-weight-copy",
+   "step_id": 11,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/shared-volume-weight-copy.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] shared-volume-weight-copy: 1 step(s), 3 finding(s), 1 artifact(s)"
+   },
+   "seq": 67
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "shared-volume-weight-copy",
+   "action": "finding.high",
+   "target": "title",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "d39988ef042b6d2816c3a80735fa49dd2eba0ac13216e009721cea6e6d099bad",
+   "step_key": "shared-volume-weight-copy",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/shared-volume-weight-copy.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 68
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "shared-volume-weight-copy",
+   "action": "finding.high",
+   "target": "共享卷权重可直接读取：{len(weights)} 个权重文件（{total} 字节）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "d39988ef042b6d2816c3a80735fa49dd2eba0ac13216e009721cea6e6d099bad",
+   "step_key": "shared-volume-weight-copy",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/shared-volume-weight-copy.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 69
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "shared-volume-weight-copy",
+   "action": "finding.medium",
+   "target": "共享卷数据集可读：{len(datasets)} 个数据文件",
+   "files": [],
+   "result": "medium",
+   "evidence_sha256": "d39988ef042b6d2816c3a80735fa49dd2eba0ac13216e009721cea6e6d099bad",
+   "step_key": "shared-volume-weight-copy",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/shared-volume-weight-copy.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 70
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "shared-volume-weight-copy",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "d39988ef042b6d2816c3a80735fa49dd2eba0ac13216e009721cea6e6d099bad",
+   "step_key": "shared-volume-weight-copy",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#22",
+   "detail": {
+    "params": {
+     "volume_root": "<abs-path>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 71
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "training-data-leak",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "65e7e958093c9dd30453bed6e14383be53ee2c685b1f614ea56de8f207aeedbb",
+   "step_key": "training-data-leak",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#23",
+   "detail": {
+    "params": {
+     "data_root": "<abs-path>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 72
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "training-data-leak",
+   "action": "step.run",
+   "target": "training-data-leak",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "65e7e958093c9dd30453bed6e14383be53ee2c685b1f614ea56de8f207aeedbb",
+   "step_key": "training-data-leak",
+   "step_id": 12,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/training-data-leak.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] training-data-leak: 1 step(s), 6 finding(s), 1 artifact(s)"
+   },
+   "seq": 73
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "training-data-leak",
+   "action": "finding.high",
+   "target": "title",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "65e7e958093c9dd30453bed6e14383be53ee2c685b1f614ea56de8f207aeedbb",
+   "step_key": "training-data-leak",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/training-data-leak.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 74
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "training-data-leak",
+   "action": "finding.high",
+   "target": "共享数据集卷未授权读：{len(cats[",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "65e7e958093c9dd30453bed6e14383be53ee2c685b1f614ea56de8f207aeedbb",
+   "step_key": "training-data-leak",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/training-data-leak.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 75
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "training-data-leak",
+   "action": "finding.medium",
+   "target": "数据缓存残留：{len(cats[",
+   "files": [],
+   "result": "medium",
+   "evidence_sha256": "65e7e958093c9dd30453bed6e14383be53ee2c685b1f614ea56de8f207aeedbb",
+   "step_key": "training-data-leak",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/training-data-leak.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 76
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "training-data-leak",
+   "action": "finding.high",
+   "target": "训练日志含 PII/prompt 残留：{len(cats[",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "65e7e958093c9dd30453bed6e14383be53ee2c685b1f614ea56de8f207aeedbb",
+   "step_key": "training-data-leak",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/training-data-leak.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 77
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "training-data-leak",
+   "action": "finding.high",
+   "target": "RL 轨迹跨租户残留：{len(cats[",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "65e7e958093c9dd30453bed6e14383be53ee2c685b1f614ea56de8f207aeedbb",
+   "step_key": "training-data-leak",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/training-data-leak.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 78
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "training-data-leak",
+   "action": "finding.high",
+   "target": "训练/数据面凭据残留：{len(cats[",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "65e7e958093c9dd30453bed6e14383be53ee2c685b1f614ea56de8f207aeedbb",
+   "step_key": "training-data-leak",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/training-data-leak.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 79
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "training-data-leak",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "65e7e958093c9dd30453bed6e14383be53ee2c685b1f614ea56de8f207aeedbb",
+   "step_key": "training-data-leak",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#24",
+   "detail": {
+    "params": {
+     "data_root": "<abs-path>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 80
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "python-dangerous-sinks",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "a2d4ccdc2c96c7172221cbc82163c72c810c5e98a71381fdce96ff5b9d5253a8",
+   "step_key": "python-dangerous-sinks",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#25",
+   "detail": {
+    "params": {
+     "root": "<abs-path>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 81
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "python-dangerous-sinks",
+   "action": "step.run",
+   "target": "python-dangerous-sinks",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "a2d4ccdc2c96c7172221cbc82163c72c810c5e98a71381fdce96ff5b9d5253a8",
+   "step_key": "python-dangerous-sinks",
+   "step_id": 13,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/python-dangerous-sinks.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] python-dangerous-sinks: 1 step(s), 2 finding(s), 1 artifact(s)"
+   },
+   "seq": 82
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "python-dangerous-sinks",
+   "action": "finding.high",
+   "target": "title",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "a2d4ccdc2c96c7172221cbc82163c72c810c5e98a71381fdce96ff5b9d5253a8",
+   "step_key": "python-dangerous-sinks",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/python-dangerous-sinks.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 83
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "python-dangerous-sinks",
+   "action": "finding.high",
+   "target": "危险调用 {h[",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "a2d4ccdc2c96c7172221cbc82163c72c810c5e98a71381fdce96ff5b9d5253a8",
+   "step_key": "python-dangerous-sinks",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/python-dangerous-sinks.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Declarative probe assertion (baseline migrated from the module rule)."
+   },
+   "seq": 84
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "python-dangerous-sinks",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "a2d4ccdc2c96c7172221cbc82163c72c810c5e98a71381fdce96ff5b9d5253a8",
+   "step_key": "python-dangerous-sinks",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#26",
+   "detail": {
+    "params": {
+     "root": "<abs-path>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 85
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "auth-gap-detection",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "030e725dd710f1beef128d487dfe634ae2903a1f0c2af4a1ab032743914edafb",
+   "step_key": "auth-gap-detection",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#27",
+   "detail": {
+    "params": {
+     "root": "<abs-path>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 86
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "auth-gap-detection",
+   "action": "step.run",
+   "target": "auth-gap-detection",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "030e725dd710f1beef128d487dfe634ae2903a1f0c2af4a1ab032743914edafb",
+   "step_key": "auth-gap-detection",
+   "step_id": 14,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/auth-gap-detection.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] auth-gap-detection: 1 step(s), 1 finding(s), 1 artifact(s)"
+   },
+   "seq": 87
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "auth-gap-detection",
+   "action": "finding.info",
+   "target": "鉴权缺口：部署面已观测",
+   "files": [],
+   "result": "info",
+   "evidence_sha256": "030e725dd710f1beef128d487dfe634ae2903a1f0c2af4a1ab032743914edafb",
+   "step_key": "auth-gap-detection",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/auth-gap-detection.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "Template executed and the declared surface responded; no exploitable condition asserted."
+   },
+   "seq": 88
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "auth-gap-detection",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "030e725dd710f1beef128d487dfe634ae2903a1f0c2af4a1ab032743914edafb",
+   "step_key": "auth-gap-detection",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#28",
+   "detail": {
+    "params": {
+     "root": "<abs-path>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 89
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "defense-bypass-falco",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "6fa160d583c656b2c8c0aa1fdb403ff9a45de998a57be6132a84e9f871dad725",
+   "step_key": "defense-bypass-falco",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#29",
+   "detail": {
+    "params": {
+     "deploy_snapshot": {
+      "daemonsets": [
+       "kube-system/falco"
+      ],
+      "images": [
+       "falcosecurity/falco:0.37.1"
+      ],
+      "rules": [
+       "falco_rules.yaml",
+       "falco_rules.local.yaml"
+      ],
+      "configs": [
+       "/etc/falco/falco.yaml"
+      ],
+      "kernel_modules": [
+       "falco"
+      ]
+     }
+    },
+    "is_zeroday": false
+   },
+   "seq": 90
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "defense-bypass-falco",
+   "action": "step.run",
+   "target": "defense-bypass-falco",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "6fa160d583c656b2c8c0aa1fdb403ff9a45de998a57be6132a84e9f871dad725",
+   "step_key": "defense-bypass-falco",
+   "step_id": 15,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-falco.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] defense-bypass-falco: 1 step(s), 8 finding(s), 1 artifact(s)"
+   },
+   "seq": 91
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-falco",
+   "action": "finding.info",
+   "target": "[defense-bypass-falco] 指纹: Falco = deployed",
+   "files": [],
+   "result": "info",
+   "evidence_sha256": "6fa160d583c656b2c8c0aa1fdb403ff9a45de998a57be6132a84e9f871dad725",
+   "step_key": "defense-bypass-falco",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-falco.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "matched=`true` driver_ok=`true` forced_degraded=`false` ruleset=`false`"
+   },
+   "seq": 92
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-falco",
+   "action": "finding.medium",
+   "target": "[defense-bypass-falco] 覆盖矩阵: detected=2 blindspots=3",
+   "files": [],
+   "result": "medium",
+   "evidence_sha256": "6fa160d583c656b2c8c0aa1fdb403ff9a45de998a57be6132a84e9f871dad725",
+   "step_key": "defense-bypass-falco",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-falco.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "检出=默认规则集能识别的技术类别；盲区=不能；benign-only 实验室断言。"
+   },
+   "seq": 93
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-falco",
+   "action": "finding.low",
+   "target": "盲区: ephemeral-container-marker — ephemeral 容器良性标记",
+   "files": [],
+   "result": "low",
+   "evidence_sha256": "6fa160d583c656b2c8c0aa1fdb403ff9a45de998a57be6132a84e9f871dad725",
+   "step_key": "defense-bypass-falco",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-falco.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "category=ephemeral-container-marker needs_driver=false state=deployed"
+   },
+   "seq": 94
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-falco",
+   "action": "finding.low",
+   "target": "盲区: ruleset-gap-syntax — 规则集语法缺口路径",
+   "files": [],
+   "result": "low",
+   "evidence_sha256": "6fa160d583c656b2c8c0aa1fdb403ff9a45de998a57be6132a84e9f871dad725",
+   "step_key": "defense-bypass-falco",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-falco.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "category=ruleset-gap-syntax needs_driver=false state=deployed"
+   },
+   "seq": 95
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-falco",
+   "action": "finding.low",
+   "target": "盲区: tool-rename-exec — 改名工具执行 echo",
+   "files": [],
+   "result": "low",
+   "evidence_sha256": "6fa160d583c656b2c8c0aa1fdb403ff9a45de998a57be6132a84e9f871dad725",
+   "step_key": "defense-bypass-falco",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-falco.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "category=tool-rename-exec needs_driver=true state=deployed"
+   },
+   "seq": 96
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-falco",
+   "action": "finding.info",
+   "target": "检出: sensitive-path-access — 容器内敏感路径访问良性标记",
+   "files": [],
+   "result": "info",
+   "evidence_sha256": "6fa160d583c656b2c8c0aa1fdb403ff9a45de998a57be6132a84e9f871dad725",
+   "step_key": "defense-bypass-falco",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-falco.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "category=sensitive-path-access needs_driver=true state=deployed"
+   },
+   "seq": 97
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-falco",
+   "action": "finding.info",
+   "target": "检出: monitored-path-write — 受监控路径类别良性写入",
+   "files": [],
+   "result": "info",
+   "evidence_sha256": "6fa160d583c656b2c8c0aa1fdb403ff9a45de998a57be6132a84e9f871dad725",
+   "step_key": "defense-bypass-falco",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-falco.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "category=monitored-path-write needs_driver=true state=deployed"
+   },
+   "seq": 98
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-falco",
+   "action": "finding.info",
+   "target": "[defense-bypass-falco] 硬化建议 (3 条)",
+   "files": [],
+   "result": "info",
+   "evidence_sha256": "6fa160d583c656b2c8c0aa1fdb403ff9a45de998a57be6132a84e9f871dad725",
+   "step_key": "defense-bypass-falco",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-falco.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "rule:product=falco:technique=ephemeral-container-marker:state=deployed:category=ephemeral-container-marker:建议=默认规则补充 ephemeral_container=true 宏与事件覆盖 | rule:product=falco:technique=ruleset-gap-syntax:state=deployed:category=ruleset-gap-syntax:建议=规则加载校验：宏/字段缺失时显式告警而非静默跳过整条规则 | rule:product=falco:technique=tool-rename-exec:state=deployed:category=tool-rename-exec:建议=spawned_process 事件增加改名执行启发式"
+   },
+   "seq": 99
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "defense-bypass-falco",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "6fa160d583c656b2c8c0aa1fdb403ff9a45de998a57be6132a84e9f871dad725",
+   "step_key": "defense-bypass-falco",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#30",
+   "detail": {
+    "params": {
+     "deploy_snapshot": {
+      "daemonsets": [
+       "kube-system/falco"
+      ],
+      "images": [
+       "falcosecurity/falco:0.37.1"
+      ],
+      "rules": [
+       "falco_rules.yaml",
+       "falco_rules.local.yaml"
+      ],
+      "configs": [
+       "/etc/falco/falco.yaml"
+      ],
+      "kernel_modules": [
+       "falco"
+      ]
+     }
+    },
+    "is_zeroday": false
+   },
+   "seq": 100
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "defense-bypass-admission",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "b8e2d6f0dc47a1c9307971d2627c1c7123a9503905cc524e67d2118ab9dd56ee",
+   "step_key": "defense-bypass-admission",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#31",
+   "detail": {
+    "params": {
+     "deploy_snapshot": {
+      "deployments": [
+       "kyverno/kyverno",
+       "gatekeeper-system/gatekeeper-controller-manager"
+      ],
+      "daemonsets": [
+       "gatekeeper-system/gatekeeper-audit"
+      ],
+      "images": [
+       "kyverno/kyverno:v1.11.0",
+       "openpolicyagent/gatekeeper:v3.15.0"
+      ],
+      "crds": [
+       "constrainttemplates.templates.gatekeeper.sh"
+      ],
+      "webhooks": [
+       "kyverno-resource-validating-webhook-cfg",
+       "gatekeeper-validating-webhook-configuration"
+      ],
+      "rules": [
+       "clusterpolicy/disallow-privileged-containers validationFailureAction=Audit"
+      ],
+      "configs": [
+       "kyverno-config"
+      ]
+     }
+    },
+    "is_zeroday": false
+   },
+   "seq": 101
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "defense-bypass-admission",
+   "action": "step.run",
+   "target": "defense-bypass-admission",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "b8e2d6f0dc47a1c9307971d2627c1c7123a9503905cc524e67d2118ab9dd56ee",
+   "step_key": "defense-bypass-admission",
+   "step_id": 16,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-admission.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] defense-bypass-admission: 1 step(s), 8 finding(s), 1 artifact(s)"
+   },
+   "seq": 102
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-admission",
+   "action": "finding.info",
+   "target": "[defense-bypass-admission] 指纹: 准入策略(Kyverno/Gatekeeper) = deployed",
+   "files": [],
+   "result": "info",
+   "evidence_sha256": "b8e2d6f0dc47a1c9307971d2627c1c7123a9503905cc524e67d2118ab9dd56ee",
+   "step_key": "defense-bypass-admission",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-admission.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "matched=`true` driver_ok=`true` forced_degraded=`false` ruleset=`false`"
+   },
+   "seq": 103
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-admission",
+   "action": "finding.medium",
+   "target": "[defense-bypass-admission] 覆盖矩阵: detected=1 blindspots=4",
+   "files": [],
+   "result": "medium",
+   "evidence_sha256": "b8e2d6f0dc47a1c9307971d2627c1c7123a9503905cc524e67d2118ab9dd56ee",
+   "step_key": "defense-bypass-admission",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-admission.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "检出=默认规则集能识别的技术类别；盲区=不能；benign-only 实验室断言。"
+   },
+   "seq": 104
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-admission",
+   "action": "finding.low",
+   "target": "盲区: exempt-namespace-path — 豁免命名空间路径",
+   "files": [],
+   "result": "low",
+   "evidence_sha256": "b8e2d6f0dc47a1c9307971d2627c1c7123a9503905cc524e67d2118ab9dd56ee",
+   "step_key": "defense-bypass-admission",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-admission.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "category=exempt-namespace-path needs_driver=false state=deployed"
+   },
+   "seq": 105
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-admission",
+   "action": "finding.low",
+   "target": "盲区: audit-mode-path — Audit 模式路径",
+   "files": [],
+   "result": "low",
+   "evidence_sha256": "b8e2d6f0dc47a1c9307971d2627c1c7123a9503905cc524e67d2118ab9dd56ee",
+   "step_key": "defense-bypass-admission",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-admission.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "category=audit-mode-path needs_driver=false state=deployed"
+   },
+   "seq": 106
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-admission",
+   "action": "finding.low",
+   "target": "盲区: annotation-bypass — 绕过模式/注解路径",
+   "files": [],
+   "result": "low",
+   "evidence_sha256": "b8e2d6f0dc47a1c9307971d2627c1c7123a9503905cc524e67d2118ab9dd56ee",
+   "step_key": "defense-bypass-admission",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-admission.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "category=annotation-bypass needs_driver=false state=deployed"
+   },
+   "seq": 107
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-admission",
+   "action": "finding.low",
+   "target": "盲区: mutation-order-path — mutation 顺序路径",
+   "files": [],
+   "result": "low",
+   "evidence_sha256": "b8e2d6f0dc47a1c9307971d2627c1c7123a9503905cc524e67d2118ab9dd56ee",
+   "step_key": "defense-bypass-admission",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-admission.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "category=mutation-order-path needs_driver=false state=deployed"
+   },
+   "seq": 108
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-admission",
+   "action": "finding.info",
+   "target": "检出: enforced-path — 已 enforce 策略路径良性提交",
+   "files": [],
+   "result": "info",
+   "evidence_sha256": "b8e2d6f0dc47a1c9307971d2627c1c7123a9503905cc524e67d2118ab9dd56ee",
+   "step_key": "defense-bypass-admission",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-admission.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "category=enforced-path needs_driver=false state=deployed"
+   },
+   "seq": 109
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "defense-bypass-admission",
+   "action": "finding.info",
+   "target": "[defense-bypass-admission] 硬化建议 (4 条)",
+   "files": [],
+   "result": "info",
+   "evidence_sha256": "b8e2d6f0dc47a1c9307971d2627c1c7123a9503905cc524e67d2118ab9dd56ee",
+   "step_key": "defense-bypass-admission",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/defense-bypass-admission.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "rule:product=admission:technique=exempt-namespace-path:state=deployed:category=exempt-namespace-path:建议=豁免 ns 清单最小化并定期审计（kyverno-config/exemptNamespaceLabels） | rule:product=admission:technique=audit-mode-path:state=deployed:category=audit-mode-path:建议=validationFailureAction/enforcementAction 强制 Enforce；Audit 仅允许迁移期并告警 | rule:product=admission:technique=annotation-bypass:state=deployed:category=annotation-bypass:建议=清除可绕过策略的注解（如 pod-resolution 豁免类），webhook 拒绝携带 | rule:product=admission:technique=mutation-order-path:state=deployed:category=mutation-order-path:建议=mutate→validate 顺序审计，防止 mutate 规避后续校验"
+   },
+   "seq": 110
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "defense-bypass-admission",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "b8e2d6f0dc47a1c9307971d2627c1c7123a9503905cc524e67d2118ab9dd56ee",
+   "step_key": "defense-bypass-admission",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#32",
+   "detail": {
+    "params": {
+     "deploy_snapshot": {
+      "deployments": [
+       "kyverno/kyverno",
+       "gatekeeper-system/gatekeeper-controller-manager"
+      ],
+      "daemonsets": [
+       "gatekeeper-system/gatekeeper-audit"
+      ],
+      "images": [
+       "kyverno/kyverno:v1.11.0",
+       "openpolicyagent/gatekeeper:v3.15.0"
+      ],
+      "crds": [
+       "constrainttemplates.templates.gatekeeper.sh"
+      ],
+      "webhooks": [
+       "kyverno-resource-validating-webhook-cfg",
+       "gatekeeper-validating-webhook-configuration"
+      ],
+      "rules": [
+       "clusterpolicy/disallow-privileged-containers validationFailureAction=Audit"
+      ],
+      "configs": [
+       "kyverno-config"
+      ]
+     }
+    },
+    "is_zeroday": false
+   },
+   "seq": 111
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "privileged-gpu-pod-escape",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "8ff9da852975ba3d98d1d39f7f6cda83939a40b42807b6164ce7ddb9691e7bca",
+   "step_key": "privileged-gpu-pod-escape",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#33",
+   "detail": {
+    "params": {
+     "fixture": "<abs-path>",
+     "mode": "backup-write",
+     "demo_target": "<abs-path>",
+     "backup_targets": [
+      {
+       "kind": "file",
+       "path": "<abs-path>"
+      }
+     ]
+    },
+    "is_zeroday": false
+   },
+   "seq": 112
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "privileged-gpu-pod-escape",
+   "action": "step.run",
+   "target": "privileged-gpu-pod-escape",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "8ff9da852975ba3d98d1d39f7f6cda83939a40b42807b6164ce7ddb9691e7bca",
+   "step_key": "privileged-gpu-pod-escape",
+   "step_id": 17,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/privileged-gpu-pod-escape.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] privileged-gpu-pod-escape: 2 step(s), 4 finding(s), 1 artifact(s)"
+   },
+   "seq": 113
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "privileged-gpu-pod-escape",
+   "action": "finding.high",
+   "target": "title",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "8ff9da852975ba3d98d1d39f7f6cda83939a40b42807b6164ce7ddb9691e7bca",
+   "step_key": "privileged-gpu-pod-escape",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/privileged-gpu-pod-escape.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "{\"detail\": \"Declarative probe assertion (baseline migrated from the module rule).\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"privileged-gpu-pod-escape\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 privileged-gpu-pod-escape（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] privileged-gpu-pod-escape: 2 step(s), 4 finding(s), 1 artifact(s)\", \"artifacts\": [\"privileged-gpu-pod-escape-probe.json\"], \"result_sha256\": \"8e6b3e22d35728b4924418da762fb7ebcba6d5658a855019dbc52529aa7941f6\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"fixture\": \"<abs-path>", \"mode\": \"backup-write\", \"demo_target\": \"<abs-path>"}}}"
+   },
+   "seq": 114
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "privileged-gpu-pod-escape",
+   "action": "finding.high",
+   "target": "Pod「{name}」特权原语组合可宿主逃逸",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "8ff9da852975ba3d98d1d39f7f6cda83939a40b42807b6164ce7ddb9691e7bca",
+   "step_key": "privileged-gpu-pod-escape",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/privileged-gpu-pod-escape.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "{\"detail\": \"Declarative probe assertion (baseline migrated from the module rule).\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"privileged-gpu-pod-escape\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 privileged-gpu-pod-escape（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] privileged-gpu-pod-escape: 2 step(s), 4 finding(s), 1 artifact(s)\", \"artifacts\": [\"privileged-gpu-pod-escape-probe.json\"], \"result_sha256\": \"8e6b3e22d35728b4924418da762fb7ebcba6d5658a855019dbc52529aa7941f6\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"fixture\": \"<abs-path>", \"mode\": \"backup-write\", \"demo_target\": \"<abs-path>"}}}"
+   },
+   "seq": 115
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "privileged-gpu-pod-escape",
+   "action": "finding.high",
+   "target": "宿主逃逸 marker 证明已写入（backup-write + 可回滚）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "8ff9da852975ba3d98d1d39f7f6cda83939a40b42807b6164ce7ddb9691e7bca",
+   "step_key": "privileged-gpu-pod-escape",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/privileged-gpu-pod-escape.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "{\"detail\": \"Declarative probe assertion (baseline migrated from the module rule).\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"privileged-gpu-pod-escape\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 privileged-gpu-pod-escape（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] privileged-gpu-pod-escape: 2 step(s), 4 finding(s), 1 artifact(s)\", \"artifacts\": [\"privileged-gpu-pod-escape-probe.json\"], \"result_sha256\": \"8e6b3e22d35728b4924418da762fb7ebcba6d5658a855019dbc52529aa7941f6\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"fixture\": \"<abs-path>", \"mode\": \"backup-write\", \"demo_target\": \"<abs-path>"}}}"
+   },
+   "seq": 116
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "privileged-gpu-pod-escape",
+   "action": "finding.high",
+   "target": "特权 Pod 清单写入演示已落盘（可回滚）",
+   "files": [],
+   "result": "high",
+   "evidence_sha256": "8ff9da852975ba3d98d1d39f7f6cda83939a40b42807b6164ce7ddb9691e7bca",
+   "step_key": "privileged-gpu-pod-escape",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/privileged-gpu-pod-escape.tar.gz",
+   "detail": {
+    "zeroday": false,
+    "detail": "{\"detail\": \"演示清单写入 <abs-path>；真实集群中由 create pods 生效。\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"privileged-gpu-pod-escape\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 privileged-gpu-pod-escape（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] privileged-gpu-pod-escape: 2 step(s), 4 finding(s), 1 artifact(s)\", \"artifacts\": [\"privileged-gpu-pod-escape-probe.json\"], \"result_sha256\": \"8e6b3e22d35728b4924418da762fb7ebcba6d5658a855019dbc52529aa7941f6\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"fixture\": \"<abs-path>", \"mode\": \"backup-write\", \"demo_target\": \"<abs-path>"}}}"
+   },
+   "seq": 117
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "privileged-gpu-pod-escape",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "8ff9da852975ba3d98d1d39f7f6cda83939a40b42807b6164ce7ddb9691e7bca",
+   "step_key": "privileged-gpu-pod-escape",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#34",
+   "detail": {
+    "params": {
+     "fixture": "<abs-path>",
+     "mode": "backup-write",
+     "demo_target": "<abs-path>",
+     "backup_targets": [
+      {
+       "kind": "file",
+       "path": "<abs-path>"
+      }
+     ]
+    },
+    "is_zeroday": false
+   },
+   "seq": 118
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "chain",
+   "target": "flat-network-admin-plane-weight-poison",
+   "files": [],
+   "result": "部分成立",
+   "evidence_sha256": "d691d5003e7fc1db2e14bdc5d25050da39849c80973534ce9b922ecf6ef873aa",
+   "step_key": "",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#35",
+   "detail": {
+    "params": {
+     "verdict": "部分成立",
+     "applicability": {}
+    },
+    "is_zeroday": false
+   },
+   "seq": 119
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "sglang-admin-failopen",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "ead2e9e937f9e46ba93fbd56e0bebb832cb4e18f9ef87ec0d1fdffaf1e15199f",
+   "step_key": "sglang-admin-failopen",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#36",
+   "detail": {
+    "params": {
+     "probe": "auth-bypass",
+     "target": "http://127.0.0.1:<port>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 120
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "sglang-admin-failopen",
+   "action": "step.run",
+   "target": "sglang-admin-failopen",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "ead2e9e937f9e46ba93fbd56e0bebb832cb4e18f9ef87ec0d1fdffaf1e15199f",
+   "step_key": "sglang-admin-failopen",
+   "step_id": 18,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/sglang-admin-failopen.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] sglang-admin-failopen: 5 step(s), 0 finding(s), 1 artifact(s)"
+   },
+   "seq": 121
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "sglang-admin-failopen",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "ead2e9e937f9e46ba93fbd56e0bebb832cb4e18f9ef87ec0d1fdffaf1e15199f",
+   "step_key": "sglang-admin-failopen",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#37",
+   "detail": {
+    "params": {
+     "probe": "auth-bypass",
+     "target": "http://127.0.0.1:<port>"
+    },
+    "is_zeroday": false
+   },
+   "seq": 122
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "slime-weight-pull-poison",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "47bec17582abdc9b6f8b8b6c79bc62e939bd8d2d5b85592d2f13b5fdbe99c3d6",
+   "step_key": "slime-weight-pull-poison",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#38",
+   "detail": {
+    "params": {
+     "mode": "backup-write",
+     "marker": "INKBLADE-${run.name}",
+     "target": "http://127.0.0.1:<port>",
+     "backup_targets": [
+      {
+       "kind": "http",
+       "url": "http://127.0.0.1:<port>/pull_weights",
+       "state": {}
+      }
+     ]
+    },
+    "is_zeroday": false
+   },
+   "seq": 123
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "slime-weight-pull-poison",
+   "action": "step.run",
+   "target": "slime-weight-pull-poison",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "47bec17582abdc9b6f8b8b6c79bc62e939bd8d2d5b85592d2f13b5fdbe99c3d6",
+   "step_key": "slime-weight-pull-poison",
+   "step_id": 19,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/slime-weight-pull-poison.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] slime-weight-pull-poison: 2 step(s), 0 finding(s), 1 artifact(s)"
+   },
+   "seq": 124
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "slime-weight-pull-poison",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "47bec17582abdc9b6f8b8b6c79bc62e939bd8d2d5b85592d2f13b5fdbe99c3d6",
+   "step_key": "slime-weight-pull-poison",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#39",
+   "detail": {
+    "params": {
+     "mode": "backup-write",
+     "marker": "INKBLADE-${run.name}",
+     "target": "http://127.0.0.1:<port>",
+     "backup_targets": [
+      {
+       "kind": "http",
+       "url": "http://127.0.0.1:<port>/pull_weights",
+       "state": {}
+      }
+     ]
+    },
+    "is_zeroday": false
+   },
+   "seq": 125
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "dify-control-plane-failopen",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "e1487ea8f661c7966d8ed756b0a04603c1a472da40f4e19016a4e3cd4857d2d7",
+   "step_key": "dify-control-plane-failopen",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#40",
+   "detail": {
+    "params": {
+     "base_url": "http://127.0.0.1:<port>/",
+     "backup_targets": [
+      {
+       "kind": "http",
+       "url": "http://127.0.0.1:<port>/",
+       "state": {}
+      }
+     ],
+     "mode": "backup-write"
+    },
+    "is_zeroday": false
+   },
+   "seq": 126
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "dify-control-plane-failopen",
+   "action": "step.run",
+   "target": "dify-control-plane-failopen",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "e1487ea8f661c7966d8ed756b0a04603c1a472da40f4e19016a4e3cd4857d2d7",
+   "step_key": "dify-control-plane-failopen",
+   "step_id": 20,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/dify-control-plane-failopen.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] dify-control-plane-failopen: 1 step(s), 2 finding(s), 1 artifact(s)"
+   },
+   "seq": 127
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "dify-control-plane-failopen",
+   "action": "finding.critical",
+   "target": "title",
+   "files": [],
+   "result": "critical",
+   "evidence_sha256": "e1487ea8f661c7966d8ed756b0a04603c1a472da40f4e19016a4e3cd4857d2d7",
+   "step_key": "dify-control-plane-failopen",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/dify-control-plane-failopen.tar.gz",
+   "detail": {
+    "zeroday": true,
+    "detail": "{\"detail\": \"Declarative probe assertion (baseline migrated from the module rule).\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"dify-control-plane-failopen\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 dify-control-plane-failopen（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] dify-control-plane-failopen: 1 step(s), 2 finding(s), 1 artifact(s)\", \"artifacts\": [\"dify-control-plane-failopen-probe.json\"], \"result_sha256\": \"f1aa8fcf9222f439f4e4d023b2cc9dc7e21f42a14813211a0331dd80f1fdd8c3\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"base_url\": \"http://127.0.0.1:<port>/\", \"mode\": \"backup-write\"}}}"
+   },
+   "seq": 128
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "dify-control-plane-failopen",
+   "action": "finding.critical",
+   "target": "Dify 控制面默认放行：未鉴权创建 binding 成功",
+   "files": [],
+   "result": "critical",
+   "evidence_sha256": "e1487ea8f661c7966d8ed756b0a04603c1a472da40f4e19016a4e3cd4857d2d7",
+   "step_key": "dify-control-plane-failopen",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/dify-control-plane-failopen.tar.gz",
+   "detail": {
+    "zeroday": true,
+    "detail": "{\"detail\": \"无 Authorization 凭据即可创建/销毁 binding；route=POST /openapi/v1/permission/binding，匿名主体可写控制面。\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"dify-control-plane-failopen\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 dify-control-plane-failopen（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] dify-control-plane-failopen: 1 step(s), 2 finding(s), 1 artifact(s)\", \"artifacts\": [\"dify-control-plane-failopen-probe.json\"], \"result_sha256\": \"f1aa8fcf9222f439f4e4d023b2cc9dc7e21f42a14813211a0331dd80f1fdd8c3\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"base_url\": \"http://127.0.0.1:<port>/\", \"mode\": \"backup-write\"}}}"
+   },
+   "seq": 129
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "dify-control-plane-failopen",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "e1487ea8f661c7966d8ed756b0a04603c1a472da40f4e19016a4e3cd4857d2d7",
+   "step_key": "dify-control-plane-failopen",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#41",
+   "detail": {
+    "params": {
+     "base_url": "http://127.0.0.1:<port>/",
+     "backup_targets": [
+      {
+       "kind": "http",
+       "url": "http://127.0.0.1:<port>/",
+       "state": {}
+      }
+     ],
+     "mode": "backup-write"
+    },
+    "is_zeroday": false
+   },
+   "seq": 130
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "open-webui-code-execute-rce",
+   "files": [],
+   "result": "started",
+   "evidence_sha256": "c3c29d919e8a8941c5da6b7ebaaa6606d35325c310ee37d251e3664a643102a4",
+   "step_key": "open-webui-code-execute-rce",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#42",
+   "detail": {
+    "params": {
+     "base_url": "http://127.0.0.1:<port>/",
+     "backup_targets": [
+      {
+       "kind": "http",
+       "url": "http://127.0.0.1:<port>/",
+       "state": {}
+      }
+     ],
+     "mode": "backup-write"
+    },
+    "is_zeroday": false
+   },
+   "seq": 131
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "step",
+   "subject": "open-webui-code-execute-rce",
+   "action": "step.run",
+   "target": "open-webui-code-execute-rce",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "c3c29d919e8a8941c5da6b7ebaaa6606d35325c310ee37d251e3664a643102a4",
+   "step_key": "open-webui-code-execute-rce",
+   "step_id": 21,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/open-webui-code-execute-rce.tar.gz",
+   "detail": {
+    "started_at": "<dynamic>",
+    "finished_at": "<dynamic>",
+    "duration_ms": "<dynamic>",
+    "summary": "probe[reference] open-webui-code-execute-rce: 1 step(s), 2 finding(s), 1 artifact(s)"
+   },
+   "seq": 132
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "open-webui-code-execute-rce",
+   "action": "finding.critical",
+   "target": "title",
+   "files": [],
+   "result": "critical",
+   "evidence_sha256": "c3c29d919e8a8941c5da6b7ebaaa6606d35325c310ee37d251e3664a643102a4",
+   "step_key": "open-webui-code-execute-rce",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/open-webui-code-execute-rce.tar.gz",
+   "detail": {
+    "zeroday": true,
+    "detail": "{\"detail\": \"Declarative probe assertion (baseline migrated from the module rule).\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"open-webui-code-execute-rce\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 open-webui-code-execute-rce（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] open-webui-code-execute-rce: 1 step(s), 2 finding(s), 1 artifact(s)\", \"artifacts\": [\"open-webui-code-execute-rce-probe.json\"], \"result_sha256\": \"6bedad978b0e03260d94b308a3be9d86b1cf9c6dfa73be60355d6d68812b0293\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"base_url\": \"http://127.0.0.1:<port>/\", \"mode\": \"backup-write\"}}}"
+   },
+   "seq": 133
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "exploit",
+   "subject": "open-webui-code-execute-rce",
+   "action": "finding.critical",
+   "target": "Open WebUI 共享沙箱执行：任意登录用户可执行任意 Python",
+   "files": [],
+   "result": "critical",
+   "evidence_sha256": "c3c29d919e8a8941c5da6b7ebaaa6606d35325c310ee37d251e3664a643102a4",
+   "step_key": "open-webui-code-execute-rce",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "steps/open-webui-code-execute-rce.tar.gz",
+   "detail": {
+    "zeroday": true,
+    "detail": "{\"detail\": \"Declarative probe assertion (baseline migrated from the module rule).\", \"verification\": {\"schema\": \"inkblade-poc-verification-v1\", \"module\": \"open-webui-code-execute-rce\", \"steps\": [\"1. 复核 ROE 与备份回执：actions 表中该模块 started/success 行与 backups 快照在册\", \"2. 以 probe-only 参数重放模块 open-webui-code-execute-rce（params 供 explorer/scheduler 传递）\", \"3. 比对重放 findings 标题集合与本 finding（存在即复现）\", \"4. 写面复核：backups→rollbacks 回滚后目标 sha256 与快照一致（无残留）\"], \"expected_evidence\": {\"summary\": \"probe[reference] open-webui-code-execute-rce: 1 step(s), 2 finding(s), 1 artifact(s)\", \"artifacts\": [\"open-webui-code-execute-rce-probe.json\"], \"result_sha256\": \"6bedad978b0e03260d94b308a3be9d86b1cf9c6dfa73be60355d6d68812b0293\", \"rollback\": \"备份回滚后目标内容与快照 sha256 完全一致（BackupManager 断言）\", \"trace\": \"traces/<module>.json 内请求/响应全量记录（traffic 表同步入库）\"}, \"auto_reverify\": \"workspace.json poc.auto_reverify 开启时由 scheduler/explorer 触发\", \"params\": {\"base_url\": \"http://127.0.0.1:<port>/\", \"mode\": \"backup-write\"}}}"
+   },
+   "seq": 134
+  },
+  {
+   "ts": "<dynamic>",
+   "kind": "action",
+   "subject": "e2e-tester",
+   "action": "execute",
+   "target": "open-webui-code-execute-rce",
+   "files": [],
+   "result": "success",
+   "evidence_sha256": "c3c29d919e8a8941c5da6b7ebaaa6606d35325c310ee37d251e3664a643102a4",
+   "step_key": "open-webui-code-execute-rce",
+   "step_id": null,
+   "probe_id": "",
+   "namespace": "",
+   "ref": "actions#43",
+   "detail": {
+    "params": {
+     "base_url": "http://127.0.0.1:<port>/",
+     "backup_targets": [
+      {
+       "kind": "http",
+       "url": "http://127.0.0.1:<port>/",
+       "state": {}
+      }
+     ],
+     "mode": "backup-write"
+    },
+    "is_zeroday": false
+   },
+   "seq": 135
+  }
+ ]
+}
