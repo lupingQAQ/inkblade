@@ -1,16 +1,15 @@
-/* InkBlade 六视图 SPA — 原生 JS + vendor UMD（React / ReactDOM / React Flow v11），无构建步骤。
+/* InkBlade 十视图 SPA — 原生 JS + vendor UMD（React / ReactDOM / React Flow v11），无构建步骤。
  *
  * 数据源：
  *  - 静态导出模式：window.INKBLADE_DATA（由 export_static.py 注入，免服务打开）
- *  - 服务模式：POST api/login（会话）、GET api/runs（运行列表）；步骤级数据无只读端点 → 空数据兜底提示
+ *  - 服务模式：POST api/login、GET api/runs、GET api/v1/{workspaces,consent,steps,graph,
+ *    timeline,file-ops,evidence,report,assets,drift,explorer,scheduler}
  *
- * 六视图：
- *  ① view-dag       工作流 DAG（React Flow；缺库时自绘 DagCanvas SVG 兜底），状态色 待执行/运行中/成功/降级/阻断
- *  ② view-chain     攻击链图（资产节点 + 利用边，严重度着色，链过滤）
- *  ③ view-timeline  执行时间线（瀑布：起止/耗时/并行度）
- *  ④ view-evidence  证据浏览器（runs → steps → 归档哈希，三层穿透）
- *  ⑤ view-report    报告预览（服务模式试 api/report，失败/静态模式内嵌渲染 findings 表）
- *  ⑥ view-rules     规则视图（规则↔链映射矩阵 + 紫队验证标记）
+ * 首屏：
+ *  - 未登录：真实环境接入向导（登录卡 + kubeconfig/授权/探针三步）
+ *  - 登录后：工作区、运行列表、最近发现、链状态总览
+ *
+ * 十视图：DAG / 攻击链 / 时间线 / 证据 / 报告 / 规则 / 资产 / 差异 / 审批 / 计划。
  */
 (function () {
   "use strict";
@@ -56,14 +55,23 @@
   /* ================= 状态 ================= */
 
   var STATE = {
-    token: null, role: null, workspace: "local-lab",
+    token: null, role: null, user: null, workspace: "local-lab",
     runs: [], data: window.INKBLADE_DATA || null,
-    selectedStep: null, view: "dag", reportRemote: null, redactZeroday: false,
+    selectedStep: null, selectedRun: "", view: "dag", reportRemote: null, redactZeroday: false,
     remoteTimeline: null, remoteFileOps: null,
-    remoteAuditLoaded: false, remoteAuditLoading: false,
+    remoteSteps: null, remoteNodes: null, remoteEdges: null, remoteGraph: null,
+    remoteEvidence: null, remoteManifestVerified: null, remoteReport: null,
+    remoteAuditLoaded: false, remoteAuditLoading: false, remoteAuditRun: "",
+    consent: null, workspaces: [], runLoading: false, runError: "", runGen: 0,
+    connectInit: false, connectUserToggled: false, connectOpen: false,
     lang: "zh",
   };
   var STATIC_MODE = !!window.INKBLADE_DATA;
+
+  /* 视图宿主：view-dag / view-chain / view-timeline / view-evidence / view-report /
+   * view-rules / view-assets / view-drift / view-approvals / view-schedules */
+  var VIEW_IDS = ["dag", "chain", "timeline", "evidence", "report",
+    "rules", "assets", "drift", "approvals", "schedules"];
 
   /* ================= 双语（zh/en） =================
    * 静态文案走 index.html 的 data-i18n；动态视图走 t(key)。
@@ -71,17 +79,54 @@
   var I18N = {
     zh: {
       "brand.sub": "ML 集群渗透测试控制台 · 十视图",
-      "mode.offline": "本地模式 · 全离线",
+      "mode.offline": "本地控制台",
       "mode.static": "静态导出 · 免服务打开",
       "mode.service": "服务模式 · 本地",
-      "login.user": "用户名", "login.pass": "密码", "login.ws": "工作区",
-      "login.submit": "登录", "login.runs": "刷新运行", "login.abort": "紧急停止",
+      "topbar.workspace": "工作区",
       "lang.switch": "切换语言 / Switch language",
-      "guide.title": "第一次用 InkBlade？2 条命令看结果",
-      "guide.body": "本地 mock 靶场，不碰真实集群；约 10–20 秒生成发现、双语报告与规则包。",
-      "guide.step1": "环境自检", "guide.step2": "本地看结果", "guide.step3": "真实集群（只读）",
-      "guide.cluster": "真实集群：", "guide.kubeconfig": "自动发现 KUBECONFIG / ~/.kube/config；先 dry-run 不碰集群。",
-      "guide.dismiss": "知道了",
+      "login.user": "用户名", "login.pass": "密码", "login.ws": "工作区",
+      "login.submit": "登录", "login.abort": "紧急停止",
+      "login.subtitle": "授权范围内的 ML 集群渗透测试控制台",
+      "connect.kicker": "CONNECT",
+      "connect.title": "接入",
+      "connect.hasRuns": "已有运行 · 可折叠",
+      "connect.noRuns": "尚无运行 · 按探针优先接入",
+      "connect.recommended": "推荐",
+      "connect.assumption": "默认立足点：普通/最低权限 Pod（非 root、无 hostPath/privileged、无 kubeconfig，仅出站 TCP）。",
+      "connect.existing.title": "已有探针 / 立足点",
+      "connect.existing.body": "已有投放的探针、foothold shell 或低权限 Pod 可主动回连控制端；不需要 kubeconfig。",
+      "connect.existing.step1": "控制端监听",
+      "connect.existing.step2": "Pod 内探针回连",
+      "connect.existing.step3": "确认探针注册",
+      "connect.first.title": "首次投放",
+      "connect.first.body": "没有现成探针时，从 foothold 进入并投放；默认立足点为普通/最低权限 Pod，仅需出站 TCP。",
+      "connect.first.step1": "控制端监听",
+      "connect.first.step2": "建立 foothold 会话",
+      "connect.first.step3": "RCE 投放探针",
+      "connect.first.sa": "SA token 投放（备选）",
+      "connect.first.reverse": "Pod 内探针回连",
+      "connect.first.confirm": "确认探针注册",
+      "connect.advanced.summary": "kubeconfig 批量投放（可选）",
+      "connect.advanced.body": "仅当直接持有 kubeconfig 且需要批量投放时使用；不是接入前提。",
+      "connect.advanced.step1": "kubeconfig 会话",
+      "connect.advanced.step2": "批量投放",
+      "connect.advanced.step3": "确认探针注册",
+      "dash.eyebrow": "WORKSPACE OVERVIEW", "dash.workspace": "工作区",
+      "dash.runs": "运行列表", "dash.findings": "最近发现", "dash.chain": "链状态",
+      "dash.loading": "正在读取工作区…", "dash.refresh": "刷新", "dash.run": "运行",
+      "dash.role": "角色", "dash.consent": "授权", "dash.consentComplete": "已签署",
+      "dash.consentPending": "未签署", "dash.runCount": "运行数", "dash.latest": "最近运行",
+      "dash.noRuns": "还没有运行。完成 CLI 接入后刷新。",
+      "dash.noWorkspace": "未连接工作区", "dash.loadingRun": "正在载入运行数据…",
+      "dash.noRunData": "该运行暂无步骤数据。",
+      "dash.findingsTotal": "发现总数", "dash.steps": "步骤", "dash.graph": "图节点",
+      "dash.chainEdges": "链边", "dash.chainStatus": "运行状态",
+      "dash.statusSuccess": "成功", "dash.statusRunning": "运行中",
+      "dash.statusDegraded": "降级", "dash.statusBlocked": "阻断", "dash.statusPending": "待执行",
+      "dash.selectRun": "选择运行查看发现与链状态。",
+      "dash.runLoadFail": "运行数据加载失败：",
+      "dash.refreshing": "正在刷新…", "dash.refreshed": "已刷新",
+      "dash.abortSent": "已发送紧急停止",
       "nav.dag": "工作流 DAG", "nav.chain": "攻击链图", "nav.timeline": "执行时间线",
       "nav.evidence": "证据浏览器", "nav.report": "报告预览", "nav.rules": "规则视图",
       "nav.assets": "资产图", "nav.drift": "差异视图", "nav.approvals": "审批队列",
@@ -119,10 +164,10 @@
       "schedules.hint": "cron/interval 计划 → 到期自动跑指定链子集 → drift 报告。",
       "footer.line": "InkBlade · 资产全部本地内嵌（无 CDN）· 证据三层：上下文摘要 / 数据库 / 归档（tar+SHA256）",
       "common.copy": "复制", "common.copied": "已复制",
-      "common.demo": "本地 demo", "common.cluster": "真实集群（只读）",
+      "common.probe": "启动探针", "common.cluster": "连接真实集群",
       "run.staticMeta": "运行 {run} · 状态 {status} · 步骤 {steps} · 发现 {findings}",
       "run.serviceMeta": "本工作区运行数：{n}（{runs}）",
-      "run.serviceEmpty": "已登录（服务模式暂无步骤只读端点；步骤级数据请用静态导出查看）",
+      "run.serviceEmpty": "已登录，等待本工作区的运行数据。",
       "run.loadFail": "获取运行失败：",
       "report.total": "发现总数", "report.steps": "执行步骤",
       "report.findings": "发现清单（Findings）",
@@ -134,39 +179,41 @@
       "report.evidence": "证据（归档层引用）", "report.zeroday": "零日",
       "report.sectionTitle": "结构对齐（PTES / NIST SP 800-115 / 等保 2.0 · GB/T 20984 / CVSS 3.1 / ATT&CK·ATLAS）",
       "report.sectionBody": "预览页仅渲染发现表与统计；正式双语报告由报告引擎生成（渗透 + 修复 + 防御规则包交付文档），含组合层风险 / 训练数据泄露面 / 核心代码清单 / 网络分层威胁模型 / 混合云边界专节。",
-      "report.remote": "服务端报告已返回（占位端点）；以下为本地内嵌渲染：",
-      "report.fallback": "api/report 不可用（未实现或未登录）——以内嵌渲染兜底；完整报告请运行报告引擎或使用静态导出。",
+      "report.remote": "服务端 /api/v1/report 已返回报告（{bytes} 字节）；以下为 Markdown 原文：",
+      "report.fallback": "服务端报告暂不可用：{msg}。请先登录并选择一次运行。",
+      "report.noRun": "请先从运行列表选择一次运行。",
+      "report.loading": "正在从服务端生成报告…",
       "report.zerodayYes": "是（零日级，已公开）", "report.zerodayRedacted": "是（可选脱敏）",
       "report.no": "否", "report.redactedTitle": "【脱敏】影响已验证（零日级，已公开；未展示细节）",
       "timeline.summary": "步骤 {steps} · 总耗时 {total} · 累计执行 {sum} · 峰值并行度 {par}",
       "empty.dag.title": "这个视图还没有步骤",
-      "empty.dag.body": "DAG 来自一次 run 的 steps 表。先跑本地 demo 生成真实步骤与三层证据；已有 run 时请用静态导出打开。",
-      "empty.dag.action": "python -m inkblade demo",
-      "empty.dag.next": "真实集群只读清点：python -m inkblade onboard-cluster --dry-run",
+      "empty.dag.body": "DAG 来自一次 run 的 steps 表。已有探针/立足点直接回连控制端，或先投放探针并启动 Agent；步骤与三层证据会出现在这里。",
+      "empty.dag.action": "inkblade channel listen --bind 0.0.0.0 --port 9443 --transport tls --token-file ./probe.token",
+      "empty.dag.next": "Pod 内探针回连：./inkblade-probe reverse --transport tls --host <controller> --port 9443 --ca-file ca.pem --pin <sha256> --token-file /tmp/probe.token",
       "empty.chain.title": "还没有攻击链图",
-      "empty.chain.body": "图数据来自 graph_nodes / graph_edges。demo 会写入可达性边；真实集群先用 pilot 只读清点建立基线。",
-      "empty.chain.action": "python -m inkblade demo",
-      "empty.chain.next": "接入真实集群：python -m inkblade onboard-cluster --dry-run",
+      "empty.chain.body": "图数据来自 graph_nodes / graph_edges。完成探针回连并启动 Agent 后，可达性边会写入本次 run。",
+      "empty.chain.action": "inkblade channel listen --bind 0.0.0.0 --port 9443 --transport tls --token-file ./probe.token",
+      "empty.chain.next": "已有探针：inkblade probe list --workspace ./work",
       "empty.timeline.title": "还没有执行时间线",
-      "empty.timeline.body": "时间线需要带起止时间的 steps 记录。跑一次 demo 或从服务模式登录后查看运行列表。",
-      "empty.timeline.action": "python -m inkblade demo",
-      "empty.timeline.next": "服务模式：python -m inkblade ui --port 8765",
+      "empty.timeline.body": "时间线需要带起止时间的 steps 记录。探针回连并启动 Agent 后自动加载。",
+      "empty.timeline.action": "inkblade channel listen --bind 0.0.0.0 --port 9443 --transport tls --token-file ./probe.token",
+      "empty.timeline.next": "Pod 内探针回连：./inkblade-probe reverse --transport tls --host <controller> --port 9443 --ca-file ca.pem --pin <sha256> --token-file /tmp/probe.token",
       "empty.evidence.title": "还没有证据可浏览",
-      "empty.evidence.body": "三层证据（context.jsonl.gz / evidence.db / tar+SHA256 归档）由 run 产生；先跑 demo 再回到此页。",
-      "empty.evidence.action": "python -m inkblade demo",
-      "empty.evidence.next": "静态导出：python -m inkblade ui --export-static <run> <out>",
+      "empty.evidence.body": "三层证据（context.jsonl.gz / evidence.db / tar+SHA256 归档）由 run 产生；完成探针回连与一次运行后回到此页。",
+      "empty.evidence.action": "inkblade channel listen --bind 0.0.0.0 --port 9443 --transport tls --token-file ./probe.token",
+      "empty.evidence.next": "已有探针：inkblade probe list --workspace ./work",
       "empty.report.title": "还没有发现（findings）",
-      "empty.report.body": "报告预览从 findings 表读取。demo 会生成 10 条发现与双语报告；真实集群请先签授权再执行只读模块。",
-      "empty.report.action": "python -m inkblade demo",
-      "empty.report.next": "授权与范围：python -m inkblade quickstart",
+      "empty.report.body": "报告预览从本次 run 的 findings 读取。",
+      "empty.report.action": "inkblade report --run <run-id> --lang bi",
+      "empty.report.next": "先接入探针：inkblade probe list --workspace ./work",
       "empty.rules.title": "规则目录为空",
       "empty.rules.body": "规则包由规则引擎生成；本地仓库应自带 Kyverno/PSS/Sigma/Falco/Suricata 规则目录。",
       "empty.rules.action": "python -m inkblade rules generate --help",
       "empty.rules.next": "规则校验：python -m inkblade rules validate <pack>",
       "empty.assets.title": "资产库为空",
-      "empty.assets.body": "资产图来自 assets 表（种子 → 增量发现）。demo 会写入命名空间/服务；真实集群用 discover 或 pilot。",
-      "empty.assets.action": "python -m inkblade demo",
-      "empty.assets.next": "资产发现：python -m inkblade discover --seeds <seeds.json>",
+      "empty.assets.body": "资产图来自 assets 表（种子 → 增量发现）。真实集群用 discover 或 pilot 建立基线。",
+      "empty.assets.action": "inkblade discover --seeds <seeds.json>",
+      "empty.assets.next": "资产发现：inkblade discover --seeds <seeds.json>",
       "empty.drift.title": "还没有 drift 报告",
       "empty.drift.body": "drift 由周期重测生成：scheduler 到期跑链子集，与上次 findings 逐键比较。",
       "empty.drift.action": "python -m inkblade schedule list",
@@ -191,17 +238,54 @@
     },
     en: {
       "brand.sub": "ML cluster pentest console · 10 views",
-      "mode.offline": "Local mode · fully offline",
+      "mode.offline": "Local console",
       "mode.static": "Static export · open without server",
       "mode.service": "Service mode · local",
-      "login.user": "User", "login.pass": "Password", "login.ws": "Workspace",
-      "login.submit": "Sign in", "login.runs": "Refresh runs", "login.abort": "Abort",
+      "topbar.workspace": "Workspace",
       "lang.switch": "Switch language / 切换语言",
-      "guide.title": "New to InkBlade? Two commands to first result",
-      "guide.body": "Local mock lab, no real cluster touched; findings, bilingual report and rule pack in ~10–20s.",
-      "guide.step1": "Environment check", "guide.step2": "Local result", "guide.step3": "Real cluster (read-only)",
-      "guide.cluster": "Real cluster:", "guide.kubeconfig": "Auto-discovers KUBECONFIG / ~/.kube/config; dry-run touches nothing.",
-      "guide.dismiss": "Got it",
+      "login.user": "User", "login.pass": "Password", "login.ws": "Workspace",
+      "login.submit": "Sign in", "login.abort": "Abort",
+      "login.subtitle": "Authorized operations console for ML clusters",
+      "connect.kicker": "CONNECT",
+      "connect.title": "Connect",
+      "connect.hasRuns": "Runs available · collapsible",
+      "connect.noRuns": "No runs yet · probe-first setup",
+      "connect.recommended": "Recommended",
+      "connect.assumption": "Default foothold: an ordinary, least-privilege Pod (non-root, no hostPath/privileged, no kubeconfig, outbound TCP only).",
+      "connect.existing.title": "Existing probe / foothold",
+      "connect.existing.body": "An already deployed probe, foothold shell or low-privilege Pod can reverse-connect to the controller; kubeconfig is not required.",
+      "connect.existing.step1": "Listen on the controller",
+      "connect.existing.step2": "Probe reverse-connect from the Pod",
+      "connect.existing.step3": "Confirm the probe is registered",
+      "connect.first.title": "First deployment",
+      "connect.first.body": "Without an existing probe, enter through a foothold and deploy; the default foothold is an ordinary, least-privilege Pod with outbound TCP only.",
+      "connect.first.step1": "Listen on the controller",
+      "connect.first.step2": "Create the foothold session",
+      "connect.first.step3": "Deploy via RCE",
+      "connect.first.sa": "Deploy via SA token (alternative)",
+      "connect.first.reverse": "Probe reverse-connect from the Pod",
+      "connect.first.confirm": "Confirm the probe is registered",
+      "connect.advanced.summary": "kubeconfig bulk deployment (optional)",
+      "connect.advanced.body": "Only when you already hold a kubeconfig and need bulk deployment; this is not a prerequisite.",
+      "connect.advanced.step1": "kubeconfig session",
+      "connect.advanced.step2": "Bulk deployment",
+      "connect.advanced.step3": "Confirm the probe is registered",
+      "dash.eyebrow": "WORKSPACE OVERVIEW", "dash.workspace": "Workspace",
+      "dash.runs": "Runs", "dash.findings": "Recent findings", "dash.chain": "Chain status",
+      "dash.loading": "Reading workspace…", "dash.refresh": "Refresh", "dash.run": "Run",
+      "dash.role": "Role", "dash.consent": "Authorization", "dash.consentComplete": "Signed",
+      "dash.consentPending": "Not signed", "dash.runCount": "Runs", "dash.latest": "Latest run",
+      "dash.noRuns": "No runs yet. Refresh after completing the CLI setup.",
+      "dash.noWorkspace": "No workspace connected", "dash.loadingRun": "Loading run data…",
+      "dash.noRunData": "This run has no step data yet.",
+      "dash.findingsTotal": "Total findings", "dash.steps": "Steps", "dash.graph": "Graph nodes",
+      "dash.chainEdges": "Chain edges", "dash.chainStatus": "Run status",
+      "dash.statusSuccess": "Success", "dash.statusRunning": "Running",
+      "dash.statusDegraded": "Degraded", "dash.statusBlocked": "Blocked", "dash.statusPending": "Pending",
+      "dash.selectRun": "Select a run to inspect findings and chain status.",
+      "dash.runLoadFail": "Failed to load run data: ",
+      "dash.refreshing": "Refreshing…", "dash.refreshed": "Refreshed",
+      "dash.abortSent": "Emergency stop sent",
       "nav.dag": "Workflow DAG", "nav.chain": "Attack chain", "nav.timeline": "Timeline",
       "nav.evidence": "Evidence", "nav.report": "Report", "nav.rules": "Rules",
       "nav.assets": "Assets", "nav.drift": "Drift", "nav.approvals": "Approvals",
@@ -228,10 +312,10 @@
       "schedules.hint": "cron/interval schedule → run chain subset when due → drift report.",
       "footer.line": "InkBlade · all assets embedded locally (no CDN) · three evidence layers: context summary / database / archive (tar+SHA256)",
       "common.copy": "Copy", "common.copied": "Copied",
-      "common.demo": "Local demo", "common.cluster": "Real cluster (read-only)",
+      "common.probe": "Deploy probe", "common.cluster": "Connect cluster",
       "run.staticMeta": "Run {run} · status {status} · steps {steps} · findings {findings}",
       "run.serviceMeta": "Runs in this workspace: {n} ({runs})",
-      "run.serviceEmpty": "Signed in (service mode has no read-only step endpoint; use static export for step-level data)",
+      "run.serviceEmpty": "Signed in; waiting for run data in this workspace.",
       "run.loadFail": "Failed to load runs: ",
       "report.total": "Total findings", "report.steps": "Steps",
       "report.findings": "Findings",
@@ -243,8 +327,10 @@
       "report.evidence": "Evidence (archive ref)", "report.zeroday": "Zero-day",
       "report.sectionTitle": "Structural alignment (PTES / NIST SP 800-115 / GB/T 20984 / CVSS 3.1 / ATT&CK·ATLAS)",
       "report.sectionBody": "Preview renders findings and counts only; the report engine produces the full bilingual pentest + remediation + defense rule pack, including combo risk, training-data exposure, code inventory, network threat model and hybrid-cloud boundary.",
-      "report.remote": "Server report returned (placeholder endpoint); rendering embedded data below:",
-      "report.fallback": "api/report unavailable (not implemented or not signed in) — falling back to embedded rendering; use the report engine or static export for the full report.",
+      "report.remote": "Server /api/v1/report returned {bytes} bytes; Markdown follows:",
+      "report.fallback": "Server report unavailable: {msg}. Sign in and select a run first.",
+      "report.noRun": "Select a run from the run list first.",
+      "report.loading": "Generating the report on the server…",
       "report.zerodayYes": "Yes (zero-day, public)", "report.zerodayRedacted": "Yes (redacted)",
       "report.no": "No", "report.redactedTitle": "[Redacted] impact verified (zero-day, public; details hidden)",
       "timeline.summary": "Steps {steps} · span {total} · cumulative {sum} · peak parallelism {par}",
@@ -260,33 +346,33 @@
       "ops.summary": "{total} events · file ops {file} · steps {step} · exploit markers {exploit}",
       "evidence.files": "File access (file_ops)",
       "empty.dag.title": "No steps in this view yet",
-      "empty.dag.body": "The DAG comes from a run's steps table. Run the local demo to generate steps and three-layer evidence, or open a static export.",
-      "empty.dag.action": "python -m inkblade demo",
-      "empty.dag.next": "Read-only real cluster: python -m inkblade onboard-cluster --dry-run",
+      "empty.dag.body": "The DAG comes from a run's steps table. Reverse-connect an existing probe or foothold, or deploy a probe and start the Agent; steps and evidence will appear here.",
+      "empty.dag.action": "inkblade channel listen --bind 0.0.0.0 --port 9443 --transport tls --token-file ./probe.token",
+      "empty.dag.next": "Probe reverse-connect from the Pod: ./inkblade-probe reverse --transport tls --host <controller> --port 9443 --ca-file ca.pem --pin <sha256> --token-file /tmp/probe.token",
       "empty.chain.title": "No attack-chain graph yet",
-      "empty.chain.body": "Graph data comes from graph_nodes / graph_edges. demo writes reachability edges; use pilot for a real-cluster baseline.",
-      "empty.chain.action": "python -m inkblade demo",
-      "empty.chain.next": "Connect a cluster: python -m inkblade onboard-cluster --dry-run",
+      "empty.chain.body": "Graph data comes from graph_nodes / graph_edges. After the probe reverse-connects and the Agent runs, reachability edges are written to this run.",
+      "empty.chain.action": "inkblade channel listen --bind 0.0.0.0 --port 9443 --transport tls --token-file ./probe.token",
+      "empty.chain.next": "Existing probe: inkblade probe list --workspace ./work",
       "empty.timeline.title": "No execution timeline yet",
-      "empty.timeline.body": "The timeline needs steps with start/end times. Run demo or sign in to service mode and open a run.",
-      "empty.timeline.action": "python -m inkblade demo",
-      "empty.timeline.next": "Service mode: python -m inkblade ui --port 8765",
+      "empty.timeline.body": "The timeline needs steps with start/end times. It loads after the probe reverse-connects and the Agent starts.",
+      "empty.timeline.action": "inkblade channel listen --bind 0.0.0.0 --port 9443 --transport tls --token-file ./probe.token",
+      "empty.timeline.next": "Probe reverse-connect from the Pod: ./inkblade-probe reverse --transport tls --host <controller> --port 9443 --ca-file ca.pem --pin <sha256> --token-file /tmp/probe.token",
       "empty.evidence.title": "No evidence to browse yet",
-      "empty.evidence.body": "Three evidence layers (context.jsonl.gz / evidence.db / tar+SHA256 archive) are produced by a run; run demo first.",
-      "empty.evidence.action": "python -m inkblade demo",
-      "empty.evidence.next": "Static export: python -m inkblade ui --export-static <run> <out>",
+      "empty.evidence.body": "Three evidence layers (context.jsonl.gz / evidence.db / tar+SHA256 archive) are produced by a run; return after the probe reverse-connects and one run completes.",
+      "empty.evidence.action": "inkblade channel listen --bind 0.0.0.0 --port 9443 --transport tls --token-file ./probe.token",
+      "empty.evidence.next": "Existing probe: inkblade probe list --workspace ./work",
       "empty.report.title": "No findings yet",
-      "empty.report.body": "Report preview reads the findings table. demo creates 10 findings plus a bilingual report; for a real cluster sign consent first.",
-      "empty.report.action": "python -m inkblade demo",
-      "empty.report.next": "Consent and scope: python -m inkblade quickstart",
+      "empty.report.body": "Report preview reads findings for this run.",
+      "empty.report.action": "inkblade report --run <run-id> --lang bi",
+      "empty.report.next": "Connect a probe first: inkblade probe list --workspace ./work",
       "empty.rules.title": "Rule catalog is empty",
       "empty.rules.body": "Rule packs are generated by the rules engine; a local checkout ships Kyverno/PSS/Sigma/Falco/Suricata rules.",
       "empty.rules.action": "python -m inkblade rules generate --help",
       "empty.rules.next": "Validate: python -m inkblade rules validate <pack>",
       "empty.assets.title": "Asset inventory is empty",
-      "empty.assets.body": "The asset graph comes from the assets table (seed → incremental discovery). demo writes namespaces/services; use discover or pilot for a real cluster.",
-      "empty.assets.action": "python -m inkblade demo",
-      "empty.assets.next": "Discover: python -m inkblade discover --seeds <seeds.json>",
+      "empty.assets.body": "The asset graph comes from the assets table (seed → incremental discovery). Use discover or pilot for a real-cluster baseline.",
+      "empty.assets.action": "inkblade discover --seeds <seeds.json>",
+      "empty.assets.next": "Discover: inkblade discover --seeds <seeds.json>",
       "empty.drift.title": "No drift report yet",
       "empty.drift.body": "Drift is produced by periodic retests: scheduler runs chain subsets and diffs findings against the previous run.",
       "empty.drift.action": "python -m inkblade schedule list",
@@ -324,11 +410,52 @@
 
   function statusLabel(st) { return t("status." + (st || "pending")); }
 
-  function steps() { return (STATE.data && STATE.data.steps) || []; }
-  function findings() { return (STATE.data && STATE.data.findings) || []; }
-  function nodes() { return (STATE.data && STATE.data.nodes) || []; }
-  function edges() { return (STATE.data && STATE.data.edges) || []; }
+  function steps() {
+    if (STATE.data && STATE.data.steps) return STATE.data.steps;
+    return STATE.remoteSteps || [];
+  }
+  function findings() {
+    if (STATE.data && STATE.data.findings) return STATE.data.findings;
+    return [];
+  }
+  function nodes() {
+    if (STATE.data && STATE.data.nodes) return STATE.data.nodes;
+    return STATE.remoteNodes || [];
+  }
+  function edges() {
+    if (STATE.data && STATE.data.edges) return STATE.data.edges;
+    return STATE.remoteEdges || [];
+  }
   function stepStatus(s) { return s && STATUS_ZH[s.status] ? s.status : "pending"; }
+
+  function stepFindingCount(s) {
+    var summary = (s && (s.result_summary || s.result || "")) || "";
+    var m = /(\d+)\s+finding/i.exec(summary);
+    return m ? parseInt(m[1], 10) : 0;
+  }
+  function derivedFindings() {
+    var out = [];
+    steps().forEach(function (s) {
+      var n = stepFindingCount(s);
+      if (n > 0) out.push({ step_key: s.step_key, count: n, status: stepStatus(s), summary: s.result_summary || "" });
+    });
+    return out;
+  }
+  function totalDerivedFindings() {
+    return derivedFindings().reduce(function (a, f) { return a + f.count; }, 0);
+  }
+  function runStatus() {
+    var list = steps();
+    if (!list.length) return "pending";
+    var order = ["blocked", "running", "degraded", "pending", "success"];
+    var seen = {};
+    list.forEach(function (s) { seen[stepStatus(s)] = true; });
+    for (var i = 0; i < order.length; i++) if (seen[order[i]]) return order[i];
+    return "success";
+  }
+  function selectedRunName() {
+    return STATE.selectedRun || (STATE.runs && STATE.runs[0]) || "";
+  }
 
   /* ================= 操作/文件访问台账数据 ================= */
 
@@ -338,9 +465,11 @@
     return (STATE.data && STATE.data.file_ops) || STATE.remoteFileOps || [];
   }
   function loadRemoteAudit() {
-    if (STATIC_MODE || !STATE.token || STATE.remoteAuditLoaded || STATE.remoteAuditLoading) return;
-    var run = STATE.selectedRun || (STATE.runs && STATE.runs[0]) || "";
+    if (STATIC_MODE || !STATE.token) return;
+    var run = selectedRunName();
     if (!run) return;
+    if (STATE.remoteAuditRun === run && (STATE.remoteAuditLoaded || STATE.remoteAuditLoading)) return;
+    STATE.remoteAuditRun = run;
     STATE.remoteAuditLoading = true;
     var qs = "?workspace=" + encodeURIComponent(STATE.workspace) + "&run=" + encodeURIComponent(run);
     api("api/v1/timeline" + qs)
@@ -349,13 +478,14 @@
         return api("api/v1/file-ops" + qs);
       })
       .then(function (body) {
+        if (STATE.remoteAuditRun !== run) return;
         STATE.remoteFileOps = body.file_ops || [];
         STATE.remoteAuditLoaded = true;
         STATE.remoteAuditLoading = false;
         renderOpsLedger();
         if (STATE.view === "evidence") renderEvidence();
       })
-      .catch(function () { STATE.remoteAuditLoading = false; });
+      .catch(function () { if (STATE.remoteAuditRun === run) STATE.remoteAuditLoading = false; });
   }
   function opsForStep(key) {
     if (!key) return [];
@@ -433,8 +563,8 @@
   /* ================= 引导空态（十个视图统一） ================= */
 
   var EMPTY_STATES = {
-    dag: "①", chain: "②", timeline: "③", evidence: "④", report: "⑤",
-    rules: "⑥", assets: "⑦", drift: "⑧", approvals: "⑨", schedules: "⑩",
+    dag: "01", chain: "02", timeline: "03", evidence: "04", report: "05",
+    rules: "06", assets: "07", drift: "08", approvals: "09", schedules: "10",
   };
 
   function copyText(text, btn) {
@@ -481,8 +611,8 @@
     box.appendChild(el("h4", null, opts.title || t("empty." + view + ".title")));
     box.appendChild(el("p", null, opts.body || t("empty." + view + ".body")));
     var actions = el("div", "empty-actions");
-    actions.appendChild(cmdRow(t("empty." + view + ".action"), t("common.demo")));
-    actions.appendChild(cmdRow("python -m inkblade onboard-cluster --dry-run", t("common.cluster")));
+    actions.appendChild(cmdRow(t("empty." + view + ".action"), t("common.probe")));
+    actions.appendChild(cmdRow("inkblade session open --mode kubeconfig --workspace ./work --kubeconfig ~/.kube/config", t("common.cluster")));
     box.appendChild(actions);
     var next = opts.next || t("empty." + view + ".next");
     if (next) box.appendChild(el("div", "empty-next", next));
@@ -515,6 +645,7 @@
     }
     applyI18n();
     renderCurrent();
+    renderDashboard();
     renderRunMeta();
   }
 
@@ -541,6 +672,7 @@
     });
   }
   function showView(v) {
+    if (VIEW_IDS.indexOf(v) < 0) return;
     STATE.view = v;
     document.querySelectorAll("nav#views button").forEach(function (b) {
       b.classList.toggle("active", b.getAttribute("data-view") === v);
@@ -551,6 +683,7 @@
     renderCurrent();
   }
   function renderCurrent() {
+    if (!isAuthed()) return;
     switch (STATE.view) {
       case "dag": renderDag(); break;
       case "chain": renderChain(); break;
@@ -565,84 +698,605 @@
     }
   }
   function renderAll() {
+    if (!isAuthed()) return;
     renderCurrent();
     renderRunMeta();
+    renderDashboard();
   }
 
-  /* ================= 登录 / 服务模式 ================= */
+  /* ================= 登录 / 工作区 / 运行数据 ================= */
 
-  function bindSession() {
-    var form = document.getElementById("login-form");
-    if (STATIC_MODE) {
-      document.getElementById("mode-pill").textContent = t("mode.static");
-      document.getElementById("mode-pill").classList.add("static");
-      return; // 静态模式无登录
-    }
-    form.hidden = false;
-    document.getElementById("mode-pill").textContent = t("mode.service");
-    form.addEventListener("submit", function (ev) {
-      ev.preventDefault();
-      login();
-    });
-    document.getElementById("btn-runs").addEventListener("click", loadRuns);
-    document.getElementById("btn-abort").addEventListener("click", function () {
-      fetch("api/abort", { method: "POST" }).catch(function () {});
-      this.textContent = t("login.abort");
-    });
-  }
   function api(path, opts) {
     opts = opts || {};
     opts.headers = Object.assign({ "Content-Type": "application/json" }, opts.headers || {});
     if (STATE.token) opts.headers["Authorization"] = "Bearer " + STATE.token;
     return fetch(path, opts).then(function (r) {
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      return r.json();
+      return r.json().catch(function () { return {}; }).then(function (body) {
+        if (!r.ok) {
+          var err = new Error((body && body.error) || ("HTTP " + r.status));
+          err.status = r.status;
+          throw err;
+        }
+        return body;
+      });
     });
   }
+
+  function isAuthed() { return STATIC_MODE || !!STATE.token; }
+
+  function showApp() {
+    document.body.classList.add("authed");
+    var dashboard = document.getElementById("dashboard");
+    if (dashboard) dashboard.hidden = false;
+    var abort = document.getElementById("btn-abort");
+    if (abort) abort.hidden = STATIC_MODE;
+  }
+
+  function showOnboarding() {
+    document.body.classList.remove("authed");
+    var dashboard = document.getElementById("dashboard");
+    if (dashboard) dashboard.hidden = true;
+  }
+
+  function metric(label, value, cls) {
+    var box = el("div", "metric");
+    box.appendChild(el("div", "value " + (cls || ""), String(value)));
+    box.appendChild(el("div", "label", label));
+    return box;
+  }
+
+  function populateWorkspaceSelect() {
+    var sel = document.getElementById("ws-select");
+    if (!sel) return;
+    clear(sel);
+    var list = STATE.workspaces.length ? STATE.workspaces : (STATE.workspace ? [STATE.workspace] : []);
+    if (!list.length) {
+      sel.appendChild(el("option", null, t("dash.noWorkspace"))).value = "";
+      sel.disabled = true;
+      return;
+    }
+    list.forEach(function (ws) {
+      var o = el("option", null, ws);
+      o.value = ws;
+      sel.appendChild(o);
+    });
+    sel.value = STATE.workspace;
+    sel.disabled = false;
+  }
+
+  function showLoginError(message) {
+    var box = document.getElementById("login-error");
+    if (!box) return;
+    box.textContent = message || "";
+    box.hidden = !message;
+  }
+
+  function bindCopyCommands() {
+    document.querySelectorAll(".copy-cmd").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        copyText(btn.getAttribute("data-copy") || "", btn);
+      });
+    });
+  }
+
+  function bindSession() {
+    var form = document.getElementById("login-form");
+    var abort = document.getElementById("btn-abort");
+    if (abort) {
+      abort.addEventListener("click", function () {
+        if (!isAuthed()) return;
+        api("api/abort", { method: "POST" })
+          .then(function () {
+            abort.textContent = t("dash.abortSent");
+            setTimeout(function () { abort.textContent = t("login.abort"); }, 1800);
+          })
+          .catch(function () {});
+      });
+    }
+    var refresh = document.getElementById("btn-refresh");
+    if (refresh) {
+      refresh.addEventListener("click", function () {
+        if (STATIC_MODE) { renderAll(); return; }
+        refresh.textContent = t("dash.refreshing");
+        loadRuns().then(function () { refresh.textContent = t("dash.refreshed"); });
+        setTimeout(function () { refresh.textContent = t("dash.refresh"); }, 1200);
+      });
+    }
+    var runSel = document.getElementById("run-select");
+    if (runSel) runSel.addEventListener("change", function () { selectRun(runSel.value); });
+    var wsSel = document.getElementById("ws-select");
+    if (wsSel) wsSel.addEventListener("change", function () { switchWorkspace(wsSel.value); });
+    bindCopyCommands();
+    if (STATIC_MODE) {
+      document.getElementById("mode-pill").textContent = t("mode.static");
+      document.getElementById("mode-pill").classList.add("static");
+      initStaticMode();
+      return;
+    }
+    document.getElementById("mode-pill").textContent = t("mode.service");
+    showOnboarding();
+    var wsInput = document.getElementById("in-ws");
+    if (wsInput) {
+      try {
+        var asked = new URLSearchParams(window.location.search).get("workspace") ||
+          localStorage.getItem("inkblade-ws");
+        if (asked) wsInput.value = asked;
+      } catch (e) { /* file:// 或隐私模式 */ }
+    }
+    if (form) {
+      form.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        login();
+      });
+    }
+  }
+
   function login() {
     var name = document.getElementById("in-user").value.trim();
     var pass = document.getElementById("in-pass").value;
-    STATE.workspace = document.getElementById("in-ws").value.trim() || "local-lab";
+    var ws = document.getElementById("in-ws").value.trim() || "local-lab";
+    var btn = document.getElementById("btn-login");
+    showLoginError("");
+    if (btn) { btn.disabled = true; btn.textContent = t("dash.loading"); }
     api("api/login", { method: "POST", body: JSON.stringify({ name: name, password: pass }) })
       .then(function (body) {
-        STATE.token = body.token; STATE.role = body.role;
+        STATE.token = body.token;
+        STATE.role = body.role || "";
+        STATE.user = name;
+        STATE.workspace = ws;
+        STATE.selectedRun = "";
+        try { localStorage.setItem("inkblade-ws", ws); } catch (e) { /* 隐私模式 */ }
         var pill = document.getElementById("session-pill");
         pill.hidden = false;
-        pill.textContent = name + " · " + (body.role || "") + " · " + STATE.workspace;
         pill.classList.add("ok");
-        document.getElementById("btn-runs").hidden = false;
-        document.getElementById("btn-abort").hidden = false;
-        loadRuns();
+        pill.textContent = name + " · " + STATE.role + " · " + STATE.workspace;
+        showApp();
+        populateWorkspaceSelect();
+        loadWorkspaces();
+        loadConsent();
+        return loadRuns();
       })
       .catch(function (e) {
+        showLoginError(e.status === 401 ? "用户名或密码不正确" : e.message);
         var pill = document.getElementById("session-pill");
         pill.hidden = false;
         pill.classList.remove("ok");
         pill.textContent = "登录失败：" + e.message;
+      })
+      .then(function () {
+        if (btn) { btn.disabled = false; btn.textContent = t("login.submit"); }
       });
   }
+
+  function switchWorkspace(ws) {
+    if (!ws || ws === STATE.workspace) return;
+    STATE.workspace = ws;
+    STATE.selectedRun = "";
+    STATE.runs = [];
+    STATE.remoteSteps = null; STATE.remoteNodes = null; STATE.remoteEdges = null;
+    STATE.remoteGraph = null; STATE.remoteEvidence = null; STATE.remoteReport = null;
+    STATE.remoteTimeline = null; STATE.remoteFileOps = null;
+    STATE.remoteAuditLoaded = false; STATE.remoteAuditRun = "";
+    var pill = document.getElementById("session-pill");
+    if (pill) pill.textContent = (STATE.user || "") + " · " + (STATE.role || "") + " · " + STATE.workspace;
+    loadConsent();
+    loadRuns();
+  }
+
+  function loadWorkspaces() {
+    return api("api/v1/workspaces?workspace=" + encodeURIComponent(STATE.workspace))
+      .then(function (body) {
+        STATE.workspaces = body.workspaces || [STATE.workspace];
+        populateWorkspaceSelect();
+      })
+      .catch(function () {
+        STATE.workspaces = [STATE.workspace];
+        populateWorkspaceSelect();
+      });
+  }
+
+  function loadConsent() {
+    if (STATIC_MODE) {
+      STATE.consent = { status: "static", fields: {} };
+      renderDashboard();
+      return Promise.resolve();
+    }
+    return api("api/v1/consent?workspace=" + encodeURIComponent(STATE.workspace))
+      .then(function (body) { STATE.consent = body; renderDashboard(); })
+      .catch(function () { STATE.consent = { status: "unknown", fields: {} }; renderDashboard(); });
+  }
+
   function loadRuns() {
-    api("api/runs?workspace=" + encodeURIComponent(STATE.workspace))
-      .then(function (body) { STATE.runs = body.runs || []; renderRunMeta(); })
+    if (STATIC_MODE) {
+      var run = (STATE.data && STATE.data.run) || {};
+      STATE.runs = run.name ? [run.name] : [];
+      STATE.selectedRun = run.name || "";
+      renderDashboard();
+      renderRunMeta();
+      return Promise.resolve();
+    }
+    return api("api/runs?workspace=" + encodeURIComponent(STATE.workspace))
+      .then(function (body) {
+        STATE.runs = (body.runs || []).slice().reverse();
+        renderDashboard();
+        var run = STATE.selectedRun && STATE.runs.indexOf(STATE.selectedRun) >= 0
+          ? STATE.selectedRun : (STATE.runs[0] || "");
+        if (run) return selectRun(run);
+        STATE.selectedRun = "";
+        clearRunData();
+        renderAll();
+      })
       .catch(function (e) {
         var pill = document.getElementById("session-pill");
-        pill.textContent = t("run.loadFail") + e.message;
+        if (pill) pill.textContent = t("run.loadFail") + e.message;
+        renderDashboard();
       });
   }
-  function renderRunMeta() {
-    var host = document.getElementById("tl-summary"); // 顶部数据状态（时间线页顺便展示）
-    if (!host) return;
-    if (STATIC_MODE) {
-      var d = STATE.data;
-      host.textContent = t("run.staticMeta", {
-        run: d.run.name, status: d.run.status || "—",
-        steps: d.steps.length, findings: d.findings.length,
-      });
+
+  function clearRunData() {
+    STATE.remoteSteps = null; STATE.remoteNodes = null; STATE.remoteEdges = null;
+    STATE.remoteGraph = null; STATE.remoteEvidence = null; STATE.remoteManifestVerified = null;
+    STATE.remoteTimeline = null; STATE.remoteFileOps = null; STATE.remoteReport = null;
+    STATE.remoteAuditLoaded = false; STATE.remoteAuditRun = "";
+    STATE.selectedStep = null;
+  }
+
+  function safeApi(path) {
+    return api(path).then(
+      function (body) { return { ok: true, body: body }; },
+      function (err) { return { ok: false, error: err.message || "HTTP error" }; }
+    );
+  }
+
+  function selectRun(run) {
+    if (!run) return Promise.resolve();
+    STATE.selectedRun = run;
+    if (STATIC_MODE) { renderAll(); return Promise.resolve(); }
+    STATE.runGen += 1;
+    var gen = STATE.runGen;
+    STATE.runLoading = true;
+    STATE.runError = "";
+    clearRunData();
+    renderDashboard();
+    renderRunMeta();
+    renderCurrent();
+    var qs = "?workspace=" + encodeURIComponent(STATE.workspace) + "&run=" + encodeURIComponent(run);
+    return Promise.all([
+      safeApi("api/v1/steps" + qs),
+      safeApi("api/v1/graph" + qs),
+      safeApi("api/v1/timeline" + qs),
+      safeApi("api/v1/file-ops" + qs),
+      safeApi("api/v1/evidence" + qs),
+    ]).then(function (results) {
+      if (gen !== STATE.runGen) return;
+      var stepsRes = results[0], graphRes = results[1], timelineRes = results[2],
+        opsRes = results[3], evidenceRes = results[4];
+      STATE.runLoading = false;
+      if (stepsRes.ok) STATE.remoteSteps = stepsRes.body.steps || [];
+      else STATE.runError = stepsRes.error;
+      if (graphRes.ok) {
+        STATE.remoteGraph = graphRes.body;
+        STATE.remoteNodes = graphRes.body.nodes || [];
+        STATE.remoteEdges = graphRes.body.edges || [];
+      }
+      if (timelineRes.ok) STATE.remoteTimeline = { events: timelineRes.body.events || [], counts: timelineRes.body.counts || {} };
+      if (opsRes.ok) STATE.remoteFileOps = opsRes.body.file_ops || [];
+      if (evidenceRes.ok) {
+        STATE.remoteEvidence = evidenceRes.body.evidence || [];
+        STATE.remoteManifestVerified = evidenceRes.body.manifest_verified;
+      }
+      STATE.remoteAuditLoaded = true;
+      STATE.remoteAuditRun = run;
+      renderAll();
+    });
+  }
+
+  function syncRunSelect() {
+    var sel = document.getElementById("run-select");
+    if (!sel) return;
+    clear(sel);
+    if (!STATE.runs.length) {
+      sel.appendChild(el("option", null, t("dash.noRuns"))).value = "";
+      sel.disabled = true;
       return;
     }
-    host.textContent = STATE.runs.length
-      ? t("run.serviceMeta", { n: STATE.runs.length, runs: STATE.runs.join(", ") })
-      : t("run.serviceEmpty");
+    STATE.runs.forEach(function (run) {
+      var o = el("option", null, run);
+      o.value = run;
+      sel.appendChild(o);
+    });
+    sel.value = selectedRunName();
+    sel.disabled = false;
+  }
+
+  function renderRunMeta() {
+    if (STATIC_MODE) {
+      var d = STATE.data;
+      var host = document.getElementById("tl-summary");
+      if (host) {
+        host.textContent = t("run.staticMeta", {
+          run: (d.run && d.run.name) || "—", status: (d.run && d.run.status) || "—",
+          steps: (d.steps || []).length, findings: (d.findings || []).length,
+        });
+      }
+      return;
+    }
+    var meta = document.getElementById("tl-summary");
+    if (meta) {
+      meta.textContent = STATE.runs.length
+        ? t("run.serviceMeta", { n: STATE.runs.length, runs: STATE.runs.join(", ") })
+        : t("run.serviceEmpty");
+    }
+  }
+
+  /* ================= 接入面板（探针优先） ================= */
+
+  function connectPath(titleKey, bodyKey, rows, badgeKey) {
+    var card = el("section", "connect-path" + (badgeKey ? " primary" : ""));
+    var head = el("div", "connect-path-head");
+    if (badgeKey) head.appendChild(el("span", "path-badge", t(badgeKey)));
+    head.appendChild(el("h4", null, t(titleKey)));
+    card.appendChild(head);
+    card.appendChild(el("p", "connect-copy", t(bodyKey)));
+    rows.forEach(function (row) {
+      card.appendChild(cmdRow(row[0], t(row[1])));
+    });
+    return card;
+  }
+
+  function buildConnectPanel(hasRuns) {
+    var panel = document.createElement("details");
+    panel.id = "connect-panel";
+    panel.className = "connect-panel";
+    var summary = document.createElement("summary");
+    summary.className = "connect-summary";
+    var main = el("div", "connect-summary-main");
+    main.appendChild(el("span", "card-kicker", t("connect.kicker")));
+    main.appendChild(el("span", "connect-title", t("connect.title")));
+    main.appendChild(el("span", "connect-state",
+      hasRuns ? t("connect.hasRuns") : t("connect.noRuns")));
+    summary.appendChild(main);
+    summary.appendChild(el("span", "chev", "▾"));
+    panel.appendChild(summary);
+
+    var body = el("div", "connect-body");
+    body.appendChild(el("p", "connect-assumption", t("connect.assumption")));
+    var grid = el("div", "connect-grid");
+
+    grid.appendChild(connectPath("connect.existing.title", "connect.existing.body", [
+      ["inkblade channel listen --bind 0.0.0.0 --port 9443 --transport tls --token-file ./probe.token", "connect.existing.step1"],
+      ["./inkblade-probe reverse --transport tls --host <controller> --port 9443 --ca-file ca.pem --pin <sha256> --sni <name> --token-file /tmp/probe.token", "connect.existing.step2"],
+      ["inkblade probe list --workspace ./work", "connect.existing.step3"],
+    ], "connect.recommended"));
+
+    grid.appendChild(connectPath("connect.first.title", "connect.first.body", [
+      ["inkblade channel listen --bind 0.0.0.0 --port 9443 --transport tls --token-file ./probe.token", "connect.first.step1"],
+      ["inkblade session open --mode foothold --target <target> --pod <pod>",
+        "connect.first.step2"],
+      ["inkblade probe deploy --session <id> --via rce --binary ./inkblade-probe-linux-amd64",
+        "connect.first.step3"],
+      ["inkblade probe deploy --session <id> --via sa-token --binary ./inkblade-probe-linux-amd64",
+        "connect.first.sa"],
+      ["./inkblade-probe reverse --transport tls --host <controller> --port 9443 --ca-file ca.pem --pin <sha256> --token-file /tmp/probe.token",
+        "connect.first.reverse"],
+      ["inkblade probe list --workspace ./work", "connect.first.confirm"],
+    ]));
+
+    body.appendChild(grid);
+
+    var advanced = document.createElement("details");
+    advanced.className = "connect-advanced";
+    var advSummary = document.createElement("summary");
+    advSummary.textContent = t("connect.advanced.summary");
+    advanced.appendChild(advSummary);
+    advanced.appendChild(el("p", "connect-copy", t("connect.advanced.body")));
+    [
+      ["inkblade session open --mode kubeconfig --workspace ./work --kubeconfig ~/.kube/config",
+        "connect.advanced.step1"],
+      ["inkblade probe deploy --session <session-id> --via kubectl --binary ./inkblade-probe-linux-amd64",
+        "connect.advanced.step2"],
+      ["inkblade probe list --workspace ./work", "connect.advanced.step3"],
+    ].forEach(function (row) {
+      advanced.appendChild(cmdRow(row[0], t(row[1])));
+    });
+    body.appendChild(advanced);
+    panel.appendChild(body);
+    return panel;
+  }
+
+  function renderConnectPanel() {
+    var host = document.getElementById("post-auth-panel");
+    if (!host) return;
+    var hasRuns = STATE.runs.length > 0;
+    var previous = document.getElementById("connect-panel");
+    if (previous && STATE.connectUserToggled) {
+      STATE.connectOpen = previous.open;
+    }
+    clear(host);
+    var panel = buildConnectPanel(hasRuns);
+    host.appendChild(panel);
+    var desired;
+    if (!hasRuns) desired = true;
+    else if (!STATE.connectInit) desired = false;
+    else if (STATE.connectUserToggled) desired = !!STATE.connectOpen;
+    else desired = false;
+    STATE.connectInit = true;
+    panel.open = desired;
+    panel.addEventListener("toggle", function () {
+      if (panel.open !== desired) {
+        STATE.connectUserToggled = true;
+        STATE.connectOpen = panel.open;
+      }
+    });
+  }
+
+  /* ================= 工作区总览 ================= */
+
+  function renderDashboard() {
+    if (!isAuthed()) return;
+    var title = document.getElementById("dash-title");
+    if (title) title.textContent = STATE.workspace || t("dash.noWorkspace");
+    var sub = document.getElementById("dash-subtitle");
+    if (sub) {
+      if (STATIC_MODE) {
+        var r = (STATE.data && STATE.data.run) || {};
+        sub.textContent = t("run.staticMeta", {
+          run: r.name || "—", status: r.status || "—",
+          steps: (STATE.data && STATE.data.steps || []).length,
+          findings: (STATE.data && STATE.data.findings || []).length,
+        });
+      } else if (STATE.runLoading) {
+        sub.textContent = t("dash.loadingRun");
+      } else if (STATE.runs.length) {
+        sub.textContent = STATE.workspace + " · " + t("run.serviceMeta", {
+          n: STATE.runs.length, runs: STATE.runs[0],
+        });
+      } else {
+        sub.textContent = t("dash.noRuns");
+      }
+    }
+    syncRunSelect();
+    renderConnectPanel();
+    renderDashWorkspace();
+    renderDashRuns();
+    renderDashFindings();
+    renderDashChain();
+    renderRunMeta();
+  }
+
+  function renderDashWorkspace() {
+    var host = document.getElementById("dash-workspace");
+    if (!host) return;
+    clear(host);
+    var grid = el("div", "metric-grid");
+    var consent = STATE.consent || {};
+    var cstatus = consent.status || "unknown";
+    var consentText = cstatus === "complete" ? t("dash.consentComplete")
+      : (cstatus === "static" ? "—" : t("dash.consentPending"));
+    grid.appendChild(metric(t("dash.role"), STATE.role || (STATIC_MODE ? "static" : "—"), "dim"));
+    grid.appendChild(metric(t("dash.consent"), consentText,
+      cstatus === "complete" ? "ok" : (cstatus === "unknown" || cstatus === "static" ? "dim" : "warn")));
+    grid.appendChild(metric(t("dash.runCount"), STATE.runs.length, "dim"));
+    grid.appendChild(metric(t("dash.latest"), selectedRunName() || "—", "dim"));
+    host.appendChild(grid);
+    var extra = el("div", "dash-empty");
+    extra.style.marginTop = "11px";
+    extra.textContent = STATIC_MODE
+      ? "静态导出：证据与图数据来自内嵌快照。"
+      : (consent.status === "complete"
+        ? "授权记录已签署，执行路径按 RoE 范围放行。"
+        : "授权未完成：执行类 API 在执行前返回 423。");
+    host.appendChild(extra);
+  }
+
+  function renderDashRuns() {
+    var host = document.getElementById("dash-runs");
+    if (!host) return;
+    clear(host);
+    if (!STATE.runs.length) {
+      host.appendChild(el("div", "dash-empty", t("dash.noRuns")));
+      return;
+    }
+    STATE.runs.forEach(function (run) {
+      var btn = el("button", "run-item" + (run === STATE.selectedRun ? " active" : ""));
+      btn.type = "button";
+      btn.appendChild(el("span", "run-name", run));
+      btn.appendChild(el("span", "run-state", run === STATE.selectedRun ? "ACTIVE" : "SELECT"));
+      btn.addEventListener("click", function () { selectRun(run); });
+      host.appendChild(btn);
+    });
+  }
+
+  function renderDashFindings() {
+    var host = document.getElementById("dash-findings");
+    if (!host) return;
+    clear(host);
+    if (STATE.runLoading) {
+      host.appendChild(el("div", "dash-empty", t("dash.loadingRun")));
+      return;
+    }
+    if (STATE.runError) {
+      host.appendChild(el("div", "dash-empty", t("dash.runLoadFail") + STATE.runError));
+      return;
+    }
+    var list = [];
+    if (STATIC_MODE) {
+      list = findings().slice(0, 6).map(function (f) {
+        return {
+          title: f.title || f.step_key || "—",
+          meta: (f.severity || "info") + " · " + (f.step_key || ""),
+          sev: String(f.severity || "info").toLowerCase(),
+        };
+      });
+    } else {
+      list = derivedFindings().slice(0, 6).map(function (f) {
+        return {
+          title: f.step_key,
+          meta: f.count + " finding(s) · " + f.status,
+          sev: f.status === "blocked" ? "blocked" : (f.status === "degraded" ? "degraded" : "info"),
+        };
+      });
+    }
+    if (!list.length) {
+      host.appendChild(el("div", "dash-empty",
+        STATE.selectedRun ? t("dash.noRunData") : t("dash.selectRun")));
+      return;
+    }
+    var box = el("div", "dash-list");
+    list.forEach(function (f) {
+      var row = el("div", "dash-list-item");
+      row.appendChild(el("span", "dot " + (f.sev === "critical" || f.sev === "high" || f.sev === "blocked"
+        ? "blocked" : (f.sev === "degraded" ? "degraded" : ""))));
+      var body = el("div", "body");
+      body.appendChild(el("div", "title", f.title));
+      body.appendChild(el("div", "meta", f.meta));
+      row.appendChild(body);
+      box.appendChild(row);
+    });
+    host.appendChild(box);
+  }
+
+  function renderDashChain() {
+    var host = document.getElementById("dash-chain");
+    if (!host) return;
+    clear(host);
+    var list = steps();
+    var ns = nodes(), es = edges();
+    if (!list.length && !ns.length) {
+      host.appendChild(el("div", "dash-empty", STATE.selectedRun ? t("dash.noRunData") : t("dash.selectRun")));
+      return;
+    }
+    var status = runStatus();
+    var head = el("div", "dash-list-item");
+    head.appendChild(el("span", "dot " + (status === "blocked" ? "blocked" : (status === "degraded" ? "degraded" : ""))));
+    var body = el("div", "body");
+    body.appendChild(el("div", "title",
+      t("dash.chainStatus") + " · " + (t("dash.status" + status.charAt(0).toUpperCase() + status.slice(1)) || status)));
+    body.appendChild(el("div", "meta", selectedRunName() || "—"));
+    head.appendChild(body);
+    host.appendChild(head);
+    var grid = el("div", "metric-grid");
+    grid.style.marginTop = "10px";
+    grid.appendChild(metric(t("dash.steps"), list.length, "dim"));
+    grid.appendChild(metric(t("dash.findingsTotal"), totalDerivedFindings(), totalDerivedFindings() ? "warn" : "dim"));
+    grid.appendChild(metric(t("dash.graph"), ns.length, "dim"));
+    grid.appendChild(metric(t("dash.chainEdges"), es.length, "dim"));
+    host.appendChild(grid);
+  }
+
+  function initStaticMode() {
+    var run = (STATE.data && STATE.data.run) || {};
+    STATE.workspace = run.workspace || "static-export";
+    STATE.user = "static";
+    STATE.role = "read-only";
+    STATE.runs = run.name ? [run.name] : [];
+    STATE.selectedRun = run.name || "";
+    STATE.workspaces = [STATE.workspace];
+    STATE.consent = { status: "static", fields: {} };
+    showApp();
+    populateWorkspaceSelect();
+    renderDashboard();
+    renderAll();
   }
 
   /* ================= ① 工作流 DAG ================= */
@@ -653,8 +1307,12 @@
     var host = document.getElementById("dag-canvas");
     var list = steps();
     clear(host);
+    if (STATE.runLoading) {
+      host.appendChild(el("div", "dag-empty", t("dash.loadingRun")));
+      return;
+    }
     if (!list.length) {
-      host.appendChild(emptyState("dag", { icon: "①" }));
+      host.appendChild(emptyState("dag", { icon: "01" }));
       return;
     }
     var RF = window.ReactFlowCore;
@@ -1016,7 +1674,11 @@
     loadRemoteAudit();
     clear(list); clear(detail);
     var st = steps();
-    if (!st.length) {
+    if (STATE.runLoading) {
+      list.appendChild(el("div", "hint", t("dash.loadingRun")));
+      detail.appendChild(el("h3", null, t("evidence.threeLayers")));
+      detail.appendChild(el("div", "hint", "（—）"));
+    } else if (!st.length) {
       list.appendChild(emptyState("evidence", { icon: "④" }));
       detail.appendChild(el("h3", null, t("evidence.threeLayers")));
       detail.appendChild(el("div", "hint", "（—）"));
@@ -1042,7 +1704,22 @@
       renderStepDetail(detail, STATE.selectedStep || st[0].step_key);
     }
     // 归档清单
-    manifest.textContent = (STATE.data && STATE.data.manifest) ? STATE.data.manifest : "（静态导出未含 manifest 或运行未产生归档）";
+    if (STATE.data && STATE.data.manifest) {
+      manifest.textContent = STATE.data.manifest;
+    } else if (STATE.remoteManifestVerified === true) {
+      var rows = [];
+      steps().forEach(function (s) {
+        (s.evidence || []).forEach(function (ev) {
+          if (ev.sha256) rows.push((ev.sha256 + "  " + (ev.path || "")).trim());
+        });
+      });
+      manifest.textContent = "manifest.sha256 · 已验证（/api/v1/evidence）" +
+        (rows.length ? "\n" + rows.join("\n") : "");
+    } else if (STATE.remoteManifestVerified === false) {
+      manifest.textContent = "manifest.sha256 · 验证未通过：请检查运行归档。";
+    } else {
+      manifest.textContent = "该运行未返回 manifest.sha256（或尚未产生归档）。";
+    }
   }
 
   function renderStepDetail(host, stepKey) {
@@ -1134,17 +1811,78 @@
     var host = document.getElementById("report-body");
     clear(host);
     if (STATIC_MODE) { renderReportData(host); return; }
-    // 服务模式：尝试 /api/report 占位端点，失败则内嵌渲染（空数据兜底）
-    api("api/report?run=&lang=bi")
+    var run = selectedRunName();
+    if (!STATE.token || !run) {
+      host.appendChild(emptyState("report", { icon: "05", body: t("report.noRun") }));
+      return;
+    }
+    if (STATE.runLoading) {
+      host.appendChild(el("div", "panel hint", t("dash.loadingRun")));
+      return;
+    }
+    host.appendChild(el("div", "panel hint", t("report.loading")));
+    var qs = "?workspace=" + encodeURIComponent(STATE.workspace) +
+      "&run=" + encodeURIComponent(run) + "&kind=pentest&lang=bi&redact=" +
+      (STATE.redactZeroday ? "1" : "0");
+    api("api/v1/report" + qs)
       .then(function (body) {
-        STATE.reportRemote = body;
-        host.appendChild(el("div", "panel", t("report.remote")));
-        renderReportData(host);
+        if (selectedRunName() !== run) return;
+        STATE.remoteReport = body;
+        clear(host);
+        renderRemoteReport(host, body);
       })
-      .catch(function () {
-        host.appendChild(el("div", "panel hint", t("report.fallback")));
-        renderReportData(host);
+      .catch(function (e) {
+        clear(host);
+        var panel = el("div", "panel");
+        panel.appendChild(el("div", "hint", t("report.fallback", { msg: e.message })));
+        panel.appendChild(emptyState("report", { icon: "05" }));
+        host.appendChild(panel);
       });
+  }
+
+  function reportStatCard(num, label, color) {
+    var c = el("div", "rep-card");
+    var n = el("div", "num", String(num));
+    if (color) n.style.color = color;
+    c.appendChild(n);
+    c.appendChild(el("div", "lbl", label));
+    return c;
+  }
+
+  function renderRemoteReport(host, body) {
+    var cards = el("div", "rep-cards");
+    cards.appendChild(reportStatCard(totalDerivedFindings(), t("report.total")));
+    cards.appendChild(reportStatCard(steps().length, t("report.steps")));
+    cards.appendChild(reportStatCard(body.bytes || 0, "BYTES", "var(--text-dim)"));
+    cards.appendChild(reportStatCard(statusLabel(runStatus()), t("dash.chainStatus"), "var(--accent)"));
+    host.appendChild(cards);
+
+    var panel = el("div", "panel");
+    var bar = el("div", "report-toolbar");
+    bar.appendChild(el("h3", null, t("report.findings") + " · " + (body.run || selectedRunName())));
+    var toggle = el("label", "hint");
+    var cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = !!STATE.redactZeroday;
+    cb.addEventListener("change", function () {
+      STATE.redactZeroday = cb.checked;
+      renderReport();
+    });
+    toggle.appendChild(cb);
+    toggle.appendChild(document.createTextNode(" " + t("report.redact")));
+    bar.appendChild(toggle);
+    panel.appendChild(bar);
+    var message = el("div", "hint report-progress",
+      t("report.remote", { bytes: body.bytes || (body.markdown || "").length }));
+    panel.appendChild(message);
+    if (body.markdown) {
+      var pre = el("pre", "report-doc");
+      pre.textContent = body.markdown;
+      panel.appendChild(pre);
+    } else {
+      panel.appendChild(emptyState("report", { icon: "05" }));
+    }
+    host.appendChild(panel);
   }
 
   function renderReportData(host) {
@@ -1591,29 +2329,14 @@
 
   /* ================= 启动 ================= */
 
-  /* ================= 首屏 demo 引导卡 ================= */
-
-  function bindDemoGuide() {
-    var card = document.getElementById("demo-guide");
-    if (!card) return;
-    var close = document.getElementById("demo-guide-close");
-    try {
-      if (localStorage.getItem("inkblade-demo-guide-dismissed") === "1") card.hidden = true;
-    } catch (e) { /* file:// 或隐私模式下 localStorage 可能不可用 */ }
-    if (close) {
-      close.addEventListener("click", function () {
-        card.hidden = true;
-        try { localStorage.setItem("inkblade-demo-guide-dismissed", "1"); } catch (e) {}
-      });
-    }
-  }
-
   document.addEventListener("DOMContentLoaded", function () {
     bindLang();
-    bindDemoGuide();
     bindNav();
     bindSession();
     applyI18n();
-    renderAll();
+    if (isAuthed()) {
+      renderDashboard();
+      renderAll();
+    }
   });
 })();

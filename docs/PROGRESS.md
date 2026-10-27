@@ -73,3 +73,8 @@ Updated: 2026-10-27 (agent runtime, coverage closure, file audit, defense bypass
 - Code HEAD `687824e`; docs/matrix commit `80afe6c`; 286 templates; probe v0.1.1; 5/6 bypass-confirmed
 - Remaining: **28 partial**, 7 blocked-resource, 238 reduced templates, negative-control 35/286 —
   by class in `docs/REQUIREMENTS-MATRIX.md` §3.5 (129 requirements total, done 94)
+
+## Full regression after reverse + mlproxy (2026-10-27)
+- Ran 1998 tests, OK (skipped=13)
+- HEAD 4472f38; encrypted reverse channel TLS/WSS/HTTPS; gRPC/Redis ML proxy; loopback SOCKS5
+- Still pending: QUIC/WebTransport/MASQUE, ZMTP+CURVE, TCPStore/Gloo, NCCL/UCX profiles
