@@ -63,10 +63,6 @@ python -m inkblade up --no-consent
 
 父子树：每个探针有 `probe_id` / `parent_id`；子探针继承更严格的只读状态、命令白名单和预算；深度与扇出有上限；清理先子后父。
 
-### 会不会被 HIDS/EDR 发现？
-
-会。探针不试图隐藏进程、网络连接、文件写入或 kubelet 审计。第 10 层的 11 个 `defense-bypass-*` 模块用良性 marker 测防守方能不能看见这类行为，并输出检测 / 盲区 / 硬化建议。
-
 ## 检测与结果
 
 ### 模板和模块是什么关系？
@@ -125,9 +121,9 @@ python -m inkblade up --no-consent
 
 Apache-2.0 允许商用与 fork；保留 `LICENSE` / `NOTICE`，不要用 InkBlade 商标命名 fork。
 
-### 第 10 层是不是在教人绕过防护？
+### 第 10 层做什么？
 
-不是。它不携带恶意载荷、不做持久化、不关闭安全产品、不提供规避执法的话术。它做的是：在授权环境里发一个带 `INKBLADE-BENIGN` 前缀的 marker，看 Elkeid/Falco/Tetragon/Kyverno/WAF 是否记录；没记录就是盲区，盲区转成规则和配置建议。
+在授权环境里发一个带 `INKBLADE-BENIGN` 前缀的 marker，覆盖 Elkeid/Falco/Tetragon/Kyverno/WAF 等防守面，输出记录结果、盲区和规则/配置建议。
 
 ### 为什么有 11 个 defense-bypass 模块？
 

@@ -64,7 +64,7 @@
 | INIT-07 | 网络架构十模块（fabric/CNI/Multus/集合通信/operator/网关/存储/DNS/可达性/调度） | spec §5.2 网络表、§5.6 七层模型 | done | 网络 52 模块；`inkblade/core/reachability.py`、`graph.py`；`docs/DETECTION-LAYERS.md` | IB/SR-IOV/IMEX 仅 fixture 推演，无硬件实证 | probe |
 | INIT-08 | 混合云三模块（多云 IMDS/云角色过权/混合出网回旋） | spec §5.2 混合云表 | done | 混合云 11 模块；`lab/cloud_six_sim.py`；`docs/SIX-CLOUD-MATRIX.md` | 契约级仿真，无真实账号/IAM 求值 | probe |
 | INIT-09 | 情报模块（架构语料导入、要素→检查项映射） | spec §5.2 情报表、§12 | done | 情报 6 模块；`inkblade/arch-intel/`；`docs/RESEARCH-COVERAGE.md` | 语料为文档级，未转为可执行资产模型 | probe |
-| INIT-10 | 私有零日内置（6 条，加密武器库、默认不可见、报告脱敏） | spec §1.1-12、§5.7 | done | 6 个 `dify-*`/`open-webui-*` 模块；`inkblade/core/zeroday.py`（默认关）；`docs/0DAY-PUBLIC.md` | 口径已更正为「公开漏洞模块」：`private=false`、正常展示；加密库降为可选扩展 | docs |
+| INIT-10 | 私有零日内置（6 条，加密武器库、默认关闭、报告脱敏） | spec §1.1-12、§5.7 | done | 6 个 `dify-*`/`open-webui-*` 模块；`inkblade/core/zeroday.py`（默认关）；`docs/0DAY-PUBLIC.md` | 口径已更正为「公开漏洞模块」：`private=false`、正常展示；加密库降为可选扩展 | docs |
 | INIT-11 | 零日挖掘流水线与披露生命周期 | spec §5.7、§18-16 | done | `inkblade/mining.py`；`tools/novelty-check.py`；`corpus/zeroday/inventory.json`（169）；`docs/0DAY-DISCLOSURE.md` | 披露仅到「包已生成未外发」，无厂商回执/CVE 分配 | docs |
 | INIT-12 | 防护产品绕过 11 模块（字节系为重点，良性 marker，检出/盲区/硬化） | spec §1.1-13、§5.2 绕过表 | done | 11 个 `defense-bypass-*`；`inkblade/core/defenseprobe.py`；`docs/DEFENSE-LAB-RESULTS.md`（QEMU k3s 真机回放 4 产品）；`tests/test_probe_defense_bypass.py` | Kyverno/Falco/Trivy/ModSecurity 已真机回放；Elkeid/AgentSmith/veinmind/Tetragon/KubeArmor/Wazuh/Hubble 因内核头/BPF-LSM/CNI 明确 N/A | defense |
 | INIT-13 | 攻击链目录齐全（经典 7 + 云侧 4 + 网络 5 + 零日 2） | spec §6.3；plan 链任务 | done | `inkblade/chains/` 29 条（超集） | 零日 2 条与 CVE 1 条依赖外部条件，紫队未重放 CVE 链 | defense |

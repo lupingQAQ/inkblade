@@ -133,7 +133,7 @@ InkBlade 是一套面向训练与推理集群的授权渗透测试产品：在�
 | 编码、分块、Unicode、超长请求 | Suricata / WAF | `rules generate` 生成 Suricata 规则与 WAF 归一化建议 |
 | hostNetwork、多网卡、短流 | Hubble / Calico | 采集配置建议与流验证用例 |
 
-第 10 层只使用良性 marker、只读探测或授权 scratch 内的写入；不携带恶意载荷、不做持久化、不关闭安全产品、不提供规避执法的话术。厂商盲区只对被测版本与配置成立，不能外推为“该产品可被绕过”。
+第 10 层使用良性 marker、只读探测或授权 scratch 内的写入，覆盖 HIDS、运行时 eBPF、准入、镜像扫描、主机代理、WAF 与网络可视化，输出检测结果、盲区与规则/配置建议。
 
 ## 5. 产品框架
 

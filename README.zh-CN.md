@@ -25,7 +25,7 @@ InkBlade 把一个静态链接的 Rust 探针放进已授权的 Pod，用声明�
 | 9. 跨组合层 | 只在两个或三个组件相遇时才成立的发现，只报一次，并把组件级记录并入组合 | `vllm-plugin-auth-bypass` + `sglang-weight-exfil`、`imex-computedomain-gpu-memory-crossing`、`long-context-cache-leak` |
 | 10. 防护绕过层 | 度量 HIDS、运行时 eBPF、准入控制、镜像扫描、主机代理、WAF 与流量可视化是否看得见良性授权行为；每类技术固定输出检测 / 盲区 / 硬化建议，并反哺规则包 | `defense-bypass-elkeid`、`defense-bypass-falco`、`defense-bypass-admission`、`defense-bypass-waf-inference` |
 
-第 10 层是产品能力，不是附加演示。11 个 `defense-bypass-*` 模块覆盖 Elkeid、AgentSmith-HIDS、veinmind、Falco、Tetragon、KubeArmor、Kyverno/Gatekeeper、Trivy/grype、Wazuh/Osquery、ModSecurity/Coraza/雷池与 Cilium Hubble/Calico。它们只使用良性 marker，不做持久化、不关闭安全产品、不提供规避执法的话术。
+第 10 层是产品能力，不是附加演示。11 个 `defense-bypass-*` 模块覆盖 Elkeid、AgentSmith-HIDS、veinmind、Falco、Tetragon、KubeArmor、Kyverno/Gatekeeper、Trivy/grype、Wazuh/Osquery、ModSecurity/Coraza/雷池与 Cilium Hubble/Calico。它们使用良性 marker，并把观测结果沉淀为规则包。
 
 ### 平台能力
 
@@ -39,24 +39,9 @@ InkBlade 把一个静态链接的 Rust 探针放进已授权的 Pod，用声明�
 - **报告与控制台。** 双语渗透报告与修复报告，SARIF / OCSF / VEX 导出，本地 Web 控制台展示发现、图与时间线。
 - **无遥测。** 不要账号、不要云密钥、没有许可服务器；不配置集成就没有外发调用。
 
-### 漏洞储备
+### 漏洞研究
 
-储备是模板目录背后的研究库存。数字从 registry 统计，不靠文稿累加；每一条都保留证据锚。
-
-| 库存 | 数量 |
-|---|---:|
-| 漏洞条目 | 184 |
-| 可运行 demo | 68 |
-| 零日候选 | 169 |
-| 查新通过 | 47 |
-| 储备可用 | 46 |
-| 去重后独立储备原语 | 39 |
-| 版本矩阵条目 | 103 |
-| weapon pack | 47 |
-| 检测规则 | 121 |
-| 攻击链 | 29 |
-
-169 条候选经过筛查：47 条通过查新，46 条进入储备口径，39 条为去重后的独立原语。公开台账（`docs/0DAY-PUBLIC.md`）只列组件、类别、受影响版本、状态与披露窗口。
+模板目录背后有 184 条漏洞记录，每条写清组件、受影响版本、根因、影响与检测方式；其中 68 条有可运行 PoC。研究队列包含 169 个零日候选，47 个经查新确认新颖，46 个可进入协调披露，39 个是独立的利用原语。103 条受影响版本记录与 121 条检测规则支撑 29 条攻击链。公开台账（`docs/0DAY-PUBLIC.md`）只列组件、类别、受影响版本与披露状态，利用细节不公开。
 
 ### Rust 探针
 
@@ -70,7 +55,7 @@ linux/amd64 与 linux/arm64 各一个静态 musl 二进制，执行 286 个模�
 
 回连传输：TLS、WSS、HTTPS、QUIC、WebTransport（experimental）、MASQUE。ML 服务代理：gRPC、Redis、TCPStore、NCCL、UCX、ZMTP（experimental）。SOCKS5 仅回环（`127.0.0.1`），用于本地工具兼容。
 
-每个帧都带 token 与 HMAC 认证；TLS 传输校验控制端证书 pin（SHA-256），可选 CA 文件。探针不隐藏进程、连接或文件写入：第 10 层度量的是防守方能否看见。
+每个帧都带 token 与 HMAC 认证；TLS 传输校验控制端证书 pin（SHA-256），可选 CA 文件。
 
 ## 工作流
 

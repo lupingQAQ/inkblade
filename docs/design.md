@@ -48,7 +48,7 @@ privileged / hostPID / hostIPC / hostPath / 容器运行时 socket / GPU 设备�
 
 ## 12. 防护绕过
 
-Falco / Tetragon / KubeArmor / Elkeid / AgentSmith / NetObserv / veinmind / 准入控制与 WAF 的覆盖盲区、规则缺口与硬化建议；只做防御有效性验证，不提供规避检测的武器化细节。
+Falco / Tetragon / KubeArmor / Elkeid / AgentSmith / NetObserv / veinmind / 准入控制与 WAF 的覆盖盲区、规则缺口与硬化建议；结果反哺规则包与配置建议。
 
 ## 13. 零日级模块（已公开）
 

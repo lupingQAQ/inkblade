@@ -316,4 +316,4 @@ TTFT 判定口径：同样 token 数、同样 batch、交替发送，每组至�
 | ModSecurity / Coraza / 雷池 WAF | `defense-bypass-waf-inference` | 编码、分块、Unicode、超长请求变体 |
 | Cilium Hubble / Calico flows | `defense-bypass-netobserv` | hostNetwork、多网卡、短生命周期流 |
 
-盲区直接反哺规则包：Kyverno/Gatekeeper 管准入，Sigma 管进程/文件/DNS，Falco/Tetragon 管运行时，Suricata/WAF 管网络与请求归一化。模块只使用良性 marker，不携带恶意载荷、不做持久化、不关闭安全产品、不提供规避执法的话术。
+盲区直接反哺规则包：Kyverno/Gatekeeper 管准入，Sigma 管进程/文件/DNS，Falco/Tetragon 管运行时，Suricata/WAF 管网络与请求归一化。模块使用良性 marker，结果写成规则与配置建议。

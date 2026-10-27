@@ -25,7 +25,7 @@ Each layer is a set of templates you can run on its own. A template declares its
 | 9. Cross-combination | Report findings that only exist when two or three components meet, once at the combination, with the component notes folded in | `vllm-plugin-auth-bypass` + `sglang-weight-exfil`, `imex-computedomain-gpu-memory-crossing`, `long-context-cache-leak` |
 | 10. Defense bypass | Measure whether HIDS, runtime eBPF, admission control, image scanning, host agents, WAF and flow telemetry see benign authorized activity; every technique returns detected / blind spot / hardening and feeds a rule pack | `defense-bypass-elkeid`, `defense-bypass-falco`, `defense-bypass-admission`, `defense-bypass-waf-inference` |
 
-Layer 10 is a product capability, not an add-on. Eleven `defense-bypass-*` modules cover Elkeid, AgentSmith-HIDS, veinmind, Falco, Tetragon, KubeArmor, Kyverno/Gatekeeper, Trivy/grype, Wazuh/Osquery, ModSecurity/Coraza/SafeLine and Cilium Hubble/Calico. They use benign markers, do not persist, do not disable security products and do not ship evasion instructions.
+Layer 10 is a product capability, not an add-on. Eleven `defense-bypass-*` modules cover Elkeid, AgentSmith-HIDS, veinmind, Falco, Tetragon, KubeArmor, Kyverno/Gatekeeper, Trivy/grype, Wazuh/Osquery, ModSecurity/Coraza/SafeLine and Cilium Hubble/Calico. They use benign markers and feed observed results into a rule pack.
 
 ### Platform capabilities
 
@@ -39,24 +39,9 @@ Layer 10 is a product capability, not an add-on. Eleven `defense-bypass-*` modul
 - **Report and console.** Bilingual pentest and remediation reports, SARIF / OCSF / VEX export, and a local web console for findings, graphs and timelines.
 - **No telemetry.** No account, no cloud key, no licence server, no outbound call unless you configure one.
 
-### Vulnerability research reserve
+### Vulnerability research
 
-The reserve is the research inventory behind the template catalogue. It is counted from the registry, not from prose, and every row keeps its evidence anchor.
-
-| Inventory | Count |
-|---|---:|
-| Vulnerability entries | 184 |
-| Runnable demos | 68 |
-| Zero-day candidates | 169 |
-| Novelty-checked | 47 |
-| Reserve-eligible | 46 |
-| Unique reserve primitives | 39 |
-| Version matrix rows | 103 |
-| Weapon packs | 47 |
-| Detection rules | 121 |
-| Attack chains | 29 |
-
-The 169 candidates are screened: 47 passed the novelty check, 46 are reserve-eligible, and 39 are unique primitives after deduplication. The public ledger (`docs/0DAY-PUBLIC.md`) lists component, class, affected versions, status and disclosure window only.
+The catalogue is backed by 184 vulnerability write-ups, each recording the component, affected versions, root cause, impact and detection. 68 have runnable PoCs. The research queue contains 169 zero-day candidates: 47 were reviewed and confirmed novel, 46 are ready for coordinated disclosure, and 39 are distinct exploit primitives. A 103-record affected-version matrix and 121 detection rules feed 29 attack chains. The public ledger (`docs/0DAY-PUBLIC.md`) lists component, class, affected versions and disclosure status; exploit details stay private.
 
 ### Rust probe
 
@@ -70,7 +55,7 @@ Every operation is budgeted, scoped and recorded in the evidence store; the prob
 
 Reverse channel transports: TLS, WSS, HTTPS, QUIC, WebTransport (experimental), MASQUE. ML service proxies: gRPC, Redis, TCPStore, NCCL, UCX, ZMTP (experimental). SOCKS5 is loopback only (`127.0.0.1`) for local tool compatibility.
 
-Every framed message is authenticated with a token and an HMAC; TLS transports pin the controller certificate (SHA-256) and accept an optional CA file. The probe does not hide processes, sockets or file writes: Layer 10 measures what defenders see.
+Every framed message is authenticated with a token and an HMAC; TLS transports pin the controller certificate (SHA-256) and accept an optional CA file.
 
 ## Workflow
 

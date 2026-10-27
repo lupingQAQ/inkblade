@@ -332,10 +332,6 @@ FAQ_ITEMS = [
      "No. It does not persist, modify startup, patch images or call a fixed C2. It runs inside an authorized session, executes registered templates, defaults to read-only, gates writes and cleans up.",
      "探针是不是后门？",
      "不是。它不持久化、不改启动项、不改镜像、不回连固定 C2。它只在授权会话内运行，执行已注册模板，默认只读，写操作过闸门，退出时清理。"),
-    ("Will HIDS or EDR see it?",
-     "Yes. The probe does not hide processes, connections or file writes. Layer 10 measures whether defenders see benign markers; it does not provide evasion.",
-     "会被 HIDS/EDR 发现吗？",
-     "会。探针不隐藏进程、连接或文件写入。第 10 层度量防守方是否看得见良性 marker，不提供规避能力。"),
     ("How are writes controlled?",
      "Five gates: signed authorization covering target/level/window, --allow-write, meta.writes with a write step, backup-write mode and a backup receipt. A write reads back the hash and rolls back on failure.",
      "写操作怎么保证安全？",
@@ -549,7 +545,6 @@ section(
   <li>gRPC, Redis, TCPStore, NCCL and UCX proxies are TLS-wrapped; ZMTP uses CURVE with Z85 keys when enabled.</li>
   <li>SOCKS5 stays on loopback and is a compatibility path for local tooling, not a network-wide proxy.</li>
 </ul>
-<div class="cut"><p><strong>No invisibility claim.</strong> The probe does not hide processes, sockets or file writes. Layer 10 measures what defenders see; it does not ship evasion instructions.</p></div>
 <p class="note"><a href="PROBE-CHANNEL.md">PROBE-CHANNEL.md</a> · <a href="PROBE-PROTOCOL.md">PROBE-PROTOCOL.md</a> · <a href="USAGE.md">USAGE.md</a></p>""",
     zh="""<p>回连通道与 ML 代理是两层：通道在控制端与探针之间承载帧，代理在探针与范围内目标之间承载服务协议。</p>
 """ + table(
@@ -567,25 +562,16 @@ section(
   <li>gRPC、Redis、TCPStore、NCCL 与 UCX 代理走 TLS；ZMTP 启用时使用 CURVE 与 Z85 密钥。</li>
   <li>SOCKS5 只留在回环，是本地工具的兼容路径，不是全网代理。</li>
 </ul>
-<div class="cut"><p><strong>不承诺不可见。</strong> 探针不隐藏进程、连接或文件写入。第 10 层度量的是防守方能否看见，不提供规避执法的话术。</p></div>
 <p class="note"><a href="PROBE-CHANNEL.md">PROBE-CHANNEL.md</a> · <a href="PROBE-PROTOCOL.md">PROBE-PROTOCOL.md</a> · <a href="USAGE.md">USAGE.md</a></p>""",
 )
 
 section(
-    "reserve", "Reserve", "漏洞储备",
-    "Vulnerability research reserve", "漏洞储备",
-    "The inventory behind the template catalogue", "模板目录背后的研究库存",
-    en="""<p>The reserve is the research inventory behind the template catalogue. Each entry records a component, a vulnerability class, affected versions and an evidence anchor. Runnable demos are separate, benign, loopback-only reproductions.</p>
-""" + figures([("184", "vulnerability entries"), ("68", "runnable demos"), ("169", "zero-day candidates"), ("39", "unique reserve")]) + """
-<h3>Inventory</h3>
-""" + reserve_inventory_table("en") + """
-<p class="note">The 169 candidates are screened: 47 passed the novelty check, 46 are reserve-eligible, and 39 are unique primitives after deduplication. The public ledger lists component, class, affected versions, status and disclosure window only.</p>
+    "reserve", "Vulnerability research", "漏洞研究",
+    "Vulnerability research", "漏洞研究",
+    "The research behind the template catalogue", "模板目录背后的漏洞研究",
+    en="""<p>The catalogue is backed by 184 vulnerability write-ups, each recording the component, affected versions, root cause, impact and detection. 68 have runnable PoCs. The research queue contains 169 zero-day candidates: 47 were reviewed and confirmed novel, 46 are ready for coordinated disclosure, and 39 are distinct exploit primitives. A 103-record affected-version matrix and 121 detection rules feed 29 attack chains. The public ledger lists component, class, affected versions and disclosure status; exploit details stay private.</p>
 <p class="note"><a href="0DAY-PUBLIC.md">0DAY-PUBLIC.md</a> · <a href="VULNERABILITY-LAYERS.md">VULNERABILITY-LAYERS.md</a> · <a href="DETECTION-LAYERS.md">DETECTION-LAYERS.md</a></p>""",
-    zh="""<p>储备是模板目录背后的研究库存。每条记录组件、漏洞类别、受影响版本与证据锚；可运行 demo 是独立的良性复现，只监听回环。</p>
-""" + figures([("184", "漏洞条目"), ("68", "可运行 demo"), ("169", "零日候选"), ("39", "独立储备")]) + """
-<h3>库存</h3>
-""" + reserve_inventory_table("zh") + """
-<p class="note">169 条候选经过筛查：47 条通过查新，46 条进入储备口径，39 条为去重后的独立原语。公开台账只列组件、类别、受影响版本、状态与披露窗口。</p>
+    zh="""<p>模板目录背后有 184 条漏洞记录，每条写清组件、受影响版本、根因、影响与检测方式；其中 68 条有可运行 PoC。研究队列包含 169 个零日候选，47 个经查新确认新颖，46 个可进入协调披露，39 个是独立的利用原语。103 条受影响版本记录与 121 条检测规则支撑 29 条攻击链。公开台账只列组件、类别、受影响版本与披露状态，利用细节不公开。</p>
 <p class="note"><a href="0DAY-PUBLIC.md">0DAY-PUBLIC.md</a> · <a href="VULNERABILITY-LAYERS.md">VULNERABILITY-LAYERS.md</a> · <a href="DETECTION-LAYERS.md">DETECTION-LAYERS.md</a></p>""",
 )
 
