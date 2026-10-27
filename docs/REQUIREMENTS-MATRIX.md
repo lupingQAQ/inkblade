@@ -47,7 +47,7 @@
 | 22 | CIS / LPE | **CIS 161 / LPE 52** | `inkblade/cis/catalog.py` `CATALOG`；`inkblade/lpe/catalog.py` | 专项单测 `test_cis_benchmark.py`、`test_kernel_lpe.py` 已在迁移中删除 |
 | 23 | 对比工具数 | **竞品 23 · 缺口 31 · OSS 34 · 腾讯 8** | `COMPETITIVE-MATRIX.md`、`docs/gap-matrix.json`、`docs/oss-ml-cluster-tools.json`、`SECTION3` | OSS「32 个工具」（同文档正文） |
 | 24 | 缺口行数 | **260 = 功能 122 + 攻击面 82 + payload 56**；已有 36+35+21=92、部分 47+29+18=94、缺失 39+18+17=74 | `docs/gap-matrix.json` | — |
-| 25 | 测试总数 | **Ran 1841 tests / OK (skipped=13)**（迁移后稳定快照；1073.350s） | `python -m unittest discover -s tests`（§3.4、§5） | 2128（迁移在途红测）·2003·1974·1934·1933·1278·1260·1140（历史快照） |
+| 25 | 测试总数 | **Ran 1936 tests / OK (skipped=13)**（agent 运行时/文件审计/绕过路径并入后的稳定快照；1288.533s） | `python -m unittest discover -s tests`（§3.4、§5） | 1841（探针收口快照）·2128（迁移在途红测）·2003·1974·1934·1933·1278·1260·1140（历史快照） |
 
 ## 2. 需求矩阵
 
@@ -262,10 +262,10 @@ CLI 一致性 → ADD-30；防护实测 → ADD-68／ADD-75；自主 runtime →
 ### 3.4 测试实测（2026-10-27）
 
 - 命令：`python -m unittest discover -s tests`；摘要证据 `reports/samples/requirements/suite-summary.txt`。
-- 结果：**Ran 1841 tests in 1073.350s — OK (skipped=13)**（迁移收口后的稳定快照）。
+- 结果：**Ran 1936 tests in 1288.533s — OK (skipped=13)**（无并发、稳定树复跑；比探针收口快照 1841 条多 95 条，其中本轮新增 agent 运行时 68 + 文件审计 17 + 覆盖/中继 20，其余为既有测试文件的增删）。
 - 跳过项：13 条均为环境门槛（宿主机无 Rust 工具链时的 cargo 门控、可选外部件、平台差异），不是隐藏失败。
 - 回归对照：迁移在途快照为 **Ran 2128 / FAILED (failures=99, errors=513, skipped=4)**——那是在删除 286 个 `run.py` 与旧模块测试的同时跑出的「移动靶」，已在 §3.2 归因；本次为删除落盘后的稳定树。
-- 本轮文档改动引入的 2 条红测（`test_sota_doc` 的 25/10/4 硬编码）已随 SOTA 计数改为 26/10/3 同步修复，复跑为绿。
+- 一次带并发的快照出现 1 条 `ConnectionAbortedError: WinError 10053`（`tests.test_hardware_sim.test_post_not_allowed_and_invalid_mode`，本机 socket 被外部中止）；该模块单独复跑 12/12 OK，以本节的无线程干扰复跑为准，不计为回归。
 
 ### 3.5 仍未完成项（按类复算；共 35 条 = partial 28 + blocked-resource 7）
 
@@ -364,12 +364,12 @@ CLI 一致性 → ADD-30；防护实测 → ADD-68／ADD-75；自主 runtime →
 
 ```
 python -m unittest discover -s tests
-Ran 1841 tests in 1073.350s
+Ran 1936 tests in 1288.533s
 OK (skipped=13)
 ```
 
-对照（已被取代）：迁移在途快照 `Ran 2128 tests / FAILED (failures=99, errors=513, skipped=4)`，归因见 §3.2、§3.4 与 `reports/samples/requirements/suite-summary.txt`。
-本轮自检：`tests.test_requirements_matrix` 与 `tests.test_sota_doc` 在更新 26/10/3 计数后复跑为绿。
+对照（已被取代）：探针收口快照 `Ran 1841 / OK (skipped=13)`；迁移在途快照 `Ran 2128 tests / FAILED (failures=99, errors=513, skipped=4)`，归因见 §3.2、§3.4 与 `reports/samples/requirements/suite-summary.txt`。
+本轮自检：`tests.test_requirements_matrix`（24 项）、`tests.test_sota_doc`、`tests.test_docs_master`、`tests.test_docs_index`、`tests.test_agent_runtime_docs` 共 53 项复跑为绿。
 
 ## 6. 证据索引
 

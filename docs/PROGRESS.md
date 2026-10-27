@@ -4,8 +4,8 @@ Updated: 2026-10-27 (agent runtime, coverage closure, file audit, defense bypass
 
 ## Snapshot
 
-- Code HEAD: `687824e` (file and operation audit timeline); this document ships in the
-  docs-only commit stacked on top
+- Code HEAD: `687824e` (file and operation audit timeline); docs/matrix snapshot `80afe6c`,
+  with this count/test refresh stacked on top
 - Probe release: tag `probe-v0.1.1`, source commit `1f0f57c`; CI run 40430384961
   - `probe/dist/inkblade-probe-linux-amd64` — 2,066,112 B — `c8d2f118…b726f3`
   - `probe/dist/inkblade-probe-linux-arm64` — 1,775,584 B — `6d480367…a38e4`
@@ -20,7 +20,7 @@ Updated: 2026-10-27 (agent runtime, coverage closure, file audit, defense bypass
 - Template equivalence: 48 equivalent / 238 reduced (reduced semantics still open)
 - Requirements: done 94 / partial 28 / not-done 0 / blocked-resource 7 (129 total);
   `docs/REQUIREMENTS-MATRIX.md` §2.4, unfinished items by class in §3.5
-- Tests: `Ran 1841 tests in 1073.350s — OK (skipped=13)`
+- Tests: `Ran 1936 tests in 1288.533s — OK (skipped=13)`
 - Gates: public-tree 0 hits · docs-links 0 problems · release verify 72/72 · compileall clean
 - Repository private; GitHub Pages not enabled
 
@@ -69,6 +69,7 @@ Updated: 2026-10-27 (agent runtime, coverage closure, file audit, defense bypass
   be called fully two-state verified.
 
 ## Final regression (2026-10-27)
-- Ran 1936 tests, OK (skipped=13)
-- HEAD 80afe6c; 286 templates; probe v0.1.1; 5/6 bypass-confirmed
-- Remaining: 26 partial, 7 blocked-resource, 238 reduced templates, negative-control 35/286
+- Ran 1936 tests, OK (skipped=13) — `reports/samples/requirements/suite-summary.txt`
+- Code HEAD `687824e`; docs/matrix commit `80afe6c`; 286 templates; probe v0.1.1; 5/6 bypass-confirmed
+- Remaining: **28 partial**, 7 blocked-resource, 238 reduced templates, negative-control 35/286 —
+  by class in `docs/REQUIREMENTS-MATRIX.md` §3.5 (129 requirements total, done 94)

@@ -1,26 +1,40 @@
-# Full unittest discover - final acceptance (2026-10-27)
+# Full unittest discover - requirements matrix refresh (2026-10-27)
 
 command: python -m unittest discover -s tests
 
-Result (verbatim, final stable tree):
-Ran 1841 tests in 1073.350s
+Result (verbatim, clean tree, no concurrent test runs):
+
+Ran 1936 tests in 1288.533s
 OK (skipped=13)
 
 Skips (13): environment-gated only - cargo/Rust-toolchain gates on this host,
 optional external integrations, and platform-specific branches. No red tests.
 
 Context:
-- The 286 legacy run.py files and their per-family tests are already deleted and
-  committed; the probe templates are the only execution path.
+- +95 tests versus the probe-acceptance snapshot (1841): agent event-sourced
+  runtime 68, file/operation audit 17, coverage closure + cross-cluster relay 20,
+  plus existing-file additions/removals.
+- One earlier snapshot taken while another test process and external VM tooling
+  were running hit `ConnectionAbortedError: [WinError 10053]` in
+  tests.test_hardware_sim.test_post_not_allowed_and_invalid_mode; that module
+  reruns 12/12 OK and the clean run above has no errors. It is not a regression.
 - Evidence for the native probe sweep: reports/probe-coverage/evidence.json
   (286 entries, runtime=rust, probe 0.1.1, repeat=3, consistent=286, failures=0).
+- Requirement counts at this snapshot: 129 rows, done 94 / partial 28 /
+  not-done 0 / blocked-resource 7 (docs/REQUIREMENTS-MATRIX.md sections 2.4, 3.5).
 
-History (superseded, migration in flight, do not use as a baseline):
+History (superseded, do not use as a baseline):
 
+  2026-10-27 probe acceptance
+  command: python -m unittest discover -s tests
+  Ran 1841 tests in 1073.350s
+  OK (skipped=13)
+
+  2026-10-27 migration in flight (moving tree, 286 run.py being deleted)
   command: python -m unittest discover -s tests -v
   Ran 2128 tests in 2159.553s
   FAILED (failures=99, errors=513, skipped=4)
 
-  45 red test files; 30 of them were deleted from the worktree while the run was
-  executing (another workstream was removing 286 run.py files). The run measured
-  a moving tree. See docs/REQUIREMENTS-MATRIX.md 3.2 for the attribution.
+  The migration snapshot measured a moving tree; 45 red test files, 30 of them
+  deleted from the worktree while the run was executing. See
+  docs/REQUIREMENTS-MATRIX.md 3.2 for the attribution.
