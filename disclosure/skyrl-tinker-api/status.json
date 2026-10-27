@@ -1,0 +1,35 @@
+{
+  "schema": "inkblade-disclosure-status-v1",
+  "id": "skyrl-tinker-api",
+  "reserve_source": "audit-history",
+  "component": "skyrl",
+  "merged_ids": [],
+  "eligible_for_cve": true,
+  "decision": "cve",
+  "reason": "Eight Tinker control endpoints bind 0.0.0.0 without authentication.",
+  "state": "draft-not-sent",
+  "sent": false,
+  "sent_at": null,
+  "vendor_notified": false,
+  "cve_id": null,
+  "cve_state": "not-requested",
+  "public_disclosure": false,
+  "legal_review": "required",
+  "redaction": {
+    "internal_paths_removed": true,
+    "credentials_removed": true,
+    "hostnames_removed": true,
+    "method": "drive-letter, workspace, /home and internal evidence prefixes stripped"
+  },
+  "package_files": [
+    "cve-request.json",
+    "evidence.sha256",
+    "report-en.md",
+    "timeline.json",
+    "vendor-contact.txt",
+    "status.json"
+  ],
+  "evidence_gaps": [],
+  "generated_at": "2026-10-27T00:00:00+00:00",
+  "no_send_policy": "this repository never transmits disclosure material automatically"
+}

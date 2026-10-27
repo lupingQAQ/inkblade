@@ -1,0 +1,42 @@
+{
+  "schema": "inkblade-disclosure-timeline-v1",
+  "id": "openjev-clef-release-module",
+  "anchor": "planned-t0",
+  "t0_planned": "2026-10-28T00:00:00+00:00",
+  "t0_actual": null,
+  "sent": false,
+  "milestones": [
+    {
+      "label": "T0",
+      "due": "2026-10-28T00:00:00+00:00",
+      "action": "private-vendor-notification",
+      "state": "not-started"
+    },
+    {
+      "label": "T0+7",
+      "due": "2026-11-04T00:00:00+00:00",
+      "action": "second-channel-if-unacknowledged",
+      "state": "not-started"
+    },
+    {
+      "label": "T0+30",
+      "due": "2026-11-27T00:00:00+00:00",
+      "action": "fix-plan-and-cve-request",
+      "state": "not-started"
+    },
+    {
+      "label": "T0+60",
+      "due": "2026-12-27T00:00:00+00:00",
+      "action": "second-reminder",
+      "state": "not-started"
+    },
+    {
+      "label": "T0+90",
+      "due": "2027-01-26T00:00:00+00:00",
+      "action": "default-coordinated-publication",
+      "state": "not-started"
+    }
+  ],
+  "extension_policy": "written vendor request only; record the new date in status.json",
+  "publication_rule": "publish no earlier than T0+90 unless the vendor agrees; never before a fix is available"
+}

@@ -1,0 +1,1632 @@
+{
+  "entries": {
+    "areal-awex": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "areal-awex",
+      "cvss31": {
+        "score": 8.2,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        },
+        {
+          "id": "CWE-73",
+          "name": "External Control of File Name or Path"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Authenticate /awex, restrict save paths to a server-side root, and require a shared NCCL secret/allowlist.",
+      "id": "areal-awex",
+      "impact": "An attacker can write arbitrary files through torch.save and join the training NCCL group with a chosen master_addr/port, injecting or exfiltrating weights and gradients.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Unauthenticated /awex/* allows arbitrary torch.save paths and joining an attacker NCCL group.",
+      "title": "AReaL /awex allows arbitrary writes and NCCL group joins without authentication",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/areal/",
+        "email": null,
+        "policy": "https://github.com/areal-project/AReaL/security/policy",
+        "product_name": "AReaL",
+        "product_repo": "areal-project/AReaL",
+        "url": "https://github.com/areal-project/AReaL/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "448de52",
+          "versionType": "git"
+        }
+      ]
+    },
+    "areal-dataservice-pickle": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "areal-dataservice-pickle",
+      "cvss31": {
+        "score": 9.8,
+        "severity": "CRITICAL",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-502",
+          "name": "Deserialization of Untrusted Data"
+        },
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Authenticate /run, replace pickle with a typed schema, and never deserialize request bodies.",
+      "id": "areal-dataservice-pickle",
+      "impact": "A single POST to the data-service worker executes arbitrary pickle payloads on the worker host.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Unauthenticated /run endpoint unpickles the request body.",
+      "title": "AReaL data-service worker unpickles unauthenticated request bodies",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/areal/",
+        "email": null,
+        "policy": "https://github.com/areal-project/AReaL/security/policy",
+        "product_name": "AReaL",
+        "product_repo": "areal-project/AReaL",
+        "url": "https://github.com/areal-project/AReaL/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "448de52",
+          "versionType": "git"
+        }
+      ]
+    },
+    "areal-unauth-engine-control": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "areal-unauth-engine-control",
+      "cvss31": {
+        "score": 9.8,
+        "severity": "CRITICAL",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        },
+        {
+          "id": "CWE-94",
+          "name": "Improper Control of Generation of Code ('Code Injection')"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Require authentication and replace the generic import/call dispatcher with an allowlisted command set.",
+      "id": "areal-unauth-engine-control",
+      "impact": "POST /set_env, /create_engine, and /call allow an unauthenticated client to import and execute arbitrary Python on the rollout host.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Unauthenticated control plane imports and invokes arbitrary modules/classes/methods.",
+      "title": "AReaL proxy rollout control plane allows unauthenticated code execution",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/areal/",
+        "email": null,
+        "policy": "https://github.com/areal-project/AReaL/security/policy",
+        "product_name": "AReaL",
+        "product_repo": "areal-project/AReaL",
+        "url": "https://github.com/areal-project/AReaL/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "448de52",
+          "versionType": "git"
+        }
+      ]
+    },
+    "areal-v2-worker": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "areal-v2-worker",
+      "cvss31": {
+        "score": 9.8,
+        "severity": "CRITICAL",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-502",
+          "name": "Deserialization of Untrusted Data"
+        },
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Authenticate worker endpoints and load with weights_only=True plus a signed checkpoint manifest.",
+      "id": "areal-v2-worker",
+      "impact": "A malicious checkpoint sent to the v2 worker executes pickle code on load; /save and /awex extend the same unauthenticated control surface.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Unauthenticated /load calls torch.load(weights_only=False) on a caller-supplied .pt.",
+      "title": "AReaL v2 worker loads untrusted checkpoints without authentication",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/areal/",
+        "email": null,
+        "policy": "https://github.com/areal-project/AReaL/security/policy",
+        "product_name": "AReaL",
+        "product_repo": "areal-project/AReaL",
+        "url": "https://github.com/areal-project/AReaL/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "448de52",
+          "versionType": "git"
+        }
+      ]
+    },
+    "deepspeed-autoep-unsafe-load": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "deepspeed-unsafe-checkpoint-load",
+      "cvss31": {
+        "score": 8.8,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-502",
+          "name": "Deserialization of Untrusted Data"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Pass weights_only=True and load optimizer/dataloader state through a restricted unpickler; sign checkpoints and verify before load.",
+      "id": "deepspeed-autoep-unsafe-load",
+      "impact": "An actor able to write an AutoEP or ZeRO-3 checkpoint directory obtains pickle code execution in the training process on conversion/resume.",
+      "merged_ids": [
+        "deepspeed-stage3-py-torch-load-any-l3660-regex",
+        "deepspeed-stage3-py-torch-load-any-l3770-regex",
+        "deepspeed-stage3-py-torch-load-unsafe-l3660-ast",
+        "deepspeed-stage3-py-torch-load-unsafe-l3660-regex",
+        "deepspeed-stage3-py-torch-load-unsafe-l3770-ast"
+      ],
+      "poc": "",
+      "reason": "Multiple checkpoint loaders call torch.load(..., weights_only=False) on attacker-writable files.",
+      "title": "DeepSpeed checkpoint loaders deserialize untrusted state with weights_only=False",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/deepspeed/",
+        "email": null,
+        "policy": "https://github.com/deepspeedai/DeepSpeed/security/policy",
+        "product_name": "DeepSpeed",
+        "product_repo": "deepspeedai/DeepSpeed",
+        "url": "https://github.com/deepspeedai/DeepSpeed/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "0.19.8",
+          "versionType": "semver"
+        }
+      ]
+    },
+    "dify-agent-auth-failopen": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "dify-agent-auth-failopen",
+      "cvss31": {
+        "score": 9.1,
+        "severity": "CRITICAL",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        },
+        {
+          "id": "CWE-863",
+          "name": "Incorrect Authorization"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Fail closed when the token is unset; compare with hmac.compare_digest; remove the public dev token from compose and generate one per install.",
+      "id": "dify-agent-auth-failopen",
+      "impact": "Any caller can create execution bindings and trigger host mkdir/rm operations; the public dev token shipped in compose makes the control plane reachable in default deployments.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Token check returns allow when the expected token is None; wrong tokens are also accepted.",
+      "title": "dify-agent authentication fails open and ships a public development token",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/dify/",
+        "email": null,
+        "policy": "https://github.com/langgenius/dify/security/policy",
+        "product_name": "dify-agent",
+        "product_repo": "langgenius/dify",
+        "url": "https://github.com/langgenius/dify/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "1.17.1",
+          "versionType": "semver"
+        },
+        {
+          "status": "affected",
+          "version": "bbfac7a",
+          "versionType": "git"
+        }
+      ]
+    },
+    "dify-home-snapshot-cross-tenant": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "dify-home-snapshot-cross-tenant",
+      "cvss31": {
+        "score": 7.7,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-668",
+          "name": "Exposure of Resource to Wrong Sphere"
+        },
+        {
+          "id": "CWE-22",
+          "name": "Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Namespace snapshot/control-lease directories per tenant, authorize the binding reference, and verify ownership before materialization.",
+      "id": "dify-home-snapshot-cross-tenant",
+      "impact": "A tenant can snapshot another tenant's home and materialize it into its own binding, reading VICTIM-SECRET and other cross-tenant data.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Snapshots are stored under a shared root keyed only by a caller-supplied reference.",
+      "title": "Dify local runtime snapshots allow cross-tenant home theft",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/dify/",
+        "email": null,
+        "policy": "https://github.com/langgenius/dify/security/policy",
+        "product_name": "Dify local runtime",
+        "product_repo": "langgenius/dify",
+        "url": "https://github.com/langgenius/dify/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "1.17.1",
+          "versionType": "semver"
+        }
+      ]
+    },
+    "dify-shellctl-unauth-rce": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "dify-shellctl-unauth-rce",
+      "cvss31": {
+        "score": 9.8,
+        "severity": "CRITICAL",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        },
+        {
+          "id": "CWE-78",
+          "name": "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Require a per-job token/HMAC on shellctl, bind to the compose network only, and run jobs in a disposable sandbox with a read-only tenant home.",
+      "id": "dify-shellctl-unauth-rce",
+      "impact": "POST /v1/jobs/run without a token executes arbitrary commands on the sandbox host and can read every tenant home under /home/dify.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Zero-precondition unauthenticated host command execution in the shipped sandbox daemon.",
+      "title": "Dify 1.17.1 shellctl sandbox daemon allows unauthenticated host command execution",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/dify/",
+        "email": null,
+        "policy": "https://github.com/langgenius/dify/security/policy",
+        "product_name": "Dify",
+        "product_repo": "langgenius/dify",
+        "url": "https://github.com/langgenius/dify/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "1.17.1",
+          "versionType": "semver"
+        }
+      ]
+    },
+    "dify-stub-jwe-default-key": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "dify-stub-jwe-default-key",
+      "cvss31": {
+        "score": 9.1,
+        "severity": "CRITICAL",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-798",
+          "name": "Use of Hard-coded Credentials"
+        },
+        {
+          "id": "CWE-321",
+          "name": "Use of Hard-coded Cryptographic Key"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Generate a random AGENT_STUB_SECRET at install time, refuse to start with the documented default, and rotate the key.",
+      "id": "dify-stub-jwe-default-key",
+      "impact": "An attacker derives the JWE key offline and forges tokens accepted by /agent-stub/*, reading files and configuration from the control plane.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "A hard-coded public default JWE root key allows offline token forgery.",
+      "title": "Dify agent-stub ships a hard-coded JWE root key",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/dify/",
+        "email": null,
+        "policy": "https://github.com/langgenius/dify/security/policy",
+        "product_name": "Dify agent-stub",
+        "product_repo": "langgenius/dify",
+        "url": "https://github.com/langgenius/dify/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "1.17.1",
+          "versionType": "semver"
+        }
+      ]
+    },
+    "djev-open-proxy": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "djev-open-proxy",
+      "cvss31": {
+        "score": 8.2,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        },
+        {
+          "id": "CWE-863",
+          "name": "Incorrect Authorization"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Require authentication on every HTTP method (not only POST), reject /v1/* when API_KEY is unset, and bind to loopback by default.",
+      "id": "djev-open-proxy",
+      "impact": "An unauthenticated client can relay /v1/* requests to the upstream vLLM service and read management routes; with API_KEY set, GET management routes remain unauthenticated.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Unauthenticated relay plus a GET path that stays open when API_KEY is configured.",
+      "title": "djev relays /v1/* without authentication and leaves GET management routes open",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": null,
+        "email": null,
+        "policy": "https://github.com/mmastrac/djev/security/policy",
+        "product_name": "djev",
+        "product_repo": "mmastrac/djev",
+        "url": "https://github.com/mmastrac/djev/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "e5841cf",
+          "versionType": "git"
+        }
+      ]
+    },
+    "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": null,
+      "cvss31": {
+        "score": 8.8,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-502",
+          "name": "Deserialization of Untrusted Data"
+        }
+      ],
+      "decision": "hardening",
+      "eligible": false,
+      "fix": "Apply the same weights_only=True fix to TrainingCheckpointCoordinator.resume.",
+      "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
+      "impact": "Already covered by the public advisory; no new CVE.",
+      "merged_ids": [
+        "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex"
+      ],
+      "poc": "",
+      "reason": "dedupe-existing-cve: LLaMA-Factory checkpoint torch.load RCE is already covered by public CVE-2026-1839 (same product, same checkpoint trust boundary). A second CVE for a sibling function would duplicate the vendor fix; report as an extension to the existing advisory.",
+      "title": "LLaMA-Factory v1 checkpoint resume deserializes with weights_only=False",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/llamafactory/",
+        "email": null,
+        "policy": "https://github.com/hiyouga/LlamaFactory/security/policy",
+        "product_name": "LLaMA-Factory",
+        "product_repo": "hiyouga/LlamaFactory",
+        "url": "https://github.com/hiyouga/LlamaFactory/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "0.9.5",
+          "versionType": "semver"
+        }
+      ]
+    },
+    "llm2jev-image-file": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "llm2jev-image-file",
+      "cvss31": {
+        "score": 7.5,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-22",
+          "name": "Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')"
+        },
+        {
+          "id": "CWE-918",
+          "name": "Server-Side Request Forgery (SSRF)"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Accept only https URLs from an allowlist or base64 payloads; reject file:// and local paths.",
+      "id": "llm2jev-image-file",
+      "impact": "A request can read arbitrary files readable by the service (e.g. /etc/passwd, model credentials) and reach internal HTTP services.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "image_url accepts file:// and local paths, returning file content; also http(s) SSRF.",
+      "title": "LLM2Jev image_url permits local file read and SSRF",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": null,
+        "email": null,
+        "policy": "https://github.com/Yinsongxu/LLM2Jev/security/policy",
+        "product_name": "LLM2Jev",
+        "product_repo": "Yinsongxu/LLM2Jev",
+        "url": "https://github.com/Yinsongxu/LLM2Jev/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "f2bdad6",
+          "versionType": "git"
+        }
+      ]
+    },
+    "megatron-checkpointing-py-torch-load-any-l1739-regex": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": null,
+      "cvss31": {
+        "score": 8.8,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-502",
+          "name": "Deserialization of Untrusted Data"
+        }
+      ],
+      "decision": "hardening",
+      "eligible": false,
+      "fix": "Pass weights_only=True explicitly and document the minimum torch version.",
+      "id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
+      "impact": "None on the supported torch pairing; blocked before object construction.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "dependency-default-blocks: the sink calls torch.load() without weights_only, so torch >= 2.6 (weights_only=True by default) refuses the payload. Affected only with torch < 2.6, which is a dependency pin, not a Megatron code defect; no version-bounded Megatron fix exists.",
+      "title": "Megatron-LM checkpoint loader relies on the torch weights_only default",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/megatron-core/",
+        "email": null,
+        "policy": "https://github.com/NVIDIA/Megatron-LM/security/policy",
+        "product_name": "Megatron-LM",
+        "product_repo": "NVIDIA/Megatron-LM",
+        "url": "https://github.com/NVIDIA/Megatron-LM/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "0.19.2",
+          "versionType": "semver"
+        }
+      ]
+    },
+    "msswift-eval-escape": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "msswift-eval-escape",
+      "cvss31": {
+        "score": 8.8,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-95",
+          "name": "Improper Neutralization of Directives in Dynamically Evaluated Code ('Eval Injection')"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Replace eval() with an AST-validated integer/range parser; never pass user input to eval.",
+      "id": "msswift-eval-escape",
+      "impact": "An authenticated WebUI user can pass a crafted device_groups/ranks expression that escapes the restricted globals and executes arbitrary Python on the training host.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Restricted eval() is escaped through builtins, reachable from WebUI more_params.",
+      "title": "ms-swift device_groups eval() can be escaped through builtins",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/ms-swift/",
+        "email": null,
+        "policy": "https://github.com/modelscope/ms-swift/security/policy",
+        "product_name": "ms-swift",
+        "product_repo": "modelscope/ms-swift",
+        "url": "https://github.com/modelscope/ms-swift/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "4.5.3",
+          "versionType": "semver"
+        },
+        {
+          "status": "affected",
+          "version": "fbc61cf",
+          "versionType": "git"
+        }
+      ]
+    },
+    "msswift-indexed-dataset-py-pickle-loads-l112-ast": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "msswift-indexed-dataset-unsafe-pickle",
+      "cvss31": {
+        "score": 8.8,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-502",
+          "name": "Deserialization of Untrusted Data"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Replace pickle with a restricted format (safetensors/npz/json) and verify a manifest digest before load.",
+      "id": "msswift-indexed-dataset-py-pickle-loads-l112-ast",
+      "impact": "Writing data.idx or a data-*.bin shard in the packing cache yields code execution the next time a training job opens the IndexedDataset.",
+      "merged_ids": [
+        "msswift-indexed-dataset-py-pickle-loads-l112-regex",
+        "msswift-indexed-dataset-py-pickle-loads-l129-ast",
+        "msswift-indexed-dataset-py-pickle-loads-l129-regex"
+      ],
+      "poc": "",
+      "reason": "Packed-dataset index and record files are unpickled from an attacker-writable cache.",
+      "title": "ms-swift IndexedDataset unpickles attacker-writable packing cache",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/ms-swift/",
+        "email": null,
+        "policy": "https://github.com/modelscope/ms-swift/security/policy",
+        "product_name": "ms-swift",
+        "product_repo": "modelscope/ms-swift",
+        "url": "https://github.com/modelscope/ms-swift/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "4.6.0",
+          "versionType": "semver"
+        }
+      ]
+    },
+    "msswift-media-local-read": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "msswift-media-local-read",
+      "cvss31": {
+        "score": 7.5,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-22",
+          "name": "Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')"
+        },
+        {
+          "id": "CWE-73",
+          "name": "External Control of File Name or Path"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Default SWIFT_MEDIA_ALLOWED_DIRS to the dataset root (deny all when unset), canonicalize and check the resolved path.",
+      "id": "msswift-media-local-read",
+      "impact": "A request containing a local path (image/audio/video) makes swift deploy read any file the service can access and return its content in the response.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Default allow-all media path policy reads arbitrary host files and returns them base64-encoded.",
+      "title": "ms-swift deploy media path allows arbitrary local file read",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/ms-swift/",
+        "email": null,
+        "policy": "https://github.com/modelscope/ms-swift/security/policy",
+        "product_name": "ms-swift",
+        "product_repo": "modelscope/ms-swift",
+        "url": "https://github.com/modelscope/ms-swift/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "4.6.0",
+          "versionType": "semver"
+        }
+      ]
+    },
+    "msswift-torch-utils-py-pickle-loads-l340-ast": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "msswift-torch-utils-pickle",
+      "cvss31": {
+        "score": 8.8,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-502",
+          "name": "Deserialization of Untrusted Data"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Use a safe tensor container and validate length/type headers before unpickling; reject pickle payloads.",
+      "id": "msswift-torch-utils-py-pickle-loads-l340-ast",
+      "impact": "A peer able to inject tensor bytes into the rank/node serialization path obtains code execution when the victim calls Serializer.from_tensor.",
+      "merged_ids": [
+        "msswift-torch-utils-py-pickle-loads-l340-regex"
+      ],
+      "poc": "",
+      "reason": "Tensor byte prefixes are unpickled in an inter-rank serialization helper.",
+      "title": "ms-swift Serializer.from_tensor unpickles tensor-controlled bytes",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/ms-swift/",
+        "email": null,
+        "policy": "https://github.com/modelscope/ms-swift/security/policy",
+        "product_name": "ms-swift",
+        "product_repo": "modelscope/ms-swift",
+        "url": "https://github.com/modelscope/ms-swift/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "4.6.0",
+          "versionType": "semver"
+        }
+      ]
+    },
+    "msswift-trust-remote-code": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "msswift-trust-remote-code",
+      "cvss31": {
+        "score": 8.8,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-829",
+          "name": "Inclusion of Functionality from Untrusted Control Sphere"
+        },
+        {
+          "id": "CWE-94",
+          "name": "Improper Control of Generation of Code ('Code Injection')"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Default trust_remote_code to False, require an explicit opt-in per model, and pin revisions.",
+      "id": "msswift-trust-remote-code",
+      "impact": "A malicious or compromised model repository executes Python in the ms-swift service process when loaded through the WebUI or deploy path, leading to host compromise.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Unsafe default (trust_remote_code=True) lets a model repository execute code in the service.",
+      "title": "ms-swift defaults trust_remote_code to True in WebUI/deploy paths",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/ms-swift/",
+        "email": null,
+        "policy": "https://github.com/modelscope/ms-swift/security/policy",
+        "product_name": "ms-swift",
+        "product_repo": "modelscope/ms-swift",
+        "url": "https://github.com/modelscope/ms-swift/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "4.5.3",
+          "versionType": "semver"
+        },
+        {
+          "status": "affected",
+          "version": "fbc61cf",
+          "versionType": "git"
+        }
+      ]
+    },
+    "onejev-media-ssrf": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "onejev-media-ssrf",
+      "cvss31": {
+        "score": 7.5,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-918",
+          "name": "Server-Side Request Forgery (SSRF)"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Allowlist schemes and hosts, block link-local/private ranges after DNS resolution, and disable redirects.",
+      "id": "onejev-media-ssrf",
+      "impact": "A request carrying a media URL makes the OneJev service fetch arbitrary http(s) targets, exposing internal services and cloud metadata endpoints.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Media URL is fetched with urllib and no scheme/host policy.",
+      "title": "OneJev media fetch is an unauthenticated SSRF primitive",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": null,
+        "email": null,
+        "policy": "https://github.com/OmniJev/OneJev/security/policy",
+        "product_name": "OneJev",
+        "product_repo": "OmniJev/OneJev",
+        "url": "https://github.com/OmniJev/OneJev/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "6122519",
+          "versionType": "git"
+        }
+      ]
+    },
+    "openjev-clef-release-module": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "openjev-clef-release-module",
+      "cvss31": {
+        "score": 8.8,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-94",
+          "name": "Improper Control of Generation of Code ('Code Injection')"
+        },
+        {
+          "id": "CWE-829",
+          "name": "Inclusion of Functionality from Untrusted Control Sphere"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Load model code only from a signed/pinned artifact, verify a digest before exec_module, and disable model-provided modules by default.",
+      "id": "openjev-clef-release-module",
+      "impact": "A user able to write the shared model cache/PVC can place joint_schema_model.py and obtain code execution in every process that loads the model.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Model-directory Python module is executed on load without integrity or revision checks.",
+      "title": "OpenJev Clef release_module executes model-supplied Python",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": null,
+        "email": null,
+        "policy": "https://github.com/razorback16/openjev/security/policy",
+        "product_name": "openjev",
+        "product_repo": "razorback16/openjev",
+        "url": "https://github.com/razorback16/openjev/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "b4339c6",
+          "versionType": "git"
+        }
+      ]
+    },
+    "openrlhf-serve-rm": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "openrlhf-serve-rm",
+      "cvss31": {
+        "score": 7.5,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Bind serve_rm to 127.0.0.1 by default and add a shared-secret or mTLS check before scoring.",
+      "id": "openrlhf-serve-rm",
+      "impact": "Any host that can reach port 5000 can score arbitrary prompt/response pairs, forging the reward signal used by RL training.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Network-exposed scoring service has no authentication; forged rewards corrupt training.",
+      "title": "OpenRLHF serve_rm exposes unauthenticated reward scoring on 0.0.0.0:5000",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/openrlhf/",
+        "email": null,
+        "policy": "https://github.com/OpenRLHF/OpenRLHF/security/policy",
+        "product_name": "OpenRLHF",
+        "product_repo": "OpenRLHF/OpenRLHF",
+        "url": "https://github.com/OpenRLHF/OpenRLHF/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "0.11.2",
+          "versionType": "semver"
+        },
+        {
+          "status": "affected",
+          "version": "dc2a7ad",
+          "versionType": "git"
+        }
+      ]
+    },
+    "openrlhf-vllm-insecure": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": null,
+      "cvss31": {
+        "score": 8.8,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-1188",
+          "name": "Insecure Default Initialization of Resource"
+        }
+      ],
+      "decision": "hardening",
+      "eligible": false,
+      "fix": "Stop forcing insecure serialization; gate it behind an explicit opt-in.",
+      "id": "openrlhf-vllm-insecure",
+      "impact": "Contributes exposure but has no independent sink.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "insecure-default-only: OpenRLHF unconditionally sets VLLM_ALLOW_INSECURE_SERIALIZATION=1, but the deserialization surface and fix live in vLLM. Hardening recommendation, duplicate of the vLLM control-plane advisory.",
+      "title": "OpenRLHF forces vLLM insecure serialization",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/openrlhf/",
+        "email": null,
+        "policy": "https://github.com/OpenRLHF/OpenRLHF/security/policy",
+        "product_name": "OpenRLHF",
+        "product_repo": "OpenRLHF/OpenRLHF",
+        "url": "https://github.com/OpenRLHF/OpenRLHF/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "0.11.2",
+          "versionType": "semver"
+        },
+        {
+          "status": "affected",
+          "version": "dc2a7ad",
+          "versionType": "git"
+        }
+      ]
+    },
+    "openwebui-code-interpreter-bypass": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "openwebui-code-interpreter-bypass",
+      "cvss31": {
+        "score": 9.6,
+        "severity": "CRITICAL",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-94",
+          "name": "Improper Control of Generation of Code ('Code Injection')"
+        },
+        {
+          "id": "CWE-693",
+          "name": "Protection Mechanism Failure"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Run code in a separate container/VM with a read-only FS and no network; do not rely on an in-process __import__ patch.",
+      "id": "openwebui-code-interpreter-bypass",
+      "impact": "Indirect prompt injection in model output reaches <code_interpreter>, bypasses the sandbox guard, and executes commands on the Open WebUI host.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "The __import__ patch is bypassable via importlib; no module deny list is effective.",
+      "title": "Open WebUI code-interpreter guard is bypassable with importlib",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": null,
+        "email": null,
+        "policy": "https://github.com/open-webui/open-webui/security/policy",
+        "product_name": "Open WebUI",
+        "product_repo": "open-webui/open-webui",
+        "url": "https://github.com/open-webui/open-webui/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "0.12.3",
+          "versionType": "semver"
+        },
+        {
+          "status": "affected",
+          "version": "91ea4e3",
+          "versionType": "git"
+        }
+      ]
+    },
+    "sglang-omni-admin-failopen": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "sglang-omni-admin-failopen",
+      "cvss31": {
+        "score": 9.1,
+        "severity": "CRITICAL",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        },
+        {
+          "id": "CWE-73",
+          "name": "External Control of File Name or Path"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Make make_admin_auth_dependency fail closed when SGLANG_OMNI_ADMIN_KEY is absent, and constrain event_dir to a server-side allowlisted root.",
+      "id": "sglang-omni-admin-failopen",
+      "impact": "Unauthenticated callers can start profilers writing to an attacker-chosen directory and invoke weight/cache control endpoints (pause, update weights) on sglang-omni.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Admin dependency becomes a no-op when the key env var is unset, and event_dir is request-controlled.",
+      "title": "sglang-omni admin authentication fails open and profiler event_dir is attacker-controlled",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": null,
+        "email": null,
+        "policy": "https://github.com/sgl-project/sglang-omni/security/policy",
+        "product_name": "sglang-omni",
+        "product_repo": "sgl-project/sglang-omni",
+        "url": "https://github.com/sgl-project/sglang-omni/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "204ba29",
+          "versionType": "git"
+        }
+      ]
+    },
+    "siliconlab-credential-exfil": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "siliconlab-credential-exfil",
+      "cvss31": {
+        "score": 8.2,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-918",
+          "name": "Server-Side Request Forgery (SSRF)"
+        },
+        {
+          "id": "CWE-522",
+          "name": "Insufficiently Protected Credentials"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Do not accept outbound URLs from request data; if required, allowlist and never attach server-side keys to caller-supplied destinations.",
+      "id": "siliconlab-credential-exfil",
+      "impact": "An unauthenticated caller points base_url/decider_url at an attacker server and receives the service's upstream provider API key and evaluation payloads.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Request-controlled base_url/decider_url receives the server-side provider API key.",
+      "title": "OpenJev-SiliconLabAI leaks server API keys to request-controlled URLs",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": null,
+        "email": null,
+        "policy": "https://github.com/SiliconLabAI/OpenJev/security/policy",
+        "product_name": "OpenJev-SiliconLabAI",
+        "product_repo": "SiliconLabAI/OpenJev",
+        "url": "https://github.com/SiliconLabAI/OpenJev/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "a08e969",
+          "versionType": "git"
+        }
+      ]
+    },
+    "skyrl-fetch-weights": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "skyrl-fetch-weights",
+      "cvss31": {
+        "score": 8.2,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-22",
+          "name": "Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')"
+        },
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Authenticate /fetch_weights, reject absolute/.. path components, and resolve under the cache root.",
+      "id": "skyrl-fetch-weights",
+      "impact": "A caller writes files outside cache_dir via ../ payload names and controls the weights loaded by the next training step.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "payload_files entries are joined without traversal checks, allowing writes outside the cache.",
+      "title": "SkyRL /fetch_weights path traversal enables weight poisoning",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/skyrl/",
+        "email": null,
+        "policy": "https://github.com/NovaSky-AI/SkyRL/security/policy",
+        "product_name": "SkyRL",
+        "product_repo": "NovaSky-AI/SkyRL",
+        "url": "https://github.com/NovaSky-AI/SkyRL/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "a1e34db",
+          "versionType": "git"
+        }
+      ]
+    },
+    "skyrl-tinker-api": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "skyrl-tinker-api",
+      "cvss31": {
+        "score": 8.2,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Bind 127.0.0.1 by default and require an API token on all Tinker endpoints.",
+      "id": "skyrl-tinker-api",
+      "impact": "An unauthenticated client can create, sample from, and delete models, manipulating the training control plane and checkpoints.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Eight Tinker control endpoints bind 0.0.0.0 without authentication.",
+      "title": "SkyRL Tinker API exposes unauthenticated model control on 0.0.0.0:8000",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/skyrl/",
+        "email": null,
+        "policy": "https://github.com/NovaSky-AI/SkyRL/security/policy",
+        "product_name": "SkyRL",
+        "product_repo": "NovaSky-AI/SkyRL",
+        "url": "https://github.com/NovaSky-AI/SkyRL/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "a1e34db",
+          "versionType": "git"
+        }
+      ]
+    },
+    "skyrl-vllm-devmode": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": null,
+      "cvss31": {
+        "score": 9.1,
+        "severity": "CRITICAL",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-1188",
+          "name": "Insecure Default Initialization of Resource"
+        }
+      ],
+      "decision": "hardening",
+      "eligible": false,
+      "fix": "Do not force 0.0.0.0/dev mode; bind loopback and require an API key.",
+      "id": "skyrl-vllm-devmode",
+      "impact": "Contributes exposure but has no independent sink.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "insecure-default-only: SkyRL sets VLLM_SERVER_DEV_MODE and 0.0.0.0 for its vLLM worker. The executable weakness is in vLLM's unauthenticated dev/RL routes, already covered by vllm-rl-dev-auth-bypass; a separate SkyRL CVE would duplicate it.",
+      "title": "SkyRL forces vLLM dev mode and 0.0.0.0 binding",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/skyrl/",
+        "email": null,
+        "policy": "https://github.com/NovaSky-AI/SkyRL/security/policy",
+        "product_name": "SkyRL",
+        "product_repo": "NovaSky-AI/SkyRL",
+        "url": "https://github.com/NovaSky-AI/SkyRL/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "a1e34db",
+          "versionType": "git"
+        }
+      ]
+    },
+    "slime-pull-weights": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "slime-pull-weights",
+      "cvss31": {
+        "score": 8.2,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        },
+        {
+          "id": "CWE-73",
+          "name": "External Control of File Name or Path"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Require admin auth on /pull_weights and resolve both directories under a per-tenant allowlisted root.",
+      "id": "slime-pull-weights",
+      "impact": "With the slime patch stack deployed, an unauthenticated caller can read or overwrite checkpoint weights outside its tenant directory on the shared PVC/NFS.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Unauthenticated weight pull accepts request-controlled source_dir/local_checkpoint_dir.",
+      "title": "slime /pull_weights allows unauthenticated cross-tenant weight access",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": null,
+        "email": null,
+        "policy": "https://github.com/THUDM/slime/security/policy",
+        "product_name": "slime",
+        "product_repo": "THUDM/slime",
+        "url": "https://github.com/THUDM/slime/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "05e3b01",
+          "versionType": "git"
+        },
+        {
+          "status": "affected",
+          "version": "sglang-0.5.15.post1",
+          "versionType": "semver"
+        }
+      ]
+    },
+    "slime-torch-load": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "slime-torch-load",
+      "cvss31": {
+        "score": 8.8,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-502",
+          "name": "Deserialization of Untrusted Data"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Use weights_only=True and a restricted unpickler; verify checkpoint digests before load.",
+      "id": "slime-torch-load",
+      "impact": "A user who can write the shared NFS/JuiceFS path executes pickle code when a victim loads debug or resume data.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Debug/resume loaders call torch.load(weights_only=False) on shared-storage files.",
+      "title": "slime debug/resume data loaders deserialize untrusted pickle",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": null,
+        "email": null,
+        "policy": "https://github.com/THUDM/slime/security/policy",
+        "product_name": "slime",
+        "product_repo": "THUDM/slime",
+        "url": "https://github.com/THUDM/slime/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "05e3b01",
+          "versionType": "git"
+        }
+      ]
+    },
+    "trl-vllm-serve-devmode": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": null,
+      "cvss31": {
+        "score": 9.1,
+        "severity": "CRITICAL",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-1188",
+          "name": "Insecure Default Initialization of Resource"
+        }
+      ],
+      "decision": "hardening",
+      "eligible": false,
+      "fix": "Do not set VLLM_SERVER_DEV_MODE by default; bind 127.0.0.1 and pass an api-key.",
+      "id": "trl-vllm-serve-devmode",
+      "impact": "Contributes exposure but has no independent sink.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "insecure-default-only: trl vllm-serve enables vLLM dev endpoints and a public bind. The missing authentication is in vLLM and is covered by vllm-rl-dev-auth-bypass; treat as configuration hardening for trl.",
+      "title": "trl vllm-serve enables vLLM dev mode on 0.0.0.0 without a key",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/trl/",
+        "email": null,
+        "policy": "https://github.com/huggingface/trl/security/policy",
+        "product_name": "TRL",
+        "product_repo": "huggingface/trl",
+        "url": "https://github.com/huggingface/trl/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "1.15.0",
+          "versionType": "semver"
+        }
+      ]
+    },
+    "verl-checkpoint-pickle": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "verl-checkpoint-pickle",
+      "cvss31": {
+        "score": 9.8,
+        "severity": "CRITICAL",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-502",
+          "name": "Deserialization of Untrusted Data"
+        },
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Authenticate the checkpoint channel (mTLS/shared secret) and replace recv_pyobj with a typed, non-executable codec.",
+      "id": "verl-checkpoint-pickle",
+      "impact": "Anyone who can reach the checkpoint channel sends a pickle stream and executes code in the training process.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Checkpoint engine receives pyobj over TCP/ZMQ without authentication.",
+      "title": "verl checkpoint engine deserializes unauthenticated pickle over the network",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/verl/",
+        "email": null,
+        "policy": "https://github.com/verl-project/verl/security/policy",
+        "product_name": "verl",
+        "product_repo": "verl-project/verl",
+        "url": "https://github.com/verl-project/verl/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "76e837e",
+          "versionType": "git"
+        }
+      ]
+    },
+    "verl-hdfs-command-injection": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "verl-hdfs-command-injection",
+      "cvss31": {
+        "score": 8.8,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-78",
+          "name": "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Use subprocess with an argv list, validate the HDFS path, and drop os.system.",
+      "id": "verl-hdfs-command-injection",
+      "impact": "A checkpoint path containing shell metacharacters executes arbitrary commands on the training host when the HDFS copy runs.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "HDFS checkpoint path is interpolated into os.system without quoting.",
+      "title": "verl HDFS checkpoint copy is vulnerable to shell command injection",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/verl/",
+        "email": null,
+        "policy": "https://github.com/verl-project/verl/security/policy",
+        "product_name": "verl",
+        "product_repo": "verl-project/verl",
+        "url": "https://github.com/verl-project/verl/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "76e837e",
+          "versionType": "git"
+        }
+      ]
+    },
+    "verl-prime-code-exec": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": null,
+      "cvss31": {
+        "score": 8.8,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        {
+          "id": "CWE-94",
+          "name": "Improper Control of Generation of Code ('Code Injection')"
+        }
+      ],
+      "decision": "hardening",
+      "eligible": false,
+      "fix": "Run prime_code evaluation in a network-isolated, resource-limited sandbox with a read-only FS.",
+      "id": "verl-prime-code-exec",
+      "impact": "By design; risk accepted unless the reward scorer is exposed to untrusted models.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "by-design: executing model-generated code is the documented function of the prime_code reward scorer. The security gap is the absence of a sandbox, which belongs in a hardening recommendation, not a CVE against intended behaviour.",
+      "title": "verl prime_code reward executes model-generated code without a sandbox",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/verl/",
+        "email": null,
+        "policy": "https://github.com/verl-project/verl/security/policy",
+        "product_name": "verl",
+        "product_repo": "verl-project/verl",
+        "url": "https://github.com/verl-project/verl/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "76e837e",
+          "versionType": "git"
+        }
+      ]
+    },
+    "vllm-jev-plugin-auth-bypass": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "vllm-jev-plugin-auth-bypass",
+      "cvss31": {
+        "score": 8.2,
+        "severity": "HIGH",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        },
+        {
+          "id": "CWE-863",
+          "name": "Incorrect Authorization"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Route /plugins/* through the same AuthenticationMiddleware as /v1,/v2,/inference,/cohere or require an explicit per-plugin token; add a deny-by-default test for every registered router.",
+      "id": "vllm-jev-plugin-auth-bypass",
+      "impact": "An unauthenticated network client can invoke vllm-jev plugin routes (model choice, system-one control) on a vLLM deployment that is otherwise protected by --api-key.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "Unauthenticated plugin control route bypasses --api-key; direct control-plane impact.",
+      "title": "vllm-jev plugin routes bypass the vLLM API-key middleware",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/vllm-jev/",
+        "email": null,
+        "policy": "https://github.com/mode-io/vllm-jev/security/policy",
+        "product_name": "vllm-jev",
+        "product_repo": "mode-io/vllm-jev",
+        "url": "https://github.com/mode-io/vllm-jev/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "0.31.0",
+          "versionType": "semver"
+        },
+        {
+          "status": "affected",
+          "version": "57226d4e5b8e164f07288acd4f6b7ccca3340218",
+          "versionType": "git"
+        }
+      ]
+    },
+    "vllm-rl-dev-auth-bypass": {
+      "cnnvd": true,
+      "cnvd": true,
+      "cve_key": "vllm-rl-dev-auth-bypass",
+      "cvss31": {
+        "score": 9.1,
+        "severity": "CRITICAL",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+      },
+      "cwe": [
+        {
+          "id": "CWE-306",
+          "name": "Missing Authentication for Critical Function"
+        }
+      ],
+      "decision": "cve",
+      "eligible": true,
+      "fix": "Include the RL router in GUARDED_PREFIX (or mount it under /v1) and require the API key for every control endpoint.",
+      "id": "vllm-rl-dev-auth-bypass",
+      "impact": "With VLLM_SERVER_DEV_MODE=1 (used by SkyRL/TRL recipes), unauthenticated callers pause/resume the engine, abort requests, and trigger weight updates while /v1/* still returns 401.",
+      "merged_ids": [],
+      "poc": "",
+      "reason": "RL control router mounted at / is outside the API-key guarded prefixes.",
+      "title": "vLLM 0.32.0 RL control router bypasses --api-key",
+      "vendor": {
+        "channel": "GitHub private security advisory (preferred)",
+        "collection_url": "https://pypi.org/project/vllm/",
+        "email": null,
+        "policy": "https://github.com/vllm-project/vllm/security/policy",
+        "product_name": "vLLM",
+        "product_repo": "vllm-project/vllm",
+        "url": "https://github.com/vllm-project/vllm/security/advisories/new"
+      },
+      "versions": [
+        {
+          "status": "affected",
+          "version": "0.32.0",
+          "versionType": "semver"
+        }
+      ]
+    }
+  },
+  "generated_at": "2026-10-27T00:00:00+00:00",
+  "policy": {
+    "criteria": [
+      "verified dynamic reproduction with an attacker-controlled path",
+      "direct confidentiality/integrity/availability impact, not pure binding/exposure posture",
+      "not by-design behaviour and not operator-only configuration",
+      "not a duplicate of an existing public CVE or of another reserve entry (same fix batch)"
+    ],
+    "cve_path": [
+      "vendor CNA (preferred)",
+      "MITRE CNA of last resort",
+      "CNVD",
+      "CNNVD"
+    ],
+    "default": "vendor-first notification, 90 days, then CVE assignment and coordinated publication",
+    "no_send": true
+  },
+  "schema": "inkblade-cve-eligibility-v1"
+}

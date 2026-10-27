@@ -62,14 +62,14 @@
       "id": "zeroday-public-no-gate",
       "title": "零日级漏洞模块（已公开）无需零日闸门：默认可见、可直接执行，发现带 is_zeroday 审计标记",
       "status": "PASS",
-      "detail": "公开✓ / private=false✓ / 无需 enable✓ / is_zeroday 落库 2 条",
+      "detail": "公开✓ / private=false✓ / 无需 enable✓ / is_zeroday 落库 4 条",
       "elapsed_ms": "<dynamic>"
     },
     {
       "id": "report-bilingual-public-details",
       "title": "双语渗透+修复报告渲染：PTES/专节/标准映射/CVSS/证据锚齐备；已公开零日级细节默认展示，可选脱敏开关生效",
       "status": "PASS",
-      "detail": "渗透 72648 字符 / 修复 69071 字符；默认展示✓ / 可选脱敏 71070 字符✓",
+      "detail": "渗透 74809 字符 / 修复 71762 字符；默认展示✓ / 可选脱敏 71352 字符✓",
       "elapsed_ms": "<dynamic>"
     },
     {

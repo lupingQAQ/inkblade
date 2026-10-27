@@ -206,21 +206,20 @@ Coverage details and the current Rust-runtime gap: [`docs/PROBE-COVERAGE.md`](do
 - Defense-bypass assessment: `inkblade/core/defenseprobe.py` and 11 `inkblade/modules/defense-bypass-*`
   modules.
 - Current counts: 287 module directories (286 templates plus one bootstrap), 29 chains, 11
-  defense-bypass modules. The 286 legacy `run.py` files were deleted in the working tree during the
-  migration and are still present at `HEAD` until the migration commit lands; the registry only
-  accepts templates.
-- Rust-runtime dynamic verification is still 0. The 286/286 two-state results in the coverage
-  report use `runtime=reference`; they are useful for template logic, not for probe evidence. The
-  probe source is tracked; binaries are built in CI (`docs/PROBE-BUILD.md`) and kept out of git
-  (`probe/dist/`).
+  defense-bypass modules. The 286 legacy `run.py` files are gone from both the working tree and
+  `HEAD` (deleted in the migration commit); the registry only accepts templates.
+- Rust-runtime dynamic verification: 286/286 templates ran in both states on the static musl probe
+  (sha256 `c8d2f118…`, source `1f0f57c`, three identical runs per state, 0 failures). Evidence is in
+  `reports/probe-coverage/evidence.json` and `docs/PROBE-COVERAGE.md`; binaries are built in CI
+  (`docs/PROBE-BUILD.md`) and kept out of git (`probe/dist/`). The fixed-state negative control is
+  only conclusive for templates whose inputs come from the mock target — see PROBE-COVERAGE §6.
 
 **Limits**
 
-- The 2026-10 migration is in its final window. The probe CLI and the `session/probe/exec/scan`
-  surface are still being finished; this README describes the target contract and marks the current
-  state.
-- The defense-bypass modules still use the Python reference assessment; they are not yet counted as
-  Rust template coverage.
+- The 2026-10 migration is complete: the probe CLI (`session`/`probe`/`channel`) and the template
+  runtime are usable; the `exec`/`scan` shorthands are still not provided.
+- The defense-bypass modules ran two-state on the Rust probe together with the other 286 templates;
+  the Python reference assessment is no longer the coverage evidence.
 - Vendor blind spots are version- and configuration-specific. A blind spot is not a claim that the
   product can be bypassed in general.
 - Benign markers prove visibility, not invisibility of malicious behaviour. The product does not

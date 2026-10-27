@@ -1,0 +1,5 @@
+# evidence bundle: siliconlab-credential-exfil
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+b87b2e206577bab626fdc00407d208069b011bf829f1be91be0df55c246708dd  LATEST-RESULT.md
+99e700b69dc279c91532a2f9a7f650af1b7f1fd510bf78bcf3bd53244eda99a0  inventory-entry.json

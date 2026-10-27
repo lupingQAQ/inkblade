@@ -1,0 +1,8 @@
+# evidence bundle: deepspeed-autoep-unsafe-load
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+ecb5d36cb0005f177b61c1a74e34880971028ea6206b9d369a97a8463db6eff0  result.json
+d09b24c3984c0ce3fd8c8743f5593f9bcded134087d4263a141ab3ba6f647927  log.txt
+261eeb62517a553a61c91ac9c57b53b360ff0a99aa1dafd7b191f6dcc541db69  marker.txt
+204f4f3d91431faf896731ede30fd8e293ecd152f2ca394383501278e118dcb4  layer_0_expert_0_mp_rank_0_model_states.pt
+5eb8553bbd0bd420ce7f87789e855ebed74810e42432b76a56becaa338003d21  inventory-entry.json

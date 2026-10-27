@@ -11,22 +11,23 @@
 > | 项 | 当前实际 | 来源 |
 > |---|---:|---|
 > | 模块 / 模板 | **287 / 286**（默认启用 276 / 隔离 11；bootstrap 1） | `inkblade/modules/*/module.json`、`docs/SURFACE-REALISM.md` |
-> | 旧 `run.py` | **0（工作树）/ 286（HEAD，迁移在途）** | 目录扫描 + `git ls-tree HEAD` |
-> | 单元测试 | 见 `REQUIREMENTS-MATRIX.md` §5 实测块（迁移在途红测单列） | `python -m unittest discover -s tests`（§10.7） |
+> | 旧 `run.py` | **0（工作树）/ 0（HEAD，已提交删除）** | 目录扫描 + `git ls-tree HEAD` |
+> | 单元测试 | 见 `REQUIREMENTS-MATRIX.md` §5 实测块（迁移后稳定快照） | `python -m unittest discover -s tests`（§10.7） |
 > | 可利用性核验 | **37 verified / 6 exposure-verified / 87 static-only / 22 unsupported**（共 152） | `inkblade/core/exploit-registry.json` |
 > | 画像覆盖（production，6 画像） | 70.65% / 67.39% / 59.78% / 67.75% / 68.48% / **25.00%**（Slurm 域级 88.2%） | `docs/SURFACE-REALISM.md`、`docs/SLURM-HPC-COVERAGE.md` |
 > | 默认 PoC | **11**（六画像默认可利用 3/2/3/2/4/0） | `exploit-registry.json` + `SURFACE-REALISM.md` |
 > | 无面模块 | **19**（11 个已隔离 + 8 个待 owner） | `docs/SURFACE-REALISM.md` §2 |
 > | 语料 | **80 源**（cn 24 / en 42 / paper 14） | `inkblade/arch-intel/coverage-matrix.json` |
-> | 未达成项 | **12 条**（见 §7.7） | 本文 §7、`docs/SOTA-2026-10.md` |
+> | 未达成项 | **11 条**（见 §7.7） | 本文 §7、`docs/SOTA-2026-10.md` |
 >
-> 口径：模块/画像/无面为静态统计；测试为全量 `unittest discover` 实测（当前树有迁移在途红测，单列）；
+> 口径：模块/画像/无面为静态统计；测试为全量 `unittest discover` 实测（迁移已收口，无在途红测）；
 > verified 只认 `exploit-registry.json` 的 `verified`；exposure-verified 与 static-only/unsupported 不计入可利用清单。
 > 历史测试计数（1933/1891/1904/2003）为不同快照，逐项归因见 `DEV-LOG.md` §D 与 `progress.md`。
 >
 > **探针架构口径**：模块现在只有 `module.json` + `template.json`，执行载体是目标 Pod 内 Rust 探针；
-> 286 模板的两态证据目前全部为 `runtime=reference`，`runtime=rust` 为 **0**。不要把参考评估器结果写成
-> 「Rust 动态验证完成」，也不要把已删除的 `run.py` 写成「仍是 Python 模块成品」。
+> **286/286 模板已在静态 musl 探针上跑完 vulnerable/fixed 两态，每态连续 3 次一致，0 失败**
+> （二进制 `c8d2f118…`，源码 `1f0f57c`，probe 0.1.1）。不要把参考评估器结果写成 Rust 结果，
+> 也不要把已删除的 `run.py` 写成「仍是 Python 模块成品」；fixed 态负控边界见 `PROBE-COVERAGE.md` §6。
 >
 > **0.2.0 改名（2026-10-27）**：项目由 Trident 更名为 InkBlade（墨刃零）；本报告中的
 > 包路径、命令示例与规则命名空间已同步，改名记录见 [`CHANGELOG.md`](../CHANGELOG.md)。
@@ -678,9 +679,9 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | cosign | **模拟验证**（验证侧真实，签名侧未达成） | 公共 keyless 样本验证、Rekor 写入/回读、本地 fixture | 本仓库产物的公共 Fulcio 签发、OIDC、SCT/CRL | 验证链能处理真实 keyless/Rekor | 我们的签名身份、生产 CI |
 | SaaS | **模拟验证** | 8 租户 × 8 并发、多进程 worker、原子配额/审批 | 跨副本队列/HA/租户加密 | 单机隔离/配额/审批可测 | 分布式调度与商业 SLA |
 
-### 7.7 未达成清单（终版，证据日期 2026-10-26）
+### 7.7 未达成清单（终版，证据日期 2026-10-27）
 
-以下 12 条是**当前仍未达成**项，写死在终版里；未达成不等于失败，但不允许被“模拟通过”覆盖。
+以下 11 条是**当前仍未达成**项，写死在终版里；未达成不等于失败，但不允许被“模拟通过”覆盖。
 
 | # | 未达成项 | 当前状态 | 验收标准（达成后再改口径） |
 |---|---|---|---|
@@ -695,7 +696,9 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | 9 | 无面模块治理 | 19 个六画像全无面；11 个已隔离，8 个待 owner 决定 | 8 个模块隔离或补面；面闸门默认开启 |
 | 10 | 画像覆盖缺口 | `slurm-hpc` 25.00%（Slurm 17 域覆盖 88.2%），其余 59.78%–70.65% | 六画像 production coverage ≥90% |
 | 11 | 可利用性核验缺口 | 152 条中 37 verified / 6 exposure-verified / 87 static-only / 22 unsupported | 真实 GPU/内核/硬件环境升级 static-only/unsupported |
-| 12 | Rust 探针运行时 | 286 模板两态证据全为 `runtime=reference`；`runtime=rust` 为 0；源码已入库、CI 产出 amd64/arm64 二进制（本机 cargo 被 WDAC/SAC 拦截）；CLI 有 `session/probe/channel`，无 `exec/scan` | 286 模板的 Rust 两态重跑 + 证据含 probe_version |
+
+> 2026-10-27 关闭：第 12 条「Rust 探针运行时」已完成——286 模板 × 两态 × 每态 3 次一致，0 失败，
+> 证据 `reports/probe-coverage/evidence-native.json`；fixed 态负控边界见 `docs/PROBE-COVERAGE.md` §6。
 
 **证据索引（本章）**：[SOTA 与追赶路径](SOTA-2026-10.md) · [规模压测](SCALE-RESULTS.md) · [Fabric 攻击面](FABRIC-ATTACK-SURFACE.md) · [TEE 验证](TEE-VERIFICATION.md) · [六云矩阵](SIX-CLOUD-MATRIX.md) · [性能对比](PERFORMANCE-COMPARISON.md) · [供应链代码](../inkblade/supplychain.py) · [TEE 代码](../inkblade/tee/) · [六云仿真](../lab/cloud_six_sim.py)
 
@@ -707,7 +710,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 ### 8.1 用能力维度代替逐功能
 
-**当时怎么想**：SOTA 用 38 项能力（当前 25 真实验证 / 10 模拟验证 / 3 仍未达成）和 18 个能力维度，已经能说明“我们有什么、缺什么”。维度清楚、好汇报。
+**当时怎么想**：SOTA 用 39 项能力（当前 26 真实验证 / 10 模拟验证 / 3 仍未达成）和 18 个能力维度，已经能说明“我们有什么、缺什么”。维度清楚、好汇报。
 
 **错在哪**：维度是地图，不是清单。ARTEX 有 515 行逐路由/逐表/逐组件的功能，我们却用“多 agent 协作”一个维度概括；结果 180 条具体缺失被藏在“partial”里。甲方问“你有没有某个页面/某个 API”，维度答不了。
 
@@ -879,7 +882,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | [README](../README.md) | 项目入口、快速开始、能力与边界 |
 | [REQUIREMENTS-MATRIX.md](REQUIREMENTS-MATRIX.md) | **唯一需求事实源**：124 条需求、数字对账、未完成清单与依赖 |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | 控制端七组件与职责边界（检测模型为十层，见 DETECTION-LAYERS） |
-| [SOTA-2026-10.md](SOTA-2026-10.md) | 39 项能力矩阵：25 真实验证 / 10 模拟验证 / 4 仍未达成（附证据路径） |
+| [SOTA-2026-10.md](SOTA-2026-10.md) | 39 项能力矩阵：26 真实验证 / 10 模拟验证 / 3 仍未达成（附证据路径） |
 | [design.md](design.md) | 设计基线与漏洞研究分类 |
 | [RUNBOOK.md](RUNBOOK.md) | 安装、授权、模块/链、报告、回滚、实验室边界 |
 | [DELIVERY.md](DELIVERY.md) | 交付包结构与样张说明 |

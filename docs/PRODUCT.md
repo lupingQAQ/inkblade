@@ -229,7 +229,7 @@ InkBlade 是一套面向训练与推理集群的授权渗透测试产品：在�
 | 声明式模板注册表 | 已切换，收尾中 | 287 个模块目录中 286 个 `template.json` + 1 个 bootstrap；迁移窗口内仍有旧 `run.py`，发布前删除 |
 | Pod 内零 Python | 已成立 | 探针不依赖 Python；bootstrap 只在控制端投放 Rust 二进制，不进入目标执行逻辑 |
 | 10 层检测点 | 已定义 | 前 9 层沿用既有覆盖；第 10 层 11 个模块已实现评估逻辑 |
-| 全量动态验证 | 进行中 | 286/286 模板有参考评估器两态证据；按 Rust 运行时标准仍为 0，见 `docs/DYNAMIC-VERIFICATION.md` |
+| 全量动态验证 | 已成立 | 286/286 模板在 Rust 探针上跑完两态，每态 3 次一致、0 失败（`c8d2f118…` / `1f0f57c`）；负控边界见 `docs/PROBE-COVERAGE.md` §6 |
 | 报告 / 规则包 | 已成立 | 双语报告、SARIF/OCSF/VEX 导出、规则重放 |
 
 ## 9. English summary
@@ -251,8 +251,9 @@ The tenth layer is a first-class product capability, not an add-on. Eleven `defe
 
 **限制**
 
-- 模板迁移进入收尾：287 个模块目录中 286 个有 `template.json`，1 个是 bootstrap；迁移窗口内仍保留 286 个旧 `run.py`，发布前必须删除。注册表已强制模板，旧执行路径不再被加载。
-- 11 个 defense-bypass 模块已有 `template.json`，但动态证据仍由 Python 参考评估器产生（`runtime=reference`）；按 Rust 运行时标准，覆盖率仍为 0，见 `docs/DYNAMIC-VERIFICATION.md`。
+- 模板迁移已完成：287 个模块目录中 286 个有 `template.json`，1 个是 bootstrap；旧 `run.py` 已从工作树与 HEAD 全部删除。注册表强制模板，旧执行路径不再被加载。
+- 11 个 defense-bypass 模块与其余 275 个模板一起在 Rust 探针上跑完两态（`runtime=rust`，每态 3 次一致）；其 detected/blindspots/hardening 来自模板输出的防护矩阵产物。
+- fixed 态负控只对输入来自 mock 靶场的模板成立；两态共用 fixture 输入的模板只算执行验证，见 `docs/PROBE-COVERAGE.md` §6。
 - 防护产品版本、规则集和内核配置差异很大；盲区结论只对被测版本和被测配置成立，不能外推为“该产品可被绕过”。
 - 良性 marker 只能证明“这类行为是否可见”，不能证明“恶意行为一定不可见”；产品不提供恶意载荷、持久化或规避执法。
 - 部分检测点需要特权 Pod、hostNetwork、GPU 设备或节点访问；没有对应部署面时，模板返回 `skipped`，不计入覆盖率分子。

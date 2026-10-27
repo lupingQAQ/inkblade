@@ -72,3 +72,13 @@ probe/target/
 # Real defense lab raw evidence (small text/JSON only)
 !lab/defense-lab/evidence/
 !lab/defense-lab/evidence/**
+
+# --- API response caches (rebuilt by tools/novelty-check.py; not source) ---
+corpus/novelty/cache/
+
+# --- local dashboard cache ---
+llamaboard_cache/
+
+# --- Alpine modloop boot image (22 MB, downloaded) ---
+lab/qemu-k3s/modloop-virt
+

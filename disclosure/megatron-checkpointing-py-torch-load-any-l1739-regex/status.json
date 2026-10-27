@@ -1,0 +1,31 @@
+{
+  "schema": "inkblade-disclosure-status-v1",
+  "id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
+  "reserve_source": "mining",
+  "component": "megatron",
+  "merged_ids": [],
+  "eligible_for_cve": false,
+  "decision": "hardening",
+  "reason": "dependency-default-blocks: the sink calls torch.load() without weights_only, so torch >= 2.6 (weights_only=True by default) refuses the payload. Affected only with torch < 2.6, which is a dependency pin, not a Megatron code defect; no version-bounded Megatron fix exists.",
+  "state": "hardening-only",
+  "sent": false,
+  "sent_at": null,
+  "vendor_notified": false,
+  "cve_id": null,
+  "cve_state": "not-requested",
+  "public_disclosure": false,
+  "legal_review": "required",
+  "redaction": {
+    "internal_paths_removed": true,
+    "credentials_removed": true,
+    "hostnames_removed": true,
+    "method": "drive-letter, workspace, /home and internal evidence prefixes stripped"
+  },
+  "package_files": [
+    "hardening-advice.md",
+    "status.json"
+  ],
+  "evidence_gaps": [],
+  "generated_at": "2026-10-27T00:00:00+00:00",
+  "no_send_policy": "this repository never transmits disclosure material automatically"
+}

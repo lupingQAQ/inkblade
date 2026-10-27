@@ -42,7 +42,7 @@
 
 ### 287 个模块都迁移完了吗？
 
-模板迁移进入收尾，但还不能说“全部完成”。截至 2026-10-27，287 个模块目录中有 286 个 `template.json` 和 1 个 `probe-bootstrap`；迁移窗口内仍保留 286 个旧 `run.py`，发布前要删除。参考评估器已经跑完 286/286 两态，但证据是 `runtime=reference`；按 Rust 运行时标准，动态验证仍为 0。完成度看 `docs/DYNAMIC-VERIFICATION.md`，不看宣传页。
+模板迁移已完成。截至 2026-10-27，287 个模块目录中有 286 个 `template.json` 和 1 个 `probe-bootstrap`；286 个旧 `run.py` 已从工作树与 HEAD 删除。Rust 静态探针（`c8d2f118…`，源码 `1f0f57c`）已在 VM 内跑完 286/286 模板的 vulnerable/fixed 两态，每态连续 3 次一致、0 失败；fixed 态负控的边界（部分模板两态共用 fixture 输入）如实写在 `docs/PROBE-COVERAGE.md` §6。完成度看 `docs/DYNAMIC-VERIFICATION.md`，不看宣传页。
 
 ### 动态验证是什么？
 
@@ -126,7 +126,7 @@ Yes. It does not hide processes, connections, file writes, or kubelet audit. The
 
 ### Are 287 modules migrated?
 
-The template migration is in its final window, but it is not “all done”. As of 2026-10-27 there are 287 module directories: 286 `template.json` files and one `probe-bootstrap`. The migration window still contains 286 legacy `run.py` files that must be removed before release. The reference evaluator has two-state results for 286/286, but every entry is `runtime=reference`; Rust-runtime verification is still zero. See `docs/DYNAMIC-VERIFICATION.md`.
+The template migration is complete. As of 2026-10-27 there are 287 module directories: 286 `template.json` files and one `probe-bootstrap`; the 286 legacy `run.py` files are gone from both the working tree and `HEAD`. The static Rust probe (`c8d2f118…`, source `1f0f57c`) ran all 286 templates in both the vulnerable and fixed states inside a Linux VM, three identical runs per state, 0 failures; the boundaries of the fixed-state negative control (some templates share fixture inputs across both states) are stated in `docs/PROBE-COVERAGE.md` §6. See `docs/DYNAMIC-VERIFICATION.md`.
 
 ### What counts as verified?
 

@@ -132,11 +132,13 @@ SOCKS5 / port forwards; see [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md).
   `reports/probe-coverage/coverage.json`; per-module evidence digests are in
   `reports/probe-coverage/evidence.json`.
 - Native run: `tools/native-verify.py` drives the static Linux probe over SSH
-  (QEMU TCG Alpine guest) through the framed protocol, two states per template.
-  Result: **286/286 `runtime=rust`, 0 failures**, binary sha256
-  `7348deb0368c4d85d1cb2daef80a1dbe1c1f331c97544326b5b27aaf304f5f21`, source
-  commit `bb58f9f`; raw evidence in
-  `reports/probe-coverage/evidence-native.json`.
+  (QEMU TCG Alpine guest) through the framed protocol, two states per template,
+  three repeats per state.
+  Result: **286/286 `runtime=rust`, 0 failures, 286/286 repeat-consistent**, binary sha256
+  `c8d2f118460349a9c4303250b737adb0ccb28a1598e59c16d1f0d3f230b726f3` (probe 0.1.1), source
+  commit `1f0f57c`; raw evidence in
+  `reports/probe-coverage/evidence-native.json`. The fixed-state negative control is only
+  conclusive for templates whose inputs come from the mock target (`PROBE-COVERAGE.md` §6).
 - Lint: `tools/template-lint.py --strict` (schema, metadata equality,
   expressions, no `run.py`).
 

@@ -1,0 +1,8 @@
+# evidence bundle: msswift-torch-utils-py-pickle-loads-l340-ast
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+6b4a40dfb10ff124de98506dfa68f44ba580c528d3aae2fb87e4e48f4ab532a0  result.json
+106cc6e88deafbf034135b6e49135db4c35d8f095419cd773b0e13a58d4d2173  log.txt
+e460c5be5a75e46cc4664db1bf0b1ff7f909e458cf4053fface0c209fdf00ee9  marker.txt
+769333d49f38b16e35729c4c45d47ca35996aabd23b0dcc9e6aade775bef38bf  run.json
+f19a015d357be40753b28b962e020f410c78f02fd47b9ab191538c53f91f73e1  inventory-entry.json

@@ -1,0 +1,9 @@
+# evidence bundle: msswift-indexed-dataset-py-pickle-loads-l112-ast
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+61493067b6c207fe9ad1d3bc96c2a24167289567f795cb2d7bd212db7e9af468  result.json
+15be8a496fb179086d85425bd10c15eaac1fa9c44374d3353b9a3c9e6f00227b  log.txt
+5339fb1eeea713c369c347f162eff7cfc07ef126cd151ab11737cbf0814d8090  marker.txt
+cd1f1c5af22fd9ccc869640d75ebbac2916380e674a89ac43d65935b07a7da3e  data.idx
+441eccea2a3b2c51b310ee079fde550c20fbcf21ab2d2f0a506807a3bad4bab6  run.json
+72055204ed754fd07ff0c69dba222b3e085302515777c9f3903f2e2f01e535b6  inventory-entry.json

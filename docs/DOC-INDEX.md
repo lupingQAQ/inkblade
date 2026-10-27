@@ -15,7 +15,7 @@
 | [`docs/PROBE-CHANNEL.md`](PROBE-CHANNEL.md) | 入口会话与 `kubectl exec -i` 通道：投放、SOCKS/端口转发、权限边界 |
 | [`docs/PROBE-DEPLOY.md`](PROBE-DEPLOY.md) | RCE/memfd、kubectl cp/exec、EphemeralContainer、共享卷、发布物与写闸门 |
 | [`docs/DYNAMIC-VERIFICATION.md`](DYNAMIC-VERIFICATION.md) | 每个模板的两态 mock 验证标准、证据格式、覆盖率字段与当前完成度 |
-| [`docs/PROBE-COVERAGE.md`](PROBE-COVERAGE.md) | 生成式模板覆盖率表：模块、执行载体、两态结果、证据哈希（注意 `runtime=reference`） |
+| [`docs/PROBE-COVERAGE.md`](PROBE-COVERAGE.md) | 生成式模板覆盖率表：模块、执行载体、两态结果、证据哈希（`runtime=rust`，286/286；负控边界见 §6） |
 | [`docs/PROBE-MIGRATION-BRIEF.md`](PROBE-MIGRATION-BRIEF.md) | 模块模板化迁移须知：运行时契约、schema、禁止 host fallback |
 | [`docs/PROBE-BUILD.md`](PROBE-BUILD.md) | Rust 探针构建：CI musl amd64/arm64、SHA-256、本机限制与自测项 |
 | [`docs/INSTALL.md`](INSTALL.md) | 控制器与探针安装、容器/Helm、离线、工作区布局、首次会话 |

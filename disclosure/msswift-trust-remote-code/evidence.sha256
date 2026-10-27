@@ -1,0 +1,5 @@
+# evidence bundle: msswift-trust-remote-code
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+2303aa8fe91cb49a97cef05582fa31a38e579ca7055547a4c0246f96e76cbc1d  LATEST-RESULT.md
+04c3a92cd0f8db8e028ddd89a00a95187b8ff83f1b93790e7d07bb221c23ae09  inventory-entry.json

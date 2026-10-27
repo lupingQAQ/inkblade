@@ -1,6 +1,6 @@
 # 需求矩阵（唯一事实源）/ Requirements Matrix
 
-> 建立日期：2026-10-27。依据：仓库文件 + git 历史（126 commits），**不依赖对话记忆**。
+> 建立日期：2026-10-27。依据：仓库文件 + git 历史（139 commits），**不依赖对话记忆**。
 > 本文件是全仓需求的唯一事实源；其他文档的计数与状态若与之冲突，以本文件第 1 节为准，并在第 4 节登记修正。
 >
 > 状态词（四态，互斥）：
@@ -15,7 +15,7 @@
 ## 0. 口径声明（先读这一段）
 
 1. **执行载体已换代**：模块 = `module.json` + `template.json`，由目标 Pod 内静态 Rust 探针执行；Python `run.py` 在 **HEAD 仍有 286 个**，在 **当前工作树已被删除（0 个，迁移在途）**。因此「Python 模块 = 成品」的旧口径作废；但「Rust 运行时已验证」也**不成立**（见第 3 节）。
-2. **两套验证口径必须分开写**：`runtime=reference`（参考评估器两态）与 `runtime=rust`（真探针两态）。当前前者 286/286，后者 **0**。
+2. **两套验证口径必须分开写**：`runtime=reference`（参考评估器两态）与 `runtime=rust`（真探针两态）。当前 Rust 侧 **286/286**（二进制 `c8d2f118…`，源码 `1f0f57c`，每态 3 次一致，0 失败）；参考评估器只保留作无 Linux 运行器时的本地回归。
 3. **层级只有一套**：检测模型为**十层**（1–9 业务面 + 10 防护绕过）。历史上的「七层控制端架构」只描述控制端组件，不再作为产品层数；「九层」为第 10 层加入前的旧称。
 4. **数字只从 JSON/目录/registry 取值**，不从散文取值。第 1 节每一行给出计算方式。
 
@@ -26,7 +26,7 @@
 | 1 | 模块目录 | **287** | `inkblade/modules/*/module.json` 计数 | 275（SOTA 终版块）、264（SURFACE-REALISM 分母）、138（DEV-LOG C.3） |
 | 2 | 默认启用/隔离 | **276 / 11** | `default_enabled=false` 计数 | 264 / 11；「12 个全无面、9 个隔离」 |
 | 3 | 模板 / bootstrap | **286 / 1** | `template.json` 计数；`probe-bootstrap` | 「模板迁移进行中」未给数 |
-| 4 | 旧 `run.py` | **0（工作树）／286（HEAD）** | 目录扫描 vs `git ls-tree HEAD` | README/动态验证「286 个 run.py 仍保留」 |
+| 4 | 旧 `run.py` | **0（工作树）／0（HEAD，已提交删除）** | 目录扫描 vs `git ls-tree HEAD` | README/动态验证「286 个 run.py 仍保留」 |
 | 5 | 按系列 | 侦察 68·横向 66·网络 52·权限 43·代码 22·窃取 19·混合云 11·情报 6 | module.json `series` | 九族「各 2 个代表模块」 |
 | 6 | 写类模块 | **67** | `writes=true` 计数 | — |
 | 7 | 攻击链 | **29**（经典 9·云 5·网络 12·零日 2·AI 网关 1） | `inkblade/chains/*.json` `category` | spec「7+4+5+2=18」；SOTA「29」已对 |
@@ -47,7 +47,7 @@
 | 22 | CIS / LPE | **CIS 161 / LPE 52** | `inkblade/cis/catalog.py` `CATALOG`；`inkblade/lpe/catalog.py` | 专项单测 `test_cis_benchmark.py`、`test_kernel_lpe.py` 已在迁移中删除 |
 | 23 | 对比工具数 | **竞品 23 · 缺口 31 · OSS 34 · 腾讯 8** | `COMPETITIVE-MATRIX.md`、`docs/gap-matrix.json`、`docs/oss-ml-cluster-tools.json`、`SECTION3` | OSS「32 个工具」（同文档正文） |
 | 24 | 缺口行数 | **260 = 功能 122 + 攻击面 82 + payload 56**；已有 36+35+21=92、部分 47+29+18=94、缺失 39+18+17=74 | `docs/gap-matrix.json` | — |
-| 25 | 测试总数 | **2128 项实测 / failures 99 · errors 513 · skipped 4**（迁移在途，非有效绿基线） | `python -m unittest discover -s tests`（§3.4） | 2003·1974·1934·1933·1278·1260·1140（历史快照） |
+| 25 | 测试总数 | **Ran 1841 tests / OK (skipped=13)**（迁移后稳定快照；1073.350s） | `python -m unittest discover -s tests`（§3.4、§5） | 2128（迁移在途红测）·2003·1974·1934·1933·1278·1260·1140（历史快照） |
 
 ## 2. 需求矩阵
 
@@ -126,10 +126,10 @@
 | ADD-30 | Rust 探针：单静态二进制，目标端零解释器 | `docs/ARCHITECTURE-PROBE.md`；README | done | `probe/src/*.rs`（21 文件已入库）；`probe/Cargo.toml`；`probe/dist/inkblade-probe-linux-{amd64,arm64}` + sha256；`docs/PROBE-BUILD.md`；`.github/workflows/probe-release.yml` | 本机 cargo 被 WDAC/SAC 拦截，二进制只能走 CI；`dist/` 不入 git；`exec`/`scan` 简写未实现 | probe |
 | ADD-31 | 探针协议：长度前缀 JSON 帧、认证、任务/结果、预算、文件分块、清理、错误码 | `docs/PROBE-PROTOCOL.md` | done | `probe/src/protocol.rs`、`server.rs`；`inkblade/channel.py`；`tests/test_probe_channel.py`（11 项） | challenge-HMAC 而非 mTLS；依赖 `kubectl exec -i` 通道 | probe |
 | ADD-32 | 多探针父子树（probe_id/parent_id、per-child token、depth/fan-out、child-first cleanup） | README「Probe trees」；`docs/ARCHITECTURE-PROBE.md` | done | `inkblade/core/probes.py`（SQLite parent_id/children/cleanup）；`tests/test_session_probe_entry.py`（parent_child_tree、controller_spawn_and_cleanup_tree） | 未在真集群做多探针跨节点演练 | probe |
-| ADD-33 | 全量探针化：287 模块全部改为 JSON 模板 | progress 行 110/113/115/118；`docs/PROBE-COVERAGE.md` | partial | 286 `template.json`；`tests/test_probe_templates.py`；`docs/PROBE-COVERAGE.md` | 等价模板 48 / 降级 238；Rust 运行态 0 | migration |
+| ADD-33 | 全量探针化：287 模块全部改为 JSON 模板 | progress 行 110/113/115/118；`docs/PROBE-COVERAGE.md` | partial | 286 `template.json`；`tests/test_probe_templates.py`；`docs/PROBE-COVERAGE.md` | Rust 运行态 286/286 已通；等价模板 48 / 降级 238（降级语义未补齐） | migration |
 | ADD-34 | 模板 schema + 表达式引擎 + 工具链（lint/run/generate/coverage） | `probe/schema/probe-template.schema.json`；`inkblade/tpl/`；`tools/template-*.py` | done | `tests/test_probe_lowering.py`、`test_probe_templates_dynamic.py` | 参考评估器与 Rust 实现存在语义漂移风险（无差分测试） | probe |
-| ADD-35 | Rust 运行时动态验证（每模板 vulnerable/fixed 两态、3 次一致、证据含 probe 版本） | `docs/DYNAMIC-VERIFICATION.md` §2、§4、§8 | not-done | `docs/DYNAMIC-VERIFICATION.md` §7（自述 0）；`reports/probe-coverage/evidence.json` 286 条全为 `runtime=reference` | 0/286；二进制与通道已就绪（CI amd64/arm64、session/probe/channel），缺一次全量 Rust 两态重跑与证据落盘 | migration |
-| ADD-36 | 迁移收尾：删除 286 个旧 `run.py`，注册表只认模板 | `docs/PROBE-MIGRATION-BRIEF.md`；README 证据节 | partial | 工作树 0 个 run.py（已删）；HEAD 286 | 删除尚未提交；32 个模块专项测试随之删除，部分能力失去直接单测 | migration |
+| ADD-35 | Rust 运行时动态验证（每模板 vulnerable/fixed 两态、3 次一致、证据含 probe 版本） | `docs/DYNAMIC-VERIFICATION.md` §2、§4、§8 | done | `reports/probe-coverage/evidence.json`（286 条 `runtime=rust`，probe `0.1.1`，binary `c8d2f118…`，source `1f0f57c`，`repeat=3`，`consistent=286`，802s，0 失败）；`reports/probe-coverage/evidence-native.json`；`docs/PROBE-COVERAGE.md` | 负控：fixed `status=ok` 仅 **35/286**，`same_finding=false` **49/286**；其余模板两态共用 fixture 输入，只算执行验证（`PROBE-COVERAGE.md` §6） | migration |
+| ADD-36 | 迁移收尾：删除 286 个旧 `run.py`，注册表只认模板 | `docs/PROBE-MIGRATION-BRIEF.md`；README 证据节 | done | `git ls-tree HEAD`：工作树 0 / HEAD 0；`inkblade/core/registry.py` 只接受 `template.json`；`tests/test_probe_templates.py` | 32 个模块专项测试随 `run.py` 删除，改由 `tests/test_probe_*.py` 模板断言覆盖（覆盖不等价） | migration |
 | ADD-37 | 项目改名 InkBlade（包/命令/环境变量/标记/schema），旧名兼容一版 | progress 行 101；`CHANGELOG.md` | done | `inkblade/`；`pyproject.toml` 0.2.0；`tests/test_public_tree.py` | 历史台账仍含旧名（已声明不计残留） | docs |
 | ADD-38 | 开源发布工程：CI（Win+Linux×py3.10–3.13）、Docker、Helm、cosign、SBOM | progress 行 105 | done | `.github/workflows/{ci,release,docker}.yml`；`Dockerfile`；`deploy/helm/inkblade`；`build/` | 发布步骤 opt-in，未真实发版到 PyPI/GHCR | enterprise |
 | ADD-39 | 插件 SDK（manifest、entrypoint 约束、指纹+信任库、结果 schema） | progress 行 106；`docs/PLUGIN-SDK.md` | done | `inkblade/sdk/`；`tests/test_sdk.py` | 第三方生态为零（仅 `examples/hello-surface`） | enterprise |
@@ -202,13 +202,13 @@
 
 | 状态 | INIT | ADD | CMP | 合计 |
 |---|---:|---:|---:|---:|
-| done | 30 | 45 | 14 | **89** |
-| partial | 2 | 19 | 6 | **27** |
-| not-done | 0 | 1 | 0 | **1** |
+| done | 30 | 47 | 14 | **91** |
+| partial | 2 | 18 | 6 | **26** |
+| not-done | 0 | 0 | 0 | **0** |
 | blocked-resource | 0 | 6 | 1 | **7** |
 | 合计 | 32 | 71 | 21 | **124** |
 
-> `not-done` 仅 1 条：Rust 运行时动态验证（ADD-35）——代码与模板都已就绪，缺的是真实探针执行证据，不是缺资源，因此不归 blocked。
+> `not-done` 0 条：原第 1 条（Rust 运行时动态验证，ADD-35）已由 2026-10-27 原生重跑关闭——286 模板 × vulnerable/fixed 两态 × 每态 3 次一致，0 失败，证据含 probe 版本与二进制哈希。
 > `blocked-resource` 7 条：真实 GPU/fabric（ADD-65、CMP-21）、硬件 TEE（ADD-66）、真实六云（ADD-67）、真实 LLM 自主 runtime（ADD-69）、公共 Fulcio 身份（ADD-70）、跨副本 SaaS（ADD-71）。防护产品回放已由 QEMU k3s 真机推进为 partial（ADD-68），不再计入 blocked。
 
 ## 3. 未完成清单与依赖
@@ -217,58 +217,47 @@
 
 | # | 未完成项 | 现状 | 依赖 | 责任线 | 验收标准 |
 |---:|---|---|---|---|---|
-| 1 | **S5：模板等价化收尾** | 286 模板中 equivalent 48 / reduced 238 | 需要逐模块把降级语义补齐（`docs/PROBE-COVERAGE.md` fidelity 列） | migration | reduced 归零，或每条 reduced 有书面等价性说明 |
-| 2 | **Rust 运行时动态验证** | 源码已入库、CI 产出 amd64/arm64 二进制（sha256 固定）；本机 cargo 被 WDAC/SAC 拦截；286 模板证据仍全为 `runtime=reference`（0 rust） | 一次探针驱动的全量两态重跑：`probe/dist/inkblade-probe-linux-amd64` + `lab/template_range` + 286 模板 × 2 态 × 3 次 | migration | `runtime=rust` 覆盖 ≥1 层全模板；证据目录含 probe_version |
-| 3 | **`exec`/`scan` 简写与 README 不一致** | `session`/`probe`/`channel` 已实现，README 快速开始已改为 `session run`/`template`；`exec`/`scan` 仍不存在 | 命令面补齐或长期标注为未实现 | docs | README 快速开始命令逐条可执行 |
-| 4 | **防护产品实测缺口** | Kyverno/Falco/Trivy/ModSecurity 已在 QEMU k3s 真机回放；Elkeid/AgentSmith/veinmind/Tetragon/KubeArmor/Wazuh/Hubble 因内核头缺失/无 BPF-LSM/flannel CNI 明确 N/A | 可加载内核模块的节点 或 支持 BPF-LSM 的内核；替换 CNI 需重建集群 | defense | 11 个模块各自给出 detected/bypass/N/A + 证据文件 |
-| 5 | **自主 runtime 端到端** | L3/explorer 的自动批准为 token 预授权；CI 不调用真实 LLM | 真实 LLM 端点 + 客户授权环境 | agent | 端到端演练：plan→approve→execute→report 全部留痕 |
-| 6 | **真实 10K+ GPU / 裸机** | 仅 1,024–10,000 节点离散事件仿真 + QEMU TCG | GPU 集群（≥1,024）+ 真实 NIC/交换机 | docs | 原始计数器与可复现 BENCH |
-| 7 | **硬件 TEE 实测** | 公共 PKI 真实验证；无 TDX/SEV-SNP/H100-CC 实机 quote | 实机 | docs | nonce/measurement/TCB/debug 负例 + 证明→密钥释放 |
-| 8 | **真实六云** | 契约仿真 + 三云 mock | 六云账号与最小集群 | docs | 每云只读侦察 + 网络策略矩阵 |
-| 9 | **自有 Fulcio keyless 签发** | 第三方公共样本验证通过 | OIDC 身份 | enterprise | CI OIDC 签发 + Rekor + 轮换/吊销 |
-| 10 | **跨副本分布式 SaaS** | 单机 8 租户压测 | 队列/HA/租户 KMS | enterprise | 100 并发链 + 故障恢复 |
-| 11 | **披露闭环** | 30 包已生成未外发 | 厂商回执 / CVE 分配 | docs | 至少 1 条收到厂商回复或 CVE 号 |
+| 1 | **S5：模板等价化收尾** | 286 模板中 equivalent 48 / reduced 238；Rust 运行态已全量通过（286/286），但降级语义未补齐 | 需要逐模块把降级语义补齐（`docs/PROBE-COVERAGE.md` fidelity 列） | migration | reduced 归零，或每条 reduced 有书面等价性说明 |
+| 2 | **`exec`/`scan` 简写与 README 不一致** | `session`/`probe`/`channel` 已实现，README 快速开始已改为 `session run`/`template`；`exec`/`scan` 仍不存在 | 命令面补齐或长期标注为未实现 | docs | README 快速开始命令逐条可执行 |
+| 3 | **防护产品实测缺口** | Kyverno/Falco/Trivy/ModSecurity 已在 QEMU k3s 真机回放；Elkeid/AgentSmith/veinmind/Tetragon/KubeArmor/Wazuh/Hubble 因内核头缺失/无 BPF-LSM/flannel CNI 明确 N/A | 可加载内核模块的节点 或 支持 BPF-LSM 的内核；替换 CNI 需重建集群 | defense | 11 个模块各自给出 detected/bypass/N/A + 证据文件 |
+| 4 | **自主 runtime 端到端** | L3/explorer 的自动批准为 token 预授权；CI 不调用真实 LLM | 真实 LLM 端点 + 客户授权环境 | agent | 端到端演练：plan→approve→execute→report 全部留痕 |
+| 5 | **真实 10K+ GPU / 裸机** | 仅 1,024–10,000 节点离散事件仿真 + QEMU TCG | GPU 集群（≥1,024）+ 真实 NIC/交换机 | docs | 原始计数器与可复现 BENCH |
+| 6 | **硬件 TEE 实测** | 公共 PKI 真实验证；无 TDX/SEV-SNP/H100-CC 实机 quote | 实机 | docs | nonce/measurement/TCB/debug 负例 + 证明→密钥释放 |
+| 7 | **真实六云** | 契约仿真 + 三云 mock | 六云账号与最小集群 | docs | 每云只读侦察 + 网络策略矩阵 |
+| 8 | **自有 Fulcio keyless 签发** | 第三方公共样本验证通过 | OIDC 身份 | enterprise | CI OIDC 签发 + Rekor + 轮换/吊销 |
+| 9 | **跨副本分布式 SaaS** | 单机 8 租户压测 | 队列/HA/租户 KMS | enterprise | 100 并发链 + 故障恢复 |
+| 10 | **披露闭环** | 30 包已生成未外发 | 厂商回执 / CVE 分配 | docs | 至少 1 条收到厂商回复或 CVE 号 |
 
-矩阵映射：S5 → ADD-33／ADD-36；Rust 编译与动态验证 → ADD-30／ADD-31／ADD-32／ADD-35；CLI 一致性 → ADD-30；
-防护实测 → ADD-68；自主 runtime → ADD-69；真实 10K GPU → ADD-65；硬件 TEE → ADD-66；六云 → ADD-67；
-Fulcio → ADD-70；跨副本 SaaS → ADD-71；披露闭环 → ADD-55；ARTEX 裸机 → CMP-21。
+矩阵映射：S5 → ADD-33／ADD-36；Rust 编译与动态验证 → ADD-30／ADD-31／ADD-32／ADD-35（已关闭）；
+CLI 一致性 → ADD-30；防护实测 → ADD-68；自主 runtime → ADD-69；真实 10K GPU → ADD-65；硬件 TEE → ADD-66；
+六云 → ADD-67；Fulcio → ADD-70；跨副本 SaaS → ADD-71；披露闭环 → ADD-55；ARTEX 裸机 → CMP-21。
 
-### 3.2 迁移在途红测（不是产品缺陷，必须列出）
+### 3.2 迁移收口记录（原「在途红测」，已关闭）
 
 | 现象 | 证据 | 处置 |
 |---|---|---|
-| 286 个 `run.py` 已从工作树删除但未提交（`git status` 显示 318 项 staged deletion） | `git ls-tree HEAD -- inkblade/modules` 计 286 个 `run.py`；工作树 0 | 由迁移任务提交；本矩阵只读不代提交 |
-| 32 个模块专项测试被删除（`test_modules_*`、`test_depth_*`、`test_cis_benchmark`、`test_kernel_lpe`、`test_chip_modules` 等） | 运行结束时工作树少了 30 个测试文件；本次全量跑红测 45 个文件，其中 30 个已在结束时删除 | 需以 `test_probe_*` 模板断言补齐；CIS/LPE/深度复核失去直接单测 |
-| 全量 `unittest discover` 在删除进行中执行会大量 ERROR（模块 `run.py` 已被删、测试仍按旧契约调用） | 见第 3.4 节实测 | 以稳定快照重跑；红测逐条归因 |
+| 286 个 `run.py` 的删除曾在工作树完成但未提交 | `git ls-tree HEAD -- inkblade/modules` 计数 0；工作树 0 | 已随 `9bdfa55 feat: probe execution S5` 提交，ADD-36 转 done |
+| 32 个模块专项测试随 `run.py` 删除 | `test_modules_*`、`test_depth_*`、`test_cis_benchmark`、`test_kernel_lpe`、`test_chip_modules` 等 | 由 `tests/test_probe_*.py` 的模板两态断言替代；覆盖不等价，已在 ADD-48/57/58 的缺口列保留 |
+| 删除进行中执行全量 `unittest discover` 会大量 ERROR（旧测试仍按 `run.py` 契约调用） | 2026-10-27 在途快照 Ran 2128 / failures 99 / errors 513（`reports/samples/requirements/suite-summary.txt` 历史段） | 以迁移后的稳定快照重跑，见 §3.4 与 §5 |
 
 ### 3.3 仅「参考实现」的验证（不得对外称已验证）
 
 | 能力 | 参考证据 | 缺什么 |
 |---|---|---|
-| 全部 286 模板两态 | `reports/probe-coverage/evidence.json`（`runtime=reference`） | Rust 探针真实执行 |
-| 11 个防护绕过模块 | 4 个产品真机回放 + 7 个明确 N/A（`docs/DEFENSE-LAB-RESULTS.md`） | 7 个产品的可部署内核/CNI 环境（§3.1-4） |
+| 全部 286 模板两态（执行面） | `reports/probe-coverage/evidence.json`（`runtime=rust`，二进制 `c8d2f118…`，源码 `1f0f57c`，每态 3 次一致，0 失败） | 无：执行与重复一致性已成立 |
+| 全部 286 模板两态（负控） | 同上；`docs/PROBE-COVERAGE.md` §6 | fixed 态负控只在输入来自 mock 靶场时成立（`same_finding` 为真者不计 full two-state verified）；需逐个补 mock 输入 |
+| 11 个防护绕过模块 | 4 个产品真机回放 + 7 个明确 N/A（`docs/DEFENSE-LAB-RESULTS.md`） | 7 个产品的可部署内核/CNI 环境（§3.1-3） |
 | 47 值提权矩阵 | fixture + 4 项真集群 | 真实环境逐向量验证 |
 | 云/GPU 跨租户 | 契约仿真 | 真实云账号 |
 | fabric/PFC/SHARP | 离散事件仿真 + 计数器语义 | 真实交换机计数器 |
 
 ### 3.4 测试实测（2026-10-27）
 
-- 命令：`python -m unittest discover -s tests -v`；摘要证据 `reports/samples/requirements/suite-summary.txt`（逐文件计数 + 是否仍在）。
-- 结果：**Ran 2128 tests in 2159.553s — FAILED (failures=99, errors=513, skipped=4)**。
-- 归因：本次运行期间另一条并行任务正在删除 286 个 `run.py`、删除旧模块测试、新增 `session/probe/channel` 与 Rust 动态测试；**测试文件在运行中被删除**，因此该数字是「移动靶」快照，不是产品缺陷基线。
-- 失败集中在 45 个测试文件：其中 **30 个在运行结束时已从工作树删除**（`test_modules_*` 20 个、`test_chip_modules`、`test_cis_benchmark`、`test_kernel_lpe`、`test_depth_*` 6 个、`test_privesc_modules`、`test_scale_bench`），属迁移在途红测。
-- **15 个仍存在**的红测（迁移遗留，需迁移任务或后续修复）：
-  - `test_verify_effects*`（4 个）：效果脚本仍按 `run.py` 调用被模板化的模块。
-  - `test_trainstack_modules`、`test_e2e`：同上（旧模块契约）。
-  - `test_chains_gpu_cloud`：模板化后 finding detail 丢失 `cross_account` 等结构化字段（reduced fidelity 的直接后果）。
-  - `test_fabric_sim`：`fabric-topology-isolation/run.py` 不存在。
-  - `test_enterprise_lab`：FP 81.48%（迁移改变了检测集合，需重标定）。
-  - `test_sdk`：`inkblade/sdk/examples/hello-surface` 仍只有 `run.py`，缺 `template.json`。
-  - `test_artex_parity`、`test_backlog_s`：模板化后 finding 字段/数量变化。
-  - `test_onboarding`：已由本轮修复（README 恢复「5 分钟上手」三段命令）。
-  - `test_sota_doc`：已由本轮修复（39 项 / 25-10-4 / 证据路径存在）。
-  - `test_weaponization`、`test_verify_effects_hardware`：已由本轮 `module_runnable` 与文档再生成修复。
-- 本轮交付自检：`tests/test_requirements_matrix.py` 23/23 绿；文档相关 155 项中除迁移遗留外全绿（`test_surface_realism` 的 `'ok' != 'success'` 两项同样属 runner 语义变更，非本轮改动）。
+- 命令：`python -m unittest discover -s tests`；摘要证据 `reports/samples/requirements/suite-summary.txt`。
+- 结果：**Ran 1841 tests in 1073.350s — OK (skipped=13)**（迁移收口后的稳定快照）。
+- 跳过项：13 条均为环境门槛（宿主机无 Rust 工具链时的 cargo 门控、可选外部件、平台差异），不是隐藏失败。
+- 回归对照：迁移在途快照为 **Ran 2128 / FAILED (failures=99, errors=513, skipped=4)**——那是在删除 286 个 `run.py` 与旧模块测试的同时跑出的「移动靶」，已在 §3.2 归因；本次为删除落盘后的稳定树。
+- 本轮文档改动引入的 2 条红测（`test_sota_doc` 的 25/10/4 硬编码）已随 SOTA 计数改为 26/10/3 同步修复，复跑为绿。
 
 ## 4. 文档口径修正记录（旧 → 新）
 
@@ -287,14 +276,19 @@ Fulcio → ADD-70；跨副本 SaaS → ADD-71；披露闭环 → ADD-55；ARTEX 
 | `docs/MASTER-REPORT.md` | 版本矩阵 42 条 | 103 条 | 已改 |
 | `docs/MASTER-REPORT.md` | 0day「47 条储备」 | novelty-checked 47 / reserve 46 / unique 39 / packs 47 | 已改 |
 | `docs/MASTER-REPORT.md` | 未达成 11 项含「12 个无面、9 隔离」「画像 62.12–73.48」 | 19 无面（11 隔离 + 8 待定）；画像 59.78–70.65 | 已改 |
-| `README.md` / `README.zh-CN.md` | 「286 legacy run.py remain」 | 工作树 0 / HEAD 286（迁移在途） | 已改 |
+| `README.md` / `README.zh-CN.md` | 「286 legacy run.py remain」 | 工作树 0 / HEAD 0（删除已提交） | 已改 |
 | `README.md` / `README.zh-CN.md` | 快速开始 `session/probe/exec/scan` 直用 | 标注「0.2.0 未提供，当前用 module/run/execute/template」 | 已改 |
-| `docs/DYNAMIC-VERIFICATION.md` | 286 run.py 仍保留 | 工作树 0；删除未提交 | 已改 |
+| `docs/DYNAMIC-VERIFICATION.md` | 286 run.py 仍保留 | 工作树 0 / HEAD 0；删除已提交 | 已改 |
 | `docs/WEAPON-READINESS.md` | one-click=「有 run.py 的模块」；47 条储备 | one-click=「有模块（模板）」；reserve 46 / packs 47 | 已改 |
 | `docs/COMPETITIVE-MATRIX.md` | CM-32/CM-33 open；L3 未动 | CM-32 partial（87/146）、CM-33 done（161 项） | 已改 |
 | `docs/OSS-ML-CLUSTER-TOOLS.md` | 正文「32 个工具」 | 34（JSON 与标题一致） | 已改 |
 | `docs/DETECTION-LAYERS.md` / `DOC-INDEX.md` / `ARCHITECTURE.md` / `FEATURES.md` | 「九层」「七层」并列 | 检测模型统一十层；控制端改称「七组件」 | 已改（`FEATURES.md` 由 9c74fc9 一并落盘） |
 | `docs/ARCHITECTURE-PROBE.md` / `AGENT-ARCHITECTURE-2026.md` | 「七层架构」作为产品层数 | 同上 | 已改 |
+| `docs/SOTA-2026-10.md` / `docs/MASTER-REPORT.md` | Rust 运行时 `runtime=rust` 为 0、未达成 12 条 | 286/286 `runtime=rust`（3 次一致）；未达成 11 条 | 已改 |
+| `docs/SOTA-2026-10.md` | 25 真实 / 10 模拟 / 4 未达成 | 26 / 10 / 3（39 项不变） | 已改（`tests/test_sota_doc.py` 同步） |
+| `README.md` / `README.zh-CN.md` / `docs/FAQ.md` / `docs/PRODUCT.md` | run.py「HEAD 286、迁移在途」、动态验证「仍为 0」 | 工作树 0 / HEAD 0；286/286 原生两态 | 已改 |
+| `docs/DYNAMIC-VERIFICATION.md` | 参考评估器 286/286、rust 为 0 | 原生 286/286、`probe 0.1.1`、802s；负控边界 §6 | 已改 |
+| `docs/PROBE-COVERAGE.md` / `docs/PROBE-BUILD.md` | 旧二进制 `7348deb0…` / 源码 `bb58f9f` | `c8d2f118…` / `1f0f57c` / probe 0.1.1 / CI run 40430384961 | 已用 `tools/template-coverage.py --write` 重生成 |
 
 ## 5. 实测回填（测试与关键命令）
 
@@ -302,25 +296,26 @@ Fulcio → ADD-70；跨副本 SaaS → ADD-71；披露闭环 → ADD-55；ARTEX 
 |---|---|---|
 | 全量单测 | `python -m unittest discover -s tests` | 见下方结果块 |
 | 模板契约 | `python -m unittest tests.test_probe_templates` | PASS |
-| 模板两态（参考） | `python tools/template-run.py --range` | 286/286 |
-| 模板覆盖率 | `python tools/template-coverage.py` | 286/286 reference |
+| 模板两态（原生） | `python tools/native-verify.py --repeat 3` | 286/286 `runtime=rust`，0 失败，802s |
+| 模板两态（参考） | `python tools/template-run.py --range` | 286/286（仅本地回归，不计证据） |
+| 模板覆盖率 | `python tools/template-coverage.py` | 286/286 native（`c8d2f118…` / `1f0f57c`） |
 | 架构语料门槛 | `python inkblade/arch-intel/check.py` | ALL GATES ok |
 | 核验编排 | `python tools/verify-exploits.py` | green（37 verified） |
 
 **全量单测结果块**
 
 ```
-python -m unittest discover -s tests -v
-Ran 2128 tests in 2159.553s
-FAILED (failures=99, errors=513, skipped=4)
+python -m unittest discover -s tests
+Ran 1841 tests in 1073.350s
+OK (skipped=13)
 ```
 
-归因见 §3.4 与 `reports/samples/requirements/suite-summary.txt`：45 个红测文件中 30 个在运行结束时已被并行迁移删除；15 个仍存在者已逐项列因。
-本轮自检：`tests.test_requirements_matrix` 23/23 OK。
+对照（已被取代）：迁移在途快照 `Ran 2128 tests / FAILED (failures=99, errors=513, skipped=4)`，归因见 §3.2、§3.4 与 `reports/samples/requirements/suite-summary.txt`。
+本轮自检：`tests.test_requirements_matrix` 与 `tests.test_sota_doc` 在更新 26/10/3 计数后复跑为绿。
 
 ## 6. 证据索引
 
 - 计数来源：`inkblade/core/exploit-registry.json`、`inkblade/core/zeroday-registry.json`、`inkblade/core/data/{version-matrix,weapon-packs}.json`、`inkblade/arch-intel/coverage-matrix.json`、`reports/samples/rules-pack/{mapping,coverage-matrix}.json`、`reports/probe-coverage/evidence.json`、`reports/samples/effects/effects.json`。
 - 覆盖与画像：`docs/PROBE-COVERAGE.md`、`docs/SURFACE-REALISM.md`、`docs/DYNAMIC-VERIFICATION.md`。
 - 规格与计划：`docs/superpowers/specs/2026-10-24-trident-ml-cluster-pentest-design.md`、`docs/superpowers/plans/2026-10-25-trident-platform.md`（仓库外，工作区 `docs/`）。
-- 历史台账：`progress.md`、`docs/DEV-LOG.md`、`.superpowers/sdd/2026-10-25-inkblade-platform/progress.md`、`git log --oneline`（126 commits）。
+- 历史台账：`progress.md`、`docs/DEV-LOG.md`、`.superpowers/sdd/2026-10-25-inkblade-platform/progress.md`、`git log --oneline`（139 commits）。

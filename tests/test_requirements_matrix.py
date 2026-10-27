@@ -305,13 +305,14 @@ class OpenItemsTest(unittest.TestCase):
         self.assertIsNotNone(m)
         text = MATRIX.read_text(encoding="utf-8")
         self.assertIn(f"**Ran {m.group(1)} tests", text)
-        self.assertIn("FAILED (failures=99, errors=513, skipped=4)", summary)
-        self.assertIn("FAILED (failures=99, errors=513, skipped=4)", text)
-        self.assertIn("Red test files (45)", summary)
+        outcome = re.search(r"^(OK(?: \(.*\))?|FAILED \(.*\))$", summary, re.M)
+        self.assertIsNotNone(outcome, "suite summary has no outcome line")
+        self.assertIn(outcome.group(1), text)
+        self.assertIn("python -m unittest discover", summary)
 
     def test_migration_in_flight_section_lists_red_tests(self):
         text = MATRIX.read_text(encoding="utf-8")
-        block = _section(text, "### 3.2 迁移在途红测", "### 3.3")
+        block = _section(text, "### 3.2 迁移收口记录", "### 3.3")
         self.assertIn("run.py", block)
         self.assertIn("unittest", block)
 
@@ -362,7 +363,7 @@ class DocConsistencyTest(unittest.TestCase):
         self.assertIn("not implemented", self.readme)
         self.assertIn("session run", self.readme)
         self.assertIn("287 module directories", self.readme)
-        self.assertIn("deleted in the working tree", self.readme)
+        self.assertIn("gone from both the working tree", self.readme)
         self.assertIn("未实现", self.readme_cn)
         self.assertIn("287", self.readme_cn)
 

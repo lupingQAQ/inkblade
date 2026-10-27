@@ -1,0 +1,5 @@
+# evidence bundle: dify-agent-auth-failopen
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+39ebe7d824653350357129a9259e405401c634b54ecfa02cf0c33192a2a23fcd  RESULT.md
+b22a093859d0c46d3fe7ec4e3c77af4ac8709617d78733937052d0ce91bbaa30  inventory-entry.json

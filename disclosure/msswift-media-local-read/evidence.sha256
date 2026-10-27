@@ -1,0 +1,8 @@
+# evidence bundle: msswift-media-local-read
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+3f7472e915c988a394577d9ecc680b448464951393e314fcfe4d8699719de81e  result.json
+ad75ea2efb16a0b2120397c79bcb555555eb7fb8b2f15fd47458d515766c6173  log.txt
+a07d6695f370dd1e3e6ebfded1dbe4629006c4c32aece8a8f90d3299dc4110b6  marker.txt
+a07d6695f370dd1e3e6ebfded1dbe4629006c4c32aece8a8f90d3299dc4110b6  victim-secret.txt
+2c12f679ecce663cc7bc71ab837793e748dca151179b3f05ab72e73e04cba5a8  inventory-entry.json

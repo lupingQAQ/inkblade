@@ -1,0 +1,15 @@
+# Vendor contact plan — areal-awex
+
+Product: AReaL
+Repository: https://github.com/areal-project/AReaL
+Preferred channel: GitHub private security advisory (preferred)
+Private advisory intake: https://github.com/areal-project/AReaL/security/advisories/new
+Security policy: https://github.com/areal-project/AReaL/security/policy
+Email: not guessed; read the current SECURITY.md before sending.
+
+Secondary channels (after the vendor has been notified):
+- CNVD: https://www.cnvd.org.cn/ (account and real-name registration required).
+- CNNVD: https://www.cnnvd.org.cn/ (parallel or supplementary to CNVD).
+
+Status: NOT SENT. No message has been drafted into an email client or API.
+Before sending: legal review, redaction check, and a human owner must sign off.

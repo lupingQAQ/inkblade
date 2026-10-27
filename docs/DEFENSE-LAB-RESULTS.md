@@ -145,7 +145,7 @@ During the Trivy DB download (22:46 UTC) the k3s apiserver entered a kine/sqlite
 time="2026-10-26T22:46:00Z" level=fatal msg="Transaction commit failed: sql: transaction has already been committed or rolled back"
 ```
 
-Preceding lines show API handler timeouts and kine `DeadlineExceeded` under load. k3s restarted (`Startup VACUUM completed`), but `/readyz` stayed `apiserver not ready` through the end of the timebox. This happened **after** the Kyverno (22:21) and Falco (22:23–22:35) probes; those results are unaffected. Trivy and the WAF run in Docker and remained healthy. The summarized crash log is `evidence/k3s-crash-summary.txt`.
+Preceding lines show API handler timeouts and kine `DeadlineExceeded` under load. k3s restarted (`Startup VACUUM completed`), but `/readyz` stayed `apiserver not ready` through the end of the timebox. This happened **after** the Kyverno (22:21) and Falco (22:23–22:35) probes; those results are unaffected. Trivy and the WAF run in Docker and remained healthy. The summarized crash log is `evidence/k3s-crash-summary.txt`; its JSON-escaped quotes (`\"`) were unescaped to plain `"` when capturing, so the message text is verbatim but the file no longer carries the escape sequences that trip the public-tree path scanner.
 
 Impact on conclusions: no post-crash cluster-wide snapshot could be collected, so Kyverno/Falco deployment state is proven by the pre-crash probe transcripts and logs, not by a final `kubectl get`. This is recorded as a limitation rather than papered over.
 

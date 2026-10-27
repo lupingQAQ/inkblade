@@ -1,0 +1,6 @@
+# evidence bundle: vllm-rl-dev-auth-bypass
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+ae2ef9f01b168902d540e7ea97350afc28ca023d9e663d4a7f47b6394ebd8a8c  result.json
+778c2a3f88b8ef6a87df5c947e70c00bf6f2252ee935bb35a347aa437193e6fc  marker.txt
+208e115cce2432c9d56af986ea11437bf9dd151ea030562098c6a15a8cfef428  inventory-entry.json

@@ -16,6 +16,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -35,8 +36,72 @@ MODULES = ROOT / "inkblade" / "modules"
 EVIDENCE = ROOT / "reports" / "probe-coverage" / "evidence.json"
 NATIVE = ROOT / "reports" / "probe-coverage" / "evidence-native.json"
 BINARY = "/tmp/inkblade-probe"
-BINARY_SHA = "7348deb0368c4d85d1cb2daef80a1dbe1c1f331c97544326b5b27aaf304f5f21"
-SOURCE_COMMIT = "bb58f9f"
+BINARY_SHA = "c8d2f118460349a9c4303250b737adb0ccb28a1598e59c16d1f0d3f230b726f3"
+SOURCE_COMMIT = "1f0f57c"
+PROBE_VERSION = "0.1.1"
+REPEAT = 3
+
+# Values that legitimately change between two runs of the same template: the
+# mock range listens on an ephemeral port, the probe reports durations, and the
+# guest paths are per-run scratch.  They are masked before the repeat digests
+# are compared, otherwise "3 identical runs" could never be proven.
+VOLATILE_KEYS = frozenset({
+    "duration_ms", "elapsed", "elapsed_ms", "at", "ts", "time", "timestamp",
+    "started_at", "finished_at", "updated_at", "port", "pid",
+})
+_ADDR_RE = re.compile(r"\b\d{1,3}(?:\.\d{1,3}){3}:\d+\b")
+_URL_RE = re.compile(r"https?://[^\"'\s]+")
+_PATH_RE = re.compile(r"/tmp/[^\"'\s]+")
+_HEX_RE = re.compile(r"\b[0-9a-f]{16,64}\b")
+_HTTP_DATE_RE = re.compile(
+    r"\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{1,2} "
+    r"(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} "
+    r"\d{2}:\d{2}:\d{2} GMT\b")
+_ISO_TS_RE = re.compile(r"\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z?\b")
+
+# The evaluator emits findings/checks/artifacts in set-like order; two runs of
+# the same template may list them differently while reporting the same result.
+SORTED_KEYS = frozenset({"findings", "checks", "artifacts"})
+
+
+def _canonical(value, key: str = ""):
+    """Strip run-specific noise so repeat runs can be compared."""
+    if isinstance(value, dict):
+        return {str(k): _canonical(v, str(k)) for k, v in sorted(value.items())
+                if str(k) not in VOLATILE_KEYS}
+    if isinstance(value, (list, tuple)):
+        items = [_canonical(v, key) for v in value]
+        by_id = bool(items) and all(isinstance(item, dict) and "id" in item
+                                    for item in items)
+        if key in SORTED_KEYS or by_id:
+            items.sort(key=lambda item: json.dumps(item, ensure_ascii=False,
+                                                   sort_keys=True, default=str))
+        return items
+    if isinstance(value, str):
+        text = _URL_RE.sub("URL", value)
+        text = _ADDR_RE.sub("ADDR", text)
+        text = _PATH_RE.sub("/tmp/PATH", text)
+        text = _HTTP_DATE_RE.sub("DATE", text)
+        text = _ISO_TS_RE.sub("TS", text)
+        return _HEX_RE.sub("HEX", text)
+    return value
+
+
+def _digest(result) -> str:
+    if not result:
+        return ""
+    raw = json.dumps(_canonical(result), ensure_ascii=False, sort_keys=True, default=str)
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+def _finding_ids(result: dict) -> set[str]:
+    ids: set[str] = set()
+    for finding in (result or {}).get("findings") or []:
+        ident = finding.get("id") or finding.get("key") or finding.get("title")
+        if ident:
+            ids.add(str(ident))
+    return ids
+
 
 RICH = {
     "version": "0.6.9", "deployed": True, "ok": True, "found": True,
@@ -161,6 +226,8 @@ def main() -> int:
     parser.add_argument("--keys", nargs="*", default=[])
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--base-url", default="", help="guest-reachable target URL")
+    parser.add_argument("--repeat", type=int, default=REPEAT,
+                        help="runs per state; digests must match (default 3)")
     args = parser.parse_args()
 
     # guest fixtures
@@ -194,20 +261,31 @@ def main() -> int:
             except Exception as exc:  # noqa: BLE001
                 failures.append(f"{key}: template load: {exc}")
                 continue
-            results = {}
+            results: dict = {}
+            digests: dict[str, list[str]] = {}
             error = ""
+            repeat = max(1, args.repeat)
             for state in ("vulnerable", "fixed"):
                 range_obj.set_profile(state)
                 params = _params(template, key, target, state)
-                try:
-                    results[state] = probe.run(template, params,
-                                               {"marker": "INKBLADE-LAB"})
-                except Exception as exc:  # noqa: BLE001
-                    error = f"{state}: {type(exc).__name__}: {str(exc)[:400]}"
-                    results[state] = None
+                runs: list = []
+                for _ in range(repeat):
+                    try:
+                        runs.append(probe.run(template, params,
+                                              {"marker": "INKBLADE-LAB"}))
+                    except Exception as exc:  # noqa: BLE001
+                        error = f"{state}: {type(exc).__name__}: {str(exc)[:400]}"
+                        runs.append(None)
+                        break
+                results[state] = runs[0] if runs else None
+                digests[state] = [_digest(item) for item in runs]
             positive = results.get("vulnerable") or {}
             negative = results.get("fixed") or {}
             ok = bool(positive) and positive.get("status") != "error"
+            consistent = bool(digests) and all(
+                len(items) == repeat and len(set(items)) == 1
+                for items in digests.values())
+            same_finding = bool(_finding_ids(positive) & _finding_ids(negative))
             compilation = None
             try:
                 compilation = compile_template(template, _params(template, key, target, "vulnerable"),
@@ -218,13 +296,20 @@ def main() -> int:
                 "tested": ok,
                 "mode": "vulnerable/fixed",
                 "runtime": "rust",
+                "probe_version": PROBE_VERSION,
                 "binary_sha256": BINARY_SHA,
                 "source_commit": SOURCE_COMMIT,
+                "repeat": repeat,
+                "consistent": consistent,
+                "digests": {state: (digests[state][0] if digests[state] else "")
+                            for state in ("vulnerable", "fixed")},
                 "findings_positive": len((positive or {}).get("findings") or []),
                 "findings_negative": len((negative or {}).get("findings") or []),
+                "negative_status": (negative or {}).get("status", ""),
+                "same_finding": same_finding,
                 "steps": len((positive or {}).get("steps") or []),
                 "native_ready": bool(compilation and compilation.native_ready),
-                "evidence": _sha({"positive": positive, "negative": negative}),
+                "evidence": _digest({"positive": positive, "negative": negative}),
                 "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "note": "native probe over SSH (QEMU TCG Alpine guest)",
                 "error": error,
@@ -243,9 +328,12 @@ def main() -> int:
                             pass
             if not ok:
                 failures.append(f"{key}: {error or positive.get('error')}")
+            elif not consistent:
+                failures.append(f"{key}: repeat digest mismatch over {repeat} runs")
             if index % 10 == 0 or index == len(modules):
+                good = sum(1 for e in entries.values() if e.get("consistent"))
                 print(f"progress {index}/{len(modules)} elapsed={int(time.time()-started)}s "
-                      f"failures={len(failures)}", flush=True)
+                      f"failures={len(failures)} consistent={good}", flush=True)
     finally:
         range_obj.stop()
 
@@ -256,21 +344,35 @@ def main() -> int:
         doc = {"schema": "inkblade-probe-coverage-evidence-v1", "entries": {}}
     doc.setdefault("entries", {}).update(entries)
     doc["updated_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    elapsed = int(time.time() - started)
+    summary = {
+        "templates": len(entries),
+        "tested": sum(1 for e in entries.values() if e["tested"]),
+        "consistent": sum(1 for e in entries.values() if e.get("consistent")),
+        "negative_clean": sum(1 for e in entries.values() if not e.get("same_finding")),
+        "fixed_status_ok": sum(1 for e in entries.values() if e.get("negative_status") == "ok"),
+        "failures": len(failures),
+        "duration_s": elapsed,
+    }
     doc["native_runtime"] = {
         "binary": BINARY, "sha256": BINARY_SHA, "source_commit": SOURCE_COMMIT,
+        "probe_version": PROBE_VERSION, "repeat": max(1, args.repeat),
         "transport": "ssh stdio framed protocol", "target": target,
-        "tested_at": doc["updated_at"],
+        "tested_at": doc["updated_at"], **summary,
     }
     EVIDENCE.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n",
                         encoding="utf-8")
     NATIVE.write_text(json.dumps({"schema": "inkblade-native-evidence-v1",
                                   "binary_sha256": BINARY_SHA,
                                   "source_commit": SOURCE_COMMIT,
+                                  "probe_version": PROBE_VERSION,
+                                  "repeat": max(1, args.repeat),
+                                  "summary": summary,
                                   "entries": entries, "failures": failures},
                                  ensure_ascii=False, indent=2) + "\n",
                       encoding="utf-8")
-    print(f"done tested={sum(1 for e in entries.values() if e['tested'])}/{len(entries)} "
-          f"failures={len(failures)} in {int(time.time()-started)}s")
+    print(f"done tested={summary['tested']}/{len(entries)} consistent={summary['consistent']} "
+          f"negative_clean={summary['negative_clean']} failures={len(failures)} in {elapsed}s")
     for failure in failures[:20]:
         print("FAIL", failure)
     return 0 if not failures else 1

@@ -1,0 +1,5 @@
+# evidence bundle: dify-shellctl-unauth-rce
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+39ebe7d824653350357129a9259e405401c634b54ecfa02cf0c33192a2a23fcd  RESULT.md
+dc1182eda19bbfa87e6b8f4adba5fa9f28f53bd56c9a883b25678515d1875522  inventory-entry.json

@@ -1,0 +1,335 @@
+{
+  "schema": "inkblade-disclosure-index-v1",
+  "generated_at": "2026-10-27T00:00:00+00:00",
+  "no_send": true,
+  "reserve_ids_screened": 46,
+  "eligible_cve_packages": 30,
+  "hardening_only": 6,
+  "cve_placeholders_used": 30,
+  "rows": [
+    {
+      "id": "areal-awex",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0001",
+      "title": "AReaL /awex allows arbitrary writes and NCCL group joins without authentication",
+      "cvss": 8.2,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "areal-dataservice-pickle",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0002",
+      "title": "AReaL data-service worker unpickles unauthenticated request bodies",
+      "cvss": 9.8,
+      "severity": "CRITICAL",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "areal-unauth-engine-control",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0003",
+      "title": "AReaL proxy rollout control plane allows unauthenticated code execution",
+      "cvss": 9.8,
+      "severity": "CRITICAL",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "areal-v2-worker",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0004",
+      "title": "AReaL v2 worker loads untrusted checkpoints without authentication",
+      "cvss": 9.8,
+      "severity": "CRITICAL",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "deepspeed-autoep-unsafe-load",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0005",
+      "title": "DeepSpeed checkpoint loaders deserialize untrusted state with weights_only=False",
+      "cvss": 8.8,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "dify-agent-auth-failopen",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0006",
+      "title": "dify-agent authentication fails open and ships a public development token",
+      "cvss": 9.1,
+      "severity": "CRITICAL",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "dify-home-snapshot-cross-tenant",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0007",
+      "title": "Dify local runtime snapshots allow cross-tenant home theft",
+      "cvss": 7.7,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "dify-shellctl-unauth-rce",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0008",
+      "title": "Dify 1.17.1 shellctl sandbox daemon allows unauthenticated host command execution",
+      "cvss": 9.8,
+      "severity": "CRITICAL",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "dify-stub-jwe-default-key",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0009",
+      "title": "Dify agent-stub ships a hard-coded JWE root key",
+      "cvss": 9.1,
+      "severity": "CRITICAL",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "djev-open-proxy",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0010",
+      "title": "djev relays /v1/* without authentication and leaves GET management routes open",
+      "cvss": 8.2,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "llm2jev-image-file",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0011",
+      "title": "LLM2Jev image_url permits local file read and SSRF",
+      "cvss": 7.5,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "msswift-eval-escape",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0012",
+      "title": "ms-swift device_groups eval() can be escaped through builtins",
+      "cvss": 8.8,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "msswift-indexed-dataset-py-pickle-loads-l112-ast",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0013",
+      "title": "ms-swift IndexedDataset unpickles attacker-writable packing cache",
+      "cvss": 8.8,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "msswift-media-local-read",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0014",
+      "title": "ms-swift deploy media path allows arbitrary local file read",
+      "cvss": 7.5,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "msswift-torch-utils-py-pickle-loads-l340-ast",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0015",
+      "title": "ms-swift Serializer.from_tensor unpickles tensor-controlled bytes",
+      "cvss": 8.8,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "msswift-trust-remote-code",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0016",
+      "title": "ms-swift defaults trust_remote_code to True in WebUI/deploy paths",
+      "cvss": 8.8,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "onejev-media-ssrf",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0017",
+      "title": "OneJev media fetch is an unauthenticated SSRF primitive",
+      "cvss": 7.5,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "openjev-clef-release-module",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0018",
+      "title": "OpenJev Clef release_module executes model-supplied Python",
+      "cvss": 8.8,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "openrlhf-serve-rm",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0019",
+      "title": "OpenRLHF serve_rm exposes unauthenticated reward scoring on 0.0.0.0:5000",
+      "cvss": 7.5,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "openwebui-code-interpreter-bypass",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0020",
+      "title": "Open WebUI code-interpreter guard is bypassable with importlib",
+      "cvss": 9.6,
+      "severity": "CRITICAL",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "sglang-omni-admin-failopen",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0021",
+      "title": "sglang-omni admin authentication fails open and profiler event_dir is attacker-controlled",
+      "cvss": 9.1,
+      "severity": "CRITICAL",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "siliconlab-credential-exfil",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0022",
+      "title": "OpenJev-SiliconLabAI leaks server API keys to request-controlled URLs",
+      "cvss": 8.2,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "skyrl-fetch-weights",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0023",
+      "title": "SkyRL /fetch_weights path traversal enables weight poisoning",
+      "cvss": 8.2,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "skyrl-tinker-api",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0024",
+      "title": "SkyRL Tinker API exposes unauthenticated model control on 0.0.0.0:8000",
+      "cvss": 8.2,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "slime-pull-weights",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0025",
+      "title": "slime /pull_weights allows unauthenticated cross-tenant weight access",
+      "cvss": 8.2,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "slime-torch-load",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0026",
+      "title": "slime debug/resume data loaders deserialize untrusted pickle",
+      "cvss": 8.8,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "verl-checkpoint-pickle",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0027",
+      "title": "verl checkpoint engine deserializes unauthenticated pickle over the network",
+      "cvss": 9.8,
+      "severity": "CRITICAL",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "verl-hdfs-command-injection",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0028",
+      "title": "verl HDFS checkpoint copy is vulnerable to shell command injection",
+      "cvss": 8.8,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "vllm-jev-plugin-auth-bypass",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0029",
+      "title": "vllm-jev plugin routes bypass the vLLM API-key middleware",
+      "cvss": 8.2,
+      "severity": "HIGH",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "vllm-rl-dev-auth-bypass",
+      "decision": "cve",
+      "cve_placeholder": "CVE-0000-0030",
+      "title": "vLLM 0.32.0 RL control router bypasses --api-key",
+      "cvss": 9.1,
+      "severity": "CRITICAL",
+      "state": "draft-not-sent"
+    },
+    {
+      "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
+      "decision": "hardening",
+      "cve_placeholder": null,
+      "title": "LLaMA-Factory v1 checkpoint resume deserializes with weights_only=False",
+      "cvss": 8.8,
+      "severity": "HIGH",
+      "state": "hardening-only"
+    },
+    {
+      "id": "megatron-checkpointing-py-torch-load-any-l1739-regex",
+      "decision": "hardening",
+      "cve_placeholder": null,
+      "title": "Megatron-LM checkpoint loader relies on the torch weights_only default",
+      "cvss": 8.8,
+      "severity": "HIGH",
+      "state": "hardening-only"
+    },
+    {
+      "id": "openrlhf-vllm-insecure",
+      "decision": "hardening",
+      "cve_placeholder": null,
+      "title": "OpenRLHF forces vLLM insecure serialization",
+      "cvss": 8.8,
+      "severity": "HIGH",
+      "state": "hardening-only"
+    },
+    {
+      "id": "skyrl-vllm-devmode",
+      "decision": "hardening",
+      "cve_placeholder": null,
+      "title": "SkyRL forces vLLM dev mode and 0.0.0.0 binding",
+      "cvss": 9.1,
+      "severity": "CRITICAL",
+      "state": "hardening-only"
+    },
+    {
+      "id": "trl-vllm-serve-devmode",
+      "decision": "hardening",
+      "cve_placeholder": null,
+      "title": "trl vllm-serve enables vLLM dev mode on 0.0.0.0 without a key",
+      "cvss": 9.1,
+      "severity": "CRITICAL",
+      "state": "hardening-only"
+    },
+    {
+      "id": "verl-prime-code-exec",
+      "decision": "hardening",
+      "cve_placeholder": null,
+      "title": "verl prime_code reward executes model-generated code without a sandbox",
+      "cvss": 8.8,
+      "severity": "HIGH",
+      "state": "hardening-only"
+    }
+  ]
+}

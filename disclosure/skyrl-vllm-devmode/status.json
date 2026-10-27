@@ -1,0 +1,31 @@
+{
+  "schema": "inkblade-disclosure-status-v1",
+  "id": "skyrl-vllm-devmode",
+  "reserve_source": "audit-history",
+  "component": "skyrl",
+  "merged_ids": [],
+  "eligible_for_cve": false,
+  "decision": "hardening",
+  "reason": "insecure-default-only: SkyRL sets VLLM_SERVER_DEV_MODE and 0.0.0.0 for its vLLM worker. The executable weakness is in vLLM's unauthenticated dev/RL routes, already covered by vllm-rl-dev-auth-bypass; a separate SkyRL CVE would duplicate it.",
+  "state": "hardening-only",
+  "sent": false,
+  "sent_at": null,
+  "vendor_notified": false,
+  "cve_id": null,
+  "cve_state": "not-requested",
+  "public_disclosure": false,
+  "legal_review": "required",
+  "redaction": {
+    "internal_paths_removed": true,
+    "credentials_removed": true,
+    "hostnames_removed": true,
+    "method": "drive-letter, workspace, /home and internal evidence prefixes stripped"
+  },
+  "package_files": [
+    "hardening-advice.md",
+    "status.json"
+  ],
+  "evidence_gaps": [],
+  "generated_at": "2026-10-27T00:00:00+00:00",
+  "no_send_policy": "this repository never transmits disclosure material automatically"
+}

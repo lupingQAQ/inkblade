@@ -35,6 +35,9 @@ REQUIRED_ROOT_FILES = (
 REQUIRED_DOCS = (
     "TRIAL.md", "PILOT-KIT.md", "FEEDBACK.md", "VERSIONING.md",
     "PLUGIN-SDK.md", "AUDIT-PACKAGE.md",
+    "USAGE.md", "INSTALL.md", "FEATURES.md", "WORKFLOW.md",
+    "MODULES.md", "FAQ.md", "0DAY-PUBLIC.md", "README-SITE.md",
+    "DETECTION-LAYERS.md", "AI-SCAN-RESULT.md",
 )
 
 REQUIRED_WORKFLOWS = ("ci.yml", "release.yml", "docker.yml")

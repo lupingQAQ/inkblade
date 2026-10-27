@@ -1,0 +1,5 @@
+# evidence bundle: djev-open-proxy
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+c3204ec59680894f03913953345443ba33f5b0994fac11e34ae3c09da3972bf3  LATEST-RESULT.md
+8ca2ead310001db33385de86976f485169a42ed7e2bb4d2f14e82e86a443ae8b  inventory-entry.json

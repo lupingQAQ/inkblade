@@ -1,93 +1,93 @@
-# PROBE-BUILD — InkBlade Rust 探针构建与动态验证
+# PROBE-BUILD — InkBlade Rust 探针构建、产物与原生验证
 
-状态：**已完成**（2026-10-27）。linux-amd64 / linux-arm64 musl 静态二进制由 GitHub Actions
-构建，amd64 在 runner 上完成 `--version` / `--help` / `collect` / `exec` / `dial` 自测；
-两份产物已取回本机并复核 ELF magic 与 SHA-256。
+本文件记录**当前发布态**：探针 `0.1.1`，linux-amd64 / linux-arm64 musl 静态二进制，由 GitHub Actions
+构建；amd64 产物在 QEMU Alpine VM 内跑完 286 个模板的 vulnerable/fixed 两态（每态 3 次一致）。
 
-## 1. 背景与约束
+## 1. 为什么二进制只能走 CI
 
-| 项 | 事实 |
+| 本机路径 | 结果 |
 | --- | --- |
-| 本机 rustc | 被 Smart App Control 拦截（`os error 4551`），`cargo build` 无法启动 `rustc`；`rustc --version` 可执行但实际编译被阻断 |
-| 本机 WSL2 | 不可用：`Wsl/Service/CreateInstance/CreateVm/HCS/HCS_E_HYPERV_NOT_INSTALLED`（虚拟化未启用，等待重启） |
-| QEMU k3s VM | 在跑（127.0.0.1:2222 SSH / 127.0.0.1:4555 串口均可达），root 口令未知；仅作为备选路径 |
-| 结论 | 走 **路径 A：GitHub Actions**，首个成功路径；路径 B 未启用 |
+| 本机 rustc | 被 Smart App Control 拦截（`os error 4551`），`cargo build` 无法调用 `rustc`；`rustc --version` 也会失败 |
+| WSL2 | 不可用（`Wsl/Service/CreateInstance/CreateVm/HCS/HCS_E_HYPERV_NOT_INSTALLED`），不能作为构建环境 |
+| QEMU k3s VM | 可用（127.0.0.1:2222 SSH / 127.0.0.1:4555 串口），但 guest 内编译只作兜底；本次产物仍以 CI 为准 |
+| Docker | 未使用；构建走 **方案 A（GitHub Actions）** |
 
-## 2. 构建路径 A（GitHub Actions）
+因此：**源码入库、二进制由 CI 产出、校验和入文档**；`probe/dist/` 被 `.gitignore` 的 `dist/` 忽略，
+不把二进制提交进 git。
+
+## 2. CI 构建（方案 A）
 
 - 仓库：`lupingQAQ/inkblade`（private）
-- 分支：`probe-build`（探针源码 + 工作流；`main` 未改动）
-- 构建提交：`f28428b`（`build: fix probe self-test exec allow-list`）
-- 运行：run **40417044211** — <https://github.com/lupingQAQ/inkblade/actions/runs/40417044211>
-- 工作流：`.github/workflows/probe-release.yml`（同时接受 `push: probe-build`、`push: tag probe-v*`、`workflow_dispatch`）
+- 分支：`main`；发布标签：**`probe-v0.1.1`** → 标签提交 **`1f0f57c`**（`ci: restore probe artifact executable bit before channel tests`）
+- 工作流：`.github/workflows/probe-release.yml`（`push: tag probe-v*` / `push: probe-build` / `workflow_dispatch`）
+- 本次运行：**run 40430384961** — <https://github.com/lupingQAQ/inkblade/actions/runs/40430384961>
+  （首次运行 40429959639 在 `python channel against real probe` 失败：artifact zip 丢可执行位，
+  已在同一工作流补 `chmod 0755` 后重跑；两次构建的 sha256 完全一致，见 §3）
 
 ### 2.1 构建环境
 
 | 项 | 值 |
 | --- | --- |
-| Runner | GitHub-hosted `ubuntu-24.04`（Ubuntu 24.04.5 LTS） |
+| Runner | GitHub-hosted `ubuntu-24.04` |
 | Rust | `rustc 1.99.1 (58cf8f9c3 2026-10-13)` / stable-x86_64-unknown-linux-gnu |
-| 交叉工具 | `cargo-zigbuild 0.24.0` + `ziglang 0.17.0`（PyPI wheel，自带匹配的 zig） |
+| 交叉工具 | `cargo-zigbuild 0.24.0` + `ziglang 0.17.0`（PyPI wheel，自带 zig） |
 | 目标 | `x86_64-unknown-linux-musl`、`aarch64-unknown-linux-musl` |
-| 编译参数 | `cargo zigbuild --release --locked`；`opt-level="z"`, `lto=true`, `codegen-units=1`, `panic="abort"`, `strip=true` |
+| 构建命令 | `cargo zigbuild --release --locked`（`opt-level="z"`, `lto=true`, `codegen-units=1`, `panic="abort"`, `strip=true`） |
 
-### 2.2 构建命令
+### 2.2 本地复现
 
 ```bash
-# 工作流内
 python3 -m pip install --user cargo-zigbuild        # 0.24.0 + ziglang 0.17.0
 cd probe
 cargo zigbuild --release --locked --target x86_64-unknown-linux-musl
 cargo zigbuild --release --locked --target aarch64-unknown-linux-musl
 ```
 
-### 2.3 耗时（run 40417044211）
+### 2.3 耗时（run 40430384961）
 
-| Job | Job 墙钟 | 其中编译 |
-| --- | --- | --- |
-| probe (amd64 / x86_64-unknown-linux-musl) | 1m25s | `real 0m57.266s`（user 58.421s） |
-| probe (arm64 / aarch64-unknown-linux-musl) | 1m49s | `real 1m23.013s`（user 1m23.219s） |
-
-前置迭代 3 次（失败原因留档）：musl.cc 拉取超时 `curl exit 28`；PyPI `ziglang` 未加入 PATH
-导致 `zig: command not found`（改用 `pip install cargo-zigbuild` 自带 zig 后解决）；
-`exec -- /bin/sh` 触发 "program must be a bare command name" 白名单校验（改为
-`--allow-write --allow-cmd sh -- sh -c ...`）。
+| Job | Job 总时长 | 构建步骤 | 备注 |
+| --- | --- | --- | --- |
+| probe (amd64 / x86_64-unknown-linux-musl) | 108s | 81s（`cargo real 1m20.777s`） | 含 native self-test |
+| probe (arm64 / aarch64-unknown-linux-musl) | 89s | 61s | 交叉构建，不执行 self-test |
+| python channel against real probe | 20s | 8s | 15 项 framed-channel 测试，`OK` |
+| publish probe release | 8s | — | 上传 `SHA256SUMS` 与两个二进制 |
 
 ## 3. 产物与校验
 
-产物落在 `probe/dist/`（`.gitignore` 第 9 行 `dist/` 命中，**不入源码树**）：
+产物位于 `probe/dist/`（不入 git）：
 
-| 文件 | 架构 | 大小 (bytes) | 大小 (KiB) | SHA-256 |
-| --- | --- | --- | --- | --- |
-| `probe/dist/inkblade-probe-linux-amd64` | x86-64 | 2 063 240 | 2 015 | `7348deb0368c4d85d1cb2daef80a1dbe1c1f331c97544326b5b27aaf304f5f21` |
-| `probe/dist/inkblade-probe-linux-arm64` | ARM aarch64 | 1 776 336 | 1 735 | `fc5d28729f4cec7cb4b7e2720473a5826927b77653f90377148d55efb4392f0c` |
+| 文件 | 架构 | 大小（bytes） | SHA-256 |
+| --- | --- | ---: | --- |
+| `probe/dist/inkblade-probe-linux-amd64` | x86-64 | 2 066 112 | `c8d2f118460349a9c4303250b737adb0ccb28a1598e59c16d1f0d3f230b726f3` |
+| `probe/dist/inkblade-probe-linux-arm64` | ARM aarch64 | 1 775 584 | `6d4803673bea9004bece7491282f8272a0ae41a2d3583f53704c430546fa38e4` |
 
-取回与复核：
+本地复核（下载后重新计算，与 CI sidecar 一致）：
 
 ```powershell
-gh run download 40417044211 --repo lupingQAQ/inkblade -D probe\dist
-# ELF magic（前 4 字节）与 sha256（本机重算 vs artifact 内 .sha256 sidecar）
-#   amd64 magic=7f454c46 sha256=7348deb0… sidecar_match=True
-#   arm64 magic=7f454c46 sha256=fc5d2872… sidecar_match=True
+gh run download 40430384961 --repo lupingQAQ/inkblade -D probe\dist
+Get-FileHash probe/dist/inkblade-probe-linux-amd64 -Algorithm SHA256   # c8d2f118…b726f3
+Get-FileHash probe/dist/inkblade-probe-linux-arm64 -Algorithm SHA256   # 6d480367…a38e4
 ```
 
-CI 侧 `file` 输出：
+ELF 结构（本地解析，非仅看 magic）：
 
 ```
-target/x86_64-unknown-linux-musl/release/inkblade-probe:  ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, stripped
-target/aarch64-unknown-linux-musl/release/inkblade-probe: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, stripped
+amd64: magic=7f454c46 class=ELF64 type=ET_EXEC machine=0x3e (x86-64)   PT_INTERP=no → static
+arm64: magic=7f454c46 class=ELF64 type=ET_EXEC machine=0xb7 (AArch64)  PT_INTERP=no → static
 ```
 
-工作流在打包前强制断言：ELF magic `7f454c46`、`statically linked`、架构匹配、`size > 100000`，
-任一不满足即失败（不是"看起来像 ELF"就放过）。
+CI 侧同时以 `file` 断言：`ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, stripped`
+（arm64 为 `ARM aarch64`），且 `size > 100000`。
 
-## 4. 动态验证（amd64，Linux runner 原生执行）
+**可复现性**：40429959639 与 40430384961 两次独立构建产出的 amd64/arm64 字节与 sha256 完全一致。
+
+## 4. native self-test（amd64 runner）
 
 ```
 == --version ==
-inkblade-probe 0.1.0
+inkblade-probe 0.1.1
 == --help ==
-inkblade-probe 0.1.0
+inkblade-probe 0.1.1
 inkblade-probe run --stdio --token-file PATH [--read-only|--allow-write]
 inkblade-probe collect [--read-only]
 inkblade-probe exec -- <argv...> [--allow-write] [--allow-cmd CMD]
@@ -96,53 +96,44 @@ inkblade-probe beacon
 inkblade-probe cleanup --path PATH...
 inkblade-probe socks [BIND] [PORT]
 == collect ==
-collect keys: ['cgroup', 'devices', 'env', 'files_read', 'host', 'limits', 'mounts', 'network', 'parent_id', 'probe_id', 'read_only', 'service_account']
+collect keys: ['cgroup', 'devices', 'env', 'files_read', 'host', 'limits', 'mounts',
+               'network', 'parent_id', 'probe_id', 'read_only', 'service_account']
 == exec ==
-{"exit_code":0,"rc":0,"stdout":"inkblade-probe-exec-ok\n","stderr":"","truncated":false,"timed_out":false,"duration_ms":10,"argv":["sh","-c","echo inkblade-probe-exec-ok"]}
+{"exit_code":0,"rc":0,"stdout":"inkblade-probe-exec-ok\n","stderr":"","truncated":false,
+ "timed_out":false,"duration_ms":10,"argv":["sh","-c","echo inkblade-probe-exec-ok"]}
 == dial ==
 inkblade-probe: connect 127.0.0.1:1 failed: 127.0.0.1:1: Connection refused (os error 111)
 ```
 
-解读：
+要点：
 
-- `collect` 返回容器/主机上下文 12+ 个顶层键（cgroup、devices、env、host、limits、mounts、
-  network、probe_id、read_only、service_account…），JSON 可被 `json.load` 直接解析。
-- `exec` 走白名单 + 写门：`sh -c` 需 `--allow-write --allow-cmd sh`，返回 `exit_code=0`、
-  `stdout` 完整、`timed_out=false`；审计事件与结果 JSON 分离（审计走 stderr，结果走 stdout）。
-- `dial` 在无监听端口返回 `Connection refused (os error 111)`，说明 socket 错误路径与 errno
-  透传正常（期望失败，非缺陷）。
-- arm64 产物无原生 runner，未做执行自测；仅做 ELF/架构/静态链接校验（同上）。
+- `collect` 返回 12+ 个字段的 JSON（cgroup / devices / env / host / limits / mounts / network /
+  probe_id / read_only / service_account …），可被 `json.load` 直接消费。
+- `exec` 需要显式 `--allow-write --allow-cmd sh`；输出含 `exit_code=0`、`stdout` 原文、
+  `timed_out=false`；stderr 与截断标记同样在 JSON 内。
+- `dial` 对关闭端口返回 `Connection refused (os error 111)`，说明 socket 路径真实可达且 errno 透传。
 
-## 5. 复现
+## 5. 原生验证（QEMU Alpine VM，286 模板 × 2 态 × 3 次）
 
-```bash
-git clone https://github.com/lupingQAQ/inkblade.git
-cd inkblade && git checkout probe-build
-gh workflow run probe-release.yml --repo lupingQAQ/inkblade   # 或 push probe-build / tag probe-v0.1.0
-gh run watch --repo lupingQAQ/inkblade
-gh run download <run-id> --repo lupingQAQ/inkblade -D probe/dist
-```
+- 传输：`ssh root@127.0.0.1:2222 /tmp/inkblade-probe run --stdio`（challenge-HMAC 认证的 framed protocol）
+- 二进制：`c8d2f118…b726f3`（即 `probe/dist/inkblade-probe-linux-amd64`），probe `0.1.1`，源码 `1f0f57c`
+- 靶场：`lab/template_range.py`（host 侧 mock，guest 经 10.0.2.2 访问）
+- 驱动：`tools/native-verify.py --repeat 3`
+- 结果：**286/286 `runtime=rust`，0 失败**；每态 3 次规范化摘要一致；耗时与负控边界见
+  `docs/PROBE-COVERAGE.md` 与 `reports/probe-coverage/evidence-native.json`
 
-本地（Windows）只做只读复核，不执行 Linux 二进制：
+证据文件的 `source_commit` / `binary_sha256` / `probe_version` / `repeat` 字段与本文件一致；
+`evidence` 为规范化（端口、日期、顺序、临时路径已脱敏）摘要，可在同一二进制上复算。
 
-```powershell
-$b = [IO.File]::ReadAllBytes("probe/dist/inkblade-probe-linux-amd64")[0..3]
-($b | % { $_.ToString('x2') }) -join ''      # 7f454c46
-(Get-FileHash probe/dist/inkblade-probe-linux-amd64 -Algorithm SHA256).Hash.ToLower()
-```
+## 6. Release
 
-## 6. 路径 B（QEMU VM，未启用）
+`probe-release.yml` 在 `probe-v*` tag 上额外执行 `release` job：汇总两个架构二进制与 `SHA256SUMS`，
+通过 `gh release upload` 发布到该 tag 的 GitHub Release；`ENABLE_COSIGN=true` 时才附加
+`SHA256SUMS.sigstore.json`（本次未启用，仓库保持 private）。
 
-VM 已就绪（SSH 2222 / 串口 4555 均 `TcpTestSucceeded=True`），原计划经 `lab/qemu-k3s/vm_console.py`
-串口登录取回提示符 → 设 root 口令/写临时公钥 → `apk add rust cargo musl-dev build-base` →
-上传 `probe.tar.gz` → `cargo build --release` → `scp` 回二进制。因路径 A 一次成功且已在真实
-Linux runner 完成自测，未再消耗 VM 构建时间；该路径保留为 CI 额度/权限不可用时的回退方案
-（脚本草稿见 `scripts/build-probe-vm.py`）。
+## 7. 限制
 
-## 7. Release 资产（CI 发布）
-
-`probe-release.yml` 在 `probe-v*` tag 上追加 `release` job：把两个 musl 二进制、
-`SHA256SUMS`（以及 `ENABLE_COSIGN=true` 时的 `SHA256SUMS.sigstore.json`）上传到
-GitHub Release。`python-dynamic` job 用真实 amd64 二进制跑
-`tests/test_probe_rust_dynamic` 与 `tests/test_probe_channel`。二进制始终由 CI
-构建，不入源码树；本机 ELF 只能在 Linux（或 CI runner）执行。
+- arm64 产物只做 ELF/架构/静态链接断言，未在 arm64 机器上执行；amd64 产物承担全部原生验证。
+- CI runner 为共享虚拟机，构建耗时只作量级参考，不作性能结论。
+- 本机 cargo 不可用是环境限制，不是产品限制；源码、锁定文件与构建命令均已入库，可在任意 Linux 复现。
+- 探针验证使用本地 mock 靶场，证明判定逻辑与执行链路，不证明客户集群的真实版本/配置组合。

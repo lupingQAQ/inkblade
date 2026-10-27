@@ -1,0 +1,5 @@
+# evidence bundle: vllm-jev-plugin-auth-bypass
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+852fa3c96e517d88cd18535922ffd954ff1aaf4a6979bfaf440778a12f0f73bc  LATEST-RESULT.md
+be47e947a3d32253690255c10293f4d25ce4b4a09130013abe6728d822a2689a  inventory-entry.json

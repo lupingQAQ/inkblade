@@ -1,0 +1,5 @@
+# evidence bundle: sglang-omni-admin-failopen
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+ccdd70cba974362236353f8168e05bff359cb7c9051e9a0976318315e6af4cb2  LATEST-RESULT.md
+11cfbb1ab1f05871e71f6b0059d83e78bacebbf721b5717432b1de0d5996d7a1  inventory-entry.json

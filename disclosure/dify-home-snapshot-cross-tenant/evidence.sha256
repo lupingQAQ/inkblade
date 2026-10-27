@@ -1,0 +1,5 @@
+# evidence bundle: dify-home-snapshot-cross-tenant
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+39ebe7d824653350357129a9259e405401c634b54ecfa02cf0c33192a2a23fcd  RESULT.md
+7fa8c4abebd6b84018c60ae4eb94e83ccd3c1ac65f101e3118db81c86866171e  inventory-entry.json

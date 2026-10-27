@@ -10,7 +10,7 @@
   ],
   "inputs": {
     "chains": 29,
-    "findings": 2
+    "findings": 68
   },
   "rules": [
     {
@@ -46,7 +46,9 @@
         "imex-computedomain-gpu-memory-crossing",
         "ray-dashboard-cluster-takeover"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:overprivileged-sa-escalation"
+      ],
       "match": null,
       "cves": [],
       "scope": "chain"
@@ -147,7 +149,9 @@
         "cluster-takeover-objective",
         "ray-dashboard-cluster-takeover"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:overprivileged-sa-escalation"
+      ],
       "match": null,
       "cves": [],
       "scope": "chain"
@@ -179,9 +183,7 @@
       "blocks_chains": [
         "flat-network-admin-plane-weight-poison"
       ],
-      "finding_links": [
-        "step_key:slime-weight-pull-poison"
-      ],
+      "finding_links": [],
       "match": null,
       "cves": [],
       "scope": "chain"
@@ -228,7 +230,11 @@
         "ray-dashboard-cluster-takeover",
         "vpc-cni-dual-control-plane-lateral"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:cni-stack-capability",
+        "step_key:exposure-mapping",
+        "step_key:framework-port-matching"
+      ],
       "match": null,
       "cves": [],
       "scope": "chain"
@@ -258,7 +264,9 @@
       "blocks_chains": [
         "vpc-cni-dual-control-plane-lateral"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:cni-stack-capability"
+      ],
       "match": null,
       "cves": [],
       "scope": "chain"
@@ -293,7 +301,9 @@
         "nccl-gradient-injection",
         "prefill-decode-kv-inference-manipulation"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:multus-sriov-rdma-bypass"
+      ],
       "match": null,
       "cves": [],
       "scope": "chain"
@@ -326,7 +336,9 @@
         "cluster-takeover-objective",
         "ray-dashboard-cluster-takeover"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:overprivileged-sa-escalation"
+      ],
       "match": {
         "engine": "sigma",
         "logsource": {
@@ -479,7 +491,10 @@
         "ssrf-sa-token-cloud-metadata",
         "tencent-cam-role-cos-weight"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:multi-cloud-imds-credentials",
+        "step_key:training-data-leak"
+      ],
       "match": {
         "engine": "sigma",
         "logsource": {
@@ -729,7 +744,9 @@
         "cluster-takeover-objective",
         "ray-dashboard-cluster-takeover"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:overprivileged-sa-escalation"
+      ],
       "match": {
         "engine": "sigma",
         "logsource": {
@@ -780,7 +797,9 @@
         "cluster-takeover-objective",
         "ray-dashboard-cluster-takeover"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:overprivileged-sa-escalation"
+      ],
       "match": {
         "engine": "sigma",
         "logsource": {
@@ -831,7 +850,9 @@
         "cluster-takeover-objective",
         "ray-dashboard-cluster-takeover"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:overprivileged-sa-escalation"
+      ],
       "match": {
         "engine": "sigma",
         "logsource": {
@@ -887,7 +908,9 @@
       "blocks_chains": [
         "shared-pvc-supply-chain-poison"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:shared-volume-weight-copy"
+      ],
       "match": {
         "engine": "sigma",
         "logsource": {
@@ -4127,10 +4150,7 @@
         "flat-network-admin-plane-weight-poison",
         "ray-dashboard-cluster-takeover"
       ],
-      "finding_links": [
-        "step_key:sglang-admin-failopen",
-        "step_key:slime-weight-pull-poison"
-      ],
+      "finding_links": [],
       "match": {
         "engine": "falco",
         "event_type": [
@@ -4223,7 +4243,7 @@
         "shared-pvc-supply-chain-poison"
       ],
       "finding_links": [
-        "step_key:slime-weight-pull-poison"
+        "step_key:shared-volume-weight-copy"
       ],
       "match": {
         "engine": "falco",
@@ -4268,7 +4288,9 @@
         "nccl-gradient-injection",
         "prefill-decode-kv-inference-manipulation"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:multus-sriov-rdma-bypass"
+      ],
       "match": {
         "engine": "falco",
         "event_type": [
@@ -4556,10 +4578,7 @@
         "flat-network-admin-plane-weight-poison",
         "pickle-channel-unauth-execution"
       ],
-      "finding_links": [
-        "step_key:sglang-admin-failopen",
-        "step_key:slime-weight-pull-poison"
-      ],
+      "finding_links": [],
       "match": {
         "engine": "suricata",
         "any_of": [
@@ -4604,7 +4623,9 @@
         "tencent-cam-role-cos-weight",
         "vpc-cni-dual-control-plane-lateral"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:multi-cloud-imds-credentials"
+      ],
       "match": {
         "engine": "suricata",
         "any_of": [
@@ -4947,7 +4968,9 @@
       "blocks_chains": [
         "agent-platform-cross-tenant-data-chain"
       ],
-      "finding_links": [],
+      "finding_links": [
+        "step_key:training-data-leak"
+      ],
       "match": {
         "engine": "sigma",
         "logsource": {

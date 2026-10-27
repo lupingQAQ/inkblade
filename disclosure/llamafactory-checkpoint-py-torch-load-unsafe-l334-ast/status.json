@@ -1,0 +1,33 @@
+{
+  "schema": "inkblade-disclosure-status-v1",
+  "id": "llamafactory-checkpoint-py-torch-load-unsafe-l334-ast",
+  "reserve_source": "mining",
+  "component": "llamafactory",
+  "merged_ids": [
+    "llamafactory-checkpoint-py-torch-load-unsafe-l334-regex"
+  ],
+  "eligible_for_cve": false,
+  "decision": "hardening",
+  "reason": "dedupe-existing-cve: LLaMA-Factory checkpoint torch.load RCE is already covered by public CVE-2026-1839 (same product, same checkpoint trust boundary). A second CVE for a sibling function would duplicate the vendor fix; report as an extension to the existing advisory.",
+  "state": "hardening-only",
+  "sent": false,
+  "sent_at": null,
+  "vendor_notified": false,
+  "cve_id": null,
+  "cve_state": "not-requested",
+  "public_disclosure": false,
+  "legal_review": "required",
+  "redaction": {
+    "internal_paths_removed": true,
+    "credentials_removed": true,
+    "hostnames_removed": true,
+    "method": "drive-letter, workspace, /home and internal evidence prefixes stripped"
+  },
+  "package_files": [
+    "hardening-advice.md",
+    "status.json"
+  ],
+  "evidence_gaps": [],
+  "generated_at": "2026-10-27T00:00:00+00:00",
+  "no_send_policy": "this repository never transmits disclosure material automatically"
+}

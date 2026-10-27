@@ -1,0 +1,5 @@
+# evidence bundle: verl-hdfs-command-injection
+# generated: 2026-10-27T00:00:00+00:00
+# logical names only; no host paths are stored in the disclosure tree
+d0965d86c544e222fed5a0fcf45309efca8b54fcbc6ca30064eb79b254d66b31  RESULT.md
+b0bbf53cdc7c9d5488c36e2731afefb16bffea8432c47129c4546db7a29e8c44  inventory-entry.json

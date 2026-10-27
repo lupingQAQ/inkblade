@@ -39,7 +39,7 @@ DEFENSE = [
 
 def load_evidence() -> dict:
     try:
-        return json.loads(EVIDENCE_PATH.read_text(encoding="utf-8")).get("entries") or {}
+        return json.loads(EVIDENCE_PATH.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return {}
 
@@ -84,8 +84,10 @@ def collect(modules_dir: Path) -> list[dict]:
 
 def build(rows: list[dict], evidence: dict) -> dict:
     entries = []
+    evidence_entries = evidence.get("entries") or {}
+    native_meta = evidence.get("native_runtime") or {}
     for row in rows:
-        ev = evidence.get(row["module"]) or {}
+        ev = evidence_entries.get(row["module"]) or {}
         entries.append({
             **row,
             "dynamic_tested": bool(ev.get("tested")),
@@ -93,6 +95,11 @@ def build(rows: list[dict], evidence: dict) -> dict:
             "evidence": ev.get("evidence", ""),
             "evidence_at": ev.get("at", ""),
             "evidence_runtime": ev.get("runtime", ""),
+            "probe_version": ev.get("probe_version", ""),
+            "repeat": ev.get("repeat", 0),
+            "consistent": bool(ev.get("consistent")),
+            "negative_status": ev.get("negative_status", ""),
+            "same_finding": bool(ev.get("same_finding")),
             "binary_sha256": ev.get("binary_sha256", ""),
             "source_commit": ev.get("source_commit", ""),
             "defense_matrix": ev.get("defense_matrix") or {},
@@ -114,6 +121,13 @@ def build(rows: list[dict], evidence: dict) -> dict:
                                       if e.get("binary_sha256")), ""),
         "native_source_commit": next((e.get("source_commit") for e in native
                                       if e.get("source_commit")), ""),
+        "probe_version": next((e.get("probe_version") for e in native
+                               if e.get("probe_version")), ""),
+        "repeat": max((e.get("repeat") or 0) for e in native) if native else 0,
+        "consistent": sum(1 for e in native if e.get("consistent")),
+        "negative_clean": sum(1 for e in native if not e.get("same_finding")),
+        "fixed_status_ok": sum(1 for e in native if e.get("negative_status") == "ok"),
+        "native_duration_s": int(native_meta.get("duration_s") or 0),
         "coverage_pct": round(100.0 * len(dynamic) / len(templates), 2) if templates else 0.0,
         "equivalent": sum(1 for e in templates if e["fidelity"] == "equivalent"),
         "reduced": sum(1 for e in templates if e["fidelity"] == "reduced"),
@@ -142,8 +156,17 @@ def render(result: dict) -> str:
         f"bootstrap **{s['bootstrap']}**)",
         f"- Dynamic template verification: **{s['dynamic_tested']}/{s['templates']} "
         f"({s['coverage_pct']}%)** — Rust-native **{s['native_tested']}** "
-        f"(binary `{s['native_binary_sha256'][:12]}…`, source `{s['native_source_commit']}`)",
+        f"(binary `{s['native_binary_sha256'][:12]}…`, source `{s['native_source_commit']}`, "
+        f"probe `{s['probe_version']}`)",
         f"- Fidelity: equivalent **{s['equivalent']}**, reduced **{s['reduced']}**",
+        f"- Repeat consistency: **{s['consistent']}/{s['templates']}** identical over "
+        f"{s['repeat']} runs per state (canonical digest; volatile port/date/order masked)",
+        f"- Negative control: fixed state without the same finding "
+        f"**{s['negative_clean']}/{s['templates']}**; fixed `status=ok` "
+        f"**{s['fixed_status_ok']}/{s['templates']}** (fixture-bound templates share inputs "
+        "across both states — see §6)",
+        f"- Native sweep duration: **{s['native_duration_s']}s** over the SSH framed protocol "
+        "(QEMU TCG guest)",
         f"- Rust-native readiness (static compile): **{s['native_ready']}/{s['templates']}** "
         f"(gaps: {s['native_gaps']} op(s))",
         f"- Write-capable templates: **{s['writes']}** (RoE + backup + audit unchanged)",
@@ -192,6 +215,23 @@ def render(result: dict) -> str:
               "- Legacy per-family Python tests for `run.py` internals were retired with the "
               "execution path; `tests/test_probe_*.py` replace them with two-state template "
               "execution and evidence digests.",
+              "",
+              "## 6. What the native sweep does and does not prove",
+              "",
+              "- Proves: every template lowers to the Rust template engine, runs in a real Linux "
+              "guest through the framed SSH protocol, returns a non-error result in the "
+              "`vulnerable` state, and repeats identically (canonical digest) over "
+              f"{s['repeat']} runs per state.",
+              "- Does not prove: a true negative control for every template. Templates whose "
+              "inputs come from a fixture file (not from the mock target) receive the same input "
+              "in both states, so the `fixed` run can still report the same finding. "
+              f"**{s['templates'] - s['negative_clean']}/{s['templates']}** templates report the same "
+              "finding in both states and are execution-verified only; "
+              f"**{s['negative_clean']}/{s['templates']}** report no identical finding, and "
+              f"**{s['fixed_status_ok']}/{s['templates']}** return `status=ok` in the fixed state — only "
+              "that last group meets the strict `verified` definition in `DYNAMIC-VERIFICATION.md` §8.",
+              "- The target is a local mock range (`lab/template_range.py`), not a production "
+              "cluster; findings demonstrate detection logic, not live exposure.",
               ""]
     return "\n".join(lines)
 

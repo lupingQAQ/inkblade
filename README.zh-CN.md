@@ -164,15 +164,17 @@ python -m inkblade report --session pilot-01 --lang bi
 - 模板 schema：`probe/schema/probe-template.schema.json`；参考评估器：`inkblade/tpl/engine.py`（仅 mock/CI，
   默认拒绝运行）。
 - 防护绕过评估：`inkblade/core/defenseprobe.py` 与 11 个 `inkblade/modules/defense-bypass-*` 模块。
-- 当前计数：287 个模块目录（286 个模板 + 1 个 bootstrap）、29 条链、11 个防护绕过模块。旧 `run.py` 已在工作树中删除
-  （0 个），HEAD 仍有 286 个，迁移提交落盘后归零；注册表只接受模板。
-- Rust 运行时动态验证仍为 0。覆盖率报告里的 286/286 两态结果使用 `runtime=reference`；它们能验证模板逻辑，
-  不能作为探针证据。探针源码已入库；二进制在 CI 构建（`docs/PROBE-BUILD.md`），不入 git（`probe/dist/`）。
+- 当前计数：287 个模块目录（286 个模板 + 1 个 bootstrap）、29 条链、11 个防护绕过模块。旧 `run.py`
+  已从工作树与 HEAD 全部删除（迁移提交落盘），注册表只接受模板。
+- Rust 运行时动态验证：286/286 模板在静态 musl 探针上跑完 vulnerable/fixed 两态（sha256 `c8d2f118…`，
+  源码 `1f0f57c`，每态连续 3 次一致，0 失败）。证据见 `reports/probe-coverage/evidence.json` 与
+  `docs/PROBE-COVERAGE.md`；二进制由 CI 构建（`docs/PROBE-BUILD.md`），不入 git（`probe/dist/`）。
+  fixed 态负控只对输入来自 mock 靶场的模板成立，边界见 PROBE-COVERAGE §6。
 
 **限制**
 
-- 2026-10 迁移进入收尾。探针 CLI 与 `session/probe/exec/scan` 命令面仍在完成中；本 README 描述目标契约，并标注当前状态。
-- 防护绕过模块仍使用 Python 参考评估，不计入 Rust 模板覆盖率。
+- 2026-10 迁移已完成：探针 CLI 的 `session/probe/channel` 与模板运行时可用；`exec`/`scan` 简写仍未提供。
+- 防护绕过模块已随 286 模板一起在 Rust 探针上跑两态，不再使用 Python 参考评估作为覆盖率证据。
 - 厂商盲区只对被测版本/配置成立；盲区不等于“该产品可被绕过”。
 - 良性 marker 证明“可见性”，不证明“恶意行为不可见”。产品不提供恶意载荷、持久化或规避执法。
 - 需要特权 Pod、hostNetwork、GPU 或节点访问的检测点，没有对应部署面时返回 `skipped` 或 `blocked`，永不写成 `verified`。
