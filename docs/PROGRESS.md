@@ -93,3 +93,8 @@ Updated: 2026-10-27 (agent runtime, coverage closure, file audit, defense bypass
 - QUIC/WebTransport/MASQUE + gRPC/Redis/TCPStore/NCCL/UCX/ZMTP proxies landed; ZMTP and WebTransport marked experimental.
 - Seven resource-bound items dropped by user decision and excluded from scope.
 - Final commit before private push.
+
+## Final local verification (2026-10-28)
+- Ran 2029 tests, OK (skipped=13) after the last reconnect-race fix.
+- GitHub Actions could not start jobs due account billing/spending limit; code push is complete and private.
+- Experimental: ZMTP CURVE, WebTransport Rust client, low-privilege QUIC lab, real Triton/Ray/SGLang targets.
