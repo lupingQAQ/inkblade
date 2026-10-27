@@ -1,6 +1,6 @@
 [package]
 name = "inkblade-probe"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 rust-version = "1.75"
 description = "InkBlade in-pod probe: native template runtime (http/tcp/exec/fs/k8s/socks/spawn)"
