@@ -36,6 +36,9 @@ classifiers = [
 ]
 dependencies = []
 
+[project.optional-dependencies]
+mlproxy = ["h2>=4.1"]
+
 [project.scripts]
 inkblade = "inkblade.cli:main"
 # Deprecated compatibility entry: kept for one release, prints a migration hint.

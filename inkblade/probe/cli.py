@@ -380,6 +380,24 @@ def register(sub) -> None:
     sv = csub.add_parser("serve", help=argparse.SUPPRESS)
     sv.add_argument("--config", required=True)
     sv.add_argument("--state", required=True)
+    mp = csub.add_parser("proxy", help="ML 原生代理：gRPC/TLS 或 Redis RESP/TLS")
+    mp.add_argument("--protocol", choices=["grpc", "redis"], required=True)
+    mp.add_argument("--target", required=True, help="HOST:PORT（Triton 8001 / Ray 8265 / GCS 6379）")
+    mp.add_argument("--listen-port", type=int, default=0)
+    mp.add_argument("--token-file", required=True, help="本地代理 token 文件（0600）")
+    mp.add_argument("--tls-dir", default=None)
+    mp.add_argument("--session", default=None)
+    mp.add_argument("--workspace", default="local-lab")
+    mp.add_argument("--probe-id", default=None)
+    mp.add_argument("--probe-path", default=None)
+    mp.add_argument("--probe-token", default=None)
+    mp.add_argument("--probe-token-file", default=None)
+    mp.add_argument("--probe-command", default=None)
+    mp.add_argument("--kubectl", default="kubectl")
+    mp.add_argument("--namespace", default=None)
+    mp.add_argument("--pod", default=None)
+    mp.add_argument("--timeout", type=float, default=30)
+    mp.add_argument("--json", action="store_true")
 
 
 def dispatch(args, home: Path) -> int:
@@ -855,6 +873,8 @@ def _channel_cmd(args, home: Path) -> int:
         from .. import reverse
 
         return reverse.cli_control_exec(args, home)
+    if args.channel_cmd == "proxy":
+        return _mlproxy_cmd(args, home)
     store = _store(home, args.workspace)
     state = _state_path(home, args.workspace)
     if args.channel_cmd == "status":
@@ -934,6 +954,64 @@ def _channel_cmd(args, home: Path) -> int:
         time.sleep(0.1)
     print("inkblade channel start: child did not become ready", file=sys.stderr)
     return 2
+
+
+def _mlproxy_cmd(args, home: Path) -> int:
+    from .. import reverse
+    from ..mlproxy import GrpcTlsProxy, MlProxyError, RedisTlsProxy
+
+    store = _store(home, args.workspace)
+    sess = _load_session(store, args.session) if args.session else None
+    try:
+        _level_ok(store, "主动探测")
+    except ExecutionLocked as exc:
+        print(f"inkblade channel proxy: {exc}", file=sys.stderr)
+        return 91
+    try:
+        host, port_text = args.target.rsplit(":", 1)
+        target_port = int(port_text)
+        proxy_token = reverse._read_token(args.token_file)
+        material = reverse.ensure_tls_material(
+            args.tls_dir or str(
+                reverse.reverse_paths(home, args.workspace)["dir"] / "mlproxy-tls"
+            ),
+            hosts=["127.0.0.1", "localhost"],
+        )
+        connection = _connect(args, sess)
+        proxy_type = GrpcTlsProxy if args.protocol == "grpc" else RedisTlsProxy
+        proxy = proxy_type(
+            connection, target_host=host, target_port=target_port,
+            token=proxy_token, tls_material=material,
+            listen_port=int(args.listen_port),
+        ).start()
+    except (ChannelError, MlProxyError, OSError, ValueError) as exc:
+        print(f"inkblade channel proxy: {exc}", file=sys.stderr)
+        return 2
+    data = {"pid": os.getpid(), "status": "running",
+            "workspace": args.workspace, "started_at": time.time(),
+            **proxy.status()}
+    _print_json(data)
+    stop = False
+
+    def _handle(signum, frame):
+        nonlocal stop
+        stop = True
+
+    try:
+        signal.signal(signal.SIGTERM, _handle)
+        signal.signal(signal.SIGINT, _handle)
+    except (ValueError, OSError):
+        pass
+    try:
+        while not stop:
+            time.sleep(0.5)
+    finally:
+        proxy.stop()
+        try:
+            connection.close()
+        except Exception:
+            pass
+    return 0
 
 
 def _serve_config(config: dict[str, Any], state: Path, token: str) -> dict[str, Any]:

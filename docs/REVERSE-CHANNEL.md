@@ -175,7 +175,25 @@ inkblade channel exec --workspace local-lab --probe-id pod-a --op ping --json
 - 子探针写入 `/tmp` 或 `/dev/shm`；两者都不可写时明确失败，不回退到
   宿主机路径。
 
-## 8. Rust 构建与验证
+## 8. ML 原生代理协议
+
+本地 SOCKS5 只是兼容层，绝不作为跨集群代理。ML 原生代理按协议顺序推进：
+
+| 优先级 | 协议 | 状态 |
+|---|---|---|
+| P1 | gRPC over TLS（Triton 8001 / Ray 8265），bidi stream，token 在 metadata | 已实现，`channel proxy --protocol grpc` |
+| P2 | Redis RESP over TLS（Ray GCS 6379），客户端 `AUTH <token>` | 已实现，`channel proxy --protocol redis` |
+| P3 | ZMTP + CURVE（SGLang/vLLM） | 未实现 |
+| P4 | TCPStore/Gloo TLS relay（PyTorch 29500） | 未实现 |
+| P5 | MASQUE CONNECT-UDP（RoCE/UCX 辅助面） | 未实现（experimental） |
+| P6 | NCCL/UCX 端口 profile（只控制流） | 未实现 |
+
+P1 需要可选依赖 h2（pip install h2）。P1/P2 的本地客户端侧是 TLS，控制器到探针的数据面走已认证加密的 reverse
+传输（`tls`/`wss`/`https`）；目标侧是探针 `dial` 的 TCP 连接，不在本层
+终止目标 TLS。token 文件 `0600`，不写入状态或日志。P3–P6 不以“已支持”
+展示；不承诺绕过任何安全设备。
+
+## 9. Rust 构建与验证
 
 ```sh
 cd probe

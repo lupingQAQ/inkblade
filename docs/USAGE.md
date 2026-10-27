@@ -154,7 +154,32 @@ python -m inkblade channel status
 python -m inkblade channel stop
 ```
 
-stdio 通道用探针 stdio 承载帧协议，SOCKS5 与端口转发只绑 `127.0.0.1`。反向通道由 Pod 主动发起出站连接，不需要 Pod 监听端口，适合最低权限、只有出站 TCP 的立足点。
+stdio 通道用探针 stdio 承载帧协议。SOCKS5 只是**本地兼容代理**，只绑定
+`127.0.0.1`，不提供对外认证或 TLS；端口转发同样只用于本地 loopback。
+不要用 SOCKS5/本地端口转发跨越不受信网络。反向通道由 Pod 主动发起出站连接，
+不需要 Pod 监听端口，适合最低权限、只有出站 TCP 的立足点。
+
+ML 原生代理优先使用协议自身形态，本地客户端侧 TLS，控制器到探针走已加密
+的 reverse 传输（P1 需要安装可选依赖 h2）：
+
+```bash
+# P1: gRPC over TLS（Triton 8001 / Ray 8265），token 放 gRPC metadata
+python -m inkblade channel proxy --protocol grpc \
+  --target triton-0.ml-team:8001 --token-file ./proxy.token \
+  --probe-command '<kubectl exec -i ... -- probe run --stdio ...>' \
+  --tls-dir ./evidence/local-lab/reverse/mlproxy-tls
+
+# P2: Redis RESP over TLS（Ray GCS 6379），客户端 AUTH <token>
+python -m inkblade channel proxy --protocol redis \
+  --target ray-head.ml-team:6379 --token-file ./proxy.token \
+  --probe-command '<kubectl exec -i ... -- probe run --stdio ...>'
+```
+
+`channel proxy` 默认只监听 `127.0.0.1`；`--tls-dir` 输出 CA、服务器证书和
+pin，客户端必须用 pin 校验。token 文件权限需为 `0600`，不写入状态或日志。
+P3（ZMTP+CURVE）、P4（TCPStore/Gloo）、P5（MASQUE CONNECT-UDP）、
+P6（NCCL/UCX 端口 profile）尚未实现，不会以“已支持”展示。跨集群/远端
+代理必须使用 `tls`、`wss` 或 `https` 的 reverse 探针，禁止明文 `tcp`。
 
 ## 检测
 
