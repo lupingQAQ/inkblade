@@ -83,3 +83,7 @@ Updated: 2026-10-27 (agent runtime, coverage closure, file audit, defense bypass
 - User dropped the seven resource-bound items: 10K GPU cluster, hardware TEE, real six-cloud accounts, public Fulcio identity, cross-replica SaaS, ARTEX bare-metal comparison, enterprise on-site validation.
 - They are out of scope and not counted in completion; public docs do not mention them.
 - Journal append is now serialized across threads/processes (flake fix).
+
+## Full regression after QUIC/MASQUE + journal fix (2026-10-28)
+- Ran 2024 tests, OK (skipped=13)
+- Includes QUIC/WebTransport/MASQUE, ML proxy gRPC/Redis/TCPStore/NCCL/UCX, journal concurrency fix.
