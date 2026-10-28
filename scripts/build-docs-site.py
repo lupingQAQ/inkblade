@@ -961,7 +961,7 @@ HERO = {
 
 FOOT = {
     "en": {
-        "blurb": "Product documentation for InkBlade. Plain HTML and two local assets; no fonts, scripts or styles are fetched from anywhere.",
+        "blurb": "Product documentation for InkBlade.",
         "cols": [
             ("Guides", [("Usage", "USAGE.md"), ("Features", "FEATURES.md"), ("Workflow", "WORKFLOW.md"), ("Install", "INSTALL.md")]),
             ("Reference", [("Product", "PRODUCT.md"), ("Detection layers", "DETECTION-LAYERS.md"), ("FAQ", "FAQ.md"), ("Doc index", "DOC-INDEX.md")]),
@@ -970,7 +970,7 @@ FOOT = {
         "bar": ["InkBlade", "Apache-2.0", "Authorized testing only"],
     },
     "zh": {
-        "blurb": "InkBlade 产品文档。纯 HTML 加两个本地资源；不从任何地方加载字体、脚本或样式。",
+        "blurb": "InkBlade 产品文档。",
         "cols": [
             ("指南", [("使用", "USAGE.md"), ("特性", "FEATURES.md"), ("流程", "WORKFLOW.md"), ("安装", "INSTALL.md")]),
             ("参考", [("产品定义", "PRODUCT.md"), ("检测分层", "DETECTION-LAYERS.md"), ("常见问题", "FAQ.md"), ("文档索引", "DOC-INDEX.md")]),
