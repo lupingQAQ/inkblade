@@ -751,7 +751,7 @@ section(
 """ + table(
         [("控制", ""), ("保证什么", "")],
         [
-            '<tr><td>授权哈希</td><td>每次运行都带签署授权文件的哈希，并写入证据。</td></tr>',
+            '<tr><td>授权文件</td><td>每次运行都带签署授权文件的哈希，并写入证据。</td></tr>',
             '<tr><td>范围与级别</td><td>越界或超出级别的动作会在执行前被拒绝。</td></tr>',
             '<tr><td>备份回执</td><td>没有可恢复快照就没有写操作。</td></tr>',
             '<tr><td>证据 manifest</td><td>每条发现都能落到 task、step、artifact、probe 或 manifest 哈希。</td></tr>',
