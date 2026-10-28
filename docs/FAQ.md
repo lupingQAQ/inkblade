@@ -45,7 +45,7 @@ python -m inkblade up --no-consent
 
 ### 探针是不是后门？
 
-不是。探针不持久化、不写启动项、不改镜像、不驻留、不回连固定 C2。它只在授权 session 内运行，任务来自已注册模板，退出时清理。区别不在名字，而在：授权、模板白名单、只读默认、写闸门、清理回执、证据可审计。
+不是。探针不持久化、不写启动项、不改镜像、不驻留、不回连固定 C2。它只在授权 session 内运行，任务来自已注册模板，退出时清理。区别不在名字，而在：授权、模板白名单、只读默认、写权限校验、清理回执、证据可审计。
 
 ### 探针怎么进 Pod？
 
@@ -89,7 +89,7 @@ python -m inkblade up --no-consent
 
 ### 写操作怎么保证安全？
 
-五道闸门：session 授权覆盖目标/级别/时间窗；探针 `--allow-write`；模板 `meta.writes=true` 且步骤声明写；`mode=backup-write`；备份回执存在。缺一条就 `skipped` 或 `E_DENIED`。写后回读哈希，失败回滚。
+五重校验：session 授权覆盖目标/级别/时间窗；探针 `--allow-write`；模板 `meta.writes=true` 且步骤声明写；`mode=backup-write`；备份回执存在。缺一条就 `skipped` 或 `E_DENIED`。写后回读哈希，失败回滚。
 
 ### 只读模式能做什么？
 

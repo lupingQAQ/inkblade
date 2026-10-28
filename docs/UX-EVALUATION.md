@@ -126,7 +126,7 @@ python -m inkblade onboard-cluster --snapshot east-prod.json --out reports/pilot
 4. **dry-run**：打印将执行的 `inkblade pilot ...` 命令 + JSON 摘要，不调用
    kubectl、不写文件。
 5. **执行**：只读 pilot（`allow_write=False`）→ 报告/审批清单/manifest；
-   写计划不在此向导暴露，仍需三闸门。
+   写计划不在此向导暴露，仍需三重校验。
 6. **失败**：找不到 kubeconfig → E101（含 `doctor`/`demo` 备选路径）；
    snapshot 缺失 → 三行式错误；退出码 2，不抛堆栈。
 

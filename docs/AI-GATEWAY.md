@@ -61,7 +61,7 @@
   私有模型清单为模型盗用/权重桶定位提供目标。
 - **判据**：vulnerable：别名写入 200 + 后续 chat `backend=攻击者 URL`、`upstream=hijacked`；
   fixed：admin key + allowlist（非白名单 400 `backend_not_allowlisted`），匿名 401。
-  写类模块 `writes=true`，必须经 runner 备份闸门（`backup_targets`，建议 `/ai/route` 状态快照）。
+  写类模块 `writes=true`，必须经 runner 备份校验（`backup_targets`，建议 `/ai/route` 状态快照）。
 
 ### 2.4 语义缓存跨租户（`aigateway-cache-cross-tenant`）
 
@@ -187,7 +187,7 @@
 # 仿真器两态
 python -m unittest tests.test_lab_ai_gateway -v
 
-# 10 模块 vulnerable 命中 / fixed 干净 / 写类闸门 / 链执行
+# 10 模块 vulnerable 命中 / fixed 干净 / 写类校验 / 链执行
 python -m unittest tests.test_modules_aigateway -v
 
 # 规则覆盖 + 紫队验证（自动拉起 AI 网关仿真）
@@ -208,5 +208,5 @@ python -m unittest discover -s tests
 3. **缓存口径**：vulnerable 的跨租户命中要求 `entry.tenant != requester` 且两次 lookup 的 `cache_key`
    完全一致；仅「相似但不同键」不构成本 finding。
 4. **配额口径**：只观测状态码与桶数，不消耗真实额度；fixed 必须在轮换 XFF 后仍出现 429。
-5. **写面口径**：`aigateway-route-hijack` 为唯一写类模块，必须经 backup_targets 闸门；probe-only 只读。
+5. **写面口径**：`aigateway-route-hijack` 为唯一写类模块，必须经 backup_targets 校验；probe-only 只读。
 6. **仿真边界**：内存态、`MOCK` 凭据、无真实模型厂商/Envoy/向量数据库；真实结论需客户环境的授权配置与审计日志。

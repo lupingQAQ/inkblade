@@ -60,7 +60,7 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 
 `report --run <id> --lang bi` renders the pentest narrative and the remediation checklist from the same evidence. `export --format sarif|ocsf|vex` produces machine-readable output. `rules generate` writes admission, runtime and network packs; `rules validate` replays them and prints the blocked / detected / missed matrix. `inkblade ui` serves the local console with findings, probe trees, graphs and timelines.
 
-### Gate behaviour
+### Write-permission checks
 
 | Situation | What happens | What to do |
 |---|---|---|
@@ -76,13 +76,13 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 
 ### 九个阶段
 
-| # | 阶段 | 命令 | 闸门 | 产物 |
+| # | 阶段 | 命令 | 校验 | 产物 |
 |---:|---|---|---|---|
 | 1 | 立足 | `session open --mode foothold\|external`（可选 `kubeconfig`） | 签署授权、目标、时间窗 | 会话记录、审计轨迹 |
 | 2 | Rust 探针 | `probe deploy --via sa-token\|rce`（可选 `kubectl`） | `--allow-write` 与会话级别 | 探针身份、SHA-256 |
 | 3 | 通道 | `channel listen`（探针 reverse），`channel start` 用 stdio | 回环绑定策略 | 通道状态、任务日志 |
 | 4 | 检测 | `session run --module`、`run --module`、`agent run` | 范围、级别、部署面 | 发现、证据锚 |
-| 5 | 逃逸 | `execute --chain`、`exploit` | 链前置条件、备份闸门 | 逃逸路径、证明 |
+| 5 | 逃逸 | `execute --chain`、`exploit` | 链前置条件、备份校验 | 逃逸路径、证明 |
 | 6 | 横向 | 通道转发、`probe upload` + `probe spawn`、`agent run` | 范围覆盖 | 可达图、跳板 |
 | 7 | 多探针 | `probe spawn`、`probe list` | 父 token、深度与扇出 | 探针树、血缘 |
 | 8 | 跨集群 | `agent relay add`、`agent coverage status` | 中继 token、逐集群授权 | 中继状态、覆盖证明 |
@@ -108,7 +108,7 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 
 ### 第 5 步 — 逃逸
 
-`execute --chain <id> --dry-run` 解析链图并打印每一处写入。确认后用 `execute --chain <id>` 执行。写步骤要过备份闸门：执行前生成回执，执行后引用回执。`exploit <id>` 是预置利用包的一键入口；`--real` 打开 RoE、备份与部署面闸门。
+`execute --chain <id> --dry-run` 解析链图并打印每一处写入。确认后用 `execute --chain <id>` 执行。写步骤要过备份校验：执行前生成回执，执行后引用回执。`exploit <id>` 是预置利用包的一键入口；`--real` 打开 RoE、备份与部署面校验。
 
 ### 第 6 步 — 横向
 
@@ -126,12 +126,12 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 
 `report --run <id> --lang bi` 用同一套证据渲染渗透叙事与修复清单；`export --format sarif|ocsf|vex` 产出机器可读结果；`rules generate` 写准入、运行时、网络三类规则包，`rules validate` 重放并输出拦截 / 检出 / 漏过矩阵；`inkblade ui` 提供本地控制台，展示发现、探针树、图与时间线。
 
-### 闸门行为
+### 写权限校验结果
 
 | 情况 | 会发生什么 | 怎么办 |
 |---|---|---|
 | 授权记录过期 | 所有 run 退出 91 | 用新窗口重签；旧证据仍然有效 |
 | 目标越界 | 执行前拒绝 | 修范围或去掉目标 |
 | 链前置条件为假 | 跳过该步，能继续的继续 | 先跑前置模块 |
-| 写步骤没有备份目标 | 拒绝该步，退出 91 | 提供备份目标；不要跳过闸门 |
+| 写步骤没有备份目标 | 拒绝该步，退出 91 | 提供备份目标；不要跳过校验 |
 | 回滚无法恢复某步 | 退出 3，run 被标记 | 把恢复不了的那一步当发现报出 |

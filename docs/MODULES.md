@@ -173,7 +173,7 @@ python -m inkblade surfaces --profile airgapped --fixture
 }
 ```
 
-关键字段：`writes` 触发备份闸门；`requires` 驱动部署面矩阵；`min_level` 对着授权记录检查；
+关键字段：`writes` 触发备份校验；`requires` 驱动部署面矩阵；`min_level` 对着授权记录检查；
 `combo_signature` 让平台能说“这两条发现其实是同一个问题”。
 
 ### 隔离模块

@@ -42,7 +42,7 @@ flowchart LR
    前置：持有高权 SA token；网络可达 apiserver
    证据：Kubernetes Secret 文档 https://kubernetes.io/docs/concepts/configuration/secret/
    检测：sigma:K8s audit：高权 SA 主体创建敏感绑定
-结论：沿上述原语可到达目标；执行前需通过 ROE 级别、范围与备份闸门。
+结论：沿上述原语可到达目标；执行前需通过 ROE 级别、范围与备份校验。
 
 ### 选择依据
 

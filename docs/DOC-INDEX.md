@@ -24,7 +24,7 @@
 | [`docs/ARCHITECTURE-PROBE.md`](ARCHITECTURE-PROBE.md) | 唯一执行路径：模板面、探针面、控制面；父子树与零解释器边界 |
 | [`docs/PROBE-CHANNEL.md`](PROBE-CHANNEL.md) | 入口会话与 `kubectl exec -i` 通道：投放、SOCKS/端口转发、权限边界 |
 | [`docs/PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md) | 长度前缀 JSON 帧、认证、任务/结果、预算、文件分块、清理与错误码 |
-| [`docs/PROBE-DEPLOY.md`](PROBE-DEPLOY.md) | RCE/memfd、kubectl、ServiceAccount token、EphemeralContainer、共享卷、写闸门 |
+| [`docs/PROBE-DEPLOY.md`](PROBE-DEPLOY.md) | RCE/memfd、kubectl、ServiceAccount token、EphemeralContainer、共享卷、写权限校验 |
 | [`docs/PROBE-BUILD.md`](PROBE-BUILD.md) | Rust 探针构建：musl amd64/arm64、SHA-256、发布校验 |
 | [`docs/MODULES.md`](MODULES.md) | 模块目录、系列、级别与键 |
 | [`docs/PLUGIN-SDK.md`](PLUGIN-SDK.md) | 插件/模板 SDK、manifest、信任与校验 |

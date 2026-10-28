@@ -42,7 +42,7 @@ mock 靶场要能本地启动，不依赖外网，端口固定。vulnerable 态�
 
 覆盖率口径要写死：分母是全部 `template` 模板，`blocked` 计入分母、不计入分子；`verified` 要求 vulnerable 与 fixed 都 `pass`，且连续 3 次一致；参考评估器、fixture 单态、静态检查都不计入 `verified`。`blocked` 必须写原因，不能因为“难跑”就标 blocked。
 
-## 6. CI 闸门
+## 6. CI 校验
 
 本次原生验证（2026-10-27）：静态 musl 探针 `inkblade-probe 0.1.1`，二进制 `c8d2f118460349a9c4303250b737adb0ccb28a1598e59c16d1f0d3f230b726f3`（源码 `1f0f57c`，tag `probe-v0.1.1`，CI run 40430384961）在 QEMU Alpine VM 内通过 SSH framed protocol 逐个执行 286 个模板的 vulnerable/fixed 两态，每态连续 **3 次**（`tools/native-verify.py --repeat 3`）：`runtime=rust` **286/286**、**0 失败**、规范化摘要 **286/286 一致**，总耗时 **802s**。证据见 `reports/probe-coverage/evidence.json`（286 条，含 `probe_version` / `repeat` / `consistent` / `same_finding`）与 `docs/PROBE-COVERAGE.md`。CI 门槛以原生结果为准；`runtime=reference` 仅用于无 Linux 运行器时的本地回归。
 

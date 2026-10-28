@@ -204,4 +204,4 @@ For air-gapped installs, carry the controller wheel, a Python interpreter, both 
 
 Deployment options: `docker build -t inkblade:0.2.0 .` or `helm install inkblade deploy/helm/inkblade --namespace inkblade --create-namespace`. The chart is read-only by default; writes need `readOnly=false`, `rbac.allowWrite=true` and a signed record.
 
-Deployment prerequisites and write gates: [`PROBE-DEPLOY.md`](PROBE-DEPLOY.md).
+Deployment prerequisites and write-permission checks: [`PROBE-DEPLOY.md`](PROBE-DEPLOY.md).

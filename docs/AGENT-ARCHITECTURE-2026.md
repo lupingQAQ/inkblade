@@ -90,7 +90,7 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 ### 2.0 先承认当时的设计意图
 
 `docs/REFLECTION-XBOW-ARTEX-KUBETRAIL.md:17-22` 写得很清楚：自主性只作用于「提议」，不作用于
-「执行」；执行环永远是确定性模块 + 授权（ROE）+ 备份 + 审计四闸门。这个判断**今天仍然成立**，
+「执行」；执行环永远是确定性模块 + 授权（ROE）+ 备份 + 审计四校验。这个判断**今天仍然成立**，
 而且被 2026 的证据强化（AutoPenBench：全自主 21% vs 半自主 64%；OWASP ASI09 人机信任利用）。
 
 **证据口径**：本节行号基线为 `git HEAD f1547f6`（本任务开始时的工作树快照）。同日并行任务可能
@@ -105,12 +105,12 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 
 | ID | 落伍点 | 现状与证据 | 当时的取舍 | 代价 | 2026 对照 |
 |---|---|---|---|---|---|
-| **G01** | 确定性 DAG + 审批，无动态重规划 | `inkblade/core/chains.py:419-487` 按依赖拓扑执行（进程内 ThreadPool）；`inkblade/agent_planner.py:87-166` 只读推荐；`inkblade/core/explorer.py:159-200` 只提议不执行；`tests/test_explorer.py:48-78` 锁定 pending/审批 | 可复核、可回滚、审批闸门不可绕过 | 只能跑预定义链；新攻击面要发版加链；中间结果不能改变下一步；无法做「发现异常→改道验证」 | Plan-Execute / ReAct / LATS 都允许基于观察重规划 |
+| **G01** | 确定性 DAG + 审批，无动态重规划 | `inkblade/core/chains.py:419-487` 按依赖拓扑执行（进程内 ThreadPool）；`inkblade/agent_planner.py:87-166` 只读推荐；`inkblade/core/explorer.py:159-200` 只提议不执行；`tests/test_explorer.py:48-78` 锁定 pending/审批 | 可复核、可回滚、审批校验不可绕过 | 只能跑预定义链；新攻击面要发版加链；中间结果不能改变下一步；无法做「发现异常→改道验证」 | Plan-Execute / ReAct / LATS 都允许基于观察重规划 |
 | **G02** | 单进程 explorer，无 supervisor-worker | `inkblade/core/explorer.py:249-280` 顺序 for 循环逐个 `run_module`；`inkblade/core/runner.py:34-105` 单进程执行；`inkblade/core/chains.py:460` 的线程池只在单进程内并行；`tests/test_explorer.py:100-113` | 单机部署简单、证据库单写者、审计线性 | 多目标/多路径只能串行；单点崩溃全停；无法按角色分工；与 XBOW「数千 agent 并行」差一个数量级架构 | Anthropic orchestrator-worker（90.2% 提升）、D-CIPHER Planner+异构 Executor |
 | **G03** | 无 durable journal（有证据库，无恢复点） | `inkblade/core/evidence.py:24-43` 只有 runs/steps/actions/findings 等表，无 journal/checkpoint 表；`inkblade/core/runner.py:56-80` 失败直接抛，链只能整条重跑；核心代码 grep 无 `resume/checkpoint/thread_id`（除业务模块名） | 证据=事实，执行=一次性；避免「恢复出不一致状态」 | 进程崩溃/审批中断后无法续跑；长任务不可行；无法 time-travel 复盘；重跑会重复副作用（写类步骤尤其危险） | LangGraph super-step+pending writes；Temporal event history；MCP Tasks durable handle；CrewAI checkpoint |
 | **G10** | 无事件驱动/任务队列（cron 轮询） | `inkblade/core/scheduler.py:2-8` 明写 cron/interval；`inkblade/core/scheduler.py:62-79` 只做时间解析；`explorer.execute` 在请求线程内联执行；`evidence.py` 无 task/queue 表 | 零依赖、单机可跑、无 broker 运维 | 无多租户隔离/限流/优先级/租约；无法接 MCP Tasks 的异步语义；无法把「审批等待」变成可恢复任务 | Temporal Task Queue（poll/优先级/公平）；MCP Tasks；CrewAI Flows |
 
-**最贵的代价是 G03。** 我们的写类模块有备份闸门（`inkblade/core/runner.py:62-67`，退出码 91），但没有「这一步
+**最贵的代价是 G03。** 我们的写类模块有备份校验（`inkblade/core/runner.py:62-67`，退出码 91），但没有「这一步
 已经执行到哪」的记录：崩溃后重跑，可能重复写、重复备份、甚至覆盖上一次的回滚点。证据库记录的是
 **发生过什么**，不是**下一步该做什么**——这两者必须分开存。
 
@@ -190,7 +190,7 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 ```
                          ┌─────────────────────────────────────────────┐
   客户/平台 ────────────▶│ 接入层：CLI · REST /api/v1 · MCP · A2A       │
-                         │ 认证 · 租户 · ROE 四级闸门 · 速率/预算        │
+                         │ 认证 · 租户 · ROE 四级校验 · 速率/预算        │
                          └───────────────────┬─────────────────────────┘
                                              │ 任务提交（不直接执行）
                          ┌───────────────────▼─────────────────────────┐
@@ -220,7 +220,7 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
                                  │ 经审批的步骤
         ┌────────────────────────▼──────────────────────────────────────┐
         │ 确定性执行内核（不变量不变）                                    │
-        │ ROE 闸门 → 备份闸门(91) → 模块 run.py → 三层落证               │
+        │ ROE 校验 → 备份校验(91) → 模块 run.py → 三层落证               │
         └────────────────────────┬──────────────────────────────────────┘
                                  │
         ┌────────────────────────▼──────────────────────────────────────┐
@@ -245,7 +245,7 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 | Durable Journal | 记录每步状态、恢复、审批信号 | 不替代证据库 |
 | 记忆服务 | working/episodic/semantic 读写与检索 | 不存原始证据（只存索引/摘要/引用） |
 | 技能库 | 技能包发现/校验/版本/权限声明 | 不直接执行（执行仍走模块） |
-| 执行内核 | 四闸门 + 模块 + 落证 | 不接受「模型直接下令」 |
+| 执行内核 | 四校验 + 模块 + 落证 | 不接受「模型直接下令」 |
 | 评测基座 | 离线/在线评分、回归、对比 | 不参与生产决策 |
 | 可观测 | trace/成本/审计导出 | 不采集敏感正文（默认脱敏） |
 
@@ -284,7 +284,7 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 
 ### 4.6 不做什么（守住差异化）
 
-- **不把执行环交给模型**：LLM 只影响 proposal；执行仍是模块 + 四闸门。
+- **不把执行环交给模型**：LLM 只影响 proposal；执行仍是模块 + 四校验。
 - **不做无人审批的写操作**：即使未来提高自主等级，写类动作仍需人类/策略批准。
 - **不做 C2/命令控制集成**：与「可审计交付」定位冲突。
 - **不做自动武器化**：挖掘候选保持 `pending-manual-review`。
@@ -308,7 +308,7 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 | 维度 | InkBlade | ARTEX（源码枚举事实） | XBOW（公开宣称） |
 |---|---|---|---|
 | 形态 | Python 单机 CLI + 本地 WebUI + REST/MCP | Go + Next.js + PostgreSQL，docker-compose 部署 | 商业 SaaS |
-| 执行模型 | 确定性链（依赖拓扑 + 进程内线程池），四闸门 | 多 agent 协作：goals/planner/worker/reporter | 数千 agent 并行，链式组合漏洞 |
+| 执行模型 | 确定性链（依赖拓扑 + 进程内线程池），四校验 | 多 agent 协作：goals/planner/worker/reporter | 数千 agent 并行，链式组合漏洞 |
 | 规划 | `agent_planner` 只读推荐 + lead 审批；无重规划 | planner agent 动态规划（32 个 agent 组件） | 模型自主决定下一步（无人驱动） |
 | 并发 | 单进程串行 explorer（默认 5 动作） | worker 并发 + 多模型池 llmpool（我们刻意不做） | 千级并行（宣称） |
 | 审批位置 | 执行器外环：proposal→approve→human execute | agent 内环 intercept/（人工审批拦截） | 平台侧护栏：scope/impact/window + command checker |
@@ -346,7 +346,7 @@ Anthropic 把 agentic system 分成 **workflows**（预定义代码路径编排 
 | # | 能力 | 依据 |
 |---|---|---|
 | 1 | 三层证据 + manifest sha256 | `evidence.py`、`reports/render.py`；XBOW 的「完整案卷」我们形态不同但同等可复核 |
-| 2 | 四闸门（ROE/级别/备份/审计） | `inkblade/core/roe.py`、`inkblade/core/runner.py:47-67`；退出码 91 语义 |
+| 2 | 四校验（ROE/级别/备份/审计） | `inkblade/core/roe.py`、`inkblade/core/runner.py:47-67`；退出码 91 语义 |
 | 3 | 审批不可绕过性 | `tests/test_mcp.py:117-129`、`tests/test_explorer.py:69-90` 锁定只读/审批 |
 | 4 | 合规映射 | ASI01–ASI10、ATLAS、NIST、ISO 42001、EU AI Act、TC260（`reports/standards.json`） |
 | 5 | 版本矩阵/弹药溯源 | 42 条逐条来源 + 变体物化；竞品多为闭源弹药 |

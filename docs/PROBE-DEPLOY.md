@@ -113,7 +113,7 @@ EphemeralContainer 不能加端口、不能改资源限制、不能当长期服�
 
 只读不是“建议”，是默认值。只读模式下 `fs.write`、`fs.remove`、`fs.mkdir`、K8s 写动词、非白名单 `exec`、`spawn` 全部拒绝。模板里的 `write: true` 步骤在 `probe-only` 模式下直接 `skipped`，不报错；只读探针仍然可以采集快照、跑 HTTP/TCP 探测、读文件、执行只读命令。
 
-## 5. 写闸门
+## 5. 写权限校验
 
 写操作要同时满足五件事：session 的 consent/ROE 覆盖目标、级别和时间窗；探针 `--allow-write`；模板 `meta.writes=true` 且具体步骤 `write: true`；运行模式是 `backup-write`；控制端有备份回执。任何一条缺失，写步骤返回 `E_DENIED` 或 `skipped`，不静默降级为“只读跑一半”。
 

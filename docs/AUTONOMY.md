@@ -2,7 +2,7 @@
 
 > 适用：`inkblade explore autonomy --autonomy L3`、`inkblade supervisor run --autonomy L3`。
 > 定位：L3 是**预授权后的受控自主循环**，不是让模型自由决定攻击动作。
-> 每个动作仍是注册模块，仍逐条走 `core.runner` 的授权闸门、范围校验、备份闸门与三层落证。
+> 每个动作仍是注册模块，仍逐条走 `core.runner` 的授权校验、范围校验、备份校验与三层落证。
 
 ## 1. 自主等级
 
@@ -51,7 +51,7 @@ python -m inkblade autonomy replay --workspace l3-lab
 ```
 
 `grant` 只允许 lead/admin（`session.can("approve")`）；tester 直接 `PermissionError`。
-写动作默认禁止，必须显式 `--allow-writes`；即便如此，写模块仍要过 runner 的备份闸门
+写动作默认禁止，必须显式 `--allow-writes`；即便如此，写模块仍要过 runner 的备份校验
 （缺 `backup_targets` → 退出码 91）。
 
 ## 4. 运行时硬边界
@@ -110,7 +110,7 @@ ARTEX（Autumn-27 / RuoJi6 维护分支）是 LLM 多 agent 自主渗透系统�
 
 ## 8. 已知限制
 
-- L3 的「自主」止步于模块选择与排序；**不会**生成新利用代码、不会绕过备份闸门。
+- L3 的「自主」止步于模块选择与排序；**不会**生成新利用代码、不会绕过备份校验。
 - 预授权 token 被窃取的风险由 TTL、白名单、预算与 `revoke` 收敛，但不能消除；
   生产演练应把 token 放在 lead 的密钥管理里，不写进 shell history。
 - token 计数是估算而非账单；真实成本以 `llm_pool_records.jsonl` 的端点为维度统计。

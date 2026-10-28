@@ -138,7 +138,7 @@
 | `fabric-exhaustion-chain` | bootstrap 端口占满 → gang 占位打满队列 → checkpoint I/O 洪峰 | ports_remaining=0 + 诚实作业 503 + pending>capacity + io_bytes Δ | Sigma（配额缺失）+ Falco（config mutation）+ Suricata（fabric URI） |
 
 前置判定：分别以 `sharp-in-network-poison` 与 `nccl-port-exhaustion` 的 high finding 为闸；
-写类步骤（sharp/ib/gradient/rank/xid/rail/pfc）全部走 runner backup_targets 备份闸门。
+写类步骤（sharp/ib/gradient/rank/xid/rail/pfc）全部走 runner backup_targets 备份校验。
 
 ---
 

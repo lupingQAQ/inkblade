@@ -40,7 +40,7 @@
 - 每任务必须 `approval.status=approved` 且有 `approved_by`，否则 `ApprovalRequired`，入队前整体校验、零残留；
 - 角色上限每角色默认 2、最小 2、最大 8；总 worker 1–16；4 worker = 每角色 1 个；
 - 失败由父进程按 `max_attempts` 重派到**同角色**队列，超过上限才终态失败；
-- 生产执行器 `runner` 在子进程内构造 EvidenceStore + `core.runner.run_module`，授权/备份/三层落证闸门照旧（本评测未启用真实模块）。
+- 生产执行器 `runner` 在子进程内构造 EvidenceStore + `core.runner.run_module`，授权/备份/三层落证校验照旧（本评测未启用真实模块）。
 
 ## 5. 诚实边界
 

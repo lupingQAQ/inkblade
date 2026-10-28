@@ -1,7 +1,7 @@
 # 企业就绪差距与准入体系（2026-10-26）
 
 > 本文回答一个问题：**InkBlade 的 demo 能力距离「企业可采购/可运营」还差什么**。
-> 结论先行：demo 证明的是「机制可跑、证据可复现、闸门有代码」；企业就绪还要求
+> 结论先行：demo 证明的是「机制可跑、证据可复现、校验有代码」；企业就绪还要求
 > 客户真实环境、规模、数据/变更治理、误报调优、系统集成、合规运营六类证据。
 > 本文不把任何单项能力冒充整体就绪，也不把本地 fixture 写成客户生产验证。
 >
@@ -40,12 +40,12 @@
 
 | 维度 | 内容 |
 |---|---|
-| demo 证明什么 | ROE/consent HMAC 签名、字段篡改即拒绝、命名空间/CIDR 范围、时间窗、级别闸门；写类模块备份回执 + 逐步回滚；工作区 kill switch；载荷统一脱敏；证据三层 + manifest 哈希。 |
+| demo 证明什么 | ROE/consent HMAC 签名、字段篡改即拒绝、命名空间/CIDR 范围、时间窗、级别校验；写类模块备份回执 + 逐步回滚；工作区 kill switch；载荷统一脱敏；证据三层 + manifest 哈希。 |
 | 企业还差什么 | 客户数据分级/标注样本导入、变更窗口/冻结期系统对接、客户 KMS/HSM/信封加密、训练数据与模型权重接触审批、跨境/数据驻留、证据保留/删除的合规执行。 |
 | 本地可测 | `roe.py`/`backup.py`/`abort.py` 全链；`inkblade/pilot.py` 的窗口/停止条件/回滚预案；`report_signing.retention_plan`（dry-run）；`calendar` 窗口登记。 |
 | 必须客户环境测 | 客户变更管理（CAB/ServiceNow）、SOC 值班与升级、KMS/HSM 托管密钥、数据分类策略、跨境合规、法务保留/删除指令。 |
 
-**判断**：代码闸门只能保证「未授权不跑」；企业要求的是「在客户治理系统里可审计地跑」。
+**判断**：代码校验只能保证「未授权不跑」；企业要求的是「在客户治理系统里可审计地跑」。
 变更窗口、数据 owner 签字、KMS 托管必须在客户环境落地。
 
 ### 1.4 误报漏报与调优
@@ -207,7 +207,7 @@ python -m inkblade pilot --kubeconfig east.yaml --kubeconfig west.yaml \
   --snapshot lab/enterprise-fixtures/clusters/east-prod.json \
   --snapshot lab/enterprise-fixtures/clusters/west-prod.json --out reports/pilot
 
-# 3) 写计划（必须 ROE + 级别 + 备份三闸门；pilot 自身仍只读）
+# 3) 写计划（必须 ROE + 级别 + 备份三重校验；pilot 自身仍只读）
 python -m inkblade pilot --kubeconfig ~/.kube/config --allow-write --role lead
 ```
 

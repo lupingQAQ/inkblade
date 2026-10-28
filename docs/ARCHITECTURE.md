@@ -1,6 +1,6 @@
 # InkBlade（墨刃零）架构 / Architecture
 
-InkBlade 的控制端由七个组件组成，运行时仅依赖 Python 3.10+ 标准库；所有执行路径统一经过授权闸门与备份闸门。
+InkBlade 的控制端由七个组件组成，运行时仅依赖 Python 3.10+ 标准库；所有执行路径统一经过授权校验与备份校验。
 检测模型另有十层（前九层业务面 + 第十层防护绕过），见 [`DETECTION-LAYERS.md`](DETECTION-LAYERS.md) 与 [`PRODUCT.md`](PRODUCT.md)。
 
 ```
@@ -24,7 +24,7 @@ InkBlade 的控制端由七个组件组成，运行时仅依赖 Python 3.10+ 标
 │    dry-run → execute；依赖拓扑/并行；写类模块先备份；失败回滚；逐动作审计      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │ ① 授权治理层  inkblade/core/roe.py + users.py + zeroday.py                     │
-│    consent/ROE 签名 + 级别闸门 + 四角色 RBAC + 可选零日加密扩展（默认关闭）    │
+│    consent/ROE 签名 + 级别校验 + 四角色 RBAC + 可选零日加密扩展（默认关闭）    │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -32,8 +32,8 @@ InkBlade 的控制端由七个组件组成，运行时仅依赖 Python 3.10+ 标
 
 | 层 | 关键实现 | 职责 |
 |---|---|---|
-| ① 授权治理 | `core/roe.py`, `core/users.py`, `core/zeroday.py` | consent/ROE 哈希签存；只读侦察 → 主动探测 → 利用验证 → 全影响演示四级闸门；admin/lead/tester/auditor 角色；可选 `private` 模块加密扩展（默认关闭，当前 6 个零日漏洞模块均为公开模块，不走该闸门） |
-| ② 编排 | `core/chains.py`, `core/runner.py`, `core/backup.py` | 链前置三态判定（自实现表达式求值，禁 `eval`）；dry-run 预览写面；依赖拓扑与并行执行；备份闸门（退出码 91）；失败回滚 |
+| ① 授权治理 | `core/roe.py`, `core/users.py`, `core/zeroday.py` | consent/ROE 哈希签存；只读侦察 → 主动探测 → 利用验证 → 全影响演示四级校验；admin/lead/tester/auditor 角色；可选 `private` 模块加密扩展（默认关闭，当前 6 个零日漏洞模块均为公开模块，不走该校验） |
+| ② 编排 | `core/chains.py`, `core/runner.py`, `core/backup.py` | 链前置三态判定（自实现表达式求值，禁 `eval`）；dry-run 预览写面；依赖拓扑与并行执行；备份校验（退出码 91）；失败回滚 |
 | ③ 模块 | `modules/*/module.json`, `modules/*/run.py` | 统一契约：`key/name/series/description/min_level/writes/requires`；`run(ctx, params) -> {summary, artifacts, findings}`；`private` 仅用于可选加密扩展 |
 | ④ 证据 | `core/evidence.py` | 每步三层落证；`manifest.sha256` 逐文件校验；`findings`/`actions`/`backups`/`rollbacks` 审计表 |
 | ⑤ 报告 | `reports/render.py`, `reports/cvss.py` | 双语渗透与修复报告；证据锚 = 步骤 + manifest sha256 前 16 位；零日漏洞细节默认展示，`redact_zeroday=True` 可选脱敏 |

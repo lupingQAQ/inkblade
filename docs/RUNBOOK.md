@@ -72,7 +72,7 @@ assert roe_status(store) == "complete"
 ```
 
 - 角色矩阵：`admin`（全部）/ `lead`（执行+审批+零日扩展审批，无 manage）/ `tester`（执行+报告）/ `auditor`（只读+报告）。
-- 级别闸门：模块 `min_level` 高于授权级别 → `ExecutionLocked`；范围外命名空间/IP → 拒绝。
+- 级别校验：模块 `min_level` 高于授权级别 → `ExecutionLocked`；范围外命名空间/IP → 拒绝。
 - **可选零日加密扩展**（默认关；仅对显式 `private: true` 的未来模块生效）：`python -c "from inkblade.core.zeroday import enable; enable(store, lead_session)"`——需 `approve-zeroday` 角色，写入 `workspace.json` 并留审计。当前 6 个 dify-*/open-webui-* 零日漏洞模块已公开（`private: false`），**无需启用本扩展**。
 
 ## 3. 跑模块与链（CLI + API）
@@ -86,7 +86,7 @@ python -m inkblade ui --port 8765                               # 本地控制�
 ```
 
 ```python
-# 编程执行（runner = 唯一执行路径：授权闸门 + 备份闸门 + 三层落证 + 审计）
+# 编程执行（runner = 唯一执行路径：授权校验 + 备份校验 + 三层落证 + 审计）
 from inkblade.core.runner import run_module
 result = run_module(store, tester_session, "sglang-admin-failopen",
                     {"target": "http://127.0.0.1:30000", "mode": "probe-only"},
@@ -107,7 +107,7 @@ res = execute(chain, store, tester_session, modules_dir=..., findings=..., worke
 # 全部步骤共用一个证据 run；依赖失败 → 下游 skipped；strict=True 时非「成立」拒绝执行
 ```
 
-### 3.3 API（与 CLI 同源闸门）
+### 3.3 API（与 CLI 同源校验）
 
 ```
 POST /api/login {name,password} → {token}

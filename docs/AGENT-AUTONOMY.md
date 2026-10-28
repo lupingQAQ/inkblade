@@ -126,11 +126,11 @@ fact 只能是 `hypothesis`；confirmed 只能由 Observer 根据探针证据晋
 | 授权 | RoE `consent.json` HMAC 验签 + lead 一次性启动确认（`--start-token` 或 lead `--yes`/隐式启动）；无授权不创建 run |
 | 范围 | 递归检查 `target/host/url/endpoint/address` 与 `namespace/target_ns`；只接受 RoE CIDR 内的 IP/URL，越界直接 `policy.refused` |
 | 只读 | 默认只读 intent 自动执行；recon/verify worker 拒绝写入 intent |
-| 写动作 | 需要 `--allow-destructive` + RoE `全影响演示` + 非空且可用的 `backup_targets`；runner 仍会二次执行退出码 91 备份闸门 |
+| 写动作 | 需要 `--allow-destructive` + RoE `全影响演示` + 非空且可用的 `backup_targets`；runner 仍会二次执行退出码 91 备份校验 |
 | 审批 | 默认 `auto`，没有逐步审批；`--approval manual` 只是兼容模式，仅在写 intent 前产生 `approval.required` |
 | 探针 | 所有动作经 `session→probe_task→Rust probe`；没有 host fallback；无探针/未知探针在创建 run 前拒绝 |
 | 证据 | confirmed 必须带 probe 证据 SHA-256；observer 拒绝无 evidence 行/无 hash 的步骤 |
-| 清理 | 目标要求清理时，cleanup 是独立写 intent，必须走同样备份闸门并留证 |
+| 清理 | 目标要求清理时，cleanup 是独立写 intent，必须走同样备份校验并留证 |
 | 记忆/技能 | semantic 写入必须有 `source_ref`；skill/human 写入需 `approved_by`；技能只有 approved 才进入检索；支持版本回滚 |
 
 ### 与旧审批模式的差异
@@ -140,7 +140,7 @@ fact 只能是 `hypothesis`；confirmed 只能由 Observer 根据探针证据晋
 | 授权粒度 | 批动作 / 每个动作批准 | 一次 RoE + lead 启动；之后自主选择 |
 | 下一步 | 固定候选列表或 FIFO | 图 frontier（priority/cost/记忆先验） |
 | 状态 | 进程内 proposal/queue | 事件溯源 journal + checkpoint + replay |
-| 写动作 | 逐动作审批 | `--allow-destructive` + RoE + 备份闸门 |
+| 写动作 | 逐动作审批 | `--allow-destructive` + RoE + 备份校验 |
 | 观察 | result dict | evidence-gated facts/assets/capabilities/failures |
 | 恢复 | 失败整链重跑 | resume 跳过 done，重试 failed/incomplete |
 | 轨迹 | 部分 audit | 决策/选择/证据/预算全事件 trace |

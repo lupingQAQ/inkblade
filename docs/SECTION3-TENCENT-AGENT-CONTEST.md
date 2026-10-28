@@ -249,7 +249,7 @@ explore(action) → plan(action, checkpoint) → execute_step(action) → done(r
 
 ### G4. 「不可逆写」与「可回滚写」没有区分
 
-- **现状**：`dry_run` 只提示备份闸门，审批语义不区分；没有备份目标的写动作与有
+- **现状**：`dry_run` 只提示备份校验，审批语义不区分；没有备份目标的写动作与有
   备份的动作等价。
 - **对标**：P1 的 scope guard + 备份；P4 的高风险工具白名单；P5 的沙箱强隔离。
 - **改进（已落地）**：`classify_action` 以 `writes` + `backup_targets` 分档；
@@ -284,8 +284,8 @@ explore(action) → plan(action, checkpoint) → execute_step(action) → done(r
 - **对标**：P1 ralph-loop（最多 10 次、1s→10s 退避）；P5 的可重试 Provider 分类
   + 新 session；P4 的熔断/取消。
 - **改进（已落地）**：`agent_policy.retry_plan` 分 transient / permanent / invalid /
-  budget；瞬时错误 2 次尝试 + 250ms 退避 + 声明式 fallback；闸门类错误立即上报。
-  提议块携带策略，执行仍走 runner 三闸门。
+  budget；瞬时错误 2 次尝试 + 250ms 退避 + 声明式 fallback；校验类错误立即上报。
+  提议块携带策略，执行仍走 runner 三重校验。
 - **验收**：`gateway-auth`（瞬时）OFF 失败 → ON 成功；`dead-end` OFF 失败 → ON
   切换 fallback 成功。
 
@@ -370,7 +370,7 @@ explore(action) → plan(action, checkpoint) → execute_step(action) → done(r
 
 参赛项目给出三种路径：**Skill 文件**（P3/P7）、**工具配方**（P4）、**图上的
 pattern**（P2/P5）。共同点是「把判断写成结构化资产，而不是写进 prompt」。
-我们的落点是 playbook（G10）：前置条件、证据 schema、审批闸门、预算、成功判据
+我们的落点是 playbook（G10）：前置条件、证据 schema、审批校验、预算、成功判据
 都可执行；专家只需要写 YAML，不写 Python。短期先把现有 `chains/*.json` 升级为
 带 `evidence_schema` 与 `approval_gates` 的 playbook，保持向后兼容。
 

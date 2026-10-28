@@ -45,7 +45,7 @@ Agent 不是「更聪明的聊天框」。用工程语言说，Agent 是「模�
 |---|---|---|---|---|
 | L0 | 观察 | 只读观察、证据整理，不产生执行动作 | 无需审批 | 0 |
 | L1 | 建议 | 逐动作人工确认；不可逆写必须单独预览与批准 | 每个动作 | 3 |
-| L2 | 监督执行 | 按阶段批量批准；写动作必须有备份闸门与回滚路径 | 按阶段 | 8 |
+| L2 | 监督执行 | 按阶段批量批准；写动作必须有备份校验与回滚路径 | 按阶段 | 8 |
 | L3 | 自治（只读） | 一次计划批准后，只读动作自动审计执行；写动作仍单独确认 | 按计划批量 | 12 |
 
 注意 L3 的名字：**「自治（只读）」**。它不是「全自动」，它是「只读动作可以自己跑」。这是很多团队最容易含糊的地方：把「读」和「写」混在一个档位里，最后要么人被迫批一堆无害的读，要么不可逆的写被顺手放行。
@@ -68,9 +68,9 @@ InkBlade 把这三个问题压缩进一个纯函数 `inkblade/core/agent_policy.
 
 第二步，整批动作取**最弱链路**。`inkblade/core/agent_policy.py::decide` 用 `min(graded, key=lambda g: LEVELS.index(g["level"]))` 找出最弱的一档；`requested` 只能把等级往下压，不能往上抬。这条规则很关键：一批动作里只要有一个不可逆写，整批就不能按 L3 放行。现实里最常见的漏洞不是「模型故意作恶」，而是「一批只读里混了一个写，审批人没看见」。
 
-第三步，把审批放在**阶段边界**，不是每个工具调用。`inkblade/core/agent_policy.py::decompose` 提供三种分解策略：`phase` 把动作分成「只读侦察 → 受控写验证」两段；`dependency` 让每个写动作独占一个阶段；`single` 整批一段。默认用 `phase`：只读段批一次就可以连续跑，写段单独设闸门。这样人看到的是「两段计划」，而不是「二十条 JSON」。
+第三步，把审批放在**阶段边界**，不是每个工具调用。`inkblade/core/agent_policy.py::decompose` 提供三种分解策略：`phase` 把动作分成「只读侦察 → 受控写验证」两段；`dependency` 让每个写动作独占一个阶段；`single` 整批一段。默认用 `phase`：只读段批一次就可以连续跑，写段单独设校验。这样人看到的是「两段计划」，而不是「二十条 JSON」。
 
-第四步，提议与执行硬分离。`inkblade/core/explorer.py::Explorer.propose` 只生成 `pending_approval` 的提议，写入 `explorer/queue.json`，不建 run、不写 actions、不执行模块。`inkblade/core/supervisor.py::Supervisor.submit` 在入队前逐个检查动作的 `approval.status == "approved"` 和 `approved_by`，没有批准就抛 `ApprovalRequired`，队列零残留。真正执行时，`inkblade/core/runner.py::run_module` 仍然要过授权闸门、角色闸门、范围闸门、备份闸门（退出码 91）和审计落证。**提议层的「批准」不是执行层的「放行」；它是执行层的前置条件之一。**
+第四步，提议与执行硬分离。`inkblade/core/explorer.py::Explorer.propose` 只生成 `pending_approval` 的提议，写入 `explorer/queue.json`，不建 run、不写 actions、不执行模块。`inkblade/core/supervisor.py::Supervisor.submit` 在入队前逐个检查动作的 `approval.status == "approved"` 和 `approved_by`，没有批准就抛 `ApprovalRequired`，队列零残留。真正执行时，`inkblade/core/runner.py::run_module` 仍然要过授权校验、角色校验、范围校验、备份校验（退出码 91）和审计落证。**提议层的「批准」不是执行层的「放行」；它是执行层的前置条件之一。**
 
 第五步，审批界面要回答四个问题，而不是展示一段 JSON：**要改什么、备份在哪、失败怎么回滚、预计花多少。** InkBlade 的 `Explorer._action_dry_run` 已经给出 `writes / backup_targets / write_surface / min_level`，提议块里也带 `policy.label` 与 `hard_boundary`。但 Web 端目前仍偏「结构化数据展示」，没有把这四行做成人类可读的变更单——这是产品化差距，第九章会给改法。
 
@@ -98,7 +98,7 @@ InkBlade 把这三个问题压缩进一个纯函数 `inkblade/core/agent_policy.
 4. 审批放在阶段边界：只读一段、写一段、不可逆写单独一段。
 5. 审批前先做去重、裁剪、风险摘要，别让人读原始 JSON。
 6. 审批状态必须是持久化状态机，不是进程内布尔值。
-7. 提议层不执行、不建 run、不写 actions；执行层再走一次完整闸门。
+7. 提议层不执行、不建 run、不写 actions；执行层再走一次完整校验。
 8. 不可逆写必须有备份目标与回滚路径，否则一律 L1。
 9. UI 必须显示「改什么、备份在哪、怎么回滚、花多少」四行。
 10. 把「L3 只读自治」写进合同、文档、销售话术，禁止简称「全自动」。
@@ -160,7 +160,7 @@ InkBlade 把这三个问题压缩进一个纯函数 `inkblade/core/agent_policy.
 - **耗时 -40.2%，主要来自 4 个 worker 的并发**；任务之间越独立，收益越明显；强依赖任务上并发反而会增加冲突。
 - **token +2.3%，审批从 1 次涨到 32 次**。这就是「用审批换完成率」的真实账单。32 次审批在演示里很酷，在甲方现场是人力成本，必须用分级审批、去重、阶段批来压。
 
-第八任务的策略级微评测则是另一套口径：`lab/tencent-compare/run_eval.py` 用确定性动作成本、四类故障注入（瞬时、死胡同、永久闸门、预算超支），比较 OFF（HEAD 语义）与 ON（新策略）。结果是成功率 0.50→1.00、时延 31,500→19,200ms、token 12,423→9,111。注意：这是**策略级**评测，不是模型能力评测，也不是线上账单；它证明「分级审批 + 结构化观察 + 预算降级」这套策略有效，不证明「模型在真实靶场上更聪明」。
+第八任务的策略级微评测则是另一套口径：`lab/tencent-compare/run_eval.py` 用确定性动作成本、四类故障注入（瞬时、死胡同、永久校验、预算超支），比较 OFF（HEAD 语义）与 ON（新策略）。结果是成功率 0.50→1.00、时延 31,500→19,200ms、token 12,423→9,111。注意：这是**策略级**评测，不是模型能力评测，也不是线上账单；它证明「分级审批 + 结构化观察 + 预算降级」这套策略有效，不证明「模型在真实靶场上更聪明」。
 
 **反例与坑。**
 
@@ -170,7 +170,7 @@ InkBlade 把这三个问题压缩进一个纯函数 `inkblade/core/agent_policy.
 - **坑四：无界 fan-out。** 「目标有 50 个资产，就开 50 个 worker」通常会把目标打挂、把预算烧穿、把审批人淹没。InkBlade 把 worker 上限锁在 1–8（`WORKERS_MIN/MAX`），提议动作上限默认 5；这是产品约束，不是技术限制。
 - **坑五：只看成功率，不看审批次数。** 15 任务评测里 supervisor 的 32 次审批是明显代价。如果 KPI 只有成功率，团队会自然走向「全部逐动作审批」，最后客户不用。
 - **坑六：把「计划」写成工具名列表。** 一份可批准的计划至少要包含：目标、步骤、依赖、每步成功判据、证据要求、风险与回滚、预算、审批点。只有 `["recon", "exploit", "report"]` 的不是计划，是目录。
-- **坑七：没有重规划触发器。** plan-execute 最大的风险是「计划错了还硬跑」。至少要在这四种情况下重规划：新证据推翻了前置假设、关键前置条件变成「不成立」、预算超支、永久性错误（401/403/越权/备份闸门）。InkBlade 的 `agent_policy.retry_plan` 把「永久/瞬时/非法/预算」分开，就是为这个触发器服务。
+- **坑七：没有重规划触发器。** plan-execute 最大的风险是「计划错了还硬跑」。至少要在这四种情况下重规划：新证据推翻了前置假设、关键前置条件变成「不成立」、预算超支、永久性错误（401/403/越权/备份校验）。InkBlade 的 `agent_policy.retry_plan` 把「永久/瞬时/非法/预算」分开，就是为这个触发器服务。
 - **坑八：把并发收益归因给「agent 架构」。** 15 任务里时间下降主要来自并发；如果任务集是串行依赖的，supervisor 可能更慢。评测设计必须让「架构」和「并发」可分离，否则你会在客户现场复现不出来。
 
 **可复用清单。**
@@ -204,7 +204,7 @@ InkBlade 把这三个问题压缩进一个纯函数 `inkblade/core/agent_policy.
 - **checkpoint**：一个可恢复的边界。不是每一条事件都能当恢复点，通常在一个阶段完成、或一个不可逆动作之前打点。
 - **resume**：从 journal 重建状态，跳过已成功步骤，重试失败步骤，把「开始了但没结束」的步骤交给人工确认。
 - **幂等（idempotency）**：同一个逻辑动作执行多次，副作用只发生一次。常见做法是「幂等键 + 结果缓存 + 唯一约束」。
-- **重试四分类**：瞬时错误（超时/429/5xx/连接重置）可以有界重试；永久错误（401/403/越权/范围外/备份闸门）立即停；非法输出（JSON 解析失败/schema 不符）重新规划；预算错误降级而不是重试。
+- **重试四分类**：瞬时错误（超时/429/5xx/连接重置）可以有界重试；永久错误（401/403/越权/范围外/备份校验）立即停；非法输出（JSON 解析失败/schema 不符）重新规划；预算错误降级而不是重试。
 
 **为什么。**
 
@@ -233,16 +233,16 @@ InkBlade 改造前的真实状态是 G03：`evidence.py` 只有 runs/steps/actio
 | 类别 | 触发例 | 尝试次数 | 退避 | 动作 |
 |---|---|---:|---:|---|
 | budget | 预算/quota 超限 | 1 | 0 | 降级动作集，不重试 |
-| permanent | 401/403/越权/范围外/备份闸门 | 1 | 0 | 立即上报，不浪费预算 |
+| permanent | 401/403/越权/范围外/备份校验 | 1 | 0 | 立即上报，不浪费预算 |
 | transient | TimeoutError/ConnectionError/429/502/503/504 | 2 | 250ms | 有界重试，仍失败则 fallback/上报 |
 | invalid | ValueError/schema/JSON 解析失败 | 1 | 0 | 重新规划，不重复同一调用 |
 | 未知 | 其他 | 1 | 0 | 按永久错误保守处理 |
 
-这张表最重要的不是「重试几次」，而是**永久错误绝不重试**。401/403 重试一百次还是 401；备份闸门重试一百次还是 91；越权重试只会留下更多失败审计。
+这张表最重要的不是「重试几次」，而是**永久错误绝不重试**。401/403 重试一百次还是 401；备份校验重试一百次还是 91；越权重试只会留下更多失败审计。
 
 第七步，证据与动作要绑定。`inkblade/core/observation.py::build` 在 `status="ok"` 时强制要求至少一个证据指针，否则直接抛 `ObservationError`。证据类型被限制在 `run/step/finding/file/audit/plan/artifact` 七种，每种都要有 `ref`。`claim` 字段把结论分成 `confirmed / hypothesis / planned`：有证据的成功才是 confirmed，失败是 hypothesis，未执行是 planned。这样「模型说发现了」永远不会自动变成「事实」。
 
-第八步，写类动作要有「先备份后执行」的硬闸门。`inkblade/core/runner.py::run_module` 在 `meta.writes` 为真时，先 `bm.snapshot(module_key, params["backup_targets"])`；拿不到回执就写 `refused-no-backup` 审计并抛 `BackupGateRefused`（退出码 91）。恢复时，先看这一步有没有备份回执，再决定能不能重跑；没有回执的写步骤，不允许「自动恢复」。
+第八步，写类动作要有「先备份后执行」的硬校验。`inkblade/core/runner.py::run_module` 在 `meta.writes` 为真时，先 `bm.snapshot(module_key, params["backup_targets"])`；拿不到回执就写 `refused-no-backup` 审计并抛 `BackupGateRefused`（退出码 91）。恢复时，先看这一步有没有备份回执，再决定能不能重跑；没有回执的写步骤，不允许「自动恢复」。
 
 一个可执行的崩溃恢复流程：
 
@@ -258,7 +258,7 @@ InkBlade 改造前的真实状态是 G03：`evidence.py` 只有 runs/steps/actio
 - **坑一：拿证据库当 journal。** 证据库有 steps 表，看起来「知道执行到哪」，但它没有 started/finished 的中间态，也没有重试次数、租约、checkpoint。用它做恢复，只能判断「这一步有没有成功记录」，无法判断「是不是正在执行」。这就是 G03 的根因。
 - **坑二：就地写 JSON。** `json.dump` 直接覆盖 `queue.json`，进程在写一半时崩溃，文件就是截断的 JSON。InkBlade 用 `tmp.replace` 是正确姿势；但要注意，单文件队列仍然只适合单控制面，多实例要换数据库或带租约的队列。
 - **坑三：恢复时重跑 started 步骤。** 这是最危险的坑：一个写动作可能已经执行成功，只是 finished 事件没写进去。重跑会重复写、重复备份。正确做法是 incomplete → 人工确认，或者用幂等键查结果。
-- **坑四：所有错误都重试。** 403、越权、备份闸门、范围外，重试没有意义，只会烧预算、留垃圾审计。重试分类必须写进代码，不能靠「模型判断」。
+- **坑四：所有错误都重试。** 403、越权、备份校验、范围外，重试没有意义，只会烧预算、留垃圾审计。重试分类必须写进代码，不能靠「模型判断」。
 - **坑五：step key 用模块名。** 这是 InkBlade 当前的真实缺陷：`Supervisor.run` 写 journal 时用 `step=task["module"]`，如果同一个模块在一个 run 里出现两次，`resume` 会把它们当成同一步，状态互相覆盖。正确做法是用 `task_id` 或 `module#seq` 作为 step key；这条要写进下一轮修复清单。
 - **坑六：explorer.execute 没有 journal。** `Explorer.execute` 直接逐动作调 `run_module`，没有 supervisor 的 journal/重派；同一 proposal 的并发 execute 也没有幂等保护（状态只在执行完后才改成 executed，两个请求可能同时读到 approved）。演示时没人会连点两次，生产里一定会有人连点。
 - **坑七：哈希链没有 fsync。** 只 `write` 不 `flush/fsync`，操作系统缓存一丢，最后几行就没了；哈希链会报「半写」，但如果你的恢复逻辑忽略 verify，就会带着坏日志跑。
@@ -416,7 +416,7 @@ Agent 的「记忆」不是一个向量库，而是三层不同生命周期的�
 
 - `agent_policy.PolicyError("未知自主度 'L9'（可选 ('L0','L1','L2','L3')）")`：告诉调用方可选值。
 - `supervisor.ApprovalRequired("动作 X 未批准（需 lead approve 后入队）")`：告诉调用方找谁。
-- `runner.BackupGateRefused` 带 `exit_code=91`：告诉调用方这是备份闸门，不是网络错误。
+- `runner.BackupGateRefused` 带 `exit_code=91`：告诉调用方这是备份校验，不是网络错误。
 - `sandbox.SandboxError("timeout 须为正数，得到 ...")`：参数校验直接说人话。
 
 反面例子是 `KeyError: 'foo'`、`TypeError: NoneType`、一整段堆栈。商用产品的错误文案要像「医生解释病情」，不是「编译器吐日志」。
@@ -606,14 +606,14 @@ Agent 的成本不是「token 单价 × 用量」这么简单，至少有四个�
 
 第一步，把授权做成密码学对象，不是勾选框。`inkblade/core/roe.py::sign_consent` 把 `fields` 规范化 JSON 后用工作区密钥做 HMAC-SHA256，`consent.json` 存 `{fields, sha256, hmac_sha256, ts, status}`；`verify_consent_doc` 每次读取都验签，任何字段被改（包括偷偷提升 level）都会变成 `tampered`，所有执行路径拒绝。这比「用户点了同意」强一个量级：它防的是「事后改授权」。
 
-第二步，把级别、范围、时间窗做成三道硬闸门。`roe.LEVELS` 是「只读侦察 → 主动探测 → 利用验证 → 全影响演示」；`allowed(module_level, roe_level)` 只允许模块级别 ≤ 授权级别；`scope_violation(store, params)` 检查 `host/target_ns/namespace` 是否落在授权范围；`window_status` 检查时间窗。`assert_execution_allowed` 把授权状态（含篡改）、时间窗、级别合成一个「执行许可断言」，`runner.run_module` 再单独调用 `scope_violation` 做范围检查；任何一条不满足就抛 `ExecutionLocked`。
+第二步，把级别、范围、时间窗做成三道硬校验。`roe.LEVELS` 是「只读侦察 → 主动探测 → 利用验证 → 全影响演示」；`allowed(module_level, roe_level)` 只允许模块级别 ≤ 授权级别；`scope_violation(store, params)` 检查 `host/target_ns/namespace` 是否落在授权范围；`window_status` 检查时间窗。`assert_execution_allowed` 把授权状态（含篡改）、时间窗、级别合成一个「执行许可断言」，`runner.run_module` 再单独调用 `scope_violation` 做范围检查；任何一条不满足就抛 `ExecutionLocked`。
 
 第三步，加一个「紧急停止」开关。`inkblade/core/abort.py::assert_not_aborted` 在工作区级 kill switch 命中后拒绝一切新执行；`runner.run_module` 在入口调用它，并写 `refused-aborted` 审计。客户现场出现异常时，这个开关比「让模型停下来」可靠得多。
 
-第四步，写类动作先备份，再执行。`runner.run_module` 的顺序是：授权/角色/私有模块/紧急停止/范围/备份，然后才 `log_action("started")`、加载模块、执行。`meta.writes` 为真时，`BackupManager.snapshot` 必须返回回执，否则 `BackupGateRefused`（91），并在审计里写 `refused-no-backup`。执行失败时，如果是写类，还会 `bm.rollback(module_key)`。这就是「三闸门」里的备份闸门。
+第四步，写类动作先备份，再执行。`runner.run_module` 的顺序是：授权/角色/私有模块/紧急停止/范围/备份，然后才 `log_action("started")`、加载模块、执行。`meta.writes` 为真时，`BackupManager.snapshot` 必须返回回执，否则 `BackupGateRefused`（91），并在审计里写 `refused-no-backup`。执行失败时，如果是写类，还会 `bm.rollback(module_key)`。这就是「三重校验」里的备份校验。
 
-> **2026-10 修订。** 探针架构下，备份闸门之外还有两道：探针必须 `--allow-write`，模板必须声明 `meta.writes=true`
-> 且具体步骤 `write: true`，运行模式必须是 `backup-write`。五道闸门缺一不可；缺任何一条，写步骤
+> **2026-10 修订。** 探针架构下，备份校验之外还有两道：探针必须 `--allow-write`，模板必须声明 `meta.writes=true`
+> 且具体步骤 `write: true`，运行模式必须是 `backup-write`。五重校验缺一不可；缺任何一条，写步骤
 > `skipped` 或 `E_DENIED`，不静默降级为「只读跑一半」。备份回执仍是核心，不是可选项。
 
 第五步，证据要能抗篡改。InkBlade 的三层证据是：归档层 `steps/*.tar.gz|zst` + `manifest.sha256`（逐文件 sha256）、数据库层 `evidence.db`、上下文摘要层 `context.jsonl.gz`（每步 digest + 双指针）。`EvidenceStore.verify_manifest` 重算清单，篡改必检出；报告里的证据锚是「步骤 + manifest sha256 前 16 位」。这比「附一张截图」强，因为截图可以 P，哈希不行。
@@ -665,7 +665,7 @@ InkBlade 自己是 Apache-2.0，`NOTICE` 里对 ARTEX 等 AGPL 项目只做黑�
 **可复用清单。**
 
 1. 授权是密码学对象：字段规范化 + 签名 + 每次验签 + 篡改即拒绝。
-2. 级别、范围、时间窗三道闸门，每次执行都检查。
+2. 级别、范围、时间窗三道校验，每次执行都检查。
 3. 工作区级 kill switch；异常时先停，再查。
 4. 写类动作先备份、拿回执、失败回滚；定期做恢复演练。
 5. 三层证据 + manifest 哈希 + 报告证据锚；结论必须能回到原始事实。
@@ -686,7 +686,7 @@ InkBlade 自己是 Apache-2.0，`NOTICE` 里对 ARTEX 等 AGPL 项目只做黑�
 Agent 评测不是「跑几个 demo 看效果」，而是一套可复现的实验设计：
 
 - **任务集**：规模、难度分布、类别覆盖、独立性、是否有 ground truth。
-- **故障注入**：瞬时错误、永久闸门、死胡同、预算超支、工具返回脏数据、上下文超限。
+- **故障注入**：瞬时错误、永久校验、死胡同、预算超支、工具返回脏数据、上下文超限。
 - **指标**：成功率、时延（p50/p95）、token、审批次数、人工干预、证据覆盖率、重试次数、误报率。
 - **可复现性**：固定模型版本、固定提示词、固定工具版本、固定环境、固定随机种子、落盘原始 JSON。
 - **对照**：OFF/ON、A/B、消融（去掉记忆/技能/重派），每次只改一个变量。
@@ -714,7 +714,7 @@ Demo 有三个天然偏差：**幸存者偏差**（只演示成功的那条）�
 - `lab/tencent-compare/tasks.json`：8 个任务，回答「第三节的产品化策略（分级审批 + 结构化观察 + 预算降级）有没有效」。它是**策略级微评测**：动作成本是标定的确定性值，不调用外部 LLM，不打真实目标；OFF 精确复现 HEAD 语义，ON 走新策略。任务是 `tenant-recon / gateway-auth / litellm-chain / gpu-tenant / budget-crunch / evidence-audit / dead-end / irreversible-write`，覆盖四个赛区。
 - `lab/agent-eval/tasks.json`：15 个任务，6 类（recon 4、exploit 3、chain 2、long-context 2、gateway 2、gpu-tenant 2），回答「deterministic 单进程 vs supervisor-worker 有界并发 + 重派，哪个更适合当前任务集」。它跑本地仿真靶场，写类模块不参与（probe-only）。
 
-第二步，把故障注入写进配置，不要偷偷埋。8 任务里有四类故障：瞬时错误（`gateway-auth`）、死胡同（`dead-end`）、永久闸门（`evidence-audit`）、预算超支（`budget-crunch`），每类只出现一次。15 任务里只有一处注入：`gateway-auth` 的首个动作首次尝试抛 `TimeoutError`，并在 `config.fault_injection` 里显式记录。**故障注入不是作弊，它是测量恢复能力的必要手段；但必须标注，不能把注入失败当成模型失败。**
+第二步，把故障注入写进配置，不要偷偷埋。8 任务里有四类故障：瞬时错误（`gateway-auth`）、死胡同（`dead-end`）、永久校验（`evidence-audit`）、预算超支（`budget-crunch`），每类只出现一次。15 任务里只有一处注入：`gateway-auth` 的首个动作首次尝试抛 `TimeoutError`，并在 `config.fault_injection` 里显式记录。**故障注入不是作弊，它是测量恢复能力的必要手段；但必须标注，不能把注入失败当成模型失败。**
 
 第三步，阈值写进测试，不写进 PPT。`lab/tencent-compare/run_eval.py` 的 `THRESHOLDS` 有五条主指标：成功率至少 +25 个百分点、审阅项 ≤ 基线 85%、时延 ≤ 基线 80%、token ≤ 基线 85%、人工干预降到 0；`GUARDRAILS` 有两条：审批决策点不得比基线多 1 次以上、证据覆盖率 ≥ 0.9。只有主指标至少 2 项达标 + 护栏全过，才算 PASS。这样「改坏了」会被 CI 挡住，而不是靠人记得。
 
@@ -888,7 +888,7 @@ Agent 产品的流失，很多时候不是「模型不够强」，而是：
 - **5 分钟 quickstart**：安装、doctor、demo、看到第一条发现；一页，截图/GIF。
 - **30 分钟 tutorial**：签授权、选链、dry-run、执行、看证据、导报告；一个完整闭环。
 - **reference**：CLI/API/模块/链/配置/错误码；可搜索。
-- **troubleshooting**：按症状索引（装不上、端口占用、授权过期、备份闸门 91、报告空、UI 打不开）。
+- **troubleshooting**：按症状索引（装不上、端口占用、授权过期、备份校验 91、报告空、UI 打不开）。
 
 每页开头写「读完你能做什么」，结尾写「下一步读什么」。不要把架构文档放在 quickstart 前面；用户先要结果，再要原理。
 
@@ -1140,7 +1140,7 @@ Rust 探针解决的是这五件事：静态二进制不依赖目标运行时；
 
 **只读是默认，不是选项。** 探针 `--read-only` 默认开启；写需要 `--allow-write`。只读模式下 `fs.write/remove/mkdir`、非白名单 `exec`、K8s 写动词、`spawn` 全部拒绝。
 
-**写是五道闸门。** 授权、探针开关、模板 `meta.writes`、`backup-write` 模式、备份回执。缺一条就 `skipped` 或 `E_DENIED`。不要用“客户已经同意了”替代任何一条；同意不是备份，也不是模板声明。
+**写是五重校验。** 授权、探针开关、模板 `meta.writes`、`backup-write` 模式、备份回执。缺一条就 `skipped` 或 `E_DENIED`。不要用“客户已经同意了”替代任何一条；同意不是备份，也不是模板声明。
 
 **认证在通道层。** token 通过 `--token-file` 传入，文件 0600；握手用 HMAC-SHA256 证明，不在线上传 token；子探针独立 token；失败 3 次关闭连接。token 不写 argv、不写日志、不写证据。
 
@@ -1229,7 +1229,7 @@ session
 - [ ] 模板在 fixed 态不产生同一 finding；
 - [ ] 连续 3 次一致；
 - [ ] 只读模板在 `--read-only` 下跑通；
-- [ ] 写模板在五道闸门下跑通，且有回滚；
+- [ ] 写模板在五重校验下跑通，且有回滚；
 - [ ] 清理回执完整；
 - [ ] 结果 `runtime=rust`；
 - [ ] 覆盖率表更新；
@@ -1252,7 +1252,7 @@ Testing gains a probe/template layer: every template runs vulnerable and fixed a
 
 - 执行路径与 op：`ARCHITECTURE-PROBE.md`、`probe/src/`。
 - 协议与错误码：`PROBE-PROTOCOL.md`、`probe/src/protocol.rs`。
-- 投放与写闸门：`PROBE-DEPLOY.md`、`probe/src/config.rs`、`probe/src/spawn.rs`。
+- 投放与写权限校验：`PROBE-DEPLOY.md`、`probe/src/config.rs`、`probe/src/spawn.rs`。
 - 动态验证标准：`DYNAMIC-VERIFICATION.md`、`probe/schema/probe-template.schema.json`。
 - 第 10 层：[`PRODUCT.md`](PRODUCT.md)、`inkblade/core/defenseprobe.py`。
 
@@ -1278,7 +1278,7 @@ Testing gains a probe/template layer: every template runs vulnerable and fixed a
 | D04 | 审批放在哪？ | 阶段边界：只读一段、写一段、不可逆写单独 | 高风险客户可加到逐动作，但不能减到无 |
 | D05 | 不可逆写怎么放行？ | 必须有备份目标 + 单独确认 | 没有例外；没有备份就 L1 |
 | D06 | 审批状态存哪？ | 持久化状态机（队列/DB），不是内存布尔 | 单机 demo 可临时内存，生产必须持久 |
-| D07 | 提议能不能执行？ | 不能；提议只写队列 | 永远不能；执行必须走 runner 闸门 |
+| D07 | 提议能不能执行？ | 不能；提议只写队列 | 永远不能；执行必须走 runner 校验 |
 | D08 | 用 plan-execute 还是 ReAct？ | 阶段清晰用 plan-execute；探索用有界 ReAct | 任务形状变化时切换，不要混着用 |
 | D09 | 用不用 supervisor-worker？ | 3 个以上独立目标才用 | 强依赖/共享上下文时回单 agent |
 | D10 | fan-out 上限多少？ | 4–8，按目标承载能力定 | 客户环境更大且限流可控时可提高，但要有配额 |
@@ -1407,7 +1407,7 @@ Testing gains a probe/template layer: every template runs vulnerable and fixed a
 | 回答的问题 | 分级审批 + 结构化观察 + 预算降级有没有效 | deterministic vs supervisor-worker 哪个更适合当前任务集 |
 | 是否调 LLM | 否 | 否（本地仿真 + 确定性执行） |
 | 成本口径 | 任务集逐动作标定 token（如 420/260） | 确定性估算（CJK 按字 + 其余 4 字符/token） |
-| 故障注入 | 瞬时/死胡同/永久闸门/预算超支，各一次 | `gateway-auth` 首个动作首次 `TimeoutError` |
+| 故障注入 | 瞬时/死胡同/永久校验/预算超支，各一次 | `gateway-auth` 首个动作首次 `TimeoutError` |
 | 审批口径 | OFF 整批 1 次；ON 按策略 | deterministic 整批 1 次；supervisor 逐动作 |
 | 主要结果 | 0.50→1.00；31,500→19,200ms；12,423→9,111 token | 93.3%→100.0%；4,844→2,899ms；4,288→4,387 token；审批 1→32 |
 

@@ -69,8 +69,8 @@
 | INIT-12 | 防护产品绕过 11 模块（字节系为重点，良性 marker，检出/盲区/硬化） | spec §1.1-13、§5.2 绕过表 | done | 11 个 `defense-bypass-*`；`inkblade/core/defenseprobe.py`；`docs/DEFENSE-LAB-RESULTS.md`（QEMU k3s 真机回放 4 产品）；`tests/test_probe_defense_bypass.py` | Kyverno/Falco/Trivy/ModSecurity 已真机回放；Elkeid/AgentSmith/veinmind/Tetragon/KubeArmor/Wazuh/Hubble 因内核头/BPF-LSM/CNI 明确 N/A | defense |
 | INIT-13 | 攻击链目录齐全（经典 7 + 云侧 4 + 网络 5 + 零日 2） | spec §6.3；plan 链任务 | done | `inkblade/chains/` 29 条（超集） | 零日 2 条与 CVE 1 条依赖外部条件，紫队未重放 CVE 链 | defense |
 | INIT-14 | 链前置三态判定 + dry-run 计划（模块/参数/备份动作/写面） | spec §6.2；§18-4 | done | `inkblade/core/chains.py`；`tests/test_chains.py`；`docs/RUNBOOK.md` | 表达式为自定义子集，复杂布尔需拆分 | docs |
-| INIT-15 | 写类模块强制备份闸门，无回执拒绝执行（退出码 91） | spec §4.3；§18-2 | done | `inkblade/core/backup.py`、`runner.py`；`tests/test_backup.py`、`test_runner.py` | 回滚对远端不可逆动作只能标记 unsupported | docs |
-| INIT-16 | 授权向导 + 要素哈希签存 + 分级闸门 + 范围校验（未签→423/拒绝） | spec §4.2；§18-1 | done | `inkblade/core/roe.py`；`tests/test_roe.py`、`test_consent_signature.py`、`test_runner_scope_audit.py` | 签名为工作区 HMAC，不是 CA 证书链 | docs |
+| INIT-15 | 写类模块强制备份校验，无回执拒绝执行（退出码 91） | spec §4.3；§18-2 | done | `inkblade/core/backup.py`、`runner.py`；`tests/test_backup.py`、`test_runner.py` | 回滚对远端不可逆动作只能标记 unsupported | docs |
+| INIT-16 | 授权向导 + 要素哈希签存 + 分级校验 + 范围校验（未签→423/拒绝） | spec §4.2；§18-1 | done | `inkblade/core/roe.py`；`tests/test_roe.py`、`test_consent_signature.py`、`test_runner_scope_audit.py` | 签名为工作区 HMAC，不是 CA 证书链 | docs |
 | INIT-17 | 多用户四角色（admin/lead/tester/auditor）+ 多工作区硬隔离 | spec §4.1；§18-7 | done | `inkblade/core/users.py`；`tests/test_users.py`；`tests/test_e2e.py`（跨工作区拒绝） | 无 LDAP/OIDC 真实联调（仅契约 mock） | enterprise |
 | INIT-18 | 三层证据（上下文摘要/SQLite/归档 tar+SHA256）+ manifest 篡改检测 | spec §7；§18-3 | done | `inkblade/core/evidence.py`；`tests/test_evidence.py`、`test_sample_determinism.py` | 归档层在 Windows 无 zstd 时降级 gzip（已声明） | docs |
 | INIT-19 | 双语渗透报告（PTES 七段 + NIST 800-115 + 等保 2.0 + GB/T 20984 + CVSS 3.1 + ATT&CK/ATLAS） | spec §8；§18-5 | done | `inkblade/reports/render.py`、`cvss.py`、`standards.json`；`tests/test_reports.py`；`reports/samples/pentest-report-bi.md` | 等保/20984 为条款映射，不是测评机构结论 | docs |

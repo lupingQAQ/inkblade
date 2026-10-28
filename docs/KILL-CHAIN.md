@@ -30,7 +30,7 @@
 | # | 阶段 | 原语 | 前置判定 | 成功证据 | 备份/清理 | 失败回退 |
 |---|---|---|---|---|---|---|
 | 1 | `stage-1-entry` 入口 | 枚举 NodePort/Service 暴露面；识别训练/推理控制面；盘点 operator SA | `/readyz=ok`；至少一个 NodePort；SA 可读 | Service 清单、入口 HTTP 200、SA can-i 矩阵 | 无写；不删除任何既有服务 | HTTP 不可达 → 仅保留 API 层暴露证据，不进入凭据阶段 |
-| 2 | `stage-2-credential` 凭据/SA | TokenRequest 取 bearer token；盘点 IRSA/默认 key 分支 | SA 存在；token whoami 匹配；token 可 create rolebindings/clusterrolebindings | token 指纹、whoami、can-i 矩阵、IRSA/默认 key 版本闸门声明 | 不落明文 token；运行结束删除临时 token kubeconfig | token 不可用 → 默认 SA token 只读盘点；仍失败则中止，不尝试默认口令 |
+| 2 | `stage-2-credential` 凭据/SA | TokenRequest 取 bearer token；盘点 IRSA/默认 key 分支 | SA 存在；token whoami 匹配；token 可 create rolebindings/clusterrolebindings | token 指纹、whoami、can-i 矩阵、IRSA/默认 key 版本校验声明 | 不落明文 token；运行结束删除临时 token kubeconfig | token 不可用 → 默认 SA token 只读盘点；仍失败则中止，不尝试默认口令 |
 | 3 | `stage-3-rbac-escalation` RBAC | 用 operator token 创建 namespace RoleBinding + ClusterRoleBinding 指向 cluster-admin；复核集群级 can-i | token 有效；具备 RBAC 写；namespace 存在 | 两个绑定对象 JSON；`can-i '*' '*'` = yes；前后对比 | 写前快照两个绑定（预期 absent）；清理删除绑定 | 防提权拒绝 → 降级 namespace RoleBinding，明确标记“未达集群级”，不伪造 PROOF |
 | 4 | `stage-4-privileged-pod` 特权 Pod | cluster-admin token 创建 privileged + hostPID + hostPath=/ Pod | cluster-admin 已验证；namespace 存在；节点 Ready | Pod JSON 字段回读、phase=Running、准入策略对照 | 写前快照 Pod（预期 absent）；清理删除 Pod | 准入拒绝/镜像不可拉 → 保留 RBAC 证据并降级，不宣称节点 root |
 | 5 | `stage-5-node-marker` 节点 root | Pod 内 uid=0 向 `/host/root` 写唯一 marker，`sha256sum` 回读 | Pod Running；hostPath=/；uid=0 | `id`、`cat /host/etc/hostname`、marker 内容+sha256+回读一致 | node-file 快照（预期 absent）；清理 `rm -f` 后 `test ! -f` | 写入失败 → 删 Pod 并以逃逸原语证据降级，不伪造节点 root |
@@ -49,15 +49,15 @@
 | 6 | stage-6-cluster-proof | success | `53550568fdfae994` |
 | 7 | stage-7-cleanup | success | `3775120b8ad947e1` |
 
-## 2. 编排器语义（三闸门 + 逐阶段）
+## 2. 编排器语义（三重校验 + 逐阶段）
 
 `inkblade objective cluster-takeover --workspace ... --proof-marker ... [--dry-run] [--max-stage N]`
 
 | 机制 | 实现 |
 |---|---|
-| 授权闸门 | `roe_status=complete`；`level` 必须为 `全影响演示`；时间窗有效；`session.can('execute')` |
-| 范围闸门 | `--namespace` 必须在 consent `namespaces`；可选 `host` 必须在授权 CIDR |
-| 备份闸门 | 每个 `writes=true` 阶段必须有 `backup_targets`；执行前逐目标快照并写入 `backups/` + `run.record_backup` |
+| 授权校验 | `roe_status=complete`；`level` 必须为 `全影响演示`；时间窗有效；`session.can('execute')` |
+| 范围校验 | `--namespace` 必须在 consent `namespaces`；可选 `host` 必须在授权 CIDR |
+| 备份校验 | 每个 `writes=true` 阶段必须有 `backup_targets`；执行前逐目标快照并写入 `backups/` + `run.record_backup` |
 | 紧急停止 | 每阶段前检查 `<ws>/abort.json`；命中即拒绝，不进入下一阶段 |
 | 逐阶段确认 | 默认交互 `y/N`；展示阶段/原语/写面/备份数/成功证据/回退 |
 | `--auto-approve` | **仅限** `level=全影响演示` 且 `role=lead`；否则退出码 91 |
@@ -66,7 +66,7 @@
 | 证据三层 | 每阶段：`objective/<stage>.json` → `steps/<stage>.tar.gz`（归档+sha256）+ SQLite steps/findings/actions + `context.jsonl.gz` |
 | 最终 PROOF | `objective-proof.json`：gates、7 阶段、highest_privilege、集群级动作清单、stage/actions 哈希、`proof_sha256`、cleanup 校验 |
 
-退出码：`0` 全链成功且清理已验证（或 `--dry-run`）；`3` 阶段失败/清理未验证/部分链；`91` 三闸门拒绝。
+退出码：`0` 全链成功且清理已验证（或 `--dry-run`）；`3` 阶段失败/清理未验证/部分链；`91` 三重校验拒绝。
 
 ## 3. 真实实验室（QEMU TCG + k3s）
 
@@ -150,7 +150,7 @@ inkblade rules validate --pack reports/rules-pack
 ## 5. 边界（如实声明）
 
 1. **非生产规模**：单节点 k3s、QEMU TCG 纯软件仿真，无 HA/多节点调度/真实 GPU。
-2. **硬件/交换机/带外**：无物理交换机、InfiniBand、BMC/OOB 访问；仅以版本闸门 + 只读证据代替，
+2. **硬件/交换机/带外**：无物理交换机、InfiniBand、BMC/OOB 访问；仅以版本校验 + 只读证据代替，
    不执行任何硬件写入（见链定义 `objective.hardware_gates`）。
 3. **secret 仅名称**：stage 6 只列举 secret 名称，不读取 value；token 仅记录 sha256 前缀与尾 4 位。
 4. **入口适配**：真实 NodePort 30081 未做 QEMU hostfwd，实验用 `kubectl port-forward` 作为宿主侧
@@ -172,9 +172,9 @@ inkblade rules validate --pack reports/rules-pack
 | `reports/samples/kill-chain/transcript.jsonl` | kubectl 调用轨迹（token 已脱敏） |
 | `reports/samples/kill-chain/lab-wrapper.json` | 夹具 teardown 与 wrapper 侧无残留复核 |
 | `inkblade/chains/cluster-takeover-objective.json` | 七阶段链定义 |
-| `inkblade/core/objective_chain.py` | 编排器实现（三闸门/确认/超时/证据/PROOF） |
+| `inkblade/core/objective_chain.py` | 编排器实现（三重校验/确认/超时/证据/PROOF） |
 | `lab/qemu-k3s/manifests/40-killchain-operator.yaml` | 脆弱 operator 夹具 |
 | `lab/qemu-k3s/manifests/41-killchain-entry.yaml` | 未鉴权入口夹具 |
 | `lab/qemu-k3s/kill_chain_lab.py` | 真实集群实验 runner |
-| `tests/test_objective.py` | 三闸门/确认/超时/清理/PROOF 哈希测试 |
+| `tests/test_objective.py` | 三重校验/确认/超时/清理/PROOF 哈希测试 |
 | `tests/test_kill_chain_artifacts.py` | 链/规则/文档/真实样张结构校验 |

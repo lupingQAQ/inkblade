@@ -69,7 +69,7 @@
 | `router-cache-metrics-leak` | `GET /router/metrics` | 200 且 `per_tenant` 含受害租户 | 401 或仅本租户视图 |
 | `cache-poison-persistence` | probe-only：读受害块；backup-write：写块 + 洪泛 + 独立读回 | pinned 生效 + 逐出压力下 sha256 读回一致 | pinning 被拒/降级，洪泛后 404 |
 
-写类边界：`cache-poison-persistence` 的 `writes=true`，执行前必须通过 runner 备份闸门
+写类边界：`cache-poison-persistence` 的 `writes=true`，执行前必须通过 runner 备份校验
 （`backup_targets` 非空且快照回执成功），否则 `BackupGateRefused`（exit 91）；无备份时不落任何写请求。
 
 ---
@@ -156,7 +156,7 @@ python -m unittest tests.test_cache_sim tests.test_modules_cache tests.test_cach
 - 远程 KV 池接口按 Mooncake/LMCache 的“块存储 + 传输”抽象建模，不绑定其具体 RPC 协议；
   真实适配需替换 `remote-kv-pool-isolation` 的 URL/认证参数。
 - 指标/样本只使用 benign fixture（`INKBLADE-BENIGN-*`），不含真实业务数据或凭据。
-- 写类验证仅在 `backup-write` + 备份回执下执行；生产使用需额外 ROE/范围闸门。
+- 写类验证仅在 `backup-write` + 备份回执下执行；生产使用需额外 ROE/范围校验。
 
 ---
 

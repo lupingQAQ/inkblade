@@ -13,7 +13,7 @@ real Kyverno + Falco VM described in [`DEFENSE-LAB-RESULTS.md`](DEFENSE-LAB-RESU
 |---|---|---|
 | Probe collection | process/mount/SA snapshot | adds `security_posture`: agent processes, kernel modules, agent directories, admission policies, runtime sensor, ruleset fingerprint |
 | Agent graph | findings only | `Fact` with claim `defense:<product>` (`fact_kind="defense"`), evidence-gated |
-| Policy | RoE / scope / write gate | `core/defense_policy.py`: product → available techniques → risk/success ranking; explicit stop when no primitive exists |
+| Policy | RoE / scope / write-permission check | `core/defense_policy.py`: product → available techniques → risk/success ranking; explicit stop when no primitive exists |
 | Execution | free-form exploit intent | scheduler refuses offensive intents without a `bypass.technique_id`; probe tasks carry the selected plan |
 | Evidence | probe archive | additionally records detected product, technique id, alerts and denials observed in the phase window |
 

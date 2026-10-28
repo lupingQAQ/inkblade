@@ -11,7 +11,7 @@ ms-swift / TRL）、RL（rollout 缓冲 / 奖励信号）三条栈，共 10 个�
 
 | 项 | 结果 |
 |---|---|
-| 新增模块 | 10（纯小写键，只读 4 / 写类 6；写类全部走 `backup_targets` 备份闸门） |
+| 新增模块 | 10（纯小写键，只读 4 / 写类 6；写类全部走 `backup_targets` 备份校验） |
 | 两态差分 | vulnerable 10/10 产出 high；fixed 10/10 无 high（读面 401 / 写面 401/403 / 奖励指标健康） |
 | 实效验证 | `verify-effects` 新增 3 项：optimizer state 写读回、数据篡改检出、模板注入检出（均 PASS） |
 | 0day 挖掘 | 5 个最新 release 快照、70 条 `pending-manual-review` 候选（high 10 / medium 60），**不自动入库** |
@@ -68,7 +68,7 @@ ms-swift / TRL）、RL（rollout 缓冲 / 奖励信号）三条栈，共 10 个�
 - 只读调度器提交面与数据集可见性，不提交任何作业；
 - 出口：SFT/作业提交面的鉴权与租户隔离结论。
 
-阶段 2（写类，需书面授权 + 备份闸门 + 回滚演练）：
+阶段 2（写类，需书面授权 + 备份校验 + 回滚演练）：
 
 - `checkpoint-optimizer-state-poison` / `data-pipeline-poison` / `tokenizer-template-injection` /
   `rl-rollout-buffer-poison` / `pretrain-job-escape`（backup-write）；
@@ -128,6 +128,6 @@ python -m inkblade mine --trainstack --out reports/samples/mining-trainstack
 - **未覆盖**：真实 GPU 训练步/集合通信（G1）、真实对象存储分片（G2）、真实调度器准入执行、
   真实 SFT/RL 训练执行、DeepSpeed/Megatron 具体 CVE 版本区间（版本矩阵未扩展）。
 - **下一步**：对 70 条候选中 high 的 10 条做人工可达性复核（输入是否来自请求/配置/租户数据）；
-  复核通过者再建私有模块（走零日闸门），未通过者在候选 note 中记录"设计内行为"。
+  复核通过者再建私有模块（走零日校验），未通过者在候选 note 中记录"设计内行为"。
 - **反向收益**：把 `checkpoint sha256`、`sampler manifest 校验`、`模板基线 sha256`、
   `跨租户轨迹隔离` 四条检测语义固化为企业监控项，可在不写任何数据的前提下持续发现篡改。

@@ -21,7 +21,7 @@ inkblade.agent.coverage   资产/服务/SA/权限边/检查/覆盖 proof
         │  intent_priority / closure gate
         ▼
 inkblade.agent.scheduler  frontier 选择（未覆盖优先）
-inkblade.agent.objective  证据门控 + 闭包闸门（未闭包不 success）
+inkblade.agent.objective  证据门控 + 闭包校验（未闭包不 success）
 ```
 
 - probe 协议仍是 Rust 探针的 framed JSON；`relay` 只消费既有
@@ -108,7 +108,7 @@ inkblade.agent.objective  证据门控 + 闭包闸门（未闭包不 success）
 | `budget-exhausted` | 任一硬预算耗尽；proof 同时输出完整缺口清单 |
 | `operator-stop` | kill switch / operator stop |
 | `objective-unmet` | objective 自身未满足 |
-| `policy-refused` | RoE/审批/防御闸门拒绝并阻塞 |
+| `policy-refused` | RoE/审批/防御校验拒绝并阻塞 |
 | `no-probes` | 存在覆盖缺口但没有任何已注册探针 |
 | `dry-run` / `error` | 只规划 / 内部错误 |
 
@@ -176,7 +176,7 @@ inkblade agent run --coverage --objective read-only-recon --probe <probe> \
    - cluster 父链 / probe 父链成环 → `RelayLoopError`；
    - 所有被拒绝的重复/环都写入 `prevented[]`，不是静默跳过。
 6. **每集群独立 RoE/预算**：每个 cluster 有自己的 `roe_level`、
-   `steps`/`actions` 上限；工作区 consent 仍是总闸门，cluster 级别不得高于
+   `steps`/`actions` 上限；工作区 consent 仍是总校验，cluster 级别不得高于
    工作区。一个集群预算耗尽只抛 `RelayBudgetExceeded`，不影响兄弟集群。
 7. **失败回退**：按 `transport + fallback[]` 顺序尝试；每次失败记录
    `attempts[]` 的 transport/error，成功后返回 `fallback_from`。全部失败时

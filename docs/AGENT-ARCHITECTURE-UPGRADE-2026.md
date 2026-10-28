@@ -2,7 +2,7 @@
 
 > 研究背景与差距反思见 `docs/AGENT-ARCHITECTURE-2026.md`；本文只写 **已落地的实现**、
 > 边界与默认开关。全部模块默认只读/默认关闭写面，执行路径仍逐动作经过 runner 的三道
-> 闸门（ROE 同意锁 → 备份闸门 91 → 三层落证/审计）。
+> 校验（ROE 同意锁 → 备份校验 91 → 三层落证/审计）。
 
 ## 1. 七个核心模块
 
@@ -15,7 +15,7 @@
 | `core/reflexion.py` | 运行后自反思：失败/降级 → 建议 → pending 技能 | **零执行** | `reflect/propose_skill/render_md` |
 | `core/a2a.py` | A2A agent card + task 状态机（只读委派）+ MCP stdio 客户端（只读工具） | 写技能/写工具拒绝 | `A2AServer/agent_card/MCPClient` |
 | `core/sandbox.py` | 工具执行沙箱：python -I 子进程 + 超时 + 内存限制（POSIX）+ 禁网开关 + 审计 | 不可信代码默认禁网 | `Sandbox.run_python/run_untrusted` |
-| `core/agentops.py` | 门面：审批计划 → supervisor（journal）→ reflexion → 技能提案，一条可审计闭环 | 不绕过任何闸门 | `run_approved_plan` |
+| `core/agentops.py` | 门面：审批计划 → supervisor（journal）→ reflexion → 技能提案，一条可审计闭环 | 不绕过任何校验 | `run_approved_plan` |
 
 ## 2. 硬边界（测试锁定）
 
@@ -29,7 +29,7 @@
    `annotations.readOnlyHint=true` 或读前缀工具，显式 False/未知一律拒绝。
 4. **沙箱不是隔离证明**：`python -I` + 禁网 monkeypatch + 墙钟超时 + POSIX rlimit；
    Windows 无 rlimit（`limits.memory=false` 如实标注）。文档不宣称内核级隔离。
-5. **写面仍走 runner**：备份闸门/ROE 级别/零日闸门原样生效；supervisor 不绕过。
+5. **写面仍走 runner**：备份校验/ROE 级别/零日校验原样生效；supervisor 不绕过。
 
 ## 3. 组合用法（库 API）
 
@@ -44,7 +44,7 @@ from inkblade.core import reflexion, memory
 store = EvidenceStore(".", workspace="local-lab")
 session = Session(None, "lead", "lead", ["local-lab"], "local")
 
-# 1) 已批准动作 → supervisor 队列（默认执行器走 runner 三闸门）
+# 1) 已批准动作 → supervisor 队列（默认执行器走 runner 三重校验）
 sup = Supervisor(store, session, workers=4, max_attempts=2,
                  journal=Journal.for_store(store))
 sup.submit([{"module": "exposure-mapping", "params": {"snapshot": "..."},

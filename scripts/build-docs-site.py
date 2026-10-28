@@ -290,7 +290,7 @@ WORKFLOW9 = [
     ("4", "Detection", "检测", "session run, run and agent run execute templates across the ten layers.",
      "session run、run 与 agent run 按十层执行模板。", "findings, evidence", "发现、证据"),
     ("5", "Escape", "逃逸", "execute resolves a chain; write steps pass the backup gate first.",
-     "execute 解析链；写步骤先过备份闸门。", "escape path", "逃逸路径"),
+     "execute 解析链；写步骤先过备份校验。", "escape path", "逃逸路径"),
     ("6", "Lateral", "横向", "channel forwards, child probes and agent graph edges map internal reachability.",
      "通道转发、子探针与 agent 图边测绘内部可达性。", "reachability graph", "可达图"),
     ("7", "Multi-probe", "多探针", "probe spawn extends the tree; children inherit a stricter budget and allow-list.",
@@ -331,11 +331,11 @@ FAQ_ITEMS = [
     ("Is the probe a backdoor?",
      "No. It does not persist, modify startup, patch images or call a fixed C2. It runs inside an authorized session, executes registered templates, defaults to read-only, gates writes and cleans up.",
      "探针是不是后门？",
-     "不是。它不持久化、不改启动项、不改镜像、不回连固定 C2。它只在授权会话内运行，执行已注册模板，默认只读，写操作过闸门，退出时清理。"),
+     "不是。它不持久化、不改启动项、不改镜像、不回连固定 C2。它只在授权会话内运行，执行已注册模板，默认只读，写操作过校验，退出时清理。"),
     ("How are writes controlled?",
      "Five gates: signed authorization covering target/level/window, --allow-write, meta.writes with a write step, backup-write mode and a backup receipt. A write reads back the hash and rolls back on failure.",
      "写操作怎么保证安全？",
-     "五道闸门：授权覆盖目标/级别/时间窗、--allow-write、meta.writes 与写步骤、backup-write 模式、备份回执。写后回读哈希，失败回滚。"),
+     "五重校验：授权覆盖目标/级别/时间窗、--allow-write、meta.writes 与写步骤、backup-write 模式、备份回执。写后回读哈希，失败回滚。"),
     ("Can it run air-gapped?",
      "Yes. The controller needs no network, the probe needs no package index, and templates and rule packs ship with the release.",
      "能离线吗？",
@@ -462,7 +462,7 @@ section(
 <ul>
   <li><b>模板面。</b> template.json 声明输入、载荷、步骤、computed 状态、检查项、发现与产物。</li>
   <li><b>探针面。</b> 静态 Rust 二进制使用 HMAC 认证的帧协议，执行 http、tcp、exec、fs、k8s、socks 与 spawn。</li>
-  <li><b>控制面。</b> Python 执行授权、范围、级别、备份与审计闸门，并把探针证据折成发现。</li>
+  <li><b>控制面。</b> Python 执行授权、范围、级别、备份与审计校验，并把探针证据折成发现。</li>
 </ul>
 <h3>探针树</h3>
 <p>每颗探针都有 probe_id 与 parent_id。子探针继承父探针的只读状态、命令白名单与预算，且只能更严格。清理先子后父，避免留下仍持有 token 的孤儿。</p>
@@ -484,7 +484,7 @@ section(
             '<tr><td><code>audit-exec</code></td><td>Run a command with the audit trail and timing record.</td></tr>',
             '<tr><td><code>read-file</code></td><td>Read a file with size caps and a SHA-256 hash.</td></tr>',
             '<tr><td><code>list-files</code></td><td>List a directory tree with metadata.</td></tr>',
-            '<tr><td><code>upload</code></td><td>Write a file through the authorized write gate.</td></tr>',
+            '<tr><td><code>upload</code></td><td>Write a file through the authorized write-permission check.</td></tr>',
             '<tr><td><code>download</code></td><td>Stream a file back in chunks.</td></tr>',
             '<tr><td><code>spawn</code></td><td>Start a child probe with its own token and a stricter budget.</td></tr>',
             '<tr><td><code>dial</code></td><td>Open a TCP or UDP connection to an in-scope target.</td></tr>',
@@ -506,7 +506,7 @@ section(
             '<tr><td><code>audit-exec</code></td><td>执行命令并留下审计轨迹与时序记录。</td></tr>',
             '<tr><td><code>read-file</code></td><td>读取文件，带大小上限与 SHA-256 哈希。</td></tr>',
             '<tr><td><code>list-files</code></td><td>列出目录树与元数据。</td></tr>',
-            '<tr><td><code>upload</code></td><td>经授权写闸门写入文件。</td></tr>',
+            '<tr><td><code>upload</code></td><td>经授权写权限校验写入文件。</td></tr>',
             '<tr><td><code>download</code></td><td>分块流式回传文件。</td></tr>',
             '<tr><td><code>spawn</code></td><td>启动子探针，独立 token、更严格预算。</td></tr>',
             '<tr><td><code>dial</code></td><td>向范围内目标建立 TCP 或 UDP 连接。</td></tr>',
@@ -575,7 +575,7 @@ section(
     "Nine stages, each leaves something the next can check", "九个阶段，每步都留下下一步能校验的东西",
     en="""<p>The order is the product. Any stage can refuse; a refusal stops the run.</p>
 """ + workflow_flow("en") + """
-<h3>Gate behaviour</h3>
+<h3>Write-permission checks</h3>
 """ + table(
         [("Gate", ""), ("Refuses when", ""), ("Signal", "num")],
         [
@@ -589,9 +589,9 @@ section(
 <p class="note"><a href="WORKFLOW.md">Stage reference</a></p>""",
     zh="""<p>顺序就是产品。任何阶段都可以拒绝；拒绝就地停下。</p>
 """ + workflow_flow("zh") + """
-<h3>闸门行为</h3>
+<h3>写权限校验结果</h3>
 """ + table(
-        [("闸门", ""), ("拒绝条件", ""), ("信号", "num")],
+        [("校验", ""), ("拒绝条件", ""), ("信号", "num")],
         [
             '<tr><td>授权</td><td>没记录、窗口过期、资产越界。</td><td class="num">exit 91</td></tr>',
             '<tr><td>级别</td><td>模板级别高于记录。</td><td class="num">exit 91</td></tr>',
@@ -719,7 +719,7 @@ section(
 <ol class="steps">
   <li><b>RoE record</b><span>Target, scope, level, window and emergency contact. Hash-pinned and carried by every run.</span></li>
   <li><b>Read-only default</b><span>Collection, probes, file reads and read-only templates need no extra flag.</span></li>
-  <li><b>Five write gates</b><span>Session level, --allow-write, meta.writes, backup-write mode, backup receipt.</span></li>
+  <li><b>Five write-permission checks</b><span>Session level, --allow-write, meta.writes, backup-write mode, backup receipt.</span></li>
   <li><b>Backup and rollback</b><span>Snapshot before the write, record both, restore one step at a time.</span></li>
   <li><b>Audit and evidence</b><span>Every probe action and file access lands in the evidence store with a SHA-256 manifest.</span></li>
   <li><b>Kill switch</b><span>inkblade abort stops the workspace; agent stop stops one run.</span></li>
@@ -737,11 +737,11 @@ section(
   <p><strong>Authorized use only.</strong> Written authorization or nothing. Testing systems you do not own is a crime in most jurisdictions. The software refuses without a signed record.</p>
   <p>Report security issues through the private channel in <code>SECURITY.md</code>. Do not open a public issue with exploit detail.</p>
 </div>""",
-    zh="""<p>没有签署记录，InkBlade 拒绝运行。每个阶段都有自己的闸门。</p>
+    zh="""<p>没有签署记录，InkBlade 拒绝运行。每个阶段都有自己的校验。</p>
 <ol class="steps">
   <li><b>RoE 记录</b><span>目标、范围、级别、时间窗与应急联系人；哈希钉存，跟着每次 run 走。</span></li>
   <li><b>默认只读</b><span>采集、探测、读文件与只读模板不需要额外开关。</span></li>
-  <li><b>五道写闸门</b><span>会话级别、--allow-write、meta.writes、backup-write 模式、备份回执。</span></li>
+  <li><b>五重写权限校验</b><span>会话级别、--allow-write、meta.writes、backup-write 模式、备份回执。</span></li>
   <li><b>备份与回滚</b><span>写前快照，两者都记录，逐步恢复。</span></li>
   <li><b>审计与证据</b><span>每次探针动作与文件访问进入证据库，带 SHA-256 manifest。</span></li>
   <li><b>急停</b><span>inkblade abort 停工作区；agent stop 停单个 run。</span></li>

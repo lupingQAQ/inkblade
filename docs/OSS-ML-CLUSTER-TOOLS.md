@@ -114,7 +114,7 @@
 | [KubiScan](https://github.com/cyberark/KubiScan) | GPL-3.0 | 1434 / 2025-05-25 / 低频维护 | `limited` 面向集群内 pod 运行（python）；需 kubeconfig/service account；bench 未跑（与 Trivy RBAC 面重叠） | risky RBAC 枚举（cluster-admin/通配/exec）与 inkblade privesc 模块族同覆盖；InkBlade 多了利用验证+回滚 |
 | [kdigger](https://github.com/quarkslab/kdigger) | Apache-2.0 | 490 / 2025-11-07 / 低频维护 | `limited` 需在 pod 内跑 linux 二进制（bench 未跑：无受害 pod 执行环境；InkBlade 已有 20 bucket 模块映射） | pod 内态势感知 20 bucket 已映射进 InkBlade（agent-architecture 任务 21 新模块之一）；admission 六模板→InkBlade 规则包 |
 | [Peirates](https://github.com/inguardians/peirates) | GPL-2.0 | 1487 / 2026-10-25 / 活跃 | `limited` 交互式 CLI，需在拿到 pod/凭据后使用；bench 未跑（交互式工具不适合自动化计时口径） | 37 个攻击原语（exec/pod-create/secret 读取/token 伪造）与 InkBlade 权限链+提权矩阵同面；Peirates 是人工交互式、InkBlade 是编排验证式 |
-| [CDK](https://github.com/cdk-team/CDK) | Apache-2.0 | 4779 / 2026-05-01 / 低频维护 | `limited` linux 静态二进制，pod/容器内运行；bench 未跑（同 kdigger 原因） | 30 检测/13 利用分类已映射（InkBlade 21 新模块之一）；CDK 的容器逃逸 CVE 一键利用对应 InkBlade CVE arsenal 50 条的子集+版本闸门 |
+| [CDK](https://github.com/cdk-team/CDK) | Apache-2.0 | 4779 / 2026-05-01 / 低频维护 | `limited` linux 静态二进制，pod/容器内运行；bench 未跑（同 kdigger 原因） | 30 检测/13 利用分类已映射（InkBlade 21 新模块之一）；CDK 的容器逃逸 CVE 一键利用对应 InkBlade CVE arsenal 50 条的子集+版本校验 |
 
 ### ②模型/推理安全测试
 
@@ -180,7 +180,7 @@
 | OSS-M3 | M | ③ fabric 基线 | fabric 性能基线解析：nccl-tests（algbw/busbw）与 perftest（ib_write_bw/ib_read_lat）输出解析→rail 基线库，与 fabric-sim 期望值对比出偏差 findings | `inkblade/fabric_baseline.py` |
 | OSS-M4 | M | ③ fabric 诊断 | fabric 遥测采集适配：ibdiagnet 报告/infiniband-diags 计数器（symbol error/port discard）+ SONiC 计数器→fabric findings（只读） | `inkblade/modules/fabric-diag-ingest` |
 | OSS-M5 | M | ③ 诊断聚合 | sonobuoy 结果接入：sonobuoy 归档 tar→run evidence 归档（诊断插件结果作为证据链一层） | `inkblade/evidence.py::sonobuoy_ingest` |
-| OSS-L1 | L | ④ 扰动鲁棒 | 扰动鲁棒编排套件（robustness profile）：网络损伤×GPU 故障×进程杀×IO 慢的组合场景库+验收判据+审批闸门（复用 backup/ROE 三闸门），一次跑出韧性评分 | `inkblade/objective.py::robustness-suite` |
+| OSS-L1 | L | ④ 扰动鲁棒 | 扰动鲁棒编排套件（robustness profile）：网络损伤×GPU 故障×进程杀×IO 慢的组合场景库+验收判据+审批校验（复用 backup/ROE 三重校验），一次跑出韧性评分 | `inkblade/objective.py::robustness-suite` |
 | OSS-L2 | L | ④ GPU 故障注入 | GPU 故障注入面：Xid/ECC/MIG 错配/显存残留模拟扩展 + dcgmi diag -r 注入在真机联动（需真实 NVIDIA GPU，本机不可验证） | `inkblade/modules/gpu-fault-injection` |
 | OSS-L3 | L | ④ 混沌编排 | K8s 混沌执行器对接：Chaos Mesh/Litmus CRD 生成器（NetworkChaos/StressChaos/PodChaos 实验物化+结果回收），需 live 集群 | `inkblade/chaos_crd.py` |
 

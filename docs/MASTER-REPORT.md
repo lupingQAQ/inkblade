@@ -136,7 +136,7 @@ K8s 调度 Pod；Pod 带着 RBAC 身份；Service 把 Pod 暴露成入口；Netw
 
 **第三，ML 团队和 Security 团队说的不是一种语言。** ML 团队关心“我的训练会不会停、我的模型会不会坏”；Security 团队关心“权限、网络、密钥”。InkBlade 的报告把同一条发现同时映射到 PTES、CVSS、MITRE ATLAS、OWASP LLM/Agentic 和等保条款，目的不是“堆框架”，而是让两个团队能在同一页上对话。
 
-**第四，测试本身必须安全。** 写类动作要有备份，不可逆写要逐动作审批，未授权时 CLI 和 API 都要拒绝执行。甲方最怕的不是“没测出问题”，而是“测出问题的方式把生产搞坏了”。InkBlade 的四道闸门就是为此存在的。
+**第四，测试本身必须安全。** 写类动作要有备份，不可逆写要逐动作审批，未授权时 CLI 和 API 都要拒绝执行。甲方最怕的不是“没测出问题”，而是“测出问题的方式把生产搞坏了”。InkBlade 的四重校验就是为此存在的。
 
 ### 2.4 边界：它不是“万能攻击平台”
 
@@ -168,7 +168,7 @@ InkBlade 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 ### 3.3 侦察：先看清楚，不急着动手
 
-**做什么**：跑只读模块。包括暴露面、网络策略覆盖、RBAC、ServiceAccount、kubelet 面、Ray/vLLM/SGLang 管理面、AI 网关、GPU 池、云身份、审计日志。模块默认只读；需要写的时候必须单独声明 `writes=true`，并走备份闸门。
+**做什么**：跑只读模块。包括暴露面、网络策略覆盖、RBAC、ServiceAccount、kubelet 面、Ray/vLLM/SGLang 管理面、AI 网关、GPU 池、云身份、审计日志。模块默认只读；需要写的时候必须单独声明 `writes=true`，并走备份校验。
 
 **为什么这样做**：侦察是“低成本、高信息”的阶段。先把“谁能访问什么、哪里没鉴权、哪里权限过大”摸清楚，后面的利用才有依据。只读也意味着可以反复跑，不会改变目标状态。
 
@@ -198,11 +198,11 @@ InkBlade 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **不这样做会怎样**：一个错误的提议直接变成生产写操作；出了事无法追责；甲方不敢把工具放进真实环境。代码在 `inkblade/core/agent_policy.py`、`inkblade/core/explorer.py`，测试在 `tests/test_agent_policy.py`、`tests/test_explorer_policy.py`。
 
-### 3.7 执行：四道闸门，一个都不能少
+### 3.7 执行：四重校验，一个都不能少
 
-**做什么**：执行器按“授权 → 级别 → 备份 → 审计”四道闸门跑模块。授权不通过就拒绝；级别不够就拒绝；写类模块没有备份回执就以退出码 91 拒绝；每个动作都落审计。执行默认走确定性模块，不让模型直接下令。
+**做什么**：执行器按“授权 → 级别 → 备份 → 审计”四重校验跑模块。授权不通过就拒绝；级别不够就拒绝；写类模块没有备份回执就以退出码 91 拒绝；每个动作都落审计。执行默认走确定性模块，不让模型直接下令。
 
-**为什么这样做**：这四道闸门分别对应四类事故：测错目标、越权测试、写坏数据、无法追责。把它们放在执行器里，而不是放在“操作规范”里，才能保证不会被绕过。
+**为什么这样做**：这四重校验分别对应四类事故：测错目标、越权测试、写坏数据、无法追责。把它们放在执行器里，而不是放在“操作规范”里，才能保证不会被绕过。
 
 **不这样做会怎样**：一次“只是试试”的写操作可能覆盖生产权重；一次“忘记记录”的测试可能无法复现；一次“越权”的测试可能触发合同纠纷。代码在 `inkblade/core/runner.py`、`inkblade/core/backup.py`，测试在 `tests/test_runner_scope_audit.py`、`tests/test_backup.py`。
 
@@ -250,9 +250,9 @@ InkBlade 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 ### 4.0 先给结论：改的是“运行时”，不是“放权”
 
-这一轮之前，InkBlade 的执行环是稳的：确定性链、四道闸门、三层证据。问题是**认知环是空的**：没有 durable journal，没有分层记忆，没有技能库，没有沙箱，没有评测。模型只能“提一次建议”，失败就靠人重来。等于把 2026 年主流的 agent 运行时（持久化、记忆、技能、沙箱、评测）连同“自主执行”一起砍掉了。
+这一轮之前，InkBlade 的执行环是稳的：确定性链、四重校验、三层证据。问题是**认知环是空的**：没有 durable journal，没有分层记忆，没有技能库，没有沙箱，没有评测。模型只能“提一次建议”，失败就靠人重来。等于把 2026 年主流的 agent 运行时（持久化、记忆、技能、沙箱、评测）连同“自主执行”一起砍掉了。
 
-这一轮改动的核心判断是：**执行环继续确定性，认知环外挂 agent 运行时**。Agent 只影响“选哪个模块、传什么参数、下一步试什么”，不生成新的执行原语；所有执行仍走 `runner` 的四道闸门。下面分“方法论 / 代码逻辑 / 新增功能”三类讲。
+这一轮改动的核心判断是：**执行环继续确定性，认知环外挂 agent 运行时**。Agent 只影响“选哪个模块、传什么参数、下一步试什么”，不生成新的执行原语；所有执行仍走 `runner` 的四重校验。下面分“方法论 / 代码逻辑 / 新增功能”三类讲。
 
 ### 4.1 方法论：五个转变
 
@@ -277,10 +277,10 @@ InkBlade 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 | `inkblade/core/reflexion.py` | `reflect/propose_skill/render_md` | 读失败/降级动作，生成建议；零执行 | 新增；不 import runner |
 | `inkblade/core/a2a.py` | `A2AServer/agent_card/MCPClient` | agent card + task 状态机；只读技能白名单；MCP 只接受 `readOnlyHint=true` | 新增；写技能/写工具拒绝 |
 | `inkblade/core/sandbox.py` | `Sandbox.run_python/run_untrusted` | `python -I` 子进程；墙钟超时；默认禁网；POSIX rlimit；审计代码 sha256 | 新增；不替代内核级隔离 |
-| `inkblade/core/agent_policy.py` | `classify_action/decide/decompose/retry_plan` | L0–L3 分级；混合动作取最弱；瞬时错误有界重试，闸门错误立即停 | 提议路径可开关；OFF 复现旧语义 |
+| `inkblade/core/agent_policy.py` | `classify_action/decide/decompose/retry_plan` | L0–L3 分级；混合动作取最弱；瞬时错误有界重试，校验错误立即停 | 提议路径可开关；OFF 复现旧语义 |
 | `inkblade/core/observation.py` | `build/action_key/dedupe/compress/is_dead_end` | 动作/结果/证据/下一步/claim 五段式；`ok` 必须有证据指针 | 新增；JSONL 只追加 |
 | `inkblade/core/cost.py` | `plan_cost/Budget/degrade/CostTracker` | token/时延/审批/干预四维预算；超支先丢 optional，再砍写，至少留 1 个 | 新增；确定性降级 |
-| `inkblade/core/agentops.py` | `run_approved_plan` | 门面：审批计划 → supervisor（journal）→ reflexion → 技能提案 | 新增；不绕闸门 |
+| `inkblade/core/agentops.py` | `run_approved_plan` | 门面：审批计划 → supervisor（journal）→ reflexion → 技能提案 | 新增；不绕校验 |
 | `inkblade/webui/api_section3.py` | `/api/v1/agent/*` | 只读视图：等级、阶段、证据指针、下一步、预算 | 新增；仅 GET |
 | `lab/tencent-compare/` | `run_eval.py` | 8 任务 OFF/ON 微评测；OFF 复现旧语义 | 新增；确定性，不调用外部 LLM |
 | `lab/agent-eval/` | `run_eval.py` | 15 任务 deterministic vs supervisor-worker | 新增；故障注入显式标注 |
@@ -343,7 +343,7 @@ InkBlade 只做**授权测试**。它不内置真实凭据，不提供 C2，不�
 
 **动机**：旧 explorer 记录了结果，但 `propose()` 不读历史结果。失败不学习，同一提议反复出现，人审负担不降。
 
-**关键实现**：`inkblade/core/reflexion.py::reflect`。只读 evidence DB，把失败动作、备份闸门拒绝、零发现归纳成 failure/degraded；生成 `action + rationale + refs` 建议；`propose_skill()` 转成 pending 技能，仍需 lead 批准。测试用 monkeypatch 把 `runner.run_module` 换成炸弹，证明零执行。
+**关键实现**：`inkblade/core/reflexion.py::reflect`。只读 evidence DB，把失败动作、备份校验拒绝、零发现归纳成 failure/degraded；生成 `action + rationale + refs` 建议；`propose_skill()` 转成 pending 技能，仍需 lead 批准。测试用 monkeypatch 把 `runner.run_module` 换成炸弹，证明零执行。
 
 **影响指标**：失败识别数；建议数；执行调用数；健康 run 误报。
 
@@ -560,7 +560,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 ### 6.7 已补齐项：哪些差距真的关掉了
 
-**ARTEX 方向**：8 个功能族（LLM 池、通知、模板、日历、侧问、图快照、黑板、bounded 并发）全部 clean-room 实现；S/M backlog 30/30 清零；180 条 missing 逐行处置，0 条未分类。默认安全：新功能默认关闭或只读，执行仍走 RoE/角色/备份三闸门。
+**ARTEX 方向**：8 个功能族（LLM 池、通知、模板、日历、侧问、图快照、黑板、bounded 并发）全部 clean-room 实现；S/M backlog 30/30 清零；180 条 missing 逐行处置，0 条未分类。默认安全：新功能默认关闭或只读，执行仍走 RoE/角色/备份三重校验。
 
 **K8s 攻防方向（KubeTrail/KubeHound/kube-hunter/CDK 等）**：21 个模块移植（KubeHound 26 边/最短路径、kdigger 20 bucket + admission、CDK 30/13 分类、kube-hunter 29/47、KubeletCTL 15 API、Peirates 37 原语、kube-bench CIS 26 项、KubiScan/密钥/K8s CVE/云 token、KubeTrail 5 项）；许可检查与 NOTICE 已补。注意：286 行原矩阵没有重算，120 条 missing 不能因为“移植了 21 个模块”就宣称清零。
 
@@ -601,7 +601,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 
 ### 7.0 三态怎么定义
 
-**真实**：在客户或厂商的真实环境里跑过，有原始数据、有环境描述、能复跑。**模拟**：在仿真器、夹具、本机回环或合成数据上跑过，能证明算法/接口/闸门，不能证明真实环境。**未达成**：没有可复现实验，只有设计、脚本或公开资料。下面五项里，四项是“真实未达成、模拟已做或部分做”；cosign 是“签名侧未达成、验证侧已真实（第三方样本），但本仓库产物仍未取得公共 Fulcio 身份”。我们逐项写“能证明什么、不能证明什么”，避免把“模拟通过”写成“生产可用”。
+**真实**：在客户或厂商的真实环境里跑过，有原始数据、有环境描述、能复跑。**模拟**：在仿真器、夹具、本机回环或合成数据上跑过，能证明算法/接口/校验，不能证明真实环境。**未达成**：没有可复现实验，只有设计、脚本或公开资料。下面五项里，四项是“真实未达成、模拟已做或部分做”；cosign 是“签名侧未达成、验证侧已真实（第三方样本），但本仓库产物仍未取得公共 Fulcio 身份”。我们逐项写“能证明什么、不能证明什么”，避免把“模拟通过”写成“生产可用”。
 
 ### 7.1 万卡/超大规模实测
 
@@ -697,7 +697,7 @@ ML 面是我们的差异化：权重桶、checkpoint、NCCL、IB/SHARP、PFC、K
 | 6 | 模型注册中心 / 权重仓库直连 | 只读本地清单/权重 | HF/OCI 拉取 + 在线验签 + 断网/篡改/吊销负例 |
 | 7 | SIEM/SOAR 真实投递 | 只有 SARIF/OCSF/VEX 产物 | Splunk HEC/Elastic/Sentinel 投递 + 幂等/回压/审计 |
 | 8 | 漏洞挖掘披露闭环 | 已建 CVE 适格筛选、CVE 5.1 请求体、脱敏证据包、90 天发布计划（未外发） | 人工发送 + 厂商回执 + CVE 分配 + 公开 advisory |
-| 9 | 无面模块治理 | 19 个六画像全无面；11 个已隔离，8 个待 owner 决定 | 8 个模块隔离或补面；面闸门默认开启 |
+| 9 | 无面模块治理 | 19 个六画像全无面；11 个已隔离，8 个待 owner 决定 | 8 个模块隔离或补面；面校验默认开启 |
 | 10 | 画像覆盖缺口 | `slurm-hpc` 25.00%（Slurm 17 域覆盖 88.2%），其余 59.78%–70.65% | 六画像 production coverage ≥90% |
 | 11 | 可利用性核验缺口 | 152 条中 37 verified / 6 exposure-verified / 87 static-only / 22 unsupported | 真实 GPU/内核/硬件环境升级 static-only/unsupported |
 

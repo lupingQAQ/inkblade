@@ -98,7 +98,7 @@
   攻击者可读（内容泄露）、写（推理操纵）、伪造（缓存命中劫持）。
 - 模块：`prefill-decode-kv-channel-unauth`（读握手差分 + 池计数器）、
   `kv-cache-integrity-poison`（benign marker 写入 + 独立读回 sha256）。
-- 链：`pd-kv-poison`（通道探测 → KV 块投毒，写类步骤走备份闸门）。
+- 链：`pd-kv-poison`（通道探测 → KV 块投毒，写类步骤走备份校验）。
 
 ### 2.5 内存放大
 
@@ -131,7 +131,7 @@
 链定义（`inkblade/chains/`）：
 
 - `long-context-cache-leak`：`window-pressure`（超窗）→ `cache-reuse`（跨租户 prefix 复用）。
-- `pd-kv-poison`：`kv-channel-probe`（未鉴权读握手）→ `kv-block-poison`（写类，备份闸门 + http 快照）。
+- `pd-kv-poison`：`kv-channel-probe`（未鉴权读握手）→ `kv-block-poison`（写类，备份校验 + http 快照）。
 
 两条链均接入规则引擎：`suricata-longctx-kv-endpoints` 以
 `/v1/chat/completions|/kv/transfer|/checkpoint/shards|/metrics` URI 签名覆盖，
