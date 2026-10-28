@@ -49,7 +49,7 @@ python -m inkblade up --no-consent
 
 ### 探针怎么进 Pod？
 
-默认是授权 RCE（base64 + memfd）：适合非 root、无 hostPath/privileged 的最低权限 Pod，只需要可写临时目录或 memfd 与出站 TCP。也可以用 ServiceAccount token、共享卷或 EphemeralContainer 清单；`kubectl` 只是可选的批量 bootstrap。每种方式都有前置条件和痕迹；没有“静默投放”这种承诺。详见 [`PROBE-DEPLOY.md`](PROBE-DEPLOY.md)。
+默认是授权 RCE（base64 + memfd）：适合非 root、无 hostPath/privileged 的最低权限 Pod，只需要可写临时目录或 memfd 与出站 TCP。也可以用 ServiceAccount token、共享卷或 EphemeralContainer 清单；`kubectl` 只是可选的批量 bootstrap。探针启动后主动回连控制器，后续命令都走探针通道，不需要在 Pod 内安装 Python。详见 [`PROBE-DEPLOY.md`](PROBE-DEPLOY.md)。
 
 ### 通道能做什么？
 

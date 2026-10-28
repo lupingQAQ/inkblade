@@ -327,7 +327,7 @@ FAQ_ITEMS = [
     ("How does the probe get into the Pod?",
      "kubectl, a ServiceAccount token, a shared volume, an EphemeralContainer manifest or an authorized RCE callback. Each path has prerequisites and leaves traces.",
      "探针怎么进 Pod？",
-     "kubectl、ServiceAccount token、共享卷、EphemeralContainer 清单或授权 RCE 回调。每种方式都有前置条件，也会留下痕迹。"),
+     "通过已有立足点投放：在 Pod shell 或授权 RCE 里上传静态探针并启动；有 ServiceAccount token 或 kubeconfig 时可创建 Job/EphemeralContainer；共享卷可直接挂载。探针启动后主动回连控制器，后续命令都走探针通道，不需要在 Pod 内安装 Python。"),
     ("Is the probe a backdoor?",
      "No. It does not persist, modify startup, patch images or call a fixed C2. It runs inside an authorized session, executes registered templates, defaults to read-only, gates writes and cleans up.",
      "探针是不是后门？",
@@ -749,7 +749,7 @@ section(
 """ + table(
         [("控制", ""), ("保证什么", "")],
         [
-            '<tr><td>授权哈希</td><td>一次 run 的授权是一个文件，不是一场会。</td></tr>',
+            '<tr><td>授权哈希</td><td>每次运行对应一份签名授权文件，哈希写入证据；不是口头确认。</td></tr>',
             '<tr><td>范围与级别</td><td>越界或超级别的动作在执行前拒绝。</td></tr>',
             '<tr><td>备份回执</td><td>没有可恢复快照就没有写操作。</td></tr>',
             '<tr><td>证据 manifest</td><td>每条发现都能落到 task、step、artifact、probe 或 manifest 哈希。</td></tr>',
