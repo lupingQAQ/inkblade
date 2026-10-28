@@ -50,7 +50,7 @@ Lateral movement uses the same probe. Channel forwards (reverse or stdio) reach 
 
 ### Stage 7 — multi-probe
 
-Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's read-only state, command allow-list and budget, and can only be stricter. Depth is capped, fan-out is capped, and cleanup is child-first so no orphan keeps a token alive.
+Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's read-only state, command allow-list and budget, and can only be stricter. The tree caps nesting depth and concurrent child probes; cleanup runs child-first so no uncleaned child probe keeps a token alive.
 
 ### Stage 8 — cross-cluster
 
@@ -116,7 +116,7 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 
 ### 第 7 步 — 多探针
 
-每颗探针都有 `probe_id` 与 `parent_id`。子探针继承父探针的只读状态、命令白名单和预算，且只能更严格。限制嵌套层数与并发子探针数量，清理先子后父，避免留下仍持有 token 的孤儿。
+每颗探针都有 `probe_id` 与 `parent_id`。子探针继承父探针的只读状态、命令白名单和预算，且只能更严格。限制嵌套层数与并发子探针数量，清理先子后父，避免留下未清理、仍持有 token 的子探针进程。
 
 ### 第 8 步 — 跨集群
 

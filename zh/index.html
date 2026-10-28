@@ -95,7 +95,7 @@ pre{background:#060708;border:1px solid #262b34;padding:15px 16px;overflow:auto;
   <li><b>控制端。</b> Python 负责授权、范围、级别、备份与审计校验，并把探针证据汇总成发现。</li>
 </ul>
 <h3>探针树</h3>
-<p>每颗探针都有 probe_id 与 parent_id。子探针继承父探针的只读状态、命令白名单与预算，且只能更严格。清理先子后父，避免留下仍持有 token 的孤儿。</p>
+<p>每颗探针都有 probe_id 与 parent_id。子探针继承父探针的只读状态、命令白名单与预算，且只能更严格。清理先子后父，避免留下未清理、仍持有 token 的子探针进程。</p>
 <p class="note"><a href="../ARCHITECTURE.md">ARCHITECTURE.md</a> · <a href="../ARCHITECTURE-PROBE.md">ARCHITECTURE-PROBE.md</a> · <a href="../PROBE-PROTOCOL.md">PROBE-PROTOCOL.md</a></p></div></section>
 <section class="sec" id="probe"><div class="lang-block" data-lang="zh"><div class="sec-head"><span class="sec-no">03</span><h2>静态 Rust 探针</h2><p class="sub">一个二进制、286 个模板</p></div><p>探针是 linux/amd64 与 linux/arm64 各一个静态 musl 二进制。模板是 JSON 数据。</p>
 <div class="figures"><div class="figure"><b>286</b><span>模板</span></div><div class="figure"><b>2</b><span>musl 架构</span></div><div class="figure"><b>12</b><span>探针操作</span></div></div>
