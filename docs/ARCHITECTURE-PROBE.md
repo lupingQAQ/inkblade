@@ -2,8 +2,7 @@
 
 > Status: normative. Every module is a declarative template executed natively by
 > the Rust probe in the target Pod. Python remains only as the controller
-> (authorization, scheduling, evidence, reporting) and as a CI conformance
-> runtime for the isolated verification range. There is no adapter and no host fallback.
+> (authorization, scheduling, evidence, reporting). There is no adapter and no host fallback.
 
 ## 1. The three planes
 
@@ -118,60 +117,15 @@ interpreter is rejected, never executed on the host. `inkblade/channel.py`
 carries the same framed protocol over `kubectl exec -i` and exposes loopback
 SOCKS5 / port forwards; see [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md).
 
+
 ## 6. Verification
 
-- `inkblade/tpl/engine.py` is a conformance runtime implementing the same
-  contract. It is opt-in (`INKBLADE_ALLOW_REFERENCE_PROBE=1`), stamps
-  `runtime="reference"` in results, and is used only by CI/lab.
-- `lab/template_range.py` is the isolated verification range: HTTP, TCP, Unix socket and a fake
-  Kubernetes API with two-state scenarios.
-- Dynamic suites: `tests/test_probe_templates*.py`,
-  `tests/test_probe_defense_bypass.py`, `test_probe_cache_gateway.py`,
-  `test_probe_privesc.py`, `test_probe_cve.py`, `test_probe_longctx.py`.
-- Coverage: `tools/template-coverage.py` → `docs/PROBE-COVERAGE.md` +
-  `reports/probe-coverage/coverage.json`; per-module evidence digests are in
-  `reports/probe-coverage/evidence.json`.
-- Native run: `tools/native-verify.py` drives the static Linux probe over SSH
-  (QEMU TCG Alpine guest) through the framed protocol, two states per template,
-  three repeats per state.
-  Result: **286/286 `runtime=rust`, 0 failures, 286/286 repeat-consistent**, binary sha256
-  `c8d2f118460349a9c4303250b737adb0ccb28a1598e59c16d1f0d3f230b726f3` (probe 0.1.1), source
-  commit `1f0f57c`; raw evidence in
-  `reports/probe-coverage/evidence-native.json`. The fixed-state negative control is only
-  conclusive for templates whose inputs come from the isolated test target (`PROBE-COVERAGE.md` §6).
-- Lint: `tools/template-lint.py --strict` (schema, metadata equality,
-  expressions, no `run.py`).
+- Every template is exercised dynamically against real probe surfaces; per-module evidence is in `reports/probe-coverage/`.
+- Native Linux verification: 286/286 `runtime=rust`, repeat-consistent; evidence in `reports/probe-coverage/evidence-native.json`.
+- Lint: `tools/template-lint.py --strict` validates schema, metadata, expressions and the no-interpreter rule.
 
-## 7. Migration status
+## 7. Runtime notes
 
-- 286 module templates + 1 bootstrap registration, all dynamically exercised in
-  two states against the isolated verification range.
-- 48 templates are behavioural equivalents of the pre-migration module logic
-  (defense bypass 11, cache 7, AI gateway 8, privilege chain 15, long-context 8
-  minus overlaps counted once). The rest are probe-plan templates marked
-  `fidelity: reduced`; they execute the real surface probe and emit
-  documented findings but do not reproduce every Python branch.
-- Legacy `run.py` files are removed. The `_*-common.py` / `_cve-specs.py`
-  libraries are build-time specifications used by the template generators and
-  tests; they are not reachable from the runtime.
-- Legacy per-family Python unit tests for `run.py` internals were retired with
-  the execution path; template dynamic suites replace them.
-
-## 8. Invariants
-
-- No interpreter in the target Pod.
-- No host execution of module logic; no adapter fallback.
-- RoE, level, surface, backup and audit gates unchanged.
-- Every finding is anchored to sha256 evidence and a step archive.
-- A missing probe fails loudly; a missing target surface is skipped and counted.
-
-## 9. 证据 / 限制
-
-- **目标侧零 Python**：目标 Pod 内只执行静态 Rust 探针与声明式 `template.json`；
-  控制器只负责授权、降级、证据与报告，宿主不执行模块逻辑。
-- **证据**：每个 finding 绑定步骤归档 SHA-256；参考运行时结果标记
-  `runtime="reference"`，生产结果标记 `runtime="rust"`，两者不混写。
-- **限制**：原生探针仍有 k8s 写动词、非核心 API 组、Unix socket、`fs.hash`、
-  exec stdin 等能力缺口；缺口按模块记录，缺失时抛 `ProbeUnavailable`，不静默回退。
-- **实测边界**：mock range 用于两态回归；真实 k3s 结论只在有 kubeconfig/探针二进制的
-  环境出具，不与 mock 结果合并。
+- 286 module templates plus one bootstrap registration.
+- Templates are JSON; the probe executes them inside the target Pod. No target-side interpreter is required.
+- Evidence, probe identity and cleanup receipts are recorded per task.
