@@ -95,7 +95,7 @@ pre{background:#060708;border:1px solid #262b34;padding:15px 16px;overflow:auto;
   <li><b>Controller.</b> Python enforces consent, scope, level, backup and audit, then folds probe evidence into findings.</li>
 </ul>
 <h3>Probe tree</h3>
-<p>Every probe has a probe_id and a parent_id. Children inherit the parent's read-only state, command allow-list and budget, and can only be stricter. Cleanup is child-first, so no orphan keeps a token alive.</p>
+<p>Every probe has a probe_id and a parent_id. Children inherit the parent's read-only state, command allow-list and budget, and can only be stricter. Cleanup runs child-first, so no uncleaned child probe keeps a token alive.</p>
 <p class="note"><a href="../ARCHITECTURE.md">ARCHITECTURE.md</a> · <a href="../ARCHITECTURE-PROBE.md">ARCHITECTURE-PROBE.md</a> · <a href="../PROBE-PROTOCOL.md">PROBE-PROTOCOL.md</a></p></div></section>
 <section class="sec" id="probe"><div class="lang-block" data-lang="en"><div class="sec-head"><span class="sec-no">03</span><h2>Static Rust probe</h2><p class="sub">One binary, 286 templates</p></div><p>The probe is one static musl binary per architecture, linux/amd64 and linux/arm64. Templates are JSON data.</p>
 <div class="figures"><div class="figure"><b>286</b><span>templates</span></div><div class="figure"><b>2</b><span>musl architectures</span></div><div class="figure"><b>12</b><span>probe operations</span></div></div>

@@ -442,7 +442,7 @@ section(
   <li><b>Controller.</b> Python enforces consent, scope, level, backup and audit, then folds probe evidence into findings.</li>
 </ul>
 <h3>Probe tree</h3>
-<p>Every probe has a probe_id and a parent_id. Children inherit the parent's read-only state, command allow-list and budget, and can only be stricter. Cleanup is child-first, so no orphan keeps a token alive.</p>
+<p>Every probe has a probe_id and a parent_id. Children inherit the parent's read-only state, command allow-list and budget, and can only be stricter. Cleanup runs child-first, so no uncleaned child probe keeps a token alive.</p>
 <p class="note"><a href="ARCHITECTURE.md">ARCHITECTURE.md</a> · <a href="ARCHITECTURE-PROBE.md">ARCHITECTURE-PROBE.md</a> · <a href="PROBE-PROTOCOL.md">PROBE-PROTOCOL.md</a></p>""",
     zh="""<p>控制端不在目标侧执行任何逻辑：它负责授权、渲染模板、执行预算与归档证据。探针是 Pod 里唯一运行的代码。</p>
 <div class="term">
@@ -459,7 +459,7 @@ section(
   <li><b>控制端。</b> Python 负责授权、范围、级别、备份与审计校验，并把探针证据汇总成发现。</li>
 </ul>
 <h3>探针树</h3>
-<p>每颗探针都有 probe_id 与 parent_id。子探针继承父探针的只读状态、命令白名单与预算，且只能更严格。清理先子后父，避免留下仍持有 token 的孤儿。</p>
+<p>每颗探针都有 probe_id 与 parent_id。子探针继承父探针的只读状态、命令白名单与预算，且只能更严格。清理先子后父，避免留下未清理、仍持有 token 的子探针进程。</p>
 <p class="note"><a href="ARCHITECTURE.md">ARCHITECTURE.md</a> · <a href="ARCHITECTURE-PROBE.md">ARCHITECTURE-PROBE.md</a> · <a href="PROBE-PROTOCOL.md">PROBE-PROTOCOL.md</a></p>""",
 )
 
