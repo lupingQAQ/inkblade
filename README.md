@@ -40,7 +40,7 @@ Eleven `defense-bypass-*` modules cover Elkeid, AgentSmith-HIDS, veinmind, Falco
 
 ### Vulnerability research
 
-The catalogue is backed by 184 vulnerability write-ups, each recording the component, affected versions, root cause, impact and detection. 68 have runnable PoCs. The research queue contains 169 zero-day candidates: 47 were reviewed and confirmed novel, 46 are ready for coordinated disclosure, and 39 are distinct exploit primitives. A 103-record affected-version matrix and 121 detection rules feed 29 attack chains. The public ledger (`docs/0DAY-PUBLIC.md`) lists component, class, affected versions and disclosure status; exploit details stay private.
+The catalogue is backed by 184 vulnerability write-ups, each recording the component, affected versions, root cause, impact and detection. 68 have runnable PoCs. The research queue contains 169 vulnerability leads; not all are zero-day. 47 were dynamically reproduced and confirmed unpublished, 46 are ready for coordinated disclosure, and 39 are distinct exploit primitives after deduplication. A 103-record affected-version matrix and 121 detection rules feed 29 attack chains. The public ledger (`docs/0DAY-PUBLIC.md`) lists component, class, affected versions and disclosure status; exploit details stay private.
 
 ### Rust probe
 
