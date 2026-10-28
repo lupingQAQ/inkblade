@@ -1,44 +1,4 @@
 # CODEOWNERS
-#
-# Review ownership for the public tree. Replace the placeholder team handles with
-# real GitHub teams when the repository is transferred to its public home; the
-# patterns stay valid.
+# Review ownership for the public tree.
 
-# Default: every change needs a maintainer review.
-*                                   @inkblade/maintainers
-
-# Platform core: authorization, evidence, runner, reporting.
-/inkblade/core/                     @inkblade/core-reviewers
-/inkblade/cli.py                    @inkblade/core-reviewers
-/inkblade/onboarding.py             @inkblade/core-reviewers
-/inkblade/trial.py                  @inkblade/core-reviewers
-/inkblade/pilot.py                  @inkblade/core-reviewers
-
-# Modules change the assessment surface and the safety gates.
-/inkblade/modules/                  @inkblade/module-reviewers
-/inkblade/chains/                   @inkblade/module-reviewers
-/inkblade/profiles/                 @inkblade/module-reviewers
-
-# Plugin SDK is a public contract; SDK changes need API review.
-/inkblade/sdk/                      @inkblade/sdk-reviewers
-/docs/PLUGIN-SDK.md                 @inkblade/sdk-reviewers
-/tests/test_sdk.py                  @inkblade/sdk-reviewers
-
-# Supply chain and release engineering.
-/.github/                           @inkblade/release-reviewers
-/Dockerfile                         @inkblade/release-reviewers
-/.dockerignore                      @inkblade/release-reviewers
-/deploy/                            @inkblade/release-reviewers
-/scripts/release/                   @inkblade/release-reviewers
-/pyproject.toml                     @inkblade/release-reviewers
-/CHANGELOG.md                       @inkblade/release-reviewers
-/docs/VERSIONING.md                 @inkblade/release-reviewers
-
-# Security policy and disclosure material.
-/SECURITY.md                        @inkblade/security-reviewers
-/docs/0DAY-DISCLOSURE.md            @inkblade/security-reviewers
-/disclosure/                        @inkblade/security-reviewers
-
-# Governance.
-/CODE_OF_CONDUCT.md                 @inkblade/maintainers
-/CONTRIBUTING.md                    @inkblade/maintainers
+* @lupingQAQ
