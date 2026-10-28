@@ -240,7 +240,7 @@ def section(sid, nav_en, nav_zh, title_en, title_zh, sub_en, sub_zh, en, zh) -> 
 LAYERS = [
     ("1", "Architecture", "架构层",
      "Audit rail and multi-plane alignment, PD-split KV channels, IMEX domains, MoE/EP collectives, long-context KV lifetime and federation.",
-     "审计 rail 与多平面错配、PD 分离 KV 通道、IMEX 域、MoE/EP 集合通信、长上下文 KV 生命周期与联邦。",
+     "审计 rail 与多平面错配、PD 分离 KV 通道、IMEX 域、MoE/EP 集合通信、长上下文 KV 生命周期、多集群联邦与身份信任。",
      "rail-mismatch-forcing, prefill-decode-kv-channel-unauth, nvlink-imex-isolation"),
     ("2", "Product / framework", "产品 / 框架层",
      "Enumerate admin and control surfaces of vLLM, SGLang, TRL, verl, AReaL, SkyRL, OpenRLHF, slime, LLaMA-Factory, ms-swift, Megatron-LM, DeepSpeed, transformers, gateways and agent platforms.",
