@@ -2,7 +2,7 @@
 
 [English](#english) · [中文](#中文)
 
-The order is the product. Each stage leaves behind something the next stage can check, and any stage can refuse. The workflow starts at a foothold, runs every action through the probe, extends the probe tree, and ends with a report, rule packs and a console view.
+The order matters. Each stage leaves behind something the next stage can check, and any stage can refuse. The workflow starts at a foothold, runs every action through the probe, extends the probe tree, and ends with a report, rule packs and a console view.
 
 ---
 
@@ -54,11 +54,11 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 
 ### Stage 8 — cross-cluster
 
-`agent relay add` registers a relay to another cluster; `agent coverage status` shows which objective nodes are closed, which are reachable but unproven, and which have no path. `agent coverage proof` writes the closure proof that ships with the report.
+`agent relay add` registers a relay to another cluster; `agent coverage status` shows which objective nodes are complete, which are reachable but unproven, and which have no path. `agent coverage proof` writes the completion proof that ships with the report.
 
 ### Stage 9 — report, rules and console
 
-`report --run <id> --lang bi` renders the pentest narrative and the remediation checklist from the same evidence. `export --format sarif|ocsf|vex` produces machine-readable output. `rules generate` writes admission, runtime and network packs; `rules validate` replays them and prints the blocked / detected / missed matrix. `inkblade ui` serves the local console with findings, probe trees, graphs and timelines.
+`report --run <id> --lang bi` renders the pentest narrative and the remediation checklist from the same evidence. `export --format sarif|ocsf|vex` produces machine-readable output. `rules generate` writes admission, runtime and network packs; `rules validate` replays them and prints the intercepted / detected / missed matrix. `inkblade ui` serves the local console with findings, probe trees, graphs and timelines.
 
 ### Write-permission checks
 
@@ -67,8 +67,8 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 | Consent record expired | Every run exits 91 | Re-sign with a new window; old evidence stays valid |
 | Out-of-scope target | Run refused before execution | Fix the scope or drop the target |
 | Chain precondition false | Step skipped, the rest continues where possible | Run the prerequisite module first |
-| Write step without backup target | Step refused, exit 91 | Provide a backup target; do not skip the gate |
-| Rollback cannot restore a step | Exit 3, run marked | Treat the unrestored step as a finding and report it |
+| Write step without backup target | Step refused, exit 91 | Provide a backup target |
+| Rollback cannot restore a step | Exit 3, run marked | Treat the un-restored step as a finding and report it |
 
 ---
 
@@ -90,17 +90,17 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 
 ### 第 1 步 — 立足
 
-`session open` 把项目绑定到你已有的入口。`foothold` 从 Pod shell、ServiceAccount token 或授权 RCE 开始，不需要 kubeconfig；`external` 从可达服务开始，除只读侦察外的任何动作都必须先有有界证明对象，再经授权 RCE 或回调投放探针；`kubeconfig` 是可选的多 Pod 批量 bootstrap。记录保存凭据的 SHA-256 指纹，不保存凭据本身。
+`session open` 把项目绑定到你已有的入口。`foothold` 从 Pod shell、ServiceAccount token 或授权 RCE 起步，不需要 kubeconfig；`external` 从可达服务起步，除只读侦察外，任何动作都先要有有界证明对象，再经授权 RCE 或回调投放探针；`kubeconfig` 是可选的批量 bootstrap，用于多个 Pod。记录里保存凭据的 SHA-256 指纹，不保存凭据本身。
 
 ### 第 2 步 — Rust 探针
 
-`probe deploy` 投放静态二进制。不带 `--allow-write` 时只打印投放计划；带上后经立足点 —— ServiceAccount token 或授权 RCE —— 或可选的 `kubectl` 路径落地，并登记 `probe_id`、架构与哈希。
+`probe deploy` 投放静态二进制。不带 `--allow-write` 时只打印投放计划；带上后，探针经立足点（ServiceAccount token 或授权 RCE）或可选的 `kubectl` 路径投放，并登记 `probe_id`、架构与哈希。
 
-已有探针时跳过第 1、2 步：`probe list` 发现在册探针，控制端 `channel listen`，Pod 内探针 `reverse` 主动回连。
+已有探针时跳过第 1、2 步：`probe list` 列出在册探针，控制端用 `channel listen` 监听，Pod 内的探针用 `reverse` 回连。
 
 ### 第 3 步 — 通道
 
-默认通道由探针发起：控制端 `channel listen`，Pod 内 `inkblade-probe reverse` 主动回连。Pod 不需要开监听端口，默认的最低权限立足点只要有出站 TCP。存在本地命令通道时，可使用 stdio 通道：`channel start` 暴露回环 SOCKS5 与 `--forward LOCAL:HOST:PORT`，`channel status` 报告状态，`channel stop` 关闭。子探针由父探针用 `probe upload` + `probe spawn` 投放，并以同样方式回连。
+默认通道由探针发起：控制端 `channel listen`，Pod 内的 `inkblade-probe reverse` 主动回连。Pod 不用开监听端口，默认的最低权限立足点只要有出站 TCP 就够。目标环境里已有本地命令通道时，可以用 stdio 通道：`channel start` 暴露回环 SOCKS5 与 `--forward LOCAL:HOST:PORT`，`channel status` 报告状态，`channel stop` 关闭。子探针由父探针用 `probe upload` + `probe spawn` 投放，回连方式相同。
 
 ### 第 4 步 — 检测
 
@@ -108,7 +108,7 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 
 ### 第 5 步 — 逃逸
 
-`execute --chain <id> --dry-run` 解析链图并打印每一处写入。确认后用 `execute --chain <id>` 执行。写步骤要过备份校验：执行前生成回执，执行后引用回执。`exploit <id>` 是预置利用包的一键入口；`--real` 打开 RoE、备份与部署面校验。
+`execute --chain <id> --dry-run` 解析链图并打印每一处写入。确认后用 `execute --chain <id>` 执行。写步骤要过备份校验：执行前生成回执，执行后引用回执。`exploit <id>` 是预置利用包的入口命令；`--real` 启用 RoE、备份与部署面校验。
 
 ### 第 6 步 — 横向
 
@@ -120,18 +120,18 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 
 ### 第 8 步 — 跨集群
 
-`agent relay add` 注册到另一个集群的中继；`agent coverage status` 显示目标节点里哪些已闭合、哪些可达但未证明、哪些没有路径；`agent coverage proof` 写出随报告交付的闭合证明。
+`agent relay add` 注册到另一个集群的中继；`agent coverage status` 显示目标节点里哪些已完成、哪些可达但没有证明、哪些没有路径；`agent coverage proof` 写出随报告交付的完成证明。
 
 ### 第 9 步 — 报告、规则与控制台
 
 `report --run <id> --lang bi` 用同一套证据渲染渗透叙事与修复清单；`export --format sarif|ocsf|vex` 产出机器可读结果；`rules generate` 写准入、运行时、网络三类规则包，`rules validate` 重放并输出拦截 / 检出 / 漏过矩阵；`inkblade ui` 提供本地控制台，展示发现、探针树、图与时间线。
 
-### 写权限校验结果
+### 写操作的五道校验
 
 | 情况 | 会发生什么 | 怎么办 |
 |---|---|---|
-| 授权记录过期 | 所有 run 退出 91 | 用新窗口重签；旧证据仍然有效 |
-| 目标越界 | 执行前拒绝 | 修范围或去掉目标 |
-| 链前置条件为假 | 跳过该步，能继续的继续 | 先跑前置模块 |
-| 写步骤没有备份目标 | 拒绝该步，退出 91 | 提供备份目标；不要跳过校验 |
-| 回滚无法恢复某步 | 退出 3，run 被标记 | 把恢复不了的那一步当发现报出 |
+| 授权记录过期 | 所有运行退出 91 | 用新窗口重签；旧证据仍然有效 |
+| 目标越界 | 执行前拒绝 | 调整范围，或去掉这个目标 |
+| 链前置条件不成立 | 跳过该步，能继续的继续 | 先跑前置模块 |
+| 写步骤没有备份目标 | 拒绝该步，退出 91 | 提供备份目标 |
+| 回滚无法恢复某步 | 退出 3，这次运行被标记 | 把无法恢复的步骤作为发现报出 |

@@ -1,19 +1,19 @@
 # In-pod probe and exec/SOCKS channel / 探针与通道
 
-> 产品能力：拿到立足点 → 投放 Rust 探针 → 建立 `kubectl exec -i` stdio 通道
-> → 所有收集/执行/利用/横向/代理都经探针。Host 直连只允许“首次立足点
-> bootstrap”，之后没有 host fallback。
+> 工作路径：拿到立足点 → 投放 Rust 探针 → 建立 `kubectl exec -i` stdio 通道
+> → 采集、执行、利用、横向与代理都经探针完成。Host 直连只用于首次立足点的
+> bootstrap，之后不再回退到 host（no host fallback）。
 >
 > 协议细节：[`PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md)；模板 DSL：
 > [`../probe/TEMPLATE-ENGINE.md`](../probe/TEMPLATE-ENGINE.md)。
 
 ## 1. 为什么不是“直接扫描” / Not a blind scanner
 
-外部入口（`session --mode external`）只允许有界证明：最多访问 profile 声明的
-版本/指纹路径，保留响应证据；只有观测到明确脆弱版本（或 route proof）才进入
-`vulnerable`。没有 foothold 时只允许只读侦察，任何写模块/利用都在状态机层面
-拒绝。`kubeconfig` 与 `foothold` 模式也只在 bootstrap 阶段使用 host 的 kubectl；
-探针就绪后 `session.run` 只向探针发模板任务。
+外部入口（`session --mode external`）只做有界证明：最多访问 profile 声明的
+版本与指纹路径，并保留响应证据；确认脆弱版本（或拿到 route proof）之后才进入
+`vulnerable`。没有 foothold 时只允许只读侦察，写模块与利用步骤会被状态机拒绝。
+`kubeconfig` 与 `foothold` 模式也只在 bootstrap 阶段用到 host 的 kubectl；
+探针就绪后，`session.run` 只向探针发模板任务。
 
 状态机：
 
@@ -26,8 +26,8 @@ foothold:   new → foothold → probe_ready → channel_ready → closed
 - `kubeconfig`：已授权评估；kubeconfig 只用于启动第一个探针。
 - `external`：黑盒目标；必须先证明可达 + 脆弱版本/路由，才可 `mark_foothold`。
 - `foothold`：已有 SA token / Pod shell；只用于投放探针。
-- 所有迁移写 evidence run 的 `actions` 和 `audit.jsonl`；会话记录入口向量、
-  凭据来源（仅 SHA256 指纹）、探针 ID/父子、通道和证据 run。
+- 每次状态迁移都写进 evidence run 的 `actions` 与 `audit.jsonl`；会话记录入口
+  向量、凭据来源（只存 SHA256 指纹）、探针 ID 与父子关系、通道状态和证据 run。
 
 ## 2. 注入方式 / Injection
 
@@ -61,18 +61,17 @@ stdout 只承载长度前缀 JSON 帧；stderr 是审计 JSONL。
 ### 2.2 RCE → probe（Ray/AReaL/SGLang 回调）
 
 已有 RCE 模块提供 `CommandExecutor` 回调；`inkblade/entry/rce.py` 把静态
-探针二进制 base64 分片写入 `/tmp`，用 `base64 -d`/`openssl` 解码并
-`chmod 0700`，**不需要 kubectl、不需要 Python**。默认 dry-run，只有
-`--allow-write` 且 RoE 为全影响演示时才执行：
+探针二进制 base64 分片写入 `/tmp`，用 `base64 -d` 或 `openssl` 解码，再
+`chmod 0700`。默认 dry-run，只有带 `--allow-write` 且 RoE 为全影响演示时才执行：
 
 ```sh
 inkblade probe deploy --session <id> --via rce --allow-write \
   --binary ./inkblade-probe-linux-amd64 --probe-token-file ./probe.token
 ```
 
-RCE 回调（Ray `POST /api/jobs/`、AReaL `/set_env→/create_engine→/call`）
-由 `executor_for(chain, target, callback=...)` 适配；SGLang 的写原语不被
-伪装成命令执行，必须由 `sglang-zmq-pickle-rce` 提供真实 callback。
+RCE 回调（Ray 的 `POST /api/jobs/`、AReaL 的 `/set_env→/create_engine→/call`）
+由 `executor_for(chain, target, callback=...)` 适配。SGLang 的写原语不算命令
+执行，需要由 `sglang-zmq-pickle-rce` 提供真实的 callback。
 
 ### 2.3 SA token → probe
 
@@ -114,7 +113,8 @@ EphemeralContainer manifest 用 `kind: Pod` + `spec.ephemeralContainers`，通�
 | manifest | `pods`/`jobs` create、`pods/ephemeralcontainers` patch | 仍受准入策略约束 |
 
 探针本体的 `k8s list/get` 使用 Pod 内 SA token；`k8s exec/copy` 只在镜像内
-存在 `kubectl` 时可用（无则明确失败，不回退 host）。K8s API CA 校验默认开启。
+存在 `kubectl` 时可用，没有 `kubectl` 就明确报错，不改走 host。K8s API 的
+CA 校验默认开启。
 
 ## 4. 通道能力 / Channel
 
@@ -175,17 +175,17 @@ inkblade probe cleanup --session <id> --no-recursive
 - 探针每次 `collect/exec/dial/task/upload/spawn/cleanup` 写一行 JSONL 到
   stderr（`--audit PATH` 可再加文件）；控制器写入 run 的 `actions` 与工作区
   `audit.jsonl`。
-- 会话关闭会 finalize run；通道停止会发送 `cleanup`，删除 `/tmp` 前缀临时
-  文件并杀子探针。
-- 所有失败也留痕（认证失败、超时、拒绝、越界、探针丢失），不静默。
+- 会话关闭会 finalize run；通道停止会发送 `cleanup`，删除 `/tmp` 前缀的临时
+  文件并终止子探针。
+- 失败同样记录：认证失败、超时、拒绝、越界、探针丢失都会写进审计。
 
 ## 7. 边界与已知限制 / Boundaries and known gaps
 
-- 目标 Pod 内**不执行 Python/解释器**；模块是 JSON/YAML 模板，执行器是 Rust。
-- 当前 native gap（由 `compile_template` 明确报 `ProbeUnavailable`，不 host
-  回退）：K8s 写动词/非 core API 组、Unix-socket 客户端、`fs.hash`、exec stdin。
-- K8s `exec/copy` 依赖目标环境有 `kubectl`；否则用 `k8s list/get` + 模板
-  证据，不伪装成功。
+- 目标 Pod 内不执行 Python：模块是 JSON 模板，执行器是 Rust。
+- 当前 native gap（`compile_template` 会报 `ProbeUnavailable`，不会回退到 host）：
+  K8s 写动词/非 core API 组、Unix-socket 客户端、`fs.hash`、exec stdin。
+- K8s `exec/copy` 依赖目标环境有 `kubectl`；没有就用 `k8s list/get` 与模板
+  证据，不会假装成功。
 - SOCKS 只监听回环；若需要从其他主机使用，请由操作机侧 SSH/端口转发到
   `127.0.0.1`，不要放开 `0.0.0.0`。
 - Release 二进制由 CI（`probe-release.yml`）构建 linux-musl amd64/arm64；
@@ -193,13 +193,13 @@ inkblade probe cleanup --session <id> --no-recursive
 
 ## English (short)
 
-`inkblade-probe` is a single static Rust binary. It is injected by `kubectl cp`
-/ `exec`, an existing RCE callback (base64 chunks to `/tmp`), an SA-token
+`inkblade-probe` is a single static Rust binary. It is delivered through `kubectl cp`
+and `exec`, an existing RCE callback (base64 chunks to `/tmp`), an SA-token
 bootstrap, or a generated hardened Pod/Job/EphemeralContainer manifest. The
 operator side opens a `kubectl exec -i` framed-JSON channel; SOCKS5 and port
 forwards listen on loopback only and dial through the probe. Sessions have
-three explicit entry modes (`kubeconfig`, `external`, `foothold`); external
-must prove a vulnerable version/route before any foothold/exploit, and no
-foothold means read-only recon. All actions, credentials (fingerprint only),
-probe parent/child links and cleanup are audited. There is no host fallback
-after the first bootstrap; no interpreter is placed in the target.
+three explicit entry modes (`kubeconfig`, `external`, `foothold`); `external`
+must prove a vulnerable version or route before any foothold or exploit, and no
+foothold means read-only recon. Actions, credential fingerprints, probe
+parent/child links and cleanup are audited. There is no host fallback after the
+first bootstrap, and the target runs no interpreter.

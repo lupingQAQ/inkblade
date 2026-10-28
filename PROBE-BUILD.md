@@ -1,28 +1,29 @@
 # PROBE-BUILD — InkBlade Rust 探针构建、产物与原生验证
 
-本文件记录**当前发布态**：探针 `0.1.1`，linux-amd64 / linux-arm64 musl 静态二进制，由 GitHub Actions
-构建；amd64 产物在 QEMU Alpine VM 内跑完 286 个模板的 vulnerable/fixed 两态（每态 3 次一致）。
+本文件记录当前发布状态：探针 `0.1.1`，linux-amd64 与 linux-arm64 两个 musl 静态二进制，
+由 GitHub Actions 构建；amd64 产物在 QEMU Alpine VM 里跑完 286 个模板的 vulnerable/fixed
+两态，每态 3 次结果一致。
 
-## 1. 为什么二进制只能走 CI
+## 1. 构建为什么放在 CI
 
-| 本机路径 | 结果 |
+| 环境 | 结果 |
 | --- | --- |
-| 本机 rustc | 被 Smart App Control 拦截（`os error 4551`），`cargo build` 无法调用 `rustc`；`rustc --version` 也会失败 |
+| 本机 rustc | 被 Smart App Control 拦截（`os error 4551`），`cargo build` 无法调用 `rustc`，`rustc --version` 也失败 |
 | WSL2 | 不可用（`Wsl/Service/CreateInstance/CreateVm/HCS/HCS_E_HYPERV_NOT_INSTALLED`），不能作为构建环境 |
-| QEMU k3s VM | 可用（127.0.0.1:2222 SSH / 127.0.0.1:4555 串口），但 guest 内编译只作兜底；本次产物仍以 CI 为准 |
-| Docker | 未使用；构建走 **方案 A（GitHub Actions）** |
+| QEMU k3s VM | 可用（127.0.0.1:2222 SSH / 127.0.0.1:4555 串口），但 guest 内编译只作为备用路径，本次产物以 CI 为准 |
+| Docker | 未使用；构建走 GitHub Actions |
 
-因此：**源码入库、二进制由 CI 产出、校验和入文档**；`probe/dist/` 被 `.gitignore` 的 `dist/` 忽略，
-不把二进制提交进 git。
+结论是：源码入库，二进制由 CI 产出，校验和写进文档。`probe/dist/` 被 `.gitignore`
+里的 `dist/` 忽略，二进制不提交进 git。
 
-## 2. CI 构建（方案 A）
+## 2. CI 构建
 
 - 仓库：`lupingQAQ/inkblade`（private）
 - 分支：`main`；发布标签：**`probe-v0.1.1`** → 标签提交 **`1f0f57c`**（`ci: restore probe artifact executable bit before channel tests`）
 - 工作流：`.github/workflows/probe-release.yml`（`push: tag probe-v*` / `push: probe-build` / `workflow_dispatch`）
 - 本次运行：**run 40430384961** — <https://github.com/lupingQAQ/inkblade/actions/runs/40430384961>
-  （首次运行 40429959639 在 `python channel against real probe` 失败：artifact zip 丢可执行位，
-  已在同一工作流补 `chmod 0755` 后重跑；两次构建的 sha256 完全一致，见 §3）
+  （首次运行 40429959639 在 `python channel against real probe` 失败：artifact zip 丢了
+  可执行位，工作流补 `chmod 0755` 后重跑；两次构建的 sha256 一致，见 §3）
 
 ### 2.1 构建环境
 
@@ -127,11 +128,11 @@ inkblade-probe: connect 127.0.0.1:1 failed: 127.0.0.1:1: Connection refused (os 
 ## 6. Release
 
 `probe-release.yml` 在 `probe-v*` tag 上额外执行 `release` job：汇总两个架构二进制与 `SHA256SUMS`，
-通过 `gh release upload` 发布到该 tag 的 GitHub Release；`ENABLE_COSIGN=true` 时才附加
-`SHA256SUMS.sigstore.json`（本次未启用，仓库保持 private）。
+通过 `gh release upload` 发布到该 tag 的 GitHub Release；只有 `ENABLE_COSIGN=true` 时才附加
+`SHA256SUMS.sigstore.json`（本次没有启用，仓库仍然私有）。
 
 ## 7. 限制
 
-- arm64 产物只做 ELF/架构/静态链接断言，未在 arm64 机器上执行；amd64 产物承担全部原生验证。
-- CI runner 为共享虚拟机，构建耗时只作量级参考，不作性能结论。
-- 本机 cargo 不可用是环境限制，不是产品限制；源码、锁定文件与构建命令均已入库，可在任意 Linux 复现。
+- arm64 产物只做 ELF/架构/静态链接断言，没有在 arm64 机器上执行；全部原生验证由 amd64 产物承担。
+- CI runner 是共享虚拟机，构建耗时只作量级参考，不能当性能结论。
+- 本机 cargo 不可用是环境限制，与产品无关；源码、锁定文件与构建命令都已入库，可以在任意 Linux 上复现。

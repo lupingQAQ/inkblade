@@ -1,7 +1,7 @@
 # Usage / 使用手册
 
 > 路径：接入 → 授权 → 会话 → 探针 → 检测 → 横向 → 报告。
-> 目标侧执行体：Rust 探针。模板是数据；控制端 Python 不进入目标 Pod。
+> 目标侧只有 Rust 探针；模板是数据，控制端的 Python 代码不下发进 Pod。
 
 ## 快速参考
 
@@ -9,13 +9,13 @@
 
 ## 先理解六个对象
 
-一次测试由六样东西串起来：
+一次测试由六个对象串起来：
 
 - `session`：授权容器，记录入口方式、目标、命名空间、Pod、凭据指纹和证据目录。
 - `probe`：目标 Pod 里的 Rust 执行体，有 `probe_id` 和 `parent_id`。
 - `template`：声明式检测程序，含 steps、checks、findings、artifacts。
 - `task`：一次模板执行。
-- `run`：一次项目运行的证据根；`agent` 与 `execute` 都写入 run。
+- `run`：一次项目运行的证据根目录；`agent` 与 `execute` 的结果都写进同一个 run。
 - `evidence`：结果、日志、产物与 manifest。
 
 一个 session 可以有多棵探针树，一个探针可以跑多个模板，一个模板可以产生多条 finding，每条 finding 必须指向一个 task + step。
@@ -27,9 +27,9 @@ python -m pip install -e .
 python -m inkblade up --no-consent
 ```
 
-`up` 创建工作区、打印一次性 admin 密码，并在 `127.0.0.1:8765` 提供本地控制台；浏览器登录。首次投放前用 `inkblade quickstart` 或控制台的授权页签署记录：目标、范围、级别、用户、时间窗。记录是哈希钉存的；`inkblade roe` 随时查看当前授权状态。
+`up` 创建工作区、打印一次性 admin 密码，并在 `127.0.0.1:8765` 提供本地控制台。在浏览器里登录后，用 `inkblade quickstart` 或控制台的授权页签署记录：目标、范围、级别、用户、时间窗。记录带哈希，会随每次运行进入证据；`inkblade roe` 随时查看当前授权状态。
 
-级别共四档：`read-only`、`active-probe`、`exploit-verify`、`full-impact`。模板的 `min_level` 高于会话级别时会被拒绝，不会“先跑跑看”。时间窗过期即拒绝。
+级别共四档：`read-only`、`active-probe`、`exploit-verify`、`full-impact`。模板的 `min_level` 高于会话级别时直接拒绝。时间窗过期同样拒绝。
 
 ## 三种入口
 
@@ -43,7 +43,7 @@ python -m inkblade up --no-consent
 
 ## 已有探针接入
 
-默认立足点是普通、最低权限的 Pod：非 root、无 hostPath/privileged、无 kubeconfig，只有出站 TCP。探针主动回连控制端：
+默认立足点是一个普通的最低权限 Pod：非 root、没有 hostPath 或 privileged、没有 kubeconfig，只有出站 TCP。探针主动回连控制端：
 
 ```bash
 python -m inkblade channel listen \
@@ -62,7 +62,7 @@ python -m inkblade channel listen \
   --probe-id pod-a
 ```
 
-`probe list` 列出工作区里已登记的探针（`probe_id`、父探针、状态、目标）。`channel listen` 等待探针连接；子探针由父探针用 `probe upload` + `probe spawn` 投放，并以同样方式回连。存在本地命令通道时仍可用 stdio 通道（`channel start --session <id>`）；SOCKS5 与端口转发只绑 `127.0.0.1`。已有探针不需要重新投放，也不需要 kubeconfig。
+`probe list` 列出工作区里已登记的探针（`probe_id`、父探针、状态、目标）。`channel listen` 等待探针连接；子探针由父探针用 `probe upload` + `probe spawn` 投放，回连方式相同。目标环境里已有本地命令通道时，也可以用 stdio 通道（`channel start --session <id>`）；SOCKS5 与端口转发只绑 `127.0.0.1`。已有探针不用重新投放，也不需要 kubeconfig。
 
 ## 首次投放
 
@@ -95,7 +95,7 @@ python -m inkblade probe deploy \
   --probe-id pod-a
 ```
 
-`--credential-source` 可取 `pod-shell`、`sa-token` 或 `rce`；`--via` 用 `rce` 或 `sa-token` 投放。`--via rce` 适合非 root、无 hostPath/privileged 的低权限 Pod。没有 shell、只有可达服务时，先用 `session open --mode external --target <target> --proof @proof.json` 建立有界证明，再经授权 RCE/回调投放。
+`--credential-source` 可取 `pod-shell`、`sa-token` 或 `rce`；`--via` 用 `rce` 或 `sa-token` 投放。`--via rce` 适合非 root、没有 hostPath 或 privileged 的低权限 Pod。没有 shell、只有可达服务时，先用 `session open --mode external --target <target> --proof @proof.json` 建立有界证明，再经授权 RCE 或回调投放。
 
 ## 会话
 
@@ -144,7 +144,7 @@ python -m inkblade probe download --session <session-id> --probe-id <probe-id> /
 
 ## 通道
 
-默认是探针主动回连的反向通道：控制端 `channel listen`，Pod 内探针 `reverse`。存在本地命令通道时，可用 stdio 通道：
+默认是探针主动回连的反向通道：控制端 `channel listen`，Pod 内的探针用 `reverse` 回连。目标环境里已有本地命令通道时，也可以用 stdio 通道：
 
 ```bash
 python -m inkblade channel start --session <session-id> --socks-port 1080
@@ -154,13 +154,13 @@ python -m inkblade channel status
 python -m inkblade channel stop
 ```
 
-stdio 通道用探针 stdio 承载帧协议。SOCKS5 只是**本地兼容代理**，只绑定
-`127.0.0.1`，不提供对外认证或 TLS；端口转发同样只用于本地 loopback。
-不要用 SOCKS5/本地端口转发跨越不受信网络。反向通道由 Pod 主动发起出站连接，
-不需要 Pod 监听端口，适合最低权限、只有出站 TCP 的立足点。
+stdio 通道用探针的 stdin/stdout 承载帧协议。SOCKS5 只是本地兼容代理，只绑定
+`127.0.0.1`，没有对外认证，也不做 TLS；端口转发同样只用于本地回环。
+不要用它跨越不受信网络。反向通道由 Pod 主动发起出站连接，Pod 不用监听端口，
+适合只有出站 TCP 的最低权限立足点。
 
-ML 原生代理优先使用协议自身形态，本地客户端侧 TLS，控制器到探针走已加密
-的 reverse 传输（P1 需要安装可选依赖 h2）：
+ML 原生代理沿用各协议自己的形态：客户端侧走 TLS，控制器到探针走已加密的
+reverse 传输（P1 需要安装可选依赖 `h2`）：
 
 ```bash
 # P1: gRPC over TLS（Triton 8001 / Ray 8265），token 放 gRPC metadata
@@ -179,7 +179,7 @@ python -m inkblade channel proxy --protocol tcpstore \
   --target ray-head.ml-team:29500 --token-file ./proxy.token \
   --probe-command '<kubectl exec -i ... -- probe run --stdio ...>'
 
-# P6: NCCL/UCX TCP 控制流 profile（不冒充 RDMA verbs）
+# P6: NCCL/UCX TCP 控制流 profile（只做 TCP，不涉及 RDMA verbs）
 python -m inkblade channel proxy --protocol nccl \
   --target worker-0.ml-team --port 50000-51000 \
   --token-file ./proxy.token \
@@ -193,14 +193,14 @@ python -m inkblade channel proxy --protocol zmtp \
   --probe-command '<kubectl exec -i ... -- probe run --stdio ...>'
 ```
 
-`channel proxy` 默认只监听 `127.0.0.1`；`--tls-dir` 输出 CA、服务器证书和
-pin，客户端必须用 pin 校验。token 文件权限需为 `0600`，不写入状态或日志。
-P1/P2/P3/P4/P6 已实现；P3 的 token 派生本地 CURVE 客户端密钥，本地
-ROUTER 用 CURVE server + ZAP allowlist 认证，DEALER 经 loopback TCP bridge
-和 probe 重新向目标发起标准 ZMTP/CURVE（不是消息级重建）。P5
-（MASQUE CONNECT-UDP）不在本任务范围。P6 只做 TCP 控制流加密 relay、端口
-映射、保活和抖动统计，不实现也不冒充 IB/RoCE/UCX/RDMA verbs。跨集群/远端
-代理必须使用 `tls`、`wss` 或 `https` 的 reverse 探针，禁止明文 `tcp`。
+`channel proxy` 默认只监听 `127.0.0.1`；`--tls-dir` 输出 CA、服务器证书与
+pin，客户端要用 pin 校验。token 文件权限为 `0600`，不写进状态或日志。
+P1/P2/P3/P4/P6 已经实现。P3 用 token 派生本地 CURVE 客户端密钥，本地
+ROUTER 以 CURVE server + ZAP allowlist 认证，DEALER 经 loopback TCP bridge
+与 probe 重新向目标发起标准 ZMTP/CURVE 握手。P5
+（MASQUE CONNECT-UDP）还没有实现。P6 只做 TCP 控制流的加密 relay、端口
+映射、保活与抖动统计，不涉及 IB/RoCE/UCX/RDMA verbs。跨集群或远端
+代理必须走 `tls`、`wss` 或 `https` 的 reverse 探针，不能用明文 `tcp`。
 
 ## 检测
 
@@ -256,7 +256,7 @@ python -m inkblade probe list --session <session-id> --json
 python -m inkblade probe cleanup --session <session-id> --probe-id <parent-probe-id>
 ```
 
-子探针继承父探针的只读、白名单和预算，只能更严格。跨 namespace 需要 session 范围覆盖，否则拒绝。清理先子后父；`probe cleanup` 默认递归。
+子探针继承父探针的只读状态、命令白名单与预算，只能更严格。跨 namespace 需要会话范围覆盖，否则拒绝。清理先子后父，`probe cleanup` 默认递归。
 
 ## 跨集群
 
@@ -268,7 +268,7 @@ python -m inkblade agent coverage status --run-id <run-id>
 python -m inkblade agent coverage proof --run-id <run-id>
 ```
 
-中继承载同一套帧协议；每个集群仍然需要自己的授权记录。`coverage proof` 写出目标图的闭合情况，随报告一起交付。
+中继承载同一套帧协议；每个集群仍要有自己的授权记录。`coverage proof` 写出目标图的完成情况，随报告一起交付。
 
 ## 报告与导出
 
@@ -280,7 +280,7 @@ python -m inkblade export --run <run-id> --format ocsf
 python -m inkblade export --run <run-id> --format vex
 ```
 
-报告包含范围与授权、探针树、按层发现、组合链、盲区、修复建议与覆盖证明。探针树要能看到投放方式、父子关系、清理状态；发现要带证据锚；盲区要写清缺少什么部署面。没有证据的 finding 不生成。
+报告包含范围与授权、探针树、按层发现、组合链、盲区、修复建议与覆盖证明。探针树列出投放方式、父子关系与清理状态；每条发现都带证据锚；盲区写明缺少哪个部署面。没有证据的 finding 不会生成。
 
 ## 规则包
 
@@ -289,7 +289,7 @@ python -m inkblade rules generate --out ./rules
 python -m inkblade rules validate --findings <findings.json>
 ```
 
-规则包来源要对应盲区：Kyverno/Gatekeeper 管准入豁免、Audit、mutation 与子资源；Sigma 管进程、文件、DNS、改名执行；Falco/Tetragon 管 syscall、容器逃逸、敏感路径；Suricata/WAF 管编码、分块、Unicode、超长请求。`rules validate` 输出拦截 / 检出 / 漏过矩阵。
+规则包对应不同的盲区：Kyverno/Gatekeeper 管准入豁免、Audit、mutation 与子资源；Sigma 管进程、文件、DNS、改名执行；Falco/Tetragon 管 syscall、容器逃逸、敏感路径；Suricata/WAF 管编码、分块、Unicode、超长请求。`rules validate` 输出拦截 / 检出 / 漏过矩阵。
 
 ## 控制台
 
@@ -297,7 +297,7 @@ python -m inkblade rules validate --findings <findings.json>
 python -m inkblade ui --port 8765
 ```
 
-控制台默认绑 `127.0.0.1`，展示工作区里的会话、探针树、发现、图与时间线。容器或反向代理后才用 `--host 0.0.0.0`。
+控制台默认绑 `127.0.0.1`，展示工作区里的会话、探针树、发现、图与时间线。只有在容器里或放在反向代理后面时，才用 `--host 0.0.0.0`。
 
 ## 读结果
 
@@ -338,6 +338,6 @@ CI 里建议把 4、5、6、91 当硬失败；0 和 3 由策略决定。
 
 ## English summary
 
-Start with `inkblade up`, sign the authorization record with `quickstart`, open a session with an explicit entry mode, deliver the static probe, then run one template with `session run`, a chain with `execute`, or an objective graph with `agent run`. `report` renders the bilingual pentest and remediation output; `export` produces SARIF, OCSF and VEX; `rules generate` and `rules validate` close the loop with replayable packs. Probe trees are explicit, writes pass five gates, and every finding resolves to an evidence anchor.
+Start with `inkblade up`, sign the authorization record with `quickstart`, open a session with an explicit entry mode, deliver the static probe, then run one template with `session run`, a chain with `execute`, or an objective graph with `agent run`. `report` renders the bilingual pentest and remediation output; `export` produces SARIF, OCSF and VEX; `rules generate` and `rules validate` produce replayable packs and their replay matrix. Probe trees are explicit, writes pass five checks, and every finding resolves to an evidence anchor.
 
 Protocol frames and deployment prerequisites: [`PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md), [`PROBE-DEPLOY.md`](PROBE-DEPLOY.md), [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md).
