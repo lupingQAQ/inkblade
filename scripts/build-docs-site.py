@@ -200,12 +200,12 @@ def reserve_table(lang: str) -> str:
 RESERVE_INVENTORY = [
     ("Vulnerability entries", "漏洞条目", 184),
     ("Runnable demos", "可运行 demo", 68),
-    ("Zero-day candidates", "零日候选", 169),
-    ("Novelty-checked", "查新通过", 47),
-    ("Reserve-eligible", "储备可用", 46),
-    ("Unique reserve primitives", "去重后独立储备原语", 39),
+    ("Research leads", "研究线索", 169),
+    ("Confirmed unpublished", "确认未公开", 47),
+    ("Ready for disclosure", "可进入披露", 46),
+    ("Unique primitives", "独立原语", 39),
     ("Version matrix rows", "版本矩阵条目", 103),
-    ("Weapon packs", "weapon pack", 47),
+    ("Weapon packs", "利用包", 47),
     ("Detection rules", "检测规则", 121),
     ("Attack chains", "攻击链", 29),
 ]
@@ -272,7 +272,7 @@ LAYERS = [
      "prefix-cache-cross-tenant-leak, remote-kv-pool-isolation, cache-timing-sidechannel"),
     ("9", "Cross-combination", "跨组合层",
      "Report findings that only exist when two or three components meet, once at the combination, with component notes folded in.",
-     "只在两个或三个组件相遇时才成立的发现，只报一次，并把组件级记录并入组合。",
+     "只在两个或三个组件同时满足条件时才成立的发现，合并到组合层报一次，并把组件级记录并入其中。",
      "sglang-weight-exfil, imex-computedomain-gpu-memory-crossing, long-context-cache-leak"),
     ("10", "Defense bypass", "防护绕过层",
      "Measure whether HIDS, runtime eBPF, admission, image scan, host agents, WAF and network flow visibility see benign authorized activity.",
@@ -286,19 +286,19 @@ WORKFLOW9 = [
     ("2", "Rust probe", "Rust 探针", "probe deploy delivers the static binary and registers its identity and hash.",
      "probe deploy 投放静态二进制并登记身份与哈希。", "probe identity", "探针身份"),
     ("3", "Channel", "通道", "channel listen accepts the probe's reverse connection; a stdio channel is available when a local transport exists.",
-     "channel listen 接收探针主动回连；存在本地命令通道时也可用 stdio 通道。", "channel state", "通道状态"),
+     "channel listen 接收探针回连；有本地命令通道时也可以用 stdio 通道。", "channel state", "通道状态"),
     ("4", "Detection", "检测", "session run, run and agent run execute templates across the ten layers.",
      "session run、run 与 agent run 按十层执行模板。", "findings, evidence", "发现、证据"),
-    ("5", "Escape", "逃逸", "execute resolves a chain; write steps pass the backup gate first.",
+    ("5", "Escape", "逃逸", "execute resolves a chain; write steps pass the backup check first.",
      "execute 解析链；写步骤先过备份校验。", "escape path", "逃逸路径"),
     ("6", "Lateral", "横向", "channel forwards, child probes and agent graph edges map internal reachability.",
      "通道转发、子探针与 agent 图边测绘内部可达性。", "reachability graph", "可达图"),
     ("7", "Multi-probe", "多探针", "probe spawn extends the tree; children inherit a stricter budget and allow-list.",
      "probe spawn 扩展探针树；子探针继承更严格的预算与白名单。", "probe tree", "探针树"),
-    ("8", "Cross-cluster", "跨集群", "agent relay connects clusters; agent coverage writes the closure proof.",
-     "agent relay 连接集群；agent coverage 写出闭合证明。", "relay status, coverage proof", "中继状态、覆盖证明"),
-    ("9", "Report / rules / console", "报告 / 规则 / 控制台", "report, export, rules generate and ui close the engagement.",
-     "report、export、rules generate 与 ui 收束项目。", "report, rule packs, console", "报告、规则包、控制台"),
+    ("8", "Cross-cluster", "跨集群", "agent relay connects clusters; agent coverage writes the completion proof.",
+     "agent relay 连接集群；agent coverage 写出完成证明。", "relay status, coverage proof", "中继状态、覆盖证明"),
+    ("9", "Report / rules / console", "报告 / 规则 / 控制台", "report, export, rules generate and ui finish the engagement.",
+     "report、export、rules generate 与 ui 完成报告、规则与控制台。", "report, rule packs, console", "报告、规则包、控制台"),
 ]
 
 COMMANDS = [
@@ -320,22 +320,18 @@ COMMANDS = [
 ]
 
 FAQ_ITEMS = [
-    ("Does the target Pod need Python?",
-     "No. The probe is a static Rust binary and templates are JSON. The Pod needs a Linux kernel, a writable temporary directory or memfd_create, and the probe process inherits the Pod's namespaces and service account.",
-     "目标 Pod 要装 Python 吗？",
-     "不要。探针是静态 Rust 二进制，模板是 JSON。目标只需要 Linux 内核、可写临时目录或 memfd_create，探针进程继承 Pod 的命名空间与 ServiceAccount。"),
     ("How does the probe get into the Pod?",
-     "kubectl, a ServiceAccount token, a shared volume, an EphemeralContainer manifest or an authorized RCE callback. Each path has prerequisites and leaves traces.",
+     "From a foothold you already hold. The default is authorized RCE: base64 chunks of the binary go into the Pod and are written through memfd, or through /dev/shm or /tmp when memfd is unavailable, then chmod 700 and start. A ServiceAccount token, a shared volume and an EphemeralContainer manifest are the other roads: probe deploy --via sa-token builds a temporary kubeconfig and uses kubectl cp + exec, a shared volume carries the binary through a mounted volume, and probe deploy --via manifest generates the Pod, Job or EphemeralContainer manifest. kubectl is only needed for batch bootstrap. Once started, the probe calls back with inkblade-probe reverse --host <controller> --port <port>, and every later command runs over that channel.",
      "探针怎么进 Pod？",
-     "通过已有立足点投放：在 Pod shell 或授权 RCE 里上传静态探针并启动；有 ServiceAccount token 或 kubeconfig 时可创建 Job/EphemeralContainer；共享卷可直接挂载。探针启动后主动回连控制器，后续命令都走探针通道，不需要在 Pod 内安装 Python。"),
+     "从你已有的立足点投放。默认是授权 RCE：二进制 base64 分块送进 Pod，落到 <code>memfd</code>；没有 <code>memfd</code> 就落到 <code>/dev/shm</code> 或 <code>/tmp</code>，<code>chmod 700</code> 后启动。另外三条路是 ServiceAccount token、共享卷与 EphemeralContainer 清单：<code>probe deploy --via sa-token</code> 生成临时 kubeconfig 后 <code>kubectl cp</code> + <code>exec</code>；共享卷把二进制放进目标容器挂载的卷；<code>probe deploy --via manifest</code> 生成 Pod、Job 或 EphemeralContainer 清单。<code>kubectl</code> 只在批量 bootstrap 时需要。探针启动后执行 <code>inkblade-probe reverse --host &lt;controller&gt; --port &lt;port&gt;</code> 回连控制端，之后的命令都走这条通道。"),
     ("Is the probe a backdoor?",
-     "No. It does not persist, modify startup, patch images or call a fixed C2. It runs inside an authorized session, executes registered templates, defaults to read-only, gates writes and cleans up.",
+     "No. It does not persist, modify startup, patch images or call a fixed C2. It runs inside an authorized session, executes registered templates, defaults to read-only, checks writes and cleans up.",
      "探针是不是后门？",
      "不是。它不持久化、不改启动项、不改镜像、不回连固定 C2。它只在授权会话内运行，执行已注册模板，默认只读，写操作过校验，退出时清理。"),
     ("How are writes controlled?",
-     "Five gates: signed authorization covering target/level/window, --allow-write, meta.writes with a write step, backup-write mode and a backup receipt. A write reads back the hash and rolls back on failure.",
+     "Five checks: signed authorization covering target, level and window; --allow-write; meta.writes with a write step; backup-write mode; and a backup receipt. A write reads back the hash and rolls back on failure.",
      "写操作怎么保证安全？",
-     "五重校验：授权覆盖目标/级别/时间窗、--allow-write、meta.writes 与写步骤、backup-write 模式、备份回执。写后回读哈希，失败回滚。"),
+     "五道校验：授权覆盖目标、级别与时间窗；<code>--allow-write</code>；<code>meta.writes</code> 与写步骤；<code>backup-write</code> 模式；备份回执。写后回读哈希，失败回滚。"),
     ("Can it run air-gapped?",
      "Yes. The controller needs no network, the probe needs no package index, and templates and rule packs ship with the release.",
      "能离线吗？",
@@ -397,33 +393,31 @@ section(
     "What the probe looks at, layer by layer", "探针逐层看什么",
     en="""<p>Each layer is a set of templates you can run on its own. A template declares inputs, steps, checks, findings and artifacts; the probe executes it and returns evidence.</p>
 """ + figures([("10", "detection layers"), ("286", "templates"), ("29", "chains"), ("11", "defense-bypass modules")]) + """
-<h3>Ten detection layers</h3>
+<h3>The ten layers</h3>
 """ + layers_table("en") + """
 <p class="note">Layer detail, detection points and evidence produced: <a href="DETECTION-LAYERS.md">DETECTION-LAYERS.md</a> · <a href="PRODUCT.md">PRODUCT.md</a></p>
 <h3>Platform capabilities</h3>
 <ul>
   <li><b>One execution path.</b> Foothold, Rust probe, framed channel, in-pod task, child probe, evidence.</li>
-  <li><b>Zero target-side interpreter.</b> A static binary runs the same templates on distroless, scratch and Python images.</li>
-  <li><b>Probe trees.</b> probe_id and parent_id, per-child tokens, stricter inheritance, bounded depth and fan-out, child-first cleanup.</li>
+  <li><b>Probe trees.</b> probe_id and parent_id; each child has its own token and a stricter budget; depth and fan-out are bounded; cleanup is child-first.</li>
   <li><b>Agent runtime.</b> A budgeted objective graph with decision trace, journal resume and zero-execution replay.</li>
-  <li><b>Cross-cluster relay.</b> The same framed protocol between clusters, with a closure proof.</li>
-  <li><b>Evidence at the boundary.</b> Task results, step logs, artifacts, SHA-256 manifests, traffic tables and cleanup receipts.</li>
-  <li><b>Rules you can replay.</b> Admission, runtime and network packs with blocked / detected / missed matrices.</li>
+  <li><b>Cross-cluster relay.</b> The same framed protocol between clusters, with a completion proof.</li>
+  <li><b>Evidence from the probe.</b> Task results, step logs, artifacts, SHA-256 manifests, traffic tables and cleanup receipts.</li>
+  <li><b>Rules you can replay.</b> Admission, runtime and network packs with intercepted / detected / missed matrices.</li>
   <li><b>Report and console.</b> Bilingual pentest and remediation reports, SARIF / OCSF / VEX export, local console.</li>
 </ul>""",
     zh="""<p>每一层都是一组可独立执行的模板。模板声明输入、步骤、检查项、发现和产物；探针执行模板并回传证据。</p>
 """ + figures([("10", "检测层"), ("286", "模板"), ("29", "条链"), ("11", "防护绕过模块")]) + """
-<h3>十层检测</h3>
+<h3>十层一览</h3>
 """ + layers_table("zh") + """
 <p class="note">逐层检测点与证据产出：<a href="DETECTION-LAYERS.md">DETECTION-LAYERS.md</a> · <a href="PRODUCT.md">PRODUCT.md</a></p>
 <h3>平台能力</h3>
 <ul>
   <li><b>一条执行路径。</b> 立足、Rust 探针、帧通道、Pod 内任务、子探针、证据。</li>
-  <li><b>目标侧零解释器。</b> 静态二进制在 distroless、scratch 与 Python 镜像上跑同一套模板。</li>
-  <li><b>探针树。</b> probe_id 与 parent_id、独立子 token、更严格的继承、有界的深度与扇出、先子后父清理。</li>
+  <li><b>探针树。</b> probe_id 与 parent_id 标出位置；子探针用自己的 token，继承只能更严格；深度与扇出有上限；清理先子后父。</li>
   <li><b>Agent 运行时。</b> 带预算的目标图，含决策轨迹、journal 恢复与零执行回放。</li>
   <li><b>跨集群中继。</b> 集群间用同一套帧协议，并留下覆盖证明。</li>
-  <li><b>证据在边界产生。</b> 任务结果、步骤日志、产物、SHA-256 manifest、流量表与清理回执。</li>
+  <li><b>证据由探针产出。</b> 任务结果、步骤日志、产物、SHA-256 manifest、流量表与清理回执。</li>
   <li><b>规则可重放。</b> 准入、运行时、网络三类规则包，输出拦截 / 检出 / 漏过矩阵。</li>
   <li><b>报告与控制台。</b> 双语渗透与修复报告、SARIF / OCSF / VEX 导出、本地控制台。</li>
 </ul>""",
@@ -450,7 +444,7 @@ section(
 <h3>Probe tree</h3>
 <p>Every probe has a probe_id and a parent_id. Children inherit the parent's read-only state, command allow-list and budget, and can only be stricter. Cleanup is child-first, so no orphan keeps a token alive.</p>
 <p class="note"><a href="ARCHITECTURE.md">ARCHITECTURE.md</a> · <a href="ARCHITECTURE-PROBE.md">ARCHITECTURE-PROBE.md</a> · <a href="PROBE-PROTOCOL.md">PROBE-PROTOCOL.md</a></p>""",
-    zh="""<p>控制端不在目标侧执行任何逻辑。它负责授权、渲染模板、执行预算和归档证据。探针是 Pod 内唯一运行的代码。</p>
+    zh="""<p>控制端不在目标侧执行任何逻辑：它负责授权、渲染模板、执行预算与归档证据。探针是 Pod 里唯一运行的代码。</p>
 <div class="term">
   <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">执行路径</span></div>
 <pre><code>立足 ──▶ Rust 探针 ──▶ 帧通道 ──▶ Pod 内任务
@@ -460,9 +454,9 @@ section(
 </div>
 <h3>三个平面</h3>
 <ul>
-  <li><b>模板面。</b> template.json 声明输入、载荷、步骤、computed 状态、检查项、发现与产物。</li>
-  <li><b>探针面。</b> 静态 Rust 二进制使用 HMAC 认证的帧协议，执行 http、tcp、exec、fs、k8s、socks 与 spawn。</li>
-  <li><b>控制面。</b> Python 执行授权、范围、级别、备份与审计校验，并把探针证据折成发现。</li>
+  <li><b>模板平面。</b> template.json 声明输入、载荷、步骤、computed 状态、检查项、发现与产物。</li>
+  <li><b>探针平面。</b> 静态 Rust 二进制使用 HMAC 认证的帧协议，执行 http、tcp、exec、fs、k8s、socks 与 spawn。</li>
+  <li><b>控制平面。</b> Python 负责授权、范围、级别、备份与审计校验，并把探针证据汇总成发现。</li>
 </ul>
 <h3>探针树</h3>
 <p>每颗探针都有 probe_id 与 parent_id。子探针继承父探针的只读状态、命令白名单与预算，且只能更严格。清理先子后父，避免留下仍持有 token 的孤儿。</p>
@@ -472,8 +466,8 @@ section(
 section(
     "probe", "Rust probe", "Rust 探针",
     "Static Rust probe", "静态 Rust 探针",
-    "One binary, 286 templates, no target-side interpreter", "一个二进制、286 个模板、目标侧无解释器",
-    en="""<p>The probe is a single static musl binary for linux/amd64 and linux/arm64. Templates are JSON data; the target Pod needs no Python, shell, curl or other interpreter.</p>
+    "One binary, 286 templates", "一个二进制、286 个模板",
+    en="""<p>The probe is one static musl binary per architecture, linux/amd64 and linux/arm64. Templates are JSON data.</p>
 """ + figures([("286", "templates"), ("2", "musl architectures"), ("12", "probe operations")]) + """
 <h3>Probe operations</h3>
 """ + table(
@@ -481,21 +475,22 @@ section(
         [
             '<tr><td><code>collect</code></td><td>Host, Pod, process, network and Kubernetes context.</td></tr>',
             '<tr><td><code>exec</code></td><td>Run an allow-listed command with a bounded budget.</td></tr>',
-            '<tr><td><code>audit-exec</code></td><td>Run a command with the audit trail and timing record.</td></tr>',
-            '<tr><td><code>read-file</code></td><td>Read a file with size caps and a SHA-256 hash.</td></tr>',
+            '<tr><td><code>audit-exec</code></td><td>Run a command and record the audit trail and timing.</td></tr>',
+            '<tr><td><code>read-file</code></td><td>Read a file with size limits and a SHA-256 hash.</td></tr>',
             '<tr><td><code>list-files</code></td><td>List a directory tree with metadata.</td></tr>',
-            '<tr><td><code>upload</code></td><td>Write a file through the authorized write-permission check.</td></tr>',
+            '<tr><td><code>upload</code></td><td>Write a file after the authorization and write-permission checks.</td></tr>',
             '<tr><td><code>download</code></td><td>Stream a file back in chunks.</td></tr>',
             '<tr><td><code>spawn</code></td><td>Start a child probe with its own token and a stricter budget.</td></tr>',
             '<tr><td><code>dial</code></td><td>Open a TCP or UDP connection to an in-scope target.</td></tr>',
             '<tr><td><code>socks</code></td><td>Expose a loopback SOCKS5 listener for local tool compatibility.</td></tr>',
-            '<tr><td><code>beacon</code></td><td>Send heartbeat and posture updates over the framed channel.</td></tr>',
+            '<tr><td><code>beacon</code></td><td>Send heartbeat and state updates over the framed channel.</td></tr>',
             '<tr><td><code>cleanup</code></td><td>Remove artifacts and confirm the probe tree is empty.</td></tr>',
         ],
     ) + """
 <p class="note">Every operation is budgeted, scoped and recorded in the evidence store; the probe tree cleans up child-first.</p>
+<p class="note">Every module is a template, and the registry rejects a module that ships <code>run.py</code>.</p>
 <p class="note"><a href="ARCHITECTURE-PROBE.md">ARCHITECTURE-PROBE.md</a> · <a href="PROBE-PROTOCOL.md">PROBE-PROTOCOL.md</a> · <a href="PROBE-BUILD.md">PROBE-BUILD.md</a></p>""",
-    zh="""<p>探针是 linux/amd64 与 linux/arm64 各一个静态 musl 二进制。模板是 JSON 数据；目标 Pod 不需要 Python、shell、curl 或其他解释器。</p>
+    zh="""<p>探针是 linux/amd64 与 linux/arm64 各一个静态 musl 二进制。模板是 JSON 数据。</p>
 """ + figures([("286", "模板"), ("2", "musl 架构"), ("12", "探针操作")]) + """
 <h3>探针操作</h3>
 """ + table(
@@ -506,16 +501,17 @@ section(
             '<tr><td><code>audit-exec</code></td><td>执行命令并留下审计轨迹与时序记录。</td></tr>',
             '<tr><td><code>read-file</code></td><td>读取文件，带大小上限与 SHA-256 哈希。</td></tr>',
             '<tr><td><code>list-files</code></td><td>列出目录树与元数据。</td></tr>',
-            '<tr><td><code>upload</code></td><td>经授权写权限校验写入文件。</td></tr>',
+            '<tr><td><code>upload</code></td><td>写入前先过授权与写权限校验。</td></tr>',
             '<tr><td><code>download</code></td><td>分块流式回传文件。</td></tr>',
-            '<tr><td><code>spawn</code></td><td>启动子探针，独立 token、更严格预算。</td></tr>',
+            '<tr><td><code>spawn</code></td><td>启动子探针，给它独立 token 与更严格的预算。</td></tr>',
             '<tr><td><code>dial</code></td><td>向范围内目标建立 TCP 或 UDP 连接。</td></tr>',
             '<tr><td><code>socks</code></td><td>暴露回环 SOCKS5 监听，兼容本地工具。</td></tr>',
-            '<tr><td><code>beacon</code></td><td>经帧通道发送心跳与姿态更新。</td></tr>',
+            '<tr><td><code>beacon</code></td><td>经帧通道发送心跳与状态更新。</td></tr>',
             '<tr><td><code>cleanup</code></td><td>移除产物并确认探针树已清空。</td></tr>',
         ],
     ) + """
-<p class="note">每个操作都受预算与范围约束，并写入证据库；探针树先子后父清理。</p>
+<p class="note">每个操作都受预算与范围约束，并写入证据库；探针树按先子后父的顺序清理。</p>
+<p class="note">每个模块都是模板；注册表不接受带 <code>run.py</code> 的模块。</p>
 <p class="note"><a href="ARCHITECTURE-PROBE.md">ARCHITECTURE-PROBE.md</a> · <a href="PROBE-PROTOCOL.md">PROBE-PROTOCOL.md</a> · <a href="PROBE-BUILD.md">PROBE-BUILD.md</a></p>""",
 )
 
@@ -540,7 +536,7 @@ section(
   <li>SOCKS5 stays on loopback and is a compatibility path for local tooling, not a network-wide proxy.</li>
 </ul>
 <p class="note"><a href="PROBE-CHANNEL.md">PROBE-CHANNEL.md</a> · <a href="PROBE-PROTOCOL.md">PROBE-PROTOCOL.md</a> · <a href="USAGE.md">USAGE.md</a></p>""",
-    zh="""<p>回连通道与 ML 代理是两层：通道在控制端与探针之间承载帧，代理在探针与范围内目标之间承载服务协议。</p>
+    zh="""<p>回连通道与 ML 代理属于两层：通道在控制端与探针之间承载帧，代理在探针与范围内目标之间承载服务协议。</p>
 """ + table(
         [("层", ""), ("支持", "")],
         [
@@ -551,7 +547,7 @@ section(
     ) + """
 <h3>认证与加密</h3>
 <ul>
-  <li>每个帧都带 token 与 HMAC；token 或 MAC 不对即断开。</li>
+  <li>每个帧都带 token 与 HMAC；token 或 MAC 不匹配就断开连接。</li>
   <li>TLS、WSS、HTTPS、QUIC 与 WebTransport 用 SHA-256 pin 校验控制端证书，可选 CA 文件。</li>
   <li>gRPC、Redis、TCPStore、NCCL 与 UCX 代理走 TLS；ZMTP 启用时使用 CURVE 与 Z85 密钥。</li>
   <li>SOCKS5 只留在回环，是本地工具的兼容路径，不是全网代理。</li>
@@ -563,17 +559,23 @@ section(
     "reserve", "Vulnerability research", "漏洞研究",
     "Vulnerability research", "漏洞研究",
     "The research behind the template catalogue", "模板目录背后的漏洞研究",
-    en="""<p>The catalogue is backed by 184 vulnerability write-ups, each recording the component, affected versions, root cause, impact and detection. 68 have runnable PoCs. The research queue contains 169 vulnerability leads; not all are zero-day. 47 were dynamically reproduced and confirmed unpublished, 46 are ready for coordinated disclosure, and 39 are distinct exploit primitives after deduplication. A 103-record affected-version matrix and 121 detection rules feed 29 attack chains. The public ledger lists component, class, affected versions and disclosure status; exploit details stay private.</p>
+    en="""<p>The template catalogue is built on 184 vulnerability write-ups, each recording the component, affected versions, root cause, impact and detection. 68 have runnable PoCs. The research queue holds 169 leads, and not all of them are zero-day: 47 were reproduced dynamically and confirmed unpublished, 46 are ready for coordinated disclosure, and deduplication leaves 39 distinct exploit primitives. A 103-record version matrix and 121 detection rules feed 29 attack chains.</p>
+<h3>Vulnerability research reserve</h3>
+""" + reserve_inventory_table("en") + """
+<p>The public ledger lists component, class, affected versions and disclosure status; exploit details stay private.</p>
 <p class="note"><a href="0DAY-PUBLIC.md">0DAY-PUBLIC.md</a> · <a href="VULNERABILITY-LAYERS.md">VULNERABILITY-LAYERS.md</a> · <a href="DETECTION-LAYERS.md">DETECTION-LAYERS.md</a></p>""",
-    zh="""<p>模板目录背后有 184 条漏洞记录，每条写清组件、受影响版本、根因、影响与检测方式；其中 68 条有可运行 PoC。研究队列包含 169 条漏洞线索，47 条经动态复现并确认未公开（0day），46 个可进入协调披露，39 个是独立的利用原语。103 条受影响版本记录与 121 条检测规则支撑 29 条攻击链。公开台账只列组件、类别、受影响版本与披露状态，利用细节不公开。</p>
+    zh="""<p>模板目录对应 184 条漏洞记录，每条写清组件、受影响版本、根因、影响与检测方式；其中 68 条带可运行 PoC。研究队列有 169 条线索，并非都算 0day：47 条经动态复现并确认未公开，46 条可以进入协调披露，去重后得到 39 个独立利用原语。103 条受影响版本记录与 121 条检测规则支撑 29 条攻击链。</p>
+<h3>漏洞储备</h3>
+""" + reserve_inventory_table("zh") + """
+<p>公开台账列出组件、类别、受影响版本与披露状态；利用细节不公开。</p>
 <p class="note"><a href="0DAY-PUBLIC.md">0DAY-PUBLIC.md</a> · <a href="VULNERABILITY-LAYERS.md">VULNERABILITY-LAYERS.md</a> · <a href="DETECTION-LAYERS.md">DETECTION-LAYERS.md</a></p>""",
 )
 
 section(
     "workflow", "Workflow", "工作流",
     "From foothold to report", "从立足到报告",
-    "Nine stages, each leaves something the next can check", "九个阶段，每步都留下下一步能校验的东西",
-    en="""<p>The order is the product. Any stage can refuse; a refusal stops the run.</p>
+    "Nine stages, each leaving behind something the next stage can check", "九个阶段，每步都留下下一步能校验的东西",
+    en="""<p>The order matters. Any stage can refuse, and a refusal stops the run.</p>
 """ + workflow_flow("en") + """
 <h3>Write-permission checks</h3>
 """ + table(
@@ -587,9 +589,9 @@ section(
         ],
     ) + """
 <p class="note"><a href="WORKFLOW.md">Stage reference</a></p>""",
-    zh="""<p>顺序就是产品。任何阶段都可以拒绝；拒绝就地停下。</p>
+    zh="""<p>阶段顺序很重要。任何阶段都可以拒绝，拒绝之后这次运行就停在这里。</p>
 """ + workflow_flow("zh") + """
-<h3>写权限校验结果</h3>
+<h3>写操作的五道校验</h3>
 """ + table(
         [("校验", ""), ("拒绝条件", ""), ("信号", "num")],
         [
@@ -609,8 +611,8 @@ section(
     "Install, attach, deliver, run, report", "安装、接入、投放、运行、报告",
     en="""<p>Start from the console and attach the probe or foothold you already hold. The default foothold is a least-privilege Pod: non-root, no hostPath or privileged mode, no kubeconfig, outbound TCP only.</p>
 <ol class="steps">
-  <li><b>python -m pip install -e .</b><span>Install the controller. Python 3.10 – 3.13, no compiler.</span></li>
-  <li><b>python -m inkblade up</b><span>Start the console, sign in, sign the authorization record.</span></li>
+  <li><b>python -m pip install -e .</b><span>Install the controller (Python 3.10 – 3.13).</span></li>
+  <li><b>python -m inkblade up</b><span>Start the console, sign in and sign the authorization record.</span></li>
   <li><b>python -m inkblade probe list</b><span>Attach an existing probe; the controller listens and the probe connects back.</span></li>
   <li><b>python -m inkblade session open --mode foothold ...</b><span>First delivery from the shell, SA token or RCE you already hold.</span></li>
   <li><b>python -m inkblade agent run --probe &lt;probe-id&gt; ...</b><span>Run detection through the probe channel, then report.</span></li>
@@ -631,13 +633,13 @@ section(
 </div>
 <p class="note">Child probes are delivered from the parent with probe upload + probe spawn and call back the same way. A stdio channel (channel start) is available when a local command transport exists. A kubeconfig is optional, only for a first batch bootstrap of several Pods. The documentation site is local: python -m inkblade docs serves docs/ on 127.0.0.1:8766 and opens the browser; --no-browser keeps it headless.</p>
 <p class="note"><a href="QUICKSTART.md">Quick start</a> · <a href="INSTALL.md">Install</a> · <a href="USAGE.md">Usage</a></p>""",
-    zh="""<p>从控制台开始，接入你已有的探针或立足点。默认立足点是普通、最低权限的 Pod：非 root、无 hostPath/privileged、无 kubeconfig，只有出站 TCP。</p>
+    zh="""<p>从控制台开始，接入你已有的探针或立足点。默认立足点是一个普通的最低权限 Pod：非 root、没有 hostPath 或 privileged、没有 kubeconfig，只有出站 TCP。</p>
 <ol class="steps">
-  <li><b>python -m pip install -e .</b><span>安装控制端。Python 3.10 – 3.13，不需要编译器。</span></li>
-  <li><b>python -m inkblade up</b><span>启动控制台、浏览器登录、签授权记录。</span></li>
+  <li><b>python -m pip install -e .</b><span>安装控制端，需要 Python 3.10 – 3.13。</span></li>
+  <li><b>python -m inkblade up</b><span>启动控制台，在浏览器里登录并签授权记录。</span></li>
   <li><b>python -m inkblade probe list</b><span>接入已有探针；控制端监听，探针主动回连。</span></li>
   <li><b>python -m inkblade session open --mode foothold ...</b><span>用已有 shell、SA token 或 RCE 完成首次投放。</span></li>
-  <li><b>python -m inkblade agent run --probe &lt;probe-id&gt; ...</b><span>通过探针通道执行检测，再出报告。</span></li>
+  <li><b>python -m inkblade agent run --probe &lt;probe-id&gt; ...</b><span>通过探针通道执行检测，再生成报告。</span></li>
 </ol>
 <div class="term">
   <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">终端 · 探针优先</span></div>
@@ -653,7 +655,7 @@ section(
 <span class="p">$</span> python -m inkblade agent run --probe &lt;probe-id&gt; --objective read-only-recon --workspace ./work
 <span class="p">$</span> python -m inkblade report --run &lt;run-id&gt; --lang bi</code></pre>
 </div>
-<p class="note">子探针由父探针用 probe upload + probe spawn 投放，并以同样方式回连。存在本地命令通道时可用 stdio 通道（channel start）。kubeconfig 是可选的，只用于首次批量 bootstrap。文档站点在本地：python -m inkblade docs 在 127.0.0.1:8766 服务 docs/ 并打开浏览器；--no-browser 不打开浏览器。</p>
+<p class="note">子探针由父探针用 probe upload + probe spawn 投放，回连方式相同。目标环境里有本地命令通道时，可以用 stdio 通道（channel start）。kubeconfig 是可选的，只用于首次批量 bootstrap。文档站点在本地：<code>python -m inkblade docs</code> 在 127.0.0.1:8766 提供 docs/ 并打开浏览器，<code>--no-browser</code> 则不打开。</p>
 <p class="note"><a href="QUICKSTART.md">快速开始</a> · <a href="INSTALL.md">安装</a> · <a href="USAGE.md">使用</a></p>""",
 )
 
@@ -707,7 +709,7 @@ docker run --rm -v inkblade-data:/data inkblade:0.2.0 up</code></pre>
 <pre><code>helm install inkblade deploy/helm/inkblade \
   --namespace inkblade --create-namespace</code></pre>
 </div>
-<p class="note">uid 10001、根只读、证据落在 PVC。默认只给读动词；写操作要 readOnly=false、rbac.allowWrite=true 与签署记录。卸载保留 PVC。</p>
+<p class="note">uid 10001、根文件系统只读、证据写入 PVC。默认只给读动词；写操作需要 readOnly=false、rbac.allowWrite=true 与签署记录。卸载时保留 PVC。</p>
 <p class="note"><a href="INSTALL.md">安装指南</a> · <a href="PROBE-DEPLOY.md">探针投放</a></p>""",
 )
 
@@ -715,7 +717,7 @@ section(
     "security", "Security", "安全与授权",
     "Security and authorization", "安全与授权",
     "Authorization is a prerequisite, not a feature toggle", "授权是使用前提，不是功能开关",
-    en="""<p>InkBlade refuses to run without a signed record. Every stage keeps its own gate.</p>
+    en="""<p>InkBlade refuses to run without a signed record, and each stage has its own check.</p>
 <ol class="steps">
   <li><b>RoE record</b><span>Target, scope, level, window and emergency contact. Hash-pinned and carried by every run.</span></li>
   <li><b>Read-only default</b><span>Collection, probes, file reads and read-only templates need no extra flag.</span></li>
@@ -727,7 +729,7 @@ section(
 """ + table(
         [("Control", ""), ("What it guarantees", "")],
         [
-            '<tr><td>Consent hash</td><td>The authority for a run is one file, not a meeting.</td></tr>',
+            '<tr><td>Consent hash</td><td>Every run carries the hash of its signed authorization file.</td></tr>',
             '<tr><td>Scope and level</td><td>Out-of-scope or above-level actions are refused before execution.</td></tr>',
             '<tr><td>Backup receipt</td><td>No write without a restorable snapshot.</td></tr>',
             '<tr><td>Evidence manifest</td><td>Every finding resolves to a task, step, artifact, probe or manifest hash.</td></tr>',
@@ -739,18 +741,18 @@ section(
 </div>""",
     zh="""<p>没有签署记录，InkBlade 拒绝运行。每个阶段都有自己的校验。</p>
 <ol class="steps">
-  <li><b>RoE 记录</b><span>目标、范围、级别、时间窗与应急联系人；哈希钉存，跟着每次 run 走。</span></li>
+  <li><b>RoE 记录</b><span>目标、范围、级别、时间窗与应急联系人；记录带哈希，随每次运行进入证据。</span></li>
   <li><b>默认只读</b><span>采集、探测、读文件与只读模板不需要额外开关。</span></li>
-  <li><b>五重写权限校验</b><span>会话级别、--allow-write、meta.writes、backup-write 模式、备份回执。</span></li>
-  <li><b>备份与回滚</b><span>写前快照，两者都记录，逐步恢复。</span></li>
+  <li><b>五道写权限校验</b><span>会话级别、--allow-write、meta.writes、backup-write 模式、备份回执。</span></li>
+  <li><b>备份与回滚</b><span>写前做快照，写操作与快照都记录，恢复按步骤进行。</span></li>
   <li><b>审计与证据</b><span>每次探针动作与文件访问进入证据库，带 SHA-256 manifest。</span></li>
-  <li><b>急停</b><span>inkblade abort 停工作区；agent stop 停单个 run。</span></li>
+  <li><b>急停</b><span><code>inkblade abort</code> 停止整个工作区；<code>agent stop</code> 停止单次运行。</span></li>
 </ol>
 """ + table(
         [("控制", ""), ("保证什么", "")],
         [
-            '<tr><td>授权哈希</td><td>每次运行对应一份签名授权文件，哈希写入证据；不是口头确认。</td></tr>',
-            '<tr><td>范围与级别</td><td>越界或超级别的动作在执行前拒绝。</td></tr>',
+            '<tr><td>授权哈希</td><td>每次运行都带签署授权文件的哈希，并写入证据。</td></tr>',
+            '<tr><td>范围与级别</td><td>越界或超出级别的动作会在执行前被拒绝。</td></tr>',
             '<tr><td>备份回执</td><td>没有可恢复快照就没有写操作。</td></tr>',
             '<tr><td>证据 manifest</td><td>每条发现都能落到 task、step、artifact、probe 或 manifest 哈希。</td></tr>',
         ],
@@ -785,7 +787,7 @@ section(
         ],
     ) + """
 <p class="note">Documentation index: <a href="DOC-INDEX.md">DOC-INDEX.md</a></p>""",
-    zh="""<p>Apache-2.0。允许商用、fork 与嵌入服务；保留声明。</p>
+    zh="""<p>Apache-2.0。允许商用、fork 与嵌入到其他产品中；保留 <code>LICENSE</code> 与 <code>NOTICE</code>。</p>
 """ + table(
         [("项目", ""), ("说明", "")],
         [
@@ -931,6 +933,7 @@ HERO = {
         "kicker": "Training &amp; inference infrastructure",
         "positioning": "Training &amp; Inference Cluster Penetration Testing Platform",
         "docstate": "Product documentation <i>/</i> 2026-10",
+        "spec_title": "build sheet",
         "lead": "A static Rust probe inside the authorized Pod, ten detection layers, bilingual reports, replayable rules and a local console. The controller never ships code into the cluster.",
         "links": [("Install", "INSTALL.md"), ("Usage", "USAGE.md"), ("Architecture", "ARCHITECTURE.md")],
         "spec": [
@@ -944,11 +947,13 @@ HERO = {
         "kicker": "训练与推理基础设施",
         "positioning": "训练与推理集群渗透测试平台",
         "docstate": "产品文档 <i>/</i> 2026-10",
+        "spec_title": "规格",
         "lead": "把静态 Rust 探针放进已授权的 Pod，覆盖十层检测，产出双语报告、可重放规则与本地控制台。控制端不向集群下发代码。",
         "links": [("安装", "INSTALL.md"), ("使用", "USAGE.md"), ("架构", "ARCHITECTURE.md")],
         "spec": [
             ("许可证", "Apache-2.0"), ("控制端", "Python 3.10 – 3.13"),
             ("目标端", "静态 Rust 探针"), ("模板", "286"), ("链", "29"),
+            ("默认状态", "只读"),
         ],
         "spec_note": "仅限授权测试。范围、级别与时间窗来自签署记录。",
     },
@@ -1019,7 +1024,7 @@ def render_hero(mode: str, langs: list[str]) -> str:
       <p class="lead-note note" style="margin-top:18px;max-width:44ch">{h["lead"]}</p>
     </div>
     <aside class="spec">
-      <h2>build sheet</h2>
+      <h2>{h["spec_title"]}</h2>
       <dl>{spec_rows}</dl>
       <div class="rule"></div>
       <p>{h["spec_note"]}</p>

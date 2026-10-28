@@ -2,11 +2,11 @@
 
 > 适用范围：控制端与 `inkblade-probe` 之间；也适用于父探针与子探针。
 > 传输：stdio、TCP 或 Unix 域套接字；同一套帧格式。
-> 状态：v1 草案，随探针 CLI 收尾。字段以本文为准，代码以 `probe/src/protocol.rs` 对齐。
+> 状态：v1 草案，随探针 CLI 一起定稿。字段以本文为准，实现以 `probe/src/protocol.rs` 为准。
 
 ## 1. 帧格式
 
-每条消息由两部分组成：4 字节大端长度，加上 UTF-8 JSON 负载。长度字段算的是负载字节数，不含这 4 字节头。负载必须大于 0，且不超过 8 MiB（`MAX_FRAME`）；数组、标量、空负载一律拒绝。协议不做压缩，也不拆帧；大文件走文件分块任务，不靠把一帧撑大。
+每条消息由两部分组成：4 字节大端长度，加上 UTF-8 JSON 负载。长度字段算的是负载字节数，不含这 4 字节头。负载必须大于 0，且不超过 8 MiB（`MAX_FRAME`）；数组、标量、空负载一律拒绝。协议不做压缩，也不拆帧；大文件走文件分块任务，不靠放大单帧。
 
 ```
 +----------------+------------------------------+
@@ -14,7 +14,7 @@
 +----------------+------------------------------+
 ```
 
-读端遇到 `EINTR` 要重试；读到 0 且没读满 4 字节，视为截断。写端写完立即 flush，不允许把多条帧拼进一个写缓冲后延迟发送。这个约束看起来琐碎，但它决定了 `kubectl exec` 的 stdio 通道能不能稳定工作：shell banner、TTY 回显、管道缓冲，任何一个混进来，帧就会错位。
+读端遇到 `EINTR` 要重试；读到 0 且没读满 4 字节，视为截断。写端写完立即 flush，不把多条帧拼进一个写缓冲再延迟发送。这条约束决定了 `kubectl exec` 的 stdio 通道能否稳定工作：shell banner、TTY 回显或管道缓冲只要混进一个，帧就会错位。
 
 **English.** Every message is a 4-byte big-endian length followed by a UTF-8 JSON object. The maximum frame is 8 MiB. Large files use chunked file tasks, not oversized frames.
 
@@ -34,7 +34,7 @@
 | `cleanup` | controller → probe | 清理指定资源或整棵子树 |
 | `bye` | 双向 | 正常关闭；收到后不再接受新任务 |
 
-`task` 的 `op` 可以是 `template`、`collect`、`http`、`tcp`、`exec`、`fs`、`k8s`、`socks`、`spawn`、`probe.list`、`probe.cleanup` 或 `session.stats`。生产路径优先用 `template`；单 op 任务只用于探针自检、协议调试和 bootstrap 验证。单 op 不绕过授权，也不绕过只读/白名单。
+`task` 的 `op` 可以是 `template`、`collect`、`http`、`tcp`、`exec`、`fs`、`k8s`、`socks`、`spawn`、`probe.list`、`probe.cleanup` 或 `session.stats`。生产路径优先用 `template`；单 op 任务只用于探针自检、协议调试与 bootstrap 验证，同样受授权、只读与白名单约束。
 
 ## 3. 握手与认证
 
@@ -68,7 +68,7 @@
 }
 ```
 
-token 是 32 字节随机值，通过 `--token-file` 传入，文件权限 0600；它不出现在 argv、环境变量、日志或证据里。探针用常量时间比较 proof；失败返回 `E_AUTH`，连续 3 次失败关闭连接。认证前只接受 `hello`、`auth`、`ping`，其他类型一律 `E_AUTH`。每个子探针使用独立 token；父探针只把 token 写入子探针的 token 文件，不转发给控制端。TCP/Unix 通道必须认证，stdio 通道也必须认证，不能因为“本地”跳过。
+token 是 32 字节随机值，通过 `--token-file` 传入，文件权限 0600；它不出现在 argv、环境变量、日志或证据里。探针用常量时间比较 proof；失败返回 `E_AUTH`，连续 3 次失败关闭连接。认证前只接受 `hello`、`auth`、`ping`，其他类型一律 `E_AUTH`。每个子探针使用独立 token；父探针只把 token 写入子探针的 token 文件，不转发给控制端。TCP、Unix 与 stdio 三种通道都必须认证，本地连接也不例外。
 
 认证通过后，探针发 `ready`：
 
@@ -90,7 +90,7 @@ token 是 32 字节随机值，通过 `--token-file` 传入，文件权限 0600�
 }
 ```
 
-控制端收到 `ready` 后才能发 `task`。`limits` 是探针实际生效值，不是控制端请求值；控制端必须以 `ready` 为准。
+控制端收到 `ready` 后才能发 `task`。`limits` 是探针实际生效的值，可能小于控制端的请求值，控制端要以 `ready` 为准。
 
 ## 4. 任务与结果帧
 
@@ -152,7 +152,7 @@ token 是 32 字节随机值，通过 `--token-file` 传入，文件权限 0600�
 }
 ```
 
-`ok=true` 不代表“目标安全”，只代表任务执行完成；安全结论看 `data.findings` 和 `data.checks`。`ok=false` 必须带 `code`、`message`，最好带 `step`。`data.status` 只有 `ok`、`findings`、`skipped`、`error` 四种。`data.runtime` 必须是 `rust`；参考评估器返回 `reference`，不得混入探测证据。结果帧必须带 `probe.id`；子探针结果带 `probe.parent_id`。同一 `id` 重发视为重复，控制端保留第一次成功结果，第二次记 `duplicate`。
+`ok=true` 不代表“目标安全”，只代表任务执行完成；安全结论看 `data.findings` 和 `data.checks`。`ok=false` 必须带 `code`、`message`，最好带 `step`。`data.status` 只有 `ok`、`findings`、`skipped`、`error` 四种。`data.runtime` 必须是 `rust`；参考评估器返回 `reference`，不能当作探测证据。结果帧必须带 `probe.id`；子探针结果带 `probe.parent_id`。同一 `id` 重发视为重复，控制端保留第一次成功结果，第二次记 `duplicate`。
 
 `event` 用于进度和树变化，不替代结果。需要可靠交付的事实必须放进 `result`。
 
@@ -171,7 +171,7 @@ token 是 32 字节随机值，通过 `--token-file` 传入，文件权限 0600�
 | 会话总时长 | 由控制端设置 | 24h | 控制端 + 探针 TTL |
 | 孤儿 TTL | 120s | 600s | 探针 |
 
-任务超时后，探针杀死当前 op 的子进程或连接，返回 `E_TIMEOUT`；已完成步骤保留在 `data.steps` 里，未收尾步骤标 `skipped`。预算超限返回 `E_BUDGET`，不自动降级到无上限。`cancel` 命中在途任务后，探针在下一个检查点停止，结果返回 `E_CANCELLED`，已产生的步骤保留。只有 `retryable=true` 的错误允许控制端重试；`E_AUTH`、`E_DENIED`、`E_TEMPLATE` 不重试。
+任务超时后，探针终止当前 op 的子进程或连接，返回 `E_TIMEOUT`；已完成的步骤留在 `data.steps` 里，没来得及执行的步骤标 `skipped`。预算超限返回 `E_BUDGET`，不会自动降级成无上限。`cancel` 命中在途任务后，探针在下一个检查点停止，结果返回 `E_CANCELLED`，已经产生的步骤保留。只有 `retryable=true` 的错误允许控制端重试；`E_AUTH`、`E_DENIED`、`E_TEMPLATE` 不重试。
 
 ## 6. 文件分块
 
@@ -187,7 +187,7 @@ token 是 32 字节随机值，通过 `--token-file` 传入，文件权限 0600�
 }
 ```
 
-返回结果里带 `path`、`offset`、`bytes`、`total`、整文件 `sha256` 和 `data_b64`。单块上限 1 MiB，`length` 不得超过 `max_chunk`；`sha256` 是整文件哈希，不是块哈希。控制端按 offset 递增拼接，不连续即拒绝；最后一块满足 `offset + bytes == total`。读取失败返回 `E_IO`，文件不存在返回 `E_NOTFOUND`。大文件不自动压缩，需要压缩由控制端在证据层处理。
+返回结果里带 `path`、`offset`、`bytes`、`total`、整文件 `sha256` 和 `data_b64`。单块上限 1 MiB，`length` 不得超过 `max_chunk`；`sha256` 是整文件哈希，不是块哈希。控制端按 offset 递增拼接，不连续即拒绝；最后一块满足 `offset + bytes == total`。读取失败返回 `E_IO`，文件不存在返回 `E_NOTFOUND`。大文件不做自动压缩，需要压缩时由控制端在证据层处理。
 
 `push` 从控制端写文件：
 
@@ -210,7 +210,7 @@ token 是 32 字节随机值，通过 `--token-file` 传入，文件权限 0600�
 
 `cleanup` 任务带 `scope`、`probe_id` 和要删除的类别（`token`、`binary`、`scratch`、`sockets`、`children`）。清理顺序固定：停止接受新任务；取消在途任务；递归清理子探针（先子后父）；关闭监听 socket 和 SOCKS 连接；删除 token 文件、临时二进制、scratch 文件；返回 `cleanup.report`。
 
-`cleanup.report` 包含 `removed`、`failed`、`children`、`idempotent`。清理是幂等的；重复清理返回空 removed 和 `idempotent=true`。清理失败不阻塞退出，但必须回报；控制端把失败写进证据和报告的限制节。探针收到 `bye` 后执行同样的清理；异常退出时，子探针在 orphan TTL 后自行清理。不删除目标原有文件；只删除探针自己创建的文件，路径必须在探针的创建清单里，不能凭控制端一句话删任意路径。
+`cleanup.report` 包含 `removed`、`failed`、`children`、`idempotent`。清理是幂等的；重复清理返回空 removed 和 `idempotent=true`。清理失败不阻塞退出，但必须回报；控制端把失败写进证据和报告的限制一节。探针收到 `bye` 后执行同样的清理；异常退出时，子探针在 orphan TTL 之后自行清理。目标原有的文件不删：只删探针自己创建的文件，路径必须在探针的创建清单里，控制端不能凭一条命令删除任意路径。
 
 ## 8. 错误码
 
@@ -233,7 +233,7 @@ token 是 32 字节随机值，通过 `--token-file` 传入，文件权限 0600�
 | `E_CLEANUP` | 清理失败 | 是（人工介入） |
 | `E_INTERNAL` | 未分类内部错误 | 否 |
 
-错误信息要求很具体：`code` 稳定，`message` 说人话，`step` 指向步骤，`retryable` 明确。不要把堆栈、token、完整响应体塞进 `message`。
+错误信息有固定形状：`code` 稳定，`message` 说清楚发生了什么，`step` 指向步骤，`retryable` 明确。堆栈、token 与完整响应体不放进 `message`。
 
 ## 9. 版本与兼容
 
@@ -280,9 +280,7 @@ Budgets are enforced at the probe: per-task wall clock, output size, HTTP reques
 
 ## 12. 当前实现兼容层 / Implemented compatibility layer
 
-> 本节记录 `probe/src` 与 `inkblade/channel.py` 的**已实现**线格式；上文是
-> v1 目标语义。两者不矛盾时以上文为准，字段名以本节为准，避免“文档先行、
-> 代码未跟上”的误读。
+> 本节记录 `probe/src` 与 `inkblade/channel.py` **已经实现**的线格式，上文描述 v1 的目标语义。两者不冲突时以上文为准，字段名以本节为准。
 
 当前探针启动帧同时是 `hello`：
 

@@ -832,7 +832,7 @@ def coverage_for(ids, rows, templates) -> str:
                 red += 1
     uniq = len(set(keys))
     return (f"本节引用 {len(ids)} 条附录条目，涉及 {uniq} 个模板；"
-            f"其中 equivalent {eq} / reduced {red}。全仓 286 个模板均完成 Rust 两态执行，"
+            f"其中等价 {eq} 个、近似 {red} 个。全仓 286 个模板均完成 Rust 两态执行，"
             f"严格负控 verified 为 35/286（见 PROBE-COVERAGE §6）；registry 总账为 "
             f"37 verified + 6 exposure + 87 static + 22 unsupported。")
 
@@ -1085,7 +1085,7 @@ def render_rail_concept() -> str:
 - **错配原因**：调度器不校验 GPU-NIC-leaf 三元组；拓扑标签写错；`NCCL_IB_HCA` 或 `GID_INDEX` 指错；SR-IOV VF 与 PF 不在同一 rail；异构机型混部；多租户共享 HCA。最常见的是“能跑但跑错轨”，监控只看吞吐，不看 rail 映射。
 - **攻击链**：已有 Pod → 读 rail 映射与拓扑标签 → 写 NCCL rail 绑定或选错 HCA → 集合通信跨轨 → PFC 暂停帧增长、步时劣化 → 训练退化；叠加 SHARP/PFC 攻击时，跨轨流量还会放大交换机聚合面的故障域。
 - **前置**：能写 rail 配置或控制 NCCL 环境变量；作业与目标同 fabric；没有 per-job rail 校验。只读侦察只需要能看到拓扑标签与 NCCL 配置。
-- **危害**：跨 rail 拥塞与 PFC 风暴（可用性）；straggler 使同步 all-reduce 被单 rank 拖垮，goodput 静默下降（训练有效性）；跨轨流不在预期 rail 计数里，绕过按轨隔离与遥测（租户隔离/合规）；放大 SHARP/PFC 攻击的影响面。
+- **危害**：跨 rail 拥塞与 PFC 风暴（可用性）；straggler 使同步 all-reduce 被单 rank 拖垮，goodput 静默下降（训练有效性）；跨轨流不在预期 rail 计数里，绕过按轨隔离与监控（租户隔离/合规）；放大 SHARP/PFC 攻击的影响面。
 - **检测**：`rail-mismatch-forcing` 读/试 rail 绑定并观察 `cross_rail_flows`；`fabric-topology-isolation` 出 rail 映射与分区；`roce-pfc-storm` 看 `pfc_pause_frames` 差分；`nccl-straggler-injection` 看步时比。证据是 rail 图、跨轨流计数、PFC 计数与步时基线。
 - **边界**：配置判定 + 仿真（`lab/fabric_dos_sim.py`），没有真实 IB/RoCE ASIC，也没有跑真实 NCCL 二进制协议；PFC/ECN 的真实行为必须上交换机核验。
 """
@@ -1129,24 +1129,24 @@ def render_intro(rows, templates, chains, zero) -> str:
 
 > 规模：286 个模板、152 条可利用性核验、{reserve} 条零日储备
 >
-> 本文回答三个问题：训练/推理集群的漏洞为什么不能只按 Kubernetes 分类；每一层的根因、代码锚点与危害是什么；每一类问题如何演示与修复。
+> 本文回答三个问题：训练与推理集群的漏洞为什么不能只按 Kubernetes 分类；每一层的根因、代码锚点与危害是什么；每一类问题怎么演示、怎么修。
 >
-> 阅读顺序：先读十层正文；每层先看「名词与架构前置」，再看「逐条攻击面与演示」。所有条目落在对应层正文；附录只保留索引，不承载代码。
+> 阅读顺序：先读十层正文。每层先看「名词与架构前置」，再看「逐条攻击面与演示」。所有条目都放在对应层的正文里；附录只保留索引，不承载代码。
 
-## 0. 口径与读法
+## 0. 阅读说明
 
-- **层是什么**：每一层先给 2–3 句前置知识，解释这层为什么在 ML 集群里成立；六层另加「名词与架构前置」。
-- **漏洞类别**：只列类别，不把类别当发现；具体条目必须落到层内 `L<层>-<序号>` 锚点。
-- **代表漏洞**：正文给 3–5 条可复核的代表，完整 152 条在每层「逐条攻击面与演示」。框架层按框架列 2–5 条，避免“一个大表看完还是不知道怎么打”。
-- **逐条六段**：每条固定给「打了哪里 → 攻击代码 → 攻击效果 → 复现环境 → 清理 → 危害」。`打了哪里` 表含组件、版本、入口、根因 file:line、可控参数、认证前置、网络位置。
-- **攻击代码**：3–20 行可执行片段，目标只允许 `127.0.0.1:<port>`；脚本在 `demos/<id>/`，文档代码块由生成器从 `poc.py` 抽取，二者一致。N/A 只用于硬件/纯配置/static，且必须写原因。
-- **检测方法**：写探针/模板/证据口径，不写请求构造。模板是数据，由 Pod 内 Rust 探针执行。
-- **危害口径**：`C/I/A` 是机密性/完整性/可用性，`H/M/L` 是高/中/低；另列训练有效性、租户隔离、合规三项。不要把 H 一律读成“必然发生”，它表示“成立时的上限”。
-- **不写什么**：不写真实目标、公网地址、真实凭据、破坏性 payload、持久化或完整生产利用步骤。关键代码只保留 sink、路由、权限判断与加载点；演示代码只写 benign marker、127.0.0.1 回环与最小请求字段，目的是让防守方能定位、复现和写规则。
+- **层是什么**：每层先用 2–3 句交代前置知识，说明这层在 ML 集群里为什么成立；其中六层另有「名词与架构前置」。
+- **漏洞类别**：只列类别，不把类别当发现；具体条目都落在层内的 `L<层>-<序号>` 锚点上。
+- **代表漏洞**：正文挑 3–5 条可复核的代表，完整的 152 条在每层的「逐条攻击面与演示」里。框架层按框架列 2–5 条，避免“看完一张大表还是不知道怎么打”。
+- **逐条六段**：每条固定给「打了哪里 → 攻击代码 → 攻击效果 → 复现环境 → 清理 → 危害」。`打了哪里` 表包含组件、版本、入口、根因 file:line、可控参数、认证前置与网络位置。
+- **攻击代码**：3–20 行可执行片段，目标只允许 `127.0.0.1:<port>`；脚本放在 `demos/<id>/`，文档里的代码块由生成器从 `poc.py` 抽取，两者一致。N/A 只用于硬件、纯配置或 static，而且要写明原因。
+- **检测方法**：写清探针、模板与证据怎么取，不写请求构造。模板是数据，由 Pod 内的 Rust 探针执行。
+- **危害评级**：`C/I/A` 是机密性/完整性/可用性，`H/M/L` 是高/中/低；另外列训练有效性、租户隔离与合规三项。H 表示“成立时的上限”，不是“必然发生”。
+- **不写什么**：真实目标、公网地址、真实凭据、破坏性 payload、持久化或完整生产利用步骤都不写。关键代码只保留 sink、路由、权限判断与加载点；演示代码只用 benign marker、127.0.0.1 回环与最小请求字段，方便防守方定位、复现和写规则。
 
 **范围**：{total} 条 registry 条目、286 个模板、{reserve} 条零日储备、{len(chains)} 条攻击链。正文按十层逐条展开 {total} 条，附录 A 给索引，附录 B/C 给正文锚点，附录 D 给原因索引。
 
-**边界**：152 条 registry 描述的是“有代码锚点、能按版本/配置核验的子集”，不是“ML 集群全部漏洞”。正文十层描述的是产品检测模型，逐条条目描述的是可对账的技术参考。
+**边界**：152 条 registry 描述的是“有代码锚点、能按版本或配置核验”的子集，不是 ML 集群的全部漏洞。正文的十层是产品检测模型，逐条条目是可对账的技术参考。
 """
 
 
@@ -1258,7 +1258,7 @@ def render_evidence() -> str:
 def render_stats(rows, templates, chains, zero) -> str:
     reserve = len(zero["summary"]["reserve_unique_ids"])
     out = ["## 规模", "",
-           "| 指标 | 数值 | 口径 |", "|---|---:|---|",
+           "| 指标 | 数值 | 说明 |", "|---|---:|---|",
            f"| 模板 | {len(templates)} | `inkblade/modules/*/template.json` 计数 |",
            f"| 模块目录 | 287 | 286 模板 + 1 bootstrap |",
            f"| registry 条目 | {len(rows)} | 有代码锚点的可利用性核验 |",
@@ -1329,8 +1329,8 @@ def render_reserve(zero, templates, modules) -> str:
     ids = zero["summary"]["reserve_unique_ids"]
     entries = {e["id"]: e for e in zero["entries"]}
     out = ["## 附录 C：零日储备 39 条逐条详解", "",
-           "口径：`reserve-eligible` 46 条，按根因/组件去重后 39 条。这里只写防御方需要的原理、根因、危害、前置、检测、修复与证据；"
-           "不写利用请求、不写武器化步骤、不写披露对象。7 条与附录 B 重叠，保留两套口径：registry 记录可利用性，reserve 记录披露状态。",
+           "统计规则：`reserve-eligible` 46 条，按根因/组件去重后 39 条。这里只写防御方需要的原理、根因、危害、前置、检测、修复与证据；"
+           "不写利用请求、不写武器化步骤、不写披露对象。7 条与附录 B 重叠，保留两套记录：registry 记录可利用性，reserve 记录披露状态。",
            ""]
     for idx, cid in enumerate(ids, 1):
         e = entries[cid]
@@ -1407,7 +1407,7 @@ def render_appendix_c_index(grouped, anchors, zero) -> str:
     ids = list(zero["summary"]["reserve_unique_ids"])
     zero_by_id = {e["id"]: e for e in zero["entries"]}
     out = ["## 附录 C：零日储备 39 条索引", "",
-           "本附录只给索引、披露状态、正文锚点与 demo 路径；demo 只演示 mock 原语，不提供真实目标利用链。",
+           "本附录只给索引、披露状态、正文锚点与 demo 路径；demo 只演示本地仿真环境里的原语，不提供真实目标利用链。",
            "", "| # | ID | 组件 | 层级 | 正文锚点 | 披露状态 | 演示 |",
            "|---|---|---|---|---|---|---|"]
     for idx, cid in enumerate(ids, 1):
@@ -1582,7 +1582,7 @@ ROWS = []
 LAYER_TEXTS = {
     1: {
         "title": "架构层：万卡拓扑、PD 分离与 KV 生命周期",
-        "what": "万卡集群不是“更大的 Kubernetes”。GPU 与网卡按 rail 固定布线，训练按 DP/TP/PP/EP/CP 切分，推理用 PD 分离把 prefill 与 decode 拆到不同节点，再用 KV 通道搬运中间状态。架构层的信任边界由“通信域”决定，而不是 namespace：能加入同一个集合通信组、能 map 同一段显存、能读同一个 KV 块，就等于跨过了租户边界。",
+        "what": "万卡集群不是“更大的 Kubernetes”。GPU 与网卡按 rail 固定布线，训练按 DP/TP/PP/EP/CP 切分，推理用 PD 分离把 prefill 与 decode 放到不同节点，再用 KV 通道搬运中间状态。架构层的信任边界由“通信域”决定，而不是 namespace：能加入同一个集合通信组、能映射同一段显存、能读同一个 KV 块，就已经越过了租户边界。",
         "concept": render_imex_concept(),
         "categories": [
             "跨节点 GPU 内存共享越权：IMEX 域成员、ComputeDomain 选择器、DRA deviceClass 三者任一过宽，都会把远端显存映射进不该拿的 Pod。",
@@ -1593,19 +1593,19 @@ LAYER_TEXTS = {
             "多集群联邦信任传递：Karmada 风格的 propagation 与共享 kubeconfig 把身份和权重信任带到集群边界之外。",
         ],
         "reps": [
-            ("IMEX 域越权（GB200 NVL72 / IMEX，2026-10 文档口径）", "`nodes_config.cfg` 的 `allowedHosts` 通配；channel 全局 RW；DRA claim 未绑定租户", "同 fabric 的已有 Pod + 可读域配置 → 跨节点显存读写、训练静默损坏", "`nvlink-imex-isolation`、`gpu-network-operator-posture`"),
+            ("IMEX 域越权（GB200 NVL72 / IMEX，2026-10 文档版本）", "`nodes_config.cfg` 的 `allowedHosts` 通配；channel 全局 RW；DRA claim 未绑定租户", "同 fabric 的已有 Pod + 可读域配置 → 跨节点显存读写、训练静默损坏", "`nvlink-imex-isolation`、`gpu-network-operator-posture`"),
             ("rail 错配（rail-optimized fabric，无版本上限）", "`NCCL_IB_HCA` / `GID_INDEX` 可写；调度器不校验 GPU-NIC-leaf；SR-IOV VF 与 PF 不同轨", "能写 rail 绑定或控制 NCCL 环境 → 跨轨拥塞、PFC 风暴、straggler", "`rail-mismatch-forcing`、`fabric-topology-isolation`"),
             ("PD KV 通道未鉴权（llm-d / vLLM PD + NIXL 风格）", "KV transfer API 无 mTLS/token；block ID 可枚举；跨租户写入不校验", "prefill/decode 网络可达 → KV 读、写、推理操纵", "`prefill-decode-kv-channel-unauth`、`kv-cache-integrity-poison`"),
             ("长上下文窗口耗尽（128K–1M）", "只校验声明 `context_window`，不校验实际 prompt token；KV 按声明窗口预留", "补全端点可达 → prefill 队列 DoS、GB 级 KV 预留", "`long-context-window-exhaustion`、`long-context-memory-amplification`"),
             ("多集群联邦信任通配（Karmada 风格）", "propagation 通配到全部集群；共享 kubeconfig 无审批；命名空间未隔离", "federation 控制面可达 → 跨集群权重/身份信任", "`multi-cluster-federation`、`federated-learning-surface`"),
         ],
-        "detection": "先用拓扑快照回答“谁和谁在一个域”：`fabric-topology-isolation` 读 IB Partition、NVLink/NVSwitch 域与 IMEX 成员；`gpu-network-operator-posture` 读 ComputeDomain controller 的特权、hostPath 与 ClusterRole；`nvlink-imex-isolation` 是 research-only 的域成员/权限快照，默认关闭。PD 侧用 `prefill-decode-kv-channel-unauth` 做读握手与池计数器差分，写类验证走 `kv-cache-integrity-poison` 的备份闸门。长上下文用 `long-context-window-exhaustion` 看 `prefill_tokens > context_window` 与 `queue_depth`，用 `long-context-memory-amplification` 看 `kv_cache_bytes` 放大比（阈值 64×）。证据只取状态码、计数器差分、读回 sha256 与拓扑映射，不取“感觉变慢”。",
+        "detection": "先用拓扑快照回答“谁和谁在一个域”：`fabric-topology-isolation` 读 IB Partition、NVLink/NVSwitch 域与 IMEX 成员；`gpu-network-operator-posture` 读 ComputeDomain controller 的特权、hostPath 与 ClusterRole；`nvlink-imex-isolation` 是 research-only 的域成员/权限快照，默认关闭。PD 侧用 `prefill-decode-kv-channel-unauth` 做读握手与池计数器差分，写类验证走 `kv-cache-integrity-poison` 的备份校验。长上下文用 `long-context-window-exhaustion` 看 `prefill_tokens > context_window` 与 `queue_depth`，用 `long-context-memory-amplification` 看 `kv_cache_bytes` 放大比（阈值 64×）。证据只取状态码、计数器差分、读回 sha256 与拓扑映射，不取“感觉变慢”。",
         "fix": "IMEX：`allowedHosts` 收敛到节点级 allowlist，channel 按租户授权，ComputeDomain 选择器绑定 namespace/SA，DRA claim 校验租户标签；已分配设备禁止在线改域。rail：rail 绑定只读，由调度器按 GPU-NIC-leaf 三元组校验，`NCCL_IB_HCA`/`GID_INDEX` 下发前做一致性检查，SR-IOV VF 与 PF 同轨。PD：KV 通道 mTLS + 每租户 token，块 ID 不可枚举，写入校验块归属。长上下文：按实际 token 计数准入，声明值只做上限提示，给每租户 KV 配额。联邦：propagation 白名单 + 每集群独立凭据 + 变更审批。",
         "boundary": "没有 GB200/NVL72 真机，IMEX 只到配置/权限级，不执行 map、不读真实显存；rail 结论来自配置判定与 `lab/fabric_dos_sim.py` 的计数器仿真，没有真实 IB/RoCE ASIC；PD KV 是 HTTP 语义同构，不覆盖 NIXL/RDMA 二进制协议与 GPU 显存语义。A1–A8 假设必须用客户集群只读快照逐条核验。",
     },
     2: {
         "title": "产品与框架层：十八个栈的默认面",
-        "what": "训练/推理栈的漏洞很少是“Kubernetes 配错了”，更多是框架自己的默认值：管理面没有 key、开发模式默认开、权重同步用 pickle、模型加载信任仓库代码、网关把默认 master key 写进示例。每个栈有自己的控制面、序列化选择和默认绑定地址，通用 K8s 扫描器看不见这些差异。",
+        "what": "训练与推理栈的漏洞大多不是“Kubernetes 配错了”，而是框架自己的默认值：管理面没有 key、开发模式默认打开、权重同步用 pickle、模型加载信任仓库代码、网关把默认 master key 写进示例。每个栈都有自己的控制面、序列化方式与默认绑定地址，通用 K8s 扫描器看不到这些差异。",
         "framework_table": True,
         "categories": [
             "控制面 fail-open：SGLang、TRL、AReaL、SkyRL、OpenRLHF、LLaMA-Factory、Dify 都出现过“没配 key 就放行”或“默认 0.0.0.0”。",
@@ -1615,13 +1615,13 @@ LAYER_TEXTS = {
             "推理状态泄露：前缀缓存时序、权重导出路径、dev 端点返回缓存/权重控制面。",
         ],
         "reps": [],
-        "detection": "每个框架至少两条证据：一条是“面”的证据（路由/绑定/版本/默认值），一条是“行为”的证据（无 key 200、写后读回 sha256、执行 marker、缓存命中计数）。模板键见上表；附录 A 给 152 条 registry 的逐条根因与片段。通用规则：先 `framework-port-matching` 指纹，再按框架选模板；不要在没确认版本/路由的情况下直接套 CVE。动态验证只证明检测逻辑在 mock/上游函数级成立，不证明目标一定是该版本。",
+        "detection": "每个框架至少两条证据：一条是“面”的证据（路由/绑定/版本/默认值），一条是“行为”的证据（无 key 200、写后读回 sha256、执行 marker、缓存命中计数）。模板键见上表；附录 A 给 152 条 registry 的逐条根因与片段。通用规则：先 `framework-port-matching` 指纹，再按框架选模板；不要在没确认版本/路由的情况下直接套 CVE。动态验证只证明检测逻辑在本地仿真或上游函数级成立，不证明目标一定是该版本。",
         "fix": "统一动作：管理面 fail-closed（无 key 即拒，不区分 GET/POST）；默认绑定回环，Service 暴露前加 NetworkPolicy；dev-mode 显式开关并只对 localhost 开放；pickle 改安全序列化，`torch.load` 固定 `weights_only=True`；checkpoint/权重目录只读 + 哈希/签名；`trust_remote_code` 默认 False，模型 revision 固定到 commit；网关移除默认 master key，上游 key 按租户隔离，缓存键加 tenant/salt。",
         "boundary": "附录 A 的 152 条不是 18 个框架的全量漏洞库，而是有代码锚点、能按版本/配置核验的子集；AReaL、SkyRL、OpenRLHF、slime、djev/vllm-jev 的 registry 条目少，正文以模板键与上游 file:line 为准。多数条目只到函数级/静态级，真实利用需要目标版本、部署形态与授权窗口。框架默认值随版本漂移，修复建议不替代版本升级与回归。",
     },
     3: {
         "title": "组件与 Operator 层：发牌的人",
-        "what": "KubeRay、LWS、Volcano、Kueue、GPU Operator、DRA、CSI、BMC、DPU 不直接跑训练，但它们发放 GPU、存储与节点权限。Operator 的 ClusterRole 往往比业务 Pod 大一个数量级：能创建 Pod、读 Secret、改 RoleBinding，就等于把“安装即得”的集群级权限放在每一个被管理的命名空间旁边。",
+        "what": "KubeRay、LWS、Volcano、Kueue、GPU Operator、DRA、CSI、BMC、DPU 不直接跑训练，但它们发放 GPU、存储与节点权限。Operator 的 ClusterRole 往往比业务 Pod 大一个数量级：能创建 Pod、读 Secret、改 RoleBinding，就等于在每个被管理的 namespace 旁放了一份“安装即得”的集群级权限。",
         "categories": [
             "Operator 集群级 RBAC：KubeRay、LWS、vLLM production-stack 的 ClusterRole 含 pods/secrets/serviceaccounts/roles/rolebindings 的 create/update，拿 operator SA 即可一步提权。",
             "驱动与设备插件特权：GPU Operator driver 容器、device plugin、CSI node plugin 以 privileged + hostPath 运行，节点边界被抹平。",
@@ -1641,11 +1641,11 @@ LAYER_TEXTS = {
         ],
         "detection": "Operator 看三样：ClusterRole 的 verbs/resources、webhook 是否关 automount、管理的 Pod 是否带 securityContext。模板 `kuberay-operator-escalation`、`lws-secrets-lateral`、`vllm-operator-rbac-escalation` 读 fixture 里的 role.yaml 与 can-i 矩阵；`operator-cross-namespace-reference` 看跨 namespace 引用。驱动/CSI 用 `gpu-operator-driver-audit`、`csi-node-plugin-escape` 读 DaemonSet 的 privileged、hostPath、capabilities。DRA 用 `gpu-dra-mig-policy` 读 ResourceClaim 策略。BMC 用 `bmc-ipmi-exposure` 做只读 Redfish GET + 单次默认凭据验证；`ipmi-cipher-zero-bypass` 看 cipher suite 0。证据是 role 规则、mount 列表、claim 策略、Redfish 响应与登录结果，不写爆破。",
         "fix": "Operator：ClusterRole 收窄为 namespace Role；去掉 roles/rolebindings/secrets 的集群级写；manager SA 不开 automount；webhook 显式 `automountServiceAccountToken: false`；对 create RoleBinding 到 cluster-admin 加准入告警。驱动/CSI：privileged 改设备白名单，hostPath 只读白名单，seccomp/AppArmor 开启。DRA：profile 以设备实际值为准，已分配设备禁止重配。BMC：改默认凭据、带外网隔离、禁用 cipher 0/IPMI over LAN、固件签名核验。DPU：管理服务 mTLS + 独立管理网。",
-        "boundary": "Operator RBAC 结论来自上游 raw 清单（2026-10-23）与 fixture，不是每个客户集群的实际绑定；KubeRay/LWS 的“一步 cluster-admin”需要 operator SA 或进程可触达，前置不成立时只是配置风险。BMC/DPU 只做 mock 只读与单次默认凭据验证，没有真实 iDRAC/iLO/BlueField；驱动/CSI 逃逸只到 DaemonSet 姿态，不执行真实逃逸。",
+        "boundary": "Operator RBAC 结论来自上游 raw 清单（2026-10-23）与 fixture，不是每个客户集群的实际绑定；KubeRay/LWS 的“一步 cluster-admin”需要 operator SA 或进程可触达，前置不成立时只是配置风险。BMC/DPU 只做仿真只读与单次默认凭据验证，没有真实 iDRAC/iLO/BlueField；驱动/CSI 逃逸只到 DaemonSet 姿态，不执行真实逃逸。",
     },
     4: {
         "title": "网络与 fabric 层：策略管不到的地方",
-        "what": "Kubernetes NetworkPolicy 只覆盖主 CNI 的 Pod 网络。hostNetwork、SR-IOV、macvlan、RDMA 流量不经过同一个钩子；IB 子网管理器、PFC/ECN、SHARP 会话又是 fabric 自己的控制面，根本不在 K8s API 里。训练集群把“网络”拆成三层：Pod 网络、RDMA 网络、带外/交换机管理网，三层的策略与身份各管各的。",
+        "what": "Kubernetes NetworkPolicy 只覆盖主 CNI 的 Pod 网络。hostNetwork、SR-IOV、macvlan、RDMA 流量不经过同一个钩子；IB 子网管理器、PFC/ECN、SHARP 会话又是 fabric 自己的控制面，根本不在 K8s API 里。训练集群的“网络”实际有三层：Pod 网络、RDMA 网络、带外与交换机管理网，三层的策略与身份各自独立。",
         "concept": render_rail_concept(),
         "categories": [
             "NetworkPolicy 旁路：hostNetwork、Multus/SR-IOV、macvlan 与 RDMA 直通流量不经过策略钩子。",
@@ -1671,7 +1671,7 @@ LAYER_TEXTS = {
     },
     5: {
         "title": "数据与权重层：训练状态的信任链",
-        "what": "训练状态是“体量大、可写、加载时被信任”的三重组合：checkpoint、optimizer shard、数据集缓存、HF 缓存、权重桶、模型注册表。只要写者能让受害者在下一次恢复时加载被污染的分片，就能把数据面问题变成代码执行或静默训练损坏；只要读者能跨租户读到缓存或权重，就能把“训练数据”变成“模型窃取”。",
+        "what": "训练状态同时具备三个特点：体量大、可写、加载时被信任。checkpoint、optimizer shard、数据集缓存、HF 缓存、权重桶、模型注册表都是如此。只要写者能让受害者在下一次恢复时加载被污染的分片，数据面问题就变成代码执行或静默训练损坏；只要读者能跨租户读到缓存或权重，“训练数据”就成了“模型窃取”。",
         "categories": [
             "checkpoint / optimizer 分片投毒：分片写面常由 sidecar/对象存储网关暴露，加载时不做哈希/签名校验。",
             "数据集管道：webdataset/Arrow/pickle 解析与代码执行相邻，共享缓存目录可被跨租户写。",
@@ -1712,7 +1712,7 @@ LAYER_TEXTS = {
             ("cache_salt（vLLM APC / 网关缓存）", "`cache_salt` 未启用，`key_scope=global`；租户 B 同 prefix 无 salt 复用", "同实例多租户 → `cached_tokens>0`、前缀成员推断", "`cache-salt-policy-audit`、`approx-cache-cross-tenant-chain`"),
             ("EPP / DCGM 指标", "`/router/metrics` 的 `per_tenant` 含他租户 KV 利用率/命中率/前缀样本；DCGM 暴露进程名/namespace", "指标面可达 → 租户画像、缓存状态侧信道", "`router-cache-metrics-leak`、`gpu-metrics-tenant-leak`"),
         ],
-        "detection": "先读分配生命周期：`/gpu/pools`、`/gpu/mig/profiles`、`/gpu/mps/status`、`/gpu/residue`。`gpu-pool-scheduler-unauth` 看 admin API 是否无鉴权、能否 allocate/migrate；`gpu-tenant-residue` 做 allocate → 写 benign marker → release → 读回，断言 marker/sha256 一致；`gpu-memory-residue-isolation` 是写类芯片模块，走备份闸门；`mig-profile-mismatch` 对比 requested/active；`mps-context-shared` 看 client/pid 跨租户可见。cache_salt 用 `cache-salt-policy-audit` 做配置面 + 行为面双确认；指标用 `router-cache-metrics-leak`、`gpu-metrics-tenant-leak` 抓 `per_tenant`。证据是 marker 读回、sha256、profile 差分、context 列表与指标 JSON。",
+        "detection": "先读分配生命周期：`/gpu/pools`、`/gpu/mig/profiles`、`/gpu/mps/status`、`/gpu/residue`。`gpu-pool-scheduler-unauth` 看 admin API 是否无鉴权、能否 allocate/migrate；`gpu-tenant-residue` 做 allocate → 写 benign marker → release → 读回，断言 marker/sha256 一致；`gpu-memory-residue-isolation` 是写类芯片模块，走备份校验；`mig-profile-mismatch` 对比 requested/active；`mps-context-shared` 看 client/pid 跨租户可见。cache_salt 用 `cache-salt-policy-audit` 做配置面 + 行为面双确认；指标用 `router-cache-metrics-leak`、`gpu-metrics-tenant-leak` 抓 `per_tenant`。证据是 marker 读回、sha256、profile 差分、context 列表与指标 JSON。",
         "fix": "MIG：profile 以设备实际值为准，已分配设备禁止在线重配，释放即销毁 instance。MPS：一租户一 server/pipe 或至少按租户隔离 context；指标按租户过滤。残留：释放路径清零显存/快照/临时卷，读回 404。池化：admin API mTLS + 租户作用域，allocate/migrate 校验 tenant/namespace/allocation_id。cache_salt：每租户独立 salt，键含 tenant，近似缓存先按租户过滤。指标：per-tenant 视图只给本租户，管理面单独鉴权。",
         "boundary": "没有真实 nvidia-smi/NVML/MIG/MPS；池化与残留结论来自 `lab/gpu_cloud_sim.py` 的 HTTP 双态与 fixture，`gpu-memory-residue-isolation` 只写 benign marker；MIG/MPS 的真实硬件行为、清零语义与邻居干扰必须在授权实验室复核。cache_salt 与指标结论是 HTTP 语义同构，不代表真实 vLLM/SGLang 的键派生实现。",
     },
@@ -1827,9 +1827,9 @@ LAYER_TEXTS = {
             "| ModSecurity + CRS | `defense-bypass-waf-inference` | CRS 4.30.0，PL1，nginx 1.30.6 | 7 次拦截：URL 编码、双编码、Unicode、大小写、SQLi、chunked、超长（414） | 明文 benign 请求按设计放行；未测 PL2+ 与审计日志 | 解码后再匹配；反分块缓冲；Unicode 规范化；超长直接拒绝 |",
             "| Cilium Hubble / Calico | `defense-bypass-netobserv` | N/A：k3s CNI 是 flannel | — | hostNetwork/多网卡/短流未验证；换 CNI 需重启 | 换 Cilium/Calico；hostNetwork 纳入采集；SR-IOV/RDMA 接口纳入；缩短采样窗口 |",
         ]),
-        "detection": "每个 `defense-bypass-*` 模块固定输出三类结果：detected（哪些技术类别被现有规则看见）、blindspots（动态验证中没有告警的类别及原因）、hardening（可直接落地的规则/配置）。评估口径是三态：deployed（已部署）、degraded（driver/策略降级）、absent（未部署）；只有 deployed 才能把“没告警”解释为“看不见”，absent 只能记 N/A。证据是产品日志、探针 transcript、命中/未命中矩阵与规则文件版本。",
-        "fix": "准入：策略覆盖全部命名空间，Audit 仅限过渡期，清理绕过注解，审计 mutation 顺序与子资源。运行时：driver 健康检查、ephemeral 宏、hostNetwork 策略、改名执行启发式。镜像：全层解析、内容/哈希识别、压缩递归、收窄排除。主机：manager 独立部署、离线即告警、监控 `/tmp`/`/dev/shm`。WAF：解码/反分块/Unicode 规范化/超长拒绝。网络：hostNetwork 与多网卡纳入采集。规则包反哺到 Kyverno/Gatekeeper、Sigma/Falco、Suricata/WAF。",
-        "boundary": "Defense Lab 是 QEMU TCG 单节点 k3s（6 vCPU/6GB），不是生产规模；4 个产品实机、7 个 N/A，N/A 有明确阻塞事实，不用 mock 代替。盲区结论只对被测版本/配置成立，不能外推为“该产品可被绕过”。11/11 是 triaged，不是 11 个产品都验证；21 次探针、11 检出、8 绕过、2 对照是当前样本的计数。实验期间 k3s kine/sqlite 在 Trivy DB 下载时崩溃，说明这台 VM 只能承载两个控制面产品 + CLI/容器工具，不是全栈实验室。",
+        "detection": "每个 `defense-bypass-*` 模块固定输出三类结果：detected（哪些技术类别被现有规则看见）、blindspots（动态验证中没有告警的类别及原因）、hardening（可直接落地的规则/配置）。评估分三态：deployed（已部署）、degraded（driver/策略降级）、absent（未部署）；只有 deployed 才能把“没告警”解释为“看不见”，absent 只能记 N/A。证据是产品日志、探针 transcript、命中/未命中矩阵与规则文件版本。",
+        "fix": "准入：策略覆盖全部命名空间，Audit 仅限过渡期，清理绕过注解，审计 mutation 顺序与子资源。运行时：driver 健康检查、ephemeral 宏、hostNetwork 策略、改名执行启发式。镜像：全层解析、内容/哈希识别、压缩递归、收窄排除。主机：manager 独立部署、离线即告警、监控 `/tmp`/`/dev/shm`。WAF：解码/反分块/Unicode 规范化/超长拒绝。网络：hostNetwork 与多网卡纳入采集。规则包输出到 Kyverno/Gatekeeper、Sigma/Falco、Suricata/WAF。",
+        "boundary": "Defense Lab 是 QEMU TCG 单节点 k3s（6 vCPU/6GB），不是生产规模；4 个产品实机、7 个 N/A，N/A 都有明确原因，不用仿真结果代替。盲区结论只对被测版本/配置成立，不能外推为“该产品可被绕过”。11/11 是 triaged，不是 11 个产品都验证；21 次探针、11 检出、8 绕过、2 对照是当前样本的计数。实验期间 k3s kine/sqlite 在 Trivy DB 下载时崩溃，说明这台 VM 只能承载两个控制面产品 + CLI/容器工具，不是全栈实验室。",
     },
 }
 

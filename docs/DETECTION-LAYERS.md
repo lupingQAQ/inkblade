@@ -2,9 +2,9 @@
 
 [English](#english) · [中文](#中文)
 
-A generic Kubernetes scanner asks: is this namespace privileged, is that API anonymous, does this image have a CVE? Useful questions. They miss the parts that make a training cluster a training cluster: GPU fabric and collectives, weights and checkpoints, KV caches, tenant residue, and the combinations that only exist when a framework, an operator and a network plugin meet.
+A generic Kubernetes scanner asks whether a namespace is privileged, whether an API answers anonymously, whether an image has a CVE. Those questions matter, but they miss what makes a training cluster different: GPU fabric and collectives, weights and checkpoints, KV caches, tenant residue, and the combinations that only appear when a framework, an operator and a network plugin meet.
 
-InkBlade is organised around ten layers. Each layer is a set of templates you can run on its own; each template declares what it does, what it looks for and what it produces. The rule for the combination layer: a finding that needs two components to be true is reported once, at the combination, not twice as two low-severity notes.
+InkBlade is organised around ten layers. Each layer is a set of templates you can run on its own, and each template declares what it does, what it looks for and what it produces. The combination layer keeps one rule: a finding that needs two components to be true is reported once, at the combination, not twice as two low-severity notes.
 
 ---
 
@@ -12,7 +12,7 @@ InkBlade is organised around ten layers. Each layer is a set of templates you ca
 
 ### 1. Architecture layer
 
-**What you can do.** Audit ten-thousand-GPU topologies, verify rail alignment and PD-split channels, map IMEX domains, test collective membership and measure long-context KV lifetime.
+**What you can do.** Audit topologies of ten thousand GPUs, check rail alignment and PD-split channels, map IMEX domains, test collective membership and measure long-context KV lifetime.
 
 **What it detects.** Rail and multi-plane mismatch, unauthenticated prefill/decode KV channels, cross-node GPU memory sharing outside the process boundary, EP group trust by default, KV residency and eviction windows, federation identity and weight trust.
 
@@ -65,7 +65,7 @@ Representative templates: `ray-dashboard-job`, `ray-control-plane`, `lws-leader-
 
 **What it produces.** Interface inventory, reachability proofs, reachability graphs and drift lists, partition tables and membership proofs, PFC counters and queue flow visibility, session tables and config diffs, join records and timing skew.
 
-Representative templates: `multus-sriov-rdma-bypass`, `network-policy-coverage`, `cni-aware-reachability-graph`, `vpc-cni-dual-control-plane-lateral`, `ib-sm-partition-audit`, `ib-subnet-manager-hijack`, `ib-rdma-collective-injection`, `roce-pfc-storm`, `fabric-flow visibility-exposure`, `sharp-in-network-poison`, `sharp-session-trust-audit`, `nccl-collective-join`, `nccl-port-exhaustion`, `dns-service-discovery`.
+Representative templates: `multus-sriov-rdma-bypass`, `network-policy-coverage`, `cni-aware-reachability-graph`, `vpc-cni-dual-control-plane-lateral`, `ib-sm-partition-audit`, `ib-subnet-manager-hijack`, `ib-rdma-collective-injection`, `roce-pfc-storm`, `fabric-telemetry-exposure`, `sharp-in-network-poison`, `sharp-session-trust-audit`, `nccl-collective-join`, `nccl-port-exhaustion`, `dns-service-discovery`.
 
 ### 5. Data and weights layer
 
@@ -158,15 +158,15 @@ Deduplication: each combination has a signature. If the combination fires, the c
 | ModSecurity / Coraza / SafeLine WAF | `defense-bypass-waf-inference` | encoding, chunked, Unicode and oversized request variants |
 | Cilium Hubble / Calico flows | `defense-bypass-netobserv` | hostNetwork, multi-NIC, short-lived flows |
 
-Blind spots feed rule packs directly: Kyverno/Gatekeeper for admission, Sigma for process/file/DNS flow visibility, Falco/Tetragon for runtime, Suricata/WAF for network and request normalization. The modules use benign markers only; they do not carry malware, persist, disable security products or provide evasion instructions.
+Blind spots turn into rule packs directly: Kyverno/Gatekeeper for admission, Sigma for process/file/DNS flow visibility, Falco/Tetragon for runtime, Suricata/WAF for network and request normalization. The modules use benign markers and write the result as rules and configuration advice.
 
 ---
 
 ## 中文
 
-通用 Kubernetes 扫描器问的是：这个命名空间是不是 privileged，那个 API 是不是匿名可读，这个镜像有没有 CVE。这些问题有用，但漏掉了训练集群之所以是训练集群的部分：GPU fabric 与集合通信、权重与 checkpoint、KV 缓存、租户残留，以及只有框架、Operator 与网络插件凑在一起才成立的组合。
+通用 Kubernetes 扫描器会问：这个命名空间是不是 privileged，那个 API 是不是匿名可读，这个镜像有没有 CVE。这些问题有意义，但漏掉了训练集群真正的不同之处：GPU fabric 与集合通信、权重与 checkpoint、KV 缓存、租户残留，以及只有框架、Operator 与网络插件凑在一起才会出现的组合。
 
-InkBlade 的检测模型共十层。每一层都是一组可独立执行的模板；每个模板都声明自己做什么、检测什么、产出什么。组合层的规则：需要两个组件同时成立才算问题的，只报一次，报在组合上，不拆成两条低危。
+InkBlade 的检测模型分十层。每一层都是一组可以单独执行的模板；每个模板都说明自己做什么、检测什么、产出什么。组合层只有一条规则：需要两个组件同时成立才算问题的，只在组合层报一次，不拆成两条低危发现。
 
 ### 1. 架构层
 
@@ -182,7 +182,7 @@ InkBlade 的检测模型共十层。每一层都是一组可独立执行的模�
 
 **能做什么。** 枚举推理框架、训练框架、RL 控制面、推理网关与 Agent 平台的管理面，测试插件路由、开发模式、反序列化 sink 与权重导出路径。
 
-**检测什么。** vLLM 插件路由在 `--api-key` 保护之外、RL 控制路由挂在 `/`、dev-mode 权重与缓存端点、前缀缓存时序；SGLang 管理面 fail-open、profiler `event_dir` 写入、ZMQ pickle、权重导出；TRL `vllm-serve` 绑 `0.0.0.0`；verl 的 `prime_math` eval、`prime_code` exec、checkpoint `recv_pyobj`、HDFS 命令注入；AReaL 的 `/set_env` → `/create_engine` → `/call`、不安全 `/load`、`/awex` NCCL 入组；SkyRL dev-mode `/update_weights`、`/fetch_weights` 穿越、Tinker 控制面；OpenRLHF 无鉴权 `serve_rm` 与强制不安全序列化；slime `pull_weights` 跨租户写入；LLaMA-Factory、Megatron-LM、DeepSpeed 的 checkpoint loader；ms-swift 的 `trust_remote_code`；transformers 动态模块导入；djev / vllm-jev 开放中继；LiteLLM、Higress、Envoy AI 的密钥与配置面；Dify 与 Open WebUI 的沙箱和默认密钥。
+**检测什么。** vLLM 插件路由在 `--api-key` 保护之外、RL 控制路由挂在 `/`、dev-mode 权重与缓存端点、前缀缓存时序；SGLang 管理面 fail-open、profiler `event_dir` 写入、ZMQ pickle、权重导出；TRL `vllm-serve` 绑 `0.0.0.0`；verl 的 `prime_math` eval、`prime_code` exec、checkpoint `recv_pyobj`、HDFS 命令注入；AReaL 的 `/set_env` → `/create_engine` → `/call`、不安全的 `/load`、`/awex` NCCL 入组；SkyRL dev-mode `/update_weights`、`/fetch_weights` 穿越、Tinker 控制面；OpenRLHF 无鉴权 `serve_rm` 与强制使用不安全的序列化；slime `pull_weights` 跨租户写入；LLaMA-Factory、Megatron-LM、DeepSpeed 的 checkpoint loader；ms-swift 的 `trust_remote_code`；transformers 动态模块导入；djev / vllm-jev 开放中继；LiteLLM、Higress、Envoy AI 的密钥与配置；Dify 与 Open WebUI 的沙箱和默认密钥。
 
 **产出什么。** 路由与鉴权矩阵、端点响应、loader 轨迹、执行 marker、写入文件哈希、配置差异、密钥作用域、缓存命中记录。
 
@@ -190,15 +190,15 @@ InkBlade 的检测模型共十层。每一层都是一组可独立执行的模�
 |---|---|---|
 | vLLM | 插件路由绕过、RL 路由、dev 端点、前缀时序 | `vllm-plugin-auth-bypass`、`vllm-pickle-pipe-rce`、`vllm-timing-oracle` |
 | SGLang | 管理面 fail-open、profiler 写入、ZMQ pickle、权重导出 | `sglang-admin-failopen`、`sglang-omni-profiler-write`、`sglang-zmq-pickle-rce`、`sglang-weight-exfil` |
-| TRL | `vllm-serve` 在 0.0.0.0 上开 dev | `trl-serve-dev-mode` |
+| TRL | `vllm-serve` 在 0.0.0.0 上打开 dev 模式 | `trl-serve-dev-mode` |
 | verl | `prime_math` eval、`prime_code` exec、checkpoint `recv_pyobj`、HDFS 注入 | `verl-prime-code-exec`、`verl-checkpoint-pickle`、`verl-hdfs-command-injection` |
-| AReaL | `set_env` 到 `create_engine` 到 `call`、不安全 `/load`、`/awex` NCCL 入组 | `areal-setenv-engine-rce`、`areal-load-pickle`、`areal-awex-nccl-injection` |
+| AReaL | `set_env` → `create_engine` → `call`、不安全的 `/load`、`/awex` NCCL 入组 | `areal-setenv-engine-rce`、`areal-load-pickle`、`areal-awex-nccl-injection` |
 | SkyRL | dev 权重、fetch 穿越、Tinker 控制面 | `skyrl-dev-pickle-rce`、`skyrl-fetch-weights-traversal`、`skyrl-tinker-hijack` |
-| OpenRLHF | 无鉴权 `serve_rm`、强制不安全序列化 | `openrlhf-serve-rm`、`openrlhf-vllm-env-force` |
+| OpenRLHF | 无鉴权 `serve_rm`、强制使用不安全的序列化 | `openrlhf-serve-rm`、`openrlhf-vllm-env-force` |
 | slime | 跨租户 `pull_weights`、debug/resume 加载 | `slime-weight-pull-poison` |
 | LLaMA-Factory | checkpoint 加载、WebUI 暴露 | `llamafactory-checkpoint-rce` |
-| ms-swift | `trust_remote_code`、eval 逃逸、数据集 pickle、media 读取 | `msswift-trust-remote-code`、`msswift-eval-escape`、`msswift-dataset-pickle-rce` |
-| Megatron-LM | checkpointing 加载、config 面、优化器分片信任 | `megatron-checkpoint-rce`、`megatron-deepspeed-config-surface` |
+| ms-swift | `trust_remote_code`、eval 逃逸、数据集 pickle、媒体文件读取 | `msswift-trust-remote-code`、`msswift-eval-escape`、`msswift-dataset-pickle-rce` |
+| Megatron-LM | checkpoint 加载、配置与优化器分片信任 | `megatron-checkpoint-rce`、`megatron-deepspeed-config-surface` |
 | DeepSpeed | stage3 加载 sink、AutoEP 转换 | `deepspeed-checkpoint-rce`、`checkpoint-shard-poison` |
 | transformers | 动态模块导入、revision 漂移 | `trust-remote-code-supply-chain` |
 | djev / vllm-jev | 开放中继、插件路由绕过 | `djev-open-proxy`、`vllm-plugin-auth-bypass` |
@@ -207,7 +207,7 @@ InkBlade 的检测模型共十层。每一层都是一组可独立执行的模�
 
 ### 3. 组件 / Operator 层
 
-**能做什么。** 检查发放 GPU 与存储权限的机械部分：KubeRay、LWS、GPU Operator、DRA、CSI、BMC 与 DPU。
+**能做什么。** 检查发放 GPU 与存储权限的组件：KubeRay、LWS、GPU Operator、DRA、CSI、BMC 与 DPU。
 
 **检测什么。** Ray dashboard 与 LWS leader 端点在训练负载旁边跑任务、特权驱动容器与 device plugin、DRA 设备策略（含 MIG profile）、CSI 节点插件权限、BMC/Redfish 默认凭据与 IPMI cipher 0、DPU offload 把策略执行移出集群。
 
@@ -221,15 +221,15 @@ InkBlade 的检测模型共十层。每一层都是一组可独立执行的模�
 
 **检测什么。** hostNetwork、SR-IOV、macvlan 流量绕过策略钩子；VPC 路由与集群策略漂移；IB 子网管理器分区；RoCE PFC/ECN 无损配置；SHARP 在网聚合与会话信任；NCCL bootstrap 与 straggler 注入；DNS 服务发现。
 
-**产出什么。** 接口清单、可达性证明、可达图与漂移清单、分区表与成员证明、PFC 计数与队列指标、会话表与配置差异、入组记录与时序偏斜。
+**产出什么。** 接口清单、可达性证明、可达图与漂移清单、分区表与成员证明、PFC 计数与队列指标、会话表与配置差异、入组记录与时序偏差。
 
-代表模板：`multus-sriov-rdma-bypass`、`network-policy-coverage`、`cni-aware-reachability-graph`、`vpc-cni-dual-control-plane-lateral`、`ib-sm-partition-audit`、`ib-subnet-manager-hijack`、`ib-rdma-collective-injection`、`roce-pfc-storm`、`fabric-flow visibility-exposure`、`sharp-in-network-poison`、`sharp-session-trust-audit`、`nccl-collective-join`、`nccl-port-exhaustion`、`dns-service-discovery`。
+代表模板：`multus-sriov-rdma-bypass`、`network-policy-coverage`、`cni-aware-reachability-graph`、`vpc-cni-dual-control-plane-lateral`、`ib-sm-partition-audit`、`ib-subnet-manager-hijack`、`ib-rdma-collective-injection`、`roce-pfc-storm`、`fabric-telemetry-exposure`、`sharp-in-network-poison`、`sharp-session-trust-audit`、`nccl-collective-join`、`nccl-port-exhaustion`、`dns-service-discovery`。
 
 ### 5. 数据 / 权重层
 
 **能做什么。** 检查训练状态、数据集管道、模型缓存、权重存储与注册表的信任边界。
 
-**检测什么。** checkpoint 与优化器分片在加载时被信任、数据集 pickle 解析、共享 HF 缓存被一个租户写另一个租户读、权重桶由云 IAM 管理、模型注册表暴露面、KV 与前缀缓存跨租户。
+**检测什么。** checkpoint 与优化器分片在加载时被信任、数据集 pickle 解析、共享 HF 缓存被一个租户写入、另一个租户读取、权重桶由云 IAM 管理、模型注册表暴露面、KV 与前缀缓存跨租户。
 
 **产出什么。** 分片差异与 loader 轨迹、管道配置与加载结果、缓存写入路径与读回证明、对象 ACL 与拉取转录、签名链、缓存键作用域与命中样本。
 
@@ -265,7 +265,7 @@ InkBlade 的检测模型共十层。每一层都是一组可独立执行的模�
 
 代表模板：`prefix-cache-cross-tenant-leak`、`long-context-cache-leak`、`similarity-cache-false-hit`、`approx-cache-cross-tenant-chain`、`cache-salt-policy-audit`、`cache-eviction-residue`、`kv-cache-integrity-poison`、`remote-kv-pool-isolation`、`prefill-decode-kv-channel-unauth`、`router-cache-metrics-leak`、`cache-timing-sidechannel`、`cache-sidechannel-chain`。
 
-TTFT 判定口径：同样 token 数、同样 batch、交替发送，每组至少 30 个样本。只有当 p95 差异超过同批噪声带、且与缓存命中计数相关时才报。
+TTFT 判定规则：同样 token 数、同样 batch、交替发送，每组至少 30 个样本。只有当 p95 差异超过同批噪声带、并且与缓存命中计数相关时才报。
 
 ### 9. 跨组合层
 
@@ -316,4 +316,4 @@ TTFT 判定口径：同样 token 数、同样 batch、交替发送，每组至�
 | ModSecurity / Coraza / 雷池 WAF | `defense-bypass-waf-inference` | 编码、分块、Unicode、超长请求变体 |
 | Cilium Hubble / Calico flows | `defense-bypass-netobserv` | hostNetwork、多网卡、短生命周期流 |
 
-盲区直接反哺规则包：Kyverno/Gatekeeper 管准入，Sigma 管进程/文件/DNS，Falco/Tetragon 管运行时，Suricata/WAF 管网络与请求归一化。模块使用良性 marker，结果写成规则与配置建议。
+盲区会直接变成规则包：Kyverno/Gatekeeper 管准入，Sigma 管进程/文件/DNS，Falco/Tetragon 管运行时，Suricata/WAF 管网络与请求归一化。模块只使用良性 marker，结果写成规则与配置建议。

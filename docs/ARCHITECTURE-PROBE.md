@@ -3,6 +3,8 @@
 > Status: normative. Every module is a declarative template executed natively by
 > the Rust probe in the target Pod. Python remains only as the controller
 > (authorization, scheduling, evidence, reporting). There is no adapter and no host fallback.
+>
+> 目标侧零 Python：模板由探针原生执行，控制端不下发模块代码。
 
 ## 1. The three planes
 
@@ -21,15 +23,14 @@
    payload variants, steps, computed state, checks, findings, artifacts, version
    matrix, limits.
 2. **Probe plane** — a static Rust binary (`probe/`) speaking an authenticated
-   framed protocol. It executes ops natively. No Python, no shell, no module
-   code is uploaded.
+   framed protocol. It executes ops natively; no module code is uploaded.
 3. **Control plane** — Python orchestrates: consent/level/scope gates, backup
    receipts, audit rows, three-layer evidence, reports. It lowers templates to
-   the probe dialect and folds probe evidence into findings/artifacts.
+   the probe dialect and folds probe evidence into findings and artifacts.
 
 ## 2. Execution sequence
 
-1. `run_module()` loads `module.json` + `template.json` (registry rejects a
+1. `run_module()` loads `module.json` + `template.json` (the registry rejects a
    missing template or a legacy `run.py`).
 2. **Consent gate** — signed consent, expiry, scope, level, role `execute`.
 3. **Abort gate** — workspace kill switch.
@@ -39,7 +40,8 @@
 6. **Backup gate** — write modules need a snapshot receipt before any execution.
 7. **Probe execution** — the controller resolves a probe transport:
    `session.probe` → session/channel `task` → explicit local framed client.
-   No transport ⇒ `ProbeUnavailable` (never host execution).
+   No transport means `ProbeUnavailable`; the controller never falls back to
+   running the module on the host.
 8. **Evidence** — probe step evidence, artifacts (sha256 verified), traffic
    table, step archive, findings, audit row.
 9. **Failure** — a probe error is `TemplateExecutionError`; write modules roll
@@ -56,7 +58,7 @@ Rust contract: `probe/TEMPLATE-ENGINE.md`.
   (`get/list/create/patch/delete/apply` via ServiceAccount token), `socks`
   (Unix socket), `spawn`. `repeat` executes an op N times with `{{i}}`.
 - `computed` derives named state after steps (`vars.<name>`), so a rule is
-  written once and reused by checks/findings.
+  written once and reused by checks and findings.
 - `findings` support `for_each` + `as`, `when`, severity, title/detail/evidence/
   mapping/fix, CVE ids and a version matrix.
 - `artifacts` are JSON/text/binary built from `from` or `fields`, hashed and
@@ -73,11 +75,10 @@ when `params.mode = "backup-write"` **and** the runner has a backup receipt.
 The probe (`probe/src/server.rs`) exposes `op:"task"` with
 `args:{task_id, template, params}`; the result contains `steps[]` and a `vars`
 map (`steps.<id>`). A delivered probe session is identified by `probe_id`; child
-probes spawned from a foothold carry `parent_id`, so the controller can keep the
-provenance tree (root → child → lateral probe) without uploading Python. The
-controller:
+probes spawned from a foothold carry `parent_id`, so the controller keeps the
+provenance tree (root → child → lateral probe). The controller:
 
-1. `inkblade/tpl/lower.py::compile_template` resolves inputs/non-step
+1. `inkblade/tpl/lower.py::compile_template` resolves inputs and non-step
    placeholders, drops skipped steps and write steps in probe-only mode, maps
    ops to the probe dialect and reports capability gaps.
 2. `RustProbe.run` sends the lowered template and folds the result with
@@ -90,8 +91,7 @@ controller:
 
 `inkblade/probe-bootstrap.json` registers exactly one bootstrap module,
 `probe-bootstrap`. It uploads the static Rust binary, verifies its sha256 and
-chmods it. It never uploads Python and never executes module logic. Every other
-module is `execution: "template"`.
+chmods it. Every other module is `execution: "template"`.
 
 The controller records the bootstrap as an entry session, not an implicit
 precondition:
@@ -103,10 +103,10 @@ external              external-http (proof)    RCE callback (base64 /tmp)
 foothold              sa-token / pod-shell     kubectl cp + exec
 ```
 
-`external` is bounded: profile version/fingerprint requests only, a signed
-proof object, and no exploit until `vulnerable`; without a foothold only
-read-only recon is legal. The session record stores the credential SHA-256
-fingerprint (never the credential), the evidence run, probe ids/parent ids,
+`external` is bounded: profile version and fingerprint requests, a signed
+proof object, and no exploit until `vulnerable`. Without a foothold, only
+read-only recon is allowed. The session record stores the credential SHA-256
+fingerprint (never the credential), the evidence run, probe ids and parent ids,
 channel state and every transition in `actions` + `audit.jsonl`.
 
 `inkblade/core/probes.py` is the SQLite registry and controller: probe id,
@@ -115,8 +115,7 @@ leaf-first cleanup. `inkblade/core/probe_task.py` translates controller actions
 into `task`/`upload`/`download`/`spawn` requests; an action that needs an
 interpreter is rejected, never executed on the host. `inkblade/channel.py`
 carries the same framed protocol over `kubectl exec -i` and exposes loopback
-SOCKS5 / port forwards; see [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md).
-
+SOCKS5 and port forwards; see [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md).
 
 ## 6. Verification
 
@@ -127,5 +126,5 @@ SOCKS5 / port forwards; see [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md).
 ## 7. Runtime notes
 
 - 286 module templates plus one bootstrap registration.
-- Templates are JSON; the probe executes them inside the target Pod. No target-side interpreter is required.
+- The probe executes templates inside the target Pod; the target needs no interpreter of its own.
 - Evidence, probe identity and cleanup receipts are recorded per task.
