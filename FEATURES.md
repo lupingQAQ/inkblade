@@ -79,7 +79,7 @@ LLM pool, notifications, SIEM/ITSM adapters and the autonomous planner are off u
 
 | 层 | 产品做什么 | 详情 |
 |---|---|---|
-| 1. 架构层 | 审计 rail 与多平面错配、PD 分离 KV 通道、IMEX 域、MoE/EP 集合通信、长上下文 KV 生命周期与联邦 | `DETECTION-LAYERS.md` |
+| 1. 架构层 | 审计 rail 与多平面错配、PD 分离 KV 通道、IMEX 域、MoE/EP 集合通信、长上下文 KV 生命周期、多集群联邦与身份信任 | `DETECTION-LAYERS.md` |
 | 2. 产品 / 框架层 | 枚举 vLLM、SGLang、TRL、verl、AReaL、SkyRL、OpenRLHF、slime、LLaMA-Factory、ms-swift、Megatron-LM、DeepSpeed、transformers、推理网关与 Agent 平台的管理面与控制面 | `DETECTION-LAYERS.md` |
 | 3. 组件 / Operator 层 | 检查 Ray、LWS、GPU Operator、DRA、CSI、BMC/Redfish 与 DPU | `MODULES.md` |
 | 4. 网络 / fabric 层 | 测试策略旁路、CNI 双控制面、IB 子网管理器、RoCE PFC/ECN、SHARP、NCCL bootstrap 与 DNS | `DETECTION-LAYERS.md` |
