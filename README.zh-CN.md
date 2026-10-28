@@ -25,7 +25,7 @@ InkBlade 把一个静态链接的 Rust 探针放进已授权的 Pod，用声明�
 | 9. 跨组合层 | 只在两个或三个组件相遇时才成立的发现，只报一次，并把组件级记录并入组合 | `vllm-plugin-auth-bypass` + `sglang-weight-exfil`、`imex-computedomain-gpu-memory-crossing`、`long-context-cache-leak` |
 | 10. 防护绕过层 | 测试哪些绕过变体能躲过 HIDS、运行时 eBPF、准入控制、镜像扫描、主机代理、WAF 与流量可视化，哪些会被检测；每类技术输出 bypassed / detected / 盲区与硬化建议，并反哺规则包 | `defense-bypass-elkeid`、`defense-bypass-falco`、`defense-bypass-admission`、`defense-bypass-waf-inference` |
 
-第 10 层是产品能力，不是附加演示。11 个 `defense-bypass-*` 模块覆盖 Elkeid、AgentSmith-HIDS、veinmind、Falco、Tetragon、KubeArmor、Kyverno/Gatekeeper、Trivy/grype、Wazuh/Osquery、ModSecurity/Coraza/雷池与 Cilium Hubble/Calico。它们使用良性 marker，并把观测结果沉淀为规则包。
+11 个 `defense-bypass-*` 模块覆盖 Elkeid、AgentSmith-HIDS、veinmind、Falco、Tetragon、KubeArmor、Kyverno/Gatekeeper、Trivy/grype、Wazuh/Osquery、ModSecurity/Coraza/雷池与 Cilium Hubble/Calico。它们使用良性 marker，并把观测结果沉淀为规则包。
 
 ### 平台能力
 
