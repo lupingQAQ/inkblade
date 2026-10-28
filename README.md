@@ -30,7 +30,7 @@ Eleven `defense-bypass-*` modules cover Elkeid, AgentSmith-HIDS, veinmind, Falco
 ### Platform capabilities
 
 - **One execution path.** Foothold → Rust probe → framed channel → in-pod task → child probe → evidence. Detection, escape and lateral movement all run through that path.
-- **Probe trees.** `probe_id` and `parent_id` give every probe a place in the tree; children inherit a stricter budget and allow-list, depth and fan-out are bounded, cleanup is child-first.
+- **Probe trees.** `probe_id` and `parent_id` give every probe a place in the tree; children inherit a stricter budget and allow-list; the tree limits nesting depth and concurrent child probes; cleanup is child-first.
 - **Agent runtime.** A budgeted planner executes the objective graph, records every observation and decision, and can resume from a durable journal or replay without executing.
 - **Cross-cluster relay.** Relays carry the same framed protocol between clusters, so one engagement can cover several clusters and record a coverage proof.
 - **Evidence from the probe.** Per-task results, step logs, artifacts, SHA-256 manifests, traffic tables, probe identity and cleanup receipts.

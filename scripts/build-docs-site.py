@@ -28,7 +28,7 @@ DISCLOSURE_TARGET = "2027-01-25"
 # --------------------------------------------------------------------------
 
 MODULE_SERIES = [
-    ("侦察", "Reconnaissance", 67, "Control plane, schedulers, gateways, storage, identity — enumeration only."),
+    ("侦察", "Reconnaissance", 67, "Controller, schedulers, gateways, storage, identity — enumeration only."),
     ("横向利用", "Lateral movement", 66, "Service-to-service pivots, gateway abuse, worker takeover, token reuse."),
     ("网络架构", "Network architecture", 52, "CNI semantics, policy coverage, service mesh, multi-NIC and fabric reach."),
     ("权限链", "Privilege chains", 43, "RBAC escalation, admission gaps, service-account trust, operator permissions."),
@@ -399,7 +399,7 @@ section(
 <h3>Platform capabilities</h3>
 <ul>
   <li><b>One execution path.</b> Foothold, Rust probe, framed channel, in-pod task, child probe, evidence.</li>
-  <li><b>Probe trees.</b> probe_id and parent_id; each child has its own token and a stricter budget; depth and fan-out are bounded; cleanup is child-first.</li>
+  <li><b>Probe trees.</b> probe_id and parent_id; each child has its own token and a stricter budget; the tree limits nesting depth and concurrent child probes; cleanup is child-first.</li>
   <li><b>Agent runtime.</b> A budgeted objective graph with decision trace, journal resume and zero-execution replay.</li>
   <li><b>Cross-cluster relay.</b> The same framed protocol between clusters, with a completion proof.</li>
   <li><b>Evidence from the probe.</b> Task results, step logs, artifacts, SHA-256 manifests, traffic tables and cleanup receipts.</li>
@@ -414,7 +414,7 @@ section(
 <h3>平台能力</h3>
 <ul>
   <li><b>一条执行路径。</b> 立足、Rust 探针、帧通道、Pod 内任务、子探针、证据。</li>
-  <li><b>探针树。</b> probe_id 与 parent_id 标出位置；子探针用自己的 token，继承只能更严格；深度与扇出有上限；清理先子后父。</li>
+  <li><b>探针树。</b> probe_id 与 parent_id 标出位置；子探针用自己的 token，继承只能更严格；限制嵌套层数与并发子探针数量；清理先子后父。</li>
   <li><b>Agent 运行时。</b> 带预算的目标图，含决策轨迹、journal 恢复与零执行回放。</li>
   <li><b>跨集群中继。</b> 集群间用同一套帧协议，并留下覆盖证明。</li>
   <li><b>证据由探针产出。</b> 任务结果、步骤日志、产物、SHA-256 manifest、流量表与清理回执。</li>
@@ -426,7 +426,7 @@ section(
 section(
     "architecture", "Architecture", "架构",
     "One execution path", "一条执行路径",
-    "Three planes, one probe tree", "三个平面，一棵探针树",
+    "Three components, one probe tree", "三个组件，一棵探针树",
     en="""<p>The controller never executes target-side logic. It authorizes, renders templates, enforces budgets and archives evidence. The probe is the only code that runs inside the Pod.</p>
 <div class="term">
   <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">execution path</span></div>
@@ -435,11 +435,11 @@ section(
                                               ├─▶ child probe ──▶ child probe
                                               └─▶ evidence ──▶ report / rules / console</code></pre>
 </div>
-<h3>Three planes</h3>
+<h3>Three components</h3>
 <ul>
-  <li><b>Template plane.</b> template.json declares inputs, payloads, steps, computed state, checks, findings and artifacts.</li>
-  <li><b>Probe plane.</b> A static Rust binary speaks an HMAC-authenticated framed protocol and executes http, tcp, exec, fs, k8s, socks and spawn ops.</li>
-  <li><b>Control plane.</b> Python enforces consent, scope, level, backup and audit, then folds probe evidence into findings.</li>
+  <li><b>Templates.</b> template.json declares inputs, payloads, steps, computed state, checks, findings and artifacts.</li>
+  <li><b>Probe.</b> A static Rust binary speaks an HMAC-authenticated framed protocol and executes http, tcp, exec, fs, k8s, socks and spawn ops.</li>
+  <li><b>Controller.</b> Python enforces consent, scope, level, backup and audit, then folds probe evidence into findings.</li>
 </ul>
 <h3>Probe tree</h3>
 <p>Every probe has a probe_id and a parent_id. Children inherit the parent's read-only state, command allow-list and budget, and can only be stricter. Cleanup is child-first, so no orphan keeps a token alive.</p>
@@ -452,11 +452,11 @@ section(
                                    ├─▶ 子探针 ──▶ 子探针
                                    └─▶ 证据 ──▶ 报告 / 规则 / 控制台</code></pre>
 </div>
-<h3>三个平面</h3>
+<h3>三个组件</h3>
 <ul>
-  <li><b>模板平面。</b> template.json 声明输入、载荷、步骤、computed 状态、检查项、发现与产物。</li>
-  <li><b>探针平面。</b> 静态 Rust 二进制使用 HMAC 认证的帧协议，执行 http、tcp、exec、fs、k8s、socks 与 spawn。</li>
-  <li><b>控制平面。</b> Python 负责授权、范围、级别、备份与审计校验，并把探针证据汇总成发现。</li>
+  <li><b>模板层。</b> template.json 声明输入、载荷、步骤、computed 状态、检查项、发现与产物。</li>
+  <li><b>探针端。</b> 静态 Rust 二进制使用 HMAC 认证的帧协议，执行 http、tcp、exec、fs、k8s、socks 与 spawn。</li>
+  <li><b>控制端。</b> Python 负责授权、范围、级别、备份与审计校验，并把探针证据汇总成发现。</li>
 </ul>
 <h3>探针树</h3>
 <p>每颗探针都有 probe_id 与 parent_id。子探针继承父探针的只读状态、命令白名单与预算，且只能更严格。清理先子后父，避免留下仍持有 token 的孤儿。</p>
