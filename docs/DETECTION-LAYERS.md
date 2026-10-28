@@ -63,9 +63,9 @@ Representative templates: `ray-dashboard-job`, `ray-control-plane`, `lws-leader-
 
 **What it detects.** hostNetwork, SR-IOV and macvlan traffic that never reaches the policy hook; VPC routing and cluster policy drift; IB subnet manager partitions; RoCE PFC/ECN lossless configuration; SHARP in-network aggregation and session trust; NCCL bootstrap and straggler injection; DNS service discovery.
 
-**What it produces.** Interface inventory, reachability proofs, reachability graphs and drift lists, partition tables and membership proofs, PFC counters and queue telemetry, session tables and config diffs, join records and timing skew.
+**What it produces.** Interface inventory, reachability proofs, reachability graphs and drift lists, partition tables and membership proofs, PFC counters and queue flow visibility, session tables and config diffs, join records and timing skew.
 
-Representative templates: `multus-sriov-rdma-bypass`, `network-policy-coverage`, `cni-aware-reachability-graph`, `vpc-cni-dual-control-plane-lateral`, `ib-sm-partition-audit`, `ib-subnet-manager-hijack`, `ib-rdma-collective-injection`, `roce-pfc-storm`, `fabric-telemetry-exposure`, `sharp-in-network-poison`, `sharp-session-trust-audit`, `nccl-collective-join`, `nccl-port-exhaustion`, `dns-service-discovery`.
+Representative templates: `multus-sriov-rdma-bypass`, `network-policy-coverage`, `cni-aware-reachability-graph`, `vpc-cni-dual-control-plane-lateral`, `ib-sm-partition-audit`, `ib-subnet-manager-hijack`, `ib-rdma-collective-injection`, `roce-pfc-storm`, `fabric-flow visibility-exposure`, `sharp-in-network-poison`, `sharp-session-trust-audit`, `nccl-collective-join`, `nccl-port-exhaustion`, `dns-service-discovery`.
 
 ### 5. Data and weights layer
 
@@ -158,7 +158,7 @@ Deduplication: each combination has a signature. If the combination fires, the c
 | ModSecurity / Coraza / SafeLine WAF | `defense-bypass-waf-inference` | encoding, chunked, Unicode and oversized request variants |
 | Cilium Hubble / Calico flows | `defense-bypass-netobserv` | hostNetwork, multi-NIC, short-lived flows |
 
-Blind spots feed rule packs directly: Kyverno/Gatekeeper for admission, Sigma for process/file/DNS telemetry, Falco/Tetragon for runtime, Suricata/WAF for network and request normalization. The modules use benign markers only; they do not carry malware, persist, disable security products or provide evasion instructions.
+Blind spots feed rule packs directly: Kyverno/Gatekeeper for admission, Sigma for process/file/DNS flow visibility, Falco/Tetragon for runtime, Suricata/WAF for network and request normalization. The modules use benign markers only; they do not carry malware, persist, disable security products or provide evasion instructions.
 
 ---
 
@@ -221,9 +221,9 @@ InkBlade 的检测模型共十层。每一层都是一组可独立执行的模�
 
 **检测什么。** hostNetwork、SR-IOV、macvlan 流量绕过策略钩子；VPC 路由与集群策略漂移；IB 子网管理器分区；RoCE PFC/ECN 无损配置；SHARP 在网聚合与会话信任；NCCL bootstrap 与 straggler 注入；DNS 服务发现。
 
-**产出什么。** 接口清单、可达性证明、可达图与漂移清单、分区表与成员证明、PFC 计数与队列遥测、会话表与配置差异、入组记录与时序偏斜。
+**产出什么。** 接口清单、可达性证明、可达图与漂移清单、分区表与成员证明、PFC 计数与队列指标、会话表与配置差异、入组记录与时序偏斜。
 
-代表模板：`multus-sriov-rdma-bypass`、`network-policy-coverage`、`cni-aware-reachability-graph`、`vpc-cni-dual-control-plane-lateral`、`ib-sm-partition-audit`、`ib-subnet-manager-hijack`、`ib-rdma-collective-injection`、`roce-pfc-storm`、`fabric-telemetry-exposure`、`sharp-in-network-poison`、`sharp-session-trust-audit`、`nccl-collective-join`、`nccl-port-exhaustion`、`dns-service-discovery`。
+代表模板：`multus-sriov-rdma-bypass`、`network-policy-coverage`、`cni-aware-reachability-graph`、`vpc-cni-dual-control-plane-lateral`、`ib-sm-partition-audit`、`ib-subnet-manager-hijack`、`ib-rdma-collective-injection`、`roce-pfc-storm`、`fabric-flow visibility-exposure`、`sharp-in-network-poison`、`sharp-session-trust-audit`、`nccl-collective-join`、`nccl-port-exhaustion`、`dns-service-discovery`。
 
 ### 5. 数据 / 权重层
 

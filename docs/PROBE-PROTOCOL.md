@@ -171,7 +171,7 @@ token 是 32 字节随机值，通过 `--token-file` 传入，文件权限 0600�
 | 会话总时长 | 由控制端设置 | 24h | 控制端 + 探针 TTL |
 | 孤儿 TTL | 120s | 600s | 探针 |
 
-任务超时后，探针杀死当前 op 的子进程或连接，返回 `E_TIMEOUT`；已完成步骤保留在 `data.steps` 里，未完成步骤标 `skipped`。预算超限返回 `E_BUDGET`，不自动降级到无上限。`cancel` 命中在途任务后，探针在下一个检查点停止，结果返回 `E_CANCELLED`，已产生的步骤保留。只有 `retryable=true` 的错误允许控制端重试；`E_AUTH`、`E_DENIED`、`E_TEMPLATE` 不重试。
+任务超时后，探针杀死当前 op 的子进程或连接，返回 `E_TIMEOUT`；已完成步骤保留在 `data.steps` 里，未收尾步骤标 `skipped`。预算超限返回 `E_BUDGET`，不自动降级到无上限。`cancel` 命中在途任务后，探针在下一个检查点停止，结果返回 `E_CANCELLED`，已产生的步骤保留。只有 `retryable=true` 的错误允许控制端重试；`E_AUTH`、`E_DENIED`、`E_TEMPLATE` 不重试。
 
 ## 6. 文件分块
 

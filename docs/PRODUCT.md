@@ -63,7 +63,7 @@ InkBlade 是一套面向训练与推理集群的授权渗透测试产品：在�
 
 - **能做什么**：验证非标准接口上的策略旁路，测绘双 CNI 控制面、InfiniBand 与 RoCE 配置、在网聚合与集合通信 bootstrap。
 - **检测什么**：hostNetwork/SR-IOV/macvlan 流量绕过策略钩子、VPC 路由与集群策略漂移、IB 子网管理器与分区、RoCE PFC/ECN 无损配置、SHARP 会话信任、NCCL 入组与 straggler、DNS 服务发现面。
-- **产出什么**：接口清单、可达性证明、可达图与漂移清单、分区表与成员证明、PFC 计数与队列遥测、会话表与配置差异、入组记录与时序偏斜。
+- **产出什么**：接口清单、可达性证明、可达图与漂移清单、分区表与成员证明、PFC 计数与队列指标、会话表与配置差异、入组记录与时序偏斜。
 - **代表模板**：`multus-sriov-rdma-bypass`、`network-policy-coverage`、`vpc-cni-dual-control-plane-lateral`、`ib-sm-partition-audit`、`ib-subnet-manager-hijack`、`roce-pfc-storm`、`sharp-in-network-poison`、`nccl-collective-join`、`nccl-port-exhaustion`、`dns-service-discovery`。
 
 ### 第 5 层：数据 / 权重层

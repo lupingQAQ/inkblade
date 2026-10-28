@@ -275,7 +275,7 @@ LAYERS = [
      "只在两个或三个组件相遇时才成立的发现，只报一次，并把组件级记录并入组合。",
      "sglang-weight-exfil, imex-computedomain-gpu-memory-crossing, long-context-cache-leak"),
     ("10", "Defense bypass", "防护绕过层",
-     "Measure whether HIDS, runtime eBPF, admission, image scan, host agents, WAF and flow telemetry see benign authorized activity.",
+     "Measure whether HIDS, runtime eBPF, admission, image scan, host agents, WAF and network flow visibility see benign authorized activity.",
      "度量 HIDS、运行时 eBPF、准入、镜像扫描、主机代理、WAF 与流量可视化是否看得见良性授权行为。",
      "defense-bypass-elkeid, defense-bypass-falco, defense-bypass-admission"),
 ]

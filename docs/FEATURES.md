@@ -23,7 +23,7 @@ A generic cluster scanner checks RBAC, admission, exposed APIs and image CVEs. U
 | 7. Supply chain / identity | Verifies `trust_remote_code`, revision pinning, attestation chains, SBOM, IRSA/workload identity and IMDS | `VULNERABILITY-LAYERS.md` |
 | 8. Cache security | Tests prefix cache, semantic cache, salt policy, eviction residue, remote KV pools, EPP metrics and TTFT timing | `DETECTION-LAYERS.md` |
 | 9. Cross-combination | Reports findings that only exist when two or three components meet, once per combination | `DETECTION-LAYERS.md` |
-| 10. Defense bypass | Measures whether HIDS, runtime eBPF, admission, image scan, host agents, WAF and flow telemetry see benign authorized activity | `PRODUCT.md` |
+| 10. Defense bypass | Measures whether HIDS, runtime eBPF, admission, image scan, host agents, WAF and network flow visibility see benign authorized activity | `PRODUCT.md` |
 
 ### In-pod probe / channel
 

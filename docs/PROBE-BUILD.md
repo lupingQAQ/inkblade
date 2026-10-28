@@ -117,7 +117,6 @@ inkblade-probe: connect 127.0.0.1:1 failed: 127.0.0.1:1: Connection refused (os 
 
 - 传输：`ssh root@127.0.0.1:2222 /tmp/inkblade-probe run --stdio`（challenge-HMAC 认证的 framed protocol）
 - 二进制：`c8d2f118…b726f3`（即 `probe/dist/inkblade-probe-linux-amd64`），probe `0.1.1`，源码 `1f0f57c`
-- 靶场：`lab/template_range.py`（host 侧 mock，guest 经 10.0.2.2 访问）
 - 驱动：`tools/native-verify.py --repeat 3`
 - 结果：**286/286 `runtime=rust`，0 失败**；每态 3 次规范化摘要一致；耗时与负控边界见
   `docs/PROBE-COVERAGE.md` 与 `reports/probe-coverage/evidence-native.json`
@@ -136,4 +135,3 @@ inkblade-probe: connect 127.0.0.1:1 failed: 127.0.0.1:1: Connection refused (os 
 - arm64 产物只做 ELF/架构/静态链接断言，未在 arm64 机器上执行；amd64 产物承担全部原生验证。
 - CI runner 为共享虚拟机，构建耗时只作量级参考，不作性能结论。
 - 本机 cargo 不可用是环境限制，不是产品限制；源码、锁定文件与构建命令均已入库，可在任意 Linux 复现。
-- 探针验证使用本地 mock 靶场，证明判定逻辑与执行链路，不证明客户集群的真实版本/配置组合。
