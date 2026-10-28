@@ -126,7 +126,7 @@ helm get notes inkblade --namespace inkblade
 
 ### 离线安装
 
-离线环境要带四样东西：控制器 wheel（或源码树）、Python 3.10+ 解释器、两个架构的探针二进制、模板与规则包。整个过程不需要包索引、模型权重或外发端点。
+离线环境要带四样东西：控制器 wheel（或源码树）、Python 3.10+ 解释器、两个架构的探针二进制、模板与规则包。手动执行、模板、探针与报告不需要外发端点；`agent run` 的 LLM 规划需要另配本地或内网 LLM 端点。
 
 ```bash
 python -m pip wheel . --no-deps -w dist/

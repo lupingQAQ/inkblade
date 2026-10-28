@@ -333,9 +333,9 @@ FAQ_ITEMS = [
      "写操作怎么保证安全？",
      "五道校验：授权覆盖目标、级别与时间窗；<code>--allow-write</code>；<code>meta.writes</code> 与写步骤；<code>backup-write</code> 模式；备份回执。写后回读哈希，失败回滚。"),
     ("Can it run air-gapped?",
-     "Yes. The controller needs no network, the probe needs no package index, and templates and rule packs ship with the release.",
+     "Manual runs, templates, probes and reports run offline. Agent mode with LLM planning needs an LLM endpoint — a local model or an internal API; without one, use manual or rule-based execution.",
      "能离线吗？",
-     "能。控制端不需要外网，探针不需要包索引，模板与规则包随发布物带入。"),
+     "手动执行、模板、探针和报告可以离线；`agent run` 的 LLM 规划需要配置 LLM 端点（本地模型或内网 API），没有配置时就用手动或规则模式。"),
     ("Can I use it commercially?",
      "Apache-2.0 permits commercial use and forks. Keep LICENSE and NOTICE, and do not use the InkBlade trademark for a fork.",
      "能商用或 fork 吗？",
@@ -663,10 +663,10 @@ section(
     "commands", "Commands", "命令",
     "Command map", "命令表",
     "The surface you actually type", "实际输入的命令面",
-    en="""<p>Every command below runs offline except the ones that talk to a cluster through a session or probe.</p>
+    en="""<p>Commands that do not contact a cluster or an LLM run offline. Agent planning needs an LLM endpoint.</p>
 """ + command_table("en") + """
 <p class="note"><a href="USAGE.md">Full usage reference</a></p>""",
-    zh="""<p>除经会话或探针访问集群的命令外，下列命令都可离线运行。</p>
+    zh="""<p>不访问集群或 LLM 的命令可以离线运行；`agent` 规划需要配置 LLM 端点。</p>
 """ + command_table("zh") + """
 <p class="note"><a href="USAGE.md">完整使用手册</a></p>""",
 )
