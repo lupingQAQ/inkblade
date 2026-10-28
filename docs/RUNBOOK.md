@@ -73,7 +73,7 @@ assert roe_status(store) == "complete"
 
 - 角色矩阵：`admin`（全部）/ `lead`（执行+审批+零日扩展审批，无 manage）/ `tester`（执行+报告）/ `auditor`（只读+报告）。
 - 级别闸门：模块 `min_level` 高于授权级别 → `ExecutionLocked`；范围外命名空间/IP → 拒绝。
-- **可选零日加密扩展**（默认关；仅对显式 `private: true` 的未来模块生效）：`python -c "from inkblade.core.zeroday import enable; enable(store, lead_session)"`——需 `approve-zeroday` 角色，写入 `workspace.json` 并留审计。当前 6 个 dify-*/open-webui-* 零日级漏洞模块已公开（`private: false`），**无需启用本扩展**。
+- **可选零日加密扩展**（默认关；仅对显式 `private: true` 的未来模块生效）：`python -c "from inkblade.core.zeroday import enable; enable(store, lead_session)"`——需 `approve-zeroday` 角色，写入 `workspace.json` 并留审计。当前 6 个 dify-*/open-webui-* 零日漏洞模块已公开（`private: false`），**无需启用本扩展**。
 
 ## 3. 跑模块与链（CLI + API）
 
@@ -100,7 +100,7 @@ result = run_module(store, tester_session, "sglang-admin-failopen",
 
 ```python
 from inkblade.core.chains import load_chains, dry_run, execute
-chains = load_chains("inkblade/chains")                 # 20 条：经典/云侧权重桶/网络（含长上下文/PD KV）/零日级
+chains = load_chains("inkblade/chains")                 # 20 条：经典/云侧权重桶/网络（含长上下文/PD KV）/零日
 plan = dry_run(chains["flat-network-admin-plane-weight-poison"], findings, modules_dir=...)
 # plan.verdict ∈ 成立/部分成立/不成立；plan.steps[].backup_actions / write_surface = 预览写面
 res = execute(chain, store, tester_session, modules_dir=..., findings=..., workers=4)
@@ -123,7 +123,7 @@ from inkblade.rules.generate import generate_all
 from inkblade.rules.validate import validate
 from inkblade.webui.export_static import export_static
 
-pentest = render_pentest(store, run_name)          # 双语（bi/zh/en），零日级细节默认展示
+pentest = render_pentest(store, run_name)          # 双语（bi/zh/en），零日漏洞细节默认展示
 # 可选脱敏（未来真私有发现）：render_pentest(..., redact_zeroday=True)
 remediation = render_remediation(store, run_name)  # 立即/短期/中期基线 + 逐发现建议 + 复测计划
 pack = generate_all("inkblade/chains", findings=..., cni="native", out_dir="reports/samples/rules-pack")
@@ -140,7 +140,7 @@ export_static(run_dir, "reports/samples/static-export")            # file:// 免
 - **步骤回滚**：`BackupManager(store, run).rollback("<module-key>")`；整 run：逐步骤回滚（按 `backups` 表回执）。
 - **备份语义**：file → 副本+sha256 还原；kube → 清单快照（`kubectl-apply` 人工执行）；http → 响应/状态存档（登记 `http-restore`）。
 - **紧急停止**：API `POST /api/abort`（置全局 abort 标志）；Ctrl+C 终止 CLI/链执行——已落盘写面按 run 的 `backups` 表回执清单人工/脚本回滚。
-- 每步动作全量入 `actions` 表（主体/工作区/目标/参数/结果/回滚指针，零日级另标 `is_zeroday=1`）。
+- 每步动作全量入 `actions` 表（主体/工作区/目标/参数/结果/回滚指针，零日另标 `is_zeroday=1`）。
 
 ## 6. 实验室（mock / KIND / WSL 边界）
 

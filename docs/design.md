@@ -50,12 +50,12 @@ privileged / hostPID / hostIPC / hostPath / 容器运行时 socket / GPU 设备�
 
 Falco / Tetragon / KubeArmor / Elkeid / AgentSmith / NetObserv / veinmind / 准入控制与 WAF 的覆盖盲区、规则缺口与硬化建议；结果反哺规则包与配置建议。
 
-## 13. 零日级模块（已公开）
+## 13. 零日漏洞模块（已公开）
 
-当前 6 个 `dify-*` / `open-webui-*` 模块为**已公开**的零日级漏洞模块（`private: false`），正常打包、展示与报告细节。`inkblade/core/zeroday.py` 保留为默认关闭的可选加密扩展，仅对显式 `private: true` 的未来模块生效；报告可用 `redact_zeroday=True` 可选脱敏。
+当前 6 个 `dify-*` / `open-webui-*` 模块为**已公开**的零日漏洞模块（`private: false`），正常打包、展示与报告细节。`inkblade/core/zeroday.py` 保留为默认关闭的可选加密扩展，仅对显式 `private: true` 的未来模块生效；报告可用 `redact_zeroday=True` 可选脱敏。
 
 ## 14. 研究伦理与披露
 
 - 仅使用实验室 fixture / mock 样值（`MOCK*` / `FAKE*`），不内置真实凭据。
 - 新发现的未披露漏洞遵循 [`SECURITY.md`](../SECURITY.md) 的私密披露流程（90 天协调期）。
-- 公开规则包中的零日级签名采用行为化描述，不含利用细节特征串。
+- 公开规则包中的零日规则采用行为化描述，不含利用细节特征串。

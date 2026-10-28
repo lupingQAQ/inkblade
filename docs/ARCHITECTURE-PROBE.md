@@ -3,7 +3,7 @@
 > Status: normative. Every module is a declarative template executed natively by
 > the Rust probe in the target Pod. Python remains only as the controller
 > (authorization, scheduling, evidence, reporting) and as a CI conformance
-> runtime for the mock range. There is no adapter and no host fallback.
+> runtime for the isolated verification range. There is no adapter and no host fallback.
 
 ## 1. The three planes
 
@@ -123,7 +123,7 @@ SOCKS5 / port forwards; see [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md).
 - `inkblade/tpl/engine.py` is a conformance runtime implementing the same
   contract. It is opt-in (`INKBLADE_ALLOW_REFERENCE_PROBE=1`), stamps
   `runtime="reference"` in results, and is used only by CI/lab.
-- `lab/template_range.py` is the mock range: HTTP, TCP, Unix socket and a fake
+- `lab/template_range.py` is the isolated verification range: HTTP, TCP, Unix socket and a fake
   Kubernetes API with two-state scenarios.
 - Dynamic suites: `tests/test_probe_templates*.py`,
   `tests/test_probe_defense_bypass.py`, `test_probe_cache_gateway.py`,
@@ -138,14 +138,14 @@ SOCKS5 / port forwards; see [`PROBE-CHANNEL.md`](PROBE-CHANNEL.md).
   `c8d2f118460349a9c4303250b737adb0ccb28a1598e59c16d1f0d3f230b726f3` (probe 0.1.1), source
   commit `1f0f57c`; raw evidence in
   `reports/probe-coverage/evidence-native.json`. The fixed-state negative control is only
-  conclusive for templates whose inputs come from the mock target (`PROBE-COVERAGE.md` §6).
+  conclusive for templates whose inputs come from the isolated test target (`PROBE-COVERAGE.md` §6).
 - Lint: `tools/template-lint.py --strict` (schema, metadata equality,
   expressions, no `run.py`).
 
 ## 7. Migration status
 
 - 286 module templates + 1 bootstrap registration, all dynamically exercised in
-  two states against the mock range.
+  two states against the isolated verification range.
 - 48 templates are behavioural equivalents of the pre-migration module logic
   (defense bypass 11, cache 7, AI gateway 8, privilege chain 15, long-context 8
   minus overlaps counted once). The rest are probe-plan templates marked
