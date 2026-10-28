@@ -73,14 +73,14 @@ pre{background:#060708;border:1px solid #262b34;padding:15px 16px;overflow:auto;
 <h3>Platform capabilities</h3>
 <ul>
   <li><b>One execution path.</b> Foothold, Rust probe, framed channel, in-pod task, child probe, evidence.</li>
-  <li><b>Probe trees.</b> probe_id and parent_id; each child has its own token and a stricter budget; depth and fan-out are bounded; cleanup is child-first.</li>
+  <li><b>Probe trees.</b> probe_id and parent_id; each child has its own token and a stricter budget; the tree limits nesting depth and concurrent child probes; cleanup is child-first.</li>
   <li><b>Agent runtime.</b> A budgeted objective graph with decision trace, journal resume and zero-execution replay.</li>
   <li><b>Cross-cluster relay.</b> The same framed protocol between clusters, with a completion proof.</li>
   <li><b>Evidence from the probe.</b> Task results, step logs, artifacts, SHA-256 manifests, traffic tables and cleanup receipts.</li>
   <li><b>Rules you can replay.</b> Admission, runtime and network packs with intercepted / detected / missed matrices.</li>
   <li><b>Report and console.</b> Bilingual pentest and remediation reports, SARIF / OCSF / VEX export, local console.</li>
 </ul></div></section>
-<section class="sec" id="architecture"><div class="lang-block" data-lang="en"><div class="sec-head"><span class="sec-no">02</span><h2>One execution path</h2><p class="sub">Three planes, one probe tree</p></div><p>The controller never executes target-side logic. It authorizes, renders templates, enforces budgets and archives evidence. The probe is the only code that runs inside the Pod.</p>
+<section class="sec" id="architecture"><div class="lang-block" data-lang="en"><div class="sec-head"><span class="sec-no">02</span><h2>One execution path</h2><p class="sub">Three components, one probe tree</p></div><p>The controller never executes target-side logic. It authorizes, renders templates, enforces budgets and archives evidence. The probe is the only code that runs inside the Pod.</p>
 <div class="term">
   <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">execution path</span></div>
 <pre><code>foothold ──▶ Rust probe ──▶ framed channel ──▶ in-pod task
@@ -88,11 +88,11 @@ pre{background:#060708;border:1px solid #262b34;padding:15px 16px;overflow:auto;
                                               ├─▶ child probe ──▶ child probe
                                               └─▶ evidence ──▶ report / rules / console</code></pre>
 </div>
-<h3>Three planes</h3>
+<h3>Three components</h3>
 <ul>
-  <li><b>Template plane.</b> template.json declares inputs, payloads, steps, computed state, checks, findings and artifacts.</li>
-  <li><b>Probe plane.</b> A static Rust binary speaks an HMAC-authenticated framed protocol and executes http, tcp, exec, fs, k8s, socks and spawn ops.</li>
-  <li><b>Control plane.</b> Python enforces consent, scope, level, backup and audit, then folds probe evidence into findings.</li>
+  <li><b>Templates.</b> template.json declares inputs, payloads, steps, computed state, checks, findings and artifacts.</li>
+  <li><b>Probe.</b> A static Rust binary speaks an HMAC-authenticated framed protocol and executes http, tcp, exec, fs, k8s, socks and spawn ops.</li>
+  <li><b>Controller.</b> Python enforces consent, scope, level, backup and audit, then folds probe evidence into findings.</li>
 </ul>
 <h3>Probe tree</h3>
 <p>Every probe has a probe_id and a parent_id. Children inherit the parent's read-only state, command allow-list and budget, and can only be stricter. Cleanup is child-first, so no orphan keeps a token alive.</p>

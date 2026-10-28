@@ -21,7 +21,7 @@
 | 文档 | 说明 |
 |---|---|
 | [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) | 控制端组件架构：治理、编排、模块、证据、报告、可视化、规则 |
-| [`docs/ARCHITECTURE-PROBE.md`](ARCHITECTURE-PROBE.md) | 唯一执行路径：模板、探针、控制三个平面；父子树，以及目标侧不执行 Python 的边界 |
+| [`docs/ARCHITECTURE-PROBE.md`](ARCHITECTURE-PROBE.md) | 唯一执行路径：模板、探针、控制三个组件；父子树，以及目标侧不执行 Python 的边界 |
 | [`docs/PROBE-CHANNEL.md`](PROBE-CHANNEL.md) | 入口会话与 `kubectl exec -i` 通道：投放、SOCKS/端口转发、权限边界 |
 | [`docs/PROBE-PROTOCOL.md`](PROBE-PROTOCOL.md) | 长度前缀 JSON 帧、认证、任务/结果、预算、文件分块、清理与错误码 |
 | [`docs/PROBE-DEPLOY.md`](PROBE-DEPLOY.md) | RCE/memfd、kubectl、ServiceAccount token、EphemeralContainer、共享卷、写权限校验 |

@@ -19,12 +19,12 @@
       inkblade/modules/<key>/template.json
 ```
 
-1. **Template plane** — `template.json` is the only module form: inputs,
+1. **Templates** — `template.json` is the only module form: inputs,
    payload variants, steps, computed state, checks, findings, artifacts, version
    matrix, limits.
-2. **Probe plane** — a static Rust binary (`probe/`) speaking an authenticated
+2. **Probe** — a static Rust binary (`probe/`) speaking an authenticated
    framed protocol. It executes ops natively; no module code is uploaded.
-3. **Control plane** — Python orchestrates: consent/level/scope gates, backup
+3. **Controller** — Python orchestrates: consent/level/scope gates, backup
    receipts, audit rows, three-layer evidence, reports. It lowers templates to
    the probe dialect and folds probe evidence into findings and artifacts.
 

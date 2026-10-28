@@ -27,7 +27,7 @@ this deployment shape?
 
 | Family | Count | What it looks at |
 |---|---:|---|
-| Reconnaissance | 67 | Control plane objects, schedulers, gateways, storage, identity. Enumeration only. |
+| Reconnaissance | 67 | Controller objects, schedulers, gateways, storage, identity. Enumeration only. |
 | Lateral movement | 66 | Service-to-service pivots, gateway abuse, worker takeover, token reuse. |
 | Network architecture | 52 | CNI behaviour, policy coverage, service mesh, multi-NIC, fabric reachability. |
 | Privilege chains | 43 | RBAC escalation, admission gaps, service-account trust, operator permissions. |

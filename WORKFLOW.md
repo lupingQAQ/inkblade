@@ -18,7 +18,7 @@ The order matters. Each stage leaves behind something the next stage can check, 
 | 4 | Detection | `session run --module`, `run --module`, `agent run` | scope, level, surface | findings, evidence anchors |
 | 5 | Escape | `execute --chain`, `exploit` | chain preconditions, backup gate | escape path, proof |
 | 6 | Lateral | channel forwards, `probe upload` + `probe spawn`, `agent run` | scope coverage | reachability graph, pivots |
-| 7 | Multi-probe | `probe spawn`, `probe list` | parent token, depth and fan-out | probe tree, lineage |
+| 7 | Multi-probe | `probe spawn`, `probe list` | parent token, nesting depth, concurrent child probes | probe tree, lineage |
 | 8 | Cross-cluster | `agent relay add`, `agent coverage status` | relay token, per-cluster consent | relay status, coverage proof |
 | 9 | Report / rules / console | `report`, `export`, `rules generate`, `ui` | `--redact` before release | report, rule packs, console |
 
@@ -84,7 +84,7 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 | 4 | 检测 | `session run --module`、`run --module`、`agent run` | 范围、级别、部署面 | 发现、证据锚 |
 | 5 | 逃逸 | `execute --chain`、`exploit` | 链前置条件、备份校验 | 逃逸路径、证明 |
 | 6 | 横向 | 通道转发、`probe upload` + `probe spawn`、`agent run` | 范围覆盖 | 可达图、跳板 |
-| 7 | 多探针 | `probe spawn`、`probe list` | 父 token、深度与扇出 | 探针树、血缘 |
+| 7 | 多探针 | `probe spawn`、`probe list` | 父 token、嵌套层数、并发子探针数 | 探针树、血缘 |
 | 8 | 跨集群 | `agent relay add`、`agent coverage status` | 中继 token、逐集群授权 | 中继状态、覆盖证明 |
 | 9 | 报告 / 规则 / 控制台 | `report`、`export`、`rules generate`、`ui` | 外发前 `--redact` | 报告、规则包、控制台 |
 
@@ -116,7 +116,7 @@ Every probe has a `probe_id` and a `parent_id`. A child inherits the parent's re
 
 ### 第 7 步 — 多探针
 
-每颗探针都有 `probe_id` 与 `parent_id`。子探针继承父探针的只读状态、命令白名单和预算，且只能更严格。深度有上限，扇出有上限，清理先子后父，避免留下仍持有 token 的孤儿。
+每颗探针都有 `probe_id` 与 `parent_id`。子探针继承父探针的只读状态、命令白名单和预算，且只能更严格。限制嵌套层数与并发子探针数量，清理先子后父，避免留下仍持有 token 的孤儿。
 
 ### 第 8 步 — 跨集群
 
