@@ -199,13 +199,13 @@ def reserve_table(lang: str) -> str:
 
 RESERVE_INVENTORY = [
     ("Vulnerability entries", "漏洞条目", 184),
-    ("Runnable demos", "可运行 demo", 68),
-    ("Research leads", "研究线索", 169),
+    ("Runnable PoCs", "可运行 PoC", 68),
+    ("Research entries", "研究记录", 169),
     ("Confirmed unpublished", "确认未公开", 47),
     ("Ready for disclosure", "可进入披露", 46),
     ("Unique primitives", "独立原语", 39),
     ("Version matrix rows", "版本矩阵条目", 103),
-    ("Weapon packs", "利用包", 47),
+    ("Payload packs", "载荷包", 47),
     ("Detection rules", "检测规则", 121),
     ("Attack chains", "攻击链", 29),
 ]
@@ -559,13 +559,13 @@ section(
     "reserve", "Vulnerability research", "漏洞研究",
     "Vulnerability research", "漏洞研究",
     "The research behind the template catalogue", "模板目录背后的漏洞研究",
-    en="""<p>The template catalogue is built on 184 vulnerability write-ups, each recording the component, affected versions, root cause, impact and detection. 68 have runnable PoCs. The research queue holds 169 leads, and not all of them are zero-day: 47 were reproduced dynamically and confirmed unpublished, 46 are ready for coordinated disclosure, and deduplication leaves 39 distinct exploit primitives. A 103-record version matrix and 121 detection rules feed 29 attack chains.</p>
-<h3>Vulnerability research reserve</h3>
+    en="""<p>The template catalogue is built on 184 vulnerability write-ups, each recording the component, affected versions, root cause, impact and detection. 68 have runnable PoCs. The research set contains 169 entries: 47 were reproduced dynamically and confirmed unpublished, 46 are ready for coordinated disclosure, and deduplication leaves 39 distinct exploit primitives. A 103-record version matrix and 121 detection rules feed 29 attack chains.</p>
+<h3>Vulnerability research</h3>
 """ + reserve_inventory_table("en") + """
 <p>The public ledger lists component, class, affected versions and disclosure status; exploit details stay private.</p>
 <p class="note"><a href="0DAY-PUBLIC.md">0DAY-PUBLIC.md</a> · <a href="VULNERABILITY-LAYERS.md">VULNERABILITY-LAYERS.md</a> · <a href="DETECTION-LAYERS.md">DETECTION-LAYERS.md</a></p>""",
-    zh="""<p>模板目录对应 184 条漏洞记录，每条写清组件、受影响版本、根因、影响与检测方式；其中 68 条带可运行 PoC。研究队列有 169 条线索，并非都算 0day：47 条经动态复现并确认未公开，46 条可以进入协调披露，去重后得到 39 个独立利用原语。103 条受影响版本记录与 121 条检测规则支撑 29 条攻击链。</p>
-<h3>漏洞储备</h3>
+    zh="""<p>模板目录对应 184 条漏洞记录，每条写清组件、受影响版本、根因、影响与检测方式；其中 68 条带可运行 PoC。研究集共 169 条：47 条经动态复现并确认未公开，46 条可以进入协调披露，去重后得到 39 个独立利用原语。103 条受影响版本记录与 121 条检测规则支撑 29 条攻击链。</p>
+<h3>漏洞研究</h3>
 """ + reserve_inventory_table("zh") + """
 <p>公开台账列出组件、类别、受影响版本与披露状态；利用细节不公开。</p>
 <p class="note"><a href="0DAY-PUBLIC.md">0DAY-PUBLIC.md</a> · <a href="VULNERABILITY-LAYERS.md">VULNERABILITY-LAYERS.md</a> · <a href="DETECTION-LAYERS.md">DETECTION-LAYERS.md</a></p>""",
