@@ -1660,7 +1660,7 @@ LAYER_TEXTS = {
             ("Multus + SR-IOV + RDMA（所有受审版本）", "策略钩子只覆盖主 CNI；SR-IOV VF/macvlan/RDMA 流量绕过 kube-proxy 与 NetworkPolicy", "已有 Pod + 第二张网卡 → 跨 namespace 直达训练/推理端口", "`multus-sriov-rdma-bypass`、`network-policy-coverage`"),
             ("VPC-native CNI（EKS VPC-CNI / ACK Terway / TKE VPC-CNI）", "VPC 路由/安全组与 K8s NetworkPolicy 双控制面；SG 规则不随 namespace 自动收敛", "云上集群 → 安全组漂移导致跨租户可达", "`cni-stack-capability`、`cni-aware-reachability-graph`"),
             ("IB SM / Partition（UFM/OpenSM）", "SM 跑在计算节点或单实例；默认分区 `*` 覆盖全部 HCA；PKey 成员不按租户收敛", "IB 管理面可达 → 重定义 RDMA 信任域、跨租户加入", "`ib-sm-partition-audit`、`ib-subnet-manager-hijack`"),
-            ("RoCE PFC / ECN（Spectrum-X / 自研白盒）", "PFC watchdog 关闭、ECN 未启用、管理 ACL 放行任意来源；无损队列无租户配额", "交换机配置面可达 → PFC 暂停风暴、fabric 级停摆", "`roce-pfc-storm`、`fabric-telemetry-exposure`"),
+            ("RoCE PFC / ECN（Spectrum-X / 自研白盒）", "PFC watchdog 关闭、ECN 未启用、管理 ACL 放行任意来源；无损队列无租户配额", "交换机配置面可达 → PFC 暂停风暴、fabric 级停摆", "`roce-pfc-storm`、`fabric-observability-exposure`"),
             ("SHARP 在网聚合（Quantum-X800 / NVLink SHARP）", "会话加入无鉴权；聚合节点跨租户共享；reduce 结果不在主机审计里", "交换机/SHARP 会话面可达 → 静默篡改 all-reduce 结果", "`sharp-in-network-poison`、`sharp-session-trust-audit`"),
             ("NCCL bootstrap / rank（NCCL 2.x）", "bootstrap 端口无认证；rank 时序被信任；端口池无配额", "同网可达 → 加入集合通信、注入梯度、耗尽端口", "`nccl-collective-join`、`nccl-straggler-injection`、`nccl-port-exhaustion`"),
             ("DNS / Service discovery（CoreDNS）", "Service/Endpoint 清单可读；训练作业用可预测的 headless Service 名", "已有 Pod → 拓扑测绘、定位 Ray/vLLM/SGLang 控制面", "`dns-service-discovery`"),

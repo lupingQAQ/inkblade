@@ -14,7 +14,7 @@ MODULES = (
     "switch-os-config-surface",
     "ib-sm-partition-audit",
     "sharp-collective-config",
-    "fabric-telemetry-exposure",
+    "fabric-observability-exposure",
     "hardware-supply-chain",
 )
 

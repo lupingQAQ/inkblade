@@ -125,7 +125,7 @@ EphemeralContainer 不能加端口、不能改资源限制，也不适合长期�
 
 失败处理要具体。架构不匹配是 `E_EXEC`，换二进制；无写权限或 `noexec` 是 `E_IO`/`E_EXEC`，换 memfd 或共享卷；哈希不匹配是 `E_HASH`，停止并重新传输；认证失败是 `E_AUTH`，查 token 文件权限；握手超时是 `E_TIMEOUT`，先查 stdin/stdout 是否被 shell 污染；子探针启动失败是 `E_CHILD`，查路径、权限、架构。
 
-## 7. 清理与孤儿
+## 7. 清理与失联探针
 
 清理顺序固定：停止新任务、取消在途任务、递归清理子探针、关闭监听端口和 SOCKS、删除 token/二进制/scratch、回报 `cleanup.report`。`cleanup.report` 里要有 removed、failed、children 和 idempotent 四个字段；失败不阻塞退出，但必须写进证据和报告的限制节。
 

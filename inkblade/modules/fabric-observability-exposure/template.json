@@ -1,11 +1,11 @@
 {
   "schema": "inkblade-probe-template-v1",
-  "key": "fabric-telemetry-exposure",
+  "key": "fabric-observability-exposure",
   "version": "1.0.0",
   "meta": {
     "name": {
-      "zh": "fabric 遥测暴露面（gNMI/SNMP/TSDB）",
-      "en": "Fabric telemetry exposure (gNMI/SNMP/TSDB)"
+      "zh": "fabric 观测暴露面（gNMI/SNMP/TSDB）",
+      "en": "Fabric observability exposure (gNMI/SNMP/TSDB)"
     },
     "series": "网络架构",
     "min_level": "主动探测",
@@ -49,10 +49,10 @@
       "id": "f1",
       "when": "steps.surface.ok == true",
       "sev": "high",
-      "title": "fabric 遥测匿名暴露跨租户标签",
+      "title": "fabric 观测匿名暴露跨租户标签",
       "detail": "Declarative probe assertion (baseline migrated from the module rule).",
       "evidence": "{{steps.snapshot.path}}",
-      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；gNMI/SNMP 遥测面与多租户标签",
+      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；gNMI/SNMP 观测面与多租户标签",
       "fix": ""
     },
     {
@@ -62,7 +62,7 @@
       "title": "gNMI 未启用 TLS",
       "detail": "Declarative probe assertion (baseline migrated from the module rule).",
       "evidence": "{{steps.snapshot.path}}",
-      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；gNMI/SNMP 遥测面与多租户标签",
+      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；gNMI/SNMP 观测面与多租户标签",
       "fix": ""
     },
     {
@@ -72,7 +72,7 @@
       "title": "gNMI 未启用认证",
       "detail": "Declarative probe assertion (baseline migrated from the module rule).",
       "evidence": "{{steps.snapshot.path}}",
-      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；gNMI/SNMP 遥测面与多租户标签",
+      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；gNMI/SNMP 观测面与多租户标签",
       "fix": ""
     },
     {
@@ -82,13 +82,13 @@
       "title": "SNMP v2c 弱团体名",
       "detail": "Declarative probe assertion (baseline migrated from the module rule).",
       "evidence": "{{steps.snapshot.path}}",
-      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；gNMI/SNMP 遥测面与多租户标签",
+      "mapping": "docs/HARDWARE-SWITCH-COVERAGE.md 三级矩阵 T2；gNMI/SNMP 观测面与多租户标签",
       "fix": ""
     }
   ],
   "artifacts": [
     {
-      "name": "fabric-telemetry-exposure-probe.json",
+      "name": "fabric-observability-exposure-probe.json",
       "from": "steps",
       "kind": "json"
     }

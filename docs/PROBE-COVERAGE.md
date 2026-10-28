@@ -134,7 +134,7 @@
 | `etcd-direct-access` | 权限链 | template | 1 | 1 | 1 | equivalent | yes | rust | yes | `9e7e340f19d6e24c` |
 | `experiment-tracker-exposure` | 窃取与数据泄露 | template | 1 | 1 | 2 | reduced | yes | rust | yes | `574f6dcd38b8e13f` |
 | `exposure-mapping` | 侦察 | template | 1 | 1 | 6 | reduced | yes | rust | yes | `0dc2e30480851514` |
-| `fabric-telemetry-exposure` | 网络架构 | template | 1 | 1 | 4 | reduced | yes | rust | yes | `5e7a9449a35cc67a` |
+| `fabric-observability-exposure` | 网络架构 | template | 1 | 1 | 4 | reduced | yes | rust | yes | `5e7a9449a35cc67a` |
 | `fabric-topology-isolation` | 网络架构 | template | 1 | 1 | 6 | reduced | yes | rust | yes | `dc5570e5ef1cc06b` |
 | `federated-learning-audit` | 侦察 | template | 1 | 1 | 2 | reduced | yes | rust | yes | `2f29071ebb7997d8` |
 | `federated-learning-surface` | 情报 | template | 1 | 1 | 4 | reduced | yes | rust | yes | `180f3ec85727589c` |

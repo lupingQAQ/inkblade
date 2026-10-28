@@ -65,7 +65,7 @@ Representative templates: `ray-dashboard-job`, `ray-control-plane`, `lws-leader-
 
 **What it produces.** Interface inventory, reachability proofs, reachability graphs and drift lists, partition tables and membership proofs, PFC counters and queue flow visibility, session tables and config diffs, join records and timing skew.
 
-Representative templates: `multus-sriov-rdma-bypass`, `network-policy-coverage`, `cni-aware-reachability-graph`, `vpc-cni-dual-control-plane-lateral`, `ib-sm-partition-audit`, `ib-subnet-manager-hijack`, `ib-rdma-collective-injection`, `roce-pfc-storm`, `fabric-telemetry-exposure`, `sharp-in-network-poison`, `sharp-session-trust-audit`, `nccl-collective-join`, `nccl-port-exhaustion`, `dns-service-discovery`.
+Representative templates: `multus-sriov-rdma-bypass`, `network-policy-coverage`, `cni-aware-reachability-graph`, `vpc-cni-dual-control-plane-lateral`, `ib-sm-partition-audit`, `ib-subnet-manager-hijack`, `ib-rdma-collective-injection`, `roce-pfc-storm`, `fabric-observability-exposure`, `sharp-in-network-poison`, `sharp-session-trust-audit`, `nccl-collective-join`, `nccl-port-exhaustion`, `dns-service-discovery`.
 
 ### 5. Data and weights layer
 
@@ -223,7 +223,7 @@ InkBlade 的检测模型分十层。每一层都是一组可以单独执行的�
 
 **产出什么。** 接口清单、可达性证明、可达图与漂移清单、分区表与成员证明、PFC 计数与队列指标、会话表与配置差异、入组记录与时序偏差。
 
-代表模板：`multus-sriov-rdma-bypass`、`network-policy-coverage`、`cni-aware-reachability-graph`、`vpc-cni-dual-control-plane-lateral`、`ib-sm-partition-audit`、`ib-subnet-manager-hijack`、`ib-rdma-collective-injection`、`roce-pfc-storm`、`fabric-telemetry-exposure`、`sharp-in-network-poison`、`sharp-session-trust-audit`、`nccl-collective-join`、`nccl-port-exhaustion`、`dns-service-discovery`。
+代表模板：`multus-sriov-rdma-bypass`、`network-policy-coverage`、`cni-aware-reachability-graph`、`vpc-cni-dual-control-plane-lateral`、`ib-sm-partition-audit`、`ib-subnet-manager-hijack`、`ib-rdma-collective-injection`、`roce-pfc-storm`、`fabric-observability-exposure`、`sharp-in-network-poison`、`sharp-session-trust-audit`、`nccl-collective-join`、`nccl-port-exhaustion`、`dns-service-discovery`。
 
 ### 5. 数据 / 权重层
 

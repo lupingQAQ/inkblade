@@ -33,7 +33,7 @@ K8s 控制面审计能看到 Pod、Service、RBAC，却看不到下面四类真�
 | 层级 | 定义 | 模块 | 当前证据 | 能做 | 不能做 |
 |---|---|---|---|---|---|
 | **T1 只读** | 只解析客户提供的导出文件或 fixture，不连接设备、不登录、不写 | `gpu-driver-firmware-surface`、`nvswitch-nvlink-topology`、`switch-os-config-surface`、`ib-sm-partition-audit`、`sharp-collective-config`、`hardware-supply-chain` | `lab/hardware-fixtures/` 的合成 fixture + 单元测试 | 版本/配置/拓扑/哈希清单核验；输出可复核 finding | 不能证明导出文件是最新、完整、未被篡改；不能替代设备实时状态 |
-| **T2 需授权主动** | 对已授权资产做**只读 HTTP GET / 单次默认凭据验证**（不写、不爆破、不改配置） | `bmc-ipmi-exposure`、`dpu-smartnic-surface`、`fabric-telemetry-exposure` | `lab/hardware_sim.py` 的 127.0.0.1 mock（vulnerable/fixed 两态） | 发现匿名管理面、默认凭据可登录、IPMI over LAN、DPU 未鉴权服务、gNMI/SNMP 暴露 | 不能在未授权/未窗口时扫生产；默认凭据验证可能触发锁定，必须先在实验环境演练 |
+| **T2 需授权主动** | 对已授权资产做**只读 HTTP GET / 单次默认凭据验证**（不写、不爆破、不改配置） | `bmc-ipmi-exposure`、`dpu-smartnic-surface`、`fabric-observability-exposure` | `lab/hardware_sim.py` 的 127.0.0.1 mock（vulnerable/fixed 两态） | 发现匿名管理面、默认凭据可登录、IPMI over LAN、DPU 未鉴权服务、gNMI/SNMP 暴露 | 不能在未授权/未窗口时扫生产；默认凭据验证可能触发锁定，必须先在实验环境演练 |
 | **T3 必须真实硬件** | 需要厂商设备、真实 ASIC/固件/带外网络，且通常需要变更审批 | 无（当前不提供） | **无真实 GPU/BMC/交换机验证** | 只有客户现场 + 厂商配合 + 变更窗口才能做 | 不能拿仿真结果冒充 PFC/ECN 行为、NVSwitch 分区生效、SHARP 真实聚合、固件刷写/回滚 |
 
 ### 2.1 按模块展开
@@ -47,7 +47,7 @@ K8s 控制面审计能看到 Pod、Service、RBAC，却看不到下面四类真�
 | `switch-os-config-surface` | 只读侦察 / `writes=false` | SONiC `config_db.json` 或 Cumulus 导出 JSON | PFC watchdog、ECN/WRED、管理 ACL、SNMP、NTP、AAA | PFC watchdog 关闭、ECN 未启用、管理 ACL 放行任意来源、SNMP public、缺少远程 AAA | 只解析 JSON 导出；**不登录设备**，不解析二进制/私有格式 |
 | `ib-sm-partition-audit` | 只读侦察 / `writes=false` | SM/Partition/节点导出 JSON | SM 冗余、默认分区、PKey 成员、IPoIB、SM 主机位置 | 单 SM 无冗余、默认分区覆盖全部 HCA、Partition 跨租户、SM 跑在计算节点 | fixture 解析；未连接 UFM/OpenSM，未验证真实成员 |
 | `sharp-collective-config` | 只读侦察 / `writes=false` | SHARP 会话/AM/collective 导出 JSON | 会话鉴权、成员租户、聚合节点、缓冲隔离 | 会话无鉴权、聚合节点跨租户共享、成员跨租户、缓冲未隔离 | fixture 解析；未触发真实 SHARP reduce |
-| `fabric-telemetry-exposure` | 主动探测 / `writes=false` | gNMI/SNMP/TSDB 配置 + 指标 JSON | gNMI TLS/鉴权、SNMP 版本/团体名、tenant/serial 标签 | 遥测匿名暴露租户/序列号、gNMI 明文/无鉴权、SNMP v2c public | mock 只读；未连真实 gNMI/SNMP 设备 |
+| `fabric-observability-exposure` | 主动探测 / `writes=false` | gNMI/SNMP/TSDB 配置 + 指标 JSON | gNMI TLS/鉴权、SNMP 版本/团体名、tenant/serial 标签 | 遥测匿名暴露租户/序列号、gNMI 明文/无鉴权、SNMP v2c public | mock 只读；未连真实 gNMI/SNMP 设备 |
 | `hardware-supply-chain` | 只读侦察 / `writes=false` | 固件清单 + 实际 blob + 可选签名密钥 | 组件哈希、缺失文件、签名状态、签名者/供应商 | 固件哈希不匹配、清单签名无效、组件缺签名者、供应商不一致 | fixture 使用 **HMAC**；生产必须换厂商非对称签名/PKI，不能把 HMAC 当供应链信任 |
 
 ---

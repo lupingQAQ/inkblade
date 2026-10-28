@@ -145,7 +145,7 @@ Legend: **production-testable** = execute against this profile without extra con
 | `etcd-direct-access` | k8s-object:Pod; http-endpoint::2379 | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
 | `experiment-tracker-exposure` | http-endpoint:/api; model-file:model | production-testable | conditional | conditional | production-testable | production-testable | production-testable |
 | `exposure-mapping` | k8s-object:Pod; http-endpoint:/healthz | production-testable | production-testable | production-testable | production-testable | production-testable | no-surface |
-| `fabric-telemetry-exposure` | switch:switch/fabric | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
+| `fabric-observability-exposure` | switch:switch/fabric | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `fabric-topology-isolation` | switch:switch/fabric | production-testable | no-surface | no-surface | no-surface | no-surface | production-testable |
 | `federated-learning-audit` | http-endpoint:/fl; k8s-object:Deployment/nvflare; k8s-object:Deployment/flower | no-surface | no-surface | no-surface | no-surface | no-surface | no-surface |
 | `federated-learning-surface` | http-endpoint:/fl; k8s-object:Deployment | conditional | conditional | conditional | conditional | conditional | no-surface |
